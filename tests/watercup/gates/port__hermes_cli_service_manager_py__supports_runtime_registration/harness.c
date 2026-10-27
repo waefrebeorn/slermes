@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sm_supports_runtime_registration(void);
 
 int main(int argc, char **argv) {

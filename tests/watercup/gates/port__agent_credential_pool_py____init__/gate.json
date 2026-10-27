@@ -19,7 +19,7 @@
     "src/cli/paths.c",
     "src/agent/credential_pool_ports.c",
     "src/agent/credential_pool_custom.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/credential_pool_engine.c"
   ],
   "cflags": [
     "-I",

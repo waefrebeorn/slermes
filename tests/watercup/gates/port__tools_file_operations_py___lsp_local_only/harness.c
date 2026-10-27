@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool fo_lsp_local_only(void);
 
 int main(int argc, char **argv) {

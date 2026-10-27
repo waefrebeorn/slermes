@@ -17,7 +17,9 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/slash_exec.c"
+    "src/hermes_cli/slash_exec.c",
+    "src/agent/iron_proxy_ports.c",
+    "src/agent/skill_bundles_ports.c"
   ],
   "cflags": [
     "-I",

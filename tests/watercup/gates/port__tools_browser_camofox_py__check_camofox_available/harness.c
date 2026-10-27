@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool check_camofox_available(void);
 
 int main(int argc, char **argv) {

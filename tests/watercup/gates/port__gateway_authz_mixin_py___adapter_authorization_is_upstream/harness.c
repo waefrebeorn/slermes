@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool authz_adapter_authorization_is_upstream(const char *platform,
                                              const char *profile);
 

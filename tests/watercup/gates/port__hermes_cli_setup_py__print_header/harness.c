@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stp_print_header(const char *title);
 
 int main(int argc, char **argv) {

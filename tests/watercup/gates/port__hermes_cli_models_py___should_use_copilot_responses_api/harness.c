@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int should_use_copilot_responses_api(const char *model_id);
 
 int main(int argc, char **argv) {

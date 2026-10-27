@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/gateway/run_gaps.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/hermes_state/hermes_state_fd_budget.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int clipboard_linux_save(const char *text);
 
 int main(int argc, char **argv) {

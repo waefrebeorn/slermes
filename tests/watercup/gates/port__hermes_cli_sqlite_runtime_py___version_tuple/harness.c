@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg);
 
 int main(int argc, char **argv) {

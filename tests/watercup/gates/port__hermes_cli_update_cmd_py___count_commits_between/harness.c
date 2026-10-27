@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_count_commits_between(const char *revlist_stdout);
 
 int main(int argc, char **argv) {

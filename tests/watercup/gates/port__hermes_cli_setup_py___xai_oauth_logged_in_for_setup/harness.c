@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool stp_xai_oauth_logged_in_for_setup(void);
 
 int main(int argc, char **argv) {

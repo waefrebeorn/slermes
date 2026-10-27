@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stopped(const char *sandbox_id, const char *current_state);
 
 int main(int argc, char **argv) {

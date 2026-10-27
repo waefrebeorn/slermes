@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool fo_is_write_denied(const char *path);
 
 int main(int argc, char **argv) {

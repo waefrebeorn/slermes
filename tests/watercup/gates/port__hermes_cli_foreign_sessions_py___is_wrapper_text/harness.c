@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int foreign_sessions_is_wrapper_text(const char *text);
 
 int main(int argc, char **argv) {

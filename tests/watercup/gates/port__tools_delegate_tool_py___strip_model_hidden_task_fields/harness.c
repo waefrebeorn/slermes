@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg);
 
 int main(int argc, char **argv) {

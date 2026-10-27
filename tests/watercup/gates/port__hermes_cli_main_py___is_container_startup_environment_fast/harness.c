@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool main_g_is_container_startup_environment_fast(void);
 
 int main(int argc, char **argv) {

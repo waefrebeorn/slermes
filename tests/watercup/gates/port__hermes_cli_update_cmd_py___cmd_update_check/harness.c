@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_cmd_update_check(const char *project_root, const char *branch);
 
 int main(int argc, char **argv) {

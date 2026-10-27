@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int profile_dir_exists(const char *name);
 
 int main(int argc, char **argv) {

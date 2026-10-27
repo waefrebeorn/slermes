@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_tools_check_file_staleness(const char *path);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_has_upstream_remote(const char *git_cmd[], const char *cwd);
 
 int main(int argc, char **argv) {

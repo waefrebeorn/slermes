@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/container_boot.c",
-    "src/infrastructure_stubs.c"
+    "src/gateway/lifecycle_ledger.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int resolve_compression_fast_lane(const char *config);
 
 int main(int argc, char **argv) {

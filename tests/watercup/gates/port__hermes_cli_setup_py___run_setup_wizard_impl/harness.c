@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _run_setup_wizard_impl(void);
 
 int main(int argc, char **argv) {

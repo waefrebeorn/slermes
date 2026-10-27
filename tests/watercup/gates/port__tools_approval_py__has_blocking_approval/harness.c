@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool apr2_has_blocking_approval(const char *session_key);
 
 int main(int argc, char **argv) {

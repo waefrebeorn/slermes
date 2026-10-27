@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool profile_set_active(const char *name);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_tools_search_result_read_block_error(const char *error_text);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * cli_reverse_alias_for_display(const char *model_name);
 
 int main(int argc, char **argv) {

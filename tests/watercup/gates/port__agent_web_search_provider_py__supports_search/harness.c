@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_web_search_provider_supports_search(const char *provider_id);
 
 int main(int argc, char **argv) {

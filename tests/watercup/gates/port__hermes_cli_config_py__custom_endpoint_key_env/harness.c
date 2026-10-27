@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_config_custom_endpoint_key_env(const char *arg);
 
 int main(int argc, char **argv) {

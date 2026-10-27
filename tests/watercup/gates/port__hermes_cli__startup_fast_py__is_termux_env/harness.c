@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool sf_is_termux_env(void);
 
 int main(int argc, char **argv) {

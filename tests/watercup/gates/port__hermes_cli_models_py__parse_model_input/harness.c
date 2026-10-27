@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void model_parse_model_input(const char *raw, const char *current_provider,
                              char *provider_out, size_t poutsz,
                              char *model_out, size_t moutsz);
@@ -18,7 +19,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    model_parse_model_input(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], argv[2 + (i - 2 + 3) % 5], argv[2 + (i - 2 + 4) % 5], argv[2 + (i - 2 + 5) % 5]);
+    model_parse_model_input();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int restore(const char *input);
 
 int main(int argc, char **argv) {

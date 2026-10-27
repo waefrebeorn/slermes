@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kanban_severity_at_or_above(const char *severity, const char *threshold);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_stdio_u_flip_console_code_page_to_utf8(const char *arg);
 
 int main(int argc, char **argv) {

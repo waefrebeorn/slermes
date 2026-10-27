@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_is_accepted_host(const char *host_header, const char *bound_host);
 
 int main(int argc, char **argv) {

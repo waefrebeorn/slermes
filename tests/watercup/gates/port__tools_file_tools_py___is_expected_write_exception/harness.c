@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int file_tools_is_expected_write_exception(int errnum, int is_permission_error);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_stdio_u_augment_path_with_known_tools(const char *arg);
 
 int main(int argc, char **argv) {

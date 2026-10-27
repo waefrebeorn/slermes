@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int should_require_dashboard_auth(const char *host);
 
 int main(int argc, char **argv) {

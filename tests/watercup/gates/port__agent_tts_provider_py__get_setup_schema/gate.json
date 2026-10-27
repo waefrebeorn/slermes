@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/tts_provider_ports.c"
+    "src/agent/tts_provider_ports.c",
+    "src/tools/tts.c"
   ],
   "cflags": [
     "-I",

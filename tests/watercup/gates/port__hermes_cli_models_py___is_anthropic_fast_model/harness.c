@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int is_anthropic_fast_model(const char *model_id);
 
 int main(int argc, char **argv) {

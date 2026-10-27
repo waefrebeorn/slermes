@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *arg);
 
 int main(int argc, char **argv) {

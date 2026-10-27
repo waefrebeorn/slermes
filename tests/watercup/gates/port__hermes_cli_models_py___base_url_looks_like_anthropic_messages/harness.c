@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_base_url_looks_like_anthropic_messages(const char *base_url);
 
 int main(int argc, char **argv) {

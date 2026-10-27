@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void upd_print_parked_branch_skip_warning(const char *cwd,
                                           const char *current_branch,
                                           const char *target_branch,
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    upd_print_parked_branch_skip_warning(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], argv[2 + (i - 2 + 3) % 5]);
+    upd_print_parked_branch_skip_warning();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

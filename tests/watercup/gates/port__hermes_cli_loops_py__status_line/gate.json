@@ -18,13 +18,13 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/gateway/run.c",
-    "src/infrastructure_stubs.c",
     "src/gateway/platforms/helpers.c",
     "src/gateway/gw_dispatch.c",
     "src/hermes_cli/goals.c",
     "src/gateway/gw_thread.c",
     "src/hermes_cli/lifecycle.c",
     "src/agent/hermes_state/hermes_state_session.c",
+    "src/agent/hermes_state/hermes_state_ops.c",
     "src/agent/hermes_state/hermes_state_session2.c"
   ],
   "cflags": [

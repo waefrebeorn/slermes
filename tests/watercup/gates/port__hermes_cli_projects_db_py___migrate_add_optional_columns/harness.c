@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg);
 
 int main(int argc, char **argv) {

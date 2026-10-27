@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_path_is_under(const char *root, const char *target);
 
 int main(int argc, char **argv) {

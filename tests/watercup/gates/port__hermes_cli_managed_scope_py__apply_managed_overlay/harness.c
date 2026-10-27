@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_managed_scope_apply_managed_overlay(const char *arg);
 
 int main(int argc, char **argv) {

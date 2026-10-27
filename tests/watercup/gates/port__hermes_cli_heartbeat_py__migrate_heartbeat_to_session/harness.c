@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool hb_migrate_heartbeat_to_session(const char *old_session_id,
                                      const char *new_session_id);
 

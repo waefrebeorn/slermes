@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__should_auto_tts_for_chat(const char *chat_id);
 
 int main(int argc, char **argv) {

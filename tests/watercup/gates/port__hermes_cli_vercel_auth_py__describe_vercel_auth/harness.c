@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_vercel_auth_describe_vercel_auth(const char *arg);
 
 int main(int argc, char **argv) {

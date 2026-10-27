@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gw_runtime_dir_is_ours(const char *runtime_dir);
 
 int main(int argc, char **argv) {

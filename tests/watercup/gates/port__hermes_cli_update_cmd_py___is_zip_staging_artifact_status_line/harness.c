@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool upd_is_zip_staging_artifact_status_line(const char *line);
 
 int main(int argc, char **argv) {

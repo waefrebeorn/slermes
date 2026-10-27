@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_sess_delete_session(const char *db_path, const char *session_id);
 
 int main(int argc, char **argv) {

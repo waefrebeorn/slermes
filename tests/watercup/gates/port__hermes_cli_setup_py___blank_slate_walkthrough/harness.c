@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _blank_slate_walkthrough(void);
 
 int main(int argc, char **argv) {

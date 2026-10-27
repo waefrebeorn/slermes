@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool is_dir(const char *cwd);
 
 int main(int argc, char **argv) {

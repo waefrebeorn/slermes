@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_projects_cmd_projects_command(const char *arg);
 
 int main(int argc, char **argv) {

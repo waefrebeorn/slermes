@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_heal_cooked_mode_drift(int fd);
 
 int main(int argc, char **argv) {

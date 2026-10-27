@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool apr2_is_session_yolo_enabled(const char *session_key);
 
 int main(int argc, char **argv) {

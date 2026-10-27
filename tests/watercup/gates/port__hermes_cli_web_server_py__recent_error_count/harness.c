@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ws_recent_error_count_all(void);
 
 int main(int argc, char **argv) {

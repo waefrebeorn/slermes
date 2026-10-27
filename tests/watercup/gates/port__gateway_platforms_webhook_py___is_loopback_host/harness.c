@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool value(const char *host);
 
 int main(int argc, char **argv) {

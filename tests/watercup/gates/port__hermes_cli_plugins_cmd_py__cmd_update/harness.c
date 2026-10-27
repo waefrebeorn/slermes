@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void plugins_cmd_cmd_update(const char *name);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    plugins_cmd_cmd_update(argv[i]);
+    plugins_cmd_cmd_update();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

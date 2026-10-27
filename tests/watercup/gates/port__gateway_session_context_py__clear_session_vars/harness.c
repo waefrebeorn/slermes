@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sct_clear_session_vars(void);
 
 int main(int argc, char **argv) {

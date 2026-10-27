@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool tts_tool_import_openai_client(void);
 
 int main(int argc, char **argv) {

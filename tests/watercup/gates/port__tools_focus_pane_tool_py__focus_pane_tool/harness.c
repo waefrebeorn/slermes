@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_focus_pane_tool_focus_pane_tool(const char *arg);
 
 int main(int argc, char **argv) {

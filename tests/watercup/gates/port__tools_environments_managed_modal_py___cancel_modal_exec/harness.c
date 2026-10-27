@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void cli_tools_environments_managed_modal__cancel_modal_exec(const char *sandbox_id, const char *exec_id);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    cli_tools_environments_managed_modal__cancel_modal_exec(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    cli_tools_environments_managed_modal__cancel_modal_exec();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

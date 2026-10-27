@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _delivery_platform_routed_from_primary_gateway(void);
 
 int main(int argc, char **argv) {

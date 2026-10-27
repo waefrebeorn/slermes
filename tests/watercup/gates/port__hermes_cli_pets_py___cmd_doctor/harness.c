@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_pets_cmd_doctor(void);
 
 int main(int argc, char **argv) {

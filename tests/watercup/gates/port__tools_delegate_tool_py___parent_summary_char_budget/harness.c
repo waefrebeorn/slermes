@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_delegate_tool_u_parent_summary_char_budget(const char *arg);
 
 int main(int argc, char **argv) {

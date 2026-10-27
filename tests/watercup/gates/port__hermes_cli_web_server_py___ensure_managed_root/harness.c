@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ws_ensure_managed_root(const char *path);
 
 int main(int argc, char **argv) {

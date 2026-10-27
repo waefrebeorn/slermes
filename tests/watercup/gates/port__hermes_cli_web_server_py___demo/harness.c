@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void ws_demo(void);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    ws_demo(argv[i]);
+    ws_demo();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

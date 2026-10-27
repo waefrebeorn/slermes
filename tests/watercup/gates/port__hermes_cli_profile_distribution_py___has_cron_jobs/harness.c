@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_profile_distributio_u_has_cron_jobs(const char *arg);
 
 int main(int argc, char **argv) {

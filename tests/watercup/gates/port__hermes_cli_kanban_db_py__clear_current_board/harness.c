@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int clear_current_board(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_profile_distributio_check_hermes_requires(const char *arg);
 
 int main(int argc, char **argv) {

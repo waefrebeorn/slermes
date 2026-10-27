@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool apr2_is_approval_bypass_active_for_session(const char *session_key);
 
 int main(int argc, char **argv) {

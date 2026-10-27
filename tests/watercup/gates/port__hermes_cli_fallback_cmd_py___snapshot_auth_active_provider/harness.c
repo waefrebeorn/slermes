@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg);
 
 int main(int argc, char **argv) {

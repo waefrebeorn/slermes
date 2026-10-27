@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int fo_not_regular_error(const char *path);
 
 int main(int argc, char **argv) {

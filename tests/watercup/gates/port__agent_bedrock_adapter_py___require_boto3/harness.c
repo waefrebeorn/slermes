@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_bedrock_adapter__require_boto3(void);
 
 int main(int argc, char **argv) {

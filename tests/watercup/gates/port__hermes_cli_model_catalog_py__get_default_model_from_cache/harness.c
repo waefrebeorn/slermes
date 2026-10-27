@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg);
 
 int main(int argc, char **argv) {

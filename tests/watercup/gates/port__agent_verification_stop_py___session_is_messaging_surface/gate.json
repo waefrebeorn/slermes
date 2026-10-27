@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/verification_stop_helpers.c",
-    "src/infrastructure_stubs.c",
+    "src/agent/verify_recipes.c",
     "src/agent/verify_environment.c"
   ],
   "cflags": [

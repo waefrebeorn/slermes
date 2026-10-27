@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_fallback_cmd_u_write_chain(const char *arg);
 
 int main(int argc, char **argv) {

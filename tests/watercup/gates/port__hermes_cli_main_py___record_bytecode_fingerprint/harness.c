@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_record_bytecode_fingerprint(const char *project_root);
 
 int main(int argc, char **argv) {

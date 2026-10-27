@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int coe_register_command_family(const char *input);
 
 int main(int argc, char **argv) {

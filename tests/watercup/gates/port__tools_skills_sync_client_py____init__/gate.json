@@ -14,13 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/tools/skills_sync_client.c",
-    "src/agent/skill_utils.c",
-    "src/infrastructure_stubs.c",
-    "src/tools/skill_usage_wrappers.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

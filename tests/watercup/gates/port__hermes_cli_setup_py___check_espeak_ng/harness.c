@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool stp_check_espeak_ng(void);
 
 int main(int argc, char **argv) {

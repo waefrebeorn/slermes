@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__start_session_processing(const char *session_key, const char *text);
 
 int main(int argc, char **argv) {

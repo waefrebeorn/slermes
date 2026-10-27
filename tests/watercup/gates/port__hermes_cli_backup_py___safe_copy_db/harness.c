@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int backup_safe_copy_db(const char *src, const char *dst);
 
 int main(int argc, char **argv) {

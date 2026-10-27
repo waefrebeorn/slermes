@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_active_sessions_resolve_max_concurrent_sessions(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _looks_like_desktop_control_plane(const char *cmdline);
 
 int main(int argc, char **argv) {

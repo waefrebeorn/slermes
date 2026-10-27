@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dash_detect_https(const char *scheme);
 
 int main(int argc, char **argv) {

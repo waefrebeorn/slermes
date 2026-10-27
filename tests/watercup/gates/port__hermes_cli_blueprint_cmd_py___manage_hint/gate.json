@@ -17,7 +17,11 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/blueprint_cmd.c"
+    "src/hermes_cli/blueprint_cmd.c",
+    "src/hermes_cli/blueprint_catalog_helpers.c",
+    "src/cron/blueprint_catalog.c",
+    "src/gateway/session_context.c",
+    "src/cron/scheduler.c"
   ],
   "cflags": [
     "-I",

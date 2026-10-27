@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    long result = antr_resolve_anthropic_messages_max_tokens(strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    long result = antr_resolve_anthropic_messages_max_tokens((long)strtol(argv[i], NULL, 10), argv[2 + (i - 2 + 1) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];

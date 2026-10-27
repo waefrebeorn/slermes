@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_display__verb_drops_preview(const char *tool_name);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_count_running_tasks_other_boards(const char *board);
 
 int main(int argc, char **argv) {

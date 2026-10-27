@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool clipboard_write_base64_image(const char *b64, const char *out_path);
 
 int main(int argc, char **argv) {

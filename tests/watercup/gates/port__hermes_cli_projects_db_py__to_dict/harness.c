@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * pdb_to_dict(const char *path, const char *label);
 
 int main(int argc, char **argv) {

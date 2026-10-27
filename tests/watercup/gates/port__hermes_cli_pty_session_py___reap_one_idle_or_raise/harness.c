@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg);
 
 int main(int argc, char **argv) {

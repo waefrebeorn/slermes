@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_write_approval_write_approval_enabled(const char *subsystem);
 
 int main(int argc, char **argv) {

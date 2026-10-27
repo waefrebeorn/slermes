@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * doctor_read_journal_mode(const char *db_path);
 
 int main(int argc, char **argv) {

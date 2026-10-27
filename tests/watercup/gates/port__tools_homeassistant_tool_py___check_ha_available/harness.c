@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_homeassistant_tool_u_check_ha_available(const char *arg);
 
 int main(int argc, char **argv) {

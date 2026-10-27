@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/whatsapp_common_helpers.c"
+    "src/hermes_cli/whatsapp_common_helpers.c",
+    "src/agent/secret_scope.c"
   ],
   "cflags": [
     "-I",

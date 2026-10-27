@@ -1,31 +1,25 @@
-/* gate: port__tools_discord_tool_py___read_limited_response_body — traced copy of discord_read_limited_response_body (int_str) */
+/* gate: port__tools_discord_tool_py___read_limited_response_body — GAP sentinel for _read_limited_response_body */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int discord_read_limited_response_body(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_read_limited_response_body";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s discord_read_limited_response_body <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _read_limited_response_body <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("discord_read_limited_response_body");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = discord_read_limited_response_body(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_read_limited_response_body");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("discord_read_limited_response_body");
+        WCUP_END("_read_limited_response_body");
     }
     return 0;
 }

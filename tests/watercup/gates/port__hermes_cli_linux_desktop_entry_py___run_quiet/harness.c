@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool lde_run_quiet(const char *const *cmd, int cmd_count);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = lde_run_quiet((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    bool result = lde_run_quiet(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR(result ? "true" : "false");

@@ -17,7 +17,9 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/relay/relay_shared_metrics.c"
+    "src/gateway/relay/relay_shared_metrics.c",
+    "src/hermes_cli/smc_event_extractors.c",
+    "src/hermes_cli/shared_metrics_contract.c"
   ],
   "cflags": [
     "-I",

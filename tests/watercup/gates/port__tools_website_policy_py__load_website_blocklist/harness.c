@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_website_policy_load_website_blocklist(const char *config_path);
 
 int main(int argc, char **argv) {

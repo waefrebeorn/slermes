@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_clarify_gateway_has_pending(const char *session_key);
 
 int main(int argc, char **argv) {

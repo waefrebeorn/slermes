@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_inventory_u_apply_featured(const char *arg);
 
 int main(int argc, char **argv) {

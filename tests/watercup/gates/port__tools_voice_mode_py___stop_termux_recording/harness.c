@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int vmd_stop_termux_recording(void);
 
 int main(int argc, char **argv) {

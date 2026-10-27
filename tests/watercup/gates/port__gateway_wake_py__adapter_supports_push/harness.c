@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_wake_adapter_supports_push(const char *arg);
 
 int main(int argc, char **argv) {

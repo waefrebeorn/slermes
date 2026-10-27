@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dingtalk_auth_render_qr_to_terminal(const char *arg);
 
 int main(int argc, char **argv) {

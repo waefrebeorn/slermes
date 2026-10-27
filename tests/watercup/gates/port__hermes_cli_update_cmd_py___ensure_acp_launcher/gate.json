@@ -18,7 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/update_cmd.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/banner_pure.c",
+    "src/hermes_cli/config_migrate.c"
   ],
   "cflags": [
     "-I",

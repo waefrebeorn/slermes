@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool main_g_desktop_macos_has_valid_real_signature(const char *app_path);
 
 int main(int argc, char **argv) {

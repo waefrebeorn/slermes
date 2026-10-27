@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_security_advisories_term_supports_color(void);
 
 int main(int argc, char **argv) {

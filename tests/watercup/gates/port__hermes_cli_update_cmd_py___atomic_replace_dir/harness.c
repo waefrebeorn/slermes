@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_atomic_replace_dir(const char *src, const char *dst);
 
 int main(int argc, char **argv) {

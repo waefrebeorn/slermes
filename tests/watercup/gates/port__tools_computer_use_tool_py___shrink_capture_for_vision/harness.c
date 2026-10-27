@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg);
 
 int main(int argc, char **argv) {

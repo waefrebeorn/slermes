@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * tts_get_env_value(const char *key, const char *env_val);
 
 int main(int argc, char **argv) {

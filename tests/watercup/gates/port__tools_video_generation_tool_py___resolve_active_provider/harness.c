@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_video_generation_tool_u_resolve_active_provider(const char *arg);
 
 int main(int argc, char **argv) {

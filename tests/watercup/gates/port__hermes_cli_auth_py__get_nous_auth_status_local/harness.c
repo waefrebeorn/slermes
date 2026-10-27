@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_auth_get_nous_auth_status_local(const char *arg);
 
 int main(int argc, char **argv) {

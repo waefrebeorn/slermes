@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_terminal_supports_extended_enter_keys(void);
 
 int main(int argc, char **argv) {

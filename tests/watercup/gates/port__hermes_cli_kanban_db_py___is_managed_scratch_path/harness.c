@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_is_managed_scratch_path(const char *path);
 
 int main(int argc, char **argv) {

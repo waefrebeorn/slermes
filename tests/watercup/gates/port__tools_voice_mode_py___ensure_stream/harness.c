@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int vmd_ensure_stream(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool main_g_active_profile_may_override_home_fast(const char *hermes_root);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _restore_state_db_from_snapshot(const char *state_path, const char *snap_state);
 
 int main(int argc, char **argv) {

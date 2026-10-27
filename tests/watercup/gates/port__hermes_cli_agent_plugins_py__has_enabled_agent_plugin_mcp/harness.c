@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ap_has_enabled_agent_plugin_mcp(void);
 
 int main(int argc, char **argv) {

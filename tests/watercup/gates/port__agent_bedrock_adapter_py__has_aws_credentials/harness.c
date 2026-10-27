@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_bedrock_adapter_has_aws_credentials(void);
 
 int main(int argc, char **argv) {

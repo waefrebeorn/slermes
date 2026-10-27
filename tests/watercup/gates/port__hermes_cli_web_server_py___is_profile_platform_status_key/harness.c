@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _is_profile_platform_status_key(const char *key);
 
 int main(int argc, char **argv) {

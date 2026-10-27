@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * camofox_back(const char *camofox_url, const char *session_id);
 
 int main(int argc, char **argv) {

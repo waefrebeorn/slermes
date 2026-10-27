@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_proxy_cli_u_load_env_file_into_environ(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool nac_coerce_bool(const char *value);
 
 int main(int argc, char **argv) {

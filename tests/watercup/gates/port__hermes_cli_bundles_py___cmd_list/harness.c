@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_bundles_cmd_list(const char *bundles_dir);
 
 int main(int argc, char **argv) {

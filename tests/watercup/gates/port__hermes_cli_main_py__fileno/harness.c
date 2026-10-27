@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_tee_init(const char *log_file);
 
 int main(int argc, char **argv) {

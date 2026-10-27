@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int webhook_u_on_processing_complete(const char *arg);
 
 int main(int argc, char **argv) {

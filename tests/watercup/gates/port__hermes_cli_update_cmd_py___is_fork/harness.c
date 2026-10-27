@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_is_fork_origin(const char *origin_url);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_try_restart_systemd_service(const char *unit);
 
 int main(int argc, char **argv) {

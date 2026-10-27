@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool discord_check_requirements(void);
 
 int main(int argc, char **argv) {

@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/pairing.c"
+    "src/gateway/pairing.c",
+    "src/gateway/platforms/helpers.c"
   ],
   "cflags": [
     "-I",

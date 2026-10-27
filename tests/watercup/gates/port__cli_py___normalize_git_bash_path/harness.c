@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * cli_normalize_git_bash_path(const char *p);
 
 int main(int argc, char **argv) {

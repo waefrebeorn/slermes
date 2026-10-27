@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _cli_is_silent_head(const char *h);
 
 int main(int argc, char **argv) {

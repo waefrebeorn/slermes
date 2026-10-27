@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_projects_db_py__project_for_path — traced copy of projects_db_project_for_path (int_str) */
+/* gate: port__hermes_cli_projects_db_py__project_for_path — GAP sentinel for project_for_path */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int projects_db_project_for_path(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "project_for_path";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s projects_db_project_for_path <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s project_for_path <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("projects_db_project_for_path");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = projects_db_project_for_path(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("project_for_path");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("projects_db_project_for_path");
+        WCUP_END("project_for_path");
     }
     return 0;
 }

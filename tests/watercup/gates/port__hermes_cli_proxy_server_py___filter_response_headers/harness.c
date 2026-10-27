@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_proxy_server_u_filter_response_headers(const char *arg);
 
 int main(int argc, char **argv) {

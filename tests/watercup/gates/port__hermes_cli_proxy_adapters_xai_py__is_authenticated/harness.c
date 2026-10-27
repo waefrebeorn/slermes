@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool pxa_is_authenticated(void);
 
 int main(int argc, char **argv) {

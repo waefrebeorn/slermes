@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg);
 
 int main(int argc, char **argv) {

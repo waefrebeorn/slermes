@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gwc2_spawn_gateway_restart_watcher(const char *old_pid, const char *run_argv);
 
 int main(int argc, char **argv) {

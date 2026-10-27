@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
     char * result = yuanbao_proto_encode_biz_msg(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], argv[2 + (i - 2 + 3) % 5], (long)strtol(argv[2 + (i - 2 + 4) % 5], NULL, 10), &_o5);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%zu", (size_t)_o5); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

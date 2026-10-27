@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_security_audit_u_extract_mcp_component(const char *arg);
 
 int main(int argc, char **argv) {

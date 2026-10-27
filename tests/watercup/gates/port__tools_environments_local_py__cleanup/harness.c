@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int elc_cleanup(const char *snapshot_path, const char *cwd_file);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_is_busy_error(const char *msg);
 
 int main(int argc, char **argv) {

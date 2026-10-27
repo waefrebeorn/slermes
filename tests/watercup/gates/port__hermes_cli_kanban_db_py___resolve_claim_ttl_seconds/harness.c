@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kanban_resolve_claim_ttl_seconds(int ttl_seconds);
 
 int main(int argc, char **argv) {

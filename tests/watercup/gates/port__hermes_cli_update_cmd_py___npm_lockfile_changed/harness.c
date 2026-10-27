@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_npm_lockfile_changed(const char *project_root, const char *hermes_root);
 
 int main(int argc, char **argv) {

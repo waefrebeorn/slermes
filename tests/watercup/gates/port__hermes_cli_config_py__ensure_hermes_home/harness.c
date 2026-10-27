@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_ensure_hermes_home(void);
 
 int main(int argc, char **argv) {

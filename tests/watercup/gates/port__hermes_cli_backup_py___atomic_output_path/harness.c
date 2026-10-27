@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_backup_u_atomic_output_path(const char *arg);
 
 int main(int argc, char **argv) {

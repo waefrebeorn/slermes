@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool whatsapp_common_is_broadcast_chat(const char *chat_type);
 
 int main(int argc, char **argv) {

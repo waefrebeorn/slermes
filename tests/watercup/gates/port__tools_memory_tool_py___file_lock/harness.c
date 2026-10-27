@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int memory_store_file_lock(const char *path);
 
 int main(int argc, char **argv) {

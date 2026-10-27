@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _codex_event_has_content(const char *event);
 
 int main(int argc, char **argv) {

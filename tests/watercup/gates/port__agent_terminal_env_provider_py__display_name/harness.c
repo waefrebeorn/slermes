@@ -1,31 +1,25 @@
-/* gate: port__agent_terminal_env_provider_py__display_name — traced copy of tep_display_name (int_str) */
+/* gate: port__agent_terminal_env_provider_py__display_name — GAP sentinel for display_name */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int tep_display_name(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "display_name";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s tep_display_name <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s display_name <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("tep_display_name");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = tep_display_name(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("display_name");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("tep_display_name");
+        WCUP_END("display_name");
     }
     return 0;
 }

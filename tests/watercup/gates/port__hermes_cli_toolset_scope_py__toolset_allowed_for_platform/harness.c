@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool toolset_allowed_for_platform(const char *ts_key, const char *platform);
 
 int main(int argc, char **argv) {

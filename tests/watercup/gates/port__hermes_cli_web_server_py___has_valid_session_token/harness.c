@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_has_valid_session_token(const char *headers);
 
 int main(int argc, char **argv) {

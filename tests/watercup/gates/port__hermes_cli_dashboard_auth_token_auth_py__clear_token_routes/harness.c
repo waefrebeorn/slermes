@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_toke_clear_token_routes(const char *arg);
 
 int main(int argc, char **argv) {

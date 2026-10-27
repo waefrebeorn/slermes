@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_backup_create_pre_update_backup(const char *arg);
 
 int main(int argc, char **argv) {

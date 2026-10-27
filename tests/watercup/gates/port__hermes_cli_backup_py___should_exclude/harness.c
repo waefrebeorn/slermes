@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int backup_should_exclude(const char *rel_path);
 
 int main(int argc, char **argv) {

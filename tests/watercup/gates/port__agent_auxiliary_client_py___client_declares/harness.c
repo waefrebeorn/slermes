@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _client_declares(const char *client_obj, const char *flag);
 
 int main(int argc, char **argv) {

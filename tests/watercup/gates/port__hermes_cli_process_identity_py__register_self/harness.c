@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int process_identity_register_self(const char *purpose,
                                    const char *project_root);
 

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_clarify_gateway_resolve_gateway_clarify(const char *clarify_id, const char *response);
 
 int main(int argc, char **argv) {

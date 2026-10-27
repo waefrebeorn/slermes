@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool request_gateway_self_restart(int pid);
 
 int main(int argc, char **argv) {

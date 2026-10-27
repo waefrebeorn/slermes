@@ -17,8 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/web_routers/cron.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/web_routers/cron.c"
   ],
   "cflags": [
     "-I",

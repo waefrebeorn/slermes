@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_relay_command_manifest_build_relay_command_manifest(const char *arg);
 
 int main(int argc, char **argv) {

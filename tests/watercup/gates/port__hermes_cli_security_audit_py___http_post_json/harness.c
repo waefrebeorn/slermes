@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_security_audit_u_http_post_json(const char *arg);
 
 int main(int argc, char **argv) {

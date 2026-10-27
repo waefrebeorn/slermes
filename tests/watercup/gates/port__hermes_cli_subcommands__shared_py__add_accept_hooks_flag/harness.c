@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands__shared_add_accept_hooks_flag(const char *arg);
 
 int main(int argc, char **argv) {

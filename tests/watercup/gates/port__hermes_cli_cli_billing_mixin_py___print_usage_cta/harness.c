@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_cli_billing_mixin_u_print_usage_cta(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_update_via_zip(const char *branch, const char *project_root);
 
 int main(int argc, char **argv) {

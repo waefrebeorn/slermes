@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_is_managed(void);
 
 int main(int argc, char **argv) {

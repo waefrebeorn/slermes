@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cl2_persist_active_session_before_close(const char *session_id);
 
 int main(int argc, char **argv) {

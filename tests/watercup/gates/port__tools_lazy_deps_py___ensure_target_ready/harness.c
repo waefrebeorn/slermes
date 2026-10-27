@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_lazy_deps_u_ensure_target_ready(const char *arg);
 
 int main(int argc, char **argv) {

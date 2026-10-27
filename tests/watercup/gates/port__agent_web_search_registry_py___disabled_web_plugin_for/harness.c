@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_web_search_registry_u_disabled_web_plugin_for(const char *arg);
 
 int main(int argc, char **argv) {

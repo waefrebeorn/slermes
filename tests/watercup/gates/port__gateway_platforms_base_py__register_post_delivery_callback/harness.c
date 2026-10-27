@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__register_post_delivery_callback(const char *input);
 
 int main(int argc, char **argv) {

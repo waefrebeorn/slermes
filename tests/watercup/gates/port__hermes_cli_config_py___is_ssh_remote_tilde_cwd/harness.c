@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_is_ssh_remote_tilde_cwd(const char *backend, const char *cwd);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg);
 
 int main(int argc, char **argv) {

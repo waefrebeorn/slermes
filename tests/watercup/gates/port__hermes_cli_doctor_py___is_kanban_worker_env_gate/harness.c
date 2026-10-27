@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool doctor_is_kanban_worker_env_gate(void);
 
 int main(int argc, char **argv) {

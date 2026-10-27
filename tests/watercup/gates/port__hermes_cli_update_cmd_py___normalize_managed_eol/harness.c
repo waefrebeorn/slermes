@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_normalize_managed_eol(const char *git_cmd[], const char *repo_root);
 
 int main(int argc, char **argv) {

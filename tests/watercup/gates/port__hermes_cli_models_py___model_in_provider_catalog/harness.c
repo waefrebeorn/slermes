@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int model(const char *name_lower,
                                      char *const *providers);
 

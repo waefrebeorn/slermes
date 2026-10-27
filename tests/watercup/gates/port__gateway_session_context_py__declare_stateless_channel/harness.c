@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_session_context_declare_stateless_channel(const char *arg);
 
 int main(int argc, char **argv) {

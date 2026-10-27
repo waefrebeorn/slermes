@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__is_animation_url(const char *url);
 
 int main(int argc, char **argv) {

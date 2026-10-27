@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int is_github_models_base_url(const char *base_url);
 
 int main(int argc, char **argv) {

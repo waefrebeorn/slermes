@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int pet_downscale_cells(int pixel_w, int pixel_h, int cell_w, int cell_h);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_hydrate_reasoning_caps_from_disk(const char *input);
 
 int main(int argc, char **argv) {

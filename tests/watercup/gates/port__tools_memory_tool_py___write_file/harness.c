@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int memt_write_file(const char *path, const char *content);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int lanes(const char *response);
 
 int main(int argc, char **argv) {

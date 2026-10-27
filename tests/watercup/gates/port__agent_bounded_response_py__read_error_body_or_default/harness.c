@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_bounded_response_read_error_body_or_default(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg);
 
 int main(int argc, char **argv) {

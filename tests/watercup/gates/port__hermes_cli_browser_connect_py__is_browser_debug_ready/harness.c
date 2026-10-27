@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int is_browser_debug_ready(const char *url);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_kanban_specify_list_triage_ids(const char *arg);
 
 int main(int argc, char **argv) {

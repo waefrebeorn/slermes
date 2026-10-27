@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool webhook_hmac_str_equal(const char *provided, const char *expected);
 
 int main(int argc, char **argv) {

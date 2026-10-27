@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg);
 
 int main(int argc, char **argv) {

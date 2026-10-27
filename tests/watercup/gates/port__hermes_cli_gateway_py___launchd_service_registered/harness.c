@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gw_launchd_service_registered(const char *label);
 
 int main(int argc, char **argv) {

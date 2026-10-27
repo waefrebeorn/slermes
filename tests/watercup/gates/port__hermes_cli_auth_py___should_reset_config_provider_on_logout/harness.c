@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool auth_should_reset_config_provider_on_logout(const char *provider_id);
 
 int main(int argc, char **argv) {

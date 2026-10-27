@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_blueprint_cmd_py___humanize_schedule — traced copy of blueprint_cmd_humanize_schedule (int_str) */
+/* gate: port__hermes_cli_blueprint_cmd_py___humanize_schedule — GAP sentinel for _humanize_schedule */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int blueprint_cmd_humanize_schedule(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_humanize_schedule";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s blueprint_cmd_humanize_schedule <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _humanize_schedule <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("blueprint_cmd_humanize_schedule");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = blueprint_cmd_humanize_schedule(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_humanize_schedule");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("blueprint_cmd_humanize_schedule");
+        WCUP_END("_humanize_schedule");
     }
     return 0;
 }

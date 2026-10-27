@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg);
 
 int main(int argc, char **argv) {

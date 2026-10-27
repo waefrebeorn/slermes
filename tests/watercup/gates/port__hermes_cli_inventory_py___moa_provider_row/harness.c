@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_inventory_u_moa_provider_row(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_set_config_value(const char *key, const char *value);
 
 int main(int argc, char **argv) {

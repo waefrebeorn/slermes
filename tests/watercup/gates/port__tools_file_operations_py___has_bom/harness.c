@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_ops_has_bom(const char *text);
 
 int main(int argc, char **argv) {

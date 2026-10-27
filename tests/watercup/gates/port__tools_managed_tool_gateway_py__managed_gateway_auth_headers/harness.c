@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_managed_tool_gateway_managed_gateway_auth_headers(const char *url);
 
 int main(int argc, char **argv) {

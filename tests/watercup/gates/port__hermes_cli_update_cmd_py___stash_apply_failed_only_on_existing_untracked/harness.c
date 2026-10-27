@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_stash_apply_failed_only_on_existing_untracked(const char *stderr_text);
 
 int main(int argc, char **argv) {

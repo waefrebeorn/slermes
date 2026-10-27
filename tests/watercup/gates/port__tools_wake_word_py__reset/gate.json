@@ -14,10 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/agent/rate_limit_tracker.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

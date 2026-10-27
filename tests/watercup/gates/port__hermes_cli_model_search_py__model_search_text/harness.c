@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_model_search_model_search_text(const char *arg);
 
 int main(int argc, char **argv) {

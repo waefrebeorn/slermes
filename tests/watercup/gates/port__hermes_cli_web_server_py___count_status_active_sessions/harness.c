@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ws_count_active_sessions(void);
 
 int main(int argc, char **argv) {

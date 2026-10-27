@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int install_cmd_backspace_alias(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_gateway_hooks_discover_and_load(const char *hooks_dir);
 
 int main(int argc, char **argv) {

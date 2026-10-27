@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _skip_configured_section(const char *section);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int loops_goal_blocks_loop_tick(const char *session_id);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * _dashboard_skew_restart_hint(void);
 
 int main(int argc, char **argv) {

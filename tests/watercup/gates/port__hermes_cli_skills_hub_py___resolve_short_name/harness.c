@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_skills_hub_u_resolve_short_name(const char *arg);
 
 int main(int argc, char **argv) {

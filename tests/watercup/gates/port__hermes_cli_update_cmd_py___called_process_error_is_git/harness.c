@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool upd_called_process_error_is_git(char *const cmd[]);
 
 int main(int argc, char **argv) {

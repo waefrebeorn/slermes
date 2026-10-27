@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg);
 
 int main(int argc, char **argv) {

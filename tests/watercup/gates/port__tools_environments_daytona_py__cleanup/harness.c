@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool daytona_delete_sandbox(const char *sandbox_id);
 
 int main(int argc, char **argv) {

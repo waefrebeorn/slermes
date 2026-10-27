@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_fal_common__extract_http_status(const char *error_str);
 
 int main(int argc, char **argv) {

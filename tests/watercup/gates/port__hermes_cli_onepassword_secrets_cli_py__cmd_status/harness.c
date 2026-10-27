@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_opw_cmd_status(void);
 
 int main(int argc, char **argv) {

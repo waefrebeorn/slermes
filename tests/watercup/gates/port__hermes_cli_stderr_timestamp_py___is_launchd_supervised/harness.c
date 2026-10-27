@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stderr_ts_is_launchd_supervised(const char *xpc_service_name);
 
 int main(int argc, char **argv) {

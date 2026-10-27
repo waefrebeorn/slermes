@@ -104,6 +104,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("blueprint_catalog_humanize_schedule")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

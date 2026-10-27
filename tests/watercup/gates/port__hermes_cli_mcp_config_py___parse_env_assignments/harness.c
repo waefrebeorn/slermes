@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_config_u_parse_env_assignments(const char *arg);
 
 int main(int argc, char **argv) {

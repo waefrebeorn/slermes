@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool authstore_same_path(const char *a, const char *b);
 
 int main(int argc, char **argv) {

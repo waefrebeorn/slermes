@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool is_known_auth_provider(const char *provider_id);
 
 int main(int argc, char **argv) {

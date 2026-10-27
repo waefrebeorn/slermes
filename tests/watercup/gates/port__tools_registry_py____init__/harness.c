@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_registry_init(const char *name);
 
 int main(int argc, char **argv) {

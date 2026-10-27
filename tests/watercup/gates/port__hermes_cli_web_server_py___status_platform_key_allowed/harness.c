@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _status_platform_key_allowed(const char *key);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int azure_looks_like_anthropic_path(const char *url);
 
 int main(int argc, char **argv) {

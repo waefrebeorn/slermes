@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_env_loader_get_secret_source_values(const char *arg);
 
 int main(int argc, char **argv) {

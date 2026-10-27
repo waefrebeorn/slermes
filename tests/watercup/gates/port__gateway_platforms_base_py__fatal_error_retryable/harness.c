@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__fatal_error_retryable(void);
 
 int main(int argc, char **argv) {

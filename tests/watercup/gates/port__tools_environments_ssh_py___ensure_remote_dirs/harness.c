@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_environments_ssh__ensure_remote_dirs(const char *remote_home);
 
 int main(int argc, char **argv) {

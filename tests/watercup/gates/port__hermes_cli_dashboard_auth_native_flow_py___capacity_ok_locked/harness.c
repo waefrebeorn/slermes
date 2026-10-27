@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg);
 
 int main(int argc, char **argv) {

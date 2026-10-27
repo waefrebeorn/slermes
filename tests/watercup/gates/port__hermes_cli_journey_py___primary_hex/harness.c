@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_journey_u_primary_hex(const char *arg);
 
 int main(int argc, char **argv) {

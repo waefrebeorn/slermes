@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int pty_win_clamp(int value, int maximum);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ai_is_secret_key(const char *key);
 
 int main(int argc, char **argv) {

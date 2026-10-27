@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_plugins_py___parse_manifest — traced copy of plugin_manifest_parse (int_str) */
+/* gate: port__hermes_cli_plugins_py___parse_manifest — GAP sentinel for _parse_manifest */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int plugin_manifest_parse(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_parse_manifest";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s plugin_manifest_parse <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _parse_manifest <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("plugin_manifest_parse");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = plugin_manifest_parse(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_parse_manifest");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("plugin_manifest_parse");
+        WCUP_END("_parse_manifest");
     }
     return 0;
 }

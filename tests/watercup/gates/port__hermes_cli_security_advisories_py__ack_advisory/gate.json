@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/security_advisories.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/config_py_io.c"
   ],
   "cflags": [
     "-I",

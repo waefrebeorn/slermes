@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_should_emit_cleanup_session_finalize(const char *session_id);
 
 int main(int argc, char **argv) {

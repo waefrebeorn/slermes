@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_tts_streaming_mark_speech_interrupted(const char *arg);
 
 int main(int argc, char **argv) {

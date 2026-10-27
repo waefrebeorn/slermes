@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool clipboard_xclip_has_image(void);
 
 int main(int argc, char **argv) {

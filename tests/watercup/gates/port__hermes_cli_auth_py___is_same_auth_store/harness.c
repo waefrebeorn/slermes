@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _is_same_auth_store(void);
 
 int main(int argc, char **argv) {

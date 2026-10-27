@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool mn_try_redownload_electron_dist(const char *electron_dir);
 
 int main(int argc, char **argv) {

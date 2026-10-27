@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_stamp_install_method(const char *method);
 
 int main(int argc, char **argv) {

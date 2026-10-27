@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/webhook_ports.c"
+    "src/gateway/webhook_ports.c",
+    "src/gateway/gw_pollers.c"
   ],
   "cflags": [
     "-I",

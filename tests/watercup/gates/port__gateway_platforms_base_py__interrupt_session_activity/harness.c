@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__interrupt_session_activity(const char *session_key, const char *chat_id);
 
 int main(int argc, char **argv) {

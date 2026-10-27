@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_board_exists(const char *board);
 
 int main(int argc, char **argv) {

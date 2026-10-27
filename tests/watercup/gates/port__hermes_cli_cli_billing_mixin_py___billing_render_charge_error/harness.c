@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cbm_billing_render_charge_error(const char *error_type);
 
 int main(int argc, char **argv) {

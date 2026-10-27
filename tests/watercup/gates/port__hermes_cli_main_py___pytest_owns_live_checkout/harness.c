@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool main_g_pytest_owns_live_checkout(const char *root);
 
 int main(int argc, char **argv) {

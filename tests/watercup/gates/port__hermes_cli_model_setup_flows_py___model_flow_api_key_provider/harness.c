@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_model_flow_api_key(const char *provider_id, const char *current_model);
 
 int main(int argc, char **argv) {

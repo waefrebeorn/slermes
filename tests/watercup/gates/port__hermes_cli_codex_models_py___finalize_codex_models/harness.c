@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_codex_models_py___finalize_codex_models — traced copy of hermes_cli_codex_models_finalize_codex_models (int_str) */
+/* gate: port__hermes_cli_codex_models_py___finalize_codex_models — GAP sentinel for _finalize_codex_models */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int hermes_cli_codex_models_finalize_codex_models(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_finalize_codex_models";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_codex_models_finalize_codex_models <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _finalize_codex_models <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("hermes_cli_codex_models_finalize_codex_models");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = hermes_cli_codex_models_finalize_codex_models(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_finalize_codex_models");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("hermes_cli_codex_models_finalize_codex_models");
+        WCUP_END("_finalize_codex_models");
     }
     return 0;
 }

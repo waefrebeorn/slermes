@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _finalize_single_query(const char *input);
 
 int main(int argc, char **argv) {

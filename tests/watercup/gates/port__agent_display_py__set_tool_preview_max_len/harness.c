@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern long disp_set_tool_preview_max_len(const char *n);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    long result = disp_set_tool_preview_max_len((int)strtol(argv[i], NULL, 10));
+    long result = disp_set_tool_preview_max_len(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];

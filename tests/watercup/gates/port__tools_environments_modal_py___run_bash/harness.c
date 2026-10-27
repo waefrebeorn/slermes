@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * mdl_run_bash(const char *cmd_string);
 
 int main(int argc, char **argv) {

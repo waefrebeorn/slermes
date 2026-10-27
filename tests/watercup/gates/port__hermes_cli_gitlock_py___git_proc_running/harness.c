@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _git_proc_running(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_session_filters_format_epoch(const char *arg);
 
 int main(int argc, char **argv) {

@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/tools/cua_backend_ports.c",
-    "src/infrastructure_stubs.c"
+    "src/tools/cua_backend_helpers2.c"
   ],
   "cflags": [
     "-I",

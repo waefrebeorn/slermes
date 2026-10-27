@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int 1(const char *server_name, const char *token_dir);
 
 int main(int argc, char **argv) {

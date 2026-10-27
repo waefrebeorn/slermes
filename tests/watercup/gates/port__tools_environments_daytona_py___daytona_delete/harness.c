@@ -1,42 +1,25 @@
-/* gate: port__tools_environments_daytona_py___daytona_delete — traced copy of cli_tools_environments_daytona__daytona_delete (int_other) */
+/* gate: port__tools_environments_daytona_py___daytona_delete — GAP sentinel for _daytona_delete */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int cli_tools_environments_daytona__daytona_delete(const char *sandbox_id, const char **remote_paths, int path_count);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_daytona_delete";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_environments_daytona__daytona_delete <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _daytona_delete <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_tools_environments_daytona__daytona_delete");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = cli_tools_environments_daytona__daytona_delete((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
+        WCUP_BEGIN("_daytona_delete");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_tools_environments_daytona__daytona_delete");
+        WCUP_END("_daytona_delete");
     }
     return 0;
 }

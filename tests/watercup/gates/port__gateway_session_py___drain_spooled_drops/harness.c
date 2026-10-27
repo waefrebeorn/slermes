@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int session_drain_spooled_drops(const char *session_id);
 
 int main(int argc, char **argv) {

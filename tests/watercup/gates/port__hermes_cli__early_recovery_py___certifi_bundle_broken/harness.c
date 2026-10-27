@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli__early_recovery_u_certifi_bundle_broken(const char *arg);
 
 int main(int argc, char **argv) {

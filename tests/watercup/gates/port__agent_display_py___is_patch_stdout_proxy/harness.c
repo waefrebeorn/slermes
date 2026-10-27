@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool disp_spinner_is_patch_stdout_proxy(void);
 
 int main(int argc, char **argv) {

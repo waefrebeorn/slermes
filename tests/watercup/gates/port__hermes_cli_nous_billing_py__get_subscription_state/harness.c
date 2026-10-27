@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_nous_billing_get_subscription_state(const char *arg);
 
 int main(int argc, char **argv) {

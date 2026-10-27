@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int run_setup_action_with_navigation(const char *action);
 
 int main(int argc, char **argv) {

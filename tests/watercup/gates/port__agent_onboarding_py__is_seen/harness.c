@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool obd_is_seen(const char *config_yaml, const char *flag);
 
 int main(int argc, char **argv) {

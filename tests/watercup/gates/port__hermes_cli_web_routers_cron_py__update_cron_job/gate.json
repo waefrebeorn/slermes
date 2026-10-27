@@ -14,11 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/web_routers/cron.c",
-    "src/infrastructure_stubs.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
     char * result = fv_resolve_focus_arg(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), &_o2);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     WCUP_VALSTR(_o2 ? "true" : "false");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

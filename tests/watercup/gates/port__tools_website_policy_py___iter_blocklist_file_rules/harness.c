@@ -1,31 +1,25 @@
-/* gate: port__tools_website_policy_py___iter_blocklist_file_rules — traced copy of cli_tools_website_policy__iter_blocklist_file_rules (int_other) */
+/* gate: port__tools_website_policy_py___iter_blocklist_file_rules — GAP sentinel for _iter_blocklist_file_rules */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int cli_tools_website_policy__iter_blocklist_file_rules(const char *path, char **rules, int max_rules);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_iter_blocklist_file_rules";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_tools_website_policy__iter_blocklist_file_rules <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _iter_blocklist_file_rules <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_tools_website_policy__iter_blocklist_file_rules");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = cli_tools_website_policy__iter_blocklist_file_rules((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_iter_blocklist_file_rules");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_tools_website_policy__iter_blocklist_file_rules");
+        WCUP_END("_iter_blocklist_file_rules");
     }
     return 0;
 }

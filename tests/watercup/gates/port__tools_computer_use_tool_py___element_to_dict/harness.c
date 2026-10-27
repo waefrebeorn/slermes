@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_computer_use_tool_u_element_to_dict(const char *arg);
 
 int main(int argc, char **argv) {

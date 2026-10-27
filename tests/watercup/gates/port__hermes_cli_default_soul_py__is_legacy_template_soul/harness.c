@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool hermes_cli_default_soul_is_legacy(const char *text);
 
 int main(int argc, char **argv) {

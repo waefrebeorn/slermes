@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool sd_n_unhealthy_state(void);
 
 int main(int argc, char **argv) {

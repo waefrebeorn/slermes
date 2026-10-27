@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool antr_is_stream_unavailable_error(const char *error_msg);
 
 int main(int argc, char **argv) {

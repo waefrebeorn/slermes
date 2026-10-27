@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool profile_has_bundled_skills_opt_out(const char *profile_dir);
 
 int main(int argc, char **argv) {

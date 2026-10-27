@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool open_dm_opted_in(void);
 
 int main(int argc, char **argv) {

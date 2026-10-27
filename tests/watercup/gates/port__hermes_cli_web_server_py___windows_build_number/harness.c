@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int web_windows_build_number(const char *version, const char *platform_label);
 
 int main(int argc, char **argv) {

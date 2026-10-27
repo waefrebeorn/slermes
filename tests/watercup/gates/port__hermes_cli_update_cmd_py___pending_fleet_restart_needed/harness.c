@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _pending_fleet_restart_needed(void);
 
 int main(int argc, char **argv) {

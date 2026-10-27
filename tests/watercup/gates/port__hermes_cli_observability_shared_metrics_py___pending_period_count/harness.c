@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sm_pending_period_count(const char *db_path);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_gui_uninstall_gui_is_installed(const char *arg);
 
 int main(int argc, char **argv) {

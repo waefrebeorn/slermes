@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__cancel_background_tasks(void);
 
 int main(int argc, char **argv) {

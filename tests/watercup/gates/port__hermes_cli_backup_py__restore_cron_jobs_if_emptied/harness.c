@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int backup_restore_cron_jobs_if_emptied(const char *snapshot_id, const char *hermes_home);
 
 int main(int argc, char **argv) {

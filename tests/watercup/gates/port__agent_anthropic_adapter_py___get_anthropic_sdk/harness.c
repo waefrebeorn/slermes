@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char* cli_agent_anthropic_adapter__get_anthropic_sdk(void);
 
 int main(int argc, char **argv) {

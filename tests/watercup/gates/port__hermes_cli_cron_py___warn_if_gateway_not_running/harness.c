@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg);
 
 int main(int argc, char **argv) {

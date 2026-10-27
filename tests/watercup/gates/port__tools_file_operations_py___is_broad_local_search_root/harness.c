@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _is_broad_local_search_root(const char *root);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int fdt2_set_client(const char *client_desc);
 
 int main(int argc, char **argv) {

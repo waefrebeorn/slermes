@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_auth_py___merge_disk_cooldown_state — traced copy of auth_merge_disk_cooldown_state (int_str) */
+/* gate: port__hermes_cli_auth_py___merge_disk_cooldown_state — GAP sentinel for _merge_disk_cooldown_state */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int auth_merge_disk_cooldown_state(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_merge_disk_cooldown_state";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s auth_merge_disk_cooldown_state <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _merge_disk_cooldown_state <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("auth_merge_disk_cooldown_state");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = auth_merge_disk_cooldown_state(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_merge_disk_cooldown_state");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("auth_merge_disk_cooldown_state");
+        WCUP_END("_merge_disk_cooldown_state");
     }
     return 0;
 }

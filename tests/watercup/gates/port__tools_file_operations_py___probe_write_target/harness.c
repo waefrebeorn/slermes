@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _probe_write_target(const char *path);
 
 int main(int argc, char **argv) {

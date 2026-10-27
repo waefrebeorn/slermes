@@ -14,10 +14,7 @@
     "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_y4ql624_.txt"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/dump.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sku_set_state(const char *skill_name, const char *state);
 
 int main(int argc, char **argv) {

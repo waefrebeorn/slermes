@@ -14,17 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/cli/cli_gaps_2026_08_25.c",
-    "src/agent/checkpoint.c",
-    "src/cli/cli_helpers2.c",
-    "src/hermes_cli/_subprocess_compat.c",
-    "src/hermes_cli/lifecycle.c",
-    "src/infrastructure_stubs.c",
-    "src/agent/hermes_state/hermes_state_ops.c",
-    "src/agent/hermes_state/hermes_state_ports.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

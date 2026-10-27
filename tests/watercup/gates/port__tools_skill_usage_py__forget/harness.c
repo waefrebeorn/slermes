@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sku_forget(const char *skill_name);
 
 int main(int argc, char **argv) {

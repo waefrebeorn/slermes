@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool image_gen_path_looks_like_absolute_file_path(const char *value);
 
 int main(int argc, char **argv) {

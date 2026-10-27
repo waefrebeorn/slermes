@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gwc2_launch_detached_gateway_restart_by_cmdline(const char *run_argv);
 
 int main(int argc, char **argv) {

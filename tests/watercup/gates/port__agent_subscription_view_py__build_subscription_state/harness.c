@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_subscription_view_build_subscription_state(const char *arg);
 
 int main(int argc, char **argv) {

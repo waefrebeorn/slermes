@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _loopback_rewrite_enabled(void);
 
 int main(int argc, char **argv) {

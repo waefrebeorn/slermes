@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool clipboard_is_png_file(const char *path);
 
 int main(int argc, char **argv) {

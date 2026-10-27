@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_is_opencode_zen_free_model(const char *model_id);
 
 int main(int argc, char **argv) {

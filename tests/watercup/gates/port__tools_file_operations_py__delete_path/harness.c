@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_fs_ops_delete_path(const char *path);
 
 int main(int argc, char **argv) {

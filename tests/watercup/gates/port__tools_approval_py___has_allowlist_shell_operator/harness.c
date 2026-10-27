@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool apr_has_allowlist_shell_operator(const char *command);
 
 int main(int argc, char **argv) {

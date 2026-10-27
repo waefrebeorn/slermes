@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool clear_provider_auth(const char *provider_id);
 
 int main(int argc, char **argv) {

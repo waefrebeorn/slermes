@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool kdb_git_branch_exists(const char *repo_root, const char *branch);
 
 int main(int argc, char **argv) {

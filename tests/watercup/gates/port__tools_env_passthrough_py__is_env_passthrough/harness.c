@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_env_passthrough_is_env_passthrough(const char *var_name);
 
 int main(int argc, char **argv) {

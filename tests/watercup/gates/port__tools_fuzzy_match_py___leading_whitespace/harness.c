@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern size_t fuzzy_match_leading_whitespace(const char *line);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    size_t result = fuzzy_match_leading_whitespace((int)strtol(argv[i], NULL, 10));
+    size_t result = fuzzy_match_leading_whitespace(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];

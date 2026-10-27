@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sdw_stop(void);
 
 int main(int argc, char **argv) {

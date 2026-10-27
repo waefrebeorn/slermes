@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_moa_cmd_u_pick_slot(const char *arg);
 
 int main(int argc, char **argv) {

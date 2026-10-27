@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _camofox_private_page_block(const char *url);
 
 int main(int argc, char **argv) {

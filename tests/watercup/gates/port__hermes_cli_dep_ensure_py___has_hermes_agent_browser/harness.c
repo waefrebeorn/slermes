@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dep_ensure_u_has_hermes_agent_browser(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_onepassword_secrets_cmd_remove(const char *arg);
 
 int main(int argc, char **argv) {

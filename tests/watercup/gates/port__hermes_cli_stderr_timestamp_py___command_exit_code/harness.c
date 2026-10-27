@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stderr_ts_command_exit_code(int returncode);
 
 int main(int argc, char **argv) {

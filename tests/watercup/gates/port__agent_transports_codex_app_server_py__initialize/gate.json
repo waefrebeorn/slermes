@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/codex_app_server_ports.c"
+    "src/agent/codex_app_server_ports.c",
+    "src/agent/codex_app_server_client.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int file_tools_is_blocked_device_path(const char *path, const char *home);
 
 int main(int argc, char **argv) {

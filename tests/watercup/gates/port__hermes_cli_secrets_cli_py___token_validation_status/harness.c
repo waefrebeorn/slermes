@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_secrets_cli_u_token_validation_status(const char *arg);
 
 int main(int argc, char **argv) {

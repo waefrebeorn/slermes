@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dll_flush_stream(const char *stream_buf);
 
 int main(int argc, char **argv) {

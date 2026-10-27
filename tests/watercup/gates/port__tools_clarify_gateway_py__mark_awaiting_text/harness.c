@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_clarify_gateway_mark_awaiting_text(const char *clarify_id);
 
 int main(int argc, char **argv) {

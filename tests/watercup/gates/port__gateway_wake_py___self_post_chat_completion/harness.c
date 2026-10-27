@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_wake_u_self_post_chat_completion(const char *arg);
 
 int main(int argc, char **argv) {

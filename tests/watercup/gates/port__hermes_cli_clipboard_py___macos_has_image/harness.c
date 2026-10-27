@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool clipboard_macos_has_image(void);
 
 int main(int argc, char **argv) {

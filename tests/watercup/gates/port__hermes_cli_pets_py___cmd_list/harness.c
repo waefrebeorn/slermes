@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_slash_completer_init(void);
 
 int main(int argc, char **argv) {

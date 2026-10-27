@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool web_maybe_open_browser(const char *url);
 
 int main(int argc, char **argv) {

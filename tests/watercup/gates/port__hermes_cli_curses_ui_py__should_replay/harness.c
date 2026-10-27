@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int curses_ui_should_replay(int has_replay_value);
 
 int main(int argc, char **argv) {

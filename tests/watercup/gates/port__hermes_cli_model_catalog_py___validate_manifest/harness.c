@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_model_catalog_u_validate_manifest(const char *arg);
 
 int main(int argc, char **argv) {

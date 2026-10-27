@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg);
 
 int main(int argc, char **argv) {

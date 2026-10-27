@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_write_approval_pending_count(const char *session_key);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_active_sessions_u__exit__(const char *arg);
 
 int main(int argc, char **argv) {

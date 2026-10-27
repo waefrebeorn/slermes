@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool supports_systemd_services(void);
 
 int main(int argc, char **argv) {

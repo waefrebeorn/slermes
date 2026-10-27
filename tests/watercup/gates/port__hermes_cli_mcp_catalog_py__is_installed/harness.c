@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_catalog_is_installed(const char *name);
 
 int main(int argc, char **argv) {

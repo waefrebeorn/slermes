@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cmd_compress_coerce_keep_value(const char *value);
 
 int main(int argc, char **argv) {

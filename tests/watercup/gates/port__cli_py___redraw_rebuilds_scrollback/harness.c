@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_redraw_rebuilds_scrollback(void);
 
 int main(int argc, char **argv) {

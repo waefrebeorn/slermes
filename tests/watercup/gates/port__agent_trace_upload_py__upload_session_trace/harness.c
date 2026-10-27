@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_trace_upload_upload_session_trace(const char *arg);
 
 int main(int argc, char **argv) {

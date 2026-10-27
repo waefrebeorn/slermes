@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ensure_gateway_service(const char *context);
 
 int main(int argc, char **argv) {

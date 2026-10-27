@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_sweep_stale_bytecode_if_checkout_changed(const char *project_root);
 
 int main(int argc, char **argv) {

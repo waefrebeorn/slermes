@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const char *err);
 
 int main(int argc, char **argv) {

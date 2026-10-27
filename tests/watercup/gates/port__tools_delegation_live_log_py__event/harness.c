@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dll_event(const char *role, const char *text);
 
 int main(int argc, char **argv) {

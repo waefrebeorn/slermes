@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool lde_needs_interpreter(const char *bin_path);
 
 int main(int argc, char **argv) {

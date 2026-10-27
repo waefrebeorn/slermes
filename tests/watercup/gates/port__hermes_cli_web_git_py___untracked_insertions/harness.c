@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int untracked_insertions(const char *cwd, const char *rel);
 
 int main(int argc, char **argv) {

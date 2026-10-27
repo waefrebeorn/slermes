@@ -1,29 +1,25 @@
-/* gate: port__hermes_cli_web_server_py___probe_gateway_health — traced copy of ws_probe_gateway_health (bool_str) */
+/* gate: port__hermes_cli_web_server_py___probe_gateway_health — GAP sentinel for _probe_gateway_health */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern bool ws_probe_gateway_health(char **out_body);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_probe_gateway_health";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s ws_probe_gateway_health <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _probe_gateway_health <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("ws_probe_gateway_health");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    bool result = ws_probe_gateway_health(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+        WCUP_BEGIN("_probe_gateway_health");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("ws_probe_gateway_health");
+        WCUP_END("_probe_gateway_health");
     }
     return 0;
 }

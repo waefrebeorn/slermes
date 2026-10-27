@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_nati_register_pending(const char *arg);
 
 int main(int argc, char **argv) {

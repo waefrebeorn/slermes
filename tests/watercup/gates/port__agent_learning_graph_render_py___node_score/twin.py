@@ -125,6 +125,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("learning_graph_render_node_score")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr("%.17g" % float(result))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_thread_context_propagate_context_to_thread(const char *arg);
 
 int main(int argc, char **argv) {

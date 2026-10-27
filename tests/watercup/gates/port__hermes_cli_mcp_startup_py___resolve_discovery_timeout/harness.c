@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_startup_u_resolve_discovery_timeout(const char *arg);
 
 int main(int argc, char **argv) {

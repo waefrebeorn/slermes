@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _config_base_url_trustworthy_for_bare_custom(const char *cfg_base_url,
                                                   const char *cfg_provider);
 

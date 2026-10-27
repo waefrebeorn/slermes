@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_error_classifier_u_classify_by_error_code(const char *arg);
 
 int main(int argc, char **argv) {

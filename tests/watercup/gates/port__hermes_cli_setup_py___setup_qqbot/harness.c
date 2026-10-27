@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stp_setup_qqbot(void);
 
 int main(int argc, char **argv) {

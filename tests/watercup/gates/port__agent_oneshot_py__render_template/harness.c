@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_oneshot_render_template(const char *arg);
 
 int main(int argc, char **argv) {

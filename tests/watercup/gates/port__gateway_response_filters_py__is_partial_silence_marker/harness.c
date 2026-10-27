@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int marker(const char *text);
 
 int main(int argc, char **argv) {

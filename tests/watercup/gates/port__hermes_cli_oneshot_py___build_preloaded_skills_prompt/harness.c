@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void _build_preloaded_skills_prompt(void);
 
 int main(int argc, char **argv) {

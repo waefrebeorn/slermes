@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli__early_recovery_recover_if_needed(const char *arg);
 
 int main(int argc, char **argv) {

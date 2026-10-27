@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_desktop_macos_local_codesign(const char *app_path, const char *identity);
 
 int main(int argc, char **argv) {

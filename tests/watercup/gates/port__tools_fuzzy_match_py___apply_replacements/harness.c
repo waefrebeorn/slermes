@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     char * result = fuzzy_match_apply_replacements(argv[i], &_o1, (long)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), argv[2 + (i - 2 + 3) % 5], argv[2 + (i - 2 + 4) % 5]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%ld", (long)_o1); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

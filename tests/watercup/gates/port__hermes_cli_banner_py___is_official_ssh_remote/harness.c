@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool banner_is_official_ssh_remote(const char *url);
 
 int main(int argc, char **argv) {

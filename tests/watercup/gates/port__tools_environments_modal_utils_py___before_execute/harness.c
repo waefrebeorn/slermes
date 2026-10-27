@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_modal_before_execute(void);
 
 int main(int argc, char **argv) {

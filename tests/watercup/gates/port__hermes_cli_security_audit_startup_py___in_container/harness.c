@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _running_in_container(void);
 
 int main(int argc, char **argv) {

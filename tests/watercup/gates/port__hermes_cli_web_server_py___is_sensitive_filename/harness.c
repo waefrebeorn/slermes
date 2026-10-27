@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_is_sensitive_filename(const char *name);
 
 int main(int argc, char **argv) {

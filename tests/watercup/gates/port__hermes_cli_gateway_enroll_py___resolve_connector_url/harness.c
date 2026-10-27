@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_gateway_enroll_u_resolve_connector_url(const char *arg);
 
 int main(int argc, char **argv) {

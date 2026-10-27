@@ -21,7 +21,7 @@
     "src/hermes_cli/config_ports.c",
     "src/hermes_cli/config_py_io.c",
     "src/hermes_cli/dashboard_procs.c",
-    "src/infrastructure_stubs.c",
+    "src/hermes_cli/web_server_paths.c",
     "src/tools/skills_tool.c"
   ],
   "cflags": [

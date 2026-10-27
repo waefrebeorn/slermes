@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool antr_is_claude_model(const char *model);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int file_tools_looks_like_read_file_line_numbered_content(const char *content);
 
 int main(int argc, char **argv) {

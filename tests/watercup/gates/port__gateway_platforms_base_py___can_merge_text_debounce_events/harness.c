@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int identity(const char *pa, const char *pb);
 
 int main(int argc, char **argv) {

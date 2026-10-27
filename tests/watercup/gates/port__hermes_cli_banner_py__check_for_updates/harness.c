@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int banner_check_for_updates(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int apr2_clear_session(const char *session_key);
 
 int main(int argc, char **argv) {

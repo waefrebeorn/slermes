@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_post_setup_run(const char *key);
 
 int main(int argc, char **argv) {

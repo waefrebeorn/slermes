@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool skills_hub_validate_skill_name(const char *name);
 
 int main(int argc, char **argv) {

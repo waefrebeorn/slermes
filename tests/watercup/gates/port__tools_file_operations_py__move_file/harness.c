@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool move_file(const char *src, const char *dst);
 
 int main(int argc, char **argv) {

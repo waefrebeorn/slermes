@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_pagination_ops_is_line_oriented_newline_error(const char *error);
 
 int main(int argc, char **argv) {

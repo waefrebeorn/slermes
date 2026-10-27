@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int context_breakdown_chars_to_tokens(const char *text);
 
 int main(int argc, char **argv) {

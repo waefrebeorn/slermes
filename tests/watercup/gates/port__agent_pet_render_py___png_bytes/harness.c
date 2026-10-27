@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     char * result = pet_png_bytes(argv[i], &_o1);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%zu", (size_t)_o1); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

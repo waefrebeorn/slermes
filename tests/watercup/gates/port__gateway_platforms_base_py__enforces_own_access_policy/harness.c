@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__enforces_own_access_policy(void);
 
 int main(int argc, char **argv) {

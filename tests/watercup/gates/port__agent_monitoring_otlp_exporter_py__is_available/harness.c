@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool otlp_exporter_is_available(void);
 
 int main(int argc, char **argv) {

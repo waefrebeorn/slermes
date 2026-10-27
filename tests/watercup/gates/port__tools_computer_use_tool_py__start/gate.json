@@ -18,7 +18,6 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/web_dashboard.c",
-    "src/gateway/platforms/api_server_adapter_cron.c",
     "src/tools/session_crud.c"
   ],
   "cflags": [

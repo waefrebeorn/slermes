@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _enable_extended_enter_keys(const char *input);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int bsv_init(const char *dialog_policy);
 
 int main(int argc, char **argv) {

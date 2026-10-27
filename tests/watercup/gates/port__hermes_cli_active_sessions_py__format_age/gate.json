@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/sidebar.c"
+    "src/chat_view.c"
   ],
   "cflags": [
     "-I",

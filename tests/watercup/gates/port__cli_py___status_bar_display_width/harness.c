@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_status_bar_display_width(const char *text);
 
 int main(int argc, char **argv) {

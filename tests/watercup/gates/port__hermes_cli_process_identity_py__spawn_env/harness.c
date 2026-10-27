@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_process_identity_py__spawn_env — traced copy of process_identity_spawn_env (void) */
+/* gate: port__hermes_cli_process_identity_py__spawn_env — GAP sentinel for spawn_env */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern void process_identity_spawn_env(const char *purpose, const char *project_root,
-                                char **out_var, char **out_val);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "spawn_env";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s process_identity_spawn_env <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s spawn_env <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("process_identity_spawn_env");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    process_identity_spawn_env(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], argv[2 + (i - 2 + 3) % 5]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("spawn_env");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("process_identity_spawn_env");
+        WCUP_END("spawn_env");
     }
     return 0;
 }

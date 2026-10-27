@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg);
 
 int main(int argc, char **argv) {

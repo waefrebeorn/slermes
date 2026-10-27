@@ -14,8 +14,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/mcp_tool_ports.c",
-    "src/infrastructure_stubs.c"
+    "src/tools/mcp_tool_ports.c"
   ],
   "cflags": [
     "-I",

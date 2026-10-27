@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * skills_hub_index_entry(const char *slug, const char *name);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands_gateway_u_add_compat_platform_flag(const char *arg);
 
 int main(int argc, char **argv) {

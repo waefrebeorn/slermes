@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_openrouter_client_check_api_key(void);
 
 int main(int argc, char **argv) {

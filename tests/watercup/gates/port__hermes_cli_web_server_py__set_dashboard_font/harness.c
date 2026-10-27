@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_theme_font_choice_allowed(const char *font_id);
 
 int main(int argc, char **argv) {

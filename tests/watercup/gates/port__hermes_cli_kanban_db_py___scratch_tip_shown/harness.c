@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_scratch_tip_shown(void);
 
 int main(int argc, char **argv) {

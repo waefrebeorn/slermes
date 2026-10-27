@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int is_linux(void);
 
 int main(int argc, char **argv) {

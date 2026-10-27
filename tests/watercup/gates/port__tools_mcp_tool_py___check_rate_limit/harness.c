@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool mct_check_rate_limit(const char *server_name);
 
 int main(int argc, char **argv) {

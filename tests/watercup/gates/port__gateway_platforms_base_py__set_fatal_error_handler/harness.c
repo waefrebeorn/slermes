@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__set_fatal_error_handler(void);
 
 int main(int argc, char **argv) {

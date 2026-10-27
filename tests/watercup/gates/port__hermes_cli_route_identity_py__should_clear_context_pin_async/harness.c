@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_route_identity_should_clear_context_pin_async(const char *arg);
 
 int main(int argc, char **argv) {

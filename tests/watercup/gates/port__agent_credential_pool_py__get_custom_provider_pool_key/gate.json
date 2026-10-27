@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/credential_pool_custom.c"
+    "src/agent/credential_pool_custom.c",
+    "src/hermes_cli/config_py_io.c"
   ],
   "cflags": [
     "-I",

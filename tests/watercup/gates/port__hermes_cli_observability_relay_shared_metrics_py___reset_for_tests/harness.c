@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int rsm_reset_for_tests(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void auth_log_nous_invoke_jwt_selected(const char *access_token, const char *sequence_id);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    auth_log_nous_invoke_jwt_selected(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    auth_log_nous_invoke_jwt_selected();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

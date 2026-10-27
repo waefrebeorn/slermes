@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kanban_review_dispatch_enabled(void);
 
 int main(int argc, char **argv) {

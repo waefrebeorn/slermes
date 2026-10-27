@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_valid_parent_start_marker(const char *marker);
 
 int main(int argc, char **argv) {

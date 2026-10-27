@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_website_policy__match_host_against_rule(const char *host, const char *pattern);
 
 int main(int argc, char **argv) {

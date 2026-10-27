@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_memory_oauth_memory_oauth_status(const char *arg);
 
 int main(int argc, char **argv) {

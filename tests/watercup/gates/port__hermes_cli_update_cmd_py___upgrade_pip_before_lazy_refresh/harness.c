@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void uc_upgrade_pip_before_lazy_refresh(const char *install_cmd_prefix[],
                                             const char *env_path);
 
@@ -17,7 +18,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    uc_upgrade_pip_before_lazy_refresh(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    uc_upgrade_pip_before_lazy_refresh();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

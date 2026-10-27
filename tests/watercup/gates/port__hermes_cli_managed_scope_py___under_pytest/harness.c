@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int managed_scope_under_pytest(void);
 
 int main(int argc, char **argv) {

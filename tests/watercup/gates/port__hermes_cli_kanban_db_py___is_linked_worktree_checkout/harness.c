@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool kdb_is_linked_worktree_checkout(const char *path);
 
 int main(int argc, char **argv) {

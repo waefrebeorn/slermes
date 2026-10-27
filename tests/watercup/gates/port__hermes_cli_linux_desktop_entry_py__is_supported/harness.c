@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool lde_is_supported(void);
 
 int main(int argc, char **argv) {

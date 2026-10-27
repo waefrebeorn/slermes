@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int unavailable(int pid);
 
 int main(int argc, char **argv) {

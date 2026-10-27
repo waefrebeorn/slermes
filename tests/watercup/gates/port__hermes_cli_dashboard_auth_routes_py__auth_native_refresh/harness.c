@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg);
 
 int main(int argc, char **argv) {

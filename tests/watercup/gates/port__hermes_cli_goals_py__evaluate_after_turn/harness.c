@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_goals_evaluate_after_turn(const char *arg);
 
 int main(int argc, char **argv) {

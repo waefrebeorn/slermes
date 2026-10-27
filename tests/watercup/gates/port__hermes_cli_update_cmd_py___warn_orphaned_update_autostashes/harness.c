@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd);
 
 int main(int argc, char **argv) {

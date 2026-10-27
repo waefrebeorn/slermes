@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int clipboard_write_clipboard_text(const char *arg);
 
 int main(int argc, char **argv) {

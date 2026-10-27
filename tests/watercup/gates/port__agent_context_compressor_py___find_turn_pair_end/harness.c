@@ -1,31 +1,25 @@
-/* gate: port__agent_context_compressor_py___find_turn_pair_end — traced copy of cli_agent_context_compressor__find_turn_pair_end (int_other) */
+/* gate: port__agent_context_compressor_py___find_turn_pair_end — GAP sentinel for _find_turn_pair_end */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int cli_agent_context_compressor__find_turn_pair_end(const char **roles, int n, int user_idx);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_find_turn_pair_end";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_agent_context_compressor__find_turn_pair_end <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _find_turn_pair_end <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_agent_context_compressor__find_turn_pair_end");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = cli_agent_context_compressor__find_turn_pair_end((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_find_turn_pair_end");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_agent_context_compressor__find_turn_pair_end");
+        WCUP_END("_find_turn_pair_end");
     }
     return 0;
 }

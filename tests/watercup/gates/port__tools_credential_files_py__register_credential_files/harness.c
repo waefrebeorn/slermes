@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_credential_files_register_credential_files(const char *arg);
 
 int main(int argc, char **argv) {

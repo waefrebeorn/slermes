@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * std_init(const char *adapter_desc, const char *sink_desc);
 
 int main(int argc, char **argv) {

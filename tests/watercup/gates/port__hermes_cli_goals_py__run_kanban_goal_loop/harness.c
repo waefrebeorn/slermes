@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_goals_run_kanban_goal_loop(const char *arg);
 
 int main(int argc, char **argv) {

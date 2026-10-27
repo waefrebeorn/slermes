@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_managed_scope_is_env_managed(const char *name);
 
 int main(int argc, char **argv) {

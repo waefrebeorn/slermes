@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_banner_u_skin_color(const char *arg);
 
 int main(int argc, char **argv) {

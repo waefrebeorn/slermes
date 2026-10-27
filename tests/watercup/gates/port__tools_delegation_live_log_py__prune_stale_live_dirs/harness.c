@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_delegation_live_log_prune_stale_live_dirs(const char *arg);
 
 int main(int argc, char **argv) {

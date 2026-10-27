@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * coe_execute(const char *line);
 
 int main(int argc, char **argv) {

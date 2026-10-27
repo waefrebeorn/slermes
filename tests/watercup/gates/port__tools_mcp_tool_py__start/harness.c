@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int mct_start(const char *server_name);
 
 int main(int argc, char **argv) {

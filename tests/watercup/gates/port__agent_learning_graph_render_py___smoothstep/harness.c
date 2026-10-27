@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern double learning_graph_render_smoothstep(double p);
 
 int main(int argc, char **argv) {

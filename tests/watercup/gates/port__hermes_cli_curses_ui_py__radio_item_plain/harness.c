@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_curses_ui_radio_item_plain(const char *arg);
 
 int main(int argc, char **argv) {

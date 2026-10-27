@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dll_marker(const char *kind, const char *detail);
 
 int main(int argc, char **argv) {

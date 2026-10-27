@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_resolve_deferred_platform_cli_command(const char *command_name);
 
 int main(int argc, char **argv) {

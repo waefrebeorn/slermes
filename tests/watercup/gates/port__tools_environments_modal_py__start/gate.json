@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/tools/environments_modal_ports.c",
-    "src/infrastructure_stubs.c"
+    "src/tools/env_managed_modal_ports.c"
   ],
   "cflags": [
     "-I",

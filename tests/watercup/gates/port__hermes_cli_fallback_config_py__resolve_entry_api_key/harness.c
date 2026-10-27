@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_fallback_config_resolve_entry_api_key(const char *arg);
 
 int main(int argc, char **argv) {

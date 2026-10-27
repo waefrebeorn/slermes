@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg);
 
 int main(int argc, char **argv) {

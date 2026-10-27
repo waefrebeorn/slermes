@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cronjobs_parse_duration(const char *s);
 
 int main(int argc, char **argv) {

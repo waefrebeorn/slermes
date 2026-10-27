@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_delivery_init(void);
 
 int main(int argc, char **argv) {

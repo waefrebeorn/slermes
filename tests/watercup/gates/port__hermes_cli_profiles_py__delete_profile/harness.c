@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool profile_delete_profile(const char *name);
 
 int main(int argc, char **argv) {

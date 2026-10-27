@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sm_register_profile_gateway(const char *profile, const char *extra_env);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_debug_u_upload_paste_rs(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int verification_stop_is_non_code_path(const char *raw);
 
 int main(int argc, char **argv) {

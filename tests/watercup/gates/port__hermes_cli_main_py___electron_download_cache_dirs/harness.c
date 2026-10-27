@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     char ** result = _electron_download_cache_dirs(&_o0);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o0); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

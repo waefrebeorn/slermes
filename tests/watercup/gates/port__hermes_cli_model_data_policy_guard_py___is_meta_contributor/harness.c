@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _is_meta_contributor(const char *model_lower,
                                 const char *provider_lower);
 

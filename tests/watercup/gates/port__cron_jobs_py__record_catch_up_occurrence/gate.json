@@ -17,8 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/jobs_helpers.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/jobs_helpers.c"
   ],
   "cflags": [
     "-I",

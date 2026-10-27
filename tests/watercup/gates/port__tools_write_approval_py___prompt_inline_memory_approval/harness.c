@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_write_approval__prompt_inline_memory_approval(const char *path, const char *content_hash);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool skills_hub_write_cache(const char *key, const char *content);
 
 int main(int argc, char **argv) {

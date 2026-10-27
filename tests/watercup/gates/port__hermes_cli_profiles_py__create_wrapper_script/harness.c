@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool profile_create_wrapper_script(const char *name, const char *target);
 
 int main(int argc, char **argv) {

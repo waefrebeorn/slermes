@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _receipt_looks_unfinished(const char *receipt);
 
 int main(int argc, char **argv) {

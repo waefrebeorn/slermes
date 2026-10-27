@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_file_state_writes_since_2(const char *arg);
 
 int main(int argc, char **argv) {

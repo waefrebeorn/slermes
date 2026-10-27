@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg);
 
 int main(int argc, char **argv) {

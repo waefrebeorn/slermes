@@ -1,31 +1,25 @@
-/* gate: port__tools_environments_base_py___export_dump_excluding_session_vars — traced copy of envb_export_dump_excluding_session_vars (int_str) */
+/* gate: port__tools_environments_base_py___export_dump_excluding_session_vars — GAP sentinel for _export_dump_excluding_session_vars */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int envb_export_dump_excluding_session_vars(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_export_dump_excluding_session_vars";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s envb_export_dump_excluding_session_vars <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _export_dump_excluding_session_vars <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("envb_export_dump_excluding_session_vars");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = envb_export_dump_excluding_session_vars(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_export_dump_excluding_session_vars");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("envb_export_dump_excluding_session_vars");
+        WCUP_END("_export_dump_excluding_session_vars");
     }
     return 0;
 }

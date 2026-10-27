@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool unsuppress_credential_source(const char *provider_id, const char *source);
 
 int main(int argc, char **argv) {

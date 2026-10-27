@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_desktop_ui_set_emitter(const char *arg);
 
 int main(int argc, char **argv) {

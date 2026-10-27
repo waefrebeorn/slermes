@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/billing_mixin_ports.c",
-    "src/infrastructure_stubs.c",
+    "src/agent/billing_view.c",
     "src/hermes_cli/nous_billing.c"
   ],
   "cflags": [

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gw_path_exists_safe(const char *path);
 
 int main(int argc, char **argv) {

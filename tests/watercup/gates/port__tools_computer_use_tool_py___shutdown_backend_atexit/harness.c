@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cut_shutdown_backend_atexit(const char *arg);
 
 int main(int argc, char **argv) {

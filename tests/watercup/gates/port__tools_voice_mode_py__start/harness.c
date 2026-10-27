@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int vmd_start(const char *mic_cmd);
 
 int main(int argc, char **argv) {

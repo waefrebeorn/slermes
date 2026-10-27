@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sm_is_running(const char *name);
 
 int main(int argc, char **argv) {

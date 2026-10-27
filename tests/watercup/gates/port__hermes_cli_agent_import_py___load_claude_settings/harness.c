@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_agent_import_py___load_claude_settings — traced copy of ai_agent_importer_load_claude_settings (int_str) */
+/* gate: port__hermes_cli_agent_import_py___load_claude_settings — GAP sentinel for _load_claude_settings */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int ai_agent_importer_load_claude_settings(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_load_claude_settings";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s ai_agent_importer_load_claude_settings <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _load_claude_settings <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("ai_agent_importer_load_claude_settings");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = ai_agent_importer_load_claude_settings(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_load_claude_settings");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("ai_agent_importer_load_claude_settings");
+        WCUP_END("_load_claude_settings");
     }
     return 0;
 }

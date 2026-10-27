@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_skills_hub_u_ssrf_safe_http_get(const char *arg);
 
 int main(int argc, char **argv) {

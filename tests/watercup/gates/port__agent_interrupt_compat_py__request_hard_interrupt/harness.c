@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_interrupt_compat_request_hard_interrupt(const char *arg);
 
 int main(int argc, char **argv) {

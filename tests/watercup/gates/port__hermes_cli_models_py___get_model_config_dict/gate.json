@@ -20,7 +20,7 @@
     "src/hermes_cli/models_gaps.c",
     "src/hermes_cli/models_helpers.c",
     "src/hermes_cli/models_net.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/moa_pure_helpers.c"
   ],
   "cflags": [
     "-I",

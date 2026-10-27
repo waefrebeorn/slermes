@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_path);
 
 int main(int argc, char **argv) {

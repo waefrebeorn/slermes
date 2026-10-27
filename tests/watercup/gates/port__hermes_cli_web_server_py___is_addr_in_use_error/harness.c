@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_is_addr_in_use_error(int errnum);
 
 int main(int argc, char **argv) {

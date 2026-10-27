@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_codex_models_u_fetch_models_from_api(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void tdt_normalize_order(void);
 
 int main(int argc, char **argv) {

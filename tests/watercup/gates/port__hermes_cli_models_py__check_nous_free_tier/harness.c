@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_check_nous_free_tier(int force_fresh);
 
 int main(int argc, char **argv) {

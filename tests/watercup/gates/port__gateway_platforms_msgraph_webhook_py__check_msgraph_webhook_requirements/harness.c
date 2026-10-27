@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool msgraph_webhook_check_requirements(void);
 
 int main(int argc, char **argv) {

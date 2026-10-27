@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int mgr_scrubber_reset(void);
 
 int main(int argc, char **argv) {

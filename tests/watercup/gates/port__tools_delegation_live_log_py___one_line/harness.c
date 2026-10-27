@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_delegation_live_log_u_one_line(const char *arg);
 
 int main(int argc, char **argv) {

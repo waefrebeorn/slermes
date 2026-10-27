@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_computer_use_vision_routing__provider_accepts_multimodal_tool_result(const char *provider, const char *model);
 
 int main(int argc, char **argv) {

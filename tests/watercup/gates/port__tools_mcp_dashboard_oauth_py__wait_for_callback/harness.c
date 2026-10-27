@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg);
 
 int main(int argc, char **argv) {

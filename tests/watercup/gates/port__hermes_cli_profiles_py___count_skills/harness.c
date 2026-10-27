@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int profile_count_skills(const char *profile_dir);
 
 int main(int argc, char **argv) {

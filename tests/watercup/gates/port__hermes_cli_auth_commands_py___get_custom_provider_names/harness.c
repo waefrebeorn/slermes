@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg);
 
 int main(int argc, char **argv) {

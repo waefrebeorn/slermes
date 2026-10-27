@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_cors_sanitizer_init(const char *original_url);
 
 int main(int argc, char **argv) {

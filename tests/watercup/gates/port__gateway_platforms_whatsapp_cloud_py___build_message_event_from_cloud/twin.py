@@ -126,6 +126,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("whatsapp_cloud_build_message_event_from_cloud")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

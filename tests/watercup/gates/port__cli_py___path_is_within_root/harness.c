@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_path_is_within_root(const char *path, const char *root);
 
 int main(int argc, char **argv) {

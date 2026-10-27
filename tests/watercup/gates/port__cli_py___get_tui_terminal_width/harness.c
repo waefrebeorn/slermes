@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_get_tui_terminal_width(void);
 
 int main(int argc, char **argv) {

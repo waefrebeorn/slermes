@@ -1,29 +1,25 @@
-/* gate: port__hermes_cli_update_cmd_py___web_build_toolchain_ready — traced copy of upd_web_build_toolchain_ready (bool_other) */
+/* gate: port__hermes_cli_update_cmd_py___web_build_toolchain_ready — GAP sentinel for _web_build_toolchain_ready */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern bool upd_web_build_toolchain_ready(char **roots, int n_roots);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_web_build_toolchain_ready";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s upd_web_build_toolchain_ready <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _web_build_toolchain_ready <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("upd_web_build_toolchain_ready");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    bool result = upd_web_build_toolchain_ready((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+        WCUP_BEGIN("_web_build_toolchain_ready");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("upd_web_build_toolchain_ready");
+        WCUP_END("_web_build_toolchain_ready");
     }
     return 0;
 }

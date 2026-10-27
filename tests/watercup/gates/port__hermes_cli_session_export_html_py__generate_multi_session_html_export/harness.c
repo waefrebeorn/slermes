@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *arg);
 
 int main(int argc, char **argv) {

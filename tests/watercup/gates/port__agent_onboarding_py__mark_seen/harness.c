@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int obd_mark_seen(const char *config_path, const char *flag);
 
 int main(int argc, char **argv) {

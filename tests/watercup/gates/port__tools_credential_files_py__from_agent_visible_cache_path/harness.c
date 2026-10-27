@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_credential_files_from_agent_visible_cache_path(const char *arg);
 
 int main(int argc, char **argv) {

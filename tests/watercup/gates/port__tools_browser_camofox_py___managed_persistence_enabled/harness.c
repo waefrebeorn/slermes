@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _managed_persistence_enabled(void);
 
 int main(int argc, char **argv) {

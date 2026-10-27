@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg);
 
 int main(int argc, char **argv) {

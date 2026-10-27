@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool tts_gemini_model_supports_audio_tags(const char *model);
 
 int main(int argc, char **argv) {

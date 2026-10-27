@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/kanban_db.c"
+    "src/hermes_cli/kanban_db.c",
+    "src/hermes_cli/lifecycle.c"
   ],
   "cflags": [
     "-I",

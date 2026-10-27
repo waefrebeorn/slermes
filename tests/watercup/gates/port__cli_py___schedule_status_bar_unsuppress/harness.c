@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cl2_schedule_status_bar_unsuppress(void);
 
 int main(int argc, char **argv) {

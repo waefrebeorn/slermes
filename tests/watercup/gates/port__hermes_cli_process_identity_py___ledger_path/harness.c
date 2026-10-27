@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * process_identity_ledger_path(void);
 
 int main(int argc, char **argv) {

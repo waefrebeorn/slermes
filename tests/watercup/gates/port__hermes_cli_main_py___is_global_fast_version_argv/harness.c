@@ -1,29 +1,25 @@
-/* gate: port__hermes_cli_main_py___is_global_fast_version_argv — traced copy of main_g_is_global_fast_version_argv (bool_other) */
+/* gate: port__hermes_cli_main_py___is_global_fast_version_argv — GAP sentinel for _is_global_fast_version_argv */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern bool main_g_is_global_fast_version_argv(int argc, char **argv);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_is_global_fast_version_argv";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s main_g_is_global_fast_version_argv <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _is_global_fast_version_argv <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("main_g_is_global_fast_version_argv");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    bool result = main_g_is_global_fast_version_argv((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+        WCUP_BEGIN("_is_global_fast_version_argv");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("main_g_is_global_fast_version_argv");
+        WCUP_END("_is_global_fast_version_argv");
     }
     return 0;
 }

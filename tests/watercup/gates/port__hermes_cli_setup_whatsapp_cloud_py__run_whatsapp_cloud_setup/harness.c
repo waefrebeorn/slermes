@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg);
 
 int main(int argc, char **argv) {

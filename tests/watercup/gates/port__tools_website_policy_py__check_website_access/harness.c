@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_website_policy_check_website_access(const char *arg);
 
 int main(int argc, char **argv) {

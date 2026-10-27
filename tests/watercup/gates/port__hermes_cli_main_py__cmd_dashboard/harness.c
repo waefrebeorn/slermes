@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int mn_cmd_dashboard(const char *args, const char *token_file);
 
 int main(int argc, char **argv) {

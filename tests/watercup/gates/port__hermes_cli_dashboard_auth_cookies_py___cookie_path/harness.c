@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * dash_cookie_path(const char *prefix);
 
 int main(int argc, char **argv) {

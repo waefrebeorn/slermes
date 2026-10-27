@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int image_gen_load_fal_client(void);
 
 int main(int argc, char **argv) {

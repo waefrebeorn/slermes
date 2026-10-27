@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tts_cache_get_or_load(const char *input);
 
 int main(int argc, char **argv) {

@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     char * result = hcli_session_export_ts(argv[i], &_o1);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     WCUP_VALSTR(_o1 ? "true" : "false");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

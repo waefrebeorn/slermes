@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool banner_is_full_sha(const char *value);
 
 int main(int argc, char **argv) {

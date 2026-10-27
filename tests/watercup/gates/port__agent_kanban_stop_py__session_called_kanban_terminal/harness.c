@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_kanban_stop_session_called_kanban_terminal(const char *arg);
 
 int main(int argc, char **argv) {

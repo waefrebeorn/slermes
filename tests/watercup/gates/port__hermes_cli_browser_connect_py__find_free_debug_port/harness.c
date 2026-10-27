@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_browser_connect_find_free_debug_port(const char *arg);
 
 int main(int argc, char **argv) {

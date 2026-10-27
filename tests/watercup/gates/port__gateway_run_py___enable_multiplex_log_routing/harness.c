@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _enable_multiplex_log_routing(int multiplex_profiles);
 
 int main(int argc, char **argv) {

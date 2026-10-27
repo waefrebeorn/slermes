@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool smt_is_path_redirect(const char *path);
 
 int main(int argc, char **argv) {

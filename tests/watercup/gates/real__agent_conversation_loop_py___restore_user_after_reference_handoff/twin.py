@@ -125,6 +125,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("agent_conversation_loop_restore_user_after_reference_handoff")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr("true" if result else "false")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

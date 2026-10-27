@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_battery_read_battery(const char *arg);
 
 int main(int argc, char **argv) {

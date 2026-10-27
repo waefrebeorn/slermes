@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _hook_uses_callback_timeout(void);
 
 int main(int argc, char **argv) {

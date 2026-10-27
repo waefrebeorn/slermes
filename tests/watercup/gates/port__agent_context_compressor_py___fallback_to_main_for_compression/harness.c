@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_context_compressor__fallback_to_main_for_compression(const char *error_msg, const char *reason);
 
 int main(int argc, char **argv) {

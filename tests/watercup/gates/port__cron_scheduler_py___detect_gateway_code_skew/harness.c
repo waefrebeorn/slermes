@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _detect_gateway_code_skew(void);
 
 int main(int argc, char **argv) {

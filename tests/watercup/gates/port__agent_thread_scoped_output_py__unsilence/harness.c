@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_thread_scoped_output_unsilence(const char *arg);
 
 int main(int argc, char **argv) {

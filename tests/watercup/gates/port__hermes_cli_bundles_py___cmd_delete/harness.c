@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_bundles_u_cmd_delete(const char *arg);
 
 int main(int argc, char **argv) {

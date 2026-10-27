@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_platform_registry_is_deferred_load_cancelled(const char *arg);
 
 int main(int argc, char **argv) {

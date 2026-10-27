@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int sm_unregister_profile_gateway(const char *profile);
 
 int main(int argc, char **argv) {

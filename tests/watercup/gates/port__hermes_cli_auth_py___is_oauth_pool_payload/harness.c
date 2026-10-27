@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _is_oauth_pool_payload(void);
 
 int main(int argc, char **argv) {

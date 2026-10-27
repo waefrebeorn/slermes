@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_managed_tool_gateway_is_managed_tool_gateway_ready(const char *vendor);
 
 int main(int argc, char **argv) {

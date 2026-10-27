@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     char * result = yuanbao_proto_encode_map_entry(argv[i], argv[2 + (i - 2 + 1) % 5], &_o2);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%zu", (size_t)_o2); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

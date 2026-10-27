@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _restart_phase_failure_is_incomplete(void);
 
 int main(int argc, char **argv) {

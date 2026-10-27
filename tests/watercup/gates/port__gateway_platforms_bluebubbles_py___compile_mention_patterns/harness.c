@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int bb_u_compile_mention_patterns(const char *arg);
 
 int main(int argc, char **argv) {

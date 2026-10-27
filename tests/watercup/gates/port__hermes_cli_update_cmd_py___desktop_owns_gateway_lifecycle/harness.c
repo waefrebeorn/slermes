@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _desktop_owns_gateway_lifecycle(void);
 
 int main(int argc, char **argv) {

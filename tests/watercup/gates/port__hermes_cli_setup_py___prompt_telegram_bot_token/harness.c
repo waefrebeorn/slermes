@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * _prompt_telegram_bot_token(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg);
 
 int main(int argc, char **argv) {

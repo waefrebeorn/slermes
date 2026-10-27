@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_oneshot_u_write_usage_file(const char *arg);
 
 int main(int argc, char **argv) {

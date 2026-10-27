@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_fal_common_init(const char *key);
 
 int main(int argc, char **argv) {

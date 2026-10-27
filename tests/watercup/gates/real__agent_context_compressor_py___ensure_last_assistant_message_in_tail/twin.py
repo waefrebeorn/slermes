@@ -125,6 +125,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("cc_micro_compact_ensure_last_assistant_message_in_tail")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr(str(int(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

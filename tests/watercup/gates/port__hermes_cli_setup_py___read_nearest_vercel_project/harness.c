@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * _read_nearest_vercel_project(const char *cwd);
 
 int main(int argc, char **argv) {

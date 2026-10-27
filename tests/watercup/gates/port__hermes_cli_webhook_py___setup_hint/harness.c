@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_webhook_u_setup_hint(const char *arg);
 
 int main(int argc, char **argv) {

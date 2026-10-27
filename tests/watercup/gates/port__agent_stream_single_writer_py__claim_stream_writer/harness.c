@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_stream_single_writer_claim_stream_writer(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_onboard__render_qr(const char *url);
 
 int main(int argc, char **argv) {

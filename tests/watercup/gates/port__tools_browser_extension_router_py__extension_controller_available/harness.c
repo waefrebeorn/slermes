@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int bcr_extension_controller_available(const char *action);
 
 int main(int argc, char **argv) {

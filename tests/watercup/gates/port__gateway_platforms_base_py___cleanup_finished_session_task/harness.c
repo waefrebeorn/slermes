@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__cleanup_finished_session_task(const char *session_key);
 
 int main(int argc, char **argv) {

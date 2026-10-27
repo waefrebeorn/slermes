@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_write_approval_is_background(void);
 
 int main(int argc, char **argv) {

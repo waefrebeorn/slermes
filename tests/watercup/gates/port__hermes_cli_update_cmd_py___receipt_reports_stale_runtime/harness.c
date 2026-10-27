@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _receipt_reports_stale_runtime(const char *expected_sha);
 
 int main(int argc, char **argv) {

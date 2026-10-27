@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hcli_voice_continuous_on_silence(void);
 
 int main(int argc, char **argv) {

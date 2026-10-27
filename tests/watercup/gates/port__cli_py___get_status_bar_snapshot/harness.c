@@ -1,31 +1,25 @@
-/* gate: port__cli_py___get_status_bar_snapshot — traced copy of hcli_get_status_bar_snapshot (int_str) */
+/* gate: port__cli_py___get_status_bar_snapshot — GAP sentinel for _get_status_bar_snapshot */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int hcli_get_status_bar_snapshot(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_get_status_bar_snapshot";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s hcli_get_status_bar_snapshot <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _get_status_bar_snapshot <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("hcli_get_status_bar_snapshot");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = hcli_get_status_bar_snapshot(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_get_status_bar_snapshot");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("hcli_get_status_bar_snapshot");
+        WCUP_END("_get_status_bar_snapshot");
     }
     return 0;
 }

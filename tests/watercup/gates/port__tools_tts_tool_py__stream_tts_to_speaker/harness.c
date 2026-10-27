@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool tts_tool_stream_tts_to_speaker(const char *audio_file);
 
 int main(int argc, char **argv) {

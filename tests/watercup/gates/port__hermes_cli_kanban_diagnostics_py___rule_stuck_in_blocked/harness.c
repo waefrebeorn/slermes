@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg);
 
 int main(int argc, char **argv) {

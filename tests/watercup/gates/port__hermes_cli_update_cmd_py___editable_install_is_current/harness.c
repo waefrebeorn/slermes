@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool upd_editable_install_is_current(const char *cwd, const char *pre_pull_sha);
 
 int main(int argc, char **argv) {

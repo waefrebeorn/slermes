@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg);
 
 int main(int argc, char **argv) {

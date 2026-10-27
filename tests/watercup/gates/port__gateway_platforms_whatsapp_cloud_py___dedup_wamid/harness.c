@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool whatsapp_cloud_dedup_wamid(const char *wamid);
 
 int main(int argc, char **argv) {

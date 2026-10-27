@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_secret_prompt_u_collect_masked_input(const char *arg);
 
 int main(int argc, char **argv) {

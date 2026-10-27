@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int doctor_maybe_run_live_checks(void);
 
 int main(int argc, char **argv) {

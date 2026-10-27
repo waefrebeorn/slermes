@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int laf_lost_and_found_db_usable(const char *lf_path);
 
 int main(int argc, char **argv) {

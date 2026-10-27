@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/gateway/authz_mixin.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/secret_scope.c"
   ],
   "cflags": [
     "-I",

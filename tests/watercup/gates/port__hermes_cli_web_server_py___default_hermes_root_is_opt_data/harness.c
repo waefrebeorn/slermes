@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool default_hermes_root_is_opt_data(void);
 
 int main(int argc, char **argv) {

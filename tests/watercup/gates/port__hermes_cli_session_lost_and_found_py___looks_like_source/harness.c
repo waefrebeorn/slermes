@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int laf_looks_like_source(const char *value);
 
 int main(int argc, char **argv) {

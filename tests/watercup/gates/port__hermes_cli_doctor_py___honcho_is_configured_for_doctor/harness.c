@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool doctor_honcho_is_configured(void);
 
 int main(int argc, char **argv) {

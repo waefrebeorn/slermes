@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_diagnostics_upload_put_bundle(const char *arg);
 
 int main(int argc, char **argv) {

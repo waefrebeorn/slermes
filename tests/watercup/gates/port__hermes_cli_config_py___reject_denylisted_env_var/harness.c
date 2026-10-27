@@ -1,12 +1,17 @@
-/* gate: port__hermes_cli_config_py___reject_denylisted_env_var — traced copy of hermes_cli_config_reject_denylisted_env_var (int_str) */
+/* gate: port__hermes_cli_config_py___reject_denylisted_env_var — traced copy of hermes_cli_config_reject_denylisted_env_var (json_ret) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-extern int hermes_cli_config_reject_denylisted_env_var(const char *input);
+
+extern json_t * hermes_cli_config_reject_denylisted_env_var(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_config_reject_denylisted_env_var <input>...\n", argv[0]); return 2; }
@@ -16,12 +21,13 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = hermes_cli_config_reject_denylisted_env_var(argv[i]);
+    json_t * result = hermes_cli_config_reject_denylisted_env_var();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char *_js = result ? json_serialize(result) : NULL;
+    WCUP_VALSTR(_js ? _js : "null");
+    if (result) json_free(result);
+    if (_js) free(_js);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

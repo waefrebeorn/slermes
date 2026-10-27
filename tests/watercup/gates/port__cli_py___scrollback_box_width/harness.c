@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_scrollback_box_width(int width);
 
 int main(int argc, char **argv) {

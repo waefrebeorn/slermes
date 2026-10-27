@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int auth_coerce_ttl_seconds(const char *expires_in);
 
 int main(int argc, char **argv) {

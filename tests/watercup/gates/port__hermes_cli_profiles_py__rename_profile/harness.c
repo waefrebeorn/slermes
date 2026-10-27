@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool profile_rename_profile(const char *old_name, const char *new_name);
 
 int main(int argc, char **argv) {

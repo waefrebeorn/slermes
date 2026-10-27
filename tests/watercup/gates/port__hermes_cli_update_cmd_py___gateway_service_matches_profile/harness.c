@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _gateway_service_matches_profile(const char *service, const char *profile);
 
 int main(int argc, char **argv) {

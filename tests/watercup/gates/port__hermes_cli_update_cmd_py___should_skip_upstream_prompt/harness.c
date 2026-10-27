@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_should_skip_upstream_prompt(const char *hermes_home);
 
 int main(int argc, char **argv) {

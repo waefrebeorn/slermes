@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_curator_u_idle_days(const char *arg);
 
 int main(int argc, char **argv) {

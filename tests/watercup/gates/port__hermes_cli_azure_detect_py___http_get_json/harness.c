@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_azure_detect_u_http_get_json(const char *arg);
 
 int main(int argc, char **argv) {

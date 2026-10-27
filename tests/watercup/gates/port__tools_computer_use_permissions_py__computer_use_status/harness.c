@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_computer_use_permissions_computer_use_status(const char *arg);
 
 int main(int argc, char **argv) {

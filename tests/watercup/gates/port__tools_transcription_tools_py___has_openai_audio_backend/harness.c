@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool trt_has_openai_audio_backend(const char *config_yaml);
 
 int main(int argc, char **argv) {

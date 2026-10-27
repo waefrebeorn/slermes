@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_npm_bin_exists(const char *bin_dir, const char *name);
 
 int main(int argc, char **argv) {

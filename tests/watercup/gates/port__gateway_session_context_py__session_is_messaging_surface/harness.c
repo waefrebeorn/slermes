@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gw_session_is_messaging_surface(void);
 
 int main(int argc, char **argv) {

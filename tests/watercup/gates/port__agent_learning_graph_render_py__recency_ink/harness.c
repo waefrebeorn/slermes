@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern double learning_graph_render_recency_ink(double rec);
 
 int main(int argc, char **argv) {

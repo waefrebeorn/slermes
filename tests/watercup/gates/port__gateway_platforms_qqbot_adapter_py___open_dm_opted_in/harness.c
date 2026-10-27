@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gateway_dm_opted_in(const char *platform_env);
 
 int main(int argc, char **argv) {

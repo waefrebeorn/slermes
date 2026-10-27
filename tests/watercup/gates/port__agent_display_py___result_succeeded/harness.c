@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool disp_result_succeeded(const char *result);
 
 int main(int argc, char **argv) {

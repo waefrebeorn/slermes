@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int ap_inside(const char *path, const char *root);
 
 int main(int argc, char **argv) {

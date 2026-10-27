@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int session_recover_interrupted_turns(int max_age_seconds);
 
 int main(int argc, char **argv) {

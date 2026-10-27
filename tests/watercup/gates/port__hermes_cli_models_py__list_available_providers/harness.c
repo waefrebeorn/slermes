@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_list_available_providers_json(const char *arg);
 
 int main(int argc, char **argv) {

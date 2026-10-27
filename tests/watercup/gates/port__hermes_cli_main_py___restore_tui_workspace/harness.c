@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool mn_restore_tui_workspace(const char *repo_root);
 
 int main(int argc, char **argv) {

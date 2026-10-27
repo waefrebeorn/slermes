@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern long cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(const char *raw);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    long result = cli_gateway_shutdown_forensics__parse_systemd_duration_to_us((int)strtol(argv[i], NULL, 10));
+    long result = cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];

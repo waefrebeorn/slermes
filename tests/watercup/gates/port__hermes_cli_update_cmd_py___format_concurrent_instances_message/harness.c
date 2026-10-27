@@ -1,31 +1,25 @@
-/* gate: port__hermes_cli_update_cmd_py___format_concurrent_instances_message — traced copy of uc_format_concurrent_instances_message (int_str) */
+/* gate: port__hermes_cli_update_cmd_py___format_concurrent_instances_message — GAP sentinel for _format_concurrent_instances_message */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int uc_format_concurrent_instances_message(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_format_concurrent_instances_message";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s uc_format_concurrent_instances_message <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _format_concurrent_instances_message <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("uc_format_concurrent_instances_message");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = uc_format_concurrent_instances_message(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("_format_concurrent_instances_message");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("uc_format_concurrent_instances_message");
+        WCUP_END("_format_concurrent_instances_message");
     }
     return 0;
 }

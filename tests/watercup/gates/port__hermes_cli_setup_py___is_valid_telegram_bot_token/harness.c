@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool stp_is_valid_telegram_bot_token(const char *token);
 
 int main(int argc, char **argv) {

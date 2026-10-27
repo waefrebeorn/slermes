@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern long kdb_now(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg);
 
 int main(int argc, char **argv) {

@@ -17,7 +17,12 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/util_helpers.c"
+    "src/tools/util_helpers.c",
+    "src/tools/async_delegation.c",
+    "src/tools/browser_supervisor.c",
+    "src/tools/lazy_deps.c",
+    "src/tools/mixture_of_agents.c",
+    "src/tools/send_message_tool.c"
   ],
   "cflags": [
     "-I",

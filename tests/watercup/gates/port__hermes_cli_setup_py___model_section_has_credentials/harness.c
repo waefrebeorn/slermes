@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool stp_model_section_has_credentials(void);
 
 int main(int argc, char **argv) {

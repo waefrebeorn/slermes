@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int config_sanitize_env_file(void);
 
 int main(int argc, char **argv) {

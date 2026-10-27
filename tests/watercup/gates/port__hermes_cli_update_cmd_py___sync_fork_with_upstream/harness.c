@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_sync_fork_with_upstream(const char *git_cmd[], const char *cwd);
 
 int main(int argc, char **argv) {

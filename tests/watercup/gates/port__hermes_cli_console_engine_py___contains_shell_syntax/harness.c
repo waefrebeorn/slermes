@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int console_engine_contains_shell_syntax(const char *line, const char *tokens_csv);
 
 int main(int argc, char **argv) {

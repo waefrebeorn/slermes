@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_is_android_python(void);
 
 int main(int argc, char **argv) {

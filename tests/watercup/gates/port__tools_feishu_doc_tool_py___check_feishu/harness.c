@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool fdt2_check_feishu(void);
 
 int main(int argc, char **argv) {

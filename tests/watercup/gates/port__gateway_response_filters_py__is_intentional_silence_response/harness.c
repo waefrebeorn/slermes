@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_gateway_response_filters_is_intentional_silence_response(const char *response);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int stp_print_noninteractive_setup_guidance(void);
 
 int main(int argc, char **argv) {

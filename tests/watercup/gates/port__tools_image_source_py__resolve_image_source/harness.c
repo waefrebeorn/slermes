@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_image_source_resolve_image_source(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dump_u_configured_platforms(const char *arg);
 
 int main(int argc, char **argv) {

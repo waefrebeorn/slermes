@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_picker_u_configure_tools(const char *arg);
 
 int main(int argc, char **argv) {

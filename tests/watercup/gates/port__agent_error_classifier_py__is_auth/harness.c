@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_error_classifier_is_auth(const char *reason);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_skills_hub_source_url_for_bundle(const char *arg);
 
 int main(int argc, char **argv) {

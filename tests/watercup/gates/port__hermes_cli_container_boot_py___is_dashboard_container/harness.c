@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool hcli_is_dashboard_container(const char *argv_line);
 
 int main(int argc, char **argv) {

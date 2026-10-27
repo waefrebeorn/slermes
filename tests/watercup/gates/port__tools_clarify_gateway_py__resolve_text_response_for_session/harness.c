@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *session_key, const char *response);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_xai_video_tools_u_clean_string(const char *arg);
 
 int main(int argc, char **argv) {

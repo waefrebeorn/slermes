@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dlg_interrupt_subagent(const char *subagent_id);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_middleware_run_llm_execution_middleware(const char *arg);
 
 int main(int argc, char **argv) {

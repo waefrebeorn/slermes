@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int console_engine_is_status_footer_rule(const char *line);
 
 int main(int argc, char **argv) {

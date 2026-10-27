@@ -17,7 +17,10 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/models_gaps.c"
+    "src/hermes_cli/models_gaps.c",
+    "src/hermes_cli/models_helpers.c",
+    "src/hermes_cli/models_net.c",
+    "src/hermes_cli/moa_pure_helpers.c"
   ],
   "cflags": [
     "-I",

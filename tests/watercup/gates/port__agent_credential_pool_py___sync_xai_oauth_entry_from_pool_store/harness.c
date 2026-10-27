@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg);
 
 int main(int argc, char **argv) {

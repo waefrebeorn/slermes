@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _cron_delivery_notify_enabled(void);
 
 int main(int argc, char **argv) {

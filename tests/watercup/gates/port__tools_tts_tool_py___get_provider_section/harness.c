@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * tts_tool_get_provider_section(const char *provider);
 
 int main(int argc, char **argv) {

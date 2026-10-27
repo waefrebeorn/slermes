@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int lazy_deps_spec_is_safe(const char *spec);
 
 int main(int argc, char **argv) {

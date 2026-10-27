@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg);
 
 int main(int argc, char **argv) {

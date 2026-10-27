@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int web_read_bound_port(const char *ready_file);
 
 int main(int argc, char **argv) {

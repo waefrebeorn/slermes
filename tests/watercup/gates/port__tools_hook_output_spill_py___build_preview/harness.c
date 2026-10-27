@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_hook_output_spill_u_build_preview(const char *arg);
 
 int main(int argc, char **argv) {

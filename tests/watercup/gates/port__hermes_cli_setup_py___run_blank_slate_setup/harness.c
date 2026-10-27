@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _run_blank_slate_setup(void);
 
 int main(int argc, char **argv) {

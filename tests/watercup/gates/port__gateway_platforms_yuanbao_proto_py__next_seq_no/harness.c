@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int yuanbao_proto_next_seq_no(void);
 
 int main(int argc, char **argv) {

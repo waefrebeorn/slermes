@@ -17,7 +17,11 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/partial_compress.c"
+    "src/hermes_cli/partial_compress.c",
+    "src/tools/delegate.c",
+    "src/tools/send_message.c",
+    "src/tools/session_crud.c",
+    "src/tools/session_search.c"
   ],
   "cflags": [
     "-I",

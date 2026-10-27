@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_u_is_dm_allowed(const char *arg);
 
 int main(int argc, char **argv) {

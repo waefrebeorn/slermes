@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int debug_run_debug_delete(const char *const *urls, int n);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_cap = tmpfile();
     if (_cap) dup2(fileno(_cap), 1);
-    int result = debug_run_debug_delete((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    int result = debug_run_debug_delete(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
     fflush(stdout);
     if (_cap) {
         dup2(_sv, 1); close(_sv);

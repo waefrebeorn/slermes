@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool doctor_has_healthy_oauth_fallback(const char *provider);
 
 int main(int argc, char **argv) {

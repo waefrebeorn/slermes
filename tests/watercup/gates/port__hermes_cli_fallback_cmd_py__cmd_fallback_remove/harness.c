@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cmd_fallback_remove(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg);
 
 int main(int argc, char **argv) {

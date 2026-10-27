@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_x_search_tool_u_handle_x_search(const char *arg);
 
 int main(int argc, char **argv) {

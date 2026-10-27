@@ -18,7 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/tools/image_generation_tool.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/image_gen_provider_ports.c",
+    "src/agent/image_gen_registry_ports.c",
+    "src/hermes_cli/plugins_wrappers.c"
   ],
   "cflags": [
     "-I",

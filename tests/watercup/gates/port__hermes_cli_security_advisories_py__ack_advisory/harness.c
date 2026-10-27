@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_security_advisories_ack_advisory(const char *advisory_id);
 
 int main(int argc, char **argv) {

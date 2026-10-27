@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int voice_speak(const char *text);
 
 int main(int argc, char **argv) {

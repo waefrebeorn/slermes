@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_x_search_tool_u_extract_inline_citations(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool hcli_voice_is_continuous_active(void);
 
 int main(int argc, char **argv) {

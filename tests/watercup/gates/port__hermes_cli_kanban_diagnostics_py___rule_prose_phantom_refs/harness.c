@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * tls_init(const char *session_id, const char *owner_key);
 
 int main(int argc, char **argv) {

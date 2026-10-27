@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _service_unit_supports_graceful_sigusr1_restart(const char *unit);
 
 int main(int argc, char **argv) {

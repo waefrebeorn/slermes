@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool web_voice_list_error_logged_once(void);
 
 int main(int argc, char **argv) {

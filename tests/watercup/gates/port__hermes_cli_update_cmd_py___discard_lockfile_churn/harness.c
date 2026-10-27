@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int uc_discard_lockfile_churn(const char *git_cmd[], const char *repo_root);
 
 int main(int argc, char **argv) {

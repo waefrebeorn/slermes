@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_environments_daytona__before_execute(const char *sandbox_id, const char *sync_mode);
 
 int main(int argc, char **argv) {

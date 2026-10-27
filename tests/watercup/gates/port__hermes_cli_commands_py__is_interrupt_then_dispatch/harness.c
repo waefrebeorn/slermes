@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_commands_is_interrupt_then_dispatch(const char *command_name);
 
 int main(int argc, char **argv) {

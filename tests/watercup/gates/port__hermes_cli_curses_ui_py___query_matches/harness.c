@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int curses_query_matches(const char *label, const char *query);
 
 int main(int argc, char **argv) {

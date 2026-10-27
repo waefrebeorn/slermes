@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool is_within(const char *root, const char *path);
 
 int main(int argc, char **argv) {

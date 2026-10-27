@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cut_release_computer_use_session(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kdb_ensure_git_worktree(const char *repo_root, const char *target, const char *branch);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_cap = tmpfile();
     if (_cap) dup2(fileno(_cap), 1);
-    int result = kdb_ensure_git_worktree((int)strtol(argv[i], NULL, 10), (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10), (int)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
+    int result = kdb_ensure_git_worktree(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5]);
     fflush(stdout);
     if (_cap) {
         dup2(_sv, 1); close(_sv);

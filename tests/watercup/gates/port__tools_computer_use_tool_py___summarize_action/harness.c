@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_computer_use_tool_u_summarize_action(const char *arg);
 
 int main(int argc, char **argv) {

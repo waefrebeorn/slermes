@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int process_identity_attach_self_to_kill_on_close_job(void);
 
 int main(int argc, char **argv) {

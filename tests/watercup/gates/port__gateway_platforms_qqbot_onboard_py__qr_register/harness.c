@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_onboard_qr_register(int timeout_seconds);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _run_first_time_quick_setup(void);
 
 int main(int argc, char **argv) {

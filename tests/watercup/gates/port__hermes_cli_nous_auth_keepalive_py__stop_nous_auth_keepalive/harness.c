@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_nous_auth_keepalive_stop_nous_auth_keepalive(const char *arg);
 
 int main(int argc, char **argv) {

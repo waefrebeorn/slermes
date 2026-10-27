@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands_memory_build_memory_parser(const char *arg);
 
 int main(int argc, char **argv) {

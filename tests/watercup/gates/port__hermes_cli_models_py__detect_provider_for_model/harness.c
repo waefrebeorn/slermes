@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_detect_provider_for_model(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int dlg_get_worktree_isolation(void);
 
 int main(int argc, char **argv) {

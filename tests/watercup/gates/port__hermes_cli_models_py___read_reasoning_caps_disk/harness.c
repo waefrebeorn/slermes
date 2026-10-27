@@ -1,12 +1,17 @@
-/* gate: port__hermes_cli_models_py___read_reasoning_caps_disk — traced copy of models_read_reasoning_caps_disk (int_str) */
+/* gate: port__hermes_cli_models_py___read_reasoning_caps_disk — traced copy of models_read_reasoning_caps_disk (json_ret) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-extern int models_read_reasoning_caps_disk(const char *input);
+
+extern json_t * models_read_reasoning_caps_disk(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s models_read_reasoning_caps_disk <input>...\n", argv[0]); return 2; }
@@ -16,12 +21,13 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = models_read_reasoning_caps_disk(argv[i]);
+    json_t * result = models_read_reasoning_caps_disk();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    char *_js = result ? json_serialize(result) : NULL;
+    WCUP_VALSTR(_js ? _js : "null");
+    if (result) json_free(result);
+    if (_js) free(_js);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

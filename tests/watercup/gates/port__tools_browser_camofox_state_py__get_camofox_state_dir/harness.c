@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_browser_camofox_state_get_camofox_state_dir(const char *arg);
 
 int main(int argc, char **argv) {

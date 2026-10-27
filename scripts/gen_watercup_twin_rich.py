@@ -355,6 +355,15 @@ def generate_twin_rich(py_module, py_fn, parent_class, c_ret, cup_name,
     lines.append('    c = Cup("' + (cup_name or py_fn) + '")')
     lines.append('    try:')
     lines.append('        ' + call_expr)
+    # Async parity: gateway/platform methods are `async def` — calling one
+    # returns a coroutine that, hashed directly, folds every cup to the
+    # same constant (the "coroutine never awaited" fleet signature).
+    # Resolve it: a self-contained coroutine runs to completion; one that
+    # needs a live event loop raises honestly into the ERROR path.
+    lines.append('        import inspect as _ic')
+    lines.append('        if _ic.iscoroutine(result):')
+    lines.append('            import asyncio as _aio')
+    lines.append('            result = _aio.run(result)')
     lines.append(trace_expr)
     lines.append('    except Exception as e:')
     lines.append('        c.valstr(f"ERROR:{type(e).__name__}")')

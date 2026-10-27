@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_lazy_deps_activate_durable_lazy_target(const char *arg);
 
 int main(int argc, char **argv) {

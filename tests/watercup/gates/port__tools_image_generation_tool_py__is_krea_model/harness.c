@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool image_gen_is_krea_model(const char *model_id);
 
 int main(int argc, char **argv) {

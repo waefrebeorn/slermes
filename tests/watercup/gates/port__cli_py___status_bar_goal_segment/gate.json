@@ -20,7 +20,6 @@
     "src/cli/cli_hermes_cli_methods.c",
     "src/tools/async_delegation_wrappers.c",
     "src/agent/account_usage.c",
-    "src/infrastructure_stubs.c",
     "src/tools/approval_helpers2.c",
     "src/agent/context_breakdown.c",
     "src/hermes_cli/pet_input.c",

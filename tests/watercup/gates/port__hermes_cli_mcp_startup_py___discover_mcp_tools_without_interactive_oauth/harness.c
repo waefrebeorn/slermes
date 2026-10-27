@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *arg);
 
 int main(int argc, char **argv) {

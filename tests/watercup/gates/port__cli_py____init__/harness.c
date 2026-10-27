@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * cli3_init(const char *skin_key, const char *fallback_hex);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool web_validate_plugin_name(const char *name);
 
 int main(int argc, char **argv) {

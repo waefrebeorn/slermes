@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_homeassistant_tool_u_handle_list_entities(const char *arg);
 
 int main(int argc, char **argv) {

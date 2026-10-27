@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool whatsapp_common_free_response_chats(const char *chat_id);
 
 int main(int argc, char **argv) {

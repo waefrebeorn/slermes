@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands_cron_build_cron_parser(const char *arg);
 
 int main(int argc, char **argv) {

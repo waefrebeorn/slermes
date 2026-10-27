@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool uc_shim_quarantine_error_type(void);
 
 int main(int argc, char **argv) {

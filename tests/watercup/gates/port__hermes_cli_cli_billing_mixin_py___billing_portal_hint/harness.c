@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cbm_billing_portal_hint(const char *url);
 
 int main(int argc, char **argv) {

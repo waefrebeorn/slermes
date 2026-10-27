@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_clarify_gateway_resolve_clarify_timeout(const char *arg);
 
 int main(int argc, char **argv) {

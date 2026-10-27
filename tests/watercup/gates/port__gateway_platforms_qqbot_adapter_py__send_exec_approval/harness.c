@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int qqbot_send_exec_approval(const char *arg);
 
 int main(int argc, char **argv) {

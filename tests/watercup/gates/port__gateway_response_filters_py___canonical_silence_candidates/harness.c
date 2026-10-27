@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_response_filters_u_canonical_silence_candidates(const char *arg);
 
 int main(int argc, char **argv) {

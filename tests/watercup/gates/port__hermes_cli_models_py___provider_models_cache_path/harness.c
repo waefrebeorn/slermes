@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * model_provider_models_cache_path(void);
 
 int main(int argc, char **argv) {

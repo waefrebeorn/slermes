@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/platforms/whatsapp_cloud.c"
+    "src/gateway/platforms/whatsapp_cloud.c",
+    "src/gateway/platforms/whatsapp.c"
   ],
   "cflags": [
     "-I",

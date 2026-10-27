@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int model_supports_fast_mode(const char *model_id);
 
 int main(int argc, char **argv) {

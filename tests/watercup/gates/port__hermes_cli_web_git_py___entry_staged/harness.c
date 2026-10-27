@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool entry_staged(const char *tag, const char *xy);
 
 int main(int argc, char **argv) {

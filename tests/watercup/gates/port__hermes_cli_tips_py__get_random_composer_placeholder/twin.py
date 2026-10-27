@@ -104,6 +104,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("hermes_cli_tips_get_random_composer_placeholder")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr(result if isinstance(result, str) else ("" if result is None else str(result)))
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

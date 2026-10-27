@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool disp_emit_inline_diff(const char *diff_text);
 
 int main(int argc, char **argv) {

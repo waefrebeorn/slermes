@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_x_search_tool_u_http_error_message(const char *arg);
 
 int main(int argc, char **argv) {

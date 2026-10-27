@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_slash_confirm_register(const char *input);
 
 int main(int argc, char **argv) {

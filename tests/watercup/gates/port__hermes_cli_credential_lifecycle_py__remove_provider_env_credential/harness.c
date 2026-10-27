@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *arg);
 
 int main(int argc, char **argv) {

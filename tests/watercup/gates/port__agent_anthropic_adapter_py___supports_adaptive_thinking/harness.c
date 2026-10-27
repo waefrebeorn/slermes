@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_anthropic_adapter__supports_adaptive_thinking(const char *model);
 
 int main(int argc, char **argv) {

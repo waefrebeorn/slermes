@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int file_tools_record_patch_failure(const char *path, const char *reason);
 
 int main(int argc, char **argv) {

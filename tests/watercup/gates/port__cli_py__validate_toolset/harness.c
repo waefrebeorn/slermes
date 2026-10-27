@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_validate_toolset(const char *name);
 
 int main(int argc, char **argv) {

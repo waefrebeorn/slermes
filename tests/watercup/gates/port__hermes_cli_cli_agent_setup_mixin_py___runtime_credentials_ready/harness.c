@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_cli_agent_setup_mix_u_runtime_credentials_ready(const char *arg);
 
 int main(int argc, char **argv) {

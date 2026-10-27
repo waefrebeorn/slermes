@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool doctor_check_gateway_service_linger(void);
 
 int main(int argc, char **argv) {

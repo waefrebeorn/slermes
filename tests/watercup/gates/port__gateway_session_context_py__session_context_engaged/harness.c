@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_session_context_engaged(void);
 
 int main(int argc, char **argv) {

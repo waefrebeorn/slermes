@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int agent_credential_pool_u_current_unlocked(const char *arg);
 
 int main(int argc, char **argv) {

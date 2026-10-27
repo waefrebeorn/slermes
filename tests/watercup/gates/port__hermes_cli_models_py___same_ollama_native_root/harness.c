@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int models_same_ollama_native_root(const char *left, const char *right);
 
 int main(int argc, char **argv) {

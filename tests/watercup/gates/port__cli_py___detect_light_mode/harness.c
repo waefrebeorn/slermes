@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _detect_light_mode(void);
 
 int main(int argc, char **argv) {

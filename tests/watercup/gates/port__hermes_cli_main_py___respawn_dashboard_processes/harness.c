@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int main_g_respawn_dashboard_processes(const char *command_line);
 
 int main(int argc, char **argv) {

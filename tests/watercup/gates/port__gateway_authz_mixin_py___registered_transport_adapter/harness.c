@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gateway_authz_mixin_u_registered_transport_adapter(const char *arg);
 
 int main(int argc, char **argv) {

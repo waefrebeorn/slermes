@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_dashboard_auth_base_verify_session(const char *arg);
 
 int main(int argc, char **argv) {

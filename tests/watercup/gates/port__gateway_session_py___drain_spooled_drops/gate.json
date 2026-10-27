@@ -17,8 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/session.c",
-    "src/infrastructure_stubs.c"
+    "src/gateway/session.c"
   ],
   "cflags": [
     "-I",

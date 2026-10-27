@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_daemon_pool_u_adjust_thread_count(const char *arg);
 
 int main(int argc, char **argv) {

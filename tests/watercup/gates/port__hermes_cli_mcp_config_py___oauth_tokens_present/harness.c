@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_mcp_config_u_oauth_tokens_present(const char *arg);
 
 int main(int argc, char **argv) {

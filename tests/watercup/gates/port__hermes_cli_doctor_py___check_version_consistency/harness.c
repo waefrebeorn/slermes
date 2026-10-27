@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool doctor_check_version_consistency(void);
 
 int main(int argc, char **argv) {

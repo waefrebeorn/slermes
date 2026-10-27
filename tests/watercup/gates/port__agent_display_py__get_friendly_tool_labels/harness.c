@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_display__get_friendly_tool_labels(void);
 
 int main(int argc, char **argv) {

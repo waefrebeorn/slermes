@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool sc_already_sent(const char *text, const char *sent_text);
 
 int main(int argc, char **argv) {

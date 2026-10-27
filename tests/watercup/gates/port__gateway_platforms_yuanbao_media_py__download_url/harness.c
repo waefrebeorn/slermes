@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_gateway_platforms_yuanbao_media_download_url(const char *url, const char *output_path);
 
 int main(int argc, char **argv) {

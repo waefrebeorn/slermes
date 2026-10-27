@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_gateway_platform_registry_unregister(const char *platform_name);
 
 int main(int argc, char **argv) {

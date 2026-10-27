@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/web_server_simple.c",
-    "src/infrastructure_stubs.c"
+    "src/hermes_cli/dashboard_auth_prefix.c"
   ],
   "cflags": [
     "-I",

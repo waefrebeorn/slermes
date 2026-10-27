@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int whatsapp_cloud_post_interactive(const char *url, const char *body);
 
 int main(int argc, char **argv) {

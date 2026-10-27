@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int doctor_has_provider_env_config(const char *content);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _looks_like_path(const char *value);
 
 int main(int argc, char **argv) {

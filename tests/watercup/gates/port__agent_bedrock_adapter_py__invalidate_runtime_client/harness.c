@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_bedrock_adapter_invalidate_runtime_client(const char *region);
 
 int main(int argc, char **argv) {

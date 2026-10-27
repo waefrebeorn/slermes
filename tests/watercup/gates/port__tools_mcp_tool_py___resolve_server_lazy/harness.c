@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int mct_resolve_server_lazy(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int laf_is_session_id(const char *value);
 
 int main(int argc, char **argv) {

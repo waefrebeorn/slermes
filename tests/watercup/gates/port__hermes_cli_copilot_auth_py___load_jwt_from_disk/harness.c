@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_copilot_auth_u_load_jwt_from_disk(const char *arg);
 
 int main(int argc, char **argv) {

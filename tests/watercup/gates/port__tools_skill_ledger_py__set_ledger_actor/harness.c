@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int set_ledger_actor(const char *actor);
 
 int main(int argc, char **argv) {

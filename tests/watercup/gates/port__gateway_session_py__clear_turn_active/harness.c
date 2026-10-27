@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool session_clear_turn_active(const char *session_key, const char *token);
 
 int main(int argc, char **argv) {

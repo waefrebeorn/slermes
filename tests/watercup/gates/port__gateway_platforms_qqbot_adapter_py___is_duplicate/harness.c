@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int helpers_is_duplicate(const char *msg_id);
 
 int main(int argc, char **argv) {

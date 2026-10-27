@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool cli_is_backslash_line_continuation(const char *text);
 
 int main(int argc, char **argv) {

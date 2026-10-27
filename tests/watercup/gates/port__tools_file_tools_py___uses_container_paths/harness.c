@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool file_tools_uses_container_paths(const char *env_type);
 
 int main(int argc, char **argv) {

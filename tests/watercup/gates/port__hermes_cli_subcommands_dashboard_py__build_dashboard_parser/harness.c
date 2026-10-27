@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_subcommands_dashboa_build_dashboard_parser(const char *arg);
 
 int main(int argc, char **argv) {

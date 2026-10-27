@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _electron_dist_ok(const char* project_root);
 
 int main(int argc, char **argv) {

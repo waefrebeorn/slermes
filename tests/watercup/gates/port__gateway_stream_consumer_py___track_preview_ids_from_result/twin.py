@@ -125,6 +125,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("sc_track_preview_ids_from_result")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr("void")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

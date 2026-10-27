@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cbm_billing_auto_reload_disable(void);
 
 int main(int argc, char **argv) {

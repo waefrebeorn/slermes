@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _refuse_gateway_ancestor_tree_kill(const char *gateway_pids);
 
 int main(int argc, char **argv) {

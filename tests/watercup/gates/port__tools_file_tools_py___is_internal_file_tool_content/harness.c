@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int file_tools_is_internal_file_tool_content(const char *content);
 
 int main(int argc, char **argv) {

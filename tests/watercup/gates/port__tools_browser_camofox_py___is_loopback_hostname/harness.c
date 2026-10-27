@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool _is_loopback_hostname(const char *hostname);
 
 int main(int argc, char **argv) {

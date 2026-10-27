@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_browser_connect_manual_chrome_debug_command(const char *arg);
 
 int main(int argc, char **argv) {

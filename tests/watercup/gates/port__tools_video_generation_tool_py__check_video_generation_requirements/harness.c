@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_video_generation_tool_check_video_generation_requirements(void);
 
 int main(int argc, char **argv) {

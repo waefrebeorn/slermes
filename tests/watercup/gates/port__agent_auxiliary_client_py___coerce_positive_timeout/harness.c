@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern double _coerce_positive_timeout(double timeout);
 
 int main(int argc, char **argv) {

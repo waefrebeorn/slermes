@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool commands_requires_argument(const char *args_hint);
 
 int main(int argc, char **argv) {

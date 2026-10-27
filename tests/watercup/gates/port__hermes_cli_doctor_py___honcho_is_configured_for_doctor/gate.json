@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/doctor_helpers.c",
-    "src/infrastructure_stubs.c"
+    "src/plugins/plugin_disk_cleanup.c"
   ],
   "cflags": [
     "-I",

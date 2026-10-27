@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name);
 
 int main(int argc, char **argv) {

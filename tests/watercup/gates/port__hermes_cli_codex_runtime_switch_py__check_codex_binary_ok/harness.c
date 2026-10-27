@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_codex_runtime_switc_check_codex_binary_ok(const char *arg);
 
 int main(int argc, char **argv) {

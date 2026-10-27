@@ -17,8 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/browser_extension_router.c",
-    "src/infrastructure_stubs.c"
+    "src/tools/browser_extension_router.c"
   ],
   "cflags": [
     "-I",

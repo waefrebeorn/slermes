@@ -161,6 +161,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("cfg_apply_terminal_config_to_env")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         for _sp, _v in zip(_SPECS, _outvals(result)):
             c.valstr(_enc_out(_sp, _v))
     except Exception as e:

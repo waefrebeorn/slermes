@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_base__authorization_is_upstream(void);
 
 int main(int argc, char **argv) {

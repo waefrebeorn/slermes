@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_security_audit_star_u_iter_sshd_config_lines(const char *arg);
 
 int main(int argc, char **argv) {

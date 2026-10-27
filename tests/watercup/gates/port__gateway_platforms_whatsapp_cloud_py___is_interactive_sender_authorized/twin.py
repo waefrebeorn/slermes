@@ -125,6 +125,10 @@ def trace(inp, inputs, idx=0):
     c = Cup("whatsapp_cloud_is_interactive_sender_authorized")
     try:
         result = _call(inp, inputs, idx)
+        import inspect as _ic
+        if _ic.iscoroutine(result):
+            import asyncio as _aio
+            result = _aio.run(result)
         c.valstr("true" if result else "false")
     except Exception as e:
         c.valstr(f"ERROR:{type(e).__name__}")

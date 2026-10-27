@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_send_cmd_u_emit_result(const char *arg);
 
 int main(int argc, char **argv) {

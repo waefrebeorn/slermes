@@ -14,10 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/tools/file_operations_gaps.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

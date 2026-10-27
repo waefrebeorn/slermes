@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_gateway_enroll_cmd_gateway_enroll(const char *arg);
 
 int main(int argc, char **argv) {

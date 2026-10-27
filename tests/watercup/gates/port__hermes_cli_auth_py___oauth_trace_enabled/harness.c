@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool auth_oauth_trace_enabled(void);
 
 int main(int argc, char **argv) {

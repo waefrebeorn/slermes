@@ -19,7 +19,7 @@
     "src/cli/paths.c",
     "src/gateway/platforms/qqbot/qqbot_adapter_ports.c",
     "src/gateway/platforms/qqbot.c",
-    "src/infrastructure_stubs.c"
+    "src/agent/secret_scope.c"
   ],
   "cflags": [
     "-I",

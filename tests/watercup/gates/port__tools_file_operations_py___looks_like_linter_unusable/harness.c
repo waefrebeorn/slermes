@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int fo_looks_like_linter_unusable(const char *base_cmd, const char *output);
 
 int main(int argc, char **argv) {

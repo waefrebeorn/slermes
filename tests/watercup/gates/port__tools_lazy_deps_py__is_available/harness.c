@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool tools_lazy_deps_available(const char *feature);
 
 int main(int argc, char **argv) {

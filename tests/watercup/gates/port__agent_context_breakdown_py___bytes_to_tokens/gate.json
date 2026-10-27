@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/context_breakdown_helpers.c"
+    "src/hermes_cli/context_breakdown_helpers.c",
+    "src/hermes_cli/prompt_size.c"
   ],
   "cflags": [
     "-I",

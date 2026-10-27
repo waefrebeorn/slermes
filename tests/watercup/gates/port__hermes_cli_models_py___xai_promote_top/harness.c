@@ -1,29 +1,25 @@
-/* gate: port__hermes_cli_models_py___xai_promote_top — traced copy of models_xai_promote_top (void) */
+/* gate: port__hermes_cli_models_py___xai_promote_top — GAP sentinel for _xai_promote_top */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern void models_xai_promote_top(char *const *ids, char **out, size_t cap);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_xai_promote_top";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s models_xai_promote_top <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _xai_promote_top <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("models_xai_promote_top");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    models_xai_promote_top(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("_xai_promote_top");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("models_xai_promote_top");
+        WCUP_END("_xai_promote_top");
     }
     return 0;
 }

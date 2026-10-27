@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void models_refresh_nous_reasoning_caps(void);
 
 int main(int argc, char **argv) {

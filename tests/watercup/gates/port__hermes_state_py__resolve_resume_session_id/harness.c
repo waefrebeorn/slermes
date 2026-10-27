@@ -1,31 +1,25 @@
-/* gate: port__hermes_state_py__resolve_resume_session_id — traced copy of hermes_state_resolve_resume_session_id (int_str) */
+/* gate: port__hermes_state_py__resolve_resume_session_id — GAP sentinel for resolve_resume_session_id */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-extern int hermes_state_resolve_resume_session_id(const char *input);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "resolve_resume_session_id";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s hermes_state_resolve_resume_session_id <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s resolve_resume_session_id <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("hermes_state_resolve_resume_session_id");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = hermes_state_resolve_resume_session_id(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        WCUP_BEGIN("resolve_resume_session_id");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("hermes_state_resolve_resume_session_id");
+        WCUP_END("resolve_resume_session_id");
     }
     return 0;
 }

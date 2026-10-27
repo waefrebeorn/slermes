@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool stop_profile_gateway(void);
 
 int main(int argc, char **argv) {

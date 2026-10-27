@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_agent_bedrock_adapter_is_stale_connection_error(const char *error_msg);
 
 int main(int argc, char **argv) {

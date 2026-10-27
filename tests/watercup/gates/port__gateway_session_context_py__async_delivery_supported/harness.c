@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int gw_session_async_delivery_supported(void);
 
 int main(int argc, char **argv) {

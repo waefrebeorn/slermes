@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int profiles_should_redact_export_file(const char *filename);
 
 int main(int argc, char **argv) {

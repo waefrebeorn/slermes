@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern char * uni_init(const char *mode);
 
 int main(int argc, char **argv) {

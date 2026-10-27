@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool ws_start_desktop_cron_ticker(int interval_seconds);
 
 int main(int argc, char **argv) {

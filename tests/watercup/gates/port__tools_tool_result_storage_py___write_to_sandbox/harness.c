@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_tools_tool_result_storage__write_to_sandbox(const char *content, const char *remote_path);
 
 int main(int argc, char **argv) {

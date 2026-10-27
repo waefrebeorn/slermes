@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_skills_hub_u_derive_category_from_install_path(const char *arg);
 
 int main(int argc, char **argv) {

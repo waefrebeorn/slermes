@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int tools_homeassistant_tool_u_async_call_service(const char *arg);
 
 int main(int argc, char **argv) {

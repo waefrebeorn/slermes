@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
     char ** result = envb_snapshot_excluded_passthrough_names((int)strtol(argv[i], NULL, 10), &_o1);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? result : "");
     { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o1); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int cli_cleanup_all_terminals(void);
 
 int main(int argc, char **argv) {

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern bool setup_wizard_is_hidden_env(const char *name);
 
 int main(int argc, char **argv) {

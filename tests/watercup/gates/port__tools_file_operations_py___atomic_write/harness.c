@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int fo_atomic_write(const char *path, const char *content);
 
 int main(int argc, char **argv) {

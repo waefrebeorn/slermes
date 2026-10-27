@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int disp_spinner_update_text(const char *new_message);
 
 int main(int argc, char **argv) {

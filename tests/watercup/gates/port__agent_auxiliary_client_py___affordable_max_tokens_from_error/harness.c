@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int _affordable_max_tokens_from_error(const char *error);
 
 int main(int argc, char **argv) {

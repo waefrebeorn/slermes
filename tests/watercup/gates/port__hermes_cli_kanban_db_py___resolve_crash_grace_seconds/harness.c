@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int kanban_resolve_crash_grace_seconds(const char *env);
 
 int main(int argc, char **argv) {

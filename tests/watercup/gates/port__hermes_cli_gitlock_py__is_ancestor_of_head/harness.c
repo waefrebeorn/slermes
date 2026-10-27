@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int is_ancestor_of_head(const char *repo_root, const char *rev);
 
 int main(int argc, char **argv) {
