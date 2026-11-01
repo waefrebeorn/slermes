@@ -13,8 +13,8 @@
 
 typedef struct {
     int exit_code;
-    char *stdout;
-    char *stderr;
+    char *out_buf;   /* renamed: stdio.h defines stdout as a macro on MinGW */
+    char *err_buf;   /* same, stderr */
 } file_ops_execute_result_t;
 
 /* _SEARCH_TIMEOUT_MARKER_RE = re.compile(r"\n?\[Command timed out after \d+s\]\s*$") */
@@ -29,10 +29,10 @@ char *file_ops_search_search_stdout_and_limit(const file_ops_execute_result_t *r
     if (!compiled) { regcomp(&re, SEARCH_TIMEOUT_MARKER_RE, REG_EXTENDED); compiled = true; }
     if (out_reason) *out_reason = NULL;
     if (!result) return strdup("");
-    char *stdout = result->stdout ? result->stdout : "";
+    char *out_s = result->out_buf ? result->out_buf : "";
     if (result->exit_code == 124) {
         /* strip the timeout marker */
-        char *out = strdup(stdout);
+        char *out = strdup(out_s);
         regmatch_t m;
         if (regexec(&re, out, 1, &m, 0) == 0) {
             out[m.rm_so] = '\0';
@@ -40,7 +40,7 @@ char *file_ops_search_search_stdout_and_limit(const file_ops_execute_result_t *r
         if (out_reason) *out_reason = strdup("search_timeout");
         return out;
     }
-    return strdup(stdout);
+    return strdup(out_s);
 }
 
 /* PoP: file_ops_search_split_tool_diagnostics @ tools/file_operations.py:_split_tool_diagnostics */
