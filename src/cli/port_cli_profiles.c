@@ -357,7 +357,7 @@ char *profile_build_alias_map(void) {
 
     struct dirent *e;
     while ((e = readdir(d))) {
-        if (e->d_type != DT_REG && e->d_type != DT_UNKNOWN) continue;
+        if (!hermes_dirent_is_file(wd, e->d_name)) continue;
         /* No suffix for POSIX wrappers. */
         if (strchr(e->d_name, '.')) continue;
         char full[PATH_MAX];
@@ -881,7 +881,7 @@ char *profile_profiles_to_serve(bool multiplex) {
             if (d) {
                 struct dirent *e;
                 while ((e = readdir(d))) {
-                    if (e->d_type != DT_DIR && e->d_type != DT_UNKNOWN) continue;
+                    if (!hermes_dirent_is_dir(root, e->d_name)) continue;
                     if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
                     if (strcmp(e->d_name, "default") == 0) continue;
                     if (!profile_id_matches(e->d_name)) continue;
@@ -1004,7 +1004,7 @@ char *profile_backfill_profile_envs(void) {
     if (d) {
         struct dirent *e;
         while ((e = readdir(d))) {
-            if (e->d_type != DT_DIR && e->d_type != DT_UNKNOWN) continue;
+            if (!hermes_dirent_is_dir(root, e->d_name)) continue;
             if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
             if (!profile_id_matches(e->d_name)) continue;
             char *ep = malloc(strlen(root) + 1 + strlen(e->d_name) + 1 + strlen("/.env"));

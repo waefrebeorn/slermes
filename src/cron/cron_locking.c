@@ -173,7 +173,7 @@ void cron_release_all_locks(void) {
     pid_t our_pid = getpid();
     struct dirent *entry;
     while ((entry = readdir(d)) != NULL) {
-        if (entry->d_type != DT_REG) continue;
+        if (!hermes_dirent_is_file(lock_dir, entry->d_name)) continue;
 
         /* Verify it ends with .lock */
         size_t len = strlen(entry->d_name);

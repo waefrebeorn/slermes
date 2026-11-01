@@ -3298,14 +3298,14 @@ static void tui_draw_skill_browser(void) {
         while ((entry = readdir(d)) != NULL && y < w_rows - 3) {
             /* Skip hidden and non-directory entries */
             if (entry->d_name[0] == '.') continue;
-            if (entry->d_type != DT_DIR && entry->d_type != DT_LNK && entry->d_type != DT_REG) continue;
+            if (!hermes_dirent_is_dir(skill_dir, entry->d_name) && !hermes_dirent_is_file(skill_dir, entry->d_name)) continue;
             /* Only show .md files and directories */
             size_t nlen = strlen(entry->d_name);
-            if (entry->d_type == DT_REG && (nlen < 3 || strcmp(entry->d_name + nlen - 3, ".md") != 0))
+            if (hermes_dirent_is_file(skill_dir, entry->d_name) && (nlen < 3 || strcmp(entry->d_name + nlen - 3, ".md") != 0))
                 continue;
 
             char display[256];
-            if (entry->d_type == DT_DIR) {
+            if (hermes_dirent_is_dir(skill_dir, entry->d_name)) {
                 snprintf(display, sizeof(display), " [%s]", entry->d_name);
             } else {
                 snprintf(display, sizeof(display), "   %s", entry->d_name);

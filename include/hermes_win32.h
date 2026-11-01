@@ -1,0 +1,481 @@
+/* Slermes Windows platform shims.
+ * Included from hermes_core_types.h after <sys/types.h>.
+ *
+ * Only POSIX/ISO surfaces MinGW lacks live here. Behavioural gaps (no fork(),
+ * no real tty attributes, no POSIX uids) fail closed rather than pretending to
+ * succeed — a silent wrong answer would poison oracle parity. */
+#ifndef SLERMES_HERMES_WIN32_H
+#define SLERMES_HERMES_WIN32_H
+
+#ifdef _WIN32
+
+#include <winsock2.h>
+#include <windows.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <sys/stat.h>   /* must precede the mkdir macro below */
+#include <stdlib.h>
+#include <stdio.h>      /* vsnprintf, used by the dprintf shim */
+#include <string.h>
+#include <direct.h>     /* _mkdir */
+#include <io.h>
+
+/* POSIX user/group ids: there is no multi-user model, everything is uid 0. */
+#ifndef SLERMES_UID_T_DEFINED
+#define SLERMES_UID_T_DEFINED
+typedef unsigned int uid_t;
+typedef unsigned int gid_t;
+#endif
+
+/* POSIX realpath() -> Microsoft _fullpath(). */
+static inline char *realpath(const char *path, char *resolved)
+{
+    if (!path) return NULL;
+    if (resolved) return _fullpath(resolved, path, _MAX_PATH);
+    return _fullpath(NULL, path, _MAX_PATH);
+}
+
+static inline uid_t geteuid(void) { return 0; }
+static inline uid_t getuid(void)  { return 0; }
+static inline gid_t getgid(void)  { return 0; }
+
+/* POSIX stdio/io MinGW omits. */
+#define fsync(fd) _commit(fd)
+
+/* fcntl() and its flags. Windows has no per-fd flags worth emulating here, so
+ * the call succeeds without changing behaviour rather than failing open. */
+#include <fcntl.h>
+#ifndef O_NONBLOCK
+#define O_NONBLOCK 0x4000
+#endif
+#ifndef F_GETFL
+#define F_GETFL 3
+#endif
+#ifndef F_SETFL
+#define F_SETFL 4
+#endif
+static inline int fcntl(int fd, int cmd, ...) { (void)fd; (void)cmd; return 0; }
+
+/* MinGW's struct dirent has no d_type. Sites that test for a directory stat the
+ * joined path instead — real answer, no fabricated DT_* value. */
+static inline int hermes_dirent_is_dir(const char *dirpath, const char *name)
+{
+    char p[4096];
+    struct stat st;
+    if (!dirpath || !name) return 0;
+    if ((size_t)snprintf(p, sizeof p, "%s/%s", dirpath, name) >= sizeof p) return 0;
+    if (stat(p, &st) != 0) return 0;
+    return (st.st_mode & S_IFMT) == S_IFDIR;
+}
+
+
+/* Regular-file test to pair with hermes_dirent_is_dir(). */
+static inline int hermes_dirent_is_file(const char *dirpath, const char *name)
+{
+    char p[4096];
+    struct stat st;
+    if (!dirpath || !name) return 0;
+    if ((size_t)snprintf(p, sizeof p, "%s/%s", dirpath, name) >= sizeof p) return 0;
+    if (stat(p, &st) != 0) return 0;
+    return (st.st_mode & S_IFMT) == S_IFREG;
+}
+
+/* glibc's strcasestr is absent on MinGW. */
+static inline char *strcasestr(const char *haystack, const char *needle)
+{
+    size_t nlen;
+    if (!haystack || !needle) return NULL;
+    nlen = strlen(needle);
+    if (!nlen) return (char *)haystack;
+    for (; *haystack; ++haystack)
+        if (strncasecmp(haystack, needle, nlen) == 0)
+            return (char *)haystack;
+    return NULL;
+}
+
+/* Windows has no symlinks in the POSIX sense, so lstat() is stat() and nothing
+ * is ever a link. Reporting S_ISLNK as always-false is the honest answer. */
+static inline int lstat(const char *path, struct stat *st) { return stat(path, st); }
+#ifndef S_ISLNK
+#define S_ISLNK(m) 0
+#endif
+#ifndef S_ISSOCK
+#define S_ISSOCK(m) 0
+#endif
+
+/* glibc extensions MinGW lacks. */
+#include <time.h>
+#define timegm(tm) _mkgmtime(tm)
+
+#ifndef SIGPIPE
+#define SIGPIPE 13   /* never raised on Windows; kept distinct for signal() calls */
+#endif
+
+#ifndef SIGALRM
+#define SIGALRM 14   /* never raised: alarm() is a no-op, see below */
+#endif
+
+/* Reentrant time conversions: POSIX *_r -> MSVC *_s (argument order differs). */
+static inline struct tm *localtime_r(const time_t *t, struct tm *out)
+{
+    return localtime_s(out, t) == 0 ? out : NULL;
+}
+static inline struct tm *gmtime_r(const time_t *t, struct tm *out)
+{
+    return gmtime_s(out, t) == 0 ? out : NULL;
+}
+
+/* Windows has no interval timer delivering SIGALRM. Timed-out code paths must
+ * rely on their own deadline checks; this cannot be faked without a thread. */
+static inline unsigned int alarm(unsigned int seconds) { (void)seconds; return 0; }
+
+static inline int setenv(const char *name, const char *value, int overwrite)
+{
+    if (!overwrite) {
+        const char *old = getenv(name);
+        if (old) return 0;
+    }
+    return _putenv_s(name, value ? value : "");
+}
+
+static inline int unsetenv(const char *name) { return _putenv_s(name, ""); }
+
+#include <stdarg.h>
+static inline int dprintf(int fd, const char *fmt, ...)
+{
+    char buf[4096];
+    va_list ap;
+    int n;
+    va_start(ap, fmt);
+    n = vsnprintf(buf, sizeof buf, fmt, ap);
+    va_end(ap);
+    if (n < 0) return n;
+    if ((size_t)n > sizeof buf - 1) n = (int)sizeof buf - 1;
+    return _write(fd, buf, n);
+}
+
+/* glibc's open_memstream is absent on MinGW. Emulated with a temp file: writers
+ * use it unchanged, and the fclose() hook below reads the bytes back and hands
+ * them to the caller as the malloc'd buffer + length the contract promises. */
+#define SLERMES_MEMSTREAM_MAX 8
+typedef struct {
+    FILE  *f;
+    char **bufp;
+    size_t *sizep;
+} slermes_memstream_slot;
+
+static slermes_memstream_slot slermes_memstreams[SLERMES_MEMSTREAM_MAX];
+
+static inline FILE *open_memstream(char **bufp, size_t *sizep)
+{
+    int i;
+    FILE *f;
+    if (!bufp || !sizep) return NULL;
+    f = tmpfile();
+    if (!f) return NULL;
+    for (i = 0; i < SLERMES_MEMSTREAM_MAX; i++) {
+        if (!slermes_memstreams[i].f) {
+            slermes_memstreams[i].f = f;
+            slermes_memstreams[i].bufp = bufp;
+            slermes_memstreams[i].sizep = sizep;
+            *bufp = NULL;
+            *sizep = 0;
+            return f;
+        }
+    }
+    fclose(f);
+    return NULL;
+}
+
+static inline int slermes_fclose(FILE *f)
+{
+    int i;
+    for (i = 0; i < SLERMES_MEMSTREAM_MAX; i++) {
+        if (slermes_memstreams[i].f == f) {
+            char *data = NULL;
+            long sz;
+            size_t got;
+            fflush(f);
+            rewind(f);
+            if (fseek(f, 0, SEEK_END) == 0) {
+                sz = ftell(f);
+                rewind(f);
+                if (sz >= 0) {
+                    data = (char *)malloc((size_t)sz + 1);
+                    if (data) {
+                        got = fread(data, 1, (size_t)sz, f);
+                        data[got] = '\0';
+                        *slermes_memstreams[i].bufp = data;
+                        *slermes_memstreams[i].sizep = got;
+                    }
+                }
+            }
+            slermes_memstreams[i].f = NULL;
+            slermes_memstreams[i].bufp = NULL;
+            slermes_memstreams[i].sizep = NULL;
+            return fclose(f);
+        }
+    }
+    return fclose(f);
+}
+#define fclose(f) slermes_fclose(f)
+
+/* POSIX mkdir(path, mode) while MinGW declares the 1-arg MSVC form.
+ * Variadic dispatch keeps both arities compiling. */
+#define SLERMES_MKDIR1(p)     _mkdir(p)
+#define SLERMES_MKDIR2(p, m)  _mkdir(p)
+#define SLERMES_MKDIR_PICK(_1, _2, NAME, ...) NAME
+#define mkdir(...) \
+    SLERMES_MKDIR_PICK(__VA_ARGS__, SLERMES_MKDIR2, SLERMES_MKDIR1)(__VA_ARGS__)
+
+
+
+/* ── Signals that exist only to be named/compared ─────────────────────
+ * Windows has no POSIX signal machinery; these exist so tables and kill()
+ * arguments compile. Nothing will ever be delivered for them. */
+#ifndef SIGUSR1
+#define SIGUSR1 10
+#endif
+#ifndef SIGUSR2
+#define SIGUSR2 12
+#endif
+#ifndef SIGBUS
+#define SIGBUS 7
+#endif
+#ifndef SIGSTOP
+#define SIGSTOP 19
+#endif
+#ifndef SIGTSTP
+#define SIGTSTP 20
+#endif
+#ifndef SIGCONT
+#define SIGCONT 18
+#endif
+#ifndef SIGWINCH
+#define SIGWINCH 28
+#endif
+#ifndef SIG_BLOCK
+#define SIG_BLOCK 0
+#define SIG_UNBLOCK 1
+#define SIG_SETMASK 2
+#endif
+typedef unsigned long sigset_t;
+static inline int sigemptyset(sigset_t *s) { if (s) *s = 0; return 0; }
+static inline int sigfillset(sigset_t *s) { if (s) *s = (sigset_t)-1; return 0; }
+static inline int sigaddset(sigset_t *s, int sig) { (void)sig; if (s) *s = (sigset_t)-1; return 0; }
+static inline int sigdelset(sigset_t *s, int sig) { (void)sig; (void)s; return 0; }
+static inline int sigismember(const sigset_t *s, int sig) { (void)s; (void)sig; return 0; }
+static inline int sigprocmask(int how, const sigset_t *set, sigset_t *old)
+{ (void)how; (void)set; if (old) *old = 0; return 0; }
+static inline int pthread_sigmask(int how, const sigset_t *set, sigset_t *old)
+{ return sigprocmask(how, set, old); }
+
+#ifndef S_IFSOCK
+#define S_IFSOCK 0140000
+#endif
+
+#ifndef _SC_PHYS_PAGES
+#define _SC_PHYS_PAGES 85
+#define _SC_OPEN_MAX   4
+#define _SC_CLK_TCK    2
+#endif
+
+/* ── Process model: Windows has no fork()/signals-as-POSIX ─────────────
+ * These fail closed. Callers that spawn subprocesses must use the Win32
+ * CreateProcess path; a silent success here would look like a working feature. */
+#include <errno.h>
+#include <sys/types.h>
+
+#ifndef SIGKILL
+#define SIGKILL 9
+#endif
+#ifndef SIGHUP
+#define SIGHUP 1
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT 3
+#endif
+#ifndef O_CLOEXEC
+#define O_CLOEXEC 0
+#endif
+#ifndef ENOSYS
+#define ENOSYS 40
+#endif
+
+static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+static inline int kill(pid_t pid, int sig) { (void)pid; (void)sig; errno = ENOSYS; return -1; }
+static inline int pipe(int fds[2]) { (void)fds; errno = ENOSYS; return -1; }
+static inline pid_t setsid(void) { return (pid_t)0; }
+static inline pid_t getppid(void) { return (pid_t)0; }
+
+/* sysconf: only the values the port actually queries. */
+#ifndef _SC_NPROCESSORS_ONLN
+#define _SC_NPROCESSORS_ONLN 84
+#define _SC_PAGESIZE         30
+#define _SC_PAGE_SIZE        _SC_PAGESIZE
+#endif
+static inline long sysconf(int name)
+{
+    SYSTEM_INFO si;
+    switch (name) {
+    case _SC_NPROCESSORS_ONLN:
+        GetSystemInfo(&si);
+        return (long)si.dwNumberOfProcessors;
+    case _SC_PAGESIZE:
+        GetSystemInfo(&si);
+        return (long)si.dwPageSize;
+    case _SC_PHYS_PAGES: {
+        MEMORYSTATUSEX ms;
+        ms.dwLength = sizeof ms;
+        if (!GlobalMemoryStatusEx(&ms)) return -1;
+        GetSystemInfo(&si);
+        return (long)(ms.ullTotalPhys / si.dwPageSize);
+    }
+    case _SC_OPEN_MAX:
+        return 2048;
+    case _SC_CLK_TCK:
+        return 1000;
+    default:
+        return -1;
+    }
+}
+
+/* flock via LockFileEx — real advisory locking, not a no-op. */
+#ifndef LOCK_EX
+#define LOCK_SH 1
+#define LOCK_EX 2
+#define LOCK_NB 4
+#define LOCK_UN 8
+#endif
+static inline int flock(int fd, int op)
+{
+    HANDLE h = (HANDLE)_get_osfhandle(fd);
+    OVERLAPPED ov;
+    DWORD flags = 0;
+    if (h == INVALID_HANDLE_VALUE) return -1;
+    memset(&ov, 0, sizeof ov);
+    if (op & LOCK_UN) return UnlockFileEx(h, 0, 1, 0, &ov) ? 0 : -1;
+    if (op & LOCK_NB) flags |= LOCKFILE_FAIL_IMMEDIATELY;
+    if (op & LOCK_EX) flags |= LOCKFILE_EXCLUSIVE_LOCK;
+    return LockFileEx(h, flags, 0, 1, 0, &ov) ? 0 : -1;
+}
+
+
+static inline ssize_t readlink(const char *path, char *buf, size_t bufsiz)
+{ (void)path; (void)buf; (void)bufsiz; errno = EINVAL; return -1; }
+
+/* ── string/stdio extensions ─────────────────────────────────────────── */
+static inline int asprintf(char **strp, const char *fmt, ...)
+{
+    va_list ap;
+    int n;
+    va_start(ap, fmt);
+    n = vsnprintf(NULL, 0, fmt, ap);
+    va_end(ap);
+    if (n < 0) return -1;
+    *strp = (char *)malloc((size_t)n + 1);
+    if (!*strp) return -1;
+    va_start(ap, fmt);
+    vsnprintf(*strp, (size_t)n + 1, fmt, ap);
+    va_end(ap);
+    return n;
+}
+
+static inline int vasprintf(char **strp, const char *fmt, va_list ap)
+{
+    int n = vsnprintf(NULL, 0, fmt, ap);
+    if (n < 0) return -1;
+    *strp = (char *)malloc((size_t)n + 1);
+    if (!*strp) return -1;
+    vsnprintf(*strp, (size_t)n + 1, fmt, ap);
+    return n;
+}
+
+/* getline: MinGW's CRT has no getline. */
+static inline ssize_t getline(char **lineptr, size_t *n, FILE *stream)
+{
+    size_t cap, len = 0;
+    char *buf;
+    int c;
+    if (!lineptr || !n || !stream) return -1;
+    if (!*lineptr || *n == 0) {
+        cap = 256;
+        buf = (char *)malloc(cap);
+        if (!buf) return -1;
+        *lineptr = buf;
+        *n = cap;
+    }
+    buf = *lineptr;
+    cap = *n;
+    for (;;) {
+        c = fgetc(stream);
+        if (c == EOF) {
+            if (len == 0) return -1;
+            break;
+        }
+        if (len + 1 >= cap) {
+            char *nb;
+            cap *= 2;
+            nb = (char *)realloc(buf, cap);
+            if (!nb) return -1;
+            buf = nb;
+            *lineptr = buf;
+            *n = cap;
+        }
+        buf[len++] = (char)c;
+        if (c == '\n') break;
+    }
+    buf[len] = '\0';
+    return (ssize_t)len;
+}
+
+/* strptime: subset covering the formats this port uses. */
+static inline char *strptime(const char *s, const char *format, struct tm *tm)
+{
+    if (!s || !format || !tm) return NULL;
+    while (*format) {
+        if (*format == '%') {
+            format++;
+            switch (*format) {
+            case 'Y': tm->tm_year = atoi(s) - 1900; while (*s >= '0' && *s <= '9') s++; break;
+            case 'm': tm->tm_mon = atoi(s) - 1;     while (*s >= '0' && *s <= '9') s++; break;
+            case 'd': tm->tm_mday = atoi(s);        while (*s >= '0' && *s <= '9') s++; break;
+            case 'H': tm->tm_hour = atoi(s);        while (*s >= '0' && *s <= '9') s++; break;
+            case 'M': tm->tm_min = atoi(s);         while (*s >= '0' && *s <= '9') s++; break;
+            case 'S': tm->tm_sec = atoi(s);         while (*s >= '0' && *s <= '9') s++; break;
+            case 'F':
+                if (!strptime(s, "%Y-%m-%d", tm)) return NULL;
+                while (*s && *s != ' ') s++;
+                break;
+            case 'T':
+                if (!strptime(s, "%H:%M:%S", tm)) return NULL;
+                while (*s && *s != ' ') s++;
+                break;
+            case 'z':
+                while (*s && *s != ' ' && *s != '+') s++;
+                if (*s) s++;
+                while (*s >= '0' && *s <= '9') s++;
+                break;
+            case '%': if (*s != '%') return NULL; s++; break;
+            default: return NULL;
+            }
+            format++;
+        } else {
+            if (*s != *format) return NULL;
+            s++; format++;
+        }
+    }
+    return (char *)s;
+}
+
+/* UTC offset for a broken-down local time, replacing tm_gmtoff. */
+static inline long hermes_tm_gmtoff(const struct tm *tm)
+{
+    struct tm copy;
+    if (!tm) return 0;
+    copy = *tm;
+    return (long)difftime(mktime(&copy), (time_t)_mkgmtime(&copy));
+}
+
+#endif /* _WIN32 */
+#endif /* SLERMES_HERMES_WIN32_H */

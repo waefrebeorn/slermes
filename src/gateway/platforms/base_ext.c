@@ -247,7 +247,7 @@ int cleanup_image_cache(int max_age_hours) {
         struct dirent *entry;
         time_t cutoff = time(NULL) - (max_age_hours * 3600);
         while ((entry = readdir(d))) {
-            if (entry->d_type == DT_REG) {
+            if (hermes_dirent_is_file(cache_dir, entry->d_name)) {
                 size_t path_len = strlen(cache_dir) + 1 + strlen(entry->d_name) + 1;
                 char *path = malloc(path_len);
                 snprintf(path, path_len, "%s/%s", cache_dir, entry->d_name);
@@ -275,7 +275,7 @@ int cleanup_audio_cache(int max_age_hours) {
         struct dirent *entry;
         time_t cutoff = time(NULL) - (max_age_hours * 3600);
         while ((entry = readdir(d))) {
-            if (entry->d_type == DT_REG) {
+            if (hermes_dirent_is_file(cache_dir, entry->d_name)) {
                 size_t path_len = strlen(cache_dir) + 1 + strlen(entry->d_name) + 1;
                 char *path = malloc(path_len);
                 snprintf(path, path_len, "%s/%s", cache_dir, entry->d_name);
@@ -303,7 +303,7 @@ int cleanup_video_cache(int max_age_hours) {
         struct dirent *entry;
         time_t cutoff = time(NULL) - (max_age_hours * 3600);
         while ((entry = readdir(d))) {
-            if (entry->d_type == DT_REG) {
+            if (hermes_dirent_is_file(cache_dir, entry->d_name)) {
                 size_t path_len = strlen(cache_dir) + 1 + strlen(entry->d_name) + 1;
                 char *path = malloc(path_len);
                 snprintf(path, path_len, "%s/%s", cache_dir, entry->d_name);
@@ -331,7 +331,7 @@ int cleanup_document_cache(int max_age_hours) {
         struct dirent *entry;
         time_t cutoff = time(NULL) - (max_age_hours * 3600);
         while ((entry = readdir(d))) {
-            if (entry->d_type == DT_REG) {
+            if (hermes_dirent_is_file(cache_dir, entry->d_name)) {
                 size_t path_len = strlen(cache_dir) + 1 + strlen(entry->d_name) + 1;
                 char *path = malloc(path_len);
                 snprintf(path, path_len, "%s/%s", cache_dir, entry->d_name);

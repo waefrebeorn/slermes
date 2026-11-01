@@ -426,7 +426,7 @@ void cli_logs_list(void)
     /* collect entries for sorted output */
     char names[128][256]; int nn = 0;
     while ((e = readdir(d)) != NULL) {
-        if (e->d_type != DT_REG) continue;
+        if (!hermes_dirent_is_file(dir, e->d_name)) continue;
         size_t L = strlen(e->d_name);
         if (L < 4 || strcmp(e->d_name + L - 4, ".log") != 0) continue;
         if (nn < 128) strncpy(names[nn++], e->d_name, 255);

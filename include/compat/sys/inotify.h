@@ -1,0 +1,27 @@
+/* Slermes Windows compat: <sys/inotify.h> — no inotify on Windows.
+ * Watches fail to initialise; callers already handle that case. */
+#ifndef SLERMES_COMPAT_SYS_INOTIFY_H
+#define SLERMES_COMPAT_SYS_INOTIFY_H
+#include <errno.h>
+#define IN_ACCESS        0x00000001
+#define IN_MODIFY        0x00000002
+#define IN_ATTRIB        0x00000004
+#define IN_CLOSE_WRITE   0x00000008
+#define IN_CLOSE_NOWRITE 0x00000010
+#define IN_OPEN          0x00000020
+#define IN_MOVED_FROM    0x00000040
+#define IN_MOVED_TO      0x00000080
+#define IN_CREATE        0x00000100
+#define IN_DELETE        0x00000200
+#define IN_DELETE_SELF   0x00000400
+#define IN_MOVE_SELF     0x00000800
+#define IN_ALL_EVENTS    0x00000fff
+#define IN_NONBLOCK      0x00004000
+#define IN_CLOEXEC       0x00080000
+struct inotify_event { int wd; unsigned int mask; unsigned int cookie; unsigned int len; char name[1]; };
+static inline int inotify_init(void) { errno = ENOSYS; return -1; }
+static inline int inotify_init1(int flags) { (void)flags; errno = ENOSYS; return -1; }
+static inline int inotify_add_watch(int fd, const char *path, unsigned int mask)
+{ (void)fd; (void)path; (void)mask; errno = ENOSYS; return -1; }
+static inline int inotify_rm_watch(int fd, int wd) { (void)fd; (void)wd; errno = ENOSYS; return -1; }
+#endif

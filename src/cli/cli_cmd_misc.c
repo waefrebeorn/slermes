@@ -38,7 +38,7 @@ void cmd_plugins(const char *args, agent_state_t *state) {
         int count = 0;
         struct dirent *entry;
         while ((entry = readdir(d)) != NULL) {
-            if (entry->d_type != DT_REG && entry->d_type != DT_LNK) continue;
+            if (!hermes_dirent_is_file(plugins_dir, entry->d_name)) continue;
             const char *dot = strrchr(entry->d_name, '.');
             if (!dot || strcmp(dot, ".so") != 0) continue;
 

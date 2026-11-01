@@ -886,7 +886,7 @@ char *skill_manage_handler(const char *args_json, const char *task_id) {
         if (dir) {
             struct dirent *entry;
             while ((entry = readdir(dir)) != NULL) {
-                if (entry->d_type == DT_DIR || strstr(entry->d_name, ".md")) {
+                if (hermes_dirent_is_dir(skills_dir, entry->d_name) || strstr(entry->d_name, ".md")) {
                     char spath[MAX_PATH];
                     snprintf(spath, sizeof(spath), "%s/%s/SKILL.md", skills_dir, entry->d_name);
                     struct stat st;

@@ -936,7 +936,7 @@ json_node_t *build_skills_manifest(const char *skills_dir) {
 
         struct dirent *entry;
         while ((entry = readdir(dir)) != NULL) {
-            if (entry->d_type != DT_DIR) continue;
+            if (!hermes_dirent_is_dir(skills_dir, entry->d_name)) continue;
             if (entry->d_name[0] == '.') continue;
 
             /* Check category/SKILL.md */
@@ -964,7 +964,7 @@ json_node_t *build_skills_manifest(const char *skills_dir) {
 
             struct dirent *subentry;
             while ((subentry = readdir(subdir)) != NULL) {
-                if (subentry->d_type != DT_DIR) continue;
+                if (!hermes_dirent_is_dir(subdir_path, subentry->d_name)) continue;
                 if (subentry->d_name[0] == '.') continue;
 
                 snprintf(filepath, sizeof(filepath), "%s/%s/%s/%s",

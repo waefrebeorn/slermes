@@ -50,6 +50,16 @@ else ifeq ($(UNAME_S),Darwin)
     SSL_LDFLAGS := -L$(BREW_SSL)/lib -lssl -lcrypto
     PLATFORM_LDFLAGS := -ldl -lpthread -lz -lpcre2-8
     OS_DEF := -D__APPLE__
+else ifneq ($(filter MINGW% MSYS_NT%,$(UNAME_S)),)
+# Windows (MSYS2/MinGW). No fork, no POSIX tty, Winsock for sockets, libtre for
+# regex. POSIX surface MinGW lacks is supplied by include/compat/ so port_*.c
+# keeps its original #include lines and stays faithful to the Python source.
+    SSL_CFLAGS := $(shell pkg-config --cflags openssl 2>/dev/null)
+    SSL_LDFLAGS := $(shell pkg-config --libs openssl 2>/dev/null || echo "-lssl -lcrypto")
+    PLATFORM_LDFLAGS := -lws2_32 -ltre -lSDL2 -lSDL2_ttf
+    OS_DEF := -D_WIN32
+    COMPAT_INC := -I include/compat
+    WIN_PLATFORM := 1
 else
 # musl/Alpine (non-Linux) or fallback
     ifeq ($(shell ldd --version 2>/dev/null | head -1 | grep -c musl || echo 0),1)
@@ -70,8 +80,13 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+CFLAGS = -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function $(COMPAT_INC) -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
 CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION_STR)\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE_STR)\" -DATADIR=\"$(DATADIR_STR)\"
+# Windows: force platform shims into every TU so POSIX names (realpath, fsync,
+# fcntl, geteuid, POSIX mkdir arity) resolve without editing sources.
+ifdef WIN_PLATFORM
+    CFLAGS += -include hermes_win32.h
+endif
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm
 

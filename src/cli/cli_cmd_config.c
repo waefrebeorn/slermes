@@ -135,7 +135,7 @@ void cmd_backup(const char *args, agent_state_t *state) {
                 struct dirent *entry;
                 int count = 0;
                 while ((entry = readdir(d)) != NULL) {
-                    if (entry->d_type != DT_REG) continue;
+                    if (!hermes_dirent_is_file(sessions_src, entry->d_name)) continue;
                     char sf[1024], df[1024];
                     snprintf(sf, sizeof(sf), "%s/%s", sessions_src, entry->d_name);
                     snprintf(df, sizeof(df), "%s/%s", sessions_dst, entry->d_name);
@@ -171,7 +171,7 @@ void cmd_backup(const char *args, agent_state_t *state) {
                 struct dirent *entry;
                 int count = 0;
                 while ((entry = readdir(d)) != NULL) {
-                    if (entry->d_type != DT_REG && entry->d_type != DT_LNK) continue;
+                    if (!hermes_dirent_is_file(plugins_src, entry->d_name)) continue;
                     char sf[1024], df[1024];
                     snprintf(sf, sizeof(sf), "%s/%s", plugins_src, entry->d_name);
                     snprintf(df, sizeof(df), "%s/%s", plugins_dst, entry->d_name);

@@ -386,7 +386,7 @@ static char *iso_local(time_t ts) {
     if (!localtime_r(&ts, &lt)) return NULL;
     char base[32];
     if (strftime(base, sizeof(base), "%Y-%m-%dT%H:%M:%S", &lt) == 0) return NULL;
-    long off = lt.tm_gmtoff;               /* seconds east of UTC */
+    long off = hermes_tm_gmtoff(&lt);               /* seconds east of UTC */
     char sign = off < 0 ? '-' : '+';
     long ao = off < 0 ? -off : off;
     int oh = (int)(ao / 3600), om = (int)((ao % 3600) / 60);
@@ -1710,7 +1710,7 @@ json_t *cronjobs_get_due_jobs(void) {
 
     time_t now = time(NULL);
     struct tm nl; localtime_r(&now, &nl);
-    int now_off = (int)nl.tm_gmtoff;
+    int now_off = (int)hermes_tm_gmtoff(&nl);
 
     json_t *due = json_array();
     bool needs_save = false;

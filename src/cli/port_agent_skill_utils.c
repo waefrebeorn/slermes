@@ -65,7 +65,7 @@ char *cli_agent_skill_utils__load_raw_config(void)
     long mtime_ns = 0, size = 0;
     int have_stat = (stat(config_path, &st) == 0);
     if (have_stat) {
-        mtime_ns = (long)st.st_mtim.tv_sec * 1000000000L + (long)st.st_mtim.tv_nsec;
+        mtime_ns = (long)st.st_mtime * 1000000000L + (long)0;
         size = (long)st.st_size;
         if (s_raw_config_cache.valid && s_raw_config_cache.path &&
             strcmp(s_raw_config_cache.path, config_path) == 0 &&

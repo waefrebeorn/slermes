@@ -35,6 +35,10 @@
 #include <string.h>
 #include <sys/types.h>   /* uid_t (used by hermes_file_permissions_harden) */
 
+/* Windows: POSIX surfaces MinGW lacks (uid_t, realpath, mkdir arity, geteuid).
+ * Inert on other platforms. */
+#include "hermes_win32.h"
+
 /* strcasestr — case-insensitive substring search (glibc extension)
  * macOS/BSD doesn't provide it in <string.h> — provide fallback */
 #if defined(__APPLE__) || defined(__MACH__)

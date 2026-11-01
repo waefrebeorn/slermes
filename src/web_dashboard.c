@@ -660,7 +660,7 @@ static void handle_profiles_list(int fd) {
             if (d) {
                 struct dirent *entry;
                 while ((entry = readdir(d)) != NULL) {
-                    if (entry->d_type == DT_DIR &&
+                    if (hermes_dirent_is_dir(prof_dir, entry->d_name) &&
                         entry->d_name[0] != '.' &&
                         strcmp(entry->d_name, "default") != 0) {
                         json_t *p = json_new_object();
@@ -1486,7 +1486,7 @@ static void handle_fs_list(int fd, const http_req_t *req) {
         json_t *f = json_new_object();
         if (f) {
             json_set(f, "name", json_string(entry->d_name));
-            json_set(f, "type", json_string(entry->d_type == DT_DIR ? "dir" : "file"));
+            json_set(f, "type", json_string(hermes_dirent_is_dir(dir_path, entry->d_name) ? "dir" : "file"));
             json_array_append(arr, f);
         }
     }
