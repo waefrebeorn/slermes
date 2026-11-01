@@ -6,7 +6,7 @@ tools/image_generation_tool.py:_looks_like_absolute_file_path and
 exact-compares. When C disagrees, fix the C.
 """
 import json, subprocess, sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.image_generation_tool as igt
 
 proc = subprocess.run(["/tmp/t_port_image_gen_path"], capture_output=True, text=True)

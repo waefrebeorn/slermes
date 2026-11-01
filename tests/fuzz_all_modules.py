@@ -10,7 +10,7 @@ Usage: python3 tests/fuzz_all_modules.py
 """
 import os, re, subprocess, sys
 
-WORKDIR = "/home/wubu/hermes-agent-dev/slermes"
+WORKDIR = "SLERMES_REPO"
 SRCDIR = os.path.join(WORKDIR, "src")
 INCDIR = os.path.join(WORKDIR, "include")
 

@@ -21,7 +21,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Config
-HERMES_DEV = Path("/home/wubu/hermes-agent-dev")
+HERMES_DEV = Path("C:/Users/eman5/hermes-agent")
 SLERMES = HERMES_DEV / "slermes"
 PYTHON_DIRS = [
     HERMES_DEV / "hermes_cli",

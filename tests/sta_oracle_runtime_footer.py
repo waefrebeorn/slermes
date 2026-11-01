@@ -8,7 +8,7 @@ argv[1] = fixture path. HOME is pinned so _home_relative_cwd is deterministic.
 import sys, os, json
 from pathlib import Path
 
-ROOT = Path("/home/wubu/hermes-agent-dev")
+ROOT = Path("C:/Users/eman5/hermes-agent")
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

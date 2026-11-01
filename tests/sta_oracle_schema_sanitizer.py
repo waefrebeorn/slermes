@@ -7,10 +7,10 @@ two can be diffed directly. Key order is preserved (both Python and libjson
 keep insertion order), so the byte diff is meaningful.
 """
 import sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util as u
 
-spec = u.spec_from_file_location("ss", "/home/wubu/hermes-agent-dev/tools/schema_sanitizer.py")
+spec = u.spec_from_file_location("ss", "C:/Users/eman5/hermes-agent/tools/schema_sanitizer.py")
 mod = u.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

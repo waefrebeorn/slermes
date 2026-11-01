@@ -12,7 +12,7 @@ Run:  gcc -O2 -g -I include -I src/tools -I lib/libregex \
 import json, sys
 
 # import LIVE Python source of truth
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import agent.redact as redact
 
 

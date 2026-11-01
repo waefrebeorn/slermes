@@ -11,7 +11,7 @@ import os
 import json
 import types
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import agent.nous_rate_guard as NRG  # noqa: E402
 
 

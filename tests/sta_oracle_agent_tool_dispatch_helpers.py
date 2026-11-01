@@ -2,9 +2,9 @@
 """Oracle: agent/tool_dispatch_helpers.py mutation helpers vs LIVE Python.
 Newline-delimited JSON."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("tdh_mod", "/home/wubu/hermes-agent-dev/agent/tool_dispatch_helpers.py")
+spec = importlib.util.spec_from_file_location("tdh_mod", "C:/Users/eman5/hermes-agent/agent/tool_dispatch_helpers.py")
 mod = importlib.util.module_from_spec(spec)
 m = types.ModuleType("agent.tool_result_classification"); m.FILE_MUTATING_TOOL_NAMES = {"write_file", "patch"}
 sys.modules["agent.tool_result_classification"] = m

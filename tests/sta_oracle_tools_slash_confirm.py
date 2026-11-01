@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: tools/slash_confirm.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types, asyncio
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("sc_mod", "/home/wubu/hermes-agent-dev/tools/slash_confirm.py")
+spec = importlib.util.spec_from_file_location("sc_mod", "C:/Users/eman5/hermes-agent/tools/slash_confirm.py")
 mod = importlib.util.module_from_spec(spec)
 # stub heavy deps (threading/logging fine; asyncio fine)
 try:

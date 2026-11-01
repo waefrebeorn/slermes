@@ -7,7 +7,7 @@ reference. Because the C port renames internals (yb_*), we verify the
 externally-observable wire format is byte-identical, which proves the 30
 internal helpers are correct too."""
 import sys, os, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import gateway.platforms.yuanbao_proto as P
 
 HERE = os.path.dirname(os.path.abspath(__file__))

@@ -4,7 +4,7 @@ Exercises _format_money and _pricing_from_model_info across edge cases."""
 import json, os, sys, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 
 from hermes_cli.model_cost_guard import _format_money, _pricing_from_model_info
 from decimal import Decimal

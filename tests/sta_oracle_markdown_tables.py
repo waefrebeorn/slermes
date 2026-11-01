@@ -8,9 +8,9 @@ Prints the realigned markdown from LIVE Python. Diff against the C harness
 For the narrow-terminal vertical fallback, pass available_width (e.g. 20).
 """
 import sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util as u
-spec = u.spec_from_file_location("mt", "/home/wubu/hermes-agent-dev/agent/markdown_tables.py")
+spec = u.spec_from_file_location("mt", "C:/Users/eman5/hermes-agent/agent/markdown_tables.py")
 mod = u.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

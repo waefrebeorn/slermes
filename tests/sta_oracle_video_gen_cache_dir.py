@@ -12,7 +12,7 @@ import os
 import json
 from pathlib import Path
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import agent.video_gen_provider as VGP  # noqa: E402
 
 

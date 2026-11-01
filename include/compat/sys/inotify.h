@@ -15,6 +15,10 @@
 #define IN_DELETE        0x00000200
 #define IN_DELETE_SELF   0x00000400
 #define IN_MOVE_SELF     0x00000800
+#define IN_ISDIR         0x40000000
+#define IN_ONLYDIR       0x01000000
+#define IN_DONT_FOLLOW   0x02000000
+#define IN_EXCL_UNLINK   0x04000000
 #define IN_ALL_EVENTS    0x00000fff
 #define IN_NONBLOCK      0x00004000
 #define IN_CLOEXEC       0x00080000

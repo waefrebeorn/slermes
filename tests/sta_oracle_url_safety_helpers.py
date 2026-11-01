@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: tools/url_safety.py:_allows_private_ip_resolution vs LIVE Python."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("us_mod", "/home/wubu/hermes-agent-dev/tools/url_safety.py")
+spec = importlib.util.spec_from_file_location("us_mod", "C:/Users/eman5/hermes-agent/tools/url_safety.py")
 mod = importlib.util.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

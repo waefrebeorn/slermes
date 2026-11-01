@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: agent/verify_hooks.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("vh_mod", "/home/wubu/hermes-agent-dev/agent/verify_hooks.py")
+spec = importlib.util.spec_from_file_location("vh_mod", "C:/Users/eman5/hermes-agent/agent/verify_hooks.py")
 mod = importlib.util.module_from_spec(spec)
 utils_mod = types.ModuleType("utils")
 utils_mod.is_truthy_value = lambda v, default=False: (

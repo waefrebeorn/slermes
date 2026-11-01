@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: agent/ssl_verify.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("sv_mod", "/home/wubu/hermes-agent-dev/agent/ssl_verify.py")
+spec = importlib.util.spec_from_file_location("sv_mod", "C:/Users/eman5/hermes-agent/agent/ssl_verify.py")
 mod = importlib.util.module_from_spec(spec)
 # only stub 'utils' if needed; use real 'ssl'
 sys.modules.setdefault("utils", __import__("types").ModuleType("utils"))

@@ -11,7 +11,7 @@ import sys
 import os
 import json
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import agent.file_safety as FS  # noqa: E402
 
 

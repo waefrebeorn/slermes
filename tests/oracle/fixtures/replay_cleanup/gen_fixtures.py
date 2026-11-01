@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Oracle reference for agent/replay_cleanup.py history strippers."""
 import json, os, sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from agent.replay_cleanup import (
     strip_interrupted_tool_tails,
     strip_dangling_tool_call_tail,

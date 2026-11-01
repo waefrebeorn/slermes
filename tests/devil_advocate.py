@@ -19,7 +19,7 @@ import re
 import sys
 from pathlib import Path
 
-SLERMES_DIR = Path(__file__).parent / ".." if "__file__" in dir() else Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES_DIR = Path(__file__).parent / ".." if "__file__" in dir() else Path("SLERMES_REPO")
 SRC_DIR = SLERMES_DIR / "src"
 PORT_FILES = list(SRC_DIR.rglob("port_*.c"))
 

@@ -6,7 +6,7 @@ Also flag any 'FIXME'/'TODO'/'not implemented'/'stub' bodies in port_*.c.
 """
 import re, subprocess, pathlib, collections, sys
 
-ROOT=pathlib.Path('/home/wubu/hermes-agent-dev/slermes')
+ROOT=pathlib.Path('SLERMES_REPO')
 # 1) collect all defined C function names across src/include/lib
 cfun=set()
 cfunc_pat=re.compile(r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(')

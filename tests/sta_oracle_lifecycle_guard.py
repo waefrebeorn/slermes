@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: cron/lifecycle_guard.contains_gateway_lifecycle_command vs LIVE Python."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("lg_mod", "/home/wubu/hermes-agent-dev/cron/lifecycle_guard.py")
+spec = importlib.util.spec_from_file_location("lg_mod", "C:/Users/eman5/hermes-agent/cron/lifecycle_guard.py")
 mod = importlib.util.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

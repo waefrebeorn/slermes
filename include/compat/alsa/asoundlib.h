@@ -20,4 +20,19 @@ enum { SND_PCM_FORMAT_S16_LE = 2, SND_PCM_FORMAT_S16_BE = 3, SND_PCM_FORMAT_FLOA
 
 #define SND_PCM_NONBLOCK 0x0001
 #define SND_PCM_ASYNC    0x0002
+#include <errno.h>
+static inline int snd_pcm_open(snd_pcm_t **pcm, const char *name, snd_pcm_stream_t stream, int mode)
+{ (void)pcm; (void)name; (void)stream; (void)mode; errno = ENODEV; return -1; }
+static inline int snd_pcm_close(snd_pcm_t *pcm) { (void)pcm; return 0; }
+static inline int snd_pcm_set_params(snd_pcm_t *pcm, snd_pcm_format_t fmt, snd_pcm_access_t acc,
+                                     unsigned int channels, unsigned int rate, int soft_resample,
+                                     unsigned int latency)
+{ (void)pcm; (void)fmt; (void)acc; (void)channels; (void)rate; (void)soft_resample; (void)latency; return -1; }
+static inline snd_pcm_sframes_t snd_pcm_readi(snd_pcm_t *pcm, void *buf, snd_pcm_uframes_t n)
+{ (void)pcm; (void)buf; (void)n; return -1; }
+static inline int snd_pcm_recover(snd_pcm_t *pcm, int err, int silent)
+{ (void)pcm; (void)err; (void)silent; return -1; }
+static inline int snd_pcm_prepare(snd_pcm_t *pcm) { (void)pcm; return -1; }
+static inline int snd_pcm_drain(snd_pcm_t *pcm) { (void)pcm; return -1; }
+static inline const char *snd_strerror(int errnum) { (void)errnum; return "ALSA unavailable on Windows"; }
 #endif

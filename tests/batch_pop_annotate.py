@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 from collections import defaultdict
 
-SLERMES_DIR = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES_DIR = Path("SLERMES_REPO")
 
 
 def run_scanner():

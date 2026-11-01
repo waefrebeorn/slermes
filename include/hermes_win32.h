@@ -364,6 +364,95 @@ static inline int flock(int fd, int op)
 static inline ssize_t readlink(const char *path, char *buf, size_t bufsiz)
 { (void)path; (void)buf; (void)bufsiz; errno = EINVAL; return -1; }
 
+
+/* ── Remaining libc surface ──────────────────────────────────────────── */
+/* LOG_* deliberately NOT defined here: the logger has its own level
+ * enum and a macro named LOG_DEBUG breaks it. Use <syslog.h>. */
+
+/* wcwidth/wcswidth: East-Asian-width approximation, zero for controls. */
+#include <wchar.h>
+static inline int wcwidth(wchar_t wc)
+{
+    if (wc == 0) return 0;
+    if (wc < 32 || (wc >= 0x7f && wc < 0xa0)) return -1;
+    if (wc < 0x1100) return 1;
+    if ((wc >= 0x1100 && wc <= 0x115f) || (wc >= 0x2e80 && wc <= 0xa4cf) ||
+        (wc >= 0xac00 && wc <= 0xd7a3) || (wc >= 0xf900 && wc <= 0xfaff) ||
+        (wc >= 0xfe30 && wc <= 0xfe6f) || (wc >= 0xff00 && wc <= 0xff60) ||
+        (wc >= 0xffe0 && wc <= 0xffe6) || (wc >= 0x1f300 && wc <= 0x1f64f) ||
+        (wc >= 0x1f900 && wc <= 0x1f9ff) || (wc >= 0x20000 && wc <= 0x3fffd))
+        return 2;
+    return 1;
+}
+static inline int wcswidth(const wchar_t *s, size_t n)
+{
+    int total = 0;
+    size_t i;
+    if (!s) return -1;
+    for (i = 0; (n == (size_t)-1 || i < n) && s[i]; i++) {
+        int w = wcwidth(s[i]);
+        if (w < 0) return -1;
+        total += w;
+    }
+    return total;
+}
+
+/* strsep */
+static inline char *strsep(char **sp, const char *delim)
+{
+    char *s, *end;
+    if (!sp || !(s = *sp)) return NULL;
+    end = s + strcspn(s, delim);
+    if (*end) { *end = '\0'; *sp = end + 1; }
+    else { *sp = NULL; }
+    return s;
+}
+
+/* utimensat: Windows has no atime control worth exposing; touch mtime only. */
+#include <sys/stat.h>
+#include <utime.h>
+struct timespec;
+static inline int utimensat(int dirfd, const char *path, const void *times, int flags)
+{
+    (void)dirfd; (void)times; (void)flags;
+    return _utime(path, NULL);
+}
+
+/* sigaction: installs nothing (no POSIX signal delivery). Reports success so
+ * startup code does not treat the platform as broken. */
+struct sigaction {
+    void  (*sa_handler)(int);
+    sigset_t sa_mask;
+    int    sa_flags;
+    void  (*sa_sigaction)(int, void *, void *);
+};
+#ifndef SA_RESTART
+#define SA_RESTART 0x10000000
+#define SA_SIGINFO 4
+#define SA_NOCLDSTOP 8
+#endif
+static inline int sigaction(int sig, const struct sigaction *act, struct sigaction *old)
+{ (void)sig; (void)act; (void)old; return 0; }
+
+/* pthread_tryjoin_np: degrade to a non-blocking "not finished" answer. */
+#include <pthread.h>
+static inline int pthread_tryjoin_np(pthread_t t, void **ret)
+{ (void)t; if (ret) *ret = NULL; return 16 /* EBUSY */; }
+
+/* mkstemps: MinGW has _mktemp_s; build the name and reserve it. */
+#include <fcntl.h>
+#include <io.h>
+static inline int mkstemps(char *tmpl, int suffixlen)
+{
+    int fd;
+    char *x = strstr(tmpl, "XXXXXX");
+    if (!x) { errno = EINVAL; return -1; }
+    if (_mktemp_s(tmpl, strlen(tmpl) + 1) != 0) { errno = EINVAL; return -1; }
+    (void)suffixlen;
+    fd = _open(tmpl, _O_CREAT | _O_EXCL | _O_RDWR | _O_BINARY, _S_IREAD | _S_IWRITE);
+    return fd;
+}
+
 /* ── string/stdio extensions ─────────────────────────────────────────── */
 static inline int asprintf(char **strp, const char *fmt, ...)
 {

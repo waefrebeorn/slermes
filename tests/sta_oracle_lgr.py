@@ -21,7 +21,7 @@ Mapping of C formatting -> Python formatting:
 """
 import json, sys, math
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from agent.learning_graph_render import (
     _clamp, _smoothstep, format_date,
     _rgb_to_hsl, _hsl_to_rgb, _complementary_ink,

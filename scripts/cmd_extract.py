@@ -12,7 +12,7 @@ Strategy (proven correct):
 import os, tempfile
 from clang import cindex
 
-BASE='/home/wubu/hermes-agent-dev/slermes/'
+BASE='SLERMES_REPO/'
 
 def _clang_extents(src_text):
     """Return {name: (start_line1, end_line1)} using libclang's authoritative

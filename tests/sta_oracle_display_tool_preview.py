@@ -6,10 +6,10 @@ Usage: python3 sta_oracle_display_tool_preview.py <args.json> <preview|label|red
 Prints the resulting string so it can be diffed against the C harness output.
 """
 import sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util as u
 
-spec = u.spec_from_file_location("disp", "/home/wubu/hermes-agent-dev/agent/display.py")
+spec = u.spec_from_file_location("disp", "C:/Users/eman5/hermes-agent/agent/display.py")
 mod = u.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

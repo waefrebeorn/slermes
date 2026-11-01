@@ -12,7 +12,7 @@ nb = {
 path = os.path.join(HERE, "sample.ipynb")
 with open(path, "w") as f:
     json.dump(nb, f)
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from tools.read_extract import extract_document_text
 with open(os.path.join(HERE, "sample.ipynb.ref.txt"), "w") as f:
     f.write(extract_document_text(path))

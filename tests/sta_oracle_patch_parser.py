@@ -11,9 +11,9 @@ so the two can be diffed directly:
 The shell wrapper sta_oracle_test.sh runs this comparison across all cases.
 """
 import sys, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util as u
-spec = u.spec_from_file_location("pp", "/home/wubu/hermes-agent-dev/tools/patch_parser.py")
+spec = u.spec_from_file_location("pp", "C:/Users/eman5/hermes-agent/tools/patch_parser.py")
 mod = u.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

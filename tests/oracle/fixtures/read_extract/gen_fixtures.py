@@ -94,7 +94,7 @@ def main():
     xlsx = os.path.join(HERE, 'sample.xlsx')
     write_docx(docx)
     write_xlsx(xlsx)
-    sys.path.insert(0, '/home/wubu/hermes-agent-dev')
+    sys.path.insert(0, 'C:/Users/eman5/hermes-agent')
     from tools.read_extract import extract_document_text
     with open(os.path.join(HERE, 'sample.docx.ref.txt'), 'w') as f:
         f.write(extract_document_text(docx))

@@ -21,7 +21,7 @@ import importlib.util
 # the temp HOME the runner sets for the isolated kanban home. The module must
 # be imported as `hermes_cli.kanban_db` (not a one-off spec name) so its
 # dataclasses' __module__ resolves correctly in sys.modules.
-ROOT = os.environ.get("SLERMES_SRC") or "/home/wubu/hermes-agent-dev"
+ROOT = os.environ.get("SLERMES_SRC") or "C:/Users/eman5/hermes-agent"
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 import hermes_cli.kanban_db as kdb

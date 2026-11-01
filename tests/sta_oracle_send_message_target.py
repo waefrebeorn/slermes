@@ -9,7 +9,7 @@ parse_target_ref's unhandled-platform branches (matrix/weixin/yuanbao/phone/
 xmpp/etc.) are a documented C subset and are NOT asserted here.
 """
 import json, subprocess, sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.send_message_tool as sm
 
 proc = subprocess.run(["/tmp/t_port_send_message_target"], capture_output=True, text=True)

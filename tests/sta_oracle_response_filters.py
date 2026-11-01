@@ -6,7 +6,7 @@ and asserts the C port would match (C returns 0/1; Python bool). The C port
 uses the 4-marker set from LIVE_GATEWAY_SILENT_MARKERS.
 """
 import sys, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from gateway.response_filters import (
     _canonical_silence_candidate,
     is_intentional_silence_response,

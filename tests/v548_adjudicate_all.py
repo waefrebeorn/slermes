@@ -22,7 +22,7 @@ import ast, json, re
 from pathlib import Path
 from collections import Counter
 
-HERMES = Path("/home/wubu/hermes-agent-dev")
+HERMES = Path("C:/Users/eman5/hermes-agent")
 d = json.load(open(HERMES / "slermes/tests/.v548_adjudicated.json"))
 
 SDK_MODULES = (

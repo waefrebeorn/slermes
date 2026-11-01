@@ -13,7 +13,7 @@ touches files still containing the include).
 """
 import subprocess, os, re, sys
 
-ROOT = "/home/wubu/hermes-agent-dev/slermes"
+ROOT = "SLERMES_REPO"
 os.chdir(ROOT)
 
 def find_ports():

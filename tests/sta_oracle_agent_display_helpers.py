@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: agent/display.py pure helpers vs LIVE Python."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("disp_mod", "/home/wubu/hermes-agent-dev/agent/display.py")
+spec = importlib.util.spec_from_file_location("disp_mod", "C:/Users/eman5/hermes-agent/agent/display.py")
 mod = importlib.util.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

@@ -3,7 +3,7 @@
 import re
 from pathlib import Path
 
-SLERMES_DIR = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES_DIR = Path("SLERMES_REPO")
 
 PARTIALS = [
     # From port_web_server_auth.c

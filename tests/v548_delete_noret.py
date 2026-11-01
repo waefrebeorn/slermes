@@ -7,7 +7,7 @@ Usage: python3 tests/v548_delete_noret.py [--apply]
 import json, re, sys
 from pathlib import Path
 
-SLERMES = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES = Path("SLERMES_REPO")
 # 22 unreferenced no-return facade names (verified by reference scan)
 TARGET = {
  "src/tools/port_browser_tool.c": [

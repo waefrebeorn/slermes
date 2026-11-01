@@ -32,7 +32,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Set, Optional, Tuple
 from collections import defaultdict
 
-HERMES_DIR = Path("/home/wubu/hermes-agent-dev")
+HERMES_DIR = Path("C:/Users/eman5/hermes-agent")
 SLERMES_DIR = HERMES_DIR / "slermes"
 
 # Python source directories to scan

@@ -5,7 +5,7 @@ Recomputes gateway/platforms/signal_format.markdown_to_signal from LIVE source
 for the same inputs and asserts (text, styles) match the C port exactly.
 """
 import sys, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from gateway.platforms.signal_format import markdown_to_signal
 
 ok = True
