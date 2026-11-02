@@ -1,19 +1,16 @@
 
-/* PoP: _find_boundary_open_tag @ agent/memory_context.py:_find_boundary_open_tag */
-void *agent_memory_context_find_boundary_open_tag(void) { return NULL; }
+/* PoP: normalize_tool_schema @ agent/memory_manager_tools.py:normalize_tool_schema */
+void *agent_memory_manager_tools_normalize_tool_schema(void) { return NULL; }
 
-/* PoP: _ends_at_block_boundary @ agent/memory_context.py:_ends_at_block_boundary */
-int agent_memory_context_ends_at_block_boundary(void) { return 0; }
+/* PoP: memory_provider_tools_enabled @ agent/memory_manager_tools.py:memory_provider_tools_enabled */
+int agent_memory_manager_tools_memory_provider_tools_enabled(void) { return 0; }
 
-/* PoP: _append_visible @ agent/memory_context.py:_append_visible */
-void agent_memory_context_append_visible(void) { }
+/* PoP: memory_provider_tools_exposed @ agent/memory_manager_tools.py:memory_provider_tools_exposed */
+void *agent_memory_manager_tools_memory_provider_tools_exposed(void) { return NULL; }
 
-/* PoP: _drop_repeated_recall_lines @ agent/memory_context.py:_drop_repeated_recall_lines */
-void agent_memory_context_drop_repeated_recall_lines(void) { }
-{ }
-
-/* PoP: current_prompt_reading_hook @ agent/local_prompt_progress.py:current_prompt_reading_hook */
-void agent_local_prompt_progress_current_prompt_reading_hook(void) { }
+/* PoP: inject_memory_provider_tools @ agent/memory_manager_tools.py:inject_memory_provider_tools */
+void agent_memory_manager_tools_inject_memory_provider_tools(void) { }
+rompt_progress_current_prompt_reading_hook(void) { }
 _auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
 /* PoP: nous_credential_failure_detail @ agent/auxiliary_unavailable.py:nous_credential_failure_detail */
