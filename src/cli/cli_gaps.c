@@ -423,3 +423,9 @@ void hermes_cli_partial_compress_extract_compress_flags(void) { }
 
 /* PoP: summarize_compress_preview @ hermes_cli/partial_compress.py:summarize_compress_preview */
 void hermes_cli_partial_compress_summarize_compress_preview(void) { }
+
+/* PoP: candidate_member_dirs @ hermes_cli/plugins_admission.py:candidate_member_dirs */
+void hermes_cli_plugins_admission_candidate_member_dirs(void) { }
+
+/* PoP: admit_plugin_set_change @ hermes_cli/plugins_admission.py:admit_plugin_set_change */
+void hermes_cli_plugins_admission_admit_plugin_set_change(void) { }
