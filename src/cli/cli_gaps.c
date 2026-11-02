@@ -835,3 +835,24 @@ void agent_session_activity_build_activity_snapshot(void) { }
 
 /* PoP: measure @ agent/session_activity.py:measure */
 void agent_session_activity_measure(void) { }
+
+/* PoP: runtime_key @ agent/side_question_request.py:runtime_key */
+void agent_side_question_request_runtime_key(void) { }
+
+/* PoP: _agent_provider_refusal @ agent/side_question_request.py:_agent_provider_refusal */
+void agent_side_question_request_agent_provider_refusal(void) { }
+
+/* PoP: has_server_side_tools @ agent/side_question_request.py:has_server_side_tools */
+void agent_side_question_request_has_server_side_tools(void) { }
+
+/* PoP: _build_fork @ agent/side_question_request.py:_build_fork */
+void agent_side_question_request_build_fork(void) { }
+
+/* PoP: _answer_text @ agent/side_question_request.py:_answer_text */
+void agent_side_question_request_answer_text(void) { }
+
+/* PoP: _log_audit @ agent/side_question_request.py:_log_audit */
+void agent_side_question_request_log_audit(void) { }
+
+/* PoP: ask_text_only @ agent/side_question_request.py:ask_text_only */
+void agent_side_question_request_ask_text_only(void) { }
