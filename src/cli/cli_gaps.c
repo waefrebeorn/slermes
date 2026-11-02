@@ -1,16 +1,16 @@
 
-/* PoP: mint @ gateway/runtime_bootstrap.py:mint */
-void *gateway_runtime_bootstrap_mint(void) { return NULL; }
+/* PoP: publish @ gateway/session_control_actions.py:publish */
+void gateway_session_control_actions_publish(void) { }
 
-/* PoP: redeem @ gateway/runtime_bootstrap.py:redeem */
-void gateway_runtime_bootstrap_redeem(void) { }
+/* PoP: publish_async @ gateway/session_control_actions.py:publish_async */
+void gateway_session_control_actions_publish_async(void) { }
 
-/* PoP: outstanding @ gateway/runtime_bootstrap.py:outstanding */
-void *gateway_runtime_bootstrap_outstanding(void) { return NULL; }
-rejection_response @ gateway/platforms/api_server_profile_prefix.py:rejection_response */
-void *gateway_platforms_api_server_profile_prefix_rejection_response(void) { return NULL; }
-ugin_backends */
-void *agent_vault_backend_registry_enabled_plugin_backends(void) { return NULL; }
+/* PoP: _read_control_snapshot @ gateway/session_control_actions.py:_read_control_snapshot */
+void *gateway_session_control_actions_read_control_snapshot(void) { return NULL; }
+
+/* PoP: _publish_snapshot @ gateway/session_control_actions.py:_publish_snapshot */
+void gateway_session_control_actions_publish_snapshot(void) { }
+_enabled_plugin_backends(void) { return NULL; }
 py:_rejected_background */
 void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
 prompt_reading_hook(void) { }
