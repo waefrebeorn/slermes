@@ -480,3 +480,9 @@ void tools_cronjob_prompt_scan_first_pattern_error(void) { }
 
 /* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
 void tools_daemon_pool_adjust_thread_count(void) { }
+
+/* PoP: collect_data_use @ tools/connectors/data_use.py:collect_data_use */
+void tools_connectors_data_use_collect_data_use(void) { }
+
+/* PoP: record_data_use @ tools/connectors/data_use.py:record_data_use */
+void tools_connectors_data_use_record_data_use(void) { }
