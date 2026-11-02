@@ -1,15 +1,16 @@
 
-/* PoP: normalize_tool_schema @ agent/memory_manager_tools.py:normalize_tool_schema */
-void *agent_memory_manager_tools_normalize_tool_schema(void) { return NULL; }
+/* PoP: session_auxiliary_scope @ agent/auxiliary_task_config.py:session_auxiliary_scope */
+void *agent_auxiliary_task_config_session_auxiliary_scope(void) { return NULL; }
 
-/* PoP: memory_provider_tools_enabled @ agent/memory_manager_tools.py:memory_provider_tools_enabled */
-int agent_memory_manager_tools_memory_provider_tools_enabled(void) { return 0; }
+/* PoP: authoritative_auxiliary_task @ agent/auxiliary_task_config.py:authoritative_auxiliary_task */
+void *agent_auxiliary_task_config_authoritative_auxiliary_task(void) { return NULL; }
 
-/* PoP: memory_provider_tools_exposed @ agent/memory_manager_tools.py:memory_provider_tools_exposed */
-void *agent_memory_manager_tools_memory_provider_tools_exposed(void) { return NULL; }
+/* PoP: _task_config @ agent/auxiliary_task_config.py:_task_config */
+void *agent_auxiliary_task_config_task_config(void) { return NULL; }
 
-/* PoP: inject_memory_provider_tools @ agent/memory_manager_tools.py:inject_memory_provider_tools */
-void agent_memory_manager_tools_inject_memory_provider_tools(void) { }
+/* PoP: _layer_over_inherited @ agent/auxiliary_task_config.py:_layer_over_inherited */
+void agent_auxiliary_task_config_layer_over_inherited(void) { }
+mory_manager_tools_inject_memory_provider_tools(void) { }
 rompt_progress_current_prompt_reading_hook(void) { }
 _auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
