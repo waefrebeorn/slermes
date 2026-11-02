@@ -518,3 +518,12 @@ void agent_legacy_cli_build_parser(void) { }
 
 /* PoP: sha256_of @ tools/file_operations_native.py:sha256_of */
 void tools_file_operations_native_sha256_of(void) { }
+
+/* PoP: set_accounting_context @ agent/aux_accounting.py:set_accounting_context */
+void agent_aux_accounting_set_accounting_context(void) { }
+
+/* PoP: reset_accounting_context @ agent/aux_accounting.py:reset_accounting_context */
+void agent_aux_accounting_reset_accounting_context(void) { }
+
+/* PoP: record_aux_usage @ agent/aux_accounting.py:record_aux_usage */
+void agent_aux_accounting_record_aux_usage(void) { }
