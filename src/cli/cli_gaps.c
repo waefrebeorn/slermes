@@ -1105,3 +1105,21 @@ void gateway_parked_route_refusal_refuse_parked_route(void) { }
 
 /* PoP: _send_refusal @ gateway/parked_route_refusal.py:_send_refusal */
 void gateway_parked_route_refusal_send_refusal(void) { }
+
+/* PoP: _yaml_block_names @ gateway/platform_activation.py:_yaml_block_names */
+void gateway_platform_activation_yaml_block_names(void) { }
+
+/* PoP: _env_names @ gateway/platform_activation.py:_env_names */
+void gateway_platform_activation_env_names(void) { }
+
+/* PoP: _credential_pool_names @ gateway/platform_activation.py:_credential_pool_names */
+void gateway_platform_activation_credential_pool_names(void) { }
+
+/* PoP: _legacy_gateway_json_names @ gateway/platform_activation.py:_legacy_gateway_json_names */
+void gateway_platform_activation_legacy_gateway_json_names(void) { }
+
+/* PoP: activation_predicate @ gateway/platform_activation.py:activation_predicate */
+void gateway_platform_activation_activation_predicate(void) { }
+
+/* PoP: configured_plugin_entries @ gateway/platform_activation.py:configured_plugin_entries */
+void gateway_platform_activation_configured_plugin_entries(void) { }
