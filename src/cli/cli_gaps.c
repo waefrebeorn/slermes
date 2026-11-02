@@ -375,3 +375,9 @@ void hermes_cli_dashboard_auth_listener_client_offer(void) { }
 
 /* PoP: _is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
 int hermes_cli_scan_venv_blockers_is_pausable_gateway(void) { return 0; }
+
+/* PoP: print_truncated @ hermes_cli/cli_output.py:print_truncated */
+void hermes_cli_cli_output_print_truncated(void) { }
+
+/* PoP: line_input @ hermes_cli/cli_output.py:line_input */
+void hermes_cli_cli_output_line_input(void) { }
