@@ -1,38 +1,34 @@
 
-/* PoP: claude_family_version @ agent/anthropic_thinking_policy.py:claude_family_version */
-void *agent_anthropic_thinking_policy_claude_family_version(void) { return NULL; }
+/* PoP: tracks_rejected_thinking @ agent/anthropic_thinking_replay.py:tracks_rejected_thinking */
+void agent_anthropic_thinking_replay_tracks_rejected_thinking(void) { }
 
-/* PoP: model_preserves_prior_thinking @ agent/anthropic_thinking_policy.py:model_preserves_prior_thinking */
-int agent_anthropic_thinking_policy_model_preserves_prior_thinking(void) { return 0; }
+/* PoP: rejected_thinking_fingerprints @ agent/anthropic_thinking_replay.py:rejected_thinking_fingerprints */
+void *agent_anthropic_thinking_replay_rejected_thinking_fingerprints(void) { return NULL; }
 
-/* PoP: _is_off_anthropic @ agent/anthropic_thinking_policy.py:_is_off_anthropic */
-int agent_anthropic_thinking_policy_is_off_anthropic(void) { return 0; }
+/* PoP: session_rejected_thinking @ agent/anthropic_thinking_replay.py:session_rejected_thinking */
+void *agent_anthropic_thinking_replay_session_rejected_thinking(void) { return NULL; }
 
-/* PoP: anthropic_thinking_route @ agent/anthropic_thinking_policy.py:anthropic_thinking_route */
-void *agent_anthropic_thinking_policy_anthropic_thinking_route(void) { return NULL; }
+/* PoP: _bind @ agent/anthropic_thinking_replay.py:_bind */
+void agent_anthropic_thinking_replay_bind(void) { }
 
-/* PoP: route_replays_prior_thinking @ agent/anthropic_thinking_policy.py:route_replays_prior_thinking */
-int agent_anthropic_thinking_policy_route_replays_prior_thinking(void) { return 0; }
+/* PoP: _rejected @ agent/anthropic_thinking_replay.py:_rejected */
+void *agent_anthropic_thinking_replay_rejected(void) { return NULL; }
 
-/* PoP: native_anthropic_preserves_prior_thinking @ agent/anthropic_thinking_policy.py:native_anthropic_preserves_prior_thinking */
-int agent_anthropic_thinking_policy_native_anthropic_preserves_prior_thinking(void) { return 0; }
-nts_is_claude_platform_endpoint(void) { return 0; }
- }
+/* PoP: _mirrored_readable_thinking @ agent/anthropic_thinking_replay.py:_mirrored_readable_thinking */
+void *agent_anthropic_thinking_replay_mirrored_readable_thinking(void) { return NULL; }
 
-/* PoP: _refresh_legacy @ agent/account_usage_cache.py:_refresh_legacy */
-void agent_account_usage_cache_refresh_legacy(void) { }
+/* PoP: strip_rejected_thinking @ agent/anthropic_thinking_replay.py:strip_rejected_thinking */
+void agent_anthropic_thinking_replay_strip_rejected_thinking(void) { }
 
-/* PoP: refresh_account_usage_entries_async @ agent/account_usage_cache.py:refresh_account_usage_entries_async */
-void agent_account_usage_cache_refresh_account_usage_entries_async(void) { }
+/* PoP: apply_rejected_thinking_suppression @ agent/anthropic_thinking_replay.py:apply_rejected_thinking_suppression */
+void agent_anthropic_thinking_replay_apply_rejected_thinking_suppression(void) { }
 
-/* PoP: _refresh_entries @ agent/account_usage_cache.py:_refresh_entries */
-void agent_account_usage_cache_refresh_entries(void) { }
-, F_OK) == 0) return path;
-        free(path);
-    }
+/* PoP: remember_rejected_thinking @ agent/anthropic_thinking_replay.py:remember_rejected_thinking */
+void agent_anthropic_thinking_replay_remember_rejected_thinking(void) { }
 
-    /* Check common locations */
-    const char *checks[] = {
+/* PoP: carry_rejected_thinking_to_session @ agent/anthropic_thinking_replay.py:carry_rejected_thinking_to_session */
+void agent_anthropic_thinking_replay_carry_rejected_thinking_to_session(void) { }
+ecks[] = {
         "/usr/local/lib/hermes-agent/hermes_cli",
         "/usr/lib/hermes-agent/hermes_cli",
         "/opt/hermes-agent/hermes_cli",
