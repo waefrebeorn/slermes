@@ -1075,3 +1075,18 @@ void gateway_hosted_room_execution_policy_reset_room_execution_policy(void) { }
 
 /* PoP: current_room_execution_policy @ gateway/hosted_room_execution_policy.py:current_room_execution_policy */
 void gateway_hosted_room_execution_policy_current_room_execution_policy(void) { }
+
+/* PoP: _nonneg_int @ gateway/memory_status.py:_nonneg_int */
+void gateway_memory_status_nonneg_int(void) { }
+
+/* PoP: _mb @ gateway/memory_status.py:_mb */
+void gateway_memory_status_mb(void) { }
+
+/* PoP: classify_pressure @ gateway/memory_status.py:classify_pressure */
+void gateway_memory_status_classify_pressure(void) { }
+
+/* PoP: _read_state_files @ gateway/memory_status.py:_read_state_files */
+void gateway_memory_status_read_state_files(void) { }
+
+/* PoP: collect_memory_status @ gateway/memory_status.py:collect_memory_status */
+void gateway_memory_status_collect_memory_status(void) { }
