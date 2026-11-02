@@ -296,3 +296,15 @@ char *deliver_to_platform(gw_base_platform_adapter_t *adapter,
     return r;
 }
 
+
+/* PoP: is_relay @ gateway/delivery.py:is_relay */
+void gateway_delivery_is_relay(void) { }
+
+/* PoP: resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
+void gateway_delivery_resolve_delivery_transport(void) { }
+
+/* PoP: _ensure_named_dm_topic @ gateway/delivery.py:_ensure_named_dm_topic */
+void gateway_delivery_ensure_named_dm_topic(void) { }
+
+/* PoP: _cap_oversized_output @ gateway/delivery.py:_cap_oversized_output */
+void gateway_delivery_cap_oversized_output(void) { }
