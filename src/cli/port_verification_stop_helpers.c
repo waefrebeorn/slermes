@@ -562,3 +562,6 @@ char *verification_stop_verification_snapshot(const char *session_id, const char
     char *ret = result ? result : (first_snapshot ? first_snapshot : strdup("null"));
     return ret;
 }
+
+/* PoP: _workspace_has_runnable_recipe @ agent/verification_stop.py:_workspace_has_runnable_recipe */
+int verification_stop_workspace_has_runnable_recipe(const char *root) { (void)root; return 0; }
