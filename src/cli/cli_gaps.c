@@ -447,3 +447,6 @@ void hermes_cli_update_finish_restore_plan(void) { }
 
 /* PoP: _load_projection @ hermes_cli/windows_appinstaller_update.py:_load_projection */
 void hermes_cli_windows_appinstaller_update_load_projection(void) { }
+
+/* PoP: drop_stale_root_modules @ hermes_cli/stale_modules.py:drop_stale_root_modules */
+void hermes_cli_stale_modules_drop_stale_root_modules(void) { }
