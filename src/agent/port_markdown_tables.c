@@ -132,6 +132,7 @@ static bool md_looks_like_table_row(const char *row)
     return count >= 2;
 }
 
+/* PoP: _hard_break @ agent/markdown_tables.py:_hard_break */
 /* hard-break a single word into its first <=width display-cell piece. */
 static char *md_hard_break(const char *word, int width)
 {
