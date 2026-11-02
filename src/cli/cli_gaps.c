@@ -1,20 +1,19 @@
 
-/* PoP: cancelled @ agent/periodic_scheduler.py:cancelled */
-int agent_periodic_scheduler_cancelled(void) { return 0; }
+/* PoP: _available @ agent/pet/generate/imagegen.py:_available */
+int agent_pet_generate_imagegen_available(void) { return 0; }
 
-/* PoP: _cancel @ agent/periodic_scheduler.py:_cancel */
-void agent_periodic_scheduler_cancel(void) { }
+/* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
+void *agent_pet_generate_imagegen_resolve_provider(void) { return NULL; }
 
-/* PoP: _requeue @ agent/periodic_scheduler.py:_requeue */
-void agent_periodic_scheduler_requeue(void) { }
+/* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
+void *agent_pet_generate_imagegen_list_sprite_providers(void) { return NULL; }
 
-/* PoP: _run_callback @ agent/periodic_scheduler.py:_run_callback */
-void agent_periodic_scheduler_run_callback(void) { }
-id *agent_memory_manager_tools_memory_provider_tools_exposed(void) { return NULL; }
+/* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */
+void agent_pet_generate_imagegen_save_local(void) { }
 
-/* PoP: inject_memory_provider_tools @ agent/memory_manager_tools.py:inject_memory_provider_tools */
-void agent_memory_manager_tools_inject_memory_provider_tools(void) { }
-rompt_progress_current_prompt_reading_hook(void) { }
+/* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
+void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
+prompt_reading_hook(void) { }
 _auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
 /* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
