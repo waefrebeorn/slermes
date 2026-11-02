@@ -1,16 +1,16 @@
 
-/* PoP: materialize @ agent/chat_completion_helpers_tool_calls.py:materialize */
-void agent_chat_completion_helpers_tool_calls_materialize(void) { }
+/* PoP: _near_deadline @ agent/chat_completion_wait_notice.py:_near_deadline */
+int agent_chat_completion_wait_notice_near_deadline(void) { return 0; }
 
-/* PoP: _starts_new_call @ agent/chat_completion_helpers_tool_calls.py:_starts_new_call */
-int agent_chat_completion_helpers_tool_calls_starts_new_call(void) { return 0; }
+/* PoP: wait_notice_text @ agent/chat_completion_wait_notice.py:wait_notice_text */
+void *agent_chat_completion_wait_notice_wait_notice_text(void) { return NULL; }
 
-/* PoP: _arguments_closed @ agent/chat_completion_helpers_tool_calls.py:_arguments_closed */
-int agent_chat_completion_helpers_tool_calls_arguments_closed(void) { return 0; }
-ge @ agent/auxiliary_unavailable.py:pool_billing_message */
-void *agent_auxiliary_unavailable_pool_billing_message(void) { return NULL; }
+/* PoP: codex_watchdog_deadline @ agent/chat_completion_wait_notice.py:codex_watchdog_deadline */
+void *agent_chat_completion_wait_notice_codex_watchdog_deadline(void) { return NULL; }
 
-/* PoP: missing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
+/* PoP: should_emit @ agent/chat_completion_wait_notice.py:should_emit */
+int agent_chat_completion_wait_notice_should_emit(void) { return 0; }
+sing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
 void *agent_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
 /* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
