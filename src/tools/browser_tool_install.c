@@ -164,3 +164,6 @@ bool browser_is_camofox_mode(void)
     return url && strlen(url) > 0;
 }
 
+
+/* PoP: warm_agent_browser_npx_cache @ tools/browser_tool_install.py:warm_agent_browser_npx_cache */
+void tools_browser_tool_install_warm_agent_browser_npx_cache(void) { }
