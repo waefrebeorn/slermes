@@ -24,3 +24,6 @@ char *budget_for_context_window(const char *context_length)
     hermes_log(LOG_DEBUG, "port", "budget_for_context_window: context=%s", context_length);
     return result;
 }
+
+/* PoP: _configured_mcp_result_size @ tools/budget_config.py:_configured_mcp_result_size */
+int tools_budget_config_configured_mcp_result_size(void) { return 0; }
