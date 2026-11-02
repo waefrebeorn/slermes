@@ -387,3 +387,9 @@ void hermes_cli_dashboard_auth_refresh_singleflight_refresh_provider(void) { }
 
 /* PoP: refresh_session_coalesced @ hermes_cli/dashboard_auth/refresh_singleflight.py:refresh_session_coalesced */
 void hermes_cli_dashboard_auth_refresh_singleflight_refresh_session_coalesced(void) { }
+
+/* PoP: _verb_for @ hermes_cli/gateway_command_errors.py:_verb_for */
+const char *hermes_cli_gateway_command_errors_verb_for(void) { return NULL; }
+
+/* PoP: explain_service_failure @ hermes_cli/gateway_command_errors.py:explain_service_failure */
+void hermes_cli_gateway_command_errors_explain_service_failure(void) { }
