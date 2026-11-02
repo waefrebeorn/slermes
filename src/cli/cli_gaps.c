@@ -474,3 +474,6 @@ int tools_bot_desktop_idle_watch_own_launcher(void) { return 0; }
 
 /* PoP: resolves @ tools/connectors/contract.py:resolves */
 void tools_connectors_contract_resolves(void) { }
+
+/* PoP: _first_pattern_error @ tools/cronjob_prompt_scan.py:_first_pattern_error */
+void tools_cronjob_prompt_scan_first_pattern_error(void) { }
