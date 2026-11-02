@@ -1,27 +1,25 @@
 
-/* PoP: has_account_usage @ agent/account_usage_cache.py:has_account_usage */
-int agent_account_usage_cache_has_account_usage(void) { return 0; }
+/* PoP: _normalized_lower @ agent/anthropic_endpoints.py:_normalized_lower */
+const char *agent_anthropic_endpoints_normalized_lower(void) { return NULL; }
 
-/* PoP: _identity_id_for @ agent/account_usage_cache.py:_identity_id_for */
-void *agent_account_usage_cache_identity_id_for(void) { return NULL; }
+/* PoP: _is_opencode_endpoint @ agent/anthropic_endpoints.py:_is_opencode_endpoint */
+int agent_anthropic_endpoints_is_opencode_endpoint(void) { return 0; }
 
-/* PoP: remember_account_usage @ agent/account_usage_cache.py:remember_account_usage */
-void agent_account_usage_cache_remember_account_usage(void) { }
+/* PoP: _model_name_is_deepseek_thinking @ agent/anthropic_endpoints.py:_model_name_is_deepseek_thinking */
+int agent_anthropic_endpoints_model_name_is_deepseek_thinking(void) { return 0; }
 
-/* PoP: cached_account_usage @ agent/account_usage_cache.py:cached_account_usage */
-void *agent_account_usage_cache_cached_account_usage(void) { return NULL; }
+/* PoP: _is_nous_portal_endpoint @ agent/anthropic_endpoints.py:_is_nous_portal_endpoint */
+int agent_anthropic_endpoints_is_nous_portal_endpoint(void) { return 0; }
 
-/* PoP: snapshot_is_stale @ agent/account_usage_cache.py:snapshot_is_stale */
-int agent_account_usage_cache_snapshot_is_stale(void) { return 0; }
+/* PoP: _is_bedrock_runtime_endpoint @ agent/anthropic_endpoints.py:_is_bedrock_runtime_endpoint */
+int agent_anthropic_endpoints_is_bedrock_runtime_endpoint(void) { return 0; }
 
-/* PoP: _claim_refresh @ agent/account_usage_cache.py:_claim_refresh */
-int agent_account_usage_cache_claim_refresh(void) { return 0; }
+/* PoP: _is_vertex_ai_endpoint @ agent/anthropic_endpoints.py:_is_vertex_ai_endpoint */
+int agent_anthropic_endpoints_is_vertex_ai_endpoint(void) { return 0; }
 
-/* PoP: _release_refresh @ agent/account_usage_cache.py:_release_refresh */
-void agent_account_usage_cache_release_refresh(void) { }
-
-/* PoP: refresh_account_usage_async @ agent/account_usage_cache.py:refresh_account_usage_async */
-void agent_account_usage_cache_refresh_account_usage_async(void) { }
+/* PoP: _is_claude_platform_endpoint @ agent/anthropic_endpoints.py:_is_claude_platform_endpoint */
+int agent_anthropic_endpoints_is_claude_platform_endpoint(void) { return 0; }
+ }
 
 /* PoP: _refresh_legacy @ agent/account_usage_cache.py:_refresh_legacy */
 void agent_account_usage_cache_refresh_legacy(void) { }
