@@ -522,3 +522,6 @@ void tools_spill_safety_open_exclusive(void) { }
 
 /* PoP: write_text_exclusive @ tools/spill_safety.py:write_text_exclusive */
 void tools_spill_safety_write_text_exclusive(void) { }
+
+/* PoP: _build_parser @ agent/legacy_cli.py:_build_parser */
+void agent_legacy_cli_build_parser(void) { }
