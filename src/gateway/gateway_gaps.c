@@ -57,3 +57,9 @@ void gateway_stream_dispatch_dispatch_tool_call(void) { }
 
 /* PoP: _resolve_target_pid @ gateway/systemd_stop_mark.py:_resolve_target_pid */
 int gateway_systemd_stop_mark_resolve_target_pid(void) { return 0; }
+
+/* PoP: _work @ gateway/turn_executor.py:_work */
+void gateway_turn_executor_work(void) { }
+
+/* PoP: _park @ gateway/turn_executor.py:_park */
+void gateway_turn_executor_park(void) { }
