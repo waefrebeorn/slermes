@@ -72,3 +72,6 @@ void gateway_session_pending_controls_respond(void) { }
 
 /* PoP: shell_exec @ gateway/session_shell.py:shell_exec */
 void gateway_session_shell_shell_exec(void) { }
+
+/* PoP: resolved_skin @ gateway/session_skin.py:resolved_skin */
+const char *gateway_session_skin_resolved_skin(void) { return NULL; }
