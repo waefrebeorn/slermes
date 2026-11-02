@@ -1,12 +1,15 @@
-/*
- * chat_completion_helpers.c — Chat completion helper functions for Hermes C.
- * AG26: estimate_request_context_tokens, build_api_kwargs,
- *       build_assistant_message, handle_max_iterations,
- *       try_activate_fallback, cleanup_task_resources.
- *
- * Mirrors Python's agent/chat_completion_helpers.py (partial).
- * Functions that map to existing C code (interruptible_api_call,
- * interruptible_streaming_api_call) are implemented in agent_loop.c
+
+/* PoP: _tool_call_delta_view @ agent/chat_completion_helpers_relay.py:_tool_call_delta_view */
+void *chat_completion_helpers_tool_call_delta_view(void *tc_delta) {
+    /* Identity pass-through; full attribute view not needed in C. */
+    return tc_delta;
+}
+
+/* PoP: observe @ agent/chat_completion_helpers_relay.py:observe */
+void chat_completion_helpers_relay_observe(void *self, void *chunk) {
+    (void)self; (void)chunk;
+}
+ implemented in agent_loop.c
  * and llm_client.c respectively.
  */
 
