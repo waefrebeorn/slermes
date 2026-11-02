@@ -444,3 +444,6 @@ void hermes_cli_update_finish_finish_update(void) { }
 
 /* PoP: _restore_plan @ hermes_cli/update_finish.py:_restore_plan */
 void hermes_cli_update_finish_restore_plan(void) { }
+
+/* PoP: _load_projection @ hermes_cli/windows_appinstaller_update.py:_load_projection */
+void hermes_cli_windows_appinstaller_update_load_projection(void) { }
