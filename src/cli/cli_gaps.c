@@ -1200,3 +1200,18 @@ void gateway_platforms_api_server_memory_sessions_close_all(void) { }
 
 /* PoP: _shutdown_async @ gateway/platforms/api_server_memory_sessions.py:_shutdown_async */
 void gateway_platforms_api_server_memory_sessions_shutdown_async(void) { }
+
+/* PoP: validate_coalesce_config @ gateway/platforms/webhook_coalesce.py:validate_coalesce_config */
+void gateway_platforms_webhook_coalesce_validate_coalesce_config(void) { }
+
+/* PoP: prompt_with_note @ gateway/platforms/webhook_coalesce.py:prompt_with_note */
+void gateway_platforms_webhook_coalesce_prompt_with_note(void) { }
+
+/* PoP: group_key @ gateway/platforms/webhook_coalesce.py:group_key */
+void gateway_platforms_webhook_coalesce_group_key(void) { }
+
+/* PoP: _timer @ gateway/platforms/webhook_coalesce.py:_timer */
+void gateway_platforms_webhook_coalesce_timer(void) { }
+
+/* PoP: _settle @ gateway/platforms/webhook_coalesce.py:_settle */
+void gateway_platforms_webhook_coalesce_settle(void) { }
