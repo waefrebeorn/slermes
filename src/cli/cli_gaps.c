@@ -1,11 +1,13 @@
 
-/* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init_compression_notice.py:_build_codex_gpt5_autoraise_notice */
-void *agent_agent_init_compression_notice_build_codex_gpt5_autoraise_notice(void) { return NULL; }
+/* PoP: _fallback_entries @ agent/agent_init_fallback.py:_fallback_entries */
+void *agent_agent_init_fallback_fallback_entries(void) { return NULL; }
 
-/* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_marker */
-void *agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_marker(void) { return NULL; }
+/* PoP: _init_fallback_chain @ agent/agent_init_fallback.py:_init_fallback_chain */
+void agent_agent_init_fallback_init_fallback_chain(void) { }
 
-/* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_state */
+/* PoP: recompute_init_fallback_api_mode @ agent/agent_init_fallback.py:recompute_init_fallback_api_mode */
+void agent_agent_init_fallback_recompute_init_fallback_api_mode(void) { }
+e_notice_state @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_state */
 void *agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_state(void) { return NULL; }
 
 /* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
