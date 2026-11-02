@@ -660,3 +660,24 @@ void agent_acp_client_request_error(void) { }
 
 /* PoP: _missing_command_hint @ agent/acp_client.py:_missing_command_hint */
 void agent_acp_client_missing_command_hint(void) { }
+
+/* PoP: _timeout_fallback_prompt @ agent/compression_facade.py:_timeout_fallback_prompt */
+void agent_compression_facade_timeout_fallback_prompt(void) { }
+
+/* PoP: _report_compression_timeout @ agent/compression_facade.py:_report_compression_timeout */
+void agent_compression_facade_report_compression_timeout(void) { }
+
+/* PoP: _warn_commit_overrun @ agent/compression_facade.py:_warn_commit_overrun */
+void agent_compression_facade_warn_commit_overrun(void) { }
+
+/* PoP: _sync_persisted_markers @ agent/compression_facade.py:_sync_persisted_markers */
+void agent_compression_facade_sync_persisted_markers(void) { }
+
+/* PoP: _run_under_progress_timeout @ agent/compression_facade.py:_run_under_progress_timeout */
+void agent_compression_facade_run_under_progress_timeout(void) { }
+
+/* PoP: _mirror_result_onto_live_lists @ agent/compression_facade.py:_mirror_result_onto_live_lists */
+void agent_compression_facade_mirror_result_onto_live_lists(void) { }
+
+/* PoP: _rebind_caller_session_context @ agent/compression_facade.py:_rebind_caller_session_context */
+void agent_compression_facade_rebind_caller_session_context(void) { }
