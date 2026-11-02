@@ -1331,3 +1331,24 @@ void gateway_session_busy_controls_adopts_owner_agent(void) { }
 
 /* PoP: correct @ gateway/session_busy_controls.py:correct */
 void gateway_session_busy_controls_correct(void) { }
+
+/* PoP: _authorize @ gateway/session_config.py:_authorize */
+void gateway_session_config_authorize(void) { }
+
+/* PoP: mcp_revision @ gateway/session_config.py:mcp_revision */
+void gateway_session_config_mcp_revision(void) { }
+
+/* PoP: _client_config @ gateway/session_config.py:_client_config */
+void gateway_session_config_client_config(void) { }
+
+/* PoP: session_voice_mode @ gateway/session_config.py:session_voice_mode */
+void gateway_session_config_session_voice_mode(void) { }
+
+/* PoP: local_voice_enabled @ gateway/session_config.py:local_voice_enabled */
+void gateway_session_config_local_voice_enabled(void) { }
+
+/* PoP: set_local_voice_mode @ gateway/session_config.py:set_local_voice_mode */
+void gateway_session_config_set_local_voice_mode(void) { }
+
+/* PoP: local_voice_transition @ gateway/session_config.py:local_voice_transition */
+void gateway_session_config_local_voice_transition(void) { }
