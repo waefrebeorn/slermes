@@ -533,3 +533,12 @@ void *agent_auxiliary_async_rebuild_async_api_key(void) { return NULL; }
 
 /* PoP: configured_default_headers @ agent/auxiliary_async_rebuild.py:configured_default_headers */
 void *agent_auxiliary_async_rebuild_configured_default_headers(void) { return NULL; }
+
+/* PoP: embedded_provider_error @ agent/auxiliary_call_outcome.py:embedded_provider_error */
+void agent_auxiliary_call_outcome_embedded_provider_error(void) { }
+
+/* PoP: is_cancellation @ agent/auxiliary_call_outcome.py:is_cancellation */
+int agent_auxiliary_call_outcome_is_cancellation(void) { return 0; }
+
+/* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
+void *agent_auxiliary_call_outcome_error_class(void) { return NULL; }
