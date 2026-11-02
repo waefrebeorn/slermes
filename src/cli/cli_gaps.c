@@ -1215,3 +1215,24 @@ void gateway_platforms_webhook_coalesce_timer(void) { }
 
 /* PoP: _settle @ gateway/platforms/webhook_coalesce.py:_settle */
 void gateway_platforms_webhook_coalesce_settle(void) { }
+
+/* PoP: _err @ gateway/plugin_messages.py:_err */
+void gateway_plugin_messages_err(void) { }
+
+/* PoP: _fit @ gateway/plugin_messages.py:_fit */
+void gateway_plugin_messages_fit(void) { }
+
+/* PoP: _supports_edit @ gateway/plugin_messages.py:_supports_edit */
+void gateway_plugin_messages_supports_edit(void) { }
+
+/* PoP: bind_live_source @ gateway/plugin_messages.py:bind_live_source */
+void gateway_plugin_messages_bind_live_source(void) { }
+
+/* PoP: bound_route @ gateway/plugin_messages.py:bound_route */
+void gateway_plugin_messages_bound_route(void) { }
+
+/* PoP: _publish_local @ gateway/plugin_messages.py:_publish_local */
+void gateway_plugin_messages_publish_local(void) { }
+
+/* PoP: edit @ gateway/plugin_messages.py:edit */
+void gateway_plugin_messages_edit(void) { }
