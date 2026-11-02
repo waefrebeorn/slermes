@@ -411,3 +411,9 @@ int hermes_cli_local_runtime_detect_probe_port(void) { return 0; }
 
 /* PoP: detect_server @ hermes_cli/local_runtime/detect.py:detect_server */
 void hermes_cli_local_runtime_detect_detect_server(void) { }
+
+/* PoP: pairing_command @ hermes_cli/pairing.py:pairing_command */
+void hermes_cli_pairing_pairing_command(void) { }
+
+/* PoP: _cmd_clear_pending @ hermes_cli/pairing.py:_cmd_clear_pending */
+void hermes_cli_pairing_cmd_clear_pending(void) { }
