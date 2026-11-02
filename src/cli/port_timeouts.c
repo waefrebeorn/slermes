@@ -113,3 +113,6 @@ double timeouts_get_provider_stale_timeout(const char *config_json,
 {
     return get_provider_timeout(config_json, provider_id, model, 1);
 }
+
+/* PoP: _configured_timeout @ hermes_cli/timeouts.py:_configured_timeout */
+int hermes_cli_timeouts_configured_timeout(void) { return 0; }
