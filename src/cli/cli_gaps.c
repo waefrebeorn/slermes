@@ -1,15 +1,16 @@
 
-/* PoP: _near_deadline @ agent/chat_completion_wait_notice.py:_near_deadline */
-int agent_chat_completion_wait_notice_near_deadline(void) { return 0; }
+/* PoP: materialize_probe_api_key @ agent/command_token_source.py:materialize_probe_api_key */
+void *agent_command_token_source_materialize_probe_api_key(void) { return NULL; }
 
-/* PoP: wait_notice_text @ agent/chat_completion_wait_notice.py:wait_notice_text */
-void *agent_chat_completion_wait_notice_wait_notice_text(void) { return NULL; }
+/* PoP: _mint @ agent/command_token_source.py:_mint */
+void *agent_command_token_source_mint(void) { return NULL; }
 
-/* PoP: codex_watchdog_deadline @ agent/chat_completion_wait_notice.py:codex_watchdog_deadline */
-void *agent_chat_completion_wait_notice_codex_watchdog_deadline(void) { return NULL; }
+/* PoP: cache_identity @ agent/command_token_source.py:cache_identity */
+void agent_command_token_source_cache_identity(void) { }
 
-/* PoP: should_emit @ agent/chat_completion_wait_notice.py:should_emit */
-int agent_chat_completion_wait_notice_should_emit(void) { return 0; }
+/* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
+void *agent_command_token_source_build_command_token_provider(void) { return NULL; }
+ice_should_emit(void) { return 0; }
 sing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
 void *agent_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
