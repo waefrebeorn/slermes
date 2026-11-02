@@ -814,3 +814,24 @@ void agent_repetition_guard_is_runaway_repetition(void) { }
 
 /* PoP: _line_repetition_dominated @ agent/repetition_guard.py:_line_repetition_dominated */
 void agent_repetition_guard_line_repetition_dominated(void) { }
+
+/* PoP: is_terminal_compression_provenance @ agent/session_activity.py:is_terminal_compression_provenance */
+void agent_session_activity_is_terminal_compression_provenance(void) { }
+
+/* PoP: bound_activity_description @ agent/session_activity.py:bound_activity_description */
+void agent_session_activity_bound_activity_description(void) { }
+
+/* PoP: normalize_activity_provenance @ agent/session_activity.py:normalize_activity_provenance */
+void agent_session_activity_normalize_activity_provenance(void) { }
+
+/* PoP: format_iteration_progress @ agent/session_activity.py:format_iteration_progress */
+void agent_session_activity_format_iteration_progress(void) { }
+
+/* PoP: reset_session_activity_persist_window @ agent/session_activity.py:reset_session_activity_persist_window */
+void agent_session_activity_reset_session_activity_persist_window(void) { }
+
+/* PoP: build_activity_snapshot @ agent/session_activity.py:build_activity_snapshot */
+void agent_session_activity_build_activity_snapshot(void) { }
+
+/* PoP: measure @ agent/session_activity.py:measure */
+void agent_session_activity_measure(void) { }
