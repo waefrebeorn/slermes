@@ -1,11 +1,13 @@
 
-/* PoP: _handle_is_free @ gateway/platforms/api_server_profile_prefix.py:_handle_is_free */
-int gateway_platforms_api_server_profile_prefix_handle_is_free(void) { return 0; }
+/* PoP: mint @ gateway/runtime_bootstrap.py:mint */
+void *gateway_runtime_bootstrap_mint(void) { return NULL; }
 
-/* PoP: _prefix_profile @ gateway/platforms/api_server_profile_prefix.py:_prefix_profile */
-void gateway_platforms_api_server_profile_prefix_prefix_profile(void) { }
+/* PoP: redeem @ gateway/runtime_bootstrap.py:redeem */
+void gateway_runtime_bootstrap_redeem(void) { }
 
-/* PoP: rejection_response @ gateway/platforms/api_server_profile_prefix.py:rejection_response */
+/* PoP: outstanding @ gateway/runtime_bootstrap.py:outstanding */
+void *gateway_runtime_bootstrap_outstanding(void) { return NULL; }
+rejection_response @ gateway/platforms/api_server_profile_prefix.py:rejection_response */
 void *gateway_platforms_api_server_profile_prefix_rejection_response(void) { return NULL; }
 ugin_backends */
 void *agent_vault_backend_registry_enabled_plugin_backends(void) { return NULL; }
