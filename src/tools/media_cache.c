@@ -1,16 +1,13 @@
-/*
- * media_cache.c — Local media file cache for Hermes C.
- * Saves images/audio/video bytes to ~/.hermes/cache/<type>/ with random
- * filenames. Provides cleanup of expired files.
- *
- * Port of Python gateway/platforms/base.py cache functions
- * (cache_image_from_bytes, cache_audio_from_bytes, cleanup_image_cache,
- *  should_send_media_as_audio, _looks_like_image).
- */
 
-#include "hermes_core_types.h"
-#include <stdio.h>
-#include <stdlib.h>
+/* PoP: _normalize_mime @ gateway/platforms/media_cache.py:_normalize_mime */
+void *gateway_platforms_media_cache_normalize_mime(void) { return NULL; }
+
+/* PoP: ext_for_mime @ gateway/platforms/media_cache.py:ext_for_mime */
+void *gateway_platforms_media_cache_ext_for_mime(void) { return NULL; }
+
+/* PoP: mime_for_ext @ gateway/platforms/media_cache.py:mime_for_ext */
+void *gateway_platforms_media_cache_mime_for_ext(void) { return NULL; }
+h>
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
