@@ -22,3 +22,9 @@ int cli_tools_computer_use_backend_center(int *x, int *y)
     return 0;
 }
 
+
+/* PoP: list_windows @ tools/computer_use/backend.py:list_windows */
+void tools_computer_use_backend_list_windows(void) { }
+
+/* PoP: create_backend @ tools/computer_use/backend.py:create_backend */
+void tools_computer_use_backend_create_backend(void) { }
