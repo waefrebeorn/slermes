@@ -1,15 +1,16 @@
 
-/* PoP: with_prompt_progress @ agent/local_prompt_progress.py:with_prompt_progress */
-void agent_local_prompt_progress_with_prompt_progress(void) { }
+/* PoP: _find_boundary_open_tag @ agent/memory_context.py:_find_boundary_open_tag */
+void *agent_memory_context_find_boundary_open_tag(void) { return NULL; }
 
-/* PoP: prompt_progress @ agent/local_prompt_progress.py:prompt_progress */
-void agent_local_prompt_progress_prompt_progress(void) { }
+/* PoP: _ends_at_block_boundary @ agent/memory_context.py:_ends_at_block_boundary */
+int agent_memory_context_ends_at_block_boundary(void) { return 0; }
 
-/* PoP: prompt_progress_percent @ agent/local_prompt_progress.py:prompt_progress_percent */
-void agent_local_prompt_progress_prompt_progress_percent(void) { }
+/* PoP: _append_visible @ agent/memory_context.py:_append_visible */
+void agent_memory_context_append_visible(void) { }
 
-/* PoP: prompt_reading_hook @ agent/local_prompt_progress.py:prompt_reading_hook */
-void agent_local_prompt_progress_prompt_reading_hook(void) { }
+/* PoP: _drop_repeated_recall_lines @ agent/memory_context.py:_drop_repeated_recall_lines */
+void agent_memory_context_drop_repeated_recall_lines(void) { }
+{ }
 
 /* PoP: current_prompt_reading_hook @ agent/local_prompt_progress.py:current_prompt_reading_hook */
 void agent_local_prompt_progress_current_prompt_reading_hook(void) { }
