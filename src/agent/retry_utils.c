@@ -68,3 +68,21 @@ void jittered_backoff_reset(void)
     g_jitter_counter = 0;
     pthread_mutex_unlock(&g_jitter_lock);
 }
+
+/* PoP: _quota_reset_seconds @ agent/retry_utils.py:_quota_reset_seconds */
+void agent_retry_utils_quota_reset_seconds(void) { }
+
+/* PoP: _resets_in_seconds @ agent/retry_utils.py:_resets_in_seconds */
+void agent_retry_utils_resets_in_seconds(void) { }
+
+/* PoP: format_reset_window @ agent/retry_utils.py:format_reset_window */
+void agent_retry_utils_format_reset_window(void) { }
+
+/* PoP: reset_delay_from_message @ agent/retry_utils.py:reset_delay_from_message */
+void agent_retry_utils_reset_delay_from_message(void) { }
+
+/* PoP: zai_coding_overload_retry_ceiling @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */
+void agent_retry_utils_zai_coding_overload_retry_ceiling(void) { }
+
+/* PoP: provider_retry_after_seconds @ agent/retry_utils.py:provider_retry_after_seconds */
+void agent_retry_utils_provider_retry_after_seconds(void) { }
