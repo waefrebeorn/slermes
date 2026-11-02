@@ -1,15 +1,13 @@
 
-/* PoP: _nous_billing_url @ agent/billing_links.py:_nous_billing_url */
-void *agent_billing_links_nous_billing_url(void) { return NULL; }
+/* PoP: materialize @ agent/chat_completion_helpers_tool_calls.py:materialize */
+void agent_chat_completion_helpers_tool_calls_materialize(void) { }
 
-/* PoP: _resolve_provider_link @ agent/billing_links.py:_resolve_provider_link */
-void *agent_billing_links_resolve_provider_link(void) { return NULL; }
+/* PoP: _starts_new_call @ agent/chat_completion_helpers_tool_calls.py:_starts_new_call */
+int agent_chat_completion_helpers_tool_calls_starts_new_call(void) { return 0; }
 
-/* PoP: build_billing_block @ agent/billing_links.py:build_billing_block */
-void *agent_billing_links_build_billing_block(void) { return NULL; }
-n_message(void) { return NULL; }
-
-/* PoP: pool_billing_message @ agent/auxiliary_unavailable.py:pool_billing_message */
+/* PoP: _arguments_closed @ agent/chat_completion_helpers_tool_calls.py:_arguments_closed */
+int agent_chat_completion_helpers_tool_calls_arguments_closed(void) { return 0; }
+ge @ agent/auxiliary_unavailable.py:pool_billing_message */
 void *agent_auxiliary_unavailable_pool_billing_message(void) { return NULL; }
 
 /* PoP: missing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
