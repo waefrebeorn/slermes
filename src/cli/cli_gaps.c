@@ -501,3 +501,9 @@ void tools_kanban_tools_schemas_prop(void) { }
 
 /* PoP: _schema @ tools/kanban_tools_schemas.py:_schema */
 void tools_kanban_tools_schemas_schema(void) { }
+
+/* PoP: kanban_toolset_requested @ tools/kanban_toolset_context.py:kanban_toolset_requested */
+int tools_kanban_toolset_context_kanban_toolset_requested(void) { return 0; }
+
+/* PoP: scoped_kanban_toolset_selection @ tools/kanban_toolset_context.py:scoped_kanban_toolset_selection */
+void tools_kanban_toolset_context_scoped_kanban_toolset_selection(void) { }
