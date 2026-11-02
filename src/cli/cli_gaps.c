@@ -907,3 +907,27 @@ void agent_turn_liveness_surface_stall(void) { }
 
 /* PoP: _surface_committed_abort @ agent/turn_liveness.py:_surface_committed_abort */
 void agent_turn_liveness_surface_committed_abort(void) { }
+
+/* PoP: total_tools @ agent/turn_summary.py:total_tools */
+void agent_turn_summary_total_tools(void) { }
+
+/* PoP: _extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
+void agent_turn_summary_extract_line_deltas(void) { }
+
+/* PoP: record_tool @ agent/turn_summary.py:record_tool */
+void agent_turn_summary_record_tool(void) { }
+
+/* PoP: tally @ agent/turn_summary.py:tally */
+void agent_turn_summary_tally(void) { }
+
+/* PoP: format_elapsed @ agent/turn_summary.py:format_elapsed */
+void agent_turn_summary_format_elapsed(void) { }
+
+/* PoP: _pluralize @ agent/turn_summary.py:_pluralize */
+void agent_turn_summary_pluralize(void) { }
+
+/* PoP: format_turn_summary @ agent/turn_summary.py:format_turn_summary */
+void agent_turn_summary_format_turn_summary(void) { }
+
+/* PoP: format_token_flow @ agent/turn_summary.py:format_token_flow */
+void agent_turn_summary_format_token_flow(void) { }
