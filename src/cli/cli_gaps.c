@@ -1033,3 +1033,21 @@ void gateway_bot_loop_guard_tracked_conversations(void) { }
 
 /* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
 void gateway_bot_loop_guard_blocked(void) { }
+
+/* PoP: _normalized @ gateway/host_topology.py:_normalized */
+void gateway_host_topology_normalized(void) { }
+
+/* PoP: serves @ gateway/host_topology.py:serves */
+void gateway_host_topology_serves(void) { }
+
+/* PoP: _from_host_record @ gateway/host_topology.py:_from_host_record */
+void gateway_host_topology_from_host_record(void) { }
+
+/* PoP: _from_served_record @ gateway/host_topology.py:_from_served_record */
+void gateway_host_topology_from_served_record(void) { }
+
+/* PoP: host_gateway_topology @ gateway/host_topology.py:host_gateway_topology */
+void gateway_host_topology_host_gateway_topology(void) { }
+
+/* PoP: host_gateway_serving @ gateway/host_topology.py:host_gateway_serving */
+void gateway_host_topology_host_gateway_serving(void) { }
