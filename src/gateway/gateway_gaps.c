@@ -75,3 +75,6 @@ void gateway_session_shell_shell_exec(void) { }
 
 /* PoP: resolved_skin @ gateway/session_skin.py:resolved_skin */
 const char *gateway_session_skin_resolved_skin(void) { return NULL; }
+
+/* PoP: connection_for @ hermes_cli/gateway_side.py:connection_for */
+void *hermes_cli_gateway_side_connection_for(void) { return NULL; }
