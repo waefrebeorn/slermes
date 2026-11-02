@@ -369,3 +369,6 @@ void hermes_cli_onboarding_due_begin_boot(void) { }
 
 /* PoP: _bounded_value @ hermes_cli/dashboard_auth/audit.py:_bounded_value */
 void hermes_cli_dashboard_auth_audit_bounded_value(void) { }
+
+/* PoP: offer @ hermes_cli/dashboard_auth/listener_client.py:offer */
+void hermes_cli_dashboard_auth_listener_client_offer(void) { }
