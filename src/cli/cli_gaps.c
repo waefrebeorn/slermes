@@ -680,3 +680,24 @@ void agent_compression_facade_mirror_result_onto_live_lists(void) { }
 
 /* PoP: _rebind_caller_session_context @ agent/compression_facade.py:_rebind_caller_session_context */
 void agent_compression_facade_rebind_caller_session_context(void) { }
+
+/* PoP: _begin_compression_telemetry @ agent/context_compressor_telemetry.py:_begin_compression_telemetry */
+void agent_context_compressor_telemetry_begin_compression_telemetry(void) { }
+
+/* PoP: _record_compression_regions @ agent/context_compressor_telemetry.py:_record_compression_regions */
+void agent_context_compressor_telemetry_record_compression_regions(void) { }
+
+/* PoP: _record_aux_compression_call @ agent/context_compressor_telemetry.py:_record_aux_compression_call */
+void agent_context_compressor_telemetry_record_aux_compression_call(void) { }
+
+/* PoP: _note_aux_route_fallback @ agent/context_compressor_telemetry.py:_note_aux_route_fallback */
+void agent_context_compressor_telemetry_note_aux_route_fallback(void) { }
+
+/* PoP: _compression_method @ agent/context_compressor_telemetry.py:_compression_method */
+void agent_context_compressor_telemetry_compression_method(void) { }
+
+/* PoP: _record_compression_effect @ agent/context_compressor_telemetry.py:_record_compression_effect */
+void agent_context_compressor_telemetry_record_compression_effect(void) { }
+
+/* PoP: _record_committed_compression_effect @ agent/context_compressor_telemetry.py:_record_committed_compression_effect */
+void agent_context_compressor_telemetry_record_committed_compression_effect(void) { }
