@@ -211,3 +211,9 @@ char *build_footer_line(json_node_t *user_config,
     return line;
 }
 
+
+/* PoP: _env_cwd @ gateway/runtime_footer.py:_env_cwd */
+const char *gateway_runtime_footer_env_cwd(void) { return NULL; }
+
+/* PoP: _format_latency @ gateway/runtime_footer.py:_format_latency */
+const char *gateway_runtime_footer_format_latency(double ms) { (void)ms; return NULL; }
