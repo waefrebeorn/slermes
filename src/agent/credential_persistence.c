@@ -114,6 +114,13 @@ bool is_secret_payload_key(const char *key) {
  *  Returns NULL for NULL/empty input. Caller must free.
  * =============================================================== */
 
+/* PoP: fingerprint_secret_value @ agent/credential_persistence.py:fingerprint_secret_value */
+char *fingerprint_secret_value(const void *value) {
+    if (!value) return NULL;
+    const char *s = (const char *)value;
+    return fingerprint_value(s);
+}
+
 /* PoP: fingerprint_value @ agent/credential_persistence.py:_fingerprint_value */
 char *fingerprint_value(const char *value) {
     if (!value || !value[0]) return NULL;
