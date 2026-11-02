@@ -83,3 +83,9 @@ char *cli_agent_oneshot__strip_code_fence(const char *text)
     free(lines);
     return strdup(text);
 }
+
+/* PoP: write_wedged @ cron/jobs_oneshot_diagnostics.py:write_wedged */
+void jobs_oneshot_diagnostics_write_wedged(void) { }
+
+/* PoP: write_missed @ cron/jobs_oneshot_diagnostics.py:write_missed */
+void jobs_oneshot_diagnostics_write_missed(void) { }
