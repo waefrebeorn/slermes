@@ -429,3 +429,9 @@ void hermes_cli_plugins_admission_candidate_member_dirs(void) { }
 
 /* PoP: admit_plugin_set_change @ hermes_cli/plugins_admission.py:admit_plugin_set_change */
 void hermes_cli_plugins_admission_admit_plugin_set_change(void) { }
+
+/* PoP: _collect_skills @ hermes_cli/profile_describer.py:_collect_skills */
+void hermes_cli_profile_describer_collect_skills(void) { }
+
+/* PoP: _sample_skills @ hermes_cli/profile_describer.py:_sample_skills */
+void hermes_cli_profile_describer_sample_skills(void) { }
