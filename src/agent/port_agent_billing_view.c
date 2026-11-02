@@ -454,3 +454,29 @@ const char *billing_fallback_portal_url(void) {
 }
 
 #endif /* SRC_AGENT_PORT_AGENT_BILLING_VIEW_C */
+/* PoP: _optional_str @ agent/billing_view.py:_optional_str */
+void agent_billing_view_optional_str(void) { }
+
+/* PoP: _dict_parser @ agent/billing_view.py:_dict_parser */
+void agent_billing_view_dict_parser(void) { }
+
+/* PoP: can_change_plan @ agent/billing_view.py:can_change_plan */
+void agent_billing_view_can_change_plan(void) { }
+
+/* PoP: _parse_payment_method @ agent/billing_view.py:_parse_payment_method */
+void agent_billing_view_parse_payment_method(void) { }
+
+/* PoP: _parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
+void agent_billing_view_parse_auto_reload_card(void) { }
+
+/* PoP: parse_org_fields @ agent/billing_view.py:parse_org_fields */
+void agent_billing_view_parse_org_fields(void) { }
+
+/* PoP: _parse_keep_going_on_credits @ agent/billing_view.py:_parse_keep_going_on_credits */
+void agent_billing_view_parse_keep_going_on_credits(void) { }
+
+/* PoP: fetch_portal_state @ agent/billing_view.py:fetch_portal_state */
+void agent_billing_view_fetch_portal_state(void) { }
+
+/* PoP: _dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
+void agent_billing_view_dev_fixture_billing_state(void) { }
