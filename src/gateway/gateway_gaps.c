@@ -45,3 +45,6 @@ void gateway_plugin_keyless_inject_refuse(void) { }
 
 /* PoP: _launched_by_classic_cli @ gateway/plugin_keyless_inject.py:_launched_by_classic_cli */
 int gateway_plugin_keyless_inject_launched_by_classic_cli(void) { return 0; }
+
+/* PoP: active_sink @ gateway/session_command_sink.py:active_sink */
+void *gateway_session_command_sink_active_sink(void) { return NULL; }
