@@ -1,17 +1,16 @@
 
-/* PoP: _activity_lock @ agent/activity_tracking.py:_activity_lock */
-void *agent_activity_tracking_activity_lock(void) { return NULL; }
+/* PoP: session_auxiliary_scope @ agent/auxiliary_task_config.py:session_auxiliary_scope */
+void *agent_auxiliary_task_config_session_auxiliary_scope(void) { return NULL; }
 
-/* PoP: _liveness_activity_lock @ agent/activity_tracking.py:_liveness_activity_lock */
-void *agent_activity_tracking_liveness_activity_lock(void) { return NULL; }
+/* PoP: authoritative_auxiliary_task @ agent/auxiliary_task_config.py:authoritative_auxiliary_task */
+void *agent_auxiliary_task_config_authoritative_auxiliary_task(void) { return NULL; }
 
-/* PoP: _touch_activity @ agent/activity_tracking.py:_touch_activity */
-void agent_activity_tracking_touch_activity(void) { }
+/* PoP: _task_config @ agent/auxiliary_task_config.py:_task_config */
+void *agent_auxiliary_task_config_task_config(void) { return NULL; }
 
-/* PoP: _persist_session_activity_if_due @ agent/activity_tracking.py:_persist_session_activity_if_due */
-void agent_activity_tracking_persist_session_activity_if_due(void) { }
-
-/* PoP: _reset_activity_labels_after_turn @ agent/activity_tracking.py:_reset_activity_labels_after_turn */
+/* PoP: _layer_over_inherited @ agent/auxiliary_task_config.py:_layer_over_inherited */
+void agent_auxiliary_task_config_layer_over_inherited(void) { }
+nt/activity_tracking.py:_reset_activity_labels_after_turn */
 void agent_activity_tracking_reset_activity_labels_after_turn(void) { }
 _missing_provider_credentials_message(void) { return NULL; }
 
