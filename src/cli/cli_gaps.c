@@ -1391,3 +1391,18 @@ void gateway_session_contract_respond(void) { }
 
 /* PoP: mutate @ gateway/session_contract.py:mutate */
 void gateway_session_contract_mutate(void) { }
+
+/* PoP: _publish_health @ gateway/session_db_recovery.py:_publish_health */
+void gateway_session_db_recovery_publish_health(void) { }
+
+/* PoP: _registry_owned @ gateway/session_db_recovery.py:_registry_owned */
+void gateway_session_db_recovery_registry_owned(void) { }
+
+/* PoP: _is_stale @ gateway/session_db_recovery.py:_is_stale */
+void gateway_session_db_recovery_is_stale(void) { }
+
+/* PoP: last_error @ gateway/session_db_recovery.py:last_error */
+void gateway_session_db_recovery_last_error(void) { }
+
+/* PoP: close_all @ gateway/session_db_recovery.py:close_all */
+void gateway_session_db_recovery_close_all(void) { }
