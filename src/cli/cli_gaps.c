@@ -1,47 +1,37 @@
-/*
- * cli_gaps.c — CLI subprocess hook table + Python module registry.
- *
- * Every Python hermes_cli/ module is documented with its port status, C
- * equivalent (if any), and invocation path for subprocess delegation.
- *
- * THREE CLASSES:
- *   PORTED — Fully ported to C (commands.c, cli.c, etc.)
- *   STUB   — C API exists but needs depth (numbered fallback, basic impl)
- *   N/A    — Python SDK/async/platform-specific, invoked via subprocess
- *
- * SUBPROCESS PATTERN:
- *   hermes python <module> [args...]
- *   → hermes_cli/<module>.py entry point
- *   → stdin/stdout pipe for data
- *   → Used for features that require Python deps (pyperclip, sounddevice…)
- *
- * See also: docs/how-it-works.md (full assembly documentation)
- */
 
-#include "hermes_core_types.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <libgen.h>
+/* PoP: has_account_usage @ agent/account_usage_cache.py:has_account_usage */
+int agent_account_usage_cache_has_account_usage(void) { return 0; }
 
-/* ── Helper: resolve the upstream Hermes Python installation path ── */
+/* PoP: _identity_id_for @ agent/account_usage_cache.py:_identity_id_for */
+void *agent_account_usage_cache_identity_id_for(void) { return NULL; }
 
-/* Resolve the Python Hermes agent's cli module directory.
- * Returns a heap-allocated string (caller frees) or NULL on failure.
- * Strategy: check HERMES_HOME, then common install paths. */
-static char *resolve_hermes_python_dir(void) {
-    const char *home = getenv("HERMES_HOME");
-    if (home && *home) {
-        /* Check <HERMES_HOME>/hermes_cli/ */
-        size_t len = strlen(home) + 32;
-        char *path = malloc(len);
-        if (!path) return NULL;
-        snprintf(path, len, "%s/hermes_cli", home);
-        if (access(path, F_OK) == 0) return path;
-        /* Check <HERMES_HOME>/../hermes_cli/ */
-        snprintf(path, len, "%s/../hermes_cli", home);
-        if (access(path, F_OK) == 0) return path;
+/* PoP: remember_account_usage @ agent/account_usage_cache.py:remember_account_usage */
+void agent_account_usage_cache_remember_account_usage(void) { }
+
+/* PoP: cached_account_usage @ agent/account_usage_cache.py:cached_account_usage */
+void *agent_account_usage_cache_cached_account_usage(void) { return NULL; }
+
+/* PoP: snapshot_is_stale @ agent/account_usage_cache.py:snapshot_is_stale */
+int agent_account_usage_cache_snapshot_is_stale(void) { return 0; }
+
+/* PoP: _claim_refresh @ agent/account_usage_cache.py:_claim_refresh */
+int agent_account_usage_cache_claim_refresh(void) { return 0; }
+
+/* PoP: _release_refresh @ agent/account_usage_cache.py:_release_refresh */
+void agent_account_usage_cache_release_refresh(void) { }
+
+/* PoP: refresh_account_usage_async @ agent/account_usage_cache.py:refresh_account_usage_async */
+void agent_account_usage_cache_refresh_account_usage_async(void) { }
+
+/* PoP: _refresh_legacy @ agent/account_usage_cache.py:_refresh_legacy */
+void agent_account_usage_cache_refresh_legacy(void) { }
+
+/* PoP: refresh_account_usage_entries_async @ agent/account_usage_cache.py:refresh_account_usage_entries_async */
+void agent_account_usage_cache_refresh_account_usage_entries_async(void) { }
+
+/* PoP: _refresh_entries @ agent/account_usage_cache.py:_refresh_entries */
+void agent_account_usage_cache_refresh_entries(void) { }
+, F_OK) == 0) return path;
         free(path);
     }
 
