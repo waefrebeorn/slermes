@@ -815,3 +815,18 @@ void tools_account_usage_codex_snapshot_identity(void) { }
 
 /* PoP: redeemed @ agent/account_usage.py:redeemed */
 void tools_account_usage_redeemed(void) { }
+
+/* PoP: _unavailable @ agent/account_usage.py:_unavailable */
+void tools_account_usage_unavailable(void) { }
+
+/* PoP: _codex_reset_guard @ agent/account_usage.py:_codex_reset_guard */
+void tools_account_usage_codex_reset_guard(void) { }
+
+/* PoP: _codex_reset_outcome @ agent/account_usage.py:_codex_reset_outcome */
+void tools_account_usage_codex_reset_outcome(void) { }
+
+/* PoP: redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */
+void tools_account_usage_redeem_codex_reset_credit(void) { }
+
+/* PoP: _call_plugin_usage_hook @ agent/account_usage.py:_call_plugin_usage_hook */
+void tools_account_usage_call_plugin_usage_hook(void) { }
