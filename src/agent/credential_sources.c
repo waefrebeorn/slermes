@@ -628,3 +628,18 @@ void credential_sources_init(void) {
         .description = "Custom provider config.yaml api_key field"
     });
 }
+
+/* PoP: adopt_external_logins_enabled @ agent/credential_sources.py:adopt_external_logins_enabled */
+void agent_credential_sources_adopt_external_logins_enabled(void) { }
+
+/* PoP: _profile_removal_step @ agent/credential_sources.py:_profile_removal_step */
+void agent_credential_sources_profile_removal_step(void) { }
+
+/* PoP: _remove_auth_store_oauth @ agent/credential_sources.py:_remove_auth_store_oauth */
+void agent_credential_sources_remove_auth_store_oauth(void) { }
+
+/* PoP: _remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
+void agent_credential_sources_remove_xai_oauth_device_code(void) { }
+
+/* PoP: _suppress_only @ agent/credential_sources.py:_suppress_only */
+void agent_credential_sources_suppress_only(void) { }
