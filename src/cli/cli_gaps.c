@@ -767,3 +767,27 @@ void agent_image_token_cost_count_images(void) { }
 
 /* PoP: calibrate_from_usage @ agent/image_token_cost.py:calibrate_from_usage */
 void agent_image_token_cost_calibrate_from_usage(void) { }
+
+/* PoP: iter_configured_targets @ agent/outbound_webhooks.py:iter_configured_targets */
+void agent_outbound_webhooks_iter_configured_targets(void) { }
+
+/* PoP: re_register_config_hooks @ agent/outbound_webhooks.py:re_register_config_hooks */
+void agent_outbound_webhooks_re_register_config_hooks(void) { }
+
+/* PoP: _parse_single_target @ agent/outbound_webhooks.py:_parse_single_target */
+void agent_outbound_webhooks_parse_single_target(void) { }
+
+/* PoP: _build_delivery @ agent/outbound_webhooks.py:_build_delivery */
+void agent_outbound_webhooks_build_delivery(void) { }
+
+/* PoP: _enqueue @ agent/outbound_webhooks.py:_enqueue */
+void agent_outbound_webhooks_enqueue(void) { }
+
+/* PoP: _worker_loop @ agent/outbound_webhooks.py:_worker_loop */
+void agent_outbound_webhooks_worker_loop(void) { }
+
+/* PoP: redirect_request @ agent/outbound_webhooks.py:redirect_request */
+void agent_outbound_webhooks_redirect_request(void) { }
+
+/* PoP: _deliver @ agent/outbound_webhooks.py:_deliver */
+void agent_outbound_webhooks_deliver(void) { }
