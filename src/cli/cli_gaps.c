@@ -1275,3 +1275,18 @@ void gateway_readiness_probe_session_store(void) { }
 
 /* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
 void gateway_readiness_collect_runtime_readiness(void) { }
+
+/* PoP: media_base_url @ gateway/relay/media.py:media_base_url */
+void gateway_relay_media_media_base_url(void) { }
+
+/* PoP: _bearer @ gateway/relay/media.py:_bearer */
+void gateway_relay_media_bearer(void) { }
+
+/* PoP: is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
+void gateway_relay_media_is_relay_media_url(void) { }
+
+/* PoP: download_with_name @ gateway/relay/media.py:download_with_name */
+void gateway_relay_media_download_with_name(void) { }
+
+/* PoP: _content_disposition_filename @ gateway/relay/media.py:_content_disposition_filename */
+void gateway_relay_media_content_disposition_filename(void) { }
