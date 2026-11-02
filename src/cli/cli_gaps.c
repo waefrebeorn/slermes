@@ -723,3 +723,27 @@ void agent_delegation_registry_usable(void) { }
 
 /* PoP: backend_status @ agent/delegation_registry.py:backend_status */
 void agent_delegation_registry_backend_status(void) { }
+
+/* PoP: _looks_like_stream_drop @ agent/error_surface.py:_looks_like_stream_drop */
+void agent_error_surface_looks_like_stream_drop(void) { }
+
+/* PoP: _surface @ agent/error_surface.py:_surface */
+void agent_error_surface_surface(void) { }
+
+/* PoP: _api_key_env @ agent/error_surface.py:_api_key_env */
+void agent_error_surface_api_key_env(void) { }
+
+/* PoP: auth_kind @ agent/error_surface.py:auth_kind */
+void agent_error_surface_auth_kind(void) { }
+
+/* PoP: _disk_full @ agent/error_surface.py:_disk_full */
+void agent_error_surface_disk_full(void) { }
+
+/* PoP: _result_layer @ agent/error_surface.py:_result_layer */
+void agent_error_surface_result_layer(void) { }
+
+/* PoP: build_error_surface_from_result @ agent/error_surface.py:build_error_surface_from_result */
+void agent_error_surface_build_error_surface_from_result(void) { }
+
+/* PoP: build_error_surface_from_exception @ agent/error_surface.py:build_error_surface_from_exception */
+void agent_error_surface_build_error_surface_from_exception(void) { }
