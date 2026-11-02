@@ -209,3 +209,18 @@ void emit_stream_drop(
     fprintf(stderr, "⚠️ %s stream %s (%s)%s — reconnecting, retry %d/%d\n",
             prov, kind, err_name, suffix, attempt, max_attempts);
 }
+
+/* PoP: _diag_fields @ agent/stream_diag.py:_diag_fields */
+void agent_stream_diag_diag_fields(void) { }
+
+/* PoP: _failed_request @ agent/stream_diag.py:_failed_request */
+void agent_stream_diag_failed_request(void) { }
+
+/* PoP: _request_body_bytes @ agent/stream_diag.py:_request_body_bytes */
+void agent_stream_diag_request_body_bytes(void) { }
+
+/* PoP: connect_exhausted_notice @ agent/stream_diag.py:connect_exhausted_notice */
+void agent_stream_diag_connect_exhausted_notice(void) { }
+
+/* PoP: buffer_connect_exhausted_notice @ agent/stream_diag.py:buffer_connect_exhausted_notice */
+void agent_stream_diag_buffer_connect_exhausted_notice(void) { }
