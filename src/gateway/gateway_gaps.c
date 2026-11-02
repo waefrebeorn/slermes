@@ -63,3 +63,9 @@ void gateway_turn_executor_work(void) { }
 
 /* PoP: _park @ gateway/turn_executor.py:_park */
 void gateway_turn_executor_park(void) { }
+
+/* PoP: register_clarify @ gateway/session_pending_controls.py:register_clarify */
+void gateway_session_pending_controls_register_clarify(void) { }
+
+/* PoP: respond @ gateway/session_pending_controls.py:respond */
+void gateway_session_pending_controls_respond(void) { }
