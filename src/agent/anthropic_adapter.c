@@ -90,3 +90,71 @@ void* cli_agent_anthropic_adapter_create_anthropic_message(void* p1, void* p2, v
                "(Python SDK call - use provider_anthropic_create_message in C)");
     return NULL;
 }
+/* PoP: _require_sdk @ agent/anthropic_adapter.py:_require_sdk */
+void agent_anthropic_adapter_require_sdk(void) { }
+
+/* PoP: _model_matches @ agent/anthropic_adapter.py:_model_matches */
+void agent_anthropic_adapter_model_matches(void) { }
+
+/* PoP: _accepts_thinking_disable @ agent/anthropic_adapter.py:_accepts_thinking_disable */
+void agent_anthropic_adapter_accepts_thinking_disable(void) { }
+
+/* PoP: _is_pre_thinking_haiku @ agent/anthropic_adapter.py:_is_pre_thinking_haiku */
+void agent_anthropic_adapter_is_pre_thinking_haiku(void) { }
+
+/* PoP: _claude_code_candidates @ agent/anthropic_adapter.py:_claude_code_candidates */
+void agent_anthropic_adapter_claude_code_candidates(void) { }
+
+/* PoP: find_claude_code_cli @ agent/anthropic_adapter.py:find_claude_code_cli */
+void agent_anthropic_adapter_find_claude_code_cli(void) { }
+
+/* PoP: _apply_oauth_prose_aliases @ agent/anthropic_adapter.py:_apply_oauth_prose_aliases */
+void agent_anthropic_adapter_apply_oauth_prose_aliases(void) { }
+
+/* PoP: _beta_header @ agent/anthropic_adapter.py:_beta_header */
+void agent_anthropic_adapter_beta_header(void) { }
+
+/* PoP: _attribution_headers @ agent/anthropic_adapter.py:_attribution_headers */
+void agent_anthropic_adapter_attribution_headers(void) { }
+
+/* PoP: _client_timeout @ agent/anthropic_adapter.py:_client_timeout */
+void agent_anthropic_adapter_client_timeout(void) { }
+
+/* PoP: _base_client_kwargs @ agent/anthropic_adapter.py:_base_client_kwargs */
+void agent_anthropic_adapter_base_client_kwargs(void) { }
+
+/* PoP: _new_sdk_client @ agent/anthropic_adapter.py:_new_sdk_client */
+void agent_anthropic_adapter_new_sdk_client(void) { }
+
+/* PoP: _custom_provider_extra_headers @ agent/anthropic_adapter.py:_custom_provider_extra_headers */
+void agent_anthropic_adapter_custom_provider_extra_headers(void) { }
+
+/* PoP: _auth_style @ agent/anthropic_adapter.py:_auth_style */
+void agent_anthropic_adapter_auth_style(void) { }
+
+/* PoP: _normalize_to_mcp_wire @ agent/anthropic_adapter.py:_normalize_to_mcp_wire */
+void agent_anthropic_adapter_normalize_to_mcp_wire(void) { }
+
+/* PoP: _oauth_wire_namer @ agent/anthropic_adapter.py:_oauth_wire_namer */
+void agent_anthropic_adapter_oauth_wire_namer(void) { }
+
+/* PoP: _apply_claude_code_identity @ agent/anthropic_adapter.py:_apply_claude_code_identity */
+void agent_anthropic_adapter_apply_claude_code_identity(void) { }
+
+/* PoP: _thinking_kwargs @ agent/anthropic_adapter.py:_thinking_kwargs */
+void agent_anthropic_adapter_thinking_kwargs(void) { }
+
+/* PoP: buffer_anthropic_tool_input @ agent/anthropic_adapter.py:buffer_anthropic_tool_input */
+void agent_anthropic_adapter_buffer_anthropic_tool_input(void) { }
+
+/* PoP: __getattr__ @ agent/anthropic_adapter.py:__getattr__ */
+void agent_anthropic_adapter_dunder_getattrdunder(void) { }
+
+/* PoP: __iter__ @ agent/anthropic_adapter.py:__iter__ */
+void agent_anthropic_adapter_dunder_iterdunder(void) { }
+
+/* PoP: normalize_stream_usage @ agent/anthropic_adapter.py:normalize_stream_usage */
+void agent_anthropic_adapter_normalize_stream_usage(void) { }
+
+/* PoP: _stream_final_message @ agent/anthropic_adapter.py:_stream_final_message */
+void agent_anthropic_adapter_stream_final_message(void) { }
