@@ -408,3 +408,30 @@ void vertex_adapter_get_vertex_config(const char *credentials_path, const char *
     free(eff_region);
 }
 
+
+/* PoP: _ensure_google_auth @ agent/vertex_adapter.py:_ensure_google_auth */
+void agent_vertex_adapter_ensure_google_auth(void) { }
+
+/* PoP: _env_or_config @ agent/vertex_adapter.py:_env_or_config */
+void agent_vertex_adapter_env_or_config(void) { }
+
+/* PoP: _sa_snapshot @ agent/vertex_adapter.py:_sa_snapshot */
+void agent_vertex_adapter_sa_snapshot(void) { }
+
+/* PoP: _load_credentials @ agent/vertex_adapter.py:_load_credentials */
+void agent_vertex_adapter_load_credentials(void) { }
+
+/* PoP: _needs_refresh @ agent/vertex_adapter.py:_needs_refresh */
+void agent_vertex_adapter_needs_refresh(void) { }
+
+/* PoP: _cached_credentials @ agent/vertex_adapter.py:_cached_credentials */
+void agent_vertex_adapter_cached_credentials(void) { }
+
+/* PoP: get_vertex_base_url @ agent/vertex_adapter.py:get_vertex_base_url */
+void agent_vertex_adapter_get_vertex_base_url(void) { }
+
+/* PoP: vertex_access_token @ agent/vertex_adapter.py:vertex_access_token */
+void agent_vertex_adapter_vertex_access_token(void) { }
+
+/* PoP: has_explicit_vertex_config @ agent/vertex_adapter.py:has_explicit_vertex_config */
+void agent_vertex_adapter_has_explicit_vertex_config(void) { }
