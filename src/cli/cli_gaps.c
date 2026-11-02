@@ -1,30 +1,28 @@
 
-/* PoP: session_auxiliary_scope @ agent/auxiliary_task_config.py:session_auxiliary_scope */
-void *agent_auxiliary_task_config_session_auxiliary_scope(void) { return NULL; }
+/* PoP: _quarantined_nous_error @ agent/auxiliary_unavailable.py:_quarantined_nous_error */
+void *agent_auxiliary_unavailable_quarantined_nous_error(void) { return NULL; }
 
-/* PoP: authoritative_auxiliary_task @ agent/auxiliary_task_config.py:authoritative_auxiliary_task */
-void *agent_auxiliary_task_config_authoritative_auxiliary_task(void) { return NULL; }
+/* PoP: _sentence @ agent/auxiliary_unavailable.py:_sentence */
+void *agent_auxiliary_unavailable_sentence(void) { return NULL; }
 
-/* PoP: _task_config @ agent/auxiliary_task_config.py:_task_config */
-void *agent_auxiliary_task_config_task_config(void) { return NULL; }
+/* PoP: pool_cooldown_message @ agent/auxiliary_unavailable.py:pool_cooldown_message */
+void *agent_auxiliary_unavailable_pool_cooldown_message(void) { return NULL; }
 
-/* PoP: _layer_over_inherited @ agent/auxiliary_task_config.py:_layer_over_inherited */
-void agent_auxiliary_task_config_layer_over_inherited(void) { }
-nt/activity_tracking.py:_reset_activity_labels_after_turn */
-void agent_activity_tracking_reset_activity_labels_after_turn(void) { }
-ions(void) { return NULL; }
+/* PoP: pool_billing_message @ agent/auxiliary_unavailable.py:pool_billing_message */
+void *agent_auxiliary_unavailable_pool_billing_message(void) { return NULL; }
 
-/* PoP: _parse_tool_args @ agent/anthropic_message_convert.py:_parse_tool_args */
-void *agent_anthropic_message_convert_parse_tool_args(void) { return NULL; }
+/* PoP: missing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
+void *agent_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
-/* PoP: _strip_thinking @ agent/anthropic_message_convert.py:_strip_thinking */
-void agent_anthropic_message_convert_strip_thinking(void) { }
+/* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
+int agent_auxiliary_unavailable_nous_credential_present(void) { return 0; }
 
-/* PoP: _block_ids @ agent/anthropic_message_convert.py:_block_ids */
-void *agent_anthropic_message_convert_block_ids(void) { return NULL; }
+/* PoP: record_nous_credential_failure @ agent/auxiliary_unavailable.py:record_nous_credential_failure */
+void agent_auxiliary_unavailable_record_nous_credential_failure(void) { }
 
-/* PoP: _assistant_block_lists @ agent/anthropic_message_convert.py:_assistant_block_lists */
-void *agent_anthropic_message_convert_assistant_block_lists(void) { return NULL; }
+/* PoP: clear_nous_credential_failure @ agent/auxiliary_unavailable.py:clear_nous_credential_failure */
+void agent_auxiliary_unavailable_clear_nous_credential_failure(void) { }
+essage_convert_assistant_block_lists(void) { return NULL; }
 
 /* PoP: _carry_cache_control @ agent/anthropic_message_convert.py:_carry_cache_control */
 void agent_anthropic_message_convert_carry_cache_control(void) { }
