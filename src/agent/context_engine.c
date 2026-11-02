@@ -232,3 +232,27 @@ void context_engine_init_default(context_engine_t *engine, const char *name) {
     /* Defer preflight — default: true */
     engine->should_defer_preflight_to_real_usage = context_engine_default_should_defer_preflight;
 }
+
+/* PoP: sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
+void agent_context_engine_sanitize_memory_context(void) { }
+
+/* PoP: automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
+void agent_context_engine_automatic_compaction_status_message(void) { }
+
+/* PoP: should_compress_info @ agent/context_engine.py:should_compress_info */
+void agent_context_engine_should_compress_info(void) { }
+
+/* PoP: prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
+void agent_context_engine_prune_tool_results_only(void) { }
+
+/* PoP: select_context @ agent/context_engine.py:select_context */
+void agent_context_engine_select_context(void) { }
+
+/* PoP: on_turn_complete @ agent/context_engine.py:on_turn_complete */
+void agent_context_engine_on_turn_complete(void) { }
+
+/* PoP: get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
+void agent_context_engine_get_automatic_compaction_status_message(void) { }
+
+/* PoP: clone_for_agent @ agent/context_engine.py:clone_for_agent */
+void agent_context_engine_clone_for_agent(void) { }
