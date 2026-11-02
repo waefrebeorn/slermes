@@ -438,3 +438,9 @@ void hermes_cli_profile_describer_sample_skills(void) { }
 
 /* PoP: build_auxiliary_task_entry @ hermes_cli/plugins_aux_tasks.py:build_auxiliary_task_entry */
 void hermes_cli_plugins_aux_tasks_build_auxiliary_task_entry(void) { }
+
+/* PoP: finish_update @ hermes_cli/update_finish.py:finish_update */
+void hermes_cli_update_finish_finish_update(void) { }
+
+/* PoP: _restore_plan @ hermes_cli/update_finish.py:_restore_plan */
+void hermes_cli_update_finish_restore_plan(void) { }
