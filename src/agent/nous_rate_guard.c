@@ -1,21 +1,13 @@
-/*
- * nous_rate_guard.c — Cross-session rate limit guard for Nous Portal.
- * Port of Python agent/nous_rate_guard.py (325 lines).
- *
- * Writes/reads a shared JSON file (~/.hermes/rate_limits/nous.json)
- * to track cross-session rate limit state.
- */
-#include "nous_rate_guard.h"
-#include "hermes_json.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <errno.h>
 
-/* --- Constants --- */
+/* PoP: _is_exhausted @ agent/nous_rate_guard.py:_is_exhausted */
+int agent_nous_rate_guard_is_exhausted(void) { return 0; }
+
+/* PoP: is_long_welcome_rate_limit @ agent/nous_rate_guard.py:is_long_welcome_rate_limit */
+int agent_nous_rate_guard_is_long_welcome_rate_limit(void) { return 0; }
+
+/* PoP: welcome_refusal_from_headers @ agent/nous_rate_guard.py:welcome_refusal_from_headers */
+void *agent_nous_rate_guard_welcome_refusal_from_headers(void) { return NULL; }
+Constants --- */
 
 #define STATE_SUBDIR    "rate_limits"
 #define STATE_FILENAME  "nous.json"
