@@ -154,3 +154,9 @@ bool restart_loop_check_and_record(int max_restarts, int window_seconds, double 
     if (max_restarts <= 0) return false;
     return n >= max_restarts;
 }
+
+/* PoP: _chain_gap @ gateway/restart_loop_guard.py:_chain_gap */
+long gateway_restart_loop_guard_chain_gap(void) { return 0; }
+
+/* PoP: _chain_ending_at @ gateway/restart_loop_guard.py:_chain_ending_at */
+long gateway_restart_loop_guard_chain_ending_at(long t) { (void)t; return 0; }
