@@ -1,14 +1,13 @@
 
-/* PoP: _activity_lock @ agent/activity_tracking.py:_activity_lock */
-void *agent_activity_tracking_activity_lock(void) { return NULL; }
+/* PoP: _named_function @ agent/acp_openai_bridge.py:_named_function */
+void *agent_acp_openai_bridge_named_function(void) { return NULL; }
 
-/* PoP: _liveness_activity_lock @ agent/activity_tracking.py:_liveness_activity_lock */
-void *agent_activity_tracking_liveness_activity_lock(void) { return NULL; }
+/* PoP: tool_specs_from_openai_tools @ agent/acp_openai_bridge.py:tool_specs_from_openai_tools */
+void *agent_acp_openai_bridge_tool_specs_from_openai_tools(void) { return NULL; }
 
-/* PoP: _touch_activity @ agent/activity_tracking.py:_touch_activity */
-void agent_activity_tracking_touch_activity(void) { }
-
-/* PoP: _persist_session_activity_if_due @ agent/activity_tracking.py:_persist_session_activity_if_due */
+/* PoP: render_tool_bridge_sections @ agent/acp_openai_bridge.py:render_tool_bridge_sections */
+void *agent_acp_openai_bridge_render_tool_bridge_sections(void) { return NULL; }
+:_persist_session_activity_if_due */
 void agent_activity_tracking_persist_session_activity_if_due(void) { }
 
 /* PoP: _reset_activity_labels_after_turn @ agent/activity_tracking.py:_reset_activity_labels_after_turn */
