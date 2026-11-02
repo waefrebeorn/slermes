@@ -166,6 +166,9 @@ typedef struct {
 
 static slermes_memstream_slot slermes_memstreams[SLERMES_MEMSTREAM_MAX];
 
+static inline FILE *fmemopen(void *buf, size_t size, const char *mode)
+{ (void)buf; (void)size; (void)mode; return NULL; }
+
 static inline FILE *open_memstream(char **bufp, size_t *sizep)
 {
     int i;
@@ -313,6 +316,8 @@ static inline pid_t getppid(void) { return (pid_t)0; }
 #define _SC_NPROCESSORS_ONLN 84
 #define _SC_PAGESIZE         30
 #define _SC_PAGE_SIZE        _SC_PAGESIZE
+#define _SC_PHYS_PAGES       85
+#define _SC_AVPHYS_PAGES     86
 #endif
 static inline long sysconf(int name)
 {
@@ -331,6 +336,13 @@ static inline long sysconf(int name)
         GetSystemInfo(&si);
         return (long)(ms.ullTotalPhys / si.dwPageSize);
     }
+    case _SC_AVPHYS_PAGES: {
+        MEMORYSTATUSEX ms;
+        ms.dwLength = sizeof ms;
+        if (!GlobalMemoryStatusEx(&ms)) return -1;
+        GetSystemInfo(&si);
+        return (long)(ms.ullAvailPhys / si.dwPageSize);
+    }
     case _SC_OPEN_MAX:
         return 2048;
     case _SC_CLK_TCK:
@@ -346,6 +358,29 @@ static inline long sysconf(int name)
 #define LOCK_EX 2
 #define LOCK_NB 4
 #define LOCK_UN 8
+#endif
+static inline int fchmod(int fd, mode_t mode)
+{
+    (void)fd; (void)mode;
+    return 0;
+}
+
+/* flock advisory locking stubs (no-op on Windows) */
+#ifndef _HERMES_FLOCK_DEFINED
+#define _HERMES_FLOCK_DEFINED
+struct flock {
+    short l_type;
+    short l_whence;
+    off_t l_start;
+    off_t l_len;
+    pid_t l_pid;
+};
+#define F_RDLCK 0
+#define F_WRLCK 1
+#define F_UNLCK 2
+#define F_SETLK 6
+#define F_SETLKW 7
+#define F_GETLK 5
 #endif
 static inline int flock(int fd, int op)
 {
@@ -567,4 +602,48 @@ static inline long hermes_tm_gmtoff(const struct tm *tm)
 }
 
 #endif /* _WIN32 */
+
+/* fcntl-style *at constants (Windows has no fd-relative ops) */
+#ifndef AT_FDCWD
+#define AT_FDCWD (-100)
+#define AT_SYMLINK_NOFOLLOW 0x100
+#define AT_REMOVEDIR 0x200
+#endif
+
+/* inotify event masks (Windows has no inotify; shimmed for compile) */
+#ifndef IN_ACCESS
+#define IN_ACCESS 0x00000001
+#define IN_MODIFY 0x00000002
+#define IN_ATTRIB 0x00000004
+#define IN_CLOSE_WRITE 0x00000008
+#define IN_OPEN 0x00000010
+#define IN_MOVED_FROM 0x00000040
+#define IN_MOVED_TO 0x00000080
+#define IN_CREATE 0x00000100
+#define IN_DELETE 0x00000200
+#define IN_DELETE_SELF 0x00000400
+#define IN_MOVE 0x000000c0
+#define IN_ALL_EVENTS 0x00000fff
+#define IN_ONLYDIR 0x01000000
+#define IN_ISDIR 0x40000000
+#define IN_NONBLOCK 0x00000800
+#endif
+
+static inline int getloadavg(double loadavg[], int nelem)
+{ (void)loadavg; (void)nelem; if (nelem>0 && loadavg) loadavg[0]=0.0; return (nelem>0)?1:0; }
+
+static inline int chown(const char *path, uid_t owner, gid_t group)
+{ (void)path; (void)owner; (void)group; return 0; }
+static inline int link(const char *oldpath, const char *newpath) { (void)oldpath; (void)newpath; errno=ENOSYS; return -1; }
+static inline void *memmem(const void *haystack, size_t haystacklen,
+                           const void *needle, size_t needlelen) {
+    if (!needlelen) return (void *)haystack;
+    if (needlelen > haystacklen) return NULL;
+    const unsigned char *h = (const unsigned char *)haystack;
+    const unsigned char *n = (const unsigned char *)needle;
+    for (size_t i = 0; i + needlelen <= haystacklen; i++) {
+        if (memcmp(h + i, n, needlelen) == 0) return (void *)(h + i);
+    }
+    return NULL;
+}
 #endif /* SLERMES_HERMES_WIN32_H */

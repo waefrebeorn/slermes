@@ -390,19 +390,19 @@ char *blueprint_cmd_format_no_match(const blueprint_catalog_t *cat, const char *
     if (ql >= sizeof(qb)) ql = sizeof(qb) - 1;
     memcpy(qb, query ? query : "", ql); qb[ql] = '\0';
     /* gather up to 3 close keys (cutoff 0.4) */
-    char near[3][128]; int nn = 0;
+    char near_keys[3][128]; int nn = 0;
     for (int i = 0; i < cat->n && nn < 3; i++) {
         json_t *e = json_array_get(cat->doc, (size_t)i);
         const char *k = entry_key(e);
         if (k && difflib_ratio(qb, k) >= 0.4) {
-            strncpy(near[nn], k, sizeof(near[nn]) - 1); near[nn][sizeof(near[nn])-1] = '\0'; nn++;
+            strncpy(near_keys[nn], k, sizeof(near_keys[nn]) - 1); near_keys[nn][sizeof(near_keys[nn])-1] = '\0'; nn++;
         }
     }
     char *buf;
     if (nn) {
         char suggest[512];
         int off = 0;
-        for (int i = 0; i < nn; i++) off += snprintf(suggest + off, sizeof(suggest) - (size_t)off, "%s%s", i ? ", " : "", near[i]);
+        for (int i = 0; i < nn; i++) off += snprintf(suggest + off, sizeof(suggest) - (size_t)off, "%s%s", i ? ", " : "", near_keys[i]);
         size_t need = strlen(qb) + strlen(suggest) + 128;
         buf = malloc(need);
         snprintf(buf, need, "No automation blueprint matches '%s'. Did you mean: %s? Run /blueprint to see the catalog.", qb, suggest);

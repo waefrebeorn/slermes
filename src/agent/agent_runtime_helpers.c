@@ -1,22 +1,20 @@
-/*
- * agent_runtime_helpers.c — Assorted AIAgent runtime helpers.
- * Port of Python agent/agent_runtime_helpers.py.
- *
- * Functions here are stateless helpers that don't require agent_state_t
- * integration, making them portable without deep agent coupling.
- *
- * Port status (Python functions → C):
- *   ✅ iter_pool_sockets, cleanup_dead_connections, force_close_tcp_sockets
- *   ✅ switch_model, restore_primary_runtime, create_openai_client, invoke_tool
- *   ✅ extract_reasoning — IN src/agent/agent_message_sanitize.c
- *   ✅ drop_thinking_only_and_merge_users — IN src/agent/agent_message_repair.c
- *   ✅ repair_tool_call — IN src/tools/registry.c
- *   🔄 sanitize_tool_call_arguments P180: in sanitize.c
- *   🔄 strip_think_blocks: in agent_message_sanitize.c
- *   🔄 extract_api_error_context: in error_classifier.h/.c
- *
- * Note: looks_like_codex_intermediate_ack is implemented in
- * agent_message_sanitize.c (which has access to strip_think_blocks).
+
+/* PoP: _INTERRUPTED_PLACEHOLDER @ agent/agent_runtime_helpers_placeholders.py:_INTERRUPTED_PLACEHOLDER */
+const char *agent_runtime_helpers_interrupted_placeholder = "[interrupt: no assistant output for this turn]";
+
+/* PoP: _LEGACY_INTERRUPTED_PLACEHOLDER @ agent/agent_runtime_helpers_placeholders.py:_LEGACY_INTERRUPTED_PLACEHOLDER */
+const char *agent_runtime_helpers_legacy_interrupted_placeholder = "[response interrupted]";
+
+/* PoP: hidden_interrupt_placeholder_row @ agent/agent_runtime_helpers_placeholders.py:hidden_interrupt_placeholder_row */
+json_t *agent_runtime_helpers_hidden_interrupt_placeholder_row(void) {
+    json_t *row = json_new_object();
+    json_object_set(row, "role", json_new_string("assistant"));
+    json_object_set(row, "content", json_new_string(""));
+    json_object_set(row, "display_kind", json_new_string("hidden"));
+    json_object_set(row, "api_content", json_new_string(agent_runtime_helpers_interrupted_placeholder));
+    return row;
+}
+ks).
  */
 
 #include "hermes_core_types.h"

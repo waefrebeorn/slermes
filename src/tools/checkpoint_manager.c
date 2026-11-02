@@ -363,7 +363,8 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
             snprintf(abs, sizeof(abs), "%s/%s", working_dir, p);
             struct stat st;
             if (stat(abs, &st) == 0 && st.st_size > cap)
-                snprintf(paths[npaths++], MAX_PATH, "%s", p);
+                snprintf(paths + npaths * MAX_PATH, MAX_PATH, "%s", p);
+npaths++;
         }
         p += len + 1;
     }

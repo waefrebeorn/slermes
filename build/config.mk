@@ -56,8 +56,8 @@ else ifneq ($(filter MINGW% MSYS_NT%,$(UNAME_S)),)
 # keeps its original #include lines and stays faithful to the Python source.
     SSL_CFLAGS := $(shell pkg-config --cflags openssl 2>/dev/null)
     SSL_LDFLAGS := $(shell pkg-config --libs openssl 2>/dev/null || echo "-lssl -lcrypto")
-    PLATFORM_LDFLAGS := -lws2_32 -ltre -lSDL2 -lSDL2_ttf
-    OS_DEF := -D_WIN32
+    PLATFORM_LDFLAGS := -lws2_32 -ltre -lpcre2-8 -lgdi32 -lSDL2main -lSDL2 -lSDL2_ttf -lz
+    OS_DEF := -D_WIN32 -DSDL_MAIN_HANDLED
     COMPAT_INC := -I include/compat
     WIN_PLATFORM := 1
 else

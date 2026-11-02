@@ -197,6 +197,12 @@ int cli_tools_environments_daytona__ensure_sandbox_ready(
 
 /* Port of Python tools/environments/daytona.py:_before_execute */
 /* Ensure sandbox is ready, then sync files via FileSyncManager. */
+static bool daytona_bulk_download_adapter(const char *local_tar_path, void *ctx) {
+    const char *sandbox_id = (const char *)ctx;
+    int r = cli_tools_environments_daytona__daytona_bulk_download(sandbox_id, ".hermes", local_tar_path);
+    return r == 0;
+}
+
 int cli_tools_environments_daytona__before_execute(
     const char *sandbox_id, const char *sync_mode)
 {
@@ -215,7 +221,7 @@ int cli_tools_environments_daytona__before_execute(
         /* Actually apply the downloaded tar to the host via the real
          * FileSyncManager sync-back (extract -> sha256 diff -> apply). */
         cli_tools_environments_file_sync__sync_back_locked(
-            NULL, cli_tools_environments_daytona__daytona_bulk_download,
+            NULL, daytona_bulk_download_adapter,
             (void *)sandbox_id);
     }
 

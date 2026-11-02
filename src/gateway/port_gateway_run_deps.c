@@ -248,7 +248,7 @@ char *gw_own_policy_open_startup_violation(const gateway_config_t *cfg) {
         if (!pc->enabled) continue;
 
         /* Only the own-policy platforms participate. */
-        const struct { const char *name; const char *dm_env; const char *group_env; const char *allow_all_env; } *hit = NULL;
+        const __typeof__(map[0]) *hit = NULL;
         for (size_t k = 0; k < sizeof(map) / sizeof(map[0]); k++) {
             if (pc->name && strcmp(pc->name, map[k].name) == 0) { hit = &map[k]; break; }
         }

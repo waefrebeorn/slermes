@@ -534,7 +534,7 @@ bool pet_is_petdex_host(const char *url) {
 json_t *pet_download_json(const char *url) {
     if (!url || !*url) return NULL;
 
-    http_client_t *client = http_new(NULL);
+    http_client_t *client = http_new(30);
     if (!client) return NULL;
 
     http_resp_t *resp = http_get(client, url, NULL);

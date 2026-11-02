@@ -399,7 +399,7 @@ json_t *config_py_get_compatible_custom_providers(const json_t *config) {
     if (custom && custom->type == JSON_ARRAY) {
         for (size_t i = 0; i < custom->c.count; i++) {
             char *ser = json_serialize(custom->c.items[i]);
-            json_t *norm = normalize_custom_provider_entry_json(ser, "");
+            char *norm = normalize_custom_provider_entry_json(ser, "");
             free(ser);
             if (!norm) continue;
             json_t *n = json_parse(norm, NULL);
@@ -414,7 +414,7 @@ json_t *config_py_get_compatible_custom_providers(const json_t *config) {
             json_t *entry = providers->c.items[i];
             if (!entry || entry->type != JSON_OBJECT) continue;
             if (!config_py_is_provider_enabled(entry)) continue;
-            json_t *norm = normalize_custom_provider_entry_json(json_serialize(entry), key);
+            char *norm = normalize_custom_provider_entry_json(json_serialize(entry), key);
             if (!norm) continue;
             json_t *n = json_parse(norm, NULL);
             free(norm);

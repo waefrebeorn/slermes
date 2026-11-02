@@ -2250,7 +2250,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
             if (kdb_run_ended_at(runs[i]) <= 0) continue;
             shown++;
             long st = kdb_run_started_at(runs[i]);
-            char ts[64]; strftime(ts, sizeof(ts), "%Y-%m-%d %H:%M", localtime(&st));
+                        char ts[64]; strftime(ts, sizeof(ts), "%Y-%m-%d %H:%M", localtime((time_t *)&st));
             char *age = relative_age(st, now);
             const char *outcome = kdb_run_outcome(runs[i]) ? kdb_run_outcome(runs[i]) : kdb_run_status(runs[i]);
             const char *profile = kdb_run_profile(runs[i]) ? kdb_run_profile(runs[i]) : "(unknown)";
@@ -2332,7 +2332,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
                 const char *rtitle = (const char *)sqlite3_column_text(rr, 1);
                 const char *rsum = (const char *)sqlite3_column_text(rr, 2);
                 long rend = sqlite3_column_type(rr, 3) == SQLITE_NULL ? 0 : sqlite3_column_int64(rr, 3);
-                char ts[64]; if (rend) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime(&rend)); } else ts[0]=0;
+                char ts[64]; if (rend) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime((time_t *)&rend)); } else ts[0]=0;
                 char *age = relative_age(rend, now);
                 KB_APPEND("- %s — %s (%s%s): %s\n", rid, rtitle ? rtitle : "", ts, age?age:"",
                           rsum ? rsum : "(no summary)");
@@ -2353,7 +2353,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
         int off = nc - shown_c;
         for (int i = off; i < nc; i++) {
             long cat = kdb_comment_created_at(comments[i]);
-            char ts[64]; if (cat) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime(&cat)); } else ts[0]=0;
+            char ts[64]; if (cat) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime((time_t *)&cat)); } else ts[0]=0;
             char *age = relative_age(cat, now);
             const char *author = kdb_comment_author(comments[i]) ? kdb_comment_author(comments[i]) : "";
             char safe_author[256];

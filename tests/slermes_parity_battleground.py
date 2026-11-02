@@ -33,7 +33,7 @@ from typing import Dict, List, Set, Optional, Tuple
 from collections import defaultdict
 
 HERMES_DIR = Path("C:/Users/eman5/hermes-agent")
-SLERMES_DIR = HERMES_DIR / "slermes"
+SLERMES_DIR = Path("C:/Users/eman5/slermes")
 
 # Python source directories to scan
 PYTHON_SOURCE_DIRS = {

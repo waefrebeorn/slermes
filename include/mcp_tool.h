@@ -18,7 +18,7 @@ extern "C" {
 
 /* Register an MCP server launched via stdio (command + args). */
 bool mcp_add_stdio_server(const char *name, const char *command,
-                          const char *args_csv, const char *env_csv);
+                          char **args, int arg_count);
 /* Remove a registered MCP server by name. */
 bool mcp_remove_server(const char *name);
 

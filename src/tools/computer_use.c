@@ -851,7 +851,7 @@ static bool macos_is_available(void) {
     return system("which cua-driver >/dev/null 2>&1") == 0;
 }
 
-static bool macos_start(void *state) {
+static bool macos_start( {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return false;
     if (st->srv) return true;  /* already started */
@@ -871,7 +871,7 @@ static bool macos_start(void *state) {
     return true;
 }
 
-static void macos_stop(void *state) {
+static void macos_stop( {
     macos_state_t *st = (macos_state_t *)state;
     if (!st || !st->srv) return;
     mcp_server_disconnect(st->srv);
@@ -932,7 +932,7 @@ static int parse_windows(const char *lw_json, int *out_pid, int *out_wid,
 }
 
 /* ── Capture ──────────────────────────────────────────────────────── */
-static cu_capture_t *macos_capture(void *state, const char *mode, const char *app) {
+static cu_capture_t *macos_capture(const char *mode, const char *app) {
     macos_state_t *st = (macos_state_t *)state;
     (void)app;
     if (!st || !st->srv) return NULL;
@@ -1017,7 +1017,7 @@ static cu_action_t *macos_action_call(macos_state_t *st, const char *tool,
 }
 
 /* ── Pointer actions ──────────────────────────────────────────────── */
-static cu_action_t *macos_click(void *state, int element, int x, int y,
+static cu_action_t *macos_click(int element, int x, int y,
                                   const char *button, int click_count,
                                   const char *modifiers) {
     (void)modifiers;
@@ -1033,7 +1033,7 @@ static cu_action_t *macos_click(void *state, int element, int x, int y,
     return macos_action_call(st, "click", args);
 }
 
-static cu_action_t *macos_drag(void *state, int from_element, int to_element,
+static cu_action_t *macos_drag(int from_element, int to_element,
                                  int from_x, int from_y, int to_x, int to_y,
                                  const char *button, const char *modifiers) {
     (void)modifiers;
@@ -1051,7 +1051,7 @@ static cu_action_t *macos_drag(void *state, int from_element, int to_element,
     return macos_action_call(st, "drag", args);
 }
 
-static cu_action_t *macos_scroll(void *state, const char *direction, int amount,
+static cu_action_t *macos_scroll(const char *direction, int amount,
                                    int element, int x, int y,
                                    const char *modifiers) {
     (void)element; (void)x; (void)y; (void)modifiers;
@@ -1065,7 +1065,7 @@ static cu_action_t *macos_scroll(void *state, const char *direction, int amount,
 }
 
 /* ── Keyboard ─────────────────────────────────────────────────────── */
-static cu_action_t *macos_type_text(void *state, const char *text) {
+static cu_action_t *macos_type_text(const char *text) {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return NULL;
     if (!text) text = "";
@@ -1091,7 +1091,7 @@ static cu_action_t *macos_type_text(void *state, const char *text) {
     return macos_action_call(st, "type_text", args);
 }
 
-static cu_action_t *macos_key(void *state, const char *keys) {
+static cu_action_t *macos_key(const char *keys) {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return NULL;
     if (!keys) keys = "";
@@ -1101,7 +1101,7 @@ static cu_action_t *macos_key(void *state, const char *keys) {
 }
 
 /* ── Introspection ────────────────────────────────────────────────── */
-static cu_action_t *macos_list_apps(void *state) {
+static cu_action_t *macos_list_apps( {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return NULL;
     cu_action_t *act = (cu_action_t *)calloc(1, sizeof(cu_action_t));
@@ -1120,7 +1120,7 @@ static cu_action_t *macos_list_apps(void *state) {
     return act;
 }
 
-static cu_action_t *macos_focus_app(void *state, const char *app, bool raise_window) {
+static cu_action_t *macos_focus_app(const char *app, bool raise_window) {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return NULL;
     if (!app) app = "";
@@ -1131,7 +1131,7 @@ static cu_action_t *macos_focus_app(void *state, const char *app, bool raise_win
 }
 
 /* ── Value mutation ───────────────────────────────────────────────── */
-static cu_action_t *macos_set_value(void *state, const char *value, int element) {
+static cu_action_t *macos_set_value(const char *value, int element) {
     macos_state_t *st = (macos_state_t *)state;
     if (!st) return NULL;
     if (!value) value = "";
@@ -1141,8 +1141,7 @@ static cu_action_t *macos_set_value(void *state, const char *value, int element)
 }
 
 /* ── Wait ─────────────────────────────────────────────────────────── */
-static cu_action_t *macos_wait(void *state, double seconds) {
-    (void)state;
+static cu_action_t *macos_wait(double seconds) {
     cu_action_t *act = (cu_action_t *)calloc(1, sizeof(cu_action_t));
     if (!act) return NULL;
     snprintf(act->action, sizeof(act->action), "wait");
@@ -1210,13 +1209,11 @@ static bool win_is_available(void) {
     return true;  /* Always available on Windows */
 }
 
-static bool win_start(void *state) {
-    (void)state;
+static bool win_start(void) {
     return true;
 }
 
-static void win_stop(void *state) {
-    (void)state;
+static void win_stop(void) {
 }
 
 /* ── Helper: JSON response builder ────────────────────────────────── */
@@ -1236,8 +1233,7 @@ static cu_action_t *win_action_result(const char *action_name, bool ok,
 }
 
 /* ── Capture ──────────────────────────────────────────────────────── */
-static cu_capture_t *win_capture(void *state, const char *mode, const char *app) {
-    (void)state; (void)app;
+static cu_capture_t *win_capture(const char *mode, const char *app) {
     cu_capture_t *cap = (cu_capture_t *)calloc(1, sizeof(cu_capture_t));
     if (!cap) return NULL;
     snprintf(cap->mode, sizeof(cap->mode), "%s", mode ? mode : "som");
@@ -1284,10 +1280,9 @@ static cu_capture_t *win_capture(void *state, const char *mode, const char *app)
 }
 
 /* ── Pointer actions ──────────────────────────────────────────────── */
-static cu_action_t *win_click(void *state, int element, int x, int y,
+static cu_action_t *win_click(int element, int x, int y,
                                 const char *button, int click_count,
                                 const char *modifiers) {
-    (void)state; (void)element; (void)modifiers;
     if (!button) button = "left";
 
     /* Move cursor and click */
@@ -1315,10 +1310,9 @@ static cu_action_t *win_click(void *state, int element, int x, int y,
                               x, y, button, cnt);
 }
 
-static cu_action_t *win_drag(void *state, int from_element, int to_element,
+static cu_action_t *win_drag(int from_element, int to_element,
                                int from_x, int from_y, int to_x, int to_y,
                                const char *button, const char *modifiers) {
-    (void)state; (void)from_element; (void)to_element; (void)modifiers;
     if (!button) button = "left";
 
     SetCursorPos(from_x, from_y);
@@ -1342,10 +1336,9 @@ static cu_action_t *win_drag(void *state, int from_element, int to_element,
                               from_x, from_y, to_x, to_y);
 }
 
-static cu_action_t *win_scroll(void *state, const char *direction, int amount,
+static cu_action_t *win_scroll(const char *direction, int amount,
                                  int element, int x, int y,
                                  const char *modifiers) {
-    (void)state; (void)element; (void)x; (void)y; (void)modifiers;
     if (!direction) direction = "down";
     DWORD wheel = (strcmp(direction, "up") == 0) ? WHEEL_DELTA : (DWORD)-WHEEL_DELTA;
     int cnt = amount > 0 ? amount : 1;
@@ -1355,8 +1348,7 @@ static cu_action_t *win_scroll(void *state, const char *direction, int amount,
 }
 
 /* ── Keyboard ─────────────────────────────────────────────────────── */
-static cu_action_t *win_type_text(void *state, const char *text) {
-    (void)state;
+static cu_action_t *win_type_text(const char *text) {
     if (!text) text = "";
     /* Open the clipboard and paste */
     if (OpenClipboard(NULL)) {
@@ -1382,8 +1374,7 @@ static cu_action_t *win_type_text(void *state, const char *text) {
     return win_action_result("type_text", true, "typed %zu chars", strlen(text));
 }
 
-static cu_action_t *win_key(void *state, const char *keys) {
-    (void)state;
+static cu_action_t *win_key(const char *keys) {
     if (!keys) keys = "";
     /* Parse key combo like "ctrl+c" */
     char buf[128];
@@ -1444,13 +1435,11 @@ static cu_action_t *win_key(void *state, const char *keys) {
 }
 
 /* ── Introspection ────────────────────────────────────────────────── */
-static cu_action_t *win_list_apps(void *state) {
-    (void)state;
+static cu_action_t *win_list_apps(void) {
     return win_action_result("list_apps", true, "Use tasklist or EnumWindows");
 }
 
-static cu_action_t *win_focus_app(void *state, const char *app, bool raise_window) {
-    (void)state; (void)raise_window;
+static cu_action_t *win_focus_app(const char *app, bool raise_window) {
     if (!app) app = "";
     HWND hwnd = FindWindowA(NULL, app);
     if (!hwnd) {
@@ -1466,15 +1455,13 @@ static cu_action_t *win_focus_app(void *state, const char *app, bool raise_windo
 }
 
 /* ── Value mutation ───────────────────────────────────────────────── */
-static cu_action_t *win_set_value(void *state, const char *value, int element) {
-    (void)state; (void)element;
+static cu_action_t *win_set_value(const char *value, int element) {
     if (!value) value = "";
     return win_action_result("set_value", true, "value set: %s", value);
 }
 
 /* ── Wait ─────────────────────────────────────────────────────────── */
-static cu_action_t *win_wait(void *state, double seconds) {
-    (void)state;
+static cu_action_t *win_wait(double seconds) {
     Sleep((DWORD)(seconds * 1000));
     return win_action_result("wait", true, "waited %.2fs", seconds);
 }
