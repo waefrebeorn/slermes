@@ -1,27 +1,22 @@
 
-/* PoP: _model_dump @ agent/api_request_hooks.py:_model_dump */
-void *agent_api_request_hooks_model_dump(void) { return NULL; }
+/* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init_compression_notice.py:_build_codex_gpt5_autoraise_notice */
+void *agent_agent_init_compression_notice_build_codex_gpt5_autoraise_notice(void) { return NULL; }
 
-/* PoP: _usage_summary_for_api_request_hook @ agent/api_request_hooks.py:_usage_summary_for_api_request_hook */
-void *agent_api_request_hooks_usage_summary_for_api_request_hook(void) { return NULL; }
+/* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_marker */
+void *agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_marker(void) { return NULL; }
 
-/* PoP: _hook_payload_max_chars @ agent/api_request_hooks.py:_hook_payload_max_chars */
-int agent_api_request_hooks_hook_payload_max_chars(void) { return 0; }
+/* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_state */
+void *agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_state(void) { return NULL; }
 
-/* PoP: _is_sensitive_hook_key @ agent/api_request_hooks.py:_is_sensitive_hook_key */
-int agent_api_request_hooks_is_sensitive_hook_key(void) { return 0; }
+/* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
+int agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_seen(void) { return 0; }
 
-/* PoP: _hook_jsonable @ agent/api_request_hooks.py:_hook_jsonable */
-void *agent_api_request_hooks_hook_jsonable(void) { return NULL; }
+/* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init_compression_notice.py:_record_codex_gpt55_autoraise_notice */
+void agent_agent_init_compression_notice_record_codex_gpt55_autoraise_notice(void) { }
 
-/* PoP: _sanitize_hook_payload @ agent/api_request_hooks.py:_sanitize_hook_payload */
-void *agent_api_request_hooks_sanitize_hook_payload(void) { return NULL; }
-
-/* PoP: _api_request_payload_for_hook @ agent/api_request_hooks.py:_api_request_payload_for_hook */
-void *agent_api_request_hooks_api_request_payload_for_hook(void) { return NULL; }
-
-/* PoP: _api_response_payload_for_hook @ agent/api_request_hooks.py:_api_response_payload_for_hook */
-void *agent_api_request_hooks_api_response_payload_for_hook(void) { return NULL; }
+/* PoP: _emit_compression_summary @ agent/agent_init_compression_notice.py:_emit_compression_summary */
+void agent_agent_init_compression_notice_emit_compression_summary(void) { }
+_hook(void) { return NULL; }
 
 /* PoP: _invoke_api_request_error_hook @ agent/api_request_hooks.py:_invoke_api_request_error_hook */
 void agent_api_request_hooks_invoke_api_request_error_hook(void) { }
