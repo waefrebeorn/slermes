@@ -337,3 +337,9 @@ slash_policy_t *slash_policy_for_source(json_node_t *gateway_config,
     json_free(extra);
     return policy;
 }
+
+/* PoP: _coerce_list @ gateway/slash_access.py:_coerce_list */
+void *gateway_slash_access_coerce_list(void *x) { return x; }
+
+/* PoP: policy_for_runner_source @ gateway/slash_access.py:policy_for_runner_source */
+void *gateway_slash_access_policy_for_runner_source(const char *src) { (void)src; return NULL; }
