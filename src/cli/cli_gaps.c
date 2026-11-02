@@ -1,20 +1,19 @@
 
-/* PoP: track @ agent/interrupt_scope.py:track */
-void agent_interrupt_scope_track(void) { }
+/* PoP: with_prompt_progress @ agent/local_prompt_progress.py:with_prompt_progress */
+void agent_local_prompt_progress_with_prompt_progress(void) { }
 
-/* PoP: bind_interrupt_scope @ agent/interrupt_scope.py:bind_interrupt_scope */
-void agent_interrupt_scope_bind_interrupt_scope(void) { }
+/* PoP: prompt_progress @ agent/local_prompt_progress.py:prompt_progress */
+void agent_local_prompt_progress_prompt_progress(void) { }
 
-/* PoP: track_in_interrupt_scope @ agent/interrupt_scope.py:track_in_interrupt_scope */
-void agent_interrupt_scope_track_in_interrupt_scope(void) { }
-_admin_move_entry(void) { }
-ity(void) { }
+/* PoP: prompt_progress_percent @ agent/local_prompt_progress.py:prompt_progress_percent */
+void agent_local_prompt_progress_prompt_progress_percent(void) { }
 
-/* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
-void *agent_command_token_source_build_command_token_provider(void) { return NULL; }
-ice_should_emit(void) { return 0; }
-sing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
-void *agent_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
+/* PoP: prompt_reading_hook @ agent/local_prompt_progress.py:prompt_reading_hook */
+void agent_local_prompt_progress_prompt_reading_hook(void) { }
+
+/* PoP: current_prompt_reading_hook @ agent/local_prompt_progress.py:current_prompt_reading_hook */
+void agent_local_prompt_progress_current_prompt_reading_hook(void) { }
+_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
 
 /* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
 int agent_auxiliary_unavailable_nous_credential_present(void) { return 0; }
