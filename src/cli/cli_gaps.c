@@ -1,12 +1,13 @@
 
-/* PoP: materialize_probe_api_key @ agent/command_token_source.py:materialize_probe_api_key */
-void *agent_command_token_source_materialize_probe_api_key(void) { return NULL; }
+/* PoP: _cleared_status_copy @ agent/credential_pool_admin.py:_cleared_status_copy */
+void *agent_credential_pool_admin_cleared_status_copy(void) { return NULL; }
 
-/* PoP: _mint @ agent/command_token_source.py:_mint */
-void *agent_command_token_source_mint(void) { return NULL; }
+/* PoP: reset_status @ agent/credential_pool_admin.py:reset_status */
+void agent_credential_pool_admin_reset_status(void) { }
 
-/* PoP: cache_identity @ agent/command_token_source.py:cache_identity */
-void agent_command_token_source_cache_identity(void) { }
+/* PoP: move_entry @ agent/credential_pool_admin.py:move_entry */
+void agent_credential_pool_admin_move_entry(void) { }
+ity(void) { }
 
 /* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
 void *agent_command_token_source_build_command_token_provider(void) { return NULL; }
