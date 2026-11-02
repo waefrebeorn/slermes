@@ -124,3 +124,6 @@ char *tools_slash_confirm_resolve_sync_compat(void *loop, const char *session_ke
     (void)loop;
     return tools_slash_confirm_resolve(session_key, confirm_id, choice, 0.0);
 }
+
+/* PoP: _is_stale @ tools/slash_confirm.py:_is_stale */
+int tools_slash_confirm_is_stale(void) { return 0; }
