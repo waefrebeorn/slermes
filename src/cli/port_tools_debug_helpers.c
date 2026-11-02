@@ -50,3 +50,6 @@ char *cli_tools_debug_helpers_get_session_info(const debug_session_t *session)
 
     return json;
 }
+
+/* PoP: _now @ tools/debug_helpers.py:_now */
+void tools_debug_helpers_now(void) { }
