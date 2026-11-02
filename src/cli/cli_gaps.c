@@ -1,15 +1,16 @@
 
-/* PoP: first_proxy_env_value @ agent/proxy_bypass.py:first_proxy_env_value */
-void *agent_proxy_bypass_first_proxy_env_value(void) { return NULL; }
+/* PoP: _turn_target @ agent/relay_compaction.py:_turn_target */
+void *agent_relay_compaction_turn_target(void) { return NULL; }
 
-/* PoP: is_loopback_host @ agent/proxy_bypass.py:is_loopback_host */
-int agent_proxy_bypass_is_loopback_host(void) { return 0; }
+/* PoP: _session_target @ agent/relay_compaction.py:_session_target */
+void *agent_relay_compaction_session_target(void) { return NULL; }
 
-/* PoP: loopback_connect_kwargs @ agent/proxy_bypass.py:loopback_connect_kwargs */
-void *agent_proxy_bypass_loopback_connect_kwargs(void) { return NULL; }
+/* PoP: compaction_target_available @ agent/relay_compaction.py:compaction_target_available */
+int agent_relay_compaction_compaction_target_available(void) { return 0; }
 
-/* PoP: loopback_request_kwargs @ agent/proxy_bypass.py:loopback_request_kwargs */
-void *agent_proxy_bypass_loopback_request_kwargs(void) { return NULL; }
+/* PoP: emit_compaction_mark @ agent/relay_compaction.py:emit_compaction_mark */
+void agent_relay_compaction_emit_compaction_mark(void) { }
+rn NULL; }
 background @ agent/pet/generate/imagegen.py:_rejected_background */
 void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
 prompt_reading_hook(void) { }
