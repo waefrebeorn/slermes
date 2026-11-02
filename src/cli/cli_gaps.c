@@ -856,3 +856,27 @@ void agent_side_question_request_log_audit(void) { }
 
 /* PoP: ask_text_only @ agent/side_question_request.py:ask_text_only */
 void agent_side_question_request_ask_text_only(void) { }
+
+/* PoP: cache_path_base @ agent/terminal_env_provider.py:cache_path_base */
+void agent_terminal_env_provider_cache_path_base(void) { }
+
+/* PoP: default_cwd @ agent/terminal_env_provider.py:default_cwd */
+void agent_terminal_env_provider_default_cwd(void) { }
+
+/* PoP: strip_env_keys @ agent/terminal_env_provider.py:strip_env_keys */
+void agent_terminal_env_provider_strip_env_keys(void) { }
+
+/* PoP: env_description @ agent/terminal_env_provider.py:env_description */
+void agent_terminal_env_provider_env_description(void) { }
+
+/* PoP: check_requirements @ agent/terminal_env_provider.py:check_requirements */
+void agent_terminal_env_provider_check_requirements(void) { }
+
+/* PoP: setup_instructions @ agent/terminal_env_provider.py:setup_instructions */
+void agent_terminal_env_provider_setup_instructions(void) { }
+
+/* PoP: post_setup @ agent/terminal_env_provider.py:post_setup */
+void agent_terminal_env_provider_post_setup(void) { }
+
+/* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
+void agent_terminal_env_provider_doctor_checks(void) { }
