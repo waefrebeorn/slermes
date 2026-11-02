@@ -1,14 +1,13 @@
 
-/* PoP: _builtin_namespaces @ agent/vault_backend_registry.py:_builtin_namespaces */
-void *agent_vault_backend_registry_builtin_namespaces(void) { return NULL; }
+/* PoP: _handle_is_free @ gateway/platforms/api_server_profile_prefix.py:_handle_is_free */
+int gateway_platforms_api_server_profile_prefix_handle_is_free(void) { return 0; }
 
-/* PoP: _namespace_error @ agent/vault_backend_registry.py:_namespace_error */
-void *agent_vault_backend_registry_namespace_error(void) { return NULL; }
+/* PoP: _prefix_profile @ gateway/platforms/api_server_profile_prefix.py:_prefix_profile */
+void gateway_platforms_api_server_profile_prefix_prefix_profile(void) { }
 
-/* PoP: static_name @ agent/vault_backend_registry.py:static_name */
-void *agent_vault_backend_registry_static_name(void) { return NULL; }
-
-/* PoP: enabled_plugin_backends @ agent/vault_backend_registry.py:enabled_plugin_backends */
+/* PoP: rejection_response @ gateway/platforms/api_server_profile_prefix.py:rejection_response */
+void *gateway_platforms_api_server_profile_prefix_rejection_response(void) { return NULL; }
+ugin_backends */
 void *agent_vault_backend_registry_enabled_plugin_backends(void) { return NULL; }
 py:_rejected_background */
 void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
