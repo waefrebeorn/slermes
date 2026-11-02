@@ -1183,3 +1183,21 @@ void gateway_platforms_event_extend_media(void) { }
 
 /* PoP: _command_text @ gateway/platforms/event.py:_command_text */
 void gateway_platforms_event_command_text(void) { }
+
+/* PoP: _bounds @ gateway/platforms/api_server_memory_sessions.py:_bounds */
+void gateway_platforms_api_server_memory_sessions_bounds(void) { }
+
+/* PoP: _owner_home @ gateway/platforms/api_server_memory_sessions.py:_owner_home */
+void gateway_platforms_api_server_memory_sessions_owner_home(void) { }
+
+/* PoP: checkout @ gateway/platforms/api_server_memory_sessions.py:checkout */
+void gateway_platforms_api_server_memory_sessions_checkout(void) { }
+
+/* PoP: checkin @ gateway/platforms/api_server_memory_sessions.py:checkin */
+void gateway_platforms_api_server_memory_sessions_checkin(void) { }
+
+/* PoP: close_all @ gateway/platforms/api_server_memory_sessions.py:close_all */
+void gateway_platforms_api_server_memory_sessions_close_all(void) { }
+
+/* PoP: _shutdown_async @ gateway/platforms/api_server_memory_sessions.py:_shutdown_async */
+void gateway_platforms_api_server_memory_sessions_shutdown_async(void) { }
