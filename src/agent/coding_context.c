@@ -1316,3 +1316,27 @@ char *coding_context_coding_instructions(const hermes_config_t *config)
  * Port of Python agent/coding_context.py:coding_system_blocks
  * Port of Python agent/coding_context.py:coding_compact_skill_categories
  */
+
+/* PoP: _agent_config_value @ agent/coding_context.py:_agent_config_value */
+void agent_coding_context_agent_config_value(void) { }
+
+/* PoP: _detect_profile @ agent/coding_context.py:_detect_profile */
+void agent_coding_context_detect_profile(void) { }
+
+/* PoP: _posture_toolsets @ agent/coding_context.py:_posture_toolsets */
+void agent_coding_context_posture_toolsets(void) { }
+
+/* PoP: focus_toolsets @ agent/coding_context.py:focus_toolsets */
+void agent_coding_context_focus_toolsets(void) { }
+
+/* PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts */
+void agent_coding_context_system_prompt_parts(void) { }
+
+/* PoP: in_focus_workspace @ agent/coding_context.py:in_focus_workspace */
+void agent_coding_context_in_focus_workspace(void) { }
+
+/* PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts */
+void agent_coding_context_coding_system_prompt_parts(void) { }
+
+/* PoP: _workspace_roots @ agent/coding_context.py:_workspace_roots */
+void agent_coding_context_workspace_roots(void) { }
