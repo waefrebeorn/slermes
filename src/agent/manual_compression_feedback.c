@@ -1,23 +1,16 @@
-/*
- * manual_compression_feedback.c — User-facing summaries for manual compression.
- *
- * Port of Python agent/manual_compression_feedback.py (49 lines).
- * MIT License — WuBu Slermes Project
- */
 
-#include "manual_compression_feedback.h"
-#include <stdio.h>
-#include <string.h>
-
-/* Port of Python manual_compression_feedback.py:summarize_manual_compression(). */
-void summarize_manual_compression(int before_count, int after_count,
-                                  int before_tokens, int after_tokens,
-                                  compression_feedback_t *out)
-{
-    if (!out) return;
-    memset(out, 0, sizeof(*out));
-
-    bool noop = (after_count == before_count);
+/* PoP: describe_compression_lock_skip @ agent/manual_compression_feedback.py:describe_compression_lock_skip */
+char *describe_compression_lock_skip(const char *lock_signal) {
+    char *buf = malloc(256);
+    if (!buf) return NULL;
+    if (lock_signal && lock_signal[0]) {
+        snprintf(buf, 256, "Compression already in progress for this session (holder: %s). Please wait for it to finish.", lock_signal);
+    } else {
+        snprintf(buf, 256, "Compression skipped: could not acquire this session's compression lock. Another compression may still be running, or the lock check failed - try again shortly.");
+    }
+    return buf;
+}
+op = (after_count == before_count);
     out->noop = noop;
 
     if (noop) {

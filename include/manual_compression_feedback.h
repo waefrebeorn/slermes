@@ -31,6 +31,7 @@ typedef struct {
  * @param after_tokens   Estimated token count after compression
  * @param out            Output structure (caller provides storage)
  */
+char *describe_compression_lock_skip(const char *lock_signal);
 void summarize_manual_compression(int before_count, int after_count,
                                   int before_tokens, int after_tokens,
                                   compression_feedback_t *out);
