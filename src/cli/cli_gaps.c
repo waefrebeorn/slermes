@@ -1352,3 +1352,24 @@ void gateway_session_config_set_local_voice_mode(void) { }
 
 /* PoP: local_voice_transition @ gateway/session_config.py:local_voice_transition */
 void gateway_session_config_local_voice_transition(void) { }
+
+/* PoP: session_owned @ gateway/session_connections.py:session_owned */
+void gateway_session_connections_session_owned(void) { }
+
+/* PoP: pending_connection @ gateway/session_connections.py:pending_connection */
+void gateway_session_connections_pending_connection(void) { }
+
+/* PoP: _handle @ gateway/session_connections.py:_handle */
+void gateway_session_connections_handle(void) { }
+
+/* PoP: _respond @ gateway/session_connections.py:_respond */
+void gateway_session_connections_respond(void) { }
+
+/* PoP: _require_connectors @ gateway/session_connections.py:_require_connectors */
+void gateway_session_connections_require_connectors(void) { }
+
+/* PoP: _session_toolsets @ gateway/session_connections.py:_session_toolsets */
+void gateway_session_connections_session_toolsets(void) { }
+
+/* PoP: _session_context @ gateway/session_connections.py:_session_context */
+void gateway_session_connections_session_context(void) { }
