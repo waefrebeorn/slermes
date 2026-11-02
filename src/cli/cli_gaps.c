@@ -381,3 +381,9 @@ void hermes_cli_cli_output_print_truncated(void) { }
 
 /* PoP: line_input @ hermes_cli/cli_output.py:line_input */
 void hermes_cli_cli_output_line_input(void) { }
+
+/* PoP: _refresh_provider @ hermes_cli/dashboard_auth/refresh_singleflight.py:_refresh_provider */
+void hermes_cli_dashboard_auth_refresh_singleflight_refresh_provider(void) { }
+
+/* PoP: refresh_session_coalesced @ hermes_cli/dashboard_auth/refresh_singleflight.py:refresh_session_coalesced */
+void hermes_cli_dashboard_auth_refresh_singleflight_refresh_session_coalesced(void) { }
