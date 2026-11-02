@@ -232,3 +232,9 @@ int cli_hermes_cli_hooks__doctor_one(const char *event, const char *command, int
     free(entry);
     return problems;
 }
+
+/* PoP: _matcher_part @ hermes_cli/hooks.py:_matcher_part */
+void hermes_cli_hooks_matcher_part(void) { }
+
+/* PoP: _mtime_drift @ hermes_cli/hooks.py:_mtime_drift */
+void hermes_cli_hooks_mtime_drift(void) { }
