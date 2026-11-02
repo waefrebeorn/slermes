@@ -69,3 +69,9 @@
  */
 
 #include "hermes_core_types.h"
+
+/* PoP: task_parameters @ agent/delegation_provider.py:task_parameters */
+void *delegation_provider_task_parameters(void *task) { (void)task; return NULL; }
+
+/* PoP: route_task @ agent/delegation_provider.py:route_task */
+void *delegation_provider_route_task(void *task) { (void)task; return NULL; }
