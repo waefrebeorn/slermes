@@ -747,3 +747,24 @@ void agent_error_surface_build_error_surface_from_result(void) { }
 
 /* PoP: build_error_surface_from_exception @ agent/error_surface.py:build_error_surface_from_exception */
 void agent_error_surface_build_error_surface_from_exception(void) { }
+
+/* PoP: _cache_path @ agent/image_token_cost.py:_cache_path */
+void agent_image_token_cost_cache_path(void) { }
+
+/* PoP: learned_image_token_cost @ agent/image_token_cost.py:learned_image_token_cost */
+void agent_image_token_cost_learned_image_token_cost(void) { }
+
+/* PoP: current_image_token_cost @ agent/image_token_cost.py:current_image_token_cost */
+void agent_image_token_cost_current_image_token_cost(void) { }
+
+/* PoP: image_cost_context @ agent/image_token_cost.py:image_cost_context */
+void agent_image_token_cost_image_cost_context(void) { }
+
+/* PoP: bind_image_token_cost @ agent/image_token_cost.py:bind_image_token_cost */
+void agent_image_token_cost_bind_image_token_cost(void) { }
+
+/* PoP: count_images @ agent/image_token_cost.py:count_images */
+void agent_image_token_cost_count_images(void) { }
+
+/* PoP: calibrate_from_usage @ agent/image_token_cost.py:calibrate_from_usage */
+void agent_image_token_cost_calibrate_from_usage(void) { }
