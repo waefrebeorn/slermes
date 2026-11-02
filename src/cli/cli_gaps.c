@@ -507,3 +507,6 @@ int tools_kanban_toolset_context_kanban_toolset_requested(void) { return 0; }
 
 /* PoP: scoped_kanban_toolset_selection @ tools/kanban_toolset_context.py:scoped_kanban_toolset_selection */
 void tools_kanban_toolset_context_scoped_kanban_toolset_selection(void) { }
+
+/* PoP: _open_regular @ tools/file_operations_native.py:_open_regular */
+void tools_file_operations_native_open_regular(void) { }
