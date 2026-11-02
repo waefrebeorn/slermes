@@ -459,3 +459,9 @@ int tools_browser_supervisor_capture_is_valid(void) { return 0; }
 
 /* PoP: _invalid @ tools/browser_supervisor_capture.py:_invalid */
 int tools_browser_supervisor_capture_invalid(void) { return 0; }
+
+/* PoP: _enable_page_domains @ tools/browser_supervisor_frames.py:_enable_page_domains */
+void tools_browser_supervisor_frames_enable_page_domains(void) { }
+
+/* PoP: _set_frame @ tools/browser_supervisor_frames.py:_set_frame */
+void tools_browser_supervisor_frames_set_frame(void) { }
