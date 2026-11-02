@@ -53,3 +53,27 @@ char *hermes_nous_portal_tags_json(void)
     free(client_tag);
     return strdup(buf);
 }
+
+/* PoP: _reset_var @ agent/portal_tags.py:_reset_var */
+void agent_portal_tags_reset_var(void) { }
+
+/* PoP: set_affinity_scope @ agent/portal_tags.py:set_affinity_scope */
+void agent_portal_tags_set_affinity_scope(void) { }
+
+/* PoP: reset_affinity_scope @ agent/portal_tags.py:reset_affinity_scope */
+void agent_portal_tags_reset_affinity_scope(void) { }
+
+/* PoP: get_affinity_scope @ agent/portal_tags.py:get_affinity_scope */
+void agent_portal_tags_get_affinity_scope(void) { }
+
+/* PoP: set_conversation_context @ agent/portal_tags.py:set_conversation_context */
+void agent_portal_tags_set_conversation_context(void) { }
+
+/* PoP: reset_conversation_context @ agent/portal_tags.py:reset_conversation_context */
+void agent_portal_tags_reset_conversation_context(void) { }
+
+/* PoP: get_conversation_context @ agent/portal_tags.py:get_conversation_context */
+void agent_portal_tags_get_conversation_context(void) { }
+
+/* PoP: conversation_tag @ agent/portal_tags.py:conversation_tag */
+void agent_portal_tags_conversation_tag(void) { }
