@@ -531,3 +531,93 @@ int agent_auxiliary_call_outcome_is_cancellation(void) { return 0; }
 
 /* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
 void *agent_auxiliary_call_outcome_error_class(void) { return NULL; }
+
+/* PoP: _first_env @ agent/anthropic_credentials.py:_first_env */
+void agent_anthropic_credentials_first_env(void) { }
+
+/* PoP: is_native_anthropic_host @ agent/anthropic_credentials.py:is_native_anthropic_host */
+void agent_anthropic_credentials_is_native_anthropic_host(void) { }
+
+/* PoP: anthropic_route_is_oauth @ agent/anthropic_credentials.py:anthropic_route_is_oauth */
+void agent_anthropic_credentials_anthropic_route_is_oauth(void) { }
+
+/* PoP: _load_json_if_exists @ agent/anthropic_credentials.py:_load_json_if_exists */
+void agent_anthropic_credentials_load_json_if_exists(void) { }
+
+/* PoP: _atomic_write_private_json @ agent/anthropic_credentials.py:_atomic_write_private_json */
+void agent_anthropic_credentials_atomic_write_private_json(void) { }
+
+/* PoP: _commit_private_json @ agent/anthropic_credentials.py:_commit_private_json */
+void agent_anthropic_credentials_commit_private_json(void) { }
+
+/* PoP: _spent_rotation_sidecar_path @ agent/anthropic_credentials.py:_spent_rotation_sidecar_path */
+void agent_anthropic_credentials_spent_rotation_sidecar_path(void) { }
+
+/* PoP: spent_rotation_source_path @ agent/anthropic_credentials.py:spent_rotation_source_path */
+void agent_anthropic_credentials_spent_rotation_source_path(void) { }
+
+/* PoP: _read_spent_rotation_sidecar @ agent/anthropic_credentials.py:_read_spent_rotation_sidecar */
+void agent_anthropic_credentials_read_spent_rotation_sidecar(void) { }
+
+/* PoP: _append_spent_rotation_sidecar @ agent/anthropic_credentials.py:_append_spent_rotation_sidecar */
+void agent_anthropic_credentials_append_spent_rotation_sidecar(void) { }
+
+/* PoP: mark_rotation_consumed_uncommitted @ agent/anthropic_credentials.py:mark_rotation_consumed_uncommitted */
+void agent_anthropic_credentials_mark_rotation_consumed_uncommitted(void) { }
+
+/* PoP: is_rotation_consumed_uncommitted @ agent/anthropic_credentials.py:is_rotation_consumed_uncommitted */
+void agent_anthropic_credentials_is_rotation_consumed_uncommitted(void) { }
+
+/* PoP: _claude_oauth_record @ agent/anthropic_credentials.py:_claude_oauth_record */
+void agent_anthropic_credentials_claude_oauth_record(void) { }
+
+/* PoP: _decode_keychain_attr @ agent/anthropic_credentials.py:_decode_keychain_attr */
+void agent_anthropic_credentials_decode_keychain_attr(void) { }
+
+/* PoP: _find_claude_code_keychain_item @ agent/anthropic_credentials.py:_find_claude_code_keychain_item */
+void agent_anthropic_credentials_find_claude_code_keychain_item(void) { }
+
+/* PoP: _read_claude_code_keychain_payload @ agent/anthropic_credentials.py:_read_claude_code_keychain_payload */
+void agent_anthropic_credentials_read_claude_code_keychain_payload(void) { }
+
+/* PoP: _keychain_mirror_command @ agent/anthropic_credentials.py:_keychain_mirror_command */
+void agent_anthropic_credentials_keychain_mirror_command(void) { }
+
+/* PoP: claude_code_credentials_path @ agent/anthropic_credentials.py:claude_code_credentials_path */
+void agent_anthropic_credentials_claude_code_credentials_path(void) { }
+
+/* PoP: relogin_required @ agent/anthropic_credentials.py:relogin_required */
+void agent_anthropic_credentials_relogin_required(void) { }
+
+/* PoP: is_terminal_anthropic_refresh_error @ agent/anthropic_credentials.py:is_terminal_anthropic_refresh_error */
+void agent_anthropic_credentials_is_terminal_anthropic_refresh_error(void) { }
+
+/* PoP: _oauth_http_error @ agent/anthropic_credentials.py:_oauth_http_error */
+void agent_anthropic_credentials_oauth_http_error(void) { }
+
+/* PoP: _post_oauth_token @ agent/anthropic_credentials.py:_post_oauth_token */
+void agent_anthropic_credentials_post_oauth_token(void) { }
+
+/* PoP: _oauth_token_state @ agent/anthropic_credentials.py:_oauth_token_state */
+void agent_anthropic_credentials_oauth_token_state(void) { }
+
+/* PoP: _merge_keychain_credential_payload @ agent/anthropic_credentials.py:_merge_keychain_credential_payload */
+void agent_anthropic_credentials_merge_keychain_credential_payload(void) { }
+
+/* PoP: _mirror_claude_code_credentials_to_keychain @ agent/anthropic_credentials.py:_mirror_claude_code_credentials_to_keychain */
+void agent_anthropic_credentials_mirror_claude_code_credentials_to_keychain(void) { }
+
+/* PoP: _resolve_anthropic_pool_token @ agent/anthropic_credentials.py:_resolve_anthropic_pool_token */
+void agent_anthropic_credentials_resolve_anthropic_pool_token(void) { }
+
+/* PoP: _available_anthropic_token @ agent/anthropic_credentials.py:_available_anthropic_token */
+void agent_anthropic_credentials_available_anthropic_token(void) { }
+
+/* PoP: _get_hermes_oauth_file @ agent/anthropic_credentials.py:_get_hermes_oauth_file */
+void agent_anthropic_credentials_get_hermes_oauth_file(void) { }
+
+/* PoP: _root_hermes_oauth_file @ agent/anthropic_credentials.py:_root_hermes_oauth_file */
+void agent_anthropic_credentials_root_hermes_oauth_file(void) { }
+
+/* PoP: _write_hermes_oauth_credentials @ agent/anthropic_credentials.py:_write_hermes_oauth_credentials */
+void agent_anthropic_credentials_write_hermes_oauth_credentials(void) { }
