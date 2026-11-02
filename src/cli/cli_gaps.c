@@ -1171,3 +1171,15 @@ void gateway_platforms_api_server_authority_runs_stop_run(void) { }
 
 /* PoP: resolve_unknown_run @ gateway/platforms/api_server_authority_runs.py:resolve_unknown_run */
 void gateway_platforms_api_server_authority_runs_resolve_unknown_run(void) { }
+
+/* PoP: clean_attachment_filename @ gateway/platforms/event.py:clean_attachment_filename */
+void gateway_platforms_event_clean_attachment_filename(void) { }
+
+/* PoP: absorb_reply_expected @ gateway/platforms/event.py:absorb_reply_expected */
+void gateway_platforms_event_absorb_reply_expected(void) { }
+
+/* PoP: extend_media @ gateway/platforms/event.py:extend_media */
+void gateway_platforms_event_extend_media(void) { }
+
+/* PoP: _command_text @ gateway/platforms/event.py:_command_text */
+void gateway_platforms_event_command_text(void) { }
