@@ -527,3 +527,9 @@ void agent_aux_accounting_reset_accounting_context(void) { }
 
 /* PoP: record_aux_usage @ agent/aux_accounting.py:record_aux_usage */
 void agent_aux_accounting_record_aux_usage(void) { }
+
+/* PoP: async_api_key @ agent/auxiliary_async_rebuild.py:async_api_key */
+void *agent_auxiliary_async_rebuild_async_api_key(void) { return NULL; }
+
+/* PoP: configured_default_headers @ agent/auxiliary_async_rebuild.py:configured_default_headers */
+void *agent_auxiliary_async_rebuild_configured_default_headers(void) { return NULL; }
