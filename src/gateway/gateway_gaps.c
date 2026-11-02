@@ -51,3 +51,6 @@ void *gateway_session_command_sink_active_sink(void) { return NULL; }
 
 /* PoP: _scoped_lock_record_is_stale @ gateway/status_scoped_locks.py:_scoped_lock_record_is_stale */
 int gateway_status_scoped_locks_scoped_lock_record_is_stale(void) { return 0; }
+
+/* PoP: _dispatch_tool_call @ gateway/stream_dispatch.py:_dispatch_tool_call */
+void gateway_stream_dispatch_dispatch_tool_call(void) { }
