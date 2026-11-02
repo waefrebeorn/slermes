@@ -1147,3 +1147,27 @@ void gateway_platforms_access_policy_mixin_is_dm_intake_allowed(void) { }
 
 /* PoP: _is_group_allowed @ gateway/platforms/access_policy_mixin.py:_is_group_allowed */
 void gateway_platforms_access_policy_mixin_is_group_allowed(void) { }
+
+/* PoP: _authority @ gateway/platforms/api_server_authority_runs.py:_authority */
+void gateway_platforms_api_server_authority_runs_authority(void) { }
+
+/* PoP: store_error_response @ gateway/platforms/api_server_authority_runs.py:store_error_response */
+void gateway_platforms_api_server_authority_runs_store_error_response(void) { }
+
+/* PoP: continued_session @ gateway/platforms/api_server_authority_runs.py:continued_session */
+void gateway_platforms_api_server_authority_runs_continued_session(void) { }
+
+/* PoP: run_admission @ gateway/platforms/api_server_authority_runs.py:run_admission */
+void gateway_platforms_api_server_authority_runs_run_admission(void) { }
+
+/* PoP: run_projection @ gateway/platforms/api_server_authority_runs.py:run_projection */
+void gateway_platforms_api_server_authority_runs_run_projection(void) { }
+
+/* PoP: respond_run @ gateway/platforms/api_server_authority_runs.py:respond_run */
+void gateway_platforms_api_server_authority_runs_respond_run(void) { }
+
+/* PoP: stop_run @ gateway/platforms/api_server_authority_runs.py:stop_run */
+void gateway_platforms_api_server_authority_runs_stop_run(void) { }
+
+/* PoP: resolve_unknown_run @ gateway/platforms/api_server_authority_runs.py:resolve_unknown_run */
+void gateway_platforms_api_server_authority_runs_resolve_unknown_run(void) { }
