@@ -147,3 +147,5 @@
      pthread_mutex_unlock(&_boot_fingerprint_mutex);
      return true;
  }
+/* PoP: current_code_sha @ gateway/code_skew.py:current_code_sha */
+const char *gateway_code_skew_current_code_sha(void) { return ""; }
