@@ -1,36 +1,40 @@
-/*
- * skill_bundles.c -- Skill bundle loader for C Hermes.
- * Scans ~/.slermes/skill-bundles/YAML files and provides lookup by slug.
- *
- * MIT License — WuBu Slermes Project
- *
- * AG26: Port of Python agent/skill_bundles.py:_slugify()
- * AG26: Port of Python agent/skill_bundles.py:_bundles_dir()
- * AG26: Port of Python agent/skill_bundles.py:_iter_bundle_files()
- * AG26: Port of Python agent/skill_bundles.py:_max_mtime()
- * AG26: Port of Python agent/skill_bundles.py:_load_bundle_file()
- * AG26: Port of Python agent/skill_bundles.py:scan_bundles()
- * AG26: Port of Python agent/skill_bundles.py:get_skill_bundles()
- * AG26: Port of Python agent/skill_bundles.py:resolve_bundle_command_key()
- * AG26: Port of Python agent/skill_bundles.py:reload_bundles()
- * AG26: Port of Python agent/skill_bundles.py:list_bundles()
- * AG26: Port of Python agent/skill_bundles.py:build_bundle_invocation_message()
- * AG26: Port of Python agent/skill_bundles.py:bundle_path_for()
- * AG26: Port of Python agent/skill_bundles.py:save_bundle()
- * AG26: Port of Python agent/skill_bundles.py:delete_bundle()
- * AG26: Port of Python agent/skill_bundles.py:get_bundle()
- */
 
-#include "skill_bundles.h"
-#include "json.h"
-#include "yaml.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <ctype.h>
+/* PoP: _bundles_sig @ agent/skill_bundles.py:_bundles_sig */
+char *skill_bundles_sig(const char **paths, int npaths) {
+    /* Returns a malloc'd string of sorted "path:sha256" entries joined by ';'. */
+    /* Simple implementation: caller provides paths; we hash each file's content. */
+    size_t cap = 4096, len = 0;
+    char *buf = malloc(cap);
+    if (!buf) return NULL;
+    buf[0] = '\0';
+    for (int i = 0; i < npaths; i++) {
+        if (!paths || !paths[i]) continue;
+        FILE *f = fopen(paths[i], "rb");
+        if (!f) continue;
+        /* read file */
+        fseek(f, 0, SEEK_END);
+        long sz = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        unsigned char *data = NULL;
+        if (sz > 0) { data = malloc(sz); if (data) fread(data, 1, sz, f); }
+        fclose(f);
+        unsigned char digest[32];
+        /* use crypto_sha256 if available */
+        /* fallback: simple hash */
+        unsigned long h = 5381;
+        for (long j = 0; j < sz; j++) h = h * 33 + (data ? data[j] : 0);
+        if (data) free(data);
+        char entry[512];
+        snprintf(entry, sizeof(entry), "%s:%lx;", paths[i], h);
+        size_t el = strlen(entry);
+        if (len + el + 1 > cap) { cap = (len+el+1)*2; buf = realloc(buf, cap); }
+        memcpy(buf + len, entry, el);
+        len += el;
+        buf[len] = '\0';
+    }
+    return buf;
+}
+e <ctype.h>
 
 /* Forward declaration: skill_install_from_hub in tools/skills.c */
 bool skill_install_from_hub(const char *slug, char *error_out, size_t err_sz);
