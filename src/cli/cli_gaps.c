@@ -471,3 +471,6 @@ int tools_bot_desktop_idle_watch_next_check_in(void) { return 0; }
 
 /* PoP: _own_launcher @ tools/bot_desktop/idle_watch.py:_own_launcher */
 int tools_bot_desktop_idle_watch_own_launcher(void) { return 0; }
+
+/* PoP: resolves @ tools/connectors/contract.py:resolves */
+void tools_connectors_contract_resolves(void) { }
