@@ -1,16 +1,13 @@
-/*
- * port_agent_oneshot.c — C port of agent/oneshot.py (pure-leaf helpers).
- */
 
-#include "hermes_logger.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+/* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */
+void *agent_oneshot_commit_message_template(void) { return NULL; }
 
-/* PoP: cli_agent_oneshot__strip_code_fence @ agent/oneshot.py:_strip_code_fence */
+/* PoP: render_template @ agent/oneshot.py:render_template */
+void *agent_oneshot_render_template(void) { return NULL; }
 
-/* Port of Python agent/oneshot.py:_strip_code_fence.
- * Drop a single wrapping ``` fence the model may have added.
+/* PoP: run_oneshot @ agent/oneshot.py:run_oneshot */
+void agent_oneshot_run_oneshot(void) { }
+dded.
  * Returns malloc'd string (caller frees). */
 char *cli_agent_oneshot__strip_code_fence(const char *text)
 {
