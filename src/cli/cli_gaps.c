@@ -1,11 +1,10 @@
 
-/* PoP: _unavailable_warning_key @ agent/agent_init_memory_provider.py:_unavailable_warning_key */
-void *agent_agent_init_memory_provider_unavailable_warning_key(void) { return NULL; }
+/* PoP: _configure_ollama_num_ctx @ agent/agent_init_ollama.py:_configure_ollama_num_ctx */
+void agent_agent_init_ollama_configure_ollama_num_ctx(void) { }
 
-/* PoP: _warn_once @ agent/agent_init_memory_provider.py:_warn_once */
-void agent_agent_init_memory_provider_warn_once(void) { }
-
-/* PoP: _warn_memory_provider_unavailable @ agent/agent_init_memory_provider.py:_warn_memory_provider_unavailable */
+/* PoP: _clamp_compressor_to_ollama_num_ctx @ agent/agent_init_ollama.py:_clamp_compressor_to_ollama_num_ctx */
+void agent_agent_init_ollama_clamp_compressor_to_ollama_num_ctx(void) { }
+er_unavailable @ agent/agent_init_memory_provider.py:_warn_memory_provider_unavailable */
 void agent_agent_init_memory_provider_warn_memory_provider_unavailable(void) { }
 
 /* PoP: resolve_memory_provider @ agent/agent_init_memory_provider.py:resolve_memory_provider */
