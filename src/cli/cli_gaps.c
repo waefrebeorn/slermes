@@ -1307,3 +1307,27 @@ void gateway_run_inbound_unauthorized_unauthorized_owner_hint(void) { }
 
 /* PoP: first_time @ gateway/run_inbound_unauthorized.py:first_time */
 void gateway_run_inbound_unauthorized_first_time(void) { }
+
+/* PoP: authorize @ gateway/session_busy_controls.py:authorize */
+void gateway_session_busy_controls_authorize(void) { }
+
+/* PoP: busy_config @ gateway/session_busy_controls.py:busy_config */
+void gateway_session_busy_controls_busy_config(void) { }
+
+/* PoP: verbose_config @ gateway/session_busy_controls.py:verbose_config */
+void gateway_session_busy_controls_verbose_config(void) { }
+
+/* PoP: show_reasoning_config @ gateway/session_busy_controls.py:show_reasoning_config */
+void gateway_session_busy_controls_show_reasoning_config(void) { }
+
+/* PoP: service_tier_config @ gateway/session_busy_controls.py:service_tier_config */
+void gateway_session_busy_controls_service_tier_config(void) { }
+
+/* PoP: yolo_config @ gateway/session_busy_controls.py:yolo_config */
+void gateway_session_busy_controls_yolo_config(void) { }
+
+/* PoP: adopts_owner_agent @ gateway/session_busy_controls.py:adopts_owner_agent */
+void gateway_session_busy_controls_adopts_owner_agent(void) { }
+
+/* PoP: correct @ gateway/session_busy_controls.py:correct */
+void gateway_session_busy_controls_correct(void) { }
