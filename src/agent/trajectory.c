@@ -228,3 +228,6 @@ char *convert_to_trajectory_format(const message_t *messages, int count) {
     json_free(root);
     return result;
 }
+
+/* PoP: _lock_append_handle @ agent/trajectory.py:_lock_append_handle */
+void trajectory_lock_append_handle(void) { }
