@@ -1,12 +1,13 @@
 
-/* PoP: _cleared_status_copy @ agent/credential_pool_admin.py:_cleared_status_copy */
-void *agent_credential_pool_admin_cleared_status_copy(void) { return NULL; }
+/* PoP: track @ agent/interrupt_scope.py:track */
+void agent_interrupt_scope_track(void) { }
 
-/* PoP: reset_status @ agent/credential_pool_admin.py:reset_status */
-void agent_credential_pool_admin_reset_status(void) { }
+/* PoP: bind_interrupt_scope @ agent/interrupt_scope.py:bind_interrupt_scope */
+void agent_interrupt_scope_bind_interrupt_scope(void) { }
 
-/* PoP: move_entry @ agent/credential_pool_admin.py:move_entry */
-void agent_credential_pool_admin_move_entry(void) { }
+/* PoP: track_in_interrupt_scope @ agent/interrupt_scope.py:track_in_interrupt_scope */
+void agent_interrupt_scope_track_in_interrupt_scope(void) { }
+_admin_move_entry(void) { }
 ity(void) { }
 
 /* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
