@@ -513,3 +513,12 @@ void tools_file_operations_native_open_regular(void) { }
 
 /* PoP: read_window_below_tool @ tools/read_window_tool.py:read_window_below_tool */
 void tools_read_window_tool_read_window_below_tool(void) { }
+
+/* PoP: ensure_spill_dir @ tools/spill_safety.py:ensure_spill_dir */
+void tools_spill_safety_ensure_spill_dir(void) { }
+
+/* PoP: open_exclusive @ tools/spill_safety.py:open_exclusive */
+void tools_spill_safety_open_exclusive(void) { }
+
+/* PoP: write_text_exclusive @ tools/spill_safety.py:write_text_exclusive */
+void tools_spill_safety_write_text_exclusive(void) { }
