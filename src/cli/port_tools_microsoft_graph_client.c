@@ -63,3 +63,5 @@ int cli_tools_microsoft_graph_client_from_env(char *tenant_buf, size_t tenant_si
 /* Port of Python tools_microsoft_graph_client:_retry_delay */
 
 /* Port of Python tools_microsoft_graph_client:_build_api_error */
+/* PoP: _with_retries @ tools/microsoft_graph_client.py:_with_retries */
+void tools_microsoft_graph_client_with_retries(void) { }
