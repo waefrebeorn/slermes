@@ -1,18 +1,19 @@
 
-/* PoP: _block_type @ agent/anthropic_message_convert.py:_block_type */
-void *agent_anthropic_message_convert_block_type(void) { return NULL; }
+/* PoP: _activity_lock @ agent/activity_tracking.py:_activity_lock */
+void *agent_activity_tracking_activity_lock(void) { return NULL; }
 
-/* PoP: _has_block_type @ agent/anthropic_message_convert.py:_has_block_type */
-int agent_anthropic_message_convert_has_block_type(void) { return 0; }
+/* PoP: _liveness_activity_lock @ agent/activity_tracking.py:_liveness_activity_lock */
+void *agent_activity_tracking_liveness_activity_lock(void) { return NULL; }
 
-/* PoP: _is_blank_text_block @ agent/anthropic_message_convert.py:_is_blank_text_block */
-int agent_anthropic_message_convert_is_blank_text_block(void) { return 0; }
+/* PoP: _touch_activity @ agent/activity_tracking.py:_touch_activity */
+void agent_activity_tracking_touch_activity(void) { }
 
-/* PoP: _cache_control_of @ agent/anthropic_message_convert.py:_cache_control_of */
-void *agent_anthropic_message_convert_cache_control_of(void) { return NULL; }
+/* PoP: _persist_session_activity_if_due @ agent/activity_tracking.py:_persist_session_activity_if_due */
+void agent_activity_tracking_persist_session_activity_if_due(void) { }
 
-/* PoP: _text_block_with_citations @ agent/anthropic_message_convert.py:_text_block_with_citations */
-void *agent_anthropic_message_convert_text_block_with_citations(void) { return NULL; }
+/* PoP: _reset_activity_labels_after_turn @ agent/activity_tracking.py:_reset_activity_labels_after_turn */
+void agent_activity_tracking_reset_activity_labels_after_turn(void) { }
+ions(void) { return NULL; }
 
 /* PoP: _parse_tool_args @ agent/anthropic_message_convert.py:_parse_tool_args */
 void *agent_anthropic_message_convert_parse_tool_args(void) { return NULL; }
