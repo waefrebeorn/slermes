@@ -1,19 +1,16 @@
 
-/* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */
-void agent_thread_scoped_output_unsilence(void) { }
+/* PoP: _builtin_namespaces @ agent/vault_backend_registry.py:_builtin_namespaces */
+void *agent_vault_backend_registry_builtin_namespaces(void) { return NULL; }
 
-/* PoP: writelines @ agent/thread_scoped_output.py:writelines */
-void agent_thread_scoped_output_writelines(void) { }
+/* PoP: _namespace_error @ agent/vault_backend_registry.py:_namespace_error */
+void *agent_vault_backend_registry_namespace_error(void) { return NULL; }
 
-/* PoP: __getattr__ @ agent/thread_scoped_output.py:__getattr__ */
-void *agent_thread_scoped_output_getattr(void) { return NULL; }
+/* PoP: static_name @ agent/vault_backend_registry.py:static_name */
+void *agent_vault_backend_registry_static_name(void) { return NULL; }
 
-/* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
-void agent_thread_scoped_output_thread_scoped_silence(void) { }
-*/
-void agent_relay_compaction_emit_compaction_mark(void) { }
-rn NULL; }
-background @ agent/pet/generate/imagegen.py:_rejected_background */
+/* PoP: enabled_plugin_backends @ agent/vault_backend_registry.py:enabled_plugin_backends */
+void *agent_vault_backend_registry_enabled_plugin_backends(void) { return NULL; }
+py:_rejected_background */
 void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
 prompt_reading_hook(void) { }
 _auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
