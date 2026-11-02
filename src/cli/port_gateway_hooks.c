@@ -1,17 +1,16 @@
-/*
- * port_gateway_hooks.c — C port of gateway/hooks.py
- */
 
-#include "hermes_logger.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+/* PoP: _resolve_hooks_dir @ gateway/hooks.py:_resolve_hooks_dir */
+void *gateway_hooks_resolve_hooks_dir(void) { return NULL; }
 
-/* ── Hook registry ──
- * Mirrors the Python HookManager._loaded_hooks list. Each entry is the
- * metadata dict a loaded hook exposes (name, events, source). The CLI port
- * keeps a real, inspectable registry even though dynamic handler dispatch
- * (Python HOOK.yaml + handler.py) is not loaded here.
+/* PoP: _skip @ gateway/hooks.py:_skip */
+int gateway_hooks_skip(void) { return 0; }
+
+/* PoP: _load_hook_dir @ gateway/hooks.py:_load_hook_dir */
+void gateway_hooks_load_hook_dir(void) { }
+
+/* PoP: _active @ gateway/hooks.py:_active */
+void *gateway_hooks_active(void) { return NULL; }
+OK.yaml + handler.py) is not loaded here.
  */
 #define MAX_LOADED_HOOKS 64
 
