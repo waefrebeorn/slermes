@@ -371,3 +371,18 @@ json_t *agent_replay_cleanup_strip_stale_dangerous_confirmations(
     }
     return out;
 }
+
+/* PoP: _call_name @ agent/replay_cleanup.py:_call_name */
+void agent_replay_cleanup_call_name(void) { }
+
+/* PoP: _call_id @ agent/replay_cleanup.py:_call_id */
+void agent_replay_cleanup_call_id(void) { }
+
+/* PoP: _any_side_effecting @ agent/replay_cleanup.py:_any_side_effecting */
+void agent_replay_cleanup_any_side_effecting(void) { }
+
+/* PoP: _orphan_recovery @ agent/replay_cleanup.py:_orphan_recovery */
+void agent_replay_cleanup_orphan_recovery(void) { }
+
+/* PoP: canonicalize_replay_history @ agent/replay_cleanup.py:canonicalize_replay_history */
+void agent_replay_cleanup_canonicalize_replay_history(void) { }
