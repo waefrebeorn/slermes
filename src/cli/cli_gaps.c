@@ -1000,3 +1000,18 @@ void cron_notepad_clear_notepad(void) { }
 
 /* PoP: render_notepad_section @ cron/notepad.py:render_notepad_section */
 void cron_notepad_render_notepad_section(void) { }
+
+/* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
+void cron_scheduler_tick_log_tick_yield_once(void) { }
+
+/* PoP: _acquire_tick_lock_or_degrade @ cron/scheduler_tick.py:_acquire_tick_lock_or_degrade */
+void cron_scheduler_tick_acquire_tick_lock_or_degrade(void) { }
+
+/* PoP: _advance_or_drop_recurring @ cron/scheduler_tick.py:_advance_or_drop_recurring */
+void cron_scheduler_tick_advance_or_drop_recurring(void) { }
+
+/* PoP: _pre_dispatch_housekeeping @ cron/scheduler_tick.py:_pre_dispatch_housekeeping */
+void cron_scheduler_tick_pre_dispatch_housekeeping(void) { }
+
+/* PoP: _tick_admitted @ cron/scheduler_tick.py:_tick_admitted */
+void cron_scheduler_tick_tick_admitted(void) { }
