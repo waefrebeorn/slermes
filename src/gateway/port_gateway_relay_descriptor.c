@@ -104,3 +104,6 @@ capability_descriptor_t capability_descriptor_from_json(const char *data)
     json_free(raw);
     return desc;
 }
+
+/* PoP: supports_op @ gateway/relay/descriptor.py:supports_op */
+int gateway_relay_descriptor_supports_op(const char *op) { (void)op; return 0; }
