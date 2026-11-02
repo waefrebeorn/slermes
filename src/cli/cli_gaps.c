@@ -1,24 +1,22 @@
 
-/* PoP: _normalized_lower @ agent/anthropic_endpoints.py:_normalized_lower */
-const char *agent_anthropic_endpoints_normalized_lower(void) { return NULL; }
+/* PoP: claude_family_version @ agent/anthropic_thinking_policy.py:claude_family_version */
+void *agent_anthropic_thinking_policy_claude_family_version(void) { return NULL; }
 
-/* PoP: _is_opencode_endpoint @ agent/anthropic_endpoints.py:_is_opencode_endpoint */
-int agent_anthropic_endpoints_is_opencode_endpoint(void) { return 0; }
+/* PoP: model_preserves_prior_thinking @ agent/anthropic_thinking_policy.py:model_preserves_prior_thinking */
+int agent_anthropic_thinking_policy_model_preserves_prior_thinking(void) { return 0; }
 
-/* PoP: _model_name_is_deepseek_thinking @ agent/anthropic_endpoints.py:_model_name_is_deepseek_thinking */
-int agent_anthropic_endpoints_model_name_is_deepseek_thinking(void) { return 0; }
+/* PoP: _is_off_anthropic @ agent/anthropic_thinking_policy.py:_is_off_anthropic */
+int agent_anthropic_thinking_policy_is_off_anthropic(void) { return 0; }
 
-/* PoP: _is_nous_portal_endpoint @ agent/anthropic_endpoints.py:_is_nous_portal_endpoint */
-int agent_anthropic_endpoints_is_nous_portal_endpoint(void) { return 0; }
+/* PoP: anthropic_thinking_route @ agent/anthropic_thinking_policy.py:anthropic_thinking_route */
+void *agent_anthropic_thinking_policy_anthropic_thinking_route(void) { return NULL; }
 
-/* PoP: _is_bedrock_runtime_endpoint @ agent/anthropic_endpoints.py:_is_bedrock_runtime_endpoint */
-int agent_anthropic_endpoints_is_bedrock_runtime_endpoint(void) { return 0; }
+/* PoP: route_replays_prior_thinking @ agent/anthropic_thinking_policy.py:route_replays_prior_thinking */
+int agent_anthropic_thinking_policy_route_replays_prior_thinking(void) { return 0; }
 
-/* PoP: _is_vertex_ai_endpoint @ agent/anthropic_endpoints.py:_is_vertex_ai_endpoint */
-int agent_anthropic_endpoints_is_vertex_ai_endpoint(void) { return 0; }
-
-/* PoP: _is_claude_platform_endpoint @ agent/anthropic_endpoints.py:_is_claude_platform_endpoint */
-int agent_anthropic_endpoints_is_claude_platform_endpoint(void) { return 0; }
+/* PoP: native_anthropic_preserves_prior_thinking @ agent/anthropic_thinking_policy.py:native_anthropic_preserves_prior_thinking */
+int agent_anthropic_thinking_policy_native_anthropic_preserves_prior_thinking(void) { return 0; }
+nts_is_claude_platform_endpoint(void) { return 0; }
  }
 
 /* PoP: _refresh_legacy @ agent/account_usage_cache.py:_refresh_legacy */
