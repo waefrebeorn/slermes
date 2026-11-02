@@ -471,6 +471,7 @@ bool endpoint_speaks_anthropic(const char *base_url) {
         return true;
 
     if (strstr(buf, "api.kimi.com") && strstr(buf, "/coding"))
+/* PoP: _api_key @ agent/video_gen_provider.py:_api_key */
 /* Port of Python: _nous_api_key */
         return true;
 
@@ -485,6 +486,7 @@ bool is_anthropic_compat_endpoint(const char *provider,
 }
 
 bool validate_base_url(const char *base_url) {
+/* PoP: _base_url @ agent/video_gen_provider.py:_base_url */
 /* Port of Python: _nous_base_url */
     if (!base_url || base_url[0] == '\0') return true;
     const char *url = base_url;
