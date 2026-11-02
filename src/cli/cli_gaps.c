@@ -417,3 +417,9 @@ void hermes_cli_pairing_pairing_command(void) { }
 
 /* PoP: _cmd_clear_pending @ hermes_cli/pairing.py:_cmd_clear_pending */
 void hermes_cli_pairing_cmd_clear_pending(void) { }
+
+/* PoP: extract_compress_flags @ hermes_cli/partial_compress.py:extract_compress_flags */
+void hermes_cli_partial_compress_extract_compress_flags(void) { }
+
+/* PoP: summarize_compress_preview @ hermes_cli/partial_compress.py:summarize_compress_preview */
+void hermes_cli_partial_compress_summarize_compress_preview(void) { }
