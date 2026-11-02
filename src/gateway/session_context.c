@@ -179,3 +179,27 @@ int gw_session_async_delivery_supported(void)
     if (_session_async_delivery < 0) return 1;
     return _session_async_delivery ? 1 : 0;
 }
+
+/* PoP: _runtime_cwd @ gateway/session_context.py:_runtime_cwd */
+void gateway_session_context_runtime_cwd(void) { }
+
+/* PoP: scoped_current_session_id @ gateway/session_context.py:scoped_current_session_id */
+void gateway_session_context_scoped_current_session_id(void) { }
+
+/* PoP: scoped_session_key @ gateway/session_context.py:scoped_session_key */
+void gateway_session_context_scoped_session_key(void) { }
+
+/* PoP: bound_session_key @ gateway/session_context.py:bound_session_key */
+void gateway_session_context_bound_session_key(void) { }
+
+/* PoP: source_route_metadata @ gateway/session_context.py:source_route_metadata */
+void gateway_session_context_source_route_metadata(void) { }
+
+/* PoP: session_is_messaging_surface @ gateway/session_context.py:session_is_messaging_surface */
+void gateway_session_context_session_is_messaging_surface(void) { }
+
+/* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
+void gateway_session_context_declare_stateless_channel(void) { }
+
+/* PoP: session_history_delivery_supported @ gateway/session_context.py:session_history_delivery_supported */
+void gateway_session_context_session_history_delivery_supported(void) { }
