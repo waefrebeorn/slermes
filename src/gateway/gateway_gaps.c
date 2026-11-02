@@ -54,3 +54,6 @@ int gateway_status_scoped_locks_scoped_lock_record_is_stale(void) { return 0; }
 
 /* PoP: _dispatch_tool_call @ gateway/stream_dispatch.py:_dispatch_tool_call */
 void gateway_stream_dispatch_dispatch_tool_call(void) { }
+
+/* PoP: _resolve_target_pid @ gateway/systemd_stop_mark.py:_resolve_target_pid */
+int gateway_systemd_stop_mark_resolve_target_pid(void) { return 0; }
