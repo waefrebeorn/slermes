@@ -60,3 +60,9 @@ void registry_init_ansi_strip(void) {
         "Remove ANSI escape codes from text. Returns cleaned text with original and stripped lengths.",
         SCHEMA, ansi_strip_handler);
 }
+
+/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+void tools_ansi_strip_sanitize_display_text(void) { }
+
+/* PoP: strip_unicode_tags @ tools/ansi_strip.py:strip_unicode_tags */
+void tools_ansi_strip_strip_unicode_tags(void) { }
