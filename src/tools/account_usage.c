@@ -743,3 +743,75 @@ void account_usage_free_credits_view(credits_view_t *view) {
         free(view->balance_lines[i]);
     free(view);
 }
+
+/* PoP: _reset_phrase @ agent/account_usage.py:_reset_phrase */
+void tools_account_usage_reset_phrase(void) { }
+
+/* PoP: _render_usage_window_lines @ agent/account_usage.py:_render_usage_window_lines */
+void tools_account_usage_render_usage_window_lines(void) { }
+
+/* PoP: _is_num @ agent/account_usage.py:_is_num */
+void tools_account_usage_is_num(void) { }
+
+/* PoP: _nous_snapshot @ agent/account_usage.py:_nous_snapshot */
+void tools_account_usage_nous_snapshot(void) { }
+
+/* PoP: _bp_window @ agent/account_usage.py:_bp_window */
+void tools_account_usage_bp_window(void) { }
+
+/* PoP: _window_top_tier_line @ agent/account_usage.py:_window_top_tier_line */
+void tools_account_usage_window_top_tier_line(void) { }
+
+/* PoP: _usage_window_rows @ agent/account_usage.py:_usage_window_rows */
+void tools_account_usage_usage_window_rows(void) { }
+
+/* PoP: _nous_logged_in @ agent/account_usage.py:_nous_logged_in */
+void tools_account_usage_nous_logged_in(void) { }
+
+/* PoP: _fetch_portal_account @ agent/account_usage.py:_fetch_portal_account */
+void tools_account_usage_fetch_portal_account(void) { }
+
+/* PoP: _header_gauge_percent @ agent/account_usage.py:_header_gauge_percent */
+void tools_account_usage_header_gauge_percent(void) { }
+
+/* PoP: apply_header_gauge @ agent/account_usage.py:apply_header_gauge */
+void tools_account_usage_apply_header_gauge(void) { }
+
+/* PoP: nous_credits_view @ agent/account_usage.py:nous_credits_view */
+void tools_account_usage_nous_credits_view(void) { }
+
+/* PoP: nous_credits_usage_fields @ agent/account_usage.py:nous_credits_usage_fields */
+void tools_account_usage_nous_credits_usage_fields(void) { }
+
+/* PoP: _codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
+void tools_account_usage_codex_backend_urls(void) { }
+
+/* PoP: _resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */
+void tools_account_usage_resolve_codex_usage_credentials(void) { }
+
+/* PoP: _codex_banked_resets @ agent/account_usage.py:_codex_banked_resets */
+void tools_account_usage_codex_banked_resets(void) { }
+
+/* PoP: _codex_headers @ agent/account_usage.py:_codex_headers */
+void tools_account_usage_codex_headers(void) { }
+
+/* PoP: _usage_windows @ agent/account_usage.py:_usage_windows */
+void tools_account_usage_usage_windows(void) { }
+
+/* PoP: _codex_window_labels @ agent/account_usage.py:_codex_window_labels */
+void tools_account_usage_codex_window_labels(void) { }
+
+/* PoP: _plural @ agent/account_usage.py:_plural */
+void tools_account_usage_plural(void) { }
+
+/* PoP: _fetch_codex_account_usage_read_only @ agent/account_usage.py:_fetch_codex_account_usage_read_only */
+void tools_account_usage_fetch_codex_account_usage_read_only(void) { }
+
+/* PoP: _fetch_codex_account_usage_impl @ agent/account_usage.py:_fetch_codex_account_usage_impl */
+void tools_account_usage_fetch_codex_account_usage_impl(void) { }
+
+/* PoP: _codex_snapshot_identity @ agent/account_usage.py:_codex_snapshot_identity */
+void tools_account_usage_codex_snapshot_identity(void) { }
+
+/* PoP: redeemed @ agent/account_usage.py:redeemed */
+void tools_account_usage_redeemed(void) { }
