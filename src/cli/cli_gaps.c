@@ -1,12 +1,13 @@
 
-/* PoP: _quarantined_nous_error @ agent/auxiliary_unavailable.py:_quarantined_nous_error */
-void *agent_auxiliary_unavailable_quarantined_nous_error(void) { return NULL; }
+/* PoP: _cleared_status_copy @ agent/credential_pool_admin.py:_cleared_status_copy */
+void *agent_credential_pool_admin_cleared_status_copy(void) { return NULL; }
 
-/* PoP: _sentence @ agent/auxiliary_unavailable.py:_sentence */
-void *agent_auxiliary_unavailable_sentence(void) { return NULL; }
+/* PoP: reset_status @ agent/credential_pool_admin.py:reset_status */
+void agent_credential_pool_admin_reset_status(void) { }
 
-/* PoP: pool_cooldown_message @ agent/auxiliary_unavailable.py:pool_cooldown_message */
-void *agent_auxiliary_unavailable_pool_cooldown_message(void) { return NULL; }
+/* PoP: move_entry @ agent/credential_pool_admin.py:move_entry */
+void agent_credential_pool_admin_move_entry(void) { }
+ry_unavailable_pool_cooldown_message(void) { return NULL; }
 
 /* PoP: pool_billing_message @ agent/auxiliary_unavailable.py:pool_billing_message */
 void *agent_auxiliary_unavailable_pool_billing_message(void) { return NULL; }
