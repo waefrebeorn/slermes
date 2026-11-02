@@ -1090,3 +1090,18 @@ void gateway_memory_status_read_state_files(void) { }
 
 /* PoP: collect_memory_status @ gateway/memory_status.py:collect_memory_status */
 void gateway_memory_status_collect_memory_status(void) { }
+
+/* PoP: retryable_ingress @ gateway/parked_route_refusal.py:retryable_ingress */
+void gateway_parked_route_refusal_retryable_ingress(void) { }
+
+/* PoP: _notice_due @ gateway/parked_route_refusal.py:_notice_due */
+void gateway_parked_route_refusal_notice_due(void) { }
+
+/* PoP: drop_rejected_route @ gateway/parked_route_refusal.py:drop_rejected_route */
+void gateway_parked_route_refusal_drop_rejected_route(void) { }
+
+/* PoP: refuse_parked_route @ gateway/parked_route_refusal.py:refuse_parked_route */
+void gateway_parked_route_refusal_refuse_parked_route(void) { }
+
+/* PoP: _send_refusal @ gateway/parked_route_refusal.py:_send_refusal */
+void gateway_parked_route_refusal_send_refusal(void) { }
