@@ -48,3 +48,6 @@ int gateway_plugin_keyless_inject_launched_by_classic_cli(void) { return 0; }
 
 /* PoP: active_sink @ gateway/session_command_sink.py:active_sink */
 void *gateway_session_command_sink_active_sink(void) { return NULL; }
+
+/* PoP: _scoped_lock_record_is_stale @ gateway/status_scoped_locks.py:_scoped_lock_record_is_stale */
+int gateway_status_scoped_locks_scoped_lock_record_is_stale(void) { return 0; }
