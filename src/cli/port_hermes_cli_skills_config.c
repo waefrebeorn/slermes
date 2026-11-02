@@ -138,3 +138,6 @@ char *cli_hermes_cli_skills_config__select_platform(const char *args)
     return NULL;
 }
 
+
+/* PoP: _normalize_skill_names @ hermes_cli/skills_config.py:_normalize_skill_names */
+void hermes_cli_skills_config_normalize_skill_names(void) { }
