@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <math.h>
 
 /* ================================================================
  *  Public API
@@ -338,4 +339,15 @@ int budget_tracker_iterations_remaining(const budget_tracker_t *bt) {
      * Python computes self.max_iterations - self._iterations_used;
      * C does the same arithmetic on the struct fields. */
     return bt->max_iterations - bt->iterations_used;
+}
+
+/* PoP: normalize_budget_warning_ratio @ agent/iteration_budget.py:normalize_budget_warning_ratio */
+double normalize_budget_warning_ratio(double value) {
+    /* Returns -1.0 for None/off; otherwise a finite ratio strictly in (0,1). */
+    if (value != value) return -1.0; /* NaN => None */
+    /* bool guard: callers pass 1.0 for True, but True is not a valid ratio (not < 1? 1.0 not <1) -> -1 */
+    if (!(value > 0.0 && value < 1.0)) return -1.0;
+    /* finiteness */
+    if (value == 1.0/0.0 || value == -1.0/0.0) return -1.0;
+    return value;
 }
