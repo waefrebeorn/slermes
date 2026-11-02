@@ -1257,3 +1257,21 @@ void gateway_profile_routing_parse_profile_routes(void) { }
 
 /* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
 void gateway_profile_routing_match_profile_route(void) { }
+
+/* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
+void gateway_readiness_probe_state_db(void) { }
+
+/* PoP: _probe_config @ gateway/readiness.py:_probe_config */
+void gateway_readiness_probe_config(void) { }
+
+/* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
+void gateway_readiness_probe_disk(void) { }
+
+/* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
+void gateway_readiness_probe_gateway(void) { }
+
+/* PoP: _probe_session_store @ gateway/readiness.py:_probe_session_store */
+void gateway_readiness_probe_session_store(void) { }
+
+/* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
+void gateway_readiness_collect_runtime_readiness(void) { }
