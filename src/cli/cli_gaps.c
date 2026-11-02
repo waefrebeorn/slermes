@@ -1,16 +1,16 @@
 
-/* PoP: _fallback_entries @ agent/agent_init_fallback.py:_fallback_entries */
-void *agent_agent_init_fallback_fallback_entries(void) { return NULL; }
+/* PoP: _unavailable_warning_key @ agent/agent_init_memory_provider.py:_unavailable_warning_key */
+void *agent_agent_init_memory_provider_unavailable_warning_key(void) { return NULL; }
 
-/* PoP: _init_fallback_chain @ agent/agent_init_fallback.py:_init_fallback_chain */
-void agent_agent_init_fallback_init_fallback_chain(void) { }
+/* PoP: _warn_once @ agent/agent_init_memory_provider.py:_warn_once */
+void agent_agent_init_memory_provider_warn_once(void) { }
 
-/* PoP: recompute_init_fallback_api_mode @ agent/agent_init_fallback.py:recompute_init_fallback_api_mode */
-void agent_agent_init_fallback_recompute_init_fallback_api_mode(void) { }
-e_notice_state @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_state */
-void *agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_state(void) { return NULL; }
+/* PoP: _warn_memory_provider_unavailable @ agent/agent_init_memory_provider.py:_warn_memory_provider_unavailable */
+void agent_agent_init_memory_provider_warn_memory_provider_unavailable(void) { }
 
-/* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
+/* PoP: resolve_memory_provider @ agent/agent_init_memory_provider.py:resolve_memory_provider */
+void *agent_agent_init_memory_provider_resolve_memory_provider(void) { return NULL; }
+toraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
 int agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_seen(void) { return 0; }
 
 /* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init_compression_notice.py:_record_codex_gpt55_autoraise_notice */
