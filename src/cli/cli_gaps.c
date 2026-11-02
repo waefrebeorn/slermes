@@ -486,3 +486,9 @@ void tools_connectors_data_use_collect_data_use(void) { }
 
 /* PoP: record_data_use @ tools/connectors/data_use.py:record_data_use */
 void tools_connectors_data_use_record_data_use(void) { }
+
+/* PoP: dispatch_connector_call @ tools/connectors/dispatch.py:dispatch_connector_call */
+void tools_connectors_dispatch_dispatch_connector_call(void) { }
+
+/* PoP: dispatch_connector_batch @ tools/connectors/dispatch.py:dispatch_connector_batch */
+void tools_connectors_dispatch_dispatch_connector_batch(void) { }
