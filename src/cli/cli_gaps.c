@@ -1,16 +1,16 @@
 
-/* PoP: _named_function @ agent/acp_openai_bridge.py:_named_function */
-void *agent_acp_openai_bridge_named_function(void) { return NULL; }
+/* PoP: session_auxiliary_scope @ agent/auxiliary_task_config.py:session_auxiliary_scope */
+void *agent_auxiliary_task_config_session_auxiliary_scope(void) { return NULL; }
 
-/* PoP: tool_specs_from_openai_tools @ agent/acp_openai_bridge.py:tool_specs_from_openai_tools */
-void *agent_acp_openai_bridge_tool_specs_from_openai_tools(void) { return NULL; }
+/* PoP: authoritative_auxiliary_task @ agent/auxiliary_task_config.py:authoritative_auxiliary_task */
+void *agent_auxiliary_task_config_authoritative_auxiliary_task(void) { return NULL; }
 
-/* PoP: render_tool_bridge_sections @ agent/acp_openai_bridge.py:render_tool_bridge_sections */
-void *agent_acp_openai_bridge_render_tool_bridge_sections(void) { return NULL; }
-:_persist_session_activity_if_due */
-void agent_activity_tracking_persist_session_activity_if_due(void) { }
+/* PoP: _task_config @ agent/auxiliary_task_config.py:_task_config */
+void *agent_auxiliary_task_config_task_config(void) { return NULL; }
 
-/* PoP: _reset_activity_labels_after_turn @ agent/activity_tracking.py:_reset_activity_labels_after_turn */
+/* PoP: _layer_over_inherited @ agent/auxiliary_task_config.py:_layer_over_inherited */
+void agent_auxiliary_task_config_layer_over_inherited(void) { }
+nt/activity_tracking.py:_reset_activity_labels_after_turn */
 void agent_activity_tracking_reset_activity_labels_after_turn(void) { }
 ions(void) { return NULL; }
 
