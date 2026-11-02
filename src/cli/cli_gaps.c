@@ -1015,3 +1015,21 @@ void cron_scheduler_tick_pre_dispatch_housekeeping(void) { }
 
 /* PoP: _tick_admitted @ cron/scheduler_tick.py:_tick_admitted */
 void cron_scheduler_tick_tick_admitted(void) { }
+
+/* PoP: _as_positive @ gateway/bot_loop_guard.py:_as_positive */
+void gateway_bot_loop_guard_as_positive(void) { }
+
+/* PoP: _as_positive_int @ gateway/bot_loop_guard.py:_as_positive_int */
+void gateway_bot_loop_guard_as_positive_int(void) { }
+
+/* PoP: settings_from_config @ gateway/bot_loop_guard.py:settings_from_config */
+void gateway_bot_loop_guard_settings_from_config(void) { }
+
+/* PoP: load_settings @ gateway/bot_loop_guard.py:load_settings */
+void gateway_bot_loop_guard_load_settings(void) { }
+
+/* PoP: tracked_conversations @ gateway/bot_loop_guard.py:tracked_conversations */
+void gateway_bot_loop_guard_tracked_conversations(void) { }
+
+/* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
+void gateway_bot_loop_guard_blocked(void) { }
