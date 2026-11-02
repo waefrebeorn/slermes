@@ -13,3 +13,9 @@
  */
 
 #include "hermes_core_types.h"   /* process_bootstrap types and helpers */
+
+/* PoP: safe_schedule_threadsafe @ agent/async_utils.py:safe_schedule_threadsafe */
+void agent_async_utils_safe_schedule_threadsafe(void) { }
+
+/* PoP: consume_detached_task_result @ agent/async_utils.py:consume_detached_task_result */
+void agent_async_utils_consume_detached_task_result(void) { }
