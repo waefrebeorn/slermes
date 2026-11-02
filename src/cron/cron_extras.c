@@ -891,3 +891,9 @@ int cron_parse_duration(const char *s) {
 
 /* PoP: _inactivity_watchdog_loop @ cron/scheduler_liveness.py:_inactivity_watchdog_loop */
 void cron_scheduler_liveness_inactivity_watchdog_loop(void) { }
+
+/* PoP: is_alive @ cron/scheduler_thread.py:is_alive */
+int cron_scheduler_thread_is_alive(void) { return 0; }
+
+/* PoP: restart_if_dead @ cron/scheduler_thread.py:restart_if_dead */
+void cron_scheduler_thread_restart_if_dead(void) { }
