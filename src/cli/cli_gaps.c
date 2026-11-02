@@ -880,3 +880,30 @@ void agent_terminal_env_provider_post_setup(void) { }
 
 /* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
 void agent_terminal_env_provider_doctor_checks(void) { }
+
+/* PoP: _warn_invalid_value @ agent/turn_liveness.py:_warn_invalid_value */
+void agent_turn_liveness_warn_invalid_value(void) { }
+
+/* PoP: _resolve_finite_seconds @ agent/turn_liveness.py:_resolve_finite_seconds */
+void agent_turn_liveness_resolve_finite_seconds(void) { }
+
+/* PoP: resolve_turn_liveness_settings @ agent/turn_liveness.py:resolve_turn_liveness_settings */
+void agent_turn_liveness_resolve_turn_liveness_settings(void) { }
+
+/* PoP: _tick @ agent/turn_liveness.py:_tick */
+void agent_turn_liveness_tick(void) { }
+
+/* PoP: _sample @ agent/turn_liveness.py:_sample */
+void agent_turn_liveness_sample(void) { }
+
+/* PoP: _dump_turn_thread_stack @ agent/turn_liveness.py:_dump_turn_thread_stack */
+void agent_turn_liveness_dump_turn_thread_stack(void) { }
+
+/* PoP: _emit_warning @ agent/turn_liveness.py:_emit_warning */
+void agent_turn_liveness_emit_warning(void) { }
+
+/* PoP: _surface_stall @ agent/turn_liveness.py:_surface_stall */
+void agent_turn_liveness_surface_stall(void) { }
+
+/* PoP: _surface_committed_abort @ agent/turn_liveness.py:_surface_committed_abort */
+void agent_turn_liveness_surface_committed_abort(void) { }
