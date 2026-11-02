@@ -405,3 +405,9 @@ void hermes_cli_kanban_worker_log_worker_log_rotation_config(void) { }
 
 /* PoP: rotate_worker_log @ hermes_cli/kanban_worker_log.py:rotate_worker_log */
 void hermes_cli_kanban_worker_log_rotate_worker_log(void) { }
+
+/* PoP: probe_port @ hermes_cli/local_runtime/detect.py:probe_port */
+int hermes_cli_local_runtime_detect_probe_port(void) { return 0; }
+
+/* PoP: detect_server @ hermes_cli/local_runtime/detect.py:detect_server */
+void hermes_cli_local_runtime_detect_detect_server(void) { }
