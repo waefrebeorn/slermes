@@ -393,3 +393,9 @@ const char *hermes_cli_gateway_command_errors_verb_for(void) { return NULL; }
 
 /* PoP: explain_service_failure @ hermes_cli/gateway_command_errors.py:explain_service_failure */
 void hermes_cli_gateway_command_errors_explain_service_failure(void) { }
+
+/* PoP: collapse_repeated_input_artifacts @ hermes_cli/input_sanitize.py:collapse_repeated_input_artifacts */
+void hermes_cli_input_sanitize_collapse_repeated_input_artifacts(void) { }
+
+/* PoP: sanitize_user_prompt_text @ hermes_cli/input_sanitize.py:sanitize_user_prompt_text */
+void hermes_cli_input_sanitize_sanitize_user_prompt_text(void) { }
