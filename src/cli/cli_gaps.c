@@ -354,3 +354,6 @@ const char *cli_gaps_module_path(const char *module_name) {
     }
     return path;
 }
+
+/* PoP: blank @ hermes_cli/cli_panel.py:blank */
+void hermes_cli_cli_panel_blank(void) { }
