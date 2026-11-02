@@ -1,11 +1,13 @@
 
-/* PoP: _turn_target @ agent/relay_compaction.py:_turn_target */
-void *agent_relay_compaction_turn_target(void) { return NULL; }
+/* PoP: _jsonable @ agent/relay_tools.py:_jsonable */
+void *agent_relay_tools_jsonable(void) { return NULL; }
 
-/* PoP: _session_target @ agent/relay_compaction.py:_session_target */
-void *agent_relay_compaction_session_target(void) { return NULL; }
+/* PoP: _json_equal @ agent/relay_tools.py:_json_equal */
+int agent_relay_tools_json_equal(void) { return 0; }
 
-/* PoP: compaction_target_available @ agent/relay_compaction.py:compaction_target_available */
+/* PoP: _run_awaitable @ agent/relay_tools.py:_run_awaitable */
+void *agent_relay_tools_run_awaitable(void) { return NULL; }
+et_available */
 int agent_relay_compaction_compaction_target_available(void) { return 0; }
 
 /* PoP: emit_compaction_mark @ agent/relay_compaction.py:emit_compaction_mark */
