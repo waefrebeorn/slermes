@@ -399,3 +399,9 @@ void hermes_cli_input_sanitize_collapse_repeated_input_artifacts(void) { }
 
 /* PoP: sanitize_user_prompt_text @ hermes_cli/input_sanitize.py:sanitize_user_prompt_text */
 void hermes_cli_input_sanitize_sanitize_user_prompt_text(void) { }
+
+/* PoP: worker_log_rotation_config @ hermes_cli/kanban_worker_log.py:worker_log_rotation_config */
+void hermes_cli_kanban_worker_log_worker_log_rotation_config(void) { }
+
+/* PoP: rotate_worker_log @ hermes_cli/kanban_worker_log.py:rotate_worker_log */
+void hermes_cli_kanban_worker_log_rotate_worker_log(void) { }
