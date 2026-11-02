@@ -372,3 +372,6 @@ void hermes_cli_dashboard_auth_audit_bounded_value(void) { }
 
 /* PoP: offer @ hermes_cli/dashboard_auth/listener_client.py:offer */
 void hermes_cli_dashboard_auth_listener_client_offer(void) { }
+
+/* PoP: _is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
+int hermes_cli_scan_venv_blockers_is_pausable_gateway(void) { return 0; }
