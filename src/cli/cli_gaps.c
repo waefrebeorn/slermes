@@ -360,3 +360,6 @@ void hermes_cli_cli_panel_blank(void) { }
 
 /* PoP: _plugin_label @ hermes_cli/platforms.py:_plugin_label */
 const char *hermes_cli_platforms_plugin_label(void) { return NULL; }
+
+/* PoP: make_scoped_provider_registrar @ hermes_cli/plugins_registrars.py:make_scoped_provider_registrar */
+void *hermes_cli_plugins_registrars_make_scoped_provider_registrar(void) { return NULL; }
