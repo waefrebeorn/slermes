@@ -62,6 +62,7 @@ static char *make_cache_key(const char *query, const char *intent) {
     return key;
 }
 
+/* PoP: _cache_get @ tools/osv_check.py:_cache_get */
 static research_summary_t *cache_get(const char *query, const char *intent) {
     cache_init();
     char *key = make_cache_key(query, intent);
