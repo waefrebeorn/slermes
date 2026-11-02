@@ -928,3 +928,30 @@ void agent_turn_summary_format_turn_summary(void) { }
 
 /* PoP: format_token_flow @ agent/turn_summary.py:format_token_flow */
 void agent_turn_summary_format_token_flow(void) { }
+
+/* PoP: _normalize_text @ agent/vault_login_classifier.py:_normalize_text */
+void agent_vault_login_classifier_normalize_text(void) { }
+
+/* PoP: classify_login_control @ agent/vault_login_classifier.py:classify_login_control */
+void agent_vault_login_classifier_classify_login_control(void) { }
+
+/* PoP: classify_otp_controls @ agent/vault_login_classifier.py:classify_otp_controls */
+void agent_vault_login_classifier_classify_otp_controls(void) { }
+
+/* PoP: select_password_fill @ agent/vault_login_classifier.py:select_password_fill */
+void agent_vault_login_classifier_select_password_fill(void) { }
+
+/* PoP: classify_checkout_control @ agent/vault_login_classifier.py:classify_checkout_control */
+void agent_vault_login_classifier_classify_checkout_control(void) { }
+
+/* PoP: select_checkout_fills @ agent/vault_login_classifier.py:select_checkout_fills */
+void agent_vault_login_classifier_select_checkout_fills(void) { }
+
+/* PoP: build_otp_fills @ agent/vault_login_classifier.py:build_otp_fills */
+void agent_vault_login_classifier_build_otp_fills(void) { }
+
+/* PoP: build_inspection_js @ agent/vault_login_classifier.py:build_inspection_js */
+void agent_vault_login_classifier_build_inspection_js(void) { }
+
+/* PoP: build_fill_js @ agent/vault_login_classifier.py:build_fill_js */
+void agent_vault_login_classifier_build_fill_js(void) { }
