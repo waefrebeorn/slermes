@@ -63,3 +63,26 @@ void agent_azure_identity_adapter_entra_identity_config_post_init(
     memcpy(out, s, L);
     out[L] = '\0';
 }
+/* PoP: _default_chain_credential @ agent/azure_identity_adapter.py:_default_chain_credential */
+void agent_azure_identity_adapter_default_chain_credential(void) { }
+
+/* PoP: _scoped_credential @ agent/azure_identity_adapter.py:_scoped_credential */
+void agent_azure_identity_adapter_scoped_credential(void) { }
+
+/* PoP: _resolve_config @ agent/azure_identity_adapter.py:_resolve_config */
+void agent_azure_identity_adapter_resolve_config(void) { }
+
+/* PoP: _install_failure @ agent/azure_identity_adapter.py:_install_failure */
+void agent_azure_identity_adapter_install_failure(void) { }
+
+/* PoP: _probe_token @ agent/azure_identity_adapter.py:_probe_token */
+void agent_azure_identity_adapter_probe_token(void) { }
+
+/* PoP: _env @ agent/azure_identity_adapter.py:_env */
+void agent_azure_identity_adapter_env(void) { }
+
+/* PoP: _scoped_env @ agent/azure_identity_adapter.py:_scoped_env */
+void agent_azure_identity_adapter_scoped_env(void) { }
+
+/* PoP: _strip_auth_headers @ agent/azure_identity_adapter.py:_strip_auth_headers */
+void agent_azure_identity_adapter_strip_auth_headers(void) { }
