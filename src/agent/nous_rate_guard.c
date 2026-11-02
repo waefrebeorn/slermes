@@ -52,6 +52,7 @@ static int ensure_state_dir(const char *hermes_home) {
 
 /* Port of Python tools/file_operations.py:_atomic_write(). */
 /* Atomic write: write to temp file, then rename (POSIX atomic for same-fs) */
+/* PoP: atomic_write @ tools/file_operations_native.py:atomic_write */
 static int atomic_write(const char *path, const char *content) {
     /* Create temp file in the same directory (same filesystem) */
     size_t plen = strlen(path);

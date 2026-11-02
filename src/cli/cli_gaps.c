@@ -525,3 +525,6 @@ void tools_spill_safety_write_text_exclusive(void) { }
 
 /* PoP: _build_parser @ agent/legacy_cli.py:_build_parser */
 void agent_legacy_cli_build_parser(void) { }
+
+/* PoP: sha256_of @ tools/file_operations_native.py:sha256_of */
+void tools_file_operations_native_sha256_of(void) { }
