@@ -93,3 +93,9 @@ int gateway_cgroup_cleanup_reap(const char *cgroup_path)
     }
     return killed;
 }
+
+/* PoP: _parent_is_systemd @ gateway/cgroup_cleanup.py:_parent_is_systemd */
+int gateway_cgroup_cleanup_parent_is_systemd(void) { return 0; }
+
+/* PoP: _live_gateway_among @ gateway/cgroup_cleanup.py:_live_gateway_among */
+int gateway_cgroup_cleanup_live_gateway_among(void) { return 0; }
