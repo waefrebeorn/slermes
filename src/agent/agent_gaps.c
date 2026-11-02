@@ -78,3 +78,9 @@ void *delegation_provider_route_task(void *task) { (void)task; return NULL; }
 
 /* PoP: has_page @ agent/browser_page_backend.py:has_page */
 int browser_page_backend_has_page(const char *task_id) { (void)task_id; return 0; }
+
+/* PoP: reserved_session_id @ agent/runtime_session_child.py:reserved_session_id */
+const char *runtime_session_child_reserved_session_id(const char *child_id) { (void)child_id; return NULL; }
+
+/* PoP: reserve_child_store @ agent/runtime_session_child.py:reserve_child_store */
+void runtime_session_child_reserve_child_store(const char *child_id) { (void)child_id; }
