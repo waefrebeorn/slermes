@@ -465,3 +465,9 @@ void tools_browser_supervisor_frames_enable_page_domains(void) { }
 
 /* PoP: _set_frame @ tools/browser_supervisor_frames.py:_set_frame */
 void tools_browser_supervisor_frames_set_frame(void) { }
+
+/* PoP: next_check_in @ tools/bot_desktop/idle_watch.py:next_check_in */
+int tools_bot_desktop_idle_watch_next_check_in(void) { return 0; }
+
+/* PoP: _own_launcher @ tools/bot_desktop/idle_watch.py:_own_launcher */
+int tools_bot_desktop_idle_watch_own_launcher(void) { return 0; }
