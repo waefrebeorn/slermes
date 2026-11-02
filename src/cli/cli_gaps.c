@@ -1051,3 +1051,27 @@ void gateway_host_topology_host_gateway_topology(void) { }
 
 /* PoP: host_gateway_serving @ gateway/host_topology.py:host_gateway_serving */
 void gateway_host_topology_host_gateway_serving(void) { }
+
+/* PoP: _policy_digest @ gateway/hosted_room_execution_policy.py:_policy_digest */
+void gateway_hosted_room_execution_policy_policy_digest(void) { }
+
+/* PoP: _identifier @ gateway/hosted_room_execution_policy.py:_identifier */
+void gateway_hosted_room_execution_policy_identifier(void) { }
+
+/* PoP: as_mapping @ gateway/hosted_room_execution_policy.py:as_mapping */
+void gateway_hosted_room_execution_policy_as_mapping(void) { }
+
+/* PoP: _served_profile_scope @ gateway/hosted_room_execution_policy.py:_served_profile_scope */
+void gateway_hosted_room_execution_policy_served_profile_scope(void) { }
+
+/* PoP: execution_policy_mapping @ gateway/hosted_room_execution_policy.py:execution_policy_mapping */
+void gateway_hosted_room_execution_policy_execution_policy_mapping(void) { }
+
+/* PoP: bind_room_execution_policy @ gateway/hosted_room_execution_policy.py:bind_room_execution_policy */
+void gateway_hosted_room_execution_policy_bind_room_execution_policy(void) { }
+
+/* PoP: reset_room_execution_policy @ gateway/hosted_room_execution_policy.py:reset_room_execution_policy */
+void gateway_hosted_room_execution_policy_reset_room_execution_policy(void) { }
+
+/* PoP: current_room_execution_policy @ gateway/hosted_room_execution_policy.py:current_room_execution_policy */
+void gateway_hosted_room_execution_policy_current_room_execution_policy(void) { }
