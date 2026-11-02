@@ -477,3 +477,6 @@ void tools_connectors_contract_resolves(void) { }
 
 /* PoP: _first_pattern_error @ tools/cronjob_prompt_scan.py:_first_pattern_error */
 void tools_cronjob_prompt_scan_first_pattern_error(void) { }
+
+/* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
+void tools_daemon_pool_adjust_thread_count(void) { }
