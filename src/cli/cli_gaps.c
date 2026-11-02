@@ -363,3 +363,6 @@ const char *hermes_cli_platforms_plugin_label(void) { return NULL; }
 
 /* PoP: make_scoped_provider_registrar @ hermes_cli/plugins_registrars.py:make_scoped_provider_registrar */
 void *hermes_cli_plugins_registrars_make_scoped_provider_registrar(void) { return NULL; }
+
+/* PoP: begin_boot @ hermes_cli/onboarding_due.py:begin_boot */
+void hermes_cli_onboarding_due_begin_boot(void) { }
