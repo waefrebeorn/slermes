@@ -160,3 +160,18 @@ bool rich_sent_record(const char *chat_id, const char *message_id, const char *t
     json_free(data);
     return true;
 }
+
+/* PoP: record_media @ gateway/rich_sent_store.py:record_media */
+void gateway_rich_sent_store_record_media(void) { }
+
+/* PoP: record_async @ gateway/rich_sent_store.py:record_async */
+void gateway_rich_sent_store_record_async(void) { }
+
+/* PoP: record_media_async @ gateway/rich_sent_store.py:record_media_async */
+void gateway_rich_sent_store_record_media_async(void) { }
+
+/* PoP: _entry @ gateway/rich_sent_store.py:_entry */
+void gateway_rich_sent_store_entry(void) { }
+
+/* PoP: lookup_media @ gateway/rich_sent_store.py:lookup_media */
+void gateway_rich_sent_store_lookup_media(void) { }
