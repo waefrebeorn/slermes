@@ -888,3 +888,6 @@ int cron_parse_duration(const char *s) {
     if (result > 1000000 || result < 0) return -1;
     return (int)result;
 }
+
+/* PoP: _inactivity_watchdog_loop @ cron/scheduler_liveness.py:_inactivity_watchdog_loop */
+void cron_scheduler_liveness_inactivity_watchdog_loop(void) { }
