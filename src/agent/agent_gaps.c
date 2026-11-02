@@ -75,3 +75,6 @@ void *delegation_provider_task_parameters(void *task) { (void)task; return NULL;
 
 /* PoP: route_task @ agent/delegation_provider.py:route_task */
 void *delegation_provider_route_task(void *task) { (void)task; return NULL; }
+
+/* PoP: has_page @ agent/browser_page_backend.py:has_page */
+int browser_page_backend_has_page(const char *task_id) { (void)task_id; return 0; }
