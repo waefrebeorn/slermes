@@ -3,4 +3,5 @@
 #include <stdbool.h>
 bool agent_ssl_verify_coerce_insecure(const char *ssl_verify);
 const char *agent_ssl_verify_resolve_httpx_verify(const char *ca_bundle, const char *ssl_verify);
+const char *agent_model_metadata_resolve_verify(const char *base_url);
 #endif

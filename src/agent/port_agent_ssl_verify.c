@@ -1,18 +1,10 @@
-/* Slermes C port — agent/ssl_verify.py (pure + env helpers) */
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <ctype.h>
-#include <unistd.h>
-
-#include <stdio.h>
-
-static bool is_falsey_string(const char *s)
-{
-    if (!s) return false;
+/* PoP: resolve_verify @ agent/model_metadata_http.py:resolve_verify */
+const char *agent_model_metadata_resolve_verify(const char *base_url) {
+    /* Best-effort: no custom_providers available here; use defaults. */
+    return agent_ssl_verify_resolve_httpx_verify(NULL, NULL);
+}
+(!s) return false;
     char buf[32]; size_t n = 0;
     for (size_t i = 0; s[i] && n < sizeof(buf) - 1; i++)
         if (s[i] != ' ' && s[i] != '\t') buf[n++] = (char)tolower((unsigned char)s[i]);
