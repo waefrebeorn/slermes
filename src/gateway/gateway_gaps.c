@@ -39,3 +39,9 @@
 
 #include "hermes_core_types.h"
 #include "hermes_gateway_core.h"
+
+/* PoP: _refuse @ gateway/plugin_keyless_inject.py:_refuse */
+void gateway_plugin_keyless_inject_refuse(void) { }
+
+/* PoP: _launched_by_classic_cli @ gateway/plugin_keyless_inject.py:_launched_by_classic_cli */
+int gateway_plugin_keyless_inject_launched_by_classic_cli(void) { return 0; }
