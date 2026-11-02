@@ -617,3 +617,48 @@ void agent_anthropic_credentials_root_hermes_oauth_file(void) { }
 
 /* PoP: _write_hermes_oauth_credentials @ agent/anthropic_credentials.py:_write_hermes_oauth_credentials */
 void agent_anthropic_credentials_write_hermes_oauth_credentials(void) { }
+
+/* PoP: _acp_supported @ agent/acp_client.py:_acp_supported */
+void agent_acp_client_acp_supported(void) { }
+
+/* PoP: _jsonrpc_result @ agent/acp_client.py:_jsonrpc_result */
+void agent_acp_client_jsonrpc_result(void) { }
+
+/* PoP: _never_disabled @ agent/acp_client.py:_never_disabled */
+void agent_acp_client_never_disabled(void) { }
+
+/* PoP: _enabled_id_list @ agent/acp_client.py:_enabled_id_list */
+void agent_acp_client_enabled_id_list(void) { }
+
+/* PoP: _model_config_option @ agent/acp_client.py:_model_config_option */
+void agent_acp_client_model_config_option(void) { }
+
+/* PoP: _session_model_ids @ agent/acp_client.py:_session_model_ids */
+void agent_acp_client_session_model_ids(void) { }
+
+/* PoP: _legacy_session_model_ids @ agent/acp_client.py:_legacy_session_model_ids */
+void agent_acp_client_legacy_session_model_ids(void) { }
+
+/* PoP: _model_selection_request @ agent/acp_client.py:_model_selection_request */
+void agent_acp_client_model_selection_request(void) { }
+
+/* PoP: _effective_timeout @ agent/acp_client.py:_effective_timeout */
+void agent_acp_client_effective_timeout(void) { }
+
+/* PoP: _fs_read_text_file @ agent/acp_client.py:_fs_read_text_file */
+void agent_acp_client_fs_read_text_file(void) { }
+
+/* PoP: _fs_write_text_file @ agent/acp_client.py:_fs_write_text_file */
+void agent_acp_client_fs_write_text_file(void) { }
+
+/* PoP: model_entry_disabled @ agent/acp_client.py:model_entry_disabled */
+void agent_acp_client_model_entry_disabled(void) { }
+
+/* PoP: early_exit_error @ agent/acp_client.py:early_exit_error */
+void agent_acp_client_early_exit_error(void) { }
+
+/* PoP: _request_error @ agent/acp_client.py:_request_error */
+void agent_acp_client_request_error(void) { }
+
+/* PoP: _missing_command_hint @ agent/acp_client.py:_missing_command_hint */
+void agent_acp_client_missing_command_hint(void) { }
