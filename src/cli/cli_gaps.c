@@ -796,3 +796,21 @@ void agent_outbound_webhooks_redirect_request(void) { }
 
 /* PoP: _deliver @ agent/outbound_webhooks.py:_deliver */
 void agent_outbound_webhooks_deliver(void) { }
+
+/* PoP: is_repetition_dominated @ agent/repetition_guard.py:is_repetition_dominated */
+void agent_repetition_guard_is_repetition_dominated(void) { }
+
+/* PoP: _window_count_dominated @ agent/repetition_guard.py:_window_count_dominated */
+void agent_repetition_guard_window_count_dominated(void) { }
+
+/* PoP: _periodic_run_dominated @ agent/repetition_guard.py:_periodic_run_dominated */
+void agent_repetition_guard_periodic_run_dominated(void) { }
+
+/* PoP: _expand_run @ agent/repetition_guard.py:_expand_run */
+void agent_repetition_guard_expand_run(void) { }
+
+/* PoP: is_runaway_repetition @ agent/repetition_guard.py:is_runaway_repetition */
+void agent_repetition_guard_is_runaway_repetition(void) { }
+
+/* PoP: _line_repetition_dominated @ agent/repetition_guard.py:_line_repetition_dominated */
+void agent_repetition_guard_line_repetition_dominated(void) { }
