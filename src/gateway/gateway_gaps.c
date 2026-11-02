@@ -69,3 +69,6 @@ void gateway_session_pending_controls_register_clarify(void) { }
 
 /* PoP: respond @ gateway/session_pending_controls.py:respond */
 void gateway_session_pending_controls_respond(void) { }
+
+/* PoP: shell_exec @ gateway/session_shell.py:shell_exec */
+void gateway_session_shell_shell_exec(void) { }
