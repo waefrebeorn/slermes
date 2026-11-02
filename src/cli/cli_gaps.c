@@ -702,3 +702,24 @@ void agent_context_compressor_telemetry_record_compression_effect(void) { }
 
 /* PoP: _record_committed_compression_effect @ agent/context_compressor_telemetry.py:_record_committed_compression_effect */
 void agent_context_compressor_telemetry_record_committed_compression_effect(void) { }
+
+/* PoP: configured_backend @ agent/delegation_registry.py:configured_backend */
+void agent_delegation_registry_configured_backend(void) { }
+
+/* PoP: register_delegation_provider @ agent/delegation_registry.py:register_delegation_provider */
+void agent_delegation_registry_register_delegation_provider(void) { }
+
+/* PoP: _bundled_disabled @ agent/delegation_registry.py:_bundled_disabled */
+void agent_delegation_registry_bundled_disabled(void) { }
+
+/* PoP: _load_bundled @ agent/delegation_registry.py:_load_bundled */
+void agent_delegation_registry_load_bundled(void) { }
+
+/* PoP: _available @ agent/delegation_registry.py:_available */
+void agent_delegation_registry_available(void) { }
+
+/* PoP: _usable @ agent/delegation_registry.py:_usable */
+void agent_delegation_registry_usable(void) { }
+
+/* PoP: backend_status @ agent/delegation_registry.py:backend_status */
+void agent_delegation_registry_backend_status(void) { }
