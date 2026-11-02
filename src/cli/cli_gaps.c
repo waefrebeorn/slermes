@@ -1123,3 +1123,27 @@ void gateway_platform_activation_activation_predicate(void) { }
 
 /* PoP: configured_plugin_entries @ gateway/platform_activation.py:configured_plugin_entries */
 void gateway_platform_activation_configured_plugin_entries(void) { }
+
+/* PoP: __init_subclass__ @ gateway/platforms/access_policy_mixin.py:__init_subclass__ */
+void gateway_platforms_access_policy_mixin_init_subclass(void) { }
+
+/* PoP: _allow_all_env_names @ gateway/platforms/access_policy_mixin.py:_allow_all_env_names */
+void gateway_platforms_access_policy_mixin_allow_all_env_names(void) { }
+
+/* PoP: _open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
+void gateway_platforms_access_policy_mixin_open_dm_opted_in(void) { }
+
+/* PoP: _entry_matches @ gateway/platforms/access_policy_mixin.py:_entry_matches */
+void gateway_platforms_access_policy_mixin_entry_matches(void) { }
+
+/* PoP: _live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:_live_dm_allow_from */
+void gateway_platforms_access_policy_mixin_live_dm_allow_from(void) { }
+
+/* PoP: _is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
+void gateway_platforms_access_policy_mixin_is_dm_allowed(void) { }
+
+/* PoP: _is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
+void gateway_platforms_access_policy_mixin_is_dm_intake_allowed(void) { }
+
+/* PoP: _is_group_allowed @ gateway/platforms/access_policy_mixin.py:_is_group_allowed */
+void gateway_platforms_access_policy_mixin_is_group_allowed(void) { }
