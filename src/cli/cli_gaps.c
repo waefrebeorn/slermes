@@ -453,3 +453,9 @@ void hermes_cli_stale_modules_drop_stale_root_modules(void) { }
 
 /* PoP: _message_length @ tools/bot_desktop/rfb_filter.py:_message_length */
 int tools_bot_desktop_rfb_filter_message_length(void) { return 0; }
+
+/* PoP: is_valid @ tools/browser_supervisor_capture.py:is_valid */
+int tools_browser_supervisor_capture_is_valid(void) { return 0; }
+
+/* PoP: _invalid @ tools/browser_supervisor_capture.py:_invalid */
+int tools_browser_supervisor_capture_invalid(void) { return 0; }
