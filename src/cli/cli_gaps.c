@@ -1,62 +1,58 @@
 
-/* PoP: _configure_ollama_num_ctx @ agent/agent_init_ollama.py:_configure_ollama_num_ctx */
-void agent_agent_init_ollama_configure_ollama_num_ctx(void) { }
+/* PoP: _block_type @ agent/anthropic_message_convert.py:_block_type */
+void *agent_anthropic_message_convert_block_type(void) { return NULL; }
 
-/* PoP: _clamp_compressor_to_ollama_num_ctx @ agent/agent_init_ollama.py:_clamp_compressor_to_ollama_num_ctx */
-void agent_agent_init_ollama_clamp_compressor_to_ollama_num_ctx(void) { }
-er_unavailable @ agent/agent_init_memory_provider.py:_warn_memory_provider_unavailable */
-void agent_agent_init_memory_provider_warn_memory_provider_unavailable(void) { }
+/* PoP: _has_block_type @ agent/anthropic_message_convert.py:_has_block_type */
+int agent_anthropic_message_convert_has_block_type(void) { return 0; }
 
-/* PoP: resolve_memory_provider @ agent/agent_init_memory_provider.py:resolve_memory_provider */
-void *agent_agent_init_memory_provider_resolve_memory_provider(void) { return NULL; }
-toraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
-int agent_agent_init_compression_notice_codex_gpt55_autoraise_notice_seen(void) { return 0; }
+/* PoP: _is_blank_text_block @ agent/anthropic_message_convert.py:_is_blank_text_block */
+int agent_anthropic_message_convert_is_blank_text_block(void) { return 0; }
 
-/* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init_compression_notice.py:_record_codex_gpt55_autoraise_notice */
-void agent_agent_init_compression_notice_record_codex_gpt55_autoraise_notice(void) { }
+/* PoP: _cache_control_of @ agent/anthropic_message_convert.py:_cache_control_of */
+void *agent_anthropic_message_convert_cache_control_of(void) { return NULL; }
 
-/* PoP: _emit_compression_summary @ agent/agent_init_compression_notice.py:_emit_compression_summary */
-void agent_agent_init_compression_notice_emit_compression_summary(void) { }
-_hook(void) { return NULL; }
+/* PoP: _text_block_with_citations @ agent/anthropic_message_convert.py:_text_block_with_citations */
+void *agent_anthropic_message_convert_text_block_with_citations(void) { return NULL; }
 
-/* PoP: _invoke_api_request_error_hook @ agent/api_request_hooks.py:_invoke_api_request_error_hook */
-void agent_api_request_hooks_invoke_api_request_error_hook(void) { }
-gent_anthropic_thinking_replay_remember_rejected_thinking(void) { }
+/* PoP: _parse_tool_args @ agent/anthropic_message_convert.py:_parse_tool_args */
+void *agent_anthropic_message_convert_parse_tool_args(void) { return NULL; }
 
-/* PoP: carry_rejected_thinking_to_session @ agent/anthropic_thinking_replay.py:carry_rejected_thinking_to_session */
-void agent_anthropic_thinking_replay_carry_rejected_thinking_to_session(void) { }
-ecks[] = {
-        "/usr/local/lib/hermes-agent/hermes_cli",
-        "/usr/lib/hermes-agent/hermes_cli",
-        "/opt/hermes-agent/hermes_cli",
-        NULL
-    };
-    for (int i = 0; checks[i]; i++) {
-        if (access(checks[i], F_OK) == 0) {
-            return strdup(checks[i]);
-        }
-    }
+/* PoP: _strip_thinking @ agent/anthropic_message_convert.py:_strip_thinking */
+void agent_anthropic_message_convert_strip_thinking(void) { }
 
-    /* Try resolving from which hermes */
-    FILE *fp = popen("command -v hermes 2>/dev/null", "r");
-    if (fp) {
-        char buf[4096];
-        if (fgets(buf, sizeof(buf), fp)) {
-            buf[strcspn(buf, "\n")] = '\0';
-            /* Resolve symlink and go up to find hermes_cli/ */
-            char real[4096];
-            if (realpath(buf, real)) {
-                char *dir = dirname(real);
-                size_t plen = strlen(dir) + 32;
-                char *path = malloc(plen);
-                if (path) {
-                    snprintf(path, plen, "%s/../hermes_cli", dir);
-                    char r2[4096];
-                    if (realpath(path, r2)) {
-                        free(path);
-                        path = strdup(r2);
-                    }
-                    if (access(path, F_OK) == 0) {
+/* PoP: _block_ids @ agent/anthropic_message_convert.py:_block_ids */
+void *agent_anthropic_message_convert_block_ids(void) { return NULL; }
+
+/* PoP: _assistant_block_lists @ agent/anthropic_message_convert.py:_assistant_block_lists */
+void *agent_anthropic_message_convert_assistant_block_lists(void) { return NULL; }
+
+/* PoP: _carry_cache_control @ agent/anthropic_message_convert.py:_carry_cache_control */
+void agent_anthropic_message_convert_carry_cache_control(void) { }
+
+/* PoP: _split_blank_text_blocks @ agent/anthropic_message_convert.py:_split_blank_text_blocks */
+void *agent_anthropic_message_convert_split_blank_text_blocks(void) { return NULL; }
+
+/* PoP: _image_block_from_openai_url @ agent/anthropic_message_convert.py:_image_block_from_openai_url */
+void *agent_anthropic_message_convert_image_block_from_openai_url(void) { return NULL; }
+
+/* PoP: _safe_text @ agent/anthropic_message_convert.py:_safe_text */
+void *agent_anthropic_message_convert_safe_text(void) { return NULL; }
+
+/* PoP: _replay_text @ agent/anthropic_message_convert.py:_replay_text */
+void agent_anthropic_message_convert_replay_text(void) { }
+
+/* PoP: _replay_thinking @ agent/anthropic_message_convert.py:_replay_thinking */
+void agent_anthropic_message_convert_replay_thinking(void) { }
+
+/* PoP: _replay_redacted_thinking @ agent/anthropic_message_convert.py:_replay_redacted_thinking */
+void agent_anthropic_message_convert_replay_redacted_thinking(void) { }
+
+/* PoP: _replay_tool_use @ agent/anthropic_message_convert.py:_replay_tool_use */
+void agent_anthropic_message_convert_replay_tool_use(void) { }
+
+/* PoP: _replay_image @ agent/anthropic_message_convert.py:_replay_image */
+void agent_anthropic_message_convert_replay_image(void) { }
+ess(path, F_OK) == 0) {
                         pclose(fp);
                         return path;
                     }
