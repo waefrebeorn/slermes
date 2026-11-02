@@ -1,12 +1,16 @@
 
-/* PoP: normalize_tool_schema @ agent/memory_manager_tools.py:normalize_tool_schema */
-void *agent_memory_manager_tools_normalize_tool_schema(void) { return NULL; }
+/* PoP: cancelled @ agent/periodic_scheduler.py:cancelled */
+int agent_periodic_scheduler_cancelled(void) { return 0; }
 
-/* PoP: memory_provider_tools_enabled @ agent/memory_manager_tools.py:memory_provider_tools_enabled */
-int agent_memory_manager_tools_memory_provider_tools_enabled(void) { return 0; }
+/* PoP: _cancel @ agent/periodic_scheduler.py:_cancel */
+void agent_periodic_scheduler_cancel(void) { }
 
-/* PoP: memory_provider_tools_exposed @ agent/memory_manager_tools.py:memory_provider_tools_exposed */
-void *agent_memory_manager_tools_memory_provider_tools_exposed(void) { return NULL; }
+/* PoP: _requeue @ agent/periodic_scheduler.py:_requeue */
+void agent_periodic_scheduler_requeue(void) { }
+
+/* PoP: _run_callback @ agent/periodic_scheduler.py:_run_callback */
+void agent_periodic_scheduler_run_callback(void) { }
+id *agent_memory_manager_tools_memory_provider_tools_exposed(void) { return NULL; }
 
 /* PoP: inject_memory_provider_tools @ agent/memory_manager_tools.py:inject_memory_provider_tools */
 void agent_memory_manager_tools_inject_memory_provider_tools(void) { }
