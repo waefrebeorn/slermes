@@ -269,3 +269,30 @@ void i18n_cleanup(void)
 {
     reset_language_cache();
 }
+
+/* PoP: _current_home @ agent/i18n.py:_current_home */
+void agent_i18n_current_home(void) { }
+
+/* PoP: supported_languages @ agent/i18n.py:supported_languages */
+void agent_i18n_supported_languages(void) { }
+
+/* PoP: _bundled_surfaces @ agent/i18n.py:_bundled_surfaces */
+void agent_i18n_bundled_surfaces(void) { }
+
+/* PoP: language_surfaces @ agent/i18n.py:language_surfaces */
+void agent_i18n_language_surfaces(void) { }
+
+/* PoP: resolve_language_id @ agent/i18n.py:resolve_language_id */
+void agent_i18n_resolve_language_id(void) { }
+
+/* PoP: _load_bundled @ agent/i18n.py:_load_bundled */
+void agent_i18n_load_bundled(void) { }
+
+/* PoP: surface_catalog @ agent/i18n.py:surface_catalog */
+void agent_i18n_surface_catalog(void) { }
+
+/* PoP: _config_language @ agent/i18n.py:_config_language */
+void agent_i18n_config_language(void) { }
+
+/* PoP: _resolve_language @ agent/i18n.py:_resolve_language */
+void agent_i18n_resolve_language(void) { }
