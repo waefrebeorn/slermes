@@ -1373,3 +1373,21 @@ void gateway_session_connections_session_toolsets(void) { }
 
 /* PoP: _session_context @ gateway/session_connections.py:_session_context */
 void gateway_session_connections_session_context(void) { }
+
+/* PoP: attach @ gateway/session_contract.py:attach */
+void gateway_session_contract_attach(void) { }
+
+/* PoP: detach @ gateway/session_contract.py:detach */
+void gateway_session_contract_detach(void) { }
+
+/* PoP: receipt @ gateway/session_contract.py:receipt */
+void gateway_session_contract_receipt(void) { }
+
+/* PoP: cancel_queued @ gateway/session_contract.py:cancel_queued */
+void gateway_session_contract_cancel_queued(void) { }
+
+/* PoP: respond @ gateway/session_contract.py:respond */
+void gateway_session_contract_respond(void) { }
+
+/* PoP: mutate @ gateway/session_contract.py:mutate */
+void gateway_session_contract_mutate(void) { }
