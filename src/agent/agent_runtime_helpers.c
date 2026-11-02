@@ -1,13 +1,20 @@
 
-/* PoP: _INTERRUPTED_PLACEHOLDER @ agent/agent_runtime_helpers_placeholders.py:_INTERRUPTED_PLACEHOLDER */
-const char *agent_runtime_helpers_interrupted_placeholder = "[interrupt: no assistant output for this turn]";
+/* PoP: _socket_is_dead @ agent/agent_runtime_helpers_dead_connections.py:_socket_is_dead */
+int agent_runtime_helpers_socket_is_dead(int fd) {
+    /* Probe socket health with a non-blocking recv peek. Returns 1 if dead. */
+    /* Implementation omitted: requires fcntl/socket; stub returns 0 (healthy). */
+    (void)fd;
+    return 0;
+}
 
-/* PoP: _LEGACY_INTERRUPTED_PLACEHOLDER @ agent/agent_runtime_helpers_placeholders.py:_LEGACY_INTERRUPTED_PLACEHOLDER */
-const char *agent_runtime_helpers_legacy_interrupted_placeholder = "[response interrupted]";
-
-/* PoP: hidden_interrupt_placeholder_row @ agent/agent_runtime_helpers_placeholders.py:hidden_interrupt_placeholder_row */
-json_t *agent_runtime_helpers_hidden_interrupt_placeholder_row(void) {
-    json_t *row = json_new_object();
+/* PoP: _count_dead_pool_sockets @ agent/agent_runtime_helpers_dead_connections.py:_count_dead_pool_sockets */
+int agent_runtime_helpers_count_dead_pool_sockets(int *fds, int n) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        if (agent_runtime_helpers_socket_is_dead(fds[i])) count++;
+    }
+    return count;
+}
     json_object_set(row, "role", json_new_string("assistant"));
     json_object_set(row, "content", json_new_string(""));
     json_object_set(row, "display_kind", json_new_string("hidden"));
