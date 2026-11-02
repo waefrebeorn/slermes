@@ -1,18 +1,19 @@
 
-/* PoP: materialize_probe_api_key @ agent/command_token_source.py:materialize_probe_api_key */
-void *agent_command_token_source_materialize_probe_api_key(void) { return NULL; }
+/* PoP: _activity_lock @ agent/activity_tracking.py:_activity_lock */
+void *agent_activity_tracking_activity_lock(void) { return NULL; }
 
-/* PoP: _mint @ agent/command_token_source.py:_mint */
-void *agent_command_token_source_mint(void) { return NULL; }
+/* PoP: _liveness_activity_lock @ agent/activity_tracking.py:_liveness_activity_lock */
+void *agent_activity_tracking_liveness_activity_lock(void) { return NULL; }
 
-/* PoP: cache_identity @ agent/command_token_source.py:cache_identity */
-void agent_command_token_source_cache_identity(void) { }
+/* PoP: _touch_activity @ agent/activity_tracking.py:_touch_activity */
+void agent_activity_tracking_touch_activity(void) { }
 
-/* PoP: build_command_token_provider @ agent/command_token_source.py:build_command_token_provider */
-void *agent_command_token_source_build_command_token_provider(void) { return NULL; }
-ice_should_emit(void) { return 0; }
-sing_provider_credentials_message @ agent/auxiliary_unavailable.py:missing_provider_credentials_message */
-void *agent_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
+/* PoP: _persist_session_activity_if_due @ agent/activity_tracking.py:_persist_session_activity_if_due */
+void agent_activity_tracking_persist_session_activity_if_due(void) { }
+
+/* PoP: _reset_activity_labels_after_turn @ agent/activity_tracking.py:_reset_activity_labels_after_turn */
+void agent_activity_tracking_reset_activity_labels_after_turn(void) { }
+_missing_provider_credentials_message(void) { return NULL; }
 
 /* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
 int agent_auxiliary_unavailable_nous_credential_present(void) { return 0; }
