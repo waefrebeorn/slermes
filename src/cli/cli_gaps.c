@@ -510,3 +510,6 @@ void tools_kanban_toolset_context_scoped_kanban_toolset_selection(void) { }
 
 /* PoP: _open_regular @ tools/file_operations_native.py:_open_regular */
 void tools_file_operations_native_open_regular(void) { }
+
+/* PoP: read_window_below_tool @ tools/read_window_tool.py:read_window_below_tool */
+void tools_read_window_tool_read_window_below_tool(void) { }
