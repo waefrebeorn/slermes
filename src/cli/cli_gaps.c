@@ -492,3 +492,6 @@ void tools_connectors_dispatch_dispatch_connector_call(void) { }
 
 /* PoP: dispatch_connector_batch @ tools/connectors/dispatch.py:dispatch_connector_batch */
 void tools_connectors_dispatch_dispatch_connector_batch(void) { }
+
+/* PoP: open_fd_waiter @ tools/environments/fd_wait.py:open_fd_waiter */
+void tools_environments_fd_wait_open_fd_waiter(void) { }
