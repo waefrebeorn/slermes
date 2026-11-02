@@ -1,16 +1,16 @@
 
-/* PoP: _jsonable @ agent/relay_tools.py:_jsonable */
-void *agent_relay_tools_jsonable(void) { return NULL; }
+/* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */
+void agent_thread_scoped_output_unsilence(void) { }
 
-/* PoP: _json_equal @ agent/relay_tools.py:_json_equal */
-int agent_relay_tools_json_equal(void) { return 0; }
+/* PoP: writelines @ agent/thread_scoped_output.py:writelines */
+void agent_thread_scoped_output_writelines(void) { }
 
-/* PoP: _run_awaitable @ agent/relay_tools.py:_run_awaitable */
-void *agent_relay_tools_run_awaitable(void) { return NULL; }
-et_available */
-int agent_relay_compaction_compaction_target_available(void) { return 0; }
+/* PoP: __getattr__ @ agent/thread_scoped_output.py:__getattr__ */
+void *agent_thread_scoped_output_getattr(void) { return NULL; }
 
-/* PoP: emit_compaction_mark @ agent/relay_compaction.py:emit_compaction_mark */
+/* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
+void agent_thread_scoped_output_thread_scoped_silence(void) { }
+*/
 void agent_relay_compaction_emit_compaction_mark(void) { }
 rn NULL; }
 background @ agent/pet/generate/imagegen.py:_rejected_background */
