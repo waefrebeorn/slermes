@@ -90,3 +90,9 @@ int stream_max_lifetime_resolve(const char *arg) { (void)arg; return 0; }
 
 /* PoP: exceeded @ agent/stream_max_lifetime.py:exceeded */
 int stream_max_lifetime_exceeded(long elapsed, long max) { (void)elapsed; (void)max; return 0; }
+
+/* PoP: _windows_unbiased_clock @ agent/sleep_clock.py:_windows_unbiased_clock */
+double sleep_clock_windows_unbiased_clock(void) { return 0.0; }
+
+/* PoP: slept @ agent/sleep_clock.py:slept */
+void sleep_clock_slept(double seconds) { (void)seconds; }
