@@ -84,3 +84,9 @@ const char *runtime_session_child_reserved_session_id(const char *child_id) { (v
 
 /* PoP: reserve_child_store @ agent/runtime_session_child.py:reserve_child_store */
 void runtime_session_child_reserve_child_store(const char *child_id) { (void)child_id; }
+
+/* PoP: resolve_stream_max_lifetime @ agent/stream_max_lifetime.py:resolve_stream_max_lifetime */
+int stream_max_lifetime_resolve(const char *arg) { (void)arg; return 0; }
+
+/* PoP: exceeded @ agent/stream_max_lifetime.py:exceeded */
+int stream_max_lifetime_exceeded(long elapsed, long max) { (void)elapsed; (void)max; return 0; }
