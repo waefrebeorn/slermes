@@ -1,17 +1,16 @@
 
-/* PoP: _available @ agent/pet/generate/imagegen.py:_available */
-int agent_pet_generate_imagegen_available(void) { return 0; }
+/* PoP: first_proxy_env_value @ agent/proxy_bypass.py:first_proxy_env_value */
+void *agent_proxy_bypass_first_proxy_env_value(void) { return NULL; }
 
-/* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
-void *agent_pet_generate_imagegen_resolve_provider(void) { return NULL; }
+/* PoP: is_loopback_host @ agent/proxy_bypass.py:is_loopback_host */
+int agent_proxy_bypass_is_loopback_host(void) { return 0; }
 
-/* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
-void *agent_pet_generate_imagegen_list_sprite_providers(void) { return NULL; }
+/* PoP: loopback_connect_kwargs @ agent/proxy_bypass.py:loopback_connect_kwargs */
+void *agent_proxy_bypass_loopback_connect_kwargs(void) { return NULL; }
 
-/* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */
-void agent_pet_generate_imagegen_save_local(void) { }
-
-/* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
+/* PoP: loopback_request_kwargs @ agent/proxy_bypass.py:loopback_request_kwargs */
+void *agent_proxy_bypass_loopback_request_kwargs(void) { return NULL; }
+background @ agent/pet/generate/imagegen.py:_rejected_background */
 void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
 prompt_reading_hook(void) { }
 _auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
