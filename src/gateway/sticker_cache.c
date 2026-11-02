@@ -204,3 +204,9 @@ char *sticker_build_animated_injection(const char *emoji) {
     }
     return strdup(buf);
 }
+
+/* PoP: _resolve_cache_path @ gateway/sticker_cache.py:_resolve_cache_path */
+const char *gateway_sticker_cache_resolve_cache_path(void) { return NULL; }
+
+/* PoP: cache_sticker_description_async @ gateway/sticker_cache.py:cache_sticker_description_async */
+void gateway_sticker_cache_cache_sticker_description_async(void) { }
