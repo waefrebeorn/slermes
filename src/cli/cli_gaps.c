@@ -1290,3 +1290,18 @@ void gateway_relay_media_download_with_name(void) { }
 
 /* PoP: _content_disposition_filename @ gateway/relay/media.py:_content_disposition_filename */
 void gateway_relay_media_content_disposition_filename(void) { }
+
+/* PoP: pairing_profile_arg @ gateway/run_inbound_unauthorized.py:pairing_profile_arg */
+void gateway_run_inbound_unauthorized_pairing_profile_arg(void) { }
+
+/* PoP: pairing_code_reply @ gateway/run_inbound_unauthorized.py:pairing_code_reply */
+void gateway_run_inbound_unauthorized_pairing_code_reply(void) { }
+
+/* PoP: pairing_rate_limited_reply @ gateway/run_inbound_unauthorized.py:pairing_rate_limited_reply */
+void gateway_run_inbound_unauthorized_pairing_rate_limited_reply(void) { }
+
+/* PoP: unauthorized_owner_hint @ gateway/run_inbound_unauthorized.py:unauthorized_owner_hint */
+void gateway_run_inbound_unauthorized_unauthorized_owner_hint(void) { }
+
+/* PoP: first_time @ gateway/run_inbound_unauthorized.py:first_time */
+void gateway_run_inbound_unauthorized_first_time(void) { }
