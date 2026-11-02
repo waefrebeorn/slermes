@@ -1236,3 +1236,24 @@ void gateway_plugin_messages_publish_local(void) { }
 
 /* PoP: edit @ gateway/plugin_messages.py:edit */
 void gateway_plugin_messages_edit(void) { }
+
+/* PoP: _is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
+void gateway_profile_routing_is_whatsapp_non_user_chat(void) { }
+
+/* PoP: _whatsapp_user_chat_ids_match @ gateway/profile_routing.py:_whatsapp_user_chat_ids_match */
+void gateway_profile_routing_whatsapp_user_chat_ids_match(void) { }
+
+/* PoP: specificity @ gateway/profile_routing.py:specificity */
+void gateway_profile_routing_specificity(void) { }
+
+/* PoP: _bot_profile_key @ gateway/profile_routing.py:_bot_profile_key */
+void gateway_profile_routing_bot_profile_key(void) { }
+
+/* PoP: _coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
+void gateway_profile_routing_coerce_route_id(void) { }
+
+/* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
+void gateway_profile_routing_parse_profile_routes(void) { }
+
+/* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
+void gateway_profile_routing_match_profile_route(void) { }
