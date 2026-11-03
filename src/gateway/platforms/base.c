@@ -63,13 +63,18 @@ size_t utf16_len(const char *s) {
 
 /* Port of Python: _prefix_within_utf16_limit */
 char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
-    if (!s || limit == 0) return strdup("");
+    /* NULL and a zero budget have no valid prefix: return NULL, not "". */
+    if (!s || limit == 0) return NULL;
 
     size_t len = 0;
     const unsigned char *p = (const unsigned char *)s;
     const unsigned char *start = p;
 
     while (*p) {
+        /* Remember where this character starts: on overflow the prefix must
+         * end BEFORE it, and the old code had already advanced p past it, so
+         * the over-budget character leaked into the result. */
+        const unsigned char *char_start = p;
         size_t units = 0;
         uint32_t cp = 0;
 
@@ -96,6 +101,7 @@ char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
         }
 
         if (len + units > limit) {
+            p = char_start;   /* drop the character that does not fit */
             break;
         }
         len += units;
@@ -424,4 +430,16 @@ int validate_inbound_media_size(long size, long max_bytes)
     long limit = (max_bytes > 0) ? max_bytes : get_inbound_media_max_bytes();
     if (limit == 0) return 0; /* disabled */
     return (size > limit) ? -1 : 0;
+}
+
+/* Tool-facing aliases (tests/ and callers use the gw_ prefix). */
+int gw_custom_unit_to_cp(const char *s, int len, int budget,
+                         int (*len_fn)(const char *, int))
+{
+    return custom_unit_to_cp(s, len, budget, len_fn);
+}
+
+double gw_float_env(const char *name, double default_value)
+{
+    return float_env(name, default_value);
 }

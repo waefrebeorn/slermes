@@ -63,6 +63,10 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_escprim tests/test_gateway_escape_primitives.c src/gateway/gateway_escape.c \
+    src/gateway/platforms/base.c src/agent/logger.o lib/libjson/json.o \
+    $(for d in lib/*/; do printf -- "-I %s " "$d"; done) -I include/compat -I include -I src -I lib \
+    -include hermes_win32.h -lws2_32
 build test_i18n2 tests/test_i18n.c src/agent/i18n.c \
     src/agent/logger.o lib/libjson/json.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
     -I include/compat -I include -I src -I lib -include hermes_win32.h
@@ -182,6 +186,7 @@ run_suite "Anthropic Depth" "$B/test_anth.exe"
 run_suite "File Safety" "$B/test_fs.exe"
 run_suite "Hook Registry" "$B/test_hook.exe"
 run_suite "i18n Core" "$B/test_i18n2.exe"
+run_suite "Gateway Escape" "$B/test_escprim.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then

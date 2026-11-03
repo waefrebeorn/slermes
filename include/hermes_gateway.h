@@ -97,4 +97,16 @@
 #include "hermes_gateway_yuanbao.h"
 
 /** @} */
+
+/* UTF-16 code units in a UTF-8 string; 4-byte chars count as 2.
+ * Platform message limits are measured in these units. */
+size_t gw_utf16_len(const char *s);
+
+/* Largest prefix of s within a caller-supplied unit budget. */
+int gw_custom_unit_to_cp(const char *s, int len, int budget,
+                         int (*len_fn)(const char *, int));
+
+/* Read a float from the environment, falling back to default_value. */
+double gw_float_env(const char *name, double default_value);
+
 #endif /* HERMES_GATEWAY_H */
