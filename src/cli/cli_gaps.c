@@ -1424,3 +1424,24 @@ void gateway_session_managed_worker_log_lock_for(void) { }
 
 /* PoP: drain_worker_stderr @ gateway/session_managed_worker_log.py:drain_worker_stderr */
 void gateway_session_managed_worker_log_drain_worker_stderr(void) { }
+
+/* PoP: _turns @ gateway/session_producer_lifecycle.py:_turns */
+void gateway_session_producer_lifecycle_turns(void) { }
+
+/* PoP: mark_producer_admission @ gateway/session_producer_lifecycle.py:mark_producer_admission */
+void gateway_session_producer_lifecycle_mark_producer_admission(void) { }
+
+/* PoP: _open @ gateway/session_producer_lifecycle.py:_open */
+void gateway_session_producer_lifecycle_open(void) { }
+
+/* PoP: _executed_outcome @ gateway/session_producer_lifecycle.py:_executed_outcome */
+void gateway_session_producer_lifecycle_executed_outcome(void) { }
+
+/* PoP: producer_turn @ gateway/session_producer_lifecycle.py:producer_turn */
+void gateway_session_producer_lifecycle_producer_turn(void) { }
+
+/* PoP: close_producer_turn @ gateway/session_producer_lifecycle.py:close_producer_turn */
+void gateway_session_producer_lifecycle_close_producer_turn(void) { }
+
+/* PoP: drop_producer_turn @ gateway/session_producer_lifecycle.py:drop_producer_turn */
+void gateway_session_producer_lifecycle_drop_producer_turn(void) { }
