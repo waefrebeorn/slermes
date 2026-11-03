@@ -1496,3 +1496,15 @@ void gateway_stream_consumer_think_filter_and_accumulate(void) { }
 
 /* PoP: _flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
 void gateway_stream_consumer_think_flush_think_buffer(void) { }
+
+/* PoP: _notify_socket @ gateway/systemd_notify.py:_notify_socket */
+void gateway_systemd_notify_notify_socket(void) { }
+
+/* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
+void gateway_systemd_notify_watchdog_interval_seconds(void) { }
+
+/* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+void gateway_systemd_notify_lag_tolerance(void) { }
+
+/* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
+void gateway_systemd_notify_record_tick(void) { }
