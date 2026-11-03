@@ -61,6 +61,8 @@ build test_ui tests/ui/test_ui_harness.c \
 build test_api tests/integration/test_api_endpoints.c \
     lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
+build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
+    lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
 
 echo
 
@@ -100,6 +102,7 @@ run_suite() {
 run_suite "State DB Tests" "$B/test_state_db"
 run_suite "CLI Tests" "$B/test_cli" slermes.exe
 run_suite "UI Tests" "$B/test_ui"
+run_suite "i18n Languages" "$B/test_i18n"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api" ]; then

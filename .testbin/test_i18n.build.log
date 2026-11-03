@@ -1,0 +1,22 @@
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~
+In file included from tests/test_i18n_languages.c:6:
+include/hermes_json.h:92:9: warning: 'json_array_get' redefined
+   92 | #define json_array_get(a, i)    json_get((a), (i))
+      |         ^~~~~~~~~~~~~~
+include/hermes_json.h:40:9: note: this is the location of the previous definition
+   40 | #define json_array_get(a,i)     json_get((a),(i))
+      |         ^~~~~~~~~~~~~~
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~
+In file included from src/agent/i18n_languages.c:18:
+include/hermes_json.h:92:9: warning: 'json_array_get' redefined
+   92 | #define json_array_get(a, i)    json_get((a), (i))
+      |         ^~~~~~~~~~~~~~
+include/hermes_json.h:40:9: note: this is the location of the previous definition
+   40 | #define json_array_get(a,i)     json_get((a),(i))
+      |         ^~~~~~~~~~~~~~
