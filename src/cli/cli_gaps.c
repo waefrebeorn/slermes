@@ -1856,3 +1856,12 @@ void hermes_cli_source_completion_complete_locked(void) { }
 
 /* PoP: _bootstrap_command @ hermes_cli/source_completion.py:_bootstrap_command */
 void hermes_cli_source_completion_bootstrap_command(void) { }
+
+/* PoP: build_completion_parser @ hermes_cli/subcommands/completion.py:build_completion_parser */
+void hermes_cli_subcommands_completion_build_completion_parser(void) { }
+
+/* PoP: _exit_if_plugin_backend @ hermes_cli/subcommands/completion.py:_exit_if_plugin_backend */
+void hermes_cli_subcommands_completion_exit_if_plugin_backend(void) { }
+
+/* PoP: _cu_install @ hermes_cli/subcommands/completion.py:_cu_install */
+void hermes_cli_subcommands_completion_cu_install(void) { }
