@@ -37,6 +37,9 @@ extern "C" {
  */
 const char *get_camofox_state_dir(const char *hermes_home, char out_path[CAMOFOX_PATH_MAX]);
 
+/* Tool-facing alias for get_camofox_state_dir(). */
+const char *camofox_state_dir(const char *hermes_home, char out_path[CAMOFOX_PATH_MAX]);
+
 /**
  * Generate a stable Camofox user identity for the given Hermes home.
  *

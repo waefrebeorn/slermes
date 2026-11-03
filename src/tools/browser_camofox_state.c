@@ -22,7 +22,7 @@
  * Returns heap-allocated "<HERMES_HOME>/browser_auth/camofox" (caller frees),
  * or NULL on failure. Mirrors get_camofox_state_dir(). */
 /* PoP: _state_dir @ hermes_cli/active_sessions.py:_state_dir */
-static char *camofox_state_dir(void)
+static char *camofox_state_dir_internal(void)
 {
     char home[4096];
     const char *env = getenv("HERMES_HOME");
@@ -65,7 +65,7 @@ static char *uuid5_hex(const char *ns, const char *name, size_t nchars)
  * (caller frees). */
 char *browser_camofox_state_get_camofox_identity(const char *task_id)
 {
-    char *scope_root = camofox_state_dir();
+    char *scope_root = camofox_state_dir_internal();
     if (!scope_root) return strdup("{\"user_id\":\"hermes_unknown\",\"session_key\":\"task_unknown\"}");
     const char *logical_scope = (task_id && task_id[0]) ? task_id : "default";
 
