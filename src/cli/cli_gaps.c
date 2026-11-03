@@ -1592,3 +1592,27 @@ void hermes_cli_auth_error_copy_provider_setup_failure_lines(void) { }
 
 /* PoP: unknown_provider_hint @ hermes_cli/auth_error_copy.py:unknown_provider_hint */
 void hermes_cli_auth_error_copy_unknown_provider_hint(void) { }
+
+/* PoP: _read_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_read_qwen_cli_tokens */
+void hermes_cli_auth_qwen_read_qwen_cli_tokens(void) { }
+
+/* PoP: _save_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_save_qwen_cli_tokens */
+void hermes_cli_auth_qwen_save_qwen_cli_tokens(void) { }
+
+/* PoP: _qwen_access_token_is_expiring @ hermes_cli/auth_qwen.py:_qwen_access_token_is_expiring */
+void hermes_cli_auth_qwen_qwen_access_token_is_expiring(void) { }
+
+/* PoP: _refresh_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_refresh_qwen_cli_tokens */
+void hermes_cli_auth_qwen_refresh_qwen_cli_tokens(void) { }
+
+/* PoP: _mark_qwen_oauth_active @ hermes_cli/auth_qwen.py:_mark_qwen_oauth_active */
+void hermes_cli_auth_qwen_mark_qwen_oauth_active(void) { }
+
+/* PoP: _qwen_base_url @ hermes_cli/auth_qwen.py:_qwen_base_url */
+void hermes_cli_auth_qwen_qwen_base_url(void) { }
+
+/* PoP: resolve_qwen_runtime_credentials @ hermes_cli/auth_qwen.py:resolve_qwen_runtime_credentials */
+void hermes_cli_auth_qwen_resolve_qwen_runtime_credentials(void) { }
+
+/* PoP: get_qwen_auth_status @ hermes_cli/auth_qwen.py:get_qwen_auth_status */
+void hermes_cli_auth_qwen_get_qwen_auth_status(void) { }
