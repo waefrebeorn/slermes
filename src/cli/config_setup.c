@@ -2687,3 +2687,23 @@ int looks_like_structured_value(const char *value)
         if (*p == ' ' || *p == '\t') return 1;
     return 0;
 }
+
+/* PoP: get_platform_token @ hermes_cli/config.py:get_platform_token */
+/* Token for a configured messaging platform, or "" when unconfigured.
+ *
+ * Reads the per-platform struct on hermes_config_t. Platforms without a
+ * token field in the config (whatsapp) resolve through env only, so this
+ * returns "". Never returns NULL for a non-NULL args pair, so callers can
+ * compare directly. */
+const char *get_platform_token(const hermes_config_t *cfg, const char *platform)
+{
+    if (!cfg || !platform) return "";
+
+    if (strcmp(platform, "telegram") == 0)   return cfg->telegram.bot_token;
+    if (strcmp(platform, "discord") == 0)    return cfg->discord.token;
+    if (strcmp(platform, "slack") == 0)      return cfg->slack.token;
+    if (strcmp(platform, "matrix") == 0)     return cfg->matrix.access_token;
+    if (strcmp(platform, "mattermost") == 0) return cfg->mattermost.token;
+    if (strcmp(platform, "signal") == 0)     return cfg->signal_number;
+    return "";
+}

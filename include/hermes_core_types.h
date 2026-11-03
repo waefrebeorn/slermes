@@ -1183,6 +1183,9 @@ void hermes_config_load_platforms(void *yaml_doc);
 /* Fallback env var names for platform tokens — lookup by platform name. */
 const char *hermes_platform_token_env(const char *platform_name);
 
+/* Token for a configured messaging platform, or "" when unconfigured. */
+const char *get_platform_token(const hermes_config_t *cfg, const char *platform);
+
 bool hermes_config_load(hermes_config_t *cfg, const char *config_dir);
 bool hermes_config_load_env(hermes_config_t *cfg);
 

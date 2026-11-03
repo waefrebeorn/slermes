@@ -183,7 +183,7 @@ static void test_capability_name(void) {
     ASSERT_STR_EQ(model_capability_name(MODEL_CAP_STREAMING), "streaming", "streaming name");
     ASSERT_STR_EQ(model_capability_name(MODEL_CAP_FUNCTION_CALLING), "fc", "fc name");
     ASSERT_STR_EQ(model_capability_name(MODEL_CAP_THINKING), "thinking", "thinking name");
-    ASSERT_STR_EQ(model_capability_name(MODEL_CAP_JSON), "json", "json name");
+    ASSERT_STR_EQ(model_capability_name(MODEL_CAP_STRUCTURED_OUTPUT), "json", "json name");
     ASSERT_STR_EQ(model_capability_name(MODEL_CAP_CODE_EXECUTION), "code", "code name");
     ASSERT_STR_EQ(model_capability_name(MODEL_CAP_CONTEXT_CACHING), "caching", "caching name");
     ASSERT_STR_EQ(model_capability_name((model_capability_t)0), "", "zero → empty");
@@ -247,19 +247,19 @@ static void test_export_import_parity(void) {
     snprintf(src.provider, sizeof(src.provider), "openrouter");
     snprintf(src.model, sizeof(src.model), "owl-alpha");
     snprintf(src.base_url, sizeof(src.base_url), "https://openrouter.ai/api/v1");
-    src.max_iterations = 90;
-    src.compress = true;
+    src.agent.max_iterations = 90;
+    src.compress_enabled = true;
     src.verbose = 1;
-    src.max_tokens = 16384;
-    src.temperature = 0.3;
+    src.provider_cfg.max_tokens = 16384;
+    src.provider_cfg.temperature = 0.3;
 
     /* Export */
     ASSERT(hermes_config_export(&src, path), "export should succeed");
 
     /* Load back */
     memset(&loaded, 0, sizeof(loaded));
-    char err[256];
-    bool ok = hermes_config_load(path, &loaded, err, sizeof(err));
+    /* Real signature: hermes_config_load(cfg, config_dir). */
+    bool ok = hermes_config_load(&loaded, path);
     ASSERT(ok, "load should succeed after export");
 
     /* Compare key fields */
@@ -269,8 +269,8 @@ static void test_export_import_parity(void) {
     if (verbose) {
         printf("\n    exported provider='%s' model='%s'\n",
                src.provider, src.model);
-        printf("    loaded   provider='%s' model='%s' err='%s'\n",
-               loaded.provider, loaded.model, err);
+        printf("    loaded   provider='%s' model='%s'\n",
+               loaded.provider, loaded.model);
     }
 
     unlink(path);
