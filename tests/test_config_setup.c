@@ -22,6 +22,7 @@
 
 #define HERMES_NO_MAIN 1
 #include "hermes.h"
+#include "provider_metadata.h"
 
 /* ── Test framework ── */
 static int tests_passed = 0;
@@ -33,6 +34,7 @@ static bool verbose = false;
 #define FAIL(msg) do { printf("FAIL ❌  %s:%d: %s\n", __FILE__, __LINE__, msg); tests_failed++; return; } while (0)
 #define ASSERT(cond, msg) do { if (!(cond)) { FAIL(msg); return; } } while (0)
 #define ASSERT_NOT_NULL(ptr, msg) ASSERT((ptr) != NULL, msg)
+#define ASSERT_NULL(ptr, msg) ASSERT((ptr) == NULL, msg)
 #define ASSERT_EQ(a, b, msg) do { \
     long long _x = (long long)(a), _y = (long long)(b); \
     if (_x != _y) { \
@@ -81,10 +83,10 @@ static void test_config_roundtrip(void) {
     snprintf(cfg.model, sizeof(cfg.model), "openai/gpt-4.1");
     snprintf(cfg.base_url, sizeof(cfg.base_url), "https://openrouter.ai/api/v1");
     snprintf(cfg.api_key, sizeof(cfg.api_key), "sk-test-key");
-    cfg.max_iterations = 90;
-    cfg.compress = true;
-    cfg.max_tokens = 8192;
-    cfg.temperature = 0.5;
+    cfg.agent.max_iterations = 90;
+    cfg.compress_enabled = true;
+    cfg.provider_cfg.max_tokens = 8192;
+    cfg.provider_cfg.temperature = 0.5;
 
     /* Export */
     bool ok = hermes_config_export(&cfg, path);
@@ -117,9 +119,10 @@ static void test_provider_metadata(void) {
     /* Check known providers exist */
     const provider_metadata_t *meta = provider_metadata_find("openrouter");
     ASSERT_NOT_NULL(meta, "openrouter should be in PROVIDERS[]");
-    ASSERT_STR_EQ(meta->name, "OpenRouter", "openrouter display name");
+    ASSERT_STR_EQ(meta->display_name, "OpenRouter", "openrouter display name");
     ASSERT_STR_EQ(meta->base_url, "https://openrouter.ai/api/v1", "openrouter base URL");
-    ASSERT(meta->has_api_key, "openrouter should have API key");
+    /* No has_api_key field on provider_metadata_t; credential presence is a
+     * runtime check (credential_sources), not provider metadata. */
     ASSERT(meta->supports_streaming, "openrouter should support streaming");
     ASSERT(meta->supports_thinking, "openrouter should support thinking");
 
@@ -133,8 +136,8 @@ static void test_provider_metadata(void) {
     /* Check model metadata */
     const model_metadata_t *model = model_metadata_find("gpt-4.1");
     ASSERT_NOT_NULL(model, "gpt-4.1 should be in MODELS[]");
-    ASSERT(model->context_length > 0, "gpt-4.1 should have context length");
-    ASSERT(model->capabilities & MODEL_CAP_FUNCTION_CALLING, "gpt-4.1 should support function calling");
+    ASSERT(model->context_window > 0, "gpt-4.1 should have context length");
+    ASSERT(model->caps & MODEL_CAP_FUNCTION_CALLING, "gpt-4.1 should support function calling");
 
     model = model_metadata_find("nonexistent-model-9000");
     ASSERT_NULL(model, "nonexistent model should return NULL");
@@ -197,7 +200,7 @@ static void test_platform_config(void) {
     memset(&cfg, 0, sizeof(cfg));
 
     /* Default: no platforms configured */
-    ASSERT_EQ(cfg.platform_config_count, 0, "no platforms by default");
+    ASSERT(cfg.gateway_platforms[0] == ' ', "no platforms by default");
 
     /* get_platform_token should return empty for unknown */
     const char *tok = get_platform_token(&cfg, "telegram");
@@ -246,7 +249,7 @@ static void test_export_import_parity(void) {
     snprintf(src.base_url, sizeof(src.base_url), "https://openrouter.ai/api/v1");
     src.max_iterations = 90;
     src.compress = true;
-    src.verbose_tool_usage = 1;
+    src.verbose = 1;
     src.max_tokens = 16384;
     src.temperature = 0.3;
 
