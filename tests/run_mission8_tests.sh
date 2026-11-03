@@ -63,6 +63,9 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_think tests/test_think_scrubber.c src/agent/think_scrubber.c \
+    lib/libjson/json.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
+    -I include/compat -I include -I src -I lib -include hermes_win32.h
 build test_cron tests/test_cron_extras_util.c src/cron/cron_extras.c \
     lib/libjson/json.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
     -I include/compat -I include -I src -I lib -include hermes_win32.h
@@ -140,6 +143,7 @@ run_suite "i18n Languages" "$B/test_i18n.exe"
 run_suite "ANSI Strip" "$B/test_ansi.exe"
 run_suite "Threat Patterns" "$B/test_threat.exe"
 run_suite "Cron Extras" "$B/test_cron.exe"
+run_suite "Think Scrubber" "$B/test_think.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then
