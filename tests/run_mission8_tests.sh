@@ -91,7 +91,11 @@ run_suite() {
     out="$("$bin" "$@" 2>&1)"
     rc=$?
     count_and_report "$out"
-    if [ "$rc" -ne 0 ]; then
+    if [ "$rc" -eq 126 ]; then
+        echo "  cannot execute (rc 126) — the OS refused to run $bin"
+        BROKEN=$((BROKEN + 1))
+        BROKEN_LIST+=("$name (OS refused to execute)")
+    elif [ "$rc" -ne 0 ]; then
         echo "  exited $rc"
         BROKEN=$((BROKEN + 1))
         BROKEN_LIST+=("$name (exit $rc)")
@@ -99,13 +103,13 @@ run_suite() {
     echo
 }
 
-run_suite "State DB Tests" "$B/test_state_db"
-run_suite "CLI Tests" "$B/test_cli" slermes.exe
-run_suite "UI Tests" "$B/test_ui"
-run_suite "i18n Languages" "$B/test_i18n"
+run_suite "State DB Tests" "$B/test_state_db.exe"
+run_suite "CLI Tests" "$B/test_cli.exe" slermes.exe
+run_suite "UI Tests" "$B/test_ui.exe"
+run_suite "i18n Languages" "$B/test_i18n.exe"
 
 echo "--- API Integration Tests ---"
-if [ ! -x "$B/test_api" ]; then
+if [ ! -x "$B/test_api.exe" ]; then
     echo "  NOT RUN (binary missing)"
     BROKEN=$((BROKEN + 1))
     BROKEN_LIST+=("API integration (missing binary)")
@@ -114,7 +118,7 @@ elif ! curl -s --max-time 2 http://localhost:5174/health >/dev/null 2>&1; then
     BROKEN=$((BROKEN + 1))
     BROKEN_LIST+=("API integration (server not running)")
 else
-    out="$("$B/test_api" 5174 2>&1)"
+    out="$("$B/test_api.exe" 5174 2>&1)"
     count_and_report "$out"
     echo
 fi
