@@ -63,6 +63,11 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_anth tests/test_anthropic_depth.c src/agent/provider_anthropic.c \
+    src/agent/logger.o src/tools/url_safety.o lib/libjson/json.o lib/libhttp/http.o \
+    lib/libcrypto/crypto.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
+    -I include/compat -I include -I src -I lib -include hermes_win32.h \
+    -lssl -lcrypto -lz -lws2_32
 build test_acct tests/test_account_usage.c src/tools/account_usage.c \
     src/agent/logger.o lib/libjson/json.o lib/libhttp/http.o \
     $(for d in lib/*/; do printf -- "-I %s " "$d"; done) -I include/compat -I include -I src -I lib \
@@ -159,6 +164,7 @@ run_suite "Think Scrubber" "$B/test_think.exe"
 run_suite "Auxiliary Client" "$B/test_aux.exe"
 run_suite "Bedrock Depth" "$B/test_bedrock.exe"
 run_suite "Account Usage" "$B/test_acct.exe"
+run_suite "Anthropic Depth" "$B/test_anth.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then

@@ -219,6 +219,15 @@ extern const provider_ops_t PROVIDER_OPS_BEDROCK;
 
 /* Bedrock utility functions — ported from Python bedrock_adapter.py */
 bool bedrock_is_context_overflow(const char *error_message);
+
+/* True for Anthropic OAuth/setup tokens, not Console API keys. */
+bool anthropic_is_oauth_token(const char *key);
+bool anthropic_is_kimi_coding_endpoint(const char *base_url);
+bool anthropic_model_name_is_kimi_family(const char *model);
+bool anthropic_is_kimi_family_endpoint(const char *base_url, const char *model);
+bool anthropic_requires_bearer_auth(const char *base_url);
+bool anthropic_is_azure_anthropic_endpoint(const char *base_url);
+bool anthropic_is_bedrock_model_id(const char *model_id);
 const char *classify_bedrock_error(const char *error_message);
 char *bedrock_extract_provider_from_arn(const char *arn);
 int  get_bedrock_context_length(const char *model_id);

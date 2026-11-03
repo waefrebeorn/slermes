@@ -929,8 +929,16 @@ static void anthropic_free_response(provider_response_t *resp) {
 /* Port of Python anthropic_adapter.py:_is_oauth_token(). */
 bool is_oauth_token(const char *key) {
     if (!key || !*key) return false;
-    /* Regular Anthropic Console API keys — x-api-key auth, not OAuth */
-    if (strncmp(key, "sk-ant-api", 10) == 0) return false;
+    /* Anthropic Console API-key families — x-api-key auth, never OAuth.
+     * Python excludes all four (agent/anthropic_credentials.py:67); this used
+     * to exclude only sk-ant-api, so sk-ant-usr/svc/admin were misread as
+     * OAuth and picked up the Claude Code identity header. */
+    static const char *const CONSOLE_PREFIXES[] = {
+        "sk-ant-api", "sk-ant-usr", "sk-ant-svc", "sk-ant-admin",
+    };
+    for (size_t i = 0; i < sizeof(CONSOLE_PREFIXES) / sizeof(CONSOLE_PREFIXES[0]); i++) {
+        if (strncmp(key, CONSOLE_PREFIXES[i], strlen(CONSOLE_PREFIXES[i])) == 0) return false;
+    }
     /* Anthropic-issued tokens (setup-tokens sk-ant-oat-*, managed keys) */
     if (strncmp(key, "sk-ant-", 7) == 0) return true;
     /* JWTs from Anthropic OAuth flow */
@@ -3572,3 +3580,30 @@ const provider_ops_t PROVIDER_OPS_ANTHROPIC = {
     .free_response = anthropic_free_response,
     .name = "anthropic"
 };
+
+/* Tool-facing alias (tests/ and callers use the anthropic_ prefix). */
+bool anthropic_is_oauth_token(const char *key)
+{
+    return is_oauth_token(key);
+}
+
+/* ── Tool-facing aliases for the endpoint/model predicates ──
+ * These already existed unprefixed; tests/ and callers use the anthropic_
+ * prefix consistent with the rest of the module. */
+bool anthropic_is_kimi_coding_endpoint(const char *base_url)
+{ return is_kimi_coding_endpoint(base_url); }
+
+bool anthropic_model_name_is_kimi_family(const char *model)
+{ return model_name_is_kimi_family(model); }
+
+bool anthropic_is_kimi_family_endpoint(const char *base_url, const char *model)
+{ return is_kimi_family_endpoint(base_url, model); }
+
+bool anthropic_requires_bearer_auth(const char *base_url)
+{ return requires_bearer_auth(base_url); }
+
+bool anthropic_is_azure_anthropic_endpoint(const char *base_url)
+{ return is_azure_anthropic_endpoint(base_url); }
+
+bool anthropic_is_bedrock_model_id(const char *model_id)
+{ return is_bedrock_model_id(model_id); }
