@@ -1,3 +1,7 @@
+/*
+ * agent_runtime_helpers.c — C port of agent/agent_runtime_helpers.py.
+ */
+
 
 /* PoP: _socket_is_dead @ agent/agent_runtime_helpers_dead_connections.py:_socket_is_dead */
 int agent_runtime_helpers_socket_is_dead(int fd) {
@@ -15,14 +19,6 @@ int agent_runtime_helpers_count_dead_pool_sockets(int *fds, int n) {
     }
     return count;
 }
-    json_object_set(row, "role", json_new_string("assistant"));
-    json_object_set(row, "content", json_new_string(""));
-    json_object_set(row, "display_kind", json_new_string("hidden"));
-    json_object_set(row, "api_content", json_new_string(agent_runtime_helpers_interrupted_placeholder));
-    return row;
-}
-ks).
- */
 
 #include "hermes_core_types.h"
 #include "hermes_http.h"

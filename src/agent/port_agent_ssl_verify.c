@@ -1,10 +1,31 @@
 
+/*
+ * port_agent_ssl_verify.c — C port of agent/ssl_verify.py and the
+ * resolve_verify helper from agent/model_metadata_http.py.
+ */
+
+#include "hermes_core_types.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <strings.h>
+#include <ctype.h>
+
+static bool is_falsey_string(const char *s);
+const char *agent_ssl_verify_resolve_httpx_verify(const char *ca_bundle,
+                                                  const char *ssl_verify);
+
 /* PoP: resolve_verify @ agent/model_metadata_http.py:resolve_verify */
 const char *agent_model_metadata_resolve_verify(const char *base_url) {
     /* Best-effort: no custom_providers available here; use defaults. */
     return agent_ssl_verify_resolve_httpx_verify(NULL, NULL);
 }
-(!s) return false;
+
+static bool is_falsey_string(const char *s)
+{
+    if (!s) return false;
     char buf[32]; size_t n = 0;
     for (size_t i = 0; s[i] && n < sizeof(buf) - 1; i++)
         if (s[i] != ' ' && s[i] != '\t') buf[n++] = (char)tolower((unsigned char)s[i]);

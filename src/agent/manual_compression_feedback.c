@@ -1,3 +1,15 @@
+/*
+ * manual_compression_feedback.c — C port of
+ * agent/manual_compression_feedback.py.
+ */
+
+#include "manual_compression_feedback.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 
 /* PoP: describe_compression_lock_skip @ agent/manual_compression_feedback.py:describe_compression_lock_skip */
 char *describe_compression_lock_skip(const char *lock_signal) {
@@ -10,7 +22,12 @@ char *describe_compression_lock_skip(const char *lock_signal) {
     }
     return buf;
 }
-op = (after_count == before_count);
+
+void summarize_manual_compression(int before_count, int after_count,
+                                  int before_tokens, int after_tokens,
+                                  compression_feedback_t *out)
+{
+    bool noop = (after_count == before_count);
     out->noop = noop;
 
     if (noop) {

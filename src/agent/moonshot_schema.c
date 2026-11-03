@@ -276,7 +276,7 @@ bool is_moonshot_model(const char *model) {
 }
 
 /* PoP: _empty_object_schema @ agent/moonshot_schema.py:_empty_object_schema */
-char *moonshot_empty_object_schema(void) { return strdup("{"type":"object","properties":{}}"); }
+char *moonshot_empty_object_schema(void) { return strdup("{\"type\":\"object\",\"properties\":{}}"); }
 
 /* PoP: _ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
 void moonshot_ensure_required_array(void *schema) { (void)schema; }

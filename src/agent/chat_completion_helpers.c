@@ -9,7 +9,9 @@ void *chat_completion_helpers_tool_call_delta_view(void *tc_delta) {
 void chat_completion_helpers_relay_observe(void *self, void *chunk) {
     (void)self; (void)chunk;
 }
- implemented in agent_loop.c
+/*
+ * chat_completion_helpers.c — pure helpers for the chat completion path.
+ * The streaming loop itself lives in agent_loop.c
  * and llm_client.c respectively.
  */
 
