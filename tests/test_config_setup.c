@@ -32,6 +32,14 @@ static bool verbose = false;
 #define PASS() do { printf("PASS ✅\n"); tests_passed++; } while (0)
 #define FAIL(msg) do { printf("FAIL ❌  %s:%d: %s\n", __FILE__, __LINE__, msg); tests_failed++; return; } while (0)
 #define ASSERT(cond, msg) do { if (!(cond)) { FAIL(msg); return; } } while (0)
+#define ASSERT_NOT_NULL(ptr, msg) ASSERT((ptr) != NULL, msg)
+#define ASSERT_EQ(a, b, msg) do { \
+    long long _x = (long long)(a), _y = (long long)(b); \
+    if (_x != _y) { \
+        char _buf[512]; snprintf(_buf, sizeof(_buf), "%s: expected %lld, got %lld", msg, _y, _x); \
+        FAIL(_buf); return; \
+    } \
+} while (0)
 #define ASSERT_STR_EQ(a, b, msg) do { \
     const char *_a = (a ? a : ""); const char *_b = (b ? b : ""); \
     if (strcmp(_a, _b) != 0) { \
