@@ -1790,3 +1790,36 @@ void hermes_cli_cli_chat_error_copy_chat_error_response(void) { }
 
 /* PoP: agent_init_failure_message @ hermes_cli/cli_chat_error_copy.py:agent_init_failure_message */
 void hermes_cli_cli_chat_error_copy_agent_init_failure_message(void) { }
+
+/* PoP: _cli @ hermes_cli/cli_config_load.py:_cli */
+void hermes_cli_cli_config_load_cli(void) { }
+
+/* PoP: _mirror_config_to_env @ hermes_cli/cli_config_load.py:_mirror_config_to_env */
+void hermes_cli_cli_config_load_mirror_config_to_env(void) { }
+
+/* PoP: _cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
+void hermes_cli_cli_config_load_cli_config_defaults(void) { }
+
+/* PoP: _merge_file_config @ hermes_cli/cli_config_load.py:_merge_file_config */
+void hermes_cli_cli_config_load_merge_file_config(void) { }
+
+/* PoP: _init_logging_and_display_from_config @ hermes_cli/cli_config_load.py:_init_logging_and_display_from_config */
+void hermes_cli_cli_config_load_init_logging_and_display_from_config(void) { }
+
+/* PoP: _last_output_line @ hermes_cli/cli_process_dock.py:_last_output_line */
+void hermes_cli_cli_process_dock_last_output_line(void) { }
+
+/* PoP: process_status @ hermes_cli/cli_process_dock.py:process_status */
+void hermes_cli_cli_process_dock_process_status(void) { }
+
+/* PoP: process_rows @ hermes_cli/cli_process_dock.py:process_rows */
+void hermes_cli_cli_process_dock_process_rows(void) { }
+
+/* PoP: process_activity @ hermes_cli/cli_process_dock.py:process_activity */
+void hermes_cli_cli_process_dock_process_activity(void) { }
+
+/* PoP: process_glyph @ hermes_cli/cli_process_dock.py:process_glyph */
+void hermes_cli_cli_process_dock_process_glyph(void) { }
+
+/* PoP: process_tail @ hermes_cli/cli_process_dock.py:process_tail */
+void hermes_cli_cli_process_dock_process_tail(void) { }
