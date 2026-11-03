@@ -1406,3 +1406,12 @@ void gateway_session_db_recovery_last_error(void) { }
 
 /* PoP: close_all @ gateway/session_db_recovery.py:close_all */
 void gateway_session_db_recovery_close_all(void) { }
+
+/* PoP: _control_task @ gateway/session_hosted_controls.py:_control_task */
+void gateway_session_hosted_controls_control_task(void) { }
+
+/* PoP: discard_room_task @ gateway/session_hosted_controls.py:discard_room_task */
+void gateway_session_hosted_controls_discard_room_task(void) { }
+
+/* PoP: retry_room_task @ gateway/session_hosted_controls.py:retry_room_task */
+void gateway_session_hosted_controls_retry_room_task(void) { }
