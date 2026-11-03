@@ -1616,3 +1616,12 @@ void hermes_cli_auth_qwen_resolve_qwen_runtime_credentials(void) { }
 
 /* PoP: get_qwen_auth_status @ hermes_cli/auth_qwen.py:get_qwen_auth_status */
 void hermes_cli_auth_qwen_get_qwen_auth_status(void) { }
+
+/* PoP: _probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
+void hermes_cli_auth_zai_kimi_probe_single_zai_endpoint(void) { }
+
+/* PoP: detect_zai_endpoint @ hermes_cli/auth_zai_kimi.py:detect_zai_endpoint */
+void hermes_cli_auth_zai_kimi_detect_zai_endpoint(void) { }
+
+/* PoP: _resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
+void hermes_cli_auth_zai_kimi_resolve_zai_base_url(void) { }
