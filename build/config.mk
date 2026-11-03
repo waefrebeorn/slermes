@@ -57,7 +57,16 @@ else ifneq ($(filter MINGW% MSYS_NT%,$(UNAME_S)),)
     SSL_CFLAGS := $(shell pkg-config --cflags openssl 2>/dev/null)
     SSL_LDFLAGS := $(shell pkg-config --libs openssl 2>/dev/null || echo "-lssl -lcrypto")
     PLATFORM_LDFLAGS := -lws2_32 -ltre -lpcre2-8 -lgdi32 -lSDL2main -lSDL2 -lSDL2_ttf -lz
-    OS_DEF := -D_WIN32 -DSDL_MAIN_HANDLED
+    # Extra Win32 libs required when linking statically: libcrypto.a's
+    # Windows cert-store backend pulls Cert* from crypt32 and Reg* from
+    # advapi32, which the DLL import libraries supply implicitly.
+    PLATFORM_LDFLAGS += -lcrypt32 -ladvapi32 -luser32 -lshell32 -lole32 -luuid
+    OS_DEF := -D_WIN32 -DSDL_MAIN_HANDLED -DPCRE2_STATIC
+    # -DPCRE2_STATIC makes pcre2 headers declare plain symbols instead of
+    # dllimport, so a static link can resolve them. Without it every TU
+    # referencing pcre2 pulls in __imp_pcre2_* and only the DLL import
+    # library satisfies it, which is what kept the shipped binary dependent
+    # on the MSYS2 toolchain being installed on the user's machine.
     COMPAT_INC := -I include/compat
     WIN_PLATFORM := 1
 else
