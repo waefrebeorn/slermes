@@ -830,3 +830,16 @@ void tools_account_usage_redeem_codex_reset_credit(void) { }
 
 /* PoP: _call_plugin_usage_hook @ agent/account_usage.py:_call_plugin_usage_hook */
 void tools_account_usage_call_plugin_usage_hook(void) { }
+
+/* Tool-facing alias for fetch_account_usage(). */
+account_usage_snapshot_t *account_usage_fetch(const char *provider,
+    const char *base_url, const char *api_key)
+{
+    return fetch_account_usage(provider, base_url, api_key);
+}
+
+/* Tool-facing alias for render_account_usage_lines(). */
+char **account_usage_render(const account_usage_snapshot_t *snap, bool markdown)
+{
+    return render_account_usage_lines(snap, markdown);
+}

@@ -49,6 +49,10 @@ typedef struct {
 account_usage_snapshot_t *fetch_account_usage(const char *provider,
     const char *base_url, const char *api_key);
 
+/* Tool-facing alias (tests and src/ call it by this name). Same function. */
+account_usage_snapshot_t *account_usage_fetch(const char *provider,
+    const char *base_url, const char *api_key);
+
 /* Port of Python: agent/account_usage.py:CreditsView (dataclass) */
 #define CREDITS_VIEW_BALANCE_LINES_MAX 32
 typedef struct {
@@ -87,6 +91,9 @@ bool account_usage_is_finite_num(double v);
  * Each line is a separate allocation. */
 char **render_account_usage_lines(const account_usage_snapshot_t *snap,
     bool markdown);
+
+/* Tool-facing alias for render_account_usage_lines(). */
+char **account_usage_render(const account_usage_snapshot_t *snap, bool markdown);
 
 /* Free the rendered lines array */
 void account_usage_free_lines(char **lines);
