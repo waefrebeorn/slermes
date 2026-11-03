@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -41,6 +42,10 @@ def real_cflags():
             parts = flags.split()
             if parts and parts[0].endswith("gcc"):
                 parts = parts[1:]
+            # make prints -DNAME=\\\"value\\\" (shell-escaped). Passing that
+            # straight to execve hands gcc a literal backslash, which it reports
+            # as "stray '\'". Collapse the escaping back to a plain quote pair.
+            parts = [re.sub(r'\\+"', '"', p) for p in parts]
             return parts + ["-fsyntax-only"]
     raise SystemExit("could not harvest compile flags from `make -n`")
 
