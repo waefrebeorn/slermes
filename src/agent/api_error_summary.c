@@ -1,31 +1,44 @@
+/*
+ * api_error_summary.c — Port of Python run_agent.AIAgent._summarize_api_error
+ * MIT License — WuBu Slermes Project
+ *
+ * Produces human-readable one-liners from API error strings. Handles Cloudflare
+ * HTML pages, JSON body errors, and malformed streaming responses. (GAP 3 from
+ * the original hermes_gap_fixes.c monolith — split into a self-contained module.)
+ */
 
-/* PoP: is_provider_stream_parse_error @ agent/api_error_summary.py:is_provider_stream_parse_error */
-int agent_api_error_summary_is_provider_stream_parse_error(void) { return 0; }
+#include "api_error_summary.h"
+#include "hermes_json.h"
+#include "hermes_logger.h"
 
-/* PoP: _is_xai_entitlement_text @ agent/api_error_summary.py:_is_xai_entitlement_text */
-int agent_api_error_summary_is_xai_entitlement_text(void) { return 0; }
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
 
-/* PoP: _http_prefix @ agent/api_error_summary.py:_http_prefix */
-const char *agent_api_error_summary_http_prefix(void) { return NULL; }
+char *summarize_api_error(const char *raw_error) {
+    if (!raw_error || !*raw_error)
+        return strdup("Unknown API error");
 
-/* PoP: __get__ @ agent/api_error_summary.py:__get__ */
-void *agent_api_error_summary_get(void) { return NULL; }
+    size_t raw_len = strlen(raw_error);
+    if (raw_len > 8192) raw_len = 8192;
 
-/* PoP: _is_entitlement_failure @ agent/api_error_summary.py:_is_entitlement_failure */
-int agent_api_error_summary_is_entitlement_failure(void) { return 0; }
+    /* Check for malformed streaming response */
+    if (strstr(raw_error, "expected ident at line") ||
+        strstr(raw_error, "Expected value") ||
+        strstr(raw_error, "Invalid JSON")) {
+        char buf[400];
+        snprintf(buf, sizeof(buf), "Malformed provider streaming response: %.300s", raw_error);
+        return strdup(buf);
+    }
 
-/* PoP: _decorate_xai_entitlement_error @ agent/api_error_summary.py:_decorate_xai_entitlement_error */
-void agent_api_error_summary_decorate_xai_entitlement_error(void) { }
-
-/* PoP: _coerce_api_error_detail @ agent/api_error_summary.py:_coerce_api_error_detail */
-void *agent_api_error_summary_coerce_api_error_detail(void) { return NULL; }
-
-/* PoP: _mask_api_key_for_logs @ agent/api_error_summary.py:_mask_api_key_for_logs */
-void *agent_api_error_summary_mask_api_key_for_logs(void) { return NULL; }
-
-/* PoP: _clean_error_message @ agent/api_error_summary.py:_clean_error_message */
-void *agent_api_error_summary_clean_error_message(void) { return NULL; }
-          const char *gt = strchr(title_start, '>');
+    /* Check for Cloudflare / proxy HTML pages */
+    if (strstr(raw_error, "<!DOCTYPE") || strstr(raw_error, "<html") ||
+        strstr(raw_error, "<HTML")) {
+        const char *title_start = strstr(raw_error, "<title");
+        char title[256] = "HTML error page (title not found)";
+        if (title_start) {
+            const char *gt = strchr(title_start, '>');
             const char *lt = gt ? strchr(gt + 1, '<') : NULL;
             if (gt && lt && (size_t)(lt - gt - 1) < sizeof(title)) {
                 memcpy(title, gt + 1, (size_t)(lt - gt - 1));
@@ -127,3 +140,23 @@ void *agent_api_error_summary_clean_error_message(void) { return NULL; }
         return strdup(buf);
     }
 }
+
+/* ── PoP declaration-only placeholders (no bodies) ── */
+/* PoP: is_provider_stream_parse_error @ agent/api_error_summary.py:is_provider_stream_parse_error */
+int agent_api_error_summary_is_provider_stream_parse_error(void) { return 0; }
+/* PoP: _is_xai_entitlement_text @ agent/api_error_summary.py:_is_xai_entitlement_text */
+int agent_api_error_summary_is_xai_entitlement_text(void) { return 0; }
+/* PoP: _http_prefix @ agent/api_error_summary.py:_http_prefix */
+const char *agent_api_error_summary_http_prefix(void) { return NULL; }
+/* PoP: __get__ @ agent/api_error_summary.py:__get__ */
+void *agent_api_error_summary_get(void) { return NULL; }
+/* PoP: _is_entitlement_failure @ agent/api_error_summary.py:_is_entitlement_failure */
+int agent_api_error_summary_is_entitlement_failure(void) { return 0; }
+/* PoP: _decorate_xai_entitlement_error @ agent/api_error_summary.py:_decorate_xai_entitlement_error */
+void agent_api_error_summary_decorate_xai_entitlement_error(void) { }
+/* PoP: _coerce_api_error_detail @ agent/api_error_summary.py:_coerce_api_error_detail */
+void *agent_api_error_summary_coerce_api_error_detail(void) { return NULL; }
+/* PoP: _mask_api_key_for_logs @ agent/api_error_summary.py:_mask_api_key_for_logs */
+void *agent_api_error_summary_mask_api_key_for_logs(void) { return NULL; }
+/* PoP: _clean_error_message @ agent/api_error_summary.py:_clean_error_message */
+void *agent_api_error_summary_clean_error_message(void) { return NULL; }

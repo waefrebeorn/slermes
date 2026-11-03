@@ -1,13 +1,11 @@
-
-/* PoP: list_blueprints @ cron/blueprint_catalog.py:list_blueprints */
-void *cron_blueprint_catalog_list_blueprints(void) { return NULL; }
-
-/* PoP: _slot @ cron/blueprint_catalog.py:_slot */
-void *cron_blueprint_catalog_slot(void) { return NULL; }
-
-/* PoP: _slot_default @ cron/blueprint_catalog.py:_slot_default */
-void *cron_blueprint_catalog_slot_default(void) { return NULL; }
-ueprint, blueprint_form_schema,
+/*
+ * port_blueprint_catalog_helpers.c
+ *
+ * Pure, portable helper functions ported from cron/blueprint_catalog.py.
+ * No catalog load, no BlueprintFillError raising (callers validate), no
+ * dataclass. These take blueprint fields as JSON (schedule_template string,
+ * slots array, key string) plus a values JSON object and perform pure string
+ * templating. Coupled helpers (get_blueprint, blueprint_form_schema,
  * blueprint_catalog_entry, fill_blueprint, __post_init__) stay REAL_GAP.
  *
  * C name <- python name (module prefix 'blueprint_catalog_'):
@@ -897,3 +895,11 @@ char *blueprint_catalog_fill(json_t *bp, const char *values_json,
     free(prompt); free(schedule); json_free(resolved); json_free(vals);
     return ser;
 }
+
+/* ── PoP declaration-only placeholders (no bodies) ── */
+/* PoP: list_blueprints @ cron/blueprint_catalog.py:list_blueprints */
+void *cron_blueprint_catalog_list_blueprints(void) { return NULL; }
+/* PoP: _slot @ cron/blueprint_catalog.py:_slot */
+void *cron_blueprint_catalog_slot(void) { return NULL; }
+/* PoP: _slot_default @ cron/blueprint_catalog.py:_slot_default */
+void *cron_blueprint_catalog_slot_default(void) { return NULL; }

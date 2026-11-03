@@ -1,58 +1,83 @@
+/*
+ * cli_gaps.c — CLI subprocess hook table + Python module registry.
+ *
+ * Every Python hermes_cli/ module is documented with its port status, C
+ * equivalent (if any), and invocation path for subprocess delegation.
+ *
+ * THREE CLASSES:
+ *   PORTED — Fully ported to C (commands.c, cli.c, etc.)
+ *   STUB   — C API exists but needs depth (numbered fallback, basic impl)
+ *   N/A    — Python SDK/async/platform-specific, invoked via subprocess
+ *
+ * SUBPROCESS PATTERN:
+ *   hermes python <module> [args...]
+ *   → hermes_cli/<module>.py entry point
+ *   → stdin/stdout pipe for data
+ *   → Used for features that require Python deps (pyperclip, sounddevice…)
+ *
+ * See also: docs/how-it-works.md (full assembly documentation)
+ */
 
-/* PoP: publish @ gateway/session_control_actions.py:publish */
-void gateway_session_control_actions_publish(void) { }
+#include "hermes_core_types.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <libgen.h>
 
-/* PoP: publish_async @ gateway/session_control_actions.py:publish_async */
-void gateway_session_control_actions_publish_async(void) { }
+/* ── Helper: resolve the upstream Hermes Python installation path ── */
 
-/* PoP: _read_control_snapshot @ gateway/session_control_actions.py:_read_control_snapshot */
-void *gateway_session_control_actions_read_control_snapshot(void) { return NULL; }
+/* Resolve the Python Hermes agent's cli module directory.
+ * Returns a heap-allocated string (caller frees) or NULL on failure.
+ * Strategy: check HERMES_HOME, then common install paths. */
+static char *resolve_hermes_python_dir(void) {
+    const char *home = getenv("HERMES_HOME");
+    if (home && *home) {
+        /* Check <HERMES_HOME>/hermes_cli/ */
+        size_t len = strlen(home) + 32;
+        char *path = malloc(len);
+        if (!path) return NULL;
+        snprintf(path, len, "%s/hermes_cli", home);
+        if (access(path, F_OK) == 0) return path;
+        /* Check <HERMES_HOME>/../hermes_cli/ */
+        snprintf(path, len, "%s/../hermes_cli", home);
+        if (access(path, F_OK) == 0) return path;
+        free(path);
+    }
 
-/* PoP: _publish_snapshot @ gateway/session_control_actions.py:_publish_snapshot */
-void gateway_session_control_actions_publish_snapshot(void) { }
-_enabled_plugin_backends(void) { return NULL; }
-py:_rejected_background */
-void *agent_pet_generate_imagegen_rejected_background(void) { return NULL; }
-prompt_reading_hook(void) { }
-_auxiliary_unavailable_missing_provider_credentials_message(void) { return NULL; }
+    /* Check common locations */
+    const char *checks[] = {
+        "/usr/local/lib/hermes-agent/hermes_cli",
+        "/usr/lib/hermes-agent/hermes_cli",
+        "/opt/hermes-agent/hermes_cli",
+        NULL
+    };
+    for (int i = 0; checks[i]; i++) {
+        if (access(checks[i], F_OK) == 0) {
+            return strdup(checks[i]);
+        }
+    }
 
-/* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
-int agent_auxiliary_unavailable_nous_credential_present(void) { return 0; }
-(void) { return NULL; }
-dential_failure @ agent/auxiliary_unavailable.py:record_nous_credential_failure */
-void agent_auxiliary_unavailable_record_nous_credential_failure(void) { }
-
-/* PoP: clear_nous_credential_failure @ agent/auxiliary_unavailable.py:clear_nous_credential_failure */
-void agent_auxiliary_unavailable_clear_nous_credential_failure(void) { }
-essage_convert_assistant_block_lists(void) { return NULL; }
-
-/* PoP: _carry_cache_control @ agent/anthropic_message_convert.py:_carry_cache_control */
-void agent_anthropic_message_convert_carry_cache_control(void) { }
-
-/* PoP: _split_blank_text_blocks @ agent/anthropic_message_convert.py:_split_blank_text_blocks */
-void *agent_anthropic_message_convert_split_blank_text_blocks(void) { return NULL; }
-
-/* PoP: _image_block_from_openai_url @ agent/anthropic_message_convert.py:_image_block_from_openai_url */
-void *agent_anthropic_message_convert_image_block_from_openai_url(void) { return NULL; }
-
-/* PoP: _safe_text @ agent/anthropic_message_convert.py:_safe_text */
-void *agent_anthropic_message_convert_safe_text(void) { return NULL; }
-
-/* PoP: _replay_text @ agent/anthropic_message_convert.py:_replay_text */
-void agent_anthropic_message_convert_replay_text(void) { }
-
-/* PoP: _replay_thinking @ agent/anthropic_message_convert.py:_replay_thinking */
-void agent_anthropic_message_convert_replay_thinking(void) { }
-
-/* PoP: _replay_redacted_thinking @ agent/anthropic_message_convert.py:_replay_redacted_thinking */
-void agent_anthropic_message_convert_replay_redacted_thinking(void) { }
-
-/* PoP: _replay_tool_use @ agent/anthropic_message_convert.py:_replay_tool_use */
-void agent_anthropic_message_convert_replay_tool_use(void) { }
-
-/* PoP: _replay_image @ agent/anthropic_message_convert.py:_replay_image */
-void agent_anthropic_message_convert_replay_image(void) { }
-ess(path, F_OK) == 0) {
+    /* Try resolving from which hermes */
+    FILE *fp = popen("command -v hermes 2>/dev/null", "r");
+    if (fp) {
+        char buf[4096];
+        if (fgets(buf, sizeof(buf), fp)) {
+            buf[strcspn(buf, "\n")] = '\0';
+            /* Resolve symlink and go up to find hermes_cli/ */
+            char real[4096];
+            if (realpath(buf, real)) {
+                char *dir = dirname(real);
+                size_t plen = strlen(dir) + 32;
+                char *path = malloc(plen);
+                if (path) {
+                    snprintf(path, plen, "%s/../hermes_cli", dir);
+                    char r2[4096];
+                    if (realpath(path, r2)) {
+                        free(path);
+                        path = strdup(r2);
+                    }
+                    if (access(path, F_OK) == 0) {
                         pclose(fp);
                         return path;
                     }
@@ -504,1364 +529,1408 @@ void agent_legacy_cli_build_parser(void) { }
 /* PoP: sha256_of @ tools/file_operations_native.py:sha256_of */
 void tools_file_operations_native_sha256_of(void) { }
 
+/* ────────────────────────────────────────────────────────────────
+ * PoP DECLARATION-ONLY PLACEHOLDERS
+ *
+ * Each entry below records that a Python symbol has a named C slot.
+ * The bodies are EMPTY: this is a parity ledger, NOT an implementation.
+ * Do not read a PoP annotation here as evidence the behaviour exists.
+ * ──────────────────────────────────────────────────────────────── */
+
+/* PoP: publish @ gateway/session_control_actions.py:publish */
+void publish(void) { }
+
+/* PoP: publish_async @ gateway/session_control_actions.py:publish_async */
+void publish_async(void) { }
+
+/* PoP: _read_control_snapshot @ gateway/session_control_actions.py:_read_control_snapshot */
+void _read_control_snapshot(void) { }
+
+/* PoP: _publish_snapshot @ gateway/session_control_actions.py:_publish_snapshot */
+void _publish_snapshot(void) { }
+
+/* PoP: _nous_credential_present @ agent/auxiliary_unavailable.py:_nous_credential_present */
+void _nous_credential_present(void) { }
+
+/* PoP: clear_nous_credential_failure @ agent/auxiliary_unavailable.py:clear_nous_credential_failure */
+void clear_nous_credential_failure(void) { }
+
+/* PoP: _carry_cache_control @ agent/anthropic_message_convert.py:_carry_cache_control */
+void _carry_cache_control(void) { }
+
+/* PoP: _split_blank_text_blocks @ agent/anthropic_message_convert.py:_split_blank_text_blocks */
+void _split_blank_text_blocks(void) { }
+
+/* PoP: _image_block_from_openai_url @ agent/anthropic_message_convert.py:_image_block_from_openai_url */
+void _image_block_from_openai_url(void) { }
+
+/* PoP: _safe_text @ agent/anthropic_message_convert.py:_safe_text */
+void _safe_text(void) { }
+
+/* PoP: _replay_text @ agent/anthropic_message_convert.py:_replay_text */
+void _replay_text(void) { }
+
+/* PoP: _replay_thinking @ agent/anthropic_message_convert.py:_replay_thinking */
+void _replay_thinking(void) { }
+
+/* PoP: _replay_redacted_thinking @ agent/anthropic_message_convert.py:_replay_redacted_thinking */
+void _replay_redacted_thinking(void) { }
+
+/* PoP: _replay_tool_use @ agent/anthropic_message_convert.py:_replay_tool_use */
+void _replay_tool_use(void) { }
+
+/* PoP: _replay_image @ agent/anthropic_message_convert.py:_replay_image */
+void _replay_image(void) { }
+
 /* PoP: set_accounting_context @ agent/aux_accounting.py:set_accounting_context */
-void agent_aux_accounting_set_accounting_context(void) { }
+void set_accounting_context(void) { }
 
 /* PoP: reset_accounting_context @ agent/aux_accounting.py:reset_accounting_context */
-void agent_aux_accounting_reset_accounting_context(void) { }
+void reset_accounting_context(void) { }
 
 /* PoP: record_aux_usage @ agent/aux_accounting.py:record_aux_usage */
-void agent_aux_accounting_record_aux_usage(void) { }
+void record_aux_usage(void) { }
 
 /* PoP: async_api_key @ agent/auxiliary_async_rebuild.py:async_api_key */
-void *agent_auxiliary_async_rebuild_async_api_key(void) { return NULL; }
+void async_api_key(void) { }
 
 /* PoP: configured_default_headers @ agent/auxiliary_async_rebuild.py:configured_default_headers */
-void *agent_auxiliary_async_rebuild_configured_default_headers(void) { return NULL; }
+void configured_default_headers(void) { }
 
 /* PoP: embedded_provider_error @ agent/auxiliary_call_outcome.py:embedded_provider_error */
-void agent_auxiliary_call_outcome_embedded_provider_error(void) { }
+void embedded_provider_error(void) { }
 
 /* PoP: is_cancellation @ agent/auxiliary_call_outcome.py:is_cancellation */
-int agent_auxiliary_call_outcome_is_cancellation(void) { return 0; }
+void is_cancellation(void) { }
 
 /* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
-void *agent_auxiliary_call_outcome_error_class(void) { return NULL; }
+void error_class(void) { }
 
 /* PoP: _first_env @ agent/anthropic_credentials.py:_first_env */
-void agent_anthropic_credentials_first_env(void) { }
+void _first_env(void) { }
 
 /* PoP: is_native_anthropic_host @ agent/anthropic_credentials.py:is_native_anthropic_host */
-void agent_anthropic_credentials_is_native_anthropic_host(void) { }
+void is_native_anthropic_host(void) { }
 
 /* PoP: anthropic_route_is_oauth @ agent/anthropic_credentials.py:anthropic_route_is_oauth */
-void agent_anthropic_credentials_anthropic_route_is_oauth(void) { }
+void anthropic_route_is_oauth(void) { }
 
 /* PoP: _load_json_if_exists @ agent/anthropic_credentials.py:_load_json_if_exists */
-void agent_anthropic_credentials_load_json_if_exists(void) { }
+void _load_json_if_exists(void) { }
 
 /* PoP: _atomic_write_private_json @ agent/anthropic_credentials.py:_atomic_write_private_json */
-void agent_anthropic_credentials_atomic_write_private_json(void) { }
+void _atomic_write_private_json(void) { }
 
 /* PoP: _commit_private_json @ agent/anthropic_credentials.py:_commit_private_json */
-void agent_anthropic_credentials_commit_private_json(void) { }
+void _commit_private_json(void) { }
 
 /* PoP: _spent_rotation_sidecar_path @ agent/anthropic_credentials.py:_spent_rotation_sidecar_path */
-void agent_anthropic_credentials_spent_rotation_sidecar_path(void) { }
+void _spent_rotation_sidecar_path(void) { }
 
 /* PoP: spent_rotation_source_path @ agent/anthropic_credentials.py:spent_rotation_source_path */
-void agent_anthropic_credentials_spent_rotation_source_path(void) { }
+void spent_rotation_source_path(void) { }
 
 /* PoP: _read_spent_rotation_sidecar @ agent/anthropic_credentials.py:_read_spent_rotation_sidecar */
-void agent_anthropic_credentials_read_spent_rotation_sidecar(void) { }
+void _read_spent_rotation_sidecar(void) { }
 
 /* PoP: _append_spent_rotation_sidecar @ agent/anthropic_credentials.py:_append_spent_rotation_sidecar */
-void agent_anthropic_credentials_append_spent_rotation_sidecar(void) { }
+void _append_spent_rotation_sidecar(void) { }
 
 /* PoP: mark_rotation_consumed_uncommitted @ agent/anthropic_credentials.py:mark_rotation_consumed_uncommitted */
-void agent_anthropic_credentials_mark_rotation_consumed_uncommitted(void) { }
+void mark_rotation_consumed_uncommitted(void) { }
 
 /* PoP: is_rotation_consumed_uncommitted @ agent/anthropic_credentials.py:is_rotation_consumed_uncommitted */
-void agent_anthropic_credentials_is_rotation_consumed_uncommitted(void) { }
+void is_rotation_consumed_uncommitted(void) { }
 
 /* PoP: _claude_oauth_record @ agent/anthropic_credentials.py:_claude_oauth_record */
-void agent_anthropic_credentials_claude_oauth_record(void) { }
+void _claude_oauth_record(void) { }
 
 /* PoP: _decode_keychain_attr @ agent/anthropic_credentials.py:_decode_keychain_attr */
-void agent_anthropic_credentials_decode_keychain_attr(void) { }
+void _decode_keychain_attr(void) { }
 
 /* PoP: _find_claude_code_keychain_item @ agent/anthropic_credentials.py:_find_claude_code_keychain_item */
-void agent_anthropic_credentials_find_claude_code_keychain_item(void) { }
+void _find_claude_code_keychain_item(void) { }
 
 /* PoP: _read_claude_code_keychain_payload @ agent/anthropic_credentials.py:_read_claude_code_keychain_payload */
-void agent_anthropic_credentials_read_claude_code_keychain_payload(void) { }
+void _read_claude_code_keychain_payload(void) { }
 
 /* PoP: _keychain_mirror_command @ agent/anthropic_credentials.py:_keychain_mirror_command */
-void agent_anthropic_credentials_keychain_mirror_command(void) { }
+void _keychain_mirror_command(void) { }
 
 /* PoP: claude_code_credentials_path @ agent/anthropic_credentials.py:claude_code_credentials_path */
-void agent_anthropic_credentials_claude_code_credentials_path(void) { }
+void claude_code_credentials_path(void) { }
 
 /* PoP: relogin_required @ agent/anthropic_credentials.py:relogin_required */
-void agent_anthropic_credentials_relogin_required(void) { }
+void relogin_required(void) { }
 
 /* PoP: is_terminal_anthropic_refresh_error @ agent/anthropic_credentials.py:is_terminal_anthropic_refresh_error */
-void agent_anthropic_credentials_is_terminal_anthropic_refresh_error(void) { }
+void is_terminal_anthropic_refresh_error(void) { }
 
 /* PoP: _oauth_http_error @ agent/anthropic_credentials.py:_oauth_http_error */
-void agent_anthropic_credentials_oauth_http_error(void) { }
+void _oauth_http_error(void) { }
 
 /* PoP: _post_oauth_token @ agent/anthropic_credentials.py:_post_oauth_token */
-void agent_anthropic_credentials_post_oauth_token(void) { }
+void _post_oauth_token(void) { }
 
 /* PoP: _oauth_token_state @ agent/anthropic_credentials.py:_oauth_token_state */
-void agent_anthropic_credentials_oauth_token_state(void) { }
+void _oauth_token_state(void) { }
 
 /* PoP: _merge_keychain_credential_payload @ agent/anthropic_credentials.py:_merge_keychain_credential_payload */
-void agent_anthropic_credentials_merge_keychain_credential_payload(void) { }
+void _merge_keychain_credential_payload(void) { }
 
 /* PoP: _mirror_claude_code_credentials_to_keychain @ agent/anthropic_credentials.py:_mirror_claude_code_credentials_to_keychain */
-void agent_anthropic_credentials_mirror_claude_code_credentials_to_keychain(void) { }
+void _mirror_claude_code_credentials_to_keychain(void) { }
 
 /* PoP: _resolve_anthropic_pool_token @ agent/anthropic_credentials.py:_resolve_anthropic_pool_token */
-void agent_anthropic_credentials_resolve_anthropic_pool_token(void) { }
+void _resolve_anthropic_pool_token(void) { }
 
 /* PoP: _available_anthropic_token @ agent/anthropic_credentials.py:_available_anthropic_token */
-void agent_anthropic_credentials_available_anthropic_token(void) { }
+void _available_anthropic_token(void) { }
 
 /* PoP: _get_hermes_oauth_file @ agent/anthropic_credentials.py:_get_hermes_oauth_file */
-void agent_anthropic_credentials_get_hermes_oauth_file(void) { }
+void _get_hermes_oauth_file(void) { }
 
 /* PoP: _root_hermes_oauth_file @ agent/anthropic_credentials.py:_root_hermes_oauth_file */
-void agent_anthropic_credentials_root_hermes_oauth_file(void) { }
+void _root_hermes_oauth_file(void) { }
 
 /* PoP: _write_hermes_oauth_credentials @ agent/anthropic_credentials.py:_write_hermes_oauth_credentials */
-void agent_anthropic_credentials_write_hermes_oauth_credentials(void) { }
+void _write_hermes_oauth_credentials(void) { }
 
 /* PoP: _acp_supported @ agent/acp_client.py:_acp_supported */
-void agent_acp_client_acp_supported(void) { }
+void _acp_supported(void) { }
 
 /* PoP: _jsonrpc_result @ agent/acp_client.py:_jsonrpc_result */
-void agent_acp_client_jsonrpc_result(void) { }
+void _jsonrpc_result(void) { }
 
 /* PoP: _never_disabled @ agent/acp_client.py:_never_disabled */
-void agent_acp_client_never_disabled(void) { }
+void _never_disabled(void) { }
 
 /* PoP: _enabled_id_list @ agent/acp_client.py:_enabled_id_list */
-void agent_acp_client_enabled_id_list(void) { }
+void _enabled_id_list(void) { }
 
 /* PoP: _model_config_option @ agent/acp_client.py:_model_config_option */
-void agent_acp_client_model_config_option(void) { }
+void _model_config_option(void) { }
 
 /* PoP: _session_model_ids @ agent/acp_client.py:_session_model_ids */
-void agent_acp_client_session_model_ids(void) { }
+void _session_model_ids(void) { }
 
 /* PoP: _legacy_session_model_ids @ agent/acp_client.py:_legacy_session_model_ids */
-void agent_acp_client_legacy_session_model_ids(void) { }
+void _legacy_session_model_ids(void) { }
 
 /* PoP: _model_selection_request @ agent/acp_client.py:_model_selection_request */
-void agent_acp_client_model_selection_request(void) { }
+void _model_selection_request(void) { }
 
 /* PoP: _effective_timeout @ agent/acp_client.py:_effective_timeout */
-void agent_acp_client_effective_timeout(void) { }
+void _effective_timeout(void) { }
 
 /* PoP: _fs_read_text_file @ agent/acp_client.py:_fs_read_text_file */
-void agent_acp_client_fs_read_text_file(void) { }
+void _fs_read_text_file(void) { }
 
 /* PoP: _fs_write_text_file @ agent/acp_client.py:_fs_write_text_file */
-void agent_acp_client_fs_write_text_file(void) { }
+void _fs_write_text_file(void) { }
 
 /* PoP: model_entry_disabled @ agent/acp_client.py:model_entry_disabled */
-void agent_acp_client_model_entry_disabled(void) { }
+void model_entry_disabled(void) { }
 
 /* PoP: early_exit_error @ agent/acp_client.py:early_exit_error */
-void agent_acp_client_early_exit_error(void) { }
+void early_exit_error(void) { }
 
 /* PoP: _request_error @ agent/acp_client.py:_request_error */
-void agent_acp_client_request_error(void) { }
+void _request_error(void) { }
 
 /* PoP: _missing_command_hint @ agent/acp_client.py:_missing_command_hint */
-void agent_acp_client_missing_command_hint(void) { }
+void _missing_command_hint(void) { }
 
 /* PoP: _timeout_fallback_prompt @ agent/compression_facade.py:_timeout_fallback_prompt */
-void agent_compression_facade_timeout_fallback_prompt(void) { }
+void _timeout_fallback_prompt(void) { }
 
 /* PoP: _report_compression_timeout @ agent/compression_facade.py:_report_compression_timeout */
-void agent_compression_facade_report_compression_timeout(void) { }
+void _report_compression_timeout(void) { }
 
 /* PoP: _warn_commit_overrun @ agent/compression_facade.py:_warn_commit_overrun */
-void agent_compression_facade_warn_commit_overrun(void) { }
+void _warn_commit_overrun(void) { }
 
 /* PoP: _sync_persisted_markers @ agent/compression_facade.py:_sync_persisted_markers */
-void agent_compression_facade_sync_persisted_markers(void) { }
+void _sync_persisted_markers(void) { }
 
 /* PoP: _run_under_progress_timeout @ agent/compression_facade.py:_run_under_progress_timeout */
-void agent_compression_facade_run_under_progress_timeout(void) { }
+void _run_under_progress_timeout(void) { }
 
 /* PoP: _mirror_result_onto_live_lists @ agent/compression_facade.py:_mirror_result_onto_live_lists */
-void agent_compression_facade_mirror_result_onto_live_lists(void) { }
+void _mirror_result_onto_live_lists(void) { }
 
 /* PoP: _rebind_caller_session_context @ agent/compression_facade.py:_rebind_caller_session_context */
-void agent_compression_facade_rebind_caller_session_context(void) { }
+void _rebind_caller_session_context(void) { }
 
 /* PoP: _begin_compression_telemetry @ agent/context_compressor_telemetry.py:_begin_compression_telemetry */
-void agent_context_compressor_telemetry_begin_compression_telemetry(void) { }
+void _begin_compression_telemetry(void) { }
 
 /* PoP: _record_compression_regions @ agent/context_compressor_telemetry.py:_record_compression_regions */
-void agent_context_compressor_telemetry_record_compression_regions(void) { }
+void _record_compression_regions(void) { }
 
 /* PoP: _record_aux_compression_call @ agent/context_compressor_telemetry.py:_record_aux_compression_call */
-void agent_context_compressor_telemetry_record_aux_compression_call(void) { }
+void _record_aux_compression_call(void) { }
 
 /* PoP: _note_aux_route_fallback @ agent/context_compressor_telemetry.py:_note_aux_route_fallback */
-void agent_context_compressor_telemetry_note_aux_route_fallback(void) { }
+void _note_aux_route_fallback(void) { }
 
 /* PoP: _compression_method @ agent/context_compressor_telemetry.py:_compression_method */
-void agent_context_compressor_telemetry_compression_method(void) { }
+void _compression_method(void) { }
 
 /* PoP: _record_compression_effect @ agent/context_compressor_telemetry.py:_record_compression_effect */
-void agent_context_compressor_telemetry_record_compression_effect(void) { }
+void _record_compression_effect(void) { }
 
 /* PoP: _record_committed_compression_effect @ agent/context_compressor_telemetry.py:_record_committed_compression_effect */
-void agent_context_compressor_telemetry_record_committed_compression_effect(void) { }
+void _record_committed_compression_effect(void) { }
 
 /* PoP: configured_backend @ agent/delegation_registry.py:configured_backend */
-void agent_delegation_registry_configured_backend(void) { }
+void configured_backend(void) { }
 
 /* PoP: register_delegation_provider @ agent/delegation_registry.py:register_delegation_provider */
-void agent_delegation_registry_register_delegation_provider(void) { }
+void register_delegation_provider(void) { }
 
 /* PoP: _bundled_disabled @ agent/delegation_registry.py:_bundled_disabled */
-void agent_delegation_registry_bundled_disabled(void) { }
+void _bundled_disabled(void) { }
 
 /* PoP: _load_bundled @ agent/delegation_registry.py:_load_bundled */
-void agent_delegation_registry_load_bundled(void) { }
+void _load_bundled(void) { }
 
 /* PoP: _available @ agent/delegation_registry.py:_available */
-void agent_delegation_registry_available(void) { }
+void _available(void) { }
 
 /* PoP: _usable @ agent/delegation_registry.py:_usable */
-void agent_delegation_registry_usable(void) { }
+void _usable(void) { }
 
 /* PoP: backend_status @ agent/delegation_registry.py:backend_status */
-void agent_delegation_registry_backend_status(void) { }
+void backend_status(void) { }
 
 /* PoP: _looks_like_stream_drop @ agent/error_surface.py:_looks_like_stream_drop */
-void agent_error_surface_looks_like_stream_drop(void) { }
+void _looks_like_stream_drop(void) { }
 
 /* PoP: _surface @ agent/error_surface.py:_surface */
-void agent_error_surface_surface(void) { }
+void _surface(void) { }
 
 /* PoP: _api_key_env @ agent/error_surface.py:_api_key_env */
-void agent_error_surface_api_key_env(void) { }
+void _api_key_env(void) { }
 
 /* PoP: auth_kind @ agent/error_surface.py:auth_kind */
-void agent_error_surface_auth_kind(void) { }
+void auth_kind(void) { }
 
 /* PoP: _disk_full @ agent/error_surface.py:_disk_full */
-void agent_error_surface_disk_full(void) { }
+void _disk_full(void) { }
 
 /* PoP: _result_layer @ agent/error_surface.py:_result_layer */
-void agent_error_surface_result_layer(void) { }
+void _result_layer(void) { }
 
 /* PoP: build_error_surface_from_result @ agent/error_surface.py:build_error_surface_from_result */
-void agent_error_surface_build_error_surface_from_result(void) { }
+void build_error_surface_from_result(void) { }
 
 /* PoP: build_error_surface_from_exception @ agent/error_surface.py:build_error_surface_from_exception */
-void agent_error_surface_build_error_surface_from_exception(void) { }
+void build_error_surface_from_exception(void) { }
 
 /* PoP: _cache_path @ agent/image_token_cost.py:_cache_path */
-void agent_image_token_cost_cache_path(void) { }
+void _cache_path(void) { }
 
 /* PoP: learned_image_token_cost @ agent/image_token_cost.py:learned_image_token_cost */
-void agent_image_token_cost_learned_image_token_cost(void) { }
+void learned_image_token_cost(void) { }
 
 /* PoP: current_image_token_cost @ agent/image_token_cost.py:current_image_token_cost */
-void agent_image_token_cost_current_image_token_cost(void) { }
+void current_image_token_cost(void) { }
 
 /* PoP: image_cost_context @ agent/image_token_cost.py:image_cost_context */
-void agent_image_token_cost_image_cost_context(void) { }
+void image_cost_context(void) { }
 
 /* PoP: bind_image_token_cost @ agent/image_token_cost.py:bind_image_token_cost */
-void agent_image_token_cost_bind_image_token_cost(void) { }
+void bind_image_token_cost(void) { }
 
 /* PoP: count_images @ agent/image_token_cost.py:count_images */
-void agent_image_token_cost_count_images(void) { }
+void count_images(void) { }
 
 /* PoP: calibrate_from_usage @ agent/image_token_cost.py:calibrate_from_usage */
-void agent_image_token_cost_calibrate_from_usage(void) { }
+void calibrate_from_usage(void) { }
 
 /* PoP: iter_configured_targets @ agent/outbound_webhooks.py:iter_configured_targets */
-void agent_outbound_webhooks_iter_configured_targets(void) { }
+void iter_configured_targets(void) { }
 
 /* PoP: re_register_config_hooks @ agent/outbound_webhooks.py:re_register_config_hooks */
-void agent_outbound_webhooks_re_register_config_hooks(void) { }
+void re_register_config_hooks(void) { }
 
 /* PoP: _parse_single_target @ agent/outbound_webhooks.py:_parse_single_target */
-void agent_outbound_webhooks_parse_single_target(void) { }
+void _parse_single_target(void) { }
 
 /* PoP: _build_delivery @ agent/outbound_webhooks.py:_build_delivery */
-void agent_outbound_webhooks_build_delivery(void) { }
+void _build_delivery(void) { }
 
 /* PoP: _enqueue @ agent/outbound_webhooks.py:_enqueue */
-void agent_outbound_webhooks_enqueue(void) { }
+void _enqueue(void) { }
 
 /* PoP: _worker_loop @ agent/outbound_webhooks.py:_worker_loop */
-void agent_outbound_webhooks_worker_loop(void) { }
+void _worker_loop(void) { }
 
 /* PoP: redirect_request @ agent/outbound_webhooks.py:redirect_request */
-void agent_outbound_webhooks_redirect_request(void) { }
+void redirect_request(void) { }
 
 /* PoP: _deliver @ agent/outbound_webhooks.py:_deliver */
-void agent_outbound_webhooks_deliver(void) { }
+void _deliver(void) { }
 
 /* PoP: is_repetition_dominated @ agent/repetition_guard.py:is_repetition_dominated */
-void agent_repetition_guard_is_repetition_dominated(void) { }
+void is_repetition_dominated(void) { }
 
 /* PoP: _window_count_dominated @ agent/repetition_guard.py:_window_count_dominated */
-void agent_repetition_guard_window_count_dominated(void) { }
+void _window_count_dominated(void) { }
 
 /* PoP: _periodic_run_dominated @ agent/repetition_guard.py:_periodic_run_dominated */
-void agent_repetition_guard_periodic_run_dominated(void) { }
+void _periodic_run_dominated(void) { }
 
 /* PoP: _expand_run @ agent/repetition_guard.py:_expand_run */
-void agent_repetition_guard_expand_run(void) { }
+void _expand_run(void) { }
 
 /* PoP: is_runaway_repetition @ agent/repetition_guard.py:is_runaway_repetition */
-void agent_repetition_guard_is_runaway_repetition(void) { }
+void is_runaway_repetition(void) { }
 
 /* PoP: _line_repetition_dominated @ agent/repetition_guard.py:_line_repetition_dominated */
-void agent_repetition_guard_line_repetition_dominated(void) { }
+void _line_repetition_dominated(void) { }
 
 /* PoP: is_terminal_compression_provenance @ agent/session_activity.py:is_terminal_compression_provenance */
-void agent_session_activity_is_terminal_compression_provenance(void) { }
+void is_terminal_compression_provenance(void) { }
 
 /* PoP: bound_activity_description @ agent/session_activity.py:bound_activity_description */
-void agent_session_activity_bound_activity_description(void) { }
+void bound_activity_description(void) { }
 
 /* PoP: normalize_activity_provenance @ agent/session_activity.py:normalize_activity_provenance */
-void agent_session_activity_normalize_activity_provenance(void) { }
+void normalize_activity_provenance(void) { }
 
 /* PoP: format_iteration_progress @ agent/session_activity.py:format_iteration_progress */
-void agent_session_activity_format_iteration_progress(void) { }
+void format_iteration_progress(void) { }
 
 /* PoP: reset_session_activity_persist_window @ agent/session_activity.py:reset_session_activity_persist_window */
-void agent_session_activity_reset_session_activity_persist_window(void) { }
+void reset_session_activity_persist_window(void) { }
 
 /* PoP: build_activity_snapshot @ agent/session_activity.py:build_activity_snapshot */
-void agent_session_activity_build_activity_snapshot(void) { }
+void build_activity_snapshot(void) { }
 
 /* PoP: measure @ agent/session_activity.py:measure */
-void agent_session_activity_measure(void) { }
+void measure(void) { }
 
 /* PoP: runtime_key @ agent/side_question_request.py:runtime_key */
-void agent_side_question_request_runtime_key(void) { }
+void runtime_key(void) { }
 
 /* PoP: _agent_provider_refusal @ agent/side_question_request.py:_agent_provider_refusal */
-void agent_side_question_request_agent_provider_refusal(void) { }
+void _agent_provider_refusal(void) { }
 
 /* PoP: has_server_side_tools @ agent/side_question_request.py:has_server_side_tools */
-void agent_side_question_request_has_server_side_tools(void) { }
+void has_server_side_tools(void) { }
 
 /* PoP: _build_fork @ agent/side_question_request.py:_build_fork */
-void agent_side_question_request_build_fork(void) { }
+void _build_fork(void) { }
 
 /* PoP: _answer_text @ agent/side_question_request.py:_answer_text */
-void agent_side_question_request_answer_text(void) { }
+void _answer_text(void) { }
 
 /* PoP: _log_audit @ agent/side_question_request.py:_log_audit */
-void agent_side_question_request_log_audit(void) { }
+void _log_audit(void) { }
 
 /* PoP: ask_text_only @ agent/side_question_request.py:ask_text_only */
-void agent_side_question_request_ask_text_only(void) { }
+void ask_text_only(void) { }
 
 /* PoP: cache_path_base @ agent/terminal_env_provider.py:cache_path_base */
-void agent_terminal_env_provider_cache_path_base(void) { }
+void cache_path_base(void) { }
 
 /* PoP: default_cwd @ agent/terminal_env_provider.py:default_cwd */
-void agent_terminal_env_provider_default_cwd(void) { }
+void default_cwd(void) { }
 
 /* PoP: strip_env_keys @ agent/terminal_env_provider.py:strip_env_keys */
-void agent_terminal_env_provider_strip_env_keys(void) { }
+void strip_env_keys(void) { }
 
 /* PoP: env_description @ agent/terminal_env_provider.py:env_description */
-void agent_terminal_env_provider_env_description(void) { }
+void env_description(void) { }
 
 /* PoP: check_requirements @ agent/terminal_env_provider.py:check_requirements */
-void agent_terminal_env_provider_check_requirements(void) { }
+void check_requirements(void) { }
 
 /* PoP: setup_instructions @ agent/terminal_env_provider.py:setup_instructions */
-void agent_terminal_env_provider_setup_instructions(void) { }
+void setup_instructions(void) { }
 
 /* PoP: post_setup @ agent/terminal_env_provider.py:post_setup */
-void agent_terminal_env_provider_post_setup(void) { }
+void post_setup(void) { }
 
 /* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
-void agent_terminal_env_provider_doctor_checks(void) { }
+void doctor_checks(void) { }
 
 /* PoP: _warn_invalid_value @ agent/turn_liveness.py:_warn_invalid_value */
-void agent_turn_liveness_warn_invalid_value(void) { }
+void _warn_invalid_value(void) { }
 
 /* PoP: _resolve_finite_seconds @ agent/turn_liveness.py:_resolve_finite_seconds */
-void agent_turn_liveness_resolve_finite_seconds(void) { }
+void _resolve_finite_seconds(void) { }
 
 /* PoP: resolve_turn_liveness_settings @ agent/turn_liveness.py:resolve_turn_liveness_settings */
-void agent_turn_liveness_resolve_turn_liveness_settings(void) { }
+void resolve_turn_liveness_settings(void) { }
 
 /* PoP: _tick @ agent/turn_liveness.py:_tick */
-void agent_turn_liveness_tick(void) { }
+void _tick(void) { }
 
 /* PoP: _sample @ agent/turn_liveness.py:_sample */
-void agent_turn_liveness_sample(void) { }
+void _sample(void) { }
 
 /* PoP: _dump_turn_thread_stack @ agent/turn_liveness.py:_dump_turn_thread_stack */
-void agent_turn_liveness_dump_turn_thread_stack(void) { }
+void _dump_turn_thread_stack(void) { }
 
 /* PoP: _emit_warning @ agent/turn_liveness.py:_emit_warning */
-void agent_turn_liveness_emit_warning(void) { }
+void _emit_warning(void) { }
 
 /* PoP: _surface_stall @ agent/turn_liveness.py:_surface_stall */
-void agent_turn_liveness_surface_stall(void) { }
+void _surface_stall(void) { }
 
 /* PoP: _surface_committed_abort @ agent/turn_liveness.py:_surface_committed_abort */
-void agent_turn_liveness_surface_committed_abort(void) { }
+void _surface_committed_abort(void) { }
 
 /* PoP: total_tools @ agent/turn_summary.py:total_tools */
-void agent_turn_summary_total_tools(void) { }
+void total_tools(void) { }
 
 /* PoP: _extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
-void agent_turn_summary_extract_line_deltas(void) { }
+void _extract_line_deltas(void) { }
 
 /* PoP: record_tool @ agent/turn_summary.py:record_tool */
-void agent_turn_summary_record_tool(void) { }
+void record_tool(void) { }
 
 /* PoP: tally @ agent/turn_summary.py:tally */
-void agent_turn_summary_tally(void) { }
+void tally(void) { }
 
 /* PoP: format_elapsed @ agent/turn_summary.py:format_elapsed */
-void agent_turn_summary_format_elapsed(void) { }
+void format_elapsed(void) { }
 
 /* PoP: _pluralize @ agent/turn_summary.py:_pluralize */
-void agent_turn_summary_pluralize(void) { }
+void _pluralize(void) { }
 
 /* PoP: format_turn_summary @ agent/turn_summary.py:format_turn_summary */
-void agent_turn_summary_format_turn_summary(void) { }
+void format_turn_summary(void) { }
 
 /* PoP: format_token_flow @ agent/turn_summary.py:format_token_flow */
-void agent_turn_summary_format_token_flow(void) { }
+void format_token_flow(void) { }
 
 /* PoP: _normalize_text @ agent/vault_login_classifier.py:_normalize_text */
-void agent_vault_login_classifier_normalize_text(void) { }
+void _normalize_text(void) { }
 
 /* PoP: classify_login_control @ agent/vault_login_classifier.py:classify_login_control */
-void agent_vault_login_classifier_classify_login_control(void) { }
+void classify_login_control(void) { }
 
 /* PoP: classify_otp_controls @ agent/vault_login_classifier.py:classify_otp_controls */
-void agent_vault_login_classifier_classify_otp_controls(void) { }
+void classify_otp_controls(void) { }
 
 /* PoP: select_password_fill @ agent/vault_login_classifier.py:select_password_fill */
-void agent_vault_login_classifier_select_password_fill(void) { }
+void select_password_fill(void) { }
 
 /* PoP: classify_checkout_control @ agent/vault_login_classifier.py:classify_checkout_control */
-void agent_vault_login_classifier_classify_checkout_control(void) { }
+void classify_checkout_control(void) { }
 
 /* PoP: select_checkout_fills @ agent/vault_login_classifier.py:select_checkout_fills */
-void agent_vault_login_classifier_select_checkout_fills(void) { }
+void select_checkout_fills(void) { }
 
 /* PoP: build_otp_fills @ agent/vault_login_classifier.py:build_otp_fills */
-void agent_vault_login_classifier_build_otp_fills(void) { }
+void build_otp_fills(void) { }
 
 /* PoP: build_inspection_js @ agent/vault_login_classifier.py:build_inspection_js */
-void agent_vault_login_classifier_build_inspection_js(void) { }
+void build_inspection_js(void) { }
 
 /* PoP: build_fill_js @ agent/vault_login_classifier.py:build_fill_js */
-void agent_vault_login_classifier_build_fill_js(void) { }
+void build_fill_js(void) { }
 
 /* PoP: _text @ cron/blueprint_plugins.py:_text */
-void cron_blueprint_plugins_text(void) { }
+void _text(void) { }
 
 /* PoP: _strings @ cron/blueprint_plugins.py:_strings */
-void cron_blueprint_plugins_strings(void) { }
+void _strings(void) { }
 
 /* PoP: _slot @ cron/blueprint_plugins.py:_slot */
-void cron_blueprint_plugins_slot(void) { }
+void _slot(void) { }
 
 /* PoP: _placeholders @ cron/blueprint_plugins.py:_placeholders */
-void cron_blueprint_plugins_placeholders(void) { }
+void _placeholders(void) { }
 
 /* PoP: build_plugin_blueprint @ cron/blueprint_plugins.py:build_plugin_blueprint */
-void cron_blueprint_plugins_build_plugin_blueprint(void) { }
+void build_plugin_blueprint(void) { }
 
 /* PoP: plugin_blueprints @ cron/blueprint_plugins.py:plugin_blueprints */
-void cron_blueprint_plugins_plugin_blueprints(void) { }
+void plugin_blueprints(void) { }
 
 /* PoP: _current_notepad_file @ cron/notepad.py:_current_notepad_file */
-void cron_notepad_current_notepad_file(void) { }
+void _current_notepad_file(void) { }
 
 /* PoP: _initialize_schema @ cron/notepad.py:_initialize_schema */
-void cron_notepad_initialize_schema(void) { }
+void _initialize_schema(void) { }
 
 /* PoP: _transaction @ cron/notepad.py:_transaction */
-void cron_notepad_transaction(void) { }
+void _transaction(void) { }
 
 /* PoP: set_note @ cron/notepad.py:set_note */
-void cron_notepad_set_note(void) { }
+void set_note(void) { }
 
 /* PoP: get_note @ cron/notepad.py:get_note */
-void cron_notepad_get_note(void) { }
+void get_note(void) { }
 
 /* PoP: delete_note @ cron/notepad.py:delete_note */
-void cron_notepad_delete_note(void) { }
+void delete_note(void) { }
 
 /* PoP: list_notes @ cron/notepad.py:list_notes */
-void cron_notepad_list_notes(void) { }
+void list_notes(void) { }
 
 /* PoP: clear_notepad @ cron/notepad.py:clear_notepad */
-void cron_notepad_clear_notepad(void) { }
+void clear_notepad(void) { }
 
 /* PoP: render_notepad_section @ cron/notepad.py:render_notepad_section */
-void cron_notepad_render_notepad_section(void) { }
+void render_notepad_section(void) { }
 
 /* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
-void cron_scheduler_tick_log_tick_yield_once(void) { }
+void _log_tick_yield_once(void) { }
 
 /* PoP: _acquire_tick_lock_or_degrade @ cron/scheduler_tick.py:_acquire_tick_lock_or_degrade */
-void cron_scheduler_tick_acquire_tick_lock_or_degrade(void) { }
+void _acquire_tick_lock_or_degrade(void) { }
 
 /* PoP: _advance_or_drop_recurring @ cron/scheduler_tick.py:_advance_or_drop_recurring */
-void cron_scheduler_tick_advance_or_drop_recurring(void) { }
+void _advance_or_drop_recurring(void) { }
 
 /* PoP: _pre_dispatch_housekeeping @ cron/scheduler_tick.py:_pre_dispatch_housekeeping */
-void cron_scheduler_tick_pre_dispatch_housekeeping(void) { }
+void _pre_dispatch_housekeeping(void) { }
 
 /* PoP: _tick_admitted @ cron/scheduler_tick.py:_tick_admitted */
-void cron_scheduler_tick_tick_admitted(void) { }
+void _tick_admitted(void) { }
 
 /* PoP: _as_positive @ gateway/bot_loop_guard.py:_as_positive */
-void gateway_bot_loop_guard_as_positive(void) { }
+void _as_positive(void) { }
 
 /* PoP: _as_positive_int @ gateway/bot_loop_guard.py:_as_positive_int */
-void gateway_bot_loop_guard_as_positive_int(void) { }
+void _as_positive_int(void) { }
 
 /* PoP: settings_from_config @ gateway/bot_loop_guard.py:settings_from_config */
-void gateway_bot_loop_guard_settings_from_config(void) { }
+void settings_from_config(void) { }
 
 /* PoP: load_settings @ gateway/bot_loop_guard.py:load_settings */
-void gateway_bot_loop_guard_load_settings(void) { }
+void load_settings(void) { }
 
 /* PoP: tracked_conversations @ gateway/bot_loop_guard.py:tracked_conversations */
-void gateway_bot_loop_guard_tracked_conversations(void) { }
+void tracked_conversations(void) { }
 
 /* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
-void gateway_bot_loop_guard_blocked(void) { }
+void blocked(void) { }
 
 /* PoP: _normalized @ gateway/host_topology.py:_normalized */
-void gateway_host_topology_normalized(void) { }
+void _normalized(void) { }
 
 /* PoP: serves @ gateway/host_topology.py:serves */
-void gateway_host_topology_serves(void) { }
+void serves(void) { }
 
 /* PoP: _from_host_record @ gateway/host_topology.py:_from_host_record */
-void gateway_host_topology_from_host_record(void) { }
+void _from_host_record(void) { }
 
 /* PoP: _from_served_record @ gateway/host_topology.py:_from_served_record */
-void gateway_host_topology_from_served_record(void) { }
+void _from_served_record(void) { }
 
 /* PoP: host_gateway_topology @ gateway/host_topology.py:host_gateway_topology */
-void gateway_host_topology_host_gateway_topology(void) { }
+void host_gateway_topology(void) { }
 
 /* PoP: host_gateway_serving @ gateway/host_topology.py:host_gateway_serving */
-void gateway_host_topology_host_gateway_serving(void) { }
+void host_gateway_serving(void) { }
 
 /* PoP: _policy_digest @ gateway/hosted_room_execution_policy.py:_policy_digest */
-void gateway_hosted_room_execution_policy_policy_digest(void) { }
+void _policy_digest(void) { }
 
 /* PoP: _identifier @ gateway/hosted_room_execution_policy.py:_identifier */
-void gateway_hosted_room_execution_policy_identifier(void) { }
+void _identifier(void) { }
 
 /* PoP: as_mapping @ gateway/hosted_room_execution_policy.py:as_mapping */
-void gateway_hosted_room_execution_policy_as_mapping(void) { }
+void as_mapping(void) { }
 
 /* PoP: _served_profile_scope @ gateway/hosted_room_execution_policy.py:_served_profile_scope */
-void gateway_hosted_room_execution_policy_served_profile_scope(void) { }
+void _served_profile_scope(void) { }
 
 /* PoP: execution_policy_mapping @ gateway/hosted_room_execution_policy.py:execution_policy_mapping */
-void gateway_hosted_room_execution_policy_execution_policy_mapping(void) { }
+void execution_policy_mapping(void) { }
 
 /* PoP: bind_room_execution_policy @ gateway/hosted_room_execution_policy.py:bind_room_execution_policy */
-void gateway_hosted_room_execution_policy_bind_room_execution_policy(void) { }
+void bind_room_execution_policy(void) { }
 
 /* PoP: reset_room_execution_policy @ gateway/hosted_room_execution_policy.py:reset_room_execution_policy */
-void gateway_hosted_room_execution_policy_reset_room_execution_policy(void) { }
+void reset_room_execution_policy(void) { }
 
 /* PoP: current_room_execution_policy @ gateway/hosted_room_execution_policy.py:current_room_execution_policy */
-void gateway_hosted_room_execution_policy_current_room_execution_policy(void) { }
+void current_room_execution_policy(void) { }
 
 /* PoP: _nonneg_int @ gateway/memory_status.py:_nonneg_int */
-void gateway_memory_status_nonneg_int(void) { }
+void _nonneg_int(void) { }
 
 /* PoP: _mb @ gateway/memory_status.py:_mb */
-void gateway_memory_status_mb(void) { }
+void _mb(void) { }
 
 /* PoP: classify_pressure @ gateway/memory_status.py:classify_pressure */
-void gateway_memory_status_classify_pressure(void) { }
+void classify_pressure(void) { }
 
 /* PoP: _read_state_files @ gateway/memory_status.py:_read_state_files */
-void gateway_memory_status_read_state_files(void) { }
+void _read_state_files(void) { }
 
 /* PoP: collect_memory_status @ gateway/memory_status.py:collect_memory_status */
-void gateway_memory_status_collect_memory_status(void) { }
+void collect_memory_status(void) { }
 
 /* PoP: retryable_ingress @ gateway/parked_route_refusal.py:retryable_ingress */
-void gateway_parked_route_refusal_retryable_ingress(void) { }
+void retryable_ingress(void) { }
 
 /* PoP: _notice_due @ gateway/parked_route_refusal.py:_notice_due */
-void gateway_parked_route_refusal_notice_due(void) { }
+void _notice_due(void) { }
 
 /* PoP: drop_rejected_route @ gateway/parked_route_refusal.py:drop_rejected_route */
-void gateway_parked_route_refusal_drop_rejected_route(void) { }
+void drop_rejected_route(void) { }
 
 /* PoP: refuse_parked_route @ gateway/parked_route_refusal.py:refuse_parked_route */
-void gateway_parked_route_refusal_refuse_parked_route(void) { }
+void refuse_parked_route(void) { }
 
 /* PoP: _send_refusal @ gateway/parked_route_refusal.py:_send_refusal */
-void gateway_parked_route_refusal_send_refusal(void) { }
+void _send_refusal(void) { }
 
 /* PoP: _yaml_block_names @ gateway/platform_activation.py:_yaml_block_names */
-void gateway_platform_activation_yaml_block_names(void) { }
+void _yaml_block_names(void) { }
 
 /* PoP: _env_names @ gateway/platform_activation.py:_env_names */
-void gateway_platform_activation_env_names(void) { }
+void _env_names(void) { }
 
 /* PoP: _credential_pool_names @ gateway/platform_activation.py:_credential_pool_names */
-void gateway_platform_activation_credential_pool_names(void) { }
+void _credential_pool_names(void) { }
 
 /* PoP: _legacy_gateway_json_names @ gateway/platform_activation.py:_legacy_gateway_json_names */
-void gateway_platform_activation_legacy_gateway_json_names(void) { }
+void _legacy_gateway_json_names(void) { }
 
 /* PoP: activation_predicate @ gateway/platform_activation.py:activation_predicate */
-void gateway_platform_activation_activation_predicate(void) { }
+void activation_predicate(void) { }
 
 /* PoP: configured_plugin_entries @ gateway/platform_activation.py:configured_plugin_entries */
-void gateway_platform_activation_configured_plugin_entries(void) { }
+void configured_plugin_entries(void) { }
 
 /* PoP: __init_subclass__ @ gateway/platforms/access_policy_mixin.py:__init_subclass__ */
-void gateway_platforms_access_policy_mixin_init_subclass(void) { }
+void __init_subclass__(void) { }
 
 /* PoP: _allow_all_env_names @ gateway/platforms/access_policy_mixin.py:_allow_all_env_names */
-void gateway_platforms_access_policy_mixin_allow_all_env_names(void) { }
+void _allow_all_env_names(void) { }
 
 /* PoP: _open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
-void gateway_platforms_access_policy_mixin_open_dm_opted_in(void) { }
+void _open_dm_opted_in(void) { }
 
 /* PoP: _entry_matches @ gateway/platforms/access_policy_mixin.py:_entry_matches */
-void gateway_platforms_access_policy_mixin_entry_matches(void) { }
+void _entry_matches(void) { }
 
 /* PoP: _live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:_live_dm_allow_from */
-void gateway_platforms_access_policy_mixin_live_dm_allow_from(void) { }
+void _live_dm_allow_from(void) { }
 
 /* PoP: _is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
-void gateway_platforms_access_policy_mixin_is_dm_allowed(void) { }
+void _is_dm_allowed(void) { }
 
 /* PoP: _is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
-void gateway_platforms_access_policy_mixin_is_dm_intake_allowed(void) { }
+void _is_dm_intake_allowed(void) { }
 
 /* PoP: _is_group_allowed @ gateway/platforms/access_policy_mixin.py:_is_group_allowed */
-void gateway_platforms_access_policy_mixin_is_group_allowed(void) { }
+void _is_group_allowed(void) { }
 
 /* PoP: _authority @ gateway/platforms/api_server_authority_runs.py:_authority */
-void gateway_platforms_api_server_authority_runs_authority(void) { }
+void _authority(void) { }
 
 /* PoP: store_error_response @ gateway/platforms/api_server_authority_runs.py:store_error_response */
-void gateway_platforms_api_server_authority_runs_store_error_response(void) { }
+void store_error_response(void) { }
 
 /* PoP: continued_session @ gateway/platforms/api_server_authority_runs.py:continued_session */
-void gateway_platforms_api_server_authority_runs_continued_session(void) { }
+void continued_session(void) { }
 
 /* PoP: run_admission @ gateway/platforms/api_server_authority_runs.py:run_admission */
-void gateway_platforms_api_server_authority_runs_run_admission(void) { }
+void run_admission(void) { }
 
 /* PoP: run_projection @ gateway/platforms/api_server_authority_runs.py:run_projection */
-void gateway_platforms_api_server_authority_runs_run_projection(void) { }
+void run_projection(void) { }
 
 /* PoP: respond_run @ gateway/platforms/api_server_authority_runs.py:respond_run */
-void gateway_platforms_api_server_authority_runs_respond_run(void) { }
+void respond_run(void) { }
 
 /* PoP: stop_run @ gateway/platforms/api_server_authority_runs.py:stop_run */
-void gateway_platforms_api_server_authority_runs_stop_run(void) { }
+void stop_run(void) { }
 
 /* PoP: resolve_unknown_run @ gateway/platforms/api_server_authority_runs.py:resolve_unknown_run */
-void gateway_platforms_api_server_authority_runs_resolve_unknown_run(void) { }
+void resolve_unknown_run(void) { }
 
 /* PoP: clean_attachment_filename @ gateway/platforms/event.py:clean_attachment_filename */
-void gateway_platforms_event_clean_attachment_filename(void) { }
+void clean_attachment_filename(void) { }
 
 /* PoP: absorb_reply_expected @ gateway/platforms/event.py:absorb_reply_expected */
-void gateway_platforms_event_absorb_reply_expected(void) { }
+void absorb_reply_expected(void) { }
 
 /* PoP: extend_media @ gateway/platforms/event.py:extend_media */
-void gateway_platforms_event_extend_media(void) { }
+void extend_media(void) { }
 
 /* PoP: _command_text @ gateway/platforms/event.py:_command_text */
-void gateway_platforms_event_command_text(void) { }
+void _command_text(void) { }
 
 /* PoP: _bounds @ gateway/platforms/api_server_memory_sessions.py:_bounds */
-void gateway_platforms_api_server_memory_sessions_bounds(void) { }
+void _bounds(void) { }
 
 /* PoP: _owner_home @ gateway/platforms/api_server_memory_sessions.py:_owner_home */
-void gateway_platforms_api_server_memory_sessions_owner_home(void) { }
+void _owner_home(void) { }
 
 /* PoP: checkout @ gateway/platforms/api_server_memory_sessions.py:checkout */
-void gateway_platforms_api_server_memory_sessions_checkout(void) { }
+void checkout(void) { }
 
 /* PoP: checkin @ gateway/platforms/api_server_memory_sessions.py:checkin */
-void gateway_platforms_api_server_memory_sessions_checkin(void) { }
+void checkin(void) { }
 
 /* PoP: close_all @ gateway/platforms/api_server_memory_sessions.py:close_all */
-void gateway_platforms_api_server_memory_sessions_close_all(void) { }
+void close_all(void) { }
 
 /* PoP: _shutdown_async @ gateway/platforms/api_server_memory_sessions.py:_shutdown_async */
-void gateway_platforms_api_server_memory_sessions_shutdown_async(void) { }
+void _shutdown_async(void) { }
 
 /* PoP: validate_coalesce_config @ gateway/platforms/webhook_coalesce.py:validate_coalesce_config */
-void gateway_platforms_webhook_coalesce_validate_coalesce_config(void) { }
+void validate_coalesce_config(void) { }
 
 /* PoP: prompt_with_note @ gateway/platforms/webhook_coalesce.py:prompt_with_note */
-void gateway_platforms_webhook_coalesce_prompt_with_note(void) { }
+void prompt_with_note(void) { }
 
 /* PoP: group_key @ gateway/platforms/webhook_coalesce.py:group_key */
-void gateway_platforms_webhook_coalesce_group_key(void) { }
+void group_key(void) { }
 
 /* PoP: _timer @ gateway/platforms/webhook_coalesce.py:_timer */
-void gateway_platforms_webhook_coalesce_timer(void) { }
+void _timer(void) { }
 
 /* PoP: _settle @ gateway/platforms/webhook_coalesce.py:_settle */
-void gateway_platforms_webhook_coalesce_settle(void) { }
+void _settle(void) { }
 
 /* PoP: _err @ gateway/plugin_messages.py:_err */
-void gateway_plugin_messages_err(void) { }
+void _err(void) { }
 
 /* PoP: _fit @ gateway/plugin_messages.py:_fit */
-void gateway_plugin_messages_fit(void) { }
+void _fit(void) { }
 
 /* PoP: _supports_edit @ gateway/plugin_messages.py:_supports_edit */
-void gateway_plugin_messages_supports_edit(void) { }
+void _supports_edit(void) { }
 
 /* PoP: bind_live_source @ gateway/plugin_messages.py:bind_live_source */
-void gateway_plugin_messages_bind_live_source(void) { }
+void bind_live_source(void) { }
 
 /* PoP: bound_route @ gateway/plugin_messages.py:bound_route */
-void gateway_plugin_messages_bound_route(void) { }
+void bound_route(void) { }
 
 /* PoP: _publish_local @ gateway/plugin_messages.py:_publish_local */
-void gateway_plugin_messages_publish_local(void) { }
+void _publish_local(void) { }
 
 /* PoP: edit @ gateway/plugin_messages.py:edit */
-void gateway_plugin_messages_edit(void) { }
+void edit(void) { }
 
 /* PoP: _is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
-void gateway_profile_routing_is_whatsapp_non_user_chat(void) { }
+void _is_whatsapp_non_user_chat(void) { }
 
 /* PoP: _whatsapp_user_chat_ids_match @ gateway/profile_routing.py:_whatsapp_user_chat_ids_match */
-void gateway_profile_routing_whatsapp_user_chat_ids_match(void) { }
+void _whatsapp_user_chat_ids_match(void) { }
 
 /* PoP: specificity @ gateway/profile_routing.py:specificity */
-void gateway_profile_routing_specificity(void) { }
+void specificity(void) { }
 
 /* PoP: _bot_profile_key @ gateway/profile_routing.py:_bot_profile_key */
-void gateway_profile_routing_bot_profile_key(void) { }
+void _bot_profile_key(void) { }
 
 /* PoP: _coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
-void gateway_profile_routing_coerce_route_id(void) { }
+void _coerce_route_id(void) { }
 
 /* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
-void gateway_profile_routing_parse_profile_routes(void) { }
+void parse_profile_routes(void) { }
 
 /* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
-void gateway_profile_routing_match_profile_route(void) { }
+void match_profile_route(void) { }
 
 /* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
-void gateway_readiness_probe_state_db(void) { }
+void _probe_state_db(void) { }
 
 /* PoP: _probe_config @ gateway/readiness.py:_probe_config */
-void gateway_readiness_probe_config(void) { }
+void _probe_config(void) { }
 
 /* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
-void gateway_readiness_probe_disk(void) { }
+void _probe_disk(void) { }
 
 /* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
-void gateway_readiness_probe_gateway(void) { }
+void _probe_gateway(void) { }
 
 /* PoP: _probe_session_store @ gateway/readiness.py:_probe_session_store */
-void gateway_readiness_probe_session_store(void) { }
+void _probe_session_store(void) { }
 
 /* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
-void gateway_readiness_collect_runtime_readiness(void) { }
+void collect_runtime_readiness(void) { }
 
 /* PoP: media_base_url @ gateway/relay/media.py:media_base_url */
-void gateway_relay_media_media_base_url(void) { }
+void media_base_url(void) { }
 
 /* PoP: _bearer @ gateway/relay/media.py:_bearer */
-void gateway_relay_media_bearer(void) { }
+void _bearer(void) { }
 
 /* PoP: is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
-void gateway_relay_media_is_relay_media_url(void) { }
+void is_relay_media_url(void) { }
 
 /* PoP: download_with_name @ gateway/relay/media.py:download_with_name */
-void gateway_relay_media_download_with_name(void) { }
+void download_with_name(void) { }
 
 /* PoP: _content_disposition_filename @ gateway/relay/media.py:_content_disposition_filename */
-void gateway_relay_media_content_disposition_filename(void) { }
+void _content_disposition_filename(void) { }
 
 /* PoP: pairing_profile_arg @ gateway/run_inbound_unauthorized.py:pairing_profile_arg */
-void gateway_run_inbound_unauthorized_pairing_profile_arg(void) { }
+void pairing_profile_arg(void) { }
 
 /* PoP: pairing_code_reply @ gateway/run_inbound_unauthorized.py:pairing_code_reply */
-void gateway_run_inbound_unauthorized_pairing_code_reply(void) { }
+void pairing_code_reply(void) { }
 
 /* PoP: pairing_rate_limited_reply @ gateway/run_inbound_unauthorized.py:pairing_rate_limited_reply */
-void gateway_run_inbound_unauthorized_pairing_rate_limited_reply(void) { }
+void pairing_rate_limited_reply(void) { }
 
 /* PoP: unauthorized_owner_hint @ gateway/run_inbound_unauthorized.py:unauthorized_owner_hint */
-void gateway_run_inbound_unauthorized_unauthorized_owner_hint(void) { }
+void unauthorized_owner_hint(void) { }
 
 /* PoP: first_time @ gateway/run_inbound_unauthorized.py:first_time */
-void gateway_run_inbound_unauthorized_first_time(void) { }
+void first_time(void) { }
 
 /* PoP: authorize @ gateway/session_busy_controls.py:authorize */
-void gateway_session_busy_controls_authorize(void) { }
+void authorize(void) { }
 
 /* PoP: busy_config @ gateway/session_busy_controls.py:busy_config */
-void gateway_session_busy_controls_busy_config(void) { }
+void busy_config(void) { }
 
 /* PoP: verbose_config @ gateway/session_busy_controls.py:verbose_config */
-void gateway_session_busy_controls_verbose_config(void) { }
+void verbose_config(void) { }
 
 /* PoP: show_reasoning_config @ gateway/session_busy_controls.py:show_reasoning_config */
-void gateway_session_busy_controls_show_reasoning_config(void) { }
+void show_reasoning_config(void) { }
 
 /* PoP: service_tier_config @ gateway/session_busy_controls.py:service_tier_config */
-void gateway_session_busy_controls_service_tier_config(void) { }
+void service_tier_config(void) { }
 
 /* PoP: yolo_config @ gateway/session_busy_controls.py:yolo_config */
-void gateway_session_busy_controls_yolo_config(void) { }
+void yolo_config(void) { }
 
 /* PoP: adopts_owner_agent @ gateway/session_busy_controls.py:adopts_owner_agent */
-void gateway_session_busy_controls_adopts_owner_agent(void) { }
+void adopts_owner_agent(void) { }
 
 /* PoP: correct @ gateway/session_busy_controls.py:correct */
-void gateway_session_busy_controls_correct(void) { }
+void correct(void) { }
 
 /* PoP: _authorize @ gateway/session_config.py:_authorize */
-void gateway_session_config_authorize(void) { }
+void _authorize(void) { }
 
 /* PoP: mcp_revision @ gateway/session_config.py:mcp_revision */
-void gateway_session_config_mcp_revision(void) { }
+void mcp_revision(void) { }
 
 /* PoP: _client_config @ gateway/session_config.py:_client_config */
-void gateway_session_config_client_config(void) { }
+void _client_config(void) { }
 
 /* PoP: session_voice_mode @ gateway/session_config.py:session_voice_mode */
-void gateway_session_config_session_voice_mode(void) { }
+void session_voice_mode(void) { }
 
 /* PoP: local_voice_enabled @ gateway/session_config.py:local_voice_enabled */
-void gateway_session_config_local_voice_enabled(void) { }
+void local_voice_enabled(void) { }
 
 /* PoP: set_local_voice_mode @ gateway/session_config.py:set_local_voice_mode */
-void gateway_session_config_set_local_voice_mode(void) { }
+void set_local_voice_mode(void) { }
 
 /* PoP: local_voice_transition @ gateway/session_config.py:local_voice_transition */
-void gateway_session_config_local_voice_transition(void) { }
+void local_voice_transition(void) { }
 
 /* PoP: session_owned @ gateway/session_connections.py:session_owned */
-void gateway_session_connections_session_owned(void) { }
+void session_owned(void) { }
 
 /* PoP: pending_connection @ gateway/session_connections.py:pending_connection */
-void gateway_session_connections_pending_connection(void) { }
+void pending_connection(void) { }
 
 /* PoP: _handle @ gateway/session_connections.py:_handle */
-void gateway_session_connections_handle(void) { }
+void _handle(void) { }
 
 /* PoP: _respond @ gateway/session_connections.py:_respond */
-void gateway_session_connections_respond(void) { }
+void _respond(void) { }
 
 /* PoP: _require_connectors @ gateway/session_connections.py:_require_connectors */
-void gateway_session_connections_require_connectors(void) { }
+void _require_connectors(void) { }
 
 /* PoP: _session_toolsets @ gateway/session_connections.py:_session_toolsets */
-void gateway_session_connections_session_toolsets(void) { }
+void _session_toolsets(void) { }
 
 /* PoP: _session_context @ gateway/session_connections.py:_session_context */
-void gateway_session_connections_session_context(void) { }
+void _session_context(void) { }
 
 /* PoP: attach @ gateway/session_contract.py:attach */
-void gateway_session_contract_attach(void) { }
+void attach(void) { }
 
 /* PoP: detach @ gateway/session_contract.py:detach */
-void gateway_session_contract_detach(void) { }
+void detach(void) { }
 
 /* PoP: receipt @ gateway/session_contract.py:receipt */
-void gateway_session_contract_receipt(void) { }
+void receipt(void) { }
 
 /* PoP: cancel_queued @ gateway/session_contract.py:cancel_queued */
-void gateway_session_contract_cancel_queued(void) { }
+void cancel_queued(void) { }
 
 /* PoP: respond @ gateway/session_contract.py:respond */
-void gateway_session_contract_respond(void) { }
+void respond(void) { }
 
 /* PoP: mutate @ gateway/session_contract.py:mutate */
-void gateway_session_contract_mutate(void) { }
+void mutate(void) { }
 
 /* PoP: _publish_health @ gateway/session_db_recovery.py:_publish_health */
-void gateway_session_db_recovery_publish_health(void) { }
+void _publish_health(void) { }
 
 /* PoP: _registry_owned @ gateway/session_db_recovery.py:_registry_owned */
-void gateway_session_db_recovery_registry_owned(void) { }
+void _registry_owned(void) { }
 
 /* PoP: _is_stale @ gateway/session_db_recovery.py:_is_stale */
-void gateway_session_db_recovery_is_stale(void) { }
+void _is_stale(void) { }
 
 /* PoP: last_error @ gateway/session_db_recovery.py:last_error */
-void gateway_session_db_recovery_last_error(void) { }
-
-/* PoP: close_all @ gateway/session_db_recovery.py:close_all */
-void gateway_session_db_recovery_close_all(void) { }
+void last_error(void) { }
 
 /* PoP: _control_task @ gateway/session_hosted_controls.py:_control_task */
-void gateway_session_hosted_controls_control_task(void) { }
+void _control_task(void) { }
 
 /* PoP: discard_room_task @ gateway/session_hosted_controls.py:discard_room_task */
-void gateway_session_hosted_controls_discard_room_task(void) { }
+void discard_room_task(void) { }
 
 /* PoP: retry_room_task @ gateway/session_hosted_controls.py:retry_room_task */
-void gateway_session_hosted_controls_retry_room_task(void) { }
+void retry_room_task(void) { }
 
 /* PoP: worker_log_path @ gateway/session_managed_worker_log.py:worker_log_path */
-void gateway_session_managed_worker_log_worker_log_path(void) { }
+void worker_log_path(void) { }
 
 /* PoP: _lock_for @ gateway/session_managed_worker_log.py:_lock_for */
-void gateway_session_managed_worker_log_lock_for(void) { }
+void _lock_for(void) { }
 
 /* PoP: drain_worker_stderr @ gateway/session_managed_worker_log.py:drain_worker_stderr */
-void gateway_session_managed_worker_log_drain_worker_stderr(void) { }
+void drain_worker_stderr(void) { }
 
 /* PoP: _turns @ gateway/session_producer_lifecycle.py:_turns */
-void gateway_session_producer_lifecycle_turns(void) { }
+void _turns(void) { }
 
 /* PoP: mark_producer_admission @ gateway/session_producer_lifecycle.py:mark_producer_admission */
-void gateway_session_producer_lifecycle_mark_producer_admission(void) { }
+void mark_producer_admission(void) { }
 
-/* PoP: _open @ gateway/session_producer_lifecycle.py:_open */
-void gateway_session_producer_lifecycle_open(void) { }
+/* PoP: producer_lifecycle_open @ gateway/session_producer_lifecycle.py:_open */
+void producer_lifecycle_open(void) { }
 
 /* PoP: _executed_outcome @ gateway/session_producer_lifecycle.py:_executed_outcome */
-void gateway_session_producer_lifecycle_executed_outcome(void) { }
+void _executed_outcome(void) { }
 
 /* PoP: producer_turn @ gateway/session_producer_lifecycle.py:producer_turn */
-void gateway_session_producer_lifecycle_producer_turn(void) { }
+void producer_turn(void) { }
 
 /* PoP: close_producer_turn @ gateway/session_producer_lifecycle.py:close_producer_turn */
-void gateway_session_producer_lifecycle_close_producer_turn(void) { }
+void close_producer_turn(void) { }
 
 /* PoP: drop_producer_turn @ gateway/session_producer_lifecycle.py:drop_producer_turn */
-void gateway_session_producer_lifecycle_drop_producer_turn(void) { }
+void drop_producer_turn(void) { }
 
-/* PoP: bind @ gateway/session_retry_admission.py:bind */
-void gateway_session_retry_admission_bind(void) { }
+/* PoP: retry_admission_bind @ gateway/session_retry_admission.py:bind */
+void retry_admission_bind(void) { }
 
 /* PoP: unbind @ gateway/session_retry_admission.py:unbind */
-void gateway_session_retry_admission_unbind(void) { }
+void unbind(void) { }
 
 /* PoP: take @ gateway/session_retry_admission.py:take */
-void gateway_session_retry_admission_take(void) { }
+void take(void) { }
 
 /* PoP: compose @ gateway/session_retry_admission.py:compose */
-void gateway_session_retry_admission_compose(void) { }
+void compose(void) { }
 
 /* PoP: owned_by @ gateway/session_server_requests.py:owned_by */
-void gateway_session_server_requests_owned_by(void) { }
+void owned_by(void) { }
 
 /* PoP: may_settle @ gateway/session_server_requests.py:may_settle */
-void gateway_session_server_requests_may_settle(void) { }
+void may_settle(void) { }
 
 /* PoP: is_response_frame @ gateway/session_server_requests.py:is_response_frame */
-void gateway_session_server_requests_is_response_frame(void) { }
+void is_response_frame(void) { }
 
 /* PoP: ask_viewer @ gateway/session_server_requests.py:ask_viewer */
-void gateway_session_server_requests_ask_viewer(void) { }
+void ask_viewer(void) { }
 
 /* PoP: ask_viewer_result @ gateway/session_server_requests.py:ask_viewer_result */
-void gateway_session_server_requests_ask_viewer_result(void) { }
+void ask_viewer_result(void) { }
 
 /* PoP: open_requests @ gateway/session_server_requests.py:open_requests */
-void gateway_session_server_requests_open_requests(void) { }
+void open_requests(void) { }
 
 /* PoP: withdraw @ gateway/session_server_requests.py:withdraw */
-void gateway_session_server_requests_withdraw(void) { }
+void withdraw(void) { }
 
 /* PoP: lock_answer @ gateway/session_server_requests.py:lock_answer */
-void gateway_session_server_requests_lock_answer(void) { }
+void lock_answer(void) { }
 
 /* PoP: _ask @ gateway/session_server_requests.py:_ask */
-void gateway_session_server_requests_ask(void) { }
+void _ask(void) { }
 
 /* PoP: _at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
-void gateway_stream_consumer_think_at_block_boundary(void) { }
+void _at_block_boundary(void) { }
 
 /* PoP: _earliest_open_tag @ gateway/stream_consumer_think.py:_earliest_open_tag */
-void gateway_stream_consumer_think_earliest_open_tag(void) { }
+void _earliest_open_tag(void) { }
 
 /* PoP: _filter_and_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
-void gateway_stream_consumer_think_filter_and_accumulate(void) { }
+void _filter_and_accumulate(void) { }
 
 /* PoP: _flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
-void gateway_stream_consumer_think_flush_think_buffer(void) { }
+void _flush_think_buffer(void) { }
 
 /* PoP: _notify_socket @ gateway/systemd_notify.py:_notify_socket */
-void gateway_systemd_notify_notify_socket(void) { }
+void _notify_socket(void) { }
 
 /* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
-void gateway_systemd_notify_watchdog_interval_seconds(void) { }
+void watchdog_interval_seconds(void) { }
 
 /* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
-void gateway_systemd_notify_lag_tolerance(void) { }
+void _lag_tolerance(void) { }
 
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
-void gateway_systemd_notify_record_tick(void) { }
+void record_tick(void) { }
 
 /* PoP: _holder_desc @ gateway/turn_lease.py:_holder_desc */
-void gateway_turn_lease_holder_desc(void) { }
+void _holder_desc(void) { }
 
 /* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
-void gateway_turn_lease_repr(void) { }
+void __repr__(void) { }
 
 /* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
-void gateway_turn_lease_evict_idle(void) { }
+void _evict_idle(void) { }
 
 /* PoP: rebind @ gateway/turn_lease.py:rebind */
-void gateway_turn_lease_rebind(void) { }
+void rebind(void) { }
 
 /* PoP: release @ gateway/turn_lease.py:release */
-void gateway_turn_lease_release(void) { }
+void release(void) { }
 
 /* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
-void gateway_wake_adapter_supports_push(void) { }
+void adapter_supports_push(void) { }
 
 /* PoP: session_owned_by_profile @ gateway/wake.py:session_owned_by_profile */
-void gateway_wake_session_owned_by_profile(void) { }
+void session_owned_by_profile(void) { }
 
 /* PoP: admit_internal_event @ gateway/wake.py:admit_internal_event */
-void gateway_wake_admit_internal_event(void) { }
+void admit_internal_event(void) { }
 
 /* PoP: _runner_draining @ gateway/wake.py:_runner_draining */
-void gateway_wake_runner_draining(void) { }
+void _runner_draining(void) { }
 
 /* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
-void gateway_wake_deliver_wake(void) { }
+void deliver_wake(void) { }
 
 /* PoP: _delegation_display_metadata @ gateway/wake.py:_delegation_display_metadata */
-void gateway_wake_delegation_display_metadata(void) { }
+void _delegation_display_metadata(void) { }
 
 /* PoP: persist_delegation_delivery @ gateway/wake.py:persist_delegation_delivery */
-void gateway_wake_persist_delegation_delivery(void) { }
+void persist_delegation_delivery(void) { }
 
 /* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
-void gateway_wake_self_post_chat_completion(void) { }
-
-/* PoP: respond @ hermes_cli/approval_transport.py:respond */
-void hermes_cli_approval_transport_respond(void) { }
+void _self_post_chat_completion(void) { }
 
 /* PoP: invoke_approval_transport @ hermes_cli/approval_transport.py:invoke_approval_transport */
-void hermes_cli_approval_transport_invoke_approval_transport(void) { }
+void invoke_approval_transport(void) { }
 
 /* PoP: _validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
-void hermes_cli_approval_transport_validate_decision(void) { }
+void _validate_decision(void) { }
 
 /* PoP: __getattr__ @ hermes_cli/auth_constants.py:__getattr__ */
-void hermes_cli_auth_constants_getattr(void) { }
+void __getattr__(void) { }
 
 /* PoP: __setattr__ @ hermes_cli/auth_constants.py:__setattr__ */
-void hermes_cli_auth_constants_setattr(void) { }
+void __setattr__(void) { }
 
 /* PoP: __delattr__ @ hermes_cli/auth_constants.py:__delattr__ */
-void hermes_cli_auth_constants_delattr(void) { }
+void __delattr__(void) { }
 
 /* PoP: _provider_error_factory @ hermes_cli/auth_constants.py:_provider_error_factory */
-void hermes_cli_auth_constants_provider_error_factory(void) { }
+void _provider_error_factory(void) { }
 
 /* PoP: is_network_error @ hermes_cli/auth_error_copy.py:is_network_error */
-void hermes_cli_auth_error_copy_is_network_error(void) { }
+void is_network_error(void) { }
 
 /* PoP: is_device_code_expired @ hermes_cli/auth_error_copy.py:is_device_code_expired */
-void hermes_cli_auth_error_copy_is_device_code_expired(void) { }
+void is_device_code_expired(void) { }
 
 /* PoP: is_cancelled @ hermes_cli/auth_error_copy.py:is_cancelled */
-void hermes_cli_auth_error_copy_is_cancelled(void) { }
+void is_cancelled(void) { }
 
 /* PoP: device_flow_error @ hermes_cli/auth_error_copy.py:device_flow_error */
-void hermes_cli_auth_error_copy_device_flow_error(void) { }
+void device_flow_error(void) { }
 
 /* PoP: _details_line @ hermes_cli/auth_error_copy.py:_details_line */
-void hermes_cli_auth_error_copy_details_line(void) { }
+void _details_line(void) { }
 
 /* PoP: sign_in_failure_lines @ hermes_cli/auth_error_copy.py:sign_in_failure_lines */
-void hermes_cli_auth_error_copy_sign_in_failure_lines(void) { }
+void sign_in_failure_lines(void) { }
 
 /* PoP: provider_setup_failure_lines @ hermes_cli/auth_error_copy.py:provider_setup_failure_lines */
-void hermes_cli_auth_error_copy_provider_setup_failure_lines(void) { }
+void provider_setup_failure_lines(void) { }
 
 /* PoP: unknown_provider_hint @ hermes_cli/auth_error_copy.py:unknown_provider_hint */
-void hermes_cli_auth_error_copy_unknown_provider_hint(void) { }
+void unknown_provider_hint(void) { }
 
 /* PoP: _read_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_read_qwen_cli_tokens */
-void hermes_cli_auth_qwen_read_qwen_cli_tokens(void) { }
+void _read_qwen_cli_tokens(void) { }
 
 /* PoP: _save_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_save_qwen_cli_tokens */
-void hermes_cli_auth_qwen_save_qwen_cli_tokens(void) { }
+void _save_qwen_cli_tokens(void) { }
 
 /* PoP: _qwen_access_token_is_expiring @ hermes_cli/auth_qwen.py:_qwen_access_token_is_expiring */
-void hermes_cli_auth_qwen_qwen_access_token_is_expiring(void) { }
+void _qwen_access_token_is_expiring(void) { }
 
 /* PoP: _refresh_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_refresh_qwen_cli_tokens */
-void hermes_cli_auth_qwen_refresh_qwen_cli_tokens(void) { }
+void _refresh_qwen_cli_tokens(void) { }
 
 /* PoP: _mark_qwen_oauth_active @ hermes_cli/auth_qwen.py:_mark_qwen_oauth_active */
-void hermes_cli_auth_qwen_mark_qwen_oauth_active(void) { }
+void _mark_qwen_oauth_active(void) { }
 
 /* PoP: _qwen_base_url @ hermes_cli/auth_qwen.py:_qwen_base_url */
-void hermes_cli_auth_qwen_qwen_base_url(void) { }
+void _qwen_base_url(void) { }
 
 /* PoP: resolve_qwen_runtime_credentials @ hermes_cli/auth_qwen.py:resolve_qwen_runtime_credentials */
-void hermes_cli_auth_qwen_resolve_qwen_runtime_credentials(void) { }
+void resolve_qwen_runtime_credentials(void) { }
 
 /* PoP: get_qwen_auth_status @ hermes_cli/auth_qwen.py:get_qwen_auth_status */
-void hermes_cli_auth_qwen_get_qwen_auth_status(void) { }
+void get_qwen_auth_status(void) { }
 
 /* PoP: _probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
-void hermes_cli_auth_zai_kimi_probe_single_zai_endpoint(void) { }
+void _probe_single_zai_endpoint(void) { }
 
 /* PoP: detect_zai_endpoint @ hermes_cli/auth_zai_kimi.py:detect_zai_endpoint */
-void hermes_cli_auth_zai_kimi_detect_zai_endpoint(void) { }
+void detect_zai_endpoint(void) { }
 
 /* PoP: _resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
-void hermes_cli_auth_zai_kimi_resolve_zai_base_url(void) { }
+void _resolve_zai_base_url(void) { }
 
 /* PoP: _expire @ hermes_cli/backend_retirement.py:_expire */
-void hermes_cli_backend_retirement_expire(void) { }
-
-/* PoP: release @ hermes_cli/backend_retirement.py:release */
-void hermes_cli_backend_retirement_release(void) { }
+void _expire(void) { }
 
 /* PoP: active_count @ hermes_cli/backend_retirement.py:active_count */
-void hermes_cli_backend_retirement_active_count(void) { }
+void active_count(void) { }
 
 /* PoP: prepare @ hermes_cli/backend_retirement.py:prepare */
-void hermes_cli_backend_retirement_prepare(void) { }
+void prepare(void) { }
 
 /* PoP: _close_quietly @ hermes_cli/backup_sqlite.py:_close_quietly */
-void hermes_cli_backup_sqlite_close_quietly(void) { }
+void _close_quietly(void) { }
 
 /* PoP: _uses_wal @ hermes_cli/backup_sqlite.py:_uses_wal */
-void hermes_cli_backup_sqlite_uses_wal(void) { }
+void _uses_wal(void) { }
 
 /* PoP: pages_per_second @ hermes_cli/backup_sqlite.py:pages_per_second */
-void hermes_cli_backup_sqlite_pages_per_second(void) { }
+void pages_per_second(void) { }
 
 /* PoP: _stepped_attempt @ hermes_cli/backup_sqlite.py:_stepped_attempt */
-void hermes_cli_backup_sqlite_stepped_attempt(void) { }
+void _stepped_attempt(void) { }
 
 /* PoP: _stepped_rollback_journal_copy @ hermes_cli/backup_sqlite.py:_stepped_rollback_journal_copy */
-void hermes_cli_backup_sqlite_stepped_rollback_journal_copy(void) { }
+void _stepped_rollback_journal_copy(void) { }
 
 /* PoP: _safe_copy_db @ hermes_cli/backup_sqlite.py:_safe_copy_db */
-void hermes_cli_backup_sqlite_safe_copy_db(void) { }
+void _safe_copy_db(void) { }
 
 /* PoP: _reclaim_abandoned_staging @ hermes_cli/backup_sqlite.py:_reclaim_abandoned_staging */
-void hermes_cli_backup_sqlite_reclaim_abandoned_staging(void) { }
+void _reclaim_abandoned_staging(void) { }
 
 /* PoP: preflight_state_db @ hermes_cli/backup_sqlite.py:preflight_state_db */
-void hermes_cli_backup_sqlite_preflight_state_db(void) { }
+void preflight_state_db(void) { }
 
 /* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
-void hermes_cli_auth_is_actual_local_base_url(void) { }
+void is_actual_local_base_url(void) { }
 
 /* PoP: normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
-void hermes_cli_auth_normalize_actual_base_url(void) { }
+void normalize_actual_base_url(void) { }
 
 /* PoP: _api_key_provider @ hermes_cli/auth.py:_api_key_provider */
-void hermes_cli_auth_api_key_provider(void) { }
+void _api_key_provider(void) { }
 
 /* PoP: get_anthropic_key @ hermes_cli/auth.py:get_anthropic_key */
-void hermes_cli_auth_get_anthropic_key(void) { }
+void get_anthropic_key(void) { }
 
 /* PoP: _is_placeholder_shape @ hermes_cli/auth.py:_is_placeholder_shape */
-void hermes_cli_auth_is_placeholder_shape(void) { }
+void _is_placeholder_shape(void) { }
 
 /* PoP: _matches_key_prefix @ hermes_cli/auth.py:_matches_key_prefix */
-void hermes_cli_auth_matches_key_prefix(void) { }
+void _matches_key_prefix(void) { }
 
 /* PoP: looks_like_openrouter_key @ hermes_cli/auth.py:looks_like_openrouter_key */
-void hermes_cli_auth_looks_like_openrouter_key(void) { }
+void looks_like_openrouter_key(void) { }
 
 /* PoP: _get_custom_provider_entries @ hermes_cli/auth_commands.py:_get_custom_provider_entries */
-void hermes_cli_auth_commands_get_custom_provider_entries(void) { }
+void _get_custom_provider_entries(void) { }
 
 /* PoP: _configured_provider_entry @ hermes_cli/auth_commands.py:_configured_provider_entry */
-void hermes_cli_auth_commands_configured_provider_entry(void) { }
+void _configured_provider_entry(void) { }
 
 /* PoP: _resolve_custom_provider_input @ hermes_cli/auth_commands.py:_resolve_custom_provider_input */
-void hermes_cli_auth_commands_resolve_custom_provider_input(void) { }
+void _resolve_custom_provider_input(void) { }
 
 /* PoP: _migrate_legacy_custom_pool_key @ hermes_cli/auth_commands.py:_migrate_legacy_custom_pool_key */
-void hermes_cli_auth_commands_migrate_legacy_custom_pool_key(void) { }
+void _migrate_legacy_custom_pool_key(void) { }
 
 /* PoP: _provider_base_url @ hermes_cli/auth_commands.py:_provider_base_url */
-void hermes_cli_auth_commands_provider_base_url(void) { }
+void _provider_base_url(void) { }
 
 /* PoP: _is_known_provider @ hermes_cli/auth_commands.py:_is_known_provider */
-void hermes_cli_auth_commands_is_known_provider(void) { }
+void _is_known_provider(void) { }
 
 /* PoP: _unknown_provider_exit @ hermes_cli/auth_commands.py:_unknown_provider_exit */
-void hermes_cli_auth_commands_unknown_provider_exit(void) { }
+void _unknown_provider_exit(void) { }
 
 /* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
-void hermes_cli_auth_commands_display_source(void) { }
+void _display_source(void) { }
 
 /* PoP: _unusable_invoke_jwt_error @ hermes_cli/auth_nous.py:_unusable_invoke_jwt_error */
-void hermes_cli_auth_nous_unusable_invoke_jwt_error(void) { }
+void _unusable_invoke_jwt_error(void) { }
 
 /* PoP: _oauth_trace @ hermes_cli/auth_nous.py:_oauth_trace */
-void hermes_cli_auth_nous_oauth_trace(void) { }
+void _oauth_trace(void) { }
 
 /* PoP: _iso_after @ hermes_cli/auth_nous.py:_iso_after */
-void hermes_cli_auth_nous_iso_after(void) { }
+void _iso_after(void) { }
 
 /* PoP: _portal_entitlement_message @ hermes_cli/auth_nous.py:_portal_entitlement_message */
-void hermes_cli_auth_nous_portal_entitlement_message(void) { }
+void _portal_entitlement_message(void) { }
 
 /* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth_nous.py:_format_nous_entitlement_auth_error */
-void hermes_cli_auth_nous_format_nous_entitlement_auth_error(void) { }
+void _format_nous_entitlement_auth_error(void) { }
 
 /* PoP: _migrate_stale_nous_portal_url @ hermes_cli/auth_nous.py:_migrate_stale_nous_portal_url */
-void hermes_cli_auth_nous_migrate_stale_nous_portal_url(void) { }
+void _migrate_stale_nous_portal_url(void) { }
 
 /* PoP: _nous_inference_host_allowed @ hermes_cli/auth_nous.py:_nous_inference_host_allowed */
-void hermes_cli_auth_nous_nous_inference_host_allowed(void) { }
+void _nous_inference_host_allowed(void) { }
 
 /* PoP: _validate_nous_inference_url_from_network @ hermes_cli/auth_nous.py:_validate_nous_inference_url_from_network */
-void hermes_cli_auth_nous_validate_nous_inference_url_from_network(void) { }
+void _validate_nous_inference_url_from_network(void) { }
 
 /* PoP: generation_of @ hermes_cli/browser_credential.py:generation_of */
-void hermes_cli_browser_credential_generation_of(void) { }
+void generation_of(void) { }
 
 /* PoP: is_current @ hermes_cli/browser_credential.py:is_current */
-void hermes_cli_browser_credential_is_current(void) { }
+void is_current(void) { }
 
 /* PoP: current_if @ hermes_cli/browser_credential.py:current_if */
-void hermes_cli_browser_credential_current_if(void) { }
+void current_if(void) { }
 
 /* PoP: on_rotate @ hermes_cli/browser_credential.py:on_rotate */
-void hermes_cli_browser_credential_on_rotate(void) { }
+void on_rotate(void) { }
 
 /* PoP: rotate @ hermes_cli/browser_credential.py:rotate */
-void hermes_cli_browser_credential_rotate(void) { }
+void rotate(void) { }
 
 /* PoP: _fail @ hermes_cli/bundles.py:_fail */
-void hermes_cli_bundles_fail(void) { }
+void _fail(void) { }
 
 /* PoP: _cmd_show @ hermes_cli/bundles.py:_cmd_show */
-void hermes_cli_bundles_cmd_show(void) { }
+void _cmd_show(void) { }
 
 /* PoP: _cmd_create @ hermes_cli/bundles.py:_cmd_create */
-void hermes_cli_bundles_cmd_create(void) { }
+void _cmd_create(void) { }
 
 /* PoP: _cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
-void hermes_cli_bundles_cmd_delete(void) { }
+void _cmd_delete(void) { }
 
 /* PoP: register_cli @ hermes_cli/bundles.py:register_cli */
-void hermes_cli_bundles_register_cli(void) { }
+void register_cli(void) { }
 
 /* PoP: _clear_secret_input @ hermes_cli/callbacks.py:_clear_secret_input */
-void hermes_cli_callbacks_clear_secret_input(void) { }
+void _clear_secret_input(void) { }
 
 /* PoP: _skipped @ hermes_cli/callbacks.py:_skipped */
-void hermes_cli_callbacks_skipped(void) { }
+void _skipped(void) { }
 
 /* PoP: _secret_result @ hermes_cli/callbacks.py:_secret_result */
-void hermes_cli_callbacks_secret_result(void) { }
+void _secret_result(void) { }
 
 /* PoP: _print_archives @ hermes_cli/checkpoints.py:_print_archives */
-void hermes_cli_checkpoints_print_archives(void) { }
+void _print_archives(void) { }
 
 /* PoP: _confirm @ hermes_cli/checkpoints.py:_confirm */
-void hermes_cli_checkpoints_confirm(void) { }
+void _confirm(void) { }
 
 /* PoP: _confirmed @ hermes_cli/checkpoints.py:_confirmed */
-void hermes_cli_checkpoints_confirmed(void) { }
+void _confirmed(void) { }
 
 /* PoP: cmd_clear_legacy @ hermes_cli/checkpoints.py:cmd_clear_legacy */
-void hermes_cli_checkpoints_cmd_clear_legacy(void) { }
+void cmd_clear_legacy(void) { }
 
 /* PoP: refusal_text @ hermes_cli/cli_chat_error_copy.py:refusal_text */
-void hermes_cli_cli_chat_error_copy_refusal_text(void) { }
+void refusal_text(void) { }
 
 /* PoP: chat_error_response @ hermes_cli/cli_chat_error_copy.py:chat_error_response */
-void hermes_cli_cli_chat_error_copy_chat_error_response(void) { }
+void chat_error_response(void) { }
 
 /* PoP: agent_init_failure_message @ hermes_cli/cli_chat_error_copy.py:agent_init_failure_message */
-void hermes_cli_cli_chat_error_copy_agent_init_failure_message(void) { }
+void agent_init_failure_message(void) { }
 
 /* PoP: _cli @ hermes_cli/cli_config_load.py:_cli */
-void hermes_cli_cli_config_load_cli(void) { }
+void _cli(void) { }
 
 /* PoP: _mirror_config_to_env @ hermes_cli/cli_config_load.py:_mirror_config_to_env */
-void hermes_cli_cli_config_load_mirror_config_to_env(void) { }
+void _mirror_config_to_env(void) { }
 
 /* PoP: _cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
-void hermes_cli_cli_config_load_cli_config_defaults(void) { }
+void _cli_config_defaults(void) { }
 
 /* PoP: _merge_file_config @ hermes_cli/cli_config_load.py:_merge_file_config */
-void hermes_cli_cli_config_load_merge_file_config(void) { }
+void _merge_file_config(void) { }
 
 /* PoP: _init_logging_and_display_from_config @ hermes_cli/cli_config_load.py:_init_logging_and_display_from_config */
-void hermes_cli_cli_config_load_init_logging_and_display_from_config(void) { }
+void _init_logging_and_display_from_config(void) { }
 
 /* PoP: _last_output_line @ hermes_cli/cli_process_dock.py:_last_output_line */
-void hermes_cli_cli_process_dock_last_output_line(void) { }
+void _last_output_line(void) { }
 
 /* PoP: process_status @ hermes_cli/cli_process_dock.py:process_status */
-void hermes_cli_cli_process_dock_process_status(void) { }
+void process_status(void) { }
 
 /* PoP: process_rows @ hermes_cli/cli_process_dock.py:process_rows */
-void hermes_cli_cli_process_dock_process_rows(void) { }
+void process_rows(void) { }
 
 /* PoP: process_activity @ hermes_cli/cli_process_dock.py:process_activity */
-void hermes_cli_cli_process_dock_process_activity(void) { }
+void process_activity(void) { }
 
 /* PoP: process_glyph @ hermes_cli/cli_process_dock.py:process_glyph */
-void hermes_cli_cli_process_dock_process_glyph(void) { }
+void process_glyph(void) { }
 
 /* PoP: process_tail @ hermes_cli/cli_process_dock.py:process_tail */
-void hermes_cli_cli_process_dock_process_tail(void) { }
+void process_tail(void) { }
 
 /* PoP: _thinking_prefix @ hermes_cli/cli_stream_mixin.py:_thinking_prefix */
-void hermes_cli_cli_stream_mixin_thinking_prefix(void) { }
+void _thinking_prefix(void) { }
 
 /* PoP: _terminal_columns @ hermes_cli/cli_stream_mixin.py:_terminal_columns */
-void hermes_cli_cli_stream_mixin_terminal_columns(void) { }
+void _terminal_columns(void) { }
 
 /* PoP: _agent_status_print @ hermes_cli/cli_stream_mixin.py:_agent_status_print */
-void hermes_cli_cli_stream_mixin_agent_status_print(void) { }
+void _agent_status_print(void) { }
 
 /* PoP: _release_held_status_lines @ hermes_cli/cli_stream_mixin.py:_release_held_status_lines */
-void hermes_cli_cli_stream_mixin_release_held_status_lines(void) { }
+void _release_held_status_lines(void) { }
 
 /* PoP: _emit_stream_line @ hermes_cli/cli_stream_mixin.py:_emit_stream_line */
-void hermes_cli_cli_stream_mixin_emit_stream_line(void) { }
+void _emit_stream_line(void) { }
 
 /* PoP: _flush_stream_table_buf @ hermes_cli/cli_stream_mixin.py:_flush_stream_table_buf */
-void hermes_cli_cli_stream_mixin_flush_stream_table_buf(void) { }
+void _flush_stream_table_buf(void) { }
 
 /* PoP: _forget_tool_label @ hermes_cli/cli_stream_mixin.py:_forget_tool_label */
-void hermes_cli_cli_stream_mixin_forget_tool_label(void) { }
+void _forget_tool_label(void) { }
 
 /* PoP: _show_tool_progress @ hermes_cli/cli_stream_mixin.py:_show_tool_progress */
-void hermes_cli_cli_stream_mixin_show_tool_progress(void) { }
+void _show_tool_progress(void) { }
 
 /* PoP: complete_source_checkout @ hermes_cli/source_completion.py:complete_source_checkout */
-void hermes_cli_source_completion_complete_source_checkout(void) { }
+void complete_source_checkout(void) { }
 
 /* PoP: _complete_locked @ hermes_cli/source_completion.py:_complete_locked */
-void hermes_cli_source_completion_complete_locked(void) { }
+void _complete_locked(void) { }
 
 /* PoP: _bootstrap_command @ hermes_cli/source_completion.py:_bootstrap_command */
-void hermes_cli_source_completion_bootstrap_command(void) { }
+void _bootstrap_command(void) { }
 
 /* PoP: build_completion_parser @ hermes_cli/subcommands/completion.py:build_completion_parser */
-void hermes_cli_subcommands_completion_build_completion_parser(void) { }
+void build_completion_parser(void) { }
 
 /* PoP: _exit_if_plugin_backend @ hermes_cli/subcommands/completion.py:_exit_if_plugin_backend */
-void hermes_cli_subcommands_completion_exit_if_plugin_backend(void) { }
+void _exit_if_plugin_backend(void) { }
 
 /* PoP: _cu_install @ hermes_cli/subcommands/completion.py:_cu_install */
-void hermes_cli_subcommands_completion_cu_install(void) { }
+void _cu_install(void) { }

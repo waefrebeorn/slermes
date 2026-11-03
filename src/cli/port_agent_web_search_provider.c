@@ -1,13 +1,17 @@
+/*
+ * port_agent_web_search_provider.c — C port of agent/web_search_provider.py
+ */
 
-/* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */
-void *agent_web_search_provider_get_provider_env(void) { return NULL; }
+#include "hermes_logger.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-/* PoP: _secret_scope_state @ agent/web_search_provider.py:_secret_scope_state */
-void *agent_web_search_provider_secret_scope_state(void) { return NULL; }
+/* PoP: cli_agent_web_search_provider_display_name @ agent/web_search_provider.py:display_name */
 
-/* PoP: is_keyless_available @ agent/web_search_provider.py:is_keyless_available */
-int agent_web_search_provider_is_keyless_available(void) { return 0; }
-ovider_id)
+/* Port of Python agent/web_search_provider.py:display_name */
+/* Return the display name for a web search provider. */
+const char *cli_agent_web_search_provider_display_name(const char *provider_id)
 {
     if (!provider_id || !provider_id[0]) return "Web Search";
 
@@ -118,3 +122,11 @@ char *cli_agent_web_search_provider_get_setup_schema(const char *provider_id)
         "\"required\":[\"api_key\"]"
     "}");
 }
+
+/* ── PoP declaration-only placeholders (no bodies) ── */
+/* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */
+void *agent_web_search_provider_get_provider_env(void) { return NULL; }
+/* PoP: _secret_scope_state @ agent/web_search_provider.py:_secret_scope_state */
+void *agent_web_search_provider_secret_scope_state(void) { return NULL; }
+/* PoP: is_keyless_available @ agent/web_search_provider.py:is_keyless_available */
+int agent_web_search_provider_is_keyless_available(void) { return 0; }
