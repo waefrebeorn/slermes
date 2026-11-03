@@ -63,6 +63,10 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_bedrock tests/test_bedrock_depth.c src/agent/bedrock_adapter.c \
+    src/agent/provider_bedrock.o src/agent/logger.o lib/libjson/json.o \
+    $(for d in lib/*/; do printf -- "-I %s " "$d"; done) -I include/compat -I include -I src -I lib \
+    -include hermes_win32.h -lssl -lcrypto -lws2_32
 build test_aux tests/test_auxiliary_client.c src/agent/auxiliary_client.c \
     src/tools/url_safety.o src/agent/logger.o lib/libjson/json.o -lws2_32 \
     $(for d in lib/*/; do printf -- "-I %s " "$d"; done) -I include/compat -I include -I src -I lib \
@@ -90,8 +94,8 @@ count_and_report() {
     summary=$(printf '%s\n' "$out" | grep -oE 'Results: [0-9]+/[0-9]+ passed|Results: [0-9]+ passed, [0-9]+ failed' | tail -1)
     if [ -z "$summary" ]; then
         echo "  WARNING: no Results: summary line; falling back to PASS/FAIL text"
-        p=$(printf '%s\n' "$out" | grep -cE '^(PASS|OK)' || true)
-        f=$(printf '%s\n' "$out" | grep -cE '^FAIL' || true)
+        p=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*(PASS|OK)' || true)
+        f=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*FAIL' || true)
     elif printf '%s' "$summary" | grep -q '/'; then
         p=$(printf '%s' "$summary" | sed -E 's|.*Results: ([0-9]+)/.*|\1|')
         tot=$(printf '%s' "$summary" | sed -E 's|.*Results: [0-9]+/([0-9]+) passed.*|\1|')
@@ -149,6 +153,7 @@ run_suite "Threat Patterns" "$B/test_threat.exe"
 run_suite "Cron Extras" "$B/test_cron.exe"
 run_suite "Think Scrubber" "$B/test_think.exe"
 run_suite "Auxiliary Client" "$B/test_aux.exe"
+run_suite "Bedrock Depth" "$B/test_bedrock.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then

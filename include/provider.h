@@ -229,6 +229,15 @@ const char *resolve_aws_auth_env_var(void);
 bool has_aws_credentials(void);
 const char *resolve_bedrock_region(void);
 json_t *bedrock_convert_tools_to_converse(const json_t *tools);
+
+/* ── Bedrock utility helpers (port of agent/bedrock_adapter.py) ── */
+const char *bedrock_classify_error(const char *error);
+int         bedrock_get_context_length(const char *model_id);
+bool        bedrock_is_anthropic_model(const char *model_id);
+bool        bedrock_model_supports_tool_use(const char *model_id);
+const char *bedrock_resolve_auth_env_var(void);
+bool        bedrock_has_credentials(void);
+const char *bedrock_resolve_region(void);
 json_t *bedrock_convert_content_to_converse(const json_t *content);
 json_t *bedrock_convert_messages_to_converse(const json_t *messages);
 json_t *bedrock_normalize_converse_response(const json_t *response);
