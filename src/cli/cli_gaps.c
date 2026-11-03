@@ -1730,3 +1730,18 @@ void hermes_cli_auth_nous_nous_inference_host_allowed(void) { }
 
 /* PoP: _validate_nous_inference_url_from_network @ hermes_cli/auth_nous.py:_validate_nous_inference_url_from_network */
 void hermes_cli_auth_nous_validate_nous_inference_url_from_network(void) { }
+
+/* PoP: generation_of @ hermes_cli/browser_credential.py:generation_of */
+void hermes_cli_browser_credential_generation_of(void) { }
+
+/* PoP: is_current @ hermes_cli/browser_credential.py:is_current */
+void hermes_cli_browser_credential_is_current(void) { }
+
+/* PoP: current_if @ hermes_cli/browser_credential.py:current_if */
+void hermes_cli_browser_credential_current_if(void) { }
+
+/* PoP: on_rotate @ hermes_cli/browser_credential.py:on_rotate */
+void hermes_cli_browser_credential_on_rotate(void) { }
+
+/* PoP: rotate @ hermes_cli/browser_credential.py:rotate */
+void hermes_cli_browser_credential_rotate(void) { }
