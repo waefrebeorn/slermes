@@ -1823,3 +1823,27 @@ void hermes_cli_cli_process_dock_process_glyph(void) { }
 
 /* PoP: process_tail @ hermes_cli/cli_process_dock.py:process_tail */
 void hermes_cli_cli_process_dock_process_tail(void) { }
+
+/* PoP: _thinking_prefix @ hermes_cli/cli_stream_mixin.py:_thinking_prefix */
+void hermes_cli_cli_stream_mixin_thinking_prefix(void) { }
+
+/* PoP: _terminal_columns @ hermes_cli/cli_stream_mixin.py:_terminal_columns */
+void hermes_cli_cli_stream_mixin_terminal_columns(void) { }
+
+/* PoP: _agent_status_print @ hermes_cli/cli_stream_mixin.py:_agent_status_print */
+void hermes_cli_cli_stream_mixin_agent_status_print(void) { }
+
+/* PoP: _release_held_status_lines @ hermes_cli/cli_stream_mixin.py:_release_held_status_lines */
+void hermes_cli_cli_stream_mixin_release_held_status_lines(void) { }
+
+/* PoP: _emit_stream_line @ hermes_cli/cli_stream_mixin.py:_emit_stream_line */
+void hermes_cli_cli_stream_mixin_emit_stream_line(void) { }
+
+/* PoP: _flush_stream_table_buf @ hermes_cli/cli_stream_mixin.py:_flush_stream_table_buf */
+void hermes_cli_cli_stream_mixin_flush_stream_table_buf(void) { }
+
+/* PoP: _forget_tool_label @ hermes_cli/cli_stream_mixin.py:_forget_tool_label */
+void hermes_cli_cli_stream_mixin_forget_tool_label(void) { }
+
+/* PoP: _show_tool_progress @ hermes_cli/cli_stream_mixin.py:_show_tool_progress */
+void hermes_cli_cli_stream_mixin_show_tool_progress(void) { }
