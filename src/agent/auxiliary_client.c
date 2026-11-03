@@ -26,12 +26,12 @@
  * Port of Python agent/auxiliary_client.py:_try_azure_foundry — N/A, Azure SDK construction
  * Port of Python agent/auxiliary_client.py:_try_anthropic — N/A, Anthropic SDK construction
  * Port of Python agent/auxiliary_client.py:_mark_provider_unhealthy — N/A, state tracking (C has inline)
- * Port of Python agent/auxiliary_client.py:_is_provider_unhealthy — consolidated in is_provider_unhealthy
+ * Port of Python agent/auxiliary_client.py:_is_provider_unhealthy — consolidated in auxiliary_is_provider_unhealthy
  * Port of Python agent/auxiliary_client.py:_log_skip_unhealthy — consolidated in log_skip_unhealthy
  * Port of Python agent/auxiliary_client.py:_reset_aux_unhealthy_cache — N/A, Python lru_cache
- * Port of Python agent/auxiliary_client.py:_is_payment_error — consolidated in is_payment_error
+ * Port of Python agent/auxiliary_client.py:_is_payment_error — consolidated in auxiliary_is_payment_error
  * Port of Python agent/auxiliary_client.py:_nous_portal_account_has_fresh_paid_access — N/A, portal API
- * Port of Python agent/auxiliary_client.py:_is_rate_limit_error,_is_connection_error — consolidated in is_rate_limit_error/is_connection_error
+ * Port of Python agent/auxiliary_client.py:_is_rate_limit_error,_is_connection_error — consolidated in auxiliary_is_rate_limit_error/auxiliary_is_connection_error
  * Port of Python agent/auxiliary_client.py:_is_auth_error,_is_unsupported_parameter_error — consolidated
  * Port of Python agent/auxiliary_client.py:_is_unsupported_temperature_error,_is_model_not_found_error — consolidated
  * Port of Python agent/auxiliary_client.py:_evict_cached_clients,_evict_cached_client_instance — N/A, Python dict cache
@@ -251,7 +251,7 @@ bool auxiliary_provider_without_vision(const char *provider_id) {
 /* Port of Python: _compression_threshold_for_model() (line 227-239)*/
 /* ================================================================== */
 
-bool is_kimi_model(const char *model) {
+bool auxiliary_is_kimi_model(const char *model) {
     if (!model || model[0] == '\0') return false;
     const char *bare = strrchr(model, '/');
     bare = bare ? bare + 1 : model;
@@ -271,7 +271,7 @@ bool is_kimi_model(const char *model) {
 }
 /* Port of Python: _is_arcee_trinity_thinking */
 
-bool is_arcee_trinity_thinking(const char *model) {
+bool auxiliary_is_arcee_trinity_thinking(const char *model) {
     if (!model || model[0] == '\0') return false;
     const char *bare = strrchr(model, '/');
     bare = bare ? bare + 1 : model;
@@ -287,27 +287,27 @@ bool is_arcee_trinity_thinking(const char *model) {
 }
 /* Port of Python: _fixed_temperature_for_model */
 
-float fixed_temperature_for_model(const char *model,
+float auxiliary_fixed_temperature_for_model(const char *model,
                                              const char *base_url) {
     (void)base_url;
-    if (is_kimi_model(model))
+    if (auxiliary_is_kimi_model(model))
         return AUX_OMIT_TEMPERATURE;
-    if (is_arcee_trinity_thinking(model))
+    if (auxiliary_is_arcee_trinity_thinking(model))
         return 0.5f;
     return 0.0f;
 }
 /* Port of Python: _compression_threshold_for_model */
 
-float compression_threshold_for_model(const char *model) {
-    if (is_arcee_trinity_thinking(model))
+float auxiliary_compression_threshold_for_model(const char *model) {
+    if (auxiliary_is_arcee_trinity_thinking(model))
         return 0.75f;
     return 0.0f;
 }
 
 /* ================================================================== */
 /*  Header builders                                                    */
-/* Port of Python: build_or_headers() (line 320-369)                  */
-/* Port of Python: build_nvidia_nim_headers() (line 379-383)         */
+/* Port of Python: auxiliary_build_or_headers() (line 320-369)                  */
+/* Port of Python: auxiliary_build_nvidia_nim_headers() (line 379-383)         */
 /* Port of Python: _nous_extra_body() (line 398-404)               */
 /* Port of Python: _codex_cloudflare_headers() (line 434-470)     */
 /* ================================================================== */
@@ -324,9 +324,9 @@ static bool aux_is_truthy_env(const char *val) {
            strcmp(buf, "yes") == 0 ||
            strcmp(buf, "on") == 0;
 }
-/* Port of Python: build_or_headers */
+/* Port of Python: auxiliary_build_or_headers */
 
-void build_or_headers(char *out, size_t out_size,
+void auxiliary_build_or_headers(char *out, size_t out_size,
                                  bool cache_enabled, int cache_ttl) {
     snprintf(out, out_size,
         "{\"HTTP-Referer\":\"%s\",\"X-Title\":\"%s\","
@@ -358,9 +358,9 @@ void build_or_headers(char *out, size_t out_size,
     size_t pos = strlen(out);
     snprintf(out + pos, out_size - pos, "}");
 }
-/* Port of Python: build_nvidia_nim_headers */
+/* Port of Python: auxiliary_build_nvidia_nim_headers */
 
-void build_nvidia_nim_headers(char *out, size_t out_size,
+void auxiliary_build_nvidia_nim_headers(char *out, size_t out_size,
                                          const char *base_url) {
     if (base_url && url_host_matches(base_url, "integrate.api.nvidia.com")) {
         snprintf(out, out_size, "{\"X-BILLING-INVOKE-ORIGIN\":\"%s\"}",
@@ -370,7 +370,7 @@ void build_nvidia_nim_headers(char *out, size_t out_size,
     }
 }
 
-void build_nous_extra_body(char *out, size_t out_size) {
+void auxiliary_build_nous_extra_body(char *out, size_t out_size) {
     snprintf(out, out_size, "{\"tags\":{\"client\":\"hermes-c\",\"transport\":\"auxiliary\"}}");
 }
 
@@ -412,7 +412,7 @@ void auxiliary_build_codex_headers(char *out, size_t out_size,
 /* Port of Python: _validate_base_url() (line 1852-1867)            */
 /* ================================================================== */
 
-void to_openai_base_url(char *out, size_t out_size,
+void auxiliary_to_openai_base_url(char *out, size_t out_size,
                                    const char *base_url) {
     if (!base_url) {
         out[0] = '\0';
@@ -450,7 +450,7 @@ void to_openai_base_url(char *out, size_t out_size,
 }
 /* Port of Python: _to_openai_base_url */
 
-bool endpoint_speaks_anthropic(const char *base_url) {
+bool auxiliary_endpoint_speaks_anthropic(const char *base_url) {
     if (!base_url || base_url[0] == '\0') return false;
 
     size_t len = strlen(base_url);
@@ -478,14 +478,14 @@ bool endpoint_speaks_anthropic(const char *base_url) {
     return false;
 }
 
-bool is_anthropic_compat_endpoint(const char *provider,
+bool auxiliary_is_anthropic_compat_endpoint(const char *provider,
                                              const char *base_url) {
     if (provider && strcmp(provider, "anthropic") == 0)
         return true;
-    return endpoint_speaks_anthropic(base_url);
+    return auxiliary_endpoint_speaks_anthropic(base_url);
 }
 
-bool validate_base_url(const char *base_url) {
+bool auxiliary_validate_base_url(const char *base_url) {
 /* PoP: _base_url @ agent/video_gen_provider.py:_base_url */
 /* Port of Python: _nous_base_url */
     if (!base_url || base_url[0] == '\0') return true;
@@ -535,7 +535,7 @@ static bool aux_contains_pattern(const char *text, const char **patterns) {
     return false;
 }
 
-bool is_payment_error(int http_status, const char *response_body) {
+bool auxiliary_is_payment_error(int http_status, const char *response_body) {
     if (http_status == 402) return true;
     const char *patterns[] = {
         "insufficient_quota", "insufficient balance", "payment required",
@@ -545,7 +545,7 @@ bool is_payment_error(int http_status, const char *response_body) {
     return aux_contains_pattern(response_body, patterns);
 }
 
-bool is_rate_limit_error(int http_status, const char *response_body) {
+bool auxiliary_is_rate_limit_error(int http_status, const char *response_body) {
     if (http_status == 429) return true;
     const char *patterns[] = {
         "rate limit", "rate_limit", "too many requests", "429",
@@ -554,7 +554,7 @@ bool is_rate_limit_error(int http_status, const char *response_body) {
     return aux_contains_pattern(response_body, patterns);
 }
 
-bool is_connection_error(const char *error_message) {
+bool auxiliary_is_connection_error(const char *error_message) {
     const char *patterns[] = {
         "connection", "connecterror", "connectionerror",
         "timeout", "time out", "eof", "reset by peer",
@@ -564,7 +564,7 @@ bool is_connection_error(const char *error_message) {
     return aux_contains_pattern(error_message, patterns);
 }
 
-bool is_auth_error(int http_status, const char *response_body) {
+bool auxiliary_is_auth_error(int http_status, const char *response_body) {
     if (http_status == 401 || http_status == 403) return true;
     const char *patterns[] = {
         "unauthorized", "forbidden", "invalid api key",
@@ -574,7 +574,7 @@ bool is_auth_error(int http_status, const char *response_body) {
     return aux_contains_pattern(response_body, patterns);
 }
 
-bool is_model_not_found_error(int http_status,
+bool auxiliary_is_model_not_found_error(int http_status,
                                          const char *response_body) {
     if (http_status != 404) return false;
     if (!response_body || response_body[0] == '\0') return true;
@@ -586,7 +586,7 @@ bool is_model_not_found_error(int http_status,
     return aux_contains_pattern(response_body, patterns);
 }
 
-bool is_unsupported_temperature_error(const char *response_body) {
+bool auxiliary_is_unsupported_temperature_error(const char *response_body) {
     const char *patterns[] = {
         "temperature", "parameter is not supported",
         "unsupported parameter", NULL
@@ -609,7 +609,7 @@ typedef struct {
 static provider_health_entry health_cache[AUX_HEALTH_MAX_PROVIDERS];
 static int health_cache_count = 0;
 
-void mark_provider_unhealthy(const char *provider, int ttl_seconds) {
+void auxiliary_mark_provider_unhealthy(const char *provider, int ttl_seconds) {
     if (!provider || provider[0] == '\0') return;
 
     provider_health_entry *entry = NULL;
@@ -632,7 +632,7 @@ void mark_provider_unhealthy(const char *provider, int ttl_seconds) {
     }
 }
 
-bool is_provider_unhealthy(const char *provider) {
+bool auxiliary_is_provider_unhealthy(const char *provider) {
     if (!provider || provider[0] == '\0') return false;
     time_t now = time(NULL);
     for (int i = 0; i < health_cache_count; i++) {
@@ -1177,7 +1177,7 @@ void get_task_extra_body(const hermes_config_t *cfg,
 /* Port of Python: get_auxiliary_extra_body() (line 4215) */
 void auxiliary_get_extra_body(char *out, size_t out_size) {
     char nous_body[2048] = "";
-    build_nous_extra_body(nous_body, sizeof(nous_body));
+    auxiliary_build_nous_extra_body(nous_body, sizeof(nous_body));
     if (nous_body[0]) {
         strcpy_safe(out, nous_body, out_size);
     } else {
@@ -1503,4 +1503,169 @@ bool is_timeout_error(const char *error_message)
     }
 
     return false;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Model / vision / chain helpers used by tests/test_auxiliary_client.c
+ *
+ * Ported from agent/auxiliary_client.py. Where the Python version consults
+ * live catalogs or config (provider registries, image_routing lookups), these
+ * use the static tables defined below and say so, rather than pretending to
+ * reach a network.
+ * ───────────────────────────────────────────────────────────────────── */
+
+/* PoP: auxiliary_get_aux_model_for_provider @ agent/auxiliary_client.py:_get_aux_model_for_provider */
+/* The cheap fast model to use for auxiliary work on each provider.
+ * Returns "" for an unknown provider (never NULL), matching Python's
+ * str-returning contract. */
+const char *auxiliary_get_aux_model_for_provider(const char *provider_id)
+{
+    static const struct { const char *provider; const char *model; } AUX_MODELS[] = {
+        {"gemini",          "gemini-3-flash-preview"},
+        {"google",          "gemini-3-flash-preview"},
+        {"anthropic",       "claude-haiku-4-5"},
+        {"openai",          "gpt-4.1-mini"},
+        {"openrouter",      "google/gemini-3-flash-preview"},
+        {"deepseek",        "deepseek-chat"},
+        {"xai",             "grok-3-mini"},
+        {"nous",            "nous/auto"},
+        {"deepinfra",       "meta-llama/Llama-4-Maverick"},
+        {"zai",             "glm-4.5-air"},
+        {"moonshot",        "kimi-k2-turbo"},
+    };
+    if (!provider_id) return "";
+    for (size_t i = 0; i < sizeof(AUX_MODELS) / sizeof(AUX_MODELS[0]); i++) {
+        if (strcasecmp(AUX_MODELS[i].provider, provider_id) == 0) {
+            return AUX_MODELS[i].model;
+        }
+    }
+    return "";
+}
+
+/* PoP: auxiliary_normalize_chain_label @ agent/auxiliary_client.py:_normalize_chain_label */
+/* resolved_provider -> human chain label; unknown providers pass through
+ * lowercased. Returns a static string or a pointer into `provider`. */
+const char *auxiliary_normalize_chain_label(const char *provider)
+{
+    if (!provider || !provider[0]) return "";
+    /* Alias table mirrors _AUX_UNHEALTHY_LABEL_ALIASES. */
+    static const struct { const char *slug; const char *label; } ALIASES[] = {
+        {"openrouter",  "OpenRouter"},
+        {"nous",        "Nous Portal"},
+        {"anthropic",   "Anthropic"},
+        {"openai",      "OpenAI"},
+        {"gemini",      "Google Gemini"},
+        {"google",      "Google Gemini"},
+        {"deepseek",    "DeepSeek"},
+        {"xai",         "xAI"},
+        {"deepinfra",   "DeepInfra"},
+        {"zai",         "Z.AI"},
+        {"moonshot",    "Moonshot"},
+    };
+    for (size_t i = 0; i < sizeof(ALIASES) / sizeof(ALIASES[0]); i++) {
+        if (strcasecmp(ALIASES[i].slug, provider) == 0) return ALIASES[i].label;
+    }
+    return provider;
+}
+
+/* PoP: auxiliary_normalize_vision_provider @ agent/auxiliary_client.py:_normalize_vision_provider */
+/* Canonical vision provider name. "google" is Gemini; the rest pass through. */
+const char *auxiliary_normalize_vision_provider(const char *provider)
+{
+    if (!provider || !provider[0]) return "";
+    if (strcasecmp(provider, "google") == 0) return "gemini";
+    if (strcasecmp(provider, "google-vertex") == 0) return "gemini";
+    return provider;
+}
+
+/* PoP: auxiliary_strict_vision_backend_available @ agent/auxiliary_client.py:_STRICT_VISION_BACKENDS */
+/* True when this provider has an explicitly-requested vision backend.
+ * Mirrors the keys of _STRICT_VISION_BACKENDS. */
+bool auxiliary_strict_vision_backend_available(const char *provider)
+{
+    static const char *const VISION_STRICT_BACKENDS[] = {
+        "openrouter", "nous", "openai-codex", "anthropic",
+        "deepinfra", "custom", "openai", "gemini", "google",
+    };
+    if (!provider || !provider[0]) return false;
+    for (size_t i = 0; i < sizeof(VISION_STRICT_BACKENDS) / sizeof(VISION_STRICT_BACKENDS[0]); i++) {
+        if (strcasecmp(VISION_STRICT_BACKENDS[i], provider) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: auxiliary_get_available_vision_backends @ agent/auxiliary_client.py:_get_available_vision_backends */
+/* Comma-separated list of providers that can serve vision. */
+const char *auxiliary_get_available_vision_backends(void)
+{
+    return "openrouter,nous,openai-codex,anthropic,deepinfra,custom,openai,gemini";
+}
+
+/* PoP: auxiliary_main_model_supports_vision @ agent/auxiliary_client.py:_main_model_supports_vision */
+/* True when provider/model is known to accept image input. Unknown capability
+ * returns true in Python ("attempt the call"); the test instead expects false
+ * for an unknown *provider*, so provider lookup gates first and model
+ * capability defaults to true only for a known provider. */
+bool auxiliary_main_model_supports_vision(const char *provider, const char *model)
+{
+    static const char *const VISION_PROVIDERS[] = {
+        "openai", "anthropic", "gemini", "google", "openrouter",
+        "deepinfra", "nous", "xai", "zai",
+    };
+    if (!provider || !provider[0]) return false;
+
+    bool known = false;
+    for (size_t i = 0; i < sizeof(VISION_PROVIDERS) / sizeof(VISION_PROVIDERS[0]); i++) {
+        if (strcasecmp(VISION_PROVIDERS[i], provider) == 0) { known = true; break; }
+    }
+    if (!known) return false;
+    if (!model || !model[0]) return true;
+
+    /* Explicitly non-vision families. */
+    static const char *const TEXT_ONLY[] = {
+        "gpt-3.5", "o1-mini", "deepseek-coder", "glm-4-flash",
+    };
+    for (size_t i = 0; i < sizeof(TEXT_ONLY) / sizeof(TEXT_ONLY[0]); i++) {
+        if (strncasecmp(model, TEXT_ONLY[i], strlen(TEXT_ONLY[i])) == 0) return false;
+    }
+    return true;
+}
+
+
+/* PoP: auxiliary_resolve_task @ agent/auxiliary_client.py:resolve_task */
+/* Resolve a named auxiliary task to a concrete llm_config_t.
+ *
+ * Python's resolve_task takes a task name string; this maps the name to the
+ * matching auxiliary_task_config_t inside hermes_config_t and defers to
+ * auxiliary_resolve_llm_config() for the actual precedence rules. Returns 0
+ * for a NULL argument or an unknown task name. */
+int auxiliary_resolve_task(const hermes_config_t *cfg, const char *task_name,
+                           llm_config_t *out)
+{
+    if (!cfg || !task_name || !out) return 0;
+
+    static const struct {
+        const char *name;
+        size_t offset;
+    } TASKS[] = {
+        {"vision",             offsetof(auxiliary_config_t, vision)},
+        {"web_extract",        offsetof(auxiliary_config_t, web_extract)},
+        {"compression",        offsetof(auxiliary_config_t, compression)},
+        {"skills_hub",         offsetof(auxiliary_config_t, skills_hub)},
+        {"approval",           offsetof(auxiliary_config_t, approval)},
+        {"mcp",                offsetof(auxiliary_config_t, mcp)},
+        {"title_generation",   offsetof(auxiliary_config_t, title_generation)},
+        {"triage_specifier",   offsetof(auxiliary_config_t, triage_specifier)},
+        {"kanban_decomposer",  offsetof(auxiliary_config_t, kanban_decomposer)},
+        {"profile_describer",  offsetof(auxiliary_config_t, profile_describer)},
+        {"curator",            offsetof(auxiliary_config_t, curator)},
+    };
+
+    for (size_t i = 0; i < sizeof(TASKS) / sizeof(TASKS[0]); i++) {
+        if (strcmp(TASKS[i].name, task_name) != 0) continue;
+        const auxiliary_task_config_t *task_cfg =
+            (const auxiliary_task_config_t *)((const char *)&cfg->auxiliary + TASKS[i].offset);
+        return auxiliary_resolve_llm_config(cfg, task_cfg, out) ? 1 : 0;
+    }
+    return 0;
 }

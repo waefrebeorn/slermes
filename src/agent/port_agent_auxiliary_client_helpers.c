@@ -99,7 +99,7 @@ int aux__is_anthropic_compatible_host(const char *host) {
 /* PoP: aux__is_transient_transport_error @ agent/auxiliary_client.py:_is_transient_transport_error */
 /* True for a one-off transport blip worth retrying once on the same provider. */
 int aux__is_transient_transport_error(const char *error_msg, int status_code) {
-    if (is_connection_error(error_msg)) return 1;
+    if (auxiliary_is_connection_error(error_msg)) return 1;
     return status_code == 408 || (status_code >= 500 && status_code < 600);
 }
 
@@ -243,7 +243,7 @@ char *aux__pool_runtime_base_url(const char *provider) {
 /* PoP: aux__maybe_wrap_anthropic @ agent/auxiliary_client.py:_maybe_wrap_anthropic */
 /* If the host is Anthropic-compatible, return a wrapped flag; returns 1. */
 int aux__maybe_wrap_anthropic(const char *base_url) {
-    return is_anthropic_compat_endpoint(NULL, base_url);
+    return auxiliary_is_anthropic_compat_endpoint(NULL, base_url);
 }
 
 /* PoP: aux__read_nous_auth @ agent/auxiliary_client.py:_read_nous_auth */
