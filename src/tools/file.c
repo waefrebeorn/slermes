@@ -267,8 +267,17 @@ static char *handle_write(const char *args_json) {
     fsync(fd);
     close(fd);
 
-    /* Atomic rename — replaces target atomically on POSIX */
-    if (rename(tmp_path, path) != 0) {
+    /* Atomic rename — replaces the target atomically on POSIX.
+     * Windows rename() fails with EEXIST when the destination exists, so
+     * write_file could never overwrite an existing file despite its schema
+     * promising "Overwrites existing". MoveFileEx with REPLACE_EXISTING is the
+     * Windows equivalent and is still a single atomic operation. */
+#ifdef _WIN32
+    int rename_rc = MoveFileExA(tmp_path, path, MOVEFILE_REPLACE_EXISTING) ? 0 : -1;
+#else
+    int rename_rc = rename(tmp_path, path);
+#endif
+    if (rename_rc != 0) {
         unlink(tmp_path);
         json_free(args);
         char buf[256];

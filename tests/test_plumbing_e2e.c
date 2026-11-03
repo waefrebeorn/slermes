@@ -62,6 +62,7 @@ int main(void)
              "{\"path\":\"%s\",\"content\":\"plumbing-ok-123\"}", tmp);
     char *w = registry_dispatch("write_file", wargs, "plumb");
     ck("write_file succeeds", w && strstr(w, "error") == NULL);
+    if (w) printf("  (write_file said) %.160s\n", w);
     free(w);
 
     char rargs[512];

@@ -198,6 +198,14 @@ run_suite "Gateway Escape" "$B/test_escprim.exe"
 run_suite "Error Classifier" "$B/test_err.exe"
 run_suite "Interrupt" "$B/test_int.exe"
 run_suite "Context Refs" "$B/test_ctx.exe"
+# End-to-end tool plumbing: links the full object set, so it proves the
+# real registry registers real tools and real dispatch works.
+build test_plumb tests/test_plumbing_e2e.c $(find src lib -name '*.o' | grep -v 'src/main.o' | grep -v 'src/cli/main.o' | grep -v 'threat_patterns.o' | tr '
+' ' ') \
+    -I include/compat -I include -I src -I lib $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
+    -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -ltre -lpcre2-8 \
+    -lgdi32 -luser32 -lshell32 -lole32 -luuid -lgdiplus -lcomdlg32 -lwinmm -lstdc++
+run_suite "Tool Plumbing (e2e)" "$B/test_plumb.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then
