@@ -1445,3 +1445,15 @@ void gateway_session_producer_lifecycle_close_producer_turn(void) { }
 
 /* PoP: drop_producer_turn @ gateway/session_producer_lifecycle.py:drop_producer_turn */
 void gateway_session_producer_lifecycle_drop_producer_turn(void) { }
+
+/* PoP: bind @ gateway/session_retry_admission.py:bind */
+void gateway_session_retry_admission_bind(void) { }
+
+/* PoP: unbind @ gateway/session_retry_admission.py:unbind */
+void gateway_session_retry_admission_unbind(void) { }
+
+/* PoP: take @ gateway/session_retry_admission.py:take */
+void gateway_session_retry_admission_take(void) { }
+
+/* PoP: compose @ gateway/session_retry_admission.py:compose */
+void gateway_session_retry_admission_compose(void) { }
