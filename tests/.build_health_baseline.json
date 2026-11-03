@@ -1,10 +1,4 @@
 {
- "total": 90,
- "failing": [
-  "src/agent/port_agent_ssl_verify.c",
-  "src/agent/agent_runtime_helpers.c",
-  "src/agent/manual_compression_feedback.c",
-  "src/agent/chat_completion_helpers.c",
-  "src/agent/moonshot_schema.c"
- ]
+ "total": 723,
+ "failing": []
 }

@@ -25,6 +25,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASELINE = ROOT / "tests" / ".build_health_baseline.json"
 
 CFLAGS = None
+FLAGS_BY_FILE = {}
 
 
 def real_cflags():
@@ -33,7 +34,7 @@ def real_cflags():
     Hand-rolled -I lists diverge from the real build and manufacture phantom
     errors (e.g. missing -I lib -> 'libdb/db.h: No such file'). Ask make.
     """
-    r = subprocess.run(["make", "-n"], cwd=ROOT, capture_output=True,
+    r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
                        text=True, encoding="utf-8", errors="replace")
     for line in r.stdout.splitlines():
         if " -c " in line and ".c" in line:
@@ -60,16 +61,21 @@ def build_sources():
     only exist on Linux (objects.mk gates them on UNAME_S) and will never
     compile on Windows. Scope to what `make -n` would compile.
     """
-    r = subprocess.run(["make", "-n"], cwd=ROOT, capture_output=True,
+    r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
                        text=True, encoding="utf-8", errors="replace")
-    out = set()
+    # Keep make's command line verbatim and hand it to sh: the -D values are
+    # shell-escaped (\"v\"), and re-parsing them into execve argv hands gcc a
+    # literal backslash ('stray ' in program'). Shell evaluation is exact.
+    out = {}
     for line in r.stdout.splitlines():
-        if " -c -o " in line:
-            tail = line.split(" -c -o ", 1)[1]
-            src = tail.split()[-1]
-            if src.endswith(".c"):
-                out.add(src)
-    return sorted(out)
+        if " -c -o " not in line:
+            continue
+        head, tail = line.split(" -c -o ", 1)
+        src = tail.split()[-1]
+        if not src.endswith(".c"):
+            continue
+        out.setdefault(src, head)
+    return out
 
 
 def sources():
@@ -84,8 +90,13 @@ def sources():
 
 
 def check(path):
+    cmd = FLAGS_BY_FILE.get(path)
+    if cmd:
+        shell_cmd = f'{cmd} -fsyntax-only "{path}"'
+    else:
+        shell_cmd = f'{CC} -fsyntax-only "{path}"'
     r = subprocess.run(
-        [CC, *CFLAGS, path],
+        ["sh", "-c", shell_cmd],
         cwd=ROOT, capture_output=True, text=True,
         encoding="utf-8", errors="replace",
     )
@@ -102,9 +113,11 @@ def main():
     ap.add_argument("--regress", action="store_true")
     args = ap.parse_args()
 
-    files = build_sources()
-    global CFLAGS
-    CFLAGS = real_cflags()
+    per_file = build_sources()
+    files = sorted(per_file)
+    global CFLAGS, FLAGS_BY_FILE
+    FLAGS_BY_FILE = per_file
+    CFLAGS = next(iter(per_file.values())) if per_file else real_cflags()
     with ThreadPoolExecutor(max_workers=8) as ex:
         results = [r for r in ex.map(check, files) if r]
 
