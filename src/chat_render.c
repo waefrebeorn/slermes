@@ -709,7 +709,7 @@ static void highlight_line(chat_rendered_msg_t *msg, const char *line, size_t li
             if (is_keyword(word, word_len, lang)) {
                 msg_add_token(msg, TOKEN_KEYWORD, word, 0);
             } else if (is_type_word(word, word_len, lang)) {
-                msg_add_token(msg, TOKEN_TYPE, word, 0);
+                msg_add_token(msg, TOKEN_TYPE_NAME, word, 0);
             } else if (k < line_len && line[k] == '(') {
                 msg_add_token(msg, TOKEN_FUNCTION, word, 0);
             } else {
