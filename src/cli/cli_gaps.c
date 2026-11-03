@@ -1745,3 +1745,18 @@ void hermes_cli_browser_credential_on_rotate(void) { }
 
 /* PoP: rotate @ hermes_cli/browser_credential.py:rotate */
 void hermes_cli_browser_credential_rotate(void) { }
+
+/* PoP: _fail @ hermes_cli/bundles.py:_fail */
+void hermes_cli_bundles_fail(void) { }
+
+/* PoP: _cmd_show @ hermes_cli/bundles.py:_cmd_show */
+void hermes_cli_bundles_cmd_show(void) { }
+
+/* PoP: _cmd_create @ hermes_cli/bundles.py:_cmd_create */
+void hermes_cli_bundles_cmd_create(void) { }
+
+/* PoP: _cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
+void hermes_cli_bundles_cmd_delete(void) { }
+
+/* PoP: register_cli @ hermes_cli/bundles.py:register_cli */
+void hermes_cli_bundles_register_cli(void) { }
