@@ -26,7 +26,7 @@
 #include <arpa/inet.h>
 #include <openssl/sha.h>
 #include <dirent.h>
-#include <linux/limits.h>
+#include <limits.h>
 
 #define PORT 5174
 #define STATIC_DIR "./web_app_dist"

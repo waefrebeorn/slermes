@@ -53,6 +53,25 @@ def real_cflags():
 CC = os.environ.get("CC", "gcc")
 
 
+def build_sources():
+    """Source files this platform's build actually compiles.
+
+    Scanning every .c over-reports: window_wayland.c and xdg-shell-protocol.c
+    only exist on Linux (objects.mk gates them on UNAME_S) and will never
+    compile on Windows. Scope to what `make -n` would compile.
+    """
+    r = subprocess.run(["make", "-n"], cwd=ROOT, capture_output=True,
+                       text=True, encoding="utf-8", errors="replace")
+    out = set()
+    for line in r.stdout.splitlines():
+        if " -c -o " in line:
+            tail = line.split(" -c -o ", 1)[1]
+            src = tail.split()[-1]
+            if src.endswith(".c"):
+                out.add(src)
+    return sorted(out)
+
+
 def sources():
     # Walk the tree instead of shelling out to git: this box's MSYS python
     # cannot spawn the native git.exe (WinError 5), and a filesystem scan has
@@ -83,7 +102,7 @@ def main():
     ap.add_argument("--regress", action="store_true")
     args = ap.parse_args()
 
-    files = sources()
+    files = build_sources()
     global CFLAGS
     CFLAGS = real_cflags()
     with ThreadPoolExecutor(max_workers=8) as ex:

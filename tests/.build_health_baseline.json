@@ -1,26 +1,10 @@
 {
- "total": 789,
+ "total": 90,
  "failing": [
   "src/agent/port_agent_ssl_verify.c",
   "src/agent/agent_runtime_helpers.c",
   "src/agent/manual_compression_feedback.c",
-  "src/tools/port_process_registry.c",
-  "src/sidebar.c",
-  "src/plugins/plugin_spotify.c",
   "src/agent/chat_completion_helpers.c",
-  "src/plugins/plugin_honcho.c",
-  "src/plugins/plugin_kanban.c",
-  "src/titlebar.c",
-  "src/cli/tui_transport.c",
-  "src/window_win32.c",
-  "src/agent/image_gen_provider.c",
-  "src/agent/moonshot_schema.c",
-  "src/agent/port_antigravity_oauth.c",
-  "src/cli/tui_fullscreen.c",
-  "src/desktop_app.c",
-  "src/tools/port_tools_read_extract.c",
-  "src/web_server.c",
-  "src/window_wayland.c",
-  "src/xdg-shell-protocol.c"
+  "src/agent/moonshot_schema.c"
  ]
 }
