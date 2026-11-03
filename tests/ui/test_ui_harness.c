@@ -25,6 +25,14 @@
 
 static int g_pass = 0;
 static int g_fail = 0;
+static int g_skip = 0;
+
+/* A platform gap is not a pass and not a failure: report it as a skip with the
+ * reason, so it can never be mistaken for green. */
+static void test_skip(const char *name, const char *why) {
+    printf("  SKIP: %s (%s)\n", name, why);
+    g_skip++;
+}
 
 static void test_assert(const char *name, int condition) {
     if (condition) {
@@ -126,15 +134,24 @@ int main(void) {
 
     /* Basic environment */
     printf("--- Environment ---\n");
-    test_assert("Terminal available", terminal_available());
+    if (terminal_available()) test_assert("Terminal available", 1);
+    else test_skip("Terminal available", "no TTY in this environment");
     test_assert("UTF-8 support", test_utf8_support());
     test_assert("Color support", test_color_support());
 
     /* Terminal I/O */
     printf("\n--- Terminal I/O ---\n");
+#ifdef _WIN32
+    test_skip("termios manipulation", "POSIX termios is not available on Windows");
+#else
     test_assert("termios manipulation", test_termios());
+#endif
     test_assert("non-blocking I/O", test_nonblocking_io());
+#ifdef _WIN32
+    test_skip("window size detection", "POSIX TIOCGWINSZ is not available on Windows");
+#else
     test_assert("window size detection", test_winsize());
+#endif
 
     /* Signals */
     printf("\n--- Signals ---\n");
@@ -174,6 +191,6 @@ int main(void) {
         test_assert("nanosleep works", 1);
     }
 
-    printf("\n=== Results: %d passed, %d failed ===\n", g_pass, g_fail);
+    printf("\n=== Results: %d passed, %d failed, %d skipped ===\n", g_pass, g_fail, g_skip);
     return g_fail > 0 ? 1 : 0;
 }
