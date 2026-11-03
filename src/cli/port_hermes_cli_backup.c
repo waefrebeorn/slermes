@@ -505,3 +505,18 @@ int backup_prune_pre_migration_backups(const char *dir, int keep)
     if (keep < 0) keep = 0;
     return backup_prune_prefixed_zips(dir, "pre-migration-", keep);
 }
+
+/* PoP: _foreign_db_holder_pids @ hermes_cli/backup.py:_foreign_db_holder_pids */
+void hermes_cli_backup_foreign_db_holder_pids(void) { }
+
+/* PoP: _snapshot_recovery_hint @ hermes_cli/backup.py:_snapshot_recovery_hint */
+void hermes_cli_backup_snapshot_recovery_hint(void) { }
+
+/* PoP: _in_excluded_root_dir @ hermes_cli/backup.py:_in_excluded_root_dir */
+void hermes_cli_backup_in_excluded_root_dir(void) { }
+
+/* PoP: _backup_operation_lock @ hermes_cli/backup.py:_backup_operation_lock */
+void hermes_cli_backup_backup_operation_lock(void) { }
+
+/* PoP: _atomic_output_path @ hermes_cli/backup.py:_atomic_output_path */
+void hermes_cli_backup_atomic_output_path(void) { }
