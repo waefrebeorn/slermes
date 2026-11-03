@@ -1415,3 +1415,12 @@ void gateway_session_hosted_controls_discard_room_task(void) { }
 
 /* PoP: retry_room_task @ gateway/session_hosted_controls.py:retry_room_task */
 void gateway_session_hosted_controls_retry_room_task(void) { }
+
+/* PoP: worker_log_path @ gateway/session_managed_worker_log.py:worker_log_path */
+void gateway_session_managed_worker_log_worker_log_path(void) { }
+
+/* PoP: _lock_for @ gateway/session_managed_worker_log.py:_lock_for */
+void gateway_session_managed_worker_log_lock_for(void) { }
+
+/* PoP: drain_worker_stderr @ gateway/session_managed_worker_log.py:drain_worker_stderr */
+void gateway_session_managed_worker_log_drain_worker_stderr(void) { }
