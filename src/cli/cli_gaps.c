@@ -1781,3 +1781,12 @@ void hermes_cli_checkpoints_confirmed(void) { }
 
 /* PoP: cmd_clear_legacy @ hermes_cli/checkpoints.py:cmd_clear_legacy */
 void hermes_cli_checkpoints_cmd_clear_legacy(void) { }
+
+/* PoP: refusal_text @ hermes_cli/cli_chat_error_copy.py:refusal_text */
+void hermes_cli_cli_chat_error_copy_refusal_text(void) { }
+
+/* PoP: chat_error_response @ hermes_cli/cli_chat_error_copy.py:chat_error_response */
+void hermes_cli_cli_chat_error_copy_chat_error_response(void) { }
+
+/* PoP: agent_init_failure_message @ hermes_cli/cli_chat_error_copy.py:agent_init_failure_message */
+void hermes_cli_cli_chat_error_copy_agent_init_failure_message(void) { }
