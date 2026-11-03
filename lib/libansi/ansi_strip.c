@@ -248,3 +248,9 @@ char *strip_ansi(const char *text) {
     if (!buf) return NULL;
     return ansi_strip_buf(text, buf, len + 1);
 }
+
+/* Tool-facing alias for strip_ansi(). */
+char *ansi_strip(const char *text)
+{
+    return strip_ansi(text);
+}

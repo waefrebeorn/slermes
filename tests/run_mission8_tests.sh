@@ -63,6 +63,8 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_ansi tests/test_ansi_strip.c lib/libansi/ansi_strip.c \
+    -I include/compat -I include -I lib/libansi -include hermes_win32.h
 
 echo
 
@@ -107,6 +109,7 @@ run_suite "State DB Tests" "$B/test_state_db.exe"
 run_suite "CLI Tests" "$B/test_cli.exe" slermes.exe
 run_suite "UI Tests" "$B/test_ui.exe"
 run_suite "i18n Languages" "$B/test_i18n.exe"
+run_suite "ANSI Strip" "$B/test_ansi.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then

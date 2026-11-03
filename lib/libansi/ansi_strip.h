@@ -42,6 +42,11 @@ char *ansi_strip_buf(const char *text, char *buf, size_t buf_size);
  * Useful when you want to skip the full strip on clean text. */
 bool ansi_has_escape(const char *text);
 
+/* Alias: the tool-facing name (src/tools/ansi_strip.c and tests/ use it).
+ * Same function as strip_ansi(). */
+char *ansi_strip(const char *text);
+
+
 #ifdef __cplusplus
 }
 #endif

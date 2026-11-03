@@ -1,0 +1,8 @@
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~
