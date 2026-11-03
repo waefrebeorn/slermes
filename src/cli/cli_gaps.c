@@ -1625,3 +1625,15 @@ void hermes_cli_auth_zai_kimi_detect_zai_endpoint(void) { }
 
 /* PoP: _resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
 void hermes_cli_auth_zai_kimi_resolve_zai_base_url(void) { }
+
+/* PoP: _expire @ hermes_cli/backend_retirement.py:_expire */
+void hermes_cli_backend_retirement_expire(void) { }
+
+/* PoP: release @ hermes_cli/backend_retirement.py:release */
+void hermes_cli_backend_retirement_release(void) { }
+
+/* PoP: active_count @ hermes_cli/backend_retirement.py:active_count */
+void hermes_cli_backend_retirement_active_count(void) { }
+
+/* PoP: prepare @ hermes_cli/backend_retirement.py:prepare */
+void hermes_cli_backend_retirement_prepare(void) { }
