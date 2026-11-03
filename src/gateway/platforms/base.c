@@ -432,14 +432,11 @@ int validate_inbound_media_size(long size, long max_bytes)
     return (size > limit) ? -1 : 0;
 }
 
-/* Tool-facing aliases (tests/ and callers use the gw_ prefix). */
+/* gw_float_env already lives in src/gateway/port_gateway_run.c; adding a
+ * second definition here duplicated the symbol and broke the link. Only the
+ * custom-unit helper needed exposing. */
 int gw_custom_unit_to_cp(const char *s, int len, int budget,
                          int (*len_fn)(const char *, int))
 {
     return custom_unit_to_cp(s, len, budget, len_fn);
-}
-
-double gw_float_env(const char *name, double default_value)
-{
-    return float_env(name, default_value);
 }

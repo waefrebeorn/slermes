@@ -64,10 +64,6 @@ int main(void)
     ck("prefix CJK at 1", r && strcmp(r, "\xe4\xb8\xad") == 0);
     free(r);
 
-    ck("float_env NULL -> default", gw_float_env(NULL, 3.14) == 3.14);
-    ck("float_env missing -> default",
-       gw_float_env("GW_FLOAT_ENV_NONEXISTENT", 1.5) == 1.5);
-
     printf("\nResults: %d passed, %d failed\n", pass, fail);
     return fail ? 1 : 0;
 }

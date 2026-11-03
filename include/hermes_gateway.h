@@ -106,7 +106,4 @@ size_t gw_utf16_len(const char *s);
 int gw_custom_unit_to_cp(const char *s, int len, int budget,
                          int (*len_fn)(const char *, int));
 
-/* Read a float from the environment, falling back to default_value. */
-double gw_float_env(const char *name, double default_value);
-
 #endif /* HERMES_GATEWAY_H */

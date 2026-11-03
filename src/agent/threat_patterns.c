@@ -148,7 +148,7 @@ void threat_patterns_cleanup(void)
 }
 
 /* PoP: threat_patterns_check @ tools/threat_patterns.py:check_for_threats */
-bool threat_patterns_check(const char *text, unsigned scope_mask,
+bool threat_patterns_check(const char *text, int scope_mask,
                            threat_match_t *out)
 {
     if (!text || !text[0]) return false;
@@ -160,7 +160,7 @@ bool threat_patterns_check(const char *text, unsigned scope_mask,
     bool hit = false;
     for (size_t i = 0; i < TABLE_N; i++) {
         const pattern_t *pat = &TABLE[i];
-        if (!(scope_mask & (1u << (unsigned)pat->scope))) continue;
+        if (!(scope_mask & (1 << pat->scope))) continue;
 
         const char *where = NULL;
         if (!matches(pat, hay, &where)) continue;
@@ -182,8 +182,8 @@ bool threat_patterns_check(const char *text, unsigned scope_mask,
 /* PoP: threat_patterns_check_all @ tools/threat_patterns.py:check_all */
 bool threat_patterns_check_all(const char *text, threat_match_t *out)
 {
-    unsigned mask = (1u << THREAT_SCOPE_ALL) |
-                    (1u << THREAT_SCOPE_CONTEXT) |
-                    (1u << THREAT_SCOPE_STRICT);
+    int mask = (1 << THREAT_SCOPE_ALL) |
+               (1 << THREAT_SCOPE_CONTEXT) |
+               (1 << THREAT_SCOPE_STRICT);
     return threat_patterns_check(text, mask, out);
 }
