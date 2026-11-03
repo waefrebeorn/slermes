@@ -123,15 +123,24 @@ void init_agent(agent_state_t *state) {
 void agent_configure_from_config(agent_state_t *state, const hermes_config_t *cfg) {
     if (!state || !cfg) return;
 
-    /* Set LLM config from provider config */
-    if (cfg->provider_cfg.model[0])
-        snprintf(state->llm.model, sizeof(state->llm.model), "%s", cfg->provider_cfg.model);
-    if (cfg->provider_cfg.provider[0])
-        snprintf(state->llm.provider, sizeof(state->llm.provider), "%s", cfg->provider_cfg.provider);
-    if (cfg->provider_cfg.base_url[0])
-        snprintf(state->llm.base_url, sizeof(state->llm.base_url), "%s", cfg->provider_cfg.base_url);
-    if (cfg->provider_cfg.api_key[0])
-        snprintf(state->llm.api_key, sizeof(state->llm.api_key), "%s", cfg->provider_cfg.api_key);
+    /* Set LLM config from provider config.
+     *
+     * Fall back to the top-level fields when provider_cfg is empty. Tracing
+     * showed agent_configure_from_config() being called with
+     * provider_cfg.provider/model/base_url/api_key all empty while
+     * cfg->provider and cfg->model held the right values -- so the agent's LLM
+     * struct stayed blank and the first request went to an empty URL, producing
+     * "Stream drop: / after 0.0s" with exit code 0 and status "ok". */
+    {
+        const char *m = cfg->provider_cfg.model[0] ? cfg->provider_cfg.model : cfg->model;
+        const char *p = cfg->provider_cfg.provider[0] ? cfg->provider_cfg.provider : cfg->provider;
+        const char *u = cfg->provider_cfg.base_url[0] ? cfg->provider_cfg.base_url : cfg->base_url;
+        const char *k = cfg->provider_cfg.api_key[0] ? cfg->provider_cfg.api_key : cfg->api_key;
+        if (m[0]) snprintf(state->llm.model, sizeof(state->llm.model), "%s", m);
+        if (p[0]) snprintf(state->llm.provider, sizeof(state->llm.provider), "%s", p);
+        if (u[0]) snprintf(state->llm.base_url, sizeof(state->llm.base_url), "%s", u);
+        if (k[0]) snprintf(state->llm.api_key, sizeof(state->llm.api_key), "%s", k);
+    }
 
     /* Forward LLM request params from config */
     state->llm.max_tokens = cfg->provider_cfg.max_tokens;
