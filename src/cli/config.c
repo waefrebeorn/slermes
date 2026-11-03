@@ -1723,6 +1723,35 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
         hermes_set_profile(cfg->agent.profile);
     }
 
+    /* Environment overrides win over config.yaml.
+     *
+     * The env fallback above only runs when the YAML fails to parse, so with a
+     * valid config file present HERMES_MODEL / HERMES_PROVIDER / HERMES_BASE_URL
+     * / HERMES_API_KEY were silently ignored. The result was a config struct
+     * with empty provider and model, and the agent loop failed at the first hop
+     * with "Stream drop: / after 0.0s" -- exiting 0 and reporting success while
+     * never contacting a provider. Hermes lets the environment override the
+     * file; so does this now. */
+    {
+        const char *e;
+        if ((e = getenv("HERMES_MODEL")) && e[0]) {
+            snprintf(cfg->model, sizeof(cfg->model), "%s", e);
+            snprintf(cfg->provider_cfg.model, sizeof(cfg->provider_cfg.model), "%s", e);
+        }
+        if ((e = getenv("HERMES_PROVIDER")) && e[0]) {
+            snprintf(cfg->provider, sizeof(cfg->provider), "%s", e);
+            snprintf(cfg->provider_cfg.provider, sizeof(cfg->provider_cfg.provider), "%s", e);
+        }
+        if ((e = getenv("HERMES_BASE_URL")) && e[0]) {
+            snprintf(cfg->base_url, sizeof(cfg->base_url), "%s", e);
+            snprintf(cfg->provider_cfg.base_url, sizeof(cfg->provider_cfg.base_url), "%s", e);
+        }
+        if ((e = getenv("HERMES_API_KEY")) && e[0]) {
+            snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", e);
+            snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", e);
+        }
+    }
+
     return true;
 }
 
