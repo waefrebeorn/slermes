@@ -26,18 +26,46 @@ static const char *resolve_home(void) {
         return s_slermes_home;
     }
 
-    const char *user_home = getenv("HOME");
+    const char *user_home = NULL;
+#ifdef _WIN32
+    /* Windows: USERPROFILE is authoritative. HOME is a POSIX convention that
+     * only exists when the binary is launched from MSYS/Cygwin, where it points
+     * at /c/msys64/home/<user> -- a *different* directory from the real profile.
+     * Preferring HOME there silently relocated config, skills and plugins to the
+     * toolchain's home, so `slermes status` read one config from a CABI shell and
+     * another from cmd.exe. */
+    user_home = getenv("USERPROFILE");
+    if (!user_home || !user_home[0]) {
+        const char *drive = getenv("HOMEDRIVE");
+        const char *path = getenv("HOMEPATH");
+        static char winhome[512];
+        if (drive && path && drive[0] && path[0]) {
+            snprintf(winhome, sizeof winhome, "%s%s", drive, path);
+            user_home = winhome;
+        }
+    }
+    if (!user_home || !user_home[0]) user_home = getenv("HOME");
+#else
+    user_home = getenv("HOME");
     if (!user_home) {
         struct passwd *pw = getpwuid(getuid());
         if (pw) user_home = pw->pw_dir;
     }
+#endif
 
     if (user_home && user_home[0]) {
         snprintf(s_slermes_home, sizeof(s_slermes_home),
                  "%s/%s", user_home, SLERMES_HOME_DEFAULT);
     } else {
+#ifdef _WIN32
+        const char *tmp = getenv("TEMP");
+        if (!tmp || !tmp[0]) tmp = ".";
+        snprintf(s_slermes_home, sizeof(s_slermes_home),
+                 "%s/%s", tmp, SLERMES_HOME_DEFAULT);
+#else
         snprintf(s_slermes_home, sizeof(s_slermes_home),
                  "/tmp/%s", SLERMES_HOME_DEFAULT);
+#endif
     }
     return s_slermes_home;
 }
