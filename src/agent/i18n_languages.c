@@ -55,7 +55,7 @@ static const lang_info_t BUNDLED[] = {
 static const char *BUNDLED_SOURCE = "bundled";
 static const char *OVERLAY_SOURCE = "overlay";
 
-/* PoP: bundled_language_info @ agent/i18n_languages.py:BUNDLED_LANGUAGE_INFO */
+/* PoP: i18n_bundled_info @ agent/i18n_languages.py:BUNDLED_LANGUAGE_INFO */
 const lang_info_t *i18n_bundled_info(const char *lang)
 {
     if (!lang) return NULL;
@@ -75,7 +75,7 @@ const char *i18n_bundled_id_at(size_t i)
     return i < BUNDLED_COUNT ? BUNDLED[i].id : NULL;
 }
 
-/* PoP: describe_language @ agent/i18n_languages.py:describe_language */
+/* PoP: i18n_describe_language @ agent/i18n_languages.py:describe_language */
 /*
  * One picker row. Precedence for endonym/rtl: bundled table -> pack metadata
  * -> bare id / LTR. `source` names the highest layer that supplies the
@@ -145,7 +145,7 @@ static int cmp_lang_id(const void *a, const void *b)
     return strcmp(x->id, y->id);
 }
 
-/* PoP: language_options @ agent/i18n_languages.py:language_options */
+/* PoP: i18n_language_options_bundled @ agent/i18n_languages.py:language_options */
 /*
  * [{id, endonym, rtl, source, surfaces}, ...] for every BUNDLED language,
  * "en" first then sorted by id -- the list every switcher renders.
