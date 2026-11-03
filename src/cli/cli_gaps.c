@@ -1847,3 +1847,12 @@ void hermes_cli_cli_stream_mixin_forget_tool_label(void) { }
 
 /* PoP: _show_tool_progress @ hermes_cli/cli_stream_mixin.py:_show_tool_progress */
 void hermes_cli_cli_stream_mixin_show_tool_progress(void) { }
+
+/* PoP: complete_source_checkout @ hermes_cli/source_completion.py:complete_source_checkout */
+void hermes_cli_source_completion_complete_source_checkout(void) { }
+
+/* PoP: _complete_locked @ hermes_cli/source_completion.py:_complete_locked */
+void hermes_cli_source_completion_complete_locked(void) { }
+
+/* PoP: _bootstrap_command @ hermes_cli/source_completion.py:_bootstrap_command */
+void hermes_cli_source_completion_bootstrap_command(void) { }
