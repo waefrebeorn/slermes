@@ -1547,3 +1547,12 @@ void gateway_wake_persist_delegation_delivery(void) { }
 
 /* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
 void gateway_wake_self_post_chat_completion(void) { }
+
+/* PoP: respond @ hermes_cli/approval_transport.py:respond */
+void hermes_cli_approval_transport_respond(void) { }
+
+/* PoP: invoke_approval_transport @ hermes_cli/approval_transport.py:invoke_approval_transport */
+void hermes_cli_approval_transport_invoke_approval_transport(void) { }
+
+/* PoP: _validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
+void hermes_cli_approval_transport_validate_decision(void) { }
