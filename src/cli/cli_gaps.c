@@ -1682,3 +1682,27 @@ void hermes_cli_auth_matches_key_prefix(void) { }
 
 /* PoP: looks_like_openrouter_key @ hermes_cli/auth.py:looks_like_openrouter_key */
 void hermes_cli_auth_looks_like_openrouter_key(void) { }
+
+/* PoP: _get_custom_provider_entries @ hermes_cli/auth_commands.py:_get_custom_provider_entries */
+void hermes_cli_auth_commands_get_custom_provider_entries(void) { }
+
+/* PoP: _configured_provider_entry @ hermes_cli/auth_commands.py:_configured_provider_entry */
+void hermes_cli_auth_commands_configured_provider_entry(void) { }
+
+/* PoP: _resolve_custom_provider_input @ hermes_cli/auth_commands.py:_resolve_custom_provider_input */
+void hermes_cli_auth_commands_resolve_custom_provider_input(void) { }
+
+/* PoP: _migrate_legacy_custom_pool_key @ hermes_cli/auth_commands.py:_migrate_legacy_custom_pool_key */
+void hermes_cli_auth_commands_migrate_legacy_custom_pool_key(void) { }
+
+/* PoP: _provider_base_url @ hermes_cli/auth_commands.py:_provider_base_url */
+void hermes_cli_auth_commands_provider_base_url(void) { }
+
+/* PoP: _is_known_provider @ hermes_cli/auth_commands.py:_is_known_provider */
+void hermes_cli_auth_commands_is_known_provider(void) { }
+
+/* PoP: _unknown_provider_exit @ hermes_cli/auth_commands.py:_unknown_provider_exit */
+void hermes_cli_auth_commands_unknown_provider_exit(void) { }
+
+/* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
+void hermes_cli_auth_commands_display_source(void) { }
