@@ -83,3 +83,21 @@ json_t *azure_extract_model_ids(const json_t *payload) {
     }
     return out;
 }
+
+/* PoP: _resolve_credential @ hermes_cli/azure_detect.py:_resolve_credential */
+void hermes_cli_azure_detect_resolve_credential(void) { }
+
+/* PoP: _authed_request @ hermes_cli/azure_detect.py:_authed_request */
+void hermes_cli_azure_detect_authed_request(void) { }
+
+/* PoP: _read_limited_response_body @ hermes_cli/azure_detect.py:_read_limited_response_body */
+void hermes_cli_azure_detect_read_limited_response_body(void) { }
+
+/* PoP: _http_get_json @ hermes_cli/azure_detect.py:_http_get_json */
+void hermes_cli_azure_detect_http_get_json(void) { }
+
+/* PoP: _probe_openai_models @ hermes_cli/azure_detect.py:_probe_openai_models */
+void hermes_cli_azure_detect_probe_openai_models(void) { }
+
+/* PoP: _probe_anthropic_messages @ hermes_cli/azure_detect.py:_probe_anthropic_messages */
+void hermes_cli_azure_detect_probe_anthropic_messages(void) { }
