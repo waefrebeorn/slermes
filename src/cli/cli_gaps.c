@@ -1484,3 +1484,15 @@ void gateway_session_server_requests_lock_answer(void) { }
 
 /* PoP: _ask @ gateway/session_server_requests.py:_ask */
 void gateway_session_server_requests_ask(void) { }
+
+/* PoP: _at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
+void gateway_stream_consumer_think_at_block_boundary(void) { }
+
+/* PoP: _earliest_open_tag @ gateway/stream_consumer_think.py:_earliest_open_tag */
+void gateway_stream_consumer_think_earliest_open_tag(void) { }
+
+/* PoP: _filter_and_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
+void gateway_stream_consumer_think_filter_and_accumulate(void) { }
+
+/* PoP: _flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
+void gateway_stream_consumer_think_flush_think_buffer(void) { }
