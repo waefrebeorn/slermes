@@ -1769,3 +1769,15 @@ void hermes_cli_callbacks_skipped(void) { }
 
 /* PoP: _secret_result @ hermes_cli/callbacks.py:_secret_result */
 void hermes_cli_callbacks_secret_result(void) { }
+
+/* PoP: _print_archives @ hermes_cli/checkpoints.py:_print_archives */
+void hermes_cli_checkpoints_print_archives(void) { }
+
+/* PoP: _confirm @ hermes_cli/checkpoints.py:_confirm */
+void hermes_cli_checkpoints_confirm(void) { }
+
+/* PoP: _confirmed @ hermes_cli/checkpoints.py:_confirmed */
+void hermes_cli_checkpoints_confirmed(void) { }
+
+/* PoP: cmd_clear_legacy @ hermes_cli/checkpoints.py:cmd_clear_legacy */
+void hermes_cli_checkpoints_cmd_clear_legacy(void) { }
