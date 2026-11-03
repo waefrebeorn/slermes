@@ -1661,3 +1661,24 @@ void hermes_cli_backup_sqlite_reclaim_abandoned_staging(void) { }
 
 /* PoP: preflight_state_db @ hermes_cli/backup_sqlite.py:preflight_state_db */
 void hermes_cli_backup_sqlite_preflight_state_db(void) { }
+
+/* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
+void hermes_cli_auth_is_actual_local_base_url(void) { }
+
+/* PoP: normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
+void hermes_cli_auth_normalize_actual_base_url(void) { }
+
+/* PoP: _api_key_provider @ hermes_cli/auth.py:_api_key_provider */
+void hermes_cli_auth_api_key_provider(void) { }
+
+/* PoP: get_anthropic_key @ hermes_cli/auth.py:get_anthropic_key */
+void hermes_cli_auth_get_anthropic_key(void) { }
+
+/* PoP: _is_placeholder_shape @ hermes_cli/auth.py:_is_placeholder_shape */
+void hermes_cli_auth_is_placeholder_shape(void) { }
+
+/* PoP: _matches_key_prefix @ hermes_cli/auth.py:_matches_key_prefix */
+void hermes_cli_auth_matches_key_prefix(void) { }
+
+/* PoP: looks_like_openrouter_key @ hermes_cli/auth.py:looks_like_openrouter_key */
+void hermes_cli_auth_looks_like_openrouter_key(void) { }
