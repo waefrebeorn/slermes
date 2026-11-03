@@ -949,3 +949,20 @@ bool curator_get_consolidate(void) {
     }
     return false; /* DEFAULT_CONSOLIDATE = false */
 }
+
+/* ── Tool-facing aliases ── */
+void curator_init_state(curator_state_t *state) { init_state(state); }
+bool curator_load_state(curator_state_t *state) { return load_state(state); }
+void curator_save_state(const curator_state_t *state) { save_state(state); }
+void curator_record_run(curator_state_t *state, double duration_secs, const char *summary)
+{
+    record_run(state, duration_secs, summary);
+}
+void curator_format_duration(double seconds, char *buf, size_t sz)
+{
+    format_duration(seconds, buf, sz);
+}
+void curator_format_reltime(time_t t, char *buf, size_t sz)
+{
+    format_reltime(t, buf, sz);
+}
