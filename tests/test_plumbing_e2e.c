@@ -43,9 +43,12 @@ int main(void)
      * canonicalisation in is_safe_path, since getcwd returns a native path. */
     char cwd[512];
     if (!getcwd(cwd, sizeof cwd)) snprintf(cwd, sizeof cwd, ".");
+    /* Normalise immediately after getcwd: these paths are embedded in JSON
+     * argument strings, where a raw backslash is an escape character and
+     * silently eats the separator ("C:Userseman5..."). */
+    for (char *q = cwd; *q; q++) if (*q == '\\') *q = '/';
     char readme[640];
     snprintf(readme, sizeof readme, "%s/README.md", cwd);
-    for (char *p = readme; *p; p++) if (*p == '\\') *p = '/';
     printf("  (reading %s)\n", readme);
 
     char rargs_q[700];
@@ -95,6 +98,33 @@ int main(void)
     ck("terminal executed the command",
        t && strstr(t, "plumb-terminal-ok") != NULL);
     free(t);
+
+    /* search_files — core navigation tool, same POSIX-path risk as read_file */
+    char sargs[900];
+    snprintf(sargs, sizeof sargs,
+             "{\"pattern\":\"SLERMEd\",\"path\":\"%s/README.md\"}", cwd);
+    char *s = registry_dispatch("search_files", sargs, "plumb");
+    ck("search_files returns", s != NULL);
+    ck("search_files found the text",
+       s && strstr(s, "SLERMEd") != NULL);
+    if (s && strstr(s, "error")) printf("  (search said) %.160s\n", s);
+    free(s);
+
+    /* patch — replaces text in place; uses its own atomic write path */
+    char pargs[900];
+    snprintf(pargs, sizeof pargs,
+             "{\"path\":\"%s\",\"old_string\":\"plumbing-ok-123\","
+             "\"new_string\":\"plumbing-ok-456\"}", tmp);
+    char *p = registry_dispatch("patch", pargs, "plumb");
+    ck("patch returns", p != NULL);
+    ck("patch did not error", p == NULL || strstr(p, "error") == NULL);
+    if (p && strstr(p, "error")) printf("  (patch said) %.160s\n", p);
+    free(p);
+
+    char *r2 = registry_dispatch("read_file", rargs, "plumb");
+    ck("patch actually changed the file",
+       r2 && strstr(r2, "plumbing-ok-456") != NULL);
+    free(r2);
 
     printf("\nResults: %d passed, %d failed\n", pass, fail);
     return fail ? 1 : 0;
