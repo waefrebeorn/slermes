@@ -111,6 +111,8 @@ def main():
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--save", action="store_true")
     ap.add_argument("--regress", action="store_true")
+    ap.add_argument("--no-link", action="store_true",
+                    help="skip the link check (sources only)")
     args = ap.parse_args()
 
     per_file = build_sources()
@@ -153,6 +155,29 @@ def main():
         print(f"\nNo regressions. Fixed {len(fixed)} since baseline.")
         for f in fixed:
             print(f"  - {f}")
+
+    # ---- link check -------------------------------------------------------
+    # -fsyntax-only proves a file parses. It does NOT prove the symbols resolve.
+    # A duplicate definition or a missing object leaves every source "clean"
+    # while the binary fails to link -- which is exactly how a compile-only
+    # gate reported success against a broken build. Always link.
+    if not args.no_link:
+        print("\nLinking (make -j4 all) ...")
+        r = subprocess.run(["make", "-j4", "all"], cwd=ROOT, capture_output=True,
+                           text=True, encoding="utf-8", errors="replace")
+        if r.returncode != 0:
+            print("LINK FAILED")
+            seen = set()
+            for ln in (r.stdout + r.stderr).splitlines():
+                if "error:" in ln or "multiple definition" in ln or "undefined reference" in ln:
+                    key = ln.strip()[:160]
+                    if key not in seen:
+                        seen.add(key)
+                        print(f"  {key}")
+                        if len(seen) >= 12:
+                            break
+            return 1
+        print("LINK OK")
     return 0
 
 
