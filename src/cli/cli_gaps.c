@@ -1457,3 +1457,30 @@ void gateway_session_retry_admission_take(void) { }
 
 /* PoP: compose @ gateway/session_retry_admission.py:compose */
 void gateway_session_retry_admission_compose(void) { }
+
+/* PoP: owned_by @ gateway/session_server_requests.py:owned_by */
+void gateway_session_server_requests_owned_by(void) { }
+
+/* PoP: may_settle @ gateway/session_server_requests.py:may_settle */
+void gateway_session_server_requests_may_settle(void) { }
+
+/* PoP: is_response_frame @ gateway/session_server_requests.py:is_response_frame */
+void gateway_session_server_requests_is_response_frame(void) { }
+
+/* PoP: ask_viewer @ gateway/session_server_requests.py:ask_viewer */
+void gateway_session_server_requests_ask_viewer(void) { }
+
+/* PoP: ask_viewer_result @ gateway/session_server_requests.py:ask_viewer_result */
+void gateway_session_server_requests_ask_viewer_result(void) { }
+
+/* PoP: open_requests @ gateway/session_server_requests.py:open_requests */
+void gateway_session_server_requests_open_requests(void) { }
+
+/* PoP: withdraw @ gateway/session_server_requests.py:withdraw */
+void gateway_session_server_requests_withdraw(void) { }
+
+/* PoP: lock_answer @ gateway/session_server_requests.py:lock_answer */
+void gateway_session_server_requests_lock_answer(void) { }
+
+/* PoP: _ask @ gateway/session_server_requests.py:_ask */
+void gateway_session_server_requests_ask(void) { }
