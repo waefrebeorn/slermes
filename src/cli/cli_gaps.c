@@ -1508,3 +1508,18 @@ void gateway_systemd_notify_lag_tolerance(void) { }
 
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
 void gateway_systemd_notify_record_tick(void) { }
+
+/* PoP: _holder_desc @ gateway/turn_lease.py:_holder_desc */
+void gateway_turn_lease_holder_desc(void) { }
+
+/* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
+void gateway_turn_lease_repr(void) { }
+
+/* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
+void gateway_turn_lease_evict_idle(void) { }
+
+/* PoP: rebind @ gateway/turn_lease.py:rebind */
+void gateway_turn_lease_rebind(void) { }
+
+/* PoP: release @ gateway/turn_lease.py:release */
+void gateway_turn_lease_release(void) { }
