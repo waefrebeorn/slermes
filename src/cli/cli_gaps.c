@@ -1556,3 +1556,15 @@ void hermes_cli_approval_transport_invoke_approval_transport(void) { }
 
 /* PoP: _validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
 void hermes_cli_approval_transport_validate_decision(void) { }
+
+/* PoP: __getattr__ @ hermes_cli/auth_constants.py:__getattr__ */
+void hermes_cli_auth_constants_getattr(void) { }
+
+/* PoP: __setattr__ @ hermes_cli/auth_constants.py:__setattr__ */
+void hermes_cli_auth_constants_setattr(void) { }
+
+/* PoP: __delattr__ @ hermes_cli/auth_constants.py:__delattr__ */
+void hermes_cli_auth_constants_delattr(void) { }
+
+/* PoP: _provider_error_factory @ hermes_cli/auth_constants.py:_provider_error_factory */
+void hermes_cli_auth_constants_provider_error_factory(void) { }
