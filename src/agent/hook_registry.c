@@ -236,3 +236,9 @@ hook_result_t hook_parse_result(const char *stdout_json) {
 
     return r;
 }
+
+/* Tool-facing alias for invoke_hook() (tests/ and callers use hook_invoke). */
+char *hook_invoke(const char *event, const char *payload_json)
+{
+    return invoke_hook(event, payload_json);
+}

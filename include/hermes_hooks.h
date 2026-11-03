@@ -72,6 +72,9 @@ bool hook_unregister(const char *event, hook_callback_t cb, void *userdata);
  */
 char *invoke_hook(const char *event, const char *payload_json);
 
+/* Tool-facing alias for invoke_hook(). */
+char *hook_invoke(const char *event, const char *payload_json);
+
 /**
  * Return true if any callbacks are registered for event.
  */
