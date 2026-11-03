@@ -63,6 +63,9 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_cron tests/test_cron_extras_util.c src/cron/cron_extras.c \
+    lib/libjson/json.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
+    -I include/compat -I include -I src -I lib -include hermes_win32.h
 build test_threat tests/test_threat_patterns.c src/agent/threat_patterns.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h
 build test_ansi tests/test_ansi_strip.c lib/libansi/ansi_strip.c \
@@ -72,12 +75,24 @@ echo
 
 count_and_report() {
     local out="$1"
-    local p f
-    # Harnesses print either PASS/FAIL or the ✅/❌ glyphs; count both.
-    p=$(printf '%s
-' "$out" | grep -cE 'PASS|✅' || true)
-    f=$(printf '%s
-' "$out" | grep -cE 'FAIL|❌' || true)
+    local p f tot summary
+    # Count from each suite's own summary line. Harnesses here print PASS:, OK,
+    # or glyph marks depending on who wrote them; scraping glyph bytes is
+    # fragile (it broke once, silently undercounting by 99). Every suite ends
+    # with "Results: N passed, M failed" or "Results: N/M passed".
+    summary=$(printf '%s\n' "$out" | grep -oE 'Results: [0-9]+/[0-9]+ passed|Results: [0-9]+ passed, [0-9]+ failed' | tail -1)
+    if [ -z "$summary" ]; then
+        echo "  WARNING: no Results: summary line; falling back to PASS/FAIL text"
+        p=$(printf '%s\n' "$out" | grep -cE '^(PASS|OK)' || true)
+        f=$(printf '%s\n' "$out" | grep -cE '^FAIL' || true)
+    elif printf '%s' "$summary" | grep -q '/'; then
+        p=$(printf '%s' "$summary" | sed -E 's|.*Results: ([0-9]+)/.*|\1|')
+        tot=$(printf '%s' "$summary" | sed -E 's|.*Results: [0-9]+/([0-9]+) passed.*|\1|')
+        f=$((tot - p))
+    else
+        p=$(printf '%s' "$summary" | sed -E 's|.*Results: ([0-9]+) passed.*|\1|')
+        f=$(printf '%s' "$summary" | sed -E 's|.*Results: [0-9]+ passed, ([0-9]+) failed.*|\1|')
+    fi
     PASS=$((PASS + p))
     FAIL=$((FAIL + f))
     printf '%s\n' "$out" | sed 's/^/  /'
@@ -97,9 +112,17 @@ run_suite() {
     local out rc
     out="$("$bin" "$@" 2>&1)"
     rc=$?
+    # A freshly linked exe is briefly refused by the OS (AV holds a handle on
+    # the new file): rc 126 with no output. Retry once rather than report a
+    # false "cannot execute".
+    if [ "$rc" -eq 126 ]; then
+        sleep 20
+        out="$("$bin" "$@" 2>&1)"
+        rc=$?
+    fi
     count_and_report "$out"
     if [ "$rc" -eq 126 ]; then
-        echo "  cannot execute (rc 126) — the OS refused to run $bin"
+        echo "  cannot execute (rc 126 even after retry)"
         BROKEN=$((BROKEN + 1))
         BROKEN_LIST+=("$name (OS refused to execute)")
     elif [ "$rc" -ne 0 ]; then
@@ -116,6 +139,7 @@ run_suite "UI Tests" "$B/test_ui.exe"
 run_suite "i18n Languages" "$B/test_i18n.exe"
 run_suite "ANSI Strip" "$B/test_ansi.exe"
 run_suite "Threat Patterns" "$B/test_threat.exe"
+run_suite "Cron Extras" "$B/test_cron.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then

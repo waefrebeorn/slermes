@@ -897,3 +897,14 @@ int cron_scheduler_thread_is_alive(void) { return 0; }
 
 /* PoP: restart_if_dead @ cron/scheduler_thread.py:restart_if_dead */
 void cron_scheduler_thread_restart_if_dead(void) { }
+
+/* Tool-facing aliases for normalize_optional_job_value / normalize_deliver_param. */
+char *cron_normalize_value(const char *value, bool strip_trailing_slash)
+{
+    return normalize_optional_job_value(value, strip_trailing_slash);
+}
+
+char *cron_normalize_deliver(json_node_t *deliver)
+{
+    return normalize_deliver_param(deliver);
+}

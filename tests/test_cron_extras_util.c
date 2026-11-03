@@ -523,11 +523,18 @@ static void test_normalize_workdir_nonexistent(void) {
 }
 
 static void test_normalize_workdir_tmp(void) {
+#ifdef _WIN32
+    /* No POSIX /tmp on Windows, and native stat() cannot resolve it.
+     * Platform gap, reported rather than counted as a pass. */
+    printf("  SKIP: normalize_workdir /tmp (no POSIX /tmp on Windows)\n");
+    return;
+#else
     TEST("normalize_workdir(\"/tmp\") -> path");
     char err[256];
     char *p = cron_normalize_workdir("/tmp", err);
     if (p && strncmp(p, "/tmp", 4) == 0) { PASS(); free(p); return; }
     FAIL("expected /tmp..."); printf("  got=%s err=%s\n", p ? p : "NULL", err); free(p);
+#endif
 }
 
 /* ================================================================

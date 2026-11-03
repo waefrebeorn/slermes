@@ -55,6 +55,10 @@ void cron_chain_store_output(const char *job_name, const char *output);
 char **cron_canonical_skills(const char *skill, json_node_t *skills, size_t *out_count);
 char  *normalize_optional_job_value(const char *value, bool strip_trailing_slash);
 char  *normalize_deliver_param(json_node_t *deliver);
+
+/* Tool-facing aliases used by src/cron/ and tests/. Same functions. */
+char  *cron_normalize_value(const char *value, bool strip_trailing_slash);
+char  *cron_normalize_deliver(json_node_t *deliver);
 int    cron_parse_duration(const char *s);   /* Parse "30m", "2h", "1d" -> minutes */
 bool   cron_secure_dir(const char *path);     /* chmod 0700 */
 bool   cron_secure_file(const char *path);    /* chmod 0600 */
