@@ -1015,3 +1015,9 @@ char **rg_files(const char *path, const char *cwd, int *count, int limit) {
     pclose(fp);
     return files;
 }
+
+/* Tool-facing alias for parse_context_references() (tests/ use this name). */
+int context_ref_parse(const char *message, context_ref_t *refs, int max_refs)
+{
+    return parse_context_references(message, refs, max_refs);
+}

@@ -101,6 +101,11 @@ typedef struct {
  * @param context_length Maximum context length for the model (0 if unknown)
  * @param[out] result  Filled with classification result
  */
+/* Tool-facing alias for classify_api_error(). */
+void error_classify(int status_code, const char *error_body, const char *provider,
+                    const char *model, int approx_tokens, int context_length,
+                    classified_error_t *result);
+
 void classify_api_error(int status_code, const char *error_body,
                     const char *provider, const char *model,
                     int approx_tokens, int context_length,

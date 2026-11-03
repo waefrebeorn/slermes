@@ -1,0 +1,12 @@
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~
+tests/test_error_classifier.c:5:10: fatal error: error_classifier.h: No such file or directory
+    5 | #include "error_classifier.h"
+      |          ^~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+In file included from <command-line>:
+include/hermes_win32.h:308:21: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
+  308 | static inline pid_t fork(void) { errno = ENOSYS; return (pid_t)-1; }
+      |                     ^~~~

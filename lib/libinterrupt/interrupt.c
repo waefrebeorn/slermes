@@ -68,3 +68,9 @@ int interrupt_count(void) {
     pthread_mutex_unlock(&interrupt_lock);
     return count;
 }
+
+/* Tool-facing alias for set_interrupt() (tests/ use this name). */
+void interrupt_set(bool active, unsigned long thread_id)
+{
+    set_interrupt(active, thread_id);
+}

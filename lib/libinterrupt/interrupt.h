@@ -22,6 +22,9 @@ extern "C" {
  *  When thread_id is 0, targets the current thread (pthread_self()). */
 void set_interrupt(bool active, unsigned long thread_id);
 
+/* Tool-facing alias for set_interrupt(). */
+void interrupt_set(bool active, unsigned long thread_id);
+
 /** interrupt_is_interrupted() — Check if current thread has been interrupted.
  *  Each thread only sees its own interrupt state. */
 /* Port of Python tools/interrupt.py:is_interrupted() */

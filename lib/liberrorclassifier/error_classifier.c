@@ -895,3 +895,12 @@ int error_format(const classified_error_t *err, char *buf, size_t bufsz) {
         err->should_fallback ? "yes" : "no",
         err->message);
 }
+
+/* Tool-facing alias for classify_api_error() (tests/ and callers use this name). */
+void error_classify(int status_code, const char *error_body, const char *provider,
+                    const char *model, int approx_tokens, int context_length,
+                    classified_error_t *result)
+{
+    classify_api_error(status_code, error_body, provider, model,
+                       approx_tokens, context_length, result);
+}

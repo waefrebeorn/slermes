@@ -27,6 +27,13 @@ static const char *wsl_translate_path(const char *path) {
     static char buf[4096];
     if (!path) return NULL;
     if (path[0] == '/') return NULL;
+#ifdef _WIN32
+    /* Native Windows: "C:\\x" is already a valid path. Rewriting it to
+     * "/mnt/c/x" (the WSL convention) made fopen() fail with ENOENT, so every
+     * read_file/write_file on a drive path returned "Cannot open". */
+    (void)buf;
+    return NULL;
+#else
     if (strlen(path) >= 3 && path[1] == ':' && (path[2] == '\\' || path[2] == '/')) {
         char drive = tolower((unsigned char)path[0]);
         if (drive >= 'a' && drive <= 'z') {
@@ -36,6 +43,7 @@ static const char *wsl_translate_path(const char *path) {
         }
     }
     return NULL;
+#endif
 }
 
 /* Schema */
