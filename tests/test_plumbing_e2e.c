@@ -126,6 +126,35 @@ int main(void)
        r2 && strstr(r2, "plumbing-ok-456") != NULL);
     free(r2);
 
+    /* todo — pure in-memory state, must not need a network or model */
+    char *td = registry_dispatch("todo",
+        "{\"action\":\"write\",\"todos\":[{\"id\":\"1\",\"content\":\"plumb\",\"status\":\"pending\"}]}",
+        "plumb");
+    ck("todo accepts a list", td && strstr(td, "error") == NULL);
+    if (td && strstr(td, "error")) printf("  (todo said) %.160s\n", td);
+    free(td);
+
+    char *tl = registry_dispatch("todo", "{}", "plumb");
+    ck("todo reads back", tl && strstr(tl, "plumb") != NULL);
+    if (tl && strstr(tl, "error")) printf("  (todo read said) %.160s\n", tl);
+    free(tl);
+
+    /* memory — persistent store under the agent home */
+    char *mm = registry_dispatch("memory",
+        "{\"action\":\"add\",\"target\":\"memory\","
+        "\"content\":\"plumbing probe entry\"}", "plumb");
+    ck("memory add does not error", mm && strstr(mm, "error") == NULL);
+    if (mm && strstr(mm, "error")) printf("  (memory said) %.160s\n", mm);
+    free(mm);
+
+    /* process — listing background jobs must work with an empty registry */
+    char *pr = registry_dispatch("process", "{\"action\":\"list\"}", "plumb");
+    ck("process list returns", pr != NULL);
+    ck("process list does not error",
+       pr && strstr(pr, "error") == NULL);
+    if (pr && strstr(pr, "error")) printf("  (process said) %.160s\n", pr);
+    free(pr);
+
     printf("\nResults: %d passed, %d failed\n", pass, fail);
     return fail ? 1 : 0;
 }
