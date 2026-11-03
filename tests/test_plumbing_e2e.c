@@ -36,9 +36,21 @@ int main(void)
         ck(label, registry_find(want[i]) != NULL);
     }
 
-    /* real dispatch: read_file on a file we know exists */
-    char *out = registry_dispatch("read_file",
-        "{\"path\":\"C:/Users/eman5/slermes/README.md\",\"limit\":1}", "plumb");
+    /* Real dispatch: read_file on README.md in the current working directory.
+     * Derived from getcwd() rather than USERPROFILE because the suite runs the
+     * binary under MSYS, where USERPROFILE points at /c/msys64/home/... and the
+     * repo lives elsewhere. This still exercises the Windows-vs-POSIX
+     * canonicalisation in is_safe_path, since getcwd returns a native path. */
+    char cwd[512];
+    if (!getcwd(cwd, sizeof cwd)) snprintf(cwd, sizeof cwd, ".");
+    char readme[640];
+    snprintf(readme, sizeof readme, "%s/README.md", cwd);
+    for (char *p = readme; *p; p++) if (*p == '\\') *p = '/';
+    printf("  (reading %s)\n", readme);
+
+    char rargs_q[700];
+    snprintf(rargs_q, sizeof rargs_q, "{\"path\":\"%s\",\"limit\":1}", readme);
+    char *out = registry_dispatch("read_file", rargs_q, "plumb");
     ck("read_file returns", out != NULL);
     if (out) {
         ck("read_file content is not an error",
@@ -56,8 +68,12 @@ int main(void)
     free(bad);
 
     /* write_file -> read_file round trip proves the fs path end to end */
-    const char *tmp = "C:/Users/eman5/AppData/Local/hermes/cache/scratch/plumb_probe.txt";
-    char wargs[512];
+    /* Probe next to cwd: the sandbox only permits HOME/USERPROFILE/TEMP/TMP and
+     * the working directory. The MSYS suite has USERPROFILE=/c/msys64/home/...
+     * while TEMP=/tmp, so an AppData path is correctly refused there. */
+    char tmp[640];
+    snprintf(tmp, sizeof tmp, "%s/plumb_probe.txt", cwd);
+    char wargs[800];
     snprintf(wargs, sizeof wargs,
              "{\"path\":\"%s\",\"content\":\"plumbing-ok-123\"}", tmp);
     char *w = registry_dispatch("write_file", wargs, "plumb");
@@ -65,7 +81,7 @@ int main(void)
     if (w) printf("  (write_file said) %.160s\n", w);
     free(w);
 
-    char rargs[512];
+    char rargs[800];
     snprintf(rargs, sizeof rargs, "{\"path\":\"%s\"}", tmp);
     char *r = registry_dispatch("read_file", rargs, "plumb");
     ck("round trip returns the written content",

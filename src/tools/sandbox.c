@@ -300,6 +300,31 @@ bool is_safe_path(const char *path) {
                 roots[nroots++] = rbuf;
             }
 
+            /* The working directory is always a legitimate scope: tools operate
+             * on the project the user launched the agent in, which is not
+             * necessarily under HOME (a repo on another drive, a mounted
+             * volume, etc.). Without this, read_file fails whenever cwd is
+             * outside the home root. */
+            {
+                char cwdbuf[1024];
+                if (getcwd(cwdbuf, sizeof cwdbuf)) {
+                    char *rbuf = malloc(strlen(cwdbuf) + 1);
+                    if (rbuf) {
+                        size_t k = 0;
+                        for (const char *s = cwdbuf; *s; s++) {
+                            char c = *s;
+                            if (c == '\\') c = '/';
+                            if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                            rbuf[k++] = c;
+                        }
+                        rbuf[k] = '\0';
+                        if (rbuf[0] == '/' && rbuf[2] == '/')
+                            memmove(rbuf, rbuf + 1, strlen(rbuf));
+                        roots[nroots++] = rbuf;
+                    }
+                }
+            }
+
             bool ok = false;
             for (size_t r = 0; r < nroots; r++) {
                 size_t rl = strlen(roots[r]);

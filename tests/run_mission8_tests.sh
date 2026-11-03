@@ -64,9 +64,9 @@ build test_api tests/integration/test_api_endpoints.c \
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
 build test_err tests/test_error_classifier.c lib/liberrorclassifier/error_classifier.c \
-    lib/libjson/json.o -I include/compat -I include -include hermes_win32.h
+    lib/libjson/json.o -I lib/liberrorclassifier -I include/compat -I include -include hermes_win32.h
 build test_int tests/test_interrupt.c lib/libinterrupt/interrupt.c \
-    -I include/compat -I include -include hermes_win32.h
+    -I lib/libinterrupt -I include/compat -I include -include hermes_win32.h
 build test_ctx tests/test_context_references.c src/agent/context_references.c \
     lib/libhttp/http.o lib/libjson/json.o src/tools/url_safety.o \
     $(for d in lib/*/; do printf -- "-I %s " "$d"; done) -I include/compat -I include -I src -I lib \
