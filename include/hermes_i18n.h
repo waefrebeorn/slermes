@@ -86,6 +86,9 @@ void reset_language_cache(void);
 /* Free all i18n resources */
 void i18n_cleanup(void);
 
+/* Active UI language (HERMES_LANGUAGE normalised, else "en"). Never NULL. */
+const char *i18n_get_language(void);
+
 /* Load a single YAML locale file into a catalog.
  * Public primarily for testing. */
 int i18n_load_catalog(const char *lang, const char *yaml_path,

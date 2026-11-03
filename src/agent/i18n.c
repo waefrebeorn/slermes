@@ -296,3 +296,45 @@ void agent_i18n_config_language(void) { }
 
 /* PoP: _resolve_language @ agent/i18n.py:_resolve_language */
 void agent_i18n_resolve_language(void) { }
+
+/* PoP: i18n_get_language @ agent/i18n.py:get_language */
+/* Resolve the active UI language.
+ *
+ * Precedence mirrors the Python module: HERMES_LANGUAGE, normalised through
+ * the alias table and reduced to its primary subtag ("zh-cn" -> "zh"), else
+ * "en". Returns a pointer to static or getenv storage; never NULL. */
+const char *i18n_get_language(void)
+{
+    static char norm[16];
+    const char *raw = getenv("HERMES_LANGUAGE");
+    if (!raw || !raw[0]) return "en";
+
+    /* Lowercase into a small buffer; language tags are short. */
+    size_t i = 0;
+    for (; raw[i] && i < sizeof(norm) - 1; i++) {
+        norm[i] = (char)tolower((unsigned char)raw[i]);
+    }
+    norm[i] = '\0';
+
+    /* Full-name aliases. */
+    static const struct { const char *name; const char *code; } ALIASES[] = {
+        {"english", "en"},   {"german", "de"},   {"spanish", "es"},
+        {"french", "fr"},    {"italian", "it"},  {"portuguese", "pt"},
+        {"russian", "ru"},   {"japanese", "ja"}, {"korean", "ko"},
+        {"chinese", "zh"},   {"turkish", "tr"},  {"ukrainian", "uk"},
+        {"afrikaans", "af"}, {"irish", "ga"},    {"hungarian", "hu"},
+        {"arabic", "ar"},
+    };
+    for (size_t k = 0; k < sizeof(ALIASES) / sizeof(ALIASES[0]); k++) {
+        if (strcmp(norm, ALIASES[k].name) == 0) {
+            snprintf(norm, sizeof(norm), "%s", ALIASES[k].code);
+            return norm;
+        }
+    }
+
+    /* Reduce a regional tag to its primary subtag: zh-cn -> zh, uk-ua -> uk. */
+    char *sep = strpbrk(norm, "-_");
+    if (sep) *sep = '\0';
+
+    return norm[0] ? norm : "en";
+}
