@@ -1760,3 +1760,12 @@ void hermes_cli_bundles_cmd_delete(void) { }
 
 /* PoP: register_cli @ hermes_cli/bundles.py:register_cli */
 void hermes_cli_bundles_register_cli(void) { }
+
+/* PoP: _clear_secret_input @ hermes_cli/callbacks.py:_clear_secret_input */
+void hermes_cli_callbacks_clear_secret_input(void) { }
+
+/* PoP: _skipped @ hermes_cli/callbacks.py:_skipped */
+void hermes_cli_callbacks_skipped(void) { }
+
+/* PoP: _secret_result @ hermes_cli/callbacks.py:_secret_result */
+void hermes_cli_callbacks_secret_result(void) { }
