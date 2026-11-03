@@ -1568,3 +1568,27 @@ void hermes_cli_auth_constants_delattr(void) { }
 
 /* PoP: _provider_error_factory @ hermes_cli/auth_constants.py:_provider_error_factory */
 void hermes_cli_auth_constants_provider_error_factory(void) { }
+
+/* PoP: is_network_error @ hermes_cli/auth_error_copy.py:is_network_error */
+void hermes_cli_auth_error_copy_is_network_error(void) { }
+
+/* PoP: is_device_code_expired @ hermes_cli/auth_error_copy.py:is_device_code_expired */
+void hermes_cli_auth_error_copy_is_device_code_expired(void) { }
+
+/* PoP: is_cancelled @ hermes_cli/auth_error_copy.py:is_cancelled */
+void hermes_cli_auth_error_copy_is_cancelled(void) { }
+
+/* PoP: device_flow_error @ hermes_cli/auth_error_copy.py:device_flow_error */
+void hermes_cli_auth_error_copy_device_flow_error(void) { }
+
+/* PoP: _details_line @ hermes_cli/auth_error_copy.py:_details_line */
+void hermes_cli_auth_error_copy_details_line(void) { }
+
+/* PoP: sign_in_failure_lines @ hermes_cli/auth_error_copy.py:sign_in_failure_lines */
+void hermes_cli_auth_error_copy_sign_in_failure_lines(void) { }
+
+/* PoP: provider_setup_failure_lines @ hermes_cli/auth_error_copy.py:provider_setup_failure_lines */
+void hermes_cli_auth_error_copy_provider_setup_failure_lines(void) { }
+
+/* PoP: unknown_provider_hint @ hermes_cli/auth_error_copy.py:unknown_provider_hint */
+void hermes_cli_auth_error_copy_unknown_provider_hint(void) { }
