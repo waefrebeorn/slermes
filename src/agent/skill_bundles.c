@@ -1,3 +1,22 @@
+/*
+ * skill_bundles.c — C port of agent/skill_bundles.py.
+ * Scans skill bundle manifests and exposes lookup helpers.
+ */
+
+#include "skill_bundles.h"
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include "libyaml/yaml.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 
 /* PoP: _bundles_sig @ agent/skill_bundles.py:_bundles_sig */
 char *skill_bundles_sig(const char **paths, int npaths) {
@@ -34,7 +53,7 @@ char *skill_bundles_sig(const char **paths, int npaths) {
     }
     return buf;
 }
-e <ctype.h>
+#include <ctype.h>
 
 /* Forward declaration: skill_install_from_hub in tools/skills.c */
 bool skill_install_from_hub(const char *slug, char *error_out, size_t err_sz);

@@ -10,7 +10,9 @@ void *agent_learning_mutations_memory_detail(void) { return NULL; }
 
 /* PoP: _skill_detail @ agent/learning_mutations.py:_skill_detail */
 void *agent_learning_mutations_skill_detail(void) { return NULL; }
-m_prompt_cache() after skill mutations
+/*
+ * port_learning_mutations.c — C port of agent/learning_mutations.py.
+ *   - patch_memory_prompt_cache() after skill mutations
  *   - POSIX I/O + the § delimiter parser (ENTRY_DELIMITER = "\n§\n")
  *
  * Every public entry returns malloc'd JSON (caller frees). Mirrors the Python
