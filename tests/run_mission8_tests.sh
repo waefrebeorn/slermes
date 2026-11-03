@@ -63,6 +63,8 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_threat tests/test_threat_patterns.c src/agent/threat_patterns.c \
+    lib/libjson/json.o -I include/compat -I include -include hermes_win32.h
 build test_ansi tests/test_ansi_strip.c lib/libansi/ansi_strip.c \
     -I include/compat -I include -I lib/libansi -include hermes_win32.h
 
@@ -71,8 +73,11 @@ echo
 count_and_report() {
     local out="$1"
     local p f
-    p=$(printf '%s\n' "$out" | grep -c 'PASS' || true)
-    f=$(printf '%s\n' "$out" | grep -c 'FAIL' || true)
+    # Harnesses print either PASS/FAIL or the ✅/❌ glyphs; count both.
+    p=$(printf '%s
+' "$out" | grep -cE 'PASS|✅' || true)
+    f=$(printf '%s
+' "$out" | grep -cE 'FAIL|❌' || true)
     PASS=$((PASS + p))
     FAIL=$((FAIL + f))
     printf '%s\n' "$out" | sed 's/^/  /'
@@ -110,6 +115,7 @@ run_suite "CLI Tests" "$B/test_cli.exe" slermes.exe
 run_suite "UI Tests" "$B/test_ui.exe"
 run_suite "i18n Languages" "$B/test_i18n.exe"
 run_suite "ANSI Strip" "$B/test_ansi.exe"
+run_suite "Threat Patterns" "$B/test_threat.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then
