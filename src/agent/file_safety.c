@@ -69,6 +69,13 @@ static void resolve_path(const char *in, char *out, size_t out_sz)
         snprintf(out, out_sz, "%s", to_resolve);
     }
     free(expanded);
+    /* MinGW's realpath returns Windows separators (C:\tmp\x), so any
+     * downstream prefix check written against '/' silently stops matching --
+     * that made mcp-tokens/ readable on Windows while it was write-denied.
+     * Normalise once here so every caller compares like with like. */
+    for (char *q = out; *q; q++) {
+        if (*q == '\\') *q = '/';
+    }
 }
 
 /* Get the user's home directory. */
@@ -818,4 +825,17 @@ void sandbox_mirror_info_free(sandbox_mirror_info_t *info) {
     free(info->mirror_root);
     free(info->inner_path);
     memset(info, 0, sizeof(*info));
+}
+
+/* ── Tool-facing aliases ──
+ * tests/ and callers use the file_ prefix; the implementations above predate
+ * it. Same functions. */
+bool file_is_write_denied(const char *path)
+{
+    return is_write_denied(path);
+}
+
+char *file_get_read_block_error(const char *path)
+{
+    return get_read_block_error(path);
 }

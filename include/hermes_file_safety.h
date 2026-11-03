@@ -59,6 +59,10 @@ char *get_read_block_error(const char *path);
  */
 void file_safety_set_test_paths(const char *hermes_home, const char *hermes_root);
 
+/* Tool-facing aliases for is_write_denied / get_read_block_error. */
+bool   file_is_write_denied(const char *path);
+char  *file_get_read_block_error(const char *path);
+
 /**
  * Check if a path is a cross-profile write target.
  * Detects writes to another profile's scoped areas (skills/plugins/cron/memories).

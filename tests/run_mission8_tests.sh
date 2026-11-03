@@ -63,6 +63,9 @@ build test_api tests/integration/test_api_endpoints.c \
     -I include/compat -I include -include hermes_win32.h -lssl -lcrypto -lz -lws2_32 -lm -lpthread
 build test_i18n tests/test_i18n_languages.c src/agent/i18n_languages.c \
     lib/libjson/json.o -I include/compat -I include -include hermes_win32.h -lm
+build test_fs tests/test_file_safety.c src/agent/file_safety.c \
+    src/agent/logger.o lib/libjson/json.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
+    -I include/compat -I include -I src -I lib -include hermes_win32.h
 build test_anth tests/test_anthropic_depth.c src/agent/provider_anthropic.c \
     src/agent/logger.o src/tools/url_safety.o lib/libjson/json.o lib/libhttp/http.o \
     lib/libcrypto/crypto.o $(for d in lib/*/; do printf -- "-I %s " "$d"; done) \
@@ -95,23 +98,28 @@ echo
 
 count_and_report() {
     local out="$1"
-    local p f tot summary
-    # Count from each suite's own summary line. Harnesses here print PASS:, OK,
-    # or glyph marks depending on who wrote them; scraping glyph bytes is
-    # fragile (it broke once, silently undercounting by 99). Every suite ends
-    # with "Results: N passed, M failed" or "Results: N/M passed".
-    summary=$(printf '%s\n' "$out" | grep -oE 'Results: [0-9]+/[0-9]+ passed|Results: [0-9]+ passed, [0-9]+ failed' | tail -1)
-    if [ -z "$summary" ]; then
-        echo "  WARNING: no Results: summary line; falling back to PASS/FAIL text"
-        p=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*(PASS|OK)' || true)
-        f=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*FAIL' || true)
-    elif printf '%s' "$summary" | grep -q '/'; then
-        p=$(printf '%s' "$summary" | sed -E 's|.*Results: ([0-9]+)/.*|\1|')
-        tot=$(printf '%s' "$summary" | sed -E 's|.*Results: [0-9]+/([0-9]+) passed.*|\1|')
+    local p="" f="" tot="" summary
+    # Harnesses in this repo print three different summary shapes:
+    #   "Results: 27 passed, 0 failed"
+    #   "Results: 63/63 passed"
+    #   "file_safety: 26/26 passed"
+    # plus some that print no numbers at all. Parse the shapes explicitly and
+    # fall back to counting lines; never assume a number.
+    summary=$(printf '%s\n' "$out" | grep -oE '[0-9]+/[0-9]+ passed' | tail -1)
+    if [ -n "$summary" ]; then
+        p=$(printf '%s' "$summary" | sed -E 's|([0-9]+)/([0-9]+) passed|\1|')
+        tot=$(printf '%s' "$summary" | sed -E 's|([0-9]+)/([0-9]+) passed|\2|')
         f=$((tot - p))
     else
-        p=$(printf '%s' "$summary" | sed -E 's|.*Results: ([0-9]+) passed.*|\1|')
-        f=$(printf '%s' "$summary" | sed -E 's|.*Results: [0-9]+ passed, ([0-9]+) failed.*|\1|')
+        summary=$(printf '%s\n' "$out" | grep -oE 'Results: [0-9]+ passed, [0-9]+ failed' | tail -1)
+        if [ -n "$summary" ]; then
+            p=$(printf '%s' "$summary" | sed -E 's|Results: ([0-9]+) passed.*|\1|')
+            f=$(printf '%s' "$summary" | sed -E 's|.*passed, ([0-9]+) failed.*|\1|')
+        else
+            echo "  NOTE: no numeric summary line; counting PASS/FAIL text"
+            p=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*(PASS|OK)' || true)
+            f=$(printf '%s\n' "$out" | grep -cE '^[[:space:]]*FAIL' || true)
+        fi
     fi
     PASS=$((PASS + p))
     FAIL=$((FAIL + f))
@@ -165,6 +173,7 @@ run_suite "Auxiliary Client" "$B/test_aux.exe"
 run_suite "Bedrock Depth" "$B/test_bedrock.exe"
 run_suite "Account Usage" "$B/test_acct.exe"
 run_suite "Anthropic Depth" "$B/test_anth.exe"
+run_suite "File Safety" "$B/test_fs.exe"
 
 echo "--- API Integration Tests ---"
 if [ ! -x "$B/test_api.exe" ]; then
