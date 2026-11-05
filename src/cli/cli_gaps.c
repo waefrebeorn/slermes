@@ -388,24 +388,6 @@ void hermes_cli_dashboard_auth_refresh_singleflight_refresh_provider(void) { }
 /* PoP: refresh_session_coalesced @ hermes_cli/dashboard_auth/refresh_singleflight.py:refresh_session_coalesced */
 void hermes_cli_dashboard_auth_refresh_singleflight_refresh_session_coalesced(void) { }
 
-/* PoP: _verb_for @ hermes_cli/gateway_command_errors.py:_verb_for */
-const char *hermes_cli_gateway_command_errors_verb_for(void) { return NULL; }
-
-/* PoP: explain_service_failure @ hermes_cli/gateway_command_errors.py:explain_service_failure */
-void hermes_cli_gateway_command_errors_explain_service_failure(void) { }
-
-/* PoP: collapse_repeated_input_artifacts @ hermes_cli/input_sanitize.py:collapse_repeated_input_artifacts */
-void hermes_cli_input_sanitize_collapse_repeated_input_artifacts(void) { }
-
-/* PoP: sanitize_user_prompt_text @ hermes_cli/input_sanitize.py:sanitize_user_prompt_text */
-void hermes_cli_input_sanitize_sanitize_user_prompt_text(void) { }
-
-/* PoP: worker_log_rotation_config @ hermes_cli/kanban_worker_log.py:worker_log_rotation_config */
-void hermes_cli_kanban_worker_log_worker_log_rotation_config(void) { }
-
-/* PoP: rotate_worker_log @ hermes_cli/kanban_worker_log.py:rotate_worker_log */
-void hermes_cli_kanban_worker_log_rotate_worker_log(void) { }
-
 /* PoP: probe_port @ hermes_cli/local_runtime/detect.py:probe_port */
 int hermes_cli_local_runtime_detect_probe_port(void) { return 0; }
 

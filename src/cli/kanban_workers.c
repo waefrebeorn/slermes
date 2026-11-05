@@ -599,6 +599,34 @@ void kdb_worker_log_rotation_config(const char *kanban_cfg_json,
 }
 
 /* ===================================================================== */
+/* hermes_cli/kanban_worker_log.py — the split-out log-rotation surface.  */
+/* Reuses the kanban_db.py implementations above; no second body.        */
+/* ===================================================================== */
+
+/* PoP: kwl_rotated_log_path @ hermes_cli/kanban_worker_log.py:_rotated_log_path */
+char *kwl_rotated_log_path(const char *log_path, int generation)
+{
+    if (!log_path) return NULL;
+    return kb_rotated_log_path(log_path, generation);
+}
+
+/* PoP: kwl_worker_log_rotation_config @ hermes_cli/kanban_worker_log.py:worker_log_rotation_config */
+void kwl_worker_log_rotation_config(const char *kanban_cfg_json,
+                                    long *out_rotate_bytes,
+                                    int *out_backup_count)
+{
+    kdb_worker_log_rotation_config(kanban_cfg_json, out_rotate_bytes,
+                                   out_backup_count);
+}
+
+/* PoP: kwl_rotate_worker_log @ hermes_cli/kanban_worker_log.py:rotate_worker_log */
+int kwl_rotate_worker_log(const char *log_path, long max_bytes,
+                          int backup_count)
+{
+    return kdb_rotate_worker_log(log_path, max_bytes, backup_count);
+}
+
+/* ===================================================================== */
 /* gc_worker_logs / read_worker_log                                */
 /* ===================================================================== */
 /* PoP: kdb_gc_worker_logs @ hermes_cli/kanban_db.py:gc_worker_logs */
