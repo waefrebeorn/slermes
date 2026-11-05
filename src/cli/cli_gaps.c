@@ -1266,30 +1266,6 @@ void rebind(void) { }
 /* PoP: release @ gateway/turn_lease.py:release */
 void release(void) { }
 
-/* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
-void adapter_supports_push(void) { }
-
-/* PoP: session_owned_by_profile @ gateway/wake.py:session_owned_by_profile */
-void session_owned_by_profile(void) { }
-
-/* PoP: admit_internal_event @ gateway/wake.py:admit_internal_event */
-void admit_internal_event(void) { }
-
-/* PoP: _runner_draining @ gateway/wake.py:_runner_draining */
-void _runner_draining(void) { }
-
-/* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
-void deliver_wake(void) { }
-
-/* PoP: _delegation_display_metadata @ gateway/wake.py:_delegation_display_metadata */
-void _delegation_display_metadata(void) { }
-
-/* PoP: persist_delegation_delivery @ gateway/wake.py:persist_delegation_delivery */
-void persist_delegation_delivery(void) { }
-
-/* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
-void _self_post_chat_completion(void) { }
-
 /* PoP: invoke_approval_transport @ hermes_cli/approval_transport.py:invoke_approval_transport */
 void invoke_approval_transport(void) { }
 
