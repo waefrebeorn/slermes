@@ -594,9 +594,6 @@ void _record_aux_compression_call(void) { }
 /* PoP: _note_aux_route_fallback @ agent/context_compressor_telemetry.py:_note_aux_route_fallback */
 void _note_aux_route_fallback(void) { }
 
-/* PoP: _compression_method @ agent/context_compressor_telemetry.py:_compression_method */
-void _compression_method(void) { }
-
 /* PoP: _record_compression_effect @ agent/context_compressor_telemetry.py:_record_compression_effect */
 void _record_compression_effect(void) { }
 
