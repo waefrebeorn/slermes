@@ -358,9 +358,6 @@ const char *cli_gaps_module_path(const char *module_name) {
 /* PoP: blank @ hermes_cli/cli_panel.py:blank */
 void hermes_cli_cli_panel_blank(void) { }
 
-/* PoP: _plugin_label @ hermes_cli/platforms.py:_plugin_label */
-const char *hermes_cli_platforms_plugin_label(void) { return NULL; }
-
 /* PoP: make_scoped_provider_registrar @ hermes_cli/plugins_registrars.py:make_scoped_provider_registrar */
 void *hermes_cli_plugins_registrars_make_scoped_provider_registrar(void) { return NULL; }
 
@@ -846,14 +843,8 @@ void _publish_local(void) { }
 /* PoP: edit @ gateway/plugin_messages.py:edit */
 void edit(void) { }
 
-/* PoP: media_base_url @ gateway/relay/media.py:media_base_url */
-void media_base_url(void) { }
-
 /* PoP: _bearer @ gateway/relay/media.py:_bearer */
 void _bearer(void) { }
-
-/* PoP: is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
-void is_relay_media_url(void) { }
 
 /* PoP: download_with_name @ gateway/relay/media.py:download_with_name */
 void download_with_name(void) { }
@@ -1076,9 +1067,6 @@ void _migrate_legacy_custom_pool_key(void) { }
 
 /* PoP: _unknown_provider_exit @ hermes_cli/auth_commands.py:_unknown_provider_exit */
 void _unknown_provider_exit(void) { }
-
-/* PoP: generation_of @ hermes_cli/browser_credential.py:generation_of */
-void generation_of(void) { }
 
 /* PoP: is_current @ hermes_cli/browser_credential.py:is_current */
 void is_current(void) { }
