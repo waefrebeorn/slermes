@@ -1200,27 +1200,6 @@ void active_count(void) { }
 /* PoP: prepare @ hermes_cli/backend_retirement.py:prepare */
 void prepare(void) { }
 
-/* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
-void is_actual_local_base_url(void) { }
-
-/* PoP: normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
-void normalize_actual_base_url(void) { }
-
-/* PoP: _api_key_provider @ hermes_cli/auth.py:_api_key_provider */
-void _api_key_provider(void) { }
-
-/* PoP: get_anthropic_key @ hermes_cli/auth.py:get_anthropic_key */
-void get_anthropic_key(void) { }
-
-/* PoP: _is_placeholder_shape @ hermes_cli/auth.py:_is_placeholder_shape */
-void _is_placeholder_shape(void) { }
-
-/* PoP: _matches_key_prefix @ hermes_cli/auth.py:_matches_key_prefix */
-void _matches_key_prefix(void) { }
-
-/* PoP: looks_like_openrouter_key @ hermes_cli/auth.py:looks_like_openrouter_key */
-void looks_like_openrouter_key(void) { }
-
 /* PoP: _get_custom_provider_entries @ hermes_cli/auth_commands.py:_get_custom_provider_entries */
 void _get_custom_provider_entries(void) { }
 
