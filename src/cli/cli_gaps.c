@@ -936,30 +936,6 @@ void unauthorized_owner_hint(void) { }
 /* PoP: first_time @ gateway/run_inbound_unauthorized.py:first_time */
 void first_time(void) { }
 
-/* PoP: authorize @ gateway/session_busy_controls.py:authorize */
-void authorize(void) { }
-
-/* PoP: busy_config @ gateway/session_busy_controls.py:busy_config */
-void busy_config(void) { }
-
-/* PoP: verbose_config @ gateway/session_busy_controls.py:verbose_config */
-void verbose_config(void) { }
-
-/* PoP: show_reasoning_config @ gateway/session_busy_controls.py:show_reasoning_config */
-void show_reasoning_config(void) { }
-
-/* PoP: service_tier_config @ gateway/session_busy_controls.py:service_tier_config */
-void service_tier_config(void) { }
-
-/* PoP: yolo_config @ gateway/session_busy_controls.py:yolo_config */
-void yolo_config(void) { }
-
-/* PoP: adopts_owner_agent @ gateway/session_busy_controls.py:adopts_owner_agent */
-void adopts_owner_agent(void) { }
-
-/* PoP: correct @ gateway/session_busy_controls.py:correct */
-void correct(void) { }
-
 /* PoP: _authorize @ gateway/session_config.py:_authorize */
 void _authorize(void) { }
 
