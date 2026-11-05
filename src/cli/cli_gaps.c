@@ -732,12 +732,6 @@ void _send_refusal(void) { }
 /* PoP: __init_subclass__ @ gateway/platforms/access_policy_mixin.py:__init_subclass__ */
 void __init_subclass__(void) { }
 
-/* PoP: _open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
-void _open_dm_opted_in(void) { }
-
-/* PoP: _entry_matches @ gateway/platforms/access_policy_mixin.py:_entry_matches */
-void _entry_matches(void) { }
-
 /* PoP: _live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:_live_dm_allow_from */
 void _live_dm_allow_from(void) { }
 
