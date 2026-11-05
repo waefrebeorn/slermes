@@ -24,4 +24,8 @@ char *apm_allow_all_env_names(const char *prefix);
  * Returns malloc'd, caller frees. */
 char *ht_normalized(const char *name);
 
+/* host_topology.HostGatewayTopology.serves(profile_name): True when the
+ * normalized profile name is in the normalized roster. Reuses ht_normalized. */
+int hgt_serves(const char *profiles_json, const char *profile_name);
+
 #endif /* PORT_MICRO_ENV_H */

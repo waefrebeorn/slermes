@@ -91,6 +91,19 @@ def main() -> int:
             if c["out"] != want:
                 mism += 1
                 print(f"MISMATCH norm {c['case']}: C={c['out']!r} PY={want!r}")
+        elif fam == "serves":
+            from hermes_cli.profiles import normalize_profile_name  # noqa: E402
+
+            def nz(n):
+                return normalize_profile_name(n) if n else ""
+
+            wanted = nz(c["profile"])
+            want = (1 if bool(wanted) and wanted in
+                    {nz(p) for p in c["profiles"]} else 0)
+            if c["out"] != want:
+                mism += 1
+                print(f"MISMATCH serves {c['case']}: C={c['out']} PY={want} "
+                      f"profile={c['profile']!r}")
     print(f"ORACLE micro_env: {len(cases)} cases, {mism} mismatches")
     return 1 if mism else 0
 

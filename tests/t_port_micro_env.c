@@ -62,5 +62,20 @@ int main(void)
         printf("}\n");
         free(out);
     }
+
+    /* serves: (profiles, profile_name). */
+    static const char *const sp[][2] = {
+        {"[\"default\",\"coder\"]", "default"},
+        {"[\"default\",\"coder\"]", "CODER"},
+        {"[\"default\",\"coder\"]", "gone"},
+        {"[\"default\",\"coder\"]", ""},
+        {"[\"A B\"]", "a b"},
+    };
+    for (int i = 0; i < 5; i++) {
+        int out = hgt_serves(sp[i][0], sp[i][1]);
+        printf("{\"family\":\"serves\",\"case\":%d,\"profiles\":%s,\"profile\":", i, sp[i][0]);
+        jstr(sp[i][1]);
+        printf(",\"out\":%d}\n", out);
+    }
     return 0;
 }

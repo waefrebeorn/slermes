@@ -3,6 +3,7 @@
  */
 
 #include "port_micro_env.h"
+#include "hermes_json.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -64,4 +65,28 @@ char *ht_normalized(const char *name)
         out[j++] = (char)tolower((unsigned char)s[i]);
     out[j] = '\0';
     return out;
+}
+
+/* ---- HostGatewayTopology.serves ---- */
+
+int hgt_serves(const char *profiles_json, const char *profile_name)
+{
+    json_t *arr = profiles_json ? json_parse(profiles_json, NULL) : NULL;
+    char *wanted = ht_normalized(profile_name);
+    int served = 0;
+    if (!wanted || wanted[0] == '\0') { free(wanted); if (arr) json_free(arr); return 0; }
+    if (arr && arr->type == JSON_ARRAY) {
+        size_t i;
+        for (i = 0; i < arr->c.count && !served; i++) {
+            const json_t *it = arr->c.items[i];
+            if (it && it->type == JSON_STRING) {
+                char *np = ht_normalized(it->str_val);
+                if (np && strcmp(np, wanted) == 0) served = 1;
+                free(np);
+            }
+        }
+    }
+    if (arr) json_free(arr);
+    free(wanted);
+    return served;
 }

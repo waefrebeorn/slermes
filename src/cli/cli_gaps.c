@@ -684,9 +684,6 @@ void tracked_conversations(void) { }
 /* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
 void blocked(void) { }
 
-/* PoP: serves @ gateway/host_topology.py:serves */
-void serves(void) { }
-
 /* PoP: _from_host_record @ gateway/host_topology.py:_from_host_record */
 void _from_host_record(void) { }
 
