@@ -1245,30 +1245,6 @@ void _unknown_provider_exit(void) { }
 /* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
 void _display_source(void) { }
 
-/* PoP: _unusable_invoke_jwt_error @ hermes_cli/auth_nous.py:_unusable_invoke_jwt_error */
-void _unusable_invoke_jwt_error(void) { }
-
-/* PoP: _oauth_trace @ hermes_cli/auth_nous.py:_oauth_trace */
-void _oauth_trace(void) { }
-
-/* PoP: _iso_after @ hermes_cli/auth_nous.py:_iso_after */
-void _iso_after(void) { }
-
-/* PoP: _portal_entitlement_message @ hermes_cli/auth_nous.py:_portal_entitlement_message */
-void _portal_entitlement_message(void) { }
-
-/* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth_nous.py:_format_nous_entitlement_auth_error */
-void _format_nous_entitlement_auth_error(void) { }
-
-/* PoP: _migrate_stale_nous_portal_url @ hermes_cli/auth_nous.py:_migrate_stale_nous_portal_url */
-void _migrate_stale_nous_portal_url(void) { }
-
-/* PoP: _nous_inference_host_allowed @ hermes_cli/auth_nous.py:_nous_inference_host_allowed */
-void _nous_inference_host_allowed(void) { }
-
-/* PoP: _validate_nous_inference_url_from_network @ hermes_cli/auth_nous.py:_validate_nous_inference_url_from_network */
-void _validate_nous_inference_url_from_network(void) { }
-
 /* PoP: generation_of @ hermes_cli/browser_credential.py:generation_of */
 void generation_of(void) { }
 
