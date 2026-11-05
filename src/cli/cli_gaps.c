@@ -1077,12 +1077,6 @@ void _resolve_custom_provider_input(void) { }
 /* PoP: _migrate_legacy_custom_pool_key @ hermes_cli/auth_commands.py:_migrate_legacy_custom_pool_key */
 void _migrate_legacy_custom_pool_key(void) { }
 
-/* PoP: _provider_base_url @ hermes_cli/auth_commands.py:_provider_base_url */
-void _provider_base_url(void) { }
-
-/* PoP: _is_known_provider @ hermes_cli/auth_commands.py:_is_known_provider */
-void _is_known_provider(void) { }
-
 /* PoP: _unknown_provider_exit @ hermes_cli/auth_commands.py:_unknown_provider_exit */
 void _unknown_provider_exit(void) { }
 
