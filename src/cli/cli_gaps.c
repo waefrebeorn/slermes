@@ -777,24 +777,6 @@ void refuse_parked_route(void) { }
 /* PoP: _send_refusal @ gateway/parked_route_refusal.py:_send_refusal */
 void _send_refusal(void) { }
 
-/* PoP: _yaml_block_names @ gateway/platform_activation.py:_yaml_block_names */
-void _yaml_block_names(void) { }
-
-/* PoP: _env_names @ gateway/platform_activation.py:_env_names */
-void _env_names(void) { }
-
-/* PoP: _credential_pool_names @ gateway/platform_activation.py:_credential_pool_names */
-void _credential_pool_names(void) { }
-
-/* PoP: _legacy_gateway_json_names @ gateway/platform_activation.py:_legacy_gateway_json_names */
-void _legacy_gateway_json_names(void) { }
-
-/* PoP: activation_predicate @ gateway/platform_activation.py:activation_predicate */
-void activation_predicate(void) { }
-
-/* PoP: configured_plugin_entries @ gateway/platform_activation.py:configured_plugin_entries */
-void configured_plugin_entries(void) { }
-
 /* PoP: __init_subclass__ @ gateway/platforms/access_policy_mixin.py:__init_subclass__ */
 void __init_subclass__(void) { }
 
