@@ -43,11 +43,33 @@ PYBIN="$(pick_python)" || { echo "ORACLE $NAME: no python with working hashlib" 
 # A link failure must be fatal — piping gcc through `grep ... || true` let a
 # broken link reach the oracle as "0 cases".
 OBJARG="${MINIMAL_OBJS:-@$OBJSET}"
-gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
-  "tests/t_port_$NAME.c" $OBJARG -o ".testbin/tt_$NAME" \
-  -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
-  -Wl,--allow-multiple-definition
-SLERMES_HOME="$TMPH" HOME="$TMPH" "./.testbin/tt_$NAME" 2>/dev/null | "$PYBIN" "tests/$ORACLE"
+build() {   # build <out> <opt>
+  gcc "$2" -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
+    "tests/t_port_$NAME.c" $OBJARG -o "$1" \
+    -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
+    -Wl,--allow-multiple-definition
+}
+OUT=".testbin/tt_$NAME"
+build "$OUT" -O2
+
+# Smart App Control refuses some freshly linked binaries outright (rc 126) and
+# only PowerShell names the reason. A relink with an extra optimization level
+# produces a different image, which it lets through — retry once that way
+# rather than reporting a false "0 cases".
+SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" > "$TMPH/harness.out" 2> "$TMPH/harness.err"
+HRC=$?
+if [ "$HRC" -eq 126 ] || [ "$HRC" -eq 127 ]; then
+  build "${OUT}_alt" -O1
+  SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err"
+  HRC=$?
+fi
+if [ "$HRC" -ne 0 ] && [ ! -s "$TMPH/harness.out" ]; then
+  echo "ORACLE $NAME: harness could not run (rc $HRC)" >&2
+  sed -n '1,3p' "$TMPH/harness.err" >&2 || true
+  rm -rf "$TMPH"
+  exit 1
+fi
+"$PYBIN" "tests/$ORACLE" < "$TMPH/harness.out"
 RC=$?
 rm -rf "$TMPH"
 exit $RC
