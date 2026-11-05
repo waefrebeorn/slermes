@@ -735,15 +735,6 @@ void __init_subclass__(void) { }
 /* PoP: _live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:_live_dm_allow_from */
 void _live_dm_allow_from(void) { }
 
-/* PoP: _is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
-void _is_dm_allowed(void) { }
-
-/* PoP: _is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
-void _is_dm_intake_allowed(void) { }
-
-/* PoP: _is_group_allowed @ gateway/platforms/access_policy_mixin.py:_is_group_allowed */
-void _is_group_allowed(void) { }
-
 /* PoP: _authority @ gateway/platforms/api_server_authority_runs.py:_authority */
 void _authority(void) { }
 

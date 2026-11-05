@@ -51,5 +51,72 @@ int main(void)
         jstr(em[i][1]);
         printf(",\"out\":%d}\n", out);
     }
+
+    /* _is_dm_allowed: (policy, sender, allow, env0, env1); optin derived via
+     * the already-verified apm_open_dm_opted_in. */
+    static const char *const dm[][5] = {
+        {"allowlist", "alice", "[\"alice\",\"bob\"]", "", ""},
+        {"allowlist", "eve", "[\"alice\",\"bob\"]", "", ""},
+        {"open", "alice", "[]", "true", ""},
+        {"open", "alice", "[]", "", "0"},
+        {"disabled", "alice", "[]", "yes", ""},
+        {"", "alice", "[]", "", ""},
+    };
+    for (int i = 0; i < 6; i++) {
+        int optin = apm_open_dm_opted_in(dm[i][3], dm[i][4]);
+        int out = apm_is_dm_allowed(dm[i][0], dm[i][1], dm[i][2], optin);
+        printf("{\"family\":\"dma\",\"case\":%d,\"policy\":", i);
+        jstr(dm[i][0]);
+        printf(",\"sender\":");
+        jstr(dm[i][1]);
+        printf(",\"allow\":%s,\"e0\":", dm[i][2]);
+        jstr(dm[i][3]);
+        printf(",\"e1\":");
+        jstr(dm[i][4]);
+        printf(",\"optin\":%d,\"out\":%d}\n", optin, out);
+    }
+
+    /* _is_dm_intake_allowed. */
+    static const char *const di[][5] = {
+        {"pairing", "alice", "[]", "", ""},
+        {"pairing", "  alice  ", "[]", "", ""},
+        {"pairing", "", "[]", "", ""},
+        {"pairing", "   ", "[]", "", ""},
+        {"open", "alice", "[]", "1", ""},
+        {"open", "alice", "[]", "", "no"},
+        {"allowlist", "alice", "[\"alice\"]", "", ""},
+        {"allowlist", "bob", "[\"alice\"]", "", ""},
+    };
+    for (int i = 0; i < 8; i++) {
+        int optin = apm_open_dm_opted_in(di[i][3], di[i][4]);
+        int out = apm_is_dm_intake_allowed(di[i][0], di[i][1], di[i][2], optin);
+        printf("{\"family\":\"dmi\",\"case\":%d,\"policy\":", i);
+        jstr(di[i][0]);
+        printf(",\"sender\":");
+        jstr(di[i][1]);
+        printf(",\"allow\":%s,\"e0\":", di[i][2]);
+        jstr(di[i][3]);
+        printf(",\"e1\":");
+        jstr(di[i][4]);
+        printf(",\"optin\":%d,\"out\":%d}\n", optin, out);
+    }
+
+    /* _is_group_allowed: (policy, chat, allow). */
+    static const char *const gr[][3] = {
+        {"allowlist", "g1", "[\"g1\",\"g2\"]"},
+        {"allowlist", "g9", "[\"g1\",\"g2\"]"},
+        {"open", "g1", "[]"},
+        {"disabled", "g1", "[]"},
+        {"pairing", "g1", "[]"},
+        {"", "g1", "[]"},
+    };
+    for (int i = 0; i < 6; i++) {
+        int out = apm_is_group_allowed(gr[i][0], gr[i][1], gr[i][2]);
+        printf("{\"family\":\"grp\",\"case\":%d,\"policy\":", i);
+        jstr(gr[i][0]);
+        printf(",\"chat\":");
+        jstr(gr[i][1]);
+        printf(",\"allow\":%s,\"out\":%d}\n", gr[i][2], out);
+    }
     return 0;
 }
