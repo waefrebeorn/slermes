@@ -654,12 +654,6 @@ void cache_path_base(void) { }
 /* PoP: default_cwd @ agent/terminal_env_provider.py:default_cwd */
 void default_cwd(void) { }
 
-/* PoP: strip_env_keys @ agent/terminal_env_provider.py:strip_env_keys */
-void strip_env_keys(void) { }
-
-/* PoP: env_description @ agent/terminal_env_provider.py:env_description */
-void env_description(void) { }
-
 /* PoP: check_requirements @ agent/terminal_env_provider.py:check_requirements */
 void check_requirements(void) { }
 
@@ -705,9 +699,6 @@ void tracked_conversations(void) { }
 /* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
 void blocked(void) { }
 
-/* PoP: _normalized @ gateway/host_topology.py:_normalized */
-void _normalized(void) { }
-
 /* PoP: serves @ gateway/host_topology.py:serves */
 void serves(void) { }
 
@@ -740,9 +731,6 @@ void _send_refusal(void) { }
 
 /* PoP: __init_subclass__ @ gateway/platforms/access_policy_mixin.py:__init_subclass__ */
 void __init_subclass__(void) { }
-
-/* PoP: _allow_all_env_names @ gateway/platforms/access_policy_mixin.py:_allow_all_env_names */
-void _allow_all_env_names(void) { }
 
 /* PoP: _open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
 void _open_dm_opted_in(void) { }
