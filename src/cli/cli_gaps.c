@@ -873,24 +873,6 @@ void _publish_local(void) { }
 /* PoP: edit @ gateway/plugin_messages.py:edit */
 void edit(void) { }
 
-/* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
-void _probe_state_db(void) { }
-
-/* PoP: _probe_config @ gateway/readiness.py:_probe_config */
-void _probe_config(void) { }
-
-/* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
-void _probe_disk(void) { }
-
-/* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
-void _probe_gateway(void) { }
-
-/* PoP: _probe_session_store @ gateway/readiness.py:_probe_session_store */
-void _probe_session_store(void) { }
-
-/* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
-void collect_runtime_readiness(void) { }
-
 /* PoP: media_base_url @ gateway/relay/media.py:media_base_url */
 void media_base_url(void) { }
 
