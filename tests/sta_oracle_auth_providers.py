@@ -22,6 +22,15 @@ NSA = {"CUSTOM_POOL_PREFIX": "custom:"}
 exec(compile(ast.parse(known_fn), "x", "exec"), NSA)
 _is_known = NSA["_is_known_provider"]
 
+resolve_fn = None
+for n in tree.body:
+    if isinstance(n, ast.FunctionDef) and n.name == "_resolve_custom_provider_input":
+        resolve_fn = ast.get_source_segment(code, n)
+NSR = {"CUSTOM_POOL_PREFIX": "custom:",
+       "_normalize_custom_pool_name": (lambda name: name.strip().lower().replace(" ", "-"))}
+exec(compile(ast.parse(resolve_fn), "x", "exec"), NSR)
+_resolve = NSR["_resolve_custom_provider_input"]
+
 OPENROUTER = "https://openrouter.ai/api/v1"
 CPREFIX = "custom:"
 
@@ -72,6 +81,13 @@ def main() -> int:
                 mism += 1
                 print(f"MISMATCH iknow {c['case']}: C={c['out']} PY={want} "
                       f"provider={c['provider']!r}")
+        elif fam == "resolve":
+            NSR["_get_custom_provider_entries"] = lambda: list(c["entries"])
+            want = _resolve(c["raw"])
+            if c["out"] != want:
+                mism += 1
+                print(f"MISMATCH resolve {c['case']}: C={c['out']!r} PY={want!r} "
+                      f"raw={c['raw']!r}")
     print(f"ORACLE auth_providers: {len(cases)} cases, {mism} mismatches")
     return 1 if mism else 0
 

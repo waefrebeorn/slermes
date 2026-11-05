@@ -20,4 +20,11 @@ char *cpa_provider_base_url(const char *provider, const char *registry_base_url,
  * configured entry. in_registry/configured are the parameterized facts. */
 int cpa_is_known_provider(const char *provider, int in_registry, int configured);
 
+/* _resolve_custom_provider_input(raw, entries, cp_prefix): resolve a legacy
+ * name or keyed provider to its credential-pool id. entries_json is an array
+ * of {"name","provider_key","pool_key"}. Returns malloc'd resolved string or
+ * NULL. cp_prefix is "custom:". */
+char *apa_resolve_custom_provider_input(const char *raw, const char *entries_json,
+                                        const char *cp_prefix);
+
 #endif /* PORT_AUTH_PROVIDERS_H */

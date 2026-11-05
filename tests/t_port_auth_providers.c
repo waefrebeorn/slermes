@@ -60,5 +60,26 @@ int main(void)
         printf(",\"inreg\":%d,\"cfg\":%d,\"out\":%d}\n",
                ikf[i][0], ikf[i][1], out);
     }
+    /* _resolve_custom_provider_input: (raw, entries). */
+    static const char *const RS[][2] = {
+        {"my-provider", "[{\"name\":\"My Provider\",\"provider_key\":\"myprov\",\"pool_key\":\"custom:my-provider\"}]"},
+        {"myprov", "[{\"name\":\"My Provider\",\"provider_key\":\"myprov\",\"pool_key\":\"custom:my-provider\"}]"},
+        {"custom:foo", "[]"},
+        {"", "[]"},
+        {"zz-z", "[{\"name\":\"ZZ Z\",\"provider_key\":\"\",\"pool_key\":\"custom:zz-z\"}]"},
+        {"none", "[]"},
+        {"a b", "[{\"name\":\"A B\",\"provider_key\":\"pk\",\"pool_key\":\"custom:a-b\"}]"},
+        {"some-name", "[{\"name\":\"Other\",\"provider_key\":\"other\",\"pool_key\":\"custom:other\"},{\"name\":\"Some Name\",\"provider_key\":\"\",\"pool_key\":\"custom:some-name\"}]"},
+        {" my-provider ", "[{\"name\":\"My Provider\",\"provider_key\":\"myprov\",\"pool_key\":\"custom:my-provider\"}]"},
+    };
+    for (int i = 0; i < 9; i++) {
+        char *out = apa_resolve_custom_provider_input(RS[i][0], RS[i][1], "custom:");
+        printf("{\"family\":\"resolve\",\"case\":%d,\"raw\":", i);
+        jstr(RS[i][0]);
+        printf(",\"entries\":%s,\"out\":", RS[i][1]);
+        jstr(out);
+        printf("}\n");
+        free(out);
+    }
     return 0;
 }

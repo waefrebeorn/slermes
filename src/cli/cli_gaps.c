@@ -1071,9 +1071,6 @@ void _get_custom_provider_entries(void) { }
 /* PoP: _configured_provider_entry @ hermes_cli/auth_commands.py:_configured_provider_entry */
 void _configured_provider_entry(void) { }
 
-/* PoP: _resolve_custom_provider_input @ hermes_cli/auth_commands.py:_resolve_custom_provider_input */
-void _resolve_custom_provider_input(void) { }
-
 /* PoP: _migrate_legacy_custom_pool_key @ hermes_cli/auth_commands.py:_migrate_legacy_custom_pool_key */
 void _migrate_legacy_custom_pool_key(void) { }
 
