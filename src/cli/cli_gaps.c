@@ -1539,30 +1539,6 @@ void active_count(void) { }
 /* PoP: prepare @ hermes_cli/backend_retirement.py:prepare */
 void prepare(void) { }
 
-/* PoP: _close_quietly @ hermes_cli/backup_sqlite.py:_close_quietly */
-void _close_quietly(void) { }
-
-/* PoP: _uses_wal @ hermes_cli/backup_sqlite.py:_uses_wal */
-void _uses_wal(void) { }
-
-/* PoP: pages_per_second @ hermes_cli/backup_sqlite.py:pages_per_second */
-void pages_per_second(void) { }
-
-/* PoP: _stepped_attempt @ hermes_cli/backup_sqlite.py:_stepped_attempt */
-void _stepped_attempt(void) { }
-
-/* PoP: _stepped_rollback_journal_copy @ hermes_cli/backup_sqlite.py:_stepped_rollback_journal_copy */
-void _stepped_rollback_journal_copy(void) { }
-
-/* PoP: _safe_copy_db @ hermes_cli/backup_sqlite.py:_safe_copy_db */
-void _safe_copy_db(void) { }
-
-/* PoP: _reclaim_abandoned_staging @ hermes_cli/backup_sqlite.py:_reclaim_abandoned_staging */
-void _reclaim_abandoned_staging(void) { }
-
-/* PoP: preflight_state_db @ hermes_cli/backup_sqlite.py:preflight_state_db */
-void preflight_state_db(void) { }
-
 /* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
 void is_actual_local_base_url(void) { }
 
