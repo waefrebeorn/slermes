@@ -1182,9 +1182,6 @@ void _mirror_config_to_env(void) { }
 /* PoP: _cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
 void _cli_config_defaults(void) { }
 
-/* PoP: _merge_file_config @ hermes_cli/cli_config_load.py:_merge_file_config */
-void _merge_file_config(void) { }
-
 /* PoP: _init_logging_and_display_from_config @ hermes_cli/cli_config_load.py:_init_logging_and_display_from_config */
 void _init_logging_and_display_from_config(void) { }
 
