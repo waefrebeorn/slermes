@@ -1266,3 +1266,79 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).
+
+
+---
+
+# Slermes Parity — Checkpoint (2026-11-05, placeholder eradication, Windows)
+
+**Branch:** main (local; no push target configured)
+**Session:** attack `src/cli/cli_gaps.c`, the file that actually holds the gap
+
+## How the gap was re-measured
+
+`tests/slermes_parity_battleground.py` said PORTED 7,089 / REAL_GAP 25,646 and
+never moved. It is not the backlog. `tests/parity_reality.py` — which refuses
+to score an empty or `return 0/NULL/false;` body as parity — reported
+**3,184 implemented, 843 placeholder-only**, and every one of those 843 was a
+`/* PoP: ... */` comment above a **zero-argument stub** in `cli_gaps.c`
+(`void hermes_cli_x_y(void) { }`). Wrong signature, empty body, uncallable.
+
+Two measurement traps confirmed this session:
+- the scanner does not index some modules at all (`input_sanitize`,
+  `gateway_command_errors`, `kanban_worker_log`), so their stubs are invisible
+  to it — only `parity_reality` sees them;
+- generic stub names (`_tick`, `_sample`, `is_cancelled`, `_emit_warning`) earn
+  *phantom credit* for unrelated Python features by name. Deleting them moves
+  features from `placeholder only` to `missing entirely`, which is the honest
+  direction and must not be read as a regression.
+
+## Closed (oracle-verified against LIVE Python, stub deleted each time)
+
+| commit | module | C | oracle |
+|---|---|---|---|
+| 4fb2938 | hermes_cli/input_sanitize.py | port_input_sanitize.c | 26/0 |
+| 4fb2938 | hermes_cli/gateway_command_errors.py | port_gateway_command_errors.c | 12/0 |
+| 4fb2938 | hermes_cli/kanban_worker_log.py | kwl_* wrappers in kanban_workers.c | (reuse) |
+| 125fcdc | agent/turn_liveness.py (settings half) | port_turn_liveness.c | 25/0 |
+| 3e1d9f6 | hermes_cli/auth_error_copy.py | port_auth_error_copy.c | 36/0 |
+| f986a40 | gateway/hosted_room_execution_policy.py (validate+digest) | port_hosted_room_execution_policy.c | 22/0 |
+| fea2677 | agent/error_surface.py (result classifier) | port_error_surface.c | 87/0 |
+| 2bb4d8a | agent/turn_summary.py | port_turn_summary.c | 43/0 |
+
+Deliberately left unported, with the reason in the code: the
+TurnLivenessWatchdog state machine (no C caller), `execution_policy_mapping`
+(live gateway config), `build_error_surface_from_exception` (needs the
+`failover_reason_t` -> Python reason-string bridge), the provider-label /
+auth-kind / api-key-env lookups (no comparable C registry — they are
+parameters), and `unknown_provider_hint`'s config-validation branch.
+
+## Numbers
+
+| metric | before | after |
+|---|---|---|
+| implemented (reality) | 3,184 | 3,216 |
+| placeholder only | 843 | 782 |
+| missing entirely | 31,831 | 31,860 |
+
+## Tooling repaired (both were silently lying)
+
+- `tests/run_one_oracle.sh` piped gcc through `grep -iE 'error' || true`, so a
+  **broken link reached the oracle as "0 cases"**. Now fail-closed, with an
+  `@response` object list (Windows command-line limit), `.testbin/` output (a
+  POSIX `/tmp` path is unresolvable for a native gcc.exe), per-platform libs
+  (`-ltre`, `-lws2_32`, SDL; no `-ldl`/`-lpthread`), and interpreter selection —
+  MSYS2's `/mingw64` python3 has a broken OpenSSL binding that kills hashlib.
+- `tests/run_mission8_tests.sh` retried rc 126 once. Defender holds several
+  freshly linked exes at once, so one pass reported **765 vs 946 passed** from
+  that race alone. Now 5/10/15/20/25s backoff.
+
+## Environment blocker (not code)
+
+Windows **Smart App Control is ON** (`VerifiedAndReputablePolicyState = 1`,
+CodeIntegrityPolicyEnforcementStatus = 2). The freshly linked 47 MB unsigned
+`slermes.exe` is refused with "An Application Control policy has blocked this
+file", so the `--version` smoke test and the CLI Tests suite cannot run. Small
+test binaries and oracle harnesses still execute, so the source gate, the
+oracles and `parity_reality` remain valid evidence. Turning SAC off is a
+one-way, user-only decision.
