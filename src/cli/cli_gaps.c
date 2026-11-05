@@ -915,30 +915,6 @@ void post_setup(void) { }
 /* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
 void doctor_checks(void) { }
 
-/* PoP: total_tools @ agent/turn_summary.py:total_tools */
-void total_tools(void) { }
-
-/* PoP: _extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
-void _extract_line_deltas(void) { }
-
-/* PoP: record_tool @ agent/turn_summary.py:record_tool */
-void record_tool(void) { }
-
-/* PoP: tally @ agent/turn_summary.py:tally */
-void tally(void) { }
-
-/* PoP: format_elapsed @ agent/turn_summary.py:format_elapsed */
-void format_elapsed(void) { }
-
-/* PoP: _pluralize @ agent/turn_summary.py:_pluralize */
-void _pluralize(void) { }
-
-/* PoP: format_turn_summary @ agent/turn_summary.py:format_turn_summary */
-void format_turn_summary(void) { }
-
-/* PoP: format_token_flow @ agent/turn_summary.py:format_token_flow */
-void format_token_flow(void) { }
-
 /* PoP: _normalize_text @ agent/vault_login_classifier.py:_normalize_text */
 void _normalize_text(void) { }
 
