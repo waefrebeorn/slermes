@@ -194,7 +194,11 @@ static bool socket_send_all(int fd, const char *data, size_t len, int timeout_se
         tv.tv_usec = 0;
         int rc = select(fd + 1, NULL, &wset, NULL, &tv);
         if (rc <= 0) return false;
+#ifdef _WIN32
+        ssize_t n = send(fd, data, (int)len, 0);
+#else
         ssize_t n = write(fd, data, len);
+#endif
         if (n <= 0) return false;
         data += n;
         len -= (size_t)n;
@@ -245,7 +249,11 @@ static char *read_all(int fd, SSL *ssl, size_t *out_len, int timeout_sec) {
             tv.tv_usec = 0;
             int rc = select(fd + 1, &rset, NULL, NULL, &tv);
             if (rc <= 0) break;
+#ifdef _WIN32
+            n = (int)recv(fd, buf + len, (int)(cap - len - 1), 0);
+#else
             n = (int)read(fd, buf + len, cap - len - 1);
+#endif
         }
         if (n > 0) {
             len += (size_t)n;
@@ -1159,7 +1167,11 @@ static int read_line_buffered(int fd, SSL *ssl, char *buf, size_t cap,
             tv.tv_usec = 0;
             int rc = select(fd + 1, &rset, NULL, NULL, &tv);
             if (rc <= 0) return -1;
+#ifdef _WIN32
+            int n = ssl ? SSL_read(ssl, rbuf, (int)rcap) : (int)recv(fd, rbuf, (int)rcap, 0);
+#else
             int n = ssl ? SSL_read(ssl, rbuf, (int)rcap) : (int)read(fd, rbuf, rcap);
+#endif
             if (n <= 0) return (out > 0) ? (int)out : (n == 0 ? 0 : -1);
             *rlen = (size_t)n;
         }

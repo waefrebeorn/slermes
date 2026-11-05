@@ -27,6 +27,26 @@
 #include <signal.h>
 #include <ctype.h>
 
+/* MinGW native: Winsock is not auto-initialized (MSYS2 does it for us,
+ * but the pre-built libhttp/http.o was built against MSYS2's POSIX layer
+ * and calls getaddrinfo/socket/connect without ever calling WSAStartup.
+ * On a plain MinGW binary that returns WSANOTINITIALISED, so every HTTP
+ * request fails with "The system cannot find the path specified" and the
+ * stub server receives zero requests. Call it once at startup. */
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+static void winsock_init(void) {
+    WSADATA wsa;
+    WORD ver = MAKEWORD(2, 2);
+    if (WSAStartup(ver, &wsa) != 0) {
+        fprintf(stderr, "[main] WSAStartup failed: %d\n", WSAGetLastError());
+    }
+}
+#else
+static void winsock_init(void) {}
+#endif
+
 /* Forward declaration for startup initialization */
 extern void mcp_init_all(void);
 extern void tools_init_all(void);
@@ -125,6 +145,14 @@ static void print_banner(void) {
 }
 
 int main(int argc, char **argv) {
+
+    /* P78: MinGW native binary needs explicit Winsock init — MSYS2 does it
+     * automatically, but the pre-built libhttp/http.o was built against MSYS2
+     * and never calls WSAStartup itself. Without this getaddrinfo/socket/connect
+     * all fail with WSANOTINITIALISED and the user sees "Stream drop: ... after
+     * 0.0s" with zero tokens and an empty stub request log. */
+    winsock_init();
+
     /* L03: Install crash-resistant stdio before any output */
     install_safe_stdio();
 

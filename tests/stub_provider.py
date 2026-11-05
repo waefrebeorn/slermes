@@ -32,7 +32,10 @@ class H(BaseHTTPRequestHandler):
             f.write(json.dumps({"turn": turn, "path": self.path,
                                 "tools": len(req.get("tools", [])),
                                 "messages": len(req.get("messages", [])),
-                                "model": req.get("model")}) + "\n")
+                                "model": req.get("model"),
+                                "body_len": len(body),
+                                "stream": req.get("stream", False),
+                                "body_snippet": body[:300] if body else ""}) + "\n")
 
         if turn == 1:
             msg = {"role": "assistant", "content": "stub-reply-one"}
