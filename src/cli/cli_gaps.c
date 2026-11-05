@@ -1026,12 +1026,6 @@ void _lag_tolerance(void) { }
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
 void record_tick(void) { }
 
-/* PoP: _holder_desc @ gateway/turn_lease.py:_holder_desc */
-void _holder_desc(void) { }
-
-/* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
-void __repr__(void) { }
-
 /* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
 void _evict_idle(void) { }
 
