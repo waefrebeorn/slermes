@@ -543,12 +543,6 @@ void async_api_key(void) { }
 /* PoP: configured_default_headers @ agent/auxiliary_async_rebuild.py:configured_default_headers */
 void configured_default_headers(void) { }
 
-/* PoP: embedded_provider_error @ agent/auxiliary_call_outcome.py:embedded_provider_error */
-void embedded_provider_error(void) { }
-
-/* PoP: is_cancellation @ agent/auxiliary_call_outcome.py:is_cancellation */
-void is_cancellation(void) { }
-
 /* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
 void error_class(void) { }
 
@@ -747,17 +741,11 @@ void stop_run(void) { }
 /* PoP: resolve_unknown_run @ gateway/platforms/api_server_authority_runs.py:resolve_unknown_run */
 void resolve_unknown_run(void) { }
 
-/* PoP: clean_attachment_filename @ gateway/platforms/event.py:clean_attachment_filename */
-void clean_attachment_filename(void) { }
-
 /* PoP: absorb_reply_expected @ gateway/platforms/event.py:absorb_reply_expected */
 void absorb_reply_expected(void) { }
 
 /* PoP: extend_media @ gateway/platforms/event.py:extend_media */
 void extend_media(void) { }
-
-/* PoP: _command_text @ gateway/platforms/event.py:_command_text */
-void _command_text(void) { }
 
 /* PoP: _bounds @ gateway/platforms/api_server_memory_sessions.py:_bounds */
 void _bounds(void) { }
