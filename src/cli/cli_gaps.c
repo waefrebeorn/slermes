@@ -606,9 +606,6 @@ void _record_committed_compression_effect(void) { }
 /* PoP: register_delegation_provider @ agent/delegation_registry.py:register_delegation_provider */
 void register_delegation_provider(void) { }
 
-/* PoP: _bundled_disabled @ agent/delegation_registry.py:_bundled_disabled */
-void _bundled_disabled(void) { }
-
 /* PoP: _load_bundled @ agent/delegation_registry.py:_load_bundled */
 void _load_bundled(void) { }
 
@@ -617,9 +614,6 @@ void _available(void) { }
 
 /* PoP: _usable @ agent/delegation_registry.py:_usable */
 void _usable(void) { }
-
-/* PoP: backend_status @ agent/delegation_registry.py:backend_status */
-void backend_status(void) { }
 
 /* PoP: _cache_path @ agent/image_token_cost.py:_cache_path */
 void _cache_path(void) { }
