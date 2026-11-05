@@ -537,33 +537,6 @@ void _nous_credential_present(void) { }
 /* PoP: clear_nous_credential_failure @ agent/auxiliary_unavailable.py:clear_nous_credential_failure */
 void clear_nous_credential_failure(void) { }
 
-/* PoP: _carry_cache_control @ agent/anthropic_message_convert.py:_carry_cache_control */
-void _carry_cache_control(void) { }
-
-/* PoP: _split_blank_text_blocks @ agent/anthropic_message_convert.py:_split_blank_text_blocks */
-void _split_blank_text_blocks(void) { }
-
-/* PoP: _image_block_from_openai_url @ agent/anthropic_message_convert.py:_image_block_from_openai_url */
-void _image_block_from_openai_url(void) { }
-
-/* PoP: _safe_text @ agent/anthropic_message_convert.py:_safe_text */
-void _safe_text(void) { }
-
-/* PoP: _replay_text @ agent/anthropic_message_convert.py:_replay_text */
-void _replay_text(void) { }
-
-/* PoP: _replay_thinking @ agent/anthropic_message_convert.py:_replay_thinking */
-void _replay_thinking(void) { }
-
-/* PoP: _replay_redacted_thinking @ agent/anthropic_message_convert.py:_replay_redacted_thinking */
-void _replay_redacted_thinking(void) { }
-
-/* PoP: _replay_tool_use @ agent/anthropic_message_convert.py:_replay_tool_use */
-void _replay_tool_use(void) { }
-
-/* PoP: _replay_image @ agent/anthropic_message_convert.py:_replay_image */
-void _replay_image(void) { }
-
 /* PoP: set_accounting_context @ agent/aux_accounting.py:set_accounting_context */
 void set_accounting_context(void) { }
 
