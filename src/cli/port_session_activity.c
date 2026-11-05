@@ -66,13 +66,15 @@ char *sa_bound_activity_description(const char *description)
     size_t n = e - s;
     if (n <= SA_ACTIVITY_DESCRIPTION_MAX)
         return dup_(raw + s, n);
-    /* text[:119] + "…" (U+2026, UTF-8 e2 80 a6) -> 120 chars total. */
-    char *out = (char *)malloc(SA_ACTIVITY_DESCRIPTION_MAX + 1);
+    /* text[:119] + "…" (U+2026, UTF-8 e2 80 a6) -> 120 chars total.
+     * buffer = 119 text + 3 ellipsis bytes + 1 NUL. */
+    char *out = (char *)malloc(SA_ACTIVITY_DESCRIPTION_MAX + 4);
     if (!out) return NULL;
     memcpy(out, raw + s, SA_ACTIVITY_DESCRIPTION_MAX - 1);
     out[SA_ACTIVITY_DESCRIPTION_MAX - 1] = (char)0xE2;
     out[SA_ACTIVITY_DESCRIPTION_MAX] = (char)0x80;
     out[SA_ACTIVITY_DESCRIPTION_MAX + 1] = (char)0xA6;
+    out[SA_ACTIVITY_DESCRIPTION_MAX + 2] = '\0';
     return out;
 }
 
