@@ -159,16 +159,19 @@ run_suite() {
     out="$("$bin" "$@" 2>&1)"
     rc=$?
     # A freshly linked exe is briefly refused by the OS (AV holds a handle on
-    # the new file): rc 126 with no output. Retry once rather than report a
-    # false "cannot execute".
-    if [ "$rc" -eq 126 ]; then
-        sleep 20
+    # the new file): rc 126 with no output. Retry with backoff rather than
+    # report a false "cannot execute" — Defender can hold several binaries at
+    # once, so a single retry still loses whole suites.
+    local attempt=0
+    while [ "$rc" -eq 126 ] && [ "$attempt" -lt 5 ]; do
+        attempt=$((attempt + 1))
+        sleep $((attempt * 5))
         out="$("$bin" "$@" 2>&1)"
         rc=$?
-    fi
+    done
     count_and_report "$out"
     if [ "$rc" -eq 126 ]; then
-        echo "  cannot execute (rc 126 even after retry)"
+        echo "  cannot execute (rc 126 after $attempt retries)"
         BROKEN=$((BROKEN + 1))
         BROKEN_LIST+=("$name (OS refused to execute)")
     elif [ "$rc" -ne 0 ]; then

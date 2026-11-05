@@ -786,30 +786,6 @@ void _usable(void) { }
 /* PoP: backend_status @ agent/delegation_registry.py:backend_status */
 void backend_status(void) { }
 
-/* PoP: _looks_like_stream_drop @ agent/error_surface.py:_looks_like_stream_drop */
-void _looks_like_stream_drop(void) { }
-
-/* PoP: _surface @ agent/error_surface.py:_surface */
-void _surface(void) { }
-
-/* PoP: _api_key_env @ agent/error_surface.py:_api_key_env */
-void _api_key_env(void) { }
-
-/* PoP: auth_kind @ agent/error_surface.py:auth_kind */
-void auth_kind(void) { }
-
-/* PoP: _disk_full @ agent/error_surface.py:_disk_full */
-void _disk_full(void) { }
-
-/* PoP: _result_layer @ agent/error_surface.py:_result_layer */
-void _result_layer(void) { }
-
-/* PoP: build_error_surface_from_result @ agent/error_surface.py:build_error_surface_from_result */
-void build_error_surface_from_result(void) { }
-
-/* PoP: build_error_surface_from_exception @ agent/error_surface.py:build_error_surface_from_exception */
-void build_error_surface_from_exception(void) { }
-
 /* PoP: _cache_path @ agent/image_token_cost.py:_cache_path */
 void _cache_path(void) { }
 
