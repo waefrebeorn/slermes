@@ -666,9 +666,6 @@ void _log_tick_yield_once(void) { }
 /* PoP: _acquire_tick_lock_or_degrade @ cron/scheduler_tick.py:_acquire_tick_lock_or_degrade */
 void _acquire_tick_lock_or_degrade(void) { }
 
-/* PoP: _advance_or_drop_recurring @ cron/scheduler_tick.py:_advance_or_drop_recurring */
-void _advance_or_drop_recurring(void) { }
-
 /* PoP: _pre_dispatch_housekeeping @ cron/scheduler_tick.py:_pre_dispatch_housekeeping */
 void _pre_dispatch_housekeeping(void) { }
 
