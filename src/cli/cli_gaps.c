@@ -1179,33 +1179,6 @@ void take(void) { }
 /* PoP: compose @ gateway/session_retry_admission.py:compose */
 void compose(void) { }
 
-/* PoP: owned_by @ gateway/session_server_requests.py:owned_by */
-void owned_by(void) { }
-
-/* PoP: may_settle @ gateway/session_server_requests.py:may_settle */
-void may_settle(void) { }
-
-/* PoP: is_response_frame @ gateway/session_server_requests.py:is_response_frame */
-void is_response_frame(void) { }
-
-/* PoP: ask_viewer @ gateway/session_server_requests.py:ask_viewer */
-void ask_viewer(void) { }
-
-/* PoP: ask_viewer_result @ gateway/session_server_requests.py:ask_viewer_result */
-void ask_viewer_result(void) { }
-
-/* PoP: open_requests @ gateway/session_server_requests.py:open_requests */
-void open_requests(void) { }
-
-/* PoP: withdraw @ gateway/session_server_requests.py:withdraw */
-void withdraw(void) { }
-
-/* PoP: lock_answer @ gateway/session_server_requests.py:lock_answer */
-void lock_answer(void) { }
-
-/* PoP: _ask @ gateway/session_server_requests.py:_ask */
-void _ask(void) { }
-
 /* PoP: _at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
 void _at_block_boundary(void) { }
 
