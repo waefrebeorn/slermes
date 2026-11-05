@@ -1176,20 +1176,11 @@ void _cli_config_defaults(void) { }
 /* PoP: _init_logging_and_display_from_config @ hermes_cli/cli_config_load.py:_init_logging_and_display_from_config */
 void _init_logging_and_display_from_config(void) { }
 
-/* PoP: _last_output_line @ hermes_cli/cli_process_dock.py:_last_output_line */
-void _last_output_line(void) { }
-
-/* PoP: process_status @ hermes_cli/cli_process_dock.py:process_status */
-void process_status(void) { }
-
 /* PoP: process_rows @ hermes_cli/cli_process_dock.py:process_rows */
 void process_rows(void) { }
 
 /* PoP: process_activity @ hermes_cli/cli_process_dock.py:process_activity */
 void process_activity(void) { }
-
-/* PoP: process_glyph @ hermes_cli/cli_process_dock.py:process_glyph */
-void process_glyph(void) { }
 
 /* PoP: process_tail @ hermes_cli/cli_process_dock.py:process_tail */
 void process_tail(void) { }
