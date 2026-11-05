@@ -915,33 +915,6 @@ void post_setup(void) { }
 /* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
 void doctor_checks(void) { }
 
-/* PoP: _normalize_text @ agent/vault_login_classifier.py:_normalize_text */
-void _normalize_text(void) { }
-
-/* PoP: classify_login_control @ agent/vault_login_classifier.py:classify_login_control */
-void classify_login_control(void) { }
-
-/* PoP: classify_otp_controls @ agent/vault_login_classifier.py:classify_otp_controls */
-void classify_otp_controls(void) { }
-
-/* PoP: select_password_fill @ agent/vault_login_classifier.py:select_password_fill */
-void select_password_fill(void) { }
-
-/* PoP: classify_checkout_control @ agent/vault_login_classifier.py:classify_checkout_control */
-void classify_checkout_control(void) { }
-
-/* PoP: select_checkout_fills @ agent/vault_login_classifier.py:select_checkout_fills */
-void select_checkout_fills(void) { }
-
-/* PoP: build_otp_fills @ agent/vault_login_classifier.py:build_otp_fills */
-void build_otp_fills(void) { }
-
-/* PoP: build_inspection_js @ agent/vault_login_classifier.py:build_inspection_js */
-void build_inspection_js(void) { }
-
-/* PoP: build_fill_js @ agent/vault_login_classifier.py:build_fill_js */
-void build_fill_js(void) { }
-
 /* PoP: _text @ cron/blueprint_plugins.py:_text */
 void _text(void) { }
 

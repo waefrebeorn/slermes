@@ -42,8 +42,9 @@ pick_python() {
 PYBIN="$(pick_python)" || { echo "ORACLE $NAME: no python with working hashlib" >&2; exit 1; }
 # A link failure must be fatal — piping gcc through `grep ... || true` let a
 # broken link reach the oracle as "0 cases".
+OBJARG="${MINIMAL_OBJS:-@$OBJSET}"
 gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
-  "tests/t_port_$NAME.c" "@$OBJSET" -o ".testbin/tt_$NAME" \
+  "tests/t_port_$NAME.c" $OBJARG -o ".testbin/tt_$NAME" \
   -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
   -Wl,--allow-multiple-definition
 SLERMES_HOME="$TMPH" HOME="$TMPH" "./.testbin/tt_$NAME" 2>/dev/null | "$PYBIN" "tests/$ORACLE"
