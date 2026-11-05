@@ -852,15 +852,6 @@ void close_all(void) { }
 /* PoP: _shutdown_async @ gateway/platforms/api_server_memory_sessions.py:_shutdown_async */
 void _shutdown_async(void) { }
 
-/* PoP: validate_coalesce_config @ gateway/platforms/webhook_coalesce.py:validate_coalesce_config */
-void validate_coalesce_config(void) { }
-
-/* PoP: prompt_with_note @ gateway/platforms/webhook_coalesce.py:prompt_with_note */
-void prompt_with_note(void) { }
-
-/* PoP: group_key @ gateway/platforms/webhook_coalesce.py:group_key */
-void group_key(void) { }
-
 /* PoP: _timer @ gateway/platforms/webhook_coalesce.py:_timer */
 void _timer(void) { }
 
