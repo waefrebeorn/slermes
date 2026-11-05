@@ -978,9 +978,6 @@ void mark_producer_admission(void) { }
 /* PoP: producer_lifecycle_open @ gateway/session_producer_lifecycle.py:_open */
 void producer_lifecycle_open(void) { }
 
-/* PoP: _executed_outcome @ gateway/session_producer_lifecycle.py:_executed_outcome */
-void _executed_outcome(void) { }
-
 /* PoP: producer_turn @ gateway/session_producer_lifecycle.py:producer_turn */
 void producer_turn(void) { }
 
