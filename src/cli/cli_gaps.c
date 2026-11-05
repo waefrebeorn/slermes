@@ -738,9 +738,6 @@ void _live_dm_allow_from(void) { }
 /* PoP: _authority @ gateway/platforms/api_server_authority_runs.py:_authority */
 void _authority(void) { }
 
-/* PoP: store_error_response @ gateway/platforms/api_server_authority_runs.py:store_error_response */
-void store_error_response(void) { }
-
 /* PoP: continued_session @ gateway/platforms/api_server_authority_runs.py:continued_session */
 void continued_session(void) { }
 
