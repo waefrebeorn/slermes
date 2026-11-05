@@ -603,9 +603,6 @@ void _record_compression_effect(void) { }
 /* PoP: _record_committed_compression_effect @ agent/context_compressor_telemetry.py:_record_committed_compression_effect */
 void _record_committed_compression_effect(void) { }
 
-/* PoP: configured_backend @ agent/delegation_registry.py:configured_backend */
-void configured_backend(void) { }
-
 /* PoP: register_delegation_provider @ agent/delegation_registry.py:register_delegation_provider */
 void register_delegation_provider(void) { }
 
@@ -1181,9 +1178,6 @@ void _is_known_provider(void) { }
 
 /* PoP: _unknown_provider_exit @ hermes_cli/auth_commands.py:_unknown_provider_exit */
 void _unknown_provider_exit(void) { }
-
-/* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
-void _display_source(void) { }
 
 /* PoP: generation_of @ hermes_cli/browser_credential.py:generation_of */
 void generation_of(void) { }
