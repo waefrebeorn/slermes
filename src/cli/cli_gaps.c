@@ -702,9 +702,6 @@ void host_gateway_serving(void) { }
 /* PoP: retryable_ingress @ gateway/parked_route_refusal.py:retryable_ingress */
 void retryable_ingress(void) { }
 
-/* PoP: _notice_due @ gateway/parked_route_refusal.py:_notice_due */
-void _notice_due(void) { }
-
 /* PoP: drop_rejected_route @ gateway/parked_route_refusal.py:drop_rejected_route */
 void drop_rejected_route(void) { }
 
