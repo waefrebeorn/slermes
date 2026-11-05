@@ -684,17 +684,8 @@ void post_setup(void) { }
 /* PoP: doctor_checks @ agent/terminal_env_provider.py:doctor_checks */
 void doctor_checks(void) { }
 
-/* PoP: _text @ cron/blueprint_plugins.py:_text */
-void _text(void) { }
-
-/* PoP: _strings @ cron/blueprint_plugins.py:_strings */
-void _strings(void) { }
-
 /* PoP: _slot @ cron/blueprint_plugins.py:_slot */
 void _slot(void) { }
-
-/* PoP: _placeholders @ cron/blueprint_plugins.py:_placeholders */
-void _placeholders(void) { }
 
 /* PoP: build_plugin_blueprint @ cron/blueprint_plugins.py:build_plugin_blueprint */
 void build_plugin_blueprint(void) { }
