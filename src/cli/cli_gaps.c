@@ -669,27 +669,6 @@ void redirect_request(void) { }
 /* PoP: _deliver @ agent/outbound_webhooks.py:_deliver */
 void _deliver(void) { }
 
-/* PoP: is_terminal_compression_provenance @ agent/session_activity.py:is_terminal_compression_provenance */
-void is_terminal_compression_provenance(void) { }
-
-/* PoP: bound_activity_description @ agent/session_activity.py:bound_activity_description */
-void bound_activity_description(void) { }
-
-/* PoP: normalize_activity_provenance @ agent/session_activity.py:normalize_activity_provenance */
-void normalize_activity_provenance(void) { }
-
-/* PoP: format_iteration_progress @ agent/session_activity.py:format_iteration_progress */
-void format_iteration_progress(void) { }
-
-/* PoP: reset_session_activity_persist_window @ agent/session_activity.py:reset_session_activity_persist_window */
-void reset_session_activity_persist_window(void) { }
-
-/* PoP: build_activity_snapshot @ agent/session_activity.py:build_activity_snapshot */
-void build_activity_snapshot(void) { }
-
-/* PoP: measure @ agent/session_activity.py:measure */
-void measure(void) { }
-
 /* PoP: cache_path_base @ agent/terminal_env_provider.py:cache_path_base */
 void cache_path_base(void) { }
 
