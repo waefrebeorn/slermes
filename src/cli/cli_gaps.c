@@ -1086,30 +1086,6 @@ void host_gateway_topology(void) { }
 /* PoP: host_gateway_serving @ gateway/host_topology.py:host_gateway_serving */
 void host_gateway_serving(void) { }
 
-/* PoP: _policy_digest @ gateway/hosted_room_execution_policy.py:_policy_digest */
-void _policy_digest(void) { }
-
-/* PoP: _identifier @ gateway/hosted_room_execution_policy.py:_identifier */
-void _identifier(void) { }
-
-/* PoP: as_mapping @ gateway/hosted_room_execution_policy.py:as_mapping */
-void as_mapping(void) { }
-
-/* PoP: _served_profile_scope @ gateway/hosted_room_execution_policy.py:_served_profile_scope */
-void _served_profile_scope(void) { }
-
-/* PoP: execution_policy_mapping @ gateway/hosted_room_execution_policy.py:execution_policy_mapping */
-void execution_policy_mapping(void) { }
-
-/* PoP: bind_room_execution_policy @ gateway/hosted_room_execution_policy.py:bind_room_execution_policy */
-void bind_room_execution_policy(void) { }
-
-/* PoP: reset_room_execution_policy @ gateway/hosted_room_execution_policy.py:reset_room_execution_policy */
-void reset_room_execution_policy(void) { }
-
-/* PoP: current_room_execution_policy @ gateway/hosted_room_execution_policy.py:current_room_execution_policy */
-void current_room_execution_policy(void) { }
-
 /* PoP: _nonneg_int @ gateway/memory_status.py:_nonneg_int */
 void _nonneg_int(void) { }
 

@@ -24,13 +24,29 @@ case "$(uname -s)" in
 esac
 TMPH="$(pwd)/.testbin/oracle_tmp_$NAME"
 mkdir -p "$TMPH/.hermes/cron"
+# Pick an interpreter with a working hashlib: the MSYS2 /mingw64 python3 that
+# PATH resolves to first has a broken OpenSSL binding (blake2b/blake2s raise at
+# import), which would make a sha256 oracle fail for an unrelated reason.
+pick_python() {
+  for cand in "${PYTHON_BIN:-}" python python3 py \
+              /c/Users/*/AppData/Local/hermes/tools/python-*/python.exe; do
+    [ -n "$cand" ] || continue
+    if { command -v "$cand" >/dev/null 2>&1 || [ -x "$cand" ]; } &&
+       "$cand" -c "import hashlib,json; hashlib.sha256(b'x').hexdigest()" >/dev/null 2>&1; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+  done
+  return 1
+}
+PYBIN="$(pick_python)" || { echo "ORACLE $NAME: no python with working hashlib" >&2; exit 1; }
 # A link failure must be fatal — piping gcc through `grep ... || true` let a
 # broken link reach the oracle as "0 cases".
 gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
   "tests/t_port_$NAME.c" "@$OBJSET" -o ".testbin/tt_$NAME" \
   -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
   -Wl,--allow-multiple-definition
-SLERMES_HOME="$TMPH" HOME="$TMPH" "./.testbin/tt_$NAME" 2>/dev/null | python3 "tests/$ORACLE"
+SLERMES_HOME="$TMPH" HOME="$TMPH" "./.testbin/tt_$NAME" 2>/dev/null | "$PYBIN" "tests/$ORACLE"
 RC=$?
 rm -rf "$TMPH"
 exit $RC
