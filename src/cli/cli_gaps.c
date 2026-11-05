@@ -762,15 +762,6 @@ void _timer(void) { }
 /* PoP: _settle @ gateway/platforms/webhook_coalesce.py:_settle */
 void _settle(void) { }
 
-/* PoP: _err @ gateway/plugin_messages.py:_err */
-void _err(void) { }
-
-/* PoP: _fit @ gateway/plugin_messages.py:_fit */
-void _fit(void) { }
-
-/* PoP: _supports_edit @ gateway/plugin_messages.py:_supports_edit */
-void _supports_edit(void) { }
-
 /* PoP: bind_live_source @ gateway/plugin_messages.py:bind_live_source */
 void bind_live_source(void) { }
 
