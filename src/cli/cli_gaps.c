@@ -909,27 +909,6 @@ void _publish_local(void) { }
 /* PoP: edit @ gateway/plugin_messages.py:edit */
 void edit(void) { }
 
-/* PoP: _is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
-void _is_whatsapp_non_user_chat(void) { }
-
-/* PoP: _whatsapp_user_chat_ids_match @ gateway/profile_routing.py:_whatsapp_user_chat_ids_match */
-void _whatsapp_user_chat_ids_match(void) { }
-
-/* PoP: specificity @ gateway/profile_routing.py:specificity */
-void specificity(void) { }
-
-/* PoP: _bot_profile_key @ gateway/profile_routing.py:_bot_profile_key */
-void _bot_profile_key(void) { }
-
-/* PoP: _coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
-void _coerce_route_id(void) { }
-
-/* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
-void parse_profile_routes(void) { }
-
-/* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
-void match_profile_route(void) { }
-
 /* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
 void _probe_state_db(void) { }
 
