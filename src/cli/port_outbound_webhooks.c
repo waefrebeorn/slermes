@@ -6,6 +6,7 @@
 #include "hermes_json.h"
 #include "../lib/libcrypto/crypto.h"
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -102,5 +103,189 @@ char *ow_build_delivery_json(const char *event, const char *url,
 
     out = json_serialize(d);
     json_free(d);
+    return out;
+}
+
+/* ---- _parse_single_target ---- */
+
+static const int OW_MAX_TIMEOUT = 60;
+
+static int ow_in_list(const json_t *arr, const char *s)
+{
+    size_t i;
+    if (!arr || arr->type != JSON_ARRAY || !s) return 0;
+    for (i = 0; i < arr->c.count; i++) {
+        const json_t *it = arr->c.items[i];
+        if (it && it->type == JSON_STRING && it->str_val &&
+            strcmp(it->str_val, s) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+static char *ow_trimdup(const char *s)
+{
+    const char *b, *e;
+    char *o;
+    size_t n;
+    if (!s) return NULL;
+    b = s;
+    while (*b && isspace((unsigned char)*b)) b++;
+    e = b + strlen(b);
+    while (e > b && isspace((unsigned char)e[-1])) e--;
+    n = (size_t)(e - b);
+    o = malloc(n + 1);
+    if (o) {
+        memcpy(o, b, n);
+        o[n] = '\0';
+    }
+    return o;
+}
+
+/* Python-style int(text): optional sign + digits, leading/trailing whitespace
+ * tolerated, anything else invalid. */
+static int ow_parse_int_str(const char *s, long *out)
+{
+    const char *p = s;
+    long v = 0;
+    int neg = 0, nd = 0;
+    if (!s) return 0;
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (*p == '+' || *p == '-') { neg = (*p == '-'); p++; }
+    if (*p < '0' || *p > '9') return 0;
+    while (*p >= '0' && *p <= '9') { v = v * 10 + (*p - '0'); nd = 1; p++; }
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (*p != '\0') return 0;
+    if (!nd) return 0;
+    *out = neg ? -v : v;
+    return 1;
+}
+
+/* int(timeout_raw): number truncates toward zero; bool -> 1; string parsed
+ * strictly; null/object/array invalid. Returns 0 on failure. */
+static int ow_int_value(const json_t *n, long *out)
+{
+    if (!n) return 0;
+    switch (n->type) {
+    case JSON_NUMBER: *out = (long)n->num_val; return 1;
+    case JSON_BOOL: *out = n->bool_val ? 1 : 0; return 1;
+    case JSON_STRING:
+        return ow_parse_int_str(n->str_val ? n->str_val : "", out);
+    default: return 0;
+    }
+}
+
+char *ow_parse_single_target(const char *raw_json, const char *valid_hooks_json,
+                             const char *tool_scoped_json, const char *env_secret,
+                             int default_timeout)
+{
+    json_t *raw = raw_json ? json_parse(raw_json, NULL) : NULL;
+    json_t *valid = valid_hooks_json ? json_parse(valid_hooks_json, NULL) : NULL;
+    json_t *tsc = tool_scoped_json ? json_parse(tool_scoped_json, NULL) : NULL;
+    char *out = NULL;
+    json_t *target = NULL;
+    const json_t *urln, *evr, *mat, *traw, *nam, *secenv, *sec;
+    char *url = NULL, *name = NULL;
+    const char *secret;
+    json_t *events = NULL;
+    long timeout;
+    int has_timeout = 0, evcount = 0;
+
+    if (!raw || raw->type != JSON_OBJECT) goto done;
+
+    urln = json_obj_get(raw, "url");
+    if (!urln || urln->type != JSON_STRING) goto done;
+    url = ow_trimdup(urln->str_val ? urln->str_val : "");
+    if (!url || url[0] == '\0') goto done;
+    {
+        /* strip && lowercase startswith http:// or https:// */
+        char lo[1024]; size_t i = 0;
+        for (i = 0; i + 1 < sizeof(lo) && url[i]; i++)
+            lo[i] = (char)tolower((unsigned char)url[i]);
+        lo[i] = '\0';
+        if (strncmp(lo, "http://", 7) != 0 && strncmp(lo, "https://", 8) != 0)
+            goto done;
+    }
+
+    evr = json_obj_get(raw, "events");
+    if (!evr || evr->type != JSON_ARRAY || evr->c.count == 0) goto done;
+    events = json_array();
+    {
+        size_t i;
+        for (i = 0; i < evr->c.count; i++) {
+            const json_t *it = evr->c.items[i];
+            if (it && it->type == JSON_STRING && it->str_val &&
+                ow_in_list(valid, it->str_val))
+                json_array_append(events, json_string(it->str_val));
+        }
+        evcount = events->c.count;
+    }
+    if (evcount == 0) { json_free(events); events = NULL; goto done; }
+
+    has_timeout = 0;
+    traw = json_obj_get(raw, "timeout");
+    if (traw) has_timeout = ow_int_value(traw, &timeout);
+    if (!has_timeout) timeout = default_timeout;
+    if (timeout < 1) timeout = 1;
+    if (timeout > OW_MAX_TIMEOUT) timeout = OW_MAX_TIMEOUT;
+
+    nam = json_obj_get(raw, "name");
+    if (nam && nam->type == JSON_STRING)
+        name = ow_trimdup(nam->str_val ? nam->str_val : "");
+    if (!name) name = strdup("");
+
+    /* matcher: non-str -> None; str but no tool-scoped event -> None */
+    mat = json_obj_get(raw, "matcher");
+    if (mat && mat->type != JSON_STRING) mat = NULL;
+    if (mat) {
+        size_t i; int scoped = 0;
+        if (events)
+            for (i = 0; i < (size_t)evcount; i++) {
+                const json_t *it = events->c.items[i];
+                if (it && it->str_val && ow_in_list(tsc, it->str_val)) { scoped = 1; break; }
+            }
+        if (!scoped) mat = NULL;
+    }
+
+    /* secret_env (preferred) else inline secret */
+    secret = NULL;
+    secenv = json_obj_get(raw, "secret_env");
+    if (secenv && secenv->type == JSON_STRING) {
+        char *se = ow_trimdup(secenv->str_val ? secenv->str_val : "");
+        int nonempty = se && se[0];
+        if (nonempty) {
+            secret = (env_secret && env_secret[0]) ? env_secret : NULL;
+        } else {
+            sec = json_obj_get(raw, "secret");
+            secret = (sec && sec->type == JSON_STRING && sec->str_val && sec->str_val[0])
+                     ? sec->str_val : NULL;
+        }
+        free(se);
+    } else {
+        sec = json_obj_get(raw, "secret");
+        secret = (sec && sec->type == JSON_STRING && sec->str_val && sec->str_val[0])
+                 ? sec->str_val : NULL;
+    }
+
+    target = json_object();
+    json_set(target, "url", json_string(url));
+    json_set(target, "events", events); /* steals */
+    events = NULL;
+    json_set(target, "name", json_string(name));
+    if (secret) json_set(target, "secret", json_string(secret));
+    if (mat) {
+        json_set(target, "matcher", json_string(mat->str_val ? mat->str_val : ""));
+    }
+    json_set(target, "timeout", json_int((int)timeout));
+    out = json_serialize(target);
+
+done:
+    free(url);
+    free(name);
+    if (target) json_free(target);
+    if (events) json_free(events);
+    if (raw) json_free(raw);
+    if (valid) json_free(valid);
+    if (tsc) json_free(tsc);
     return out;
 }

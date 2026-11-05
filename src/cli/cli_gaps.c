@@ -642,10 +642,6 @@ void iter_configured_targets(void) { }
 /* PoP: re_register_config_hooks @ agent/outbound_webhooks.py:re_register_config_hooks */
 void re_register_config_hooks(void) { }
 
-/* PoP: _parse_single_target @ agent/outbound_webhooks.py:_parse_single_target */
-void _parse_single_target(void) { }
-
-
 /* PoP: _enqueue @ agent/outbound_webhooks.py:_enqueue */
 void _enqueue(void) { }
 

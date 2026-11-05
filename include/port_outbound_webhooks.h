@@ -22,4 +22,13 @@ char *ow_build_delivery_json(const char *event, const char *url,
                              const char *label, const char *secret, int timeout,
                              const char *body, const char *delivery_id);
 
+/* _parse_single_target: validate one hooks.outbound entry (raw_json object)
+ * against the valid-events and tool-scoped-events sets and a resolved
+ * env secret. Returns a malloc'd JSON object
+ * {"url","events":[...],"name","secret"?, "matcher"?, "timeout"} or NULL when
+ * the entry is rejected. Caller frees. */
+char *ow_parse_single_target(const char *raw_json, const char *valid_hooks_json,
+                             const char *tool_scoped_json, const char *env_secret,
+                             int default_timeout);
+
 #endif /* PORT_OUTBOUND_WEBHOOKS_H */

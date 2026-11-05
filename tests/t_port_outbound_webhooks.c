@@ -76,5 +76,74 @@ int main(void)
         printf(",\"out\":%s}\n", out ? out : "null");
         free(out);
     }
+
+    /* _parse_single_target: validate one hooks.outbound entry. */
+    static const char *const PARS[][7] = {
+        /* raw, valid, tscoped, env, def */
+        {"{\"url\":\" https://x.io/hook \",\"events\":[\"pre_tool_call\",\"on_session_end\"],\"name\":\"alias\",\"matcher\":\"bash\",\"secret\":\"s\",\"timeout\":\"30\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"pre_tool_call\",\"bogus\"]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"bogus\"]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"matcher\":\"..\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"pre_tool_call\"],\"matcher\":5}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"timeout\":150}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"timeout\":-5}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"timeout\":12.7}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"timeout\":\"abc\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"pre_tool_call\"],\"secret_env\":\"OW_SECRET\",\"timeout\":\"5\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "ENVVALUE", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"pre_tool_call\"],\"secret_env\":\"UNSET_VAR\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"pre_tool_call\"],\"secret_env\":\"  \",\"secret\":\"inline\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"events\":[\"on_session_end\"]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"ftp://x\",\"events\":[\"on_session_end\"]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"   \",\"events\":[\"on_session_end\"]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[]}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":\"on_session_end\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+        {"null", "[\"pre_tool_call\"]", "[\"pre_tool_call\"]", "", "10"},
+        {"{\"url\":\"https://h\",\"events\":[\"on_session_end\"],\"name\":5,\"matcher\":\"mm\"}",
+         "[\"pre_tool_call\",\"on_session_end\",\"session_start\"]",
+         "[\"pre_tool_call\",\"post_tool_call\"]", "", "10"},
+    };
+    for (size_t i = 0; i < sizeof(PARS) / sizeof(PARS[0]); i++) {
+        char *out = ow_parse_single_target(PARS[i][0], PARS[i][1], PARS[i][2],
+                                           PARS[i][3], atoi(PARS[i][4]));
+        printf("{\"family\":\"par\",\"case\":%zu,\"raw\":%s,\"valid\":%s,"
+               "\"tscoped\":%s,\"env\":", i, PARS[i][0], PARS[i][1], PARS[i][2]);
+        jstr(PARS[i][3]);
+        printf(",\"def\":%s,\"out\":%s}\n", PARS[i][4], out ? out : "null");
+        free(out);
+    }
     return 0;
 }
