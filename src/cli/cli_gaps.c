@@ -762,21 +762,6 @@ void host_gateway_topology(void) { }
 /* PoP: host_gateway_serving @ gateway/host_topology.py:host_gateway_serving */
 void host_gateway_serving(void) { }
 
-/* PoP: _nonneg_int @ gateway/memory_status.py:_nonneg_int */
-void _nonneg_int(void) { }
-
-/* PoP: _mb @ gateway/memory_status.py:_mb */
-void _mb(void) { }
-
-/* PoP: classify_pressure @ gateway/memory_status.py:classify_pressure */
-void classify_pressure(void) { }
-
-/* PoP: _read_state_files @ gateway/memory_status.py:_read_state_files */
-void _read_state_files(void) { }
-
-/* PoP: collect_memory_status @ gateway/memory_status.py:collect_memory_status */
-void collect_memory_status(void) { }
-
 /* PoP: retryable_ingress @ gateway/parked_route_refusal.py:retryable_ingress */
 void retryable_ingress(void) { }
 
