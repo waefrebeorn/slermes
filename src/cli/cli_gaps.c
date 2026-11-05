@@ -412,9 +412,6 @@ void hermes_cli_plugins_admission_admit_plugin_set_change(void) { }
 /* PoP: _collect_skills @ hermes_cli/profile_describer.py:_collect_skills */
 void hermes_cli_profile_describer_collect_skills(void) { }
 
-/* PoP: _sample_skills @ hermes_cli/profile_describer.py:_sample_skills */
-void hermes_cli_profile_describer_sample_skills(void) { }
-
 /* PoP: finish_update @ hermes_cli/update_finish.py:finish_update */
 void hermes_cli_update_finish_finish_update(void) { }
 
@@ -620,9 +617,6 @@ void image_cost_context(void) { }
 
 /* PoP: bind_image_token_cost @ agent/image_token_cost.py:bind_image_token_cost */
 void bind_image_token_cost(void) { }
-
-/* PoP: count_images @ agent/image_token_cost.py:count_images */
-void count_images(void) { }
 
 /* PoP: calibrate_from_usage @ agent/image_token_cost.py:calibrate_from_usage */
 void calibrate_from_usage(void) { }
