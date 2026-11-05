@@ -1342,3 +1342,58 @@ file", so the `--version` smoke test and the CLI Tests suite cannot run. Small
 test binaries and oracle harnesses still execute, so the source gate, the
 oracles and `parity_reality` remain valid evidence. Turning SAC off is a
 one-way, user-only decision.
+
+
+---
+
+# Slermes Parity — Checkpoint 2 (2026-11-05, continued)
+
+Same session, second wind. Twelve commits, each one: read the Python, write C at
+the Python signature, oracle-verify against the LIVE module, delete the fake
+`cli_gaps.c` body, run the gates.
+
+## Closed
+
+| module | oracle |
+|---|---|
+| hermes_cli/vault_login_classifier.py (9 fns + generated JS templates) | 53/0, 11/0 |
+| hermes_cli/backup_sqlite.py (WAL-safe snapshot, prune, sweep) | 9/0 |
+| cron/notepad.py (KV, caps, prompt section) | 18/0 |
+| hermes_cli/auth_qwen.py (file/env half) | 21/0 |
+| agent/anthropic_credentials.py (classification core) | 50/0 |
+| agent/acp_client.py (JSON-RPC / session-model shaping) | 51/0 |
+
+## Numbers
+
+| metric | session start | now |
+|---|---|---|
+| implemented (reality) | 3,184 | 3,265 |
+| placeholder only | 843 | 681 |
+| stubs left in cli_gaps.c | 524 | 403 |
+
+## Bugs the oracles caught (all compiled clean)
+
+- autocomplete tokens run through the label normaliser: `current-password` ->
+  `current password`, so exact matches degraded and the hard exclusions stopped
+  working;
+- `str(SystemExit(3))` is `"3"`, not `"SystemExit"`;
+- snapshot stamps without microseconds collided, so the keep-two prune kept one;
+- `updated_at` naive vs AWARE (`-05:00`), and `localtime()` reporting `+00:00`
+  under MSYS because `TZ` is unset — the port reads the Windows clock instead;
+- `int()` vs `strtod()`: `"1e12"` is a valid float and an invalid int, and any
+  conversion failure means "expiring";
+- `_effective_timeout` reads ATTRIBUTES off an httpx.Timeout, so a JSON-keyed C
+  version disagreed on every object — the port takes a component struct.
+
+## Oracle driver (tests/run_one_oracle.sh)
+
+Now: no swallowed link failures, `@response` object list, `.testbin/` output,
+per-platform libs, an interpreter with a working hashlib, `MINIMAL_OBJS` for
+small links, and a **relink at -O1 when Smart App Control refuses the fresh
+binary** (rc 126, empty output) — which is also why one oracle silently
+reported "0 cases" for a while.
+
+## Still open
+
+403 stubs, ~31.9k features missing. Smart App Control still refuses the freshly
+linked 47 MB `slermes.exe` intermittently (user-only decision to disable).
