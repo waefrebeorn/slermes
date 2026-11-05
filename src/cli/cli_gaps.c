@@ -588,51 +588,6 @@ void is_cancellation(void) { }
 /* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
 void error_class(void) { }
 
-/* PoP: _acp_supported @ agent/acp_client.py:_acp_supported */
-void _acp_supported(void) { }
-
-/* PoP: _jsonrpc_result @ agent/acp_client.py:_jsonrpc_result */
-void _jsonrpc_result(void) { }
-
-/* PoP: _never_disabled @ agent/acp_client.py:_never_disabled */
-void _never_disabled(void) { }
-
-/* PoP: _enabled_id_list @ agent/acp_client.py:_enabled_id_list */
-void _enabled_id_list(void) { }
-
-/* PoP: _model_config_option @ agent/acp_client.py:_model_config_option */
-void _model_config_option(void) { }
-
-/* PoP: _session_model_ids @ agent/acp_client.py:_session_model_ids */
-void _session_model_ids(void) { }
-
-/* PoP: _legacy_session_model_ids @ agent/acp_client.py:_legacy_session_model_ids */
-void _legacy_session_model_ids(void) { }
-
-/* PoP: _model_selection_request @ agent/acp_client.py:_model_selection_request */
-void _model_selection_request(void) { }
-
-/* PoP: _effective_timeout @ agent/acp_client.py:_effective_timeout */
-void _effective_timeout(void) { }
-
-/* PoP: _fs_read_text_file @ agent/acp_client.py:_fs_read_text_file */
-void _fs_read_text_file(void) { }
-
-/* PoP: _fs_write_text_file @ agent/acp_client.py:_fs_write_text_file */
-void _fs_write_text_file(void) { }
-
-/* PoP: model_entry_disabled @ agent/acp_client.py:model_entry_disabled */
-void model_entry_disabled(void) { }
-
-/* PoP: early_exit_error @ agent/acp_client.py:early_exit_error */
-void early_exit_error(void) { }
-
-/* PoP: _request_error @ agent/acp_client.py:_request_error */
-void _request_error(void) { }
-
-/* PoP: _missing_command_hint @ agent/acp_client.py:_missing_command_hint */
-void _missing_command_hint(void) { }
-
 /* PoP: _timeout_fallback_prompt @ agent/compression_facade.py:_timeout_fallback_prompt */
 void _timeout_fallback_prompt(void) { }
 
