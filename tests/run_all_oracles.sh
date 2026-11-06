@@ -61,6 +61,7 @@ declare -A DEPS=(
   [url_safety_helpers]="src/tools/port_url_safety_helpers.o lib/libjson/json.o"
   [agent_thinking_timeout_guidance]="src/agent/port_agent_thinking_timeout_guidance.o src/agent/port_agent_reasoning_timeouts.o lib/libjson/json.o"
   [gateway_platform_activation]="src/cli/port_gateway_platform_activation.o lib/libjson/json.o"
+  [agent_intent_ack]="src/agent/port_agent_intent_ack.o lib/libjson/json.o"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
