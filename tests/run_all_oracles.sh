@@ -51,6 +51,7 @@ declare -A DEPS=(
   [input_sanitize]="src/cli/port_input_sanitize.o lib/libjson/json.o"
   [agent_reasoning_timeouts]="src/agent/port_agent_reasoning_timeouts.o lib/libjson/json.o"
   [memory_status]="src/cli/port_memory_status.o lib/libjson/json.o"
+  [gateway_signal_format]="FULL"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"

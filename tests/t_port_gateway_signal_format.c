@@ -11,7 +11,7 @@
 
 /* Include the real port directly (it is self-contained: only stdio/stdlib/
  * string/pcre2). This makes the harness a faithful link of the actual code. */
-#include "port_gateway_signal_format.c"
+#include "cli/port_gateway_signal_format.c"
 
 static void emit(const char *input)
 {
