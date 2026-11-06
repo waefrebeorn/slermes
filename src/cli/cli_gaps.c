@@ -804,9 +804,6 @@ void set_local_voice_mode(void) { }
 /* PoP: local_voice_transition @ gateway/session_config.py:local_voice_transition */
 void local_voice_transition(void) { }
 
-/* PoP: session_owned @ gateway/session_connections.py:session_owned */
-void session_owned(void) { }
-
 /* PoP: pending_connection @ gateway/session_connections.py:pending_connection */
 void pending_connection(void) { }
 
