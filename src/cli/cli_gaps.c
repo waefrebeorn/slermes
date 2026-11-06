@@ -898,9 +898,6 @@ void release(void) { }
 /* PoP: invoke_approval_transport @ hermes_cli/approval_transport.py:invoke_approval_transport */
 void invoke_approval_transport(void) { }
 
-/* PoP: _validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
-void _validate_decision(void) { }
-
 /* PoP: __getattr__ @ hermes_cli/auth_constants.py:__getattr__ */
 void __getattr__(void) { }
 
