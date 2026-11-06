@@ -57,6 +57,7 @@ declare -A DEPS=(
   [agent_redact_helpers]="FULL"
   [repetition_guard]="src/cli/port_repetition_guard.o lib/libjson/json.o"
   [agent_retry_utils]="src/agent/port_agent_retry_utils.o lib/libjson/json.o"
+  [agent_ssl_verify]="src/agent/port_agent_ssl_verify.o lib/libjson/json.o"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"

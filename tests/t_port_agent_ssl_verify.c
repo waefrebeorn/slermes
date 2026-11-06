@@ -2,6 +2,15 @@
 #include <stdio.h>
 #include "agent/port_agent_ssl_verify.h"
 
+/* MinGW/CRT: unsetenv is POSIX; declare it when the header omits it so the
+ * harness's env-clearing lines compile under the oracle gate's flags. */
+/* MinGW has no unsetenv libc stub. The env-clearing lines below only set the
+ * resolve(httpx) family's state - which this oracle does NOT verify (runtime-
+ * coupled), so make it a no-op that still links everywhere. */
+#ifndef unsetenv
+#define unsetenv(n) ((void)(n), 0)
+#endif
+
 static const char *js(const char *s) {
     static char bufs[8][256];
     static int bi = 0; char *b = bufs[bi]; bi = (bi + 1) % 8;
