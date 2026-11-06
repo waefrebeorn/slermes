@@ -591,9 +591,6 @@ void _usable(void) { }
 /* PoP: _cache_path @ agent/image_token_cost.py:_cache_path */
 void _cache_path(void) { }
 
-/* PoP: learned_image_token_cost @ agent/image_token_cost.py:learned_image_token_cost */
-void learned_image_token_cost(void) { }
-
 /* PoP: current_image_token_cost @ agent/image_token_cost.py:current_image_token_cost */
 void current_image_token_cost(void) { }
 

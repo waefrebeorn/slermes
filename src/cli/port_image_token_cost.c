@@ -4,6 +4,7 @@
  */
 
 #include "port_image_token_cost.h"
+#include "port_anthropic_credentials.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,3 +114,40 @@ int pic_count_images(const char *messages_json)
     json_free(msgs);
     return total;
 }
+
+/* PoP: pic_learned_image_token_cost @ agent/image_token_cost.py:learned_image_token_cost */
+char *pic_learned_image_token_cost(const char *model, const char *base_url,
+                                   const char *table_json)
+{
+    /* _key(model, base_url) = f"{model or ''}@{base_url_hostname(base_url or '') or ''}" */
+    char *host = anc_base_url_hostname(base_url ? base_url : "");
+    json_t *table = table_json ? json_parse(table_json, NULL) : NULL;
+    json_t *node = NULL;
+    char *key = NULL;
+    char *out;
+    size_t host_len = host ? strlen(host) : 0;
+    size_t model_len = model ? strlen(model) : 0;
+
+    key = malloc(model_len + 1 + host_len + 1);
+    if (!key) { free(host); if (table) json_free(table); return NULL; }
+    memcpy(key, model ? model : "", model_len);
+    key[model_len] = '@';
+    memcpy(key + model_len + 1, host ? host : "", host_len);
+    key[model_len + 1 + host_len] = '\0';
+
+    if (table && table->type == JSON_OBJECT)
+        node = json_obj_get(table, key);
+
+    out = malloc(32);
+    if (out) {
+        if (node && node->type == JSON_NUMBER)
+            sprintf(out, "%lld", (long long)node->num_val);
+        else
+            sprintf(out, "%d", PIC_DEFAULT_IMAGE_TOKEN_COST);
+    }
+    free(key);
+    free(host);
+    if (table) json_free(table);
+    return out;
+}
+

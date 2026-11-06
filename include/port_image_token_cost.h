@@ -26,4 +26,11 @@ int pic_count_image_tokens(const char *msg_json, int cost_per_image);
  * count_images(messages)). Accepts a JSON array of message dicts. */
 int pic_count_images(const char *messages_json);
 
+/* learned_image_token_cost(model, base_url): the learned per-image cost for
+ * model@host else PIC_DEFAULT_IMAGE_TOKEN_COST. table_json is the active
+ * profile's learned cost dict {model@host: cost} (Python _table()); may be NULL
+ * for an unloaded/empty table. Returns malloc'd decimal string, caller frees. */
+char *pic_learned_image_token_cost(const char *model, const char *base_url,
+                                   const char *table_json);
+
 #endif /* PORT_IMAGE_TOKEN_COST_H */
