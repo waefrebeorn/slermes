@@ -1,21 +1,34 @@
-/*
- * t_port_auth_error_copy.c — Oracle harness for hermes_cli/auth_error_copy.py
- * (ported to src/cli/port_auth_error_copy.c).
+/* t_port_auth_error_copy.c — Oracle harness.
+ * Emits the FULL afc_error_t input + host/retry for each case so the oracle can
+ * reconstruct the matching Python exception and replay the live functions.
+ * Line shape: {"case","kind","mess":<json|null>,"type":<json|null>,
+ *   "oauth":<json|null>,"code":<json|null>,"exit":int,
+ *   "host":<json|null>,"retry":<json|null>,
+ *   "signin":<json array|null>,"provider":<json array|null>}
  */
 #include "port_auth_error_copy.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-static void emit_json_str(const char *s)
-{
+static const char *afc_kind_name(afc_kind_t k) {
+    switch (k) {
+    case AFC_OTHER: return "other";
+    case AFC_CANCELLED: return "cancelled";
+    case AFC_NETWORK: return "network";
+    case AFC_SIGNIN_COPY: return "signin_copy";
+    case AFC_DEVICE_EXPIRED: return "device_expired";
+    }
+    return "other";
+}
+
+static void jstr(const char *s) {
     if (!s) { fputs("null", stdout); return; }
     fputc('"', stdout);
     for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
         switch (*p) {
-        case '"':  fputs("\\\"", stdout); break;
+        case '"': fputs("\\\"", stdout); break;
         case '\\': fputs("\\\\", stdout); break;
         case '\n': fputs("\\n", stdout); break;
         case '\r': fputs("\\r", stdout); break;
@@ -28,102 +41,92 @@ static void emit_json_str(const char *s)
     fputc('"', stdout);
 }
 
-static void emit_lines(const char *name, const char *family, json_t *arr)
-{
-    printf("{\"case\":\"%s\",\"family\":\"%s\",\"lines\":", name, family);
-    if (!arr) { fputs("null", stdout); }
-    else {
-        char *s = json_serialize(arr);
-        fputs(s ? s : "null", stdout);
-        free(s);
-        json_free(arr);
-    }
+static void emit_arr(const char *key, json_t *arr) {
+    printf(",\"%s\":", key);
+    if (!arr) fputs("null", stdout);
+    else { char *s = json_serialize(arr); fputs(s ? s : "null", stdout); free(s); json_free(arr); }
+}
+
+static void emit(const char *name, const afc_error_t *e,
+                 const char *host, const char *retry) {
+    printf("{\"case\":\"%s\",\"kind\":\"%s\",\"mess\":", name, afc_kind_name(e->kind));
+    jstr(e->message);
+    printf(",\"type\":");
+    jstr(e->type_name);
+    printf(",\"oauth\":");
+    jstr(e->oauth_code);
+    printf(",\"code\":");
+    jstr(e->exc_code);
+    printf(",\"exit\":%d,\"host\":", e->exit_code);
+    jstr(host);
+    printf(",\"retry\":");
+    jstr(retry);
+    emit_arr("signin", afc_sign_in_failure_lines(e, host ? host : "portal.nousresearch.com",
+                                                 retry ? retry : "hermes portal"));
+    emit_arr("provider", afc_provider_setup_failure_lines(e, retry ? retry : "hermes model"));
     printf("}\n");
 }
 
-static void emit_text(const char *name, const char *family, char *text)
-{
-    printf("{\"case\":\"%s\",\"family\":\"%s\",\"text\":", name, family);
-    emit_json_str(text);
-    printf("}\n");
-    free(text);
-}
-
-static void emit_hint(const char *name, const char *provider)
-{
-    printf("{\"case\":\"%s\",\"family\":\"hint\",\"provider\":", name);
-    emit_json_str(provider);
-    printf(",\"text\":");
-    emit_json_str(afc_unknown_provider_hint(provider));
-    printf("}\n");
-}
-
-int main(void)
-{
+int main(void) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    afc_error_t cancelled = { AFC_CANCELLED, "", "KeyboardInterrupt", NULL, NULL, 0 };
-    afc_error_t eof       = { AFC_CANCELLED, "", "EOFError", NULL, NULL, 0 };
-    afc_error_t sysexit130 = { AFC_OTHER, "", "SystemExit", NULL, NULL, 130 };
-    afc_error_t sysexit_none = { AFC_OTHER, "", "SystemExit", NULL, NULL, -1 };
-    afc_error_t sysexit3  = { AFC_OTHER, "", "SystemExit", NULL, NULL, 3 };
-    afc_error_t net       = { AFC_OTHER, "connection refused", "ConnectError", NULL, NULL, 0 };
-    afc_error_t net_stdlib = { AFC_OTHER, "reset by peer", "ConnectionResetError", NULL, NULL, 0 };
-    afc_error_t generic   = { AFC_OTHER, "boom", "RuntimeError", NULL, NULL, 0 };
+    const char *host = "portal.nousresearch.com", *retry = "hermes portal";
+
+    afc_error_t cancelled  = { AFC_CANCELLED, "operation aborted", "KeyboardInterrupt", NULL, NULL, 0 };
+    afc_error_t eof        = { AFC_CANCELLED, "EOF received", "EOFError", NULL, NULL, 0 };
+    afc_error_t sysexit130 = { AFC_CANCELLED, "user interrupt", "SystemExit", NULL, NULL, 130 };
+    afc_error_t sysexit_n  = { AFC_CANCELLED, "exit", "SystemExit", NULL, NULL, -1 };
+    afc_error_t sysexit3   = { AFC_OTHER, "exit", "SystemExit", NULL, NULL, 3 };
+    afc_error_t net        = { AFC_NETWORK, "connection refused", "ConnectError", NULL, NULL, 0 };
+    afc_error_t net_connerr= { AFC_OTHER, "reset by peer", "ConnectionResetError", NULL, NULL, 0 };
+    afc_error_t net_to     = { AFC_OTHER, "timed out", "ReadTimeout", NULL, NULL, 0 };
+    afc_error_t generic    = { AFC_OTHER, "boom", "RuntimeError", NULL, NULL, 0 };
     afc_error_t generic_empty = { AFC_OTHER, "", "RuntimeError", NULL, NULL, 0 };
-    afc_error_t copy      = { AFC_SIGNIN_COPY, "The sign-in code expired.\n  Details: expired_token: gone",
-                              "SignInCopyError", "expired_token", NULL, 0 };
+    afc_error_t copy       = { AFC_SIGNIN_COPY,
+        "The sign-in code expired.\n  Details: expired_token: gone",
+        "SignInCopyError", "expired_token", NULL, 0 };
     afc_error_t copy_single = { AFC_SIGNIN_COPY, "Sign-in did not complete.",
                                 "SignInCopyError", "", NULL, 0 };
-    afc_error_t dev_exp   = { AFC_DEVICE_EXPIRED, "device code timed out",
-                              "DeviceCodeExpired", NULL, "device_code_timeout", 0 };
-    afc_error_t dev_exp2  = { AFC_OTHER, "timed out", "AuthError", NULL, "timeout", 0 };
+    afc_error_t dev_exp    = { AFC_DEVICE_EXPIRED, "device code timed out",
+                               "DeviceCodeExpired", NULL, "device_code_timeout", 0 };
+    afc_error_t dev_exp2   = { AFC_OTHER, "timed out", "AuthError", NULL, "timeout", 0 };
+    afc_error_t net_custom = { AFC_NETWORK, "unreachable", "ConnectionError", NULL, NULL, 0 };
 
-    struct { const char *name; const afc_error_t *e; } signin[] = {
-        { "cancelled", &cancelled },
-        { "eof", &eof },
-        { "sysexit130", &sysexit130 },
-        { "sysexit_none", &sysexit_none },
-        { "sysexit3", &sysexit3 },
-        { "network", &net },
-        { "network_stdlib", &net_stdlib },
-        { "generic", &generic },
-        { "generic_empty", &generic_empty },
-        { "signin_copy", &copy },
-        { "signin_copy_single", &copy_single },
-        { "device_expired", &dev_exp },
-        { "device_expired_code2", &dev_exp2 },
+    emit("cancelled", &cancelled, host, retry);
+    emit("eof", &eof, host, retry);
+    emit("sysexit130", &sysexit130, host, retry);
+    emit("sysexit_none", &sysexit_n, host, retry);
+    emit("sysexit3", &sysexit3, host, retry);
+    emit("network", &net, host, retry);
+    emit("network_connerr", &net_connerr, host, retry);
+    emit("network_timeout", &net_to, host, retry);
+    emit("generic", &generic, host, retry);
+    emit("generic_empty", &generic_empty, host, retry);
+    emit("signin_copy", &copy, host, retry);
+    emit("signin_copy_single", &copy_single, host, retry);
+    emit("device_expired", &dev_exp, host, retry);
+    emit("device_expired2", &dev_exp2, host, retry);
+    emit("network_custom", &net_custom, "example.test", "hermes login");
+
+    /* device-flow error text only (no exception) */
+    static const char *const flows[][2] = {
+        { "expired_token", "code expired" },
+        { "access_denied", "user said no" },
+        { "invalid_grant", "bad grant" },
+        { "invalid_client", "unknown app" },
+        { "weird_code", "server exploded" },
+        { "", "no code given" },
     };
-    for (size_t i = 0; i < sizeof(signin) / sizeof(signin[0]); i++) {
-        emit_lines(signin[i].name, "signin",
-                   afc_sign_in_failure_lines(signin[i].e,
-                                             "portal.nousresearch.com",
-                                             "hermes portal"));
-        emit_lines(signin[i].name, "provider",
-                   afc_provider_setup_failure_lines(signin[i].e, "hermes model"));
+    for (size_t i = 0; i < sizeof(flows) / sizeof(flows[0]); i++) {
+        printf("{\"case\":\"flow_%zu\",\"flow\":", i);
+        jstr(flows[i][0]);
+        printf(",\"desc\":");
+        jstr(flows[i][1]);
+        printf(",\"out\":");
+        char *m = afc_device_flow_error(flows[i][0], flows[i][1], "hermes portal");
+        jstr(m);
+        printf("}\n");
+        free(m);
     }
-
-    /* custom host/retry */
-    emit_lines("custom_host", "signin",
-               afc_sign_in_failure_lines(&net, "example.test", "hermes login"));
-
-    emit_text("device_expired_token", "device",
-              afc_device_flow_error("expired_token", "code expired", "hermes portal"));
-    emit_text("device_access_denied", "device",
-              afc_device_flow_error("access_denied", "user said no", "hermes portal"));
-    emit_text("device_invalid_grant", "device",
-              afc_device_flow_error("invalid_grant", "bad grant", "hermes portal"));
-    emit_text("device_invalid_client", "device",
-              afc_device_flow_error("invalid_client", "unknown app", "hermes portal"));
-    emit_text("device_unknown_code", "device",
-              afc_device_flow_error("weird_code", "server exploded", "hermes portal"));
-    emit_text("device_empty_code", "device",
-              afc_device_flow_error("", "no code given", "hermes portal"));
-
-    emit_hint("hint_opencode_free", "opencode-free");
-    emit_hint("hint_free_upper", "  FREE ");
-    emit_hint("hint_opencode_underscore", "opencode_free");
-    emit_hint("hint_other", "openai");
-    emit_hint("hint_null", NULL);
     return 0;
 }
