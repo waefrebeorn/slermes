@@ -567,9 +567,6 @@ void _mirror_result_onto_live_lists(void) { }
 /* PoP: _rebind_caller_session_context @ agent/compression_facade.py:_rebind_caller_session_context */
 void _rebind_caller_session_context(void) { }
 
-/* PoP: _begin_compression_telemetry @ agent/context_compressor_telemetry.py:_begin_compression_telemetry */
-void _begin_compression_telemetry(void) { }
-
 /* PoP: _record_compression_regions @ agent/context_compressor_telemetry.py:_record_compression_regions */
 void _record_compression_regions(void) { }
 
