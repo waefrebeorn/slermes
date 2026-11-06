@@ -112,7 +112,11 @@ int main(void)
         };
         for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
             char *p = anc_credentials_path(cases[i].dir, cases[i].home);
-            printf("{\"family\":\"creds_path\",\"case\":\"%s\",\"out\":", cases[i].name);
+            printf("{\"family\":\"creds_path\",\"case\":\"%s\",\"dir\":", cases[i].name);
+            emit_json_str(cases[i].dir);
+            printf(",\"home\":");
+            emit_json_str(cases[i].home);
+            printf(",\"out\":");
             emit_json_str(p);
             printf("}\n");
             free(p);
