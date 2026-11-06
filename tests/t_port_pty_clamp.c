@@ -1,6 +1,7 @@
 /* t_port_pty_clamp.c */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "port_pty_clamp_helpers.h"
 
 static const char *js(const char *s){static char b[2][512];static int cur=0;char*q=b[cur];cur^=1;char*base=q;*q++='"';for(const char*p=s;*p&&(q-base)<500;p++){if(*p=='"'||*p=='\\')*q++='\\';*q++=*p;}*q++='"';*q=0;return base;}
