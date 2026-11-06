@@ -37,6 +37,8 @@ declare -A DEPS=(
   # oracle name.
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
+  # backfilled: harness/object name differs from the oracle discovery name.
+  [whatsapp_identity]="src/cli/port_gateway_whatsapp_identity.o lib/libjson/json.o"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
   [image_token_cost_lic]="src/cli/port_image_token_cost.o src/cli/port_anthropic_credentials.o lib/libjson/json.o"
