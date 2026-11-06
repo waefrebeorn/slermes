@@ -75,6 +75,7 @@ declare -A DEPS=(
   [relay_media]="src/cli/port_media_labels.o src/cli/port_aux_outcome_event.o lib/libcrypto/crypto.o lib/libjson/json.o"
   [learning_graph]="src/cli/port_learning_graph_helpers.o lib/libjson/json.o"
   [model_cost_guard]="src/cli/port_model_cost_guard.o lib/libjson/json.o"
+  [agent_replay_cleanup]="src/agent/port_agent_replay_cleanup.o lib/libjson/json.o"
 )
 
 fail=0

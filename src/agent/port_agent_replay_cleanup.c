@@ -52,19 +52,72 @@ static bool rc_tool_may_have_side_effect(const char *name)
 
 /* ── Interrupted-tool detection (is_interrupted_tool_result) ── */
 /* PoP: is_interrupted_tool_result @ agent/replay_cleanup.py:is_interrupted_tool_result */
+
+/* Match the executor's interrupt marker LINE:
+ *   ^\[(?:command|execution) interrupted\b[^\n]*\]\s*$   (case-insensitive on the literal)
+ * This is the LAST line of the output; a marker quoted mid-successful-output is
+ * ordinary data. `\b` rejects "interruptedx"; trailing whitespace is allowed. */
+static bool rc_marker_line_match(const char *line)
+{
+    if (!line) return false;
+    const char *p = line;
+    if (*p != '[') return false;
+    p++;
+    const char *kw;
+    if (strncasecmp(p, "command interrupted", 19) == 0) {
+        kw = p + 19;
+    } else if (strncasecmp(p, "execution interrupted", 21) == 0) {
+        kw = p + 21;
+    } else {
+        return false;
+    }
+    /* \b after "interrupted": next char must be a non-word char or end */
+    unsigned char cw = (unsigned char)*kw;
+    if (cw && (isalnum(cw) || cw == '_')) return false;
+    /* scan for a ']' such that everything after it (to end of line) is whitespace */
+    const char *last_close = NULL;
+    for (const char *q = kw; *q && *q != '\n'; q++) {
+        if (*q == ']') last_close = q;
+    }
+    if (!last_close) return false;
+    for (const char *r = last_close + 1; *r && *r != '\n'; r++) {
+        if (!isspace((unsigned char)*r)) return false;
+    }
+    return true;
+}
+
 bool agent_replay_cleanup_is_interrupted_tool_result(const char *content)
 {
     if (!content) return false;
-    char low[8192];
-    size_t n = 0;
-    for (const char *p = content; *p && n + 1 < sizeof(low); p++)
-        low[n++] = (char)tolower((unsigned char)*p);
-    low[n] = '\0';
-    if (strstr(low, "[command interrupted]")) return true;
-    if (strstr(low, "exit_code") && (strstr(low, "130") || strstr(low, "-1"))) {
-        if (strstr(low, "interrupt")) return true;
+    const char *output = content;
+    /* JSON envelope: a dict with a NON-zero exit_code gates on its "output" field;
+       a 0/absent/null exit_code or missing "output" is ordinary successful output. */
+    const char *ls = content;
+    while (*ls == ' ' || *ls == '\t' || *ls == '\n' || *ls == '\r') ls++;
+    if (*ls == '{') {
+        json_t *env = json_parse(content, NULL);
+        if (!env || env->type != JSON_OBJECT) { if (env) json_free(env); return false; }
+        json_t *ec = json_obj_get(env, "exit_code");
+        int ok = 1;
+        if (!ec || ec->type == JSON_NULL ||
+            (ec->type == JSON_NUMBER && ec->num_val == 0)) ok = 0;
+        json_t *out = ec ? json_obj_get(env, "output") : NULL;
+        if (ok && out && out->type == JSON_STRING) {
+            output = out->str_val ? out->str_val : "";
+        } else {
+            json_free(env);
+            return false;
+        }
+        json_free(env);
     }
-    return false;
+    /* last_line = output.rstrip().rsplit("\n",1)[-1] */
+    size_t len = strlen(output);
+    while (len > 0 && isspace((unsigned char)output[len - 1])) len--;
+    const char *last_nl = NULL;
+    for (size_t i = 0; i < len; i++)
+        if (output[i] == '\n') last_nl = output + i;
+    const char *line = last_nl ? last_nl + 1 : output;
+    return rc_marker_line_match(line);
 }
 
 /* Read a message's content as a C string (tool results are plain strings in
