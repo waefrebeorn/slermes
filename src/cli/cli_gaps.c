@@ -481,8 +481,6 @@ int tools_kanban_toolset_context_kanban_toolset_requested(void) { return 0; }
 /* PoP: scoped_kanban_toolset_selection @ tools/kanban_toolset_context.py:scoped_kanban_toolset_selection */
 void tools_kanban_toolset_context_scoped_kanban_toolset_selection(void) { }
 
-/* PoP: _open_regular @ tools/file_operations_native.py:_open_regular */
-void tools_file_operations_native_open_regular(void) { }
 
 /* PoP: read_window_below_tool @ tools/read_window_tool.py:read_window_below_tool */
 void tools_read_window_tool_read_window_below_tool(void) { }
@@ -498,9 +496,6 @@ void tools_spill_safety_write_text_exclusive(void) { }
 
 /* PoP: _build_parser @ agent/legacy_cli.py:_build_parser */
 void agent_legacy_cli_build_parser(void) { }
-
-/* PoP: sha256_of @ tools/file_operations_native.py:sha256_of */
-void tools_file_operations_native_sha256_of(void) { }
 
 /* ────────────────────────────────────────────────────────────────
  * PoP DECLARATION-ONLY PLACEHOLDERS
