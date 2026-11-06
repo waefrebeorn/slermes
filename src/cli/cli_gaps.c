@@ -757,9 +757,6 @@ void _bearer(void) { }
 /* PoP: download_with_name @ gateway/relay/media.py:download_with_name */
 void download_with_name(void) { }
 
-/* PoP: pairing_profile_arg @ gateway/run_inbound_unauthorized.py:pairing_profile_arg */
-void pairing_profile_arg(void) { }
-
 /* PoP: pairing_code_reply @ gateway/run_inbound_unauthorized.py:pairing_code_reply */
 void pairing_code_reply(void) { }
 
