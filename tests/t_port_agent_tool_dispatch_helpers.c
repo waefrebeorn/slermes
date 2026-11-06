@@ -28,7 +28,8 @@ int main(void) {
     int n;
     char **p1 = agent_tool_dispatch_extract_landed_file_mutation_paths(
         "write_file", "{\"path\": \"/tmp/a.txt\", \"mode\": \"replace\"}", NULL, &n);
-    printf("{\"t\":\"landed_write\",\"paths\":[");
+    printf("{\"t\":\"landed_write\",\"tool\":\"write_file\",\"args\":%s,\"result\":null,\"paths\":[",
+           "{\"path\": \"/tmp/a.txt\", \"mode\": \"replace\"}");
     for (int i = 0; i < n; i++) { printf("%s%s", i?",":"", js(p1[i])); free(p1[i]); }
     printf("]}\n");
     free(p1);
@@ -36,10 +37,9 @@ int main(void) {
     const char *patch =
         "*** Update File: src/a.py\n*** Add File: src/b.py\n*** Delete File: src/c.py\n";
     char args_patch[9000];
-    /* build {"mode":"patch","patch":<json-string>} where js() emits a JSON string */
     snprintf(args_patch, sizeof(args_patch), "{\"mode\": \"patch\", \"patch\": %s}", js(patch));
     char **p2 = agent_tool_dispatch_extract_landed_file_mutation_paths("patch", args_patch, NULL, &n);
-    printf("{\"t\":\"landed_patch\",\"paths\":[");
+    printf("{\"t\":\"landed_patch\",\"tool\":\"patch\",\"args\":%s,\"result\":null,\"paths\":[", args_patch);
     for (int i = 0; i < n; i++) { printf("%s%s", i?",":"", js(p2[i])); free(p2[i]); }
     printf("]}\n");
     free(p2);
@@ -47,7 +47,8 @@ int main(void) {
     const char *result = "{\"success\": true, \"files_modified\": [\"src/x.py\", \"src/y.py\"]}";
     char **p3 = agent_tool_dispatch_extract_landed_file_mutation_paths(
         "patch", "{\"mode\": \"replace\"}", result, &n);
-    printf("{\"t\":\"landed_result\",\"paths\":[");
+    printf("{\"t\":\"landed_result\",\"tool\":\"patch\",\"args\":%s,\"result\":%s,\"paths\":[",
+           "{\"mode\": \"replace\"}", js(result));
     for (int i = 0; i < n; i++) { printf("%s%s", i?",":"", js(p3[i])); free(p3[i]); }
     printf("]}\n");
     free(p3);
