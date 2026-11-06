@@ -549,12 +549,6 @@ void error_class(void) { }
 /* PoP: _timeout_fallback_prompt @ agent/compression_facade.py:_timeout_fallback_prompt */
 void _timeout_fallback_prompt(void) { }
 
-/* PoP: _report_compression_timeout @ agent/compression_facade.py:_report_compression_timeout */
-void _report_compression_timeout(void) { }
-
-/* PoP: _warn_commit_overrun @ agent/compression_facade.py:_warn_commit_overrun */
-void _warn_commit_overrun(void) { }
-
 /* PoP: _sync_persisted_markers @ agent/compression_facade.py:_sync_persisted_markers */
 void _sync_persisted_markers(void) { }
 
