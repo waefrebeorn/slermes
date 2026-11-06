@@ -15,6 +15,12 @@
  *   recency_ink, hex_to_rgb, rgb_to_hex, mix_rgb, derive_palette, node_label
  */
 
+/* MinGW needs this before <time.h> to expose gmtime_r (the make build sets it
+ * via its own flags; the oracle harness's standalone gcc does not). */
+#ifndef _POSIX_THREAD_SAFE_FUNCTIONS
+#define _POSIX_THREAD_SAFE_FUNCTIONS 1
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

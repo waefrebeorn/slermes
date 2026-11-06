@@ -13,7 +13,7 @@
  * and compares exactly. Exits 0 only if ALL checks pass (and the oracle agrees).
  */
 
-#include "port_learning_graph_render_helpers.c"
+#include "cli/port_learning_graph_render_helpers.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
