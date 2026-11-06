@@ -207,7 +207,7 @@ char *gateway_platforms_helpers_convert_table_to_bullets(const char *text)
             block[bn++] = ln;
             block[bn++] = lines[i + 1];
             int j = i + 2;
-            while (j < n && gateway_platforms_helpers_is_table_row(lines[j])) block[bn++] = lines[j];
+            while (j < n && gateway_platforms_helpers_is_table_row(lines[j])) { block[bn++] = lines[j]; j++; }
             block[bn] = NULL;
             char *rendered = gateway_platforms_helpers_render_table_block(block, bn);
             size_t rl = strlen(rendered);
