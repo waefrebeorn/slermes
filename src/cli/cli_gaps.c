@@ -976,9 +976,6 @@ void register_cli(void) { }
 /* PoP: _clear_secret_input @ hermes_cli/callbacks.py:_clear_secret_input */
 void _clear_secret_input(void) { }
 
-/* PoP: _skipped @ hermes_cli/callbacks.py:_skipped */
-void _skipped(void) { }
-
 /* PoP: _secret_result @ hermes_cli/callbacks.py:_secret_result */
 void _secret_result(void) { }
 
