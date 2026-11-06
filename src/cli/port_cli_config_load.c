@@ -111,3 +111,38 @@ char *ccl_merge_file_config(const char *defaults_json, const char *file_json)
     json_free(file);
     return out;
 }
+
+/* PoP: _cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
+json_t *ccd_cli_config_defaults(void)
+{
+    const char *lit =
+        "{\"model\":{\"default\":\"\",\"base_url\":\"\",\"provider\":\"auto\"},"
+        "\"terminal\":{"
+        "\"env_type\":\"local\",\"cwd\":\".\",\"home_mode\":\"auto\","
+        "\"lifetime_seconds\":300,"
+        "\"docker_image\":\"nousresearch/hermes-sandbox:desktop\","
+        "\"docker_forward_env\":[],\"modal_image\":\"nousresearch/hermes-sandbox:desktop\","
+        "\"daytona_image\":\"nousresearch/hermes-sandbox:desktop\","
+        "\"docker_volumes\":[],\"docker_mount_cwd_to_workspace\":false,"
+        "\"docker_shared_container_key\":\"\"},"
+        "\"browser\":{\"inactivity_timeout\":120,\"engine\":\"auto\"},"
+        "\"compression\":{\"enabled\":true,\"threshold\":0.50,\"min_tail_user_messages\":1},"
+        "\"agent\":{"
+        "\"max_turns\":500,\"verbose\":false,\"system_prompt\":\"\","
+        "\"prefill_messages_file\":\"\",\"reasoning_effort\":\"\",\"service_tier\":\"\","
+        "\"personalities\":{}},"
+        "\"display\":{"
+        "\"compact\":false,"
+        "\"resume_display\":\"full\",\"resume_exchanges\":10,\"resume_max_user_chars\":300,"
+        "\"resume_max_assistant_chars\":200,\"resume_max_assistant_lines\":3,"
+        "\"resume_skip_tool_only\":true,\"show_reasoning\":true,\"reasoning_full\":false,"
+        "\"streaming\":true,\"busy_input_mode\":\"interrupt\",\"cli_layout\":\"modern\","
+        "\"persistent_output\":true,\"persistent_output_max_lines\":200,"
+        "\"cli_rebuild_scrollback_on_redraw\":false,\"persist_prompts\":true,"
+        "\"skin\":\"default\"},"
+        "\"code_execution\":{\"timeout\":300,\"max_tool_calls\":50},"
+        "\"auxiliary\":{\"vision\":{\"provider\":\"auto\",\"model\":\"\",\"base_url\":\"\",\"api_key\":\"\"}},"
+        "\"delegation\":{\"max_iterations\":45,\"model\":\"\",\"provider\":\"\",\"base_url\":\"\",\"api_key\":\"\"},"
+        "\"onboarding\":{\"seen\":{}}}";
+    return json_parse(lit, NULL);
+}

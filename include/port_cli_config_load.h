@@ -8,6 +8,8 @@
 #ifndef PORT_CLI_CONFIG_LOAD_H
 #define PORT_CLI_CONFIG_LOAD_H
 
+#include "hermes_json.h"
+
 /* cli_config_load._parse_service_tier_config(raw): delegates to the fast_mode
  * parser (agent/fast_mode.py parse_service_tier). Returns a malloc'd tier
  * ("priority", "ultrafast", "auto", "cold") or NULL for normal/blank/unknown.
@@ -20,5 +22,10 @@ char *ccl_parse_service_tier_config(const char *raw);
  * "agent" is a dict. Returns a malloc'd JSON object = the merged defaults.
  * Caller frees. */
 char *ccl_merge_file_config(const char *defaults_json, const char *file_json);
+
+/* cli_config_load._cli_config_defaults(): the built-in CLI config defaults
+ * dict (file overlays these). Includes the imported DEFAULT_SANDBOX_IMAGE.
+ * Returns a new json_t object, caller frees. */
+json_t *ccd_cli_config_defaults(void);
 
 #endif /* PORT_CLI_CONFIG_LOAD_H */
