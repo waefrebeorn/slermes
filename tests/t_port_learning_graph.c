@@ -2,9 +2,8 @@
  * t_port_learning_graph.c — Oracle harness for agent/learning_graph.py
  * pure-transform ports (build_edges, density_stats, _memory_skill_edges).
  *
- * Emits one JSON line per case (case name + C output). The Python oracle
- * replays the identical calls against LIVE Python and compares (structural,
- * order-insensitive where Python's is).
+ * Emits one JSON line per case with the INPUTS plus the C output, so the Python
+ * oracle replays the identical calls against LIVE Python.
  */
 #include "hermes_json.h"
 #include <stdio.h>
@@ -15,11 +14,35 @@ extern char *learning_graph_build_edges(const char *nodes_json);
 extern char *learning_graph_density_stats(const char *nodes_json, const char *edges_json);
 extern char *learning_graph_memory_skill_edges(const char *cards_json, const char *skills_json);
 
-static void emit(const char *name, const char *raw_json)
+static void js(const char *s)
 {
-    /* raw_json is already valid JSON text produced by the C fn; wrap it */
+    /* emit s as a JSON string (or null) */
+    if (!s) { fputs("null", stdout); return; }
+    fputc('"', stdout);
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+        switch (*p) {
+        case '"': fputs("\\\"", stdout); break;
+        case '\\': fputs("\\\\", stdout); break;
+        case '\n': fputs("\\n", stdout); break;
+        case '\r': fputs("\\r", stdout); break;
+        case '\t': fputs("\\t", stdout); break;
+        default: fputc((char)*p, stdout);
+        }
+    }
+    fputc('"', stdout);
+}
+
+/* Emit {case, in:<json array of input strings>, out:<parsed C output or null>} */
+static void emit(const char *name, const char *const *inputs, int ninput, const char *raw_json)
+{
     json_t *o = json_object();
     json_set(o, "case", json_string(name));
+    json_t *in = json_new_array();
+    for (int i = 0; i < ninput; i++) {
+        json_t *parsed = json_parse(inputs[i] ? inputs[i] : "null", NULL);
+        json_array_append(in, parsed ? parsed : json_null());
+    }
+    json_set(o, "in", in);
     json_t *parsed = json_parse(raw_json ? raw_json : "null", NULL);
     json_set(o, "out", parsed ? parsed : json_null());
     char *s = json_serialize(o);
@@ -31,10 +54,9 @@ static void emit(const char *name, const char *raw_json)
 int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
+    const char *const *ins;
 
     /* ---- build_edges ---- */
-    /* nodes with related_skills; only edges where BOTH endpoints exist,
-       sorted, deduped, no self-loops. */
     const char *nodes1 =
         "["
         "{\"name\":\"alpha\",\"related\":[\"beta\",\"gamma\",\"missing\",\"alpha\"]},"
@@ -42,12 +64,12 @@ int main(void)
         "{\"name\":\"gamma\",\"related\":[\"beta\"]},"
         "{\"name\":\"delta\",\"related\":[]}"
         "]";
-    char *e1 = learning_graph_build_edges(nodes1);
-    emit("build_edges_basic", e1);
+    ins = (const char *const[]){ nodes1 };
+    { char *e = learning_graph_build_edges(nodes1); emit("build_edges_basic", ins, 1, e); free(e); }
 
     const char *nodes2 = "[]";
-    char *e2 = learning_graph_build_edges(nodes2);
-    emit("build_edges_empty", e2);
+    ins = (const char *const[]){ nodes2 };
+    { char *e = learning_graph_build_edges(nodes2); emit("build_edges_empty", ins, 1, e); free(e); }
 
     /* ---- density_stats ---- */
     const char *dnodes =
@@ -58,17 +80,17 @@ int main(void)
         "{\"name\":\"delta\",\"category\":\"ops\",\"use_count\":0,\"created_by\":null}"
         "]";
     const char *dedges = "[[\"alpha\",\"beta\"],[\"beta\",\"gamma\"]]";
-    char *d1 = learning_graph_density_stats(dnodes, dedges);
-    emit("density_basic", d1);
+    ins = (const char *const[]){ dnodes, dedges };
+    { char *d = learning_graph_density_stats(dnodes, dedges); emit("density_basic", ins, 2, d); free(d); }
 
-    char *d2 = learning_graph_density_stats("[]", "[]");
-    emit("density_empty", d2);
+    ins = (const char *const[]){ "[]", "[]" };
+    { char *d = learning_graph_density_stats("[]", "[]"); emit("density_empty", ins, 2, d); free(d); }
 
     /* ---- memory_skill_edges ---- */
     const char *cards =
         "["
-        "{\"source\":\"memory\",\"title\":\"web scraping notes\",\"body\":\"alpha helps with scraping web pages\"},"
-        "{\"source\":\"profile\",\"title\":\"data pipeline\",\"body\":\"gamma runs the data pipeline nightly\"}"
+        "{\"source\":\"memory\",\"fingerprint\":\"326938da6797\",\"title\":\"web scraping notes\",\"body\":\"alpha helps with scraping web pages\"},"
+        "{\"source\":\"profile\",\"fingerprint\":\"078e1cc4832e\",\"title\":\"data pipeline\",\"body\":\"gamma runs the data pipeline nightly\"}"
         "]";
     const char *mskills =
         "["
@@ -77,12 +99,12 @@ int main(void)
         "{\"name\":\"scraping\"},"
         "{\"name\":\"pipeline\"}"
         "]";
-    char *m1 = learning_graph_memory_skill_edges(cards, mskills);
-    emit("mem_edges_basic", m1);
+    ins = (const char *const[]){ cards, mskills };
+    { char *m = learning_graph_memory_skill_edges(cards, mskills); emit("mem_edges_basic", ins, 2, m); free(m); }
 
-    char *m2 = learning_graph_memory_skill_edges("[]", mskills);
-    emit("mem_edges_empty", m2);
+    ins = (const char *const[]){ "[]", mskills };
+    { char *m = learning_graph_memory_skill_edges("[]", mskills); emit("mem_edges_empty", ins, 2, m); free(m); }
 
-    free(e1); free(e2); free(d1); free(d2); free(m1); free(m2);
     return 0;
 }
+

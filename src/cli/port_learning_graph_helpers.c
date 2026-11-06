@@ -513,9 +513,11 @@ char *learning_graph_memory_skill_edges(const char *cards_json, const char *skil
         const char *src = json_object_get_string(card, "source", "");
         const char *title = json_object_get_string(card, "title", "");
         const char *body = json_object_get_string(card, "body", "");
-        /* mem_id = "memory:<source>:<idx>" */
-        char mem_id[512];
-        snprintf(mem_id, sizeof(mem_id), "memory:%s:%d", src ? src : "", ci);
+        const char *fp = json_object_get_string(card, "fingerprint", "");
+        /* mem_id = "memory:<source>:<idx>:<fingerprint>" (fingerprint is the
+           content-identity guard: a bare index can name a stale card) */
+        char mem_id[560];
+        snprintf(mem_id, sizeof(mem_id), "memory:%s:%d:%s", src ? src : "", ci, fp ? fp : "");
         /* text = lower("title\nbody") */
         size_t tl = strlen(title ? title : "") + strlen(body ? body : "") + 2;
         char *text = (char *)malloc(tl);
