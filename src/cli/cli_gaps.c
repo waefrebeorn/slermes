@@ -424,9 +424,6 @@ void hermes_cli_windows_appinstaller_update_load_projection(void) { }
 /* PoP: drop_stale_root_modules @ hermes_cli/stale_modules.py:drop_stale_root_modules */
 void hermes_cli_stale_modules_drop_stale_root_modules(void) { }
 
-/* PoP: _message_length @ tools/bot_desktop/rfb_filter.py:_message_length */
-int tools_bot_desktop_rfb_filter_message_length(void) { return 0; }
-
 /* PoP: is_valid @ tools/browser_supervisor_capture.py:is_valid */
 int tools_browser_supervisor_capture_is_valid(void) { return 0; }
 
