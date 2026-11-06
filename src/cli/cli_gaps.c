@@ -780,9 +780,6 @@ void pairing_rate_limited_reply(void) { }
 /* PoP: unauthorized_owner_hint @ gateway/run_inbound_unauthorized.py:unauthorized_owner_hint */
 void unauthorized_owner_hint(void) { }
 
-/* PoP: first_time @ gateway/run_inbound_unauthorized.py:first_time */
-void first_time(void) { }
-
 /* PoP: _authorize @ gateway/session_config.py:_authorize */
 void _authorize(void) { }
 
