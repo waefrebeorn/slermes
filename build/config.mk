@@ -19,6 +19,20 @@ ifeq ($(origin AR),default)
     AR := $(shell command -v ar 2>/dev/null || echo ar)
 endif
 
+# Optional compiler-cache wrapper (default off; opt in with `make CCACHE=1`).
+# .ccache/launch.sh sets MSYS env vars ccache needs and pins the cache to the
+# repo, then execs the real compiler. On a port where a shared header edit
+# forces dozens of unchanged objects to recompile, CCACHE=1 turns that into
+# cache hits. Left off by default so the build never depends on ccache being
+# installed.
+ifneq ($(CCACHE),)
+CC_WRAPPER := $(if $(wildcard .ccache/launch.sh),.ccache/launch.sh)
+ifneq ($(CC_WRAPPER),)
+CC := $(CC_WRAPPER) $(CC)
+CXX := $(CC_WRAPPER) $(CXX)
+endif
+endif
+
 # Platform detection
 UNAME_S := $(shell uname -s)
 

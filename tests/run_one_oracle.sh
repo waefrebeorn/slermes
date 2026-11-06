@@ -43,8 +43,16 @@ PYBIN="$(pick_python)" || { echo "ORACLE $NAME: no python with working hashlib" 
 # A link failure must be fatal — piping gcc through `grep ... || true` let a
 # broken link reach the oracle as "0 cases".
 OBJARG="${MINIMAL_OBJS:-@$OBJSET}"
+# Use the repo-local ccache wrapper when present (sets MSYS env vars + pins
+# the cache to <repo>/.ccache). Subsequent identical harness compiles of the
+# SAME port .c hash-hit, so re-gating a port is near-instant even when the
+# harness was rebuilt for a different object set.
+COMPILER="gcc"
+if [ -x "./.ccache/launch.sh" ]; then
+  COMPILER="./.ccache/launch.sh gcc"
+fi
 build() {   # build <out> <opt>
-  gcc "$2" -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
+  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
     -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
     -Wl,--allow-multiple-definition

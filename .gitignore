@@ -48,3 +48,9 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Compiler cache — ignore the cached data but keep the wrapper + config tracked
+# so the repo works with CCACHE=1 without re-creating them.
+.ccache/*
+!.ccache/launch.sh
+!.ccache/ccache.conf
