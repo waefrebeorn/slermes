@@ -49,6 +49,7 @@ declare -A DEPS=(
   [auth_error_copy]="src/cli/port_auth_error_copy.o lib/libjson/json.o"
   [partial_compress_keep]="FULL"
   [input_sanitize]="src/cli/port_input_sanitize.o lib/libjson/json.o"
+  [agent_reasoning_timeouts]="src/agent/port_agent_reasoning_timeouts.o lib/libjson/json.o"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
@@ -61,9 +62,15 @@ count=0
 names=("$@")
 
 # If no subset given, discover all committed oracles.
+# fuzzy_match_helpers is EXCLUDED: its harness consumes its OWN stdin (op-value
+# lines), so the no-stdin pipe here can't drive it — the standalone
+# tests/gate_fuzzy_match_helpers.sh is the authority for that port.
+SUITE_SKIP="fuzzy_match_helpers"
 if [ ${#names[@]} -eq 0 ]; then
   for o in tests/oracle_*.py; do
-    names+=("$(basename "$o" | sed -E 's/^oracle_//; s/\.py$//')")
+    n="$(basename "$o" | sed -E 's/^oracle_//; s/\.py$//')"
+    case " $SUITE_SKIP " in *" $n "*) continue;; esac
+    names+=("$n")
   done
 fi
 
