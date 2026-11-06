@@ -436,9 +436,6 @@ void tools_browser_supervisor_frames_set_frame(void) { }
 /* PoP: _own_launcher @ tools/bot_desktop/idle_watch.py:_own_launcher */
 int tools_bot_desktop_idle_watch_own_launcher(void) { return 0; }
 
-/* PoP: _first_pattern_error @ tools/cronjob_prompt_scan.py:_first_pattern_error */
-void tools_cronjob_prompt_scan_first_pattern_error(void) { }
-
 /* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
 void tools_daemon_pool_adjust_thread_count(void) { }
 
