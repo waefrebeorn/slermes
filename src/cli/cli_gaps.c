@@ -844,9 +844,6 @@ void discard_room_task(void) { }
 /* PoP: retry_room_task @ gateway/session_hosted_controls.py:retry_room_task */
 void retry_room_task(void) { }
 
-/* PoP: worker_log_path @ gateway/session_managed_worker_log.py:worker_log_path */
-void worker_log_path(void) { }
-
 /* PoP: _lock_for @ gateway/session_managed_worker_log.py:_lock_for */
 void _lock_for(void) { }
 
