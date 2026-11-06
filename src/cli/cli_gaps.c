@@ -460,9 +460,6 @@ void tools_connectors_dispatch_dispatch_connector_batch(void) { }
 /* PoP: open_fd_waiter @ tools/environments/fd_wait.py:open_fd_waiter */
 void tools_environments_fd_wait_open_fd_waiter(void) { }
 
-/* PoP: _prop @ tools/kanban_tools_schemas.py:_prop */
-void tools_kanban_tools_schemas_prop(void) { }
-
 /* PoP: _schema @ tools/kanban_tools_schemas.py:_schema */
 void tools_kanban_tools_schemas_schema(void) { }
 
