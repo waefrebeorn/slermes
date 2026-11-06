@@ -43,6 +43,12 @@ PYBIN="$(pick_python)" || { echo "ORACLE $NAME: no python with working hashlib" 
 # A link failure must be fatal — piping gcc through `grep ... || true` let a
 # broken link reach the oracle as "0 cases".
 OBJARG="${MINIMAL_OBJS:-@$OBJSET}"
+# "FULL" is a sentinel meaning the entire project object set (for ports whose
+# kernel lives in a core .o like cli_cmd_system.o that the default per-port set
+# under-binds). Healthy link: stubs resolve, duplicate definitions collapse.
+if [ "$OBJARG" = "FULL" ]; then
+  OBJARG="@$OBJSET"
+fi
 # Use the repo-local ccache wrapper when present (sets MSYS env vars + pins
 # the cache to <repo>/.ccache). Subsequent identical harness compiles of the
 # SAME port .c hash-hit, so re-gating a port is near-instant even when the

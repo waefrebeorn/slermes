@@ -47,6 +47,7 @@ declare -A DEPS=(
   [turn_liveness]="src/agent/port_turn_liveness.o lib/libjson/json.o"
   [hermes_auth]="src/cli/port_hermes_auth.o lib/libjson/json.o"
   [auth_error_copy]="src/cli/port_auth_error_copy.o lib/libjson/json.o"
+  [partial_compress_keep]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
   [image_token_cost_lic]="src/cli/port_image_token_cost.o src/cli/port_anthropic_credentials.o lib/libjson/json.o"
