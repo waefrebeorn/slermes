@@ -16,4 +16,9 @@ char *acm_display_source(const char *source);
 char *acm_classify_exhausted(const char *code_or_null,
                              const char *reason, const char *message);
 
+/* _format_exhausted_status's wait-string core: given `remaining` seconds (>=0),
+ * render "Xd Yh"/"Xh Ym"/"Xm Ys"/"Ns" (first non-zero unit + next, two max).
+ * Returns malloc'd, caller frees. */
+char *acm_format_wait_left(long long remaining);
+
 #endif /* PORT_AUTH_COMMANDS_H */

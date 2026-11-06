@@ -12,8 +12,58 @@
 #include "port_auth_commands.h"
 
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* PoP: _format_exhausted_status @ hermes_cli/auth_commands.py:_format_exhausted_status */
+/* The wait-string core of _format_exhausted_status: given `remaining` seconds
+ * (already >= 0), render "Xd Yh"/"Xh Ym"/"Xm Ys"/"Ns" — the first non-zero unit
+ * (seconds always present) plus the next, two at most, space-joined. Returns
+ * malloc'd, caller frees. */
+char *acm_format_wait_left(long long remaining)
+{
+    long long minutes, seconds, hours, days;
+    char buffer[64];
+    long long parts[4];
+    const char *units[4] = { "d", "h", "m", "s" };
+    int first = 3;
+    char *out;
+
+    if (remaining < 0) remaining = 0;
+    minutes = remaining / 60;
+    seconds = remaining % 60;
+    hours = minutes / 60;
+    minutes = minutes % 60;
+    days = hours / 24;
+    hours = hours % 24;
+
+    parts[0] = days; parts[1] = hours; parts[2] = minutes; parts[3] = seconds;
+    /* first = next(i for i,(value,_) in enumerate(parts) if value or i==3) */
+    for (int i = 0; i < 4; i++) {
+        if (parts[i] != 0 || i == 3) { first = i; break; }
+    }
+
+    /* the renderer always takes exactly the last two when the first index would
+     * go past the end — but parts[first:first+2] with first<=3 yields <=2 items.
+     * Join the present sub-slice with a space. */
+    out = malloc(sizeof(buffer));
+    if (!out) return NULL;
+    {
+        /* build a compound: up to 2 "{value}{unit}" tokens */
+        char *p = out;
+        int n = 0;
+        for (int i = first; i < 4 && n < 2; i++, n++) {
+            size_t seg = (size_t)snprintf(p, (size_t)(out + sizeof(buffer) - p),
+                                          "%s%lld%s", n ? " " : "",
+                                          (long long)parts[i], units[i]);
+            if (seg >= (size_t)(out + sizeof(buffer) - p)) break;
+            p += seg;
+        }
+        *p = '\0';
+    }
+    return out;
+}
 
 static char *acm_strndup(const char *s, size_t n)
 {

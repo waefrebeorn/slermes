@@ -74,6 +74,20 @@ for line in sys.stdin:
             passes += 1
         else:
             fails.append(("classify", (code, reason, message), want_str, got))
+    elif tag == "wait":
+        remaining = c["remaining"]
+        minutes, seconds = divmod(remaining, 60)
+        hours, minutes = divmod(minutes, 60)
+        days, hours = divmod(hours, 24)
+        parts = [(days, "d"), (hours, "h"), (minutes, "m"), (seconds, "s")]
+        first = next(i for i, (value, _) in enumerate(parts) if value or i == 3)
+        want = " ".join("%d%s" % (value, unit)
+                        for value, unit in parts[first:first + 2])
+        total += 1
+        if c["out"] == want:
+            passes += 1
+        else:
+            fails.append(("wait", remaining, want, c["out"]))
 
 print("pass/total: %d/%d" % (passes, total))
 for f in fails[:10]:

@@ -55,5 +55,15 @@ int main(void)
             free(o);
         }
     }
+    /* _format_exhausted_status wait-string core */
+    {
+        static const long long rems[] = { 3661, 90, 5, 7200, 0, 90061, 59, 1, 259205 };
+        for (size_t i = 0; i < sizeof(rems)/sizeof(rems[0]); i++) {
+            char *o = acm_format_wait_left(rems[i]);
+            printf("{\"tag\":\"wait\",\"remaining\":%lld,\"out\":", rems[i]);
+            jstr(o); printf("}\n");
+            free(o);
+        }
+    }
     return 0;
 }
