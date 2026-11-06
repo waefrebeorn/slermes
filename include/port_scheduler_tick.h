@@ -15,4 +15,15 @@ int js_is_recurring(const char *job_json);
  * JSON array, caller frees. */
 char *js_advance_or_drop(const char *due_jobs_json, int advance_ok);
 
+/* scheduler_tick _log_tick_yield_once decision: True when the yield should be
+ * logged — the reason/skew signature changed, or the cooldown elapsed. Calling
+ * this is the caller's decision input; the caller is responsible for the
+ * once-per-episode state bookkeeping like the Python module global. */
+int js_tick_yield_should_log(const char *last_reason, double last_at,
+                             const char *reason, double now);
+
+/* scheduler_tick _log_tick_yield_once message: the fixed error text with the
+ * reason interpolated. Returns malloc'd, caller frees. */
+char *js_tick_yield_message(const char *reason);
+
 #endif /* PORT_SCHEDULER_TICK_H */

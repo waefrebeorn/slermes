@@ -657,9 +657,6 @@ void build_plugin_blueprint(void) { }
 /* PoP: plugin_blueprints @ cron/blueprint_plugins.py:plugin_blueprints */
 void plugin_blueprints(void) { }
 
-/* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
-void _log_tick_yield_once(void) { }
-
 /* PoP: _acquire_tick_lock_or_degrade @ cron/scheduler_tick.py:_acquire_tick_lock_or_degrade */
 void _acquire_tick_lock_or_degrade(void) { }
 

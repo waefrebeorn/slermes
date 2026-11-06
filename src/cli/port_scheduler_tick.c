@@ -5,6 +5,7 @@
 #include "port_scheduler_tick.h"
 #include "hermes_json.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,6 +27,38 @@ int js_is_recurring(const char *job_json)
     int r = js_job_recurring(job);
     if (job) json_free(job);
     return r;
+}
+
+/* _log_tick_yield_once decision + message. The Python body reads the module
+ * global _last_yield_log for last_reason/last_at and time.monotonic() for now;
+ * those are passed in here (the caller keeps the once-per-episode state). */
+#define JS_YIELD_LOG_INTERVAL_SECONDS 3600.0
+
+int js_tick_yield_should_log(const char *last_reason, double last_at,
+                             const char *reason, double now)
+{
+    /* if last_reason != reason or (now - float(last_at)) >= _YIELD_LOG_INTERVAL */
+    if (strcmp(last_reason ? last_reason : "", reason ? reason : "") != 0)
+        return 1;
+    return (now - last_at) >= JS_YIELD_LOG_INTERVAL_SECONDS;
+}
+
+/* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
+char *js_tick_yield_message(const char *reason)
+{
+    const char *r = reason ? reason : "";
+    size_t n =
+        strlen("Cron tick yielded: this process is running stale code (") +
+        strlen(r) +
+        strlen(") and a fresher gateway owns the runtime lock \xe2\x80\x94 jobs "
+               "will fire from that process. Restart this one to reclaim its ticks.");
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    sprintf(out,
+            "Cron tick yielded: this process is running stale code (%s) and a "
+            "fresher gateway owns the runtime lock \xe2\x80\x94 jobs will fire "
+            "from that process. Restart this one to reclaim its ticks.", r);
+    return out;
 }
 
 char *js_advance_or_drop(const char *due_jobs_json, int advance_ok)
