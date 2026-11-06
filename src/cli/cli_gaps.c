@@ -909,12 +909,6 @@ void take(void) { }
 /* PoP: compose @ gateway/session_retry_admission.py:compose */
 void compose(void) { }
 
-/* PoP: _at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
-void _at_block_boundary(void) { }
-
-/* PoP: _earliest_open_tag @ gateway/stream_consumer_think.py:_earliest_open_tag */
-void _earliest_open_tag(void) { }
-
 /* PoP: _filter_and_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
 void _filter_and_accumulate(void) { }
 
