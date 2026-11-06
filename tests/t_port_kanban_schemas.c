@@ -42,5 +42,22 @@ int main(void)
         printf("}\n");
         free(s); json_free(b);
     }
+    /* _schema: name, description, properties (JSON), required (JSON) */
+    {
+        const char *name = "kanban_show";
+        const char *desc = "Show a kanban task.";
+        const char *props = "{\"task_id\":{\"type\":\"string\",\"description\":\"Task id.\"},\"detail\":{\"type\":\"boolean\",\"description\":\"Full detail.\"}}";
+        const char *req = "[\"task_id\"]";
+        json_t *s = kts_schema(name, desc, props, req);
+        char *s2 = json_serialize(s);
+        printf("{\"tag\":\"schema\",\"case\":0,\"name\":");
+        jstr(name);
+        printf(",\"desc\":");
+        jstr(desc);
+        printf(",\"props\":%s,\"required\":%s,\"out\":", props, req);
+        jstr(s2);
+        printf("}\n");
+        free(s2); json_free(s);
+    }
     return 0;
 }
