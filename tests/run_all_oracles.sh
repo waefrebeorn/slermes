@@ -41,6 +41,7 @@ declare -A DEPS=(
   [whatsapp_identity]="src/cli/port_gateway_whatsapp_identity.o lib/libjson/json.o"
   [pty_clamp]="src/cli/port_pty_clamp_helpers.o lib/libjson/json.o"
   [session_server_requests]="src/cli/port_session_server_requests.o lib/libjson/json.o"
+  [side_question_request]="src/cli/port_side_question_request.o lib/libjson/json.o"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
   [image_token_cost_lic]="src/cli/port_image_token_cost.o src/cli/port_anthropic_credentials.o lib/libjson/json.o"
