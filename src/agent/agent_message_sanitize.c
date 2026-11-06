@@ -1076,13 +1076,28 @@ bool message_sanitize_close_interrupted(json_t *messages, const char *final_resp
         memcpy(trimmed, text, n);
         trimmed[n] = '\0';
     }
-    const char *content = (trimmed && trimmed[0]) ? trimmed : "Operation interrupted.";
+    const char *INTERRUPTED = "[interrupt: no assistant output for this turn]";
 
-    json_t *turn = json_object();
-    json_set(turn, "role", json_string("assistant"));
-    json_set(turn, "content", json_string(content));
-    json_append(messages, turn);
-    /* ownership: json_set/json_append steal, turn is now owned by array */
+    /* Live Python: stripped = str(final_response).strip();
+     *   if not stripped or stripped == _INTERRUPTED_PLACEHOLDER:
+     *       row = hidden_interrupt_placeholder_row()  -> {"role":"assistant",
+     *            "content":"", "display_kind":"hidden","api_content":"[interrupt: ...]"}
+     *   else: row = {"role":"assistant","content": stripped}
+     *   append_message(messages, row)
+     */
+    if (!trimmed || !trimmed[0] || strcmp(trimmed, INTERRUPTED) == 0) {
+        json_t *turn = json_object();
+        json_set(turn, "role", json_string("assistant"));
+        json_set(turn, "content", json_string(""));
+        json_set(turn, "display_kind", json_string("hidden"));
+        json_set(turn, "api_content", json_string(INTERRUPTED));
+        json_append(messages, turn);
+    } else {
+        json_t *turn = json_object();
+        json_set(turn, "role", json_string("assistant"));
+        json_set(turn, "content", json_string(trimmed));
+        json_append(messages, turn);
+    }
     if (trimmed) free(trimmed);
     return 1;
 }
