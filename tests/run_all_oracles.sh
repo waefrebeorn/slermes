@@ -67,6 +67,7 @@ declare -A DEPS=(
   [agent_tool_dispatch_helpers]="src/agent/port_agent_tool_dispatch_helpers.o lib/libjson/json.o"
   [agent_verify_hooks]="src/agent/port_agent_verify_hooks.o lib/libjson/json.o"
   [anthropic_credentials]="src/cli/port_anthropic_credentials.o lib/libjson/json.o"
+  [agent_oneshot]="FULL"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
