@@ -15,7 +15,7 @@
 #define DEFAULT_IDLE_STOP_SECS 1800.0 /* 30 * 60 */
 #define MIN_DELAY_S 30.0
 
-/* PoP: next_check_in @ tools/bot_desktop/idle_watch.py:next_check_in */
+/* PoP: idw_next_check_in @ tools/bot_desktop/idle_watch.py:next_check_in */
 int idw_next_check_in(double limit, int idle_is_null, double idle)
 {
     if (limit <= 0.0)

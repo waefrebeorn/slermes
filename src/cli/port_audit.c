@@ -39,7 +39,7 @@ static char *bounded_str(const char *s)
     return out;
 }
 
-/* PoP: _bounded_value @ hermes_cli/dashboard_auth/audit.py:_bounded_value */
+/* PoP: port_audit_bounded_value @ hermes_cli/dashboard_auth/audit.py:_bounded_value */
 json_t *port_audit_bounded_value(const json_t *value)
 {
     if (!value)

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: _skipped @ hermes_cli/callbacks.py:_skipped */
+/* PoP: cb_skipped @ hermes_cli/callbacks.py:_skipped */
 json_t *cb_skipped(const char *var_name, const char *reason, const char *message)
 {
     json_t *obj = json_object();

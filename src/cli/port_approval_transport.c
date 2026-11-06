@@ -23,7 +23,7 @@ static const char *dupcode(const char *c)
     return strdup(c);
 }
 
-/* PoP: _validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
+/* PoP: atr_validate_decision @ hermes_cli/approval_transport.py:_validate_decision */
 const char *atr_validate_decision(
     const char *kind,
     int value_null,

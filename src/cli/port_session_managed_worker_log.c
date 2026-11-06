@@ -37,7 +37,7 @@ static int is_absolute(const char *p)
     return 0;
 }
 
-/* PoP: worker_log_path @ gateway/session_managed_worker_log.py:worker_log_path */
+/* PoP: smwl_worker_log_path @ gateway/session_managed_worker_log.py:worker_log_path */
 char *smwl_worker_log_path(const char *profile)
 {
     if (!profile || !*profile || !is_absolute(profile))

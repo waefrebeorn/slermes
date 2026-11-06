@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-/* PoP: resolves @ tools/connectors/contract.py:resolves */
+/* PoP: ctc_resolves @ tools/connectors/contract.py:resolves */
 int ctc_resolves(const char *kind, const char *state)
 {
     if (!state)

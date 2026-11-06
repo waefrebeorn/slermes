@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: pairing_profile_arg @ gateway/run_inbound_unauthorized.py:pairing_profile_arg
+/* PoP: run_inbound_pairing_profile_arg @ gateway/run_inbound_unauthorized.py:pairing_profile_arg
  * Python: store_profile = getattr(pairing_store, "profile", None); if str,
  * non-empty and != "default" -> "-p <profile> ", else "". profile==NULL => "". */
 char *run_inbound_pairing_profile_arg(const char *profile)

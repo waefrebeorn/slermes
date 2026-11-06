@@ -112,8 +112,8 @@ char *ccl_merge_file_config(const char *defaults_json, const char *file_json)
     return out;
 }
 
-/* PoP: _cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
-json_t *ccd_cli_config_defaults(void)
+/* PoP: ccl_cli_config_defaults @ hermes_cli/cli_config_load.py:_cli_config_defaults */
+json_t *ccl_cli_config_defaults(void)
 {
     const char *lit =
         "{\"model\":{\"default\":\"\",\"base_url\":\"\",\"provider\":\"auto\"},"

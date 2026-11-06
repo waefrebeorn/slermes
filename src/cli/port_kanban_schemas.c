@@ -19,7 +19,7 @@ static json_t *kts_clone(const json_t *n)
     return copy;
 }
 
-/* PoP: _prop @ tools/kanban_tools_schemas.py:_prop */
+/* PoP: kts_prop @ tools/kanban_tools_schemas.py:_prop */
 json_t *kts_prop(const char *type_, const char *description)
 {
     json_t *obj = json_object();
@@ -37,7 +37,7 @@ json_t *kts_prop(const char *type_, const char *description)
     "a Telegram routing layer) needs to override the env-pinned active " \
     "board for this one call."
 
-/* PoP: _schema @ tools/kanban_tools_schemas.py:_schema */
+/* PoP: kts_schema @ tools/kanban_tools_schemas.py:_schema */
 json_t *kts_schema(const char *name, const char *description,
                    const char *properties_json, const char *required_json)
 {

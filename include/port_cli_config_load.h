@@ -26,6 +26,6 @@ char *ccl_merge_file_config(const char *defaults_json, const char *file_json);
 /* cli_config_load._cli_config_defaults(): the built-in CLI config defaults
  * dict (file overlays these). Includes the imported DEFAULT_SANDBOX_IMAGE.
  * Returns a new json_t object, caller frees. */
-json_t *ccd_cli_config_defaults(void);
+json_t *ccl_cli_config_defaults(void);
 
 #endif /* PORT_CLI_CONFIG_LOAD_H */

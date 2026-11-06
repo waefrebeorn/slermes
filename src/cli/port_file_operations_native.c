@@ -35,7 +35,7 @@ static int open_regular(const char *path, struct stat *st)
     return fd;
 }
 
-/* PoP: tools_file_operations_native_sha256_of @ tools/file_operations_native.py:sha256_of */
+/* PoP: fop_sha256_of @ tools/file_operations_native.py:sha256_of */
 char *fop_sha256_of(const char *path)
 {
     if (!path || !*path)
