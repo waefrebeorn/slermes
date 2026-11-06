@@ -54,6 +54,7 @@ declare -A DEPS=(
   [gateway_signal_format]="FULL"
   [learning_graph_render_helpers]="FULL"
   [agent_display_helpers]="src/agent/port_agent_display_helpers.o lib/libjson/json.o"
+  [agent_redact_helpers]="FULL"
   [message_sanitize_close]="FULL"
   [ccd]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [cronjob_prompt_scan]="src/cli/port_cronjob_prompt_scan.o lib/libregex/hermes_regex.o lib/libjson/json.o"
