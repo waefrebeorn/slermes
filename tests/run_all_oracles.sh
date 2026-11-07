@@ -93,6 +93,7 @@ declare -A DEPS=(
   [bot_loop_guard]="src/cli/port_bot_loop_guard.o lib/libjson/json.o"
   [media_labels]="src/cli/port_media_labels.o src/cli/port_aux_outcome_event.o lib/libcrypto/crypto.o lib/libjson/json.o"
   [error_surface]="src/agent/port_error_surface.o lib/libjson/json.o"
+  [config_pure]="lib/libjson/json.o"
 )
 
 fail=0

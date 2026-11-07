@@ -1,165 +1,166 @@
 /*
- * t_port_config_pure.c — faithful verification harness for port_config_pure.c
- *
- * Compiled SEPARATELY and linked against the real lib/libjson/json.o
- * (NOT the slermes binary). Includes port_config_pure.c directly so it
- * exercises the exact compiled object that ships in the binary.
- *
- * Each check asserts the C port produces output byte-equivalent to the
- * Python source on the same inputs. Exits 0 only if ALL checks pass.
+ * t_port_config_pure.c — Oracle harness for port_config_pure.c (config.py +
+ * models_catalog_static.py pure helpers). Emits inputs + C outputs as JSONL so
+ * an oracle can replay the LIVE Python on the identical values.
+ * Families:
+ *   deep_merge: {family, base, over, out}            _deep_merge(base,over) result JSON
+ *   by_name:    {family, items, out|null}            _items_by_unique_name(items)
+ *   max_turns:  {family, config, out}                _normalize_max_turns_config(config)
+ *   strip:      {family, key, value, out}            _check_non_ascii_credential(key,value)
+ *   group:      {family, slug, out}                  provider_group_for_slug(slug)
  */
-
-#include "port_config_pure.c"   /* pull in the real functions + tables */
+#include "cli/port_config_pure.c"   /* pull in the real functions + tables */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static int failures = 0;
-
-/* compare two JSON trees by serializing (canonical, single-line) */
-static int json_eq(const json_t *a, const json_t *b)
+static void jstr(const char *s)
 {
-    if (!a || !b) return (a == b);
-    char *sa = json_serialize(a);
-    char *sb = json_serialize(b);
-    int eq = sa && sb && strcmp(sa, sb) == 0;
-    free(sa); free(sb);
-    return eq;
+    if (!s) { fputs("null", stdout); return; }
+    fputc('"', stdout);
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+        switch (*p) {
+        case '"':  fputs("\\\"", stdout); break;
+        case '\\': fputs("\\\\", stdout); break;
+        case '\n': fputs("\\n", stdout); break;
+        case '\r': fputs("\\r", stdout); break;
+        case '\t': fputs("\\t", stdout); break;
+        default:
+            if (*p < 0x20) printf("\\u%04x", *p);
+            else fputc((char)*p, stdout);
+        }
+    }
+    fputc('"', stdout);
 }
 
-static void check(const char *name, int cond)
+/* emit_json: res may be NULL -> "null". */
+static void emit_json(const char *family, const char *label, const char *inputs,
+                      json_t *res)
 {
-    if (cond) printf("  PASS  %s\n", name);
-    else { printf("  FAIL  %s\n", name); failures++; }
+    printf("{\"family\":\"%s\",\"case\":\"%s\",%s\"out\":", family, label, inputs);
+    if (!res) { fputs("null", stdout); }
+    else { char *s = json_serialize(res); fputs(s ? s : "null", stdout); free(s); }
+    printf("}\n");
 }
 
 int main(void)
 {
-    /* ---- config_deep_merge ---- */
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    /* deep_merge */
     {
-        const char *base = "{\"tts\":{\"elevenlabs\":{\"model_id\":\"m1\"}},\"x\":1}";
-        const char *ov   = "{\"tts\":{\"elevenlabs\":{\"voice_id\":\"v1\"}}}";
-        json_t *b = json_parse(base, NULL);
-        json_t *o = json_parse(ov, NULL);
-        json_t *r = config_deep_merge(b, o);
-        const char *exp = "{\"tts\":{\"elevenlabs\":{\"model_id\":\"m1\",\"voice_id\":\"v1\"}},\"x\":1}";
-        json_t *e = json_parse(exp, NULL);
-        check("deep_merge_recurses_nested", json_eq(r, e));
-        check("deep_merge_override_replaces",
-              json_get_num(r, "x", -1) == 1.0);
-        json_free(b); json_free(o); json_free(r); json_free(e);
+        const char *b = "{\"tts\":{\"elevenlabs\":{\"model_id\":\"m1\"}},\"x\":1}";
+        const char *o = "{\"tts\":{\"elevenlabs\":{\"voice_id\":\"v1\"}}}";
+        json_t *bj = json_parse(b, NULL), *oj = json_parse(o, NULL);
+        json_t *r = config_deep_merge(bj, oj);
+        printf("{\"family\":\"deep_merge\",\"case\":\"recurses_nested\","
+               "\"base\":%s,\"over\":%s,\"out\":",
+               "{\"tts\":{\"elevenlabs\":{\"model_id\":\"m1\"}},\"x\":1}",
+               "{\"tts\":{\"elevenlabs\":{\"voice_id\":\"v1\"}}}");
+        if (r) { char *s = json_serialize(r); fputs(s ? s : "null", stdout); free(s); }
+        else fputs("null", stdout);
+        printf("}\n");
+        json_free(bj); json_free(oj); json_free(r);
     }
     {
-        /* override scalar replaces (does not grow) */
-        json_t *b = json_parse("{\"a\":{\"b\":1}}", NULL);
-        json_t *o = json_parse("{\"a\":5}", NULL);
-        json_t *r = config_deep_merge(b, o);
-        check("deep_merge_scalar_overrides", json_get_num(r, "a", -1) == 5.0);
-        json_free(b); json_free(o); json_free(r);
+        json_t *bj = json_parse("{\"a\":{\"b\":1}}", NULL);
+        json_t *oj = json_parse("{\"a\":5}", NULL);
+        json_t *r = config_deep_merge(bj, oj);
+        printf("{\"family\":\"deep_merge\",\"case\":\"scalar_overrides\","
+               "\"base\":{\"a\":{\"b\":1}},\"over\":{\"a\":5},\"out\":");
+        if (r) { char *s = json_serialize(r); fputs(s ? s : "null", stdout); free(s); }
+        else fputs("null", stdout);
+        printf("}\n");
+        json_free(bj); json_free(oj); json_free(r);
+    }
+    {
+        json_t *bj = json_parse("{\"a\":{\"b\":1}}", NULL);
+        json_t *oj = json_parse("{\"a\":null}", NULL);
+        json_t *r = config_deep_merge(bj, oj);
+        printf("{\"family\":\"deep_merge\",\"case\":\"null_over_dict_ignored\","
+               "\"base\":{\"a\":{\"b\":1}},\"over\":{\"a\":null},\"out\":");
+        if (r) { char *s = json_serialize(r); fputs(s ? s : "null", stdout); free(s); }
+        else fputs("null", stdout);
+        printf("}\n");
+        json_free(bj); json_free(oj); json_free(r);
     }
 
-    /* ---- config_items_by_unique_name ---- */
+    /* by_name */
     {
-        json_t *ok = json_parse("[{\"name\":\"a\",\"v\":1},{\"name\":\"b\",\"v\":2}]", NULL);
-        json_t *r = config_items_by_unique_name(ok);
-        check("items_by_unique_name_indexes",
-              r && json_get_num(json_obj_get(r, "a"), "v", -1) == 1.0);
-        json_free(ok); json_free(r);
-    }
-    {
-        /* duplicate name -> NULL */
-        json_t *dup = json_parse("[{\"name\":\"a\"},{\"name\":\"a\"}]", NULL);
-        json_t *r = config_items_by_unique_name(dup);
-        check("items_by_unique_name_dup_returns_null", r == NULL);
-        json_free(dup);
-    }
-    {
-        /* non-dict item -> NULL */
-        json_t *bad = json_parse("[{\"name\":\"a\"},\"notdict\"]", NULL);
-        json_t *r = config_items_by_unique_name(bad);
-        check("items_by_unique_name_nondict_null", r == NULL);
-        json_free(bad);
-    }
-    {
-        /* missing name -> NULL */
-        json_t *non = json_parse("[{\"v\":1}]", NULL);
-        json_t *r = config_items_by_unique_name(non);
-        check("items_by_unique_name_missing_name_null", r == NULL);
-        json_free(non);
+        static const char *const items[] = {
+            "[{\"name\":\"a\",\"v\":1},{\"name\":\"b\",\"v\":2}]",
+            "[{\"name\":\"a\"},{\"name\":\"a\"}]",
+            "[{\"name\":\"a\"},\"notdict\"]",
+            "[{\"v\":1}]",
+            "notalist",
+        };
+        static const char *const labels[] = {"indexes", "dup", "nondict",
+                                             "missing_name", "nonlist"};
+        for (size_t i = 0; i < 5; i++) {
+            json_t *oj = json_parse(items[i], NULL);
+            json_t *r = config_items_by_unique_name(oj);
+            printf("{\"family\":\"by_name\",\"case\":\"%s\",\"items\":%s,\"out\":",
+                   labels[i], items[i]);
+            if (r) { char *s = json_serialize(r); fputs(s ? s : "null", stdout); free(s); }
+            else fputs("null", stdout);
+            printf("}\n");
+            json_free(oj); if (r) json_free(r);
+        }
     }
 
-    /* ---- config_normalize_max_turns ---- */
+    /* max_turns */
     {
-        /* root-level only -> migrates + injects default? NO: had_root true so
-         * it copies root value, does NOT inject default 90. */
-        json_t *c = json_parse("{\"max_turns\":7}", NULL);
-        json_t *r = config_normalize_max_turns(c);
-        json_t *ag = json_obj_get(r, "agent");
-        check("max_turns_root_migrated", ag && json_get_num(ag, "max_turns", -1) == 7.0);
-        check("max_turns_root_removed", json_obj_get(r, "max_turns") == NULL);
-        json_free(c); json_free(r);
-    }
-    {
-        /* agent-level only -> kept, no default injected */
-        json_t *c = json_parse("{\"agent\":{\"model\":\"x\"}}", NULL);
-        json_t *r = config_normalize_max_turns(c);
-        json_t *ag = json_obj_get(r, "agent");
-        check("max_turns_agent_kept_no_default",
-              ag && json_obj_get(ag, "max_turns") == NULL);
-        json_free(c); json_free(r);
-    }
-    {
-        /* neither -> no agent.max_turns injected (default stays absent) */
-        json_t *c = json_parse("{\"model\":\"gpt\"}", NULL);
-        json_t *r = config_normalize_max_turns(c);
-        json_t *ag = json_obj_get(r, "agent");
-        check("max_turns_neither_no_inject",
-              ag == NULL || json_obj_get(ag, "max_turns") == NULL);
-        json_free(c); json_free(r);
-    }
-    {
-        /* root + agent -> agent value wins, no default injected */
-        json_t *c = json_parse("{\"max_turns\":7,\"agent\":{\"max_turns\":3}}", NULL);
-        json_t *r = config_normalize_max_turns(c);
-        json_t *ag = json_obj_get(r, "agent");
-        check("max_turns_root_and_agent", ag && json_get_num(ag, "max_turns", -1) == 3.0);
-        json_free(c); json_free(r);
+        static const char *const configs[] = {
+            "{\"max_turns\":7}",
+            "{\"agent\":{\"model\":\"x\"}}",
+            "{\"model\":\"gpt\"}",
+            "{\"max_turns\":7,\"agent\":{\"max_turns\":3}}",
+        };
+        static const char *const labels[] = {"root", "agent_only", "neither", "both"};
+        for (size_t i = 0; i < 4; i++) {
+            json_t *cj = json_parse(configs[i], NULL);
+            json_t *r = config_normalize_max_turns(cj);
+            printf("{\"family\":\"max_turns\",\"case\":\"%s\",\"config\":%s,\"out\":",
+                   labels[i], configs[i]);
+            if (r) { char *s = json_serialize(r); fputs(s ? s : "null", stdout); free(s); }
+            else fputs("null", stdout);
+            printf("}\n");
+            json_free(cj); if (r) json_free(r);
+        }
     }
 
-    /* ---- config_strip_non_ascii_credential ---- */
+    /* strip */
     {
         char *r = config_strip_non_ascii_credential("KEY", "abc123", NULL, 0);
-        check("strip_ascii_passthrough", r && strcmp(r, "abc123") == 0);
+        printf("{\"family\":\"strip\",\"case\":\"ascii\",\"key\":\"KEY\",\"value\":\"abc123\",\"out\":");
+        jstr(r); printf("}\n");
         free(r);
     }
     {
-        /* U+00E9 (é) and U+2014 (—) get stripped */
-        char *r = config_strip_non_ascii_credential("KEY", "sk-éabc—def", NULL, 0);
-        check("strip_removes_nonascii", r && strcmp(r, "sk-abcdef") == 0);
-        free(r);
-    }
-    {
-        char warn[1024];
-        /* U+00E9 == 0xC3 0xA9 in UTF-8 */
-        char nasty[] = {'a','b',(char)0xC3,(char)0xA9,'c','d','\0'};
-        char *r = config_strip_non_ascii_credential("MYKEY", nasty, warn, sizeof(warn));
-        check("strip_warns_on_nonascii", r && warn[0] != '\0' && strstr(warn, "MYKEY") != NULL);
+        /* U+00E9 (C3 A9) then "abc" then U+2014 (E2 80 94) then "def" */
+        char *r = config_strip_non_ascii_credential(
+            "KEY", "sk-\xC3\xA9" "abc" "\xE2\x80\x94" "def", NULL, 0);
+        printf("{\"family\":\"strip\",\"case\":\"removes_nonascii\","
+               "\"key\":\"KEY\",\"value\":\"sk-\\u00e9abc\\u2014def\",\"out\":");
+        jstr(r); printf("}\n");
         free(r);
     }
 
-    /* ---- provider_group_for_slug ---- */
+    /* group */
     {
-        check("group_kimi_coding", strcmp(provider_group_for_slug("kimi-coding"), "kimi") == 0);
-        check("group_minimax_oauth", strcmp(provider_group_for_slug("minimax-oauth"), "minimax") == 0);
-        check("group_xai_oauth", strcmp(provider_group_for_slug("xai-oauth"), "xai") == 0);
-        check("group_copilot_acp", strcmp(provider_group_for_slug("copilot-acp"), "copilot") == 0);
-        check("group_gemini", strcmp(provider_group_for_slug("gemini"), "google") == 0);
-        check("group_ungrouped_empty", strcmp(provider_group_for_slug("openrouter"), "") == 0);
-        check("group_case_insensitive", strcmp(provider_group_for_slug("XAI-OAuth"), "xai") == 0);
-        check("group_strips_ws", strcmp(provider_group_for_slug("  xai-oauth "), "xai") == 0);
-        check("group_none_arg_empty", strcmp(provider_group_for_slug(NULL), "") == 0);
+        static const char *const slugs[] = {
+            "kimi-coding", "minimax-oauth", "xai-oauth", "copilot-acp", "gemini",
+            "openrouter", NULL, "XAI-OAuth", "  xai-oauth ", "",
+        };
+        for (size_t i = 0; i < sizeof(slugs) / sizeof(slugs[0]); i++) {
+            char *r = strdup(provider_group_for_slug(slugs[i]));
+            printf("{\"family\":\"group\",\"case\":\"g_%zu\",\"slug\":", i);
+            jstr(slugs[i]);
+            printf(",\"out\":");
+            jstr(r);
+            printf("}\n");
+            free(r);
+        }
     }
-
-    printf("\n%s (%d failures)\n", failures ? "FAILED" : "ALL PASS", failures);
-    return failures ? 1 : 0;
+    return 0;
 }

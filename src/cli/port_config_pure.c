@@ -52,6 +52,10 @@ json_t *config_deep_merge(const json_t *base, const json_t *override)
             /* recurse; merged is a NEW object owned by json_set below */
             json_t *merged = config_deep_merge(existing, val);
             json_set(result, key, merged); /* takes ownership of merged */
+        } else if (existing && existing->type == JSON_OBJECT &&
+                   val->type == JSON_NULL) {
+            /* None over a dict section is ignored (#58277): an empty YAML
+             * section parses as None and must not replace the defaults. */
         } else {
             /* replace: pass a COPY so override's tree is not consumed */
             json_set(result, key, json_copy(val));
@@ -109,15 +113,17 @@ json_t *config_normalize_max_turns(const json_t *config_in)
 {
     if (!config_in || config_in->type != JSON_OBJECT) return NULL;
 
-    /* DEFAULT_CONFIG["agent"]["max_turns"] == 90 */
-    const double DEFAULT_MAX_TURNS = 90.0;
+    /* DEFAULT_CONFIG["agent"]["max_turns"] == 90, but live never injects it:
+     * the schema default is applied only at merge time, not written here. */
 
     json_t *config = json_copy(config_in);
     if (!config) return NULL;
 
-    json_t *agent_cfg = json_obj_get(config, "agent");
-    json_t *agent = (agent_cfg && agent_cfg->type == JSON_OBJECT)
-                        ? json_copy(agent_cfg)
+    /* Live: agent_config = dict(config.get("agent") or {}) */
+    json_t *agent_raw = json_obj_get(config, "agent");
+    int had_agent_key = (agent_raw != NULL);
+    json_t *agent = (agent_raw && agent_raw->type == JSON_OBJECT)
+                        ? json_copy(agent_raw)
                         : json_object();
     if (!agent) { json_free(config); return NULL; }
 
@@ -128,16 +134,14 @@ json_t *config_normalize_max_turns(const json_t *config_in)
         json_t *mt = json_obj_get(config, "max_turns");
         json_set(agent, "max_turns", json_copy(mt));
     }
-    /* Only inject the default when the user explicitly set max_turns
-     * (either root-level or under agent). Otherwise leave it absent. */
-    if (!had_root && !had_agent) {
-        /* deliberately do not inject the default */
-    } else if (json_obj_get(agent, "max_turns") == NULL) {
-        json_set(agent, "max_turns", json_number(DEFAULT_MAX_TURNS));
-    }
+
+    /* Live: if agent_config or "agent" in config: config["agent"] = agent_config
+     * (a sparse save must not grow an `agent: {}` section). */
+    int agent_nonempty = (json_object_size(agent) > 0);
+    int attach_agent = (agent_nonempty || had_agent_key);
 
     /* Rebuild config without the root-level max_turns key (no remove helper),
-     * then attach the migrated agent block. */
+     * then attach the migrated agent block only when warranted. */
     json_t *out = json_object();
     if (!out) { json_free(agent); json_free(config); return NULL; }
     size_t n = json_object_size(config);
@@ -148,7 +152,11 @@ json_t *config_normalize_max_turns(const json_t *config_in)
         if (strcmp(k, "max_turns") == 0) continue; /* drop root key */
         json_set(out, k, json_copy(v));
     }
-    json_set(out, "agent", agent); /* agent now owned by out */
+    if (attach_agent) {
+        json_set(out, "agent", agent); /* agent now owned by out */
+    } else {
+        json_free(agent);
+    }
 
     json_free(config);
     return out;
@@ -233,26 +241,33 @@ char *config_strip_non_ascii_credential(const char *key, const char *value,
  * =========================================================================== */
 
 /* member slug -> group_id, expanded from PROVIDER_GROUPS in models.py */
-static const char *SLUG_TO_GROUP[][2] = {
-    {"kimi-coding",     "kimi"},
-    {"kimi-coding-cn",  "kimi"},
-    {"minimax",         "minimax"},
-    {"minimax-oauth",   "minimax"},
-    {"minimax-cn",      "minimax"},
-    {"xai",             "xai"},
-    {"xai-oauth",       "xai"},
-    {"gemini",          "google"},
-    {"openai-codex",    "openai"},
-    {"openai-api",      "openai"},
-    {"opencode-zen",    "opencode"},
-    {"opencode-go",     "opencode"},
-    {"copilot",         "copilot"},
-    {"copilot-acp",     "copilot"},
+static const char *const SLUG_TO_GROUP[][2] = {
+    {"kimi-coding", "kimi"},
+    {"kimi-coding-cn", "kimi"},
+    {"minimax", "minimax"},
+    {"minimax-oauth", "minimax"},
+    {"minimax-cn", "minimax"},
+    {"xai", "xai"},
+    {"xai-oauth", "xai"},
+    {"gemini", "google"},
+    {"openai-codex", "openai"},
+    {"openai-api", "openai"},
+    {"alibaba", "qwen"},
+    {"alibaba-cn", "qwen"},
+    {"alibaba-coding-plan", "qwen"},
+    {"alibaba-coding-plan-cn", "qwen"},
+    {"alibaba-token-plan", "qwen"},
+    {"alibaba-token-plan-cn", "qwen"},
+    {"qwen-oauth", "qwen"},
+    {"opencode-zen", "opencode"},
+    {"opencode-go", "opencode"},
+    {"tencent-tokenhub", "tencent"},
+    {"tencent-tokenplan", "tencent"},
     {NULL, NULL}
 };
 
 /*
- * PoP: provider_group_for_slug @ hermes_cli/models.py:provider_group_for_slug
+ * PoP: provider_group_for_slug @ hermes_cli/models_catalog_static.py:provider_group_for_slug
  * Return the group_id a provider slug belongs to, or "" if ungrouped.
  */
 const char *provider_group_for_slug(const char *slug)
