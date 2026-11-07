@@ -90,6 +90,7 @@ declare -A DEPS=(
   [parked_notice]="src/cli/port_parked_notice.o lib/libjson/json.o"
   [producer_lifecycle]="src/cli/port_producer_lifecycle.o lib/libjson/json.o"
   [fast_mode]="src/cli/port_fast_mode.o"
+  [bot_loop_guard]="src/cli/port_bot_loop_guard.o lib/libjson/json.o"
 )
 
 fail=0
