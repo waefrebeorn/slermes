@@ -107,6 +107,7 @@ declare -A DEPS=(
   [audit]="src/cli/port_audit.o lib/libjson/json.o"
   [access_policy]="src/cli/port_access_policy.o lib/libjson/json.o"
   [aux_task_builder]="src/cli/port_aux_task_builder.o lib/libjson/json.o"
+  [error_classifier_upstream]="FULL"
 )
 
 fail=0

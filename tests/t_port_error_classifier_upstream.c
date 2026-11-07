@@ -5,7 +5,7 @@
  * recomputes the SAME function from the LIVE agent/error_classifier.py and
  * asserts exact equality.
  */
-#include "port_agent_error_classifier.c"
+#include "cli/port_agent_error_classifier.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
