@@ -96,6 +96,7 @@ declare -A DEPS=(
   [config_pure]="lib/libjson/json.o"
   [acp_client]="src/cli/port_acp_client.o lib/libjson/json.o"
   [anthropic_message_convert]="src/cli/port_anthropic_message_convert.o lib/libjson/json.o"
+  [status_helpers]="FULL"
 )
 
 fail=0

@@ -5,7 +5,7 @@
  * Python and compares exactly.
  */
 
-#include "port_status_helpers.c"
+#include "cli/port_status_helpers.c"
 #include <stdio.h>
 #include <string.h>
 

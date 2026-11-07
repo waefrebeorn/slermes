@@ -1,7 +1,7 @@
 /*
  * port_status_helpers.c
  *
- * Faithful C11 port of the PURE helper from hermes_cli/status.py:
+ * Faithful C11 port of the PURE helper from hermes_cli/status_auth.py:
  *   _format_iso_timestamp  ->  sta_format_iso_timestamp
  *
  * Converts an ISO-8601 timestamp string to the local timezone and formats
@@ -20,9 +20,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#if defined(_WIN32) && !defined(HAVE_TIMEGM_STANDALONE)
+#include <stdio.h>
+#include <stdlib.h>
+/* Standalone compile (oracle gate links without hermes_win32.h): MinGW lacks
+ * timegm()/localtime_r(). Mirror the full-build shims so the port compiles and
+ * behaves identically in the differential harness. Guarded so it never redefines
+ * what hermes_win32.h provides under `make`. */
+static time_t port_timegm(struct tm *tm)
+{
+    return _mkgmtime(tm);
+}
+static struct tm *port_localtime_r(const time_t *t, struct tm *result)
+{
+    return localtime_s(result, t) == 0 ? result : NULL;
+}
+#define timegm port_timegm
+#define localtime_r port_localtime_r
+#endif
 #include "hermes_yaml.h"
 
-/* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
+/* PoP: sta_format_iso_timestamp @ hermes_cli/status_auth.py:_format_iso_timestamp */
 void sta_format_iso_timestamp(const char *value, char out[64])
 {
     out[0] = '\0';
