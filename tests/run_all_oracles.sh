@@ -79,6 +79,7 @@ declare -A DEPS=(
   [mcp_security]="src/cli/port_mcp_security.o lib/libjson/json.o"
   [agent_turn_context]="FULL"
   [default_soul]="src/cli/port_default_soul.o"
+  [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
 )
 
 fail=0
