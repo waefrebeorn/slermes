@@ -495,6 +495,7 @@ const command_def_t COMMANDS[] = {
     {.name="/key", .alias=NULL, .description="Manage API keys: list, set, show, unset", .category="Security", .args_hint="[list|set <provider>|show <provider>|unset <provider>]", .subcommands="list,set,show,unset", .handler=cmd_key},
     {.name="/deps", .alias=NULL, .description="Install third-party Python bridge dependencies", .category="System", .args_hint=NULL, .subcommands=NULL, .handler=cmd_deps, .cli_only=true, .gateway_only=false},
     {.name="/pet", .alias=NULL, .description="Petdex: info, gallery, select, remove, disable, scale", .category="Display", .args_hint="[info|gallery|select <slug>|remove <slug>|disable|scale <n>]", .subcommands="info,gallery,select,remove,disable,scale", .handler=cmd_pet},
+    {.name="/python", .alias="/py", .description="Run a Python hermes_cli submodule via subprocess", .category="System", .args_hint="<module> [args...]", .subcommands=NULL, .handler=cmd_python},
     {.name=NULL, .alias=NULL, .description=NULL, .category=NULL, .args_hint=NULL, .subcommands=NULL, .handler=NULL},
 };
 

@@ -6,6 +6,7 @@
 #include "libplugin/plugin.h"
 #include "cli_cmd_misc.h"
 #include "commands_shared.h"
+#include <sys/stat.h>
 #include "hermes_core_types.h"
 
 /* /plugins: List installed plugins and their status */
@@ -226,4 +227,91 @@ void cmd_plugins(const char *args, agent_state_t *state) {
     printf("  install <path>      Install a plugin .so file\n");
     printf("  remove <name>       Remove an installed plugin\n");
 }
+
+/* ============================================================
+ *  cmd_python — run a Python hermes_cli/<module> via subprocess.
+ *  Bridging primary target: the N/A modules documented in
+ *  src/cli/cli_gaps.c (argparse, OAuth, pyperclip, Docker, portal,
+ *  clipboard, gateway, kanban, inventory, nous_*, etc.) that are
+ *  never reached from C. This is the live delegation path those
+ *  50 modules were registered "hermes python <module>" for but
+ *  which had no dispatcher (cli_subprocess_invoke was dead code).
+ *
+ *  Usage: /python <module> [args...]
+ *  Module is validated to [A-Za-z0-9_.] (no path traversal), then:
+ *     HERMES_HOME/<python> -m hermes_cli.<module> [args...]
+ *  falling back to bare `python -m hermes_cli.<module>`.
+ * ============================================================ */
+static bool cmd_python_module_name_valid(const char *m) {
+    if (!m || !m[0]) return false;
+    for (const char *p = m; *p; p++) {
+        if (!((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
+              (*p >= '0' && *p <= '9') || *p == '_' || *p == '.'))
+            return false;
+    }
+    return true;
+}
+
+/* Access(F_OK) check so we don't shell out to a nonexistent HERMES_HOME/python. */
+static bool command_python_usable(const char *py) {
+    if (!py || !py[0]) return false;
+    struct stat st;
+    return stat(py, &st) == 0 || access(py, F_OK) == 0;
+}
+
+void cmd_python(const char *args, agent_state_t *state) {
+    (void)state;
+    if (!args || !args[0]) {
+        printf("Usage: /python <module> [args...]\n");
+        printf("  Run a Python hermes_cli submodule (hermes python <module>).\n");
+        return;
+    }
+    char module[128];
+    const char *sp = args;
+    while (*sp == ' ') sp++;
+    size_t n = 0;
+    while (sp[n] && sp[n] != ' ' && n + 1 < sizeof(module)) n++;
+    memcpy(module, sp, n);
+    module[n] = '\0';
+    if (!cmd_python_module_name_valid(module)) {
+        printf("Invalid module name '%s'.\n", module);
+        return;
+    }
+    const char *rest = sp + n;
+    while (*rest == ' ') rest++;
+    /* Build command. Prefer a python alongside HERMES_HOME, else PATH. */
+    const char *home = getenv("HERMES_HOME");
+    char cmd[4096];
+    int w = 0;
+    if (home && *home) {
+        w = snprintf(cmd, sizeof(cmd), "%s/python", home);
+        if (w < 0 || (size_t)w >= sizeof(cmd)) w = snprintf(cmd, sizeof(cmd), "python");
+        /* HERMES_HOME may be just the config dir; verify the interpreter exists. */
+        if (w >= 0 && command_python_usable(cmd)) {
+            /* keep cmd, quoted for spaces in path */
+            char q[2048];
+            snprintf(q, sizeof(q), "\"%s\"", cmd);
+            w = snprintf(cmd, sizeof(cmd), "%s", q);
+        } else {
+            w = snprintf(cmd, sizeof(cmd), "python");
+        }
+    } else {
+        w = snprintf(cmd, sizeof(cmd), "python");
+    }
+    int tail = snprintf(cmd + (w < 0 ? 0 : w), sizeof(cmd) - (size_t)(w < 0 ? 0 : w),
+                        " -m hermes_cli.%s %s 2>&1", module, rest);
+    if (tail < 0) return;
+    FILE *fp = popen(cmd, "r");
+    if (!fp) {
+        printf("Failed to start python for module '%s'.\n", module);
+        return;
+    }
+    char buf[512];
+    size_t got;
+    while ((got = fread(buf, 1, sizeof(buf), fp)) > 0)
+        fwrite(buf, 1, got, stdout);
+    int rc = pclose(fp);
+    printf("\n[python %s exited %d]\n", module, rc);
+}
+
 
