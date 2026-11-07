@@ -6,7 +6,7 @@
  *       tests/t_port_file_pagination_ops.c src/tools/file_pagination_ops.o \
  *       lib/libjson/json.o -o /tmp/t_pg
  */
-#include "file_pagination_ops.h"
+#include "tools/file_pagination_ops.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
