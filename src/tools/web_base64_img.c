@@ -31,7 +31,6 @@
 typedef void (*b64_repl_t)(const char *match, const regmatch_t *g1,
                             char **out, size_t *op, size_t *cap);
 
-/* PoP: ensure @ tools/lazy_deps.py:ensure */
 static int b64_ensure(char **out, size_t *cap, size_t need)
 {
     if (*cap >= need) return 0;
@@ -115,6 +114,7 @@ static void b64_repl_fixed(const char *match, const regmatch_t *g1,
     *op += sizeof(tag) - 1;
 }
 
+/* PoP: web_base64_img_convert @ tools/web_tools_truncate.py:convert_base64_images_to_links */
 char *web_base64_img_convert(const char *text)
 {
     if (!text) return strdup("");

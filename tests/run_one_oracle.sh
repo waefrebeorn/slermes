@@ -58,7 +58,7 @@ if [ -x "./.ccache/launch.sh" ]; then
   COMPILER="./.ccache/launch.sh gcc"
 fi
 build() {   # build <out> <opt>
-  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
+  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -I include/compat -I include -I src $LIBINCS \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
     -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
     -Wl,--allow-multiple-definition

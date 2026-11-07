@@ -100,6 +100,7 @@ declare -A DEPS=(
   [micro_env]="src/cli/port_micro_env.o lib/libjson/json.o"
   [image_gen_path]="lib/libjson/json.o"
   [xai_expires]="FULL"
+  [web_base64_img]="FULL"
 )
 
 fail=0
