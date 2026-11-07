@@ -86,6 +86,7 @@ declare -A DEPS=(
   [gateway_wake]="src/cli/port_gateway_wake.o lib/libjson/json.o"
   [hosted_room_execution_policy]="src/gateway/port_hosted_room_execution_policy.o lib/libcrypto/crypto.o lib/libjson/json.o"
   [vault_login_classifier]="src/cli/port_vault_login_classifier.o lib/libjson/json.o"
+  [api_store_error]="src/cli/port_api_store_error.o"
 )
 
 fail=0
