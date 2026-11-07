@@ -112,6 +112,7 @@ declare -A DEPS=(
   [blueprint_plugins]="src/cli/port_blueprint_plugins.o lib/libjson/json.o"
   [callbacks]="src/cli/port_callbacks.o lib/libjson/json.o"
   [aux_outcome_event]="src/cli/port_aux_outcome_event.o lib/libjson/json.o"
+  [cli_process_dock]="src/cli/port_cli_process_dock.o lib/libjson/json.o"
 )
 
 fail=0
