@@ -105,6 +105,7 @@ declare -A DEPS=(
   [comp_telemetry]="src/cli/port_comp_telemetry.o lib/libjson/json.o"
   [file_pagination_ops]="src/tools/file_pagination_ops.o lib/libjson/json.o"
   [audit]="src/cli/port_audit.o lib/libjson/json.o"
+  [access_policy]="src/cli/port_access_policy.o lib/libjson/json.o"
 )
 
 fail=0
