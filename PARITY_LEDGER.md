@@ -6,6 +6,7 @@ Generated 2026-11-07 — whole production tree, every top-level `def`, except in
 - **PORTED-cname**: no PoP, but an identically-named C def exists somewhere (mostly name collisions — NOT counted as ported).
 - **REAL_GAP**: no C counterpart found.
 - Scope: production `hermes_cli/ agent/ tools/ gateway/ cron/`. Excludes `tests/` (7,508 files), plugins, evals, scripts, optional-skills.
+- The 47 "undefined calls" in `depth_check_results.json` are a scanner FALSE POSITIVE: every flagged symbol (`json_object_set/get`, `json_new_*`, `json_array_*`) is a macro/inline defined in `include/hermes_json.h`, and the final linked binary (`nm slermes.exe`) resolves all of them. Not a defect.
 
 ## Totals
 - Total top-level Python defs: **36545**
