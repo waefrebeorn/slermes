@@ -94,6 +94,7 @@ declare -A DEPS=(
   [media_labels]="src/cli/port_media_labels.o src/cli/port_aux_outcome_event.o lib/libcrypto/crypto.o lib/libjson/json.o"
   [error_surface]="src/agent/port_error_surface.o lib/libjson/json.o"
   [config_pure]="lib/libjson/json.o"
+  [acp_client]="src/cli/port_acp_client.o lib/libjson/json.o"
 )
 
 fail=0
