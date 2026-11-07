@@ -102,6 +102,7 @@ declare -A DEPS=(
   [xai_expires]="FULL"
   [web_base64_img]="FULL"
   [image_token_cost]="src/cli/port_image_token_cost.o src/cli/port_anthropic_credentials.o lib/libjson/json.o"
+  [comp_telemetry]="src/cli/port_comp_telemetry.o lib/libjson/json.o"
 )
 
 fail=0
