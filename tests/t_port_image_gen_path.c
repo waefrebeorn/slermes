@@ -3,7 +3,7 @@
  * Single verifiable pure fn: looks_like_absolute_file_path. Oracle-verified
  * 1:1 against LIVE tools/image_generation_tool.py:_looks_like_absolute_file_path.
  */
-#include "image_gen_path.c"
+#include "tools/image_gen_path.c"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
