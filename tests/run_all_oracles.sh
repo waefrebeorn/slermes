@@ -88,6 +88,7 @@ declare -A DEPS=(
   [vault_login_classifier]="src/cli/port_vault_login_classifier.o lib/libjson/json.o"
   [api_store_error]="src/cli/port_api_store_error.o"
   [parked_notice]="src/cli/port_parked_notice.o lib/libjson/json.o"
+  [producer_lifecycle]="src/cli/port_producer_lifecycle.o lib/libjson/json.o"
 )
 
 fail=0
