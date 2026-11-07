@@ -314,7 +314,7 @@ json_t *amc_replay_tool_use(const char *block_json)
                  (ch >= '0' && ch <= '9') || ch == '_' || ch == '-';
         id_buf[o++] = ok ? (char)ch : '_';
     }
-    id_buf[o] = ' ';
+    id_buf[o] = '\0';
     if (o == 0) snprintf(id_buf, sizeof(id_buf), "tool_0");
 
     json_t *out = json_object();
