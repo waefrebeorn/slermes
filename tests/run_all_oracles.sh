@@ -110,6 +110,7 @@ declare -A DEPS=(
   [error_classifier_upstream]="FULL"
   [auth_providers]="src/cli/port_auth_providers.o lib/libjson/json.o"
   [blueprint_plugins]="src/cli/port_blueprint_plugins.o lib/libjson/json.o"
+  [callbacks]="src/cli/port_callbacks.o lib/libjson/json.o"
 )
 
 fail=0
