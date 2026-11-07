@@ -91,6 +91,7 @@ declare -A DEPS=(
   [producer_lifecycle]="src/cli/port_producer_lifecycle.o lib/libjson/json.o"
   [fast_mode]="src/cli/port_fast_mode.o"
   [bot_loop_guard]="src/cli/port_bot_loop_guard.o lib/libjson/json.o"
+  [media_labels]="src/cli/port_media_labels.o src/cli/port_aux_outcome_event.o lib/libcrypto/crypto.o lib/libjson/json.o"
 )
 
 fail=0
