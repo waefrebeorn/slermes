@@ -78,6 +78,7 @@ declare -A DEPS=(
   [agent_replay_cleanup]="src/agent/port_agent_replay_cleanup.o lib/libjson/json.o"
   [mcp_security]="src/cli/port_mcp_security.o lib/libjson/json.o"
   [agent_turn_context]="FULL"
+  [default_soul]="src/cli/port_default_soul.o"
 )
 
 fail=0

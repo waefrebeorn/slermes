@@ -1,12 +1,16 @@
 /* Oracle harness: hermes_cli/default_soul.py vs LIVE Python. */
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cli/port_default_soul.h"
 
 static const char *jstr(const char *s){
-    static char b[4][1024]; static int bi=0; int idx=bi; char *q=b[idx]; bi=(bi+1)&3; *q++='"';
-    for(const char *p=s;p&&*p&&(q-b[idx])<500;p++){
+    static char b[4][4096]; static int bi=0; int idx=bi; char *q=b[idx]; bi=(bi+1)&3; *q++='"';
+    for(const char *p=s;p&&*p&&(q-b[idx])<4080;p++){
         unsigned char c=*p;
-        if(c=='"'||c=='\\'){*q++='\\';*q++=c;} else *q++=c;
+        if(c=='"'||c=='\\'){*q++='\\';*q++=c;}
+        else if(c<0x20){*q++='\\';*q++='u';*q++='0';*q++='0';*q++="0123456789abcdef"[c>>4];*q++="0123456789abcdef"[c&0xf];}
+        else *q++=c;
     }
     *q++='"';*q='\0';return b[idx];
 }
@@ -53,10 +57,31 @@ int main(void) {
         {wsc, "legacy0_ws"},
         {bomc, "legacy0_bom"},
         {"", "empty"},
+        {NULL, "legacy2"},   /* filled below from the live DEFAULT_SOUL_MD-era text */
+        {NULL, "legacy3"},
     };
-    for (int i = 0; i < 6; i++) {
+    unsigned nc = sizeof(cases)/sizeof(cases[0]);
+    /* the second-generation default persona (template index 2) */
+    cases[6].t =
+        "You are Hermes Agent, an intelligent AI assistant created by Nous Research. You are helpful, "
+        "knowledgeable, and direct. You assist users with a wide range of tasks including answering questions, "
+        "writing and editing code, analyzing information, creative work, and executing actions via your tools. "
+        "You communicate clearly, admit uncertainty when appropriate, and prioritize being genuinely useful over "
+        "being verbose unless otherwise directed below. Be targeted and efficient in your exploration and "
+        "investigations.";
+    /* the ASCII-dashed install variant (template index 3) */
+    cases[7].t =
+        "You are Hermes Agent, built by Nous Research. Be direct: match the length of your reply to the "
+        "weight of the ask -- a one-line question gets a one-line answer, and finished work gets a short "
+        "report of what changed, what's verified, and what's left, never a replay of the process. No filler "
+        "(\"Great question,\" \"I'd be happy to\"), no restating the request back, no re-summarizing what you "
+        "already said, no narrating tool calls the user can see. Plain claims over adjectives; when unsure, "
+        "say so plainly. Agree because it's right, not because the user said it. Depth is earned -- give it "
+        "when the user asks for detail, teaches, or the stakes demand it, not by default.";
+    for (int i = 0; i < (int)nc; i++) {
         bool leg = hermes_cli_default_soul_is_legacy(cases[i].t);
-        printf("{\"t\":\"legacy\",\"name\":%s,\"out\":%d}\n", jstr(cases[i].name), leg?1:0);
+        printf("{\"t\":\"legacy\",\"name\":%s,\"in\":%s,\"out\":%d}\n",
+               jstr(cases[i].name), jstr(cases[i].t), leg?1:0);
     }
     free(wsc); free(bomc);
     return 0;
