@@ -83,6 +83,7 @@ declare -A DEPS=(
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
   [file_operations_search]="src/tools/port_file_operations_search.o lib/libregex/hermes_regex.o lib/libjson/json.o"
   [hermes_cli_misc]="src/cli/port_hermes_cli_misc.o lib/libjson/json.o"
+  [gateway_wake]="src/cli/port_gateway_wake.o lib/libjson/json.o"
 )
 
 fail=0

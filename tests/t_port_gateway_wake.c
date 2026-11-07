@@ -60,7 +60,8 @@ int main(void)
     for (size_t i = 0; i < sizeof(evts) / sizeof(evts[0]); i++) {
         for (int w = 0; w < 2; w++) {
             json_t *meta = wake_delegation_display_metadata(evts[i], w);
-            printf("{\"family\":\"metadata\",\"case\":\"m_%zu_%d\",\"out\":", i, w);
+            printf("{\"family\":\"metadata\",\"case\":\"m_%zu_%d\",\"in\":%s,\"w\":%d,\"out\":",
+                   i, w, evts[i], w);
             if (!meta) {
                 fputs("null", stdout);
             } else {
