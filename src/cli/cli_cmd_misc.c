@@ -259,6 +259,55 @@ static bool command_python_usable(const char *py) {
     return stat(py, &st) == 0 || access(py, F_OK) == 0;
 }
 
+/* Locate the directory that CONTAINS hermes_cli/ (i.e. the hermes-agent
+ * source root). On this box that is C:\Users\<u>\hermes-agent; on a real
+ * install it is the agent payload root. Returns malloc'd path or NULL. */
+static char *cmd_python_find_agent_root(void) {
+    const char *cands[] = {
+        "C:/Users/eman5/hermes-agent",   /* dev box */
+        NULL
+    };
+    const char *home = getenv("HERMES_HOME");
+    char probe[1024];
+    if (home && *home) {
+        /* <home>/ is config dir; <home> may also sit next to an agent root */
+        snprintf(probe, sizeof(probe), "%s/hermes_cli", home);
+        if (access(probe, F_OK) == 0) {
+            char *root = malloc(strlen(home) + 1);
+            if (root) strcpy(root, home);
+            return root;
+        }
+        snprintf(probe, sizeof(probe), "%s/../hermes-cli", home);
+        if (access(probe, F_OK) == 0) {
+            char *root = malloc(strlen(home) + 1 + 3);
+            if (root) snprintf(root, strlen(home) + 1 + 3, "%s/..", home);
+            return root;
+        }
+    }
+    for (int i = 0; cands[i]; i++) {
+        snprintf(probe, sizeof(probe), "%s/hermes_cli", cands[i]);
+        if (access(probe, F_OK) == 0) return strdup(cands[i]);
+    }
+    return NULL;
+}
+
+/* Prefer a real, spawnable interpreter. The WindowsApps payload python is
+ * ACL-blocked for native child processes (Access denied in popen), so probe
+ * candidates that the C binary may actually exec. Returns malloc'd path or NULL. */
+static char *cmd_python_find_interpreter(void) {
+    /* MSYS2 mingw python is a real exe and imports hermes_cli via PYTHONPATH. */
+    static const char *real_cands[] = {
+        "C:/msys64/mingw64/bin/python.exe",
+        "C:/msys64/mingw64/bin/python3.exe",
+        NULL
+    };
+    for (int i = 0; real_cands[i]; i++) {
+        if (access(real_cands[i], F_OK) == 0) return strdup(real_cands[i]);
+    }
+    /* Fall back to PATH python; may fail with Access denied for the payload. */
+    return strdup("python");
+}
+
 void cmd_python(const char *args, agent_state_t *state) {
     (void)state;
     if (!args || !args[0]) {
@@ -279,25 +328,26 @@ void cmd_python(const char *args, agent_state_t *state) {
     }
     const char *rest = sp + n;
     while (*rest == ' ') rest++;
-    /* Build command. Prefer a python alongside HERMES_HOME, else PATH. */
-    const char *home = getenv("HERMES_HOME");
+
+    char *agent_root = cmd_python_find_agent_root();
+    char *py = cmd_python_find_interpreter();
+    /* Inject PYTHONPATH into the child's environment so `python -m hermes_cli.X`
+     * resolves the live source. do NOT prefix the command line with batch
+     * (`set X=Y&& ...`) — that construct hangs cmd.exe under popen. */
+    if (agent_root && *agent_root) {
+        setenv("PYTHONPATH", agent_root, 1);
+    }
     char cmd[4096];
     int w = 0;
-    if (home && *home) {
-        w = snprintf(cmd, sizeof(cmd), "%s/python", home);
-        if (w < 0 || (size_t)w >= sizeof(cmd)) w = snprintf(cmd, sizeof(cmd), "python");
-        /* HERMES_HOME may be just the config dir; verify the interpreter exists. */
-        if (w >= 0 && command_python_usable(cmd)) {
-            /* keep cmd, quoted for spaces in path */
-            char q[2048];
-            snprintf(q, sizeof(q), "\"%s\"", cmd);
-            w = snprintf(cmd, sizeof(cmd), "%s", q);
-        } else {
-            w = snprintf(cmd, sizeof(cmd), "python");
-        }
+    if (py) {
+        char q[1024];
+        snprintf(q, sizeof(q), "\"%s\"", py);
+        w = snprintf(cmd, sizeof(cmd), "%s", q);
+        free(py);
     } else {
         w = snprintf(cmd, sizeof(cmd), "python");
     }
+    if (agent_root) free(agent_root);
     int tail = snprintf(cmd + (w < 0 ? 0 : w), sizeof(cmd) - (size_t)(w < 0 ? 0 : w),
                         " -m hermes_cli.%s %s 2>&1", module, rest);
     if (tail < 0) return;
