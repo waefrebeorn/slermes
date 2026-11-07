@@ -81,6 +81,7 @@ declare -A DEPS=(
   [default_soul]="src/cli/port_default_soul.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
+  [file_operations_search]="src/tools/port_file_operations_search.o lib/libregex/hermes_regex.o lib/libjson/json.o"
 )
 
 fail=0

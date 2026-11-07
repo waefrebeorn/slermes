@@ -1,4 +1,4 @@
-/* Slermes C port — tools/file_operations.py (search-diagnostics helpers)
+/* Slermes C port — tools/file_operations_search.py (search-diagnostics helpers)
  *
  * Faithful port of _search_stdout_and_limit and _split_tool_diagnostics.
  * Pure string transforms over an ExecuteResult-shaped struct.
@@ -22,7 +22,7 @@ static const char *SEARCH_TIMEOUT_MARKER_RE = "\n?\\[Command timed out after [0-
 /* _SEARCH_OUTPUT_RE = re.compile(r'^([A-Za-z]:)?[^\s:][^\n]*?[:\-]\d|^[^\s:][^\s]*$') */
 static const char *SEARCH_OUTPUT_RE = "^([A-Za-z]:)?[^ \t:][^\n]*?[-:][0-9]|^[^ \t:][^ \t]*$";
 
-/* PoP: file_ops_search_search_stdout_and_limit @ tools/file_operations.py:_search_stdout_and_limit */
+/* PoP: file_ops_search_search_stdout_and_limit @ tools/file_operations_search.py:_search_stdout_and_limit */
 char *file_ops_search_search_stdout_and_limit(const file_ops_execute_result_t *result, char **out_reason)
 {
     static regex_t re; static bool compiled = false;
@@ -43,7 +43,7 @@ char *file_ops_search_search_stdout_and_limit(const file_ops_execute_result_t *r
     return strdup(out_s);
 }
 
-/* PoP: file_ops_search_split_tool_diagnostics @ tools/file_operations.py:_split_tool_diagnostics */
+/* PoP: file_ops_search_split_tool_diagnostics @ tools/file_operations_search.py:_split_tool_diagnostics */
 void file_ops_search_split_tool_diagnostics(const char *output, char **out_diagnostics, char **out_payload)
 {
     regex_t re; regcomp(&re, SEARCH_OUTPUT_RE, REG_EXTENDED);
