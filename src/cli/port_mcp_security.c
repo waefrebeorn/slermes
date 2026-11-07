@@ -29,8 +29,9 @@ void hermes_cli_mcp_security_command_basename(const char *command, char *out, si
         }
     }
     first[fi] = '\0';
-    const char *base = strrchr(first, '/');
-    base = base ? base + 1 : first;
+    const char *base = first;
+    for (const char *p = first; *p; p++)
+        if (*p == '/' || *p == '\\') base = p + 1;
     size_t i = 0;
     for (; base[i] && i + 1 < outsz; i++) out[i] = (char)tolower((unsigned char)base[i]);
     out[i] = '\0';

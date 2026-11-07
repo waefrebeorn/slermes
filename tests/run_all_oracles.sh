@@ -76,6 +76,7 @@ declare -A DEPS=(
   [learning_graph]="src/cli/port_learning_graph_helpers.o lib/libjson/json.o"
   [model_cost_guard]="src/cli/port_model_cost_guard.o lib/libjson/json.o"
   [agent_replay_cleanup]="src/agent/port_agent_replay_cleanup.o lib/libjson/json.o"
+  [mcp_security]="src/cli/port_mcp_security.o lib/libjson/json.o"
 )
 
 fail=0

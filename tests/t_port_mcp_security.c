@@ -26,8 +26,8 @@ int main(void) {
         printf("{\"t\":\"inline\",\"args\":%s,\"out\":%s}\n", jstr(args[i]), jstr(out));
     }
     const char *entries[] = {
-        "python\x1f-x\x1fSECRET=1",
-        "node\x1fserver.js\x1fA=1\x1fB=2",
+        "python\x1f-x\037SECRET=1",
+        "node\037server.js\x1fA=1\037B=2",
         "\x1f",
     };
     for (int i = 0; i < 3; i++) {
