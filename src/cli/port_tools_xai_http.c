@@ -10,6 +10,14 @@
 #include <unistd.h>
 #include <time.h>
 
+/* Standalone compile (oracle gate links without hermes_win32.h): MinGW's mkdir
+ * is single-arg (POSIX mode is the second arg). Under `make` hermes_win32.h
+ * provides its own shim, so guard this away when that's in force. */
+#if defined(_WIN32) && !defined(HAVE_MKDIR_MODE_STANDALONE)
+#include <direct.h>
+#define mkdir(p, m) _mkdir(p)
+#endif
+
 /* PoP: cli_tools_xai_http_hermes_xai_user_agent @ tools/xai_http.py:hermes_xai_user_agent */
 
 /* Port of Python tools/xai_http.py:hermes_xai_user_agent */
