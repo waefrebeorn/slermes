@@ -101,6 +101,7 @@ declare -A DEPS=(
   [image_gen_path]="lib/libjson/json.o"
   [xai_expires]="FULL"
   [web_base64_img]="FULL"
+  [image_token_cost]="src/cli/port_image_token_cost.o src/cli/port_anthropic_credentials.o lib/libjson/json.o"
 )
 
 fail=0

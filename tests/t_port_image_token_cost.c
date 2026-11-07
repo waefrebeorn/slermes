@@ -29,8 +29,8 @@ int main(void)
         "{\"content\":[{\"type\":\"image\"}],\"output\":[{\"type\":\"image\"}],\"_anthropic_content_blocks\":[{\"type\":\"image\"}]}",
     };
     for (size_t i = 0; i < sizeof(msgs) / sizeof(msgs[0]); i++) {
-        printf("{\"family\":\"msg\",\"case\":\"m_%zu\",\"count\":%d,\"cost100\":%d}\n",
-               i, pic_count_image_tokens(msgs[i], 1),
+        printf("{\"family\":\"msg\",\"case\":\"m_%zu\",\"in\":%s,\"count\":%d,\"cost100\":%d}\n",
+               i, msgs[i], pic_count_image_tokens(msgs[i], 1),
                pic_count_image_tokens(msgs[i], 100));
     }
 
@@ -43,8 +43,8 @@ int main(void)
             "null",
         };
         for (size_t i = 0; i < sizeof(arrays) / sizeof(arrays[0]); i++)
-            printf("{\"family\":\"msgs\",\"case\":\"a_%zu\",\"total\":%d}\n", i,
-                   pic_count_images(arrays[i]));
+            printf("{\"family\":\"msgs\",\"case\":\"a_%zu\",\"in\":%s,\"total\":%d}\n", i,
+                   arrays[i], pic_count_images(arrays[i]));
     }
     return 0;
 }
