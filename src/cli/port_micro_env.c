@@ -11,6 +11,7 @@
 #include <string.h>
 #include <strings.h>
 
+/* PoP: tep_strip_env_keys @ agent/terminal_env_provider.py:strip_env_keys */
 char *tep_strip_env_keys(void)
 {
     return strdup("[]");
@@ -25,12 +26,14 @@ static char *micro_snprintf_dup(const char *fmt, const char *arg)
     return o;
 }
 
+/* PoP: tep_env_description @ agent/terminal_env_provider.py:env_description */
 char *tep_env_description(const char *display_name)
 {
     return micro_snprintf_dup("a %s environment (likely Linux)",
                               display_name ? display_name : "");
 }
 
+/* PoP: apm_allow_all_env_names @ gateway/platforms/access_policy_mixin.py:_allow_all_env_names */
 char *apm_allow_all_env_names(const char *prefix)
 {
     const char *p = prefix ? prefix : "";
@@ -41,6 +44,7 @@ char *apm_allow_all_env_names(const char *prefix)
     return o;
 }
 
+/* PoP: ht_normalized @ gateway/host_topology.py:_normalized */
 char *ht_normalized(const char *name)
 {
     const char *s = name ? name : "";
@@ -68,6 +72,7 @@ char *ht_normalized(const char *name)
 }
 
 /* ---- HostGatewayTopology.serves ---- */
+/* PoP: hgt_serves @ gateway/host_topology.py:HostGatewayTopology.serves */
 
 int hgt_serves(const char *profiles_json, const char *profile_name)
 {
