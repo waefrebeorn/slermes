@@ -642,10 +642,15 @@ json_t *vl_select_checkout_fills(const vl_classified_t *classified, int n,
 
     for (int i = 0; i < nb; i++) {
         int drop = 0;
-        if (have_exp) {
-            const char *tok = json_get_str(built[i], "token", "");
-            if (strcmp(tok, "cc-exp-month") == 0 || strcmp(tok, "cc-exp-year") == 0)
-                drop = 1;
+        /* Live: only when a combined cc-exp fill was actually created does it
+         * suppress the separate month/year fills — never just because the secret
+         * carried month+year but no control classified as token cc-exp. */
+        const char *tok_i = json_get_str(built[i], "token", "");
+        if (strcmp(tok_i, "cc-exp-month") == 0 || strcmp(tok_i, "cc-exp-year") == 0) {
+            for (int j = 0; j < nb; j++) {
+                const char *tj = json_get_str(built[j], "token", "");
+                if (strcmp(tj, "cc-exp") == 0) { drop = 1; break; }
+            }
         }
         if (drop) json_free(built[i]);
         else json_append(fills, built[i]);

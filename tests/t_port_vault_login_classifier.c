@@ -103,7 +103,10 @@ static void emit_otp(const char *name, const struct fx *fxs, int n, const char *
     vl_classified_t *otp = NULL;
     int count = vl_classify_otp_controls(controls, n, &otp);
 
-    printf("{\"family\":\"otp\",\"case\":\"%s\",\"fixtures\":[", name);
+    printf("{\"family\":\"otp\",\"case\":\"%s\",\"code\":", name);
+    if (code) { fputc('"', stdout); fputs(code, stdout); fputc('"', stdout); }
+    else fputs("null", stdout);
+    printf(",\"fixtures\":[");
     for (int i = 0; i < n; i++) {
         if (i) fputs(",", stdout);
         fputs(jsons[i], stdout);
@@ -252,7 +255,7 @@ int main(void)
             { "current-password", "", "", "text", 0, 9, -1 },
         };
         vl_control_t controls[3];
-        vl_classified_t listed[3];
+        vl_classified_t *listed = calloc(3, sizeof(*listed));
         int n = 0;
         for (int i = 0; i < 3; i++) {
             build_control(&fxs[i], &controls[i]);
@@ -261,14 +264,22 @@ int main(void)
         }
         json_t *fills = vl_select_password_fill(listed, n, "s3cret");
         char *s = fills ? json_serialize(fills) : NULL;
-        printf("{\"family\":\"select_password\",\"case\":\"best\",\"out\":%s}\n",
+        printf("{\"family\":\"select_password\",\"case\":\"best\",\"password\":\"s3cret\","
+               "\"fixtures\":[{\"autocomplete\":\"\",\"label\":\"\",\"name\":\"pw1\",\"type\":\"password\",\"index\":7},"
+               "{\"autocomplete\":\"\",\"label\":\"\",\"name\":\"pw2\",\"type\":\"password\",\"index\":3},"
+               "{\"autocomplete\":\"current-password\",\"label\":\"\",\"name\":\"\",\"type\":\"text\",\"index\":9}],"
+               "\"out\":%s}\n",
                s ? s : "null");
         free(s);
         if (fills) json_free(fills);
 
         json_t *empty = vl_select_password_fill(listed, n, "");
         s = empty ? json_serialize(empty) : NULL;
-        printf("{\"family\":\"select_password\",\"case\":\"empty_password\",\"out\":%s}\n",
+        printf("{\"family\":\"select_password\",\"case\":\"empty_password\",\"password\":\"\","
+               "\"fixtures\":[{\"autocomplete\":\"\",\"label\":\"\",\"name\":\"pw1\",\"type\":\"password\",\"index\":7},"
+               "{\"autocomplete\":\"\",\"label\":\"\",\"name\":\"pw2\",\"type\":\"password\",\"index\":3},"
+               "{\"autocomplete\":\"current-password\",\"label\":\"\",\"name\":\"\",\"type\":\"text\",\"index\":9}],"
+               "\"out\":%s}\n",
                s ? s : "null");
         free(s);
         if (empty) json_free(empty);
@@ -286,7 +297,7 @@ int main(void)
             { "", "City", "", "text", 0, 6, -1 },
         };
         vl_control_t controls[6];
-        vl_classified_t listed[6];
+        vl_classified_t *listed = calloc(6, sizeof(*listed));
         int n = 0;
         for (int i = 0; i < 6; i++) {
             build_control(&fxs[i], &controls[i]);
@@ -297,16 +308,30 @@ int main(void)
         const char *map = "{\"card\":\"cc-number\",\"cvv\":\"cc-csc\",\"exp_month\":\"cc-exp-month\",\"exp_year\":\"cc-exp-year\",\"city\":\"address-level2\"}";
         json_t *fills = vl_select_checkout_fills(listed, n, secret, map);
         char *s = fills ? json_serialize(fills) : NULL;
-        printf("{\"family\":\"select_checkout\",\"case\":\"combined_exp\",\"out\":%s}\n",
-               s ? s : "null");
+        printf("{\"family\":\"select_checkout\",\"case\":\"combined_exp\",\"fixtures\":"
+               "[{\"autocomplete\":\"cc-number\",\"label\":\"\",\"name\":\"\",\"type\":\"text\",\"index\":1},"
+               "{\"autocomplete\":\"\",\"label\":\"Card number\",\"name\":\"\",\"type\":\"text\",\"index\":2},"
+               "{\"autocomplete\":\"\",\"label\":\"CVV\",\"name\":\"\",\"type\":\"text\",\"index\":3},"
+               "{\"autocomplete\":\"\",\"label\":\"Expiry month\",\"name\":\"\",\"type\":\"select\",\"index\":4},"
+               "{\"autocomplete\":\"\",\"label\":\"Expiry year\",\"name\":\"\",\"type\":\"select\",\"index\":5},"
+               "{\"autocomplete\":\"\",\"label\":\"City\",\"name\":\"\",\"type\":\"text\",\"index\":6}],"
+               "\"secret\":%s,\"map\":%s,\"out\":%s}\n",
+               secret, map, s ? s : "null");
         free(s);
         if (fills) json_free(fills);
 
         const char *secret2 = "{\"card\":\"4242\",\"cvv\":\"\",\"exp_month\":\"3\",\"city\":\"Paris\"}";
         json_t *f2 = vl_select_checkout_fills(listed, n, secret2, map);
         s = f2 ? json_serialize(f2) : NULL;
-        printf("{\"family\":\"select_checkout\",\"case\":\"missing_values\",\"out\":%s}\n",
-               s ? s : "null");
+        printf("{\"family\":\"select_checkout\",\"case\":\"missing_values\",\"fixtures\":"
+               "[{\"autocomplete\":\"cc-number\",\"label\":\"\",\"name\":\"\",\"type\":\"text\",\"index\":1},"
+               "{\"autocomplete\":\"\",\"label\":\"Card number\",\"name\":\"\",\"type\":\"text\",\"index\":2},"
+               "{\"autocomplete\":\"\",\"label\":\"CVV\",\"name\":\"\",\"type\":\"text\",\"index\":3},"
+               "{\"autocomplete\":\"\",\"label\":\"Expiry month\",\"name\":\"\",\"type\":\"select\",\"index\":4},"
+               "{\"autocomplete\":\"\",\"label\":\"Expiry year\",\"name\":\"\",\"type\":\"select\",\"index\":5},"
+               "{\"autocomplete\":\"\",\"label\":\"City\",\"name\":\"\",\"type\":\"text\",\"index\":6}],"
+               "\"secret\":%s,\"map\":%s,\"out\":%s}\n",
+               secret2, map, s ? s : "null");
         free(s);
         if (f2) json_free(f2);
         vl_classified_list_free(listed, n);
