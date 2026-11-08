@@ -11,6 +11,8 @@
  */
 
 #include "port_hosted_room_execution_policy.h"
+#include "hermes_json_strutil.h"
+#include "hermes_strutil.h"
 #include "crypto.h"
 
 #include <ctype.h>
@@ -59,33 +61,11 @@ static int identifier_ok(const char *s)
     return 1;
 }
 
-static char *str_strip_dup(const char *s)
-{
-    if (!s) return NULL;
-    while (*s && isspace((unsigned char)*s)) s++;
-    size_t n = strlen(s);
-    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
-    char *out = (char *)malloc(n + 1);
-    if (!out) return NULL;
-    memcpy(out, s, n);
-    out[n] = '\0';
-    return out;
-}
+
 
 /* Python str(value or "") for a JSON node: strings verbatim, numbers rendered,
  * null/absent as "" (falsey -> ""), everything else as JSON text. */
-static char *node_str(const json_t *n)
-{
-    if (!n) return strdup("");
-    char buf[64];
-    switch (n->type) {
-    case JSON_STRING: return strdup(n->str_val ? n->str_val : "");
-    case JSON_NUMBER: snprintf(buf, sizeof(buf), "%.17g", n->num_val); return strdup(buf);
-    case JSON_BOOL:   return strdup(n->bool_val ? "True" : "False");
-    case JSON_NULL:   return strdup("");
-    default:          return json_serialize(n);
-    }
-}
+
 
 /* PoP: hep_policy_digest @ gateway/hosted_room_execution_policy.py:_policy_digest */
 char *hep_policy_digest(const char *target_profile,
@@ -179,7 +159,7 @@ int hep_policy_from_mapping(const char *json, hep_policy_t *out, char **err)
     }
 
     /* target_profile: _identifier(value) stringifies first. */
-    char *raw_profile = node_str(json_obj_get(doc, "target_profile"));
+    char *raw_profile = json_node_to_str(json_obj_get(doc, "target_profile"));
     char *profile = str_strip_dup(raw_profile ? raw_profile : "");
     free(raw_profile);
     if (!identifier_ok(profile)) {
@@ -200,7 +180,7 @@ int hep_policy_from_mapping(const char *json, hep_policy_t *out, char **err)
     char **list = (char **)calloc((size_t)n, sizeof(char *));
     if (!list) { free(profile); json_free(doc); return -1; }
     for (int i = 0; i < n; i++) {
-        char *raw = node_str(json_get(toolsets, (size_t)i));
+        char *raw = json_node_to_str(json_get(toolsets, (size_t)i));
         char *item = str_strip_dup(raw ? raw : "");
         free(raw);
         if (!identifier_ok(item)) {
@@ -228,7 +208,7 @@ int hep_policy_from_mapping(const char *json, hep_policy_t *out, char **err)
         return set_error(err, POLICY_ERR_TOOLSETS);
     }
 
-    char *raw_mode = node_str(json_obj_get(doc, "approval_mode"));
+    char *raw_mode = json_node_to_str(json_obj_get(doc, "approval_mode"));
     char *mode = str_strip_dup(raw_mode ? raw_mode : "");
     free(raw_mode);
     if (mode) for (char *p = mode; *p; p++) *p = (char)tolower((unsigned char)*p);
@@ -264,7 +244,7 @@ int hep_policy_from_mapping(const char *json, hep_policy_t *out, char **err)
 
     char *computed = hep_policy_digest(profile, (const char *const *)list, n,
                                        mode, max_iters);
-    char *raw_digest = node_str(json_obj_get(doc, "policy_digest"));
+    char *raw_digest = json_node_to_str(json_obj_get(doc, "policy_digest"));
     char *supplied = str_strip_dup(raw_digest ? raw_digest : "");
     free(raw_digest);
     if (supplied) for (char *p = supplied; *p; p++) *p = (char)tolower((unsigned char)*p);

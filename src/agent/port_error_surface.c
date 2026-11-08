@@ -8,6 +8,8 @@
  */
 
 #include "port_error_surface.h"
+#include "hermes_json_strutil.h"
+#include "hermes_strutil.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -27,18 +29,7 @@ static char *lower_dup(const char *s)
     return out;
 }
 
-static char *strip_dup(const char *s)
-{
-    if (!s) return NULL;
-    while (*s && isspace((unsigned char)*s)) s++;
-    size_t n = strlen(s);
-    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
-    char *out = (char *)malloc(n + 1);
-    if (!out) return NULL;
-    memcpy(out, s, n);
-    out[n] = '\0';
-    return out;
-}
+
 
 static int contains_ci(const char *haystack, const char *needle_lower)
 {
@@ -59,18 +50,7 @@ static int one_of(const char *value, const char *const *set, size_t n)
 }
 
 /* Python str(x or "") for a JSON node. */
-static char *node_str(const json_t *n)
-{
-    if (!n) return strdup("");
-    char buf[64];
-    switch (n->type) {
-    case JSON_STRING: return strdup(n->str_val ? n->str_val : "");
-    case JSON_NUMBER: snprintf(buf, sizeof(buf), "%.17g", n->num_val); return strdup(buf);
-    case JSON_BOOL:   return strdup(n->bool_val ? "True" : "False");
-    case JSON_NULL:   return strdup("");
-    default:          return json_serialize(n);
-    }
-}
+
 
 static int py_truthy(const json_t *n)
 {
@@ -136,7 +116,7 @@ static const char *const DISK_FULL_MARKERS[] = {
 /* PoP: esc_is_custom_endpoint @ agent/error_surface.py:_is_custom_endpoint */
 int esc_is_custom_endpoint(const char *provider)
 {
-    char *p = strip_dup(provider ? provider : "");
+    char *p = str_strip_dup(provider ? provider : "");
     if (!p) return 0;
     for (char *q = p; *q; q++) *q = (char)tolower((unsigned char)*q);
     int custom = one_of(p, CUSTOM_ENDPOINT_PROVIDERS, NELEM(CUSTOM_ENDPOINT_PROVIDERS)) ||
@@ -223,9 +203,9 @@ json_t *esc_build_from_result(const char *result_json, const char *provider,
         return NULL;
     }
 
-    char *error_text = node_str(json_obj_get(doc, "error"));
-    char *raw_reason = node_str(json_obj_get(doc, "failure_reason"));
-    char *reason = strip_dup(raw_reason ? raw_reason : "");
+    char *error_text = json_node_to_str(json_obj_get(doc, "error"));
+    char *raw_reason = json_node_to_str(json_obj_get(doc, "failure_reason"));
+    char *reason = str_strip_dup(raw_reason ? raw_reason : "");
     free(raw_reason);
 
     json_t *out = NULL;
@@ -239,7 +219,7 @@ json_t *esc_build_from_result(const char *result_json, const char *provider,
 
     if (py_truthy(json_obj_get(doc, "billing_block")) ||
         strcmp(reason, "billing") == 0 || strcmp(reason, "billing_unverified") == 0) {
-        char *window = node_str(json_obj_get(doc, "usage_window_message"));
+        char *window = json_node_to_str(json_obj_get(doc, "usage_window_message"));
         if (window[0]) {
             out = esc_surface(ESC_LAYER_BILLING, "usage_window", 1, provider,
                               model, provider_label, auth_kind, api_key_env);
@@ -264,7 +244,7 @@ json_t *esc_build_from_result(const char *result_json, const char *provider,
     {
         json_t *free_tier = json_obj_get(doc, "free_tier");
         if (free_tier && free_tier->type == JSON_OBJECT) {
-            char *kind = node_str(json_obj_get(free_tier, "kind"));
+            char *kind = json_node_to_str(json_obj_get(free_tier, "kind"));
             if (kind[0]) {
                 char code[128];
                 snprintf(code, sizeof(code), "free_tier_%s", kind);
@@ -273,7 +253,7 @@ json_t *esc_build_from_result(const char *result_json, const char *provider,
                 out = esc_surface(ESC_LAYER_PROVIDER, code, retryable, provider,
                                   model, provider_label, auth_kind, api_key_env);
                 if (out) {
-                    char *msg = node_str(json_obj_get(free_tier, "message"));
+                    char *msg = json_node_to_str(json_obj_get(free_tier, "message"));
                     if (msg[0]) json_set(out, "message", json_string(msg));
                     free(msg);
                 }
