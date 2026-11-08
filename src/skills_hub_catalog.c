@@ -4,7 +4,8 @@
  * Split from skills_hub.c (soul.md: self-contained modules). Catalog
  * fetching, item parsing, and search; no file-scope state.
  */
-#include "hermes_core_types.h"   /* HERMES_PATH_MAX */
+#include "hermes_core_types.h"
+#include "hermes_fs.h"       /* fs_mkdir_p */   /* HERMES_PATH_MAX */
 #include "hermes_skills_hub.h"
 #include "hermes_http.h"
 #include "hermes_json.h"
@@ -170,10 +171,6 @@ bool fetch_browsesh_source(skill_source_t *src) {
 bool ensure_dir(const char *dir) {
     if (!dir) return false;
     struct stat st;
-    if (stat(dir, &st) == 0) {
-        return S_ISDIR(st.st_mode) ? true : false;
-    }
-    char cmd[HERMES_PATH_MAX + 64];
-    snprintf(cmd, sizeof(cmd), "mkdir -p '%s' 2>/dev/null", dir);
-    return system(cmd) == 0;
+    if (stat(dir, &st) == 0) return S_ISDIR(st.st_mode);
+    return fs_mkdir_p(dir, 0755) == 0;
 }
