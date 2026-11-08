@@ -17,6 +17,7 @@
  */
 
 #include "hermes.h"
+#include "hermes_clock.h"
 #include "codex_app_server_session.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
@@ -33,7 +34,6 @@
  * ================================================================ */
 
 #define STDERR_TAIL_LINES 12
-
 
 static const char *OAUTH_HINTS[] = {
     "invalid_grant", "invalid grant", "refresh token", "refresh_token",
@@ -90,12 +90,6 @@ struct codex_session_t {
 /* ================================================================
  *  Monotonic time (same pattern as llm_client.c)
  * ================================================================ */
-
-static double mono_time(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
 
 /* ================================================================
  *  Helpers
@@ -631,11 +625,11 @@ codex_turn_result_t *codex_session_run_turn(
         json_free(turn_resp_json);
     }
 
-    double deadline = mono_time() + turn_timeout;
+    double deadline = clock_mono_sec() + turn_timeout;
     bool turn_complete = false;
     double last_tool_completion_at = -1.0; /* -1 = not armed */
 
-    while (mono_time() < deadline && !turn_complete) {
+    while (clock_mono_sec() < deadline && !turn_complete) {
         if (is_interrupt_requested(s)) {
             issue_interrupt(s, result->turn_id);
             result->interrupted = true;
@@ -660,7 +654,7 @@ codex_turn_result_t *codex_session_run_turn(
 
         /* Post-tool watchdog */
         if (last_tool_completion_at >= 0 &&
-            (mono_time() - last_tool_completion_at) > post_tool_quiet_timeout) {
+            (clock_mono_sec() - last_tool_completion_at) > post_tool_quiet_timeout) {
             issue_interrupt(s, result->turn_id);
             result->interrupted = true;
             char err_buf[256];
@@ -698,7 +692,7 @@ codex_turn_result_t *codex_session_run_turn(
                     }
                     if (proj->is_tool_iteration) {
                         result->tool_iterations++;
-                        last_tool_completion_at = mono_time();
+                        last_tool_completion_at = clock_mono_sec();
                     }
                     if (proj->final_text) {
                         free(result->final_text);
@@ -757,7 +751,7 @@ codex_turn_result_t *codex_session_run_turn(
             }
             if (proj->is_tool_iteration) {
                 result->tool_iterations++;
-                last_tool_completion_at = mono_time();
+                last_tool_completion_at = clock_mono_sec();
             } else {
                 if (proj->msg_count > 0 || proj->final_text) {
                     last_tool_completion_at = -1.0;

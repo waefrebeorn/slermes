@@ -9,6 +9,21 @@
 #define HERMES_CLOCK_H
 
 #include <stdint.h>
+#include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+
+/* Seconds since CLOCK_MONOTONIC (double, seconds+fraction). Distinct from
+ * clock_now_ms (ms): used by timing that needs sub-ms monotonic granularity.
+ * (4 identical copies of this lived in port_agent_context_compressor /
+ * gw_thread / codex_app_server_session / llm_client.) */
+static inline double clock_mono_sec(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
 
 #ifdef __cplusplus
 extern "C" {

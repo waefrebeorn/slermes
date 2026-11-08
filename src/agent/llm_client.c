@@ -5,6 +5,7 @@
  */
 
 #include "hermes.h"
+#include "hermes_clock.h"
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
@@ -26,11 +27,6 @@
  * ================================================================ */
 
 /* P95: Monotonic time in seconds (for stream diagnostic timing) */
-static double mono_time(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
 
 /* Forward: populate upstream diagnostic headers from HTTP response */
 static void populate_stream_diag_headers(llm_response_t *resp, const char *raw_headers);
@@ -1424,7 +1420,7 @@ static int on_provider_stream_chunk(const char *data, size_t len, void *userdata
             /* P95: Track first token timing */
             if (!ctx->first_token_flag) {
                 ctx->first_token_flag = true;
-                ctx->resp->diag.first_token_time = mono_time();
+                ctx->resp->diag.first_token_time = clock_mono_sec();
                 ctx->resp->diag.first_token_received = true;
                 ctx->resp->diag.time_to_first_token =
                     ctx->resp->diag.first_token_time - ctx->req_start_time;
@@ -1585,7 +1581,7 @@ static int on_stream_chunk(const char *data, size_t len, void *userdata) {
         /* P95: Track first token timing */
         if (!ctx->first_token_flag) {
             ctx->first_token_flag = true;
-            ctx->resp->diag.first_token_time = mono_time();
+            ctx->resp->diag.first_token_time = clock_mono_sec();
             ctx->resp->diag.first_token_received = true;
             ctx->resp->diag.time_to_first_token =
                 ctx->resp->diag.first_token_time - ctx->req_start_time;
@@ -1912,7 +1908,7 @@ bool dump_api_request_debug(
 static void finalize_stream_diag(stream_ctx_t *ctx) {
     if (!ctx->resp) return;
     stream_diag_t *d = &ctx->resp->diag;
-    d->stream_end_time = mono_time();
+    d->stream_end_time = clock_mono_sec();
     d->total_tokens = ctx->token_count;
     if (d->first_token_received) {
         d->total_stream_time = d->stream_end_time - d->first_token_time;
@@ -2005,7 +2001,7 @@ llm_response_t *llm_chat_completion_stream(llm_config_t *cfg,
         ctx.userdata = userdata;
         ctx.prov_ops = ops;
         ctx.prov = prov;
-        ctx.req_start_time = mono_time(); /* P95: start timing */
+        ctx.req_start_time = clock_mono_sec(); /* P95: start timing */
 
         http_t *h = http_new(60);
         int r = http_stream_request(h, HTTP_POST, url,
@@ -2106,7 +2102,7 @@ llm_response_t *llm_chat_completion_stream(llm_config_t *cfg,
     ctx.resp = resp;
     ctx.token_cb = token_cb;
     ctx.userdata = userdata;
-    ctx.req_start_time = mono_time(); /* P95: start timing */
+    ctx.req_start_time = clock_mono_sec(); /* P95: start timing */
 
     /* Make streaming request */
     http_t *h = http_new(60);

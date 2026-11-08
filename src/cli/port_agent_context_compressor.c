@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_clock.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,11 +13,7 @@
 #define CC_CHARS_PER_TOKEN 4
 
 /* monotonic clock in seconds (mirrors Python time.monotonic()) */
-static double cc_monotonic(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
+
 /* wall clock in seconds (mirrors Python time.time()) */
 static double cc_walltime(void) {
     struct timespec ts;
@@ -324,7 +321,7 @@ int cli_agent_context_compressor__get_active_compression_failure_cooldown(
 {
     if (out) { out->cooldown_until = 0.0; out->remaining_seconds = 0.0; out->error = NULL; }
     if (!st) return 0;
-    double now_mono = cc_monotonic();
+    double now_mono = clock_mono_sec();
     if (st->summary_failure_cooldown_until > now_mono) {
         double remaining = st->summary_failure_cooldown_until - now_mono;
         if (out) {
@@ -358,7 +355,7 @@ void cli_agent_context_compressor__record_compression_failure_cooldown(
 {
     if (!st) return;
     double cooldown_until = cc_walltime() + cooldown_seconds;
-    st->summary_failure_cooldown_until = cc_monotonic() + cooldown_seconds;
+    st->summary_failure_cooldown_until = clock_mono_sec() + cooldown_seconds;
     free(st->last_summary_error);
     st->last_summary_error = error ? strdup(error) : NULL;
     if (!st->session_db || !st->session_id[0]) return;
