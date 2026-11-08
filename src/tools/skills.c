@@ -7,6 +7,7 @@
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_skills.h"
+#include "skills_fs.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_http.h"
@@ -29,8 +30,6 @@
 #define SKILL_CURATOR_DEFAULT_STALE_DAYS 90
 #define SKILL_MAX_DEPENDENCIES   64
 #define SKILL_USAGE_DB_NAME      "skills_usage"
-#define SKILL_BUNDLES_SUBDIR     "bundles"
-#define SKILL_PROVENANCE_FILE    ".provenance"
 #define SKILL_MAX_SEARCH_RESULTS 256
 #define SKILL_MAX_TEXT_MATCHES   1024
 
@@ -40,106 +39,6 @@
 
 static skill_cache_t   g_cache = {NULL, NULL, 0, 0};
 static int             g_curator_stale_days = SKILL_CURATOR_DEFAULT_STALE_DAYS;
-/* Port of Python: _skills_dir */
-
-/* ================================================================
- *  Path utilities
- * ================================================================ */
-
-static void skills_dir(char *buf, size_t sz) {
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
-    snprintf(buf, sz, "%s/.hermes/skills", home);
-    struct stat st;
-    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode))
-        return;
-    snprintf(buf, sz, "%s/skills", home);
-}
-
-static void skills_bundles_dir(char *buf, size_t sz) {
-    char sd[HERMES_PATH_MAX];
-    skills_dir(sd, sizeof(sd));
-    snprintf(buf, sz, "%s/%s", sd, SKILL_BUNDLES_SUBDIR);
-}
-
-/* Port of Python gateway/platforms/weixin.py:_path(). */
-static void skill_path(const char *name, char *buf, size_t sz) {
-    char sd[HERMES_PATH_MAX];
-    skills_dir(sd, sizeof(sd));
-    snprintf(buf, sz, "%s/%s", sd, name);
-}
-
-static void skill_sk_path(const char *name, char *buf, size_t sz) {
-    char sd[HERMES_PATH_MAX];
-    skills_dir(sd, sizeof(sd));
-    snprintf(buf, sz, "%s/%s/SKILL.md", sd, name);
-}
-
-static void skill_prov_path(const char *name, char *buf, size_t sz) {
-    char sd[HERMES_PATH_MAX];
-    skills_dir(sd, sizeof(sd));
-    snprintf(buf, sz, "%s/%s/%s", sd, name, SKILL_PROVENANCE_FILE);
-}
-
-/* Port of Python: bundle_path_for */
-static void bundle_path(const char *bundle, char *buf, size_t sz) {
-    char bd[HERMES_PATH_MAX];
-    skills_bundles_dir(bd, sizeof(bd));
-    snprintf(buf, sz, "%s/%s.bundle", bd, bundle);
-}
-
-static void ensure_dir(const char *path) {
-    struct stat st;
-    if (stat(path, &st) == 0) return;
-    mkdir(path, 0755);
-}
-
-/* ================================================================
- *  File I/O helpers
- * ================================================================ */
-
-static char *read_file(const char *path) {
-    FILE *f = fopen(path, "rb");
-    if (!f) return NULL;
-    fseek(f, 0, SEEK_END);
-    long sz = ftell(f);
-    if (sz > 512 * 1024) { fclose(f); return NULL; }
-    fseek(f, 0, SEEK_SET);
-    char *buf = (char *)malloc((size_t)sz + 1);
-    if (!buf) { fclose(f); return NULL; }
-    size_t n = fread(buf, 1, (size_t)sz, f);
-    fclose(f);
-    buf[n] = '\0';
-    return buf;
-}
-
-/* Port of Python tools/memory_tool.py:_write_file(). */
-/* Port of Python tools/file_operations.py:write_file(). */
-static bool write_file(const char *path, const char *content) {
-    FILE *f = fopen(path, "w");
-    if (!f) return false;
-    size_t len = strlen(content);
-    size_t written = fwrite(content, 1, len, f);
-    fclose(f);
-    return written == len;
-}
-
-static time_t file_mtime(const char *path) {
-    struct stat st;
-    if (stat(path, &st) != 0) return 0;
-    return st.st_mtime;
-}
-
-static bool dir_exists(const char *path) {
-    struct stat st;
-    return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
-}
-
-static bool file_exists(const char *path) {
-    struct stat st;
-    return stat(path, &st) == 0 && S_ISREG(st.st_mode);
-}
 
 /* ================================================================
  *  YAML frontmatter extraction from SKILL.md
@@ -338,7 +237,7 @@ static void scan_dir_recursive(skill_list_t *list, const char *dir_path) {
             /* Check if this directory has a SKILL.md */
             char skpath[HERMES_PATH_MAX];
             snprintf(skpath, sizeof(skpath), "%s/SKILL.md", fullpath);
-            if (file_exists(skpath)) {
+            if (skills_file_exists(skpath)) {
                 scan_add_skill(list, entry->d_name, fullpath);
             } else {
                 /* Recurse into subdirectory */
@@ -364,7 +263,7 @@ skill_list_t *skills_scan_all(void) {
     char sd[HERMES_PATH_MAX];
     skills_dir(sd, sizeof(sd));
 
-    if (dir_exists(sd)) {
+    if (skills_dir_exists(sd)) {
         scan_dir_recursive(list, sd);
     }
 
@@ -395,7 +294,7 @@ bool skill_validate(const char *skill_name, char *error_out, size_t err_sz) {
     char skpath[HERMES_PATH_MAX];
     skill_sk_path(skill_name, skpath, sizeof(skpath));
 
-    if (!file_exists(skpath)) {
+    if (!skills_file_exists(skpath)) {
         if (error_out) snprintf(error_out, err_sz, "SKILL.md not found for '%s'", skill_name);
         return false;
     }
@@ -485,7 +384,7 @@ skill_origin_t skill_get_origin(const char *skill_name) {
 bool skill_set_origin(const char *skill_name, skill_origin_t origin) {
     char spath[HERMES_PATH_MAX];
     skill_path(skill_name, spath, sizeof(spath));
-    ensure_dir(spath);
+    skills_ensure_dir(spath);
 
     char prov_path[HERMES_PATH_MAX];
     skill_prov_path(skill_name, prov_path, sizeof(prov_path));
@@ -516,7 +415,7 @@ bool skill_sync_from_hub(const char *hub_url, const char *branch, char *log_out,
     /* Use the hub subdirectory for the clone */
     char hub_dir[HERMES_PATH_MAX];
     snprintf(hub_dir, sizeof(hub_dir), "%s/.hub", sd);
-    ensure_dir(hub_dir);
+    skills_ensure_dir(hub_dir);
 
     /* Check if already cloned */
     char git_dir[HERMES_PATH_MAX];
@@ -525,7 +424,7 @@ bool skill_sync_from_hub(const char *hub_url, const char *branch, char *log_out,
     FILE *log = NULL;
     if (log_out) log = fmemopen(log_out, log_sz, "w");
 
-    if (dir_exists(git_dir)) {
+    if (skills_dir_exists(git_dir)) {
         /* Pull latest from existing clone */
         if (log) fprintf(log, "Pulling from %s (branch: %s)...\n", hub_url, branch ? branch : "main");
 
@@ -603,13 +502,13 @@ bool skill_sync_from_hub(const char *hub_url, const char *branch, char *log_out,
             /* Check for SKILL.md */
             char sk_src[HERMES_PATH_MAX];
             snprintf(sk_src, sizeof(sk_src), "%s/SKILL.md", src_path);
-            if (!file_exists(sk_src))
+            if (!skills_file_exists(sk_src))
                 continue;
 
             char dst_path[HERMES_PATH_MAX];
             snprintf(dst_path, sizeof(dst_path), "%s/%s", sd, entry->d_name);
 
-            if (dir_exists(dst_path)) {
+            if (skills_dir_exists(dst_path)) {
                 /* Skill already exists — do a simple merge (conflict resolution) */
                 if (log) fprintf(log, "  Merging: %s (already exists locally)\n", entry->d_name);
                 /* Copy individual files that don't exist locally */
@@ -659,7 +558,7 @@ bool skill_bundle_create(const char *bundle_name, const char *skills_csv) {
 
     char bd[HERMES_PATH_MAX];
     skills_bundles_dir(bd, sizeof(bd));
-    ensure_dir(bd);
+    skills_ensure_dir(bd);
 
     /* Build JSON: {"name": "...", "skills": ["s1","s2",...]} */
     json_node_t *j = json_new_object();
@@ -764,7 +663,7 @@ void skill_record_usage(const char *skill_name) {
 
     char spath[HERMES_PATH_MAX];
     skill_path(skill_name, spath, sizeof(spath));
-    if (!dir_exists(spath)) return;
+    if (!skills_dir_exists(spath)) return;
 
     char usage_path[HERMES_PATH_MAX];
     snprintf(usage_path, sizeof(usage_path), "%s/.usage", spath);
@@ -1783,7 +1682,7 @@ char *skills_bundle_handler(const char *args_json, const char *task_id) {
         /* List all bundles */
         char bd[HERMES_PATH_MAX];
         skills_bundles_dir(bd, sizeof(bd));
-        ensure_dir(bd);
+        skills_ensure_dir(bd);
 
         json_node_t *arr = json_new_array();
         DIR *dir = opendir(bd);
@@ -2495,7 +2394,7 @@ bool skill_install_from_hub(const char *slug, char *error_out, size_t err_sz) {
 
     char skills_dir[HERMES_PATH_MAX];
     snprintf(skills_dir, sizeof(skills_dir), "%s/.hermes/skills/%s", home, name);
-    ensure_dir(skills_dir);
+    skills_ensure_dir(skills_dir);
 
     char skillmd_path[HERMES_PATH_MAX];
     snprintf(skillmd_path, sizeof(skillmd_path), "%s/SKILL.md", skills_dir);
