@@ -19,6 +19,7 @@
  */
 
 #include "cron_jobs.h"
+#include "cron_jobs_time.h"
 #include "hermes_strutil.h"
 #include "hermes_fs.h"
 #include "slermes_home.h"
@@ -80,7 +81,6 @@ static char *home_join(const char *relpath) {
 }
 
 /* mkdir -p for a single path (parents assumed to exist or created by caller). */
-
 
 /* ── Paths (PoP: module-level path helpers) ───────────────────────── */
 
@@ -371,10 +371,6 @@ static char *iso_local(time_t ts) {
 char *now_iso(void) { return iso_local(time(NULL)); }
 
 /* Parse an ISO timestamp → time_t (UTC epoch). -1 on failure. */
-static time_t iso_to_ts(const char *iso) {
-    if (!iso || !*iso) return (time_t)-1;
-    return datetime_parse_iso8601(iso);
-}
 
 /* ── Schedule parsing ─────────────────────────────────────────────── */
 
@@ -882,8 +878,6 @@ static char *normalize_optional_cstr(const char *value, bool strip_trailing_slas
     return r;
 }
 
-
-
 /* ── Job id ───────────────────────────────────────────────────────── */
 
 #include "uuid.h"
@@ -1144,7 +1138,6 @@ json_t *cronjobs_list_jobs(bool include_disabled) {
     json_free(jobs);
     return out;
 }
-
 
 /* ── Update / lifecycle ───────────────────────────────────────────── */
 
@@ -1622,22 +1615,6 @@ bool cronjobs_claim_job_for_fire(const char *job_id, int claim_ttl_seconds) {
 
 /* Extract the numeric UTC offset (seconds) from an ISO string's trailing
  * +HH:MM / -HH:MM / Z. Returns INT_MIN when the timestamp is naive (no tz). */
-static int iso_utc_offset(const char *iso) {
-    if (!iso) return INT_MIN;
-    size_t n = strlen(iso);
-    /* look at the tail after the time portion */
-    for (size_t i = 10; i < n; i++) {
-        if (iso[i] == 'Z' || iso[i] == 'z') return 0;
-        if ((iso[i] == '+' || iso[i] == '-') && i >= 12) {
-            int h = 0, m = 0;
-            if (sscanf(iso + i + 1, "%d:%d", &h, &m) >= 1) {
-                int off = h * 3600 + m * 60;
-                return iso[i] == '-' ? -off : off;
-            }
-        }
-    }
-    return INT_MIN; /* naive */
-}
 
 /* PoP: cronjobs_timezone_offset_mismatch @ cron/jobs.py:_timezone_offset_mismatch */
 static bool timezone_offset_mismatch(const char *stored_iso, int now_off) {
@@ -1648,15 +1625,6 @@ static bool timezone_offset_mismatch(const char *stored_iso, int now_off) {
 
 /* Parse an ISO timestamp's local wall-clock fields into a naive time_t
  * (interpreted in the local zone regardless of the stored offset). */
-static time_t iso_wall_clock(const char *iso) {
-    struct tm tm; memset(&tm, 0, sizeof(tm));
-    char sep;
-    if (sscanf(iso, "%d-%d-%d%c%d:%d:%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday,
-               &sep, &tm.tm_hour, &tm.tm_min, &tm.tm_sec) < 3)
-        return (time_t)-1;
-    tm.tm_year -= 1900; tm.tm_mon -= 1; tm.tm_isdst = -1;
-    return mktime(&tm);
-}
 
 /* PoP: cronjobs_stored_wall_clock_is_future @ cron/jobs.py:_stored_wall_clock_is_future */
 static bool stored_wall_clock_is_future(const char *stored_iso, time_t now) {
