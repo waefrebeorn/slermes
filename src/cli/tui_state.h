@@ -984,4 +984,9 @@ void tui_config_editor_init(void);
 void tui_draw_config_editor(void);
 int  tui_config_editor_handle(int ch);
 
+
+/* session-browser overlay subsystem (tui_session_browser.c) */
+void tui_draw_session_browser(void);
+int  tui_session_browser_handle(int ch);
+
 #endif /* TUI_STATE_H */
