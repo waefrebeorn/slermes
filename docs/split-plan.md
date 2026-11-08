@@ -138,3 +138,21 @@ lines, down from 5169. What remains is:
   They look live (exported, declared, non-static) but nothing calls them.
   Splitting them would move dead code, so they were left alone and are
   recorded here instead.
+
+## acp/server.c: the handlers cannot move without publishing the struct
+
+The 20 `handle_*` functions (27 KB) look like a clean handler cluster and
+`dispatch_request` is their only caller, but they dereference
+`srv->sessions[...]`, `srv->pending_approval`, `srv->permission_pending` etc.
+DIRECTLY. `acp_server_t` is deliberately opaque - `include/acp/server.h` has
+only `typedef struct acp_server_t acp_server_t;` and the struct is defined
+in server.c.
+
+Moving the handlers would require publishing that struct in a shared header,
+which is exactly the god-header / lost-opacity outcome soul.md forbids. An
+attempt was made and reverted. The file is now 232 lines after the
+`acp_protocol.c` split; the handlers stay.
+
+Same pattern as `computer_use.c`'s backend registry and `port_memory_tool.c`'s
+`entries_for` / `mutable_entries_for` / `char_limit_for` (which dereference
+the opaque `memory_store_t`).
