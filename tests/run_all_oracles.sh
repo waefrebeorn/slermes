@@ -114,6 +114,7 @@ declare -A DEPS=(
   [aux_outcome_event]="src/cli/port_aux_outcome_event.o lib/libjson/json.o"
   [cli_process_dock]="src/cli/port_cli_process_dock.o lib/libjson/json.o"
   [display_shell]="FULL"
+  [provider_auth]="lib/libproviderauth/provider_auth.o"
 )
 
 fail=0

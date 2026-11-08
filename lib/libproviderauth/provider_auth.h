@@ -1,7 +1,7 @@
 /*
  * libproviderauth.h — Provider authentication registry (faithful port of
- * Python hermes_cli.auth.PROVIDER_REGISTRY, keyed by the same 44 aliased
- * provider names).
+ * Python hermes_cli.auth.PROVIDER_REGISTRY, keyed by the 78 live provider ids
+ * incl. alias expansion).
  *
  * This is a SELF-CONTAINED lookup table: it has no dependency on the
  * instance-oriented provider_metadata.c registry (which knows only ~26

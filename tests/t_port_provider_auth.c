@@ -19,8 +19,8 @@ int main(int argc, char **argv) {
     const char *name = NULL;
     provider_auth_type_t type = PROVIDER_AUTH_UNKNOWN;
     while (provider_auth_iterate(&idx, &name, &type)) {
-        printf("{\"name\":%s,\"auth_type\":%d}\n",
-               /* minimal JSON string escape for keys (no quotes expected) */
+        /* JSON-string the name (registry keys may carry '-' etc). */
+        printf("{\"name\":\"%s\",\"auth_type\":%d}\n",
                name ? name : "",
                (int)type);
     }
