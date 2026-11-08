@@ -19,6 +19,7 @@
  */
 
 #include "cron_jobs.h"
+#include "hermes_strutil.h"
 #include "hermes_fs.h"
 #include "slermes_home.h"
 #include "datetime.h"
@@ -64,24 +65,8 @@ static char *set_err(char **err, const char *msg) {
 }
 
 /* strip leading+trailing ASCII whitespace, return malloc'd copy */
-static char *str_strip_dup(const char *s) {
-    if (!s) return xstrdup("");
-    while (*s && isspace((unsigned char)*s)) s++;
-    const char *end = s + strlen(s);
-    while (end > s && isspace((unsigned char)end[-1])) end--;
-    size_t n = (size_t)(end - s);
-    char *p = malloc(n + 1);
-    if (!p) return NULL;
-    memcpy(p, s, n);
-    p[n] = '\0';
-    return p;
-}
 
 /* in-place ASCII lowercase */
-static void str_tolower_inplace(char *s) {
-    if (!s) return;
-    for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
-}
 
 /* Join home + relpath into a malloc'd absolute path. */
 static char *home_join(const char *relpath) {
@@ -398,7 +383,7 @@ int cronjobs_parse_duration(const char *s) {
     if (!s) return -1;
     char *stripped = str_strip_dup(s);
     if (!stripped) return -1;
-    str_tolower_inplace(stripped);
+    str_lower_inplace(stripped);
     /* ^(\d+)\s*(m|min|mins|minute|minutes|h|hr|hrs|hour|hours|d|day|days)$ */
     const char *p = stripped;
     long value = 0; int digits = 0;
@@ -438,7 +423,7 @@ json_t *cronjobs_parse_schedule(const char *schedule_in, char **err) {
     if (!schedule) { set_err(err, "out of memory"); return NULL; }
     char *original = xstrdup(schedule);
     char *lower = xstrdup(schedule);
-    str_tolower_inplace(lower);
+    str_lower_inplace(lower);
 
     json_t *out = NULL;
 
@@ -1122,13 +1107,13 @@ json_t *cronjobs_resolve_job_ref(const char *ref, bool *ambiguous) {
         return r;
     }
     char *ref_lower = xstrdup(ref);
-    str_tolower_inplace(ref_lower);
+    str_lower_inplace(ref_lower);
     long match_idx = -1; int matches = 0;
     size_t n = json_array_size(jobs);
     for (size_t i = 0; i < n; i++) {
         const char *nm = json_object_get_string(json_array_get(jobs, i), "name", "");
         char *nl = xstrdup(nm ? nm : "");
-        str_tolower_inplace(nl);
+        str_lower_inplace(nl);
         if (strcmp(nl, ref_lower) == 0) { matches++; if (match_idx < 0) match_idx = (long)i; }
         free(nl);
     }

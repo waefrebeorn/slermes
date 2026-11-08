@@ -21,7 +21,7 @@ extern "C" {
 /* Copy s trimmed of leading/trailing whitespace (isspace). Caller free()s.
  * Returns NULL only on malloc failure (NULL input -> NULL). */
 static inline char *str_strip_dup(const char *s) {
-    if (!s) return NULL;
+    if (!s) { char *e = (char *)malloc(1); if (e) e[0] = '\0'; return e; }
     while (*s && isspace((unsigned char)*s)) s++;
     size_t n = strlen(s);
     while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
@@ -50,6 +50,7 @@ static inline int str_member_of(const char *value, const char *const *set, size_
 
 /* Lowercase s in place. (Folded byte-identical from three port_*_helpers.c.) */
 static inline void str_lower_inplace(char *s) {
+    if (!s) return;
     for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
 }
 
