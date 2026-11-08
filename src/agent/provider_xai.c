@@ -5,7 +5,6 @@
  * adds proper type identification and xAI-specific default URL.
  */
 
-
 /* PoP: xAI provider adapter */
 
 #include "hermes_core_types.h"
@@ -300,14 +299,6 @@ static provider_response_t *xai_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void xai_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp->encrypted_content);
-    free(resp);
-}
-
 /* ================================================================
  *  L04: xAI model retirement detection
  *  Source: https://docs.x.ai/developers/migration/may-15-retirement
@@ -376,6 +367,6 @@ const provider_ops_t PROVIDER_OPS_XAI = {
     .build_request_body = xai_build_request_body,
     .parse_response = xai_parse_response,
     .parse_stream_chunk = xai_parse_stream_chunk,
-    .free_response = xai_free_response,
+    .free_response = provider_response_free,
     .name = "xai"
 };

@@ -496,13 +496,6 @@ static provider_response_t *openai_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void openai_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  Provider Operations Table
  * ================================================================ */
@@ -513,6 +506,6 @@ const provider_ops_t PROVIDER_OPS_OPENAI = {
     .build_request_body = openai_build_request_body,
     .parse_response = openai_parse_response,
     .parse_stream_chunk = openai_parse_stream_chunk,
-    .free_response = openai_free_response,
+    .free_response = provider_response_free,
     .name = "openai-compatible"
 };

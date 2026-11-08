@@ -8,7 +8,6 @@
  *   - Configurable API version via AZURE_API_VERSION env or default
  */
 
-
 /* PoP: Azure provider adapter */
 
 #include "hermes_core_types.h"
@@ -287,19 +286,12 @@ static provider_response_t *azure_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void azure_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 const provider_ops_t PROVIDER_OPS_AZURE = {
     .build_url = azure_build_url,
     .build_headers = azure_build_headers,
     .build_request_body = azure_build_request_body,
     .parse_response = azure_parse_response,
     .parse_stream_chunk = azure_parse_stream_chunk,
-    .free_response = azure_free_response,
+    .free_response = provider_response_free,
     .name = "azure"
 };

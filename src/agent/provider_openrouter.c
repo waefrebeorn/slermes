@@ -8,7 +8,6 @@
  *   - HTTP-Referer / X-Title for app identification
  */
 
-
 /* PoP: OpenRouter provider adapter */
 
 #include "hermes_core_types.h"
@@ -327,13 +326,6 @@ static provider_response_t *openrouter_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void openrouter_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  Provider Operations Table
  * ================================================================ */
@@ -344,6 +336,6 @@ const provider_ops_t PROVIDER_OPS_OPENROUTER = {
     .build_request_body = openrouter_build_request_body,
     .parse_response = openrouter_parse_response,
     .parse_stream_chunk = openrouter_parse_stream_chunk,
-    .free_response = openrouter_free_response,
+    .free_response = provider_response_free,
     .name = "openrouter"
 };

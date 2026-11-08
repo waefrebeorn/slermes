@@ -614,13 +614,6 @@ static provider_response_t *bedrock_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void bedrock_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  Bedrock utility functions — ported from Python bedrock_adapter.py
  * ================================================================ */
@@ -1609,7 +1602,7 @@ const provider_ops_t PROVIDER_OPS_BEDROCK = {
     .build_request_body = bedrock_build_request_body,
     .parse_response = bedrock_parse_response,
     .parse_stream_chunk = bedrock_parse_stream_chunk,
-    .free_response = bedrock_free_response,
+    .free_response = provider_response_free,
     .name = "bedrock"
 };
 

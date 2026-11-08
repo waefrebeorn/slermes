@@ -915,13 +915,6 @@ static provider_response_t *anthropic_parse_stream_chunk(const provider_t *p,
  *  Free response
  * ================================================================ */
 
-static void anthropic_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  Endpoint detection utilities — ported from Python anthropic_adapter.py
  * ================================================================ */
@@ -3577,7 +3570,7 @@ const provider_ops_t PROVIDER_OPS_ANTHROPIC = {
     .build_request_body = anthropic_build_request_body,
     .parse_response = anthropic_parse_response,
     .parse_stream_chunk = anthropic_parse_stream_chunk,
-    .free_response = anthropic_free_response,
+    .free_response = provider_response_free,
     .name = "anthropic"
 };
 

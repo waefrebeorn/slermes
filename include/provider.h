@@ -26,6 +26,7 @@
 #define PROVIDER_H
 
 #include "hermes_core_types.h"
+#include <stdlib.h>
 #include "hermes_json.h"
 
 #include "credential_pool.h"
@@ -66,6 +67,18 @@ typedef struct {
     tool_call_t tool_calls[64];
     char  finish_reason[32];   /* B22: "stop", "length", "tool_calls", "content_filter" */
 } provider_response_t;
+
+/* Shared response teardown: frees the heap-owned ptr fields + resp itself.
+ * The anonymous fields (tool_calls[64], finish_reason, counts) are inline
+ * scalars, not heap. Safe on any provider: fields the provider never set
+ * stay NULL and free(NULL) is a no-op. */
+static inline void provider_response_free(provider_response_t *resp) {
+    if (!resp) return;
+    free(resp->content);
+    free(resp->reasoning);
+    free(resp->encrypted_content);
+    free(resp);
+}
 
 /* Provider operations (function pointers) */
 typedef struct {
