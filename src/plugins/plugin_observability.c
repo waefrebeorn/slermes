@@ -16,6 +16,7 @@
 /* PoP: observability plugin */
 
 #include "plugin.h"
+#include "hermes_fs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -68,17 +69,7 @@ static int g_event_wraps = 0;
 
 static char g_state_path[4096];
 
-static void ensure_dir(const char *path) {
-    char tmp[4096];
-    snprintf(tmp, sizeof(tmp), "%s", path);
-    for (char *p = tmp + 1; *p; p++) {
-        if (*p == '/') {
-            *p = '\0';
-            mkdir(tmp, 0700);
-            *p = '/';
-        }
-    }
-}
+
 
 /* ================================================================
  *  Metric helpers
@@ -120,7 +111,7 @@ static void record_event_to_ring(const char *name, const char *data) {
  * ================================================================ */
 
 static void save_state(void) {
-    ensure_dir(g_state_path);
+    fs_ensure_dir(g_state_path);
     FILE *f = fopen(g_state_path, "w");
     if (!f) return;
 

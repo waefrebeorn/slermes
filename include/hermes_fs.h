@@ -9,9 +9,22 @@
 #define HERMES_FS_H
 
 #include <string.h>
+#include <stdio.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+
+/* Recursively mkdir each '/' component of path, ignoring errors (best-effort,
+ * mirror of the plugin ensure_dir; hardcoded 0700). */
+static inline void fs_ensure_dir(const char *path) {
+    if (!path || !*path) return;
+    char tmp[4096];
+    snprintf(tmp, sizeof(tmp), "%s", path);
+    for (char *p = tmp + 1; *p; p++) {
+        if (*p == '/') { *p = '\0'; mkdir(tmp, 0700); *p = '/'; }
+    }
+}
 
 #ifdef __cplusplus
 extern "C" {
