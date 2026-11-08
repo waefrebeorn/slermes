@@ -40,6 +40,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "setup_wizard_ui.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,76 +50,9 @@
 #include <time.h>
 
 /* ── ANSI helpers ──────────────────────────────────────────────── */
-#define WIZ_GREEN  "\033[0;32m"
-#define WIZ_CYAN   "\033[0;36m"
 #define WIZ_YELLOW "\033[0;33m"
-#define WIZ_RED    "\033[0;31m"
 #define WIZ_BOLD   "\033[1m"
 #define WIZ_RESET  "\033[0m"
-
-static void wiz_banner(const char *text) {
-    printf("\n%s%s%s%s\n", WIZ_BOLD, WIZ_CYAN, text, WIZ_RESET);
-}
-static void wiz_ok(const char *msg) {
-    printf("  %s\xE2\x9C\x93%s %s\n", WIZ_GREEN, WIZ_RESET, msg);
-}
-static void wiz_warn(const char *msg) {
-    printf("  %s\xE2\x9A\xA0%s %s\n", WIZ_YELLOW, WIZ_RESET, msg);
-}
-static void wiz_err(const char *msg) {
-    printf("  %s\xE2\x9C\x97%s %s\n", WIZ_RED, WIZ_RESET, msg);
-}
-static void wiz_prompt(const char *text) {
-    printf("  %s?%s %s: ", WIZ_CYAN, WIZ_RESET, text);
-    fflush(stdout);
-}
-
-static bool read_line(char *buf, size_t sz) {
-    if (!fgets(buf, (int)sz, stdin)) return false;
-    size_t len = strlen(buf);
-    while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r'))
-        buf[--len] = '\0';
-    return true;
-}
-
-static bool ensure_dir(const char *path) {
-    struct stat st;
-    if (stat(path, &st) == 0) return S_ISDIR(st.st_mode);
-    return mkdir(path, 0755) == 0;
-}
-
-static int prompt_int(const char *label, int min_val, int max_val, int default_val) {
-    char input[16];
-    while (1) {
-        char prompt[64];
-        snprintf(prompt, sizeof(prompt), "%s [%d-%d]", label, min_val, max_val);
-        wiz_prompt(prompt);
-        if (!read_line(input, sizeof(input))) continue;
-        if (input[0] == '\0') return default_val;
-        int v = atoi(input);
-        if (v >= min_val && v <= max_val) return v;
-        printf("  Enter %d-%d.\n", min_val, max_val);
-    }
-}
-
-static bool prompt_yes_no(const char *question, bool default_yes) {
-    char input[16];
-    wiz_prompt(question);
-    printf(" (%s/%s) ", default_yes ? "Y" : "y", default_yes ? "n" : "N");
-    if (!read_line(input, sizeof(input))) return default_yes;
-    if (input[0] == '\0') return default_yes;
-    return input[0] == 'y' || input[0] == 'Y';
-}
-
-/* Read a multi-choice string */
-static void prompt_str(const char *label, char *buf, size_t sz, const char *def) {
-    wiz_prompt(label);
-    if (!read_line(buf, sz) || buf[0] == '\0') {
-        if (def) snprintf(buf, sz, "%s", def);
-        else buf[0] = '\0';
-        return;
-    }
-}
 
 /* ── HTTP helpers ──────────────────────────────────────────────── */
 static bool test_api_connectivity(const char *base_url, int timeout_sec) {
@@ -262,7 +196,7 @@ static void enter_api_key(const char *env_var, const char *base_url) {
     snprintf(env_path, sizeof(env_path), "%s/.hermes/.env", home);
     char hermes_dir[512];
     snprintf(hermes_dir, sizeof(hermes_dir), "%s/.hermes", home);
-    ensure_dir(hermes_dir);
+    wiz_ensure_dir(hermes_dir);
 
     FILE *fp = fopen(env_path, "a");
     if (!fp) { wiz_err("Cannot write .env"); return; }
@@ -660,7 +594,7 @@ static int quick_setup(void) {
     if (!home) home = "/home/wubu";
     char hermes_dir[512];
     snprintf(hermes_dir, sizeof(hermes_dir), "%s/.hermes", home);
-    ensure_dir(hermes_dir);
+    wiz_ensure_dir(hermes_dir);
 
     char env_var[128] = "", base_url[256] = "";
     int provider_idx = select_provider(env_var, sizeof(env_var), base_url, sizeof(base_url));
@@ -747,7 +681,7 @@ int setup_wizard_run(void) {
     /* Create ~/.hermes directory */
     char hermes_dir[512];
     snprintf(hermes_dir, sizeof(hermes_dir), "%s/.hermes", home);
-    if (!ensure_dir(hermes_dir)) {
+    if (!wiz_ensure_dir(hermes_dir)) {
         wiz_err("Cannot create .hermes directory");
         return 1;
     }
@@ -870,6 +804,6 @@ int setup_wizard_noninteractive(void) {
     if (!home) home = "/home/wubu";
     char hermes_dir[512];
     snprintf(hermes_dir, sizeof(hermes_dir), "%s/.hermes", home);
-    ensure_dir(hermes_dir);
+    wiz_ensure_dir(hermes_dir);
     return 0;
 }
