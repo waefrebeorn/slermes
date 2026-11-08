@@ -99,7 +99,7 @@ PORT_OBJ = \
     src/cli/port_scale_to_zero_helpers.o \
     src/cli/port_cron_jobs_helpers.o \
     src/cli/port_profiles_helpers.o \
-    src/cli/port_yuanbao_proto_helpers.o \
+    src/cli/port_yuanbao_proto_helpers.o src/cli/yuanbao_proto_buf.o \
     src/cli/port_learning_graph_render_helpers.o \
     src/cli/port_lazy_deps_helpers.o \
     src/cli/port_skill_usage_helpers.o \

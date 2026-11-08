@@ -85,3 +85,35 @@ table-coupled files not yet attempted (`display_core.c`, `skills_hub.c`, `auxili
 Name-collision backlog (rename candidates, not yet done): `setup_slack` /
 `setup_telegram` exist as different functions in `config_setup.c` (wizard,
 static) and `gw_setup.c` (gateway, exported).
+
+## Parity gaps found while splitting (not splits)
+
+### weixin file upload does not encrypt (real gap)
+`src/gateway/platforms/weixin.c` exports five AES helpers with PoP
+annotations - `weixin_aes128_ecb_encrypt`, `weixin_aes128_ecb_decrypt`,
+`weixin_parse_aes_key`, `weixin_pkcs7_pad`, `weixin_aes_padded_size` - but
+**none has a caller anywhere in the repo** (verified by grep over `src/`,
+`include/`, `tests/`).
+
+The Python reference does use them: `plugins/platforms/weixin/adapter.py:1152`
+calls `_aes128_ecb_encrypt(plaintext, aes_key)` inside `_send_file`, which
+then uploads the ciphertext to the CDN.
+
+The C `send_file()` (weixin.c) does something different: it posts a
+`msg_type: 6` message whose `content` is the file URL. It never reads the
+file, never encrypts, never uploads. So the C upload path is missing the
+encrypt-then-upload step the reference performs. Wiring it is a feature, not
+a split, and is left undone here - flagged so it is not mistaken for parity.
+
+### weixin markdown cluster is dead
+`weixin_split_text_for_weixin_delivery`, `weixin_normalize_markdown_blocks`,
+`weixin_guess_chat_type` and `weixin_wrap_copy_friendly_lines_for_weixin` are
+never called from outside their own cluster; only
+`weixin_truncate_message` and `weixin_split_markdown_blocks` have internal
+callers. Splitting the cluster would move dead code, so it was skipped.
+
+### tui_json_rpc.c is not a split target
+Its 89 "clean" functions are the JSON-RPC handlers plus the `s_methods[]`
+registration table they are dispatched through. Moving handlers without the
+table (or vice versa) breaks the dispatch; moving both is a rename, not a
+split.
