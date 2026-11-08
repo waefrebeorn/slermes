@@ -16,6 +16,7 @@
  */
 
 #include <stdio.h>
+#include "hermes_strutil.h"
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -25,10 +26,7 @@
 #include "hermes_json.h"
 
 /* ---- lowercase helper ---- */
-static void lc(char *s)
-{
-    for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
-}
+
 
 /* ---------------------------------------------------------------------- */
 /* PoP: parse_duration @ cron/jobs.py:parse_duration */
@@ -38,7 +36,7 @@ int jobs_parse_duration(const char *s)
     if (!s) return -1;
     char buf[64];
     strncpy(buf, s, sizeof(buf)-1); buf[sizeof(buf)-1]='\0';
-    lc(buf);
+    str_lower_inplace(buf);
     /* strip spaces */
     char compact[64]; int j = 0;
     for (int i = 0; buf[i] && j < (int)sizeof(compact)-1; i++)

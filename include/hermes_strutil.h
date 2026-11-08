@@ -48,6 +48,11 @@ static inline int str_member_of(const char *value, const char *const *set, size_
     return 0;
 }
 
+/* Lowercase s in place. (Folded byte-identical from three port_*_helpers.c.) */
+static inline void str_lower_inplace(char *s) {
+    for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
+}
+
 #ifdef __cplusplus
 }
 #endif

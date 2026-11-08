@@ -16,6 +16,7 @@
  */
 
 #include "hermes_json.h"
+#include "hermes_strutil.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,10 +27,7 @@
 #include <sys/types.h>
 
 /* ---- lowercase helper ---- */
-static void lc(char *s)
-{
-    for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
-}
+
 
 /* ---------------------------------------------------------------------- */
 /* PoP: auth_xai_callback_cors_origin @ hermes_cli/auth.py:_xai_callback_cors_origin */
@@ -64,10 +62,10 @@ char *auth_ssh_user_at_host(void)
 int auth_is_terminal_nous_refresh_error(const char *provider, const char *code, int relogin_required)
 {
     if (!provider || !code) return 0;
-    char p[64]; strncpy(p, provider, sizeof(p)-1); p[sizeof(p)-1]='\0'; lc(p);
+    char p[64]; strncpy(p, provider, sizeof(p)-1); p[sizeof(p)-1]='\0'; str_lower_inplace(p);
     if (strcmp(p, "nous") != 0) return 0;
     if (!relogin_required) return 0;
-    char c[64]; strncpy(c, code, sizeof(c)-1); c[sizeof(c)-1]='\0'; lc(c);
+    char c[64]; strncpy(c, code, sizeof(c)-1); c[sizeof(c)-1]='\0'; str_lower_inplace(c);
     if (strcmp(c, "invalid_grant")==0 || strcmp(c,"invalid_token")==0 || strcmp(c,"refresh_token_reused")==0)
         return 1;
     return 0;

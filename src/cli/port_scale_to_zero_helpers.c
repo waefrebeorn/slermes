@@ -12,6 +12,7 @@
  */
 
 #include <stdio.h>
+#include "hermes_strutil.h"
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -20,15 +21,12 @@
 #include "hermes_json.h"
 
 /* ---- lowercase helper ---- */
-static void lc(char *s)
-{
-    for (; *s; s++) if (isupper((unsigned char)*s)) *s = (char)tolower((unsigned char)*s);
-}
+
 
 static int is_truthy(const char *v)
 {
     if (!v) return 0;
-    char b[32]; strncpy(b, v, sizeof(b)-1); b[sizeof(b)-1]='\0'; lc(b);
+    char b[32]; strncpy(b, v, sizeof(b)-1); b[sizeof(b)-1]='\0'; str_lower_inplace(b);
     return strcmp(b,"1")==0 || strcmp(b,"true")==0 || strcmp(b,"yes")==0 || strcmp(b,"on")==0;
 }
 
@@ -75,7 +73,7 @@ int scale_to_zero_messaging_is_relay_only_or_absent(const char *platforms_json)
     for (size_t i = 0; i < json_array_size(root); i++) {
         json_t *e = json_array_get(root, i);
         if (!e || e->type != JSON_STRING) continue;
-        char b[64]; strncpy(b, json_string_value(e), sizeof(b)-1); b[sizeof(b)-1]='\0'; lc(b);
+        char b[64]; strncpy(b, json_string_value(e), sizeof(b)-1); b[sizeof(b)-1]='\0'; str_lower_inplace(b);
         if (strcmp(b, "relay") != 0) { other = 1; break; }
     }
     json_free(root);
