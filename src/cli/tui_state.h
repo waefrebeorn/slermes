@@ -972,4 +972,10 @@ int  tui_model_picker_handle(int ch);
 /* render-core entry point: status line */
 void tui_redraw_status(void);
 
+
+/* plugin-hub overlay subsystem (tui_plugin_hub.c) */
+void tui_plugin_hub_init(void);
+void tui_draw_plugin_hub(void);
+int  tui_plugin_hub_handle(int ch);
+
 #endif /* TUI_STATE_H */
