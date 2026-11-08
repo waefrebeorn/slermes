@@ -15,6 +15,7 @@
  */
 
 #include "profile_store.h"
+#include "hermes_fs.h"
 #include "slermes_home.h"
 #include "gateway_status.h"
 #include "yaml.h"
@@ -62,23 +63,7 @@ static char *str_strip_dup(const char *s) {
     return p;
 }
 
-static int mkdir_p(const char *path, mode_t mode) {
-    if (!path || !*path) return -1;
-    char tmp[PATH_MAX];
-    size_t len = strlen(path);
-    if (len >= sizeof(tmp)) return -1;
-    memcpy(tmp, path, len + 1);
-    if (tmp[len - 1] == '/') tmp[len - 1] = '\0';
-    for (char *p = tmp + 1; *p; p++) {
-        if (*p == '/') {
-            *p = '\0';
-            if (mkdir(tmp, mode) != 0 && errno != EEXIST) return -1;
-            *p = '/';
-        }
-    }
-    if (mkdir(tmp, mode) != 0 && errno != EEXIST) return -1;
-    return 0;
-}
+
 
 /* ── Constant tables (mirror profiles.py module-level frozensets) ───── */
 
@@ -289,7 +274,7 @@ bool profile_create_wrapper_script(const char *name, const char *target) {
 
     char *wd = profile_wrapper_dir();
     if (!wd) { free(canon); free(profile); return false; }
-    if (mkdir_p(wd, 0755) != 0 && errno != EEXIST) { free(wd); free(canon); free(profile); return false; }
+    if (fs_mkdir_p(wd, 0755) != 0 && errno != EEXIST) { free(wd); free(canon); free(profile); return false; }
 
     size_t n = strlen(wd) + 1 + strlen(canon) + 1;
     char *wpath = malloc(n);
@@ -516,7 +501,7 @@ bool profile_set_active(const char *name) {
     bool ok = false;
     if (path) {
         char *dir = profile_default_home();
-        if (dir) { mkdir_p(dir, 0755); free(dir); }
+        if (dir) { fs_mkdir_p(dir, 0755); free(dir); }
         if (strcmp(canon, "default") == 0) {
             unlink(path);
             ok = true;
@@ -1196,11 +1181,11 @@ bool profile_safe_extract_archive(const char *archive_path,
         char target[PATH_MAX];
         snprintf(target, sizeof(target), "%s/%s", destination, name);
         if (typeflag == '5') {
-            mkdir_p(target, 0755);
+            fs_mkdir_p(target, 0755);
         } else if (typeflag == '0' || typeflag == '\0' || typeflag == '7') {
             char *slash = strrchr(target, '/');
-            if (slash) { *slash = '\0'; mkdir_p(target, 0755); *slash = '/'; }
-            else mkdir_p(destination, 0755);
+            if (slash) { *slash = '\0'; fs_mkdir_p(target, 0755); *slash = '/'; }
+            else fs_mkdir_p(destination, 0755);
             FILE *out = fopen(target, "wb");
             if (!out) { gzclose(gz); return false; }
             long remaining = size;

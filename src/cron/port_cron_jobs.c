@@ -19,6 +19,7 @@
  */
 
 #include "cron_jobs.h"
+#include "hermes_fs.h"
 #include "slermes_home.h"
 #include "datetime.h"
 #include "cron.h"
@@ -94,23 +95,7 @@ static char *home_join(const char *relpath) {
 }
 
 /* mkdir -p for a single path (parents assumed to exist or created by caller). */
-static int mkdir_p(const char *path, mode_t mode) {
-    if (!path || !*path) return -1;
-    char tmp[PATH_MAX];
-    size_t len = strlen(path);
-    if (len >= sizeof(tmp)) return -1;
-    memcpy(tmp, path, len + 1);
-    if (tmp[len - 1] == '/') tmp[len - 1] = '\0';
-    for (char *p = tmp + 1; *p; p++) {
-        if (*p == '/') {
-            *p = '\0';
-            if (mkdir(tmp, mode) != 0 && errno != EEXIST) return -1;
-            *p = '/';
-        }
-    }
-    if (mkdir(tmp, mode) != 0 && errno != EEXIST) return -1;
-    return 0;
-}
+
 
 /* ── Paths (PoP: module-level path helpers) ───────────────────────── */
 
@@ -170,7 +155,7 @@ bool cronjobs_ensure_dirs(void) {
     char *out = cronjobs_output_dir();
     bool ok = false;
     if (cron && out) {
-        if (mkdir_p(cron, 0700) == 0 && mkdir_p(out, 0700) == 0) {
+        if (fs_mkdir_p(cron, 0700) == 0 && fs_mkdir_p(out, 0700) == 0) {
             cronjobs_secure_dir(cron);
             cronjobs_secure_dir(out);
             ok = true;
@@ -1867,7 +1852,7 @@ char *cronjobs_save_job_output(const char *job_id, const char *output) {
     char *err = NULL;
     char *dir = cronjobs_job_output_dir(job_id, &err);
     if (!dir) { free(err); return NULL; }
-    mkdir_p(dir, 0700);
+    fs_mkdir_p(dir, 0700);
     cronjobs_secure_dir(dir);
 
     time_t now = time(NULL);

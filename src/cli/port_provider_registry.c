@@ -3,6 +3,7 @@
  * and runtime-provider resolution helpers. See port_provider_registry.h.
  */
 #include "port_provider_registry.h"
+#include "hermes_strutil.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -255,10 +256,6 @@ static char *url_path_lower(const char *base_url) {
     size_t len = strlen(out); while (len > 0 && out[len-1]=='/') out[--len]='\0';
     return out;
 }
-static bool ends_with(const char *s, const char *suf) {
-    size_t ls = strlen(s), lf = strlen(suf);
-    return ls >= lf && strcmp(s + ls - lf, suf) == 0;
-}
 
 /* PoP: _detect_api_mode_for_url @ hermes_cli/runtime_provider.py:_detect_api_mode_for_url */
 const char *provider_detect_api_mode_for_url(const char *base_url) {
@@ -271,7 +268,7 @@ const char *provider_detect_api_mode_for_url(const char *base_url) {
     }
     if (!r) {
         char *path = url_path_lower(base_url);
-        if (path && (ends_with(path,"/anthropic") || ends_with(path,"/anthropic/v1")))
+        if (path && (str_ends_with(path,"/anthropic") || str_ends_with(path,"/anthropic/v1")))
             r = "anthropic_messages";
         free(path);
     }
@@ -297,9 +294,9 @@ bool provider_anthropic_base_url_override_ok(const char *base_url) {
     if (!host || !*host) { free(host); return false; }
     bool ok = false;
     if (strcmp(host,"api.anthropic.com")==0 ||
-        ends_with(host,".anthropic.com") ||
-        ends_with(host,".claude.com") ||
-        ends_with(host,".azure.com")) ok = true;
+        str_ends_with(host,".anthropic.com") ||
+        str_ends_with(host,".claude.com") ||
+        str_ends_with(host,".azure.com")) ok = true;
     free(host);
     if (ok) return true;
     const char *m = provider_detect_api_mode_for_url(base_url);

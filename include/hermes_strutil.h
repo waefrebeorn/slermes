@@ -32,6 +32,13 @@ static inline char *str_strip_dup(const char *s) {
     return out;
 }
 
+/* True when s ends with suf. (Byte-identical copy folded from
+ * port_cli_profiles.c / port_provider_registry.c.) */
+static inline bool str_ends_with(const char *s, const char *suf) {
+    size_t ls = strlen(s), lf = strlen(suf);
+    return ls >= lf && strcmp(s + ls - lf, suf) == 0;
+}
+
 #ifdef __cplusplus
 }
 #endif
