@@ -20,6 +20,7 @@
 #include "hermes_http.h"
 #include "hermes_url_safety.h"
 #include "provider.h"
+#include "provider_model_caps.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,76 +34,24 @@
  * ================================================================ */
 
 /* Substring patterns for model version detection */
-static const char *ADAPTIVE_SUBSTRINGS[] = {"4-6", "4.6", "4-7", "4.7", "4-8", "4.8", NULL};
-static const char *XHIGH_EFFORT_SUBSTRINGS[] = {"4-7", "4.7", "4-8", "4.8", NULL};
-static const char *NO_SAMPLING_SUBSTRINGS[] = {"4-7", "4.7", "4-8", "4.8", NULL};
-static const char *FAST_MODE_SUBSTRINGS[] = {"opus-4-6", "opus-4.6", NULL};
 
 /* Normalize model name: replace '.' with '-' for matching */
-static void normalize_model_key(const char *model, char *out, size_t out_size) {
-    if (!model || !*model) { out[0] = '\0'; return; }
-    const char *slash = strrchr(model, '/');
-    if (slash) model = slash + 1;  /* strip provider prefix */
-    size_t i, j = 0;
-    for (i = 0; model[i] && j < out_size - 1; i++) {
-        if (model[i] == '.')
-            out[j++] = '-';
-        else
-            out[j++] = model[i];
-    }
-    out[j] = '\0';
-}
-
-static bool model_contains_any(const char *model, const char **patterns) {
-    if (!model || !*model) return false;
-    char normalized[128];
-    normalize_model_key(model, normalized, sizeof(normalized));
-    for (int i = 0; patterns[i]; i++) {
-        if (strstr(normalized, patterns[i]))
-            return true;
-    }
-    return false;
-}
 
 /* PoP: supports_adaptive_thinking @ agent/anthropic_adapter.py:_supports_adaptive_thinking */
 /* Port of Python agent/anthropic_adapter.py:_supports_adaptive_thinking().
  * Claude 4.6+ models support adaptive thinking (type="adaptive" + output_config.effort) */
-static bool supports_adaptive_thinking(const char *model) {
-    if (!model) return false;
-    bool result = model_contains_any(model, ADAPTIVE_SUBSTRINGS);
-    hermes_log(LOG_DEBUG, "anthropic", "supports_adaptive_thinking(%s) = %d", model, result);
-    return result;
-}
 
 /* PoP: supports_xhigh_effort @ agent/anthropic_adapter.py:_supports_xhigh_effort */
 /* Port of Python agent/anthropic_adapter.py:_supports_xhigh_effort().
  * Opus 4.7+ models accept the "xhigh" effort level */
-static bool supports_xhigh_effort(const char *model) {
-    if (!model) return false;
-    bool result = model_contains_any(model, XHIGH_EFFORT_SUBSTRINGS);
-    hermes_log(LOG_DEBUG, "anthropic", "supports_xhigh_effort(%s) = %d", model, result);
-    return result;
-}
 
 /* PoP: forbids_sampling_params @ agent/anthropic_adapter.py:_forbids_sampling_params */
 /* Port of Python agent/anthropic_adapter.py:_forbids_sampling_params().
  * Opus 4.7+ models reject temperature/top_p/top_k (any non-null value → 400) */
-static bool forbids_sampling_params(const char *model) {
-    if (!model) return false;
-    bool result = model_contains_any(model, NO_SAMPLING_SUBSTRINGS);
-    hermes_log(LOG_DEBUG, "anthropic", "forbids_sampling_params(%s) = %d", model, result);
-    return result;
-}
 
 /* PoP: supports_fast_mode @ agent/anthropic_adapter.py:_supports_fast_mode */
 /* Port of Python agent/anthropic_adapter.py:_supports_fast_mode().
  * Opus 4.6 supports fast mode (speed="fast" + beta header) */
-static bool supports_fast_mode(const char *model) {
-    if (!model) return false;
-    bool result = model_contains_any(model, FAST_MODE_SUBSTRINGS);
-    hermes_log(LOG_DEBUG, "anthropic", "supports_fast_mode(%s) = %d", model, result);
-    return result;
-}
 
 /* Adventure effort → adaptive effort mapping.
  * Low/medium/high/xhigh/max preserved; minimal→low; others→medium. */
