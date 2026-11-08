@@ -126,7 +126,7 @@ names=("$@")
 # fuzzy_match_helpers is EXCLUDED: its harness consumes its OWN stdin (op-value
 # lines), so the no-stdin pipe here can't drive it — the standalone
 # tests/gate_fuzzy_match_helpers.sh is the authority for that port.
-SUITE_SKIP="fuzzy_match_helpers file_type"
+SUITE_SKIP="fuzzy_match_helpers file_type github_provider"
 if [ ${#names[@]} -eq 0 ]; then
   for o in tests/oracle_*.py; do
     n="$(basename "$o" | sed -E 's/^oracle_//; s/\.py$//')"

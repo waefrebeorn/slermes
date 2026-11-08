@@ -1757,6 +1757,9 @@ static const struct { const char *repo; const char *label; } g_github_tap_provid
     {"voltagent/awesome-agent-skills", "VoltAgent"},
     {"garrytan/gstack", "gstack"},
     {"minimax-ai/cli", "MiniMax"},
+    {"wandb/skills", "Weights & Biases"},
+    {"qdrant/skills", "Qdrant"},
+    {"pinecone-io/skills", "Pinecone"},
 };
 #define GITHUB_TAP_PROVIDER_COUNT (sizeof(g_github_tap_providers) / sizeof(g_github_tap_providers[0]))
 
@@ -1764,8 +1767,10 @@ static const struct { const char *repo; const char *label; } g_github_tap_provid
 const char *github_provider_for(const char *repo) {
     if (!repo || !repo[0]) return NULL;
     char lower[256];
-    size_t i = 0;
-    for (const char *p = repo; *p && i < sizeof(lower) - 1; p++)
+    size_t i = 0, j = 0;
+    /* strip leading whitespace too (live does .strip(), both ends) */
+    while (repo[j] && (repo[j] == ' ' || repo[j] == '\t')) j++;
+    for (const char *p = repo + j; *p && i < sizeof(lower) - 1; p++)
         lower[i++] = (char)tolower((unsigned char)*p);
     lower[i] = '\0';
     /* strip trailing whitespace */
