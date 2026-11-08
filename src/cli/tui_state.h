@@ -978,4 +978,10 @@ void tui_plugin_hub_init(void);
 void tui_draw_plugin_hub(void);
 int  tui_plugin_hub_handle(int ch);
 
+
+/* config-editor overlay subsystem (tui_config_editor.c) */
+void tui_config_editor_init(void);
+void tui_draw_config_editor(void);
+int  tui_config_editor_handle(int ch);
+
 #endif /* TUI_STATE_H */
