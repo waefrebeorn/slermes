@@ -156,3 +156,25 @@ attempt was made and reverted. The file is now 232 lines after the
 Same pattern as `computer_use.c`'s backend registry and `port_memory_tool.c`'s
 `entries_for` / `mutable_entries_for` / `char_limit_for` (which dereference
 the opaque `memory_store_t`).
+
+## Systemic: generic helper names collide across translation units
+
+Splitting this session produced FOUR link-time `multiple definition` errors
+from unrelated functions sharing a generic name:
+
+| name | module A | module B | resolution |
+|---|---|---|---|
+| `utc_now_iso` | `shell_hooks.c` - `char *(void)` | `status.c` - `void (char*, size_t)` | renamed `utc_now_iso_buf` |
+| `send_json` | `api_server_http.c` | `web_dashboard_http.c` | renamed `api_send_json` |
+| `free_tokens` | `gateway_status_proc.c` | `vault_login_classifier.c` | renamed `vl_free_tokens` |
+| `ensure_dir` | `skills_hub_catalog.c` - recursive `fs_mkdir_p` | `setup_wizard.c` - plain `mkdir` | renamed `wiz_ensure_dir` |
+| `file_exists`, `dir_exists` | `file_ops.c` | `skills.c` | renamed `skills_file_exists`, `skills_dir_exists` |
+
+Note `ensure_dir` is not merely a name clash: the two bodies have DIFFERENT
+semantics (recursive vs single-level), so they are genuinely two functions
+that happened to share a name. The same is true of `utc_now_iso`.
+
+**Practical rule for future splits:** before making a moved function
+non-static, grep the whole tree for the bare name. A name that looks
+module-private may already be exported elsewhere. Renaming the NEW copy (not
+the pre-existing one) is the low-risk fix.
