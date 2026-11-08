@@ -954,4 +954,13 @@ void tui_todo_panel_init(void);
 void tui_draw_todo_panel(void);
 int  tui_todo_panel_handle(int ch);
 
+
+/* image-viewer overlay subsystem (tui_image_viewer.c) */
+void tui_image_viewer_init(void);
+bool tui_display_image(const char *path);
+bool tui_display_image_sixel(const char *path);
+bool tui_display_image_kitty(const char *path, int max_width, int max_height);
+int  tui_image_viewer_handle(int ch);
+void tui_draw_image_viewer(void);
+
 #endif /* TUI_STATE_H */
