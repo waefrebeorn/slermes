@@ -30,9 +30,6 @@
 #include <stdbool.h>
 #include <time.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/types.h>   /* uid_t (used by hermes_file_permissions_harden) */
 
 /* Windows: POSIX surfaces MinGW lacks (uid_t, realpath, mkdir arity, geteuid).
@@ -42,6 +39,7 @@
 /* strcasestr — case-insensitive substring search (glibc extension)
  * macOS/BSD doesn't provide it in <string.h> — provide fallback */
 #if defined(__APPLE__) || defined(__MACH__)
+#include <string.h> /* for the strcasestr fallback below */
 static inline const char *hermes_strcasestr(const char *haystack, const char *needle) {
     size_t nlen = strlen(needle);
     if (!nlen) return haystack;
