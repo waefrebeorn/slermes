@@ -117,7 +117,7 @@ LIBS = -lm
 TUI_INC = -I lib/libncurses/include
 TUI_LIB = lib/libncurses/lib/libncursesw.a lib/libncurses/lib/libpanelw.a
 TUI_SRC = src/cli/tui_fullscreen.c src/cli/tui_eventpub.c src/cli/tui_slash_worker.c src/cli/tui_entry.c src/cli/tui_todo_panel.c src/cli/tui_image_viewer.c src/cli/tui_model_picker.c src/cli/tui_plugin_hub.c src/cli/tui_config_editor.c src/cli/tui_session_browser.c src/cli/tui_json_rpc.c src/cli/tui_transport.c src/cli/tui_layout.c src/cli/tui_render.c src/cli/tui_websocket.c
-TUI_OBJ = src/cli/tui_fullscreen.o src/cli/tui_eventpub.o src/cli/tui_slash_worker.o tui_slash_cmds.o tui_views.o tui_stream.o src/cli/tui_entry.o src/cli/tui_todo_panel.o src/cli/tui_image_viewer.o src/cli/tui_model_picker.o src/cli/tui_plugin_hub.o src/cli/tui_config_editor.o src/cli/tui_session_browser.o src/cli/tui_json_rpc.o src/cli/tui_transport.o src/cli/tui_layout.o src/cli/tui_render.o src/cli/tui_websocket.o
+TUI_OBJ = src/cli/tui_fullscreen.o src/cli/tui_eventpub.o src/cli/tui_slash_worker.o tui_slash_cmds.o tui_views.o tui_stream.o tui_input.o src/cli/tui_entry.o src/cli/tui_todo_panel.o src/cli/tui_image_viewer.o src/cli/tui_model_picker.o src/cli/tui_plugin_hub.o src/cli/tui_config_editor.o src/cli/tui_session_browser.o src/cli/tui_json_rpc.o src/cli/tui_transport.o src/cli/tui_layout.o src/cli/tui_render.o src/cli/tui_websocket.o
 
 # Auto-detect: check if local ncurses headers AND libs exist
 ifneq ("$(wildcard lib/libncurses/include/curses.h)","")
