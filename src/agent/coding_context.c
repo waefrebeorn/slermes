@@ -275,12 +275,6 @@ static bool file_exists(const char *path) {
     return stat(path, &st) == 0;
 }
 
-static bool dir_exists(const char *path) {
-    if (!path) return false;
-    struct stat st;
-    return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
-}
-
 /* ================================================================== */
 /*  Profile lookup                                                    */
 /* ================================================================== */
@@ -735,7 +729,6 @@ coding_runtime_mode_t *coding_context_resolve_runtime_mode(
 #include <stdarg.h>
 #include <signal.h>
 #include <dirent.h>
-
 
 /*
  * PoP: _git @ agent/coding_context.py:_git
