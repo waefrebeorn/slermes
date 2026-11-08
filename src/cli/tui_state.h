@@ -941,4 +941,17 @@ typedef struct {
  * subsystem split can reach the one shared state object. */
 extern tui_global_state_t tui;
 
+
+/* Shared render-core interface (history ring + redraw). These are the two
+ * entry points a subsystem overlay uses to append/render history; their
+ * internals (markdown, roles, eventpub) stay private to the render core. */
+void tui_history_add(msg_role_t role, const char *text, bool bold);
+void tui_redraw_history(void);
+
+
+/* todo/kanban overlay subsystem (tui_todo_panel.c) */
+void tui_todo_panel_init(void);
+void tui_draw_todo_panel(void);
+int  tui_todo_panel_handle(int ch);
+
 #endif /* TUI_STATE_H */
