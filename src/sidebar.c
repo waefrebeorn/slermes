@@ -6,6 +6,7 @@
 
 #define _GNU_SOURCE
 #include "hermes.h"
+#include "hermes_duration.h"
 #include "sidebar.h"
 #include "app_state_internal.h"
 #include "session_db.h"
@@ -20,17 +21,6 @@
  * Internal Helpers - format_age must come before use
  * ══════════════════════════════════════════════════════════════════════ */
 
-static void format_age(long started_at, char *buf, size_t sz) {
-    time_t now = time(NULL);
-    double delta = difftime(now, (time_t)started_at);
-    if (delta < 0) delta = 0;
-    if (delta < 60) snprintf(buf, sz, "now");
-    else if (delta < 3600) snprintf(buf, sz, "%dm", (int)(delta / 60));
-    else if (delta < 86400) snprintf(buf, sz, "%dh", (int)(delta / 3600));
-    else if (delta < 604800) snprintf(buf, sz, "%dd", (int)(delta / 86400));
-    else if (delta < 2592000) snprintf(buf, sz, "%dw", (int)(delta / 604800));
-    else snprintf(buf, sz, "%dmo", (int)(delta / 2592000));
-}
 
 static void draw_search_bar(app_state_t *app, int x, int y, int w) {
     gc_theme_t *t = app_get_theme(app);
@@ -97,7 +87,7 @@ static void draw_session_item(app_state_t *app, int x, int y, int w, int idx, bo
     
     /* Metadata: model + age */
     char age[16];
-    format_age(s->started_at, age, sizeof(age));
+    format_duration_age(s->started_at, age, sizeof(age));
     char meta[128];
     snprintf(meta, sizeof(meta), "%s \xc2\xb7 %s", s->model[0] ? s->model : "default", age);
     gc_draw_text_clipped(app_get_window(app), font_small, meta, x + 16, y + fh, w - 32, t->text_dim);

@@ -6,6 +6,7 @@
 
 #define _GNU_SOURCE
 #include "chat_view.h"
+#include "hermes_duration.h"
 #include "app_state_internal.h"
 #include "session_db.h"
 #include "gui_core.h"
@@ -19,17 +20,6 @@
  * Internal Helpers
  * ══════════════════════════════════════════════════════════════════════ */
 
-static void format_age(long started_at, char *buf, size_t sz) {
-    time_t now = time(NULL);
-    double delta = difftime(now, (time_t)started_at);
-    if (delta < 0) delta = 0;
-    if (delta < 60) snprintf(buf, sz, "now");
-    else if (delta < 3600) snprintf(buf, sz, "%dm", (int)(delta / 60));
-    else if (delta < 86400) snprintf(buf, sz, "%dh", (int)(delta / 3600));
-    else if (delta < 604800) snprintf(buf, sz, "%dd", (int)(delta / 86400));
-    else if (delta < 2592000) snprintf(buf, sz, "%dw", (int)(delta / 604800));
-    else snprintf(buf, sz, "%dmo", (int)(delta / 2592000));
-}
 
 static void draw_scrollbar(app_state_t *app, int x, int y, int h, int content_h, int scroll) {
     if (content_h <= h) return;
