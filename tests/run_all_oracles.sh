@@ -115,6 +115,7 @@ declare -A DEPS=(
   [cli_process_dock]="src/cli/port_cli_process_dock.o lib/libjson/json.o"
   [display_shell]="FULL"
   [provider_auth]="lib/libproviderauth/provider_auth.o"
+  [browser_redact]="src/tools/browser_redact.o lib/libregex/hermes_regex.o lib/libjson/json.o"
 )
 
 fail=0

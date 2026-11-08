@@ -5,7 +5,7 @@
  *   gcc -O2 -g -I include -I src/tools -I lib/libregex \
  *     tests/t_port_browser_redact.c src/tools/browser_redact.o -o /tmp/t_br
  */
-#include "browser_redact.h"
+#include "tools/browser_redact.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
