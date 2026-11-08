@@ -28,6 +28,7 @@
  */
 
 #include "kanban_db.h"
+#include "kanban_workers_db.h"
 #include "hermes_json.h"
 #include "hermes_regex.h"
 
@@ -50,7 +51,6 @@
 
 /* ---- module constants (mirror kanban_db.py) ---------------------------- */
 #define KB_RATE_LIMIT_EXIT_CODE 75
-#define KB_DEFAULT_FAILURE_LIMIT 2
 #define KB_DEFAULT_LOG_ROTATE_BYTES (2 * 1024 * 1024)
 #define KB_DEFAULT_LOG_BACKUP_COUNT 1
 #define KB_TERMINAL_TIMEOUT_GRACE_SECONDS 30
@@ -61,7 +61,6 @@
 #define KB_RECENT_WORKER_EXIT_TTL_SECONDS 600
 #define KB_BUSY_MAX_RETRIES 5
 #define KB_CRASH_GRACE_SECONDS 30
-#define KB_RECLAIM_DEFER_GRACE_SECONDS 120
 #define KB_CTX_MAX_PRIOR_ATTEMPTS 3
 #define KB_CTX_MAX_FIELD_BYTES 512
 #define KB_CTX_MAX_BODY_BYTES (8 * 1024)
@@ -72,12 +71,6 @@
 #define PATH_MAX 4096
 #endif
 
-/* Forward declarations for same-TU helpers referenced before definition. */
-static int kdb_record_task_failure(sqlite3 *conn, const char *task_id,
-                                     const char *error, const char *outcome,
-                                     int failure_limit, int release_claim,
-                                     int end_run, const char *event_payload_extra_json);
-static int kdb_try_cleanup_parent_workspaces(sqlite3 *conn, const char *task_id);
 
 /* ---- worker-exit registry (mirrors _recent_worker_exits) ---------------- */
 typedef struct {
@@ -206,117 +199,8 @@ int kdb_record_spawn_failure(sqlite3 *conn, const char *task_id,
 }
 
 /* PoP: kdb_record_task_failure @ hermes_cli/kanban_db.py:_record_task_failure */
-int kdb_record_task_failure(sqlite3 *conn, const char *task_id,
-                             const char *error, const char *outcome,
-                             int failure_limit, int release_claim,
-                             int end_run, const char *event_payload_extra_json)
-{
-    if (!conn || !task_id) return 0;
-    if (failure_limit < 0) failure_limit = KB_DEFAULT_FAILURE_LIMIT;
-    int blocked = 0;
-    char errbuf[512];
-    snprintf(errbuf, sizeof(errbuf), "%s", error ? error : "");
-    errbuf[sizeof(errbuf) - 1] = '\0';
 
-    sqlite3_stmt *st = NULL;
-    if (sqlite3_prepare_v2(conn,
-            "SELECT consecutive_failures, status, max_retries "
-            "FROM tasks WHERE id = ?",
-            -1, &st, NULL) != SQLITE_OK) return 0;
-    sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
-    if (sqlite3_step(st) != SQLITE_ROW) { sqlite3_finalize(st); return 0; }
-    int failures0     = sqlite3_column_int(st, 0);
-    const char *status = (const char *)sqlite3_column_text(st, 1);
-    const char *maxret = (const char *)sqlite3_column_text(st, 2);
-    sqlite3_finalize(st);
 
-    int failures = failures0 + 1;
-    int effective_limit = failure_limit;
-    const char *limit_source = "dispatcher";
-    if (maxret && maxret[0]) {
-        char *end = NULL;
-        long mr = strtol(maxret, &end, 10);
-        if (end != maxret && mr >= 0) { effective_limit = (int)mr; limit_source = "task"; }
-    }
-
-    if (failures >= effective_limit) {
-        /* trip the breaker */
-        char q[512];
-        if (release_claim) {
-            snprintf(q, sizeof(q),
-                "UPDATE tasks SET status = 'blocked', claim_lock = NULL, "
-                "claim_expires = NULL, worker_pid = NULL, "
-                "consecutive_failures = ?, last_failure_error = ? "
-                "WHERE id = ? AND status IN ('running','ready')");
-        } else {
-            snprintf(q, sizeof(q),
-                "UPDATE tasks SET status = 'blocked', "
-                "consecutive_failures = ?, last_failure_error = ? "
-                "WHERE id = ? AND status IN ('ready','running')");
-        }
-        sqlite3_stmt *up = NULL;
-        if (sqlite3_prepare_v2(conn, q, -1, &up, NULL) == SQLITE_OK) {
-            sqlite3_bind_int(up, 1, failures);
-            sqlite3_bind_text(up, 2, errbuf, -1, SQLITE_TRANSIENT);
-            sqlite3_bind_text(up, 3, task_id, -1, SQLITE_TRANSIENT);
-            sqlite3_step(up);
-            sqlite3_finalize(up);
-        }
-        long run_id = -1;
-        if (end_run) {
-            char meta[512];
-            snprintf(meta, sizeof(meta),
-                     "{\"failures\":%d,\"trigger_outcome\":\"%s\","
-                     "\"effective_limit\":%d,\"limit_source\":\"%s\"}",
-                     failures, outcome ? outcome : "", effective_limit, limit_source);
-            run_id = kdb_end_run(conn, task_id, "gave_up", "", errbuf, meta, "gave_up");
-        }
-        /* gab_up event */
-        char pl[1024];
-        snprintf(pl, sizeof(pl),
-                 "{\"failures\":%d,\"effective_limit\":%d,\"limit_source\":\"%s\","
-                 "\"error\":\"%s\",\"trigger_outcome\":\"%s\"",
-                 failures, effective_limit, limit_source, errbuf,
-                 outcome ? outcome : "");
-        if (event_payload_extra_json && event_payload_extra_json[0]) {
-            size_t L = strlen(pl);
-            snprintf(pl + L, sizeof(pl) - L, ",%s", event_payload_extra_json);
-        }
-        size_t L = strlen(pl);
-        snprintf(pl + L, sizeof(pl) - L, "}");
-        kdb_append_event(conn, task_id, run_id, "gave_up", pl);
-        blocked = 1;
-    } else {
-        char q[512];
-        if (release_claim) {
-            snprintf(q, sizeof(q),
-                "UPDATE tasks SET status = 'ready', claim_lock = NULL, "
-                "claim_expires = NULL, worker_pid = NULL, "
-                "consecutive_failures = ?, last_failure_error = ? "
-                "WHERE id = ? AND status = 'running'");
-        } else {
-            snprintf(q, sizeof(q),
-                "UPDATE tasks SET consecutive_failures = ?, "
-                "last_failure_error = ? WHERE id = ?");
-        }
-        sqlite3_stmt *up = NULL;
-        if (sqlite3_prepare_v2(conn, q, -1, &up, NULL) == SQLITE_OK) {
-            sqlite3_bind_int(up, 1, failures);
-            sqlite3_bind_text(up, 2, errbuf, -1, SQLITE_TRANSIENT);
-            sqlite3_bind_text(up, 3, task_id, -1, SQLITE_TRANSIENT);
-            sqlite3_step(up);
-            sqlite3_finalize(up);
-        }
-        if (end_run) {
-            char meta[256];
-            snprintf(meta, sizeof(meta), "{\"failures\":%d}", failures);
-            long run_id = kdb_end_run(conn, task_id, outcome, "", errbuf, meta, outcome);
-            kdb_append_event(conn, task_id, run_id, outcome ? outcome : "",
-                             meta);
-        }
-    }
-    return blocked;
-}
 
 /* ===================================================================== */
 /* _set_worker_pid                                                  */
@@ -731,11 +615,8 @@ int kdb_cleanup_worker_tmux(sqlite3 *conn, const char *task_id)
 /* ===================================================================== */
 /* _cleanup_workspace / _try_cleanup_parent_workspaces              */
 /* ===================================================================== */
-static int kb_is_managed_scratch(const char *path)
-{
-    /* reuse kanban_util.c's logical path guard */
-    return kdb_is_managed_scratch_path(path) != 0;
-}
+
+
 
 /* PoP: kdb_cleanup_workspace @ hermes_cli/kanban_db.py:_cleanup_workspace */
 int kdb_cleanup_workspace(sqlite3 *conn, const char *task_id)
@@ -782,86 +663,14 @@ int kdb_cleanup_workspace(sqlite3 *conn, const char *task_id)
 }
 
 /* PoP: kdb_try_cleanup_parent_workspaces @ hermes_cli/kanban_db.py:_try_cleanup_parent_workspaces */
-int kdb_try_cleanup_parent_workspaces(sqlite3 *conn, const char *task_id)
-{
-    if (!conn || !task_id) return 0;
-    sqlite3_stmt *st = NULL;
-    if (sqlite3_prepare_v2(conn,
-            "SELECT parent_id FROM task_links WHERE child_id = ?",
-            -1, &st, NULL) != SQLITE_OK) return 0;
-    sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
-    char parents[256][64];
-    int np = 0;
-    while (sqlite3_step(st) == SQLITE_ROW && np < 256) {
-        const char *p = (const char *)sqlite3_column_text(st, 0);
-        if (p) { snprintf(parents[np], 64, "%s", p); np++; }
-    }
-    sqlite3_finalize(st);
-    for (int i = 0; i < np; i++) {
-        sqlite3_stmt *r = NULL;
-        if (sqlite3_prepare_v2(conn,
-                "SELECT workspace_kind, workspace_path FROM tasks WHERE id = ?",
-                -1, &r, NULL) != SQLITE_OK) continue;
-        sqlite3_bind_text(r, 1, parents[i], -1, SQLITE_TRANSIENT);
-        if (sqlite3_step(r) != SQLITE_ROW) { sqlite3_finalize(r); continue; }
-        const char *pk = (const char *)sqlite3_column_text(r, 0);
-        const char *pp = (const char *)sqlite3_column_text(r, 1);
-        char pkb[64], ppb[PATH_MAX];
-        snprintf(pkb, sizeof(pkb), "%s", pk ? pk : "");
-        snprintf(ppb, sizeof(ppb), "%s", pp ? pp : "");
-        sqlite3_finalize(r);
-        if (strcmp(pkb, "scratch") != 0 || !ppb[0]) continue;
-        sqlite3_stmt *a = NULL;
-        if (sqlite3_prepare_v2(conn,
-                "SELECT 1 FROM task_links l JOIN tasks t ON t.id = l.child_id "
-                "WHERE l.parent_id = ? AND t.status NOT IN "
-                "('done','archived','failed','cancelled') LIMIT 1",
-                -1, &a, NULL) == SQLITE_OK) {
-            sqlite3_bind_text(a, 1, parents[i], -1, SQLITE_TRANSIENT);
-            int active = (sqlite3_step(a) == SQLITE_ROW);
-            sqlite3_finalize(a);
-            if (active) continue;
-        }
-        if (kb_is_managed_scratch(ppb)) {
-            char rm[PATH_MAX + 32];
-            snprintf(rm, sizeof(rm), "rm -rf '%s' 2>/dev/null", ppb);
-            system(rm);
-        }
-    }
-    return 1;
-}
+
+
 
 /* ===================================================================== */
 /* _rebuild_drifted_tables                                         */
 /* ===================================================================== */
-static int kb_table_has_drifted(sqlite3 *conn, const char *table)
-{
-    sqlite3_stmt *st = NULL;
-    char pbuf[256];
-    snprintf(pbuf, sizeof(pbuf), "PRAGMA table_info(%s)", table);
-    if (sqlite3_prepare_v2(conn, pbuf, -1, &st, NULL) != SQLITE_OK)
-        return 0;
-    int has_id = 0, id_is_int = 0, id_is_pk = 0, has_lei = 0, lei_is_int = 0;
-    while (sqlite3_step(st) == SQLITE_ROW) {
-        const char *name = (const char *)sqlite3_column_text(st, 1);
-        const char *type = (const char *)sqlite3_column_text(st, 2);
-        int pk = sqlite3_column_int(st, 5);
-        if (name && strcmp(name, "id") == 0) {
-            has_id = 1;
-            if (type && strcasecmp(type, "INTEGER") == 0) id_is_int = 1;
-            if (pk) id_is_pk = 1;
-        }
-        if (name && strcmp(name, "last_event_id") == 0) {
-            has_lei = 1;
-            if (type && strcasecmp(type, "INTEGER") == 0) lei_is_int = 1;
-        }
-    }
-    sqlite3_finalize(st);
-    if (strcmp(table, "kanban_notify_subs") == 0)
-        return (has_lei && !lei_is_int);
-    if (!has_id) return 0;
-    return !(id_is_int && id_is_pk);
-}
+
+
 
 /* PoP: kdb_rebuild_drifted_tables @ hermes_cli/kanban_db.py:_rebuild_drifted_tables */
 int kdb_rebuild_drifted_tables(sqlite3 *conn)
@@ -1272,56 +1081,12 @@ static char *kb_terminate_reclaimed_worker(long pid, const char *claim_lock)
 }
 
 /* PoP: kb_worker_survived_termination @ hermes_cli/kanban_db.py:_worker_survived_termination */
-static int kb_worker_survived_termination(const char *term_json)
-{
-    if (!term_json) return 0;
-    /* parse the three booleans we care about (tiny, bounded JSON) */
-    int attempted = strstr(term_json, "\"termination_attempted\":true") != NULL;
-    int host_local = strstr(term_json, "\"host_local\":true") != NULL;
-    int terminated = strstr(term_json, "\"terminated\":true") != NULL;
-    return attempted && host_local && !terminated;
-}
+
+
 
 /* PoP: kb_defer_reclaim_for_live_worker @ hermes_cli/kanban_db.py:_defer_reclaim_for_live_worker */
-static void kb_defer_reclaim_for_live_worker(sqlite3 *conn, const char *task_id,
-                                              const char *claim_lock, long now,
-                                              const char *term_json, const char *reason)
-{
-    long grace = now + KB_RECLAIM_DEFER_GRACE_SECONDS;
-    sqlite3_stmt *st = NULL;
-    if (sqlite3_prepare_v2(conn,
-            "UPDATE tasks SET claim_expires = ? "
-            "WHERE id = ? AND status = 'running' AND claim_lock IS ?",
-            -1, &st, NULL) == SQLITE_OK) {
-        sqlite3_bind_int64(st, 1, grace);
-        sqlite3_bind_text(st, 2, task_id, -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(st, 3, claim_lock ? claim_lock : (char*)0, -1, SQLITE_TRANSIENT);
-        int rc = sqlite3_step(st);
-        (void)rc;
-        sqlite3_finalize(st);
-    }
-    long run_id = kdb_current_run_id(conn, task_id);
-    if (run_id >= 0) {
-        sqlite3_stmt *rs = NULL;
-        if (sqlite3_prepare_v2(conn,
-                "UPDATE task_runs SET claim_expires = ? WHERE id = ?",
-                -1, &rs, NULL) == SQLITE_OK) {
-            sqlite3_bind_int64(rs, 1, grace);
-            sqlite3_bind_int64(rs, 2, run_id);
-            sqlite3_step(rs);
-            sqlite3_finalize(rs);
-        }
-    }
-    char pl[1024];
-    snprintf(pl, sizeof(pl),
-             "{\"reason\":\"%s\",\"claim_lock\":\"%s\",\"claim_expires_now\":%ld",
-             reason ? reason : "", claim_lock ? claim_lock : "", grace);
-    size_t L = strlen(pl);
-    if (term_json) snprintf(pl + L, sizeof(pl) - L, ",%s", term_json);
-    L = strlen(pl);
-    snprintf(pl + L, sizeof(pl) - L, "}");
-    kdb_append_event(conn, task_id, run_id, "reclaim_deferred", pl);
-}
+
+
 
 /* ===================================================================== */
 /* enforce_max_runtime                                               */
@@ -1791,18 +1556,8 @@ void kdb_dispatch_result_free(kdb_dispatch_result_t *r)
 }
 
 /* Append a malloc'd string to a NULL-terminated vector, growing as needed. */
-static void kb_vec_push(char ***vec, char *s)
-{
-    int n = 0;
-    while ((*vec)[n]) n++;
-    if (n + 2 >= (int)(sizeof(char *) == 8 ? 1 : 1) && 0) { } /* noop */
-    /* grow by powers of two-ish: realloc +8 */
-    char **nv = realloc(*vec, (size_t)(n + 8) * sizeof(char *));
-    if (!nv) { free(s); return; }
-    *vec = nv;
-    (*vec)[n] = s;
-    (*vec)[n + 1] = NULL;
-}
+
+
 
 /* PoP: kdb_dispatch_once @ hermes_cli/kanban_db.py:dispatch_once */
 /* Runs one dispatcher tick under the board's single-writer lock. */
