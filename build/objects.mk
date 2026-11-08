@@ -146,6 +146,7 @@ PORT_OBJ = \
     src/cli/port_tools_read_terminal_tool.o \
     src/cli/port_tools_schema_sanitizer.o \
     src/cli/port_tools_session_search_tool.o \
+    src/cli/session_search_tool.o \
     src/cli/port_tools_skills_ast_audit.o \
     src/cli/port_tools_skills_guard.o \
     src/tools/port_tools_slash_confirm.o \
