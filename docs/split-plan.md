@@ -117,3 +117,24 @@ Its 89 "clean" functions are the JSON-RPC handlers plus the `s_methods[]`
 registration table they are dispatched through. Moving handlers without the
 table (or vice versa) breaks the dispatch; moving both is a rename, not a
 split.
+
+## tui_fullscreen.c: render core reached, plus a dead exported API
+
+After nine splits (tui_state.h types + 8 modules) tui_fullscreen.c is 1963
+lines, down from 5169. What remains is:
+
+- the genuinely live render core - tui_history_add (12 refs),
+  tui_redraw_history (10), tui_redraw_status (5), tui_fullscreen_run (4),
+  tui_render_markdown (3), tui_redraw_input (3), tui_process_input (3).
+  These share the `tui` global and the curses windows, so splitting them
+  would ship that state to a shared header (soul.md forbids a god header).
+- an exported-but-DEAD api. These are declared in tui_fullscreen.h and
+  defined here, but a repo-wide grep finds no caller anywhere:
+  tui_fullscreen_session_create, tui_fullscreen_session_resume,
+  tui_fullscreen_session_close, tui_fullscreen_session_finalize,
+  tui_fullscreen_start_agent_build, tui_fullscreen_wait_agent,
+  tui_fullscreen_resolve_model, tui_fullscreen_switch_model,
+  tui_gateway_connect, tui_gateway_process_message, tui_gateway_send.
+  They look live (exported, declared, non-static) but nothing calls them.
+  Splitting them would move dead code, so they were left alone and are
+  recorded here instead.
