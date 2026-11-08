@@ -176,6 +176,11 @@ typedef struct {
     char          last_app[256];
 } macos_state_t;
 
+/* The cu_backend_t lifecycle callbacks take no arguments, so the backend's
+ * opaque state (b->state) is reached through this file-scope pointer, set by
+ * make_macos_backend(). */
+static macos_state_t *g_macos_state = NULL;
+
 /* ── MCP call helper ──────────────────────────────────────────────── */
 static char *mcp_call(const macos_state_t *st, const char *tool, const char *args) {
     if (!st || !st->srv || !tool) return NULL;
@@ -214,8 +219,8 @@ static bool macos_is_available(void) {
     return system("which cua-driver >/dev/null 2>&1") == 0;
 }
 
-static bool macos_start( {
-    macos_state_t *st = (macos_state_t *)state;
+static bool macos_start(void) {
+    macos_state_t *st = g_macos_state;
     if (!st) return false;
     if (st->srv) return true;  /* already started */
 
@@ -234,8 +239,8 @@ static bool macos_start( {
     return true;
 }
 
-static void macos_stop( {
-    macos_state_t *st = (macos_state_t *)state;
+static void macos_stop(void) {
+    macos_state_t *st = g_macos_state;
     if (!st || !st->srv) return;
     mcp_server_disconnect(st->srv);
     mcp_server_free(st->srv);
@@ -464,8 +469,8 @@ static cu_action_t *macos_key(const char *keys) {
 }
 
 /* ── Introspection ────────────────────────────────────────────────── */
-static cu_action_t *macos_list_apps( {
-    macos_state_t *st = (macos_state_t *)state;
+static cu_action_t *macos_list_apps(void) {
+    macos_state_t *st = g_macos_state;
     if (!st) return NULL;
     cu_action_t *act = (cu_action_t *)calloc(1, sizeof(cu_action_t));
     if (!act) return NULL;
@@ -540,6 +545,7 @@ static cu_backend_t *make_macos_backend(void) {
     b->focus_app = macos_focus_app;
     b->set_value = macos_set_value;
     b->wait = macos_wait;
+    g_macos_state = st;
     b->state = st;
     return b;
 }
