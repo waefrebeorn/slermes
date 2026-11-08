@@ -963,4 +963,13 @@ bool tui_display_image_kitty(const char *path, int max_width, int max_height);
 int  tui_image_viewer_handle(int ch);
 void tui_draw_image_viewer(void);
 
+
+/* model-picker overlay subsystem (tui_model_picker.c) */
+void tui_model_picker_init(void);
+void tui_draw_model_picker(void);
+int  tui_model_picker_handle(int ch);
+
+/* render-core entry point: status line */
+void tui_redraw_status(void);
+
 #endif /* TUI_STATE_H */
