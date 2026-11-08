@@ -29,7 +29,6 @@ deps. Clean islands move to a new `.c` with a bounded header interface.
 
 | File | Lines | Tables | Note |
 |---|---|---|---|
-| `src/web_server.c` | 3437 | `routes` | 84 static fns dispatched through the routes table — a registry, not an island. Split = extract the route handlers that don't read table-adjacent state. |
 | `src/cli/display_core.c` | 3123 | `SPINNER_CHARS` | diff subsystem `g_ansi_diff_*` coupled to `g_display_skin`/`skin_get`. |
 | `src/cli/tui_fullscreen.c` | 3018 | `slash_registry` | overlay layer drained; core engine cohesive. |
 | `src/agent/provider_metadata.c` | 2912 | `MODELS`, `PROVIDERS` | capability cluster reads the tables. |
@@ -80,8 +79,7 @@ header); `memory_storage.c` (vtable dispatch, needs the vtable struct shared
 first); `mcp_tool.c` (6 file-scope statics + 2 local typedefs — moving it
 needs a god-header); `provider_metadata.c` (the HTTP/OAuth cluster calls ~17
 exported-but-undeclared fns, so the interface would be huge); Tier B
-table-coupled files not yet attempted (`web_server.c` routes,
-`display_core.c`, `skills_hub.c`, `auxiliary_client.c`, `prompt_builder.c`,
+table-coupled files not yet attempted (`display_core.c`, `skills_hub.c`, `auxiliary_client.c`, `prompt_builder.c`,
 `coding_context.c`).
 
 Name-collision backlog (rename candidates, not yet done): `setup_slack` /

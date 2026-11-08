@@ -365,7 +365,7 @@ void skills_build_json(int count, skill_info_t *skills) {
     g_skills_valid = 1;
 }
 
-/* Called from h_skills handler in web_server.c */
+/* Called from the h_skills web-server handler */
 int skills_get_json(char *buf, size_t bufsz) {
     if (!g_skills_valid) {
         skill_info_t skills[MAX_SKILLS];
