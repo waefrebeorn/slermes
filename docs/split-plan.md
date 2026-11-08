@@ -61,6 +61,9 @@ Every split gated: full `make all` Phase 5 RC=0 + oracle suite 95/95 + tree clea
 
 | Commit | Split | Result |
 |---|---|---|
+| `924b06c` | `config_setup.c` setup wizard -> `config_setup_wizard.c` (Tier B) | 2709 -> 1323 |
+| `5e0efa8` | `terminal.c` -> `terminal_cmd.c` (+ dead-dup removal) | 2110 -> 1979 |
+| `dcf3a3b` | `kanban_workers.c` -> `kanban_workers_db.c` | 2407 -> 2164 |
 | `62c9bcf` | `config.c` env-file helpers -> `config_env_file.c` | 1814 -> 1705 |
 | `b82cac8` | `port_tools_session_search_tool.c` -> `session_search_tool.c` | 1305 -> 808 |
 | `c615153` | `port_gateway_run.c` -> `gateway_run_match.c` | 1393 -> 1261 |
@@ -71,7 +74,16 @@ Every split gated: full `make all` Phase 5 RC=0 + oracle suite 95/95 + tree clea
 | `fcb6bfb` | `llm_client.c` -> `llm_stream.c` | 2548 -> 2109 |
 | `e938d17`..`0de1a5c` | TUI overlay splits (7 commits) | 5169 -> 3018 |
 
-Deferred: `skills.c` (scan cluster calls `read_file`/`extract_frontmatter`,
-whose definitions are outside the file and not in a includable header);
-`memory_storage.c` (vtable dispatch, needs the vtable struct shared first);
-Tier B table-coupled files.
+Deferred (with reasons): `skills.c` (scan cluster calls `read_file` /
+`extract_frontmatter`, defined outside the file and not in an includable
+header); `memory_storage.c` (vtable dispatch, needs the vtable struct shared
+first); `mcp_tool.c` (6 file-scope statics + 2 local typedefs — moving it
+needs a god-header); `provider_metadata.c` (the HTTP/OAuth cluster calls ~17
+exported-but-undeclared fns, so the interface would be huge); Tier B
+table-coupled files not yet attempted (`web_server.c` routes,
+`display_core.c`, `skills_hub.c`, `auxiliary_client.c`, `prompt_builder.c`,
+`coding_context.c`).
+
+Name-collision backlog (rename candidates, not yet done): `setup_slack` /
+`setup_telegram` exist as different functions in `config_setup.c` (wizard,
+static) and `gw_setup.c` (gateway, exported).
