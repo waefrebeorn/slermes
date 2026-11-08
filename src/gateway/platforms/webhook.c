@@ -4,6 +4,7 @@
  */
 
 #include "libcrypto/crypto.h"
+#include "hermes_encode.h"
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
@@ -24,19 +25,6 @@
 
 /* SHA-256 hash is 32 bytes */
 #define WH_SHA256_LEN 32
-
-/* ================================================================
- *  P112: Standalone hex encoding (avoid pulling in crypto.h directly)
- * ================================================================ */
-
-static char *wh_hex_encode(const unsigned char *data, size_t len) {
-    if (!data || len == 0) return NULL;
-    char *out = (char *)malloc(len * 2 + 1);
-    if (!out) return NULL;
-    for (size_t i = 0; i < len; i++)
-        snprintf(out + i * 2, 3, "%02x", data[i]);
-    return out;
-}
 
 /* ================================================================
  *  P112: Standalone rate limiter helpers (operate on gw_rate_limiter_t*)
@@ -322,7 +310,7 @@ bool webhook_verify_hmac(const char *signature, const unsigned char *body, size_
                         body, body_len, expected);
     pthread_mutex_unlock(&g_sub_mutex);
 
-    char *expected_hex = wh_hex_encode(expected, (size_t)hash_len);
+    char *expected_hex = hex_encode_alloc(expected, (size_t)hash_len);
     if (!expected_hex) return false;
 
     int result = 0;
@@ -489,7 +477,7 @@ static char *build_hmac_header_line(const webhook_subscription_t *sub,
     crypto_hmac_sha256((const unsigned char *)sub->hmac_secret, secret_len,
                        (const unsigned char *)payload, pay_len, sig);
 
-    char *hex = wh_hex_encode(sig, WH_SHA256_LEN);
+    char *hex = hex_encode_alloc(sig, WH_SHA256_LEN);
     if (!hex) return NULL;
 
     /* "X-Hub-Signature-256: sha256=" + 64 hex chars + "\r\n" = ~95 */

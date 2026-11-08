@@ -16,6 +16,7 @@
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
+#include "hermes_encode.h"
 #include "provider.h"
 
 #include <ctype.h>
@@ -63,19 +64,6 @@ static unsigned char *hmac_sha256(const unsigned char *key, size_t key_len,
          (const unsigned char *)data, data_len,
          result, out_len);
     return result;
-}
-
-/* Hex-encode binary data */
-static char *hex_encode(const unsigned char *data, unsigned int len) {
-    static const char hex[] = "0123456789abcdef";
-    char *out = (char *)malloc(len * 2 + 1);
-    if (!out) return NULL;
-    for (unsigned int i = 0; i < len; i++) {
-        out[i*2]   = hex[data[i] >> 4];
-        out[i*2+1] = hex[data[i] & 0xf];
-    }
-    out[len*2] = '\0';
-    return out;
 }
 
 /* Get current UTC time in ISO8601 format: YYYYMMDDTHHMMSSZ */
@@ -209,7 +197,7 @@ static char *sigv4_sign(const char *method, const char *host, const char *path,
     free(string_to_sign);
     if (!signature_bin) return NULL;
 
-    char *signature_hex = hex_encode(signature_bin, hash_len);
+    char *signature_hex = hex_encode_alloc(signature_bin, hash_len);
     free(signature_bin);
     if (!signature_hex) return NULL;
 
