@@ -194,3 +194,16 @@ are all coupled, for three different reasons:
   `g_curator_stale_days` and the cache.
 
 Left alone deliberately.
+
+## port_memory_tool.c: the store API is the opaque struct
+
+After `memory_entries.c` (546520b) the file is 744 lines. The remaining
+`memory_store_*` cluster (24 fns, 20 KB) is the implementation of
+`memory_store_t`, whose struct is defined in this file -
+`include/memory_store.h` only has the opaque
+`typedef struct memory_store_t memory_store_t;`.
+
+Moving the store API means moving the struct definition, which would either
+publish it or require a module-internal header carrying it. That is a
+deliberate design change (a `memory_store.c` module), not a mechanical split,
+and was not attempted. Same shape as `acp/server.c`.
