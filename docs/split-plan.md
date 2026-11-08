@@ -178,3 +178,19 @@ that happened to share a name. The same is true of `utc_now_iso`.
 non-static, grep the whole tree for the bare name. A name that looks
 module-private may already be exported elsewhere. Renaming the NEW copy (not
 the pre-existing one) is the low-risk fix.
+
+## skills.c: only the filesystem cluster was movable
+
+After `skills_fs.c` (01b65ae) skills.c is 2500 lines. The remaining clusters
+are all coupled, for three different reasons:
+
+- **cache** (`skill_cache_*`, 4.9 KB) mutates the file-scope `g_cache` state
+  and `skill_cache_preload` calls `skills_scan_all` -> `scan_dir_recursive`
+  -> `scan_add_skill` (5.6 KB), so moving it drags in the whole scanner.
+- **handlers** (`skills_*_handler`, 26 KB) have 28 distinct dependencies on
+  the skill/bundle/curator/deps/search helpers - they ARE the tool's outer
+  layer, not an extractable island.
+- **bundles / curator / sync** are each tied to the others through
+  `g_curator_stale_days` and the cache.
+
+Left alone deliberately.
