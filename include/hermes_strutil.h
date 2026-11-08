@@ -39,6 +39,15 @@ static inline bool str_ends_with(const char *s, const char *suf) {
     return ls >= lf && strcmp(s + ls - lf, suf) == 0;
 }
 
+/* One of: true when value equals any entry of set[0..n). Pure membership -
+ * folded byte-identical from port_error_surface.c / port_side_question_request.c. */
+static inline int str_member_of(const char *value, const char *const *set, size_t n) {
+    if (!value) return 0;
+    for (size_t i = 0; i < n; i++)
+        if (strcmp(value, set[i]) == 0) return 1;
+    return 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -4,6 +4,7 @@
  */
 
 #include "port_side_question_request.h"
+#include "hermes_strutil.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,13 +15,7 @@ static const char *const ROUTING_ONLY_PLUGINS[] = { "pareto-router" };
 /* Transports rewrite client tools; only these types stay client-side. */
 static const char *const CLIENT_TOOL_TYPES[] = { "function", "custom" };
 
-static int one_of(const char *value, const char *const *set, size_t n)
-{
-    if (!value) return 0;
-    for (size_t i = 0; i < n; i++)
-        if (strcmp(value, set[i]) == 0) return 1;
-    return 0;
-}
+
 
 /* PoP: sq_runtime_key @ agent/side_question_request.py:runtime_key */
 json_t *sq_runtime_key(const char *model, int has_provider, const char *provider,
@@ -66,7 +61,7 @@ int sq_has_server_side_tools(const char *api_kwargs_json)
             if (!tool || tool->type != JSON_OBJECT) continue;
             const char *type = json_get_str(tool, "type", NULL);
             if (type && *type &&
-                !one_of(type, CLIENT_TOOL_TYPES,
+                !str_member_of(type, CLIENT_TOOL_TYPES,
                         sizeof(CLIENT_TOOL_TYPES) / sizeof(CLIENT_TOOL_TYPES[0]))) {
                 json_free(kwargs);
                 return 1;
@@ -90,7 +85,7 @@ int sq_has_server_side_tools(const char *api_kwargs_json)
             const char *id = (p && p->type == JSON_OBJECT)
                                  ? json_get_str(p, "id", NULL) : NULL;
             if (!(p && p->type == JSON_OBJECT) ||
-                !one_of(id, ROUTING_ONLY_PLUGINS,
+                !str_member_of(id, ROUTING_ONLY_PLUGINS,
                         sizeof(ROUTING_ONLY_PLUGINS) / sizeof(ROUTING_ONLY_PLUGINS[0]))) {
                 json_free(kwargs);
                 return 1;

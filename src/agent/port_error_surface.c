@@ -41,13 +41,7 @@ static int contains_ci(const char *haystack, const char *needle_lower)
     return found;
 }
 
-static int one_of(const char *value, const char *const *set, size_t n)
-{
-    if (!value) return 0;
-    for (size_t i = 0; i < n; i++)
-        if (strcmp(value, set[i]) == 0) return 1;
-    return 0;
-}
+
 
 /* Python str(x or "") for a JSON node. */
 
@@ -119,7 +113,7 @@ int esc_is_custom_endpoint(const char *provider)
     char *p = str_strip_dup(provider ? provider : "");
     if (!p) return 0;
     for (char *q = p; *q; q++) *q = (char)tolower((unsigned char)*q);
-    int custom = one_of(p, CUSTOM_ENDPOINT_PROVIDERS, NELEM(CUSTOM_ENDPOINT_PROVIDERS)) ||
+    int custom = str_member_of(p, CUSTOM_ENDPOINT_PROVIDERS, NELEM(CUSTOM_ENDPOINT_PROVIDERS)) ||
                  strncmp(p, "custom:", 7) == 0;
     free(p);
     return custom;
@@ -136,7 +130,7 @@ int esc_looks_like_stream_drop(const char *message)
 /* PoP: esc_is_non_retryable_reason @ agent/error_surface.py:_NON_RETRYABLE_REASONS */
 int esc_is_non_retryable_reason(const char *reason)
 {
-    return one_of(reason, NON_RETRYABLE_REASONS, NELEM(NON_RETRYABLE_REASONS));
+    return str_member_of(reason, NON_RETRYABLE_REASONS, NELEM(NON_RETRYABLE_REASONS));
 }
 
 /* PoP: esc_disk_full @ agent/error_surface.py:_disk_full */
@@ -155,7 +149,7 @@ const char *esc_result_layer(const char *reason, const char *error_text,
         for (size_t i = 0; i < NELEM(REASON_TO_LAYER); i++)
             if (strcmp(reason, REASON_TO_LAYER[i].reason) == 0)
                 return REASON_TO_LAYER[i].layer;
-        if (one_of(reason, TRANSPORT_REASONS, NELEM(TRANSPORT_REASONS)) &&
+        if (str_member_of(reason, TRANSPORT_REASONS, NELEM(TRANSPORT_REASONS)) &&
             esc_is_custom_endpoint(provider))
             return ESC_LAYER_ENDPOINT;
     }
@@ -248,7 +242,7 @@ json_t *esc_build_from_result(const char *result_json, const char *provider,
             if (kind[0]) {
                 char code[128];
                 snprintf(code, sizeof(code), "free_tier_%s", kind);
-                int retryable = one_of(kind, FREE_TIER_RETRYABLE,
+                int retryable = str_member_of(kind, FREE_TIER_RETRYABLE,
                                        NELEM(FREE_TIER_RETRYABLE));
                 out = esc_surface(ESC_LAYER_PROVIDER, code, retryable, provider,
                                   model, provider_label, auth_kind, api_key_env);
