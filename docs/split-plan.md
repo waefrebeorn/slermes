@@ -56,3 +56,22 @@ adapters, already modular), `src/tools/computer_use.c` (2216, 19),
 6. Tier B: extract state tables into module-internal headers first, then split.
 
 Every split gated: full `make all` Phase 5 RC=0 + oracle suite 95/95 + tree clean.
+
+## Progress log (newest first)
+
+| Commit | Split | Result |
+|---|---|---|
+| `62c9bcf` | `config.c` env-file helpers -> `config_env_file.c` | 1814 -> 1705 |
+| `b82cac8` | `port_tools_session_search_tool.c` -> `session_search_tool.c` | 1305 -> 808 |
+| `c615153` | `port_gateway_run.c` -> `gateway_run_match.c` | 1393 -> 1261 |
+| `7535925` | `curator_backup.c` -> `curator_tar.c` | 1270 -> 1047 |
+| `904f0b8` | `provider_anthropic.c` -> `provider_model_caps.c` | 3334 -> 3283 |
+| `96e3373` | `port_cron_jobs.c` -> `cron_jobs_time.c` | 2012 -> 1965 |
+| `fa403d0` | dedup: `str_tolower_inplace`/`str_strip_dup` -> `hermes_strutil.h` | — |
+| `fcb6bfb` | `llm_client.c` -> `llm_stream.c` | 2548 -> 2109 |
+| `e938d17`..`0de1a5c` | TUI overlay splits (7 commits) | 5169 -> 3018 |
+
+Deferred: `skills.c` (scan cluster calls `read_file`/`extract_frontmatter`,
+whose definitions are outside the file and not in a includable header);
+`memory_storage.c` (vtable dispatch, needs the vtable struct shared first);
+Tier B table-coupled files.
