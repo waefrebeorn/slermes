@@ -12,6 +12,7 @@
 /* PoP: computer use tool (port of tools/computer_use_tool) */
 
 #include "hermes_core_types.h"
+#include "computer_use_backend.h"
 #include "computer_use_util.h"
 #include "computer_use_noop.h"
 #include "computer_use_resp.h"
@@ -450,10 +451,7 @@ static cu_backend_t *make_macos_backend(void) {
 #include <windows.h>
 
 #else /* !_WIN32 */
-/* PoP: make_windows_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
-static cu_backend_t *make_windows_backend(void) {
-    return NULL;  /* Windows backend not available on this platform */
-}
+
 #endif /* _WIN32 */
 
 /* ======================================================================
@@ -524,9 +522,6 @@ static cu_backend_t *find_backend_by_name(const char *name) {
     return NULL;
 }
 
-cu_backend_t *computer_use_new_noop_backend(void) {
-    return make_noop_backend();
-}
 
 /* Auto-register built-in backends. Idempotent — safe to call multiple times. */
 static void cu_auto_register(void) {
@@ -580,70 +575,17 @@ void cu_reset_global_backend(void) {
     }
 }
 
-/* ======================================================================
- *  Free helpers
- * ====================================================================== */
 
-/* PoP: cu_capture_free @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_accessibility_tree */
-void cu_capture_free(cu_capture_t *cap) {
-    if (!cap) return;
-    free(cap->png_b64);
-    free(cap->elements);
-    free(cap);
-}
-
-/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */
-void cu_action_free(cu_action_t *act) {
-    if (!act) return;
-    if (act->capture) cu_capture_free(act->capture);
-    free(act);
-}
 
 /* ======================================================================
  *  Safety checks (matching Python's tool.py)
  * ====================================================================== */
 
-static const char *BLOCKED_COMBOS[] = {
-    "cmd+shift+backspace",
-    "cmd+option+backspace",
-    "cmd+ctrl+q",
-    "cmd+shift+q",
-    "cmd+option+shift+q",
-    NULL
-};
 
-static bool is_blocked_key_combo(const char *keys) {
-    if (!keys) return false;
-    char buf[128];
-    size_t blen = strlen(keys);
-    if (blen >= sizeof(buf)) blen = sizeof(buf) - 1;
-    for (size_t i = 0; i < blen; i++)
-        buf[i] = (char)tolower((unsigned char)keys[i]);
-    buf[blen] = '\0';
 
-    for (int i = 0; BLOCKED_COMBOS[i]; i++) {
-        if (strstr(buf, BLOCKED_COMBOS[i])) return true;
-    }
-    return false;
-}
 
-static const char *BLOCKED_TYPE_PATTERNS[] = {
-    "curl | bash",
-    "curl | sh",
-    "wget | bash",
-    "sudo rm -rf",
-    "rm -rf /",
-    NULL
-};
 
-/* Port of Python tools/computer_use/tool.py:_is_blocked_type(). */
-static bool is_blocked_type(const char *text) {
-    if (!text) return false;
-    for (int i = 0; BLOCKED_TYPE_PATTERNS[i]; i++) {
-        if (strstr(text, BLOCKED_TYPE_PATTERNS[i])) return true;
-    }
-    return false;
-}
+
 
 /* ======================================================================
  *  Action dispatch

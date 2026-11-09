@@ -1,6 +1,6 @@
 /*
  * slv_parse.c -- the grammar: expressions, statements and blocks, plus the
- * AST pool. See slv_internal.h.
+ * AST pool. Lua 5.4 syntax throughout. See slv_internal.h.
  */
 #include "slv_internal.h"
 
@@ -17,238 +17,84 @@ static int tok_is(parser *P, int type) { return P->cur.type == type; }
 
 static void expect(parser *P, int type, const char *what) {
     if (!tok_is(P, type)) slv_perr(P, what);
-    slv_next_tok(P);
+    if (!P->err) slv_next_tok(P);
 }
 
 static ex *parse_expr(parser *P);
 static ex *parse_stmt(parser *P);
-static ex *parse_block(parser *P, const char *until, const char *until2, int *matched);
-static ex *parse_bin(parser *P, int minprec);
-static ex *parse_primary_impl(parser *P);
-static ex *parse_block_impl(parser *P, const char *until, const char *until2, int *matched);
+static ex *parse_block(parser *P, int *matched);
+static ex *parse_simple(parser *P);
+static ex *parse_prefix(parser *P);
+static ex *parse_funcbody(parser *P, const char *name, int is_method);
 
-/* Nesting guard. Without it a few thousand nested parentheses recurse until
- * the C stack is gone; Lua's own limit is 200, so match it. */
+#define U_END    1
+#define U_ELSE   2
+#define U_ELSEIF 4
+#define U_UNTIL  8
+
+/* Parser nesting guard. A few thousand nested parens recurse until the C
+ * stack is gone; Lua's own limit is 200, so match it. */
 static ex *parse_primary(parser *P) {
-    if (P->depth >= SLV_MAX_DEPTH) {
-        slv_perr(P, "expression nested too deeply");
-        return NULL;
-    }
+    if (P->depth >= SLV_MAX_DEPTH) { slv_perr(P, "expression nested too deeply"); return NULL; }
     P->depth++;
-    ex *e = parse_primary_impl(P);
+    ex *e = parse_prefix(P);
     P->depth--;
     return e;
 }
 
-static ex *parse_block(parser *P, const char *until, const char *until2, int *matched) {
-    if (matched) *matched = 0;
-    if (P->depth >= SLV_MAX_DEPTH) {
-        slv_perr(P, "block nested too deeply");
-        return NULL;
+static ex *parse_unary(parser *P) {
+    static const int uni[] = { T_NOT, '#', '-', '~', 0 };
+    for (int i = 0; uni[i]; i++) {
+        if (tok_is(P, uni[i])) {
+            int op = P->cur.type;
+            int line = P->cur.line;
+            slv_next_tok(P);
+            ex *operand = parse_unary(P);
+            if (P->err) return NULL;
+            ex *e = espawn(P->pl);
+            if (!e) { slv_perr(P, "out of AST pool"); return NULL; }
+            e->t = N_UNARY; e->op = op; e->e1 = operand; e->line = line;
+            return e;
+        }
     }
-    P->depth++;
-    ex *b = parse_block_impl(P, until, until2, matched);
-    P->depth--;
-    return b;
+    return parse_primary(P);
 }
 
+/* binary operator precedence, from the Lua 5.4 reference manual */
 static int binprec(int type) {
     switch (type) {
     case T_OR: return 1;
     case T_AND: return 2;
     case '<': case '>': case T_LE: case T_GE: case T_NE: case T_EQ: return 3;
-    case T_CONCAT: return 4;
-    case '+': case '-': return 5;
-    case '*': case '/': case '%': return 6;
+    case '|': return 4;
+    case '~': return 5;
+    case '&': return 6;
+    case T_SHL: case T_SHR: return 7;
+    case T_CONCAT: return 8;
+    case '+': case '-': return 9;
+    case '*': case '/': case T_IDIV: case '%': return 10;
+    case '^': return 12;
     }
     return 0;
 }
+static int rightassoc(int type) { return type == T_CONCAT || type == '^'; }
 
-static ex *parse_primary_impl(parser *P) {
-    ex *e = NULL;
-    tok t = P->cur;
-    switch (t.type) {
-    case T_NUM:  { e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_NUM; e->num=t.num; slv_next_tok(P); break; }
-    case T_STR:  { e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_STR; e->str=t.str; slv_next_tok(P); break; }
-    case T_TRUE: { e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_BOOL; e->boolean=1; slv_next_tok(P); break; }
-    case T_FALSE:{ e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_BOOL; e->boolean=0; slv_next_tok(P); break; }
-    case T_NIL:  { e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_NIL; slv_next_tok(P); break; }
-    case T_NAME: { e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_NAME; e->name=t.str; slv_next_tok(P); break; }
-    case '{': {   /* table literal is a PRIMARY (t = {...}) */
-        slv_next_tok(P);
-        ex *tab = espawn(P->pl); if(!tab){slv_perr(P,"pool");return NULL;}
-        tab->t = N_TABLE;
-        ex **vals=NULL,**keys=NULL; int nv=0,cap=0;
-        while (!tok_is(P, '}')) {
-            if (tok_is(P, T_EOF)) { slv_perr(P, "unterminated table literal"); break; }
-            ex *key = NULL;
-            /* bare-name field: name = value  (key becomes the interned name) */
-            if (tok_is(P, T_NAME)) {
-                const char *nm = P->cur.str;
-                slv_next_tok(P);
-                if (tok_is(P, '=')) {
-                    key = espawn(P->pl); if(!key){slv_perr(P,"pool");return NULL;}
-                    key->t = N_STR; key->str = nm;
-                    slv_next_tok(P);          /* consume '=' */
-                    ex *val = parse_expr(P);
-                    if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                    vals[nv]=val; keys[nv]=key; nv++;
-                    if (tok_is(P, ',')) slv_next_tok(P);
-                    continue;
-                }
-                /* not a name= -- it was a bare expression; fall through with
-                 * the name re-tokenized: we already consumed it, so stash a
-                 * NAME node as the value and continue. */
-                ex *nmval = espawn(P->pl); if(!nmval){slv_perr(P,"pool");return NULL;}
-                nmval->t = N_NAME; nmval->name = nm;
-                if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                vals[nv]=nmval; keys[nv]=NULL; nv++;
-                if (tok_is(P, ',')) slv_next_tok(P);
-                continue;
-            }
-            if (tok_is(P, '[')) { slv_next_tok(P); key = parse_expr(P); expect(P,']',"expected ']'"); }
-            if (tok_is(P, '=')) {
-                slv_next_tok(P);
-                ex *val = parse_expr(P);
-                if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                vals[nv]=val; keys[nv]=key; nv++;
-            } else {
-                ex *val = parse_expr(P);
-                if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                vals[nv]=val; keys[nv]=key; nv++;
-            }
-            if (tok_is(P, ',')) slv_next_tok(P);
-        }
-        slv_next_tok(P); /* } */
-        tab->list = vals; tab->keys = keys; tab->nlist = nv;
-        e = tab;
-        break;
-    }
-    case '(': {
-        slv_next_tok(P);
-        e = parse_expr(P);
-        expect(P, ')', "expected ')'");
-        break;
-    }
-    default:
-        slv_perr(P, "unexpected token"); slv_next_tok(P); break;
-    }
-    /* postfix: index and call and method */
-    for (;;) {
-        if (tok_is(P, '[')) {
-            slv_next_tok(P);
-            ex *idx = parse_expr(P);
-            expect(P, ']', "expected ']'");
-            ex *n = espawn(P->pl); if(!n){slv_perr(P,"pool");return NULL;}
-            n->t = N_INDEX; n->e1 = e; n->e2 = idx; e = n;
-        } else if (tok_is(P, '.')) {
-            slv_next_tok(P);
-            if (tok_is(P, T_NAME)) {
-                ex *n = espawn(P->pl); if(!n){slv_perr(P,"pool");return NULL;}
-                ex *key = espawn(P->pl); if(!key){slv_perr(P,"pool");return NULL;}
-                key->t = N_STR; key->str = P->cur.str;
-                n->t = N_INDEX; n->e1 = e; n->e2 = key;
-                slv_next_tok(P); e = n;
-            } else slv_perr(P, "expected field name");
-        } else if (tok_is(P, '(')) {
-            slv_next_tok(P);
-            ex *call = espawn(P->pl); if(!call){slv_perr(P,"pool");return NULL;}
-            call->t = N_CALL; call->e1 = e;
-            /* args */
-            if (tok_is(P, ')')) { call->nlist = 0; slv_next_tok(P); }
-            else {
-                ex **args = NULL; int na = 0, capa = 0;
-                for (;;) {
-                    if (na >= capa) { capa = capa ? capa*2 : 4; args = realloc(args, capa*sizeof(*args)); }
-                    args[na++] = parse_expr(P);
-                    if (tok_is(P, ',')) slv_next_tok(P);
-                    else break;
-                }
-                expect(P, ')', "expected ')' in call");
-                call->list = args; call->nlist = na;
-                /* args array is heap-realloc'd; leaked per call this milestone */
-            }
-            e = call;
-        } else if (tok_is(P, ':')) {     /* method call sugar: obj:name(...) */
-            slv_next_tok(P);
-            if (tok_is(P, T_NAME)) {
-                const char *mname = P->cur.str; slv_next_tok(P);
-                if (tok_is(P, '(')) {
-                    slv_next_tok(P);
-                    ex *method = espawn(P->pl); if(!method){slv_perr(P,"pool");return NULL;}
-                    method->t = N_CALL; method->is_method = 1; method->receiver = e;
-                    ex *mkey = espawn(P->pl); if(!mkey){slv_perr(P,"pool");return NULL;}
-                    mkey->t = N_STR; mkey->str = mname;
-                    /* callee = receiver[key] */
-                    ex *base = espawn(P->pl); if(!base){slv_perr(P,"pool");return NULL;}
-                    base->t = N_INDEX; base->e1 = e; base->e2 = mkey;
-                    method->e1 = base;
-                    if (tok_is(P, ')')) { method->nlist = 0; slv_next_tok(P); }
-                    else {
-                        ex **args=NULL; int na=0,capa=0;
-                        for (;;) {
-                            if (na>=capa){capa=capa?capa*2:4;args=realloc(args,capa*sizeof(*args));}
-                            args[na++]=parse_expr(P);
-                            if (tok_is(P, ',')) slv_next_tok(P); else break;
-                        }
-                        expect(P, ')', "expected ')' in method");
-                        method->list=args; method->nlist=na;
-                    }
-                    e = method;
-                } else slv_perr(P, "expected '(' after method name");
-            } else slv_perr(P, "expected method name");
-        } else if (tok_is(P, '{')) {
-            /* table constructor: {[k]=v, k=v, v, ...} */
-            slv_next_tok(P);
-            ex *tab = espawn(P->pl); if(!tab){slv_perr(P,"pool");return NULL;}
-            tab->t = N_TABLE;
-            ex **vals=NULL,**keys=NULL; int nv=0,cap=0;
-            while (!tok_is(P, '}')) {
-                if (tok_is(P, T_EOF)) { slv_perr(P, "unterminated table literal"); break; }
-                /* try [k] = v */
-                ex *key = NULL;
-                if (tok_is(P, '[')) { slv_next_tok(P); key = parse_expr(P); expect(P,']',"expected ']'"); }
-                if (tok_is(P, '=')) {
-                    slv_next_tok(P);
-                    ex *val = parse_expr(P);
-                    if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                    vals[nv]=val; keys[nv]=key; nv++;
-                } else if (key) { slv_perr(P,"expected '=' after [k]"); }
-                else { /* positional {a,b} -> keys are integer 1,2,... */
-                    ex *val = parse_expr(P);
-                    if (nv>=cap){cap=cap?cap*2:8; vals=realloc(vals,cap*sizeof(*vals)); keys=realloc(keys,cap*sizeof(*keys));}
-                    vals[nv]=val; keys[nv]=NULL; nv++;
-                }
-                if (tok_is(P, ',')) slv_next_tok(P);
-            }
-            slv_next_tok(P); /* } */
-            tab->list = vals; tab->keys = keys; tab->nlist = nv;
-            e = tab;
-        } else break;
-    }
-    return e;
-}
-
-static ex *parse_unary(parser *P) {
-    if (tok_is(P, '-') || tok_is(P, T_NOT)) {
-        int op = P->cur.type; slv_next_tok(P);
-        ex *operand = parse_unary(P);
-        ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;}
-        e->t = N_UNARY; e->e1 = operand; e->num = op;
-        return e;
-    }
-    return parse_primary(P);
-}
-
-static ex *parse_bin(parser *P, int minprec) {
+static ex *parse_bin(parser *P, int limit) {
     ex *lhs = parse_unary(P);
+    if (P->err) return lhs;
     for (;;) {
-        int pr = binprec(P->cur.type);
-        if (pr < minprec) break;
-        int op = P->cur.type; slv_next_tok(P);
-        ex *rhs = parse_bin(P, pr + 1);
-        ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;}
-        e->t = N_BINOP; e->e1 = lhs; e->e2 = rhs; e->num = op;
+        int op = P->cur.type;
+        int pr = binprec(op);
+        if (pr == 0 || pr < limit) break;
+        int line = P->cur.line;
+        slv_next_tok(P);
+        int nextlimit = rightassoc(op) ? pr : pr + 1;
+        ex *rhs = parse_bin(P, nextlimit);
+        if (P->err) return lhs;
+        ex *e = espawn(P->pl);
+        if (!e) { slv_perr(P, "out of AST pool"); return NULL; }
+        e->t = (op == T_AND) ? N_AND : (op == T_OR) ? N_OR : N_BINOP;
+        e->op = op; e->e1 = lhs; e->e2 = rhs; e->line = line;
         lhs = e;
     }
     return lhs;
@@ -256,139 +102,500 @@ static ex *parse_bin(parser *P, int minprec) {
 
 static ex *parse_expr(parser *P) { return parse_bin(P, 1); }
 
-/* parse a statement */
-static ex *parse_stmt(parser *P) {
-    tok t = P->cur;
-    ex *s = espawn(P->pl); if(!s){slv_perr(P,"pool");return NULL;}
+/* --------------------------------------------------------- expr lists */
 
-    if (t.type == T_LOCAL) {
-        slv_next_tok(P);
-        /* local name [, name2 ...] [= expr [, expr2 ...]] */
-        ex **names=NULL; int nn=0,capn=0;
-        while (tok_is(P, T_NAME)) {
-            if (nn>=capn){capn=capn?capn*2:4;names=realloc(names,capn*sizeof(*names));}
-            ex *n=espawn(P->pl); if(!n){slv_perr(P,"pool");return NULL;} n->t=N_NAME; n->name=P->cur.str;
-            names[nn++]=n; slv_next_tok(P);
-            if (tok_is(P, ',')) slv_next_tok(P); else break;
-        }
-        s->t = N_LOCAL; s->list=names; s->nlist=nn;
-        if (tok_is(P, '=')) {
-            slv_next_tok(P);
-            ex **vals=NULL; int nv=0,capv=0;
-            for (;;) {
-                if (nv>=capv){capv=capv?capv*2:4;vals=realloc(vals,capv*sizeof(*vals));}
-                vals[nv++]=parse_expr(P);
-                if (tok_is(P, ',')) slv_next_tok(P); else break;
-            }
-            s->keys=vals; s->nlist=nn; s->e1=(ex*)(intptr_t)1;
-            s->e3=(ex*)vals;             /* reuse e3 as the value list pointer */
-            s->num=(double)nv;
-        }
-        return s;
+static ex **parse_explist(parser *P, int *n) {
+    ex **v = NULL; int nv = 0, cap = 0;
+    for (;;) {
+        if (nv >= cap) { cap = cap ? cap * 2 : 4; v = (ex **)realloc(v, (size_t)cap * sizeof(*v)); }
+        v[nv++] = parse_expr(P);
+        if (P->err) { free(v); *n = 0; return NULL; }
+        if (tok_is(P, ',')) { slv_next_tok(P); continue; }
+        break;
     }
-    if (t.type == T_FUNCTION) {      /* function name() body -- assign to global */
-        slv_next_tok(P);
-        if (!tok_is(P, T_NAME)) { slv_perr(P,"expected function name"); return s; }
-        const char *fname = P->cur.str; slv_next_tok(P);
-        /* params */
-        ex **params=NULL; int np=0,cap=0;
-        expect(P, '(', "expected '('");
-        s->t = N_FUNC; s->name = fname;
-        while (!tok_is(P, ')')) {
-            if (np>=cap){cap=cap?cap*2:4;params=realloc(params,cap*sizeof(*params));}
-            if (!tok_is(P, T_NAME)) { slv_perr(P,"expected param name"); break; }
-            ex *p=espawn(P->pl); if(!p){slv_perr(P,"pool");return NULL;} p->t=N_NAME; p->name=P->cur.str; slv_next_tok(P);
-            params[np++]=p;
-            if (tok_is(P, ',')) slv_next_tok(P); else break;
-        }
-        expect(P, ')', "expected ')'");
-        s->list=params; s->nlist=np;
-        /* body */
-        int matched=0;
-        ex *body = parse_block(P, NULL, "end", &matched);
-        if (!matched) slv_perr(P, "expected 'end'");
-        s->e1 = body;
-        /* this stmt is a function-def assigned to the global `fname` */
-        return s;
-    }
-    if (t.type == T_IF) {
-        slv_next_tok(P);
-        ex *cond = parse_expr(P);
-        expect(P, T_THEN, "expected 'then'");
-        int m=0; ex *body = parse_block(P, NULL, "end", &m);
-        ex *else_part = NULL;
-        /* parse_block consumed the terminator: m==2 means 'else' was hit */
-        if (m == 2) { int m2=0; else_part = parse_block(P, NULL, "end", &m2); if(m2!=1) slv_perr(P,"expected 'end' after else"); }
-        else if (m != 1) slv_perr(P, "expected 'end'");
-        s->t = N_IF; s->e1=cond; s->e2=body; s->e3=else_part;
-        return s;
-    }
-    if (t.type == T_WHILE) {
-        slv_next_tok(P);
-        ex *cond = parse_expr(P);
-        expect(P, T_DO, "expected 'do'");
-        int m=0; ex *body = parse_block(P, NULL, "end", &m);
-        if (!m) slv_perr(P, "expected 'end'");
-        s->t = N_WHILE; s->e1=cond; s->e2=body;
-        return s;
-    }
-    if (t.type == T_FOR) {
-        slv_next_tok(P);
-        if (!tok_is(P, T_NAME)) { slv_perr(P,"expected loop var"); return s; }
-        const char *var = P->cur.str; slv_next_tok(P);
-        expect(P, '=', "expected '=' in for");
-        ex *start = parse_expr(P);
-        expect(P, ',', "expected ',' in for");
-        ex *stop = parse_expr(P);
-        expect(P, T_DO, "expected 'do'");
-        int m=0; ex *body = parse_block(P, NULL, "end", &m);
-        if (!m) slv_perr(P, "expected 'end'");
-        s->t = N_FOR; s->name=var; s->e1=start; s->e2=stop; s->e3=body;
-        return s;
-    }
-    if (t.type == T_RETURN) {
-        slv_next_tok(P);
-        s->t = N_RETURN;
-        if (!tok_is(P, T_END) && !tok_is(P, T_EOF)) s->e1 = parse_expr(P);
-        return s;
-    }
-    /* assignment or expression statement */
-    ex *expr = parse_expr(P);
-    if (tok_is(P, '=')) {
-        slv_next_tok(P);
-        ex *rhs = parse_expr(P);
-        s->t = N_ASSIGN;
-        if (expr->t == N_NAME) { s->e1 = expr; s->e2 = rhs; s->name = expr->name; }
-        else if (expr->t == N_INDEX) { s->e1 = expr; s->e2 = rhs; }
-        else { slv_perr(P, "invalid assignment target"); }
-        return s;
-    }
-    /* expression statement (e.g. a call). Its own node type: previously this
-     * reused N_CALL with the expression in the callee slot, so eval() ran the
-     * call and then tried to call its RESULT. */
-    s->t = N_EXPR; s->e1 = expr;
-    return s;
+    *n = nv;
+    return v;
 }
 
-static ex *parse_block_impl(parser *P, const char *until, const char *until2, int *matched) {
-    (void)until; (void)until2;
-    ex *block = espawn(P->pl); if(!block){slv_perr(P,"pool");return NULL;}
-    block->t = N_BLOCK;
-    ex **stmts=NULL; int ns=0,cap=0;
+/* ------------------------------------------------------------ tables */
+
+static ex *parse_table(parser *P) {
+    int line = P->cur.line;
+    slv_next_tok(P);                       /* '{' */
+    ex *t = espawn(P->pl);
+    if (!t) { slv_perr(P, "out of AST pool"); return NULL; }
+    t->t = N_TABLE; t->line = line;
+    ex **vals = NULL, **keys = NULL; int nv = 0, cap = 0;
+    while (!tok_is(P, '}')) {
+        if (tok_is(P, T_EOF)) { slv_perr(P, "'}' expected"); break; }
+        ex *key = NULL;
+        if (tok_is(P, '[')) {
+            slv_next_tok(P);
+            key = parse_expr(P);
+            if (P->err) break;
+            expect(P, ']', "']' expected");
+        } else if (tok_is(P, T_NAME)) {
+            /* lookahead for `name = value` */
+            size_t save_p = P->p; tok save_cur = P->cur; int save_line = P->line;
+            const char *nm = P->cur.str;
+            slv_next_tok(P);
+            if (tok_is(P, '=')) {
+                slv_next_tok(P);
+                key = espawn(P->pl);
+                if (key) { key->t = N_STR; key->str = nm; }
+                ex *val = parse_expr(P);
+                if (P->err) break;
+                if (nv >= cap) { cap = cap ? cap * 2 : 8; vals = (ex **)realloc(vals, (size_t)cap*sizeof(*vals)); keys = (ex **)realloc(keys, (size_t)cap*sizeof(*keys)); }
+                vals[nv] = val; keys[nv] = key; nv++;
+            } else {
+                /* not a keyed field: rewind and parse as a positional expr */
+                P->p = save_p; P->cur = save_cur; P->line = save_line;
+                ex *val = parse_expr(P);
+                if (P->err) break;
+                if (nv >= cap) { cap = cap ? cap * 2 : 8; vals = (ex **)realloc(vals, (size_t)cap*sizeof(*vals)); keys = (ex **)realloc(keys, (size_t)cap*sizeof(*keys)); }
+                vals[nv] = val; keys[nv] = NULL; nv++;
+            }
+            if (tok_is(P, ',') || tok_is(P, ';')) slv_next_tok(P);
+            continue;
+        } else {
+            ex *val = parse_expr(P);
+            if (P->err) break;
+            if (nv >= cap) { cap = cap ? cap * 2 : 8; vals = (ex **)realloc(vals, (size_t)cap*sizeof(*vals)); keys = (ex **)realloc(keys, (size_t)cap*sizeof(*keys)); }
+            vals[nv] = val; keys[nv] = key; nv++;
+        }
+        if (P->err) break;
+        if (tok_is(P, ',') || tok_is(P, ';')) slv_next_tok(P);
+    }
+    if (!P->err) expect(P, '}', "'}' expected");
+    t->list = vals; t->keys = keys; t->nlist = nv;
+    return t;
+}
+
+/* ------------------------------------------------------- function def */
+
+static ex *parse_funcbody(parser *P, const char *name, int is_method) {
+    int line = P->cur.line;
+    ex *f = espawn(P->pl);
+    if (!f) { slv_perr(P, "out of AST pool"); return NULL; }
+    f->t = N_FUNC; f->name = name; f->line = line; f->is_method = is_method;
+    expect(P, '(', "'(' expected");
+    const char **params = NULL; int np = 0, cap = 0;
+    if (is_method) {
+        /* the implicit `self` parameter */
+        params = (const char **)slv_arena_alloc(P->L, sizeof(char *));
+        params[np++] = slv_intern(P->L, "self", 4);
+    }
+    if (!tok_is(P, ')')) {
+        for (;;) {
+            if (tok_is(P, T_DOTS)) {
+                f->op = 1;                      /* has varargs */
+                slv_next_tok(P);
+                break;
+            }
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "parameter name expected"); break; }
+            if (np >= cap) {
+                const char **np2 = (const char **)slv_arena_alloc(P->L, (size_t)(cap ? cap * 2 : 8) * sizeof(char *));
+                memcpy(np2, params, (size_t)np * sizeof(char *));
+                params = np2; cap = cap ? cap * 2 : 8;
+            }
+            params[np++] = P->cur.str;
+            slv_next_tok(P);
+            if (tok_is(P, ',')) { slv_next_tok(P); continue; }
+            break;
+        }
+    }
+    expect(P, ')', "')' expected");
+    f->names = params; f->nlist = np;
+    int m = 0;
+    f->e1 = parse_block(P, &m);
+    if (!(m & U_END)) slv_perr(P, "'end' expected");
+    return f;
+}
+
+/* --------------------------------------------------------- simple exp */
+
+static ex *parse_simple(parser *P) {
+    int line = P->cur.line;
+    switch (P->cur.type) {
+    case T_INT: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_INT; e->i=P->cur.i; slv_next_tok(P); e->line=line; return e; }
+    case T_NUM: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_NUM; e->num=P->cur.num; slv_next_tok(P); e->line=line; return e; }
+    case T_STR: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_STR; e->str=P->cur.str; slv_next_tok(P); e->line=line; return e; }
+    case T_NIL: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_NIL; slv_next_tok(P); e->line=line; return e; }
+    case T_TRUE: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_TRUE; slv_next_tok(P); e->line=line; return e; }
+    case T_FALSE: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_FALSE; slv_next_tok(P); e->line=line; return e; }
+    case T_DOTS: { ex *e = espawn(P->pl); if(!e){slv_perr(P,"pool");return NULL;} e->t=N_VARARG; slv_next_tok(P); e->line=line; return e; }
+    case T_FUNCTION: {
+        slv_next_tok(P);
+        return parse_funcbody(P, NULL, 0);
+    }
+    case '{': return parse_table(P);
+    default: return NULL;   /* not a simple expression */
+    }
+}
+
+static ex *parse_prefix(parser *P) {
+    ex *e;
+    int line = P->cur.line;
+    if (tok_is(P, '(')) {
+        slv_next_tok(P);
+        e = parse_expr(P);
+        if (P->err) return NULL;
+        expect(P, ')', "')' expected");
+        /* parenthesised: truncates multiple results to one */
+        ex *p = espawn(P->pl);
+        if (p) { p->t = N_PAREN; p->e1 = e; p->line = line; }
+        return p ? p : e;
+    }
+    if (tok_is(P, T_NAME)) {
+        e = espawn(P->pl);
+        if (!e) { slv_perr(P, "out of AST pool"); return NULL; }
+        e->t = N_NAME; e->name = P->cur.str; e->line = line;
+        slv_next_tok(P);
+    } else {
+        e = parse_simple(P);
+        if (!e && !P->err) slv_perr(P, "unexpected symbol");
+        return e;
+    }
+    /* suffixes */
+    for (;;) {
+        if (tok_is(P, '.')) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "field name expected"); return e; }
+            ex *n = espawn(P->pl);
+            ex *k = espawn(P->pl);
+            if (!n || !k) { slv_perr(P, "out of AST pool"); return NULL; }
+            k->t = N_STR; k->str = P->cur.str;
+            n->t = N_INDEX; n->e1 = e; n->e2 = k; n->line = P->cur.line;
+            slv_next_tok(P);
+            e = n;
+        } else if (tok_is(P, '[')) {
+            slv_next_tok(P);
+            ex *idx = parse_expr(P);
+            if (P->err) return e;
+            expect(P, ']', "']' expected");
+            ex *n = espawn(P->pl);
+            if (!n) { slv_perr(P, "out of AST pool"); return NULL; }
+            n->t = N_INDEX; n->e1 = e; n->e2 = idx; n->line = P->cur.line;
+            e = n;
+        } else if (tok_is(P, ':')) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "method name expected"); return e; }
+            const char *mname = P->cur.str;
+            slv_next_tok(P);
+            ex *call = espawn(P->pl);
+            ex *mkey = espawn(P->pl);
+            ex *base = espawn(P->pl);
+            if (!call || !mkey || !base) { slv_perr(P, "out of AST pool"); return NULL; }
+            mkey->t = N_STR; mkey->str = mname;
+            base->t = N_INDEX; base->e1 = e; base->e2 = mkey;
+            call->t = N_METHOD; call->e1 = base; call->is_method = 1; call->line = P->cur.line;
+            /* arguments */
+            if (tok_is(P, '(')) {
+                slv_next_tok(P);
+                int n = 0; call->list = parse_explist(P, &n); call->nlist = n;
+                if (!P->err) expect(P, ')', "')' expected");
+            } else if (tok_is(P, '{')) {
+                call->list = (ex **)slv_arena_alloc(P->L, sizeof(ex *));
+                call->list[0] = parse_table(P); call->nlist = 1;
+            } else if (tok_is(P, T_STR)) {
+                call->list = (ex **)slv_arena_alloc(P->L, sizeof(ex *));
+                ex *s = espawn(P->pl);
+                if (s) { s->t = N_STR; s->str = P->cur.str; }
+                call->list[0] = s; call->nlist = 1; slv_next_tok(P);
+            } else slv_perr(P, "arguments expected");
+            e = call;
+        } else if (tok_is(P, '(') || tok_is(P, '{') || tok_is(P, T_STR)) {
+            ex *call = espawn(P->pl);
+            if (!call) { slv_perr(P, "out of AST pool"); return NULL; }
+            call->t = N_CALL; call->e1 = e; call->line = P->cur.line;
+            if (tok_is(P, '(')) {
+                slv_next_tok(P);
+                if (tok_is(P, ')')) { call->nlist = 0; call->list = NULL; slv_next_tok(P); }
+                else {
+                    int n = 0; call->list = parse_explist(P, &n); call->nlist = n;
+                    if (!P->err) expect(P, ')', "')' expected");
+                }
+            } else if (tok_is(P, '{')) {
+                call->list = (ex **)slv_arena_alloc(P->L, sizeof(ex *));
+                call->list[0] = parse_table(P); call->nlist = 1;
+            } else {
+                ex *s = espawn(P->pl);
+                if (s) { s->t = N_STR; s->str = P->cur.str; }
+                call->list = (ex **)slv_arena_alloc(P->L, sizeof(ex *));
+                call->list[0] = s; call->nlist = 1; slv_next_tok(P);
+            }
+            e = call;
+        } else break;
+    }
+    return e;
+}
+
+/* ----------------------------------------------------------- statements */
+
+static ex *parse_stmt(parser *P) {
+    int line = P->cur.line;
+    ex *s = espawn(P->pl);
+    if (!s) { slv_perr(P, "out of AST pool"); return NULL; }
+    s->line = line;
+
+    switch (P->cur.type) {
+    case ';': slv_next_tok(P); s->t = N_BLOCK; s->nlist = 0; return s;
+
+    case T_BREAK:
+        slv_next_tok(P);
+        s->t = N_BREAK;
+        return s;
+
+    case T_GOTO:
+        slv_next_tok(P);
+        if (!tok_is(P, T_NAME)) { slv_perr(P, "label name expected"); return s; }
+        s->t = N_GOTO; s->label = P->cur.str;
+        slv_next_tok(P);
+        return s;
+
+    case T_DBCOLON:
+        slv_next_tok(P);
+        if (!tok_is(P, T_NAME)) { slv_perr(P, "label name expected"); return s; }
+        s->t = N_LABEL; s->label = P->cur.str;
+        slv_next_tok(P);
+        expect(P, T_DBCOLON, "'::' expected");
+        return s;
+
+    case T_DO:
+        slv_next_tok(P);
+        s->t = N_DO;
+        { int m = 0; s->e1 = parse_block(P, &m); if (!(m & U_END)) slv_perr(P, "'end' expected"); }
+        return s;
+
+    case T_WHILE:
+        slv_next_tok(P);
+        s->t = N_WHILE;
+        s->e1 = parse_expr(P);
+        if (P->err) return s;
+        expect(P, T_DO, "'do' expected");
+        { int m = 0; s->e2 = parse_block(P, &m); if (!(m & U_END)) slv_perr(P, "'end' expected"); }
+        return s;
+
+    case T_REPEAT:
+        slv_next_tok(P);
+        s->t = N_REPEAT;
+        { int m = 0; s->e2 = parse_block(P, &m); if (!(m & U_UNTIL)) slv_perr(P, "'until' expected"); }
+        s->e1 = parse_expr(P);
+        return s;
+
+    case T_IF: {
+        slv_next_tok(P);
+        s->t = N_IF;
+        s->e1 = parse_expr(P);
+        if (P->err) return s;
+        expect(P, T_THEN, "'then' expected");
+        int m = 0;
+        s->e2 = parse_block(P, &m);
+        /* chain elseif/else into a list: e3 = else block, list = elseif pairs */
+        ex **branches = NULL; int nb = 0, cap = 0;
+        while (m & U_ELSEIF) {
+            slv_next_tok(P);               /* consume 'elseif' */
+            ex *cond = parse_expr(P);
+            if (P->err) break;
+            expect(P, T_THEN, "'then' expected");
+            int m2 = 0;
+            ex *body = parse_block(P, &m2);
+            if (nb >= cap) { cap = cap ? cap * 2 : 4; branches = (ex **)realloc(branches, (size_t)cap * 2 * sizeof(ex *)); }
+            branches[nb * 2] = cond; branches[nb * 2 + 1] = body; nb++;
+            m = m2;
+        }
+        if (m & U_ELSE) {
+            /* parse_block already consumed the 'else' */
+            int m3 = 0;
+            s->e3 = parse_block(P, &m3);
+            m = m3;
+        }
+        if (!(m & U_END)) slv_perr(P, "'end' expected");
+        s->list = branches; s->nlist = nb;
+        return s;
+    }
+
+    case T_FOR: {
+        slv_next_tok(P);
+        if (!tok_is(P, T_NAME)) { slv_perr(P, "loop variable expected"); return s; }
+        const char *v1 = P->cur.str;
+        slv_next_tok(P);
+        if (tok_is(P, '=')) {
+            slv_next_tok(P);
+            s->t = N_FORNUM;
+            s->names = (const char **)slv_arena_alloc(P->L, 2 * sizeof(char *));
+            s->names[0] = v1;
+            s->e1 = parse_expr(P);
+            if (P->err) return s;
+            expect(P, ',', "',' expected");
+            s->e2 = parse_expr(P);
+            if (P->err) return s;
+            if (tok_is(P, ',')) { slv_next_tok(P); s->e3 = parse_expr(P); }
+            expect(P, T_DO, "'do' expected");
+            int m = 0; s->e4 = parse_block(P, &m);
+            if (!(m & U_END)) slv_perr(P, "'end' expected");
+            return s;
+        }
+        /* generic for */
+        s->t = N_FORIN;
+        const char **names = (const char **)slv_arena_alloc(P->L, 8 * sizeof(char *));
+        names[0] = v1; int nn = 1;
+        while (tok_is(P, ',')) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "loop variable expected"); return s; }
+            names[nn++] = P->cur.str;
+            slv_next_tok(P);
+        }
+        s->names = names; s->nlist = nn;
+        expect(P, T_IN, "'in' expected");
+        int n = 0;
+        s->list = parse_explist(P, &n);
+        s->nlist = n;
+        if (P->err) return s;
+        expect(P, T_DO, "'do' expected");
+        int m = 0; s->e4 = parse_block(P, &m);
+        if (!(m & U_END)) slv_perr(P, "'end' expected");
+        return s;
+    }
+
+    case T_FUNCTION: {
+        slv_next_tok(P);
+        if (!tok_is(P, T_NAME)) { slv_perr(P, "function name expected"); return s; }
+        const char *fname = P->cur.str;
+        slv_next_tok(P);
+        int is_method = 0;
+        while (tok_is(P, '.')) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "field name expected"); return s; }
+            slv_next_tok(P);
+        }
+        if (tok_is(P, ':')) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "method name expected"); return s; }
+            is_method = 1;
+            slv_next_tok(P);
+        }
+        s->t = N_FUNCSTAT; s->name = fname;
+        ex *body = parse_funcbody(P, fname, is_method);
+        s->e1 = body;
+        return s;
+    }
+
+    case T_LOCAL: {
+        slv_next_tok(P);
+        if (tok_is(P, T_FUNCTION)) {
+            slv_next_tok(P);
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "function name expected"); return s; }
+            s->t = N_LOCALFUNC;
+            s->name = P->cur.str;
+            ex *body = parse_funcbody(P, s->name, 0);
+            s->e1 = body;
+            return s;
+        }
+        const char **names = (const char **)slv_arena_alloc(P->L, 8 * sizeof(char *));
+        int nn = 0;
+        for (;;) {
+            if (!tok_is(P, T_NAME)) { slv_perr(P, "name expected"); break; }
+            if (nn < 8) names[nn++] = P->cur.str;
+            slv_next_tok(P);
+            /* 5.4 attributes: <const> / <close> -- parsed and ignored */
+            if (tok_is(P, '<')) {
+                slv_next_tok(P);
+                if (tok_is(P, T_NAME)) slv_next_tok(P);
+                expect(P, '>', "'>' expected");
+            }
+            if (tok_is(P, ',')) { slv_next_tok(P); continue; }
+            break;
+        }
+        s->t = N_LOCAL;
+        s->names = names; s->nlist = nn;      /* name count lives in nlist */
+        if (tok_is(P, '=')) {
+            slv_next_tok(P);
+            int n = 0;
+            s->keys = parse_explist(P, &n);   /* values live in keys */
+            s->e4 = (ex *)(intptr_t)n;        /* value count */
+            s->op = 1;                        /* has initialisers */
+        }
+        return s;
+    }
+
+    case T_RETURN: {
+        slv_next_tok(P);
+        s->t = N_RETURN;
+        if (!tok_is(P, T_END) && !tok_is(P, T_EOF) && !tok_is(P, ';') &&
+            !tok_is(P, T_ELSE) && !tok_is(P, T_ELSEIF) && !tok_is(P, T_UNTIL)) {
+            int n = 0;
+            s->list = parse_explist(P, &n);
+            s->nlist = n;
+        }
+        if (tok_is(P, ';')) slv_next_tok(P);
+        return s;
+    }
+
+    default: break;
+    }
+
+    /* assignment or expression statement */
+    ex *e = parse_prefix(P);
+    if (P->err) { s->t = N_CALL; s->e1 = e; return s; }
+    if (!e) { slv_perr(P, "unexpected symbol"); s->t = N_CALL; s->e1 = NULL; return s; }
+    if (tok_is(P, '=') || tok_is(P, ',')) {
+        ex **targets = (ex **)slv_arena_alloc(P->L, 8 * sizeof(ex *));
+        int nt = 0;
+        targets[nt++] = e;
+        while (tok_is(P, ',')) {
+            slv_next_tok(P);
+            ex *t = parse_prefix(P);
+            if (P->err) break;
+            targets[nt++] = t;
+        }
+        expect(P, '=', "'=' expected");
+        int n = 0;
+        ex **vals = parse_explist(P, &n);
+        s->t = N_ASSIGN; s->list = targets; s->nlist = nt;
+        s->keys = vals; s->e4 = (ex *)(intptr_t)n;
+        return s;
+    }
+    /* expression statement: the expression node IS the statement. Lua only
+     * allows a call here; anything else is a syntax error. */
+    if (e->t != N_CALL && e->t != N_METHOD) {
+        slv_perr(P, "syntax error near unexpected expression");
+    }
+    return e;
+}
+
+/* --------------------------------------------------------------- blocks */
+
+static ex *parse_block_impl(parser *P, int until, int *matched) {
+    ex *b = espawn(P->pl);
+    if (!b) { slv_perr(P, "out of AST pool"); return NULL; }
+    b->t = N_BLOCK; b->line = P->cur.line;
+    ex **stmts = NULL; int ns = 0, cap = 0;
     *matched = 0;
     for (;;) {
-        /* block terminators: end (matched=1), else (matched=2), EOF. We
-         * CONSUME end/else so the caller continues past the terminator. */
-        if (tok_is(P, T_EOF)) { break; }
-        if (tok_is(P, T_END)) { slv_next_tok(P); *matched = 1; break; }
-        if (tok_is(P, T_ELSE)) { slv_next_tok(P); *matched = 2; break; }
+        int tt = P->cur.type;
+        int hit = 0;
+        if (tt == T_EOF) break;
+        if ((until & U_END)    && tt == T_END)    { slv_next_tok(P); *matched = U_END;    hit = 1; }
+        if ((until & U_ELSE)   && tt == T_ELSE)   { slv_next_tok(P); *matched = U_ELSE;   hit = 1; }
+        if ((until & U_ELSEIF) && tt == T_ELSEIF) { *matched = U_ELSEIF;                    hit = 1; }
+        if ((until & U_UNTIL)  && tt == T_UNTIL)  { slv_next_tok(P); *matched = U_UNTIL;  hit = 1; }
+        if (hit) break;
         ex *st = parse_stmt(P);
-        if (ns>=cap){cap=cap?cap*2:8;stmts=realloc(stmts,cap*sizeof(*stmts));}
-        stmts[ns++]=st;
+        if (ns >= cap) { cap = cap ? cap * 2 : 8; stmts = (ex **)realloc(stmts, (size_t)cap * sizeof(*stmts)); }
+        stmts[ns++] = st;
         if (P->err) break;
     }
-    block->list = stmts; block->nlist = ns;
-    return block;
+    b->list = stmts; b->nlist = ns;
+    return b;
+}
+
+static ex *parse_block(parser *P, int *matched) {
+    if (P->depth >= SLV_MAX_DEPTH) { slv_perr(P, "block nested too deeply"); return NULL; }
+    P->depth++;
+    ex *b = parse_block_impl(P, U_END | U_ELSE | U_ELSEIF | U_UNTIL, matched);
+    P->depth--;
+    return b;
 }
 
 const char *slv_parse_driver(slv *L, const char *src, pool *pl, ex **out) {
@@ -397,10 +604,14 @@ const char *slv_parse_driver(slv *L, const char *src, pool *pl, ex **out) {
     P.src = src; P.line = 1; P.L = L; P.pl = pl; P.p = 0;
     slv_next_tok(&P);
     int m = 0;
-    ex *root = parse_block(&P, NULL, NULL, &m);
+    ex *root = parse_block(&P, &m);
     if (P.err || L->has_err) {
-        snprintf(L->err, sizeof L->err, "%s", L->err[0] ? L->err : "parse error");
-        return "parse error";
+        if (!L->err[0]) snprintf(L->err, sizeof L->err, "parse error");
+        return L->err;
+    }
+    if (!tok_is(&P, T_EOF)) {
+        snprintf(L->err, sizeof L->err, "unexpected symbol (line %d)", P.line);
+        return L->err;
     }
     *out = root;
     return NULL;

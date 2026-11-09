@@ -1,20 +1,16 @@
 /*
- * slv.h -- slerm-Lua: the C11 tree-walking Lua interpreter.
+ * slv.h -- WuBu LV: slerm-Lua.
  *
- * WHY: stock Lua is the placeholder to get the engine running. slerm-Lua
- * exists for C11 SPEED + control -- it is the substrate that lets people
- * write the best mods and lets other games be slermed INTO our world space,
- * a distribution surface the world boots in WuBuOS.
+ * A from-scratch Lua 5.4 reimplementation for C11 speed + control: the
+ * substrate that lets people write mods and lets other games be slermed into
+ * the world space. No third-party runtime, no GC dependency -- one arena.
  *
- * THIS milestone is the semantic foundation: a clean tree-walking subset
- * interpreter that meets the wb_script contract (bind world, call wb.*, run
- * step). Correctness + portability are the goals here -- NOT yet speed. The
- * register bytecode VM that actually beats stock Lua is the NEXT milestone;
- * that benchmark claim is made only when it exists.
+ * The language surface is Lua 5.4: integers and floats, the full operator
+ * set, multiple returns, varargs, metatables and metamethods, `goto`, and
+ * pcall-based error isolation. The standard library is the base library plus
+ * string (with Lua patterns), table, math, and a minimal os/io.
  *
- * Subset: nil/bool/number/string(interned)/table/function; local + assign;
- * if/else; while; numeric for; table literals; index t[k]/t.k; method t:f();
- * calls (lua + host cfn); return. No coroutines/metamethods/varargs.
+ * Coroutines are not implemented; they need a separate execution model.
  */
 #ifndef SLV_H
 #define SLV_H
@@ -31,42 +27,58 @@ typedef slv_value (*slv_cfn)(slv *L, slv_value *args, int nargs, void *ud);
 
 /* --------------------------------------------------------------- values */
 typedef enum {
-    SLV_NIL = 0, SLV_BOOL, SLV_NUM, SLV_STR, SLV_TABLE,
-    SLV_FUNCTION, SLV_CFUNCTION,
+    SLV_NIL = 0, SLV_BOOL, SLV_INT, SLV_NUM, SLV_STR, SLV_TABLE,
+    SLV_FUNCTION, SLV_CFUNCTION, SLV_MULTI,
 } slv_type;
 
 struct slv_value {
     slv_type t;
     union {
         int         b;
+        int64_t     i;
         double      n;
         const char *s;
         slv_table *tab;
         slv_func  *fn;
         struct { slv_cfn f; void *ud; } cf;
+        struct slv_multi *multi;
     } as;
 };
 
-#define slv_nil()     ((slv_value){.t=SLV_NIL})
-#define slv_bool(B)   ((slv_value){.t=SLV_BOOL, .as.b=(B)})
-#define slv_number(N) ((slv_value){.t=SLV_NUM,  .as.n=(N)})
-#define slv_str(S)    ((slv_value){.t=SLV_STR,  .as.s=(S)})
+#define slv_nil()      ((slv_value){.t=SLV_NIL})
+#define slv_bool(B)    ((slv_value){.t=SLV_BOOL, .as.b=(B)})
+#define slv_integer(N) ((slv_value){.t=SLV_INT,  .as.i=(int64_t)(N)})
+#define slv_number(N)  ((slv_value){.t=SLV_NUM,  .as.n=(N)})
+#define slv_str(S)     ((slv_value){.t=SLV_STR,  .as.s=(S)})
 
-int slv_truthy(slv_value v);
-int slv_equal(slv_value a, slv_value b);
+int    slv_truthy(slv_value v);
+int    slv_equal(slv *L, slv_value a, slv_value b);
+int    slv_rawequal(slv_value a, slv_value b);
 
 /* --------------------------------------------------------------- state */
-slv *slv_new(void);
+slv *slv_new(void);          /* state + base library                        */
+slv *slv_alloc(void);        /* state only (tests / embedders)               */
 void   slv_free(slv *L);
 
 const char *slv_intern(slv *L, const char *bytes, size_t len);
+
+/* number / string coercion. `ok` (may be NULL) reports whether the value WAS
+ * a number; string parsing happens only where Lua allows it. */
 double      slv_tonumber(slv_value v, int *ok);
-const char *slv_tostring(slv_value v);
+int64_t     slv_tointeger(slv_value v, int *ok);
+const char *slv_tostring(slv_value v);            /* shared buffer; copy */
+const char *slv_tostring_intern(slv *L, slv_value v);  /* interned */
 
 /* --------------------------------------------------------------- tables */
 slv_table *slv_table_new(slv *L, int narr, int nrec);
 void         slv_table_set(slv *L, slv_table *t, slv_value k, slv_value v);
 slv_value  slv_table_get(slv *L, const slv_table *t, slv_value k);
+size_t       slv_table_len(const slv_table *t);
+
+/* metatables */
+slv_table *slv_getmetatable(slv *L, slv_value v);
+void         slv_setmetatable(slv *L, slv_table *t, slv_table *meta);
+int          slv_has_meta(slv *L, slv_value v, const char *event);
 
 /* --------------------------------------------------------------- driver */
 const char *slv_run(slv *L, const char *src, const char *chunkname);
@@ -76,5 +88,14 @@ void        slv_set_global(slv *L, const char *name, slv_value v);
 
 /* host-driven call: invoke a function value (e.g. step) with args */
 slv_value slv_call(slv *L, slv_value fn, slv_value *args, int nargs);
+
+/* --------------------------------------------------------------- library */
+void slv_register_builtins(slv *L);   /* base library                      */
+void slv_openlibs(slv *L);            /* base + string + table + math + io  */
+const char *slv_version(void);
+
+/* error isolation: returns 0 on success, 1 if the call raised. */
+int slv_pcall(slv *L, slv_value fn, slv_value *args, int nargs,
+                slv_value *out, int *nout);
 
 #endif /* SLV_H */
