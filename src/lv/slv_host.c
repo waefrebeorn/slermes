@@ -30,7 +30,7 @@ slv *slv_alloc(void) {
 
 slv *slv_new(void) {
     slv *L = slv_alloc();
-    if (L) slv_register_builtins(L);
+    if (L) slv_openlibs(L);
     return L;
 }
 
@@ -183,7 +183,7 @@ static slv_value cfn_assert(slv *L, slv_value *args, int n, void *ud) {
         slv_error(L, "%s", slv_tostring_intern(L, m));
         return slv_nil();
     }
-    return args[0];
+    return slv_multi_value(L, args, n);
 }
 
 static slv_value cfn_error(slv *L, slv_value *args, int n, void *ud) {

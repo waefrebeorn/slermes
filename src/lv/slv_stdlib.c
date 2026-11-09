@@ -448,33 +448,170 @@ void slv_register_os(slv *L) {
 }
 
 /* ------------------------------------------------------------------ io */
+/*
+ * A file handle is a table { f = <int64 pointer>, closed = bool }. The methods
+ * live on a shared metatable keyed by "f", so there is no userdata type.
+ */
+
+static FILE *get_file(slv *L, slv_value v, int argn) {
+    if (v.t != SLV_TABLE) {
+        slv_error(L, "bad argument #%d to 'read' (file expected)", argn);
+        return NULL;
+    }
+    slv_value f = slv_table_get(L, v.as.tab, slv_str("f"));
+    if (f.t != SLV_INT) {
+        slv_error(L, "bad argument #%d (file expected)", argn);
+        return NULL;
+    }
+    return (FILE *)(intptr_t)f.as.i;
+}
+
+static slv_value i_open(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    if (n < 1 || a[0].t != SLV_STR) {
+        slv_error(L, "bad argument #1 to 'open' (string expected)");
+        return slv_nil();
+    }
+    const char *mode = (n >= 2 && a[1].t == SLV_STR) ? a[1].as.s : "r";
+    FILE *f = fopen(a[0].as.s, mode);
+    if (!f) {
+        slv_value out[2];
+        out[0] = slv_nil();
+        out[1] = slv_str(slv_intern(L, "cannot open file", 17));
+        return slv_multi_value(L, out, 2);
+    }
+    slv_table *t = slv_table_new(L, 0, 4);
+    slv_table_set(L, t, slv_str("f"), slv_integer((int64_t)(intptr_t)f));
+    slv_table_set(L, t, slv_str("closed"), slv_bool(0));
+    slv_value r; r.t = SLV_TABLE; r.as.tab = t;
+    return r;
+}
+
+static slv_value f_close(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    FILE *f = get_file(L, (n >= 1) ? a[0] : slv_nil(), 1);
+    if (!f) return slv_nil();
+    fclose(f);
+    if (n >= 1 && a[0].t == SLV_TABLE)
+        slv_table_set(L, a[0].as.tab, slv_str("closed"), slv_bool(1));
+    return slv_bool(1);
+}
+
+static slv_value f_write(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    FILE *f = get_file(L, (n >= 1) ? a[0] : slv_nil(), 1);
+    if (!f) return slv_nil();
+    for (int i = 1; i < n; i++) {
+        slv_value v = a[i];
+        if (v.t == SLV_STR) fputs(v.as.s, f);
+        else if (v.t == SLV_INT || v.t == SLV_NUM) fputs(slv_tostring_intern(L, v), f);
+    }
+    return a[0];
+}
+
+static slv_value f_read(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    FILE *f = get_file(L, (n >= 1) ? a[0] : slv_nil(), 1);
+    if (!f) return slv_nil();
+    const char *fmt = (n >= 2 && a[1].t == SLV_STR) ? a[1].as.s : "l";
+    if (fmt[0] == 'n') {   /* read a number */
+        double d;
+        if (fscanf(f, "%lf", &d) == 1) return slv_number(d);
+        return slv_nil();
+    }
+    if (fmt[0] == 'a') {   /* read the whole file */
+        char *buf = NULL; size_t len = 0, cap = 0; int c;
+        while ((c = fgetc(f)) != EOF) {
+            if (len + 1 >= cap) { cap = cap ? cap * 2 : 256; buf = (char *)realloc(buf, cap); }
+            buf[len++] = (char)c;
+        }
+        slv_value r = slv_str(slv_intern(L, buf ? buf : "", len));
+        free(buf);
+        return r;
+    }
+    /* "l" (default) or "L": one line */
+    char buf[4096];
+    if (!fgets(buf, sizeof buf, f)) return slv_nil();
+    size_t l = strlen(buf);
+    if (l && buf[l-1] == '\n') buf[--l] = 0;
+    return slv_str(slv_intern(L, buf, l));
+}
+
+static slv_value f_seek(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    FILE *f = get_file(L, (n >= 1) ? a[0] : slv_nil(), 1);
+    if (!f) return slv_nil();
+    const char *whence = (n >= 3 && a[2].t == SLV_STR) ? a[2].as.s : "cur";
+    int w = SEEK_SET;
+    if (whence[0] == 'c') w = SEEK_CUR;
+    else if (whence[0] == 'e') w = SEEK_END;
+    long off = (n >= 2) ? (long)slv_tointeger(a[1], NULL) : 0;
+    if (fseek(f, off, w) != 0) return slv_nil();
+    return slv_integer((int64_t)ftell(f));
+}
+
+typedef struct { FILE *f; } line_state;
+
+static slv_value iter_lines(slv *L, slv_value *a, int n, void *ud) {
+    (void)a; (void)n;
+    line_state *st = (line_state *)ud;
+    if (!st || !st->f) return slv_nil();
+    char buf[4096];
+    if (!fgets(buf, sizeof buf, st->f)) { fclose(st->f); st->f = NULL; return slv_nil(); }
+    size_t l = strlen(buf);
+    if (l && buf[l-1] == '\n') buf[--l] = 0;
+    return slv_str(slv_intern(L, buf, l));
+}
+
+static slv_value i_lines(slv *L, slv_value *a, int n, void *ud) {
+    (void)ud;
+    FILE *f = stdin;
+    line_state *st = NULL;
+    if (n >= 1 && a[0].t == SLV_STR) {
+        f = fopen(a[0].as.s, "r");
+        if (!f) { slv_error(L, "cannot open file"); return slv_nil(); }
+    }
+    st = (line_state *)calloc(1, sizeof *st);
+    st->f = f;
+    slv_value it; it.t = SLV_CFUNCTION; it.as.cf.f = iter_lines; it.as.cf.ud = st;
+    return it;
+}
 
 static slv_value i_write(slv *L, slv_value *a, int n, void *ud) {
     (void)ud;
     for (int i = 0; i < n; i++) {
         slv_value v = a[i];
         if (v.t == SLV_STR) fputs(v.as.s, stdout);
-        else fputs(slv_tostring_intern(L, v), stdout);
+        else if (v.t == SLV_INT || v.t == SLV_NUM) fputs(slv_tostring_intern(L, v), stdout);
     }
     return slv_nil();
 }
+
 static slv_value i_read(slv *L, slv_value *a, int n, void *ud) {
     (void)ud;
-    const char *fmt = (n >= 1 && a[0].t == SLV_STR) ? a[0].as.s : "l";
     char buf[4096];
     if (!fgets(buf, sizeof buf, stdin)) return slv_nil();
     size_t l = strlen(buf);
     if (l && buf[l-1] == '\n') buf[--l] = 0;
-    (void)fmt;
     return slv_str(slv_intern(L, buf, l));
 }
 
 void slv_register_io(slv *L) {
-    slv_table *t = slv_table_new(L, 0, 4);
+    slv_table *t = slv_table_new(L, 0, 8);
 #define I(name, fn) { slv_value v; v.t = SLV_CFUNCTION; v.as.cf.f = fn; v.as.cf.ud = NULL; \
     slv_table_set(L, t, slv_str(name), v); }
-    I("write", i_write); I("read", i_read);
+    I("write", i_write); I("read", i_read); I("open", i_open); I("lines", i_lines);
 #undef I
     slv_value tv; tv.t = SLV_TABLE; tv.as.tab = t;
     slv_set_global(L, "io", tv);
+
+    /* the file metatable: file:read / write / close / seek / lines */
+    slv_table *fm = slv_table_new(L, 0, 6);
+#define M(name, fn) { slv_value v; v.t = SLV_CFUNCTION; v.as.cf.f = fn; v.as.cf.ud = NULL; \
+    slv_table_set(L, fm, slv_str(name), v); }
+    M("read", f_read); M("write", f_write); M("close", f_close); M("seek", f_seek);
+    M("lines", i_lines);
+#undef M
+    slv_value idx; idx.t = SLV_TABLE; idx.as.tab = fm;
+    slv_table_set(L, fm, slv_str("__index"), idx);
 }

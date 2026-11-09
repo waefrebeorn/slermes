@@ -5,6 +5,7 @@
  */
 #include "slv_internal.h"
 
+#include <errno.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -131,7 +132,40 @@ static slv_value call_meta(slv *L, slv_value f, slv_value a, slv_value b) {
     return slv_call(L, f, args, 2);
 }
 
+/* Lua coerces numeric strings in arithmetic. Returns 1 when `out` is usable. */
+static int coerce_num(slv_value v, slv_value *out) {
+    if (v.t == SLV_INT || v.t == SLV_NUM) { *out = v; return 1; }
+    if (v.t != SLV_STR) return 0;
+    const char *str = v.as.s;
+    char *end = NULL;
+    double d = strtod(str, &end);
+    if (end == str) return 0;
+    while (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r') end++;
+    if (*end != 0) return 0;
+    /* a plain integer literal becomes an integer */
+    const char *q = str;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    if (*q == '+' || *q == '-') q++;
+    int alldig = (*q != 0);
+    for (const char *r = q; *r; r++) if (*r < '0' || *r > '9') { alldig = 0; break; }
+    if (alldig) {
+        errno = 0;
+        long long iv = strtoll(str, NULL, 10);
+        *out = slv_integer((int64_t)iv);
+        return 1;
+    }
+    *out = slv_number(d);
+    return 1;
+}
+
 slv_value slv_arith(slv *L, int op, slv_value a, slv_value b) {
+    /* coerce numeric strings, as Lua does */
+    {
+        slv_value ca, cb;
+        int an = coerce_num(a, &ca), bn = coerce_num(b, &cb);
+        if (an && bn) { a = ca; b = cb; }
+    }
+
     /* metamethods first, when neither operand is a plain number */
     if (!(a.t == SLV_INT || a.t == SLV_NUM) || !(b.t == SLV_INT || b.t == SLV_NUM)) {
         const char *ev = arith_event(op);
@@ -177,6 +211,7 @@ slv_value slv_arith(slv *L, int op, slv_value a, slv_value b) {
         case '+': r = (int64_t)((uint64_t)x + (uint64_t)y); break;
         case '-': r = (int64_t)((uint64_t)x - (uint64_t)y); break;
         case '*': r = (int64_t)((uint64_t)x * (uint64_t)y); break;
+        case '/': return slv_number((double)x / (double)y);
         case T_IDIV:
             if (y == 0) { slv_error(L, "attempt to divide by zero (line %d)", L->curline); return slv_nil(); }
             r = x / y;
@@ -435,46 +470,63 @@ int slv_call_value(slv *L, slv_value fn, slv_value *args, int nargs, slv_value *
     return 0;
 }
 
+/* growable argument vector for calls */
+static slv_value *args_push(slv_value *a, int *n, int *cap, slv_value v) {
+    if (*n >= *cap) {
+        *cap = *cap ? *cap * 2 : 8;
+        a = (slv_value *)realloc(a, (size_t)(*cap) * sizeof(*a));
+    }
+    a[(*n)++] = v;
+    return a;
+}
+
 slv_value slv_eval_multi(slv *L, ex *e, env *en, slv_value **out, int *nout) {
     *out = NULL; *nout = 0;
     if (!e) return slv_nil();
 
     if (e->t == N_CALL || e->t == N_METHOD) {
-        slv_value callee, *args;
-        int na;
+        slv_value callee;
+        slv_value *args = NULL; int na = 0, acap = 0;
+
         if (e->t == N_METHOD) {
             slv_value self = eval(L, e->e1->e1, en);
             if (L->has_err) return slv_nil();
             slv_value key = (e->e1->e2 && e->e1->e2->t == N_STR)
                                   ? slv_str(e->e1->e2->str) : slv_nil();
             callee = slv_index(L, self, key);
-            if (L->has_err) return slv_nil();
-            na = e->nlist + 1;
-            args = (slv_value *)malloc((size_t)(na > 0 ? na : 1) * sizeof(*args));
-            if (!args) { slv_error(L, "out of memory"); return slv_nil(); }
-            args[0] = self;
+            if (L->has_err) { free(args); return slv_nil(); }
+            args = args_push(args, &na, &acap, self);      /* implicit self */
             for (int i = 0; i < e->nlist; i++) {
                 if (i == e->nlist - 1) {
                     slv_value *o2 = NULL; int n2 = 0;
                     slv_eval_multi(L, e->list[i], en, &o2, &n2);
-                    args[i + 1] = (n2 > 0) ? o2[0] : slv_nil();
-                } else args[i + 1] = eval(L, e->list[i], en);
+                    if (L->has_err) { free(args); return slv_nil(); }
+                    for (int k = 0; k < n2; k++) args = args_push(args, &na, &acap, o2[k]);
+                    if (n2 == 0) args = args_push(args, &na, &acap, slv_nil());
+                } else {
+                    slv_value v = eval(L, e->list[i], en);
+                    if (L->has_err) { free(args); return slv_nil(); }
+                    args = args_push(args, &na, &acap, v);
+                }
             }
         } else {
             callee = eval(L, e->e1, en);
-            if (L->has_err) return slv_nil();
-            na = e->nlist;
-            args = (slv_value *)malloc((size_t)(na > 0 ? na : 1) * sizeof(*args));
-            if (!args) { slv_error(L, "out of memory"); return slv_nil(); }
-            for (int i = 0; i < na; i++) {
-                if (i == na - 1 && na > 0) {
+            if (L->has_err) { free(args); return slv_nil(); }
+            for (int i = 0; i < e->nlist; i++) {
+                if (i == e->nlist - 1) {
+                    /* the last argument expands to all of its values */
                     slv_value *o2 = NULL; int n2 = 0;
                     slv_eval_multi(L, e->list[i], en, &o2, &n2);
-                    args[i] = (n2 > 0) ? o2[0] : slv_nil();
-                } else args[i] = eval(L, e->list[i], en);
+                    if (L->has_err) { free(args); return slv_nil(); }
+                    for (int k = 0; k < n2; k++) args = args_push(args, &na, &acap, o2[k]);
+                    if (n2 == 0) args = args_push(args, &na, &acap, slv_nil());
+                } else {
+                    slv_value v = eval(L, e->list[i], en);
+                    if (L->has_err) { free(args); return slv_nil(); }
+                    args = args_push(args, &na, &acap, v);
+                }
             }
         }
-        if (L->has_err) { free(args); return slv_nil(); }
         int nr = slv_call_value(L, callee, args, na, out);
         free(args);
         if (L->has_err) return slv_nil();
@@ -489,14 +541,24 @@ slv_value slv_eval_multi(slv *L, ex *e, env *en, slv_value **out, int *nout) {
 
     slv_value v = eval(L, e, en);
     *nout = 1;
-    stk_push(L, v);
-    *out = L->stk + L->sp - 1;
+    /* Arena slot, NOT the value stack: stk_push may realloc L->stk and
+     * invalidate a pointer into it. */
+    slv_value *slot = SLV_ALLOC(slv_value, L);
+    if (slot) *slot = v;
+    *out = slot;
     return v;
 }
 
 static slv_value eval_impl(slv *L, ex *e, env *en) {
     if (!e) return slv_nil();
     switch (e->t) {
+    case N_CALL: case N_METHOD: {
+        /* a call used as a VALUE: take its first result. Statement position
+         * goes through exec(), which discards it. */
+        slv_value *out = NULL; int no = 0;
+        slv_eval_multi(L, e, en, &out, &no);
+        return (no > 0) ? out[0] : slv_nil();
+    }
     case N_NIL: return slv_nil();
     case N_TRUE: return slv_bool(1);
     case N_FALSE: return slv_bool(0);
@@ -537,6 +599,13 @@ static slv_value eval_impl(slv *L, ex *e, env *en) {
         case '-':
             if (v.t == SLV_INT) return slv_integer((int64_t)(0 - (uint64_t)v.as.i));
             if (v.t == SLV_NUM) return slv_number(-v.as.n);
+            {
+                slv_value cv;
+                if (coerce_num(v, &cv)) {
+                    if (cv.t == SLV_INT) return slv_integer((int64_t)(0 - (uint64_t)cv.as.i));
+                    return slv_number(-cv.as.n);
+                }
+            }
             /* __unm */
             {
                 slv_table *m = slv_getmetatable(L, v);
@@ -683,23 +752,24 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
         env *be = new_env(L, en);           /* every block gets its own scope */
         int n = e->nlist;
         for (int i = 0; i < n; i++) {
-            ex *st = e->list[i];
-            if (st && st->t == N_GOTO) {
-                if (block_has_label(e, st->label)) {
-                    /* find the label and resume after it */
-                    int j = i;
-                    for (; j < n; j++) if (e->list[j]->t == N_LABEL && !strcmp(e->list[j]->label, st->label)) break;
-                    if (j < n) { i = j; continue; }
+            int wr = 0;
+            slv_value r = exec(L, e->list[i], be, &wr);
+            if (wr) { *was_return = 1; L->curline = save; return r; }
+            if (L->has_err) { L->curline = save; return slv_nil(); }
+            if (L->has_goto) {
+                /* A goto whose label is in THIS block jumps; anything else
+                 * (a break, or a goto to an outer block) propagates. */
+                if (L->goto_label && block_has_label(e, L->goto_label)) {
+                    int j = i + 1;
+                    for (; j < n; j++)
+                        if (e->list[j] && e->list[j]->t == N_LABEL &&
+                            !strcmp(e->list[j]->label, L->goto_label)) break;
+                    L->has_goto = 0; L->goto_label = NULL;
+                    if (j < n) { i = j; continue; }   /* resume after the label */
                 }
-                L->goto_label = st->label; L->has_goto = 1;
                 L->curline = save;
                 return slv_nil();
             }
-            int wr = 0;
-            slv_value r = exec(L, st, be, &wr);
-            if (wr) { *was_return = 1; L->curline = save; return r; }
-            if (L->has_err) { L->curline = save; return slv_nil(); }
-            if (L->has_goto) { L->curline = save; return slv_nil(); }
         }
         L->curline = save;
         return slv_nil();
@@ -710,23 +780,22 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
         int nn = e->nlist;
         if (nvals == 0) {
             for (int i = 0; i < nn; i++) env_set(L, en, e->names[i], slv_nil());
-        } else if (nvals == 1 && nn >= 1) {
-            slv_value v;
-            if (vals[0]->t == N_CALL || vals[0]->t == N_METHOD || vals[0]->t == N_VARARG) {
-                slv_value *out = NULL; int no = 0;
-                slv_eval_multi(L, vals[0], en, &out, &no);
-                v = (no > 0) ? out[0] : slv_nil();
-            } else v = eval(L, vals[0], en);
-            env_set(L, en, e->names[0], v);
-            for (int i = 1; i < nn; i++) env_set(L, en, e->names[i], slv_nil());
-        } else {
-            for (int i = 0; i < nvals - 1 && i < nn; i++) env_set(L, en, e->names[i], eval(L, vals[i], en));
-            slv_value *out = NULL; int no = 0;
-            if (nvals > 0) slv_eval_multi(L, vals[nvals - 1], en, &out, &no);
-            int start = nvals - 1;
-            for (int i = 0; i < no && start + i < nn; i++) env_set(L, en, e->names[start + i], out[i]);
-            for (int i = start + no; i < nn; i++) env_set(L, en, e->names[i], slv_nil());
+            L->curline = save;
+            return slv_nil();
         }
+        /* all but the last value expression contribute exactly one value; the
+         * last expands to fill whatever names remain (multiple returns). */
+        slv_value tmp[32]; int nt = 0;
+        for (int i = 0; i < nvals - 1 && nt < 32; i++) {
+            tmp[nt++] = eval(L, vals[i], en);
+            if (L->has_err) { L->curline = save; return slv_nil(); }
+        }
+        slv_value *out = NULL; int no = 0;
+        slv_eval_multi(L, vals[nvals - 1], en, &out, &no);
+        if (L->has_err) { L->curline = save; return slv_nil(); }
+        for (int i = 0; i < no && nt < 32; i++) tmp[nt++] = out[i];
+        for (int i = 0; i < nn; i++)
+            env_set(L, en, e->names[i], (i < nt) ? tmp[i] : slv_nil());
         L->curline = save;
         return slv_nil();
     }
@@ -762,8 +831,20 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
         return slv_nil();
     }
     case N_FUNCSTAT: {
-        slv_value f = eval(L, e->e1, en);
-        env_assign(L, en, e->name, f);
+        slv_value f = eval(L, e->e2, en);        /* the closure */
+        if (L->has_err) { L->curline = save; return slv_nil(); }
+        if (e->nlist == 0) {
+            env_assign(L, en, e->name, f);
+        } else {
+            /* function t.f() / function t:f() -- set the field on t */
+            slv_value obj = env_get(L, en, e->e1->name);
+            for (int i = 0; i < e->nlist - 1; i++) {
+                obj = slv_index(L, obj, slv_str(e->names[i]));
+                if (L->has_err) break;
+            }
+            if (!L->has_err)
+                slv_setindex(L, obj, slv_str(e->names[e->nlist - 1]), f);
+        }
         L->curline = save;
         return slv_nil();
     }
@@ -795,7 +876,10 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
             slv_value r = exec(L, e->e2, en, &wr);
             if (wr) { *was_return = 1; L->curline = save; return r; }
             if (L->has_err) break;
-            if (L->has_goto) break;
+            if (L->has_goto) {
+                if (L->goto_label == NULL) L->has_goto = 0;   /* break */
+                break;
+            }
         }
         L->curline = save;
         return slv_nil();
@@ -805,7 +889,11 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
             int wr = 0;
             slv_value r = exec(L, e->e2, en, &wr);
             if (wr) { *was_return = 1; L->curline = save; return r; }
-            if (L->has_err || L->has_goto) break;
+            if (L->has_err) break;
+            if (L->has_goto) {
+                if (L->goto_label == NULL) L->has_goto = 0;   /* break */
+                break;
+            }
             slv_value c = eval(L, e->e1, en);
             if (L->has_err) break;
             if (slv_truthy(c)) break;
@@ -834,14 +922,18 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
             int wr = 0;
             slv_value r = exec(L, e->e4, fe, &wr);
             if (wr) { *was_return = 1; L->curline = save; return r; }
-            if (L->has_err || L->has_goto) break;
+            if (L->has_err) break;
+            if (L->has_goto) {
+                if (L->goto_label == NULL) L->has_goto = 0;   /* break */
+                break;
+            }
         }
         L->curline = save;
         return slv_nil();
     }
     case N_FORIN: {
         /* evaluate the iterator triple */
-        int nv = e->nlist;
+        int nv = (int)(intptr_t)e->e4;
         slv_value f, s, ctrl;
         slv_value *out = NULL; int no = 0;
         slv_eval_multi(L, e->list[nv - 1], en, &out, &no);
@@ -860,9 +952,13 @@ slv_value slv_exec(slv *L, ex *e, env *en, int *was_return) {
                 env_set(L, fe, e->names[i], res[i]);
             }
             int wr = 0;
-            slv_value r = exec(L, e->e4, fe, &wr);
+            slv_value r = exec(L, e->e1, fe, &wr);
             if (wr) { *was_return = 1; L->curline = save; return r; }
-            if (L->has_err || L->has_goto) break;
+            if (L->has_err) break;
+            if (L->has_goto) {
+                if (L->goto_label == NULL) L->has_goto = 0;   /* break */
+                break;
+            }
         }
         L->curline = save;
         return slv_nil();
