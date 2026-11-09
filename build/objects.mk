@@ -193,6 +193,7 @@ PORT_OBJ = \
     src/cli/port_chat_completion_helpers.o \
     src/cli/port_hosted_rooms_common.o \
     src/cli/port_hosted_rooms.o \
+    src/cli/port_prompt_builder.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
     src/cli/port_gateway.o \
