@@ -35,6 +35,8 @@
 /* PoP: REST API server (port of acp_adapter/server) */
 
 #include "hermes_api_server.h"
+#include "api_server_sse.h"
+#include "gateway/platforms/api_server_adapter.h"   /* canonical send_sse_headers */
 #include "api_server_http.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
@@ -286,10 +288,6 @@ static void handle_post_chat(int fd, const char *body_json) {
     json_free(resp);
     json_free(req);
 }
-
-static void send_sse_event(int fd, const char *data);
-static void send_sse_headers(int fd);
-static void sse_send_chunk(int fd, const char *content, int index);
 
 /**
  * GET /v1/sessions — list all sessions.
@@ -1494,31 +1492,6 @@ static void handle_client(int client_fd) {
     const char *body = find_body(buf);
     dispatch_request(client_fd, method, path, body, query);
     close(client_fd);
-}
-
-/* ── SSE helpers ────────────────────────────────────────────────── */
-
-static void send_sse_event(int fd, const char *data) {
-    dprintf(fd, "data: %s\n\n", data ? data : "");
-}
-
-static void send_sse_headers(int fd) {
-    const char *headers =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/event-stream\r\n"
-        "Cache-Control: no-cache\r\n"
-        "Connection: keep-alive\r\n"
-        "Access-Control-Allow-Origin: *\r\n"
-        "\r\n";
-    write(fd, headers, strlen(headers));
-}
-
-static void sse_send_chunk(int fd, const char *content, int index) {
-    char event[4096];
-    snprintf(event, sizeof(event),
-        "{\"choices\":[{\"delta\":{\"content\":\"%s\"},\"index\":%d}]}",
-        content, index);
-    send_sse_event(fd, event);
 }
 
 /* ── Server thread ──────────────────────────────────────────────── */
