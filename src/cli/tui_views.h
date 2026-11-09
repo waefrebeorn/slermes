@@ -16,4 +16,7 @@ void tui_draw_log_viewer(void);
 void tui_draw_skill_browser(void);
 const char * tui_tool_shelf(const char *tool_name);
 
+/* called from tui_slash_cmds.c */
+void tui_draw_help(void);
+
 #endif /* TUI_VIEWS_H */

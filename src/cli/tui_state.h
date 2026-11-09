@@ -12,9 +12,18 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <time.h>
+#include <dirent.h>       /* DIR / opendir / readdir
 #include "hermes_agent.h"      /* agent_state_t, session_meta_t             */
+#include "hermes_core_types.h"  /* agent_state_t, HERMES_PATH_MAX */
+#include "libdb/db.h"             /* session_meta_t */
+
 #include "chat_render.h"      /* chat_rendered_msg_t                        */
 #include "chat_composer.h"    /* composer_t, slash_*                        */
+#include <curses.h>        /* COLOR_* for the built-in themes */
+#define MAX_MESSAGES_DISPLAY   4096
+#define MODEL_PICKER_MAX       256
+#define MODEL_NAME_MAX         128
+
 
 /* Slash command entry for autocomplete (full table defined below).
  * Named tui_slash_cmd_t to avoid colliding with the slash_cmd_t ENUM in

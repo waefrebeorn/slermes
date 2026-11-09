@@ -6,6 +6,7 @@
  * colours and the small status printers. No file-scope state.
  */
 #include "tui_win.h"
+#include "tui_eventpub.h"
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>

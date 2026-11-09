@@ -59,9 +59,6 @@
 /* ── Forward definitions (hoisted; used by early helpers below, defined
  *    in full further down the file). Kept here so the translation unit is
  *    self-contained without relying on the hermes.h god header. ──────────── */
-#define MAX_MESSAGES_DISPLAY 4096
-#define MODEL_PICKER_MAX 256
-#define MODEL_NAME_MAX 128
 
 #include "tui_state.h"
 
@@ -330,7 +327,7 @@ void tui_fullscreen_tool_status(const char *tool_name, const char *status,
 }
 
 /* Redraw the input pane — handles multi-line wrap */
-static void tui_redraw_input(void) {
+void tui_redraw_input(void) {
     WINDOW *win = tui.panes[PANE_INPUT].win;
     if (!win) return;
 

@@ -35,6 +35,10 @@
 #include "chat_composer.h"
 #include "slermes_home.h"
 #include "tui_state.h"
+#include "tui_views.h"
+#include "tui_fullscreen.h"
+#include "tui_win.h"
+
 
 
 /* ==================================================================

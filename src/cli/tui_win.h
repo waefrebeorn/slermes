@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "tui_state.h"   /* msg_role_t, display_line_t */
 
 void handle_sigint(int sig);
 void tui_create_windows(void);

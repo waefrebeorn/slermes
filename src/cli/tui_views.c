@@ -489,7 +489,7 @@ void tui_fullscreen_config_edit(void) {
  *  HELP OVERLAY (P190)
  * ================================================================== */
 
-static void tui_draw_help(void) {
+void tui_draw_help(void) {
     WINDOW *win = tui.panes[PANE_HISTORY].win;
     if (!win) return;
 

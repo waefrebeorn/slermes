@@ -6,6 +6,7 @@
  * substring scan. No file-scope state of its own.
  */
 #include "tui_input.h"
+#include "tui_fullscreen.h"
 #include "hermes_cli.h"
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
