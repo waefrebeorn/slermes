@@ -230,3 +230,20 @@ Not deleted: the port's job is parity, and the C port may be a pre-existing
 behaviour gap rather than dead weight. **Open question** - should the C weixin
 `send_message` path call `weixin_truncate_message`, or is the split a
 deliberate Windows-port deviation?
+
+## weixin.c: the HTTP/token cluster is anchored to `static weixin_state_t g_wx`
+
+After `weixin_http.c` (8bb978f) weixin.c is 874 lines. Nine helpers looked
+extractable by function-dep analysis, but six read the file-scope
+`static weixin_state_t g_wx;`:
+
+- `build_headers`, `wx_api_post`, `ctx_token_path`, `sync_buf_load`,
+  `sync_buf_path`, `sync_buf_save`
+
+Moving any of them means moving `g_wx` (or turning it into a passed-in
+parameter, which changes every call site in the send/poll path). That is a
+design change, not a mechanical split, so they stay. Same shape as the ACP
+handlers and the skills cache.
+
+Also note: `ctx_token_path` had to be made non-static because the moved
+`ctx_token_save` calls it.
