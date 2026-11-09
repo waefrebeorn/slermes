@@ -18,7 +18,7 @@
 set -u
 cd "$(dirname "$0")/.." || exit 1
 
-IFS=$'\t' read -r name harness deps <<< "$1"
+IFS=$'\t' read -r name harness deps libdir <<< "$1"
 
 oracle="tests/oracle_$name.py"
 harness_c="tests/t_port_${harness}.c"
@@ -32,7 +32,7 @@ if [ ! -f "$harness_c" ]; then
   exit 1
 fi
 
-out=$(MINIMAL_OBJS="$deps" bash tests/run_one_oracle.sh "$harness" "oracle_$name.py" 2>&1)
+out=$(MINIMAL_OBJS="$deps" bash tests/run_one_oracle.sh "$harness" "oracle_$name.py" "$libdir" 2>&1)
 rc=$?
 
 # One grep capturing the whole matching line. `|| true` keeps an empty result

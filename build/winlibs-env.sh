@@ -46,3 +46,6 @@ export PATH="/c/winlibs/mingw64/bin:/c/msys64/usr/bin:/c/msys64/mingw64/bin:/usr
 # _gnu_exception_handler / __mingw_initltssuo_force.
 export CPATH="C:/winlibs/extra-inc"
 export LIBRARY_PATH="C:/winlibs/extra-libs"
+# run_one_oracle.sh uses this because the ccache wrapper strips LIBRARY_PATH
+# from the compiler it execs - pass the borrowed lib dir explicitly instead.
+export ORACLE_LIBDIR="C:/winlibs/extra-libs"

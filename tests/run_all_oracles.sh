@@ -82,6 +82,7 @@ declare -A DEPS=(
   [inventory]="src/cli/port_inventory.o lib/libjson/json.o"
   [browser_connect]="src/cli/port_browser_connect.o lib/libjson/json.o"
   [banner]="src/cli/port_banner.o lib/libjson/json.o"
+  [nous_account]="src/cli/port_nous_account.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
   [file_operations_search]="src/tools/port_file_operations_search.o lib/libregex/hermes_regex.o lib/libjson/json.o"
@@ -206,6 +207,23 @@ fi
 # Resolve each name to "<name>\t<harness>\t<deps>" in the PARENT shell (bash
 # cannot export the HARNESS_ALIAS / DEPS associative arrays to the subshells
 # xargs spawns), then fan the lines out to tests/_oracle_one.sh workers.
+# The borrowed third-party lib dir is needed to LINK each harness, and it must
+# travel as an ARGUMENT rather than an environment variable: the ccache wrapper
+# strips LIBRARY_PATH from the compiler it execs, and this box's bash drops
+# exported vars in nested children. build/winlibs-env.sh sets it when the
+# caller sourced it; otherwise fall back to the repo-local default.
+if [ -z "${ORACLE_LIBDIR:-}" ]; then
+  if [ -f build/winlibs-env.sh ]; then
+    # shellcheck disable=SC1091
+    . ./build/winlibs-env.sh >/dev/null 2>&1 || true
+  fi
+fi
+if [ -z "${ORACLE_LIBDIR:-}" ]; then
+  for c in /c/winlibs/extra-libs "C:/winlibs/extra-libs"; do
+    [ -d "$c" ] && { ORACLE_LIBDIR="$c"; break; }
+  done
+fi
+
 resolve_one() {
   local name="$1"
   local harness="${HARNESS_ALIAS[$name]:-$name}"
@@ -218,7 +236,7 @@ resolve_one() {
   local varname="ORACLE_OBJS_$(echo "$name" | tr '[:lower:]' '[:upper:]' | tr '/' '_')"
   if [ -n "${!varname:-}" ]; then deps="${!varname}"; fi
   if [ -n "${DEPS[$name]:-}" ]; then deps="${DEPS[$name]}"; fi
-  printf '%s\t%s\t%s\n' "$name" "$harness" "$deps"
+  printf '%s\t%s\t%s\t%s\n' "$name" "$harness" "$deps" "${ORACLE_LIBDIR:-}"
 }
 
 # Parallelism: ORACLE_JOBS (default 4). ORACLE_JOBS=1 gives the sequential

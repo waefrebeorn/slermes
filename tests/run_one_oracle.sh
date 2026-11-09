@@ -6,6 +6,10 @@ set -e
 cd "$(dirname "$0")/.."
 NAME="$1"
 ORACLE="${2:-sta_oracle_$NAME.py}"
+# Borrowed third-party lib dir, passed as an argument by the runner because the
+# ccache wrapper strips LIBRARY_PATH and this box's bash drops exported vars in
+# nested children. Empty means "use the default search path".
+LIBDIR="${3:-}"
 LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | tr '\n' ' ')
 # Windows/MinGW: the inline object list overflows the command line (gcc then
 # silently drops the tail), /tmp is a POSIX path a native gcc.exe cannot
@@ -60,9 +64,16 @@ COMPILER="gcc"
 if [ -x "./.ccache/launch.sh" ]; then
   COMPILER="./.ccache/launch.sh gcc"
 fi
+ORACLE_LIBDIR_ARGS=()
+if [ -n "$LIBDIR" ]; then
+  ORACLE_LIBDIR_ARGS=(-L "$LIBDIR")
+fi
 build() {   # build <out> <opt>
+  # -L MUST precede the -l flags: the linker resolves each -l against the
+  # search path as it is encountered, so a -L placed after them finds nothing.
   $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -I include/compat -I include -I src $LIBINCS \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
+    "${ORACLE_LIBDIR_ARGS[@]}" \
     -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
     -Wl,--allow-multiple-definition
 }
