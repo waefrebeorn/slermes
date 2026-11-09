@@ -140,7 +140,7 @@ const char *acp_get_id(json_node_t *req) {
 }
 
 
-json_node_t *session_to_json(acp_session_t *sess) {
+json_node_t *acp_session_to_json(acp_session_t *sess) {
     json_node_t *info = json_new_object();
     json_object_set(info, "session_id", json_new_string(sess->id));
     json_object_set(info, "name", json_new_string(sess->name));

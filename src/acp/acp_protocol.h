@@ -30,6 +30,6 @@ json_node_t * acp_make_error(const char *id, int code, const char *message, json
 json_node_t * acp_make_response(const char *id, json_node_t *result);
 json_node_t * acp_read_message(void);
 bool acp_write_message(json_node_t *msg);
-json_node_t * session_to_json(acp_session_t *sess);
+json_node_t * acp_session_to_json(acp_session_t *sess);
 
 #endif /* ACP_PROTOCOL_H */

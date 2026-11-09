@@ -142,7 +142,7 @@ static json_node_t *handle_new_session(const char *id, json_node_t *params, acp_
     json_node_t *result = json_new_object();
     json_object_set(result, "session_id", json_new_string(sess->id));
     json_object_set(result, "name", json_new_string(session_name));
-    json_object_set(result, "session", session_to_json(sess));
+    json_object_set(result, "session", acp_session_to_json(sess));
     return acp_make_response(id, result);
 }
 
@@ -154,7 +154,7 @@ static json_node_t *handle_list_sessions(const char *id, json_node_t *params, ac
     json_node_t *sessions = json_new_array();
     for (int i = 0; i < ACP_MAX_SESSIONS; i++) {
         if (srv->sessions[i].active)
-            json_array_append(sessions, session_to_json(&srv->sessions[i]));
+            json_array_append(sessions, acp_session_to_json(&srv->sessions[i]));
     }
     json_object_set(result, "sessions", sessions);
     json_object_set(result, "next_cursor", json_new_null());
@@ -173,7 +173,7 @@ static json_node_t *handle_load_session(const char *id, json_node_t *params, acp
         return acp_make_error(id, -32000, "Session not found", NULL);
 
     json_node_t *result = json_new_object();
-    json_object_set(result, "session", session_to_json(sess));
+    json_object_set(result, "session", acp_session_to_json(sess));
     return acp_make_response(id, result);
 }
 
@@ -190,7 +190,7 @@ static json_node_t *handle_resume_session(const char *id, json_node_t *params, a
 
     json_node_t *result = json_new_object();
     json_object_set(result, "session_id", json_new_string(sess->id));
-    json_object_set(result, "session", session_to_json(sess));
+    json_object_set(result, "session", acp_session_to_json(sess));
     return acp_make_response(id, result);
 }
 
@@ -530,7 +530,7 @@ static json_node_t *handle_fork_session(const char *id, json_node_t *params, acp
 
     json_node_t *result = json_new_object();
     json_object_set(result, "session_id", json_new_string(sess->id));
-    json_object_set(result, "session", session_to_json(sess));
+    json_object_set(result, "session", acp_session_to_json(sess));
     return acp_make_response(id, result);
 }
 
