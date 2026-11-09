@@ -420,3 +420,27 @@ This is the third duplicate-symbol defect of the session and the second caused
 by my own un-static-ing (send_sse_headers was the first). **When a split dies
 with `multiple definition of X`, check `git log --oneline -S "X" -- <both files>`
 to see which definition is older before picking which one to rename.**
+
+## DIRECTION: Lua replaces curses (and SDL, and C#)
+
+Per the WWW repository (`waefrebeorn/WWW`, the ~WuBu~ world-space engine), the
+UI / game-logic / modding substrate is **Lua**, not ncurses and not SDL:
+
+> C11 owns memory, the ECS, physics and the spatial index; Lua owns game
+> logic, GUI and mods.
+
+Consequences for this repo:
+
+- The ncurses TUI is a **dead end on Windows**. It cannot link (no ncurses
+  import libs - `lib/libncurses/lib/` does not exist, so `HAS_NCURSES=0`) and
+  cannot compile (`mkfifo` does not exist anywhere in the MinGW headers).
+  `make all` excludes every TUI object; only the Linux-only `tui` target
+  references them. The header fixes in 8a88016 are kept because they are real
+  defects and the headers are shared, NOT because `make tui` is a goal.
+- The path forward is the **slerm-Lua** interpreter, ported in 1848df3 as
+  `src/lv/` (slv_*). It is self-contained (standard C headers only), builds
+  clean, and passes 27 + 5 tests. It is the substrate for a Lua-driven UI.
+
+Open question: how far to take the TUI object registrations in
+`build/config.mk` now that the target is being superseded - keep them correct
+(cheap, honest) or drop TUI_OBJ entirely until the Lua UI lands.
