@@ -505,3 +505,93 @@ literals/variables, `math.min`, `string.rep`, `type`, `tostring` (directly).
 `games/ui_demo.lua` + `tests/t_slv_ui_demo.c` render a real frame (title bar,
 two panels, status line) from Lua alone - run
 `tests/t_slv_ui_demo games/ui_demo.lua 60 16` from the repo root.
+
+## slerm-Lua gaps found by probe (Wua c38ddeb, 2026-11)
+
+Probed with `tests/probe_lua_gaps.py` (109 cases), `-gaps2.py` (39) and
+`-gaps3.py` (42), driven by `tests/slv_probe_main.c`. Results: 94/109,
+15/39, 12/42. The passes are not independent - several root causes cascade.
+
+### GAP 1 (parser) `local function f(...)` does not parse
+
+    local function f(x) return x end    ->  '(' expected
+
+Only `local f = function(...) ... end` and plain `function f(...)` work. This
+one bug is why the first pass showed 9 phantom gaps (multi_return, varargs,
+closure, nested_call, call_in_concat, generic_for) - they all used the form.
+
+### GAP 2 (evaluator, the big one) a call's return value is nil in expression context
+
+Works: `local x = f()`, `print(f(...))`, `f(g())`, `{f()}`, `(f())`.
+Fails - the call evaluates to nil:
+
+    local f = function() return 7 end
+    print(f() + 1)          -> attempt to perform arithmetic on a nil value
+    print(-f())             -> same
+    print(#f())             -> attempt to get length of a nil value
+    print(f() > 1)          -> attempt to compare nil with number
+    print('a' .. f())       -> attempt to concatenate a nil value
+    t[f()] = 9              -> table index is nil
+    print(tonumber('42')+1) -> arithmetic on a nil value
+    print('x=' .. tostring(9)) -> concatenate a nil value
+    print(string.sub('hello',2,3)) -> attempt to index a nil value
+    print(math.abs(-5))     -> attempt to index a nil value
+    t.get(t)                -> attempt to index a function value
+
+The last two are the damaging part: **every standard-library call used as a
+sub-expression is broken**, so `string.sub(...)`, `math.abs(...)`,
+`tonumber(...)` in arithmetic and `tostring(...)` in concat all fail. A
+workaround is `local s = f()` first, which works.
+
+### GAP 3 (evaluator) multiple returns are truncated to one
+
+    local f = function() return 1, 2, 3 end
+    local a, b, c = f()   ->  a=1, b=nil, c=nil
+    print(f())            ->  1            (should be 1 2 3)
+    local a, b = f(), 9   ->  a=nil, b=9   (should be 1, 9)
+    select('#', ...)      ->  1            (should be the count)
+    local t = {...}       ->  works
+    local t = {f()}       ->  #t == 3      (should be 2)
+
+### GAP 4 (parser) method syntax `:` is unsupported
+
+    function t:get() ... end   ->  unexpected symbol
+    s:upper()                  ->  unexpected symbol
+    ('abc'):upper()            ->  ')' expected
+    n:byte                     ->  arguments expected
+
+### GAP 5 (evaluator) `ipairs` / `pairs` yield nil values in a generic for
+
+    for i, v in ipairs(t) do s = s + v end   -> v is nil
+    for k, v in pairs(t)  do s = s + v end   -> v is nil
+    for i = 1, #t do ... end                 -> works
+    for i in it, nil, 0 do ... end           -> attempt to call a number value
+
+Likely the same call-result bug as GAP 2, but it needs its own fix because a
+generic for is not an ordinary expression.
+
+### GAP 6 (lexer) string escapes: only `\n` and `\t` work
+
+    #'a\nb'   -> 3   ok
+    #'a\tb'   -> 3   ok
+    #'a\'b'   -> syntax error near unexpected expression
+    #"a\"b"   -> same
+    #'a\\b'  -> same
+    #'a\0b'   -> same
+    #'a\x41b' -> same
+    #'a\65b'  -> same
+
+### GAP 7 (stdlib) `table.pack` is missing
+
+    table.pack(1, 2)   ->  attempt to index a nil value
+
+### GAP 8 (evaluator) `break` inside `if` inside a numeric for
+
+    for i = 1, 10 do if i > 3 then break end io.write(i) end
+      ->  attempt to index a nil value
+
+### Known-not-implemented (documented in Wua's slv.h)
+
+Coroutines. `goto`/labels, `repeat`, `while`, numeric and generic `for`,
+metatables, the base/string/table/math libraries and `pcall`/`xpcall`/`error`
+all work.
