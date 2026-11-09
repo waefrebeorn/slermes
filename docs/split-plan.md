@@ -268,3 +268,16 @@ single follow-up decision rather than two.
 `yuanbao_purge_expired`, `yuanbao_build_timestamp` all touch the static
 `yb_sign_mutex`. Same anchor pattern as weixin's `g_wx` and ACP's session
 table.
+
+## yuanbao frame encoders stay (anchored to `static yuanbao_state_t g_yb`)
+
+`encode_auth_bind`, `encode_ping_req`, `encode_send_c2c`,
+`encode_send_sticker` look extractable - no external *function* deps - but
+they all read the file-scope `static yuanbao_state_t g_yb;` (line 67) and use
+the file-local `CMD_AUTH_BIND` / `CMD_PING` / `YB_INSTANCE_ID` defines.
+`encode_send_c2c` also calls `encode_conn_msg`.
+
+An extraction was attempted and reverted: the module failed with 15 errors
+(`g_yb` undeclared, `CT_REQUEST`/`CMD_*`/`YB_INSTANCE_ID` undeclared,
+`encode_conn_msg` implicit). Moving them means moving `g_yb`, which is the
+same anchor pattern as weixin's `g_wx` and the ACP session table.
