@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+/* PoP: _sample_skills @ hermes_cli/profile_describer.py:_sample_skills */
 char *pd_sample_skills(const char *names_json)
 {
     json_t *arr = names_json ? json_parse(names_json, NULL) : NULL;

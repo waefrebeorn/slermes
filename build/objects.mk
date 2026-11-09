@@ -183,6 +183,8 @@ PORT_OBJ = \
     src/cli/port_cli_extra.o \
     src/cli/port_config.o \
     src/cli/port_container_boot.o \
+    src/cli/port_relaunch.o \
+    src/cli/port_slack_cli.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
     src/cli/port_gateway.o \
