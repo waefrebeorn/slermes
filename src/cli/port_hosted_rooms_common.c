@@ -39,8 +39,9 @@ static int hrc_isspace(unsigned char c)
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v';
 }
 
-/* a malloc'd sprintf-style message, sized from the format */
-static char *hrc_fmt(const char *fmt, ...)
+/* a malloc'd sprintf-style message, sized from the format.
+ * Non-static: port_hosted_rooms.c uses it for the same exact messages. */
+char *hrc_fmt(const char *fmt, ...)
 {
     va_list ap, ap2;
     va_start(ap, fmt);

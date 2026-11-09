@@ -41,4 +41,8 @@ char *hrc_compact_json(const json_t *value);
 /* hosted_rooms_common.py:utf8_len -- len("".join(parts).encode("utf-8")). */
 size_t hrc_utf8_len(const char *const *parts, int nparts);
 
+/* Shared message formatter - the Python messages are byte-identical across
+ * hosted_rooms_common and hosted_rooms. Caller frees. */
+char *hrc_fmt(const char *fmt, ...);
+
 #endif /* PORT_HOSTED_ROOMS_COMMON_H */
