@@ -202,6 +202,7 @@ PORT_OBJ = \
     src/cli/port_browser_launcher.o \
     src/cli/port_methods_session.o \
     src/cli/port_methods_tools.o \
+    src/cli/port_server.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
     src/cli/port_gateway.o \
