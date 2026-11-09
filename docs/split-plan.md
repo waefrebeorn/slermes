@@ -377,3 +377,27 @@ helpers are left behind - re-run the dep check after each exclusion.
 `g_models_dev_cache_time` are all file-scope statics that pin their clusters.
 Opaque structs pin the rest: `pj_val_t`, `pairing_store_t`,
 `tool_checkpoint_mgr_t`, `memory_store_t`, `acp_server_t`, `skills_cache`.
+
+## port_patch_parser.c: local structs are RICHER than the public view
+
+After `patch_parser_util.c` (c6c5221) port_patch_parser.c is 346 lines (from
+431). Only `match_file_marker`, `match_move_marker`, `emit_json_str`, `trim`
+and `xstrndup` were extractable.
+
+The .c typedefs its own `patch_op_t` / `hunk_t` / `hunk_line_t` /
+`parse_result_t` / `op_type_t`, and they are NOT the same types as the public
+`patch_*_t` in port_patch_parser.h - the local ones carry extra capacity fields
+(`cap_lines`, `cap_hunks`, `cap_ops`) that the public view omits. So they cannot
+be swapped for the public names, and every function touching them is anchored:
+`hunk_push_line`, `result_push_op`, `finalize_hunk`, `close_cur_op`,
+`result_free`, `op_free`, `hunk_free`, `patch_parser_result_free`,
+`patch_parser_print_canonical`, `op_name`.
+
+`op_type_t` IS just an alias of the public `patch_op_type_t`, but the .c's own
+`typedef enum { OP_ADD, ... }` redeclares the same enumerators as the header, so
+including both in one TU is a redeclaration error. Five revert cycles.
+
+**Lesson:** when a .c typedefs a type that a public header also defines, compare
+the STRUCT BODIES before assuming they are the same type. Extra fields mean the
+local one is a different (richer) type and the functions using it are anchored;
+identical enumerators mean including both headers in one TU is itself an error.
