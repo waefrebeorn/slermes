@@ -99,6 +99,7 @@ declare -A DEPS=(
   [portal_cli]="src/cli/port_portal_cli.o lib/libjson/json.o"
   [skill_commands]="src/cli/port_skill_commands.o lib/libjson/json.o"
   [skill_bundles]="src/cli/port_skill_bundles.o src/cli/port_skill_commands.o lib/libjson/json.o lib/libhash/hash.o"
+  [shared_metrics_contract]="src/cli/port_shared_metrics_contract.o lib/libjson/json.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"

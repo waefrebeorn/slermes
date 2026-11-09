@@ -189,6 +189,7 @@ PORT_OBJ = \
     src/cli/port_portal_cli.o \
     src/cli/port_skill_commands.o \
     src/cli/port_skill_bundles.o \
+    src/cli/port_shared_metrics_contract.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
     src/cli/port_gateway.o \
