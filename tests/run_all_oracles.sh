@@ -101,6 +101,7 @@ declare -A DEPS=(
   [skill_bundles]="src/cli/port_skill_bundles.o src/cli/port_skill_commands.o lib/libjson/json.o lib/libhash/hash.o"
   [shared_metrics_contract]="src/cli/port_shared_metrics_contract.o lib/libjson/json.o"
   [chat_completion_helpers]="src/cli/port_chat_completion_helpers.o lib/libjson/json.o lib/libregex/hermes_regex.o"
+  [hosted_rooms_common]="src/cli/port_hosted_rooms_common.o lib/libjson/json.o lib/libregex/hermes_regex.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
