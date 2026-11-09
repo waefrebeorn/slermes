@@ -281,3 +281,27 @@ An extraction was attempted and reverted: the module failed with 15 errors
 (`g_yb` undeclared, `CT_REQUEST`/`CMD_*`/`YB_INSTANCE_ID` undeclared,
 `encode_conn_msg` implicit). Moving them means moving `g_yb`, which is the
 same anchor pattern as weixin's `g_wx` and the ACP session table.
+
+## api_server.c: handlers anchored to `static agent_state_t *g_agent`
+
+After `api_server_sse.c` (4511c5b) and `api_server_readonly.c` (ef061e1),
+api_server.c is 1521 lines (from 1639).
+
+Seven handlers stay because they read file-scope statics:
+
+- `handle_get_response`, `handle_tools_list`, `handle_agent_status`,
+  `handle_get_models` - `static agent_state_t *g_agent` (line 71)
+- `handle_health_detailed` - `g_port`, `start_time`
+- `handle_metrics_get`, `handle_service_info` - `g_request_count`,
+  `g_start_time`
+
+First extraction attempt moved all eleven; it failed with `g_agent`
+undeclared and was reverted to the four genuinely clean handlers.
+
+## Duplicate symbol found by the SSE split
+
+`api_server.c` had a `static send_sse_headers` byte-for-byte identical to
+`gateway/platforms/api_server_adapter_handlers.c:46`. Static-ness hid the
+clash; un-static-ing it to move it produced `multiple definition`. Fixed by
+deleting the legacy copy and including
+`gateway/platforms/api_server_adapter.h` from api_server.c.
