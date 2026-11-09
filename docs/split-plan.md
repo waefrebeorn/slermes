@@ -305,3 +305,20 @@ undeclared and was reverted to the four genuinely clean handlers.
 clash; un-static-ing it to move it produced `multiple definition`. Fixed by
 deleting the legacy copy and including
 `gateway/platforms/api_server_adapter.h` from api_server.c.
+
+## checkpoint_manager.c: `_cm_in_dirset` / `_cm_add_dir` need the opaque struct
+
+After `checkpoint_fs.c` (b17b931) checkpoint_manager.c is 669 lines (from 771).
+Ten of the twelve candidate helpers moved. Two stay:
+
+- `_cm_in_dirset`, `_cm_add_dir` - both dereference `self->` on
+  `tool_checkpoint_mgr_t`, which is an opaque typedef in
+  `include/checkpoint_manager.h:27`; the struct body lives only in the .c.
+
+Same opaque-struct anchor as the ACP session table, the memory store and the
+skills cache. Moving them means publishing the struct or passing its fields
+explicitly.
+
+Note: `_run_git` and `_shadow_repo_path` are declared in
+`src/tools/checkpoint_store.h` (split in 4bb8563), so the new module includes
+that rather than redeclaring them.
