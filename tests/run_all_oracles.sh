@@ -91,6 +91,7 @@ declare -A DEPS=(
   [pt_input_extras]="src/cli/port_pt_input_extras.o lib/libjson/json.o"
   [telegram_managed_bot]="src/cli/port_telegram_managed_bot.o lib/libjson/json.o"
   [clipboard]="src/cli/port_clipboard.o lib/libjson/json.o"
+  [container_boot]="src/cli/port_container_boot.o lib/libjson/json.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
