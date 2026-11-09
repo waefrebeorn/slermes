@@ -4,6 +4,7 @@
  */
 
 #include "verification_evidence.h"
+#include "cron/cron_jobs_paths.h"   /* canonical xstrdup */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -16,13 +17,6 @@ const char *VERIFY_AD_HOC_PREFIXES[VERIFY_AD_HOC_PREFIX_COUNT] = {
 
 /* ── helpers ────────────────────────────────────────────────────── */
 
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = (char *)malloc(n);
-    if (p) memcpy(p, s, n);
-    return p;
-}
 
 /* Minimal POSIX-shell tokenizer (shlex.split-equivalent for typical commands):
  * splits on whitespace, honours single/double quotes and backslash escapes,

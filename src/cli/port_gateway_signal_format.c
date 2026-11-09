@@ -20,7 +20,7 @@
 
 /* ---------- small helpers ---------- */
 
-static char *xstrdup(const char *s) { return strdup(s ? s : ""); }
+static char *xstrdup_or_empty(const char *s) { return strdup(s ? s : ""); }
 
 /* UTF-16 code-unit length of the first n bytes of s (matches Python
  * len(s.encode("utf-16-le"))//2 for the prefix). */
@@ -115,7 +115,7 @@ int gateway_signal_markdown_to_signal(const char *input,
     size_t len = strlen(input);
 
     /* Phase 1: collapse 3+ newlines -> 2, then strip. */
-    char *buf = xstrdup(input);
+    char *buf = xstrdup_or_empty(input);
     {
         char *tmp = malloc(len + 1);
         size_t ti = 0, i = 0;
@@ -135,7 +135,7 @@ int gateway_signal_markdown_to_signal(const char *input,
         size_t s = 0, e = strlen(buf);
         while (s < e && (buf[s]==' '||buf[s]=='\t'||buf[s]=='\n'||buf[s]=='\r')) s++;
         while (e > s && (buf[e-1]==' '||buf[e-1]=='\t'||buf[e-1]=='\n'||buf[e-1]=='\r')) e--;
-        char *tmp = xstrdup(buf + s);
+        char *tmp = xstrdup_or_empty(buf + s);
         tmp[e - s] = '\0';
         free(buf); buf = tmp;
     }
@@ -190,10 +190,10 @@ int gateway_signal_markdown_to_signal(const char *input,
             }
             i++;
         }
-        char *nbuf = xstrdup(buf);
+        char *nbuf = xstrdup_or_empty(buf);
         for (int kk = ncb - 1; kk >= 0; kk--) {
             int start = cbs[kk].s;
-            char *inner = xstrdup(buf + cbs[kk].g1s);
+            char *inner = xstrdup_or_empty(buf + cbs[kk].g1s);
             inner[cbs[kk].g1e - cbs[kk].g1s] = '\0';
             PUSH_STYLE(start, (int)strlen(inner), "MONOSPACE");
             size_t newlen = (size_t)start + strlen(inner) + (strlen(nbuf) - cbs[kk].e) + 1;
@@ -333,7 +333,7 @@ int gateway_signal_markdown_to_signal(const char *input,
         char ss[64];
         snprintf(ss, sizeof(ss), "%zu:%zu:%s", u16_start, u16_len, styles_arr[s].style);
         out_styles = realloc(out_styles, sizeof(char*) * (nout + 1));
-        out_styles[nout++] = xstrdup(ss);
+        out_styles[nout++] = xstrdup_or_empty(ss);
     }
 
     *out_text = result;

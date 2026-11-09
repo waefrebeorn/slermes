@@ -5,6 +5,7 @@
  */
 
 #include "hermes.h"
+#include "cron/cron_jobs_paths.h"   /* canonical xstrdup */
 #include "hermes_clock.h"
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
@@ -44,14 +45,6 @@ llm_response_t *try_recover_primary_transport(llm_config_t *cfg,
  *  Internal helpers
  * ================================================================ */
 
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s);
-    char *d = (char *)malloc(n + 1);
-    if (!d) return NULL;
-    memcpy(d, s, n + 1);
-    return d;
-}
 
 /* Port of Python setup_save_env: update a KEY=VALUE in .env file.
  * Reads existing .env, removes any line starting with KEY=, appends KEY=VALUE.

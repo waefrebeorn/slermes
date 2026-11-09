@@ -13,6 +13,7 @@
  */
 
 #include <stdbool.h>
+#include "cron/cron_jobs_paths.h"   /* canonical xstrdup */
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,13 +52,6 @@ typedef struct {
 
 /* ---------- small helpers ---------- */
 
-static char *xstrdup(const char *s) {
-    if (!s) return NULL;
-    size_t n = strlen(s) + 1;
-    char *p = malloc(n);
-    memcpy(p, s, n);
-    return p;
-}
 
 static char *xstrndup(const char *s, size_t n) {
     char *p = malloc(n + 1);

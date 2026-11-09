@@ -48,7 +48,7 @@ static const char *const GPT5_EFFORTS[] = {"minimal", "low", "medium", "high", N
 
 /* ── helpers ───────────────────────────────────────────────────────────── */
 
-static char *xstrdup(const char *s) { return s ? strdup(s) : strdup(""); }
+static char *xstrdup_or_empty(const char *s) { return s ? strdup(s) : strdup(""); }
 
 /* Normalize a provider string: strip whitespace, lowercase. Caller frees. */
 static char *norm_provider_dup(const char *provider) {
@@ -61,7 +61,7 @@ static char *norm_provider_dup(const char *provider) {
         tmp[j++] = (char)tolower((unsigned char)c);
     }
     tmp[j] = '\0';
-    return xstrdup(tmp);
+    return xstrdup_or_empty(tmp);
 }
 
 /* ── OpenRouter / Novita / Nous pricing ────────────────────────────────── */
@@ -69,7 +69,7 @@ static char *norm_provider_dup(const char *provider) {
 /* PoP: _resolve_openrouter_api_key @ hermes_cli/models.py:_resolve_openrouter_api_key */
 char *models_resolve_openrouter_api_key(void) {
     const char *v = getenv("OPENROUTER_API_KEY");
-    return xstrdup(v && *v ? v : "");
+    return xstrdup_or_empty(v && *v ? v : "");
 }
 
 /* PoP: _resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
@@ -79,13 +79,13 @@ void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
         char *k = NULL, *b = NULL;
         resolve(&k, &b, ctx);
         if (k || b) {
-            *out_key = k ? k : xstrdup("");
-            *out_base = b ? b : xstrdup(NOUS_INFERENCE_BASE);
+            *out_key = k ? k : xstrdup_or_empty("");
+            *out_base = b ? b : xstrdup_or_empty(NOUS_INFERENCE_BASE);
             return;
         }
     }
-    *out_key = xstrdup("");
-    *out_base = xstrdup(NOUS_INFERENCE_BASE);
+    *out_key = xstrdup_or_empty("");
+    *out_base = xstrdup_or_empty(NOUS_INFERENCE_BASE);
 }
 
 /* PoP: fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
@@ -93,7 +93,7 @@ char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
                                        const char *api_key, const char *base_url,
                                        int force_refresh) {
     (void)force_refresh;
-    if (!fetch) return xstrdup("{}");
+    if (!fetch) return xstrdup_or_empty("{}");
     const char *b = (base_url && *base_url) ? base_url : "https://openrouter.ai/api";
     size_t n = strlen(b);
     while (n > 0 && b[n - 1] == '/') n--;
@@ -107,11 +107,11 @@ char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
         snprintf(hdr, sizeof(hdr), "{\"Accept\":\"application/json\"}");
 
     char *body = NULL; size_t blen = 0;
-    if (fetch(url, hdr, &body, &blen, ctx) != 0 || !body) return xstrdup("{}");
+    if (fetch(url, hdr, &body, &blen, ctx) != 0 || !body) return xstrdup_or_empty("{}");
 
     json_t *root = json_parse(body, NULL);
     free(body);
-    if (!root) return xstrdup("{}");
+    if (!root) return xstrdup_or_empty("{}");
     json_t *out = json_object();
     json_t *data = (root->type == JSON_OBJECT) ? json_obj_get(root, "data") : NULL;
     if (data && data->type == JSON_ARRAY) {
@@ -138,14 +138,14 @@ char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
     }
     char *res = json_serialize(out);
     json_free(out); json_free(root);
-    return res ? res : xstrdup("{}");
+    return res ? res : xstrdup_or_empty("{}");
 }
 
 /* PoP: _fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
 char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refresh) {
     (void)force_refresh;
     const char *key = getenv("NOVITA_API_KEY");
-    if (!key || !*key) return xstrdup("{}");
+    if (!key || !*key) return xstrdup_or_empty("{}");
     const char *base = getenv("NOVITA_BASE_URL");
     const char *b = (base && *base) ? base : "https://api.novita.ai/openai/v1";
     size_t n = strlen(b);
@@ -156,10 +156,10 @@ char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refr
     snprintf(hdr, sizeof(hdr), "{\"Authorization\":\"Bearer %s\",\"Accept\":\"application/json\"}", key);
 
     char *body = NULL; size_t blen = 0;
-    if (!fetch || fetch(url, hdr, &body, &blen, ctx) != 0 || !body) return xstrdup("{}");
+    if (!fetch || fetch(url, hdr, &body, &blen, ctx) != 0 || !body) return xstrdup_or_empty("{}");
     json_t *root = json_parse(body, NULL);
     free(body);
-    if (!root) return xstrdup("{}");
+    if (!root) return xstrdup_or_empty("{}");
     json_t *out = json_object();
     json_t *data = (root->type == JSON_OBJECT) ? json_obj_get(root, "data") : NULL;
     if (data && data->type == JSON_ARRAY) {
@@ -185,7 +185,7 @@ char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refr
     }
     char *res = json_serialize(out);
     json_free(out); json_free(root);
-    return res ? res : xstrdup("{}");
+    return res ? res : xstrdup_or_empty("{}");
 }
 
 /* PoP: get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
@@ -213,11 +213,11 @@ char *models_get_pricing_for_provider(http_fetch_fn fetch, void *ctx,
                 stripped[sl - 3] = '\0';
             res = models_fetch_models_with_pricing(fetch, ctx, k, stripped, force_refresh);
         } else {
-            res = xstrdup("{}");
+            res = xstrdup_or_empty("{}");
         }
         free(k); free(b);
     } else {
-        res = xstrdup("{}");
+        res = xstrdup_or_empty("{}");
     }
     free(norm);
     return res;
@@ -245,7 +245,7 @@ char *models_lmstudio_server_root(const char *base_url) {
             break;
         }
     }
-    return xstrdup(tmp[0] ? tmp : "");
+    return xstrdup_or_empty(tmp[0] ? tmp : "");
 }
 
 /* PoP: _lmstudio_request_headers @ hermes_cli/models.py:_lmstudio_request_headers */
@@ -301,7 +301,7 @@ char **models_probe_lmstudio_models(http_fetch_fn fetch, void *ctx,
             /* dedupe */
             int dup = 0;
             for (size_t d = 0; d < cnt; d++) if (strcmp(keys[d], key) == 0) { dup = 1; break; }
-            if (!dup) keys[cnt++] = xstrdup(key);
+            if (!dup) keys[cnt++] = xstrdup_or_empty(key);
         }
         keys[cnt] = NULL;
     }
@@ -340,7 +340,7 @@ char **models_lmstudio_reasoning_options(http_fetch_fn fetch, void *ctx,
                         for (k = 0; o2->str_val[k] && k + 1 < sizeof(low); k++)
                             low[k] = (char)tolower((unsigned char)o2->str_val[k]);
                         low[k] = '\0';
-                        out[o++] = xstrdup(low);
+                        out[o++] = xstrdup_or_empty(low);
                     }
                 }
                 out[o] = NULL;
@@ -378,7 +378,7 @@ char **models_fetch_github_models(http_fetch_fn fetch, void *ctx,
             if (!it || it->type != JSON_OBJECT) continue;
             json_t *idj = json_obj_get(it, "id");
             if (idj && idj->type == JSON_STRING && idj->str_val && *idj->str_val)
-                ids[o++] = xstrdup(idj->str_val);
+                ids[o++] = xstrdup_or_empty(idj->str_val);
         }
         ids[o] = NULL;
     }
@@ -404,7 +404,7 @@ char **models_copilot_catalog_ids(http_fetch_fn fetch, void *ctx,
             if (!it || it->type != JSON_OBJECT) continue;
             json_t *idj = json_obj_get(it, "id");
             if (idj && idj->type == JSON_STRING && idj->str_val && *idj->str_val)
-                ids[o++] = xstrdup(idj->str_val);
+                ids[o++] = xstrdup_or_empty(idj->str_val);
         }
         ids[o] = NULL;
     }
@@ -435,7 +435,7 @@ char **models_github_reasoning_efforts_for_id(const char *model_id) {
         size_t c = 0;
         for (size_t i = 0; src[i]; i++) c++;
         out = realloc(out, (c + 1) * sizeof(char *));
-        for (size_t i = 0; src[i]; i++) out[i] = xstrdup(src[i]);
+        for (size_t i = 0; src[i]; i++) out[i] = xstrdup_or_empty(src[i]);
         out[c] = NULL;
     }
     return out;
@@ -449,13 +449,13 @@ char *models_copilot_model_api_mode(http_fetch_fn fetch, void *ctx,
     json_t *owned = NULL;
     if (!cat && api_key) { cat = fetch_github_catalog(fetch, ctx, api_key); owned = cat; }
     char *normalized = model_normalize_copilot_model_id(model_id);
-    char *mode = xstrdup("chat_completions");
+    char *mode = xstrdup_or_empty("chat_completions");
     if (normalized && *normalized) {
         /* _should_use_copilot_responses_api: gpt-<digits> >=5 and not gpt-5-mini */
         if (strncmp(normalized, "gpt-", 4) == 0) {
             int major = atoi(normalized + 4);
             if (major >= 5 && strncmp(normalized, "gpt-5-mini", 10) != 0) {
-                free(mode); mode = xstrdup("codex_responses");
+                free(mode); mode = xstrdup_or_empty("codex_responses");
             }
         }
         if (cat && strcmp(mode, "chat_completions") == 0) {
@@ -478,7 +478,7 @@ char *models_copilot_model_api_mode(http_fetch_fn fetch, void *ctx,
                             }
                         }
                         if (has_messages && !has_chat) {
-                            free(mode); mode = xstrdup("anthropic_messages");
+                            free(mode); mode = xstrdup_or_empty("anthropic_messages");
                         }
                     }
                     break;
@@ -526,7 +526,7 @@ char **models_github_model_reasoning_efforts(http_fetch_fn fetch, void *ctx,
                             for (m = 0; e->str_val[m] && m + 1 < sizeof(low); m++)
                                 low[m] = (char)tolower((unsigned char)e->str_val[m]);
                             low[m] = '\0';
-                            out[o++] = xstrdup(low);
+                            out[o++] = xstrdup_or_empty(low);
                         }
                     }
                     out[o] = NULL;
@@ -562,7 +562,7 @@ char *models_get_copilot_model_context(http_fetch_fn fetch, void *ctx,
             if (mp && mp->type == JSON_NUMBER && mp->num_val > 0) {
                 char buf[32];
                 snprintf(buf, sizeof(buf), "%lld", (long long)mp->num_val);
-                result = xstrdup(buf);
+                result = xstrdup_or_empty(buf);
             }
             break;
         }
@@ -591,7 +591,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
         json_set(o, "suggested_base_url", json_null());
         json_set(o, "used_fallback", json_bool(0));
         char *r = json_serialize(o); json_free(o);
-        return r ? r : xstrdup("{}");
+        return r ? r : xstrdup_or_empty("{}");
     }
 
     /* github base url short-circuit */
@@ -613,7 +613,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
         json_set(o, "used_fallback", json_bool(0));
         char *r = json_serialize(o); json_free(o);
         if (gm) { for (size_t i = 0; gm[i]; i++) free(gm[i]); free(gm); }
-        return r ? r : xstrdup("{}");
+        return r ? r : xstrdup_or_empty("{}");
     }
 
     char alt[1024];
@@ -644,7 +644,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
         char url[1100];
         snprintf(url, sizeof(url), "%s/models", cands[i]);
         free(probed);
-        probed = xstrdup(url);
+        probed = xstrdup_or_empty(url);
         char *body = NULL; size_t blen = 0;
         if (fetch && fetch(url, hdr, &body, &blen, ctx) == 0 && body) {
             json_t *data = json_parse(body, NULL);
@@ -674,7 +674,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
             json_set(o, "used_fallback", json_bool(is_fb[i]));
             char *r = json_serialize(o); json_free(o);
             free(hdr); free(probed);
-            return r ? r : xstrdup("{}");
+            return r ? r : xstrdup_or_empty("{}");
         }
     }
     /* all candidates failed */
@@ -686,7 +686,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
     json_set(o, "used_fallback", json_bool(0));
     char *r = json_serialize(o); json_free(o);
     free(hdr); free(probed);
-    return r ? r : xstrdup("{}");
+    return r ? r : xstrdup_or_empty("{}");
 }
 
 /* PoP: fetch_api_models @ hermes_cli/models.py:fetch_api_models */
@@ -706,7 +706,7 @@ char **models_fetch_api_models(http_fetch_fn fetch, void *ctx,
             for (size_t i = 0; i < m->c.count; i++) {
                 json_t *it = m->c.items[i];
                 if (it && it->type == JSON_STRING && it->str_val)
-                    out[o++] = xstrdup(it->str_val);
+                    out[o++] = xstrdup_or_empty(it->str_val);
             }
             out[o] = NULL;
         }
@@ -720,8 +720,8 @@ char **models_fetch_api_models(http_fetch_fn fetch, void *ctx,
 /* PoP: _get_custom_base_url @ hermes_cli/models.py:_get_custom_base_url */
 char *models_get_custom_base_url(void) {
     const char *v = getenv("HERMES_CUSTOM_BASE_URL");
-    if (v && *v) return xstrdup(v);
-    return xstrdup("");
+    if (v && *v) return xstrdup_or_empty(v);
+    return xstrdup_or_empty("");
 }
 
 /* PoP: _get_model_config_dict @ hermes_cli/models.py:_get_model_config_dict */
@@ -730,7 +730,7 @@ char *models_get_model_config_dict(model_config_fn get, void *ctx) {
         char *r = get(ctx);
         if (r) return r;
     }
-    return xstrdup("{}");
+    return xstrdup_or_empty("{}");
 }
 
 /* PoP: _resolve_copilot_catalog_api_key @ hermes_cli/models.py:_resolve_copilot_catalog_api_key */
@@ -740,16 +740,16 @@ char *models_resolve_copilot_catalog_api_key(copilot_apikey_fn get, void *ctx) {
         if (r) return r;
     }
     const char *v = getenv("OPENAI_API_KEY");
-    if (v && *v) return xstrdup(v);
+    if (v && *v) return xstrdup_or_empty(v);
     v = getenv("GITHUB_COPILOT_TOKEN");
-    if (v && *v) return xstrdup(v);
-    return xstrdup("");
+    if (v && *v) return xstrdup_or_empty(v);
+    return xstrdup_or_empty("");
 }
 
 /* PoP: _resolve_nous_portal_url @ hermes_cli/models.py:_resolve_nous_portal_url */
 char *models_resolve_nous_portal_url(void) {
     const char *v = getenv("NOUS_PORTAL_URL");
-    return xstrdup(v && *v ? v : "https://portal.nousresearch.com");
+    return xstrdup_or_empty(v && *v ? v : "https://portal.nousresearch.com");
 }
 
 /* ── Ollama Cloud disk cache ───────────────────────────────────────────── */
@@ -760,7 +760,7 @@ char *models_ollama_cloud_cache_path(void) {
     hermes_home_dir(home, sizeof(home));
     char out[PATH_MAX];
     snprintf(out, sizeof(out), "%s/ollama_cloud_models_cache.json", home);
-    return xstrdup(out);
+    return xstrdup_or_empty(out);
 }
 
 /* PoP: _load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
@@ -835,14 +835,14 @@ char **models_merge_with_models_dev(char *const *live, char *const *mdev) {
         for (size_t j = 0; j < n; j++) if (strcasecmp(out[j], live[i]) == 0) { seen = 1; break; }
         if (seen) continue;
         if (n + 1 >= cap) { cap *= 2; out = realloc(out, cap * sizeof(char *)); }
-        out[n++] = xstrdup(live[i]);
+        out[n++] = xstrdup_or_empty(live[i]);
     }
     for (size_t i = 0; mdev && mdev[i]; i++) {
         int seen = 0;
         for (size_t j = 0; j < n; j++) if (strcasecmp(out[j], mdev[i]) == 0) { seen = 1; break; }
         if (seen) continue;
         if (n + 1 >= cap) { cap *= 2; out = realloc(out, cap * sizeof(char *)); }
-        out[n++] = xstrdup(mdev[i]);
+        out[n++] = xstrdup_or_empty(mdev[i]);
     }
     out[n] = NULL;
     return out;
@@ -867,7 +867,7 @@ static char **union_portal(http_fetch_fn fetch, void *ctx, const char *portal_ba
                 for (size_t i = 0; i < recommended->c.count; i++) {
                     json_t *it = recommended->c.items[i];
                     if (it && it->type == JSON_STRING && it->str_val)
-                        merged[m++] = xstrdup(it->str_val);
+                        merged[m++] = xstrdup_or_empty(it->str_val);
                 }
             }
             json_free(root);
@@ -878,7 +878,7 @@ static char **union_portal(http_fetch_fn fetch, void *ctx, const char *portal_ba
         for (size_t j = 0; j < m; j++) if (strcmp(merged[j], base[i]) == 0) { seen = 1; break; }
         if (seen) continue;
         merged = realloc(merged, (m + 2) * sizeof(char *));
-        merged[m++] = xstrdup(base[i]);
+        merged[m++] = xstrdup_or_empty(base[i]);
     }
     merged[m] = NULL;
     return merged;
