@@ -401,3 +401,22 @@ including both in one TU is a redeclaration error. Five revert cycles.
 the STRUCT BODIES before assuming they are the same type. Extra fields mean the
 local one is a different (richer) type and the functions using it are anchored;
 identical enumerators mean including both headers in one TU is itself an error.
+
+## session_to_json: third duplicate symbol, this one self-inflicted
+
+`session_to_json` existed twice with DIFFERENT signatures and bodies:
+
+- `src/gateway/platforms/api_server_adapter_sessions.c` -
+  `json_t *(session *)`, dates to the base commit 82c953c
+- `src/acp/acp_protocol.c:143` - `json_node_t *(acp_session_t *)`, which my
+  9d5361f split un-static'd and thereby exposed
+
+Fixed in 4f8f488 by renaming the NEWCOMER (the ACP one) to
+`acp_session_to_json` - definition in acp_protocol.c, declaration in
+acp_protocol.h, five call sites in acp/server.c. The pre-existing adapter
+owner was left alone.
+
+This is the third duplicate-symbol defect of the session and the second caused
+by my own un-static-ing (send_sse_headers was the first). **When a split dies
+with `multiple definition of X`, check `git log --oneline -S "X" -- <both files>`
+to see which definition is older before picking which one to rename.**
