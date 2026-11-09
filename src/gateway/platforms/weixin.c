@@ -6,6 +6,7 @@
 #include "hermes_core_types.h"
 #include "weixin_markdown.h"
 #include "weixin_crypto.h"
+#include "weixin_http.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
@@ -36,7 +37,6 @@
 #define MAX_CONSECUTIVE_FAILURES 3
 #define RETRY_DELAY_SEC 2
 #define BACKOFF_DELAY_SEC 30
-#define CONTEXT_TOKEN_DIR "weixin"
 #define MAX_PATH 4096
 #define MAX_BODY 16384
 
@@ -108,59 +108,11 @@ static char *wx_api_post(const char *endpoint, const char *payload_json,
     return result;
 }
 
-/* ================================================================
- *  Context token store (file-based)
- * ================================================================ */
-
-static void ensure_weixin_dir(void) {
-    const char *home = getenv("SLERMES_HOME");
-    if (!home || !*home) home = getenv("HOME");
-    if (home) {
-        char dir[MAX_PATH];
-        snprintf(dir, sizeof(dir), "%s/%s", home, CONTEXT_TOKEN_DIR);
-        mkdir(dir, 0755);
-    }
-}
-
-static void ctx_token_path(char *buf, size_t sz) {
+void ctx_token_path(char *buf, size_t sz) {
     const char *home = getenv("SLERMES_HOME");
     if (!home || !*home) home = getenv("HOME");
     if (!home) home = ".";
     snprintf(buf, sz, "%s/%s/%s.context-tokens.json", home, CONTEXT_TOKEN_DIR, g_wx.account_id);
-}
-
-static void ctx_token_save(const char *user_id, const char *token) {
-    char path[MAX_PATH];
-    ctx_token_path(path, sizeof(path));
-
-    json_t *data = NULL;
-    FILE *f = fopen(path, "rb");
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        long sz = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        if (sz > 0) {
-            char *buf = malloc((size_t)sz + 1);
-            if (buf) {
-                size_t n = fread(buf, 1, (size_t)sz, f);
-                buf[n] = '\0';
-                data = json_parse(buf, NULL);
-                free(buf);
-            }
-        }
-        fclose(f);
-    }
-
-    if (!data) data = json_object();
-    json_set(data, user_id, json_string(token));
-
-    char *json_str = json_serialize(data);
-    if (json_str) {
-        FILE *out = fopen(path, "wb");
-        if (out) { fwrite(json_str, 1, strlen(json_str), out); fclose(out); }
-        free(json_str);
-    }
-    json_free(data);
 }
 
 static const char *ctx_token_get(const char *user_id) {
@@ -760,28 +712,6 @@ char *weixin_rate_limit_error(double cooldown_remaining)
     return msg;
 }
 
-/* PoP: _load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
-/* PoP: weixin_load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
-char *weixin_load_sync_buf(const char *hermes_home, const char *account_id)
-{
-    if (!hermes_home || !account_id) return NULL;
-    char *path = weixin_account_file(hermes_home, account_id);
-    if (!path) return NULL;
-    FILE *f = fopen(path, "r");
-    free(path);
-    if (!f) return NULL;
-    fseek(f, 0, SEEK_END);
-    long len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    if (len <= 0) { fclose(f); return strdup(""); }
-    char *buf = (char *)malloc((size_t)len + 1);
-    if (!buf) { fclose(f); return NULL; }
-    size_t n = fread(buf, 1, (size_t)len, f);
-    fclose(f);
-    buf[n] = '\0';
-    return buf;
-}
-
 /* PoP: _headers @ gateway/platforms/weixin.py:_headers */
 /* PoP: weixin_headers @ gateway/platforms/weixin.py:_headers */
 json_t *weixin_headers(const char *token, const char *body)
@@ -941,5 +871,4 @@ json_t *weixin_media_reference(json_t *item, const char *key) {
     if (!sub || json_is_null(sub)) sub = json_new_object();
     return json_object_get(sub, "media");
 }
-
 
