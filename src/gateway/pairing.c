@@ -4,6 +4,7 @@
  */
 
 #include "pairing.h"
+#include "pairing_util.h"
 #include "hermes_gateway_pairing.h"
 #include "crypto.h"
 #include "hermes_encode.h"
@@ -49,10 +50,6 @@ static void pj_free(pj_val_t *v) {
 
 /* parse a JSON value starting at *pp; advances *pp past it. Returns NULL on error. */
 static pj_val_t *pj_parse_val(const char **pp);
-
-static void skip_ws(const char **pp) {
-    while (**pp && isspace((unsigned char)**pp)) (*pp)++;
-}
 
 static char *pj_parse_string(const char **pp) {
     /* assumes **pp == '"' */
@@ -386,18 +383,6 @@ bool pairing_revoke(pairing_store_t *st, const char *platform, const char *user_
     if (found) save_json(st, name, obj);
     pj_free(obj);
     return found;
-}
-
-/* ── hashing (hex via shared hermes_encode.h) ── */
-
-/* PoP: hash_code @ gateway/pairing.py:_hash_code */
-static void hash_code(const char *code, const unsigned char *salt, int salt_len, char *out_hex /*65*/) {
-    unsigned char buf[64];
-    memcpy(buf, salt, salt_len);
-    memcpy(buf+salt_len, code, strlen(code));
-    unsigned char h[32];
-    crypto_sha256(buf, salt_len + strlen(code), h);
-    hex_encode_buf(h, 32, out_hex);
 }
 
 /* ── pending ── */
