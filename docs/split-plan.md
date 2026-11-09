@@ -473,3 +473,35 @@ every `src/lv/slv_*.o` in `build/objects.mk` (they belong in DEPS_OBJ, which
 feeds PHASE1_OBJ). Verify with `make -pn | grep 'src/lv/slv_'` - a silent
 objects.mk edit that make cannot see is the failure mode that cost two build
 cycles here.
+
+## slerm-Lua parser gaps (found by games/ui_demo.lua)
+
+Two interpreter gaps, both hit while writing a plain-Lua demo screen. Both are
+worked around in `games/ui_demo.lua`; neither is avoided.
+
+**1. `local function f(...)` does not parse.** It reports `'(' expected` at the
+`function` keyword. Only these two forms work:
+
+    local f = function(...) ... end      -- OK
+    function f(...) ... end              -- OK
+    local function f(...) ... end        -- SYNTAX ERROR
+
+**2. The `..` operator does not accept a FUNCTION CALL as an operand.**
+
+    print("x" .. tostring(v))            -- "attempt to concatenate a nil value"
+    local s = tostring(v); print("x" .. s)   -- OK
+
+    print("a" .. "b")                    -- OK (literals)
+    local s = string.rep("-", 8); print("x" .. s)   -- OK (variable)
+
+So a call result must be bound to a local before it is concatenated. This is
+easy to misdiagnose as a broken `tostring`/`string.rep` - both work fine when
+called directly (`print(string.rep("-",3))` prints `---`).
+
+Everything else probed works: `local a,b = 1,2`, `for`/`while`/`repeat`,
+`goto`/labels, table constructors and indexing, `#`, `==`, `..` on
+literals/variables, `math.min`, `string.rep`, `type`, `tostring` (directly).
+
+`games/ui_demo.lua` + `tests/t_slv_ui_demo.c` render a real frame (title bar,
+two panels, status line) from Lua alone - run
+`tests/t_slv_ui_demo games/ui_demo.lua 60 16` from the repo root.
