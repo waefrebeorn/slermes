@@ -322,3 +322,33 @@ explicitly.
 Note: `_run_git` and `_shadow_repo_path` are declared in
 `src/tools/checkpoint_store.h` (split in 4bb8563), so the new module includes
 that rather than redeclaring them.
+
+## pairing.c: two private types anchor nearly everything
+
+After `pairing_util.c` (bbc849c) pairing.c is 628 lines (from 643). Only
+`hash_code` and `skip_ws` were extractable. Anchored:
+
+| fns | anchor |
+|---|---|
+| `obj_get`, `obj_set_num`, `obj_set_str`, `obj_del`, `obj_has`, `pj_free` | `pj_val_t` - `struct pj_val` is private to pairing.c:30 |
+| `load_json`, `save_json`, `path_for`, `pairing_store_open`, `pairing_store_close` | `pairing_store_t` - private struct |
+| `uid_aliases`, `uids_match`, `normalize_uid` | look aliases up in the store |
+
+## xstrdup is defined in eight places
+
+Tree-wide `char *xstrdup(const char *)` definitions:
+
+- `src/agent/llm_client.c:47` (static)
+- `src/agent/verification_evidence.c:19` (static)
+- `src/cli/port_cli_profiles.c:41` (static)
+- `src/cli/port_gateway_signal_format.c:23` (static, `strdup(s ? s : "")`)
+- `src/cli/port_models_pure.c:51` (static)
+- `src/cli/port_models_validate.c:31` (static)
+- `src/cron/cron_jobs_paths.c:40` (**non-static**, malloc+memcpy)
+- `src/gateway/pairing.c` (**non-static**, `s ? strdup(s) : NULL`)
+
+The two non-static copies differ in body, and `cron_jobs_paths.c:40` is linked
+into the same binary - moving the pairing copy produced
+`multiple definition of xstrdup`. Left static in pairing.c. **Needs one
+decision: pick a canonical xstrdup (or rename each), then dedupe all eight.**
+Same class of defect as the `send_sse_headers` duplicate.
