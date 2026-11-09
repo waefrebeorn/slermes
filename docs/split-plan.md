@@ -352,3 +352,28 @@ into the same binary - moving the pairing copy produced
 `multiple definition of xstrdup`. Left static in pairing.c. **Needs one
 decision: pick a canonical xstrdup (or rename each), then dedupe all eight.**
 Same class of defect as the `send_sse_headers` duplicate.
+
+## browser.c: CDP globals anchor the whole command layer
+
+After `browser_dom.c` (4dd829d) browser.c is 1747 lines (from 1833). Only
+`extract_title` and `html_to_text` were extractable.
+
+| fns | anchor |
+|---|---|
+| `cdp_get_url`, `cdp_set_url` | `static g_cdp_url` |
+| `cdp_send_command` | `static g_cdp_msg_id` |
+| `cdp_supervisor_ping`, `cdp_generate_pdf` | call the two above (transitive) |
+| `browser_supervisor_handler` | calls `cdp_supervisor_ping` (transitive) |
+| `index_elements` | `static g_tab` |
+
+Three revert cycles. Note the transitive case: a cluster can pass the
+`ext=[]` test with the helpers INCLUDED and still be unmovable once the
+helpers are left behind - re-run the dep check after each exclusion.
+
+## Browser / pairing / models_dev: the session's anchor inventory
+
+`g_cdp_url`, `g_cdp_msg_id`, `g_tab`, `g_wx`, `g_yb`, `yb_sign_mutex`,
+`g_agent`, `g_port`, `g_request_count`, `g_start_time`, `INVISIBLE_CPS`,
+`g_models_dev_cache_time` are all file-scope statics that pin their clusters.
+Opaque structs pin the rest: `pj_val_t`, `pairing_store_t`,
+`tool_checkpoint_mgr_t`, `memory_store_t`, `acp_server_t`, `skills_cache`.
