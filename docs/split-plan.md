@@ -247,3 +247,24 @@ handlers and the skills cache.
 
 Also note: `ctx_token_path` had to be made non-static because the moved
 `ctx_token_save` calls it.
+
+## yuanbao_md_* : published API, no callers (second dead-code cluster)
+
+After `yuanbao_md.c` (c44f4f3) yuanbao.c is 935 lines. The twelve
+`yuanbao_md_*` helpers were moved out; like the weixin markdown cluster they
+have **no external caller**. Each is *declared* in
+`include/hermes_gateway_yuanbao.h` (e.g. line 124 for
+`yuanbao_md_chunk_markdown_text`), so they are published API rather than
+private dead code - but nothing outside the cluster calls any of them.
+
+That is now two independent markdown-chunking clusters (weixin, yuanbao) with
+the same shape: ported, declared, and never wired into the send path. Worth a
+single follow-up decision rather than two.
+
+## yuanbao signature cache stays
+
+`yb_sign_find`, `yb_sign_cache_set`, `yuanbao_compute_signature`,
+`yuanbao_is_cache_valid`, `yuanbao_get_refresh_lock`, `yuanbao_clear_locks`,
+`yuanbao_purge_expired`, `yuanbao_build_timestamp` all touch the static
+`yb_sign_mutex`. Same anchor pattern as weixin's `g_wx` and ACP's session
+table.
