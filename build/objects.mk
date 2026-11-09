@@ -197,6 +197,8 @@ PORT_OBJ = \
     src/cli/port_gemini_native_adapter.o \
     src/cli/port_terminal_tool.o \
     src/cli/port_early_recovery.o \
+    src/cli/port_kanban_db_dispatch.o \
+    src/cli/port_local_models.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
     src/cli/port_gateway.o \
