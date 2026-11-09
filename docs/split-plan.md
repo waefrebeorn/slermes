@@ -444,3 +444,32 @@ Consequences for this repo:
 Open question: how far to take the TUI object registrations in
 `build/config.mk` now that the target is being superseded - keep them correct
 (cheap, honest) or drop TUI_OBJ entirely until the Lua UI lands.
+
+## slerm-Lua now lives in its own repo: Wua
+
+WWW commit 5578161 moved slerm-Lua out to **github.com/waefrebeorn/Wua** and
+pulls it back in as a submodule at `~WuBu~/src/lv` (git@github.com URL).
+`~WuBu~/src/lv/*` and the two lv test files are deleted from WWW - 1640
+deletions, nothing else changed.
+
+**So the upstream to sync from is Wua, not WWW.** Wua is a large step up from
+the cut first ported here in 1848df3:
+
+  src/wb_lv_stdlib.c   20 KB  base / string / table / math libraries  (NEW)
+  src/wb_lv_string.c   29 KB  string library                          (NEW)
+  src/wb_lv_eval.c     37 KB  (was 21)
+  src/wb_lv_parse.c    24 KB  (was 14)
+  src/wb_lv_lex.c      16 KB  (was 11)
+
+The public API changed shape with the upgrade - `wb_lv_new` / `wb_lv_alloc` /
+`wb_lv_value` / `wb_lv_table` / `wb_lv_call` / `wb_lv_get_global` replace the
+old `wb_lv_run`-style entry points. Anything calling into src/lv/ must be
+re-checked against the new header after a sync.
+
+Sync procedure (what 5af4643 did): copy Wua `src/*.c|h` into `src/lv/` with
+`wb_lv` -> `slv` / `WB_LV` -> `SLV`, copy `tests/wb_lv_*.c` to
+`tests/t_slv_*.c` the same way, copy `games/gamemode_demo.lua`, then register
+every `src/lv/slv_*.o` in `build/objects.mk` (they belong in DEPS_OBJ, which
+feeds PHASE1_OBJ). Verify with `make -pn | grep 'src/lv/slv_'` - a silent
+objects.mk edit that make cannot see is the failure mode that cost two build
+cycles here.
