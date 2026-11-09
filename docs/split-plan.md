@@ -207,3 +207,26 @@ Moving the store API means moving the struct definition, which would either
 publish it or require a module-internal header carrying it. That is a
 deliberate design change (a `memory_store.c` module), not a mechanical split,
 and was not attempted. Same shape as `acp/server.c`.
+
+## weixin markdown cluster: no external caller (possible parity gap)
+
+The 17-function markdown cluster moved to `weixin_markdown.c` (aae3157) has
+**no external caller**. Tree-wide:
+
+| fn | refs | where |
+|---|---|---|
+| `weixin_truncate_message` | 2 | def + 1 intra-cluster call |
+| `weixin_split_text_for_weixin_delivery` | 1 | def only |
+| `weixin_normalize_markdown_blocks` | 1 | def only |
+| `weixin_split_markdown_blocks` | 3 | def + 2 intra-cluster |
+| `weixin__is_fence` | 4 | def + 3 intra-cluster |
+
+Python *does* define `truncate_message`
+(`gateway/platforms/base.py:4776`) as an adapter method, and the send path
+uses it (`base.py:1831` notes the router skips truncation because `send()`
+chunks natively). The C weixin send path never calls the port.
+
+Not deleted: the port's job is parity, and the C port may be a pre-existing
+behaviour gap rather than dead weight. **Open question** - should the C weixin
+`send_message` path call `weixin_truncate_message`, or is the split a
+deliberate Windows-port deviation?
