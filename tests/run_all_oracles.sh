@@ -104,6 +104,7 @@ declare -A DEPS=(
   [hosted_rooms_common]="src/cli/port_hosted_rooms_common.o lib/libjson/json.o lib/libregex/hermes_regex.o"
   [hosted_rooms]="src/cli/port_hosted_rooms.o src/cli/port_hosted_rooms_common.o lib/libjson/json.o lib/libregex/hermes_regex.o lib/libhash/hash.o"
   [prompt_builder]="src/cli/port_prompt_builder.o lib/libjson/json.o"
+  [gemini_native_adapter]="src/cli/port_gemini_native_adapter.o lib/libjson/json.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
