@@ -86,6 +86,110 @@ static slv_value ui_term_refresh(slv *L, slv_value *a, int n, void *ud) {
     return slv_nil();
 }
 
+/* box(x, y, w, h [, title]) -- outline a rectangle with single-line borders.
+ * A TUI is mostly boxes, so making this one call instead of four loops keeps
+ * the Lua side readable. Anything off-screen is clipped. */
+static slv_value ui_term_box(slv *L, slv_value *a, int n, void *ud) {
+    slv_ui *ui = (slv_ui *)ud;
+    if (n < 4) return slv_nil();
+
+    int ok = 0;
+    int x = (int)slv_tointeger(a[0], &ok); if (!ok) return slv_nil();
+    int y = (int)slv_tointeger(a[1], &ok); if (!ok) return slv_nil();
+    int w = (int)slv_tointeger(a[2], &ok); if (!ok) return slv_nil();
+    int h = (int)slv_tointeger(a[3], &ok); if (!ok) return slv_nil();
+    if (w < 2 || h < 2) return slv_nil();
+
+    const char *title = (n >= 5) ? slv_tostring(a[4]) : NULL;
+
+    /* corners */
+    static const char *TL = "+", *TR = "+", *BL = "+", *BR = "+";
+    static const char *HZ = "-", *VT = "|";
+#define SLV_UI_PUT(px, py, s) \
+    do { \
+        int _x = (px), _y = (py); \
+        if (_x >= 0 && _x < ui->w && _y >= 0 && _y < ui->h) \
+            ui->cells[(size_t)_y * (size_t)ui->w + (size_t)_x] = (s)[0]; \
+    } while (0)
+
+    SLV_UI_PUT(x,         y,         TL);
+    SLV_UI_PUT(x + w - 1, y,         TR);
+    SLV_UI_PUT(x,         y + h - 1, BL);
+    SLV_UI_PUT(x + w - 1, y + h - 1, BR);
+    for (int i = 1; i < w - 1; i++) { SLV_UI_PUT(x + i, y, HZ); SLV_UI_PUT(x + i, y + h - 1, HZ); }
+    for (int j = 1; j < h - 1; j++) { SLV_UI_PUT(x,     y + j, VT); SLV_UI_PUT(x + w - 1, y + j, VT); }
+#undef SLV_UI_PUT
+
+    if (title) {
+        /* indent the title one cell inside the top edge, like a panel caption */
+        for (size_t i = 0; title[i] && i + 2 < (size_t)w; i++)
+            ui->cells[(size_t)y * (size_t)ui->w + (size_t)(x + 1 + (int)i)] = title[i];
+    }
+    return slv_nil();
+}
+
+/* hline / vline -- one call for rules and column separators. */
+static slv_value ui_term_hline(slv *L, slv_value *a, int n, void *ud) {
+    (void)L;
+    slv_ui *ui = (slv_ui *)ud;
+    if (n < 3) return slv_nil();
+    int ok = 0;
+    int x = (int)slv_tointeger(a[0], &ok); if (!ok) return slv_nil();
+    int y = (int)slv_tointeger(a[1], &ok); if (!ok) return slv_nil();
+    int len = (int)slv_tointeger(a[2], &ok); if (!ok) return slv_nil();
+    for (int i = 0; i < len; i++) {
+        int cx = x + i;
+        if (cx < 0 || cx >= ui->w || y < 0 || y >= ui->h) break;
+        ui->cells[(size_t)y * (size_t)ui->w + (size_t)cx] = '-';
+    }
+    return slv_nil();
+}
+
+static slv_value ui_term_vline(slv *L, slv_value *a, int n, void *ud) {
+    (void)L;
+    slv_ui *ui = (slv_ui *)ud;
+    if (n < 3) return slv_nil();
+    int ok = 0;
+    int x = (int)slv_tointeger(a[0], &ok); if (!ok) return slv_nil();
+    int y = (int)slv_tointeger(a[1], &ok); if (!ok) return slv_nil();
+    int len = (int)slv_tointeger(a[2], &ok); if (!ok) return slv_nil();
+    for (int j = 0; j < len; j++) {
+        int cy = y + j;
+        if (x < 0 || x >= ui->w || cy < 0 || cy >= ui->h) break;
+        ui->cells[(size_t)cy * (size_t)ui->w + (size_t)x] = '|';
+    }
+    return slv_nil();
+}
+
+/* scroll([n]) -- push the buffer up by n rows (default 1), clearing the
+ * bottom. A chat pane is just a scroll plus a redraw. */
+static slv_value ui_term_scroll(slv *L, slv_value *a, int n, void *ud) {
+    (void)L;
+    slv_ui *ui = (slv_ui *)ud;
+    int lines = 1;
+    if (n >= 1) {
+        int ok = 0;
+        lines = (int)slv_tointeger(a[0], &ok);
+        if (!ok || lines <= 0) lines = 1;
+    }
+    if (lines >= ui->h) { memset(ui->cells, ' ', (size_t)ui->w * (size_t)ui->h); return slv_nil(); }
+    size_t rows = (size_t)(ui->h - lines);
+    memmove(ui->cells, ui->cells + (size_t)lines * (size_t)ui->w, rows * (size_t)ui->w);
+    memset(ui->cells + rows * (size_t)ui->w, ' ', (size_t)lines * (size_t)ui->w);
+    return slv_nil();
+}
+
+/* row(y) -- the whole row as one string, so Lua can compose a line and read it
+ * back without a per-cell loop. Trailing spaces are significant here. */
+static slv_value ui_term_row(slv *L, slv_value *a, int n, void *ud) {
+    slv_ui *ui = (slv_ui *)ud;
+    if (n < 1) return slv_nil();
+    int ok = 0;
+    int y = (int)slv_tointeger(a[0], &ok);
+    if (!ok || y < 0 || y >= ui->h) return slv_nil();
+    return slv_str(slv_intern(L, ui->cells + (size_t)y * (size_t)ui->w, (size_t)ui->w));
+}
+
 /* ------------------------------------------------------------- hosting */
 
 static void ui_register_term(slv_ui *ui) {
@@ -100,6 +204,11 @@ static void ui_register_term(slv_ui *ui) {
         { "put",     ui_term_put     },
         { "get",     ui_term_get     },
         { "refresh", ui_term_refresh },
+        { "box",     ui_term_box     },
+        { "hline",   ui_term_hline   },
+        { "vline",   ui_term_vline   },
+        { "scroll",  ui_term_scroll  },
+        { "row",     ui_term_row     },
     };
     for (size_t i = 0; i < sizeof(methods) / sizeof(methods[0]); i++) {
         slv_value v = slv_nil();

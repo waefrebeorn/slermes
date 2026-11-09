@@ -646,4 +646,19 @@ static inline void *memmem(const void *haystack, size_t haystacklen,
     }
     return NULL;
 }
+
+/* strndup() is a POSIX/GNU extension that MSYS2's runtime provides and the
+ * winlibs UCRT runtime does not. ~50 call sites in this tree use it, so it is
+ * shimmed here rather than at each one. Semantics match POSIX: at most n bytes
+ * are copied and the result is always NUL-terminated. */
+static inline char *strndup(const char *s, size_t n) {
+    if (!s) return NULL;
+    size_t len = 0;
+    while (len < n && s[len]) len++;
+    char *out = (char *)malloc(len + 1);
+    if (!out) return NULL;
+    memcpy(out, s, len);
+    out[len] = '\0';
+    return out;
+}
 #endif /* SLERMES_HERMES_WIN32_H */

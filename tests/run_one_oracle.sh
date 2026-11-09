@@ -11,7 +11,10 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 # silently drops the tail), /tmp is a POSIX path a native gcc.exe cannot
 # resolve, and there is no libdl/libpthread. Use a response file + .testbin.
 mkdir -p .testbin
-OBJSET=.testbin/oracle_objs.rsp
+# Per-INVOCATION paths ($$), not per-harness: run_all_oracles.sh runs several
+# oracles concurrently and two runs of the SAME harness would otherwise clobber
+# each other's response file, binary and scratch dir.
+OBJSET=.testbin/oracle_objs_${NAME}_$$.rsp
 find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ' > "$OBJSET"
 echo >> "$OBJSET"
 EXTRA_LIBS=""
@@ -22,7 +25,7 @@ case "$(uname -s)" in
     ;;
   *) EXTRA_LIBS="-ldl -lpthread" ;;
 esac
-TMPH="$(pwd)/.testbin/oracle_tmp_$NAME"
+TMPH="$(pwd)/.testbin/oracle_tmp_${NAME}_$$"
 mkdir -p "$TMPH/.hermes/cron"
 # Pick an interpreter with a working hashlib: the MSYS2 /mingw64 python3 that
 # PATH resolves to first has a broken OpenSSL binding (blake2b/blake2s raise at
@@ -63,7 +66,7 @@ build() {   # build <out> <opt>
     -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
     -Wl,--allow-multiple-definition
 }
-OUT=".testbin/tt_$NAME"
+OUT=".testbin/tt_${NAME}_$$"
 build "$OUT" -O2
 
 # Smart App Control refuses some freshly linked binaries outright (rc 126) and

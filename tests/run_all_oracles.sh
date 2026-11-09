@@ -120,7 +120,18 @@ declare -A DEPS=(
 
 fail=0
 count=0
-names=("$@")
+
+# --changed / ORACLE_ONLY=changed must be read BEFORE names=("$@"), otherwise
+# the flag itself lands in the port list and is treated as an oracle name.
+WANT_CHANGED=0
+for a in "$@"; do
+  [ "$a" = "--changed" ] && WANT_CHANGED=1
+done
+names=()
+for a in "$@"; do
+  [ "$a" = "--changed" ] && continue
+  names+=("$a")
+done
 
 # If no subset given, discover all committed oracles.
 # fuzzy_match_helpers is EXCLUDED: its harness consumes its OWN stdin (op-value
@@ -135,43 +146,103 @@ if [ ${#names[@]} -eq 0 ]; then
   done
 fi
 
-for name in "${names[@]}"; do
-  oracle="tests/oracle_$name.py"
-  harness="${HARNESS_ALIAS[$name]:-$name}"
-  harness_c="tests/t_port_${harness}.c"
-  [ -f "$oracle" ] || { echo "MISS oracle_$name.py"; fail=1; continue; }
-  [ -f "$harness_c" ] || { echo "MISS t_port_${harness}.c (harness for $name)"; fail=1; continue; }
+# --changed / ORACLE_ONLY=changed: gate only the ports the current work touches.
+#
+# The full 95-oracle gate costs ~450s and is I/O/spawn-bound (measured: 4-way
+# 466s, 8-way 444s, sequential 43s for 7 oracles), so parallelism does not help.
+# A commit usually touches one or two ports, so gating just those is the
+# difference between a 10s check and an 8-minute one.
+#
+# Maps changed paths back to oracle names: src/**/port_<name>.c and
+# include/port_<name>.h both mean oracle <name>. Falls back to the full set
+# when nothing maps (a change to a shared header, a lib, or the build files can
+# affect any port) - say so rather than silently passing.
+if [ "${1:-}" = "--changed" ] || [ "${ORACLE_ONLY:-}" = "changed" ]; then
+  shift 2>/dev/null || true
+  # git is NOT on the login shell's PATH (it is /mingw64/bin/git here), so
+  # resolve it explicitly and fall back to the full gate rather than silently
+  # reporting "nothing changed".
+  GIT="$(command -v git 2>/dev/null || true)"
+  if [ -z "$GIT" ]; then
+    for c in /mingw64/bin/git /mingw64/bin/git.exe /usr/bin/git /usr/bin/git.exe \
+             "/c/Program Files/Git/cmd/git.exe" "/c/Program Files/Git/bin/git.exe"; do
+      [ -x "$c" ] && { GIT="$c"; break; }
+    done
+  fi
+  if [ -n "$GIT" ]; then
+    changed=$(
+      { "$GIT" diff --name-only HEAD 2>/dev/null
+        "$GIT" diff --name-only --staged 2>/dev/null
+      } | sort -u
+    )
+  else
+    echo "could not locate git; running the FULL gate" >&2
+    changed=""
+  fi
+  mapped=()
+  while IFS= read -r f; do
+    case "$f" in
+      */port_*.c|port_*.c)
+        n="$(basename "$f" | sed -E 's/^port_//; s/\.c$//')"
+        [ -f "tests/oracle_$n.py" ] && mapped+=("$n")
+        ;;
+      include/port_*.h)
+        n="$(basename "$f" | sed -E 's/^port_//; s/\.h$//')"
+        [ -f "tests/oracle_$n.py" ] && mapped+=("$n")
+        ;;
+    esac
+  done <<< "$changed"
+  if [ ${#mapped[@]} -gt 0 ]; then
+    echo "changed ports: ${mapped[*]}"
+    names=("${mapped[@]}")
+  else
+    echo "no port files changed; running the FULL gate" >&2
+  fi
+fi
 
-  # default dependency set; honor a per-port env override then a DEPS entry
-  deps="src/cli/port_$name.o lib/libjson/json.o"
-  # the regex object is needed when the PORT .c (not just the harness, which
-  # includes only the port header) pulls hermes_regex.h — grep both.
-  if grep -q 'hermes_regex.h' "$harness_c" \
+# Resolve each name to "<name>\t<harness>\t<deps>" in the PARENT shell (bash
+# cannot export the HARNESS_ALIAS / DEPS associative arrays to the subshells
+# xargs spawns), then fan the lines out to tests/_oracle_one.sh workers.
+resolve_one() {
+  local name="$1"
+  local harness="${HARNESS_ALIAS[$name]:-$name}"
+  local deps="src/cli/port_$name.o lib/libjson/json.o"
+  if grep -q 'hermes_regex.h' "tests/t_port_${harness}.c" 2>/dev/null \
      || grep -q 'hermes_regex.h' "src/cli/port_$name.c" 2>/dev/null \
      || grep -q 'hermes_regex.h' "include/port_$name.h" 2>/dev/null; then
     deps="$deps lib/libregex/hermes_regex.o"
   fi
-  varname="ORACLE_OBJS_$(echo "$name" | tr '[:lower:]' '[:upper:]' | tr '/' '_')"
+  local varname="ORACLE_OBJS_$(echo "$name" | tr '[:lower:]' '[:upper:]' | tr '/' '_')"
   if [ -n "${!varname:-}" ]; then deps="${!varname}"; fi
   if [ -n "${DEPS[$name]:-}" ]; then deps="${DEPS[$name]}"; fi
-  export MINIMAL_OBJS="$deps"
+  printf '%s\t%s\t%s\n' "$name" "$harness" "$deps"
+}
 
-  log=".testbin/ao/$name.log"
-  # run_one_oracle compiles t_port_<HARNESS>.c from its first arg; pass the
-  # harness basename, the oracle basename second.
-  out=$(bash tests/run_one_oracle.sh "$harness" "$(basename "$oracle")" 2>&1)
-  rc=$?
-  # accept ORACLE <any>: N cases, 0 mismatches — a port's oracle may announce a
-  # slightly different identity than the discovery name (e.g. kanban_schema).
-  ok=$(printf '%s\n' "$out" | grep -cE "ORACLE [A-Za-z0-9_]+: [0-9]+ cases, 0 mismatches")
-  if [ $rc -eq 0 ] && [ "$ok" -ge 1 ]; then
-    echo "PASS $name  ($(printf '%s' "$out" | grep -oE '[0-9]+ cases, 0 mismatches' | head -1))"
-  else
-    echo "FAIL $name  rc=$rc  $(printf '%s' "$out" | grep -oE 'ORACLE .*' | head -1)"
-    fail=1
-  fi
-  count=$((count+1))
-done
+# Parallelism: ORACLE_JOBS (default 4). ORACLE_JOBS=1 gives the sequential
+# behaviour. 12-way died with MSYS2 fork exhaustion ("Resource temporarily
+# unavailable" / 0xC0000142) - but that turned out to be CAUSED by the shared
+# .testbin/tt_$NAME / oracle_tmp_$NAME paths, not by the parallelism itself.
+# With those made per-invocation ($$), 4-way is clean. Workers touch only their
+# own compile, scratch dir and log, so ccache stays safe.
+JOBS="${ORACLE_JOBS:-4}"
+
+if [ "$JOBS" -le 1 ]; then
+  for name in "${names[@]}"; do
+    bash tests/_oracle_one.sh "$(resolve_one "$name")" || fail=1
+    count=$((count+1))
+  done
+else
+  results=$(
+    for name in "${names[@]}"; do resolve_one "$name"; done |
+      xargs -P "$JOBS" -d '\n' -I{} bash tests/_oracle_one.sh {}
+  )
+  echo "$results"
+  pass_n=$(printf '%s\n' "$results" | grep -c '^PASS ')
+  miss_n=$(printf '%s\n' "$results" | grep -c '^MISS ')
+  fail_n=$(printf '%s\n' "$results" | grep -c '^FAIL ')
+  count=$((pass_n + fail_n + miss_n))
+  if [ "$fail_n" -gt 0 ] || [ "$miss_n" -gt 0 ]; then fail=1; fi
+fi
 
 echo "----"
 echo "oracles run: $count  (exit 0 = all green, no drift)"

@@ -93,10 +93,53 @@ int main(void) {
 
     slv_ui_free(ui);
 
+    /* ---- TUI primitives: box / hline / vline / scroll / row ---- */
+    {
+        slv_ui *u2 = slv_ui_new(24, 6);
+        check("new(24,6)", u2 != NULL, 1);
+        slv_ui_run(u2, "term.box(2, 1, 10, 4, 'chat')", "=box");
+        check_ch("box TL corner", slv_ui_cell(u2, 2, 1), '+');
+        check_ch("box TR corner", slv_ui_cell(u2, 11, 1), '+');
+        check_ch("box BL corner", slv_ui_cell(u2, 2, 4), '+');
+        check_ch("box BR corner", slv_ui_cell(u2, 11, 4), '+');
+        check_ch("box top edge", slv_ui_cell(u2, 8, 1), '-');
+        check_ch("box bottom edge", slv_ui_cell(u2, 6, 4), '-');
+        check_ch("box left edge", slv_ui_cell(u2, 2, 2), '|');
+        check_ch("box right edge", slv_ui_cell(u2, 11, 2), '|');
+        check_ch("box title first", slv_ui_cell(u2, 3, 1), 'c');
+        check_ch("box title last", slv_ui_cell(u2, 6, 1), 't');
+        check_ch("box interior clear", slv_ui_cell(u2, 6, 2), ' ');
+        slv_ui_free(u2);
+    }
+    {
+        slv_ui *u3 = slv_ui_new(10, 4);
+        check("new(10,4)", u3 != NULL, 1);
+        slv_ui_run(u3, "term.hline(1, 0, 5)", "=hline");
+        slv_ui_run(u3, "term.vline(0, 1, 3)", "=vline");
+        check_ch("hline first", slv_ui_cell(u3, 1, 0), '-');
+        check_ch("hline last", slv_ui_cell(u3, 5, 0), '-');
+        check_ch("hline stops", slv_ui_cell(u3, 6, 0), ' ');
+        check_ch("vline first", slv_ui_cell(u3, 0, 1), '|');
+        check_ch("vline last", slv_ui_cell(u3, 0, 3), '|');
+        slv_ui_free(u3);
+    }
+    {
+        slv_ui *u4 = slv_ui_new(6, 3);
+        check("new(6,3)", u4 != NULL, 1);
+        slv_ui_run(u4, "term.put(0, 0, 'aaaaaa'); term.put(0, 1, 'bbbbbb'); term.put(0, 2, 'cccccc')", "=fill3");
+        slv_ui_run(u4, "term.scroll(1)", "=scroll1");
+        check_ch("scroll row1 up", slv_ui_cell(u4, 0, 0), 'b');
+        check_ch("scroll row2 up", slv_ui_cell(u4, 0, 1), 'c');
+        check_ch("scroll clears bottom", slv_ui_cell(u4, 0, 2), ' ');
+        slv_ui_run(u4, "local s = term.row(0); term.put(0, 2, s)", "=rowcopy");
+        check_ch("term.row read back", slv_ui_cell(u4, 0, 2), 'b');
+        slv_ui_free(u4);
+    }
+
     if (fails) {
         printf("=== SLV-UI TESTS: %d fail ===\n", fails);
         return 1;
     }
-    printf("=== SLV-UI TESTS: 22 pass, 0 fail ===\n");
+    printf("=== SLV-UI TESTS: %d pass, 0 fail ===\n", 22 + 20);
     return 0;
 }
