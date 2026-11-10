@@ -119,6 +119,7 @@ declare -A DEPS=(
   [update_cmd]="src/cli/port_update_cmd.o lib/libjson/json.o"
   [update_receipt]="src/cli/port_update_receipt.o lib/libjson/json.o"
   [state_repair]="src/cli/port_state_repair.o lib/libjson/json.o"
+  [worktree_ops]="src/cli/port_worktree_ops.o lib/libjson/json.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
