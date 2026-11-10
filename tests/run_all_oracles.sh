@@ -115,6 +115,7 @@ declare -A DEPS=(
   [server]="src/cli/port_server.o lib/libjson/json.o"
   [gateway_windows]="src/cli/port_gateway_windows.o lib/libjson/json.o lib/libregex/hermes_regex.o"
   [update_windows]="src/cli/port_update_windows.o lib/libjson/json.o"
+  [gateway_status]="src/cli/port_gateway_status.o lib/libjson/json.o lib/libregex/hermes_regex.o lib/libhash/hash.o"
   [service_manager]="src/cli/port_service_manager.o lib/libjson/json.o"
   [cli_config_load]="src/cli/port_cli_config_load.o src/cli/port_fast_mode.o lib/libjson/json.o"
   [scheduler_tick]="src/cli/port_scheduler_tick.o lib/libjson/json.o"
