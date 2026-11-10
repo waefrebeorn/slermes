@@ -213,6 +213,7 @@ PORT_OBJ = \
     src/cli/port_update_receipt.o \
     src/cli/port_state_repair.o \
     src/cli/port_worktree_ops.o \
+    src/cli/port_hosted_room_driver.o \
     src/cli/port_goals.o \
     src/cli/port_kanban_db.o \
     src/cli/kanban_schema.o \
