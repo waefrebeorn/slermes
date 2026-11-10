@@ -7,7 +7,7 @@ the C JSON output matches field-by-field (not byte-identical — JSON key order
 may differ, so we compare via Python dict/structural equality).
 """
 import sys, os, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from agent.copilot_acp_client import (
     _build_openai_tool_call, _completion_to_stream_chunks,
 )

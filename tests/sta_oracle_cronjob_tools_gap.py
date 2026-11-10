@@ -6,7 +6,7 @@ C output matches (or, for honestly-demoted functions, that C returns an
 honest error / no-op rather than a fake success).
 """
 import sys, os, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.cronjob_tools as ct
 
 def env_enabled(v):

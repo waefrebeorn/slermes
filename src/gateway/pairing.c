@@ -4,8 +4,10 @@
  */
 
 #include "pairing.h"
+#include "pairing_util.h"
 #include "hermes_gateway_pairing.h"
 #include "crypto.h"
+#include "hermes_encode.h"
 /* forward-declare the existing whatsapp normalizer (defined in gateway/helpers.c) */
 extern char *normalize_whatsapp_identifier(const char *value);
 #include <stdlib.h>
@@ -61,10 +63,6 @@ static void pj_free(pj_val_t *v) {
 
 /* parse a JSON value starting at *pp; advances *pp past it. Returns NULL on error. */
 static pj_val_t *pj_parse_val(const char **pp);
-
-static void skip_ws(const char **pp) {
-    while (**pp && isspace((unsigned char)**pp)) (*pp)++;
-}
 
 static char *pj_parse_string(const char **pp) {
     /* assumes **pp == '"' */
@@ -416,24 +414,6 @@ bool pairing_revoke(pairing_store_t *st, const char *platform, const char *user_
     return found;
 }
 
-/* ── hashing ── */
-
-static void hex_encode(const unsigned char *bin, int n, char *out) {
-    const char *h="0123456789abcdef";
-    for (int i=0;i<n;i++){ out[i*2]=h[bin[i]>>4]; out[i*2+1]=h[bin[i]&0xf]; }
-    out[n*2]='\0';
-}
-
-/* PoP: hash_code @ gateway/pairing.py:_hash_code */
-static void hash_code(const char *code, const unsigned char *salt, int salt_len, char *out_hex /*65*/) {
-    unsigned char buf[64];
-    memcpy(buf, salt, salt_len);
-    memcpy(buf+salt_len, code, strlen(code));
-    unsigned char h[32];
-    crypto_sha256(buf, salt_len + strlen(code), h);
-    hex_encode(h, 32, out_hex);
-}
-
 /* ── pending ── */
 
 static char *pending_filename(const char *platform);
@@ -497,10 +477,10 @@ char *pairing_generate_code(pairing_store_t *st, const char *platform, const cha
 
     unsigned char salt[16];
     if (getrandom(salt,16,0)!=16){ for(int i=0;i<16;i++) salt[i]=(unsigned char)(now*1000+i); }
-    char salt_hex[33]; hex_encode(salt,16,salt_hex);
+    char salt_hex[33]; hex_encode_buf(salt,16,salt_hex);
     char code_hash[65]; hash_code(code, salt, 16, code_hash);
 
-    char entry_id[17]; { unsigned char eb[8]; if(getrandom(eb,8,0)==8){ hex_encode(eb,8,entry_id);} else snprintf(entry_id,17,"%08lx",(unsigned long)now); }
+    char entry_id[17]; { unsigned char eb[8]; if(getrandom(eb,8,0)==8){ hex_encode_buf(eb,8,entry_id);} else snprintf(entry_id,17,"%08lx",(unsigned long)now); }
 
     char *norm = normalize_uid(st, platform, user_id);
     pj_val_t *info=(pj_val_t*)calloc(1,sizeof(pj_val_t)); info->type=J_OBJ;

@@ -886,7 +886,7 @@ static double cg_fetch_head_age(const char *repo_root)
     struct stat st;
     if (stat(fetch_head, &st) != 0)
         return -1.0;
-    double mtime = (double)st.st_mtim.tv_sec + (double)st.st_mtim.tv_nsec / 1e9;
+    double mtime = (double)SLERMES_ST_MTIM_SEC(st) + (double)SLERMES_ST_MTIM_NSEC(st) / 1e9;
     double age = (double)time(NULL) - mtime;
     return age > 0.0 ? age : 0.0;
 }
@@ -2008,8 +2008,8 @@ void _prune_stale_worktrees(const char *repo_root, int max_age_hours)
         double soft_cutoff = now - ((double)tier_hours * 3600.0);
         double hard_cutoff = now - ((double)tier_hours * 3.0 * 3600.0);
 
-        double mtime = (double)st.st_mtim.tv_sec +
-                       (double)st.st_mtim.tv_nsec / 1e9;
+        double mtime = (double)SLERMES_ST_MTIM_SEC(st) +
+                       (double)SLERMES_ST_MTIM_NSEC(st) / 1e9;
         if (mtime > soft_cutoff) continue;   /* too recent — skip */
 
         if (ncand == cap) {

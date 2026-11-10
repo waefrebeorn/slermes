@@ -135,3 +135,9 @@ int cli_tools_microsoft_graph_auth__extract_error_detail(const char *response_bo
     if (strlen(buf) > 200) buf[200] = '\0';
     return 0;
 }
+
+/* PoP: format_graph_error @ tools/microsoft_graph_auth.py:format_graph_error */
+void tools_microsoft_graph_auth_format_graph_error(void) { }
+
+/* PoP: _fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
+void tools_microsoft_graph_auth_fresh_cached(void) { }

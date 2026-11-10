@@ -41,16 +41,16 @@ think_scrubber_t *think_scrubber_new(void);
 void think_scrubber_free(think_scrubber_t *sc);
 
 /* Reset all state. Call at the top of each new turn. */
-void reset(think_scrubber_t *sc);
+void think_scrubber_reset(think_scrubber_t *sc);
 
 /* Feed one streaming delta. Returns pointer to internal buffer holding
  * the visible (scrubbed) portion, or NULL if the entire delta was
  * reasoning content. The pointer is valid until the next feed() call. */
-const char *feed(think_scrubber_t *sc, const char *text);
+const char *think_scrubber_feed(think_scrubber_t *sc, const char *text);
 
 /* Flush held-back content at end of stream. Returns pointer to any
  * remaining visible text, or NULL. */
-const char *flush(think_scrubber_t *sc);
+const char *think_scrubber_flush(think_scrubber_t *sc);
 
 /* Port of Python gateway/stream_consumer.py:_strip_orphan_close_tags
  * (identical logic to agent/think_scrubber.py::_strip_orphan_close_tags).

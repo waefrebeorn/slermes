@@ -202,7 +202,7 @@ char *whatsapp_cloud_send_exec_approval(const char *chat_id, const char *prompt)
 /* PoP: whatsapp_cloud_format_graph_error @ gateway/platforms/whatsapp_cloud.py:_format_graph_error */
 char *whatsapp_cloud_format_graph_error(const char *error_body) {
     if (!error_body) return strdup("Unknown error");
-    char *err = json_parse(error_body, NULL);
+    json_t *err = json_parse(error_body, NULL);
     if (!err) return strdup(error_body);
     json_t *e = json_object_get(err, "error");
     const char *msg = e ? json_object_get_string(e, "message", NULL) : NULL;

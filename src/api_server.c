@@ -35,6 +35,10 @@
 /* PoP: REST API server (port of acp_adapter/server) */
 
 #include "hermes_api_server.h"
+#include "api_server_readonly.h"
+#include "api_server_sse.h"
+#include "gateway/platforms/api_server_adapter.h"   /* canonical send_sse_headers */
+#include "api_server_http.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
 #include <stdio.h>
@@ -71,128 +75,6 @@ static agent_state_t   *g_agent = NULL;
 static volatile int     g_request_count = 0;
 static volatile time_t  g_start_time = 0;
 
-/* ── HTTP response helpers ──────────────────────────────────────── */
-
-static void send_response(int fd, int status, const char *status_text,
-                           const char *body, const char *content_type) {
-    char header[512];
-    int n = snprintf(header, sizeof(header),
-        "HTTP/1.1 %d %s\r\n"
-        "Content-Type: %s\r\n"
-        "Content-Length: %zu\r\n"
-        "Access-Control-Allow-Origin: *\r\n"
-        "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
-        "Access-Control-Allow-Headers: Content-Type, Authorization\r\n"
-        "Connection: close\r\n"
-        "\r\n",
-        status, status_text, content_type ? content_type : "application/json",
-        body ? strlen(body) : 0);
-
-    write(fd, header, (size_t)n);
-    if (body) write(fd, body, strlen(body));
-}
-
-static void send_json(int fd, int status, const char *status_text,
-                       const char *json_body) {
-    send_response(fd, status, status_text, json_body, "application/json");
-}
-
-static void send_error(int fd, int status, const char *message) {
-    char body[4096];
-    snprintf(body, sizeof(body),
-        "{\"error\":{\"message\":\"%s\",\"type\":\"error\",\"code\":%d}}",
-        message, status);
-    send_json(fd, status, message, body);
-}
-
-/* ── HTTP request parser (minimal) ──────────────────────────────── */
-
-/**
- * Parse the HTTP method and path from the first line.
- * Returns 0 on success.
- */
-static int parse_request_line(const char *buf, char *method, size_t mlen,
-                                char *path, size_t plen) {
-    if (!buf || !method || !path) return -1;
-    method[0] = path[0] = '\0';
-
-    const char *p = buf;
-
-    /* Read method */
-    while (*p && *p != ' ' && *p != '\r' && *p != '\n' && mlen > 1) {
-        *method++ = *p++;
-        mlen--;
-    }
-    *method = '\0';
-    if (*p == ' ') p++;
-
-    /* Read path */
-    while (*p && *p != ' ' && *p != '\r' && *p != '\n' && *p != '?' && plen > 1) {
-        *path++ = *p++;
-        plen--;
-    }
-    *path = '\0';
-
-    return 0;
-}
-
-/**
- * Find the request body (after \r\n\r\n).
- * Returns pointer to body, or NULL if not found.
- */
-static const char *find_body(const char *buf) {
-    const char *p = strstr(buf, "\r\n\r\n");
-    if (!p) {
-        p = strstr(buf, "\n\n");
-        if (!p) return NULL;
-        return p + 2;
-    }
-    return p + 4;
-}
-
-/* ── Route handlers ─────────────────────────────────────────────── */
-
-/**
- * Parse query string from request buffer into a simple key=value map.
- * Extracts the portion after '?' in the request line.
- */
-static void parse_query_params(const char *buf, char *query, size_t qlen) {
-    query[0] = '\0';
-    const char *q = strchr(buf, '?');
-    if (!q) return;
-    q++; /* skip '?' */
-    const char *space = strchr(q, ' ');
-    size_t len = space ? (size_t)(space - q) : strlen(q);
-    if (len >= qlen) len = qlen - 1;
-    memcpy(query, q, len);
-    query[len] = '\0';
-}
-
-/**
- * Get a query parameter value by name.
- * Returns pointer to value or NULL if not found.
- */
-static const char *get_query_param(const char *query, const char *name) {
-    if (!query || !query[0] || !name) return NULL;
-    size_t nlen = strlen(name);
-
-    const char *p = query;
-    while (*p) {
-        /* Skip leading '&' if not first */
-        if (p != query && *p == '&') p++;
-
-        if (strncmp(p, name, nlen) == 0 && p[nlen] == '=') {
-            return p + nlen + 1;
-        }
-
-        /* Skip to next param */
-        p = strchr(p, '&');
-        if (!p) break;
-        p++;
-    }
-    return NULL;
-}
-
 /**
  * GET /v1/models — return list of available models.
  */
@@ -224,7 +106,7 @@ static void handle_get_models(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -398,7 +280,7 @@ static void handle_post_chat(int fd, const char *body_json) {
 
     char *out = json_serialize(resp);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -406,26 +288,6 @@ static void handle_post_chat(int fd, const char *body_json) {
 
     json_free(resp);
     json_free(req);
-}
-
-static void send_sse_event(int fd, const char *data);
-static void send_sse_headers(int fd);
-static void sse_send_chunk(int fd, const char *content, int index);
-
-/* ── Path helper ────────────────────────────────────────────────── */
-
-/**
- * Check if path starts with a prefix and extract the suffix.
- * E.g. starts_with("/v1/sessions/abc123", "/v1/sessions/", id, 64) → true, id="abc123"
- */
-static bool starts_with(const char *path, const char *prefix, char *suffix, size_t slen) {
-    size_t plen = strlen(prefix);
-    if (strncmp(path, prefix, plen) != 0) return false;
-    const char *rest = path + plen;
-    if (!rest[0]) return false; /* path = prefix, no suffix */
-    strncpy(suffix, rest, slen - 1);
-    suffix[slen - 1] = '\0';
-    return true;
 }
 
 /**
@@ -441,7 +303,7 @@ static void handle_sessions_list(int fd, const char *query) {
     size_t count = 0;
     db_session_entry_t *entries = db_list_with_meta(g_agent->db, &count);
     if (!entries) {
-        send_json(fd, 200, "OK", "{\"object\":\"list\",\"data\":[],\"total\":0}");
+        api_send_json(fd, 200, "OK", "{\"object\":\"list\",\"data\":[],\"total\":0}");
         return;
     }
 
@@ -476,7 +338,7 @@ static void handle_sessions_list(int fd, const char *query) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     }
     json_free(root);
@@ -498,7 +360,7 @@ static void handle_session_get(int fd, const char *session_id) {
         return;
     }
 
-    send_json(fd, 200, "OK", json_out);
+    api_send_json(fd, 200, "OK", json_out);
     free(json_out);
 }
 
@@ -541,7 +403,7 @@ static void handle_session_create(int fd, const char *body_json) {
 
     char *out = json_serialize(resp);
     if (out) {
-        send_json(fd, 201, "Created", out);
+        api_send_json(fd, 201, "Created", out);
         free(out);
     }
     json_free(resp);
@@ -564,7 +426,7 @@ static void handle_session_delete(int fd, const char *session_id) {
     /* Build response */
     char resp[256];
     snprintf(resp, sizeof(resp), "{\"status\":\"deleted\",\"id\":\"%s\"}", session_id);
-    send_json(fd, 200, "OK", resp);
+    api_send_json(fd, 200, "OK", resp);
 }
 
 /* GW16: PATCH /v1/sessions/{id} — update session metadata (title, end_reason) */
@@ -636,7 +498,7 @@ static void handle_session_patch(int fd, const char *session_id, const char *bod
 
     char *out = json_serialize(resp);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     }
     json_free(resp);
@@ -671,7 +533,7 @@ static void handle_session_messages(int fd, const char *session_id) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     }
     json_free(root);
@@ -739,7 +601,7 @@ static void handle_session_fork(int fd, const char *session_id,
     snprintf(resp, sizeof(resp),
              "{\"id\":\"%s\",\"parent_id\":\"%s\",\"branch_point\":%d}",
              new_id, session_id, branch_point);
-    send_json(fd, 201, "Created", resp);
+    api_send_json(fd, 201, "Created", resp);
     free(forked_data);
 }
 
@@ -864,7 +726,7 @@ static void handle_post_responses(int fd, const char *body_json) {
 
     char *out = json_serialize(resp);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     }
     json_free(resp);
@@ -882,7 +744,7 @@ static void handle_get_response(int fd, const char *response_id) {
     if (g_agent && g_agent->db) {
         char *data = db_load(g_agent->db, buf, NULL);
         if (data) {
-            send_json(fd, 200, "OK", data);
+            api_send_json(fd, 200, "OK", data);
             free(data);
             return;
         }
@@ -892,17 +754,8 @@ static void handle_get_response(int fd, const char *response_id) {
     n = snprintf(buf, sizeof(buf),
              "{\"id\":\"%s\",\"object\":\"response\",\"status\":\"completed\"}",
              response_id);
-    send_json(fd, 200, "OK", buf);
+    api_send_json(fd, 200, "OK", buf);
     (void)n;
-}
-
-/* GW16: Delete response — DELETE /v1/responses/{response_id} */
-static void handle_delete_response(int fd, const char *response_id) {
-    char resp[256];
-    snprintf(resp, sizeof(resp),
-             "{\"id\":\"%s\",\"object\":\"response\",\"deleted\":true}",
-             response_id);
-    send_json(fd, 200, "OK", resp);
 }
 
 /**
@@ -1031,56 +884,6 @@ static void handle_post_chat_stream(int fd, const char *body_json) {
 }
 
 /**
- * Handle an OPTIONS preflight request.
- */
-static void handle_options(int fd) {
-    send_response(fd, 204, "No Content", NULL, NULL);
-}
-
-/**
- * GET /v1/capabilities — machine-readable API capabilities.
- */
-static void handle_capabilities(int fd) {
-    json_t *root = json_object();
-    json_set(root, "api_version", json_string("v1"));
-    json_set(root, "name", json_string("hermes-c"));
-
-    json_t *endpoints = json_array();
-    json_append(endpoints, json_string("GET /v1/models"));
-    json_append(endpoints, json_string("POST /v1/chat/completions"));
-    json_append(endpoints, json_string("GET /v1/capabilities"));
-    json_append(endpoints, json_string("GET /v1/tools"));
-    json_append(endpoints, json_string("GET /v1/agent/status"));
-    json_append(endpoints, json_string("GET /v1/sessions"));
-    json_append(endpoints, json_string("POST /v1/sessions"));
-    json_append(endpoints, json_string("GET /v1/sessions/{id}"));
-    json_append(endpoints, json_string("DELETE /v1/sessions/{id}"));
-    json_append(endpoints, json_string("GET /health"));
-    json_append(endpoints, json_string("GET /health/detailed"));
-    json_set(root, "endpoints", endpoints);
-
-    json_t *features = json_object();
-    json_set(features, "chat_completions", json_bool(true));
-    json_set(features, "streaming", json_bool(true));
-    json_set(features, "tools_listing", json_bool(true));
-    json_set(features, "models_listing", json_bool(true));
-    json_set(features, "agent_status", json_bool(true));
-    json_set(features, "sessions_listing", json_bool(true));
-    json_set(features, "sessions_crud", json_bool(true));
-    json_set(features, "health_detailed", json_bool(true));
-    json_set(root, "features", features);
-
-    char *out = json_serialize(root);
-    if (out) {
-        send_json(fd, 200, "OK", out);
-        free(out);
-    } else {
-        send_error(fd, 500, "serialization failed");
-    }
-    json_free(root);
-}
-
-/**
  * GET /v1/tools — list all registered tools.
  */
 static void handle_tools_list(int fd) {
@@ -1115,40 +918,7 @@ static void handle_tools_list(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
-        free(out);
-    } else {
-        send_error(fd, 500, "serialization failed");
-    }
-    json_free(root);
-}
-
-/* GW16: GET /v1/skills — list installed skills */
-static void handle_skills(int fd) {
-    json_t *root = json_object();
-    json_set(root, "object", json_string("list"));
-
-    skill_list_t *list = skills_scan_all();
-    if (list) {
-        json_t *data = json_array();
-        for (size_t i = 0; i < list->count; i++) {
-            json_t *entry = json_object();
-            json_set(entry, "name", json_string(list->skills[i].name));
-            if (list->skills[i].description[0])
-                json_set(entry, "description", json_string(list->skills[i].description));
-            json_append(data, entry);
-        }
-        json_set(root, "data", data);
-        json_set(root, "count", json_number((double)list->count));
-        skills_scan_free(list);
-    } else {
-        json_set(root, "data", json_array());
-        json_set(root, "count", json_number(0));
-    }
-
-    char *out = json_serialize(root);
-    if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1167,7 +937,7 @@ static void handle_toolsets(int fd) {
     if (tool_count == 0) {
         json_set(root, "data", data);
         char *out = json_serialize(root);
-        if (out) { send_json(fd, 200, "OK", out); free(out); }
+        if (out) { api_send_json(fd, 200, "OK", out); free(out); }
         else { send_error(fd, 500, "serialization failed"); }
         json_free(root);
         return;
@@ -1213,7 +983,7 @@ static void handle_toolsets(int fd) {
     json_set(root, "data", data);
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1253,7 +1023,7 @@ static void handle_health_detailed(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1300,7 +1070,7 @@ static void handle_agent_status(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1336,7 +1106,7 @@ static void handle_webhook(int fd, const char *body, const char *platform) {
             platform, body ? strlen(body) : 0);
 
     char *s = json_serialize(resp);
-    send_json(fd, 200, "OK", s ? s : "{}");
+    api_send_json(fd, 200, "OK", s ? s : "{}");
     free(s);
     json_free(resp);
 }
@@ -1399,7 +1169,7 @@ static void handle_config_get(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1460,7 +1230,7 @@ static void handle_service_info(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1489,7 +1259,7 @@ static void handle_metrics_get(int fd) {
 
     char *out = json_serialize(root);
     if (out) {
-        send_json(fd, 200, "OK", out);
+        api_send_json(fd, 200, "OK", out);
         free(out);
     } else {
         send_error(fd, 500, "serialization failed");
@@ -1578,7 +1348,7 @@ static void dispatch_request(int client_fd, const char *method,
         else
             send_error(client_fd, 400, "invalid response id");
     } else if (strcmp(method, "GET") == 0 && (strcmp(path, "/health") == 0 || strcmp(path, "/v1/health") == 0)) {
-        send_json(client_fd, 200, "OK", "{\"status\":\"ok\"}");
+        api_send_json(client_fd, 200, "OK", "{\"status\":\"ok\"}");
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/health/detailed") == 0) {
         handle_health_detailed(client_fd);
     } else if (strcmp(method, "GET") == 0 && strcmp(path, "/v1/capabilities") == 0) {
@@ -1633,31 +1403,6 @@ static void handle_client(int client_fd) {
     const char *body = find_body(buf);
     dispatch_request(client_fd, method, path, body, query);
     close(client_fd);
-}
-
-/* ── SSE helpers ────────────────────────────────────────────────── */
-
-static void send_sse_event(int fd, const char *data) {
-    dprintf(fd, "data: %s\n\n", data ? data : "");
-}
-
-static void send_sse_headers(int fd) {
-    const char *headers =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/event-stream\r\n"
-        "Cache-Control: no-cache\r\n"
-        "Connection: keep-alive\r\n"
-        "Access-Control-Allow-Origin: *\r\n"
-        "\r\n";
-    write(fd, headers, strlen(headers));
-}
-
-static void sse_send_chunk(int fd, const char *content, int index) {
-    char event[4096];
-    snprintf(event, sizeof(event),
-        "{\"choices\":[{\"delta\":{\"content\":\"%s\"},\"index\":%d}]}",
-        content, index);
-    send_sse_event(fd, event);
 }
 
 /* ── Server thread ──────────────────────────────────────────────── */

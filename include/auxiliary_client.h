@@ -173,6 +173,10 @@ bool endpoint_speaks_anthropic(const char *base_url);
  */
 bool is_anthropic_compat_endpoint(const char *provider,
                                              const char *base_url);
+static inline bool auxiliary_is_anthropic_compat_endpoint(const char *provider,
+                                                   const char *model)
+{ return is_anthropic_compat_endpoint(provider, model); }
+
 
 /**
  * Validate a base URL — returns true if it looks valid.
@@ -201,6 +205,10 @@ bool is_rate_limit_error(int http_status, const char *response_body);
  * Port of Python _is_connection_error(const char *error_message).
  */
 bool is_connection_error(const char *error_message);
+/* Aliases: call sites use the module-prefixed names. */
+static inline bool auxiliary_is_connection_error(const char *error_message)
+{ return is_connection_error(error_message); }
+
 
 /**
  * True if the response suggests an auth error (HTTP 401/403).

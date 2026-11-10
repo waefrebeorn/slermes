@@ -1,6 +1,6 @@
 /*
  * test_api_endpoints.c — HTTP API Integration Tests
- * Tests the web_server.c endpoint handlers against a running instance.
+ * Tests the web-server endpoint handlers against a running instance.
  *
  * Build: gcc -O2 -g -I include -o test_api_endpoints tests/integration/test_api_endpoints.c \
  *        lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o -lm -lpthread

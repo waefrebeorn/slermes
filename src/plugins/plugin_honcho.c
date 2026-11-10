@@ -245,6 +245,11 @@ static int memory_count(void) {
     return g_memory_count;
 }
 
+/* Windows <rpcndr.h> defines 'interface' as a macro (struct). */
+#ifdef interface
+#undef interface
+#endif
+
 static plugin_interface_t interface = {
     .type = PLUGIN_MEMORY,
     .memory_store  = memory_store,

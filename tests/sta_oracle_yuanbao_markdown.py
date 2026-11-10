@@ -10,7 +10,7 @@ symbol-prefix false-positives (the C ports use the yuanbao_md_ prefix). This
 oracle verifies the pure markdown helpers are genuinely done.
 """
 import sys, os, json
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from gateway.platforms.yuanbao import MarkdownProcessor
 
 

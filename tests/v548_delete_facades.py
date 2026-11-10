@@ -14,7 +14,7 @@ Usage: python3 tests/v548_delete_facades.py [--apply]
 import json, re, sys
 from pathlib import Path
 
-SLERMES = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES = Path("SLERMES_REPO")
 rows = json.load(open(SLERMES / "tests/.v548_facade_real.json"))
 DELETE = [r for r in rows if r["decision"] == "DELETE"]
 APPLY = "--apply" in sys.argv

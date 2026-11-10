@@ -226,7 +226,7 @@ int tg_extract_bot_handles(const char *text, const char ***out_handles) {
     const char *scan = text;
     int count = 0;
     int capacity = 8;
-    char **handles = (char **)calloc((size_t)capacity, sizeof(char *));
+    const char **handles = (const char **)calloc((size_t)capacity, sizeof(char *));
     if (!handles) { regfree(&re); return 0; }
 
     while (regexec(&re, scan, 2, matches, 0) == 0 && count < 64) {
@@ -241,7 +241,7 @@ int tg_extract_bot_handles(const char *text, const char ***out_handles) {
 
                 if (count >= capacity) {
                     capacity *= 2;
-                    char **newh = (char **)realloc(handles, (size_t)capacity * sizeof(char *));
+                    const char **newh = (const char **)realloc(handles, (size_t)capacity * sizeof(char *));
                     if (!newh) { free(h); break; }
                     handles = newh;
                 }

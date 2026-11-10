@@ -630,7 +630,10 @@ char *_resolve_runtime_from_pool_entry(const char *provider,
     free(api_key);
     free(effective_model);
     if (mc_owned) json_free(mc);
-    return out;
+    /* the caller expects a JSON *string* */
+    char *rendered = json_dumps(out, 0);
+    json_free(out);
+    return rendered;
 }
 
 /*

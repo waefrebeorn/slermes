@@ -1239,7 +1239,7 @@ FILE *ww_acquire_machine_lock(const char *lock_path)
         fputc('\0', fp);
         fflush(fp);
     }
-    fseek(fp, 0);
+    fseek(fp, 0, SEEK_SET);
     /* On Windows we'd use LockFileEx; for now, just succeed
      * since we're on POSIX. */
 #else

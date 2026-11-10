@@ -61,7 +61,7 @@ static char *bgc_git_stdout(const char *repo_dir, const char *argv[], int argc) 
     return out;
 }
 
-static int bgc_git_run(const char *repo_dir, const char *argv[], int argc, int *exit_code) {
+static char *bgc_git_run(const char *repo_dir, const char *argv[], int argc, int *exit_code) {
     char cmd[4096];
     int pos = snprintf(cmd, sizeof(cmd), "git -C \"%s\"", repo_dir ? repo_dir : ".");
     for (int i = 0; i < argc && pos < (int)sizeof(cmd) - 64; i++) {

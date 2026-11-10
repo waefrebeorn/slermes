@@ -7,7 +7,7 @@ Replays the identical operations against LIVE Python and compares each case's
 emitted JSON with the C harness output (read from stdin).
 """
 import sys, os, io, json, re, tempfile, contextlib
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from hermes_cli import logs as L
 
 def main():

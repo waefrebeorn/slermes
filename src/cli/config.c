@@ -6,6 +6,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "config_env_file.h"
 #include "config_schema.h"
 #include "hermes_yaml.h"
 #include "hermes_json.h"
@@ -235,112 +236,10 @@ static char *config_resolve_includes(const char *filepath) {
 }
 
 /* Resolve SLERMES_HOME. Default: ~/.slermes — delegates to hermes_get_home() */
-static void get_slermes_home(char *buf, size_t sz) {
-    hermes_get_home(buf, sz);
-}
 
 /* ================================================================
  *  .env file parser (KEY=VALUE, one per line, # comments)
  * ================================================================ */
-
-static void parse_env_file(const char *path, hermes_config_t *cfg) {
-    FILE *f = fopen(path, "r");
-    if (!f) return;
-
-    char line[4096];
-    while (fgets(line, sizeof(line), f)) {
-        /* Strip trailing newline */
-        size_t len = strlen(line);
-        while (len > 0 && (line[len-1] == '\n' || line[len-1] == '\r'))
-            line[--len] = '\0';
-
-        /* Skip empty/comment lines */
-        const char *p = line;
-        while (*p == ' ') p++;
-        if (*p == '#' || *p == '\0') continue;
-
-        /* Find '=' */
-        const char *eq = strchr(p, '=');
-        if (!eq) continue;
-
-        size_t key_len = (size_t)(eq - p);
-        if (key_len == 0) continue;
-
-        const char *val = eq + 1;
-
-        /* Match known keys and update config */
-        if (strncmp(p, "HERMES_API_KEY", key_len) == 0 && key_len == 14) {
-            snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-            snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-        }
-        else if (strncmp(p, "OPENAI_API_KEY", key_len) == 0 && key_len == 14) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "ANTHROPIC_API_KEY", key_len) == 0 && key_len == 17) {
-            /* Store for anthropic provider; also keep as generic fallback */
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "GOOGLE_API_KEY", key_len) == 0 && key_len == 14) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "NOUS_API_KEY", key_len) == 0 && key_len == 12) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "XAI_API_KEY", key_len) == 0 && key_len == 11) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "OPENROUTER_API_KEY", key_len) == 0 && key_len == 18) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "DEEPSEEK_API_KEY", key_len) == 0 && key_len == 16) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-            snprintf(cfg->provider_cfg.deepseek_api_key, sizeof(cfg->provider_cfg.deepseek_api_key), "%s", val);
-        }
-        else if (strncmp(p, "SLERMES_API_KEY", key_len) == 0 && key_len == 15) {
-            if (cfg->api_key[0] == '\0') {
-                snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", val);
-                snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", val);
-            }
-        }
-        else if (strncmp(p, "HERMES_MODEL", key_len) == 0 && key_len == 12) {
-            snprintf(cfg->model, sizeof(cfg->model), "%s", val);
-            snprintf(cfg->provider_cfg.model, sizeof(cfg->provider_cfg.model), "%s", val);
-        }
-        else if (strncmp(p, "HERMES_PROVIDER", key_len) == 0 && key_len == 15) {
-            snprintf(cfg->provider, sizeof(cfg->provider), "%s", val);
-            snprintf(cfg->provider_cfg.provider, sizeof(cfg->provider_cfg.provider), "%s", val);
-        }
-        else if (strncmp(p, "HERMES_BASE_URL", key_len) == 0 && key_len == 15) {
-            snprintf(cfg->base_url, sizeof(cfg->base_url), "%s", val);
-            snprintf(cfg->provider_cfg.base_url, sizeof(cfg->provider_cfg.base_url), "%s", val);
-        }
-        else if (strncmp(p, "SLERMES_HOME", key_len) == 0 && key_len == 12) {
-            /* Handled by get_slermes_home() */
-        }
-    }
-    fclose(f);
-}
 
 /* ================================================================
  *  Config file loading
@@ -1674,9 +1573,37 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
         hermes_set_profile(cfg->agent.profile);
     }
 
+    /* Environment overrides win over config.yaml.
+     *
+     * The env fallback above only runs when the YAML fails to parse, so with a
+     * valid config file present HERMES_MODEL / HERMES_PROVIDER / HERMES_BASE_URL
+     * / HERMES_API_KEY were silently ignored. The result was a config struct
+     * with empty provider and model, and the agent loop failed at the first hop
+     * with "Stream drop: / after 0.0s" -- exiting 0 and reporting success while
+     * never contacting a provider. Hermes lets the environment override the
+     * file; so does this now. */
+    {
+        const char *e;
+        if ((e = getenv("HERMES_MODEL")) && e[0]) {
+            snprintf(cfg->model, sizeof(cfg->model), "%s", e);
+            snprintf(cfg->provider_cfg.model, sizeof(cfg->provider_cfg.model), "%s", e);
+        }
+        if ((e = getenv("HERMES_PROVIDER")) && e[0]) {
+            snprintf(cfg->provider, sizeof(cfg->provider), "%s", e);
+            snprintf(cfg->provider_cfg.provider, sizeof(cfg->provider_cfg.provider), "%s", e);
+        }
+        if ((e = getenv("HERMES_BASE_URL")) && e[0]) {
+            snprintf(cfg->base_url, sizeof(cfg->base_url), "%s", e);
+            snprintf(cfg->provider_cfg.base_url, sizeof(cfg->provider_cfg.base_url), "%s", e);
+        }
+        if ((e = getenv("HERMES_API_KEY")) && e[0]) {
+            snprintf(cfg->api_key, sizeof(cfg->api_key), "%s", e);
+            snprintf(cfg->provider_cfg.api_key, sizeof(cfg->provider_cfg.api_key), "%s", e);
+        }
+    }
+
     return true;
 }
-
 
 /* S5 C15: Set gateway.platforms in config.yaml and in-memory cfg struct.
  * platforms is a comma-separated list (e.g. "telegram,discord").
@@ -1687,24 +1614,19 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
  *  P15: Config Validation
  * ================================================================ */
 
-
 /* ================================================================
  *  P17: Config Profiles
  * ================================================================ */
-
 
 /* ================================================================
  *  P18: Config default factory
  * ================================================================ */
 
-
 /* Helper: add a diff entry for string or int fields */
-
 
 /* ================================================================
  *  P20: Config Export
  * ================================================================ */
-
 
 /* ================================================================
  *  P22: Config merge — deep merge src into dst
@@ -1717,7 +1639,6 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
  *  P24: Config Schema Generation — build JSON Schema from config_t
  * ================================================================ */
 
-
 /* Build JSON Schema for the entire config struct */
 
 /* ================================================================
@@ -1729,7 +1650,6 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
 /* O15: File permission hardening — secure sensitive files to 0600/0700 */
 /* Skips if owner is 0 (root). Hardens: home dir (0700), config.yaml (0600),
    .env (0600), session DB (0600), vault file (0600), cron store (0600). */
-
 
 /* ================================================================
  *  P19: Config hot-reload via SIGHUP

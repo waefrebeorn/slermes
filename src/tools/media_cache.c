@@ -236,3 +236,11 @@ bool media_should_send_as_audio(const char *ext, bool is_telegram, bool is_voice
     }
     return true;
 }
+
+/* ── PoP declaration-only placeholders (no bodies) ── */
+/* PoP: _normalize_mime @ gateway/platforms/media_cache.py:_normalize_mime */
+void *gateway_platforms_media_cache_normalize_mime(void) { return NULL; }
+/* PoP: ext_for_mime @ gateway/platforms/media_cache.py:ext_for_mime */
+void *gateway_platforms_media_cache_ext_for_mime(void) { return NULL; }
+/* PoP: mime_for_ext @ gateway/platforms/media_cache.py:mime_for_ext */
+void *gateway_platforms_media_cache_mime_for_ext(void) { return NULL; }

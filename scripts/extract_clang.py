@@ -5,7 +5,7 @@ source slices. Robust and correct."""
 import sys
 from clang import cindex
 
-BASE='/home/wubu/hermes-agent-dev/slermes/'
+BASE='SLERMES_REPO/'
 SRC='src/cli/commands.c'
 
 def parse_extents(src_text):

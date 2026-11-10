@@ -116,8 +116,8 @@ int gstat_u_file_cache_signature(const char *arg) {
     if (!arg || !*arg) { printf("0\n"); return 0; }
     struct stat st;
     if (stat(arg, &st) != 0) { printf("0\n"); return 0; }
-    printf("1\t%lld\t%lld\n", (long long)st.st_mtim.tv_sec * 1000000000LL +
-           (long long)st.st_mtim.tv_nsec, (long long)st.st_size);
+    printf("1\t%lld\t%lld\n", (long long)SLERMES_ST_MTIM_SEC(st) * 1000000000LL +
+           (long long)SLERMES_ST_MTIM_NSEC(st), (long long)st.st_size);
     return 0;
 }
 

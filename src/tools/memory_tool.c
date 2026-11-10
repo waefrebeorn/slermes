@@ -9,6 +9,7 @@
  */
 
 #include "memory_store.h"
+#include "memory_entries.h"
 #include "hermes_json.h"
 #include "registry.h"  /* live "memory" tool registration */
 #include <stdio.h>
@@ -23,7 +24,6 @@
 #include <sys/file.h>
 #include <errno.h>
 
-#define ENTRY_DELIMITER "\n§\n"
 #define DEFAULT_MEMORY_LIMIT 2200
 #define DEFAULT_USER_LIMIT   1375
 #define MAX_CONSOLIDATION_FAILURES_PER_TURN 3
@@ -51,24 +51,6 @@ struct memory_store_t {
 static const char *path_for(const char *mem_dir, const char *target);
 static char *json_dumps_str(const char *s);
 
-/* ---- small helpers ---- */
-
-static void free_entries(char **arr, int n) {
-    for (int i = 0; i < n; i++) free(arr[i]);
-    free(arr);
-}
-static char **copy_entries(const char **src, int n) {
-    char **out = malloc(sizeof(char*) * (n > 0 ? n : 1));
-    for (int i = 0; i < n; i++) out[i] = strdup(src[i]);
-    return out;
-}
-static int char_count_arr(const char **arr, int n) {
-    if (n == 0) return 0;
-    /* delimiter between n entries = (n-1) * strlen(ENTRY_DELIMITER) */
-    int total = (n - 1) * (int)strlen(ENTRY_DELIMITER);
-    for (int i = 0; i < n; i++) total += (int)strlen(arr[i]);
-    return total;
-}
 /* PoP: entries_for @ tools/memory_tool.py:_entries_for */
 static const char **entries_for(const memory_store_t *s, const char *target, int *pn) {
     if (target && strcmp(target, "user") == 0) { *pn = s->user_n; return (const char**)s->user_entries; }
@@ -80,20 +62,6 @@ static char **mutable_entries_for(memory_store_t *s, const char *target, int *pn
 }
 static int char_limit_for(const memory_store_t *s, const char *target) {
     return (target && strcmp(target, "user") == 0) ? s->user_char_limit : s->memory_char_limit;
-}
-
-/* dedup preserving order (keep first occurrence) */
-static char **dedup_entries(char **arr, int n, int *out_n) {
-    char **out = malloc(sizeof(char*) * (n > 0 ? n : 1));
-    int m = 0;
-    for (int i = 0; i < n; i++) {
-        int seen = 0;
-        for (int j = 0; j < m; j++) if (strcmp(out[j], arr[i]) == 0) { seen = 1; break; }
-        if (!seen) out[m++] = arr[i]; else free(arr[i]);
-    }
-    *out_n = m;
-    free(arr);
-    return out;
 }
 
 /* ---- file I/O (atomic) ---- */

@@ -161,8 +161,8 @@ char *skillstool_view_fingerprint(const char *arg) {
     struct stat st;
     if (stat(arg, &st) != 0) return NULL;
     char *out = NULL;
-    long long mtime_ns = (long long)st.st_mtim.tv_sec * 1000000000LL
-                       + (long long)st.st_mtim.tv_nsec;
+    long long mtime_ns = (long long)SLERMES_ST_MTIM_SEC(st) * 1000000000LL
+                       + (long long)SLERMES_ST_MTIM_NSEC(st);
     asprintf(&out, "%s\t%lld\t%lld", arg,
              mtime_ns, (long long)st.st_size);
     return out;

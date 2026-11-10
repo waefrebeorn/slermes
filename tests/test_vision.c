@@ -12,6 +12,7 @@
  *   /tmp/hermes_test_vision
  */
 
+#include "image_routing.h"
 #include "hermes.h"
 #include "hermes_json.h"
 #include <stdio.h>

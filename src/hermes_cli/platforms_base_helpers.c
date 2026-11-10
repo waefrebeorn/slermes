@@ -429,7 +429,7 @@ void gw_base__notify_fatal_error(void) {
 void gw_base__set_fatal_error_handler(void (*handler)(void)) {
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
-    g_gw.message_handler = handler; /* store generic handler */
+    g_gw.message_handler = (void(*)(const char*, const char*))handler; /* store generic handler */
     pthread_mutex_unlock(&g_gw.lock);
 }
 /* PoP: gw_base__is_connected @ gateway/platforms/base.py:is_connected */

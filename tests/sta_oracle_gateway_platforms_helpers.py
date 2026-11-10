@@ -2,12 +2,12 @@
 """Oracle: gateway/platforms/helpers.py table helpers vs LIVE Python.
 Reads newline-delimited JSON; compares each line vs live Python."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
-sys.path.insert(0, os.path.join("/home/wubu/hermes-agent-dev", "gateway"))
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
+sys.path.insert(0, os.path.join("C:/Users/eman5/hermes-agent", "gateway"))
 utils_mod = types.ModuleType("utils"); utils_mod.atomic_json_write = lambda *a, **k: None
 sys.modules["utils"] = utils_mod
 import importlib.util
-spec = importlib.util.spec_from_file_location("gh_helpers", os.path.join("/home/wubu/hermes-agent-dev","gateway/platforms/helpers.py"))
+spec = importlib.util.spec_from_file_location("gh_helpers", os.path.join("C:/Users/eman5/hermes-agent","gateway/platforms/helpers.py"))
 mod = importlib.util.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

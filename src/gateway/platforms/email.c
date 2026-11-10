@@ -24,23 +24,8 @@
 #include <openssl/err.h>
 #include <openssl/rand.h>
 #include <ctype.h>
+#include "hermes_encode.h"
 
-/* ================================================================
- *  Inline hex encode (no dependency on libcrypto)
- * Port of Python gateway/platforms/email.py.
- * ================================================================ */
-
-static char *hex_encode(const unsigned char *data, size_t len) {
-    static const char hex[] = "0123456789abcdef";
-    char *out = malloc(len * 2 + 1);
-    if (!out) return NULL;
-    for (size_t i = 0; i < len; i++) {
-        out[i*2] = hex[(data[i] >> 4) & 0xF];
-        out[i*2+1] = hex[data[i] & 0xF];
-    }
-    out[len*2] = '\0';
-    return out;
-}
 
 /* ================================================================
  *  Constants
@@ -1620,7 +1605,7 @@ static void generate_message_id(char *buf, size_t sz) {
                  (unsigned long)time(NULL), (unsigned long)rand());
         return;
     }
-    char *hex = hex_encode(rand_bytes, 8);
+    char *hex = hex_encode_alloc(rand_bytes, 8);
     if (hex) {
         snprintf(buf, sz, "<%s.%lx.%s>", hex, (unsigned long)time(NULL),
                  g_email.from);

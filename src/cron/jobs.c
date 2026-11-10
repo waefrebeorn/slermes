@@ -187,7 +187,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-static char *set_err(char **err, const char *msg) {
+ char *set_err(char **err, const char *msg) {
     if (err) *err = xstrdup(msg);
     return NULL;
 }
@@ -284,12 +284,12 @@ char *cronjobs_job_output_dir(const char *job_id, char **err) {
 }
 
 /* PoP: cronjobs_secure_dir @ cron/jobs.py:_secure_dir */
-static void cronjobs_secure_dir(const char *path) {
+ void cronjobs_secure_dir(const char *path) {
     if (path) chmod(path, 0700); /* best-effort; ignore errors */
 }
 
 /* PoP: cronjobs_secure_file @ cron/jobs.py:_secure_file */
-static void cronjobs_secure_file(const char *path) {
+ void cronjobs_secure_file(const char *path) {
     struct stat st;
     if (path && stat(path, &st) == 0) chmod(path, 0600);
 }
@@ -324,7 +324,7 @@ bool cronjobs_ensure_dirs(void) {
 #define CRON_JOBS_LOCK_TIMEOUT_SECS 30.0
 #define CRON_JOBS_LOCK_POLL_MS      100
 
-static int cronjobs_lock(void) {
+ int cronjobs_lock(void) {
     cronjobs_ensure_dirs();
     char *lp = cronjobs_jobs_lock_file();
     if (!lp) return -1;
@@ -356,7 +356,7 @@ static int cronjobs_lock(void) {
     }
 }
 
-static void cronjobs_unlock(int fd) {
+ void cronjobs_unlock(int fd) {
     if (fd >= 0) {
         flock(fd, LOCK_UN);
         close(fd);
@@ -606,7 +606,7 @@ static char *iso_local(time_t ts) {
     if (!localtime_r(&ts, &lt)) return NULL;
     char base[32];
     if (strftime(base, sizeof(base), "%Y-%m-%dT%H:%M:%S", &lt) == 0) return NULL;
-    long off = lt.tm_gmtoff;               /* seconds east of UTC */
+    long off = SLERMES_TM_GMTOFF(&lt);               /* seconds east of UTC */
     char sign = off < 0 ? '-' : '+';
     long ao = off < 0 ? -off : off;
     int oh = (int)(ao / 3600), om = (int)((ao % 3600) / 60);
@@ -797,7 +797,7 @@ done:
 }
 
 /* PoP: recoverable_oneshot_run_at @ cron/jobs.py:_recoverable_oneshot_run_at */
-static char *recoverable_oneshot_run_at(const json_t *schedule, time_t now,
+ char *recoverable_oneshot_run_at(const json_t *schedule, time_t now,
                                         const char *last_run_at) {
     const char *kind = json_object_get_string(schedule, "kind", "");
     if (strcmp(kind, "once") != 0) return NULL;
@@ -1161,7 +1161,7 @@ static char *normalize_optional_text(const json_t *value, bool strip_trailing_sl
 }
 
 /* Convenience overload taking a C string. */
-static char *normalize_optional_cstr(const char *value, bool strip_trailing_slash) {
+ char *normalize_optional_cstr(const char *value, bool strip_trailing_slash) {
     if (!value) return NULL;
     json_t *s = json_string(value);
     char *r = normalize_optional_text(s, strip_trailing_slash);
@@ -1176,7 +1176,7 @@ static char *normalize_optional_cstr(const char *value, bool strip_trailing_slas
 #include "uuid.h"
 
 /* uuid4().hex[:12] — 12 lowercase hex chars from a v4 UUID. */
-static char *new_job_id(void) {
+ char *new_job_id(void) {
     uint8_t b[16];
     if (!uuid_v4_bytes(b)) {
         char *p = malloc(13);
@@ -1464,7 +1464,7 @@ json_t *cronjobs_list_jobs(bool include_disabled) {
 
 /* Return the semantic (provider,model,base_url,no_agent) tuple as a string key
  * for change comparison. Caller frees. */
-static char *inference_axes_key(const json_t *job) {
+ char *inference_axes_key(const json_t *job) {
     char *p = normalize_optional_text(json_object_get(job, "provider"), false);
     char *m = normalize_optional_text(json_object_get(job, "model"), false);
     char *b = normalize_optional_text(json_object_get(job, "base_url"), true);
@@ -1659,7 +1659,7 @@ json_t *cronjobs_trigger_job(const char *job_id) {
 }
 
 /* Recursively rmtree a directory. */
-static void rmtree(const char *path) {
+ void rmtree(const char *path) {
     DIR *d = opendir(path);
     if (!d) { unlink(path); return; }
     struct dirent *e;
@@ -1867,7 +1867,7 @@ bool cronjobs_advance_next_run(const char *job_id) {
 }
 
 /* PoP: machine_id @ cron/jobs.py:_machine_id */
-static char *machine_id(void) {
+ char *machine_id(void) {
     const char *explicit = getenv("HERMES_MACHINE_ID");
     if (explicit) {
         char *e = str_strip_dup(explicit);
@@ -1991,7 +1991,7 @@ static int iso_utc_offset(const char *iso) {
 }
 
 /* PoP: timezone_offset_mismatch @ cron/jobs.py:_timezone_offset_mismatch */
-static bool timezone_offset_mismatch(const char *stored_iso, int now_off) {
+ bool timezone_offset_mismatch(const char *stored_iso, int now_off) {
     int so = iso_utc_offset(stored_iso);
     if (so == INT_MIN || now_off == INT_MIN) return false;
     return so != now_off;
@@ -2010,7 +2010,7 @@ static time_t iso_wall_clock(const char *iso) {
 }
 
 /* PoP: stored_wall_clock_is_future @ cron/jobs.py:_stored_wall_clock_is_future */
-static bool stored_wall_clock_is_future(const char *stored_iso, time_t now) {
+ bool stored_wall_clock_is_future(const char *stored_iso, time_t now) {
     time_t sw = iso_wall_clock(stored_iso);
     struct tm nl; localtime_r(&now, &nl); nl.tm_isdst = -1;
     time_t nw = mktime(&nl);
@@ -2031,7 +2031,7 @@ json_t *cronjobs_get_due_jobs(void) {
 
     time_t now = time(NULL);
     struct tm nl; localtime_r(&now, &nl);
-    int now_off = (int)nl.tm_gmtoff;
+    int now_off = (int)SLERMES_TM_GMTOFF(&nl);
 
     json_t *due = json_array();
     bool needs_save = false;

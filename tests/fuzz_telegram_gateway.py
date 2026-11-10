@@ -297,7 +297,7 @@ def test_message_chunking():
 @test("format_message missing MarkdownV2 pipeline", "TL3-format")
 def test_format_message_missing():
     """C is missing full MarkdownV2 format_message conversion (Python has 175 LOC)."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "def format_message(self, content: str) -> str:" in py
     c_has = "format_message" in open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     if not c_has and py_has:
@@ -340,7 +340,7 @@ def test_reopen_forum_topic():
 @test("DM topic lifecycle MISSING", "TL4-topics")
 def test_dm_topic_lifecycle_missing():
     """Python has DM topic lifecycle (create/ensure/rename/persist) — C doesn't."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     combined = c + c_server
@@ -421,7 +421,7 @@ def test_send_with_keyboard():
 @test("callback query handler MISSING", "TL5-interact")
 def test_callback_query_handler_missing():
     """Python has 368-line _handle_callback_query — C lacks this."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     combined = c + c_server
@@ -787,7 +787,7 @@ def test_empty_config_binary():
 @test("GAP: message filtering (allowed_chats)", "TL11-gap")
 def test_allowed_chats_gap():
     """Python has allowed_chats/group_allowed/observe_allowed — C has minimal filtering."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     combined = c_server
     py_has = "_telegram_allowed_chats" in py
@@ -799,7 +799,7 @@ def test_allowed_chats_gap():
 @test("GAP: allowed_topics filtering", "TL11-gap")
 def test_allowed_topics_gap():
     """Python has allowed_topics and ignored_threads — C doesn't filter by topic."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_telegram_allowed_topics" in py
     c_has = "allowed_topics" in c or "allowed_topic" in c
@@ -810,7 +810,7 @@ def test_allowed_topics_gap():
 @test("GAP: mention patterns (regex)", "TL11-gap")
 def test_mention_patterns_gap():
     """Python has _compile_mention_patterns + regex wake-words — C has basic @mention only."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     py_has = "_compile_mention_patterns" in py and "mention_patterns" in py
     c_has = "mention_pattern" in c
@@ -821,7 +821,7 @@ def test_mention_patterns_gap():
 @test("GAP: exclusive_bot_mentions routing", "TL11-gap")
 def test_exclusive_bot_mentions_gap():
     """Python has exclusive_bot_mentions multi-bot routing — C doesn't."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "exclusive_bot_mentions" in py
@@ -834,7 +834,7 @@ def test_exclusive_bot_mentions_gap():
 def test_group_observe_attribution_gap():
     """Python attributes observed messages with [username|id] — C just appends raw text."""
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "_telegram_group_observe_attributed_text" in py
     c_has = "attributed" in c_server or "user_id" not in c_server
     # C's observe_append doesn't add attribution
@@ -845,7 +845,7 @@ def test_group_observe_attribution_gap():
 @test("GAP: free_response_chats", "TL11-gap")
 def test_free_response_chats_gap():
     """Python has free_response_chats — C doesn't."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "free_response_chats" in py
     c_has = "free_response" in c_server
@@ -856,7 +856,7 @@ def test_free_response_chats_gap():
 @test("GAP: reactions lifecycle (set+clear on processing)", "TL11-gap")
 def test_reactions_lifecycle_gap():
     """Python has on_processing_start/_complete with reactions — C has only set API."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     c_tg = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     py_has = "on_processing_start" in py and "on_processing_complete" in py
@@ -868,7 +868,7 @@ def test_reactions_lifecycle_gap():
 @test("GAP: send_or_update_status", "TL11-gap")
 def test_send_or_update_status_gap():
     """Python has send_or_update_status — C doesn't."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "send_or_update_status" in py
     c_has = "send_or_update_status" in c_server or "update_status" in c_server
@@ -880,7 +880,7 @@ def test_send_or_update_status_gap():
 def test_edit_overflow_split_gap():
     """Python has _edit_overflow_split — C only has edit_message_text."""
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "_edit_overflow_split" in py
     if py_has:
         return "PASS (MISSING: _edit_overflow_split not ported)"
@@ -891,7 +891,7 @@ def test_thread_fallback_gap():
     """Python tries send without thread_id on 'thread not found' — C doesn't."""
     c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "_send_message_with_thread_fallback" in py
     c_has = "thread_fallback" in c or "thread_fallback" in c_server
     if py_has and not c_has:
@@ -901,7 +901,7 @@ def test_thread_fallback_gap():
 @test("GAP: polling error handling (drain/conflict/verify)", "TL11-gap")
 def test_polling_error_handling_gap():
     """Python has drain_polling, handle_conflict, verify_after_reconnect — C has basic backoff."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/platforms/telegram.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_drain_polling_connections" in py or "_handle_polling_conflict" in py
     c_has = "_drain" in c_server or "polling_conflict" in c_server or "drain_polling" in c_server

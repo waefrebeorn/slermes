@@ -7,7 +7,7 @@ Usage: python3 tests/v548_delete_thin.py [--apply]
 import json, re, sys
 from pathlib import Path
 
-SLERMES = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES = Path("SLERMES_REPO")
 rows = json.load(open(SLERMES / "tests/.v548_thin_real.json"))
 TARGET = {}
 for r in rows:

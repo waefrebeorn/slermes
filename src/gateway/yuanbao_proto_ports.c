@@ -60,3 +60,13 @@ char *ybp_encode_get_group_member_list(const char *group_code) {
     printf("get-group-member-list frame built (%s)\n", group_code);
     return strdup("{}");
 }
+
+/* Aliases: callers use the unprefixed names. */
+char *encode_conn_msg(long msg_type, long seq_no, const char *data_b64)
+{ return ybp_encode_conn_msg(msg_type, seq_no, data_b64); }
+char *decode_conn_msg(const char *bytes_b64)
+{ return ybp_decode_conn_msg(bytes_b64); }
+char *encode_query_group_info(const char *group_code)
+{ return ybp_encode_query_group_info(group_code); }
+char *encode_get_group_member_list(const char *group_code)
+{ return ybp_encode_get_group_member_list(group_code); }

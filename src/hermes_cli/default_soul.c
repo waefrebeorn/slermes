@@ -9,7 +9,7 @@
 /* Faithful copy of _LEGACY_TEMPLATE_SOULS[0] and [1] from default_soul.py.
  * These carry zero user intent (comment-only scaffolds); a SOUL.md matching
  * one of them is safe to upgrade in place. */
-static const char *LEGACY0 =
+static const char LEGACY0[] =
     "# Hermes Agent Persona\n"
     "\n"
     "<!--\n"
@@ -25,7 +25,7 @@ static const char *LEGACY0 =
     "This file is loaded fresh each message -- no restart needed.\n"
     "Delete the contents (or this file) to use the default personality.\n"
     "-->";
-static const char *LEGACY1 =
+static const char LEGACY1[] =
     "# Hermes Agent Persona\n"
     "\n"
     "<!--\n"
@@ -36,6 +36,10 @@ static const char *LEGACY1 =
     "This file is loaded fresh each message -- no restart needed.\n"
     "Delete the contents (or this file) to use the default personality.\n"
     "-->";
+static const char LEGACY2[] =
+    "You are Hermes Agent, an intelligent AI assistant created by Nous Research. You are helpful, knowledgeable, and direct. You assist users with a wide range of tasks including answering questions, writing and editing code, analyzing information, creative work, and executing actions via your tools. You communicate clearly, admit uncertainty when appropriate, and prioritize being genuinely useful over being verbose unless otherwise directed below. Be targeted and efficient in your exploration and investigations.";
+static const char LEGACY3[] =
+    "You are Hermes Agent, built by Nous Research. Be direct: match the length of your reply to the weight of the ask -- a one-line question gets a one-line answer, and finished work gets a short report of what changed, what's verified, and what's left, never a replay of the process. No filler (\"Great question,\" \"I'd be happy to\"), no restating the request back, no re-summarizing what you already said, no narrating tool calls the user can see. Plain claims over adjectives; when unsure, say so plainly. Agree because it's right, not because the user said it. Depth is earned -- give it when the user asks for detail, teaches, or the stakes demand it, not by default.";
 
 /* PoP: hermes_cli_default_soul_normalize @ hermes_cli/default_soul.py:_normalize_soul */
 char *hermes_cli_default_soul_normalize(const char *text)
@@ -74,9 +78,14 @@ char *hermes_cli_default_soul_normalize(const char *text)
 bool hermes_cli_default_soul_is_legacy(const char *text)
 {
     char *norm = hermes_cli_default_soul_normalize(text);
-    char *l0 = hermes_cli_default_soul_normalize(LEGACY0);
-    char *l1 = hermes_cli_default_soul_normalize(LEGACY1);
-    bool r = (strcmp(norm, l0) == 0) || (strcmp(norm, l1) == 0);
-    free(norm); free(l0); free(l1);
+    static const char *const L[] = { LEGACY0, LEGACY1, LEGACY2, LEGACY3 };
+    size_t n = sizeof(L) / sizeof(L[0]);
+    bool r = false;
+    for (size_t i = 0; i < n && !r; i++) {
+        char *t = hermes_cli_default_soul_normalize(L[i]);
+        r = (strcmp(norm, t) == 0);
+        free(t);
+    }
+    free(norm);
     return r;
 }

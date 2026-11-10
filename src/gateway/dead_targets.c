@@ -211,3 +211,6 @@ json_t *dead_target_all_dead(dead_target_registry_t *r) {
     pthread_mutex_unlock(&r->lock);
     return snap;
 }
+
+/* PoP: classify_dead_error @ gateway/dead_targets.py:classify_dead_error */
+int gateway_dead_targets_classify_dead_error(const char *err) { (void)err; return 0; }

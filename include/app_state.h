@@ -80,16 +80,6 @@ int app_chat_y(app_state_t *app);
 int app_chat_h(app_state_t *app);
 int app_sidebar_h(app_state_t *app);
 
-/* Database */
-int app_db_open(app_state_t *app);
-void app_db_close(app_state_t *app);
-void app_load_sessions(app_state_t *app);
-void app_load_messages(app_state_t *app, int idx);
-void app_load_skills(app_state_t *app);
-void app_load_profiles(app_state_t *app);
-void app_load_cron(app_state_t *app);
-void app_load_stats(app_state_t *app);
-
 /* Session management */
 int app_selected_session(app_state_t *app);
 void app_set_selected_session(app_state_t *app, int idx);

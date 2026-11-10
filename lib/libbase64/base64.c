@@ -52,10 +52,12 @@ size_t base64_decoded_len(size_t encoded_len) {
  * ================================================================ */
 
 char *base64_encode(const unsigned char *data, size_t len) {
-    return base64_encode_nopad(data, len);
+    return base64_encode_padded(data, len);
 }
 
-char *base64_encode_nopad(const unsigned char *data, size_t len) {
+/* RFC 4648 standard base64 is PADDED; this is the actual encoder. The
+ * "nopad" name was a lie (it emits '='), renamed to match what it does. */
+char *base64_encode_padded(const unsigned char *data, size_t len) {
     if (!data) return NULL;
     if (len == 0) return strdup("");
     size_t cap = base64_encoded_len(len) + 4;

@@ -6,6 +6,13 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_clock.h"
+
+/* Public monotonic clock: seconds since CLOCK_MONOTONIC (double). The old
+ * inline body duplicated clock_mono_sec() in the shared header; keep this
+ * exported symbol for the gateway-wide callers (gg_dispatch/logging/misc/
+ * session/server) that reference gw_mono_time(). */
+double gw_mono_time(void) { return clock_mono_sec(); }
 #include "hermes_agent.h"
 #include "hermes_gateway_core.h"
 #include "hermes_json.h"
@@ -27,12 +34,6 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <dirent.h>
-
-double gw_mono_time(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
 
 void gw_queue_init(void) {
     g_gw.msg_queue_head = 0;
@@ -68,7 +69,7 @@ bool gw_queue_push(const char *platform, const char *chat_id,
         snprintf(slot->thread_id, sizeof(slot->thread_id), "%s", thread_id);
     else
         slot->thread_id[0] = '\0';
-    slot->timestamp = gw_mono_time();
+    slot->timestamp = clock_mono_sec();
 
     g_gw.msg_queue_head = next;
 
@@ -130,7 +131,7 @@ void gw_set_keepalive(int plat_idx, double keepalive_sec) {
 
 bool gw_dedup_check(const char *message_id) {
     if (!message_id || !*message_id) return false;
-    double now = gw_mono_time();
+    double now = clock_mono_sec();
 
     /* Prune expired entries */
     while (g_gw.dedup_count > 0 &&
@@ -154,14 +155,14 @@ void gw_dedup_add(const char *message_id) {
 
     int idx = (g_gw.dedup_head + g_gw.dedup_count) % 64;
     snprintf(g_gw.dedup_ids[idx], sizeof(g_gw.dedup_ids[idx]), "%s", message_id);
-    g_gw.dedup_timestamps[idx] = gw_mono_time();
+    g_gw.dedup_timestamps[idx] = clock_mono_sec();
     g_gw.dedup_count++;
 }
 
 void gw_batch_accumulate(const char *platform, const char *chat_id, const char *fragment) {
     if (!platform || !chat_id || !fragment) return;
 
-    double now = gw_mono_time();
+    double now = clock_mono_sec();
     double BATCH_TIMEOUT = 2.0; /* seconds to wait for more fragments */
 
     /* If no active batch or different source, flush first */

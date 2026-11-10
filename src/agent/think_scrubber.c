@@ -196,7 +196,7 @@ void think_scrubber_free(think_scrubber_t *sc) {
 
 /* PoP: reset @ agent/think_scrubber.py:reset */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.reset(). */
-void reset(think_scrubber_t *sc) {
+void think_scrubber_reset(think_scrubber_t *sc) {
     if (!sc) return;
     sc->buf_len = 0; sc->buf[0] = '\0'; sc->in_block = 0; sc->last_nl = 1;
 }
@@ -264,7 +264,7 @@ static int grow_work(think_scrubber_t *sc, int needed) {
 
 /* Port of Python agent/memory_manager.py:feed, agent/think_scrubber.py:feed(). */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.feed(). */
-const char *feed(think_scrubber_t *sc, const char *text) {
+const char *think_scrubber_feed(think_scrubber_t *sc, const char *text) {
     if (!sc || !text || !*text) return NULL;
     int tlen = (int)strlen(text);
     int comb = sc->buf_len + tlen;
@@ -363,7 +363,7 @@ const char *feed(think_scrubber_t *sc, const char *text) {
 /* Port of Python agent/memory_manager.py:flush, agent/process_bootstrap.py:flush, agent/think_scrubber.py:flush(). */
 /* Port of Python gateway/platforms/helpers.py:_flush(). */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.flush(). */
-const char *flush(think_scrubber_t *sc) {
+const char *think_scrubber_flush(think_scrubber_t *sc) {
     if (!sc) return NULL;
     if (sc->in_block) { sc->buf_len = 0; sc->buf[0] = '\0'; sc->in_block = 0; return NULL; }
     if (sc->buf_len == 0) return NULL;

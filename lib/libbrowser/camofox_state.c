@@ -224,3 +224,9 @@ bool camofox_delete_session(const char *hermes_home,
     if (!session_file_path(hermes_home, task_id, path)) return false;
     return unlink(path) == 0 || errno == ENOENT;
 }
+
+/* Tool-facing alias for get_camofox_state_dir(). */
+const char *camofox_state_dir(const char *hermes_home, char out_path[CAMOFOX_PATH_MAX])
+{
+    return get_camofox_state_dir(hermes_home, out_path);
+}

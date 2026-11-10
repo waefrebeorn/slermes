@@ -641,7 +641,7 @@ int plugin_registry_discover(plugin_registry_t *reg, const char *dir) {
     int loaded = 0;
     struct dirent *entry;
     while ((entry = readdir(d)) != NULL) {
-        if (entry->d_type != DT_REG && entry->d_type != DT_LNK) continue;
+        if (!hermes_dirent_is_file(dir, entry->d_name)) continue;
         size_t len = strlen(entry->d_name);
         if (len < 4 || strcmp(entry->d_name + len - 3, ".so") != 0) continue;
 

@@ -315,9 +315,9 @@ json_t *cron_notepad_list_notes(const char *job_id) {
             json_t *row = json_object();
             if (row) {
                 json_set(row, "job_id",  json_string(job_id));
-                json_set(row, "key",     json_string((const char *)(k  ? k  : "")));
-                json_set(row, "value",   json_string((const char *)(v  ? v  : "")));
-                json_set(row, "updated_at", json_string((const char *)(ua ? ua : "")));
+                json_set(row, "key",     json_string(k ? (const char *)k : ""));
+                json_set(row, "value",   json_string(v ? (const char *)v : ""));
+                json_set(row, "updated_at", json_string(ua ? (const char *)ua : ""));
                 json_append(out, row);
             } else {
                 json_free(row);

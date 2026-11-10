@@ -176,7 +176,7 @@ void _guard_named_profile_under_multiplexer(const char* profile_name, bool force
 
     int fd = open(pid_path, O_RDONLY);
     if (fd < 0) {
-        return 0; /* No PID file — no conflict */
+        return; /* No PID file — no conflict */
     }
 
     char pid_str[32];

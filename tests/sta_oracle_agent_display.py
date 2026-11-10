@@ -6,10 +6,10 @@ Prints the summarized shell command from LIVE Python. Diff against the C
 harness (t_port_agent_display) for fidelity.
 """
 import sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util as u
 
-spec = u.spec_from_file_location("disp", "/home/wubu/hermes-agent-dev/agent/display.py")
+spec = u.spec_from_file_location("disp", "C:/Users/eman5/hermes-agent/agent/display.py")
 mod = u.module_from_spec(spec)
 try:
     spec.loader.exec_module(mod)

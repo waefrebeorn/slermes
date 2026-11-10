@@ -464,7 +464,7 @@ void banner_snapshot_fingerprint(char *out_fp, size_t out_sz) {
         if (stat(paths[i], &st) == 0)
             snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),
                      "|%s:%lld:%ld", names[i],
-                     (long long)st.st_mtim.tv_sec * 1000000000LL + st.st_mtim.tv_nsec,
+                     (long long)SLERMES_ST_MTIM_SEC(st) * 1000000000LL + SLERMES_ST_MTIM_NSEC(st),
                      (long)st.st_size);
         else
             snprintf(parts + strlen(parts), sizeof(parts) - strlen(parts),

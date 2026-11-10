@@ -14,7 +14,7 @@ import re
 import sys
 from pathlib import Path
 
-HERMES_DIR = Path("/home/wubu/hermes-agent-dev")
+HERMES_DIR = Path("C:/Users/eman5/hermes-agent")
 SLERMES_DIR = HERMES_DIR / "slermes"
 
 # Directories to scan for Python source. The C port surface is agent/ + tools/

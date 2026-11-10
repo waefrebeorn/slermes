@@ -4,7 +4,7 @@
 import subprocess, sys, os, tempfile
 from pycparser import c_parser, c_ast
 
-BASE='/home/wubu/hermes-agent-dev/slermes/'
+BASE='SLERMES_REPO/'
 SRC='src/cli/commands.c'
 TABLE_LO, TABLE_HI = 535, 632
 

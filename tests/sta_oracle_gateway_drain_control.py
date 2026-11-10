@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Oracle: gateway/drain_control.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("dc_mod", "/home/wubu/hermes-agent-dev/gateway/drain_control.py")
+spec = importlib.util.spec_from_file_location("dc_mod", "C:/Users/eman5/hermes-agent/gateway/drain_control.py")
 mod = importlib.util.module_from_spec(spec)
 utils_mod = types.ModuleType("utils")
 import json as _json

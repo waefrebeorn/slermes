@@ -24,8 +24,10 @@ char *base64_encode(const unsigned char *data, size_t len);
 /** base64_decode(encoded, *out_len) — Base64 decode. Caller free(). */
 unsigned char *base64_decode(const char *encoded, size_t *out_len);
 
-/** base64_encode_nopad(data, len) — Base64 encode without padding. */
-char *base64_encode_nopad(const unsigned char *data, size_t len);
+/** base64_encode_padded(data, len) — Base64 encode WITH RFC 4648 `=` padding
+ * (the current base64_encode contracts to this so its name tells the truth;
+ * base64url_encode strips the padding for the URL-safe variant). */
+char *base64_encode_padded(const unsigned char *data, size_t len);
 
 /* ─── Base64 URL-safe (RFC 4648 §5) ──────────────────────── */
 

@@ -498,9 +498,10 @@ int term_cleanup_all_environments(void) {
     char **ids = calloc(n ? n : 1, sizeof(char *));
     size_t got = 0;
     for (size_t i = 0; i < n; i++) {
-        json_t *k = g_active_envs->c.keys[i];
-        if (k && k->type == JSON_STRING)
-            ids[got++] = strdup(k->str_val);
+        /* c.keys[] holds the key STRINGS; c.items[] holds the values. */
+        const char *k = g_active_envs->c.keys[i];
+        if (k)
+            ids[got++] = strdup(k);
     }
     pthread_mutex_unlock(&g_lock);
     for (size_t i = 0; i < got; i++) {
@@ -522,12 +523,12 @@ int term_cleanup_inactive_envs(long lifetime_seconds) {
     char **ids = calloc(n ? n : 1, sizeof(char *));
     size_t got = 0;
     for (size_t i = 0; i < n; i++) {
-        json_t *k = g_last_activity->c.keys[i];
-        if (!k || k->type != JSON_STRING) continue;
-        json_t *la = json_obj_get(g_last_activity, k->str_val);
+        const char *k = g_last_activity->c.keys[i];
+        if (!k) continue;
+        json_t *la = json_obj_get(g_last_activity, k);
         double last = (la && la->type == JSON_NUMBER) ? la->num_val : 0.0;
         if (now - last > (double)lifetime_seconds)
-            ids[got++] = strdup(k->str_val);
+            ids[got++] = strdup(k);
     }
     pthread_mutex_unlock(&g_lock);
     for (size_t i = 0; i < got; i++) {

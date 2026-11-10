@@ -93,7 +93,7 @@ json_t *gitlock_clear_stale_git_locks_checked(const char *repo_root,
         /* Python: lock_path.is_file() and stat().st_mtime < cutoff */
         if (lstat(lock_path, &lst) != 0 || !S_ISREG(lst.st_mode))
             continue;
-        if ((long long)lst.st_mtim.tv_sec >= cutoff)
+        if ((long long)SLERMES_ST_MTIM_SEC(lst) >= cutoff)
             continue;
         if (unlink(lock_path) == 0)
             json_append(removed, json_string(lock_path));

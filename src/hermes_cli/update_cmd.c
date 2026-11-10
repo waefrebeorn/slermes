@@ -4359,10 +4359,10 @@ static char *upd_git_stdout(char *const argv[], const char *cwd) {
 char *upd_branch_head_label(const char *cwd) {
     /* "<branch> @ <short-sha>" for the checkout; NULL when unknown. */
     char *argv_branch[] = { (char*)"git", (char*)"rev-parse", (char*)"--abbrev-ref", (char*)"HEAD", NULL };
-    char *branch = upd_git_stdout(cwd, argv_branch);
+    char *branch = upd_git_stdout(argv_branch, cwd);
     if (!branch) return NULL;
     char *argv_sha[] = { (char*)"git", (char*)"rev-parse", (char*)"--short", (char*)"HEAD", NULL };
-    char *sha = upd_git_stdout(cwd, argv_sha);
+    char *sha = upd_git_stdout(argv_sha, cwd);
     free(branch);
     if (!sha) return NULL;
     const char *label = (strcmp(branch, "HEAD") == 0) ? "detached" : branch;
@@ -4422,7 +4422,7 @@ void upd_assess_parked_branch_switch(const char *cwd,
     /* git status --porcelain: non-empty output = dirty tree/index. */
     char *argv_status[] = { (char*)"git", (char*)"status", (char*)"--porcelain", NULL };
     extern char *upd_git_stdout(char *const argv[], const char *cwd);
-    char *dirty = upd_git_stdout(cwd, argv_status);
+    char *dirty = upd_git_stdout(argv_status, cwd);
     if (dirty) { free(dirty); snprintf(reason_buf, sizeof(reason_buf), "dirty"); return; }
     /* empty porcelain means clean; NULL from upd_git_stdout also means clean
      * (empty stdout is normalised to NULL by its strip). */
@@ -4432,7 +4432,7 @@ void upd_assess_parked_branch_switch(const char *cwd,
     snprintf(ref, sizeof(ref), "origin/%s", target_branch ? target_branch : "main");
     char *argv_cherry[] = { (char*)"git", (char*)"cherry", (char*)ref, NULL };
     extern char *upd_git_stdout(char *const argv[], const char *cwd);
-    char *cherry = upd_git_stdout(cwd, argv_cherry);
+    char *cherry = upd_git_stdout(argv_cherry, cwd);
     long unmerged = 0;
     if (cherry) {
         const char *q = cherry;
@@ -4588,11 +4588,11 @@ void upd_print_update_completion(const char *message) {
     }
     if (repo) {
         char *argv_branch[] = { (char*)"git", (char*)"rev-parse", (char*)"--abbrev-ref", (char*)"HEAD", NULL };
-        char *branch = upd_git_stdout(repo, argv_branch);
+        char *branch = upd_git_stdout(argv_branch, repo);
         if (branch) {
             if (strcmp(branch, "HEAD") == 0) strcpy(branch, "detached");
             char *argv_sha[] = { (char*)"git", (char*)"rev-parse", (char*)"--short=8", (char*)"HEAD", NULL };
-            char *sha = upd_git_stdout(repo, argv_sha);
+            char *sha = upd_git_stdout(argv_sha, repo);
             if (sha) {
                 snprintf(suffix, sizeof(suffix), " [%s @ %s]", branch, sha);
                 free(sha);
@@ -4625,7 +4625,7 @@ void upd_print_parked_branch_skip_warning(const char *cwd,
     snprintf(ref, sizeof(ref), "HEAD..origin/%s", target_branch ? target_branch : "main");
     char *argv[] = { (char*)"git", (char*)"rev-list", ref, (char*)"--count", NULL };
     extern char *upd_git_stdout(char *const argv[], const char *cwd);
-    char *cnt = upd_git_stdout(cwd, argv);
+    char *cnt = upd_git_stdout(argv, cwd);
     if (cnt) { behind = atol(cnt); free(cnt); }
 
     const char *why;
@@ -4856,7 +4856,7 @@ bool upd_editable_install_is_current(const char *cwd, const char *pre_pull_sha) 
         argv2[c++] = (char*)DEFINING[i];
         argv2[c] = NULL;
         extern char *upd_git_stdout(char *const argv[], const char *cwd);
-        char *out = upd_git_stdout(cwd, argv2);
+        char *out = upd_git_stdout(argv2, cwd);
         if (out) { free(out); return false; }   /* a defining file changed */
     }
     return true;

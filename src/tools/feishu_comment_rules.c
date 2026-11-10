@@ -29,6 +29,7 @@
 #include "hermes_core_types.h"
 #include "hermes_feishu_rules.h"
 #include "hermes_json.h"
+#include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>

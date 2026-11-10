@@ -11,13 +11,31 @@
 # subsystem object lists, matching the documented wiring convention.
 PHASE5_OBJ = $(CLI_OBJ)
 CLI_OBJ = src/cli/cli_gaps_2026_08_25.o src/cli/cli.o src/cli/cli_helpers2.o src/cli/cli_helpers3.o src/cli/hermes_cli_agent_b2.o src/cli/hermes_cli_agent_b3.o src/cli/hermes_cli_agent_b4.o src/cli/hermes_cli_agent_b5.o src/hermes_cli/partial_compress.o src/hermes_cli/setup_pure.o src/hermes_cli/dashboard_procs.o src/hermes_cli/webhook.o src/hermes_cli/web_models.o src/hermes_cli/vercel_auth.o src/hermes_cli/urllib_security.o src/hermes_cli/telegram_managed_bot.o src/hermes_cli/suggestions_cmd.o src/hermes_cli/stdio.o src/hermes_cli/sqlite_runtime.o src/hermes_cli/slack_cli.o src/hermes_cli/skin_engine.o src/hermes_cli/skin_cmd.o src/hermes_cli/skills_hub.o src/hermes_cli/setup_whatsapp_cloud.o src/hermes_cli/setup_hidden_env.o src/hermes_cli/sessions_cmd.o src/hermes_cli/session_filters.o src/hermes_cli/session_export_html.o src/hermes_cli/send_cmd.o src/hermes_cli/security_audit_startup.o src/hermes_cli/secrets_cli.o src/hermes_cli/secret_prompt.o src/hermes_cli/route_identity.o src/hermes_cli/relaunch.o src/hermes_cli/pty_session.o src/hermes_cli/psutil_android.o src/hermes_cli/proxy_cli.o src/hermes_cli/providers.o src/hermes_cli/projects_cmd.o src/hermes_cli/profile_distribution.o src/hermes_cli/profile_describer.o src/hermes_cli/portal_cli.o src/hermes_cli/pets.o src/hermes_cli/pairing.o src/hermes_cli/onepassword_secrets_cli.o src/hermes_cli/nous_auth_keepalive.o src/hermes_cli/model_search.o src/hermes_cli/moa_cmd.o src/hermes_cli/memory_oauth.o src/hermes_cli/mcp_startup.o src/hermes_cli/mcp_picker.o src/hermes_cli/mcp_config.o src/hermes_cli/mcp_catalog.o src/hermes_cli/managed_scope.o src/hermes_cli/lifecycle.o src/hermes_cli/kanban_specify.o src/hermes_cli/journey.o src/hermes_cli/inventory.o src/hermes_cli/init_command.o src/hermes_cli/gui_uninstall.o src/hermes_cli/gateway_enroll.o src/hermes_cli/env_loader.o src/hermes_cli/dingtalk_auth.o src/hermes_cli/diagnostics_upload.o src/hermes_cli/dep_ensure.o src/hermes_cli/debug.o src/hermes_cli/dashboard_register.o src/hermes_cli/curator.o src/hermes_cli/cron.o src/hermes_cli/credential_lifecycle.o src/hermes_cli/copilot_auth.o src/hermes_cli/codex_runtime_switch.o src/hermes_cli/codex_runtime_plugin_migration.o src/hermes_cli/codex_models.o src/hermes_cli/cli_billing_mixin.o src/hermes_cli/cli_agent_setup_mixin.o src/hermes_cli/claw.o src/hermes_cli/checkpoints.o src/hermes_cli/bundles.o src/hermes_cli/browser_connect.o src/hermes_cli/banner.o src/hermes_cli/auth_commands.o src/hermes_cli/approval_mode.o src/hermes_cli/active_sessions.o src/hermes_cli/_subprocess_compat.o src/hermes_cli/_parser.o src/hermes_cli/_early_recovery.o src/hermes_cli/approval_transport.o src/cli/config.o src/hermes_cli/config_env.o src/hermes_cli/config_platforms.o src/hermes_cli/config_profile.o src/hermes_cli/config_diff.o src/hermes_cli/config_io.o src/hermes_cli/config_schema.o src/hermes_cli/config_migrate.o src/cli/config_setup.o src/hermes_cli/config_schema.o src/cli/paths.o src/hermes_cli/cli_output.o src/cli/display_core.o src/hermes_cli/main.o src/hermes_cli/doctor.o src/hermes_cli/setup.o src/hermes_cli/linux_desktop_entry.o src/hermes_cli/banner_pure.o src/hermes_cli/banner_boot.o src/hermes_cli/context_switch_guard.o src/hermes_cli/windows.o src/hermes_cli/nous_billing.o src/hermes_cli/nous_billing_ports.o src/hermes_cli/nous_subscription_ports.o src/hermes_cli/proxy_xai_ports.o src/hermes_cli/proxy_adapters_base_ports.o src/hermes_cli/proxy/server.o src/hermes_cli/proxy/cli.o src/hermes_cli/console_engine_ports.o src/hermes_cli/config_pure.o src/hermes_cli/status_helpers.o src/hermes_cli/logs.o src/hermes_cli/write_approval_commands.o src/hermes_cli/cli_cmd_help.o src/cli/cli_cmd_session.o src/cli/cli_cmd_config.o src/hermes_cli/cli_cmd_misc.o src/hermes_cli/subcommands/whatsapp.o src/hermes_cli/subcommands/webhook.o src/hermes_cli/subcommands/update.o src/hermes_cli/subcommands/uninstall.o src/hermes_cli/subcommands/tools.o src/hermes_cli/subcommands/sync.o src/hermes_cli/subcommands/status.o src/hermes_cli/subcommands/slack.o src/hermes_cli/subcommands/skin.o src/hermes_cli/subcommands/skills.o src/hermes_cli/subcommands/setup.o src/hermes_cli/subcommands/security.o src/hermes_cli/subcommands/prompt_size.o src/hermes_cli/subcommands/profile.o src/hermes_cli/subcommands/plugins.o src/hermes_cli/subcommands/pairing.o src/hermes_cli/subcommands/monitoring.o src/hermes_cli/subcommands/model.o src/hermes_cli/subcommands/memory.o src/hermes_cli/subcommands/mcp.o src/hermes_cli/subcommands/logs.o src/hermes_cli/subcommands/logout.o src/hermes_cli/subcommands/login.o src/hermes_cli/subcommands/insights.o src/hermes_cli/subcommands/import_cmd.o src/hermes_cli/subcommands/import_agent.o src/hermes_cli/subcommands/hooks.o src/hermes_cli/subcommands/gui.o src/hermes_cli/subcommands/gateway.o src/hermes_cli/subcommands/dump.o src/hermes_cli/subcommands/doctor.o src/hermes_cli/subcommands/debug.o src/hermes_cli/subcommands/dashboard.o src/hermes_cli/subcommands/cron.o src/hermes_cli/subcommands/console.o src/hermes_cli/subcommands/config.o src/hermes_cli/subcommands/claw.o src/hermes_cli/subcommands/backup.o src/hermes_cli/subcommands/auth.o src/hermes_cli/subcommands/approvals.o src/hermes_cli/subcommands/acp.o src/hermes_cli/subcommands/_shared.o src/cli/cli_cmd_gateway.o src/hermes_cli/cli_cmd_skills.o src/hermes_cli/cli_cmd_tools.o src/hermes_cli/cli_cmd_mcp.o src/hermes_cli/cli_cmd_kanban.o src/cli/cli_cmd_security.o src/cli/cli_cmd_memory.o src/hermes_cli/cli_cmd_display.o src/hermes_cli/cli_cmd_parity.o src/hermes_cli/terminal_breadcrumbs_pure.o src/hermes_cli/plugin_index_pure.o src/hermes_cli/plugin_capabilities_pure.o src/hermes_cli/session_lost_and_found_pure.o src/hermes_cli/foreign_sessions_pure.o src/hermes_cli/subprocess_compat_pure.o src/hermes_cli/plugin_packs_pure.o src/hermes_cli/plugins_cmd.o src/hermes_cli/plugins_gaps.o src/hermes_cli/stderr_timestamp_pure.o src/hermes_cli/kanban_db_pure.o src/hermes_cli/cli_kanban_goal_loop_q.o src/hermes_cli/goals_pure.o src/hermes_cli/loops_pure.o src/hermes_cli/loops_manager.o src/hermes_cli/console_engine_pure.o src/hermes_cli/model_cost_guard.o src/battery.o src/hermes_cli/profiles.o src/hermes_cli/web_server_status.o src/hermes_cli/web_server_managed_files.o src/hermes_cli/web_server_fs.o src/hermes_cli/web_server_events.o src/hermes_cli/web_server_console.o src/hermes_cli/web_server_themes.o src/hermes_cli/web_server_ws_auth.o src/hermes_cli/hermes_cli_ws_tickets.o src/hermes_cli/web_server_chat_argv.o src/hermes_cli/web_server_cron_dash.o src/hermes_cli/web_server_sessions_admin.o src/hermes_cli/web_server_session_detail.o src/hermes_cli/web_server_session_endpoints.o src/hermes_cli/web_server_prune.o \
+    src/tools/url_safety_helpers.o \
+    src/agent/turn_summary.o \
+    src/gateway/lifecycle_ledger.o \
+    src/agent/redact_helpers.o \
+    src/tools/browser_redact.o \
+    src/agent/repetition_guard.o \
+    src/gateway/memory_status.o \
+    src/cli/vault_login_tokens.o \
+    src/cron/cron_jobs_time.o \
+    src/tools/browser_tool_eval.o \
+    src/gateway/gateway_run_match.o \
+    src/cli/port_anthropic_credentials.o \
+    src/agent/port_agent_turn_context.o \
+    src/cli/port_acp_client.o \
+    src/cli/port_access_policy.o \
+    src/gateway/platforms/yuanbao_proto.o \
+    src/gateway/yuanbao_proto_ports.o \
+    src/cli/config_env_file.o \
 src/hermes_cli/default_soul.o src/hermes_cli/gemini_cloudcode_adapter_methods.o src/agent/tts_provider.o src/agent/interrupt_compat.o src/agent/web_search_registry.o src/agent/video_gen_provider.o src/agent/trace_upload.o src/agent/tool_result_classification.o src/agent/thread_scoped_output.o src/agent/subscription_view.o src/agent/stream_single_writer.o src/agent/rate_limit_tracker.o src/agent/oneshot.o src/agent/moa_trace.o src/agent/kanban_stop.o src/agent/jiter_preload.o src/agent/credential_pool.o src/agent/bounded_response.o src/agent/account_usage.o src/agent/omarchy_usage.o src/hermes_cli/dashboard_auth_prefix.o src/hermes_cli/hooks.o src/hermes_cli/prompt_size.o src/hermes_cli/voice.o src/hermes_cli/display_diff.o src/hermes_cli/gitlock.o src/hermes_cli/model_data_policy_guard.o src/hermes_cli/model_selection_guards.o \
 src/hermes_cli/config_defaults.o \
  src/hermes_cli/web_server_paths.o \
  src/gateway/platforms/msgraph_webhook/msgraph_webhook_helpers.o \
  src/hermes_cli/pairing_helpers.o \
  src/hermes_cli/webhook_helpers.o \
- src/hermes_cli/plugin_dev.o src/hermes_cli/platform_actions.o src/hermes_cli/verify_cmd.o src/cli/cli_hermes_cli_methods.o
+ src/hermes_cli/plugin_dev.o src/hermes_cli/platform_actions.o src/hermes_cli/verify_cmd.o src/cli/cli_hermes_cli_methods.o $(PORT_OBJ)
 # Auto-generated hermes_cli/ port objects (empty — placeholder)
 HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plugins.o \
  src/hermes_cli/process_identity.o \
@@ -27,6 +45,8 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
  src/hermes_cli/worktree_cmd.o \
  src/hermes_cli/relay_plugin_cutover.o \
  src/tools/browser_extension_router.o src/tools/xai_video_tools.o src/tools/x_search_tool.o src/tools/tts_streaming.o src/tools/tirith_security.o src/tools/thread_context.o src/tools/project_tools.o src/tools/open_preview_tool.o src/tools/mcp_stdio_watchdog.o src/tools/mcp_dashboard_oauth.o src/tools/image_source.o src/tools/hook_output_spill.o src/tools/homeassistant_tool.o src/tools/focus_pane_tool.o src/tools/file_state.o src/tools/desktop_ui.o src/tools/delegation_live_log.o src/tools/daemon_pool.o \
+    src/tools/memory_entries.o \
+    src/gateway/gw_encode.o \
 
 HERMES_CLI_PORT_EXTRA_OBJ = \
  src/hermes_cli/tips.o \
@@ -172,7 +192,7 @@ PORT_OBJ = \
  \
  src/tools/clarify_gateway.o \
  \
- src/tools/computer_use/computer_use_backend.o src/tools/computer_use/tool.o src/tools/computer_use/permissions.o src/tools/computer_use/doctor.o src/tools/computer_use/backend.o \
+ src/tools/computer_use/tool.o src/tools/computer_use/permissions.o src/tools/computer_use/doctor.o src/tools/computer_use/backend.o \
  src/tools/computer_use/computer_use_vision_routing.o \
  src/tools/credential_files.o \
  src/tools/debug_helpers.o \
@@ -375,6 +395,111 @@ src/hermes_cli/profile_gaps.o \
  src/gateway/readiness_gaps3.o \
  src/gateway/relay/adapter_gaps3.o \
  src/gateway/relay/ws_transport_gaps3.o \
+    src/agent/port_error_surface.o \
+    src/agent/port_markdown_tables.o \
+    src/agent/port_turn_liveness.o \
+    src/cli/port_agent_provider.o \
+    src/cli/port_agent_skill_utils.o \
+    src/cli/port_anthropic_message_convert.o \
+    src/cli/port_api_store_error.o \
+    src/cli/port_approval_transport.o \
+    src/cli/port_audit.o \
+    src/cli/port_auth_commands.o \
+    src/cli/port_auth_error_copy.o \
+    src/cli/port_auth_providers.o \
+    src/cli/port_auth_qwen.o \
+    src/cli/port_aux_outcome_event.o \
+    src/cli/port_aux_task_builder.o \
+    src/cli/port_backup_sqlite.o \
+    src/cli/port_banner.o \
+    src/cli/port_blueprint_plugins.o \
+    src/cli/port_bot_loop_guard.o \
+    src/cli/port_browser_connect.o \
+    src/cli/port_browser_launcher.o \
+    src/cli/port_callbacks.o \
+    src/cli/port_cli_config_load.o \
+    src/cli/port_cli_process_dock.o \
+    src/cli/port_clipboard.o \
+    src/cli/port_codex_models.o \
+    src/cli/port_comp_telemetry.o \
+    src/cli/port_compression_facade.o \
+    src/cli/port_connectors_contract.o \
+    src/cli/port_container_boot.o \
+    src/cli/port_context_compressor_telemetry.o \
+    src/cli/port_cron_notepad.o \
+    src/cli/port_cronjob_prompt_scan.o \
+    src/cli/port_dashboard_register.o \
+    src/cli/port_delegation_registry.o \
+    src/cli/port_dingtalk_auth.o \
+    src/cli/port_early_recovery.o \
+    src/cli/port_fast_mode.o \
+    src/cli/port_file_operations_native.o \
+    src/cli/port_first_time.o \
+    src/cli/port_gateway_command_errors.o \
+    src/cli/port_gateway_platform_activation.o \
+    src/cli/port_gateway_profile_routing.o \
+    src/cli/port_gateway_status.o \
+    src/cli/port_gateway_wake.o \
+    src/cli/port_gemini_native_adapter.o \
+    src/cli/port_hermes_auth.o \
+    src/cli/port_hermes_auth_nous.o \
+    src/cli/port_hermes_cli_misc.o \
+    src/cli/port_hosted_room_driver.o \
+    src/cli/port_hosted_rooms.o \
+    src/cli/port_hosted_rooms_common.o \
+    src/cli/port_idle_watch.o \
+    src/cli/port_image_token_cost.o \
+    src/cli/port_input_sanitize.o \
+    src/cli/port_inventory.o \
+    src/cli/port_kanban_db_dispatch.o \
+    src/cli/port_kanban_schemas.o \
+    src/cli/port_local_models.o \
+    src/cli/port_media_labels.o \
+    src/cli/port_memory_status.o \
+    src/cli/port_methods_session.o \
+    src/cli/port_methods_tools.o \
+    src/cli/port_micro_env.o \
+    src/cli/port_nous_subscription.o \
+    src/cli/port_parked_notice.o \
+    src/cli/port_plugin_messages.o \
+    src/cli/port_portal_cli.o \
+    src/cli/port_producer_lifecycle.o \
+    src/cli/port_profile_describer.o \
+    src/cli/port_prompt_builder.o \
+    src/cli/port_pt_input_extras.o \
+    src/cli/port_readiness.o \
+    src/cli/port_relaunch.o \
+    src/cli/port_repetition_guard.o \
+    src/cli/port_rfb_filter.o \
+    src/cli/port_run_inbound_unauthorized.o \
+    src/cli/port_scheduler_tick.o \
+    src/cli/port_secrets_cli.o \
+    src/cli/port_send_cmd.o \
+    src/cli/port_server.o \
+    src/cli/port_session_activity.o \
+    src/cli/port_session_managed_worker_log.o \
+    src/cli/port_session_owned.o \
+    src/cli/port_session_server_requests.o \
+    src/cli/port_side_question_request.o \
+    src/cli/port_skill_bundles.o \
+    src/cli/port_skill_commands.o \
+    src/cli/port_slack_cli.o \
+    src/cli/port_state_repair.o \
+    src/cli/port_stream_consumer_think.o \
+    src/cli/port_telegram_managed_bot.o \
+    src/cli/port_terminal_tool.o \
+    src/cli/port_tools_microsoft_graph_client.o \
+    src/cli/port_tools_xai_http.o \
+    src/cli/port_turn_lease.o \
+    src/cli/port_update_cmd.o \
+    src/cli/port_update_receipt.o \
+    src/cli/port_update_windows.o \
+    src/cli/port_vault_login_classifier.o \
+    src/cli/port_vault_login_js.o \
+    src/cli/port_webhook_coalesce.o \
+    src/cli/port_worktree_ops.o \
+    src/gateway/port_hosted_room_execution_policy.o \
+    src/tools/port_browser_tool.o \
  src/gateway/run_gaps3.o \
  src/gateway/scale_to_zero_gaps3.o \
  src/gateway/session_gaps3.o \

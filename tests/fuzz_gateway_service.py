@@ -516,7 +516,7 @@ def _load_all_gateway_c():
 @test("GAP: GatewayRunner start() not ported", "GS11-gap")
 def test_gap_gatewayrunner_start():
     """Python has ~550 LOC async start() — C has synchronous hermes_gateway_main."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "async def start(self)" in py
     c_has = "gateway_run" in c or "gateway_start" in c or "gw_runtime_init" in c
@@ -530,7 +530,7 @@ def test_gap_gatewayrunner_start():
 @test("GAP: agent cache (LRU, 128, 1h TTL)", "GS11-gap")
 def test_gap_agent_cache():
     """Python has _AGENT_CACHE_MAX_SIZE=128, idle TTL=3600s — C recreates agents."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "_AGENT_CACHE_MAX_SIZE" in py and "_AGENT_CACHE_IDLE_TTL_SECS" in py
     c_has = "agent_cache" in c or "AGENT_CACHE" in c or "gw_agent_cache" in c
@@ -541,7 +541,7 @@ def test_gap_agent_cache():
 @test("GAP: session expiry watcher", "GS11-gap")
 def test_gap_session_expiry():
     """Python has _session_expiry_watcher (300s interval) — C has session cleanup thread."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "_session_expiry_watcher" in py
     c_has = "thread_cleanup_sessions" in c or "gw_agent_cache_sweep_idle" in c
@@ -552,7 +552,7 @@ def test_gap_session_expiry():
 @test("GAP: stop/drain logic", "GS11-gap")
 def test_gap_stop_drain():
     """Python stop() drains agents, notifies sessions — C has gw_shutdown()."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "async def stop(self" in py
     c_has = "gw_shutdown" in c or "gw_drain_active_agents" in c
@@ -563,7 +563,7 @@ def test_gap_stop_drain():
 @test("GAP: restart/detached/handoff", "GS11-gap")
 def test_gap_restart_handoff():
     """Python has detached restart, systemd shortcut, handoff — C has basic restart."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "request_restart" in py and "detached" in py
     c_has = "detached" in c or "handoff" in c or "gw_detached_restart" in c or "gw_handoff_save_state" in c
@@ -574,7 +574,7 @@ def test_gap_restart_handoff():
 @test("GAP: systemd integration", "GS11-gap")
 def test_gap_systemd():
     """Python has _launch_systemd_restart_shortcut — C has no systemd support."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = _load_all_gateway_c()
     py_has = "_launch_systemd_restart_shortcut" in py or "systemd" in py
     c_has = "systemd" in c.lower() or "systemd" in c_serv.lower() or "sd_notify" in c.lower()
@@ -585,7 +585,7 @@ def test_gap_systemd():
 @test("GAP: streaming dispatch", "GS11-gap")
 def test_gap_streaming():
     """Python has stream dispatch to platforms — C has no streaming."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "stream" in py.lower() and "dispatch" in py.lower()
     # C has stream_events.c and stream_consumer.c but they're stubs
@@ -599,7 +599,7 @@ def test_gap_streaming():
 @test("GAP: voice channel support", "GS11-gap")
 def test_gap_voice():
     """Python has voice channel join/leave/timeout — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_handle_voice_channel_join" in py
     c_has = "voice" in c.lower() and "channel" in c.lower()
@@ -610,7 +610,7 @@ def test_gap_voice():
 @test("GAP: goal management", "GS11-gap")
 def test_gap_goal():
     """Python has goal management (continuations, max turns) — C has minimal."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_goal_still_active_for_session" in py
     c_has = "goal" in c.lower() or "gw_goal_record_turn" in c
@@ -621,7 +621,7 @@ def test_gap_goal():
 @test("GAP: background task runner", "GS11-gap")
 def test_gap_background_tasks():
     """Python has _run_background_task for parallel processing — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_run_background_task" in py
     c_has = "background_task" in c.lower()
@@ -632,7 +632,7 @@ def test_gap_background_tasks():
 @test("GAP: handoff management", "GS11-gap")
 def test_gap_handoff():
     """Python has _handoff_watcher and _process_handoff — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_handoff_watcher" in py
     c_has = "handoff" in c.lower() or "gw_handoff" in c
@@ -643,7 +643,7 @@ def test_gap_handoff():
 @test("GAP: prefill messages", "GS11-gap")
 def test_gap_prefill():
     """Python has prefill messages and ephemeral system prompt — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_load_prefill_messages" in py or "_load_ephemeral_system_prompt" in py
     c_has = "prefill" in c.lower() or "gw_load_prefill" in c
@@ -654,7 +654,7 @@ def test_gap_prefill():
 @test("GAP: service tier + reasoning config", "GS11-gap")
 def test_gap_reasoning():
     """Python has reasoning config, service_tier, show_reasoning — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_load_service_tier" in py or "_load_reasoning_config" in py
     c_has = "service_tier" in c.lower() or "reasoning" in c.lower() or "gw_service_tier" in c
@@ -665,7 +665,7 @@ def test_gap_reasoning():
 @test("GAP: provider routing + fallback model", "GS11-gap")
 def test_gap_provider_routing():
     """Python has provider routing override and fallback model loading — C has basic fallback."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_load_provider_routing" in py or "_load_fallback_model" in py
     c_has = "provider_routing" in c.lower() or "fallback_model" in c.lower() or "gw_load_provider_routing" in c
@@ -676,7 +676,7 @@ def test_gap_provider_routing():
 @test("GAP: background notifications", "GS11-gap")
 def test_gap_background_notifications():
     """Python has _load_background_notifications_mode — C has none."""
-    py = open("/home/wubu/hermes-agent-dev/gateway/run.py", "r").read()
+    py = open("C:/Users/eman5/hermes-agent/gateway/run.py", "r").read()
     c = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "_load_background_notifications_mode" in py
     c_has = "background_notifications" in c.lower() or "gw_notification_mode" in c
@@ -687,7 +687,7 @@ def test_gap_background_notifications():
 @test("GAP: GatewayRunner class not ported", "GS11-gap")
 def test_gap_gatewayrunner_class():
     """Python GatewayRunner has ~100+ methods — C has ~30 standalone functions."""
-    py_methods = sum(1 for line in open("/home/wubu/hermes-agent-dev/gateway/run.py") if "    def " in line)
+    py_methods = sum(1 for line in open("C:/Users/eman5/hermes-agent/gateway/run.py") if "    def " in line)
     c_fns = sum(1 for line in open(os.path.join(SLERMES_DIR, "src/gateway/server.c")) if "void " in line or "bool " in line or "int " in line)
     if py_methods > 50:
         return f"PASS (MISSING: GatewayRunner class not ported — Python {py_methods} methods vs C ~{c_fns} functions)"

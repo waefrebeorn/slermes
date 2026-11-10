@@ -6,5 +6,6 @@
 #include "hermes_core_types.h"
 
 void cmd_plugins(const char *args, agent_state_t *state);
+void cmd_python(const char *args, agent_state_t *state);
 
 #endif /* SLERMES_CLI_CMD_MISC_H */

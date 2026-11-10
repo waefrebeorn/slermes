@@ -57,7 +57,7 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | Petdex (floating pets, pet overlay, gallery) | ✅ Done | Floating animated pet + gallery picker + scale control |
 | Voice (TTS/STT) | ✅ Done | Voice mode indicator, Ctrl+V toggle, clipboard image detection |
 | File browser + side-by-side previews | ✅ Done | Nav view 8+9, file list with icons, preview panel |
-| React web dashboard | **web_server.c** | Serves SPA + REST API from a single binary |
+| React web dashboard | **cli/port_web_server.c** | Serves SPA + REST API from a single binary |
 | ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills |
 | Python plugin system | **19 plugin .so files** | Honcho, Spotify, Google Meet, Teams, etc. |
 | 29 gateway platforms | **gateway/platforms/** | Telegram, Discord, Slack, Signal, Matrix, WhatsApp, etc. |
@@ -103,7 +103,7 @@ slermes/
 │   ├── desktop_gui.c   # SDL2 desktop GUI (custom widgets, model picker, session mgmt)
 │   ├── gui_core.c      # Core GUI framework (drawing, hit testing, input)
 │   ├── slermes_home.c  # Home directory resolver (~/.slermes/)
-│   ├── web_server.c    # REST API server + SPA static file server
+│   ├── port_web_server.c # REST API server + SPA static file server
 │   ├── api_server.c    # In-process REST API server (port 9101)
 │   ├── skills_hub.c    # Skills management + SKILL.md parser
 │   ├── skills/         # Skills parser (skills_parser.c)
@@ -116,7 +116,7 @@ slermes/
 ├── packaging/          # Distribution (AppImage, Homebrew, NSIS, Docker, Nix)
 ├── scripts/            # Build scripts, perf gates, release tools
 ├── tests/              # 200+ test files + Mission 8 integration tests
-├── web_app_dist/       # Built SPA (served by web_server.c)
+├── web_app_dist/       # Built SPA (served by port_web_server.c)
 └── docs/               # Documentation .md files served by /api/docs*
 ```
 
@@ -386,7 +386,7 @@ We run a triple-pass audit on every component:
 |-----------|-----|--------|---------|-----------------|-----------------|--------|
 | desktop_gui.c | 1,600+ | 0 | 0 | 0 | 0 | ✅ Clean |
 | app_desktop.c | 1,941 | 0 | 0 | 0 | 0 | ✅ Clean |
-| web_server.c | 3,000+ | 0 | 0 | 0 | 0 | ✅ Clean |
+| cli/port_web_server.c | 1,496 | 0 | 0 | 0 | 0 | ✅ Clean |
 | tui_fullscreen.c | 5,162 | 5* | 0 | 0 | 0 | ✅ Clean |
 | web_app_dist/ | — | — | — | — | 0 | ✅ Clean |
 

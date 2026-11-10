@@ -8,7 +8,7 @@ If they still fail, restore god header.
 """
 import subprocess, os
 
-ROOT = "/home/wubu/hermes-agent-dev/slermes"
+ROOT = "SLERMES_REPO"
 os.chdir(ROOT)
 
 def make_obj(src):

@@ -5,7 +5,7 @@
 
 static const char *js(const char *s){static char b[2][512];static int cur=0;char*q=b[cur];cur^=1;char*base=q;*q++='"';for(const char*p=s;*p&&(q-base)<500;p++){if(*p=='"'||*p=='\\')*q++='\\';*q++=*p;}*q++='"';*q=0;return base;}
 static void emit(const char *v){
-    char *o = gateway_whatsapp_to_jid(v);
+    char *o = wi_to_jid(v);
     printf("{\"in\":%s,\"out\":%s}\n", js(v), js(o?o:""));
     free(o);
 }

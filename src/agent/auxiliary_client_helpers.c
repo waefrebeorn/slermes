@@ -108,7 +108,7 @@ int aux__is_anthropic_compatible_host(const char *host) {
 /* PoP: aux__is_transient_transport_error @ agent/auxiliary_client.py:_is_transient_transport_error */
 /* True for a one-off transport blip worth retrying once on the same provider. */
 int aux__is_transient_transport_error(const char *error_msg, int status_code) {
-    if (is_connection_error(error_msg)) return 1;
+    if (auxiliary_is_connection_error(error_msg)) return 1;
     return status_code == 408 || (status_code >= 500 && status_code < 600);
 }
 
@@ -252,7 +252,7 @@ char *aux__pool_runtime_base_url(const char *provider) {
 /* PoP: aux__maybe_wrap_anthropic @ agent/auxiliary_client.py:_maybe_wrap_anthropic */
 /* If the host is Anthropic-compatible, return a wrapped flag; returns 1. */
 int aux__maybe_wrap_anthropic(const char *base_url) {
-    return is_anthropic_compat_endpoint(NULL, base_url);
+    return auxiliary_is_anthropic_compat_endpoint(NULL, base_url);
 }
 
 /* PoP: aux__read_nous_auth @ agent/auxiliary_client.py:_read_nous_auth */
@@ -858,7 +858,9 @@ char *aux__call_llm_impl(const char *task, const char *kwargs_json) {
     int cfg_max_retries = cfg.max_retries;
     cfg.max_retries = 0;  /* impl handles its own single-shot path */
 
-    llm_response_t *resp = llm_chat_completion(&cfg, n_msgs ? msgs : NULL, n_msgs, NULL);
+    llm_response_t *resp = llm_chat_completion(&cfg,
+                                               n_msgs ? (const message_t **)msgs : NULL,
+                                               n_msgs, NULL);
 
     for (size_t i = 0; i < n_msgs; i++) if (msgs && msgs[i]) message_free(msgs[i]);
     free(msgs);

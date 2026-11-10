@@ -1,21 +1,36 @@
 /*
- * threat_patterns.h — minimal declaration surface for the deterministic
- * threat-scanning helpers ported from tools/threat_patterns.py in
- * src/cli/port_tools_threat_patterns.c. Opaque / minimal: no god-header.
+ * include/threat_patterns.h — declarations for the threat-pattern table.
+ *
+ * The implementation lives in lib/libthreatpatterns/threat_patterns.c. A
+ * second copy briefly existed in src/agent/threat_patterns.c and broke the
+ * link with multiple-definition errors; this header declares the real API
+ * rather than redeclaring the module.
  */
 
 #ifndef SLERMES_THREAT_PATTERNS_H
 #define SLERMES_THREAT_PATTERNS_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
-/* Port of tools/threat_patterns.py:scan_for_threats. Returns a malloc'd JSON
- * array of matched pattern-id strings (and "invisible_unicode_U+XXXX" hits).
- * Caller frees. */
-char *cli_tools_threat_patterns_scan_for_threats(const char *content, const char *scope);
+#define THREAT_SCOPE_ALL      0
+#define THREAT_SCOPE_CONTEXT  1
+#define THREAT_SCOPE_STRICT   2
 
-/* Port of tools/threat_patterns.py:first_threat_message. Returns a malloc'd
- * human-readable message, or NULL if safe. Caller frees. */
+typedef struct {
+    char pattern_id[64];
+    int  scope;
+    int  match_start;
+    int  match_len;
+} threat_match_t;
+
+int  threat_patterns_init(void);
+int  threat_patterns_count(void);
+void threat_patterns_cleanup(void);
+bool threat_patterns_check(const char *content, int scope_mask, threat_match_t *match_out);
+bool threat_patterns_check_all(const char *content, threat_match_t *match_out);
+
+char *cli_tools_threat_patterns_scan_for_threats(const char *content, const char *scope);
 char *cli_tools_threat_patterns_first_threat_message(const char *content, const char *scope);
 
 #endif /* SLERMES_THREAT_PATTERNS_H */

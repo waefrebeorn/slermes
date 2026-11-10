@@ -46,7 +46,7 @@ const char *kanban_status_icon(const char *status) {
 char *kanban_fmt_ts (long ts) {
     if (!ts) return xstrdup("");
     struct tm tm;
-    if (localtime_r(&ts, &tm) == NULL) return xstrdup("");
+    if (localtime_r((time_t *)&ts, &tm) == NULL) return xstrdup("");
     char buf[32];
     if (strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M", &tm) == 0) return xstrdup("");
     return xstrdup(buf);

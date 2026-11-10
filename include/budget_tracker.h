@@ -127,6 +127,7 @@ void budget_tracker_set_hard_limit(budget_tracker_t *bt, bool hard);
 
 /* G26: Should stop immediately (hard exceeded) vs allow grace call. */
 bool budget_tracker_is_hard_exceeded(const budget_tracker_t *bt);
+double normalize_budget_warning_ratio(double value);
 
 /* Get stats as JSON string (malloc'd). Caller must free(). */
 char *budget_tracker_stats_json(const budget_tracker_t *bt);

@@ -248,7 +248,7 @@ json_t *build_external_skill_index(void)
 
         struct dirent *entry;
         while ((entry = readdir(dir)) != NULL) {
-            if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+            if (hermes_dirent_is_dir(dir_path, entry->d_name) && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
                 /* Check for skill.yaml or skill.yml */
                 char skill_yaml[4096];
                 snprintf(skill_yaml, sizeof(skill_yaml), "%s/%s/skill.yaml", dir_path, entry->d_name);

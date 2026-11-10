@@ -6,6 +6,7 @@
 #include "libplugin/plugin.h"
 #include "cli_cmd_misc.h"
 #include "commands_shared.h"
+#include <sys/stat.h>
 #include "hermes_core_types.h"
 
 /* /plugins: List installed plugins and their status */
@@ -38,7 +39,7 @@ void cmd_plugins(const char *args, agent_state_t *state) {
         int count = 0;
         struct dirent *entry;
         while ((entry = readdir(d)) != NULL) {
-            if (entry->d_type != DT_REG && entry->d_type != DT_LNK) continue;
+            if (!hermes_dirent_is_file(plugins_dir, entry->d_name)) continue;
             const char *dot = strrchr(entry->d_name, '.');
             if (!dot || strcmp(dot, ".so") != 0) continue;
 
@@ -226,4 +227,141 @@ void cmd_plugins(const char *args, agent_state_t *state) {
     printf("  install <path>      Install a plugin .so file\n");
     printf("  remove <name>       Remove an installed plugin\n");
 }
+
+/* ============================================================
+ *  cmd_python — run a Python hermes_cli/<module> via subprocess.
+ *  Bridging primary target: the N/A modules documented in
+ *  src/cli/cli_gaps.c (argparse, OAuth, pyperclip, Docker, portal,
+ *  clipboard, gateway, kanban, inventory, nous_*, etc.) that are
+ *  never reached from C. This is the live delegation path those
+ *  50 modules were registered "hermes python <module>" for but
+ *  which had no dispatcher (cli_subprocess_invoke was dead code).
+ *
+ *  Usage: /python <module> [args...]
+ *  Module is validated to [A-Za-z0-9_.] (no path traversal), then:
+ *     HERMES_HOME/<python> -m hermes_cli.<module> [args...]
+ *  falling back to bare `python -m hermes_cli.<module>`.
+ * ============================================================ */
+static bool cmd_python_module_name_valid(const char *m) {
+    if (!m || !m[0]) return false;
+    for (const char *p = m; *p; p++) {
+        if (!((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
+              (*p >= '0' && *p <= '9') || *p == '_' || *p == '.'))
+            return false;
+    }
+    return true;
+}
+
+/* Access(F_OK) check so we don't shell out to a nonexistent HERMES_HOME/python. */
+static bool command_python_usable(const char *py) {
+    if (!py || !py[0]) return false;
+    struct stat st;
+    return stat(py, &st) == 0 || access(py, F_OK) == 0;
+}
+
+/* Locate the directory that CONTAINS hermes_cli/ (i.e. the hermes-agent
+ * source root). On this box that is C:\Users\<u>\hermes-agent; on a real
+ * install it is the agent payload root. Returns malloc'd path or NULL. */
+static char *cmd_python_find_agent_root(void) {
+    const char *cands[] = {
+        "C:/Users/eman5/hermes-agent",   /* dev box */
+        NULL
+    };
+    const char *home = getenv("HERMES_HOME");
+    char probe[1024];
+    if (home && *home) {
+        /* <home>/ is config dir; <home> may also sit next to an agent root */
+        snprintf(probe, sizeof(probe), "%s/hermes_cli", home);
+        if (access(probe, F_OK) == 0) {
+            char *root = malloc(strlen(home) + 1);
+            if (root) strcpy(root, home);
+            return root;
+        }
+        snprintf(probe, sizeof(probe), "%s/../hermes-cli", home);
+        if (access(probe, F_OK) == 0) {
+            char *root = malloc(strlen(home) + 1 + 3);
+            if (root) snprintf(root, strlen(home) + 1 + 3, "%s/..", home);
+            return root;
+        }
+    }
+    for (int i = 0; cands[i]; i++) {
+        snprintf(probe, sizeof(probe), "%s/hermes_cli", cands[i]);
+        if (access(probe, F_OK) == 0) return strdup(cands[i]);
+    }
+    return NULL;
+}
+
+/* Prefer a real, spawnable interpreter. The WindowsApps payload python is
+ * ACL-blocked for native child processes (Access denied in popen), so probe
+ * candidates that the C binary may actually exec. Returns malloc'd path or NULL. */
+static char *cmd_python_find_interpreter(void) {
+    /* MSYS2 mingw python is a real exe and imports hermes_cli via PYTHONPATH. */
+    static const char *real_cands[] = {
+        "C:/msys64/mingw64/bin/python.exe",
+        "C:/msys64/mingw64/bin/python3.exe",
+        NULL
+    };
+    for (int i = 0; real_cands[i]; i++) {
+        if (access(real_cands[i], F_OK) == 0) return strdup(real_cands[i]);
+    }
+    /* Fall back to PATH python; may fail with Access denied for the payload. */
+    return strdup("python");
+}
+
+void cmd_python(const char *args, agent_state_t *state) {
+    (void)state;
+    if (!args || !args[0]) {
+        printf("Usage: /python <module> [args...]\n");
+        printf("  Run a Python hermes_cli submodule (hermes python <module>).\n");
+        return;
+    }
+    char module[128];
+    const char *sp = args;
+    while (*sp == ' ') sp++;
+    size_t n = 0;
+    while (sp[n] && sp[n] != ' ' && n + 1 < sizeof(module)) n++;
+    memcpy(module, sp, n);
+    module[n] = '\0';
+    if (!cmd_python_module_name_valid(module)) {
+        printf("Invalid module name '%s'.\n", module);
+        return;
+    }
+    const char *rest = sp + n;
+    while (*rest == ' ') rest++;
+
+    char *agent_root = cmd_python_find_agent_root();
+    char *py = cmd_python_find_interpreter();
+    /* Inject PYTHONPATH into the child's environment so `python -m hermes_cli.X`
+     * resolves the live source. do NOT prefix the command line with batch
+     * (`set X=Y&& ...`) — that construct hangs cmd.exe under popen. */
+    if (agent_root && *agent_root) {
+        setenv("PYTHONPATH", agent_root, 1);
+    }
+    char cmd[4096];
+    int w = 0;
+    if (py) {
+        char q[1024];
+        snprintf(q, sizeof(q), "\"%s\"", py);
+        w = snprintf(cmd, sizeof(cmd), "%s", q);
+        free(py);
+    } else {
+        w = snprintf(cmd, sizeof(cmd), "python");
+    }
+    if (agent_root) free(agent_root);
+    int tail = snprintf(cmd + (w < 0 ? 0 : w), sizeof(cmd) - (size_t)(w < 0 ? 0 : w),
+                        " -m hermes_cli.%s %s 2>&1", module, rest);
+    if (tail < 0) return;
+    FILE *fp = popen(cmd, "r");
+    if (!fp) {
+        printf("Failed to start python for module '%s'.\n", module);
+        return;
+    }
+    char buf[512];
+    size_t got;
+    while ((got = fread(buf, 1, sizeof(buf), fp)) > 0)
+        fwrite(buf, 1, got, stdout);
+    int rc = pclose(fp);
+    printf("\n[python %s exited %d]\n", module, rc);
+}
+
 

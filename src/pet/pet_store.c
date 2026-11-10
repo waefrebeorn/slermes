@@ -187,7 +187,7 @@ int pet_installed_pets(pet_installed_t *out, int max_count) {
 
     struct dirent *entry;
     while ((entry = readdir(d)) != NULL && count < max_count) {
-        if (entry->d_type != DT_DIR) continue;
+        if (!hermes_dirent_is_dir(base, entry->d_name)) continue;
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
         if (strcmp(entry->d_name, ".thumbs") == 0)
@@ -332,7 +332,7 @@ bool pet_remove_pet(const char *slug) {
     if (!d) return false;
     struct dirent *entry;
     while ((entry = readdir(d)) != NULL) {
-        if (entry->d_type == DT_REG) {
+        if (hermes_dirent_is_file(dir, entry->d_name)) {
             char fp[1100];
             snprintf(fp, sizeof(fp), "%s/%s", dir, entry->d_name);
             unlink(fp);
@@ -599,7 +599,7 @@ bool pet_is_petdex_host(const char *url) {
 json_t *pet_download_json(const char *url) {
     if (!url || !*url) return NULL;
 
-    http_client_t *client = http_new(NULL);
+    http_client_t *client = http_new(30);
     if (!client) return NULL;
 
     http_resp_t *resp = http_get(client, url, NULL);

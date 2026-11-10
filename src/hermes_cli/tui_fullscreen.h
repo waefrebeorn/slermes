@@ -183,4 +183,7 @@ void tui_fullscreen_notify_boundary(const char *event_type,
 }
 #endif
 
+/* called from tui_input.c */
+void tui_redraw_input(void);
+
 #endif /* TUI_FULLSCREEN_H */

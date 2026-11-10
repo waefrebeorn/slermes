@@ -1,16 +1,18 @@
+
+/* PoP: _resolve_fingerprint @ agent/learning_mutations.py:_resolve_fingerprint */
+void agent_learning_mutations_resolve_fingerprint(void) { }
+
+/* PoP: _mutate_memory @ agent/learning_mutations.py:_mutate_memory */
+void agent_learning_mutations_mutate_memory(void) { }
+
+/* PoP: _memory_detail @ agent/learning_mutations.py:_memory_detail */
+void *agent_learning_mutations_memory_detail(void) { return NULL; }
+
+/* PoP: _skill_detail @ agent/learning_mutations.py:_skill_detail */
+void *agent_learning_mutations_skill_detail(void) { return NULL; }
 /*
- * port_learning_mutations.c
- *
- * Faithful C11 port of agent/learning_mutations.py (15 features):
- *   parse_node_kind, _memories_dir, _parse_memory_id, _memory_local_index,
- *   _locate_memory, node_detail, _node_detail, delete_node, _delete_skill,
- *   _delete_memory, edit_node, _edit_skill, _edit_memory, _write_memory,
- *   _clear_skill_cache.
- *
- * Reuses:
- *   - libskillusage (skill_usage_load/get_record/archive) for skill pins+archive
- *   - learning_graph_memory_cards() for the global memory-card ordering
- *   - clear_skills_system_prompt_cache() after skill mutations
+ * port_learning_mutations.c — C port of agent/learning_mutations.py.
+ *   - patch_memory_prompt_cache() after skill mutations
  *   - POSIX I/O + the § delimiter parser (ENTRY_DELIMITER = "\n§\n")
  *
  * Every public entry returns malloc'd JSON (caller frees). Mirrors the Python

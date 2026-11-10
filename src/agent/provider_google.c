@@ -705,13 +705,6 @@ static provider_response_t *google_parse_stream_chunk(const provider_t *p,
  *  Free response
  * ================================================================ */
 
-static void google_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  Google provider utility functions — ported from Python
  *  gemini_native_adapter.py
@@ -1618,7 +1611,6 @@ const char *google_probe_gemini_tier(const char *api_key,
     return result;
 }
 
-
 /* Port of Python gemini_native_adapter.py:is_free_tier_quota_error().
  * Return True when a Gemini 429 message indicates free-tier exhaustion.
  * Public wrapper — callers outside provider_google.c use this instead of
@@ -2000,7 +1992,7 @@ const provider_ops_t PROVIDER_OPS_GOOGLE = {
     .build_request_body = google_build_request_body,
     .parse_response = google_parse_response,
     .parse_stream_chunk = google_parse_stream_chunk,
-    .free_response = google_free_response,
+    .free_response = provider_response_free,
     .name = "google"
 };
 

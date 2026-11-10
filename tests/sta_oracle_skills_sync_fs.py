@@ -6,7 +6,7 @@ LIVE tools/skills_sync.py on the SAME inputs the C harness
 emitted, and exact-compares. When C disagrees, fix the C.
 """
 import json, subprocess, sys, os, hashlib
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from tools.skills_sync import _dir_hash, _safe_rel_install_path
 from pathlib import Path
 

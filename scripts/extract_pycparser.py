@@ -5,7 +5,7 @@ source slices. GUARANTEED-correct unlike hand-rolled brace matching."""
 import re, sys
 from pycparser import c_parser, c_ast
 
-BASE='/home/wubu/hermes-agent-dev/slermes/'
+BASE='SLERMES_REPO/'
 SRC='src/cli/commands.c'
 STUB='scripts/c_stub.h'
 

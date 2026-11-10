@@ -667,8 +667,8 @@ json_t *tools_config_cua_driver_contract_status(const char *binary) {
         free(resolved);
         return r;
     }
-    long long mtime_ns = (long long)st.st_mtim.tv_sec * 1000000000LL +
-                         (long long)st.st_mtim.tv_nsec;
+    long long mtime_ns = (long long)SLERMES_ST_MTIM_SEC(st) * 1000000000LL +
+                         (long long)SLERMES_ST_MTIM_NSEC(st);
     long long size = (long long)st.st_size;
 
     double now = tcc_monotonic();
@@ -736,8 +736,10 @@ bool tools_config_post_setup_already_installed(const char *post_setup_key) {
 /* PoP: tools_config_post_setup_no_window_flags @ hermes_cli/tools_config.py:_post_setup_no_window_flags */
 int tools_config_post_setup_no_window_flags(bool streams_to_console) {
 #if defined(_WIN32)
-    const int CREATE_NO_WINDOW = 0x08000000;  /* windows_hide_flags() */
-    int flags = CREATE_NO_WINDOW;
+    /* CREATE_NO_WINDOW is a macro in the Windows headers; the local
+     * shadow must not redeclare it. */
+    const int slermes_create_no_window = 0x08000000;  /* windows_hide_flags() */
+    int flags = slermes_create_no_window;
     if (streams_to_console && isatty(STDOUT_FILENO)) return 0;
     return flags;
 #else

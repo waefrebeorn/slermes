@@ -804,7 +804,7 @@ int _cmd_boards_show(kb_args_t *a) {
     sqlite3 *conn = dbp ? kdb_connect_path(dbp) : NULL;
     json_t *counts = json_object();
     long total = 0;
-    if (conn) { kc_board_task_counts(conn, counts, total); kdb_close(conn); }
+    if (conn) { kc_board_task_counts(conn, counts, &total); kdb_close(conn); }
     printf("Current board: %s\n", current);
     printf("  Display name: %s\n", meta ? json_get_str(meta, "name", "") : "");
     const char *desc = meta ? json_get_str(meta, "description", NULL) : NULL;
@@ -3681,19 +3681,21 @@ char *run_slash(const char *rest) {
     free(err);
 
     fflush(stdout); fflush(stderr);
-    FILE *saved_out = stdout, *saved_err = stderr;
+    /* stdout/stderr are not lvalues on MinGW (they expand to a pointer
+     * expression), so redirect the underlying descriptors instead. */
     char out_path[] = "/tmp/slermes_kb_out.XXXXXX";
     char err_path[] = "/tmp/slermes_kb_err.XXXXXX";
     int out_fd = mkstemp(out_path), err_fd = mkstemp(err_path);
-    stdout = fdopen(dup(out_fd), "w");
-    stderr = fdopen(dup(err_fd), "w");
+    fflush(stdout); fflush(stderr);
+    int saved_out_fd = dup(fileno(stdout)), saved_err_fd = dup(fileno(stderr));
+    dup2(out_fd, fileno(stdout)); dup2(err_fd, fileno(stderr));
+    close(out_fd); close(err_fd);
     int handler_rc = kc_dispatch_command(
         action, &args, _is_delegated_child_cli_mutation(&args));
     (void)handler_rc;
     fflush(stdout); fflush(stderr);
-    fclose(stdout); fclose(stderr);
-    stdout = saved_out;
-    stderr = saved_err;
+    dup2(saved_out_fd, fileno(stdout)); dup2(saved_err_fd, fileno(stderr));
+    close(saved_out_fd); close(saved_err_fd);
 
     /* read back captured streams */
     char buf[65536];

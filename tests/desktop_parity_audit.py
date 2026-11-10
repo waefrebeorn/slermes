@@ -12,8 +12,8 @@ Usage:
 import os, re, sys, json, argparse
 from dataclasses import dataclass, field, asdict
 
-SLERMES_DIR = "/home/wubu/hermes-agent-dev/slermes"
-DESKTOP_DIR = "/home/wubu/hermes-agent-dev/apps/desktop"
+SLERMES_DIR = "SLERMES_REPO"
+DESKTOP_DIR = "C:/Users/eman5/hermes-agent/apps/desktop"
 
 @dataclass
 class ParityItem:

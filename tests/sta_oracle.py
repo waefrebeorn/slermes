@@ -10,7 +10,7 @@ astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"), and C uses the
 same local TZ, outputs must match on this machine.
 """
 import json, sys
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from hermes_cli.status import _format_iso_timestamp
 
 ok = True

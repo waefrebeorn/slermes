@@ -277,3 +277,9 @@ bool mirror_to_session(const char *platform,
     free(session_id);
     return ok;
 }
+
+/* PoP: _resolve_sessions_index @ gateway/mirror.py:_resolve_sessions_index */
+void *gateway_mirror_resolve_sessions_index(void) { return NULL; }
+
+/* PoP: _origin_user_id @ gateway/mirror.py:_origin_user_id */
+const char *gateway_mirror_origin_user_id(void) { return NULL; }

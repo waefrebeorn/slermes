@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include <math.h>
 
-static char *xstrdup(const char *s) { return s ? strdup(s) : strdup(""); }
+static char *xstrdup_or_empty(const char *s) { return s ? strdup(s) : strdup(""); }
 
 static void strlist_free_local(char **p) { if (!p) return; for (size_t i = 0; p[i]; i++) free(p[i]); free(p); }
 
@@ -71,7 +71,7 @@ static char **get_close_matches(const char *word, char *const *cands,
         double r = char_ratio(word, cands[i]);
         if (r >= cutoff) {
             if (cnt + 1 >= cap) { cap *= 2; hits = realloc(hits, cap * sizeof(hit_t)); }
-            hits[cnt].s = xstrdup(cands[i]);
+            hits[cnt].s = xstrdup_or_empty(cands[i]);
             hits[cnt].r = r;
             cnt++;
         }
@@ -84,7 +84,7 @@ static char **get_close_matches(const char *word, char *const *cands,
     }
     size_t outn = (n && cnt > n) ? n : cnt;
     char **out = calloc(outn + 1, sizeof(char *));
-    for (size_t i = 0; i < outn; i++) out[i] = xstrdup(hits[i].s);
+    for (size_t i = 0; i < outn; i++) out[i] = xstrdup_or_empty(hits[i].s);
     out[outn] = NULL;
     for (size_t i = 0; i < cnt; i++) free(hits[i].s);
     free(hits);
@@ -96,7 +96,7 @@ static char **get_close_matches(const char *word, char *const *cands,
 static char *suggestion_text(const char *requested, char *const *cands, size_t n) {
     char **m = get_close_matches(requested, cands, n, 0.5);
     size_t cnt = 0; for (; m && m[cnt]; cnt++);
-    if (cnt == 0) { strlist_free_local(m); return xstrdup(""); }
+    if (cnt == 0) { strlist_free_local(m); return xstrdup_or_empty(""); }
     size_t sz = 64;
     char *out = malloc(sz);
     int len = snprintf(out, sz, "\n  Similar models:");
@@ -121,7 +121,7 @@ static char **parse_id_array(const char *json) {
     size_t o = 0;
     for (size_t i = 0; i < root->c.count; i++) {
         json_t *it = root->c.items[i];
-        if (it && it->type == JSON_STRING && it->str_val) out[o++] = xstrdup(it->str_val);
+        if (it && it->type == JSON_STRING && it->str_val) out[o++] = xstrdup_or_empty(it->str_val);
     }
     out[o] = NULL;
     json_free(root);
@@ -209,14 +209,14 @@ models_validate_result_t models_validate_requested_model(
     catalog_resolver_fn catalog_resolve, void *cat_ctx) {
 
     models_validate_result_t r = {0};
-    char *requested = xstrdup((model_name && *model_name) ? model_name : "");
+    char *requested = xstrdup_or_empty((model_name && *model_name) ? model_name : "");
     const char *norm_static = model_normalize_provider(provider ? provider : "");
-    char *normalized = xstrdup(norm_static);
+    char *normalized = xstrdup_or_empty(norm_static);
     if (strcmp(normalized, "openrouter") == 0 && base_url && strstr(base_url, "openrouter.ai") == NULL)
-        free(normalized), normalized = xstrdup("custom");
+        free(normalized), normalized = xstrdup_or_empty("custom");
 
     /* copilot lookup normalization */
-    char *requested_for_lookup = xstrdup(requested);
+    char *requested_for_lookup = xstrdup_or_empty(requested);
     if (strcmp(normalized, "copilot") == 0) {
         char *n = model_normalize_copilot_model_id(requested);
         if (n && *n) { free(requested_for_lookup); requested_for_lookup = n; }
@@ -225,7 +225,7 @@ models_validate_result_t models_validate_requested_model(
 
     if (!*requested) {
         r.accepted = 0; r.persist = 0; r.recognized = 0;
-        r.message = xstrdup("Model name cannot be empty.");
+        r.message = xstrdup_or_empty("Model name cannot be empty.");
         goto done;
     }
 
@@ -239,7 +239,7 @@ models_validate_result_t models_validate_requested_model(
             r.accepted = 0; r.persist = 0; r.recognized = 0;
             char buf[512];
             snprintf(buf, sizeof(buf), "MoA preset `%s` was not found. Run `hermes moa list`.", requested);
-            r.message = xstrdup(buf);
+            r.message = xstrdup_or_empty(buf);
         }
         strlist_free_local(presets);
         goto done;
@@ -250,7 +250,7 @@ models_validate_result_t models_validate_requested_model(
         int sp = 0; for (size_t i = 0; requested[i]; i++) if (isspace((unsigned char)requested[i])) { sp = 1; break; }
         if (sp) {
             r.accepted = 0; r.persist = 0; r.recognized = 0;
-            r.message = xstrdup("Model names cannot contain spaces.");
+            r.message = xstrdup_or_empty("Model names cannot contain spaces.");
             goto done;
         }
     }
@@ -261,14 +261,14 @@ models_validate_result_t models_validate_requested_model(
             r.accepted = 0; r.persist = 0; r.recognized = 0;
             char buf[512];
             snprintf(buf, sizeof(buf), "Could not reach LM Studio's `/api/v1/models` to validate `%s`.", requested);
-            r.message = xstrdup(buf);
+            r.message = xstrdup_or_empty(buf);
         } else if (models[0] == NULL) {
             r.accepted = 0; r.persist = 0; r.recognized = 0;
             char buf[512];
             snprintf(buf, sizeof(buf),
                 "LM Studio is reachable but no chat-capable models are loaded. "
                 "Load `%s` in LM Studio (Developer tab -> Load Model) and try again.", requested);
-            r.message = xstrdup(buf);
+            r.message = xstrdup_or_empty(buf);
         } else {
             int hit = 0;
             for (size_t i = 0; models[i]; i++)
@@ -278,7 +278,7 @@ models_validate_result_t models_validate_requested_model(
                 r.accepted = 0; r.persist = 0; r.recognized = 0;
                 char buf[512];
                 snprintf(buf, sizeof(buf), "Model `%s` was not found in LM Studio's model listing.", requested);
-                r.message = xstrdup(buf);
+                r.message = xstrdup_or_empty(buf);
             }
         }
         strlist_free_local(models);
@@ -297,7 +297,7 @@ models_validate_result_t models_validate_requested_model(
                     size_t o = 0;
                     for (size_t i = 0; i < m->c.count; i++)
                         if (m->c.items[i]->type == JSON_STRING && m->c.items[i]->str_val)
-                            api_models[o++] = xstrdup(m->c.items[i]->str_val);
+                            api_models[o++] = xstrdup_or_empty(m->c.items[i]->str_val);
                     api_models[o] = NULL;
                 }
                 json_t *fb = json_obj_get(p, "used_fallback");
@@ -317,9 +317,9 @@ models_validate_result_t models_validate_requested_model(
                     r.accepted = 1; r.persist = 1; r.recognized = 1;
                     char buf[512];
                     snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, auto_m[0]);
-                    r.corrected_model = xstrdup(auto_m[0]);
+                    r.corrected_model = xstrdup_or_empty(auto_m[0]);
                     strlist_free_local(auto_m);
-                    r.message = xstrdup(buf);
+                    r.message = xstrdup_or_empty(buf);
                 } else {
                     char *sug = suggestion_text(requested, api_models, 3);
                     size_t bl = strlen(requested) + strlen(sug) + 256;
@@ -369,9 +369,9 @@ models_validate_result_t models_validate_requested_model(
                     r.accepted = 1; r.persist = 1; r.recognized = 1;
                     char buf[512];
                     snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, auto_m[0]);
-                    r.corrected_model = xstrdup(auto_m[0]);
+                    r.corrected_model = xstrdup_or_empty(auto_m[0]);
                     strlist_free_local(auto_m);
-                    r.message = xstrdup(buf);
+                    r.message = xstrdup_or_empty(buf);
                 } else {
                     const char *prov_label = (strcmp(normalized, "openai-codex") == 0)
                         ? "OpenAI Codex" : "xAI Grok OAuth (SuperGrok / Premium+)";
@@ -413,7 +413,7 @@ models_validate_result_t models_validate_requested_model(
             strlist_free_local(catalog_models);
         } else {
             r.accepted = 1; r.persist = 1; r.recognized = 0;
-            r.message = xstrdup("Note: could not resolve the provider catalog to validate the model.");
+            r.message = xstrdup_or_empty("Note: could not resolve the provider catalog to validate the model.");
             strlist_free_local(catalog_models);
         }
         goto done;
@@ -428,7 +428,7 @@ models_validate_result_t models_validate_requested_model(
             char **lower = calloc(1, sizeof(char *));
             size_t n = 0;
             for (size_t i = 0; catalog_models[i]; i++) {
-                char *l = xstrdup(catalog_models[i]);
+                char *l = xstrdup_or_empty(catalog_models[i]);
                 for (char *p = l; *p; p++) *p = (char)tolower((unsigned char)*p);
                 lower = realloc(lower, (n + 2) * sizeof(char *));
                 lower[n++] = l; lower[n] = NULL;
@@ -453,11 +453,11 @@ models_validate_result_t models_validate_requested_model(
                         if (strcmp(l2, auto_m[0]) == 0) { orig = catalog_models[i]; break; }
                     }
                     r.accepted = 1; r.persist = 1; r.recognized = 1;
-                    r.corrected_model = xstrdup(orig ? orig : auto_m[0]);
+                    r.corrected_model = xstrdup_or_empty(orig ? orig : auto_m[0]);
                     strlist_free_local(auto_m);
                     char buf[512];
                     snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, r.corrected_model);
-                    r.message = xstrdup(buf);
+                    r.message = xstrdup_or_empty(buf);
                 } else {
                     char *sug = suggestion_text(rl, lower, 3);
                     size_t bl = strlen(requested) + strlen(sug) + 256;
@@ -475,7 +475,7 @@ models_validate_result_t models_validate_requested_model(
             strlist_free_local(catalog_models);
         } else {
             r.accepted = 1; r.persist = 1; r.recognized = 0;
-            r.message = xstrdup("Note: could not resolve the MiniMax catalog to validate the model.");
+            r.message = xstrdup_or_empty("Note: could not resolve the MiniMax catalog to validate the model.");
         }
         goto done;
     }
@@ -494,9 +494,9 @@ models_validate_result_t models_validate_requested_model(
                     r.accepted = 1; r.persist = 1; r.recognized = 1;
                     char buf[512];
                     snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, auto_m[0]);
-                    r.corrected_model = xstrdup(auto_m[0]);
+                    r.corrected_model = xstrdup_or_empty(auto_m[0]);
                     strlist_free_local(auto_m);
-                    r.message = xstrdup(buf);
+                    r.message = xstrdup_or_empty(buf);
                 } else {
                     char *sug = suggestion_text(requested, am, 3);
                     size_t bl = strlen(requested) + strlen(sug) + 256;
@@ -528,16 +528,16 @@ models_validate_result_t models_validate_requested_model(
                     r.accepted = 1; r.persist = 1; r.recognized = 1;
                     char buf[512];
                     snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, auto_m[0]);
-                    r.corrected_model = xstrdup(auto_m[0]);
+                    r.corrected_model = xstrdup_or_empty(auto_m[0]);
                     strlist_free_local(auto_m);
-                    r.message = xstrdup(buf);
+                    r.message = xstrdup_or_empty(buf);
                 }
             }
             strlist_free_local(api_models);
             goto done;
         }
         r.accepted = 1; r.persist = 1; r.recognized = 0;
-        r.message = xstrdup("Note: could not verify the model against this endpoint's model listing. "
+        r.message = xstrdup_or_empty("Note: could not verify the model against this endpoint's model listing. "
                             "Many Anthropic-compatible proxies do not implement GET /v1/models. "
                             "The model name has been accepted without verification.");
         goto done;
@@ -554,7 +554,7 @@ models_validate_result_t models_validate_requested_model(
                 const char *m = api_models[i];
                 if (strncmp(m, "models/", 7) == 0) m += 7;
                 cmp = realloc(cmp, (n + 2) * sizeof(char *));
-                cmp[n++] = xstrdup(m); cmp[n] = NULL;
+                cmp[n++] = xstrdup_or_empty(m); cmp[n] = NULL;
             }
         }
         int hit = 0;
@@ -564,10 +564,10 @@ models_validate_result_t models_validate_requested_model(
             char **auto_m = get_close_matches(requested_for_lookup, cmp, 1, 0.9);
             if (auto_m && auto_m[0]) {
                 r.accepted = 1; r.persist = 1; r.recognized = 1;
-                r.corrected_model = xstrdup(auto_m[0]);
+                r.corrected_model = xstrdup_or_empty(auto_m[0]);
                 char buf[512];
                 snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, auto_m[0]);
-                r.message = xstrdup(buf);
+                r.message = xstrdup_or_empty(buf);
             } else {
                 /* curated-catalog fallback (pure, no extra fetch) */
                 char key[64], normk[64];
@@ -607,7 +607,7 @@ models_validate_result_t models_validate_requested_model(
         char **lower = calloc(1, sizeof(char *));
         size_t n = 0;
         for (size_t i = 0; catalog_models[i]; i++) {
-            char *l = xstrdup(catalog_models[i]);
+            char *l = xstrdup_or_empty(catalog_models[i]);
             for (char *p = l; *p; p++) *p = (char)tolower((unsigned char)*p);
             lower = realloc(lower, (n + 2) * sizeof(char *));
             lower[n++] = l; lower[n] = NULL;
@@ -631,10 +631,10 @@ models_validate_result_t models_validate_requested_model(
                     if (strcmp(l2, auto_m[0]) == 0) { orig = catalog_models[i]; break; }
                 }
                 r.accepted = 1; r.persist = 1; r.recognized = 1;
-                r.corrected_model = xstrdup(orig ? orig : auto_m[0]);
+                r.corrected_model = xstrdup_or_empty(orig ? orig : auto_m[0]);
                 char buf[512];
                 snprintf(buf, sizeof(buf), "Auto-corrected `%s` -> `%s`", requested, r.corrected_model);
-                r.message = xstrdup(buf);
+                r.message = xstrdup_or_empty(buf);
             } else {
                 char *sug = suggestion_text(rl, lower, 3);
                 const char *label = normalized; /* _PROVIDER_LABELS simplified to slug */

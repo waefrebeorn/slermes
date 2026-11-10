@@ -3,7 +3,7 @@
  * Includes the port .c directly; links only stdlib. Compares C output
  * byte-for-byte against LIVE Python tools/web_tools.py:convert_base64_images_to_links.
  */
-#include "web_base64_img.c"
+#include "tools/web_base64_img.c"
 #include <stdio.h>
 #include <string.h>
 

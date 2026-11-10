@@ -13,14 +13,20 @@ HERMES_RELEASE_DATE := $(shell python3 -c "import sys; sys.path.insert(0, '..');
 # instead of minutes, and no-op rebuilds finish in well under a second.
 ifeq ($(origin CC),default)
     ifneq ($(shell command -v ccache 2>/dev/null),)
-        CC := ccache $(shell command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc)
+        # ccache is a native Windows binary: it cannot exec a POSIX path like
+        # /c/winlibs/... so the compiler path is converted to C:/... form.
+        # NB: the awk must apply to the WHOLE command -v output. Writing
+        # `A || B | awk` parses as `A || (B | awk)`, so the conversion silently
+        # only ever saw the `echo cc` fallback and left a POSIX path that
+        # native ccache cannot exec.
+        CC := ccache $(shell c=$$(command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc); echo $$c | awk '{if (substr($$0,1,1)=="/") {print toupper(substr($$0,2,1))":"substr($$0,3)} else print}')
     else
         CC := $(shell command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc)
     endif
 endif
 ifeq ($(origin CXX),default)
     ifneq ($(shell command -v ccache 2>/dev/null),)
-        CXX := ccache $(shell command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++)
+        CXX := ccache $(shell c=$$(command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++); echo $$c | awk '{if (substr($$0,1,1)=="/") {print toupper(substr($$0,2,1))":"substr($$0,3)} else print}')
     else
         CXX := $(shell command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++)
     endif
@@ -80,7 +86,7 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O3 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+CFLAGS = -O3 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -include hermes_win32.h -D_GNU_SOURCE -I include/compat -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
 # PGO (Profile-Guided Optimization) support — two-phase build for max runtime speed.
 # PGO typically yields 5-15% runtime speedup on C codebases (GCC docs: up to 2×).
 # Slermes is heavy on JSON + DB + string processing hot paths — good PGO candidates.
@@ -127,3 +133,9 @@ ifneq ("$(wildcard lib/libncurses/include/curses.h)","")
 else
     HAS_NCURSES = 0
 endif
+
+# ccache refuses to run without USERPROFILE. Exporting it from the shell is not
+# reliable here (make/native-tool env handling drops it), so force it for every
+# recipe make spawns.
+export USERPROFILE ?= C:/Users/eman5
+export LOCALAPPDATA ?= C:/Users/eman5/AppData/Local

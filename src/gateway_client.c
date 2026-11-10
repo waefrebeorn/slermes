@@ -13,6 +13,7 @@
  */
 
 #include "gateway_client.h"
+#include "hermes_clock.h"
 #include "hermes_core_types.h"
 #include "json.h"
 
@@ -31,15 +32,7 @@
 
 /* ── Internal helpers ────────────────────────────────────────────────────── */
 
-static int64_t now_ms(void) {
-#ifdef _WIN32
-    return GetTickCount64();
-#else
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000;
-#endif
-}
+
 
 static void gw_set_state(gw_client_t *gw, gw_state_t state, const char *error) {
     gw->state = state;

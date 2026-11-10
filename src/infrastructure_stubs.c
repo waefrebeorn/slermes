@@ -493,7 +493,6 @@ int stub_shadowed_clear_session_cwd(void) { return 0; }
 int stub_shadowed_is_container(void) { return 0; }
 int stub_shadowed_is_yolo_mode_frozen(void) { return 0; }
 int clamp_effort(void) { return 0; }
-int classify_pressure(void) { return 0; }
 int silent_default_for_provider(const char *p) { (void)p; return 0; }
 int stub_shadowed_detect_install_method(void) { return 0; }
 
@@ -515,8 +514,6 @@ char *image_gen_path_looks_like_absolute_file_path(const char *p) {
     return strdup((p && p[0] == '/') ? "1" : "0");
 }
 
-int llg_sample_memory(void) { return 0; }
-int llg_read_prior_exit_label(void) { return 0; }
 int _parse_absolute_timestamp(const char *ts, double *out) { (void)ts; (void)out; return 0; }
 int stub_shadowed__worktree_is_dirty(void) { return 0; }
 int stub_shadowed__worktree_has_unpushed_commits(void) { return 0; }
@@ -634,8 +631,6 @@ char *stub_shadowed_cli_hermes_cli_dashboard_auth_prefix_resolve_public_url(void
 int stub_shadowed_cli_get_tui_terminal_width(void) { return 80; }
 
 /* Browser */
-char *browser_redact_sensitive_text(const char *text) { (void)text; return strdup(""); }
-int browser_blocked_private_page_action(void) { return 0; }
 int stub_shadowed_browser_is_always_blocked_url(const char *url) { (void)url; return 0; }
 int stub_shadowed_browser_is_safe_url(const char *url) { (void)url; return 1; }
 int stub_shadowed_browser_url_is_private(const char *url) { (void)url; return 0; }
@@ -717,13 +712,6 @@ int stub_shadowed_allowlist_clear(void) { return 0; }
 int stub_shadowed_allowlist_remove(const char *entry) { (void)entry; return 0; }
 int stub_shadowed_save_permanent_allowlist(void) { return 0; }
 
-/* Turn summary collector */
-void turn_summary_collector_begin(void) {}
-void turn_summary_collector_free(void *col) { free(col); }
-void *turn_summary_collector_new(void) { return calloc(1, 64); }
-int turn_summary_collector_record(void *col, const char *text) { (void)col; (void)text; return 0; }
-char *turn_summary_collector_render(void *col) { (void)col; return strdup(""); }
-char *turn_summary_format_token_flow(void) { return strdup(""); }
 
 /* Misc */
 int stub_shadowed_voice_recorder_stop(void) { return 0; }

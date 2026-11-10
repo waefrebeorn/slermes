@@ -740,6 +740,15 @@ int cli_main(int argc, char **argv) {
                 strcat(msg, argv[i]);
             }
 
+            /* The one-shot path reaches agent_chat without ever having applied
+             * the config to the agent: agent_configure_from_config() is called
+             * at startup for the interactive path, but tracing showed it never
+             * runs here, so state->llm.provider/model stayed empty and the
+             * first request went to an empty URL. The turn then reported
+             * "Stream drop: / after 0.0s" -- exit 0, status ok, no model ever
+             * contacted. Apply it here; it is idempotent. */
+            agent_configure_from_config(&g_cli.agent, &g_cli.config);
+
             /* Show spinner during LLM call */
             if (g_cli.interactive)
                 display_kawaii_start(&g_cli.spinner, "thinking", true);

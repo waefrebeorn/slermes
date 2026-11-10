@@ -35,6 +35,10 @@
 /* No ALSA outside Linux (Windows/macOS) — recorder functions are
  * compiled out (see below). */
 #define SLERMES_NO_ALSA 1
+/* The recorder state struct below still names these types, so provide
+ * opaque stand-ins rather than guarding every member. */
+typedef struct _snd_pcm snd_pcm_t;
+typedef unsigned long snd_pcm_uframes_t;
 #endif
 
 /* Forward declaration (defined later in this file as voice_write_wav). */
@@ -79,6 +83,10 @@ static struct {
     snd_pcm_t *pcm;
     pthread_mutex_t mutex;
 } g_recorder = {0};
+
+#ifdef SLERMES_NO_ALSA
+static void *record_thread(void *arg);
+#endif
 
 /* Recording parameters (mirror Python module constants). */
 #define VOICE_SAMPLE_RATE 16000
@@ -1097,6 +1105,7 @@ char *voice_listen_for_speech(int (*should_stop)(void),
                               int capture, void (*on_trigger)(void),
                               int pre_roll_ms, int endpoint_silence_ms,
                               int max_utterance_ms) {
+#ifndef SLERMES_NO_ALSA
     snd_pcm_t *pcm = NULL;
     int rc = snd_pcm_open(&pcm, g_voice_device, SND_PCM_STREAM_CAPTURE, 0);
     if (rc < 0) return NULL; /* no audio -> None */
@@ -1215,6 +1224,12 @@ char *voice_listen_for_speech(int (*should_stop)(void),
     free(floor);
     snd_pcm_close(pcm);
     return out_path; /* NULL when capture and no trip / no audio / stopped */
+#else
+    (void)should_stop; (void)threshold; (void)sustained_ms; (void)calibration_ms;
+    (void)capture; (void)on_trigger; (void)pre_roll_ms; (void)endpoint_silence_ms;
+    (void)max_utterance_ms;
+    return NULL;   /* no audio capture on this platform */
+#endif
 }
 
 void voice_speak(const char *text) {

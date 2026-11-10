@@ -79,7 +79,7 @@ def test(name, category="general"):
 
 
 # Read desktop API methods and endpoints
-DESKTOP_TS = "/home/wubu/hermes-agent-dev/apps/desktop/src/hermes.ts"
+DESKTOP_TS = "C:/Users/eman5/hermes-agent/apps/desktop/src/hermes.ts"
 API_SERVER_C = os.path.join(SLERMES_DIR, "src/api_server.c")
 WEB_DASHBOARD_C = os.path.join(SLERMES_DIR, "src/web_dashboard.c")
 

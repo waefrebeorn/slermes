@@ -125,8 +125,10 @@ void hcli_handle_whoami_command(hcli_t *self)
         if (v && *v) { user_name = v; break; }
     }
     char login_buf[256];
+#ifndef _WIN32
     if (!user_name && getlogin_r(login_buf, sizeof login_buf) == 0)
         user_name = login_buf;
+#endif
     if (!user_name || !*user_name)
         user_name = "?";
 

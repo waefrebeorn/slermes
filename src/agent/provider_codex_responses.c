@@ -655,14 +655,6 @@ static provider_response_t *codex_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void codex_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp->encrypted_content);
-    free(resp);
-}
-
 /* ================================================================
  *  Provider Operations Table
  * ================================================================ */
@@ -673,7 +665,7 @@ const provider_ops_t PROVIDER_OPS_CODEX = {
     .build_request_body = codex_build_request_body,
     .parse_response = codex_parse_response,
     .parse_stream_chunk = codex_parse_stream_chunk,
-    .free_response = codex_free_response,
+    .free_response = provider_response_free,
     .build_fim_body = NULL,
     .parse_fim_response = NULL,
     .build_fim_url = NULL,

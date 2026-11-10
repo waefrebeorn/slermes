@@ -21,6 +21,16 @@ int cli_tools_environments_file_sync__sync_back_locked(
     bool (*download_fn)(const char *local_tar_path, void *ctx),
     void *download_ctx);
 
+/* Adapter: file_sync_bulk_download_fn is bool(const char *tar, void *ctx). */
+int cli_tools_environments_daytona__daytona_bulk_download(
+    const char *sandbox_id, const char *remote_base, const char *local_dest);
+static bool daytona_bulk_download_adapter(const char *local_tar_path, void *ctx)
+{
+    const char *sandbox_id = (const char *)ctx;
+    return cli_tools_environments_daytona__daytona_bulk_download(
+               sandbox_id, ".hermes", local_tar_path) == 0;
+}
+
 /* PoP: cli_tools_environments_daytona__daytona_upload @ tools/environments/daytona.py:_daytona_upload */
 
 /* Port of Python tools/environments/daytona.py:_daytona_upload */
@@ -214,9 +224,10 @@ int cli_tools_environments_daytona__before_execute(
             sandbox_id, ".hermes", local_dest);
         /* Actually apply the downloaded tar to the host via the real
          * FileSyncManager sync-back (extract -> sha256 diff -> apply). */
+        /* file_sync_bulk_download_fn is bool(const char *tar, void *ctx);
+         * adapt the 3-arg daytona downloader to that shape. */
         cli_tools_environments_file_sync__sync_back_locked(
-            NULL, cli_tools_environments_daytona__daytona_bulk_download,
-            (void *)sandbox_id);
+            NULL, daytona_bulk_download_adapter, (void *)sandbox_id);
     }
 
     hermes_log(LOG_DEBUG, "daytona", "before_execute: %s (restarted=%d, sync=%s)",

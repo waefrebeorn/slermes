@@ -28,6 +28,13 @@ static const char *wsl_translate_path(const char *path) {
     static char buf[4096];
     if (!path) return NULL;
     if (path[0] == '/') return NULL;
+#ifdef _WIN32
+    /* Native Windows: "C:\\x" is already a valid path. Rewriting it to
+     * "/mnt/c/x" (the WSL convention) made fopen() fail with ENOENT, so every
+     * read_file/write_file on a drive path returned "Cannot open". */
+    (void)buf;
+    return NULL;
+#else
     if (strlen(path) >= 3 && path[1] == ':' && (path[2] == '\\' || path[2] == '/')) {
         char drive = tolower((unsigned char)path[0]);
         if (drive >= 'a' && drive <= 'z') {
@@ -37,6 +44,7 @@ static const char *wsl_translate_path(const char *path) {
         }
     }
     return NULL;
+#endif
 }
 
 /* Schema */
@@ -260,8 +268,17 @@ static char *handle_write(const char *args_json) {
     fsync(fd);
     close(fd);
 
-    /* Atomic rename — replaces target atomically on POSIX */
-    if (rename(tmp_path, path) != 0) {
+    /* Atomic rename — replaces the target atomically on POSIX.
+     * Windows rename() fails with EEXIST when the destination exists, so
+     * write_file could never overwrite an existing file despite its schema
+     * promising "Overwrites existing". MoveFileEx with REPLACE_EXISTING is the
+     * Windows equivalent and is still a single atomic operation. */
+#ifdef _WIN32
+    int rename_rc = MoveFileExA(tmp_path, path, MOVEFILE_REPLACE_EXISTING) ? 0 : -1;
+#else
+    int rename_rc = rename(tmp_path, path);
+#endif
+    if (rename_rc != 0) {
         unlink(tmp_path);
         json_free(args);
         char buf[256];

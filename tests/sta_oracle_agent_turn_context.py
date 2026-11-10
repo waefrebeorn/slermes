@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Oracle: agent/turn_context.py _compression_made_progress vs LIVE Python."""
 import json, sys, os
-sys.path.insert(0, "/home/wubu/hermes-agent-dev/agent")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent/agent")
 import turn_context as mod
 
 mm = 0

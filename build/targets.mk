@@ -33,10 +33,16 @@ LIB_OBJ_FILTERED := $(if $(WHISPER_LIBS),$(filter-out lib/whisper_cpp/whisper_st
 NCURSES_LIBS := $(wildcard /usr/lib/x86_64-linux-gnu/libncursesw.so /usr/lib/x86_64-linux-gnu/libncursesw.so.6)
 PANEL_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libpanelw.so /usr/lib/x86_64-linux-gnu/libpanelw.so.6)
 TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64-linux-gnu/libtinfo.so.6)
+# The link line carries every object in the tree, which blows past the Windows
+# command-line limit (~32k); gcc then reports "Argument list too long" and the
+# build dies at the final step with all objects already compiled. Put the
+# object list in a response file and pass @file instead.
 slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -lwebp -lasound -lstdc++ \
+	@: > slermes.link.rsp; for o in $^; do echo $$o >> slermes.link.rsp; done
+	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lws2_32 -lpcre2-8 -ltre -lSDL2main \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS)) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
+	@rm -f slermes.link.rsp
 	@echo "  slermes binary: $@ $$(ls -lh $@ | awk '{print $$5}')$(if $(WHISPER_LIBS), with whisper, without whisper)"
 
 # ncurses full-screen TUI build (shared libs from system)

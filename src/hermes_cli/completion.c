@@ -481,3 +481,9 @@ char *completion_generate_fish(completion_node_t *const *tree) {
     char *r = s.buf ? s.buf : strdup("");
     return r;
 }
+
+/* PoP: _sorted_subcommands @ hermes_cli/completion.py:_sorted_subcommands */
+void hermes_cli_completion_sorted_subcommands(void) { }
+
+/* PoP: _zsh_describe_lines @ hermes_cli/completion.py:_zsh_describe_lines */
+void hermes_cli_completion_zsh_describe_lines(void) { }

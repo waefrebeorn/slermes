@@ -26,6 +26,7 @@
 #define PROVIDER_H
 
 #include "hermes_core_types.h"
+#include <stdlib.h>
 #include "hermes_json.h"
 
 #include "credential_pool.h"
@@ -66,6 +67,18 @@ typedef struct {
     tool_call_t tool_calls[64];
     char  finish_reason[32];   /* B22: "stop", "length", "tool_calls", "content_filter" */
 } provider_response_t;
+
+/* Shared response teardown: frees the heap-owned ptr fields + resp itself.
+ * The anonymous fields (tool_calls[64], finish_reason, counts) are inline
+ * scalars, not heap. Safe on any provider: fields the provider never set
+ * stay NULL and free(NULL) is a no-op. */
+static inline void provider_response_free(provider_response_t *resp) {
+    if (!resp) return;
+    free(resp->content);
+    free(resp->reasoning);
+    free(resp->encrypted_content);
+    free(resp);
+}
 
 /* Provider operations (function pointers) */
 typedef struct {
@@ -219,6 +232,15 @@ extern const provider_ops_t PROVIDER_OPS_BEDROCK;
 
 /* Bedrock utility functions — ported from Python bedrock_adapter.py */
 bool bedrock_is_context_overflow(const char *error_message);
+
+/* True for Anthropic OAuth/setup tokens, not Console API keys. */
+bool anthropic_is_oauth_token(const char *key);
+bool anthropic_is_kimi_coding_endpoint(const char *base_url);
+bool anthropic_model_name_is_kimi_family(const char *model);
+bool anthropic_is_kimi_family_endpoint(const char *base_url, const char *model);
+bool anthropic_requires_bearer_auth(const char *base_url);
+bool anthropic_is_azure_anthropic_endpoint(const char *base_url);
+bool anthropic_is_bedrock_model_id(const char *model_id);
 const char *classify_bedrock_error(const char *error_message);
 char *bedrock_extract_provider_from_arn(const char *arn);
 int  get_bedrock_context_length(const char *model_id);
@@ -229,6 +251,15 @@ const char *resolve_aws_auth_env_var(void);
 bool has_aws_credentials(void);
 const char *resolve_bedrock_region(void);
 json_t *bedrock_convert_tools_to_converse(const json_t *tools);
+
+/* ── Bedrock utility helpers (port of agent/bedrock_adapter.py) ── */
+const char *bedrock_classify_error(const char *error);
+int         bedrock_get_context_length(const char *model_id);
+bool        bedrock_is_anthropic_model(const char *model_id);
+bool        bedrock_model_supports_tool_use(const char *model_id);
+const char *bedrock_resolve_auth_env_var(void);
+bool        bedrock_has_credentials(void);
+const char *bedrock_resolve_region(void);
 json_t *bedrock_convert_content_to_converse(const json_t *content);
 json_t *bedrock_convert_messages_to_converse(const json_t *messages);
 json_t *bedrock_normalize_converse_response(const json_t *response);

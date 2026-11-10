@@ -20,7 +20,7 @@ for fns in ci.functions.values():
 problems=[]
 ported=0; partial=0
 import pathlib
-HERMES='/home/wubu/hermes-agent-dev'
+HERMES='C:/Users/eman5/hermes-agent'
 from pathlib import Path
 PYTHON_SOURCE_DIRS=bg.PYTHON_SOURCE_DIRS
 # iterate tracked modules

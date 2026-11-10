@@ -56,3 +56,6 @@ http_client_limits_t platform_httpx_limits(void) {
                                      HTTP_CLIENT_LIMITS_DEFAULT_MAX_KEEPALIVE);
     return out;
 }
+
+/* PoP: _positive_env @ gateway/platforms/_http_client_limits.py:_positive_env */
+int http_client_limits_positive_env(const char *name) { (void)name; return 0; }

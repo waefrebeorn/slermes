@@ -8,7 +8,7 @@ is in C (fix the C, never the oracle).
 import json, subprocess, sys, re
 
 # import the LIVE parent-repo Python module (NOT inside slermes/)
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from tools.web_tools import convert_base64_images_to_links as py_fn
 
 # the C harness prints one JSON line per case

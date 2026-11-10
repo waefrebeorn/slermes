@@ -13,3 +13,6 @@
  *
  * PoP annotations referencing this module: 5
  */
+
+/* PoP: normalize_whatsapp_mention_jid @ gateway/whatsapp_identity.py:normalize_whatsapp_mention_jid */
+const char *gateway_whatsapp_identity_normalize_whatsapp_mention_jid(const char *jid) { (void)jid; return NULL; }

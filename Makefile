@@ -8,9 +8,10 @@
 #   make test                # run test suite
 #   make help                # show all targets
 #
-# Parallel builds: make -j$$(nproc)
-# Cross-compile:   make CC=clang  or  make CC=x86_64-w64-mingw32-gcc
-# Single phases:   make phase1 phase2 phase3 phase4 phase5
+# NOTE: .DEFAULT_GOAL is pinned to `all` below. Without it, the first rule in
+# the first included .mk file (a single SQLite3 object rule) becomes the
+# default, so a bare `make` builds ONE object and reports "up to date" --
+# which silently validates nothing.
 
 # ── Load modular build system ───────────────────────────────────────
 include build/config.mk
@@ -24,6 +25,9 @@ include build/dist.mk
 include build/dev.mk
 include build/plugins.mk
 include build/clean.mk
+
+# ── Pin the default goal (must come after all includes) ─────────────
+.DEFAULT_GOAL := all
 
 # ── Legacy alias / backward compatibility ───────────────────────────
 

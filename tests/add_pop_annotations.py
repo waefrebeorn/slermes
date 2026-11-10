@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-SLERMES_DIR = Path("/home/wubu/hermes-agent-dev/slermes")
+SLERMES_DIR = Path("SLERMES_REPO")
 
 # PARTIAL functions that exist in C but lack PoP annotation
 # Format: (c_file, c_function, python_function)

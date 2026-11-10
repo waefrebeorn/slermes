@@ -198,7 +198,7 @@ bool profile_delete_profile(const char *name) {
             char *child = malloc(strlen(dir) + 2 + strlen(ent->d_name) + 1);
             if (!child) continue;
             snprintf(child, strlen(dir) + 2 + strlen(ent->d_name) + 1, "%s/%s", dir, ent->d_name);
-            if (ent->d_type == DT_DIR) {
+            if (hermes_dirent_is_dir(dir, ent->d_name)) {
                 profile_delete_profile(ent->d_name);
             } else {
                 unlink(child);
@@ -453,7 +453,7 @@ char *profile_list_profiles(void) {
     struct dirent *ent;
     bool any = false;
     while ((ent = readdir(d)) != NULL) {
-        if (ent->d_name[0] == '.' || ent->d_type != DT_DIR) continue;
+        if (ent->d_name[0] == '.' || !hermes_dirent_is_dir(root, ent->d_name)) continue;
         bool valid = true;
         for (const char *p = ent->d_name; *p; p++) {
             if (!isalnum((unsigned char)*p) && *p != '-' && *p != '_') {

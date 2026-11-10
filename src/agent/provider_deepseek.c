@@ -7,7 +7,6 @@
  *   - Reasoning content in response (deepseek-reasoner models)
  */
 
-
 /* PoP: DeepSeek provider adapter */
 
 #include "hermes_core_types.h"
@@ -316,13 +315,6 @@ static provider_response_t *deepseek_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void deepseek_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 /* ================================================================
  *  B32: FIM (Fill-in-the-Middle) — /beta/completions endpoint
  * ================================================================ */
@@ -445,7 +437,7 @@ const provider_ops_t PROVIDER_OPS_DEEPSEEK = {
     .build_request_body = deepseek_build_request_body,
     .parse_response = deepseek_parse_response,
     .parse_stream_chunk = deepseek_parse_stream_chunk,
-    .free_response = deepseek_free_response,
+    .free_response = provider_response_free,
     .build_fim_body = deepseek_build_fim_body,
     .parse_fim_response = deepseek_parse_fim_response,
     .build_fim_url = deepseek_build_fim_url,

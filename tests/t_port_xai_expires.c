@@ -4,7 +4,13 @@
  * Emits JSON lines consumed by tests/sta_oracle_xai_expires.py which
  * recomputes the SAME function from LIVE tools/xai_http.py.
  */
-#include "port_tools_xai_http.c"
+/* Provide the version macros make injects via -D (the standalone oracle gate
+ * compiles without them, and the include-self port file references them). */
+#ifndef HERMES_VERSION
+#define HERMES_VERSION "0.15.1-slermes"
+#define HERMES_RELEASE_DATE "2026.5.29"
+#endif
+#include "cli/port_tools_xai_http.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

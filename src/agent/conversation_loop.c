@@ -41,12 +41,16 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <strings.h>
+/* These are NOT Linux-only: hermes_sanitize.h and hermes_memory.h declare
+ * sanitize_surrogates() and memory_entry_t/memory_search(), which the core
+ * loop uses on every platform. Guarding them on _WIN32 left the Windows
+ * build with implicit declarations. */
 #ifndef _WIN32
 #include <pthread.h>
+#endif
 #include "hermes_sanitize.h"
 #include "hermes_memory.h"
 #include "registry.h"
-#endif
 
 /* ================================================================
  *  Core loop
@@ -1402,11 +1406,11 @@ retry_done:
         for (int i = 0; i < n_calls; i++) {
             if (works[i].approved) {
                 struct timespec ts_s, ts_e;
-                clock_gettime(CLOCK_MONOTONIC, ts_s);
+                clock_gettime(CLOCK_MONOTONIC, &ts_s);
                 works[i].result = dispatch_with_retry(
                     works[i].tool_name, works[i].tool_args, state->session_id,
                     &works[i].duration_ms);
-                clock_gettime(CLOCK_MONOTONIC, ts_e);
+                clock_gettime(CLOCK_MONOTONIC, &ts_e);
                 int64_t ns = (int64_t)(ts_e.tv_sec - ts_s.tv_sec) * 1000000000L +
                              (int64_t)(ts_e.tv_nsec - ts_s.tv_nsec);
                 works[i].duration_ms = (int)(ns / 1000000);

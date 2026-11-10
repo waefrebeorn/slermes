@@ -34,7 +34,7 @@ import os
 import re
 from pathlib import Path
 
-HERMES_DIR = Path("/home/wubu/hermes-agent-dev")
+HERMES_DIR = Path("C:/Users/eman5/hermes-agent")
 SLERMES_DIR = HERMES_DIR / "slermes"
 SRC = SLERMES_DIR / "src"
 

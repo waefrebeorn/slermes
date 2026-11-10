@@ -296,7 +296,7 @@ int cli_tools_mcp_oauth_manager_invalidate_if_disk_changed(
         return 0;
     }
 
-    long long mtime_ns = (long long)st.st_mtime * 1000000000LL + st.st_mtim.tv_nsec;
+    long long mtime_ns = (long long)st.st_mtime * 1000000000LL + 0;
     pthread_mutex_lock(&entry->lock);
     int changed = (mtime_ns != entry->last_mtime_ns);
     if (changed) {

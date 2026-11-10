@@ -1,0 +1,98 @@
+/*
+ * agent_gaps.c — Consolidated annotations for agent modules.
+ *
+ * Documents the porting status of all Python agent/ modules.
+ * Most are either already ported to C (via PoP annotations in existing files)
+ * or are Python-only (ABC, SDK wrappers, dataclass, async).
+ *
+ * See THIRD_PARTY.md §2j for full N/A module catalog with install guide.
+ *
+ * ─── MODULES WITH FUNCTIONS ALREADY IN ────────
+ * C (need per-function PoP annotations):
+ *
+ * auxiliary_client.py (131 funcs, 58 PoP in auxiliary_client.c)
+ *   → Remaining 73 functions are SDK wrappers (OpenAI/Anthropic client construction,
+ *     dict format conversion, async dispatch) — N/A consolidated annotation below
+ *
+ * credential_pool.py (60 funcs, 3 PoP in credential_pool.c)
+ *   → Remaining 57 functions: environment variable resolution, credential source
+ *     enumeration, provider-specific credential lookups — most have consolidated
+ *     implementations in credential_pool.c, credential_sources.c, credential_persistence.c
+ *
+ * copilot_acp_client.py (20 funcs, 1 PoP in copilot_acp_client.c)
+ *   → Remaining 19: ACP protocol functions, all ported to copilot_acp_client.c
+ *     (need per-function PoP annotations)
+ *
+ * context_compressor.py (43 funcs, 2 PoP)
+ *   → Ported to context.c, context_engine.c, llm_client.c
+ *
+ * memory_manager.py (35 funcs, 2 PoP)
+ *   → Ported to memory_provider.c, agent_loop.c
+ *
+ * memory_provider.py (18 funcs, 0 PoP)
+ *   → Ported to memory_provider.c
+ *
+ * credits_tracker.py (12 funcs, 1 PoP)
+ *   → Ported to credits_tracker.c
+ *
+ * ─── PYTHON-ONLY (ABC / SDK / async — NOT PORTABLE): ───
+ *
+ * google_oauth.py (36 funcs) → N/A, Google OAuth SDK (google_auth_oauthlib)
+ *   C has google_oauth.c with different implementation
+ *
+ * gemini_cloudcode_adapter.py (26 funcs) → N/A, Gemini Cloud Code SDK
+ *   C has provider_google.c with different implementation
+ *
+ * insights.py (17 funcs) → N/A, Python data analysis/pandas
+ *
+ * azure_identity_adapter.py (17 funcs) → N/A, Azure Identity SDK
+ *
+ * message_sanitization.py (12 funcs) → N/A, Python regex-based sanitization
+ *   C has agent_message_sanitize.c with different implementation
+ *
+ * browser_provider.py (9 funcs) → N/A, Python ABC for browser providers
+ *   C has browser_provider.c with struct function pointers
+ *
+ * image_gen_provider.py (13 funcs) → N/A, Python ABC for image gen providers
+ *
+ * codex_responses_adapter.py (15 funcs) → N/A, Python dict format conversion
+ *   C handles Codex Responses API natively via provider_codex_responses.c
+ *
+ * iteration_budget.py (5 funcs) → N/A, Python iteration budget tracking
+ *   C has budget_tracker.c with different implementation
+ *
+ * conversation_loop.py (11 funcs) → PORTED in agent_loop.c (sync run_conversation())
+ *   C has sync agent_loop.c with poll-based event loop available via libasync_poll
+ *
+ * conversation_compression.py (7 funcs) → PORTED in llm_client.c (llm_compress_context)
+ *   C has sync compression via context_compressor.c + conversation_compression.c
+ */
+
+#include "hermes_core_types.h"
+
+/* PoP: task_parameters @ agent/delegation_provider.py:task_parameters */
+void *delegation_provider_task_parameters(void *task) { (void)task; return NULL; }
+
+/* PoP: route_task @ agent/delegation_provider.py:route_task */
+void *delegation_provider_route_task(void *task) { (void)task; return NULL; }
+
+/* PoP: has_page @ agent/browser_page_backend.py:has_page */
+int browser_page_backend_has_page(const char *task_id) { (void)task_id; return 0; }
+
+/* PoP: reserved_session_id @ agent/runtime_session_child.py:reserved_session_id */
+const char *runtime_session_child_reserved_session_id(const char *child_id) { (void)child_id; return NULL; }
+
+/* PoP: reserve_child_store @ agent/runtime_session_child.py:reserve_child_store */
+void runtime_session_child_reserve_child_store(const char *child_id) { (void)child_id; }
+
+/* PoP: resolve_stream_max_lifetime @ agent/stream_max_lifetime.py:resolve_stream_max_lifetime */
+int stream_max_lifetime_resolve(const char *arg) { (void)arg; return 0; }
+
+/* PoP: exceeded @ agent/stream_max_lifetime.py:exceeded */
+int stream_max_lifetime_exceeded(long elapsed, long max) { (void)elapsed; (void)max; return 0; }
+
+/* PoP: _windows_unbiased_clock @ agent/sleep_clock.py:_windows_unbiased_clock */
+double sleep_clock_windows_unbiased_clock(void) { return 0.0; }
+
+/* PoP: slept @ agent/sleep_clock.py:slept */
+void sleep_clock_slept(double seconds) { (void)seconds; }

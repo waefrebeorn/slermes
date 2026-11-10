@@ -37,13 +37,17 @@ bool image_gen_path_looks_like_absolute_file_path(const char *value)
         strncmp(lower_buf, "https://", 8) == 0 ||
         strncmp(lower_buf, "data:", 5) == 0) {
         result = false;
-    } else if (value[0] == '/') {
-        /* POSIX absolute path (mirrors os.path.isabs on POSIX: leading '/') */
-        result = true;
-    } else if (strlen(value) >= 3 && value[1] == ':' &&
-               (value[2] == '/' || value[2] == '\\')) {
-        /* Windows drive letter, e.g. C:/x or D:\win */
-        result = true;
+    } else {
+        /* ntpath.isabs (CPython 3.14): absolute iff, after viewing the first 3
+         * chars with '/' folded to '\', the window is "X:\" (drive + root) at
+         * index 1, OR the path starts with "\\" (UNC / device). A bare leading
+         * '/' or '\' with no drive is *not* absolute on Windows. */
+        char win[4] = {0, 0, 0, 0};
+        size_t n = strlen(value);
+        for (size_t k = 0; k < 3 && k < n; k++)
+            win[k] = (value[k] == '/') ? '\\' : value[k];
+        result = (win[1] == ':' && (win[2] == '\\')) ||
+                 (win[0] == '\\' && win[1] == '\\');
     }
 
     free(lower_buf);

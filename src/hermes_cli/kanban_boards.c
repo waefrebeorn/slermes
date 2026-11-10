@@ -332,7 +332,7 @@ char *kdb_list_boards(int include_archived)
             while ((e = readdir(d)) != NULL) {
                 if (e->d_name[0] == '.') continue;
 #ifdef _DIRENT_HAVE_D_TYPE
-                if (e->d_type != DT_UNKNOWN && e->d_type != DT_DIR) continue;
+                if (!hermes_dirent_is_dir(root, e->d_name)) continue;
 #endif
                 char *slug = _normalize_board_slug(e->d_name);
                 if (!slug) continue;
@@ -402,7 +402,7 @@ static void remove_dir_recursive(const char *path)
         char child[PATH_MAX];
         snprintf(child, sizeof(child), "%s/%s", path, e->d_name);
 #ifdef _DIRENT_HAVE_D_TYPE
-        if (e->d_type == DT_DIR) { remove_dir_recursive(child); }
+        if (hermes_dirent_is_dir(path, e->d_name)) { remove_dir_recursive(child); }
         else { remove(child); }
 #else
         struct stat st;

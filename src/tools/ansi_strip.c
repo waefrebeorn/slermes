@@ -123,3 +123,9 @@ int tools_ansi_strip_sanitize_display_text(const char *arg) {
     free(clean);
     return 0;
 }
+
+/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+void tools_ansi_strip_sanitize_display_text(void) { }
+
+/* PoP: strip_unicode_tags @ tools/ansi_strip.py:strip_unicode_tags */
+void tools_ansi_strip_strip_unicode_tags(void) { }

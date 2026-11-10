@@ -926,7 +926,7 @@ static void file_cache_signature(const char *path, bool *exists,
     struct stat st;
     if (path && stat(path, &st) == 0) {
         *exists = true;
-        *mtime_ns = (long)st.st_mtime * 1000000000L + (long)st.st_mtim.tv_nsec;
+        *mtime_ns = (long)st.st_mtime * 1000000000L + (long)SLERMES_ST_MTIM_NSEC(st);
         *size = (long)st.st_size;
     } else {
         *exists = false;

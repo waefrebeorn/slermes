@@ -1139,7 +1139,10 @@ void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
     json_set(patch, "base_url", base_url ? json_string(base_url) : json_null());
     json_set(patch, "api_mode", api_mode ? json_string(api_mode) : json_null());
 
-    hermes_state_patch_session_model_config(self->session_db, sid, patch);
+    /* patch_session_model_config() takes a JSON *string*, not an object. */
+    char *patch_json = json_dumps(patch, 0);
+    hermes_state_patch_session_model_config(self->session_db, sid, patch_json);
+    free(patch_json);
 
     json_free(route);
     json_free(patch);

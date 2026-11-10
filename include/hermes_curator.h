@@ -84,6 +84,16 @@ void save_state(const curator_state_t *state);
  */
 void init_state(curator_state_t *state);
 
+/* ── Tool-facing aliases (tests/ and callers use the curator_ prefix) ──
+ * Same functions as init_state / load_state / save_state / record_run /
+ * format_duration / format_reltime. */
+void curator_init_state(curator_state_t *state);
+bool curator_load_state(curator_state_t *state);
+void curator_save_state(const curator_state_t *state);
+void curator_record_run(curator_state_t *state, double duration_secs, const char *summary);
+void curator_format_duration(double seconds, char *buf, size_t sz);
+void curator_format_reltime(time_t t, char *buf, size_t sz);
+
 /**
  * Check if curator is enabled.
  * Port of Python agent/curator.py:is_enabled().

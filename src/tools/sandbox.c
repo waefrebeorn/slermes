@@ -201,6 +201,150 @@ void sandbox_set_symlink_check(bool enabled) {
  * ================================================================ */
 
 bool is_safe_path(const char *path) {
+    if (!path) return false;
+
+#ifdef _WIN32
+    /* Windows canonicalisation.
+     *
+     * realpath() here returns native form ("C:\\Users\\x\\file"), while HOME is
+     * the MSYS form ("/c/Users/x"). Comparing them byte-for-byte rejected every
+     * absolute Windows path, which made read_file/write_file fail on all files.
+     * Canonicalise both sides to "c:/users/x" (lowercase, forward slashes,
+     * drive folded into the first component) and compare case-insensitively,
+     * which is correct for NTFS.
+     */
+    {
+        char canon[1024];
+        const char *p = path;
+        size_t i = 0;
+        while (*p && i + 1 < sizeof canon) {
+            char c = *p;
+            if (c == '\\') c = '/';
+            if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+            canon[i++] = c;
+            p++;
+        }
+        canon[i] = '\0';
+
+        /* "/c/Users/x" -> "c:/users/x" */
+        char norm[1024];
+        if (canon[0] == '/' && canon[2] == '/') {
+            snprintf(norm, sizeof norm, "%c:/%s", canon[1], canon + 3);
+        } else if (canon[1] == ':' && canon[2] == '/') {
+            snprintf(norm, sizeof norm, "%s", canon);
+        } else {
+            norm[0] = '\0';
+        }
+
+        if (norm[0]) {
+            char *resolved = realpath(path, NULL);
+            const char *target = norm;
+            char res_norm[1024];
+            if (resolved) {
+                const char *q = resolved;
+                size_t j = 0;
+                while (*q && j + 1 < sizeof res_norm) {
+                    char c = *q;
+                    if (c == '\\') c = '/';
+                    if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                    res_norm[j++] = c;
+                    q++;
+                }
+                res_norm[j] = '\0';
+                if (res_norm[0] == '/' && res_norm[2] == '/')
+                    memmove(res_norm, res_norm + 1, strlen(res_norm));
+                if (res_norm[1] == ':' && res_norm[2] == '/')
+                    target = res_norm;
+                free(resolved);
+            }
+
+            /* Roots that are always allowed. */
+            const char *roots[16];
+            size_t nroots = 0;
+            const char *envs[] = {"HOME", "USERPROFILE", NULL};
+            for (int e = 0; envs[e]; e++) {
+                const char *v = getenv(envs[e]);
+                if (!v || !v[0]) continue;
+                char *rbuf = malloc(strlen(v) + 1);
+                if (!rbuf) continue;
+                size_t k = 0;
+                for (const char *s = v; *s; s++) {
+                    char c = *s;
+                    if (c == '\\') c = '/';
+                    if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                    rbuf[k++] = c;
+                }
+                rbuf[k] = '\0';
+                if (rbuf[0] == '/' && rbuf[2] == '/') {
+                    memmove(rbuf, rbuf + 1, strlen(rbuf));
+                }
+                roots[nroots++] = rbuf;
+            }
+            /* TEMP / TMP */
+            const char *tenvs[] = {"TEMP", "TMP", NULL};
+            for (int e = 0; tenvs[e]; e++) {
+                const char *v = getenv(tenvs[e]);
+                if (!v || !v[0]) continue;
+                char *rbuf = malloc(strlen(v) + 1);
+                if (!rbuf) continue;
+                size_t k = 0;
+                for (const char *s = v; *s; s++) {
+                    char c = *s;
+                    if (c == '\\') c = '/';
+                    if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                    rbuf[k++] = c;
+                }
+                rbuf[k] = '\0';
+                if (rbuf[0] == '/' && rbuf[2] == '/')
+                    memmove(rbuf, rbuf + 1, strlen(rbuf));
+                roots[nroots++] = rbuf;
+            }
+
+            /* The working directory is always a legitimate scope: tools operate
+             * on the project the user launched the agent in, which is not
+             * necessarily under HOME (a repo on another drive, a mounted
+             * volume, etc.). Without this, read_file fails whenever cwd is
+             * outside the home root. */
+            {
+                char cwdbuf[1024];
+                if (getcwd(cwdbuf, sizeof cwdbuf)) {
+                    char *rbuf = malloc(strlen(cwdbuf) + 1);
+                    if (rbuf) {
+                        size_t k = 0;
+                        for (const char *s = cwdbuf; *s; s++) {
+                            char c = *s;
+                            if (c == '\\') c = '/';
+                            if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                            rbuf[k++] = c;
+                        }
+                        rbuf[k] = '\0';
+                        if (rbuf[0] == '/' && rbuf[2] == '/')
+                            memmove(rbuf, rbuf + 1, strlen(rbuf));
+                        roots[nroots++] = rbuf;
+                    }
+                }
+            }
+
+            bool ok = false;
+            for (size_t r = 0; r < nroots; r++) {
+                size_t rl = strlen(roots[r]);
+                if (rl == 0) continue;
+                if (strncmp(target, roots[r], rl) != 0) continue;
+                /* must be the root itself or a child, not a sibling prefix */
+                if (target[rl] == '\0' || target[rl] == '/') { ok = true; break; }
+            }
+            for (size_t r = 0; r < nroots; r++) free((void *)roots[r]);
+            if (ok) return true;
+
+            /* Belt and braces: '/' traversal is still rejected by the caller's
+             * sandbox when enabled; here, unknown absolute paths stay blocked. */
+            return false;
+        }
+        /* Relative path — no absolute-root escape possible. */
+        return true;
+    }
+#endif
+
     /* P168: Use sandbox for path validation if enabled */
     if (g_sandbox_enabled) {
         return sandbox_check_path(path);

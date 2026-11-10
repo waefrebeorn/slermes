@@ -75,6 +75,7 @@ static void format_timestamp(char *buf, size_t sz) {
 }
 
 /* Rotate a log file if it exceeds LOG_MAX_BYTES */
+/* PoP: _rotate_if_needed @ hermes_cli/dashboard_auth/audit.py:_rotate_if_needed */
 static void rotate_if_needed(FILE **fpp, const char *path) {
     if (!path) return;
     if (ftell(*fpp) < LOG_MAX_BYTES) return;

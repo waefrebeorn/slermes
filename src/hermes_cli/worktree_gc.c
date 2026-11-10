@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 /* worktree merge-cache API (src/cli/cli.c) */
-extern char *cli_load_worktree_merge_cache(void);
+extern json_t *cli_load_worktree_merge_cache(void);
 extern void cli_save_worktree_merge_cache(json_t *verdicts);
 #include <string.h>
 #include <ctype.h>

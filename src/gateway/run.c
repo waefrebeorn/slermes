@@ -6300,7 +6300,7 @@ static void gw_warm_goals_db_construct(void)
 void gw_warm_goals_session_db(const char *label)
 {
     if (g_off_loop_exec) {
-        g_off_loop_exec(gw_warm_goals_db_construct, NULL);
+        g_off_loop_exec((void (*)(void *))gw_warm_goals_db_construct, NULL);
         return;
     }
     gw_warm_goals_db_construct();

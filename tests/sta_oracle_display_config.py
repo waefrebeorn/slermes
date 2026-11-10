@@ -8,7 +8,7 @@ import json
 import sys
 import importlib.util
 
-SPEC = "/home/wubu/hermes-agent-dev/gateway/display_config.py"
+SPEC = "C:/Users/eman5/hermes-agent/gateway/display_config.py"
 
 
 def load_module():

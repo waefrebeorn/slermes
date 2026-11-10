@@ -17,7 +17,7 @@ machine-checkable 'verdict' field: HONEST_KEEP | FACADE_FRAUD | NEEDS_MANUAL.
 import ast, json, re
 from pathlib import Path
 
-HERMES = Path("/home/wubu/hermes-agent-dev")
+HERMES = Path("C:/Users/eman5/hermes-agent")
 rows = json.load(open(HERMES / "slermes/tests/.v548_facade_full.json"))
 
 SDK_MODULES = (

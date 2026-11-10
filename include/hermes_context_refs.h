@@ -62,6 +62,9 @@ typedef struct {
  * Returns number of references parsed (0 = none found, -1 = too many). */
 int parse_context_references(const char *message, context_ref_t *refs, int max_refs);
 
+/* Tool-facing alias for parse_context_references(). */
+int context_ref_parse(const char *message, context_ref_t *refs, int max_refs);
+
 /* Expand all references in one pass.
  * Returns allocated context_ref_result_t (caller must free with context_ref_free()).
  * cwd: working directory for relative paths.

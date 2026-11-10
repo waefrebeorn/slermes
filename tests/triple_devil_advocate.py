@@ -16,11 +16,11 @@ from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
-SLERMES_DIR = "/home/wubu/hermes-agent-dev/slermes"
-APPS_DESKTOP = "/home/wubu/hermes-agent-dev/apps/desktop"
-APPS_SHARED = "/home/wubu/hermes-agent-dev/apps/shared"
-WEB_SRC = "/home/wubu/hermes-agent-dev/web/src"
-HERMES_CLI = "/home/wubu/hermes-agent-dev/hermes_cli"
+SLERMES_DIR = "SLERMES_REPO"
+APPS_DESKTOP = "C:/Users/eman5/hermes-agent/apps/desktop"
+APPS_SHARED = "C:/Users/eman5/hermes-agent/apps/shared"
+WEB_SRC = "C:/Users/eman5/hermes-agent/web/src"
+HERMES_CLI = "C:/Users/eman5/hermes-agent/hermes_cli"
 
 @dataclass
 class AuditFinding:

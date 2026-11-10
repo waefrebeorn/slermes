@@ -400,7 +400,7 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
             snprintf(abs, sizeof(abs), "%s/%s", working_dir, p);
             struct stat st;
             if (stat(abs, &st) == 0 && st.st_size > cap)
-                snprintf(paths[npaths++], MAX_PATH, "%s", p);
+                snprintf(paths + (npaths++) * MAX_PATH, MAX_PATH, "%s", p);
         }
         p += len + 1;
     }
@@ -408,7 +408,7 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
         char cmd[MAX_PATH * 8];
         int off = snprintf(cmd, sizeof(cmd), "rm --cached --quiet --");
         for (int j = i; j < i + 200 && j < npaths; j++)
-            off += snprintf(cmd + off, sizeof(cmd) - off, " '%s'", paths[j]);
+            off += snprintf(cmd + off, sizeof(cmd) - off, " '%s'", paths + j * MAX_PATH);
         _run_git_idx(shadow_repo, working_dir, index_file, cmd, NULL, 0);
     }
 }

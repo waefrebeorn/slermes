@@ -221,8 +221,8 @@ json_t *sr_source_fingerprint(const char *source) {
             json_t *e = json_object();
             json_set(e, "size", json_number((double)st.st_size));
             json_set(e, "mtime_ns",
-                     json_number((double)st.st_mtim.tv_sec * 1e9 +
-                                 (double)st.st_mtim.tv_nsec));
+                     json_number((double)SLERMES_ST_MTIM_SEC(st) * 1e9 +
+                                 (double)SLERMES_ST_MTIM_NSEC(st)));
             json_set(fp, SR_SIDECAR_SUFFIXES[i][0] ? SR_SIDECAR_SUFFIXES[i]
                                                    : "main", e);
         }

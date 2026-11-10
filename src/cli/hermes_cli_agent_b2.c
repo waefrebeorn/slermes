@@ -74,7 +74,12 @@ void hcli_check_config_mcp_changes(hcli_t *self)
     struct stat st;
     if (stat(cfg_path, &st) != 0) return;   /* cfg_path missing */
 
-    double mtime = (double)st.st_mtim.tv_sec + (double)st.st_mtim.tv_nsec / 1e9;
+#ifdef _WIN32
+    /* Windows struct stat has st_mtime (seconds) and no st_mtim */
+    double mtime = (double)st.st_mtime;
+#else
+    double mtime = (double)SLERMES_ST_MTIM_SEC(st) + (double)SLERMES_ST_MTIM_NSEC(st) / 1e9;
+#endif
     if (mtime == self->config_mtime)
         return;                              /* File unchanged — fast path */
 

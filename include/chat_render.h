@@ -57,7 +57,7 @@ typedef enum {
     TOKEN_COMMENT,          /* Comment */
     TOKEN_NUMBER,           /* Numeric literal */
     TOKEN_OPERATOR,         /* Operator (+, -, =, etc.) */
-    TOKEN_TYPE,             /* Type name (int, char, bool, etc.) */
+    TOKEN_TYPE_NAME,             /* Type name (int, char, bool, etc.) */
     TOKEN_FUNCTION,         /* Function call */
     TOKEN_VARIABLE,         /* Variable identifier */
     TOKEN_DECORATOR,        /* Decorator / annotation */

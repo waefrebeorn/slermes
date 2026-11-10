@@ -2,9 +2,9 @@
 """Oracle: tools/file_operations.py search-diagnostics helpers vs LIVE Python.
 Newline-delimited JSON; compares C output to live Python for identical inputs."""
 import json, sys, os, types
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
-spec = importlib.util.spec_from_file_location("fo_mod", "/home/wubu/hermes-agent-dev/tools/file_operations.py")
+spec = importlib.util.spec_from_file_location("fo_mod", "C:/Users/eman5/hermes-agent/tools/file_operations.py")
 mod = importlib.util.module_from_spec(spec)
 for name in ["agent.tool_result_classification", "tools.terminal", "tools.patch",
              "tools.file_lint", "tools.memory", "agent.skills", "utils", "hermes_constants"]:

@@ -255,20 +255,13 @@ static provider_response_t *custom_parse_stream_chunk(const provider_t *p,
     return resp;
 }
 
-static void custom_free_response(provider_response_t *resp) {
-    if (!resp) return;
-    free(resp->content);
-    free(resp->reasoning);
-    free(resp);
-}
-
 const provider_ops_t PROVIDER_OPS_CUSTOM = {
     .build_url = custom_build_url,
     .build_headers = custom_build_headers,
     .build_request_body = custom_build_request_body,
     .parse_response = custom_parse_response,
     .parse_stream_chunk = custom_parse_stream_chunk,
-    .free_response = custom_free_response,
+    .free_response = provider_response_free,
     .name = "custom"
 };
 

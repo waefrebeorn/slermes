@@ -11,3 +11,6 @@
  * Key functions ported:
  *   Text-to-speech provider tool. C implementation in src/tools/tts.c: tts_synthesize, tts_list_voices, tts_get_provider, tts_is_available, tts_save_audio.
  */
+
+/* PoP: release @ agent/tts_provider.py:release */
+void tts_provider_release(void) { }

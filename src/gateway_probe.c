@@ -8,6 +8,7 @@
  */
 
 #include "gateway_probe.h"
+#include "hermes_clock.h"
 #include "hermes_core_types.h"
 #include "http.h"
 
@@ -24,15 +25,7 @@
 
 /* ── Internal helpers ────────────────────────────────────────────────────── */
 
-static int64_t now_ms(void) {
-#ifdef _WIN32
-    return GetTickCount64();
-#else
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000;
-#endif
-}
+
 
 static void probe_result_init(probe_result_t *r) {
     r->reachable     = false;
@@ -117,7 +110,7 @@ probe_result_t gateway_probe(const char *url, int timeout_ms) {
 
     /* Try /health first, then /status, then root */
     const char *paths[] = { "/health", "/status", "/", NULL };
-    int64_t start_ms = now_ms();
+    int64_t start_ms = clock_now_ms();
 
     for (int i = 0; paths[i]; i++) {
         snprintf(health_url, health_url_len, "%s%s", http_url, paths[i]);
@@ -130,7 +123,7 @@ probe_result_t gateway_probe(const char *url, int timeout_ms) {
         if (resp && resp->status > 0) {
             result.reachable   = true;
             result.http_status = resp->status;
-            result.latency_ms  = (int)(now_ms() - start_ms);
+            result.latency_ms  = (int)(clock_now_ms() - start_ms);
 
             if (resp->status == 200) {
                 result.authenticated = true;
@@ -171,7 +164,7 @@ probe_result_t gateway_probe(const char *url, int timeout_ms) {
     free(http_url);
 
     if (!result.reachable) {
-        result.latency_ms = (int)(now_ms() - start_ms);
+        result.latency_ms = (int)(clock_now_ms() - start_ms);
         snprintf(result.error, sizeof(result.error),
                  "Gateway unreachable (%d ms timeout)", timeout_ms);
     }

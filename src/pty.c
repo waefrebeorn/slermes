@@ -15,6 +15,7 @@
 #include <pty.h>       /* openpty (system, needs _GNU_SOURCE) */
 #include "slermes_pty.h"
 #include "hermes_core_types.h"
+#include "hermes_logger.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,11 +28,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#ifndef _WIN32
 #include <termios.h>
 
-#include "hermes_logger.h"
-#endif
 
 #define PTY_MAGIC 0x50545931  /* "PTY1" */
 
@@ -73,6 +71,7 @@ static void pty_setup_slave(int slave_fd, int master_fd) {
 /* PoP: bridge @ hermes_cli/win_pty_bridge.py:__enter__ */
 /* Context-manager enter: spawns the PTY and returns the bridge (self). */
 pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
+    pid_t pid = (pid_t)-1;   /* set by fork() on POSIX; stays -1 on Windows */
     pty_t *pty = calloc(1, sizeof(pty_t));
     if (!pty) {
         fprintf(stderr, "PTY calloc failed");
@@ -124,7 +123,7 @@ pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
     set_nonblocking(pty->master_fd);
 
     /* Fork child process */
-    pid_t pid = fork();
+    pid = fork();
     if (pid < 0) {
         hermes_log(LOG_ERROR, "pty", "PTY fork failed: %s", strerror(errno));
         close(pty->master_fd);

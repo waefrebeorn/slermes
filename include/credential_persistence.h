@@ -35,6 +35,7 @@ bool is_secret_payload_key(const char *key);
 /* Port of _fingerprint_value(): SHA-256 of the value, rendered as
  * "sha256:<first 16 hex>". Returns NULL for NULL/empty input. Caller frees. */
 char *fingerprint_value(const char *value);
+char *fingerprint_secret_value(const void *value);
 
 /* Port of _credential_secret_fingerprint(): walk a JSON object looking for a
  * well-known or secret-named value field and return its fingerprint, or pass

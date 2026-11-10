@@ -4,7 +4,7 @@
  * Emits JSON lines consumed by tests/sta_oracle_oneshot.py which recomputes
  * the SAME function from the LIVE agent/oneshot.py.
  */
-#include "port_agent_oneshot.c"
+#include "cli/port_agent_oneshot.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
