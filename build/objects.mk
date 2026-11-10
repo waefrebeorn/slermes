@@ -209,6 +209,7 @@ PORT_OBJ = \
     src/cli/port_gateway_windows.o \
     src/cli/port_update_windows.o \
     src/cli/port_gateway_status.o \
+    src/cli/port_update_cmd.o \
     src/cli/port_goals.o \
     src/cli/port_kanban_db.o \
     src/cli/kanban_schema.o \
