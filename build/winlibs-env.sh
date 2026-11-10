@@ -44,7 +44,11 @@ export PATH="/c/winlibs/mingw64/bin:/c/msys64/usr/bin:/c/msys64/mingw64/bin:/usr
 # Do NOT add C:/msys64/mingw64/lib to LIBRARY_PATH - its libgcc.a then shadows
 # winlibs' own and winlibs' crt2.o fails with undefined references to
 # _gnu_exception_handler / __mingw_initltssuo_force.
-export CPATH="C:/winlibs/extra-inc"
+export CFLAGS_EXTRA="-I C:/winlibs/extra-inc"
+# CPATH does NOT work for this: the Windows-form path contains a colon, so
+# gcc splits "C:/winlibs/extra-inc" into two entries ("C" and
+# "/winlibs/extra-inc") and neither resolves. -I on the command line is
+# literal and works. CFLAGS_EXTRA is referenced by build/config.mk.
 export LIBRARY_PATH="C:/winlibs/extra-libs"
 # run_one_oracle.sh uses this because the ccache wrapper strips LIBRARY_PATH
 # from the compiler it execs - pass the borrowed lib dir explicitly instead.

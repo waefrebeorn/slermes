@@ -103,7 +103,12 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function $(COMPAT_INC) -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+# The borrowed third-party headers (pcre2.h, SDL2/, tre/, openssl/) live in
+# C:/winlibs/extra-inc. CPATH cannot carry a Windows-form path (the colon
+# splits it into two entries) and exported CFLAGS_EXTRA does not survive
+# into make on this box, so the -I is pinned here.
+WINLIBS_INC ?= -I C:/winlibs/extra-inc
+CFLAGS = $(WINLIBS_INC) -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function $(COMPAT_INC) -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
 CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION_STR)\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE_STR)\" -DATADIR=\"$(DATADIR_STR)\"
 # Windows: force platform shims into every TU so POSIX names (realpath, fsync,
 # fcntl, geteuid, POSIX mkdir arity) resolve without editing sources.

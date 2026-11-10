@@ -72,6 +72,7 @@ build() {   # build <out> <opt>
   # -L MUST precede the -l flags: the linker resolves each -l against the
   # search path as it is encountered, so a -L placed after them finds nothing.
   $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -I include/compat -I include -I src $LIBINCS \
+    -I "${ORACLE_INC:-C:/winlibs/extra-inc}" \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
     "${ORACLE_LIBDIR_ARGS[@]}" \
     -lstdc++ -lm $EXTRA_LIBS $WIN_LIBS -lz -lpcre2-8 -ltre -lssl -lcrypto \
