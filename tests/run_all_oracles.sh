@@ -299,7 +299,7 @@ if [ "$JOBS" -le 1 ]; then
 else
   results=$(
     for name in "${names[@]}"; do resolve_one "$name"; done |
-      xargs -P "$JOBS" -d '\n' -I{} bash tests/_oracle_one.sh {}
+      xargs -P "$JOBS" -d '\n' -I {} bash tests/_oracle_one.sh {}
   )
   echo "$results"
   pass_n=$(printf '%s\n' "$results" | grep -c '^PASS ')
@@ -310,5 +310,9 @@ else
 fi
 
 echo "----"
-echo "oracles run: $count  (exit 0 = all green, no drift)"
+if [ "${fail:-0}" -eq 0 ]; then
+  echo "oracles run: $count  (exit 0 = all green, no drift)"
+else
+  echo "oracles run: $count  (NOT all green: $fail_n failed, $miss_n missing)"
+fi
 exit "$fail"
