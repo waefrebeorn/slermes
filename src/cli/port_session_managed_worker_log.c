@@ -3,17 +3,18 @@
  * gateway/session_managed_worker_log.py::worker_log_path.
  *
  * Mirrors the oracle's LIVE Python 3.12 pathlib on this win32 box. Given the
- * owning profile's home string, return `home / 'logs' / LOG_NAME` normalized to
- * '/' separators when the home is absolute, else NULL (test doubles /
- * drive-relative / single-root inputs).
+ * owning profile's home string, return `home / 'logs' / LOG_NAME` as pathlib
+ * renders it on Windows — '\' separators — when the home is absolute, else NULL
+ * (test doubles / drive-relative / single-root inputs).
  *
  * is_absolute (probed against the live interpreter):
  *   - path starting with '\\' (UNC)            -> absolute      e.g. \\server\share
  *   - drive letter + ':' + root separator      -> absolute      e.g. C:\ or C:/
  *   - drive letter + ':' with NO separator     -> NOT absolute  e.g. "C:"
  *   - single leading '/' or '\' with no drive  -> NOT absolute  e.g. /home, \foo
- * Output: every separator normalized to '/', consecutive seps collapsed, then
- * "/logs/managed-worker.log" appended on a single '/'.
+ * Output: str(PureWindowsPath(...)) semantics — every separator normalized to
+ * '\', consecutive seps collapsed (a leading UNC pair kept as '\\'), a trailing
+ * separator dropped, then "\logs\managed-worker.log" appended on a single '\'.
  */
 
 #include "port_session_managed_worker_log.h"
@@ -43,7 +44,7 @@ char *smwl_worker_log_path(const char *profile)
     if (!profile || !*profile || !is_absolute(profile))
         return NULL;
 
-    static const char SUF[] = "/logs/" SMWL_LOG_NAME;
+    static const char SUF[] = "\\logs\\" SMWL_LOG_NAME;
     size_t cap = strlen(profile) + sizeof(SUF) + 1 + 16;
     if (cap > (1u << 20))
         return NULL;
@@ -59,16 +60,16 @@ char *smwl_worker_log_path(const char *profile)
             while (q[nseps] == '\\' || q[nseps] == '/')
                 nseps++;
             if (n == 0) {
-                /* leading separators: preserve the UNC pair '//...', else one '/'. */
+                /* leading separators: preserve the UNC pair '\\', else one '\'. */
                 int emit = nseps >= 2 ? 2 : 1;
                 if (emit > 1 && n + 2 < cap) {
-                    out[n++] = '/';
-                    out[n++] = '/';
+                    out[n++] = '\\';
+                    out[n++] = '\\';
                 } else if (emit == 1 && n + 1 < cap) {
-                    out[n++] = '/';
+                    out[n++] = '\\';
                 }
-            } else if (out[n - 1] != '/') {
-                out[n++] = '/';
+            } else if (out[n - 1] != '\\') {
+                out[n++] = '\\';
             }
             q += nseps - 1;
         } else {
@@ -76,8 +77,8 @@ char *smwl_worker_log_path(const char *profile)
                 out[n++] = *q;
         }
     }
-    /* strip a trailing '/' before appending the suffix */
-    if (n > 0 && out[n - 1] == '/')
+    /* strip a trailing separator before appending the suffix */
+    if (n > 0 && out[n - 1] == '\\')
         n--;
     memcpy(out + n, SUF, sizeof(SUF)); /* includes NUL */
     return out;
