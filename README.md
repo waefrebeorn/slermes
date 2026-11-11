@@ -4,6 +4,8 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 **SLERM** (verb): to take someone's full work and make your own version from scratch. Not a fork — a ground-up reimplementation.
 
+> **~WuBu~ AGI** — one system, many repositories. This is the **agent, reimplemented in C11**. The Body is [WuBuOS](https://github.com/waefrebeorn/WuBuOS), the Brain wubuwizard, the Compiler WuBuNOS.
+
 ## What this is
 
 <!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
