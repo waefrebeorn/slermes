@@ -126,7 +126,11 @@ def main():
     global CFLAGS, FLAGS_BY_FILE
     FLAGS_BY_FILE = per_file
     CFLAGS = next(iter(per_file.values())) if per_file else real_cflags()
-    with ThreadPoolExecutor(max_workers=8) as ex:
+    # 8 workers was the original default, but on this MSYS2 box that reliably
+    # produces spurious failures (ccache/env contention under concurrent
+    # spawns -- the same fork-exhaustion family as the oracle suite). 4 is the
+    # largest count that stays green; override with HEALTH_JOBS.
+    with ThreadPoolExecutor(max_workers=int(os.environ.get("HEALTH_JOBS", "4"))) as ex:
         results = [r for r in ex.map(check, files) if r]
 
     failing = sorted(results, key=lambda r: -r["errors"])

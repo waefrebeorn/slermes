@@ -21,6 +21,7 @@
 set -u
 cd "$(dirname "$0")/.." || exit 1
 mkdir -p .testbin/ao
+RUNNING_FULL=0
 
 # legacy: discovery name -> harness basename (when the oracle filename and the
 # t_port_<name>.c differ for a pre-existing port).
@@ -161,8 +162,9 @@ SUITE_SKIP="fuzzy_match_helpers file_type github_provider"
 # excluded here rather than reported as false failures.
 SUITE_SKIP="$SUITE_SKIP approval_transport input_sanitize memory_status repetition_guard turn_summary url_safety_helpers"
 if [ ${#names[@]} -eq 0 ]; then
+  RUNNING_FULL=1
   for o in tests/oracle_*.py; do
-    n="$(basename "$o" | sed -E 's/^oracle_//; s/\.py$//')"
+    n="${o#tests/oracle_}"; n="${n%.py}"
     case " $SUITE_SKIP " in *" $n "*) continue;; esac
     names+=("$n")
   done
@@ -256,6 +258,38 @@ resolve_one() {
   if [ -n "${DEPS[$name]:-}" ]; then deps="${DEPS[$name]}"; fi
   printf '%s\t%s\t%s\t%s\n' "$name" "$harness" "$deps" "${ORACLE_LIBDIR:-}"
 }
+
+# --- prebuilt harness cache ------------------------------------------------------
+# run_one_oracle.sh reuses .testbin/harnesses/<harness>.exe when that binary is
+# newer than every object and harness source. Warm the cache in one make -j
+# batch when it has gone stale, but only for a FULL gate: a subset run would
+# pay the whole build to save a couple of 2s compiles, so it lets the per-oracle
+# check rebuild just what it needs.
+STAMP=".testbin/harnesses/.stamp"
+cache_stale=0
+if [ ! -f "$STAMP" ]; then
+  cache_stale=1
+elif [ -n "$(find src lib -name '*.o' -newer "$STAMP" -print -quit 2>/dev/null)" ]; then
+  cache_stale=1
+elif [ -n "$(find tests -name 't_port_*.c' -newer "$STAMP" -print -quit 2>/dev/null)" ]; then
+  cache_stale=1
+fi
+if [ "$cache_stale" = "1" ] && [ "$RUNNING_FULL" = "1" ]; then
+  SPECS_FILE=".testbin/harness_specs.$$.tsv"
+  : > "$SPECS_FILE"
+  for name in "${names[@]}"; do
+    resolve_one "$name" | cut -f1-3 >> "$SPECS_FILE"
+  done
+  echo "prebuilt harness cache stale; rebuilding $(wc -l < "$SPECS_FILE") specs..." >&2
+  bash tests/build_all_harnesses.sh "$SPECS_FILE" >&2
+  rm -f "$SPECS_FILE"
+fi
+# A full gate has now either confirmed the cache or rebuilt it wholesale, so
+# the per-oracle workers can skip their own freshness finds.
+if [ "$RUNNING_FULL" = "1" ]; then
+  ORACLE_PREBUILT_OK=1
+  export ORACLE_PREBUILT_OK
+fi
 
 # Parallelism: ORACLE_JOBS (default 4). ORACLE_JOBS=1 gives the sequential
 # behaviour. 12-way died with MSYS2 fork exhaustion ("Resource temporarily
