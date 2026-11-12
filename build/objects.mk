@@ -481,6 +481,7 @@ src/hermes_cli/profile_gaps.o \
     src/cli/port_session_owned.o \
     src/cli/port_session_server_requests.o \
     src/cli/port_side_question_request.o \
+    src/cli/port_sizefmt.o \
     src/cli/port_skill_bundles.o \
     src/cli/port_skill_commands.o \
     src/cli/port_slack_cli.o \
