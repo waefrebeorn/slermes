@@ -494,6 +494,7 @@ src/hermes_cli/profile_gaps.o \
     src/cli/port_update_cmd.o \
     src/cli/port_update_receipt.o \
     src/cli/port_update_windows.o \
+    src/cli/port_url_utils.o \
     src/cli/port_vault_login_classifier.o \
     src/cli/port_vault_login_js.o \
     src/cli/port_webhook_coalesce.o \
