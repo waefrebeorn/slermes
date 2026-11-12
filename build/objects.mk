@@ -430,6 +430,7 @@ src/hermes_cli/profile_gaps.o \
     src/cli/port_models_validate.o \
     src/cli/port_models_pricing.o \
     src/cli/port_model_picker_usage.o \
+    src/cli/port_anon_auth.o \
     src/cli/port_container_boot.o \
     src/cli/port_context_compressor_telemetry.o \
     src/cli/port_cron_notepad.o \

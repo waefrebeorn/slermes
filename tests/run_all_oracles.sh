@@ -106,6 +106,7 @@ declare -A DEPS=(
   [compaction_events]="src/agent/port_compaction_events.o lib/libjson/json.o"
   [web_common]="src/plugins/port_web_common.o lib/libjson/json.o"
   [model_picker_usage]="src/cli/port_model_picker_usage.o src/cli/port_models_pricing.o lib/libjson/json.o"
+  [anon_auth]="src/cli/port_anon_auth.o lib/libjson/json.o"
   [hermes_state_keys]="src/agent/hermes_state/port_hermes_state_keys.o lib/libhash/hash.o lib/libjson/json.o"
   [kanban_schemas]="src/cli/port_kanban_schemas.o lib/libjson/json.o"
   [rfb_filter]="src/cli/port_rfb_filter.o lib/libjson/json.o"
