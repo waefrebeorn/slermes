@@ -155,7 +155,7 @@ char *vmd_split_wav_for_transcription(const char *file_path, const char *out_dir
 }
 
 /* ── TTS echo detection (tools/voice_mode.py:is_tts_echo) ──────────────── */
-/* PoP: vmd_normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
+/* PoP: vmd_normalize_for_echo_compare @ tools/voice_mode_transcript.py:_normalize_for_echo_compare */
 static char *vmd_normalize_for_echo_compare(const char *text) {
     /* Python: re.sub(r"\s+", " ", text).strip().lower() */
     if (!text) return NULL;
@@ -227,7 +227,7 @@ static double vmd_ratio(const char *a, const char *b) {
     return (double)(total - dist) / (double)total;
 }
 
-/* PoP: vmd_is_tts_echo @ tools/voice_mode.py:is_tts_echo */
+/* PoP: vmd_is_tts_echo @ tools/voice_mode_transcript.py:is_tts_echo */
 bool vmd_is_tts_echo(const char *transcript, const char *spoken_text, double threshold) {
     /* Python: is_tts_echo(transcript, spoken_text, threshold=0.6) */
     if (!transcript || !spoken_text || !*transcript || !*spoken_text) return false;

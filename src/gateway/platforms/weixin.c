@@ -151,7 +151,7 @@ static char *wx_api_post(const char *endpoint, const char *payload_json,
 }
 
 /* ── Poll session recycle (gateway/platforms/weixin.py:_recycle_poll_session) */
-/* PoP: wx_recycle_poll_session @ gateway/platforms/weixin.py:_recycle_poll_session */
+/* PoP: wx_recycle_poll_session @ plugins/platforms/weixin/adapter.py:_recycle_poll_session */
 void wx_recycle_poll_session(void) {
     /* Python: async def _recycle_poll_session(self) -> None:
      *   if not self._running or aiohttp is None: return
@@ -702,9 +702,9 @@ void weixin_send_file(const char *chat_id, const char *file_url,
  *  Real AES-128-ECB (PKCS7) via OpenSSL EVP. These were REAL_GAP.
  * =========================================================================== */
 
-/* PoP: weixin_pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad */
+/* PoP: weixin_pkcs7_pad @ plugins/platforms/weixin/adapter.py:_pkcs7_pad */
 /* Caller frees the returned buffer. Returns NULL on alloc failure. */
-/* PoP: weixin_pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad */
+/* PoP: weixin_pkcs7_pad @ plugins/platforms/weixin/adapter.py:_pkcs7_pad */
 unsigned char *weixin_pkcs7_pad(const unsigned char *data, size_t len, size_t *out_len)
 {
     size_t pad = 16 - (len % 16);
@@ -723,9 +723,9 @@ size_t aes_padded_size(size_t size)
     return ((size + 1 + 15) / 16) * 16;
 }
 
-/* PoP: aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
+/* PoP: aes128_ecb_encrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_encrypt */
 /* Encrypts PKCS7-padded plaintext with AES-128-ECB. Caller frees *out. */
-/* PoP: aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
+/* PoP: aes128_ecb_encrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_encrypt */
 int aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
                               const unsigned char *key, size_t key_len,
                               unsigned char **out, size_t *out_len)
@@ -752,9 +752,9 @@ int aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
     return 0;
 }
 
-/* PoP: aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
+/* PoP: aes128_ecb_decrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_decrypt */
 /* Decrypts AES-128-ECB and strips PKCS7 padding. Caller frees *out. */
-/* PoP: aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
+/* PoP: aes128_ecb_decrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_decrypt */
 int aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
                               const unsigned char *key, size_t key_len,
                               unsigned char **out, size_t *out_len)
@@ -785,9 +785,9 @@ int aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
     return 0;
 }
 
-/* PoP: safe_id @ gateway/platforms/weixin.py:_safe_id */
+/* PoP: safe_id @ plugins/platforms/weixin/adapter.py:_safe_id */
 /* Strip non-printable / non-identifier chars for safe logging. */
-/* PoP: safe_id @ gateway/platforms/weixin.py:_safe_id */
+/* PoP: safe_id @ plugins/platforms/weixin/adapter.py:_safe_id */
 void safe_id(const char *in, char *out, size_t out_sz)
 {
     size_t o = 0;
@@ -818,8 +818,8 @@ void random_wechat_uin(char *out, size_t out_sz)
 
 /* ── Simple utility ports ───────────────────────────────────────────── */
 
-/* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
-/* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
+/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
+/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
 bool weixin_check_requirements(void)
 { /* Python default is also a no-op */ 
     return true; /* C port: always available in compiled binary */
@@ -843,8 +843,8 @@ json_t *weixin_base_info(void)
     return obj;
 }
 
-/* PoP: weixin_account_dir @ gateway/platforms/weixin.py:_account_dir */
-/* PoP: weixin_account_dir @ gateway/platforms/weixin.py:_account_dir */
+/* PoP: weixin_account_dir @ plugins/platforms/weixin/adapter.py:_account_dir */
+/* PoP: weixin_account_dir @ plugins/platforms/weixin/adapter.py:_account_dir */
 char *weixin_account_dir(const char *hermes_home)
 {
     if (!hermes_home) return NULL;
@@ -928,8 +928,8 @@ const char *weixin_mime_from_filename(const char *filename)
     return "application/octet-stream";
 }
 
-/* PoP: weixin_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
-/* PoP: weixin_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
+/* PoP: weixin_split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
+/* PoP: weixin_split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
 char **weixin_split_table_row(const char *line, int *count)
 {
     if (count) *count = 0;
@@ -984,8 +984,8 @@ bool weixin_looks_like_heading_line(const char *line)
     return false;
 }
 
-/* PoP: weixin_looks_like_chatty_line @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
-/* PoP: weixin_looks_like_chatty_line @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: weixin_looks_like_chatty_line @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
+/* PoP: weixin_looks_like_chatty_line @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
 bool weixin_looks_like_chatty_line(const char *line)
 {
     if (!line || !*line) return false;
@@ -1004,16 +1004,16 @@ bool weixin_looks_like_chatty_line(const char *line)
     return false;
 }
 
-/* PoP: coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
-/* PoP: coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
+/* PoP: coerce_float_extra @ gateway/platforms/base.py:_coerce_float_extra */
+/* PoP: coerce_float_extra @ gateway/platforms/base.py:_coerce_float_extra */
 double coerce_float_extra(const json_t *obj, const char *key, double default_val)
 {
     if (!obj || !key) return default_val;
     return json_get_num(obj, key, default_val);
 }
 
-/* PoP: is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
-/* PoP: is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
+/* PoP: is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
+/* PoP: is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
 bool is_dm_allowed(const char *sender_id, bool open_dm_opted_in,
                            const char *allowlist_json, const char *blocklist_json)
 {
@@ -1050,8 +1050,8 @@ bool is_dm_allowed(const char *sender_id, bool open_dm_opted_in,
     return false;
 }
 
-/* PoP: weixin_assert_cdn_url @ gateway/platforms/weixin.py:_assert_weixin_cdn_url */
-/* PoP: weixin_assert_cdn_url @ gateway/platforms/weixin.py:_assert_weixin_cdn_url */
+/* PoP: weixin_assert_cdn_url @ plugins/platforms/weixin/adapter.py:_assert_weixin_cdn_url */
+/* PoP: weixin_assert_cdn_url @ plugins/platforms/weixin/adapter.py:_assert_weixin_cdn_url */
 bool weixin_assert_cdn_url(const char *url)
 {
     if (!url) return false;
@@ -1076,8 +1076,8 @@ char *weixin_rate_limit_error(double cooldown_remaining)
     return msg;
 }
 
-/* PoP: weixin_load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
-/* PoP: weixin_load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
+/* PoP: weixin_load_sync_buf @ plugins/platforms/weixin/adapter.py:_load_sync_buf */
+/* PoP: weixin_load_sync_buf @ plugins/platforms/weixin/adapter.py:_load_sync_buf */
 char *weixin_load_sync_buf(const char *hermes_home, const char *account_id)
 {
     if (!hermes_home || !account_id) return NULL;
@@ -1149,8 +1149,8 @@ char **weixin_coerce_list(const json_t *value, int *count)
     return NULL;
 }
 
-/* PoP: rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
-/* PoP: rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
+/* PoP: rate_limit_cooldown_remaining @ plugins/platforms/weixin/adapter.py:_rate_limit_cooldown_remaining */
+/* PoP: rate_limit_cooldown_remaining @ plugins/platforms/weixin/adapter.py:_rate_limit_cooldown_remaining */
 double rate_limit_cooldown_remaining(double circuit_until)
 {
     double now = (double)time(NULL);
@@ -1182,7 +1182,7 @@ static char *weixin__join_strip(char **lines, int n)
     if (p != buf) memmove(buf, p, strlen(p) + 1);
     return buf;
 }
-/* PoP: open_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
+/* PoP: open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
 bool open_dm_opted_in(void)
 {
     const char *allow_all = getenv("GATEWAY_ALLOW_ALL_USERS");
@@ -1201,7 +1201,7 @@ bool open_dm_opted_in(void)
 
 #define WEIXIN_RATE_LIMIT_ERRCODE (-2)
 
-/* PoP: is_stale_session_ret @ gateway/platforms/weixin.py:_is_stale_session_ret */
+/* PoP: is_stale_session_ret @ plugins/platforms/weixin/adapter.py:_is_stale_session_ret */
 /* True when iLink returns ret=-2 / errcode=-2 with 'unknown error' — stale-session signal. */
 bool is_stale_session_ret(int ret, int errcode, const char *errmsg)
 {
@@ -1210,7 +1210,7 @@ bool is_stale_session_ret(int ret, int errcode, const char *errmsg)
     return errmsg != NULL && strcasecmp(errmsg, "unknown error") == 0;
 }
 
-/* PoP: parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
+/* PoP: parse_aes_key @ plugins/platforms/weixin/adapter.py:_parse_aes_key */
 /* Decode a base64 AES key; accept 16 raw bytes or a 32-char hex string. */
 /* PoP: parse_aes_key @ gateway/platforms/weixin.py:_key */
 int parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len)
@@ -1273,7 +1273,7 @@ void guess_chat_type(json_t *message, const char *account_id,
     }
 }
 
-/* PoP: message_type_from_media @ gateway/platforms/weixin.py:_message_type_from_media */
+/* PoP: message_type_from_media @ plugins/platforms/weixin/adapter.py:_message_type_from_media */
 typedef enum {
     WEIXIN_MSG_TEXT = 0,
     WEIXIN_MSG_PHOTO,
@@ -1299,7 +1299,7 @@ weixin_msg_type_t message_type_from_media(const char **media_types, int n_media,
     return WEIXIN_MSG_TEXT;
 }
 
-/* PoP: weixin_split_markdown_blocks @ gateway/platforms/weixin.py:_split_markdown_blocks */
+/* PoP: weixin_split_markdown_blocks @ plugins/platforms/weixin/adapter.py:_split_markdown_blocks */
 /* Split content into blocks at fenced code regions and blank lines, keeping fenced blocks intact. */
 char **weixin_split_markdown_blocks(const char *content, int *out_count)
 {
@@ -1433,7 +1433,7 @@ json_t *weixin_media_reference(json_t *item, const char *key) {
     return json_object_get(sub, "media");
 }
 
-/* PoP: weixin_normalize_markdown_blocks @ gateway/platforms/weixin.py:_normalize_markdown_blocks */
+/* PoP: weixin_normalize_markdown_blocks @ plugins/platforms/weixin/adapter.py:_normalize_markdown_blocks */
 /* Collapse runs of >1 blank line to a single blank line; keep fenced blocks
  * intact; strip leading/trailing whitespace of the whole content. */
 char *weixin_normalize_markdown_blocks(const char *content) {
@@ -1494,7 +1494,7 @@ char *weixin_normalize_markdown_blocks(const char *content) {
     return res;
 }
 
-/* PoP: looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: looks_like_chatty_line_for_weixin @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
 static bool looks_like_chatty_line_for_weixin(const char *line) {
     const char *s = line;
     while (*s == ' ' || *s == '\t') s++;
@@ -1529,7 +1529,7 @@ static bool looks_like_heading_line_for_weixin(const char *line) {
     return (L > 0 && (s[L-1] == ':' || s[L-1] == '：'));
 }
 
-/* PoP: should_split_short_chat_block_for_weixin @ gateway/platforms/weixin.py:_should_split_short_chat_block_for_weixin */
+/* PoP: should_split_short_chat_block_for_weixin @ plugins/platforms/weixin/adapter.py:_should_split_short_chat_block_for_weixin */
 static bool should_split_short_chat_block_for_weixin(const char *block) {
     char **lines = NULL; int nl = 0;
     const char *start = block;
@@ -1565,7 +1565,7 @@ static bool should_split_short_chat_block_for_weixin(const char *block) {
 
 #define WEIXIN_COPY_LINE_WIDTH 120
 
-/* PoP: lines @ gateway/platforms/weixin.py:_wrap_copy_friendly_lines_for_weixin */
+/* PoP: lines @ plugins/platforms/weixin/adapter.py:_wrap_copy_friendly_lines_for_weixin */
 /* Greedy word-wrap long display lines (break_long_words=false): a word longer
  * than the width is kept intact on its own line. Fenced blocks, short lines,
  * table rows, and empty lines pass through unchanged. */
@@ -1635,7 +1635,7 @@ char *weixin_wrap_copy_friendly_lines_for_weixin(const char *content) {
     return res;
 }
 
-/* PoP: weixin_split_delivery_units_for_weixin @ gateway/platforms/weixin.py:_split_delivery_units_for_weixin */
+/* PoP: weixin_split_delivery_units_for_weixin @ plugins/platforms/weixin/adapter.py:_split_delivery_units_for_weixin */
 /* Split formatted content into chat-friendly delivery units: one unit per
  * fenced block, otherwise one unit per top-level (non-indented) line group,
  * attaching indented continuation lines to the preceding unit. */
@@ -1816,7 +1816,7 @@ char **weixin_truncate_message(const char *content, int max_length, int *out_cou
     return chunks;
 }
 
-/* PoP: weixin_pack_markdown_blocks_for_weixin @ gateway/platforms/weixin.py:_pack_markdown_blocks_for_weixin */
+/* PoP: weixin_pack_markdown_blocks_for_weixin @ plugins/platforms/weixin/adapter.py:_pack_markdown_blocks_for_weixin */
 char **weixin_pack_markdown_blocks_for_weixin(const char *content, int max_length, int *out_count) {
     if (out_count) *out_count = 0;
     if (!content) return NULL;
@@ -1867,7 +1867,7 @@ char **weixin_pack_markdown_blocks_for_weixin(const char *content, int max_lengt
     return packed;
 }
 
-/* PoP: weixin_split_text_for_weixin_delivery @ gateway/platforms/weixin.py:_split_text_for_weixin_delivery */
+/* PoP: weixin_split_text_for_weixin_delivery @ plugins/platforms/weixin/adapter.py:_split_text_for_weixin_delivery */
 char **weixin_split_text_for_weixin_delivery(const char *content, int max_length, bool split_per_line, int *out_count) {
     if (out_count) *out_count = 0;
     if (!content || !*content) return NULL;

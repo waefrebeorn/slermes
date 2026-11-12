@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_jpeg_size @ gateway/platforms/yuanbao_media.py:_parse_jpeg_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_jpeg_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_jpeg_size */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:_parse_jpeg_size */
 /* Parses JPEG image dimensions from binary data. */
@@ -32,7 +32,7 @@ int cli_gateway_platforms_yuanbao_media__parse_jpeg_size(
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_gif_size @ gateway/platforms/yuanbao_media.py:_parse_gif_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_gif_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_gif_size */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:_parse_gif_size */
 /* Parses GIF image dimensions from binary data. */
@@ -51,7 +51,7 @@ int cli_gateway_platforms_yuanbao_media__parse_gif_size(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_webp_size @ gateway/platforms/yuanbao_media.py:_parse_webp_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_webp_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_webp_size */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:_parse_webp_size */
 /* Parses WebP image dimensions from binary data. */
@@ -81,7 +81,7 @@ int cli_gateway_platforms_yuanbao_media__parse_webp_size(
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media_download_url @ gateway/platforms/yuanbao_media.py:download_url */
+/* PoP: cli_gateway_platforms_yuanbao_media_download_url @ plugins/platforms/yuanbao/yuanbao_media.py:download_url */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:download_url */
 /* Downloads media from a URL. */
@@ -95,7 +95,7 @@ int cli_gateway_platforms_yuanbao_media_download_url(
     return 0;
 }
 
-/* PoP: COS @ gateway/platforms/yuanbao_media.py:get_cos_credentials */
+/* PoP: COS @ plugins/platforms/yuanbao/yuanbao_media.py:get_cos_credentials */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:get_cos_credentials */
 /* Gets COS (Cloud Object Storage) upload credentials. */
@@ -112,7 +112,7 @@ int cli_gateway_platforms_yuanbao_media_get_cos_credentials(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media_upload_to_cos @ gateway/platforms/yuanbao_media.py:upload_to_cos */
+/* PoP: cli_gateway_platforms_yuanbao_media_upload_to_cos @ plugins/platforms/yuanbao/yuanbao_media.py:upload_to_cos */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:upload_to_cos */
 /* Uploads a file to COS. */

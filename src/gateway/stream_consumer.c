@@ -473,7 +473,7 @@ static int strip_orphan_close_tags(const char *text, int tlen, char *out, int ou
 /* Port of GatewayStreamConsumer._filter_and_accumulate.
  * Adds `text` to the buffer, suppressing inline think/reasoning blocks.
  * Returns pointer to the visible accumulated text (valid until next call). */
-/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer.py:_filter_and_accumulate */
+/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
 const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const char *text)
 {
     if (!c || !text || !*text) return c ? c->accumulated : NULL;
@@ -592,7 +592,7 @@ const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const 
 }
 
 /* Port of GatewayStreamConsumer._flush_think_buffer. */
-/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer.py:_flush_think_buffer */
+/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
 const char *gw_stream_consumer_flush_think_buffer(gw_stream_consumer_t *c)
 {
     if (!c) return NULL;
@@ -627,7 +627,7 @@ void gw_stream_consumer_reset_segment(gw_stream_consumer_t *c, bool preserve_no_
 
 /* Port of GatewayStreamConsumer._visible_prefix.
  * Uses the consumer's internally-tracked last-sent text. Caller must free. */
-/* PoP: gw_stream_consumer_visible_prefix @ gateway/stream_consumer.py:_visible_prefix */
+/* PoP: gw_stream_consumer_visible_prefix @ gateway/stream_consumer_fallback.py:_visible_prefix */
 char *gw_stream_consumer_visible_prefix(gw_stream_consumer_t *c)
 {
     if (!c) return strdup("");
@@ -709,7 +709,7 @@ void gw_stream_consumer_add_commentary(gw_stream_consumer_t *c, const char *text
 
 /* PoP helpers for gateway/stream_consumer.py */
 
-/* PoP: sc_escape_code_fences_for_display @ gateway/stream_consumer.py:escape_code_fences_for_display */
+/* PoP: sc_escape_code_fences_for_display @ gateway/stream_consumer_fences.py:escape_code_fences_for_display */
 /* Escape triple-backtick markers in-place so text can be safely wrapped in an
  * outer ``` block. Python: return text.replace("```", "\\`\\`\\`").
  * Editing in place expands each 3-byte ``` to 6 bytes (\`\`\`), so we render
@@ -741,7 +741,7 @@ void sc_escape_code_fences_for_display(char *buf, size_t sz) {
     free(tmp);
 }
 /* PoP: ensure_closed_code_fences */
-/* PoP: sc_ensure_closed_code_fences @ gateway/stream_consumer.py:ensure_closed_code_fences */
+/* PoP: sc_ensure_closed_code_fences @ gateway/stream_consumer_fences.py:ensure_closed_code_fences */
 char *sc_ensure_closed_code_fences(const char *text){ if(!text) return strdup(""); return strdup(text); }
 /* PoP: already_sent */
 /* PoP: sc_already_sent @ gateway/stream_consumer.py:already_sent */
@@ -749,7 +749,7 @@ bool sc_already_sent(const char *text, const char *sent_text){ if(!text||!sent_t
 /* PoP: state @ gateway/stream_consumer.py:final_response_sent */
 /* PoP: state @ gateway/stream_consumer.py:message_id */
 /* PoP: state @ gateway/stream_consumer.py:final_content_delivered */
-/* PoP: state @ gateway/stream_consumer.py:_edit_message */
+/* PoP: state @ gateway/stream_consumer_transport.py:_edit_message */
 
 /* Instance getters for the finalization state (Python @property accessors).
  * The transport layer sets these as it sends edits and finalization. */
@@ -770,7 +770,7 @@ char *sc_clean_for_display(const char *text){
 
 /* ─── Transport dispatch (Python async _edit_message / adapter.send) ───── */
 
-/* PoP: gw_stream_consumer_edit_message @ gateway/stream_consumer.py:_edit_message */
+/* PoP: gw_stream_consumer_edit_message @ gateway/stream_consumer_transport.py:_edit_message */
 bool gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
                                      const char *message_id, const char *text) {
     /* Python awaits self.adapter.edit_message(...); the C transport installs
@@ -879,7 +879,7 @@ double gw_stream_consumer_now(void) {
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: sc_track_preview_id @ gateway/stream_consumer.py:_track_preview_id */
+/* PoP: sc_track_preview_id @ gateway/stream_consumer_transport.py:_track_preview_id */
 static void sc_track_preview_id(gw_stream_consumer_t *c, const char *message_id) {
     /* Record a real preview message id for finalization cleanup. */
     if (!c || !message_id || !message_id[0]
@@ -889,7 +889,7 @@ static void sc_track_preview_id(gw_stream_consumer_t *c, const char *message_id)
     json_array_append(c->segment_preview_ids, json_string(message_id));
 }
 
-/* PoP: sc_track_preview_ids_from_result @ gateway/stream_consumer.py:_track_preview_ids_from_result */
+/* PoP: sc_track_preview_ids_from_result @ gateway/stream_consumer_transport.py:_track_preview_ids_from_result */
 static void sc_track_preview_ids_from_result(gw_stream_consumer_t *c,
                                              json_t *result) {
     /* Record every message id a send/edit result exposes: primary id plus
@@ -916,7 +916,7 @@ static void sc_track_preview_ids_from_result(gw_stream_consumer_t *c,
     }
 }
 
-/* PoP: sc_send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
+/* PoP: sc_send_new_chunk @ gateway/stream_consumer_fallback.py:_send_new_chunk */
 char *sc_send_new_chunk(gw_stream_consumer_t *c, const char *text,
                         const char *reply_to_id, bool final) {
     /* Send a new message chunk, optionally threaded to a previous message.
@@ -952,7 +952,7 @@ char *sc_send_new_chunk(gw_stream_consumer_t *c, const char *text,
     return reply_to_id ? strdup(reply_to_id) : NULL;
 }
 
-/* PoP: sc_continuation_text @ gateway/stream_consumer.py:_continuation_text */
+/* PoP: sc_continuation_text @ gateway/stream_consumer_fallback.py:_continuation_text */
 char *sc_continuation_text(gw_stream_consumer_t *c, const char *final_text) {
     /* Return only the part of final_text the user has not already seen. */
     if (!final_text) return strdup("");
@@ -973,7 +973,7 @@ char *sc_continuation_text(gw_stream_consumer_t *c, const char *final_text) {
     return strdup(final_text);
 }
 
-/* PoP: sc_split_text_chunks @ gateway/stream_consumer.py:_split_text_chunks */
+/* PoP: sc_split_text_chunks @ gateway/stream_consumer_fallback.py:_split_text_chunks */
 json_t *sc_split_text_chunks(const char *text, size_t limit) {
     /* Fence-balanced fallback chunking: prefer newline boundaries, close an
      * open ``` at the split and reopen on the tail. */
@@ -1061,7 +1061,7 @@ json_t *sc_balance_fences_across_chunks(json_t *chunks) {
     return out;
 }
 
-/* PoP: sc_truncate_for_stream @ gateway/stream_consumer.py:_truncate_for_stream */
+/* PoP: sc_truncate_for_stream @ gateway/stream_consumer_fallback.py:_truncate_for_stream */
 json_t *sc_truncate_for_stream(gw_stream_consumer_t *c, const char *text,
                                size_t limit) {
     /* The adapter's canonical splitter is folded into the transport hooks;
@@ -1070,7 +1070,7 @@ json_t *sc_truncate_for_stream(gw_stream_consumer_t *c, const char *text,
     return sc_split_text_chunks(text, limit);
 }
 
-/* PoP: sc_send_failure_may_have_delivered @ gateway/stream_consumer.py:_send_failure_may_have_delivered */
+/* PoP: sc_send_failure_may_have_delivered @ gateway/stream_consumer_fallback.py:_send_failure_may_have_delivered */
 bool sc_send_failure_may_have_delivered(json_t *result_or_error) {
     /* True for timeout failures where retrying may duplicate the message. */
     if (!result_or_error) return false;
@@ -1081,7 +1081,7 @@ bool sc_send_failure_may_have_delivered(json_t *result_or_error) {
         || strstr(err, "timed out") != NULL;
 }
 
-/* PoP: sc_resolve_draft_streaming @ gateway/stream_consumer.py:_resolve_draft_streaming */
+/* PoP: sc_resolve_draft_streaming @ gateway/stream_consumer_transport.py:_resolve_draft_streaming */
 bool sc_resolve_draft_streaming(gw_stream_consumer_t *c) {
     /* Honors cfg.transport: "edit"/"off" never use drafts; "draft"/"auto"
      * require adapter support (chat-type gated in the adapter hook). */
@@ -1094,7 +1094,7 @@ bool sc_resolve_draft_streaming(gw_stream_consumer_t *c) {
     return true;
 }
 
-/* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_send_draft_frame */
+/* PoP: sc_send_draft_frame @ gateway/stream_consumer_transport.py:_send_draft_frame */
 bool sc_send_draft_frame(gw_stream_consumer_t *c, const char *text) {
     /* Emit one animated draft frame. On any failure permanently disable
      * drafts for this run so frames fall back to the edit path. */
@@ -1109,10 +1109,10 @@ bool sc_send_draft_frame(gw_stream_consumer_t *c, const char *text) {
     return true;
 }
 
-/* PoP: sc_try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
+/* PoP: sc_try_strip_cursor @ gateway/stream_consumer_fallback.py:_try_strip_cursor */
 bool sc_try_strip_cursor(gw_stream_consumer_t *c);
 
-/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_flush_segment_tail_on_edit_failure */
+/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer_fallback.py:_flush_segment_tail_on_edit_failure */
 void sc_flush_segment_tail_on_edit_failure(gw_stream_consumer_t *c) {
     /* Deliver un-sent tail content before a segment-break reset: send the
      * text after the last delivered prefix as a new message and best-effort
@@ -1145,7 +1145,7 @@ void sc_flush_segment_tail_on_edit_failure(gw_stream_consumer_t *c) {
     }
 }
 
-/* PoP: sc_try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
+/* PoP: sc_try_strip_cursor @ gateway/stream_consumer_fallback.py:_try_strip_cursor */
 bool sc_try_strip_cursor(gw_stream_consumer_t *c) {
     /* Best-effort edit removing the trailing cursor from the last visible
      * message so the user never sees a stuck cursor block. */
@@ -1165,7 +1165,7 @@ bool sc_try_strip_cursor(gw_stream_consumer_t *c) {
     return ok;
 }
 
-/* PoP: sc_send_commentary @ gateway/stream_consumer.py:_send_commentary */
+/* PoP: sc_send_commentary @ gateway/stream_consumer_fallback.py:_send_commentary */
 bool sc_send_commentary(gw_stream_consumer_t *c, const char *text) {
     /* Send a completed interim commentary message. Deliberately does NOT
      * set already_sent (#10454) — commentary is not the final response. */
@@ -1194,7 +1194,7 @@ bool sc_send_commentary(gw_stream_consumer_t *c, const char *text) {
     return ok;
 }
 
-/* PoP: sc_should_send_fresh_final @ gateway/stream_consumer.py:_should_send_fresh_final */
+/* PoP: sc_should_send_fresh_final @ gateway/stream_consumer_transport.py:_should_send_fresh_final */
 bool sc_should_send_fresh_final(gw_stream_consumer_t *c) {
     if (!c) return false;
     double threshold = c->fresh_final_after_seconds;
@@ -1205,7 +1205,7 @@ bool sc_should_send_fresh_final(gw_stream_consumer_t *c) {
     return (gw_stream_consumer_now() - c->message_created_ts) >= threshold;
 }
 
-/* PoP: sc_adapter_prefers_fresh_final @ gateway/stream_consumer.py:_adapter_prefers_fresh_final */
+/* PoP: sc_adapter_prefers_fresh_final @ gateway/stream_consumer_transport.py:_adapter_prefers_fresh_final */
 bool sc_adapter_prefers_fresh_final(gw_stream_consumer_t *c, const char *text) {
     if (!c || !c->message_id || strcmp(c->message_id, "__no_edit__") == 0)
         return false;
@@ -1213,7 +1213,7 @@ bool sc_adapter_prefers_fresh_final(gw_stream_consumer_t *c, const char *text) {
     return c->prefers_fresh_final_fn(c->adapter, c, text);
 }
 
-/* PoP: sc_try_fresh_final @ gateway/stream_consumer.py:_try_fresh_final */
+/* PoP: sc_try_fresh_final @ gateway/stream_consumer_transport.py:_try_fresh_final */
 bool sc_try_fresh_final(gw_stream_consumer_t *c, const char *text,
                         bool is_turn_final) {
     /* Fresh send + best-effort delete of stale previews. Sealed heads of a
@@ -1255,7 +1255,7 @@ bool sc_try_fresh_final(gw_stream_consumer_t *c, const char *text,
     return true;
 }
 
-/* PoP: sc_suppress_silence_marker @ gateway/stream_consumer.py:_suppress_silence_marker */
+/* PoP: sc_suppress_silence_marker @ gateway/stream_consumer_fallback.py:_suppress_silence_marker */
 void sc_suppress_silence_marker(gw_stream_consumer_t *c) {
     /* Retract streamed previews when the final reply is a silence marker.
      * Delivery flags stay FALSE and already_sent cleared. */
@@ -1276,7 +1276,7 @@ void sc_suppress_silence_marker(gw_stream_consumer_t *c) {
     c->final_content_delivered = false;
 }
 
-/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer.py:_send_empty_fallback_final */
+/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer_fallback.py:_send_empty_fallback_final */
 const char *sc_send_empty_fallback_final(gw_stream_consumer_t *c,
                                          const char *final_text) {
     /* "delivered" on success, "failed" when safe to retry, "ambiguous"
@@ -1311,7 +1311,7 @@ const char *sc_send_empty_fallback_final(gw_stream_consumer_t *c,
     return "failed";
 }
 
-/* PoP: sc_send_fallback_final @ gateway/stream_consumer.py:_send_fallback_final */
+/* PoP: sc_send_fallback_final @ gateway/stream_consumer_fallback.py:_send_fallback_final */
 void sc_send_fallback_final(gw_stream_consumer_t *c, const char *text) {
     /* Send the final continuation after streaming edits stop working.
      * Retries each chunk once on flood-control failures with a delay. */
@@ -1361,7 +1361,7 @@ void sc_send_fallback_final(gw_stream_consumer_t *c, const char *text) {
     json_free(chunks);
 }
 
-/* PoP: sc_send_or_edit @ gateway/stream_consumer.py:_send_or_edit */
+/* PoP: sc_send_or_edit @ gateway/stream_consumer_transport.py:_send_or_edit */
 bool sc_send_or_edit(gw_stream_consumer_t *c, const char *text,
                      bool finalize, bool is_turn_final) {
     /* Send or edit the streaming message; true when delivered. */

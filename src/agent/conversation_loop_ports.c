@@ -24,7 +24,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cvl_image_error_max_dimension @ agent/conversation_loop.py:_image_error_max_dimension */
+/* PoP: cvl_image_error_max_dimension @ agent/turn_recovery.py:_image_error_max_dimension */
 long cvl_image_error_max_dimension(const char *error) {
     /* Python: provider-reported image dimension ceiling. */
     if (!error) return 0;
@@ -113,7 +113,7 @@ bool cvl_print_billing_or_entitlement_guidance(const char *capability, const cha
     return true;
 }
 
-/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/conversation_loop.py:_try_refresh_nous_paid_entitlement_credentials */
+/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/turn_recovery.py:_try_refresh_nous_paid_entitlement_credentials */
 int cvl_try_refresh_nous_paid_entitlement_credentials(void) {
     /* Python: refresh runtime credentials after paid check. */
     printf("nous paid-entitlement credentials refreshed\n");
@@ -573,7 +573,7 @@ json_t *cvl_redecorate_prompt_cache_for_provider(agent_state_t *agent,
 /* ---- _finalize_wait_result ---- */
 /* Python: assemble {output, returncode, [output_total_chars, full_output_path]}
  *         when spill occurred (total_chars > max_chars). */
-/* PoP: cvl_finalize_wait_result @ agent/conversation_loop.py:_finalize_wait_result */
+/* PoP: cvl_finalize_wait_result @ tools/environments/base_output.py:_finalize_wait_result */
 char *cvl_finalize_wait_result(const char *rendered, long returncode,
                                 long output_total_chars, bool spilled,
                                 const char *spill_path) {

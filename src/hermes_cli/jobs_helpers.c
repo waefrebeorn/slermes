@@ -167,7 +167,7 @@ void _atomic_write_counter(const char *path, long value) {
     _atomic_write_counter_impl(path, value);
 }
 
-/* PoP: record_catch_up_occurrence @ cron/jobs.py:record_catch_up_occurrence */
+/* PoP: record_catch_up_occurrence @ cron/occurrences.py:record_catch_up_occurrence */
 void record_catch_up_occurrence(void) {
     char *cd = cronjobs_cron_dir();
     if (!cd) return;
@@ -184,7 +184,7 @@ void record_catch_up_occurrence(void) {
     free(cd);
 }
 
-/* PoP: get_catch_up_occurrence_count @ cron/jobs.py:get_catch_up_occurrence_count */
+/* PoP: get_catch_up_occurrence_count @ cron/occurrences.py:get_catch_up_occurrence_count */
 long get_catch_up_occurrence_count(void) {
     char *cd = cronjobs_cron_dir();
     if (!cd) return 0;

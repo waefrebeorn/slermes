@@ -67,7 +67,7 @@ char *he_gateway_health_config(const char *config_json)
     return out;
 }
 
-/* PoP: he_otlp_config @ agent/monitoring/gateway_health_export.py:_otlp_config */
+/* PoP: he_otlp_config @ agent/monitoring/otlp_exporter.py:_otlp_config */
 char *he_otlp_config(const char *config_json)
 {
     if (!config_json) return strdup("{}");
@@ -199,7 +199,7 @@ char *he_logs_endpoint(const char *endpoint)
     return strdup(endpoint);
 }
 
-/* PoP: he_resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers */
+/* PoP: he_resolve_headers @ agent/monitoring/otlp_exporter.py:_resolve_headers */
 /* Resolve headers from env-var-name mapping. input: JSON object */
 /* {"header_name": "ENV_VAR"}; output: JSON object {"header_name": value}. Only */
 /* headers whose ENV_VAR is set to a non-empty string are included. malloc'd. */

@@ -80,7 +80,7 @@ static const char *SCHEMA = "{"
  *  Safe command preview
  * ================================================================ */
 
-/* PoP: buffer @ tools/terminal_tool.py:_safe_command_preview */
+/* PoP: buffer @ tools/terminal_tool_guards.py:_safe_command_preview */
 /* Return a log-safe preview of a command, truncated at limit bytes.
  * Returns pointer to a static buffer (NOT thread-safe — terminal.c
  * is single-threaded). Mirrors Python _safe_command_preview(). */
@@ -1102,7 +1102,7 @@ restore:
 
 /* Check if token looks like a shell env assignment (KEY=VALUE).
  * Port of Python terminal_tool._looks_like_env_assignment(). */
-/* PoP: looks_like_env_assignment @ tools/terminal_tool.py:_looks_like_env_assignment */
+/* PoP: looks_like_env_assignment @ tools/terminal_tool_sudo.py:_looks_like_env_assignment */
 static bool looks_like_env_assignment(const char *token) {
     if (!token || !token[0]) return false;
     const char *eq = strchr(token, '=');
@@ -1122,7 +1122,7 @@ static bool looks_like_env_assignment(const char *token) {
 }
 
 /* Forward declaration */
-/* PoP: free @ tools/terminal_tool.py:_read_shell_token */
+/* PoP: free @ tools/terminal_tool_sudo.py:_read_shell_token */
 char *terminal_read_shell_token(const char *command, int start, int *end);
 
 /* B07: Rewrite bare 'sudo' command words to 'sudo -S -p ""' for piped password.
@@ -2048,28 +2048,28 @@ bool check_terminal_requirements(void) {
     return term_check_terminal_requirements();
 }
 
-/* PoP: environment @ tools/terminal_tool.py:is_persistent_env */
+/* PoP: environment @ tools/terminal_tool_lifecycle.py:is_persistent_env */
 /* Check if task has a persistent environment (cross-turn persistence). */
 bool is_persistent_env(const char *task_id) {
     return term_is_persistent_env(task_id);
 }
 
-/* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
+/* PoP: cleanup_all_environments @ tools/terminal_tool_lifecycle.py:cleanup_all_environments */
 /* Clean up ALL active environment containers/VMs. */
 int cleanup_all_environments(void) {
     return term_cleanup_all_environments();
 }
 
-/* PoP: preference @ tools/terminal_tool.py:cleanup_vm */
+/* PoP: preference @ tools/terminal_tool_lifecycle.py:cleanup_vm */
 /* Clean up a specific VM environment by task_id. force_remove honors the
  * session-lifecycle persist-mode preference (default false). */
 void cleanup_vm(const char *task_id, bool force_remove) {
     term_cleanup_vm(task_id, force_remove);
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
+/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
 /* Check if command looks like --help or --version.
- * PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
+ * PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
 static bool _looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||

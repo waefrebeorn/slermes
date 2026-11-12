@@ -44,7 +44,7 @@ static const struct { const char *suffix; const char *mime; } FS_MIME_TYPES[] = 
 };
 
 /* ── _is_addr_in_use_error ──────────────────────────────────────────── */
-/* PoP: ws_is_addr_in_use_error @ hermes_cli/web_server.py:_is_addr_in_use_error */
+/* PoP: ws_is_addr_in_use_error @ hermes_cli/web_server_lifecycle.py:_is_addr_in_use_error */
 /* True when errno indicates an address-in-use bind failure. */
 bool ws_is_addr_in_use_error(int errnum) {
     switch (errnum) {
@@ -58,7 +58,7 @@ bool ws_is_addr_in_use_error(int errnum) {
 }
 
 /* ── _durable_completed_update_action_id ────────────────────────────── */
-/* PoP: ws_durable_completed_update_action_id @ hermes_cli/web_server.py:_durable_completed_update_action_id */
+/* PoP: ws_durable_completed_update_action_id @ hermes_cli/web_routers/actions.py:_durable_completed_update_action_id */
 /* Recover the latest successful update identity from update.log lines. */
 char *ws_durable_completed_update_action_id(const char **lines, size_t n_lines) {
     int last_start = -1;
@@ -97,7 +97,7 @@ char *ws_durable_completed_update_action_id(const char **lines, size_t n_lines) 
 }
 
 /* ── _report_port_in_use ────────────────────────────────────────────── */
-/* PoP: ws_report_port_in_use @ hermes_cli/web_server.py:_report_port_in_use */
+/* PoP: ws_report_port_in_use @ hermes_cli/web_server_lifecycle.py:_report_port_in_use */
 /* Print the port-in-use sentinel and human hint. */
 void ws_report_port_in_use(const char *host, int port) {
     printf("BACKEND_PORT_IN_USE port=%d\n", port);
@@ -123,7 +123,7 @@ const char *get_public_url(void) {
 extern int cli_hermes_cli_dashboard_auth_prefix_resolve_public_url(char *output, size_t output_size);
 
 /* ── _dashboard_public_hosts ────────────────────────────────────────── */
-/* PoP: ws_dashboard_public_hosts @ hermes_cli/web_server.py:_dashboard_public_hosts */
+/* PoP: ws_dashboard_public_hosts @ hermes_cli/web_server_boundary.py:_dashboard_public_hosts */
 /* Return the hostname from dashboard.public_url (fail closed as empty string). */
 char *ws_dashboard_public_hosts(void) {
     const char *public_url = get_public_url();

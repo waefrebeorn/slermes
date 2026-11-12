@@ -1787,13 +1787,13 @@ json_t *gw_running_agent_items(GatewayRunner *self)
     return result;
 }
 
-/* PoP: gw_load_restart_after_turn_timeout @ gateway/run.py:_load_restart_after_turn_timeout */
+/* PoP: gw_load_restart_after_turn_timeout @ gateway/run_config_loaders.py:_load_restart_after_turn_timeout */
 double gw_load_restart_after_turn_timeout(void)
 {
     return gw_float_env("HERMES_RESTART_AFTER_TURN_TIMEOUT", 30.0);
 }
 
-/* PoP: gw_prepare_busy_steer_text @ gateway/run.py:_prepare_busy_steer_text */
+/* PoP: gw_prepare_busy_steer_text @ gateway/run_busy.py:_prepare_busy_steer_text */
 const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_json)
 {
     (void)self;
@@ -1820,7 +1820,7 @@ const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_js
     return result;
 }
 
-/* PoP: gw_await_active_work_before_restart @ gateway/run.py:_await_active_work_before_restart */
+/* PoP: gw_await_active_work_before_restart @ gateway/run_shutdown.py:_await_active_work_before_restart */
 bool gw_await_active_work_before_restart(GatewayRunner *self, double timeout_secs)
 {
     (void)self;
@@ -2371,7 +2371,7 @@ bool gw_run_looks_like_provider_error(const char *text) {
 }
 
 /* ── _csv_or_list_to_set (L1293) ── */
-/* PoP: gw_run_csv_or_list_to_set @ gateway/run.py:_csv_or_list_to_set */
+/* PoP: gw_run_csv_or_list_to_set @ gateway/run_common.py:_csv_or_list_to_set */
 json_t *gw_run_csv_or_list_to_set(const char *raw) {
     json_t *result = json_array();
     if (!raw || !*raw) return result;
@@ -2539,7 +2539,7 @@ void gw_reset_hygiene_failure_streak(const char *session_key) {
  *  Busy modes from config (gateway_run.py _busy_modes_from_config)
  * ════════════════════════════════════════════════════════════════ */
 
-/* PoP: gw_busy_modes_from_config @ gateway/run.py:_busy_modes_from_config */
+/* PoP: gw_busy_modes_from_config @ gateway/run_config_loaders.py:_busy_modes_from_config */
 void gw_busy_modes_from_config(
     const char *raw_input_mode,
     const char *raw_text_mode,
@@ -2595,7 +2595,7 @@ typedef struct {
 static gw_busy_mode_entry_t g_busy_modes[GW_BUSY_MODES_MAX];
 static pthread_mutex_t g_busy_modes_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_snapshot_profile_busy_modes @ gateway/run.py:_snapshot_profile_busy_modes */
+/* PoP: gw_snapshot_profile_busy_modes @ gateway/run_config_loaders.py:_snapshot_profile_busy_modes */
 void gw_snapshot_profile_busy_modes(
     const char *profile_name,
     const char *config_input_mode,
@@ -2630,7 +2630,7 @@ void gw_snapshot_profile_busy_modes(
     pthread_mutex_unlock(&g_busy_modes_mutex);
 }
 
-/* PoP: gw_effective_busy_input_mode @ gateway/run.py:_effective_busy_input_mode */
+/* PoP: gw_effective_busy_input_mode @ gateway/run_config_loaders.py:_effective_busy_input_mode */
 void gw_effective_busy_input_mode(const char *profile_name, const char *fallback, char *out, size_t out_sz) {
     pthread_mutex_lock(&g_busy_modes_mutex);
     for (int i = 0; i < GW_BUSY_MODES_MAX; i++) {
@@ -2644,7 +2644,7 @@ void gw_effective_busy_input_mode(const char *profile_name, const char *fallback
     snprintf(out, out_sz, "%s", fallback ? fallback : "interrupt");
 }
 
-/* PoP: gw_effective_busy_text_mode @ gateway/run.py:_effective_busy_text_mode */
+/* PoP: gw_effective_busy_text_mode @ gateway/run_config_loaders.py:_effective_busy_text_mode */
 void gw_effective_busy_text_mode(const char *profile_name, const char *fallback, char *out, size_t out_sz) {
     pthread_mutex_lock(&g_busy_modes_mutex);
     for (int i = 0; i < GW_BUSY_MODES_MAX; i++) {
@@ -2674,7 +2674,7 @@ typedef struct {
 static gw_heartbeat_watch_t g_heartbeat_watches[GW_HEARTBEAT_WATCH_MAX];
 static pthread_mutex_t g_heartbeat_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_register_heartbeat_watch @ gateway/run.py:_register_heartbeat_watch */
+/* PoP: gw_register_heartbeat_watch @ gateway/run_goals.py:_register_heartbeat_watch */
 void gw_register_heartbeat_watch(const char *quick_key, const char *session_id,
                                   const char *platform, const char *chat_id) {
     pthread_mutex_lock(&g_heartbeat_mutex);
@@ -2699,7 +2699,7 @@ void gw_register_heartbeat_watch(const char *quick_key, const char *session_id,
     pthread_mutex_unlock(&g_heartbeat_mutex);
 }
 
-/* PoP: gw_unregister_heartbeat_watch @ gateway/run.py:_unregister_heartbeat_watch */
+/* PoP: gw_unregister_heartbeat_watch @ gateway/run_goals.py:_unregister_heartbeat_watch */
 void gw_unregister_heartbeat_watch(const char *quick_key) {
     pthread_mutex_lock(&g_heartbeat_mutex);
     for (int i = 0; i < GW_HEARTBEAT_WATCH_MAX; i++) {
@@ -2760,7 +2760,7 @@ typedef struct {
 static gw_active_turn_t g_active_turns[GW_ACTIVE_TURN_MAX];
 static pthread_mutex_t g_active_turn_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_mark_durable_active_turn @ gateway/run.py:_mark_durable_active_turn */
+/* PoP: gw_mark_durable_active_turn @ gateway/run_inbound.py:_mark_durable_active_turn */
 int gw_mark_durable_active_turn(const char *session_key) {
     /* Generate a token */
     static unsigned long counter = 0;
@@ -2783,7 +2783,7 @@ int gw_mark_durable_active_turn(const char *session_key) {
     return ok;
 }
 
-/* PoP: gw_clear_durable_active_turn @ gateway/run.py:_clear_durable_active_turn */
+/* PoP: gw_clear_durable_active_turn @ gateway/run_inbound.py:_clear_durable_active_turn */
 int gw_clear_durable_active_turn(const char *session_key) {
     pthread_mutex_lock(&g_active_turn_mutex);
     int cleared = 0;
@@ -2802,7 +2802,7 @@ int gw_clear_durable_active_turn(const char *session_key) {
  *  Clean shutdown marker + unclean session recovery
  * ════════════════════════════════════════════════════════════════ */
 
-/* PoP: gw_consume_clean_shutdown_marker @ gateway/run.py:_consume_clean_shutdown_marker */
+/* PoP: gw_consume_clean_shutdown_marker @ gateway/run_startup.py:_consume_clean_shutdown_marker */
 int gw_consume_clean_shutdown_marker(const char *marker_path) {
     /* Discard active-turn markers, then remove the marker file */
     pthread_mutex_lock(&g_active_turn_mutex);
@@ -2815,7 +2815,7 @@ int gw_consume_clean_shutdown_marker(const char *marker_path) {
     return 0;
 }
 
-/* PoP: gw_recover_unclean_sessions @ gateway/run.py:_recover_unclean_sessions */
+/* PoP: gw_recover_unclean_sessions @ gateway/run_startup.py:_recover_unclean_sessions */
 /* Recover exact active turns, then run the legacy recency fallback.
  * Python returns (exact, fallback); the C port returns the exact count and
  * reports the fallback count through *out_fallback when non-NULL. */
@@ -2861,7 +2861,7 @@ static pthread_mutex_t g_pressure_mutex = PTHREAD_MUTEX_INITIALIZER;
  *  Agent cache pressure sweep
  * ════════════════════════════════════════════════════════════════ */
 
-/* PoP: gw_sweep_agent_cache_under_pressure @ gateway/run.py:_sweep_agent_cache_under_pressure */
+/* PoP: gw_sweep_agent_cache_under_pressure @ gateway/run_agent_cache.py:_sweep_agent_cache_under_pressure */
 int gw_sweep_agent_cache_under_pressure(void) {
     /* Evict LRU agents when memory pressure is high.
      * Returns count of evicted entries. */
@@ -2880,7 +2880,7 @@ int gw_sweep_agent_cache_under_pressure(void) {
     return evicted;
 }
 
-/* PoP: gw_release_pressure_batch @ gateway/run.py:_release_pressure_batch */
+/* PoP: gw_release_pressure_batch @ gateway/run_agent_cache.py:_release_pressure_batch */
 void gw_release_pressure_batch(int count) {
     /* Release a batch of pressure-evicted agents.
      * In C, this evicts the oldest N cached agents. */
@@ -2917,7 +2917,7 @@ typedef struct {
 static gw_failed_platform_t g_failed_platforms[GW_FAILED_PLATFORMS_MAX];
 static pthread_mutex_t g_failed_platforms_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_queue_retryable_fatal_platform @ gateway/run.py:_queue_retryable_fatal_platform */
+/* PoP: gw_queue_retryable_fatal_platform @ gateway/run_adapters.py:_queue_retryable_fatal_platform */
 /* Queue a retryable fatal platform for background reconnection. Returns 1
  * when the platform was newly queued; idempotent (0) if already queued.
  * Callers invoke this BEFORE any disconnect so a wedged close cannot strand
@@ -2956,7 +2956,7 @@ int gw_queue_retryable_fatal_platform(const char *platform) {
     return 0;
 }
 
-/* PoP: gw_interrupt_api_server_runs @ gateway/run.py:_interrupt_api_server_runs */
+/* PoP: gw_interrupt_api_server_runs @ gateway/run_shutdown.py:_interrupt_api_server_runs */
 /* Interrupt API-server agents that are not in _running_agents during the
  * shutdown drain. Python duck-types adapter.interrupt_active_runs(reason) and
  * returns 0 when the hook is absent — the C port mirrors that with an
@@ -2973,14 +2973,14 @@ int gw_interrupt_api_server_runs(const char *reason) {
     return n > 0 ? n : 0;
 }
 
-/* PoP: gw_await_relay_auto_thread_info @ gateway/run.py:_await_relay_auto_thread_info */
+/* PoP: gw_await_relay_auto_thread_info @ gateway/run_topics.py:_await_relay_auto_thread_info */
 int gw_await_relay_auto_thread_info(const char *chat_id, char *out_thread_id, size_t out_sz) {
     (void)chat_id;
     if (out_thread_id && out_sz > 0) out_thread_id[0] = '\0';
     return 0;
 }
 
-/* PoP: gw_deliver_queued_first_response @ gateway/run.py:_deliver_queued_first_response */
+/* PoP: gw_deliver_queued_first_response @ gateway/run_notifications.py:_deliver_queued_first_response */
 /* Deliver a queued response using the normal text+attachment split:
  * strip MEDIA/[[audio_as_voice]]/[[as_document]] markers from the text and
  * send the remainder through the owning platform adapter, then deliver media
@@ -3019,7 +3019,7 @@ typedef struct {
 static gw_title_lane_entry_t g_title_lanes[GW_TITLE_LANES_MAX];
 static pthread_mutex_t g_title_lanes_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_attach_session_title_callback @ gateway/run.py:_attach_session_title_callback */
+/* PoP: gw_attach_session_title_callback @ gateway/run_turn_progress.py:_attach_session_title_callback */
 /* Wire the platform thread-rename lane onto the session. Both lanes spend a
  * rate-limited platform call per title, so only model-derived ("llm") titles
  * are renamed — derived titles are skipped (see TitleCallback). Gateway
@@ -3093,7 +3093,7 @@ typedef struct {
 static gw_busy_handler_t g_busy_handlers[GW_BUSY_HANDLERS_MAX];
 static pthread_mutex_t g_busy_handlers_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_make_profile_busy_session_handler @ gateway/run.py:_make_profile_busy_session_handler */
+/* PoP: gw_make_profile_busy_session_handler @ gateway/run_adapters.py:_make_profile_busy_session_handler */
 /* Register the busy-session handler bound to *profile_name*. Returns 1 when
  * registered (new or existing binding). */
 int gw_make_profile_busy_session_handler(const char *profile_name) {
@@ -3141,14 +3141,14 @@ int gw_route_profile_busy_session(const char *source_profile,
     return found;
 }
 
-/* PoP: gw_get_heartbeat_manager_for_event @ gateway/run.py:_get_heartbeat_manager_for_event */
+/* PoP: gw_get_heartbeat_manager_for_event @ gateway/run_goals.py:_get_heartbeat_manager_for_event */
 void gw_get_heartbeat_manager_for_event(const char *session_id, char *out_session_id, size_t out_sz) {
     if (out_session_id && out_sz > 0) {
         snprintf(out_session_id, out_sz, "%s", session_id ? session_id : "");
     }
 }
 
-/* PoP: gw_start_heartbeat_poller @ gateway/run.py:_start_heartbeat_poller */
+/* PoP: gw_start_heartbeat_poller @ gateway/run_goals.py:_start_heartbeat_poller */
 /* Start the single gateway-wide heartbeat poll thread (idempotent).
  * Each tick: warm the goals session DB, then for every registered watch
  * whose session is not busy, check has_heartbeat(); drop watches without a
@@ -3229,7 +3229,7 @@ void gw_start_heartbeat_poller(void) {
     __atomic_store_n(&g_hb_poll_running, 1, __ATOMIC_SEQ_CST);
 }
 
-/* PoP: gw_busy_profile_name_for_source @ gateway/run.py:_busy_profile_name_for_source */
+/* PoP: gw_busy_profile_name_for_source @ gateway/run_config_loaders.py:_busy_profile_name_for_source */
 void gw_busy_profile_name_for_source(const char *source_profile, char *out, size_t out_sz) {
     if (out && out_sz > 0) {
         snprintf(out, out_sz, "%s", source_profile ? source_profile : "");

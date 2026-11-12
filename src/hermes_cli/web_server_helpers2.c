@@ -40,7 +40,7 @@ char *wbs_get_status(void) {
     return strdup("{\"status\": \"ok\"}");
 }
 
-/* PoP: wbs_get_sessions @ hermes_cli/web_server.py:get_sessions */
+/* PoP: wbs_get_sessions @ hermes_cli/web_routers/sessions.py:get_sessions */
 /* PoP: wbs_get_sessions @ hermes_cli/web_routers/sessions.py:get_sessions */
 char *wbs_get_sessions(bool archived, const char *index_json) {
     /* Python: list sessions; archived controls soft-archive handling. */
@@ -77,7 +77,7 @@ char *wbs_get_model_info(void) {
     return strdup("{}");
 }
 
-/* PoP: wbs_catalog_lookup @ hermes_cli/web_server.py:_catalog_lookup */
+/* PoP: wbs_catalog_lookup @ hermes_cli/web_routers/messaging.py:_catalog_lookup */
 char *wbs_catalog_lookup(const char *platform_id, const char *catalog_json) {
     /* Python: platform catalog entry by id. */
     if (!platform_id || !catalog_json) return NULL;
@@ -92,7 +92,7 @@ char *wbs_catalog_lookup(const char *platform_id, const char *catalog_json) {
     return strndup(open, (size_t)(close - open + 1));
 }
 
-/* PoP: wbs_cron_fire_webhook @ hermes_cli/web_server.py:cron_fire_webhook */
+/* PoP: wbs_cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
 /* PoP: wbs_cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
 char *wbs_cron_fire_webhook(const char *job_id) {
     /* Python: fire cron webhook. */
@@ -115,7 +115,7 @@ char *wbs_list_checkpoints(void) {
     return strdup("[]");
 }
 
-/* PoP: wbs_config_profile_scope @ hermes_cli/web_server.py:_config_profile_scope */
+/* PoP: wbs_config_profile_scope @ hermes_cli/web_server_profiles.py:_config_profile_scope */
 char *wbs_config_profile_scope(void) {
     /* Python: await-safe config-only profile scope. */
     printf("config profile scope resolved\n");

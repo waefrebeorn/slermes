@@ -93,7 +93,7 @@ long long hermes_state_append_message(hermes_state_db_t *db,
     return rowid;
 }
 
-/* PoP: hermes_state_rewind_to_message @ hermes_state.py:get_messages_around */
+/* PoP: hermes_state_rewind_to_message @ hermes_state_messages.py:get_messages_around */
 char *hermes_state_get_messages_around(hermes_state_db_t *db,
                                        const char *session_id,
                                        long long around_message_id,
@@ -175,7 +175,7 @@ char *hermes_state_get_messages_around(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: hermes_state_get_anchored_view @ hermes_state.py:get_anchored_view */
+/* PoP: hermes_state_get_anchored_view @ hermes_state_search.py:get_anchored_view */
 char *hermes_state_get_anchored_view(hermes_state_db_t *db,
                                      const char *session_id,
                                      long long around_message_id,
@@ -380,7 +380,7 @@ static json_t *hs_msg_to_json(sqlite3_stmt *st) {
     return o;
 }
 
-/* PoP: hermes_state_get_messages @ hermes_state.py:get_messages */
+/* PoP: hermes_state_get_messages @ hermes_state_messages.py:get_messages */
 char *hermes_state_get_messages(hermes_state_db_t *db, const char *session_id,
                                 bool include_inactive, long long limit, long long offset) {
     if (!db || !session_id) return strdup("[]");
@@ -404,9 +404,9 @@ char *hermes_state_get_messages(hermes_state_db_t *db, const char *session_id,
     return out;
 }
 
-/* PoP: hermes_state_get_messages_around @ hermes_state.py:get_messages_around */
+/* PoP: hermes_state_get_messages_around @ hermes_state_messages.py:get_messages_around */
 
-/* PoP: hermes_state_rewind_to_message @ hermes_state.py:rewind_to_message */
+/* PoP: hermes_state_rewind_to_message @ hermes_state_messages.py:rewind_to_message */
 char *hermes_state_rewind_to_message(hermes_state_db_t *db, const char *session_id,
                                      long long target_message_id) {
     /* Soft-delete all messages with id >= target (the target becomes
@@ -442,7 +442,7 @@ long long hermes_state_restore_rewound(hermes_state_db_t *db, const char *sessio
     return n;
 }
 
-/* PoP: hermes_state_list_recent_user_messages @ hermes_state.py:list_recent_user_messages */
+/* PoP: hermes_state_list_recent_user_messages @ hermes_state_search.py:list_recent_user_messages */
 char *hermes_state_list_recent_user_messages(hermes_state_db_t *db, const char *session_id,
                                              long long limit, bool include_inactive) {
     /* Newest-first user messages; preview = first 80 chars of content with
@@ -485,7 +485,7 @@ char *hermes_state_list_recent_user_messages(hermes_state_db_t *db, const char *
     return out;
 }
 
-/* PoP: hermes_state_clear_messages @ hermes_state.py:clear_messages */
+/* PoP: hermes_state_clear_messages @ hermes_state_messages.py:clear_messages */
 void hermes_state_clear_messages(hermes_state_db_t *db, const char *session_id) {
     if (!db || !session_id) return;
     sqlite3_stmt *d = NULL;
@@ -506,7 +506,7 @@ void hermes_state_clear_messages(hermes_state_db_t *db, const char *session_id) 
 /* ── conversation load / message replacement ───────────────────────────── */
 
 
-/* PoP: hermes_state_insert_message_rows @ hermes_state.py:_insert_message_rows */
+/* PoP: hermes_state_insert_message_rows @ hermes_state_messages.py:_insert_message_rows */
 char *hermes_state_insert_message_rows(hermes_state_db_t *db, const char *session_id,
                                        const char *messages_json) {
     /* Insert fresh active rows (21 columns mirroring Python); returns
@@ -561,7 +561,7 @@ char *hermes_state_insert_message_rows(hermes_state_db_t *db, const char *sessio
     return out;
 }
 
-/* PoP: hermes_state_replace_messages @ hermes_state.py:replace_messages */
+/* PoP: hermes_state_replace_messages @ hermes_state_messages.py:replace_messages */
 bool hermes_state_replace_messages(hermes_state_db_t *db, const char *session_id,
                                    const char *messages_json) {
     /* Atomically delete + reinsert in one transaction. */
@@ -599,7 +599,7 @@ bool hermes_state_archive_and_compact(hermes_state_db_t *db, const char *session
     return true;
 }
 
-/* PoP: hermes_state_describe_search_path @ hermes_state.py:_describe_search_path */
+/* PoP: hermes_state_describe_search_path @ hermes_state_search.py:_describe_search_path */
 char *hermes_state_describe_search_path(const char *query, bool fts_cjk_available) {
     /* Best-effort routing-path name for the search query (log-only):
      * empty / fts5 / cjk / unindexed. */

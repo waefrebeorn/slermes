@@ -245,7 +245,7 @@ char *browser_socket_safe_tmpdir(void)
     return strdup(tmpdir);
 }
 
-/* PoP: browser_create_local_session @ tools/browser_tool.py:_create_local_session */
+/* PoP: browser_create_local_session @ tools/browser_session.py:_create_local_session */
 json_t *browser_create_local_session(const char *task_id)
 {
     json_t *result = json_object();

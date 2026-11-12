@@ -17,7 +17,7 @@
 
 /* ── resource display helpers ────────────────────────────────────────── */
 
-/* PoP: acps_resource_display_name @ acp_adapter/server.py:_resource_display_name */
+/* PoP: acps_resource_display_name @ acp_adapter/content.py:_resource_display_name */
 void acps_resource_display_name(const char *uri, const char *name,
                                 const char *title, char *out, size_t out_sz) {
     if (title && *title) { snprintf(out, out_sz, "%s", title); return; }
@@ -31,7 +31,7 @@ void acps_resource_display_name(const char *uri, const char *name,
     snprintf(out, out_sz, "resource");
 }
 
-/* PoP: acps_is_text_resource @ acp_adapter/server.py:_is_text_resource */
+/* PoP: acps_is_text_resource @ acp_adapter/content.py:_is_text_resource */
 int acps_is_text_resource(const char *mime_type) {
     if (!mime_type) return 1; /* default text */
     return strncmp(mime_type, "text/", 5) == 0
@@ -41,7 +41,7 @@ int acps_is_text_resource(const char *mime_type) {
         || strstr(mime_type, "+xml") != NULL;
 }
 
-/* PoP: acps_is_image_resource @ acp_adapter/server.py:_is_image_resource */
+/* PoP: acps_is_image_resource @ acp_adapter/content.py:_is_image_resource */
 int acps_is_image_resource(const char *mime_type) {
     return mime_type && strncmp(mime_type, "image/", 6) == 0;
 }
@@ -64,7 +64,7 @@ void acps_guess_image_mime_from_path(const char *path, char *out, size_t out_sz)
     }
 }
 
-/* PoP: acps_path_from_file_uri @ acp_adapter/server.py:_path_from_file_uri */
+/* PoP: acps_path_from_file_uri @ acp_adapter/content.py:_path_from_file_uri */
 int acps_path_from_file_uri(const char *uri, char *out, size_t out_sz) {
     if (!uri || strncmp(uri, "file://", 7) != 0) return 0;
     const char *path = uri + 7;
@@ -75,7 +75,7 @@ int acps_path_from_file_uri(const char *uri, char *out, size_t out_sz) {
     return 1;
 }
 
-/* PoP: acps_decode_text_bytes @ acp_adapter/server.py:_decode_text_bytes */
+/* PoP: acps_decode_text_bytes @ acp_adapter/content.py:_decode_text_bytes */
 void acps_decode_text_bytes(const unsigned char *data, size_t len,
                             const char *mime_type, char *out, size_t out_sz) {
     (void)mime_type;

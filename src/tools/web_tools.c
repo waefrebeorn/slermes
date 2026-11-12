@@ -214,7 +214,7 @@ char **web_web_requires_env(int *out_count)
     return result;
 }
 
-/* PoP: web_get_extract_char_limit @ tools/web_tools.py:_get_extract_char_limit */
+/* PoP: web_get_extract_char_limit @ tools/web_tools_truncate.py:_get_extract_char_limit */
 int web_get_extract_char_limit(void)
 {
     /* Python: web.extract_char_limit from config, clamped to [2000, 500000],
@@ -233,14 +233,14 @@ int web_get_extract_char_limit(void)
     return v;
 }
 
-/* PoP: module @ tools/web_tools.py:convert_base64_images_to_links */
+/* PoP: module @ tools/web_tools_truncate.py:convert_base64_images_to_links */
 /* Delegate to the focused web_base64_img module (faithful POSIX-ERE port). */
 char *web_convert_base64_images_to_links(const char *text)
 {
     return web_base64_img_convert(text);
 }
 
-/* PoP: web_store_full_text @ tools/web_tools.py:_store_full_text */
+/* PoP: web_store_full_text @ tools/web_tools_truncate.py:_store_full_text */
 char *web_store_full_text(const char *url, const char *content)
 {
     if (!url || !content) return NULL;
@@ -250,7 +250,7 @@ char *web_store_full_text(const char *url, const char *content)
     return NULL;
 }
 
-/* PoP: web_truncate_with_footer @ tools/web_tools.py:_truncate_with_footer */
+/* PoP: web_truncate_with_footer @ tools/web_tools_truncate.py:_truncate_with_footer */
 bool web_truncate_with_footer(const char *content, const char *url, int char_limit,
                               char **out_text, bool *out_truncated)
 {
@@ -500,7 +500,7 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_web_tools_u_web_extract_url @ tools/web_tools.py:_web_extract_url */
+/* PoP: tools_web_tools_u_web_extract_url @ tools/web_tools_extract.py:_web_extract_url */
 int tools_web_tools_u_web_extract_url(const char *arg) {
     /* Python: dict url/href or str strip; None otherwise. Arg = "json_or_raw". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -570,7 +570,7 @@ bool web_tools_tavily_explicitly_configured(const json_t *cfg)
     return false;
 }
 
-/* PoP: _keyless_rescue_enabled @ tools/web_tools.py:_keyless_rescue_enabled
+/* PoP: _keyless_rescue_enabled @ tools/web_tools_rescue.py:_keyless_rescue_enabled
  * web.keyless_rescue (default on) AND web.keyless_fallback (tier itself).
  * keyless_tier_enabled is the LIVE registry verdict, passed in. */
 bool web_tools_keyless_rescue_enabled(const json_t *cfg,
@@ -582,7 +582,7 @@ bool web_tools_keyless_rescue_enabled(const json_t *cfg,
     return keyless_tier_enabled;
 }
 
-/* PoP: _rescue_eligible @ tools/web_tools.py:_rescue_eligible
+/* PoP: _rescue_eligible @ tools/web_tools_rescue.py:_rescue_eligible
  * Eligible: keyed/configured path (non-ring backend, or ring vendor in
  * keyed mode). NOT eligible: provider already went through the keyless
  * ring (re-walking would just repeat it), or rescue disabled. */
@@ -597,7 +597,7 @@ bool web_tools_rescue_eligible(const char *provider,
 
 /* ── policy-block + provider-readiness (web_tools closure, part 1) ─────── */
 
-/* PoP: _policy_blocked_result @ tools/web_tools.py:_policy_blocked_result
+/* PoP: _policy_blocked_result @ tools/web_tools_rescue.py:_policy_blocked_result
  * True when an extract result failed due to the user's website policy — an
  * intentional refusal, never a backend outage. Policy blocks must NOT be
  * rescued. */

@@ -136,7 +136,7 @@ static void b3_warn_normalized(hcli_t *self, const char *fmt,
     printf("%s\n", B3_RST);
 }
 
-/* PoP: hcli_normalize_model_for_provider @ cli.py:_normalize_model_for_provider */
+/* PoP: hcli_normalize_model_for_provider @ hermes_cli/cli_model_switch_mixin.py:_normalize_model_for_provider */
 bool hcli_normalize_model_for_provider(hcli_t *self, const char *resolved_provider)
 {
     if (!self) return false;
@@ -331,7 +331,7 @@ static char **b3_split_paragraphs(const char *text, size_t *out_n)
     return paras;
 }
 
-/* PoP: emit_reasoning_preview @ cli.py:_emit_reasoning_preview */
+/* PoP: emit_reasoning_preview @ hermes_cli/cli_stream_mixin.py:_emit_reasoning_preview */
 static void b3_emit_reasoning_preview(hcli_t *self, const char *reasoning_text)
 {
     if (!reasoning_text) return;
@@ -418,7 +418,7 @@ done:
 
 /* ── hcli_flush_reasoning_preview ───────────────────────────────────────── */
 
-/* PoP: hcli_flush_reasoning_preview @ cli.py:_flush_reasoning_preview */
+/* PoP: hcli_flush_reasoning_preview @ hermes_cli/cli_stream_mixin.py:_flush_reasoning_preview */
 void hcli_flush_reasoning_preview(hcli_t *self, bool force)
 {
     if (!self || !self->reasoning_preview_buf || !self->reasoning_preview_buf[0])
@@ -584,7 +584,7 @@ char *b3_format_user_preview(hcli_t *self, const char *user_input)
 
 /* ── hcli_print_user_message_preview ────────────────────────────────────── */
 
-/* PoP: hcli_print_user_message_preview @ cli.py:_print_user_message_preview */
+/* PoP: hcli_print_user_message_preview @ hermes_cli/cli_stream_mixin.py:_print_user_message_preview */
 void hcli_print_user_message_preview(hcli_t *self, const char *user_input)
 {
     char rule[41];
@@ -612,7 +612,7 @@ void hcli_print_user_message_preview(hcli_t *self, const char *user_input)
 
 /* ── hcli_stream_reasoning_delta ────────────────────────────────────────── */
 
-/* PoP: hcli_stream_reasoning_delta @ cli.py:_stream_reasoning_delta */
+/* PoP: hcli_stream_reasoning_delta @ hermes_cli/cli_stream_mixin.py:_stream_reasoning_delta */
 void hcli_stream_reasoning_delta(hcli_t *self, const char *text)
 {
     if (!self || !text || !text[0])
@@ -774,7 +774,7 @@ literal:
 
 /* ── hcli_inline_pastes ─────────────────────────────────────────────────── */
 
-/* PoP: hcli_inline_pastes @ cli.py:_inline_pastes */
+/* PoP: hcli_inline_pastes @ hermes_cli/cli_modal_mixin.py:_inline_pastes */
 void hcli_inline_pastes(hcli_t *self, char **buffer_text, size_t *cursor_position)
 {
     if (!self || !buffer_text || !*buffer_text)

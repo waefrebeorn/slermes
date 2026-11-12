@@ -32,9 +32,9 @@
  *  Real AES-128-ECB (PKCS7) via OpenSSL EVP. These were REAL_GAP.
  * =========================================================================== */
 
-/* PoP: _pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad */
+/* PoP: _pkcs7_pad @ plugins/platforms/weixin/adapter.py:_pkcs7_pad */
 /* Caller frees the returned buffer. Returns NULL on alloc failure. */
-/* PoP: weixin_pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad */
+/* PoP: weixin_pkcs7_pad @ plugins/platforms/weixin/adapter.py:_pkcs7_pad */
 unsigned char *weixin_pkcs7_pad(const unsigned char *data, size_t len, size_t *out_len)
 {
     size_t pad = 16 - (len % 16);
@@ -55,9 +55,9 @@ size_t weixin_aes_padded_size(size_t size)
 }
 
 
-/* PoP: _aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
+/* PoP: _aes128_ecb_encrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_encrypt */
 /* Encrypts PKCS7-padded plaintext with AES-128-ECB. Caller frees *out. */
-/* PoP: weixin_aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
+/* PoP: weixin_aes128_ecb_encrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_encrypt */
 int weixin_aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
                               const unsigned char *key, size_t key_len,
                               unsigned char **out, size_t *out_len)
@@ -85,9 +85,9 @@ int weixin_aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
 }
 
 
-/* PoP: _aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
+/* PoP: _aes128_ecb_decrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_decrypt */
 /* Decrypts AES-128-ECB and strips PKCS7 padding. Caller frees *out. */
-/* PoP: weixin_aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
+/* PoP: weixin_aes128_ecb_decrypt @ plugins/platforms/weixin/adapter.py:_aes128_ecb_decrypt */
 int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
                               const unsigned char *key, size_t key_len,
                               unsigned char **out, size_t *out_len)
@@ -119,9 +119,9 @@ int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
 }
 
 
-/* PoP: _safe_id @ gateway/platforms/weixin.py:_safe_id */
+/* PoP: _safe_id @ plugins/platforms/weixin/adapter.py:_safe_id */
 /* Strip non-printable / non-identifier chars for safe logging. */
-/* PoP: weixin_safe_id @ gateway/platforms/weixin.py:_safe_id */
+/* PoP: weixin_safe_id @ plugins/platforms/weixin/adapter.py:_safe_id */
 void weixin_safe_id(const char *in, char *out, size_t out_sz)
 {
     size_t o = 0;
@@ -154,8 +154,8 @@ void weixin_random_wechat_uin(char *out, size_t out_sz)
 
 /* ── Simple utility ports ───────────────────────────────────────────── */
 
-/* PoP: _check_weixin_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
-/* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
+/* PoP: _check_weixin_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
+/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
 bool weixin_check_requirements(void)
 {
     return true; /* C port: always available in compiled binary */
@@ -173,8 +173,8 @@ json_t *weixin_base_info(void)
 }
 
 
-/* PoP: _account_dir @ gateway/platforms/weixin.py:_account_dir */
-/* PoP: weixin_account_dir @ gateway/platforms/weixin.py:_account_dir */
+/* PoP: _account_dir @ plugins/platforms/weixin/adapter.py:_account_dir */
+/* PoP: weixin_account_dir @ plugins/platforms/weixin/adapter.py:_account_dir */
 char *weixin_account_dir(const char *hermes_home)
 {
     if (!hermes_home) return NULL;
@@ -203,7 +203,7 @@ char *weixin_account_file(const char *hermes_home, const char *account_id)
 }
 
 
-/* PoP: _parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
+/* PoP: _parse_aes_key @ plugins/platforms/weixin/adapter.py:_parse_aes_key */
 /* Decode a base64 AES key; accept 16 raw bytes or a 32-char hex string. */
 int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len)
 {

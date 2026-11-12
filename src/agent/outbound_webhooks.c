@@ -177,7 +177,7 @@ ow_webhook_target_t *ow_parse_single_target(int index, const json_t *raw) {
     return t;
 }
 
-/* PoP: ow_resolve_secret @ agent/outbound_webhooks.py:_resolve_secret */
+/* PoP: ow_resolve_secret @ plugins/dashboard_auth/basic/__init__.py:_resolve_secret */
 char *ow_resolve_secret(int index, const json_t *raw) {
     (void)index;
     if (!raw) return NULL;

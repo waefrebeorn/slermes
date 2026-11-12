@@ -484,14 +484,14 @@ char *compute_relative_dest(const char *skill_dir, const char *bundled_dir)
     return skills_sync_fs_compute_relative_dest(skill_dir, bundled_dir);
 }
 
-/* PoP: safe_rel_install_path @ tools/skills_sync.py:_safe_rel_install_path */
+/* PoP: safe_rel_install_path @ tools/skills_sync_optional.py:_safe_rel_install_path */
 /* Delegate to the focused skills_sync_fs module. */
 char *safe_rel_install_path(const char *path, const char *base)
 {
     return skills_sync_fs_safe_rel_install_path(path, base);
 }
 
-/* PoP: paths @ tools/skills_sync.py:_skill_file_list */
+/* PoP: paths @ tools/skills_sync_optional.py:_skill_file_list */
 /* Port of Python tools/skills_sync.py:_skill_file_list().
  * Lists files inside a skill directory in lock-file format.
  * Returns json_t* array of relative file paths (POSIX), or NULL on error. */
@@ -550,7 +550,7 @@ json_t *skill_file_list(const char *skill_dir)
     return arr;
 }
 
-/* PoP: string @ tools/skills_sync.py:_content_hash */
+/* PoP: string @ tools/skills_sync_optional.py:_content_hash */
 /* Port of Python tools/skills_sync.py:_content_hash().
  * Returns the same hash style the skills hub lock uses.
  * Returns malloc'd hex string (caller must free) or NULL on error. */
@@ -570,7 +570,7 @@ char *dir_hash(const char *directory)
     return skills_sync_fs_dir_hash(directory);
 }
 
-/* PoP: optional_skill_index @ tools/skills_sync.py:_optional_skill_index */
+/* PoP: optional_skill_index @ tools/skills_sync_optional.py:_optional_skill_index */
 /* Port of Python tools/skills_sync.py:_optional_skill_index().
  * Returns official optional skills keyed by folder name and frontmatter name.
  * Returns json_t* object mapping name -> {folder_name, install_path, source_dir}. */
@@ -671,7 +671,7 @@ json_t *optional_skill_index(void)
     return index;
 }
 
-/* PoP: string @ tools/skills_sync.py:_move_to_restore_backup */
+/* PoP: string @ tools/skills_sync_optional.py:_move_to_restore_backup */
 /* Port of Python tools/skills_sync.py:_move_to_restore_backup().
  * Moves an existing skill directory into a restore backup, preserving rel path.
  * Returns malloc'd string (caller must free) or NULL on error. */
@@ -730,7 +730,7 @@ char *move_to_restore_backup(const char *path, const char *backup_root)
     return strdup(rel);
 }
 
-/* PoP: restore_official_optional_skill @ tools/skills_sync.py:restore_official_optional_skill */
+/* PoP: restore_official_optional_skill @ tools/skills_sync_optional.py:restore_official_optional_skill */
 /* Port of Python tools/skills_sync.py:restore_official_optional_skill().
  * Restores one or all official optional skills from repo source.
  * Returns json_t* object with ok, message, restored, backfilled, backed_up arrays. */
@@ -857,7 +857,7 @@ json_t *restore_official_optional_skill(const char *name, bool restore)
     return result;
 }
 
-/* PoP: backfill_optional_provenance @ tools/skills_sync.py:_backfill_optional_provenance */
+/* PoP: backfill_optional_provenance @ tools/skills_sync_optional.py:_backfill_optional_provenance */
 /* Port of Python tools/skills_sync.py:_backfill_optional_provenance().
  * Marks already-present official optional skills as hub-installed.
  * Returns json_t* array of backfilled skill names. */
@@ -1334,7 +1334,7 @@ void rmtree_writable(const char *path)
     free(skills_resolved);
 }
 
-/* PoP: reset_bundled_skill @ tools/skills_sync.py:reset_bundled_skill */
+/* PoP: reset_bundled_skill @ tools/skills_sync_bundled_ops.py:reset_bundled_skill */
 /* Port of Python tools/skills_sync.py:reset_bundled_skill().
  * Resets a bundled skill's manifest tracking so future syncs work normally. */
 json_t *reset_bundled_skill(const char *name, bool restore)
@@ -1434,7 +1434,7 @@ json_t *reset_bundled_skill(const char *name, bool restore)
     return result;
 }
 
-/* PoP: set_bundled_skills_opt_out @ tools/skills_sync.py:set_bundled_skills_opt_out */
+/* PoP: set_bundled_skills_opt_out @ tools/skills_sync_bundled_ops.py:set_bundled_skills_opt_out */
 /* Port of Python tools/skills_sync.py:set_bundled_skills_opt_out().
  * Toggles the .no-bundled-skills opt-out marker for the active profile. */
 json_t *set_bundled_skills_opt_out(bool enabled)
@@ -1495,7 +1495,7 @@ bool is_bundled_skills_opt_out(void)
     return access(marker, F_OK) == 0;
 }
 
-/* PoP: remove_pristine_bundled_skills @ tools/skills_sync.py:remove_pristine_bundled_skills */
+/* PoP: remove_pristine_bundled_skills @ tools/skills_sync_bundled_ops.py:remove_pristine_bundled_skills */
 /* Port of Python tools/skills_sync.py:remove_pristine_bundled_skills().
  * Deletes bundled skills that are present, manifest-tracked, AND unmodified. */
 json_t *remove_pristine_bundled_skills(bool dry_run)
@@ -1584,7 +1584,7 @@ json_t *remove_pristine_bundled_skills(bool dry_run)
 
 /* ── tools/skills_sync.py gap functions ──────────────────────────── */
 
-/* PoP: skillsync_index_installed_skill_dirs_by_name @ tools/skills_sync.py:_index_installed_skill_dirs_by_name */
+/* PoP: skillsync_index_installed_skill_dirs_by_name @ tools/skills_sync_optional.py:_index_installed_skill_dirs_by_name */
 char *skillsync_index_installed_skill_dirs_by_name(const char *arg) {
     /* Python: index installed skills by directory name with one active-tree
      * scan. Arg = "index_json" (JSON object: dirname -> [paths]). */
@@ -1604,7 +1604,7 @@ char *skillsync_find_installed_skill_dir_by_name(const char *arg) {
     return tab && tab[1] ? strdup(tab + 1) : NULL;
 }
 
-/* PoP: skillsync_read_hub_install_paths @ tools/skills_sync.py:_read_hub_install_paths */
+/* PoP: skillsync_read_hub_install_paths @ tools/skills_sync_optional.py:_read_hub_install_paths */
 char *skillsync_read_hub_install_paths(const char *arg) {
     /* Python: install paths recorded in the skills-hub lock, as POSIX strings.
      * Arg = "paths_json" (JSON array of install paths). */

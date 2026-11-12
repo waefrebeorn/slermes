@@ -1089,7 +1089,7 @@ char *auth_reset_config_provider(void)
     return strdup(path);
 }
 
-/* PoP: auth_save_model_choice @ hermes_cli/auth.py:_save_model_choice */
+/* PoP: auth_save_model_choice @ hermes_cli/auth_model_picker.py:_save_model_choice */
 void auth_save_model_choice(const char *model_id)
 {
     if (!model_id || !*model_id) return;
@@ -1135,7 +1135,7 @@ auth_verify_t auth_default_verify(void)
     return v;
 }
 
-/* PoP: auth_resolve_verify @ hermes_cli/auth.py:_resolve_verify */
+/* PoP: auth_resolve_verify @ hermes_cli/auth_device_flow.py:_resolve_verify */
 auth_verify_t auth_resolve_verify(const char *insecure_opt, const char *ca_bundle,
                                   const json_t *auth_state)
 {
@@ -1196,7 +1196,7 @@ bool auth_oauth_trace_enabled(void)
     return truthy_str(getenv("HERMES_OAUTH_TRACE"), false);
 }
 
-/* PoP: auth_oauth_trace @ hermes_cli/auth.py:_oauth_trace */
+/* PoP: auth_oauth_trace @ hermes_cli/auth_nous.py:_oauth_trace */
 void auth_oauth_trace(const char *event, const char *sequence_id, const json_t *fields)
 {
     if (!auth_oauth_trace_enabled()) return;
@@ -1219,13 +1219,13 @@ void auth_oauth_trace(const char *event, const char *sequence_id, const json_t *
 
 /* _optional_base_url: reuse _optional_base_url() from auth_helpers.c */
 
-/* PoP: auth_nous_inference_env_override @ hermes_cli/auth.py:_nous_inference_env_override */
+/* PoP: auth_nous_inference_env_override @ hermes_cli/auth_nous.py:_nous_inference_env_override */
 char *auth_nous_inference_env_override(void)
 {
     return _optional_base_url(getenv("NOUS_INFERENCE_BASE_URL"));
 }
 
-/* PoP: auth_nous_portal_env_override @ hermes_cli/auth.py:_nous_portal_env_override */
+/* PoP: auth_nous_portal_env_override @ hermes_cli/auth_nous.py:_nous_portal_env_override */
 char *auth_nous_portal_env_override(void)
 {
     const char *v = getenv("HERMES_PORTAL_BASE_URL");
@@ -1258,7 +1258,7 @@ static bool url_hostname(const char *url, char *buf, size_t sz, char *scheme, si
     return i > 0;
 }
 
-/* PoP: auth_validate_nous_inference_url_from_network @ hermes_cli/auth.py:_validate_nous_inference_url_from_network */
+/* PoP: auth_validate_nous_inference_url_from_network @ hermes_cli/auth_nous.py:_validate_nous_inference_url_from_network */
 char *auth_validate_nous_inference_url_from_network(const char *url)
 {
     if (!url) return NULL;
@@ -1287,7 +1287,7 @@ char *auth_validate_nous_inference_url_from_network(const char *url)
     return strdup(cleaned);
 }
 
-/* PoP: auth_migrate_stale_nous_portal_url @ hermes_cli/auth.py:_migrate_stale_nous_portal_url */
+/* PoP: auth_migrate_stale_nous_portal_url @ hermes_cli/auth_nous.py:_migrate_stale_nous_portal_url */
 void auth_migrate_stale_nous_portal_url(json_t *providers)
 {
     if (!providers || providers->type != JSON_OBJECT) return;
@@ -1321,7 +1321,7 @@ static int auth_coerce_ttl_seconds_json(const json_t *expires_in)
     return ttl > 0 ? (int)ttl : 0;
 }
 
-/* PoP: auth_codex_access_token_is_expiring @ hermes_cli/auth.py:_codex_access_token_is_expiring */
+/* PoP: auth_codex_access_token_is_expiring @ hermes_cli/auth_codex.py:_codex_access_token_is_expiring */
 bool auth_codex_access_token_is_expiring(const char *access_token, int skew_seconds)
 {
     char *payload = auth_decode_jwt_payload(access_token);
@@ -1333,7 +1333,7 @@ bool auth_codex_access_token_is_expiring(const char *access_token, int skew_seco
     return exp <= ((double)time(NULL) + skew);
 }
 
-/* PoP: auth_qwen_access_token_is_expiring @ hermes_cli/auth.py:_qwen_access_token_is_expiring */
+/* PoP: auth_qwen_access_token_is_expiring @ hermes_cli/auth_qwen.py:_qwen_access_token_is_expiring */
 bool auth_qwen_access_token_is_expiring(const char *expiry_date_ms, int skew_seconds)
 {
     if (!expiry_date_ms || !*expiry_date_ms) return true;
@@ -1344,7 +1344,7 @@ bool auth_qwen_access_token_is_expiring(const char *expiry_date_ms, int skew_sec
     return ((double)time(NULL) + skew) * 1000.0 >= (double)expiry_ms;
 }
 
-/* PoP: auth_nous_jwt_expires_at @ hermes_cli/auth.py:_nous_jwt_expires_at */
+/* PoP: auth_nous_jwt_expires_at @ hermes_cli/auth_nous.py:_nous_jwt_expires_at */
 char *auth_nous_jwt_expires_at(const char *token, const char *fallback_expires_at)
 {
     char *payload = auth_decode_jwt_payload(token);
@@ -1365,7 +1365,7 @@ char *auth_nous_jwt_expires_at(const char *token, const char *fallback_expires_a
     return fallback_expires_at ? strdup(fallback_expires_at) : NULL;
 }
 
-/* PoP: auth_nous_invoke_jwt_is_usable @ hermes_cli/auth.py:_nous_invoke_jwt_is_usable */
+/* PoP: auth_nous_invoke_jwt_is_usable @ hermes_cli/auth_nous.py:_nous_invoke_jwt_is_usable */
 bool auth_nous_invoke_jwt_is_usable(const char *token, const char *scope,
                                     const char *expires_at, int min_ttl_seconds)
 {
@@ -1375,7 +1375,7 @@ bool auth_nous_invoke_jwt_is_usable(const char *token, const char *scope,
     return usable;
 }
 
-/* PoP: auth_assert_nous_inference_jwt_usable @ hermes_cli/auth.py:_assert_nous_inference_jwt_usable */
+/* PoP: auth_assert_nous_inference_jwt_usable @ hermes_cli/auth_nous.py:_assert_nous_inference_jwt_usable */
 auth_error_t *auth_assert_nous_inference_jwt_usable(const json_t *state, const char *access_token)
 {
     const char *token = access_token;
@@ -1408,7 +1408,7 @@ void auth_log_nous_invoke_jwt_selected(const char *access_token, const char *seq
     json_free(fields);
 }
 
-/* PoP: auth_set_nous_agent_key_from_invoke_jwt @ hermes_cli/auth.py:_set_nous_agent_key_from_invoke_jwt */
+/* PoP: auth_set_nous_agent_key_from_invoke_jwt @ hermes_cli/auth_nous.py:_set_nous_agent_key_from_invoke_jwt */
 void auth_set_nous_agent_key_from_invoke_jwt(json_t *state, const char *obtained_at)
 {
     if (!state || state->type != JSON_OBJECT) return;
@@ -1463,7 +1463,7 @@ void auth_set_nous_agent_key_from_invoke_jwt(json_t *state, const char *obtained
     free(expires_at);
 }
 
-/* PoP: auth_select_nous_invoke_jwt @ hermes_cli/auth.py:_select_nous_invoke_jwt */
+/* PoP: auth_select_nous_invoke_jwt @ hermes_cli/auth_nous.py:_select_nous_invoke_jwt */
 void auth_select_nous_invoke_jwt(json_t *state, const char *access_token,
                                  const char *sequence_id)
 {
@@ -1477,7 +1477,7 @@ void auth_select_nous_invoke_jwt(json_t *state, const char *access_token,
     auth_log_nous_invoke_jwt_selected(json_get_str(state, "access_token", NULL), sequence_id);
 }
 
-/* PoP: auth_nous_effective_provider_state @ hermes_cli/auth.py:_nous_effective_provider_state */
+/* PoP: auth_nous_effective_provider_state @ hermes_cli/auth_nous.py:_nous_effective_provider_state */
 json_t *auth_nous_effective_provider_state(const json_t *state)
 {
     json_t *out = json_new_object();
@@ -1491,7 +1491,7 @@ json_t *auth_nous_effective_provider_state(const json_t *state)
     return out;
 }
 
-/* PoP: auth_agent_key_is_usable @ hermes_cli/auth.py:_agent_key_is_usable */
+/* PoP: auth_agent_key_is_usable @ hermes_cli/auth_nous.py:_agent_key_is_usable */
 bool auth_agent_key_is_usable(const json_t *state, int min_ttl_seconds)
 {
     if (!state || state->type != JSON_OBJECT) return false;
@@ -1507,7 +1507,7 @@ bool auth_agent_key_is_usable(const json_t *state, int min_ttl_seconds)
         min_ttl_seconds > 0 ? min_ttl_seconds : 0);
 }
 
-/* PoP: auth_empty_nous_auth_status @ hermes_cli/auth.py:_empty_nous_auth_status */
+/* PoP: auth_empty_nous_auth_status @ hermes_cli/auth_nous.py:_empty_nous_auth_status */
 json_t *auth_empty_nous_auth_status(void)
 {
     json_t *s = json_new_object();
@@ -1568,7 +1568,7 @@ bool auth_is_terminal_codex_oauth_refresh_error(const char *provider, const char
 
 extern void hermes_get_home(char *buf, size_t sz);   /* hermes_core_types.h */
 
-/* PoP: auth_nous_shared_auth_dir @ hermes_cli/auth.py:_nous_shared_auth_dir */
+/* PoP: auth_nous_shared_auth_dir @ hermes_cli/auth_nous.py:_nous_shared_auth_dir */
 static char *auth_nous_shared_auth_dir(void)
 {
     const char *override = getenv("HERMES_SHARED_AUTH_DIR");
@@ -1595,7 +1595,7 @@ static char *auth_nous_shared_auth_dir(void)
     return out;
 }
 
-/* PoP: auth_nous_shared_store_path_py @ hermes_cli/auth.py:_nous_shared_store_path */
+/* PoP: auth_nous_shared_store_path_py @ hermes_cli/auth_nous.py:_nous_shared_store_path */
 char *auth_nous_shared_store_path_py(void)
 {
     char *dir = auth_nous_shared_auth_dir();
@@ -1606,7 +1606,7 @@ char *auth_nous_shared_store_path_py(void)
     return out;
 }
 
-/* PoP: auth_nous_shared_store_lock_py @ hermes_cli/auth.py:_nous_shared_store_lock */
+/* PoP: auth_nous_shared_store_lock_py @ hermes_cli/auth_nous.py:_nous_shared_store_lock */
 static int auth_nous_shared_store_lock_py(double timeout_seconds, char **out_lock_path)
 {
     *out_lock_path = NULL;
@@ -1629,7 +1629,7 @@ static void auth_nous_shared_store_unlock_py(char *lock_path)
     free(lock_path);
 }
 
-/* PoP: auth_read_shared_nous_state @ hermes_cli/auth.py:_read_shared_nous_state */
+/* PoP: auth_read_shared_nous_state @ hermes_cli/auth_nous.py:_read_shared_nous_state */
 json_t *auth_read_shared_nous_state(void)
 {
     char *path = auth_nous_shared_store_path_py();
@@ -1655,7 +1655,7 @@ json_t *auth_read_shared_nous_state(void)
     return payload;
 }
 
-/* PoP: auth_write_shared_nous_state @ hermes_cli/auth.py:_write_shared_nous_state */
+/* PoP: auth_write_shared_nous_state @ hermes_cli/auth_nous.py:_write_shared_nous_state */
 void auth_write_shared_nous_state(const json_t *state)
 {
     if (!state || state->type != JSON_OBJECT) return;
@@ -1739,7 +1739,7 @@ void auth_write_shared_nous_state(const json_t *state)
     json_free(shared);
 }
 
-/* PoP: auth_clear_shared_nous_state @ hermes_cli/auth.py:_clear_shared_nous_state */
+/* PoP: auth_clear_shared_nous_state @ hermes_cli/auth_nous.py:_clear_shared_nous_state */
 void auth_clear_shared_nous_state(const char *reason)
 {
     char *lock_path = NULL;
@@ -1753,7 +1753,7 @@ void auth_clear_shared_nous_state(const char *reason)
     json_free(fields);
 }
 
-/* PoP: auth_merge_shared_nous_oauth_state @ hermes_cli/auth.py:_merge_shared_nous_oauth_state */
+/* PoP: auth_merge_shared_nous_oauth_state @ hermes_cli/auth_nous.py:_merge_shared_nous_oauth_state */
 bool auth_merge_shared_nous_oauth_state(json_t *state)
 {
     if (!state || state->type != JSON_OBJECT) return false;
@@ -1816,7 +1816,7 @@ bool auth_merge_shared_nous_oauth_state(json_t *state)
 /* _is_terminal_nous_refresh_error: reuse auth_is_terminal_nous_refresh_error()
  * from port_auth_helpers.c (int signature). */
 
-/* PoP: auth_quarantine_nous_oauth_state @ hermes_cli/auth.py:_quarantine_nous_oauth_state */
+/* PoP: auth_quarantine_nous_oauth_state @ hermes_cli/auth_nous.py:_quarantine_nous_oauth_state */
 void auth_quarantine_nous_oauth_state(json_t *state, const auth_error_t *error,
                                       const char *reason)
 {
@@ -1893,7 +1893,7 @@ void auth_quarantine_nous_oauth_state(json_t *state, const auth_error_t *error,
     auth_invalidate_nous_auth_status_cache();
 }
 
-/* PoP: auth_quarantine_nous_pool_entries @ hermes_cli/auth.py:_quarantine_nous_pool_entries */
+/* PoP: auth_quarantine_nous_pool_entries @ hermes_cli/auth_nous.py:_quarantine_nous_pool_entries */
 bool auth_quarantine_nous_pool_entries(json_t *auth_store, const auth_error_t *error,
                                        const char *reason)
 {

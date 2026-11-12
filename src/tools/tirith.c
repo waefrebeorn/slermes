@@ -28,7 +28,7 @@
 #define TIRITH_VERSION "1.0.0"
 #define MAX_PATH 4096
 
-/* PoP: _env_bool @ tools/tirith_security.py:_env_bool */
+/* PoP: _env_bool @ plugins/platforms/discord/adapter.py:_env_bool */
 static bool _env_bool(const char *key, bool default_val) {
     const char *val = getenv(key);
     if (!val) return default_val;
@@ -105,7 +105,7 @@ void _reset_spawn_warning_state(void) {
     pthread_mutex_unlock(&g_warn_once.lock);
 }
 
-/* PoP: _failure_marker_path @ tools/tirith_security.py:_get_hermes_home */
+/* PoP: _failure_marker_path @ cron/scheduler.py:_get_hermes_home */
 static const char* _get_hermes_home(void) {
     static char buf[MAX_PATH];
     if (buf[0] == '\0') {

@@ -19,7 +19,7 @@
 #include "hermes_web_server_pure.h"
 
 /* ── _ws_close_reason ───────────────────────────────────────────────────── */
-/* PoP: ws_events_close_reason @ hermes_cli/web_server.py:_ws_close_reason */
+/* PoP: ws_events_close_reason @ hermes_cli/web_server_chat.py:_ws_close_reason */
 char *ws_events_close_reason(const char *text) {
     if (!text) return strdup("");
     size_t len = strlen(text);
@@ -57,7 +57,7 @@ char *ws_events_close_reason(const char *text) {
 }
 
 /* ── _resolve_client_ws_host ────────────────────────────────────────────── */
-/* PoP: ws_events_resolve_client_host @ hermes_cli/web_server.py:_resolve_client_ws_host */
+/* PoP: ws_events_resolve_client_host @ hermes_cli/web_server_chat.py:_resolve_client_ws_host */
 char *ws_events_resolve_client_host(const char *bound_host) {
     const char *explicit_host = getenv("HERMES_DASHBOARD_WS_HOST");
     if (explicit_host) {
@@ -108,7 +108,7 @@ static void netloc_for(char *dst, size_t cap, const char *host, int port) {
         snprintf(dst, cap, "%s:%d", host, port);
 }
 
-/* PoP: ws_events_build_gateway_ws_url @ hermes_cli/web_server.py:_build_gateway_ws_url */
+/* PoP: ws_events_build_gateway_ws_url @ hermes_cli/web_server_chat.py:_build_gateway_ws_url */
 char *ws_events_build_gateway_ws_url(const char *bound_host, int bound_port,
                                      bool auth_required,
                                      const char *session_token,
@@ -134,7 +134,7 @@ char *ws_events_build_gateway_ws_url(const char *bound_host, int bound_port,
     return url;
 }
 
-/* PoP: ws_events_build_sidecar_url @ hermes_cli/web_server.py:_build_sidecar_url */
+/* PoP: ws_events_build_sidecar_url @ hermes_cli/web_server_chat.py:_build_sidecar_url */
 char *ws_events_build_sidecar_url(const char *bound_host, int bound_port,
                                   bool auth_required,
                                   const char *session_token,
@@ -226,7 +226,7 @@ static void maybe_evict(ws_event_registry_t *reg, channel_t *c) {
     if (*pp) { *pp = c->next; channel_free(c); }
 }
 
-/* PoP: ws_event_subscribe @ hermes_cli/web_server.py:events_ws */
+/* PoP: ws_event_subscribe @ hermes_cli/web_routers/chat_ws.py:events_ws */
 int ws_event_subscribe(ws_event_registry_t *reg, const char *channel,
                        ws_event_send_fn send, void *sub_ctx) {
     if (!reg || !channel) return -1;
@@ -244,7 +244,7 @@ int ws_event_subscribe(ws_event_registry_t *reg, const char *channel,
     return id;
 }
 
-/* PoP: ws_event_unsubscribe @ hermes_cli/web_server.py:events_ws */
+/* PoP: ws_event_unsubscribe @ hermes_cli/web_routers/chat_ws.py:events_ws */
 void ws_event_unsubscribe(ws_event_registry_t *reg, const char *channel,
                           int sub_id) {
     if (!reg || !channel) return;
@@ -261,7 +261,7 @@ void ws_event_unsubscribe(ws_event_registry_t *reg, const char *channel,
     maybe_evict(reg, c);
 }
 
-/* PoP: ws_event_publisher_connect @ hermes_cli/web_server.py:pub_ws */
+/* PoP: ws_event_publisher_connect @ hermes_cli/web_routers/chat_ws.py:pub_ws */
 void ws_event_publisher_connect(ws_event_registry_t *reg, const char *channel) {
     if (!reg || !channel) return;
     char *ok = web_channel_or_close_code(channel);
@@ -271,7 +271,7 @@ void ws_event_publisher_connect(ws_event_registry_t *reg, const char *channel) {
     c->publisher_live = true;
 }
 
-/* PoP: ws_event_publisher_disconnect @ hermes_cli/web_server.py:pub_ws */
+/* PoP: ws_event_publisher_disconnect @ hermes_cli/web_routers/chat_ws.py:pub_ws */
 void ws_event_publisher_disconnect(ws_event_registry_t *reg,
                                    const char *channel) {
     if (!reg || !channel) return;
@@ -281,7 +281,7 @@ void ws_event_publisher_disconnect(ws_event_registry_t *reg,
     maybe_evict(reg, c);
 }
 
-/* PoP: ws_event_broadcast @ hermes_cli/web_server.py:_broadcast_event */
+/* PoP: ws_event_broadcast @ hermes_cli/web_routers/chat_ws.py:_broadcast_event */
 int ws_event_broadcast(ws_event_registry_t *reg, const char *channel,
                        const char *payload) {
     if (!reg || !channel) return 0;
@@ -351,7 +351,7 @@ void ws_session_files_free(ws_session_files_t *sf) {
     free(sf);
 }
 
-/* PoP: ws_session_file_for_channel @ hermes_cli/web_server.py:_active_session_file_for_channel */
+/* PoP: ws_session_file_for_channel @ hermes_cli/web_server_chat.py:_active_session_file_for_channel */
 char *ws_session_file_for_channel(ws_session_files_t *sf, const char *channel) {
     if (!sf || !channel) return NULL;
     for (sf_entry_t *e = sf->head; e; e = e->next)
@@ -393,7 +393,7 @@ void ws_session_file_forget(ws_session_files_t *sf, const char *channel) {
 }
 
 /* ── theme CSS escape ───────────────────────────────────────────────────── */
-/* PoP: ws_events_theme_css_esc @ hermes_cli/web_server.py:_esc */
+/* PoP: ws_events_theme_css_esc @ hermes_cli/web_server_dashboard.py:_esc */
 char *ws_events_theme_css_esc(const char *s) {
     if (!s) return strdup("");
     size_t len = strlen(s), extra = 0;

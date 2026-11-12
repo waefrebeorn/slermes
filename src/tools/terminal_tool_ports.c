@@ -64,7 +64,7 @@ static const char *SUPPORTED_VERCEL_RUNTIME_LIST[] = {
 };
 #define WORKDIR_SAFE_ASCII_CHARS "/\\:_-.~ +@=,"
 
-/* PoP: termtool_is_supported_vercel_runtime @ tools/terminal_tool.py:_is_supported_vercel_runtime */
+/* PoP: termtool_is_supported_vercel_runtime @ tools/terminal_tool_backends.py:_is_supported_vercel_runtime */
 int termtool_is_supported_vercel_runtime(const char *runtime) {
     /* Python: not runtime or runtime in _SUPPORTED_VERCEL_RUNTIMES. */
     if (!runtime || !runtime[0]) { printf("1\n"); return 1; }
@@ -96,7 +96,7 @@ int termtool_check_vercel_sandbox_requirements(const char *arg) {
     return 1;
 }
 
-/* PoP: termtool_is_safe_workdir_char @ tools/terminal_tool.py:_is_safe_workdir_char */
+/* PoP: termtool_is_safe_workdir_char @ tools/terminal_tool_guards.py:_is_safe_workdir_char */
 int termtool_is_safe_workdir_char(const char *arg) {
     /* Python: allowlist check — reject control chars/NUL; accept alnum +
      * safe ASCII. Arg = single char (as string). */

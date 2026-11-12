@@ -181,7 +181,7 @@ char *skills_hub_inspect_petdex(const char *identifier)
 static const char *skills_cache_dir = NULL;
 
 /* Port of Python: _read_cache */
-/* PoP: skills_hub_read_cache @ tools/skills_hub.py:_read_cache */
+/* PoP: skills_hub_read_cache @ agent/image_token_cost.py:_read_cache */
 char *skills_hub_read_cache(const char *key)
 {
     if (!key || !skills_cache_dir) return NULL;
@@ -195,7 +195,7 @@ char *skills_hub_read_cache(const char *key)
 }
 
 /* Port of Python: _write_cache */
-/* PoP: skills_hub_write_cache @ tools/skills_hub.py:_write_cache */
+/* PoP: skills_hub_write_cache @ hermes_cli/source_check.py:_write_cache */
 bool skills_hub_write_cache(const char *key, const char *content)
 {
     if (!key || !skills_cache_dir) return false;
@@ -247,7 +247,7 @@ char *skills_hub_parse_frontmatter_quick(const char *content)
  * ================================================================ */
 
 /* Port of Python: _query_to_index_url */
-/* PoP: skills_hub_query_to_index_url @ tools/skills_hub.py:_query_to_index_url */
+/* PoP: skills_hub_query_to_index_url @ tools/skills_hub_sources.py:_query_to_index_url */
 char *skills_hub_query_to_index_url(const char *query)
 {
     if (!query) return strdup("https://index.hermes.ai/search?q=");
@@ -271,7 +271,7 @@ char *skills_hub_parse_identifier(const char *identifier)
 }
 
 /* Port of Python: _parse_index */
-/* PoP: skills_hub_parse_index @ tools/skills_hub.py:_parse_index */
+/* PoP: skills_hub_parse_index @ tools/skills_hub_sources.py:_parse_index */
 char *skills_hub_parse_index(const char *json_str)
 {
     if (!json_str) return strdup("[]");
@@ -279,7 +279,7 @@ char *skills_hub_parse_index(const char *json_str)
 }
 
 /* Port of Python: _index_entry */
-/* PoP: skills_hub_index_entry @ tools/skills_hub.py:_index_entry */
+/* PoP: skills_hub_index_entry @ tools/skills_hub_sources.py:_index_entry */
 char *skills_hub_index_entry(const char *slug, const char *name)
 {
     if (!slug || !name) return strdup("{}");
@@ -296,7 +296,7 @@ char *skills_hub_index_entry(const char *slug, const char *name)
  * ================================================================ */
 
 /* Port of Python: _fetch_text */
-/* PoP: skills_hub_fetch_text @ tools/skills_hub.py:_fetch_text */
+/* PoP: skills_hub_fetch_text @ tools/skills_hub_models.py:_fetch_text */
 char *skills_hub_fetch_text(const char *url)
 {
     if (!url) return strdup("");
@@ -330,13 +330,13 @@ bool skills_hub_matches(const char *query, const char *text)
  * ================================================================ */
 
 /* Port of Python: _is_valid_skill_name */
-/* PoP: skills_hub_is_valid_skill_name @ tools/skills_hub.py:_is_valid_skill_name */
+/* PoP: skills_hub_is_valid_skill_name @ tools/skills_hub_sources.py:_is_valid_skill_name */
 bool skills_hub_is_valid_skill_name(const char *name)
 {
     return hub_validate_skill_name(name);
 }
 
-/* PoP: names @ tools/skills_hub.py:_is_valid_skill_name */
+/* PoP: names @ tools/skills_hub_sources.py:_is_valid_skill_name */
 /* SkillSource._is_valid_skill_name: strip + lowercase the candidate, reject
  * empty / reserved names (skill, readme, index, unnamed-skill), then match
  * ^[a-z][a-z0-9_-]*$. NOTE: distinct from the module-level
@@ -373,7 +373,7 @@ static bool source_is_valid_skill_name(const char *name)
 }
 
 /* Port of Python: _resolve_skill_name */
-/* PoP: skills_hub_resolve_skill_name @ tools/skills_hub.py:_resolve_skill_name */
+/* PoP: skills_hub_resolve_skill_name @ tools/skills_hub_sources.py:_resolve_skill_name */
 /* Pick a skill name from frontmatter or URL. Returns NULL when neither
  * source produces a valid identifier — callers then prompt or refuse
  * (a clean failure beats a useless auto-name like "SKILL"). Caller frees. */
@@ -460,7 +460,7 @@ char *skills_hub_resolve_skill_name(json_t *fm, const char *url)
 /* Port of Python: _discover_identifier */
 
 /* Port of Python: _resolve_github_meta */
-/* PoP: skills_hub_resolve_github_meta @ tools/skills_hub.py:_resolve_github_meta */
+/* PoP: skills_hub_resolve_github_meta @ tools/skills_hub_skillssh.py:_resolve_github_meta */
 char *skills_hub_resolve_github_meta(const char *repo)
 {
     if (!repo) return strdup("{}");
@@ -518,7 +518,7 @@ char *skills_hub_strip_html(const char *text)
 }
 
 /* Port of Python: _normalize_identifier */
-/* PoP: skills_hub_normalize_identifier @ tools/skills_hub.py:_normalize_identifier */
+/* PoP: skills_hub_normalize_identifier @ tools/skills_hub_skillssh.py:_normalize_identifier */
 char *skills_hub_normalize_identifier(const char *identifier)
 {
     if (!identifier) return strdup("");
@@ -526,7 +526,7 @@ char *skills_hub_normalize_identifier(const char *identifier)
 }
 
 /* Port of Python: _candidate_identifiers */
-/* PoP: skills_hub_candidate_identifiers @ tools/skills_hub.py:_candidate_identifiers */
+/* PoP: skills_hub_candidate_identifiers @ tools/skills_hub_skillssh.py:_candidate_identifiers */
 char *skills_hub_candidate_identifiers(const char *query)
 {
     if (!query) return strdup("[]");
@@ -556,7 +556,7 @@ char *skills_hub_wrap_identifier_v2(const char *identifier, const char *source)
  * ================================================================ */
 
 /* Port of Python: _query_terms */
-/* PoP: skills_hub_query_terms @ tools/skills_hub.py:_query_terms */
+/* PoP: skills_hub_query_terms @ tools/skills_hub_clawhub.py:_query_terms */
 char *skills_hub_query_terms(const char *query)
 {
     if (!query) return strdup("[]");
@@ -630,7 +630,7 @@ char *skills_hub_query_terms(const char *query)
  * ================================================================ */
 
 /* Port of Python: _resolve_skill_md_url */
-/* PoP: skills_hub_resolve_skill_md_url @ tools/skills_hub.py:_resolve_skill_md_url */
+/* PoP: skills_hub_resolve_skill_md_url @ tools/skills_hub_sources.py:_resolve_skill_md_url */
 char *skills_hub_resolve_skill_md_url(const char *identifier)
 {
     if (!identifier) return strdup("");
@@ -803,7 +803,7 @@ static char *xstrdup(const char *s) {
 }
 
 /* ── _validate_skill_name (L226) ── */
-/* PoP: skills_hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name */
+/* PoP: skills_hub_validate_skill_name @ tools/skills_hub_models.py:_validate_skill_name */
 char *skills_hub_validate_skill_name(const char *name) {
     if (!name || !*name) return NULL;
     /* Must be a single path component (no slashes) */
@@ -816,7 +816,7 @@ char *skills_hub_validate_skill_name(const char *name) {
 }
 
 /* ── _normalize_bundle_path (L195) ── */
-/* PoP: skills_hub_normalize_bundle_path @ tools/skills_hub.py:_normalize_bundle_path */
+/* PoP: skills_hub_normalize_bundle_path @ tools/skills_hub_models.py:_normalize_bundle_path */
 char *skills_hub_normalize_bundle_path(const char *path_value) {
     if (!path_value || !*path_value) return NULL;
     /* Strip whitespace */
@@ -901,7 +901,7 @@ void skills_hub_audit_log(char *out, size_t out_sz) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_skills_hub_u_referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
+/* PoP: tools_skills_hub_u_referenced_support_paths @ tools/skills_hub_models.py:_referenced_support_paths */
 int tools_skills_hub_u_referenced_support_paths(const char *arg) {
     /* Python: safe referenced paths or None on traversal. Arg =
      * "state\tpaths" (state: ok/traversal). */
@@ -913,7 +913,7 @@ int tools_skills_hub_u_referenced_support_paths(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_skills_hub_source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
+/* PoP: tools_skills_hub_source_url_for_bundle @ tools/skills_hub_models.py:source_url_for_bundle */
 int tools_skills_hub_source_url_for_bundle(const char *arg) {
     /* Python: explicit source_url/url; github identifier -> tree URL. Arg =
      * "source\tidentifier\texplicit". */
@@ -955,7 +955,7 @@ int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_skills_hub_u_fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
+/* PoP: tools_skills_hub_u_fetch_file_bytes @ tools/skills_hub_github.py:_fetch_file_bytes */
 int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
     /* Python: raw bytes from GitHub contents API. Arg = "repo\tpath". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -967,7 +967,7 @@ int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_skills_hub_u_fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
+/* PoP: tools_skills_hub_u_fetch_bytes @ tools/skills_hub_models.py:_fetch_bytes */
 int tools_skills_hub_u_fetch_bytes(const char *arg) {
     /* Python: guarded HTTP GET 200 -> content. Arg = "url\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -981,7 +981,7 @@ int tools_skills_hub_u_fetch_bytes(const char *arg) {
 /* PoP: tools_skills_hub_u_find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
 int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
 
-/* PoP: tools_skills_hub_u_parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
+/* PoP: tools_skills_hub_u_parse_frontmatter @ tools/skills_hub_models.py:_parse_frontmatter */
 int tools_skills_hub_u_parse_frontmatter(const char *arg) {
     /* Python: YAML frontmatter -> dict. Arg = "has_fm\tparsed\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }

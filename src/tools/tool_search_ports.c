@@ -45,7 +45,7 @@ long ts_estimate_tokens_from_schemas(const char *tool_defs_json) {
     return (long)(strlen(tool_defs_json) / 4);
 }
 
-/* PoP: ts_entry_search_text @ tools/tool_search.py:_entry_search_text */
+/* PoP: ts_entry_search_text @ tools/tool_search_catalog.py:_entry_search_text */
 char *ts_entry_search_text(const char *tool_json) {
     /* Python: name + description blob. */
     if (!tool_json) return strdup("");

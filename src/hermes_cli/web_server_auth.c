@@ -93,7 +93,7 @@ bool ws_has_valid_session_token(const char *headers) {
  * trusted (no gate); any non-loopback bind always requires an auth
  * provider. `allow_public` is accepted for backward-compat but ignored —
  * a non-loopback bind ALWAYS engages the gate. */
-/* PoP: ws_should_require_auth @ hermes_cli/web_server.py:should_require_auth */
+/* PoP: ws_should_require_auth @ hermes_cli/web_server_boundary.py:should_require_auth */
 bool ws_should_require_auth(const char *host, bool allow_public) {
     (void)allow_public; /* legacy escape hatch, intentionally ignored */
     if (!host) return true;
@@ -106,7 +106,7 @@ bool ws_should_require_auth(const char *host, bool allow_public) {
  * interface. 0.0.0.0 / :: binds opt into all-interfaces (no Host-layer
  * defence possible); loopback binds accept the loopback aliases; explicit
  * non-loopback binds require an exact host match. */
-/* PoP: ws_is_accepted_host @ hermes_cli/web_server.py:_is_accepted_host */
+/* PoP: ws_is_accepted_host @ hermes_cli/web_server_boundary.py:_is_accepted_host */
 bool ws_is_accepted_host(const char *host_header, const char *bound_host) {
     if (!host_header || !bound_host) return false;
 

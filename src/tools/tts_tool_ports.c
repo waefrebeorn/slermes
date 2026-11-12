@@ -24,7 +24,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: tts_get_env_value @ tools/tts_tool.py:get_env_value */
+/* PoP: tts_get_env_value @ hermes_cli/config.py:get_env_value */
 char *tts_get_env_value(const char *key, const char *env_val) {
     /* Python: read through live config module (test-patchable). */
     if (env_val && *env_val) return strdup(env_val);
@@ -35,7 +35,7 @@ char *tts_get_env_value(const char *key, const char *env_val) {
     return NULL;
 }
 
-/* PoP: tts_config_bool @ tools/tts_tool.py:_config_bool */
+/* PoP: tts_config_bool @ tools/tts_tool_providers.py:_config_bool */
 bool tts_config_bool(const char *value, bool default_value) {
     /* Python: bool passthrough; YAML/env spellings; else default. */
     if (!value) return default_value;
@@ -51,7 +51,7 @@ bool tts_config_bool(const char *value, bool default_value) {
     return r;
 }
 
-/* PoP: tts_resolve_max_text_length @ tools/tts_tool.py:_resolve_max_text_length */
+/* PoP: tts_resolve_max_text_length @ tools/tts_tool_delivery.py:_resolve_max_text_length */
 long tts_resolve_max_text_length(const char *provider_config_json, const char *provider) {
     /* Python: tts.<provider>.max_text_length → default. */
     if (!provider) return 4000;
@@ -100,14 +100,14 @@ char *tts_get_named_provider_config(const char *tts_config_json, const char *nam
     return out ? out : strdup("{}");
 }
 
-/* PoP: tts_plugin_provider_is_voice_compatible @ tools/tts_tool.py:_plugin_provider_is_voice_compatible */
+/* PoP: tts_plugin_provider_is_voice_compatible @ tools/tts_tool_plugins.py:_plugin_provider_is_voice_compatible */
 bool tts_plugin_provider_is_voice_compatible(const char *plugin_json) {
     /* Python: voice_compatible property opt-in. */
     if (!plugin_json) return false;
     return tts_config_bool(plugin_json, false);
 }
 
-/* PoP: tts_iter_command_providers @ tools/tts_tool.py:_iter_command_providers */
+/* PoP: tts_iter_command_providers @ tools/tts_command_provider.py:_iter_command_providers */
 char *tts_iter_command_providers(const char *tts_config_json) {
     /* Python: yield (name, config) for command-type providers. */
     if (!tts_config_json) return strdup("[]");
@@ -155,7 +155,7 @@ char *tts_iter_command_providers(const char *tts_config_json) {
     return out;
 }
 
-/* PoP: tts_get_command_tts_output_format @ tools/tts_tool.py:_get_command_tts_output_format */
+/* PoP: tts_get_command_tts_output_format @ tools/tts_command_provider.py:_get_command_tts_output_format */
 char *tts_get_command_tts_output_format(const char *config_json, const char *output_path) {
     /* Python: suffix from output_path; else config; validated mp3/wav/ogg/flac. */
     if (output_path) {
@@ -174,7 +174,7 @@ char *tts_get_command_tts_output_format(const char *config_json, const char *out
     return strdup("wav");
 }
 
-/* PoP: tts_is_command_tts_voice_compatible @ tools/tts_tool.py:_is_command_tts_voice_compatible */
+/* PoP: tts_is_command_tts_voice_compatible @ tools/tts_command_provider.py:_is_command_tts_voice_compatible */
 bool tts_is_command_tts_voice_compatible(const char *config_json) {
     /* Python: explicit voice_compatible opt-in only. */
     if (!config_json) return false;
@@ -257,7 +257,7 @@ char *tts_run_command_tts(const char *command, const char *output_path, double t
     return output_path ? strdup(output_path) : NULL;
 }
 
-/* PoP: tts_configured_command_tts_output_path @ tools/tts_tool.py:_configured_command_tts_output_path */
+/* PoP: tts_configured_command_tts_output_path @ tools/tts_command_provider.py:_configured_command_tts_output_path */
 char *tts_configured_command_tts_output_path(const char *config_json) {
     /* Python: temp path w/ provider output_format extension. */
     char *fmt = tts_get_command_tts_output_format(config_json, NULL);
@@ -267,7 +267,7 @@ char *tts_configured_command_tts_output_path(const char *config_json) {
     return out;
 }
 
-/* PoP: tts_generate_command_tts @ tools/tts_tool.py:_generate_command_tts */
+/* PoP: tts_generate_command_tts @ tools/tts_command_provider.py:_generate_command_tts */
 char *tts_generate_command_tts(const char *text, const char *config_json) {
     /* Python: run command; return absolute audio path; raise on failure. */
     if (!text) return NULL;
@@ -315,7 +315,7 @@ char *tts_convert_to_opus(const char *mp3_path) {
     return out;
 }
 
-/* PoP: tts_generate_edge_tts @ tools/tts_tool.py:_generate_edge_tts */
+/* PoP: tts_generate_edge_tts @ tools/tts_tool_providers.py:_generate_edge_tts */
 char *tts_generate_edge_tts(const char *text, const char *voice, const char *output_path) {
     /* Python: Microsoft Edge TTS synthesis. */
     if (!text) return NULL;
@@ -328,7 +328,7 @@ bool tts_xai_bool_config(const char *value, bool default_value) {
     return tts_config_bool(value, default_value);
 }
 
-/* PoP: tts_generate_minimax_tts @ tools/tts_tool.py:_generate_minimax_tts */
+/* PoP: tts_generate_minimax_tts @ tools/tts_tool_providers.py:_generate_minimax_tts */
 char *tts_generate_minimax_tts(const char *text, const char *config_json, const char *output_path) {
     /* Python: v1/text_to_speech raw + v2 group_id audio. */
     if (!text) return NULL;
@@ -336,7 +336,7 @@ char *tts_generate_minimax_tts(const char *text, const char *config_json, const 
     return output_path ? strdup(output_path) : NULL;
 }
 
-/* PoP: tts_generate_mistral_tts @ tools/tts_tool.py:_generate_mistral_tts */
+/* PoP: tts_generate_mistral_tts @ tools/tts_tool_providers.py:_generate_mistral_tts */
 char *tts_generate_mistral_tts(const char *text, const char *config_json, const char *output_path) {
     /* Python: Voxtral base64 audio decode + write. */
     if (!text) return NULL;
@@ -344,7 +344,7 @@ char *tts_generate_mistral_tts(const char *text, const char *config_json, const 
     return output_path ? strdup(output_path) : NULL;
 }
 
-/* PoP: tts_wrap_pcm_as_wav @ tools/tts_tool.py:_wrap_pcm_as_wav */
+/* PoP: tts_wrap_pcm_as_wav @ tools/tts_tool_delivery.py:_wrap_pcm_as_wav */
 int tts_wrap_pcm_as_wav(const unsigned char *pcm, size_t pcm_len, const char *wav_path, long sample_rate) {
     /* Python: RIFF header + PCM data (L16 24kHz). */
     if (!pcm || !wav_path) return -1;
@@ -385,7 +385,7 @@ bool tts_gemini_model_supports_audio_tags(const char *model) {
     return r;
 }
 
-/* PoP: tts_gemini_audio_tags_enabled @ tools/tts_tool.py:_gemini_audio_tags_enabled */
+/* PoP: tts_gemini_audio_tags_enabled @ tools/tts_tool_providers.py:_gemini_audio_tags_enabled */
 bool tts_gemini_audio_tags_enabled(const char *gemini_config_json) {
     /* Python: audio_tags dict → enabled key. */
     if (!gemini_config_json) return false;
@@ -431,7 +431,7 @@ char *tts_extract_auxiliary_message_content(const char *response_json) {
     return strdup("");
 }
 
-/* PoP: tts_rewrite_gemini_tts_audio_tags @ tools/tts_tool.py:_rewrite_gemini_tts_audio_tags */
+/* PoP: tts_rewrite_gemini_tts_audio_tags @ tools/tts_tool_providers.py:_rewrite_gemini_tts_audio_tags */
 char *tts_rewrite_gemini_tts_audio_tags(const char *text, const char *config_json) {
     /* Python: auxiliary model inserts expressive audio tags. */
     if (!text) return strdup("");
@@ -439,7 +439,7 @@ char *tts_rewrite_gemini_tts_audio_tags(const char *text, const char *config_jso
     return strdup(text);
 }
 
-/* PoP: tts_compose_gemini_tts_prompt @ tools/tts_tool.py:_compose_gemini_tts_prompt */
+/* PoP: tts_compose_gemini_tts_prompt @ tools/tts_tool_providers.py:_compose_gemini_tts_prompt */
 char *tts_compose_gemini_tts_prompt(const char *persona_prompt, const char *text) {
     /* Python: persona + live transcript composition. */
     if (!text) return strdup("");
@@ -449,7 +449,7 @@ char *tts_compose_gemini_tts_prompt(const char *persona_prompt, const char *text
     return out;
 }
 
-/* PoP: tts_generate_gemini_tts @ tools/tts_tool.py:_generate_gemini_tts */
+/* PoP: tts_generate_gemini_tts @ tools/tts_tool_providers.py:_generate_gemini_tts */
 char *tts_generate_gemini_tts(const char *text, const char *config_json, const char *output_path) {
     /* Python: generateContent w/ responseModalities AUDIO → 24kHz PCM wav. */
     if (!text) return NULL;
@@ -481,7 +481,7 @@ char *tts_default_neutts_ref_text(void) {
     return strdup("tools/neutts_samples/jo.txt");
 }
 
-/* PoP: tts_generate_neutts @ tools/tts_tool.py:_generate_neutts */
+/* PoP: tts_generate_neutts @ tools/tts_tool_local.py:_generate_neutts */
 char *tts_generate_neutts(const char *text, const char *ref_audio, const char *output_path) {
     /* Python: subprocess via neutts_synth.py (~500MB model off-loop). */
     if (!text) return NULL;
@@ -496,7 +496,7 @@ bool tts_check_piper_available(void) {
     return false;
 }
 
-/* PoP: tts_get_piper_voices_dir @ tools/tts_tool.py:_get_piper_voices_dir */
+/* PoP: tts_get_piper_voices_dir @ tools/tts_tool_local.py:_get_piper_voices_dir */
 char *tts_get_piper_voices_dir(const char *hermes_home) {
     /* Python: ~/.hermes/cache/piper-voices/. */
     char *out = NULL;
@@ -504,7 +504,7 @@ char *tts_get_piper_voices_dir(const char *hermes_home) {
     return out;
 }
 
-/* PoP: tts_generate_piper_tts @ tools/tts_tool.py:_generate_piper_tts */
+/* PoP: tts_generate_piper_tts @ tools/tts_tool_local.py:_generate_piper_tts */
 char *tts_generate_piper_tts(const char *text, const char *voice_path, const char *output_path) {
     /* Python: cached voice model, WAV out. */
     if (!text) return NULL;
@@ -512,7 +512,7 @@ char *tts_generate_piper_tts(const char *text, const char *voice_path, const cha
     return output_path ? strdup(output_path) : NULL;
 }
 
-/* PoP: tts_generate_kittentts @ tools/tts_tool.py:_generate_kittentts */
+/* PoP: tts_generate_kittentts @ tools/tts_tool_local.py:_generate_kittentts */
 char *tts_generate_kittentts(const char *text, const char *model_path, const char *output_path) {
     /* Python: ONNX in-process inference. */
     if (!text) return NULL;
@@ -529,14 +529,14 @@ bool tts_has_openai_audio_backend(void) {
 
 /* ── Response reading helpers ────────────────────────────────────────────── */
 
-/* PoP: tts_response_has_explicit_stream @ tools/tts_tool.py:_response_has_explicit_stream */
+/* PoP: tts_response_has_explicit_stream @ tools/tts_tool_providers.py:_response_has_explicit_stream */
 bool tts_response_has_explicit_stream(const void *response) {
     /* Python: checks if response has callable iter_content or is a
      * requests.Response. In C, we check for a marker field. */
     return response != NULL;
 }
 
-/* PoP: tts_close_response @ tools/tts_tool.py:_close_response */
+/* PoP: tts_close_response @ tools/tts_tool_providers.py:_close_response */
 void tts_close_response(void *response) {
     /* Python: call response.close() if callable. Best-effort. */
     if (!response) return;
@@ -547,7 +547,7 @@ void tts_close_response(void *response) {
 #define TTS_RESPONSE_BODY_LIMIT_BYTES (16 * 1024 * 1024)
 #define TTS_RESPONSE_BODY_CHUNK_BYTES (64 * 1024)
 
-/* PoP: tts_read_tts_response_bytes @ tools/tts_tool.py:_read_tts_response_bytes */
+/* PoP: tts_read_tts_response_bytes @ tools/tts_tool_providers.py:_read_tts_response_bytes */
 void *tts_read_tts_response_bytes(const void *response, const char *label,
                                   size_t limit, size_t *out_len) {
     /* Python: read response body with hard byte cap.
@@ -566,7 +566,7 @@ void *tts_read_tts_response_bytes(const void *response, const char *label,
     return strdup(buf);
 }
 
-/* PoP: tts_read_tts_response_json @ tools/tts_tool.py:_read_tts_response_json */
+/* PoP: tts_read_tts_response_json @ tools/tts_tool_providers.py:_read_tts_response_json */
 char *tts_read_tts_response_json(const void *response, const char *label,
                                  size_t limit) {
     /* Python: parse response bytes as JSON dict. */
@@ -617,7 +617,7 @@ char *tts_resolve_provider_key(const char *env_var, const char *provider_id) {
 
 /* ── ElevenLabs environment ──────────────────────────────────────────────── */
 
-/* PoP: tts_elevenlabs_environment_kwargs @ tools/tts_tool.py:_elevenlabs_environment_kwargs */
+/* PoP: tts_elevenlabs_environment_kwargs @ tools/tts_tool_providers.py:_elevenlabs_environment_kwargs */
 char *tts_elevenlabs_environment_kwargs(const char *el_config_json) {
     /* Python: build ElevenLabsEnvironment kwargs if base_url set. */
     if (!el_config_json) return strdup("{}");
@@ -664,7 +664,7 @@ char *tts_elevenlabs_environment_kwargs(const char *el_config_json) {
 
 /* ── MiniMax TTS runtime resolution ──────────────────────────────────────── */
 
-/* PoP: tts_resolve_minimax_tts_runtime @ tools/tts_tool.py:_resolve_minimax_tts_runtime */
+/* PoP: tts_resolve_minimax_tts_runtime @ tools/tts_tool_providers.py:_resolve_minimax_tts_runtime */
 char *tts_resolve_minimax_tts_runtime(const char *tts_config_json) {
     /* Python: select region (global/cn), endpoint, credential. */
     if (!tts_config_json) return strdup("{\"region\":\"global\",\"endpoint\":\"\",\"key\":\"\"}");
@@ -731,7 +731,7 @@ static const char *sniff_container_magic(const unsigned char *head, size_t len) 
     return "unknown";
 }
 
-/* PoP: tts_sniff_audio_container @ tools/tts_tool.py:_sniff_audio_container */
+/* PoP: tts_sniff_audio_container @ tools/tts_tool_delivery.py:_sniff_audio_container */
 const char *tts_sniff_audio_container(const char *path) {
     /* Python: read 12-byte magic from file, delegate to sniff_container. */
     if (!path) return "unknown";
@@ -772,7 +772,7 @@ char *tts_ffmpeg_transcode_to_opus(const char *input_path, const char *ogg_path)
     return out;
 }
 
-/* PoP: tts_repair_ogg_container @ tools/tts_tool.py:_repair_ogg_container */
+/* PoP: tts_repair_ogg_container @ tools/tts_tool_delivery.py:_repair_ogg_container */
 char *tts_repair_ogg_container(const char *file_str) {
     /* Python: ensure .ogg actually contains Ogg; transcode or rename. */
     if (!file_str) return NULL;
@@ -799,7 +799,7 @@ char *tts_repair_ogg_container(const char *file_str) {
 
 #define TTS_MODEL_CACHE_MAX 3
 
-/* PoP: tts_cache_get_or_load @ tools/tts_tool.py:_tts_cache_get_or_load */
+/* PoP: tts_cache_get_or_load @ tools/tts_tool_local.py:_tts_cache_get_or_load */
 void *tts_cache_get_or_load(void *cache, const char *key,
                             void *(*load)(void *), void *load_ctx) {
     /* Python: LRU-bounded get-or-load. cache is a JSON object (insertion-

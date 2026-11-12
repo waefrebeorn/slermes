@@ -47,12 +47,12 @@ char *_tenv(const char *key) {
     return strdup(val ? val : "");
 }
 
-/* PoP: _docker_sandbox_dir_candidates @ gateway/platforms/base.py:_docker_sandbox_dir_candidates */
+/* PoP: _docker_sandbox_dir_candidates @ gateway/platforms/docker_media_paths.py:_docker_sandbox_dir_candidates */
 char *_docker_sandbox_dir_candidates(void) {
     return strdup("[]");
 }
 
-/* PoP: _default_docker_workspace_host_roots @ gateway/platforms/base.py:_default_docker_workspace_host_roots */
+/* PoP: _default_docker_workspace_host_roots @ gateway/platforms/docker_media_paths.py:_default_docker_workspace_host_roots */
 char *_default_docker_workspace_host_roots(void) {
     return strdup("[]");
 }

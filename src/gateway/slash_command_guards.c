@@ -24,7 +24,7 @@ const char *slash_typed_command_prefix_for(const char *adapter_prefix) {
     return "/";
 }
 
-/* PoP: slash_same_matrix_room @ gateway/slash_commands.py:_same_matrix_room */
+/* PoP: slash_same_matrix_room @ gateway/slash_commands_session.py:_same_matrix_room */
 bool slash_same_matrix_room(const gw_session_source_t *current,
                             const gw_session_source_t *origin) {
     if (origin == NULL || current == NULL) return false;
@@ -38,7 +38,7 @@ bool slash_same_matrix_room(const gw_session_source_t *current,
     return true;
 }
 
-/* PoP: slash_same_origin_chat @ gateway/slash_commands.py:_same_origin_chat */
+/* PoP: slash_same_origin_chat @ gateway/slash_commands_session.py:_same_origin_chat */
 bool slash_same_origin_chat(const gw_session_source_t *current,
                             const gw_session_source_t *origin,
                             bool group_sessions_per_user,

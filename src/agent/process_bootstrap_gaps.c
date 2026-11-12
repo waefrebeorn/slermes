@@ -9,7 +9,7 @@
 
 /* ── agent/process_bootstrap.py: 8 missing functions ── */
 
-/* PoP: _happy_eyeballs_create_connection @ agent/process_bootstrap.py:_happy_eyeballs_create_connection */
+/* PoP: _happy_eyeballs_create_connection @ hermes_bootstrap.py:_happy_eyeballs_create_connection */
 void *_happy_eyeballs_create_connection(void) { return NULL; }
 
 /* PoP: _default_backend @ agent/process_bootstrap.py:_default_backend */

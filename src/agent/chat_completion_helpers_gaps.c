@@ -12,7 +12,7 @@
 /* PoP: _provider_stream_error_from_text @ agent/chat_completion_helpers.py:_provider_stream_error_from_text */
 char *_provider_stream_error_from_text(void) { return strdup(""); }
 
-/* PoP: _managed_local_load_notice @ agent/chat_completion_helpers.py:_managed_local_load_notice */
+/* PoP: _managed_local_load_notice @ agent/chat_completion_local.py:_managed_local_load_notice */
 char *_managed_local_load_notice(void) { return strdup(""); }
 
 

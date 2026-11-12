@@ -689,7 +689,7 @@ char *cli_agent_copilot_acp_client__create_chat_completion(
     return prompt;
 }
 
-/* PoP: cli_agent_copilot_acp_client__run_prompt @ agent/copilot_acp_client.py:_run_prompt */
+/* PoP: cli_agent_copilot_acp_client__run_prompt @ agent/acp_client.py:_run_prompt */
 
 /* Port of Python agent/copilot_acp_client.py:_run_prompt */
 /* Run a prompt through the Copilot ACP subprocess. */
@@ -718,7 +718,7 @@ int cli_agent_copilot_acp_client__run_prompt(
     return -1;
 }
 
-/* PoP: cli_agent_copilot_acp_client__handle_server_message @ agent/copilot_acp_client.py:_handle_server_message */
+/* PoP: cli_agent_copilot_acp_client__handle_server_message @ agent/acp_client.py:_handle_server_message */
 
 /* Port of Python agent/copilot_acp_client.py:_handle_server_message */
 /* Handle a server message from the Copilot ACP session. */

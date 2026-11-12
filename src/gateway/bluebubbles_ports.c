@@ -198,7 +198,7 @@ char *bb_handle_webhook(const char *query_json) {
  * the provided default). */
 extern const char *secret_scope_get_secret(const char *name, const char *default_val);
 
-/* PoP: bb_get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
+/* PoP: bb_get_scoped_secret @ plugins/platforms/buzz/adapter.py:_get_scoped_secret */
 char *bb_get_scoped_secret(const char *name, const char *default_value) {
     const char *val = secret_scope_get_secret(name, default_value);
     return val ? strdup(val) : (default_value ? strdup(default_value) : NULL);

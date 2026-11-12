@@ -488,7 +488,7 @@ int hermes_cli_skills_hub_do_snapshot_import(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_status_redact_key @ hermes_cli/status.py:redact_key */
+/* PoP: hermes_cli_status_redact_key @ hermes_cli/config.py:redact_key */
 /* PoP: commands_resolve @ hermes_cli/commands.py:resolve_command */
 /*
  * Port of Python hermes_cli commands: build_info.py, platforms.py,

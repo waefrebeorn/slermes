@@ -204,7 +204,7 @@ static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) 
 }
 
 
-/* PoP: _delete_ref @ tools/checkpoint_manager.py:_delete_ref */
+/* PoP: _delete_ref @ tools/checkpoint_maintenance.py:_delete_ref */
 static bool _delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
     _shadow_repo_path("", shadow, sizeof(shadow));
@@ -868,14 +868,14 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     return true;
 }
 
-/* PoP: maybe_auto_prune_checkpoints @ tools/checkpoint_manager.py:maybe_auto_prune_checkpoints */
+/* PoP: maybe_auto_prune_checkpoints @ tools/checkpoint_maintenance.py:maybe_auto_prune_checkpoints */
 void maybe_auto_prune_checkpoints(const char *store, const char *working_dir) {
     (void)store; (void)working_dir;
     /* Real pruning runs after each _take via _cm_prune / _cm_enforce_size_cap.
      * This standalone hook is intentionally a no-op. */
 }
 
-/* PoP: store_status @ tools/checkpoint_manager.py:store_status */
+/* PoP: store_status @ tools/checkpoint_maintenance.py:store_status */
 char *store_status(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -886,7 +886,7 @@ char *store_status(const char *checkpoint_base) {
     return r;
 }
 
-/* PoP: clear_all @ tools/checkpoint_manager.py:clear_all */
+/* PoP: clear_all @ tools/checkpoint_maintenance.py:clear_all */
 char *clear_all(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -1374,7 +1374,7 @@ int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
+/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ tools/checkpoint_maintenance.py:_workdir_is_observably_gone */
 int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     /* Python: 3-step corroboration. Arg =
      * "gone\tstate\tresult". */
@@ -1389,7 +1389,7 @@ int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
+/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ tools/checkpoint_maintenance.py:_dir_has_any_entry */
 int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     /* Python: scandir stops at first entry. Arg = directory. */
     if (!arg || !*arg) { printf("0\n"); return 0; }

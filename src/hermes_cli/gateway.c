@@ -775,7 +775,7 @@ bool stop_profile_gateway(void)
     return true;
 }
 
-/* PoP: ensure_gateway_service @ hermes_cli/gateway.py:ensure_gateway_service */
+/* PoP: ensure_gateway_service @ hermes_cli/gateway_setup_service.py:ensure_gateway_service */
 /* Install and start the gateway service without prompting.
  *
  * Zero-decision path used by setup/import: when this host supports a service
@@ -984,7 +984,7 @@ char **launchd_gateway_labels_for_install(size_t *out_n)
     return labels;
 }
 
-/* PoP: wait_for_launchd_gateway_supervision @ hermes_cli/gateway.py:wait_for_launchd_gateway_supervision */
+/* PoP: wait_for_launchd_gateway_supervision @ hermes_cli/gateway_launchd.py:wait_for_launchd_gateway_supervision */
 /* Poll launchd until it is supervising a live gateway process.
  *
  * Restart requests are asynchronous (self-restart handoff, detached plist

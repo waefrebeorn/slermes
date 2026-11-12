@@ -15,7 +15,7 @@ int _cua_install_lock_held(void) { return 0; }
 /* PoP: _cua_release_endpoint_reachable @ hermes_cli/tools_config.py:_cua_release_endpoint_reachable */
 int _cua_release_endpoint_reachable(void) { return 1; }
 
-/* PoP: _lightpanda_installed @ hermes_cli/tools_config.py:_lightpanda_installed */
+/* PoP: _lightpanda_installed @ hermes_cli/tools_config_post_setup.py:_lightpanda_installed */
 int _lightpanda_installed(void) { return 0; }
 
 /* PoP: _shared_metrics_state @ hermes_cli/tools_config.py:_shared_metrics_state */

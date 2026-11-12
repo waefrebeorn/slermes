@@ -294,7 +294,7 @@ void kdb_run_free(kanban_run_t *r)
     free(r);
 }
 
-/* PoP: kdb_run_outcome @ hermes_cli/kanban_db.py:outcome */
+/* PoP: kdb_run_outcome @ tools/voice_mode.py:outcome */
 const char *kdb_run_outcome(const kanban_run_t *r)   { return r ? r->outcome : NULL; }
 /* PoP: kdb_run_summary @ hermes_cli/kanban_db.py:summary */
 const char *kdb_run_summary(const kanban_run_t *r)   { return r ? r->summary : NULL; }

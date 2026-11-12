@@ -47,7 +47,7 @@ char *ckm_format_checkpoint_list(const char *checkpoints_json) {
     return strdup(checkpoints_json);
 }
 
-/* PoP: ckm_clear_legacy @ tools/checkpoint_manager.py:clear_legacy */
+/* PoP: ckm_clear_legacy @ tools/checkpoint_maintenance.py:clear_legacy */
 char *ckm_clear_legacy(const char *checkpoint_dir) {
     /* Python: delete legacy-* dirs — REAL. */
     if (!checkpoint_dir) return strdup("{\"bytes_freed\": 0}");

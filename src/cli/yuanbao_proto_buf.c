@@ -37,7 +37,7 @@ static void yb_append_byte(yb_buf *b, unsigned char c) { yb_reserve(b, 1); b->p[
 
 
 /* varint encode */
-/* PoP: _encode_varint @ gateway/platforms/yuanbao_proto.py:_encode_varint */
+/* PoP: _encode_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_varint */
 static void yb_append_varint(yb_buf *b, uint64_t v)
 {
     if ((int64_t)v < 0) v &= 0xFFFFFFFFFFFFFFFFULL;
@@ -51,7 +51,7 @@ static void yb_append_varint(yb_buf *b, uint64_t v)
 
 
 /* field tag = (field_number << 3) | wire_type, then value */
-/* PoP: _encode_field @ gateway/platforms/yuanbao_proto.py:_encode_field */
+/* PoP: _encode_field @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_field */
 static void yb_append_field(yb_buf *b, int fn, int wt, const unsigned char *val, size_t n)
 {
     yb_append_varint(b, (uint64_t)((fn << 3) | wt));
@@ -74,10 +74,10 @@ void yb_f_varint(yb_buf *b, int fn, uint64_t v)
 
 /* string field */
 
-/* PoP: _encode_string @ gateway/platforms/yuanbao_proto.py:_encode_string */void yb_f_str(yb_buf *b, int fn, const char *s)
+/* PoP: _encode_string @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_string */void yb_f_str(yb_buf *b, int fn, const char *s)
 { if (!s || !*s) return; size_t n = strlen(s); yb_append_varint(b, (uint64_t)((fn<<3)|WT_LEN)); yb_append_varint(b, n); yb_append(b, (const unsigned char*)s, n); }
 
 /* length-delimited from a sub-buffer (message/bytes wrapper) */
 
-/* PoP: _encode_message @ gateway/platforms/yuanbao_proto.py:_encode_message */void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
+/* PoP: _encode_message @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_message */void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
 { yb_f_len(b, fn, sub->p, sub->len); }

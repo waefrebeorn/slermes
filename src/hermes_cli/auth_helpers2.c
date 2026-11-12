@@ -52,7 +52,7 @@ char *ath_get_active_provider(const char *auth_store_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: ath_codex_pool_rate_limit_status @ hermes_cli/auth.py:_codex_pool_rate_limit_status */
+/* PoP: ath_codex_pool_rate_limit_status @ hermes_cli/auth_codex.py:_codex_pool_rate_limit_status */
 char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     /* Python: pool-only codex credential in quota cooldown. */
     if (!cred_json) return strdup("{}");
@@ -60,7 +60,7 @@ char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     return strdup(cred_json);
 }
 
-/* PoP: ath_xai_oauth_state_from_store @ hermes_cli/auth.py:_xai_oauth_state_from_store */
+/* PoP: ath_xai_oauth_state_from_store @ hermes_cli/auth_xai.py:_xai_oauth_state_from_store */
 char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     /* Python: usable xAI oauth from provider state or pool. */
     if (!auth_store_json) return NULL;
@@ -70,7 +70,7 @@ char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     return strdup("{}");
 }
 
-/* PoP: ath_xai_oauth_state_has_usable_tokens @ hermes_cli/auth.py:_xai_oauth_state_has_usable_tokens */
+/* PoP: ath_xai_oauth_state_has_usable_tokens @ hermes_cli/auth_xai.py:_xai_oauth_state_has_usable_tokens */
 bool ath_xai_oauth_state_has_usable_tokens(const char *state_json) {
     /* Python: tokens + access_token/refresh_token present. */
     if (!state_json) return false;
@@ -88,7 +88,7 @@ bool ath_profile_has_own_xai_oauth_state(const char *auth_store_json) {
     return strstr(p, "xai-oauth") != NULL;
 }
 
-/* PoP: ath_write_through_xai_oauth_to_global_root @ hermes_cli/auth.py:_write_through_xai_oauth_to_global_root */
+/* PoP: ath_write_through_xai_oauth_to_global_root @ hermes_cli/auth_xai.py:_write_through_xai_oauth_to_global_root */
 int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
     /* Python: persist rotated state into global-root auth.json.
      * REAL: merge providers.xai-oauth into ~/.hermes/auth.json. */
@@ -114,7 +114,7 @@ char *ath_auth_file_cache_key(const char *auth_file_path) {
     return out;
 }
 
-/* PoP: ath_nous_device_code_login @ hermes_cli/auth.py:_nous_device_code_login */
+/* PoP: ath_nous_device_code_login @ hermes_cli/auth_nous.py:_nous_device_code_login */
 char *ath_nous_device_code_login(void) {
     /* Python: full oauth state without persisting. */
     printf("nous device-code login (state returned, not persisted)\n");
@@ -128,7 +128,7 @@ bool ath_nous_token_has_billing_scope(const char *token_json) {
     return strstr(token_json, "billing:manage") != NULL;
 }
 
-/* PoP: ath_step_up_nous_billing_scope @ hermes_cli/auth.py:step_up_nous_billing_scope */
+/* PoP: ath_step_up_nous_billing_scope @ hermes_cli/auth_nous.py:step_up_nous_billing_scope */
 char *ath_step_up_nous_billing_scope(void) {
     /* Python: re-run device flow requesting billing:manage. */
     printf("nous device flow re-run (billing:manage requested)\n");
@@ -347,7 +347,7 @@ void ath_warn_malformed_secret(const char *provider_id, const char *source)
 
 /* Best-effort parse of a Retry-After header into whole seconds.
  *
- * PoP: ath_parse_retry_after_seconds @ hermes_cli/auth.py:_parse_retry_after_seconds */
+ * PoP: ath_parse_retry_after_seconds @ hermes_cli/auth_codex.py:_parse_retry_after_seconds */
 int ath_parse_retry_after_seconds(const char *raw_value)
 {
     int ok = 0;
@@ -363,7 +363,7 @@ int ath_parse_retry_after_seconds(const char *raw_value)
 /* _scope_values returns a SET: space/comma-separated string tokens plus
  * recursive collection support (JWT scp claims, stored fixtures), deduped.
  *
- * PoP: ath_scope_values @ hermes_cli/auth.py:_scope_values */
+ * PoP: ath_scope_values @ hermes_cli/auth_nous.py:_scope_values */
 char **ath_scope_values(const char *raw_scope, int *out_count);
 
 typedef struct { char **items; int n, cap; } scope_set;
@@ -579,7 +579,7 @@ char *get_active_provider_id_for_status(void)
  * to proceed, 0 to cancel. input_fn mirrors stdin input(); NULL uses a
  * non-interactive default of cancel ("N").
  *
- * PoP: ath_confirm_selection_guards @ hermes_cli/auth.py:_confirm_selection_guards */
+ * PoP: ath_confirm_selection_guards @ hermes_cli/auth_model_picker.py:_confirm_selection_guards */
 int ath_confirm_selection_guards(
     const char *model_id,
     const char *provider,

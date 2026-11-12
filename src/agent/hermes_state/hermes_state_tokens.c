@@ -34,7 +34,7 @@ void hermes_state_flush_token_counts(sqlite3 *conn, const char *session_id) {
     }
 }
 
-/* PoP: classify_session_status @ hermes_state.py:classify_session_status */
+/* PoP: classify_session_status @ hermes_state_sessions.py:classify_session_status */
 const char *hermes_state_classify_session_status(const char *role, int has_tool_calls, const char *finish_reason) {
     if (!role) return "empty";
     if (strcmp(role, "assistant") == 0) {

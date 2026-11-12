@@ -1151,9 +1151,9 @@ char *moa_mixture_of_agents_math(const char *user_prompt) {
 }
 
 /* Context-manager no-ops (Python __aenter__ / __aexit__ on MoAHttpClient). */
-/* PoP: moa_http_client_enter @ tools/mixture_of_agents_tool.py:__aenter__ */
+/* PoP: moa_http_client_enter @ hermes_cli/gateway_client.py:__aenter__ */
 void moa_http_client_enter(void) { /* session lifecycle handled by engine */ }
-/* PoP: moa_http_client_exit @ tools/mixture_of_agents_tool.py:__aexit__ */
+/* PoP: moa_http_client_exit @ hermes_cli/gateway_client.py:__aexit__ */
 void moa_http_client_exit(void) { /* no-op */ }
 
 /* ─── REGISTRY INTEGRATION ───────────────────────────────────────── */

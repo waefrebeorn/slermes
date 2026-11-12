@@ -47,7 +47,7 @@ const char *ws_path_status_str(ws_path_status_t s) {
 }
 
 /* ───────────────────────── ws_infer_type ──────────────────────────────── */
-/* PoP: ws_infer_type_bool @ hermes_cli/web_server.py:_infer_type */
+/* PoP: ws_infer_type_bool @ hermes_cli/web_server_config.py:_infer_type */
 const char *ws_infer_type_bool (bool   v) { (void)v; return "boolean"; }
 const char *ws_infer_type_int  (long   v) { (void)v; return "number";  }
 const char *ws_infer_type_f64  (double v) { (void)v; return "number";  }
@@ -228,7 +228,7 @@ void ws_schema_free(ws_schema_entry_t *arr, size_t n) {
 }
 
 /* ── ws_path_text ───────────────────────────────────────────────────── */
-/* PoP: ws_path_text_n @ hermes_cli/web_server.py:_path_text */
+/* PoP: ws_path_text_n @ hermes_cli/web_server_files.py:_path_text */
 ws_path_status_t ws_path_text_n(const char *raw, size_t raw_len,
                                 char *out, size_t cap)
 {
@@ -519,7 +519,7 @@ static const mime_pair_t k_mimetypes_fallback[] = {
     {".yml", "application/yaml"},
 };
 
-/* PoP: ws_fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
+/* PoP: ws_fs_mime_type @ hermes_cli/web_routers/files.py:_fs_mime_type */
 const char *ws_fs_mime_type(const char *path) {
     if (!path) return "application/octet-stream";
     /* Get the suffix (last '.' from the last '/'). Python: path.suffix.lower(). */
@@ -667,8 +667,8 @@ char *ws_fs_find_git_root(const char *start) {
  *     Python: strip; check NUL; expanduser(); resolve().
  *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
  */
-/* PoP: ws_fs_path @ hermes_cli.web_server.py:_fs_path */
-/* PoP: ws_fs_path @ hermes_cli/web_server.py:_fs_path */
+/* PoP: ws_fs_path @ hermes_cli/web_server_files.py:_fs_path */
+/* PoP: ws_fs_path @ hermes_cli/web_server_files.py:_fs_path */
 char *ws_fs_path(const char *raw_path) {
     if (!raw_path) return NULL;
     /* Strip whitespace */
@@ -788,7 +788,7 @@ char **ws_media_serve_roots(void) {
 /* ── ws_ensure_managed_root ──────────────────────────────────────────────────
  *     Returns 0 on success, -1 on error.
  */
-/* PoP: ws_ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root */
+/* PoP: ws_ensure_managed_root @ hermes_cli/web_server_files.py:_ensure_managed_root */
 int ws_ensure_managed_root(const char *path) {
     if (!path || !*path) return -1;
     /* Expand user */

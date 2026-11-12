@@ -103,7 +103,7 @@ static bool key_isalnumish(const char *s) {
 }
 
 /* ── _parse_theme_layer ─────────────────────────────────────────────────── */
-/* PoP: ws_theme_parse_layer @ hermes_cli/web_server.py:_parse_theme_layer */
+/* PoP: ws_theme_parse_layer @ hermes_cli/web_server_dashboard.py:_parse_theme_layer */
 json_t *ws_theme_parse_layer(const json_t *value, const char *default_hex,
                              double default_alpha) {
     if (!value || value->type == JSON_NULL) {
@@ -169,7 +169,7 @@ static json_t *theme_layer(const json_t *palette_src, const json_t *colors_src,
     return o;
 }
 
-/* PoP: ws_theme_normalise_definition @ hermes_cli/web_server.py:_normalise_theme_definition */
+/* PoP: ws_theme_normalise_definition @ hermes_cli/web_server_dashboard.py:_normalise_theme_definition */
 json_t *ws_theme_normalise_definition(const json_t *data) {
     if (!data || data->type != JSON_OBJECT) return NULL;
     json_t *name_v = json_object_get((json_t *)data, "name");
@@ -390,7 +390,7 @@ json_t *ws_theme_normalise_definition(const json_t *data) {
 }
 
 /* ── builtin list ───────────────────────────────────────────────────────── */
-/* PoP: ws_theme_builtin_list @ hermes_cli/web_server.py:get_dashboard_themes */
+/* PoP: ws_theme_builtin_list @ hermes_cli/web_routers/dashboard_ui.py:get_dashboard_themes */
 json_t *ws_theme_builtin_list(void) {
     json_t *arr = json_array();
     for (size_t i = 0; i < N_BUILTIN; i++) {
@@ -409,7 +409,7 @@ static int cmp_str(const void *a, const void *b) {
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
 
-/* PoP: ws_theme_discover_user_themes @ hermes_cli/web_server.py:_discover_user_themes */
+/* PoP: ws_theme_discover_user_themes @ hermes_cli/web_server_dashboard.py:_discover_user_themes */
 json_t *ws_theme_discover_user_themes(const char *home) {
     json_t *result = json_array();
     char dirpath[1024];
@@ -457,7 +457,7 @@ json_t *ws_theme_discover_user_themes(const char *home) {
 }
 
 /* ── get_dashboard_themes response ──────────────────────────────────────── */
-/* PoP: ws_theme_dashboard_themes_response @ hermes_cli/web_server.py:get_dashboard_themes */
+/* PoP: ws_theme_dashboard_themes_response @ hermes_cli/web_routers/dashboard_ui.py:get_dashboard_themes */
 json_t *ws_theme_dashboard_themes_response(const char *home,
                                            const char *active) {
     json_t *themes = ws_theme_builtin_list();
@@ -489,7 +489,7 @@ json_t *ws_theme_dashboard_themes_response(const char *home,
 }
 
 /* ── _render_active_theme_bootstrap_css ─────────────────────────────────── */
-/* PoP: ws_theme_render_bootstrap_css @ hermes_cli/web_server.py:_render_active_theme_bootstrap_css */
+/* PoP: ws_theme_render_bootstrap_css @ hermes_cli/web_server_dashboard.py:_render_active_theme_bootstrap_css */
 char *ws_theme_render_bootstrap_css(const char *home, const char *active) {
     if (!active || !*active) return strdup("");
     for (size_t i = 0; i < N_BUILTIN; i++)
@@ -542,7 +542,7 @@ char *ws_theme_render_bootstrap_css(const char *home, const char *active) {
 }
 
 /* ── font allowlist ─────────────────────────────────────────────────────── */
-/* PoP: ws_theme_font_choice_allowed @ hermes_cli/web_server.py:set_dashboard_font */
+/* PoP: ws_theme_font_choice_allowed @ hermes_cli/web_routers/dashboard_ui.py:set_dashboard_font */
 bool ws_theme_font_choice_allowed(const char *font_id) {
     if (!font_id) return false;
     if (strcmp(font_id, "theme") == 0) return true; /* _FONT_DEFAULT_ID */

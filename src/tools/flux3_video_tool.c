@@ -717,7 +717,7 @@ char *f3_handle_video_continuation(const char *args_json, const char *task_id) {
     return result;
 }
 
-/* PoP: f3_poll_until_done @ tools/flux3_video_tool.py:_poll_until_done */
+/* PoP: f3_poll_until_done @ agent/chat_completion_stream_monitor.py:_poll_until_done */
 char *f3_poll_until_done(const char *url, const char *save_to, double started) {
     /* Python: poll until Ready/Error/interrupt/budget exhausted. */
     double spent = 0.0;

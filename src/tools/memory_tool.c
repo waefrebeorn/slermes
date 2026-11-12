@@ -219,11 +219,11 @@ const char *memory_store_snapshot(memory_store_t *s, const char *target) {
     return s->snap_memory;
 }
 
-/* PoP: memory_store_char_count @ tools/memory_tool.py:_char_count */
+/* PoP: memory_store_char_count @ tools/memory_tool_store.py:_char_count */
 int memory_store_char_count(memory_store_t *s, const char *target) {
     int n; const char **e = entries_for(s, target, &n); return char_count_arr(e, n);
 }
-/* PoP: memory_store_char_limit @ tools/memory_tool.py:_char_limit */
+/* PoP: memory_store_char_limit @ tools/memory_tool_store.py:_char_limit */
 int memory_store_char_limit(memory_store_t *s, const char *target) {
     return char_limit_for(s, target);
 }
@@ -264,7 +264,7 @@ static char *resp_error(memory_store_t *s, const char *target, const char *err, 
 }
 
 /* consolidation-failure degradation */
-/* PoP: consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
+/* PoP: consolidation_failure @ tools/memory_tool_store.py:_consolidation_failure */
 static char *consolidation_failure(memory_store_t *s, const char *target, char *resp) {
     s->consolidation_failures++;
     if (s->consolidation_failures <= MAX_CONSOLIDATION_FAILURES_PER_TURN)
@@ -398,7 +398,7 @@ char *memory_store_remove(memory_store_t *s, const char *target, const char *old
 }
 
 /* batch */
-/* PoP: memory_store_apply_batch @ tools/memory_tool.py:apply_batch */
+/* PoP: memory_store_apply_batch @ tools/memory_tool_store.py:apply_batch */
 char *memory_store_apply_batch(memory_store_t *s, const char *target, const json_node_t *ops) {
     if (!ops) return resp_error(s, target, "operations list is empty.", 0);
     int opn = (int)json_array_size(ops);
@@ -774,7 +774,7 @@ void memory_tool_pure_get_builtin_memory_store_flags(const json_t *config,
 char *cli_tools_threat_patterns_first_threat_message(const char *content, const char *scope);
 
 /* ---- _scan_memory_content ------------------------------------------ */
-/* PoP: memory_tool_scan_memory_content @ tools/memory_tool.py:_scan_memory_content */
+/* PoP: memory_tool_scan_memory_content @ tools/memory_tool_store.py:_scan_memory_content */
 char *memory_tool_scan_memory_content(const char *content) {
     /* Python: return _first_threat_message(content, scope="strict") */
     if (!content) return NULL;
@@ -782,7 +782,7 @@ char *memory_tool_scan_memory_content(const char *content) {
 }
 
 /* ---- target_enabled -------------------------------------------------- */
-/* PoP: memory_store_target_enabled @ tools/memory_tool.py:target_enabled */
+/* PoP: memory_store_target_enabled @ tools/memory_tool_store.py:target_enabled */
 int memory_store_target_enabled(memory_store_t *s, const char *target) {
     if (!s) return 0;
     return (target && strcmp(target, "user") == 0)
@@ -792,7 +792,7 @@ int memory_store_target_enabled(memory_store_t *s, const char *target) {
 /* ---- _previews ------------------------------------------------------- */
 /* Truncated one-line previews of entries for error feedback. Returns a
  * malloc'd array of malloc'd strings (free with free_entries-style loop). */
-/* PoP: memory_store_previews @ tools/memory_tool.py:_previews */
+/* PoP: memory_store_previews @ tui_gateway/project_tree.py:_previews */
 char **memory_store_previews(const char **entries, int n, int width, int *out_n) {
     if (width <= 0) width = PREVIEW_WIDTH;
     char **out = malloc(sizeof(char *) * (n > 0 ? n : 1));
@@ -812,7 +812,7 @@ char **memory_store_previews(const char **entries, int n, int width, int *out_n)
 
 /* ---- format_for_system_prompt ---------------------------------------- */
 /* Frozen snapshot for system prompt injection; NULL when empty. */
-/* PoP: memory_store_format_for_system_prompt @ tools/memory_tool.py:format_for_system_prompt */
+/* PoP: memory_store_format_for_system_prompt @ tools/memory_tool_store.py:format_for_system_prompt */
 const char *memory_store_format_for_system_prompt(memory_store_t *s, const char *target) {
     const char *block = memory_store_snapshot(s, target);
     return (block && *block) ? block : NULL;
@@ -823,7 +823,7 @@ const char *memory_store_format_for_system_prompt(memory_store_t *s, const char 
  * Returns malloc'd raw text ("" for absent file) and sets *read_ok to 0 ONLY
  * when the file exists but could not be read. A leading UTF-8 BOM is stripped
  * (utf-8-sig semantics). */
-/* PoP: memory_store_read_raw_checked @ tools/memory_tool.py:_read_raw_checked */
+/* PoP: memory_store_read_raw_checked @ tools/memory_tool_store.py:_read_raw_checked */
 char *memory_store_read_raw_checked(const char *path, int *read_ok) {
     *read_ok = 1;
     struct stat st;
@@ -845,7 +845,7 @@ char *memory_store_read_raw_checked(const char *path, int *read_ok) {
 
 /* ---- _parse_entries ---------------------------------------------------- */
 /* Split raw memory-file text into stripped, non-empty entries. Caller frees. */
-/* PoP: memory_store_parse_entries @ tools/memory_tool.py:_parse_entries */
+/* PoP: memory_store_parse_entries @ tools/memory_tool_store.py:_parse_entries */
 char **memory_store_parse_entries(const char *raw, int *out_n) {
     *out_n = 0;
     /* skip if whole input is whitespace-only */
@@ -995,7 +995,7 @@ static char *drift_check_raw(memory_store_t *s, const char *target, const char *
 }
 
 /* ---- _set_entries ---------------------------------------------------------- */
-/* PoP: memory_store_set_entries @ tools/memory_tool.py:_set_entries */
+/* PoP: memory_store_set_entries @ tools/memory_tool_store.py:_set_entries */
 void memory_store_set_entries(memory_store_t *s, const char *target,
                               char **entries, int n) {
     if (!s) return;
@@ -1039,7 +1039,7 @@ int memory_store_reload_target(memory_store_t *s, const char *target,
 /* ---- load_from_disk ------------------------------------------------------------ */
 /* Load entries from MEMORY.md and USER.md under get_memory_dir(), capture the
  * frozen (sanitized) system-prompt snapshot. */
-/* PoP: memory_store_load_from_disk @ tools/memory_tool.py:load_from_disk */
+/* PoP: memory_store_load_from_disk @ tools/memory_tool_store.py:load_from_disk */
 void memory_store_load_from_disk(memory_store_t *s) {
     char *dir = memory_tool_get_memory_dir();
     memory_store_load(s, dir);

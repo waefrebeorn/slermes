@@ -28,7 +28,7 @@
  *  Format / MIME detection (wrapping the private magic-byte logic)
  * ────────────────────────────────────────────────────────────── */
 
-/* PoP: vision_detect_image_mime_from_bytes @ tools/vision_tools.py:_detect_image_mime_type_from_bytes */
+/* PoP: vision_detect_image_mime_from_bytes @ tools/vision_tools_image_prep.py:_detect_image_mime_type_from_bytes */
 const char *vision_detect_image_mime_from_bytes(const unsigned char *buf, size_t len)
 {
     if (!buf || len < 4) return "application/octet-stream";
@@ -54,7 +54,7 @@ const char *vision_detect_image_mime_from_bytes(const unsigned char *buf, size_t
     return "application/octet-stream";
 }
 
-/* PoP: vision_detect_image_format_from_bytes @ tools/vision_tools.py:_determine_mime_type */
+/* PoP: vision_detect_image_format_from_bytes @ tools/vision_tools_image_prep.py:_determine_mime_type */
 const char *vision_detect_image_format_from_bytes(const unsigned char *buf, size_t len)
 {
     if (!buf || len < 4) return NULL;
@@ -73,7 +73,7 @@ const char *vision_detect_image_format_from_bytes(const unsigned char *buf, size
     return NULL;
 }
 
-/* PoP: vision_detect_image_format_from_path @ tools/vision_tools.py:_determine_mime_type */
+/* PoP: vision_detect_image_format_from_path @ tools/vision_tools_image_prep.py:_determine_mime_type */
 const char *vision_detect_image_format_from_path(const char *path)
 {
     if (!path || !path[0]) return NULL;
@@ -118,7 +118,7 @@ bool vision_validate_image_path(const char *path)
  *  Dimension extraction
  * ────────────────────────────────────────────────────────────── */
 
-/* PoP: vision_extract_dimensions_from_bytes @ tools/vision_tools.py:_image_exceeds_dimension */
+/* PoP: vision_extract_dimensions_from_bytes @ tools/vision_tools_image_prep.py:_image_exceeds_dimension */
 char *vision_extract_dimensions_from_bytes(const unsigned char *buf, size_t n)
 {
     if (!buf || n < 12) return NULL;
@@ -155,7 +155,7 @@ char *vision_extract_dimensions_from_bytes(const unsigned char *buf, size_t n)
     return NULL;
 }
 
-/* PoP: vision_extract_dimensions_from_path @ tools/vision_tools.py:_image_exceeds_dimension */
+/* PoP: vision_extract_dimensions_from_path @ tools/vision_tools_image_prep.py:_image_exceeds_dimension */
 char *vision_extract_dimensions_from_path(const char *path)
 {
     if (!path) return NULL;
@@ -298,7 +298,7 @@ char *vision_resize_image_for_vision(const char *path, int max_dim)
     return strdup(out);
 }
 
-/* PoP: vision_image_exceeds_dimension @ tools/vision_tools.py:_image_exceeds_dimension */
+/* PoP: vision_image_exceeds_dimension @ tools/vision_tools_image_prep.py:_image_exceeds_dimension */
 bool vision_image_exceeds_dimension(const char *path, int max_dim)
 {
     char *dims = vision_extract_dimensions_from_path(path);
@@ -313,7 +313,7 @@ bool vision_image_exceeds_dimension(const char *path, int max_dim)
  *  SVG rasterization
  * ────────────────────────────────────────────────────────────── */
 
-/* PoP: vision_rasterize_svg_to_png @ tools/vision_tools.py:_rasterize_svg_to_png */
+/* PoP: vision_rasterize_svg_to_png @ tools/vision_tools_image_prep.py:_rasterize_svg_to_png */
 char *vision_rasterize_svg_to_png(const char *svg_path)
 {
     if (!svg_path || !svg_path[0]) return NULL;
@@ -342,7 +342,7 @@ char *vision_rasterize_svg_to_png(const char *svg_path)
  *  Normalization
  * ────────────────────────────────────────────────────────────── */
 
-/* PoP: vision_normalize_to_supported_image @ tools/vision_tools.py:_normalize_to_supported_image */
+/* PoP: vision_normalize_to_supported_image @ tools/vision_tools_image_prep.py:_normalize_to_supported_image */
 char *vision_normalize_to_supported_image(const char *path)
 {
     if (!path || !path[0]) return NULL;

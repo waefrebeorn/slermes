@@ -189,7 +189,7 @@ void pairing_store_close(pairing_store_t *st) {
     free(st->dir); free(st);
 }
 
-/* PoP: path_for @ tools/memory_tool.py:_path_for */
+/* PoP: path_for @ tools/memory_tool_store.py:_path_for */
 static char *path_for(pairing_store_t *st, const char *name) {
     size_t need = strlen(st->dir)+1+strlen(name)+1;
     char *p = (char*)malloc(need);
@@ -197,7 +197,7 @@ static char *path_for(pairing_store_t *st, const char *name) {
     return p;
 }
 
-/* PoP: load_json @ gateway/pairing.py:_load_json */
+/* PoP: load_json @ hermes_cli/status.py:_load_json */
 static pj_val_t *load_json(pairing_store_t *st, const char *name) {
     char *path = path_for(st, name);
     FILE *f = fopen(path, "rb");

@@ -95,7 +95,7 @@ static void b5_queue_put(void *queue, const char *value)
 
 /* ── hcli_approval_choices ──────────────────────────────────────────────── */
 
-/* PoP: hcli_approval_choices @ cli.py:_approval_choices */
+/* PoP: hcli_approval_choices @ hermes_cli/cli_modal_mixin.py:_approval_choices */
 char **hcli_approval_choices(const char *command, bool allow_permanent,
                              bool allow_session, bool smart_denied,
                              size_t *out_count)
@@ -161,7 +161,7 @@ static void b5_approval_state_clear(hcli_t *self)
     free(st);
 }
 
-/* PoP: hcli_approval_callback @ cli.py:_approval_callback */
+/* PoP: hcli_approval_callback @ hermes_cli/cli_modal_mixin.py:_approval_callback */
 char *hcli_approval_callback(hcli_t *self, const char *command,
                              const char *description, bool allow_permanent,
                              bool allow_session, bool smart_denied)
@@ -324,7 +324,7 @@ static void b5_schedule_status_bar_unsuppress(hcli_t *self)
         free(u);
 }
 
-/* PoP: hcli_recover_after_resize @ cli.py:_recover_after_resize */
+/* PoP: hcli_recover_after_resize @ hermes_cli/cli_terminal_mixin.py:_recover_after_resize */
 void hcli_recover_after_resize(hcli_t *self, void *app,
                                void (*original_on_resize)(hcli_t *, void *))
 {
@@ -359,7 +359,7 @@ void hcli_recover_after_resize(hcli_t *self, void *app,
 
 /* ── hcli_get_status_bar_snapshot ───────────────────────────────────────── */
 
-/* PoP: hcli_get_status_bar_snapshot @ cli.py:_get_status_bar_snapshot */
+/* PoP: hcli_get_status_bar_snapshot @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_snapshot */
 json_t *hcli_get_status_bar_snapshot(hcli_t *self)
 {
     json_t *snapshot = json_object();
@@ -475,7 +475,7 @@ json_t *hcli_get_status_bar_snapshot(hcli_t *self)
 
 extern bool hcli_use_minimal_tui_chrome(hcli_t *self, int width) __attribute__((weak));
 
-/* PoP: hcli_spinner_widget_height @ cli.py:_spinner_widget_height */
+/* PoP: hcli_spinner_widget_height @ hermes_cli/cli_status_bar_mixin.py:_spinner_widget_height */
 int hcli_spinner_widget_height(hcli_t *self, int width)
 {
     if (!self)
@@ -540,7 +540,7 @@ void _reset_stream_state(hcli_t *self)
     self->in_stream_table = false;
 }
 
-/* PoP: hcli_stream_delta @ cli.py:_stream_delta */
+/* PoP: hcli_stream_delta @ hermes_cli/cli_stream_mixin.py:_stream_delta */
 void hcli_stream_delta(hcli_t *self, const char *text)
 {
     if (!self)

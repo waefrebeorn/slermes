@@ -74,7 +74,7 @@ static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) 
 }
 
 
-/* PoP: _delete_ref @ tools/checkpoint_manager.py:_delete_ref */
+/* PoP: _delete_ref @ tools/checkpoint_maintenance.py:_delete_ref */
 static bool _delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
     _shadow_repo_path("", shadow, sizeof(shadow));

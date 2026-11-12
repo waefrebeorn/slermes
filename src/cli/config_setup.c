@@ -2691,7 +2691,7 @@ int looks_like_structured_value(const char *value)
 
 /* ── tools_config.py parity batch (v680) ───────────────────────────── */
 
-/* PoP: cli_provider_readiness_status @ hermes_cli/tools_config.py:provider_readiness_status */
+/* PoP: cli_provider_readiness_status @ hermes_cli/tools_config_providers.py:provider_readiness_status */
 char *cli_provider_readiness_status(const json_t *provider, const json_t *config,
                                     bool is_active) {
     /* Honest readiness state for a provider picker row:
@@ -2744,7 +2744,7 @@ char *cli_provider_readiness_status(const json_t *provider, const json_t *config
     return strdup("ready");
 }
 
-/* PoP: cli_apply_provider_selection @ hermes_cli/tools_config.py:apply_provider_selection */
+/* PoP: cli_apply_provider_selection @ hermes_cli/tools_config_providers.py:apply_provider_selection */
 int cli_apply_provider_selection(const char *ts_key, const char *provider_name,
                                  json_t *config, char **err) {
     /* Non-interactive persistence of a provider selection: writes
@@ -2774,7 +2774,7 @@ int cli_apply_provider_selection(const char *ts_key, const char *provider_name,
     return 0;
 }
 
-/* PoP: cli_tools_post_setup_run @ hermes_cli/tools_config.py:run_post_setup_command */
+/* PoP: cli_tools_post_setup_run @ hermes_cli/tools_config_post_setup.py:run_post_setup_command */
 int cli_tools_post_setup_run(const char *key) {
     /* `hermes tools post-setup <key>`: run the declared install hook.
      * Returns 0 ok, 2 unknown/missing key. Hook execution is delegated to

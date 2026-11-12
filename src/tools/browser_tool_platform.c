@@ -122,8 +122,8 @@ bool browser_session_info_owned_by_task(const char *session_info_json, const cha
     return true;
 }
 
-/* PoP: browser_get_session_inactivity_timeout @ tools/browser_tool.py:_get_session_inactivity_timeout */
-/* PoP: browser_get_session_inactivity_timeout @ tools/browser_tool.py:_get_session_inactivity_timeout */
+/* PoP: browser_get_session_inactivity_timeout @ tools/browser_session.py:_get_session_inactivity_timeout */
+/* PoP: browser_get_session_inactivity_timeout @ tools/browser_session.py:_get_session_inactivity_timeout */
 int browser_get_session_inactivity_timeout(void)
 {
     int result = 120; /* DEFAULT_SESSION_INACTIVITY_TIMEOUT */

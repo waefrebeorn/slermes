@@ -740,7 +740,7 @@ char *smc_provider_metadata(const char *arg) {
     return out;
 }
 
-/* PoP: smc_known_provider_ids @ hermes_cli/observability/shared_metrics_contract.py:_known_provider_ids */
+/* PoP: smc_known_provider_ids @ hermes_cli/doctor_config.py:_known_provider_ids */
 char *smc_known_provider_ids(void) {
     /* Python: cache Hermes's static provider catalog (lru_cache, process-lifetime).
      * Returns a JSON array of provider slugs. */

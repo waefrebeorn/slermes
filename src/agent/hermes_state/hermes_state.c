@@ -73,7 +73,7 @@ static const char *_disk_full_markers[] = {
     NULL,
 };
 
-/* PoP: hs_is_disk_full_error @ hermes_state.py:is_disk_full_error */
+/* PoP: hs_is_disk_full_error @ hermes_state_errors.py:is_disk_full_error */
 bool hs_is_disk_full_error(const char *exc)
 {
     if (!exc) return false;

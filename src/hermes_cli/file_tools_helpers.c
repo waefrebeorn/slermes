@@ -77,7 +77,7 @@ static void ft_normpath2(const char *in, char *out)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: file_tools_expand_tilde @ tools/file_tools.py:_expand_tilde */
+/* PoP: file_tools_expand_tilde @ tools/file_tools_paths.py:_expand_tilde */
 char *file_tools_expand_tilde(const char *path, const char *home)
 {
     if (!path || !*path || strchr(path,'~')==NULL) return strdup(path?path:"");
@@ -140,7 +140,7 @@ int file_tools_is_expected_write_exception(int errnum, int is_permission_error)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: file_tools_is_internal_file_status_text @ tools/file_tools.py:_is_internal_file_status_text */
+/* PoP: file_tools_is_internal_file_status_text @ tools/file_tools_write_guards.py:_is_internal_file_status_text */
 int file_tools_is_internal_file_status_text(const char *content)
 {
     if (!content) return 0;
@@ -158,7 +158,7 @@ int file_tools_is_internal_file_status_text(const char *content)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: file_tools_looks_like_read_file_line_numbered_content @ tools/file_tools.py:_looks_like_read_file_line_numbered_content */
+/* PoP: file_tools_looks_like_read_file_line_numbered_content @ tools/file_tools_write_guards.py:_looks_like_read_file_line_numbered_content */
 int file_tools_looks_like_read_file_line_numbered_content(const char *content)
 {
     if (!content) return 0;
@@ -195,7 +195,7 @@ int file_tools_looks_like_read_file_line_numbered_content(const char *content)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: file_tools_is_internal_file_tool_content @ tools/file_tools.py:_is_internal_file_tool_content */
+/* PoP: file_tools_is_internal_file_tool_content @ tools/file_tools_write_guards.py:_is_internal_file_tool_content */
 int file_tools_is_internal_file_tool_content(const char *content)
 {
     return file_tools_is_internal_file_status_text(content) ||
@@ -217,7 +217,7 @@ char *file_tools_truncate_to_char_budget(const char *text, size_t budget)
     return out;
 }
 
-/* PoP: file_tools_terminal_env_type_for_task @ tools/file_tools.py:_terminal_env_type_for_task */
+/* PoP: file_tools_terminal_env_type_for_task @ tools/file_tools_paths.py:_terminal_env_type_for_task */
 const char *file_tools_terminal_env_type_for_task(const char *task_id)
 {
     /* Python _terminal_env_type_for_task: resolve the active environment
@@ -230,7 +230,7 @@ const char *file_tools_terminal_env_type_for_task(const char *task_id)
     return "local";
 }
 
-/* PoP: file_tools_uses_container_paths @ tools/file_tools.py:_uses_container_paths */
+/* PoP: file_tools_uses_container_paths @ tools/file_tools_paths.py:_uses_container_paths */
 bool file_tools_uses_container_paths(const char *env_type)
 {
     if (!env_type) return false;
@@ -238,7 +238,7 @@ bool file_tools_uses_container_paths(const char *env_type)
            strcmp(env_type, "daytona") == 0 || strcmp(env_type, "singularity") == 0;
 }
 
-/* PoP: file_tools_normalize_without_host_deref @ tools/file_tools.py:_normalize_without_host_deref */
+/* PoP: file_tools_normalize_without_host_deref @ tools/file_tools_paths.py:_normalize_without_host_deref */
 char *file_tools_normalize_without_host_deref(const char *path)
 {
     if (!path) return NULL;
@@ -278,7 +278,7 @@ json_t *file_tools_filter_read_blocked_search_results(json_t *results)
     return out;
 }
 
-/* PoP: file_tools_get_hermes_config_resolved @ tools/file_tools.py:_get_hermes_config_resolved */
+/* PoP: file_tools_get_hermes_config_resolved @ tools/file_tools_write_guards.py:_get_hermes_config_resolved */
 json_t *file_tools_get_hermes_config_resolved(void)
 {
     json_t *cfg = json_object();
@@ -291,8 +291,8 @@ json_t *file_tools_get_hermes_config_resolved(void)
     return cfg;
 }
 
-/* PoP: file_tools_record_patch_failure @ tools/file_tools.py:_record_patch_failure */
-/* PoP: file_tools_record_patch_failure @ tools/file_tools.py:_record_patch_failure */
+/* PoP: file_tools_record_patch_failure @ tools/file_tools_read_tracking.py:_record_patch_failure */
+/* PoP: file_tools_record_patch_failure @ tools/file_tools_read_tracking.py:_record_patch_failure */
 int file_tools_record_patch_failure(const char *path, const char *reason)
 {
     /* Python: increment consecutive-failure count (cap 64 per task). */
@@ -302,8 +302,8 @@ int file_tools_record_patch_failure(const char *path, const char *reason)
     /* In C, patch failures are logged but not persisted in a dict */
 }
 
-/* PoP: file_tools_reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
-/* PoP: file_tools_reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
+/* PoP: file_tools_reset_patch_failures @ tools/file_tools_read_tracking.py:_reset_patch_failures */
+/* PoP: file_tools_reset_patch_failures @ tools/file_tools_read_tracking.py:_reset_patch_failures */
 void file_tools_reset_patch_failures(void) {
     /* Python: clear consecutive-failure counts for the given paths. */
     printf("patch failure counters reset\n");
@@ -317,15 +317,15 @@ void file_tools_clear_file_ops_cache(void) {
     printf("file ops cache cleared\n");
 }
 
-/* PoP: file_tools_reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
-/* PoP: file_tools_reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
+/* PoP: file_tools_reset_file_dedup @ tools/file_tools_read_tracking.py:reset_file_dedup */
+/* PoP: file_tools_reset_file_dedup @ tools/file_tools_read_tracking.py:reset_file_dedup */
 void file_tools_reset_file_dedup(void) {
     /* Python: clear dedup cache (all tasks) after compression. */
     printf("file read dedup cache cleared\n");
 }
 
-/* PoP: file_tools_notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
-/* PoP: file_tools_notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
+/* PoP: file_tools_notify_other_tool_call @ tools/file_tools_read_tracking.py:notify_other_tool_call */
+/* PoP: file_tools_notify_other_tool_call @ tools/file_tools_read_tracking.py:notify_other_tool_call */
 void file_tools_notify_other_tool_call(const char *tool_name)
 {
     /* Python: reset consecutive read/search counters for the task. */
@@ -333,8 +333,8 @@ void file_tools_notify_other_tool_call(const char *tool_name)
     printf("read counters reset (non-read tool)\n");
 }
 
-/* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
-/* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
+/* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools_read_tracking.py:_invalidate_dedup_for_path */
+/* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools_read_tracking.py:_invalidate_dedup_for_path */
 void file_tools_invalidate_dedup_for_path(const char *path)
 {
     /* Python: evict all cached ranges for the written path. */
@@ -342,8 +342,8 @@ void file_tools_invalidate_dedup_for_path(const char *path)
     printf("dedup cache evicted for: %s\n", path);
 }
 
-/* PoP: file_tools_update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
-/* PoP: file_tools_update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
+/* PoP: file_tools_update_read_timestamp @ tools/file_tools_read_tracking.py:_update_read_timestamp */
+/* PoP: file_tools_update_read_timestamp @ tools/file_tools_read_tracking.py:_update_read_timestamp */
 void file_tools_update_read_timestamp(const char *path)
 {
     /* Python: refresh stored mtime + invalidate dedup after write. */
@@ -351,7 +351,7 @@ void file_tools_update_read_timestamp(const char *path)
     printf("read timestamp refreshed: %s\n", path);
 }
 
-/* PoP: file_tools_check_file_staleness @ tools/file_tools.py:_check_file_staleness */
+/* PoP: file_tools_check_file_staleness @ tools/file_tools_read_tracking.py:_check_file_staleness */
 bool file_tools_check_file_staleness(const char *path)
 {
     if (!path) return false;
@@ -359,8 +359,8 @@ bool file_tools_check_file_staleness(const char *path)
     return stat(path, &st) == 0;
 }
 
-/* PoP: file_tools_mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
-/* PoP: file_tools_mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
+/* PoP: file_tools_mark_verification_stale @ tools/file_tools_read_tracking.py:_mark_verification_stale */
+/* PoP: file_tools_mark_verification_stale @ tools/file_tools_read_tracking.py:_mark_verification_stale */
 void file_tools_mark_verification_stale(const char *path)
 {
     /* Python: mark workspace edited after successful edits. */
@@ -378,14 +378,14 @@ bool file_tools_check_file_reqs(const char *path, size_t max_bytes)
     return true;
 }
 
-/* PoP: file_tools_registered_task_cwd_override @ tools/file_tools.py:_registered_task_cwd_override */
+/* PoP: file_tools_registered_task_cwd_override @ tools/file_tools_paths.py:_registered_task_cwd_override */
 char *file_tools_registered_task_cwd_override(const char *task_id)
 {
     (void)task_id;
     return NULL;
 }
 
-/* PoP: file_tools_get_container_mirror_prefix_for_task @ tools/file_tools.py:_get_container_mirror_prefix_for_task */
+/* PoP: file_tools_get_container_mirror_prefix_for_task @ tools/file_tools_write_guards.py:_get_container_mirror_prefix_for_task */
 char *file_tools_get_container_mirror_prefix_for_task(const char *task_id)
 {
     (void)task_id;
@@ -398,7 +398,7 @@ json_t *file_tools_get_file_ops(void)
     return json_array();
 }
 
-/* PoP: file_tools_cap_read_tracker_data @ tools/file_tools.py:_cap_read_tracker_data */
+/* PoP: file_tools_cap_read_tracker_data @ tools/file_tools_read_tracking.py:_cap_read_tracker_data */
 size_t file_tools_cap_read_tracker_data(size_t data_len, size_t max_cap)
 {
     if (max_cap == 0) return data_len;

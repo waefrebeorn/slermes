@@ -58,7 +58,7 @@ const char *cmd_gateway_help_lines(void) {
 json_t *cmd_iter_plugin_command_entries(void) {
     return json_array();
 }
-/* PoP: cmd_telegram_bot_commands @ hermes_cli/commands.py:telegram_bot_commands */
+/* PoP: cmd_telegram_bot_commands @ hermes_cli/commands_platforms.py:telegram_bot_commands */
 json_t *cmd_telegram_bot_commands(void) {
     return json_array();
 }
@@ -70,7 +70,7 @@ json_t *cmd_nested_mapping(const char *key, const char *value) {
     json_set(inner, "description", json_string(value ? value : ""));
     return obj;
 }
-/* PoP: cmd_telegram_command_menu_config @ hermes_cli/commands.py:_telegram_command_menu_config */
+/* PoP: cmd_telegram_command_menu_config @ hermes_cli/commands_platforms.py:_telegram_command_menu_config */
 json_t *cmd_telegram_command_menu_config(void) {
     return json_object();
 }
@@ -89,15 +89,15 @@ int cmd_telegram_effective_priority(const char *command_name) {
 json_t *cmd_prioritize_telegram_menu_commands(json_t *commands) {
     return commands ? commands : json_array();
 }
-/* PoP: cmd_clamp_command_names @ hermes_cli/commands.py:_clamp_command_names */
+/* PoP: cmd_clamp_command_names @ hermes_cli/commands_platforms.py:_clamp_command_names */
 json_t *cmd_clamp_command_names(json_t *names, int max_count) {
     (void)max_count; return names ? names : json_array();
 }
-/* PoP: cmd_collect_gateway_skill_entries @ hermes_cli/commands.py:_collect_gateway_skill_entries */
+/* PoP: cmd_collect_gateway_skill_entries @ hermes_cli/commands_platforms.py:_collect_gateway_skill_entries */
 json_t *cmd_collect_gateway_skill_entries(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
-/* PoP: cmd_telegram_menu_commands @ hermes_cli/commands.py:telegram_menu_commands */
+/* PoP: cmd_telegram_menu_commands @ hermes_cli/commands_platforms.py:telegram_menu_commands */
 json_t *cmd_telegram_menu_commands(void) {
     return json_array();
 }
@@ -105,30 +105,30 @@ json_t *cmd_telegram_menu_commands(void) {
 json_t *cmd_discord_skill_commands(void) {
     return json_array();
 }
-/* PoP: cmd_discord_skill_commands_by_category @ hermes_cli/commands.py:discord_skill_commands_by_category */
+/* PoP: cmd_discord_skill_commands_by_category @ hermes_cli/commands_platforms.py:discord_skill_commands_by_category */
 json_t *cmd_discord_skill_commands_by_category(void) {
     return json_object();
 }
-/* PoP: cmd_slack_native_slashes @ hermes_cli/commands.py:slack_native_slashes */
+/* PoP: cmd_slack_native_slashes @ hermes_cli/commands_platforms.py:slack_native_slashes */
 json_t *cmd_slack_native_slashes(void) {
     return json_array();
 }
-/* PoP: cmd_slack_app_manifest @ hermes_cli/commands.py:slack_app_manifest */
+/* PoP: cmd_slack_app_manifest @ hermes_cli/commands_platforms.py:slack_app_manifest */
 json_t *cmd_slack_app_manifest(void) {
     return json_object();
 }
-/* PoP: cmd_slack_subcommand_map @ hermes_cli/commands.py:slack_subcommand_map */
+/* PoP: cmd_slack_subcommand_map @ hermes_cli/commands_platforms.py:slack_subcommand_map */
 json_t *cmd_slack_subcommand_map(void) {
     return json_object();
 }
-/* PoP: cmd_command_allowed @ hermes_cli/commands.py:_command_allowed */
-/* PoP: cmd_command_allowed @ hermes_cli/commands.py:_command_allowed */
+/* PoP: cmd_command_allowed @ hermes_cli/commands_completion.py:_command_allowed */
+/* PoP: cmd_command_allowed @ hermes_cli/commands_completion.py:_command_allowed */
 bool cmd_command_allowed(const char *command_name, json_t *disabled_set) {
     (void)command_name;
     if (!disabled_set) return true;
     return true;
 }
-/* PoP: cmd_iter_skill_commands @ hermes_cli/commands.py:_iter_skill_commands */
+/* PoP: cmd_iter_skill_commands @ hermes_cli/commands_completion.py:_iter_skill_commands */
 json_t *cmd_iter_skill_commands(void) {
     return json_array();
 }
@@ -136,7 +136,7 @@ json_t *cmd_iter_skill_commands(void) {
 json_t *cmd_iter_skill_bundles(void) {
     return json_array();
 }
-/* PoP: cmd_normalize_skill_token @ hermes_cli/commands.py:_normalize_skill_token */
+/* PoP: cmd_normalize_skill_token @ hermes_cli/commands_completion.py:_normalize_skill_token */
 void cmd_normalize_skill_token(const char *input, char *out, size_t sz) {
     if (!input || !out || sz == 0) return;
     size_t j = 0;
@@ -146,16 +146,16 @@ void cmd_normalize_skill_token(const char *input, char *out, size_t sz) {
     }
     out[j] = '\0';
 }
-/* PoP: cmd_is_skill_command @ hermes_cli/commands.py:_is_skill_command */
+/* PoP: cmd_is_skill_command @ hermes_cli/commands_completion.py:_is_skill_command */
 bool cmd_is_skill_command(const char *command_name) {
     if (!command_name) return false;
     return strncmp(command_name, "/skill", 6) == 0;
 }
-/* PoP: cmd_stacked_skill_completions @ hermes_cli/commands.py:_stacked_skill_completions */
+/* PoP: cmd_stacked_skill_completions @ hermes_cli/commands_completion.py:_stacked_skill_completions */
 json_t *cmd_stacked_skill_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_completion_text @ hermes_cli/commands.py:_completion_text */
+/* PoP: cmd_completion_text @ hermes_cli/commands_completion.py:_completion_text */
 const char *cmd_completion_text(const char *command_name) {
     /* Python _completion_text(cmd_name, word): when the user already typed the
      * full command, append a trailing space so the dropdown stays visible —
@@ -172,32 +172,32 @@ const char *cmd_completion_text(const char *command_name) {
     }
     return buf;
 }
-/* PoP: cmd_extract_path_word @ hermes_cli/commands.py:_extract_path_word */
+/* PoP: cmd_extract_path_word @ hermes_cli/commands_completion.py:_extract_path_word */
 const char *cmd_extract_path_word(const char *input, char *out, size_t sz) {
     if (!input || !out || sz == 0) { if (out && sz) out[0] = '\0'; return out; }
     snprintf(out, sz, "%s", input);
     return out;
 }
-/* PoP: cmd_path_completions @ hermes_cli/commands.py:_path_completions */
+/* PoP: cmd_path_completions @ hermes_cli/commands_completion.py:_path_completions */
 json_t *cmd_path_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_extract_context_word @ hermes_cli/commands.py:_extract_context_word */
+/* PoP: cmd_extract_context_word @ hermes_cli/commands_completion.py:_extract_context_word */
 const char *cmd_extract_context_word(const char *input, char *out, size_t sz) {
     if (!input || !out || sz == 0) { if (out && sz) out[0] = '\0'; return out; }
     snprintf(out, sz, "%s", input);
     return out;
 }
-/* PoP: cmd_context_completions @ hermes_cli/commands.py:_context_completions */
+/* PoP: cmd_context_completions @ hermes_cli/commands_completion.py:_context_completions */
 json_t *cmd_context_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_get_project_files @ hermes_cli/commands.py:_get_project_files */
+/* PoP: cmd_get_project_files @ hermes_cli/commands_completion.py:_get_project_files */
 json_t *cmd_get_project_files(const char *dir, int max_count) {
     (void)dir; (void)max_count; return json_array();
 }
-/* PoP: cmd_score_path @ hermes_cli/commands.py:_score_path */
-/* PoP: cmd_score_path @ hermes_cli/commands.py:_score_path */
+/* PoP: cmd_score_path @ hermes_cli/commands_completion.py:_score_path */
+/* PoP: cmd_score_path @ hermes_cli/commands_completion.py:_score_path */
 double cmd_score_path(const char *path, const char *query) {
     /* Python: fuzzy score ladder. */
     if (!path || !*path) return 0.0;
@@ -227,23 +227,23 @@ double cmd_score_path(const char *path, const char *query) {
     for (const char *c = lower; *c && qi < ql; c++) if (*c == lq[qi]) qi++;
     return (qi == ql) ? 25 : 0;
 }
-/* PoP: cmd_fuzzy_file_completions @ hermes_cli/commands.py:_fuzzy_file_completions */
+/* PoP: cmd_fuzzy_file_completions @ hermes_cli/commands_completion.py:_fuzzy_file_completions */
 json_t *cmd_fuzzy_file_completions(const char *query, int max_results) {
     (void)query; (void)max_results; return json_array();
 }
-/* PoP: cmd_skin_completions @ hermes_cli/commands.py:_skin_completions */
+/* PoP: cmd_skin_completions @ hermes_cli/commands_completion.py:_skin_completions */
 json_t *cmd_skin_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_tools_completions @ hermes_cli/commands.py:_tools_completions */
+/* PoP: cmd_tools_completions @ hermes_cli/commands_completion.py:_tools_completions */
 json_t *cmd_tools_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_handoff_completions @ hermes_cli/commands.py:_handoff_completions */
+/* PoP: cmd_handoff_completions @ hermes_cli/commands_completion.py:_handoff_completions */
 json_t *cmd_handoff_completions(const char *prefix) {
     (void)prefix; return json_array();
 }
-/* PoP: cmd_personality_completions @ hermes_cli/commands.py:_personality_completions */
+/* PoP: cmd_personality_completions @ hermes_cli/commands_completion.py:_personality_completions */
 json_t *cmd_personality_completions(const char *prefix) {
     (void)prefix; return json_array();
 }

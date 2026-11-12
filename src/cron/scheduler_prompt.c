@@ -66,7 +66,7 @@ static void put(sb_t *sb, const char *s)
  * _cron_job_origin_log_suffix
  * ================================================================ */
 
-/* PoP: scheduler_cron_job_origin_log_suffix @ cron/scheduler.py:_cron_job_origin_log_suffix */
+/* PoP: scheduler_cron_job_origin_log_suffix @ cron/scheduler_delivery.py:_cron_job_origin_log_suffix */
 char *scheduler_cron_job_origin_log_suffix(const json_t *job)
 {
     const json_t *origin =
@@ -126,7 +126,7 @@ char *scheduler_cron_job_origin_log_suffix(const json_t *job)
  * _scan_assembled_cron_prompt
  * ================================================================ */
 
-/* PoP: scheduler_scan_assembled_cron_prompt @ cron/scheduler.py:_scan_assembled_cron_prompt */
+/* PoP: scheduler_scan_assembled_cron_prompt @ cron/scheduler_prompt.py:_scan_assembled_cron_prompt */
 char *scheduler_scan_assembled_cron_prompt(const char *assembled,
                                            const json_t *job,
                                            bool has_skills,
@@ -180,7 +180,7 @@ char *scheduler_scan_assembled_cron_prompt(const char *assembled,
  * _guard_job_credential_exfil
  * ================================================================ */
 
-/* PoP: scheduler_guard_job_credential_exfil @ cron/scheduler.py:_guard_job_credential_exfil */
+/* PoP: scheduler_guard_job_credential_exfil @ cron/scheduler_prompt.py:_guard_job_credential_exfil */
 char *scheduler_guard_job_credential_exfil(const json_t *job)
 {
     if (!job) return NULL;
@@ -278,7 +278,7 @@ static const char *CRON_HINT =
     "Never combine [SILENT] with content — either report your "
     "findings normally, or say [SILENT] and nothing more.]\n\n";
 
-/* PoP: scheduler_build_job_prompt @ cron/scheduler.py:_build_job_prompt */
+/* PoP: scheduler_build_job_prompt @ cron/scheduler_prompt.py:_build_job_prompt */
 char *scheduler_build_job_prompt(const json_t *job,
                                  bool prerun_ok, const char *prerun_output,
                                  bool *silent_out, char **error_out)

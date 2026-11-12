@@ -71,7 +71,7 @@ char *check_invisible_unicode(const char *prompt)
  *  Returns a JSON object {cleaned_prompt, removed_codepoints[]}.
  *  Caller owns the returned json_t*.
  * ================================================================ */
-/* PoP: module @ tools/cronjob_tools.py:_strip_invisible_unicode */
+/* PoP: module @ tools/cronjob_prompt_scan.py:_strip_invisible_unicode */
 /* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *strip_invisible_unicode(const char *prompt)
 {
@@ -83,7 +83,7 @@ json_t *strip_invisible_unicode(const char *prompt)
  *  Scans an assembled cron prompt (includes loaded skill content).
  *  Returns json_t* {cleaned, error} where error is empty string on pass.
  * ================================================================ */
-/* PoP: module @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
+/* PoP: module @ tools/cronjob_prompt_scan.py:_scan_cron_skill_assembled */
 /* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *scan_cron_skill_assembled(const char *assembled)
 {
@@ -95,7 +95,7 @@ json_t *scan_cron_skill_assembled(const char *assembled)
  *  Captures session env vars into a JSON object.
  *  Returns json_t* object or NULL if env vars not set.
  * ================================================================ */
-/* PoP: origin_from_env @ tools/cronjob_tools.py:_origin_from_env */
+/* PoP: origin_from_env @ tools/cronjob_job_args.py:_origin_from_env */
 /* Port of Python tools/cronjob_tools.py:_origin_from_env().
  * Reads HERMES_SESSION_PLATFORM, HERMES_SESSION_CHAT_ID, HERMES_SESSION_THREAD_ID,
  * HERMES_SESSION_CHAT_NAME, HERMES_SESSION_USER_ID from environment.
@@ -125,7 +125,7 @@ json_t *origin_from_env(void)
  *  Returns a notice string (caller frees) when job is local-only
  *  and will not be delivered back to the session.
  * ================================================================ */
-/* PoP: local_delivery_notice @ tools/cronjob_tools.py:_local_delivery_notice */
+/* PoP: local_delivery_notice @ tools/cronjob_job_args.py:_local_delivery_notice */
 /* Port of Python tools/cronjob_tools.py:_local_delivery_notice().
  * Returns malloc'd notice string when a created job won't deliver anywhere
  * (CLI/TUI sessions have no live-delivery channel). Returns NULL when
@@ -161,7 +161,7 @@ char *local_delivery_notice(const json_t *job, const char *user_deliver)
  *  10. PoP: _repeat_display
  *  Returns a malloc'd string describing the repeat state.
  * ================================================================ */
-/* PoP: repeat_display @ tools/cronjob_tools.py:_repeat_display */
+/* PoP: repeat_display @ tools/cronjob_job_args.py:_repeat_display */
 /* Port of Python tools/cronjob_tools.py:_repeat_display().
  * Formats the repeat configuration: "forever", "once", "1/1", "N times", "X/Y". */
 char *repeat_display(const json_t *job)
@@ -261,7 +261,7 @@ static char *normalize_optional_job_value(const char *value, bool strip_trailing
  *  13. PoP: _normalize_deliver_param
  *  Flattens list/tuple deliver values to comma-separated string.
  * ================================================================ */
-/* PoP: normalize_deliver_param @ tools/cronjob_tools.py:_normalize_deliver_param */
+/* PoP: normalize_deliver_param @ tools/cronjob_job_args.py:_normalize_deliver_param */
 /* Port of Python tools/cronjob_tools.py:_normalize_deliver_param().
  * Normalizes a user-supplied "deliver" value to canonical string form.
  * Flattens arrays/tuples to comma-separated string. Returns malloc'd string
@@ -323,7 +323,7 @@ bool cronjob_check_cronjob_requirements(void)
     return false;
 }
 
-/* PoP: cronjob_validate_cron_script_path @ tools/cronjob_tools.py:_validate_cron_script_path */
+/* PoP: cronjob_validate_cron_script_path @ tools/cronjob_job_args.py:_validate_cron_script_path */
 /* API-boundary guard: scripts must be relative paths within HERMES_HOME/scripts/.
  * Rejects absolute / ~ / Windows-drive prefixes and `..` traversal. */
 char *cronjob_validate_cron_script_path(const char *script)
@@ -438,7 +438,7 @@ json_t *cronjob_format_job(const json_t *job)
     return r;
 }
 
-/* PoP: cronjob_validate_cron_base_url @ tools/cronjob_tools.py:_validate_cron_base_url */
+/* PoP: cronjob_validate_cron_base_url @ tools/cronjob_job_args.py:_validate_cron_base_url */
 /* SECURITY: rejects pairing a named provider's stored credential with an
  * off-host base_url (credential exfil, CWE-200/522). Python host-matches
  * against the provider registry; this C port has no provider-registry, so it

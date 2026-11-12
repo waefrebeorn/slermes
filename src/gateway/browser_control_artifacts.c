@@ -119,7 +119,7 @@ json_t *bca_receipt_to_dict(const bca_receipt_t *r, const char *download_path)
     return o;
 }
 
-/* PoP: _normalize_content_type @gateway/browser_control_artifacts.py:_normalize_content_type */
+/* PoP: _normalize_content_type @plugins/platforms/wecom/media.py:_normalize_content_type */
 void bca_normalize_content_type(const char *value, char *out, size_t out_sz)
 {
     if (!value || !out || out_sz == 0) { if (out && out_sz) out[0] = '\0'; return; }
@@ -623,7 +623,7 @@ static bca_hits_t *rl_bucket(bca_rate_limiter_t *lim, const char *key,
     return b;
 }
 
-/* PoP: allow @gateway/browser_control_artifacts.py:allow */
+/* PoP: allow @plugins/platforms/a2a/protocol.py:allow */
 int bca_rate_limiter_allow(bca_rate_limiter_t *lim, const char *key)
 {
     if (!lim || !key || !key[0]) return 0;

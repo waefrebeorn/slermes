@@ -248,7 +248,7 @@ int hermes_cli_security_audit_u_discover_components(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_security_audit_u_http_post_json @ hermes_cli/security_audit.py:_http_post_json */
+/* PoP: hermes_cli_security_audit_u_http_post_json @ plugins/platforms/a2a/tools.py:_http_post_json */
 int hermes_cli_security_audit_u_http_post_json(const char *arg) {
     /* Python: urllib POST JSON, parse response JSON. Arg =
      * "url\tpayload_json" (curl fallback). */

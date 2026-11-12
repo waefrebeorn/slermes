@@ -130,7 +130,7 @@ int backup_should_skip_file(const char *abs_path, const char *rel_path, const ch
 /*
  * Safely copy a SQLite DB via the online backup API (handles WAL mode),
  * falling back to a raw byte copy on failure. Returns 1 on success. */
-/* PoP: backup_safe_copy_db @ hermes_cli/backup.py:_safe_copy_db */
+/* PoP: backup_safe_copy_db @ hermes_cli/backup_sqlite.py:_safe_copy_db */
 int backup_safe_copy_db(const char *src, const char *dst)
 {
     if (!src || !dst) return 0;
@@ -344,7 +344,7 @@ char *backup_pre_update_backup_dir(const char *hermes_home)
 /*
  * Count jobs in a cron/jobs.json file. Returns -1 if missing/unparseable
  * (means "unknown", never "zero"), else the job count. */
-/* PoP: backup_count_cron_jobs @ hermes_cli/backup.py:_count_cron_jobs */
+/* PoP: backup_count_cron_jobs @ hermes_cli/backup_restore.py:_count_cron_jobs */
 int backup_count_cron_jobs(const char *path)
 {
     if (!path) return -1;

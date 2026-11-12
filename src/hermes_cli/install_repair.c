@@ -138,7 +138,7 @@ void install_repair_target_free(install_repair_target_t *t) {
     free(t);
 }
 
-/* PoP: _venv_scripts_dir @ hermes_cli/_install_repair.py:_venv_scripts_dir */
+/* PoP: _venv_scripts_dir @ hermes_cli/main_install_repair.py:_venv_scripts_dir */
 char *install_repair_venv_scripts_dir(const char *root) {
     size_t n = snprintf(NULL, 0, "%s/venv", root);
     char *venv_dir = malloc(n + 1);
@@ -176,7 +176,7 @@ static char *read_file_all(const char *path) {
     return buf;
 }
 
-/* PoP: _load_console_script_names @ hermes_cli/_install_repair.py:_load_console_script_names */
+/* PoP: _load_console_script_names @ hermes_cli/main_install_repair.py:_load_console_script_names */
 char **install_repair_load_console_script_names(const char *root, size_t *out_n) {
     *out_n = 0;
     size_t n = snprintf(NULL, 0, "%s/pyproject.toml", root);
@@ -211,7 +211,7 @@ char **install_repair_load_console_script_names(const char *root, size_t *out_n)
     return names;
 }
 
-/* PoP: _quarantine_running_hermes_exe @ hermes_cli/_install_repair.py:_quarantine_running_hermes_exe */
+/* PoP: _quarantine_running_hermes_exe @ hermes_cli/old_updater_main.py:_quarantine_running_hermes_exe */
 size_t install_repair_quarantine_running_hermes_exe(const char *scripts_dir,
                                                     install_repair_move_t **out) {
     *out = NULL;
@@ -267,7 +267,7 @@ size_t install_repair_quarantine_running_hermes_exe(const char *scripts_dir,
     return nmoved;
 }
 
-/* PoP: _restore_quarantined_exes @ hermes_cli/_install_repair.py:_restore_quarantined_exes */
+/* PoP: _restore_quarantined_exes @ hermes_cli/old_updater_main.py:_restore_quarantined_exes */
 void install_repair_restore_quarantined_exes(install_repair_move_t *moved,
                                              size_t n) {
     for (size_t i = 0; i < n; i++) {
@@ -277,7 +277,7 @@ void install_repair_restore_quarantined_exes(install_repair_move_t *moved,
     }
 }
 
-/* PoP: _load_installable_optional_extras @ hermes_cli/_install_repair.py:_load_installable_optional_extras */
+/* PoP: _load_installable_optional_extras @ hermes_cli/old_updater_main.py:_load_installable_optional_extras */
 char **install_repair_load_installable_optional_extras(const char *root,
                                                        const char *group,
                                                        size_t *out_n) {

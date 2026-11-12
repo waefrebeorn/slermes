@@ -61,7 +61,7 @@ static char *opt_text(const json_t *v, bool strip_trailing_slash) {
 }
 
 /* _cron_string_list(value) over a json value → json array or NULL. */
-/* PoP: string_list @ hermes_cli.web_server.py:_string_list */
+/* PoP: string_list @ hermes_cli/web_server_memory.py:_string_list */
 static json_t *string_list(const json_t *v) {
     if (!v || v->type == JSON_NULL) return NULL;
     json_t *items = json_array();
@@ -164,7 +164,7 @@ static char *resolve_lenient(const char *path) {
 }
 
 /* ── _normalize_dashboard_cron_script ───────────────────────────────────── */
-/* PoP: ws_cron_normalize_script @ hermes_cli/web_server.py:_normalize_dashboard_cron_script */
+/* PoP: ws_cron_normalize_script @ hermes_cli/web_server_cron.py:_normalize_dashboard_cron_script */
 char *ws_cron_normalize_script(const char *value, const char *profile_home,
                                int *status, char **detail) {
     if (status) *status = 0;
@@ -238,7 +238,7 @@ char *ws_cron_normalize_script(const char *value, const char *profile_home,
 }
 
 /* ── _validate_dashboard_cron_effective_job ─────────────────────────────── */
-/* PoP: ws_cron_validate_effective_job @ hermes_cli/web_server.py:_validate_dashboard_cron_effective_job */
+/* PoP: ws_cron_validate_effective_job @ hermes_cli/web_server_cron.py:_validate_dashboard_cron_effective_job */
 bool ws_cron_validate_effective_job(const json_t *job, int *status,
                                     char **detail) {
     if (status) *status = 0;
@@ -276,7 +276,7 @@ bool ws_cron_validate_effective_job(const json_t *job, int *status,
 }
 
 /* ── _normalize_dashboard_cron_updates ──────────────────────────────────── */
-/* PoP: ws_cron_normalize_updates @ hermes_cli/web_server.py:_normalize_dashboard_cron_updates */
+/* PoP: ws_cron_normalize_updates @ hermes_cli/web_routers/cron.py:_normalize_dashboard_cron_updates */
 json_t *ws_cron_normalize_updates(const json_t *updates,
                                   const char *profile_home, int *status,
                                   char **detail) {
@@ -329,7 +329,7 @@ json_t *ws_cron_normalize_updates(const json_t *updates,
 }
 
 /* ── _cron_default_profile ──────────────────────────────────────────────── */
-/* PoP: ws_cron_default_profile @ hermes_cli/web_server.py:_cron_default_profile */
+/* PoP: ws_cron_default_profile @ hermes_cli/web_server_cron.py:_cron_default_profile */
 char *ws_cron_default_profile(void) {
     char *name = profile_get_active_name();
     if (!name) return strdup("default");
@@ -341,7 +341,7 @@ char *ws_cron_default_profile(void) {
 }
 
 /* ── _cron_profile_home ─────────────────────────────────────────────────── */
-/* PoP: ws_cron_profile_home @ hermes_cli/web_server.py:_cron_profile_home */
+/* PoP: ws_cron_profile_home @ hermes_cli/web_server_cron.py:_cron_profile_home */
 bool ws_cron_profile_home(const char *profile, char **name_out,
                           char **home_out, int *status, char **detail) {
     if (status) *status = 0;
@@ -382,7 +382,7 @@ bool ws_cron_profile_home(const char *profile, char **name_out,
 }
 
 /* ── _annotate_cron_job ─────────────────────────────────────────────────── */
-/* PoP: ws_cron_annotate_job @ hermes_cli/web_server.py:_annotate_cron_job */
+/* PoP: ws_cron_annotate_job @ hermes_cli/web_server_cron.py:_annotate_cron_job */
 json_t *ws_cron_annotate_job(const json_t *job, const char *profile,
                              const char *home) {
     json_t *annotated = job ? json_copy((json_t *)job) : json_object();

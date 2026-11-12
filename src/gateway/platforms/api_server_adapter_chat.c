@@ -99,7 +99,7 @@ static void send_sse_keepalive(int fd) {
 /* Port of Python gateway/platforms/api_server.py:_handle_chat_completions(). */
 /* ── Chat Completions Handlers ───────────────────────────────────── */
 
-/* PoP: api_server_handle_chat_completions @ gateway/platforms/api_server.py:_handle_chat_completions */
+/* PoP: api_server_handle_chat_completions @ gateway/platforms/api_server_openai_routes.py:_handle_chat_completions */
 void api_server_handle_chat_completions(api_server_adapter_t *adapter, int client_fd, const char *body, const char *query, const char *headers) {
     (void)query; (void)headers;
 

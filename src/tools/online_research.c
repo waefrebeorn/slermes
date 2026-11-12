@@ -744,7 +744,7 @@ int tools_online_research_clear_expired(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_online_research_u__aenter__ @ tools/online_research.py:__aenter__ */
+/* PoP: tools_online_research_u__aenter__ @ hermes_cli/gateway_client.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) {
     /* Python: open aiohttp ClientSession with timeout.
      * REAL: the C researcher keeps a session handle; opening just
@@ -753,7 +753,7 @@ int tools_online_research_u__aenter__(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_online_research_u__aexit__ @ tools/online_research.py:__aexit__ */
+/* PoP: tools_online_research_u__aexit__ @ hermes_cli/gateway_client.py:__aexit__ */
 int tools_online_research_u__aexit__(const char *arg) {
     /* Python: close session (teardown). The C researcher has no
      * persistent session handle; __aexit__ releases the shared

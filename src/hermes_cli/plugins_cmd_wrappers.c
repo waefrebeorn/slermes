@@ -249,7 +249,7 @@ int pcmd_copy_example_files(const char *src_dir, const char *dst_dir) {
 json_t *pcmd_missing_requires_env_names(json_t *manifest) {
     (void)manifest; return json_array();
 }
-/* PoP: pcmd_prompt_plugin_env_vars @ hermes_cli/plugins_cmd.py:_prompt_plugin_env_vars */
+/* PoP: pcmd_prompt_plugin_env_vars @ hermes_cli/plugins_cmd_install.py:_prompt_plugin_env_vars */
 void pcmd_prompt_plugin_env_vars(json_t *missing_names) {
     /* Python: prompt for each missing required env var, save to .env.
      * REAL: iterate the json array, read a masked line per var. */
@@ -277,7 +277,7 @@ void pcmd_prompt_plugin_env_vars(json_t *missing_names) {
     }
     if (fp) fclose(fp);
 }
-/* PoP: pcmd_display_after_install @ hermes_cli/plugins_cmd.py:_display_after_install */
+/* PoP: pcmd_display_after_install @ hermes_cli/plugins_cmd_install.py:_display_after_install */
 void pcmd_display_after_install(const char *plugin_name, const char *plugin_dir) {
     if (plugin_name && plugin_dir) {
         printf("Installed plugin '%s' to %s\n", plugin_name, plugin_dir);
@@ -304,7 +304,7 @@ int pcmd_require_installed_plugin(const char *hermes_home, const char *name) {
     printf("%s\n", dir);
     return 0;
 }
-/* PoP: pcmd_install_plugin_core @ hermes_cli/plugins_cmd.py:_install_plugin_core */
+/* PoP: pcmd_install_plugin_core @ hermes_cli/plugins_cmd_install.py:_install_plugin_core */
 int pcmd_install_plugin_core(const char *hermes_home, const char *source, const char *name) {
     /* Python: clone git plugin into plugins dir.
      * REAL: git clone --depth 1 into <home>/plugins/<name>. */
@@ -358,14 +358,14 @@ int pcmd_resolve_plugin_key_and_source(const char *input, char *out_key, size_t 
     if (out_src && src_sz) out_src[0] = '\0';
     return 0;
 }
-/* PoP: pcmd_set_plugin_entry_flag @ hermes_cli/plugins_cmd.py:_set_plugin_entry_flag */
+/* PoP: pcmd_set_plugin_entry_flag @ hermes_cli/plugins_cmd_capabilities.py:_set_plugin_entry_flag */
 int pcmd_set_plugin_entry_flag(const char *hermes_home, const char *key, const char *flag, bool value) {
     /* Python: plugins.entries.<id>.<key> = bool into config.yaml. */
     if (!hermes_home || !key || !flag) return 1;
     printf("plugin entry flag set: %s.%s = %s\n", key, flag, value ? "true" : "false");
     return 0;
 }
-/* PoP: pcmd_resolve_tool_override_grant @ hermes_cli/plugins_cmd.py:_resolve_tool_override_grant */
+/* PoP: pcmd_resolve_tool_override_grant @ hermes_cli/plugins_cmd_capabilities.py:_resolve_tool_override_grant */
 bool pcmd_resolve_tool_override_grant(const char *hermes_home, const char *plugin_key) {
     /* Python: tri-state consent, deny default. */
     (void)hermes_home;
@@ -428,15 +428,15 @@ json_t *pcmd_discover_entrypoint_plugins(const char *hermes_home) {
 const char *pcmd_plugin_status(const char *hermes_home, const char *name) {
     (void)hermes_home; (void)name; return "unknown";
 }
-/* PoP: pcmd_filter_plugin_entries @ hermes_cli/plugins_cmd.py:_filter_plugin_entries */
+/* PoP: pcmd_filter_plugin_entries @ hermes_cli/plugins_cmd_listing.py:_filter_plugin_entries */
 json_t *pcmd_filter_plugin_entries(json_t *entries, const char *filter_str) {
     (void)filter_str; return entries ? entries : json_array();
 }
-/* PoP: pcmd_discover_memory_providers @ hermes_cli/plugins_cmd.py:_discover_memory_providers */
+/* PoP: pcmd_discover_memory_providers @ hermes_cli/plugins_cmd_toggle.py:_discover_memory_providers */
 json_t *pcmd_discover_memory_providers(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
-/* PoP: pcmd_discover_context_engines @ hermes_cli/plugins_cmd.py:_discover_context_engines */
+/* PoP: pcmd_discover_context_engines @ hermes_cli/plugins_cmd_toggle.py:_discover_context_engines */
 json_t *pcmd_discover_context_engines(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
@@ -487,14 +487,14 @@ int pcmd_configure_context_engine(const char *hermes_home, const char *engine) {
     printf("0\n");
     return 0;
 }
-/* PoP: pcmd_run_composite_ui @ hermes_cli/plugins_cmd.py:_run_composite_ui */
+/* PoP: pcmd_run_composite_ui @ hermes_cli/plugins_cmd_toggle.py:_run_composite_ui */
 int pcmd_run_composite_ui(const char *hermes_home) {
     (void)hermes_home;
     /* Python: curses checkbox screen. */
     printf("composite UI ran (checkbox rows + category action rows, scroll, color pairs, plugins_changed/providers_changed result)\n");
     return 0;
 }
-/* PoP: pcmd_run_composite_fallback @ hermes_cli/plugins_cmd.py:_run_composite_fallback */
+/* PoP: pcmd_run_composite_fallback @ hermes_cli/plugins_cmd_toggle.py:_run_composite_fallback */
 int pcmd_run_composite_fallback(const char *hermes_home) {
     /* Python: text toggle fallback. */
     (void)hermes_home;
@@ -502,7 +502,7 @@ int pcmd_run_composite_fallback(const char *hermes_home) {
     printf("(persist by canonical key — never bare manifest name)\n");
     return 0;
 }
-/* PoP: pcmd_dashboard_install_plugin @ hermes_cli/plugins_cmd.py:dashboard_install_plugin */
+/* PoP: pcmd_dashboard_install_plugin @ hermes_cli/plugins_cmd_install.py:dashboard_install_plugin */
 int pcmd_dashboard_install_plugin(const char *hermes_home, const char *source) {
     /* Python: non-interactive install for dashboard. */
     (void)hermes_home;
@@ -543,7 +543,7 @@ const char *pcmd_user_installed_plugin_dir(const char *hermes_home, const char *
     snprintf(out, sz, "%s/plugins/%s", hermes_home ? hermes_home : "/tmp", name ? name : "");
     return out;
 }
-/* PoP: pcmd_dashboard_update_user_plugin @ hermes_cli/plugins_cmd.py:dashboard_update_user_plugin */
+/* PoP: pcmd_dashboard_update_user_plugin @ hermes_cli/plugins_cmd_update.py:dashboard_update_user_plugin */
 int pcmd_dashboard_update_user_plugin(const char *hermes_home, const char *plugin) {
     /* Python: git pull + example copy. Returns {"ok":...} JSON. */
     if (!hermes_home || !plugin || !*plugin) {
@@ -566,7 +566,7 @@ int pcmd_dashboard_update_user_plugin(const char *hermes_home, const char *plugi
     printf("{\"ok\": true, \"name\": \"%s\", \"output\": \"Already up to date.\", \"unchanged\": true}\n", plugin);
     return 0;
 }
-/* PoP: pcmd_git_pull_plugin_dir @ hermes_cli/plugins_cmd.py:_git_pull_plugin_dir */
+/* PoP: pcmd_git_pull_plugin_dir @ hermes_cli/plugins_cmd_git.py:_git_pull_plugin_dir */
 int pcmd_git_pull_plugin_dir(const char *plugin_dir) {
     /* Python: git pull --ff-only with 60s timeout. Returns (ok, msg). */
     if (!plugin_dir || !*plugin_dir) {
@@ -581,7 +581,7 @@ int pcmd_git_pull_plugin_dir(const char *plugin_dir) {
     printf("1\tAlready up to date.\n");
     return 0;
 }
-/* PoP: pcmd_dashboard_remove_user_plugin @ hermes_cli/plugins_cmd.py:dashboard_remove_user_plugin */
+/* PoP: pcmd_dashboard_remove_user_plugin @ hermes_cli/plugins_cmd_remove.py:dashboard_remove_user_plugin */
 int pcmd_dashboard_remove_user_plugin(const char *hermes_home, const char *plugin) {
     /* Python: remove plugin tree under ~/.hermes/plugins only. */
     if (!hermes_home || !plugin || !*plugin) {
@@ -614,7 +614,7 @@ int pcmd_dashboard_remove_user_plugin(const char *hermes_home, const char *plugi
  * .py files, stale bytecode here can produce the same ImportError class.
  * Never raises — OSError on any entry is swallowed.
  */
-/* PoP: pcmd_remove_pycache_in_dir @ hermes_cli/plugins_cmd.py:_clear_plugin_bytecode */
+/* PoP: pcmd_remove_pycache_in_dir @ hermes_cli/plugins_cmd_update.py:_clear_plugin_bytecode */
 static void pcmd_remove_pycache_recursive(const char *path);
 
 static void pcmd_remove_pycache_in_dir(const char *dirpath) {

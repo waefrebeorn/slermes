@@ -116,14 +116,14 @@ char *send_message_display_chat_id(const char *platform_name, const char *chat_i
     return send_message_target_display_chat_id(platform_name, chat_id);
 }
 
-/* PoP: send_message_telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
+/* PoP: send_message_telegram_retry_delay @ tools/send_message_senders.py:_telegram_retry_delay */
 /* Delegate to the focused send_message_target module. */
 double send_message_telegram_retry_delay(const char *error_text, int attempt)
 {
     return send_message_target_telegram_retry_delay(error_text, attempt);
 }
 
-/* PoP: send_message_parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
+/* PoP: send_message_parse_target_ref @ tools/send_message_targets.py:_parse_target_ref */
 /* Delegate to the focused send_message_target module. */
 int send_message_parse_target_ref(const char *platform_name, const char *target_ref,
                                    char *chat_id_out, size_t chat_id_size,
@@ -431,7 +431,7 @@ json_t *send_message_handle_send(json_t *args)
 
 /* ── Platform-specific senders (10 REAL_GAPs closed) ─────────────────── */
 
-/* PoP: send_message_send_telegram_message_with_retry @ tools/send_message_tool.py:_send_telegram_message_with_retry */
+/* PoP: send_message_send_telegram_message_with_retry @ tools/send_message_senders.py:_send_telegram_message_with_retry */
 /* Port of Python tools/send_message_tool.py:_send_telegram_message_with_retry().
  * Sends a Telegram message with automatic retry on transient failures. */
 json_t *send_message_send_telegram_message_with_retry(const char *token, const char *chat_id,
@@ -593,7 +593,7 @@ json_t *send_message_send_to_platform(const char *platform, json_t *pconfig,
     return send_message_send_via_adapter(platform, pconfig, chat_id, message, thread_id);
 }
 
-/* PoP: send_message_send_telegram @ tools/send_message_tool.py:_send_telegram */
+/* PoP: send_message_send_telegram @ tools/send_message_senders.py:_send_telegram */
 /* Port of Python tools/send_message_tool.py:_send_telegram().
  * Send a message via Telegram Bot API. */
 json_t *send_message_send_telegram(const char *token, const char *chat_id,
@@ -777,7 +777,7 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
     return result;
 }
 
-/* PoP: Signal @ tools/send_message_tool.py:_send_signal */
+/* PoP: Signal @ plugins/platforms/signal/standalone.py:_send_signal */
 /* Port of Python tools/send_message_tool.py:_send_signal().
  * Send a message via Signal (photon). */
 json_t *send_message_send_signal(json_t *pconfig, const char *chat_id,
@@ -816,7 +816,7 @@ json_t *send_message_send_signal(json_t *pconfig, const char *chat_id,
     return result;
 }
 
-/* PoP: send_message_send_matrix_via_adapter @ tools/send_message_tool.py:_send_matrix_via_adapter */
+/* PoP: send_message_send_matrix_via_adapter @ tools/send_message_senders.py:_send_matrix_via_adapter */
 /* Port of Python tools/send_message_tool.py:_send_matrix_via_adapter().
  * Send a message via Matrix homeserver adapter. */
 json_t *send_message_send_matrix_via_adapter(json_t *pconfig, const char *chat_id,
@@ -840,7 +840,7 @@ json_t *send_message_send_matrix_via_adapter(json_t *pconfig, const char *chat_i
     return result;
 }
 
-/* PoP: send_message_matrix_send_core @ tools/send_message_tool.py:_matrix_send_core */
+/* PoP: send_message_matrix_send_core @ tools/send_message_senders.py:_matrix_send_core */
 /* Port of Python tools/send_message_tool.py:_matrix_send_core().
  * Core Matrix send logic — formats and posts to the homeserver API. */
 json_t *send_message_matrix_send_core(json_t *adapter, const char *chat_id,
@@ -994,7 +994,7 @@ json_t *send_message_send_yuanbao(const char *chat_id,
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_send_message_tool_u_media_caption_split @ tools/send_message_tool.py:_media_caption_split */
+/* PoP: tools_send_message_tool_u_media_caption_split @ tools/send_message_senders.py:_media_caption_split */
 int tools_send_message_tool_u_media_caption_split(const char *arg) {
     /* Python: caption chokepoint. Arg =
      * "captionable\tstate\tresult". */
@@ -1008,7 +1008,7 @@ int tools_send_message_tool_u_media_caption_split(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_send_message_tool_u_resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
+/* PoP: tools_send_message_tool_u_resolve_slack_user_target @ tools/send_message_senders.py:_resolve_slack_user_target */
 int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) {
     /* Python: DM open. Arg =
      * "state\tresult\terr". */

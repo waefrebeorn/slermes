@@ -53,7 +53,7 @@ typedef struct notify_cb {
 } notify_cb_t;
 static notify_cb_t *g_notify_cbs = NULL;
 
-/* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:signature */
+/* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ agent/empty_response_guard.py:signature */
 
 /* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:wait_for_response */
 

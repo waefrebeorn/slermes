@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 
-/* PoP: gw_utf16_len @ gateway/escape.py:utf16_len */
+/* PoP: gw_utf16_len @ gateway/platforms/base.py:utf16_len */
 /*
  * Count UTF-16 code units in a NUL-terminated UTF-8 string.
  *

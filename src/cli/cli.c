@@ -1209,7 +1209,7 @@ void continuous_on_silence(void *ctx)
 
 /* ── Worktree merge verdict cache ────────────────────────────────────────
  */
-/* PoP: _worktree_merge_cache_path @ cli.py:_worktree_merge_cache_path */
+/* PoP: _worktree_merge_cache_path @ hermes_cli/worktree_ops.py:_worktree_merge_cache_path */
 char *cli_worktree_merge_cache_path(void) {
     const char *home = slermes_home();
     if (!home) return NULL;
@@ -1223,7 +1223,7 @@ char *cli_worktree_merge_cache_path(void) {
     return path;
 }
 
-/* PoP: cli_load_worktree_merge_cache @ cli.py:_load_worktree_merge_cache */
+/* PoP: cli_load_worktree_merge_cache @ hermes_cli/worktree_ops.py:_load_worktree_merge_cache */
 json_t *cli_load_worktree_merge_cache(void) {
     char *path = cli_worktree_merge_cache_path();
     if (!path) return json_object();
@@ -1255,7 +1255,7 @@ json_t *cli_load_worktree_merge_cache(void) {
     return out;
 }
 
-/* PoP: cli_save_worktree_merge_cache @ cli.py:_save_worktree_merge_cache */
+/* PoP: cli_save_worktree_merge_cache @ hermes_cli/worktree_ops.py:_save_worktree_merge_cache */
 void cli_save_worktree_merge_cache(json_t *verdicts) {
     if (!verdicts) return;
     char *path = cli_worktree_merge_cache_path();

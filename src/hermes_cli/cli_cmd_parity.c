@@ -66,7 +66,7 @@ static int get_config_bool(const char *key) {
 
 /* ── /battery ───────────────────────────────────────────────────────── */
 /* PoP: cmd_battery @ hermes_cli/commands.py:battery */
-/* PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
+/* PoP: cmd_battery @ hermes_cli/cli_status_bar_mixin.py:_handle_battery_command */
 void cmd_battery(const char *args, agent_state_t *state) {
     (void)state;
     const char *arg = "";
@@ -251,7 +251,7 @@ void cmd_topup(const char *args, agent_state_t *state) {
 
 /* ── /journey ───────────────────────────────────────────────────────── */
 /* PoP: cmd_journey @ hermes_cli/commands.py:journey */
-/* PoP: cmd_journey @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
+/* PoP: cmd_journey @ hermes_cli/cli_commands_session_tools.py:_handle_journey_command */
 void cmd_journey(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful journey wrapper (hermes_cli/journey.py). */
@@ -346,7 +346,7 @@ void cmd_blueprint(const char *args, agent_state_t *state) {
  * Python exactly means ONE estop handler: cmd_pause, with the disengage
  * branch inline. */
 /* PoP: cmd_pause @ hermes_cli/subcommands/pause.py:cmd_pause */
-/* PoP: cmd_pause @ gateway/run.py:_handle_pause_command */
+/* PoP: cmd_pause @ gateway/run_busy.py:_handle_pause_command */
 void cmd_pause(const char *args, agent_state_t *state) {
     (void)state;
     /* Mirror pause.py / run.py: strip leading spaces. */

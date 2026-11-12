@@ -19,7 +19,7 @@
 
 /* ── hermes_state.py: message ops + repair + delete ── */
 
-/* PoP: latest_message_row_id @ hermes_state.py:latest_message_row_id */
+/* PoP: latest_message_row_id @ hermes_state_messages.py:latest_message_row_id */
 long long hermes_state_latest_message_row_id(sqlite3 *conn, const char *session_id) {
     if (!conn || !session_id) return -1;
     sqlite3_stmt *st = NULL;
@@ -32,7 +32,7 @@ long long hermes_state_latest_message_row_id(sqlite3 *conn, const char *session_
     return id;
 }
 
-/* PoP: set_message_reaction @ hermes_state.py:set_message_reaction */
+/* PoP: set_message_reaction @ hermes_state_messages.py:set_message_reaction */
 void hermes_state_set_message_reaction(sqlite3 *conn, const char *session_id, long long row_id, const char *reaction) {
     if (!conn || !session_id) return;
     sqlite3_stmt *st = NULL;

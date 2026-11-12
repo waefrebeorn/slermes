@@ -18,7 +18,7 @@ void register_telegram_handler(const char *handler) { (void)handler; }
 /* PoP: _resolve_hook_callback_timeout @ hermes_cli/plugins.py:_resolve_hook_callback_timeout */
 int _resolve_hook_callback_timeout(void) { return 30; }
 
-/* PoP: _hook_uses_callback_timeout @ hermes_cli/plugins.py:_hook_uses_callback_timeout */
+/* PoP: _hook_uses_callback_timeout @ hermes_cli/plugins_dispatch.py:_hook_uses_callback_timeout */
 int _hook_uses_callback_timeout(void) { return 0; }
 
 /* PoP: _pre_tool_call_timeout_block @ hermes_cli/plugins.py:_pre_tool_call_timeout_block */

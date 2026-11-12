@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/config.py: 21 missing functions ── */
 
-/* PoP: get_active_config_parse_failure @ hermes_cli/config.py:get_active_config_parse_failure */
+/* PoP: get_active_config_parse_failure @ hermes_cli/config_read_errors.py:get_active_config_parse_failure */
 char *get_active_config_parse_failure(void) { return strdup(""); }
 
 /* PoP: _env_var_policy_name @ hermes_cli/config.py:_env_var_policy_name */
@@ -30,16 +30,16 @@ char *_greedy_literal_match(const char *a, const char *b) { return strdup(""); }
 /* PoP: _phantom_sibling @ hermes_cli/config.py:_phantom_sibling */
 int _phantom_sibling(const char *key) { return 0; }
 
-/* PoP: _canonical_api_mode @ hermes_cli/config.py:_canonical_api_mode */
+/* PoP: _canonical_api_mode @ hermes_cli/config_providers.py:_canonical_api_mode */
 char *_canonical_api_mode(void) { return strdup("openai"); }
 
-/* PoP: coerce_provider_id @ hermes_cli/config.py:coerce_provider_id */
+/* PoP: coerce_provider_id @ hermes_cli/config_providers.py:coerce_provider_id */
 char *coerce_provider_id(const char *id) { return id ? strdup(id) : strdup(""); }
 
-/* PoP: stringify_provider_map @ hermes_cli/config.py:stringify_provider_map */
+/* PoP: stringify_provider_map @ hermes_cli/config_providers.py:stringify_provider_map */
 char *stringify_provider_map(void) { return strdup("{}"); }
 
-/* PoP: find_provider_entry @ hermes_cli/config.py:find_provider_entry */
+/* PoP: find_provider_entry @ hermes_cli/config_providers.py:find_provider_entry */
 char *find_provider_entry(const char *id) { return strdup("{}"); }
 
 /* PoP: _env_ref_lookup @ hermes_cli/config.py:_env_ref_lookup */

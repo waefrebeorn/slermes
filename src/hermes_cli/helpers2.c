@@ -23,7 +23,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cl2_estimate_usage_cost @ cli.py:estimate_usage_cost */
+/* PoP: cl2_estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */
 char *cl2_estimate_usage_cost(const char *args_json) {
     /* Python: delegates to usage_pricing.estimate_usage_cost. */
     if (!args_json) return strdup("0");
@@ -57,20 +57,20 @@ char *cl2_format_token_count_compact(long value) {
     return out ? out : strdup("0");
 }
 
-/* PoP: cl2_is_table_divider @ cli.py:is_table_divider */
+/* PoP: cl2_is_table_divider @ agent/markdown_tables.py:is_table_divider */
 bool cl2_is_table_divider(const char *line) {
     /* Python: markdown_tables delegation. */
     if (!line) return false;
     return line[0] == '|' && strstr(line, "-") != NULL;
 }
 
-/* PoP: cl2_looks_like_table_row @ cli.py:looks_like_table_row */
+/* PoP: cl2_looks_like_table_row @ agent/markdown_tables.py:looks_like_table_row */
 bool cl2_looks_like_table_row(const char *line) {
     if (!line) return false;
     return line[0] == '|' && strchr(line, '|') != NULL;
 }
 
-/* PoP: cl2_realign_markdown_tables @ cli.py:realign_markdown_tables */
+/* PoP: cl2_realign_markdown_tables @ agent/markdown_tables.py:realign_markdown_tables */
 char *cl2_realign_markdown_tables(const char *text) {
     /* Python: markdown_tables delegation. */
     if (!text) return strdup("");
@@ -78,7 +78,7 @@ char *cl2_realign_markdown_tables(const char *text) {
     return strdup(text);
 }
 
-/* PoP: cl2_resolve_worktree_base @ cli.py:_resolve_worktree_base */
+/* PoP: cl2_resolve_worktree_base @ hermes_cli/worktree_ops.py:_resolve_worktree_base */
 char *cl2_resolve_worktree_base(const char *repo_path) {
     /* Python: freshest base ref for a new worktree. */
     if (!repo_path) return NULL;
@@ -86,7 +86,7 @@ char *cl2_resolve_worktree_base(const char *repo_path) {
     return NULL;
 }
 
-/* PoP: cl2_b @ cli.py:_b */
+/* PoP: cl2_b @ plugins/platforms/discord/adapter.py:_b */
 char *cl2_b(const char *s) {
     /* Python: bold on TTY; plain otherwise. */
     if (!s) return strdup("");
@@ -109,7 +109,7 @@ char *cl2_d(const char *s) {
     return strdup(s);
 }
 
-/* PoP: cl2_accent_hex @ cli.py:_accent_hex */
+/* PoP: cl2_accent_hex @ hermes_cli/cli_render.py:_accent_hex */
 char *cl2_accent_hex(void) {
     /* Python: active skin accent for legacy CLI lines. */
     printf("accent color resolved from skin\n");
@@ -122,7 +122,7 @@ char *cl2_get_skill_commands(void) {
     return strdup("[]");
 }
 
-/* PoP: cl2_build_preloaded_skills_prompt @ cli.py:build_preloaded_skills_prompt */
+/* PoP: cl2_build_preloaded_skills_prompt @ agent/skill_commands.py:build_preloaded_skills_prompt */
 char *cl2_build_preloaded_skills_prompt(const char *args_json) {
     /* Python: skill_commands delegation. */
     if (!args_json) return strdup("");
@@ -136,7 +136,7 @@ char *cl2_get_skill_bundles(void) {
     return strdup("[]");
 }
 
-/* PoP: cl2_build_bundle_invocation_message @ cli.py:build_bundle_invocation_message */
+/* PoP: cl2_build_bundle_invocation_message @ agent/skill_bundles.py:build_bundle_invocation_message */
 char *cl2_build_bundle_invocation_message(const char *args_json) {
     /* Python: skill_bundles delegation. */
     if (!args_json) return strdup("");
@@ -144,14 +144,14 @@ char *cl2_build_bundle_invocation_message(const char *args_json) {
     return strdup("");
 }
 
-/* PoP: cl2_schedule_status_bar_unsuppress @ cli.py:_schedule_status_bar_unsuppress */
+/* PoP: cl2_schedule_status_bar_unsuppress @ hermes_cli/cli_terminal_mixin.py:_schedule_status_bar_unsuppress */
 int cl2_schedule_status_bar_unsuppress(void) {
     /* Python: debounced post-resize unsuppress. */
     printf("status bar unsuppress scheduled (debounced)\n");
     return 0;
 }
 
-/* PoP: cl2_agent_spacer_height @ cli.py:_agent_spacer_height */
+/* PoP: cl2_agent_spacer_height @ hermes_cli/cli_status_bar_mixin.py:_agent_spacer_height */
 long cl2_agent_spacer_height(bool agent_running) {
     /* Python: spacer above status bar while agent runs. */
     return agent_running ? 1 : 0;
@@ -178,13 +178,13 @@ int cl2_notify_session_boundary(const char *hook_name, const char *session_json)
     return 0;
 }
 
-/* PoP: cl2_reload_mcp @ cli.py:_reload_mcp */
+/* PoP: cl2_reload_mcp @ hermes_cli/cli_info_mixin.py:_reload_mcp */
 int cl2_reload_mcp(void) {
     /* Python: reload MCP servers — REAL reload. */
     return 0;
 }
 
-/* PoP: cl2_reload_skills @ cli.py:_reload_skills */
+/* PoP: cl2_reload_skills @ hermes_cli/cli_info_mixin.py:_reload_skills */
 int cl2_reload_skills(void) {
     /* Python: reload skills — REAL re-scan. */
     return 0;
@@ -204,7 +204,7 @@ int cl2_chat(const char *message, const char *session_json) {
     return 0;
 }
 
-/* PoP: cl2_persist_active_session_before_close @ cli.py:_persist_active_session_before_close */
+/* PoP: cl2_persist_active_session_before_close @ hermes_cli/cli_session_mixin.py:_persist_active_session_before_close */
 int cl2_persist_active_session_before_close(const char *session_id) {
     /* Python: best-effort flush before close. */
     if (!session_id) return -1;

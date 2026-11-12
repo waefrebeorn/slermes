@@ -23,9 +23,9 @@
 /* ---- parsed fields ---- */
 
 /* ---- Head encode/decode ---- */
-/* PoP: _encode_head @ gateway/platforms/yuanbao_proto.py:_encode_head */
+/* PoP: _encode_head @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_head */
 
-/* PoP: _decode_head @ gateway/platforms/yuanbao_proto.py:_decode_head */ void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
+/* PoP: _decode_head @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_head */ void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
                             const char *msg_id, const char *module, int need_ack, uint64_t status)
 {
     if (cmd_type != 0) yb_f_varint(b, 1, (uint64_t)cmd_type);
@@ -39,7 +39,7 @@
 
 
 /* ---- MsgContent encode/decode ---- */
-/* PoP: _encode_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_msg_content */
+/* PoP: _encode_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_msg_content */
 
 /* PoP: _decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
 /* PoP: _encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */static void yb_encode_msg_content(yb_buf *b, const char *json_content)
@@ -92,7 +92,7 @@
 
 
 /* ---- MsgBodyElement encode ---- */
-/* PoP: _encode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_encode_msg_body_element */
+/* PoP: _encode_msg_body_element @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_msg_body_element */
 static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 {
     json_t *e = json_parse(json_el, NULL);

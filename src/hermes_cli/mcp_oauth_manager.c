@@ -416,7 +416,7 @@ void cli_tools_mcp_oauth_manager_reset_manager_for_tests(void)
     hermes_log(LOG_DEBUG, "mcp_oauth", "Reset manager for tests");
 }
 
-/* PoP: cli_tools_mcp_oauth_manager__same_endpoint @ tools/mcp_oauth_manager.py:_same_endpoint */
+/* PoP: cli_tools_mcp_oauth_manager__same_endpoint @ hermes_cli/web_server_config.py:_same_endpoint */
 /* Port of Python _same_endpoint: True if two URLs target the same endpoint,
  * ignoring query/fragment. Compares scheme, host (case-insensitive netloc),
  * and path with a trailing "/" stripped. Faithful to urllib.parse.urlsplit:

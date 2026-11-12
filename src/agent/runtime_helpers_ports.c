@@ -289,7 +289,7 @@ char *arh_iter_pool_sockets(const char *client_json) {
     return strdup("[]");
 }
 
-/* PoP: arh_cleanup_dead_connections @ agent/agent_runtime_helpers.py:cleanup_dead_connections */
+/* PoP: arh_cleanup_dead_connections @ agent/agent_runtime_helpers_dead_connections.py:cleanup_dead_connections */
 long arh_cleanup_dead_connections(long fd) {
     /* Python: inspect httpx pool, force-close dead — REAL poll probe.
      * Returns 1 when the fd shows no writability (dead/closed). */

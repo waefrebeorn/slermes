@@ -22,7 +22,7 @@ extern char *_stat_sqlite_sidecar_identity(const char *db_path);
 
 /* ── hermes_state.py: session lifecycle + compression + handoff cluster ── */
 
-/* PoP: _bump_conversation_generation @ hermes_state.py:_bump_conversation_generation */
+/* PoP: _bump_conversation_generation @ hermes_state_messages.py:_bump_conversation_generation */
 void _bump_conversation_generation(sqlite3 *conn, const char *session_id, const char *end_reason) {
     if (!conn || !session_id || !end_reason) return;
     /* Only reset-end reasons count: compression, session_reset, etc. */
@@ -88,7 +88,7 @@ void update_session_tool_names(const char *session_id, const char *tool_names_js
     sqlite3_finalize(st);
 }
 
-/* PoP: _freelist_ratio @ hermes_state.py:_freelist_ratio */
+/* PoP: _freelist_ratio @ hermes_state_maintenance.py:_freelist_ratio */
 float _freelist_ratio(sqlite3 *conn) {
     if (!conn) return -1.0f;
     int64_t page_count = 0, freelist = 0;
@@ -105,7 +105,7 @@ float _freelist_ratio(sqlite3 *conn) {
     return (float)((double)freelist / (double)page_count);
 }
 
-/* PoP: reclaim_stale_running_handoffs @ hermes_state.py:reclaim_stale_running_handoffs */
+/* PoP: reclaim_stale_running_handoffs @ hermes_state_gateway.py:reclaim_stale_running_handoffs */
 int reclaim_stale_running_handoffs(const char *error, sqlite3 *conn) {
     if (!error || !conn) return 0;
     /* Find running handoffs */
@@ -129,7 +129,7 @@ int reclaim_stale_running_handoffs(const char *error, sqlite3 *conn) {
     return count;
 }
 
-/* PoP: _db_has_trigram_tool_calls_projection @ hermes_state.py:_db_has_trigram_tool_calls_projection */
+/* PoP: _db_has_trigram_tool_calls_projection @ hermes_state_fts.py:_db_has_trigram_tool_calls_projection */
 bool _db_has_trigram_tool_calls_projection(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
@@ -152,7 +152,7 @@ bool _db_has_trigram_tool_calls_projection(sqlite3 *conn) {
     return has;
 }
 
-/* PoP: _db_needs_fts_storage_upgrade @ hermes_state.py:_db_needs_fts_storage_upgrade */
+/* PoP: _db_needs_fts_storage_upgrade @ hermes_state_fts.py:_db_needs_fts_storage_upgrade */
 bool _db_needs_fts_storage_upgrade(sqlite3 *conn) {
     if (!conn) return false;
     /* True when legacy inline FTS or trigram tool_calls projection exists */
@@ -276,7 +276,7 @@ void _raise_if_db_corrupt(const char *db_path, const char *exc_msg) {
     }
 }
 
-/* PoP: classify_persistence_error @ hermes_state.py:classify_persistence_error */
+/* PoP: classify_persistence_error @ hermes_state_errors.py:classify_persistence_error */
 const char *hermes_state_classify_persistence_error(const char *exc_msg) {
     if (!exc_msg) return "unknown";
     char lower[2048];
@@ -297,7 +297,7 @@ const char *hermes_state_classify_persistence_error(const char *exc_msg) {
     return "unknown";
 }
 
-/* PoP: _repair_scratch_space_error @ hermes_state.py:_repair_scratch_space_error */
+/* PoP: _repair_scratch_space_error @ hermes_state_repair.py:_repair_scratch_space_error */
 char *hermes_state_repair_scratch_space_error(const char *db_path) {
     if (!db_path) return NULL;
     struct stat st;

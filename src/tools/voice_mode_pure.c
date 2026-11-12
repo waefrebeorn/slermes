@@ -98,7 +98,7 @@ void _vad_log(const char *msg) {
 }
 
 /* -- _load_voice_stop_phrases --------------------------------------  */
-/* PoP: _load_voice_stop_phrases @ tools/voice_mode.py:_load_voice_stop_phrases */
+/* PoP: _load_voice_stop_phrases @ tools/voice_mode_transcript.py:_load_voice_stop_phrases */
 char **_load_voice_stop_phrases(const json_t *voice_cfg, int *out_count) {
     *out_count = 0;
     json_t *phrases = NULL;
@@ -151,7 +151,7 @@ void free_voice_stop_phrases(char **phrases, int count) {
 }
 
 /* -- is_voice_stop_phrase ------------------------------------------  */
-/* PoP: is_voice_stop_phrase @ tools/voice_mode.py:is_voice_stop_phrase */
+/* PoP: is_voice_stop_phrase @ tools/voice_mode_transcript.py:is_voice_stop_phrase */
 bool is_voice_stop_phrase(const char *transcript,
                           char **stop_phrases, int phrase_count) {
     if (!transcript || !*transcript) return false;
@@ -180,7 +180,7 @@ bool is_voice_stop_phrase(const char *transcript,
 }
 
 /* -- voice_stop_hint -----------------------------------------------  */
-/* PoP: voice_stop_hint @ tools/voice_mode.py:voice_stop_hint */
+/* PoP: voice_stop_hint @ tools/voice_mode_transcript.py:voice_stop_hint */
 char *voice_stop_hint(char **stop_phrases, int phrase_count) {
     if (phrase_count == 0 || !stop_phrases || !stop_phrases[0]) return strdup("");
     char *hint = (char *)malloc(256);
@@ -228,7 +228,7 @@ bool audio_recorder_max_duration_reached(double cap, double elapsed) {
     return cap > 0 && elapsed >= cap;
 }
 
-/* PoP: voice_mode_normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare  */
+/* PoP: voice_mode_normalize_for_echo_compare @ tools/voice_mode_transcript.py:_normalize_for_echo_compare  */
 /* Returns malloc'd normalized text. Caller frees. */
 char *voice_mode_normalize_for_echo_compare(const char *text) {
     if (!text) return strdup("");

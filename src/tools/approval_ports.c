@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: apr_normalize_command_for_detection @ tools/approval.py:_normalize_command_for_detection */
+/* PoP: apr_normalize_command_for_detection @ tools/approval_detection.py:_normalize_command_for_detection */
 char *apr_normalize_command_for_detection(const char *command) {
     /* Python: strip ANSI escapes, null bytes, normalize fullwidth. */
     if (!command) return strdup("");
@@ -63,7 +63,7 @@ char *apr_normalize_command_for_detection(const char *command) {
     return out;
 }
 
-/* PoP: apr_has_allowlist_shell_operator @ tools/approval.py:_has_allowlist_shell_operator */
+/* PoP: apr_has_allowlist_shell_operator @ tools/approval_floors.py:_has_allowlist_shell_operator */
 bool apr_has_allowlist_shell_operator(const char *command) {
     /* Python: (\n|&&|\|\||[;&|<>`]|\$() */
     if (!command) return false;
@@ -77,7 +77,7 @@ bool apr_has_allowlist_shell_operator(const char *command) {
     return false;
 }
 
-/* PoP: apr_strip_line_comment @ tools/approval.py:_strip_line_comment */
+/* PoP: apr_strip_line_comment @ tools/approval_smart.py:_strip_line_comment */
 char *apr_strip_line_comment(const char *line) {
     /* Python: remove trailing # comment, quote-state aware. */
     if (!line) return strdup("");
@@ -97,7 +97,7 @@ char *apr_strip_line_comment(const char *line) {
     return out ? out : strdup("");
 }
 
-/* PoP: apr_get_approval_timeout @ tools/approval.py:_get_approval_timeout */
+/* PoP: apr_get_approval_timeout @ tools/approval_context.py:_get_approval_timeout */
 long apr_get_approval_timeout(const char *config_yaml) {
     /* Python: approvals.timeout; default 300. */
     if (!config_yaml) return 300;
@@ -109,7 +109,7 @@ long apr_get_approval_timeout(const char *config_yaml) {
     return v > 0 ? v : 300;
 }
 
-/* PoP: apr_command_matches_permanent_allowlist @ tools/approval.py:_command_matches_permanent_allowlist */
+/* PoP: apr_command_matches_permanent_allowlist @ tools/approval_floors.py:_command_matches_permanent_allowlist */
 bool apr_command_matches_permanent_allowlist(const char *command, const char *allowlist_json) {
     /* Python: command_allowlist exact or glob. */
     if (!command || !allowlist_json) return false;
@@ -145,7 +145,7 @@ bool apr_command_matches_permanent_allowlist(const char *command, const char *al
     return false;
 }
 
-/* PoP: apr_detect_dangerous_command @ tools/approval.py:detect_dangerous_command */
+/* PoP: apr_detect_dangerous_command @ tools/approval_detection.py:detect_dangerous_command */
 char *apr_detect_dangerous_command(const char *command) {
     /* Python: (is_dangerous, pattern_key, description) — real pattern
      * table for recursive delete / disk wipe / pipe-to-sh / rm -rf. */

@@ -397,6 +397,7 @@ src/hermes_cli/profile_gaps.o \
  src/gateway/relay/ws_transport_gaps3.o \
     src/agent/port_error_surface.o \
     src/agent/port_image_eviction_policy.o \
+    src/agent/port_compaction_events.o \
     src/agent/port_markdown_tables.o \
     src/agent/port_turn_liveness.o \
     src/cli/port_agent_provider.o \

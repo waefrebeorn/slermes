@@ -55,7 +55,7 @@ static void b2_expand_env_strings(json_t *node)
     }
 }
 
-/* PoP: hcli_check_config_mcp_changes @ cli.py:_check_config_mcp_changes */
+/* PoP: hcli_check_config_mcp_changes @ hermes_cli/cli_info_mixin.py:_check_config_mcp_changes */
 void hcli_check_config_mcp_changes(hcli_t *self)
 {
     if (!self) return;
@@ -172,7 +172,7 @@ void hcli_check_config_mcp_changes(hcli_t *self)
 
 /* ── hcli_split_destructive_skip ────────────────────────────────────────── */
 
-/* PoP: hcli_split_destructive_skip @ cli.py:_split_destructive_skip */
+/* PoP: hcli_split_destructive_skip @ hermes_cli/cli_modal_mixin.py:_split_destructive_skip */
 bool hcli_split_destructive_skip(const char *cmd_text, char **out_remainder)
 {
     if (out_remainder) *out_remainder = NULL;
@@ -345,7 +345,7 @@ static json_t *b2_stt_section(void)
     return out;
 }
 
-/* PoP: hcli_voice_stt_model @ cli.py:_voice_stt_model */
+/* PoP: hcli_voice_stt_model @ hermes_cli/cli_voice_mixin.py:_voice_stt_model */
 char *hcli_voice_stt_model(hcli_t *self)
 {
     (void)self;
@@ -384,7 +384,7 @@ char *hcli_voice_stt_model(hcli_t *self)
     return result;
 }
 
-/* PoP: hcli_voice_stt_provider @ cli.py:_voice_stt_provider */
+/* PoP: hcli_voice_stt_provider @ hermes_cli/cli_voice_mixin.py:_voice_stt_provider */
 char *hcli_voice_stt_provider(hcli_t *self)
 {
     (void)self;
@@ -409,7 +409,7 @@ char *hcli_voice_stt_provider(hcli_t *self)
     return out;
 }
 
-/* PoP: hcli_voice_beeps_enabled @ cli.py:_voice_beeps_enabled */
+/* PoP: hcli_voice_beeps_enabled @ hermes_cli/cli_voice_mixin.py:_voice_beeps_enabled */
 bool hcli_voice_beeps_enabled(hcli_t *self)
 {
     (void)self;
@@ -434,7 +434,7 @@ bool hcli_voice_beeps_enabled(hcli_t *self)
     return result;
 }
 
-/* PoP: hcli_disable_voice_mode @ cli.py:_disable_voice_mode */
+/* PoP: hcli_disable_voice_mode @ hermes_cli/cli_voice_mixin.py:_disable_voice_mode */
 void hcli_disable_voice_mode(hcli_t *self)
 {
     if (!self) return;

@@ -32,7 +32,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: trt_get_env_value @ tools/transcription_tools.py:get_env_value */
+/* PoP: trt_get_env_value @ hermes_cli/config.py:get_env_value */
 char *trt_get_env_value(const char *key, const char *config_yaml) {
     /* Python: live config module read. */
     if (!key) return NULL;
@@ -113,7 +113,7 @@ char *trt_resolve_stt_language(const char *provider_key, const char *stt_config_
     return NULL;
 }
 
-/* PoP: trt_transcode_audio_for_stt @ tools/transcription_tools.py:_transcode_audio_for_stt */
+/* PoP: trt_transcode_audio_for_stt @ tools/transcription_audio.py:_transcode_audio_for_stt */
 char *trt_transcode_audio_for_stt(const char *file_path, const char *work_dir, char **error_out) {
     /* Python: ffmpeg → 16kHz mono AAC/m4a. Returns (converted_path, error). */
     char ffmpeg_path[512];
@@ -162,7 +162,7 @@ char *trt_transcode_audio_for_stt(const char *file_path, const char *work_dir, c
     return strdup(converted);
 }
 
-/* PoP: trt_unregistered_stt_provider_error @ tools/transcription_tools.py:_unregistered_stt_provider_error */
+/* PoP: trt_unregistered_stt_provider_error @ tools/transcription_command.py:_unregistered_stt_provider_error */
 char *trt_unregistered_stt_provider_error(const char *provider) {
     /* Python: returns error dict JSON for unregistered STT provider. */
     json_t *obj = json_object();
@@ -183,7 +183,7 @@ char *trt_unregistered_stt_provider_error(const char *provider) {
     return out;
 }
 
-/* PoP: trt_validate_audio_file_size @ tools/transcription_tools.py:_validate_audio_file_size */
+/* PoP: trt_validate_audio_file_size @ tools/transcription_audio.py:_validate_audio_file_size */
 char *trt_validate_audio_file_size(const char *audio_path) {
     /* Python: check file size against MAX_FILE_SIZE (25 MB). */
     struct stat st;
@@ -204,7 +204,7 @@ char *trt_validate_audio_file_size(const char *audio_path) {
     return NULL;
 }
 
-/* PoP: trt_validate_audio_source_file @ tools/transcription_tools.py:_validate_audio_source_file */
+/* PoP: trt_validate_audio_source_file @ tools/transcription_audio.py:_validate_audio_source_file */
 char *trt_validate_audio_source_file(const char *file_path, bool enforce_size_limit) {
     /* Python: symlink check, existence check, file check, optional size check. */
     struct stat st;
@@ -237,7 +237,7 @@ char *trt_validate_audio_source_file(const char *file_path, bool enforce_size_li
     return NULL;
 }
 
-/* PoP: trt_prepare_audio_for_transcription @ tools/transcription_tools.py:_prepare_audio_for_transcription */
+/* PoP: trt_prepare_audio_for_transcription @ tools/transcription_audio.py:_prepare_audio_for_transcription */
 char *trt_prepare_audio_for_transcription(const char *file_path, char **work_dir_out) {
     /* Python: .silk → WAV via pilk. Non-.silk returns original path. */
     if (!file_path) return NULL;
@@ -254,7 +254,7 @@ char *trt_prepare_audio_for_transcription(const char *file_path, char **work_dir
     return err;
 }
 
-/* PoP: trt_sysctl_value @ tools/transcription_tools.py:_sysctl_value */
+/* PoP: trt_sysctl_value @ tools/transcription_local.py:_sysctl_value */
 char *trt_sysctl_value(const char *name) {
     /* Python: subprocess.check_output(["/usr/sbin/sysctl", "-n", name]). */
     if (!name) return NULL;
@@ -272,7 +272,7 @@ char *trt_sysctl_value(const char *name) {
     return strdup(buf);
 }
 
-/* PoP: trt_should_force_faster_whisper_cpu @ tools/transcription_tools.py:_should_force_faster_whisper_cpu */
+/* PoP: trt_should_force_faster_whisper_cpu @ tools/transcription_local.py:_should_force_faster_whisper_cpu */
 bool trt_should_force_faster_whisper_cpu(void) {
     /* Python: force CPU on Apple Silicon / Rosetta to avoid hard aborts. */
 #ifdef __APPLE__
@@ -315,7 +315,7 @@ static void trt_confidence_thresholds_impl(const char *local_cfg_json, double *n
     if (p) { const char *c = strchr(p, ':'); if (c) *log_prob = atof(c + 1); }
 }
 
-/* PoP: trt_build_local_transcribe_kwargs @ tools/transcription_tools.py:build_local_transcribe_kwargs */
+/* PoP: trt_build_local_transcribe_kwargs @ tools/transcription_local.py:build_local_transcribe_kwargs */
 char *trt_build_local_transcribe_kwargs(const char *stt_config_json) {
     /* Python: build kwargs dict for faster-whisper model.transcribe(). */
     json_t *kwargs = json_object();
@@ -369,7 +369,7 @@ char *trt_build_local_transcribe_kwargs(const char *stt_config_json) {
     return out;
 }
 
-/* PoP: trt_join_confident_segments @ tools/transcription_tools.py:_join_confident_segments */
+/* PoP: trt_join_confident_segments @ tools/transcription_local.py:_join_confident_segments */
 char *trt_join_confident_segments(const char *segments_json, const char *local_cfg_json) {
     /* Python: join segment texts, dropping hallucinated segments. */
     if (!segments_json) return strdup("");
@@ -417,7 +417,7 @@ char *trt_join_confident_segments(const char *segments_json, const char *local_c
     return result;
 }
 
-/* PoP: trt_convert_caf_to_wav @ tools/transcription_tools.py:_convert_caf_to_wav */
+/* PoP: trt_convert_caf_to_wav @ tools/transcription_audio.py:_convert_caf_to_wav */
 char *trt_convert_caf_to_wav(const char *file_path) {
     /* Python: ffmpeg or afconvert (macOS) for CAF→WAV. */
     if (!file_path) return NULL;
@@ -482,7 +482,7 @@ static const char *const TRT_STT_M4A_ENCODE_ARGS[] = {
     NULL
 };
 
-/* PoP: trt_run_ffmpeg_stt_encode @ tools/transcription_tools.py:_run_ffmpeg_stt_encode */
+/* PoP: trt_run_ffmpeg_stt_encode @ tools/transcription_audio.py:_run_ffmpeg_stt_encode */
 /* Python: ffmpeg -y -i input [-af filter] <encode_args> output (check=True,
  * timeout=120). Raises on failure. Returns 0 on success, -1 on failure. */
 int trt_run_ffmpeg_stt_encode(const char *ffmpeg, const char *input_path,
@@ -612,7 +612,7 @@ void trt_start_idle_unload_watcher(int timeout_seconds) {
 #define TRT_CLOUD_TRIM_MIN_RESULT_SECONDS 0.3
 #define TRT_CLOUD_TRIM_MIN_INPUT_SECONDS 12.0
 
-/* PoP: trt_trim_silence_for_cloud_stt @ tools/transcription_tools.py:_trim_silence_for_cloud_stt */
+/* PoP: trt_trim_silence_for_cloud_stt @ tools/transcription_audio.py:_trim_silence_for_cloud_stt */
 char *trt_trim_silence_for_cloud_stt(const char *file_path,
                                      const char *stt_config_json) {
     if (!file_path) return NULL;

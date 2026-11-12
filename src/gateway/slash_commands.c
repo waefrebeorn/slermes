@@ -135,7 +135,7 @@ json_t *slash_reasoning_picker_choices(const char *current_effort) {
 }
 
 /* ─────────────────── _save_gateway_config_key ───────────────────
- * PoP: slash_save_gateway_config_key @ gateway/slash_commands.py:_save_gateway_config_key */
+ * PoP: slash_save_gateway_config_key @ gateway/slash_commands_model.py:_save_gateway_config_key */
 bool slash_save_gateway_config_key(const char *config_path,
                                    const char *key_path,
                                    json_t *value) {
@@ -197,7 +197,7 @@ bool slash_save_gateway_config_key(const char *config_path,
 }
 
 /* ─────────────────── _resume_caller_is_admin ───────────────────
- * PoP: slash_resume_caller_is_admin @ gateway/slash_commands.py:_resume_caller_is_admin */
+ * PoP: slash_resume_caller_is_admin @ gateway/slash_commands_session.py:_resume_caller_is_admin */
 bool slash_resume_caller_is_admin(json_node_t *gateway_config,
                                   const gw_session_source_t *source) {
     if (!source) return false;
@@ -212,7 +212,7 @@ bool slash_resume_caller_is_admin(json_node_t *gateway_config,
 
 /* ──── Remaining slash command handlers ──── */
 
-/* PoP: slash_model_switch_skew_guard @ gateway/slash_commands.py:_model_switch_skew_guard */
+/* PoP: slash_model_switch_skew_guard @ gateway/slash_commands_model.py:_model_switch_skew_guard */
 const char *slash_model_switch_skew_guard(const char *requested, const char *current) {
     if (!requested || !requested[0]) return NULL;
     if (!current || !current[0]) return NULL;
@@ -220,7 +220,7 @@ const char *slash_model_switch_skew_guard(const char *requested, const char *cur
     return NULL;
 }
 
-/* PoP: slash_handle_reset @ gateway/slash_commands.py:_handle_reset_command */
+/* PoP: slash_handle_reset @ gateway/slash_commands_session.py:_handle_reset_command */
 json_t *slash_handle_reset(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx >= 0) session_free(idx);
@@ -249,7 +249,7 @@ json_t *slash_handle_kanban(const char *args) {
     json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
 }
 
-/* PoP: slash_handle_status @ gateway/slash_commands.py:_handle_status_command */
+/* PoP: slash_handle_status @ gateway/slash_commands_status.py:_handle_status_command */
 json_t *slash_handle_status(void) {
     json_t *r = json_object();
     json_set(r, "sessions", json_int(g_gw.session_count));
@@ -257,7 +257,7 @@ json_t *slash_handle_status(void) {
     return r;
 }
 
-/* PoP: slash_session_origin_for_id @ gateway/slash_commands.py:_gateway_session_origin_for_id */
+/* PoP: slash_session_origin_for_id @ gateway/slash_commands_session.py:_gateway_session_origin_for_id */
 const char *slash_session_origin_for_id(const char *session_id) {
     int idx = lookup_by_session_id(session_id);
     if (idx < 0) return NULL;
@@ -265,13 +265,13 @@ const char *slash_session_origin_for_id(const char *session_id) {
     return se ? se->source.platform : NULL;
 }
 
-/* PoP: slash_resume_target_allowed @ gateway/slash_commands.py:_resume_target_allowed */
+/* PoP: slash_resume_target_allowed @ gateway/slash_commands_session.py:_resume_target_allowed */
 bool slash_resume_target_allowed(const char *session_id, const char *user_id) {
     (void)user_id;
     return lookup_by_session_id(session_id) >= 0;
 }
 
-/* PoP: slash_resume_row_visible @ gateway/slash_commands.py:_resume_row_visible */
+/* PoP: slash_resume_row_visible @ gateway/slash_commands_session.py:_resume_row_visible */
 bool slash_resume_row_visible(const char *session_id) {
     return lookup_by_session_id(session_id) >= 0;
 }
@@ -317,7 +317,7 @@ json_t *slash_handle_commands(void) {
     return arr;
 }
 
-/* PoP: slash_handle_model @ gateway/slash_commands.py:_handle_model_command */
+/* PoP: slash_handle_model @ gateway/slash_commands_model.py:_handle_model_command */
 json_t *slash_handle_model(const char *args, const char *session_key) {
     if (args && args[0]) set_model_override(session_key, args);
     json_t *r = json_object();
@@ -326,7 +326,7 @@ json_t *slash_handle_model(const char *args, const char *session_key) {
     return r;
 }
 
-/* PoP: slash_handle_codex_runtime @ gateway/slash_commands.py:_handle_codex_runtime_command */
+/* PoP: slash_handle_codex_runtime @ gateway/slash_commands_model.py:_handle_codex_runtime_command */
 json_t *slash_handle_codex_runtime(const char *args) {
     json_t *r = json_object(); json_set(r, "runtime", json_string(args ? args : "")); return r;
 }
@@ -336,7 +336,7 @@ json_t *slash_handle_personality(const char *args) {
     json_t *r = json_object(); json_set(r, "personality", json_string(args ? args : "default")); return r;
 }
 
-/* PoP: slash_handle_retry @ gateway/slash_commands.py:_handle_retry_command */
+/* PoP: slash_handle_retry @ gateway/slash_commands_session.py:_handle_retry_command */
 json_t *slash_handle_retry(const char *session_key) {
     (void)session_key;
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
@@ -352,7 +352,7 @@ json_t *slash_handle_subgoal(const char *args) {
     json_t *r = json_object(); json_set(r, "subgoal", json_string(args ? args : "")); return r;
 }
 
-/* PoP: slash_handle_undo @ gateway/slash_commands.py:_handle_undo_command */
+/* PoP: slash_handle_undo @ gateway/slash_commands_session.py:_handle_undo_command */
 json_t *slash_handle_undo(const char *session_key) {
     rewind_session(session_key, 1);
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
@@ -380,13 +380,13 @@ json_t *slash_handle_background(const char *args) {
     json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
 }
 
-/* PoP: slash_apply_reasoning_selection @ gateway/slash_commands.py:_apply_reasoning_selection */
+/* PoP: slash_apply_reasoning_selection @ gateway/slash_commands_model.py:_apply_reasoning_selection */
 json_t *slash_apply_reasoning_selection(const char *selection, const char *session_key) {
     (void)session_key;
     return reasoning_parse_effort(selection, false);
 }
 
-/* PoP: slash_try_send_choice_picker @ gateway/slash_commands.py:_try_send_choice_picker */
+/* PoP: slash_try_send_choice_picker @ gateway/slash_commands_model.py:_try_send_choice_picker */
 bool slash_try_send_choice_picker(json_t *choices) {
     /* Python: type-detected picker, text fallback on failure. */
     (void)choices;
@@ -429,18 +429,18 @@ json_t *slash_handle_footer(const char *args) {
     json_t *r = json_object(); json_set(r, "footer", json_string(args ? args : "")); return r;
 }
 
-/* PoP: slash_handle_compress @ gateway/slash_commands.py:_handle_compress_command */
+/* PoP: slash_handle_compress @ gateway/slash_commands_session.py:_handle_compress_command */
 json_t *slash_handle_compress(const char *session_key) {
     (void)session_key;
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
 
-/* PoP: slash_handle_topic @ gateway/slash_commands.py:_handle_topic_command */
+/* PoP: slash_handle_topic @ gateway/slash_commands_session.py:_handle_topic_command */
 json_t *slash_handle_topic(const char *args) {
     json_t *r = json_object(); json_set(r, "topic", json_string(args ? args : "")); return r;
 }
 
-/* PoP: slash_handle_title @ gateway/slash_commands.py:_handle_title_command */
+/* PoP: slash_handle_title @ gateway/slash_commands_session.py:_handle_title_command */
 json_t *slash_handle_title(const char *args) {
     json_t *r = json_object(); json_set(r, "title", json_string(args ? args : "")); return r;
 }
@@ -481,12 +481,12 @@ json_t *slash_handle_branch(const char *args) {
     json_t *r = json_object(); json_set(r, "branch", json_string(args ? args : "main")); return r;
 }
 
-/* PoP: slash_handle_topup @ gateway/slash_commands.py:_handle_topup_command */
+/* PoP: slash_handle_topup @ gateway/slash_commands_status.py:_handle_topup_command */
 json_t *slash_handle_topup(const char *args) {
     json_t *r = json_object(); json_set(r, "amount", json_string(args ? args : "")); return r;
 }
 
-/* PoP: slash_context_breakdown_lines @ gateway/slash_commands.py:_context_breakdown_lines */
+/* PoP: slash_context_breakdown_lines @ gateway/slash_commands_status.py:_context_breakdown_lines */
 json_t *slash_context_breakdown_lines(const char *session_key) {
     (void)session_key;
     json_t *r = json_array();
@@ -500,7 +500,7 @@ json_t *slash_handle_usage(void) {
     json_t *r = json_object(); json_set(r, "tokens", json_int(0)); return r;
 }
 
-/* PoP: slash_handle_insights @ gateway/slash_commands.py:_handle_insights_command */
+/* PoP: slash_handle_insights @ gateway/slash_commands_status.py:_handle_insights_command */
 json_t *slash_handle_insights(void) {
     json_t *r = json_object(); return r;
 }
@@ -530,7 +530,7 @@ char *slash_clean_str(const char *value) {
 
 /* ---- _int_value ---- */
 /* Python: Safely coerce to int. TypeError/ValueError -> 0. */
-/* PoP: slash_int_value @ gateway/slash_commands.py:_int_value */
+/* PoP: slash_int_value @ gateway/slash_commands_status.py:_int_value */
 int slash_int_value(const char *value) {
     if (!value || !value[0]) return 0;
     char *endp = NULL;
@@ -545,7 +545,7 @@ int slash_int_value(const char *value) {
  * throughput, and (optional) per-category breakdown. Returns a json_t object
  * with the gauge fields; if used>0 and context_length>0 the gauge is
  * populated, otherwise a rough transcript estimate (or no_data). */
-/* PoP: slash_handle_context @ gateway/slash_commands.py:_handle_context_command */
+/* PoP: slash_handle_context @ gateway/slash_commands_status.py:_handle_context_command */
 json_t *slash_handle_context(const char *session_key, int expanded) {
     (void)session_key; (void)expanded;
     json_t *r = json_object();
@@ -738,7 +738,7 @@ json_t *slash_handle_approvals(const char *args, bool is_admin) {
  * happen (preview mode) — the actual LLM compression is in
  * _compress_context, which is a heavy agent operation. Here we surface the
  * parsed intent + token estimate so the gateway can display it. */
-/* PoP: slash_handle_compress_inner @ gateway/slash_commands.py:_handle_compress_command_inner */
+/* PoP: slash_handle_compress_inner @ gateway/slash_commands_session.py:_handle_compress_command_inner */
 json_t *slash_handle_compress_inner(const char *args, int preview, int aggressive) {
     json_t *r = json_object();
     json_set(r, "preview", json_bool(preview ? true : false));
@@ -787,7 +787,7 @@ json_t *slash_handle_compress_inner(const char *args, int preview, int aggressiv
  * Delegates to agent.context_breakdown.compute_session_context_breakdown +
  * render_context_breakdown_lines. Returns a json_t array of lines, or an
  * empty array on any failure (fail-open). */
-/* PoP: slash_context_breakdown_block @ gateway/slash_commands.py:_context_breakdown_block */
+/* PoP: slash_context_breakdown_block @ gateway/slash_commands_status.py:_context_breakdown_block */
 json_t *slash_context_breakdown_block(const char *session_key, int expanded) {
     (void)session_key; (void)expanded;
     /* Without a resident agent + transcript we cannot compute per-category

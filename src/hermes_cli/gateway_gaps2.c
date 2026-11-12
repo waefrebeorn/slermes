@@ -93,24 +93,24 @@ int _windows_gateway_breakaway_state(void) { return 0; }
 /* PoP: _get_cron_drain_timeout @ hermes_cli/gateway.py:_get_cron_drain_timeout */
 int _get_cron_drain_timeout(void) { return 30; }
 
-/* PoP: _probe_launchd_domain_for_label @ hermes_cli/gateway.py:_probe_launchd_domain_for_label */
+/* PoP: _probe_launchd_domain_for_label @ hermes_cli/gateway_launchd.py:_probe_launchd_domain_for_label */
 char *_probe_launchd_domain_for_label(const char *label) {
     (void)label;
     return strdup("{}");
 }
 
-/* PoP: _launchctl_label_supervising_process @ hermes_cli/gateway.py:_launchctl_label_supervising_process */
+/* PoP: _launchctl_label_supervising_process @ hermes_cli/gateway_launchd.py:_launchctl_label_supervising_process */
 int _launchctl_label_supervising_process(const char *label) {
     (void)label;
     return 0;
 }
 
-/* PoP: _launchd_kickstart @ hermes_cli/gateway.py:_launchd_kickstart */
+/* PoP: _launchd_kickstart @ hermes_cli/gateway_launchd.py:_launchd_kickstart */
 void _launchd_kickstart(const char *label) {
     (void)label;
 }
 
-/* PoP: _wait_for_launchd_service_pid @ hermes_cli/gateway.py:_wait_for_launchd_service_pid */
+/* PoP: _wait_for_launchd_service_pid @ hermes_cli/gateway_launchd.py:_wait_for_launchd_service_pid */
 int _wait_for_launchd_service_pid(const char *label, int timeout) {
     (void)label; (void)timeout;
     return 0;

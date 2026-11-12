@@ -855,7 +855,7 @@ int read_small(const char *path, char *out, size_t out_size, size_t max_bytes)
  * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
  * root and renders them as workspace-snapshot lines into out (malloc'd, caller frees). */
-/* PoP: coding_context_project_facts @ agent/coding_context.py:_project_facts */
+/* PoP: coding_context_project_facts @ agent/verification_evidence.py:_project_facts */
 char *coding_context_project_facts(const char *root)
 {
     if (!root || !root[0]) return NULL;

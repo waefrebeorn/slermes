@@ -49,7 +49,7 @@ static int clamp_search_limit(int limit, int default_limit)
     return limit < 1 ? 1 : limit;
 }
 
-/* PoP: file_pagination_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination */
+/* PoP: file_pagination_ops_normalize_read_pagination @ tools/file_operations_common.py:normalize_read_pagination */
 char *file_pagination_ops_normalize_read_pagination(int offset, int limit, int default_limit)
 {
     int normalized_offset = offset < 1 ? 1 : offset;          /* max(1, offset) */
@@ -63,7 +63,7 @@ char *file_pagination_ops_normalize_read_pagination(int offset, int limit, int d
     return s;
 }
 
-/* PoP: file_pagination_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination */
+/* PoP: file_pagination_ops_normalize_search_pagination @ tools/file_operations_common.py:normalize_search_pagination */
 char *file_pagination_ops_normalize_search_pagination(int offset, int limit, int default_limit)
 {
     int normalized_offset = offset < 0 ? 0 : offset;          /* max(0, offset) */
@@ -77,7 +77,7 @@ char *file_pagination_ops_normalize_search_pagination(int offset, int limit, int
     return s;
 }
 
-/* PoP: file_pagination_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error */
+/* PoP: file_pagination_ops_is_line_oriented_newline_error @ tools/file_operations_search.py:_is_line_oriented_newline_error */
 bool file_pagination_ops_is_line_oriented_newline_error(const char *error)
 {
     if (!error || !*error) return false;
@@ -86,7 +86,7 @@ bool file_pagination_ops_is_line_oriented_newline_error(const char *error)
            strstr(error, "--multiline") != NULL;
 }
 
-/* PoP: backslashes @ tools/file_operations.py:_pattern_has_regex_newline */
+/* PoP: backslashes @ tools/file_operations_search.py:_pattern_has_regex_newline */
 /* True when pattern contains a literal newline OR a regex \n escape preceded by
  * an ODD number of backslashes (even backslashes => literal backslash+n). */
 bool file_pagination_ops_pattern_has_regex_newline(const char *pattern)
@@ -108,7 +108,7 @@ bool file_pagination_ops_pattern_has_regex_newline(const char *pattern)
     return false;
 }
 
-/* PoP: file_pagination_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern */
+/* PoP: file_pagination_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations_search.py:_maybe_warn_line_oriented_newline_pattern */
 json_t *file_pagination_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern)
 {
     if (!result || !pattern) return result;

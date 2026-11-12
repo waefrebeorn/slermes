@@ -22,7 +22,7 @@
 #include "libjson/json.h"
 
 /* -- _status_bar_goal_segment ----------------------------------  */
-/* PoP: goal_active @ cli.py:_status_bar_goal_segment  */
+/* PoP: goal_active @ hermes_cli/cli_status_bar_mixin.py:_status_bar_goal_segment  */
 /* Returns the "⊙ goal 3/20" segment, or "" when no goal is active.
  * snapshot is a JSON object with optional keys goal_active (bool),
  * goal_turns_used (int), goal_max_turns (int). Caller frees. */
@@ -66,7 +66,7 @@ char *cli_status_goal_segment(const char *snapshot_json)
 }
 
 /* -- _fmt_stash_age --------------------------------------------  */
-/* PoP: cli_status_fmt_stash_age @ cli.py:_fmt_stash_age  */
+/* PoP: cli_status_fmt_stash_age @ hermes_cli/cli_status_bar_mixin.py:_fmt_stash_age  */
 /* Human-readable age for a stash entry, given seconds-since-stash.
  * stashed_at is a time.monotonic() value and now_mono is the caller's
  * current monotonic clock; the delta is what matters. Caller frees. */

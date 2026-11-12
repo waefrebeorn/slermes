@@ -364,8 +364,8 @@ int main_u_has_any_provider_configured(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_session_browse_picker @ hermes_cli/main.py:_session_browse_picker */
-/* PoP: main_u_session_browse_picker @ hermes_cli/sessions_cmd.py:_session_browse_picker */
+/* PoP: main_u_session_browse_picker @ hermes_cli/sessions_cmd_browse.py:_session_browse_picker */
+/* PoP: main_u_session_browse_picker @ hermes_cli/sessions_cmd_browse.py:_session_browse_picker */
 int main_u_session_browse_picker(const char *arg) {
     /* Python: curses browser. Arg =
      * "picked\tstate\tresult". */
@@ -391,7 +391,7 @@ int main_u_resolve_last_session(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_probe_container @ hermes_cli/main.py:_probe_container */
+/* PoP: main_u_probe_container @ hermes_cli/main_container.py:_probe_container */
 int main_u_probe_container(const char *arg) {
     /* Python: subprocess probe; timeout message + exit 1. Arg =
      * "cmd\ttimed_out". */
@@ -433,7 +433,7 @@ int main_u_resolve_session_by_name_or_id(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_print_tui_exit_summary @ hermes_cli/main.py:_print_tui_exit_summary */
+/* PoP: main_u_print_tui_exit_summary @ hermes_cli/main_tui_launch.py:_print_tui_exit_summary */
 int main_u_print_tui_exit_summary(const char *arg) {
     /* Python: resume epilogue. Arg =
      * "has_session\tstate\tresult". */
@@ -491,7 +491,7 @@ int main_u_iter_tui_build_inputs(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_tui_need_rebuild @ hermes_cli/main.py:_tui_need_rebuild */
+/* PoP: main_u_tui_need_rebuild @ hermes_cli/main_tui_launch.py:_tui_need_rebuild */
 int main_u_tui_need_rebuild(const char *arg) {
     /* Python: force flag or mtime freshness. Arg =
      * "force\tstate\tresult". */
@@ -522,7 +522,7 @@ int main_u_ensure_tui_node(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_find_bundled_tui @ hermes_cli/main.py:_find_bundled_tui */
+/* PoP: main_u_find_bundled_tui @ hermes_cli/main_tui_launch.py:_find_bundled_tui */
 int main_u_find_bundled_tui(const char *arg) {
     /* Python: <cli_dir>/tui_dist/entry.js if file. Arg = cli dir (optional;
      * empty = cwd). */
@@ -535,7 +535,7 @@ int main_u_find_bundled_tui(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_make_tui_argv @ hermes_cli/main.py:_make_tui_argv */
+/* PoP: main_u_make_tui_argv @ hermes_cli/main_tui_launch.py:_make_tui_argv */
 int main_u_make_tui_argv(const char *arg) {
     /* Python: node resolution. Arg =
      * "dev\tstate\tresult". */
@@ -553,7 +553,7 @@ int main_u_make_tui_argv(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_normalize_tui_toolsets @ hermes_cli/main.py:_normalize_tui_toolsets */
+/* PoP: main_u_normalize_tui_toolsets @ hermes_cli/main_tui_launch.py:_normalize_tui_toolsets */
 int main_u_normalize_tui_toolsets(const char *arg) {
     /* Python: comma-split list of non-empty. Arg = "raw" (comma-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -577,7 +577,7 @@ int main_u_normalize_tui_toolsets(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_tui_heap_mb @ hermes_cli/main.py:_resolve_tui_heap_mb */
+/* PoP: main_u_resolve_tui_heap_mb @ hermes_cli/main_tui_launch.py:_resolve_tui_heap_mb */
 int main_u_resolve_tui_heap_mb(const char *arg) {
     /* Python: cgroup-aware heap. Arg = "limit_mb\tdefault_mb\tresult". */
     if (!arg || !*arg) { printf("8192\n"); return 0; }
@@ -593,7 +593,7 @@ int main_u_resolve_tui_heap_mb(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_safe_tui_cwd @ hermes_cli/main.py:_safe_tui_cwd */
+/* PoP: main_u_safe_tui_cwd @ hermes_cli/main_tui_launch.py:_safe_tui_cwd */
 int main_u_safe_tui_cwd(const char *arg) {
     /* Python: getcwd, else PWD env dir, else project root. Arg = PWD. */
     char cwd[1024];
@@ -611,7 +611,7 @@ int main_u_safe_tui_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_apply_tui_python_env @ hermes_cli/main.py:_apply_tui_python_env */
+/* PoP: main_u_apply_tui_python_env @ hermes_cli/main_tui_launch.py:_apply_tui_python_env */
 int main_u_apply_tui_python_env(const char *arg) {
     /* Python: seed/repair Python env vars. Arg = "state\tresult_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -622,7 +622,7 @@ int main_u_apply_tui_python_env(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_launch_tui @ hermes_cli/main.py:_launch_tui */
+/* PoP: main_u_launch_tui @ hermes_cli/main_tui_launch.py:_launch_tui */
 int main_u_launch_tui(const char *arg) {
     /* Python: exec TUI. Arg =
      * "worktree\tstate\tresult". */
@@ -636,7 +636,7 @@ int main_u_launch_tui(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_pin_kanban_board_env @ hermes_cli/main.py:_pin_kanban_board_env */
+/* PoP: main_u_pin_kanban_board_env @ hermes_cli/main_tui_launch.py:_pin_kanban_board_env */
 int main_u_pin_kanban_board_env(const char *arg) {
     /* Python: pin HERMES_KANBAN_BOARD if unset. Arg = "board\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -647,7 +647,7 @@ int main_u_pin_kanban_board_env(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_sync_bundled_skills_quietly @ hermes_cli/main.py:_sync_bundled_skills_quietly */
+/* PoP: main_u_sync_bundled_skills_quietly @ hermes_cli/main_tui_launch.py:_sync_bundled_skills_quietly */
 int main_u_sync_bundled_skills_quietly(const char *arg) {
     /* Python: sync_skills(quiet=True), failures swallowed — REAL. */
     (void)arg;
@@ -667,7 +667,7 @@ int main_u_sync_bundled_skills_quietly(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_use_tui @ hermes_cli/main.py:_resolve_use_tui */
+/* PoP: main_u_resolve_use_tui @ hermes_cli/main_tui_launch.py:_resolve_use_tui */
 int main_u_resolve_use_tui(const char *arg) {
     /* Python: TUI decision ladder. Arg =
      * "cli_flag\ttui_flag\ttty\tenv_tui\tstate\tresult". */
@@ -721,7 +721,7 @@ int main_cmd_proxy(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_whatsapp @ hermes_cli/main.py:cmd_whatsapp */
+/* PoP: main_cmd_whatsapp @ hermes_cli/main_platform_setup.py:cmd_whatsapp */
 int main_cmd_whatsapp(const char *arg) {
     /* Python: mode choice + QR. Arg =
      * "state\tresult\terr". */
@@ -742,7 +742,7 @@ int main_cmd_whatsapp(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_whatsapp_cloud @ hermes_cli/main.py:cmd_whatsapp_cloud */
+/* PoP: main_cmd_whatsapp_cloud @ hermes_cli/main_platform_setup.py:cmd_whatsapp_cloud */
 int main_cmd_whatsapp_cloud(const char *arg) {
     /* Python: tty gate + setup run. Arg = "has_tty\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -753,7 +753,7 @@ int main_cmd_whatsapp_cloud(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_is_profile_api_key_provider @ hermes_cli/main.py:_is_profile_api_key_provider */
+/* PoP: main_u_is_profile_api_key_provider @ hermes_cli/main_provider_setup.py:_is_profile_api_key_provider */
 int main_u_is_profile_api_key_provider(const char *arg) {
     /* Python: provider profile auth_type == api_key. Arg = "auth_type". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -776,7 +776,7 @@ int main_select_provider_and_model(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_clear_stale_openai_base_url @ hermes_cli/main.py:_clear_stale_openai_base_url */
+/* PoP: main_u_clear_stale_openai_base_url @ hermes_cli/main_provider_setup.py:_clear_stale_openai_base_url */
 int main_u_clear_stale_openai_base_url(const char *arg) {
     /* Python: stale aux route. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -787,7 +787,7 @@ int main_u_clear_stale_openai_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_all_aux_tasks @ hermes_cli/main.py:_all_aux_tasks */
+/* PoP: main_u_all_aux_tasks @ hermes_cli/main_provider_setup.py:_all_aux_tasks */
 int main_u_all_aux_tasks(const char *arg) {
     /* Python: built-in + plugin tasks. Arg = "tasks_json\tcount". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -796,7 +796,7 @@ int main_u_all_aux_tasks(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_format_aux_current @ hermes_cli/main.py:_format_aux_current */
+/* PoP: main_u_format_aux_current @ hermes_cli/main_provider_setup.py:_format_aux_current */
 int main_u_format_aux_current(const char *arg) {
     /* Python: custom/provider/model render. Arg =
      * "base_url\tprovider\tmodel". */
@@ -828,7 +828,7 @@ int main_u_format_aux_current(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_save_aux_choice @ hermes_cli/main.py:_save_aux_choice */
+/* PoP: main_u_save_aux_choice @ hermes_cli/main_provider_setup.py:_save_aux_choice */
 int main_u_save_aux_choice(const char *arg) {
     /* Python: persist 4 routing fields. Arg =
      * "task\tprovider\tmodel\tstate". */
@@ -842,7 +842,7 @@ int main_u_save_aux_choice(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_reset_aux_to_auto @ hermes_cli/main.py:_reset_aux_to_auto */
+/* PoP: main_u_reset_aux_to_auto @ hermes_cli/main_provider_setup.py:_reset_aux_to_auto */
 int main_u_reset_aux_to_auto(const char *arg) {
     /* Python: reset routing fields, keep timeouts. Arg =
      * "count\tstate\tresult". */
@@ -854,7 +854,7 @@ int main_u_reset_aux_to_auto(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_aux_config_menu @ hermes_cli/main.py:_aux_config_menu */
+/* PoP: main_u_aux_config_menu @ hermes_cli/main_provider_setup.py:_aux_config_menu */
 int main_u_aux_config_menu(const char *arg) {
     /* Python: task picker loop. Arg =
      * "task\tstate\tresult". */
@@ -873,7 +873,7 @@ int main_u_aux_config_menu(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_aux_select_for_task @ hermes_cli/main.py:_aux_select_for_task */
+/* PoP: main_u_aux_select_for_task @ hermes_cli/main_provider_setup.py:_aux_select_for_task */
 int main_u_aux_select_for_task(const char *arg) {
     /* Python: authenticated-only picker. Arg =
      * "task\tstate\tresult". */
@@ -887,7 +887,7 @@ int main_u_aux_select_for_task(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_aux_flow_provider_model @ hermes_cli/main.py:_aux_flow_provider_model */
+/* PoP: main_u_aux_flow_provider_model @ hermes_cli/main_provider_setup.py:_aux_flow_provider_model */
 int main_u_aux_flow_provider_model(const char *arg) {
     /* Python: aux model prompt. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -898,7 +898,7 @@ int main_u_aux_flow_provider_model(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_aux_flow_custom_endpoint @ hermes_cli/main.py:_aux_flow_custom_endpoint */
+/* PoP: main_u_aux_flow_custom_endpoint @ hermes_cli/main_provider_setup.py:_aux_flow_custom_endpoint */
 int main_u_aux_flow_custom_endpoint(const char *arg) {
     /* Python: OpenAI-compatible prompt. Arg =
      * "task\tstate\tresult\taborted". */
@@ -919,7 +919,7 @@ int main_u_aux_flow_custom_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_prompt_provider_choice @ hermes_cli/main.py:_prompt_provider_choice */
+/* PoP: main_u_prompt_provider_choice @ hermes_cli/main_provider_setup.py:_prompt_provider_choice */
 int main_u_prompt_provider_choice(const char *arg) {
     /* Python: curses or numbered. Arg =
      * "count\tdefault\tstate\tresult". */
@@ -936,7 +936,7 @@ int main_u_prompt_provider_choice(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_prompt_custom_api_mode_selection @ hermes_cli/main.py:_prompt_custom_api_mode_selection */
+/* PoP: main_u_prompt_custom_api_mode_selection @ hermes_cli/main_provider_setup.py:_prompt_custom_api_mode_selection */
 int main_u_prompt_custom_api_mode_selection(const char *arg) {
     /* Python: 4-mode picker. Arg =
      * "state\tresult". */
@@ -948,7 +948,7 @@ int main_u_prompt_custom_api_mode_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_custom_provider_api_key_config_value @ hermes_cli/main.py:_custom_provider_api_key_config_value */
+/* PoP: main_u_custom_provider_api_key_config_value @ hermes_cli/main_provider_setup.py:_custom_provider_api_key_config_value */
 int main_u_custom_provider_api_key_config_value(const char *arg) {
     /* Python: api_key_ref -> it; key_env (no api_key) -> ${KEY}; else key.
      * Arg = "api_key_ref\tkey_env\tapi_key\tresolved". */
@@ -966,7 +966,7 @@ int main_u_custom_provider_api_key_config_value(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_custom_provider_base_url_config_value @ hermes_cli/main.py:_custom_provider_base_url_config_value */
+/* PoP: main_u_custom_provider_base_url_config_value @ hermes_cli/main_provider_setup.py:_custom_provider_base_url_config_value */
 int main_u_custom_provider_base_url_config_value(const char *arg) {
     /* Python: base_url_ref if set else resolved_base_url, stripped. Arg =
      * "base_url_ref\tresolved". */
@@ -982,7 +982,7 @@ int main_u_custom_provider_base_url_config_value(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_save_custom_provider @ hermes_cli/main.py:_save_custom_provider */
+/* PoP: main_u_save_custom_provider @ hermes_cli/main_provider_setup.py:_save_custom_provider */
 int main_u_save_custom_provider(const char *arg) {
     /* Python: upsert provider. Arg =
      * "exists\tstate\tresult". */
@@ -997,7 +997,7 @@ int main_u_save_custom_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_remove_custom_provider @ hermes_cli/main.py:_remove_custom_provider */
+/* PoP: main_u_remove_custom_provider @ hermes_cli/main_provider_setup.py:_remove_custom_provider */
 int main_u_remove_custom_provider(const char *arg) {
     /* Python: picker remove. Arg =
      * "removed\tstate\tresult". */
@@ -1031,8 +1031,8 @@ int main_u__getattr__(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
-/* PoP: main_u_set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
+/* PoP: main_u_set_reasoning_effort @ hermes_cli/setup.py:_set_reasoning_effort */
+/* PoP: main_u_set_reasoning_effort @ hermes_cli/setup.py:_set_reasoning_effort */
 int main_u_set_reasoning_effort(const char *arg) {
     /* Python: config["agent"]["reasoning_effort"] = effort. Persist it. */
     json_t *v = json_string(arg ? arg : "medium");
@@ -1045,7 +1045,7 @@ int main_u_set_reasoning_effort(const char *arg) {
     return rc == 0 ? 0 : 1;
 }
 
-/* PoP: main_u_prompt_reasoning_effort_selection @ hermes_cli/main.py:_prompt_reasoning_effort_selection */
+/* PoP: main_u_prompt_reasoning_effort_selection @ hermes_cli/main_provider_setup.py:_prompt_reasoning_effort_selection */
 int main_u_prompt_reasoning_effort_selection(const char *arg) {
     /* Python: canonical-order picker. Arg =
      * "state\tresult". */
@@ -1057,7 +1057,7 @@ int main_u_prompt_reasoning_effort_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_anthropic_oauth_flow @ hermes_cli/main.py:_run_anthropic_oauth_flow */
+/* PoP: main_u_run_anthropic_oauth_flow @ hermes_cli/main_provider_setup.py:_run_anthropic_oauth_flow */
 int main_u_run_anthropic_oauth_flow(const char *arg) {
     /* Python: setup-token flow. Arg =
      * "linked\tstate\tresult". */
@@ -1092,7 +1092,7 @@ int main_cmd_logout(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_slack @ hermes_cli/main.py:cmd_slack */
+/* PoP: main_cmd_slack @ hermes_cli/main_platform_setup.py:cmd_slack */
 int main_cmd_slack(const char *arg) {
     /* Python: slack subcommand dispatch. Arg = "sub\tstate". */
     if (!arg || !*arg) {
@@ -1190,7 +1190,7 @@ int main_u_clear_bytecode_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_capture_head_sha @ hermes_cli/main.py:_capture_head_sha */
+/* PoP: main_u_capture_head_sha @ hermes_cli/update_cmd.py:_capture_head_sha */
 int main_u_capture_head_sha(const char *arg) {
     /* Python: git rev-parse HEAD stdout or None. Arg = "output" (empty =
      * failure). */
@@ -1202,7 +1202,7 @@ int main_u_capture_head_sha(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_validate_critical_files_syntax @ hermes_cli/main.py:_validate_critical_files_syntax */
+/* PoP: main_u_validate_critical_files_syntax @ hermes_cli/update_cmd.py:_validate_critical_files_syntax */
 int main_u_validate_critical_files_syntax(const char *arg) {
     /* Python: py_compile sweep. Arg =
      * "ok\tstate\tresult". */
@@ -1217,7 +1217,7 @@ int main_u_validate_critical_files_syntax(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_gateway_prompt @ hermes_cli/main.py:_gateway_prompt */
+/* PoP: main_u_gateway_prompt @ hermes_cli/update_cmd.py:_gateway_prompt */
 int main_u_gateway_prompt(const char *arg) {
     /* Python: file IPC prompt. Arg =
      * "state\tresult\ttimed_out". */
@@ -1299,7 +1299,7 @@ int main_u_run_with_idle_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_nixos_build_env @ hermes_cli/main.py:_nixos_build_env */
+/* PoP: main_u_nixos_build_env @ hermes_cli/main_web_build.py:_nixos_build_env */
 int main_u_nixos_build_env(const char *arg) {
     /* Python: two-tier python3. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1310,7 +1310,7 @@ int main_u_nixos_build_env(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_npm_install_deterministic @ hermes_cli/main.py:_run_npm_install_deterministic */
+/* PoP: main_u_run_npm_install_deterministic @ hermes_cli/main_web_build.py:_run_npm_install_deterministic */
 int main_u_run_npm_install_deterministic(const char *arg) {
     /* Python: ci-first install. Arg =
      * "rc\tstate\tresult". */
@@ -1325,7 +1325,7 @@ int main_u_run_npm_install_deterministic(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_build_web_ui @ hermes_cli/main.py:_build_web_ui */
+/* PoP: main_u_build_web_ui @ hermes_cli/main_web_build.py:_build_web_ui */
 int main_u_build_web_ui(const char *arg) {
     /* Python: flock serialized build. Arg =
      * "has_pkg\tstate\tresult". */
@@ -1340,7 +1340,7 @@ int main_u_build_web_ui(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_do_build_web_ui @ hermes_cli/main.py:_do_build_web_ui */
+/* PoP: main_u_do_build_web_ui @ hermes_cli/main_web_build.py:_do_build_web_ui */
 int main_u_do_build_web_ui(const char *arg) {
     /* Python: npm build. Arg =
      * "built\tstate\tresult". */
@@ -1355,7 +1355,7 @@ int main_u_do_build_web_ui(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_dist_exists @ hermes_cli/main.py:_desktop_dist_exists */
+/* PoP: main_u_desktop_dist_exists @ hermes_cli/main_desktop.py:_desktop_dist_exists */
 int main_u_desktop_dist_exists(const char *arg) {
     /* Python: dist/index.html presence. Arg = "state". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -1374,7 +1374,7 @@ int main_u_compute_desktop_content_hash(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_stamp_path @ hermes_cli/main.py:_desktop_stamp_path */
+/* PoP: main_u_desktop_stamp_path @ hermes_cli/old_updater_main.py:_desktop_stamp_path */
 int main_u_desktop_stamp_path(const char *arg) {
     /* Python: get_hermes_home() / "desktop-build-stamp.json". Arg = optional
      * hermes home. */
@@ -1386,7 +1386,7 @@ int main_u_desktop_stamp_path(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_build_needed @ hermes_cli/main.py:_desktop_build_needed */
+/* PoP: main_u_desktop_build_needed @ hermes_cli/main_desktop.py:_desktop_build_needed */
 int main_u_desktop_build_needed(const char *arg) {
     /* Python: hash vs stamp. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -1413,7 +1413,7 @@ int main_u_write_desktop_build_stamp(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_packaged_executable @ hermes_cli/main.py:_desktop_packaged_executable */
+/* PoP: main_u_desktop_packaged_executable @ hermes_cli/main_desktop.py:_desktop_packaged_executable */
 int main_u_desktop_packaged_executable(const char *arg) {
     /* Python: PE-arch filtered. Arg =
      * "platform\tstate\tresult". */
@@ -1470,7 +1470,7 @@ int main_u_parse_pe_machine(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_pe_machine_or_none @ hermes_cli/main.py:_pe_machine_or_none */
+/* PoP: main_u_pe_machine_or_none @ hermes_cli/main_desktop.py:_pe_machine_or_none */
 int main_u_pe_machine_or_none(const char *arg) {
     /* Python: _parse_pe_machine(path) with ValueError -> None. Reads the
      * PE header machine field (DOS MZ + e_lfanew + PE signature + machine).
@@ -1491,7 +1491,7 @@ int main_u_pe_machine_or_none(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_exe_integrity_error @ hermes_cli/main.py:_desktop_exe_integrity_error */
+/* PoP: main_u_desktop_exe_integrity_error @ hermes_cli/main_desktop.py:_desktop_exe_integrity_error */
 int main_u_desktop_exe_integrity_error(const char *arg) {
     /* Python: PE machine check vs host. Arg = "machine\texpected\thost". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1585,7 +1585,7 @@ int main_u_redownload_electron_dist(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_stop_desktop_processes_locking_build @ hermes_cli/main.py:_stop_desktop_processes_locking_build */
+/* PoP: main_u_stop_desktop_processes_locking_build @ hermes_cli/main_desktop.py:_stop_desktop_processes_locking_build */
 int main_u_stop_desktop_processes_locking_build(const char *arg) {
     /* Python: release-dir scope. Arg =
      * "stopped\tstate\tresult". */
@@ -1598,7 +1598,7 @@ int main_u_stop_desktop_processes_locking_build(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_macos_relaunchable_fixup @ hermes_cli/main.py:_desktop_macos_relaunchable_fixup */
+/* PoP: main_u_desktop_macos_relaunchable_fixup @ hermes_cli/main_desktop.py:_desktop_macos_relaunchable_fixup */
 int main_u_desktop_macos_relaunchable_fixup(const char *arg) {
     /* Python: quarantine + ad-hoc resign. Arg =
      * "darwin\thas_identity\tstate\tresult". */
@@ -1614,7 +1614,7 @@ int main_u_desktop_macos_relaunchable_fixup(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_force_adhoc_macos_signing @ hermes_cli/main.py:_force_adhoc_macos_signing */
+/* PoP: main_u_force_adhoc_macos_signing @ hermes_cli/main_desktop.py:_force_adhoc_macos_signing */
 int main_u_force_adhoc_macos_signing(const char *arg) {
     /* Python: ad-hoc signing flag. Arg =
      * "darwin\tsource_mode\thas_identity\tpinned\tstate\tresult". */
@@ -1633,7 +1633,7 @@ int main_u_force_adhoc_macos_signing(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_linux_needs_no_sandbox @ hermes_cli/main.py:_desktop_linux_needs_no_sandbox */
+/* PoP: main_u_desktop_linux_needs_no_sandbox @ hermes_cli/main_desktop.py:_desktop_linux_needs_no_sandbox */
 int main_u_desktop_linux_needs_no_sandbox(const char *arg) {
     /* Python: apparmor userns check. Arg =
      * "is_linux\tis_root\trestricted\tresult". */
@@ -1648,7 +1648,7 @@ int main_u_desktop_linux_needs_no_sandbox(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_linux_sandbox_helper_is_regular_file @ hermes_cli/main.py:_desktop_linux_sandbox_helper_is_regular_file */
+/* PoP: main_u_desktop_linux_sandbox_helper_is_regular_file @ hermes_cli/main_desktop.py:_desktop_linux_sandbox_helper_is_regular_file */
 int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {
     /* Python: linux only; <parent>/chrome-sandbox is a regular file. Arg =
      * packaged exe dir (or "windows"). */
@@ -1662,7 +1662,7 @@ int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_linux_sandbox_fixup @ hermes_cli/main.py:_desktop_linux_sandbox_fixup */
+/* PoP: main_u_desktop_linux_sandbox_fixup @ hermes_cli/main_desktop.py:_desktop_linux_sandbox_fixup */
 int main_u_desktop_linux_sandbox_fixup(const char *arg) {
     /* Python: SUID helper. Arg =
      * "is_linux\tmissing\tstate\tresult". */
@@ -1684,7 +1684,7 @@ int main_u_desktop_linux_sandbox_fixup(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_desktop_launch_options @ hermes_cli/main.py:_desktop_launch_options */
+/* PoP: main_u_desktop_launch_options @ hermes_cli/main_desktop.py:_desktop_launch_options */
 int main_u_desktop_launch_options(const char *arg) {
     /* Python: desktop.* options. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\tauto\n"); return 0; }
@@ -1695,7 +1695,7 @@ int main_u_desktop_launch_options(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_gui @ hermes_cli/main.py:cmd_gui */
+/* PoP: main_cmd_gui @ hermes_cli/main_desktop.py:cmd_gui */
 int main_cmd_gui(const char *arg) {
     /* Python: Electron launch. Arg =
      * "state\tresult\terr". */
@@ -1716,7 +1716,7 @@ int main_cmd_gui(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_find_stale_dashboard_pids @ hermes_cli/main.py:_find_stale_dashboard_pids */
+/* PoP: main_u_find_stale_dashboard_pids @ hermes_cli/main_dashboard.py:_find_stale_dashboard_pids */
 int main_u_find_stale_dashboard_pids(const char *arg) {
     /* Python: dashboard lock finder. Arg =
      * "count\tstate\tresult". */
@@ -1729,7 +1729,7 @@ int main_u_find_stale_dashboard_pids(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_print_curator_first_run_notice @ hermes_cli/main.py:_print_curator_first_run_notice */
+/* PoP: main_u_print_curator_first_run_notice @ hermes_cli/update_cmd_maint.py:_print_curator_first_run_notice */
 int main_u_print_curator_first_run_notice(const char *arg) {
     /* Python: only fires when curator enabled AND no run recorded.
      * REAL: gate on the curator marker file under HERMES_HOME. */
@@ -1749,7 +1749,7 @@ int main_u_print_curator_first_run_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_print_fts_optimize_available_notice @ hermes_cli/main.py:_print_fts_optimize_available_notice */
+/* PoP: main_u_print_fts_optimize_available_notice @ hermes_cli/update_cmd_maint.py:_print_fts_optimize_available_notice */
 int main_u_print_fts_optimize_available_notice(const char *arg) {
     /* Python: only when state.db still on legacy pre-v23 inline FTS.
      * REAL: probe the FTS-legacy marker; print only when applicable. */
@@ -1770,7 +1770,7 @@ int main_u_print_fts_optimize_available_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_print_curator_recent_run_notice @ hermes_cli/main.py:_print_curator_recent_run_notice */
+/* PoP: main_u_print_curator_recent_run_notice @ hermes_cli/update_cmd_maint.py:_print_curator_recent_run_notice */
 int main_u_print_curator_recent_run_notice(const char *arg) {
     /* Python (update_cmd.py:_print_curator_recent_run_notice): load curator
      * state, print the most recent run's summary exactly once (show-once
@@ -1787,7 +1787,7 @@ int main_u_print_curator_recent_run_notice(const char *arg) {
     return 1;
 }
 
-/* PoP: main_u_restart_managed_dashboard_service @ hermes_cli/main.py:_restart_managed_dashboard_service */
+/* PoP: main_u_restart_managed_dashboard_service @ hermes_cli/main_dashboard.py:_restart_managed_dashboard_service */
 int main_u_restart_managed_dashboard_service(const char *arg) {
     /* Python: systemd-aware restart. Arg =
      * "handled\tstate\tresult". */
@@ -1802,7 +1802,7 @@ int main_u_restart_managed_dashboard_service(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_kill_stale_dashboard_processes @ hermes_cli/main.py:_kill_stale_dashboard_processes */
+/* PoP: main_u_kill_stale_dashboard_processes @ hermes_cli/dashboard_procs.py:_kill_stale_dashboard_processes */
 int main_u_kill_stale_dashboard_processes(const char *arg) {
     /* Python: stale dashboard sweep. Arg =
      * "killed\tstate\tresult". */
@@ -1817,7 +1817,7 @@ int main_u_kill_stale_dashboard_processes(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_update_via_zip @ hermes_cli/main.py:_update_via_zip */
+/* PoP: main_u_update_via_zip @ hermes_cli/update_cmd_zip.py:_update_via_zip */
 int main_u_update_via_zip(const char *arg) {
     /* Python: Windows zip fallback. Arg =
      * "state\tresult\terr". */
@@ -1839,7 +1839,7 @@ int main_u_update_via_zip(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_stash_local_changes_if_needed @ hermes_cli/main.py:_stash_local_changes_if_needed */
+/* PoP: main_u_stash_local_changes_if_needed @ hermes_cli/update_cmd_stash.py:_stash_local_changes_if_needed */
 int main_u_stash_local_changes_if_needed(const char *arg) {
     /* Python: unmerged-reset stash. Arg =
      * "stashed\tstate\tresult". */
@@ -1855,7 +1855,7 @@ int main_u_stash_local_changes_if_needed(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_stash_selector @ hermes_cli/main.py:_resolve_stash_selector */
+/* PoP: main_u_resolve_stash_selector @ hermes_cli/update_cmd_stash.py:_resolve_stash_selector */
 int main_u_resolve_stash_selector(const char *arg) {
     /* Python: stash list scan for commit match. Arg = "stash_ref\tlines"
      * (lines = selector H per line). */
@@ -1888,7 +1888,7 @@ int main_u_resolve_stash_selector(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_print_stash_cleanup_guidance @ hermes_cli/main.py:_print_stash_cleanup_guidance */
+/* PoP: main_u_print_stash_cleanup_guidance @ hermes_cli/update_cmd_stash.py:_print_stash_cleanup_guidance */
 int main_u_print_stash_cleanup_guidance(const char *arg) {
     /* Python: guidance lines. Arg = "stash_selector\tstash_ref" (selector
      * empty = none). */
@@ -1902,7 +1902,7 @@ int main_u_print_stash_cleanup_guidance(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_stash_apply_failed_only_on_existing_untracked @ hermes_cli/main.py:_stash_apply_failed_only_on_existing_untracked */
+/* PoP: main_u_stash_apply_failed_only_on_existing_untracked @ hermes_cli/update_cmd_stash.py:_stash_apply_failed_only_on_existing_untracked */
 int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) {
     /* Python: stash-apply tail classification. Arg =
      * "state\tresult". */
@@ -1914,7 +1914,7 @@ int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_restore_stashed_changes @ hermes_cli/main.py:_restore_stashed_changes */
+/* PoP: main_u_restore_stashed_changes @ hermes_cli/update_cmd_stash.py:_restore_stashed_changes */
 int main_u_restore_stashed_changes(const char *arg) {
     /* Python: prompt + apply. Arg =
      * "restored\tstate\tresult". */
@@ -1934,7 +1934,7 @@ int main_u_restore_stashed_changes(const char *arg) {
     return 1;
 }
 
-/* PoP: main_u_discard_stashed_changes @ hermes_cli/main.py:_discard_stashed_changes */
+/* PoP: main_u_discard_stashed_changes @ hermes_cli/update_cmd_stash.py:_discard_stashed_changes */
 int main_u_discard_stashed_changes(const char *arg) {
     /* Python: stash drop. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1953,7 +1953,7 @@ int main_u_discard_stashed_changes(const char *arg) {
 }
 
 
-/* PoP: main_u_is_fork @ hermes_cli/main.py:_is_fork */
+/* PoP: main_u_is_fork @ hermes_cli/update_cmd_git.py:_is_fork */
 int main_u_is_fork(const char *arg) {
     /* Python: normalize origin (rstrip /, strip .git) and compare against
      * the four official repo URL spellings. */
@@ -1979,7 +1979,7 @@ int main_u_is_fork(const char *arg) {
     return 1;
 }
 
-/* PoP: main_u_has_upstream_remote @ hermes_cli/main.py:_has_upstream_remote */
+/* PoP: main_u_has_upstream_remote @ hermes_cli/update_cmd_git.py:_has_upstream_remote */
 int main_u_has_upstream_remote(const char *arg) {
     /* Python: git remote get-url upstream exit 0 == remote exists.
      * Arg = cwd (default "."). */
@@ -1989,7 +1989,7 @@ int main_u_has_upstream_remote(const char *arg) {
     return system(cmd) == 0;
 }
 
-/* PoP: main_u_add_upstream_remote @ hermes_cli/main.py:_add_upstream_remote */
+/* PoP: main_u_add_upstream_remote @ hermes_cli/update_cmd_git.py:_add_upstream_remote */
 int main_u_add_upstream_remote(const char *arg) {
     /* Python: git remote add upstream <OFFICIAL_REPO_URL>; True on exit 0. */
     char cmd[4096];
@@ -1999,7 +1999,7 @@ int main_u_add_upstream_remote(const char *arg) {
     return system(cmd) == 0;
 }
 
-/* PoP: main_u_count_commits_between @ hermes_cli/main.py:_count_commits_between */
+/* PoP: main_u_count_commits_between @ hermes_cli/update_cmd_git.py:_count_commits_between */
 int main_u_count_commits_between(const char *arg) {
     /* Python (base, head, cwd): git rev-list --count base..head; -1 on error.
      * Arg = "base\thead\tcwd". */
@@ -2022,7 +2022,7 @@ int main_u_count_commits_between(const char *arg) {
     return (int)v;
 }
 
-/* PoP: main_u_should_skip_upstream_prompt @ hermes_cli/main.py:_should_skip_upstream_prompt */
+/* PoP: main_u_should_skip_upstream_prompt @ hermes_cli/update_cmd_git.py:_should_skip_upstream_prompt */
 int main_u_should_skip_upstream_prompt(const char *arg) {
     /* Python: (get_hermes_home() / ".skip_upstream_prompt").exists().
      * Arg = optional hermes home (defaults to env). */
@@ -2039,7 +2039,7 @@ int main_u_should_skip_upstream_prompt(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_mark_skip_upstream_prompt @ hermes_cli/main.py:_mark_skip_upstream_prompt */
+/* PoP: main_u_mark_skip_upstream_prompt @ hermes_cli/update_cmd_git.py:_mark_skip_upstream_prompt */
 int main_u_mark_skip_upstream_prompt(const char *arg) {
     /* Python: touch(get_hermes_home() / ".skip_upstream_prompt"); any
      * error ignored. Arg = optional hermes home. */
@@ -2061,7 +2061,7 @@ int main_u_mark_skip_upstream_prompt(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_sync_fork_with_upstream @ hermes_cli/main.py:_sync_fork_with_upstream */
+/* PoP: main_u_sync_fork_with_upstream @ hermes_cli/update_cmd_git.py:_sync_fork_with_upstream */
 int main_u_sync_fork_with_upstream(const char *arg) {
     /* Python: git push origin main --force-with-lease. Arg = "rc" (0 = ok). */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2069,7 +2069,7 @@ int main_u_sync_fork_with_upstream(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_sync_with_upstream_if_needed @ hermes_cli/main.py:_sync_with_upstream_if_needed */
+/* PoP: main_u_sync_with_upstream_if_needed @ hermes_cli/update_cmd_git.py:_sync_with_upstream_if_needed */
 int main_u_sync_with_upstream_if_needed(const char *arg) {
     /* Python: fork sync. Arg =
      * "synced\tstate\tresult". */
@@ -2102,7 +2102,7 @@ int main_u_invalidate_update_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_load_installable_optional_extras @ hermes_cli/main.py:_load_installable_optional_extras */
+/* PoP: main_u_load_installable_optional_extras @ hermes_cli/old_updater_main.py:_load_installable_optional_extras */
 int main_u_load_installable_optional_extras(const char *arg) {
     /* Python: optional-deps group refs. Arg = "group\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2114,7 +2114,7 @@ int main_u_load_installable_optional_extras(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_lazy_refresh_marker_path @ hermes_cli/main.py:_lazy_refresh_marker_path */
+/* PoP: main_u_lazy_refresh_marker_path @ hermes_cli/main_install_repair.py:_lazy_refresh_marker_path */
 int main_u_lazy_refresh_marker_path(const char *arg) {
     /* Python: PROJECT_ROOT / ".lazy-refresh-incomplete". */
     (void)arg;
@@ -2138,7 +2138,7 @@ int main_u_write_marker_file(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_clear_marker_file @ hermes_cli/main.py:_clear_marker_file */
+/* PoP: main_u_clear_marker_file @ hermes_cli/main_install_repair.py:_clear_marker_file */
 int main_u_clear_marker_file(const char *arg) {
     /* Python: best-effort unlink; never raises. Arg = marker path. */
     if (!arg || !*arg) { printf("no marker\n"); return 0; }
@@ -2147,7 +2147,7 @@ int main_u_clear_marker_file(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_write_update_incomplete_marker @ hermes_cli/main.py:_write_update_incomplete_marker */
+/* PoP: main_u_write_update_incomplete_marker @ hermes_cli/update_cmd.py:_write_update_incomplete_marker */
 int main_u_write_update_incomplete_marker(const char *arg) {
     /* Python: _write_marker_file(_update_marker_path(),
      * label="update-incomplete"). Never raises. */
@@ -2165,7 +2165,7 @@ int main_u_write_update_incomplete_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_clear_update_incomplete_marker @ hermes_cli/main.py:_clear_update_incomplete_marker */
+/* PoP: main_u_clear_update_incomplete_marker @ hermes_cli/main_install_repair.py:_clear_update_incomplete_marker */
 int main_u_clear_update_incomplete_marker(const char *arg) {
     /* Python: _clear_marker_file(_update_marker_path(),
      * label="update-incomplete"). Never raises. */
@@ -2181,7 +2181,7 @@ int main_u_clear_update_incomplete_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_write_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_write_lazy_refresh_incomplete_marker */
+/* PoP: main_u_write_lazy_refresh_incomplete_marker @ hermes_cli/update_cmd.py:_write_lazy_refresh_incomplete_marker */
 int main_u_write_lazy_refresh_incomplete_marker(const char *arg) {
     /* Python: _write_marker_file(_lazy_refresh_marker_path(),
      * label="lazy-refresh-incomplete"). Never raises. */
@@ -2200,7 +2200,7 @@ int main_u_write_lazy_refresh_incomplete_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_clear_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_clear_lazy_refresh_incomplete_marker */
+/* PoP: main_u_clear_lazy_refresh_incomplete_marker @ hermes_cli/main_install_repair.py:_clear_lazy_refresh_incomplete_marker */
 int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) {
     /* Python: _clear_marker_file(_lazy_refresh_marker_path(),
      * label="lazy-refresh-incomplete"). Never raises. */
@@ -2309,7 +2309,7 @@ int main_u_default_venv_install_target(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_install_with_heartbeat @ hermes_cli/main.py:_run_install_with_heartbeat */
+/* PoP: main_u_run_install_with_heartbeat @ hermes_cli/old_updater_main.py:_run_install_with_heartbeat */
 int main_u_run_install_with_heartbeat(const char *arg) {
     /* Python: heartbeat thread + install. Arg =
      * "cmd\tinterval\tstate\tresult". */
@@ -2323,7 +2323,7 @@ int main_u_run_install_with_heartbeat(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_venv_scripts_dir @ hermes_cli/main.py:_venv_scripts_dir */
+/* PoP: main_u_venv_scripts_dir @ hermes_cli/main_install_repair.py:_venv_scripts_dir */
 int main_u_venv_scripts_dir(const char *arg) {
     /* Python: <project>/venv/Scripts (win) or bin dir if it exists. Arg =
      * project root (or HERMES_HOME). */
@@ -2366,7 +2366,7 @@ int main_u_hermes_exe_shims(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_detect_concurrent_hermes_instances @ hermes_cli/main.py:_detect_concurrent_hermes_instances */
+/* PoP: main_u_detect_concurrent_hermes_instances @ hermes_cli/dashboard_procs.py:_detect_concurrent_hermes_instances */
 int main_u_detect_concurrent_hermes_instances(const char *arg) {
     /* Python: shim-lock finder. Arg =
      * "count\tstate\tresult". */
@@ -2396,7 +2396,7 @@ int main_u_format_concurrent_instances_message(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_quarantine_running_hermes_exe @ hermes_cli/main.py:_quarantine_running_hermes_exe */
+/* PoP: main_u_quarantine_running_hermes_exe @ hermes_cli/old_updater_main.py:_quarantine_running_hermes_exe */
 int main_u_quarantine_running_hermes_exe(const char *arg) {
     /* Python: rename-then-retry. Arg =
      * "quarantined\tstate\tresult". */
@@ -2427,7 +2427,7 @@ int main_u_schedule_replace_on_reboot(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_restore_quarantined_exes @ hermes_cli/main.py:_restore_quarantined_exes */
+/* PoP: main_u_restore_quarantined_exes @ hermes_cli/old_updater_main.py:_restore_quarantined_exes */
 int main_u_restore_quarantined_exes(const char *arg) {
     /* Python: rename quarantined back when original missing. Arg =
      * "orig\tquarantined\torig\tquarantined..." (tab pairs). */
@@ -2455,7 +2455,7 @@ int main_u_restore_quarantined_exes(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_quarantined_install @ hermes_cli/main.py:_run_quarantined_install */
+/* PoP: main_u_run_quarantined_install @ hermes_cli/old_updater_main.py:_run_quarantined_install */
 int main_u_run_quarantined_install(const char *arg) {
     /* Python: quarantine + heartbeat install. Arg =
      * "is_windows\tstate\tresult". */
@@ -2469,7 +2469,7 @@ int main_u_run_quarantined_install(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_cleanup_quarantined_exes @ hermes_cli/main.py:_cleanup_quarantined_exes */
+/* PoP: main_u_cleanup_quarantined_exes @ hermes_cli/main_install_repair.py:_cleanup_quarantined_exes */
 int main_u_cleanup_quarantined_exes(const char *arg) {
     /* Python: sweep .exe.old.*. Arg = "is_windows\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2481,7 +2481,7 @@ int main_u_cleanup_quarantined_exes(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_package_only_install @ hermes_cli/main.py:_run_package_only_install */
+/* PoP: main_u_run_package_only_install @ hermes_cli/old_updater_main.py:_run_package_only_install */
 int main_u_run_package_only_install(const char *arg) {
     /* Python: pip/uv install WITHOUT shim quarantine. Arg = "cmd\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -2515,7 +2515,7 @@ int main_u_upgrade_pip_before_lazy_refresh(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_detect_broken_lazy_refresh_imports @ hermes_cli/main.py:_detect_broken_lazy_refresh_imports */
+/* PoP: main_u_detect_broken_lazy_refresh_imports @ hermes_cli/old_updater_main.py:_detect_broken_lazy_refresh_imports */
 int main_u_detect_broken_lazy_refresh_imports(const char *arg) {
     /* Python: certifi size gate. Arg =
      * "state\tresult". */
@@ -2527,7 +2527,7 @@ int main_u_detect_broken_lazy_refresh_imports(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_repair_broken_lazy_refresh_imports @ hermes_cli/main.py:_repair_broken_lazy_refresh_imports */
+/* PoP: main_u_repair_broken_lazy_refresh_imports @ hermes_cli/old_updater_main.py:_repair_broken_lazy_refresh_imports */
 int main_u_repair_broken_lazy_refresh_imports(const char *arg) {
     /* Python: force-reinstall + re-probe; never raises. Arg =
      * "packages\tresult" (result: ok/failed/indeterminate). */
@@ -2556,7 +2556,7 @@ int main_u_repair_venv_via_import_probes(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_refresh_active_lazy_features @ hermes_cli/main.py:_refresh_active_lazy_features */
+/* PoP: main_u_refresh_active_lazy_features @ hermes_cli/old_updater_deps.py:_refresh_active_lazy_features */
 int main_u_refresh_active_lazy_features(const char *arg) {
     /* Python: post-update reinstall. Arg =
      * "ok\tstate\tresult". */
@@ -2589,7 +2589,7 @@ int main_u_install_python_dependencies_with_optional_fallback(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_load_console_script_names @ hermes_cli/main.py:_load_console_script_names */
+/* PoP: main_u_load_console_script_names @ hermes_cli/main_install_repair.py:_load_console_script_names */
 int main_u_load_console_script_names(const char *arg) {
     /* Python: pyproject project.scripts names. Arg = "scripts" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2597,7 +2597,7 @@ int main_u_load_console_script_names(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_verify_console_scripts_installed @ hermes_cli/main.py:_verify_console_scripts_installed */
+/* PoP: main_u_verify_console_scripts_installed @ hermes_cli/old_updater_main.py:_verify_console_scripts_installed */
 int main_u_verify_console_scripts_installed(const char *arg) {
     /* Python: shim verification. Arg =
      * "is_windows\tmissing\tstate\tresult". */
@@ -2616,7 +2616,7 @@ int main_u_verify_console_scripts_installed(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_verify_core_dependencies_installed @ hermes_cli/main.py:_verify_core_dependencies_installed */
+/* PoP: main_u_verify_core_dependencies_installed @ hermes_cli/old_updater_main.py:_verify_core_dependencies_installed */
 int main_u_verify_core_dependencies_installed(const char *arg) {
     /* Python: pyproject direct read. Arg =
      * "missing\tstate\tresult". */
@@ -2634,7 +2634,7 @@ int main_u_verify_core_dependencies_installed(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_install_target_python @ hermes_cli/main.py:_resolve_install_target_python */
+/* PoP: main_u_resolve_install_target_python @ hermes_cli/old_updater_main.py:_resolve_install_target_python */
 int main_u_resolve_install_target_python(const char *arg) {
     /* Python: venv then cmd prefix. Arg =
      * "venv_path\tcmd_first\tstate\tresult". */
@@ -2659,7 +2659,7 @@ int main_u_install_psutil_android_compat(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_ensure_uv_for_termux @ hermes_cli/main.py:_ensure_uv_for_termux */
+/* PoP: main_u_ensure_uv_for_termux @ hermes_cli/update_cmd.py:_ensure_uv_for_termux */
 int main_u_ensure_uv_for_termux(const char *arg) {
     /* Python: uv bootstrap. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2699,7 +2699,7 @@ int main_u_npm_manifests_digest(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_npm_lockfile_changed @ hermes_cli/main.py:_npm_lockfile_changed */
+/* PoP: main_u_npm_lockfile_changed @ hermes_cli/old_updater_deps.py:_npm_lockfile_changed */
 int main_u_npm_lockfile_changed(const char *arg) {
     /* Python: digest changed or node_modules missing. Arg =
      * "digest_missing\tnode_modules\tcache_match". */
@@ -2726,7 +2726,7 @@ int main_u_record_npm_lockfile_hash(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_is_windows_npm_path @ hermes_cli/main.py:_is_windows_npm_path */
+/* PoP: main_u_is_windows_npm_path @ hermes_cli/main_install_repair.py:_is_windows_npm_path */
 int main_u_is_windows_npm_path(const char *arg) {
     /* Python: .exe/.cmd/.bat suffix, /mnt/ drive-mount prefix, or an
      * embedded backslash marks a Windows npm shim. */
@@ -2740,7 +2740,7 @@ int main_u_is_windows_npm_path(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_node_runtime_npm @ hermes_cli/main.py:_resolve_node_runtime_npm */
+/* PoP: main_u_resolve_node_runtime_npm @ hermes_cli/main_install_repair.py:_resolve_node_runtime_npm */
 int main_u_resolve_node_runtime_npm(const char *arg) {
     /* Python: WSL npm refusal. Arg =
      * "is_windows\tstate\tresult". */
@@ -2755,7 +2755,7 @@ int main_u_resolve_node_runtime_npm(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_update_node_dependencies @ hermes_cli/main.py:_update_node_dependencies */
+/* PoP: main_u_update_node_dependencies @ hermes_cli/old_updater_deps.py:_update_node_dependencies */
 int main_u_update_node_dependencies(const char *arg) {
     /* Python: npm refresh. Arg =
      * "failed\tstate\tresult". */
@@ -2793,7 +2793,7 @@ int main_u__getattr___2(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_install_hangup_protection @ hermes_cli/main.py:_install_hangup_protection */
+/* PoP: main_u_install_hangup_protection @ hermes_cli/main_dashboard.py:_install_hangup_protection */
 int main_u_install_hangup_protection(const char *arg) {
     /* Python: SIGHUP guard. Arg =
      * "gateway_mode\tstate\tresult". */
@@ -2808,7 +2808,7 @@ int main_u_install_hangup_protection(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_log_only_write @ hermes_cli/main.py:_log_only_write */
+/* PoP: main_u_log_only_write @ hermes_cli/update_cmd.py:_log_only_write */
 int main_u_log_only_write(const char *arg) {
     /* Python: write to update.log handle only. Arg = "text\thas_log". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2819,7 +2819,7 @@ int main_u_log_only_write(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_logged_subprocess @ hermes_cli/main.py:_run_logged_subprocess */
+/* PoP: main_u_run_logged_subprocess @ hermes_cli/update_cmd.py:_run_logged_subprocess */
 int main_u_run_logged_subprocess(const char *arg) {
     /* Python: run + log-only write. Arg = "cmd\trc\toutput". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -2832,7 +2832,7 @@ int main_u_run_logged_subprocess(const char *arg) {
     return rc == 0 ? 0 : 1;
 }
 
-/* PoP: main_u_finalize_update_output @ hermes_cli/main.py:_finalize_update_output */
+/* PoP: main_u_finalize_update_output @ hermes_cli/main_dashboard.py:_finalize_update_output */
 int main_u_finalize_update_output(const char *arg) {
     /* Python: restore stdio + close log. Arg = "installed\tstate". */
     (void)arg;
@@ -2840,7 +2840,7 @@ int main_u_finalize_update_output(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_update_branch @ hermes_cli/main.py:_resolve_update_branch */
+/* PoP: main_u_resolve_update_branch @ hermes_cli/main_install_repair.py:_resolve_update_branch */
 int main_u_resolve_update_branch(const char *arg) {
     /* Python: (args.branch or "main").strip() or "main". Arg = branch. */
     if (!arg || !*arg) { printf("main\n"); return 0; }
@@ -2851,7 +2851,7 @@ int main_u_resolve_update_branch(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_cmd_update_check @ hermes_cli/main.py:_cmd_update_check */
+/* PoP: main_u_cmd_update_check @ hermes_cli/update_cmd.py:_cmd_update_check */
 int main_u_cmd_update_check(const char *arg) {
     /* Python: check only. Arg =
      * "method\tstate\tresult". */
@@ -2873,7 +2873,7 @@ int main_u_cmd_update_check(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_ensure_fhs_path_guard @ hermes_cli/main.py:_ensure_fhs_path_guard */
+/* PoP: main_u_ensure_fhs_path_guard @ hermes_cli/update_cmd_maint.py:_ensure_fhs_path_guard */
 int main_u_ensure_fhs_path_guard(const char *arg) {
     /* Python: RHEL /usr/local/bin. Arg =
      * "applied\tstate\tresult". */
@@ -2888,7 +2888,7 @@ int main_u_ensure_fhs_path_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_size_delta_label @ hermes_cli/main.py:_size_delta_label */
+/* PoP: main_u_size_delta_label @ hermes_cli/sessions_cmd.py:_size_delta_label */
 /* PoP: main_u_size_delta_label @ hermes_cli/sessions_cmd.py:_size_delta_label */
 int main_u_size_delta_label(const char *arg) {
     /* Python returns f"reclaimed {mb:.1f} MB" or f"grew by {-mb:.1f} MB".
@@ -2901,7 +2901,7 @@ int main_u_size_delta_label(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_get_origin_url @ hermes_cli/main.py:_get_origin_url */
+/* PoP: main_u_get_origin_url @ hermes_cli/update_cmd_git.py:_get_origin_url */
 int main_u_get_origin_url(const char *arg) {
     (void)arg;
     /* git remote get-url origin -> print the URL (best effort). */
@@ -2917,7 +2917,7 @@ int main_u_get_origin_url(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resolve_pre_update_backup_mode @ hermes_cli/main.py:_resolve_pre_update_backup_mode */
+/* PoP: main_u_resolve_pre_update_backup_mode @ hermes_cli/update_cmd_maint.py:_resolve_pre_update_backup_mode */
 int main_u_resolve_pre_update_backup_mode(const char *arg) {
     /* Python: off/quick/full. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("quick\n"); return 0; }
@@ -2928,7 +2928,7 @@ int main_u_resolve_pre_update_backup_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_run_pre_update_backup @ hermes_cli/main.py:_run_pre_update_backup */
+/* PoP: main_u_run_pre_update_backup @ hermes_cli/update_cmd_maint.py:_run_pre_update_backup */
 int main_u_run_pre_update_backup(const char *arg) {
     /* Python: quick/full/off. Arg =
      * "snap\tstate\tresult". */
@@ -2941,7 +2941,7 @@ int main_u_run_pre_update_backup(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_write_update_planned_stop_marker @ hermes_cli/main.py:_write_update_planned_stop_marker */
+/* PoP: main_u_write_update_planned_stop_marker @ hermes_cli/update_cmd_windows.py:_write_update_planned_stop_marker */
 int main_u_write_update_planned_stop_marker(const char *arg) {
     /* Python: atomic JSON marker + return True/False. Arg =
      * "profile_path\tpid\twritable". */
@@ -2954,7 +2954,7 @@ int main_u_write_update_planned_stop_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_wait_for_windows_update_gateway_exit @ hermes_cli/main.py:_wait_for_windows_update_gateway_exit */
+/* PoP: main_u_wait_for_windows_update_gateway_exit @ hermes_cli/update_cmd_windows.py:_wait_for_windows_update_gateway_exit */
 int main_u_wait_for_windows_update_gateway_exit(const char *arg) {
     /* Python: poll pid set until deadline. Arg =
      * "survivors\tstate\ttimed_out". */
@@ -3010,7 +3010,7 @@ int main_u_format_venv_python_holders_message(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_pause_windows_gateways_for_update @ hermes_cli/main.py:_pause_windows_gateways_for_update */
+/* PoP: main_u_pause_windows_gateways_for_update @ hermes_cli/update_cmd_windows.py:_pause_windows_gateways_for_update */
 int main_u_pause_windows_gateways_for_update(const char *arg) {
     /* Python: pythonw-aware pause. Arg =
      * "paused\tstate\tresult". */
@@ -3025,7 +3025,7 @@ int main_u_pause_windows_gateways_for_update(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_cold_start_windows_gateway_after_update @ hermes_cli/main.py:_cold_start_windows_gateway_after_update */
+/* PoP: main_u_cold_start_windows_gateway_after_update @ hermes_cli/update_cmd_windows.py:_cold_start_windows_gateway_after_update */
 int main_u_cold_start_windows_gateway_after_update(const char *arg) {
     /* Python: fresh spawn. Arg =
      * "is_windows\talready_running\tstate\tpid". */
@@ -3041,7 +3041,7 @@ int main_u_cold_start_windows_gateway_after_update(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_for_each_systemd_gateway_unit @ hermes_cli/main.py:_for_each_systemd_gateway_unit */
+/* PoP: main_u_for_each_systemd_gateway_unit @ hermes_cli/update_cmd_fleet.py:_for_each_systemd_gateway_unit */
 int main_u_for_each_systemd_gateway_unit(const char *arg) {
     /* Python: fleet iteration w/ timeout isolation. Arg =
      * "units\tprocessed\ttimed_out". */
@@ -3053,7 +3053,7 @@ int main_u_for_each_systemd_gateway_unit(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_warn_incomplete_gateway_fleet_restart @ hermes_cli/main.py:_warn_incomplete_gateway_fleet_restart */
+/* PoP: main_u_warn_incomplete_gateway_fleet_restart @ hermes_cli/update_cmd_fleet.py:_warn_incomplete_gateway_fleet_restart */
 int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {
     /* Python: incomplete-update warning. Arg = "units" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3072,7 +3072,7 @@ int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_resume_windows_gateways_after_update @ hermes_cli/main.py:_resume_windows_gateways_after_update */
+/* PoP: main_u_resume_windows_gateways_after_update @ hermes_cli/update_cmd_windows.py:_resume_windows_gateways_after_update */
 int main_u_resume_windows_gateways_after_update(const char *arg) {
     /* Python: post-update respawn. Arg =
      * "has_profiles\tstate\tresult". */
@@ -3087,7 +3087,7 @@ int main_u_resume_windows_gateways_after_update(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_discard_lockfile_churn @ hermes_cli/main.py:_discard_lockfile_churn */
+/* PoP: main_u_discard_lockfile_churn @ hermes_cli/update_cmd_git.py:_discard_lockfile_churn */
 int main_u_discard_lockfile_churn(const char *arg) {
     /* Python: npm lockfile restore. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3100,7 +3100,7 @@ int main_u_discard_lockfile_churn(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_cmd_update_impl @ hermes_cli/main.py:_cmd_update_impl */
+/* PoP: main_u_cmd_update_impl @ hermes_cli/update_cmd.py:_cmd_update_impl */
 int main_u_cmd_update_impl(const char *arg) {
     /* Python: update body. Arg =
      * "state\tresult\terr". */
@@ -3121,7 +3121,7 @@ int main_u_cmd_update_impl(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_render_distribution_plan @ hermes_cli/main.py:_render_distribution_plan */
+/* PoP: main_u_render_distribution_plan @ hermes_cli/profile_cmd.py:_render_distribution_plan */
 int main_u_render_distribution_plan(const char *arg) {
     /* Python: plan summary. Arg =
      * "exists\tstate\tresult". */
@@ -3140,7 +3140,7 @@ int main_u_render_distribution_plan(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_report_dashboard_status @ hermes_cli/main.py:_report_dashboard_status */
+/* PoP: main_u_report_dashboard_status @ hermes_cli/main_dashboard.py:_report_dashboard_status */
 int main_u_report_dashboard_status(const char *arg) {
     /* Python: dashboard PIDs. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("No hermes dashboard processes running.\n"); return 0; }
@@ -3154,7 +3154,7 @@ int main_u_report_dashboard_status(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_dashboard_listening @ hermes_cli/main.py:_dashboard_listening */
+/* PoP: main_u_dashboard_listening @ hermes_cli/main_dashboard.py:_dashboard_listening */
 int main_u_dashboard_listening(const char *arg) {
     /* Python: TCP connect probe at host:port. Arg = "host\tport". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3167,7 +3167,7 @@ int main_u_dashboard_listening(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_maybe_setup_dashboard_auth_interactively @ hermes_cli/main.py:_maybe_setup_dashboard_auth_interactively */
+/* PoP: main_u_maybe_setup_dashboard_auth_interactively @ hermes_cli/main_dashboard.py:_maybe_setup_dashboard_auth_interactively */
 int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) {
     /* Python: non-loopback prompt. Arg =
      * "prompted\tstate\tresult". */
@@ -3182,7 +3182,7 @@ int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_read_ssh_session_token_file @ hermes_cli/main.py:_read_ssh_session_token_file */
+/* PoP: main_u_read_ssh_session_token_file @ hermes_cli/main_dashboard.py:_read_ssh_session_token_file */
 int main_u_read_ssh_session_token_file(const char *arg) {
     /* Python: rigid token path. Arg =
      * "state\tresult\terr". */
@@ -3203,7 +3203,7 @@ int main_u_read_ssh_session_token_file(const char *arg) {
     return 0;
 }
 
-/* PoP: main_u_is_electron_packaged_web_dist @ hermes_cli/main.py:_is_electron_packaged_web_dist */
+/* PoP: main_u_is_electron_packaged_web_dist @ hermes_cli/main_dashboard.py:_is_electron_packaged_web_dist */
 int main_u_is_electron_packaged_web_dist(const char *arg) {
     /* Python: True when *path* looks like an Electron-packaged renderer
      * dist (HERMES_WEB_DIST points into app.asar[.unpacked]/dist). */
@@ -3212,7 +3212,7 @@ int main_u_is_electron_packaged_web_dist(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_dashboard_register @ hermes_cli/main.py:cmd_dashboard_register */
+/* PoP: main_cmd_dashboard_register @ hermes_cli/dashboard_register.py:cmd_dashboard_register */
 int main_cmd_dashboard_register(const char *arg) {
     /* Python: dashboard_register.cmd_dashboard_register(args) — register a
      * self-hosted dashboard OAuth client with Nous Portal. */
@@ -3221,7 +3221,7 @@ int main_cmd_dashboard_register(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_gateway_enroll @ hermes_cli/main.py:cmd_gateway_enroll */
+/* PoP: main_cmd_gateway_enroll @ hermes_cli/gateway_enroll.py:cmd_gateway_enroll */
 int main_cmd_gateway_enroll(const char *arg) {
     /* Python: gateway_enroll.cmd_gateway_enroll(args) — enroll a
      * self-hosted gateway with a relay connector. */
@@ -3360,7 +3360,7 @@ int main_u_try_termux_fast_tui_launch(const char *arg) {
     return 0;
 }
 
-/* PoP: main_cmd_acp @ hermes_cli/main.py:cmd_acp */
+/* PoP: main_cmd_acp @ hermes_cli/main_agent_cmds.py:cmd_acp */
 int main_cmd_acp(const char *arg) {
     /* Python: ACP server launch. Arg = "state". */
     if (!arg || !*arg) { printf("acp server launched\n"); return 0; }

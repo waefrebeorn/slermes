@@ -19,7 +19,7 @@
 #define TWILIO_API_BASE "https://api.twilio.com/2010-04-01/Accounts"
 #define MAX_SMS_LENGTH 1600
 
-/* PoP: cli_gateway_platforms_sms_check_sms_requirements @ gateway/platforms/sms.py:check_sms_requirements */
+/* PoP: cli_gateway_platforms_sms_check_sms_requirements @ plugins/platforms/sms/adapter.py:check_sms_requirements */
 
 /* Port of Python gateway/platforms/sms.py:check_sms_requirements */
 /* Check if SMS adapter dependencies are available. */
@@ -66,7 +66,7 @@ int cli_gateway_platforms_sms__basic_auth_header(
     return 0;
 }
 
-/* PoP: header @ gateway/platforms/sms.py:_validate_twilio_signature */
+/* PoP: header @ plugins/platforms/sms/adapter.py:_validate_twilio_signature */
 
 /* Port of Python gateway/platforms/sms.py:_validate_twilio_signature */
 /* Validate X-Twilio-Signature header (HMAC-SHA1, base64). */
@@ -132,7 +132,7 @@ int cli_gateway_platforms_sms__validate_twilio_signature(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_sms__check_signature @ gateway/platforms/sms.py:_check_signature */
+/* PoP: cli_gateway_platforms_sms__check_signature @ plugins/platforms/sms/adapter.py:_check_signature */
 
 /* Port of Python gateway/platforms/sms.py:_check_signature */
 /* Compute and compare a single Twilio signature. */
@@ -190,7 +190,7 @@ int cli_gateway_platforms_sms__check_signature(
     return match;
 }
 
-/* PoP: cli_gateway_platforms_sms__port_variant_url @ gateway/platforms/sms.py:_port_variant_url */
+/* PoP: cli_gateway_platforms_sms__port_variant_url @ plugins/platforms/sms/adapter.py:_port_variant_url */
 
 /* Port of Python gateway/platforms/sms.py:_port_variant_url */
 /* Return the URL with the default port toggled, or empty string. */

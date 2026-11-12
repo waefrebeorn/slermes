@@ -101,7 +101,7 @@ void* cli_agent_anthropic_adapter_create_anthropic_message(void* p1, void* p2, v
 #include <ctype.h>
 #include <stdbool.h>
 
-/* PoP: anthropic_is_opencode_endpoint @ agent/anthropic_adapter.py:_is_opencode_endpoint */
+/* PoP: anthropic_is_opencode_endpoint @ agent/anthropic_endpoints.py:_is_opencode_endpoint */
 /* Return true for OpenCode's Zen/Go relay (opencode.ai). Faithful delegation
  * to utils.base_url_host_matches (C: provider_base_url_host_matches, defined
  * in auxiliary_client_runtime.c). */
@@ -132,7 +132,7 @@ bool anthropic_is_stream_unavailable_error(const char *error_msg) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: agent_anthropic_adapter_u_get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
+/* PoP: agent_anthropic_adapter_u_get_hermes_oauth_file @ agent/anthropic_credentials.py:_get_hermes_oauth_file */
 int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
     /* Python: get_hermes_home() / ".anthropic_oauth.json". */
     (void)arg;
@@ -163,7 +163,7 @@ int agent_anthropic_adapter_u_safe_text(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_anthropic_adapter_u_ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
+/* PoP: agent_anthropic_adapter_u_ensure_leading_user_turn @ agent/anthropic_message_convert.py:_ensure_leading_user_turn */
 int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
     /* Python: prepend minimal user turn. Arg = "first_role\tprepended". */
     if (!arg || !*arg) { printf("0\n"); return 0; }

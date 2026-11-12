@@ -1069,7 +1069,7 @@ void register_api_server_platform(void) {
 /* End of api_server_adapter.c */
 /* ── gateway/platforms/api_server.py gap functions ───────────────── */
 
-/* PoP: gwapi_get_scoped_secret @ gateway/platforms/api_server.py:_get_scoped_secret */
+/* PoP: gwapi_get_scoped_secret @ plugins/platforms/buzz/adapter.py:_get_scoped_secret */
 char *gwapi_get_scoped_secret(const char *arg) {
     /* Python: scope-aware credential read with default-profile fallback.
      * Arg = "name\tvalue" (value empty = miss -> default). */

@@ -2619,7 +2619,7 @@ int cron_classify_items_main(int argc, char **argv)
     return 0;   /* below-threshold silence and success share exit 0 */
 }
 
-/* PoP: cronjobs_validate_job_mode_invariants @ cron/jobs.py:_validate_job_mode_invariants */
+/* PoP: cronjobs_validate_job_mode_invariants @ cron/jobs_invariants.py:_validate_job_mode_invariants */
 char *cronjobs_validate_job_mode_invariants(const char *monitor_script,
                                             const char *monitor_url,
                                             bool no_agent,

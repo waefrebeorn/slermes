@@ -2293,7 +2293,7 @@ char *auxc_resolve_task_provider_model(const char *task, const char *explicit_pr
     return strdup("{\"provider\": \"auto\", \"model\": null}");
 }
 
-/* PoP: auxc_get_auxiliary_task_config @ agent/auxiliary_client.py:_get_auxiliary_task_config */
+/* PoP: auxc_get_auxiliary_task_config @ agent/auxiliary_task_config.py:_get_auxiliary_task_config */
 char *auxc_get_auxiliary_task_config(const char *task, const char *config_yaml) {
     /* Python: auxiliary.<task> dict; plugin defaults layered under. */
     if (!task) return strdup("{}");

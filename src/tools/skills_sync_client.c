@@ -317,7 +317,7 @@ static char *read_nous_bearer(void) {
     return out;
 }
 
-/* PoP: skills_sync_resolve_identity @ tools/skills_sync_client.py:resolve_identity */
+/* PoP: skills_sync_resolve_identity @ gateway/session_identity.py:resolve_identity */
 json_t *skills_sync_resolve_identity(void) {
     char *api_key = read_nous_bearer();
     if (!api_key) return NULL;
@@ -445,7 +445,7 @@ static bool sync_config_bool(const char *env_var, const char *config_key,
 
 /* ── sync feature knobs (L391-435) ────────────────────────────────────── *//* ── config bool helpers (L358-388) ───────────────────────────────────── */
 
-/* PoP: unrecognized @ tools/skills_sync_client.py:_parse_bool */
+/* PoP: unrecognized @ plugins/platforms/teams/summary_writer.py:_parse_bool */
 /* Parse a config/env bool; returns -1 for unrecognized (None in Python). */
 static int ssc_parse_bool(const char *value) {
     if (!value) return -1;
@@ -977,7 +977,7 @@ static char *ssc_build_tree_rec(const char *dir_path,
     return tree_addr;
 }
 
-/* PoP: ssc_build_tree @ tools/skills_sync_client.py:build_tree */
+/* PoP: ssc_build_tree @ tui_gateway/project_tree.py:build_tree */
 char *ssc_build_tree(const char *dir_path, ssc_object_set_t *objects,
                      long max_object_bytes, int *too_large) {
     if (too_large) *too_large = 0;

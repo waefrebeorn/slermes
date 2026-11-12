@@ -21,7 +21,7 @@
 /* ---- growable byte buffer ---- */
 
 /* ---- varint decode ---- */
-/* PoP: _decode_varint @ gateway/platforms/yuanbao_proto.py:_decode_varint */
+/* PoP: _decode_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_varint */
 static int yb_decode_varint(const unsigned char *d, size_t n, size_t *pos, uint64_t *out)
 {
     uint64_t result = 0; int shift = 0;
@@ -37,9 +37,9 @@ static int yb_decode_varint(const unsigned char *d, size_t n, size_t *pos, uint6
  void yb_fields_free(yb_fields *fs)
 { for (size_t i=0;i<fs->n;i++) free(fs->f[i].vbytes); free(fs->f); fs->f=NULL; fs->n=fs->cap=0; }
 
-/* PoP: _parse_fields @ gateway/platforms/yuanbao_proto.py:_parse_fields */
+/* PoP: _parse_fields @ plugins/platforms/yuanbao/yuanbao_proto.py:_parse_fields */
 
-/* PoP: _fields_to_dict @ gateway/platforms/yuanbao_proto.py:_fields_to_dict */ int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
+/* PoP: _fields_to_dict @ plugins/platforms/yuanbao/yuanbao_proto.py:_fields_to_dict */ int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
 {
     out->f = NULL; out->n = out->cap = 0;
     size_t pos = 0;
@@ -70,20 +70,20 @@ static int yb_decode_varint(const unsigned char *d, size_t n, size_t *pos, uint6
 }
 
 /* accessors: first match by field number */
-/* PoP: _get_varint @ gateway/platforms/yuanbao_proto.py:_get_varint */ uint64_t yb_get_varint(const yb_fields *fs, int fn, uint64_t def)
+/* PoP: _get_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_varint */ uint64_t yb_get_varint(const yb_fields *fs, int fn, uint64_t def)
 { for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_VARINT) return fs->f[i].vint; return def; }
 
-/* PoP: _get_string @ gateway/platforms/yuanbao_proto.py:_get_string */ char *yb_get_string(const yb_fields *fs, int fn, char *buf, size_t bufsz)
+/* PoP: _get_string @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_string */ char *yb_get_string(const yb_fields *fs, int fn, char *buf, size_t bufsz)
 { buf[0]=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) {
     size_t c = fs->f[i].vlen < bufsz-1 ? fs->f[i].vlen : bufsz-1;
     memcpy(buf, fs->f[i].vbytes, c); buf[c]=0; return buf; }
   return buf; }
 
-/* PoP: _get_bytes @ gateway/platforms/yuanbao_proto.py:_get_bytes */ unsigned char *yb_get_bytes(const yb_fields *fs, int fn, size_t *outlen)
+/* PoP: _get_bytes @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_bytes */ unsigned char *yb_get_bytes(const yb_fields *fs, int fn, size_t *outlen)
 { *outlen=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) { *outlen=fs->f[i].vlen; return fs->f[i].vbytes; } return NULL; }
 
 /* collect repeated bytes into a malloc'd array of (ptr,len); returns count */
-/* PoP: _get_repeated_bytes @ gateway/platforms/yuanbao_proto.py:_get_repeated_bytes */ size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char ***out, size_t **lens)
+/* PoP: _get_repeated_bytes @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_repeated_bytes */ size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char ***out, size_t **lens)
 {
     size_t cnt = 0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) cnt++;
     *out = cnt ? malloc(cnt*sizeof(unsigned char*)) : NULL;

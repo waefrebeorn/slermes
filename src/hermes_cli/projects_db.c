@@ -774,7 +774,7 @@ int hermes_cli_projects_db_connect_closing(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_projects_db_u_migrate_add_optional_columns @ hermes_cli/projects_db.py:_migrate_add_optional_columns */
+/* PoP: hermes_cli_projects_db_u_migrate_add_optional_columns @ hermes_cli/kanban_db_connect.py:_migrate_add_optional_columns */
 int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) {
     /* Python: PRAGMA table_info diff + ALTER. Arg = "existing_cols\toptional_cols". */
     if (!arg || !*arg) { printf("\n"); return 0; }

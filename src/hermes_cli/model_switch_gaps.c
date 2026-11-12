@@ -12,7 +12,7 @@
 /* PoP: _entry_models_discovered @ hermes_cli/model_switch.py:_entry_models_discovered */
 char *_entry_models_discovered(void) { return strdup("[]"); }
 
-/* PoP: _fetch_picker_live_models @ hermes_cli/model_switch.py:_fetch_picker_live_models */
+/* PoP: _fetch_picker_live_models @ hermes_cli/model_switch_providers.py:_fetch_picker_live_models */
 char *_fetch_picker_live_models(void) { return strdup("[]"); }
 
 /* PoP: _direct_alias_source_identity @ hermes_cli/model_switch.py:_direct_alias_source_identity */
@@ -34,8 +34,8 @@ char *resolve_startup_model_route(void) { return strdup("{}"); }
 char *_ambiguous_alias_message(void) { return strdup(""); }
 
 
-/* PoP: _collect_authed_provider_slugs @ hermes_cli/model_switch.py:_collect_authed_provider_slugs */
+/* PoP: _collect_authed_provider_slugs @ hermes_cli/model_switch_providers.py:_collect_authed_provider_slugs */
 char *_collect_authed_provider_slugs(void) { return strdup("[]"); }
 
-/* PoP: list_picker_providers @ hermes_cli/model_switch.py:list_picker_providers */
+/* PoP: list_picker_providers @ hermes_cli/model_switch_providers.py:list_picker_providers */
 char *list_picker_providers(void) { return strdup("[]"); }

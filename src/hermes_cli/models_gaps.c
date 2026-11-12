@@ -232,7 +232,7 @@ char *models_resolve_nous_portal_url(void) {
     return strdup("https://portal.nousresearch.com");
 }
 
-/* PoP: models_resolve_openrouter_api_key @ hermes_cli/models.py:_resolve_openrouter_api_key */
+/* PoP: models_resolve_openrouter_api_key @ hermes_cli/models_pricing.py:_resolve_openrouter_api_key */
 char *models_resolve_openrouter_api_key(void) {
     const char *raw = getenv("OPENROUTER_API_KEY");
     char *key = mg_strip_dup(raw);
@@ -241,7 +241,7 @@ char *models_resolve_openrouter_api_key(void) {
 
 /* ── ollama native API root normalization (pure) ───────────────────────── */
 
-/* PoP: models_root_for_ollama_native_api @ hermes_cli/models.py:_root_for_ollama_native_api */
+/* PoP: models_root_for_ollama_native_api @ hermes_cli/models_local.py:_root_for_ollama_native_api */
 char *models_root_for_ollama_native_api(const char *base_url) {
     char *root = mg_strip_dup(base_url);
     if (!root) return NULL;
@@ -273,7 +273,7 @@ char *models_root_for_ollama_native_api(const char *base_url) {
     return root;
 }
 
-/* PoP: models_normalize_openai_base_url @ hermes_cli/models.py:_normalize_openai_base_url */
+/* PoP: models_normalize_openai_base_url @ hermes_cli/models_local.py:_normalize_openai_base_url */
 char *models_normalize_openai_base_url(const char *base_url) {
     char *value = mg_strip_dup(base_url);
     if (!value) return strdup("");
@@ -370,7 +370,7 @@ static void mg_blake2b_final(mg_blake2b_t *S, uint8_t *out, size_t outlen) {
     mg_blake2b_compress(S, S->t[0], S->buf, 1);
     for (size_t i = 0; i < outlen; i++) out[i] = (uint8_t)(S->h[i/8] >> (8*(i%8)));
 }
-/* PoP: models_ollama_probe_cache_key @ hermes_cli/models.py:_ollama_probe_cache_key */
+/* PoP: models_ollama_probe_cache_key @ hermes_cli/models_local.py:_ollama_probe_cache_key */
 char *models_ollama_probe_cache_key(const char *root, const char *headers_json) {
     if (!headers_json || !*headers_json) return mg_strdup(root ? root : "");
     json_t *headers = json_parse(headers_json, NULL);
@@ -508,7 +508,7 @@ json_t *models_cached_catalog(const char *cache_key) {
     return e->value;
 }
 
-/* PoP: models_cache_catalog @ hermes_cli/models.py:_cache_catalog */
+/* PoP: models_cache_catalog @ hermes_cli/models_pricing.py:_cache_catalog */
 json_t *models_cache_catalog(const char *cache_key, json_t *result) {
     if (!cache_key) return result;
     mg_price_entry_t *e = mg_price_find(cache_key);
@@ -528,7 +528,7 @@ json_t *models_cache_catalog(const char *cache_key, json_t *result) {
     return result;
 }
 
-/* PoP: models_fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
+/* PoP: models_fetch_novita_pricing @ hermes_cli/models_pricing.py:_fetch_novita_pricing */
 char *models_fetch_novita_pricing(int force_refresh) {
     const char *raw_key = getenv("NOVITA_API_KEY");
     char *api_key = mg_strip_dup(raw_key);
@@ -611,7 +611,7 @@ char *models_fetch_novita_pricing(int force_refresh) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: models_get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
+/* PoP: models_get_pricing_for_provider @ hermes_cli/models_pricing.py:get_pricing_for_provider */
 char *models_get_pricing_for_provider(const char *provider, int force_refresh) {
     const char *normalized = normalize_provider(provider ? provider : "");
     if (strcmp(normalized, "openrouter") == 0) {
@@ -855,7 +855,7 @@ typedef struct {
 static mg_caps_state_t g_mg_or_caps;
 static mg_caps_state_t g_mg_nous_caps;
 
-/* PoP: models_warm_reasoning_caps_async @ hermes_cli/models.py:_warm_reasoning_caps_async */
+/* PoP: models_warm_reasoning_caps_async @ hermes_cli/models_reasoning_caps.py:_warm_reasoning_caps_async */
 static void *mg_thread_trampoline(void *fn) {
     ((void (*)(void))(uintptr_t)fn)();
     return NULL;
@@ -938,7 +938,7 @@ static void mg_caps_disk_write(const char *url, const json_t *caps) {
     free(path);
 }
 
-/* PoP: models_hydrate_reasoning_caps_from_disk @ hermes_cli/models.py:_hydrate_reasoning_caps_from_disk */
+/* PoP: models_hydrate_reasoning_caps_from_disk @ hermes_cli/models_reasoning_caps.py:_hydrate_reasoning_caps_from_disk */
 json_t *models_hydrate_reasoning_caps_from_disk(const char *url, void (*refresh)(void)) {
     double age = 0.0;
     json_t *disk = mg_caps_disk_read(url, &age);
@@ -1068,7 +1068,7 @@ json_t *models_openrouter_caps_cached(void) {
     return g_mg_or_caps.cache;
 }
 
-/* PoP: models_warm_openrouter_reasoning_caps_async @ hermes_cli/models.py:warm_openrouter_reasoning_caps_async */
+/* PoP: models_warm_openrouter_reasoning_caps_async @ hermes_cli/models_reasoning_caps.py:warm_openrouter_reasoning_caps_async */
 void models_warm_openrouter_reasoning_caps_async(void) {
     if (g_mg_or_caps.warm_started || models_openrouter_caps_cached() != NULL) return;
     g_mg_or_caps.warm_started = 1;
@@ -1106,7 +1106,7 @@ json_t *models_nous_caps_cached(void) {
     return g_mg_nous_caps.cache;
 }
 
-/* PoP: models_warm_nous_reasoning_caps_async @ hermes_cli/models.py:warm_nous_reasoning_caps_async */
+/* PoP: models_warm_nous_reasoning_caps_async @ hermes_cli/models_reasoning_caps.py:warm_nous_reasoning_caps_async */
 void models_warm_nous_reasoning_caps_async(void) {
     if (g_mg_nous_caps.warm_started || models_nous_caps_cached() != NULL) return;
     g_mg_nous_caps.warm_started = 1;
@@ -1286,7 +1286,7 @@ char *models_model_ids(int force_refresh) {
 /* ── ollama base URL / headers ─────────────────────────────────────────── */
 
 
-/* PoP: models_get_ollama_base_url @ hermes_cli/models.py:_get_ollama_base_url */
+/* PoP: models_get_ollama_base_url @ hermes_cli/models_local.py:_get_ollama_base_url */
 char *models_get_ollama_base_url(void) {
     json_t *provider_cfg = models_get_provider_config_dict("ollama");
     const char *configured_raw =
@@ -1379,7 +1379,7 @@ char *models_get_ollama_base_url(void) {
     return strdup("http://localhost:11434");
 }
 
-/* PoP: models_get_ollama_request_headers @ hermes_cli/models.py:_get_ollama_request_headers */
+/* PoP: models_get_ollama_request_headers @ hermes_cli/models_local.py:_get_ollama_request_headers */
 char *models_get_ollama_request_headers(void) {
     json_t *entry = models_get_provider_config_dict("ollama");
     json_t *raw = json_obj_get(entry, "extra_headers");
@@ -1421,7 +1421,7 @@ char *models_get_ollama_request_headers(void) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: models_get_ollama_native_headers @ hermes_cli/models.py:_get_ollama_native_headers */
+/* PoP: models_get_ollama_native_headers @ hermes_cli/models_local.py:_get_ollama_native_headers */
 char *models_get_ollama_native_headers(const char *base_url, const char *api_key) {
     json_t *entry = models_get_provider_config_dict("ollama");
     const char *cb = json_get_str(entry, "base_url", "");
@@ -1537,7 +1537,7 @@ static void mg_oc_put(mg_oc_entry_t **head, const char *key, void *value, double
     *head = e;
 }
 
-/* PoP: models_evict_related_ollama_cache_entries @ hermes_cli/models.py:_evict_related_ollama_cache_entries */
+/* PoP: models_evict_related_ollama_cache_entries @ hermes_cli/models_local.py:_evict_related_ollama_cache_entries */
 void models_evict_related_ollama_cache_entries(const char *key) {
     if (!key) return;
     mg_oc_pop(&mg_oc_models, key);
@@ -1556,7 +1556,7 @@ void models_evict_related_ollama_cache_entries(const char *key) {
     }
 }
 
-/* PoP: models_remember_ollama_cache @ hermes_cli/models.py:_remember_ollama_cache */
+/* PoP: models_remember_ollama_cache @ hermes_cli/models_local.py:_remember_ollama_cache */
 void models_remember_ollama_cache(int cache_id, const char *key, const char *value_json) {
     if (!key) return;
     mg_oc_entry_t **head =
@@ -1583,7 +1583,7 @@ void models_remember_ollama_cache(int cache_id, const char *key, const char *val
     mg_oc_put(head, key, value, mg_monotonic());
 }
 
-/* PoP: models_probe_ollama_local_models @ hermes_cli/models.py:probe_ollama_local_models */
+/* PoP: models_probe_ollama_local_models @ hermes_cli/models_local.py:probe_ollama_local_models */
 char *models_probe_ollama_local_models(const char *base_url, double timeout,
                                        const char *headers_json) {
     char *default_base = NULL;
@@ -1701,7 +1701,7 @@ char *models_probe_ollama_local_models(const char *base_url, double timeout,
 }
 
 
-/* PoP: models_fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
+/* PoP: models_fetch_models_with_pricing @ hermes_cli/models_pricing.py:fetch_models_with_pricing */
 /* Declared (but never defined) in port_models_pure.h; the pricing dispatch
  * above is its only caller. Injectable transport; NULL -> live fetcher. */
 char *models_fetch_models_with_pricing(void *fetch, void *ctx,
@@ -1830,7 +1830,7 @@ char *models_fetch_models_with_pricing(void *fetch, void *ctx,
     return out ? out : strdup("{}");
 }
 
-/* PoP: models_same_ollama_native_root @ hermes_cli/models.py:_same_ollama_native_root */
+/* PoP: models_same_ollama_native_root @ hermes_cli/models_local.py:_same_ollama_native_root */
 int models_same_ollama_native_root(const char *left, const char *right)
 {
     if (!left || !right) return 0;
@@ -1843,7 +1843,7 @@ int models_same_ollama_native_root(const char *left, const char *right)
     return same;
 }
 
-/* PoP: models_should_use_ollama_native_catalog @ hermes_cli/models.py:should_use_ollama_native_catalog */
+/* PoP: models_should_use_ollama_native_catalog @ hermes_cli/models_local.py:should_use_ollama_native_catalog */
 int models_should_use_ollama_native_catalog(const char *provider,
                                             const char *base_url,
                                             const char *headers_json)
@@ -2172,7 +2172,7 @@ json_t *models_opencode_zen_free_headers(void) {
 }
 
 /* ── _load_ollama_cloud_cache (line 6212) ───────────────────────────── */
-/* PoP: models_load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
+/* PoP: models_load_ollama_cloud_cache @ hermes_cli/models_local.py:_load_ollama_cloud_cache */
 char *models_load_ollama_cloud_cache(int ignore_ttl) {
     const char *cache_path = ollama_cloud_cache_path();
     if (!cache_path || !*cache_path) return NULL;
@@ -2224,7 +2224,7 @@ char *models_load_ollama_cloud_cache(int ignore_ttl) {
 }
 
 /* ── _save_ollama_cloud_cache (line 6239) ───────────────────────────── */
-/* PoP: models_save_ollama_cloud_cache @ hermes_cli/models.py:_save_ollama_cloud_cache */
+/* PoP: models_save_ollama_cloud_cache @ hermes_cli/models_local.py:_save_ollama_cloud_cache */
 void models_save_ollama_cloud_cache(const char *models_json) {
     const char *cache_path = ollama_cloud_cache_path();
     if (!cache_path || !*cache_path || !models_json) return;

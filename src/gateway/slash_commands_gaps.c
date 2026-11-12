@@ -15,8 +15,8 @@ char *_home_thread_from_source(void) { return strdup(""); }
 /* PoP: _get_loop_manager_for_event @ gateway/slash_commands.py:_get_loop_manager_for_event */
 char *_get_loop_manager_for_event(void) { return strdup("{}"); }
 
-/* PoP: _compress_codex_app_server_session @ gateway/slash_commands.py:_compress_codex_app_server_session */
+/* PoP: _compress_codex_app_server_session @ gateway/slash_commands_session.py:_compress_codex_app_server_session */
 char *_compress_codex_app_server_session(void) { return strdup("{}"); }
 
-/* PoP: _handle_save_command @ gateway/slash_commands.py:_handle_save_command */
+/* PoP: _handle_save_command @ gateway/slash_commands_session.py:_handle_save_command */
 char *_handle_save_command(void) { return strdup("{}"); }

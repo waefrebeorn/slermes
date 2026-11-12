@@ -7,7 +7,7 @@
  * warnings (mirrors the decoupled-helper pattern used in Python).
  */
 
-/* PoP: toolset_validation_is_known_toolset @ hermes_cli/toolset_validation.py:validate_toolset */
+/* PoP: toolset_validation_is_known_toolset @ toolsets.py:validate_toolset */
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"

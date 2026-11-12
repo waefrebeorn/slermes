@@ -92,7 +92,7 @@ char *ghe_redact_string(const char *raw, int limit)
 
 /* ── _safe_resource_attributes ───────────────────────────────── */
 
-/* PoP: ghe_safe_resource_attributes @ agent/monitoring/gateway_health_export.py:_safe_resource_attributes */
+/* PoP: ghe_safe_resource_attributes @ agent/monitoring/otlp_exporter.py:_safe_resource_attributes */
 /* Allowlist bounded resource labels and reject values changed by redaction.
  * raw_json: JSON object. Returns a malloc'd JSON object string. */
 char *ghe_safe_resource_attributes(const char *raw_json)
@@ -242,7 +242,7 @@ const char *ghe_supervision_mode(void)
 
 /* ── _runtime_resource_attributes ──────────────────────────── */
 
-/* PoP: ghe_runtime_resource_attributes @ agent/monitoring/gateway_health_export.py:_runtime_resource_attributes */
+/* PoP: ghe_runtime_resource_attributes @ agent/monitoring/otlp_exporter.py:_runtime_resource_attributes */
 /* Build the safe OTLP resource shared by metrics and diagnostic logs.
  * config_json: JSON config dict. telemetry_scope: the scope string.
  * Returns malloc'd JSON object string. */

@@ -184,7 +184,7 @@ json_t* redact_config_value(json_t* value, int depth)
 #include <string.h>
 #include <stdio.h>
 
-/* PoP: hermes_cli_config_chown_to_hermes_uid @ hermes_cli/config.py:_chown_to_hermes_uid */
+/* PoP: hermes_cli_config_chown_to_hermes_uid @ hermes_constants.py:_chown_to_hermes_uid */
 json_t *hermes_cli_config_chown_to_hermes_uid(void) {
     return json_object();
 }
@@ -703,7 +703,7 @@ void redact_key(const char *key, char *out, size_t out_size)
 
 /* === Install detection === */
 
-/* PoP: config_get_managed_system @ hermes_cli/config.py:get_managed_system */
+/* PoP: config_get_managed_system @ hermes_constants.py:get_managed_system */
 const char *config_get_managed_system(void) {
     const char *raw = getenv("HERMES_MANAGED");
     if (!raw || !raw[0]) return NULL;
@@ -851,7 +851,7 @@ void config_get_missing_config_fields(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "[]");
 }
 
-/* PoP: config_check_config_version @ hermes_cli/config.py:check_config_version */
+/* PoP: config_check_config_version @ hermes_cli/config_version_stamp.py:check_config_version */
 void config_check_config_version(int *current, int *latest) {
     *latest = 2; /* Current schema version */
     /* Read version from config file */
@@ -1140,7 +1140,7 @@ json_t *hermes_cli_config_reject_denylisted_env_var(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_config_normalize_custom_provider_entry @ hermes_cli/config.py:_normalize_custom_provider_entry */
+/* PoP: hermes_cli_config_normalize_custom_provider_entry @ hermes_cli/config_providers.py:_normalize_custom_provider_entry */
 json_t *hermes_cli_config_normalize_custom_provider_entry(void) {
     return json_object();
 }

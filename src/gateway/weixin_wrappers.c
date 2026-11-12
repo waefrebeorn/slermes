@@ -14,7 +14,7 @@
 #include "port_config_py_helpers.h"
 #include "hermes_gateway_weixin.h"
 
-/* PoP: wx_u_make_ssl_connector @ gateway/platforms/weixin.py:_make_ssl_connector */
+/* PoP: wx_u_make_ssl_connector @ plugins/platforms/weixin/adapter.py:_make_ssl_connector */
 int wx_u_make_ssl_connector(const char *arg) {
     /* Python: certifi connector or None. Arg = "certifi\taiohttp". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -26,7 +26,7 @@ int wx_u_make_ssl_connector(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_save_weixin_account @ gateway/platforms/weixin.py:save_weixin_account */
+/* PoP: wx_save_weixin_account @ plugins/platforms/weixin/adapter.py:save_weixin_account */
 int wx_save_weixin_account(const char *arg) {
     /* Python: atomic_json_write + chmod 600. Arg = "path\tpayload_json". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -45,7 +45,7 @@ int wx_save_weixin_account(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_load_weixin_account @ gateway/platforms/weixin.py:load_weixin_account */
+/* PoP: wx_load_weixin_account @ plugins/platforms/weixin/adapter.py:load_weixin_account */
 int wx_load_weixin_account(const char *arg) {
     /* Python: json dict from account file, None on missing/error. Arg =
      * account file path. */
@@ -103,7 +103,7 @@ int wx_u_get_config(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_get_upload_url @ gateway/platforms/weixin.py:_get_upload_url */
+/* PoP: wx_u_get_upload_url @ plugins/platforms/weixin/adapter.py:_get_upload_url */
 int wx_u_get_upload_url(const char *arg) {
     /* Python: EP_GET_UPLOAD_URL. Arg =
      * "state\tresult\terr". */
@@ -120,7 +120,7 @@ int wx_u_get_upload_url(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_upload_ciphertext @ gateway/platforms/weixin.py:_upload_ciphertext */
+/* PoP: wx_u_upload_ciphertext @ plugins/platforms/weixin/adapter.py:_upload_ciphertext */
 int wx_u_upload_ciphertext(const char *arg) {
     /* Python: CDN raw POST. Arg =
      * "state\tresult\terr". */
@@ -137,7 +137,7 @@ int wx_u_upload_ciphertext(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_bytes @ gateway/platforms/weixin.py:_download_bytes */
+/* PoP: wx_u_download_bytes @ plugins/platforms/weixin/adapter.py:_download_bytes */
 int wx_u_download_bytes(const char *arg) {
     /* Python: wait_for download. Arg =
      * "state\tresult\terr". */
@@ -154,7 +154,7 @@ int wx_u_download_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_and_decrypt_media @ gateway/platforms/weixin.py:_download_and_decrypt_media */
+/* PoP: wx_u_download_and_decrypt_media @ plugins/platforms/weixin/adapter.py:_download_and_decrypt_media */
 int wx_u_download_and_decrypt_media(const char *arg) {
     /* Python: CDN + AES. Arg =
      * "state\tresult\terr". */
@@ -171,7 +171,7 @@ int wx_u_download_and_decrypt_media(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_save_sync_buf @ gateway/platforms/weixin.py:_save_sync_buf */
+/* PoP: wx_u_save_sync_buf @ plugins/platforms/weixin/adapter.py:_save_sync_buf */
 int wx_u_save_sync_buf(const char *arg) {
     /* Python: atomic_json_write(_sync_buf_path(hermes_home, account_id),
      * {"get_updates_buf": sync_buf}). Arg = "hermes_home\taccount_id\tsync_buf". */
@@ -201,7 +201,7 @@ int wx_u_save_sync_buf(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_qr_login @ gateway/platforms/weixin.py:qr_login */
+/* PoP: wx_qr_login @ plugins/platforms/weixin/adapter.py:qr_login */
 int wx_qr_login(const char *arg) {
     /* Python: interactive QR. Arg =
      * "state\tresult\terr". */
@@ -234,7 +234,7 @@ int wx_u_poll_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_process_message_safe @ gateway/platforms/weixin.py:_process_message_safe */
+/* PoP: wx_u_process_message_safe @ plugins/platforms/weixin/adapter.py:_process_message_safe */
 int wx_u_process_message_safe(const char *arg) {
     /* Python: guarded handler. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -245,7 +245,7 @@ int wx_u_process_message_safe(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_is_dm_intake_allowed @ gateway/platforms/weixin.py:_is_dm_intake_allowed */
+/* PoP: wx_u_is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
 int wx_u_is_dm_intake_allowed(const char *arg) {
     /* Python: policy switch (disabled/allowlist/pairing/open). Arg =
      * "policy\tsender_id\tallowlist_json\topen_opted". */
@@ -320,7 +320,7 @@ int wx_u_flush_text_batch(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_collect_media @ gateway/platforms/weixin.py:_collect_media */
+/* PoP: wx_u_collect_media @ plugins/platforms/weixin/adapter.py:_collect_media */
 int wx_u_collect_media(const char *arg) {
     /* Python: item-type dispatch. Arg =
      * "count\tstate\tresult". */
@@ -333,7 +333,7 @@ int wx_u_collect_media(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_image @ gateway/platforms/weixin.py:_download_image */
+/* PoP: wx_u_download_image @ tools/vision_tools.py:_download_image */
 int wx_u_download_image(const char *arg) {
     /* Python: image_item media. Arg =
      * "path\tstate\tresult". */
@@ -501,7 +501,7 @@ int wx_u_open_rate_limit_circuit(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_record_rate_limit_event @ gateway/platforms/weixin.py:_record_rate_limit_event */
+/* PoP: wx_u_record_rate_limit_event @ plugins/platforms/weixin/adapter.py:_record_rate_limit_event */
 int wx_u_record_rate_limit_event(const char *arg) {
     /* Python: window-prune events, append, breaker check. Arg =
      * "count\tthreshold\topened". */
@@ -530,7 +530,7 @@ int wx_u_reset_rate_limit_circuit(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_send_text_chunk @ gateway/platforms/weixin.py:_send_text_chunk */
+/* PoP: wx_u_send_text_chunk @ plugins/platforms/weixin/adapter.py:_send_text_chunk */
 int wx_u_send_text_chunk(const char *arg) {
     /* Python: gated + retry. Arg =
      * "sent\tstate\tresult". */
@@ -559,7 +559,7 @@ int wx_u_send_text_chunk_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_ensure_typing_ticket @ gateway/platforms/weixin.py:_ensure_typing_ticket */
+/* PoP: wx_u_ensure_typing_ticket @ plugins/platforms/weixin/adapter.py:_ensure_typing_ticket */
 int wx_u_ensure_typing_ticket(const char *arg) {
     /* Python: 600s TTL refresh. Arg =
      * "ticket\tstate\tresult". */
@@ -572,7 +572,7 @@ int wx_u_ensure_typing_ticket(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_remote_media @ gateway/platforms/weixin.py:_download_remote_media */
+/* PoP: wx_u_download_remote_media @ plugins/platforms/weixin/adapter.py:_download_remote_media */
 int wx_u_download_remote_media(const char *arg) {
     /* Python: SSRF-gated fetch. Arg =
      * "path\tstate\tresult". */
@@ -585,7 +585,7 @@ int wx_u_download_remote_media(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_outbound_media_builder @ gateway/platforms/weixin.py:_outbound_media_builder */
+/* PoP: wx_u_outbound_media_builder @ plugins/platforms/weixin/adapter.py:_outbound_media_builder */
 int wx_u_outbound_media_builder(const char *arg) {
     /* Python: mime dispatch. Arg =
      * "kind\tstate\tresult". */
@@ -599,7 +599,7 @@ int wx_u_outbound_media_builder(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_send_weixin_direct @ gateway/platforms/weixin.py:send_weixin_direct */
+/* PoP: wx_send_weixin_direct @ plugins/platforms/weixin/adapter.py:send_weixin_direct */
 int wx_send_weixin_direct(const char *arg) {
     /* Python: one-shot send. Arg =
      * "state\tresult\terr". */

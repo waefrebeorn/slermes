@@ -216,7 +216,7 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
                      spec->branch_name ? "\"true\"" : "null",
                      skills ? skills : "null",
                      spec->goal_mode ? "true" : "null");
-/* PoP: kdb_list_tasks @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kdb_list_tasks @ gateway/hosted_rooms.py:append_event */
             kdb_append_event(conn, task_id, -1, "created", payload);
             kdb_write_end(conn, 1);
             break;
@@ -313,7 +313,7 @@ int kdb_assign_task(sqlite3 *conn, const char *task_id, const char *profile)
                     ok = (sqlite3_step(up) == SQLITE_DONE);
                     sqlite3_finalize(up);
                 }
-/* PoP: kanban_would_cycle @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kanban_would_cycle @ gateway/hosted_rooms.py:append_event */
                 kdb_append_event(conn, task_id, -1, "assigned",
                                     assignee[0] ? "{\"assignee\":\"true\"}" : "{\"assignee\":null}");
                 ok = 1;
@@ -393,7 +393,7 @@ int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
         }
         sqlite3_finalize(ps);
     }
-/* PoP: kdb_unlink_tasks @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kdb_unlink_tasks @ gateway/hosted_rooms.py:append_event */
     kdb_append_event(conn, child_id, -1, "linked", "{\"parent\":\"x\",\"child\":\"x\"}");
     kdb_write_end(conn, 1);
     return 1;
@@ -619,7 +619,7 @@ void kdb_attachment_list_free(kanban_attach_t **list)
 
 /* ---- events ---- */
 
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kdb_append_event @ gateway/hosted_rooms.py:append_event */
 int kdb_append_event(sqlite3 *conn, const char *task_id, long run_id,
                         const char *kind, const char *payload_json)
 {
@@ -863,7 +863,7 @@ int kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
  * busy dispatcher from reopening state.db on every spawn. A dispatcher tick
  * must never fail because the session DB was busy or missing. The C port
  * keeps the same in-process dedupe and swallows all failures. */
-/* PoP: kdb_retag_legacy_worker_sessions @ hermes_cli/kanban_db.py:_retag_legacy_worker_sessions */
+/* PoP: kdb_retag_legacy_worker_sessions @ hermes_cli/kanban_db_dispatch.py:_retag_legacy_worker_sessions */
 extern char *hermes_state_default_db_path(void);
 extern hermes_state_db_t *hermes_state_db_open(const char *path);
 extern void hermes_state_db_close(hermes_state_db_t *db);

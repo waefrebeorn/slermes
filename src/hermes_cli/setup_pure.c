@@ -103,7 +103,7 @@ bool stp_is_noninteractive(void) {
 /* ==========================================================================
  * _is_valid_telegram_bot_token
  * ========================================================================== */
-/* PoP: stp_is_valid_telegram_bot_token @ hermes_cli/setup.py:_is_valid_telegram_bot_token */
+/* PoP: stp_is_valid_telegram_bot_token @ hermes_cli/setup_platforms.py:_is_valid_telegram_bot_token */
 bool stp_is_valid_telegram_bot_token(const char *token) {
     if (!token || !token[0]) return false;
     /* Python: _TELEGRAM_BOT_TOKEN_RE.match(token)
@@ -140,7 +140,7 @@ bool stp_is_valid_telegram_bot_token(const char *token) {
 /* ==========================================================================
  * _profile_name_from_hermes_home
  * ========================================================================== */
-/* PoP: stp_profile_name_from_hermes_home @ hermes_cli/setup.py:_profile_name_from_hermes_home */
+/* PoP: stp_profile_name_from_hermes_home @ hermes_cli/setup_platforms.py:_profile_name_from_hermes_home */
 char *stp_profile_name_from_hermes_home(const char *hermes_home_path) {
     if (!hermes_home_path) return NULL;
     /* Python: Path(hermes_home).parent.name == "profiles" -> return hermes_home.name

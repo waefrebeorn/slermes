@@ -43,7 +43,7 @@
 #include "gateway_status.h"
 
 /* ── _format_time_ago ──────────────────────────────────────────── */
-/* PoP: uc_format_time_ago @ hermes_cli/update_cmd.py:_format_time_ago */
+/* PoP: uc_format_time_ago @ hermes_cli/update_cmd_maint.py:_format_time_ago */
 const char *uc_format_time_ago(const char *iso_ts)
 {
     /* Parse ISO-8601: accept "Z" suffix and ±HH:MM offset. */
@@ -109,7 +109,7 @@ const char *uc_format_time_ago(const char *iso_ts)
 }
 
 /* ── _stash_apply_failed_only_on_existing_untracked ───────────────────── */
-/* PoP: uc_stash_apply_failed_only_on_existing_untracked @ hermes_cli/update_cmd.py:_stash_apply_failed_only_on_existing_untracked */
+/* PoP: uc_stash_apply_failed_only_on_existing_untracked @ hermes_cli/update_cmd_stash.py:_stash_apply_failed_only_on_existing_untracked */
 bool uc_stash_apply_failed_only_on_existing_untracked(const char *stderr_text)
 {
     if (!stderr_text || !*stderr_text) return false;
@@ -156,7 +156,7 @@ bool uc_stash_apply_failed_only_on_existing_untracked(const char *stderr_text)
 }
 
 /* ── _is_fork ──────────────────────────────────────────────────── */
-/* PoP: uc_is_fork_origin @ hermes_cli/update_cmd.py:_is_fork */
+/* PoP: uc_is_fork_origin @ hermes_cli/update_cmd_git.py:_is_fork */
 bool uc_is_fork_origin(const char *origin_url)
 {
     if (!origin_url || !*origin_url) return false;
@@ -190,7 +190,7 @@ bool uc_is_fork_origin(const char *origin_url)
 }
 
 /* ── _count_commits_between ────────────────────────────────── */
-/* PoP: uc_count_commits_between @ hermes_cli/update_cmd.py:_count_commits_between */
+/* PoP: uc_count_commits_between @ hermes_cli/update_cmd_git.py:_count_commits_between */
 int uc_count_commits_between(const char *revlist_stdout)
 {
     if (!revlist_stdout || !*revlist_stdout) return -1;
@@ -214,7 +214,7 @@ int uc_count_commits_between(const char *revlist_stdout)
 }
 
 /* ── _resolve_stash_selector ────────────────────────────── */
-/* PoP: uc_resolve_stash_selector @ hermes_cli/update_cmd.py:_resolve_stash_selector */
+/* PoP: uc_resolve_stash_selector @ hermes_cli/update_cmd_stash.py:_resolve_stash_selector */
 char *uc_resolve_stash_selector(const char *stash_list_output,
                                     const char *stash_ref)
 {
@@ -254,7 +254,7 @@ char *uc_resolve_stash_selector(const char *stash_list_output,
 }
 
 /* ── _print_stash_cleanup_guidance ────────────────────── */
-/* PoP: uc_stash_cleanup_guidance @ hermes_cli/update_cmd.py:_print_stash_cleanup_guidance */
+/* PoP: uc_stash_cleanup_guidance @ hermes_cli/update_cmd_stash.py:_print_stash_cleanup_guidance */
 char *uc_stash_cleanup_guidance(const char *stash_ref,
                                     const char *stash_selector)
 {
@@ -695,7 +695,7 @@ char *uc_format_venv_python_holders_message(const char **matches, size_t n_match
 }
 
 /* ── _resolve_pre_update_backup_mode ────────────── */
-/* PoP: uc_resolve_pre_update_backup_mode @ hermes_cli/update_cmd.py:_resolve_pre_update_backup_mode */
+/* PoP: uc_resolve_pre_update_backup_mode @ hermes_cli/update_cmd_maint.py:_resolve_pre_update_backup_mode */
 const char *uc_resolve_pre_update_backup_mode(bool no_backup, bool backup,
                                                const char *raw_config_json)
 {
@@ -820,7 +820,7 @@ char **uc_parse_numstat_paths(const char *numstat_output)
 }
 
 /* ── _get_origin_url ────────────────────────────────────────────── */
-/* PoP: uc_get_origin_url @ hermes_cli/update_cmd.py:_get_origin_url */
+/* PoP: uc_get_origin_url @ hermes_cli/update_cmd_git.py:_get_origin_url */
 const char *uc_get_origin_url(const char *git_cmd[], const char *cwd)
 {
     /* Python: git remote get-url origin, return stdout.strip() or None. */
@@ -848,7 +848,7 @@ const char *uc_get_origin_url(const char *git_cmd[], const char *cwd)
 }
 
 /* ── _has_upstream_remote ──────────────────────────────────────── */
-/* PoP: uc_has_upstream_remote @ hermes_cli/update_cmd.py:_has_upstream_remote */
+/* PoP: uc_has_upstream_remote @ hermes_cli/update_cmd_git.py:_has_upstream_remote */
 bool uc_has_upstream_remote(const char *git_cmd[], const char *cwd)
 {
     (void)git_cmd;
@@ -862,7 +862,7 @@ bool uc_has_upstream_remote(const char *git_cmd[], const char *cwd)
 }
 
 /* ── _add_upstream_remote ──────────────────────────────────────── */
-/* PoP: uc_add_upstream_remote @ hermes_cli/update_cmd.py:_add_upstream_remote */
+/* PoP: uc_add_upstream_remote @ hermes_cli/update_cmd_git.py:_add_upstream_remote */
 bool uc_add_upstream_remote(const char *git_cmd[], const char *cwd)
 {
     (void)git_cmd;
@@ -876,7 +876,7 @@ bool uc_add_upstream_remote(const char *git_cmd[], const char *cwd)
 }
 
 /* ── _should_skip_upstream_prompt ──────────────────────────────── */
-/* PoP: uc_should_skip_upstream_prompt @ hermes_cli/update_cmd.py:_should_skip_upstream_prompt */
+/* PoP: uc_should_skip_upstream_prompt @ hermes_cli/update_cmd_git.py:_should_skip_upstream_prompt */
 bool uc_should_skip_upstream_prompt(const char *hermes_home)
 {
     if (!hermes_home || !*hermes_home) return false;
@@ -887,7 +887,7 @@ bool uc_should_skip_upstream_prompt(const char *hermes_home)
 }
 
 /* ── _mark_skip_upstream_prompt ────────────────────────────────── */
-/* PoP: uc_mark_skip_upstream_prompt @ hermes_cli/update_cmd.py:_mark_skip_upstream_prompt */
+/* PoP: uc_mark_skip_upstream_prompt @ hermes_cli/update_cmd_git.py:_mark_skip_upstream_prompt */
 void uc_mark_skip_upstream_prompt(const char *hermes_home)
 {
     if (!hermes_home || !*hermes_home) return;
@@ -898,7 +898,7 @@ void uc_mark_skip_upstream_prompt(const char *hermes_home)
 }
 
 /* ── _sync_fork_with_upstream ──────────────────────────────────── */
-/* PoP: uc_sync_fork_with_upstream @ hermes_cli/update_cmd.py:_sync_fork_with_upstream */
+/* PoP: uc_sync_fork_with_upstream @ hermes_cli/update_cmd_git.py:_sync_fork_with_upstream */
 bool uc_sync_fork_with_upstream(const char *git_cmd[], const char *cwd)
 {
     (void)git_cmd;
@@ -1042,7 +1042,7 @@ char *uc_npm_manifests_digest(const char *project_root)
 }
 
 /* ── _npm_lockfile_changed ─────────────────────────────────────── */
-/* PoP: uc_npm_lockfile_changed @ hermes_cli/update_cmd.py:_npm_lockfile_changed */
+/* PoP: uc_npm_lockfile_changed @ hermes_cli/old_updater_deps.py:_npm_lockfile_changed */
 bool uc_npm_lockfile_changed(const char *project_root, const char *hermes_root)
 {
     char *current = uc_npm_manifests_digest(project_root);
@@ -1149,7 +1149,7 @@ void uc_write_marker_file(const char *path)
 }
 
 /* ── _for_each_systemd_gateway_unit ───────────────────────── */
-/* PoP: uc_for_each_systemd_gateway_unit @ hermes_cli/update_cmd.py:_for_each_systemd_gateway_unit */
+/* PoP: uc_for_each_systemd_gateway_unit @ hermes_cli/update_cmd_fleet.py:_for_each_systemd_gateway_unit */
 char **uc_for_each_systemd_gateway_unit(const char *list_units_stdout)
 {
     if (!list_units_stdout || !*list_units_stdout) return NULL;
@@ -1197,7 +1197,7 @@ char **uc_for_each_systemd_gateway_unit(const char *list_units_stdout)
 }
 
 /* ── _warn_incomplete_gateway_fleet_restart ──────────────── */
-/* PoP: uc_warn_incomplete_gateway_fleet_restart @ hermes_cli/update_cmd.py:_warn_incomplete_gateway_fleet_restart */
+/* PoP: uc_warn_incomplete_gateway_fleet_restart @ hermes_cli/update_cmd_fleet.py:_warn_incomplete_gateway_fleet_restart */
 char *uc_warn_incomplete_gateway_fleet_restart(const char **failed_units)
 {
     if (!failed_units || !*failed_units) return NULL;
@@ -1240,7 +1240,7 @@ char *uc_warn_incomplete_gateway_fleet_restart(const char **failed_units)
 }
 
 /* ── _discard_lockfile_churn (pure selection half) ───────── */
-/* PoP: uc_select_lockfile_churn @ hermes_cli/update_cmd.py:_discard_lockfile_churn */
+/* PoP: uc_select_lockfile_churn @ hermes_cli/update_cmd_git.py:_discard_lockfile_churn */
 char **uc_select_lockfile_churn(const char *diff_stdout)
 {
     if (!diff_stdout || !*diff_stdout) return NULL;
@@ -1383,7 +1383,7 @@ char *uc_capture_head_sha(const char *rev_parse_stdout)
 }
 
 /* ── _stash_local_changes_if_needed (name generator) ─────── */
-/* PoP: uc_autostash_name @ hermes_cli/update_cmd.py:_stash_local_changes_if_needed */
+/* PoP: uc_autostash_name @ hermes_cli/update_cmd_stash.py:_stash_local_changes_if_needed */
 char *uc_autostash_name(time_t now_utc)
 {
     struct tm tmv;
@@ -1397,7 +1397,7 @@ char *uc_autostash_name(time_t now_utc)
 }
 
 /* ── _print_curator_first_run_notice ─────────────────── */
-/* PoP: uc_print_curator_first_run_notice @ hermes_cli/update_cmd.py:_print_curator_first_run_notice */
+/* PoP: uc_print_curator_first_run_notice @ hermes_cli/update_cmd_maint.py:_print_curator_first_run_notice */
 char *uc_print_curator_first_run_notice(bool curator_enabled,
                                         bool has_last_run_at,
                                         int interval_hours)
@@ -1428,7 +1428,7 @@ char *uc_print_curator_first_run_notice(bool curator_enabled,
 }
 
 /* ── _print_curator_recent_run_notice ────────────────── */
-/* PoP: uc_print_curator_recent_run_notice @ hermes_cli/update_cmd.py:_print_curator_recent_run_notice */
+/* PoP: uc_print_curator_recent_run_notice @ hermes_cli/update_cmd_maint.py:_print_curator_recent_run_notice */
 char *uc_print_curator_recent_run_notice(const char *last_run_at,
                                          const char *shown_at,
                                          const char *summary,
@@ -1506,7 +1506,7 @@ void uc_write_lazy_refresh_incomplete_marker(const char *project_root)
 }
 
 /* ── _finish_dashboard_update_cleanup ─────────────────────── */
-/* PoP: uc_finish_dashboard_update_cleanup @ hermes_cli/update_cmd.py:_finish_dashboard_update_cleanup */
+/* PoP: uc_finish_dashboard_update_cleanup @ hermes_cli/update_cmd_maint.py:_finish_dashboard_update_cleanup */
 char *uc_finish_dashboard_update_cleanup(const char **node_failures,
                                           size_t n_failures,
                                           bool unrecovered)
@@ -1597,7 +1597,7 @@ static int uc_copy_tree_internal(const char *src, const char *dst)
 }
 
 /* ── _stage_replacement ───────────────────────────────────────── */
-/* PoP: uc_stage_replacement @ hermes_cli/update_cmd.py:_stage_replacement */
+/* PoP: uc_stage_replacement @ hermes_cli/update_cmd_zip.py:_stage_replacement */
 char *uc_stage_replacement(const char *src, const char *dst)
 {
     if (!src || !dst || !*src || !*dst) return NULL;
@@ -1627,7 +1627,7 @@ char *uc_stage_replacement(const char *src, const char *dst)
 }
 
 /* ── _discard_staged ──────────────────────────────────────────── */
-/* PoP: uc_discard_staged @ hermes_cli/update_cmd.py:_discard_staged */
+/* PoP: uc_discard_staged @ hermes_cli/update_cmd_zip.py:_discard_staged */
 void uc_discard_staged(const char **staged_pairs)
 {
     if (!staged_pairs) return;
@@ -1650,7 +1650,7 @@ void uc_discard_staged(const char **staged_pairs)
 }
 
 /* ── _commit_staged_replacements ──────────────────────────────── */
-/* PoP: uc_commit_staged_replacements @ hermes_cli/update_cmd.py:_commit_staged_replacements */
+/* PoP: uc_commit_staged_replacements @ hermes_cli/update_cmd_zip.py:_commit_staged_replacements */
 int uc_commit_staged_replacements(const char **staged_pairs)
 {
     if (!staged_pairs) return -1;
@@ -1728,7 +1728,7 @@ rollback:
 }
 
 /* ── _atomic_replace_dir ──────────────────────────────────────── */
-/* PoP: uc_atomic_replace_dir @ hermes_cli/update_cmd.py:_atomic_replace_dir */
+/* PoP: uc_atomic_replace_dir @ hermes_cli/update_cmd_zip.py:_atomic_replace_dir */
 int uc_atomic_replace_dir(const char *src, const char *dst)
 {
     char *staging = uc_stage_replacement(src, dst);
@@ -1757,7 +1757,7 @@ long uc_log_only_write(FILE *log_file, const char *text)
 }
 
 /* ── _write_update_planned_stop_marker ────────────────────────── */
-/* PoP: uc_write_update_planned_stop_marker @ hermes_cli/update_cmd.py:_write_update_planned_stop_marker */
+/* PoP: uc_write_update_planned_stop_marker @ hermes_cli/update_cmd_windows.py:_write_update_planned_stop_marker */
 int uc_write_update_planned_stop_marker(const char *profile_path, long pid,
                                         long stopper_pid,
                                         const char *target_start_time,
@@ -1783,7 +1783,7 @@ int uc_write_update_planned_stop_marker(const char *profile_path, long pid,
 }
 
 /* ── _print_fts_optimize_available_notice ─────────────────────── */
-/* PoP: uc_print_fts_optimize_available_notice @ hermes_cli/update_cmd.py:_print_fts_optimize_available_notice */
+/* PoP: uc_print_fts_optimize_available_notice @ hermes_cli/update_cmd_maint.py:_print_fts_optimize_available_notice */
 char *uc_print_fts_optimize_available_notice(const char *mode, double size_gb,
                                              bool interrupted)
 {
@@ -1900,7 +1900,7 @@ char *uc_gateway_prompt(const char *default_home, const char *prompt_text,
 }
 
 /* ── _wait_for_service_active ────────────────────────── */
-/* PoP: uc_wait_for_service_active @ hermes_cli/update_cmd.py:_wait_for_service_active */
+/* PoP: uc_wait_for_service_active @ hermes_cli/update_cmd_fleet.py:_wait_for_service_active */
 int uc_wait_for_service_active(const char *service_name,
                                      double timeout_sec,
                                      int poll_ms)
@@ -1951,7 +1951,7 @@ char *uc_generate_uuid(void)
 }
 
 /* ── _restore_stashed_changes ───────────────────────────────────────── */
-/* PoP: uc_restore_stashed_changes @ hermes_cli/update_cmd.py:_restore_stashed_changes */
+/* PoP: uc_restore_stashed_changes @ hermes_cli/update_cmd_stash.py:_restore_stashed_changes */
 bool uc_restore_stashed_changes(const char *git_cmd[], const char *cwd,
                                 const char *stash_ref, bool prompt_user)
 {
@@ -2099,7 +2099,7 @@ bool uc_restore_stashed_changes(const char *git_cmd[], const char *cwd,
 }
 
 /* ── _discard_stashed_changes ───────────────────────────────────────── */
-/* PoP: uc_discard_stashed_changes @ hermes_cli/update_cmd.py:_discard_stashed_changes */
+/* PoP: uc_discard_stashed_changes @ hermes_cli/update_cmd_stash.py:_discard_stashed_changes */
 bool uc_discard_stashed_changes(const char *git_cmd[], const char *cwd,
                                 const char *stash_ref)
 {
@@ -2155,7 +2155,7 @@ bool uc_discard_stashed_changes(const char *git_cmd[], const char *cwd,
 }
 
 /* ── _sync_with_upstream_if_needed ──────────────────────────────────── */
-/* PoP: uc_sync_with_upstream_if_needed @ hermes_cli/update_cmd.py:_sync_with_upstream_if_needed */
+/* PoP: uc_sync_with_upstream_if_needed @ hermes_cli/update_cmd_git.py:_sync_with_upstream_if_needed */
 void uc_sync_with_upstream_if_needed(const char *git_cmd[], const char *cwd,
                                      const char *hermes_home)
 {
@@ -2275,7 +2275,7 @@ void uc_sync_with_upstream_if_needed(const char *git_cmd[], const char *cwd,
 }
 
 /* ── _discard_lockfile_churn (orchestration half) ───────────────────── */
-/* PoP: uc_discard_lockfile_churn @ hermes_cli/update_cmd.py:_discard_lockfile_churn */
+/* PoP: uc_discard_lockfile_churn @ hermes_cli/update_cmd_git.py:_discard_lockfile_churn */
 int uc_discard_lockfile_churn(const char *git_cmd[], const char *repo_root)
 {
     (void)git_cmd;
@@ -2324,7 +2324,7 @@ int uc_discard_lockfile_churn(const char *git_cmd[], const char *repo_root)
 }
 
 /* ── _normalize_managed_eol ─────────────────────────────────────────── */
-/* PoP: uc_normalize_managed_eol @ hermes_cli/update_cmd.py:_normalize_managed_eol */
+/* PoP: uc_normalize_managed_eol @ hermes_cli/update_cmd_git.py:_normalize_managed_eol */
 int uc_normalize_managed_eol(const char *git_cmd[], const char *repo_root)
 {
     (void)git_cmd;
@@ -2780,7 +2780,7 @@ int uc_cmd_update_check(const char *project_root, const char *branch)
 }
 
 /* ── _update_node_dependencies ─────────────────────────────── */
-/* PoP: uc_update_node_dependencies @ hermes_cli/update_cmd.py:_update_node_dependencies */
+/* PoP: uc_update_node_dependencies @ hermes_cli/old_updater_deps.py:_update_node_dependencies */
 char **uc_update_node_dependencies(const char *project_root)
 {
     if (!project_root) return NULL;
@@ -2924,7 +2924,7 @@ void uc_upgrade_pip_before_lazy_refresh(const char *install_cmd_prefix[],
 }
 
 /* ── _refresh_active_lazy_features ──────────────────────────── */
-/* PoP: uc_refresh_active_lazy_features @ hermes_cli/update_cmd.py:_refresh_active_lazy_features */
+/* PoP: uc_refresh_active_lazy_features @ hermes_cli/old_updater_deps.py:_refresh_active_lazy_features */
 char *uc_refresh_active_lazy_features(const char *install_cmd_prefix[],
                                           const char *env_path)
 {
@@ -2938,7 +2938,7 @@ char *uc_refresh_active_lazy_features(const char *install_cmd_prefix[],
 }
 
 /* ── _refresh_active_memory_provider_dependencies ────────────── */
-/* PoP: uc_refresh_active_memory_provider_dependencies @ hermes_cli/update_cmd.py:_refresh_active_memory_provider_dependencies */
+/* PoP: uc_refresh_active_memory_provider_dependencies @ hermes_cli/old_updater_deps.py:_refresh_active_memory_provider_dependencies */
 char *uc_refresh_active_memory_provider_dependencies(void)
 {
     /* The Python version loads config, finds the active memory
@@ -2951,7 +2951,7 @@ char *uc_refresh_active_memory_provider_dependencies(void)
 }
 
 /* ── _run_pre_update_backup ────────────────────────────────── */
-/* PoP: uc_run_pre_update_backup @ hermes_cli/update_cmd.py:_run_pre_update_backup */
+/* PoP: uc_run_pre_update_backup @ hermes_cli/update_cmd_maint.py:_run_pre_update_backup */
 char *uc_run_pre_update_backup(const char *mode, const char *project_root)
 {
     if (!mode || strcmp(mode, "off") == 0) return NULL;
@@ -3020,7 +3020,7 @@ char *uc_run_pre_update_backup(const char *mode, const char *project_root)
 }
 
 /* ── _ensure_fhs_path_guard ────────────────────────────────────── */
-/* PoP: uc_ensure_fhs_path_guard @ hermes_cli/update_cmd.py:_ensure_fhs_path_guard */
+/* PoP: uc_ensure_fhs_path_guard @ hermes_cli/update_cmd_maint.py:_ensure_fhs_path_guard */
 bool uc_ensure_fhs_path_guard(void)
 {
 #if defined(__linux__)
@@ -3129,7 +3129,7 @@ bool uc_ensure_fhs_path_guard(void)
 }
 
 /* ── _ensure_acp_launcher ────────────────────────────────────── */
-/* PoP: uc_ensure_acp_launcher @ hermes_cli/update_cmd.py:_ensure_acp_launcher */
+/* PoP: uc_ensure_acp_launcher @ hermes_cli/update_cmd_maint.py:_ensure_acp_launcher */
 bool uc_ensure_acp_launcher(void)
 {
 #if defined(_WIN32) || defined(_WIN64)
@@ -3364,7 +3364,7 @@ int uc_install_psutil_android_compat(const char *install_cmd_prefix[])
 }
 
 /* ── _refresh_windows_gateway_launchers ────────────────────── */
-/* PoP: uc_refresh_windows_gateway_launchers @ hermes_cli/update_cmd.py:_refresh_windows_gateway_launchers */
+/* PoP: uc_refresh_windows_gateway_launchers @ hermes_cli/update_cmd_windows.py:_refresh_windows_gateway_launchers */
 void uc_refresh_windows_gateway_launchers(void)
 {
 #if defined(_WIN32) || defined(_WIN64)
@@ -3490,7 +3490,7 @@ int uc_venv_core_imports_healthy(const char *project_root, bool is_windows,
 }
 
 /* ── _update_via_zip ───────────────────────────────────────── */
-/* PoP: uc_update_via_zip @ hermes_cli/update_cmd.py:_update_via_zip */
+/* PoP: uc_update_via_zip @ hermes_cli/update_cmd_zip.py:_update_via_zip */
 int uc_update_via_zip(const char *branch, const char *project_root)
 {
     if (!branch || !project_root) return -1;
@@ -3914,7 +3914,7 @@ int uc_cmd_update_impl(const char *project_root, bool assume_yes,
 }
 
 /* ── _reload_updated_runtime_modules ─────────────────────────── */
-/* PoP: uc_reload_updated_runtime_modules @ hermes_cli/update_cmd.py:_reload_updated_runtime_modules */
+/* PoP: uc_reload_updated_runtime_modules @ hermes_cli/update_cmd_maint.py:_reload_updated_runtime_modules */
 void uc_reload_updated_runtime_modules(void)
 {
     /* Python original: importlib.invalidate_caches() then importlib.reload()
@@ -4058,7 +4058,7 @@ int uc_validate_critical_files_syntax(const char *root,
 }
 
 /* ── _validate_critical_modules_import ───────────────────────── */
-/* PoP: uc_validate_critical_modules_import @ hermes_cli/update_cmd.py:_validate_critical_modules_import */
+/* PoP: uc_validate_critical_modules_import @ hermes_cli/update_cmd_validation.py:_validate_critical_modules_import */
 int uc_validate_critical_modules_import(const char *root,
                                         char **failing_module,
                                         char **error_message)
@@ -4210,7 +4210,7 @@ char *uc_m(void)
     return NULL;
 }
 
-/* PoP: update_cmd_print_completion @ hermes_cli/update_cmd.py:_print_update_completion */
+/* PoP: update_cmd_print_completion @ hermes_cli/update_cmd_maint.py:_print_update_completion */
 /* Print update outcome + terminal receipt line when action id is valid.
  * Returns malloc'd combined output string. Caller frees. */
 char *update_cmd_print_completion(const char *message) {
@@ -4245,17 +4245,17 @@ char *update_cmd_print_completion(const char *message) {
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: update_reload_config_modules @ hermes_cli/update_cmd.py:_reload_config_modules */
+/* PoP: update_reload_config_modules @ hermes_cli/update_cmd_config.py:_reload_config_modules */
 void update_reload_config_modules(void) {
 }
 
-/* PoP: update_run_config_check_fresh @ hermes_cli/update_cmd.py:_run_config_check_fresh */
+/* PoP: update_run_config_check_fresh @ hermes_cli/update_cmd_config.py:_run_config_check_fresh */
 int update_run_config_check_fresh(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"ok\":true}");
     return 1;
 }
 
-/* PoP: update_run_migrate_config_fresh @ hermes_cli/update_cmd.py:_run_migrate_config_fresh */
+/* PoP: update_run_migrate_config_fresh @ hermes_cli/update_cmd_config.py:_run_migrate_config_fresh */
 int update_run_migrate_config_fresh(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"migrated\":true}");
     return 1;
@@ -4273,7 +4273,7 @@ int update_stop_process_trees(const char *pid_list) {
     return 1;
 }
 
-/* PoP: update_refresh_bootstrap_cache_scripts @ hermes_cli/update_cmd.py:_refresh_bootstrap_cache_scripts */
+/* PoP: update_refresh_bootstrap_cache_scripts @ hermes_cli/update_cmd_windows.py:_refresh_bootstrap_cache_scripts */
 void update_refresh_bootstrap_cache_scripts(void) {
 }
 
@@ -4285,7 +4285,7 @@ static const char *upd_read_project_version(void) {
     return (v && *v) ? v : NULL;
 }
 
-/* PoP: upd_update_complete_message @ hermes_cli/update_cmd.py:_update_complete_message */
+/* PoP: upd_update_complete_message @ hermes_cli/update_cmd_maint.py:_update_complete_message */
 char *upd_update_complete_message(const char *pre_version) {
     /* "✓ Update complete! (vPRE → vPOST)" when both known and different;
      * "(vPOST)" when only post known; plain message otherwise. */
@@ -4308,7 +4308,7 @@ char *upd_update_complete_message(const char *pre_version) {
     return strdup("✓" " Update complete!");
 }
 
-/* PoP: upd_branch_head_suffix @ hermes_cli/update_cmd.py:_branch_head_suffix */
+/* PoP: upd_branch_head_suffix @ hermes_cli/update_cmd_git.py:_branch_head_suffix */
 char *upd_branch_head_suffix(const char *label) {
     /* " [<label>]" when a label is known; "" otherwise. */
     if (!label || !*label) return strdup("");
@@ -4355,7 +4355,7 @@ static char *upd_git_stdout(char *const argv[], const char *cwd) {
     return stripped[0] ? stripped : NULL;
 }
 
-/* PoP: upd_branch_head_label @ hermes_cli/update_cmd.py:_branch_head_label */
+/* PoP: upd_branch_head_label @ hermes_cli/update_cmd_git.py:_branch_head_label */
 char *upd_branch_head_label(const char *cwd) {
     /* "<branch> @ <short-sha>" for the checkout; NULL when unknown. */
     char *argv_branch[] = { (char*)"git", (char*)"rev-parse", (char*)"--abbrev-ref", (char*)"HEAD", NULL };
@@ -4374,7 +4374,7 @@ char *upd_branch_head_label(const char *cwd) {
     return out;
 }
 
-/* PoP: upd_branch_head_suffix2 @ hermes_cli/update_cmd.py:_branch_head_suffix */
+/* PoP: upd_branch_head_suffix2 @ hermes_cli/update_cmd_git.py:_branch_head_suffix */
 char *upd_branch_head_suffix_from_cwd(const char *cwd) {
     /* " [<branch> @ <short-sha>]" — "" when unknown. */
     char *label = upd_branch_head_label(cwd);
@@ -4387,7 +4387,7 @@ char *upd_branch_head_suffix_from_cwd(const char *cwd) {
     return out;
 }
 
-/* PoP: upd_write_gateway_update_exit_code @ hermes_cli/update_cmd.py:_write_gateway_update_exit_code */
+/* PoP: upd_write_gateway_update_exit_code @ hermes_cli/update_cmd_fleet.py:_write_gateway_update_exit_code */
 void upd_write_gateway_update_exit_code(bool ok) {
     /* Persist 0/1 to <home>/.update_exit_code for the desktop/gateway poller.
      * Best-effort: OSError is swallowed in Python too. */
@@ -4402,7 +4402,7 @@ void upd_write_gateway_update_exit_code(bool ok) {
     fclose(f);
 }
 
-/* PoP: upd_assess_parked_branch_switch @ hermes_cli/update_cmd.py:_assess_parked_branch_switch */
+/* PoP: upd_assess_parked_branch_switch @ hermes_cli/update_cmd_git.py:_assess_parked_branch_switch */
  /*
  * Decide whether auto-switching a parked branch back to the update target is
  * safe. Writes the decision into *ok* and a malloc'd reason (or "") into
@@ -4471,7 +4471,7 @@ static bool upd_ends_with_staging_suffix(const char *s) {
     return false;
 }
 
-/* PoP: upd_is_zip_staging_artifact_status_line @ hermes_cli/update_cmd.py:_is_zip_staging_artifact_status_line */
+/* PoP: upd_is_zip_staging_artifact_status_line @ hermes_cli/update_cmd_zip.py:_is_zip_staging_artifact_status_line */
 bool upd_is_zip_staging_artifact_status_line(const char *line) {
     /* True when a porcelain status line is our own two-phase-swap artifact:
      * payload = line[3:]; top-level dir after strip/quote/backslash-normalise
@@ -4506,7 +4506,7 @@ bool upd_is_zip_staging_artifact_status_line(const char *line) {
     return upd_ends_with_staging_suffix(norm);
 }
 
-/* PoP: upd_print_parked_branch_kept_notice @ hermes_cli/update_cmd.py:_print_parked_branch_kept_notice */
+/* PoP: upd_print_parked_branch_kept_notice @ hermes_cli/update_cmd_git.py:_print_parked_branch_kept_notice */
 void upd_print_parked_branch_kept_notice(const char *current_branch,
                                          const char *target_branch,
                                          const char *unmerged_count) {
@@ -4523,7 +4523,7 @@ void upd_print_parked_branch_kept_notice(const char *current_branch,
     printf("%s\n", bar);
 }
 
-/* PoP: upd_print_update_summary @ hermes_cli/update_cmd.py:_print_update_summary */
+/* PoP: upd_print_update_summary @ hermes_cli/update_cmd_maint.py:_print_update_summary */
 void upd_print_update_summary(const json_t *node_failures, bool desktop_build_ok,
                               const char *pre_update_version) {
     /* Final update banner. A failed Desktop rebuild is non-fatal but must
@@ -4570,7 +4570,7 @@ void upd_print_update_summary(const json_t *node_failures, bool desktop_build_ok
     free(msg);
 }
 
-/* PoP: upd_print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion */
+/* PoP: upd_print_update_completion @ hermes_cli/update_cmd_maint.py:_print_update_completion */
  /*
  * Print the outcome plus, when HERMES_ACTION_ID is a 32-hex action id, a
  * terminal receipt line the Desktop can match after it restarts. */
@@ -4613,7 +4613,7 @@ void upd_print_update_completion(const char *message) {
     }
 }
 
-/* PoP: upd_print_parked_branch_skip_warning @ hermes_cli/update_cmd.py:_print_parked_branch_skip_warning */
+/* PoP: upd_print_parked_branch_skip_warning @ hermes_cli/update_cmd_git.py:_print_parked_branch_skip_warning */
 void upd_print_parked_branch_skip_warning(const char *cwd,
                                           const char *current_branch,
                                           const char *target_branch,
@@ -4729,7 +4729,7 @@ void upd_print_called_process_error_tail(const char *blob, int limit) {
     }
 }
 
-/* PoP: upd_zip_overlay_block_reason @ hermes_cli/update_cmd.py:_zip_overlay_block_reason */
+/* PoP: upd_zip_overlay_block_reason @ hermes_cli/update_cmd_zip.py:_zip_overlay_block_reason */
  /*
  * Why overlaying a ZIP onto root would destroy work, or NULL if safe. Runs
  * git status --porcelain -uall (fail-closed on git errors); optionally
@@ -4961,7 +4961,7 @@ static bool upd_profile_id_valid(const char *name) {
     return true;
 }
 
-/* PoP: upd_migrate_sibling_profile_configs @ hermes_cli/update_cmd.py:_migrate_sibling_profile_configs */
+/* PoP: upd_migrate_sibling_profile_configs @ hermes_cli/update_cmd_config.py:_migrate_sibling_profile_configs */
 /* Migrate every sibling profile's config.yaml to the current version (#91277
  * phase 2): iterate the profiles root, skip the active home, run the quiet
  * non-interactive migration. Returns count migrated; *skipped* gets profiles

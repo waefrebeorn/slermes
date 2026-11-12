@@ -1,4 +1,4 @@
-/* PoP: refuse_deleted_wal_generation @ hermes_state.py:refuse_deleted_wal_generation */
+/* PoP: refuse_deleted_wal_generation @ hermes_state_dbfile.py:refuse_deleted_wal_generation */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

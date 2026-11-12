@@ -108,7 +108,7 @@ int envl_u_resolve_safe_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: envl_u_build_provider_env_blocklist @ tools/environments/local.py:_build_provider_env_blocklist */
+/* PoP: envl_u_build_provider_env_blocklist @ tools/environments/local_env_policy.py:_build_provider_env_blocklist */
 int envl_u_build_provider_env_blocklist(const char *arg) {
     /* Python: derived blocklist. Arg =
      * "count\tstate\tresult". */
@@ -279,7 +279,7 @@ int envl_u_git_bash_aslr_help(const char *arg) {
     return 0;
 }
 
-/* PoP: envl_u_bash_starts @ tools/environments/local.py:_bash_starts */
+/* PoP: envl_u_bash_starts @ pm/shell.py:_bash_starts */
 int envl_u_bash_starts(const char *arg) {
     /* Python: external-program probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -533,7 +533,7 @@ int envl_u_quote_shell_path(const char *arg) {
     return 0;
 }
 
-/* PoP: envl_u_update_cwd @ tools/environments/local.py:_update_cwd */
+/* PoP: envl_u_update_cwd @ tools/environments/base.py:_update_cwd */
 int envl_u_update_cwd(const char *arg) {
     /* Python: extract cwd from stdout marker. Arg = "result\tcwd". */
     if (!arg || !*arg) { printf("\n"); return 0; }

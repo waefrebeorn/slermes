@@ -116,7 +116,7 @@ int ccm_handle_agents_command(const char *args) {
     if (finished) printf("  Recently finished: %d\n", finished);
     return 0;
 }
-/* PoP: ccm_handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
+/* PoP: ccm_handle_journey_command @ hermes_cli/cli_commands_session_tools.py:_handle_journey_command */
 int ccm_handle_journey_command(const char *args) {
     (void)args;
     /* Faithful port of `hermes journey`: show the learning timeline. The
@@ -149,22 +149,22 @@ int ccm_handle_journey_command(const char *args) {
     if (n == 0) printf("  Journey is empty — nothing learned/recorded yet.\n");
     return 0;
 }
-/* PoP: ccm_handle_paste_command @ hermes_cli/cli_commands_mixin.py:_handle_paste_command */
+/* PoP: ccm_handle_paste_command @ hermes_cli/cli_commands_session_tools.py:_handle_paste_command */
 int ccm_handle_paste_command(const char *args) {
     cmd_paste(args ? args : "", NULL);
     return 0;
 }
-/* PoP: ccm_handle_copy_command @ hermes_cli/cli_commands_mixin.py:_handle_copy_command */
+/* PoP: ccm_handle_copy_command @ hermes_cli/cli_commands_session_tools.py:_handle_copy_command */
 int ccm_handle_copy_command(const char *args) {
     cmd_copy(args ? args : "", NULL);
     return 0;
 }
-/* PoP: ccm_handle_image_command @ hermes_cli/cli_commands_mixin.py:_handle_image_command */
+/* PoP: ccm_handle_image_command @ hermes_cli/cli_commands_session_tools.py:_handle_image_command */
 int ccm_handle_image_command(const char *args) {
     cmd_image(args ? args : "", NULL);
     return 0;
 }
-/* PoP: ccm_handle_tools_command @ hermes_cli/cli_commands_mixin.py:_handle_tools_command */
+/* PoP: ccm_handle_tools_command @ hermes_cli/cli_commands_session_tools.py:_handle_tools_command */
 int ccm_handle_tools_command(const char *args) {
     cmd_tools(args ? args : "", NULL);
     return 0;

@@ -17,7 +17,7 @@
 
 /* ── hermes_state.py: FD budget + read-budget cluster ── */
 
-/* PoP: _open_fd_count @ hermes_state.py:_open_fd_count */
+/* PoP: _open_fd_count @ hermes_state_readpool.py:_open_fd_count */
 int _open_fd_count(void) {
     static const char *const fd_dirs[] = { "/proc/self/fd", "/dev/fd", NULL };
     for (int i = 0; fd_dirs[i]; i++) {
@@ -36,7 +36,7 @@ int _open_fd_count(void) {
     return -1;
 }
 
-/* PoP: _fd_soft_limit @ hermes_state.py:_fd_soft_limit */
+/* PoP: _fd_soft_limit @ hermes_state_readpool.py:_fd_soft_limit */
 int _fd_soft_limit(void) {
 #ifdef __linux__
     struct rlimit rl;
@@ -54,7 +54,7 @@ static struct { double stamp; int cached; pthread_mutex_t lock; } _fd_cache = {
 #define FD_USAGE_CACHE_SECONDS 5.0
 #define FD_HEADROOM_RESERVE 16
 
-/* PoP: _fd_headroom_ok @ hermes_state.py:_fd_headroom_ok */
+/* PoP: _fd_headroom_ok @ hermes_state_readpool.py:_fd_headroom_ok */
 bool _fd_headroom_ok(void) {
     int soft = _fd_soft_limit();
     if (soft < 0) return true;
@@ -76,7 +76,7 @@ bool _fd_headroom_ok(void) {
     return (soft - cached) > FD_HEADROOM_RESERVE;
 }
 
-/* PoP: _normalize_telegram_topic_profile_name @ hermes_state.py:_normalize_telegram_topic_profile_name */
+/* PoP: _normalize_telegram_topic_profile_name @ hermes_state_telegram.py:_normalize_telegram_topic_profile_name */
 const char *_normalize_telegram_topic_profile_name(const char *profile_name) {
     static char result[256];
     if (!profile_name || !*profile_name) return "default";
@@ -89,7 +89,7 @@ const char *_normalize_telegram_topic_profile_name(const char *profile_name) {
     return result;
 }
 
-/* PoP: _database_has_content @ hermes_state.py:_database_has_content */
+/* PoP: _database_has_content @ hermes_state_wal.py:_database_has_content */
 bool _database_has_content(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
@@ -104,7 +104,7 @@ bool _database_has_content(sqlite3 *conn) {
     return has;
 }
 
-/* PoP: is_transient_sqlite_error @ hermes_state.py:is_transient_sqlite_error */
+/* PoP: is_transient_sqlite_error @ hermes_state_errors.py:is_transient_sqlite_error */
 bool is_transient_sqlite_error(const char *msg) {
     if (!msg) return false;
     static const char *markers[] = {
@@ -135,7 +135,7 @@ bool _is_transient_read_only_ioerr(const char *msg, int attempt) {
     return strstr(lower, "disk i/o error") != NULL;
 }
 
-/* PoP: resolve_synchronous_level @ hermes_state.py:resolve_synchronous_level */
+/* PoP: resolve_synchronous_level @ hermes_state_wal.py:resolve_synchronous_level */
 int resolve_synchronous_level(const char *raw) {
     if (!raw || !*raw) return -1;
     char upper[32];

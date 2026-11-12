@@ -133,7 +133,7 @@ char *banner_upstream_main_sha(void) {
 
 /* ── banner_github_compare_behind ─────────────────────────────────── */
 /*
- * PoP: banner_github_compare_behind @ hermes_cli/banner.py:_github_compare_behind
+ * PoP: banner_github_compare_behind @ hermes_cli/source_check.py:_github_compare_behind
  * Returns 0 if up-to-date, >0 if behind, -1 on error.
  */
 int banner_github_compare_behind(const char *local_sha) {

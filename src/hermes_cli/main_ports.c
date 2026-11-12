@@ -34,7 +34,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: mn_restore_tui_workspace @ hermes_cli/main.py:_restore_tui_workspace */
+/* PoP: mn_restore_tui_workspace @ hermes_cli/main_tui_launch.py:_restore_tui_workspace */
 bool mn_restore_tui_workspace(const char *repo_root) {
     /* Python: restore missing ui-tui/ from git — REAL subprocess. */
     if (!repo_root) return false;
@@ -55,7 +55,7 @@ bool mn_restore_tui_workspace(const char *repo_root) {
     return ok;
 }
 
-/* PoP: mn_ensure_tui_workspace @ hermes_cli/main.py:_ensure_tui_workspace */
+/* PoP: mn_ensure_tui_workspace @ hermes_cli/main_tui_launch.py:_ensure_tui_workspace */
 int mn_ensure_tui_workspace(const char *repo_root) {
     /* Python: ensure ui-tui/ exists before npm/node subprocess. */
     if (!repo_root) return -1;
@@ -113,7 +113,7 @@ int mn_cmd_webhook(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: mn_cmd_doctor @ hermes_cli/main.py:cmd_doctor */
+/* PoP: mn_cmd_doctor @ pm/cli.py:cmd_doctor */
 int mn_cmd_doctor(const char *args, agent_state_t *state) {
     if (!args) return -1;
     cmd_doctor(args, state);
@@ -170,7 +170,7 @@ int mn_cmd_dashboard(const char *args, const char *token_file) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: mn_cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */
+/* PoP: mn_cmd_prompt_size @ hermes_cli/prompt_size.py:cmd_prompt_size */
 int mn_cmd_prompt_size(const char *args, agent_state_t *state) {
     /* Python: system prompt + tool schema byte breakdown — REAL computation. */
     if (!args) return -1;
@@ -189,7 +189,7 @@ int mn_cmd_logs(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: mn_cmd_memory @ hermes_cli/main.py:cmd_memory */
+/* PoP: mn_cmd_memory @ hermes_cli/main_agent_cmds.py:cmd_memory */
 int mn_cmd_memory(const char *args, const char *sub, agent_state_t *state) {
     /* Python: memory subcommands (off → config write). */
     if (!args) return -1;
@@ -330,7 +330,7 @@ char *mn_confirm_startup_expensive_model_override(const json_t *args,
  * _session_status_tag — short fixed-width tag for a lifecycle status.
  * Writes into out (at least 8 bytes).
  * ------------------------------------------------------------------------- */
-/* PoP: mn_session_status_tag @ hermes_cli/main.py:_session_status_tag */
+/* PoP: mn_session_status_tag @ hermes_cli/sessions_cmd_browse.py:_session_status_tag */
 void mn_session_status_tag(const char *status, char *out, size_t n)
 {
     const char *tag = "-";
@@ -347,7 +347,7 @@ void mn_session_status_tag(const char *status, char *out, size_t n)
  * _annotate_session_statuses — attach "_status" to each session row from a
  * {session_id: status} mapping (best-effort; failures leave rows untagged).
  * ------------------------------------------------------------------------- */
-/* PoP: mn_annotate_session_statuses @ hermes_cli/main.py:_annotate_session_statuses */
+/* PoP: mn_annotate_session_statuses @ hermes_cli/sessions_cmd_browse.py:_annotate_session_statuses */
 void mn_annotate_session_statuses(json_t *sessions, const json_t *statuses)
 {
     if (!statuses || !sessions || sessions->type != JSON_ARRAY ||
@@ -497,7 +497,7 @@ char *mn_npm_lifecycle_env(const json_t *overrides)
  * aux-task shape ({provider,model,base_url,api_key}, stripped strings).
  * Caller frees with json_free().
  * ------------------------------------------------------------------------- */
-/* PoP: mn_delegation_cfg_as_task @ hermes_cli/main.py:_delegation_cfg_as_task */
+/* PoP: mn_delegation_cfg_as_task @ hermes_cli/main_provider_setup.py:_delegation_cfg_as_task */
 json_t *mn_delegation_cfg_as_task(const json_t *cfg)
 {
     const json_t *d = cfg ? json_obj_get(cfg, "delegation") : NULL;
@@ -521,7 +521,7 @@ json_t *mn_delegation_cfg_as_task(const json_t *cfg)
  * _aux_task_display_name — display name for a task key, covering the special
  * delegation entry. Falls back to the key itself. Caller frees.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_aux_task_display_name @ hermes_cli/main.py:_aux_task_display_name */
+/* PoP: mn_aux_task_display_name @ hermes_cli/main_provider_setup.py:_aux_task_display_name */
 char *mn_aux_task_display_name(const char *task)
 {
     if (task && strcmp(task, MN_DELEGATION_TASK_KEY) == 0)
@@ -534,7 +534,7 @@ char *mn_aux_task_display_name(const char *task)
  * is statically linked and there is no lazy module dict to route through, so
  * the faithful equivalent is a self-returning identity.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_self @ hermes_cli/main.py:_self */
+/* PoP: mn_self @ hermes_cli/old_updater_main.py:_self */
 const void *mn_self(void)
 {
     return (const void *)mn_self;   /* the module object itself */
@@ -598,7 +598,7 @@ void mn_cmd_verify(const json_t *args)
  * the executable (macOS: executable/../Resources, else executable/resources).
  * Caller frees; NULL when not inspectable.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_renderer_bundle_dir @ hermes_cli/main.py:_renderer_bundle_dir */
+/* PoP: mn_renderer_bundle_dir @ hermes_cli/main_desktop.py:_renderer_bundle_dir */
 char *mn_renderer_bundle_dir(const char *desktop_dir, bool source_mode,
                              const char *packaged_executable)
 {
@@ -632,7 +632,7 @@ char *mn_renderer_bundle_dir(const char *desktop_dir, bool source_mode,
  * that are not on disk. Conservative: an unreadable index or one naming
  * nothing checkable is NOT torn. `dist_dir` is the bundle root.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_renderer_bundle_torn @ hermes_cli/main.py:_renderer_bundle_torn */
+/* PoP: mn_renderer_bundle_torn @ hermes_cli/main_desktop.py:_renderer_bundle_torn */
 bool mn_renderer_bundle_torn(const char *dist_dir)
 {
     if (!dist_dir || !*dist_dir)
@@ -701,7 +701,7 @@ bool mn_renderer_bundle_torn(const char *dist_dir)
  * control socket, then a D-Bus ping of org.freedesktop.secrets.
  * Caller frees; NULL when no keychain daemon is reachable.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_detect_linux_password_store @ hermes_cli/main.py:_detect_linux_password_store */
+/* PoP: mn_detect_linux_password_store @ hermes_cli/main_desktop.py:_detect_linux_password_store */
 char *mn_detect_linux_password_store(void)
 {
     const char *kde_raw = getenv("KDE_SESSION_VERSION");
@@ -763,7 +763,7 @@ char *mn_detect_linux_password_store(void)
  * ------------------------------------------------------------------------- */
 char *lde_install_desktop_entry(const char *project_root);
 
-/* PoP: mn_register_linux_desktop_entry @ hermes_cli/main.py:_register_linux_desktop_entry */
+/* PoP: mn_register_linux_desktop_entry @ hermes_cli/main_desktop.py:_register_linux_desktop_entry */
 bool mn_register_linux_desktop_entry(const char *project_root,
                                      bool supported, char **out_message)
 {
@@ -791,7 +791,7 @@ bool mn_register_linux_desktop_entry(const char *project_root,
 /* ---------------------------------------------------------------------------
  * _update_marker_path — PROJECT_ROOT/.update-incomplete. Caller frees.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_update_marker_path @ hermes_cli/main.py:_update_marker_path */
+/* PoP: mn_update_marker_path @ hermes_cli/main_install_repair.py:_update_marker_path */
 char *mn_update_marker_path(void)
 {
     const char *root = getenv("HERMES_PROJECT_ROOT");
@@ -831,7 +831,7 @@ char *mn_norm_exe_path(const char *path)
  * from or under. Windows-only; candidates come from argv[0]/main paths and
  * must intersect the project venv's own shims. Caller frees; NULL otherwise.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_windows_shim_in_process_chain @ hermes_cli/main.py:_windows_shim_in_process_chain */
+/* PoP: mn_windows_shim_in_process_chain @ hermes_cli/old_updater_main.py:_windows_shim_in_process_chain */
 char *mn_windows_shim_in_process_chain(const char *const *argv0_candidates,
                                        size_t n_cand,
                                        const char *const *venv_shims,
@@ -877,7 +877,7 @@ char *mn_windows_shim_in_process_chain(const char *const *argv0_candidates,
  * continue the sync in-process (False). A spawned child is marked via
  * HERMES_UPDATE_REEXEC=1 so it cannot spawn another child.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_reexec_dependency_sync_off_windows_shim @ hermes_cli/main.py:_reexec_dependency_sync_off_windows_shim */
+/* PoP: mn_reexec_dependency_sync_off_windows_shim @ hermes_cli/main_install_repair.py:_reexec_dependency_sync_off_windows_shim */
 bool mn_reexec_dependency_sync_off_windows_shim(const char *hermes_exe)
 {
 #ifndef _WIN32
@@ -920,7 +920,7 @@ static void mn_pfr_norm(char *dst, size_t n, const char *value)
             *q = '\\';
 }
 
-/* PoP: mn_filter_pending_shim_renames @ hermes_cli/main.py:_filter_pending_shim_renames */
+/* PoP: mn_filter_pending_shim_renames @ hermes_cli/main_install_repair.py:_filter_pending_shim_renames */
 json_t *mn_filter_pending_shim_renames(const json_t *entries,
                                        const json_t *shims)
 {
@@ -995,7 +995,7 @@ json_t *mn_filter_pending_shim_renames(const json_t *entries,
  * Needs elevation to read/write HKLM PendingFileRenameOperations; a non-
  * Windows host is a no-op returning 0.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_cleanup_pending_shim_renames @ hermes_cli/main.py:_cleanup_pending_shim_renames */
+/* PoP: mn_cleanup_pending_shim_renames @ hermes_cli/main_install_repair.py:_cleanup_pending_shim_renames */
 int mn_cleanup_pending_shim_renames(const char *scripts_dir)
 {
 #ifndef _WIN32
@@ -1089,7 +1089,7 @@ int mn_cleanup_pending_shim_renames(const char *scripts_dir)
  * _quarantine_stamp_ms — the ".old.<unix-ms>" stamp in a quarantine filename.
  * Returns false when the name was not produced by _quarantine_running_hermes_exe.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_quarantine_stamp_ms @ hermes_cli/main.py:_quarantine_stamp_ms */
+/* PoP: mn_quarantine_stamp_ms @ hermes_cli/main_install_repair.py:_quarantine_stamp_ms */
 bool mn_quarantine_stamp_ms(const char *filename, long long *out_ms)
 {
     if (out_ms)
@@ -1149,7 +1149,7 @@ bool mn_is_uv_command(const char *const *install_cmd_prefix, size_t n)
  * line unless the caller already passed --python. Returns a malloc'd argv
  * array (argv[argc]=NULL); caller frees each element and the array.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_insert_python_pin @ hermes_cli/main.py:_insert_python_pin */
+/* PoP: mn_insert_python_pin @ hermes_cli/old_updater_main.py:_insert_python_pin */
 char **mn_insert_python_pin(char *const *args, size_t n_args, size_t *out_n)
 {
     if (out_n)
@@ -1191,7 +1191,7 @@ char **mn_insert_python_pin(char *const *args, size_t n_args, size_t *out_n)
  * sys.executable lives IN that dir; the env root is parent.parent. Falls
  * back to the executable's dir. Caller frees; NULL when neither exists.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_interpreter_scripts_dir @ hermes_cli/main.py:_interpreter_scripts_dir */
+/* PoP: mn_interpreter_scripts_dir @ hermes_cli/old_updater_main.py:_interpreter_scripts_dir */
 char *mn_interpreter_scripts_dir(void)
 {
     char exe[PATH_MAX];
@@ -1364,7 +1364,7 @@ bool mn_try_fast_chat_launch(char *const *argv, size_t argc)
  * project root (explicit path validated as a directory, else find_project_root).
  * Returns a malloc'd status message (caller frees); never blocks.
  * ------------------------------------------------------------------------- */
-/* PoP: mn_cmd_skills_trust @ hermes_cli/main.py:_cmd_skills_trust */
+/* PoP: mn_cmd_skills_trust @ hermes_cli/main_agent_cmds.py:_cmd_skills_trust */
 char *mn_cmd_skills_trust(const char *action, const char *raw_path,
                          json_t *config)
 {

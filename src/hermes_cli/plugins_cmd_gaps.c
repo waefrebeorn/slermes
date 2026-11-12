@@ -392,7 +392,7 @@ void _print_python_dependencies(const json_t *manifest) {
     free(hint);
 }
 
-/* PoP: _install_metadata_path @ hermes_cli/plugins_cmd.py:_install_metadata_path */
+/* PoP: _install_metadata_path @ hermes_cli/plugins_cmd_git.py:_install_metadata_path */
 /* <hermes home>/plugins/.install-metadata.json. Caller frees. */
 char *_install_metadata_path(void) {
     char *home = get_hermes_home() ? strdup(get_hermes_home())
@@ -440,7 +440,7 @@ static int write_install_metadata(const json_t *meta) {
  * Git plumbing
  * ====================================================================== */
 
-/* PoP: _normalize_exact_revision @ hermes_cli/plugins_cmd.py:_normalize_exact_revision */
+/* PoP: _normalize_exact_revision @ hermes_cli/plugins_cmd_git.py:_normalize_exact_revision */
 /* --ref must be a full 40-character commit SHA. Caller frees. */
 char *_normalize_exact_revision(const char *ref) {
     if (!ref || strlen(ref) != 40) goto invalid;
@@ -458,7 +458,7 @@ invalid:
     return NULL;
 }
 
-/* PoP: _safe_git_error @ hermes_cli/plugins_cmd.py:_safe_git_error */
+/* PoP: _safe_git_error @ hermes_cli/plugins_cmd_git.py:_safe_git_error */
 /* Diagnosable Git output without echoing embedded credentials. Caller frees. */
 char *_safe_git_error(const completed_process_t *result, const char *source_url) {
     const char *raw =
@@ -506,7 +506,7 @@ char *_safe_git_error(const completed_process_t *result, const char *source_url)
     return redacted ? redacted : strdup("");
 }
 
-/* PoP: _scrub_git_url @ hermes_cli/plugins_cmd.py:_scrub_git_url */
+/* PoP: _scrub_git_url @ hermes_cli/plugins_cmd_git.py:_scrub_git_url */
 /*
  * Strip credentials and query/fragment data from an HTTP(S) Git URL.
  * Other schemes are returned unchanged. Caller frees. */
@@ -538,7 +538,7 @@ char *_scrub_git_url(const char *git_url) {
     return out;
 }
 
-/* PoP: _canonical_source @ hermes_cli/plugins_cmd.py:_canonical_source */
+/* PoP: _canonical_source @ hermes_cli/plugins_cmd_git.py:_canonical_source */
 /* Scrubbed URL plus "#subdir" when one was requested. Caller frees. */
 char *_canonical_source(const char *git_url, const char *subdir) {
     char *scrubbed = _scrub_git_url(git_url);
@@ -551,7 +551,7 @@ char *_canonical_source(const char *git_url, const char *subdir) {
     return out;
 }
 
-/* PoP: _run_plugin_git @ hermes_cli/plugins_cmd.py:_run_plugin_git */
+/* PoP: _run_plugin_git @ hermes_cli/plugins_cmd_git.py:_run_plugin_git */
 /* Run one git command inside a plugin checkout (non-interactive). */
 completed_process_t _run_plugin_git(const char *git_exe, const char *target,
                                     const char *const *args, size_t n_args,
@@ -567,7 +567,7 @@ completed_process_t _run_plugin_git(const char *git_exe, const char *target,
     return r;
 }
 
-/* PoP: _git_head_revision @ hermes_cli/plugins_cmd.py:_git_head_revision */
+/* PoP: _git_head_revision @ hermes_cli/plugins_cmd_git.py:_git_head_revision */
 /*
  * HEAD of an installed checkout; PluginOperationError maps to NULL +
  * pcmd_last_error(). Caller frees. */
@@ -592,7 +592,7 @@ char *_git_head_revision(const char *repo, const char *git_exe) {
     return head;
 }
 
-/* PoP: _checkout_exact_revision @ hermes_cli/plugins_cmd.py:_checkout_exact_revision */
+/* PoP: _checkout_exact_revision @ hermes_cli/plugins_cmd_git.py:_checkout_exact_revision */
 /*
  * Fetch and detach at one immutable commit, then verify the resulting HEAD.
  * 0 ok; -1 maps PluginOperationError into pcmd_last_error(). */
@@ -645,7 +645,7 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
     return 0;
 }
 
-/* PoP: _scrub_cloned_origin @ hermes_cli/plugins_cmd.py:_scrub_cloned_origin */
+/* PoP: _scrub_cloned_origin @ hermes_cli/plugins_cmd_git.py:_scrub_cloned_origin */
 /*
  * Ensure credentials used for cloning do not survive in .git/config.
  * 0 ok; -1 maps PluginOperationError. */
@@ -671,7 +671,7 @@ int _scrub_cloned_origin(const char *repo, const char *git_exe,
     return 0;
 }
 
-/* PoP: _stash_ref @ hermes_cli/plugins_cmd.py:_stash_ref */
+/* PoP: _stash_ref @ hermes_cli/plugins_cmd_git.py:_stash_ref */
 /*
  * Current refs/stash commit, or empty string when no stash exists.
  * Caller frees. */
@@ -822,7 +822,7 @@ int _resolve_index_name(const char *identifier, char **out_identifier,
  * Capabilities & consent
  * ====================================================================== */
 
-/* PoP: _declared_capabilities_from_manifest @ hermes_cli/plugins_cmd.py:_declared_capabilities_from_manifest */
+/* PoP: _declared_capabilities_from_manifest @ hermes_cli/plugins_cmd_capabilities.py:_declared_capabilities_from_manifest */
 /*
  * Extract + normalize the capabilities: declaration from a manifest. Returns
  * a fresh JSON array; caller frees. */
@@ -847,7 +847,7 @@ json_t *_declared_capabilities_from_manifest(const json_t *manifest,
     return arr;
 }
 
-/* PoP: _declared_capabilities_for_key @ hermes_cli/plugins_cmd.py:_declared_capabilities_for_key */
+/* PoP: _declared_capabilities_for_key @ hermes_cli/plugins_cmd_capabilities.py:_declared_capabilities_for_key */
 /*
  * Read the declared capabilities for an installed/bundled plugin by key.
  * entry tuple = (name, version, description, source, dir_path, key). */
@@ -934,7 +934,7 @@ void _print_capability_list(const json_t *capabilities) {
     }
 }
 
-/* PoP: _run_capability_consent @ hermes_cli/plugins_cmd.py:_run_capability_consent */
+/* PoP: _run_capability_consent @ hermes_cli/plugins_cmd_capabilities.py:_run_capability_consent */
 /*
  * Show the consent screen and record the decision. On consent the pending
  * capabilities are granted; on decline — or in ANY non-interactive context —
@@ -1365,7 +1365,7 @@ void plugins_cmd_cmd_update(const char *name) {
     free(target);
 }
 
-/* PoP: _remove_plugin_core @ hermes_cli/plugins_cmd.py:_remove_plugin_core */
+/* PoP: _remove_plugin_core @ hermes_cli/plugins_cmd_remove.py:_remove_plugin_core */
 /*
  * Remove one plugin and its metadata without splitting their state:
  * stage metadata first, move the tree aside, and restore on failure. */
@@ -1455,7 +1455,7 @@ static void rm_rf(const char *path) {
     }
 }
 
-/* PoP: cmd_show @ hermes_cli/plugins_cmd.py:cmd_show */
+/* PoP: cmd_show @ hermes_cli/plugins_cmd_listing.py:cmd_show */
 /*
  * Show details for one plugin including advisory emits/listens declarations.
  * Resolves by display name or registry key across every discoverable plugin. */

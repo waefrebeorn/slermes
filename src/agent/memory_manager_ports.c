@@ -144,7 +144,7 @@ char *mgr_build_system_prompt(void) {
 }
 
 /* PoP: mgr_has_tool @ agent/memory_manager.py:has_tool */
-/* PoP: _has_tool @ tools/computer_use/cua_backend.py:_has_tool */
+/* PoP: _has_tool @ tools/computer_use/cua_backend_session.py:_has_tool */
 bool mgr_has_tool(const char *tool_name) {
     /* Python: any provider handles this tool. */
     if (!tool_name) return false;
@@ -271,7 +271,7 @@ long mgr_max_partial_suffix(const char *buf) {
     return best;
 }
 
-/* PoP: mgr_is_block_boundary @ agent/memory_manager.py:_is_block_boundary */
+/* PoP: mgr_is_block_boundary @ agent/think_scrubber.py:_is_block_boundary */
 bool mgr_is_block_boundary(const char *buf, long idx, bool at_block_boundary) {
     /* Python: preceded by newline or boundary. */
     if (!buf) return at_block_boundary;

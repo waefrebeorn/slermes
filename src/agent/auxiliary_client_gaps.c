@@ -23,7 +23,7 @@ char *_anthropic_aux_stream_event_hook(void) {
     return strdup("{}");
 }
 
-/* PoP: _codex_event_has_content @ agent/auxiliary_client.py:_codex_event_has_content */
+/* PoP: _codex_event_has_content @ agent/codex_runtime.py:_codex_event_has_content */
 int _codex_event_has_content(const char *event) {
     (void)event;
     return 0;
@@ -92,13 +92,13 @@ char *_compression_fast_lane_controls(void) {
     return strdup("{}");
 }
 
-/* PoP: _managed_local_netloc @ agent/auxiliary_client.py:_managed_local_netloc */
+/* PoP: _managed_local_netloc @ agent/auxiliary_managed_local.py:_managed_local_netloc */
 int _managed_local_netloc(const char *netloc) {
     (void)netloc;
     return 0;
 }
 
-/* PoP: _is_managed_local_endpoint @ agent/auxiliary_client.py:_is_managed_local_endpoint */
+/* PoP: _is_managed_local_endpoint @ agent/auxiliary_managed_local.py:_is_managed_local_endpoint */
 int _is_managed_local_endpoint(const char *url) {
     (void)url;
     return 0;

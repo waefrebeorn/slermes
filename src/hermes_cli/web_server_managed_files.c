@@ -38,7 +38,7 @@ static const char *k_sensitive_basenames[] = {
 };
 static const char *k_sensitive_dirs[] = { "mcp-tokens", "pairing", NULL };
 
-/* PoP: ws_is_sensitive_filename @ hermes_cli/web_server.py:_is_sensitive_filename */
+/* PoP: ws_is_sensitive_filename @ hermes_cli/web_routers/files.py:_is_sensitive_filename */
 bool ws_is_sensitive_filename(const char *name) {
     if (!name || !name[0]) return false;
     size_t n = strlen(name);
@@ -56,7 +56,7 @@ bool ws_is_sensitive_filename(const char *name) {
     return rc;
 }
 
-/* PoP: ws_is_sensitive_path @ hermes_cli/web_server.py:_is_sensitive_path */
+/* PoP: ws_is_sensitive_path @ hermes_cli/web_routers/files.py:_is_sensitive_path */
 bool ws_is_sensitive_path(const char *path) {
     if (!path || !path[0]) return false;
     /* basename check */

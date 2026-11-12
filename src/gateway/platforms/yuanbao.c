@@ -598,7 +598,7 @@ int send_sticker(const char *to_uid, const char *sticker_id,
 }
 
 /* Query group info synchronously. Returns JSON string or NULL. Caller must free(). */
-/* PoP: yuanbao_query_group_info @ gateway/platforms/yuanbao.py:query_group_info */
+/* PoP: yuanbao_query_group_info @ plugins/platforms/yuanbao/adapter.py:query_group_info */
 /* Port of Python gateway/platforms/yuanbao.py:query_group_info(). */
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
@@ -611,7 +611,7 @@ char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
 }
 
 /* Query group members synchronously. Returns JSON string or NULL. Caller must free(). */
-/* PoP: yuanbao_get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */
+/* PoP: yuanbao_get_group_member_list @ plugins/platforms/yuanbao/adapter.py:get_group_member_list */
 /* Port of Python gateway/platforms/yuanbao.py:get_group_member_list(). */
 char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uint32_t limit, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;

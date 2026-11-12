@@ -1554,7 +1554,7 @@ int cgw_systemd_status(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_get_launchd_label @ hermes_cli/gateway.py:get_launchd_label */
+/* PoP: cgw_get_launchd_label @ hermes_cli/gateway_launchd.py:get_launchd_label */
 int cgw_get_launchd_label(const char *arg) {
     /* Python: "ai.hermes.gateway-<suffix>" or base. Arg = suffix (may be
      * empty). */
@@ -1563,7 +1563,7 @@ int cgw_get_launchd_label(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchd_domain @ hermes_cli/gateway.py:_launchd_domain */
+/* PoP: cgw_u_launchd_domain @ hermes_cli/gateway_launchd.py:_launchd_domain */
 int cgw_u_launchd_domain(const char *arg) {
     /* Python: 4-step probe. Arg =
      * "domain\tstate\tresult". */
@@ -1577,7 +1577,7 @@ int cgw_u_launchd_domain(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchd_error_indicates_unloaded @ hermes_cli/gateway.py:_launchd_error_indicates_unloaded */
+/* PoP: cgw_u_launchd_error_indicates_unloaded @ hermes_cli/gateway_launchd.py:_launchd_error_indicates_unloaded */
 int cgw_u_launchd_error_indicates_unloaded(const char *arg) {
     /* Python: exc.returncode in _LAUNCHD_JOB_UNLOADED_EXIT_CODES (113 +
      * "Could not find service" variants). Arg = return code. */
@@ -1588,7 +1588,7 @@ int cgw_u_launchd_error_indicates_unloaded(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchctl_domain_unsupported @ hermes_cli/gateway.py:_launchctl_domain_unsupported */
+/* PoP: cgw_u_launchctl_domain_unsupported @ hermes_cli/gateway_launchd.py:_launchctl_domain_unsupported */
 int cgw_u_launchctl_domain_unsupported(const char *arg) {
     /* Python: returncode in {5, 125}. Arg = "returncode". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1597,7 +1597,7 @@ int cgw_u_launchctl_domain_unsupported(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchctl_bootstrap @ hermes_cli/gateway.py:_launchctl_bootstrap */
+/* PoP: cgw_u_launchctl_bootstrap @ hermes_cli/gateway_launchd.py:_launchctl_bootstrap */
 int cgw_u_launchctl_bootstrap(const char *arg) {
     /* Python (domain, plist_path, label, timeout): launchctl bootstrap;
      * exit 5 (EIO) = stale registration -> bootout the label, retry once. */
@@ -1615,7 +1615,7 @@ int cgw_u_launchctl_bootstrap(const char *arg) {
     return system(cmd);
 }
 
-/* PoP: cgw_u_launchd_reload_log_path @ hermes_cli/gateway.py:_launchd_reload_log_path */
+/* PoP: cgw_u_launchd_reload_log_path @ hermes_cli/gateway_launchd.py:_launchd_reload_log_path */
 int cgw_u_launchd_reload_log_path(const char *arg) {
     /* Python: get_hermes_home() / "logs" / "launchd-reload.log" — the path
      * the launchd reload watchdog tails for persistent-orphan detection. */
@@ -1627,7 +1627,7 @@ int cgw_u_launchd_reload_log_path(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_append_launchd_reload_log @ hermes_cli/gateway.py:_append_launchd_reload_log */
+/* PoP: cgw_u_append_launchd_reload_log @ hermes_cli/gateway_launchd.py:_append_launchd_reload_log */
 int cgw_u_append_launchd_reload_log(const char *arg) {
     /* Python: append "[stamp] message" to reload log. Arg = "path\tmessage". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1655,7 +1655,7 @@ int cgw_u_launchctl_label_registered(const char *arg) {
     return system(cmd) == 0;
 }
 
-/* PoP: cgw_u_retry_launchctl_bootstrap_until_registered @ hermes_cli/gateway.py:_retry_launchctl_bootstrap_until_registered */
+/* PoP: cgw_u_retry_launchctl_bootstrap_until_registered @ hermes_cli/gateway_launchd.py:_retry_launchctl_bootstrap_until_registered */
 int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) {
     /* Python: deadline retry. Arg =
      * "registered\tstate\tresult". */
@@ -1670,7 +1670,7 @@ int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchd_unsupported_marker_path @ hermes_cli/gateway.py:_launchd_unsupported_marker_path */
+/* PoP: cgw_u_launchd_unsupported_marker_path @ hermes_cli/gateway_launchd.py:_launchd_unsupported_marker_path */
 int cgw_u_launchd_unsupported_marker_path(const char *arg) {
     /* Python: get_hermes_home() / ".gateway-launchd-unsupported". */
     (void)arg;
@@ -1682,7 +1682,7 @@ int cgw_u_launchd_unsupported_marker_path(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_write_launchd_unsupported_marker @ hermes_cli/gateway.py:_write_launchd_unsupported_marker */
+/* PoP: cgw_u_write_launchd_unsupported_marker @ hermes_cli/gateway_launchd.py:_write_launchd_unsupported_marker */
 int cgw_u_write_launchd_unsupported_marker(const char *arg) {
     /* Python: persist JSON marker (best-effort). Arg = path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1694,7 +1694,7 @@ int cgw_u_write_launchd_unsupported_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_clear_launchd_unsupported_marker @ hermes_cli/gateway.py:_clear_launchd_unsupported_marker */
+/* PoP: cgw_u_clear_launchd_unsupported_marker @ hermes_cli/gateway_launchd.py:_clear_launchd_unsupported_marker */
 int cgw_u_clear_launchd_unsupported_marker(const char *arg) {
     /* Python: _launchd_unsupported_marker_path().unlink(missing_ok=True);
      * OSError ignored. Arg = marker path. */
@@ -1704,7 +1704,7 @@ int cgw_u_clear_launchd_unsupported_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchd_unsupported_marker_exists @ hermes_cli/gateway.py:_launchd_unsupported_marker_exists */
+/* PoP: cgw_u_launchd_unsupported_marker_exists @ hermes_cli/gateway_launchd.py:_launchd_unsupported_marker_exists */
 int cgw_u_launchd_unsupported_marker_exists(const char *arg) {
     /* Python: the unsupported-marker path exists. */
     char base[1024];
@@ -1716,7 +1716,7 @@ int cgw_u_launchd_unsupported_marker_exists(const char *arg) {
     return access(path, F_OK) == 0;
 }
 
-/* PoP: cgw_u_gateway_run_command @ hermes_cli/gateway.py:_gateway_run_command */
+/* PoP: cgw_u_gateway_run_command @ hermes_cli/gateway_launchd.py:_gateway_run_command */
 int cgw_u_gateway_run_command(const char *arg) {
     /* Python: [python, -m, hermes_cli.main, --profile X?, gateway, run,
      * --replace]. Arg = "python\tprofile". */
@@ -1738,7 +1738,7 @@ int cgw_u_spawn_detached_gateway(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_launchd_fallback_to_detached @ hermes_cli/gateway.py:_launchd_fallback_to_detached */
+/* PoP: cgw_u_launchd_fallback_to_detached @ hermes_cli/gateway_launchd.py:_launchd_fallback_to_detached */
 int cgw_u_launchd_fallback_to_detached(const char *arg) {
     /* Python: detached fallback + guidance. Arg =
      * "reason\tspawned\texit_on_failure\tresult". */
@@ -1763,7 +1763,7 @@ int cgw_u_launchd_fallback_to_detached(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_generate_launchd_plist @ hermes_cli/gateway.py:generate_launchd_plist */
+/* PoP: cgw_generate_launchd_plist @ hermes_cli/gateway_launchd.py:generate_launchd_plist */
 int cgw_generate_launchd_plist(const char *arg) {
     /* Python: plist render. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1774,7 +1774,7 @@ int cgw_generate_launchd_plist(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_plist_is_current @ hermes_cli/gateway.py:launchd_plist_is_current */
+/* PoP: cgw_launchd_plist_is_current @ hermes_cli/gateway_launchd.py:launchd_plist_is_current */
 int cgw_launchd_plist_is_current(const char *arg) {
     /* Python: installed == generated (normalized). Arg = "installed\tgenerated"
      * (installed empty = missing). */
@@ -1789,7 +1789,7 @@ int cgw_launchd_plist_is_current(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_refresh_launchd_plist_if_needed @ hermes_cli/gateway.py:refresh_launchd_plist_if_needed */
+/* PoP: cgw_refresh_launchd_plist_if_needed @ hermes_cli/gateway_launchd.py:refresh_launchd_plist_if_needed */
 int cgw_refresh_launchd_plist_if_needed(const char *arg) {
     /* Python: bootout/bootstrap. Arg =
      * "refreshed\tstate\tresult". */
@@ -1804,7 +1804,7 @@ int cgw_refresh_launchd_plist_if_needed(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_install @ hermes_cli/gateway.py:launchd_install */
+/* PoP: cgw_launchd_install @ hermes_cli/gateway_launchd.py:launchd_install */
 int cgw_launchd_install(const char *arg) {
     /* Python: plist + bootstrap. Arg =
      * "exists\tforce\tstate\tresult". */
@@ -1826,7 +1826,7 @@ int cgw_launchd_install(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_uninstall @ hermes_cli/gateway.py:launchd_uninstall */
+/* PoP: cgw_launchd_uninstall @ hermes_cli/gateway_launchd.py:launchd_uninstall */
 int cgw_launchd_uninstall(const char *arg) {
     /* Python: launchctl bootout + unlink plist + ✓ messages. Arg =
      * "plist_path\tlabel\tdomain". */
@@ -1842,7 +1842,7 @@ int cgw_launchd_uninstall(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_start @ hermes_cli/gateway.py:launchd_start */
+/* PoP: cgw_launchd_start @ hermes_cli/gateway_launchd.py:launchd_start */
 int cgw_launchd_start(const char *arg) {
     /* Python: kickstart + self-heal. Arg =
      * "state\tresult\terr". */
@@ -1869,7 +1869,7 @@ int cgw_launchd_start(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_stop @ hermes_cli/gateway.py:launchd_stop */
+/* PoP: cgw_launchd_stop @ hermes_cli/gateway_launchd.py:launchd_stop */
 int cgw_launchd_stop(const char *arg) {
     /* Python: bootout + wait. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -1900,7 +1900,7 @@ int cgw_u_wait_for_gateway_exit(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_restart @ hermes_cli/gateway.py:launchd_restart */
+/* PoP: cgw_launchd_restart @ hermes_cli/gateway_launchd.py:launchd_restart */
 int cgw_launchd_restart(const char *arg) {
     /* Python: self-restart drain. Arg =
      * "self\tdrain\tstate\tresult". */
@@ -1923,7 +1923,7 @@ int cgw_launchd_restart(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_launchd_status @ hermes_cli/gateway.py:launchd_status */
+/* PoP: cgw_launchd_status @ hermes_cli/gateway_launchd.py:launchd_status */
 int cgw_launchd_status(const char *arg) {
     /* Python: launchd+fallback. Arg =
      * "state\tresult". */
@@ -2049,7 +2049,7 @@ int cgw_u_all_platforms(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_platform_status @ hermes_cli/gateway.py:_platform_status */
+/* PoP: cgw_u_platform_status @ hermes_cli/gateway_setup_wizard.py:_platform_status */
 int cgw_u_platform_status(const char *arg) {
     /* Python: uncolored status. Arg =
      * "registry\tstate\tresult". */
@@ -2080,7 +2080,7 @@ int cgw_u_runtime_health_lines(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_set_platform_unauthorized_dm_behavior @ hermes_cli/gateway.py:_set_platform_unauthorized_dm_behavior */
+/* PoP: cgw_u_set_platform_unauthorized_dm_behavior @ hermes_cli/gateway_setup_wizard.py:_set_platform_unauthorized_dm_behavior */
 int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {
     /* Python: write_platform_config_field(platform_key,
      * "unauthorized_dm_behavior", behavior, raw=True). Arg =
@@ -2093,7 +2093,7 @@ int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_setup_standard_platform @ hermes_cli/gateway.py:_setup_standard_platform */
+/* PoP: cgw_u_setup_standard_platform @ hermes_cli/gateway_setup_wizard.py:_setup_standard_platform */
 int cgw_u_setup_standard_platform(const char *arg) {
     /* Python: telegram/discord/slack. Arg =
      * "configured\tstate\tresult". */
@@ -2130,7 +2130,7 @@ int cgw_u_is_service_running(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_builtin_setup_fn @ hermes_cli/gateway.py:_builtin_setup_fn */
+/* PoP: cgw_u_builtin_setup_fn @ hermes_cli/gateway_setup_wizard.py:_builtin_setup_fn */
 int cgw_u_builtin_setup_fn(const char *arg) {
     /* Python: key -> fn map. Arg = "key\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2142,7 +2142,7 @@ int cgw_u_builtin_setup_fn(const char *arg) {
     return 0;
 }
 
-/* PoP: cgw_u_configure_platform @ hermes_cli/gateway.py:_configure_platform */
+/* PoP: cgw_u_configure_platform @ hermes_cli/gateway_setup_wizard.py:_configure_platform */
 int cgw_u_configure_platform(const char *arg) {
     /* Python: setup dispatch. Arg =
      * "has_fn\thas_builtin\thas_vars\tstate\tresult". */

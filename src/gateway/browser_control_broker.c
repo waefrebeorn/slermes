@@ -403,7 +403,7 @@ const bcb_artifact_store_vtab_t *bcb_broker_artifact_store_for_scope(
 /* Tickets                                                             */
 /* ------------------------------------------------------------------ */
 
-/* PoP: mint_ticket @gateway/browser_control_broker.py:mint_ticket */
+/* PoP: mint_ticket @hermes_cli/dashboard_auth/ws_tickets.py:mint_ticket */
 bcb_ticket_t *bcb_broker_mint_ticket(bcb_broker_t *broker,
                                      const bcb_scope_t *scope)
 {
@@ -476,7 +476,7 @@ bcb_ticket_t *bcb_broker_mint_ticket(bcb_broker_t *broker,
     return ticket;
 }
 
-/* PoP: consume_ticket @gateway/browser_control_broker.py:consume_ticket */
+/* PoP: consume_ticket @hermes_cli/dashboard_auth/ws_tickets.py:consume_ticket */
 bcb_error_t bcb_broker_consume_ticket(bcb_broker_t *broker, const char *value,
                                       bcb_scope_t *out_scope)
 {

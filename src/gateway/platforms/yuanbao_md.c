@@ -81,7 +81,7 @@ bool yuanbao_md_ends_with_table_row(const char *text)
 
 /* Split text at nearest paragraph boundary within max_chars.
    Returns head (caller-free) and sets *tail_out (caller-free). */
-/* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/yuanbao.py:split_at_paragraph_boundary */
+/* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/helpers.py:split_at_paragraph_boundary */
 char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars, char **tail_out)
 {
     if (!text || !tail_out) return NULL;
@@ -158,7 +158,7 @@ char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
 
 
 /* Check if text (atom) is a code fence block (starts with ```). */
-/* PoP: yuanbao_md_is_fence_atom @ gateway/platforms/yuanbao.py:is_fence_atom */
+/* PoP: yuanbao_md_is_fence_atom @ gateway/platforms/helpers.py:is_fence_atom */
 bool yuanbao_md_is_fence_atom(const char *text)
 {
     if (!text) return false;
@@ -168,7 +168,7 @@ bool yuanbao_md_is_fence_atom(const char *text)
 
 
 /* Check if text (atom) is a table (first line starts and ends with |). */
-/* PoP: yuanbao_md_is_table_atom @ gateway/platforms/yuanbao.py:is_table_atom */
+/* PoP: yuanbao_md_is_table_atom @ gateway/platforms/helpers.py:is_table_atom */
 bool yuanbao_md_is_table_atom(const char *text)
 {
     if (!text) return false;
@@ -303,7 +303,7 @@ char **yuanbao_md_split_into_atoms(const char *text)
 
 
 /* Infer separator between two chunks: "\n" if fence/table continuation, else "\n\n". */
-/* PoP: yuanbao_md_infer_block_separator @ gateway/platforms/yuanbao.py:infer_block_separator */
+/* PoP: yuanbao_md_infer_block_separator @ gateway/platforms/helpers.py:infer_block_separator */
 char *yuanbao_md_infer_block_separator(const char *prev_chunk, const char *next_chunk)
 {
     if (!prev_chunk || !next_chunk) return strdup("\n\n");
@@ -541,7 +541,7 @@ char **yuanbao_md_merge_block_streaming_fences(char **chunks)
 /* Split markdown text into chunks each <= max_chars.
    Guarantees: fences not split, tables not split, split at paragraph boundaries,
    small chunks merged. Returns NULL-terminated array, caller frees. */
-/* PoP: yuanbao_md_chunk_markdown_text @ gateway/platforms/yuanbao.py:chunk_markdown_text */
+/* PoP: yuanbao_md_chunk_markdown_text @ plugins/platforms/yuanbao/adapter.py:chunk_markdown_text */
 char **yuanbao_md_chunk_markdown_text(const char *text, size_t max_chars)
 {
     if (!text || !*text) {

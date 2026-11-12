@@ -540,7 +540,7 @@ static json_t *su_candidate_project_skills_dirs(const char *root) {
     return dirs;
 }
 
-/* PoP: get_skills_dir @ agent/skill_utils.py:get_skills_dir (helper reuse).
+/* PoP: get_skills_dir @ hermes_constants.py:get_skills_dir (helper reuse).
  * The primary profile-local skills dir. Caller frees. */
 static char *su_get_skills_dir(void) {
     char local[PATH_MAX];

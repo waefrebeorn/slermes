@@ -1048,7 +1048,7 @@ char *profile_seed_profile_skills(const char *profile_dir, bool quiet) {
 
 /* ── Config schema migration (no-op) ─────────────────────────────── */
 
-/* PoP: profile_migrate_config_if_outdated @ hermes_cli/profiles.py:_migrate_profile_config_if_outdated */
+/* PoP: profile_migrate_config_if_outdated @ hermes_cli/profiles_config.py:_migrate_profile_config_if_outdated */
 void profile_migrate_config_if_outdated(const char *profile_dir) {
     (void)profile_dir;
 }
@@ -1392,7 +1392,7 @@ int hermes_cli_profiles_u_stop_profile_backends(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_profiles_u_rmtree_with_retry @ hermes_cli/profiles.py:_rmtree_with_retry */
+/* PoP: hermes_cli_profiles_u_rmtree_with_retry @ hermes_cli/profiles_remove.py:_rmtree_with_retry */
 int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) {
     /* Python: 3-attempt rmtree. Arg = "state\tresult\tattempts". */
     if (!arg || !*arg) { printf("\n"); return 0; }

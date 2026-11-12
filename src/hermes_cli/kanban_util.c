@@ -325,7 +325,7 @@ static int logical_norm(const char *path, char *out, size_t outsz)
     return 0;
 }
 
-/* PoP: kdb_is_managed_scratch_path @ hermes_cli/kanban_db.py:_is_managed_scratch_path */
+/* PoP: kdb_is_managed_scratch_path @ hermes_cli/kanban_db_workspace.py:_is_managed_scratch_path */
 int kdb_is_managed_scratch_path(const char *path)
 {
     if (!path || !*path) return 0;
@@ -417,7 +417,7 @@ int kdb_is_managed_scratch_path(const char *path)
 /* workspace resolution                                               */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_resolve_workspace @ hermes_cli/kanban_db.py:resolve_workspace */
+/* PoP: kdb_resolve_workspace @ hermes_cli/kanban_db_workspace.py:resolve_workspace */
 char *kdb_resolve_workspace(const char *kind, const char *workspace_path,
                              const char *task_id, const char *board)
 {
@@ -475,7 +475,7 @@ static void mkdirs(const char *path)
     mkdir(tmp, 0755);
 }
 
-/* PoP: kdb_set_workspace_path @ hermes_cli/kanban_db.py:set_workspace_path */
+/* PoP: kdb_set_workspace_path @ hermes_cli/kanban_db_workspace.py:set_workspace_path */
 int kdb_set_workspace_path(sqlite3 *conn, const char *task_id, const char *path)
 {
     if (!conn || !task_id) return 0;
@@ -494,7 +494,7 @@ int kdb_set_workspace_path(sqlite3 *conn, const char *task_id, const char *path)
 /* spawnable health queries                                           */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_has_spawnable_ready @ hermes_cli/kanban_db.py:has_spawnable_ready */
+/* PoP: kdb_has_spawnable_ready @ hermes_cli/kanban_db_dispatch.py:has_spawnable_ready */
 int kdb_has_spawnable_ready(sqlite3 *conn)
 {
     if (!conn) return 0;
@@ -512,7 +512,7 @@ int kdb_has_spawnable_ready(sqlite3 *conn)
     return found;
 }
 
-/* PoP: kdb_has_spawnable_review @ hermes_cli/kanban_db.py:has_spawnable_review */
+/* PoP: kdb_has_spawnable_review @ hermes_cli/kanban_db_dispatch.py:has_spawnable_review */
 int kdb_has_spawnable_review(sqlite3 *conn)
 {
     if (!conn) return 0;
@@ -534,7 +534,7 @@ int kdb_has_spawnable_review(sqlite3 *conn)
 /* connection / error helpers                                         */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_is_busy_error @ hermes_cli/kanban_db.py:_is_busy_error */
+/* PoP: kdb_is_busy_error @ hermes_cli/kanban_db_connect.py:_is_busy_error */
 int kdb_is_busy_error(const char *msg)
 {
     if (!msg) return 0;
@@ -550,7 +550,7 @@ int kdb_is_busy_error(const char *msg)
         || strstr(low, "database is busy") != NULL;
 }
 
-/* PoP: kdb_absolute_hermes_path @ hermes_cli/kanban_db.py:_absolute_hermes_path */
+/* PoP: kdb_absolute_hermes_path @ hermes_cli/kanban_db_dispatch.py:_absolute_hermes_path */
 
 /* os.path.normpath equivalent (lexical, POSIX): collapse "//", resolve
  * "." and ".." segments, strip trailing slashes. Python abspath() is
@@ -649,7 +649,7 @@ char *kdb_absolute_hermes_path(const char *path)
 /* path search (worker argv resolution) - portable subset            */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_path_search_names @ hermes_cli/kanban_db.py:_path_search_names */
+/* PoP: kdb_path_search_names @ hermes_cli/kanban_db_dispatch.py:_path_search_names */
 char **kdb_path_search_names(const char *command)
 {
     char **out = malloc(sizeof(char*) * 2);
@@ -658,7 +658,7 @@ char **kdb_path_search_names(const char *command)
     return out;
 }
 
-/* PoP: kdb_safe_which_no_cwd @ hermes_cli/kanban_db.py:_safe_which_no_cwd */
+/* PoP: kdb_safe_which_no_cwd @ hermes_cli/kanban_db_dispatch.py:_safe_which_no_cwd */
 char *kdb_safe_which_no_cwd(const char *command)
 {
     if (!command) return NULL;
@@ -705,7 +705,7 @@ char *kdb_safe_which_no_cwd(const char *command)
 /* schema drift detection                                             */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
+/* PoP: kdb_table_has_drifted @ hermes_cli/kanban_db_connect.py:_table_has_drifted */
 int kdb_table_has_drifted(sqlite3 *conn, const char *table)
 {
     if (!conn || !table) return 0;
@@ -764,7 +764,7 @@ static const char KDB_SCRATCH_TIP_MESSAGE[] =
     "completes. Use --workspace worktree (git worktree) or "
     "--workspace dir:/abs/path (existing dir) to preserve worker output.";
 
-/* PoP: kdb_check_file_length_invariant @ hermes_cli/kanban_db.py:_check_file_length_invariant */
+/* PoP: kdb_check_file_length_invariant @ hermes_cli/kanban_db_connect.py:_check_file_length_invariant */
 int kdb_check_file_length_invariant(sqlite3 *conn)
 {
     if (!conn) return 0;
@@ -802,7 +802,7 @@ int kdb_check_file_length_invariant(sqlite3 *conn)
     return 0;
 }
 
-/* PoP: kdb_scratch_tip_sentinel_path @ hermes_cli/kanban_db.py:_scratch_tip_sentinel_path */
+/* PoP: kdb_scratch_tip_sentinel_path @ hermes_cli/kanban_db_workspace.py:_scratch_tip_sentinel_path */
 char *kdb_scratch_tip_sentinel_path(void)
 {
     char *home = kanban_home();
@@ -814,7 +814,7 @@ char *kdb_scratch_tip_sentinel_path(void)
     return out;
 }
 
-/* PoP: kdb_scratch_tip_shown @ hermes_cli/kanban_db.py:_scratch_tip_shown */
+/* PoP: kdb_scratch_tip_shown @ hermes_cli/kanban_db_workspace.py:_scratch_tip_shown */
 int kdb_scratch_tip_shown(void)
 {
     char *p = kdb_scratch_tip_sentinel_path();
@@ -824,7 +824,7 @@ int kdb_scratch_tip_shown(void)
     return exists;
 }
 
-/* PoP: kdb_mark_scratch_tip_shown @ hermes_cli/kanban_db.py:_mark_scratch_tip_shown */
+/* PoP: kdb_mark_scratch_tip_shown @ hermes_cli/kanban_db_workspace.py:_mark_scratch_tip_shown */
 void kdb_mark_scratch_tip_shown(void)
 {
     char *p = kdb_scratch_tip_sentinel_path();
@@ -836,7 +836,7 @@ void kdb_mark_scratch_tip_shown(void)
     free(p);
 }
 
-/* PoP: kdb_maybe_emit_scratch_tip @ hermes_cli/kanban_db.py:_maybe_emit_scratch_tip */
+/* PoP: kdb_maybe_emit_scratch_tip @ hermes_cli/kanban_db_workspace.py:_maybe_emit_scratch_tip */
 void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
                                 const char *workspace_kind)
 {
@@ -856,7 +856,7 @@ void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
 /* corruption recovery: backup + guard                           */
 /* ------------------------------------------------------------------ */
 
-/* PoP: DB @ hermes_cli/kanban_db.py:_backup_corrupt_db */
+/* PoP: DB @ hermes_cli/kanban_db_connect.py:_backup_corrupt_db */
 /* Copy a corrupt DB (and its WAL/SHM sidecars) to a content-addressed
  * backup inside the DB's own parent dir. The backup basename is derived
  * from the file name + sha256[:16] of the bytes, so repeated quarantine
@@ -929,7 +929,7 @@ char *kdb_backup_corrupt_db(const char *path)
     return strdup(cand);
 }
 
-/* PoP: propagate @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy */
+/* PoP: propagate @ hermes_cli/kanban_db_connect.py:_guard_existing_db_is_healthy */
 /* Run `PRAGMA integrity_check` on an existing non-empty DB file. Opens a
  * throwaway probe so a healthy WAL/hot-journal DB can checkpoint before
  * we call it corrupt. Returns:

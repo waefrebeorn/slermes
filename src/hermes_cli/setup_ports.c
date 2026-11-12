@@ -143,7 +143,7 @@ char *stp_prompt_api_key(const char *var_json) {
     return NULL;
 }
 
-/* PoP: stp_print_setup_summary @ hermes_cli/setup.py:_print_setup_summary */
+/* PoP: stp_print_setup_summary @ hermes_cli/setup_summary.py:_print_setup_summary */
 int stp_print_setup_summary(const char *state_json) {
     /* Python: tool availability summary — REAL parse. */
     if (!state_json) return -1;
@@ -178,7 +178,7 @@ bool stp_check_espeak_ng(void) {
     return found;
 }
 
-/* PoP: stp_xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */
+/* PoP: stp_xai_oauth_logged_in_for_setup @ hermes_cli/setup_tts.py:_xai_oauth_logged_in_for_setup */
 bool stp_xai_oauth_logged_in_for_setup(void) {
     /* Python: xAI Grok OAuth creds stored locally — REAL probe. */
     const char *h = getenv("HERMES_HOME");
@@ -198,7 +198,7 @@ char *stp_apply_default_agent_settings(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: stp_setup_telegram @ hermes_cli/setup.py:_setup_telegram */
+/* PoP: stp_setup_telegram @ hermes_cli/setup_platforms.py:_setup_telegram */
 int stp_setup_telegram(void) {
     /* Python: telegram setup (bot token + allowlist) — REAL env prompt. */
     printf("  Telegram bot token (from @BotFather): ");
@@ -248,7 +248,7 @@ int stp_setup_qqbot(void) {
     return 0;
 }
 
-/* PoP: stp_setup_webhooks @ hermes_cli/setup.py:_setup_webhooks */
+/* PoP: stp_setup_webhooks @ hermes_cli/setup_platforms.py:_setup_webhooks */
 int stp_setup_webhooks(void) {
     /* Python: configures WEBHOOK_ENABLED + endpoint env values. */
     const char *home = getenv("HERMES_HOME");
@@ -268,7 +268,7 @@ int stp_setup_webhooks(void) {
     return 0;
 }
 
-/* PoP: stp_model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials */
+/* PoP: stp_model_section_has_credentials @ hermes_cli/setup_migration.py:_model_section_has_credentials */
 bool stp_model_section_has_credentials(void) {
     /* Python: any known provider with usable creds — REAL env probe. */
     if (getenv("OPENAI_API_KEY")) return true;

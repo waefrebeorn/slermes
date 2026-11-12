@@ -114,7 +114,7 @@ void tool_search_entry_text(const char *name, const char *description,
 }
 
 /* Classify tool source by name — Port of Python: _classify_source() */
-/* PoP: classify_source @ tools/tool_search.py:_classify_source */
+/* PoP: classify_source @ tools/tool_search_catalog.py:_classify_source */
 static catalog_source_t classify_source(const char *name, char *source_name, size_t sn_size) {
     if (!name) return CATALOG_SOURCE_OTHER;
     tool_t *t = registry_find(name);
@@ -132,7 +132,7 @@ static catalog_source_t classify_source(const char *name, char *source_name, siz
     return CATALOG_SOURCE_OTHER;
 }
 
-/* PoP: build_catalog @ tools/tool_search.py:build_catalog */
+/* PoP: build_catalog @ tools/tool_search_catalog.py:build_catalog */
 /* Port of Python: build_catalog() */
 int build_catalog(const char *tool_schemas[], int schema_count,
                               tool_catalog_t *catalog) {
@@ -197,7 +197,7 @@ int build_catalog(const char *tool_schemas[], int schema_count,
  *  BM25 scoring
  * ═════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _bm25_score @ tools/tool_search.py:_bm25_score */
+/* PoP: _bm25_score @ tools/tool_search_catalog.py:_bm25_score */
 /* Port of Python: _bm25_score() */
 double bm25_score(const char *query_tokens[], int query_count,
                               const catalog_entry_t *entry,
@@ -750,7 +750,7 @@ int listing_token_budget(const tool_search_config_t *config,
     return result;
 }
 
-/* PoP: _short_desc @ tools/tool_search.py:_short_desc */
+/* PoP: _short_desc @ tools/tool_search_catalog.py:_short_desc */
 /* Port of Python: _short_desc() — first sentence, clipped to max_chars */
 void short_desc(const char *description, int max_chars,
                             char *out, size_t out_size) {
@@ -821,7 +821,7 @@ void short_desc(const char *description, int max_chars,
     snprintf(out, out_size, "%s", trunc);
 }
 
-/* PoP: _listing_group_label @ tools/tool_search.py:_listing_group_label */
+/* PoP: _listing_group_label @ tools/tool_search_catalog.py:_listing_group_label */
 /* Port of Python: _listing_group_label() — mcp-foo → foo */
 void listing_group_label(const char *source_name,
                                      char *out, size_t out_size) {
@@ -1065,7 +1065,7 @@ char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
     return strdup(groups_text);
 }
 
-/* PoP: build_catalog_listing_with_form @ tools/tool_search.py:build_catalog_listing_with_form */
+/* PoP: build_catalog_listing_with_form @ tools/tool_search_catalog.py:build_catalog_listing_with_form */
 /* Port of Python: build_catalog_listing_with_form() — returns (text, form) */
 char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
                                                     int max_tokens,
@@ -1400,7 +1400,7 @@ char *tool_search_available_source_summary(const tool_catalog_t *catalog) {
     return result;
 }
 
-/* PoP: validate_deferred_call_args @ tools/tool_search.py:validate_deferred_call_args */
+/* PoP: validate_deferred_call_args @ tools/tool_search_validation.py:validate_deferred_call_args */
 /* Port of Python: validate_deferred_call_args() — probe required args before dispatch */
 char *tool_search_validate_deferred_call(const char *name,
                                          const char *args_json,

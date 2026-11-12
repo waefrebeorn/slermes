@@ -32,8 +32,8 @@ extern char *build_native_content_parts(const char *user_text,
 extern void gw_sanitize_final_response(const char *platform, const char *text,
                                        char *out, size_t out_size);
 
-/* PoP: gateway_runner_apply_session_model_override @ gateway/run.py:_apply_session_model_override */
-/* PoP: gateway_runner_apply_session_model_override @ gateway/run.py:_apply_session_model_override */
+/* PoP: gateway_runner_apply_session_model_override @ gateway/run_agent_cache.py:_apply_session_model_override */
+/* PoP: gateway_runner_apply_session_model_override @ gateway/run_agent_cache.py:_apply_session_model_override */
 void gateway_runner_apply_session_model_override(GatewayRunner *self,
                                                  const char *session_key,
                                                  char **io_model,
@@ -74,7 +74,7 @@ void gateway_runner_apply_session_model_override(GatewayRunner *self,
     }
 }
 
-/* PoP: gateway_runner_run_agent_inner @ gateway/run.py:_run_agent_inner */
+/* PoP: gateway_runner_run_agent_inner @ gateway/run_turn.py:_run_agent_inner */
 json_t *gateway_runner_run_agent_inner(GatewayRunner *self,
                                        agent_state_t *agent,
                                        const gw_turn_input_t *in)

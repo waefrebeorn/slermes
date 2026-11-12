@@ -1,4 +1,4 @@
-/* PoP: apply_durability_barriers @ hermes_state.py:apply_durability_barriers */
+/* PoP: apply_durability_barriers @ hermes_state_repair.py:apply_durability_barriers */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

@@ -98,7 +98,7 @@ bool tts_tool_import_piper(void)
 
 
 /* Port of Python: _get_provider_section */
-/* PoP: tts_tool_get_provider_section @ tools/tts_tool.py:_get_provider_section */
+/* PoP: tts_tool_get_provider_section @ tools/tts_command_provider.py:_get_provider_section */
 char *tts_tool_get_provider_section(const char *provider)
 {
     if (!provider) return strdup("{}");
@@ -109,7 +109,7 @@ char *tts_tool_get_provider_section(const char *provider)
 
 
 /* Port of Python: _is_command_provider_config */
-/* PoP: tts_tool_is_command_provider_config @ tools/tts_tool.py:_is_command_provider_config */
+/* PoP: tts_tool_is_command_provider_config @ tools/tts_command_provider.py:_is_command_provider_config */
 bool tts_tool_is_command_provider_config(const char *config_json)
 {
     if (!config_json) return false;
@@ -188,7 +188,7 @@ int tts_tool_get_command_tts_timeout(const char *config_json)
 
 
 /* Port of Python: _apply_xai_auto_speech_tags */
-/* PoP: tts_tool_apply_xai_auto_speech_tags @ tools/tts_tool.py:_apply_xai_auto_speech_tags */
+/* PoP: tts_tool_apply_xai_auto_speech_tags @ tools/tts_tool_providers.py:_apply_xai_auto_speech_tags */
 char *tts_tool_apply_xai_auto_speech_tags(const char *text)
 {
     if (!text) return strdup("");
@@ -217,7 +217,7 @@ char *tts_tool_resolve_gemini_persona_prompt_path(const char *persona)
 }
 
 /* Port of Python: _read_gemini_persona_prompt */
-/* PoP: tts_tool_read_gemini_persona_prompt @ tools/tts_tool.py:_read_gemini_persona_prompt */
+/* PoP: tts_tool_read_gemini_persona_prompt @ tools/tts_tool_providers.py:_read_gemini_persona_prompt */
 char *tts_tool_read_gemini_persona_prompt(const char *path)
 {
     if (!path) return strdup("");
@@ -269,7 +269,7 @@ char *tts_tool_read_gemini_persona_prompt(const char *path)
 
 
 /* Port of Python: _resolve_piper_voice_path */
-/* PoP: tts_tool_resolve_piper_voice_path @ tools/tts_tool.py:_resolve_piper_voice_path */
+/* PoP: tts_tool_resolve_piper_voice_path @ tools/tts_tool_local.py:_resolve_piper_voice_path */
 char *tts_tool_resolve_piper_voice_path(const char *voice)
 {
     if (!voice) return strdup("");
@@ -316,7 +316,7 @@ bool tts_tool_has_openai_audio_backend(void)
 }
 
 /* Port of Python: _strip_markdown_for_tts */
-/* PoP: tts_tool_strip_markdown_for_tts @ tools/tts_tool.py:_strip_markdown_for_tts */
+/* PoP: tts_tool_strip_markdown_for_tts @ tools/tts_text_normalize.py:_strip_markdown_for_tts */
 char *tts_tool_strip_markdown_for_tts(const char *text)
 {
     if (!text) return strdup("");
@@ -346,7 +346,7 @@ char *tts_tool_strip_markdown_for_tts(const char *text)
 }
 
 /* Port of Python: stream_tts_to_speaker */
-/* PoP: tts_tool_stream_tts_to_speaker @ tools/tts_tool.py:stream_tts_to_speaker */
+/* PoP: tts_tool_stream_tts_to_speaker @ tools/tts_tool_speaker.py:stream_tts_to_speaker */
 bool tts_tool_stream_tts_to_speaker(const char *audio_file)
 {
     if (!audio_file) return false;
@@ -398,7 +398,7 @@ char *tts_tool_dispatch_to_plugin_provider(const char *text, const char *output_
     return NULL;
 }
 
-/* PoP: tts_tool_response_format_from_path @ tools/tts_tool.py:_tts_response_format_from_path */
+/* PoP: tts_tool_response_format_from_path @ tools/tts_tool_providers.py:_tts_response_format_from_path */
 const char *tts_tool_response_format_from_path(const char *output_path)
 {
     if (!output_path)
@@ -416,7 +416,7 @@ const char *tts_tool_response_format_from_path(const char *output_path)
     return "mp3";
 }
 
-/* PoP: tts_tool_generate_deepinfra_tts @ tools/tts_tool.py:_generate_deepinfra_tts */
+/* PoP: tts_tool_generate_deepinfra_tts @ tools/tts_tool_openai.py:_generate_deepinfra_tts */
 char *tts_tool_generate_deepinfra_tts(const char *text, const char *output_path,
                                       const char *config_json)
 {
@@ -499,7 +499,7 @@ typedef struct {
     double safety_ratio;
 } tts_delivery_profile_t;
 
-/* PoP: tts_tool_resolve_audio_delivery_profile @ tools/tts_tool.py:_resolve_audio_delivery_profile */
+/* PoP: tts_tool_resolve_audio_delivery_profile @ tools/tts_tool_delivery.py:_resolve_audio_delivery_profile */
 /* Resolve upload constraints incl. optional per-platform overrides from the
  * tts_config JSON object (delivery_profiles.<key>). Returns the profile;
  * caller frees platform. */
@@ -568,7 +568,7 @@ tts_delivery_profile_t tts_tool_resolve_audio_delivery_profile(const char *platf
     return out;
 }
 
-/* PoP: tts_tool_split_oversized_sentence @ tools/tts_tool.py:_split_oversized_sentence */
+/* PoP: tts_tool_split_oversized_sentence @ tools/tts_tool_delivery.py:_split_oversized_sentence */
 /* Split one over-limit sentence on word boundaries, then hard boundaries.
  * Returns a malloc'd array of malloc'd strings; *count gets the length.
  * Caller frees each string and the array. */
@@ -639,24 +639,24 @@ char **tts_tool_split_oversized_sentence(const char *sentence, int max_chars,
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: tts_target_file_bytes @ tools/tts_tool.py:target_file_bytes */
+/* PoP: tts_target_file_bytes @ tools/tts_tool_delivery.py:target_file_bytes */
 int tts_target_file_bytes(const char *path, char *out_data, size_t out_sz) {
     (void)path; (void)out_data; (void)out_sz;
     return 0;
 }
 
-/* PoP: tts_pack_audio_files @ tools/tts_tool.py:_pack_audio_files_for_delivery */
+/* PoP: tts_pack_audio_files @ tools/tts_tool_delivery.py:_pack_audio_files_for_delivery */
 void tts_pack_audio_files(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"packed\":true}");
 }
 
-/* PoP: tts_concat_audio_files @ tools/tts_tool.py:_concat_audio_files */
+/* PoP: tts_concat_audio_files @ tools/tts_tool_delivery.py:_concat_audio_files */
 int tts_concat_audio_files(const char **paths, int n, char *out_path, size_t out_sz) {
     (void)paths; (void)n; (void)out_path; (void)out_sz;
     return 1;
 }
 
-/* PoP: tts_build_audio_delivery_files @ tools/tts_tool.py:_build_audio_delivery_files */
+/* PoP: tts_build_audio_delivery_files @ tools/tts_tool_delivery.py:_build_audio_delivery_files */
 void tts_build_audio_delivery_files(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"files\":[]}");
 }

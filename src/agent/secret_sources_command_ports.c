@@ -187,7 +187,7 @@ char *cmd_config_schema(void) {
     return strdup("{\"enabled\": {\"description\": \"Master switch\", \"default\": false}}");
 }
 
-/* PoP: cmd_remediation @ agent/secret_sources/command.py:remediation */
+/* PoP: cmd_remediation @ agent/secret_sources/base.py:remediation */
 char *cmd_remediation(const char *kind) {
     /* Python: fix guidance per error kind. */
     if (!kind) return strdup("");

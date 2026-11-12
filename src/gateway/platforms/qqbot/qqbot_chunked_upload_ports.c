@@ -44,7 +44,7 @@ char *qcu_complete(const char *upload_id) {
     return strdup("{}");
 }
 
-/* PoP: qcu_format_size @ gateway/platforms/qqbot/chunked_upload.py:format_size */
+/* PoP: qcu_format_size @ plugins/platforms/qqbot/chunked_upload.py:format_size */
 char *qcu_format_size(double size) {
     /* Python: '12.3 MB'. */
     char *out = NULL;

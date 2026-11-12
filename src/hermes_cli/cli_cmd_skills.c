@@ -197,7 +197,7 @@ void cmd_curator(const char *args, agent_state_t *state) {
 
 /* /reload-skills: Re-scan skills directory */
 /* Port of Python skill_commands: reload_skills */
-/* PoP: cmd_reload_skills @ cli.py:_reload_skills */
+/* PoP: cmd_reload_skills @ hermes_cli/cli_info_mixin.py:_reload_skills */
 /* Port of Python cli.py:_reload_skills(). */
 void cmd_reload_skills(const char *args, agent_state_t *state) {
     (void)args; (void)state;
@@ -238,7 +238,7 @@ void cmd_reload_skills(const char *args, agent_state_t *state) {
 
 /* PoP: cmd_skills @ hermes_cli/skills_config.py:skills_command */
 /* /skills: List installed skills */
-/* PoP: cmd_skills @ hermes_cli/main.py:cmd_skills */
+/* PoP: cmd_skills @ hermes_cli/main_agent_cmds.py:cmd_skills */
 void cmd_skills(const char *args, agent_state_t *state) {
     (void)state;
     const char *home = getenv("SLERMES_HOME");

@@ -290,7 +290,7 @@ char **cua_backend_candidate_cua_driver_commands(const char *override,
     return list;
 }
 
-/* PoP: cua_backend_resolve_cua_driver_cmd @ tools/computer_use/cua_backend.py:resolve_cua_driver_cmd */
+/* PoP: cua_backend_resolve_cua_driver_cmd @ tools/computer_use/cua_backend_driver.py:resolve_cua_driver_cmd */
 char *cua_backend_resolve_cua_driver_cmd(const char *override) {
     size_t n = 0;
     char **cands = cua_backend_candidate_cua_driver_commands(override, &n);
@@ -337,7 +337,7 @@ static bool contract_parse_semver(const char *raw, int out[3]) {
     return (*p == '-' || *p == '+');  /* (?:[-+].*)? */
 }
 
-/* PoP: cua_backend_cua_driver_runtime_contract_status @ tools/computer_use/cua_backend.py:cua_driver_runtime_contract_status */
+/* PoP: cua_backend_cua_driver_runtime_contract_status @ tools/computer_use/cua_backend_driver.py:cua_driver_runtime_contract_status */
 json_t *cua_backend_cua_driver_runtime_contract_status(const char *binary) {
     char *resolved = (binary && *binary) ? tcc_strdup(binary)
                                          : cua_backend_resolve_cua_driver_cmd(NULL);
@@ -504,7 +504,7 @@ json_t *cua_backend_cua_driver_runtime_contract_status(const char *binary) {
 
 /* ── hermes_cli/tools_config.py cua surface ────────────────────────────── */
 
-/* PoP: tools_config_cua_driver_cmd @ hermes_cli/tools_config.py:_cua_driver_cmd */
+/* PoP: tools_config_cua_driver_cmd @ hermes_cli/tools_config_cua.py:_cua_driver_cmd */
 char *tools_config_cua_driver_cmd(void) {
     char *v = tcc_env_stripped(CUA_DRIVER_CMD_ENV);
     if (v && *v) return v;
@@ -512,7 +512,7 @@ char *tools_config_cua_driver_cmd(void) {
     return tcc_strdup(CUA_DRIVER_DEFAULT_CMD);
 }
 
-/* PoP: tools_config_resolved_cua_driver_cmd @ hermes_cli/tools_config.py:_resolved_cua_driver_cmd */
+/* PoP: tools_config_resolved_cua_driver_cmd @ hermes_cli/tools_config_cua.py:_resolved_cua_driver_cmd */
 char *tools_config_resolved_cua_driver_cmd(void) {
     return cua_backend_resolve_cua_driver_cmd(NULL);
 }
@@ -542,7 +542,7 @@ char *tools_config_cua_windows_install_lock_file(void) {
     return out;
 }
 
-/* PoP: tools_config_ps_single_quote @ hermes_cli/tools_config.py:_ps_single_quote */
+/* PoP: tools_config_ps_single_quote @ hermes_cli/tools_config_cua.py:_ps_single_quote */
 char *tools_config_ps_single_quote(const char *value) {
     const char *v = value ? value : "";
     size_t quotes = 0;
@@ -560,7 +560,7 @@ char *tools_config_ps_single_quote(const char *value) {
     return out;
 }
 
-/* PoP: tools_config_cua_version_summary @ hermes_cli/tools_config.py:_cua_version_summary */
+/* PoP: tools_config_cua_version_summary @ hermes_cli/tools_config_cua.py:_cua_version_summary */
 char *tools_config_cua_version_summary(const char *raw, size_t limit) {
     if (limit == 0) limit = 120;  /* Python keyword default */
     const char *p = raw ? raw : "";
@@ -608,7 +608,7 @@ static bool tcc_cua_telemetry_disabled(void) {
              strcasecmp(v, "yes") == 0 || strcasecmp(v, "on") == 0);
 }
 
-/* PoP: tools_config_cua_driver_env @ hermes_cli/tools_config.py:_cua_driver_env */
+/* PoP: tools_config_cua_driver_env @ hermes_cli/tools_config_cua.py:_cua_driver_env */
 char **tools_config_cua_driver_env(size_t *out_n) {
     extern char **environ;
     size_t base = 0;
@@ -652,7 +652,7 @@ static double tcc_monotonic(void) {
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: tools_config_cua_driver_contract_status @ hermes_cli/tools_config.py:_cua_driver_contract_status */
+/* PoP: tools_config_cua_driver_contract_status @ hermes_cli/tools_config_cua.py:_cua_driver_contract_status */
 json_t *tools_config_cua_driver_contract_status(const char *binary) {
     char *resolved = (binary && *binary) ? tcc_strdup(binary)
                                          : tools_config_resolved_cua_driver_cmd();
@@ -695,7 +695,7 @@ json_t *tools_config_cua_driver_contract_status(const char *binary) {
     return state;
 }
 
-/* PoP: tools_config_cua_driver_autostart_registered_windows @ hermes_cli/tools_config.py:_cua_driver_autostart_registered_windows */
+/* PoP: tools_config_cua_driver_autostart_registered_windows @ hermes_cli/tools_config_cua.py:_cua_driver_autostart_registered_windows */
 bool tools_config_cua_driver_autostart_registered_windows(void) {
 #if defined(_WIN32)
     const char *argv[5] = { "schtasks.exe", "/Query", "/TN",
@@ -711,7 +711,7 @@ bool tools_config_cua_driver_autostart_registered_windows(void) {
 #endif
 }
 
-/* PoP: tools_config_cua_driver_install_ready @ hermes_cli/tools_config.py:_cua_driver_install_ready */
+/* PoP: tools_config_cua_driver_install_ready @ hermes_cli/tools_config_cua.py:_cua_driver_install_ready */
 bool tools_config_cua_driver_install_ready(void) {
     json_t *status = tools_config_cua_driver_contract_status(NULL);
     bool ready = json_get_bool(status, "ready", false);
@@ -724,7 +724,7 @@ bool tools_config_cua_driver_install_ready(void) {
 #endif
 }
 
-/* PoP: tools_config_post_setup_already_installed @ hermes_cli/tools_config.py:_post_setup_already_installed */
+/* PoP: tools_config_post_setup_already_installed @ hermes_cli/tools_config_post_setup.py:_post_setup_already_installed */
 bool tools_config_post_setup_already_installed(const char *post_setup_key) {
     /* _POST_SETUP_INSTALLED = {"cua_driver": _cua_driver_install_ready} */
     if (post_setup_key && strcmp(post_setup_key, "cua_driver") == 0)
@@ -733,7 +733,7 @@ bool tools_config_post_setup_already_installed(const char *post_setup_key) {
     return true;
 }
 
-/* PoP: tools_config_post_setup_no_window_flags @ hermes_cli/tools_config.py:_post_setup_no_window_flags */
+/* PoP: tools_config_post_setup_no_window_flags @ hermes_cli/tools_config_cua.py:_post_setup_no_window_flags */
 int tools_config_post_setup_no_window_flags(bool streams_to_console) {
 #if defined(_WIN32)
     /* CREATE_NO_WINDOW is a macro in the Windows headers; the local

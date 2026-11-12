@@ -213,14 +213,14 @@ long bw_apply_bitwarden_secrets(const char *secrets_json) {
     return applied;
 }
 
-/* PoP: bw_override_existing @ agent/secret_sources/bitwarden.py:override_existing */
+/* PoP: bw_override_existing @ agent/secret_sources/base.py:override_existing */
 bool bw_override_existing(void) {
     /* Python default is also a no-op: bitwarden.py returns
      * cfg.get("override_existing", True) — TRUE is the documented default. */
     return true;
 }
 
-/* PoP: bw_protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */
+/* PoP: bw_protected_env_vars @ agent/secret_sources/base.py:protected_env_vars */
 char *bw_protected_env_vars(void) {
     return strdup("[]");
 }
@@ -238,7 +238,7 @@ char *bw_fetch(const char *config_json) {
     return NULL;
 }
 
-/* PoP: bw_remediation @ agent/secret_sources/bitwarden.py:remediation */
+/* PoP: bw_remediation @ agent/secret_sources/base.py:remediation */
 char *bw_remediation(const char *error) {
     /* Python: user-facing fix guidance. */
     if (!error) return strdup("");

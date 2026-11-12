@@ -79,11 +79,11 @@ const char *plug_get_bundled_plugins_dir(const char *hermes_home) {
 void plug_install_debug_handler(void) { plugin_install_debug_handler(); }
 /* PoP: plug_env_enabled @ hermes_cli/plugins.py:_env_enabled */
 bool plug_env_enabled(const char *name) { return plugin_env_enabled(name); }
-/* PoP: plug_get_disabled_plugins @ hermes_cli/plugins.py:_get_disabled_plugins */
+/* PoP: plug_get_disabled_plugins @ hermes_cli/plugins_discovery.py:_get_disabled_plugins */
 json_t *plug_get_disabled_plugins(const char *hermes_home) {
     return plugin_get_disabled_plugins(hermes_home);
 }
-/* PoP: plug_get_enabled_plugins @ hermes_cli/plugins.py:_get_enabled_plugins */
+/* PoP: plug_get_enabled_plugins @ hermes_cli/plugins_discovery.py:_get_enabled_plugins */
 json_t *plug_get_enabled_plugins(const char *hermes_home) {
     return plugin_get_enabled_plugins(hermes_home);
 }
@@ -141,15 +141,15 @@ json_t *plug_discover_and_load_inner(const char *dir) { return plugin_discover_a
 json_t *plug_scan_directory_level(const char *dir) { return plugin_scan_directory_level(dir); }
 /* PoP: plug_scan_entry_points @ hermes_cli/plugins.py:_scan_entry_points */
 json_t *plug_scan_entry_points(const char *dir) { return plugin_scan_entry_points(dir); }
-/* PoP: plug_platform_name_from_manifest @ hermes_cli/plugins.py:_platform_name_from_manifest */
+/* PoP: plug_platform_name_from_manifest @ hermes_cli/plugins_loader.py:_platform_name_from_manifest */
 const char *plug_platform_name_from_manifest(json_t *manifest) { return plugin_platform_name_from_manifest(manifest); }
-/* PoP: plug_register_deferred_platform @ hermes_cli/plugins.py:_register_deferred_platform */
+/* PoP: plug_register_deferred_platform @ hermes_cli/plugins_loader.py:_register_deferred_platform */
 void plug_register_deferred_platform(const char *name) { plugin_register_deferred_platform(name); }
-/* PoP: plug_load_by_name @ hermes_cli/plugins.py:_load_plugin */
+/* PoP: plug_load_by_name @ hermes_cli/plugins_loader.py:_load_plugin */
 plugin_t *plug_load_by_name(const char *name) { return plugin_load_by_name(name); }
-/* PoP: plug_load_directory_module @ hermes_cli/plugins.py:_load_directory_module */
+/* PoP: plug_load_directory_module @ hermes_cli/plugins_loader.py:_load_directory_module */
 void *plug_load_directory_module(const char *dir) { return plugin_load_directory_module(dir); }
-/* PoP: plug_load_entrypoint_module @ hermes_cli/plugins.py:_load_entrypoint_module */
+/* PoP: plug_load_entrypoint_module @ hermes_cli/plugins_loader.py:_load_entrypoint_module */
 void *plug_load_entrypoint_module(const char *path) { return plugin_load_entrypoint_module(path); }
 /* PoP: plug_has_hook @ hermes_cli/plugins.py:has_hook */
 bool plug_has_hook(const char *name) { return plugin_has_hook(name); }
@@ -195,7 +195,7 @@ bool plug_ensure_discovered(void) { return plugin_ensure_discovered(); }
 const char *plug_get_context_engine(const char *name) { return plugin_get_context_engine(name); }
 /* PoP: plug_get_command_handler @ hermes_cli/plugins.py:get_plugin_command_handler */
 void *plug_get_command_handler(const char *name) { return plugin_get_command_handler(name); }
-/* PoP: plug_resolve_command_result @ hermes_cli/plugins.py:resolve_plugin_command_result */
+/* PoP: plug_resolve_command_result @ hermes_cli/plugins_dispatch.py:resolve_plugin_command_result */
 json_t *plug_resolve_command_result(json_t *result) { return plugin_resolve_command_result(result); }
 /* PoP: plug_get_commands @ hermes_cli/plugins.py:get_plugin_commands */
 json_t *plug_get_commands(void) { return plugin_get_commands(); }
@@ -313,7 +313,7 @@ char *plugins_portable_skill_namespace(const char *key) {
     return out;
 }
 
-/* PoP: str @ hermes_cli/plugins.py:_display_author */
+/* PoP: str @ hermes_cli/plugins_manifest.py:_display_author */
 /* Python: if value is Mapping: return ", ".join(str(value[f]) for f in
  * ("name","email","url") if value.get(f)); return "" if None else str(value). */
 char *plugins_display_author(const char *value_json) {

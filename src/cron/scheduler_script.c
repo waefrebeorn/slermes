@@ -65,7 +65,7 @@ static int parse_timeout(const char *s)
     return (int)v;
 }
 
-/* PoP: scheduler_get_script_timeout @ cron/scheduler.py:_get_script_timeout */
+/* PoP: scheduler_get_script_timeout @ cron/scheduler_script.py:_get_script_timeout */
 int scheduler_get_script_timeout(void)
 {
     /* 1. Patched module value (tests / emergency monkeypatch). */
@@ -117,7 +117,7 @@ int scheduler_get_script_timeout(void)
  * pyvenv.cfg parser
  * ================================================================ */
 
-/* PoP: scheduler_read_pyvenv_cfg @ cron/scheduler.py:_read_windows_pyvenv_cfg */
+/* PoP: scheduler_read_pyvenv_cfg @ cron/scheduler_script.py:_read_windows_pyvenv_cfg */
 json_t *scheduler_read_pyvenv_cfg(const char *venv_dir)
 {
     json_t *parsed = json_object();
@@ -196,7 +196,7 @@ static const char *ENV_BLOCKLIST[] = {
 /* Active-venv markers that must not leak (#23473). */
 static const char *VENV_MARKERS[] = { "VIRTUAL_ENV", "CONDA_PREFIX", NULL };
 
-/* PoP: env_is_internal_secret @ tools/environments/local.py:_is_hermes_internal_secret */
+/* PoP: env_is_internal_secret @ tools/environments/local_env_policy.py:_is_hermes_internal_secret */
 static bool env_is_internal_secret(const char *key)
 {
     char upper[256];
@@ -346,7 +346,7 @@ static char *redact_or_marker(const char *text)
     return red;
 }
 
-/* PoP: scheduler_run_job_script @ cron/scheduler.py:_run_job_script */
+/* PoP: scheduler_run_job_script @ cron/scheduler_script.py:_run_job_script */
 bool scheduler_run_job_script(const char *script_path, const char *workdir,
                               char **output_out)
 {
@@ -660,7 +660,7 @@ static void *heartbeat_loop(void *arg)
     return NULL;
 }
 
-/* PoP: scheduler_run_job_script_with_claim_heartbeat @ cron/scheduler.py:_run_job_script_with_claim_heartbeat */
+/* PoP: scheduler_run_job_script_with_claim_heartbeat @ cron/scheduler_script.py:_run_job_script_with_claim_heartbeat */
 bool scheduler_run_job_script_with_claim_heartbeat(const json_t *job,
                                                    const char *script_path,
                                                    const char *workdir,
@@ -710,7 +710,7 @@ bool scheduler_run_job_script_with_claim_heartbeat(const json_t *job,
  * Wake gate
  * ================================================================ */
 
-/* PoP: scheduler_parse_wake_gate @ cron/scheduler.py:_parse_wake_gate */
+/* PoP: scheduler_parse_wake_gate @ cron/scheduler_prompt.py:_parse_wake_gate */
 bool scheduler_parse_wake_gate(const char *script_output)
 {
     if (!script_output || !script_output[0]) return true;

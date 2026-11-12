@@ -20,7 +20,7 @@ extern int resolve_synchronous_level(const char *raw);
 
 /* ── hermes_state.py: journal-mode + durability + maintenance cluster ── */
 
-/* PoP: _log_journal_mode_upgrade_once @ hermes_state.py:_log_journal_mode_upgrade_once */
+/* PoP: _log_journal_mode_upgrade_once @ hermes_state_wal.py:_log_journal_mode_upgrade_once */
 static pthread_mutex_t _journal_upgrade_lock = PTHREAD_MUTEX_INITIALIZER;
 static char **_journal_upgrade_warned = NULL;
 static int _journal_upgrade_n = 0;
@@ -68,7 +68,7 @@ void _log_configured_delete_overridden_once(const char *db_label) {
     hermes_log(LOG_ERROR, "hermes_state", "%s: database.journal_mode=delete is configured but the on-disk database is already WAL.", db_label);
 }
 
-/* PoP: apply_durability_barriers @ hermes_state.py:apply_durability_barriers */
+/* PoP: apply_durability_barriers @ hermes_state_repair.py:apply_durability_barriers */
 bool apply_durability_barriers(sqlite3 *conn) {
     if (!conn) return false;
     /* Re-apply the configured synchronous level if set */
@@ -84,7 +84,7 @@ bool apply_durability_barriers(sqlite3 *conn) {
     return true;
 }
 
-/* PoP: _probe_journal_mode_for_repair @ hermes_state.py:_probe_journal_mode_for_repair */
+/* PoP: _probe_journal_mode_for_repair @ hermes_state_repair.py:_probe_journal_mode_for_repair */
 const char *_probe_journal_mode_for_repair(const char *db_path) {
     static char mode[32];
     if (!db_path) return NULL;
@@ -110,7 +110,7 @@ const char *_probe_journal_mode_for_repair(const char *db_path) {
     return result;
 }
 
-/* PoP: _restore_journal_mode_after_repair @ hermes_state.py:_restore_journal_mode_after_repair */
+/* PoP: _restore_journal_mode_after_repair @ hermes_state_repair.py:_restore_journal_mode_after_repair */
 void _restore_journal_mode_after_repair(const char *db_path, const char *before_mode) {
     if (!db_path) return;
     sqlite3 *conn = NULL;
@@ -131,7 +131,7 @@ void _restore_journal_mode_after_repair(const char *db_path, const char *before_
     sqlite3_close(conn);
 }
 
-/* PoP: _try_acquire_auto_maintenance_lock @ hermes_state.py:_try_acquire_auto_maintenance_lock */
+/* PoP: _try_acquire_auto_maintenance_lock @ hermes_state_repair.py:_try_acquire_auto_maintenance_lock */
 /* Returns a file handle (int fd) or -1. Caller must close. */
 int _try_acquire_auto_maintenance_lock(const char *db_path) {
     if (!db_path) return -1;

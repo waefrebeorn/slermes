@@ -38,7 +38,7 @@ static bool utf8_valid(const unsigned char *s, size_t len) {
 }
 
 /* ── _console_json_payload ──────────────────────────────────────────────── */
-/* PoP: ws_console_json_payload @ hermes_cli/web_server.py:_console_json_payload */
+/* PoP: ws_console_json_payload @ hermes_cli/web_routers/chat_ws.py:_console_json_payload */
 json_t *ws_console_json_payload(const char *text, const unsigned char *bytes,
                                 size_t bytes_len, char **error) {
     if (error) *error = NULL;
@@ -267,7 +267,7 @@ static char *frame_type_of(const json_t *payload) {
 
 /* run_command inline (synchronous seam: exec + result frames). */
 /* PoP: run_command_now @ hermes_cli/web_server.py:run_command */
-/* PoP: run_command_now @ hermes_cli/web_server.py:start_command */
+/* PoP: run_command_now @ hermes_cli/web_routers/chat_ws.py:start_command */
 static bool run_command_now(ws_console_session_t *s, const char *line,
                             bool confirmed, ws_console_exec_fn exec,
                             void *exec_ctx, json_t *frames) {
@@ -304,7 +304,7 @@ static bool run_command_now(ws_console_session_t *s, const char *line,
     return result.status && strcmp(result.status, "exit") == 0;
 }
 
-/* PoP: ws_console_handle_frame @ hermes_cli/web_server.py:console_ws */
+/* PoP: ws_console_handle_frame @ hermes_cli/web_routers/chat_ws.py:console_ws */
 bool ws_console_handle_frame(ws_console_session_t *s, const json_t *payload,
                              ws_console_exec_fn exec, void *exec_ctx,
                              json_t *frames) {

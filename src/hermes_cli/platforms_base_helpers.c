@@ -92,13 +92,13 @@ int gw_base__is_animation_url(const char *url) {
     return (L >= 4 && strcmp(lower + L - 4, ".gif") == 0);
 }
 
-/* PoP: gw_base__is_command @ gateway/platforms/base.py:is_command */
+/* PoP: gw_base__is_command @ gateway/platforms/event.py:is_command */
 /* True if text begins with '/'. Operates on a C message text buffer. */
 int gw_base__is_command(const char *text) {
     return text && text[0] == '/';
 }
 
-/* PoP: name @ gateway/platforms/base.py:get_command */
+/* PoP: name @ gateway/platforms/event.py:get_command */
 /* Extract command name (lowercased, '@'-stripped, '/'-rejecting). Returns
  * malloc'd string or NULL. */
 char *gw_base__get_command(const char *text) {
@@ -114,7 +114,7 @@ char *gw_base__get_command(const char *text) {
     return raw;
 }
 
-/* PoP: gw_base__get_command_args @ gateway/platforms/base.py:get_command_args */
+/* PoP: gw_base__get_command_args @ gateway/platforms/event.py:get_command_args */
 /* Args after command, with iOS em/en-dash fixes. Returns malloc'd string. */
 char *gw_base__get_command_args(const char *text) {
     if (!text) return strdup("");

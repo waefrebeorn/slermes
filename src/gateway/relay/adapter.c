@@ -66,7 +66,7 @@ int gateway_relay_adapter_u_platform_is_fronted(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_relay_adapter_u_on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
+/* PoP: gateway_relay_adapter_u_on_passthrough @ gateway/relay/adapter_discord_interaction.py:_on_passthrough */
 int gateway_relay_adapter_u_on_passthrough(const char *arg) {
     /* Python: §5.1 edge-forward. Arg =
      * "handled\tstate\tresult". */
@@ -81,7 +81,7 @@ int gateway_relay_adapter_u_on_passthrough(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_relay_adapter_u_discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
+/* PoP: gateway_relay_adapter_u_discord_interaction_to_event @ gateway/relay/adapter_discord_interaction.py:_discord_interaction_to_event */
 int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
     /* Python: interaction body. Arg =
      * "itype\tstate\tresult". */
@@ -96,7 +96,7 @@ int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_relay_adapter_u_render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
+/* PoP: gateway_relay_adapter_u_render_interaction_options @ gateway/relay/adapter_discord_interaction.py:_render_interaction_options */
 int gateway_relay_adapter_u_render_interaction_options(const char *arg) {
     /* Python: discord options flatten. Arg =
      * "parts\tstate\tresult". */

@@ -1,6 +1,6 @@
 /* process_bootstrap_pure.c — pure helpers from agent/process_bootstrap.py.
  *
- * PoP: _interleave_addrinfos @ agent/process_bootstrap.py:_interleave_addrinfos
+ * PoP: _interleave_addrinfos @ hermes_bootstrap.py:_interleave_addrinfos
  *
  * Python:
  *   queues: dict[int, list] keyed by family, family_order: first-seen order,

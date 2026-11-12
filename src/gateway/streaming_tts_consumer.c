@@ -184,7 +184,7 @@ static stts_audio_format_t stts_audio_format_from_provider(stts_provider_t *p,
 }
 
 /* ── Strip markdown for TTS (lazy) ─────────────────────────────────────── */
-/* PoP: stts_strip_markdown_for_tts @ gateway/streaming_tts_consumer.py:_strip_markdown_for_tts */
+/* PoP: stts_strip_markdown_for_tts @ tools/tts_text_normalize.py:_strip_markdown_for_tts */
 static char *stts_strip_markdown_for_tts(stts_consumer_t *c, const char *text) {
     if (!text) return NULL;
     char *stripped = c && c->strip_markdown_fn
@@ -595,7 +595,7 @@ void stts_abort_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
 /* ── Streaming TTS turn-key session bookkeeping ────────────────────────── */
 
 /* PoP: stts_streaming_tts_turn_key_private @ gateway/platforms/base.py:_streaming_tts_turn_key */
-/* PoP: stts_streaming_tts_turn_key_private @ gateway/platforms/base.py:streaming_tts_turn_key */
+/* PoP: stts_streaming_tts_turn_key_private @ gateway/platforms/base_streaming_tts.py:streaming_tts_turn_key */
 char *stts_streaming_tts_turn_key_private(const char *chat_id, const char *session_id) {
     if (!chat_id) return NULL;
     char *key = NULL;
@@ -629,7 +629,7 @@ void stts_mark_streaming_tts_completed_turn(stts_consumer_t *c, const char *chat
     }
 }
 
-/* PoP: stts_streaming_tts_should_skip_whole_file @ gateway/platforms/base.py:streaming_tts_should_skip_whole_file */
+/* PoP: stts_streaming_tts_should_skip_whole_file @ gateway/platforms/base_streaming_tts.py:streaming_tts_should_skip_whole_file */
 bool stts_streaming_tts_should_skip_whole_file(stts_consumer_t *c, const char *chat_id,
                                                const char *session_id, json_t *msg) {
     (void)msg;

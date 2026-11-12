@@ -231,7 +231,7 @@ char *discord_admin_handler(const char *args_json) {
     return strdup("{\"ok\":true,\"admin\":true}");
 }
 
-/* PoP: discord_make_handler @ tools/discord_tool.py:_make_handler */
+/* PoP: discord_make_handler @ agent/transports/hermes_tools_mcp_server.py:_make_handler */
 void *discord_make_handler(const char *name) {
     (void)name;
     return NULL;

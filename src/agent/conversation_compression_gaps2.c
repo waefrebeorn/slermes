@@ -12,7 +12,7 @@
 /* PoP: _retry_compression_on_fallback_chain @ agent/conversation_compression.py:_retry_compression_on_fallback_chain */
 int _retry_compression_on_fallback_chain(void) { return 0; }
 
-/* PoP: _checkpoint_blocked @ agent/conversation_compression.py:_checkpoint_blocked */
+/* PoP: _checkpoint_blocked @ agent/conversation_compression_checkpoint.py:_checkpoint_blocked */
 int _checkpoint_blocked(void) { return 0; }
 
 /* PoP: _get_context_compression_timeout_state @ agent/conversation_compression.py:_get_context_compression_timeout_state */
@@ -54,8 +54,8 @@ char *_replace_message_content(const char *msg, const char *content) { return st
 /* PoP: _messages_match_scoped_identity @ agent/conversation_compression.py:_messages_match_scoped_identity */
 int _messages_match_scoped_identity(const char *a, const char *b) { return 0; }
 
-/* PoP: _codex_compaction_cooldown_remaining @ agent/conversation_compression.py:_codex_compaction_cooldown_remaining */
+/* PoP: _codex_compaction_cooldown_remaining @ agent/conversation_compression_codex.py:_codex_compaction_cooldown_remaining */
 double _codex_compaction_cooldown_remaining(void) { return 0.0; }
 
-/* PoP: _record_codex_compaction_failure @ agent/conversation_compression.py:_record_codex_compaction_failure */
+/* PoP: _record_codex_compaction_failure @ agent/conversation_compression_codex.py:_record_codex_compaction_failure */
 void _record_codex_compaction_failure(const char *error) { (void)error; }

@@ -61,7 +61,7 @@ static long cua_json_positive_int(const json_t *value)
  * shape exactly. Returns a malloc'd json_t* (caller frees via json_free),
  * or NULL on NULL/empty/non-array input.
  * =========================================================================== */
-/* PoP: cua_ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
+/* PoP: cua_ingest_windows @ tools/computer_use/cua_backend_parse.py:_ingest_windows */
 json_t *cua_ingest_windows(const json_t *raw_windows)
 {
     json_t *out = json_array();
@@ -323,7 +323,7 @@ bool cua_session_is_ended_session_result(const json_t *result)
  * shapes (structuredContent/windows, data/windows, data/_legacy_windows,
  * top-level windows/_legacy_windows).
  * =========================================================================== */
-/* PoP: cua_windows_from_tool_result @ tools/computer_use/cua_backend.py:_windows_from_tool_result */
+/* PoP: cua_windows_from_tool_result @ tools/computer_use/cua_backend_parse.py:_windows_from_tool_result */
 json_t *cua_windows_from_tool_result(const json_t *out)
 {
     if (!out || out->type != JSON_OBJECT)
@@ -360,7 +360,7 @@ json_t *cua_windows_from_tool_result(const json_t *out)
  * _apps_from_windows — dedupe windows to {name, pid} pairs, preserving order.
  * Depends on cua_ingest_windows (normalises raw -> window summaries).
  * =========================================================================== */
-/* PoP: cua_apps_from_windows @ tools/computer_use/cua_backend.py:_apps_from_windows */
+/* PoP: cua_apps_from_windows @ tools/computer_use/cua_backend_parse.py:_apps_from_windows */
 json_t *cua_apps_from_windows(const json_t *raw_windows)
 {
     json_t *windows = cua_ingest_windows(raw_windows);
@@ -451,7 +451,7 @@ static char *cua_strip_lower(const char *raw)
  * `obj` is a JSON object; an absent key is Python's _MISSING. Returns the
  * borrowed value for snake, else camel, else default_val (borrowed).
  * ------------------------------------------------------------------------- */
-/* PoP: cua_mcp_field @ tools/computer_use/cua_backend.py:_mcp_field */
+/* PoP: cua_mcp_field @ tools/computer_use/cua_backend_parse.py:_mcp_field */
 json_t *cua_mcp_field(const json_t *obj, const char *snake, const char *camel,
                       json_t *default_val)
 {
@@ -1208,7 +1208,7 @@ json_t *cua_maybe_repair_runtime_contract(const json_t *contract)
  * real target. Bools are never placeholders; non-numeric strings are NOT
  * placeholders either (they reach validation errors instead).
  * ------------------------------------------------------------------------- */
-/* PoP: cua_is_placeholder_id @ tools/computer_use/cua_backend.py:_is_placeholder_id */
+/* PoP: cua_is_placeholder_id @ tools/computer_use/cua_backend_parse.py:_is_placeholder_id */
 bool cua_is_placeholder_id(const json_t *value)
 {
     if (!value)

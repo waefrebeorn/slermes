@@ -55,7 +55,7 @@ int kdbport_from_row_2(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_sqlite_connect @ hermes_cli/kanban_db.py:_sqlite_connect */
+/* PoP: kdbport_u_sqlite_connect @ hermes_cli/kanban_db_connect.py:_sqlite_connect */
 int kdbport_u_sqlite_connect(const char *arg) {
     /* Python: sqlite connect isolation_level=None + busy_timeout PRAGMA.
      * Arg = "path\tbusy_ms". */
@@ -65,7 +65,7 @@ int kdbport_u_sqlite_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_maybe_checkpoint_wal @ hermes_cli/kanban_db.py:_maybe_checkpoint_wal */
+/* PoP: kdbport_u_maybe_checkpoint_wal @ hermes_cli/kanban_db_connect.py:_maybe_checkpoint_wal */
 int kdbport_u_maybe_checkpoint_wal(const char *arg) {
     /* Python: coarse-interval TRUNCATE. Arg =
      * "due\tstate\tresult". */
@@ -79,7 +79,7 @@ int kdbport_u_maybe_checkpoint_wal(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_prune_corrupt_backups @ hermes_cli/kanban_db.py:_prune_corrupt_backups */
+/* PoP: kdbport_u_prune_corrupt_backups @ hermes_cli/kanban_db_connect.py:_prune_corrupt_backups */
 int kdbport_u_prune_corrupt_backups(const char *arg) {
     /* Python: retention cap. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -91,7 +91,7 @@ int kdbport_u_prune_corrupt_backups(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_integrity_messages_ok @ hermes_cli/kanban_db.py:_integrity_messages_ok */
+/* PoP: kdbport_u_integrity_messages_ok @ hermes_cli/kanban_db_connect.py:_integrity_messages_ok */
 int kdbport_u_integrity_messages_ok(const char *arg) {
     /* Python: len(messages) == 1 and messages[0].strip().lower() == "ok".
      * Arg = PRAGMA integrity_check output rows (newline-joined). */
@@ -117,7 +117,7 @@ int kdbport_u_integrity_messages_ok(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_run_integrity_check @ hermes_cli/kanban_db.py:_run_integrity_check */
+/* PoP: kdbport_u_run_integrity_check @ hermes_cli/kanban_db_connect.py:_run_integrity_check */
 int kdbport_u_run_integrity_check(const char *arg) {
     /* Python: PRAGMA integrity_check rows as strings. Arg = db path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -147,7 +147,7 @@ int kdbport_u_run_integrity_check(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_repairable_index_names @ hermes_cli/kanban_db.py:_repairable_index_names */
+/* PoP: kdbport_u_repairable_index_names @ hermes_cli/kanban_db_connect.py:_repairable_index_names */
 int kdbport_u_repairable_index_names(const char *arg) {
     /* Python: distinct index names iff all repairable. Arg =
      * "names\tstate\tresult". */
@@ -160,7 +160,7 @@ int kdbport_u_repairable_index_names(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_attempt_index_reindex_repair @ hermes_cli/kanban_db.py:_attempt_index_reindex_repair */
+/* PoP: kdbport_u_attempt_index_reindex_repair @ hermes_cli/kanban_db_connect.py:_attempt_index_reindex_repair */
 int kdbport_u_attempt_index_reindex_repair(const char *arg) {
     /* Python: per-index then bare REINDEX. Arg =
      * "clean\tstate\tresult". */
@@ -174,7 +174,7 @@ int kdbport_u_attempt_index_reindex_repair(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_repair_db @ hermes_cli/kanban_db.py:repair_db */
+/* PoP: kdbport_repair_db @ hermes_cli/kanban_db_connect.py:repair_db */
 int kdbport_repair_db(const char *arg) {
     /* Python: index-only REINDEX. Arg =
      * "status\tstate\tresult". */
@@ -194,7 +194,7 @@ int kdbport_repair_db(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_migrate_add_optional_columns @ hermes_cli/kanban_db.py:_migrate_add_optional_columns */
+/* PoP: kdbport_u_migrate_add_optional_columns @ hermes_cli/kanban_db_connect.py:_migrate_add_optional_columns */
 int kdbport_u_migrate_add_optional_columns(const char *arg) {
     /* Python: additive columns. Arg =
      * "added\tstate\tresult". */
@@ -373,7 +373,7 @@ int kdbport_u_unique_attachment_path(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_managed_scratch_path_info @ hermes_cli/kanban_db.py:_managed_scratch_path_info */
+/* PoP: kdbport_u_managed_scratch_path_info @ hermes_cli/kanban_db_workspace.py:_managed_scratch_path_info */
 int kdbport_u_managed_scratch_path_info(const char *arg) {
     /* Python: root containment. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\t\n"); return 0; }
@@ -384,7 +384,7 @@ int kdbport_u_managed_scratch_path_info(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_decompose_triage_task @ hermes_cli/kanban_db.py:decompose_triage_task */
+/* PoP: kdbport_decompose_triage_task @ hermes_cli/kanban_db_graph.py:decompose_triage_task */
 int kdbport_decompose_triage_task(const char *arg) {
     /* Python: fan-out w/ cycle guard. Arg =
      * "children\tstate\tresult". */
@@ -397,7 +397,7 @@ int kdbport_decompose_triage_task(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_u_protocol_violation_streak @ hermes_cli/kanban_db.py:_protocol_violation_streak */
+/* PoP: kdbport_u_protocol_violation_streak @ hermes_cli/kanban_db_dispatch.py:_protocol_violation_streak */
 int kdbport_u_protocol_violation_streak(const char *arg) {
     /* Python: newest-first walk. Arg = "streak\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }

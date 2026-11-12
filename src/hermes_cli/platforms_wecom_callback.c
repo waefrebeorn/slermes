@@ -20,7 +20,7 @@ static const char *DEFAULT_PATH = "/wecom/callback";
 static const int ACCESS_TOKEN_TTL = 7200;
 static const int MESSAGE_DEDUP_TTL = 300;
 
-/* PoP: cli_gateway_platforms_wecom_callback_check_wecom_callback_requirements @ gateway/platforms/wecom_callback.py:check_wecom_callback_requirements */
+/* PoP: cli_gateway_platforms_wecom_callback_check_wecom_callback_requirements @ plugins/platforms/wecom/callback_adapter.py:check_wecom_callback_requirements */
 int cli_gateway_platforms_wecom_callback_check_wecom_callback_requirements(void) {
     /*
      * Check if all required dependencies are available.
@@ -35,7 +35,7 @@ int cli_gateway_platforms_wecom_callback_check_wecom_callback_requirements(void)
     return result;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_normalize_apps */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ plugins/platforms/wecom/callback_adapter.py:_normalize_apps */
 json_node_t* cli_gateway_platforms_wecom_callback__normalize_apps(json_node_t *extra) {
     /*
      * Normalize the apps configuration from the extra config dict.
@@ -75,7 +75,7 @@ json_node_t* cli_gateway_platforms_wecom_callback__normalize_apps(json_node_t *e
     return apps;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_resolve_app_for_chat */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ plugins/platforms/wecom/callback_adapter.py:_resolve_app_for_chat */
 json_node_t* cli_gateway_platforms_wecom_callback__resolve_app_for_chat(const char *chat_id,
                                                                           json_node_t *user_app_map,
                                                                           json_node_t *apps) {
@@ -133,7 +133,7 @@ int cli_gateway_platforms_wecom_callback__handle_verify(const char *msg_signatur
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__handle_callback @ gateway/platforms/wecom_callback.py:_handle_callback */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_callback @ plugins/platforms/wecom/callback_adapter.py:_handle_callback */
 int cli_gateway_platforms_wecom_callback__handle_callback(const char *body, const char *msg_signature,
                                                            const char *timestamp, const char *nonce,
                                                            json_node_t *apps, json_node_t *user_app_map) {
@@ -172,7 +172,7 @@ int cli_gateway_platforms_wecom_callback__poll_loop(json_node_t *message_queue) 
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__decrypt_request @ gateway/platforms/wecom_callback.py:_decrypt_request */
+/* PoP: cli_gateway_platforms_wecom_callback__decrypt_request @ plugins/platforms/wecom/callback_adapter.py:_decrypt_request */
 char* cli_gateway_platforms_wecom_callback__decrypt_request(json_node_t *app, const char *body,
                                                              const char *msg_signature, const char *timestamp,
                                                              const char *nonce, char *buf, size_t bufsz) {
@@ -186,9 +186,9 @@ char* cli_gateway_platforms_wecom_callback__decrypt_request(json_node_t *app, co
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__crypt_for_app @ gateway/platforms/wecom_callback.py:_crypt_for_app */
+/* PoP: cli_gateway_platforms_wecom_callback__crypt_for_app @ plugins/platforms/wecom/callback_adapter.py:_crypt_for_app */
 
-/* PoP: cli_gateway_platforms_wecom_callback__get_app_by_name @ gateway/platforms/wecom_callback.py:_get_app_by_name */
+/* PoP: cli_gateway_platforms_wecom_callback__get_app_by_name @ plugins/platforms/wecom/callback_adapter.py:_get_app_by_name */
 json_node_t* cli_gateway_platforms_wecom_callback__get_app_by_name(const char *name, json_node_t *apps) {
     /*
      * Find an app by name in the apps list.

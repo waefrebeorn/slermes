@@ -130,7 +130,7 @@ int cli_tools_mixture_of_agents_tool_get_moa_configuration(
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_mixture_of_agents_tool_u_build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
+/* PoP: tools_mixture_of_agents_tool_u_build_auth_header @ plugins/platforms/ntfy/adapter.py:_build_auth_header */
 int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) {
     /* Python: env key. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }

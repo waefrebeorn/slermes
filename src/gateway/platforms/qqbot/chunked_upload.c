@@ -10,7 +10,7 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: gateway_platforms_qqbot_chunke_file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+/* PoP: gateway_platforms_qqbot_chunke_file_size_human @ plugins/platforms/qqbot/chunked_upload.py:file_size_human */
 int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {
     /* Python: format_size(self.file_size) — human size with units. */
     if (!arg || !*arg) { printf("0 B\n"); return 0; }
@@ -24,7 +24,7 @@ int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_file_size_human_2 @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+/* PoP: gateway_platforms_qqbot_chunke_file_size_human_2 @ plugins/platforms/qqbot/chunked_upload.py:file_size_human */
 int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
     /* Python: format_size(self.file_size) — human size with units. */
     if (!arg || !*arg) { printf("0 B\n"); return 0; }
@@ -38,7 +38,7 @@ int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
+/* PoP: gateway_platforms_qqbot_chunke_limit_human @ plugins/platforms/qqbot/chunked_upload.py:limit_human */
 int gateway_platforms_qqbot_chunke_limit_human(const char *arg) {
     /* Python: format_size(limit_bytes) if limit_bytes else "unknown".
      * Arg = byte count (or empty). */
@@ -56,7 +56,7 @@ int gateway_platforms_qqbot_chunke_limit_human(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_parse_prepare_response @ gateway/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
+/* PoP: gateway_platforms_qqbot_chunke_u_parse_prepare_response @ plugins/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
 int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) {
     /* Python: prepare parse. Arg =
      * "state\tresult\terr". */
@@ -90,7 +90,7 @@ int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
+/* PoP: gateway_platforms_qqbot_chunke_u_upload_one_part @ plugins/platforms/qqbot/chunked_upload.py:_upload_one_part */
 int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
     /* Python: COS PUT part. Arg =
      * "uploaded\tstate\tresult". */
@@ -105,7 +105,7 @@ int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
+/* PoP: gateway_platforms_qqbot_chunke_u_put_to_presigned_url @ plugins/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
 int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) {
     /* Python: presigned PUT. Arg =
      * "put\tstate\tresult". */
@@ -118,7 +118,7 @@ int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
+/* PoP: gateway_platforms_qqbot_chunke_u_part_finish_with_retry @ plugins/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
 int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {
     /* Python: 40093001 retry. Arg =
      * "finished\tstate\tresult". */
@@ -133,7 +133,7 @@ int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
+/* PoP: gateway_platforms_qqbot_chunke_u_read_file_chunk @ plugins/platforms/qqbot/chunked_upload.py:_read_file_chunk */
 int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
     /* Python: seek + read exact length, IOError on short. Arg =
      * "path\toffset\tlength\tstate". */
@@ -152,7 +152,7 @@ int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
+/* PoP: gateway_platforms_qqbot_chunke_u_compute_file_hashes @ plugins/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
 int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
     /* Python: md5/sha1/md5_10m one pass. Arg =
      * "file_size\tstate\tmd5\tsha1\tmd5_10m". */

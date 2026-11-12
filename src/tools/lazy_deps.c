@@ -314,7 +314,7 @@ int tools_lazy_deps_refresh_active_features(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_lazy_deps_ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
+/* PoP: tools_lazy_deps_ensure_and_bind @ pm/extras.py:ensure_and_bind */
 int tools_lazy_deps_ensure_and_bind(const char *arg) {
     /* Python: ensure + rebind. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }

@@ -225,7 +225,7 @@ char *skill_val_resolve_skill_target(const char *skill_dir, const char *file_pat
     return joined;
 }
 
-/* PoP: skill_val_validate_delete_target @ tools/skill_manager_tool.py:_validate_delete_target */
+/* PoP: skill_val_validate_delete_target @ tools/skill_manager_guards.py:_validate_delete_target */
 char *skill_val_validate_delete_target(const char *skill_dir,
                                        char **roots, int nroots) {
     if (skill_val_is_path_redirect(skill_dir)) {
@@ -255,7 +255,7 @@ char *skill_val_validate_delete_target(const char *skill_dir,
     return r;
 }
 
-/* PoP: skill_val_containing_skills_root @ tools/skill_manager_tool.py:_containing_skills_root */
+/* PoP: skill_val_containing_skills_root @ tools/skill_manager_guards.py:_containing_skills_root */
 char *skill_val_containing_skills_root(const char *skill_path,
                                        char **roots, int nroots) {
     for (int i = 0; i < nroots; i++) {

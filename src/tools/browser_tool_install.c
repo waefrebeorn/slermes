@@ -33,8 +33,8 @@ struct browser_tool_install {
 browser_tool_install_t *browser_tool_install_init(void) { return calloc(1, sizeof(browser_tool_install_t)); }
 void browser_tool_install_cleanup(browser_tool_install_t *s) { free(s); }
 
-/* PoP: browser_maybe_autoinstall_chromium @ tools/browser_tool.py:_maybe_autoinstall_chromium */
-/* PoP: browser_maybe_autoinstall_chromium @ tools/browser_tool.py:_maybe_autoinstall_chromium */
+/* PoP: browser_maybe_autoinstall_chromium @ tools/browser_launcher.py:_maybe_autoinstall_chromium */
+/* PoP: browser_maybe_autoinstall_chromium @ tools/browser_launcher.py:_maybe_autoinstall_chromium */
 bool browser_maybe_autoinstall_chromium(void)
 {
     static bool attempted = false;
@@ -61,8 +61,8 @@ bool browser_maybe_autoinstall_chromium(void)
     return false;
 }
 
-/* PoP: browser_chromium_installed @ tools/browser_tool.py:_chromium_installed */
-/* PoP: browser_chromium_installed @ tools/browser_tool.py:_chromium_installed */
+/* PoP: browser_chromium_installed @ hermes_cli/tools_config_post_setup.py:_chromium_installed */
+/* PoP: browser_chromium_installed @ hermes_cli/tools_config_post_setup.py:_chromium_installed */
 bool browser_chromium_installed(void)
 {
     /* Check for Chromium binary in common locations */
@@ -243,7 +243,7 @@ static json_t *browser_eval_error(const char *error_fmt, ...)
     return obj;
 }
 
-/* PoP: browser_evaluate_url_safety @ tools/browser_tool.py:evaluate_url_safety */
+/* PoP: browser_evaluate_url_safety @ tools/browser_url_policy.py:evaluate_url_safety */
 json_t *browser_evaluate_url_safety(const char *url)
 {
     /* Run URL safety checks; NULL json when safe, else an error object. */

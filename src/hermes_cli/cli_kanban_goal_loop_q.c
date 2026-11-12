@@ -1,4 +1,4 @@
-/* PoP: cli_run_kanban_goal_loop_q @ cli.py:_run_kanban_goal_loop_q */
+/* PoP: cli_run_kanban_goal_loop_q @ hermes_cli/cli_single_query.py:_run_kanban_goal_loop_q */
 
 #include "cli_wave4b.h"
 #include "hermes_state_db.h"

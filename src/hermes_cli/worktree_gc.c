@@ -151,7 +151,7 @@ int wgc_run_git(char *const args[], const char *cwd, int timeout,
 }
 
 /*
- * PoP: wgc_git_repo_root @ hermes_cli/worktree_gc.py:_git_repo_root
+ * PoP: wgc_git_repo_root @ hermes_cli/worktree_ops.py:_git_repo_root
  */
 char *wgc_git_repo_root(void)
 {
@@ -166,7 +166,7 @@ char *wgc_git_repo_root(void)
     return root;
 }
 
-/* PoP: _repo_is_shallow @hermes_cli/worktree_gc.py:_repo_is_shallow */
+/* PoP: _repo_is_shallow @hermes_cli/worktree_ops.py:_repo_is_shallow */
 int wgc_repo_is_shallow(const char *repo_path)
 {
     char path[4096];
@@ -175,14 +175,14 @@ int wgc_repo_is_shallow(const char *repo_path)
     return stat(path, &st) == 0;
 }
 
-/* PoP: _deepen_shallow_repo @hermes_cli/worktree_gc.py:_deepen_shallow_repo */
+/* PoP: _deepen_shallow_repo @hermes_cli/worktree_ops.py:_deepen_shallow_repo */
 int wgc_deepen_shallow_repo(const char *repo_root)
 {
     char *const args[] = {"fetch", "--unshallow", "--quiet", NULL};
     return wgc_run_git(args, repo_root, 120, NULL, NULL) == 0;
 }
 
-/* PoP: _worktree_has_unpushed_commits @hermes_cli/worktree_gc.py:_worktree_has_unpushed_commits */
+/* PoP: _worktree_has_unpushed_commits @hermes_cli/worktree_ops.py:_worktree_has_unpushed_commits */
 int wgc_worktree_has_unpushed_commits(const char *worktree_path, int timeout)
 {
     char *const args[] = {"status", "-sb", NULL};
@@ -216,7 +216,7 @@ static json_t *wgc_cache_get(json_t *cache, const char *key)
                                                : NULL;
 }
 
-/* PoP: _worktree_commits_all_merged_upstream @hermes_cli/worktree_gc.py:_worktree_commits_all_merged_upstream */
+/* PoP: _worktree_commits_all_merged_upstream @hermes_cli/worktree_ops.py:_worktree_commits_all_merged_upstream */
 int wgc_worktree_commits_all_merged_upstream(const char *worktree_path,
                                              int timeout, long max_ahead,
                                              void *cache_v)
@@ -285,7 +285,7 @@ int wgc_worktree_commits_all_merged_upstream(const char *worktree_path,
     return merged;
 }
 
-/* PoP: _worktree_lock_is_live @ cli.py:_worktree_lock_is_live — fail SAFE
+/* PoP: _worktree_lock_is_live @ hermes_cli/worktree_ops.py:_worktree_lock_is_live — fail SAFE
  * toward "live". Returns malloc'd "live"/"dead" or NULL when not locked. */
 char *wgc_worktree_lock_is_live(const char *repo_root,
                                 const char *worktree_path, int timeout)

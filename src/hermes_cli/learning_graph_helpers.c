@@ -144,7 +144,7 @@ char *learning_graph_related(const char *fm_json)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: learning_graph_category @ agent/learning_graph.py:_category */
+/* PoP: learning_graph_category @ hermes_cli/config_defaults_env.py:_category */
 /* fm_json: JSON object; fallback: caller-computed path-derived category
  * (mirrors skill_md.parts[-3]). Returns malloc'd category string. */
 char *learning_graph_category(const char *fm_json, const char *fallback)

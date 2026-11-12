@@ -343,7 +343,7 @@ void banner_compute_git_banner_state(char *out_json, size_t out_sz) {
 static int banner_update_result = -2;   /* -2 = not yet run; Python None */
 static bool banner_update_check_done = false;
 
-/* PoP: banner_check_for_updates @ hermes_cli/banner.py:check_for_updates */
+/* PoP: banner_check_for_updates @ hermes_cli/source_check.py:check_for_updates */
 int banner_check_for_updates(void) {
     /* Two paths: embedded HERMES_REVISION vs upstream ls-remote; otherwise
      * count commits behind origin/main in a local checkout. Returns commits
@@ -435,7 +435,7 @@ int banner_get_update_result(double timeout_seconds) {
 void banner_defer_update_notice(void) {
 }
 
-/* PoP: banner_is_full_sha @ hermes_cli/banner.py:_is_full_sha */
+/* PoP: banner_is_full_sha @ hermes_cli/source_check.py:_is_full_sha */
 bool banner_is_full_sha(const char *value) {
     if (!value || strlen(value) != 40) return false;
     for (const char *c = value; *c; c++)

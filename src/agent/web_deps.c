@@ -87,7 +87,7 @@ void *web_deps_late_state_getattr(web_deps_late_state_t *ls, const char *attr) {
     return g_server_resolver(full_name);
 }
 
-/* PoP: web_deps_get_session_token @ hermes_cli/web_deps.py:get_session_token */
+/* PoP: web_deps_get_session_token @ agent/vault_backends/unlock.py:get_session_token */
 const char *web_deps_get_session_token(void) {
     if (!g_server_resolver) return "";
     void *token = g_server_resolver("_SESSION_TOKEN");

@@ -325,7 +325,7 @@ static void proc_load_checkpoint(void) {
 }
 
 /* PoP: process_handler @ tools/process_registry.py:drain_notifications */
-/* PoP: process_handler @ tools/process_registry.py:_drain_loop */
+/* PoP: process_handler @ plugins/google_meet/meet_bot.py:_drain_loop */
 /* PoP: process_handler @ tools/process_registry.py:_read_stream */
 /* PoP: process_handler @ tools/process_registry.py:_handle_termination */
 /* PoP: process_handler @ tools/process_registry.py:_cleanup_dead */

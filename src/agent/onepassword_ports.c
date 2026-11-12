@@ -103,7 +103,7 @@ long opw_apply_onepassword_secrets(const char *refs_json) {
     return applied;
 }
 
-/* PoP: opw_override_existing @ agent/secret_sources/onepassword.py:override_existing */
+/* PoP: opw_override_existing @ agent/secret_sources/base.py:override_existing */
 bool opw_override_existing(void) {
     /* Python: explicit VAR→op:// binding is strongest intent. */
     return true;
@@ -121,7 +121,7 @@ char *opw_fetch(const char *config_json) {
     return NULL;
 }
 
-/* PoP: opw_remediation @ agent/secret_sources/onepassword.py:remediation */
+/* PoP: opw_remediation @ agent/secret_sources/base.py:remediation */
 char *opw_remediation(const char *error_kind) {
     /* Python: fix guidance per error kind. */
     if (!error_kind) return strdup("");

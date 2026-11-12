@@ -31,7 +31,7 @@
  * ====================================================================== */
 
 char *handle_computer_use(const char *args_json, const char *task_id); /* non-static: re-exported by tools/computer_use_tool.py shim port */
-/* PoP: noop_is_available @ tools/computer_use/cua_backend.py:action */
+/* PoP: noop_is_available @ hermes_cli/onepassword_secrets_cli.py:action */
 /* PoP: noop_is_available @ tools/computer_use/cua_backend.py:_action */
 static char *dispatch_action(cu_backend_t *b, const char *action, json_t *args);
 
@@ -1726,7 +1726,7 @@ static cu_backend_t *g_cu_backend = NULL;
 static cu_backend_entry_t *g_backend_registry = NULL;
 static int g_backend_count = 0;
 
-/* PoP: cu_register_backend @ tools/computer_use/cua_backend.py:cua_driver_binary_available */
+/* PoP: cu_register_backend @ tools/computer_use/cua_backend_driver.py:cua_driver_binary_available */
 bool cu_register_backend(const char *name,
                           const char *description,
                           cu_backend_t *(*factory)(void)) {
@@ -1742,7 +1742,7 @@ bool cu_register_backend(const char *name,
     return true;
 }
 
-/* PoP: cu_list_backends @ tools/computer_use/cua_backend.py:cua_driver_update_check */
+/* PoP: cu_list_backends @ tools/computer_use/cua_backend_driver.py:cua_driver_update_check */
 char *cu_list_backends(void) {
     json_t *arr = json_array();
     if (!arr) return strdup("[]");
@@ -1859,7 +1859,7 @@ void cu_capture_free(cu_capture_t *cap) {
     free(cap);
 }
 
-/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */
+/* PoP: cu_action_free @ tools/computer_use/cua_backend_parse.py:_parse_elements_from_tree */
 void cu_action_free(cu_action_t *act) {
     if (!act) return;
     if (act->capture) cu_capture_free(act->capture);

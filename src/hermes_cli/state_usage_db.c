@@ -101,7 +101,7 @@ void state_usage_db_close(state_usage_db_t *db) {
     free(db);
 }
 
-/* PoP: state_usage_insert_session_row @ hermes_state.py:_insert_session_row */
+/* PoP: state_usage_insert_session_row @ hermes_state_sessions.py:_insert_session_row */
 bool state_usage_insert_session_row(state_usage_db_t *db,
                                     const char *session_id,
                                     const char *source) {
@@ -123,7 +123,7 @@ bool state_usage_insert_session_row(state_usage_db_t *db,
     return ok;
 }
 
-/* PoP: state_usage_record_model_usage @ hermes_state.py:_record_model_usage */
+/* PoP: state_usage_record_model_usage @ hermes_state_usage.py:_record_model_usage */
 bool state_usage_record_model_usage(state_usage_db_t *db,
                                     const char *session_id,
                                     const char *model,

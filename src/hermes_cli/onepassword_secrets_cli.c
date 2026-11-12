@@ -108,7 +108,7 @@ int hermes_cli_onepassword_secrets_cmd_disable(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_onepassword_secrets_u_yn @ hermes_cli/onepassword_secrets_cli.py:_yn */
+/* PoP: hermes_cli_onepassword_secrets_u_yn @ hermes_cli/proxy_cli.py:_yn */
 int hermes_cli_onepassword_secrets_u_yn(const char *arg) {
     /* Python: "[green]yes[/green]" if b else "[dim]no[/dim]". */
     if (arg && *arg && strcmp(arg, "0") != 0) printf("[green]yes[/green]\n");

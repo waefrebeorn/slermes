@@ -81,7 +81,7 @@ static int g_child_max_turns_default = 30;
 static bool g_spawn_paused = false;
 static pthread_mutex_t g_spawn_pause_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: set_spawn_paused @ tools/delegate_tool.py:set_spawn_paused */
+/* PoP: set_spawn_paused @ tools/delegate_tool_registry.py:set_spawn_paused */
 /* Port of Python tools/delegate_tool.py:set_spawn_paused().
  * Globally block/unblock new delegate_task spawns. Returns the NEW state. */
 bool set_spawn_paused(bool paused) {
@@ -92,7 +92,7 @@ bool set_spawn_paused(bool paused) {
     return new_state;
 }
 
-/* PoP: is_spawn_paused @ tools/delegate_tool.py:is_spawn_paused */
+/* PoP: is_spawn_paused @ tools/delegate_tool_registry.py:is_spawn_paused */
 /* Port of Python tools/delegate_tool.py:is_spawn_paused().
  * Returns true when new delegate spawns are currently blocked. */
 bool is_spawn_paused(void) {
@@ -346,7 +346,7 @@ static void delegate_health(json_node_t *result) {
 /* ---------------------------------------------------------------------------
  * Subagent approval callbacks (Python: _subagent_auto_deny / _subagent_auto_approve)
  * --------------------------------------------------------------------------- */
-/* PoP: threads @ tools/delegate_tool.py:_subagent_auto_deny */
+/* PoP: threads @ tools/delegate_tool_config.py:_subagent_auto_deny */
 /* Auto-deny dangerous commands in subagent threads (safe default). */
 static const char *delegate_subagent_auto_deny(const char *command, const char *description)
 {
@@ -358,7 +358,7 @@ static const char *delegate_subagent_auto_deny(const char *command, const char *
     return "deny";
 }
 
-/* PoP: threads @ tools/delegate_tool.py:_subagent_auto_approve */
+/* PoP: threads @ tools/delegate_tool_config.py:_subagent_auto_approve */
 /* Auto-approve dangerous commands in subagent threads (opt-in YOLO). */
 static const char *delegate_subagent_auto_approve(const char *command, const char *description)
 {
@@ -369,7 +369,7 @@ static const char *delegate_subagent_auto_approve(const char *command, const cha
     return "once";
 }
 
-/* PoP: delegate_register_subagent @ tools/delegate_tool.py:_get_subagent_approval_callback */
+/* PoP: delegate_register_subagent @ tools/delegate_tool_config.py:_get_subagent_approval_callback */
 /* Return the callback to install into subagent worker threads. */
 static const char *(*delegate_get_subagent_approval_callback(void))(const char *, const char *)
 {
@@ -399,7 +399,7 @@ typedef struct {
 static delegate_subagent_record_t g_subagents[MAX_CHILDREN];
 static pthread_mutex_t g_subagents_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: delegate_register_subagent @ tools/delegate_tool.py:_register_subagent */
+/* PoP: delegate_register_subagent @ tools/delegate_tool_registry.py:_register_subagent */
 static void delegate_register_subagent(const char *subagent_id, const char *parent_id,
                                        int depth, const char *goal, const char *model,
                                        double started_at)
@@ -423,7 +423,7 @@ static void delegate_register_subagent(const char *subagent_id, const char *pare
     pthread_mutex_unlock(&g_subagents_lock);
 }
 
-/* PoP: delegate_unregister_subagent @ tools/delegate_tool.py:_unregister_subagent */
+/* PoP: delegate_unregister_subagent @ tools/delegate_tool_registry.py:_unregister_subagent */
 static void delegate_unregister_subagent(const char *subagent_id)
 {
     if (!subagent_id) return;
@@ -441,7 +441,7 @@ static void delegate_unregister_subagent(const char *subagent_id)
  * Output tail helpers (Python: _stringify_tool_content / _looks_like_error_output /
  * _extract_output_tail)
  * --------------------------------------------------------------------------- */
-/* PoP: content @ tools/delegate_tool.py:_stringify_tool_content */
+/* PoP: content @ tools/delegate_tool_results.py:_stringify_tool_content */
 /* Stable text representation for tool-result content (string / list / dict). */
 char *delegate_stringify_tool_content(const json_node_t *content, char *out, size_t out_sz)
 {
@@ -495,7 +495,7 @@ char *delegate_stringify_tool_content(const json_node_t *content, char *out, siz
     return out;
 }
 
-/* PoP: delegate_looks_like_error_output @ tools/delegate_tool.py:_looks_like_error_output */
+/* PoP: delegate_looks_like_error_output @ tools/delegate_tool_results.py:_looks_like_error_output */
 /* Conservative stderr/error detector for tool-result previews. */
 bool delegate_looks_like_error_output(const json_node_t *content)
 {
@@ -541,7 +541,7 @@ bool delegate_looks_like_error_output(const json_node_t *content)
     return res;
 }
 
-/* PoP: delegate_extract_output_tail @ tools/delegate_tool.py:_extract_output_tail */
+/* PoP: delegate_extract_output_tail @ tools/delegate_tool_results.py:_extract_output_tail */
 /* Pull the last N tool-call results from a child's conversation. */
 static json_node_t *delegate_extract_output_tail(const json_node_t *result,
                                                  int max_entries, int max_chars)
@@ -651,7 +651,7 @@ static json_node_t *delegate_extract_output_tail(const json_node_t *result,
  * --------------------------------------------------------------------------- */
 static bool g_high_concurrency_warned = false;
 
-/* PoP: delegate_get_max_concurrent_children @ tools/delegate_tool.py:_get_max_concurrent_children */
+/* PoP: delegate_get_max_concurrent_children @ tools/delegate_tool_config.py:_get_max_concurrent_children */
 static int delegate_get_max_concurrent_children(void)
 {
     const char *val = tool_config_get("delegation", "max_concurrent_children");
@@ -683,7 +683,7 @@ static int delegate_get_max_concurrent_children(void)
     return DEL_DEFAULT_MAX_CONCURRENT_CHILDREN;
 }
 
-/* PoP: delegate_get_max_async_children @ tools/delegate_tool.py:_get_max_async_children */
+/* PoP: delegate_get_max_async_children @ tools/delegate_tool_config.py:_get_max_async_children */
 static int delegate_get_max_async_children(void)
 {
     const char *val = tool_config_get("delegation", "max_async_children");
@@ -703,7 +703,7 @@ static int delegate_get_max_async_children(void)
     return DEL_DEFAULT_MAX_ASYNC_CHILDREN;
 }
 
-/* PoP: delegate_get_child_timeout @ tools/delegate_tool.py:_get_child_timeout */
+/* PoP: delegate_get_child_timeout @ tools/delegate_tool_config.py:_get_child_timeout */
 static double delegate_get_child_timeout(void)
 {
     const char *val = tool_config_get("delegation", "child_timeout_seconds");
@@ -723,7 +723,7 @@ static double delegate_get_child_timeout(void)
     return 0.0; /* None -> no timeout */
 }
 
-/* PoP: delegate_get_max_spawn_depth @ tools/delegate_tool.py:_get_max_spawn_depth */
+/* PoP: delegate_get_max_spawn_depth @ tools/delegate_tool_config.py:_get_max_spawn_depth */
 static int delegate_get_max_spawn_depth(void)
 {
     const char *val = tool_config_get("delegation", "max_spawn_depth");
@@ -743,7 +743,7 @@ static int delegate_get_max_spawn_depth(void)
     return (int)floored;
 }
 
-/* PoP: delegate_get_orchestrator_enabled @ tools/delegate_tool.py:_get_orchestrator_enabled */
+/* PoP: delegate_get_orchestrator_enabled @ tools/delegate_tool_config.py:_get_orchestrator_enabled */
 static bool delegate_get_orchestrator_enabled(void)
 {
     const char *val = tool_config_get("delegation", "orchestrator_enabled");
@@ -755,7 +755,7 @@ static bool delegate_get_orchestrator_enabled(void)
     return true; /* default */
 }
 
-/* PoP: delegate_get_inherit_mcp_toolsets @ tools/delegate_tool.py:_get_inherit_mcp_toolsets */
+/* PoP: delegate_get_inherit_mcp_toolsets @ tools/delegate_tool_config.py:_get_inherit_mcp_toolsets */
 static bool delegate_get_inherit_mcp_toolsets(void)
 {
     const char *val = tool_config_get("delegation", "inherit_mcp_toolsets");
@@ -769,7 +769,7 @@ static bool delegate_get_inherit_mcp_toolsets(void)
  * Toolset helpers (Python: _is_mcp_toolset_name / _expand_parent_toolsets /
  * _preserve_parent_mcp_toolsets / _strip_blocked_tools)
  * --------------------------------------------------------------------------- */
-/* PoP: delegate_is_mcp_toolset_name @ tools/delegate_tool.py:_is_mcp_toolset_name */
+/* PoP: delegate_is_mcp_toolset_name @ tools/delegate_tool_toolsets.py:_is_mcp_toolset_name */
 static bool delegate_is_mcp_toolset_name(const char *name)
 {
     if (!name || !name[0]) return false;
@@ -778,7 +778,7 @@ static bool delegate_is_mcp_toolset_name(const char *name)
     return false;
 }
 
-/* PoP: delegate_expand_parent_toolsets @ tools/delegate_tool.py:_expand_parent_toolsets */
+/* PoP: delegate_expand_parent_toolsets @ tools/delegate_tool_toolsets.py:_expand_parent_toolsets */
 /* Expand composite toolsets so individual toolset names are recognized. */
 static void delegate_expand_parent_toolsets(const char **parent_toolsets, int parent_n,
                                             char out[256][64], int *out_n)
@@ -861,7 +861,7 @@ static void delegate_preserve_parent_mcp_toolsets(const char **child_toolsets, i
     *out_n = n;
 }
 
-/* PoP: delegate_strip_blocked_tools @ tools/delegate_tool.py:_strip_blocked_tools */
+/* PoP: delegate_strip_blocked_tools @ tools/delegate_tool_toolsets.py:_strip_blocked_tools */
 /* Remove toolsets that contain only blocked tools + composite blocked toolsets. */
 static void delegate_strip_blocked_tools(const char **toolsets, int n,
                                          char out[256][64], int *out_n)
@@ -921,7 +921,7 @@ void delegate_normalize_role(const char *r, char *out, size_t out_sz)
     }
 }
 
-/* PoP: delegate_build_child_system_prompt @ tools/delegate_tool.py:_build_child_system_prompt */
+/* PoP: delegate_build_child_system_prompt @ tools/delegate_tool_progress.py:_build_child_system_prompt */
 static char *delegate_build_child_system_prompt(const char *goal, const char *context,
                                                 const char *workspace_path, const char *role,
                                                 int max_spawn_depth, int child_depth)
@@ -983,7 +983,7 @@ static char *delegate_build_child_system_prompt(const char *goal, const char *co
     return buf;
 }
 
-/* PoP: delegate_resolve_workspace_hint @ tools/delegate_tool.py:_resolve_workspace_hint */
+/* PoP: delegate_resolve_workspace_hint @ tools/delegate_tool_progress.py:_resolve_workspace_hint */
 static char *delegate_resolve_workspace_hint(const char *terminal_cwd, const char *cwd)
 {
     const char *candidates[4];

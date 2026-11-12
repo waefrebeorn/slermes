@@ -27,7 +27,7 @@ static bool sys_platform_is_linux(void) {
 
 /* ── hermes_state.py: SQLite file identity + generation + heartbeats ── */
 
-/* PoP: _pread_db_header @ hermes_state.py:_pread_db_header */
+/* PoP: _pread_db_header @ hermes_state_dbfile.py:_pread_db_header */
 /* Returns malloc'd buffer (caller frees) or NULL. */
 char *_pread_db_header(const char *db_path, int length) {
     static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
@@ -84,7 +84,7 @@ char *_pread_db_header(const char *db_path, int length) {
     return buf;
 }
 
-/* PoP: _read_sqlite_application_id @ hermes_state.py:_read_sqlite_application_id */
+/* PoP: _read_sqlite_application_id @ hermes_state_dbfile.py:_read_sqlite_application_id */
 int _read_sqlite_application_id(const char *db_path) {
     if (!db_path) return -1;
     char *hdr = _pread_db_header(db_path, 68);
@@ -107,7 +107,7 @@ char *_stat_db_file_identity(const char *path) {
     return strdup(buf);
 }
 
-/* PoP: _stat_sqlite_sidecar_identity @ hermes_state.py:_stat_sqlite_sidecar_identity */
+/* PoP: _stat_sqlite_sidecar_identity @ hermes_state_dbfile.py:_stat_sqlite_sidecar_identity */
 /* Returns malloc'd JSON string {"-wal":"dev,ino","-shm":"dev,ino"} or NULL */
 char *_stat_sqlite_sidecar_identity(const char *db_path) {
     if (!db_path) return NULL;
@@ -125,7 +125,7 @@ char *_stat_sqlite_sidecar_identity(const char *db_path) {
     return result;
 }
 
-/* PoP: _watched_sqlite_sidecar_paths @ hermes_state.py:_watched_sqlite_sidecar_paths */
+/* PoP: _watched_sqlite_sidecar_paths @ hermes_state_dbfile.py:_watched_sqlite_sidecar_paths */
 /* Returns malloc'd comma-separated path list or NULL */
 char *_watched_sqlite_sidecar_paths(const char *db_path) {
     if (!db_path) return NULL;
@@ -143,7 +143,7 @@ char *_watched_sqlite_sidecar_paths(const char *db_path) {
     return result;
 }
 
-/* PoP: iter_deleted_sqlite_sidecar_holders @ hermes_state.py:iter_deleted_sqlite_sidecar_holders */
+/* PoP: iter_deleted_sqlite_sidecar_holders @ hermes_state_dbfile.py:iter_deleted_sqlite_sidecar_holders */
 /* Returns malloc'd JSON array of [pid, target] pairs or empty array */
 char *iter_deleted_sqlite_sidecar_holders(const char *db_path) {
     if (!db_path || !sys_platform_is_linux()) return strdup("[]");
@@ -192,7 +192,7 @@ char *iter_deleted_sqlite_sidecar_holders(const char *db_path) {
     return result;
 }
 
-/* PoP: refuse_deleted_wal_generation @ hermes_state.py:refuse_deleted_wal_generation */
+/* PoP: refuse_deleted_wal_generation @ hermes_state_dbfile.py:refuse_deleted_wal_generation */
 /* Returns true if a holder was found (caller raises) */
 bool refuse_deleted_wal_generation(const char *db_path) {
     char *holders = iter_deleted_sqlite_sidecar_holders(db_path);
@@ -206,7 +206,7 @@ bool refuse_deleted_wal_generation(const char *db_path) {
     return found;
 }
 
-/* PoP: _own_profile_name @ hermes_state.py:_own_profile_name */
+/* PoP: _own_profile_name @ hermes_state_sessions.py:_own_profile_name */
 const char *_own_profile_name(const char *db_path) {
     static char result[256];
     if (!db_path) return NULL;
@@ -288,7 +288,7 @@ int latest_conversation_boundary(const char *session_key, const char *source, sq
     return gen;
 }
 
-/* PoP: _dedupe_display_generations @ hermes_state.py:_dedupe_display_generations */
+/* PoP: _dedupe_display_generations @ hermes_state_messages.py:_dedupe_display_generations */
 /* Simplified: returns the input JSON (full implementation needs message row dedup) */
 char *_dedupe_display_generations(const char *rows_json) {
     if (!rows_json) return strdup("[]");
@@ -297,7 +297,7 @@ char *_dedupe_display_generations(const char *rows_json) {
     return strdup(rows_json);
 }
 
-/* PoP: _resume_lineage_ids @ hermes_state.py:_resume_lineage_ids */
+/* PoP: _resume_lineage_ids @ hermes_state_messages.py:_resume_lineage_ids */
 /* Returns JSON array of session ids from root to tip */
 char *_resume_lineage_ids(const char *session_id, sqlite3 *conn) {
     if (!session_id || !conn) return strdup("[]");
@@ -333,7 +333,7 @@ char *_resume_lineage_ids(const char *session_id, sqlite3 *conn) {
     return result;
 }
 
-/* PoP: backfill_null_session_profiles @ hermes_state.py:backfill_null_session_profiles */
+/* PoP: backfill_null_session_profiles @ hermes_state_sessions.py:backfill_null_session_profiles */
 int backfill_null_session_profiles(const char *profile_name, sqlite3 *conn) {
     if (!profile_name || !conn) return 0;
     sqlite3_stmt *st = NULL;
@@ -346,7 +346,7 @@ int backfill_null_session_profiles(const char *profile_name, sqlite3 *conn) {
     return changes;
 }
 
-/* PoP: get_compression_chain @ hermes_state.py:get_compression_chain */
+/* PoP: get_compression_chain @ hermes_state_compression.py:get_compression_chain */
 /* Returns JSON array of session ids from root to tip */
 char *get_compression_chain(const char *session_id, sqlite3 *conn) {
     return _resume_lineage_ids(session_id, conn);
@@ -372,7 +372,7 @@ char *get_compression_tip(const char *session_id, sqlite3 *conn) {
     return strdup("");
 }
 
-/* PoP: register_backend_heartbeat @ hermes_state.py:register_backend_heartbeat */
+/* PoP: register_backend_heartbeat @ hermes_state_gateway.py:register_backend_heartbeat */
 void register_backend_heartbeat(const char *backend_id, int pid, float started_at, float last_heartbeat, const char *profile, const char *host, sqlite3 *conn) {
     if (!backend_id || !conn) return;
     sqlite3_stmt *st = NULL;
@@ -388,7 +388,7 @@ void register_backend_heartbeat(const char *backend_id, int pid, float started_a
     sqlite3_finalize(st);
 }
 
-/* PoP: clear_backend_heartbeat @ hermes_state.py:clear_backend_heartbeat */
+/* PoP: clear_backend_heartbeat @ hermes_state_gateway.py:clear_backend_heartbeat */
 bool clear_backend_heartbeat(const char *backend_id, sqlite3 *conn) {
     if (!backend_id || !conn) return false;
     sqlite3_stmt *st = NULL;
@@ -401,7 +401,7 @@ bool clear_backend_heartbeat(const char *backend_id, sqlite3 *conn) {
     return changed;
 }
 
-/* PoP: prune_stale_heartbeats @ hermes_state.py:prune_stale_heartbeats */
+/* PoP: prune_stale_heartbeats @ hermes_state_gateway.py:prune_stale_heartbeats */
 int prune_stale_heartbeats(float max_age_seconds, sqlite3 *conn) {
     if (max_age_seconds <= 0 || !conn) return 0;
     time_t cutoff = time(NULL) - (time_t)max_age_seconds;
@@ -415,7 +415,7 @@ int prune_stale_heartbeats(float max_age_seconds, sqlite3 *conn) {
     return changes;
 }
 
-/* PoP: list_backend_heartbeats @ hermes_state.py:list_backend_heartbeats */
+/* PoP: list_backend_heartbeats @ hermes_state_gateway.py:list_backend_heartbeats */
 char *list_backend_heartbeats(sqlite3 *conn) {
     if (!conn) return strdup("[]");
     sqlite3_stmt *st = NULL;

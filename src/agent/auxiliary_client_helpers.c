@@ -134,7 +134,7 @@ int aux__is_model_incompatible_error(const char *error_msg, int status_code) {
     return 0;
 }
 
-/* PoP: aux__is_invalid_aux_response_error @ agent/auxiliary_client.py:_is_invalid_aux_response_error */
+/* PoP: aux__is_invalid_aux_response_error @ agent/auxiliary_error_shapes.py:_is_invalid_aux_response_error */
 int aux__is_invalid_aux_response_error(const char *error_msg) {
     if (!error_msg) return 0;
     char buf[2048]; strncpy(buf, error_msg, sizeof(buf)-1); buf[sizeof(buf)-1]='\0';
@@ -416,7 +416,7 @@ char *aux__pool_cache_hint(const char *provider, const char *model) {
     char buf[256]; snprintf(buf, sizeof(buf), "%s|%s", provider?provider:"", model?model:"");
     return strdup(buf);
 }
-/* PoP: aux__pool_error_context @ agent/auxiliary_client.py:_pool_error_context */
+/* PoP: aux__pool_error_context @ agent/turn_recovery.py:_pool_error_context */
 /* Build a malloc'd error context string for logging. */
 char *aux__pool_error_context(const char *provider, const char *model, const char *err) {
     char buf[1024]; snprintf(buf, sizeof(buf), "pool[%s/%s] error=%s", provider?provider:"", model?model:"", err?err:"");

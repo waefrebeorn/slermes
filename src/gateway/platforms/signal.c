@@ -580,8 +580,8 @@ static const char *_sig_ext_to_mime(const char *ext) {
     return "application/octet-stream";
 }
 
-/* PoP: sig_ext_to_mime @ gateway/platforms/signal.py:_ext_to_mime */
-/* PoP: sig_ext_to_mime @ gateway/platforms/signal.py:_ext_to_mime */
+/* PoP: sig_ext_to_mime @ plugins/platforms/signal/adapter.py:_ext_to_mime */
+/* PoP: sig_ext_to_mime @ plugins/platforms/signal/adapter.py:_ext_to_mime */
 /* _ext_to_mime(ext) — Python: _EXT_TO_MIME.get(ext.lower(), default). */
 static const char *sig_ext_to_mime(const char *ext) {
     if (!ext) return "application/octet-stream";
@@ -616,7 +616,7 @@ static bool sig_is_image_ext(const char *ext) {
            strcmp(buf, ".webp") == 0;
 }
 
-/* PoP: sig_looks_like_e164 @ gateway/platforms/signal.py:_looks_like_e164_number */
+/* PoP: sig_looks_like_e164 @ plugins/platforms/signal/adapter.py:_looks_like_e164_number */
 /* _looks_like_e164_number(value) — starts with '+', rest digits, len 7..15. */
 static bool sig_looks_like_e164(const char *value) {
     if (!value || value[0] != '+') return false;
@@ -651,7 +651,7 @@ static bool sig_is_uuid(const char *v) {
     return gi == 5 && !need_dash;
 }
 
-/* PoP: sig_is_signal_service_id @ gateway/platforms/signal.py:_is_signal_service_id */
+/* PoP: sig_is_signal_service_id @ plugins/platforms/signal/adapter.py:_is_signal_service_id */
 /* _is_signal_service_id(value) — PNI:/u:/valid UUID. */
 static bool sig_is_signal_service_id(const char *value) {
     if (!value || !value[0]) return false;
@@ -718,7 +718,7 @@ static const char *sig_guess_extension(const unsigned char *data, size_t n) {
     return "";
 }
 
-/* PoP: sig_check_requirements @ gateway/platforms/signal.py:check_signal_requirements */
+/* PoP: sig_check_requirements @ plugins/platforms/signal/adapter.py:check_signal_requirements */
 /* check_signal_requirements() — Signal URL + account env present. */
 static bool sig_check_requirements(void) {
     return getenv("SIGNAL_HTTP_URL") != NULL && getenv("SIGNAL_ACCOUNT") != NULL;
@@ -757,7 +757,7 @@ static char *sig_markdown_to_signal(const char *text) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: gateway_platforms_signal_u_render_mentions @ gateway/platforms/signal.py:_render_mentions */
+/* PoP: gateway_platforms_signal_u_render_mentions @ plugins/platforms/signal/adapter.py:_render_mentions */
 int gateway_platforms_signal_u_render_mentions(const char *arg) {
     /* Python: replace U+FFFC with @id. Arg = "text\tmentions\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -768,7 +768,7 @@ int gateway_platforms_signal_u_render_mentions(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
+/* PoP: gateway_platforms_signal_validate_signal_config @ plugins/platforms/signal/adapter.py:validate_signal_config */
 int gateway_platforms_signal_validate_signal_config(const char *arg) {
     /* Python: http_url AND account present. Arg = "http_url\taccount". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -779,7 +779,7 @@ int gateway_platforms_signal_validate_signal_config(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_sse_listener @ gateway/platforms/signal.py:_sse_listener */
+/* PoP: gateway_platforms_signal_u_sse_listener @ plugins/platforms/signal/adapter.py:_sse_listener */
 int gateway_platforms_signal_u_sse_listener(const char *arg) {
     /* Python: SSE retry loop. Arg =
      * "state\tresult". */
@@ -804,7 +804,7 @@ int gateway_platforms_signal_u_health_monitor(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
+/* PoP: gateway_platforms_signal_u_force_reconnect @ plugins/platforms/signal/adapter.py:_force_reconnect */
 int gateway_platforms_signal_u_force_reconnect(const char *arg) {
     /* Python: SSE close. Arg =
      * "closed\tstate\tresult". */
@@ -819,7 +819,7 @@ int gateway_platforms_signal_u_force_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
+/* PoP: gateway_platforms_signal_u_handle_envelope @ plugins/platforms/signal/adapter.py:_handle_envelope */
 int gateway_platforms_signal_u_handle_envelope(const char *arg) {
     /* Python: syncMessage filter. Arg =
      * "handled\tstate\tresult". */
@@ -834,7 +834,7 @@ int gateway_platforms_signal_u_handle_envelope(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
+/* PoP: gateway_platforms_signal_u_remember_recipient_identifiers @ plugins/platforms/signal/adapter.py:_remember_recipient_identifiers */
 int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
     /* Python: cache number<->uuid when uuid is a valid Signal service id.
      * Arg = "number\tuuid". */
@@ -846,7 +846,7 @@ int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
+/* PoP: gateway_platforms_signal_u_extract_contact_uuid @ plugins/platforms/signal/adapter.py:_extract_contact_uuid */
 int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
     /* Python: number match gate. Arg =
      * "found\tstate\tresult". */
@@ -861,7 +861,7 @@ int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
+/* PoP: gateway_platforms_signal_u_resolve_recipient @ plugins/platforms/signal/adapter.py:_resolve_recipient */
 int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
     /* Python: uuid by number. Arg =
      * "resolved\tstate\tresult". */
@@ -874,7 +874,7 @@ int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
+/* PoP: gateway_platforms_signal_u_fetch_attachment @ plugins/platforms/signal/adapter.py:_fetch_attachment */
 int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
     /* Python: getAttachment RPC. Arg =
      * "path\tstate\tresult". */
@@ -908,7 +908,7 @@ int gateway_platforms_signal_u_rpc(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
+/* PoP: gateway_platforms_signal_u_track_sent_timestamp @ plugins/platforms/signal/adapter.py:_track_sent_timestamp */
 int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
     /* Python: echo-back filter record. Arg =
      * "has_ts\tstate\tresult". */
@@ -922,7 +922,7 @@ int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
+/* PoP: gateway_platforms_signal_u_notify_batch_pacing @ plugins/platforms/signal/adapter.py:_notify_batch_pacing */
 int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
     /* Python: pacing notice. Arg =
      * "batch\tstate\tresult". */
@@ -935,7 +935,7 @@ int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
+/* PoP: gateway_platforms_signal_u_stop_typing_indicator @ plugins/platforms/signal/adapter.py:_stop_typing_indicator */
 int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
     /* Python: cancel + RPC stop. Arg =
      * "stopped\tstate\tresult". */
@@ -965,7 +965,7 @@ int gateway_platforms_signal_remove_reaction(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
+/* PoP: gateway_platforms_signal_u_extract_reaction_target @ plugins/platforms/signal/adapter.py:_extract_reaction_target */
 int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
     /* Python: (sender, timestamp_ms) from raw envelope or None. Arg = raw
      * JSON. */

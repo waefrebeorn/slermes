@@ -16,7 +16,7 @@
 #include <string.h>
 #include <string.h>
 
-/* PoP: worktree_cmd_repo_root @hermes_cli/worktree_cmd.py:_repo_root */
+/* PoP: worktree_cmd_repo_root @tui_gateway/host_supervisor.py:_repo_root */
 static char *worktree_cmd_repo_root(void) { return wgc_git_repo_root(); }
 
 /* PoP: _fmt_size @hermes_cli/worktree_cmd.py:_fmt_size */

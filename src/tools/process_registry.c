@@ -1640,7 +1640,7 @@ void format_uptime_short(int seconds, char *buf, size_t buf_len) {
     }
 }
 
-/* PoP: _format_age @ tools/process_registry.py:_format_age */
+/* PoP: _format_age @ tools/process_registry_notifications.py:_format_age */
 void _format_age(double seconds, char *buf, size_t buf_len) {
     if (!isfinite(seconds) || seconds < 0) { snprintf(buf, buf_len, "?"); return; }
     int s = (int)seconds;
@@ -1651,7 +1651,7 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
-/* PoP: _format_async_delegation @ tools/process_registry.py:_format_async_delegation */
+/* PoP: _format_async_delegation @ tools/process_registry_notifications.py:_format_async_delegation */
 char* _format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1706,7 +1706,7 @@ char* _format_async_delegation(const char *json_evt) {
     return out;
 }
 
-/* PoP: format_process_notification @ tools/process_registry.py:format_process_notification */
+/* PoP: format_process_notification @ tools/process_registry_notifications.py:format_process_notification */
 char* format_process_notification(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -2349,7 +2349,7 @@ ProcessSession *process_registry_resolve_prefix(const char *session_id) {
     return matches == 1 ? match : NULL;
 }
 
-/* PoP: process_registry_delegation_attribution_line @ tools/process_registry.py:_delegation_attribution_line */
+/* PoP: process_registry_delegation_attribution_line @ tools/process_registry_notifications.py:_delegation_attribution_line */
 char *process_registry_delegation_attribution_line(const char *evt_json) {
     if (!evt_json) return NULL;
     char *err = NULL;

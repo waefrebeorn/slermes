@@ -212,7 +212,7 @@ static char *hs_canonical_path(const char *p) {
     return copy;
 }
 
-/* PoP: _apply_wal_size_limit @ hermes_state.py:_apply_wal_size_limit */
+/* PoP: _apply_wal_size_limit @ hermes_state_wal.py:_apply_wal_size_limit */
 void _apply_wal_size_limit(sqlite3 *conn) {
     /* Bound the WAL so checkpoints truncate it back to 64 MiB instead of
      * retaining the high-water mark forever. Best-effort: never raises. */
@@ -229,14 +229,14 @@ void _apply_wal_size_limit(sqlite3 *conn) {
     free(sql);
 }
 
-/* PoP: is_malformed_schema_error @ hermes_state.py:is_malformed_schema_error */
+/* PoP: is_malformed_schema_error @ hermes_state_errors.py:is_malformed_schema_error */
 bool is_malformed_schema_error(const char *exc_message) {
     /* True only when SQLite explicitly reports malformed SCHEMA text; a
      * generic "database disk image is malformed" does not qualify. */
     return hs_contains_any_lower(exc_message, HS_MALFORMED_SCHEMA_MARKERS);
 }
 
-/* ── PoP: _cross_process_repair_lock @ hermes_state.py:_cross_process_repair_lock ──
+/* ── PoP: _cross_process_repair_lock @ hermes_state_repair.py:_cross_process_repair_lock ──
  * Generator → acquire/release pair. _cross_process_repair_lock returns true
  * when the caller holds the repair lock for db_path (false when the bounded
  * acquire timed out). On lock-file open failure it degrades to in-process
@@ -288,7 +288,7 @@ void _cross_process_repair_lock_release(void *handle) {
     close(fd);
 }
 
-/* PoP: _bump_schema_cookie @ hermes_state.py:_bump_schema_cookie */
+/* PoP: _bump_schema_cookie @ hermes_state_repair.py:_bump_schema_cookie */
 void _bump_schema_cookie(sqlite3 *conn) {
     /* Increment PRAGMA schema_version after direct sqlite_master surgery so
      * other connections discard their cached schema. Wraps at 32-bit signed
@@ -310,7 +310,7 @@ void _bump_schema_cookie(sqlite3 *conn) {
     free(sql);
 }
 
-/* PoP: _mask_volatile_header @ hermes_state.py:_mask_volatile_header */
+/* PoP: _mask_volatile_header @ hermes_state_repair.py:_mask_volatile_header */
 void _mask_volatile_header(unsigned char *head, size_t len) {
     /* Zero the commit-counter fields (bytes 24..28 and 92..96 of the SQLite
      * header) so ordinary writes don't re-key the ledger. In-place; no-op
@@ -322,7 +322,7 @@ void _mask_volatile_header(unsigned char *head, size_t len) {
     }
 }
 
-/* PoP: _db_fingerprint @ hermes_state.py:_db_fingerprint */
+/* PoP: _db_fingerprint @ hermes_state_repair.py:_db_fingerprint */
 char *_db_fingerprint(const char *db_path) {
     /* Cheap identity: size + sha256(masked 64KiB head + up-to-64KiB tail),
      * first 32 hex chars. Deliberately EXCLUDES mtime. Returns NULL on any
@@ -359,7 +359,7 @@ char *_db_fingerprint(const char *db_path) {
     return out;
 }
 
-/* PoP: _backup_content_identity @ hermes_state.py:_backup_content_identity */
+/* PoP: _backup_content_identity @ hermes_state_repair.py:_backup_content_identity */
 char *_backup_content_identity(const char *db_path) {
     /* Recovery-image identity for forensic-backup dedupe: length-delimited
      * digest of the ENTIRE main file plus every present sidecar. Different
@@ -403,7 +403,7 @@ char *_backup_content_identity(const char *db_path) {
     return strdup(hex);
 }
 
-/* PoP: _record_repair_outcome @ hermes_state.py:_record_repair_outcome */
+/* PoP: _record_repair_outcome @ hermes_state_repair.py:_record_repair_outcome */
 void _record_repair_outcome(const char *db_path, bool repaired,
                             const char *fingerprint) {
     /* Update the persistent attempt ledger after a repair pass. Never raises.
@@ -447,7 +447,7 @@ void _record_repair_outcome(const char *db_path, bool repaired,
     free(ledger_path);
 }
 
-/* PoP: _reapply_durability_barriers @ hermes_state.py:_reapply_durability_barriers */
+/* PoP: _reapply_durability_barriers @ hermes_state_repair.py:_reapply_durability_barriers */
 bool _reapply_durability_barriers(sqlite3 *conn) {
     /* Best-effort (re)application of the macOS write barriers
      * (_apply_macos_checkpoint_barrier + _enforce_macos_synchronous_full).
@@ -460,7 +460,7 @@ bool _reapply_durability_barriers(sqlite3 *conn) {
     return rc1 == SQLITE_OK && rc2 == SQLITE_OK;
 }
 
-/* PoP: _connect_repair_durable @ hermes_state.py:_connect_repair_durable */
+/* PoP: _connect_repair_durable @ hermes_state_repair.py:_connect_repair_durable */
 sqlite3 *_connect_repair_durable(const char *db_path, double timeout) {
     /* sqlite3.connect for the repair/probe paths with durability barriers.
      * Autocommit preserved (no implicit BEGIN). Barrier application is
@@ -482,7 +482,7 @@ sqlite3 *_connect_repair_durable(const char *db_path, double timeout) {
     return conn;
 }
 
-/* ── PoP: _exclusive_repair_db_guard @ hermes_state.py:_exclusive_repair_db_guard ──
+/* ── PoP: _exclusive_repair_db_guard @ hermes_state_repair.py:_exclusive_repair_db_guard ──
  * Generator → acquire/release. On failure returns false and sets *err_out
  * (malloc'd, caller frees) to the exception text, mirroring `yield None, exc`. */
 bool _exclusive_repair_db_guard(const char *db_path, sqlite3 **guard_out,
@@ -520,7 +520,7 @@ void _exclusive_repair_db_guard_release(sqlite3 *guard) {
     sqlite3_close(guard);
 }
 
-/* ── PoP: _copy_database_snapshot @ hermes_state.py:_copy_database_snapshot ──
+/* ── PoP: _copy_database_snapshot @ hermes_state_repair.py:_copy_database_snapshot ──
  * Returns 0 on success; on failure returns -1 and sets *err_out (malloc'd).
  * Uses the online backup API in 256-page steps under a deadline so neither
  * file's inode is replaced. */
@@ -598,7 +598,7 @@ int _copy_database_snapshot(const char *source_path, const char *destination_pat
     return failed ? -1 : 0;
 }
 
-/* PoP: _live_writer_holds_db @ hermes_state.py:_live_writer_holds_db */
+/* PoP: _live_writer_holds_db @ hermes_state_repair.py:_live_writer_holds_db */
 bool _live_writer_holds_db(const char *db_path) {
     /* True when another connection holds db_path open: probe via
      * locking_mode=EXCLUSIVE + BEGIN IMMEDIATE (fails SQLITE_BUSY against
@@ -654,7 +654,7 @@ static char *gaps_db_opens_cleanly(const char *db_path) {
     return reason;
 }
 
-/* PoP: _unlink_db_triple @ hermes_state.py:_unlink_db_triple */
+/* PoP: _unlink_db_triple @ hermes_state_repair.py:_unlink_db_triple */
 char *_unlink_db_triple(const char *path) {
     /* Remove path and every SQLite sidecar; return any cleanup failure as a
      * malloc'd "; "-joined string, or NULL. POSIX unlink has no Windows
@@ -686,7 +686,7 @@ char *_unlink_db_triple(const char *path) {
     return failures;
 }
 
-/* PoP: _run_repair_strategies @ hermes_state.py:_run_repair_strategies */
+/* PoP: _run_repair_strategies @ hermes_state_repair.py:_run_repair_strategies */
 json_t *_run_repair_strategies(const char *db_path, json_t *report) {
     /* Escalating repair attempts applied IN PLACE to db_path (the caller runs
      * them on a scratch copy). Strategy 0: FTS 'rebuild'. 0.5: REINDEX.
@@ -827,7 +827,7 @@ json_t *_run_repair_strategies(const char *db_path, json_t *report) {
     return report;
 }
 
-/* PoP: _repair_state_db_schema_locked @ hermes_state.py:_repair_state_db_schema_locked */
+/* PoP: _repair_state_db_schema_locked @ hermes_state_repair.py:_repair_state_db_schema_locked */
 json_t *_repair_state_db_schema_locked(const char *db_path, bool backup,
                                        json_t *report) {
     /* Repair strategies for repair_state_db_schema. Caller must hold the
@@ -974,7 +974,7 @@ json_t *_repair_state_db_schema_locked(const char *db_path, bool backup,
 /* holder tuple: (pid, path) — mirrors List[Tuple[int, str]] */
 typedef struct { long pid; char *path; } hs_holder_t;
 
-/* PoP: _is_inactive_orphan_desktop_holder @ hermes_state.py:_is_inactive_orphan_desktop_holder */
+/* PoP: _is_inactive_orphan_desktop_holder @ hermes_state_dbfile.py:_is_inactive_orphan_desktop_holder */
 bool _is_inactive_orphan_desktop_holder(long ppid, double age_seconds,
                                         double min_age_seconds,
                                         bool ephemeral_backend,
@@ -991,7 +991,7 @@ bool _is_inactive_orphan_desktop_holder(long ppid, double age_seconds,
     return true;
 }
 
-/* PoP: _concrete_state_db_holder_pids @ hermes_state.py:_concrete_state_db_holder_pids */
+/* PoP: _concrete_state_db_holder_pids @ hermes_state_dbfile.py:_concrete_state_db_holder_pids */
 long *_concrete_state_db_holder_pids(const char *db_path, hs_holder_t *holders,
                                      int n_holders, int *out_n) {
     /* Unique PIDs proven to hold this DB or one of its sidecars. Caller
@@ -1141,7 +1141,7 @@ hs_holder_t *_foreign_state_db_holders(const char *db_path, int *out_n) {
     return holders;
 }
 
-/* PoP: _reap_inactive_orphan_desktop_holders @ hermes_state.py:_reap_inactive_orphan_desktop_holders */
+/* PoP: _reap_inactive_orphan_desktop_holders @ hermes_state_gateway.py:_reap_inactive_orphan_desktop_holders */
 long *_reap_inactive_orphan_desktop_holders(const char *db_path,
                                             hs_holder_t *holders, int n_holders,
                                             double min_age_seconds,
@@ -1270,7 +1270,7 @@ void __del__(hermes_state_db_t *self) {
     hermes_state_close(self);
 }
 
-/* PoP: list_never_active_keyed_sessions @ hermes_state.py:list_never_active_keyed_sessions */
+/* PoP: list_never_active_keyed_sessions @ hermes_state_gateway.py:list_never_active_keyed_sessions */
 json_t *list_never_active_keyed_sessions(hermes_state_db_t *self,
                                          double older_than_days) {
     /* Keyed gateway rows opened and then never used at all: session_key set,
@@ -1324,7 +1324,7 @@ json_t *list_never_active_keyed_sessions(hermes_state_db_t *self,
     return rows;
 }
 
-/* PoP: _delete_routing_entries_for_sessions @ hermes_state.py:_delete_routing_entries_for_sessions */
+/* PoP: _delete_routing_entries_for_sessions @ hermes_state_gateway.py:_delete_routing_entries_for_sessions */
 int _delete_routing_entries_for_sessions(hermes_state_db_t *self,
                                          char **session_ids, int n_ids) {
     /* Drop gateway_routing rows whose entry_json names any of *session_ids*.
@@ -1385,7 +1385,7 @@ int _delete_routing_entries_for_sessions(hermes_state_db_t *self,
     return deleted;
 }
 
-/* PoP: prune_never_active_keyed_sessions @ hermes_state.py:prune_never_active_keyed_sessions */
+/* PoP: prune_never_active_keyed_sessions @ hermes_state_gateway.py:prune_never_active_keyed_sessions */
 void prune_never_active_keyed_sessions(hermes_state_db_t *self,
                                        double older_than_days,
                                        const char *sessions_dir,
@@ -1420,7 +1420,7 @@ void prune_never_active_keyed_sessions(hermes_state_db_t *self,
     free(ids);
 }
 
-/* PoP: publish_session_git_metadata @ hermes_state.py:publish_session_git_metadata */
+/* PoP: publish_session_git_metadata @ hermes_state_sessions.py:publish_session_git_metadata */
 bool publish_session_git_metadata(hermes_state_db_t *self,
                                   const char *session_id, const char *cwd,
                                   long generation, const char *git_branch,
@@ -1463,7 +1463,7 @@ bool publish_session_git_metadata(hermes_state_db_t *self,
     return updated;
 }
 
-/* PoP: increment_hygiene_failure_streak @ hermes_state.py:increment_hygiene_failure_streak */
+/* PoP: increment_hygiene_failure_streak @ hermes_state_gateway.py:increment_hygiene_failure_streak */
 int increment_hygiene_failure_streak(hermes_state_db_t *self,
                                      const char *session_key) {
     /* Atomically increment the session-hygiene failure streak for one chat. */
@@ -1495,7 +1495,7 @@ int increment_hygiene_failure_streak(hermes_state_db_t *self,
     return streak;
 }
 
-/* PoP: reset_hygiene_failure_streak @ hermes_state.py:reset_hygiene_failure_streak */
+/* PoP: reset_hygiene_failure_streak @ hermes_state_gateway.py:reset_hygiene_failure_streak */
 void reset_hygiene_failure_streak(hermes_state_db_t *self,
                                   const char *session_key) {
     /* Clear the persisted session-hygiene failure streak for one chat. */
@@ -1510,7 +1510,7 @@ void reset_hygiene_failure_streak(hermes_state_db_t *self,
     sqlite3_finalize(st);
 }
 
-/* PoP: _session_turn_lease_key_on_conn @ hermes_state.py:_session_turn_lease_key_on_conn */
+/* PoP: _session_turn_lease_key_on_conn @ hermes_state_compression.py:_session_turn_lease_key_on_conn */
 char *_session_turn_lease_key_on_conn(hermes_state_db_t *self,
                                       sqlite3 *conn, const char *session_id) {
     /* Walk compression parents on conn to the conversation lease key. Must
@@ -1585,7 +1585,7 @@ char *_session_turn_lease_key_on_conn(hermes_state_db_t *self,
     return strdup(result);
 }
 
-/* PoP: _session_turn_lease_key @ hermes_state.py:_session_turn_lease_key */
+/* PoP: _session_turn_lease_key @ hermes_state_compression.py:_session_turn_lease_key */
 char *_session_turn_lease_key(hermes_state_db_t *self, const char *session_id) {
     /* Stable serialization key for every compression segment (tests +
      * diagnostics). Does not swallow lock errors — the caller sees the raw
@@ -1773,7 +1773,7 @@ void release_session_turn_lease(hermes_state_db_t *self,
     free(conversation_id);
 }
 
-/* PoP: session_gateway_runtime @ hermes_state.py:session_gateway_runtime */
+/* PoP: session_gateway_runtime @ hermes_state_gateway.py:session_gateway_runtime */
 json_t *session_gateway_runtime(const json_t *session_meta) {
     /* Read the persisted runtime route off a session row dict. Prefers the
      * nested gateway_runtime key, falls back to top-level provider/base_url/
@@ -1838,7 +1838,7 @@ json_t *session_gateway_runtime(const json_t *session_meta) {
     return out;
 }
 
-/* PoP: sweep_orphaned_sessions @ hermes_state.py:sweep_orphaned_sessions */
+/* PoP: sweep_orphaned_sessions @ hermes_state_maintenance.py:sweep_orphaned_sessions */
 json_t *sweep_orphaned_sessions(hermes_state_db_t *self,
                                 double max_idle_seconds,
                                 const char *const *sources, int n_sources,
@@ -1981,7 +1981,7 @@ json_t *get_dominant_session_model_route(hermes_state_db_t *self,
     return row;
 }
 
-/* PoP: unarchive_recoverable_session @ hermes_state.py:unarchive_recoverable_session */
+/* PoP: unarchive_recoverable_session @ hermes_state_sessions.py:unarchive_recoverable_session */
 bool unarchive_recoverable_session(hermes_state_db_t *self,
                                    const char *session_id) {
     /* Un-archive a session archived by a recoverable accident (ws_orphan_reap,
@@ -2044,7 +2044,7 @@ bool unarchive_recoverable_session(hermes_state_db_t *self,
     return true;
 }
 
-/* PoP: set_session_hidden @ hermes_state.py:set_session_hidden */
+/* PoP: set_session_hidden @ hermes_state_sessions.py:set_session_hidden */
 bool set_session_hidden(hermes_state_db_t *self, const char *session_id,
                         bool hidden) {
     /* Hide/unhide a session and its whole compression lineage via the
@@ -2161,7 +2161,7 @@ long long get_active_message_watermark(hermes_state_db_t *self,
     return wm;
 }
 
-/* PoP: _message_column_names @ hermes_state.py:_message_column_names */
+/* PoP: _message_column_names @ hermes_state_messages.py:_message_column_names */
 char **_message_column_names(hermes_state_db_t *self, sqlite3 *conn,
                              int *out_n) {
     /* Column names of the messages table, cached per connection era. The C
@@ -2187,7 +2187,7 @@ char **_message_column_names(hermes_state_db_t *self, sqlite3 *conn,
     return cols;
 }
 
-/* PoP: _is_explicit_branch_session @ hermes_state.py:_is_explicit_branch_session */
+/* PoP: _is_explicit_branch_session @ hermes_state_sessions.py:_is_explicit_branch_session */
 bool _is_explicit_branch_session(hermes_state_db_t *self,
                                  const char *session_id) {
     /* True when session_id is a copied user-facing branch: the durable
@@ -2218,7 +2218,7 @@ bool _is_explicit_branch_session(hermes_state_db_t *self,
     return is_branch;
 }
 
-/* PoP: _canonical_replayed_user_content @ hermes_state.py:_canonical_replayed_user_content */
+/* PoP: _canonical_replayed_user_content @ hermes_state_messages.py:_canonical_replayed_user_content */
 void _canonical_replayed_user_content(const json_t *msg,
                                       json_t **out_content, bool *is_composite) {
     /* Canonical live content + whether msg is composite: split the user turn
@@ -2243,7 +2243,7 @@ void _canonical_replayed_user_content(const json_t *msg,
     if (live) json_free(live);
 }
 
-/* PoP: _exact_replayed_user_clone_key @ hermes_state.py:_exact_replayed_user_clone_key */
+/* PoP: _exact_replayed_user_clone_key @ hermes_state_messages.py:_exact_replayed_user_clone_key */
 bool _exact_replayed_user_clone_key(const json_t *timestamp,
                                     const json_t *content,
                                     char **out_encoded) {
@@ -2265,7 +2265,7 @@ bool _exact_replayed_user_clone_key(const json_t *timestamp,
     return true;
 }
 
-/* PoP: _find_duplicate_replayed_user_message @ hermes_state.py:_find_duplicate_replayed_user_message */
+/* PoP: _find_duplicate_replayed_user_message @ hermes_state_messages.py:_find_duplicate_replayed_user_message */
 bool _find_duplicate_replayed_user_message(const json_t *messages_json_array,
                                            const json_t *msg,
                                            int *out_index, bool *prefer_current) {
@@ -2353,7 +2353,7 @@ static bool hs_json_deep_equal(const json_t *a, const json_t *b) {
     return false;
 }
 
-/* PoP: get_active_message_ids @ hermes_state.py:get_active_message_ids */
+/* PoP: get_active_message_ids @ hermes_state_messages.py:get_active_message_ids */
 long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
                                                const char *session_id, int *out_n) {
     /* Ordered physical ids pinned by rewind CAS checks: every ACTIVE row so
@@ -2380,7 +2380,7 @@ long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
     return ids;
 }
 
-/* PoP: _active_transcript_counts @ hermes_state.py:_active_transcript_counts */
+/* PoP: _active_transcript_counts @ hermes_state_messages.py:_active_transcript_counts */
 void _active_transcript_counts(sqlite3 *conn, const char *session_id,
                                int *out_messages, int *out_tool_calls) {
     /* Active message/tool-call counts inside the caller's transaction:

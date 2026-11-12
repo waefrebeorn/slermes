@@ -22,7 +22,7 @@ int msw_u_declared_model_ids(const char *arg) {
     return 0;
 }
 
-/* PoP: msw_u_save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
+/* PoP: msw_u_save_discovered_models_to_config @ hermes_cli/model_switch_providers.py:_save_discovered_models_to_config */
 int msw_u_save_discovered_models_to_config(const char *arg) {
     /* Python: custom_providers cache. Arg =
      * "changed\tstate\tresult". */
@@ -208,7 +208,7 @@ int msw_u_resolve_named_custom_model_id(const char *arg) {
     return 0;
 }
 
-/* PoP: msw_u_credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
+/* PoP: msw_u_credential_pool_is_usable @ hermes_cli/model_switch_providers.py:_credential_pool_is_usable */
 int msw_u_credential_pool_is_usable(const char *arg) {
     /* Python: pool available else raw present. Arg = "has_creds\thas_avail\traw_present". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -240,7 +240,7 @@ int msw_u_extra_headers_from_config(const char *arg) {
     return 0;
 }
 
-/* PoP: msw_prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
+/* PoP: msw_prewarm_picker_cache_async @ hermes_cli/model_switch_providers.py:prewarm_picker_cache_async */
 int msw_prewarm_picker_cache_async(const char *arg) {
     /* Python: bg daemon warm. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -251,7 +251,7 @@ int msw_prewarm_picker_cache_async(const char *arg) {
     return 0;
 }
 
-/* PoP: msw_u_prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
+/* PoP: msw_u_prepend_moa_picker_provider @ hermes_cli/model_switch_providers.py:_prepend_moa_picker_provider */
 int msw_u_prepend_moa_picker_provider(const char *arg) {
     /* Python: virtual MoA row prepended. Arg = "current\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }

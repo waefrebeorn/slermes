@@ -113,7 +113,7 @@ int envd_find_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: envd_u_egress_proxy_args_for_docker @ tools/environments/docker.py:_egress_proxy_args_for_docker */
+/* PoP: envd_u_egress_proxy_args_for_docker @ tools/environments/docker_egress.py:_egress_proxy_args_for_docker */
 int envd_u_egress_proxy_args_for_docker(const char *arg) {
     /* Python: iron-proxy wiring. Arg =
      * "enforced\tstate\tresult". */
@@ -128,7 +128,7 @@ int envd_u_egress_proxy_args_for_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: envd_u_egress_reuse_fingerprint @ tools/environments/docker.py:_egress_reuse_fingerprint */
+/* PoP: envd_u_egress_reuse_fingerprint @ tools/environments/docker_egress.py:_egress_reuse_fingerprint */
 int envd_u_egress_reuse_fingerprint(const char *arg) {
     /* Python: "off" when no args; sha256 of sorted JSON else. Arg =
      * "volume_args\tenv_overrides\thost_args" (tab-sep, may be empty). */
@@ -148,7 +148,7 @@ int envd_u_egress_reuse_fingerprint(const char *arg) {
     return 0;
 }
 
-/* PoP: envd_u_egress_enforce_on_docker @ tools/environments/docker.py:_egress_enforce_on_docker */
+/* PoP: envd_u_egress_enforce_on_docker @ tools/environments/docker_egress.py:_egress_enforce_on_docker */
 int envd_u_egress_enforce_on_docker(const char *arg) {
     /* Python: bool(cfg.proxy.enforce_on_docker, default) fail-safe. Arg =
      * "enforce\tdefault" (enforce empty = unset). */
@@ -161,7 +161,7 @@ int envd_u_egress_enforce_on_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: envd_u_critical_egress_env_names @ tools/environments/docker.py:_critical_egress_env_names */
+/* PoP: envd_u_critical_egress_env_names @ tools/environments/docker_egress.py:_critical_egress_env_names */
 int envd_u_critical_egress_env_names(const char *arg) {
     /* Python: proxy/CA/env override names + *_API_KEY/_TOKEN. Arg =
      * "env_overrides" (tab-sep, may be empty). */
@@ -192,7 +192,7 @@ int envd_u_critical_egress_env_names(const char *arg) {
     return 0;
 }
 
-/* PoP: envd_u_extra_args_egress_collisions @ tools/environments/docker.py:_extra_args_egress_collisions */
+/* PoP: envd_u_extra_args_egress_collisions @ tools/environments/docker_egress.py:_extra_args_egress_collisions */
 int envd_u_extra_args_egress_collisions(const char *arg) {
     /* Python: egress override scan. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }

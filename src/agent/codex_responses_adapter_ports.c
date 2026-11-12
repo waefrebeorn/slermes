@@ -75,7 +75,7 @@ char *crx_summarize_user_message_for_log(const char *content_json) {
     return out;
 }
 
-/* PoP: crx_deterministic_call_id @ agent/codex_responses_adapter.py:_deterministic_call_id */
+/* PoP: crx_deterministic_call_id @ agent/transports/codex_event_projector.py:_deterministic_call_id */
 char *crx_deterministic_call_id(const char *tool_call_content) {
     /* Python: deterministic call_id fallback. */
     if (!tool_call_content) return strdup("fc_0");

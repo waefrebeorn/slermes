@@ -203,7 +203,7 @@ int hermes_cli_telegram_managed_bo_poll_for_setup_result(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_telegram_managed_bo_poll_for_token @ hermes_cli/telegram_managed_bot.py:poll_for_token */
+/* PoP: hermes_cli_telegram_managed_bo_poll_for_token @ plugins/platforms/photon/auth.py:poll_for_token */
 int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) {
     /* Python: poll_for_setup_result(...) -> result.token if ready else
      * None. Arg = pairing id; polls via curl. */

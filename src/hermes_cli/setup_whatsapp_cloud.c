@@ -96,7 +96,7 @@ int hermes_cli_setup_whatsapp_clou_u_validate_access_token(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_setup_whatsapp_clou_u_prompt_validated @ hermes_cli/setup_whatsapp_cloud.py:_prompt_validated */
+/* PoP: hermes_cli_setup_whatsapp_clou_u_prompt_validated @ plugins/platforms/whatsapp_cloud/setup_wizard.py:_prompt_validated */
 int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) {
     /* Python: validated prompt loop. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -112,7 +112,7 @@ int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup @ hermes_cli/setup_whatsapp_cloud.py:run_whatsapp_cloud_setup */
+/* PoP: hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup @ plugins/platforms/whatsapp_cloud/setup_wizard.py:run_whatsapp_cloud_setup */
 int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg) {
     /* Python: Cloud API wizard. Arg =
      * "rc\tstate\tresult". */

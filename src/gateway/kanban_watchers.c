@@ -14,7 +14,7 @@ static char g_kanban_lock_handle[256] = "";
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: gateway_kanban_watchers_u_resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
+/* PoP: gateway_kanban_watchers_u_resolve_auto_decompose_settings @ gateway/kanban_watchers_common.py:_resolve_auto_decompose_settings */
 int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
     /* Python: fresh read, fails safe. Arg =
      * "state\tenabled\tper_tick\tresult". */
@@ -27,7 +27,7 @@ int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_kanban_watchers_u_acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
+/* PoP: gateway_kanban_watchers_u_acquire_singleton_lock @ gateway/kanban_watchers_common.py:_acquire_singleton_lock */
 int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
     /* Python: advisory flock. Arg =
      * "state\tresult\terr". */
@@ -44,7 +44,7 @@ int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_kanban_watchers_u_release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
+/* PoP: gateway_kanban_watchers_u_release_singleton_lock @ gateway/kanban_watchers_common.py:_release_singleton_lock */
 int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
     /* Python: release file lock + close handle, best-effort. Arg = handle
      * path (or empty = None). */

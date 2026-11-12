@@ -138,7 +138,7 @@ int cli_agent_anthropic_adapter__supports_fast_mode(const char *model) {
     return (strstr(model, "opus-4-6") != NULL || strstr(model, "opus-4.6") != NULL);
 }
 
-/* PoP: cli_agent_anthropic_adapter__to_plain_data @ agent/anthropic_adapter.py:_to_plain_data */
+/* PoP: cli_agent_anthropic_adapter__to_plain_data @ agent/anthropic_message_convert.py:_to_plain_data */
 int cli_agent_anthropic_adapter__to_plain_data(const char *data, char *buf, size_t bufsize) {
     if (!data || !buf || bufsize == 0) {
         return -1;
@@ -158,7 +158,7 @@ int cli_agent_anthropic_adapter__to_plain_data(const char *data, char *buf, size
     return 0;
 }
 
-/* PoP: cli_agent_anthropic_adapter__sanitize_replay_block @ agent/anthropic_adapter.py:_sanitize_replay_block */
+/* PoP: cli_agent_anthropic_adapter__sanitize_replay_block @ agent/anthropic_message_convert.py:_sanitize_replay_block */
 int cli_agent_anthropic_adapter__sanitize_replay_block(const char *block_json, char *buf, size_t bufsize) {
     if (!block_json || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "anthropic_adapter", "_sanitize_replay_block: invalid args");
@@ -262,7 +262,7 @@ int cli_agent_anthropic_adapter_sanitize_anthropic_kwargs(const char *model, int
     return 0;
 }
 
-/* PoP: token @ agent/anthropic_adapter.py:_resolve_anthropic_pool_token */
+/* PoP: token @ agent/anthropic_credentials.py:_resolve_anthropic_pool_token */
 /* Return the first available Anthropic OAuth token from credential_pool
  * (read-only: never clears expired entries or triggers a network refresh, so a
  * bare resolve never mutates ~/.hermes/auth.json). Faithful to the Python

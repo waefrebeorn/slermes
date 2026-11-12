@@ -12,11 +12,11 @@
 /* PoP: _sig_secret @ gateway/platforms/signal.py:_sig_secret */
 char *_sig_secret(void) { return strdup(""); }
 
-/* PoP: _utf16_offsets @ gateway/platforms/signal.py:_utf16_offsets */
+/* PoP: _utf16_offsets @ plugins/platforms/signal/adapter.py:_utf16_offsets */
 char *_utf16_offsets(void) { return strdup("[]"); }
 
-/* PoP: _styles_for_chunk @ gateway/platforms/signal.py:_styles_for_chunk */
+/* PoP: _styles_for_chunk @ plugins/platforms/signal/adapter.py:_styles_for_chunk */
 char *_styles_for_chunk(void) { return strdup("[]"); }
 
-/* PoP: _split_signal_formatted_message @ gateway/platforms/signal.py:_split_signal_formatted_message */
+/* PoP: _split_signal_formatted_message @ plugins/platforms/signal/adapter.py:_split_signal_formatted_message */
 char *_split_signal_formatted_message(void) { return strdup("[]"); }

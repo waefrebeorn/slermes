@@ -121,7 +121,7 @@ int gw_gateway_compression_progress_notices_enabled(void)
  * _csv_or_list_to_set
  * ================================================================ */
 
-/* PoP: gw_csv_or_list_to_set @ gateway/run.py:_csv_or_list_to_set */
+/* PoP: gw_csv_or_list_to_set @ gateway/run_common.py:_csv_or_list_to_set */
 /* Normalize a config list or comma-separated scalar into a malloc'd
  * NULL-terminated string array (caller frees with gw_strset_free).
  * Each entry is whitespace-stripped; empties dropped. */

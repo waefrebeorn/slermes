@@ -817,7 +817,7 @@ capability_descriptor_t *ws_transport_descriptor_for_platform(ws_transport_t *t,
     return NULL;
 }
 
-/* PoP: ws_transport_descriptor_json @ gateway/relay/ws_transport.py:_descriptor */
+/* PoP: ws_transport_descriptor_json @ gateway/session_automation.py:_descriptor */
 const char *ws_transport_descriptor_json(ws_transport_t *t) {
     if (!t) return NULL;
     return t->descriptor_json;

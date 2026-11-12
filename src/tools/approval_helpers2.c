@@ -125,7 +125,7 @@ bool apr2_is_session_yolo_enabled(const char *session_key) {
     return false;
 }
 
-/* PoP: apr2_prompt_dangerous_approval @ tools/approval.py:prompt_dangerous_approval */
+/* PoP: apr2_prompt_dangerous_approval @ tools/approval_prompt.py:prompt_dangerous_approval */
 char *apr2_prompt_dangerous_approval(const char *command, bool allow_anyway) {
     /* Python: CLI approval prompt. */
     if (!command) return NULL;
@@ -142,7 +142,7 @@ char *apr2_check_dangerous_command(const char *command, const char *session_key)
     return det ? det : strdup("false\t\t");
 }
 
-/* PoP: apr2_await_gateway_decision @ tools/approval.py:_await_gateway_decision */
+/* PoP: apr2_await_gateway_decision @ tools/approval_gateway_wait.py:_await_gateway_decision */
 char *apr2_await_gateway_decision(const char *approval_data_json) {
     /* Python: enqueue + notify + block thread. */
     if (!approval_data_json) return NULL;
@@ -150,7 +150,7 @@ char *apr2_await_gateway_decision(const char *approval_data_json) {
     return strdup("{\"approved\": false}");
 }
 
-/* PoP: apr2_request_elicitation_consent @ tools/approval.py:request_elicitation_consent */
+/* PoP: apr2_request_elicitation_consent @ tools/approval_prompt.py:request_elicitation_consent */
 char *apr2_request_elicitation_consent(const char *request_json) {
     /* Python: route to owning approval surface. */
     if (!request_json) return NULL;
@@ -182,7 +182,7 @@ static denial_entry_t s_denial_tally[_DENIAL_TALLY_MAX_SESSIONS];
 static int            s_denial_tally_n = 0;
 static pthread_mutex_t s_denial_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: apr2_is_cron_approval_context @ tools/approval.py:_is_cron_approval_context */
+/* PoP: apr2_is_cron_approval_context @ tools/approval_context.py:_is_cron_approval_context */
 bool apr2_is_cron_approval_context(void) {
     const char *v = getenv("HERMES_CRON_SESSION");
     if (v && *v && strcasecmp(v, "0") != 0 && strcasecmp(v, "false") != 0)
@@ -306,7 +306,7 @@ void apr2_release_permission_mode_dependents(const char *session_key) {
     apr2_reset_denials(session_key);
 }
 
-/* PoP: apr2_get_smart_policy @ tools/approval.py:_get_smart_policy */
+/* PoP: apr2_get_smart_policy @ tools/approval_smart.py:_get_smart_policy */
 char *apr2_get_smart_policy(void) {
     json_t *cfg = config_py_load_config_readonly();
     if (!cfg) return strdup("");
@@ -327,7 +327,7 @@ char *apr2_get_smart_policy(void) {
     return out ? out : strdup("");
 }
 
-/* PoP: apr2_mask_quoted_newlines @ tools/approval.py:_mask_quoted_newlines */
+/* PoP: apr2_mask_quoted_newlines @ tools/approval_detection.py:_mask_quoted_newlines */
 char *apr2_mask_quoted_newlines(const char *command) {
     if (!command) return NULL;
     if (!strchr(command, '\n')) return strdup(command);
@@ -356,7 +356,7 @@ char *apr2_mask_quoted_newlines(const char *command) {
     return out;
 }
 
-/* PoP: path @ tools/approval.py:_save_blocked_payload */
+/* PoP: path @ tools/approval_floors.py:_save_blocked_payload */
 /* Persist a parser-limit-blocked command as a runnable .sh under
  * $HERMES_HOME/cache/blocked-scripts/. Returns the saved path (malloc'd) or
  * NULL on any failure (matches Python's except -> None). */

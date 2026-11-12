@@ -65,7 +65,7 @@ static void add_lower(where_t *w, const char *s) {
     add_str(w, buf);
 }
 
-/* PoP: build_where @ hermes_state.py:_prune_filter_where */
+/* PoP: build_where @ hermes_state_maintenance.py:_prune_filter_where */
 static void build_where(where_t *w, const ws_prune_filters_t *f) {
     w->sql[0] = '\0';
     w->np = 0;
@@ -209,7 +209,7 @@ static json_t *col_to_json(sqlite3_stmt *st, int i) {
 }
 
 /* ── list_prune_candidates ──────────────────────────────────────────────── */
-/* PoP: ws_prune_candidates @ hermes_state.py:list_prune_candidates */
+/* PoP: ws_prune_candidates @ hermes_state_maintenance.py:list_prune_candidates */
 json_t *ws_prune_candidates(const char *db_path, bool has_older,
                             double older_than_days,
                             const ws_prune_filters_t *f) {
@@ -251,7 +251,7 @@ json_t *ws_prune_candidates(const char *db_path, bool has_older,
 }
 
 /* ── prune_sessions ─────────────────────────────────────────────────────── */
-/* PoP: ws_prune_sessions @ hermes_state.py:prune_sessions */
+/* PoP: ws_prune_sessions @ hermes_state_maintenance.py:prune_sessions */
 int ws_prune_sessions(const char *db_path, bool has_older,
                       double older_than_days, const ws_prune_filters_t *f) {
     ws_prune_filters_t eff = apply_default_cutoff(f, has_older,
@@ -341,7 +341,7 @@ static const char *get_opt_str(const json_t *body, const char *key) {
     return v->str_val;
 }
 
-/* PoP: ws_prune_endpoint @ hermes_cli/web_server.py:_prune_sessions */
+/* PoP: ws_prune_endpoint @ hermes_cli/web_routers/sessions.py:_prune_sessions */
 json_t *ws_prune_endpoint(const char *db_path, const json_t *body) {
     /* pydantic: default 90; explicit null → None (no cutoff) but still
      * counts as explicitly-set for the suppression rule. */
@@ -456,7 +456,7 @@ json_t *ws_prune_endpoint(const char *db_path, const json_t *body) {
 }
 
 
-/* PoP: count_prune_matches @ hermes_state.py:count_prune_matches */
+/* PoP: count_prune_matches @ hermes_state_maintenance.py:count_prune_matches */
 int count_prune_matches(const char *db_path, bool has_older,
                         double older_than_days, const ws_prune_filters_t *f) {
     /* Count sessions a matching prune/archive would touch — same filter
@@ -487,7 +487,7 @@ int count_prune_matches(const char *db_path, bool has_older,
     return count;
 }
 
-/* PoP: count_open_prune_matches @ hermes_state.py:count_open_prune_matches */
+/* PoP: count_open_prune_matches @ hermes_state_maintenance.py:count_open_prune_matches */
 int count_open_prune_matches(const char *db_path, bool has_older,
                              double older_than_days,
                              const ws_prune_filters_t *f) {

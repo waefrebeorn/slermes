@@ -312,7 +312,7 @@ bool gateway_runner_should_exit_with_failure(const GatewayRunner *self)
 /* PoP: gateway_runner_exit_reason @ gateway/run.py:exit_reason */
 const char *gateway_runner_exit_reason(const GatewayRunner *self)
     { return self ? self->exit_reason : NULL; }
-/* PoP: gateway_runner_exit_code @ gateway/run.py:exit_code */
+/* PoP: gateway_runner_exit_code @ hermes_cli/plugin_validate.py:exit_code */
 int gateway_runner_exit_code(const GatewayRunner *self)
     { return self ? self->exit_code_val : -1; }
 const char *gateway_runner_busy_input_mode(const GatewayRunner *self)

@@ -154,7 +154,7 @@ static json_t *tcr_setdefault_section(json_t *config, const char *key) {
 
 /* ── reconfigure provider ──────────────────────────────────────────────── */
 
-/* PoP: tools_config_reconfigure_provider @ hermes_cli/tools_config.py:_reconfigure_provider */
+/* PoP: tools_config_reconfigure_provider @ hermes_cli/tools_config_providers.py:_reconfigure_provider */
 void tools_config_reconfigure_provider(const json_t *provider, json_t *config,
                                        bool force_fresh) {
     if (!provider || !config) return;
@@ -622,7 +622,7 @@ static bool cat_has(const json_t *obj, const char *key) {
 
 /* ── MCP interactive configuration ─────────────────────────────────────── */
 
-/* PoP: tools_config_configure_mcp_tools_interactive @ hermes_cli/tools_config.py:_configure_mcp_tools_interactive */
+/* PoP: tools_config_configure_mcp_tools_interactive @ hermes_cli/tools_config_mcp.py:_configure_mcp_tools_interactive */
 void tools_config_configure_mcp_tools_interactive(json_t *config) {
     json_t *mcp_servers = config ? json_obj_get(config, "mcp_servers") : NULL;
     if (!mcp_servers || mcp_servers->type != JSON_OBJECT ||
@@ -661,7 +661,7 @@ void tools_config_configure_mcp_tools_interactive(json_t *config) {
     return;
 }
 
-/* PoP: tools_config_apply_mcp_change @ hermes_cli/tools_config.py:_apply_mcp_change */
+/* PoP: tools_config_apply_mcp_change @ hermes_cli/tools_config_mcp.py:_apply_mcp_change */
 json_t *tools_config_apply_mcp_change(json_t *config,
                                       const char *const *targets,
                                       size_t n_targets, const char *action) {
@@ -722,7 +722,7 @@ static void tcr_print_status(bool enabled, const char *ts_key,
            ts_key, label);
 }
 
-/* PoP: tools_config_print_tools_list @ hermes_cli/tools_config.py:_print_tools_list */
+/* PoP: tools_config_print_tools_list @ hermes_cli/tools_config_mcp.py:_print_tools_list */
 void tools_config_print_tools_list(const json_t *enabled_toolsets,
                                    const json_t *mcp_servers,
                                    const char *platform) {
@@ -810,7 +810,7 @@ void tools_config_print_tools_list(const json_t *enabled_toolsets,
     tools_config_free_toolset_rows(effective_all, all_n);
 }
 
-/* PoP: tools_config_disable_enable_command @ hermes_cli/tools_config.py:tools_disable_enable_command */
+/* PoP: tools_config_disable_enable_command @ hermes_cli/tools_config_mcp.py:tools_disable_enable_command */
 void tools_config_disable_enable_command(const char *action,
                                          const char *platform,
                                          const char *const *names,

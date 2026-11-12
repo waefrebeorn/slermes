@@ -58,7 +58,7 @@ char *code_exec_truncate_stdout_text(const char *text, size_t max_chars) {
     return out;
 }
 
-/* PoP: code_exec_scrub_child_env @ tools/code_execution_tool.py:_scrub_child_env */
+/* PoP: code_exec_scrub_child_env @ tools/code_execution_env.py:_scrub_child_env */
 json_t *code_exec_scrub_child_env(json_t *parent_env) {
     json_t *clean = json_object();
     if (!parent_env) return clean;
@@ -79,8 +79,8 @@ char *code_exec_generate_hermes_tools_module(void) {
     return strdup("# Hermes tools module placeholder\n");
 }
 
-/* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
-/* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
+/* PoP: code_exec_rpc_server_loop @ tools/code_execution_rpc.py:_rpc_server_loop */
+/* PoP: code_exec_rpc_server_loop @ tools/code_execution_rpc.py:_rpc_server_loop */
 void code_exec_rpc_server_loop(int server_fd) {
     /* Python: newline-delimited dispatch loop on server_sock.
      * REAL: accept one client, read 64KB chunks, split on \n,
@@ -155,8 +155,8 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
     return rc == 0;
 }
 
-/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
-/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
+/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_rpc.py:_rpc_poll_loop */
+/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_rpc.py:_rpc_poll_loop */
 void code_exec_rpc_poll_loop(const char *rpc_dir) {
     /* Python: remote fs poll (100ms) — REAL directory scan.
      * Lists req_* files (skipping .tmp), dispatches each, writes
@@ -193,7 +193,7 @@ const char *code_exec_get_execution_mode(void) {
     return m && m[0] ? m : "local";
 }
 
-/* PoP: code_exec_is_usable_python @ tools/code_execution_tool.py:_is_usable_python */
+/* PoP: code_exec_is_usable_python @ tools/code_execution_env.py:_is_usable_python */
 bool code_exec_is_usable_python(const char *path) {
     if (!path) return false;
     if (access(path, X_OK) != 0) return false;
@@ -207,7 +207,7 @@ bool code_exec_is_usable_python(const char *path) {
     return ok;
 }
 
-/* PoP: code_exec_resolve_child_python @ tools/code_execution_tool.py:_resolve_child_python */
+/* PoP: code_exec_resolve_child_python @ tools/code_execution_env.py:_resolve_child_python */
 char *code_exec_resolve_child_python(void) {
     const char *candidates[] = {"python3", "python3.11", "python3.12", "/usr/bin/python3", NULL};
     for (int i = 0; candidates[i]; i++) {
@@ -216,7 +216,7 @@ char *code_exec_resolve_child_python(void) {
     return strdup("python3");
 }
 
-/* PoP: code_exec_resolve_child_cwd @ tools/code_execution_tool.py:_resolve_child_cwd */
+/* PoP: code_exec_resolve_child_cwd @ tools/code_execution_env.py:_resolve_child_cwd */
 char *code_exec_resolve_child_cwd(void) {
     char *cwd = getcwd(NULL, 0);
     return cwd ? cwd : strdup("/tmp");

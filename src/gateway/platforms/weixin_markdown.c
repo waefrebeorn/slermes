@@ -25,8 +25,8 @@
 
 
 
-/* PoP: _split_table_row @ gateway/platforms/weixin.py:_split_table_row */
-/* PoP: weixin_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
+/* PoP: _split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
+/* PoP: weixin_split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
 char **weixin_split_table_row(const char *line, int *count)
 {
     if (count) *count = 0;
@@ -83,8 +83,8 @@ bool weixin_looks_like_heading_line(const char *line)
 }
 
 
-/* PoP: _looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
-/* PoP: weixin_looks_like_chatty_line @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: _looks_like_chatty_line_for_weixin @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
+/* PoP: weixin_looks_like_chatty_line @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
 bool weixin_looks_like_chatty_line(const char *line)
 {
     if (!line || !*line) return false;
@@ -130,7 +130,7 @@ static char *weixin__join_strip(char **lines, int n)
 }
 
 
-/* PoP: _split_markdown_blocks @ gateway/platforms/weixin.py:_split_markdown_blocks */
+/* PoP: _split_markdown_blocks @ plugins/platforms/weixin/adapter.py:_split_markdown_blocks */
 /* Split content into blocks at fenced code regions and blank lines, keeping fenced blocks intact. */
 char **weixin_split_markdown_blocks(const char *content, int *out_count)
 {
@@ -246,7 +246,7 @@ static bool weixin__is_header_line(const char *s) {
 }
 
 
-/* PoP: _normalize_markdown_blocks @ gateway/platforms/weixin.py:_normalize_markdown_blocks */
+/* PoP: _normalize_markdown_blocks @ plugins/platforms/weixin/adapter.py:_normalize_markdown_blocks */
 /* Collapse runs of >1 blank line to a single blank line; keep fenced blocks
  * intact; strip leading/trailing whitespace of the whole content. */
 char *weixin_normalize_markdown_blocks(const char *content) {
@@ -304,7 +304,7 @@ char *weixin_normalize_markdown_blocks(const char *content) {
 }
 
 
-/* PoP: _looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: _looks_like_chatty_line_for_weixin @ plugins/platforms/weixin/adapter.py:_looks_like_chatty_line_for_weixin */
 static bool weixin_looks_like_chatty_line_for_weixin(const char *line) {
     const char *s = line;
     while (*s == ' ' || *s == '\t') s++;
@@ -341,7 +341,7 @@ static bool weixin_looks_like_heading_line_for_weixin(const char *line) {
 }
 
 
-/* PoP: _should_split_short_chat_block_for_weixin @ gateway/platforms/weixin.py:_should_split_short_chat_block_for_weixin */
+/* PoP: _should_split_short_chat_block_for_weixin @ plugins/platforms/weixin/adapter.py:_should_split_short_chat_block_for_weixin */
 static bool weixin_should_split_short_chat_block_for_weixin(const char *block) {
     char **lines = NULL; int nl = 0;
     const char *start = block;
@@ -376,7 +376,7 @@ static bool weixin_should_split_short_chat_block_for_weixin(const char *block) {
 }
 
 
-/* PoP: _wrap_copy_friendly_lines_for_weixin @ gateway/platforms/weixin.py:_wrap_copy_friendly_lines_for_weixin */
+/* PoP: _wrap_copy_friendly_lines_for_weixin @ plugins/platforms/weixin/adapter.py:_wrap_copy_friendly_lines_for_weixin */
 /* Greedy word-wrap long display lines (break_long_words=false): a word longer
  * than the width is kept intact on its own line. Fenced blocks, short lines,
  * table rows, and empty lines pass through unchanged. */
@@ -447,7 +447,7 @@ char *weixin_wrap_copy_friendly_lines_for_weixin(const char *content) {
 }
 
 
-/* PoP: _split_delivery_units_for_weixin @ gateway/platforms/weixin.py:_split_delivery_units_for_weixin */
+/* PoP: _split_delivery_units_for_weixin @ plugins/platforms/weixin/adapter.py:_split_delivery_units_for_weixin */
 /* Split formatted content into chat-friendly delivery units: one unit per
  * fenced block, otherwise one unit per top-level (non-indented) line group,
  * attaching indented continuation lines to the preceding unit. */
@@ -630,7 +630,7 @@ char **weixin_truncate_message(const char *content, int max_length, int *out_cou
 }
 
 
-/* PoP: _pack_markdown_blocks_for_weixin @ gateway/platforms/weixin.py:_pack_markdown_blocks_for_weixin */
+/* PoP: _pack_markdown_blocks_for_weixin @ plugins/platforms/weixin/adapter.py:_pack_markdown_blocks_for_weixin */
 char **weixin_pack_markdown_blocks_for_weixin(const char *content, int max_length, int *out_count) {
     if (out_count) *out_count = 0;
     if (!content) return NULL;
@@ -682,7 +682,7 @@ char **weixin_pack_markdown_blocks_for_weixin(const char *content, int max_lengt
 }
 
 
-/* PoP: _split_text_for_weixin_delivery @ gateway/platforms/weixin.py:_split_text_for_weixin_delivery */
+/* PoP: _split_text_for_weixin_delivery @ plugins/platforms/weixin/adapter.py:_split_text_for_weixin_delivery */
 char **weixin_split_text_for_weixin_delivery(const char *content, int max_length, bool split_per_line, int *out_count) {
     if (out_count) *out_count = 0;
     if (!content || !*content) return NULL;

@@ -107,7 +107,7 @@ void cli_split_model_config_default(const json_t *raw_default, char **out_model,
     split_model_config_default(raw_default, out_model, out_provider);
 }
 
-/* PoP: _worktree_branch_pr_merged @ cli.py:_worktree_branch_pr_merged */
+/* PoP: _worktree_branch_pr_merged @ hermes_cli/worktree_ops.py:_worktree_branch_pr_merged */
 int cli_worktree_branch_pr_merged(const char *worktree_path, int timeout, json_t *cache)
 {
     if (!worktree_path) return 0;
@@ -159,7 +159,7 @@ int cli_worktree_branch_pr_merged(const char *worktree_path, int timeout, json_t
     return merged;
 }
 
-/* PoP: _cli_multiline_shortcuts_enabled @ cli.py:_cli_multiline_shortcuts_enabled */
+/* PoP: _cli_multiline_shortcuts_enabled @ hermes_cli/cli_terminal_input.py:_cli_multiline_shortcuts_enabled */
 int cli_multiline_shortcuts_enabled(const json_t *config)
 {
     const json_t *cfg = config;
@@ -272,7 +272,7 @@ int cli_parse_skills_argument(const json_t *skills, char ***out_items)
     return (int)lst.n;
 }
 
-/* PoP: _is_ghostty_terminal @ cli.py:_is_ghostty_terminal */
+/* PoP: _is_ghostty_terminal @ hermes_cli/cli_terminal_input.py:_is_ghostty_terminal */
 int cli_is_ghostty_terminal(void)
 {
     const char *tp = getenv("TERM_PROGRAM");
@@ -302,7 +302,7 @@ int cli_cleanup_all_terminals(void)
 
 #define H2_PACK_SPRAWL_THRESHOLD 15
 
-/* PoP: _maintain_pack_health @ cli.py:_maintain_pack_health */
+/* PoP: _maintain_pack_health @ hermes_cli/worktree_ops.py:_maintain_pack_health */
 void cli_maintain_pack_health(const char *repo_root)
 {
     if (!repo_root) return;
@@ -329,7 +329,7 @@ void cli_maintain_pack_health(const char *repo_root)
 /*
  * Returns 1 when the CPR-disabled prompt_toolkit output should be built,
  * 0 when Application keeps its default output. Constructing the Vt100_Output
- * PoP: _select_classic_cli_pt_output @ cli.py:_select_classic_cli_pt_output
+ * PoP: _select_classic_cli_pt_output @ hermes_cli/cli_terminal_input.py:_select_classic_cli_pt_output
  */
 int cli_select_classic_cli_pt_output(void)
 {
@@ -344,7 +344,7 @@ int cli_select_classic_cli_pt_output(void)
 #endif
 }
 
-/* PoP: _heal_cooked_mode_drift @ cli.py:_heal_cooked_mode_drift */
+/* PoP: _heal_cooked_mode_drift @ hermes_cli/cli_render.py:_heal_cooked_mode_drift */
 int cli_heal_cooked_mode_drift(int fd)
 {
     struct termios attrs;
@@ -359,7 +359,7 @@ int cli_heal_cooked_mode_drift(int fd)
     return 1;
 }
 
-/* PoP: _wait_for_oneshot_background_completions @ cli.py:_wait_for_oneshot_background_completions */
+/* PoP: _wait_for_oneshot_background_completions @ hermes_cli/cli_shutdown.py:_wait_for_oneshot_background_completions */
 void cli_wait_for_oneshot_background_completions(const char *task_id)
 {
     /* Delegates the bounded wait (and its terminal.oneshot_completion_wait_seconds
@@ -398,7 +398,7 @@ int cli_normalize_moa_model(const char *model, char **out_provider, char **out_r
     return 1;
 }
 
-/* PoP: _worktree_commits_all_merged_upstream @ cli.py:_worktree_commits_all_merged_upstream */
+/* PoP: _worktree_commits_all_merged_upstream @ hermes_cli/worktree_ops.py:_worktree_commits_all_merged_upstream */
 int cli_worktree_commits_all_merged_upstream(const char *worktree_path, int timeout,
                                              int max_ahead, json_t *cache)
 {
@@ -477,7 +477,7 @@ int cli_worktree_commits_all_merged_upstream(const char *worktree_path, int time
 #undef H2_MEMO
 }
 
-/* PoP: _worktree_has_unpushed_commits @ cli.py:_worktree_has_unpushed_commits */
+/* PoP: _worktree_has_unpushed_commits @ hermes_cli/worktree_ops.py:_worktree_has_unpushed_commits */
 int cli_worktree_has_unpushed_commits(const char *worktree_path, int timeout)
 {
     if (!worktree_path) return 1;
@@ -533,7 +533,7 @@ void cli_prepare_deferred_agent_startup(void)
     if (cfg) json_free(cfg);
 }
 
-/* PoP: _prune_orphaned_branches @ cli.py:_prune_orphaned_branches */
+/* PoP: _prune_orphaned_branches @ hermes_cli/worktree_ops.py:_prune_orphaned_branches */
 void cli_prune_orphaned_branches(const char *repo_root)
 {
     if (!repo_root) return;
@@ -705,7 +705,7 @@ void cli_mark_tui_input_modes_active_set(int v)
     g_tui_input_modes_active = v ? 1 : 0;
 }
 
-/* PoP: _path_is_within_root @ cli.py:_path_is_within_root */
+/* PoP: _path_is_within_root @ hermes_cli/worktree_ops.py:_path_is_within_root */
 int cli_path_is_within_root(const char *path, const char *root)
 {
     /* Path.relative_to() is lexical: child must equal root or sit below it
@@ -741,7 +741,7 @@ void hcli_release_active_session(hcli_t *self)
     self->active_session_lease = NULL;
 }
 
-/* PoP: cli_redraw_rebuilds_scrollback @ cli.py:_redraw_rebuilds_scrollback */
+/* PoP: cli_redraw_rebuilds_scrollback @ hermes_cli/cli_terminal_mixin.py:_redraw_rebuilds_scrollback */
 bool cli_redraw_rebuilds_scrollback(void)
 {
     json_t *cfg = config_py_read_raw_config();
@@ -769,7 +769,7 @@ bool cli_redraw_rebuilds_scrollback(void)
     return result;
 }
 
-/* PoP: cli_status_bar_context_style @ cli.py:_status_bar_context_style */
+/* PoP: cli_status_bar_context_style @ hermes_cli/cli_status_bar_mixin.py:_status_bar_context_style */
 const char *cli_status_bar_context_style(int percent_used)
 {
     if (percent_used < 0) return "class:status-bar-dim";   /* None */
@@ -779,7 +779,7 @@ const char *cli_status_bar_context_style(int percent_used)
     return "class:status-bar-good";
 }
 
-/* PoP: cli_battery_status_style @ cli.py:_battery_status_style */
+/* PoP: cli_battery_status_style @ hermes_cli/cli_status_bar_mixin.py:_battery_status_style */
 const char *cli_battery_status_style(const char *category)
 {
     if (!category) return "class:status-bar-dim";
@@ -790,7 +790,7 @@ const char *cli_battery_status_style(const char *category)
     return "class:status-bar-dim";
 }
 
-/* PoP: cli_compression_count_style @ cli.py:_compression_count_style */
+/* PoP: cli_compression_count_style @ hermes_cli/cli_status_bar_mixin.py:_compression_count_style */
 const char *cli_compression_count_style(int count)
 {
     if (count >= 10) return "class:status-bar-bad";
@@ -798,7 +798,7 @@ const char *cli_compression_count_style(int count)
     return "class:status-bar-dim";
 }
 
-/* PoP: cli_build_context_bar @ cli.py:_build_context_bar */
+/* PoP: cli_build_context_bar @ hermes_cli/cli_status_bar_mixin.py:_build_context_bar */
 char *cli_build_context_bar(int percent_used, int width)
 {
     if (width < 0) width = 10;
@@ -828,7 +828,7 @@ char *cli_build_context_bar(int percent_used, int width)
     return out;
 }
 
-/* PoP: cli_format_prompt_elapsed @ cli.py:_format_prompt_elapsed */
+/* PoP: cli_format_prompt_elapsed @ hermes_cli/cli_status_bar_mixin.py:_format_prompt_elapsed */
 char *cli_format_prompt_elapsed(bool has_start, double start_time,
                                 double duration, bool live)
 {
@@ -872,7 +872,7 @@ char *cli_format_prompt_elapsed(bool has_start, double start_time,
     return out;
 }
 
-/* PoP: cli_format_idle_since @ cli.py:_format_idle_since */
+/* PoP: cli_format_idle_since @ hermes_cli/cli_status_bar_mixin.py:_format_idle_since */
 char *cli_format_idle_since(bool has_last_finished_at, double last_finished_at,
                             bool turn_live)
 {
@@ -892,7 +892,7 @@ char *cli_format_idle_since(bool has_last_finished_at, double last_finished_at,
     return out;
 }
 
-/* PoP: hcli_get_status_bar_session_title @ cli.py:_get_status_bar_session_title */
+/* PoP: hcli_get_status_bar_session_title @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_session_title */
 char *hcli_get_status_bar_session_title(hcli_t *self)
 {
     if (!self) return strdup("");
@@ -946,7 +946,7 @@ char *hcli_get_status_bar_session_title(hcli_t *self)
     return strdup(title);
 }
 
-/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width */
+/* PoP: cli_status_bar_display_width @ hermes_cli/cli_status_bar_mixin.py:_status_bar_display_width */
 /* prompt_toolkit get_cwidth port: decode UTF-8 codepoints and classify —
  * zero-width combining/variation selectors, wide East-Asian & emoji ranges,
  * everything else (including ambiguous-width glyphs like ─ ✓ ⏱) = 1. */
@@ -1019,7 +1019,7 @@ static size_t h2_width_limit_offset(const char *text, int add_w, int max_w)
     return off;
 }
 
-/* PoP: cli_trim_status_bar_text @ cli.py:_trim_status_bar_text */
+/* PoP: cli_trim_status_bar_text @ hermes_cli/cli_status_bar_mixin.py:_trim_status_bar_text */
 char *cli_trim_status_bar_text(const char *text, int max_width)
 {
     if (!text) text = "";
@@ -1047,7 +1047,7 @@ char *cli_trim_status_bar_text(const char *text, int max_width)
     return out;
 }
 
-/* PoP: cli_right_align_status_title @ cli.py:_right_align_status_title */
+/* PoP: cli_right_align_status_title @ hermes_cli/cli_status_bar_mixin.py:_right_align_status_title */
 char *cli_right_align_status_title(const char *text, const char *title_in, int width)
 {
     char title[1024] = {0};
@@ -1088,7 +1088,7 @@ char *cli_right_align_status_title(const char *text, const char *title_in, int w
     return out;
 }
 
-/* PoP: hcli_right_align_status_title_fragments @ cli.py:_right_align_status_title_fragments */
+/* PoP: hcli_right_align_status_title_fragments @ hermes_cli/cli_status_bar_mixin.py:_right_align_status_title_fragments */
 hcli_fragment_t *hcli_right_align_status_title_fragments(char **styles,
                                                          char **values,
                                                          size_t n,
@@ -1165,7 +1165,7 @@ hcli_fragment_t *hcli_right_align_status_title_fragments(char **styles,
     return trimmed;
 }
 
-/* PoP: cli_get_tui_terminal_width @ cli.py:_get_tui_terminal_width */
+/* PoP: cli_get_tui_terminal_width @ hermes_cli/cli_status_bar_mixin.py:_get_tui_terminal_width */
 int cli_get_tui_terminal_width(void)
 {
     /* The TUI-layout query (prompt_toolkit get_app().output.get_size()) has no
@@ -1181,7 +1181,7 @@ int cli_get_tui_terminal_width(void)
     return 80;
 }
 
-/* PoP: cli_scrollback_box_width @ cli.py:_scrollback_box_width */
+/* PoP: cli_scrollback_box_width @ hermes_cli/cli_status_bar_mixin.py:_scrollback_box_width */
 int cli_scrollback_box_width(int width)
 {
     if (width <= 0) {

@@ -122,7 +122,7 @@ static const size_t _EPH_N =
     sizeof(_EPHEMERAL_SCAFFOLDING_FLAGS) / sizeof(_EPHEMERAL_SCAFFOLDING_FLAGS[0]);
 
 /* — Faithful port of run_agent._is_ephemeral_scaffolding — */
-/* PoP: hcli_is_ephemeral_scaffolding @ cli.py:_is_ephemeral_scaffolding */
+/* PoP: hcli_is_ephemeral_scaffolding @ agent/session_persistence.py:_is_ephemeral_scaffolding */
 static bool is_ephemeral_scaffolding(const json_t *msg) {
     if (!msg || msg->type != JSON_OBJECT) return false;
     for (size_t i = 0; i < _EPH_N; i++) {
@@ -187,7 +187,7 @@ static json_t *_comparison_content(const json_t *message) {
     return projected;
 }
 
-/* PoP: hcli_owns_process_notification @ cli.py:_owns_process_notification */
+/* PoP: hcli_owns_process_notification @ hermes_cli/cli_process_notifications.py:_owns_process_notification */
 /* Return whether this CLI session provably owns a delegation event.
  * Faithful to Python: compare event session_key vs current session_id,
  * resolving via resume_session_id when the keys differ. Fail-closed. */
@@ -226,7 +226,7 @@ bool hcli_owns_process_notification(hcli_t *self, const char *event_json) {
     return false;
 }
 
-/* PoP: hcli_get_loop_manager @ cli.py:_get_loop_manager */
+/* PoP: hcli_get_loop_manager @ hermes_cli/cli_loops_mixin.py:_get_loop_manager */
 /* Return the LoopManager bound to the current session_id, cached on
  * self->loop_manager. A NULL-vtab => in-memory (DB-unavailable degradation,
  * matching Python's graceful fallback when SessionDB is None). */
@@ -299,7 +299,7 @@ void hcli_clear_persisted_context_for_model_switch(hcli_t *self,
         config_py_save_value("model.context_length", json_new_null());
 }
 
-/* PoP: hcli_show_context_breakdown @ cli.py:_show_context_breakdown */
+/* PoP: hcli_show_context_breakdown @ hermes_cli/cli_info_mixin.py:_show_context_breakdown */
 /* /context [all] — visual context-window usage breakdown.
  * Renders a 5×20 glyph grid + per-category table using the already-ported
  * context_breakdown render functions. */
@@ -382,7 +382,7 @@ void hcli_show_context_breakdown(hcli_t *self, const char *cmd_original) {
     context_breakdown_agent_destroy(cb_agent);
 }
 
-/* PoP: hcli_usage_reset @ cli.py:_usage_reset */
+/* PoP: hcli_usage_reset @ hermes_cli/cli_info_mixin.py:_usage_reset */
 /* /usage reset [--force] — redeem one banked Codex reset credit.
  *
  * The Codex backend requires an HTTP client. The real implementation lives
@@ -414,7 +414,7 @@ void hcli_usage_reset(hcli_t *self, bool force) {
     free(arg);
 }
 
-/* PoP: hcli_drain_process_notifications @ cli.py:_drain_process_notifications */
+/* PoP: hcli_drain_process_notifications @ hermes_cli/cli_process_notifications.py:_drain_process_notifications */
 /* Queue background notifications owned by this CLI session. Mirrors Python:
  * call drain_notifications with the session key, then for each returned event
  * claim it, push its synthetic_message into pending_input, then complete it.
@@ -658,13 +658,13 @@ json_t *hcli_handle_usage_command(hcli_t *self, const char *cmd_original) {
     return json_new_null();
 }
 
-/* PoP: hcli_write_terminal_breadcrumb @ cli.py:_write_terminal_breadcrumb */
+/* PoP: hcli_write_terminal_breadcrumb @ hermes_cli/cli_session_mixin.py:_write_terminal_breadcrumb */
 void hcli_write_terminal_breadcrumb(hcli_t *self) {
     if (!self) return;
     tbr_write_breadcrumb(self->session_id, NULL);
 }
 
-/* PoP: hcli_maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
+/* PoP: hcli_maybe_start_wake_word @ hermes_cli/cli_voice_mixin.py:_maybe_start_wake_word */
 void hcli_maybe_start_wake_word(hcli_t *self) {
     if (!self) return;
     if (self->should_exit) return;
@@ -700,7 +700,7 @@ void hcli_maybe_start_wake_word(hcli_t *self) {
     json_free(cfg);
 }
 
-/* PoP: hcli_on_wake_word @ cli.py:_on_wake_word */
+/* PoP: hcli_on_wake_word @ hermes_cli/cli_voice_mixin.py:_on_wake_word */
 void hcli_on_wake_word(hcli_t *self) {
     if (!self) return;
     if (self->should_exit) return;
@@ -754,7 +754,7 @@ void hcli_persist_session_yolo(hcli_t *self, const char *session_key, bool enabl
     }
 }
 
-/* PoP: hcli_stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
+/* PoP: hcli_stop_wake_word_listener @ hermes_cli/cli_voice_mixin.py:_stop_wake_word_listener */
 void hcli_stop_wake_word_listener(hcli_t *self, bool announce) {
     (void)announce;
     if (!self) return;
@@ -763,7 +763,7 @@ void hcli_stop_wake_word_listener(hcli_t *self, bool announce) {
     ww_stop_listening(self);
 }
 
-/* PoP: _start_wake_watchdog @ cli.py:_start_wake_watchdog
+/* PoP: _start_wake_watchdog @ hermes_cli/cli_voice_mixin.py:_start_wake_watchdog
  * Daemon thread polls every 0.25s; after 3 consecutive idle polls (~0.75s),
  * resume the paused detector. Thread exits when wake_word_active is cleared. */
 static void *wake_watchdog_fn(void *arg) {
@@ -806,7 +806,7 @@ void hcli_start_wake_word_watchdog(hcli_t *self) {
     pthread_detach(tid);
 }
 
-/* PoP: _start_heartbeat_watchdog @ cli.py:_start_heartbeat_watchdog
+/* PoP: _start_heartbeat_watchdog @ hermes_cli/cli_loops_mixin.py:_start_heartbeat_watchdog
  * Daemon thread polls every hb_POLL_SECONDS (5.0s); when idle and a
  * heartbeat is due, inject the prompt into _pending_input. Idempotent. */
 static void *heartbeat_watchdog_fn(void *arg) {
@@ -845,7 +845,7 @@ void hcli_start_heartbeat_watchdog(hcli_t *self) {
     pthread_detach(tid);
 }
 
-/* PoP: hcli_get_heartbeat_manager @ cli.py:_get_heartbeat_manager */
+/* PoP: hcli_get_heartbeat_manager @ hermes_cli/cli_loops_mixin.py:_get_heartbeat_manager */
 void *hcli_get_heartbeat_manager(hcli_t *self) {
     if (!self) return NULL;
     const char *sid = self->session_id ? self->session_id : "";
@@ -897,7 +897,7 @@ void *hcli_get_goal_manager(hcli_t *self) {
     return mgr;
 }
 
-/* PoP: hcli_maybe_fire_loop_tick @ cli.py:_maybe_fire_loop_tick */
+/* PoP: hcli_maybe_fire_loop_tick @ hermes_cli/cli_loops_mixin.py:_maybe_fire_loop_tick */
 void hcli_maybe_fire_loop_tick(hcli_t *self) {
     if (!self) return;
     /* Only runs while the agent is idle and nothing is queued. */
@@ -937,7 +937,7 @@ void hcli_maybe_fire_loop_tick(hcli_t *self) {
     free(wakeup);
 }
 
-/* PoP: hcli_maybe_complete_loop_tick_after_turn @ cli.py:_maybe_complete_loop_tick_after_turn */
+/* PoP: hcli_maybe_complete_loop_tick_after_turn @ hermes_cli/cli_loops_mixin.py:_maybe_complete_loop_tick_after_turn */
 void hcli_maybe_complete_loop_tick_after_turn(hcli_t *self) {
     if (!self) return;
 
@@ -984,7 +984,7 @@ void hcli_maybe_complete_loop_tick_after_turn(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_start_wake_word_listener @ cli.py:_start_wake_word_listener */
+/* PoP: hcli_start_wake_word_listener @ hermes_cli/cli_voice_mixin.py:_start_wake_word_listener */
 bool hcli_start_wake_word_listener(hcli_t *self, bool announce) {
     if (!self) return false;
     if (self->wake_word_active && ww_owns_listener(self)) {
@@ -1023,7 +1023,7 @@ bool hcli_start_wake_word_listener(hcli_t *self, bool announce) {
     return true;
 }
 
-/* PoP: hcli_show_wake_word_status @ cli.py:_show_wake_word_status */
+/* PoP: hcli_show_wake_word_status @ hermes_cli/cli_voice_mixin.py:_show_wake_word_status */
 json_t *hcli_show_wake_word_status(hcli_t *self) {
     if (!self) return NULL;
 
@@ -1081,7 +1081,7 @@ void hcli_transfer_session_yolo(hcli_t *self, const char *old_id,
     approval_set_current_session_key(new_id);
 }
 
-/* PoP: hcli_is_session_yolo_active @ cli.py:_is_session_yolo_active */
+/* PoP: hcli_is_session_yolo_active @ hermes_cli/cli_session_mixin.py:_is_session_yolo_active */
 bool hcli_is_session_yolo_active(hcli_t *self) {
     (void)self;
     /* Honors frozen --yolo flag first, then per-session approval set. */
@@ -1090,7 +1090,7 @@ bool hcli_is_session_yolo_active(hcli_t *self) {
     return false;
 }
 
-/* PoP: hcli_toggle_yolo @ cli.py:_toggle_yolo */
+/* PoP: hcli_toggle_yolo @ hermes_cli/cli_session_mixin.py:_toggle_yolo */
 void hcli_toggle_yolo(hcli_t *self) {
     if (!self) return;
     if (is_yolo_mode_frozen()) return;
@@ -1106,7 +1106,7 @@ void hcli_toggle_yolo(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_persist_model_switch_to_session @ cli.py:_persist_model_switch_to_session */
+/* PoP: hcli_persist_model_switch_to_session @ hermes_cli/cli_model_switch_mixin.py:_persist_model_switch_to_session */
 void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
     if (!self || !self->session_db || !self->session_id ||
         !result || result->type != JSON_OBJECT) return;
@@ -1149,7 +1149,7 @@ void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
     free(canon);
 }
 
-/* PoP: hcli_restore_session_yolo @ cli.py:_restore_session_yolo */
+/* PoP: hcli_restore_session_yolo @ hermes_cli/cli_session_mixin.py:_restore_session_yolo */
 void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json,
                                 bool quiet) {
     if (!self) return;
@@ -1168,7 +1168,7 @@ void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json,
     }
 }
 
-/* PoP: hcli_snapshot_model_runtime @ cli.py:_snapshot_model_runtime */
+/* PoP: hcli_snapshot_model_runtime @ hermes_cli/cli_model_switch_mixin.py:_snapshot_model_runtime */
 hcli_model_runtime_t *hcli_snapshot_model_runtime(hcli_t *self) {
     if (!self) return NULL;
     hcli_model_runtime_t *snap = calloc(1, sizeof(hcli_model_runtime_t));
@@ -1191,7 +1191,7 @@ hcli_model_runtime_t *hcli_snapshot_model_runtime(hcli_t *self) {
     return snap;
 }
 
-/* PoP: hcli_restore_model_runtime_snapshot @ cli.py:_restore_model_runtime_snapshot */
+/* PoP: hcli_restore_model_runtime_snapshot @ hermes_cli/cli_model_switch_mixin.py:_restore_model_runtime_snapshot */
 void hcli_restore_model_runtime_snapshot(hcli_t *self, const hcli_model_runtime_t *snap) {
     if (!self || !snap) return;
     free(self->model);             self->model = snap->model ? strdup(snap->model) : NULL;
@@ -1221,7 +1221,7 @@ void hcli_model_runtime_free(hcli_model_runtime_t *snap) {
     free(snap);
 }
 
-/* PoP: handle_bang_shell @ cli.py:handle_bang_shell */
+/* PoP: handle_bang_shell @ hermes_cli/cli_info_mixin.py:handle_bang_shell */
 bool hcli_handle_bang_shell(hcli_t *self, const char *text) {
     if (!self || !text) return false;
     if (!bang_shell_is_bang_command(text)) return false;
@@ -1275,7 +1275,7 @@ bool hcli_handle_bang_shell(hcli_t *self, const char *text) {
     return true;
 }
 
-/* PoP: hcli_restore_session_model @ cli.py:_restore_session_model */
+/* PoP: hcli_restore_session_model @ hermes_cli/cli_model_switch_mixin.py:_restore_session_model */
 void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool quiet) {
     if (!self || !session_meta) return;
     if (self->explicit_model_override) return;
@@ -1413,7 +1413,7 @@ void hcli_finalize_preloaded_skills(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_get_voice_status_fragments @ cli.py:_get_voice_status_fragments */
+/* PoP: hcli_get_voice_status_fragments @ hermes_cli/cli_status_bar_mixin.py:_get_voice_status_fragments */
 hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t *out_len) {
     if (!self || !out_len) { if (out_len) *out_len = 0; return NULL; }
     *out_len = 0;
@@ -1473,7 +1473,7 @@ hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t
 }
 
 
-/* PoP: hcli_status_bar_goal_segment @ cli.py:_status_bar_goal_segment */
+/* PoP: hcli_status_bar_goal_segment @ hermes_cli/cli_status_bar_mixin.py:_status_bar_goal_segment */
 char *hcli_status_bar_goal_segment(const json_t *snapshot) {
     if (!snapshot || snapshot->type != JSON_OBJECT) return strdup("");
     bool goal_active = json_get_bool(snapshot, "goal_active", false);
@@ -1488,7 +1488,7 @@ char *hcli_status_bar_goal_segment(const json_t *snapshot) {
     return strdup("⊙ goal");
 }
 
-/* PoP: hcli_build_status_bar_text @ cli.py:_build_status_bar_text */
+/* PoP: hcli_build_status_bar_text @ hermes_cli/cli_status_bar_mixin.py:_build_status_bar_text */
 char *hcli_build_status_bar_text(hcli_t *self, int width) {
     if (!self) return NULL;
     json_t *snapshot = hcli_get_status_bar_snapshot(self);
@@ -1586,7 +1586,7 @@ char *hcli_build_status_bar_text(hcli_t *self, int width) {
     return result;
 }
 
-/* PoP: hcli_get_status_bar_fragments @ cli.py:_get_status_bar_fragments */
+/* PoP: hcli_get_status_bar_fragments @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_fragments */
 hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len) {
     if (!out_len) return NULL;
     *out_len = 0;
@@ -1699,7 +1699,7 @@ void hcli_on_reaction(hcli_t *self, const char *kind) {
     }
 }
 
-/* PoP: hcli_should_handle_background_command_inline @ cli.py:_should_handle_background_command_inline */
+/* PoP: hcli_should_handle_background_command_inline @ hermes_cli/cli_info_mixin.py:_should_handle_background_command_inline */
 bool hcli_should_handle_background_command_inline(hcli_t *self, const char *text, bool has_images) {
     (void)has_images;
     if (!self || !self->agent_running) return false;

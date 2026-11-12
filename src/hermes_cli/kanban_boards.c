@@ -197,7 +197,7 @@ int kdb_board_exists(const char *board)
     return exists;
 }
 
-/* PoP: kdb_read_board_metadata @ hermes_cli/kanban_db.py:read_board_metadata */
+/* PoP: kdb_read_board_metadata @ hermes_cli/kanban_db_boards.py:read_board_metadata */
 char *kdb_read_board_metadata(const char *board)
 {
     char *slug = _normalize_board_slug(board);
@@ -244,7 +244,7 @@ char *kdb_read_board_metadata(const char *board)
     return out;
 }
 
-/* PoP: kdb_write_board_metadata @ hermes_cli/kanban_db.py:write_board_metadata */
+/* PoP: kdb_write_board_metadata @ hermes_cli/kanban_db_boards.py:write_board_metadata */
 char *kdb_write_board_metadata(const char *board,
                                const char *name, const char *description,
                                const char *icon, const char *color,
@@ -298,7 +298,7 @@ char *kdb_write_board_metadata(const char *board,
     return out; /* db_path omitted from written file; matches Python */
 }
 
-/* PoP: kdb_create_board @ hermes_cli/kanban_db.py:create_board */
+/* PoP: kdb_create_board @ hermes_cli/kanban_db_boards.py:create_board */
 char *kdb_create_board(const char *slug,
                        const char *name, const char *description,
                        const char *icon, const char *color,
@@ -414,7 +414,7 @@ static void remove_dir_recursive(const char *path)
     remove(path);
 }
 
-/* PoP: kdb_remove_board @ hermes_cli/kanban_db.py:remove_board */
+/* PoP: kdb_remove_board @ hermes_cli/kanban_db_boards.py:remove_board */
 char *kdb_remove_board(const char *slug, int archive)
 {
     char *normed = _normalize_board_slug(slug);

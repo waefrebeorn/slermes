@@ -83,7 +83,7 @@ static char *goal_vtab_load(const char *session_id) {
 }
 
 /* ─────────────── _goal_still_active_for_session ─────────────── */
-/* PoP: gw_goal_still_active_for_session @ gateway/run.py:_goal_still_active_for_session */
+/* PoP: gw_goal_still_active_for_session @ gateway/run_busy.py:_goal_still_active_for_session */
 bool gw_goal_still_active_for_session(const char *session_id) {
     if (!session_id || session_id[0] == '\0') return false;
     /* GoalManager(session_id=session_id).is_active() — the manager's ctor
@@ -102,7 +102,7 @@ bool gw_goal_still_active_for_session(const char *session_id) {
 }
 
 /* ─────────────── _update_platform_runtime_status ─────────────── */
-/* PoP: gw_update_platform_runtime_status @ gateway/run.py:_update_platform_runtime_status */
+/* PoP: gw_update_platform_runtime_status @ gateway/run_shutdown.py:_update_platform_runtime_status */
 void gw_update_platform_runtime_status(const char *platform,
                                        const char *platform_state,
                                        const char *error_code,

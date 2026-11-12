@@ -685,7 +685,7 @@ bool _is_delegated_child_cli_mutation(kb_args_t *a) {
     return env && *env;
 }
 
-/* PoP: _cmd_boards_create @ hermes_cli/kanban.py:_cmd_boards_create */
+/* PoP: _cmd_boards_create @ hermes_cli/kanban_boards.py:_cmd_boards_create */
 int _cmd_boards_create(kb_args_t *a) {
     const char *slug_in = karg(a, "slug");
     char *normed = _normalize_board_slug(slug_in);
@@ -725,7 +725,7 @@ int _cmd_boards_create(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_rm @ hermes_cli/kanban.py:_cmd_boards_rm */
+/* PoP: _cmd_boards_rm @ hermes_cli/kanban_boards.py:_cmd_boards_rm */
 int _cmd_boards_rm(kb_args_t *a) {
     /* Alias `boards delete` never sets args.delete (the flag belongs to the
      * 'rm' subparser) — detect the alias and treat it as --delete (#23139). */
@@ -754,7 +754,7 @@ int _cmd_boards_rm(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_switch @ hermes_cli/kanban.py:_cmd_boards_switch */
+/* PoP: _cmd_boards_switch @ hermes_cli/kanban_boards.py:_cmd_boards_switch */
 int _cmd_boards_switch(kb_args_t *a) {
     char *normed = _normalize_board_slug(karg(a, "slug"));
     if (!normed || !*normed) {
@@ -793,7 +793,7 @@ static void kc_board_task_counts(sqlite3 *conn, json_t *counts, long *total) {
     }
 }
 
-/* PoP: _cmd_boards_show @ hermes_cli/kanban.py:_cmd_boards_show */
+/* PoP: _cmd_boards_show @ hermes_cli/kanban_boards.py:_cmd_boards_show */
 int _cmd_boards_show(kb_args_t *a) {
     (void)a;
     char *current = get_current_board();
@@ -828,7 +828,7 @@ int _cmd_boards_show(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_rename @ hermes_cli/kanban.py:_cmd_boards_rename */
+/* PoP: _cmd_boards_rename @ hermes_cli/kanban_boards.py:_cmd_boards_rename */
 int _cmd_boards_rename(kb_args_t *a) {
     const char *slug_in = karg(a, "slug");
     char *normed = _normalize_board_slug(slug_in);
@@ -849,7 +849,7 @@ int _cmd_boards_rename(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_set_default_workdir @ hermes_cli/kanban.py:_cmd_boards_set_default_workdir */
+/* PoP: _cmd_boards_set_default_workdir @ hermes_cli/kanban_boards.py:_cmd_boards_set_default_workdir */
 int _cmd_boards_set_default_workdir(kb_args_t *a) {
     const char *path = karg(a, "path");
     const char *slug_in = karg(a, "slug");
@@ -875,7 +875,7 @@ int _cmd_boards_set_default_workdir(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _dispatch_boards @ hermes_cli/kanban.py:_dispatch_boards */
+/* PoP: _dispatch_boards @ hermes_cli/kanban_boards.py:_dispatch_boards */
 int _dispatch_boards(kb_args_t *a) {
     /* Boards management is filesystem-level (board dirs, `current` pointer,
      * board.json), deliberately separate from the task commands so a fresh
@@ -2752,7 +2752,7 @@ int _cmd_archive(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_tail @ hermes_cli/kanban.py:_cmd_tail */
+/* PoP: _cmd_tail @ hermes_cli/kanban_ops.py:_cmd_tail */
 static volatile sig_atomic_t kc_interrupted = 0;
 #include <signal.h>
 static void kc_on_sigint(int sig) { (void)sig; kc_interrupted = 1; }
@@ -2789,7 +2789,7 @@ int _cmd_tail(kb_args_t *a) {
 }
 
 
-/* PoP: _cmd_dispatch @ hermes_cli/kanban.py:_cmd_dispatch */
+/* PoP: _cmd_dispatch @ hermes_cli/kanban_ops.py:_cmd_dispatch */
 int _cmd_dispatch(kb_args_t *a) {
     /* Honours kanban.default_assignee / max_in_progress(_per_profile) /
      * max_spawn with the same semantics as the gateway dispatch path. */
@@ -2852,7 +2852,7 @@ int _cmd_dispatch(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_daemon @ hermes_cli/kanban.py:_cmd_daemon */
+/* PoP: _cmd_daemon @ hermes_cli/kanban_ops.py:_cmd_daemon */
 int _cmd_daemon(kb_args_t *a) {
     /* Deprecated — the dispatcher now runs inside the gateway. Default path
      * exits 2 with guidance so nobody runs two dispatchers against one DB. */
@@ -2934,7 +2934,7 @@ int _cmd_daemon(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_watch @ hermes_cli/kanban.py:_cmd_watch */
+/* PoP: _cmd_watch @ hermes_cli/kanban_ops.py:_cmd_watch */
 int _cmd_watch(kb_args_t *a) {
     const char *assignee = karg(a, "assignee");
     const char *tenant = karg(a, "tenant");
@@ -3343,7 +3343,7 @@ int _cmd_decompose(kb_args_t *a) {
     return kc_triage_cmd("decompose", a, true);
 }
 
-/* PoP: _cmd_gc @ hermes_cli/kanban.py:_cmd_gc */
+/* PoP: _cmd_gc @ hermes_cli/kanban_ops.py:_cmd_gc */
 int _cmd_gc(kb_args_t *a) {
     /* Remove scratch workspaces of archived tasks, prune old events, delete
      * old worker logs. Never deletes outside the scratch root. */

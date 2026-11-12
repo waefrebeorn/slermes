@@ -393,7 +393,7 @@ bool telegram_answer_callback_query(http_client_t *http, const char *callback_qu
  *  P104: Send poll
  * ================================================================ */
 
-/* PoP: telegram_send_poll @ gateway/platforms/telegram.py:send_poll */
+/* PoP: telegram_send_poll @ plugins/platforms/whatsapp/adapter.py:send_poll */
 /* Port of Python gateway/platforms/telegram.py:send_poll(). */
 bool telegram_send_poll(http_client_t *http, const char *chat_id,
                          const char *question, json_node_t *options,
@@ -607,7 +607,7 @@ bool telegram_unpin_chat_message(http_client_t *http, const char *chat_id,
  *  E16: Message reactions
  * ================================================================ */
 
-/* PoP: telegram_set_message_reaction @ gateway/platforms/telegram.py:set_message_reaction */
+/* PoP: telegram_set_message_reaction @ hermes_state_messages.py:set_message_reaction */
 /* Port of Python gateway/platforms/telegram.py:set_message_reaction(). */
 bool telegram_set_message_reaction(http_client_t *http, const char *chat_id,
                                     const char *message_id, const char *emoji)

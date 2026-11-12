@@ -351,7 +351,7 @@ json_t *tools_config_plugin_tts_providers(void) {
     return rows;
 }
 
-/* PoP: tools_config_visible_providers @ hermes_cli/tools_config.py:_visible_providers */
+/* PoP: tools_config_visible_providers @ hermes_cli/tools_config_providers.py:_visible_providers */
 json_t *tools_config_visible_providers(const json_t *cat, const json_t *config,
                                        bool force_fresh,
                                        const json_t *features) {
@@ -438,7 +438,7 @@ bool tools_config_cloud_agent_browser_installed(void) {
 
 /* ── provider activity ─────────────────────────────────────────────────── */
 
-/* PoP: tools_config_web_tier_matches @ hermes_cli/tools_config.py:_web_tier_matches */
+/* PoP: tools_config_web_tier_matches @ hermes_cli/tools_config_providers.py:_web_tier_matches */
 bool tools_config_web_tier_matches(const json_t *provider, const json_t *config) {
     const char *row_tier = tcp_prov_str(provider, "web_tier");
     if (!row_tier || !*row_tier)
@@ -473,7 +473,7 @@ bool tools_config_web_tier_matches(const json_t *provider, const json_t *config)
     return strcmp(row_tier, has_key ? "paid" : "free") == 0;
 }
 
-/* PoP: tools_config_is_provider_active @ hermes_cli/tools_config.py:_is_provider_active */
+/* PoP: tools_config_is_provider_active @ hermes_cli/tools_config_providers.py:_is_provider_active */
 bool tools_config_is_provider_active(const json_t *provider,
                                      const json_t *config, bool force_fresh,
                                      const json_t *features) {
@@ -640,7 +640,7 @@ static int tcp_detect_active_provider_index(const json_t *providers,
 
 /* ── configuration gate ────────────────────────────────────────────────── */
 
-/* PoP: tools_config_toolset_needs_configuration_prompt @ hermes_cli/tools_config.py:_toolset_needs_configuration_prompt */
+/* PoP: tools_config_toolset_needs_configuration_prompt @ hermes_cli/tools_config_providers.py:_toolset_needs_configuration_prompt */
 bool tools_config_toolset_needs_configuration_prompt(const char *ts_key,
                                                      const json_t *config,
                                                      bool force_fresh) {
@@ -803,7 +803,7 @@ static void tcp_pick_model_common(json_t *catalog, const char *default_model,
 }
 
 /* IMAGEGEN_BACKENDS = {"fal": {...}} — the only registered backend. */
-/* PoP: tools_config_configure_imagegen_model @ hermes_cli/tools_config.py:_configure_imagegen_model */
+/* PoP: tools_config_configure_imagegen_model @ hermes_cli/tools_config_providers.py:_configure_imagegen_model */
 void tools_config_configure_imagegen_model(const char *backend_name,
                                            json_t *config) {
     if (!backend_name || strcmp(backend_name, "fal") != 0)
@@ -869,7 +869,7 @@ void tools_config_configure_imagegen_model_for_plugin(const char *plugin_name,
     free(default_model);
 }
 
-/* PoP: tools_config_configure_xai_imagine_storage @ hermes_cli/tools_config.py:_configure_xai_imagine_storage */
+/* PoP: tools_config_configure_xai_imagine_storage @ hermes_cli/tools_config_providers.py:_configure_xai_imagine_storage */
 void tools_config_configure_xai_imagine_storage(const char *section_name,
                                                 json_t *config) {
     json_t *section = config ? json_obj_get(config, section_name) : NULL;
@@ -993,7 +993,7 @@ static const struct {
     { NULL, NULL },
 };
 
-/* PoP: tools_config_configure_stt_model @ hermes_cli/tools_config.py:_configure_stt_model */
+/* PoP: tools_config_configure_stt_model @ hermes_cli/tools_config_providers.py:_configure_stt_model */
 void tools_config_configure_stt_model(const char *stt_provider, json_t *config) {
     const char *const *catalog = NULL;
     for (size_t i = 0; STT_MODEL_CATALOG[i].provider; i++) {
@@ -1080,7 +1080,7 @@ static void tcp_set_selection(json_t *config, const char *section_key,
     json_obj_del(section, "use_gateway");
 }
 
-/* PoP: tools_config_write_provider_config @ hermes_cli/tools_config.py:_write_provider_config */
+/* PoP: tools_config_write_provider_config @ hermes_cli/tools_config_providers.py:_write_provider_config */
 void tools_config_write_provider_config(const json_t *provider, json_t *config,
                                         const char *managed_feature) {
     const char *tts = tcp_prov_str(provider, "tts_provider");
@@ -1196,7 +1196,7 @@ void tools_config_write_provider_config(const json_t *provider, json_t *config,
     }
 }
 
-/* PoP: tools_config_apply_provider_selection @ hermes_cli/tools_config.py:apply_provider_selection */
+/* PoP: tools_config_apply_provider_selection @ hermes_cli/tools_config_providers.py:apply_provider_selection */
 void tools_config_apply_provider_selection(const char *ts_key,
                                            const char *provider_name,
                                            json_t *config) {
@@ -1299,7 +1299,7 @@ static bool tcp_nous_gate(const json_t *provider, json_t *config,
     return true;
 }
 
-/* PoP: tools_config_configure_provider @ hermes_cli/tools_config.py:_configure_provider */
+/* PoP: tools_config_configure_provider @ hermes_cli/tools_config_providers.py:_configure_provider */
 void tools_config_configure_provider(const json_t *provider, json_t *config,
                                      bool force_fresh) {
     if (!provider || !config) return;
@@ -1449,7 +1449,7 @@ void tools_config_configure_provider(const json_t *provider, json_t *config,
 
 /* ── vision backend ────────────────────────────────────────────────────── */
 
-/* PoP: tools_config_configure_vision_provider_model @ hermes_cli/tools_config.py:_configure_vision_provider_model */
+/* PoP: tools_config_configure_vision_provider_model @ hermes_cli/tools_config_providers.py:_configure_vision_provider_model */
 void tools_config_configure_vision_provider_model(json_t *config,
                                                   json_t *vision_cfg) {
     /* Provider rows come from the shared aux-picker substrate
@@ -1459,7 +1459,7 @@ void tools_config_configure_vision_provider_model(json_t *config,
     display_print_warning("  Could not load provider list.");
 }
 
-/* PoP: tools_config_configure_vision_backend @ hermes_cli/tools_config.py:_configure_vision_backend */
+/* PoP: tools_config_configure_vision_backend @ hermes_cli/tools_config_providers.py:_configure_vision_backend */
 void tools_config_configure_vision_backend(void) {
     printf("\n");
     display_print_warning("  Vision / Image Analysis needs a multimodal model.");
@@ -1562,7 +1562,7 @@ void tools_config_configure_vision_backend(void) {
     display_print_info("  Skipped vision configuration");
 }
 
-/* PoP: tools_config_configure_simple_requirements @ hermes_cli/tools_config.py:_configure_simple_requirements */
+/* PoP: tools_config_configure_simple_requirements @ hermes_cli/tools_config_providers.py:_configure_simple_requirements */
 void tools_config_configure_simple_requirements(const char *ts_key) {
     if (!ts_key) return;
     if (strcmp(ts_key, "vision") == 0) {
@@ -1603,7 +1603,7 @@ void tools_config_configure_simple_requirements(const char *ts_key) {
     }
 }
 
-/* PoP: tools_config_configure_tool_category @ hermes_cli/tools_config.py:_configure_tool_category */
+/* PoP: tools_config_configure_tool_category @ hermes_cli/tools_config_providers.py:_configure_tool_category */
 void tools_config_configure_tool_category(const char *ts_key,
                                           const json_t *cat,
                                           json_t *config, bool force_fresh) {

@@ -19,7 +19,7 @@
 
 /* ---- _truncate_preview ---- */
 
-/* PoP: cli_agent_display__truncate_preview @ agent/display.py:_truncate_preview */
+/* PoP: cli_agent_display__truncate_preview @ gateway/platforms/base.py:_truncate_preview */
 char *cli_agent_display__truncate_preview(const char *text, int max_len)
 {
     if (!text) return strdup("");

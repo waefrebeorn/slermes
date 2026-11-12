@@ -268,7 +268,7 @@ json_t *term_resolve_task_overrides(const char *task_id) {
 }
 
 /* ------------------------------------------------------------------ */
-/* PoP: term_is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
+/* PoP: term_is_unusable_container_cwd @ tools/terminal_tool_config.py:_is_unusable_container_cwd */
 /* ------------------------------------------------------------------ */
 bool term_is_unusable_container_cwd(const char *cwd) {
     if (!cwd || !*cwd) return false;
@@ -431,8 +431,8 @@ json_t *term_get_env_config(void) {
 }
 
 /* ------------------------------------------------------------------ */
-/* PoP: get_active_env @ tools/terminal_tool.py:get_active_env         */
-/* PoP: is_persistent_env @ tools/terminal_tool.py:is_persistent_env   */
+/* PoP: get_active_env @ tools/terminal_tool_lifecycle.py:get_active_env         */
+/* PoP: is_persistent_env @ tools/terminal_tool_lifecycle.py:is_persistent_env   */
 /* ------------------------------------------------------------------ */
 
 /* Return a copy of the active env entry for task_id (or NULL). */
@@ -471,7 +471,7 @@ void term_env_set_active(const char *task_id, json_t *env_entry) {
 }
 
 /* ------------------------------------------------------------------ */
-/* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm                 */
+/* PoP: cleanup_vm @ tools/terminal_tool_lifecycle.py:cleanup_vm                 */
 /* ------------------------------------------------------------------ */
 void term_cleanup_vm(const char *task_id, bool force_remove) {
     (void)force_remove;
@@ -489,7 +489,7 @@ void term_cleanup_vm(const char *task_id, bool force_remove) {
     }
 }
 
-/* PoP: term_cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
+/* PoP: term_cleanup_all_environments @ tools/terminal_tool_lifecycle.py:cleanup_all_environments */
 int term_cleanup_all_environments(void) {
     pthread_mutex_lock(&g_lock);
     registry_init_locked();
@@ -512,7 +512,7 @@ int term_cleanup_all_environments(void) {
     return (int)got;
 }
 
-/* PoP: term_cleanup_inactive_envs @ tools/terminal_tool.py:_cleanup_inactive_envs */
+/* PoP: term_cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:_cleanup_inactive_envs */
 int term_cleanup_inactive_envs(long lifetime_seconds) {
     if (lifetime_seconds <= 0) lifetime_seconds = 300;
     double now = (double)time(NULL);

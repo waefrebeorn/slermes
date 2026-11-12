@@ -916,7 +916,7 @@ json_t *sched_sweep_stale_inflight(const json_t *due_jobs) {
     return released;
 }
 
-/* PoP: parse_bot_chat_deliver_token @ cron/scheduler.py:parse_bot_chat_deliver_token */
+/* PoP: parse_bot_chat_deliver_token @ cron/scheduler_delivery.py:parse_bot_chat_deliver_token */
 /* Return the target profile for a ``bot-chat[:<name>]`` deliver token:
  * malloc'd "" for the bare token (the job's own profile), the profile name
  * for the explicit form, or NULL when part is not a bot-chat token at all.
@@ -985,14 +985,14 @@ void sched_write_usage_audit(const char *job_id, int status) {
     free(line);
 }
 
-/* PoP: sched_get_config_home_channel @ cron/scheduler.py:_get_config_home_channel */
+/* PoP: sched_get_config_home_channel @ cron/scheduler_delivery.py:_get_config_home_channel */
 void sched_get_config_home_channel(char *out, size_t out_sz) {
     const char *home = getenv("HOME");
     if (!home) { out[0] = '\0'; return; }
     snprintf(out, out_sz, "%s", home);
 }
 
-/* PoP: sched_env_home_target_chat_id @ cron/scheduler.py:_env_home_target_chat_id */
+/* PoP: sched_env_home_target_chat_id @ cron/scheduler_delivery.py:_env_home_target_chat_id */
 void sched_env_home_target_chat_id(char *out, size_t out_sz) {
     snprintf(out, out_sz, "");
 }
@@ -1005,7 +1005,7 @@ void sched_relay_fronted_delivery_platforms(char *out_json, size_t out_sz) {
 /* READ-ONLY probe: would provider resolution fail for lack of a key?
  * Skipped entirely when a fallback chain is configured (auth-fallback may
  * rescue a missing primary key). */
-/* PoP: sched_preflight_check_provider_key @ cron/scheduler.py:_preflight_check_provider_key */
+/* PoP: sched_preflight_check_provider_key @ cron/scheduler_preflight.py:_preflight_check_provider_key */
 int sched_preflight_check_provider_key(void) {
     json_t *cfg = config_py_load_config_readonly();
     json_t *chain = cfg ? json_object_get(cfg, "model_fallback_chain") : NULL;
@@ -1037,7 +1037,7 @@ int sched_preflight_check_provider_key(void) {
 
 /* Check attached skills report ready. C signature carries no job context;
  * validate the skills store is present so attached skills can resolve. */
-/* PoP: sched_preflight_check_skills @ cron/scheduler.py:_preflight_check_skills */
+/* PoP: sched_preflight_check_skills @ cron/scheduler_preflight.py:_preflight_check_skills */
 int sched_preflight_check_skills(void) {
     const char *home = getenv("HERMES_HOME");
     char dir[1024];
@@ -1055,7 +1055,7 @@ int sched_preflight_check_skills(void) {
 
 /* Pre-dispatch configuration validation: the job must exist and carry a
  * non-empty prompt and schedule. */
-/* PoP: sched_preflight_job_config @ cron/scheduler.py:_preflight_job_config */
+/* PoP: sched_preflight_job_config @ cron/scheduler_preflight.py:_preflight_job_config */
 int sched_preflight_job_config(const char *job_id) {
     if (!job_id || !*job_id) return 0;
     extern json_t *cronjobs_get_job(const char *job_id);
@@ -1090,7 +1090,7 @@ int sched_create_job_with_scheduler_registration(const char *job_id, char *out_j
 
 
 /* === dissolved from other_ports_wrappers.c === */
-/* PoP: cron_scheduler_u_windows_cron_python_invocation @ cron/scheduler.py:_windows_cron_python_invocation */
+/* PoP: cron_scheduler_u_windows_cron_python_invocation @ cron/scheduler_script.py:_windows_cron_python_invocation */
 int cron_scheduler_u_windows_cron_python_invocation(const char *arg) {
     /* Python: uv launcher bypass. Arg =
      * "is_windows\tstate\tresult". */

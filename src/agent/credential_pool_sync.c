@@ -515,7 +515,7 @@ long long jwt_exp_claim(const char *token) {
 
 /* Nous NAS invoke-JWT usability: the token must carry `scope` and not be
  * past its `exp`. Mirrors hermes_cli.auth._nous_invoke_jwt_is_usable(). */
-/* PoP: nous_invoke_jwt_is_usable @ hermes_cli/auth.py:_nous_invoke_jwt_is_usable */
+/* PoP: nous_invoke_jwt_is_usable @ hermes_cli/auth_nous.py:_nous_invoke_jwt_is_usable */
 bool nous_invoke_jwt_is_usable(const char *token, const char *scope, const char *expires_at) {
     (void)expires_at;
     if (!token || !*token) return false;

@@ -20,7 +20,7 @@ long long cg_now_ns(void) {
     return (long long)ts.tv_sec * 1000000000LL + ts.tv_nsec;
 }
 
-/* PoP: cg_repo_root @ tui_gateway/compute_host.py:_repo_root */
+/* PoP: cg_repo_root @ tui_gateway/host_supervisor.py:_repo_root */
 char *cg_repo_root(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !*home) home = getenv("HOME");
@@ -39,7 +39,7 @@ char *cg_repo_root(void) {
     return out;
 }
 
-/* PoP: cg_build_sha @ tui_gateway/compute_host.py:_build_sha */
+/* PoP: cg_build_sha @ tui_gateway/host_supervisor.py:_build_sha */
 char *cg_build_sha(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !*home) home = getenv("HOME");

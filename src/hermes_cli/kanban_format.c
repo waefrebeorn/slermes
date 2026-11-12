@@ -52,7 +52,7 @@ char *kanban_fmt_ts (long ts) {
     return xstrdup(buf);
 }
 
-/* PoP: _fmt_task_line @ hermes_cli/kanban.py:_fmt_task_line */
+/* PoP: _fmt_task_line @ hermes_cli/kanban_output.py:_fmt_task_line */
 char *kanban_fmt_task_line (const kanban_task_t *t) {
     const char *icon = kanban_status_icon(t->status);
     const char *assignee = (t->assignee && *t->assignee) ? t->assignee : "(unassigned)";
@@ -282,7 +282,7 @@ long kanban_worker_run_id_for (const char *task_id) {
 
 /* ── boards summary helpers (v696 parity batch) ────────────────────── */
 
-/* PoP: kbn_board_task_counts @ hermes_cli/kanban.py:_board_task_counts */
+/* PoP: kbn_board_task_counts @ hermes_cli/kanban_boards.py:_board_task_counts */
 json_t *kbn_board_task_counts(const char *slug) {
     /* {status: count} for a board via GROUP BY on the tasks table. Safe on
      * an empty/missing DB (returns {} like Python). */
@@ -313,7 +313,7 @@ json_t *kbn_board_task_counts(const char *slug) {
     return out;
 }
 
-/* PoP: kbn_cmd_boards_list @ hermes_cli/kanban.py:_cmd_boards_list */
+/* PoP: kbn_cmd_boards_list @ hermes_cli/kanban_boards.py:_cmd_boards_list */
 json_t *kbn_cmd_boards_list(int include_archived) {
     /* Enrich each board entry with is_current + per-status counts + total.
      * Returns [{...board..., "is_current":bool,"counts":{...},"total":N}]. */

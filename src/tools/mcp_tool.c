@@ -117,8 +117,8 @@ static int g_dynamic_count = 0;
 
 /* Generic handler that dispatches to the right MCP server by looking up
  * the registered tool name in g_dynamic_tools table */
-/* PoP: mcp_dynamic_handler @ tools/mcp_tool.py:_make_tool_handler */
-/* PoP: mcp_dynamic_handler @ tools/mcp_tool.py:_make_tool_handler */
+/* PoP: mcp_dynamic_handler @ tools/mcp_tool_handlers.py:_make_tool_handler */
+/* PoP: mcp_dynamic_handler @ tools/mcp_tool_handlers.py:_make_tool_handler */
 static char *mcp_dynamic_handler(const char *args_json, const char *task_id) {
     (void)args_json;
     (void)task_id;
@@ -145,7 +145,7 @@ static bool mcp_sampling_handler(const char *server_name,
                                   const mcp_sampling_params_t *params,
                                   mcp_sampling_content_t *result,
                                   void *userdata);
-/* PoP: connect_sse_server @ tools/mcp_tool.py:_connect_server */
+/* PoP: connect_sse_server @ tools/mcp_tool_discovery.py:_connect_server */
 static bool connect_sse_server(const char *name, const char *url, int timeout,
                                 const mcp_root_t *roots, int root_count) {
     if (g_server_count >= MAX_MCP_SERVERS) return false;
@@ -391,7 +391,7 @@ static bool mcp_sampling_handler(const char *server_name,
 }
 
 /* Connect an MCP server using Streamable HTTP transport */
-/* PoP: connect_http_server @ tools/mcp_tool.py:_connect_server */
+/* PoP: connect_http_server @ tools/mcp_tool_discovery.py:_connect_server */
 static bool connect_http_server(const char *name, const char *url, int timeout,
                                  const mcp_root_t *roots, int root_count) {
     if (g_server_count >= MAX_MCP_SERVERS) return false;
@@ -506,7 +506,7 @@ static bool connect_http_server(const char *name, const char *url, int timeout,
 
 /* Connect an MCP server from config */
 
-/* PoP: connect_stdio_server @ tools/mcp_tool.py:_connect_server */
+/* PoP: connect_stdio_server @ tools/mcp_tool_discovery.py:_connect_server */
 static bool connect_stdio_server(const char *name, const char *command,
                                   char **args, int arg_count, int timeout,
                                   const mcp_root_t *roots, int root_count) {
@@ -688,8 +688,8 @@ static bool connect_stdio_server(const char *name, const char *command,
  *  MCP call tool — call any MCP tool by server + tool name
  * ================================================================ */
 
-/* PoP: mcp_call_handler @ tools/mcp_tool.py:probe_mcp_server_tools */
-/* PoP: mcp_call_handler @ tools/mcp_tool.py:_make_tool_handler */
+/* PoP: mcp_call_handler @ tools/mcp_tool_discovery.py:probe_mcp_server_tools */
+/* PoP: mcp_call_handler @ tools/mcp_tool_handlers.py:_make_tool_handler */
 static char *mcp_call_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -739,8 +739,8 @@ static char *mcp_call_handler(const char *args_json, const char *task_id) {
  *  MCP status tool
  * ================================================================ */
 
-/* PoP: mcp_status_handler @ tools/mcp_tool.py:get_mcp_status */
-/* PoP: mcp_status_handler @ tools/mcp_tool.py:get_mcp_status */
+/* PoP: mcp_status_handler @ tools/mcp_tool_discovery.py:get_mcp_status */
+/* PoP: mcp_status_handler @ tools/mcp_tool_discovery.py:get_mcp_status */
 static char *mcp_status_handler(const char *args_json, const char *task_id) {
     (void)args_json;
     (void)task_id;
@@ -799,7 +799,7 @@ static char *mcp_status_handler(const char *args_json, const char *task_id) {
  *  Initialization — connect configured MCP servers from config
  * ================================================================ */
 
-/* PoP: mcp_init_all @ tools/mcp_tool.py:refresh_agent_mcp_tools */
+/* PoP: mcp_init_all @ tools/mcp_tool_agent.py:refresh_agent_mcp_tools */
 void mcp_init_all(void) {
     /* Read config to find mcp_servers section */
     char config_path[HERMES_PATH_MAX];
@@ -1201,7 +1201,7 @@ void mcp_init_all(void) {
 /* Load stored credentials from mcp_auth.json.
  * Format: { "server_name": { "access_token": "...", "expires_at": 1234567890 } }
  * Returns true if file loaded successfully (may be empty). */
-/* PoP: credential_store_load @ tools/mcp_tool.py:_load_mcp_config */
+/* PoP: credential_store_load @ tools/mcp_tool_config.py:_load_mcp_config */
 static bool credential_store_load(const char *server_name, char *token_out,
                                    size_t token_sz, long long *expires_at) {
     if (!g_credential_store_path[0]) return false;
@@ -1242,7 +1242,7 @@ static bool credential_store_load(const char *server_name, char *token_out,
 }
 
 /* Save credentials for a server to mcp_auth.json */
-/* PoP: credential_store_save @ tools/mcp_tool.py:_load_mcp_config */
+/* PoP: credential_store_save @ tools/mcp_tool_config.py:_load_mcp_config */
 static bool credential_store_save(const char *server_name,
                                    const char *access_token,
                                    long long expires_at) {
@@ -1306,7 +1306,7 @@ static bool credential_store_save(const char *server_name,
 
 /* Perform OAuth client_credentials grant to get a new token.
  * Returns malloc'd access_token on success, NULL on error. */
-/* PoP: oauth_refresh_token @ tools/mcp_tool.py:_handle_auth_error_and_retry */
+/* PoP: oauth_refresh_token @ tools/mcp_tool_handlers.py:_handle_auth_error_and_retry */
 static char *oauth_refresh_token(mcp_auth_t *auth) {
     if (!auth || !auth->token_url[0] || !auth->client_id[0]) {
         fprintf(stderr, "MCP OAuth: missing token_url or client_id\n");
@@ -1365,7 +1365,7 @@ static char *oauth_refresh_token(mcp_auth_t *auth) {
 }
 
 /* Refresh token for a specific server if it's near expiry */
-/* PoP: mcp_auth_refresh_if_needed @ tools/mcp_tool.py:_handle_auth_error_and_retry */
+/* PoP: mcp_auth_refresh_if_needed @ tools/mcp_tool_handlers.py:_handle_auth_error_and_retry */
 /* PoP: mcp_auth_refresh_if_needed @ tools/mcp_tool.py:_reset_server_error */
 static bool mcp_auth_refresh_if_needed(int server_idx) {
     if (server_idx < 0 || server_idx >= g_server_count) return false;
@@ -1508,8 +1508,8 @@ static bool mcp_auth_refresh_if_needed(int server_idx) {
  *  P64: mcp_auth_reconfigure tool handler
  * ================================================================ */
 
-/* PoP: mcp_auth_handler @ tools/mcp_tool.py:_handle_auth_error_and_retry */
-/* PoP: mcp_auth_handler @ tools/mcp_tool.py:probe_mcp_server_tools */
+/* PoP: mcp_auth_handler @ tools/mcp_tool_handlers.py:_handle_auth_error_and_retry */
+/* PoP: mcp_auth_handler @ tools/mcp_tool_discovery.py:probe_mcp_server_tools */
 static char *mcp_auth_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1619,7 +1619,7 @@ static char *mcp_auth_handler(const char *args_json, const char *task_id) {
  * ================================================================ */
 
 /* PoP: mcp_resource_list_handler @ tools/mcp_tool.py:_make_list_resources_handler */
-/* PoP: mcp_resource_list_handler @ tools/mcp_tool.py:discover_mcp_tools */
+/* PoP: mcp_resource_list_handler @ tools/mcp_tool_discovery.py:discover_mcp_tools */
 static char *mcp_resource_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1662,7 +1662,7 @@ static char *mcp_resource_list_handler(const char *args_json, const char *task_i
 }
 
 /* PoP: mcp_resource_read_handler @ tools/mcp_tool.py:_make_read_resource_handler */
-/* PoP: mcp_resource_read_handler @ tools/mcp_tool.py:discover_mcp_tools */
+/* PoP: mcp_resource_read_handler @ tools/mcp_tool_discovery.py:discover_mcp_tools */
 static char *mcp_resource_read_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1727,7 +1727,7 @@ static char *mcp_resource_read_handler(const char *args_json, const char *task_i
  * ================================================================ */
 
 /* PoP: mcp_prompt_list_handler @ tools/mcp_tool.py:_make_list_prompts_handler */
-/* PoP: mcp_prompt_list_handler @ tools/mcp_tool.py:discover_mcp_tools */
+/* PoP: mcp_prompt_list_handler @ tools/mcp_tool_discovery.py:discover_mcp_tools */
 static char *mcp_prompt_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     (void)args_json;
@@ -1767,7 +1767,7 @@ static char *mcp_prompt_list_handler(const char *args_json, const char *task_id)
 }
 
 /* PoP: mcp_prompt_get_handler @ tools/mcp_tool.py:_make_get_prompt_handler */
-/* PoP: mcp_prompt_get_handler @ tools/mcp_tool.py:discover_mcp_tools */
+/* PoP: mcp_prompt_get_handler @ tools/mcp_tool_discovery.py:discover_mcp_tools */
 static char *mcp_prompt_get_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1938,8 +1938,8 @@ void registry_init_mcp(void) {
  * ================================================================ */
 
 /* Add a stdio-based MCP server at runtime */
-/* PoP: mcp_add_stdio_server @ tools/mcp_tool.py:register_mcp_servers */
-/* PoP: mcp_add_stdio_server @ tools/mcp_tool.py:register_mcp_servers */
+/* PoP: mcp_add_stdio_server @ tools/mcp_tool_discovery.py:register_mcp_servers */
+/* PoP: mcp_add_stdio_server @ tools/mcp_tool_discovery.py:register_mcp_servers */
 bool mcp_add_stdio_server(const char *name, const char *command,
                            char **args, int arg_count) {
     if (!name || !command || g_server_count >= MAX_MCP_SERVERS)
@@ -1948,8 +1948,8 @@ bool mcp_add_stdio_server(const char *name, const char *command,
 }
 
 /* Add an SSE-based MCP server at runtime */
-/* PoP: mcp_add_sse_server @ tools/mcp_tool.py:register_mcp_servers */
-/* PoP: mcp_add_sse_server @ tools/mcp_tool.py:register_mcp_servers */
+/* PoP: mcp_add_sse_server @ tools/mcp_tool_discovery.py:register_mcp_servers */
+/* PoP: mcp_add_sse_server @ tools/mcp_tool_discovery.py:register_mcp_servers */
 bool mcp_add_sse_server(const char *name, const char *url) {
     if (!name || !url || g_server_count >= MAX_MCP_SERVERS)
         return false;
@@ -1958,8 +1958,8 @@ bool mcp_add_sse_server(const char *name, const char *url) {
 }
 
 /* Remove a connected MCP server by name */
-/* PoP: mcp_remove_server @ tools/mcp_tool.py:register_mcp_servers */
-/* PoP: mcp_remove_server @ tools/mcp_tool.py:shutdown_mcp_servers */
+/* PoP: mcp_remove_server @ tools/mcp_tool_discovery.py:register_mcp_servers */
+/* PoP: mcp_remove_server @ tools/mcp_tool_lifecycle.py:shutdown_mcp_servers */
 bool mcp_remove_server(const char *name) {
     if (!name) return false;
     for (int i = 0; i < g_server_count; i++) {
@@ -2010,11 +2010,11 @@ bool mcp_check_logging_callback_support(void) {
      * actually in play, which we verify against the live server table. */
     return g_server_count >= 0 && MAX_MCP_SERVERS > 0;
 }
-/* PoP: mcp_jittered @ tools/mcp_tool.py:_jittered */
+/* PoP: mcp_jittered @ tools/mcp_tool_common.py:_jittered */
 double mcp_jittered(double base, double jitter_frac) {
     return base * (1.0 + ((rand() % 1000) / 1000.0 - 0.5) * 2.0 * jitter_frac);
 }
-/* PoP: mcp_env_ref_name @ tools/mcp_tool.py:_env_ref_name */
+/* PoP: mcp_env_ref_name @ tools/mcp_tool_common.py:_env_ref_name */
 const char *mcp_env_ref_name(const char *ref)
 {
     static char buf[1024];
@@ -2059,7 +2059,7 @@ char *mcp_wrap_command_with_watchdog(const char *cmd, int *timeout_ms)
     (void)timeout_ms;
     return cmd ? strdup(cmd) : strdup("");
 }
-/* PoP: mcp_resource_filename @ tools/mcp_tool.py:_mcp_resource_filename */
+/* PoP: mcp_resource_filename @ tools/mcp_tool_content.py:_mcp_resource_filename */
 const char *mcp_resource_filename(const char *uri) {
     /* Faithful port of _mcp_resource_filename: derive a safe display name
      * from the last path segment of the (unquoted) URI. C returns a malloc'd
@@ -2095,7 +2095,7 @@ const char *mcp_resource_filename(const char *uri) {
     out[oi] = '\0';
     return out;
 }
-/* PoP: mcp_cache_audio_block @ tools/mcp_tool.py:_cache_mcp_audio_block */
+/* PoP: mcp_cache_audio_block @ tools/mcp_tool_content.py:_cache_mcp_audio_block */
 void mcp_cache_audio_block(const char *id, const char *data) {
     /* Cache an MCP AudioContent block's base64 payload under the Hermes
      * cache dir and log the outcome — same fail-open contract as the image
@@ -2130,11 +2130,11 @@ void mcp_cache_audio_block(const char *id, const char *data) {
     hermes_log(LOG_DEBUG, "mcp", "cached audio block %s (%zu bytes) -> %s",
                id, raw_len, path);
 }
-/* PoP: mcp_render_resource_block @ tools/mcp_tool.py:_render_mcp_resource_block */
+/* PoP: mcp_render_resource_block @ tools/mcp_tool_content.py:_render_mcp_resource_block */
 char *mcp_render_resource_block(json_t *resource) { (void)resource; return strdup(""); }
 /* PoP: mcp_unwrap_exception_group @ tools/mcp_tool.py:_unwrap_exception_group */
 const char *mcp_unwrap_exception_group(const char *err) { return err ? err : ""; }
-/* PoP: mcp_contains_only_cancellation @ tools/mcp_tool.py:_contains_only_cancellation */
+/* PoP: mcp_contains_only_cancellation @ tools/mcp_tool_errors.py:_contains_only_cancellation */
 bool mcp_contains_only_cancellation(const char *err) {
     /* Faithful port of _contains_only_cancellation: True when the failure is
      * (or a group containing only) a cancellation. C has no exception groups;
@@ -2148,7 +2148,7 @@ bool mcp_contains_only_cancellation(const char *err) {
     lower[n] = '\0';
     return strstr(lower, "cancellederror") != NULL || strstr(lower, "cancel") != NULL;
 }
-/* PoP: mcp_classify_failure @ tools/mcp_tool.py:_classify_mcp_failure */
+/* PoP: mcp_classify_failure @ tools/mcp_tool_errors.py:_classify_mcp_failure */
 const char *mcp_classify_failure(const char *err) { (void)err; return "unknown"; }
 /* Find the parallel lifecycle slot for a server by name (-1 if unknown). */
 static int mcp_slot_by_name(const char *name) {
@@ -2164,19 +2164,19 @@ static int mcp_slot_by_name(const char *name) {
  * for relative backoff math). */
 static double mcp_now(void) { return (double)time(NULL); }
 
-/* PoP: mcp_is_recycled_stdio @ tools/mcp_tool.py:_is_recycled_stdio */
+/* PoP: mcp_is_recycled_stdio @ tools/mcp_tool_health.py:_is_recycled_stdio */
 bool mcp_is_recycled_stdio(const char *server_name) {
     int s = mcp_slot_by_name(server_name);
     if (s < 0) return false;
     return !g_server_lifecycle[s].is_http && g_server_lifecycle[s].recycled_reason[0] != 0;
 }
-/* PoP: mcp_mark_tool_call @ tools/mcp_tool.py:mark_tool_call */
+/* PoP: mcp_mark_tool_call @ tools/mcp_tool_health.py:mark_tool_call */
 void mcp_mark_tool_call(const char *server, const char *tool) {
     (void)tool;
     int s = mcp_slot_by_name(server);
     if (s >= 0) g_server_lifecycle[s].last_tool_call_at = mcp_now();
 }
-/* PoP: mcp_mark_lifecycle_started @ tools/mcp_tool.py:_mark_lifecycle_started */
+/* PoP: mcp_mark_lifecycle_started @ tools/mcp_tool_health.py:_mark_lifecycle_started */
 void mcp_mark_lifecycle_started(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s < 0) return;
@@ -2185,27 +2185,27 @@ void mcp_mark_lifecycle_started(const char *server) {
     g_server_lifecycle[s].last_tool_call_at = now;
     g_server_lifecycle[s].recycled_reason[0] = 0;
 }
-/* PoP: mcp_stdio_recycle_reason @ tools/mcp_tool.py:_stdio_recycle_reason */
+/* PoP: mcp_stdio_recycle_reason @ tools/mcp_tool_health.py:_stdio_recycle_reason */
 const char *mcp_stdio_recycle_reason(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s < 0 || g_server_lifecycle[s].recycled_reason[0] == 0) return NULL;
     return g_server_lifecycle[s].recycled_reason;
 }
-/* PoP: mcp_next_stdio_recycle_deadline @ tools/mcp_tool.py:_next_stdio_recycle_deadline */
+/* PoP: mcp_next_stdio_recycle_deadline @ tools/mcp_tool_health.py:_next_stdio_recycle_deadline */
 double mcp_next_stdio_recycle_deadline(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s < 0) return 0.0;
     /* Mirror Python: no per-recycle deadline tracked in C; recycle is immediate. */
     return 0.0;
 }
-/* PoP: mcp_mark_stdio_recycled @ tools/mcp_tool.py:_mark_stdio_recycled */
+/* PoP: mcp_mark_stdio_recycled @ tools/mcp_tool_health.py:_mark_stdio_recycled */
 void mcp_mark_stdio_recycled(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s < 0) return;
     snprintf(g_server_lifecycle[s].recycled_reason,
              sizeof(g_server_lifecycle[s].recycled_reason), "recycled");
 }
-/* PoP: mcp_make_logging_callback @ tools/mcp_tool.py:_make_logging_callback */
+/* PoP: mcp_make_logging_callback @ tools/mcp_tool_health.py:_make_logging_callback */
 void *mcp_make_logging_callback(void) {
     /* Python builds an async logging_callback that routes MCP
      * notifications/message into Hermes' logger, capped at 2000 chars. The
@@ -2218,7 +2218,7 @@ void *mcp_make_logging_callback(void) {
         handler_installed = 1;
     return &handler_installed;
 }
-/* PoP: mcp_mark_session_proven @ tools/mcp_tool.py:_mark_session_proven */
+/* PoP: mcp_mark_session_proven @ tools/mcp_tool_health.py:_mark_session_proven */
 void mcp_mark_session_proven(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s >= 0) g_server_lifecycle[s].session_proven = true;
@@ -2227,7 +2227,7 @@ void mcp_mark_session_proven(const char *server) {
  * _reconnect_event per MCPServerTask). */
 static bool g_reconnect_requested[MAX_MCP_SERVERS];
 
-/* PoP: mcp_reconnect_or_reraise_group @ tools/mcp_tool.py:_reconnect_or_reraise_group */
+/* PoP: mcp_reconnect_or_reraise_group @ tools/mcp_tool_transport.py:_reconnect_or_reraise_group */
 bool mcp_reconnect_or_reraise_group(const char *server) {
     /* Map an SDK transport TaskGroup failure to a clean "reconnect":
      * when the session had proven live (session_proven) and shutdown is
@@ -2254,8 +2254,8 @@ bool mcp_reconnect_or_reraise_group(const char *server) {
     g_reconnect_requested[s] = false;
     return ok;
 }
-/* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
-/* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
+/* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool_transport.py:_register_discovered_tools_if_needed */
+/* PoP: mcp_register_discovered_tools_if_needed @ tools/mcp_tool_transport.py:_register_discovered_tools_if_needed */
 void mcp_register_discovered_tools_if_needed(const char *server) {
     /* Re-register tools after an owned server reconnects: outage handling
      * may have marked registered tools unavailable, so publish freshly
@@ -2331,7 +2331,7 @@ bool mcp_wait_for_lazy_reconnect(const char *server, int timeout) {
     }
     return mcp_server_is_connected(srv);
 }
-/* PoP: mcp_record_connect_failure @ tools/mcp_tool.py:_record_connect_failure */
+/* PoP: mcp_record_connect_failure @ tools/mcp_tool_discovery.py:_record_connect_failure */
 void mcp_record_connect_failure(const char *server) {
     if (!server) return;
     int i = mcp_cooldown_find(server, 1);
@@ -2344,7 +2344,7 @@ void mcp_record_connect_failure(const char *server) {
     if (backoff > 600.0) backoff = 600.0;
     g_connect_cooldown[i].retry_after = mcp_now() + backoff;
 }
-/* PoP: mcp_clear_connect_failure @ tools/mcp_tool.py:_clear_connect_failure */
+/* PoP: mcp_clear_connect_failure @ tools/mcp_tool_discovery.py:_clear_connect_failure */
 void mcp_clear_connect_failure(const char *server) {
     if (!server) return;
     int i = mcp_cooldown_find(server, 0);
@@ -2353,7 +2353,7 @@ void mcp_clear_connect_failure(const char *server) {
     g_connect_cooldown[i].failures = 0;
     g_connect_cooldown[i].retry_after = 0.0;
 }
-/* PoP: mcp_connect_cooldown_active @ tools/mcp_tool.py:_connect_cooldown_active */
+/* PoP: mcp_connect_cooldown_active @ tools/mcp_tool_discovery.py:_connect_cooldown_active */
 bool mcp_connect_cooldown_active(const char *server) {
     if (!server) return false;
     int i = mcp_cooldown_find(server, 0);
@@ -2361,7 +2361,7 @@ bool mcp_connect_cooldown_active(const char *server) {
     double deadline = g_connect_cooldown[i].retry_after;
     return deadline > 0.0 && mcp_now() < deadline;
 }
-/* PoP: mcp_reconnect_server @ tools/mcp_tool.py:reconnect_mcp_server */
+/* PoP: mcp_reconnect_server @ tools/mcp_tool_loop.py:reconnect_mcp_server */
 bool mcp_reconnect_server(const char *server, int timeout) {
     /* Ask a currently-live MCP server to rebuild after external re-auth. */
     if (!server || !server[0]) return false;
@@ -2389,7 +2389,7 @@ bool mcp_reconnect_server(const char *server, int timeout) {
     (void)timeout;
     return true;
 }
-/* PoP: mcp_wait_for_session_ready @ tools/mcp_tool.py:_wait_for_server_session_ready */
+/* PoP: mcp_wait_for_session_ready @ tools/mcp_tool_loop.py:_wait_for_server_session_ready */
 bool mcp_wait_for_session_ready(const char *server, int timeout) {
     /* Wait for an MCP server to expose a usable session. Iteration-bounded
      * (0.25s poll like Python) so a frozen clock cannot spin forever. */
@@ -2406,7 +2406,7 @@ bool mcp_wait_for_session_ready(const char *server, int timeout) {
     }
     return srv && mcp_server_is_connected(srv);
 }
-/* PoP: mcp_signal_reconnect_and_wait @ tools/mcp_tool.py:_signal_reconnect_and_wait */
+/* PoP: mcp_signal_reconnect_and_wait @ tools/mcp_tool_loop.py:_signal_reconnect_and_wait */
 bool mcp_signal_reconnect_and_wait(const char *server, int timeout) {
     /* Ask a live server task to rebuild its transport session, then wait
      * for readiness. Clearing "ready" before signalling matters: otherwise
@@ -2435,7 +2435,7 @@ bool mcp_signal_reconnect_and_wait(const char *server, int timeout) {
     g_server_lifecycle[s].session_proven = true;
     return true;
 }
-/* PoP: mcp_wrap_dashboard_oauth_flow @ tools/mcp_tool.py:_wrap_with_dashboard_oauth_flow */
+/* PoP: mcp_wrap_dashboard_oauth_flow @ tools/mcp_tool_loop.py:_wrap_with_dashboard_oauth_flow */
 void mcp_wrap_dashboard_oauth_flow(const char *server) {
     /* Python wraps a call coroutine in the dashboard OAuth flow scope so
      * re-auth challenges route to the desktop dashboard. The C transport
@@ -2446,7 +2446,7 @@ void mcp_wrap_dashboard_oauth_flow(const char *server) {
                "dashboard OAuth flow scoped for server '%s'", server);
     setenv("HERMES_MCP_DASHBOARD_OAUTH_SERVER", server, 1);
 }
-/* PoP: mcp_request_lazy_reconnect @ tools/mcp_tool.py:_request_lazy_reconnect */
+/* PoP: mcp_request_lazy_reconnect @ tools/mcp_tool_discovery.py:_request_lazy_reconnect */
 bool mcp_request_lazy_reconnect(const char *server) {
     /* Wake a recycled stdio server and wait briefly for a fresh session.
      * Returns false when the server is not a recycled stdio server or the
@@ -2470,7 +2470,7 @@ bool mcp_request_lazy_reconnect(const char *server) {
     g_server_lifecycle[s].session_proven = true;
     return true;
 }
-/* PoP: mcp_get_connected_server_for_call @ tools/mcp_tool.py:_get_connected_server_for_call */
+/* PoP: mcp_get_connected_server_for_call @ tools/mcp_tool_discovery.py:_get_connected_server_for_call */
 void *mcp_get_connected_server_for_call(const char *server) {
     int s = mcp_slot_by_name(server);
     return s >= 0 ? (void *)g_servers[s] : NULL;
@@ -2480,13 +2480,13 @@ void mcp_mark_server_call_started(const char *server) {
     int s = mcp_slot_by_name(server);
     if (s >= 0) g_server_lifecycle[s].server_call_started_at = mcp_now();
 }
-/* PoP: mcp_prefixed_tool_name @ tools/mcp_tool.py:mcp_prefixed_tool_name */
+/* PoP: mcp_prefixed_tool_name @ tools/mcp_tool_schema.py:mcp_prefixed_tool_name */
 char *mcp_prefixed_tool_name(const char *server, const char *tool) {
     char buf[256]; snprintf(buf, sizeof(buf), "mcp_%s_%s", server?server:"", tool?tool:""); return strdup(buf);
 }
-/* PoP: mcp_get_lifecycle_seconds @ tools/mcp_tool.py:_get_lifecycle_seconds */
+/* PoP: mcp_get_lifecycle_seconds @ tools/mcp_tool_common.py:_get_lifecycle_seconds */
 double mcp_get_lifecycle_seconds(const char *server) { (void)server; return 3600.0; }
-/* PoP: mcp_is_tool_parallel_safe @ tools/mcp_tool.py:is_mcp_tool_parallel_safe */
+/* PoP: mcp_is_tool_parallel_safe @ tools/mcp_tool_discovery.py:is_mcp_tool_parallel_safe */
 bool mcp_is_tool_parallel_safe(const char *tool_name) {
     /* Check if an MCP tool belongs to a server configured with
      * supports_parallel_tool_calls. Use exact registered provenance
@@ -2504,7 +2504,7 @@ bool mcp_is_tool_parallel_safe(const char *tool_name) {
     }
     return false;
 }
-/* PoP: mcp_get_registered_server_names @ tools/mcp_tool.py:get_registered_mcp_server_names */
+/* PoP: mcp_get_registered_server_names @ tools/mcp_tool_discovery.py:get_registered_mcp_server_names */
 json_t *mcp_get_registered_server_names(void) { return json_array(); }
 
 
@@ -2545,7 +2545,7 @@ char *mcp_tool_error_data(const char *message, long code)
 /* legacy handle superseded by mcp_tool_get_mcp_stderr_log rewrite below */
 
 /* Port of Python: _get_mcp_stderr_log */
-/* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool.py:_get_mcp_stderr_log */
+/* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool_config.py:_get_mcp_stderr_log */
 /* ---- _get_mcp_stderr_log (faithful rewrite) -------------------------- */
 
 /* Port of Python: _check_message_handler_support */
@@ -2559,7 +2559,7 @@ bool mcp_tool_check_message_handler_support(const char *handler_name)
 }
 
 /* Port of Python: _build_safe_env */
-/* PoP: mcp_tool_build_safe_env @ tools/mcp_tool.py:_build_safe_env */
+/* PoP: mcp_tool_build_safe_env @ tools/mcp_tool_config.py:_build_safe_env */
 char *mcp_tool_build_safe_env(const char *server_name)
 {
     (void)server_name;
@@ -2597,7 +2597,7 @@ char *mcp_tool_build_safe_env(const char *server_name)
 }
 
 /* Port of Python: _sanitize_error */
-/* PoP: mcp_tool_sanitize_error @ tools/mcp_tool.py:_sanitize_error */
+/* PoP: mcp_tool_sanitize_error @ tools/mcp_tool_common.py:_sanitize_error */
 char *mcp_tool_sanitize_error(const char *error)
 {
     if (!error) return strdup("unknown error");
@@ -2622,7 +2622,7 @@ char *mcp_tool_sanitize_error(const char *error)
 }
 
 /* Port of Python: _exc_str */
-/* PoP: mcp_tool_exc_str @ tools/mcp_tool.py:_exc_str */
+/* PoP: mcp_tool_exc_str @ tools/mcp_tool_common.py:_exc_str */
 char *mcp_tool_exc_str(const char *error_msg)
 {
     if (!error_msg) return strdup("exception (no message)");
@@ -2633,7 +2633,7 @@ char *mcp_tool_exc_str(const char *error_msg)
 }
 
 /* Port of Python: _is_method_not_found_error */
-/* PoP: mcp_tool_is_method_not_found_error @ tools/mcp_tool.py:_is_method_not_found_error */
+/* PoP: mcp_tool_is_method_not_found_error @ tools/mcp_tool_errors.py:_is_method_not_found_error */
 bool mcp_tool_is_method_not_found_error(const char *error)
 {
     if (!error) return false;
@@ -2643,7 +2643,7 @@ bool mcp_tool_is_method_not_found_error(const char *error)
 }
 
 /* Port of Python: _scan_mcp_description */
-/* PoP: mcp_tool_scan_mcp_description @ tools/mcp_tool.py:_scan_mcp_description */
+/* PoP: mcp_tool_scan_mcp_description @ tools/mcp_tool_schema.py:_scan_mcp_description */
 char *mcp_tool_scan_mcp_description(const char *text)
 {
     if (!text) return strdup("{}");
@@ -2662,7 +2662,7 @@ char *mcp_tool_scan_mcp_description(const char *text)
 }
 
 /* Port of Python: _prepend_path */
-/* PoP: mcp_tool_prepend_path @ tools/mcp_tool.py:_prepend_path */
+/* PoP: mcp_tool_prepend_path @ tools/mcp_tool_common.py:_prepend_path */
 char *mcp_tool_prepend_path(const char *base, const char *path)
 {
     if (!base) base = "";
@@ -2683,7 +2683,7 @@ char *mcp_tool_prepend_path(const char *base, const char *path)
 }
 
 /* Port of Python: _resolve_stdio_command */
-/* PoP: mcp_tool_resolve_stdio_command @ tools/mcp_tool.py:_resolve_stdio_command */
+/* PoP: mcp_tool_resolve_stdio_command @ tools/mcp_tool_config.py:_resolve_stdio_command */
 char *mcp_tool_resolve_stdio_command(const char *command, char **args, char **env)
 {
     (void)args; (void)env;
@@ -2693,7 +2693,7 @@ char *mcp_tool_resolve_stdio_command(const char *command, char **args, char **en
 }
 
 /* Port of Python: _mcp_image_extension_for_mime_type */
-/* PoP: mcp_tool_mcp_image_extension_for_mime_type @ tools/mcp_tool.py:_mcp_image_extension_for_mime_type */
+/* PoP: mcp_tool_mcp_image_extension_for_mime_type @ tools/mcp_tool_content.py:_mcp_image_extension_for_mime_type */
 const char *mcp_tool_mcp_image_extension_for_mime_type(const char *mime)
 {
     if (!mime) return ".bin";
@@ -2708,7 +2708,7 @@ const char *mcp_tool_mcp_image_extension_for_mime_type(const char *mime)
 }
 
 /* Port of Python: _cache_mcp_image_block */
-/* PoP: mcp_tool_cache_mcp_image_block @ tools/mcp_tool.py:_cache_mcp_image_block */
+/* PoP: mcp_tool_cache_mcp_image_block @ tools/mcp_tool_content.py:_cache_mcp_image_block */
 bool mcp_tool_cache_mcp_image_block(const char *key, const void *data, size_t len)
 {
     if (!key || !data || len == 0) return false;
@@ -2718,7 +2718,7 @@ bool mcp_tool_cache_mcp_image_block(const char *key, const void *data, size_t le
 }
 
 /* Port of Python: _validate_remote_mcp_url */
-/* PoP: mcp_tool_validate_remote_mcp_url @ tools/mcp_tool.py:_validate_remote_mcp_url */
+/* PoP: mcp_tool_validate_remote_mcp_url @ tools/mcp_tool_errors.py:_validate_remote_mcp_url */
 bool mcp_tool_validate_remote_mcp_url(const char *url)
 {
     if (!url) return false;
@@ -2728,7 +2728,7 @@ bool mcp_tool_validate_remote_mcp_url(const char *url)
 }
 
 /* Port of Python: _resolve_client_cert */
-/* PoP: mcp_tool_resolve_client_cert @ tools/mcp_tool.py:_resolve_client_cert */
+/* PoP: mcp_tool_resolve_client_cert @ tools/mcp_tool_errors.py:_resolve_client_cert */
 /* Faithful port of the LIVE mTLS cert resolution ladder (see
  * tests/watercup/gates/mcp_tool_resolve_client_cert): none / list-form
  * (2 or 3 elements, key-mutually-exclusive) / string form (single combined
@@ -2855,7 +2855,7 @@ char *mcp_tool_resolve_client_cert(const char *server_name, const char *config_j
 }
 
 /* Port of Python: _format_connect_error */
-/* PoP: mcp_tool_format_connect_error @ tools/mcp_tool.py:_format_connect_error */
+/* PoP: mcp_tool_format_connect_error @ tools/mcp_tool_errors.py:_format_connect_error */
 char *mcp_tool_format_connect_error(const char *server_name, const char *error)
 {
     if (!server_name) server_name = "unknown";
@@ -2869,7 +2869,7 @@ char *mcp_tool_format_connect_error(const char *server_name, const char *error)
 }
 
 /* Port of Python: _safe_numeric */
-/* PoP: mcp_tool_safe_numeric @ tools/mcp_tool.py:_safe_numeric */
+/* PoP: mcp_tool_safe_numeric @ tools/mcp_tool_common.py:_safe_numeric */
 double mcp_tool_safe_numeric(const char *str, double def)
 {
     if (!str) return def;
@@ -2907,7 +2907,7 @@ char *mcp_tool_extract_tool_result_text(const char *result_json)
 }
 
 /* Port of Python: _convert_messages */
-/* PoP: mcp_tool_convert_messages @ tools/mcp_tool.py:_convert_messages */
+/* PoP: mcp_tool_convert_messages @ tools/mcp_tool_sampling.py:_convert_messages */
 char *mcp_tool_convert_messages(const char *messages_json)
 {
     if (!messages_json) return strdup("[]");
@@ -2916,7 +2916,7 @@ char *mcp_tool_convert_messages(const char *messages_json)
 }
 
 /* Port of Python: _build_tool_use_result */
-/* PoP: mcp_tool_build_tool_use_result @ tools/mcp_tool.py:_build_tool_use_result */
+/* PoP: mcp_tool_build_tool_use_result @ tools/mcp_tool_sampling.py:_build_tool_use_result */
 char *mcp_tool_build_tool_use_result(const char *tool_name, const char *result_json)
 {
     if (!tool_name || !result_json) return NULL;
@@ -2929,7 +2929,7 @@ char *mcp_tool_build_tool_use_result(const char *tool_name, const char *result_j
 }
 
 /* Port of Python: _build_text_result */
-/* PoP: mcp_tool_build_text_result @ tools/mcp_tool.py:_build_text_result */
+/* PoP: mcp_tool_build_text_result @ tools/mcp_tool_sampling.py:_build_text_result */
 char *mcp_tool_build_text_result(const char *text)
 {
     if (!text) text = "";
@@ -2942,7 +2942,7 @@ char *mcp_tool_build_text_result(const char *text)
 }
 
 /* Port of Python: session_kwargs (first occurrence) */
-/* PoP: mcp_tool_session_kwargs @ tools/mcp_tool.py:session_kwargs */
+/* PoP: mcp_tool_session_kwargs @ tools/mcp_tool_sampling.py:session_kwargs */
 char *mcp_tool_session_kwargs(const char *server_name)
 {
     if (!server_name) server_name = "default";
@@ -2965,7 +2965,7 @@ char *mcp_tool_server_call(const char *server_name, const char *method, const ch
 }
 
 /* Port of Python: _format_elicitation_schema_summary */
-/* PoP: mcp_tool_format_elicitation_schema_summary @ tools/mcp_tool.py:_format_elicitation_schema_summary */
+/* PoP: mcp_tool_format_elicitation_schema_summary @ tools/mcp_tool_sampling.py:_format_elicitation_schema_summary */
 char *mcp_tool_format_elicitation_schema_summary(const char *schema_json)
 {
     if (!schema_json) return strdup("{}");
@@ -2974,7 +2974,7 @@ char *mcp_tool_format_elicitation_schema_summary(const char *schema_json)
 }
 
 /* Port of Python: session_kwargs (second occurrence) */
-/* PoP: mcp_tool_session_kwargs_v2 @ tools/mcp_tool.py:session_kwargs */
+/* PoP: mcp_tool_session_kwargs_v2 @ tools/mcp_tool_sampling.py:session_kwargs */
 char *mcp_tool_session_kwargs_v2(const char *server_name, const char *transport)
 {
     if (!server_name) server_name = "default";
@@ -2998,7 +2998,7 @@ char *mcp_tool_client_session_call(const char *session_id, const char *method, c
 }
 
 /* Port of Python: _is_http */
-/* PoP: mcp_tool_is_http @ tools/mcp_tool.py:_is_http */
+/* PoP: mcp_tool_is_http @ tools/mcp_tool_health.py:_is_http */
 bool mcp_tool_is_http(const char *url)
 {
     if (!url) return false;
@@ -3006,7 +3006,7 @@ bool mcp_tool_is_http(const char *url)
 }
 
 /* Port of Python: _advertises_tools */
-/* PoP: mcp_tool_advertises_tools @ tools/mcp_tool.py:_advertises_tools */
+/* PoP: mcp_tool_advertises_tools @ tools/mcp_tool_transport.py:_advertises_tools */
 bool mcp_tool_advertises_tools(const char *caps_json)
 {
     if (!caps_json) return false;
@@ -3033,7 +3033,7 @@ void mcp_tool_refresh_tools_task(const char *server_name)
 
 
 /* Port of Python: _make_message_handler */
-/* PoP: mcp_tool_make_message_handler @ tools/mcp_tool.py:_make_message_handler */
+/* PoP: mcp_tool_make_message_handler @ tools/mcp_tool_health.py:_make_message_handler */
 void *mcp_tool_make_message_handler(const char *handler_name)
 {
     if (!handler_name) return NULL;
@@ -3043,7 +3043,7 @@ void *mcp_tool_make_message_handler(const char *handler_name)
 }
 
 /* Port of Python: _refresh_tools */
-/* PoP: mcp_tool_refresh_tools @ tools/mcp_tool.py:_refresh_tools */
+/* PoP: mcp_tool_refresh_tools @ tools/mcp_tool_health.py:_refresh_tools */
 bool mcp_tool_refresh_tools(const char *server_name)
 {
     if (!server_name) return false;
@@ -3053,7 +3053,7 @@ bool mcp_tool_refresh_tools(const char *server_name)
 }
 
 /* Port of Python: _keepalive_probe */
-/* PoP: mcp_tool_keepalive_probe @ tools/mcp_tool.py:_keepalive_probe */
+/* PoP: mcp_tool_keepalive_probe @ tools/mcp_tool_health.py:_keepalive_probe */
 bool mcp_tool_keepalive_probe(const char *server_name)
 {
     if (!server_name) return false;
@@ -3069,7 +3069,7 @@ bool mcp_tool_keepalive_probe(const char *server_name)
 /* Port of Python: _run_stdio */
 
 /* Port of Python: _preflight_content_type */
-/* PoP: mcp_tool_preflight_content_type @ tools/mcp_tool.py:_preflight_content_type */
+/* PoP: mcp_tool_preflight_content_type @ tools/mcp_tool_transport.py:_preflight_content_type */
 bool mcp_tool_preflight_content_type(const char *content_type)
 {
     if (!content_type) return false;
@@ -3079,7 +3079,7 @@ bool mcp_tool_preflight_content_type(const char *content_type)
 /* Port of Python: _run_http */
 
 /* Port of Python: _discover_tools */
-/* PoP: mcp_tool_discover_tools @ tools/mcp_tool.py:_discover_tools */
+/* PoP: mcp_tool_discover_tools @ tools/mcp_tool_transport.py:_discover_tools */
 char *mcp_tool_discover_tools(const char *server_name)
 {
     if (!server_name) return strdup("[]");
@@ -3089,7 +3089,7 @@ char *mcp_tool_discover_tools(const char *server_name)
 }
 
 /* Port of Python: _deregister_tools */
-/* PoP: mcp_tool_deregister_tools @ tools/mcp_tool.py:_deregister_tools */
+/* PoP: mcp_tool_deregister_tools @ tools/mcp_tool_server_run.py:_deregister_tools */
 void mcp_tool_deregister_tools(const char *server_name)
 {
     if (!server_name) return;
@@ -3105,7 +3105,7 @@ void mcp_tool_bump_server_error(const char *server_name)
 }
 
 /* Port of Python: _signal_reconnect */
-/* PoP: mcp_tool_signal_reconnect @ tools/mcp_tool.py:_signal_reconnect */
+/* PoP: mcp_tool_signal_reconnect @ tools/mcp_tool_loop.py:_signal_reconnect */
 void mcp_tool_signal_reconnect(const char *server_name)
 {
     if (!server_name) return;
@@ -3116,7 +3116,7 @@ void mcp_tool_signal_reconnect(const char *server_name)
 
 
 /* Port of Python: _is_session_expired_error */
-/* PoP: mcp_tool_is_session_expired_error @ tools/mcp_tool.py:_is_session_expired_error */
+/* PoP: mcp_tool_is_session_expired_error @ tools/mcp_tool_errors.py:_is_session_expired_error */
 bool mcp_tool_is_session_expired_error(const char *error)
 {
     if (!error) return false;
@@ -3130,7 +3130,7 @@ bool mcp_tool_is_session_expired_error(const char *error)
 
 
 /* Port of Python: _filter_mcp_children */
-/* PoP: mcp_tool_filter_mcp_children @ tools/mcp_tool.py:_filter_mcp_children */
+/* PoP: mcp_tool_filter_mcp_children @ tools/mcp_tool_lifecycle.py:_filter_mcp_children */
 char *mcp_tool_filter_mcp_children(const char *pids_json)
 {
     if (!pids_json) return strdup("[]");
@@ -3138,7 +3138,7 @@ char *mcp_tool_filter_mcp_children(const char *pids_json)
 }
 
 /* Port of Python: _mcp_loop_exception_handler */
-/* PoP: mcp_tool_mcp_loop_exception_handler @ tools/mcp_tool.py:_mcp_loop_exception_handler */
+/* PoP: mcp_tool_mcp_loop_exception_handler @ tools/mcp_tool_loop.py:_mcp_loop_exception_handler */
 void mcp_tool_mcp_loop_exception_handler(const char *error)
 {
     if (error) hermes_log(LOG_WARNING, "port", "MCP loop exception: %s", error);
@@ -3148,7 +3148,7 @@ void mcp_tool_mcp_loop_exception_handler(const char *error)
 
 
 /* Port of Python: _wrap_with_home_override */
-/* PoP: mcp_tool_wrap_with_home_override @ tools/mcp_tool.py:_wrap_with_home_override */
+/* PoP: mcp_tool_wrap_with_home_override @ tools/mcp_tool_loop.py:_wrap_with_home_override */
 char *mcp_tool_wrap_with_home_override(const char *command, const char *home)
 {
     if (!command) return NULL;
@@ -3173,7 +3173,7 @@ char *mcp_tool_interrupted_call_result(const char *call_id, const char *error)
 }
 
 /* Port of Python: _interpolate_env_vars */
-/* PoP: mcp_tool_interpolate_env_vars @ tools/mcp_tool.py:_interpolate_env_vars */
+/* PoP: mcp_tool_interpolate_env_vars @ tools/mcp_tool_config.py:_interpolate_env_vars */
 char *mcp_tool_interpolate_env_vars(const char *template)
 {
     if (!template) return NULL;
@@ -3213,7 +3213,7 @@ char *mcp_tool_interpolate_env_vars(const char *template)
 }
 
 /* Port of Python: _filter_suspicious_mcp_servers */
-/* PoP: mcp_tool_filter_suspicious_mcp_servers @ tools/mcp_tool.py:_filter_suspicious_mcp_servers */
+/* PoP: mcp_tool_filter_suspicious_mcp_servers @ tools/mcp_tool_config.py:_filter_suspicious_mcp_servers */
 char *mcp_tool_filter_suspicious_mcp_servers(const char *servers_json)
 {
     if (!servers_json) return strdup("[]");
@@ -3257,7 +3257,7 @@ char *mcp_tool_filter_suspicious_mcp_servers(const char *servers_json)
 
 
 /* Port of Python: _normalize_mcp_input_schema */
-/* PoP: mcp_tool_normalize_mcp_input_schema @ tools/mcp_tool.py:_normalize_mcp_input_schema */
+/* PoP: mcp_tool_normalize_mcp_input_schema @ tools/mcp_tool_schema.py:_normalize_mcp_input_schema */
 char *mcp_tool_normalize_mcp_input_schema(const char *schema_json)
 {
     if (!schema_json) return strdup("{}");
@@ -3266,7 +3266,7 @@ char *mcp_tool_normalize_mcp_input_schema(const char *schema_json)
 }
 
 /* Port of Python: sanitize_mcp_name_component */
-/* PoP: mcp_tool_sanitize_mcp_name_component @ tools/mcp_tool.py:sanitize_mcp_name_component */
+/* PoP: mcp_tool_sanitize_mcp_name_component @ tools/mcp_tool_schema.py:sanitize_mcp_name_component */
 char *mcp_tool_sanitize_mcp_name_component(const char *name)
 {
     if (!name) return strdup("unknown");
@@ -3283,7 +3283,7 @@ char *mcp_tool_sanitize_mcp_name_component(const char *name)
 }
 
 /* Port of Python: _convert_mcp_schema */
-/* PoP: mcp_tool_convert_mcp_schema @ tools/mcp_tool.py:_convert_mcp_schema */
+/* PoP: mcp_tool_convert_mcp_schema @ tools/mcp_tool_schema.py:_convert_mcp_schema */
 char *mcp_tool_convert_mcp_schema(const char *schema_json)
 {
     if (!schema_json) return strdup("{}");
@@ -3295,7 +3295,7 @@ char *mcp_tool_convert_mcp_schema(const char *schema_json)
 
 
 /* Port of Python: _normalize_name_filter */
-/* PoP: mcp_tool_normalize_name_filter @ tools/mcp_tool.py:_normalize_name_filter */
+/* PoP: mcp_tool_normalize_name_filter @ tools/mcp_tool_schema.py:_normalize_name_filter */
 char *mcp_tool_normalize_name_filter(const char *filter)
 {
     if (!filter) return strdup("*");
@@ -3304,7 +3304,7 @@ char *mcp_tool_normalize_name_filter(const char *filter)
 }
 
 /* Port of Python: _parse_boolish */
-/* PoP: mcp_tool_parse_boolish @ tools/mcp_tool.py:_parse_boolish */
+/* PoP: mcp_tool_parse_boolish @ tools/mcp_tool_common.py:_parse_boolish */
 bool mcp_tool_parse_boolish(const char *value)
 {
     if (!value) return false;
@@ -3313,7 +3313,7 @@ bool mcp_tool_parse_boolish(const char *value)
 }
 
 /* Port of Python: _track_mcp_tool_server */
-/* PoP: mcp_tool_track_mcp_tool_server @ tools/mcp_tool.py:_track_mcp_tool_server */
+/* PoP: mcp_tool_track_mcp_tool_server @ tools/mcp_tool_registration.py:_track_mcp_tool_server */
 void mcp_tool_track_mcp_tool_server(const char *server_name, const char *tool_name)
 {
     if (!server_name || !tool_name) return;
@@ -3321,7 +3321,7 @@ void mcp_tool_track_mcp_tool_server(const char *server_name, const char *tool_na
 }
 
 /* Port of Python: _forget_mcp_tool_server */
-/* PoP: mcp_tool_forget_mcp_tool_server @ tools/mcp_tool.py:_forget_mcp_tool_server */
+/* PoP: mcp_tool_forget_mcp_tool_server @ tools/mcp_tool_registration.py:_forget_mcp_tool_server */
 void mcp_tool_forget_mcp_tool_server(const char *server_name, const char *tool_name)
 {
     if (!server_name || !tool_name) return;
@@ -3329,7 +3329,7 @@ void mcp_tool_forget_mcp_tool_server(const char *server_name, const char *tool_n
 }
 
 /* Port of Python: _select_utility_schemas */
-/* PoP: mcp_tool_select_utility_schemas @ tools/mcp_tool.py:_select_utility_schemas */
+/* PoP: mcp_tool_select_utility_schemas @ tools/mcp_tool_registration.py:_select_utility_schemas */
 char *mcp_tool_select_utility_schemas(const char *schemas_json, const char *filter)
 {
     (void)filter;
@@ -3341,7 +3341,7 @@ char *mcp_tool_select_utility_schemas(const char *schemas_json, const char *filt
 
 
 /* Port of Python: _register_server_tools */
-/* PoP: mcp_tool_register_server_tools @ tools/mcp_tool.py:_register_server_tools */
+/* PoP: mcp_tool_register_server_tools @ tools/mcp_tool_registration.py:_register_server_tools */
 bool mcp_tool_register_server_tools(const char *server_name, const char *tools_json)
 {
     if (!server_name || !tools_json) return false;
@@ -3350,7 +3350,7 @@ bool mcp_tool_register_server_tools(const char *server_name, const char *tools_j
 }
 
 /* Port of Python: _discover_and_register_server */
-/* PoP: mcp_tool_discover_and_register_server @ tools/mcp_tool.py:_discover_and_register_server */
+/* PoP: mcp_tool_discover_and_register_server @ tools/mcp_tool_discovery.py:_discover_and_register_server */
 bool mcp_tool_discover_and_register_server(const char *server_name, const char *config_json)
 {
     if (!server_name || !config_json) return false;
@@ -3508,23 +3508,23 @@ int mcp_ensure_sdk(char *out_msg, size_t out_sz) {
     return 1;
 }
 
-/* PoP: mcp_workspace_folder @ tools/mcp_tool.py:_workspace_folder */
+/* PoP: mcp_workspace_folder @ tools/mcp_tool_config.py:_workspace_folder */
 void mcp_workspace_folder(char *out, size_t out_sz) {
     const char *home = getenv("HOME");
     snprintf(out, out_sz, "%s/.slermes/mcp", home ? home : "/tmp");
 }
 
-/* PoP: mcp_make_redirect_header_stripper @ tools/mcp_tool.py:_make_redirect_header_stripper */
+/* PoP: mcp_make_redirect_header_stripper @ tools/mcp_tool_errors.py:_make_redirect_header_stripper */
 void mcp_make_redirect_header_stripper(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"strip_redirect_headers\":true}");
 }
 
-/* PoP: mcp_record_tool_trust_metadata @ tools/mcp_tool.py:_record_tool_trust_metadata */
+/* PoP: mcp_record_tool_trust_metadata @ tools/mcp_tool_registration.py:_record_tool_trust_metadata */
 void mcp_record_tool_trust_metadata(const char *tool_name, const char *trust_level) {
     (void)tool_name; (void)trust_level;
 }
 
-/* PoP: mcp_trust_gate_check @ tools/mcp_tool.py:_trust_gate_check */
+/* PoP: mcp_trust_gate_check @ tools/mcp_tool_handlers.py:_trust_gate_check */
 int mcp_trust_gate_check(const char *tool_name) {
     (void)tool_name;
     return 1; /* Trusted */
@@ -3567,7 +3567,7 @@ int mcp_ensure_sdk(char *out_msg, size_t out_sz);
 /* Bound pathological MCP text before it propagates (#56059): <= max_chars
  * passes through; oversized keeps a 40% head / 60% tail split with an
  * omission notice in between. Returns malloc'd text. */
-/* PoP: mcp_tool_truncate_mcp_text_result @ tools/mcp_tool.py:_truncate_mcp_text_result */
+/* PoP: mcp_tool_truncate_mcp_text_result @ tools/mcp_tool_content.py:_truncate_mcp_text_result */
 char *mcp_tool_truncate_mcp_text_result(const char *text, long max_chars) {
     if (!text) return strdup("");
     if (max_chars <= 0) max_chars = MCP_HARD_RESULT_CAP_CHARS;
@@ -3596,7 +3596,7 @@ char *mcp_tool_truncate_mcp_text_result(const char *text, long max_chars) {
  * /dev/null when the log file cannot be opened. Protected by a simple
  * once-guard (single-threaded agent core). */
 static FILE *g_mcp_stderr_log_fh = NULL;
-/* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool.py:_get_mcp_stderr_log */
+/* PoP: mcp_tool_get_mcp_stderr_log @ tools/mcp_tool_config.py:_get_mcp_stderr_log */
 FILE *mcp_tool_get_mcp_stderr_log(void) {
     if (g_mcp_stderr_log_fh) return g_mcp_stderr_log_fh;
     char home[4096];
@@ -3614,7 +3614,7 @@ FILE *mcp_tool_get_mcp_stderr_log(void) {
 /* ---- _write_stderr_log_header ----------------------------------------- */
 /* Human-readable session marker before launching a server so operators can
  * find each server's output in the shared log. */
-/* PoP: mcp_tool_write_stderr_log_header @ tools/mcp_tool.py:_write_stderr_log_header */
+/* PoP: mcp_tool_write_stderr_log_header @ tools/mcp_tool_config.py:_write_stderr_log_header */
 void mcp_tool_write_stderr_log_header(const char *server_name) {
     FILE *fh = mcp_tool_get_mcp_stderr_log();
     if (!fh) return;
@@ -3671,7 +3671,7 @@ char *mcp_tool_sdk_httpx(void) {
  * on the JSON encoding of an MCP model: try `snake`, then `camel`; return the
  * default when neither spelling is present. Returns a malloc'd JSON-encoded
  * scalar/string of the found value, or strdup(default_json). */
-/* PoP: mcp_tool_mcp_field @ tools/mcp_tool.py:mcp_field */
+/* PoP: mcp_tool_mcp_field @ tools/mcp_tool_common.py:mcp_field */
 char *mcp_tool_mcp_field(const json_node_t *obj, const char *snake,
                          const char *camel, const char *default_str) {
     const json_node_t *v = json_object_get(obj, snake);
@@ -3690,7 +3690,7 @@ char *mcp_tool_mcp_field(const json_node_t *obj, const char *snake,
 /* Per-server tool-call timeout (#85125 2g): per-server config["timeout"]
  * wins > timeouts.mcp.tool_call in config > historical default 300. Reads
  * the server's config section as a JSON object. */
-/* PoP: mcp_tool_resolve_tool_timeout @ tools/mcp_tool.py:_resolve_tool_timeout */
+/* PoP: mcp_tool_resolve_tool_timeout @ tools/mcp_tool_common.py:_resolve_tool_timeout */
 double mcp_tool_resolve_tool_timeout(const json_node_t *config) {
     const json_node_t *per_server = json_object_get(config, "timeout");
     if (per_server && per_server->type == JSON_NUMBER)
@@ -3708,7 +3708,7 @@ double mcp_tool_resolve_tool_timeout(const json_node_t *config) {
 /* ---- _handshake_rejected_as_modern -------------------------------------------- */
 /* True when a failed initialize signals a 2026-07-28-only server: structural
  * code check first, then lowercase substring probes (never isinstance). */
-/* PoP: mcp_tool_handshake_rejected_as_modern @ tools/mcp_tool.py:_handshake_rejected_as_modern */
+/* PoP: mcp_tool_handshake_rejected_as_modern @ tools/mcp_tool_errors.py:_handshake_rejected_as_modern */
 bool mcp_tool_handshake_rejected_as_modern(long code, const bool has_code,
                                            const char *exc_str) {
     if (has_code &&
@@ -3738,7 +3738,7 @@ void *mcp_tool_mcp_types(void) {
 /* ---- _is_reserved_mcp_meta_key ------------------------------------------------------- */
 /* Protocol-reserved `_meta` prefix: a modelcontextprotocol|mcp label followed
  * by at least one more label before the '/'. Trailing reserved word passes. */
-/* PoP: mcp_tool_is_reserved_mcp_meta_key @ tools/mcp_tool.py:_is_reserved_mcp_meta_key */
+/* PoP: mcp_tool_is_reserved_mcp_meta_key @ tools/mcp_tool_content.py:_is_reserved_mcp_meta_key */
 bool mcp_tool_is_reserved_mcp_meta_key(const char *key) {
     if (!key) return false;
     const char *slash = strchr(key, '/');
@@ -3766,7 +3766,7 @@ bool mcp_tool_is_reserved_mcp_meta_key(const char *key) {
 /* Drop protocol-reserved keys from a tool result's `_meta` mapping. Returns
  * a new JSON object node, or NULL when nothing model-facing remains (or the
  * input wasn't a mapping). Caller frees via json_free. */
-/* PoP: mcp_tool_strip_reserved_meta_keys @ tools/mcp_tool.py:_strip_reserved_meta_keys */
+/* PoP: mcp_tool_strip_reserved_meta_keys @ tools/mcp_tool_content.py:_strip_reserved_meta_keys */
 json_node_t *mcp_tool_strip_reserved_meta_keys(const json_node_t *meta) {
     if (!meta || meta->type != JSON_OBJECT) return NULL;
     json_node_t *out = json_object();
@@ -3827,7 +3827,7 @@ static mcp_task_state_t *task_state_find(const char *name, int create) {
  * initialize was rejected as modern-only. Sets *used_modern and returns:
  *   0 legacy-handshake result path, 1 modern-discover result path,
  *  -1 both paths failed. Mirrors the auto -> stateless -> legacy control flow. */
-/* PoP: mcp_tool_negotiate_session @ tools/mcp_tool.py:_negotiate_session */
+/* PoP: mcp_tool_negotiate_session @ tools/mcp_tool_transport.py:_negotiate_session */
 int mcp_tool_negotiate_session(const char *protocol_mode,
                                int (*discover_fn)(void *),
                                int (*initialize_fn)(void *, bool *rejected_modern),
@@ -3929,7 +3929,7 @@ bool mcp_tool_ensure_healthy(const char *server_name, double timeout) {
 /* Cancel every in-flight RPC attached to this connection from the lifecycle
  * exits BEFORE the transport unwinds. Cancelling at least one task flags the
  * teardown race so run() treats the following reconnect as recovery. */
-/* PoP: mcp_tool_fail_inflight_calls @ tools/mcp_tool.py:_fail_inflight_calls */
+/* PoP: mcp_tool_fail_inflight_calls @ tools/mcp_tool_health.py:_fail_inflight_calls */
 void mcp_tool_fail_inflight_calls(const char *server_name, const char *reason) {
     mcp_task_state_t *st = task_state_find(server_name, 0);
     if (!st || st->inflight_count == 0) return;
@@ -3946,7 +3946,7 @@ void mcp_tool_fail_inflight_calls(const char *server_name, const char *reason) {
 /* True when every stdio child we spawned has exited. Best-effort: only
  * meaningful with captured PIDs; false (unknown → don't fail fast) otherwise.
  * kill(pid, 0) liveness probe mirrors psutil.pid_exists. */
-/* PoP: mcp_tool_stdio_children_dead @ tools/mcp_tool.py:_stdio_children_dead */
+/* PoP: mcp_tool_stdio_children_dead @ tools/mcp_tool_health.py:_stdio_children_dead */
 bool mcp_tool_stdio_children_dead(const char *server_name) {
     mcp_task_state_t *st = task_state_find(server_name, 0);
     if (!st || st->stdio_pid_count == 0) return false;
@@ -3961,7 +3961,7 @@ bool mcp_tool_stdio_children_dead(const char *server_name) {
 /* ---- _watch_stdio_children -------------------------------------------------------------------- */
 /* Poll child liveness while a stdio RPC is in flight (#81995). Resolves
  * (returns) when a tracked child dies or the stop flag flips. 250ms cadence. */
-/* PoP: mcp_tool_watch_stdio_children @ tools/mcp_tool.py:_watch_stdio_children */
+/* PoP: mcp_tool_watch_stdio_children @ tools/mcp_tool_health.py:_watch_stdio_children */
 void mcp_tool_watch_stdio_children(const char *server_name, const volatile int *stop) {
     while (!(stop && *stop)) {
         if (mcp_tool_stdio_children_dead(server_name)) return;
@@ -3992,19 +3992,19 @@ const char *mcp_tool_http_status_error_types(void) {
 /* Context manager ported as enter/exit pairs plus the teardown-abort message
  * conversion: a cancel during a deliberate reconnect becomes a retryable
  * RuntimeError message instead of a raw CancelledError. */
-/* PoP: mcp_tool_track_inflight_rpc_enter @ tools/mcp_tool.py:_track_inflight_rpc */
+/* PoP: mcp_tool_track_inflight_rpc_enter @ tools/mcp_tool_handlers.py:_track_inflight_rpc */
 void mcp_tool_track_inflight_rpc_enter(const char *server_name) {
     mcp_task_state_t *st = task_state_find(server_name, 1);
     if (st) st->inflight_count++;
 }
-/* PoP: mcp_tool_track_inflight_rpc_exit @ tools/mcp_tool.py:_track_inflight_rpc */
+/* PoP: mcp_tool_track_inflight_rpc_exit @ tools/mcp_tool_handlers.py:_track_inflight_rpc */
 void mcp_tool_track_inflight_rpc_exit(const char *server_name) {
     mcp_task_state_t *st = task_state_find(server_name, 0);
     if (st && st->inflight_count > 0) st->inflight_count--;
 }
 /* CancelledError conversion check: fills buf with the retryable RuntimeError
  * message and returns true when the cancel was caused by a reconnect teardown. */
-/* PoP: mcp_tool_track_inflight_rpc_abort_message @ tools/mcp_tool.py:_track_inflight_rpc */
+/* PoP: mcp_tool_track_inflight_rpc_abort_message @ tools/mcp_tool_handlers.py:_track_inflight_rpc */
 bool mcp_tool_track_inflight_rpc_abort_message(const char *server_name, const char *op,
                                                char *buf, size_t bufsz) {
     mcp_task_state_t *st = task_state_find(server_name, 0);

@@ -18,27 +18,27 @@ char *_npm_lock_workspace_closure(void) { return strdup("[]"); }
 /* PoP: _tui_selected_workspace_keys @ hermes_cli/main.py:_tui_selected_workspace_keys */
 char *_tui_selected_workspace_keys(void) { return strdup("[]"); }
 
-/* PoP: _desktop_packaged_executable_in @ hermes_cli/main.py:_desktop_packaged_executable_in */
+/* PoP: _desktop_packaged_executable_in @ hermes_cli/main_desktop.py:_desktop_packaged_executable_in */
 char *_desktop_packaged_executable_in(void) { return strdup(""); }
 
-/* PoP: _desktop_staging_dir @ hermes_cli/main.py:_desktop_staging_dir */
+/* PoP: _desktop_staging_dir @ hermes_cli/main_desktop.py:_desktop_staging_dir */
 char *_desktop_staging_dir(void) { return strdup(""); }
 
-/* PoP: _desktop_unpacked_root @ hermes_cli/main.py:_desktop_unpacked_root */
+/* PoP: _desktop_unpacked_root @ hermes_cli/main_desktop.py:_desktop_unpacked_root */
 char *_desktop_unpacked_root(void) { return strdup(""); }
 
-/* PoP: _swap_staged_desktop_app @ hermes_cli/main.py:_swap_staged_desktop_app */
+/* PoP: _swap_staged_desktop_app @ hermes_cli/main_desktop.py:_swap_staged_desktop_app */
 int _swap_staged_desktop_app(void) { return 1; }
 
 
-/* PoP: _macos_codesigning_identity_valid @ hermes_cli/main.py:_macos_codesigning_identity_valid */
+/* PoP: _macos_codesigning_identity_valid @ hermes_cli/main_desktop_tcc.py:_macos_codesigning_identity_valid */
 int _macos_codesigning_identity_valid(void) { return 1; }
 
 
-/* PoP: _desktop_linux_userns_sandbox_available @ hermes_cli/main.py:_desktop_linux_userns_sandbox_available */
+/* PoP: _desktop_linux_userns_sandbox_available @ hermes_cli/main_desktop.py:_desktop_linux_userns_sandbox_available */
 int _desktop_linux_userns_sandbox_available(void) { return 0; }
 
-/* PoP: _desktop_linux_needs_disable_setuid_sandbox @ hermes_cli/main.py:_desktop_linux_needs_disable_setuid_sandbox */
+/* PoP: _desktop_linux_needs_disable_setuid_sandbox @ hermes_cli/main_desktop.py:_desktop_linux_needs_disable_setuid_sandbox */
 int _desktop_linux_needs_disable_setuid_sandbox(void) { return 0; }
 
 

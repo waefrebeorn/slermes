@@ -9,10 +9,10 @@
 
 /* ── tools/vision_tools.py: 5 missing functions ── */
 
-/* PoP: _supported_media_types @ tools/vision_tools.py:_supported_media_types */
+/* PoP: _supported_media_types @ tools/vision_tools_image_prep.py:_supported_media_types */
 char *_supported_media_types(void) { return strdup("[]"); }
 
-/* PoP: _validate_raster_image_decodable @ tools/vision_tools.py:_validate_raster_image_decodable */
+/* PoP: _validate_raster_image_decodable @ tools/vision_tools_image_prep.py:_validate_raster_image_decodable */
 int _validate_raster_image_decodable(void) { return 1; }
 
 /* PoP: _stream_download_to_file @ tools/vision_tools.py:_stream_download_to_file */

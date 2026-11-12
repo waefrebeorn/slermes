@@ -40,7 +40,7 @@ char *bw_cache_key_str(const char *token_fp, const char *project_id, const char 
     return out;
 }
 
-/* PoP: bw_disk_cache_path @ agent/secret_sources/bitwarden.py:_disk_cache_path */
+/* PoP: bw_disk_cache_path @ tools/osv_check.py:_disk_cache_path */
 char *bw_disk_cache_path(const char *home_path) {
     /* resolve_cache_home(home)/cache/bws_cache.json */
     char *home = ssh_resolve_cache_home(home_path);
@@ -96,7 +96,7 @@ char *bw_platform_asset_name(void) {
 #endif
 }
 
-/* PoP: bw_token_fingerprint @ agent/secret_sources/bitwarden.py:_token_fingerprint */
+/* PoP: bw_token_fingerprint @ hermes_cli/auth_nous.py:_token_fingerprint */
 char *bw_token_fingerprint(const char *token) {
     /* SHA-256 hex prefix, 16 chars — cache key, never logged/displayed. */
     if (!token) return strdup("");
@@ -129,7 +129,7 @@ char *op_disk_key_str(const char *auth_fp, const char *account, const char *refs
     return out;
 }
 
-/* PoP: op_disk_cache_path @ agent/secret_sources/onepassword.py:_disk_cache_path */
+/* PoP: op_disk_cache_path @ tools/osv_check.py:_disk_cache_path */
 char *op_disk_cache_path(const char *home_path) {
     char *home = ssh_resolve_cache_home(home_path);
     char *out = malloc(strlen(home) + 32);
@@ -251,7 +251,7 @@ char *op_scrub(const char *text) {
     return out;
 }
 
-/* PoP: op_protected_env_vars @ agent/secret_sources/onepassword.py:protected_env_vars */
+/* PoP: op_protected_env_vars @ agent/secret_sources/base.py:protected_env_vars */
 char *op_protected_env_vars(const char *cfg_json) {
     /* Python: frozenset({cfg.service_account_token_env or
      * OP_SERVICE_ACCOUNT_TOKEN}). Prints the single env name. */

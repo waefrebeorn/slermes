@@ -72,7 +72,7 @@ static void yb_append(yb_buf *b, const unsigned char *d, size_t n)
 static void yb_append_byte(yb_buf *b, unsigned char c) { yb_reserve(b, 1); b->p[b->len++] = c; }
 
 /* varint encode */
-/* PoP: yb_append_varint @ gateway/platforms/yuanbao_proto.py:_encode_varint */
+/* PoP: yb_append_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_varint */
 static void yb_append_varint(yb_buf *b, uint64_t v)
 {
     if ((int64_t)v < 0) v &= 0xFFFFFFFFFFFFFFFFULL;
@@ -85,7 +85,7 @@ static void yb_append_varint(yb_buf *b, uint64_t v)
 }
 
 /* field tag = (field_number << 3) | wire_type, then value */
-/* PoP: yb_append_field @ gateway/platforms/yuanbao_proto.py:_encode_field */
+/* PoP: yb_append_field @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_field */
 static void yb_append_field(yb_buf *b, int fn, int wt, const unsigned char *val, size_t n)
 {
     yb_append_varint(b, (uint64_t)((fn << 3) | wt));
@@ -105,15 +105,15 @@ static void yb_f_varint(yb_buf *b, int fn, uint64_t v)
 { yb_append_varint(b, (uint64_t)((fn << 3) | WT_LEN)); yb_append_varint(b, n); yb_append(b, d, n); }
 /* string field */
 
-/* PoP: yb_f_str @ gateway/platforms/yuanbao_proto.py:_encode_string */static void yb_f_str(yb_buf *b, int fn, const char *s)
+/* PoP: yb_f_str @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_string */static void yb_f_str(yb_buf *b, int fn, const char *s)
 { if (!s || !*s) return; size_t n = strlen(s); yb_append_varint(b, (uint64_t)((fn<<3)|WT_LEN)); yb_append_varint(b, n); yb_append(b, (const unsigned char*)s, n); }
 /* length-delimited from a sub-buffer (message/bytes wrapper) */
 
-/* PoP: yb_f_sub @ gateway/platforms/yuanbao_proto.py:_encode_message */static void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
+/* PoP: yb_f_sub @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_message */static void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
 { yb_f_len(b, fn, sub->p, sub->len); }
 
 /* ---- varint decode ---- */
-/* PoP: yb_decode_varint @ gateway/platforms/yuanbao_proto.py:_decode_varint */
+/* PoP: yb_decode_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_varint */
 static int yb_decode_varint(const unsigned char *d, size_t n, size_t *pos, uint64_t *out)
 {
     uint64_t result = 0; int shift = 0;
@@ -132,9 +132,9 @@ typedef struct { int fn; int wt; uint64_t vint; unsigned char *vbytes; size_t vl
 typedef struct { yb_field *f; size_t n, cap; } yb_fields;
 static void yb_fields_free(yb_fields *fs)
 { for (size_t i=0;i<fs->n;i++) free(fs->f[i].vbytes); free(fs->f); fs->f=NULL; fs->n=fs->cap=0; }
-/* PoP: yb_parse_fields @ gateway/platforms/yuanbao_proto.py:_parse_fields */
+/* PoP: yb_parse_fields @ plugins/platforms/yuanbao/yuanbao_proto.py:_parse_fields */
 
-/* PoP: yb_parse_fields @ gateway/platforms/yuanbao_proto.py:_fields_to_dict */static int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
+/* PoP: yb_parse_fields @ plugins/platforms/yuanbao/yuanbao_proto.py:_fields_to_dict */static int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
 {
     out->f = NULL; out->n = out->cap = 0;
     size_t pos = 0;
@@ -164,20 +164,20 @@ static void yb_fields_free(yb_fields *fs)
     return 1;
 }
 /* accessors: first match by field number */
-/* PoP: yb_get_varint @ gateway/platforms/yuanbao_proto.py:_get_varint */
+/* PoP: yb_get_varint @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_varint */
 static uint64_t yb_get_varint(const yb_fields *fs, int fn, uint64_t def)
 { for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_VARINT) return fs->f[i].vint; return def; }
-/* PoP: yb_get_string @ gateway/platforms/yuanbao_proto.py:_get_string */
+/* PoP: yb_get_string @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_string */
 static char *yb_get_string(const yb_fields *fs, int fn, char *buf, size_t bufsz)
 { buf[0]=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) {
     size_t c = fs->f[i].vlen < bufsz-1 ? fs->f[i].vlen : bufsz-1;
     memcpy(buf, fs->f[i].vbytes, c); buf[c]=0; return buf; }
   return buf; }
-/* PoP: yb_get_bytes @ gateway/platforms/yuanbao_proto.py:_get_bytes */
+/* PoP: yb_get_bytes @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_bytes */
 static unsigned char *yb_get_bytes(const yb_fields *fs, int fn, size_t *outlen)
 { *outlen=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) { *outlen=fs->f[i].vlen; return fs->f[i].vbytes; } return NULL; }
 /* collect repeated bytes into a malloc'd array of (ptr,len); returns count */
-/* PoP: yb_get_repeated_bytes @ gateway/platforms/yuanbao_proto.py:_get_repeated_bytes */
+/* PoP: yb_get_repeated_bytes @ plugins/platforms/yuanbao/yuanbao_proto.py:_get_repeated_bytes */
 static size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char ***out, size_t **lens)
 {
     size_t cnt = 0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) cnt++;
@@ -189,9 +189,9 @@ static size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char *
 }
 
 /* ---- Head encode/decode ---- */
-/* PoP: yb_encode_head @ gateway/platforms/yuanbao_proto.py:_encode_head */
+/* PoP: yb_encode_head @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_head */
 
-/* PoP: yb_encode_head @ gateway/platforms/yuanbao_proto.py:_decode_head */static void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
+/* PoP: yb_encode_head @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_head */static void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
                             const char *msg_id, const char *module, int need_ack, uint64_t status)
 {
     if (cmd_type != 0) yb_f_varint(b, 1, (uint64_t)cmd_type);
@@ -208,7 +208,7 @@ static unsigned int g_seq = 0;
 static pthread_mutex_t g_seq_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_next_seq_no @ gateway/platforms/yuanbao_proto.py:next_seq_no */
+/* PoP: yuanbao_proto_next_seq_no @ plugins/platforms/yuanbao/yuanbao_proto.py:next_seq_no */
 unsigned int yuanbao_proto_next_seq_no(void)
 {
     pthread_mutex_lock(&g_seq_lock);
@@ -219,7 +219,7 @@ unsigned int yuanbao_proto_next_seq_no(void)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_conn_msg_full @ gateway/platforms/yuanbao_proto.py:encode_conn_msg_full */
+/* PoP: yuanbao_proto_encode_conn_msg_full @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_conn_msg_full */
 unsigned char *yuanbao_proto_encode_conn_msg_full(int cmd_type, const char *cmd, uint64_t seq_no,
     const char *msg_id, const char *module, const unsigned char *data, size_t data_len, int need_ack,
     size_t *out_len)
@@ -238,7 +238,7 @@ unsigned char *yuanbao_proto_encode_conn_msg_full(int cmd_type, const char *cmd,
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_biz_msg @ gateway/platforms/yuanbao_proto.py:encode_biz_msg */
+/* PoP: yuanbao_proto_encode_biz_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_biz_msg */
 unsigned char *yuanbao_proto_encode_biz_msg(const char *service, const char *method, const char *req_id,
     const unsigned char *body, size_t body_len, size_t *out_len)
 {
@@ -247,7 +247,7 @@ unsigned char *yuanbao_proto_encode_biz_msg(const char *service, const char *met
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_decode_biz_msg @ gateway/platforms/yuanbao_proto.py:decode_biz_msg */
+/* PoP: yuanbao_proto_decode_biz_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_biz_msg */
 char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 {
     /* decode_conn_msg, then extract head fields */
@@ -272,7 +272,7 @@ char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 }
 
 /* ---- MsgContent encode/decode ---- */
-/* PoP: yb_encode_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_msg_content */
+/* PoP: yb_encode_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_msg_content */
 /* PoP: yuanbao_proto_encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */
 /* PoP: yuanbao_proto_decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
 
@@ -360,7 +360,7 @@ char *yuanbao_proto_decode_map_entry(const unsigned char *data, size_t len)
 }
 
 /* ---- MsgBodyElement encode ---- */
-/* PoP: yb_encode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_encode_msg_body_element */
+/* PoP: yb_encode_msg_body_element @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_msg_body_element */
 static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 {
     json_t *e = json_parse(json_el, NULL);
@@ -439,7 +439,7 @@ static unsigned char *yb_encode_send_group_req(const char *group_code, const cha
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_send_c2c_message @ gateway/platforms/yuanbao_proto.py:encode_send_c2c_message */
+/* PoP: yuanbao_proto_encode_send_c2c_message @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_send_c2c_message */
 unsigned char *yuanbao_proto_encode_send_c2c_message(const char *to_account, const char *msg_body_json,
     const char *from_account, const char *msg_id, uint64_t msg_random, uint64_t msg_seq,
     const char *group_code, const char *trace_id, size_t *out_len)
@@ -453,7 +453,7 @@ unsigned char *yuanbao_proto_encode_send_c2c_message(const char *to_account, con
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_send_group_message @ gateway/platforms/yuanbao_proto.py:encode_send_group_message */
+/* PoP: yuanbao_proto_encode_send_group_message @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_send_group_message */
 unsigned char *yuanbao_proto_encode_send_group_message(const char *group_code, const char *msg_body_json,
     const char *from_account, const char *msg_id, const char *to_account, const char *random,
     uint64_t msg_seq, const char *ref_msg_id, const char *trace_id, size_t *out_len)
@@ -467,7 +467,7 @@ unsigned char *yuanbao_proto_encode_send_group_message(const char *group_code, c
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_ping @ gateway/platforms/yuanbao_proto.py:encode_ping */
+/* PoP: yuanbao_proto_encode_ping @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_ping */
 unsigned char *yuanbao_proto_encode_ping(const char *msg_id, size_t *out_len)
 {
     return yuanbao_proto_encode_conn_msg_full(CT_REQUEST, CMD_PING, yuanbao_proto_next_seq_no(),
@@ -475,7 +475,7 @@ unsigned char *yuanbao_proto_encode_ping(const char *msg_id, size_t *out_len)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_push_ack @ gateway/platforms/yuanbao_proto.py:encode_push_ack */
+/* PoP: yuanbao_proto_encode_push_ack @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_push_ack */
 /* original_head_json: JSON {"cmd":..,"msg_id":..,"module":..} */
 unsigned char *yuanbao_proto_encode_push_ack(const char *original_head_json, size_t *out_len)
 {
@@ -493,7 +493,7 @@ unsigned char *yuanbao_proto_encode_push_ack(const char *original_head_json, siz
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_send_private_heartbeat @ gateway/platforms/yuanbao_proto.py:encode_send_private_heartbeat */
+/* PoP: yuanbao_proto_encode_send_private_heartbeat @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_send_private_heartbeat */
 unsigned char *yuanbao_proto_encode_send_private_heartbeat(const char *from_account, const char *to_account,
     uint64_t heartbeat, size_t *out_len)
 {
@@ -507,7 +507,7 @@ unsigned char *yuanbao_proto_encode_send_private_heartbeat(const char *from_acco
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_encode_send_group_heartbeat @ gateway/platforms/yuanbao_proto.py:encode_send_group_heartbeat */
+/* PoP: yuanbao_proto_encode_send_group_heartbeat @ plugins/platforms/yuanbao/yuanbao_proto.py:encode_send_group_heartbeat */
 unsigned char *yuanbao_proto_encode_send_group_heartbeat(const char *from_account, const char *group_code,
     uint64_t heartbeat, uint64_t send_time, size_t *out_len)
 {
@@ -592,7 +592,7 @@ static json_t *yb_decode_forward_multimedia(const unsigned char *d, size_t n)
     v=yb_get_varint(&fs,7,0); if (v) json_object_set(m,"height",json_int((int)v));
     yb_fields_free(&fs); return m;
 }
-/* PoP: yb_decode_forward_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg_content */
+/* PoP: yb_decode_forward_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_forward_msg_content */
 static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -603,7 +603,7 @@ static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
     if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_multimedia(pb[i],pl[i])); json_object_set(c,"multimedia",arr); free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */ }
     yb_fields_free(&fs); return c;
 }
-/* PoP: yb_decode_forward_msg @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg */
+/* PoP: yb_decode_forward_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_forward_msg */
 static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -617,7 +617,7 @@ static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_decode_forward_msg_data @ gateway/platforms/yuanbao_proto.py:decode_forward_msg_data */
+/* PoP: yuanbao_proto_decode_forward_msg_data @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_forward_msg_data */
 char *yuanbao_proto_decode_forward_msg_data(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return strdup("{}");
@@ -635,7 +635,7 @@ char *yuanbao_proto_decode_forward_msg_data(const unsigned char *data, size_t le
 /* Forward declaration: defined later (shared MsgContent decoder). */
 char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len);
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_decode_inbound_push @ gateway/platforms/yuanbao_proto.py:decode_inbound_push */
+/* PoP: yuanbao_proto_decode_inbound_push @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_inbound_push */
 char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -704,7 +704,7 @@ char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
 
 /* ---- QueryGroupInfoRsp decode ---- */
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_decode_query_group_info_rsp @ gateway/platforms/yuanbao_proto.py:decode_query_group_info_rsp */
+/* PoP: yuanbao_proto_decode_query_group_info_rsp @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_query_group_info_rsp */
 char *yuanbao_proto_decode_query_group_info_rsp(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -731,7 +731,7 @@ char *yuanbao_proto_decode_query_group_info_rsp(const unsigned char *data, size_
 
 /* ---- GetGroupMemberListRsp decode ---- */
 /* ---------------------------------------------------------------------- */
-/* PoP: yuanbao_proto_decode_get_group_member_list_rsp @ gateway/platforms/yuanbao_proto.py:decode_get_group_member_list_rsp */
+/* PoP: yuanbao_proto_decode_get_group_member_list_rsp @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_get_group_member_list_rsp */
 char *yuanbao_proto_decode_get_group_member_list_rsp(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -766,7 +766,7 @@ char *yuanbao_proto_decode_get_group_member_list_rsp(const unsigned char *data, 
  * yuanbao_proto_decode_inbound_push; these thin real wrappers expose the same
  * behavior so the port is name-complete and oracle-verifiable. */
 
-/* PoP: yuanbao_proto_decode_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_msg_content */
+/* PoP: yuanbao_proto_decode_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_msg_content */
 char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len)
 {
     yb_fields cf; if (!yb_parse_fields(data,len,&cf)) return strdup("{}");
@@ -802,7 +802,7 @@ char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len)
     char *out = json_dumps(content, 0); json_free(content); yb_fields_free(&cf); return out;
 }
 
-/* PoP: yuanbao_proto_decode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_decode_msg_body_element */
+/* PoP: yuanbao_proto_decode_msg_body_element @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_msg_body_element */
 char *yuanbao_proto_decode_msg_body_element(const unsigned char *data, size_t len)
 {
     yb_fields ef; if (!yb_parse_fields(data,len,&ef)) return strdup("{}");

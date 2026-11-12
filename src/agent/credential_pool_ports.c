@@ -187,7 +187,7 @@ long cpl_exhausted_ttl(long error_code) {
     return 120;
 }
 
-/* PoP: cpl_parse_absolute_timestamp @ agent/credential_pool.py:_parse_absolute_timestamp */
+/* PoP: cpl_parse_absolute_timestamp @ agent/credential_pool_timestamps.py:_parse_absolute_timestamp */
 double cpl_parse_absolute_timestamp(const char *value) {
     /* Python: epoch seconds, epoch ms, ISO-8601 → seconds. */
     if (!value || !*value) return -1;
@@ -598,7 +598,7 @@ char *cpl_try_refresh_current_unlocked(const char *current_json) {
     return NULL;
 }
 
-/* PoP: cpl_reset_statuses @ agent/credential_pool.py:reset_statuses */
+/* PoP: cpl_reset_statuses @ agent/credential_pool_admin.py:reset_statuses */
 long cpl_reset_statuses(const char *entries_json) {
     /* Python: clear status fields; returns count. */
     if (!entries_json) return 0;
@@ -606,7 +606,7 @@ long cpl_reset_statuses(const char *entries_json) {
     return 0;
 }
 
-/* PoP: cpl_remove_index @ agent/credential_pool.py:remove_index */
+/* PoP: cpl_remove_index @ agent/credential_pool_admin.py:remove_index */
 char *cpl_remove_index(const char *entries_json, int index) {
     /* Python: 1-based remove; renumber priorities. */
     if (!entries_json || index < 1) return NULL;
@@ -614,7 +614,7 @@ char *cpl_remove_index(const char *entries_json, int index) {
     return strdup(entries_json);
 }
 
-/* PoP: cpl_resolve_target @ agent/credential_pool.py:resolve_target */
+/* PoP: cpl_resolve_target @ agent/credential_pool_admin.py:resolve_target */
 char *cpl_resolve_target(const char *target, const char *entries_json) {
     /* Python: match by id / api_key hint; error tuple when unmatched. */
     if (!target || !*target) return strdup("{\"error\": \"No credential target provided.\"}");
@@ -623,7 +623,7 @@ char *cpl_resolve_target(const char *target, const char *entries_json) {
     return strdup("{\"entry\": null}");
 }
 
-/* PoP: cpl_add_entry @ agent/credential_pool.py:add_entry */
+/* PoP: cpl_add_entry @ agent/credential_pool_admin.py:add_entry */
 char *cpl_add_entry(const char *entry_json, int max_priority) {
     /* Python: assign next priority, append, persist. */
     if (!entry_json) return NULL;

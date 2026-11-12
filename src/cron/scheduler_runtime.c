@@ -509,7 +509,7 @@ void scheduler_get_lock_paths(char **lock_dir_out, char **tick_lock_out)
  * _plugin_cron_env_var read side over the same registration hook).
  * ================================================================ */
 
-/* PoP: scheduler_plugin_cron_env_var @ cron/scheduler.py:_plugin_cron_env_var */
+/* PoP: scheduler_plugin_cron_env_var @ cron/scheduler_delivery.py:_plugin_cron_env_var */
 const char *scheduler_plugin_cron_env_var(const char *platform_name)
 {
     /* The delivery module owns the plugin table; reuse its plugin-ONLY

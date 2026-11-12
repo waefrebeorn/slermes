@@ -198,7 +198,7 @@ char *skillstool_check_skill_view_dedup(const char *arg) {
     return out;
 }
 
-/* PoP: skillstool_reset_skill_view_dedup @ tools/skills_tool.py:reset_skill_view_dedup */
+/* PoP: skillstool_reset_skill_view_dedup @ tools/skills_tool_dedup.py:reset_skill_view_dedup */
 int skillstool_reset_skill_view_dedup(const char *arg) {
     /* Python: clear the skill_view dedup cache (all tasks when arg empty).
      * Called on context compression. Arg = "task_id" or empty. */
@@ -207,7 +207,7 @@ int skillstool_reset_skill_view_dedup(const char *arg) {
     return 0;
 }
 
-/* PoP: skillstool_plugin_skill_linked_files @ tools/skills_tool.py:_plugin_skill_linked_files */
+/* PoP: skillstool_plugin_skill_linked_files @ tools/skills_tool_plugin.py:_plugin_skill_linked_files */
 /* Walk each skill category dir (references/templates/assets/scripts); for each
  * file under it, keep the path only if validate_within_dir(path, skill_root)
  * is NULL (inside the skill root). Return a JSON object mapping category ->
@@ -289,7 +289,7 @@ char *skillstool_plugin_skill_linked_files(const char *skill_root) {
     return out;
 }
 
-/* PoP: skt_is_remote_env_backend @ tools/skills_tool.py:_is_remote_env_backend */
+/* PoP: skt_is_remote_env_backend @ tools/skills_tool_setup.py:_is_remote_env_backend */
 /*
  * Return True when the given backend is a built-in remote env backend
  * (docker, singularity, modal, ssh, daytona, vercel_sandbox) or a plugin

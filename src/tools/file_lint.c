@@ -121,7 +121,7 @@ static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
     return build_result(false, msg);
 }
 
-/* PoP: file_lint_json @ tools/file_operations.py:_lint_json_inproc */
+/* PoP: file_lint_json @ tools/file_operations_lint.py:_lint_json_inproc */
 char *file_lint_json(const char *content)
 {
     if (!content) return build_result(true, "");
@@ -133,7 +133,7 @@ char *file_lint_json(const char *content)
     return build_result(false, "Parse error");
 }
 
-/* PoP: file_lint_yaml @ tools/file_operations.py:_lint_yaml_inproc */
+/* PoP: file_lint_yaml @ tools/file_operations_lint.py:_lint_yaml_inproc */
 char *file_lint_yaml(const char *content)
 {
     if (!content) return build_result(true, "");
@@ -147,7 +147,7 @@ char *file_lint_yaml(const char *content)
     return build_result(false, "YAMLError: invalid YAML");
 }
 
-/* PoP: file_lint_toml @ tools/file_operations.py:_lint_toml_inproc */
+/* PoP: file_lint_toml @ tools/file_operations_lint.py:_lint_toml_inproc */
 char *file_lint_toml(const char *content)
 {
     if (!content) return build_result(true, "");
@@ -157,7 +157,7 @@ char *file_lint_toml(const char *content)
     return build_result(false, "TOMLDecodeError: invalid TOML");
 }
 
-/* PoP: file_lint_python @ tools/file_operations.py:_lint_python_inproc */
+/* PoP: file_lint_python @ tools/file_operations_lint.py:_lint_python_inproc */
 char *file_lint_python(const file_lint_t *ctx, const char *content)
 {
     return lint_via_python(ctx, "import ast; ast.parse(src)", content);

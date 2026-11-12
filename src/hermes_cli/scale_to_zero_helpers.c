@@ -82,7 +82,7 @@ int scale_to_zero_messaging_is_relay_only_or_absent(const char *platforms_json)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: scale_to_zero_should_arm @ gateway/scale_to_zero.py:should_arm */
-/* PoP: scale_to_zero_should_arm @ gateway/run.py:_scale_to_zero_should_arm */
+/* PoP: scale_to_zero_should_arm @ gateway/run_shutdown.py:_scale_to_zero_should_arm */
 int scale_to_zero_should_arm(int enabled, int relay_only_or_absent, const char *wake_url)
 {
     return (enabled != 0) && (relay_only_or_absent != 0) && (wake_url && wake_url[0]);
@@ -90,7 +90,7 @@ int scale_to_zero_should_arm(int enabled, int relay_only_or_absent, const char *
 
 /* ---------------------------------------------------------------------- */
 /* PoP: scale_to_zero_is_idle @ gateway/scale_to_zero.py:is_idle */
-/* PoP: scale_to_zero_is_idle @ gateway/run.py:_scale_to_zero_is_idle */
+/* PoP: scale_to_zero_is_idle @ gateway/run_shutdown.py:_scale_to_zero_is_idle */
 int scale_to_zero_is_idle(int running_agent_count, double seconds_since_last_inbound,
                           double idle_timeout_seconds, int has_live_background_work)
 {

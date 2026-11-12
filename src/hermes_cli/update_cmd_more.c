@@ -44,7 +44,7 @@ bool uc_should_zip_fallback_on_update_error(int exit_code, bool is_git_error, bo
 }
 
 /* ── _read_project_version ─────────────────────────────────────────── */
-/* PoP: uc_read_project_version @ hermes_cli/update_cmd.py:_read_project_version */
+/* PoP: uc_read_project_version @ hermes_cli/update_cmd_maint.py:_read_project_version */
 /* Read the version field from the checkout's pyproject.toml. */
 char *uc_read_project_version(const char *project_root) {
     if (!project_root || !*project_root) return NULL;
@@ -105,7 +105,7 @@ char *uc_read_project_version(const char *project_root) {
 }
 
 /* ── _classify_fetch_failure ───────────────────────────────────────── */
-/* PoP: uc_classify_fetch_failure @ hermes_cli/update_cmd.py:_classify_fetch_failure */
+/* PoP: uc_classify_fetch_failure @ hermes_cli/update_cmd_git.py:_classify_fetch_failure */
 /* Map git-fetch stderr to a one-line, user-facing diagnosis. */
 char *uc_classify_fetch_failure(const char *stderr_text) {
     if (!stderr_text || !*stderr_text) {
@@ -175,7 +175,7 @@ void uc_print_fetch_failure(const char *stderr_text) {
 }
 
 /* ── _purge_stale_hermes_modules ───────────────────────────────────── */
-/* PoP: uc_purge_stale_hermes_modules @ hermes_cli/update_cmd.py:_purge_stale_hermes_modules */
+/* PoP: uc_purge_stale_hermes_modules @ hermes_cli/update_cmd_maint.py:_purge_stale_hermes_modules */
 /* Evict every cached Hermes module after the checkout changed in-place.
  * In C, this is a no-op since we don't have Python's sys.modules.
  * The function exists for parity; the real work happens in the Python layer. */
@@ -193,7 +193,7 @@ void uc_purge_stale_hermes_modules(void) {
 }
 
 /* ── _reload_process_scan_modules ──────────────────────────────────── */
-/* PoP: uc_reload_process_scan_modules @ hermes_cli/update_cmd.py:_reload_process_scan_modules */
+/* PoP: uc_reload_process_scan_modules @ hermes_cli/update_cmd_maint.py:_reload_process_scan_modules */
 /* Force-reload the process-scan modules from disk after an update.
  * In C, this is a no-op since we don't dynamically reload C modules. */
 void uc_reload_process_scan_modules(void) {

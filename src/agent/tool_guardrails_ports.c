@@ -221,7 +221,7 @@ int guarrd_check_loop_cap(const char *arg) {
     return 0;
 }
 
-/* PoP: guarrd_non_negative_int @ agent/tool_guardrails.py:_non_negative_int */
+/* PoP: guarrd_non_negative_int @ tools/skill_usage.py:_non_negative_int */
 int guarrd_non_negative_int(const char *arg) {
     /* Python: parse a session-cap value; 0 = disable; negatives/junk -> default.
     * Arg = "value\tdefault". */

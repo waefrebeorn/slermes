@@ -10,7 +10,7 @@
 
 /* ── tools/file_operations.py: file ops + search + sample ── */
 
-/* PoP: _normalized_filename_search_root @ tools/file_operations.py:_normalized_filename_search_root */
+/* PoP: _normalized_filename_search_root @ tools/file_operations_search.py:_normalized_filename_search_root */
 char *_normalized_filename_search_root(const char *root, const char *fallback_cwd) {
     if (!root) return strdup(fallback_cwd ? fallback_cwd : ".");
     if (root[0] == '/') return strdup(root);
@@ -19,7 +19,7 @@ char *_normalized_filename_search_root(const char *root, const char *fallback_cw
     return result;
 }
 
-/* PoP: _filename_search_root_keys @ tools/file_operations.py:_filename_search_root_keys */
+/* PoP: _filename_search_root_keys @ tools/file_operations_search.py:_filename_search_root_keys */
 char **_filename_search_root_keys(const char **roots, int n_roots, const char *fallback_cwd) {
     char **keys = malloc(sizeof(char *) * (n_roots + 1));
     for (int i = 0; i < n_roots; i++) {
@@ -29,10 +29,10 @@ char **_filename_search_root_keys(const char **roots, int n_roots, const char *f
     return keys;
 }
 
-/* PoP: _acquire_filename_search_roots @ tools/file_operations.py:_acquire_filename_search_roots */
+/* PoP: _acquire_filename_search_roots @ tools/file_operations_search.py:_acquire_filename_search_roots */
 int _acquire_filename_search_roots(void) { return 1; }
 
-/* PoP: _macos_protected_search_exclusions @ tools/file_operations.py:_macos_protected_search_exclusions */
+/* PoP: _macos_protected_search_exclusions @ tools/file_operations_search.py:_macos_protected_search_exclusions */
 char **_macos_protected_search_exclusions(const char *path) {
     (void)path;
     char **exclusions = malloc(sizeof(char *) * 1);
@@ -77,13 +77,13 @@ char **_split_segments(const char *output, const char *sentinel) {
     return segs;
 }
 
-/* PoP: _modified_rg_capability_error @ tools/file_operations.py:_modified_rg_capability_error */
+/* PoP: _modified_rg_capability_error @ tools/file_operations_search.py:_modified_rg_capability_error */
 char *_modified_rg_capability_error(const char *executable) {
     if (!executable) return NULL;
     return NULL; /* assume rg >= 14 */
 }
 
-/* PoP: _quote_executable @ tools/file_operations.py:_quote_executable */
+/* PoP: _quote_executable @ tools/file_operations_search.py:_quote_executable */
 char *_quote_executable(const char *executable) {
     if (!executable) return strdup("");
     return strdup(executable);
@@ -238,7 +238,7 @@ int _probe_write_target_sequential(const char *path) {
     return _probe_write_target(path);
 }
 
-/* PoP: _has_ancestor_tsconfig @ tools/file_operations.py:_has_ancestor_tsconfig */
+/* PoP: _has_ancestor_tsconfig @ tools/file_operations_lint.py:_has_ancestor_tsconfig */
 int _has_ancestor_tsconfig(const char *path) {
     if (!path) return 0;
     char *p = strdup(path);
@@ -254,23 +254,23 @@ int _has_ancestor_tsconfig(const char *path) {
     return 0;
 }
 
-/* PoP: _macos_search_exclusions @ tools/file_operations.py:_macos_search_exclusions */
+/* PoP: _macos_search_exclusions @ tools/file_operations_search.py:_macos_search_exclusions */
 char **_macos_search_exclusions(const char *path) {
     return _macos_protected_search_exclusions(path);
 }
 
-/* PoP: _effective_macos_search_exclusions @ tools/file_operations.py:_effective_macos_search_exclusions */
+/* PoP: _effective_macos_search_exclusions @ tools/file_operations_search.py:_effective_macos_search_exclusions */
 char **_effective_macos_search_exclusions(const char *path) {
     return _macos_protected_search_exclusions(path);
 }
 
-/* PoP: _macos_protected_search_warning @ tools/file_operations.py:_macos_protected_search_warning */
+/* PoP: _macos_protected_search_warning @ tools/file_operations_search.py:_macos_protected_search_warning */
 char *_macos_protected_search_warning(const char *path) {
     (void)path;
     return strdup("");
 }
 
-/* PoP: _search_prune_glob_args @ tools/file_operations.py:_search_prune_glob_args */
+/* PoP: _search_prune_glob_args @ tools/file_operations_search.py:_search_prune_glob_args */
 char **_search_prune_glob_args(const char **args) {
     if (!args) {
         char **result = malloc(sizeof(char *));
@@ -285,13 +285,13 @@ char **_search_prune_glob_args(const char **args) {
     return pruned;
 }
 
-/* PoP: _is_broad_local_search_root @ tools/file_operations.py:_is_broad_local_search_root */
+/* PoP: _is_broad_local_search_root @ tools/file_operations_search.py:_is_broad_local_search_root */
 int _is_broad_local_search_root(const char *root) {
     if (!root) return 0;
     return strcmp(root, "/") == 0 || strcmp(root, ".") == 0;
 }
 
-/* PoP: _search_with_grep_pruned @ tools/file_operations.py:_search_with_grep_pruned */
+/* PoP: _search_with_grep_pruned @ tools/file_operations_search.py:_search_with_grep_pruned */
 char *_search_with_grep_pruned(const char *pattern, const char **roots, int n_roots) {
     (void)pattern; (void)roots; (void)n_roots;
     return strdup("");

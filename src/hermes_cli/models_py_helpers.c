@@ -81,7 +81,7 @@ int models_live_http_fetch(const char *url, const char *headers_json,
  * compute_sale_discount
  * ============================================================ */
 
-/* PoP: models_compute_sale_discount @ hermes_cli/models.py:compute_sale_discount */
+/* PoP: models_compute_sale_discount @ hermes_cli/models_pricing.py:compute_sale_discount */
 bool models_compute_sale_discount(const char *prompt, const char *completion,
                                   const json_t *original,
                                   int *out_pct, char **out_was_prompt, char **out_was_completion) {
@@ -253,7 +253,7 @@ char *models_deepinfra_base_url(const json_t *section) {
  * _fireworks_pricing_from_models_dev
  * ============================================================ */
 
-/* PoP: models_fireworks_pricing_from_models_dev @ hermes_cli/models.py:_fireworks_pricing_from_models_dev */
+/* PoP: models_fireworks_pricing_from_models_dev @ hermes_cli/models_pricing.py:_fireworks_pricing_from_models_dev */
 json_t *models_fireworks_pricing_from_models_dev(int force_refresh) {
     (void)force_refresh;
     json_t *result = json_new_object();
@@ -363,7 +363,7 @@ char **models_fetch_deepinfra_models(const json_t *catalog_data, int *out_count)
     return models_deepinfra_model_ids(catalog_data, "chat", out_count);
 }
 
-/* PoP: models_fetch_deepinfra_pricing @ hermes_cli/models.py:_fetch_deepinfra_pricing */
+/* PoP: models_fetch_deepinfra_pricing @ hermes_cli/models_pricing.py:_fetch_deepinfra_pricing */
 json_t *models_fetch_deepinfra_pricing(const json_t *tagged_models) {
     json_t *result = json_new_object();
     if (!tagged_models || tagged_models->type != JSON_ARRAY) return result;
@@ -479,7 +479,7 @@ char *models_urlopen_model_catalog_request(http_fetch_fn fetch, void *ctx,
  * ollama_model_supports_thinking
  * ============================================================ */
 
-/* PoP: models_ollama_model_supports_thinking @ hermes_cli/models.py:ollama_model_supports_thinking */
+/* PoP: models_ollama_model_supports_thinking @ hermes_cli/models_local.py:ollama_model_supports_thinking */
 int models_ollama_model_supports_thinking(http_fetch_fn fetch, void *ctx,
                                           const char *model, const char *base_url,
                                           const char *api_key, double timeout) {

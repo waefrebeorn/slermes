@@ -11,13 +11,13 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: bb_check_bluebubbles_requirements @ gateway/platforms/bluebubbles.py:check_bluebubbles_requirements */
+/* PoP: bb_check_bluebubbles_requirements @ plugins/platforms/bluebubbles/adapter.py:check_bluebubbles_requirements */
 int bb_check_bluebubbles_requirements(const char *arg) { /* Python default is also a no-op */ 
     /* C port implements the BlueBubbles adapter natively; deps present. */
     return 1;
 }
 
-/* PoP: bb_u_normalize_server_url @ gateway/platforms/bluebubbles.py:_normalize_server_url */
+/* PoP: bb_u_normalize_server_url @ plugins/platforms/bluebubbles/adapter.py:_normalize_server_url */
 int bb_u_normalize_server_url(const char *arg) {
     /* Python: strip, prefix http:// if no scheme, rstrip '/'. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -100,7 +100,7 @@ int bb_u_api_post(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_webhook_url @ gateway/platforms/bluebubbles.py:_webhook_url */
+/* PoP: bb_u_webhook_url @ plugins/platforms/bluebubbles/adapter.py:_webhook_url */
 int bb_u_webhook_url(const char *arg) {
     /* Python: http://host:port/path; loopback hosts -> localhost. Arg =
      * "host\tport\tpath". */
@@ -118,7 +118,7 @@ int bb_u_webhook_url(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_webhook_register_url @ gateway/platforms/bluebubbles.py:_webhook_register_url */
+/* PoP: bb_u_webhook_register_url @ plugins/platforms/bluebubbles/adapter.py:_webhook_register_url */
 int bb_u_webhook_register_url(const char *arg) {
     /* Python: base URL + ?password= query. Arg = "base_url\tpassword". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -128,7 +128,7 @@ int bb_u_webhook_register_url(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_webhook_register_url_for_log @ gateway/platforms/bluebubbles.py:_webhook_register_url_for_log */
+/* PoP: bb_u_webhook_register_url_for_log @ plugins/platforms/bluebubbles/adapter.py:_webhook_register_url_for_log */
 int bb_u_webhook_register_url_for_log(const char *arg) {
     /* Python: password masked. Arg =
      * "masked\tstate\tresult". */
@@ -143,7 +143,7 @@ int bb_u_webhook_register_url_for_log(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_find_registered_webhooks @ gateway/platforms/bluebubbles.py:_find_registered_webhooks */
+/* PoP: bb_u_find_registered_webhooks @ plugins/platforms/bluebubbles/adapter.py:_find_registered_webhooks */
 int bb_u_find_registered_webhooks(const char *arg) {
     /* Python: url match. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -154,7 +154,7 @@ int bb_u_find_registered_webhooks(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_register_webhook @ gateway/platforms/bluebubbles.py:_register_webhook */
+/* PoP: bb_u_register_webhook @ plugins/platforms/bluebubbles/adapter.py:_register_webhook */
 int bb_u_register_webhook(const char *arg) {
     /* Python: reuse-first. Arg =
      * "registered\tstate\tresult". */
@@ -169,7 +169,7 @@ int bb_u_register_webhook(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_unregister_webhook @ gateway/platforms/bluebubbles.py:_unregister_webhook */
+/* PoP: bb_u_unregister_webhook @ plugins/platforms/bluebubbles/adapter.py:_unregister_webhook */
 int bb_u_unregister_webhook(const char *arg) {
     /* Python: remove all matching. Arg =
      * "removed\tstate\tresult". */
@@ -184,7 +184,7 @@ int bb_u_unregister_webhook(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_resolve_chat_guid @ gateway/platforms/bluebubbles.py:_resolve_chat_guid */
+/* PoP: bb_u_resolve_chat_guid @ plugins/platforms/bluebubbles/adapter.py:_resolve_chat_guid */
 int bb_u_resolve_chat_guid(const char *arg) {
     /* Python: strict identifier match. Arg =
      * "guid\tstate\tresult". */
@@ -199,7 +199,7 @@ int bb_u_resolve_chat_guid(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_create_chat_for_handle @ gateway/platforms/bluebubbles.py:_create_chat_for_handle */
+/* PoP: bb_u_create_chat_for_handle @ plugins/platforms/bluebubbles/adapter.py:_create_chat_for_handle */
 int bb_u_create_chat_for_handle(const char *arg) {
     /* Python: first-message chat. Arg =
      * "state\tresult\terr". */
@@ -216,7 +216,7 @@ int bb_u_create_chat_for_handle(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_mark_read @ gateway/platforms/bluebubbles.py:mark_read */
+/* PoP: bb_mark_read @ plugins/platforms/bluebubbles/adapter.py:mark_read */
 int bb_mark_read(const char *arg) {
     /* Python: private API gate. Arg =
      * "marked\tstate\tresult". */
@@ -244,7 +244,7 @@ int bb_u_download_attachment(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_extract_payload_record @ gateway/platforms/bluebubbles.py:_extract_payload_record */
+/* PoP: bb_u_extract_payload_record @ plugins/platforms/bluebubbles/adapter.py:_extract_payload_record */
 int bb_u_extract_payload_record(const char *arg) {
     /* Python: payload data dict/list-first/message dict. Arg = payload JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -280,7 +280,7 @@ extern json_t *secret_scope_current_secret_scope(void);
 extern bool secret_scope_is_multiplex_active(void);
 extern const char *secret_scope_get_secret(const char *name, const char *default_val);
 
-/* PoP: bb_u_get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
+/* PoP: bb_u_get_scoped_secret @ plugins/platforms/buzz/adapter.py:_get_scoped_secret */
 /* Scope-aware credential read with the default-profile startup fallback.
  * Secondary profiles construct their adapters under a profile secret scope —
  * the scope is authoritative and a scoped miss returns default (no cross-

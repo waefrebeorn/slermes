@@ -430,7 +430,7 @@ static json_t *pr_load_config(void) {
     return cfg;
 }
 
-/* PoP: provider_normalize_base_url_for_match @ hermes_cli/runtime_provider.py:_normalize_base_url_for_match */
+/* PoP: provider_normalize_base_url_for_match @ hermes_cli/runtime_provider_custom.py:_normalize_base_url_for_match */
 char *provider_normalize_base_url_for_match(const char *value) {
     if (!value) return dup_or_empty("");
     /* strip whitespace */
@@ -468,7 +468,7 @@ static const char *pr_entry_url(const json_t *entry) {
     return NULL;
 }
 
-/* PoP: provider_find_custom_identity_by_url @ hermes_cli/runtime_provider.py:find_custom_provider_identity */
+/* PoP: provider_find_custom_identity_by_url @ hermes_cli/runtime_provider_custom.py:find_custom_provider_identity */
 char *provider_find_custom_identity_by_url(const char *base_url) {
     char *target = provider_normalize_base_url_for_match(base_url);
     if (!target || !*target) { free(target); return NULL; }
@@ -561,7 +561,7 @@ static bool pr_entry_serves_model(const json_t *entry, const char *target) {
     return false;
 }
 
-/* PoP: provider_find_custom_identity_by_model @ hermes_cli/runtime_provider.py:find_custom_provider_identity_by_model */
+/* PoP: provider_find_custom_identity_by_model @ hermes_cli/runtime_provider_custom.py:find_custom_provider_identity_by_model */
 char *provider_find_custom_identity_by_model(const char *model) {
     char *target = strip_lower(model);
     if (!target || !*target) { free(target); return NULL; }
@@ -689,7 +689,7 @@ static bool pr_named_custom_exists(const char *candidate) {
  * True when config defines a providers:/custom_providers: entry matching the
  * requested name (thin public wrapper over the _get_named_custom_provider
  * existence scan; Python's try/except → false maps to the scan's own
- * PoP: has_named_custom_provider @ hermes_cli/runtime_provider.py:has_named_custom_provider
+ * PoP: has_named_custom_provider @ hermes_cli/runtime_provider_custom.py:has_named_custom_provider
  */
 bool provider_has_named_custom(const char *requested_provider) {
     char *req_norm = provider_normalize_custom_name(requested_provider);
@@ -701,7 +701,7 @@ bool provider_has_named_custom(const char *requested_provider) {
     return pr_named_custom_exists(requested_provider);
 }
 
-/* PoP: provider_canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+/* PoP: provider_canonical_custom_identity @ hermes_cli/runtime_provider_custom.py:canonical_custom_identity */
 char *provider_canonical_custom_identity(const char *base_url,
                                          const char *config_provider,
                                          const char *model) {

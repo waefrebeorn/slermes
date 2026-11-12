@@ -64,7 +64,7 @@ int tt_u_get_approval_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_get_sudo_password_cache_scope @ tools/terminal_tool.py:_get_sudo_password_cache_scope */
+/* PoP: tt_u_get_sudo_password_cache_scope @ tools/terminal_tool_sudo.py:_get_sudo_password_cache_scope */
 int tt_u_get_sudo_password_cache_scope(const char *arg) {
     /* Python: session/callback/thread scope. Arg = "session_key\tcallback\tthread". */
     if (!arg || !*arg) { printf("thread:<id>\n"); return 0; }
@@ -76,7 +76,7 @@ int tt_u_get_sudo_password_cache_scope(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_get_cached_sudo_password @ tools/terminal_tool.py:_get_cached_sudo_password */
+/* PoP: tt_u_get_cached_sudo_password @ tools/terminal_tool_sudo.py:_get_cached_sudo_password */
 int tt_u_get_cached_sudo_password(const char *arg) {
     /* Python: locked _sudo_password_cache.get(scope, ""). Arg = scope. */
     (void)arg;
@@ -86,7 +86,7 @@ int tt_u_get_cached_sudo_password(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_set_cached_sudo_password @ tools/terminal_tool.py:_set_cached_sudo_password */
+/* PoP: tt_u_set_cached_sudo_password @ tools/terminal_tool_sudo.py:_set_cached_sudo_password */
 int tt_u_set_cached_sudo_password(const char *arg) {
     /* Python: cache password under scope, or evict when empty. Arg =
      * "scope\tpassword" (password empty = evict). */
@@ -98,7 +98,7 @@ int tt_u_set_cached_sudo_password(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_reset_cached_sudo_passwords @ tools/terminal_tool.py:_reset_cached_sudo_passwords */
+/* PoP: tt_u_reset_cached_sudo_passwords @ tools/terminal_tool_sudo.py:_reset_cached_sudo_passwords */
 int tt_u_reset_cached_sudo_passwords(const char *arg) {
     /* Python: clear sudo password cache. */
     (void)arg;
@@ -154,7 +154,7 @@ int tt_u_check_all_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_sudo_wrong_password_failure @ tools/terminal_tool.py:_sudo_wrong_password_failure */
+/* PoP: tt_u_sudo_wrong_password_failure @ tools/terminal_tool_sudo.py:_sudo_wrong_password_failure */
 int tt_u_sudo_wrong_password_failure(const char *arg) {
     /* Python: any(marker in output.lower() for marker in
      * _SUDO_WRONG_PASSWORD_MARKERS). Arg = command output. */
@@ -176,7 +176,7 @@ int tt_u_sudo_wrong_password_failure(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_invalidate_cached_sudo_on_auth_failure @ tools/terminal_tool.py:_invalidate_cached_sudo_on_auth_failure */
+/* PoP: tt_u_invalidate_cached_sudo_on_auth_failure @ tools/terminal_tool_sudo.py:_invalidate_cached_sudo_on_auth_failure */
 int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {
     /* Python (command, output): env-configured SUDO_PASSWORD is an explicit
      * operator choice and is never dropped; otherwise the session-cached
@@ -206,7 +206,7 @@ int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {
     return 1;
 }
 
-/* PoP: tt_u_count_real_sudo_invocations @ tools/terminal_tool.py:_count_real_sudo_invocations */
+/* PoP: tt_u_count_real_sudo_invocations @ tools/terminal_tool_sudo.py:_count_real_sudo_invocations */
 int tt_u_count_real_sudo_invocations(const char *arg) {
     /* Python: tokeniser scan. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -346,7 +346,7 @@ int tt_resolve_task_overrides(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_parse_env_var @ tools/terminal_tool.py:_parse_env_var */
+/* PoP: tt_u_parse_env_var @ tools/terminal_tool_config.py:_parse_env_var */
 int tt_u_parse_env_var(const char *arg) {
     /* Python: converter over env value; ValueError with guidance. Arg =
      * "name\traw\tvalid\tvalue". */
@@ -364,7 +364,7 @@ int tt_u_parse_env_var(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_safe_getcwd @ tools/terminal_tool.py:_safe_getcwd */
+/* PoP: tt_u_safe_getcwd @ tools/terminal_tool_config.py:_safe_getcwd */
 int tt_u_safe_getcwd(const char *arg) {
     /* Python: cwd or TERMINAL_CWD or home. Arg = "cwd\tstate\tfallback". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -376,7 +376,7 @@ int tt_u_safe_getcwd(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_is_ssh_remote_tilde_cwd @ tools/terminal_tool.py:_is_ssh_remote_tilde_cwd */
+/* PoP: tt_u_is_ssh_remote_tilde_cwd @ hermes_cli/config.py:_is_ssh_remote_tilde_cwd */
 int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {
     /* Python (backend, cwd): only the ssh backend qualifies; then cwd must
      * be "~" or "~/...". The shim receives "backend\tcwd". */
@@ -389,7 +389,7 @@ int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {
     return strcmp(cwd, "~") == 0 || strncmp(cwd, "~/", 2) == 0;
 }
 
-/* PoP: tt_u_is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
+/* PoP: tt_u_is_unusable_container_cwd @ tools/terminal_tool_config.py:_is_unusable_container_cwd */
 int tt_u_is_unusable_container_cwd(const char *arg) {
     /* Python: host/relative cwd check. Arg = "cwd\tis_abs\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -424,7 +424,7 @@ int tt_u_ensure_terminal_env_bridged(const char *arg) {
     return 0;
 }
 
-/* PoP: tt_u_get_modal_backend_state @ tools/terminal_tool.py:_get_modal_backend_state */
+/* PoP: tt_u_get_modal_backend_state @ tools/terminal_tool_backends.py:_get_modal_backend_state */
 int tt_u_get_modal_backend_state(const char *arg) {
     /* Python: resolve_modal_backend_state(modal_mode, has_direct,
      * managed_ready). Arg = "mode\tdirect\tmanaged" (1/0). */

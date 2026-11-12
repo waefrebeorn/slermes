@@ -691,7 +691,7 @@ int agent_codex_runtime_u_item_field(const char *arg) {
 
 /* ── plain-JSON wire-type check (codex gap closure) ────────────────────── */
 
-/* PoP: _is_plain_json_data @ agent/codex_runtime.py:_is_plain_json_data
+/* PoP: _is_plain_json_data @ agent/sdk_transform_bypass.py:_is_plain_json_data
  * True when value is composed purely of JSON wire types. Hermes-assembled
  * Codex payloads are JSON round-trips — provably wire format only when
  * every node is plain; anything else keeps the typed SDK path.

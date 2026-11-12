@@ -27,7 +27,7 @@ char *srl_init(const char *message, double retry_after) {
     return out;
 }
 
-/* PoP: srl_signal_send_timeout @ gateway/platforms/signal_rate_limit.py:_signal_send_timeout */
+/* PoP: srl_signal_send_timeout @ plugins/platforms/signal/signal_rate_limit.py:_signal_send_timeout */
 long srl_signal_send_timeout(void) {
     /* Python: signal-cli serial attachment uploads. */
     return 90;
@@ -39,14 +39,14 @@ char *srl_state(void) {
     return strdup("{\"pending\": 0, \"running\": 0}");
 }
 
-/* PoP: srl_get_scheduler @ gateway/platforms/signal_rate_limit.py:get_scheduler */
+/* PoP: srl_get_scheduler @ plugins/platforms/signal/signal_rate_limit.py:get_scheduler */
 char *srl_get_scheduler(void) {
     /* Python: process-wide singleton. */
     printf("signal rate-limit scheduler (process-wide)\n");
     return strdup("{}");
 }
 
-/* PoP: srl_reset_scheduler @ gateway/platforms/signal_rate_limit.py:_reset_scheduler */
+/* PoP: srl_reset_scheduler @ plugins/platforms/signal/signal_rate_limit.py:_reset_scheduler */
 int srl_reset_scheduler(void) {
     /* Python: drop cached scheduler. */
     printf("signal scheduler dropped (fresh on next access)\n");

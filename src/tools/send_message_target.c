@@ -24,7 +24,7 @@
 #include <math.h>
 #include <regex.h>
 
-/* PoP: ERE @ tools/send_message_tool.py:_parse_target_ref */
+/* PoP: ERE @ tools/send_message_targets.py:_parse_target_ref */
 /* Faithful subset for the regex-based platforms Python implements. Uses
  * POSIX ERE (capturing groups only — no (?:...) which fails to compile
  * under this glibc). g1 = chat_id, g2 = thread_id (where present). */
@@ -128,7 +128,7 @@ char *send_message_target_display_chat_id(const char *platform_name, const char 
     return strdup(chat_id ? chat_id : "default");
 }
 
-/* PoP: send_message_target_telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
+/* PoP: send_message_target_telegram_retry_delay @ tools/send_message_senders.py:_telegram_retry_delay */
 /* Backoff seconds for retryable Telegram API errors; -1 / NULL = no retry.
  * NOTE: Python reads `retry_after` from the exception ATTRIBUTE, not the
  * error text. A plain error string has no such attribute, so we do NOT

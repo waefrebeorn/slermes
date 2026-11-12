@@ -70,7 +70,7 @@ void cu_capture_free(cu_capture_t *cap) {
 }
 
 
-/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */
+/* PoP: cu_action_free @ tools/computer_use/cua_backend_parse.py:_parse_elements_from_tree */
 void cu_action_free(cu_action_t *act) {
     if (!act) return;
     if (act->capture) cu_capture_free(act->capture);

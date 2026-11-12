@@ -21,7 +21,7 @@ char *browser_supervisor_redact_cdp_error_text(const char *error_text)
     return r ? r : strdup("<error redacted>");
 }
 
-/* PoP: browser_supervisor_redact_supervisor_text @ tools/browser_supervisor.py:_redact_supervisor_text */
+/* PoP: browser_supervisor_redact_supervisor_text @ tools/browser_supervisor_dialogs.py:_redact_supervisor_text */
 char *browser_supervisor_redact_supervisor_text(const char *value)
 {
     if (!value) return strdup("");

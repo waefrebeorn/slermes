@@ -23,7 +23,7 @@ static char *dup_str(const char *s)
 
 /* urlparse-ish hostname: strip scheme, userinfo, port, path; lowercase;
  * drop trailing dots. */
-/* PoP: anc_base_url_hostname @ agent/anthropic_credentials.py:base_url_hostname */
+/* PoP: anc_base_url_hostname @ utils.py:base_url_hostname */
 char *anc_base_url_hostname(const char *base_url)
 {
     if (!base_url) return dup_str("");

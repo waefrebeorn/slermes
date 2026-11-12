@@ -143,7 +143,7 @@ int sexp_iter_user_prompt_records(const char *arg) {
     return 0;
 }
 
-/* PoP: sexp_u_render_jsonl @ hermes_cli/session_export.py:_render_jsonl */
+/* PoP: sexp_u_render_jsonl @ hermes_cli/sessions_cmd.py:_render_jsonl */
 int sexp_u_render_jsonl(const char *arg) {
     /* Python: json.dumps per row joined by \n (+ trailing). Arg = "only" or
      * rows JSON array (each row dumped verbatim). */

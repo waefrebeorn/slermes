@@ -289,7 +289,7 @@ void gw_load_prefill_messages(void) {
 
 /* Load ephemeral system prompt from HERMES_EPHEMERAL_SYSTEM_PROMPT env var
  * or config.yaml agent.system_prompt. */
-/* PoP: gw_load_ephemeral_system_prompt @ gateway/run.py:_load_ephemeral_system_prompt */
+/* PoP: gw_load_ephemeral_system_prompt @ gateway/run_config_loaders.py:_load_ephemeral_system_prompt */
 void gw_load_ephemeral_system_prompt(void) {
     g_ephemeral_system_prompt[0] = '\0';
 
@@ -481,7 +481,7 @@ void gw_runtime_init(void) {
  *  Port of Python stop() drain logic
  * ════════════════════════════════════════════════════════════════ */
 
-/* PoP: _drain_active_agents @ gateway/run.py:_drain_active_agents */
+/* PoP: _drain_active_agents @ gateway/run_shutdown.py:_drain_active_agents */
 /* Port of Python _drain_active_agents(timeout): snapshot the active work
  * counts (running agents / in-flight cron jobs / queued messages), then
  * wait in 0.1s polls while any remain, up to the deadline. In-flight turns

@@ -43,7 +43,7 @@ static void str_strip_inplace(char *s) {
     s[b - a] = '\0';
 }
 
-/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice */
+/* PoP: _flatten_choice @ plugins/platforms/discord/adapter.py:_flatten_choice */
 /* Coerce one choice (a JSON-encoded value: str | dict | list) into its
  * user-facing display string. Returns a heap string (caller frees) or NULL. */
 char *clarify_flatten_choice(const char *choice_json) {
@@ -426,7 +426,7 @@ char *clarify_batch_result(const char *normalized_json, const char *answers_json
     if (answers) json_free(answers);
     return out;
 }
-/* PoP: clarify_run_batch @ tools/clarify_tool.py:_run_batch */
+/* PoP: clarify_run_batch @ tools/delegate_tool_dispatch.py:_run_batch */
 char *clarify_run_batch(const char *normalized_json, clarify_callback cb,
                         const char *title, bool cb_is_batch, void *user_data) {
     if (clarify_callback_accepts_questions(cb_is_batch)) {

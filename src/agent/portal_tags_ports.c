@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: ptg_hermes_version @ agent/portal_tags.py:_hermes_version */
+/* PoP: ptg_hermes_version @ gateway/platforms/api_server.py:_hermes_version */
 char *ptg_hermes_version(void) {
     /* Python: release version or fallback. */
     const char *v = getenv("HERMES_VERSION");

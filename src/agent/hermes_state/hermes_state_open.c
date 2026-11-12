@@ -271,7 +271,7 @@ const char *HERMES_STATE_FTS_TRIGRAM_SQL =
     "    WHERE new.role <> 'tool';"
     "END;";
 
-/* PoP: hermes_state_now_epoch @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_now_epoch @ hermes_state_telegram.py:apply_telegram_topic_migration */
 const char *HERMES_STATE_TOPIC_SQL =
     "CREATE TABLE IF NOT EXISTS telegram_dm_topic_mode ("
     "    chat_id TEXT PRIMARY KEY,"
@@ -397,8 +397,8 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
     return h;
 }
 
-/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
-/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state_telegram.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state_telegram.py:apply_telegram_topic_migration */
 bool hermes_state_apply_telegram_topic_migration(hermes_state_db_t *db) {
     if (!db || !db->db) return false;
     char *err = NULL;

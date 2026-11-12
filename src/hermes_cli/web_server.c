@@ -68,7 +68,7 @@ bool cron_fire_webhook(const char* webhook_url, json_t* payload)
 #include "port_web_server_paths.h"
 
 /* ── Web Server Document Root helpers ───────────────────────────────── */
-/* PoP: default_hermes_root_is_opt_data @ hermes_cli/web_server.py:_default_hermes_root_is_opt_data */
+/* PoP: default_hermes_root_is_opt_data @ hermes_cli/web_server_files.py:_default_hermes_root_is_opt_data */
 
 static bool default_hermes_root_is_opt_data(void) {
     const char *home = getenv("HERMES_HOME");
@@ -76,7 +76,7 @@ static bool default_hermes_root_is_opt_data(void) {
     return strcmp(home, "/opt/data") == 0;
 }
 
-/* PoP: build_oauth_catalog @ hermes_cli/web_server.py:_build_oauth_catalog */
+/* PoP: build_oauth_catalog @ hermes_cli/web_routers/oauth.py:_build_oauth_catalog */
 /* Port of Python: _build_oauth_catalog */
 char *build_oauth_catalog(void)
 {
@@ -150,7 +150,7 @@ char *copilot_acp_status_fn(void)
     return strdup("{\"status\":\"disabled\",\"source\":\"copilot_cli\",\"source_label\":\"Managed by the GitHub Copilot CLI\"}");
 }
 
-/* PoP: dashboard_local_update_managed_externally @ hermes_cli/web_server.py:_dashboard_local_update_managed_externally */
+/* PoP: dashboard_local_update_managed_externally @ hermes_cli/web_server_files.py:_dashboard_local_update_managed_externally */
 bool dashboard_local_update_managed_externally(void) {
     if (default_hermes_root_is_opt_data()) {
         return true;
@@ -181,7 +181,7 @@ char *gateway_display_command(const char *profile, const char *verb)
     return cmd;
 }
 
-/* PoP: gateway_subcommand_fn @ hermes_cli/web_server.py:_gateway_subcommand */
+/* PoP: gateway_subcommand_fn @ hermes_cli/web_server_gateway.py:_gateway_subcommand */
 char *gateway_subcommand_fn(const char *profile, const char *verb)
 {
     if (!profile || !verb) return strdup("");
@@ -221,7 +221,7 @@ char *memory_provider_config_path(const char *provider)
     return path;
 }
 
-/* PoP: memory_provider_payload_fn @ hermes_cli/web_server.py:_memory_provider_payload */
+/* PoP: memory_provider_payload_fn @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
 /* Port of Python: _memory_provider_payload */
 char *memory_provider_payload_fn(const char *provider)
 {
@@ -242,14 +242,14 @@ char *memory_provider_payload_fn(const char *provider)
     return content;
 }
 
-/* PoP: oauth_profile_name @ hermes_cli/web_server.py:_oauth_profile_name */
+/* PoP: oauth_profile_name @ hermes_cli/web_server_oauth.py:_oauth_profile_name */
 /* Port of Python: _oauth_profile_name */
 char *oauth_profile_name(const char *profile)
 {
     return profile ? strdup(profile) : strdup("default");
 }
 
-/* PoP: oauth_provider_disconnect_command @ hermes_cli/web_server.py:_oauth_provider_disconnect_command */
+/* PoP: oauth_provider_disconnect_command @ hermes_cli/web_routers/oauth.py:_oauth_provider_disconnect_command */
 /* Port of Python: _oauth_provider_disconnect_command */
 char *oauth_provider_disconnect_command(const char *provider)
 {
@@ -284,7 +284,7 @@ char *read_memory_provider_file_fn(const char *provider)
     return memory_provider_payload_fn(provider);
 }
 
-/* PoP: resolve_chat_argv_async @ hermes_cli/web_server.py:_resolve_chat_argv_async */
+/* PoP: resolve_chat_argv_async @ hermes_cli/web_server_chat.py:_resolve_chat_argv_async */
 /* Port of Python: _resolve_chat_argv_async */
 char *resolve_chat_argv_async(const char *resume, const char *sidecar_url, const char *profile)
 {
@@ -298,7 +298,7 @@ char *resolve_chat_argv_async(const char *resume, const char *sidecar_url, const
     return argv;
 }
 
-/* PoP: resolve_restart_drain_timeout @ hermes_cli/web_server.py:_resolve_restart_drain_timeout */
+/* PoP: resolve_restart_drain_timeout @ hermes_cli/web_server_lifecycle.py:_resolve_restart_drain_timeout */
 /* Port of Python: _resolve_restart_drain_timeout */
 double resolve_restart_drain_timeout(void)
 {
@@ -308,7 +308,7 @@ double resolve_restart_drain_timeout(void)
     return val;
 }
 
-/* PoP: warm_gateway_module @ hermes_cli/web_server.py:_warm_gateway_module */
+/* PoP: warm_gateway_module @ hermes_cli/web_server_lifecycle.py:_warm_gateway_module */
 /* Port of Python: _warm_gateway_module */
 void warm_gateway_module(void *ctx)
 {
@@ -318,7 +318,7 @@ void warm_gateway_module(void *ctx)
     /* C equivalent: just log that warming was requested */
 }
 
-/* PoP: _resolve_restart_drain_timeout @ hermes_cli/web_server.py:_resolve_restart_drain_timeout */
+/* PoP: _resolve_restart_drain_timeout @ hermes_cli/web_server_lifecycle.py:_resolve_restart_drain_timeout */
 /* Port of Python: _resolve_restart_drain_timeout (bridge with ctx) */
 double _resolve_restart_drain_timeout(void *ctx)
 {
@@ -337,7 +337,7 @@ void _get_chat_argv_lock(void *ctx)
     (void)got_lock;
 }
 
-/* PoP: _gateway_subcommand @ hermes_cli/web_server.py:_gateway_subcommand */
+/* PoP: _gateway_subcommand @ hermes_cli/web_server_gateway.py:_gateway_subcommand */
 /* Port of Python: _gateway_subcommand (proper return version) */
 char *_gateway_subcommand_ret(const char *profile, const char *verb)
 {
@@ -380,7 +380,7 @@ char *_build_oauth_catalog_fn(void *ctx)
     return catalog;
 }
 
-/* PoP: _validate_messaging_env_value @ hermes_cli/web_server.py:_validate_messaging_env_value */
+/* PoP: _validate_messaging_env_value @ hermes_cli/web_routers/messaging.py:_validate_messaging_env_value */
 /* Port of Python: _validate_messaging_env_value (void version) */
 void validate_messaging_env_value(void *ctx, void *platform_id, void *key, void *value)
 {
@@ -418,7 +418,7 @@ void validate_messaging_env_value(void *ctx, void *platform_id, void *key, void 
     }
 }
 
-/* PoP: _validate_messaging_env_value @ hermes_cli/web_server.py:_validate_messaging_env_value */
+/* PoP: _validate_messaging_env_value @ hermes_cli/web_routers/messaging.py:_validate_messaging_env_value */
 /* Port of Python: _validate_messaging_env_value (returns bool) */
 bool validate_messaging_env_value_ret(void *ctx, void *platform_id, void *key, void *value)
 {
@@ -446,7 +446,7 @@ char *_read_field_value(void *ctx, void *field, void *data)
     return read_field_value((const char *)field, (json_t *)data);
 }
 
-/* PoP: field_is_set @ hermes_cli/web_server.py:_field_is_set */
+/* PoP: field_is_set @ hermes_cli/web_server_memory.py:_field_is_set */
 /* Port of Python: _field_is_set */
 bool field_is_set(void *ctx, void *field, void *data)
 {
@@ -473,7 +473,7 @@ bool field_is_set(void *ctx, void *field, void *data)
     return false;
 }
 
-/* PoP: _memory_provider_payload @ hermes_cli/web_server.py:_memory_provider_payload */
+/* PoP: _memory_provider_payload @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
 /* Port of Python: _memory_provider_payload (returns JSON string) */
 char *_memory_provider_payload(void *ctx)
 {
@@ -484,7 +484,7 @@ char *_memory_provider_payload(void *ctx)
     return payload;
 }
 
-/* PoP: _coerce_field_value @ hermes_cli/web_server.py:_coerce_field_value */
+/* PoP: _coerce_field_value @ hermes_cli/web_routers/memory_providers.py:_coerce_field_value */
 /* Port of Python: _coerce_field_value */
 char *_coerce_field_value(void *ctx, void *field, void *raw)
 {
@@ -492,7 +492,7 @@ char *_coerce_field_value(void *ctx, void *field, void *raw)
     return coerce_field_value((const char *)field, raw ? (const char *)raw : "");
 }
 
-/* PoP: get_memory_provider_config @ hermes_cli/web_server.py:get_memory_provider_config */
+/* PoP: get_memory_provider_config @ hermes_cli/web_routers/memory_providers.py:get_memory_provider_config */
 /* Port of Python: get_memory_provider_config */
 void get_memory_provider_config(void *ctx, void *name)
 {
@@ -505,7 +505,7 @@ void get_memory_provider_config(void *ctx, void *name)
     fclose(f);
 }
 
-/* PoP: fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file */
+/* PoP: fs_regular_file @ hermes_cli/web_routers/files.py:_fs_regular_file */
 int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
                     mode_t *out_mode, long *out_size)
 {
@@ -523,14 +523,14 @@ int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
     return 0;
 }
 
-/* PoP: fs_find_git_root @ hermes_cli/web_server.py:_fs_find_git_root */
+/* PoP: fs_find_git_root @ hermes_cli/web_routers/files.py:_fs_find_git_root */
 /* Delegate to pure port to avoid duplicate implementation */
 char *fs_find_git_root(const char *start)
 {
     return ws_fs_find_git_root(start);
 }
 
-/* PoP: fs_git_branch @ hermes_cli/web_server.py:_fs_git_branch */
+/* PoP: fs_git_branch @ hermes_cli/web_routers/files.py:_fs_git_branch */
 char *fs_git_branch(const char *cwd)
 {
     char cmd[PATH_MAX + 64];
@@ -546,13 +546,13 @@ char *fs_git_branch(const char *cwd)
     return strdup(branch);
 }
 
-/* PoP: audio_extension_for_mime @ hermes_cli/web_server.py:_audio_extension_for_mime */
+/* PoP: audio_extension_for_mime @ hermes_cli/web_routers/audio.py:_audio_extension_for_mime */
 const char *audio_extension_for_mime(const char *mime_type)
 {
     return ws_audio_extension_for_mime(mime_type);
 }
 
-/* PoP: infer_type @ hermes_cli/web_server.py:_infer_type */
+/* PoP: infer_type @ hermes_cli/web_server_config.py:_infer_type */
 const char *infer_type(int json_type_tag)
 {
     switch (json_type_tag) {
@@ -620,7 +620,7 @@ static json_t *schema_override_for(const char *key)
     return NULL;
 }
 
-/* PoP: build_schema_from_config @ hermes_cli/web_server.py:_build_schema_from_config */
+/* PoP: build_schema_from_config @ hermes_cli/web_server_config.py:_build_schema_from_config */
 json_t *build_schema_from_config(json_t *config, const char *prefix)
 {
     if (!config || config->type != JSON_OBJECT) return json_new_object();
@@ -742,7 +742,7 @@ json_t *build_schema_from_config(json_t *config, const char *prefix)
     return schema;
 }
 
-/* PoP: normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment */
+/* PoP: normalize_main_model_assignment @ hermes_cli/web_server_config.py:_normalize_main_model_assignment */
 char *normalize_main_model_assignment(const char *provider, const char *model)
 {
     if (!provider) provider = "";
@@ -795,7 +795,7 @@ char *normalize_main_model_assignment(const char *provider, const char *model)
     return result;
 }
 
-/* PoP: apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment */
+/* PoP: apply_main_model_assignment @ hermes_cli/web_server_config.py:_apply_main_model_assignment */
 json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, const char *model,
                                      const char *base_url, const char *api_key)
 {
@@ -838,7 +838,7 @@ json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, con
     return result;
 }
 
-/* PoP: web_display_system_platform @ hermes_cli/web_server.py:_display_system_platform */
+/* PoP: web_display_system_platform @ hermes_cli/web_server_gateway.py:_display_system_platform */
 json_t *web_display_system_platform(const char *system, const char *release,
                                      const char *version, const char *platform_label)
 {
@@ -900,7 +900,7 @@ json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *defa
  * - gateway_has_platform_display_override
  */
 
-/* PoP: web_elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label */
+/* PoP: web_elevenlabs_voice_label @ hermes_cli/web_routers/audio.py:_elevenlabs_voice_label */
 char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
                                   const char *category, const char *description)
 {
@@ -927,7 +927,7 @@ bool web_voice_list_error_logged_once(void)
     return true;  /* already logged */
 }
 
-/* PoP: web_parse_model_ids @ hermes_cli/web_server.py:_parse_model_ids */
+/* PoP: web_parse_model_ids @ hermes_cli/web_server_profiles.py:_parse_model_ids */
 char **web_parse_model_ids(const char *json_response, size_t *out_count)
 {
     if (!json_response || !out_count) return NULL;
@@ -974,7 +974,7 @@ char **web_parse_model_ids(const char *json_response, size_t *out_count)
     return ids;
 }
 
-/* PoP: web_redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env */
+/* PoP: web_redact_mcp_env @ hermes_cli/web_server_mcp.py:_redact_mcp_env */
 json_t *web_redact_mcp_env(json_t *config)
 {
     if (!config || config->type != JSON_OBJECT) return json_new_object();
@@ -997,7 +997,7 @@ json_t *web_redact_mcp_env(json_t *config)
     return result;
 }
 
-/* PoP: web_mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary */
+/* PoP: web_mcp_server_summary @ hermes_cli/web_server_mcp.py:_mcp_server_summary */
 char *web_mcp_server_summary(const char *name, const char *transport,
                               const char *command, const char *url)
 {
@@ -1021,7 +1021,7 @@ char *web_mcp_server_summary(const char *name, const char *transport,
     return strdup(name);
 }
 
-/* PoP: web_safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name */
+/* PoP: web_safe_backup_upload_name @ hermes_cli/web_routers/ops.py:_safe_backup_upload_name */
 char *web_safe_backup_upload_name(const char *name)
 {
     if (!name || !name[0]) return strdup("backup");
@@ -1050,7 +1050,7 @@ char *web_safe_backup_upload_name(const char *name)
     return out;
 }
 
-/* PoP: web_normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix */
+/* PoP: web_normalise_prefix @ hermes_cli/web_server_dashboard.py:_normalise_prefix */
 char *web_normalise_prefix(const char *prefix)
 {
     if (!prefix || !prefix[0]) return strdup("");
@@ -1072,7 +1072,7 @@ char *web_normalise_prefix(const char *prefix)
     return out;
 }
 
-/* PoP: web_parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer */
+/* PoP: web_parse_theme_layer @ hermes_cli/web_server_dashboard.py:_parse_theme_layer */
 json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
 {
     if (!name || !name[0]) return NULL;
@@ -1097,7 +1097,7 @@ json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
     return result;
 }
 
-/* PoP: web_normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition */
+/* PoP: web_normalise_theme_definition @ hermes_cli/web_server_dashboard.py:_normalise_theme_definition */
 json_t *web_normalise_theme_definition(json_t *theme_def)
 {
     if (!theme_def || theme_def->type != JSON_OBJECT) return json_new_object();
@@ -1135,7 +1135,7 @@ json_t *web_normalise_theme_definition(json_t *theme_def)
     return result;
 }
 
-/* PoP: web_validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name */
+/* PoP: web_validate_plugin_name @ hermes_cli/web_routers/dashboard_ui.py:_validate_plugin_name */
 bool web_validate_plugin_name(const char *name)
 {
     if (!name || !name[0]) return false;
@@ -1151,7 +1151,7 @@ bool web_validate_plugin_name(const char *name)
     return true;
 }
 
-/* PoP: web_read_bound_port @ hermes_cli/web_server.py:_read_bound_port */
+/* PoP: web_read_bound_port @ hermes_cli/web_server_lifecycle.py:_read_bound_port */
 int web_read_bound_port(const char *ready_file)
 {
     if (!ready_file) return 0;
@@ -1171,7 +1171,7 @@ int web_read_bound_port(const char *ready_file)
     return port;
 }
 
-/* PoP: web_write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file */
+/* PoP: web_write_dashboard_ready_file @ hermes_cli/web_server_lifecycle.py:_write_dashboard_ready_file */
 bool web_write_dashboard_ready_file(const char *ready_file, int port)
 {
     if (!ready_file) return false;
@@ -1184,7 +1184,7 @@ bool web_write_dashboard_ready_file(const char *ready_file, int port)
     return true;
 }
 
-/* PoP: web_maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser */
+/* PoP: web_maybe_open_browser @ hermes_cli/web_server_lifecycle.py:_maybe_open_browser */
 bool web_maybe_open_browser(const char *url)
 {
     if (!url) return false;
@@ -1237,7 +1237,7 @@ static double web__parse_iso(const char *s) {
     return secs;
 }
 
-/* PoP: web_parse_expiry_ts @ hermes_cli/web_server.py:_parse_expiry_ts */
+/* PoP: web_parse_expiry_ts @ hermes_cli/web_routers/messaging.py:_parse_expiry_ts */
 double web_parse_expiry_ts(const char *value) {
     if (!value || !*value) return (double)time(NULL) + 600.0;
     /* Normalize a trailing 'Z' to an explicit +00:00 offset so the ISO
@@ -1254,7 +1254,7 @@ double web_parse_expiry_ts(const char *value) {
     return r;
 }
 
-/* PoP: web_normalize_telegram_user_id @ hermes_cli/web_server.py:_normalize_telegram_user_id */
+/* PoP: web_normalize_telegram_user_id @ hermes_cli/web_routers/messaging.py:_normalize_telegram_user_id */
 /* _TELEGRAM_USER_ID_RE = ^[0-9]+$ */
 char *web_normalize_telegram_user_id(const char *value) {
     if (!value) return NULL;
@@ -1279,7 +1279,7 @@ char *web_normalize_telegram_user_id(const char *value) {
     return out;
 }
 
-/* PoP: web_telegram_onboarding_error_message @ hermes_cli/web_server.py:_telegram_onboarding_error_message */
+/* PoP: web_telegram_onboarding_error_message @ hermes_cli/web_server_messaging.py:_telegram_onboarding_error_message */
 const char *web_telegram_onboarding_error_message(const char *error, const char *fallback) {
     static const struct { const char *code; const char *msg; } map[] = {
         {"not_found", "Telegram pairing was not found. Start a new setup."},
@@ -1297,7 +1297,7 @@ const char *web_telegram_onboarding_error_message(const char *error, const char 
     return fallback ? fallback : "";
 }
 
-/* PoP: web_truncate_token @ hermes_cli/web_server.py:_truncate_token */
+/* PoP: web_truncate_token @ hermes_cli/web_server_oauth.py:_truncate_token */
 char *web_truncate_token(const char *value, int visible) {
     if (!value || !*value) return strdup("");
     if (visible <= 0) visible = 6;
@@ -1318,7 +1318,7 @@ char *web_truncate_token(const char *value, int visible) {
     return out;
 }
 
-/* PoP: web_windows_build_number @ hermes_cli/web_server.py:_windows_build_number */
+/* PoP: web_windows_build_number @ hermes_cli/web_server_gateway.py:_windows_build_number */
 /* regex: (?:^|[^0-9])10\.0\.(\d{5,})(?:[^0-9]|$) */
 int web_windows_build_number(const char *version, const char *platform_label) {
     const char *srcs[2];
@@ -1345,7 +1345,7 @@ int web_windows_build_number(const char *version, const char *platform_label) {
     return -1;
 }
 
-/* PoP: web_cron_optional_text @ hermes_cli/web_server.py:_cron_optional_text */
+/* PoP: web_cron_optional_text @ hermes_cli/web_server_cron.py:_cron_optional_text */
 char *web_cron_optional_text(const char *value, bool strip_trailing_slash) {
     if (!value) return NULL;
     /* strip leading/trailing whitespace */
@@ -1364,7 +1364,7 @@ char *web_cron_optional_text(const char *value, bool strip_trailing_slash) {
     return out;
 }
 
-/* PoP: web_cron_string_list @ hermes_cli/web_server.py:_cron_string_list */
+/* PoP: web_cron_string_list @ hermes_cli/web_server_cron.py:_cron_string_list */
 char **web_cron_string_list(const char *value) {
     if (!value) return NULL;
     /* split on newline or comma */
@@ -1391,7 +1391,7 @@ char **web_cron_string_list(const char *value) {
     return arr;
 }
 
-/* PoP: web_channel_or_close_code @ hermes_cli/web_server.py:_channel_or_close_code */
+/* PoP: web_channel_or_close_code @ hermes_cli/web_routers/chat_ws.py:_channel_or_close_code */
 /* _VALID_CHANNEL_RE = ^[A-Za-z0-9._-]{1,128}$ */
 char *web_channel_or_close_code(const char *channel) {
     if (!channel) return NULL;
@@ -1406,7 +1406,7 @@ char *web_channel_or_close_code(const char *channel) {
     return strdup(channel);
 }
 
-/* PoP: web_read_active_session_file @ hermes_cli/web_server.py:_read_active_session_file */
+/* PoP: web_read_active_session_file @ hermes_cli/web_routers/chat_ws.py:_read_active_session_file */
 char *web_read_active_session_file(const char *path) {
     if (!path) return NULL;
     char *err = NULL;
@@ -1426,7 +1426,7 @@ char *web_read_active_session_file(const char *path) {
     return out;
 }
 
-/* PoP: web_platform_env_prefixes @ hermes_cli/web_server.py:_platform_env_prefixes */
+/* PoP: web_platform_env_prefixes @ hermes_cli/web_server_messaging.py:_platform_env_prefixes */
 char **web_platform_env_prefixes(const char *platform_id)
 {
     /* aliases map (platform_id -> prefixes) */
@@ -1471,7 +1471,7 @@ void web_free_strv(char **v)
     free(v);
 }
 
-/* PoP: web_client_ip @ hermes_cli/dashboard_auth/routes.py:_client_ip */
+/* PoP: web_client_ip @ plugins/platforms/a2a/adapter.py:_client_ip */
 /* Reusable client-IP resolution (Port of the dashboard_auth _client_ip helper,
  * identical across middleware.py / routes.py / token_auth.py):
  *   x_forwarded_for (may be ""): take the first comma-separated value, trimmed.
@@ -1602,7 +1602,7 @@ void ws_register_action_proc(const char *name, int pid) {
     pthread_mutex_unlock(&g_action_procs_mutex);
 }
 
-/* PoP: ws_terminate_desktop_managed_gateway @ hermes_cli/web_server.py:_terminate_desktop_managed_gateway */
+/* PoP: ws_terminate_desktop_managed_gateway @ hermes_cli/web_server_gateway.py:_terminate_desktop_managed_gateway */
 /* Stop a live gateway-restart child when its Desktop backend shuts down. The
  * child may have exited between poll() and terminate() — that race is
  * swallowed (SIGTERM to a zombie/reaped pid is harmless here). */
@@ -1625,12 +1625,12 @@ void ws_terminate_desktop_managed_gateway(void) {
         kill(victim, SIGTERM);
 }
 
-/* PoP: ws_get_portal_status_sync @ hermes_cli/web_server.py:_get_portal_status_sync */
+/* PoP: ws_get_portal_status_sync @ hermes_cli/web_routers/status.py:_get_portal_status_sync */
 void ws_get_portal_status_sync(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "{\"status\":\"ok\"}");
 }
 
-/* PoP: ws_get_env_vars_sync @ hermes_cli/web_server.py:_get_env_vars_sync */
+/* PoP: ws_get_env_vars_sync @ hermes_cli/web_routers/config_env.py:_get_env_vars_sync */
 void ws_get_env_vars_sync(char *out_json, size_t out_sz) {
     json_t *root = json_object();
     json_t *env = json_object();
@@ -1647,7 +1647,7 @@ void ws_get_env_vars_sync(char *out_json, size_t out_sz) {
     else if (out_sz) out_json[0] = '\0';
 }
 
-/* PoP: ws_session_db_read_probe_statements @ hermes_cli/web_server.py:_session_db_read_probe_statements */
+/* PoP: ws_session_db_read_probe_statements @ hermes_cli/web_server_sessions.py:_session_db_read_probe_statements */
 /* The read-probe statement list: every table/column declared in SCHEMA_SQL.
  * ANY schema addition escalates a stale store to a one-time writable heal. */
 static const char *const SM_PROBE_STATEMENTS[] = {
@@ -1664,7 +1664,7 @@ int ws_session_db_read_probe_statements(const char *const **out_statements) {
     return n;
 }
 
-/* PoP: ws_open_session_db_at_path @ hermes_cli/web_server.py:_open_session_db_at_path */
+/* PoP: ws_open_session_db_at_path @ hermes_cli/web_server_sessions.py:_open_session_db_at_path */
 /* Open a SessionDB at an explicit path with an explicit access mode.
  *
  * Writable opens keep the full init/repair path. Read-only opens bootstrap a
@@ -1755,7 +1755,7 @@ sqlite3 *ws_open_session_db_at_path(const char *db_path, bool read_only) {
     return NULL;
 }
 
-/* PoP: ws_raise_if_cron_registration_error @ hermes_cli/web_server.py:_raise_if_cron_registration_error */
+/* PoP: ws_raise_if_cron_registration_error @ hermes_cli/web_server_cron.py:_raise_if_cron_registration_error */
 /* Map a cron partial-failure (job saved but external scheduler registration
  * failed) to HTTP 424 with the structured envelope. Shared by every dashboard
  * cron-create surface. Returns 1 (mapped) with out_status=424 + out_detail
@@ -1781,7 +1781,7 @@ int ws_raise_if_cron_registration_error(const char *error_msg,
 /* Return "linux:<starttime>" for pid from /proc/<pid>/stat field 22.
  * Returns false when the process is absent (ProcessLookupError) or the stat
  * data is malformed (OSError) — callers fail safe. */
-/* PoP: _process_start_marker @ hermes_cli/web_server.py:_process_start_marker */
+/* PoP: _process_start_marker @ hermes_cli/web_server_lifecycle.py:_process_start_marker */
 static bool ws_process_start_marker(int pid, char *out, size_t sz) {
     char path[64];
     snprintf(path, sizeof(path), "/proc/%d/stat", pid);
@@ -1809,7 +1809,7 @@ static bool ws_process_start_marker(int pid, char *out, size_t sz) {
     return true;
 }
 
-/* PoP: _valid_parent_start_marker @ hermes_cli/web_server.py:_valid_parent_start_marker */
+/* PoP: _valid_parent_start_marker @ hermes_cli/web_server_lifecycle.py:_valid_parent_start_marker */
 static bool ws_valid_parent_start_marker(const char *marker) {
     if (!marker) return false;
     const char *colon = strchr(marker, ':');
@@ -1834,7 +1834,7 @@ static bool ws_valid_parent_start_marker(const char *marker) {
     return strcmp(prefix, "ps") == 0;
 }
 
-/* PoP: _parent_start_markers_match @ hermes_cli/web_server.py:_parent_start_markers_match */
+/* PoP: _parent_start_markers_match @ hermes_cli/web_server_lifecycle.py:_parent_start_markers_match */
 static bool ws_parent_start_markers_match(const char *actual, const char *expected) {
     if (!actual || !expected) return false;
     if (strcmp(actual, expected) == 0) return true;
@@ -1848,7 +1848,7 @@ static bool ws_parent_start_markers_match(const char *actual, const char *expect
     return (ticks - DOTNET_TICKS_AT_UNIX_EPOCH) / 10000ULL == unix_ms;
 }
 
-/* PoP: ws_is_serve_orphaned @ hermes_cli/web_server.py:_is_serve_orphaned */
+/* PoP: ws_is_serve_orphaned @ hermes_cli/web_server_lifecycle.py:_is_serve_orphaned */
 /* True when the exact Desktop process that owns this backend is gone.
  * HERMES_PARENT_PID is the Electron PID, not our immediate PPID. With an
  * expected_start_marker the probe compares process-start markers (guards
@@ -1867,7 +1867,7 @@ int ws_is_serve_orphaned(int desktop_pid, const char *expected_start_marker) {
     return 0; /* EPERM etc. — process exists / inconclusive → fail safe */
 }
 
-/* PoP: ws_start_parent_death_watchdog @ hermes_cli/web_server.py:_start_parent_death_watchdog */
+/* PoP: ws_start_parent_death_watchdog @ hermes_cli/web_server_lifecycle.py:_start_parent_death_watchdog */
 /* Exit when the exact desktop parent that spawned this backend dies. Newer
  * Desktop versions pass HERMES_PARENT_START_MARKER plus HERMES_PARENT_NONCE;
  * mixed-version plumbing (one without the other) fails safe by disabling the

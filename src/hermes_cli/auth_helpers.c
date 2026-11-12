@@ -29,7 +29,7 @@ bool auth_has_usable_secret(const char *value, int min_length)
 }
 
 /* ── kimi base url ── */
-/* PoP: auth_resolve_kimi_base_url @ hermes_cli/auth.py:_resolve_kimi_base_url */
+/* PoP: auth_resolve_kimi_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_kimi_base_url */
 char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, const char *env_override) {
     if (env_override && env_override[0]) return strdup(env_override);
     if (!api_key || !api_key[0]) return strdup(default_url ? default_url : "");
@@ -38,7 +38,7 @@ char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, c
 }
 
 /* ── lmstudio base url ── */
-/* PoP: auth_normalize_lmstudio_runtime_base_url @ hermes_cli/auth.py:_normalize_lmstudio_runtime_base_url */
+/* PoP: auth_normalize_lmstudio_runtime_base_url @ hermes_cli/auth_zai_kimi.py:_normalize_lmstudio_runtime_base_url */
 char *auth_normalize_lmstudio_runtime_base_url(const char *base_url) {
     char *root = strdup(base_url ? base_url : "");
     /* strip + rstrip '/' */
@@ -64,7 +64,7 @@ char *auth_normalize_lmstudio_runtime_base_url(const char *base_url) {
 }
 
 /* ── token fingerprint ── */
-/* PoP: _token_fingerprint @ hermes_cli/auth.py:_token_fingerprint */
+/* PoP: _token_fingerprint @ hermes_cli/auth_nous.py:_token_fingerprint */
 char *_token_fingerprint(const char *token) {
     if (!token) return NULL;
     while (*token==' '||*token=='\t') token++;
@@ -336,7 +336,7 @@ char *auth_format_error(const auth_error_t *e) {
 }
 
 /* ── nous invoke jwt status ── */
-/* PoP: auth_nous_invoke_jwt_status @ hermes_cli/auth.py:_nous_invoke_jwt_status */
+/* PoP: auth_nous_invoke_jwt_status @ hermes_cli/auth_nous.py:_nous_invoke_jwt_status */
 char *auth_nous_invoke_jwt_status(const char *token, const char *scope, const char *expires_at, int min_ttl_seconds) {
     char *payload = auth_decode_jwt_payload(token);
     if (!payload) return strdup("access_token_not_jwt");

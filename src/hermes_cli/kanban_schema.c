@@ -255,7 +255,7 @@ void kdb_close(sqlite3 *conn)
     if (conn) sqlite3_close(conn);
 }
 
-/* PoP: kdb_now @ hermes_cli/kanban_db.py:_resolve_busy_timeout_ms */
+/* PoP: kdb_now @ hermes_cli/kanban_db_connect.py:_resolve_busy_timeout_ms */
 long kdb_now(void)
 {
     static int frozen = -1;
@@ -273,7 +273,7 @@ long kdb_now(void)
     return (long)time(NULL);
 }
 
-/* PoP: kdb_init_db @ hermes_cli/kanban_db.py:init_db */
+/* PoP: kdb_init_db @ hermes_cli/kanban_db_connect.py:init_db */
 int kdb_init_db(sqlite3 *conn)
 {
     if (!conn) return -1;

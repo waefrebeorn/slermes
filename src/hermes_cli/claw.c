@@ -170,7 +170,7 @@ int hermes_cli_claw_claw_command(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_claw_u_cmd_migrate @ hermes_cli/claw.py:_cmd_migrate */
+/* PoP: hermes_cli_claw_u_cmd_migrate @ hermes_cli/gateway.py:_cmd_migrate */
 int hermes_cli_claw_u_cmd_migrate(const char *arg) {
     /* Python: OpenClaw→Hermes. Arg =
      * "migrated\tstate\tresult". */

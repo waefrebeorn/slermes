@@ -1,4 +1,4 @@
-/* PoP: is_transient_sqlite_error @ hermes_state.py:is_transient_sqlite_error */
+/* PoP: is_transient_sqlite_error @ hermes_state_errors.py:is_transient_sqlite_error */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

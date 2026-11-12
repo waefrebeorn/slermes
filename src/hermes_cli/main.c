@@ -393,7 +393,7 @@ bool _try_redownload_electron_dist(const char* project_root, const char* env)
 #include "hermes_json.h"
 
 /* ── startup_fast wrappers (defined in port_startup_fast.c) ─────────── */
-/* PoP: _is_termux_env @ hermes_cli/_install_repair.py:_is_termux_env */
+/* PoP: _is_termux_env @ hermes_cli/main_install_repair.py:_is_termux_env */
 extern bool sf_is_termux_env(void);
 extern bool sf_is_termux_fast_version_argv(int argc, char **argv);
 extern bool sf_is_global_fast_version_argv(int argc, char **argv);
@@ -520,7 +520,7 @@ char *main_g_resolve_workspace_key(void) {
  * _parse_dashboard_runtime / _dashboard_probe_host
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: main_g_parse_dashboard_runtime @ hermes_cli/main.py:_parse_dashboard_runtime */
+/* PoP: main_g_parse_dashboard_runtime @ hermes_cli/main_dashboard.py:_parse_dashboard_runtime */
 int main_g_parse_dashboard_runtime(const char *command, char *mode_out, size_t mode_sz,
                                    char *host_out, size_t host_sz, int *port_out) {
     /* Python: detect dashboard/serve mode, --port, --host from a cmdline.
@@ -578,7 +578,7 @@ int main_g_parse_dashboard_runtime(const char *command, char *mode_out, size_t m
     return 1;
 }
 
-/* PoP: main_g_dashboard_probe_host @ hermes_cli/main.py:_dashboard_probe_host */
+/* PoP: main_g_dashboard_probe_host @ hermes_cli/main_dashboard.py:_dashboard_probe_host */
 void main_g_dashboard_probe_host(const char *host, char *out, size_t out_sz) {
     /* Python: map wildcard binds (0.0.0.0, ::, empty) to 127.0.0.1. */
     const char *normalized = host ? host : "127.0.0.1";
@@ -603,7 +603,7 @@ void main_g_dashboard_probe_host(const char *host, char *out, size_t out_sz) {
  * systemd / cgroup introspection
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: main_g_get_systemd_service_for_pid @ hermes_cli/main.py:_get_systemd_service_for_pid */
+/* PoP: main_g_get_systemd_service_for_pid @ hermes_cli/main_dashboard.py:_get_systemd_service_for_pid */
 char *main_g_get_systemd_service_for_pid(long pid) {
     /* Python: read /proc/<pid>/cgroup, return the .service unit name. */
     char path[256];
@@ -630,7 +630,7 @@ char *main_g_get_systemd_service_for_pid(long pid) {
     return result;
 }
 
-/* PoP: main_g_extract_scope_from_cgroup @ hermes_cli/main.py:_extract_scope_from_cgroup */
+/* PoP: main_g_extract_scope_from_cgroup @ hermes_cli/main_dashboard.py:_extract_scope_from_cgroup */
 char *main_g_extract_scope_from_cgroup(const char *cgroup_entry) {
     /* Python: system.slice → "system", user.slice → "user". */
     if (!cgroup_entry) return NULL;
@@ -639,7 +639,7 @@ char *main_g_extract_scope_from_cgroup(const char *cgroup_entry) {
     return NULL;
 }
 
-/* PoP: main_g_get_pid_cgroup_path @ hermes_cli/main.py:_get_pid_cgroup_path */
+/* PoP: main_g_get_pid_cgroup_path @ hermes_cli/main_dashboard.py:_get_pid_cgroup_path */
 char *main_g_get_pid_cgroup_path(long pid) {
     /* Python: return the unified (0::) cgroup path from /proc/<pid>/cgroup. */
     char path[256];
@@ -663,7 +663,7 @@ char *main_g_get_pid_cgroup_path(long pid) {
     return result;
 }
 
-/* PoP: main_g_dashboard_cmdline_for_pid @ hermes_cli/main.py:_dashboard_cmdline_for_pid */
+/* PoP: main_g_dashboard_cmdline_for_pid @ hermes_cli/main_dashboard.py:_dashboard_cmdline_for_pid */
 char *main_g_dashboard_cmdline_for_pid(long pid) {
     /* Python: read /proc/<pid>/cmdline (NUL-joined → spaces). */
     char path[256];
@@ -679,7 +679,7 @@ char *main_g_dashboard_cmdline_for_pid(long pid) {
     return strdup(buf);
 }
 
-/* PoP: main_g_try_restart_systemd_service @ hermes_cli/main.py:_try_restart_systemd_service */
+/* PoP: main_g_try_restart_systemd_service @ hermes_cli/main_dashboard.py:_try_restart_systemd_service */
 int main_g_try_restart_systemd_service(const char *unit) {
     /* Python: systemctl restart <unit>; returns 0 on success. */
     if (!unit || !unit[0]) return -1;
@@ -689,7 +689,7 @@ int main_g_try_restart_systemd_service(const char *unit) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: main_g_respawn_dashboard_processes @ hermes_cli/main.py:_respawn_dashboard_processes */
+/* PoP: main_g_respawn_dashboard_processes @ hermes_cli/main_dashboard.py:_respawn_dashboard_processes */
 int main_g_respawn_dashboard_processes(const char *command_line) {
     /* Python: respawn the dashboard/serve command detached. */
     if (!command_line || !command_line[0]) return -1;
@@ -738,7 +738,7 @@ static char *read_git_revision_fingerprint(const char *project_root) {
     return strdup(head);
 }
 
-/* PoP: main_g_record_bytecode_fingerprint @ hermes_cli/main.py:_record_bytecode_fingerprint */
+/* PoP: main_g_record_bytecode_fingerprint @ hermes_cli/main_web_build.py:_record_bytecode_fingerprint */
 int main_g_record_bytecode_fingerprint(const char *project_root) {
     /* Python: persist the checkout fingerprint atomically (tmp + rename).
      * Never raises; a failed write just means the next launch re-sweeps. */
@@ -783,7 +783,7 @@ static int clear_bytecode_cache(const char *root) {
     return removed;
 }
 
-/* PoP: main_g_sweep_stale_bytecode_if_checkout_changed @ hermes_cli/main.py:_sweep_stale_bytecode_if_checkout_changed */
+/* PoP: main_g_sweep_stale_bytecode_if_checkout_changed @ hermes_cli/main_web_build.py:_sweep_stale_bytecode_if_checkout_changed */
 int main_g_sweep_stale_bytecode_if_checkout_changed(const char *project_root) {
     /* Python: compare the fingerprint against the stamp; sweep __pycache__
      * once when they diverge. Returns the number of cache dirs removed. */
@@ -898,7 +898,7 @@ char *main_g_windows_native_machine_from_iswow64(const char *iswow64_native_mach
     return name ? strdup(name) : NULL;
 }
 
-/* PoP: main_g_windows_user_runnable_pe_machines @ hermes_cli/main.py:_windows_user_runnable_pe_machines */
+/* PoP: main_g_windows_user_runnable_pe_machines @ hermes_cli/main_desktop.py:_windows_user_runnable_pe_machines */
 char *main_g_windows_user_runnable_pe_machines(const char *runnable_csv) {
     /* Python: the set of PE machines the host can load. The C port takes
      * the comma-separated machine codes reported by GetMachineTypeAttributes
@@ -940,7 +940,7 @@ char *main_g_windows_native_machine(const char *env_arch, const char *env_archw6
  * macOS desktop signing helpers
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: main_g_desktop_macos_bundle_id @ hermes_cli/main.py:_desktop_macos_bundle_id */
+/* PoP: main_g_desktop_macos_bundle_id @ hermes_cli/main_desktop.py:_desktop_macos_bundle_id */
 char *main_g_desktop_macos_bundle_id(const char *bundle_path) {
     /* Python: read CFBundleIdentifier from Contents/Info.plist (or the
      * framework Variants/Resources variant). The C port shells to plutil
@@ -968,7 +968,7 @@ char *main_g_desktop_macos_bundle_id(const char *bundle_path) {
     return out[0] ? strdup(out) : NULL;
 }
 
-/* PoP: main_g_desktop_macos_local_signing_identity @ hermes_cli/main.py:_desktop_macos_local_signing_identity */
+/* PoP: main_g_desktop_macos_local_signing_identity @ hermes_cli/main_desktop.py:_desktop_macos_local_signing_identity */
 char *main_g_desktop_macos_local_signing_identity(const char *config_identity) {
     /* Python: return the opt-in keychain identity from config; None when
      * empty/unset (keeps identifier-pinned ad-hoc signing). */
@@ -984,7 +984,7 @@ char *main_g_desktop_macos_local_signing_identity(const char *config_identity) {
     return out;
 }
 
-/* PoP: main_g_desktop_macos_has_valid_real_signature @ hermes_cli/main.py:_desktop_macos_has_valid_real_signature */
+/* PoP: main_g_desktop_macos_has_valid_real_signature @ hermes_cli/main_desktop.py:_desktop_macos_has_valid_real_signature */
 bool main_g_desktop_macos_has_valid_real_signature(const char *app_path) {
     /* Python: codesign --verify a real (non-adhoc) signature. The C port
      * runs the same codesign verification and checks the authority line
@@ -996,7 +996,7 @@ bool main_g_desktop_macos_has_valid_real_signature(const char *app_path) {
     return system(cmd) == 0;
 }
 
-/* PoP: main_g_desktop_macos_local_codesign @ hermes_cli/main.py:_desktop_macos_local_codesign */
+/* PoP: main_g_desktop_macos_local_codesign @ hermes_cli/main_desktop.py:_desktop_macos_local_codesign */
 int main_g_desktop_macos_local_codesign(const char *app_path, const char *identity) {
     /* Python: ad-hoc or identity-pinned codesign of the app bundle. */
     if (!app_path) return -1;

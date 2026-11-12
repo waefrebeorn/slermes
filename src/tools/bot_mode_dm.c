@@ -271,7 +271,7 @@ static void base_name(const char *path, char *out, size_t n)
     snprintf(out, n, "%s", base ? base : "");
 }
 
-/* PoP: _hermes_root @ tools/bot_mode_dm.py:_hermes_root */
+/* PoP: _hermes_root @ tools/bot_mode_probe.py:_hermes_root */
 char *bot_mode_dm_hermes_root(const char *home, char *out, size_t n)
 {
     if (!home || !*home) { snprintf(out, n, "."); return out; }
@@ -725,7 +725,7 @@ extern int acquire_turn_lock(const char *root, const char *profile,
                              double timeout_seconds, char *path_buf, size_t n);
 extern void release_turn_lock(int fd);
 
-/* PoP: bot_mode_dm_peers @ tools/bot_mode_dm.py:_peers */
+/* PoP: bot_mode_dm_peers @ tools/bot_mode_probe.py:_peers */
 char **bot_mode_dm_peers(const char *root, size_t *count)
 {
     /* Python delegates to tools.bot_mode_probe._peers. */

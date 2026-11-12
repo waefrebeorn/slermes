@@ -32,7 +32,7 @@ static int _dedup_max_size = 2000;
 /* Port of Python gateway/platforms/helpers.py:is_duplicate
  * Hive-backed seen-map: only live msg_ids consume memory (was
  * _dedup_seen[2000] = 265KB of .bss). */
-/* PoP: helpers_is_duplicate @ gateway/platforms/qqbot/adapter.py:_is_duplicate */
+/* PoP: helpers_is_duplicate @ plugins/platforms/feishu/adapter.py:_is_duplicate */
 int helpers_is_duplicate(const char *msg_id)
 {
     if (!msg_id || !msg_id[0]) return 0;

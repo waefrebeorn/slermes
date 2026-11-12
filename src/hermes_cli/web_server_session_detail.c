@@ -90,7 +90,7 @@ static int utf8_encode(unsigned long cp, char *out) {
 }
 
 /* ── sanitize_title ─────────────────────────────────────────────────── */
-/* PoP: ws_sess_sanitize_title @ hermes_state.py:sanitize_title */
+/* PoP: ws_sess_sanitize_title @ hermes_state_titles.py:sanitize_title */
 #define MAX_TITLE_LENGTH 100
 
 char *ws_sess_sanitize_title(const char *title, char **err) {
@@ -196,7 +196,7 @@ json_t *ws_sess_get_session(const char *db_path, const char *session_id) {
 }
 
 /* ── get_messages ───────────────────────────────────────────────────── */
-/* PoP: decode_message_row @ hermes_state.py:get_messages */
+/* PoP: decode_message_row @ hermes_state_messages.py:get_messages */
 static json_t *decode_message_row(sqlite3_stmt *st) {
     int ncol = sqlite3_column_count(st);
     json_t *m = json_object();
@@ -478,7 +478,7 @@ bool ws_sess_set_title(const char *db_path, const char *session_id,
 }
 
 /* ── set_archived / set_pinned ──────────────────────────────────────── */
-/* PoP: ws_sess_set_archived @ hermes_state.py:set_session_archived */
+/* PoP: ws_sess_set_archived @ hermes_state_sessions.py:set_session_archived */
 bool ws_sess_set_archived(const char *db_path, const char *session_id,
                           bool archived) {
     sqlite3 *db = ws_sess_open_db(db_path, true);
@@ -517,7 +517,7 @@ bool ws_sess_set_archived(const char *db_path, const char *session_id,
     return rowcount > 0;
 }
 
-/* PoP: ws_sess_set_pinned @ hermes_state.py:set_session_pinned */
+/* PoP: ws_sess_set_pinned @ hermes_state_sessions.py:set_session_pinned */
 bool ws_sess_set_pinned(const char *db_path, const char *session_id,
                         bool pinned) {
     sqlite3 *db = ws_sess_open_db(db_path, true);

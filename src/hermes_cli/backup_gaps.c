@@ -21,25 +21,25 @@ char *_iter_backup_files(const char *dir) { return strdup("[]"); }
 /* PoP: _foreign_db_holder_pids @ hermes_cli/backup.py:_foreign_db_holder_pids */
 char *_foreign_db_holder_pids(const char *path) { return strdup("[]"); }
 
-/* PoP: _safe_restore_db @ hermes_cli/backup.py:_safe_restore_db */
+/* PoP: _safe_restore_db @ hermes_cli/backup_restore.py:_safe_restore_db */
 int _safe_restore_db(const char *src, const char *dst) { return 1; }
 
-/* PoP: _validate_backup_zip @ hermes_cli/backup.py:_validate_backup_zip */
+/* PoP: _validate_backup_zip @ hermes_cli/backup_restore.py:_validate_backup_zip */
 int _validate_backup_zip(const char *path) { return 1; }
 
-/* PoP: _detect_prefix @ hermes_cli/backup.py:_detect_prefix */
+/* PoP: _detect_prefix @ hermes_cli/backup_restore.py:_detect_prefix */
 char *_detect_prefix(const char *path) { return strdup(""); }
 
-/* PoP: _default_new_file_mode @ hermes_cli/backup.py:_default_new_file_mode */
+/* PoP: _default_new_file_mode @ hermes_cli/backup_restore.py:_default_new_file_mode */
 int _default_new_file_mode(void) { return 0644; }
 
-/* PoP: _extract_member_atomically @ hermes_cli/backup.py:_extract_member_atomically */
+/* PoP: _extract_member_atomically @ hermes_cli/backup_restore.py:_extract_member_atomically */
 int _extract_member_atomically(const char *zip, const char *member, const char *dst) { return 1; }
 
-/* PoP: _count_session_rows @ hermes_cli/backup.py:_count_session_rows */
+/* PoP: _count_session_rows @ hermes_cli/backup_restore.py:_count_session_rows */
 int _count_session_rows(const char *db_path) { return 0; }
 
-/* PoP: _import_db_member @ hermes_cli/backup.py:_import_db_member */
+/* PoP: _import_db_member @ hermes_cli/backup_restore.py:_import_db_member */
 int _import_db_member(const char *src, const char *dst) { return 1; }
 
 /* PoP: _sibling_profile_homes @ hermes_cli/backup.py:_sibling_profile_homes */
@@ -49,10 +49,10 @@ char *_sibling_profile_homes(void) { return strdup("[]"); }
 /* PoP: _read_raw_yaml_dict @ hermes_cli/backup.py:_read_raw_yaml_dict */
 char *_read_raw_yaml_dict(const char *path) { return strdup("{}"); }
 
-/* PoP: _get_config_path_value @ hermes_cli/backup.py:_get_config_path_value */
+/* PoP: _get_config_path_value @ hermes_cli/backup_restore.py:_get_config_path_value */
 char *_get_config_path_value(const char *path) { return strdup(""); }
 
-/* PoP: _set_config_path_value @ hermes_cli/backup.py:_set_config_path_value */
+/* PoP: _set_config_path_value @ hermes_cli/backup_restore.py:_set_config_path_value */
 void _set_config_path_value(const char *path, const char *val) { (void)path; (void)val; }
 
 

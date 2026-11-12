@@ -277,7 +277,7 @@ char **tools_config_checklist_toolset_keys(const char *platform, size_t *out_n) 
     return tct_set_sorted(&s, out_n);
 }
 
-/* PoP: tools_config_apply_toolset_change @ hermes_cli/tools_config.py:_apply_toolset_change */
+/* PoP: tools_config_apply_toolset_change @ hermes_cli/tools_config_mcp.py:_apply_toolset_change */
 void tools_config_apply_toolset_change(json_t *config, const char *platform,
                                        const char *const *toolset_names,
                                        size_t n_toolset_names,
@@ -327,7 +327,7 @@ bool tools_config_toolset_enabled_for_reconfigure(const char *ts_key,
     return found;
 }
 
-/* PoP: tools_config_known_tool_platforms @ hermes_cli/tools_config.py:_known_tool_platforms */
+/* PoP: tools_config_known_tool_platforms @ hermes_cli/tools_config_mcp.py:_known_tool_platforms */
 char **tools_config_known_tool_platforms(size_t *out_n) {
     tct_set_t s = { 0 };
     /* Built-in PLATFORMS (the platform_tools PLATFORMS registry). */
@@ -359,7 +359,7 @@ char **tools_config_known_tool_platforms(size_t *out_n) {
 
 /* ── provider rows ────────────────────────────────────────────────────── */
 
-/* PoP: tools_config_web_provider_capabilities @ hermes_cli/tools_config.py:web_provider_capabilities */
+/* PoP: tools_config_web_provider_capabilities @ hermes_cli/tools_config_providers.py:web_provider_capabilities */
 char **tools_config_web_provider_capabilities(const char *backend,
                                               size_t *out_n) {
     /* Python: get_provider(backend) → provider.supports_search()/supports_extract().
@@ -409,7 +409,7 @@ static bool tct_provider_env_complete(const json_t *provider) {
     return true;
 }
 
-/* PoP: tools_config_detect_active_provider_index @ hermes_cli/tools_config.py:_detect_active_provider_index */
+/* PoP: tools_config_detect_active_provider_index @ hermes_cli/tools_config_providers.py:_detect_active_provider_index */
 size_t tools_config_detect_active_provider_index(const json_t *providers,
                                                  const json_t *config) {
     (void)config;
@@ -425,7 +425,7 @@ size_t tools_config_detect_active_provider_index(const json_t *providers,
     return 0;
 }
 
-/* PoP: tools_config_valid_post_setup_keys @ hermes_cli/tools_config.py:valid_post_setup_keys */
+/* PoP: tools_config_valid_post_setup_keys @ hermes_cli/tools_config_post_setup.py:valid_post_setup_keys */
 char **tools_config_valid_post_setup_keys(size_t *out_n) {
     tct_set_t s = { 0 };
     for (const char *const *k = POST_SETUP_KEYS; *k; k++) tct_set_add(&s, *k);

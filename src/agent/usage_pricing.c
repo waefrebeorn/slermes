@@ -796,7 +796,7 @@ double cli_agent_usage_pricing__to_decimal(const char *value)
     return strtod(value, NULL);
 }
 
-/* PoP: cli_agent_usage_pricing__to_int @ agent/usage_pricing.py:_to_int */
+/* PoP: cli_agent_usage_pricing__to_int @ hermes_state_telegram.py:_to_int */
 
 /* Port of Python agent/usage_pricing.py:_to_int */
 /* Converts a string to an integer with default. */

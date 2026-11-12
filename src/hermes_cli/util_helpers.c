@@ -70,7 +70,7 @@ char *hcli_normalize_provider(const char *provider)
     return out;
 }
 
-/* PoP: hcli_token_fingerprint @ hermes_cli/copilot_auth.py:_token_fingerprint */
+/* PoP: hcli_token_fingerprint @ hermes_cli/auth_nous.py:_token_fingerprint */
 char *hcli_token_fingerprint(const char *raw_token)
 {
     if (!raw_token) return strdup("");
@@ -190,7 +190,7 @@ bool hcli_resolve_persist_behavior(bool is_global, bool is_session, bool is_once
     return true;
 }
 
-/* PoP: hcli_group_providers @ hermes_cli/models.py:group_providers */
+/* PoP: hcli_group_providers @ hermes_cli/models_catalog_static.py:group_providers */
 char *hcli_group_providers(const char *slugs_json)
 {
     if (!slugs_json) return strdup("[]");

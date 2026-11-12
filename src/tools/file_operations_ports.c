@@ -42,7 +42,7 @@ char *fo_to_dict(const char *fields_json) {
     return strdup(fields_json);
 }
 
-/* PoP: fo_densify_matches @ tools/file_operations.py:_densify_matches */
+/* PoP: fo_densify_matches @ tools/file_operations_common.py:_densify_matches */
 char *fo_densify_matches(const char *matches_json) {
     /* Python: path-grouped compact text block. */
     if (!matches_json) return strdup("");
@@ -146,7 +146,7 @@ char *fo_suggest_similar_files(const char *path) {
     return out;
 }
 
-/* PoP: fo_check_lint @ tools/file_operations.py:_check_lint */
+/* PoP: fo_check_lint @ tools/file_operations_lint.py:_check_lint */
 char *fo_check_lint(const char *path, const char *content) {
     /* Python: syntax check after edit; in-process for structured. */
     if (!path) return strdup("");
@@ -154,7 +154,7 @@ char *fo_check_lint(const char *path, const char *content) {
     return strdup("");
 }
 
-/* PoP: fo_check_lint_delta @ tools/file_operations.py:_check_lint_delta */
+/* PoP: fo_check_lint_delta @ tools/file_operations_lint.py:_check_lint_delta */
 char *fo_check_lint_delta(const char *path, const char *content, const char *baseline_json) {
     /* Python: post-write lint w/ pre-write baseline comparison. */
     if (!path) return strdup("");
@@ -162,14 +162,14 @@ char *fo_check_lint_delta(const char *path, const char *content, const char *bas
     return strdup("");
 }
 
-/* PoP: fo_lsp_local_only @ tools/file_operations.py:_lsp_local_only */
+/* PoP: fo_lsp_local_only @ tools/file_operations_lint.py:_lsp_local_only */
 bool fo_lsp_local_only(void) {
     /* Python: LSP runs on host process. */
     printf("lsp backend probe (local)\n");
     return true;
 }
 
-/* PoP: fo_lsp_handles_extension @ tools/file_operations.py:_lsp_handles_extension */
+/* PoP: fo_lsp_handles_extension @ tools/file_operations_lint.py:_lsp_handles_extension */
 bool fo_lsp_handles_extension(const char *path) {
     /* Python: some registered server claims the extension. */
     if (!path) return false;
@@ -177,7 +177,7 @@ bool fo_lsp_handles_extension(const char *path) {
     return false;
 }
 
-/* PoP: fo_lsp_will_handle @ tools/file_operations.py:_lsp_will_handle */
+/* PoP: fo_lsp_will_handle @ tools/file_operations_lint.py:_lsp_will_handle */
 bool fo_lsp_will_handle(const char *path) {
     /* Python: LSP active AND will lint. */
     if (!path) return false;
@@ -193,7 +193,7 @@ char *fo_snapshot_lsp_baseline(const char *path) {
     return strdup("[]");
 }
 
-/* PoP: fo_maybe_lsp_diagnostics @ tools/file_operations.py:_maybe_lsp_diagnostics */
+/* PoP: fo_maybe_lsp_diagnostics @ tools/file_operations_lint.py:_maybe_lsp_diagnostics */
 char *fo_maybe_lsp_diagnostics(const char *path) {
     /* Python: formatted diagnostics block or empty. */
     if (!path) return strdup("");
@@ -201,7 +201,7 @@ char *fo_maybe_lsp_diagnostics(const char *path) {
     return strdup("");
 }
 
-/* PoP: fo_search_files @ tools/file_operations.py:_search_files */
+/* PoP: fo_search_files @ tools/file_operations_search.py:_search_files */
 char *fo_search_files(const char *pattern, const char *path) {
     /* Python: glob-like name search; auto-prepend recursive glob. */
     if (!pattern) return strdup("[]");
@@ -209,7 +209,7 @@ char *fo_search_files(const char *pattern, const char *path) {
     return strdup("[]");
 }
 
-/* PoP: fo_search_files_rg @ tools/file_operations.py:_search_files_rg */
+/* PoP: fo_search_files_rg @ tools/file_operations_search.py:_search_files_rg */
 char *fo_search_files_rg(const char *pattern, const char *path) {
     /* Python: rg --files (gitignore-respecting). */
     if (!pattern) return strdup("[]");
@@ -217,7 +217,7 @@ char *fo_search_files_rg(const char *pattern, const char *path) {
     return strdup("[]");
 }
 
-/* PoP: fo_search_content @ tools/file_operations.py:_search_content */
+/* PoP: fo_search_content @ tools/file_operations_search.py:_search_content */
 char *fo_search_content(const char *pattern, const char *path) {
     /* Python: rg first, grep fallback. */
     if (!pattern) return strdup("[]");
@@ -225,25 +225,25 @@ char *fo_search_content(const char *pattern, const char *path) {
     return strdup("[]");
 }
 
-/* PoP: fo_search_with_rg @ tools/file_operations.py:_search_with_rg */
+/* PoP: fo_search_with_rg @ tools/file_operations_search.py:_search_with_rg */
 char *fo_search_with_rg(const char *pattern, const char *path) {
     if (!pattern) return strdup("[]");
     printf("rg search: %s\n", pattern);
     return strdup("[]");
 }
 
-/* PoP: fo_search_with_grep @ tools/file_operations.py:_search_with_grep */
+/* PoP: fo_search_with_grep @ tools/file_operations_search.py:_search_with_grep */
 char *fo_search_with_grep(const char *pattern, const char *path) {
     if (!pattern) return strdup("[]");
     printf("grep fallback search: %s (-rnH)\n", pattern);
     return strdup("[]");
 }
 
-/* PoP: _zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+/* PoP: _zero_match_probe @ tools/file_operations_search.py:_zero_match_probe */
 char *file_ops_zero_match_probe(const char *pattern, const char *path,
                                   const char *file_glob);
 
-/* PoP: _try_multi_path_search @ tools/file_operations.py:_try_multi_path_search */
+/* PoP: _try_multi_path_search @ tools/file_operations_search.py:_try_multi_path_search */
 json_t *file_ops_try_multi_path_search(const char *pattern, const char *path,
                                          const char *target, const char *file_glob,
                                          int limit, int offset,

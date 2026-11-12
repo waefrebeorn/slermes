@@ -79,7 +79,7 @@ static int fs_entry_cmp(const void *a, const void *b) {
     return strcmp(ea->name, eb->name);
 }
 
-/* PoP: ws_fs_list @ hermes_cli/web_server.py:fs_list */
+/* PoP: ws_fs_list @ hermes_cli/web_routers/files.py:fs_list */
 ws_fs_entry_t *ws_fs_list(const char *path, size_t *out_n,
                           const char **out_err, bool *out_err_malloced) {
     *out_n = 0;
@@ -196,7 +196,7 @@ static int status_from_path(ws_path_status_t s) {
     }
 }
 
-/* PoP: ws_fs_read_text @ hermes_cli/web_server.py:fs_read_text */
+/* PoP: ws_fs_read_text @ hermes_cli/web_routers/files.py:fs_read_text */
 void ws_fs_read_text(const char *path, ws_fs_read_text_t *out) {
     memset(out, 0, sizeof *out);
     out->mime = "application/octet-stream";
@@ -241,7 +241,7 @@ void ws_fs_read_text(const char *path, ws_fs_read_text_t *out) {
 }
 
 /* ── fs_write_text ──────────────────────────────────────────────────────── */
-/* PoP: ws_fs_write_text @ hermes_cli/web_server.py:fs_write_text */
+/* PoP: ws_fs_write_text @ hermes_cli/web_routers/files.py:fs_write_text */
 int ws_fs_write_text(const char *path, const char *content, size_t content_len) {
     if (!content) { content = ""; content_len = 0; }
     if (content_len > WS_FS_TEXT_WRITE_MAX_BYTES) return 413;
@@ -299,7 +299,7 @@ int ws_fs_write_text(const char *path, const char *content, size_t content_len) 
 }
 
 /* ── fs_read_data_url ───────────────────────────────────────────────────── */
-/* PoP: ws_fs_read_data_url @ hermes_cli/web_server.py:fs_read_data_url */
+/* PoP: ws_fs_read_data_url @ hermes_cli/web_routers/files.py:fs_read_data_url */
 char *ws_fs_read_data_url(const char *path, int *out_status) {
     *out_status = 0;
     char *target = ws_fs_path(path);
@@ -338,7 +338,7 @@ char *ws_fs_read_data_url(const char *path, int *out_status) {
 }
 
 /* ── fs_default_cwd + _fs_git_branch ────────────────────────────────────── */
-/* PoP: ws_fs_default_cwd @ hermes_cli/web_server.py:_fs_default_cwd */
+/* PoP: ws_fs_default_cwd @ hermes_cli/web_routers/files.py:_fs_default_cwd */
 void ws_fs_default_cwd(char *out, size_t cap) {
     /* Python: load_config().get("terminal").get("cwd") or TERMINAL_CWD env;
      * reject "."/"auto"/"cwd"; must be an existing dir; else Path.cwd(). */
@@ -375,7 +375,7 @@ void ws_fs_default_cwd(char *out, size_t cap) {
     if (!getcwd(out, cap)) snprintf(out, cap, ".");
 }
 
-/* PoP: ws_fs_git_branch @ hermes_cli/web_server.py:_fs_git_branch */
+/* PoP: ws_fs_git_branch @ hermes_cli/web_routers/files.py:_fs_git_branch */
 void ws_fs_git_branch(const char *cwd, char *out, size_t cap) {
     out[0] = '\0';
     if (!cwd || !cwd[0]) return;

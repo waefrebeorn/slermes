@@ -44,7 +44,7 @@ char *memory_tool_get_memory_dir(void) {
 }
 
 /* --- _drift_error ------------------------------------------------- */
-/* PoP: memory_tool_drift_error @ tools/memory_tool.py:_drift_error */
+/* PoP: memory_tool_drift_error @ tools/memory_tool_store.py:_drift_error */
 char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
     char *out = (char *)malloc(2048);
     const char *pname = path_name ? path_name : "";
@@ -66,7 +66,7 @@ char *memory_tool_drift_error(const char *path_name, const char *bak_path) {
 }
 
 /* --- _read_failed_error ------------------------------------------- */
-/* PoP: memory_tool_read_failed_error @ tools/memory_tool.py:_read_failed_error */
+/* PoP: memory_tool_read_failed_error @ tools/memory_tool_store.py:_read_failed_error */
 char *memory_tool_read_failed_error(const char *path_name) {
     char *out = (char *)malloc(1024);
     const char *pname = path_name ? path_name : "";
@@ -85,7 +85,7 @@ char *memory_tool_read_failed_error(const char *path_name) {
 typedef struct memory_tool_pure_store {
     int consolidation_failures;
 } memory_tool_pure_store_t;
-/* PoP: memory_tool_pure_store_reset_consolidation_failures @ tools/memory_tool.py:reset_consolidation_failures */
+/* PoP: memory_tool_pure_store_reset_consolidation_failures @ tools/memory_tool_store.py:reset_consolidation_failures */
 
 void memory_tool_pure_store_reset_consolidation_failures(memory_tool_pure_store_t *s) {
     if (s) s->consolidation_failures = 0;
@@ -93,7 +93,7 @@ void memory_tool_pure_store_reset_consolidation_failures(memory_tool_pure_store_
 
 /* Returns a malloc'd JSON dict. On under-cap it mirrors `response` (the
  * caller's JSON) unchanged; past cap returns a terminal result.  */
-/* PoP: memory_tool_pure_store_consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
+/* PoP: memory_tool_pure_store_consolidation_failure @ tools/memory_tool_store.py:_consolidation_failure */
 
 char *memory_tool_pure_store_consolidation_failure(memory_tool_pure_store_t *s, const char *response_json) {
     if (!s) return strdup(response_json ? response_json : "{}");

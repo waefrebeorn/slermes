@@ -33,7 +33,7 @@
  *  generate_file_id — 32 hex chars from 16 random bytes
  *  Port of Python yuanbao_media.generate_file_id().
  * ================================================================ */
-/* PoP: yuanbao_generate_file_id @ gateway/platforms/yuanbao_media.py:generate_file_id */
+/* PoP: yuanbao_generate_file_id @ plugins/platforms/yuanbao/yuanbao_media.py:generate_file_id */
 char *yuanbao_generate_file_id(void)
 {
     unsigned char buf[16];
@@ -136,7 +136,7 @@ char *yuanbao_build_file_msg(const char *url,
     return result;
 }
 
-/* PoP: yuanbao_get_image_format @ gateway/platforms/yuanbao_media.py:get_image_format */
+/* PoP: yuanbao_get_image_format @ plugins/platforms/yuanbao/yuanbao_media.py:get_image_format */
 /* TIM image format number from mime type; 255 = unknown. */
 long yuanbao_get_image_format(const char *mime_type)
 {
@@ -190,7 +190,7 @@ static const yuanbao_ext_mime_t YUANBAO_EXT_TO_MIME[] = {
     {".webm", "video/webm"},
 };
 
-/* PoP: yuanbao_guess_mime_type @ gateway/platforms/yuanbao_media.py:guess_mime_type */
+/* PoP: yuanbao_guess_mime_type @ plugins/platforms/yuanbao/yuanbao_media.py:guess_mime_type */
 const char *yuanbao_guess_mime_type(const char *filename)
 {
     static const char *FALLBACK = "application/octet-stream";
@@ -209,7 +209,7 @@ const char *yuanbao_guess_mime_type(const char *filename)
     return FALLBACK;
 }
 
-/* PoP: yuanbao_md5_hex @ gateway/platforms/yuanbao_media.py:md5_hex */
+/* PoP: yuanbao_md5_hex @ plugins/platforms/yuanbao/yuanbao_media.py:md5_hex */
 char *yuanbao_md5_hex(const unsigned char *data, size_t len)
 {
     return crypto_md5_hex(data, len);
@@ -288,7 +288,7 @@ static bool yuanbao_parse_webp(const unsigned char *b, size_t n, int *w, int *h)
     return false;
 }
 
-/* PoP: yuanbao_parse_image_size @ gateway/platforms/yuanbao_media.py:parse_image_size */
+/* PoP: yuanbao_parse_image_size @ plugins/platforms/yuanbao/yuanbao_media.py:parse_image_size */
 bool yuanbao_parse_image_size(const unsigned char *data, size_t len,
                               int *width, int *height)
 {

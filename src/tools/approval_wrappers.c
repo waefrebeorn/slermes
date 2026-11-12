@@ -36,7 +36,7 @@ int appr_u_observe_smart_approval_verdict(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_match_user_deny_rule @ tools/approval.py:_match_user_deny_rule */
+/* PoP: appr_u_match_user_deny_rule @ tools/approval_floors.py:_match_user_deny_rule */
 int appr_u_match_user_deny_rule(const char *arg) {
     /* Python: fnmatch deny. Arg = "command\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -48,7 +48,7 @@ int appr_u_match_user_deny_rule(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_user_deny_block_result @ tools/approval.py:_user_deny_block_result */
+/* PoP: appr_u_user_deny_block_result @ tools/approval_floors.py:_user_deny_block_result */
 int appr_u_user_deny_block_result(const char *arg) {
     /* Python: standard deny block result. Arg = pattern. */
     if (!arg || !*arg) { printf("{\"approved\": false, \"user_deny\": true}\n"); return 0; }
@@ -56,7 +56,7 @@ int appr_u_user_deny_block_result(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_command_parser_limit_exceeded @ tools/approval.py:_command_parser_limit_exceeded */
+/* PoP: appr_u_command_parser_limit_exceeded @ tools/approval_detection.py:_command_parser_limit_exceeded */
 int appr_u_command_parser_limit_exceeded(const char *arg) {
     /* Python: length/separator bounds. Arg =
      * "len\tmax_chars\tsep_free_max\tmax_segs\tresult". */
@@ -78,7 +78,7 @@ int appr_u_command_parser_limit_exceeded(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_shell_tokens_with_spans @ tools/approval.py:_shell_tokens_with_spans */
+/* PoP: appr_u_shell_tokens_with_spans @ tools/approval_detection.py:_shell_tokens_with_spans */
 int appr_u_shell_tokens_with_spans(const char *arg) {
     /* Python: span lexer. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -90,7 +90,7 @@ int appr_u_shell_tokens_with_spans(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_quoted_grep_pattern_spans @ tools/approval.py:_quoted_grep_pattern_spans */
+/* PoP: appr_u_quoted_grep_pattern_spans @ tools/approval_detection.py:_quoted_grep_pattern_spans */
 int appr_u_quoted_grep_pattern_spans(const char *arg) {
     /* Python: fail-closed spans. Arg =
      * "ambiguous\tstate\tresult". */
@@ -105,7 +105,7 @@ int appr_u_quoted_grep_pattern_spans(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_grep_safe_detection_variant @ tools/approval.py:_grep_safe_detection_variant */
+/* PoP: appr_u_grep_safe_detection_variant @ tools/approval_detection.py:_grep_safe_detection_variant */
 int appr_u_grep_safe_detection_variant(const char *arg) {
     /* Python: blank out quoted grep pattern spans. Arg = command. */
     if (!arg || !*arg) { printf("\n0\n"); return 0; }
@@ -154,7 +154,7 @@ int appr_u_interpreter_family(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_shell_segment_tokens @ tools/approval.py:_shell_segment_tokens */
+/* PoP: appr_u_shell_segment_tokens @ tools/approval_detection.py:_shell_segment_tokens */
 int appr_u_shell_segment_tokens(const char *arg) {
     /* Python: shlex tokenize; None on malformed quotes. Arg = segment. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -186,7 +186,7 @@ int appr_u_shell_segment_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_iter_top_level_shell_segments @ tools/approval.py:_iter_top_level_shell_segments */
+/* PoP: appr_u_iter_top_level_shell_segments @ tools/approval_detection.py:_iter_top_level_shell_segments */
 int appr_u_iter_top_level_shell_segments(const char *arg) {
     /* Python: left-to-right top-level segments. Arg = "command". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -225,7 +225,7 @@ int appr_u_split_option(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_interpreter_exec_flag @ tools/approval.py:_interpreter_exec_flag */
+/* PoP: appr_u_interpreter_exec_flag @ tools/approval_detection.py:_interpreter_exec_flag */
 int appr_u_interpreter_exec_flag(const char *arg) {
     /* Python: exec-flag scan. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -236,7 +236,7 @@ int appr_u_interpreter_exec_flag(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_bash_exec_payload @ tools/approval.py:_bash_exec_payload */
+/* PoP: appr_u_bash_exec_payload @ tools/approval_detection.py:_bash_exec_payload */
 int appr_u_bash_exec_payload(const char *arg) {
     /* Python: option-arg aware parse. Arg = "state\tresult\tpayload". */
     if (!arg || !*arg) { printf("0\t\n"); return 0; }
@@ -249,7 +249,7 @@ int appr_u_bash_exec_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_read_tool_exec_flag @ tools/approval.py:_read_tool_exec_flag */
+/* PoP: appr_u_read_tool_exec_flag @ tools/approval_detection.py:_read_tool_exec_flag */
 int appr_u_read_tool_exec_flag(const char *arg) {
     /* Python (tool, args): find the program-running option for read-only
      * tools (sort --compress-program, rg --pre/--hostname-bin, ag --pager,
@@ -308,7 +308,7 @@ int appr_u_read_tool_exec_flag(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_execution_flag_findings @ tools/approval.py:_execution_flag_findings */
+/* PoP: appr_u_execution_flag_findings @ tools/approval_detection.py:_execution_flag_findings */
 int appr_u_execution_flag_findings(const char *arg) {
     /* Python: exec mechanism scan. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -320,7 +320,7 @@ int appr_u_execution_flag_findings(const char *arg) {
     return 0;
 }
 
-/* PoP: appr_u_is_verification_artifact_cleanup @ tools/approval.py:_is_verification_artifact_cleanup */
+/* PoP: appr_u_is_verification_artifact_cleanup @ tools/approval_detection.py:_is_verification_artifact_cleanup */
 int appr_u_is_verification_artifact_cleanup(const char *arg) {
     /* Python: rm -f <tmp>/hermes-verify|ad-hoc-<name>. Arg = command. */
     if (!arg || !*arg) { printf("0\n"); return 0; }

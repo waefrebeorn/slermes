@@ -12,7 +12,7 @@
 /* PoP: _default_output_dir @ tools/tts_tool.py:_default_output_dir */
 char *_default_output_dir(void) { return strdup("/tmp"); }
 
-/* PoP: _local_tts_warmers @ tools/tts_tool.py:_local_tts_warmers */
+/* PoP: _local_tts_warmers @ tools/tts_tool_lifecycle.py:_local_tts_warmers */
 char *_local_tts_warmers(void) { return strdup("[]"); }
 
 /* PoP: _lazy_sdk_feature_for_provider @ tools/tts_tool.py:_lazy_sdk_feature_for_provider */
@@ -21,16 +21,16 @@ char *_lazy_sdk_feature_for_provider(void) { return strdup(""); }
 
 
 
-/* PoP: acquire_tts_lease @ tools/tts_tool.py:acquire_tts_lease */
+/* PoP: acquire_tts_lease @ tools/tts_tool_lifecycle.py:acquire_tts_lease */
 char *acquire_tts_lease(void) { return strdup("{}"); }
 
 
-/* PoP: tts_lease_holders @ tools/tts_tool.py:tts_lease_holders */
+/* PoP: tts_lease_holders @ tools/tts_tool_lifecycle.py:tts_lease_holders */
 char *tts_lease_holders(void) { return strdup("[]"); }
 
 
-/* PoP: _load_piper_voice_for_config @ tools/tts_tool.py:_load_piper_voice_for_config */
+/* PoP: _load_piper_voice_for_config @ tools/tts_tool_local.py:_load_piper_voice_for_config */
 char *_load_piper_voice_for_config(void) { return strdup("{}"); }
 
-/* PoP: _load_kittentts_model_for_config @ tools/tts_tool.py:_load_kittentts_model_for_config */
+/* PoP: _load_kittentts_model_for_config @ tools/tts_tool_local.py:_load_kittentts_model_for_config */
 char *_load_kittentts_model_for_config(void) { return strdup("{}"); }

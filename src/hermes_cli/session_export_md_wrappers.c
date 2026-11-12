@@ -114,7 +114,7 @@ int sexmd_u_render_content(const char *arg) {
     return 0;
 }
 
-/* PoP: sexmd_u_render_tool_calls @ hermes_cli/session_export_md.py:_render_tool_calls */
+/* PoP: sexmd_u_render_tool_calls @ agent/moa_loop.py:_render_tool_calls */
 int sexmd_u_render_tool_calls(const char *arg) {
     /* Python: "" if not tool_calls; else
      * "\n\n## Tool calls\n\n```json\n" + json.dumps(tool_calls,

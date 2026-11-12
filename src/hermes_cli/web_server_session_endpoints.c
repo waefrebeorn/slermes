@@ -30,7 +30,7 @@ static json_t *err_obj(int status, const char *detail) {
     return o;
 }
 
-/* PoP: ws_sess_detail_endpoint @ hermes_cli/web_server.py:get_session_detail */
+/* PoP: ws_sess_detail_endpoint @ hermes_cli/web_routers/sessions.py:get_session_detail */
 /* PoP: ws_sess_detail_endpoint @ hermes_cli/web_routers/sessions.py:get_session_detail */
 json_t *ws_sess_detail_endpoint(const char *db_path, const char *session_id) {
     json_t *sess = ws_sess_get_session(db_path, session_id);
@@ -38,7 +38,7 @@ json_t *ws_sess_detail_endpoint(const char *db_path, const char *session_id) {
     return sess;
 }
 
-/* PoP: ws_sess_messages_endpoint @ hermes_cli/web_server.py:get_session_messages */
+/* PoP: ws_sess_messages_endpoint @ hermes_cli/web_routers/sessions.py:get_session_messages */
 /* PoP: ws_sess_messages_endpoint @ hermes_cli/web_routers/sessions.py:get_session_messages */
 json_t *ws_sess_messages_endpoint(const char *db_path, const char *session_id,
                                   bool has_limit, int limit, int offset) {
@@ -61,7 +61,7 @@ json_t *ws_sess_messages_endpoint(const char *db_path, const char *session_id,
     return out;
 }
 
-/* PoP: ws_sess_delete_endpoint @ hermes_cli/web_server.py:delete_session_endpoint */
+/* PoP: ws_sess_delete_endpoint @ hermes_cli/web_routers/sessions.py:delete_session_endpoint */
 /* PoP: ws_sess_delete_endpoint @ hermes_cli/web_routers/sessions.py:delete_session_endpoint */
 json_t *ws_sess_delete_endpoint(const char *db_path, const char *session_id) {
     /* Exact-id (prefix resolution handled by routing layer). Ghost ids are
@@ -73,7 +73,7 @@ json_t *ws_sess_delete_endpoint(const char *db_path, const char *session_id) {
     return out;
 }
 
-/* PoP: ws_sess_rename_endpoint @ hermes_cli/web_server.py:rename_session_endpoint */
+/* PoP: ws_sess_rename_endpoint @ hermes_cli/web_routers/sessions.py:rename_session_endpoint */
 /* PoP: ws_sess_rename_endpoint @ hermes_cli/web_routers/sessions.py:rename_session_endpoint */
 json_t *ws_sess_rename_endpoint(const char *db_path, const char *session_id,
                                 const json_t *body) {
@@ -119,7 +119,7 @@ json_t *ws_sess_rename_endpoint(const char *db_path, const char *session_id,
     return out;
 }
 
-/* PoP: ws_sess_export_endpoint @ hermes_cli/web_server.py:export_session_endpoint */
+/* PoP: ws_sess_export_endpoint @ hermes_cli/web_routers/sessions.py:export_session_endpoint */
 /* PoP: ws_sess_export_endpoint @ hermes_cli/web_routers/sessions.py:export_session_endpoint */
 json_t *ws_sess_export_endpoint(const char *db_path, const char *session_id) {
     json_t *data = ws_sess_export_session(db_path, session_id);
@@ -127,7 +127,7 @@ json_t *ws_sess_export_endpoint(const char *db_path, const char *session_id) {
     return data;
 }
 
-/* PoP: ws_sess_latest_descendant_endpoint @ hermes_cli/web_server.py:_session_latest_descendant */
+/* PoP: ws_sess_latest_descendant_endpoint @ hermes_cli/web_server_sessions.py:_session_latest_descendant */
 json_t *ws_sess_latest_descendant_endpoint(const char *db_path,
                                            const char *session_id) {
     sqlite3 *db = ws_sess_open_db(db_path, false);

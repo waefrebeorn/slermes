@@ -77,7 +77,7 @@ static int is_ws(unsigned int cp) {
            cp == '\f' || cp == '\v';
 }
 
-/* PoP: session_title_sanitize @ hermes_state.py:sanitize_title */
+/* PoP: session_title_sanitize @ hermes_state_titles.py:sanitize_title */
 char *session_title_sanitize(const char *title, bool *invalid) {
     if (invalid) *invalid = false;
     if (!title || !*title) return NULL;   /* falsy -> None */
@@ -133,7 +133,7 @@ char *session_title_get(db_t *db, const char *session_id) {
 /* Walk the compression-continuation parent chain up from descendant_id and
  * report whether ancestor_id is reached. Mirror of _is_compression_ancestor:
  * an edge counts only when the parent ended with end_reason='compression'. */
-/* PoP: is_compression_ancestor @ hermes_state.py:_is_compression_ancestor */
+/* PoP: is_compression_ancestor @ hermes_state_titles.py:_is_compression_ancestor */
 static bool is_compression_ancestor(db_t *db, const char *ancestor_id,
                                     const char *descendant_id) {
     if (!ancestor_id || !descendant_id || !*ancestor_id || !*descendant_id)
@@ -155,7 +155,7 @@ static bool is_compression_ancestor(db_t *db, const char *ancestor_id,
     return false;
 }
 
-/* PoP: set_title_impl @ hermes_state.py:_set_session_title */
+/* PoP: set_title_impl @ hermes_state_titles.py:_set_session_title */
 static session_title_result_t set_title_impl(db_t *db, const char *session_id,
                                              const char *title,
                                              bool only_if_empty) {

@@ -89,7 +89,7 @@ static const sticker_entry_t STICKER_MAP[] = {
 
 #define STICKER_COUNT 52
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_name */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:get_sticker_by_name */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_name(const char *name) {
     /*
      * Find sticker by name with fuzzy matching.
@@ -119,7 +119,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_name(const cha
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_random_sticker */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:get_random_sticker */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_random_sticker(const char *category) {
     /*
      * Return a random sticker, optionally filtered by category.
@@ -147,7 +147,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_random_sticker(const char
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_id */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:get_sticker_by_id */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id(const char *sticker_id) {
     /*
      * Find sticker by sticker_id (exact match).
@@ -187,7 +187,7 @@ char* cli_gateway_platforms_yuanbao_sticker__normalize_text(const char *raw, cha
     return buf;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:_compact_text */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:_compact_text */
 char* cli_gateway_platforms_yuanbao_sticker__compact_text(const char *raw, char *buf, size_t bufsz) {
     /*
      * Compact text: normalize then remove punctuation and whitespace.
@@ -210,7 +210,7 @@ char* cli_gateway_platforms_yuanbao_sticker__compact_text(const char *raw, char 
     return buf;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:_multiset_char_hit_ratio */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:_multiset_char_hit_ratio */
 double cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio(const char *needle, const char *haystack) {
     /*
      * Calculate character multiset hit ratio.
@@ -234,7 +234,7 @@ double cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio(const char
     return (double)hits / (double)needle_len;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__bigram_jaccard @ gateway/platforms/yuanbao_sticker.py:_bigram_jaccard */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__bigram_jaccard @ plugins/platforms/yuanbao/yuanbao_sticker.py:_bigram_jaccard */
 double cli_gateway_platforms_yuanbao_sticker__bigram_jaccard(const char *a, const char *b) {
     /*
      * Bigram Jaccard similarity. Mirrors Python exactly: uses SET semantics
@@ -270,7 +270,7 @@ double cli_gateway_platforms_yuanbao_sticker__bigram_jaccard(const char *a, cons
     #undef MAX_BI
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio @ gateway/platforms/yuanbao_sticker.py:_longest_subsequence_ratio */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:_longest_subsequence_ratio */
 double cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio(const char *needle, const char *haystack) {
     /*
      * Calculate longest subsequence ratio.
@@ -288,7 +288,7 @@ double cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio(const ch
     return (double)j / (double)needle_len;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__score_field @ gateway/platforms/yuanbao_sticker.py:_score_field */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__score_field @ plugins/platforms/yuanbao/yuanbao_sticker.py:_score_field */
 double cli_gateway_platforms_yuanbao_sticker__score_field(const char *haystack, const char *query) {
     /*
      * Score a field against a query using multiple algorithms.
@@ -335,7 +335,7 @@ double cli_gateway_platforms_yuanbao_sticker__score_field(const char *haystack, 
     return best;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_search_stickers @ gateway/platforms/yuanbao_sticker.py:search_stickers */
+/* PoP: cli_gateway_platforms_yuanbao_sticker_search_stickers @ plugins/platforms/yuanbao/yuanbao_sticker.py:search_stickers */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_search_stickers(const char *query, int limit) {
     /*
      * Search stickers by fuzzy matching, return top N results.
@@ -399,7 +399,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_search_stickers(const char *q
     return results;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_build_face_msg_body @ gateway/platforms/yuanbao_sticker.py:build_face_msg_body */
+/* PoP: cli_gateway_platforms_yuanbao_sticker_build_face_msg_body @ plugins/platforms/yuanbao/yuanbao_sticker.py:build_face_msg_body */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_build_face_msg_body(int face_index, const char *data) {
     /*
      * Build TIMFaceElem message body.
@@ -423,7 +423,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_build_face_msg_body(int face_
     return body;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_build_sticker_msg_body @ gateway/platforms/yuanbao_sticker.py:build_sticker_msg_body */
+/* PoP: cli_gateway_platforms_yuanbao_sticker_build_sticker_msg_body @ plugins/platforms/yuanbao/yuanbao_sticker.py:build_sticker_msg_body */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_build_sticker_msg_body(const char *sticker_id) {
     /*
      * Build TIMFaceElem message body from a sticker dict.

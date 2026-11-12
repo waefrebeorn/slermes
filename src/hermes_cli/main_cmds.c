@@ -15,7 +15,7 @@
  * cmd_monitoring — gateway monitoring status
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: hermes_cli_main_cmd_monitoring @ hermes_cli/main.py:cmd_monitoring */
+/* PoP: hermes_cli_main_cmd_monitoring @ hermes_cli/main_agent_cmds.py:cmd_monitoring */
 int hermes_cli_main_cmd_monitoring(const char *monitoring_action, const char *config_json) {
     /* Python: print the gateway health-export + OTLP posture from config.
      * action defaults to "status". Returns 0; exits 2 on unknown action. */

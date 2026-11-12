@@ -132,7 +132,7 @@ bool ve_is_transient_vercel_error(const char *exc_json)
     return false;
 }
 
-/* PoP: ve_coerce_text @ tools/environments/vercel_sandbox.py:_coerce_text */
+/* PoP: ve_coerce_text @ hermes_cli/session_recap.py:_coerce_text */
 char *ve_coerce_text(const char *value_json)
 {
     if (!value_json) return strdup("");

@@ -22,7 +22,7 @@
 /* ============================================================
  * Route-identity normalizer (hermes_cli/route_identity.py)
  * ============================================================  */
-/* PoP: config_normalize_route_base_url @ hermes_cli/config.py:normalize_route_base_url  */
+/* PoP: config_normalize_route_base_url @ hermes_cli/route_identity.py:normalize_route_base_url  */
 /* PoP: config_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url  */
 /* PoP: config_normalize_route_base_url @ hermes_cli/route_identity.py:normalize_route_base_url */
 char *config_normalize_route_base_url(const char *url) {
@@ -57,7 +57,7 @@ char *config_normalize_route_base_url(const char *url) {
 /* ============================================================
  * Wrappers over already-ported helpers
  * ============================================================  */
-/* PoP: config_coerce_ssl_verify @ hermes_cli/config.py:_coerce_ssl_verify */
+/* PoP: config_coerce_ssl_verify @ hermes_cli/config_providers.py:_coerce_ssl_verify */
 int config_coerce_ssl_verify(const char *value) {
     /* coerce_ssl_verify(value, is_bool, bool_val): returns 1/0/-1 sentinel.
      * config.py returns True/False/None. We return 1/0 and -1 for None. */
@@ -68,7 +68,7 @@ int config_coerce_ssl_verify(const char *value) {
     return r;
 }
 
-/* PoP: config_coerce_config_version @ hermes_cli/config.py:_coerce_config_version */
+/* PoP: config_coerce_config_version @ hermes_cli/config_version_stamp.py:_coerce_config_version */
 int config_coerce_config_version(const char *value) {
     return coerce_config_version(value, 0);
 }
@@ -733,7 +733,7 @@ json_t *config_py_normalize_extra_headers(const json_t *extra_headers) {
 /* ============================================================
  * is_provider_enabled
  * ============================================================  */
-/* PoP: config_py_is_provider_enabled @ hermes_cli/config.py:is_provider_enabled */
+/* PoP: config_py_is_provider_enabled @ hermes_cli/config_providers.py:is_provider_enabled */
 bool config_py_is_provider_enabled(const json_t *provider_cfg) {
     if (!provider_cfg || provider_cfg->type != JSON_OBJECT) return true;
     json_t *flag = json_object_get(provider_cfg, "enabled");
@@ -751,7 +751,7 @@ bool config_py_is_provider_enabled(const json_t *provider_cfg) {
 /* ============================================================
  * _custom_provider_entry_to_provider_config
  * ============================================================  */
-/* PoP: config_py_custom_provider_entry_to_provider_config @ hermes_cli/config.py:_custom_provider_entry_to_provider_config */
+/* PoP: config_py_custom_provider_entry_to_provider_config @ hermes_cli/config_providers.py:_custom_provider_entry_to_provider_config */
 json_t *config_py_custom_provider_entry_to_provider_config(const json_t *entry, const char *provider_key) {
     char *norm_json = normalize_custom_provider_entry_json(json_serialize(entry), provider_key ? provider_key : "");
     if (!norm_json) return NULL;
@@ -794,7 +794,7 @@ int config_py_unset_config_value(json_t *cfg, const char *dotted_key) {
 /* ============================================================
  * _resolve_hermes_uid_gid
  * ============================================================  */
-/* PoP: config_py_resolve_hermes_uid_gid @ hermes_cli/config.py:_resolve_hermes_uid_gid */
+/* PoP: config_py_resolve_hermes_uid_gid @ hermes_constants.py:_resolve_hermes_uid_gid */
 void config_py_resolve_hermes_uid_gid(long *out_uid, long *out_gid) {
     long uid = -1, gid = -1;
     if (out_uid) *out_uid = -1;
@@ -810,7 +810,7 @@ void config_py_resolve_hermes_uid_gid(long *out_uid, long *out_gid) {
     if (out_gid) *out_gid = gid;
 }
 
-/* PoP: config_py_chown_to_hermes_uid @ hermes_cli/config.py:_chown_to_hermes_uid */
+/* PoP: config_py_chown_to_hermes_uid @ hermes_constants.py:_chown_to_hermes_uid */
 void config_py_chown_to_hermes_uid(const char *path) {
     if (!path) return;
     long uid = -1, gid = -1;
@@ -822,7 +822,7 @@ void config_py_chown_to_hermes_uid(const char *path) {
 /* ============================================================
  * _is_container
  * ============================================================  */
-/* PoP: config_py_is_container @ hermes_cli/config.py:_is_container */
+/* PoP: config_py_is_container @ hermes_cli/profile_distribution.py:_is_container */
 bool config_py_is_container(void) {
     if (getenv("HERMES_CONTAINER") || getenv("HERMES_SKIP_CHMOD")) return true;
     if (access("/.dockerenv", F_OK) == 0) return true;
@@ -920,7 +920,7 @@ bool is_nix_install_method(const char *method) {
 /*
  * Returns a new json bool node, or NULL when no explicit boolean capability
  * is declared. When custom_providers is NULL the read-only merged config's
- * PoP: get_custom_provider_model_capability @ hermes_cli/config.py:get_custom_provider_model_capability
+ * PoP: get_custom_provider_model_capability @ hermes_cli/config_providers.py:get_custom_provider_model_capability
  */
 json_t *get_custom_provider_model_capability(const char *model,
                                              const char *base_url,
@@ -1098,7 +1098,7 @@ long resolve_turn_limit(const json_t *raw, long default_value) {
 
 /*
  * Delegates to hermes_cli/personality.py:render_personality_prompt
- * PoP: render_personality_prompt @ hermes_cli/config.py:render_personality_prompt
+ * PoP: render_personality_prompt @ hermes_cli/personality.py:render_personality_prompt
  */
 char *render_personality_prompt(const json_t *value) {
     return per_render_personality_prompt(value);

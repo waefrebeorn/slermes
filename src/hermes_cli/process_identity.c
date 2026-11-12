@@ -84,7 +84,7 @@ char *process_identity_install_id(const char *project_root)
 }
 
 /* psutil create_time ≈ boot_time + starttime/HZ; read both from /proc. */
-/* PoP: process_identity_own_create_time @hermes_cli/process_identity.py:_own_create_time */
+/* PoP: process_identity_own_create_time @hermes_cli/update_lock.py:_own_create_time */
 double process_identity_own_create_time(void)
 {
     long hz = sysconf(_SC_CLK_TCK);

@@ -484,7 +484,7 @@ static bool apis_str_nonempty_after_trim(const char *s) {
     return false;
 }
 
-/* PoP: apis_request_reasoning_config @ gateway/platforms/api_server.py:_request_reasoning_config
+/* PoP: apis_request_reasoning_config @ gateway/platforms/api_server_request_options.py:_request_reasoning_config
  * Translate browser/API model_options into AIAgent reasoning_config JSON.
  * Accepts structured {"reasoning":{enabled,effort}} and/or the compat scalar
  * reasoning_effort. Unknown effort values are ignored, not raised.
@@ -540,7 +540,7 @@ json_t *apis_request_reasoning_config(const json_t *model_options) {
     return NULL;
 }
 
-/* PoP: apis_request_service_tier @ gateway/platforms/api_server.py:_request_service_tier */
+/* PoP: apis_request_service_tier @ gateway/platforms/api_server_request_options.py:_request_service_tier */
 char *apis_request_service_tier(const json_t *model_options, bool *is_missing) {
     /* Per-request service_tier override or _REQUEST_OPTION_MISSING sentinel.
      * is_missing=true mirrors Python's MISSING; NULL value means explicit None. */

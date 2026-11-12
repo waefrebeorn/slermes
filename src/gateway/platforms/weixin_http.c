@@ -73,8 +73,8 @@
 }
 
 
-/* PoP: _load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
-/* PoP: weixin_load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
+/* PoP: _load_sync_buf @ plugins/platforms/weixin/adapter.py:_load_sync_buf */
+/* PoP: weixin_load_sync_buf @ plugins/platforms/weixin/adapter.py:_load_sync_buf */
 char *weixin_load_sync_buf(const char *hermes_home, const char *account_id)
 {
     if (!hermes_home || !account_id) return NULL;

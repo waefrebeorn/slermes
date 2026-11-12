@@ -534,7 +534,7 @@ hermes_config_t *gw_load_gateway_config_for_runner(void) {
 }
 
 /* ────────── _adapter_disconnect_timeout_secs ────────── */
-/* PoP: gw_adapter_disconnect_timeout_secs @ gateway/run.py:_adapter_disconnect_timeout_secs */
+/* PoP: gw_adapter_disconnect_timeout_secs @ gateway/run_adapters.py:_adapter_disconnect_timeout_secs */
 double gw_adapter_disconnect_timeout_secs(void) {
     const char *raw = getenv("HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT");
     if (raw) {
@@ -559,7 +559,7 @@ double gw_adapter_disconnect_timeout_secs(void) {
 }
 
 /* ────────── _platform_connect_timeout_secs ────────── */
-/* PoP: gw_platform_connect_timeout_secs @ gateway/run.py:_platform_connect_timeout_secs */
+/* PoP: gw_platform_connect_timeout_secs @ gateway/run_adapters.py:_platform_connect_timeout_secs */
 double gw_platform_connect_timeout_secs(void) {
     const char *raw = getenv("HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT");
     if (raw) {
@@ -591,7 +591,7 @@ static bool gw_is_telegram_general_topic_id(const char *tid) {
  * topic_mode_enabled is the (DB-resolved) result of
  * _telegram_topic_mode_enabled(source); passed in explicitly because the DB
  * read is a separate concern. */
-/* PoP: gw_is_telegram_topic_root_lobby @ gateway/run.py:_is_telegram_topic_root_lobby */
+/* PoP: gw_is_telegram_topic_root_lobby @ gateway/run_topics.py:_is_telegram_topic_root_lobby */
 bool gw_is_telegram_topic_root_lobby(const char *platform,
                                      const char *chat_type,
                                      const char *thread_id,
@@ -603,7 +603,7 @@ bool gw_is_telegram_topic_root_lobby(const char *platform,
 }
 
 /* ────────── _is_telegram_topic_lane ────────── */
-/* PoP: gw_is_telegram_topic_lane @ gateway/run.py:_is_telegram_topic_lane */
+/* PoP: gw_is_telegram_topic_lane @ gateway/run_topics.py:_is_telegram_topic_lane */
 bool gw_is_telegram_topic_lane(const char *platform,
                                const char *chat_type,
                                const char *thread_id,
@@ -617,7 +617,7 @@ bool gw_is_telegram_topic_lane(const char *platform,
 }
 
 /* ────────── _telegram_topic_new_header ────────── */
-/* PoP: gw_telegram_topic_new_header @ gateway/run.py:_telegram_topic_new_header */
+/* PoP: gw_telegram_topic_new_header @ gateway/run_topics.py:_telegram_topic_new_header */
 const char *gw_telegram_topic_new_header(const char *platform,
                                          const char *chat_type,
                                          const char *thread_id,
@@ -652,7 +652,7 @@ bool gw_is_telegram_dm_topic_target(const char *platform,
  * discovers the token from adapter attrs; this ports the hashing chokepoint:
  *   sha256("hermes-mux:" + token).hexdigest()[:16]
  * Returns malloc'd 17-byte string (16 hex + NUL) or NULL when token empty. */
-/* PoP: gw_adapter_credential_fingerprint @ gateway/run.py:_adapter_credential_fingerprint */
+/* PoP: gw_adapter_credential_fingerprint @ gateway/run_adapters.py:_adapter_credential_fingerprint */
 char *gw_adapter_credential_fingerprint(const char *token) {
     if (!token) return NULL;
     /* .strip() */
@@ -718,7 +718,7 @@ char *gw_empty_honcho_cache_busting_config(void) {
  * config. Here the env path is ported; pass the config value as fallback
  * (already resolved by the caller from _load_gateway_config). Returns
  * malloc'd string or NULL. */
-/* PoP: gw_get_proxy_url @ gateway/run.py:_get_proxy_url */
+/* PoP: gw_get_proxy_url @ gateway/run_turn.py:_get_proxy_url */
 char *gw_get_proxy_url(const char *config_proxy_url) {
     const char *env = getenv("GATEWAY_PROXY_URL");
     char work[1024];
@@ -809,7 +809,7 @@ json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
  * The file read + JSON decode is a separate concern — pass the raw JSON text
  * (or NULL). Malformed/non-object input yields an empty object. Returns a
  * malloc'd json_t (caller frees via json_free). */
-/* PoP: gw_load_voice_modes @ gateway/run.py:_load_voice_modes */
+/* PoP: gw_load_voice_modes @ gateway/run_voice.py:_load_voice_modes */
 json_t *gw_load_voice_modes(const char *voice_modes_json) {
     json_t *result = json_object();
     if (!result) return NULL;
@@ -847,7 +847,7 @@ json_t *gw_load_voice_modes(const char *voice_modes_json) {
  * The file write (mkdir parents + write_text) is a separate concern — this
  * ports the serialization chokepoint. Pass the voice-mode object as a json_t;
  * returns a malloc'd JSON string (indent=2), or NULL on bad input. */
-/* PoP: gw_save_voice_modes @ gateway/run.py:_save_voice_modes */
+/* PoP: gw_save_voice_modes @ gateway/run_voice.py:_save_voice_modes */
 char *gw_save_voice_modes(const json_t *voice_mode) {
     if (!voice_mode) return NULL;
     return json_serialize_pretty(voice_mode, 2);
@@ -858,7 +858,7 @@ char *gw_save_voice_modes(const json_t *voice_mode) {
  * Python guard on SessionSource fields. auto_thread_created and
  * auto_thread_initial_name are adapter-set flags not carried on the C
  * gw_session_source_t yet, so they are passed in explicitly. */
-/* PoP: gw_is_discord_auto_thread_lane @ gateway/run.py:_is_discord_auto_thread_lane */
+/* PoP: gw_is_discord_auto_thread_lane @ gateway/run_topics.py:_is_discord_auto_thread_lane */
 bool gw_is_discord_auto_thread_lane(const char *platform,
                                     const char *chat_type,
                                     const char *thread_id,
@@ -878,7 +878,7 @@ bool gw_is_discord_auto_thread_lane(const char *platform,
 
 /* _float_env was already ported in src/gateway/port_gateway_run.c.
 
- * PoP: compression_made_progress @ turn_context.py:compression_made_progress */
+ * PoP: compression_made_progress @ agent/turn_context.py:compression_made_progress */
 bool gw_compression_made_progress(int orig_len, int new_len,
                                   int orig_tokens, int new_tokens) {
     /* Python: new row count drop OR token drop >5% (orig_tokens > 0).

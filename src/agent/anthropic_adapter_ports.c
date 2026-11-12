@@ -82,7 +82,7 @@ char *antr_get_claude_code_version(void) {
     return cached ? strdup(cached) : NULL;
 }
 
-/* PoP: antr_is_oauth_token @ agent/anthropic_adapter.py:_is_oauth_token */
+/* PoP: antr_is_oauth_token @ agent/anthropic_credentials.py:_is_oauth_token */
 bool antr_is_oauth_token(const char *key) {
     /* Python: sk-ant- (not sk-ant-api) → setup; eyJ → JWT. */
     if (!key) return false;
@@ -91,14 +91,14 @@ bool antr_is_oauth_token(const char *key) {
     return false;
 }
 
-/* PoP: antr_normalize_base_url_text @ agent/anthropic_adapter.py:_normalize_base_url_text */
+/* PoP: antr_normalize_base_url_text @ agent/anthropic_endpoints.py:_normalize_base_url_text */
 char *antr_normalize_base_url_text(const char *base_url) {
     /* Python: httpx.URL → str; raw string pass-through. */
     if (!base_url) return NULL;
     return strdup(base_url);
 }
 
-/* PoP: antr_is_third_party_anthropic_endpoint @ agent/anthropic_adapter.py:_is_third_party_anthropic_endpoint */
+/* PoP: antr_is_third_party_anthropic_endpoint @ agent/anthropic_endpoints.py:_is_third_party_anthropic_endpoint */
 bool antr_is_third_party_anthropic_endpoint(const char *base_url) {
     /* Python: non-Anthropic endpoints using Messages API. */
     if (!base_url) return false;
@@ -110,7 +110,7 @@ bool antr_is_third_party_anthropic_endpoint(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_is_kimi_coding_endpoint @ agent/anthropic_adapter.py:_is_kimi_coding_endpoint */
+/* PoP: antr_is_kimi_coding_endpoint @ agent/anthropic_endpoints.py:_is_kimi_coding_endpoint */
 bool antr_is_kimi_coding_endpoint(const char *base_url) {
     /* Python: Kimi /coding endpoint requiring claude-code UA. */
     if (!base_url) return false;
@@ -125,7 +125,7 @@ bool antr_is_kimi_coding_endpoint(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_model_name_is_kimi_family @ agent/anthropic_adapter.py:_model_name_is_kimi_family */
+/* PoP: antr_model_name_is_kimi_family @ agent/anthropic_endpoints.py:_model_name_is_kimi_family */
 bool antr_model_name_is_kimi_family(const char *model) {
     if (!model) return false;
     char *m = lowerdup(model);
@@ -138,7 +138,7 @@ bool antr_model_name_is_kimi_family(const char *model) {
     return r;
 }
 
-/* PoP: antr_is_kimi_family_endpoint @ agent/anthropic_adapter.py:_is_kimi_family_endpoint */
+/* PoP: antr_is_kimi_family_endpoint @ agent/anthropic_endpoints.py:_is_kimi_family_endpoint */
 bool antr_is_kimi_family_endpoint(const char *base_url) {
     if (!base_url) return false;
     char *l = lowerdup(base_url);
@@ -148,7 +148,7 @@ bool antr_is_kimi_family_endpoint(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_is_deepseek_anthropic_endpoint @ agent/anthropic_adapter.py:_is_deepseek_anthropic_endpoint */
+/* PoP: antr_is_deepseek_anthropic_endpoint @ agent/anthropic_endpoints.py:_is_deepseek_anthropic_endpoint */
 bool antr_is_deepseek_anthropic_endpoint(const char *base_url) {
     if (!base_url) return false;
     char *l = lowerdup(base_url);
@@ -158,7 +158,7 @@ bool antr_is_deepseek_anthropic_endpoint(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_requires_bearer_auth @ agent/anthropic_adapter.py:_requires_bearer_auth */
+/* PoP: antr_requires_bearer_auth @ agent/anthropic_endpoints.py:_requires_bearer_auth */
 bool antr_requires_bearer_auth(const char *base_url, const char *provider) {
     /* Python: third-party endpoints implementing Messages API with Bearer. */
     if (provider) {
@@ -173,7 +173,7 @@ bool antr_requires_bearer_auth(const char *base_url, const char *provider) {
     return antr_is_third_party_anthropic_endpoint(base_url);
 }
 
-/* PoP: antr_base_url_needs_context_1m_beta @ agent/anthropic_adapter.py:_base_url_needs_context_1m_beta */
+/* PoP: antr_base_url_needs_context_1m_beta @ agent/anthropic_endpoints.py:_base_url_needs_context_1m_beta */
 bool antr_base_url_needs_context_1m_beta(const char *base_url) {
     if (!base_url) return false;
     char *l = lowerdup(base_url);
@@ -183,7 +183,7 @@ bool antr_base_url_needs_context_1m_beta(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_is_minimax_anthropic_endpoint @ agent/anthropic_adapter.py:_is_minimax_anthropic_endpoint */
+/* PoP: antr_is_minimax_anthropic_endpoint @ agent/anthropic_endpoints.py:_is_minimax_anthropic_endpoint */
 bool antr_is_minimax_anthropic_endpoint(const char *base_url) {
     if (!base_url) return false;
     char *l = lowerdup(base_url);
@@ -193,7 +193,7 @@ bool antr_is_minimax_anthropic_endpoint(const char *base_url) {
     return r;
 }
 
-/* PoP: antr_is_azure_anthropic_endpoint @ agent/anthropic_adapter.py:_is_azure_anthropic_endpoint */
+/* PoP: antr_is_azure_anthropic_endpoint @ agent/anthropic_endpoints.py:_is_azure_anthropic_endpoint */
 bool antr_is_azure_anthropic_endpoint(const char *base_url) {
     if (!base_url) return false;
     char *l = lowerdup(base_url);
@@ -238,7 +238,7 @@ char *antr_build_anthropic_bedrock_client(const char *region, const char *model)
     return strdup("client");
 }
 
-/* PoP: antr_read_claude_code_credentials_from_keychain @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_keychain */
+/* PoP: antr_read_claude_code_credentials_from_keychain @ agent/anthropic_credentials.py:_read_claude_code_credentials_from_keychain */
 char *antr_read_claude_code_credentials_from_keychain(void) {
     /* Python: macOS Keychain service "Claude Code-credentials". */
 #if defined(__APPLE__)
@@ -247,7 +247,7 @@ char *antr_read_claude_code_credentials_from_keychain(void) {
     return strdup("{}");
 }
 
-/* PoP: antr_is_claude_code_token_valid @ agent/anthropic_adapter.py:is_claude_code_token_valid */
+/* PoP: antr_is_claude_code_token_valid @ agent/anthropic_credentials.py:is_claude_code_token_valid */
 bool antr_is_claude_code_token_valid(const char *creds_json, double now_epoch) {
     /* Python: expiresAt 0 (managed keys) → valid if token present. */
     if (!creds_json || !*creds_json || strcmp(creds_json, "{}") == 0) return false;
@@ -262,7 +262,7 @@ bool antr_is_claude_code_token_valid(const char *creds_json, double now_epoch) {
     return strstr(creds_json, "accessToken") || strstr(creds_json, "oauthAccount");
 }
 
-/* PoP: antr_refresh_anthropic_oauth_pure @ agent/anthropic_adapter.py:refresh_anthropic_oauth_pure */
+/* PoP: antr_refresh_anthropic_oauth_pure @ agent/anthropic_credentials.py:refresh_anthropic_oauth_pure */
 char *antr_refresh_anthropic_oauth_pure(const char *refresh_token, const char *client_id) {
     /* Python: POST token refresh; pure (no file mutation) — REAL POST. */
     if (!refresh_token) { fprintf(stderr, "refresh_token is required\n"); return NULL; }
@@ -286,7 +286,7 @@ char *antr_refresh_anthropic_oauth_pure(const char *refresh_token, const char *c
     return out;
 }
 
-/* PoP: antr_refresh_oauth_token @ agent/anthropic_adapter.py:_refresh_oauth_token */
+/* PoP: antr_refresh_oauth_token @ agent/anthropic_credentials.py:_refresh_oauth_token */
 char *antr_refresh_oauth_token(const char *creds_json) {
     /* Python: single-use refresh; rotates pair; retries race once. */
     if (!creds_json) return NULL;
@@ -294,7 +294,7 @@ char *antr_refresh_oauth_token(const char *creds_json) {
     return strdup("{}");
 }
 
-/* PoP: antr_write_claude_code_credentials @ agent/anthropic_adapter.py:_write_claude_code_credentials */
+/* PoP: antr_write_claude_code_credentials @ agent/anthropic_credentials.py:_write_claude_code_credentials */
 int antr_write_claude_code_credentials(const char *creds_json, const char *scopes_json) {
     /* Python: ~/.claude/.credentials.json w/ scopes persisted.
      * REAL: mkdir -p ~/.claude + write the JSON file. */
@@ -315,7 +315,7 @@ int antr_write_claude_code_credentials(const char *creds_json, const char *scope
     return 0;
 }
 
-/* PoP: antr_resolve_claude_code_token_from_credentials @ agent/anthropic_adapter.py:_resolve_claude_code_token_from_credentials */
+/* PoP: antr_resolve_claude_code_token_from_credentials @ agent/anthropic_credentials.py:_resolve_claude_code_token_from_credentials */
 char *antr_resolve_claude_code_token_from_credentials(const char *creds_json) {
     /* Python: valid creds → token; else refresh; else None. */
     if (!creds_json) return NULL;
@@ -323,7 +323,7 @@ char *antr_resolve_claude_code_token_from_credentials(const char *creds_json) {
     return NULL;
 }
 
-/* PoP: antr_prefer_refreshable_claude_code_token @ agent/anthropic_adapter.py:_prefer_refreshable_claude_code_token */
+/* PoP: antr_prefer_refreshable_claude_code_token @ agent/anthropic_credentials.py:_prefer_refreshable_claude_code_token */
 bool antr_prefer_refreshable_claude_code_token(const char *env_token, const char *creds_json) {
     /* Python: prefer creds when env token would shadow refresh. */
     if (!env_token || !*env_token) return true;
@@ -331,7 +331,7 @@ bool antr_prefer_refreshable_claude_code_token(const char *env_token, const char
     return false;
 }
 
-/* PoP: antr_resolve_anthropic_token @ agent/anthropic_adapter.py:resolve_anthropic_token */
+/* PoP: antr_resolve_anthropic_token @ agent/anthropic_credentials.py:resolve_anthropic_token */
 char *antr_resolve_anthropic_token(const char *env_token, const char *claude_env_token,
                                    const char *creds_json) {
     /* Python: ANTHROPIC_TOKEN → CLAUDE_CODE_OAUTH_TOKEN → creds → None. */
@@ -342,7 +342,7 @@ char *antr_resolve_anthropic_token(const char *env_token, const char *claude_env
     return NULL;
 }
 
-/* PoP: antr_run_oauth_setup_token @ agent/anthropic_adapter.py:run_oauth_setup_token */
+/* PoP: antr_run_oauth_setup_token @ agent/anthropic_credentials.py:run_oauth_setup_token */
 char *antr_run_oauth_setup_token(void) {
     /* Python: spawn `claude setup-token`; check creds/env after.
      * Real subprocess spawn: run the claude CLI and report whether the
@@ -368,7 +368,7 @@ char *antr_run_oauth_setup_token(void) {
     return out;
 }
 
-/* PoP: antr_generate_pkce @ agent/anthropic_adapter.py:_generate_pkce */
+/* PoP: antr_generate_pkce @ agent/anthropic_credentials.py:_generate_pkce */
 char *antr_generate_pkce(void) {
     /* Python: 32-byte verifier (urlsafe b64, no pad) + S256 challenge. */
     static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -380,21 +380,21 @@ char *antr_generate_pkce(void) {
     return out;
 }
 
-/* PoP: antr_run_hermes_oauth_login_pure @ agent/anthropic_adapter.py:run_hermes_oauth_login_pure */
+/* PoP: antr_run_hermes_oauth_login_pure @ agent/anthropic_credentials.py:run_hermes_oauth_login_pure */
 char *antr_run_hermes_oauth_login_pure(void) {
     /* Python: PKCE flow + webbrowser open + loopback wait. */
     printf("hermes oauth PKCE flow (browser opened, loopback callback awaited)\n");
     return strdup("{}");
 }
 
-/* PoP: antr_read_hermes_oauth_credentials @ agent/anthropic_adapter.py:read_hermes_oauth_credentials */
+/* PoP: antr_read_hermes_oauth_credentials @ agent/anthropic_credentials.py:read_hermes_oauth_credentials */
 char *antr_read_hermes_oauth_credentials(void) {
     /* Python: ~/.hermes/.anthropic_oauth.json read. */
     printf("hermes oauth credentials read (~/.hermes/.anthropic_oauth.json)\n");
     return strdup("{}");
 }
 
-/* PoP: antr_is_bedrock_model_id @ agent/anthropic_adapter.py:_is_bedrock_model_id */
+/* PoP: antr_is_bedrock_model_id @ agent/anthropic_message_convert.py:_is_bedrock_model_id */
 bool antr_is_bedrock_model_id(const char *model) {
     /* Python: dots as namespace separators — bare or regional forms. */
     if (!model) return false;
@@ -406,7 +406,7 @@ bool antr_is_bedrock_model_id(const char *model) {
     return *p == '.' && strncmp(p + 1, "anthropic.", 10) == 0;
 }
 
-/* PoP: antr_normalize_model_name @ agent/anthropic_adapter.py:normalize_model_name */
+/* PoP: antr_normalize_model_name @ agent/anthropic_message_convert.py:normalize_model_name */
 char *antr_normalize_model_name(const char *model) {
     /* Python: strip anthropic/ prefix; dots → hyphens in versions. */
     if (!model) return NULL;
@@ -425,7 +425,7 @@ char *antr_normalize_model_name(const char *model) {
     return out;
 }
 
-/* PoP: antr_sanitize_tool_id @ agent/anthropic_adapter.py:_sanitize_tool_id */
+/* PoP: antr_sanitize_tool_id @ agent/anthropic_message_convert.py:_sanitize_tool_id */
 char *antr_sanitize_tool_id(const char *tool_id) {
     /* Python: [a-zA-Z0-9_-] only; invalid → underscore; ensure non-empty. */
     if (!tool_id || !*tool_id) return strdup("tool_0");
@@ -441,7 +441,7 @@ char *antr_sanitize_tool_id(const char *tool_id) {
     return out;
 }
 
-/* PoP: antr_normalize_tool_input_schema @ agent/anthropic_adapter.py:_normalize_tool_input_schema */
+/* PoP: antr_normalize_tool_input_schema @ agent/anthropic_message_convert.py:_normalize_tool_input_schema */
 char *antr_normalize_tool_input_schema(const char *schema_json) {
     /* Python: nullable unions (anyOf + null) → optional property —
      * REAL: when the schema is a bare anyOf of [type, "null"], emit
@@ -476,7 +476,7 @@ char *antr_normalize_tool_input_schema(const char *schema_json) {
     return strdup(schema_json);
 }
 
-/* PoP: antr_convert_tools_to_anthropic @ agent/anthropic_adapter.py:convert_tools_to_anthropic */
+/* PoP: antr_convert_tools_to_anthropic @ agent/anthropic_message_convert.py:convert_tools_to_anthropic */
 char *antr_convert_tools_to_anthropic(const char *tools_json) {
     /* Python: OpenAI function defs → Anthropic tool blocks; dedup names. */
     if (!tools_json) return strdup("[]");
@@ -539,7 +539,7 @@ char *antr_image_source_from_openai_url(const char *url) {
     return out;
 }
 
-/* PoP: antr_convert_content_part_to_anthropic @ agent/anthropic_adapter.py:_convert_content_part_to_anthropic */
+/* PoP: antr_convert_content_part_to_anthropic @ agent/anthropic_message_convert.py:_convert_content_part_to_anthropic */
 char *antr_convert_content_part_to_anthropic(const char *part_json) {
     /* Python: str → text block; dict → per-type block. */
     if (!part_json) return NULL;
@@ -570,7 +570,7 @@ char *antr_convert_content_part_to_anthropic(const char *part_json) {
     return strdup(part_json);
 }
 
-/* PoP: antr_extract_preserved_thinking_blocks @ agent/anthropic_adapter.py:_extract_preserved_thinking_blocks */
+/* PoP: antr_extract_preserved_thinking_blocks @ agent/anthropic_message_convert.py:_extract_preserved_thinking_blocks */
 char *antr_extract_preserved_thinking_blocks(const char *message_json) {
     /* Python: reasoning_details list → preserved thinking blocks. */
     if (!message_json || !strstr(message_json, "reasoning_details")) return strdup("[]");
@@ -608,7 +608,7 @@ char *antr_extract_preserved_thinking_blocks(const char *message_json) {
     return out;
 }
 
-/* PoP: antr_convert_content_to_anthropic @ agent/anthropic_adapter.py:_convert_content_to_anthropic */
+/* PoP: antr_convert_content_to_anthropic @ agent/anthropic_message_convert.py:_convert_content_to_anthropic */
 char *antr_convert_content_to_anthropic(const char *content_json) {
     /* Python: list content → converted blocks. */
     if (!content_json) return strdup("[]");
@@ -617,14 +617,14 @@ char *antr_convert_content_to_anthropic(const char *content_json) {
     return strdup(content_json);
 }
 
-/* PoP: antr_content_parts_to_anthropic_blocks @ agent/anthropic_adapter.py:_content_parts_to_anthropic_blocks */
+/* PoP: antr_content_parts_to_anthropic_blocks @ agent/anthropic_message_convert.py:_content_parts_to_anthropic_blocks */
 char *antr_content_parts_to_anthropic_blocks(const char *parts_json) {
     if (!parts_json) return strdup("[]");
     printf("tool-message content parts → tool_result inner blocks (screenshots)\n");
     return strdup(parts_json);
 }
 
-/* PoP: antr_convert_assistant_message @ agent/anthropic_adapter.py:_convert_assistant_message */
+/* PoP: antr_convert_assistant_message @ agent/anthropic_message_convert.py:_convert_assistant_message */
 char *antr_convert_assistant_message(const char *message_json) {
     /* Python: thinking blocks + content + tool calls + reasoning injection. */
     if (!message_json) return NULL;
@@ -632,7 +632,7 @@ char *antr_convert_assistant_message(const char *message_json) {
     return strdup(message_json);
 }
 
-/* PoP: antr_convert_tool_message_to_result @ agent/anthropic_adapter.py:_convert_tool_message_to_result */
+/* PoP: antr_convert_tool_message_to_result @ agent/anthropic_message_convert.py:_convert_tool_message_to_result */
 char *antr_convert_tool_message_to_result(const char *message_json, const char *result_json) {
     /* Python: tool_result with consecutive-result merging (mutates result). */
     if (!message_json) return NULL;
@@ -640,7 +640,7 @@ char *antr_convert_tool_message_to_result(const char *message_json, const char *
     return strdup(result_json ? result_json : "[]");
 }
 
-/* PoP: antr_convert_user_message @ agent/anthropic_adapter.py:_convert_user_message */
+/* PoP: antr_convert_user_message @ agent/anthropic_message_convert.py:_convert_user_message */
 char *antr_convert_user_message(const char *message_json) {
     /* Python: validate + convert; empty converted content → placeholder. */
     if (!message_json) return NULL;
@@ -648,7 +648,7 @@ char *antr_convert_user_message(const char *message_json) {
     return strdup(message_json);
 }
 
-/* PoP: antr_strip_orphaned_tool_blocks @ agent/anthropic_adapter.py:_strip_orphaned_tool_blocks */
+/* PoP: antr_strip_orphaned_tool_blocks @ agent/anthropic_message_convert.py:_strip_orphaned_tool_blocks */
 char *antr_strip_orphaned_tool_blocks(const char *messages_json) {
     /* Python: drop tool_use w/o tool_result and vice versa. */
     if (!messages_json) return strdup("[]");
@@ -656,14 +656,14 @@ char *antr_strip_orphaned_tool_blocks(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: antr_merge_consecutive_roles @ agent/anthropic_adapter.py:_merge_consecutive_roles */
+/* PoP: antr_merge_consecutive_roles @ agent/anthropic_message_convert.py:_merge_consecutive_roles */
 char *antr_merge_consecutive_roles(const char *messages_json) {
     if (!messages_json) return strdup("[]");
     printf("consecutive same-role messages merged (alternation enforced)\n");
     return strdup(messages_json);
 }
 
-/* PoP: antr_manage_thinking_signatures @ agent/anthropic_adapter.py:_manage_thinking_signatures */
+/* PoP: antr_manage_thinking_signatures @ agent/anthropic_message_convert.py:_manage_thinking_signatures */
 char *antr_manage_thinking_signatures(const char *messages_json, const char *base_url) {
     /* Python: strip or preserve thinking blocks by endpoint type. */
     if (!messages_json) return strdup("[]");
@@ -672,7 +672,7 @@ char *antr_manage_thinking_signatures(const char *messages_json, const char *bas
     return strdup(messages_json);
 }
 
-/* PoP: antr_evict_old_screenshots @ agent/anthropic_adapter.py:_evict_old_screenshots */
+/* PoP: antr_evict_old_screenshots @ agent/anthropic_message_convert.py:_evict_old_screenshots */
 char *antr_evict_old_screenshots(const char *messages_json) {
     /* Python: keep most recent _MAX_KEEP_IMAGES base64 screenshots; older →
      * placeholder. */
@@ -681,7 +681,7 @@ char *antr_evict_old_screenshots(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: antr_convert_messages_to_anthropic @ agent/anthropic_adapter.py:convert_messages_to_anthropic */
+/* PoP: antr_convert_messages_to_anthropic @ agent/anthropic_message_convert.py:convert_messages_to_anthropic */
 char *antr_convert_messages_to_anthropic(const char *messages_json) {
     /* Python: (system_prompt, anthropic_messages); system extracted. */
     if (!messages_json) return strdup("{\"system\": null, \"messages\": []}");
@@ -734,7 +734,7 @@ char *anthropic_adapter_getenv(const char *arg) {
     return strdup(val ? val : def);
 }
 
-/* PoP: anthropic_adapter_is_nous_portal_endpoint @ agent/anthropic_adapter.py:_is_nous_portal_endpoint */
+/* PoP: anthropic_adapter_is_nous_portal_endpoint @ agent/anthropic_endpoints.py:_is_nous_portal_endpoint */
 bool anthropic_adapter_is_nous_portal_endpoint(const char *base_url) {
     /* Python: True for Nous Portal's Anthropic Messages route.
      * Trusted hosts: prod inference-api.nousresearch.com + operator-set
@@ -767,7 +767,7 @@ bool anthropic_adapter_is_nous_portal_endpoint(const char *base_url) {
     return false;
 }
 
-/* PoP: anthropic_adapter_fix_blank_text_blocks @ agent/anthropic_adapter.py:_fix_blank_text_blocks_in_list */
+/* PoP: anthropic_adapter_fix_blank_text_blocks @ agent/anthropic_message_convert.py:_fix_blank_text_blocks_in_list */
 char *anthropic_adapter_fix_blank_text_blocks(const char *arg) {
     /* Python: drop blank/whitespace-only text blocks, relocate cache_control.
      * Arg = "blocks_json\tplaceholder_text". Returns new list JSON. */
@@ -797,7 +797,7 @@ char *anthropic_adapter_fix_blank_text_blocks(const char *arg) {
     return result;
 }
 
-/* PoP: anthropic_adapter_scrub_blank_text_blocks @ agent/anthropic_adapter.py:_scrub_blank_text_blocks */
+/* PoP: anthropic_adapter_scrub_blank_text_blocks @ agent/anthropic_message_convert.py:_scrub_blank_text_blocks */
 char *anthropic_adapter_scrub_blank_text_blocks(const char *arg) {
     /* Python: final provider-boundary guard against blank text blocks.
      * Mutates result in place; nested tool_result content too.

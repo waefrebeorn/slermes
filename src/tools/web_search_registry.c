@@ -135,7 +135,7 @@ static unsigned int capability_mask(const char *cap) {
 }
 
 /* Check if provider supports the capability */
-/* PoP: supports_capability @ tools/computer_use/cua_backend.py:supports_capability */
+/* PoP: supports_capability @ tools/computer_use/cua_backend_session.py:supports_capability */
 static bool supports_capability(const web_search_provider_t *p,
                                  unsigned int cap_mask) {
     return (p->capabilities & cap_mask) != 0;

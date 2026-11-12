@@ -5,7 +5,7 @@
  * light-mode detection, skin-aware ANSI, stream transform output.
  *
  * Every function carries the STANDALONE annotation directly above its
- * definition, e.g.  PoP: _arm_exit_watchdog @ cli.py:_arm_exit_watchdog
+ * definition, e.g.  PoP: _arm_exit_watchdog @ hermes_cli/cli_shutdown.py:_arm_exit_watchdog
  * C names match the Python names 1:1 (leading-underscore lowercase is legal
  * in C). Shared module state mirrors the cli.py module globals.
  */
@@ -272,7 +272,7 @@ static void *cg_watchdog_thread(void *argp)
     return NULL;
 }
 
-/* PoP: _arm_exit_watchdog @ cli.py:_arm_exit_watchdog */
+/* PoP: _arm_exit_watchdog @ hermes_cli/cli_shutdown.py:_arm_exit_watchdog */
 void _arm_exit_watchdog(double timeout_s, int from_signal)
 {
     if (timeout_s <= 0.0) {
@@ -390,7 +390,7 @@ bool cli_w4b_is_handed_off(const char *session_id)
     return r;
 }
 
-/* PoP: _should_emit_cleanup_session_finalize @ cli.py:_should_emit_cleanup_session_finalize */
+/* PoP: _should_emit_cleanup_session_finalize @ hermes_cli/cli_shutdown.py:_should_emit_cleanup_session_finalize */
 bool _should_emit_cleanup_session_finalize(const char *session_id)
 {
     /* A session handed off to the gateway is gateway-owned now; CLI must not
@@ -409,13 +409,13 @@ bool _should_emit_cleanup_session_finalize(const char *session_id)
     return !attempted;
 }
 
-/* PoP: cli_should_emit_cleanup_session_finalize @ cli.py:_should_emit_cleanup_session_finalize */
+/* PoP: cli_should_emit_cleanup_session_finalize @ hermes_cli/cli_shutdown.py:_should_emit_cleanup_session_finalize */
 bool cli_should_emit_cleanup_session_finalize(const char *session_id)
 {
     return _should_emit_cleanup_session_finalize(session_id);
 }
 
-/* PoP: _notify_session_finalize @ cli.py:_notify_session_finalize */
+/* PoP: _notify_session_finalize @ hermes_cli/cli_shutdown.py:_notify_session_finalize */
 void _notify_session_finalize(const char *session_id,
                               const char *platform, const char *reason)
 {
@@ -428,14 +428,14 @@ void _notify_session_finalize(const char *session_id,
     hermes_cli_lifecycle_finalize_session(arg);
 }
 
-/* PoP: cli_notify_session_finalize @ cli.py:_notify_session_finalize */
+/* PoP: cli_notify_session_finalize @ hermes_cli/cli_shutdown.py:_notify_session_finalize */
 void cli_notify_session_finalize(const char *session_id,
                                  const char *platform, const char *reason)
 {
     _notify_session_finalize(session_id, platform, reason);
 }
 
-/* PoP: _emit_interrupted_session_end @ cli.py:_emit_interrupted_session_end */
+/* PoP: _emit_interrupted_session_end @ hermes_cli/cli_shutdown.py:_emit_interrupted_session_end */
 void _emit_interrupted_session_end(const char *cli_session_id,
                                    const char *agent_session_id,
                                    const char *task_id,
@@ -494,7 +494,7 @@ void _emit_interrupted_session_end(const char *cli_session_id,
     hermes_cli_lifecycle_invoke_hook(payload);
 }
 
-/* PoP: cli_emit_interrupted_session_end @ cli.py:_emit_interrupted_session_end */
+/* PoP: cli_emit_interrupted_session_end @ hermes_cli/cli_shutdown.py:_emit_interrupted_session_end */
 void cli_emit_interrupted_session_end(const char *cli_session_id,
                                       const char *agent_session_id,
                                       const char *task_id,
@@ -509,7 +509,7 @@ void cli_emit_interrupted_session_end(const char *cli_session_id,
                                   reason ? reason : "keyboard_interrupt");
 }
 
-/* PoP: _notify_single_query_session_finalize @ cli.py:_notify_single_query_session_finalize */
+/* PoP: _notify_single_query_session_finalize @ hermes_cli/cli_shutdown.py:_notify_single_query_session_finalize */
 void _notify_single_query_session_finalize(const char *cli_session_id,
                                            const char *agent_session_id,
                                            const char *agent_platform,
@@ -593,7 +593,7 @@ void _run_cleanup(int notify_session_finalize)
     g_cleanup_in_progress = 0;
 }
 
-/* PoP: _flush_one_shot_session_store @ cli.py:_flush_one_shot_session_store */
+/* PoP: _flush_one_shot_session_store @ hermes_cli/cli_shutdown.py:_flush_one_shot_session_store */
 void _flush_one_shot_session_store(hermes_state_db_t *db,
                                    const char *session_id,
                                    int persist_disabled)
@@ -622,7 +622,7 @@ void _flush_one_shot_session_store(hermes_state_db_t *db,
     hermes_state_end_session(db, session_id, "cli_close");
 }
 
-/* PoP: cli_flush_one_shot_session_store @ cli.py:_flush_one_shot_session_store */
+/* PoP: cli_flush_one_shot_session_store @ hermes_cli/cli_shutdown.py:_flush_one_shot_session_store */
 void cli_flush_one_shot_session_store(hermes_state_db_t *db,
                                       const char *session_id,
                                       bool persist_disabled)
@@ -630,7 +630,7 @@ void cli_flush_one_shot_session_store(hermes_state_db_t *db,
     _flush_one_shot_session_store(db, session_id, persist_disabled ? 1 : 0);
 }
 
-/* PoP: _finalize_single_query @ cli.py:_finalize_single_query */
+/* PoP: _finalize_single_query @ hermes_cli/cli_shutdown.py:_finalize_single_query */
 void _finalize_single_query(hermes_state_db_t *db,
                             const char *cli_session_id,
                             const char *agent_session_id,
@@ -683,7 +683,7 @@ void _reset_terminal_input_modes_on_exit(void)
 
 /* ═══════════ git worktree isolation (cli.py:1528+) ═══════════ */
 
-/* PoP: _normalize_git_bash_path @ cli.py:_normalize_git_bash_path */
+/* PoP: _normalize_git_bash_path @ hermes_cli/worktree_ops.py:_normalize_git_bash_path */
 #ifdef _WIN32
 static char *cg_windows_join(char drive, const char *rest)
 {
@@ -723,7 +723,7 @@ char *_normalize_git_bash_path(const char *p)
 #ifdef _WIN32
 #endif
 
-/* PoP: cli_normalize_git_bash_path @ cli.py:_normalize_git_bash_path */
+/* PoP: cli_normalize_git_bash_path @ hermes_cli/worktree_ops.py:_normalize_git_bash_path */
 char *cli_normalize_git_bash_path(const char *p)
 {
     return _normalize_git_bash_path(p);
@@ -731,7 +731,7 @@ char *cli_normalize_git_bash_path(const char *p)
 
 static size_t _normalized_len(const char *s) { return s ? strlen(s) : 0; }
 
-/* PoP: _git_repo_root @ cli.py:_git_repo_root */
+/* PoP: _git_repo_root @ hermes_cli/worktree_ops.py:_git_repo_root */
 char *_git_repo_root(void)
 {
     char *argv[] = { "git", "rev-parse", "--show-toplevel", NULL };
@@ -747,7 +747,7 @@ char *_git_repo_root(void)
     return native;
 }
 
-/* PoP: _path_is_within_root @ cli.py:_path_is_within_root */
+/* PoP: _path_is_within_root @ hermes_cli/worktree_ops.py:_path_is_within_root */
 bool _path_is_within_root(const char *path, const char *root)
 {
     /* Path.relative_to: True when resolved path stays within root. */
@@ -760,7 +760,7 @@ bool _path_is_within_root(const char *path, const char *root)
     return rp[lr] == '\0' || rp[lr] == '/';
 }
 
-/* PoP: _cleanup_failed_worktree_add @ cli.py:_cleanup_failed_worktree_add */
+/* PoP: _cleanup_failed_worktree_add @ hermes_cli/worktree_ops.py:_cleanup_failed_worktree_add */
 void _cleanup_failed_worktree_add(const char *repo_root,
                                   const char *wt_path,
                                   const char *branch_name)
@@ -789,7 +789,7 @@ void _cleanup_failed_worktree_add(const char *repo_root,
     cg_run(argv4, repo_root, 15.0, NULL, NULL);
 }
 
-/* PoP: cli_cleanup_failed_worktree_add @ cli.py:_cleanup_failed_worktree_add */
+/* PoP: cli_cleanup_failed_worktree_add @ hermes_cli/worktree_ops.py:_cleanup_failed_worktree_add */
 void cli_cleanup_failed_worktree_add(const char *repo_root,
                                      const char *wt_path,
                                      const char *branch_name)
@@ -799,7 +799,7 @@ void cli_cleanup_failed_worktree_add(const char *repo_root,
 
 #define PACK_SPRAWL_THRESHOLD 15   /* _PACK_SPRAWL_THRESHOLD */
 
-/* PoP: _maintain_pack_health @ cli.py:_maintain_pack_health */
+/* PoP: _maintain_pack_health @ hermes_cli/worktree_ops.py:_maintain_pack_health */
 void _maintain_pack_health(const char *repo_root)
 {
     if (!repo_root) return;
@@ -933,7 +933,7 @@ static void cg_refresh_base(const char *repo_root, const char *remote,
     *out_label = strdup(label);
 }
 
-/* PoP: _resolve_worktree_base @ cli.py:_resolve_worktree_base */
+/* PoP: _resolve_worktree_base @ hermes_cli/worktree_ops.py:_resolve_worktree_base */
 void _resolve_worktree_base(const char *repo_root, double fetch_timeout,
                             double freshness_window,
                             char **out_base_ref, char **out_base_label)
@@ -1036,7 +1036,7 @@ void _resolve_worktree_base(const char *repo_root, double fetch_timeout,
     *out_base_label = strdup("HEAD (local — could not reach remote)");
 }
 
-/* PoP: _setup_worktree @ cli.py:_setup_worktree */
+/* PoP: _setup_worktree @ hermes_cli/worktree_ops.py:_setup_worktree */
 json_t *_setup_worktree(const char *repo_root_in, int sync_base,
                         const char *name)
 {
@@ -1279,7 +1279,7 @@ random_name:
     return info;
 }
 
-/* PoP: _worktree_has_unpushed_commits @ cli.py:_worktree_has_unpushed_commits */
+/* PoP: _worktree_has_unpushed_commits @ hermes_cli/worktree_ops.py:_worktree_has_unpushed_commits */
 int _worktree_has_unpushed_commits(const char *worktree_path, int timeout)
 {
     double t = timeout > 0 ? (double)timeout : 10.0;
@@ -1306,7 +1306,7 @@ int _worktree_has_unpushed_commits(const char *worktree_path, int timeout)
     return unpushed ? 1 : 0;
 }
 
-/* PoP: _worktree_is_dirty @ cli.py:_worktree_is_dirty */
+/* PoP: _worktree_is_dirty @ hermes_cli/worktree_ops.py:_worktree_is_dirty */
 int _worktree_is_dirty(const char *worktree_path, int timeout)
 {
     double t = timeout > 0 ? (double)timeout : 10.0;
@@ -1320,7 +1320,7 @@ int _worktree_is_dirty(const char *worktree_path, int timeout)
     return dirty ? 1 : 0;
 }
 
-/* PoP: _repo_is_shallow @ cli.py:_repo_is_shallow */
+/* PoP: _repo_is_shallow @ hermes_cli/worktree_ops.py:_repo_is_shallow */
 int _repo_is_shallow(const char *repo_path, int timeout)
 {
     double t = timeout > 0 ? (double)timeout : 5.0;
@@ -1334,13 +1334,13 @@ int _repo_is_shallow(const char *repo_path, int timeout)
     return shallow ? 1 : 0;
 }
 
-/* PoP: cli_repo_is_shallow @ cli.py:_repo_is_shallow */
+/* PoP: cli_repo_is_shallow @ hermes_cli/worktree_ops.py:_repo_is_shallow */
 bool cli_repo_is_shallow(const char *repo_path, int timeout_seconds)
 {
     return _repo_is_shallow(repo_path, timeout_seconds) ? true : false;
 }
 
-/* PoP: _deepen_shallow_repo @ cli.py:_deepen_shallow_repo */
+/* PoP: _deepen_shallow_repo @ hermes_cli/worktree_ops.py:_deepen_shallow_repo */
 int _deepen_shallow_repo(const char *repo_root, int timeout)
 {
     if (!_repo_is_shallow(repo_root, 5))
@@ -1391,7 +1391,7 @@ int _deepen_shallow_repo(const char *repo_root, int timeout)
 
 #define WORKTREE_MERGE_CACHE_MAX 1000   /* _WORKTREE_MERGE_CACHE_MAX */
 
-/* PoP: _worktree_merge_cache_path @ cli.py:_worktree_merge_cache_path */
+/* PoP: _worktree_merge_cache_path @ hermes_cli/worktree_ops.py:_worktree_merge_cache_path */
 char *_worktree_merge_cache_path(void)
 {
     const char *home = get_hermes_home();
@@ -1401,7 +1401,7 @@ char *_worktree_merge_cache_path(void)
     return strdup(path);
 }
 
-/* PoP: _load_worktree_merge_cache @ cli.py:_load_worktree_merge_cache */
+/* PoP: _load_worktree_merge_cache @ hermes_cli/worktree_ops.py:_load_worktree_merge_cache */
 json_t *_load_worktree_merge_cache(void)
 {
     char *path = _worktree_merge_cache_path();
@@ -1444,7 +1444,7 @@ json_t *_load_worktree_merge_cache(void)
     return verdicts;
 }
 
-/* PoP: _save_worktree_merge_cache @ cli.py:_save_worktree_merge_cache */
+/* PoP: _save_worktree_merge_cache @ hermes_cli/worktree_ops.py:_save_worktree_merge_cache */
 void _save_worktree_merge_cache(json_t *verdicts)
 {
     if (!verdicts) return;
@@ -1495,7 +1495,7 @@ void _save_worktree_merge_cache(json_t *verdicts)
     free(path);
 }
 
-/* PoP: _worktree_commits_all_merged_upstream @ cli.py:_worktree_commits_all_merged_upstream */
+/* PoP: _worktree_commits_all_merged_upstream @ hermes_cli/worktree_ops.py:_worktree_commits_all_merged_upstream */
 int _worktree_commits_all_merged_upstream(const char *worktree_path,
                                           int timeout, int max_ahead,
                                           json_t *cache)
@@ -1603,7 +1603,7 @@ not_merged:
     return 0;
 }
 
-/* PoP: _worktree_branch_pr_merged @ cli.py:_worktree_branch_pr_merged */
+/* PoP: _worktree_branch_pr_merged @ hermes_cli/worktree_ops.py:_worktree_branch_pr_merged */
 int _worktree_branch_pr_merged(const char *worktree_path, int timeout,
                                json_t *cache)
 {
@@ -1657,7 +1657,7 @@ int _worktree_branch_pr_merged(const char *worktree_path, int timeout,
     return merged ? 1 : 0;
 }
 
-/* PoP: _worktree_lock_is_live @ cli.py:_worktree_lock_is_live */
+/* PoP: _worktree_lock_is_live @ hermes_cli/worktree_ops.py:_worktree_lock_is_live */
 char *_worktree_lock_is_live(const char *repo_root, const char *worktree_path,
                              int timeout)
 {
@@ -1842,7 +1842,7 @@ static int cg_cfg_int(json_t *cfg, const char *key, int def)
     }
 }
 
-/* PoP: _run_state_db_auto_maintenance @ cli.py:_run_state_db_auto_maintenance */
+/* PoP: _run_state_db_auto_maintenance @ hermes_cli/cli_auto_maintenance.py:_run_state_db_auto_maintenance */
 void _run_state_db_auto_maintenance(hermes_state_db_t *session_db)
 {
     if (!session_db)
@@ -1893,13 +1893,13 @@ void _run_state_db_auto_maintenance(hermes_state_db_t *session_db)
     json_free(cfg);
 }
 
-/* PoP: cli_run_state_db_auto_maintenance @ cli.py:_run_state_db_auto_maintenance */
+/* PoP: cli_run_state_db_auto_maintenance @ hermes_cli/cli_auto_maintenance.py:_run_state_db_auto_maintenance */
 void cli_run_state_db_auto_maintenance(hermes_state_db_t *db)
 {
     _run_state_db_auto_maintenance(db);
 }
 
-/* PoP: _run_checkpoint_auto_maintenance @ cli.py:_run_checkpoint_auto_maintenance */
+/* PoP: _run_checkpoint_auto_maintenance @ hermes_cli/cli_auto_maintenance.py:_run_checkpoint_auto_maintenance */
 void _run_checkpoint_auto_maintenance(void)
 {
     json_t *cfg = cg_config_section("checkpoints");
@@ -1917,7 +1917,7 @@ void _run_checkpoint_auto_maintenance(void)
     json_free(cfg);
 }
 
-/* PoP: cli_run_checkpoint_auto_maintenance @ cli.py:_run_checkpoint_auto_maintenance */
+/* PoP: cli_run_checkpoint_auto_maintenance @ hermes_cli/cli_auto_maintenance.py:_run_checkpoint_auto_maintenance */
 void cli_run_checkpoint_auto_maintenance(void)
 {
     _run_checkpoint_auto_maintenance();
@@ -1962,7 +1962,7 @@ typedef struct {
     bool dead_locked;
 } cg_wt_verdict_t;
 
-/* PoP: _prune_stale_worktrees @ cli.py:_prune_stale_worktrees */
+/* PoP: _prune_stale_worktrees @ hermes_cli/worktree_ops.py:_prune_stale_worktrees */
 void _prune_stale_worktrees(const char *repo_root, int max_age_hours)
 {
     int tier_base = max_age_hours > 0 ? max_age_hours : 24;
@@ -2223,13 +2223,13 @@ bool cg_luminance_from_hex(const char *hex_str, double *out_luma)
     return _luminance_from_hex(hex_str, out_luma);
 }
 
-/* PoP: cli_luminance_from_hex @ cli.py:_luminance_from_hex */
+/* PoP: cli_luminance_from_hex @ hermes_cli/cli_render.py:_luminance_from_hex */
 bool cli_luminance_from_hex(const char *hex_str, double *out_luma)
 {
     return _luminance_from_hex(hex_str, out_luma);
 }
 
-/* PoP: _query_osc11_background @ cli.py:_query_osc11_background */
+/* PoP: _query_osc11_background @ hermes_cli/cli_render.py:_query_osc11_background */
 char *_query_osc11_background(void)
 {
     if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO))
@@ -2348,7 +2348,7 @@ char *_query_osc11_background(void)
     return result;
 }
 
-/* PoP: cli_query_osc11_background @ cli.py:_query_osc11_background */
+/* PoP: cli_query_osc11_background @ hermes_cli/cli_render.py:_query_osc11_background */
 char *cli_query_osc11_background(void)
 {
     return _query_osc11_background();
@@ -2478,7 +2478,7 @@ static const cg_remap_entry_t LIGHT_MODE_REMAP_UPPER[] = {
 };
 #define LIGHT_REMAP_N (sizeof(LIGHT_MODE_REMAP_UPPER)/sizeof(LIGHT_MODE_REMAP_UPPER[0]))
 
-/* PoP: _maybe_remap_for_light_mode @ cli.py:_maybe_remap_for_light_mode */
+/* PoP: _maybe_remap_for_light_mode @ hermes_cli/cli_render.py:_maybe_remap_for_light_mode */
 char *_maybe_remap_for_light_mode(const char *hex_color)
 {
     if (!_detect_light_mode())
@@ -2494,7 +2494,7 @@ char *_maybe_remap_for_light_mode(const char *hex_color)
     return strdup(hex_color);
 }
 
-/* PoP: _install_skin_light_mode_hook @ cli.py:_install_skin_light_mode_hook */
+/* PoP: _install_skin_light_mode_hook @ hermes_cli/cli_render.py:_install_skin_light_mode_hook */
 void _install_skin_light_mode_hook(void)
 {
     /* Python monkey-patches SkinConfig.get_color so every skin color read
@@ -2520,7 +2520,7 @@ typedef struct _SkinAwareAnsi {
 skin_t *skin_default(void);
 const char *skin_get(const skin_t *s, const char *key, const char *def);
 
-/* PoP: _hex_to_ansi @ cli.py:_hex_to_ansi */
+/* PoP: _hex_to_ansi @ hermes_cli/cli_render.py:_hex_to_ansi */
 char *_hex_to_ansi(const char *hex_color, bool bold)
 {
     char *remapped = _maybe_remap_for_light_mode(hex_color);
@@ -2610,7 +2610,7 @@ void _SkinAwareAnsi_reset(_SkinAwareAnsi *self)
     self->cached = NULL;
 }
 
-/* PoP: _accent_hex @ cli.py:_accent_hex */
+/* PoP: _accent_hex @ hermes_cli/cli_render.py:_accent_hex */
 char *_accent_hex(void)
 {
     skin_t *skin = skin_default();
@@ -2620,7 +2620,7 @@ char *_accent_hex(void)
 
 /* ═══════════ stream transform output (cli.py:3531) ═══════════ */
 
-/* PoP: _post_stream_transform_output @ cli.py:_post_stream_transform_output */
+/* PoP: _post_stream_transform_output @ hermes_cli/cli_render.py:_post_stream_transform_output */
 char *_post_stream_transform_output(const char *response, json_t *result)
 {
     if (!result || !json_is_true(json_obj_get(result, "response_transformed")))
@@ -2642,7 +2642,7 @@ char *_post_stream_transform_output(const char *response, json_t *result)
     return out;
 }
 
-/* PoP: cli_post_stream_transform_output @ cli.py:_post_stream_transform_output */
+/* PoP: cli_post_stream_transform_output @ hermes_cli/cli_render.py:_post_stream_transform_output */
 char *cli_post_stream_transform_output(const char *response, json_t *result)
 {
     return _post_stream_transform_output(response, result);

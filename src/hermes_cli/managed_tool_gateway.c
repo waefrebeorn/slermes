@@ -44,12 +44,12 @@ int cli_tools_managed_tool_gateway_managed_vendor_endpoints(const char *vendor, 
     return managed_vendor_endpoints(NULL, vendor, base_url, base_sz, upload_url, upload_sz);
 }
 
-/* PoP: cli_tools_managed_tool_gateway_is_managed_nous_gateway_url @ tools/managed_tool_gateway.py:is_managed_nous_gateway_url */
+/* PoP: cli_tools_managed_tool_gateway_is_managed_nous_gateway_url @ tools/managed_gateway_auth.py:is_managed_nous_gateway_url */
 int cli_tools_managed_tool_gateway_is_managed_nous_gateway_url(const char *url) {
     return is_managed_nous_gateway_url(NULL, url) ? 1 : 0;
 }
 
-/* PoP: cli_tools_managed_tool_gateway_managed_gateway_auth_headers @ tools/managed_tool_gateway.py:managed_gateway_auth_headers */
+/* PoP: cli_tools_managed_tool_gateway_managed_gateway_auth_headers @ tools/managed_gateway_auth.py:managed_gateway_auth_headers */
 int cli_tools_managed_tool_gateway_managed_gateway_auth_headers(const char *url) {
     char buf[4096];
     if (managed_gateway_auth_headers(NULL, url, buf, sizeof(buf)) == 0) {
@@ -97,7 +97,7 @@ int cli_tools_managed_tool_gateway__read_nous_provider_state(char *buf, size_t b
     return 0;
 }
 
-/* PoP: cli_tools_managed_tool_gateway__parse_timestamp @ tools/managed_tool_gateway.py:_parse_timestamp */
+/* PoP: cli_tools_managed_tool_gateway__parse_timestamp @ plugins/platforms/photon/adapter.py:_parse_timestamp */
 int cli_tools_managed_tool_gateway__parse_timestamp(const char *value, time_t *result) {
     if (!value || !result) {
         hermes_log(LOG_WARNING, "managed_tg", "_parse_timestamp: invalid args");

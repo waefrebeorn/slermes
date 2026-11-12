@@ -23,7 +23,7 @@
 
 
 /* ---------------------------------------------------------------------- */
-/* PoP: decode_biz_msg @ gateway/platforms/yuanbao_proto.py:decode_biz_msg */
+/* PoP: decode_biz_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_biz_msg */
 char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 {
     /* decode_conn_msg, then extract head fields */
@@ -66,7 +66,7 @@ static json_t *yb_decode_forward_multimedia(const unsigned char *d, size_t n)
     yb_fields_free(&fs); return m;
 }
 
-/* PoP: _decode_forward_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg_content */
+/* PoP: _decode_forward_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_forward_msg_content */
 static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -78,7 +78,7 @@ static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
     yb_fields_free(&fs); return c;
 }
 
-/* PoP: _decode_forward_msg @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg */
+/* PoP: _decode_forward_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_forward_msg */
 static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -93,7 +93,7 @@ static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
 
 
 /* ---------------------------------------------------------------------- */
-/* PoP: decode_forward_msg_data @ gateway/platforms/yuanbao_proto.py:decode_forward_msg_data */
+/* PoP: decode_forward_msg_data @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_forward_msg_data */
 char *yuanbao_proto_decode_forward_msg_data(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return strdup("{}");
@@ -108,7 +108,7 @@ char *yuanbao_proto_decode_forward_msg_data(const unsigned char *data, size_t le
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: decode_inbound_push @ gateway/platforms/yuanbao_proto.py:decode_inbound_push */
+/* PoP: decode_inbound_push @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_inbound_push */
 char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -178,7 +178,7 @@ char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
 
 /* ---- QueryGroupInfoRsp decode ---- */
 /* ---------------------------------------------------------------------- */
-/* PoP: decode_query_group_info_rsp @ gateway/platforms/yuanbao_proto.py:decode_query_group_info_rsp */
+/* PoP: decode_query_group_info_rsp @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_query_group_info_rsp */
 char *yuanbao_proto_decode_query_group_info_rsp(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -206,7 +206,7 @@ char *yuanbao_proto_decode_query_group_info_rsp(const unsigned char *data, size_
 
 /* ---- GetGroupMemberListRsp decode ---- */
 /* ---------------------------------------------------------------------- */
-/* PoP: decode_get_group_member_list_rsp @ gateway/platforms/yuanbao_proto.py:decode_get_group_member_list_rsp */
+/* PoP: decode_get_group_member_list_rsp @ plugins/platforms/yuanbao/yuanbao_proto.py:decode_get_group_member_list_rsp */
 char *yuanbao_proto_decode_get_group_member_list_rsp(const unsigned char *data, size_t len)
 {
     yb_fields fs; if (!yb_parse_fields(data,len,&fs)) return NULL;
@@ -242,7 +242,7 @@ char *yuanbao_proto_decode_get_group_member_list_rsp(const unsigned char *data, 
  * yuanbao_proto_decode_inbound_push; these thin real wrappers expose the same
  * behavior so the port is name-complete and oracle-verifiable. */
 
-/* PoP: _decode_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_msg_content */
+/* PoP: _decode_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_msg_content */
 char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len)
 {
     yb_fields cf; if (!yb_parse_fields(data,len,&cf)) return strdup("{}");
@@ -279,7 +279,7 @@ char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len)
 }
 
 
-/* PoP: _decode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_decode_msg_body_element */
+/* PoP: _decode_msg_body_element @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_msg_body_element */
 char *yuanbao_proto_decode_msg_body_element(const unsigned char *data, size_t len)
 {
     yb_fields ef; if (!yb_parse_fields(data,len,&ef)) return strdup("{}");

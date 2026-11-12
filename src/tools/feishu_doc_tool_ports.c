@@ -26,14 +26,14 @@ int fdt2_set_client(const char *client_desc) {
     return 0;
 }
 
-/* PoP: fdt2_get_client @ tools/feishu_doc_tool.py:get_client */
+/* PoP: fdt2_get_client @ tools/feishu_lark.py:get_client */
 char *fdt2_get_client(void) {
     /* Python: thread-local or None. */
     printf("feishu lark client fetched (thread-local)\n");
     return NULL;
 }
 
-/* PoP: fdt2_check_feishu @ tools/feishu_doc_tool.py:_check_feishu */
+/* PoP: fdt2_check_feishu @ tools/feishu_lark.py:_check_feishu */
 bool fdt2_check_feishu(void) {
     /* Python: lark_oapi importable. */
     printf("feishu availability probe (lark_oapi)\n");

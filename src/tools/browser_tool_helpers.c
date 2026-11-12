@@ -71,7 +71,7 @@ int browser__should_inject_engine(const char *engine) {
 /* The C port has no plugin registry to override; report false (production path). */
 int browser__is_legacy_provider_registry_overridden(void) { /* Python default is also a no-op */  return 0; }
 
-/* PoP: browser__ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
+/* PoP: browser__ensure_browser_plugins_loaded @ tools/browser_session_cloud.py:_ensure_browser_plugins_loaded */
 void browser__ensure_browser_plugins_loaded(void) {
     /* Python: idempotent plugin discovery so the browser registry is
      * populated regardless of import order (cheap; early-returns). */
@@ -672,7 +672,7 @@ double browser__socket_dir_idle_seconds(const char *socket_dir) {
     return idle > 0.0 ? idle : 0.0;
 }
 
-/* PoP: browser__legacy_kill_process_tree @ tools/browser_tool.py:_legacy_kill_process_tree */
+/* PoP: browser__legacy_kill_process_tree @ hermes_cli/_subprocess_compat.py:_legacy_kill_process_tree */
 void browser__legacy_kill_process_tree(int pid) {
 #ifdef _WIN32
     char cmd[64];

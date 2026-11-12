@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cfg_get_managed_system @ hermes_cli/config.py:get_managed_system */
+/* PoP: cfg_get_managed_system @ hermes_constants.py:get_managed_system */
 char *cfg_get_managed_system(const char *managed_env) {
     /* Python: HERMES_MANAGED normalized (lower, strip). */
     if (!managed_env || !*managed_env) return NULL;
@@ -179,7 +179,7 @@ char *cfg_get_missing_skill_config_vars(void) {
     return strdup("[]");
 }
 
-/* PoP: cfg_providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers */
+/* PoP: cfg_providers_dict_to_custom_providers @ hermes_cli/config_providers.py:providers_dict_to_custom_providers */
 char *cfg_providers_dict_to_custom_providers(const char *providers_json) {
     /* Python: providers dict → legacy custom-provider shape. */
     if (!providers_json || providers_json[0] != '{') return strdup("[]");
@@ -187,7 +187,7 @@ char *cfg_providers_dict_to_custom_providers(const char *providers_json) {
     return strdup("[]");
 }
 
-/* PoP: cfg_get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */
+/* PoP: cfg_get_custom_provider_context_length @ hermes_cli/config_providers.py:get_custom_provider_context_length */
 long cfg_get_custom_provider_context_length(const char *custom_providers_json, const char *base_url) {
     /* Python: per-model context_length override by route identity — REAL scan. */
     if (!custom_providers_json || !base_url) return 0;
@@ -201,7 +201,7 @@ long cfg_get_custom_provider_context_length(const char *custom_providers_json, c
     return v > 0 ? v : 0;
 }
 
-/* PoP: cfg_check_config_version @ hermes_cli/config.py:check_config_version */
+/* PoP: cfg_check_config_version @ hermes_cli/config_version_stamp.py:check_config_version */
 int cfg_check_config_version(const char *raw_yaml) {
     /* Python: on-disk schema version vs current — REAL parse. */
     if (!raw_yaml) return 0;

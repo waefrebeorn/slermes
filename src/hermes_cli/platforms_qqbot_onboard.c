@@ -33,7 +33,7 @@ int qqbot_onboard__render_qr(const char *url)
     return 0;
 }
 
-/* PoP: qqbot_onboard__create_bind_task @ gateway/platforms/qqbot/onboard.py:_create_bind_task */
+/* PoP: qqbot_onboard__create_bind_task @ plugins/platforms/qqbot/onboard.py:_create_bind_task */
 /* Real POST to q.qq.com create_bind_task. Generates the AES key client-side
  * (base64 of 32 random bytes) and returns the server-issued task_id. */
 int qqbot_onboard__create_bind_task(char *task_id, size_t task_id_len,
@@ -98,7 +98,7 @@ int qqbot_onboard__create_bind_task(char *task_id, size_t task_id_len,
     return rc;
 }
 
-/* PoP: qqbot_onboard__poll_bind_result @ gateway/platforms/qqbot/onboard.py:_poll_bind_result */
+/* PoP: qqbot_onboard__poll_bind_result @ plugins/platforms/qqbot/onboard.py:_poll_bind_result */
 /* Real POST to poll_bind_result; returns status + bot_appid/secret/openid. */
 int qqbot_onboard__poll_bind_result(const char *task_id, char *bot_appid, size_t appid_len,
                                       char *encrypted_secret, size_t secret_len,
@@ -156,7 +156,7 @@ int qqbot_onboard__poll_bind_result(const char *task_id, char *bot_appid, size_t
     return status;
 }
 
-/* PoP: qqbot_onboard_build_connect_url @ gateway/platforms/qqbot/onboard.py:build_connect_url */
+/* PoP: qqbot_onboard_build_connect_url @ plugins/platforms/qqbot/onboard.py:build_connect_url */
 char *qqbot_onboard_build_connect_url(const char *task_id)
 {
     if (!task_id || !task_id[0]) return strdup("");

@@ -28,7 +28,7 @@ void cli_tools_feishu_drive_tool_set_client(void *client)
     hermes_log(LOG_DEBUG, "feishu", "client set");
 }
 
-/* PoP: cli_tools_feishu_drive_tool_get_client @ tools/feishu_drive_tool.py:get_client */
+/* PoP: cli_tools_feishu_drive_tool_get_client @ tools/feishu_lark.py:get_client */
 
 /* Port of Python tools/feishu_doc_tool.py:get_client */
 /* Return the lark client for the current thread, or NULL. */
@@ -37,7 +37,7 @@ void *cli_tools_feishu_drive_tool_get_client(void)
     return _feishu_local.client;
 }
 
-/* PoP: lark_oapi @ tools/feishu_drive_tool.py:_check_feishu */
+/* PoP: lark_oapi @ tools/feishu_lark.py:_check_feishu */
 
 /* Port of Python tools/feishu_doc_tool.py:_check_feishu */
 /* Check if the lark_oapi (Feishu SDK) is importable/available. */

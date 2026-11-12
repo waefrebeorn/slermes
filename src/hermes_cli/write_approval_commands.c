@@ -652,7 +652,7 @@ void cmd_deps(const char *args, agent_state_t *state) {
  * AG26: Port of Python hermes_cli/main.py:cmd_doctor().
  */
 /* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
-/* PoP: cmd_doctor @ hermes_cli/console_engine.py:_doctor */
+/* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
 void cmd_doctor(const char *args, agent_state_t *state) {
     /* Normalize subcommand */
     char subcmd[64] = "";
@@ -1349,7 +1349,7 @@ void cmd_platforms(const char *args, agent_state_t *state) {
 }
 
 /* /profile: Show active profile */
-/* PoP: cmd_profile @ hermes_cli/main.py:cmd_profile */
+/* PoP: cmd_profile @ hermes_cli/profile_cmd.py:cmd_profile */
 void cmd_profile(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "home") == 0) {
@@ -1576,7 +1576,7 @@ void cmd_stop(const char *args, agent_state_t *state) {
 }
 
 /* PoP: cmd_tools @ hermes_cli/portal_cli.py:_cmd_tools */
-/* PoP: cmd_tools @ hermes_cli/main.py:cmd_tools */
+/* PoP: cmd_tools @ hermes_cli/main_agent_cmds.py:cmd_tools */
 void cmd_tools(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Show details for a specific tool */

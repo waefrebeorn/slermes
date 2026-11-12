@@ -217,7 +217,7 @@ bool hcli_discard_session_if_empty(hcli_t *self, const char *session_id)
     return ok;
 }
 
-/* PoP: hcli_launch_session_boundary_memory_flush @ cli.py:_launch_session_boundary_memory_flush */
+/* PoP: hcli_launch_session_boundary_memory_flush @ hermes_cli/cli_session_mixin.py:_launch_session_boundary_memory_flush */
 bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
                                                const hcli_msg_t *history_snapshot,
                                                size_t history_len,
@@ -245,7 +245,7 @@ bool hcli_launch_session_boundary_memory_flush(hcli_t *self,
     return true;
 }
 
-/* PoP: hcli_consume_pending_resume_selection @ cli.py:_consume_pending_resume_selection */
+/* PoP: hcli_consume_pending_resume_selection @ hermes_cli/cli_session_mixin.py:_consume_pending_resume_selection */
 int hcli_consume_pending_resume_selection(hcli_t *self, const char *text)
 {
     if (!self)

@@ -111,7 +111,7 @@ char *memt_remove(const char *entries_json, const char *old_text) {
     return out;
 }
 
-/* PoP: memt_success_response @ tools/memory_tool.py:_success_response */
+/* PoP: memt_success_response @ tools/memory_tool_store.py:_success_response */
 char *memt_success_response(void) {
     return strdup("{\"success\": true, \"memory_changed\": true}");
 }

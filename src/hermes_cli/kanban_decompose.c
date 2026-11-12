@@ -151,7 +151,7 @@ char *kdb_resolve_orchestrator_profile(const char *kanban_cfg_json)
     return strdup(active_or_default());
 }
 
-/* PoP: kdb_resolve_default_assignee @ hermes_cli/kanban_decompose.py:_resolve_default_assignee */
+/* PoP: kdb_resolve_default_assignee @ hermes_cli/kanban_db_dispatch.py:_resolve_default_assignee */
 char *kdb_resolve_default_assignee(const char *kanban_cfg_json)
 {
     char *explicit = json_get_field_str(kanban_cfg_json, "default_assignee");

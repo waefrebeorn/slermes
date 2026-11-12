@@ -245,7 +245,7 @@ char *hermes_state_get_compression_lock_holder(hermes_state_db_t *db,
 
 /* ── find_live_compression_child ──────────────────────────────────────── */
 
-/* PoP: hermes_state_find_live_compression_child @ hermes_state.py:find_live_compression_child */
+/* PoP: hermes_state_find_live_compression_child @ hermes_state_compression.py:find_live_compression_child */
 char *hermes_state_find_live_compression_child(hermes_state_db_t *db,
                                                const char *parent_session_id) {
     if (!db || !parent_session_id || !parent_session_id[0]) return NULL;

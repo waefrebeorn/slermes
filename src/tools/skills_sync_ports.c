@@ -26,7 +26,7 @@ bool sys_is_tracked_user_modification(const char *mtime_json, const char *stock_
     return strcmp(mtime_json, stock_mtime) != 0;
 }
 
-/* PoP: sys_list_user_modified_bundled_skills @ tools/skills_sync.py:list_user_modified_bundled_skills */
+/* PoP: sys_list_user_modified_bundled_skills @ tools/skills_sync_bundled_ops.py:list_user_modified_bundled_skills */
 char *sys_list_user_modified_bundled_skills(const char *user_skills_json, const char *bundled_skills_json) {
     /* Python: bundled skills kept due to edits. */
     if (!user_skills_json) return strdup("[]");
@@ -34,7 +34,7 @@ char *sys_list_user_modified_bundled_skills(const char *user_skills_json, const 
     return strdup("[]");
 }
 
-/* PoP: sys_read_for_diff @ tools/skills_sync.py:_read_for_diff */
+/* PoP: sys_read_for_diff @ tools/skills_sync_bundled_ops.py:_read_for_diff */
 char *sys_read_for_diff(const char *path) {
     /* Python: (raw_bytes, text) — REAL read. */
     if (!path) return NULL;
@@ -51,7 +51,7 @@ char *sys_read_for_diff(const char *path) {
     return buf;
 }
 
-/* PoP: sys_diff_bundled_skill @ tools/skills_sync.py:diff_bundled_skill */
+/* PoP: sys_diff_bundled_skill @ tools/skills_sync_bundled_ops.py:diff_bundled_skill */
 char *sys_diff_bundled_skill(const char *user_path, const char *stock_path) {
     /* Python: diff user vs stock. */
     if (!user_path || !stock_path) return NULL;

@@ -659,7 +659,7 @@ char *browser_snapshot_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_back(). */
 /* browser_back: Navigate back in history */
-/* PoP: browser_back_handler @ tools/browser_tool.py:back */
+/* PoP: browser_back_handler @ hermes_cli/cli_subagent_monitor.py:back */
 char *browser_back_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
     if (g_tab.history_pos == 0 || g_tab.history_count == 0) {
@@ -777,7 +777,7 @@ static char *find_link_by_text(const char *html, const char *target) {
 
 /* Port of Python tools/microsoft_graph_client.py:_resolve_url(). */
 /* Resolve a relative URL against the current page URL */
-/* PoP: resolve_url @ tools/browser_tool.py:_resolve_url */
+/* PoP: resolve_url @ tools/microsoft_graph_client.py:_resolve_url */
 static char *resolve_url(const char *base, const char *href) {
     if (!href) return NULL;
     if (strstr(href, "://")) return strdup(href);
@@ -1228,7 +1228,7 @@ char *browser_get_images_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_press(). */
 /* browser_press: Press a keyboard key (Enter, Tab, Escape, etc.) */
-/* PoP: browser_press_handler @ tools/browser_tool.py:press */
+/* PoP: browser_press_handler @ apps/desktop/electron/native/hud-modifier-x11.test.py:press */
 char *browser_press_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1687,7 +1687,7 @@ static char *browser_console_handler(const char *args_json, const char *task_id)
 
 /* Port of Python tools/browser_dialog_tool.py:browser_dialog(). */
 /* browser_dialog handler — handle JavaScript dialogs */
-/* PoP: browser_dialog_handler @ tools/browser_tool.py:browser_dialog */
+/* PoP: browser_dialog_handler @ tools/browser_dialog_tool.py:browser_dialog */
 static char *browser_dialog_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -1872,7 +1872,7 @@ char *browser_tool_get_cdp_override_raw(void) {
     return strdup("");
 }
 
-/* PoP: browser_tool_resolve_allow_private_urls @ tools/browser_tool.py:_resolve_allow_private_urls */
+/* PoP: browser_tool_resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls */
 int browser_tool_resolve_allow_private_urls(void) {
     /* Python: read browser.allow_private_urls toggle from config scope.
      * The C core reads HERMES_ALLOW_PRIVATE_URLS env override, else config. */
@@ -1883,7 +1883,7 @@ int browser_tool_resolve_allow_private_urls(void) {
     return 0;
 }
 
-/* PoP: browser_tool_session_expiry_timestamp @ tools/browser_tool.py:_session_expiry_timestamp */
+/* PoP: browser_tool_session_expiry_timestamp @ tools/browser_session_lifecycle.py:_session_expiry_timestamp */
 double browser_tool_session_expiry_timestamp(const char *arg) {
     /* Python: provider-authoritative session expiry as epoch seconds.
      * Arg = "expires_at_epoch_or_iso". Numeric values pass through;

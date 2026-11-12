@@ -66,13 +66,13 @@ static char *norm_provider_dup(const char *provider) {
 
 /* ── OpenRouter / Novita / Nous pricing ────────────────────────────────── */
 
-/* PoP: _resolve_openrouter_api_key @ hermes_cli/models.py:_resolve_openrouter_api_key */
+/* PoP: _resolve_openrouter_api_key @ hermes_cli/models_pricing.py:_resolve_openrouter_api_key */
 char *models_resolve_openrouter_api_key(void) {
     const char *v = getenv("OPENROUTER_API_KEY");
     return xstrdup_or_empty(v && *v ? v : "");
 }
 
-/* PoP: _resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
+/* PoP: _resolve_nous_pricing_credentials @ hermes_cli/models_pricing.py:_resolve_nous_pricing_credentials */
 void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
                                              char **out_key, char **out_base) {
     if (resolve) {
@@ -88,7 +88,7 @@ void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
     *out_base = xstrdup_or_empty(NOUS_INFERENCE_BASE);
 }
 
-/* PoP: fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
+/* PoP: fetch_models_with_pricing @ hermes_cli/models_pricing.py:fetch_models_with_pricing */
 char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
                                        const char *api_key, const char *base_url,
                                        int force_refresh) {
@@ -141,7 +141,7 @@ char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
     return res ? res : xstrdup_or_empty("{}");
 }
 
-/* PoP: _fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
+/* PoP: _fetch_novita_pricing @ hermes_cli/models_pricing.py:_fetch_novita_pricing */
 char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refresh) {
     (void)force_refresh;
     const char *key = getenv("NOVITA_API_KEY");
@@ -188,7 +188,7 @@ char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refr
     return res ? res : xstrdup_or_empty("{}");
 }
 
-/* PoP: get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
+/* PoP: get_pricing_for_provider @ hermes_cli/models_pricing.py:get_pricing_for_provider */
 char *models_get_pricing_for_provider(http_fetch_fn fetch, void *ctx,
                                       nous_creds_fn resolve_nous, void *nous_ctx,
                                       const char *provider, int force_refresh) {
@@ -248,7 +248,7 @@ char *models_lmstudio_server_root(const char *base_url) {
     return xstrdup_or_empty(tmp[0] ? tmp : "");
 }
 
-/* PoP: _lmstudio_request_headers @ hermes_cli/models.py:_lmstudio_request_headers */
+/* PoP: _lmstudio_request_headers @ hermes_cli/models_local.py:_lmstudio_request_headers */
 char *models_lmstudio_request_headers(const char *api_key) {
     const char *tok = api_key ? api_key : "";
     while (*tok == ' ' || *tok == '\t') tok++;
@@ -257,7 +257,7 @@ char *models_lmstudio_request_headers(const char *api_key) {
     return xstrdup_printf("{\"User-Agent\":\"%s\"}", HERMES_UA);
 }
 
-/* PoP: _lmstudio_fetch_raw_models @ hermes_cli/models.py:_lmstudio_fetch_raw_models */
+/* PoP: _lmstudio_fetch_raw_models @ hermes_cli/models_local.py:_lmstudio_fetch_raw_models */
 json_t *models_lmstudio_fetch_raw_models(http_fetch_fn fetch, void *ctx,
                                          const char *api_key, const char *base_url) {
     char *root = models_lmstudio_server_root(base_url);
@@ -278,7 +278,7 @@ json_t *models_lmstudio_fetch_raw_models(http_fetch_fn fetch, void *ctx,
     return parsed;
 }
 
-/* PoP: probe_lmstudio_models @ hermes_cli/models.py:probe_lmstudio_models */
+/* PoP: probe_lmstudio_models @ hermes_cli/models_local.py:probe_lmstudio_models */
 char **models_probe_lmstudio_models(http_fetch_fn fetch, void *ctx,
                                     const char *api_key, const char *base_url) {
     json_t *raw = models_lmstudio_fetch_raw_models(fetch, ctx, api_key, base_url);
@@ -309,7 +309,7 @@ char **models_probe_lmstudio_models(http_fetch_fn fetch, void *ctx,
     return keys;
 }
 
-/* PoP: lmstudio_model_reasoning_options @ hermes_cli/models.py:lmstudio_model_reasoning_options */
+/* PoP: lmstudio_model_reasoning_options @ hermes_cli/models_local.py:lmstudio_model_reasoning_options */
 char **models_lmstudio_reasoning_options(http_fetch_fn fetch, void *ctx,
                                          const char *model, const char *base_url,
                                          const char *api_key) {
@@ -754,7 +754,7 @@ char *models_resolve_nous_portal_url(void) {
 
 /* ── Ollama Cloud disk cache ───────────────────────────────────────────── */
 
-/* PoP: _ollama_cloud_cache_path @ hermes_cli/models.py:_ollama_cloud_cache_path */
+/* PoP: _ollama_cloud_cache_path @ hermes_cli/models_local.py:_ollama_cloud_cache_path */
 char *models_ollama_cloud_cache_path(void) {
     char home[PATH_MAX];
     hermes_home_dir(home, sizeof(home));
@@ -763,7 +763,7 @@ char *models_ollama_cloud_cache_path(void) {
     return xstrdup_or_empty(out);
 }
 
-/* PoP: _load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
+/* PoP: _load_ollama_cloud_cache @ hermes_cli/models_local.py:_load_ollama_cloud_cache */
 char *models_load_ollama_cloud_cache(int ignore_ttl) {
     char *path = models_ollama_cloud_cache_path();
     FILE *f = fopen(path, "r");
@@ -795,7 +795,7 @@ char *models_load_ollama_cloud_cache(int ignore_ttl) {
     return ser ? ser : NULL;
 }
 
-/* PoP: _save_ollama_cloud_cache @ hermes_cli/models.py:_save_ollama_cloud_cache */
+/* PoP: _save_ollama_cloud_cache @ hermes_cli/models_local.py:_save_ollama_cloud_cache */
 void models_save_ollama_cloud_cache(const char *json) {
     if (!json || !*json) return;
     char *path = models_ollama_cloud_cache_path();

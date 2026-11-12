@@ -71,7 +71,7 @@ static int str_push(char ***arr, size_t *n, const char *s) {
     return 0;
 }
 
-/* PoP: plugin_manifest_parse @ hermes_cli/plugins.py:_parse_manifest */
+/* PoP: plugin_manifest_parse @ hermes_cli/mcp_catalog.py:_parse_manifest */
 plugin_manifest_t *plugin_manifest_parse(const char *json,
                                          const char *plugin_dir_name,
                                          const char *prefix,

@@ -42,7 +42,7 @@ static const char _MODIFY_OTHER_KEYS_SEQ[]  = "\x1b[>4;2m";
 /* _EXTENDED_ENTER_KEYS_SEQ = Kitty push + modifyOtherKeys (concatenation). */
 static const char _EXTENDED_ENTER_KEYS_SEQ[] = "\x1b[>1u\x1b[>4;2m";
 
-/* PoP: string @ cli.py:_print_nous_credits_block */
+/* PoP: string @ hermes_cli/cli_billing_mixin.py:_print_nous_credits_block */
 /* PoP: string @ cli.py:_show_credits */
 
 /* ── cli.py:CanonicalUsage — dataclass → struct ─────────────────────────
@@ -405,7 +405,7 @@ json_t *cli_load_prefill_messages(const char *file_path) {
     return data;
 }
 
-/* PoP: _resolve_prefill_messages_file @ cli.py:_resolve_prefill_messages_file */
+/* PoP: _resolve_prefill_messages_file @ hermes_cli/cli_config_load.py:_resolve_prefill_messages_file */
 char *cli_resolve_prefill_messages_file(const json_t *config) {
     /* 1. HERMES_PREFILL_MESSAGES_FILE env wins. */
     char *env_path = cli_trim_dup(getenv("HERMES_PREFILL_MESSAGES_FILE"));
@@ -436,7 +436,7 @@ char *cli_resolve_prefill_messages_file(const json_t *config) {
 
 /* ── cli.py reasoning / service-tier config parsing ───────────────────── */
 
-/* PoP: _parse_reasoning_config @ cli.py:_parse_reasoning_config */
+/* PoP: _parse_reasoning_config @ hermes_cli/cli_config_load.py:_parse_reasoning_config */
 json_t *cli_parse_reasoning_config(const char *effort, bool effort_is_bool_false) {
     json_t *result = reasoning_parse_effort(effort, effort_is_bool_false);
     char *trimmed = effort_is_bool_false ? NULL : cli_trim_dup(effort);
@@ -449,7 +449,7 @@ json_t *cli_parse_reasoning_config(const char *effort, bool effort_is_bool_false
     return result;
 }
 
-/* PoP: _parse_service_tier_config @ cli.py:_parse_service_tier_config */
+/* PoP: _parse_service_tier_config @ hermes_cli/cli_config_load.py:_parse_service_tier_config */
 char *cli_parse_service_tier_config(const char *raw) {
     char *value = cli_trim_dup(raw);
     if (value) for (char *c = value; *c; c++) *c = (char)tolower((unsigned char)*c);
@@ -584,7 +584,7 @@ static json_t *cli_toolset_def_to_json(const char *name,
 
 /*
  * Python returns {name: definition} for static + plugin-registered toolsets.
- * PoP: get_all_toolsets @ cli.py:get_all_toolsets
+ * PoP: get_all_toolsets @ toolsets.py:get_all_toolsets
  */
 char *cli_get_all_toolsets(void) {
     json_t *result = json_object();
@@ -602,7 +602,7 @@ char *cli_get_all_toolsets(void) {
 
 /*
  * {name, description, direct_tools, includes, resolved_tools, tool_count,
- * PoP: get_toolset_info @ cli.py:get_toolset_info
+ * PoP: get_toolset_info @ toolsets.py:get_toolset_info
  */
 char *cli_get_toolset_info(const char *name) {
     if (!name) return NULL;
@@ -625,7 +625,7 @@ char *cli_get_toolset_info(const char *name) {
     return s;
 }
 
-/* PoP: validate_toolset @ cli.py:validate_toolset */
+/* PoP: validate_toolset @ toolsets.py:validate_toolset */
 bool cli_validate_toolset(const char *name) {
     return toolsets_validate(name);
 }
@@ -634,7 +634,7 @@ bool cli_validate_toolset(const char *name) {
 
 /*
  * Python lazily imports cron.get_job; C delegates to the cron jobs port
- * PoP: get_job @ cli.py:get_job
+ * PoP: get_job @ cron/jobs.py:get_job
  */
 json_t *cli_get_job(const char *job_id) {
     return cronjobs_get_job(job_id);
@@ -655,7 +655,7 @@ static cli_sudo_password_callback_t  g_cli_sudo_password_callback  = NULL;
 static cli_approval_callback_t       g_cli_approval_callback       = NULL;
 static cli_secret_capture_callback_t g_cli_secret_capture_callback = NULL;
 
-/* PoP: set_sudo_password_callback @ cli.py:set_sudo_password_callback */
+/* PoP: set_sudo_password_callback @ tools/terminal_tool.py:set_sudo_password_callback */
 void cli_set_sudo_password_callback(cli_sudo_password_callback_t cb) {
     g_cli_sudo_password_callback = cb;
     hermes_log(LOG_DEBUG, "cli", "sudo password callback registered");
@@ -677,7 +677,7 @@ cli_approval_callback_t cli_get_approval_callback(void) {
     return g_cli_approval_callback;
 }
 
-/* PoP: set_secret_capture_callback @ cli.py:set_secret_capture_callback */
+/* PoP: set_secret_capture_callback @ tools/skills_tool.py:set_secret_capture_callback */
 void cli_set_secret_capture_callback(cli_secret_capture_callback_t cb) {
     g_cli_secret_capture_callback = cb;
     hermes_log(LOG_DEBUG, "cli", "secret capture callback registered");
@@ -688,7 +688,7 @@ cli_secret_capture_callback_t cli_get_secret_capture_callback(void) {
     return g_cli_secret_capture_callback;
 }
 
-/* PoP: _secret_capture_callback @ cli.py:_secret_capture_callback */
+/* PoP: _secret_capture_callback @ hermes_cli/cli_modal_mixin.py:_secret_capture_callback */
 json_t *hcli_secret_capture_callback(hcli_t *self,
                                       const char *var_name,
                                       const char *prompt,
@@ -930,7 +930,7 @@ json_t *cli_get_plugin_cmd_handler_names(void) {
     return arr;
 }
 
-/* PoP: cli_is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation */
+/* PoP: cli_is_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:_is_backslash_line_continuation */
 /* True when Enter should turn a trailing backslash into a newline.
  * _BACKSLASH_LINE_CONTINUATION_RE = r"\\\\[ \\t]*$" — trailing backslash
  * optionally followed by spaces/tabs then end-of-string. */
@@ -956,7 +956,7 @@ bool cli_is_backslash_line_continuation(const char *text) {
     return false;
 }
 
-/* PoP: cli_apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation */
+/* PoP: cli_apply_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:_apply_backslash_line_continuation */
 char *cli_apply_backslash_line_continuation(const char *text) {
     if (!text) text = "";
     size_t len = strlen(text);
@@ -1023,7 +1023,7 @@ void hcli_invalidate_min(hcli_t *self, double min_interval) {
     }
 }
 
-/* PoP: hcli_mark_terminal_io_broken @ cli.py:_mark_terminal_io_broken */
+/* PoP: hcli_mark_terminal_io_broken @ hermes_cli/cli_terminal_mixin.py:_mark_terminal_io_broken */
 void hcli_mark_terminal_io_broken(hcli_t *self, const char *reason) {
     if (!self) return;
     if (self->terminal_io_broken) return;
@@ -1031,7 +1031,7 @@ void hcli_mark_terminal_io_broken(hcli_t *self, const char *reason) {
 }
 /* Port of Python cli:_mark_terminal_io_broken */
 
-/* PoP: hcli_paint_now @ cli.py:_paint_now */
+/* PoP: hcli_paint_now @ hermes_cli/cli_terminal_mixin.py:_paint_now */
 /* Immediate, unthrottled repaint for user-blocking modal prompts. */
 /* Bypasses the _invalidate throttle and resize-recovery guard. */
 /* On app_invalidate_fn EIO: mark terminal io broken. */
@@ -1047,7 +1047,7 @@ void hcli_paint_now(hcli_t *self) {
 }
 /* Port of Python cli:_paint_now */
 
-/* PoP: hcli_force_full_redraw @ cli.py:_force_full_redraw */
+/* PoP: hcli_force_full_redraw @ hermes_cli/cli_terminal_mixin.py:_force_full_redraw */
 void hcli_force_full_redraw(hcli_t *self) {
     if (!self) return;
     if (self->terminal_io_broken) return;
@@ -1064,7 +1064,7 @@ void hcli_force_full_redraw(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_schedule_focus_regain_redraw @ cli.py:_schedule_focus_regain_redraw */
+/* PoP: hcli_schedule_focus_regain_redraw @ hermes_cli/cli_terminal_mixin.py:_schedule_focus_regain_redraw */
 void hcli_schedule_focus_regain_redraw(hcli_t *self) {
     if (!self) return;
     if (self->terminal_io_broken) return;
@@ -1089,7 +1089,7 @@ void hcli_schedule_focus_regain_redraw(hcli_t *self) {
 
 /* Port of Python cli:_get_status_bar_snapshot */
 
-/* PoP: cli_status_bar_display_width @ cli.py:_status_bar_display_width
+/* PoP: cli_status_bar_display_width @ hermes_cli/cli_status_bar_mixin.py:_status_bar_display_width
  * prompt_toolkit get_cwidth port: UTF-8 codepoint width classifier.
  * Implemented in src/cli/cli_helpers2.c. */
 
@@ -1097,7 +1097,7 @@ void hcli_schedule_focus_regain_redraw(hcli_t *self) {
 
 /* Port of Python cli:_get_tui_terminal_width */
 
-/* PoP: hcli_use_minimal_tui_chrome @ cli.py:_use_minimal_tui_chrome */
+/* PoP: hcli_use_minimal_tui_chrome @ hermes_cli/cli_status_bar_mixin.py:_use_minimal_tui_chrome */
 bool hcli_use_minimal_tui_chrome(hcli_t *self, int width) {
     (void)self;
     if (width <= 0) {
@@ -1108,7 +1108,7 @@ bool hcli_use_minimal_tui_chrome(hcli_t *self, int width) {
 
 /* Port of Python cli:_scrollback_box_width */
 
-/* PoP: hcli_tui_input_rule_height @ cli.py:_tui_input_rule_height */
+/* PoP: hcli_tui_input_rule_height @ hermes_cli/cli_tui_mixin.py:_tui_input_rule_height */
 int hcli_tui_input_rule_height(hcli_t *self, const char *position, int width) {
     if (!self || !position) return -1;
     if (strcmp(position, "top") != 0 && strcmp(position, "bottom") != 0)
@@ -1122,7 +1122,7 @@ int hcli_tui_input_rule_height(hcli_t *self, const char *position, int width) {
 
 /* Port of Python cli:_spinner_widget_height */
 
-/* PoP: hcli_render_spinner_text @ cli.py:_render_spinner_text */
+/* PoP: hcli_render_spinner_text @ hermes_cli/cli_status_bar_mixin.py:_render_spinner_text */
 char *hcli_render_spinner_text(hcli_t *self) {
     if (!self) return NULL;
     if (self->spinner_text && self->spinner_text[0])
@@ -1146,7 +1146,7 @@ char *hcli_render_spinner_text(hcli_t *self) {
     return strdup("");
 }
 
-/* PoP: hcli_voice_record_key_label @ cli.py:_voice_record_key_label */
+/* PoP: hcli_voice_record_key_label @ hermes_cli/cli_status_bar_mixin.py:_voice_record_key_label */
 char *hcli_voice_record_key_label(hcli_t *self) {
     if (!self) return NULL;
     if (self->voice_record_key_display_cache)
@@ -1154,7 +1154,7 @@ char *hcli_voice_record_key_label(hcli_t *self) {
     return strdup("Ctrl+B");
 }
 
-/* PoP: hcli_set_voice_record_key_cache @ cli.py:set_voice_record_key_cache */
+/* PoP: hcli_set_voice_record_key_cache @ hermes_cli/cli_status_bar_mixin.py:set_voice_record_key_cache */
 void hcli_set_voice_record_key_cache(hcli_t *self, const char *raw_key) {
     if (!self) return;
     if (raw_key) {
@@ -1169,16 +1169,16 @@ void hcli_set_voice_record_key_cache(hcli_t *self, const char *raw_key) {
     self->voice_record_key_display_cache = strdup("Ctrl+B");
 }
 
-/* PoP: hcli_get_voice_status_fragments @ cli.py:_get_voice_status_fragments */
+/* PoP: hcli_get_voice_status_fragments @ hermes_cli/cli_status_bar_mixin.py:_get_voice_status_fragments */
 hcli_fragment_t *hcli_get_voice_status_fragments(hcli_t *self, int width, size_t *out_len);
 
-/* PoP: hcli_build_status_bar_text @ cli.py:_build_status_bar_text */
+/* PoP: hcli_build_status_bar_text @ hermes_cli/cli_status_bar_mixin.py:_build_status_bar_text */
 char *hcli_build_status_bar_text(hcli_t *self, int width);
 
-/* PoP: hcli_get_status_bar_fragments @ cli.py:_get_status_bar_fragments */
+/* PoP: hcli_get_status_bar_fragments @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_fragments */
 hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len);
 
-/* PoP: hcli_slow_command_status @ cli.py:_slow_command_status */
+/* PoP: hcli_slow_command_status @ hermes_cli/cli_stream_mixin.py:_slow_command_status */
 char *hcli_slow_command_status(hcli_t *self, const char *command) {
     (void)self;
     if (!command) return strdup("Processing command...");
@@ -1204,7 +1204,7 @@ char *hcli_slow_command_status(hcli_t *self, const char *command) {
     return strdup("Processing command...");
 }
 
-/* PoP: hcli_command_spinner_frame @ cli.py:_command_spinner_frame */
+/* PoP: hcli_command_spinner_frame @ hermes_cli/cli_stream_mixin.py:_command_spinner_frame */
 static const char *cmd_spinner_frames[10] = {
     "\xe2\x8ebf", "\xe2\x8ec9", "\xe2\x8ecb", "\xe2\x8ece",
     "\xe2\x8ecb", "\xe2\x8ecf", "\xe2\x8ec1", "\xe2\x8ecb",
@@ -1262,7 +1262,7 @@ void hcli_on_notice(hcli_t *self, const char *notice_json) {
     self->pending_notice_count = n + 1;
 }
 
-/* PoP: hcli_flush_credit_notices @ cli.py:_flush_credit_notices */
+/* PoP: hcli_flush_credit_notices @ hermes_cli/cli_stream_mixin.py:_flush_credit_notices */
 void hcli_flush_credit_notices(hcli_t *self) {
     if (!self) return;
     if (self->pending_notice_count == 0) return;
@@ -1297,7 +1297,7 @@ void hcli_on_notice_clear(hcli_t *self, const char *key) {
 }
 
 
-/* PoP: hcli_current_reasoning_callback @ cli.py:_current_reasoning_callback */
+/* PoP: hcli_current_reasoning_callback @ hermes_cli/cli_stream_mixin.py:_current_reasoning_callback */
 void *hcli_current_reasoning_callback(hcli_t *self) {
     if (!self) return NULL;
     if (self->show_reasoning && self->streaming_enabled)
@@ -1331,7 +1331,7 @@ void *hcli_current_reasoning_callback(hcli_t *self) {
 
 /* Port of Python cli:_busy_command */
 
-/* PoP: hcli_open_external_editor @ cli.py:_open_external_editor */
+/* PoP: hcli_open_external_editor @ hermes_cli/cli_modal_mixin.py:_open_external_editor */
 bool hcli_open_external_editor(hcli_t *self) {
     if (!self) return false;
     if (!self->app) {
@@ -1355,7 +1355,7 @@ bool hcli_open_external_editor(hcli_t *self) {
     return false;
 }
 
-/* PoP: hcli_register_extra_tui_keybindings @ cli.py:_register_extra_tui_keybindings */
+/* PoP: hcli_register_extra_tui_keybindings @ hermes_cli/cli_tui_mixin.py:_register_extra_tui_keybindings */
 void hcli_register_extra_tui_keybindings(hcli_t *self, void *kb, void *input_area) {
     (void)self;
     (void)kb;
@@ -1440,7 +1440,7 @@ void hcli_register_extra_tui_keybindings(hcli_t *self, void *kb, void *input_are
 
 /* Port of Python cli:_confirm_and_apply_model_switch_result */
 
-/* PoP: hcli_close_model_picker @ cli.py:_close_model_picker */
+/* PoP: hcli_close_model_picker @ hermes_cli/cli_model_switch_mixin.py:_close_model_picker */
 void hcli_close_model_picker(hcli_t *self);
 
 /* Port of Python cli:_compute_model_picker_viewport */
@@ -1463,7 +1463,7 @@ void hcli_close_model_picker(hcli_t *self);
 
 /* Port of Python cli:_resolve_personality_prompt */
 
-/* PoP: hcli_show_gateway_status @ cli.py:_show_gateway_status */
+/* PoP: hcli_show_gateway_status @ hermes_cli/cli_info_mixin.py:_show_gateway_status */
 void hcli_show_gateway_status(hcli_t *self) {
     (void)self;
     /* Print the panel header (matching Python exactly). */
@@ -1709,7 +1709,7 @@ void hcli_show_gateway_status(hcli_t *self) {
 
 /* Port of Python cli:_handle_approval_selection */
 
-/* PoP: hcli_capture_modal_input_snapshot @ cli.py:_capture_modal_input_snapshot
+/* PoP: hcli_capture_modal_input_snapshot @ hermes_cli/cli_modal_mixin.py:_capture_modal_input_snapshot
  * Save the composer draft (text + cursor) before a modal prompt opens, then
  * clear the buffer. No-op when app is not wired (Python except path). */
 void hcli_capture_modal_input_snapshot(hcli_t *self) {
@@ -1726,7 +1726,7 @@ void hcli_capture_modal_input_snapshot(hcli_t *self) {
     if (self->app_set_buffer_cursor_fn) self->app_set_buffer_cursor_fn(self, 0);
 }
 
-/* PoP: hcli_restore_modal_input_snapshot @ cli.py:_restore_modal_input_snapshot */
+/* PoP: hcli_restore_modal_input_snapshot @ hermes_cli/cli_modal_mixin.py:_restore_modal_input_snapshot */
 void hcli_restore_modal_input_snapshot(hcli_t *self) {
     if (!self) return;
     if (!self->modal_snapshot_valid || !self->app) return;
@@ -1740,7 +1740,7 @@ void hcli_restore_modal_input_snapshot(hcli_t *self) {
     self->modal_snapshot_valid = false;
 }
 
-/* PoP: hcli_close_reasoning_box @ cli.py:_close_reasoning_box */
+/* PoP: hcli_close_reasoning_box @ hermes_cli/cli_stream_mixin.py:_close_reasoning_box */
 void hcli_close_reasoning_box(hcli_t *self) {
     if (!self) return;
     free(self->reasoning_buf);
@@ -1751,7 +1751,7 @@ void hcli_close_reasoning_box(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_close_command_palette @ cli.py:_close_command_palette */
+/* PoP: hcli_close_command_palette @ hermes_cli/cli_modal_mixin.py:_close_command_palette */
 void hcli_close_command_palette(hcli_t *self) {
     if (!self) return;
     self->command_palette_open = false;
@@ -1761,7 +1761,7 @@ void hcli_close_command_palette(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_close_model_picker @ cli.py:_close_model_picker */
+/* PoP: hcli_close_model_picker @ hermes_cli/cli_model_switch_mixin.py:_close_model_picker */
 void hcli_close_model_picker(hcli_t *self) {
     if (!self) return;
     self->model_picker_open = false;
@@ -1783,7 +1783,7 @@ void hcli_close_model_picker(hcli_t *self) {
 
 /* Port of Python cli:_get_tui_prompt_symbols */
 
-/* PoP: cli_status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config */
+/* PoP: cli_status_bar_visible_from_display_config @ hermes_cli/cli_terminal_input.py:_status_bar_visible_from_display_config */
 bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     if (!display_config || !json_is_object(display_config)) return true;
     json_t *sc = json_object_get(display_config, "statusbar");
@@ -1830,7 +1830,7 @@ bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     return true;
 }
 
-/* PoP: cli_terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys */
+/* PoP: cli_terminal_supports_extended_enter_keys @ hermes_cli/cli_terminal_input.py:_terminal_supports_extended_enter_keys */
 bool cli_terminal_supports_extended_enter_keys(void) {
     const char *term_program = "";
     const char *term = "";
@@ -1871,7 +1871,7 @@ bool cli_terminal_supports_extended_enter_keys(void) {
     return false;
 }
 
-/* PoP: cli_hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff */
+/* PoP: cli_hermes_call_output_screen_diff @ hermes_cli/cli_terminal_input.py:_hermes_call_output_screen_diff */
 int cli_hermes_call_output_screen_diff(
     cli_w4b_output_screen_diff_fn orig_osd, void *orig_osd_user,
     void *app, void *output, cli_w4b_screen_t *screen, int current_pos,
@@ -1905,7 +1905,7 @@ int cli_hermes_call_output_screen_diff(
 
 /* Port of Python cli:_audio_level_bar */
 
-/* PoP: hcli_clear_prompt_toolkit_screen @ cli.py:_clear_prompt_toolkit_screen */
+/* PoP: hcli_clear_prompt_toolkit_screen @ hermes_cli/cli_terminal_mixin.py:_clear_prompt_toolkit_screen */
 void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
                                       bool rebuild_scrollback) {
     (void)app;
@@ -1934,7 +1934,7 @@ void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
 
 /* Port of Python cli:_get_extra_tui_widgets */
 
-/* PoP: _enable_extended_enter_keys @ cli.py:_enable_extended_enter_keys */
+/* PoP: _enable_extended_enter_keys @ hermes_cli/cli_terminal_input.py:_enable_extended_enter_keys */
 bool _enable_extended_enter_keys(void *output,
                                  void (*write_raw_fn)(void *, const char *),
                                  void (*flush_fn)(void *)) {

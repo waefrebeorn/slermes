@@ -321,7 +321,7 @@ void cc_micro_compact_record_timeout_failure(cc_micro_compact_state_t *st,
 }
 
 /* ── _resolve_compact_cursor ─────────────────────────────────────────── */
-/* PoP: cc_micro_compact_resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
+/* PoP: cc_micro_compact_resolve_compact_cursor @ agent/micro_compaction.py:_resolve_compact_cursor */
 long cc_micro_compact_resolve_compact_cursor(cc_micro_compact_state_t *st,
                                               json_t *messages,
                                               long head_end,
@@ -374,7 +374,7 @@ long cc_micro_compact_resolve_compact_cursor(cc_micro_compact_state_t *st,
 }
 
 /* ── _find_one_exchange ──────────────────────────────────────────────── */
-/* PoP: cc_micro_compact_find_one_exchange @ agent/context_compressor.py:_find_one_exchange */
+/* PoP: cc_micro_compact_find_one_exchange @ agent/micro_compaction.py:_find_one_exchange */
 /* Returns exchange_start via *out_start; returns exchange_end, or -1 if None. */
 bool cc_micro_compact_find_one_exchange(cc_micro_compact_state_t *st,
                                          json_t *messages,
@@ -457,7 +457,7 @@ char *cc_micro_compact_serialize_one_exchange(json_t *messages,
 }
 
 /* ── _build_micro_summary_prompt ─────────────────────────────────────── */
-/* PoP: text @ agent/context_compressor.py:_build_micro_summary_prompt */
+/* PoP: text @ agent/micro_compaction.py:_build_micro_summary_prompt */
 /* Build the prompt text for a single-exchange micro-summary.
  * existing_summary: running summary text (may be empty).
  * exchange_text: serialized exchange text.
@@ -488,7 +488,7 @@ char *cc_micro_compact_build_micro_summary_prompt(const char *existing_summary,
 }
 
 /* ── _micro_summarize_one ─────────────────────────────────────────────── */
-/* PoP: exchange_text @ agent/context_compressor.py:_micro_summarize_one */
+/* PoP: exchange_text @ agent/micro_compaction.py:_micro_summarize_one */
 /* Summarize exchange_text (or the rolling summary for defrag).
  * Calls the summarize_fn callback with the prompt + budget.
  * Returns malloc'd updated summary, or NULL on failure. */
@@ -507,7 +507,7 @@ char *cc_micro_compact_micro_summarize_one(cc_micro_compact_state_t *st,
 }
 
 /* ── _needs_defrag ───────────────────────────────────────────────────── */
-/* PoP: cc_micro_compact_needs_defrag @ agent/context_compressor.py:_needs_defrag */
+/* PoP: cc_micro_compact_needs_defrag @ agent/micro_compaction.py:_needs_defrag */
 bool cc_micro_compact_needs_defrag(cc_micro_compact_state_t *st) {
     if (!st) return false;
     if (st->micro_compact_rolling_summary[0] == '\0') return false;
@@ -516,7 +516,7 @@ bool cc_micro_compact_needs_defrag(cc_micro_compact_state_t *st) {
 }
 
 /* ── _defrag_rolling_summary ─────────────────────────────────────────── */
-/* PoP: cc_micro_compact_defrag_rolling_summary @ agent/context_compressor.py:_defrag_rolling_summary */
+/* PoP: cc_micro_compact_defrag_rolling_summary @ agent/micro_compaction.py:_defrag_rolling_summary */
 bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
                                               json_t *messages) {
     if (!st || !messages || messages->type != JSON_ARRAY) return false;
@@ -565,7 +565,7 @@ bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
 }
 
 /* ── _cursor_after_splice ────────────────────────────────────────────── */
-/* PoP: cc_micro_compact_cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
+/* PoP: cc_micro_compact_cursor_after_splice @ agent/micro_compaction.py:_cursor_after_splice */
 long cc_micro_compact_cursor_after_splice(cc_micro_compact_state_t *st,
                                            json_t *result,
                                            long fallback) {
@@ -586,7 +586,7 @@ long cc_micro_compact_cursor_after_splice(cc_micro_compact_state_t *st,
 }
 
 /* ── _splice_micro_compact_result ────────────────────────────────────── */
-/* PoP: cc_micro_compact_splice_micro_compact_result @ agent/context_compressor.py:_splice_micro_compact_result */
+/* PoP: cc_micro_compact_splice_micro_compact_result @ agent/micro_compaction.py:_splice_micro_compact_result */
 json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *st,
                                                      json_t *messages,
                                                      long splice_start,
@@ -705,7 +705,7 @@ json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *s
 }
 
 /* ── _sync_micro_compact_to_db ───────────────────────────────────────── */
-/* PoP: cc_micro_compact_sync_to_db @ agent/context_compressor.py:_sync_micro_compact_to_db */
+/* PoP: cc_micro_compact_sync_to_db @ agent/micro_compaction.py:_sync_micro_compact_to_db */
 void cc_micro_compact_sync_to_db(cc_micro_compact_state_t *st,
                                   json_t *compacted_messages) {
     if (!st || !compacted_messages) return;
@@ -725,7 +725,7 @@ void cc_micro_compact_sync_to_db(cc_micro_compact_state_t *st,
 }
 
 /* ── _emit_micro_compaction_telemetry ────────────────────────────────── */
-/* PoP: cc_micro_compact_emit_telemetry @ agent/context_compressor.py:_emit_micro_compaction_telemetry */
+/* PoP: cc_micro_compact_emit_telemetry @ agent/micro_compaction.py:_emit_micro_compaction_telemetry */
 void cc_micro_compact_emit_telemetry(cc_micro_compact_state_t *st,
                                       const char *outcome,
                                       long messages_before,
@@ -763,7 +763,7 @@ void cc_micro_compact_emit_telemetry(cc_micro_compact_state_t *st,
 }
 
 /* ── _micro_compact ──────────────────────────────────────────────────── */
-/* PoP: cc_micro_compact_micro_compact @ agent/context_compressor.py:_micro_compact */
+/* PoP: cc_micro_compact_micro_compact @ agent/micro_compaction.py:_micro_compact */
 json_t *cc_micro_compact_micro_compact(cc_micro_compact_state_t *st,
                                         json_t *messages,
                                         void (*on_overrun)(double waited, double ceiling)) {

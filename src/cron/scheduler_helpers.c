@@ -101,7 +101,7 @@ int scheduler_is_cron_silence_response(const char *text)
     return 0;
 }
 
-/* PoP: scheduler_normalize_deliver_value @ cron/scheduler.py:_normalize_deliver_value */
+/* PoP: scheduler_normalize_deliver_value @ cron/scheduler_delivery.py:_normalize_deliver_value */
 /*
  * Normalize a deliver value to its canonical string form.
  *  - None / "" -> "local"

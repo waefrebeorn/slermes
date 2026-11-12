@@ -65,7 +65,7 @@ bool agent_init_module_refs_ready(void) {
  * id + provider registration). It is NOT a gap. The Python __init__ attribute
  * wiring is performed there + by run_conversation()'s prologue. No "N/A". */
 
-/* PoP: agent_init_warn_memory_provider_unavailable @ agent/agent_init.py:_warn_memory_provider_unavailable */
+/* PoP: agent_init_warn_memory_provider_unavailable @ agent/agent_init_memory_provider.py:_warn_memory_provider_unavailable */
 /* Warn (once per provider) when a configured memory provider is unavailable.
  * is_available() is a fast, side-effect-free hot-path check and can't log for
  * itself, so without this warning an unavailable provider is silently dropped.
@@ -196,7 +196,7 @@ int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_init_u_build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */
+/* PoP: agent_agent_init_u_build_codex_gpt5_autoraise_notice @ agent/agent_init_compression_notice.py:_build_codex_gpt5_autoraise_notice */
 int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) {
     /* Python: autoraise banner. Arg =
      * "model\tcap\tfrom\tto\tstate\tresult". */
@@ -229,7 +229,7 @@ int agent_agent_init_u_resolve_compression_threshold(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_marker @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_marker */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
     /* Python: $HERMES_HOME/.codex_gpt55_autoraise_notice. Arg = hermes_home. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -237,7 +237,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_state @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_state */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) {
     /* Python: model:from_pct:to_pct. Arg = "model\tfrom\tto". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -257,7 +257,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_seen @ agent/agent_init_compression_notice.py:_codex_gpt55_autoraise_notice_seen */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
     /* Python: marker text == current state. Arg = "marker\tcurrent". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -269,7 +269,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_agent_init_u_record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */
+/* PoP: agent_agent_init_u_record_codex_gpt55_autoraise_notice @ agent/agent_init_compression_notice.py:_record_codex_gpt55_autoraise_notice */
 int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) {
     /* Python: write marker (best-effort). Arg = "path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }

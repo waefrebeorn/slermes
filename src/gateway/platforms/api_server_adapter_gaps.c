@@ -168,7 +168,7 @@ static char *apisg_uuid_hex24(void) {
  * Module-level helper ports
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: apisg_prefix_names_served_profile @ api_server.py:_prefix_names_served_profile */
+/* PoP: apisg_prefix_names_served_profile @ gateway/platforms/api_server.py:_prefix_names_served_profile */
 bool apisg_prefix_names_served_profile(const char *profile) {
     /* Python: profile_matches_home(profile); fail closed on any error.
      * The gateway serves one home; a /p/<x>/ prefix names it only when the
@@ -209,7 +209,7 @@ char *apisg_artifact_scope_facade_repr(const char *principal_id) {
     return out;
 }
 
-/* PoP: apisg_approval_event_choices @ api_server.py:_approval_event_choices */
+/* PoP: apisg_approval_event_choices @ gateway/platforms/api_server.py:_approval_event_choices */
 json_t *apisg_approval_event_choices(bool smart_denied, bool allow_session,
                                      bool allow_permanent) {
     json_t *arr = json_array();
@@ -249,7 +249,7 @@ int apisg_browser_controller_ws_send(void *ws, void *loop, const char *frame_jso
     return 0;
 }
 
-/* PoP: apisg_request_reasoning_config @ api_server.py:_request_reasoning_config */
+/* PoP: apisg_request_reasoning_config @ gateway/platforms/api_server_request_options.py:_request_reasoning_config */
 json_t *apisg_request_reasoning_config(const json_t *model_options) {
     if (!json_is_object(model_options)) return NULL;
     const json_t *reasoning = json_obj_get(model_options, "reasoning");
@@ -297,7 +297,7 @@ json_t *apisg_request_reasoning_config(const json_t *model_options) {
     return NULL;
 }
 
-/* PoP: apisg_apply_runtime_agent_overrides @ api_server.py:_apply_runtime_agent_overrides */
+/* PoP: apisg_apply_runtime_agent_overrides @ gateway/platforms/api_server.py:_apply_runtime_agent_overrides */
 json_t *apisg_apply_runtime_agent_overrides(json_t *runtime_kwargs,
                                             const json_t *overrides) {
     if (!json_is_object(overrides)) return runtime_kwargs;
@@ -316,7 +316,7 @@ json_t *apisg_apply_runtime_agent_overrides(json_t *runtime_kwargs,
     return runtime_kwargs;
 }
 
-/* PoP: apisg_resolve_request_runtime_agent_kwargs @ api_server.py:_resolve_request_runtime_agent_kwargs */
+/* PoP: apisg_resolve_request_runtime_agent_kwargs @ gateway/platforms/api_server.py:_resolve_request_runtime_agent_kwargs */
 json_t *apisg_resolve_request_runtime_agent_kwargs(const char *provider,
                                                    const char *target_model) {
     /* Mirrors gateway.run._resolve_runtime_agent_kwargs with an explicit
@@ -368,7 +368,7 @@ json_t *apisg_resolve_request_runtime_agent_kwargs(const char *provider,
     return out;
 }
 
-/* PoP: apisg_request_agent_overrides @ api_server.py:_request_agent_overrides */
+/* PoP: apisg_request_agent_overrides @ gateway/platforms/api_server.py:_request_agent_overrides */
 json_t *apisg_request_agent_overrides(const json_t *body, const char *virtual_model,
                                       bool allow_bare_model) {
     json_t *overrides = json_object();
@@ -393,7 +393,7 @@ json_t *apisg_request_agent_overrides(const json_t *body, const char *virtual_mo
     return overrides;
 }
 
-/* PoP: apisg_resolve_media_to_data_urls @ api_server.py:_resolve_media_to_data_urls */
+/* PoP: apisg_resolve_media_to_data_urls @ gateway/platforms/api_server.py:_resolve_media_to_data_urls */
 char *apisg_resolve_media_to_data_urls(const char *text) {
     /* Replace ``MEDIA:<abs path>`` image tags with inline base64 data URLs.
      * Anchored on an absolute-path token after MEDIA: with a known image
@@ -495,7 +495,7 @@ char *apisg_resolve_media_to_data_urls(const char *text) {
     return out;
 }
 
-/* PoP: apisg_openai_error @ api_server.py:_openai_error */
+/* PoP: apisg_openai_error @ gateway/platforms/api_server.py:_openai_error */
 json_t *apisg_openai_error(const char *message, const char *err_type,
                            const char *param, const char *code) {
     char *redacted = apis_redact_api_error_text(message ? message : "", 0);
@@ -516,7 +516,7 @@ json_t *apisg_openai_error(const char *message, const char *err_type,
 
 typedef struct api_reservation { bool active; bool detached; } api_reservation_t;
 
-/* PoP: apisg_admit_api_agent_request @ api_server.py:_admit_api_agent_request */
+/* PoP: apisg_admit_api_agent_request @ gateway/platforms/api_server.py:_admit_api_agent_request */
 bool apisg_admit_api_agent_request(api_server_adapter_t *adapter,
                                    api_reservation_t *reservation) {
     /* Reserve an authenticated API turn before its handler first awaits:
@@ -528,7 +528,7 @@ bool apisg_admit_api_agent_request(api_server_adapter_t *adapter,
     return true;
 }
 
-/* PoP: apisg_release_pending_api_work @ api_server.py:_release_pending_api_work */
+/* PoP: apisg_release_pending_api_work @ gateway/platforms/api_server.py:_release_pending_api_work */
 void apisg_release_pending_api_work(api_server_adapter_t *adapter,
                                     api_reservation_t *reservation) {
     /* Release a pending-work reservation exactly once. */
@@ -538,7 +538,7 @@ void apisg_release_pending_api_work(api_server_adapter_t *adapter,
         adapter->pending_agent_requests > 0 ? adapter->pending_agent_requests - 1 : 0;
 }
 
-/* PoP: apisg_reserve_pending_api_work @ api_server.py:_reserve_pending_api_work */
+/* PoP: apisg_reserve_pending_api_work @ gateway/platforms/api_server.py:_reserve_pending_api_work */
 api_reservation_t *apisg_reserve_pending_api_work(api_server_adapter_t *adapter) {
     /* Keep externally-triggered background work visible across awaits. */
     if (!adapter) return NULL;
@@ -564,7 +564,7 @@ int apisg_response_store_len(response_store_t *store) {
     return n;
 }
 
-/* PoP: apisg_response_store_tighten_file_permissions @ api_server.py:_tighten_file_permissions */
+/* PoP: apisg_response_store_tighten_file_permissions @ gateway/platforms/api_server_response_store.py:_tighten_file_permissions */
 void apisg_response_store_tighten_file_permissions(response_store_t *store) {
     /* Force owner-only permissions on the DB and SQLite sidecars. */
     if (!store || !store->db_path) return;
@@ -580,7 +580,7 @@ void apisg_response_store_tighten_file_permissions(response_store_t *store) {
     }
 }
 
-/* PoP: apisg_put_threadsafe @ api_server.py:put_threadsafe */
+/* PoP: apisg_put_threadsafe @ gateway/platforms/api_server.py:put_threadsafe */
 void apisg_put_threadsafe(sse_queue_t *queue, const char *item) {
     /* (loop or self._loop_ref).call_soon_threadsafe(self.put_nowait, item):
      * sse_queue_put is mutex-guarded, so it is safe from any thread. */
@@ -589,7 +589,7 @@ void apisg_put_threadsafe(sse_queue_t *queue, const char *item) {
 
 /* ── Middleware ports ───────────────────────────────────────────────── */
 
-/* PoP: apisg_cors_headers_for_origin @ api_server.py:_cors_headers_for_origin */
+/* PoP: apisg_cors_headers_for_origin @ gateway/platforms/api_server.py:_cors_headers_for_origin */
 json_t *apisg_cors_headers_for_origin(api_server_adapter_t *adapter,
                                       const char *origin) {
     if (!origin || !*origin || adapter->cors_count == 0) return NULL;
@@ -612,7 +612,7 @@ json_t *apisg_cors_headers_for_origin(api_server_adapter_t *adapter,
     return headers;
 }
 
-/* PoP: apisg_parse_cors_origins @ api_server.py:_parse_cors_origins */
+/* PoP: apisg_parse_cors_origins @ gateway/platforms/api_server.py:_parse_cors_origins */
 json_t *apisg_parse_cors_origins(const json_t *value) {
     json_t *out = json_array();
     if (!out) return NULL;
@@ -651,7 +651,7 @@ json_t *apisg_parse_cors_origins(const json_t *value) {
     return out;
 }
 
-/* PoP: apisg_origin_allowed @ api_server.py:_origin_allowed (adapter wrapper used by cors_middleware) */
+/* PoP: apisg_origin_allowed @ gateway/platforms/api_server.py:_origin_allowed (adapter wrapper used by cors_middleware) */
 bool apisg_adapter_origin_allowed(api_server_adapter_t *adapter, const char *origin) {
     if (!adapter) return false;
     json_t *allowed = json_array();
@@ -665,7 +665,7 @@ bool apisg_adapter_origin_allowed(api_server_adapter_t *adapter, const char *ori
 }
 
 /* api_server.py:cors_middleware — see note below. */
-/* PoP: apisg_cors_middleware @ api_server.py:cors_middleware */
+/* PoP: apisg_cors_middleware @ gateway/platforms/api_server.py:cors_middleware */
 /* headers_out set; 0 → continue (headers_out carries CORS headers to merge). */
 int apisg_cors_middleware(api_server_adapter_t *adapter, const char *method,
                           const char *origin, json_t **headers_out) {
@@ -686,7 +686,7 @@ int apisg_cors_middleware(api_server_adapter_t *adapter, const char *method,
 }
 
 /* api_server.py:body_limit_middleware — see note below. */
-/* PoP: apisg_body_limit_middleware @ api_server.py:body_limit_middleware */
+/* PoP: apisg_body_limit_middleware @ gateway/platforms/api_server.py:body_limit_middleware */
 /* 413 body_too_large envelope via status 413. */
 int apisg_body_limit_middleware(const char *method, const char *content_length) {
     if (method && content_length &&
@@ -702,7 +702,7 @@ int apisg_body_limit_middleware(const char *method, const char *content_length) 
     return 0;
 }
 
-/* PoP: apisg_security_headers_middleware @ api_server.py:security_headers_middleware */
+/* PoP: apisg_security_headers_middleware @ gateway/platforms/api_server.py:security_headers_middleware */
 void apisg_security_headers_middleware(json_t *response_headers) {
     /* setdefault semantics: only add a header when not already present. */
     if (!response_headers || !json_is_object(response_headers)) return;
@@ -714,7 +714,7 @@ void apisg_security_headers_middleware(json_t *response_headers) {
 
 /* ── Audit / origin metadata cluster ───────────────────────────────── */
 
-/* PoP: apisg_clean_log_value @ api_server.py:_clean_log_value */
+/* PoP: apisg_clean_log_value @ gateway/platforms/api_server.py:_clean_log_value */
 char *apisg_clean_log_value(const char *value, size_t max_len) {
     /* Sanitize request metadata before it reaches security logs: CR/LF
      * collapsed to spaces, surrounding whitespace stripped, bounded. */
@@ -737,7 +737,7 @@ char *apisg_clean_log_value(const char *value, size_t max_len) {
     return out;
 }
 
-/* PoP: apisg_request_audit_context @ api_server.py:_request_audit_context */
+/* PoP: apisg_request_audit_context @ gateway/platforms/api_server.py:_request_audit_context */
 json_t *apisg_request_audit_context(const char *remote, const char *peer_ip,
                                     const char *forwarded_for,
                                     const char *real_ip, const char *method,
@@ -761,7 +761,7 @@ json_t *apisg_request_audit_context(const char *remote, const char *peer_ip,
     return ctx;
 }
 
-/* PoP: apisg_request_audit_log_suffix @ api_server.py:_request_audit_log_suffix */
+/* PoP: apisg_request_audit_log_suffix @ gateway/platforms/api_server.py:_request_audit_log_suffix */
 char *apisg_request_audit_log_suffix(const json_t *ctx) {
     if (!json_is_object(ctx))
         return strdup("source='unknown'");
@@ -782,7 +782,7 @@ char *apisg_request_audit_log_suffix(const json_t *ctx) {
     return out;
 }
 
-/* PoP: apisg_cron_origin_from_request @ api_server.py:_cron_origin_from_request */
+/* PoP: apisg_cron_origin_from_request @ gateway/platforms/api_server.py:_cron_origin_from_request */
 json_t *apisg_cron_origin_from_request(const json_t *audit_ctx) {
     json_t *origin = json_object();
     json_set(origin, "platform", json_string("api_server"));
@@ -800,7 +800,7 @@ json_t *apisg_cron_origin_from_request(const json_t *audit_ctx) {
     return origin;
 }
 
-/* PoP: apisg_normalize_callback_platform @ api_server.py:_normalize_callback_platform */
+/* PoP: apisg_normalize_callback_platform @ gateway/platforms/api_server.py:_normalize_callback_platform */
 char *apisg_normalize_callback_platform(const char *value) {
     char norm[256];
     apisg_strip_lower(value, norm, sizeof(norm));
@@ -810,7 +810,7 @@ char *apisg_normalize_callback_platform(const char *value) {
     return strdup(norm);
 }
 
-/* PoP: apisg_get_platform_callback_adapter @ api_server.py:_get_platform_callback_adapter */
+/* PoP: apisg_get_platform_callback_adapter @ gateway/platforms/api_server.py:_get_platform_callback_adapter */
 void *apisg_get_platform_callback_adapter(api_server_adapter_t *adapter,
                                          json_t *app,
                                          const char *platform_name) {
@@ -836,7 +836,7 @@ void *apisg_get_platform_callback_adapter(api_server_adapter_t *adapter,
 }
 
 /* api_server.py:_handle_platform_event_callback — see note below. */
-/* PoP: apisg_handle_platform_event_callback @ api_server.py:_handle_platform_event_callback */
+/* PoP: apisg_handle_platform_event_callback @ gateway/platforms/api_server.py:_handle_platform_event_callback */
 /* Writes the JSON response over client_fd and returns the status used. */
 int apisg_handle_platform_event_callback(api_server_adapter_t *adapter, int client_fd,
                                          const char *platform_raw, json_t *app,
@@ -943,7 +943,7 @@ int apisg_handle_platform_event_callback(api_server_adapter_t *adapter, int clie
 }
 
 /* api_server.py:_make_profile_prefix_middleware — see note below. */
-/* PoP: apisg_profile_prefix_middleware @ api_server.py:_make_profile_prefix_middleware */
+/* PoP: apisg_profile_prefix_middleware @ gateway/platforms/api_server.py:_make_profile_prefix_middleware */
 /* Returns 404 to reject, 0 to continue with *profile_out set. */
 int apisg_profile_prefix_middleware(api_server_adapter_t *adapter,
                                     const char *profile, char **profile_out) {
@@ -961,7 +961,7 @@ int apisg_profile_prefix_middleware(api_server_adapter_t *adapter,
     return 0;
 }
 
-/* PoP: apisg_gateway_is_draining @ api_server.py:_gateway_is_draining */
+/* PoP: apisg_gateway_is_draining @ gateway/platforms/api_server.py:_gateway_is_draining */
 bool apisg_gateway_is_draining(void) {
     GatewayRunner *runner = api_server_gateway_runner_ref();
     if (!runner) return false;
@@ -976,7 +976,7 @@ bool apisg_gateway_is_draining(void) {
 }
 
 /* api_server.py:_draining_response — see note below. */
-/* PoP: apisg_draining_response @ api_server.py:_draining_response */
+/* PoP: apisg_draining_response @ gateway/platforms/api_server.py:_draining_response */
 /* Returns a retryable 503 envelope (caller adds Retry-After: 1) or NULL. */
 json_t *apisg_draining_response(void) {
     if (!apisg_gateway_is_draining()) return NULL;
@@ -986,7 +986,7 @@ json_t *apisg_draining_response(void) {
     return err;
 }
 
-/* PoP: apisg_activate_admitted_request @ api_server.py:_activate_admitted_request */
+/* PoP: apisg_activate_admitted_request @ gateway/platforms/api_server.py:_activate_admitted_request */
 void apisg_activate_admitted_request(api_server_adapter_t *adapter,
                                      api_reservation_t *reservation) {
     /* Transfer this request's drain reservation to agent bookkeeping. */
@@ -996,7 +996,7 @@ void apisg_activate_admitted_request(api_server_adapter_t *adapter,
         adapter->pending_agent_requests > 0 ? adapter->pending_agent_requests - 1 : 0;
 }
 
-/* PoP: apisg_readiness_work_counts @ api_server.py:_readiness_work_counts */
+/* PoP: apisg_readiness_work_counts @ gateway/platforms/api_server.py:_readiness_work_counts */
 void apisg_readiness_work_counts(api_server_adapter_t *adapter, int *active_api_runs,
                                  int *process_depth, int *active_delegations) {
     int runs = 0;
@@ -1020,7 +1020,7 @@ void apisg_readiness_work_counts(api_server_adapter_t *adapter, int *active_api_
     *active_delegations = async_delegation_active_count();
 }
 
-/* PoP: apisg_active_agent_work_count @ api_server.py:active_agent_work_count */
+/* PoP: apisg_active_agent_work_count @ gateway/platforms/api_server.py:active_agent_work_count */
 int apisg_active_agent_work_count(api_server_adapter_t *adapter) {
     if (!adapter) return 0;
     /* pending + inflight + live tasks (queued-before-agent gap covered by the
@@ -1035,7 +1035,7 @@ int apisg_active_agent_work_count(api_server_adapter_t *adapter) {
     return adapter->pending_agent_requests + adapter->inflight_agent_runs + live_tasks;
 }
 
-/* PoP: apisg_interrupt_active_runs @ api_server.py:interrupt_active_runs */
+/* PoP: apisg_interrupt_active_runs @ gateway/platforms/api_server.py:interrupt_active_runs */
 int apisg_interrupt_active_runs(api_server_adapter_t *adapter, const char *reason) {
     if (!adapter) return 0;
     /* Dedupe by pointer identity across _active_run_agents and
@@ -1077,7 +1077,7 @@ int apisg_interrupt_active_runs(api_server_adapter_t *adapter, const char *reaso
     return interrupted;
 }
 
-/* PoP: apisg_resolve_model_name @ api_server.py:_resolve_model_name */
+/* PoP: apisg_resolve_model_name @ gateway/platforms/api_server.py:_resolve_model_name */
 char *apisg_resolve_model_name(const char *explicit_name) {
     /* explicit override > active profile name > "hermes-agent". */
     char profile_name[128] = "";
@@ -1090,7 +1090,7 @@ char *apisg_resolve_model_name(const char *explicit_name) {
     return strdup(resolved && *resolved ? resolved : "hermes-agent");
 }
 
-/* PoP: apisg_http_route_table @ api_server.py:_http_route_table */
+/* PoP: apisg_http_route_table @ gateway/platforms/api_server.py:_http_route_table */
 json_t *apisg_http_route_table(void) {
     static const struct { const char *method, *path, *handler; } routes[] = {
         {"GET", "/health", "_handle_health"},
@@ -1157,7 +1157,7 @@ json_t *apisg_http_route_table(void) {
 /* ── Per-profile SessionDB cache ───────────────────────────────────── */
 
 /* api_server.py:_open_and_cache_session_db — see note below. */
-/* PoP: apisg_open_and_cache_session_db @ api_server.py:_open_and_cache_session_db */
+/* PoP: apisg_open_and_cache_session_db @ gateway/platforms/api_server.py:_open_and_cache_session_db */
 /* does NOT write into the adapter's single-db override slot. */
 hermes_state_db_t *apisg_open_and_cache_session_db(api_server_adapter_t *adapter,
                                                    const char *home) {
@@ -1186,7 +1186,7 @@ hermes_state_db_t *apisg_open_and_cache_session_db(api_server_adapter_t *adapter
     return db;
 }
 
-/* PoP: apisg_close_cached_session_dbs @ api_server.py:_close_cached_session_dbs */
+/* PoP: apisg_close_cached_session_dbs @ gateway/platforms/api_server.py:_close_cached_session_dbs */
 void apisg_close_cached_session_dbs(api_server_adapter_t *adapter) {
     extern __attribute__((weak)) void hermes_state_db_close(hermes_state_db_t *db);
     pthread_mutex_lock(&adapter->session_db_cache_lock);
@@ -1219,7 +1219,7 @@ hermes_state_db_t *apisg_ensure_session_db(api_server_adapter_t *adapter) {
 }
 
 /* api_server.py:_ensure_session_db_async — see note below. */
-/* PoP: apisg_ensure_session_db_async @ api_server.py:_ensure_session_db_async */
+/* PoP: apisg_ensure_session_db_async @ gateway/platforms/api_server.py:_ensure_session_db_async */
 /* cache/single-flight gate applies synchronously. */
 hermes_state_db_t *apisg_ensure_session_db_async(api_server_adapter_t *adapter) {
     if (adapter->session_db_override)
@@ -1240,7 +1240,7 @@ hermes_state_db_t *apisg_ensure_session_db_async(api_server_adapter_t *adapter) 
 
 /* ── model_routes / runtime request resolution ─────────────────────── */
 
-/* PoP: apisg_parse_model_routes @ api_server.py:_parse_model_routes */
+/* PoP: apisg_parse_model_routes @ gateway/platforms/api_server.py:_parse_model_routes */
 json_t *apisg_parse_model_routes(const json_t *raw) {
     json_t *routes = json_object();
     if (!routes) return NULL;
@@ -1312,7 +1312,7 @@ json_t *apisg_resolve_route(api_server_adapter_t *adapter, const char *model_ali
     return route ? json_copy(route) : NULL;
 }
 
-/* PoP: apisg_stored_session_model @ api_server.py:_stored_session_model */
+/* PoP: apisg_stored_session_model @ gateway/platforms/api_server.py:_stored_session_model */
 char *apisg_stored_session_model(api_server_adapter_t *adapter, const json_t *session) {
     if (!json_is_object(session)) return NULL;
     const json_t *stored_v = json_obj_get(session, "model");
@@ -1322,7 +1322,7 @@ char *apisg_stored_session_model(api_server_adapter_t *adapter, const json_t *se
     return strdup(stored);
 }
 
-/* PoP: apisg_clean_runtime_id @ api_server.py:_clean_runtime_id */
+/* PoP: apisg_clean_runtime_id @ gateway/platforms/api_server.py:_clean_runtime_id */
 char *apisg_clean_runtime_id(const char *value, size_t max_len) {
     if (!value) return strdup("");
     const char *p = value;
@@ -1341,7 +1341,7 @@ char *apisg_clean_runtime_id(const char *value, size_t max_len) {
     return out;
 }
 
-/* PoP: apisg_split_provider_prefixed_model @ api_server.py:_split_provider_prefixed_model */
+/* PoP: apisg_split_provider_prefixed_model @ gateway/platforms/api_server.py:_split_provider_prefixed_model */
 void apisg_split_provider_prefixed_model(const char *model, char *provider,
                                          size_t provider_sz, char *raw,
                                          size_t raw_sz) {
@@ -1370,7 +1370,7 @@ void apisg_split_provider_prefixed_model(const char *model, char *provider,
     snprintf(raw, raw_sz, "%s", cleaned_buf);
 }
 
-/* PoP: apisg_runtime_options_from_model_options @ api_server.py:_runtime_options_from_model_options */
+/* PoP: apisg_runtime_options_from_model_options @ gateway/platforms/api_server.py:_runtime_options_from_model_options */
 extern bool api_server_coerce_request_bool(const char *value, bool default_val);
 
 json_t *apisg_runtime_options_from_model_options(const json_t *model_options) {
@@ -1413,7 +1413,7 @@ json_t *apisg_runtime_options_from_model_options(const json_t *model_options) {
     return runtime_options;
 }
 
-/* PoP: apisg_session_runtime_request_from_body @ api_server.py:_session_runtime_request_from_body */
+/* PoP: apisg_session_runtime_request_from_body @ gateway/platforms/api_server.py:_session_runtime_request_from_body */
 json_t *apisg_session_runtime_request_from_body(api_server_adapter_t *adapter,
                                                const json_t *body) {
     char *raw_model = apisg_clean_runtime_id(
@@ -1482,7 +1482,7 @@ json_t *apisg_session_runtime_request_from_body(api_server_adapter_t *adapter,
     return out;
 }
 
-/* PoP: apisg_runtime_lock_error @ api_server.py:_runtime_lock_error */
+/* PoP: apisg_runtime_lock_error @ gateway/platforms/api_server.py:_runtime_lock_error */
 json_t *apisg_runtime_lock_error(api_server_adapter_t *adapter,
                                  const json_t *runtime_request, int *status_out) {
     if (!runtime_request || !json_is_true(json_obj_get(runtime_request, "require_model_lock")))
@@ -1511,7 +1511,7 @@ json_t *apisg_runtime_lock_error(api_server_adapter_t *adapter,
     return err;
 }
 
-/* PoP: apisg_parse_session_model_config @ api_server.py:_parse_session_model_config */
+/* PoP: apisg_parse_session_model_config @ gateway/platforms/api_server.py:_parse_session_model_config */
 json_t *apisg_parse_session_model_config(const json_t *raw) {
     if (json_is_object(raw)) return json_copy(raw);
     if (json_is_string(raw) && raw->str_val && *raw->str_val) {
@@ -1524,7 +1524,7 @@ json_t *apisg_parse_session_model_config(const json_t *raw) {
     return json_object();
 }
 
-/* PoP: apisg_persist_session_runtime_lock @ api_server.py:_persist_session_runtime_lock */
+/* PoP: apisg_persist_session_runtime_lock @ gateway/platforms/api_server.py:_persist_session_runtime_lock */
 bool apisg_persist_session_runtime_lock(api_server_adapter_t *adapter,
                                         const char *session_id,
                                         const json_t *runtime_request) {
@@ -1558,7 +1558,7 @@ bool apisg_persist_session_runtime_lock(api_server_adapter_t *adapter,
     return true;
 }
 
-/* PoP: apisg_runtime_request_from_persisted_session_lock @ api_server.py:_runtime_request_from_persisted_session_lock */
+/* PoP: apisg_runtime_request_from_persisted_session_lock @ gateway/platforms/api_server.py:_runtime_request_from_persisted_session_lock */
 json_t *apisg_runtime_request_from_persisted_session_lock(
     api_server_adapter_t *adapter, const json_t *session, const json_t *body) {
     if (!json_is_object(session)) return NULL;
@@ -1629,7 +1629,7 @@ json_t *apisg_runtime_request_from_persisted_session_lock(
     return out;
 }
 
-/* PoP: apisg_effective_session_runtime_request @ api_server.py:_effective_session_runtime_request */
+/* PoP: apisg_effective_session_runtime_request @ gateway/platforms/api_server.py:_effective_session_runtime_request */
 json_t *apisg_effective_session_runtime_request(api_server_adapter_t *adapter,
                                                 const json_t *session,
                                                 const json_t *body) {
@@ -1649,7 +1649,7 @@ json_t *apisg_effective_session_runtime_request(api_server_adapter_t *adapter,
     return runtime_request;
 }
 
-/* PoP: apisg_sanitize_runtime_metadata @ api_server.py:_sanitize_runtime_metadata */
+/* PoP: apisg_sanitize_runtime_metadata @ gateway/platforms/api_server.py:_sanitize_runtime_metadata */
 json_t *apisg_sanitize_runtime_metadata(const json_t *runtime,
                                         const json_t *requested_runtime,
                                         const char *route_source_default,
@@ -1708,7 +1708,7 @@ json_t *apisg_sanitize_runtime_metadata(const json_t *runtime,
     return result;
 }
 
-/* PoP: apisg_normalize_session_source @ api_server.py:_normalize_session_source */
+/* PoP: apisg_normalize_session_source @ gateway/platforms/api_server.py:_normalize_session_source */
 char *apisg_normalize_session_source(const char *value) {
     char text[128];
     apisg_strip_lower(value, text, sizeof(text));
@@ -1724,7 +1724,7 @@ char *apisg_normalize_session_source(const char *value) {
     return strdup("api_server");
 }
 
-/* PoP: apisg_session_model_override_for @ api_server.py:_session_model_override_for */
+/* PoP: apisg_session_model_override_for @ gateway/platforms/api_server.py:_session_model_override_for */
 json_t *apisg_session_model_override_for(api_server_adapter_t *adapter,
                                          const char *session_key) {
     (void)adapter;
@@ -1746,7 +1746,7 @@ json_t *apisg_session_model_override_for(api_server_adapter_t *adapter,
     return (override && json_is_object(override)) ? override : NULL;
 }
 
-/* PoP: apisg_request_route_conflict_error @ api_server.py:_request_route_conflict_error */
+/* PoP: apisg_request_route_conflict_error @ gateway/platforms/api_server.py:_request_route_conflict_error */
 char *apisg_request_route_conflict_error(api_server_adapter_t *adapter,
                                          const char *session_id,
                                          const char *gateway_session_key,
@@ -2428,7 +2428,7 @@ static const char *const APISG_SESSION_SAFE_KEYS[] = {
     "api_call_count", "parent_session_id", "last_active", "preview",
     "_lineage_root_id", "pinned", "archived", "hidden", NULL};
 
-/* PoP: apisg_session_response @ api_server.py:_session_response */
+/* PoP: apisg_session_response @ gateway/platforms/api_server.py:_session_response */
 json_t *apisg_session_response(const json_t *session) {
     json_t *payload = json_object();
     if (!payload) return NULL;
@@ -2459,7 +2459,7 @@ static const char *const APISG_MESSAGE_SAFE_KEYS[] = {
     "tool_name", "timestamp", "token_count", "finish_reason", "reasoning",
     "reasoning_content", "display_kind", NULL};
 
-/* PoP: apisg_message_response @ api_server.py:_message_response */
+/* PoP: apisg_message_response @ gateway/platforms/api_server.py:_message_response */
 json_t *apisg_message_response(const json_t *message_in) {
     extern json_t *apis_project_client_message(const json_t *message);
     json_t *message = apis_project_client_message ? apis_project_client_message(message_in)
@@ -2474,7 +2474,7 @@ json_t *apisg_message_response(const json_t *message_in) {
 }
 
 /* api_server.py:_read_json_body — see note below. */
-/* PoP: apisg_read_json_body @ api_server.py:_read_json_body */
+/* PoP: apisg_read_json_body @ gateway/platforms/api_server.py:_read_json_body */
 /* Returns parsed object or NULL with *err_status 400 set. */
 json_t *apisg_read_json_body(const char *raw_body, int *err_status) {
     if (err_status) *err_status = 0;
@@ -2487,7 +2487,7 @@ json_t *apisg_read_json_body(const char *raw_body, int *err_status) {
     return body;
 }
 
-/* PoP: apisg_get_existing_session_or_404 @ api_server.py:_get_existing_session_or_404 */
+/* PoP: apisg_get_existing_session_or_404 @ gateway/platforms/api_server.py:_get_existing_session_or_404 */
 json_t *apisg_get_existing_session_or_404(api_server_adapter_t *adapter,
                                           const char *session_id, int *err_status) {
     hermes_state_db_t *db = apisg_ensure_session_db_async(adapter);
@@ -2511,7 +2511,7 @@ json_t *apisg_get_existing_session_or_404(api_server_adapter_t *adapter,
     return session;
 }
 
-/* PoP: apisg_conversation_history_for_session @ api_server.py:_conversation_history_for_session */
+/* PoP: apisg_conversation_history_for_session @ gateway/platforms/api_server.py:_conversation_history_for_session */
 json_t *apisg_conversation_history_for_session(api_server_adapter_t *adapter,
                                                const char *session_id) {
     hermes_state_db_t *db = apisg_ensure_session_db_async(adapter);
@@ -2623,13 +2623,13 @@ void send_binary_response(int fd, int status, const unsigned char *body,
     apisg_write_fd(fd, (const char *)body, body_len);
 }
 
-/* PoP: apisg_sse_frame @ api_server.py:_sse_frame — already ported in
+/* PoP: apisg_sse_frame @ gateway/platforms/api_server.py:_sse_frame — already ported in
  * api_server_adapter.c as api_server_sse_frame; local thin wrapper for the
  * event-tagged writers below. */
 extern char *api_server_sse_frame(const char *data_json, const char *event);
 
 /* api_server.py:_write_sse_chat_completion — see note below. */
-/* PoP: apisg_write_sse_chat_completion @ api_server.py:_write_sse_chat_completion */
+/* PoP: apisg_write_sse_chat_completion @ gateway/platforms/api_server_openai_routes.py:_write_sse_chat_completion */
 /* (via gwapi_reap_disconnected_agent_processes). */
 int apisg_write_sse_chat_completion(api_server_adapter_t *adapter, int client_fd,
                                     const char *completion_id, const char *model,
@@ -2903,7 +2903,7 @@ void apisg_make_run_event_callback(api_server_adapter_t *adapter, const char *ru
     json_free(event);
 }
 
-/* PoP: apisg_response_messages_turn_start_index @ api_server.py:_response_messages_turn_start_index */
+/* PoP: apisg_response_messages_turn_start_index @ gateway/platforms/api_server_openai_routes.py:_response_messages_turn_start_index */
 int apisg_response_messages_turn_start_index(const json_t *conversation_history,
                                              const json_t *user_message,
                                              const json_t *result) {
@@ -2960,7 +2960,7 @@ int apisg_response_messages_turn_start_index(const json_t *conversation_history,
     return turn_start;
 }
 
-/* PoP: apisg_build_response_conversation_history @ api_server.py:_build_response_conversation_history */
+/* PoP: apisg_build_response_conversation_history @ gateway/platforms/api_server_openai_routes.py:_build_response_conversation_history */
 json_t *apisg_build_response_conversation_history(const json_t *conversation_history,
                                                   const json_t *user_message,
                                                   const json_t *result,
@@ -3012,7 +3012,7 @@ json_t *apisg_build_response_conversation_history(const json_t *conversation_his
     return full;
 }
 
-/* PoP: apisg_turn_transcript_messages @ api_server.py:_turn_transcript_messages */
+/* PoP: apisg_turn_transcript_messages @ gateway/platforms/api_server_openai_routes.py:_turn_transcript_messages */
 json_t *apisg_turn_transcript_messages(const json_t *conversation_history,
                                        const json_t *user_message,
                                        const json_t *result) {
@@ -3039,7 +3039,7 @@ json_t *apisg_turn_transcript_messages(const json_t *conversation_history,
     return out;
 }
 
-/* PoP: apisg_extract_output_items @ api_server.py:_extract_output_items */
+/* PoP: apisg_extract_output_items @ gateway/platforms/api_server_openai_routes.py:_extract_output_items */
 json_t *apisg_extract_output_items(const json_t *result, int start_index) {
     json_t *items = json_array();
     const json_t *messages = json_is_object(result) ? json_obj_get(result, "messages")
@@ -3111,7 +3111,7 @@ json_t *apisg_extract_output_items(const json_t *result, int start_index) {
 }
 
 /* api_server.py:_handle_steer_run — see note below. */
-/* PoP: apisg_handle_steer_run @ api_server.py:_handle_steer_run */
+/* PoP: apisg_handle_steer_run @ gateway/platforms/api_server_runs.py:_handle_steer_run */
 /* returns the status used. */
 int apisg_handle_steer_run(api_server_adapter_t *adapter, int client_fd,
                            const char *auth_error_json, const char *run_id,
@@ -3221,7 +3221,7 @@ int apisg_handle_steer_run(api_server_adapter_t *adapter, int client_fd,
 }
 
 /* api_server.py:_handle_session_model_lock — see note below. */
-/* PoP: apisg_handle_session_model_lock @ api_server.py:_handle_session_model_lock */
+/* PoP: apisg_handle_session_model_lock @ gateway/platforms/api_server.py:_handle_session_model_lock */
 /* POST /api/sessions/{session_id}/model — backend-ack a Browser model lock. */
 int apisg_handle_session_model_lock(api_server_adapter_t *adapter, int client_fd,
                                     const char *session_id, const char *body_raw) {
@@ -3351,7 +3351,7 @@ void apisg_sweep_orphaned_runs_once(api_server_adapter_t *adapter, double now) {
     pthread_mutex_unlock(&adapter->run_lock);
 }
 
-/* PoP: apisg_check_api_server_requirements @ api_server.py:check_api_server_requirements */
+/* PoP: apisg_check_api_server_requirements @ gateway/platforms/api_server.py:check_api_server_requirements */
 int apisg_check_api_server_requirements(void) {
     /* Python returns AIOHTTP_AVAILABLE; the C API server links its HTTP
      * transport statically, so the dependency set is always available. */
@@ -3372,7 +3372,7 @@ void *apisg_sweep_orphaned_runs_thread(void *arg) {
     return NULL;
 }
 
-/* PoP: apisg_api_key_passes_startup_guard @ api_server.py:_api_key_passes_startup_guard */
+/* PoP: apisg_api_key_passes_startup_guard @ gateway/platforms/api_server.py:_api_key_passes_startup_guard */
 bool apisg_api_key_passes_startup_guard(api_server_adapter_t *adapter) {
     /* Return True when API_SERVER_KEY is present and strong enough to start.
      * Fail CLOSED: this guard is the only thing between a guessable key and a
@@ -3500,7 +3500,7 @@ static void apisg_rs_emit_text_delta(int fd, apisg_resp_state_t *st,
 }
 
 /* api_server.py:_write_sse_responses — see note below. */
-/* PoP: apisg_write_sse_responses @ api_server.py:_write_sse_responses */
+/* PoP: apisg_write_sse_responses @ gateway/platforms/api_server_openai_routes.py:_write_sse_responses */
 /* /v1/responses/{id} and previous_response_id chaining keep working. */
 int apisg_write_sse_responses(
     api_server_adapter_t *adapter, int client_fd, const char *response_id,
@@ -3851,7 +3851,7 @@ int apisg_write_sse_responses(
     return rc_status;
 }
 
-/* PoP: apisg_multimodal_validation_error @ api_server.py:_multimodal_validation_error */
+/* PoP: apisg_multimodal_validation_error @ gateway/platforms/api_server.py:_multimodal_validation_error */
 json_t *apisg_multimodal_validation_error(const char *exc, const char *param,
                                           int *status_out) {
     /* Translate a _normalize_multimodal_content ValueError into a 400 body:
@@ -3875,7 +3875,7 @@ json_t *apisg_multimodal_validation_error(const char *exc, const char *param,
 }
 
 /* api_server.py:_session_chat_user_message */
-/* PoP: apisg_session_chat_user_message @ api_server.py:_session_chat_user_message */
+/* PoP: apisg_session_chat_user_message @ gateway/platforms/api_server.py:_session_chat_user_message */
 /* Parse and normalize session chat "message"/"input" like chat completions;
  * returns the normalized user message, or NULL with *err_status set to 400. */
 json_t *apisg_session_chat_user_message(const json_t *body, const char *param,
@@ -3901,7 +3901,7 @@ json_t *apisg_session_chat_user_message(const json_t *body, const char *param,
 }
 
 /* api_server.py:_drain_session_stream_task_on_disconnect */
-/* PoP: apisg_drain_session_stream_task_on_disconnect @ api_server.py:_drain_session_stream_task_on_disconnect */
+/* PoP: apisg_drain_session_stream_task_on_disconnect @ gateway/platforms/api_server.py:_drain_session_stream_task_on_disconnect */
 /* Preserve live run control refs until the executor-backed turn exits. */
 void apisg_drain_session_stream_task_on_disconnect(api_server_adapter_t *adapter,
                                                    const char *run_id,

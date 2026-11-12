@@ -1126,7 +1126,7 @@ long _reasoning_details_text_chars(const json_t *value) {
 
 /* ── _rolling_summary_from_marker ─────────────────────────────────────── */
 
-/* PoP: cc_rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+/* PoP: cc_rolling_summary_from_marker @ agent/micro_compaction.py:_rolling_summary_from_marker */
 char *_rolling_summary_from_marker(const char *content) {
     /* Python: if not isinstance(content, str) or not content.strip(): return "" */
     if (!content || cc_str_is_blank(content)) return strdup("");
@@ -1149,7 +1149,7 @@ char *_rolling_summary_from_marker(const char *content) {
 
 /* ── _render_micro_marker_content ─────────────────────────────────────── */
 
-/* PoP: cc_render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+/* PoP: cc_render_micro_marker_content @ agent/micro_compaction.py:_render_micro_marker_content */
 char *_render_micro_marker_content(const char *summary_text) {
     char *stripped = cc_str_strip(strdup(summary_text ? summary_text : ""));
     if (!stripped) stripped = strdup("");
@@ -1166,7 +1166,7 @@ char *_render_micro_marker_content(const char *summary_text) {
 
 /* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
 
-/* PoP: messages @ agent/context_compressor.py:_merge_adjacent_user_turns */
+/* PoP: messages @ agent/micro_compaction.py:_merge_adjacent_user_turns */
 /* Faithful port: builds a new list merging consecutive plain-text user turns */
 /* (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar */
 /* on merged messages (drop_stale_api_content). Returns the new count. The */
@@ -1681,17 +1681,17 @@ void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens) 
  * (port_agent_context_compressor.c) uses; each delegates to the faithful
  * underscore-prefixed leaf port. */
 
-/* PoP: _render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+/* PoP: _render_micro_marker_content @ agent/micro_compaction.py:_render_micro_marker_content */
 char *cc_render_micro_marker_content(const char *summary_text) {
     return _render_micro_marker_content(summary_text);
 }
 
-/* PoP: _rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+/* PoP: _rolling_summary_from_marker @ agent/micro_compaction.py:_rolling_summary_from_marker */
 char *cc_rolling_summary_from_marker(const char *content) {
     return _rolling_summary_from_marker(content);
 }
 
-/* PoP: cc_cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
+/* PoP: cc_cursor_after_splice @ agent/micro_compaction.py:_cursor_after_splice */
 int cc_cursor_after_splice(const json_t *result, int fallback) {
     /* Scan backwards for a micro-compaction summary marker; return its index+1.
      * Falls back to `fallback` when none is found (mirrors the Python: the
@@ -1708,7 +1708,7 @@ int cc_cursor_after_splice(const json_t *result, int fallback) {
     return fallback;
 }
 
-/* PoP: cc_merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
+/* PoP: cc_merge_adjacent_user_turns @ agent/micro_compaction.py:_merge_adjacent_user_turns */
 json_t *cc_merge_adjacent_user_turns(const json_t *result) {
     json_t *m = NULL;
     int rc = _merge_adjacent_user_turns((json_t *)result, &m);
@@ -1988,7 +1988,7 @@ json_t *cc_handoff_only_content(const json_t *content)
     return json_copy(content);
 }
 
-/* PoP: retryable_user_text @ agent/context_compressor.py:retryable_user_text */
+/* PoP: retryable_user_text @ agent/context_compressor_retry.py:retryable_user_text */
  /* Lossless retry text or fail-closed error. Media/unknown parts and
  * annotated text parts are rejected (no attachment replay protocol).
  * Returns malloc'd text, or NULL with err filled. Caller frees. */
@@ -2401,7 +2401,7 @@ bool cc_is_hygiene_idle_timeout_error(const char *error)
     return hit;
 }
 
-/* PoP: _lean_recovery_stub @ agent/context_compressor.py:_lean_recovery_stub */
+/* PoP: _lean_recovery_stub @ agent/context_compressor_tail.py:_lean_recovery_stub */
  /* One-line replacement for a demoted tail tool result. malloc'd; caller frees. */
 char *cc_lean_recovery_stub(const char *tool_name, long content_len,
                             const char *session_id)

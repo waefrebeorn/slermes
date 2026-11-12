@@ -162,7 +162,7 @@ char *filetools_rewrite_v4a_patch_paths_for_host(const char *arg) {
     return patch;
 }
 
-/* PoP: filetools_check_not_found_cache @ tools/file_tools.py:_check_not_found_cache */
+/* PoP: filetools_check_not_found_cache @ tools/file_tools_read_tracking.py:_check_not_found_cache */
 char *filetools_check_not_found_cache(const char *arg) {
     /* Python: return cached not-found JSON for (op, resolved_str) if fresh.
      * Arg = "fresh\tcached_json" (fresh 1/0). */
@@ -173,7 +173,7 @@ char *filetools_check_not_found_cache(const char *arg) {
     return tab && tab[1] ? strdup(tab + 1) : NULL;
 }
 
-/* PoP: filetools_record_not_found @ tools/file_tools.py:_record_not_found */
+/* PoP: filetools_record_not_found @ tools/file_tools_read_tracking.py:_record_not_found */
 int filetools_record_not_found(const char *arg) {
     /* Python: cache a not-found error so the next op call skips I/O.
      * Arg = "recorded" (1/0). */

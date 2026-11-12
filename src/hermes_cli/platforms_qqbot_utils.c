@@ -12,7 +12,7 @@
 #define QQBOT_VERSION "1.0.0"
 #endif
 
-/* PoP: cli_gateway_platforms_qqbot_utils_build_user_agent @ gateway/platforms/qqbot/utils.py:build_user_agent */
+/* PoP: cli_gateway_platforms_qqbot_utils_build_user_agent @ plugins/platforms/qqbot/utils.py:build_user_agent */
 
 /* Port of Python gateway/platforms/qqbot/utils.py:build_user_agent */
 /* Build a descriptive User-Agent string.
@@ -46,7 +46,7 @@ char *cli_gateway_platforms_qqbot_utils_build_user_agent(void)
     return result ? result : strdup("QQBotAdapter/1.0.0 (unknown)");
 }
 
-/* PoP: cli_gateway_platforms_qqbot_utils_get_api_headers @ gateway/platforms/qqbot/utils.py:get_api_headers */
+/* PoP: cli_gateway_platforms_qqbot_utils_get_api_headers @ plugins/platforms/qqbot/utils.py:get_api_headers */
 
 /* Port of Python gateway/platforms/qqbot/utils.py:get_api_headers */
 /* Return standard HTTP headers for QQBot API requests.
@@ -67,7 +67,7 @@ char *cli_gateway_platforms_qqbot_utils_get_api_headers(void)
     return result ? result : strdup("{}");
 }
 
-/* PoP: cli_gateway_platforms_qqbot_utils_coerce_list @ gateway/platforms/qqbot/utils.py:coerce_list */
+/* PoP: cli_gateway_platforms_qqbot_utils_coerce_list @ plugins/platforms/qqbot/utils.py:coerce_list */
 
 /* Port of Python gateway/platforms/qqbot/utils.py:coerce_list */
 /* Coerce a comma-separated string into a trimmed string array.

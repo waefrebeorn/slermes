@@ -215,7 +215,7 @@ int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_projects_cmd_u_cmd_restore @ hermes_cli/projects_cmd.py:_cmd_restore */
+/* PoP: hermes_cli_projects_cmd_u_cmd_restore @ hermes_cli/curator.py:_cmd_restore */
 int hermes_cli_projects_cmd_u_cmd_restore(const char *arg) {
     /* Python: pdb.restore_project(conn, proj.id); print("Restored <slug>"). */
     if (arg && *arg) printf("Restored %s\n", arg);

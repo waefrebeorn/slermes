@@ -18,7 +18,7 @@
 #include <strings.h>
 
 /* PoP: get_hermes_home @ cron/scheduler.py:_get_hermes_home */
-/* PoP: get_hermes_home @ tools/tirith_security.py:_get_hermes_home */
+/* PoP: get_hermes_home @ cron/scheduler.py:_get_hermes_home */
 /* PoP: get_hermes_home @ hermes_cli/sessions_cmd.py:get_hermes_home */
 const char *get_hermes_home(void) {
     const char *home = getenv("HERMES_HOME");
@@ -32,7 +32,7 @@ char *hermes_constants_get_hermes_home(void) {
     return (char *)get_hermes_home();
 }
 
-/* PoP: is_container @ hermes_cli/config.py:_is_container */
+/* PoP: is_container @ hermes_cli/profile_distribution.py:_is_container */
 bool is_container(void) {
     if (access("/.dockerenv", F_OK) == 0)
         return true;

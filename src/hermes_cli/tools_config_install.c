@@ -544,7 +544,7 @@ void tools_config_clear_stale_cua_install_lock(void) {
 
 /* ── Windows autostart repair ──────────────────────────────────────────── */
 
-/* PoP: tools_config_repair_cua_driver_autostart_windows @ hermes_cli/tools_config.py:_repair_cua_driver_autostart_windows */
+/* PoP: tools_config_repair_cua_driver_autostart_windows @ hermes_cli/tools_config_cua.py:_repair_cua_driver_autostart_windows */
 bool tools_config_repair_cua_driver_autostart_windows(const char *driver_cmd,
                                                       bool verbose) {
 #if defined(_WIN32)
@@ -1149,7 +1149,7 @@ static void tci_print_bounded_warnings(const char *message) {
     }
 }
 
-/* PoP: tools_config_ensure_browser_use_cli @ hermes_cli/tools_config.py:_ensure_browser_use_cli */
+/* PoP: tools_config_ensure_browser_use_cli @ hermes_cli/tools_config_post_setup.py:_ensure_browser_use_cli */
 void tools_config_ensure_browser_use_cli(bool verbose_hints) {
     display_print_info("    Ensuring browser-use CLI (managed install)...");
     char msg[1024];
@@ -1273,7 +1273,7 @@ static void tci_pip_post_setup(const char *module, const char **pip_args,
     free(res.out); free(res.err);
 }
 
-/* PoP: tools_config_run_post_setup @ hermes_cli/tools_config.py:_run_post_setup */
+/* PoP: tools_config_run_post_setup @ hermes_cli/tools_config_post_setup.py:_run_post_setup */
 int tools_config_run_post_setup(const char *post_setup_key) {
     if (!post_setup_key || !*post_setup_key) return 1;
 

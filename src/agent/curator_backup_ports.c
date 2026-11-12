@@ -384,7 +384,7 @@ char *cub_rollback(const char *backup_id) {
     return out;
 }
 
-/* PoP: cub_format_size @ agent/curator_backup.py:format_size */
+/* PoP: cub_format_size @ plugins/platforms/qqbot/chunked_upload.py:format_size */
 char *cub_format_size(double n) {
     /* Python: human size. */
     char *out = NULL;

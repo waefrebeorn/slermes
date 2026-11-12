@@ -623,7 +623,7 @@ char *provider_models_cache_path(void)
 }
 
 /*
- * PoP: _ollama_cloud_cache_path @ hermes_cli/models.py:_ollama_cloud_cache_path */
+ * PoP: _ollama_cloud_cache_path @ hermes_cli/models_local.py:_ollama_cloud_cache_path */
 char *ollama_cloud_cache_path(void)
 {
     char out[PATH_MAX];
@@ -921,7 +921,7 @@ char *fetch_ai_gateway_models(double timeout_sec, bool force_refresh) {
     return curated;  /* caller frees */
 }
 
-/* PoP: fetch_ai_gateway_pricing @ hermes_cli/models.py:fetch_ai_gateway_pricing */
+/* PoP: fetch_ai_gateway_pricing @ hermes_cli/models_pricing.py:fetch_ai_gateway_pricing */
 /* Returns malloc'd JSON: {model_id: {"prompt":..,"completion":..,
  * "input_cache_read":..,"input_cache_write":..}}. caller frees. */
 char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh) {

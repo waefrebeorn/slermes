@@ -1390,7 +1390,7 @@ bool gwstatus_acquire_scoped_lock(const char *scope, const char *identity,
     return true;
 }
 
-/* PoP: gwstatus_release_scoped_lock @ gateway/status.py:release_scoped_lock */
+/* PoP: gwstatus_release_scoped_lock @ gateway/status_scoped_locks.py:release_scoped_lock */
 /* Port of Python: release_scoped_lock */
 void gwstatus_release_scoped_lock(const char *scope, const char *identity) {
     char lock_path[1200];
@@ -1405,7 +1405,7 @@ void gwstatus_release_scoped_lock(const char *scope, const char *identity) {
     unlink(lock_path);
 }
 
-/* PoP: gwstatus_release_all_scoped_locks @ gateway/status.py:release_all_scoped_locks */
+/* PoP: gwstatus_release_all_scoped_locks @ gateway/status_scoped_locks.py:release_all_scoped_locks */
 /* Port of Python: release_all_scoped_locks */
 int gwstatus_release_all_scoped_locks(pid_t owner_pid, long owner_start_time) {
     char dir[1100];

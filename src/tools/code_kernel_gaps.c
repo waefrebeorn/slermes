@@ -18,7 +18,7 @@ char *_lifecycle_limits(void) { return strdup("{}"); }
 /* PoP: _resolve_owner @ tools/code_kernel.py:_resolve_owner */
 char *_resolve_owner(void) { return strdup(""); }
 
-/* PoP: _kernel_key @ tools/code_kernel.py:_kernel_key */
+/* PoP: _kernel_key @ tools/code_kernel_remote.py:_kernel_key */
 char *_kernel_key(void) { return strdup(""); }
 
 

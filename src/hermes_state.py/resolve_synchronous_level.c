@@ -1,4 +1,4 @@
-/* PoP: resolve_synchronous_level @ hermes_state.py:resolve_synchronous_level */
+/* PoP: resolve_synchronous_level @ hermes_state_wal.py:resolve_synchronous_level */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

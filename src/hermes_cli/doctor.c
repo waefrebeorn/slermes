@@ -294,7 +294,7 @@ int doctor_acknowledge_advisory(const char *advisory_id) {
     return 0;
 }
 
-/* PoP: doctor_sqlite_upgrade_hint @ hermes_cli/doctor.py:_sqlite_upgrade_hint */
+/* PoP: doctor_sqlite_upgrade_hint @ hermes_cli/doctor_platform.py:_sqlite_upgrade_hint */
 char *doctor_sqlite_upgrade_hint(const char *install_method) {
     /* Python: build an actionable SQLite upgrade hint string based on
      * install method. Uses detect_install_method() (already ported as
@@ -400,7 +400,7 @@ json_t *doctor_termux_install_all_fallback_notes(void) {
     return out;
 }
 
-/* PoP: doctor_has_provider_env_config @ hermes_cli/doctor.py:_has_provider_env_config */
+/* PoP: doctor_has_provider_env_config @ hermes_cli/doctor_config.py:_has_provider_env_config */
 int doctor_has_provider_env_config(const char *content) {
     if (!content) return 0;
     for (int i = 0; i < _N_HINTS; i++) {
@@ -409,7 +409,7 @@ int doctor_has_provider_env_config(const char *content) {
     return 0;
 }
 
-/* PoP: doctor_tool_availability_detail @ hermes_cli/doctor.py:_doctor_tool_availability_detail */
+/* PoP: doctor_tool_availability_detail @ hermes_cli/doctor_tools.py:_doctor_tool_availability_detail */
 const char *doctor_tool_availability_detail(const char *toolset, const char *kanban_task_env) {
     if (!toolset) return "";
     if (strcmp(toolset, "kanban") == 0 && (!kanban_task_env || !*kanban_task_env)) {

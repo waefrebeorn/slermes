@@ -12,7 +12,7 @@
 /* PoP: prepare_send_message_platforms @ tools/send_message_tool.py:prepare_send_message_platforms */
 char *prepare_send_message_platforms(void) { return strdup("[]"); }
 
-/* PoP: resolve_send_target @ tools/send_message_tool.py:resolve_send_target */
+/* PoP: resolve_send_target @ tools/send_message_targets.py:resolve_send_target */
 char *resolve_send_target(void) { return strdup("{}"); }
 
 /* PoP: _bounded_send_error @ tools/send_message_tool.py:_bounded_send_error */

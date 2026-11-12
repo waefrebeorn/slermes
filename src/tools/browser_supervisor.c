@@ -59,7 +59,7 @@ void port_browser_supervisor_cleanup(port_browser_supervisor_state_t *state)
 /* Implementation extracted to browser_supervisor_redact.c (faithful agent.redact
  * port in browser_redact.c). This file's body is in that module. */
 
-/* PoP: dialog @ tools/browser_supervisor.py:_redact_supervisor_text */
+/* PoP: dialog @ tools/browser_supervisor_dialogs.py:_redact_supervisor_text */
 /* Implementation extracted to browser_supervisor_redact.c (faithful agent.redact
  * port in browser_redact.c). This file's body is in that module. */
 
@@ -226,7 +226,7 @@ void *browser_supervisor_thread_main(void *arg)
     return NULL;
 }
 
-/* PoP: browser_supervisor_archive_dialog_locked @ tools/browser_supervisor.py:_archive_dialog_locked */
+/* PoP: browser_supervisor_archive_dialog_locked @ tools/browser_supervisor_dialogs.py:_archive_dialog_locked */
 /* Port of Python tools/browser_supervisor.py:_archive_dialog_locked().
  * Archive a dialog that was answered but not yet removed from pending. */
 void browser_supervisor_archive_dialog_locked(void)
@@ -236,7 +236,7 @@ void browser_supervisor_archive_dialog_locked(void)
     /* In a full implementation this would move from _pending_dialogs to _recent_dialogs */
 }
 
-/* PoP: browser_supervisor_on_frame_attached @ tools/browser_supervisor.py:_on_frame_attached */
+/* PoP: browser_supervisor_on_frame_attached @ tools/browser_supervisor_frames.py:_on_frame_attached */
 /* Port of Python tools/browser_supervisor.py:_on_frame_attached().
  * CDP event handler: Page.frameAttached */
 void browser_supervisor_on_frame_attached(const char *frame_id)
@@ -246,7 +246,7 @@ void browser_supervisor_on_frame_attached(const char *frame_id)
     /* Update frame tree */
 }
 
-/* PoP: browser_supervisor_on_frame_navigated @ tools/browser_supervisor.py:_on_frame_navigated */
+/* PoP: browser_supervisor_on_frame_navigated @ tools/browser_supervisor_frames.py:_on_frame_navigated */
 /* Port of Python tools/browser_supervisor.py:_on_frame_navigated().
  * CDP event handler: Page.frameNavigated */
 void browser_supervisor_on_frame_navigated(const char *frame_id)
@@ -256,7 +256,7 @@ void browser_supervisor_on_frame_navigated(const char *frame_id)
     /* Update frame tree with new URL */
 }
 
-/* PoP: browser_supervisor_on_frame_detached @ tools/browser_supervisor.py:_on_frame_detached */
+/* PoP: browser_supervisor_on_frame_detached @ tools/browser_supervisor_frames.py:_on_frame_detached */
 /* Port of Python tools/browser_supervisor.py:_on_frame_detached().
  * CDP event handler: Page.frameDetached */
 void browser_supervisor_on_frame_detached(const char *frame_id)
@@ -266,7 +266,7 @@ void browser_supervisor_on_frame_detached(const char *frame_id)
     /* Remove from frame tree */
 }
 
-/* PoP: browser_supervisor_on_target_detached @ tools/browser_supervisor.py:_on_target_detached */
+/* PoP: browser_supervisor_on_target_detached @ tools/browser_supervisor_frames.py:_on_target_detached */
 /* Port of Python tools/browser_supervisor.py:_on_target_detached().
  * CDP event handler: Target.detachedFromTarget */
 void browser_supervisor_on_target_detached(const char *target_id)
@@ -286,7 +286,7 @@ void browser_supervisor_on_console(const char *message)
     /* Redact and store console message */
 }
 
-/* PoP: browser_supervisor_build_frame_tree_locked @ tools/browser_supervisor.py:_build_frame_tree_locked */
+/* PoP: browser_supervisor_build_frame_tree_locked @ tools/browser_supervisor_frames.py:_build_frame_tree_locked */
 /* Port of Python tools/browser_supervisor.py:_build_frame_tree_locked().
  * Build the frame tree snapshot for SupervisorSnapshot. */
 json_t *browser_supervisor_build_frame_tree_locked(void)
@@ -363,7 +363,7 @@ json_t *browser_supervisor_attach_initial_page(void)
     return result;
 }
 
-/* PoP: browser_supervisor_install_dialog_bridge @ tools/browser_supervisor.py:_install_dialog_bridge */
+/* PoP: browser_supervisor_install_dialog_bridge @ tools/browser_supervisor_dialogs.py:_install_dialog_bridge */
 /* Port of Python tools/browser_supervisor.py:_install_dialog_bridge().
  * Install dialog bridge script + Fetch.enable on a CDP session. */
 void browser_supervisor_install_dialog_bridge(const char *session_id)
@@ -381,7 +381,7 @@ void browser_supervisor_on_event(const char *method, const char *params_json, co
     hermes_log(LOG_DEBUG, "browser_supervisor", "_on_event: method=%s session=%s", method, session_id ? session_id : "none");
 }
 
-/* PoP: browser_supervisor_on_dialog_opening @ tools/browser_supervisor.py:_on_dialog_opening */
+/* PoP: browser_supervisor_on_dialog_opening @ tools/browser_supervisor_dialogs.py:_on_dialog_opening */
 /* Port of Python tools/browser_supervisor.py:_on_dialog_opening().
  * CDP event handler: Page.javascriptDialogOpening - capture new dialog. */
 void browser_supervisor_on_dialog_opening(const char *dialog_type, const char *message, const char *default_prompt, const char *session_id, const char *frame_id)
@@ -399,7 +399,7 @@ void browser_supervisor_auto_handle_dialog(const char *dialog_id, bool accept, c
     hermes_log(LOG_INFO, "browser_supervisor", "_auto_handle_dialog: dialog_id=%s accept=%d", dialog_id, accept);
 }
 
-/* PoP: browser_supervisor_on_dialog_closed @ tools/browser_supervisor.py:_on_dialog_closed */
+/* PoP: browser_supervisor_on_dialog_closed @ tools/browser_supervisor_dialogs.py:_on_dialog_closed */
 /* Port of Python tools/browser_supervisor.py:_on_dialog_closed().
  * CDP event handler: Page.javascriptDialogClosed - dialog closed by browser. */
 void browser_supervisor_on_dialog_closed(const char *session_id)
@@ -408,7 +408,7 @@ void browser_supervisor_on_dialog_closed(const char *session_id)
     hermes_log(LOG_DEBUG, "browser_supervisor", "_on_dialog_closed: session=%s", session_id);
 }
 
-/* PoP: browser_supervisor_on_fetch_paused @ tools/browser_supervisor.py:_on_fetch_paused */
+/* PoP: browser_supervisor_on_fetch_paused @ tools/browser_supervisor_dialogs.py:_on_fetch_paused */
 /* Port of Python tools/browser_supervisor.py:_on_fetch_paused().
  * CDP event handler: Fetch.requestPaused - intercept dialog bridge XHR. */
 void browser_supervisor_on_fetch_paused(const char *request_id, const char *url, const char *session_id, const char *frame_id)
@@ -417,7 +417,7 @@ void browser_supervisor_on_fetch_paused(const char *request_id, const char *url,
     hermes_log(LOG_DEBUG, "browser_supervisor", "_on_fetch_paused: request_id=%s url=%.100s", request_id, url);
 }
 
-/* PoP: browser_supervisor_on_frame_attached_with_session @ tools/browser_supervisor.py:_on_frame_attached */
+/* PoP: browser_supervisor_on_frame_attached_with_session @ tools/browser_supervisor_frames.py:_on_frame_attached */
 /* Port of Python tools/browser_supervisor.py:_on_frame_attached().
  * CDP event handler: Page.frameAttached with session_id. */
 void browser_supervisor_on_frame_attached_with_session(const char *frame_id, const char *session_id)
@@ -426,7 +426,7 @@ void browser_supervisor_on_frame_attached_with_session(const char *frame_id, con
     hermes_log(LOG_DEBUG, "browser_supervisor", "_on_frame_attached: frame_id=%s", frame_id);
 }
 
-/* PoP: browser_supervisor_on_frame_navigated_with_url @ tools/browser_supervisor.py:_on_frame_navigated */
+/* PoP: browser_supervisor_on_frame_navigated_with_url @ tools/browser_supervisor_frames.py:_on_frame_navigated */
 /* Port of Python tools/browser_supervisor.py:_on_frame_navigated().
  * CDP event handler: event handler: Page.frameNavigated with URL. */
 void browser_supervisor_on_frame_navigated_with_url(const char *frame_id, const char *url, const char *session_id)
@@ -435,7 +435,7 @@ void browser_supervisor_on_frame_navigated_with_url(const char *frame_id, const 
     hermes_log(LOG_DEBUG, "browser_supervisor", "_on_frame_navigated: frame_id=%s url=%.100s", frame_id, url ? url : "");
 }
 
-/* PoP: browser_supervisor_on_target_attached @ tools/browser_supervisor.py:_on_target_attached */
+/* PoP: browser_supervisor_on_target_attached @ tools/browser_supervisor_frames.py:_on_target_attached */
 /* Port of Python tools/browser_supervisor.py:_on_target_attached().
  * CDP event handler: Target.attachedToTarget */
 void browser_supervisor_on_target_attached(const char *target_id, const char *session_id)
@@ -472,7 +472,7 @@ json_t *browser_supervisor_fulfill_bridge_request(const char *request_id, bool a
     return result;
 }
 
-/* PoP: command @ tools/browser_supervisor.py:_handle_dialog_cdp */
+/* PoP: command @ tools/browser_supervisor_dialogs.py:_handle_dialog_cdp */
 /* Port of Python tools/browser_supervisor.py:_handle_dialog_cdp().
  * Send Page.handleJavaScriptDialog CDP command (agent path only). */
 json_t *browser_supervisor_handle_dialog_cdp(const char *session_key, const char *dialog_id, bool accept, const char *prompt_text)
@@ -491,7 +491,7 @@ json_t *browser_supervisor_handle_dialog_cdp(const char *session_key, const char
     return result;
 }
 
-/* PoP: browser_supervisor_dialog_timeout_expired @ tools/browser_supervisor.py:_dialog_timeout_expired */
+/* PoP: browser_supervisor_dialog_timeout_expired @ tools/browser_supervisor_dialogs.py:_dialog_timeout_expired */
 /* Port of Python tools/browser_supervisor.py:_dialog_timeout_expired().
  * Watchdog callback: auto-dismiss dialog after timeout. */
 void browser_supervisor_dialog_timeout_expired(const char *dialog_id)
@@ -500,7 +500,7 @@ void browser_supervisor_dialog_timeout_expired(const char *dialog_id)
     hermes_log(LOG_WARNING, "browser_supervisor", "dialog_timeout_expired: dialog_id=%s", dialog_id);
 }
 
-/* PoP: browser_supervisor_enable_child_domains @ tools/browser_supervisor.py:_enable_child_domains */
+/* PoP: browser_supervisor_enable_child_domains @ tools/browser_supervisor_frames.py:_enable_child_domains */
 /* Port of Python tools/browser_supervisor.py:_enable_child_domains().
  * Enable CDP domains on child targets. */
 void browser_supervisor_enable_child_domains(const char *session_id)

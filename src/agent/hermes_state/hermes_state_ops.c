@@ -19,7 +19,7 @@
 
 /* ── hermes_state.py: session runtime lock + maintenance + query ── */
 
-/* PoP: update_session_runtime_lock @ hermes_state.py:update_session_runtime_lock */
+/* PoP: update_session_runtime_lock @ hermes_state_sessions.py:update_session_runtime_lock */
 void hermes_state_update_session_runtime_lock(sqlite3 *conn, const char *session_id,
         const char *model, const char *provider, const char *model_options,
         const char *route_source, int confirmed) {
@@ -43,7 +43,7 @@ void hermes_state_update_session_runtime_lock(sqlite3 *conn, const char *session
     }
 }
 
-/* PoP: prune_empty_ghost_sessions @ hermes_state.py:prune_empty_ghost_sessions */
+/* PoP: prune_empty_ghost_sessions @ hermes_state_maintenance.py:prune_empty_ghost_sessions */
 int hermes_state_prune_empty_ghost_sessions(sqlite3 *conn) {
     if (!conn) return 0;
     time_t cutoff = time(NULL) - 86400;
@@ -62,7 +62,7 @@ int hermes_state_prune_empty_ghost_sessions(sqlite3 *conn) {
     return pruned;
 }
 
-/* PoP: finalize_orphaned_compression_sessions @ hermes_state.py:finalize_orphaned_compression_sessions */
+/* PoP: finalize_orphaned_compression_sessions @ hermes_state_compression.py:finalize_orphaned_compression_sessions */
 int hermes_state_finalize_orphaned_compression_sessions(sqlite3 *conn) {
     if (!conn) return 0;
     time_t cutoff = time(NULL) - 604800; /* 7 days */
@@ -169,7 +169,7 @@ long long hermes_state_session_count(sqlite3 *conn, const char *source,
     return count;
 }
 
-/* PoP: message_count @ hermes_state.py:message_count */
+/* PoP: message_count @ hermes_state_messages.py:message_count */
 long long hermes_state_message_count(sqlite3 *conn, const char *session_id) {
     if (!conn) return 0;
     sqlite3_stmt *st = NULL;

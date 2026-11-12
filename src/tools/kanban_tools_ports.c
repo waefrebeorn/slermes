@@ -47,7 +47,7 @@ bool kbt_maybe_auto_subscribe(const char *session_id) {
     return true;
 }
 
-/* PoP: kbt_board_schema_prop @ tools/kanban_tools.py:_board_schema_prop */
+/* PoP: kbt_board_schema_prop @ tools/kanban_tools_schemas.py:_board_schema_prop */
 char *kbt_board_schema_prop(void) {
     /* Python: optional board param fragment. */
     return strdup("{\"board\": {\"type\": \"string\", \"description\": \"Board name\", \"optional\": true}}");

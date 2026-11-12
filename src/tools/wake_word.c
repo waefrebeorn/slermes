@@ -1464,7 +1464,7 @@ static const char *WW_SH_SHERPA_MODEL_URL =
 static const char *WW_SH_SHERPA_MODEL_DIR =
     "sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01";
 
-/* PoP: ww_sherpa_model_root @ tools/wake_word.py:_sherpa_model_root */
+/* PoP: ww_sherpa_model_root @ tools/wake_word_engines.py:_sherpa_model_root */
 char *ww_sherpa_model_root(void)
 {
     const char *home = getenv("HERMES_HOME");
@@ -1479,7 +1479,7 @@ char *ww_sherpa_model_root(void)
     return out;
 }
 
-/* PoP: ww_ensure_sherpa_model @ tools/wake_word.py:_ensure_sherpa_model */
+/* PoP: ww_ensure_sherpa_model @ tools/wake_word_engines.py:_ensure_sherpa_model */
 char *ww_ensure_sherpa_model(const char *root)
 {
     const char *base = root && *root ? root : "/tmp/hermes/cache/wakewords";

@@ -10,5 +10,5 @@
 /* ── agent/copilot_acp_client.py: 2 missing functions ── */
 
 
-/* PoP: _model_selection_request @ agent/copilot_acp_client.py:_model_selection_request */
+/* PoP: _model_selection_request @ agent/acp_client.py:_model_selection_request */
 void _model_selection_request(void) { }

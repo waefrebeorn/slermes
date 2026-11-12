@@ -50,7 +50,7 @@ char *tools_camofox_auth_headers(void)
     return s ? s : strdup("{}");
 }
 
-/* PoP: tools_cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */
+/* PoP: tools_cleanup_all_browsers @ tools/browser_session_lifecycle.py:cleanup_all_browsers */
 int tools_cleanup_all_browsers(void)
 {
     /* Tear down CDP supervisors for every task so background threads exit
@@ -91,7 +91,7 @@ long tools_clarify_clear_session(const char *session_key)
     return 0;
 }
 
-/* PoP: tools_flatten_choice @ tools/clarify_tool.py:_flatten_choice */
+/* PoP: tools_flatten_choice @ plugins/platforms/discord/adapter.py:_flatten_choice */
 char *tools_flatten_choice(const char *c)
 {
     if (!c) return strdup("");
@@ -147,7 +147,7 @@ int tools_perm_run(const char *binary, const char *args_json, double timeout,
     return rc;
 }
 
-/* PoP: tools_vision_aux_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override */
+/* PoP: tools_vision_aux_override @ agent/image_routing.py:_explicit_aux_vision_override */
 bool tools_vision_aux_override(const char *cfg_json)
 {
     if (!cfg_json || !*cfg_json) return false;
@@ -166,7 +166,7 @@ bool tools_vision_aux_override(const char *cfg_json)
     return r;
 }
 
-/* PoP: tools_vision_lookup_supports @ tools/computer_use/vision_routing.py:_lookup_supports_vision */
+/* PoP: tools_vision_lookup_supports @ agent/image_routing.py:_lookup_supports_vision */
 bool tools_vision_lookup_supports(const char *provider, const char *model,
                                   const char *cfg_json)
 {
@@ -175,7 +175,7 @@ bool tools_vision_lookup_supports(const char *provider, const char *model,
     return true;
 }
 
-/* PoP: tools_cronjob_canonical_skills @ tools/cronjob_tools.py:_canonical_skills */
+/* PoP: tools_cronjob_canonical_skills @ tools/cronjob_job_args.py:_canonical_skills */
 char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json,
                                       int *out_count)
 {
@@ -203,7 +203,7 @@ char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json
     return out;
 }
 
-/* PoP: tools_cronjob_normalize_optional @ tools/cronjob_tools.py:_normalize_optional_job_value */
+/* PoP: tools_cronjob_normalize_optional @ tools/cronjob_job_args.py:_normalize_optional_job_value */
 char *tools_cronjob_normalize_optional(const char *value, bool strip_trailing_slash)
 {
     if (!value) return NULL;
@@ -467,7 +467,7 @@ int tools_ha_run_async(void *(*fn)(void *), void *arg, void **out_result)
     (void)join_rc;
 }
 
-/* PoP: tools_coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */
+/* PoP: tools_coerce_positive_int @ tools/tool_output_limits.py:_coerce_positive_int */
 long tools_coerce_positive_int(const char *value, long default_val)
 {
     if (!value || !*value) return default_val;
@@ -659,7 +659,7 @@ int tools_registry_init(const char *name)
     return 0;
 }
 
-/* PoP: tools_is_telegram_thread_not_found @ tools/send_message_tool.py:_is_telegram_thread_not_found */
+/* PoP: tools_is_telegram_thread_not_found @ tools/send_message_senders.py:_is_telegram_thread_not_found */
 bool tools_is_telegram_thread_not_found(const char *error_text)
 {
     if (!error_text) return false;
@@ -668,7 +668,7 @@ bool tools_is_telegram_thread_not_found(const char *error_text)
            strstr(error_text, "message thread not found") != NULL;
 }
 
-/* PoP: tools_registry_standalone_send @ tools/send_message_tool.py:_registry_standalone_send */
+/* PoP: tools_registry_standalone_send @ tools/send_message_senders.py:_registry_standalone_send */
 int tools_registry_standalone_send(const char *platform_name, const char *chat_id,
                                    const char *message, const char *thread_id)
 {
@@ -790,7 +790,7 @@ char *tools_write_approval_decision(bool allow, bool blocked, bool stage,
     return s ? s : strdup("{}");
 }
 
-/* PoP: tools_xai_get_env_value @ tools/xai_http.py:get_env_value */
+/* PoP: tools_xai_get_env_value @ hermes_cli/config.py:get_env_value */
 char *tools_xai_get_env_value(const char *name, const char *default_val)
 {
     const char *home = getenv("HERMES_HOME");

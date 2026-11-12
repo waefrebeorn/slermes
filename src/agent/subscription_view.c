@@ -10,7 +10,7 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: agent_subscription_view_can_change_plan @ agent/subscription_view.py:can_change_plan */
+/* PoP: agent_subscription_view_can_change_plan @ agent/billing_view.py:can_change_plan */
 int agent_subscription_view_can_change_plan(const char *arg) {
     /* Python: raw if set else is_admin. Arg = "raw\tadmin" (raw empty =
      * None). */

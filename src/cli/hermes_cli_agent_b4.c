@@ -124,7 +124,7 @@ static void b4_fragments_free(hcli_fragment_t *frags, size_t len)
 
 /* ── hcli_handle_approval_selection ─────────────────────────────────────── */
 
-/* PoP: hcli_handle_approval_selection @ cli.py:_handle_approval_selection */
+/* PoP: hcli_handle_approval_selection @ hermes_cli/cli_modal_mixin.py:_handle_approval_selection */
 void hcli_handle_approval_selection(hcli_t *self)
 {
     if (!self) return;
@@ -168,7 +168,7 @@ void hcli_handle_approval_selection(hcli_t *self)
 
 /* ── hcli_submit_secret_response / hcli_cancel_secret_capture ───────────── */
 
-/* PoP: hcli_submit_secret_response @ cli.py:_submit_secret_response */
+/* PoP: hcli_submit_secret_response @ hermes_cli/cli_modal_mixin.py:_submit_secret_response */
 void hcli_submit_secret_response(hcli_t *self, const char *value)
 {
     if (!self || !self->secret_state)
@@ -184,7 +184,7 @@ void hcli_submit_secret_response(hcli_t *self, const char *value)
     if (hcli_paint_now) hcli_paint_now(self);
 }
 
-/* PoP: hcli_cancel_secret_capture @ cli.py:_cancel_secret_capture */
+/* PoP: hcli_cancel_secret_capture @ hermes_cli/cli_modal_mixin.py:_cancel_secret_capture */
 void hcli_cancel_secret_capture(hcli_t *self)
 {
     hcli_submit_secret_response(self, "");
@@ -192,7 +192,7 @@ void hcli_cancel_secret_capture(hcli_t *self)
 
 /* ── hcli_print_exit_summary ────────────────────────────────────────────── */
 
-/* PoP: hcli_print_exit_summary @ cli.py:_print_exit_summary */
+/* PoP: hcli_print_exit_summary @ hermes_cli/cli_session_mixin.py:_print_exit_summary */
 void hcli_print_exit_summary(hcli_t *self, bool clear_screen)
 {
     if (!self) return;
@@ -269,7 +269,7 @@ void hcli_print_exit_summary(hcli_t *self, bool clear_screen)
 
 /* ── hcli_get_tui_prompt_text ───────────────────────────────────────────── */
 
-/* PoP: hcli_get_tui_prompt_text @ cli.py:_get_tui_prompt_text */
+/* PoP: hcli_get_tui_prompt_text @ hermes_cli/cli_tui_mixin.py:_get_tui_prompt_text */
 char *hcli_get_tui_prompt_text(hcli_t *self)
 {
     if (!self || !self->tui_prompt_fragments_fn)
@@ -292,7 +292,7 @@ char *hcli_get_tui_prompt_text(hcli_t *self)
 
 /* ── hcli_build_tui_layout_children ─────────────────────────────────────── */
 
-/* PoP: hcli_build_tui_layout_children @ cli.py:_build_tui_layout_children */
+/* PoP: hcli_build_tui_layout_children @ hermes_cli/cli_tui_mixin.py:_build_tui_layout_children */
 char **hcli_build_tui_layout_children(
     hcli_t *self,
     const char *sudo_widget,
@@ -397,7 +397,7 @@ static bool b4_frag_push(hcli_fragment_t **frags, size_t *n, size_t *cap,
     return true;
 }
 
-/* PoP: hcli_render_stash_panel @ cli.py:_render_stash_panel */
+/* PoP: hcli_render_stash_panel @ hermes_cli/cli_status_bar_mixin.py:_render_stash_panel */
 hcli_fragment_t *hcli_render_stash_panel(hcli_t *self,
                                          const hcli_stash_row_t *rows,
                                          size_t row_count,

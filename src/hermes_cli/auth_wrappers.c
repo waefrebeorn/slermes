@@ -34,7 +34,7 @@ int auth_u_resolve_api_key_provider_secret(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_detect_zai_endpoint @ hermes_cli/auth.py:detect_zai_endpoint */
+/* PoP: auth_detect_zai_endpoint @ hermes_cli/auth_zai_kimi.py:detect_zai_endpoint */
 int auth_detect_zai_endpoint(const char *arg) {
     /* Python: z.ai probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -45,7 +45,7 @@ int auth_detect_zai_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_resolve_zai_base_url @ hermes_cli/auth.py:_resolve_zai_base_url */
+/* PoP: auth_u_resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
 int auth_u_resolve_zai_base_url(const char *arg) {
     /* Python: cached probe. Arg =
      * "env\tcached\tstate\tresult". */
@@ -63,8 +63,8 @@ int auth_u_resolve_zai_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
-/* PoP: auth_u_format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
+/* PoP: auth_u_format_nous_entitlement_auth_error @ hermes_cli/auth_nous.py:_format_nous_entitlement_auth_error */
+/* PoP: auth_u_format_nous_entitlement_auth_error @ hermes_cli/auth_nous.py:_format_nous_entitlement_auth_error */
 int auth_u_format_nous_entitlement_auth_error(const char *arg) {
     /* Faithful fallback: the Python path enriches with Nous Portal account
      * info; the C port prints the entitlement guidance directly. */
@@ -123,7 +123,7 @@ int auth_u_parse_iso_timestamp(const char *arg) {
     return (int)t;
 }
 
-/* PoP: auth_u_read_qwen_cli_tokens @ hermes_cli/auth.py:_read_qwen_cli_tokens */
+/* PoP: auth_u_read_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_read_qwen_cli_tokens */
 int auth_u_read_qwen_cli_tokens(const char *arg) {
     /* Python: read Qwen CLI credential file. Arg = "state\tpath\terror". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -146,7 +146,7 @@ int auth_u_read_qwen_cli_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_save_qwen_cli_tokens @ hermes_cli/auth.py:_save_qwen_cli_tokens */
+/* PoP: auth_u_save_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_save_qwen_cli_tokens */
 int auth_u_save_qwen_cli_tokens(const char *arg) {
     /* Python: 0600 O_EXCL atomic write. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -157,7 +157,7 @@ int auth_u_save_qwen_cli_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_refresh_qwen_cli_tokens @ hermes_cli/auth.py:_refresh_qwen_cli_tokens */
+/* PoP: auth_u_refresh_qwen_cli_tokens @ hermes_cli/auth_qwen.py:_refresh_qwen_cli_tokens */
 int auth_u_refresh_qwen_cli_tokens(const char *arg) {
     /* Python: qwen refresh. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -185,7 +185,7 @@ int auth_u_refresh_qwen_cli_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_mark_qwen_oauth_active @ hermes_cli/auth.py:_mark_qwen_oauth_active */
+/* PoP: auth_u_mark_qwen_oauth_active @ hermes_cli/auth_qwen.py:_mark_qwen_oauth_active */
 int auth_u_mark_qwen_oauth_active(const char *arg) {
     /* Python: set active_provider + minimal state in auth store. Arg =
      * "base_url\tstate". */
@@ -195,7 +195,7 @@ int auth_u_mark_qwen_oauth_active(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_resolve_qwen_runtime_credentials @ hermes_cli/auth.py:resolve_qwen_runtime_credentials */
+/* PoP: auth_resolve_qwen_runtime_credentials @ hermes_cli/auth_qwen.py:resolve_qwen_runtime_credentials */
 int auth_resolve_qwen_runtime_credentials(const char *arg) {
     /* Python: read + refresh + resolve. Arg =
      * "state\trefreshed\tbase_url\tresult". */
@@ -213,7 +213,7 @@ int auth_resolve_qwen_runtime_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_get_qwen_auth_status @ hermes_cli/auth.py:get_qwen_auth_status */
+/* PoP: auth_get_qwen_auth_status @ hermes_cli/auth_qwen.py:get_qwen_auth_status */
 int auth_get_qwen_auth_status(const char *arg) {
     /* Python: qwen status w/ refresh. Arg =
      * "state\tauth_file\tsource\tresult". */
@@ -393,13 +393,13 @@ int auth_login_spotify_command(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_is_remote_session @ hermes_cli/auth.py:_is_remote_session */
+/* PoP: auth_u_is_remote_session @ hermes_cli/auth_device_flow.py:_is_remote_session */
 int auth_u_is_remote_session(const char *arg) {
     (void)arg;
     return (getenv("SSH_CLIENT") || getenv("SSH_TTY")) ? 1 : 0;
 }
 
-/* PoP: auth_u_can_open_graphical_browser @ hermes_cli/auth.py:_can_open_graphical_browser */
+/* PoP: auth_u_can_open_graphical_browser @ hermes_cli/auth_device_flow.py:_can_open_graphical_browser */
 int auth_u_can_open_graphical_browser(const char *arg) {
     (void)arg;
 #if defined(_WIN32) || defined(__APPLE__)
@@ -413,7 +413,7 @@ int auth_u_can_open_graphical_browser(const char *arg) {
 #endif
 }
 
-/* PoP: auth_u_print_loopback_ssh_hint @ hermes_cli/auth.py:_print_loopback_ssh_hint */
+/* PoP: auth_u_print_loopback_ssh_hint @ hermes_cli/auth_device_flow.py:_print_loopback_ssh_hint */
 int auth_u_print_loopback_ssh_hint(const char *arg) {
     if (!arg || !*arg) return 0;
     if (!auth_u_is_remote_session(NULL)) return 0;
@@ -432,7 +432,7 @@ int auth_u_print_loopback_ssh_hint(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_read_codex_tokens @ hermes_cli/auth.py:_read_codex_tokens */
+/* PoP: auth_u_read_codex_tokens @ hermes_cli/auth_codex.py:_read_codex_tokens */
 int auth_u_read_codex_tokens(const char *arg) {
     /* Python: store read. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -452,7 +452,7 @@ int auth_u_read_codex_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_sync_codex_pool_entries @ hermes_cli/auth.py:_sync_codex_pool_entries */
+/* PoP: auth_u_sync_codex_pool_entries @ hermes_cli/auth_codex.py:_sync_codex_pool_entries */
 int auth_u_sync_codex_pool_entries(const char *arg) {
     /* Python: re-auth mirror. Arg =
      * "synced\tstate\tresult". */
@@ -467,7 +467,7 @@ int auth_u_sync_codex_pool_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_save_codex_tokens @ hermes_cli/auth.py:_save_codex_tokens */
+/* PoP: auth_u_save_codex_tokens @ hermes_cli/auth_codex.py:_save_codex_tokens */
 int auth_u_save_codex_tokens(const char *arg) {
     /* Python: singleton capture + pool sync. Arg =
      * "state\tresult". */
@@ -479,7 +479,7 @@ int auth_u_save_codex_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_recover_codex_tokens_from_cli @ hermes_cli/auth.py:_recover_codex_tokens_from_cli */
+/* PoP: auth_u_recover_codex_tokens_from_cli @ hermes_cli/auth_codex.py:_recover_codex_tokens_from_cli */
 int auth_u_recover_codex_tokens_from_cli(const char *arg) {
     /* Python: adopt both tokens or None. Arg =
      * "access_token\trefresh_token\timported". */
@@ -494,7 +494,7 @@ int auth_u_recover_codex_tokens_from_cli(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_refresh_codex_oauth_pure @ hermes_cli/auth.py:refresh_codex_oauth_pure */
+/* PoP: auth_refresh_codex_oauth_pure @ hermes_cli/auth_codex.py:refresh_codex_oauth_pure */
 int auth_refresh_codex_oauth_pure(const char *arg) {
     /* Python: pure codex refresh. Arg =
      * "state\tresult\terr". */
@@ -519,7 +519,7 @@ int auth_refresh_codex_oauth_pure(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_refresh_codex_auth_tokens @ hermes_cli/auth.py:_refresh_codex_auth_tokens */
+/* PoP: auth_u_refresh_codex_auth_tokens @ hermes_cli/auth_codex.py:_refresh_codex_auth_tokens */
 int auth_u_refresh_codex_auth_tokens(const char *arg) {
     /* Python: refresh + self-heal. Arg =
      * "state\tresult\timported". */
@@ -537,7 +537,7 @@ int auth_u_refresh_codex_auth_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_import_codex_cli_tokens @ hermes_cli/auth.py:_import_codex_cli_tokens */
+/* PoP: auth_u_import_codex_cli_tokens @ hermes_cli/auth_codex.py:_import_codex_cli_tokens */
 int auth_u_import_codex_cli_tokens(const char *arg) {
     /* Python: ~/.codex/auth.json read. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -548,7 +548,7 @@ int auth_u_import_codex_cli_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_resolve_codex_runtime_credentials @ hermes_cli/auth.py:resolve_codex_runtime_credentials */
+/* PoP: auth_resolve_codex_runtime_credentials @ hermes_cli/auth_codex.py:resolve_codex_runtime_credentials */
 int auth_resolve_codex_runtime_credentials(const char *arg) {
     /* Python: pool fallback. Arg =
      * "state\tresult\terr". */
@@ -569,7 +569,7 @@ int auth_resolve_codex_runtime_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_is_codex_rate_limit_shaped @ hermes_cli/auth.py:_is_codex_rate_limit_shaped */
+/* PoP: auth_u_is_codex_rate_limit_shaped @ hermes_cli/auth_codex.py:_is_codex_rate_limit_shaped */
 int auth_u_is_codex_rate_limit_shaped(const char *arg) {
     /* Python (code, reason, message): 429 or rate_limit/usage_limit/quota
      * markers in the lowercased reason/message. Arg = "code\treason\tmessage". */
@@ -598,7 +598,7 @@ int auth_u_is_codex_rate_limit_shaped(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_codex_usage_probe_url @ hermes_cli/auth.py:_codex_usage_probe_url */
+/* PoP: auth_u_codex_usage_probe_url @ hermes_cli/auth_codex.py:_codex_usage_probe_url */
 int auth_u_codex_usage_probe_url(const char *arg) {
     /* Python: wham vs api/codex usage URL. Arg = "base_url\tstyle\tresult". */
     if (!arg || !*arg) { printf("https://chatgpt.com/backend-api/codex/wham/usage\n"); return 0; }
@@ -611,7 +611,7 @@ int auth_u_codex_usage_probe_url(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_probe_codex_quota_restored @ hermes_cli/auth.py:_probe_codex_quota_restored */
+/* PoP: auth_u_probe_codex_quota_restored @ hermes_cli/auth_codex.py:_probe_codex_quota_restored */
 int auth_u_probe_codex_quota_restored(const char *arg) {
     /* Python: /usage window probe. Arg =
      * "state\tresult". */
@@ -634,7 +634,7 @@ int auth_u_probe_codex_quota_restored(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_clear_codex_pool_quota_cooldowns @ hermes_cli/auth.py:clear_codex_pool_quota_cooldowns */
+/* PoP: auth_clear_codex_pool_quota_cooldowns @ hermes_cli/auth_codex.py:clear_codex_pool_quota_cooldowns */
 int auth_clear_codex_pool_quota_cooldowns(const char *arg) {
     /* Python: quota-shaped only. Arg =
      * "cleared\tstate\tresult". */
@@ -659,7 +659,7 @@ int auth_u_pool_codex_access_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_read_xai_oauth_tokens @ hermes_cli/auth.py:_read_xai_oauth_tokens */
+/* PoP: auth_u_read_xai_oauth_tokens @ hermes_cli/auth_xai.py:_read_xai_oauth_tokens */
 int auth_u_read_xai_oauth_tokens(const char *arg) {
     /* Python: profile + global fallback. Arg =
      * "state\tresult\terr". */
@@ -676,7 +676,7 @@ int auth_u_read_xai_oauth_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_save_xai_oauth_tokens @ hermes_cli/auth.py:_save_xai_oauth_tokens */
+/* PoP: auth_u_save_xai_oauth_tokens @ hermes_cli/auth_xai.py:_save_xai_oauth_tokens */
 int auth_u_save_xai_oauth_tokens(const char *arg) {
     /* Python: persist + write-through root. Arg =
      * "state\tprofile_has_own\twrite_through\tresult". */
@@ -691,7 +691,7 @@ int auth_u_save_xai_oauth_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_access_token_is_expiring @ hermes_cli/auth.py:_xai_access_token_is_expiring */
+/* PoP: auth_u_xai_access_token_is_expiring @ hermes_cli/auth_xai.py:_xai_access_token_is_expiring */
 int auth_u_xai_access_token_is_expiring(const char *arg) {
     /* Python: JWT exp <= now + skew. Arg = "exp\tskew\tnow\tvalid". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -707,7 +707,7 @@ int auth_u_xai_access_token_is_expiring(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_proactive_refresh_skew_seconds @ hermes_cli/auth.py:_xai_proactive_refresh_skew_seconds */
+/* PoP: auth_u_xai_proactive_refresh_skew_seconds @ hermes_cli/auth_xai.py:_xai_proactive_refresh_skew_seconds */
 int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) {
     /* Python: JWT exp-based skew. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("3600\n"); return 0; }
@@ -719,7 +719,7 @@ int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_validate_oauth_endpoint @ hermes_cli/auth.py:_xai_validate_oauth_endpoint */
+/* PoP: auth_u_xai_validate_oauth_endpoint @ hermes_cli/auth_xai.py:_xai_validate_oauth_endpoint */
 int auth_u_xai_validate_oauth_endpoint(const char *arg) {
     /* Python: HTTPS + x.ai pin. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -735,7 +735,7 @@ int auth_u_xai_validate_oauth_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_validate_inference_base_url @ hermes_cli/auth.py:_xai_validate_inference_base_url */
+/* PoP: auth_u_xai_validate_inference_base_url @ hermes_cli/auth_xai.py:_xai_validate_inference_base_url */
 int auth_u_xai_validate_inference_base_url(const char *arg) {
     /* Python: bearer-leak pin. Arg =
      * "state\tresult". */
@@ -750,7 +750,7 @@ int auth_u_xai_validate_inference_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_oauth_discovery @ hermes_cli/auth.py:_xai_oauth_discovery */
+/* PoP: auth_u_xai_oauth_discovery @ hermes_cli/auth_xai.py:_xai_oauth_discovery */
 int auth_u_xai_oauth_discovery(const char *arg) {
     /* Python: OIDC fetch. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -766,7 +766,7 @@ int auth_u_xai_oauth_discovery(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_refresh_xai_oauth_pure @ hermes_cli/auth.py:refresh_xai_oauth_pure */
+/* PoP: auth_refresh_xai_oauth_pure @ hermes_cli/auth_xai.py:refresh_xai_oauth_pure */
 int auth_refresh_xai_oauth_pure(const char *arg) {
     /* Python: endpoint re-validate. Arg =
      * "state\tresult\terr". */
@@ -791,7 +791,7 @@ int auth_refresh_xai_oauth_pure(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_refresh_xai_oauth_tokens @ hermes_cli/auth.py:_refresh_xai_oauth_tokens */
+/* PoP: auth_u_refresh_xai_oauth_tokens @ hermes_cli/auth_xai.py:_refresh_xai_oauth_tokens */
 int auth_u_refresh_xai_oauth_tokens(const char *arg) {
     /* Python: refresh + persist. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -802,7 +802,7 @@ int auth_u_refresh_xai_oauth_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_resolve_xai_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_xai_oauth_runtime_credentials */
+/* PoP: auth_resolve_xai_oauth_runtime_credentials @ hermes_cli/auth_xai.py:resolve_xai_oauth_runtime_credentials */
 int auth_resolve_xai_oauth_runtime_credentials(const char *arg) {
     /* Python: refresh-under-lock. Arg =
      * "refreshed\tstate\tresult". */
@@ -817,7 +817,7 @@ int auth_resolve_xai_oauth_runtime_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_request_device_code @ hermes_cli/auth.py:_request_device_code */
+/* PoP: auth_u_request_device_code @ hermes_cli/auth_device_flow.py:_request_device_code */
 int auth_u_request_device_code(const char *arg) {
     /* Python: device code POST + field check. Arg =
      * "state\tmissing_fields\tresult". */
@@ -862,7 +862,7 @@ int auth_u_poll_for_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_try_import_shared_nous_state @ hermes_cli/auth.py:_try_import_shared_nous_state */
+/* PoP: auth_u_try_import_shared_nous_state @ hermes_cli/auth_nous.py:_try_import_shared_nous_state */
 int auth_u_try_import_shared_nous_state(const char *arg) {
     /* Python: shared rehydrate. Arg =
      * "imported\tstate\tresult". */
@@ -902,7 +902,7 @@ int auth_u_refresh_access_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_fetch_nous_models @ hermes_cli/auth.py:fetch_nous_models */
+/* PoP: auth_fetch_nous_models @ hermes_cli/auth_nous.py:fetch_nous_models */
 int auth_fetch_nous_models(const char *arg) {
     /* Python: /models fetch. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -935,7 +935,7 @@ int auth_resolve_nous_access_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_refresh_nous_oauth_pure @ hermes_cli/auth.py:refresh_nous_oauth_pure */
+/* PoP: auth_refresh_nous_oauth_pure @ hermes_cli/auth_nous.py:refresh_nous_oauth_pure */
 int auth_refresh_nous_oauth_pure(const char *arg) {
     /* Python: pure refresh. Arg =
      * "state\tresult\terr". */
@@ -956,7 +956,7 @@ int auth_refresh_nous_oauth_pure(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_refresh_nous_oauth_from_state @ hermes_cli/auth.py:refresh_nous_oauth_from_state */
+/* PoP: auth_refresh_nous_oauth_from_state @ hermes_cli/auth_nous.py:refresh_nous_oauth_from_state */
 int auth_refresh_nous_oauth_from_state(const char *arg) {
     /* Python: thin wrapper around pure refresh. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -979,7 +979,7 @@ int auth_persist_nous_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_sync_nous_pool_from_auth_store @ hermes_cli/auth.py:_sync_nous_pool_from_auth_store */
+/* PoP: auth_u_sync_nous_pool_from_auth_store @ hermes_cli/auth_nous.py:_sync_nous_pool_from_auth_store */
 int auth_u_sync_nous_pool_from_auth_store(const char *arg) {
     /* Python: best-effort pool reseed; never fails login. Arg unused. */
     (void)arg;
@@ -987,7 +987,7 @@ int auth_u_sync_nous_pool_from_auth_store(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_resolve_nous_runtime_credentials @ hermes_cli/auth.py:resolve_nous_runtime_credentials */
+/* PoP: auth_resolve_nous_runtime_credentials @ hermes_cli/auth_nous.py:resolve_nous_runtime_credentials */
 int auth_resolve_nous_runtime_credentials(const char *arg) {
     /* Python: inference JWT. Arg =
      * "state\tresult\terr". */
@@ -1004,7 +1004,7 @@ int auth_resolve_nous_runtime_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_snapshot_nous_pool_status @ hermes_cli/auth.py:_snapshot_nous_pool_status */
+/* PoP: auth_u_snapshot_nous_pool_status @ hermes_cli/auth_nous.py:_snapshot_nous_pool_status */
 int auth_u_snapshot_nous_pool_status(const char *arg) {
     /* Python: pool fallback status. Arg =
      * "found\tstate\tresult". */
@@ -1029,7 +1029,7 @@ int auth_get_nous_auth_status(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_compute_nous_auth_status @ hermes_cli/auth.py:_compute_nous_auth_status */
+/* PoP: auth_u_compute_nous_auth_status @ hermes_cli/auth_nous.py:_compute_nous_auth_status */
 int auth_u_compute_nous_auth_status(const char *arg) {
     /* Python: uncached status. Arg =
      * "state\tresult". */
@@ -1045,7 +1045,7 @@ int auth_u_compute_nous_auth_status(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_get_nous_session_validity @ hermes_cli/auth.py:get_nous_session_validity */
+/* PoP: auth_get_nous_session_validity @ hermes_cli/auth_nous.py:get_nous_session_validity */
 int auth_get_nous_session_validity(const char *arg) {
     /* Python: terminal-only. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("unknown\n"); return 0; }
@@ -1200,7 +1200,7 @@ int auth_u_confirm_expensive_model_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_prompt_model_selection @ hermes_cli/auth.py:_prompt_model_selection */
+/* PoP: auth_u_prompt_model_selection @ hermes_cli/auth_model_picker.py:_prompt_model_selection */
 int auth_u_prompt_model_selection(const char *arg) {
     /* Python: picker w/ pricing. Arg =
      * "chosen\tstate\tresult". */
@@ -1215,7 +1215,7 @@ int auth_u_prompt_model_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_login_openai_codex @ hermes_cli/auth.py:_login_openai_codex */
+/* PoP: auth_u_login_openai_codex @ hermes_cli/auth_codex.py:_login_openai_codex */
 int auth_u_login_openai_codex(const char *arg) {
     /* Python: device code + pool sync. Arg =
      * "reused\tstate\tresult". */
@@ -1235,7 +1235,7 @@ int auth_u_login_openai_codex(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_login_xai_oauth @ hermes_cli/auth.py:_login_xai_oauth */
+/* PoP: auth_u_login_xai_oauth @ hermes_cli/auth_xai.py:_login_xai_oauth */
 int auth_u_login_xai_oauth(const char *arg) {
     /* Python: reuse-or-device. Arg =
      * "reused\tstate\tresult". */
@@ -1257,7 +1257,7 @@ int auth_u_login_xai_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_oauth_request_device_code @ hermes_cli/auth.py:_xai_oauth_request_device_code */
+/* PoP: auth_u_xai_oauth_request_device_code @ hermes_cli/auth_xai.py:_xai_oauth_request_device_code */
 int auth_u_xai_oauth_request_device_code(const char *arg) {
     /* Python: device code POST + field check. Arg =
      * "state\tmissing\tresult". */
@@ -1277,7 +1277,7 @@ int auth_u_xai_oauth_request_device_code(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_oauth_poll_device_token @ hermes_cli/auth.py:_xai_oauth_poll_device_token */
+/* PoP: auth_u_xai_oauth_poll_device_token @ hermes_cli/auth_xai.py:_xai_oauth_poll_device_token */
 int auth_u_xai_oauth_poll_device_token(const char *arg) {
     /* Python: slow_down ramp. Arg =
      * "state\tresult\terr". */
@@ -1302,7 +1302,7 @@ int auth_u_xai_oauth_poll_device_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_xai_oauth_device_code_login @ hermes_cli/auth.py:_xai_oauth_device_code_login */
+/* PoP: auth_u_xai_oauth_device_code_login @ hermes_cli/auth_xai.py:_xai_oauth_device_code_login */
 int auth_u_xai_oauth_device_code_login(const char *arg) {
     /* Python: device flow. Arg =
      * "state\tresult\terr". */
@@ -1321,7 +1321,7 @@ int auth_u_xai_oauth_device_code_login(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_codex_device_code_login @ hermes_cli/auth.py:_codex_device_code_login */
+/* PoP: auth_u_codex_device_code_login @ hermes_cli/auth_codex.py:_codex_device_code_login */
 int auth_u_codex_device_code_login(const char *arg) {
     /* Python: device code + poll. Arg =
      * "state\tresult\terr". */
@@ -1342,7 +1342,7 @@ int auth_u_codex_device_code_login(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_minimax_pkce_pair @ hermes_cli/auth.py:_minimax_pkce_pair */
+/* PoP: auth_u_minimax_pkce_pair @ hermes_cli/auth_minimax.py:_minimax_pkce_pair */
 int auth_u_minimax_pkce_pair(const char *arg) {
     /* Python: (verifier 96, challenge S256, state 16) urlsafe. */
     (void)arg;
@@ -1366,7 +1366,7 @@ fallback:
     return 0;
 }
 
-/* PoP: auth_u_minimax_request_user_code @ hermes_cli/auth.py:_minimax_request_user_code */
+/* PoP: auth_u_minimax_request_user_code @ hermes_cli/auth_minimax.py:_minimax_request_user_code */
 int auth_u_minimax_request_user_code(const char *arg) {
     /* Python: device-code POST. Arg =
      * "state\tresult\tmissing\tmismatch". */
@@ -1391,7 +1391,7 @@ int auth_u_minimax_request_user_code(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_minimax_poll_token @ hermes_cli/auth.py:_minimax_poll_token */
+/* PoP: auth_u_minimax_poll_token @ hermes_cli/auth_minimax.py:_minimax_poll_token */
 int auth_u_minimax_poll_token(const char *arg) {
     /* Python: ms-vs-duration parse. Arg =
      * "state\tresult\terr". */
@@ -1416,7 +1416,7 @@ int auth_u_minimax_poll_token(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_minimax_save_auth_state @ hermes_cli/auth.py:_minimax_save_auth_state */
+/* PoP: auth_u_minimax_save_auth_state @ hermes_cli/auth_minimax.py:_minimax_save_auth_state */
 int auth_u_minimax_save_auth_state(const char *arg) {
     /* Python: save provider state under "minimax-oauth" in auth store
      * (~/.hermes/auth.json). Arg = JSON auth state. */
@@ -1452,7 +1452,7 @@ int auth_u_minimax_save_auth_state(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_minimax_oauth_login @ hermes_cli/auth.py:_minimax_oauth_login */
+/* PoP: auth_u_minimax_oauth_login @ hermes_cli/auth_minimax.py:_minimax_oauth_login */
 int auth_u_minimax_oauth_login(const char *arg) {
     /* Python: PKCE device flow. Arg =
      * "region\tstate\tresult". */
@@ -1468,7 +1468,7 @@ int auth_u_minimax_oauth_login(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_refresh_minimax_oauth_state @ hermes_cli/auth.py:_refresh_minimax_oauth_state */
+/* PoP: auth_u_refresh_minimax_oauth_state @ hermes_cli/auth_minimax.py:_refresh_minimax_oauth_state */
 int auth_u_refresh_minimax_oauth_state(const char *arg) {
     /* Python: skew-gated refresh. Arg =
      * "fresh\tstate\tresult\terr". */
@@ -1488,7 +1488,7 @@ int auth_u_refresh_minimax_oauth_state(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_minimax_oauth_quarantine_on_terminal_refresh @ hermes_cli/auth.py:_minimax_oauth_quarantine_on_terminal_refresh */
+/* PoP: auth_u_minimax_oauth_quarantine_on_terminal_refresh @ hermes_cli/auth_minimax.py:_minimax_oauth_quarantine_on_terminal_refresh */
 int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {
     /* Python: wipe dead tokens + stamp error. Arg =
      * "relogin_required\thas_refresh\tstate\tcode". */
@@ -1504,7 +1504,7 @@ int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_build_minimax_oauth_token_provider @ hermes_cli/auth.py:build_minimax_oauth_token_provider */
+/* PoP: auth_build_minimax_oauth_token_provider @ hermes_cli/auth_minimax.py:build_minimax_oauth_token_provider */
 int auth_build_minimax_oauth_token_provider(const char *arg) {
     /* Python: bearer hook callable. Arg =
      * "state\tresult\terr". */
@@ -1521,7 +1521,7 @@ int auth_build_minimax_oauth_token_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_resolve_minimax_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_minimax_oauth_runtime_credentials */
+/* PoP: auth_resolve_minimax_oauth_runtime_credentials @ hermes_cli/auth_minimax.py:resolve_minimax_oauth_runtime_credentials */
 int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) {
     /* Python: minimax refresh chain. Arg =
      * "state\tresult\tnot_logged_in". */
@@ -1558,7 +1558,7 @@ int auth_get_minimax_oauth_auth_status(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_login_minimax_oauth @ hermes_cli/auth.py:_login_minimax_oauth */
+/* PoP: auth_u_login_minimax_oauth @ hermes_cli/auth_minimax.py:_login_minimax_oauth */
 int auth_u_login_minimax_oauth(const char *arg) {
     /* Python: minimax oauth login, AuthError -> SystemExit 1. Arg =
      * "region\tno_browser\ttimeout\tresult". */
@@ -1576,7 +1576,7 @@ int auth_u_login_minimax_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_login_nous @ hermes_cli/auth.py:_login_nous */
+/* PoP: auth_u_login_nous @ hermes_cli/auth_nous.py:_login_nous */
 int auth_u_login_nous(const char *arg) {
     /* Python: device flow. Arg =
      * "state\tresult\terr". */

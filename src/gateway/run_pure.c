@@ -548,7 +548,7 @@ bool gateway_event_media_is_video(const json_node_t *event, int index)
     return msg_type && msg_type->type == JSON_STRING && strcmp(msg_type->str_val, "VIDEO") == 0;
 }
 
-/* PoP: gateway_build_media_placeholder @ hermes_cli/web_server.py:_build_media_placeholder */
+/* PoP: gateway_build_media_placeholder @ gateway/run.py:_build_media_placeholder */
 /* Text placeholder for media events from run.py */
 /* PoP: gateway_build_media_placeholder @ gateway/run.py:_build_media_placeholder */
 char *gateway_build_media_placeholder(const char *media_urls_json,
@@ -633,7 +633,7 @@ char *gateway_build_document_context_note(const char *display_name,
  *  web_server.py pure helpers ported from hermes_cli/web_server.py
  * =========================================================================== */
 
-/* PoP: web_tail_lines @ hermes_cli/web_server.py:_tail_lines */
+/* PoP: web_tail_lines @ hermes_cli/web_routers/actions.py:_tail_lines */
 /* Return malloc'd string with last n lines of file at path. */
 char *web_tail_lines(const char *path, int n)
 {
@@ -704,7 +704,7 @@ char *web_dashboard_spawn_executable(void)
 #endif
 }
 
-/* PoP: web_record_completed_action @ hermes_cli/web_server.py:_record_completed_action */
+/* PoP: web_record_completed_action @ hermes_cli/web_routers/actions.py:_record_completed_action */
 /* Simple stub - the full action tracking requires subprocess management. */
 void web_record_completed_action(const char *name, int exit_code, const char *message)
 {
@@ -717,7 +717,7 @@ void web_record_completed_action(const char *name, int exit_code, const char *me
  *  web_server.py config normalization helpers
  * =========================================================================== */
 
-/* PoP: objects @ hermes_cli/web_server.py:_normalize_config_for_web */
+/* PoP: objects @ hermes_cli/web_server_config.py:_normalize_config_for_web */
 /* Normalize config for web UI: flatten model dict to string, extract context_length.
  * Input and output are JSON objects (caller frees). */
 json_node_t *web_normalize_config_for_web(json_node_t *config)
@@ -868,7 +868,7 @@ json_node_t *gateway_normalize_empty_agent_response(json_node_t *agent_result)
 }
 
 /* run.py _voice_key - extract voice key from event */
-/* PoP: gateway_voice_key @ gateway/run.py:_voice_key */
+/* PoP: gateway_voice_key @ gateway/run_voice.py:_voice_key */
 const char *gateway_voice_key(const json_node_t *event)
 {
     if (!event || event->type != JSON_OBJECT) return "";

@@ -434,7 +434,7 @@ char *cli_tools_xai_http_maybe_mark_xai_storage_notice_seen(const char *section_
 
 /* ── resolver closures (battleground 11/14 → 14/14) ────────────────────── */
 
-/* PoP: get_env_value @ tools/xai_http.py:get_env_value
+/* PoP: get_env_value @ hermes_cli/config.py:get_env_value
  * ~/.hermes/.env first (via the shared dotenv-aware getter), then environ. */
 char *xai_http_get_env_value(const char *name)
 {

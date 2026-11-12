@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: mm_memory_provider_tools_enabled @ agent/memory_manager.py:memory_provider_tools_enabled */
+/* PoP: mm_memory_provider_tools_enabled @ agent/memory_manager_tools.py:memory_provider_tools_enabled */
 int mm_memory_provider_tools_enabled(const char *arg) {
     /* Python: toolset gate resolution. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -20,7 +20,7 @@ int mm_memory_provider_tools_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: mm_inject_memory_provider_tools @ agent/memory_manager.py:inject_memory_provider_tools */
+/* PoP: mm_inject_memory_provider_tools @ agent/memory_manager_tools.py:inject_memory_provider_tools */
 int mm_inject_memory_provider_tools(const char *arg) {
     /* Python: schema append. Arg = "added\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -32,7 +32,7 @@ int mm_inject_memory_provider_tools(const char *arg) {
     return 0;
 }
 
-/* PoP: mm_u_find_boundary_open_tag @ agent/memory_manager.py:_find_boundary_open_tag */
+/* PoP: mm_u_find_boundary_open_tag @ agent/memory_context.py:_find_boundary_open_tag */
 int mm_u_find_boundary_open_tag(const char *arg) {
     /* Python: opening fence at block boundary. Arg = "buf\ttag\tfound_at".
      * found_at -1 = none. */
@@ -78,7 +78,7 @@ int mm_u_has_block_opener_suffix(const char *arg) {
     return buf[after] == '\r' || buf[after] == '\n';
 }
 
-/* PoP: mm_u_append_visible @ agent/memory_manager.py:_append_visible */
+/* PoP: mm_u_append_visible @ agent/memory_context.py:_append_visible */
 int mm_u_append_visible(const char *arg) {
     /* Python: append visible text + update the block boundary. */
     if (arg && *arg) printf("%s\n", arg);

@@ -102,13 +102,13 @@ const char *transcribe_find_whisper_binary(void)
     return transcribe_find_binary("whisper");
 }
 
-/* PoP: transcribe_get_local_command_template @ tools/transcription_tools.py:_get_local_command_template */
+/* PoP: transcribe_get_local_command_template @ tools/transcription_local.py:_get_local_command_template */
 const char *transcribe_get_local_command_template(void)
 {
     return DEFAULT_LOCAL_CMD_TEMPLATE;
 }
 
-/* PoP: transcribe_has_local_command @ tools/transcription_tools.py:_has_local_command */
+/* PoP: transcribe_has_local_command @ tools/transcription_local.py:_has_local_command */
 bool transcribe_has_local_command(const char *config_json)
 {
     if (!config_json) return false;
@@ -151,7 +151,7 @@ char *transcribe_get_named_stt_provider_config(const char *config_json, const ch
  *  Text extraction / error classification
  * ================================================================ */
 
-/* PoP: transcribe_extract_transcript_text @ tools/transcription_tools.py:_extract_transcript_text */
+/* PoP: transcribe_extract_transcript_text @ tools/transcription_cloud.py:_extract_transcript_text */
 const char *transcribe_extract_transcript_text(const char *json_text)
 {
     if (!json_text || !json_text[0])
@@ -170,7 +170,7 @@ const char *transcribe_extract_transcript_text(const char *json_text)
     return text ? text : "";
 }
 
-/* PoP: transcribe_looks_like_cuda_lib_error @ tools/transcription_tools.py:_looks_like_cuda_lib_error */
+/* PoP: transcribe_looks_like_cuda_lib_error @ tools/transcription_local.py:_looks_like_cuda_lib_error */
 bool transcribe_looks_like_cuda_lib_error(const char *msg)
 {
     if (!msg) return false;
@@ -262,7 +262,7 @@ static char *build_multipart(const char *file_path,
     return buf;
 }
 
-/* PoP: transcribe_openai_compatible @ tools/transcription_tools.py:_transcribe_openai */
+/* PoP: transcribe_openai_compatible @ tools/transcription_cloud.py:_transcribe_openai */
 char *transcribe_openai_compatible(const char *url,
                                    const char *api_key,
                                    const char *file_path,
@@ -348,7 +348,7 @@ char *transcribe_openai_compatible(const char *url,
  *  Provider wrappers
  * ================================================================ */
 
-/* PoP: transcribe_transcribe_groq @ tools/transcription_tools.py:_transcribe_groq */
+/* PoP: transcribe_transcribe_groq @ tools/transcription_cloud.py:_transcribe_groq */
 char *transcribe_transcribe_groq(const char *file_path, const char *model)
 {
     const char *api_key = getenv("GROQ_API_KEY");
@@ -359,7 +359,7 @@ char *transcribe_transcribe_groq(const char *file_path, const char *model)
         api_key, file_path, model ? model : "whisper-large-v3-turbo", NULL);
 }
 
-/* PoP: transcribe_transcribe_mistral @ tools/transcription_tools.py:_transcribe_mistral */
+/* PoP: transcribe_transcribe_mistral @ tools/transcription_cloud.py:_transcribe_mistral */
 char *transcribe_transcribe_mistral(const char *file_path, const char *model)
 {
     const char *api_key = getenv("MISTRAL_API_KEY");
@@ -370,7 +370,7 @@ char *transcribe_transcribe_mistral(const char *file_path, const char *model)
         api_key, file_path, model ? model : "voxtral-mini-latest", NULL);
 }
 
-/* PoP: transcribe_transcribe_xai @ tools/transcription_tools.py:_transcribe_xai */
+/* PoP: transcribe_transcribe_xai @ tools/transcription_cloud.py:_transcribe_xai */
 char *transcribe_transcribe_xai(const char *file_path, const char *model)
 {
     const char *api_key = getenv("XAI_API_KEY");
@@ -381,7 +381,7 @@ char *transcribe_transcribe_xai(const char *file_path, const char *model)
         api_key, file_path, model ? model : "grok-stt", NULL);
 }
 
-/* PoP: transcribe_transcribe_elevenlabs @ tools/transcription_tools.py:_transcribe_elevenlabs */
+/* PoP: transcribe_transcribe_elevenlabs @ tools/transcription_cloud.py:_transcribe_elevenlabs */
 char *transcribe_transcribe_elevenlabs(const char *file_path, const char *model)
 {
     const char *api_key = getenv("ELEVENLABS_API_KEY");
@@ -393,7 +393,7 @@ char *transcribe_transcribe_elevenlabs(const char *file_path, const char *model)
         api_key, file_path, "eleven_multilingual_v2", NULL);
 }
 
-/* PoP: transcribe_transcribe_deepinfra @ tools/transcription_tools.py:_transcribe_deepinfra */
+/* PoP: transcribe_transcribe_deepinfra @ tools/transcription_cloud.py:_transcribe_deepinfra */
 char *transcribe_transcribe_deepinfra(const char *file_path, const char *model)
 {
     const char *api_key = getenv("DEEPINFRA_API_KEY");
@@ -408,7 +408,7 @@ char *transcribe_transcribe_deepinfra(const char *file_path, const char *model)
  *  Command-STT helpers
  * ================================================================ */
 
-/* PoP: transcribe_validate_audio_file @ tools/transcription_tools.py:_validate_audio_file */
+/* PoP: transcribe_validate_audio_file @ tools/transcription_audio.py:_validate_audio_file */
 char *transcribe_validate_audio_file(const char *file_path)
 {
     if (!file_path || !file_path[0])
@@ -534,7 +534,7 @@ static int cp_file(const char *src, const char *dst)
     return 0;
 }
 
-/* PoP: transcribe_transcribe_command_stt @ tools/transcription_tools.py:_transcribe_command_stt */
+/* PoP: transcribe_transcribe_command_stt @ tools/transcription_command.py:_transcribe_command_stt */
 char *transcribe_transcribe_command_stt(const char *cmd_template,
                                         const char *file_path,
                                         const char *language)

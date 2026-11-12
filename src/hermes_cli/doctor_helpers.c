@@ -16,7 +16,7 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
-/* PoP: doctor_safe_which @ hermes_cli/doctor.py:_safe_which */
+/* PoP: doctor_safe_which @ hermes_cli/doctor_tools.py:_safe_which */
 char *doctor_safe_which(const char *cmd) {
     if (!cmd || !cmd[0]) return NULL;
     char path_search[4096];
@@ -45,7 +45,7 @@ const char *doctor_python_install_cmd(void) {
 #endif
 }
 
-/* PoP: doctor_system_package_install_cmd @ hermes_cli/doctor.py:_system_package_install_cmd */
+/* PoP: doctor_system_package_install_cmd @ hermes_cli/doctor_platform.py:_system_package_install_cmd */
 const char *doctor_system_package_install_cmd(const char *package) {
     (void)package;
 #if defined(__APPLE__)
@@ -69,19 +69,19 @@ bool doctor_honcho_is_configured(void) {
     return true;
 }
 
-/* PoP: doctor_is_kanban_worker_env_gate @ hermes_cli/doctor.py:_is_kanban_worker_env_gate */
+/* PoP: doctor_is_kanban_worker_env_gate @ hermes_cli/doctor_tools.py:_is_kanban_worker_env_gate */
 bool doctor_is_kanban_worker_env_gate(void) {
     const char *e = getenv("KANBAN_WORKER");
     return e && (strcmp(e, "1") == 0 || strcmp(e, "true") == 0);
 }
 
-/* PoP: doctor_apply_tool_availability_overrides @ hermes_cli/doctor.py:_apply_doctor_tool_availability_overrides */
+/* PoP: doctor_apply_tool_availability_overrides @ hermes_cli/doctor_tools.py:_apply_doctor_tool_availability_overrides */
 json_t *doctor_apply_tool_availability_overrides(json_t *tools) {
     if (!tools) return json_object();
     return tools;
 }
 
-/* PoP: doctor_has_healthy_oauth_fallback @ hermes_cli/doctor.py:_has_healthy_oauth_fallback_for_apikey_provider */
+/* PoP: doctor_has_healthy_oauth_fallback @ hermes_cli/doctor_connectivity.py:_has_healthy_oauth_fallback_for_apikey_provider */
 bool doctor_has_healthy_oauth_fallback(const char *provider) {
     /* Python: minimax/xai OAuth logged-in fallback. */
     if (!provider) return false;
@@ -96,7 +96,7 @@ bool doctor_has_healthy_oauth_fallback(const char *provider) {
     return false;
 }
 
-/* PoP: doctor_fail_and_issue @ hermes_cli/doctor.py:_fail_and_issue */
+/* PoP: doctor_fail_and_issue @ hermes_cli/doctor_report.py:_fail_and_issue */
 json_t *doctor_fail_and_issue(const char *check_name, const char *message) {
     json_t *issue = json_object();
     json_set(issue, "check", json_string(check_name ? check_name : ""));
@@ -105,7 +105,7 @@ json_t *doctor_fail_and_issue(const char *check_name, const char *message) {
     return issue;
 }
 
-/* PoP: doctor_collect_deprecated_config_keys @ hermes_cli/doctor.py:collect_deprecated_config_keys */
+/* PoP: doctor_collect_deprecated_config_keys @ hermes_cli/doctor_config.py:collect_deprecated_config_keys */
 json_t *doctor_collect_deprecated_config_keys(void) {
     json_t *keys = json_array();
     json_array_append(keys, json_string("model"));
@@ -114,7 +114,7 @@ json_t *doctor_collect_deprecated_config_keys(void) {
     return keys;
 }
 
-/* PoP: doctor_collect_deprecated_env_vars @ hermes_cli/doctor.py:collect_deprecated_env_vars */
+/* PoP: doctor_collect_deprecated_env_vars @ hermes_cli/doctor_config.py:collect_deprecated_env_vars */
 json_t *doctor_collect_deprecated_env_vars(void) {
     json_t *vars = json_array();
     json_array_append(vars, json_string("OPENAI_API_KEY"));
@@ -123,7 +123,7 @@ json_t *doctor_collect_deprecated_env_vars(void) {
     return vars;
 }
 
-/* PoP: doctor_report_deprecated_config_and_env @ hermes_cli/doctor.py:report_deprecated_config_and_env */
+/* PoP: doctor_report_deprecated_config_and_env @ hermes_cli/doctor_config.py:report_deprecated_config_and_env */
 json_t *doctor_report_deprecated_config_and_env(void) {
     json_t *report = json_object();
     json_set(report, "deprecated_keys", doctor_collect_deprecated_config_keys());
@@ -132,7 +132,7 @@ json_t *doctor_report_deprecated_config_and_env(void) {
     return report;
 }
 
-/* PoP: doctor_enabled_cli_toolsets @ hermes_cli/doctor.py:_enabled_cli_toolsets_for_doctor */
+/* PoP: doctor_enabled_cli_toolsets @ hermes_cli/doctor_tools.py:_enabled_cli_toolsets_for_doctor */
 json_t *doctor_enabled_cli_toolsets(void) {
     json_t *ts = json_array();
     json_array_append(ts, json_string("web"));
@@ -141,7 +141,7 @@ json_t *doctor_enabled_cli_toolsets(void) {
     return ts;
 }
 
-/* PoP: doctor_missing_api_key_toolsets @ hermes_cli/doctor.py:_missing_api_key_toolsets_for_summary */
+/* PoP: doctor_missing_api_key_toolsets @ hermes_cli/doctor_tools.py:_missing_api_key_toolsets_for_summary */
 json_t *doctor_missing_api_key_toolsets(void) {
     return json_array();
 }
@@ -154,7 +154,7 @@ char *doctor_read_pyproject_version(void) {
 /* PoP: doctor_check_version_consistency @ hermes_cli/doctor.py:_check_version_consistency */
 bool doctor_check_version_consistency(void) { return true; }
 
-/* PoP: doctor_check_s6_supervision @ hermes_cli/doctor.py:_check_s6_supervision */
+/* PoP: doctor_check_s6_supervision @ hermes_cli/doctor_platform.py:_check_s6_supervision */
 bool doctor_check_s6_supervision(void) {
     char *s6 = doctor_safe_which("s6-supervise");
     if (!s6) return false;
@@ -162,10 +162,10 @@ bool doctor_check_s6_supervision(void) {
     return true;
 }
 
-/* PoP: doctor_check_gateway_service_linger @ hermes_cli/doctor.py:_check_gateway_service_linger */
+/* PoP: doctor_check_gateway_service_linger @ hermes_cli/doctor_platform.py:_check_gateway_service_linger */
 bool doctor_check_gateway_service_linger(void) { return false; }
 
-/* PoP: doctor_build_apikey_providers_list @ hermes_cli/doctor.py:_build_apikey_providers_list */
+/* PoP: doctor_build_apikey_providers_list @ hermes_cli/doctor_connectivity.py:_build_apikey_providers_list */
 json_t *doctor_build_apikey_providers_list(void) {
     json_t *providers = json_array();
     json_array_append(providers, json_string("openai"));
@@ -176,7 +176,7 @@ json_t *doctor_build_apikey_providers_list(void) {
     return providers;
 }
 
-/* PoP: doctor_managed_scope_check @ hermes_cli/doctor.py:managed_scope_check */
+/* PoP: doctor_managed_scope_check @ hermes_cli/doctor_config.py:managed_scope_check */
 json_t *doctor_managed_scope_check(void) {
     json_t *r = json_object();
     json_set(r, "managed", json_bool(false));
@@ -184,7 +184,7 @@ json_t *doctor_managed_scope_check(void) {
     return r;
 }
 
-/* PoP: doctor_format_db_size @ hermes_cli/doctor.py:_format_db_size */
+/* PoP: doctor_format_db_size @ hermes_cli/doctor_platform.py:_format_db_size */
 /* Returns malloc'd human-readable size string. Caller frees. */
 char *doctor_format_db_size(long long nbytes) {
     if (nbytes < 0) return strdup("size unknown");
@@ -192,7 +192,7 @@ char *doctor_format_db_size(long long nbytes) {
     return strdup(format_size((unsigned long long)nbytes));
 }
 
-/* PoP: doctor_read_journal_mode @ hermes_cli/doctor.py:_read_journal_mode */
+/* PoP: doctor_read_journal_mode @ hermes_cli/doctor_platform.py:_read_journal_mode */
 /* Returns malloc'd (mode, error) pair as JSON: {"mode":...,"error":...}. Caller frees. */
 char *doctor_read_journal_mode(const char *db_path) {
     if (!db_path) return strdup("{\"mode\":null,\"error\":\"null path\"}");
@@ -216,7 +216,7 @@ char *doctor_read_journal_mode(const char *db_path) {
     return result ? result : strdup("{\"mode\":null,\"error\":\"unknown\"}");
 }
 
-/* PoP: doctor_render_state_db_stats @ hermes_cli/doctor.py:_render_state_db_stats */
+/* PoP: doctor_render_state_db_stats @ hermes_cli/doctor_state.py:_render_state_db_stats */
 /* Returns malloc'd JSON array of [kind, text, detail] tuples. Caller frees. */
 char *doctor_render_state_db_stats(const char *stats_json, int holders) {
     if (!stats_json) return strdup("[]");
@@ -356,7 +356,7 @@ void doctor_check_fail(const char *text, const char *detail)
     printf("\n");
 }
 
-/* PoP: doctor_check_info @ hermes_cli/doctor.py:check_info */
+/* PoP: doctor_check_info @ hermes_cli/doctor_report.py:check_info */
 void doctor_check_info(const char *text)
 {
     printf("    %s\xe2\x86\x92%s %s\n", dc("\033[36m"), DC_RESET, text ? text : "");
@@ -395,7 +395,7 @@ static const char *const DOCTOR_LEGACY_RELAY_EXPORT_ENV_VARS[] = {
     NULL,
 };
 
-/* PoP: doctor_collect_relay_plugin_cutover_findings @ hermes_cli/doctor.py:collect_relay_plugin_cutover_findings */
+/* PoP: doctor_collect_relay_plugin_cutover_findings @ hermes_cli/doctor_config.py:collect_relay_plugin_cutover_findings */
 /* Return actionable findings for the removed Hermes Relay plugin.
  * raw_config is the parsed config.yaml tree (may be NULL); env_map is passed
  * as parallel arrays (either may be NULL/0). Findings are appended in the

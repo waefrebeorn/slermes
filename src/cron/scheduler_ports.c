@@ -29,7 +29,7 @@ char *crs_summarize_cron_failure_for_delivery(const char *job_id, const char *er
     return out;
 }
 
-/* PoP: crs_confirm_adapter_delivery @ cron/scheduler.py:_confirm_adapter_delivery */
+/* PoP: crs_confirm_adapter_delivery @ cron/scheduler_delivery.py:_confirm_adapter_delivery */
 bool crs_confirm_adapter_delivery(const char *send_result_json) {
     /* Python: unambiguously confirmed delivery. */
     if (!send_result_json) return false;

@@ -169,7 +169,7 @@ bool models_openrouter_supports_tools(json_t *item) {
 }
 
 /* ── _format_price_per_mtok (L?) ── */
-/* PoP: models_format_price_per_mtok @ hermes_cli/models.py:_format_price_per_mtok */
+/* PoP: models_format_price_per_mtok @ hermes_cli/models_pricing.py:_format_price_per_mtok */
 char *models_format_price_per_mtok(const char *per_token_str) {
     if (!per_token_str) return xstrdup("0");
     double val = atof(per_token_str);
@@ -179,7 +179,7 @@ char *models_format_price_per_mtok(const char *per_token_str) {
 }
 
 /* ── compute_sale_discount (L?) ── */
-/* PoP: models_compute_sale_discount_batch3 @ hermes_cli/models.py:compute_sale_discount */
+/* PoP: models_compute_sale_discount_batch3 @ hermes_cli/models_pricing.py:compute_sale_discount */
 double models_compute_sale_discount_batch3(double original_price, double sale_price) {
     if (original_price <= 0) return 0;
     return (1.0 - sale_price / original_price) * 100.0;
@@ -211,7 +211,7 @@ char *banner_git_stdout(const char *args) {
  * ═══════════════════════════════════════════════════════════════════ */
 
 /* ── _config_path (L?) ── */
-/* PoP: config_path @ hermes_cli/config.py:_config_path */
+/* PoP: config_path @ hermes_cli/console_engine.py:_config_path */
 char *config_path(void) {
     const char *home = getenv("HOME");
     if (!home) home = ".";
@@ -278,7 +278,7 @@ bool update_is_locked(void) {
 }
 
 
-/* PoP: _xai_finalize_catalog @ hermes_cli/models.py:_xai_finalize_catalog */
+/* PoP: _xai_finalize_catalog @ hermes_cli/models_catalog_static.py:_xai_finalize_catalog */
 void hermes_cli_models_xai_finalize_catalog(char **ids, size_t n) {
     /* Python: return _xai_promote_top(_xai_merge_curated_extras(ids)) */
     models_xai_merge_curated_extras(ids, n);

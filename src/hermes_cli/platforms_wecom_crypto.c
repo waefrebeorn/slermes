@@ -118,7 +118,7 @@ char *cli_gateway_platforms_wecom_crypto_decode(const char *corp_id, const char 
     return result ? result : strdup("");
 }
 
-/* PoP: bytes @ gateway/platforms/wecom_crypto.py:_encrypt_bytes */
+/* PoP: bytes @ plugins/platforms/wecom/wecom_crypto.py:_encrypt_bytes */
 
 /* Port of Python gateway/platforms/wecom_crypto.py:_encrypt_bytes */
 /* Low-level AES-256-GCM encrypt with caller-supplied key + IV.
@@ -184,7 +184,7 @@ char *cli_gateway_platforms_wecom_crypto__encrypt_bytes(const char *key, int key
     return strdup("");
 }
 
-/* PoP: libcrypto @ gateway/platforms/wecom_crypto.py:_random_nonce */
+/* PoP: libcrypto @ plugins/platforms/wecom/wecom_crypto.py:_random_nonce */
 
 /* Port of Python gateway/platforms/wecom_crypto.py:_random_nonce */
 /* Generate a cryptographically random nonce of the given length.

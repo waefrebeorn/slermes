@@ -70,7 +70,7 @@ static void cli_pi_init(void) {
 
 /* ---- git / worktree helpers ------------------------------------------- */
 
-/* PoP: cli__worktree_is_dirty @ cli.py:_worktree_is_dirty */
+/* PoP: cli__worktree_is_dirty @ hermes_cli/worktree_ops.py:_worktree_is_dirty */
 /* Real: run `git status --porcelain` in the worktree. Fails SAFE -> dirty. */
 int cli__worktree_is_dirty(const char *worktree_path, int timeout) {
     (void)timeout;
@@ -87,7 +87,7 @@ int cli__worktree_is_dirty(const char *worktree_path, int timeout) {
     return dirty;
 }
 
-/* PoP: cli__worktree_lock_is_live @ cli.py:_worktree_lock_is_live */
+/* PoP: cli__worktree_lock_is_live @ hermes_cli/worktree_ops.py:_worktree_lock_is_live */
 /* Returns malloc'd "live"/"dead"/NULL. Real: parse `git worktree list
  * --porcelain` and check the owning pid. Fails SAFE -> "live". */
 char *cli__worktree_lock_is_live(const char *repo_root, const char *worktree_path, int timeout) {
@@ -128,7 +128,7 @@ char *cli__worktree_lock_is_live(const char *repo_root, const char *worktree_pat
 
 /* ---- terminal / CPR --------------------------------------------------- */
 
-/* PoP: stdout @ cli.py:_cli_visible_print */
+/* PoP: stdout @ hermes_cli/cli_render.py:_cli_visible_print */
 /* C has no prompt_toolkit app; print to stdout (equivalent when no TUI owns
  * the terminal). When a redraw is pending we still flush to stdout. */
 void cli__cli_visible_print(const char *text) {
@@ -137,7 +137,7 @@ void cli__cli_visible_print(const char *text) {
     fflush(stdout);
 }
 
-/* PoP: cli__terminal_may_leak_cpr @ cli.py:_terminal_may_leak_cpr */
+/* PoP: cli__terminal_may_leak_cpr @ hermes_cli/cli_terminal_input.py:_terminal_may_leak_cpr */
 /* Pure env-var detection of SSH/tunneled terminals where CPR replies leak. */
 int cli__terminal_may_leak_cpr(void) {
     if (getenv("PROMPT_TOOLKIT_NO_CPR") && strcmp(getenv("PROMPT_TOOLKIT_NO_CPR"), "1") == 0)
@@ -147,7 +147,7 @@ int cli__terminal_may_leak_cpr(void) {
     return 0;
 }
 
-/* PoP: default @ cli.py:_build_cpr_disabled_output */
+/* PoP: default @ hermes_cli/cli_terminal_input.py:_build_cpr_disabled_output */
 /* Constructs a CPR-suppressed output object. In C there is no prompt_toolkit
  * Vt100_Output; the equivalent is to disable CPR globally, so we return NULL
  * and the caller falls back to the default (CPR disabled path), matching
@@ -157,7 +157,7 @@ void *cli__build_cpr_disabled_output(void *stdout_handle) {
     return NULL;
 }
 
-/* PoP: cli__recover_terminal_after_interrupt @ cli.py:_recover_terminal_after_interrupt */
+/* PoP: cli__recover_terminal_after_interrupt @ hermes_cli/cli_terminal_mixin.py:_recover_terminal_after_interrupt */
 /* Drain stray escape bytes from the OS input buffer and force a redraw. */
 void cli__recover_terminal_after_interrupt(void) {
     /* flush_stdin(): tcflush(stdin, TCIFLUSH); no-op on non-TTY */
@@ -170,7 +170,7 @@ void cli__recover_terminal_after_interrupt(void) {
 
 /* ---- pet subsystem ---------------------------------------------------- */
 
-/* PoP: config @ cli.py:_pet_resolve_config */
+/* PoP: config @ hermes_cli/cli_status_bar_mixin.py:_pet_resolve_config */
 /* Re-resolve the active pet from config (display.pet.enabled/slug/scale). */
 void cli__pet_resolve_config(void) {
     cli_pi_init();
@@ -188,7 +188,7 @@ void cli__pet_resolve_config(void) {
     pthread_mutex_unlock(&g_cli.lock);
 }
 
-/* PoP: cli__pet_flash @ cli.py:_pet_flash */
+/* PoP: cli__pet_flash @ hermes_cli/cli_status_bar_mixin.py:_pet_flash */
 /* Force a transient reaction for secs seconds. */
 void cli__pet_flash(const char *state, double secs) {
     cli_pi_init();
@@ -198,12 +198,12 @@ void cli__pet_flash(const char *state, double secs) {
     pthread_mutex_unlock(&g_cli.lock);
 }
 
-/* PoP: cli__pet_react_turn_end @ cli.py:_pet_react_turn_end */
+/* PoP: cli__pet_react_turn_end @ hermes_cli/cli_status_bar_mixin.py:_pet_react_turn_end */
 void cli__pet_react_turn_end(void) {
     cli__pet_flash("wave", 1.6);
 }
 
-/* PoP: string @ cli.py:_derive_pet_state */
+/* PoP: string @ hermes_cli/cli_status_bar_mixin.py:_derive_pet_state */
 /* Map CLI activity to a pet state string (malloc'd). */
 char *cli__derive_pet_state(void) {
     cli_pi_init();
@@ -235,7 +235,7 @@ int cli__pet_frames_for(const char *state) {
     return n;
 }
 
-/* PoP: frame @ cli.py:_pet_fragments */
+/* PoP: frame @ hermes_cli/cli_status_bar_mixin.py:_pet_fragments */
 /* Return fragment count for the current pet frame (0 when disabled). */
 int cli__pet_fragments(void) {
     cli_pi_init();
@@ -250,7 +250,7 @@ int cli__pet_fragments(void) {
     return n;
 }
 
-/* PoP: cli__pet_widget_height @ cli.py:_pet_widget_height */
+/* PoP: cli__pet_widget_height @ hermes_cli/cli_status_bar_mixin.py:_pet_widget_height */
 int cli__pet_widget_height(void) {
     cli_pi_init();
     pthread_mutex_lock(&g_cli.lock);
@@ -287,10 +287,10 @@ static void *cli__pet_anim_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: cli__pet_anim_loop_impl @ cli.py:_pet_anim_loop */
+/* PoP: cli__pet_anim_loop_impl @ hermes_cli/cli_status_bar_mixin.py:_pet_anim_loop */
 void cli__pet_anim_loop_impl(void) { cli__pet_anim_loop(NULL); }
 
-/* PoP: cli__pet_start_anim @ cli.py:_pet_start_anim */
+/* PoP: cli__pet_start_anim @ hermes_cli/cli_status_bar_mixin.py:_pet_start_anim */
 void cli__pet_start_anim(void) {
     cli_pi_init();
     cli__pet_resolve_config();
@@ -301,7 +301,7 @@ void cli__pet_start_anim(void) {
     pthread_create(&g_cli.pet_thread, NULL, cli__pet_anim_loop, NULL);
 }
 
-/* PoP: cli__pet_stop_anim @ cli.py:_pet_stop_anim */
+/* PoP: cli__pet_stop_anim @ hermes_cli/cli_status_bar_mixin.py:_pet_stop_anim */
 void cli__pet_stop_anim(void) {
     cli_pi_init();
     pthread_mutex_lock(&g_cli.lock);
@@ -312,7 +312,7 @@ void cli__pet_stop_anim(void) {
 
 /* ---- editor / interrupt / overlay state ------------------------------- */
 
-/* PoP: otherwise @ cli.py:_submit_editor_buffer */
+/* PoP: otherwise @ hermes_cli/cli_modal_mixin.py:_submit_editor_buffer */
 /* Submit text left by an external editor. Empty -> dropped; slash -> dispatch
  * flag; else routed to pending input. Returns 1 if a slash command was issued,
  * 0 otherwise (mirrors the Enter handler branch split). */
@@ -341,7 +341,7 @@ int cli__submit_editor_buffer(const char *buffer_text) {
     return is_slash ? 1 : 0;
 }
 
-/* PoP: cli__reset_input_buffer @ cli.py:_reset_input_buffer */
+/* PoP: cli__reset_input_buffer @ hermes_cli/cli_modal_mixin.py:_reset_input_buffer */
 void cli__reset_input_buffer(void) {
     cli_pi_init();
     pthread_mutex_lock(&g_cli.lock);
@@ -360,7 +360,7 @@ void cli__drain_interrupt_queue_to_pending_input(void) {
     pthread_mutex_unlock(&g_cli.lock);
 }
 
-/* PoP: cli__clear_active_overlays_for_interrupt @ cli.py:_clear_active_overlays_for_interrupt */
+/* PoP: cli__clear_active_overlays_for_interrupt @ hermes_cli/cli_modal_mixin.py:_clear_active_overlays_for_interrupt */
 void cli__clear_active_overlays_for_interrupt(void) {
     cli_pi_init();
     pthread_mutex_lock(&g_cli.lock);

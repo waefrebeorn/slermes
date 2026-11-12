@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* PoP: kdb_add_notify_sub @ hermes_cli/kanban_db.py:add_notify_sub */
+/* PoP: kdb_add_notify_sub @ hermes_cli/kanban_db_notify.py:add_notify_sub */
 int kdb_add_notify_sub(sqlite3 *conn, const char *task_id, const char *platform,
                           const char *chat_id, const char *thread_id,
                           const char *user_id, const char *notifier_profile)
@@ -75,7 +75,7 @@ int kdb_add_notify_sub(sqlite3 *conn, const char *task_id, const char *platform,
     return ok;
 }
 
-/* PoP: kdb_remove_notify_sub @ hermes_cli/kanban_db.py:remove_notify_sub */
+/* PoP: kdb_remove_notify_sub @ hermes_cli/kanban_db_notify.py:remove_notify_sub */
 int kdb_remove_notify_sub(sqlite3 *conn, const char *task_id, const char *platform,
                              const char *chat_id, const char *thread_id)
 {
@@ -97,7 +97,7 @@ int kdb_remove_notify_sub(sqlite3 *conn, const char *task_id, const char *platfo
     return ok;
 }
 
-/* PoP: kdb_advance_notify_cursor @ hermes_cli/kanban_db.py:advance_notify_cursor */
+/* PoP: kdb_advance_notify_cursor @ hermes_cli/kanban_db_notify.py:advance_notify_cursor */
 int kdb_advance_notify_cursor(sqlite3 *conn, const char *task_id, const char *platform,
                                  const char *chat_id, const char *thread_id, int new_cursor)
 {
@@ -121,7 +121,7 @@ int kdb_advance_notify_cursor(sqlite3 *conn, const char *task_id, const char *pl
     return ok;
 }
 
-/* PoP: kdb_rewind_notify_cursor @ hermes_cli/kanban_db.py:rewind_notify_cursor */
+/* PoP: kdb_rewind_notify_cursor @ hermes_cli/kanban_db_notify.py:rewind_notify_cursor */
 int kdb_rewind_notify_cursor(sqlite3 *conn, const char *task_id, const char *platform,
                                 const char *chat_id, const char *thread_id,
                                 int claimed_cursor, int old_cursor)
@@ -147,7 +147,7 @@ int kdb_rewind_notify_cursor(sqlite3 *conn, const char *task_id, const char *pla
     return ok;
 }
 
-/* PoP: kdb_list_notify_subs @ hermes_cli/kanban_db.py:list_notify_subs */
+/* PoP: kdb_list_notify_subs @ hermes_cli/kanban_db_notify.py:list_notify_subs */
 char **kdb_list_notify_subs(sqlite3 *conn, const char *task_id, int *out_n)
 {
     if (!conn) { if (out_n) *out_n = 0; return NULL; }
@@ -181,7 +181,7 @@ char **kdb_list_notify_subs(sqlite3 *conn, const char *task_id, int *out_n)
     return rows;
 }
 
-/* PoP: kdb_unseen_events_for_sub @ hermes_cli/kanban_db.py:unseen_events_for_sub */
+/* PoP: kdb_unseen_events_for_sub @ hermes_cli/kanban_db_notify.py:unseen_events_for_sub */
 int kdb_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
                                const char *platform, const char *chat_id,
                                const char *thread_id, char **kinds, int n_kinds,
@@ -247,7 +247,7 @@ int kdb_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
     return n;
 }
 
-/* PoP: kdb_claim_unseen_events_for_sub @ hermes_cli/kanban_db.py:claim_unseen_events_for_sub */
+/* PoP: kdb_claim_unseen_events_for_sub @ hermes_cli/kanban_db_notify.py:claim_unseen_events_for_sub */
 int kdb_claim_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
                                      const char *platform, const char *chat_id,
                                      const char *thread_id, char **kinds, int n_kinds,
@@ -310,7 +310,7 @@ int kdb_claim_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
 /* ---- _encode_notify_delivery_metadata ---- */
 /* Python: keep only JSON-scalar values, drop None, sort keys, compact
  * separators. Returns malloc'd compact JSON, or NULL for empty/non-mapping. */
-/* PoP: kdb_encode_notify_delivery_metadata @ hermes_cli/kanban_db.py:_encode_notify_delivery_metadata */
+/* PoP: kdb_encode_notify_delivery_metadata @ hermes_cli/kanban_db_notify.py:_encode_notify_delivery_metadata */
 char *kdb_encode_notify_delivery_metadata(const char *metadata_json)
 {
     if (!metadata_json || !metadata_json[0]) return NULL;
@@ -364,7 +364,7 @@ char *kdb_encode_notify_delivery_metadata(const char *metadata_json)
 /* Python: Mapping passthrough; empty -> {}; JSON string parsed; must be a
  * dict; only scalar values survive. Returns malloc'd compact JSON ("{}" for
  * empty/unparseable). */
-/* PoP: kdb_decode_notify_delivery_metadata @ hermes_cli/kanban_db.py:_decode_notify_delivery_metadata */
+/* PoP: kdb_decode_notify_delivery_metadata @ hermes_cli/kanban_db_notify.py:_decode_notify_delivery_metadata */
 char *kdb_decode_notify_delivery_metadata(const char *raw)
 {
     if (!raw || !raw[0]) return strdup("{}");
@@ -394,7 +394,7 @@ char *kdb_decode_notify_delivery_metadata(const char *raw)
  * are written to *out_params (NULL-terminated array, caller frees with
  * kdb_strv_free) and counted in *out_n. The "0" FALSE predicate is returned
  * when profiles are empty and include_unowned is off. */
-/* PoP: kdb_notify_profile_filter @ hermes_cli/kanban_db.py:_notify_profile_filter */
+/* PoP: kdb_notify_profile_filter @ hermes_cli/kanban_db_notify.py:_notify_profile_filter */
 char *kdb_notify_profile_filter(char **notifier_profiles, int include_unowned,
                                 char ***out_params, int *out_n)
 {
@@ -492,7 +492,7 @@ char *kdb_notify_profile_filter(char **notifier_profiles, int include_unowned,
  * DB or a legacy DB without the subs table counts as zero. Returns count, or
  * -1 when an existing DB cannot be read (sqlite error other than missing
  * table). db_path explicit wins; else board via kanban_db_path. */
-/* PoP: kdb_count_notify_subs @ hermes_cli/kanban_db.py:count_notify_subs */
+/* PoP: kdb_count_notify_subs @ hermes_cli/kanban_db_notify.py:count_notify_subs */
 int kdb_count_notify_subs(const char *db_path, const char *board,
                           char **notifier_profiles, int include_unowned,
                           const char *platform, const char *chat_id,

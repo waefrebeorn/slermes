@@ -24,7 +24,7 @@ extern int profile_dir_exists(const char *name);
 extern char *profile_dir_for(const char *name);
 
 /* ── _resolve_profile_dir ───────────────────────────────────────────────── */
-/* PoP: ws_chat_resolve_profile_dir @ hermes_cli/web_server.py:_resolve_profile_dir */
+/* PoP: ws_chat_resolve_profile_dir @ hermes_cli/web_server_profiles.py:_resolve_profile_dir */
 char *ws_chat_resolve_profile_dir(const char *name, int *status,
                                   char **detail) {
     if (status) *status = 0;
@@ -63,7 +63,7 @@ static bool session_exists(sqlite3 *db, const char *sid) {
     return found;
 }
 
-/* PoP: ws_chat_resolve_session_id @ hermes_state.py:resolve_session_id */
+/* PoP: ws_chat_resolve_session_id @ hermes_state_sessions.py:resolve_session_id */
 char *ws_chat_resolve_session_id(const char *db_path, const char *prefix) {
     if (!db_path || !prefix || !*prefix) return NULL;
     sqlite3 *db = NULL;
@@ -121,7 +121,7 @@ typedef struct {
     double started_at;
 } desc_row_t;
 
-/* PoP: ws_chat_session_latest_descendant @ hermes_cli/web_server.py:_session_latest_descendant */
+/* PoP: ws_chat_session_latest_descendant @ hermes_cli/web_server_sessions.py:_session_latest_descendant */
 json_t *ws_chat_session_latest_descendant(const char *db_path,
                                           const char *session_id) {
     json_t *out = json_object();
@@ -220,7 +220,7 @@ static void env_setdefault(json_t *env, const char *k, const char *v) {
     if (!json_object_get(env, k)) json_set(env, k, json_string(v));
 }
 
-/* PoP: ws_chat_build_env @ hermes_cli/web_server.py:_resolve_chat_argv */
+/* PoP: ws_chat_build_env @ hermes_cli/web_server_chat.py:_resolve_chat_argv */
 json_t *ws_chat_build_env(const json_t *base_env, const char *resume,
                           const char *sidecar_url, const char *profile_dir,
                           const char *active_session_file,

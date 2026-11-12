@@ -23,7 +23,7 @@
 /* From port_web_server_auth.c */
 extern bool ws_is_accepted_host(const char *host_header, const char *bound_host);
 
-/* PoP: is_loopback_host @ gateway.platforms.webhook.py:_is_loopback_host */
+/* PoP: is_loopback_host @ gateway/platforms/webhook.py:_is_loopback_host */
 /* _LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost", "testclient"} */
 static bool is_loopback_host(const char *h) {
     if (!h) return false;
@@ -53,7 +53,7 @@ static char *fmt(const char *f, ...) {
 }
 
 /* ── _ws_client_reason ──────────────────────────────────────────────────── */
-/* PoP: ws_auth_client_reason @ hermes_cli/web_server.py:_ws_client_reason */
+/* PoP: ws_auth_client_reason @ hermes_cli/web_server_chat.py:_ws_client_reason */
 char *ws_auth_client_reason(const ws_auth_state_t *st,
                             const ws_upgrade_req_t *req) {
     if (st->auth_required) return NULL;
@@ -73,7 +73,7 @@ char *ws_auth_client_reason(const ws_auth_state_t *st,
 }
 
 /* ── _ws_client_is_allowed ──────────────────────────────────────────────── */
-/* PoP: ws_auth_client_is_allowed @ hermes_cli/web_server.py:_ws_client_is_allowed */
+/* PoP: ws_auth_client_is_allowed @ hermes_cli/web_server_chat.py:_ws_client_is_allowed */
 bool ws_auth_client_is_allowed(const ws_auth_state_t *st,
                                const ws_upgrade_req_t *req) {
     if (st->auth_required) return true;
@@ -124,7 +124,7 @@ static bool origin_parse(const char *origin, char *scheme, size_t scheme_sz,
     return true;
 }
 
-/* PoP: ws_auth_host_origin_reason @ hermes_cli/web_server.py:_ws_host_origin_reason */
+/* PoP: ws_auth_host_origin_reason @ hermes_cli/web_server_chat.py:_ws_host_origin_reason */
 char *ws_auth_host_origin_reason(const ws_auth_state_t *st,
                                  const ws_upgrade_req_t *req) {
     const char *bound_host = st->bound_host;
@@ -150,7 +150,7 @@ char *ws_auth_host_origin_reason(const ws_auth_state_t *st,
 }
 
 /* ── _ws_host_origin_is_allowed ─────────────────────────────────────────── */
-/* PoP: ws_auth_host_origin_is_allowed @ hermes_cli/web_server.py:_ws_host_origin_is_allowed */
+/* PoP: ws_auth_host_origin_is_allowed @ hermes_cli/web_server_chat.py:_ws_host_origin_is_allowed */
 bool ws_auth_host_origin_is_allowed(const ws_auth_state_t *st,
                                     const ws_upgrade_req_t *req) {
     char *r = ws_auth_host_origin_reason(st, req);
@@ -168,7 +168,7 @@ char *ws_auth_request_reason(const ws_auth_state_t *st,
 }
 
 /* ── _ws_request_is_allowed ─────────────────────────────────────────────── */
-/* PoP: ws_auth_request_is_allowed @ hermes_cli/web_server.py:_ws_request_is_allowed */
+/* PoP: ws_auth_request_is_allowed @ hermes_cli/web_server_chat.py:_ws_request_is_allowed */
 bool ws_auth_request_is_allowed(const ws_auth_state_t *st,
                                 const ws_upgrade_req_t *req) {
     return ws_auth_host_origin_is_allowed(st, req) &&
@@ -176,7 +176,7 @@ bool ws_auth_request_is_allowed(const ws_auth_state_t *st,
 }
 
 /* ── _ws_auth_mode ──────────────────────────────────────────────────────── */
-/* PoP: ws_auth_mode @ hermes_cli/web_server.py:_ws_auth_mode */
+/* PoP: ws_auth_mode @ hermes_cli/web_server_chat.py:_ws_auth_mode */
 const char *ws_auth_mode(const ws_auth_state_t *st) {
     if (st->auth_required) return "gated";
     char *bound = norm_bound_host(st->bound_host);
@@ -196,7 +196,7 @@ static bool const_time_eq(const char *a, const char *b) {
 }
 
 /* ── _ws_auth_reason ────────────────────────────────────────────────────── */
-/* PoP: ws_auth_reason @ hermes_cli/web_server.py:_ws_auth_reason */
+/* PoP: ws_auth_reason @ hermes_cli/web_server_chat.py:_ws_auth_reason */
 const char *ws_auth_reason(const ws_auth_state_t *st,
                            const ws_upgrade_req_t *req,
                            const char **credential) {
@@ -236,7 +236,7 @@ out:
 }
 
 /* ── _ws_auth_ok ────────────────────────────────────────────────────────── */
-/* PoP: ws_auth_ok @ hermes_cli/web_server.py:_ws_auth_ok */
+/* PoP: ws_auth_ok @ hermes_cli/web_server_chat.py:_ws_auth_ok */
 bool ws_auth_ok(const ws_auth_state_t *st, const ws_upgrade_req_t *req) {
     return ws_auth_reason(st, req, NULL) == NULL;
 }

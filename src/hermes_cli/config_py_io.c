@@ -187,7 +187,7 @@ char *config_py_backup_corrupt_config(const char *config_path) {
  * _warn_config_parse_failure
  * ============================================================ */
 
-/* PoP: config_py_warn_config_parse_failure @ hermes_cli/config.py:_warn_config_parse_failure */
+/* PoP: config_py_warn_config_parse_failure @ hermes_cli/config_read_errors.py:_warn_config_parse_failure */
 void config_py_warn_config_parse_failure(const char *config_path, const char *exc_msg,
                                           int fallback_last_known_good) {
     if (!config_path) return;
@@ -209,7 +209,7 @@ void config_py_warn_config_parse_failure(const char *config_path, const char *ex
  * _warn_once_per_provider
  * ============================================================ */
 
-/* PoP: config_py_warn_once_per_provider @ hermes_cli/config.py:_warn_once_per_provider */
+/* PoP: config_py_warn_once_per_provider @ hermes_cli/config_providers.py:_warn_once_per_provider */
 static char *g_warn_seen[256];
 static int g_warn_seen_n = 0;
 
@@ -450,7 +450,7 @@ json_t *config_py_get_compatible_custom_providers(const json_t *config) {
  * get_custom_provider_tls_settings / extra_headers
  * ============================================================ */
 
-/* PoP: config_py_get_custom_provider_tls_settings @ hermes_cli/config.py:get_custom_provider_tls_settings */
+/* PoP: config_py_get_custom_provider_tls_settings @ hermes_cli/config_providers.py:get_custom_provider_tls_settings */
 json_t *config_py_get_custom_provider_tls_settings(const char *base_url, const json_t *custom_providers) {
     json_t *out = json_new_object();
     if (!base_url || !custom_providers || custom_providers->type != JSON_ARRAY) return out;
@@ -476,7 +476,7 @@ json_t *config_py_get_custom_provider_tls_settings(const char *base_url, const j
     return out;
 }
 
-/* PoP: config_py_get_custom_provider_extra_headers @ hermes_cli/config.py:get_custom_provider_extra_headers */
+/* PoP: config_py_get_custom_provider_extra_headers @ hermes_cli/config_providers.py:get_custom_provider_extra_headers */
 json_t *config_py_get_custom_provider_extra_headers(const char *base_url, const json_t *custom_providers) {
     json_t *out = json_new_object();
     if (!base_url || !custom_providers || custom_providers->type != JSON_ARRAY) return out;
@@ -504,7 +504,7 @@ json_t *config_py_get_custom_provider_extra_headers(const char *base_url, const 
  * apply_*_client_kwargs
  * ============================================================ */
 
-/* PoP: config_py_apply_custom_provider_tls_to_client_kwargs @ hermes_cli/config.py:apply_custom_provider_tls_to_client_kwargs */
+/* PoP: config_py_apply_custom_provider_tls_to_client_kwargs @ hermes_cli/config_providers.py:apply_custom_provider_tls_to_client_kwargs */
 void config_py_apply_custom_provider_tls_to_client_kwargs(json_t *client_kwargs, const char *base_url,
                                                            const json_t *custom_providers) {
     if (!client_kwargs) return;
@@ -516,7 +516,7 @@ void config_py_apply_custom_provider_tls_to_client_kwargs(json_t *client_kwargs,
     json_free(tls);
 }
 
-/* PoP: config_py_apply_custom_provider_extra_headers_to_client_kwargs @ hermes_cli/config.py:apply_custom_provider_extra_headers_to_client_kwargs */
+/* PoP: config_py_apply_custom_provider_extra_headers_to_client_kwargs @ hermes_cli/config_providers.py:apply_custom_provider_extra_headers_to_client_kwargs */
 void config_py_apply_custom_provider_extra_headers_to_client_kwargs(json_t *client_kwargs, const char *base_url,
                                                                    const json_t *custom_providers) {
     if (!client_kwargs) return;

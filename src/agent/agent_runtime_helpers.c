@@ -373,7 +373,7 @@ bool agent_runtime_helpers__is_litellm_route(const char *provider_lower, const c
  *  Tool call ID variants (thin forwarder)
  * ================================================================ */
 
-/* PoP: agent_runtime_helpers__tool_call_id_variants @ agent/agent_runtime_helpers.py:_tool_call_id_variants */
+/* PoP: agent_runtime_helpers__tool_call_id_variants @ agent/context_compressor.py:_tool_call_id_variants */
 char *agent_runtime_helpers__tool_call_id_variants(const char *tc_json) {
     if (!tc_json || !*tc_json) return strdup("[]");
     json_t *tc = json_parse(tc_json, NULL);

@@ -69,7 +69,7 @@ char *gwr_thread_metadata_for_source(const char *source_json) {
     return strdup(source_json);
 }
 
-/* PoP: gwr_reply_anchor_for_event @ gateway/run.py:_reply_anchor_for_event */
+/* PoP: gwr_reply_anchor_for_event @ gateway/platforms/base.py:_reply_anchor_for_event */
 char *gwr_reply_anchor_for_event(const char *event_json) {
     /* Python: platform-specific reply anchor. */
     if (!event_json) return NULL;
@@ -77,7 +77,7 @@ char *gwr_reply_anchor_for_event(const char *event_json) {
     return NULL;
 }
 
-/* PoP: gwr_decide_image_input_mode @ gateway/run.py:_decide_image_input_mode */
+/* PoP: gwr_decide_image_input_mode @ gateway/run_inbound.py:_decide_image_input_mode */
 char *gwr_decide_image_input_mode(const char *provider, const char *model, const char *config_yaml) {
     /* Python: image routing for effective model. */
     if (!model) return strdup("text");

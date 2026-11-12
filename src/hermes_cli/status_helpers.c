@@ -43,7 +43,7 @@ char *sta_estop_status_line(void)
     return estop_paused_reply();
 }
 
-/* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
+/* PoP: sta_format_iso_timestamp @ hermes_cli/status_auth.py:_format_iso_timestamp */
 void sta_format_iso_timestamp(const char *value, char out[64])
 {
     out[0] = '\0';
@@ -189,7 +189,7 @@ char *hermes_cli_status_check_mark(int ok) {
     return ok ? strdup("\033[32m\u2713\033[0m") : strdup("\033[31m\u2717\033[0m");
 }
 
-/* PoP: redact_key @ hermes_cli/status.py:redact_key */
+/* PoP: redact_key @ hermes_cli/config.py:redact_key */
 char *hermes_cli_status_redact_key(const char *key) {
     /* Thin wrapper over mask_secret. Preserves "(not set)" placeholder
      * in dim color to match hermes config output. */

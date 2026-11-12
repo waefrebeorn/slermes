@@ -46,7 +46,7 @@ char *agent_backend_identity_norm_model(const char *value) {
     return agent_backend_identity_norm_provider(value);
 }
 
-/* PoP: agent_backend_identity_norm_base_url @ agent/backend_identity.py:_norm_base_url */
+/* PoP: agent_backend_identity_norm_base_url @ hermes_cli/main.py:_norm_base_url */
 char *agent_backend_identity_norm_base_url(const char *value) {
     /* Python: (value or "").strip().rstrip("/").lower() */
     char *stripped = agent_backend_identity_norm_provider(value);

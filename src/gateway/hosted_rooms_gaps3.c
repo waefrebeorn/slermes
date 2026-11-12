@@ -68,7 +68,7 @@ void _raise_room_not_found(void *conn, const char *room_id) {
     (void)conn; (void)room_id;
 }
 
-/* PoP: _table_exists @ gateway/hosted_rooms.py:_table_exists */
+/* PoP: _table_exists @ hermes_cli/kanban_db_connect.py:_table_exists */
 int _table_exists(void *conn, const char *table) {
     (void)conn; (void)table;
     return 1;

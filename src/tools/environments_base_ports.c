@@ -160,7 +160,7 @@ void envb_collector_free(envb_collector_t *c) {
     free(c);
 }
 
-/* PoP: envb_maybe_spill @ tools/environments/base.py:_maybe_spill */
+/* PoP: envb_maybe_spill @ tools/environments/base_output.py:_maybe_spill */
 int envb_maybe_spill(envb_collector_t *c, const char *text) {
     if (!c || !text || !text[0]) return -1;
     if (!c->spill_path || c->spill_capped) return -1;
@@ -204,7 +204,7 @@ int envb_maybe_spill(envb_collector_t *c, const char *text) {
  * Python: close the spill file handle; return its path if it was used.
  * C: fclose, return the spill_path (caller may free it).
  */
-/* PoP: envb_close_spill @ tools/environments/base.py:close_spill */
+/* PoP: envb_close_spill @ tools/environments/base_output.py:close_spill */
 char *envb_close_spill(envb_collector_t *c) {
     if (!c) return NULL;
     if (c->spill_fh) {
@@ -241,7 +241,7 @@ void envb_set_activity_callback(void (*cb)(const char *)) {
  * C: generate the same brace-group shell string. tmp_path is a shell variable
  *    expansion (the caller expands it in the current shell).
  */
-/* PoP: envb_export_dump_excluding_session_vars @ tools/environments/base.py:_export_dump_excluding_session_vars */
+/* PoP: envb_export_dump_excluding_session_vars @ tools/environments/base_session_env.py:_export_dump_excluding_session_vars */
 char *envb_export_dump_excluding_session_vars(const char *tmp_path,
                                                const char **excluded_names,
                                                int n_excluded) {
@@ -431,7 +431,7 @@ char **envb_snapshot_excluded_passthrough_names(bool has_profile_scoped,
  * C: caller passes the rendered string, returncode, and spill metadata
  *    (total_chars=0 means no spill). Returns malloc'd JSON string.
  */
-/* PoP: envb_finalize_wait_result @ tools/environments/base.py:_finalize_wait_result */
+/* PoP: envb_finalize_wait_result @ tools/environments/base_output.py:_finalize_wait_result */
 char *envb_finalize_wait_result(const char *rendered, long returncode,
                                  long total_chars, const char *spill_path) {
     json_t *r = json_object();
@@ -469,7 +469,7 @@ int envb_kill_process(pid_t pid) {
 }
 
 /* ==== sanitize_task_id_for_path ==== */
-/* PoP: envb_sanitize_task_id_for_path @ tools/environments/base.py:sanitize_task_id_for_path */
+/* PoP: envb_sanitize_task_id_for_path @ tools/environments/path_utils.py:sanitize_task_id_for_path */
 /* [^A-Za-z0-9._-] → "_" */
 static bool c_unsafe_path_char(unsigned char c) {
     if (c == '.' || c == '_' || c == '-') return false;

@@ -32,7 +32,7 @@ void agent_display_oneline(const char *text, char *out, size_t outsz)
     out[o] = '\0';
 }
 
-/* PoP: agent_display_truncate_preview @ agent/display.py:_truncate_preview */
+/* PoP: agent_display_truncate_preview @ gateway/platforms/base.py:_truncate_preview */
 void agent_display_truncate_preview(const char *text, int max_len, char *out, size_t outsz)
 {
     if (outsz == 0) return;

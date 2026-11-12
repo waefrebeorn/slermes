@@ -266,7 +266,7 @@ static char *dlg_strip_url_credentials(const char *bounded) {
  * Returns: malloc'd string (for a scalar) OR NULL for None.
  *          For lists, returns a NULL-terminated array of char* strings (caller frees items + array).
  */
-/* PoP: dlg_sanitize_tool_target @ tools/delegate_tool.py:_sanitize_tool_target */
+/* PoP: dlg_sanitize_tool_target @ tools/delegate_tool_results.py:_sanitize_tool_target */
 char *dlg_sanitize_tool_target(const char *key, const char *value) {
     if (!value || !value[0]) return NULL;
     /* bounded = value[:1024] */
@@ -312,7 +312,7 @@ char **dlg_sanitize_tool_target_list(const char *key, const char *json_array, in
  *         and side-effect targets (key in target set, cleaned values).
  * Returns a malloc'd json_t {"argument_keys":[...], "targets":{...}}.
  */
-/* PoP: dlg_summarize_tool_arguments @ tools/delegate_tool.py:_summarize_tool_arguments */
+/* PoP: dlg_summarize_tool_arguments @ tools/delegate_tool_results.py:_summarize_tool_arguments */
 json_t *dlg_summarize_tool_arguments(const char *arguments) {
     json_t *r = json_object();
     json_t *keys = json_array();
@@ -470,7 +470,7 @@ json_t *dlg_sanitize_tool_input_summary(const char *summary_json) {
  *        output_bytes, status} from a tool_trace list.
  * Returns a malloc'd json_t array. Caller frees.
  */
-/* PoP: dlg_subagent_stop_tool_call_history @ tools/delegate_tool.py:_subagent_stop_tool_call_history */
+/* PoP: dlg_subagent_stop_tool_call_history @ tools/delegate_tool_results.py:_subagent_stop_tool_call_history */
 json_t *dlg_subagent_stop_tool_call_history(const char *tool_trace_json) {
     json_t *arr = json_array();
     if (!tool_trace_json) return arr;
@@ -555,7 +555,7 @@ json_t *dlg_subagent_stop_tool_call_history(const char *tool_trace_json) {
  * contract by saving/restoring the parent's last-resolved toolset through
  * the agent runtime API. Returns 0 on success, nonzero on error.
  */
-/* PoP: dlg_build_child_preserving_parent_tools @ tools/delegate_tool.py:_build_child_preserving_parent_tools */
+/* PoP: dlg_build_child_preserving_parent_tools @ tools/delegate_tool_results.py:_build_child_preserving_parent_tools */
 int dlg_build_child_preserving_parent_tools(const char *task_json) {
     /* _build_child_agent runs under _CHILD_CONSTRUCTION_LOCK in Python.
      * C: model_tools._last_resolved_tool_names is the parent's set; building
@@ -580,7 +580,7 @@ int dlg_build_child_preserving_parent_tools(const char *task_json) {
  *    process-wide mutex) is the portable C equivalent — it serializes the
  *    same lifecycle side-effects across all finalizations in the process.
  */
-/* PoP: dlg_parent_finalization_lock @ tools/delegate_tool.py:_parent_finalization_lock */
+/* PoP: dlg_parent_finalization_lock @ tools/delegate_tool_results.py:_parent_finalization_lock */
 void *dlg_parent_finalization_lock(void *parent_agent) {
     (void)parent_agent;
     return dlg_parent_finalization_lock_impl(parent_agent);
@@ -598,7 +598,7 @@ void *dlg_parent_finalization_lock(void *parent_agent) {
  *    which is not resolvable from pure JSON). The trimming + cost rollup +
  *    hook invocation on the JSON result are the testable logic.
  */
-/* PoP: dlg_finalize_child_results @ tools/delegate_tool.py:_finalize_child_results */
+/* PoP: dlg_finalize_child_results @ tools/delegate_tool_results.py:_finalize_child_results */
 int dlg_finalize_child_results(char *results_json,
                                const char *task_list_json,
                                const char *children_json,
@@ -733,7 +733,7 @@ int dlg_finalize_child_results(char *results_json,
  *    lifecycle contract is: delegate to the task runner, then finalize.
  *    We expose the orchestration skeleton so the gateway can drive it.
  */
-/* PoP: dlg_run_child_lifecycle @ tools/delegate_tool.py:_run_child_lifecycle */
+/* PoP: dlg_run_child_lifecycle @ tools/delegate_tool_results.py:_run_child_lifecycle */
 char *dlg_run_child_lifecycle(int task_index, const char *goal,
                               const char *child_json,
                               const char *parent_session_id) {
@@ -777,7 +777,7 @@ char *dlg_run_child_lifecycle(int task_index, const char *goal,
 
 /* ---- Existing PoP ports (unchanged) ---- */
 
-/* PoP: dlg_interrupt_subagent @ tools/delegate_tool.py:interrupt_subagent */
+/* PoP: dlg_interrupt_subagent @ tools/delegate_tool_registry.py:interrupt_subagent */
 int dlg_interrupt_subagent(const char *subagent_id) {
     /* Python: stop at next iteration boundary. */
     if (!subagent_id) return -1;
@@ -785,7 +785,7 @@ int dlg_interrupt_subagent(const char *subagent_id) {
     return 0;
 }
 
-/* PoP: dlg_list_active_subagents @ tools/delegate_tool.py:list_active_subagents */
+/* PoP: dlg_list_active_subagents @ tools/delegate_tool_registry.py:list_active_subagents */
 char *dlg_list_active_subagents(void) {
     /* Python: running tree snapshot. */
     printf("active subagent tree snapshotted\n");
@@ -915,7 +915,7 @@ char *delegation_build_retry_message(const char *errors_json) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_delegate_tool_u_blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
+/* PoP: tools_delegate_tool_u_blocked_toolsets_for_role @ tools/delegate_tool_toolsets.py:_blocked_toolsets_for_role */
 int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
     /* Python: fully-blocked toolsets; orchestrator keeps delegate_task.
      * Arg = "role\ttoolsets" (tab-sep). */
@@ -943,7 +943,7 @@ int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
+/* PoP: tools_delegate_tool_u_emit_parent_console @ tools/delegate_tool_progress.py:_emit_parent_console */
 int tools_delegate_tool_u_emit_parent_console(const char *arg) {
     /* Python: safe_print via parent or print. Arg = "line\trouted". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -953,7 +953,7 @@ int tools_delegate_tool_u_emit_parent_console(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
+/* PoP: tools_delegate_tool_u_build_child_progress_callback @ tools/delegate_tool_progress.py:_build_child_progress_callback */
 int tools_delegate_tool_u_build_child_progress_callback(const char *arg) {
     /* Python: relay callback. Arg =
      * "built\tstate\tresult". */
@@ -979,7 +979,7 @@ int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
+/* PoP: tools_delegate_tool_u_dump_subagent_timeout_diagnostic @ tools/delegate_tool_child_run.py:_dump_subagent_timeout_diagnostic */
 int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
     /* Python: #14726 dump. Arg =
      * "path\tstate\tresult". */
@@ -992,7 +992,7 @@ int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
+/* PoP: tools_delegate_tool_u_spill_summary_to_file @ tools/delegate_tool_results.py:_spill_summary_to_file */
 int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
     /* Python: cache spill. Arg = "task_index\tstate\tpath". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1004,7 +1004,7 @@ int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
+/* PoP: tools_delegate_tool_u_parent_summary_char_budget @ tools/delegate_tool_results.py:_parent_summary_char_budget */
 int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
     /* Python: headroom split. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1015,7 +1015,7 @@ int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
+/* PoP: tools_delegate_tool_u_apply_summary_budget @ tools/delegate_tool_results.py:_apply_summary_budget */
 int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
     /* Python: min-cap trim. Arg =
      * "trimmed\tstate\tresult". */
@@ -1047,7 +1047,7 @@ int tools_delegate_tool_u_run_single_child(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
+/* PoP: tools_delegate_tool_u_resolve_child_credential_pool @ tools/delegate_tool_config.py:_resolve_child_credential_pool */
 int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
     /* Python: endpoint-identity custom. Arg =
      * "shared\tstate\tresult". */
@@ -1062,7 +1062,7 @@ int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_delegate_tool_u_resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
+/* PoP: tools_delegate_tool_u_resolve_delegation_credentials @ tools/delegate_tool_config.py:_resolve_delegation_credentials */
 int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) {
     /* Python: base_url/provider routing. Arg =
      * "state\tresult\terr". */
@@ -1293,7 +1293,7 @@ void *agent_get_session_db(void *agent) { (void)agent; return NULL; }
 __attribute__((weak))
 const char *agent_get_live_transcript_path(void *agent) { (void)agent; return NULL; }
 
-/* PoP: dlg_get_subagent_attribution @ tools/delegate_tool.py:get_subagent_attribution */
+/* PoP: dlg_get_subagent_attribution @ tools/delegate_tool_registry.py:get_subagent_attribution */
 json_t *dlg_get_subagent_attribution(const char *task_id)
 {
     if (!task_id || !*task_id) return NULL;
@@ -1325,7 +1325,7 @@ json_t *dlg_get_subagent_attribution(const char *task_id)
     return out;
 }
 
-/* PoP: dlg_close_subagent_steering @ tools/delegate_tool.py:_close_subagent_steering */
+/* PoP: dlg_close_subagent_steering @ tools/delegate_tool_registry.py:_close_subagent_steering */
 /*
  *  Atomically close steer acceptance and drain its final durable artifact.
  * Returns malloc'd pending-steer text (caller frees) or NULL. */
@@ -1353,7 +1353,7 @@ char *dlg_close_subagent_steering(const char *subagent_id, void *agent)
     return NULL;
 }
 
-/* PoP: dlg_steer_subagent @ tools/delegate_tool.py:steer_subagent */
+/* PoP: dlg_steer_subagent @ tools/delegate_tool_registry.py:steer_subagent */
 int dlg_steer_subagent(const char *subagent_id, const char *text,
                        const char *owner_session_id,
                        void *owner_transport, void *owner_session_record)
@@ -1397,7 +1397,7 @@ int dlg_steer_subagent(const char *subagent_id, const char *text,
     return 0;
 }
 
-/* PoP: dlg_capture_gateway_steer_authority @ tools/delegate_tool.py:_capture_gateway_steer_authority */
+/* PoP: dlg_capture_gateway_steer_authority @ tools/delegate_tool_registry.py:_capture_gateway_steer_authority */
 /*
  *  In-process bridge to the TUI gateway's current session steer authority.
  * Non-gateway hosts receive (NULL, NULL). */
@@ -1422,7 +1422,7 @@ void dlg_capture_gateway_steer_authority(const char *owner_session_id,
                                                 transport_out, record_out);
 }
 
-/* PoP: dlg_is_descendant_of @ tools/delegate_tool.py:_is_descendant_of */
+/* PoP: dlg_is_descendant_of @ tools/delegate_tool_registry.py:_is_descendant_of */
 int dlg_is_descendant_of(void *child_agent, void *parent_agent, int max_hops)
 {
     if (!child_agent || !parent_agent) return 0;
@@ -1437,7 +1437,7 @@ int dlg_is_descendant_of(void *child_agent, void *parent_agent, int max_hops)
     return 0;
 }
 
-/* PoP: dlg_resolve_session_lineage @ tools/delegate_tool.py:_resolve_session_lineage */
+/* PoP: dlg_resolve_session_lineage @ tools/delegate_tool_registry.py:_resolve_session_lineage */
 /*
  *  Resolve a session id to the tip of its compression lineage. Best-effort:
  * returns the input unchanged when resolution fails. Malloc'd (caller frees). */
@@ -1457,7 +1457,7 @@ char *dlg_resolve_session_lineage(const char *session_id, void *parent_agent)
     return strdup(sid);
 }
 
-/* PoP: dlg_owns_subagent_record @ tools/delegate_tool.py:_owns_subagent_record */
+/* PoP: dlg_owns_subagent_record @ tools/delegate_tool_registry.py:_owns_subagent_record */
 int dlg_owns_subagent_record(const dlg_subagent_rec_t *record, void *parent_agent)
 {
     if (!record || !parent_agent) return 0;
@@ -1490,7 +1490,7 @@ static char *dlg_tool_error(const char *msg)
     return s;
 }
 
-/* PoP: dlg_handle_control_action @ tools/delegate_tool.py:_handle_control_action */
+/* PoP: dlg_handle_control_action @ tools/delegate_tool_registry.py:_handle_control_action */
 /*
  *  Synchronous list/steer/stop control plane scoped to the caller's spawn tree.
  * Returns a malloc'd JSON response string (caller frees). */
@@ -1620,7 +1620,7 @@ char *dlg_handle_control_action(const char *action, const char *subagent_id,
     return dlg_tool_error("Unknown action; expected 'list', 'steer', or 'stop'.");
 }
 
-/* PoP: dlg_get_worktree_isolation @ tools/delegate_tool.py:_get_worktree_isolation */
+/* PoP: dlg_get_worktree_isolation @ tools/delegate_tool_config.py:_get_worktree_isolation */
 /*
  *  delegation.worktree_isolation config flag (bool, default false). */
 __attribute__((weak)) int hermes_config_delegation_flag(const char *key, int dflt)
@@ -1687,7 +1687,7 @@ static char *dlg_search_template_marker(const char *goal)
 
 #define DLG_MIN_BATCH_GOAL_LEN 10
 
-/* PoP: dlg_validate_batch_tasks @ tools/delegate_tool.py:_validate_batch_tasks */
+/* PoP: dlg_validate_batch_tasks @ tools/delegate_tool_tasks.py:_validate_batch_tasks */
 /*
  *  Validate a tasks=[...] batch. Returns malloc'd error string, or NULL when
  * valid. tasks_json is a JSON array of objects each carrying a "goal". */

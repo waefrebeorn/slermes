@@ -142,7 +142,7 @@ char *gemini_cloudcode_adapter__create_chat_completion(void *adapter, const char
     return result;
 }
 
-/* PoP: gemini_cloudcode_adapter__stream_completion @ agent/gemini_cloudcode_adapter.py:_stream_completion */
+/* PoP: gemini_cloudcode_adapter__stream_completion @ agent/gemini_native_adapter.py:_stream_completion */
 /* Real Gemini streamGenerateContent (alt=sse) call; returns the raw SSE body,
  * which the caller projects into OpenAI chat.completion.chunk events. */
 char *gemini_cloudcode_adapter__stream_completion(void *adapter, const char *model,

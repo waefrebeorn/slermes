@@ -35,7 +35,7 @@
  *   "%Y-%m-%d %H:%M:%S,%f"[:23]  -> "YYYY-MM-DD HH:MM:SS,mmm"
  * (Python truncates the 6-digit %f to 3 digits via [:23].)
  */
-/* PoP: stderr_ts_timestamp @ hermes_cli/stderr_timestamp.py:_timestamp */
+/* PoP: stderr_ts_timestamp @ gateway/hosted_room_driver.py:_timestamp */
 void stderr_ts_timestamp(char *buf, size_t cap) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);

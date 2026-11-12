@@ -711,7 +711,7 @@ int voice_write_wav(const char *file_path, const void *data, size_t data_len,
  *  Transcription
  * ================================================================ */
 
-/* PoP: is_whisper_hallucination @ tools/voice_mode.py:is_whisper_hallucination */
+/* PoP: is_whisper_hallucination @ tools/voice_mode_transcript.py:is_whisper_hallucination */
 /* Port of Python tools/voice_mode.py:is_whisper_hallucination(). */
 int is_whisper_hallucination(const char *text) {
     if (!text) return 0;
@@ -1025,7 +1025,7 @@ char *voice_record(const char *output_path, int max_seconds) {
     return voice_recorder_stop();
 }
 
-/* PoP: voice_transcribe @ tools/transcription_tools.py:transcribe */
+/* PoP: voice_transcribe @ agent/transcription_provider.py:transcribe */
 /* PoP: voice_transcribe @ transcription_provider:transcribe */
 char *voice_transcribe(const char *audio_path) {
     if (!audio_path) return NULL;

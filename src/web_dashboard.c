@@ -817,7 +817,7 @@ static void handle_analytics(int fd) {
 
 /* ── Update endpoints ── */
 
-/* PoP: payload @ hermes_cli/web_server.py:check_hermes_update */
+/* PoP: payload @ hermes_cli/web_routers/actions.py:check_hermes_update */
 /* Real online update check: git fetch origin main + commit-behind count,
  * 6h-cached, full dashboard payload (install_method / behind / commits /
  * message). The `force` query param busts the cache ("Check now" button). */
@@ -837,7 +837,7 @@ static void handle_update_check(int fd) {
     free(payload);
 }
 
-/* PoP: handle_update_apply @ hermes_cli/web_server.py:update_hermes */
+/* PoP: handle_update_apply @ hermes_cli/web_routers/actions.py:update_hermes */
 /* Kick off the real update in the background. Mirrors Python: managed /
  * docker / nix short-circuits report guidance; a git install acquires the
  * update lock and spawns the updater detached. */
@@ -1736,7 +1736,7 @@ static void handle_media(int fd, const http_req_t *req) {
     } else { send_json(fd, 200, "OK", "{\"status\":\"ok\"}"); }
 }
 
-/* PoP: handle_fs_list @ hermes_cli/web_server.py:fs_list */
+/* PoP: handle_fs_list @ hermes_cli/web_routers/files.py:fs_list */
 static void handle_fs_list(int fd, const http_req_t *req) {
     const char *home = getenv("HOME");
     if (!home) home = "/";
@@ -1774,7 +1774,7 @@ static void handle_fs_list(int fd, const http_req_t *req) {
     free(j); json_free(arr);
 }
 
-/* PoP: handle_fs_read_text @ hermes_cli/web_server.py:fs_read_text */
+/* PoP: handle_fs_read_text @ hermes_cli/web_routers/files.py:fs_read_text */
 static void handle_fs_read_text(int fd, const char *path) {
     const char *prefix = "/api/fs/read-text/";
     if (strncmp(path, prefix, strlen(prefix)) != 0) {
@@ -1828,8 +1828,8 @@ static void handle_fs_read_data(int fd, const char *path) {
     free(j); json_free(resp);
 }
 
-/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:fs_default_cwd */
-/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:_fs_default_cwd */
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_routers/files.py:fs_default_cwd */
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_routers/files.py:_fs_default_cwd */
 static void handle_fs_default_cwd(int fd) {
     char cwd_buf[1024];
     if (getcwd(cwd_buf, sizeof(cwd_buf))) {
@@ -1841,7 +1841,7 @@ static void handle_fs_default_cwd(int fd) {
     } else { send_json(fd, 500, "Error", "{\"error\":\"getcwd failed\"}"); }
 }
 
-/* PoP: handle_fs_git_root @ hermes_cli/web_server.py:fs_git_root */
+/* PoP: handle_fs_git_root @ hermes_cli/web_routers/files.py:fs_git_root */
 static void handle_fs_git_root(int fd) {
     char git_root[1024];
     if (getcwd(git_root, sizeof(git_root))) {

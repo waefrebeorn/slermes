@@ -214,7 +214,7 @@ static void _gen_turn_token(char *out, size_t sz) {
     out[o] = '\0';
 }
 
-/* PoP: session_mark_turn_active @ gateway/session.py:mark_turn_active */
+/* PoP: session_mark_turn_active @ gateway/session_lifecycle.py:mark_turn_active */
 /* Persist exact ownership of the agent turn running for session_key.
  * Generates an opaque token, stamps it (plus start time) on the entry and
  * persists BEFORE publishing in memory. Re-marking replaces the previous
@@ -244,7 +244,7 @@ bool session_mark_turn_active(const char *session_key, char *out_token, size_t o
     return true;
 }
 
-/* PoP: session_clear_turn_active @ gateway/session.py:clear_turn_active */
+/* PoP: session_clear_turn_active @ gateway/session_lifecycle.py:clear_turn_active */
 /* Compare-and-swap clear of an active-turn marker. Returns false when the
  * entry disappeared or a newer turn owns the marker. */
 bool session_clear_turn_active(const char *session_key, const char *token) {
@@ -265,7 +265,7 @@ bool session_clear_turn_active(const char *session_key, const char *token) {
     return true;
 }
 
-/* PoP: session_recover_interrupted_turns @ gateway/session.py:recover_interrupted_turns */
+/* PoP: session_recover_interrupted_turns @ gateway/session_lifecycle.py:recover_interrupted_turns */
 /* Promote exact crash-left turn markers into resume_pending. Old or invalid
  * markers are cleared without resuming; explicitly suspended sessions are
  * never re-armed. Returns the number of newly promoted sessions. */
@@ -319,7 +319,7 @@ int session_recover_interrupted_turns(int max_age_seconds) {
     return promoted;
 }
 
-/* PoP: session_discard_active_turn_markers @ gateway/session.py:discard_active_turn_markers */
+/* PoP: session_discard_active_turn_markers @ gateway/session_lifecycle.py:discard_active_turn_markers */
 /* Clear orphan turn markers after a verified clean shutdown. */
 int session_discard_active_turn_markers(void) {
     int cleared = 0;
@@ -366,7 +366,7 @@ static bool _replay_transcript_message(const char *session_id, const char *messa
     return true;
 }
 
-/* PoP: session_drain_spooled_drops @ gateway/session.py:_drain_spooled_drops */
+/* PoP: session_drain_spooled_drops @ gateway/session_transcript.py:_drain_spooled_drops */
 /* Replay cap-dropped spooled transcript messages after DB recovery.
  * Best-effort: replay failures keep the spool files for the next successful
  * flush; nothing here may raise into the caller. Returns number replayed,

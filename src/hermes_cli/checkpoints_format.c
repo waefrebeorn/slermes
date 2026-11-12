@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-/* PoP: hermes_cli_checkpoints_fmt_bytes @ hermes_cli/checkpoints.py:_fmt_bytes */
+/* PoP: hermes_cli_checkpoints_fmt_bytes @ pm/cli.py:_fmt_bytes */
 void hermes_cli_checkpoints_fmt_bytes(long n, char *out, size_t outsz)
 {
     static const char *units[] = {"B", "KB", "MB", "GB", "TB"};

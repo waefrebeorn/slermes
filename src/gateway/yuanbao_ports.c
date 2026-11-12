@@ -65,7 +65,7 @@ char *yb2_mw_execute(const char *ctx_json) {
     return strdup(ctx_json);
 }
 
-/* PoP: yb2_build_source @ gateway/platforms/yuanbao.py:_build_source */
+/* PoP: yb2_build_source @ plugins/platforms/yuanbao/adapter.py:_build_source */
 char *yb2_build_source(const char *group_code, const char *user_openid) {
     /* Python: group:/direct: source from ids. */
     char *out = NULL;
@@ -382,7 +382,7 @@ int yb2_stop_typing(const char *chat_id, bool send_finish) {
     return 0;
 }
 
-/* PoP: yb2_get_active @ gateway/platforms/yuanbao.py:get_active */
+/* PoP: yb2_get_active @ plugins/platforms/yuanbao/adapter.py:get_active */
 char *yb2_get_active(void) {
     /* Python: active adapter singleton. */
     printf("active yuanbao adapter fetched\n");

@@ -134,14 +134,14 @@ bool whatsapp_common_matches_allowlist(const char *id, json_t *allowlist) {
     return false;
 }
 
-/* PoP: whatsapp_common_is_dm_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_allowed */
+/* PoP: whatsapp_common_is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
 bool whatsapp_common_is_dm_allowed(const char *sender_id, json_t *allowlist, bool allowlist_enabled) {
     if (!allowlist_enabled) return true;
     return whatsapp_common_matches_allowlist(sender_id, allowlist);
 }
 
-/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_intake_allowed */
-/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
+/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
+/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
 bool whatsapp_common_is_dm_intake_allowed(const char *sender_id, json_t *allowlist, bool intake_enabled) {
     if (!intake_enabled) return false;
     return whatsapp_common_matches_allowlist(sender_id, allowlist);

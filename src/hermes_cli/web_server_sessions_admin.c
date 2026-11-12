@@ -50,7 +50,7 @@ static int scalar_int(sqlite3 *db, const char *sql) {
 }
 
 /* ── count_empty_sessions ───────────────────────────────────────────────── */
-/* PoP: ws_sessions_count_empty @ hermes_state.py:count_empty_sessions */
+/* PoP: ws_sessions_count_empty @ hermes_state_sessions.py:count_empty_sessions */
 int ws_sessions_count_empty(const char *db_path) {
     sqlite3 *db = open_db(db_path, false);
     if (!db) return 0;
@@ -62,7 +62,7 @@ int ws_sessions_count_empty(const char *db_path) {
 }
 
 /* ── delete_empty_sessions ──────────────────────────────────────────────── */
-/* PoP: ws_sessions_delete_empty @ hermes_state.py:delete_empty_sessions */
+/* PoP: ws_sessions_delete_empty @ hermes_state_sessions.py:delete_empty_sessions */
 int ws_sessions_delete_empty(const char *db_path) {
     sqlite3 *db = open_db(db_path, true);
     if (!db) return -1;
@@ -135,7 +135,7 @@ int ws_sessions_delete_empty(const char *db_path) {
 }
 
 /* ── message_count ──────────────────────────────────────────────────────── */
-/* PoP: ws_sessions_message_count @ hermes_state.py:message_count */
+/* PoP: ws_sessions_message_count @ hermes_state_messages.py:message_count */
 int ws_sessions_message_count(const char *db_path, const char *session_id) {
     sqlite3 *db = open_db(db_path, false);
     if (!db) return 0;
@@ -209,7 +209,7 @@ int ws_sessions_session_count(const char *db_path,
 }
 
 /* ── get_session_stats ──────────────────────────────────────────────────── */
-/* PoP: ws_sessions_stats @ hermes_cli/web_server.py:get_session_stats */
+/* PoP: ws_sessions_stats @ hermes_cli/web_routers/sessions.py:get_session_stats */
 /* PoP: ws_sessions_stats @ hermes_cli/web_routers/sessions.py:get_session_stats */
 json_t *ws_sessions_stats(const char *db_path) {
     ws_session_count_opts_t all = {.include_archived = true};

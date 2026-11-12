@@ -152,10 +152,10 @@ int cli_gateway_authz_mixin__is_user_authorized(
  * gateway/platforms/{weixin,whatsapp_common,qqbot/adapter,yuanbao}.py:
  * _open_dm_opted_in — OR of GATEWAY_ALLOW_ALL_USERS and the platform-specific
  * allow-all env var, each opted-in when lowercased value is in {true,1,yes}. */
-/* PoP: gateway_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
-/* PoP: gateway_dm_opted_in @ gateway/platforms/whatsapp_common.py:_open_dm_opted_in */
-/* PoP: gateway_dm_opted_in @ gateway/platforms/qqbot/adapter.py:_open_dm_opted_in */
-/* PoP: gateway_dm_opted_in @ gateway/platforms/yuanbao.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
 bool gateway_dm_opted_in(const char *platform_env)
 {
     static const char *truthy[] = {"true", "1", "yes", NULL};
@@ -252,7 +252,7 @@ const gw_platform_config_t *authz_authorization_adapter(const char *platform,
 
 /* Resolve the live adapter for an inbound SessionSource (platform/profile).
  * Port of Python GatewayAuthorizationMixin._adapter_for_source. */
-/* PoP: authz_adapter_for_source @ gateway/authz_mixin.py:_adapter_for_source */
+/* PoP: authz_adapter_for_source @ gateway/run.py:_adapter_for_source */
 const gw_platform_config_t *authz_adapter_for_source(const char *platform,
                                                      const char *profile) {
     if (!platform || !*platform) return NULL;

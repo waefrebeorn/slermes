@@ -44,7 +44,7 @@
 #define MAX_ENV_LIFETIME 300
 #define MAX_COMMAND_LEN 16384
 
-/* PoP: _safe_command_preview @ tools/terminal_tool.py:_safe_command_preview */
+/* PoP: _safe_command_preview @ tools/terminal_tool_guards.py:_safe_command_preview */
 static const char *_safe_command_preview(const char *command, int limit) {
     static char buf[512];
     if (!command) return "<None>";
@@ -57,7 +57,7 @@ static const char *_safe_command_preview(const char *command, int limit) {
     return buf;
 }
 
-/* PoP: _looks_like_env_assignment @ tools/terminal_tool.py:_looks_like_env_assignment */
+/* PoP: _looks_like_env_assignment @ tools/terminal_tool_sudo.py:_looks_like_env_assignment */
 static bool _looks_like_env_assignment(const char *token) {
     if (!token) return false;
     const char *eq = strchr(token, '=');
@@ -70,7 +70,7 @@ static bool _looks_like_env_assignment(const char *token) {
     return true;
 }
 
-/* PoP: _read_shell_token @ tools/terminal_tool.py:_read_shell_token */
+/* PoP: _read_shell_token @ tools/terminal_tool_sudo.py:_read_shell_token */
 static int _read_shell_token(const char *command, int start, char *out_token, int max_len) {
     int i = start;
     int len = strlen(command);
@@ -107,7 +107,7 @@ static int _read_shell_token(const char *command, int start, char *out_token, in
     return out_i;
 }
 
-/* PoP: _sudo_nopasswd_works @ tools/terminal_tool.py:_rewrite_compound_background */
+/* PoP: _sudo_nopasswd_works @ tools/terminal_tool_sudo.py:_rewrite_compound_background */
 char* _rewrite_compound_background(const char *command) {
     if (!command) return NULL;
     
@@ -124,14 +124,14 @@ char* _rewrite_compound_background(const char *command) {
     return result;
 }
 
-/* PoP: _sudo_nopasswd_works @ tools/terminal_tool.py:_sudo_nopasswd_works */
+/* PoP: _sudo_nopasswd_works @ tools/environments/base.py:_sudo_nopasswd_works */
 static bool _sudo_nopasswd_works(void) {
     FILE *fp = popen("sudo -n true 2>/dev/null", "r");
     if (fp) pclose(fp);
     return true; /* Simplified */
 }
 
-/* PoP: _transform_sudo_command @ tools/terminal_tool.py:_transform_sudo_command */
+/* PoP: _transform_sudo_command @ tools/terminal_tool_sudo.py:_transform_sudo_command */
 void _transform_sudo_command(const char *command, char **out_cmd, char **out_sudo_pass) {
     if (!command || !strncmp(command, "sudo ", 5)) {
         *out_cmd = strdup(command ? command : "");
@@ -162,7 +162,7 @@ char* _get_env_config(void) {
     return json_serialize(cfg);   /* caller owns; NULL if empty */
 }
 
-/* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_create_environment */
+/* PoP: _cleanup_inactive_envs @ tools/terminal_tool_backends.py:_create_environment */
 char* _create_environment(const char *env_type, const char *image, const char *cwd,
                           int timeout, const char *task_id, const char *env_vars_json) {
     (void)image; (void)env_vars_json;
@@ -185,13 +185,13 @@ char* _create_environment(const char *env_type, const char *image, const char *c
     return out;
 }
 
-/* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_cleanup_inactive_envs */
+/* PoP: _cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:_cleanup_inactive_envs */
 void _cleanup_inactive_envs(int lifetime_seconds) {
     if (lifetime_seconds <= 0) lifetime_seconds = 300;
     term_cleanup_inactive_envs(lifetime_seconds);
 }
 
-/* PoP: is_persistent_env_port @ tools/terminal_tool.py:get_active_env */
+/* PoP: is_persistent_env_port @ tools/terminal_tool_lifecycle.py:get_active_env */
 char* get_active_env(const char *task_id) {
     json_t *env = term_get_active_env(task_id);
     if (!env) return strdup("{}");
@@ -205,7 +205,7 @@ bool is_persistent_env_port(const char *task_id) {
 }
 
 
-/* PoP: _command_requires_pipe_stdin @ tools/terminal_tool.py:_interpret_exit_code */
+/* PoP: _command_requires_pipe_stdin @ tools/terminal_tool_result.py:_interpret_exit_code */
 const char* _interpret_exit_code(const char *command, int exit_code) {
     (void)command;
     if (exit_code == 0) return "success";
@@ -243,7 +243,7 @@ bool _command_requires_pipe_stdin(const char *command) {
            strstr(norm, "--with-token") != NULL;
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_strip_quotes */
+/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_strip_quotes */
 char* _strip_quotes(const char *command) {
     if (!command) return NULL;
     char *result = strdup(command);
@@ -259,14 +259,14 @@ char* _strip_quotes(const char *command) {
     return result;
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
+/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
 bool _looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||
            (strstr(command, "-h") != NULL && strlen(command) < 10);
 }
 
-/* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool.py:_foreground_background_guidance */
+/* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool_guards.py:_foreground_background_guidance */
 /* Faithful port: suggest background mode when a foreground command looks
  * long-lived. Returns a malloc'd guidance string (caller frees) or NULL.
  * Mirrors the Python regex/prefix analysis (help/version short-circuit,
@@ -622,19 +622,19 @@ void terminal_resolve_task_host_cwd(const char *task_id, char *out, size_t out_s
     (void)task_id;
 }
 
-/* PoP: terminal_ssh_config_from_config @ tools/terminal_tool.py:_ssh_config_from_config */
+/* PoP: terminal_ssh_config_from_config @ tools/terminal_tool_backends.py:_ssh_config_from_config */
 void terminal_ssh_config_from_config(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz,
              "{\"host\":\"\",\"port\":22,\"user\":\"\",\"password\":\"\"}");
 }
 
-/* PoP: terminal_container_config_from_config @ tools/terminal_tool.py:_container_config_from_config */
+/* PoP: terminal_container_config_from_config @ tools/terminal_tool_backends.py:_container_config_from_config */
 void terminal_container_config_from_config(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz,
              "{\"container_cpu\":1,\"container_memory\":\"512m\"}");
 }
 
-/* PoP: terminal_ensure_task_env @ tools/terminal_tool.py:ensure_task_env */
+/* PoP: terminal_ensure_task_env @ tools/terminal_tool_lifecycle.py:ensure_task_env */
 /* Lazily create and cache the sandbox env for task_id if none is active.
  * No-op on the local backend (images are read host-side). Returns true when
  * an environment is active afterwards; false when local or when creation
@@ -712,7 +712,7 @@ bool terminal_ensure_task_env(const char *task_id) {
     return true;
 }
 
-/* PoP: terminal_evict_environment @ tools/terminal_tool.py:_evict_environment_for_task */
+/* PoP: terminal_evict_environment @ tools/terminal_tool_lifecycle.py:_evict_environment_for_task */
 /* Drop any cached environment for task_id (and its collapsed key). Used when
  * a backend reports an infrastructure failure: keeping the dead env cached
  * would make every subsequent call fail against a stale connection, defeating
@@ -767,7 +767,7 @@ static const char *tt_signal_note(int signum)
     }
 }
 
-/* PoP: _interpret_signal_exit @ tools/terminal_tool.py:_interpret_signal_exit
+/* PoP: _interpret_signal_exit @ tools/terminal_tool_result.py:_interpret_signal_exit
  * Map a signal-termination exit code to a human-readable note. Returns a
  * malloc'd note or NULL when the exit code is not a signal death.
  * Negative codes are subprocess semantics (definite); the 128+signum band

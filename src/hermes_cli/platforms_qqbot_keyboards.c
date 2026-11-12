@@ -23,7 +23,7 @@ static const char *UPDATE_PROMPT_PREFIX = "update_prompt:";
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_exec_text(json_node_t *req);
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_plugin_text(json_node_t *req);
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data @ gateway/platforms/qqbot/keyboards.py:parse_approval_button_data */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data @ plugins/platforms/qqbot/keyboards.py:parse_approval_button_data */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data(const char *button_data) {
     /*
      * Parse approval button_data into (session_key, decision).
@@ -67,7 +67,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data(co
     return result;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data @ gateway/platforms/qqbot/keyboards.py:parse_update_prompt_button_data */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data @ plugins/platforms/qqbot/keyboards.py:parse_update_prompt_button_data */
 const char* cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data(const char *button_data) {
     /*
      * Parse update_prompt button_data into 'y' or 'n'.
@@ -120,7 +120,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards__make_callback_button(const c
     return button;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_build_approval_keyboard @ gateway/platforms/qqbot/keyboards.py:build_approval_keyboard */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_build_approval_keyboard @ plugins/platforms/qqbot/keyboards.py:build_approval_keyboard */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_build_approval_keyboard(const char *session_key) {
     /*
      * Build the 3-button approval keyboard.
@@ -188,7 +188,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards_build_approval_keyboard(const
     return keyboard;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_build_update_prompt_keyboard @ gateway/platforms/qqbot/keyboards.py:build_update_prompt_keyboard */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_build_update_prompt_keyboard @ plugins/platforms/qqbot/keyboards.py:build_update_prompt_keyboard */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_build_update_prompt_keyboard(void) {
     /*
      * Build a Yes/No keyboard for update confirmation prompts.
@@ -223,7 +223,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards_build_update_prompt_keyboard(
     return keyboard;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_build_approval_text @ gateway/platforms/qqbot/keyboards.py:build_approval_text */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_build_approval_text @ plugins/platforms/qqbot/keyboards.py:build_approval_text */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_build_approval_text(json_node_t *req) {
     /*
      * Render an ApprovalRequest into the message body (markdown).
@@ -356,7 +356,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards__build_plugin_text(json_node_
     return result;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_operator_openid @ gateway/platforms/qqbot/keyboards.py:operator_openid */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_operator_openid @ plugins/platforms/qqbot/keyboards.py:operator_openid */
 const char* cli_gateway_platforms_qqbot_keyboards_operator_openid(json_node_t *event) {
     /*
      * Best available operator openid (group -> member; c2c -> user).
@@ -384,7 +384,7 @@ const char* cli_gateway_platforms_qqbot_keyboards_operator_openid(json_node_t *e
     return openid;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_interaction_event @ gateway/platforms/qqbot/keyboards.py:parse_interaction_event */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_interaction_event @ plugins/platforms/qqbot/keyboards.py:parse_interaction_event */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_parse_interaction_event(json_node_t *raw) {
     /*
      * Parse a raw INTERACTION_CREATE dispatch payload (d field).

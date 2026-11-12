@@ -938,7 +938,7 @@ char *worker_logs_dir(const char *board)
 
 /*
  * Returns malloc'd "<board_dir>/board.json". Caller frees. */
-/* PoP: board_metadata_path @ hermes_cli/kanban_db.py:board_metadata_path */
+/* PoP: board_metadata_path @ hermes_cli/kanban_db_boards.py:board_metadata_path */
 char *board_metadata_path(const char *board)
 {
     char *slug = _normalize_board_slug(board);
@@ -1177,7 +1177,7 @@ int _looks_like_path(const char *value)
 }
 
 /*
- * PoP: _is_windows_batch_shim @ hermes_cli/kanban_db.py:_is_windows_batch_shim */
+ * PoP: _is_windows_batch_shim @ hermes_cli/kanban_db_dispatch.py:_is_windows_batch_shim */
 int is_windows_batch_shim(const char *path)
 {
     if (!path) return 0;
@@ -1680,7 +1680,7 @@ void kanban_invalidate_descendants(const char *task_id, const char *author,
     snprintf(out_json, out_sz, "{\"invalidated\":0}");
 }
 
-/* PoP: kanban_reconcile_orphaned @ hermes_cli/kanban_db.py:reconcile_orphaned_running */
+/* PoP: kanban_reconcile_orphaned @ hermes_cli/kanban_db_dispatch.py:reconcile_orphaned_running */
 /* Reconcile 'running' cards whose claim bookkeeping is broken (claim_lock or
  * claim_expires NULL): requeue to ready with an explanatory comment, close
  * any leaked run, append a reconciled event. If the orphan row still records
@@ -1791,7 +1791,7 @@ int kanban_reconcile_orphaned(sqlite3 *conn, char out_ids[][64], int max_ids) {
     return reconciled;
 }
 
-/* PoP: kanban_review_dispatch_enabled @ hermes_cli/kanban_db.py:review_dispatch_enabled */
+/* PoP: kanban_review_dispatch_enabled @ hermes_cli/kanban_db_dispatch.py:review_dispatch_enabled */
 /* Return whether first-class review tasks dispatch automatically. Default is
  * true (Hermes ships the sdlc-review skill and a supported changes-requested
  * transition); operators disable it for human-only review boards. Any config
@@ -1823,7 +1823,7 @@ int kanban_review_dispatch_enabled(void) {
 #define KDB_DERIVED_MAX_IN_PROGRESS_FLOOR 2L
 #define KDB_DERIVED_MAX_IN_PROGRESS_CEILING 8L
 
-/* PoP: kdb_count_running_tasks @ hermes_cli/kanban_db.py:count_running_tasks */
+/* PoP: kdb_count_running_tasks @ hermes_cli/kanban_db_dispatch.py:count_running_tasks */
 static int kdb_count_running_tasks(sqlite3 *conn)
 {
     /* Fails open to 0 — a broken board must not brick dispatch on healthy
@@ -1840,7 +1840,7 @@ static int kdb_count_running_tasks(sqlite3 *conn)
     return count;
 }
 
-/* PoP: kdb_derive_default_max_in_progress @ hermes_cli/kanban_db.py:derive_default_max_in_progress */
+/* PoP: kdb_derive_default_max_in_progress @ hermes_cli/kanban_db_dispatch.py:derive_default_max_in_progress */
 long kdb_derive_default_max_in_progress(const json_t *sample)
 {
     json_t *owned = NULL;
@@ -1867,7 +1867,7 @@ long kdb_derive_default_max_in_progress(const json_t *sample)
     return result;
 }
 
-/* PoP: kdb_resolve_max_in_progress @ hermes_cli/kanban_db.py:resolve_max_in_progress */
+/* PoP: kdb_resolve_max_in_progress @ hermes_cli/kanban_db_dispatch.py:resolve_max_in_progress */
 long kdb_resolve_max_in_progress(long configured)
 {
     if (configured >= 0)
@@ -1875,7 +1875,7 @@ long kdb_resolve_max_in_progress(long configured)
     return kdb_derive_default_max_in_progress(NULL);
 }
 
-/* PoP: kdb_configured_max_in_progress @ hermes_cli/kanban_db.py:configured_max_in_progress */
+/* PoP: kdb_configured_max_in_progress @ hermes_cli/kanban_db_dispatch.py:configured_max_in_progress */
 long kdb_configured_max_in_progress(void)
 {
     json_t *cfg = config_py_load_config_readonly();
@@ -1896,7 +1896,7 @@ long kdb_configured_max_in_progress(void)
     return result;
 }
 
-/* PoP: kdb_count_running_tasks_other_boards @ hermes_cli/kanban_db.py:count_running_tasks_other_boards */
+/* PoP: kdb_count_running_tasks_other_boards @ hermes_cli/kanban_db_dispatch.py:count_running_tasks_other_boards */
 int kdb_count_running_tasks_other_boards(const char *board)
 {
     char current_resolved[4096] = {0};
@@ -2080,7 +2080,7 @@ void kdb_notify_task_updated(sqlite3 *conn, const char *task_id,
 /* Return True for a TLS record header at data[offset:] (content type in
  * {0x14..0x17}, version major 3, minor in {0..4}, 0 < length <= 18432).
  *
- * PoP: kdb_looks_like_tls_record_at @ hermes_cli/kanban_db.py:_looks_like_tls_record_at */
+ * PoP: kdb_looks_like_tls_record_at @ hermes_cli/kanban_db_connect.py:_looks_like_tls_record_at */
 int kdb_looks_like_tls_record_at(const unsigned char *data, size_t len,
                                  size_t offset)
 {
@@ -2100,7 +2100,7 @@ int kdb_looks_like_tls_record_at(const unsigned char *data, size_t len,
 /* Whether an open connection actually sees the kanban schema ("tasks" is
  * the sentinel). Cheap by design — runs on every steady-state connect.
  *
- * PoP: kdb_schema_is_present @ hermes_cli/kanban_db.py:_schema_is_present */
+ * PoP: kdb_schema_is_present @ hermes_cli/kanban_db_connect.py:_schema_is_present */
 int kdb_schema_is_present(sqlite3 *conn)
 {
     if (!conn) return 0;
@@ -2121,7 +2121,7 @@ int kdb_schema_is_present(sqlite3 *conn)
  * auto-generated wt/<task-id> branch is deleted with it; custom branches
  * are kept. Best-effort — never blocks completion.
  *
- * PoP: kdb_cleanup_worktree_workspace @ hermes_cli/kanban_db.py:_cleanup_worktree_workspace */
+ * PoP: kdb_cleanup_worktree_workspace @ hermes_cli/kanban_db_workspace.py:_cleanup_worktree_workspace */
 void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
                                     const char *branch_name)
 {
@@ -2196,7 +2196,7 @@ void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
 /* Best-effort system memory snapshot (KiB values); {} when unknown.
  * Delegates to gateway.lifecycle_ledger.sample_memory (pure /proc reads).
  *
- * PoP: kdb_system_memory_sample @ hermes_cli/kanban_db.py:_system_memory_sample */
+ * PoP: kdb_system_memory_sample @ hermes_cli/kanban_db_dispatch.py:_system_memory_sample */
 json_t *kdb_system_memory_sample(void)
 {
     json_t *sample = llg_sample_memory();
@@ -2208,7 +2208,7 @@ json_t *kdb_system_memory_sample(void)
  * Reuses gateway.memory_status.classify_pressure so the dispatcher's idea
  * of "critical" matches the dashboard banner. NULL/empty sample => unknown.
  *
- * PoP: kdb_memory_pressure_level @ hermes_cli/kanban_db.py:_memory_pressure_level */
+ * PoP: kdb_memory_pressure_level @ hermes_cli/kanban_db_dispatch.py:_memory_pressure_level */
 const char *kdb_memory_pressure_level(const json_t *sample)
 {
     if (!sample || sample->type != JSON_OBJECT || sample->c.count == 0)
@@ -2223,7 +2223,7 @@ const char *kdb_memory_pressure_level(const json_t *sample)
 /* Return a malloc'd worker-scoped TERMINAL_TIMEOUT override string when the
  * existing timeout is below runtime - grace; NULL when no override needed.
  *
- * PoP: kdb_worker_terminal_timeout_env @ hermes_cli/kanban_db.py:_worker_terminal_timeout_env */
+ * PoP: kdb_worker_terminal_timeout_env @ hermes_cli/kanban_db_dispatch.py:_worker_terminal_timeout_env */
 char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
                                       const char *current_timeout)
 {
@@ -2248,7 +2248,7 @@ char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
  * (falling back to completed_at then created_at). max_age_days <= 0
  * disables the sweep. Returns rows deleted (-1 on sqlite failure).
  *
- * PoP: kdb_purge_stale_done_notify_subs @ hermes_cli/kanban_db.py:purge_stale_done_notify_subs */
+ * PoP: kdb_purge_stale_done_notify_subs @ hermes_cli/kanban_db_notify.py:purge_stale_done_notify_subs */
 long kdb_purge_stale_done_notify_subs(sqlite3 *conn, long max_age_days)
 {
     if (!conn) return -1;

@@ -31,20 +31,20 @@ static void smt_read_marks_reset(void) {
 }
 extern const char *skill_provenance_current_origin(void);
 
-/* PoP: smt_mark_background_review_skill_read @ tools/skill_manager_tool.py:mark_background_review_skill_read */
+/* PoP: smt_mark_background_review_skill_read @ tools/skill_manager_guards.py:mark_background_review_skill_read */
 int smt_mark_background_review_skill_read(const char *arg) {
     /* Python: record that the review fork read this target file. */
     smt_read_marks_add(arg);
     return 1;
 }
 
-/* PoP: smt_u_background_review_has_read @ tools/skill_manager_tool.py:_background_review_has_read */
+/* PoP: smt_u_background_review_has_read @ tools/skill_manager_guards.py:_background_review_has_read */
 int smt_u_background_review_has_read(const char *arg) {
     /* Python: has the review fork loaded this exact target file. */
     return smt_read_marks_has(arg);
 }
 
-/* PoP: smt_u_reset_background_review_read_marks @ tools/skill_manager_tool.py:_reset_background_review_read_marks */
+/* PoP: smt_u_reset_background_review_read_marks @ tools/skill_manager_guards.py:_reset_background_review_read_marks */
 int smt_u_reset_background_review_read_marks(const char *arg) {
     /* Python: clear all read-marks (new review fork). */
     (void)arg;
@@ -78,7 +78,7 @@ int smt_u_security_scan_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: smt_u_pinned_guard @ tools/skill_manager_tool.py:_pinned_guard */
+/* PoP: smt_u_pinned_guard @ tools/skill_manager_guards.py:_pinned_guard */
 int smt_u_pinned_guard(const char *arg) {
     /* Python: pinned refusal or None. Arg = "name\tpinned\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -107,7 +107,7 @@ int smt_u_background_review_write_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: smt_u_background_review_read_before_write_guard @ tools/skill_manager_tool.py:_background_review_read_before_write_guard */
+/* PoP: smt_u_background_review_read_before_write_guard @ tools/skill_manager_guards.py:_background_review_read_before_write_guard */
 int smt_u_background_review_read_before_write_guard(const char *arg) {
     /* Python (name, file_label, action, target): refuse a background-curator
      * mutation of a file the review fork has not loaded first. Arg =
@@ -125,7 +125,7 @@ int smt_u_background_review_read_before_write_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: smt_u_background_review_preflight @ tools/skill_manager_tool.py:_background_review_preflight */
+/* PoP: smt_u_background_review_preflight @ tools/skill_manager_guards.py:_background_review_preflight */
 int smt_u_background_review_preflight(const char *arg) {
     /* Python: None unless action in guard set AND skill exists; else
      * write-guard result. Arg = "action\tname" (1 if guard applies). */
@@ -143,7 +143,7 @@ int smt_u_background_review_preflight(const char *arg) {
     return 0;
 }
 
-/* PoP: smt_u_curator_consolidation_delete_guard @ tools/skill_manager_tool.py:_curator_consolidation_delete_guard */
+/* PoP: smt_u_curator_consolidation_delete_guard @ tools/skill_manager_guards.py:_curator_consolidation_delete_guard */
 int smt_u_curator_consolidation_delete_guard(const char *arg) {
     /* Python: fail-closed #29912. Arg =
      * "declared\tstate\tresult". */

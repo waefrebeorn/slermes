@@ -41,7 +41,7 @@ char *auth_xai_callback_cors_origin(const char *origin)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: auth_ssh_user_at_host @ hermes_cli/auth.py:_ssh_user_at_host */
+/* PoP: auth_ssh_user_at_host @ hermes_cli/auth_device_flow.py:_ssh_user_at_host */
 /* Returns "user@hostname" using USER/LOGNAME env + gethostname. */
 char *auth_ssh_user_at_host(void)
 {

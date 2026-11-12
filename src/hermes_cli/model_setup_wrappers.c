@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: msf_bedrock_region_geo_prefix @ hermes_cli/model_setup_flows.py:bedrock_region_geo_prefix */
+/* PoP: msf_bedrock_region_geo_prefix @ hermes_cli/model_setup_flows_bedrock.py:bedrock_region_geo_prefix */
 int msf_bedrock_region_geo_prefix(const char *arg) {
     /* Python: us./eu./ap./ca./sa./me./af. prefix map. Arg = region. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -27,7 +27,7 @@ int msf_bedrock_region_geo_prefix(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_bedrock_model_routable_from_region @ hermes_cli/model_setup_flows.py:bedrock_model_routable_from_region */
+/* PoP: msf_bedrock_model_routable_from_region @ hermes_cli/model_setup_flows_bedrock.py:bedrock_model_routable_from_region */
 int msf_bedrock_model_routable_from_region(const char *arg) {
     /* Python: geo prefix route check. Arg =
      * "model_geo\tregion_geo\tresult". */
@@ -46,7 +46,7 @@ int msf_bedrock_model_routable_from_region(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows.py:_prune_replaced_custom_model_config_credentials */
+/* PoP: msf_u_prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows_common.py:_prune_replaced_custom_model_config_credentials */
 int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) {
     /* Python: stale model_config drop. Arg =
      * "removed\tstate\tresult". */
@@ -59,7 +59,7 @@ int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_prompt_auth_credentials_choice @ hermes_cli/model_setup_flows.py:_prompt_auth_credentials_choice */
+/* PoP: msf_u_prompt_auth_credentials_choice @ hermes_cli/model_setup_flows_common.py:_prompt_auth_credentials_choice */
 int msf_u_prompt_auth_credentials_choice(const char *arg) {
     /* Python: use/reauth/cancel. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("use\n"); return 0; }
@@ -234,7 +234,7 @@ int msf_u_model_flow_minimax_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_model_flow_custom @ hermes_cli/model_setup_flows.py:_model_flow_custom */
+/* PoP: msf_u_model_flow_custom @ hermes_cli/model_setup_flows_custom.py:_model_flow_custom */
 int msf_u_model_flow_custom(const char *arg) {
     /* Python: endpoint collect. Arg =
      * "saved\tstate\tresult". */
@@ -250,7 +250,7 @@ int msf_u_model_flow_custom(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_model_flow_azure_foundry @ hermes_cli/model_setup_flows.py:_model_flow_azure_foundry */
+/* PoP: msf_u_model_flow_azure_foundry @ hermes_cli/model_setup_flows_azure.py:_model_flow_azure_foundry */
 int msf_u_model_flow_azure_foundry(const char *arg) {
     /* Python: Foundry wizard. Arg =
      * "entra\tstate\tresult". */
@@ -265,7 +265,7 @@ int msf_u_model_flow_azure_foundry(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_model_flow_named_custom @ hermes_cli/model_setup_flows.py:_model_flow_named_custom */
+/* PoP: msf_u_model_flow_named_custom @ hermes_cli/model_setup_flows_custom.py:_model_flow_named_custom */
 int msf_u_model_flow_named_custom(const char *arg) {
     /* Python: custom provider. Arg =
      * "probed\tstate\tresult". */
@@ -346,7 +346,7 @@ int msf_u_model_flow_stepfun(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_model_flow_bedrock_api_key @ hermes_cli/model_setup_flows.py:_model_flow_bedrock_api_key */
+/* PoP: msf_u_model_flow_bedrock_api_key @ hermes_cli/model_setup_flows_bedrock.py:_model_flow_bedrock_api_key */
 int msf_u_model_flow_bedrock_api_key(const char *arg) {
     /* Python: mantle endpoint. Arg =
      * "region\tstate\tresult". */
@@ -361,7 +361,7 @@ int msf_u_model_flow_bedrock_api_key(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_model_flow_bedrock @ hermes_cli/model_setup_flows.py:_model_flow_bedrock */
+/* PoP: msf_u_model_flow_bedrock @ hermes_cli/model_setup_flows_bedrock.py:_model_flow_bedrock */
 int msf_u_model_flow_bedrock(const char *arg) {
     /* Python: Converse API. Arg =
      * "has_aws\tstate\tresult". */
@@ -430,7 +430,7 @@ int msf_u_model_flow_anthropic(const char *arg) {
     return 0;
 }
 
-/* PoP: msf_u_existing_api_key_for_model_flow @ hermes_cli/model_setup_flows.py:_existing_api_key_for_model_flow */
+/* PoP: msf_u_existing_api_key_for_model_flow @ hermes_cli/model_setup_flows_common.py:_existing_api_key_for_model_flow */
 int msf_u_existing_api_key_for_model_flow(const char *arg) {
     /* Python: resolve existing wizard credential without changing storage —
      * delegates to _resolve_api_key_provider_secret. Arg =

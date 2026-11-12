@@ -40,5 +40,5 @@ int _verified_codex_ctx_for_slug(void) { return 0; }
 char *_strip_stale_thinking_for_estimate(void) { return strdup(""); }
 
 
-/* PoP: anchored_context_tokens @ agent/model_metadata.py:anchored_context_tokens */
+/* PoP: anchored_context_tokens @ agent/usage_anchor.py:anchored_context_tokens */
 int anchored_context_tokens(void) { return 0; }

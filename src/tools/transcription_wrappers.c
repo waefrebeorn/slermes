@@ -117,7 +117,7 @@ const char *tsc_safe_find_spec(const char *module_name) {
     if (strcmp(module_name, "mistralai") == 0) return module_name;
     return NULL;
 }
-/* PoP: tsc_normalize_local_model @ tools/transcription_tools.py:_normalize_local_model */
+/* PoP: tsc_normalize_local_model @ tools/transcription_local.py:_normalize_local_model */
 const char *tsc_normalize_local_model(const char *model_name) {
     if (!model_name) return "base";
     if (strcmp(model_name,"tiny")==0||strcmp(model_name,"base")==0||
@@ -129,7 +129,7 @@ const char *tsc_normalize_local_model(const char *model_name) {
 const char *tsc_normalize_local_command_model(const char *model_name) {
     return tsc_normalize_local_model(model_name);
 }
-/* PoP: tsc_try_lazy_install_stt @ tools/transcription_tools.py:_try_lazy_install_stt */
+/* PoP: tsc_try_lazy_install_stt @ tools/transcription_local.py:_try_lazy_install_stt */
 bool tsc_try_lazy_install_stt(const char *package_name) {
     /* Python: lazy faster-whisper install, prompt=False. */
     if (!package_name || !*package_name) return false;
@@ -193,7 +193,7 @@ char *tsc_render_command_stt_template(const char *template_str, const char *audi
 char *tsc_run_command_stt(const char *command, const char *audio_path) {
     (void)command; (void)audio_path; return strdup("");
 }
-/* PoP: tsc_read_command_stt_output @ tools/transcription_tools.py:_read_command_stt_output */
+/* PoP: tsc_read_command_stt_output @ tools/transcription_command.py:_read_command_stt_output */
 char *tsc_read_command_stt_output(const char *output_path) {
     if (!output_path) return strdup("");
     FILE *f = fopen(output_path, "r");
@@ -210,7 +210,7 @@ char *tsc_read_command_stt_output(const char *output_path) {
 char *tsc_dispatch_to_plugin_provider(const char *audio_path, const char *language) {
     (void)audio_path; (void)language; return strdup("");
 }
-/* PoP: tsc_load_local_whisper_model @ tools/transcription_tools.py:_load_local_whisper_model */
+/* PoP: tsc_load_local_whisper_model @ tools/transcription_local.py:_load_local_whisper_model */
 void *tsc_load_local_whisper_model(const char *model_name) {
     /* Python: load faster-whisper with graceful CUDA -> CPU fallback. The C
      * port's local STT is command-based (whisper CLI, transcribe_helpers.c):
@@ -227,11 +227,11 @@ void *tsc_load_local_whisper_model(const char *model_name) {
 char *tsc_transcribe_local(const char *audio_path, const char *model_name, const char *language) {
     (void)audio_path; (void)model_name; (void)language; return strdup("");
 }
-/* PoP: tsc_prepare_local_audio @ tools/transcription_tools.py:_prepare_local_audio */
+/* PoP: tsc_prepare_local_audio @ tools/transcription_audio.py:_prepare_local_audio */
 char *tsc_prepare_local_audio(const char *audio_path) {
     return audio_path ? strdup(audio_path) : NULL;
 }
-/* PoP: tsc_transcribe_local_command @ tools/transcription_tools.py:_transcribe_local_command */
+/* PoP: tsc_transcribe_local_command @ tools/transcription_local.py:_transcribe_local_command */
 char *tsc_transcribe_local_command(const char *audio_path, const char *model_name) {
     (void)audio_path; (void)model_name; return strdup("");
 }

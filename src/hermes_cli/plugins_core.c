@@ -138,7 +138,7 @@ static char *pc_bundled_plugins_dir(void) {
 
 /* ── system-prompt sections ───────────────────────────────────────────── */
 
-/* PoP: plugins_is_valid_system_prompt_section_id @ hermes_cli/plugins.py:is_valid_system_prompt_section_id */
+/* PoP: plugins_is_valid_system_prompt_section_id @ hermes_cli/plugins_dispatch.py:is_valid_system_prompt_section_id */
 bool plugins_is_valid_system_prompt_section_id(const char *value) {
     if (!value || !*value) return false;
     /* ^[a-z0-9][a-z0-9._-]{0,127}$ */
@@ -155,7 +155,7 @@ bool plugins_is_valid_system_prompt_section_id(const char *value) {
     return true;
 }
 
-/* PoP: plugins_format_system_prompt_section @ hermes_cli/plugins.py:format_system_prompt_section */
+/* PoP: plugins_format_system_prompt_section @ hermes_cli/plugins_dispatch.py:format_system_prompt_section */
 char *plugins_format_system_prompt_section(const char *section_id,
                                            const char *content) {
     const char *id = section_id ? section_id : "";
@@ -170,7 +170,7 @@ char *plugins_format_system_prompt_section(const char *section_id,
     return out;
 }
 
-/* PoP: plugins_format_system_prompt_sections @ hermes_cli/plugins.py:format_system_prompt_sections */
+/* PoP: plugins_format_system_prompt_sections @ hermes_cli/plugins_dispatch.py:format_system_prompt_sections */
 char *plugins_format_system_prompt_sections(const plugins_section_t *sections,
                                             size_t n_sections) {
     if (!sections || n_sections == 0) return pc_strdup("");
@@ -198,7 +198,7 @@ char *plugins_format_system_prompt_sections(const plugins_section_t *sections,
 
 /* ── kind detection ───────────────────────────────────────────────────── */
 
-/* PoP: plugins_detect_kind_from_source @ hermes_cli/plugins.py:_detect_kind_from_source */
+/* PoP: plugins_detect_kind_from_source @ hermes_cli/plugins_manifest.py:_detect_kind_from_source */
 const char *plugins_detect_kind_from_source(const char *source_text) {
     if (!source_text) return NULL;
     if (strstr(source_text, "register_memory_provider") ||
@@ -210,7 +210,7 @@ const char *plugins_detect_kind_from_source(const char *source_text) {
     return NULL;
 }
 
-/* PoP: plugins_classify_entrypoint_value_kind @ hermes_cli/plugins.py:_classify_entrypoint_value_kind */
+/* PoP: plugins_classify_entrypoint_value_kind @ hermes_cli/plugins_discovery.py:_classify_entrypoint_value_kind */
 const char *plugins_classify_entrypoint_value_kind(
     const char *value,
     char *(*source_reader)(const char *module_name)) {
@@ -239,7 +239,7 @@ const char *plugins_classify_entrypoint_value_kind(
 
 /* ── load order (graphlib.TopologicalSorter parity) ───────────────────── */
 
-/* PoP: plugins_resolve_plugin_load_order @ hermes_cli/plugins.py:resolve_plugin_load_order */
+/* PoP: plugins_resolve_plugin_load_order @ hermes_cli/plugins_manifest.py:resolve_plugin_load_order */
 const char **plugins_resolve_plugin_load_order(const plugins_dep_node_t *nodes,
                                                size_t n_nodes,
                                                size_t *out_n) {
@@ -1067,7 +1067,7 @@ void plugin_get_portable_mcp_names_nowait(char *out_json, size_t out_sz) {
 /*
  * Registers a portable package's MCP servers into the caller-owned registry
  * JSON. Returns the server map declared by the package (empty when it has
- * PoP: plugin_load_portable @ hermes_cli/plugins.py:_load_portable_plugin
+ * PoP: plugin_load_portable @ hermes_cli/plugins_loader.py:_load_portable_plugin
  */
 void plugin_load_portable(const char *manifest_path, char *out_json,
                           size_t out_sz) {
@@ -1167,7 +1167,7 @@ void plugin_list_skill_metadata(const char *raw_config_json, char *out_json,
 
 /* ── wave 8: plugin state / config pure helpers ───────────────────────── */
 
-/* PoP: plugins_select_entry_point_group @ hermes_cli/plugins.py:_select_entry_point_group
+/* PoP: plugins_select_entry_point_group @ hermes_cli/plugins_discovery.py:_select_entry_point_group
  * Python: entry_points.select(group=group) when the API has .select, else a
  * dict lookup, else a filter over iterables of named tuples. In C the entry
  * points arrive as one JSON array of {group: ...} records, so all three
@@ -1205,7 +1205,7 @@ static bool pc_portable_data_pattern(const char *s) {
     return true;
 }
 
-/* PoP: plugins_plugin_data_namespace @ hermes_cli/plugins.py:_plugin_data_namespace */
+/* PoP: plugins_plugin_data_namespace @ hermes_cli/plugins_state.py:_plugin_data_namespace */
 char *plugins_plugin_data_namespace(const char *plugin_id,
                                     const char *skill_namespace) {
     const char *candidate = (skill_namespace && *skill_namespace)
@@ -1222,7 +1222,7 @@ char *plugins_plugin_data_namespace(const char *plugin_id,
     return plugins_portable_skill_namespace(candidate ? candidate : "");
 }
 
-/* PoP: plugins_nested_plugin_value @ hermes_cli/plugins.py:_nested_plugin_value */
+/* PoP: plugins_nested_plugin_value @ hermes_cli/plugins_state.py:_nested_plugin_value */
 const json_t *plugins_nested_plugin_value(const json_t *root,
                                           const char *const *segments,
                                           size_t n_segments,
@@ -1237,7 +1237,7 @@ const json_t *plugins_nested_plugin_value(const json_t *root,
     return current;
 }
 
-/* PoP: plugins_nested_plugin_mapping @ hermes_cli/plugins.py:_nested_plugin_mapping */
+/* PoP: plugins_nested_plugin_mapping @ hermes_cli/plugins_state.py:_nested_plugin_mapping */
 json_t *plugins_nested_plugin_mapping(const char *const *segments,
                                       size_t n_segments,
                                       const json_t *value) {
@@ -1298,7 +1298,7 @@ bool plugins_setting_segment_valid(const char *segment) {
     return true;
 }
 
-/* PoP: plugins_relative_segments @ hermes_cli/plugins.py:_plugin_relative_segments
+/* PoP: plugins_relative_segments @ hermes_cli/plugins_state.py:_plugin_relative_segments
  * Returns NULL (Python raises ValueError) on empty keys, '/', '\\', invalid
  * segments, or reserved roots ("model", "plugins", "security", "settings",
  * case-insensitive). Caller frees via plugins_free_list. */
@@ -1386,7 +1386,7 @@ char *plugins_state_path(const char *data_namespace) {
     return out;
 }
 
-/* PoP: plugins_state_lock_path @ hermes_cli/plugins.py:_locked_plugin_state.lock_path
+/* PoP: plugins_state_lock_path @ hermes_cli/plugins_state.py:_locked_plugin_state.lock_path
  * path.with_name(f".{path.name}.lock") — the lock lives in a sibling file
  * because atomic replacement changes the target's inode/handle. */
 char *plugins_state_lock_path(const char *path) {
@@ -1482,7 +1482,7 @@ static bool plg_value_matches(const json_t *value, plg_config_type_t expected) {
 /* Validate a plugin's config entry against its declared config_schema:
  * fresh JSON array of human-actionable warnings (caller frees); never
  * fails — mismatches must not block plugin load (#64165). */
-/* PoP: plg_validate_config_schema @ hermes_cli/plugins.py:validate_config_schema */
+/* PoP: plg_validate_config_schema @ hermes_cli/plugins_manifest.py:validate_config_schema */
 json_t *plg_validate_config_schema(const char *plugin_id,
                                    const json_t *schema,
                                    const json_t *settings) {
@@ -1531,7 +1531,7 @@ json_t *plg_validate_config_schema(const char *plugin_id,
 
 /* Validate and normalize the manifest v2 fields (#64165): fresh JSON object
  * of PluginManifest kwargs (caller frees); problems warn on stderr only. */
-/* PoP: plg_parse_manifest_v2_fields @ hermes_cli/plugins.py:_parse_manifest_v2_fields */
+/* PoP: plg_parse_manifest_v2_fields @ hermes_cli/plugins_manifest.py:_parse_manifest_v2_fields */
 json_t *plg_parse_manifest_v2_fields(const json_t *data, const char *key) {
     json_t *out = json_object();
     if (!out) return NULL;
@@ -1800,7 +1800,7 @@ static char *plg_dep_vr_str(const json_t *vr) {
 static pthread_mutex_t plg_replacement_lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
 
 /* Snapshot → write → lease attachment as one atomic transaction. */
-/* PoP: plg_serialized_replacement @ hermes_cli/plugins.py:_serialized_replacement */
+/* PoP: plg_serialized_replacement @ hermes_cli/plugins_loader.py:_serialized_replacement */
 void *plg_serialized_replacement(void *(*method)(void *), void *args) {
     pthread_mutex_lock(&plg_replacement_lock);
     void *result = method ? method(args) : NULL;
@@ -1816,7 +1816,7 @@ static bool plg_is_regular_file(const char *path) {
     return path && stat(path, &st) == 0 && S_ISREG(st.st_mode);
 }
 
-/* PoP: plg_resolve_module_origin @ hermes_cli/plugins.py:resolve_module_origin */
+/* PoP: plg_resolve_module_origin @ hermes_cli/plugins_manifest.py:resolve_module_origin */
 char *plg_resolve_module_origin(const char *module_name) {
     if (!module_name) return NULL;
 

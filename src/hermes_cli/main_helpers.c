@@ -305,7 +305,7 @@ char *format_time_ago(const char *iso_ts)
 }
 
 /*
- * PoP: _infer_stepfun_region @ hermes_cli/main.py:_infer_stepfun_region */
+ * PoP: _infer_stepfun_region @ hermes_cli/main_provider_setup.py:_infer_stepfun_region */
 const char *infer_stepfun_region(const char *base_url)
 {
     if (base_url && strstr(base_url, "api.stepfun.com")) return "china";
@@ -520,7 +520,7 @@ char *update_marker_path(void)
 
 /*
  * config["agent"]["reasoning_effort"] as lowercase string, "" when absent. */
-/* PoP: main_current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort */
+/* PoP: main_current_reasoning_effort @ hermes_cli/setup.py:_current_reasoning_effort */
 char *main_current_reasoning_effort(const char *config_json)
 {
     if (!config_json || !*config_json) return strdup("");
@@ -543,7 +543,7 @@ char *main_current_reasoning_effort(const char *config_json)
 /*
  * Returns malloc'd path: project_root/apps/desktop when that package dir
  * exists, else project_root/node_modules/electron (npm hoisting layout). */
-/* PoP: main_electron_dir @ hermes_cli/main.py:_electron_dir */
+/* PoP: main_electron_dir @ hermes_cli/main_desktop.py:_electron_dir */
 char *main_electron_dir(const char *project_root)
 {
     if (!project_root) project_root = ".";

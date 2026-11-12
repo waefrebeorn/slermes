@@ -47,7 +47,7 @@ int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) {
     return 0;
 }
 
-/* PoP: cmd_list @ hermes_cli/checkpoints.py:cmd_list */
+/* PoP: cmd_list @ hermes_cli/plugins_cmd_listing.py:cmd_list */
 int hermes_cli_checkpoints_cmd_status(int argc, char **argv);
 int hermes_cli_checkpoints_cmd_list(int argc, char **argv) {
     /* Python: return cmd_status(args) */

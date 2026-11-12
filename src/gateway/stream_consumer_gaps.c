@@ -33,15 +33,15 @@ int delivered_final_matches(void) { return 1; }
 char *request_reopen_seed(void) { return strdup(""); }
 
 
-/* PoP: _fallback_flood_retry_delay @ gateway/stream_consumer.py:_fallback_flood_retry_delay */
+/* PoP: _fallback_flood_retry_delay @ gateway/stream_consumer_fallback.py:_fallback_flood_retry_delay */
 double _fallback_flood_retry_delay(void) { return 1.0; }
 
-/* PoP: _is_flood_error @ gateway/stream_consumer.py:_is_flood_error */
+/* PoP: _is_flood_error @ gateway/stream_consumer_fallback.py:_is_flood_error */
 int _is_flood_error(const char *error) { return 0; }
 
-/* PoP: _resolve_native_streaming @ gateway/stream_consumer.py:_resolve_native_streaming */
+/* PoP: _resolve_native_streaming @ gateway/stream_consumer_transport.py:_resolve_native_streaming */
 int _resolve_native_streaming(void) { return 1; }
 
 
-/* PoP: _raw_message_limit @ gateway/stream_consumer.py:_raw_message_limit */
+/* PoP: _raw_message_limit @ gateway/stream_consumer_fallback.py:_raw_message_limit */
 int _raw_message_limit(void) { return 4096; }

@@ -336,7 +336,7 @@ void cmd_history(const char *args, agent_state_t *state) {
 }
 
 /* /insights: Show usage insights (enhanced with DB-backed historical stats) */
-/* PoP: cmd_insights @ hermes_cli/main.py:cmd_insights */
+/* PoP: cmd_insights @ hermes_cli/main_agent_cmds.py:cmd_insights */
 void cmd_insights(const char *args, agent_state_t *state) {
     /* Parse --days N and --source S arguments */
     int days_filter = 0;

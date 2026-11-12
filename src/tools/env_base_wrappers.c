@@ -17,7 +17,7 @@
 /* Python module global _activity_callback_local.callback. */
 static const char *g_envb_activity_callback = NULL;
 
-/* PoP: envb_buffered_chars @ tools/environments/base.py:buffered_chars */
+/* PoP: envb_buffered_chars @ tools/environments/base_output.py:buffered_chars */
 int envb_buffered_chars(const char *arg) {
     /* Python: locked head_chars + tail_chars. Arg = "head\ttail". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -27,7 +27,7 @@ int envb_buffered_chars(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_total_chars @ tools/environments/base.py:total_chars */
+/* PoP: envb_total_chars @ tools/environments/base_output.py:total_chars */
 int envb_total_chars(const char *arg) {
     /* Python: locked counter of total captured chars. */
     static long long g_total = 0;
@@ -99,7 +99,7 @@ int envb_get_sandbox_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_u_pipe_stdin @ tools/environments/base.py:_pipe_stdin */
+/* PoP: envb_u_pipe_stdin @ tools/environments/base_output.py:_pipe_stdin */
 int envb_u_pipe_stdin(const char *arg) {
     /* Python: daemon-thread pipe. Arg = "len\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -111,7 +111,7 @@ int envb_u_pipe_stdin(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_u_popen_bash @ tools/environments/base.py:_popen_bash */
+/* PoP: envb_u_popen_bash @ tools/environments/base_output.py:_popen_bash */
 int envb_u_popen_bash(const char *arg) {
     /* Python: Popen with piped stdio. Arg = "cmd\thas_stdin\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -182,7 +182,7 @@ int envb_u_file_mtime_key(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_stdout @ tools/environments/base.py:stdout */
+/* PoP: envb_stdout @ tools/environments/base_output.py:stdout */
 int envb_stdout(const char *arg) {
     /* Python property: the captured stdout text. */
     static char g_stdout[4096];
@@ -191,7 +191,7 @@ int envb_stdout(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_returncode @ tools/environments/base.py:returncode */
+/* PoP: envb_returncode @ tools/environments/base_output.py:returncode */
 int envb_returncode(const char *arg) {
     /* Python property: the process returncode. */
     static int g_rc = 0;
@@ -200,7 +200,7 @@ int envb_returncode(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_stdout_2 @ tools/environments/base.py:stdout */
+/* PoP: envb_stdout_2 @ tools/environments/base_output.py:stdout */
 int envb_stdout_2(const char *arg) {
     /* Python property: the captured stdout text. */
     static char g_stdout[4096];
@@ -209,7 +209,7 @@ int envb_stdout_2(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_returncode_2 @ tools/environments/base.py:returncode */
+/* PoP: envb_returncode_2 @ tools/environments/base_output.py:returncode */
 int envb_returncode_2(const char *arg) {
     /* Python property: the process returncode. */
     static int g_rc = 0;
@@ -218,7 +218,7 @@ int envb_returncode_2(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_u_cwd_marker @ tools/environments/base.py:_cwd_marker */
+/* PoP: envb_u_cwd_marker @ tools/environments/base_session_env.py:_cwd_marker */
 int envb_u_cwd_marker(const char *arg) {
     /* Python: f"__HERMES_CWD_{session_id}__". Arg = session id. */
     if (!arg || !*arg) { printf("__HERMES_CWD___\n"); return 0; }

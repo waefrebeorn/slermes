@@ -65,7 +65,7 @@ static int pindex_valid_repo(const char *repo) {
 }
 
 /* _parse_entries: returns malloc'd JSON array of normalized entry objects.  */
-/* PoP: pindex_parse_entries @ hermes_cli/plugin_index.py:_parse_entries */
+/* PoP: pindex_parse_entries @ tools/memory_tool_store.py:_parse_entries */
 
 char *pindex_parse_entries(const char *raw_json) {
     json_t *raw = json_parse(raw_json, NULL);

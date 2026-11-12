@@ -155,7 +155,7 @@ bool gw_launchd_service_registered(const char *label)
 /*  Timestamped stderr                                                */
 /* ================================================================== */
 
-/* PoP: gw_timestamped_stderr_gateway_command @ hermes_cli/gateway.py:_timestamped_stderr_gateway_command */
+/* PoP: gw_timestamped_stderr_gateway_command @ hermes_cli/gateway_launchd.py:_timestamped_stderr_gateway_command */
 /* Build a shell command that prefixes stderr lines with a timestamp.
  * Returns malloc'd string (caller frees). */
 char *gw_timestamped_stderr_gateway_command(const char *base_cmd)

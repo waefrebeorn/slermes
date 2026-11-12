@@ -259,7 +259,7 @@ char *relay_helper_stamp_slack_session_thread(const char *platform,
  * _decode_prompt_token / _render_interaction_options
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: relay_helper_decode_prompt_token @ gateway/relay/adapter.py:_decode_prompt_token */
+/* PoP: relay_helper_decode_prompt_token @ gateway/relay/adapter_discord_interaction.py:_decode_prompt_token */
 int relay_helper_decode_prompt_token(const char *token, char *prompt_id_out,
                                      size_t prompt_id_sz, char *option_id_out,
                                      size_t option_id_sz) {
@@ -293,7 +293,7 @@ int relay_helper_decode_prompt_token(const char *token, char *prompt_id_out,
     return 1;
 }
 
-/* PoP: relay_helper_render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
+/* PoP: relay_helper_render_interaction_options @ gateway/relay/adapter_discord_interaction.py:_render_interaction_options */
 char *relay_helper_render_interaction_options(const char *options_json) {
     /* Discord data.options: [{name,value,type}]. Scalars contribute value;
      * SUB_COMMAND (1)/SUB_COMMAND_GROUP (2) contribute name then recurse

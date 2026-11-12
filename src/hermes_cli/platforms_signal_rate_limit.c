@@ -16,7 +16,7 @@
 /* Port of _RETRY_AFTER_RE: "Retry after (\d+(?:\.\d+)?)\s*second" (IGNORECASE) */
 static int extract_retry_after_regex(const char *msg);
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds @ gateway/platforms/signal_rate_limit.py:_extract_retry_after_seconds */
+/* PoP: cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds @ plugins/platforms/signal/signal_rate_limit.py:_extract_retry_after_seconds */
 /* Faithful port: tries two sources, in order —
  *   1. structured field: err.data.response.results[*].retryAfterSeconds
  *      (signal-cli >= v0.14.3) -> float(max(candidates))
@@ -107,7 +107,7 @@ static int extract_retry_after_regex(const char *msg) {
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error @ gateway/platforms/signal_rate_limit.py:_is_signal_rate_limit_error */
+/* PoP: cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error @ plugins/platforms/signal/signal_rate_limit.py:_is_signal_rate_limit_error */
 int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const char *err) {
     /* Faithful port of the Python _is_signal_rate_limit_error(err):
      *   - typed RATELIMIT_ERROR code (signal-cli >= v0.14.3)
@@ -154,7 +154,7 @@ int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const ch
     return hit;
 }
 
-/* PoP: if @ gateway/platforms/signal_rate_limit.py:_format_wait */
+/* PoP: if @ plugins/platforms/signal/signal_rate_limit.py:_format_wait */
 char* cli_gateway_platforms_signal_rate_limit__format_wait(int seconds, char *buf, size_t bufsz) {
     /*
      * Format a wait duration as a human-readable string.
@@ -172,7 +172,7 @@ char* cli_gateway_platforms_signal_rate_limit__format_wait(int seconds, char *bu
     return buf;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__refill @ gateway/platforms/signal_rate_limit.py:_refill */
+/* PoP: cli_gateway_platforms_signal_rate_limit__refill @ plugins/platforms/signal/signal_rate_limit.py:_refill */
 int cli_gateway_platforms_signal_rate_limit__refill(int *bucket, int capacity, int tokens_per_second) {
     /*
      * Refill the token bucket based on elapsed time.
@@ -190,7 +190,7 @@ int cli_gateway_platforms_signal_rate_limit__refill(int *bucket, int capacity, i
     return new_tokens;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit_estimate_wait @ gateway/platforms/signal_rate_limit.py:estimate_wait */
+/* PoP: cli_gateway_platforms_signal_rate_limit_estimate_wait @ plugins/platforms/signal/signal_rate_limit.py:estimate_wait */
 int cli_gateway_platforms_signal_rate_limit_estimate_wait(int retry_after, int *bucket, int capacity) {
     /*
      * Estimate how long to wait before retrying.
@@ -225,7 +225,7 @@ int cli_gateway_platforms_signal_rate_limit_acquire(int *bucket, int tokens_need
 
 
 
-/* PoP: cli_gateway_platforms_signal_rate_limit_feedback @ gateway/platforms/signal_rate_limit.py:feedback */
+/* PoP: cli_gateway_platforms_signal_rate_limit_feedback @ plugins/platforms/signal/signal_rate_limit.py:feedback */
 void cli_gateway_platforms_signal_rate_limit_feedback(int was_throttled, int retry_after) {
     /*
      * Provide feedback to the rate limiter about throttling events.
@@ -291,7 +291,7 @@ void cli_gateway_platforms_signal_rate_limit__update_from_response(json_node_t *
     }
 }
 
-/* PoP: refill @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
+/* PoP: refill @ plugins/platforms/signal/signal_rate_limit.py:report_rpc_duration */
 /* Record an attachment-send RPC that just completed: deduct n_attachments
  * tokens WITHOUT crediting upload-time refill (Signal checks the bucket at RPC
  * start and does not refill during processing — crediting it causes drift →

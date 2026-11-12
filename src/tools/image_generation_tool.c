@@ -1538,7 +1538,7 @@ int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
 
 /* ── hermes_cli/tools_config.py:_fal_model_catalog ─────────────────────── */
 
-/* PoP: tools_config_fal_model_catalog @ hermes_cli/tools_config.py:_fal_model_catalog */
+/* PoP: tools_config_fal_model_catalog @ hermes_cli/tools_config_providers.py:_fal_model_catalog */
 /* Lazy-load the FAL model catalog: fills *catalog_out with
  * {model_id: {display, speed, strengths, price}} and *default_model with the
  * module DEFAULT_MODEL. Returns false when the catalog table is empty. */

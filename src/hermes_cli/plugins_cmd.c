@@ -402,7 +402,7 @@ static void p_flat_install_dir(const char *ident, char *out, size_t sz) {
 }
 
 /* Install metadata sidecar: <home>/plugins/.install-metadata.json */
-/* PoP: _read_install_metadata @ hermes_cli/plugins_cmd.py:_read_install_metadata */
+/* PoP: _read_install_metadata @ hermes_cli/plugins_cmd_git.py:_read_install_metadata */
 static json_t *p_read_install_metadata(void) {
     char home[1024], path[2048];
     p_home(home, sizeof home);
@@ -417,7 +417,7 @@ static json_t *p_read_install_metadata(void) {
     return meta ? meta : json_object();
 }
 
-/* PoP: _write_install_metadata @ hermes_cli/plugins_cmd.py:_write_install_metadata */
+/* PoP: _write_install_metadata @ hermes_cli/plugins_cmd_git.py:_write_install_metadata */
 static int p_write_install_metadata(const json_t *meta) {
     char home[1024], path[2048], tmp[2200];
     p_home(home, sizeof home);
@@ -788,7 +788,7 @@ void cmd_disable(const char *name) {
 /* cmd_list                                                            */
 /* ------------------------------------------------------------------ */
 
-/* PoP: cmd_list @ hermes_cli/plugins_cmd.py:cmd_list */
+/* PoP: cmd_list @ hermes_cli/plugins_cmd_listing.py:cmd_list */
 void cmd_list(int opt_json, int opt_plain, int opt_no_bundled_or_user,
               int opt_enabled_only) {
     plugins_scan_result_t *r = plugins_collect_directory_manifests();
@@ -925,7 +925,7 @@ static size_t p_caps_declared(const char *dir, const char ***out_caps) {
     return ncaps;
 }
 
-/* PoP: cmd_capabilities @ hermes_cli/plugins_cmd.py:cmd_capabilities */
+/* PoP: cmd_capabilities @ hermes_cli/plugins_cmd_capabilities.py:cmd_capabilities */
 void cmd_capabilities(const char *name) {
     plugins_scan_result_t *r = plugins_collect_directory_manifests();
     size_t n = plugins_scan_count(r);
@@ -985,7 +985,7 @@ void cmd_capabilities(const char *name) {
 /*
  * Text-mode path of the composite UI (_run_composite_fallback semantics):
  * numbered toggling persisted by canonical key. The curses screen is the
- * PoP: cmd_toggle @ hermes_cli/plugins_cmd.py:cmd_toggle
+ * PoP: cmd_toggle @ hermes_cli/plugins_cmd_toggle.py:cmd_toggle
  */
 void cmd_toggle(void) {
     if (!isatty(0)) {
@@ -1138,7 +1138,7 @@ void cmd_plugin_doctor(const char *target, int ci) {
 /* cmd_search                                                          */
 /* ------------------------------------------------------------------ */
 
-/* PoP: cmd_search @ hermes_cli/plugins_cmd.py:cmd_search */
+/* PoP: cmd_search @ hermes_cli/plugins_cmd_catalog.py:cmd_search */
 #define SECURITY_FOOTER                                                        \
     "Indexed \xe2\x89\xa0 audited: inclusion in the index is a metadata review " \
     "only, not a code audit. Review a plugin before enabling it."

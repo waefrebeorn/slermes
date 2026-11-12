@@ -38,7 +38,7 @@ int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_mcp_stdio_watchdog_u_watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
+/* PoP: tools_mcp_stdio_watchdog_u_watchdog_loop @ plugins/platforms/a2a/adapter.py:_watchdog_loop */
 int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {
     /* Python: while proc alive: if orphaned(original_ppid):
      * terminate_process_group(proc); return; sleep(_POLL_INTERVAL_S).

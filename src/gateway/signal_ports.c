@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: sig_remux_aac_to_m4a @ gateway/platforms/signal.py:_remux_aac_to_m4a */
+/* PoP: sig_remux_aac_to_m4a @ plugins/platforms/signal/adapter.py:_remux_aac_to_m4a */
 char *sig_remux_aac_to_m4a(const char *aac_path, const char *out_path) {
     /* Python: lossless ADTS AAC → MP4 via ffmpeg -c copy. */
     if (!aac_path || !out_path) return NULL;
@@ -31,7 +31,7 @@ char *sig_remux_aac_to_m4a(const char *aac_path, const char *out_path) {
     return rc == 0 ? strdup(out_path) : NULL;
 }
 
-/* PoP: sig_extract_quote_author @ gateway/platforms/signal.py:_extract_quote_author */
+/* PoP: sig_extract_quote_author @ plugins/platforms/signal/adapter.py:_extract_quote_author */
 char *sig_extract_quote_author(const char *quote_json) {
     /* Python: best available sender identifier from quote metadata. */
     if (!quote_json) return strdup("");
@@ -46,14 +46,14 @@ char *sig_extract_quote_author(const char *quote_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: sig_quote_references_own_message @ gateway/platforms/signal.py:_quote_references_own_message */
+/* PoP: sig_quote_references_own_message @ plugins/platforms/signal/adapter.py:_quote_references_own_message */
 bool sig_quote_references_own_message(const char *reply_to_id, const char *sent_timestamps_json) {
     /* Python: True when quote points at our outbound message. */
     if (!reply_to_id || !sent_timestamps_json) return false;
     return strstr(sent_timestamps_json, reply_to_id) != NULL;
 }
 
-/* PoP: sig_remember_sent_message_timestamp @ gateway/platforms/signal.py:_remember_sent_message_timestamp */
+/* PoP: sig_remember_sent_message_timestamp @ plugins/platforms/signal/adapter.py:_remember_sent_message_timestamp */
 char *sig_remember_sent_message_timestamp(const char *cache_json, const char *timestamp, long max_entries) {
     /* Python: bounded cache of outbound timestamps. */
     if (!timestamp) return cache_json ? strdup(cache_json) : strdup("[]");
@@ -84,7 +84,7 @@ char *sig_format_message(const char *content) {
     return out;
 }
 
-/* PoP: sig_validate_send_result @ gateway/platforms/signal.py:_validate_send_result */
+/* PoP: sig_validate_send_result @ plugins/platforms/signal/adapter.py:_validate_send_result */
 char *sig_validate_send_result(const char *result_json) {
     /* Python: (success, error_message). */
     if (!result_json) return strdup("false\tunknown result");
@@ -93,7 +93,7 @@ char *sig_validate_send_result(const char *result_json) {
     return strdup("false\tsignal-cli send failed");
 }
 
-/* PoP: sig_consume_sent_timestamp @ gateway/platforms/signal.py:_consume_sent_timestamp */
+/* PoP: sig_consume_sent_timestamp @ plugins/platforms/signal/adapter.py:_consume_sent_timestamp */
 bool sig_consume_sent_timestamp(const char *cache_json, const char *ts) {
     /* Python: pop matching timestamp; True on echo. */
     if (!cache_json || !ts) return false;

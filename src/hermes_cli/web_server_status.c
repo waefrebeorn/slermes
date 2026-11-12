@@ -125,7 +125,7 @@ const char *dashboard_runtime_get_pty_file(dashboard_runtime_t *rt,
 }
 
 /* ── gateway health probe (Python _probe_gateway_health) ───────────────── */
-/* PoP: ws_probe_gateway_health @ hermes_cli/web_server.py:_probe_gateway_health */
+/* PoP: ws_probe_gateway_health @ hermes_cli/web_server_gateway.py:_probe_gateway_health */
 bool ws_probe_gateway_health(char **out_body) {
     if (out_body) *out_body = NULL;
     const char *raw = gateway_health_url();
@@ -171,7 +171,7 @@ bool ws_probe_gateway_health(char **out_body) {
 }
 
 /* ── active session count (Python _count_status_active_sessions) ───────── */
-/* PoP: ws_count_active_sessions @ hermes_cli/web_server.py:_count_status_active_sessions */
+/* PoP: ws_count_active_sessions @ hermes_cli/web_routers/status.py:_count_status_active_sessions */
 int ws_count_active_sessions(void) {
     char dbpath[1024];
     snprintf(dbpath, sizeof(dbpath), "%s/%s", slermes_home(),

@@ -689,7 +689,7 @@ bool cc_finalize_compression_notification(cc_pending_notification_t **slot,
 
 /* ── Telemetry ───────────────────────────────────────────────────────── */
 
-/* PoP: cc_compression_attempt_telemetry_line @ agent/conversation_compression.py:_emit_compression_attempt_telemetry */
+/* PoP: cc_compression_attempt_telemetry_line @ agent/conversation_compression_telemetry.py:_emit_compression_attempt_telemetry */
 char *cc_compression_attempt_telemetry_line(const json_t *base_telemetry,
                                             const char *attempt_id,
                                             const char *session_id,
@@ -941,7 +941,7 @@ typedef struct cc_codex_session_ctx {
 /* helper: wrap (messages, prompt) into the [messages, prompt] tuple shape */
 static json_t *cc_codex_result(json_t *messages, char *prompt);
 
-/* PoP: unchanged @ agent/conversation_compression.py:_compress_context_via_codex_app_server */
+/* PoP: unchanged @ agent/conversation_compression_codex.py:_compress_context_via_codex_app_server */
 /* Returns a malloc'd JSON tuple [unchanged_messages, built_prompt]. On the
  * Hermes-native fallback path (auto_mode != "hermes" or no session) messages
  * are returned unchanged with the built system prompt; on the codex path the
@@ -1067,7 +1067,7 @@ void cc_release_compression_admission(void) {
     pthread_mutex_unlock(&g_cc_admission_lock);
 }
 
-/* PoP: cc_resolve_context_compression_timeouts @ agent/conversation_compression.py:resolve_context_compression_timeouts */
+/* PoP: cc_resolve_context_compression_timeouts @ agent/conversation_compression_deadline.py:resolve_context_compression_timeouts */
 void cc_resolve_context_compression_timeouts(const char *compression_cfg_json,
                                              double *out_idle,
                                              double *out_ceiling) {

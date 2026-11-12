@@ -211,7 +211,7 @@ char *models_fetch_anthropic_models(http_fetch_fn fetch, void *ctx,
     return res;
 }
 
-/* PoP: models_fetch_lmstudio_models @ hermes_cli/models.py:fetch_lmstudio_models */
+/* PoP: models_fetch_lmstudio_models @ hermes_cli/models_local.py:fetch_lmstudio_models */
 /* Fetch the local LM Studio /v1/models catalog. Returns a malloc'd JSON */
 char *models_fetch_lmstudio_models(http_fetch_fn fetch, void *ctx,
                                    const char *server_root) {
@@ -242,7 +242,7 @@ char *models_fetch_lmstudio_models(http_fetch_fn fetch, void *ctx,
     return res;
 }
 
-/* PoP: models_fetch_ollama_cloud_models @ hermes_cli/models.py:fetch_ollama_cloud_models */
+/* PoP: models_fetch_ollama_cloud_models @ hermes_cli/models_local.py:fetch_ollama_cloud_models */
 /* Fetch the Ollama Cloud catalog. Returns a malloc'd JSON array of model-id */
 char *models_fetch_ollama_cloud_models(http_fetch_fn fetch, void *ctx,
                                        const char *server_root) {
@@ -306,7 +306,7 @@ int models_model_in_provider_catalog(const char *name_lower,
     return 0;
 }
 
-/* PoP: models_xai_promote_top @ hermes_cli/models.py:_xai_promote_top */
+/* PoP: models_xai_promote_top @ hermes_cli/models_catalog_static.py:_xai_promote_top */
 /* Pin _XAI_TOP_MODEL to the front of the list. ids is a NULL-terminated */
 void models_xai_promote_top(char *const *ids, char **out, size_t cap) {
     const char *TOP = "grok-build-0.1";
@@ -325,7 +325,7 @@ void models_xai_promote_top(char *const *ids, char **out, size_t cap) {
     out[o] = NULL;
 }
 
-/* PoP: models_xai_merge_curated_extras @ hermes_cli/models.py:_xai_merge_curated_extras */
+/* PoP: models_xai_merge_curated_extras @ hermes_cli/models_catalog_static.py:_xai_merge_curated_extras */
 /* Append Hermes-curated xAI extras that are missing. out is a NULL-terminated */
 void models_xai_merge_curated_extras(char **ids, size_t cap) {
     static const char *EXTRAS[] = { "grok-composer-2.5-fast", NULL };
@@ -344,7 +344,7 @@ void models_xai_merge_curated_extras(char **ids, size_t cap) {
     }
 }
 
-/* PoP: models_xai_curated_models @ hermes_cli/models.py:_xai_curated_models */
+/* PoP: models_xai_curated_models @ hermes_cli/models_catalog_static.py:_xai_curated_models */
 /* Fills *out (caller frees each + array) with xAI curated model ids; *out_n is
  * the count. Static fallback (Python reads models.dev disk cache; live path
  * via the injectable fetch is layered on top). */
@@ -362,7 +362,7 @@ void models_xai_curated_models(char ***out, size_t *out_n) {
     *out_n = n;
 }
 
-/* PoP: models_codex_curated_models @ hermes_cli/models.py:_codex_curated_models */
+/* PoP: models_codex_curated_models @ hermes_cli/models_catalog_static.py:_codex_curated_models */
 /* Fills *out (caller frees each + array) with openai-codex curated model ids.
  * The Python derives from codex_models.DEFAULT_CODEX_MODELS; we port the
  * equivalent curated list. */
@@ -557,7 +557,7 @@ static double caps_monotonic(void) {
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: models_reasoning_caps_disk_path @ hermes_cli/models.py:_reasoning_caps_disk_path */
+/* PoP: models_reasoning_caps_disk_path @ hermes_cli/models_reasoning_caps.py:_reasoning_caps_disk_path */
 char *models_reasoning_caps_disk_path(void) {
     char home[4096];
     hermes_home_dir(home, sizeof(home));
@@ -580,7 +580,7 @@ static char *caps_strip_dup(const char *s) {
     return d;
 }
 
-/* PoP: models_parse_openrouter_reasoning_capabilities_node @ hermes_cli/models.py:parse_openrouter_reasoning_capabilities */
+/* PoP: models_parse_openrouter_reasoning_capabilities_node @ hermes_cli/models_reasoning_caps.py:parse_openrouter_reasoning_capabilities */
 /* Core parser over a parsed catalog item. Returns a new JSON node:
  *   {"supports_reasoning":true,"supported_efforts":[...]|null,"mandatory":bool}
  * or {"supports_reasoning":false} when the entry omits "reasoning" from
@@ -639,7 +639,7 @@ static json_t *models_parse_openrouter_reasoning_capabilities_node(const json_t 
     return out;
 }
 
-/* PoP: models_parse_openrouter_reasoning_capabilities @ hermes_cli/models.py:parse_openrouter_reasoning_capabilities */
+/* PoP: models_parse_openrouter_reasoning_capabilities @ hermes_cli/models_reasoning_caps.py:parse_openrouter_reasoning_capabilities */
 /* Normalize one OpenRouter catalog entry's reasoning metadata. item_json is
  * one entry of the /v1/models data array. Returns a malloc'd JSON object
  * string per the tri-state contract, or NULL when capability can't be
@@ -655,7 +655,7 @@ char *models_parse_openrouter_reasoning_capabilities(const char *item_json)
     return out;
 }
 
-/* PoP: models_read_reasoning_caps_disk @ hermes_cli/models.py:_read_reasoning_caps_disk */
+/* PoP: models_read_reasoning_caps_disk @ hermes_cli/models_reasoning_caps.py:_read_reasoning_caps_disk */
 static json_t *models_read_reasoning_caps_disk(void) {
     char *path = models_reasoning_caps_disk_path();
     if (!path) return NULL;
@@ -667,7 +667,7 @@ static json_t *models_read_reasoning_caps_disk(void) {
     return doc;
 }
 
-/* PoP: models_load_reasoning_caps_disk @ hermes_cli/models.py:_load_reasoning_caps_disk */
+/* PoP: models_load_reasoning_caps_disk @ hermes_cli/models_reasoning_caps.py:_load_reasoning_caps_disk */
 /* Returns the serialized caps map for url (malloc'd) and fills *age_seconds,
  * or NULL. A missing/bad ts counts as fully stale, like Python. */
 static char *models_load_reasoning_caps_disk(const char *url, double *age_seconds) {
@@ -692,7 +692,7 @@ static char *models_load_reasoning_caps_disk(const char *url, double *age_second
     return out;
 }
 
-/* PoP: models_save_reasoning_caps_disk @ hermes_cli/models.py:_save_reasoning_caps_disk */
+/* PoP: models_save_reasoning_caps_disk @ hermes_cli/models_reasoning_caps.py:_save_reasoning_caps_disk */
 /* Merge url's caps map into the shared disk mirror, atomically. Best-effort. */
 static void models_save_reasoning_caps_disk(const char *url, const json_t *map) {
     char *path = models_reasoning_caps_disk_path();
@@ -740,7 +740,7 @@ static void models_save_reasoning_caps_disk(const char *url, const json_t *map) 
     free(path);
 }
 
-/* PoP: models_seed_reasoning_caps @ hermes_cli/models.py:_seed_reasoning_caps */
+/* PoP: models_seed_reasoning_caps @ hermes_cli/models_reasoning_caps.py:_seed_reasoning_caps */
 /* Parse a /v1/models data array into a per-model caps map, mirror it to disk
  * for url, and return the serialized map (malloc'd) — or NULL when the array
  * has no usable entries (callers remember that as a failure, not empty). */
@@ -816,7 +816,7 @@ static char *caps_fetch(caps_state *st, const char *url, http_fetch_fn fetch,
     return st->cache;
 }
 
-/* PoP: models_resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
+/* PoP: models_resolve_nous_pricing_credentials @ hermes_cli/models_pricing.py:_resolve_nous_pricing_credentials */
 /* Return (api_key, base_url) for Nous Portal pricing/inference. Base URL
  * precedence: NOUS_INFERENCE_BASE_URL env override → injected runtime
  * credential resolver → production default. Strips a trailing "/v1" so
@@ -859,7 +859,7 @@ void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
     else free(base);
 }
 
-/* PoP: models_nous_catalog_url @ hermes_cli/models.py:nous_catalog_url */
+/* PoP: models_nous_catalog_url @ hermes_cli/models_reasoning_caps.py:nous_catalog_url */
 /* The Portal /v1/models URL for the endpoint we actually talk to, resolved
  * through the documented ladder (env override → credential base → prod).
  * Returns a malloc'd URL string. Caller frees. */
@@ -875,7 +875,7 @@ char *models_nous_catalog_url(void) {
     return out;
 }
 
-/* PoP: models_openrouter_model_reasoning_capabilities @ hermes_cli/models.py:openrouter_model_reasoning_capabilities */
+/* PoP: models_openrouter_model_reasoning_capabilities @ hermes_cli/models_reasoning_caps.py:openrouter_model_reasoning_capabilities */
 /* Tri-state contract: malloc'd caps JSON with supports_reasoning true/false,
  * or NULL when unknown (catalog not loaded, model not listed, malformed).
  * Cache-only unless allow_fetch; the HTTP transport is injectable. Caller
@@ -901,7 +901,7 @@ char *models_openrouter_model_reasoning_capabilities(http_fetch_fn fetch, void *
     return out;
 }
 
-/* PoP: models_nous_model_reasoning_capabilities @ hermes_cli/models.py:nous_model_reasoning_capabilities */
+/* PoP: models_nous_model_reasoning_capabilities @ hermes_cli/models_reasoning_caps.py:nous_model_reasoning_capabilities */
 /* Nous Portal counterpart of models_openrouter_model_reasoning_capabilities;
  * same tri-state contract and cache-only default. */
 char *models_nous_model_reasoning_capabilities(http_fetch_fn fetch, void *ctx,

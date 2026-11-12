@@ -75,7 +75,7 @@ int cli_gateway_platforms_feishu_meeting_invite__as_dict(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__content_payload @ gateway/platforms/feishu_meeting_invite.py:_content_payload */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__content_payload @ plugins/platforms/feishu/feishu_meeting_invite.py:_content_payload */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:_content_payload */
 /* Unwrap a Feishu body.content list carrying an application/json payload. */
@@ -130,7 +130,7 @@ int cli_gateway_platforms_feishu_meeting_invite__content_payload(
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__int_field @ gateway/platforms/feishu_meeting_invite.py:_int_field */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__int_field @ plugins/platforms/feishu/feishu_meeting_invite.py:_int_field */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:_int_field */
 /* Safely convert a value to int, defaulting to 0. */
@@ -148,7 +148,7 @@ int cli_gateway_platforms_feishu_meeting_invite__int_field(const char *value)
     return (int)result;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_user @ gateway/platforms/feishu_meeting_invite.py:_parse_user */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_user @ plugins/platforms/feishu/feishu_meeting_invite.py:_parse_user */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:_parse_user */
 /* Parse a Feishu user object from JSON. */
@@ -215,7 +215,7 @@ int cli_gateway_platforms_feishu_meeting_invite__parse_user(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_meeting @ gateway/platforms/feishu_meeting_invite.py:_parse_meeting */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_meeting @ plugins/platforms/feishu/feishu_meeting_invite.py:_parse_meeting */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:_parse_meeting */
 /* Parse a Feishu meeting object from JSON. */
@@ -290,7 +290,7 @@ int cli_gateway_platforms_feishu_meeting_invite__parse_meeting(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event @ gateway/platforms/feishu_meeting_invite.py:parse_meeting_invited_event */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event @ plugins/platforms/feishu/feishu_meeting_invite.py:parse_meeting_invited_event */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:parse_meeting_invited_event */
 /* Parse a vc.bot.meeting_invited_v1 event into a MeetingInvitedPayload. */
@@ -353,7 +353,7 @@ int cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt @ gateway/platforms/feishu_meeting_invite.py:build_meeting_invite_prompt */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt @ plugins/platforms/feishu/feishu_meeting_invite.py:build_meeting_invite_prompt */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:build_meeting_invite_prompt */
 /* Build the prompt text for a meeting invite event. */
@@ -390,7 +390,7 @@ int cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__dedup_key @ gateway/platforms/feishu_meeting_invite.py:_dedup_key */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__dedup_key @ plugins/platforms/feishu/feishu_meeting_invite.py:_dedup_key */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:_dedup_key */
 /* Build a dedup key for a meeting invite event. */
@@ -413,7 +413,7 @@ int cli_gateway_platforms_feishu_meeting_invite__dedup_key(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite_handle_meeting_invited_event @ gateway/platforms/feishu_meeting_invite.py:handle_meeting_invited_event */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite_handle_meeting_invited_event @ plugins/platforms/feishu/feishu_meeting_invite.py:handle_meeting_invited_event */
 
 /* Port of Python gateway/platforms/feishu_meeting_invite.py:handle_meeting_invited_event */
 /* Convert a vc.bot.meeting_invited_v1 event into a gateway MessageEvent. */

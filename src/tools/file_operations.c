@@ -51,31 +51,31 @@ void port_file_operations_state_cleanup(port_file_operations_state_t *state)
  *  self-contained, oracle-verified module.
  * ================================================================ */
 
-/* PoP: file_ops_strip_terminal_fence_leaks @ tools/file_operations.py:_strip_terminal_fence_leaks */
+/* PoP: file_ops_strip_terminal_fence_leaks @ tools/file_operations_common.py:_strip_terminal_fence_leaks */
 char *file_ops_strip_terminal_fence_leaks(const char *text)
 {
     return file_text_ops_strip_terminal_fence_leaks(text);
 }
 
-/* PoP: file_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending */
+/* PoP: file_ops_detect_line_ending @ tools/file_operations_common.py:_detect_line_ending */
 char *file_ops_detect_line_ending(const char *text)
 {
     return file_text_ops_detect_line_ending(text);
 }
 
-/* PoP: file_ops_normalize_line_endings @ tools/file_operations.py:_normalize_line_endings */
+/* PoP: file_ops_normalize_line_endings @ tools/file_operations_common.py:_normalize_line_endings */
 char *file_ops_normalize_line_endings(const char *text, const char *target)
 {
     return file_text_ops_normalize_line_endings(text, target);
 }
 
-/* PoP: file_ops_strip_bom @ tools/file_operations.py:_strip_bom */
+/* PoP: file_ops_strip_bom @ tools/file_operations_common.py:_strip_bom */
 char *file_ops_strip_bom(const char *text)
 {
     return file_text_ops_strip_bom(text);
 }
 
-/* PoP: file_ops_has_bom @ tools/file_operations.py:_has_bom */
+/* PoP: file_ops_has_bom @ tools/file_operations_common.py:_has_bom */
 bool file_ops_has_bom(const char *text)
 {
     return file_text_ops_has_bom(text);
@@ -85,7 +85,7 @@ bool file_ops_has_bom(const char *text)
  *  Search context line parsing  (delegates → src/tools/file_text_ops.c)
  * ================================================================ */
 
-/* PoP: file_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line */
+/* PoP: file_ops_parse_search_context_line @ tools/file_operations_search.py:_parse_search_context_line */
 char *file_ops_parse_search_context_line(const char *line)
 {
     return file_text_ops_parse_search_context_line(line);
@@ -137,14 +137,14 @@ char *file_ops_patch_v4a(const char *patch_content)
  *  Pagination helpers
  * ================================================================ */
 
-/* PoP: file_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination */
+/* PoP: file_ops_normalize_read_pagination @ tools/file_operations_common.py:normalize_read_pagination */
 /* delegates to file_pagination_ops_normalize_read_pagination */
 char *file_ops_normalize_read_pagination(int offset, int limit, int default_limit)
 {
     return file_pagination_ops_normalize_read_pagination(offset, limit, default_limit);
 }
 
-/* PoP: file_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination */
+/* PoP: file_ops_normalize_search_pagination @ tools/file_operations_common.py:normalize_search_pagination */
 /* delegates to file_pagination_ops_normalize_search_pagination */
 char *file_ops_normalize_search_pagination(int offset, int limit, int default_limit)
 {
@@ -300,21 +300,21 @@ bool file_ops_file_has_bom(const char *path)
 /* Port of Python: _densify_matches */
 
 
-/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error */
+/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations_search.py:_is_line_oriented_newline_error */
 /* delegates to file_pagination_ops_is_line_oriented_newline_error */
 bool file_ops_is_line_oriented_newline_error(const char *error)
 {
     return file_pagination_ops_is_line_oriented_newline_error(error);
 }
 
-/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern */
+/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations_search.py:_maybe_warn_line_oriented_newline_pattern */
 /* delegates to file_pagination_ops_maybe_warn_line_oriented_newline_pattern */
 json_t *file_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern)
 {
     return file_pagination_ops_maybe_warn_line_oriented_newline_pattern(result, pattern);
 }
 
-/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline */
+/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations_search.py:_pattern_has_regex_newline */
 /* delegates to file_pagination_ops_pattern_has_regex_newline */
 bool file_ops_pattern_has_regex_newline(const char *pattern)
 {
@@ -370,7 +370,7 @@ static void fops_parse_rg_count(const char *out, int *out_total, int *out_files)
     free(lines);
 }
 
-/* PoP: file_ops_zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+/* PoP: file_ops_zero_match_probe @ tools/file_operations_search.py:_zero_match_probe */
 char *file_ops_zero_match_probe(const char *pattern, const char *path,
                                   const char *file_glob) {
     /* Python: run ONE cheap case-insensitive count probe; if it hits, say so.
@@ -462,7 +462,7 @@ char *file_ops_zero_match_probe(const char *pattern, const char *path,
     return NULL;  /* Python: return None */
 }
 
-/* PoP: list @ tools/file_operations.py:_try_multi_path_search */
+/* PoP: list @ tools/file_operations_search.py:_try_multi_path_search */
 
 /* Port of Python _search_files_rg: find files by name pattern via rg.
  * Returns space-newline-separated list (caller parses), or empty string. */
@@ -843,7 +843,7 @@ int fo_delete_path(const char *path, int recursive) {
 
 /* === Linter detection === */
 
-/* PoP: fo_looks_like_linter_unusable @ tools/file_operations.py:_looks_like_linter_unusable */
+/* PoP: fo_looks_like_linter_unusable @ tools/file_operations_lint.py:_looks_like_linter_unusable */
 int fo_looks_like_linter_unusable(const char *base_cmd, const char *output) {
     if (!base_cmd || !output) return 0;
     /* Check for common "linter can't run" patterns */
@@ -1000,7 +1000,7 @@ int fo_python_delete(const char *path) {
 
 /* === Search helpers === */
 
-/* PoP: fo_try_multi_path_search @ tools/file_operations.py:_try_multi_path_search */
+/* PoP: fo_try_multi_path_search @ tools/file_operations_search.py:_try_multi_path_search */
 int fo_try_multi_path_search(const char **paths, int count, char *out_found, size_t out_sz) {
     if (!paths || count <= 0) return -1;
     for (int i = 0; i < count; i++) {
@@ -1012,7 +1012,7 @@ int fo_try_multi_path_search(const char **paths, int count, char *out_found, siz
     return -1;
 }
 
-/* PoP: fo_zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+/* PoP: fo_zero_match_probe @ tools/file_operations_search.py:_zero_match_probe */
 int fo_zero_match_probe(const char *path) {
     if (!path) return 0;
     struct stat st;

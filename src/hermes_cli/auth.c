@@ -424,7 +424,7 @@ char *_global_auth_file_path(void)
 }
 
 /*
- * PoP: _resolve_kimi_base_url @ hermes_cli/auth.py:_resolve_kimi_base_url */
+ * PoP: _resolve_kimi_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_kimi_base_url */
 const char *resolve_kimi_base_url(const char *api_key, const char *default_url, const char *env_override)
 {
     static const char *KIMI_CODE_BASE_URL = "https://api.kimi.com/coding/v1";
@@ -435,7 +435,7 @@ const char *resolve_kimi_base_url(const char *api_key, const char *default_url, 
 }
 
 /*
- * PoP: _normalize_lmstudio_runtime_base_url @ hermes_cli/auth.py:_normalize_lmstudio_runtime_base_url */
+ * PoP: _normalize_lmstudio_runtime_base_url @ hermes_cli/auth_zai_kimi.py:_normalize_lmstudio_runtime_base_url */
 char *normalize_lmstudio_runtime_base_url(const char *base_url)
 {
     char root[1024];
@@ -524,7 +524,7 @@ char *optional_base_url(const char *value)
 /*
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
-/* PoP: _decode_jwt_claims @ hermes_cli/auth.py:_decode_jwt_claims */
+/* PoP: _decode_jwt_claims @ hermes_cli/auth_constants.py:_decode_jwt_claims */
 json_t *_decode_jwt_claims(const char *token)
 {
     if (!token) return NULL;
@@ -876,7 +876,7 @@ int xai_validate_loopback_redirect_uri(const char *redirect_uri, char **host_out
 }
 
 /*
- * PoP: _minimax_expired_in_looks_like_unix_ms @ hermes_cli/auth.py:_minimax_expired_in_looks_like_unix_ms */
+ * PoP: _minimax_expired_in_looks_like_unix_ms @ hermes_cli/auth_minimax.py:_minimax_expired_in_looks_like_unix_ms */
 int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 {
     return (int)expired_in > (now_ms / 2);
@@ -884,7 +884,7 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 
 /*
  * Returns access-token expiry as unix seconds. */
-/* PoP: _minimax_resolve_token_expiry_unix @ hermes_cli/auth.py:_minimax_resolve_token_expiry_unix */
+/* PoP: _minimax_resolve_token_expiry_unix @ hermes_cli/auth_minimax.py:_minimax_resolve_token_expiry_unix */
 double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
     long now_ms = (long)(now_unix * 1000.0);
@@ -895,7 +895,7 @@ double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 
 /*
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
-/* PoP: _qwen_cli_auth_path @ hermes_cli/auth.py:_qwen_cli_auth_path */
+/* PoP: _qwen_cli_auth_path @ hermes_cli/auth_qwen.py:_qwen_cli_auth_path */
 char *_qwen_cli_auth_path(void)
 {
     const char *home = getenv("HOME");
@@ -950,7 +950,7 @@ char *auth_xai_callback_cors_origin(const char *origin)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: auth_ssh_user_at_host @ hermes_cli/auth.py:_ssh_user_at_host */
+/* PoP: auth_ssh_user_at_host @ hermes_cli/auth_device_flow.py:_ssh_user_at_host */
 /* Returns "user@hostname" using USER/LOGNAME env + gethostname. */
 char *auth_ssh_user_at_host(void)
 {
@@ -1005,7 +1005,7 @@ int auth_is_source_suppressed(const char *provider_id, const char *source, const
 /* === dissolved from ports_wrappers.c === */
 /* ── hermes_cli/auth.py gap functions ────────────────────────────── */
 
-/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth.py:_probe_single_zai_endpoint */
+/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
 int hermes_cli_auth_u_probe_single_zai_endpoint(const char *arg) {
     /* Python: probe Z.AI endpoint for a working model. Arg =
      * "ep_id\tbase_url\tprobe_status\tmodel". */
@@ -1019,7 +1019,7 @@ int hermes_cli_auth_u_probe_single_zai_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_auth_u_nous_device_auth_timeout_message @ hermes_cli/auth.py:_nous_device_auth_timeout_message */
+/* PoP: hermes_cli_auth_u_nous_device_auth_timeout_message @ hermes_cli/auth_device_flow.py:_nous_device_auth_timeout_message */
 int hermes_cli_auth_u_nous_device_auth_timeout_message(const char *arg) {
     /* Python: actionable timeout text for Nous device-code login.
      * Arg = "portal_base_url". */
@@ -1033,7 +1033,7 @@ int hermes_cli_auth_u_nous_device_auth_timeout_message(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_auth_get_nous_auth_status_local @ hermes_cli/auth.py:get_nous_auth_status_local */
+/* PoP: hermes_cli_auth_get_nous_auth_status_local @ hermes_cli/auth_nous.py:get_nous_auth_status_local */
 int hermes_cli_auth_get_nous_auth_status_local(const char *arg) {
     /* Python: refresh-free Nous auth snapshot. Arg = "logged_in\tjwt_status\thas_refresh". */
     if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
@@ -1048,7 +1048,7 @@ int hermes_cli_auth_get_nous_auth_status_local(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_auth_u_minimax_response_error_text @ hermes_cli/auth.py:_minimax_response_error_text */
+/* PoP: hermes_cli_auth_u_minimax_response_error_text @ hermes_cli/auth_minimax.py:_minimax_response_error_text */
 int hermes_cli_auth_u_minimax_response_error_text(const char *arg) {
     /* Python: bounded error body from streamed MiniMax OAuth response.
      * Arg = "text\ttruncated" (truncated 1/0). */
@@ -1063,7 +1063,7 @@ int hermes_cli_auth_u_minimax_response_error_text(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_auth_u_minimax_post_form @ hermes_cli/auth.py:_minimax_post_form */
+/* PoP: hermes_cli_auth_u_minimax_post_form @ hermes_cli/auth_minimax.py:_minimax_post_form */
 int hermes_cli_auth_u_minimax_post_form(const char *arg) {
     /* Python: POST MiniMax OAuth form without eagerly reading error bodies.
      * Arg = "status_code\thas_stream" (has_stream 1/0). */

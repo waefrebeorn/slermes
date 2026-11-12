@@ -158,7 +158,7 @@ char **skills_tool_parse_tags(const char *tags_value, int *out_n)
 /* ---------------------------------------------------------------------------
  * _build_setup_note @ tools/skills_tool.py:_build_setup_note
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_build_setup_note @ tools/skills_tool.py:_build_setup_note */
+/* PoP: skills_tool_build_setup_note @ tools/skills_tool_setup.py:_build_setup_note */
 char *skills_tool_build_setup_note(const char *status, const char *missing_csv,
                                    const char *setup_help)
 {
@@ -201,7 +201,7 @@ char *skills_tool_terminal_backend_name(void)
 /* ---------------------------------------------------------------------------
  * _is_gateway_surface @ tools/skills_tool.py:_is_gateway_surface
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_is_gateway_surface @ tools/skills_tool.py:_is_gateway_surface */
+/* PoP: skills_tool_is_gateway_surface @ tools/skills_tool_setup.py:_is_gateway_surface */
 int skills_tool_is_gateway_surface(void)
 {
     if (getenv("HERMES_GATEWAY_SESSION")) return 1;
@@ -213,7 +213,7 @@ int skills_tool_is_gateway_surface(void)
  * _is_env_var_persisted @ tools/skills_tool.py:_is_env_var_persisted
  * True if the var is set in ~/.hermes/.env or the process environment.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_is_env_var_persisted @ tools/skills_tool.py:_is_env_var_persisted */
+/* PoP: skills_tool_is_env_var_persisted @ tools/skills_tool_setup.py:_is_env_var_persisted */
 int skills_tool_is_env_var_persisted(const char *var_name)
 {
     if (!var_name || !*var_name) return 0;
@@ -308,7 +308,7 @@ char **skills_tool_remaining_required_env_names(const char *required_csv,
  *   @ tools/skills_tool.py:_get_required_environment_variables
  * Parse frontmatter "required_environment_variables" (list of names or dicts).
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_required_env_vars @ tools/skills_tool.py:_get_required_environment_variables */
+/* PoP: skills_tool_required_env_vars @ tools/skills_tool_setup.py:_get_required_environment_variables */
 char **skills_tool_required_env_vars(const char *frontmatter_json, int *out_n)
 {
     char **out = NULL; int n = 0;
@@ -362,7 +362,7 @@ char **skills_tool_required_env_vars(const char *frontmatter_json, int *out_n)
  * Gateway surfaces short-circuit to a hint; no callback infra in C yet, so
  * we return the missing names + a gateway hint when on a gateway surface.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_capture_required_env_vars @ tools/skills_tool.py:_capture_required_environment_variables */
+/* PoP: skills_tool_capture_required_env_vars @ tools/skills_tool_setup.py:_capture_required_environment_variables */
 char *skills_tool_capture_required_env_vars(const char *skill_name,
                                             const char *missing_csv)
 {
@@ -545,7 +545,7 @@ json_t *skills_tool_find_all_skills(int skip_disabled)
  * content read). Plugin manager internals are out of scope; we return the
  * content faithfully when readable.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_serve_plugin_skill @ tools/skills_tool.py:_serve_plugin_skill */
+/* PoP: skills_tool_serve_plugin_skill @ tools/skills_tool_plugin.py:_serve_plugin_skill */
 char *skills_tool_serve_plugin_skill(const char *skill_md_path,
                                      const char *namespace, const char *bare)
 {
@@ -595,8 +595,8 @@ char *skills_tool_view_with_bump(const char *name, const char *description,
  * agent/skill_utils; implemented here so the module closes fully).
  * ------------------------------------------------------------------------- */
 
-/* PoP: skills_tool_skill_matches_platform @ tools/skills_tool.py:skill_matches_platform */
-/* PoP: skills_tool_skill_matches_platform @ tools/skills_tool.py:skill_matches_platform */
+/* PoP: skills_tool_skill_matches_platform @ agent/skill_utils.py:skill_matches_platform */
+/* PoP: skills_tool_skill_matches_platform @ agent/skill_utils.py:skill_matches_platform */
 int skills_tool_skill_matches_platform(const char *frontmatter_json)
 {
     if (!frontmatter_json) return 1;
@@ -630,8 +630,8 @@ int skills_tool_skill_matches_platform(const char *frontmatter_json)
     return 0;
 }
 
-/* PoP: skills_tool_skill_matches_environment @ tools/skills_tool.py:skill_matches_environment */
-/* PoP: skills_tool_skill_matches_environment @ tools/skills_tool.py:skill_matches_environment */
+/* PoP: skills_tool_skill_matches_environment @ agent/skill_utils.py:skill_matches_environment */
+/* PoP: skills_tool_skill_matches_environment @ agent/skill_utils.py:skill_matches_environment */
 int skills_tool_skill_matches_environment(const char *frontmatter_json)
 {
     /* environment: field lists runtime environments (kanban/docker/s6). Offer-time
@@ -641,8 +641,8 @@ int skills_tool_skill_matches_environment(const char *frontmatter_json)
     return 1; /* presence check only; C lacks the full env taxonomy */
 }
 
-/* PoP: skills_tool_parse_frontmatter @ tools/skills_tool.py:_parse_frontmatter */
-/* PoP: skills_tool_parse_frontmatter @ tools/skills_tool.py:_parse_frontmatter */
+/* PoP: skills_tool_parse_frontmatter @ tools/skills_hub_models.py:_parse_frontmatter */
+/* PoP: skills_tool_parse_frontmatter @ tools/skills_hub_models.py:_parse_frontmatter */
 char *skills_tool_parse_frontmatter(const char *content)
 {
     /* Return a JSON object of frontmatter key:value pairs. */
@@ -722,8 +722,8 @@ char **skills_tool_get_disabled_skill_names(int *out_n)
     return out;
 }
 
-/* PoP: skills_tool_get_session_platform @ tools/skills_tool.py:_get_session_platform */
-/* PoP: skills_tool_get_session_platform @ tools/skills_tool.py:_get_session_platform */
+/* PoP: skills_tool_get_session_platform @ tools/approval_context.py:_get_session_platform */
+/* PoP: skills_tool_get_session_platform @ tools/approval_context.py:_get_session_platform */
 char *skills_tool_get_session_platform(void)
 {
     const char *p = getenv("HERMES_SESSION_PLATFORM");
