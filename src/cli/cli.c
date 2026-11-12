@@ -101,7 +101,7 @@ static volatile bool g_type_ahead_running;
    Runs in non-blocking mode so it can be stopped cleanly. */
 static void *type_ahead_reader(void *arg) {
     (void)arg;
-    if (!isatty(STDIN_FILENO)) return NULL;
+    if (isatty(STDIN_FILENO) != 1) return NULL;
     /* Set stdin to non-blocking */
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -425,7 +425,7 @@ int cli_main(int argc, char **argv) {
     setup_logging();
     hermes_log(LOG_INFO, "cli", "CLI initialized");
     memset(&g_cli, 0, sizeof(g_cli));
-    g_cli.interactive = isatty(STDIN_FILENO);
+    g_cli.interactive = (isatty(STDIN_FILENO) == 1);
     g_cli.running = true;
 
     /* Load config */
@@ -1087,7 +1087,7 @@ while (g_cli.running) {
             display_kawaii_start(&g_cli.spinner, "thinking", true);
 
         /* Start type-ahead reader to capture keystrokes during LLM call */
-        if (g_cli.interactive && isatty(STDIN_FILENO)) {
+        if (g_cli.interactive && isatty(STDIN_FILENO) == 1) {
             g_type_ahead_len = 0;
             g_type_ahead_running = true;
             g_type_ahead_buf[0] = '\0';
@@ -1097,7 +1097,7 @@ while (g_cli.running) {
         char *resp = agent_chat(&g_cli.agent, input);
 
         /* Stop type-ahead reader and collect buffered input */
-        if (g_cli.interactive && isatty(STDIN_FILENO)) {
+        if (g_cli.interactive && isatty(STDIN_FILENO) == 1) {
             g_type_ahead_running = false;
             pthread_join(g_type_ahead_thread, NULL);
         }
