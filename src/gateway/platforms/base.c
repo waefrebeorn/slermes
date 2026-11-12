@@ -310,7 +310,7 @@ int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_valu
     return 0;
 }
 
-/* PoP: URL @ gateway/platforms/base.py:safe_url_for_log */
+/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log */
 /* Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
 char *safe_url_for_log(const char *url, int max_len)
 {

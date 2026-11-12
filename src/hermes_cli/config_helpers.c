@@ -65,7 +65,7 @@ static const plat_restrict_t PLAT_RESTRICTIONS[] = {
     {NULL, NULL},
 };
 
-/* PoP: toolset_allowed_for_platform @ hermes_cli/tools_config.py:_toolset_allowed_for_platform */
+/* PoP: toolset_allowed_for_platform @ hermes_cli/toolset_scope.py:toolset_allowed_for_platform */
 bool toolset_allowed_for_platform(const char *ts_key, const char *platform) {
     if (!ts_key || !platform) return true; /* absent entry => allowed everywhere */
     for (size_t i = 0; PLAT_RESTRICTIONS[i].ts_key; i++) {
