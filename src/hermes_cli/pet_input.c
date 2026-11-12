@@ -223,7 +223,7 @@ char *cli__derive_pet_state(void) {
     return strdup(st);
 }
 
-/* PoP: 0 @ cli.py:_pet_frames_for */
+/* PoP: cli__pet_frames_for @ hermes_cli/cli_status_bar_mixin.py:_pet_frames_for */
 /* Return (and cache) frame count for a state. With no spritesheet renderer
  * the C engine has 0 frames, so we return 0 (caller treats empty as no pet). */
 int cli__pet_frames_for(const char *state) {

@@ -158,7 +158,7 @@ void cmd_egress(const char *args, agent_state_t *state) {
 }
 
 /* ── /codex-runtime ─────────────────────────────────────────────────── */
-/* PoP: codex-runtime @ hermes_cli/commands.py:codex-runtime */
+/* PoP: cmd_codex_runtime @ hermes_cli/cli_model_switch_mixin.py:_handle_codex_runtime */
 void cmd_codex_runtime(const char *args, agent_state_t *state) {
     (void)state;
     const char *arg = "";
