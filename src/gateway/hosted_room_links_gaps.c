@@ -24,11 +24,7 @@ char *load_room_links(void) { return strdup("[]"); }
 /* PoP: load_room_links_tolerant @ gateway/hosted_room_links.py:load_room_links_tolerant */
 char *load_room_links_tolerant(void) { return strdup("[]"); }
 
-/* PoP: save_room_link @ gateway/hosted_room_links.py:save_room_link */
-void save_room_link(void) {}
 
-/* PoP: mark_room_link_status @ gateway/hosted_room_links.py:mark_room_link_status */
-void mark_room_link_status(void) {}
 
 /* PoP: make_stored_link @ gateway/hosted_room_links.py:make_stored_link */
 char *make_stored_link(void) { return strdup("{}"); }

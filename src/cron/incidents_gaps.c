@@ -27,11 +27,7 @@ char *_classify_failure_type(void) { return strdup("unknown"); }
 /* PoP: upsert_incident @ cron/incidents.py:upsert_incident */
 char *upsert_incident(void) { return strdup("{}"); }
 
-/* PoP: set_incident_state @ cron/incidents.py:set_incident_state */
-void set_incident_state(void) {}
 
-/* PoP: ack_incident @ cron/incidents.py:ack_incident */
-void ack_incident(void) {}
 
 /* PoP: list_incidents @ cron/incidents.py:list_incidents */
 char *list_incidents(void) { return strdup("[]"); }

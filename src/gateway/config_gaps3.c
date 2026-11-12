@@ -9,5 +9,3 @@
 
 /* ── gateway/config.py: 1 missing functions ── */
 
-/* PoP: _warn_explicit_disable_beats_env @ gateway/config.py:_warn_explicit_disable_beats_env */
-void _warn_explicit_disable_beats_env(void) { }

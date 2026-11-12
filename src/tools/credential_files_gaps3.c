@@ -9,5 +9,3 @@
 
 /* ── tools/credential_files.py: 1 missing functions ── */
 
-/* PoP: _iter_syncable_files @ tools/credential_files.py:_iter_syncable_files */
-void _iter_syncable_files(void) { }

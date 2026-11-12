@@ -15,11 +15,7 @@ int _is_alive(void) { return 0; }
 /* PoP: _kill @ tools/code_kernel_remote.py:_kill */
 void _kill(void) {}
 
-/* PoP: shutdown_all_remote_kernels @ tools/code_kernel_remote.py:shutdown_all_remote_kernels */
-void shutdown_all_remote_kernels(void) {}
 
-/* PoP: shutdown_remote_kernels_for_owner @ tools/code_kernel_remote.py:shutdown_remote_kernels_for_owner */
-void shutdown_remote_kernels_for_owner(void) {}
 
 /* PoP: _spawn_remote_kernel @ tools/code_kernel_remote.py:_spawn_remote_kernel */
 char *_spawn_remote_kernel(void) { return strdup("{}"); }

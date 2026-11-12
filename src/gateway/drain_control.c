@@ -139,23 +139,9 @@ char *gateway_drain_control_read_drain_request(const char *home)
     return strdup("{}");
 }
 
-/* PoP: open_restart_wait @ gateway/drain_control.py:open_restart_wait */
-void gateway_drain_control_open_restart_wait(void) { }
 
-/* PoP: restart_wait_open @ gateway/drain_control.py:restart_wait_open */
-void gateway_drain_control_restart_wait_open(void) { }
 
-/* PoP: restart_wait_read @ gateway/drain_control.py:restart_wait_read */
-void gateway_drain_control_restart_wait_read(void) { }
 
-/* PoP: restart_wait_socket_ticket @ gateway/drain_control.py:restart_wait_socket_ticket */
-void gateway_drain_control_restart_wait_socket_ticket(void) { }
 
-/* PoP: ws_method_refused_while_draining @ gateway/drain_control.py:ws_method_refused_while_draining */
-void gateway_drain_control_ws_method_refused_while_draining(void) { }
 
-/* PoP: _marker_is_expired @ gateway/drain_control.py:_marker_is_expired */
-void gateway_drain_control_marker_is_expired(void) { }
 
-/* PoP: _active_drain_body @ gateway/drain_control.py:_active_drain_body */
-void gateway_drain_control_active_drain_body(void) { }

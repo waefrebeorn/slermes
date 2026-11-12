@@ -39,11 +39,7 @@ char *_asset_from(void) { return strdup("{}"); }
 /* PoP: _packaged_catalog @ hermes_cli/local_runtime/catalog.py:_packaged_catalog */
 char *_packaged_catalog(void) { return strdup("{}"); }
 
-/* PoP: refresh_catalog @ hermes_cli/local_runtime/catalog.py:refresh_catalog */
-void refresh_catalog(void) {}
 
-/* PoP: refresh_catalog_soon @ hermes_cli/local_runtime/catalog.py:refresh_catalog_soon */
-void refresh_catalog_soon(void) {}
 
 /* PoP: catalog_by_id @ hermes_cli/local_runtime/catalog.py:catalog_by_id */
 char *catalog_by_id(const char *id) { return strdup("{}"); }

@@ -9,5 +9,3 @@
 
 /* ── agent/agent_init.py: 1 missing functions ── */
 
-/* PoP: _refuse_checkpoint_required_on_codex_app_server @ agent/agent_init.py:_refuse_checkpoint_required_on_codex_app_server */
-void _refuse_checkpoint_required_on_codex_app_server(void) { }

@@ -9,5 +9,3 @@
 
 /* ── agent/deadline.py: 1 missing functions ── */
 
-/* PoP: _mark_backend_suspect @ agent/deadline.py:_mark_backend_suspect */
-void _mark_backend_suspect(void) { }

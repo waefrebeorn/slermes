@@ -33,8 +33,6 @@ char *resolve_startup_model_route(void) { return strdup("{}"); }
 /* PoP: _ambiguous_alias_message @ hermes_cli/model_switch.py:_ambiguous_alias_message */
 char *_ambiguous_alias_message(void) { return strdup(""); }
 
-/* PoP: _prefetch_provider_models_parallel @ hermes_cli/model_switch.py:_prefetch_provider_models_parallel */
-void _prefetch_provider_models_parallel(void) {}
 
 /* PoP: _collect_authed_provider_slugs @ hermes_cli/model_switch.py:_collect_authed_provider_slugs */
 char *_collect_authed_provider_slugs(void) { return strdup("[]"); }

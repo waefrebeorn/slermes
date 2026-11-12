@@ -383,8 +383,4 @@ char *model_normalize_for_provider(const char *model_input, const char *target_p
     return result;
 }
 
-/* PoP: _repair_prefix_from_catalogue @ hermes_cli/model_normalize.py:_repair_prefix_from_catalogue */
-void hermes_cli_model_normalize_repair_prefix_from_catalogue(void) { }
 
-/* PoP: suggest_prefixed_model_id @ hermes_cli/model_normalize.py:suggest_prefixed_model_id */
-void hermes_cli_model_normalize_suggest_prefixed_model_id(void) { }

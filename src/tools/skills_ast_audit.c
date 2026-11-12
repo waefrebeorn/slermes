@@ -183,5 +183,3 @@ char *cli_tools_skills_ast_audit_format_ast_report(const char *findings_json, co
 /* PoP: _is_importlib @ tools/skills_ast_audit.py:_is_importlib */
 int tools_skills_ast_audit_is_importlib(void) { return 0; }
 
-/* PoP: _scan_file @ tools/skills_ast_audit.py:_scan_file */
-void tools_skills_ast_audit_scan_file(void) { }

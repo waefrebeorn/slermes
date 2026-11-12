@@ -27,20 +27,10 @@ char *staged_model_ids(void) { return strdup("[]"); }
 /* PoP: _presets_stale @ hermes_cli/local_runtime/bootstrap.py:_presets_stale */
 int _presets_stale(void) { return 0; }
 
-/* PoP: _stop_state_server @ hermes_cli/local_runtime/bootstrap.py:_stop_state_server */
-void _stop_state_server(void) {}
 
-/* PoP: refresh_local_runtime @ hermes_cli/local_runtime/bootstrap.py:refresh_local_runtime */
-void refresh_local_runtime(void) {}
 
-/* PoP: ensure_local_runtime @ hermes_cli/local_runtime/bootstrap.py:ensure_local_runtime */
-void ensure_local_runtime(void) {}
 
-/* PoP: shutdown_local_runtime @ hermes_cli/local_runtime/bootstrap.py:shutdown_local_runtime */
-void shutdown_local_runtime(void) {}
 
 /* PoP: get_supervisor @ hermes_cli/local_runtime/bootstrap.py:get_supervisor */
 char *get_supervisor(void) { return strdup("{}"); }
 
-/* PoP: _start_idle_sweeper @ hermes_cli/local_runtime/bootstrap.py:_start_idle_sweeper */
-void _start_idle_sweeper(void) {}

@@ -12,11 +12,7 @@
 /* PoP: restart_safe_gateway_child_argv @ tools/process_registry.py:restart_safe_gateway_child_argv */
 char *restart_safe_gateway_child_argv(void) { return strdup("[]"); }
 
-/* PoP: _log_delta_command @ tools/process_registry.py:_log_delta_command */
-void _log_delta_command(void) {}
 
-/* PoP: _surface_child_process_notifications @ tools/process_registry.py:_surface_child_process_notifications */
-void _surface_child_process_notifications(void) {}
 
 /* PoP: _model_not_found_patterns @ tools/process_registry.py:_model_not_found_patterns */
 char *_model_not_found_patterns(void) { return strdup("[]"); }

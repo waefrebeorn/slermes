@@ -24,17 +24,11 @@ char *_cache_hit_rate(void) { return strdup("{\"hit\":0,\"miss\":0}"); }
 /* PoP: _cache_hit_rate_style @ cli.py:_cache_hit_rate_style */
 char *_cache_hit_rate_style(void) { return strdup(""); }
 
-/* PoP: _pet_clear_runtime @ cli.py:_pet_clear_runtime */
-void _pet_clear_runtime(void) {}
 
 /* PoP: _pet_kitty_payload_for @ cli.py:_pet_kitty_payload_for */
 char *_pet_kitty_payload_for(void) { return strdup("{}"); }
 
-/* PoP: _pet_queue_kitty_frame @ cli.py:_pet_queue_kitty_frame */
-void _pet_queue_kitty_frame(void) {}
 
-/* PoP: _pet_flush_kitty_frame @ cli.py:_pet_flush_kitty_frame */
-void _pet_flush_kitty_frame(void) {}
 
 /* PoP: _get_status_bar_field_set @ cli.py:_get_status_bar_field_set */
 char *_get_status_bar_field_set(void) { return strdup("[]"); }
@@ -42,5 +36,3 @@ char *_get_status_bar_field_set(void) { return strdup("[]"); }
 /* PoP: _tts_lease_async @ cli.py:_tts_lease_async */
 char *_tts_lease_async(void) { return strdup("{}"); }
 
-/* PoP: _ring_bell @ cli.py:_ring_bell */
-void _ring_bell(void) {}

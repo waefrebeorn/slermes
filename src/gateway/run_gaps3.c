@@ -9,5 +9,3 @@
 
 /* ── gateway/run.py: 1 missing functions ── */
 
-/* PoP: _guard_corrupt_user_config @ gateway/run.py:_guard_corrupt_user_config */
-void _guard_corrupt_user_config(void) { }

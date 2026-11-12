@@ -9,5 +9,3 @@
 
 /* ── tools/skills_sync.py: 1 missing functions ── */
 
-/* PoP: _manifest_file @ tools/skills_sync.py:_manifest_file */
-void _manifest_file(void) { }

@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/kanban_db.py: 1 missing functions ── */
 
-/* PoP: _restart_safe_worker_argv @ hermes_cli/kanban_db.py:_restart_safe_worker_argv */
-void _restart_safe_worker_argv(void) { }

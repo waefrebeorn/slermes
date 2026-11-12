@@ -36,17 +36,11 @@ int _cdp_ready(void) { return 0; }
 /* PoP: _read_log_tail @ tools/browser_lightpanda.py:_read_log_tail */
 char *_read_log_tail(void) { return strdup(""); }
 
-/* PoP: _terminate @ tools/browser_lightpanda.py:_terminate */
-void _terminate(void) {}
 
 /* PoP: _safe_start_time @ tools/browser_lightpanda.py:_safe_start_time */
 double _safe_start_time(void) { return 0.0; }
 
-/* PoP: _write_record @ tools/browser_lightpanda.py:_write_record */
-void _write_record(void) {}
 
-/* PoP: _unlink_record @ tools/browser_lightpanda.py:_unlink_record */
-void _unlink_record(void) {}
 
 /* PoP: launch_lightpanda @ tools/browser_lightpanda.py:launch_lightpanda */
 char *launch_lightpanda(void) { return strdup("{}"); }
@@ -54,14 +48,8 @@ char *launch_lightpanda(void) { return strdup("{}"); }
 /* PoP: get_server @ tools/browser_lightpanda.py:get_server */
 char *get_server(void) { return strdup("{}"); }
 
-/* PoP: stop_lightpanda @ tools/browser_lightpanda.py:stop_lightpanda */
-void stop_lightpanda(void) {}
 
-/* PoP: stop_all_lightpanda @ tools/browser_lightpanda.py:stop_all_lightpanda */
-void stop_all_lightpanda(void) {}
 
 /* PoP: _is_lightpanda_process @ tools/browser_lightpanda.py:_is_lightpanda_process */
 int _is_lightpanda_process(void) { return 0; }
 
-/* PoP: reap_orphaned_lightpanda @ tools/browser_lightpanda.py:reap_orphaned_lightpanda */
-void reap_orphaned_lightpanda(void) {}

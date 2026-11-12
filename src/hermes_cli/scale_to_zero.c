@@ -39,29 +39,11 @@ char *gateway_scale_to_zero__platform_name(const char *platform) {
     return buf;
 }
 
-/* PoP: _env_str @ gateway/scale_to_zero.py:_env_str */
-void gateway_scale_to_zero_env_str(void) { }
 
-/* PoP: dashboard_client_heartbeat_path @ gateway/scale_to_zero.py:dashboard_client_heartbeat_path */
-void gateway_scale_to_zero_dashboard_client_heartbeat_path(void) { }
 
-/* PoP: touch_dashboard_client_heartbeat @ gateway/scale_to_zero.py:touch_dashboard_client_heartbeat */
-void gateway_scale_to_zero_touch_dashboard_client_heartbeat(void) { }
 
-/* PoP: dashboard_client_last_seen @ gateway/scale_to_zero.py:dashboard_client_last_seen */
-void gateway_scale_to_zero_dashboard_client_last_seen(void) { }
 
-/* PoP: self_suspend_available @ gateway/scale_to_zero.py:self_suspend_available */
-void gateway_scale_to_zero_self_suspend_available(void) { }
 
-/* PoP: brokered_sleep_url @ gateway/scale_to_zero.py:brokered_sleep_url */
-void gateway_scale_to_zero_brokered_sleep_url(void) { }
 
-/* PoP: suspend_available @ gateway/scale_to_zero.py:suspend_available */
-void gateway_scale_to_zero_suspend_available(void) { }
 
-/* PoP: request_brokered_suspend @ gateway/scale_to_zero.py:request_brokered_suspend */
-void gateway_scale_to_zero_request_brokered_suspend(void) { }
 
-/* PoP: suspend_self @ gateway/scale_to_zero.py:suspend_self */
-void gateway_scale_to_zero_suspend_self(void) { }

@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/build_info.py: 1 missing functions ── */
 
-/* PoP: _resolve_git_head_sha @ hermes_cli/build_info.py:_resolve_git_head_sha */
-void _resolve_git_head_sha(void) { }

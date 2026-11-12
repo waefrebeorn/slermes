@@ -9,5 +9,3 @@
 
 /* ── agent/ssl_verify.py: 1 missing functions ── */
 
-/* PoP: _context_for_ca_bundle @ agent/ssl_verify.py:_context_for_ca_bundle */
-void _context_for_ca_bundle(void) { }

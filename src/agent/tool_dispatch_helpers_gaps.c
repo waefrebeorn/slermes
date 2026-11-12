@@ -18,5 +18,3 @@ char *_normalize_tool_call_id(void) { return strdup(""); }
 /* PoP: _detect_upstream_elision @ agent/tool_dispatch_helpers.py:_detect_upstream_elision */
 int _detect_upstream_elision(void) { return 0; }
 
-/* PoP: _maybe_append_elision_notice @ agent/tool_dispatch_helpers.py:_maybe_append_elision_notice */
-void _maybe_append_elision_notice(void) {}

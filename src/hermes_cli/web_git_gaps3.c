@@ -12,5 +12,3 @@
 /* PoP: review_pr_list @ hermes_cli/web_git.py:review_pr_list */
 char *review_pr_list(void) { return strdup(""); }
 
-/* PoP: _remote_of_ref @ hermes_cli/web_git.py:_remote_of_ref */
-void _remote_of_ref(void) { }

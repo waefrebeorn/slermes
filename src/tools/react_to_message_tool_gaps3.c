@@ -9,5 +9,3 @@
 
 /* ── tools/react_to_message_tool.py: 1 missing functions ── */
 
-/* PoP: _react_to_message_with_db @ tools/react_to_message_tool.py:_react_to_message_with_db */
-void _react_to_message_with_db(void) { }

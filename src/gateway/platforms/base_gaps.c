@@ -95,8 +95,6 @@ void _mark_degraded(const char *path) {
     (void)path;
 }
 
-/* PoP: _wire_plugin_handlers @ gateway/platforms/base.py:_wire_plugin_handlers */
-void _wire_plugin_handlers(void) {}
 
 /* PoP: set_platform_event_handler @ gateway/platforms/base.py:set_platform_event_handler */
 void set_platform_event_handler(const char *handler) {

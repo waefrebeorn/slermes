@@ -15,5 +15,3 @@ char *_folder(void) { return strdup(""); }
 /* PoP: _connection_is_open @ agent/lsp/client.py:_connection_is_open */
 int _connection_is_open(void) { return 0; }
 
-/* PoP: add_workspace_folder @ agent/lsp/client.py:add_workspace_folder */
-void add_workspace_folder(void) {}

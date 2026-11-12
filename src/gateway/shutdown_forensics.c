@@ -592,11 +592,5 @@ json_node_t *forensics_check_systemd_timing(double drain_timeout) {
     return result;
 }
 
-/* PoP: _read_marker @ gateway/shutdown_forensics.py:_read_marker */
-void gateway_shutdown_forensics_read_marker(void) { }
 
-/* PoP: _async_diagnostic_script @ gateway/shutdown_forensics.py:_async_diagnostic_script */
-void gateway_shutdown_forensics_async_diagnostic_script(void) { }
 
-/* PoP: _systemd_timeout_stop_us @ gateway/shutdown_forensics.py:_systemd_timeout_stop_us */
-void gateway_shutdown_forensics_systemd_timeout_stop_us(void) { }

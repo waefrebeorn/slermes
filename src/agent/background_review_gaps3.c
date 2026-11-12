@@ -9,8 +9,6 @@
 
 /* ── agent/background_review.py: 2 missing functions ── */
 
-/* PoP: _parent_can_emit_tool_calls @ agent/background_review.py:_parent_can_emit_tool_calls */
-void _parent_can_emit_tool_calls(void) { }
 
 /* PoP: build_cache_parity_fork @ agent/background_review.py:build_cache_parity_fork */
 char *build_cache_parity_fork(void) { return strdup(""); }

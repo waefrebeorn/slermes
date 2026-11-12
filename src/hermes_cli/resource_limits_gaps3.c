@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/resource_limits.py: 2 missing functions ── */
 
-/* PoP: _configured_nofile_soft_limit @ hermes_cli/resource_limits.py:_configured_nofile_soft_limit */
-void _configured_nofile_soft_limit(void) { }
 
 /* PoP: apply_nofile_soft_limit @ hermes_cli/resource_limits.py:apply_nofile_soft_limit */
 char *apply_nofile_soft_limit(void) { return strdup(""); }

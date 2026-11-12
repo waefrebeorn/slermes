@@ -9,8 +9,4 @@
 
 /* ── tools/environments/docker.py: 2 missing functions ── */
 
-/* PoP: _container_identity @ tools/environments/docker.py:_container_identity */
-void _container_identity(void) { }
 
-/* PoP: _docker_client_env @ tools/environments/docker.py:_docker_client_env */
-void _docker_client_env(void) { }

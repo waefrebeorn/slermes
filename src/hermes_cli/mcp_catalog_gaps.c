@@ -15,8 +15,6 @@ char *list_catalog(void) { return strdup("[]"); }
 /* PoP: _read_prior_tool_exclude @ hermes_cli/mcp_catalog.py:_read_prior_tool_exclude */
 char *_read_prior_tool_exclude(void) { return strdup("[]"); }
 
-/* PoP: _write_tools_exclude @ hermes_cli/mcp_catalog.py:_write_tools_exclude */
-void _write_tools_exclude(void) {}
 
 /* PoP: install_entry @ hermes_cli/mcp_catalog.py:install_entry */
 char *install_entry(void) { return strdup("{}"); }

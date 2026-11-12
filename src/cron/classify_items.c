@@ -183,5 +183,3 @@ void cron_classify_free_scores(classify_score_t *scores, int count)
     free(scores);
 }
 
-/* PoP: _render_text @ cron/scripts/classify_items.py:_render_text */
-void classify_items_render_text(void) { }

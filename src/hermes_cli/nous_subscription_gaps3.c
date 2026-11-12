@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/nous_subscription.py: 1 missing functions ── */
 
-/* PoP: _selected_provider @ hermes_cli/nous_subscription.py:_selected_provider */
-void _selected_provider(void) { }

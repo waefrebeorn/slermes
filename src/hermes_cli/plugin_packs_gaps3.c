@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/plugin_packs.py: 3 missing functions ── */
 
-/* PoP: _seed_plugin_config @ hermes_cli/plugin_packs.py:_seed_plugin_config */
-void _seed_plugin_config(void) { }
 
 /* PoP: export_pack @ hermes_cli/plugin_packs.py:export_pack */
 char *export_pack(void) { return strdup(""); }

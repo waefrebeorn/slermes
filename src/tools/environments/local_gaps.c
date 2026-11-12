@@ -12,11 +12,7 @@
 /* PoP: _default_terminal_temp_dir @ tools/environments/local.py:_default_terminal_temp_dir */
 char *_default_terminal_temp_dir(void) { return strdup("/tmp"); }
 
-/* PoP: cleanup_terminal_temp_cache @ tools/environments/local.py:cleanup_terminal_temp_cache */
-void cleanup_terminal_temp_cache(void) {}
 
-/* PoP: _prune_terminal_temp_once @ tools/environments/local.py:_prune_terminal_temp_once */
-void _prune_terminal_temp_once(void) {}
 
 /* PoP: _matches_terminal_first_party_prefix @ tools/environments/local.py:_matches_terminal_first_party_prefix */
 int _matches_terminal_first_party_prefix(void) { return 0; }
@@ -39,8 +35,4 @@ char *_validated_runtime_venv(void) { return strdup(""); }
 /* PoP: _get_hermes_site_packages @ tools/environments/local.py:_get_hermes_site_packages */
 char *_get_hermes_site_packages(void) { return strdup(""); }
 
-/* PoP: _strip_hermes_owned_pythonpath_and_runtime_markers @ tools/environments/local.py:_strip_hermes_owned_pythonpath_and_runtime_markers */
-void _strip_hermes_owned_pythonpath_and_runtime_markers(void) {}
 
-/* PoP: _strip_hermes_owned_pythonpath @ tools/environments/local.py:_strip_hermes_owned_pythonpath */
-void _strip_hermes_owned_pythonpath(void) {}

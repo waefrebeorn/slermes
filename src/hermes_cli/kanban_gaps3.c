@@ -9,8 +9,4 @@
 
 /* ── hermes_cli/kanban.py: 2 missing functions ── */
 
-/* PoP: _cmd_boards_export @ hermes_cli/kanban.py:_cmd_boards_export */
-void _cmd_boards_export(void) { }
 
-/* PoP: _cmd_boards_import @ hermes_cli/kanban.py:_cmd_boards_import */
-void _cmd_boards_import(void) { }

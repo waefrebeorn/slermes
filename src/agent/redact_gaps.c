@@ -27,8 +27,4 @@ int _has_top_level_alternation(void) { return 0; }
 /* PoP: _has_nested_unbounded_repeat @ agent/redact.py:_has_nested_unbounded_repeat */
 int _has_nested_unbounded_repeat(void) { return 0; }
 
-/* PoP: _rebuild_prefix_matcher @ agent/redact.py:_rebuild_prefix_matcher */
-void _rebuild_prefix_matcher(void) {}
 
-/* PoP: _reset_plugin_redaction_patterns @ agent/redact.py:_reset_plugin_redaction_patterns */
-void _reset_plugin_redaction_patterns(void) {}

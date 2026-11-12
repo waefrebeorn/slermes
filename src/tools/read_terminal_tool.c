@@ -42,5 +42,3 @@ int cli_tools_read_terminal_tool_check_read_terminal_requirements(void)
     return 0;
 }
 
-/* PoP: read_pane @ tools/read_terminal_tool.py:read_pane */
-void tools_read_terminal_tool_read_pane(void) { }

@@ -262,14 +262,6 @@ void web_search_reset_registry(void) {
     pthread_mutex_unlock(&g_registry_lock);
 }
 
-/* PoP: _configured_backend @ agent/web_search_registry.py:_configured_backend */
-void agent_web_search_registry_configured_backend(void) { }
 
-/* PoP: _keyless_preference @ agent/web_search_registry.py:_keyless_preference */
-void agent_web_search_registry_keyless_preference(void) { }
 
-/* PoP: _keyless_tier_enabled @ agent/web_search_registry.py:_keyless_tier_enabled */
-void agent_web_search_registry_keyless_tier_enabled(void) { }
 
-/* PoP: _disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */
-void agent_web_search_registry_disabled_web_plugin_for(void) { }

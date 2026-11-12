@@ -9,8 +9,4 @@
 
 /* ── gateway/channel_directory.py: 2 missing functions ── */
 
-/* PoP: _directory_path @ gateway/channel_directory.py:_directory_path */
-void _directory_path(void) { }
 
-/* PoP: _aliases_path @ gateway/channel_directory.py:_aliases_path */
-void _aliases_path(void) { }

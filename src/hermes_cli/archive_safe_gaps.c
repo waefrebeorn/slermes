@@ -21,5 +21,3 @@ int safe_extract_targz(void) { return 1; }
 /* PoP: archive_root_dirs @ hermes_cli/archive_safe.py:archive_root_dirs */
 char *archive_root_dirs(void) { return strdup("[]"); }
 
-/* PoP: copy_regular_files @ hermes_cli/archive_safe.py:copy_regular_files */
-void copy_regular_files(void) {}

@@ -33,8 +33,6 @@ char *server_binary(void) { return strdup(""); }
 /* PoP: verify_install @ hermes_cli/local_runtime/binaries.py:verify_install */
 int verify_install(void) { return 1; }
 
-/* PoP: prune_old_tags @ hermes_cli/local_runtime/binaries.py:prune_old_tags */
-void prune_old_tags(void) {}
 
 /* PoP: ensure_runtime_installed @ hermes_cli/local_runtime/binaries.py:ensure_runtime_installed */
 char *ensure_runtime_installed(void) { return strdup("{\"status\":\"ok\"}"); }

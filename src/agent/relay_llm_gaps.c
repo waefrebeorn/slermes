@@ -18,8 +18,4 @@ char *_relay_operation_name(void) { return strdup(""); }
 /* PoP: _relay_metadata @ agent/relay_llm.py:_relay_metadata */
 char *_relay_metadata(void) { return strdup("{}"); }
 
-/* PoP: _prime_completed_response @ agent/relay_llm.py:_prime_completed_response */
-void _prime_completed_response(void) {}
 
-/* PoP: _release_runtime_lease @ agent/relay_llm.py:_release_runtime_lease */
-void _release_runtime_lease(void) {}

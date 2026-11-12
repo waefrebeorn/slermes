@@ -36,5 +36,3 @@ char *cli_hermes_cli_migrate__resolve_config_path(void) {
     return path;
 }
 
-/* PoP: _fail @ hermes_cli/migrate.py:_fail */
-void hermes_cli_migrate_fail(void) { }

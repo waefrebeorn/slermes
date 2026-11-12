@@ -33,11 +33,7 @@ char *_owner_key_for_session_id(const char *id) { return strdup(""); }
 /* PoP: _db_for_session_id @ gateway/session.py:_db_for_session_id */
 void *_db_for_session_id(const char *id) { return NULL; }
 
-/* PoP: close_all_db_handles @ gateway/session.py:close_all_db_handles */
-void close_all_db_handles(void) {}
 
-/* PoP: _reconcile_recovered_routing_locked @ gateway/session.py:_reconcile_recovered_routing_locked */
-void _reconcile_recovered_routing_locked(void) {}
 
 /* PoP: _get_transcript_drain_lock @ gateway/session.py:_get_transcript_drain_lock */
 char *_get_transcript_drain_lock(void) { return strdup("{}"); }

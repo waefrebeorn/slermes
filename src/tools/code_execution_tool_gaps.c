@@ -24,8 +24,6 @@ char *_build_child_env(void) { return strdup("{}"); }
 /* PoP: _get_kernel_mode @ tools/code_execution_tool.py:_get_kernel_mode */
 char *_get_kernel_mode(void) { return strdup("local"); }
 
-/* PoP: _cache_probe_result @ tools/code_execution_tool.py:_cache_probe_result */
-void _cache_probe_result(void) {}
 
 /* PoP: _probe_python @ tools/code_execution_tool.py:_probe_python */
 char *_probe_python(void) { return strdup("{}"); }

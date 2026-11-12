@@ -175,17 +175,7 @@ char *sanitize_gemini_tool_parameters(const char *parameters_json) {
     return cleaned;
 }
 
-/* PoP: _stringify_enum_value @ agent/gemini_schema.py:_stringify_enum_value */
-void agent_gemini_schema_stringify_enum_value(void) { }
 
-/* PoP: _normalize_gemini_type_array @ agent/gemini_schema.py:_normalize_gemini_type_array */
-void agent_gemini_schema_normalize_gemini_type_array(void) { }
 
-/* PoP: _resolve_local_ref @ agent/gemini_schema.py:_resolve_local_ref */
-void agent_gemini_schema_resolve_local_ref(void) { }
 
-/* PoP: _inline_refs @ agent/gemini_schema.py:_inline_refs */
-void agent_gemini_schema_inline_refs(void) { }
 
-/* PoP: prepare_gemini_tool_parameters @ agent/gemini_schema.py:prepare_gemini_tool_parameters */
-void agent_gemini_schema_prepare_gemini_tool_parameters(void) { }

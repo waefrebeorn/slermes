@@ -9,5 +9,3 @@
 
 /* ── tools/env_probe.py: 1 missing functions ── */
 
-/* PoP: _resolve_terminal_backend @ tools/env_probe.py:_resolve_terminal_backend */
-void _resolve_terminal_backend(void) { }

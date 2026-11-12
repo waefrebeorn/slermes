@@ -168,8 +168,4 @@ int cli_hermes_cli_write_approval_commands__set_approval(
     return 0;
 }
 
-/* PoP: _changed_entries @ hermes_cli/write_approval_commands.py:_changed_entries */
-void hermes_cli_write_approval_commands_changed_entries(void) { }
 
-/* PoP: _matched_entries @ hermes_cli/write_approval_commands.py:_matched_entries */
-void hermes_cli_write_approval_commands_matched_entries(void) { }

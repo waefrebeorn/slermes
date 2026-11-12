@@ -12,8 +12,6 @@
 /* PoP: _codex_request_failure_details @ agent/codex_runtime.py:_codex_request_failure_details */
 char *_codex_request_failure_details(void) { return strdup("{}"); }
 
-/* PoP: _log_codex_request_failure @ agent/codex_runtime.py:_log_codex_request_failure */
-void _log_codex_request_failure(void) {}
 
 /* PoP: _sanitize_consumer_codex_request @ agent/codex_runtime.py:_sanitize_consumer_codex_request */
 char *_sanitize_consumer_codex_request(void) { return strdup("{}"); }

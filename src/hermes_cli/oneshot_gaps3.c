@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/oneshot.py: 1 missing functions ── */
 
-/* PoP: _build_preloaded_skills_prompt @ hermes_cli/oneshot.py:_build_preloaded_skills_prompt */
-void _build_preloaded_skills_prompt(void) { }

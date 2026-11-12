@@ -9,8 +9,4 @@
 
 /* ── tools/web_tools.py: 2 missing functions ── */
 
-/* PoP: _rescue_search @ tools/web_tools.py:_rescue_search */
-void _rescue_search(void) { }
 
-/* PoP: _rescue_extract @ tools/web_tools.py:_rescue_extract */
-void _rescue_extract(void) { }

@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/secrets_cli.py: 1 missing functions ── */
 
-/* PoP: _load_bw @ hermes_cli/secrets_cli.py:_load_bw */
-void _load_bw(void) { }

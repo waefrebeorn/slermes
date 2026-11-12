@@ -15,11 +15,7 @@ char *_hash_file(const char *path) { return strdup(""); }
 /* PoP: _load_ledger @ tools/checkpoint_manager.py:_load_ledger */
 char *_load_ledger(void) { return strdup("{}"); }
 
-/* PoP: _save_ledger @ tools/checkpoint_manager.py:_save_ledger */
-void _save_ledger(void) {}
 
-/* PoP: record_agent_write @ tools/checkpoint_manager.py:record_agent_write */
-void record_agent_write(void) {}
 
 /* PoP: safe_restore_plan @ tools/checkpoint_manager.py:safe_restore_plan */
 char *safe_restore_plan(void) { return strdup("{}"); }

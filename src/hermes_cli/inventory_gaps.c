@@ -15,8 +15,6 @@ char *load_picker_context(void) { return strdup("{}"); }
 /* PoP: _reasoning_catalog_reader @ hermes_cli/inventory.py:_reasoning_catalog_reader */
 char *_reasoning_catalog_reader(void) { return strdup("{}"); }
 
-/* PoP: _apply_custom_aliases @ hermes_cli/inventory.py:_apply_custom_aliases */
-void _apply_custom_aliases(void) {}
 
 /* PoP: _anthropic_oauth_credentials_present @ hermes_cli/inventory.py:_anthropic_oauth_credentials_present */
 int _anthropic_oauth_credentials_present(void) { return 0; }
@@ -30,5 +28,3 @@ int _provider_is_keyless(void) { return 0; }
 /* PoP: _local_runtime_row @ hermes_cli/inventory.py:_local_runtime_row */
 char *_local_runtime_row(void) { return strdup("{}"); }
 
-/* PoP: _prewarm_pricing_async @ hermes_cli/inventory.py:_prewarm_pricing_async */
-void _prewarm_pricing_async(void) {}

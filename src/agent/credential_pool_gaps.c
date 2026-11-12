@@ -33,17 +33,9 @@ int _profile_owns_pool_provider(void) { return 0; }
 /* PoP: _borrowed_single_use_pool_root @ agent/credential_pool.py:_borrowed_single_use_pool_root */
 char *_borrowed_single_use_pool_root(void) { return strdup("{}"); }
 
-/* PoP: persist_pool_entries @ agent/credential_pool.py:persist_pool_entries */
-void persist_pool_entries(void) {}
 
-/* PoP: _sync_anthropic_entry_from_pool_store @ agent/credential_pool.py:_sync_anthropic_entry_from_pool_store */
-void _sync_anthropic_entry_from_pool_store(void) {}
 
-/* PoP: _claude_code_credentials_lock @ agent/credential_pool.py:_claude_code_credentials_lock */
-void _claude_code_credentials_lock(void) {}
 
 /* PoP: _fail_closed_unpersisted_rotation @ agent/credential_pool.py:_fail_closed_unpersisted_rotation */
 int _fail_closed_unpersisted_rotation(void) { return 0; }
 
-/* PoP: _warn_env_ingestion_once @ agent/credential_pool.py:_warn_env_ingestion_once */
-void _warn_env_ingestion_once(void) {}

@@ -9,8 +9,4 @@
 
 /* ── tools/computer_use/doctor.py: 2 missing functions ── */
 
-/* PoP: _apply_display_count_guard @ tools/computer_use/doctor.py:_apply_display_count_guard */
-void _apply_display_count_guard(void) { }
 
-/* PoP: _wayland_environment_context @ tools/computer_use/doctor.py:_wayland_environment_context */
-void _wayland_environment_context(void) { }

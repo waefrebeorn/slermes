@@ -968,17 +968,7 @@ int g_voice_mode = 0;
 /* json_escape_arg is provided by cli_cmd_kanban.c (declared in cli_cmd_kanban.h). */
 
 
-/* PoP: _localized @ hermes_cli/commands.py:_localized */
-void hermes_cli_commands_localized(void) { }
 
-/* PoP: category_label @ hermes_cli/commands.py:category_label */
-void hermes_cli_commands_category_label(void) { }
 
-/* PoP: infer_argument_mode @ hermes_cli/commands.py:infer_argument_mode */
-void hermes_cli_commands_infer_argument_mode(void) { }
 
-/* PoP: command_desktop_meta @ hermes_cli/commands.py:command_desktop_meta */
-void hermes_cli_commands_command_desktop_meta(void) { }
 
-/* PoP: desktop_surface_registry @ hermes_cli/commands.py:desktop_surface_registry */
-void hermes_cli_commands_desktop_surface_registry(void) { }

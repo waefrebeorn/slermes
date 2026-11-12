@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/model_cost_guard.py: 1 missing functions ── */
 
-/* PoP: _can_trust_pricing_lookup @ hermes_cli/model_cost_guard.py:_can_trust_pricing_lookup */
-void _can_trust_pricing_lookup(void) { }

@@ -9,8 +9,4 @@
 
 /* ── tools/transcription_tools.py: 2 missing functions ── */
 
-/* PoP: _enforce_prompt_length_limit @ tools/transcription_tools.py:_enforce_prompt_length_limit */
-void _enforce_prompt_length_limit(void) { }
 
-/* PoP: _apply_pre_transcription_hook @ tools/transcription_tools.py:_apply_pre_transcription_hook */
-void _apply_pre_transcription_hook(void) { }

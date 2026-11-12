@@ -133,5 +133,3 @@ void strip_leading_message_timestamps(const char *text, char *output, size_t out
 }
 
 
-/* PoP: _localize @ gateway/message_timestamps.py:_localize */
-void gateway_message_timestamps_localize(void) { }

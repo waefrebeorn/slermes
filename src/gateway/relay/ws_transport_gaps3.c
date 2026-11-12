@@ -9,5 +9,3 @@
 
 /* ── gateway/relay/ws_transport.py: 1 missing functions ── */
 
-/* PoP: _media_types_from_wire @ gateway/relay/ws_transport.py:_media_types_from_wire */
-void _media_types_from_wire(void) { }

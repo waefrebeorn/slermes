@@ -9,11 +9,5 @@
 
 /* ── tools/mcp_death_supervisor.py: 3 missing functions ── */
 
-/* PoP: _is_safe_target @ tools/mcp_death_supervisor.py:_is_safe_target */
-void _is_safe_target(void) { }
 
-/* PoP: _reap @ tools/mcp_death_supervisor.py:_reap */
-void _reap(void) { }
 
-/* PoP: _serve @ tools/mcp_death_supervisor.py:_serve */
-void _serve(void) { }

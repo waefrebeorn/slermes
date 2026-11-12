@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/install_identity.py: 2 missing functions ── */
 
-/* PoP: _install_id_file_lock @ hermes_cli/install_identity.py:_install_id_file_lock */
-void _install_id_file_lock(void) { }
 
 /* PoP: read_or_create_install_id @ hermes_cli/install_identity.py:read_or_create_install_id */
 char *read_or_create_install_id(void) { return strdup(""); }

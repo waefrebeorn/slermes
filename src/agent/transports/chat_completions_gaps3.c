@@ -9,5 +9,3 @@
 
 /* ── agent/transports/chat_completions.py: 1 missing functions ── */
 
-/* PoP: _rename_tool_search_bridge_for_xai @ agent/transports/chat_completions.py:_rename_tool_search_bridge_for_xai */
-void _rename_tool_search_bridge_for_xai(void) { }

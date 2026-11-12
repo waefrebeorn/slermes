@@ -9,8 +9,6 @@
 
 /* ── agent/review_engine.py: 2 missing functions ── */
 
-/* PoP: _load_review_credentials_cfg @ agent/review_engine.py:_load_review_credentials_cfg */
-void _load_review_credentials_cfg(void) { }
 
 /* PoP: start_review @ agent/review_engine.py:start_review */
 char *start_review(void) { return strdup(""); }

@@ -9,5 +9,3 @@
 
 /* ── gateway/pairing.py: 1 missing functions ── */
 
-/* PoP: _default_pairing_dir @ gateway/pairing.py:_default_pairing_dir */
-void _default_pairing_dir(void) { }

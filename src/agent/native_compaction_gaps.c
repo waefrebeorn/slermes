@@ -12,8 +12,6 @@
 /* PoP: resolve_native_compaction_capabilities @ agent/native_compaction.py:resolve_native_compaction_capabilities */
 char *resolve_native_compaction_capabilities(void) { return strdup("{}"); }
 
-/* PoP: _warn_native_compaction_suppressed_by_checkpoint_gate @ agent/native_compaction.py:_warn_native_compaction_suppressed_by_checkpoint_gate */
-void _warn_native_compaction_suppressed_by_checkpoint_gate(void) {}
 
 /* PoP: _extract_item_text @ agent/native_compaction.py:_extract_item_text */
 char *_extract_item_text(void) { return strdup(""); }

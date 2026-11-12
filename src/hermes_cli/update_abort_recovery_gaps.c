@@ -21,11 +21,7 @@ char *_without_incarnation(void) { return strdup(""); }
 /* PoP: _qualified_serve_skips @ hermes_cli/update_abort_recovery.py:_qualified_serve_skips */
 char *_qualified_serve_skips(void) { return strdup("[]"); }
 
-/* PoP: _recover_gateway_restart_after_abort @ hermes_cli/update_abort_recovery.py:_recover_gateway_restart_after_abort */
-void _recover_gateway_restart_after_abort(void) {}
 
-/* PoP: _warn_stale_serve_runtimes @ hermes_cli/update_abort_recovery.py:_warn_stale_serve_runtimes */
-void _warn_stale_serve_runtimes(void) {}
 
 /* PoP: _abort_recovery_is_complete @ hermes_cli/update_abort_recovery.py:_abort_recovery_is_complete */
 int _abort_recovery_is_complete(void) { return 1; }

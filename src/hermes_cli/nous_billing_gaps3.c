@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/nous_billing.py: 1 missing functions ── */
 
-/* PoP: _raise_for_error @ hermes_cli/nous_billing.py:_raise_for_error */
-void _raise_for_error(void) { }

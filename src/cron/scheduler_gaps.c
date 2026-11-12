@@ -57,8 +57,6 @@ void _record_delivery_verification(const char *job_id, int success) {
     (void)job_id; (void)success;
 }
 
-/* PoP: drain_delivery_queue @ cron/scheduler.py:drain_delivery_queue */
-void drain_delivery_queue(void) {}
 
 /* PoP: _get_session_db_timeout @ cron/scheduler.py:_get_session_db_timeout */
 int _get_session_db_timeout(void) { return 30; }
@@ -104,5 +102,3 @@ char *_worktree_maintenance_repos(void) {
     return strdup("[]");
 }
 
-/* PoP: _maybe_run_worktree_maintenance @ cron/scheduler.py:_maybe_run_worktree_maintenance */
-void _maybe_run_worktree_maintenance(void) {}

@@ -552,8 +552,4 @@ char *resolve_bundle_command_key(const char *command) {
     return key;
 }
 
-/* PoP: _iter_bundle_files @ agent/skill_bundles.py:_iter_bundle_files */
-void agent_skill_bundles_iter_bundle_files(void) { }
 
-/* PoP: resolve_bundle_command_key @ agent/skill_bundles.py:resolve_bundle_command_key */
-void agent_skill_bundles_resolve_bundle_command_key(void) { }

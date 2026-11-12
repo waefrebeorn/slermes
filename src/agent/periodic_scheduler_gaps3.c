@@ -9,5 +9,3 @@
 
 /* ── agent/periodic_scheduler.py: 1 missing functions ── */
 
-/* PoP: _cancel @ agent/periodic_scheduler.py:_cancel */
-void _cancel(void) { }

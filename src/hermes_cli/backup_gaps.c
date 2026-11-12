@@ -45,8 +45,6 @@ int _import_db_member(const char *src, const char *dst) { return 1; }
 /* PoP: _sibling_profile_homes @ hermes_cli/backup.py:_sibling_profile_homes */
 char *_sibling_profile_homes(void) { return strdup("[]"); }
 
-/* PoP: create_pre_update_snapshots_all_profiles @ hermes_cli/backup.py:create_pre_update_snapshots_all_profiles */
-void create_pre_update_snapshots_all_profiles(void) {}
 
 /* PoP: _read_raw_yaml_dict @ hermes_cli/backup.py:_read_raw_yaml_dict */
 char *_read_raw_yaml_dict(const char *path) { return strdup("{}"); }
@@ -57,14 +55,6 @@ char *_get_config_path_value(const char *path) { return strdup(""); }
 /* PoP: _set_config_path_value @ hermes_cli/backup.py:_set_config_path_value */
 void _set_config_path_value(const char *path, const char *val) { (void)path; (void)val; }
 
-/* PoP: restore_config_model_settings_if_rewritten @ hermes_cli/backup.py:restore_config_model_settings_if_rewritten */
-void restore_config_model_settings_if_rewritten(void) {}
 
-/* PoP: restore_config_model_settings_all_profiles @ hermes_cli/backup.py:restore_config_model_settings_all_profiles */
-void restore_config_model_settings_all_profiles(void) {}
 
-/* PoP: restore_cron_jobs_all_profiles @ hermes_cli/backup.py:restore_cron_jobs_all_profiles */
-void restore_cron_jobs_all_profiles(void) {}
 
-/* PoP: _prune_pre_update_backups @ hermes_cli/backup.py:_prune_pre_update_backups */
-void _prune_pre_update_backups(void) {}

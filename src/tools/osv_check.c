@@ -321,5 +321,3 @@ void cli_tools_osv_check__cache_put(const char *key, const char *result)
 }
 
 
-/* PoP: _disk_cache_path @ tools/osv_check.py:_disk_cache_path */
-void tools_osv_check_disk_cache_path(void) { }

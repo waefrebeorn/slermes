@@ -33,5 +33,3 @@ int _is_container_backend(void) { return 0; }
 /* PoP: _get_plugin_env_provider @ tools/terminal_tool.py:_get_plugin_env_provider */
 char *_get_plugin_env_provider(void) { return strdup(""); }
 
-/* PoP: _cleanup_env @ tools/terminal_tool.py:_cleanup_env */
-void _cleanup_env(void) {}

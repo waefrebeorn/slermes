@@ -18,11 +18,7 @@ char *get_mcp_server_filter(void) { return strdup(""); }
 /* PoP: start_background_mcp_discovery @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
 void start_background_mcp_discovery(void) {}
 
-/* PoP: defer_background_mcp_discovery @ hermes_cli/mcp_startup.py:defer_background_mcp_discovery */
-void defer_background_mcp_discovery(void) {}
 
-/* PoP: _start_deferred_mcp_discovery_now @ hermes_cli/mcp_startup.py:_start_deferred_mcp_discovery_now */
-void _start_deferred_mcp_discovery_now(void) {}
 
 /* PoP: wait_for_mcp_discovery @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
 void wait_for_mcp_discovery(void) {}

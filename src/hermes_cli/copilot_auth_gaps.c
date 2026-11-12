@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/copilot_auth.py: 7 missing functions ── */
 
-/* PoP: _invalidate_gh_cli_token_cache @ hermes_cli/copilot_auth.py:_invalidate_gh_cli_token_cache */
-void _invalidate_gh_cli_token_cache(void) {}
 
 /* PoP: _probe_gh_cli_token @ hermes_cli/copilot_auth.py:_probe_gh_cli_token */
 char *_probe_gh_cli_token(void) { return strdup(""); }
@@ -18,8 +16,6 @@ char *_probe_gh_cli_token(void) { return strdup(""); }
 /* PoP: copilot_device_code_login @ hermes_cli/copilot_auth.py:copilot_device_code_login */
 char *copilot_device_code_login(void) { return strdup("{}"); }
 
-/* PoP: _exchange_lock_for @ hermes_cli/copilot_auth.py:_exchange_lock_for */
-void _exchange_lock_for(void) {}
 
 /* PoP: _urlopen_bounded @ hermes_cli/copilot_auth.py:_urlopen_bounded */
 char *_urlopen_bounded(void) { return strdup("{}"); }

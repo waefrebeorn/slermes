@@ -12,8 +12,6 @@
 /* PoP: _safe_review_reason @ gateway/kanban_watchers.py:_safe_review_reason */
 char *_safe_review_reason(void) { return strdup(""); }
 
-/* PoP: _run_in_fresh_context @ gateway/kanban_watchers.py:_run_in_fresh_context */
-void _run_in_fresh_context(void) {}
 
 /* PoP: _to_thread_process_service @ gateway/kanban_watchers.py:_to_thread_process_service */
 char *_to_thread_process_service(void) { return strdup(""); }

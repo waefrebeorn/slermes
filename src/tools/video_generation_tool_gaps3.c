@@ -9,5 +9,3 @@
 
 /* ── tools/video_generation_tool.py: 1 missing functions ── */
 
-/* PoP: _normalize_reference_images @ tools/video_generation_tool.py:_normalize_reference_images */
-void _normalize_reference_images(void) { }

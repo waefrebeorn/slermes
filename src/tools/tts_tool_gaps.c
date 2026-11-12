@@ -18,26 +18,16 @@ char *_local_tts_warmers(void) { return strdup("[]"); }
 /* PoP: _lazy_sdk_feature_for_provider @ tools/tts_tool.py:_lazy_sdk_feature_for_provider */
 char *_lazy_sdk_feature_for_provider(void) { return strdup(""); }
 
-/* PoP: _signal_user_tts_provider @ tools/tts_tool.py:_signal_user_tts_provider */
-void _signal_user_tts_provider(void) {}
 
-/* PoP: warm_tts_provider @ tools/tts_tool.py:warm_tts_provider */
-void warm_tts_provider(void) {}
 
-/* PoP: release_tts_provider @ tools/tts_tool.py:release_tts_provider */
-void release_tts_provider(void) {}
 
 /* PoP: acquire_tts_lease @ tools/tts_tool.py:acquire_tts_lease */
 char *acquire_tts_lease(void) { return strdup("{}"); }
 
-/* PoP: release_tts_lease @ tools/tts_tool.py:release_tts_lease */
-void release_tts_lease(void) {}
 
 /* PoP: tts_lease_holders @ tools/tts_tool.py:tts_lease_holders */
 char *tts_lease_holders(void) { return strdup("[]"); }
 
-/* PoP: _reset_tts_leases_for_tests @ tools/tts_tool.py:_reset_tts_leases_for_tests */
-void _reset_tts_leases_for_tests(void) {}
 
 /* PoP: _load_piper_voice_for_config @ tools/tts_tool.py:_load_piper_voice_for_config */
 char *_load_piper_voice_for_config(void) { return strdup("{}"); }

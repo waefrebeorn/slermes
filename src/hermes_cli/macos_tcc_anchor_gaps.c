@@ -33,29 +33,19 @@ char *_interpreter_source(void) { return strdup(""); }
 /* PoP: _anchor_marker @ hermes_cli/macos_tcc_anchor.py:_anchor_marker */
 char *_anchor_marker(void) { return strdup(""); }
 
-/* PoP: _write_marker @ hermes_cli/macos_tcc_anchor.py:_write_marker */
-void _write_marker(void) {}
 
 /* PoP: _store_root @ hermes_cli/macos_tcc_anchor.py:_store_root */
 char *_store_root(void) { return strdup(""); }
 
-/* PoP: _provision_libpython @ hermes_cli/macos_tcc_anchor.py:_provision_libpython */
-void _provision_libpython(void) {}
 
 /* PoP: _copy_alias @ hermes_cli/macos_tcc_anchor.py:_copy_alias */
 void _copy_alias(const char *src, const char *dst) { (void)src; (void)dst; }
 
-/* PoP: _materialize_aliases @ hermes_cli/macos_tcc_anchor.py:_materialize_aliases */
-void _materialize_aliases(void) {}
 
 /* PoP: _passes_boot_gate @ hermes_cli/macos_tcc_anchor.py:_passes_boot_gate */
 int _passes_boot_gate(void) { return 1; }
 
-/* PoP: _install_anchor @ hermes_cli/macos_tcc_anchor.py:_install_anchor */
-void _install_anchor(void) {}
 
-/* PoP: ensure_tcc_anchor @ hermes_cli/macos_tcc_anchor.py:ensure_tcc_anchor */
-void ensure_tcc_anchor(void) {}
 
 /* PoP: tcc_anchor_state @ hermes_cli/macos_tcc_anchor.py:tcc_anchor_state */
 char *tcc_anchor_state(void) { return strdup("{\"state\":\"ok\"}"); }

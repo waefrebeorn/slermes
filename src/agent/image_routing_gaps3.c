@@ -9,5 +9,3 @@
 
 /* ── agent/image_routing.py: 1 missing functions ── */
 
-/* PoP: _resolve_inference_api_key @ agent/image_routing.py:_resolve_inference_api_key */
-void _resolve_inference_api_key(void) { }

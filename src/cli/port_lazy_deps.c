@@ -135,5 +135,3 @@ char *lazy_feature_install_command(const char *feature) {
     return NULL;
 }
 
-/* PoP: install_specs @ tools/lazy_deps.py:install_specs */
-void tools_lazy_deps_install_specs(void) { }

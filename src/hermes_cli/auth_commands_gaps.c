@@ -18,8 +18,6 @@ char *auth_add_command(void) { return strdup("{}"); }
 /* PoP: auth_list_command @ hermes_cli/auth_commands.py:auth_list_command */
 char *auth_list_command(void) { return strdup("[]"); }
 
-/* PoP: _print_oauth_heal_notices @ hermes_cli/auth_commands.py:_print_oauth_heal_notices */
-void _print_oauth_heal_notices(void) {}
 
 /* PoP: auth_remove_command @ hermes_cli/auth_commands.py:auth_remove_command */
 char *auth_remove_command(void) { return strdup("{}"); }

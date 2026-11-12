@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/observability/shared_metrics_send_config.py: 3 missing functions ── */
 
-/* PoP: _endpoint_is_safe @ hermes_cli/observability/shared_metrics_send_config.py:_endpoint_is_safe */
-void _endpoint_is_safe(void) { }
 
 /* PoP: resolve_send_config @ hermes_cli/observability/shared_metrics_send_config.py:resolve_send_config */
 char *resolve_send_config(void) { return strdup(""); }

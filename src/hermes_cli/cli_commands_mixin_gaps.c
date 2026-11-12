@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/cli_commands_mixin.py: 10 missing functions ── */
 
-/* PoP: _print_lightpanda_engine_status @ hermes_cli/cli_commands_mixin.py:_print_lightpanda_engine_status */
-void _print_lightpanda_engine_status(void) {}
 
 /* PoP: _handle_export_command @ hermes_cli/cli_commands_mixin.py:_handle_export_command */
 char *_handle_export_command(const char *args) { return strdup("{\"status\":\"ok\"}"); }

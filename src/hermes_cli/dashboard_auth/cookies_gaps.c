@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/dashboard_auth/cookies.py: 4 missing functions ── */
 
-/* PoP: _clear_cookie_variants @ hermes_cli/dashboard_auth/cookies.py:_clear_cookie_variants */
-void _clear_cookie_variants(void) {}
 
 /* PoP: _pkce_attrs @ hermes_cli/dashboard_auth/cookies.py:_pkce_attrs */
 char *_pkce_attrs(void) { return strdup("{}"); }

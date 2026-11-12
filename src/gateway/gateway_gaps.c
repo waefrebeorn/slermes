@@ -40,8 +40,6 @@
 #include "hermes_core_types.h"
 #include "hermes_gateway_core.h"
 
-/* PoP: _refuse @ gateway/plugin_keyless_inject.py:_refuse */
-void gateway_plugin_keyless_inject_refuse(void) { }
 
 /* PoP: _launched_by_classic_cli @ gateway/plugin_keyless_inject.py:_launched_by_classic_cli */
 int gateway_plugin_keyless_inject_launched_by_classic_cli(void) { return 0; }
@@ -52,26 +50,14 @@ void *gateway_session_command_sink_active_sink(void) { return NULL; }
 /* PoP: _scoped_lock_record_is_stale @ gateway/status_scoped_locks.py:_scoped_lock_record_is_stale */
 int gateway_status_scoped_locks_scoped_lock_record_is_stale(void) { return 0; }
 
-/* PoP: _dispatch_tool_call @ gateway/stream_dispatch.py:_dispatch_tool_call */
-void gateway_stream_dispatch_dispatch_tool_call(void) { }
 
 /* PoP: _resolve_target_pid @ gateway/systemd_stop_mark.py:_resolve_target_pid */
 int gateway_systemd_stop_mark_resolve_target_pid(void) { return 0; }
 
-/* PoP: _work @ gateway/turn_executor.py:_work */
-void gateway_turn_executor_work(void) { }
 
-/* PoP: _park @ gateway/turn_executor.py:_park */
-void gateway_turn_executor_park(void) { }
 
-/* PoP: register_clarify @ gateway/session_pending_controls.py:register_clarify */
-void gateway_session_pending_controls_register_clarify(void) { }
 
-/* PoP: respond @ gateway/session_pending_controls.py:respond */
-void gateway_session_pending_controls_respond(void) { }
 
-/* PoP: shell_exec @ gateway/session_shell.py:shell_exec */
-void gateway_session_shell_shell_exec(void) { }
 
 /* PoP: resolved_skin @ gateway/session_skin.py:resolved_skin */
 const char *gateway_session_skin_resolved_skin(void) { return NULL; }

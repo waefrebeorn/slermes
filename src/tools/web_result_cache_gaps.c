@@ -18,8 +18,6 @@ int bucket_limit(void) { return 100; }
 /* PoP: normalize_query @ tools/web_result_cache.py:normalize_query */
 char *normalize_query(const char *query) { return query ? strdup(query) : strdup(""); }
 
-/* PoP: flight_lock @ tools/web_result_cache.py:flight_lock */
-void flight_lock(void) {}
 
 /* PoP: slice_search_response @ tools/web_result_cache.py:slice_search_response */
 char *slice_search_response(const char *response) { return strdup("[]"); }
@@ -30,8 +28,6 @@ char *_cache_dir(void) { return strdup(""); }
 /* PoP: _load_index @ tools/web_result_cache.py:_load_index */
 char *_load_index(void) { return strdup("{}"); }
 
-/* PoP: _save_index @ tools/web_result_cache.py:_save_index */
-void _save_index(void) {}
 
 /* PoP: _url_digest @ tools/web_result_cache.py:_url_digest */
 char *_url_digest(const char *url) { return strdup(""); }

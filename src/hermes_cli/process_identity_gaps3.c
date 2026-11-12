@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/process_identity.py: 3 missing functions ── */
 
-/* PoP: _append_entry @ hermes_cli/process_identity.py:_append_entry */
-void _append_entry(void) { }
 
 /* PoP: register_child @ hermes_cli/process_identity.py:register_child */
 char *register_child(void) { return strdup(""); }

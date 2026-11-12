@@ -9,11 +9,5 @@
 
 /* ── hermes_cli/subcommands/peer.py: 3 missing functions ── */
 
-/* PoP: _resolve_peer_target @ hermes_cli/subcommands/peer.py:_resolve_peer_target */
-void _resolve_peer_target(void) { }
 
-/* PoP: _message_from_args @ hermes_cli/subcommands/peer.py:_message_from_args */
-void _message_from_args(void) { }
 
-/* PoP: _peer_run_durability @ hermes_cli/subcommands/peer.py:_peer_run_durability */
-void _peer_run_durability(void) { }

@@ -9,8 +9,4 @@
 
 /* ── hermes_cli/plugin_capabilities.py: 2 missing functions ── */
 
-/* PoP: _plugin_entry @ hermes_cli/plugin_capabilities.py:_plugin_entry */
-void _plugin_entry(void) { }
 
-/* PoP: _log_capability_decision @ hermes_cli/plugin_capabilities.py:_log_capability_decision */
-void _log_capability_decision(void) { }

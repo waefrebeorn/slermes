@@ -21,23 +21,13 @@ char *_resolve_owner(void) { return strdup(""); }
 /* PoP: _kernel_key @ tools/code_kernel.py:_kernel_key */
 char *_kernel_key(void) { return strdup(""); }
 
-/* PoP: shutdown_all_kernels @ tools/code_kernel.py:shutdown_all_kernels */
-void shutdown_all_kernels(void) {}
 
 /* PoP: shutdown_kernels_for_owner @ tools/code_kernel.py:shutdown_kernels_for_owner */
 void shutdown_kernels_for_owner(const char *owner) { (void)owner; }
 
-/* PoP: _reap_unlocked @ tools/code_kernel.py:_reap_unlocked */
-void _reap_unlocked(void) {}
 
-/* PoP: _evict_over_cap_unlocked @ tools/code_kernel.py:_evict_over_cap_unlocked */
-void _evict_over_cap_unlocked(void) {}
 
-/* PoP: _teardown @ tools/code_kernel.py:_teardown */
-void _teardown(void) {}
 
-/* PoP: _rpc_forever @ tools/code_kernel.py:_rpc_forever */
-void _rpc_forever(void) {}
 
 /* PoP: _append_bounded @ tools/code_kernel.py:_append_bounded */
 void _append_bounded(const char *data) { (void)data; }

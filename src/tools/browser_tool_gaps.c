@@ -18,8 +18,6 @@ char *lightpanda_engine_status(void) { return strdup("{\"status\":\"unknown\"}")
 /* PoP: _use_real_profile @ tools/browser_tool.py:_use_real_profile */
 int _use_real_profile(void) { return 0; }
 
-/* PoP: _terminate_real_profile_chrome @ tools/browser_tool.py:_terminate_real_profile_chrome */
-void _terminate_real_profile_chrome(void) {}
 
 /* PoP: _agent_browser_argv @ tools/browser_tool.py:_agent_browser_argv */
 char *_agent_browser_argv(void) { return strdup("[]"); }
@@ -33,8 +31,6 @@ char *_agent_browser_get_cdp(void) { return strdup("{}"); }
 /* PoP: _cdp_on_data_dir @ tools/browser_tool.py:_cdp_on_data_dir */
 char *_cdp_on_data_dir(const char *dir) { return strdup("{}"); }
 
-/* PoP: _agent_browser_close_session @ tools/browser_tool.py:_agent_browser_close_session */
-void _agent_browser_close_session(void) {}
 
 /* PoP: _real_profile_cdp @ tools/browser_tool.py:_real_profile_cdp */
 char *_real_profile_cdp(void) { return strdup("{}"); }
@@ -51,8 +47,6 @@ char *_create_lightpanda_session(void) { return strdup("{}"); }
 /* PoP: _local_backend_process_dead @ tools/browser_tool.py:_local_backend_process_dead */
 int _local_backend_process_dead(void) { return 0; }
 
-/* PoP: _discard_timed_out_browser_session @ tools/browser_tool.py:_discard_timed_out_browser_session */
-void _discard_timed_out_browser_session(void) {}
 
 /* PoP: _read_browser_daemon_pid @ tools/browser_tool.py:_read_browser_daemon_pid */
 int _read_browser_daemon_pid(void) { return 0; }
@@ -60,11 +54,5 @@ int _read_browser_daemon_pid(void) { return 0; }
 /* PoP: _browser_daemon_responsive @ tools/browser_tool.py:_browser_daemon_responsive */
 int _browser_daemon_responsive(void) { return 1; }
 
-/* PoP: _handle_browser_command_timeout @ tools/browser_tool.py:_handle_browser_command_timeout */
-void _handle_browser_command_timeout(void) {}
 
-/* PoP: _release_session_resources @ tools/browser_tool.py:_release_session_resources */
-void _release_session_resources(void) {}
 
-/* PoP: _force_reap_browser_session @ tools/browser_tool.py:_force_reap_browser_session */
-void _force_reap_browser_session(void) {}

@@ -9,8 +9,6 @@
 
 /* ── gateway/hosted_room_replicas.py: 8 missing functions ── */
 
-/* PoP: _initialize_replica_schema @ gateway/hosted_room_replicas.py:_initialize_replica_schema */
-void _initialize_replica_schema(void) {}
 
 /* PoP: _replica_transaction @ gateway/hosted_room_replicas.py:_replica_transaction */
 void *_replica_transaction(void) { return NULL; }

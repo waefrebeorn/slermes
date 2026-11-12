@@ -9,5 +9,3 @@
 
 /* ── gateway/platforms/weixin.py: 1 missing functions ── */
 
-/* PoP: _payload @ gateway/platforms/weixin.py:_payload */
-void _payload(void) { }

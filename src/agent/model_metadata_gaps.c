@@ -39,8 +39,6 @@ int _verified_codex_ctx_for_slug(void) { return 0; }
 /* PoP: _strip_stale_thinking_for_estimate @ agent/model_metadata.py:_strip_stale_thinking_for_estimate */
 char *_strip_stale_thinking_for_estimate(void) { return strdup(""); }
 
-/* PoP: capture_usage_anchor @ agent/model_metadata.py:capture_usage_anchor */
-void capture_usage_anchor(void) {}
 
 /* PoP: anchored_context_tokens @ agent/model_metadata.py:anchored_context_tokens */
 int anchored_context_tokens(void) { return 0; }

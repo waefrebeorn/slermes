@@ -137,8 +137,6 @@ char *snapshot_real_profile(const char *browser) {
     return strdup("{\"status\":\"snapshotted\"}");
 }
 
-/* PoP: cleanup_real_profile_snapshots @ hermes_cli/browser_connect.py:cleanup_real_profile_snapshots */
-void cleanup_real_profile_snapshots(void) {}
 
 /* PoP: get_chrome_debug_candidates @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
 char *get_chrome_debug_candidates(void) {

@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/profiles.py: 6 missing functions ── */
 
-/* PoP: _seed_model_config @ hermes_cli/profiles.py:_seed_model_config */
-void _seed_model_config(void) {}
 
 /* PoP: _served_by_running_multiplexer @ hermes_cli/profiles.py:_served_by_running_multiplexer */
 int _served_by_running_multiplexer(void) { return 0; }

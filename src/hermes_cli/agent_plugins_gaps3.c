@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/agent_plugins.py: 1 missing functions ── */
 
-/* PoP: _discover_skills @ hermes_cli/agent_plugins.py:_discover_skills */
-void _discover_skills(void) { }

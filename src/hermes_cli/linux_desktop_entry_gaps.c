@@ -42,17 +42,9 @@ char *_hicolor_subdir(void) { return strdup(""); }
 /* PoP: _hicolor_icon_dest @ hermes_cli/linux_desktop_entry.py:_hicolor_icon_dest */
 char *_hicolor_icon_dest(void) { return strdup(""); }
 
-/* PoP: _remove_stale_scalable_icon @ hermes_cli/linux_desktop_entry.py:_remove_stale_scalable_icon */
-void _remove_stale_scalable_icon(void) {}
 
-/* PoP: _refresh_hicolor_cache @ hermes_cli/linux_desktop_entry.py:_refresh_hicolor_cache */
-void _refresh_hicolor_cache(void) {}
 
 /* PoP: _resized_hicolor_pngs @ hermes_cli/linux_desktop_entry.py:_resized_hicolor_pngs */
 char *_resized_hicolor_pngs(void) { return strdup("[]"); }
 
-/* PoP: _write_hicolor_pngs @ hermes_cli/linux_desktop_entry.py:_write_hicolor_pngs */
-void _write_hicolor_pngs(void) {}
 
-/* PoP: _install_icon_to_hicolor @ hermes_cli/linux_desktop_entry.py:_install_icon_to_hicolor */
-void _install_icon_to_hicolor(void) {}

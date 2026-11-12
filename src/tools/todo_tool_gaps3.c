@@ -9,5 +9,3 @@
 
 /* ── tools/todo_tool.py: 1 missing functions ── */
 
-/* PoP: _sanitize_parents @ tools/todo_tool.py:_sanitize_parents */
-void _sanitize_parents(void) { }

@@ -761,29 +761,11 @@ char *provider_canonical_custom_identity(const char *base_url,
 }
 
 
-/* PoP: lower_key @ agent/provider_registry.py:lower_key */
-void agent_provider_registry_lower_key(void) { }
 
-/* PoP: _target @ agent/provider_registry.py:_target */
-void agent_provider_registry_target(void) { }
 
-/* PoP: _bump @ agent/provider_registry.py:_bump */
-void agent_provider_registry_bump(void) { }
 
-/* PoP: merged @ agent/provider_registry.py:merged */
-void agent_provider_registry_merged(void) { }
 
-/* PoP: snapshot_registration @ agent/provider_registry.py:snapshot_registration */
-void agent_provider_registry_snapshot_registration(void) { }
 
-/* PoP: restore_registration @ agent/provider_registry.py:restore_registration */
-void agent_provider_registry_restore_registration(void) { }
 
-/* PoP: export @ agent/provider_registry.py:export */
-void agent_provider_registry_export(void) { }
 
-/* PoP: is_available_safe @ agent/provider_registry.py:is_available_safe */
-void agent_provider_registry_is_available_safe(void) { }
 
-/* PoP: configured_provider_name @ agent/provider_registry.py:configured_provider_name */
-void agent_provider_registry_configured_provider_name(void) { }

@@ -9,11 +9,7 @@
 
 /* ── hermes_cli/session_recovery.py: 5 missing functions ── */
 
-/* PoP: _init_delivery_ledger_schema @ hermes_cli/session_recovery.py:_init_delivery_ledger_schema */
-void _init_delivery_ledger_schema(void) {}
 
-/* PoP: _ensure_auxiliary_destination_schema @ hermes_cli/session_recovery.py:_ensure_auxiliary_destination_schema */
-void _ensure_auxiliary_destination_schema(void) {}
 
 /* PoP: _probe_populated_edge @ hermes_cli/session_recovery.py:_probe_populated_edge */
 int _probe_populated_edge(void) { return 0; }

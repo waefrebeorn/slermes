@@ -18,8 +18,6 @@ char *_sidebar_db_fingerprint(void) { return strdup(""); }
 /* PoP: _sidebar_profile_cache_get @ hermes_cli/web_routers/profiles.py:_sidebar_profile_cache_get */
 char *_sidebar_profile_cache_get(void) { return strdup("{}"); }
 
-/* PoP: _sidebar_profile_cache_put @ hermes_cli/web_routers/profiles.py:_sidebar_profile_cache_put */
-void _sidebar_profile_cache_put(void) {}
 
 /* PoP: _sidebar_singleflight_cache @ hermes_cli/web_routers/profiles.py:_sidebar_singleflight_cache */
 char *_sidebar_singleflight_cache(void) { return strdup("{}"); }

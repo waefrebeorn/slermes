@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/subcommands/dashboard.py: 2 missing functions ── */
 
-/* PoP: _configure_serve_parser @ hermes_cli/subcommands/dashboard.py:_configure_serve_parser */
-void _configure_serve_parser(void) { }
 
 /* PoP: build_serve_parser @ hermes_cli/subcommands/dashboard.py:build_serve_parser */
 char *build_serve_parser(void) { return strdup(""); }

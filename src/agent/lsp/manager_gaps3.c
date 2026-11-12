@@ -9,5 +9,3 @@
 
 /* ── agent/lsp/manager.py: 1 missing functions ── */
 
-/* PoP: _client_key @ agent/lsp/manager.py:_client_key */
-void _client_key(void) { }

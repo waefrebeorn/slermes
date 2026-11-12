@@ -9,14 +9,8 @@
 
 /* ── agent/auxiliary_client.py: 24 missing functions ── */
 
-/* PoP: _notify_aux_dispatch @ agent/auxiliary_client.py:_notify_aux_dispatch */
-void _notify_aux_dispatch(void) {}
 
-/* PoP: _notify_aux_timing_response @ agent/auxiliary_client.py:_notify_aux_timing_response */
-void _notify_aux_timing_response(void) {}
 
-/* PoP: _notify_aux_provider_response @ agent/auxiliary_client.py:_notify_aux_provider_response */
-void _notify_aux_provider_response(void) {}
 
 /* PoP: _anthropic_event_has_content @ agent/auxiliary_client.py:_anthropic_event_has_content */
 int _anthropic_event_has_content(const char *event) {

@@ -194,8 +194,4 @@ int cli_hermes_cli_dashboard_auth_prefix_resolve_public_url(
     return 0;
 }
 
-/* PoP: _warn_once @ hermes_cli/dashboard_auth/prefix.py:_warn_once */
-void hermes_cli_dashboard_auth_prefix_warn_once(void) { }
 
-/* PoP: _warn_if_malformed_prefix @ hermes_cli/dashboard_auth/prefix.py:_warn_if_malformed_prefix */
-void hermes_cli_dashboard_auth_prefix_warn_if_malformed_prefix(void) { }

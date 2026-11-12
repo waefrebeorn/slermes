@@ -15,5 +15,3 @@ char *preview_open(void) { return strdup(""); }
 /* PoP: preview_close @ tools/preview_tool.py:preview_close */
 char *preview_close(void) { return strdup(""); }
 
-/* PoP: _handle_preview @ tools/preview_tool.py:_handle_preview */
-void _handle_preview(void) { }

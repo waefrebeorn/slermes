@@ -24,8 +24,6 @@ int _hook_uses_callback_timeout(void) { return 0; }
 /* PoP: _pre_tool_call_timeout_block @ hermes_cli/plugins.py:_pre_tool_call_timeout_block */
 int _pre_tool_call_timeout_block(void) { return 0; }
 
-/* PoP: _re_register_config_hooks_after_force @ hermes_cli/plugins.py:_re_register_config_hooks_after_force */
-void _re_register_config_hooks_after_force(void) {}
 
 /* PoP: get_platform_handler_factories @ hermes_cli/plugins.py:get_platform_handler_factories */
 char *get_platform_handler_factories(void) { return strdup("[]"); }

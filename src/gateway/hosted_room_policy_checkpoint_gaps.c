@@ -21,8 +21,6 @@ void _store_transcript_event(const char *event) { (void)event; }
 /* PoP: _event_from_room_row @ gateway/hosted_room_policy_checkpoint.py:_event_from_room_row */
 char *_event_from_room_row(const char *row) { return strdup("{}"); }
 
-/* PoP: _backfill_transcript @ gateway/hosted_room_policy_checkpoint.py:_backfill_transcript */
-void _backfill_transcript(void) {}
 
 /* PoP: _transcript_events @ gateway/hosted_room_policy_checkpoint.py:_transcript_events */
 char *_transcript_events(void) { return strdup("[]"); }

@@ -12,5 +12,3 @@
 /* PoP: get_loop_tick_socket_path @ gateway/shutdown_watchdog.py:get_loop_tick_socket_path */
 char *get_loop_tick_socket_path(void) { return strdup(""); }
 
-/* PoP: _tick_socket_handler @ gateway/shutdown_watchdog.py:_tick_socket_handler */
-void _tick_socket_handler(void) { }

@@ -15,11 +15,7 @@ char *window_overrides_path(void) { return strdup(""); }
 /* PoP: load_window_overrides @ hermes_cli/local_runtime/growth.py:load_window_overrides */
 char *load_window_overrides(void) { return strdup("{}"); }
 
-/* PoP: save_window_override @ hermes_cli/local_runtime/growth.py:save_window_override */
-void save_window_override(void) {}
 
-/* PoP: clear_window_override @ hermes_cli/local_runtime/growth.py:clear_window_override */
-void clear_window_override(void) {}
 
 /* PoP: is_managed_endpoint @ hermes_cli/local_runtime/growth.py:is_managed_endpoint */
 int is_managed_endpoint(void) { return 0; }

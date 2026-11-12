@@ -21,14 +21,10 @@ char *build_bedrock_openai_http_client(void) { return strdup("{}"); }
 /* PoP: cache_point_rejection_placement @ agent/bedrock_adapter.py:cache_point_rejection_placement */
 char *cache_point_rejection_placement(void) { return strdup(""); }
 
-/* PoP: note_cache_point_rejection @ agent/bedrock_adapter.py:note_cache_point_rejection */
-void note_cache_point_rejection(void) {}
 
 /* PoP: cache_point_allowed @ agent/bedrock_adapter.py:cache_point_allowed */
 int cache_point_allowed(void) { return 1; }
 
-/* PoP: reset_cache_point_rejections @ agent/bedrock_adapter.py:reset_cache_point_rejections */
-void reset_cache_point_rejections(void) {}
 
 /* PoP: _is_cache_point_block @ agent/bedrock_adapter.py:_is_cache_point_block */
 int _is_cache_point_block(void) { return 0; }

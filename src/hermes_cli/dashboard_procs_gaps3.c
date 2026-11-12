@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/dashboard_procs.py: 1 missing functions ── */
 
-/* PoP: _normalized_home_for_compare @ hermes_cli/dashboard_procs.py:_normalized_home_for_compare */
-void _normalized_home_for_compare(void) { }

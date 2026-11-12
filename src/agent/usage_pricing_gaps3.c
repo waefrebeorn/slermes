@@ -9,8 +9,4 @@
 
 /* ── agent/usage_pricing.py: 2 missing functions ── */
 
-/* PoP: _usage_get @ agent/usage_pricing.py:_usage_get */
-void _usage_get(void) { }
 
-/* PoP: _usage_count @ agent/usage_pricing.py:_usage_count */
-void _usage_count(void) { }

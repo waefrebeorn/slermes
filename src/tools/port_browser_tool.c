@@ -52,5 +52,3 @@ void port_browser_tool_cleanup(port_browser_tool_state_t *state)
     free(state);
 }
 
-/* PoP: warm_agent_browser_npx_cache @ tools/browser_tool.py:warm_agent_browser_npx_cache */
-void tools_browser_tool_warm_agent_browser_npx_cache(void) { }

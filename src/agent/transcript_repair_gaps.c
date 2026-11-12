@@ -15,5 +15,3 @@ int is_content_blank(void) { return 0; }
 /* PoP: resolve_and_repair_transcript_batch @ agent/transcript_repair.py:resolve_and_repair_transcript_batch */
 char *resolve_and_repair_transcript_batch(void) { return strdup("[]"); }
 
-/* PoP: sync_flushed_message_markers @ agent/transcript_repair.py:sync_flushed_message_markers */
-void sync_flushed_message_markers(void) {}

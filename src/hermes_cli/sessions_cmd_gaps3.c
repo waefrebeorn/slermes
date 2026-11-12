@@ -9,5 +9,3 @@
 
 /* ── hermes_cli/sessions_cmd.py: 1 missing functions ── */
 
-/* PoP: _prune_never_active_keyed @ hermes_cli/sessions_cmd.py:_prune_never_active_keyed */
-void _prune_never_active_keyed(void) { }

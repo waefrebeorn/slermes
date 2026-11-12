@@ -18,11 +18,7 @@ int _checkpoint_blocked(void) { return 0; }
 /* PoP: _get_context_compression_timeout_state @ agent/conversation_compression.py:_get_context_compression_timeout_state */
 char *_get_context_compression_timeout_state(void) { return strdup("{}"); }
 
-/* PoP: reset_context_compression_timeout_outcome @ agent/conversation_compression.py:reset_context_compression_timeout_outcome */
-void reset_context_compression_timeout_outcome(void) {}
 
-/* PoP: mark_context_compression_timed_out @ agent/conversation_compression.py:mark_context_compression_timed_out */
-void mark_context_compression_timed_out(void) {}
 
 /* PoP: context_compression_timed_out @ agent/conversation_compression.py:context_compression_timed_out */
 int context_compression_timed_out(void) { return 0; }
@@ -33,8 +29,6 @@ int _automatic_gate_blocked(void) { return 0; }
 /* PoP: compression_blocked_transiently @ agent/conversation_compression.py:compression_blocked_transiently */
 int compression_blocked_transiently(void) { return 0; }
 
-/* PoP: _mark_compression_blocked_transient @ agent/conversation_compression.py:_mark_compression_blocked_transient */
-void _mark_compression_blocked_transient(void) {}
 
 /* PoP: _emit_progress_status @ agent/conversation_compression.py:_emit_progress_status */
 void _emit_progress_status(const char *status) { (void)status; }

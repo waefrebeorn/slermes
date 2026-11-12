@@ -36,8 +36,6 @@ char *_latest_job_output_excerpt(void) { return strdup(""); }
 /* PoP: _try_dispatch_background_run @ tools/cronjob_tools.py:_try_dispatch_background_run */
 char *_try_dispatch_background_run(void) { return strdup("{}"); }
 
-/* PoP: _apply_continuity @ tools/cronjob_tools.py:_apply_continuity */
-void _apply_continuity(void) {}
 
 /* PoP: _gateway_liveness_notice @ tools/cronjob_tools.py:_gateway_liveness_notice */
 char *_gateway_liveness_notice(void) { return strdup(""); }

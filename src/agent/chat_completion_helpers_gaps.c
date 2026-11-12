@@ -15,8 +15,6 @@ char *_provider_stream_error_from_text(void) { return strdup(""); }
 /* PoP: _managed_local_load_notice @ agent/chat_completion_helpers.py:_managed_local_load_notice */
 char *_managed_local_load_notice(void) { return strdup(""); }
 
-/* PoP: _consume_ephemeral_reasoning_off @ agent/chat_completion_helpers.py:_consume_ephemeral_reasoning_off */
-void _consume_ephemeral_reasoning_off(void) {}
 
 /* PoP: _reasoning_config_for_wire @ agent/chat_completion_helpers.py:_reasoning_config_for_wire */
 char *_reasoning_config_for_wire(void) { return strdup("{}"); }

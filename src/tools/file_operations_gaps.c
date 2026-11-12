@@ -31,8 +31,6 @@ char **_filename_search_root_keys(const char **roots, int n_roots, const char *f
 
 /* PoP: _acquire_filename_search_roots @ tools/file_operations.py:_acquire_filename_search_roots */
 int _acquire_filename_search_roots(void) { return 1; }
-/* PoP: _release_filename_search_roots @ tools/file_operations.py:_release_filename_search_roots */
-void _release_filename_search_roots(void) {}
 
 /* PoP: _macos_protected_search_exclusions @ tools/file_operations.py:_macos_protected_search_exclusions */
 char **_macos_protected_search_exclusions(const char *path) {

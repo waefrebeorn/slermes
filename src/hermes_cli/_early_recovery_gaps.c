@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/_early_recovery.py: 7 missing functions ── */
 
-/* PoP: restore_quarantined_shims @ hermes_cli/_early_recovery.py:restore_quarantined_shims */
-void restore_quarantined_shims(void) {}
 
 /* PoP: _pid_is_running @ hermes_cli/_early_recovery.py:_pid_is_running */
 int _pid_is_running(void) { return 0; }
@@ -24,8 +22,4 @@ int _base_interpreter_is_externally_managed(void) { return 0; }
 /* PoP: _claim_recovery_lock @ hermes_cli/_early_recovery.py:_claim_recovery_lock */
 int _claim_recovery_lock(void) { return 1; }
 
-/* PoP: _release_recovery_lock @ hermes_cli/_early_recovery.py:_release_recovery_lock */
-void _release_recovery_lock(void) {}
 
-/* PoP: _complete_pending_core_install @ hermes_cli/_early_recovery.py:_complete_pending_core_install */
-void _complete_pending_core_install(void) {}

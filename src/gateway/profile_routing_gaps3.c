@@ -12,8 +12,6 @@
 /* PoP: _is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
 void _is_whatsapp_non_user_chat(void) { }
 
-/* PoP: _whatsapp_user_chat_ids_match @ gateway/profile_routing.py:_whatsapp_user_chat_ids_match */
-void _whatsapp_user_chat_ids_match(void) { }
 
 /* PoP: _coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
 void _coerce_route_id(void) { }

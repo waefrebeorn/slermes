@@ -9,5 +9,3 @@
 
 /* ── gateway/relay/adapter.py: 1 missing functions ── */
 
-/* PoP: _slack_unfurl_hints @ gateway/relay/adapter.py:_slack_unfurl_hints */
-void _slack_unfurl_hints(void) { }

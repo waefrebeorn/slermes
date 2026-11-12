@@ -12,8 +12,6 @@
 /* PoP: _midturn_request_pressure_tokens @ agent/conversation_loop.py:_midturn_request_pressure_tokens */
 int _midturn_request_pressure_tokens(void) { return 0; }
 
-/* PoP: _maybe_inject_run_budget_wrapup @ agent/conversation_loop.py:_maybe_inject_run_budget_wrapup */
-void _maybe_inject_run_budget_wrapup(void) {}
 
 /* PoP: _is_interpreter_shutdown_error @ agent/conversation_loop.py:_is_interpreter_shutdown_error */
 int _is_interpreter_shutdown_error(void) { return 0; }

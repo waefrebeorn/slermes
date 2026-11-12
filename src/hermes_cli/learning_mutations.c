@@ -1,9 +1,5 @@
 
-/* PoP: _resolve_fingerprint @ agent/learning_mutations.py:_resolve_fingerprint */
-void agent_learning_mutations_resolve_fingerprint(void) { }
 
-/* PoP: _mutate_memory @ agent/learning_mutations.py:_mutate_memory */
-void agent_learning_mutations_mutate_memory(void) { }
 
 /* PoP: _memory_detail @ agent/learning_mutations.py:_memory_detail */
 void *agent_learning_mutations_memory_detail(void) { return NULL; }

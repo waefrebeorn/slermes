@@ -9,5 +9,3 @@
 
 /* ── agent/anthropic_adapter.py: 1 missing functions ── */
 
-/* PoP: _apply_oauth_prose_aliases @ agent/anthropic_adapter.py:_apply_oauth_prose_aliases */
-void _apply_oauth_prose_aliases(void) { }

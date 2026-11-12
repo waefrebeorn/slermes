@@ -44,8 +44,6 @@ int _is_zip_preserved_entry_status_line(const char *line) {
     return strstr(line, "venv") != NULL || strstr(line, "node_modules") != NULL;
 }
 
-/* PoP: _abort_zip_update_if_dirty_tree @ hermes_cli/update_cmd.py:_abort_zip_update_if_dirty_tree */
-void _abort_zip_update_if_dirty_tree(void) {}
 
 /* PoP: _post_update_sqlite_runtime_status @ hermes_cli/update_cmd.py:_post_update_sqlite_runtime_status */
 int _post_update_sqlite_runtime_status(void) { return 1; }
@@ -67,8 +65,6 @@ void _verify_and_restore_one_state_db(const char *home, const char *label) {
     (void)home; (void)label;
 }
 
-/* PoP: _verify_and_restore_state_dbs_post_update @ hermes_cli/update_cmd.py:_verify_and_restore_state_dbs_post_update */
-void _verify_and_restore_state_dbs_post_update(void) {}
 
 /* PoP: _warn_orphaned_update_autostashes @ hermes_cli/update_cmd.py:_warn_orphaned_update_autostashes */
 int _warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd) {
@@ -108,8 +104,6 @@ void _write_fleet_restart_pending_marker(const char *expected_sha) {
     (void)expected_sha;
 }
 
-/* PoP: _clear_fleet_restart_pending_marker @ hermes_cli/update_cmd.py:_clear_fleet_restart_pending_marker */
-void _clear_fleet_restart_pending_marker(void) {}
 
 /* PoP: _current_checkout_sha @ hermes_cli/update_cmd.py:_current_checkout_sha */
 char *_current_checkout_sha(void) {
@@ -136,19 +130,13 @@ void _warn_pending_fleet_restart(int startup) {
     (void)startup;
 }
 
-/* PoP: _warn_pending_fleet_restart_on_startup @ hermes_cli/update_cmd.py:_warn_pending_fleet_restart_on_startup */
-void _warn_pending_fleet_restart_on_startup(void) {}
 
 /* PoP: _restart_systemd_gateway_units_best_effort @ hermes_cli/update_cmd.py:_restart_systemd_gateway_units_best_effort */
 void _restart_systemd_gateway_units_best_effort(const char *failed) {
     (void)failed;
 }
 
-/* PoP: _run_pending_fleet_restart @ hermes_cli/update_cmd.py:_run_pending_fleet_restart */
-void _run_pending_fleet_restart(void) {}
 
-/* PoP: _apply_pending_fleet_restart_catchup @ hermes_cli/update_cmd.py:_apply_pending_fleet_restart_catchup */
-void _apply_pending_fleet_restart_catchup(void) {}
 
 /* PoP: _filter_non_gateway_concurrent_instances @ hermes_cli/update_cmd.py:_filter_non_gateway_concurrent_instances */
 char *_filter_non_gateway_concurrent_instances(const char *matches) {
@@ -253,14 +241,8 @@ int _looks_like_desktop_control_plane(const char *cmdline) {
 /* PoP: _desktop_owns_gateway_lifecycle @ hermes_cli/update_cmd.py:_desktop_owns_gateway_lifecycle */
 int _desktop_owns_gateway_lifecycle(void) { return 0; }
 
-/* PoP: _stop_windows_gateway_service @ hermes_cli/update_cmd.py:_stop_windows_gateway_service */
-void _stop_windows_gateway_service(void) {}
 
-/* PoP: _start_windows_gateway_service @ hermes_cli/update_cmd.py:_start_windows_gateway_service */
-void _start_windows_gateway_service(void) {}
 
-/* PoP: _restore_windows_gateway_service @ hermes_cli/update_cmd.py:_restore_windows_gateway_service */
-void _restore_windows_gateway_service(void) {}
 
 /* PoP: _service_unit_supports_graceful_sigusr1_restart @ hermes_cli/update_cmd.py:_service_unit_supports_graceful_sigusr1_restart */
 int _service_unit_supports_graceful_sigusr1_restart(const char *unit) {
@@ -268,11 +250,7 @@ int _service_unit_supports_graceful_sigusr1_restart(const char *unit) {
     return 1;
 }
 
-/* PoP: _restart_launchd_gateway_after_update @ hermes_cli/update_cmd.py:_restart_launchd_gateway_after_update */
-void _restart_launchd_gateway_after_update(void) {}
 
-/* PoP: _restart_macos_launchd_gateways @ hermes_cli/update_cmd.py:_restart_macos_launchd_gateways */
-void _restart_macos_launchd_gateways(void) {}
 
 /* PoP: _surviving_gateway_pids_after_failed_restart @ hermes_cli/update_cmd.py:_surviving_gateway_pids_after_failed_restart */
 char *_surviving_gateway_pids_after_failed_restart(void) {
@@ -295,8 +273,6 @@ char *_gateway_restart_recovery_profiles(void) {
     return strdup("[]");
 }
 
-/* PoP: _warn_gateway_restart_phase_aborted @ hermes_cli/update_cmd.py:_warn_gateway_restart_phase_aborted */
-void _warn_gateway_restart_phase_aborted(void) {}
 
 /* PoP: _git_is_trampoline @ hermes_cli/update_cmd.py:_git_is_trampoline */
 int _git_is_trampoline(const char *git_path) {
@@ -314,8 +290,6 @@ char *_locate_real_git(void) {
     return strdup("/usr/bin/git");
 }
 
-/* PoP: _ensure_non_trampoline_git @ hermes_cli/update_cmd.py:_ensure_non_trampoline_git */
-void _ensure_non_trampoline_git(void) {}
 
 /* PoP: _rebuild_desktop_after_update @ hermes_cli/update_cmd.py:_rebuild_desktop_after_update */
 int _rebuild_desktop_after_update(const char *desktop_dir, int had_desktop_app_before_update) {
@@ -340,8 +314,6 @@ void _refuse_update_if_venv_foreign_owned(const char *venv_dir) {
     (void)venv_dir;
 }
 
-/* PoP: _drain_or_signal_gateway_for_update @ hermes_cli/update_cmd.py:_drain_or_signal_gateway_for_update */
-void _drain_or_signal_gateway_for_update(void) {}
 
 /* PoP: _restart_phase_failure_is_incomplete @ hermes_cli/update_cmd.py:_restart_phase_failure_is_incomplete */
 int _restart_phase_failure_is_incomplete(void) { return 0; }

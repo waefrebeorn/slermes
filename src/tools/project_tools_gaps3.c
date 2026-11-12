@@ -9,5 +9,3 @@
 
 /* ── tools/project_tools.py: 1 missing functions ── */
 
-/* PoP: _handle_project @ tools/project_tools.py:_handle_project */
-void _handle_project(void) { }

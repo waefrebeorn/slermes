@@ -15,8 +15,6 @@ int _preflight_request_tokens(void) { return 0; }
 /* PoP: _agent_stale_thinking_on_wire @ agent/turn_context.py:_agent_stale_thinking_on_wire */
 int _agent_stale_thinking_on_wire(void) { return 0; }
 
-/* PoP: _maybe_title_session_at_turn_start @ agent/turn_context.py:_maybe_title_session_at_turn_start */
-void _maybe_title_session_at_turn_start(void) {}
 
 /* PoP: _fail_closed_after_preflight_timeout @ agent/turn_context.py:_fail_closed_after_preflight_timeout */
 int _fail_closed_after_preflight_timeout(void) { return 0; }

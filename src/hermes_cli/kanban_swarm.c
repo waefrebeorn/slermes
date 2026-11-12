@@ -374,8 +374,4 @@ int cli_hermes_cli_kanban_swarm_parse_worker_arg(
     return 0;
 }
 
-/* PoP: _activate_root_inline @ hermes_cli/kanban_swarm.py:_activate_root_inline */
-void hermes_cli_kanban_swarm_activate_root_inline(void) { }
 
-/* PoP: _create_swarm_uncommitted @ hermes_cli/kanban_swarm.py:_create_swarm_uncommitted */
-void hermes_cli_kanban_swarm_create_swarm_uncommitted(void) { }

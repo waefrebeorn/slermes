@@ -84,11 +84,7 @@ char *cli_agent_oneshot__strip_code_fence(const char *text)
     return strdup(text);
 }
 
-/* PoP: write_wedged @ cron/jobs_oneshot_diagnostics.py:write_wedged */
-void jobs_oneshot_diagnostics_write_wedged(void) { }
 
-/* PoP: write_missed @ cron/jobs_oneshot_diagnostics.py:write_missed */
-void jobs_oneshot_diagnostics_write_missed(void) { }
 
 /* ── PoP declaration-only placeholders (no bodies) ── */
 /* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */

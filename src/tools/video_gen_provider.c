@@ -15,5 +15,3 @@
 /* PoP: save_url_video @ agent/video_gen_provider.py:save_url_video */
 void video_gen_provider_save_url_video(const char *url) { (void)url; }
 
-/* PoP: _create_and_poll @ agent/video_gen_provider.py:_create_and_poll */
-void video_gen_provider_create_and_poll(void) { }

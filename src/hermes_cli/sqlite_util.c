@@ -68,5 +68,3 @@ int sqlite_util_write_txn_end(sqlite3 *conn, int committed) {
     return rc == SQLITE_OK ? 0 : rc;
 }
 
-/* PoP: transaction @ hermes_cli/sqlite_util.py:transaction */
-void hermes_cli_sqlite_util_transaction(void) { }

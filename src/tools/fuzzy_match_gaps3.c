@@ -9,8 +9,4 @@
 
 /* ── tools/fuzzy_match.py: 2 missing functions ── */
 
-/* PoP: _backslash_runs @ tools/fuzzy_match.py:_backslash_runs */
-void _backslash_runs(void) { }
 
-/* PoP: _detect_backslash_doubling @ tools/fuzzy_match.py:_detect_backslash_doubling */
-void _detect_backslash_doubling(void) { }

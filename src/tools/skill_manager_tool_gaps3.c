@@ -9,11 +9,5 @@
 
 /* ── tools/skill_manager_tool.py: 3 missing functions ── */
 
-/* PoP: _display_create_dir @ tools/skill_manager_tool.py:_display_create_dir */
-void _display_create_dir(void) { }
 
-/* PoP: _attach_lint_findings @ tools/skill_manager_tool.py:_attach_lint_findings */
-void _attach_lint_findings(void) { }
 
-/* PoP: _skill_manage_batch @ tools/skill_manager_tool.py:_skill_manage_batch */
-void _skill_manage_batch(void) { }

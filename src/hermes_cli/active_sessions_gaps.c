@@ -27,11 +27,7 @@ int _pid_liveness(void) { return 1; }
 /* PoP: _lease_entry @ hermes_cli/active_sessions.py:_lease_entry */
 char *_lease_entry(void) { return strdup("{}"); }
 
-/* PoP: _drop_self_orphans @ hermes_cli/active_sessions.py:_drop_self_orphans */
-void _drop_self_orphans(void) {}
 
-/* PoP: _release_orphaned_leases_in_home @ hermes_cli/active_sessions.py:_release_orphaned_leases_in_home */
-void _release_orphaned_leases_in_home(void) {}
 
 /* PoP: active_session_registry_snapshot @ hermes_cli/active_sessions.py:active_session_registry_snapshot */
 char *active_session_registry_snapshot(void) { return strdup("[]"); }
@@ -39,8 +35,6 @@ char *active_session_registry_snapshot(void) { return strdup("[]"); }
 /* PoP: active_session_liveness_guard @ hermes_cli/active_sessions.py:active_session_liveness_guard */
 char *active_session_liveness_guard(void) { return strdup("{}"); }
 
-/* PoP: release_active_session_liveness_guard @ hermes_cli/active_sessions.py:release_active_session_liveness_guard */
-void release_active_session_liveness_guard(void) {}
 
 /* PoP: _registry_home_for_lease @ hermes_cli/active_sessions.py:_registry_home_for_lease */
 char *_registry_home_for_lease(void) { return strdup(""); }

@@ -15,8 +15,6 @@ int _assistant_row_missing_visible_text(void) { return 0; }
 /* PoP: _fill_assistant_tail_content @ agent/turn_finalizer.py:_fill_assistant_tail_content */
 char *_fill_assistant_tail_content(void) { return strdup(""); }
 
-/* PoP: _record_kanban_budget_exhausted @ agent/turn_finalizer.py:_record_kanban_budget_exhausted */
-void _record_kanban_budget_exhausted(void) {}
 
 /* PoP: _clone_background_review_messages @ agent/turn_finalizer.py:_clone_background_review_messages */
 char *_clone_background_review_messages(void) { return strdup("[]"); }

@@ -24,8 +24,4 @@ int _sample(void) { return 0; }
 /* PoP: _abort_message @ agent/turn_liveness.py:_abort_message */
 char *_abort_message(void) { return strdup(""); }
 
-/* PoP: _surface_stall @ agent/turn_liveness.py:_surface_stall */
-void _surface_stall(void) {}
 
-/* PoP: _surface_committed_abort @ agent/turn_liveness.py:_surface_committed_abort */
-void _surface_committed_abort(void) {}

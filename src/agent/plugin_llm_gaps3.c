@@ -9,8 +9,4 @@
 
 /* ── agent/plugin_llm.py: 2 missing functions ── */
 
-/* PoP: _resolve_task_ownership @ agent/plugin_llm.py:_resolve_task_ownership */
-void _resolve_task_ownership(void) { }
 
-/* PoP: _check_task @ agent/plugin_llm.py:_check_task */
-void _check_task(void) { }

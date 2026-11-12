@@ -9,5 +9,3 @@
 
 /* ── gateway/platforms/yuanbao.py: 1 missing functions ── */
 
-/* PoP: _yb_secret @ gateway/platforms/yuanbao.py:_yb_secret */
-void _yb_secret(void) { }
