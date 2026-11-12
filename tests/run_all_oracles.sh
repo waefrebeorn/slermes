@@ -102,6 +102,7 @@ declare -A DEPS=(
   [worktree_ops]="src/cli/port_worktree_ops.o lib/libjson/json.o"
   [approval_transport]="src/cli/port_approval_transport.o lib/libjson/json.o"
   [idle_watch]="src/cli/port_idle_watch.o lib/libjson/json.o"
+  [image_eviction_policy]="src/agent/port_image_eviction_policy.o"
   [kanban_schemas]="src/cli/port_kanban_schemas.o lib/libjson/json.o"
   [rfb_filter]="src/cli/port_rfb_filter.o lib/libjson/json.o"
   [session_managed_worker_log]="src/cli/port_session_managed_worker_log.o lib/libjson/json.o"
