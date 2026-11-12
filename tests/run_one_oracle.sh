@@ -87,7 +87,7 @@ fi
 build() {   # build <out> <opt>
   # -L MUST precede the -l flags: the linker resolves each -l against the
   # search path as it is encountered, so a -L placed after them finds nothing.
-  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src $LIBINCS \
+  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src -I lib $LIBINCS \
     -I "${ORACLE_INC:-C:/winlibs/extra-inc}" \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
     "${ORACLE_LIBDIR_ARGS[@]}" \

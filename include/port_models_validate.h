@@ -68,6 +68,11 @@ models_validate_result_t models_validate_requested_model(
     moa_presets_fn moa_resolve, void *moa_ctx,
     catalog_resolver_fn catalog_resolve, void *cat_ctx);
 
+/* PoP: mv_non_public_host @ hermes_cli/models_validate.py:_non_public_host.
+ * True when *host* is a user's own endpoint (loopback, LAN, single-label, or an
+ * RFC1918/loopback IPv4 literal) rather than a vendor catalog host. */
+int mv_non_public_host(const char *host);
+
 #ifdef __cplusplus
 }
 #endif

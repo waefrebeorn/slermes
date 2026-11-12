@@ -2177,7 +2177,7 @@ static int g_light_mode_cache = -1;   /* _LIGHT_MODE_CACHE: bool | None */
 /* Rec.709 luma of a #RGB/#RRGGBB string; false when unparsable. */
 bool cg_luminance_from_hex(const char *hex_str, double *out_luma);
 
-/* PoP: _luminance_from_hex @ cli.py:_luminance_from_hex */
+/* PoP: _luminance_from_hex @ hermes_cli/cli_render.py:_luminance_from_hex */
 bool _luminance_from_hex(const char *hex_str, double *out_luma)
 {
     char s[16];

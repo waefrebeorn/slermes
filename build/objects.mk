@@ -425,6 +425,7 @@ src/hermes_cli/profile_gaps.o \
     src/cli/port_compression_facade.o \
     src/cli/port_connectors_contract.o \
     src/cli/port_dashboard_auth_audit.o \
+    src/cli/port_models_validate.o \
     src/cli/port_container_boot.o \
     src/cli/port_context_compressor_telemetry.o \
     src/cli/port_cron_notepad.o \
