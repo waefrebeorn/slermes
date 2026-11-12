@@ -207,5 +207,24 @@ char *tools_microsoft_graph_auth_format_graph_error(const json_t *error)
     return NULL;
 }
 
+/* Cached-token expiry, mirroring CachedAccessToken.expires_at on the provider's
+ * cached token. tools_microsoft_graph_auth_set_cached_token() is the C stand-in
+ * for assigning self._cached_token. */
+static time_t _msgraph_cached_expires_at = 0;
+
+/* C stand-in for `self._cached_token = CachedAccessToken(...)`: stores the token
+ * and its absolute expiry. Passing NULL drops the cache (clear_cache). */
+void tools_microsoft_graph_auth_set_cached_token(const char *token, time_t expires_at)
+{
+    free(_msgraph_cached_token);
+    _msgraph_cached_token = token ? strdup(token) : NULL;
+    _msgraph_cached_expires_at = expires_at;
+}
+
 /* PoP: _fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
-void tools_microsoft_graph_auth_fresh_cached(void) { }
+int tools_microsoft_graph_auth_fresh_cached(int skew_seconds)
+{
+    if (!_msgraph_cached_token)
+        return 0;
+    return !cli_tools_microsoft_graph_auth_is_expired(_msgraph_cached_expires_at, skew_seconds);
+}
