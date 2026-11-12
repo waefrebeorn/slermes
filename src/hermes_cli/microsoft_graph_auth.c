@@ -173,7 +173,7 @@ static char *graph_json_scalar_str(const json_t *v)
     }
 }
 
-/* PoP: format_graph_error @ tools/microsoft_graph_auth.py:format_graph_error */
+/* PoP: tools_microsoft_graph_auth_format_graph_error @ tools/microsoft_graph_auth.py:format_graph_error */
 char *tools_microsoft_graph_auth_format_graph_error(const json_t *error)
 {
     if (!error) return NULL;
@@ -221,7 +221,7 @@ void tools_microsoft_graph_auth_set_cached_token(const char *token, time_t expir
     _msgraph_cached_expires_at = expires_at;
 }
 
-/* PoP: _fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
+/* PoP: tools_microsoft_graph_auth_fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
 int tools_microsoft_graph_auth_fresh_cached(int skew_seconds)
 {
     if (!_msgraph_cached_token)
