@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -136,8 +137,75 @@ int cli_tools_microsoft_graph_auth__extract_error_detail(const char *response_bo
     return 0;
 }
 
+/* Python bool(value) for a JSON scalar. */
+static int graph_json_truthy(const json_t *v)
+{
+    if (!v) return 0;
+    switch (v->type) {
+    case JSON_NULL:   return 0;
+    case JSON_BOOL:   return v->bool_val ? 1 : 0;
+    case JSON_NUMBER: return v->num_val != 0.0;
+    case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+    case JSON_ARRAY:  return json_len(v) > 0;
+    case JSON_OBJECT: return json_object_size(v) > 0;
+    }
+    return 0;
+}
+
+/* str(value) for a JSON scalar. */
+static char *graph_json_scalar_str(const json_t *v)
+{
+    if (!v) return strdup("None");
+    switch (v->type) {
+    case JSON_NULL:  return strdup("None");
+    case JSON_BOOL:  return strdup(v->bool_val ? "True" : "False");
+    case JSON_NUMBER: {
+        char buf[64];
+        double d = v->num_val;
+        if (d == (double)(long long)d)
+            snprintf(buf, sizeof(buf), "%lld", (long long)d);
+        else
+            snprintf(buf, sizeof(buf), "%g", d);
+        return strdup(buf);
+    }
+    case JSON_STRING: return strdup(v->str_val ? v->str_val : "");
+    default:          return strdup("[object]");
+    }
+}
+
 /* PoP: format_graph_error @ tools/microsoft_graph_auth.py:format_graph_error */
-void tools_microsoft_graph_auth_format_graph_error(void) { }
+char *tools_microsoft_graph_auth_format_graph_error(const json_t *error)
+{
+    if (!error) return NULL;
+    if (error->type == JSON_STRING)
+        return strdup(error->str_val ? error->str_val : "");
+    if (error->type != JSON_OBJECT)
+        return NULL;
+
+    const json_t *code = json_obj_get(error, "code");
+    const json_t *message = json_obj_get(error, "message");
+    int code_ok = graph_json_truthy(code);
+    int msg_ok = graph_json_truthy(message);
+
+    if (code_ok && msg_ok) {
+        char *cs = graph_json_scalar_str(code);
+        char *ms = graph_json_scalar_str(message);
+        if (cs && ms) {
+            size_t need = strlen(cs) + 2 + strlen(ms) + 1;
+            char *out = (char *)malloc(need);
+            if (out) snprintf(out, need, "%s: %s", cs, ms);
+            free(cs);
+            free(ms);
+            return out;
+        }
+        free(cs);
+        free(ms);
+        return NULL;
+    }
+    if (msg_ok)
+        return graph_json_scalar_str(message);
+    return NULL;
+}
 
 /* PoP: _fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
 void tools_microsoft_graph_auth_fresh_cached(void) { }

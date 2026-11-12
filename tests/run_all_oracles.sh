@@ -90,6 +90,7 @@ declare -A DEPS=(
   [kanban_db_dispatch]="src/cli/port_kanban_db_dispatch.o lib/libjson/json.o"
   [local_models]="src/cli/port_local_models.o lib/libjson/json.o"
   [browser_launcher]="src/cli/port_browser_launcher.o lib/libjson/json.o"
+  [microsoft_graph_auth]="src/hermes_cli/microsoft_graph_auth.o src/agent/logger.o lib/libjson/json.o"
   [methods_session]="src/cli/port_methods_session.o lib/libjson/json.o"
   [methods_tools]="src/cli/port_methods_tools.o lib/libjson/json.o"
   [server]="src/cli/port_server.o lib/libjson/json.o"
