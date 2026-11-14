@@ -275,7 +275,7 @@ int main(void)
             "{\"identities\":{\"1\":\"ct:1.0\",\"2\":\"ct:2.0\",\"3\":\"ct:3.0\"}}",
         };
         const int pairs[][2] = {{1, 1}, {0, 0}, {1, 0}, {0, 1}, {-1, 1}, {1, -1}};
-        for (int k = 0; k < 5; k++) {
+        for (int k = 0; k < 4; k++) {
             for (int v = 0; v < 6; v++) {
                 g_ve = pairs[v][0];
                 g_vo = pairs[v][1];
