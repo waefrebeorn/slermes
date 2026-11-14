@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """org_parity_scan.py v5 — ORGANIZATION PARITY scanner (audit-grade, final).
 
 Direction A (py→C):  every quarry py module needs a C home.
@@ -20,8 +37,8 @@ Also emits docs/organization-parity.md + .json (the audit's data source).
 import os, re, json, difflib
 from collections import defaultdict
 
-QUARRY='/home/wubu/hermes-agent-dev'
-ROOT='/home/wubu/hermes-agent-dev/slermes'
+QUARRY=PY_ROOT
+ROOT=REPO
 SRC=os.path.join(ROOT,'src')
 
 PORT_PKGS=['agent','gateway','tools','hermes_cli','cron','cli','web','plugins','pet',

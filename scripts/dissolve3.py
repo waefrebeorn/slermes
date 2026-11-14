@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """dissolve3.py — per-function dissolution, GROUPING by canonical destination file.
 
 Improvements over dissolve2:
@@ -12,7 +29,7 @@ Improvements over dissolve2:
 import os, re, sys, subprocess
 from collections import defaultdict
 
-ROOT='/home/wubu/hermes-agent-dev/slermes'
+ROOT=REPO
 DRY='--apply' not in sys.argv
 TARGETS=[a for a in sys.argv[1:] if not a.startswith('--')]
 

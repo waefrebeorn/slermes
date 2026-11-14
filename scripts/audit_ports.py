@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """audit_ports.py — authoritative PoP-integrity audit (v2, trustworthy).
 
 v1 reported ~17,500 "ORPHAN_CNAME" false positives because it collected C
@@ -19,7 +36,7 @@ The output is machine-readable (--json) so the WORK_DASHBOARD can ingest it.
 import re, json, sys, argparse
 from pathlib import Path
 
-ROOT = Path("/home/wubu/hermes-agent-dev/slermes")
+ROOT = Path(REPO)
 # entry-point / shared-helper names that legitimately differ from their PoP twin
 ENTRY_EXCEPTIONS = {"main"}
 

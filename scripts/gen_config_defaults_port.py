@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """gen_config_defaults_port.py — regenerate src/hermes_cli/config_defaults.c.
 
 Faithful PoP of hermes_cli/config_defaults.py (pure-data leaf module):
@@ -106,7 +123,7 @@ const char *config_defaults_OPTIONAL_ENV_VARS_json(void) {
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--quarry', default='/home/wubu/hermes-agent-dev')
+    ap.add_argument('--quarry', default=PY_ROOT)
     args = ap.parse_args()
     sys.path.insert(0, args.quarry)
     from hermes_cli.config_defaults import DEFAULT_CONFIG, OPTIONAL_ENV_VARS

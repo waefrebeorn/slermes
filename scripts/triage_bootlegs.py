@@ -1,9 +1,26 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """Bulk triage: for every queue entry, print C fn signature/body-summary plus
 the Python source (via PoP annotation) so gaps can be classified fast."""
 import re, json, sys, subprocess
 
-PY='/home/wubu/hermes-agent-dev'
+PY=PY_ROOT
 q=json.load(open('tests/stub_fix_queue.json'))
 OWNED={'gw_session','gateway_runner','stream_consumer','mcp_tool','tirith','final_gaps','util_helpers','platforms_base','cron','context_engine','bedrock'}
 def mine(e):
@@ -30,7 +47,7 @@ def py_src(mod, fn):
     body=txt[start:min(end,start+2200)]
     return body
 
-out=open('/home/wubu/bootleg_triage.txt','w')
+out=open('REPO + '/bootleg_triage.txt'','w')
 byfile={}
 for e in q:
     if mine(e): byfile.setdefault(e['file'],[]).append(e)
@@ -59,4 +76,4 @@ for f, entries in sorted(byfile.items()):
             b=py_src(pop[0],pop[1])
             out.write(f'--- PY {pop[0]}:{pop[1]} ---\n'+(b or 'n/a')+'\n')
 out.close()
-print('written /home/wubu/bootleg_triage.txt')
+print('written REPO + '/bootleg_triage.txt'')

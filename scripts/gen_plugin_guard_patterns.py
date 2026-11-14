@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """gen_plugin_guard_patterns.py — regenerate src/tools/plugin_guard_patterns.h.
 
 Extracts THREAT_PATTERNS / SCANNABLE_EXTENSIONS / SUSPICIOUS_BINARY_EXTENSIONS /
@@ -15,7 +32,7 @@ import sys
 
 def main():
     rows = []
-    py = open('/home/wubu/hermes-agent-dev/tools/skills_guard.py',
+    py = open('PY_ROOT/tools/skills_guard.py',
               encoding='utf-8').read()
     pat = re.compile(
         r"\(r'((?:[^'\\]|\\.)*)',\s*\"([a-z0-9_]+)\",\s*\"(\w+)\","
@@ -103,7 +120,7 @@ def main():
     inv_tbl.append('    {0, NULL}')
     out.append('\n'.join(inv_tbl) + '\n};')
 
-    dst = '/home/wubu/hermes-agent-dev/slermes/src/tools/plugin_guard_patterns.h'
+    dst = 'REPO/src/tools/plugin_guard_patterns.h'
     with open(dst, 'w', encoding='utf-8') as f:
         f.write('\n'.join(out) + '\n')
     nskip = sum(1 for r in rows if '(?' in r[0])

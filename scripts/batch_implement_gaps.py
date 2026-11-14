@@ -1,12 +1,28 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """
 batch_implement_gaps.py — Read Python source for ALL remaining gaps and generate
 faithful C implementations. Processes one Python module at a time.
 """
 import json, os, re, textwrap
 
-SLERMES = '/home/wubu/hermes-agent-dev/slermes'
-PY_ROOT = '/home/wubu/hermes-agent-dev'
+SLERMES = REPO
 SCAN_FILE = '/tmp/scan_now.json'
 
 def read_py_func(module, line_num, max_lines=60):

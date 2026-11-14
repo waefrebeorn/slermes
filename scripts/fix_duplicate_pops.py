@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """
 fix_duplicate_pops.py — For DA-4 stubs where the C function already exists
 in another file, update the PoP annotation's c_function to match the actual
@@ -7,7 +24,7 @@ implementation.
 """
 import json, os, re
 
-SLERMES = '/home/wubu/hermes-agent-dev/slermes'
+SLERMES = REPO
 SCAN_FILE = '/tmp/fresh_scan.json'
 
 def build_c_func_index():

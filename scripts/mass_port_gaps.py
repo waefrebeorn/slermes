@@ -1,12 +1,28 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """
 mass_port_gaps.py — Generate C implementations for all remaining DA-4 stubs.
 Reads Python source, generates faithful C code, writes port files.
 """
 import json, os, re, textwrap
 
-SLERMES = '/home/wubu/hermes-agent-dev/slermes'
-PY_ROOT = '/home/wubu/hermes-agent-dev'
+SLERMES = REPO
 SCAN_FILE = '/tmp/fresh_scan3.json'
 
 def read_py_func(module, line_num, max_lines=50):

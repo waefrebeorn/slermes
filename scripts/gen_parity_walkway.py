@@ -117,7 +117,7 @@ def discover_walkway_files():
                 
                 # Classify
                 try:
-                    content = open(path).read()
+                    content = read_text(path)
                 except:
                     continue
                 
@@ -134,7 +134,7 @@ def discover_walkway_files():
     for f in ["BANNER.md", "README.md", "ROADMAP.md"]:
         path = os.path.join(REPO, f)
         if os.path.isfile(path):
-            content = open(path).read()
+            content = read_text(path)
             has_sentinel = SENT_OPEN in content and SENT_CLOSE in content
             if has_sentinel:
                 results.append((path, "sentinel"))
@@ -184,19 +184,24 @@ def compute_parity():
     except:
         pass
     
-    # Upstream sync
+    # Upstream sync. A missing remote is a fact worth reporting, not something
+    # to paper over with "0 ahead / 0 behind".
     ahead = behind = -1
     last_merge = "unknown"
     try:
-        subprocess.run(["git", "fetch", "upstream", "main"], capture_output=True, cwd=REPO)
-        rb = subprocess.run(["git", "rev-list", "--count", "HEAD..upstream/main"], capture_output=True, text=True, cwd=REPO)
-        ra = subprocess.run(["git", "rev-list", "--count", "upstream/main..HEAD"], capture_output=True, text=True, cwd=REPO)
-        if rb.returncode == 0 and ra.returncode == 0:
-            behind = int(rb.stdout.strip())
-            ahead = int(ra.stdout.strip())
-        rt = subprocess.run(["git", "log", "-1", "--format=%ad", "--date=short", "upstream/main"], capture_output=True, text=True, cwd=REPO)
-        if rt.returncode == 0 and rt.stdout.strip():
-            last_merge = rt.stdout.strip() + " (upstream fetched)"
+        rem = subprocess.run(["git", "remote"], capture_output=True, text=True, cwd=REPO)
+        if "upstream" not in rem.stdout.split():
+            last_merge = "no upstream remote configured (origin only)"
+        else:
+            subprocess.run(["git", "fetch", "upstream", "main"], capture_output=True, cwd=REPO)
+            rb = subprocess.run(["git", "rev-list", "--count", "HEAD..upstream/main"], capture_output=True, text=True, cwd=REPO)
+            ra = subprocess.run(["git", "rev-list", "--count", "upstream/main..HEAD"], capture_output=True, text=True, cwd=REPO)
+            if rb.returncode == 0 and ra.returncode == 0:
+                behind = int(rb.stdout.strip())
+                ahead = int(ra.stdout.strip())
+            rt = subprocess.run(["git", "log", "-1", "--format=%ad", "--date=short", "upstream/main"], capture_output=True, text=True, cwd=REPO)
+            if rt.returncode == 0 and rt.stdout.strip():
+                last_merge = rt.stdout.strip() + " (upstream fetched)"
     except:
         pass
     
@@ -267,12 +272,22 @@ def build_count_block(d):
     bootleg = d['bootleg'] if d['bootleg'] is not None else 0
     ahead = d['ahead'] if d['ahead'] >= 0 else "?"
     behind = d['behind'] if d['behind'] >= 0 else "?"
+    if d['ahead'] >= 0:
+        sync_line = (f"**Upstream sync:** {ahead:,} ahead / {behind:,} behind "
+                     f"(last merge {d['last_merge']})\n\n")
+    else:
+        sync_line = f"**Upstream sync:** {d['last_merge']}\n\n"
     wc = d.get('watercup', {})
     wc_line = ""
     if wc.get('unavailable'):
-        wc_line = f"| **Watercup** | unavailable — {wc.get('reason','oracle blocked')} |\\n"
+        wc_line = f"| **Watercup** | unavailable — {wc.get('reason','oracle blocked')} |\n"
     elif wc.get('total', 0) > 0:
-        wc_line = f"| **Watercup** | {wc['pass']:,} PASS / {wc['total']:,} ({wc['pass_pct']:.1f}%) · {wc['ported_pass']}/{wc['ported_total']} ported match · {wc['gap_mismatch']}/{wc['gap_total']} gap mismatch |\\n"
+        wc_line = f"| **Watercup** | {wc['pass']:,} PASS / {wc['total']:,} ({wc['pass_pct']:.1f}%) · {wc['ported_pass']}/{wc['ported_total']} ported match · {wc['gap_mismatch']}/{wc['gap_total']} gap mismatch |\n"
+    else:
+        # Say so rather than dropping the row: a silent omission reads as
+        # "the oracle passed with nothing to report".
+        wc_line = ("| **Watercup** | not run — no results under "
+                   "tests/watercup/build/; the scanner counts above are current |\n")
     
     return (
         f"| PORTED  | {d['ported']:,} / {d['total']:,} ({d['pct']:.1f}%) |\n"
@@ -283,9 +298,26 @@ def build_count_block(d):
         f"| BOOTLEG | {bootleg:,} |\n"
         f"{wc_line}"
         f"**Phase ({d['version']}):** {d['phase']} phase\n\n"
-        f"**Upstream sync:** {ahead:,} ahead / {behind:,} behind (last merge {d['last_merge']})\n\n"
+        f"{sync_line}"
         f"_Generated {d['stamp']} from live scanner + watercup oracle — do not edit by hand._"
     )
+
+
+def read_text(path):
+    """Read as text, preserving the bytes we did not mean to change."""
+    with open(path, "rb") as f:
+        return f.read().decode("utf-8", errors="replace")
+
+
+def write_text(path, txt):
+    """Write LF, always.
+
+    Python's open(path, 'w') translates \\n to os.linesep, which on Windows is
+    \\r\\n — running this generator on the Windows checkout would flip every
+    line ending in every doc it touches. The repo convention is LF.
+    """
+    with open(path, "wb") as f:
+        f.write(txt.encode("utf-8"))
 
 
 def purge_stale_claims(txt):
@@ -300,7 +332,7 @@ def purge_stale_claims(txt):
 def process_file(path, d, scan_doc):
     """Process a single walkway file: inject sentinel, purge stale."""
     try:
-        content = open(path).read()
+        content = read_text(path)
     except:
         return
     
@@ -334,8 +366,7 @@ def process_file(path, d, scan_doc):
             content = f"{SENT_OPEN}\n{build_count_block(d)}\n{SENT_CLOSE}\n\n{content}"
     
     # Write back
-    with open(path, 'w') as f:
-        f.write(content)
+    write_text(path, content)
     
     print(f"OK   {rel}")
 
@@ -373,8 +404,7 @@ def generate_gap_list(d):
     )
     
     path = os.path.join(REPO, "docs", "real-gap-list.md")
-    with open(path, 'w') as f:
-        f.write(content)
+    write_text(path, content)
     print(f"OK   docs/real-gap-list.md ({total_gaps:,} gaps)")
 
 

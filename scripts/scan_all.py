@@ -1,7 +1,24 @@
 #!/usr/bin/env python3
+# --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
+import os as _os
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+def _find_quarry(_repo):
+    """The Python quarry is the sibling dir that actually is Hermes."""
+    _parent = _os.path.dirname(_repo)
+    try:
+        for _c in sorted(_os.listdir(_parent)):
+            if _os.path.isfile(_os.path.join(_parent, _c, "pm", "environments.py")):
+                return _os.path.join(_parent, _c)
+    except OSError:
+        pass
+    return ""
+PY_ROOT = _os.environ.get("HERMES_QUARRY", _find_quarry(REPO))
+# --- end roots ---
+
+
 """Full scan: list modules by REAL_GAP, pick next heavy target."""
 import subprocess, collections, sys, os
-os.chdir('/home/wubu/hermes-agent-dev/slermes')
+os.chdir(REPO)
 
 # The scanner with no args prints human text; use --json which returns JSON.
 r = subprocess.run(['python3','tests/slermes_parity_battleground.py','--json'],

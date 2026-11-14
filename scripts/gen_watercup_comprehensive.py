@@ -24,7 +24,7 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCAN_FILE = os.path.join(REPO, "live_parity_scan.json")
 GATES = os.path.join(REPO, "tests", "watercup", "gates")
-DEV = os.path.dirname(REPO)  # /home/wubu/hermes-agent-dev
+DEV = os.path.dirname(REPO)  # PY_ROOT
 
 # PoP annotation pattern
 POP_RE = re.compile(r'/\*\s*PoP:\s*(\w+)\s*@([^:]+):(\w+)\s*\*/')
