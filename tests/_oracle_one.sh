@@ -32,7 +32,11 @@ if [ ! -f "$harness_c" ]; then
   exit 1
 fi
 
-out=$(MINIMAL_OBJS="$deps" bash tests/run_one_oracle.sh "$harness" "oracle_$name.py" "$libdir" 2>&1)
+# The object list travels as an ARGUMENT, not an env prefix: on this box the
+# terminal/sandbox layer strips `VAR=value cmd` assignments, so the prefix form
+# silently degraded every oracle to a FULL link (a ~46 MB image that Smart App
+# Control then refuses to run, reported as a bogus "0 cases").
+out=$(bash tests/run_one_oracle.sh "$harness" "oracle_$name.py" "$libdir" "$deps" 2>&1)
 rc=$?
 
 # One grep capturing the whole matching line. `|| true` keeps an empty result

@@ -31,7 +31,7 @@ OBJSET=.testbin/oracle_objs_${NAME}_$$.rsp
 # under-binds). Healthy link: stubs resolve, duplicate definitions collapse.
 # The response file must be written for BOTH the empty and the FULL case: gcc
 # is handed @$OBJSET either way, and a missing file is a hard link error.
-OBJARG="${MINIMAL_OBJS:-}"
+OBJARG="${4:-${MINIMAL_OBJS:-}}"
 if [ -z "$OBJARG" ] || [ "$OBJARG" = "FULL" ]; then
   find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ' > "$OBJSET"
   echo >> "$OBJSET"
@@ -121,16 +121,18 @@ fi
 # only PowerShell names the reason. A relink with an extra optimization level
 # produces a different image, which it lets through — retry once that way
 # rather than reporting a false "0 cases".
-SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" > "$TMPH/harness.out" 2> "$TMPH/harness.err"
-HRC=$?
+# `set -e` would abort the script on the 126/127 Smart App Control block
+# before HRC is captured, so the -O1 retry below could never run.
+HRC=0
+SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
 if [ "$HRC" -eq 126 ] || [ "$HRC" -eq 127 ]; then
   if [ "$prebuilt_fresh" = "1" ]; then
     cp ".testbin/harnesses/$NAME.exe" "${OUT}_alt"
   else
     build "${OUT}_alt" -O1
   fi
-  SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err"
-  HRC=$?
+  HRC=0
+  SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
 fi
 if [ "$HRC" -ne 0 ] && [ ! -s "$TMPH/harness.out" ]; then
   echo "ORACLE $NAME: harness could not run (rc $HRC)" >&2

@@ -667,11 +667,18 @@ const char *smc_client_architecture(const char *value) {
 const char *smc_client_install_method(const char *value) {
     char *s = smc_dup_lower_strip(value);
     if (!s || !*s) { if (s) free(s); return "unknown"; }
-    static const char *methods[] = {"docker","git","homebrew","nixos","pip","unknown",NULL};
+    /* Python: _allowlisted("nixos" if normalized == "nix" else normalized,
+     *                       CLIENT_INSTALL_METHODS) */
+    const char *key = (strcmp(s, "nix") == 0) ? "nixos" : s;
+    static const char *methods[] = {
+        "apt","docker","git","home-manager","homebrew","microsoft-store","nixos","pip","unknown",
+        NULL,
+    };
+    const char *ret = "unknown";
     for (int i = 0; methods[i]; i++)
-        if (strcmp(s, methods[i]) == 0) { free(s); return methods[i]; }
+        if (strcmp(key, methods[i]) == 0) { ret = methods[i]; break; }
     free(s);
-    return "unknown";
+    return ret;
 }
 
 /* PoP: smc_client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
