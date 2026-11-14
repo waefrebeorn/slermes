@@ -293,5 +293,122 @@ int main(void)
         g_ve = g_vo = 1;
     }
 
+    /* _holder */
+    {
+        const char *cases[] = {
+            "C:/h/rec.json",
+            "C:/h/rec.json.3.claim",
+            "C:/h/rec",
+        };
+        const char *bodies[] = {
+            "{\"owner\":{\"pid\":1}}",
+            "{\"claimer\":{\"pid\":2}}",
+            "{\"owner\":{\"pid\":1},\"claimer\":{\"pid\":2}}",
+            "{}",
+            NULL,
+        };
+        for (int k = 0; k < 5; k++) {
+            json_t *body = json_parse(bodies[k], NULL);
+            for (int s = 0; s < 3; s++) {
+                json_t *held = upr_holder(cases[s], body);
+                printf("{\"case\":%d,\"fn\":\"holder\",\"in\":{\"src\":", ++cs);
+                jstr(cases[s]);
+                printf(",\"body\":%s},\"out\":", bodies[k]);
+                if (held) {
+                    char *hs = json_serialize(held);
+                    fputs(hs ? hs : "null", stdout);
+                    free(hs);
+                } else {
+                    fputs("null", stdout);
+                }
+                printf("}\n");
+            }
+            json_free(body);
+        }
+        fflush(stdout);
+    }
+
+    /* split_draining */
+    {
+        const char *tokens[] = {
+            "{\"profiles\":{\"a\":\"1\",\"b\":\"2\"},\"unmapped\":[{\"pid\":1},{\"pid\":2}],"
+            "\"posix_units\":[{\"pid\":1}]}",
+            "{}",
+            NULL,
+        };
+        const int pairs[][2] = {{1, 1}, {0, 0}, {1, 0}, {0, 1}, {-1, 1}, {1, -1}};
+        for (int k = 0; k < 3; k++) {
+            for (int v = 0; v < 6; v++) {
+                g_ve = pairs[v][0];
+                g_vo = pairs[v][1];
+                json_t *t = json_parse(tokens[k], NULL);
+                json_t *d = upr_split_draining(t, fake_live);
+                printf("{\"case\":%d,\"fn\":\"split_draining\",\"in\":{\"token\":%s,"
+                       "\"v_even\":%s,\"v_odd\":%s},\"out\":",
+                       ++cs, tokens[k],
+                       pairs[v][0] == 1 ? "true" : pairs[v][0] == 0 ? "false" : "null",
+                       pairs[v][1] == 1 ? "true" : pairs[v][1] == 0 ? "false" : "null");
+                printf("{\"draining\":");
+                char *s1 = d ? json_serialize(d) : NULL;
+                fputs(s1 ? s1 : "null", stdout);
+                free(s1);
+                json_free(d);
+                printf(",\"token\":");
+                char *s2 = t ? json_serialize(t) : NULL;
+                fputs(s2 ? s2 : "null", stdout);
+                free(s2);
+                printf("}\n");
+                json_free(t);
+            }
+        }
+        g_ve = g_vo = 1;
+        fflush(stdout);
+    }
+
+    /* merge_into */
+    {
+        const char *pairs[] = {
+            "{\"a\":1}",
+            "{\"a\":1}{\"b\":2}",
+            "{\"profiles\":{\"p\":\"1\"}}{\"profiles\":{\"q\":\"2\"}}",
+            "{\"profiles\":{\"p\":\"1\"}}{\"profiles\":{\"p\":\"9\"}}",
+            "{\"baselines\":[{\"pause_id\":\"x\"}]}{\"baselines\":[{\"pause_id\":\"y\"},{\"pause_id\":\"x\"}]}",
+            "{\"absorbed\":[\"a\"]}{\"pause_id\":\"b\",\"absorbed\":[\"c\",\"a\"]}",
+            "{\"identities\":{\"1\":\"ct:1\"}}{\"identities\":{\"2\":\"ct:2\"}}",
+            "{\"stop_requested\":[\"1\"],\"stop_sent\":[\"1\"]}{\"stop_requested\":[\"2\"]}",
+            "{\"stop_requested\":[\"1\"]}{\"identities\":{\"5\":\"ct:5\"}}",
+            "{\"cold_start_profiles\":{\"a\":\"1\"}}{\"cold_start_profiles\":{\"b\":\"2\"},\"cold_start_if_installed\":true,\"attested_generation\":7}",
+            "{\"platform\":\"posix\"}{\"platform\":\"posix\",\"posix_units\":[{\"pid\":1}]}",
+            "{}{\"services\":[\"s1\"],\"service_profiles\":{\"s1\":\"p\"}}",
+            "{}{\"unmapped\":[{\"pid\":1},{\"pid\":2}]}",
+            NULL,
+        };
+        for (int k = 0; pairs[k]; k++) {
+            /* The pair is two JSON objects back to back; the boundary is "}{",
+             * so nested objects inside either side do not split early. */
+            char *sep = strstr(pairs[k], "}{");
+            if (!sep) continue;
+            char tokbuf[512], adobuf[512];
+            size_t n = (size_t)(sep + 1 - pairs[k]);   /* include the first '}' */
+            if (n >= sizeof(tokbuf)) continue;
+            memcpy(tokbuf, pairs[k], n);
+            tokbuf[n] = '\0';
+            snprintf(adobuf, sizeof(adobuf), "%s", sep + 1);
+            json_t *t = json_parse(tokbuf, NULL);
+            json_t *a = json_parse(adobuf, NULL);
+            upr_merge_into(t, a);
+            printf("{\"case\":%d,\"fn\":\"merge_into\",\"in\":{\"token\":%s,"
+                   "\"adopted\":%s},\"out\":",
+                   ++cs, tokbuf, adobuf);
+            char *s = t ? json_serialize(t) : NULL;
+            fputs(s ? s : "null", stdout);
+            free(s);
+            printf("}\n");
+            json_free(t);
+            json_free(a);
+        }
+        fflush(stdout);
+    }
+
     return 0;
 }

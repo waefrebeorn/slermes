@@ -53,6 +53,17 @@ int upr_identity_is_live(const json_t *ident, upr_incarnation_fn fn);
  * of pid strings. Caller owns the result. */
 json_t *upr_live_pids(const json_t *token, upr_incarnation_fn fn);
 
+/* _holder -- who holds a record (its "owner") or a claim (its "claimer");
+ * UNOWNED (NULL) when the field is absent or not an object. */
+json_t *upr_holder(const char *src, const json_t *body);
+
+/* split_draining -- pull out the entries whose process is still running (asked
+ * to stop, not yet exited) and return them; `token` keeps the rest. */
+json_t *upr_split_draining(json_t *token, upr_incarnation_fn fn);
+
+/* merge_into -- fold an orphaned pause into `token`. Returns `token`. */
+json_t *upr_merge_into(json_t *token, const json_t *adopted);
+
 #ifdef __cplusplus
 }
 #endif

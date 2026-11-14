@@ -286,6 +286,380 @@ int upr_identity_is_live(const json_t *ident, upr_incarnation_fn fn)
 }
 
 /* ===========================================================================
+ *  JSON equality -- Python's `x not in list` / `b not in baselines` compare by
+ *  VALUE, so these are deep comparisons, not pointer identity.
+ * =========================================================================== */
+
+static int json_equal(const json_t *a, const json_t *b)
+{
+    if (a == b)
+        return 1;
+    if (!a || !b || a->type != b->type)
+        return 0;
+    switch (a->type) {
+    case JSON_NULL: return 1;
+    case JSON_BOOL: return a->bool_val == b->bool_val;
+    case JSON_NUMBER: return a->num_val == b->num_val;
+    case JSON_STRING: return a->str_val && b->str_val
+                             && strcmp(a->str_val, b->str_val) == 0;
+    case JSON_ARRAY:
+        if (a->c.count != b->c.count) return 0;
+        for (size_t i = 0; i < a->c.count; i++) {
+            if (!json_equal(a->c.items[i], b->c.items[i])) return 0;
+        }
+        return 1;
+    case JSON_OBJECT:
+        if (a->c.count != b->c.count) return 0;
+        for (size_t i = 0; i < a->c.count; i++) {
+            const char *key = a->c.keys[i];
+            const json_t *other = json_obj_get(b, key);
+            if (!other || !json_equal(a->c.items[i], other)) return 0;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+static int arr_contains(const json_t *arr, const json_t *needle)
+{
+    if (!arr || arr->type != JSON_ARRAY || !needle)
+        return 0;
+    for (size_t i = 0; i < arr->c.count; i++) {
+        if (json_equal(arr->c.items[i], needle))
+            return 1;
+    }
+    return 0;
+}
+
+/* ===========================================================================
+ *  _holder  (update_pause_record.py:_holder)
+ *
+ *      held_by = body.get("owner") if src.suffix == ".json" else body.get("claimer")
+ *      return held_by if isinstance(held_by, dict) else UNOWNED
+ * =========================================================================== */
+
+/* PoP: upr_holder @ hermes_cli/update_pause_record.py:_holder */
+json_t *upr_holder(const char *src, const json_t *body)
+{
+    json_t *held = NULL;
+    if (body && body->type == JSON_OBJECT) {
+        int is_record = 0;
+        if (src) {
+            const char *dot = strrchr(src, '.');
+            is_record = (dot && strcmp(dot, ".json") == 0);
+        }
+        held = json_obj_get(body, is_record ? "owner" : "claimer");
+        if (held && held->type != JSON_OBJECT)
+            held = NULL;
+    }
+    if (held)
+        return held;
+    /* UNOWNED = {"pid": 0, "ct": None} -- a fresh copy per call. */
+    json_t *unowned = json_object();
+    if (!unowned)
+        return NULL;
+    json_set(unowned, "pid", json_number(0));
+    json_set(unowned, "ct", json_null());
+    return unowned;
+}
+
+/* ===========================================================================
+ *  split_draining  (update_pause_record.py:split_draining)
+ *
+ *      live = _live_pids(token)
+ *      draining = {"profiles": {p: pid for ... if str(pid) in live},
+ *                  "unmapped": [...], "posix_units": [...]}
+ *      _without(token, live)
+ *      return draining
+ * =========================================================================== */
+
+/* PoP: upr_split_draining @ hermes_cli/update_pause_record.py:split_draining */
+json_t *upr_split_draining(json_t *token, upr_incarnation_fn fn)
+{
+    json_t *live = upr_live_pids(token, fn);
+    json_t *draining = json_object();
+    if (!draining) { json_free(live); return NULL; }
+
+    /* The live pid set, as strings -- Python's `str(pid) in live`. */
+    const char **live_s = NULL;
+    size_t n_live = 0;
+    if (live && live->type == JSON_ARRAY) {
+        n_live = live->c.count;
+        live_s = (const char **)calloc(n_live ? n_live : 1, sizeof(char *));
+        for (size_t i = 0; i < n_live; i++)
+            live_s[i] = (live->c.items[i] && live->c.items[i]->type == JSON_STRING)
+                            ? live->c.items[i]->str_val : NULL;
+    }
+
+    json_t *profiles = json_object();
+    json_t *srcp = (token && token->type == JSON_OBJECT)
+                       ? json_obj_get(token, "profiles") : NULL;
+    if (srcp && srcp->type == JSON_OBJECT) {
+        for (size_t i = 0; i < srcp->c.count; i++) {
+            char buf[64];
+            char *s = pid_str(srcp->c.items[i], buf, sizeof(buf));
+            if (in_pids(s, live_s, n_live))
+                json_set(profiles, srcp->c.keys[i], json_copy(srcp->c.items[i]));
+        }
+    }
+    json_set(draining, "profiles", profiles);
+
+    const char *keys[2] = {"unmapped", "posix_units"};
+    for (size_t kk = 0; kk < 2; kk++) {
+        json_t *kept = json_array();
+        json_t *src = (token && token->type == JSON_OBJECT)
+                          ? json_obj_get(token, keys[kk]) : NULL;
+        if (src && src->type == JSON_ARRAY) {
+            for (size_t i = 0; i < src->c.count; i++) {
+                json_t *u = src->c.items[i];
+                char buf[64];
+                char *s = (u && u->type == JSON_OBJECT)
+                              ? pid_str(json_obj_get(u, "pid"), buf, sizeof(buf))
+                              : NULL;
+                if (in_pids(s, live_s, n_live))
+                    json_append(kept, json_copy(u));
+            }
+        }
+        json_set(draining, keys[kk], kept);
+    }
+
+    /* _without(token, live) -- the same filter as split_draining's tail. */
+    upr_without(token, live_s, n_live);
+
+    free(live_s);
+    json_free(live);
+    return draining;
+}
+
+/* ===========================================================================
+ *  merge_into  (update_pause_record.py:merge_into)
+ *
+ *      Fold an orphaned pause into this update's token: baselines, absorbed
+ *      ids, profiles, unmapped, identities, stop records, cold start, POSIX
+ *      units and services.
+ * =========================================================================== */
+
+static void merge_str_list(json_t *token, const char *key,
+                           const json_t *adopted, int with_expected)
+{
+    json_t *dst = json_obj_get(token, key);
+    if (!dst) {
+        dst = json_array();
+        json_set(token, key, dst);
+    }
+    json_t *src = (adopted && adopted->type == JSON_OBJECT)
+                      ? json_obj_get(adopted, key) : NULL;
+    if (!src || src->type != JSON_ARRAY)
+        return;
+    for (size_t i = 0; i < src->c.count; i++) {
+        if (!arr_contains(dst, src->c.items[i]))
+            json_append(dst, json_copy(src->c.items[i]));
+    }
+    (void)with_expected;
+}
+
+/* PoP: upr_merge_into @ hermes_cli/update_pause_record.py:merge_into */
+json_t *upr_merge_into(json_t *token, const json_t *adopted)
+{
+    if (!token || token->type != JSON_OBJECT)
+        return token;
+    if (!adopted || adopted->type != JSON_OBJECT)
+        return token;
+
+    json_set(token, "resume_needed", json_bool(1));
+
+    /* baselines: extend with the adopted ones not already present (by value) */
+    json_t *baselines = json_obj_get(token, "baselines");
+    if (!baselines) {
+        baselines = json_array();
+        json_set(token, "baselines", baselines);
+    }
+    json_t *a_base = json_obj_get(adopted, "baselines");
+    if (a_base && a_base->type == JSON_ARRAY) {
+        for (size_t i = 0; i < a_base->c.count; i++) {
+            if (!arr_contains(baselines, a_base->c.items[i]))
+                json_append(baselines, json_copy(a_base->c.items[i]));
+        }
+    }
+
+    /* absorbed: adopted pause_id plus every id it absorbed */
+    json_t *absorbed = json_obj_get(token, "absorbed");
+    if (!absorbed) {
+        absorbed = json_array();
+        json_set(token, "absorbed", absorbed);
+    }
+    json_t *seed[16];
+    size_t n_seed = 0;
+    json_t *apid = json_obj_get(adopted, "pause_id");
+    if (apid && apid->type == JSON_STRING) seed[n_seed++] = apid;
+    json_t *a_abs = json_obj_get(adopted, "absorbed");
+    if (a_abs && a_abs->type == JSON_ARRAY) {
+        for (size_t i = 0; i < a_abs->c.count && n_seed < 16; i++)
+            seed[n_seed++] = a_abs->c.items[i];
+    }
+    for (size_t i = 0; i < n_seed; i++) {
+        if (!arr_contains(absorbed, seed[i]))
+            json_append(absorbed, json_copy(seed[i]));
+    }
+
+    /* profiles: setdefault per name */
+    json_t *profiles = json_obj_get(token, "profiles");
+    if (!profiles) {
+        profiles = json_object();
+        json_set(token, "profiles", profiles);
+    }
+    json_t *a_prof = json_obj_get(adopted, "profiles");
+    if (a_prof && a_prof->type == JSON_OBJECT) {
+        for (size_t i = 0; i < a_prof->c.count; i++) {
+            if (!json_obj_get(profiles, a_prof->c.keys[i]))
+                json_set(profiles, a_prof->c.keys[i],
+                         json_copy(a_prof->c.items[i]));
+        }
+    }
+
+    /* unmapped */
+    json_t *unmapped = json_obj_get(token, "unmapped");
+    if (!unmapped) {
+        unmapped = json_array();
+        json_set(token, "unmapped", unmapped);
+    }
+    json_t *a_unm = json_obj_get(adopted, "unmapped");
+    if (a_unm && a_unm->type == JSON_ARRAY) {
+        for (size_t i = 0; i < a_unm->c.count; i++) {
+            if (!arr_contains(unmapped, a_unm->c.items[i]))
+                json_append(unmapped, json_copy(a_unm->c.items[i]));
+        }
+    }
+
+    /* identities: setdefault per pid */
+    json_t *idents = json_obj_get(token, "identities");
+    if (!idents) {
+        idents = json_object();
+        json_set(token, "identities", idents);
+    }
+    json_t *a_id = json_obj_get(adopted, "identities");
+    if (a_id && a_id->type == JSON_OBJECT) {
+        for (size_t i = 0; i < a_id->c.count; i++) {
+            if (!json_obj_get(idents, a_id->c.keys[i]))
+                json_set(idents, a_id->c.keys[i], json_copy(a_id->c.items[i]));
+        }
+    }
+
+    /* stop record: only when either side carries one */
+    if (json_obj_get(adopted, "stop_requested")
+        || json_obj_get(token, "stop_requested")) {
+        json_t *req = json_obj_get(adopted, "stop_requested");
+        json_t *sent = json_obj_get(adopted, "stop_sent");
+        if (!req) {                        /* no stop record: all count as asked */
+            /* Python: list(adopted["identities"]) -- the dict's KEYS. */
+            json_t *ids = json_obj_get(adopted, "identities");
+            json_t *keys = json_array();
+            if (ids && ids->type == JSON_OBJECT) {
+                for (size_t i = 0; i < ids->c.count; i++)
+                    json_append(keys, json_string(ids->c.keys[i]));
+            }
+            req = sent = keys;
+        }
+        json_t *treq = json_obj_get(token, "stop_requested");
+        json_t *tsent = json_obj_get(token, "stop_sent");
+        json_t *u_req = json_array(), *u_sent = json_array();
+        if (treq && treq->type == JSON_ARRAY) {
+            for (size_t i = 0; i < treq->c.count; i++)
+                json_append(u_req, json_copy(treq->c.items[i]));
+        }
+        if (req && req->type == JSON_ARRAY) {
+            for (size_t i = 0; i < req->c.count; i++)
+                json_append(u_req, json_copy(req->c.items[i]));
+        }
+        if (tsent && tsent->type == JSON_ARRAY) {
+            for (size_t i = 0; i < tsent->c.count; i++)
+                json_append(u_sent, json_copy(tsent->c.items[i]));
+        }
+        if (sent && sent->type == JSON_ARRAY) {
+            for (size_t i = 0; i < sent->c.count; i++)
+                json_append(u_sent, json_copy(sent->c.items[i]));
+        }
+        json_obj_del(token, "stop_requested");
+        json_set(token, "stop_requested", u_req);
+        json_obj_del(token, "stop_sent");
+        json_set(token, "stop_sent", u_sent);
+    }
+
+    /* cold start */
+    json_t *cold = json_obj_get(token, "cold_start_profiles");
+    if (!cold) {
+        cold = json_object();
+        json_set(token, "cold_start_profiles", cold);
+    }
+    json_t *a_cold = json_obj_get(adopted, "cold_start_profiles");
+    if (a_cold && a_cold->type == JSON_OBJECT) {
+        for (size_t i = 0; i < a_cold->c.count; i++) {
+            if (!json_obj_get(cold, a_cold->c.keys[i]))
+                json_set(cold, a_cold->c.keys[i], json_copy(a_cold->c.items[i]));
+        }
+    }
+    if (json_truthy(json_obj_get(adopted, "cold_start_if_installed"))) {
+        json_set(token, "cold_start_if_installed", json_bool(1));
+        json_t *att = json_obj_get(adopted, "attested_generation");
+        if (att && !json_obj_get(token, "attested_generation"))
+            json_set(token, "attested_generation", json_copy(att));
+    }
+
+    /* POSIX platform + units */
+    json_t *platform = json_obj_get(adopted, "platform");
+    if (platform && platform->type == JSON_STRING) {
+        json_set(token, "platform", json_copy(platform));
+        json_t *units = json_obj_get(token, "posix_units");
+        if (!units) {
+            units = json_array();
+            json_set(token, "posix_units", units);
+        }
+        json_t *a_units = json_obj_get(adopted, "posix_units");
+        if (a_units && a_units->type == JSON_ARRAY) {
+            for (size_t i = 0; i < a_units->c.count; i++) {
+                if (!arr_contains(units, a_units->c.items[i]))
+                    json_append(units, json_copy(a_units->c.items[i]));
+            }
+        }
+    }
+
+    /* services: `token.setdefault("services", [])` runs unconditionally, so an
+     * empty list appears even when neither side has services. */
+    json_t *a_svc = json_obj_get(adopted, "services");
+    int have_services = (a_svc && a_svc->type == JSON_ARRAY && a_svc->c.count > 0);
+    merge_str_list(token, "services", adopted, 0);
+    if (have_services) {
+        json_t *expected = json_obj_get(token, "expected_services");
+        if (!expected) {
+            expected = json_array();
+            json_set(token, "expected_services", expected);
+        }
+        json_t *svc = json_obj_get(token, "services");
+        if (svc && svc->type == JSON_ARRAY) {
+            for (size_t i = 0; i < svc->c.count; i++) {
+                if (!arr_contains(expected, svc->c.items[i]))
+                    json_append(expected, json_copy(svc->c.items[i]));
+            }
+        }
+        if (!json_obj_get(token, "restarted_services")) {
+            json_set(token, "restarted_services", json_array());
+        }
+        json_t *sp = json_obj_get(token, "service_profiles");
+        if (!sp) {
+            sp = json_object();
+            json_set(token, "service_profiles", sp);
+        }
+        json_t *a_sp = json_obj_get(adopted, "service_profiles");
+        if (a_sp && a_sp->type == JSON_OBJECT) {
+            for (size_t i = 0; i < a_sp->c.count; i++)
+                json_set(sp, a_sp->c.keys[i], json_copy(a_sp->c.items[i]));
+        }
+    }
+
+    return token;
+}
+
+/* ===========================================================================
  *  _live_pids  (update_pause_record.py:_live_pids)
  *
  *      {str(pid) for pid, ct in (token.get("identities") or {}).items()

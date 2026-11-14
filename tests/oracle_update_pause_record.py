@@ -81,8 +81,28 @@ def main() -> int:
                 def fake_live(pid, ct, _ve=ve, _vo=vo):
                     return _ve if int(pid) % 2 == 0 else _vo
 
-                upr.update_lock.incarnation_live = fake_live
+                _ul.incarnation_live = fake_live
                 want = sorted(upr._live_pids(i["token"]))
+            elif fn == "holder":
+                body = i.get("body")
+                held = upr._holder(upr.Path(i["src"]), body)
+                want = held
+            elif fn == "split_draining":
+                ve, vo = i["v_even"], i["v_odd"]
+
+                def fake_live(pid, ct, _ve=ve, _vo=vo):
+                    return _ve if int(pid) % 2 == 0 else _vo
+
+                _ul.incarnation_live = fake_live
+                tok = i["token"]
+                draining = upr.split_draining(tok)
+                want = {"draining": draining, "token": tok}
+            elif fn == "merge_into":
+                tok = i.get("token")
+                if tok is None:
+                    want = upr.merge_into(None, i["adopted"])
+                else:
+                    want = upr.merge_into(tok, i["adopted"])
             else:
                 continue
         except Exception as exc:                       # noqa: BLE001
