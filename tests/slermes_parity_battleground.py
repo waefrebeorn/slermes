@@ -1743,6 +1743,7 @@ class Formatter:
         return json.dumps({
             "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "source_proof": str(SOURCE_PROOF.relative_to(HERMES_DIR)),
+            "annotation_verifiability": annotation_verifiability(),
             "modules": {
                 name: {
                     "total": r.total_features, "ported": r.ported, "partial": r.partial,
@@ -1754,6 +1755,30 @@ class Formatter:
             },
             "drift": drift,
         }, indent=2)
+
+def annotation_verifiability():
+    """Count PoP annotations whose claimed Python module actually exists.
+
+    An annotation pointing at a module that is in neither tree is an ORPHAN:
+    the C exists, but no oracle can ever diff it against the claimed source, so
+    the parity credit it carries is not verifiable. Reported separately so the
+    coverage figure is not quietly inflated by unverifiable credit.
+    """
+    idx = CIndexer()
+    try:
+        idx.build()
+    except Exception:
+        return {"total": 0, "verifiable": 0, "orphan": 0, "orphan_modules": []}
+    anns = getattr(idx, "pop_annotations", [])
+    orphan_mods = sorted({a.python_file for a in anns
+                          if not a.python_module_exists and a.python_file})
+    return {
+        "total": len(anns),
+        "verifiable": sum(1 for a in anns if a.python_module_exists),
+        "orphan": sum(1 for a in anns if not a.python_module_exists),
+        "orphan_modules": orphan_mods,
+    }
+
 
 # ── main ───────────────────────────────────────────────────────────────────────
 def main():

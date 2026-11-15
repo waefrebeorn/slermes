@@ -167,12 +167,11 @@ def main():
     # neither tree cannot be diffed by any oracle, so the credit it carries is
     # not verifiable. Report it beside the headline number rather than folding
     # it in, so the coverage figure stays honest.
-    idx = analyzer.c_index if hasattr(analyzer, "c_index") else None
-    if idx is not None:
-        anns = getattr(idx, "pop_annotations", [])
-        orphan = sum(1 for a in anns if not a.python_module_exists)
+    ver = doc.get("annotation_verifiability", {})
+    if ver:
         print("VERIFIABLE  annotations %d   ORPHAN %d (module absent from both "
-              "trees -- no oracle can check these)" % (len(anns) - orphan, orphan))
+              "trees -- no oracle can check these)"
+              % (ver.get("verifiable", 0), ver.get("orphan", 0)))
     drift = doc.get("drift", {})
     print("modules scanned: %d   drift(new=%s resolved=%s status=%s)"
           % (tot["modules_scanned"], drift.get("new_gap_count"),
