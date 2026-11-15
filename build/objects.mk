@@ -360,6 +360,7 @@ src/hermes_cli/profile_gaps.o \
  src/hermes_cli/shared_metrics_contract.o \
  src/hermes_cli/port_update_pause_record.o \
  src/hermes_cli/port_left_core_migration.o \
+ src/hermes_cli/port_model_switch.o \
  src/hermes_cli/smc_event_extractors.o \
  src/gateway/relay/relay_shared_metrics.o src/gateway/relay/command_manifest.o \
  src/hermes_cli/heartbeat.o \
