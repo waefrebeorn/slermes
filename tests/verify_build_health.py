@@ -13,12 +13,14 @@ Usage:
     python tests/verify_build_health.py --regress  # exit 1 if worse than baseline
 """
 import argparse
+import hashlib
 import json
 import os
 import pathlib
 import re
 import subprocess
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -33,6 +35,80 @@ BASELINE = ROOT / "tests" / ".build_health_baseline.json"
 CFLAGS = None
 FLAGS_BY_FILE = {}
 
+# ── one `make -n -B` probe, shared and cached ──────────────────────────────
+# The gate used to run `make -n -B` twice per invocation (once for the source
+# list, once for the flags) at ~2 minutes each, and two concurrent gate runs
+# would race over the same tree. Now the dry-run runs at most once per
+# makefile change; everybody else waits for, or reuses, that result.
+PROBE_CACHE = ROOT / ".build_probe.json"
+PROBE_LOCK = ROOT / ".build_probe.lock"
+PROBE_LOCK_STALE_S = 1800
+
+
+def _probe_key() -> str:
+    h = hashlib.sha256()
+    paths = [ROOT / "Makefile", ROOT / "build" / "winlibs-env.sh"]
+    paths += sorted((ROOT / "build").glob("*.mk"))
+    for p in paths:
+        try:
+            h.update(p.read_bytes())
+        except OSError:
+            pass
+    return h.hexdigest()
+
+
+def _read_probe(key: str):
+    try:
+        d = json.loads(PROBE_CACHE.read_text(encoding="utf-8"))
+        if d.get("key") == key:
+            return d.get("stdout", "")
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def _acquire_lock() -> bool:
+    try:
+        fd = os.open(PROBE_LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        # A crashed run leaves the lock behind; retire it after a stale age.
+        try:
+            if time.time() - os.path.getmtime(PROBE_LOCK) > PROBE_LOCK_STALE_S:
+                os.unlink(PROBE_LOCK)
+                return _acquire_lock()
+        except OSError:
+            pass
+        return False
+    os.close(fd)
+    return True
+
+
+def make_probe() -> str:
+    """`make -n -B` output, run once per makefile change."""
+    key = _probe_key()
+    cached = _read_probe(key)
+    if cached is not None:
+        return cached
+    if not _acquire_lock():
+        # Another process is probing; wait for it rather than racing the tree.
+        for _ in range(PROBE_LOCK_STALE_S):
+            time.sleep(1)
+            cached = _read_probe(key)
+            if cached is not None:
+                return cached
+        raise SystemExit("timed out waiting for the build-probe lock")
+    try:
+        r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
+                           text=True, encoding="utf-8", errors="replace")
+        PROBE_CACHE.write_text(json.dumps({"key": key, "stdout": r.stdout}),
+                               encoding="utf-8")
+        return r.stdout
+    finally:
+        try:
+            os.unlink(PROBE_LOCK)
+        except OSError:
+            pass
+
 
 def real_cflags():
     """Use the project's own compile flags, harvested from `make -n`.
@@ -40,9 +116,7 @@ def real_cflags():
     Hand-rolled -I lists diverge from the real build and manufacture phantom
     errors (e.g. missing -I lib -> 'libdb/db.h: No such file'). Ask make.
     """
-    r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
-                       text=True, encoding="utf-8", errors="replace")
-    for line in r.stdout.splitlines():
+    for line in make_probe().splitlines():
         if " -c " in line and ".c" in line:
             flags = line.split(" -c ")[0]
             flags = flags.replace(str(ROOT).replace("\\", "/"), "")
@@ -67,13 +141,8 @@ def build_sources():
     only exist on Linux (objects.mk gates them on UNAME_S) and will never
     compile on Windows. Scope to what `make -n` would compile.
     """
-    r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
-                       text=True, encoding="utf-8", errors="replace")
-    # Keep make's command line verbatim and hand it to sh: the -D values are
-    # shell-escaped (\"v\"), and re-parsing them into execve argv hands gcc a
-    # literal backslash ('stray ' in program'). Shell evaluation is exact.
     out = {}
-    for line in r.stdout.splitlines():
+    for line in make_probe().splitlines():
         if " -c -o " not in line:
             continue
         head, tail = line.split(" -c -o ", 1)

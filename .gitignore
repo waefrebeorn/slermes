@@ -239,3 +239,7 @@ venv/
 !.ccache/launch.sh
 !.ccache/ccache.conf
 >>>>>>> local-port-work
+
+# build-probe cache + lock (tests/verify_build_health.py)
+.build_probe.json
+.build_probe.lock
