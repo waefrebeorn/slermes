@@ -33,6 +33,7 @@ CONTRACT (immutable):
 This is AGNOSTIC: it contains no hardcoded parity figures, no module list,
 no "current version". Re-run it any time; it always reflects the live tree.
 """
+import glob
 import json
 import os
 import subprocess
@@ -64,9 +65,41 @@ def source_present():
     return os.path.isfile(SOURCE_PROOF)
 
 
+def pick_interpreter():
+    """A NATIVE Windows Python, never an MSYS2 one.
+
+    `sys.executable` is not good enough: when this script is launched by the
+    MSYS2 python (C:/msys64/mingw64/bin/python.exe, which is what `python` on
+    PATH resolves to here) the scanner resolves the C:\\Users\\<user>\\* symlink
+    farm differently and walks far more than the quarry -- it over-counts
+    features (34,262 vs 27,877) or hangs outright. The native Hermes python
+    resolves the same paths as Windows does and finishes in ~30s.
+    """
+    home = os.path.expanduser("~")
+    cands = [os.environ.get("PYTHON_BIN"), sys.executable]
+    cands += sorted(glob.glob(os.path.join(
+        home, "AppData", "Local", "hermes", "tools", "python-*", "python.exe")))
+    for cand in cands:
+        if not cand or not os.path.isfile(cand):
+            continue
+        low = cand.lower()
+        if "msys64" in low or "cygwin" in low or low.endswith("\\usr\\bin\\python.exe"):
+            continue
+        try:
+            subprocess.check_output([cand, "-c", "import hashlib, json"],
+                                    timeout=60, stderr=subprocess.DEVNULL)
+            return cand
+        except Exception:
+            continue
+    return sys.executable
+
+
+PY = pick_interpreter()
+
+
 def scan():
     """Run the authoritative scanner. Returns the full decoded JSON doc."""
-    out = subprocess.check_output([sys.executable, SCANNER, "--json"], cwd=REPO)
+    out = subprocess.check_output([PY, SCANNER, "--json"], cwd=REPO)
     doc = json.loads(out)
     return doc
 
