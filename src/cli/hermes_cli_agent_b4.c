@@ -103,23 +103,26 @@ char *hcli_computer_use_approval_callback(hcli_t *self, const char *action,
  * hcli_fragments_free (declared in the shared header, owned by a sibling). */
 extern void hcli_invalidate(hcli_t *self) __attribute__((weak));
 extern void hcli_paint_now(hcli_t *self) __attribute__((weak));
-extern void hcli_fragments_free(hcli_fragment_t *frags, size_t len)
-    __attribute__((weak));
 
-/* Weak-safe fragment free. */
-static void b4_fragments_free(hcli_fragment_t *frags, size_t len)
+/* hcli_fragments_free is declared in the shared header and owned by a sibling
+ * in the full build. A weak *declaration* is not enough on PE/COFF: taking the
+ * symbol's address emits a .refptr that ld insists on resolving, so a clean
+ * tree fails to link. Define it weakly instead -- a strong definition in a
+ * sibling overrides this one. */
+__attribute__((weak)) void hcli_fragments_free(hcli_fragment_t *frags, size_t len)
 {
     if (!frags)
         return;
-    if (hcli_fragments_free) {
-        b4_fragments_free(frags, len);
-        return;
-    }
     for (size_t i = 0; i < len; i++) {
         free(frags[i].style);
         free(frags[i].text);
     }
     free(frags);
+}
+
+static void b4_fragments_free(hcli_fragment_t *frags, size_t len)
+{
+    hcli_fragments_free(frags, len);
 }
 
 /* ── hcli_handle_approval_selection ─────────────────────────────────────── */

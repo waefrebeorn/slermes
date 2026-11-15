@@ -6,6 +6,7 @@
 clean:
 	rm -f slermes src/*.o src/*/*.o src/*/*/*.o
 	rm -f $(LIB_OBJ) $(LIB_A)
+	rm -f build/.profile
 	rm -rf digest_output/
 	rm -f *.gcda *.gcno src/*.gcda src/*.gcno src/*/*.gcda src/*/*.gcno
 	rm -f lib/*.gcda lib/*.gcno lib/*/*.gcda lib/*/*.gcno

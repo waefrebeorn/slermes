@@ -15,18 +15,17 @@ ifeq ($(origin CC),default)
     ifneq ($(shell command -v ccache 2>/dev/null),)
         # ccache is a native Windows binary: it cannot exec a POSIX path like
         # /c/winlibs/... so the compiler path is converted to C:/... form.
-        # NB: the awk must apply to the WHOLE command -v output. Writing
-        # `A || B | awk` parses as `A || (B | awk)`, so the conversion silently
-        # only ever saw the `echo cc` fallback and left a POSIX path that
-        # native ccache cannot exec.
-        CC := ccache $(shell c=$$(command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc); echo $$c | awk '{if (substr($$0,1,1)=="/") {print toupper(substr($$0,2,1))":"substr($$0,3)} else print}')
+        # `cygpath -m` is correct for every MSYS mount (/c/x -> C:/x,
+        # /mingw64/x -> C:/msys64/mingw64/x); the old toupper(substr trick was
+        # only right for /c/ and mangled /mingw64/ into "M:ingw64/".
+        CC := ccache $(shell c=$$(command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc); cygpath -m "$$c" 2>/dev/null || echo "$$c")
     else
         CC := $(shell command -v clang 2>/dev/null || command -v gcc 2>/dev/null || echo cc)
     endif
 endif
 ifeq ($(origin CXX),default)
     ifneq ($(shell command -v ccache 2>/dev/null),)
-        CXX := ccache $(shell c=$$(command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++); echo $$c | awk '{if (substr($$0,1,1)=="/") {print toupper(substr($$0,2,1))":"substr($$0,3)} else print}')
+        CXX := ccache $(shell c=$$(command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++); cygpath -m "$$c" 2>/dev/null || echo "$$c")
     else
         CXX := $(shell command -v clang++ 2>/dev/null || command -v g++ 2>/dev/null || echo c++)
     endif
@@ -86,7 +85,35 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O3 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -include hermes_win32.h -D_GNU_SOURCE -I include/compat -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+# ── Build profiles ──────────────────────────────────────────────────
+#   make PROFILE=release   (default) -O3 + LTO. The shipped binary.
+#   make PROFILE=dev       -O0 -g3. Fastest to build, easiest to debug and
+#                           to diff behaviour against the Python oracle.
+#   make PROFILE=strict    -O2 -g plus the full warning set. Use before
+#                           committing new ports; catches what -Wall misses.
+#   make PROFILE=analyzer  -O1 -g -fanalyzer. Static NULL-deref / OOB / leak
+#                           analysis. GCC 10+; no runtime needed.
+#   make PROFILE=sanitize  -O1 -g -fsanitize=address,undefined. Requires a
+#                           toolchain that ships libasan/libubsan (clang or
+#                           LLVM-MinGW do; the plain winlibs GCC does not) --
+#                           the build says so instead of silently skipping.
+PROFILE ?= release
+
+ifeq ($(PROFILE),release)
+  PROFILE_OPT := -O3
+else ifeq ($(PROFILE),dev)
+  PROFILE_OPT := -O0 -g3
+else ifeq ($(PROFILE),strict)
+  PROFILE_OPT := -O2 -g
+else ifeq ($(PROFILE),analyzer)
+  PROFILE_OPT := -O1 -g
+else ifeq ($(PROFILE),sanitize)
+  PROFILE_OPT := -O1 -g
+else
+  $(error unknown PROFILE '$(PROFILE)' -- use release, dev, strict, analyzer or sanitize)
+endif
+
+CFLAGS = $(PROFILE_OPT) -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -include hermes_win32.h -D_GNU_SOURCE -I include/compat -I include -I src -I src/cli -I src/hermes_cli -I src/cron -I src/gateway -I src/tools -I lib -I lib/libwubuoffice/src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
 # PGO (Profile-Guided Optimization) support — two-phase build for max runtime speed.
 # PGO typically yields 5-15% runtime speedup on C codebases (GCC docs: up to 2×).
 # Slermes is heavy on JSON + DB + string processing hot paths — good PGO candidates.
@@ -99,6 +126,57 @@ ifneq ($(PGO_OPTIMIZE),)
   CFLAGS += -fprofile-use -fprofile-correction
 endif
 CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION_STR)\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE_STR)\" -DATADIR=\"$(DATADIR_STR)\"
+
+# ── Profile-specific extras ─────────────────────────────────────────
+ifeq ($(PROFILE),strict)
+  CFLAGS += -Wextra -Wshadow -Wconversion -Wsign-conversion -Wnull-dereference \
+            -Wdouble-promotion -Wformat=2 -Wcast-qual -Wstrict-prototypes \
+            -Wmissing-prototypes -Wwrite-strings -Wundef -Wpointer-arith \
+            -Wstrict-overflow=4 -Wswitch-default -Wstack-protector \
+            -fstack-protector-strong
+endif
+ifeq ($(PROFILE),analyzer)
+  CFLAGS += -fanalyzer -Wno-analyzer-malloc-leak
+endif
+ifeq ($(PROFILE),sanitize)
+  # Refuse loudly rather than building an uninstrumented binary and letting a
+  # test report CLEAN: a sanitizer that did not run is not a pass.
+  SAN_RT := $(shell printf 'int main(void){return 0;}\n' > .sanprobe.c && \
+             $(CC) -fsanitize=address,undefined .sanprobe.c -o .sanprobe.exe 2>/dev/null && \
+             echo yes || echo no)
+  ifneq ($(SAN_RT),yes)
+    $(error PROFILE=sanitize needs a toolchain with ASan+UBSan runtimes. \
+This one does not ship them (winlibs GCC does not). Install LLVM-MinGW \
+(clang + lld, which ships both) or use PROFILE=analyzer for static checks.)
+  endif
+  CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer
+  LDFLAGS += -fsanitize=address,undefined
+endif
+ifeq ($(PROFILE),dev)
+  CFLAGS += -fstack-protector-strong
+endif
+
+# ── Profile guard ───────────────────────────────────────────────────
+# PROFILE is not an object-file dependency, so `make PROFILE=dev` on a tree
+# built with PROFILE=release would link a dev binary out of -O3 objects and
+# report success. Refuse instead of silently producing the wrong thing.
+PROFILE_STAMP := build/.profile
+
+ifeq ($(PROFILE),sanitize)
+  # sanitize writes the stamp only after the probe passed.
+endif
+ifneq ($(wildcard $(PROFILE_STAMP)),)
+  PROFILE_LAST := $(shell cat $(PROFILE_STAMP) 2>/dev/null)
+  ifneq ($(PROFILE_LAST),$(PROFILE))
+    $(error PROFILE changed from '$(PROFILE_LAST)' to '$(PROFILE)'. \
+The existing object files were compiled with the old profile, so linking them \
+would silently produce a mislabelled binary. Run: make clean)
+  endif
+endif
+
+$(PROFILE_STAMP):
+	@mkdir -p build
+	@echo $(PROFILE) > $@
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm
 # LTO (Link-Time Optimization) — enabled for release builds:
