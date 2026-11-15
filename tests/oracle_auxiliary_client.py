@@ -30,6 +30,7 @@ WANTED = {
         "_is_free_model", "_contains_any", "_normalize_chain_label",
         "_is_anthropic_compatible_host", "_endpoint_speaks_anthropic_messages",
         "_AUX_UNHEALTHY_LABEL_ALIASES", "_ANTHROPIC_COMPATIBLE_HOSTS",
+        "_translate_anthropic_response_format",
     ],
     "agent/model_metadata.py": [
         "_bare_codex_slug", "is_codex_900k_base", "_codex_variant_base",
@@ -226,6 +227,11 @@ for line in sys.stdin:
         want = bool(ns["_is_anthropic_compatible_host"](arg))
     elif fn == "anthmsg":
         want = bool(ns["_endpoint_speaks_anthropic_messages"](arg))
+    elif fn == "respfmt":
+        kw = json.loads(c.get("kw", "{}"))
+        fmt = json.loads(c.get("fmt", "null"))
+        ns["_translate_anthropic_response_format"](kw, fmt)
+        want = kw
     else:
         continue
 

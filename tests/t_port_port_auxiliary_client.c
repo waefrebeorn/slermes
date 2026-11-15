@@ -411,5 +411,44 @@ int main(void)
                    ac_endpoint_speaks_anthropic_messages(URLS[i]));
         }
     }
+
+    /* ── _translate_anthropic_response_format ── */
+    {
+        static const char *const KWARGS[] = {
+            "{}", "{\"output_config\":{}}",
+            "{\"output_config\":{\"max_tokens\":10}}",
+            "{\"output_config\":null}", "{\"model\":\"claude\"}",
+            "{\"output_config\":{\"format\":{\"type\":\"text\"}}}",
+        };
+        static const char *const FORMATS[] = {
+            "null", "[]", "\"string\"", "{}",
+            "{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"type\":\"object\"}}}",
+            "{\"type\":\"json_schema\",\"json_schema\":{}}",
+            "{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"x\"}}",
+            "{\"type\":\"json_object\"}",
+            "{\"type\":\"text\"}",
+            "{\"type\":\"json_schema\",\"json_schema\":null}",
+            "{\"type\":\"json_schema\",\"json_schema\":{\"schema\":[1,2]}}",
+        };
+        for (size_t k = 0; k < sizeof(KWARGS) / sizeof(KWARGS[0]); k++) {
+            for (size_t f = 0; f < sizeof(FORMATS) / sizeof(FORMATS[0]); f++) {
+                json_t *kw = json_parse(KWARGS[k], NULL);
+                json_t *fmt = json_parse(FORMATS[f], NULL);
+                if (!kw || !fmt) { json_free(kw); json_free(fmt); continue; }
+                ac_translate_response_format(kw, fmt);
+                char *s = json_serialize(kw);
+                printf("{\"fn\":\"respfmt\",\"kw\":");
+                jstr(KWARGS[k]);
+                printf(",\"fmt\":");
+                jstr(FORMATS[f]);
+                printf(",\"out\":");
+                jstr(s ? s : "");
+                fputs("}\n", stdout);
+                free(s);
+                json_free(kw);
+                json_free(fmt);
+            }
+        }
+    }
     return 0;
 }

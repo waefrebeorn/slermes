@@ -924,3 +924,61 @@ ac_is_anthropic_compatible_host(const char *url)
     }
     return hit;
 }
+
+/* ── _translate_anthropic_response_format ──────────────────────────────────
+ * Merge an OpenAI response_format into Anthropic's output_config.
+ * Mutates `anthropic_kwargs` in place, as the Python does.
+ */
+void
+ac_translate_response_format(json_t *anthropic_kwargs, const json_t *response_format)
+{
+    if (!anthropic_kwargs || !response_format ||
+        response_format->type != JSON_OBJECT)
+        return;
+
+    json_t *ft = json_obj_get(response_format, "type");
+    const char *format_type = (ft && ft->type == JSON_STRING) ? ft->str_val : NULL;
+
+    json_t *schema = NULL;
+    if (format_type && strcmp(format_type, "json_schema") == 0) {
+        json_t *js = json_obj_get(response_format, "json_schema");
+        if (!js || js->type != JSON_OBJECT)
+            return;
+        if (!json_obj_get(js, "schema"))
+            return;
+        schema = json_obj_get(js, "schema");
+    } else if (format_type && strcmp(format_type, "json_object") == 0) {
+        /* Anthropic has no schema-less JSON mode. */
+        schema = json_object();
+        if (!schema)
+            return;
+        json_set(schema, "type", json_string("object"));
+    } else {
+        return;
+    }
+
+    json_t *oc = json_obj_get(anthropic_kwargs, "output_config");
+    if (!oc || oc->type != JSON_OBJECT) {
+        oc = json_object();
+        if (!oc) {
+            if (format_type && strcmp(format_type, "json_object") == 0)
+                json_free(schema);
+            return;
+        }
+        json_set(anthropic_kwargs, "output_config", oc);
+    }
+
+    json_t *fmt = json_object();
+    if (!fmt) {
+        if (format_type && strcmp(format_type, "json_object") == 0)
+            json_free(schema);
+        return;
+    }
+    json_set(fmt, "type", json_string("json_schema"));
+    /* json_set takes ownership of the node, so hand over a copy when the
+     * schema came from the caller's response_format. */
+    json_set(fmt, "schema", json_copy(schema));
+    json_set(oc, "format", fmt);
+    if (format_type && strcmp(format_type, "json_object") == 0)
+        json_free(schema);
+}

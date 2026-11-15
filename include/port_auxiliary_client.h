@@ -105,6 +105,11 @@ int ac_endpoint_speaks_anthropic_messages(const char *base_url);
 /* _is_anthropic_compatible_host -- native host or a /anthropic gateway path. */
 int ac_is_anthropic_compatible_host(const char *url);
 
+/* _translate_anthropic_response_format -- merge an OpenAI response_format into
+ * Anthropic output_config. Mutates `anthropic_kwargs` in place. */
+void ac_translate_response_format(json_t *anthropic_kwargs,
+                                  const json_t *response_format);
+
 #ifdef __cplusplus
 }
 #endif
