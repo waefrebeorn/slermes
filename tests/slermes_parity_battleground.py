@@ -1809,14 +1809,19 @@ def annotation_verifiability():
     claimed = [a for a in anns if a.python_module_exists is not None]
     orphan_mods = sorted({a.python_file for a in claimed
                           if a.python_module_exists is False})
+    # A claimed "module" with no .py suffix is prose the loose patterns scraped
+    # (`backend`, `browser_tool`, `electron/main.cjs`), not a Python module.
+    non_py = [a for a in claimed if not a.python_file.endswith(".py")]
+    real = [a for a in claimed
+            if a.python_file.endswith(".py") and a.python_module_exists is False]
     return {
         "total": len(anns),
         "claimed": len(claimed),
         "verifiable": sum(1 for a in claimed if a.python_module_exists),
-        "orphan": len(orphan_mods) and sum(1 for a in claimed
-                                          if a.python_module_exists is False),
+        "orphan": len(real),
+        "non_python_claims": len(non_py),
         "unattributed": sum(1 for a in anns if a.python_module_exists is None),
-        "orphan_modules": orphan_mods,
+        "orphan_modules": sorted({a.python_file for a in real}),
     }
 
 
