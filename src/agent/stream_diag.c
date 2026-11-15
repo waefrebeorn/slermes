@@ -26,7 +26,7 @@ void stream_diag_init(stream_diag_t *diag) { /* Python default is also a no-op *
 }
 
 /* Port of Python: stream_diag_capture_response */
-/* PoP: stream_diag_capture_response @ tools/computer_use/tool.py:_capture_response */
+/* PoP: stream_diag_capture_response @ agent/stream_diag.py:_capture_response */
 void stream_diag_capture_response(stream_diag_t *diag) {
     if (!diag) return;
     char saved_headers[384];
@@ -45,7 +45,7 @@ void stream_diag_capture_response(stream_diag_t *diag) {
  *  Returns a malloc'd string (caller must free).
  * ================================================================ */
 
-/* Port of Python stream_diag.py:flatten_exception_chain(). */
+/* Port of Python agent/stream_diag.py:flatten_exception_chain(). */
 char *flatten_error_chain(const hermes_error_t *err) {
     if (!err) return strdup("unknown");
 
@@ -88,7 +88,7 @@ char *flatten_error_chain(const hermes_error_t *err) {
  *  Structured WARNING log with full diagnostic detail.
  * ================================================================ */
 
-/* Port of Python stream_diag.py:log_stream_retry(). */
+/* Port of Python agent/stream_diag.py:log_stream_retry(). */
 void log_stream_retry(
     const char *provider,
     const char *base_url,
@@ -161,7 +161,7 @@ void log_stream_retry(
  *  In C, we log to stderr (user-visible) and agent.log (structured).
  * ================================================================ */
 
-/* Port of Python stream_diag.py:emit_stream_drop(). */
+/* Port of Python agent/stream_diag.py:emit_stream_drop(). */
 void emit_stream_drop(
     const char *provider,
     const char *base_url,

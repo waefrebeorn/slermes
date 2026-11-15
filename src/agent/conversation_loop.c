@@ -65,7 +65,7 @@ struct tool_dispatch_arg {
     int  *duration_ms_out;  /* S14 gap #13: latency tracking */
 };
 
-/* PoP: is_trivial_prompt @ agent/memory_provider.py:is_trivial_prompt */
+/* PoP: is_trivial_prompt @ agent/conversation_loop.py:is_trivial_prompt */
 static int is_trivial_prompt(const char *text)
 {
     if (!text) return 1;
@@ -1023,11 +1023,11 @@ char *run_conversation(agent_state_t *state,
         }
 
 retry_done:
-        /* Port of Python agent/agent_runtime_helpers.py:restore_primary_runtime().
+        /* Port of Python agent/conversation_loop.py:restore_primary_runtime().
          * Ensure primary provider/model are restored after fallback. In C the
          * fallback is per-call, so saved values are already restored above, but
          * the label exists for goto targets that skip the restore. */
-/* PoP: success @ hermes_cli/mcp_config.py:_success */
+/* PoP: success @ agent/conversation_loop.py:_success */
         /* P95: Log upstream diagnostic headers on success (verbose only) */
         if (llm_resp && llm_resp->diag.upstream_headers[0] && getenv("SLERMES_DEBUG")) {
             fprintf(stderr, "[llm] upstream=[%s]\n",
@@ -1258,7 +1258,7 @@ retry_done:
         }
 
         /* P87: Parallel tool dispatch — execute independent tools concurrently */
-        /* Port of Python agent/tool_executor.py: execute_tool_calls_concurrent */
+        /* Port of Python agent/conversation_loop.py: execute_tool_calls_concurrent */
         int n_calls = llm_resp->tool_calls_count;
 
         /* G24: Reset per-turn tool call counter and check per-turn limit */
@@ -1402,7 +1402,7 @@ retry_done:
         /* Phase 2: Parallel execution via pthreads */
 #if defined(_WIN32) || defined(WIN32)
         /* No pthreads on Windows — fallback to sequential */
-        /* Port of Python agent/tool_executor.py: execute_tool_calls_sequential */
+        /* Port of Python agent/conversation_loop.py: execute_tool_calls_sequential */
         for (int i = 0; i < n_calls; i++) {
             if (works[i].approved) {
                 struct timespec ts_s, ts_e;
@@ -1642,7 +1642,7 @@ retry_done:
     json_free(tools_json);
 
     /* ── Turn finalization (delegated to turn_finalizer.c) ────────────── */
-    /* Port of Python turn_finalizer.py:finalize_turn. */
+    /* Port of Python agent/conversation_loop.py:finalize_turn. */
     return finalize_turn(state);
 }
 
@@ -1708,8 +1708,8 @@ bool agent_snapshot_restore(agent_state_t *state) {
 }
 
 /* Simple chat interface */
-/* PoP: agent_chat @ cli.py:chat */
-/* Port of Python cli.py:chat(). */
+/* PoP: agent_chat @ agent/conversation_loop.py:chat */
+/* Port of Python agent/conversation_loop.py:chat(). */
 char *agent_chat(agent_state_t *state, const char *message) {
     return run_conversation(state, message, NULL);
 }
@@ -1746,8 +1746,8 @@ bool agent_inject_history(agent_state_t *state, const char *history_json) {
  *  Conversation loop helpers (Port of Python conversation_loop.py)
  * ================================================================ */
 
-/* Port of Python conversation_loop.py:_is_nous_inference_route */
-/* PoP: is_nous_inference_route @ agent/billing_links.py:is_nous_inference_route */
+/* Port of Python agent/conversation_loop.py:_is_nous_inference_route */
+/* PoP: is_nous_inference_route @ agent/conversation_loop.py:is_nous_inference_route */
 bool is_nous_inference_route(const char *provider, const char *base_url) {
     if (!provider) return false;
     char prov[128];
@@ -1767,7 +1767,7 @@ bool is_nous_inference_route(const char *provider, const char *base_url) {
            url_host_matches(base_url, "inference.nousresearch.com");
 }
 
-/* Port of Python conversation_loop.py:_billing_or_entitlement_message */
+/* Port of Python agent/conversation_loop.py:_billing_or_entitlement_message */
 char *billing_or_entitlement_message(const char *capability,
                                      const char *provider,
                                      const char *base_url,
@@ -1812,7 +1812,7 @@ char *billing_or_entitlement_message(const char *capability,
     return strdup(buf);
 }
 
-/* Port of Python conversation_loop.py:_print_billing_or_entitlement_guidance */
+/* Port of Python agent/conversation_loop.py:_print_billing_or_entitlement_guidance */
 bool print_billing_or_entitlement_guidance(const char *capability,
                                            const char *provider,
                                            const char *base_url,
@@ -1831,7 +1831,7 @@ bool print_billing_or_entitlement_guidance(const char *capability,
     return true;
 }
 
-/* Port of Python conversation_loop.py:_nous_entitlement_message */
+/* Port of Python agent/conversation_loop.py:_nous_entitlement_message */
 char *nous_entitlement_message(const char *capability) {
     (void)capability; /* Fallback: C doesn't have nous_account module */
     return strdup(
@@ -1839,7 +1839,7 @@ char *nous_entitlement_message(const char *capability) {
         "Visit https://nousresearch.com to check your account status.");
 }
 
-/* Port of Python conversation_loop.py:_print_nous_entitlement_guidance */
+/* Port of Python agent/conversation_loop.py:_print_nous_entitlement_guidance */
 bool print_nous_entitlement_guidance(const char *capability) {
     char *msg = nous_entitlement_message(capability);
     if (!msg || !msg[0]) {
@@ -1853,7 +1853,7 @@ bool print_nous_entitlement_guidance(const char *capability) {
     return true;
 }
 
-/* Port of Python conversation_loop.py:_ollama_context_limit_error */
+/* Port of Python agent/conversation_loop.py:_ollama_context_limit_error */
 char *ollama_context_limit_error(bool has_tools, int ollama_num_ctx,
                                  const char *model, const char *base_url,
                                  const char *provider, int tool_count,
@@ -1888,7 +1888,7 @@ char *ollama_context_limit_error(bool has_tools, int ollama_num_ctx,
     return strdup(buf);
 }
 
-/* PoP: agent_run_conversation @ agent/run_agent.py:run_agent */
+/* PoP: agent_run_conversation @ agent/conversation_loop.py:run_agent */
 /* Header-declared alias for run_conversation() — the API-server/gateway */
 /* path uses the agent_run_ prefix (name parity with the Python-facing */
 /* surface); run_conversation is the canonical implementation. */

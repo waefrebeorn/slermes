@@ -14,7 +14,7 @@
 
 /* PoP: cli_gateway_platforms_qqbot_utils_build_user_agent @ plugins/platforms/qqbot/utils.py:build_user_agent */
 
-/* Port of Python gateway/platforms/qqbot/utils.py:build_user_agent */
+/* Port of Python plugins/platforms/qqbot/utils.py:build_user_agent */
 /* Build a descriptive User-Agent string.
  * Format: QQBotAdapter/<qqbot_version> (Python/<py_version>; <os>; Hermes/<hermes_version>)
  * In C, we use the C version string instead of Python version. */
@@ -48,7 +48,7 @@ char *cli_gateway_platforms_qqbot_utils_build_user_agent(void)
 
 /* PoP: cli_gateway_platforms_qqbot_utils_get_api_headers @ plugins/platforms/qqbot/utils.py:get_api_headers */
 
-/* Port of Python gateway/platforms/qqbot/utils.py:get_api_headers */
+/* Port of Python plugins/platforms/qqbot/utils.py:get_api_headers */
 /* Return standard HTTP headers for QQBot API requests.
  * Returns a JSON string: {"Content-Type":"application/json","Accept":"application/json","User-Agent":"..."}
  * Caller is responsible for freeing the returned string. */
@@ -69,7 +69,7 @@ char *cli_gateway_platforms_qqbot_utils_get_api_headers(void)
 
 /* PoP: cli_gateway_platforms_qqbot_utils_coerce_list @ plugins/platforms/qqbot/utils.py:coerce_list */
 
-/* Port of Python gateway/platforms/qqbot/utils.py:coerce_list */
+/* Port of Python plugins/platforms/qqbot/utils.py:coerce_list */
 /* Coerce a comma-separated string into a trimmed string array.
  * Returns a NULL-terminated array of strings. Caller must free each element and the array. */
 char **cli_gateway_platforms_qqbot_utils_coerce_list(const char *value, int *count_out)

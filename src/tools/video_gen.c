@@ -472,7 +472,7 @@ static char *video_gen_make_cache_path(const char *hermes_home,
 }
 
 /* Return $HERMES_HOME/cache/videos/, creating parents as needed.
- * Port of Python video_gen_provider.py:_videos_cache_dir().
+ * Port of Python agent/video_gen_provider.py:_videos_cache_dir().
  * Caller frees the returned malloc'd string. */
 /* PoP: video_gen_cache_dir @ agent/video_gen_provider.py:_videos_cache_dir */
 char *video_gen_cache_dir(void)
@@ -494,7 +494,7 @@ char *video_gen_cache_dir(void)
 }
 
 /* Decode base64 video data and save to cache/videos/.
- * Port of Python video_gen_provider.py:save_b64_video(). */
+ * Port of Python agent/video_gen_provider.py:save_b64_video(). */
 char *video_gen_save_b64_video(const char *b64_data, const char *prefix,
                                 const char *extension) {
     const char *home = getenv("HERMES_HOME");
@@ -530,7 +530,7 @@ char *video_gen_save_b64_video(const char *b64_data, const char *prefix,
 }
 
 /* Save raw video bytes to cache/videos/.
- * Port of Python video_gen_provider.py:save_bytes_video(). */
+ * Port of Python agent/video_gen_provider.py:save_bytes_video(). */
 char *video_gen_save_bytes_video(const unsigned char *data, size_t data_len,
                                   const char *prefix, const char *extension) {
     if (!data || data_len == 0) return NULL;
@@ -558,7 +558,7 @@ char *video_gen_save_bytes_video(const unsigned char *data, size_t data_len,
 }
 
 /* Build a uniform success response JSON string. Returns malloc'd string (caller free).
- * Port of Python video_gen_provider.py:success_response(). */
+ * Port of Python agent/video_gen_provider.py:success_response(). */
 char *video_gen_success_response(const char *video, const char *model,
                                   const char *prompt, const char *modality,
                                   const char *aspect_ratio, int duration,
@@ -588,7 +588,7 @@ char *video_gen_success_response(const char *video, const char *model,
 }
 
 /* Build a uniform error response JSON string. Returns malloc'd string (caller free).
- * Port of Python video_gen_provider.py:error_response(). */
+ * Port of Python agent/video_gen_provider.py:error_response(). */
 char *video_gen_error_response(const char *error, const char *error_type,
                                 const char *provider, const char *model,
                                 const char *prompt, const char *aspect_ratio) {

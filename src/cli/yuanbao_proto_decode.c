@@ -49,7 +49,7 @@ char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 
 
 /* decode forward multimedia / msg_content / msg */
-/* PoP: _decode_forward_multimedia @ gateway/platforms/yuanbao_proto.py:_decode_forward_multimedia */
+/* PoP: _decode_forward_multimedia @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_forward_multimedia */
 static json_t *yb_decode_forward_multimedia(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -299,7 +299,7 @@ char *yuanbao_proto_decode_msg_body_element(const unsigned char *data, size_t le
 }
 
 
-/* PoP: _decode_im_msg_seq @ gateway/platforms/yuanbao_proto.py:_decode_im_msg_seq */
+/* PoP: _decode_im_msg_seq @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_im_msg_seq */
 char *yuanbao_proto_decode_im_msg_seq(const unsigned char *data, size_t len)
 {
     yb_fields rf; if (!yb_parse_fields(data,len,&rf)) return strdup("{}");
@@ -310,7 +310,7 @@ char *yuanbao_proto_decode_im_msg_seq(const unsigned char *data, size_t len)
 }
 
 
-/* PoP: _decode_log_ext @ gateway/platforms/yuanbao_proto.py:_decode_log_ext */
+/* PoP: _decode_log_ext @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_log_ext */
 char *yuanbao_proto_decode_log_ext(const unsigned char *data, size_t len)
 {
     yb_fields lf; if (!yb_parse_fields(data,len,&lf)) return strdup("{}");

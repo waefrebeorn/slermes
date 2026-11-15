@@ -42,7 +42,7 @@
 }
 
 
-/* Port of Python gateway/platforms/weixin.py:_path(). */ void skill_path(const char *name, char *buf, size_t sz) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_path(). */ void skill_path(const char *name, char *buf, size_t sz) {
     char sd[HERMES_PATH_MAX];
     skills_dir(sd, sizeof(sd));
     snprintf(buf, sz, "%s/%s", sd, name);
@@ -89,8 +89,8 @@
 }
 
 
-/* Port of Python tools/memory_tool.py:_write_file(). */
-/* Port of Python tools/file_operations.py:write_file(). */ bool write_file(const char *path, const char *content) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_write_file(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:write_file(). */ bool write_file(const char *path, const char *content) {
     FILE *f = fopen(path, "w");
     if (!f) return false;
     size_t len = strlen(content);

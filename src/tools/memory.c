@@ -212,7 +212,7 @@ bool memory_storage_sqlite_init(memory_storage_t *st, const char *path) {
     return st->vtable.open(st, path ? path : "memory.db");
 }
 
-/* Port of Python gateway/platforms/yuanbao.py:open(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:open(). */
 /* ================================================================
  *  Plugin-backed vtable — delegates to plugin_interface_t
  * ================================================================ */
@@ -429,7 +429,7 @@ bool memory_storage_plugin_init(memory_storage_t *st, void *plugin_reg, const ch
                      "%s/hermes-agent-dev/C/src/plugins/plugin_honcho.so", home);
             plug = plugin_load(plugin_path);
             if (plug) {
-/* PoP: get_default_memory_path @ tools/memory_tool.py:add */
+/* PoP: get_default_memory_path @ plugins/platforms/yuanbao/adapter.py:add */
                 plugin_registry_add(reg, plug);
                 /* Initialize */
                 typedef int (*init_fn_t)(void);
@@ -657,8 +657,8 @@ bool memory_get(memory_t *mem, const char *key, memory_entry_t *entry) {
     return found;
 }
 
-/* Port of Python tools/browser_camofox.py:_delete(). */
-/* Port of Python gateway/platforms/api_server.py:delete(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_delete(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:delete(). */
 bool memory_delete(memory_t *mem, const char *key) {
     if (!mem || !key) return false;
     pthread_mutex_lock(&mem->lock);
@@ -811,7 +811,7 @@ void memory_autosave_stop_thread(memory_t *mem) {
     mem->autosave = MEMORY_AUTOSAVE_OFF;
 }
 
-/* Port of Python agent/credential_pool.py:_persist(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_persist(). */
 bool memory_persist(memory_t *mem) {
     if (!mem) return false;
     pthread_mutex_lock(&mem->lock);

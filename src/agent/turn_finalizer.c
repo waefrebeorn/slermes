@@ -29,7 +29,7 @@ extern char *serialize_messages(const agent_state_t *state);
 /**
  * finalize_turn — Post-loop turn finalization.
  *
- * Port of Python turn_finalizer.py:finalize_turn.
+ * Port of Python agent/turn_finalizer.py:finalize_turn.
  * Called at the end of run_conversation() after the main tool-calling loop.
  *
  * Determines the exit reason, logs turn diagnostics, and returns

@@ -69,7 +69,7 @@ void yb_f_varint(yb_buf *b, int fn, uint64_t v)
 
 /* convenience: length-delimited field from raw bytes */
 
-/* PoP: _encode_bytes @ gateway/platforms/yuanbao_proto.py:_encode_bytes */void yb_f_len(yb_buf *b, int fn, const unsigned char *d, size_t n)
+/* PoP: _encode_bytes @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_bytes */void yb_f_len(yb_buf *b, int fn, const unsigned char *d, size_t n)
 { yb_append_varint(b, (uint64_t)((fn << 3) | WT_LEN)); yb_append_varint(b, n); yb_append(b, d, n); }
 
 /* string field */

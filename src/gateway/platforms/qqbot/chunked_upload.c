@@ -73,7 +73,7 @@ int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_prepare @ gateway/platforms/qqbot/chunked_upload.py:_prepare */
+/* PoP: gateway_platforms_qqbot_chunke_u_prepare @ plugins/platforms/qqbot/chunked_upload.py:_prepare */
 int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
     /* Python: upload_prepare. Arg =
      * "state\tresult\terr". */
@@ -167,7 +167,7 @@ int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_qqbot_chunke_u_run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
+/* PoP: gateway_platforms_qqbot_chunke_u_run_with_concurrency @ plugins/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
 int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) {
     /* Python: bounded thunks. Arg =
      * "done\tstate\tresult". */

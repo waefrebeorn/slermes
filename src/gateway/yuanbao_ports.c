@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: yb2_call @ gateway/platforms/yuanbao.py:__call__ */
+/* PoP: yb2_call @ plugins/platforms/yuanbao/adapter.py:__call__ */
 char *yb2_call(const char *ctx_json) {
     /* Python: duck-typed direct middleware call. */
     if (!ctx_json) return NULL;
@@ -29,13 +29,13 @@ char *yb2_call(const char *ctx_json) {
     return strdup(ctx_json);
 }
 
-/* PoP: yb2_mw_init @ gateway/platforms/yuanbao.py:__init__ */
+/* PoP: yb2_mw_init @ plugins/platforms/yuanbao/adapter.py:__init__ */
 char *yb2_mw_init(void) {
     /* Python: middleware pipeline init. */
     return strdup("[]");
 }
 
-/* PoP: yb2_mw_normalize @ gateway/platforms/yuanbao.py:_normalize */
+/* PoP: yb2_mw_normalize @ plugins/platforms/yuanbao/adapter.py:_normalize */
 char *yb2_mw_normalize(const char *entry_json) {
     /* Python: (name, handler) or middleware → (name, callable). */
     if (!entry_json) return NULL;
@@ -43,21 +43,21 @@ char *yb2_mw_normalize(const char *entry_json) {
     return strdup(entry_json);
 }
 
-/* PoP: yb2_mw_use @ gateway/platforms/yuanbao.py:use */
+/* PoP: yb2_mw_use @ plugins/platforms/yuanbao/adapter.py:use */
 long yb2_mw_use(const char *name, const char *handler_desc) {
     /* Python: append middleware to pipeline end — REAL list append. */
     if (!name || !handler_desc) return -1;
     return 0;
 }
 
-/* PoP: yb2_mw_remove @ gateway/platforms/yuanbao.py:remove */
+/* PoP: yb2_mw_remove @ plugins/platforms/yuanbao/adapter.py:remove */
 long yb2_mw_remove(const char *name) {
     /* Python: remove by name. */
     if (!name) return -1;
     return 0;
 }
 
-/* PoP: yb2_mw_execute @ gateway/platforms/yuanbao.py:execute */
+/* PoP: yb2_mw_execute @ plugins/platforms/yuanbao/adapter.py:execute */
 char *yb2_mw_execute(const char *ctx_json) {
     /* Python: run all middlewares in order. */
     if (!ctx_json) return NULL;
@@ -84,7 +84,7 @@ char *yb2_build_source(const char *group_code, const char *user_openid) {
  * TIMCustomElem -> data JSON dispatch (1002 mention, 1010 share card,
  * 1007 link understanding, 1009 chat record); TIMFaceElem -> "[emoji: n]";
  * unknown types -> "[<type>]". Elems joined with spaces.
- * PoP: yb2_extract_text @ gateway/platforms/yuanbao.py:_extract_text
+ * PoP: yb2_extract_text @ plugins/platforms/yuanbao/adapter.py:_extract_text
  */
 #define YB_CARD_CONTENT_MAX_LENGTH 1000
 
@@ -310,19 +310,19 @@ char *yb2_extract_text(const char *msg_body_json) {
     return out ? out : strdup("");
 }
 
-/* PoP: yb2_ws @ gateway/platforms/yuanbao.py:ws */
+/* PoP: yb2_ws @ plugins/platforms/yuanbao/adapter.py:ws */
 char *yb2_ws(void) { /* Python default is also a no-op */ 
     /* Python: raw ws accessor. */
     return NULL;
 }
 
-/* PoP: yb2_is_connected @ gateway/platforms/yuanbao.py:is_connected */
+/* PoP: yb2_is_connected @ plugins/platforms/yuanbao/adapter.py:is_connected */
 bool yb2_is_connected(void) {
     /* Python: ws open attribute check. */
     return yuanbao_is_running();
 }
 
-/* PoP: yb2_open @ gateway/platforms/yuanbao.py:open */
+/* PoP: yb2_open @ plugins/platforms/yuanbao/adapter.py:open */
 bool yb2_open(void) {
     /* Python: sign-token → ws connect → AUTH_BIND → start loops.
      * Delegate to the live C implementation (src/gateway/platforms/
@@ -339,7 +339,7 @@ bool yb2_open(void) {
     return yuanbao_is_running();
 }
 
-/* PoP: yb2_handle_frame @ gateway/platforms/yuanbao.py:_handle_frame */
+/* PoP: yb2_handle_frame @ plugins/platforms/yuanbao/adapter.py:_handle_frame */
 int yb2_handle_frame(const char *frame_json) {
     /* Python: single ws frame dispatch — REAL type dispatch. */
     if (!frame_json) return -1;
@@ -363,7 +363,7 @@ int yb2_handle_frame(const char *frame_json) {
     return 0;
 }
 
-/* PoP: yb2_truncate_message @ gateway/platforms/yuanbao.py:truncate_message */
+/* PoP: yb2_truncate_message @ plugins/platforms/yuanbao/adapter.py:truncate_message */
 char *yb2_truncate_message(const char *text, long max_len) {
     /* Python: table-aware chunk splitting. */
     if (!text) return strdup("");
@@ -375,7 +375,7 @@ char *yb2_truncate_message(const char *text, long max_len) {
     return out;
 }
 
-/* PoP: yb2_stop_typing @ gateway/platforms/yuanbao.py:stop_typing */
+/* PoP: yb2_stop_typing @ plugins/platforms/yuanbao/adapter.py:stop_typing */
 int yb2_stop_typing(const char *chat_id, bool send_finish) {
     /* Python: heartbeat stop w/ finish flag. */
     if (!chat_id) return -1;
@@ -389,20 +389,20 @@ char *yb2_get_active(void) {
     return NULL;
 }
 
-/* PoP: yb2_enforces_own_access_policy @ gateway/platforms/yuanbao.py:enforces_own_access_policy */
+/* PoP: yb2_enforces_own_access_policy @ plugins/platforms/yuanbao/adapter.py:enforces_own_access_policy */
 bool yb2_enforces_own_access_policy(void) { /* Python default is also a no-op */ 
     /* Python: DM/group gated via dm_policy/group_policy. */
     return true;
 }
 
-/* PoP: yb2_disconnect @ gateway/platforms/yuanbao.py:disconnect */
+/* PoP: yb2_disconnect @ plugins/platforms/yuanbao/adapter.py:disconnect */
 int yb2_disconnect(void) {
     /* Python: cancel tasks + close ws. */
     yuanbao_stop();
     return 0;
 }
 
-/* PoP: yb2_get_chat_info @ gateway/platforms/yuanbao.py:get_chat_info */
+/* PoP: yb2_get_chat_info @ plugins/platforms/yuanbao/adapter.py:get_chat_info */
 char *yb2_get_chat_info(const char *chat_id) {
     /* Python: group:/direct: prefix classification. */
     if (!chat_id) return NULL;
@@ -412,14 +412,14 @@ char *yb2_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: yb2_send_typing @ gateway/platforms/yuanbao.py:send_typing */
+/* PoP: yb2_send_typing @ plugins/platforms/yuanbao/adapter.py:send_typing */
 int yb2_send_typing(const char *chat_id) {
     /* Python: RUNNING heartbeat via OutboundManager. */
     if (!chat_id) return -1;
     return 0;
 }
 
-/* PoP: yb2_send_image @ gateway/platforms/yuanbao.py:send_image */
+/* PoP: yb2_send_image @ plugins/platforms/yuanbao/adapter.py:send_image */
 char *yb2_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: ImageUrlHandler delegation. */
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
@@ -427,7 +427,7 @@ char *yb2_send_image(const char *chat_id, const char *image_url, const char *cap
     return strdup("{\"success\": true}");
 }
 
-/* PoP: yb2_send_image_file @ gateway/platforms/yuanbao.py:send_image_file */
+/* PoP: yb2_send_image_file @ plugins/platforms/yuanbao/adapter.py:send_image_file */
 char *yb2_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: ImageFileHandler delegation. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
@@ -435,7 +435,7 @@ char *yb2_send_image_file(const char *chat_id, const char *file_path, const char
     return strdup("{\"success\": true}");
 }
 
-/* PoP: yb2_send_file @ gateway/platforms/yuanbao.py:send_file */
+/* PoP: yb2_send_file @ plugins/platforms/yuanbao/adapter.py:send_file */
 char *yb2_send_file(const char *chat_id, const char *file_url, const char *caption) {
     /* Python: FileUrlHandler delegation. */
     if (!chat_id || !file_url) return strdup("{\"success\": false}");
@@ -443,7 +443,7 @@ char *yb2_send_file(const char *chat_id, const char *file_url, const char *capti
     return strdup("{\"success\": true}");
 }
 
-/* PoP: yb2_send_document @ gateway/platforms/yuanbao.py:send_document */
+/* PoP: yb2_send_document @ plugins/platforms/yuanbao/adapter.py:send_document */
 char *yb2_send_document(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: DocumentHandler delegation. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
@@ -451,14 +451,14 @@ char *yb2_send_document(const char *chat_id, const char *file_path, const char *
     return strdup("{\"success\": true}");
 }
 
-/* PoP: yb2_get_status @ gateway/platforms/yuanbao.py:get_status */
+/* PoP: yb2_get_status @ plugins/platforms/yuanbao/adapter.py:get_status */
 char *yb2_get_status(void) {
     /* Python: connection snapshot. */
     printf("yuanbao status snapshotted\n");
     return strdup("{\"connected\": false}");
 }
 
-/* PoP: yb2_get_active_adapter @ gateway/platforms/yuanbao.py:get_active_adapter */
+/* PoP: yb2_get_active_adapter @ plugins/platforms/yuanbao/adapter.py:get_active_adapter */
 char *yb2_get_active_adapter(void) {
     /* Python: module-level delegation. */
     return yb2_get_active();

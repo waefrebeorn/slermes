@@ -48,7 +48,7 @@ unsigned char *weixin_pkcs7_pad(const unsigned char *data, size_t len, size_t *o
 }
 
 
-/* PoP: _aes_padded_size @ gateway/platforms/weixin.py:_aes_padded_size */
+/* PoP: _aes_padded_size @ plugins/platforms/weixin/adapter.py:_aes_padded_size */
 size_t weixin_aes_padded_size(size_t size)
 {
     return ((size + 1 + 15) / 16) * 16;
@@ -135,9 +135,9 @@ void weixin_safe_id(const char *in, char *out, size_t out_sz)
 }
 
 
-/* PoP: _random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */
+/* PoP: _random_wechat_uin @ plugins/platforms/weixin/adapter.py:_random_wechat_uin */
 /* Generate a random 32-bit big-endian value, base64-encoded as ASCII. */
-/* PoP: weixin_random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */
+/* PoP: weixin_random_wechat_uin @ plugins/platforms/weixin/adapter.py:_random_wechat_uin */
 void weixin_random_wechat_uin(char *out, size_t out_sz)
 {
     unsigned char b[4];
@@ -162,8 +162,8 @@ bool weixin_check_requirements(void)
 }
 
 
-/* PoP: _base_info @ gateway/platforms/weixin.py:_base_info */
-/* PoP: weixin_base_info @ gateway/platforms/weixin.py:_base_info */
+/* PoP: _base_info @ plugins/platforms/weixin/adapter.py:_base_info */
+/* PoP: weixin_base_info @ plugins/platforms/weixin/adapter.py:_base_info */
 json_t *weixin_base_info(void)
 {
     json_t *obj = json_object();
@@ -187,8 +187,8 @@ char *weixin_account_dir(const char *hermes_home)
 }
 
 
-/* PoP: _account_file @ gateway/platforms/weixin.py:_account_file */
-/* PoP: weixin_account_file @ gateway/platforms/weixin.py:_account_file */
+/* PoP: _account_file @ plugins/platforms/weixin/adapter.py:_account_file */
+/* PoP: weixin_account_file @ plugins/platforms/weixin/adapter.py:_account_file */
 char *weixin_account_file(const char *hermes_home, const char *account_id)
 {
     if (!hermes_home || !account_id) return NULL;

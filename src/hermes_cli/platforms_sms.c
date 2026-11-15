@@ -21,7 +21,7 @@
 
 /* PoP: cli_gateway_platforms_sms_check_sms_requirements @ plugins/platforms/sms/adapter.py:check_sms_requirements */
 
-/* Port of Python gateway/platforms/sms.py:check_sms_requirements */
+/* Port of Python plugins/platforms/sms/adapter.py:check_sms_requirements */
 /* Check if SMS adapter dependencies are available. */
 int cli_gateway_platforms_sms_check_sms_requirements(void)
 {
@@ -43,9 +43,9 @@ int cli_gateway_platforms_sms_check_sms_requirements(void)
     return 1;
 }
 
-/* PoP: cli_gateway_platforms_sms__basic_auth_header @ gateway/platforms/sms.py:_basic_auth_header */
+/* PoP: cli_gateway_platforms_sms__basic_auth_header @ plugins/platforms/sms/adapter.py:_basic_auth_header */
 
-/* Port of Python gateway/platforms/sms.py:_basic_auth_header */
+/* Port of Python plugins/platforms/sms/adapter.py:_basic_auth_header */
 /* Build HTTP Basic auth header value for Twilio. */
 int cli_gateway_platforms_sms__basic_auth_header(
     const char *account_sid, const char *auth_token,
@@ -68,7 +68,7 @@ int cli_gateway_platforms_sms__basic_auth_header(
 
 /* PoP: header @ plugins/platforms/sms/adapter.py:_validate_twilio_signature */
 
-/* Port of Python gateway/platforms/sms.py:_validate_twilio_signature */
+/* Port of Python plugins/platforms/sms/adapter.py:_validate_twilio_signature */
 /* Validate X-Twilio-Signature header (HMAC-SHA1, base64). */
 int cli_gateway_platforms_sms__validate_twilio_signature(
     const char *url, const char **param_keys, const char **param_values,
@@ -134,7 +134,7 @@ int cli_gateway_platforms_sms__validate_twilio_signature(
 
 /* PoP: cli_gateway_platforms_sms__check_signature @ plugins/platforms/sms/adapter.py:_check_signature */
 
-/* Port of Python gateway/platforms/sms.py:_check_signature */
+/* Port of Python plugins/platforms/sms/adapter.py:_check_signature */
 /* Compute and compare a single Twilio signature. */
 int cli_gateway_platforms_sms__check_signature(
     const char *url, const char **param_keys, const char **param_values,
@@ -192,7 +192,7 @@ int cli_gateway_platforms_sms__check_signature(
 
 /* PoP: cli_gateway_platforms_sms__port_variant_url @ plugins/platforms/sms/adapter.py:_port_variant_url */
 
-/* Port of Python gateway/platforms/sms.py:_port_variant_url */
+/* Port of Python plugins/platforms/sms/adapter.py:_port_variant_url */
 /* Return the URL with the default port toggled, or empty string. */
 int cli_gateway_platforms_sms__port_variant_url(
     const char *url, char *variant_out, size_t variant_size)

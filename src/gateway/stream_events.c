@@ -7,12 +7,12 @@
  * Provides typed event structs and a synchronous dispatch function
  * that routes events through a platform adapter callback.
  *
- * Port of Python stream_events.py:
+ * Port of Python gateway/stream_dispatch.py:
  *   MessageChunk, MessageStop, Commentary, ToolCallChunk,
  *   ToolCallFinished, LongToolHint, GatewayNotice, StreamEvent
  *   — defined in include/hermes_gateway_stream.h
  *
- * Port of Python stream_dispatch.py:
+ * Port of Python gateway/stream_dispatch.py:
  *   GatewayEventDispatcher.dispatch() → stream_event_dispatch()
  */
 
@@ -24,7 +24,7 @@
  *  Stream event dispatch — route event through adapter callback
  * ================================================================ */
 
-/* Port of Python stream_dispatch.py:GatewayEventDispatcher.dispatch() */
+/* Port of Python gateway/stream_dispatch.py:GatewayEventDispatcher.dispatch() */
 int stream_event_dispatch(const stream_event_t *event,
                            stream_event_callback_t callback,
                            void *userdata)

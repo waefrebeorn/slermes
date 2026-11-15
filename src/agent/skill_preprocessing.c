@@ -22,7 +22,7 @@
 /* Replace ${HERMES_SKILL_DIR} and ${HERMES_SESSION_ID} tokens.
  * Returns malloc'd string (caller must free) or NULL on error.
  * Unresolved tokens are left in place. */
-/* Port of Python skill_preprocessing.py:substitute_template_vars(). */
+/* Port of Python agent/skill_preprocessing.py:substitute_template_vars(). */
 char *substitute_template_vars(const char *content,
                                       const char *skill_dir,
                                       const char *session_id) {
@@ -130,7 +130,7 @@ char *substitute_template_vars(const char *content,
 /* Execute a command via popen and return its stdout.
  * Returns malloc'd string (caller must free). On error, returns
  * an error marker string (also malloc'd). */
-/* Port of Python skill_preprocessing.py:run_inline_shell(). */
+/* Port of Python agent/skill_preprocessing.py:run_inline_shell(). */
 static char *run_inline_shell(const char *command, int timeout_sec) {
     if (!command || !command[0])
         return strdup("");
@@ -185,7 +185,7 @@ static char *run_inline_shell(const char *command, int timeout_sec) {
 
 /* Find and expand `!`cmd`` snippets in content.
  * Returns malloc'd string (caller must free). */
-/* Port of Python skill_preprocessing.py:expand_inline_shell(). */
+/* Port of Python agent/skill_preprocessing.py:expand_inline_shell(). */
 char *expand_inline_shell(const char *content, int timeout_sec) {
     if (!content || !strstr(content, "!`"))
         return content ? strdup(content) : NULL;
@@ -278,7 +278,7 @@ char *expand_inline_shell(const char *content, int timeout_sec) {
  * Returns malloc'd string (caller must free) or NULL on error.
  * If template_vars is true, substitutes ${HERMES_SKILL_DIR/SESSION_ID}.
  * If inline_shell is true, expands !`cmd` snippets. */
-/* Port of Python skill_preprocessing.py:preprocess_skill_content(). */
+/* Port of Python agent/skill_preprocessing.py:preprocess_skill_content(). */
 char *preprocess_skill_content(const char *content,
                                 const char *skill_dir,
                                 const char *session_id,

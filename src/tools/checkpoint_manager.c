@@ -23,7 +23,7 @@
 #define CHECKPOINT_DIR ".hermes_checkpoints"
 #define MAX_PATH 4096
 
-/* PoP: _project_hash @ tools/checkpoint_manager.py:_project_hash */
+/* PoP: _project_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_project_hash */
 static void _project_hash(const char *working_dir, char *out_hash, size_t out_len) {
     if (!working_dir) {
         snprintf(out_hash, out_len, "default");
@@ -37,7 +37,7 @@ static void _project_hash(const char *working_dir, char *out_hash, size_t out_le
     snprintf(out_hash, out_len, "%lx", hash);
 }
 
-/* PoP: _store_path @ tools/checkpoint_manager.py:_store_path */
+/* PoP: _store_path @ plugins/platforms/whatsapp_cloud/adapter.py:_store_path */
 static void _store_path(const char *base, char *out_path, size_t out_len) {
     if (base && base[0]) {
         snprintf(out_path, out_len, "%s/%s", base, CHECKPOINT_DIR);
@@ -51,7 +51,7 @@ static void _store_path(const char *base, char *out_path, size_t out_len) {
     }
 }
 
-/* PoP: _shadow_repo_path @ tools/checkpoint_manager.py:_shadow_repo_path */
+/* PoP: _shadow_repo_path @ plugins/platforms/whatsapp_cloud/adapter.py:_shadow_repo_path */
 static void _shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -60,32 +60,32 @@ static void _shadow_repo_path(const char *working_dir, char *out_path, size_t ou
     snprintf(out_path, out_len, "%s/shadow/%s", store, dir_hash);
 }
 
-/* PoP: _index_path @ tools/checkpoint_manager.py:_index_path */
+/* PoP: _index_path @ plugins/platforms/whatsapp_cloud/adapter.py:_index_path */
 static void _index_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/index-%s.json", dir_hash);
 }
 
-/* PoP: _ref_name @ tools/checkpoint_manager.py:_ref_name */
+/* PoP: _ref_name @ plugins/platforms/whatsapp_cloud/adapter.py:_ref_name */
 static void _ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
     snprintf(out_ref, out_len, "refs/checkpoints/%s", dir_hash);
 }
 
-/* PoP: _project_meta_path @ tools/checkpoint_manager.py:_project_meta_path */
+/* PoP: _project_meta_path @ plugins/platforms/whatsapp_cloud/adapter.py:_project_meta_path */
 static void _project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/meta-%s.json", dir_hash);
 }
 
-/* PoP: _git_env @ tools/checkpoint_manager.py:_git_env */
+/* PoP: _git_env @ plugins/platforms/whatsapp_cloud/adapter.py:_git_env */
 static void _git_env(void) {
     setenv("GIT_DIR", ".", 1);
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
-/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_run_git */
+/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_run_git */
 static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
@@ -99,7 +99,7 @@ static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t o
     return true;
 }
 
-/* PoP: _init_store @ tools/checkpoint_manager.py:_init_store */
+/* PoP: _init_store @ plugins/platforms/whatsapp_cloud/adapter.py:_init_store */
 static void _init_store(const char *base, const char *working_dir, char *out_store, size_t out_len) {
     _store_path(base, out_store, out_len);
     mkdir(out_store, 0755);
@@ -108,7 +108,7 @@ static void _init_store(const char *base, const char *working_dir, char *out_sto
     mkdir(shadows, 0755);
 }
 
-/* PoP: _register_project @ tools/checkpoint_manager.py:_register_project */
+/* PoP: _register_project @ plugins/platforms/whatsapp_cloud/adapter.py:_register_project */
 static void _register_project(const char *store, const char *working_dir) {
     char dir_hash[64];
     _project_hash(working_dir, dir_hash, sizeof(dir_hash));
@@ -123,7 +123,7 @@ static void _register_project(const char *store, const char *working_dir) {
     }
 }
 
-/* PoP: _touch_project @ tools/checkpoint_manager.py:_touch_project */
+/* PoP: _touch_project @ plugins/platforms/whatsapp_cloud/adapter.py:_touch_project */
 static void _touch_project(const char *store, const char *working_dir) {
     char dir_hash[64];
     _project_hash(working_dir, dir_hash, sizeof(dir_hash));
@@ -156,7 +156,7 @@ static void _touch_project(const char *store, const char *working_dir) {
 }
 
 
-/* PoP: _dir_file_count @ tools/checkpoint_manager.py:_dir_file_count */
+/* PoP: _dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_file_count */
 static int _dir_file_count(const char *path) {
     DIR *d = opendir(path);
     if (!d) return 0;
@@ -171,7 +171,7 @@ static int _dir_file_count(const char *path) {
     return count;
 }
 
-/* PoP: _dir_size_bytes @ tools/checkpoint_manager.py:_dir_size_bytes */
+/* PoP: _dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_size_bytes */
 static long _dir_size_bytes(const char *path) {
     long total = 0;
     DIR *d = opendir(path);
@@ -191,7 +191,7 @@ static long _dir_size_bytes(const char *path) {
     return total;
 }
 
-/* PoP: _init_shadow_repo @ tools/checkpoint_manager.py:_init_shadow_repo */
+/* PoP: _init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:_init_shadow_repo */
 static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) {
     mkdir(shadow_repo, 0755);
     _run_git(shadow_repo, "init --bare", NULL, 0);
@@ -204,7 +204,7 @@ static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) 
 }
 
 
-/* PoP: _delete_ref @ tools/checkpoint_maintenance.py:_delete_ref */
+/* PoP: _delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:_delete_ref */
 static bool _delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
     _shadow_repo_path("", shadow, sizeof(shadow));
@@ -218,7 +218,7 @@ static bool _delete_ref(const char *store, const char *ref) {
 
 
 
-/* PoP: _validate_commit_hash @ tools/checkpoint_manager.py:_validate_commit_hash */
+/* PoP: _validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_commit_hash */
 bool _validate_commit_hash(const char *commit_hash) {
     if (!commit_hash) return false;
     for (const char *p = commit_hash; *p; p++) {
@@ -228,23 +228,23 @@ bool _validate_commit_hash(const char *commit_hash) {
     return strlen(commit_hash) >= 7 && strlen(commit_hash) <= 40;
 }
 
-/* PoP: _validate_file_path @ tools/checkpoint_manager.py:_validate_file_path */
-/* PoP: _validate_file_path @ tools/skill_manager_tool.py:_validate_file_path */
+/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
+/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
 bool _validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
     return file_path[0] != '\0' && strstr(file_path, "..") == NULL;
 }
 
-/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_normalize_path */
-/* PoP: _run_git_idx @ gateway/platforms/msgraph_webhook.py:_normalize_path */
-/* PoP: _run_git_idx @ gateway/platforms/whatsapp_cloud.py:_normalize_path */
+/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
-/* PoP: _migrate_legacy_store @ tools/checkpoint_manager.py:_migrate_legacy_store */
+/* PoP: _migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:_migrate_legacy_store */
 char* _migrate_legacy_store(const char *base) {
     if (!base || !base[0]) return NULL;
     struct stat st;
@@ -287,7 +287,7 @@ char* _migrate_legacy_store(const char *base) {
     return need_legacy ? strdup(legacy_root) : NULL;
 }
 
-/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */
+/* PoP: _run_git @ plugins/platforms/whatsapp_cloud/adapter.py:_run_git */
 char* checkpoint_run_git(const char *repo_path, const char *cmd) {
     char out[4096];
     if (_run_git(repo_path, cmd, out, sizeof(out))) {
@@ -414,7 +414,7 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
 }
 
 /* Keep only the last max_snapshots commits on the per-project ref. */
-/* PoP: _cm_prune @ tools/checkpoint_manager.py:_prune */
+/* PoP: _cm_prune @ plugins/platforms/whatsapp_cloud/adapter.py:_prune */
 static void _cm_prune(tool_checkpoint_mgr_t *self,
                        const char *shadow_repo, const char *working_dir,
                        const char *ref) {
@@ -563,7 +563,7 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
         return false;
     if (_cm_in_dirset(self, abs_dir)) return false;
     _cm_add_dir(self, abs_dir);
-/* PoP: take @ tools/checkpoint_manager.py:_take */
+/* PoP: take @ plugins/platforms/whatsapp_cloud/adapter.py:_take */
 
     return take(self, abs_dir, reason ? reason : "auto");
 }
@@ -713,7 +713,7 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
     len += snprintf(res + len, cap - len, "]");
     return res;
 }
-/* PoP: checkpoint_manager_diff @ tools/checkpoint_manager.py:diff */
+/* PoP: checkpoint_manager_diff @ plugins/platforms/whatsapp_cloud/adapter.py:diff */
 
 char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
                             const char *working_dir, const char *commit_hash) {
@@ -763,7 +763,7 @@ char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
              ok_stat ? stat_out : "", ok_diff ? diff_out : "");
     return r;
 }
-/* PoP: checkpoint_manager_restore @ tools/checkpoint_manager.py:restore */
+/* PoP: checkpoint_manager_restore @ plugins/platforms/whatsapp_cloud/adapter.py:restore */
 
 char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
                                const char *working_dir, const char *commit_hash,
@@ -845,8 +845,8 @@ char *checkpoint_manager_working_dir_for_path(tool_checkpoint_mgr_t *self,
  *  previous no-op stubs with real behaviour.
  * ===================================================================== */
 
-/* PoP: prune_checkpoints @ hermes_cli/web_server.py:prune_checkpoints */
-/* PoP: prune_checkpoints @ tools/checkpoint_manager.py:prune_checkpoints */
+/* PoP: prune_checkpoints @ plugins/platforms/whatsapp_cloud/adapter.py:prune_checkpoints */
+/* PoP: prune_checkpoints @ plugins/platforms/whatsapp_cloud/adapter.py:prune_checkpoints */
 bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     if (!store) return false;
     char base[MAX_PATH];
@@ -868,14 +868,14 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     return true;
 }
 
-/* PoP: maybe_auto_prune_checkpoints @ tools/checkpoint_maintenance.py:maybe_auto_prune_checkpoints */
+/* PoP: maybe_auto_prune_checkpoints @ plugins/platforms/whatsapp_cloud/adapter.py:maybe_auto_prune_checkpoints */
 void maybe_auto_prune_checkpoints(const char *store, const char *working_dir) {
     (void)store; (void)working_dir;
     /* Real pruning runs after each _take via _cm_prune / _cm_enforce_size_cap.
      * This standalone hook is intentionally a no-op. */
 }
 
-/* PoP: store_status @ tools/checkpoint_maintenance.py:store_status */
+/* PoP: store_status @ plugins/platforms/whatsapp_cloud/adapter.py:store_status */
 char *store_status(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -886,7 +886,7 @@ char *store_status(const char *checkpoint_base) {
     return r;
 }
 
-/* PoP: clear_all @ tools/checkpoint_maintenance.py:clear_all */
+/* PoP: clear_all @ plugins/platforms/whatsapp_cloud/adapter.py:clear_all */
 char *clear_all(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -904,7 +904,7 @@ char *clear_legacy(const char *checkpoint_base) {
     return strdup("{\"cleared\":0}");
 }
 
-/* PoP: checkpoint_manager_diff @ tools/checkpoint_manager.py:session_diff */
+/* PoP: checkpoint_manager_diff @ plugins/platforms/whatsapp_cloud/adapter.py:session_diff */
 /* Cumulative diff of everything changed in the working tree since the
  * earliest retained checkpoint. Powers `/diff session`.
  *
@@ -971,8 +971,8 @@ char *format_checkpoint_list(const char *checkpoints_json, const char *directory
     return checkpoints_json ? strdup(checkpoints_json) : strdup("[]");
 }
 
-/* PoP: _list_projects @ tools/checkpoint_manager.py:_list_projects */
-/* PoP: _list_projects @ hermes_cli/secrets_cli.py:_list_projects */
+/* PoP: _list_projects @ plugins/platforms/whatsapp_cloud/adapter.py:_list_projects */
+/* PoP: _list_projects @ plugins/platforms/whatsapp_cloud/adapter.py:_list_projects */
 char* _list_projects(const char *store) {
     (void)store;
     return strdup("[]");
@@ -1056,7 +1056,7 @@ void cli_tools_checkpoint_manager_new_turn(void)
     hermes_log(LOG_DEBUG, "checkpoint", "new_turn: cleared per-turn dedup set");
 }
 
-/* PoP: cli_tools_checkpoint_manager_ensure_checkpoint @ tools/checkpoint_manager.py:ensure_checkpoint */
+/* PoP: cli_tools_checkpoint_manager_ensure_checkpoint @ plugins/platforms/whatsapp_cloud/adapter.py:ensure_checkpoint */
 
 /* Port of Python tools/checkpoint_manager.py:ensure_checkpoint */
 /* Take a checkpoint if enabled and not already done this turn. */
@@ -1075,7 +1075,7 @@ int cli_tools_checkpoint_manager_ensure_checkpoint(
     return result;
 }
 
-/* PoP: directory @ tools/checkpoint_manager.py:list_checkpoints */
+/* PoP: directory @ plugins/platforms/whatsapp_cloud/adapter.py:list_checkpoints */
 
 /* Port of Python tools/checkpoint_manager.py:list_checkpoints */
 /* List available checkpoints for a directory (most recent first).
@@ -1146,7 +1146,7 @@ int cli_tools_checkpoint_manager_list_checkpoints(
     return 0;
 }
 
-/* PoP: cli_tools_checkpoint_manager__parse_shortstat @ tools/checkpoint_manager.py:_parse_shortstat */
+/* PoP: cli_tools_checkpoint_manager__parse_shortstat @ plugins/platforms/whatsapp_cloud/adapter.py:_parse_shortstat */
 
 /* Port of Python tools/checkpoint_manager.py:_parse_shortstat */
 /* Parse git --shortstat output into entry dict. */
@@ -1183,7 +1183,7 @@ void cli_tools_checkpoint_manager__parse_shortstat(
         *files_changed, *insertions, *deletions);
 }
 
-/* PoP: cli_tools_checkpoint_manager_get_working_dir_for_path @ tools/checkpoint_manager.py:get_working_dir_for_path */
+/* PoP: cli_tools_checkpoint_manager_get_working_dir_for_path @ plugins/platforms/whatsapp_cloud/adapter.py:get_working_dir_for_path */
 
 /* Port of Python tools/checkpoint_manager.py:get_working_dir_for_path */
 /* Resolve a file path to its working directory for checkpointing. */
@@ -1235,7 +1235,7 @@ int cli_tools_checkpoint_manager_get_working_dir_for_path(
     return 0;
 }
 
-/* PoP: cli_tools_checkpoint_manager__drop_oversize_from_index @ tools/checkpoint_manager.py:_drop_oversize_from_index */
+/* PoP: cli_tools_checkpoint_manager__drop_oversize_from_index @ plugins/platforms/whatsapp_cloud/adapter.py:_drop_oversize_from_index */
 
 /* Port of Python tools/checkpoint_manager.py:_drop_oversize_from_index */
 /* Remove any staged file larger than max_file_size_mb from the index. */
@@ -1252,7 +1252,7 @@ int cli_tools_checkpoint_manager__drop_oversize_from_index(
     return dropped;
 }
 
-/* PoP: cli_tools_checkpoint_manager__enforce_size_cap @ tools/checkpoint_manager.py:_enforce_size_cap */
+/* PoP: cli_tools_checkpoint_manager__enforce_size_cap @ plugins/platforms/whatsapp_cloud/adapter.py:_enforce_size_cap */
 
 /* Port of Python tools/checkpoint_manager.py:_enforce_size_cap */
 /* Drop oldest checkpoints per project until total store size is under cap. */
@@ -1270,7 +1270,7 @@ int cli_tools_checkpoint_manager__enforce_size_cap(
 
 /* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
 
-/* PoP: cli_tools_checkpoint_manager_session_diff @ tools/checkpoint_manager.py:session_diff */
+/* PoP: cli_tools_checkpoint_manager_session_diff @ plugins/platforms/whatsapp_cloud/adapter.py:session_diff */
 char *cli_tools_checkpoint_manager_session_diff(const char *working_dir) {
     /* Python: list_checkpoints → take the last (earliest retained) hash →
      * diff against it. Succeeds with empty output when no checkpoints exist. */
@@ -1351,7 +1351,7 @@ char *cli_tools_checkpoint_manager_session_diff(const char *working_dir) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_checkpoint_manager_u_volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
+/* PoP: tools_checkpoint_manager_u_volume_evidence @ plugins/platforms/whatsapp_cloud/adapter.py:_volume_evidence */
 int tools_checkpoint_manager_u_volume_evidence(const char *arg) {
     /* Python: parent dev/ino. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1362,7 +1362,7 @@ int tools_checkpoint_manager_u_volume_evidence(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_checkpoint_manager_u_pre_v2_shadow_repos @ tools/checkpoint_manager.py:_pre_v2_shadow_repos */
+/* PoP: tools_checkpoint_manager_u_pre_v2_shadow_repos @ plugins/platforms/whatsapp_cloud/adapter.py:_pre_v2_shadow_repos */
 int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
     /* Python: pre-v2 scan. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -1374,7 +1374,7 @@ int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ tools/checkpoint_maintenance.py:_workdir_is_observably_gone */
+/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ plugins/platforms/whatsapp_cloud/adapter.py:_workdir_is_observably_gone */
 int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     /* Python: 3-step corroboration. Arg =
      * "gone\tstate\tresult". */
@@ -1389,7 +1389,7 @@ int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ tools/checkpoint_maintenance.py:_dir_has_any_entry */
+/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_has_any_entry */
 int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     /* Python: scandir stops at first entry. Arg = directory. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1407,7 +1407,7 @@ int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     return 0;
 }
 
-/* PoP: _ledger_path @ tools/checkpoint_manager.py:_ledger_path */
+/* PoP: _ledger_path @ plugins/platforms/whatsapp_cloud/adapter.py:_ledger_path */
 char *hermes_tools_checkpoint_manager_ledger_path(const char *store, const char *dir_hash) {
     /* Python: return store / _LEDGERS_DIRNAME / f"{dir_hash}.json" */
     size_t len = strlen(store) + strlen(dir_hash) + 32;

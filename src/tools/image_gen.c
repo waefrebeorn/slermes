@@ -571,7 +571,7 @@ static char *image_gen_make_cache_path(const char *hermes_home,
 }
 
 /* Decode base64 image data and save to cache/images/.
- * Port of Python image_gen_provider.py:save_b64_image(). */
+ * Port of Python agent/image_gen_provider.py:save_b64_image(). */
 char *image_gen_save_b64_image(const char *b64_data, const char *prefix,
                                 const char *extension) {
     const char *home = getenv("HERMES_HOME");
@@ -639,7 +639,7 @@ static const char *image_gen_url_to_ext(const char *url) {
 }
 
 /* Download an image URL and save to cache/images/.
- * Port of Python image_gen_provider.py:save_url_image(). */
+ * Port of Python agent/image_gen_provider.py:save_url_image(). */
 char *image_gen_save_url_image(const char *url, const char *prefix,
                                 double timeout_sec, int max_bytes) {
     const char *home = getenv("HERMES_HOME");
@@ -784,7 +784,7 @@ void registry_init_image_gen(void) {
  * ================================================================ */
 
 /* Clamp aspect_ratio to valid set: landscape, square, portrait.
- * Port of Python image_gen_provider.py:resolve_aspect_ratio(). */
+ * Port of Python agent/image_gen_provider.py:resolve_aspect_ratio(). */
 const char *image_gen_resolve_aspect_ratio(const char *value) {
     if (!value) return "landscape";
     if (strcmp(value, "square") == 0) return "square";
@@ -794,9 +794,9 @@ const char *image_gen_resolve_aspect_ratio(const char *value) {
     return "landscape";
 }
 
-/* Port of Python tools/memory_tool.py:_success_response(). */
+/* Port of Python agent/image_gen_provider.py:_success_response(). */
 /* Build a uniform success response JSON string. Returns malloc'd string (caller free).
- * Port of Python image_gen_provider.py:success_response(). */
+ * Port of Python agent/image_gen_provider.py:success_response(). */
 char *image_gen_success_response(const char *image, const char *model,
                                   const char *prompt, const char *aspect_ratio,
                                   const char *provider, const char *extra_json) {
@@ -823,7 +823,7 @@ char *image_gen_success_response(const char *image, const char *model,
 }
 
 /* Build a uniform error response JSON string. Returns malloc'd string (caller free).
- * Port of Python image_gen_provider.py:error_response(). */
+ * Port of Python agent/image_gen_provider.py:error_response(). */
 char *image_gen_error_response(const char *error, const char *error_type,
                                 const char *provider, const char *model,
                                 const char *prompt, const char *aspect_ratio) {

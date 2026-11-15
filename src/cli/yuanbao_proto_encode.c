@@ -41,8 +41,8 @@
 /* ---- MsgContent encode/decode ---- */
 /* PoP: _encode_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_msg_content */
 
-/* PoP: _decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
-/* PoP: _encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */static void yb_encode_msg_content(yb_buf *b, const char *json_content)
+/* PoP: _decode_map_entry @ plugins/platforms/yuanbao/yuanbao_proto.py:_decode_map_entry */
+/* PoP: _encode_map_entry @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_map_entry */static void yb_encode_msg_content(yb_buf *b, const char *json_content)
 {
     /* content is a JSON object; we parse and encode known fields */
     json_t *c = json_parse(json_content, NULL);
@@ -113,9 +113,9 @@ static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 
 
 /* ---- SendC2CMessageReq / SendGroupMessageReq encode ---- */
-/* PoP: _encode_send_c2c_req @ gateway/platforms/yuanbao_proto.py:_encode_send_c2c_req */
+/* PoP: _encode_send_c2c_req @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_send_c2c_req */
 
-/* PoP: _encode_log_ext @ gateway/platforms/yuanbao_proto.py:_encode_log_ext */ unsigned char *yb_encode_send_c2c_req(const char *to_account, const char *from_account,
+/* PoP: _encode_log_ext @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_log_ext */ unsigned char *yb_encode_send_c2c_req(const char *to_account, const char *from_account,
     const char *msg_body_json, const char *msg_id, uint64_t msg_random, uint64_t msg_seq,
     const char *group_code, const char *trace_id, size_t *out_len)
 {
@@ -143,7 +143,7 @@ static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 }
 
 
-/* PoP: _encode_send_group_req @ gateway/platforms/yuanbao_proto.py:_encode_send_group_req */ unsigned char *yb_encode_send_group_req(const char *group_code, const char *from_account,
+/* PoP: _encode_send_group_req @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_send_group_req */ unsigned char *yb_encode_send_group_req(const char *group_code, const char *from_account,
     const char *msg_body_json, const char *msg_id, const char *to_account, const char *random,
     uint64_t msg_seq, const char *ref_msg_id, const char *trace_id, size_t *out_len)
 {
@@ -173,7 +173,7 @@ static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 
 
 /* ---- ForwardMsgData encode/decode ---- */
-/* PoP: _encode_forward_multimedia @ gateway/platforms/yuanbao_proto.py:_encode_forward_multimedia */
+/* PoP: _encode_forward_multimedia @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_forward_multimedia */
 static void yb_encode_forward_multimedia(yb_buf *b, json_t *media)
 {
     if (!media || media->type!=JSON_OBJECT) return;
@@ -185,7 +185,7 @@ static void yb_encode_forward_multimedia(yb_buf *b, json_t *media)
     for (int i=0;i<nin;i++){ json_t *v=json_object_get(media, in[i].key); if (v&&v->type==JSON_NUMBER&&(int)json_number_value(v)!=0) yb_f_varint(b, in[i].fn, (uint64_t)(int)json_number_value(v)); }
 }
 
-/* PoP: _encode_forward_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_forward_msg_content */
+/* PoP: _encode_forward_msg_content @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_forward_msg_content */
 static void yb_encode_forward_msg_content(yb_buf *b, json_t *content)
 {
     if (!content || content->type!=JSON_OBJECT) return;
@@ -197,7 +197,7 @@ static void yb_encode_forward_msg_content(yb_buf *b, json_t *content)
     if (mm&&mm->type==JSON_ARRAY) for (size_t i=0;i<json_array_size(mm);i++){ yb_buf mb; yb_init(&mb); yb_encode_forward_multimedia(&mb, json_array_get(mm,i)); yb_f_sub(b,3,&mb); yb_free(&mb); }
 }
 
-/* PoP: _encode_forward_msg @ gateway/platforms/yuanbao_proto.py:_encode_forward_msg */ void yb_encode_forward_msg(yb_buf *b, json_t *msg)
+/* PoP: _encode_forward_msg @ plugins/platforms/yuanbao/yuanbao_proto.py:_encode_forward_msg */ void yb_encode_forward_msg(yb_buf *b, json_t *msg)
 {
     if (!msg||msg->type!=JSON_OBJECT) return;
     json_t *s=json_object_get(msg,"sender"); if (s&&s->type==JSON_STRING&&json_string_value(s)[0]) yb_f_str(b,1,json_string_value(s));

@@ -90,7 +90,7 @@ void response_store_free(response_store_t *store) {
     free(store->db_path);
     free(store);
 }
-/* PoP: response_store_get @ gateway/platforms/api_server.py:get */
+/* PoP: response_store_get @ plugins/platforms/yuanbao/adapter.py:get */
 
 char *response_store_get(response_store_t *store, const char *response_id) {
     if (!store || !store->conn || !response_id) return NULL;
@@ -118,7 +118,7 @@ char *response_store_get(response_store_t *store, const char *response_id) {
     return result;
 }
 
-/* Port of Python gateway/platforms/api_server.py:put(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:put(). */
 void response_store_put(response_store_t *store, const char *response_id, const char *data) {
     if (!store || !store->conn || !response_id || !data) return;
 
@@ -187,7 +187,7 @@ bool response_store_delete(response_store_t *store, const char *response_id) {
     return changes > 0;
 }
 
-/* Port of Python gateway/platforms/api_server.py:get_conversation(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:get_conversation(). */
 char *response_store_get_conversation(response_store_t *store, const char *name) {
     if (!store || !store->conn || !name) return NULL;
 
@@ -209,7 +209,7 @@ char *response_store_get_conversation(response_store_t *store, const char *name)
     return result;
 }
 
-/* Port of Python gateway/platforms/api_server.py:set_conversation(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:set_conversation(). */
 void response_store_set_conversation(response_store_t *store, const char *name, const char *response_id) {
     if (!store || !store->conn || !name || !response_id) return;
 
@@ -252,7 +252,7 @@ void idempotency_cache_free(idempotency_cache_t *cache) {
     free(cache);
 }
 
-/* PoP: cache_purge @ gateway/platforms/api_server.py:_purge */
+/* PoP: cache_purge @ plugins/platforms/yuanbao/adapter.py:_purge */
 static void cache_purge(idempotency_cache_t *cache) {
     time_t now = time(NULL);
     struct cache_entry **pp = &cache->head;
@@ -281,7 +281,7 @@ static void cache_purge(idempotency_cache_t *cache) {
     }
 }
 
-/* Port of Python gateway/platforms/api_server.py:get_or_set(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:get_or_set(). */
 char *idempotency_cache_get_or_set(
     idempotency_cache_t *cache,
     const char *key,
@@ -436,10 +436,10 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
         addr.sin_port = htons(adapter->port);
-/* PoP: api_server_adapter_disconnect @ gateway/platforms/api_server.py:connect */
+/* PoP: api_server_adapter_disconnect @ plugins/platforms/yuanbao/adapter.py:connect */
         if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == 0) {
             fprintf(stderr, "[api-server-adapter] Port %d already in use\n", adapter->port);
-/* PoP: api_server_adapter_disconnect @ gateway/platforms/api_server.py:close */
+/* PoP: api_server_adapter_disconnect @ plugins/platforms/yuanbao/adapter.py:close */
             close(sock);
             return false;
         }
@@ -458,7 +458,7 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
            adapter->host, adapter->port, adapter->model_name);
     return true;
 }
-/* PoP: api_server_adapter_disconnect @ gateway/platforms/api_server.py:disconnect */
+/* PoP: api_server_adapter_disconnect @ plugins/platforms/yuanbao/adapter.py:disconnect */
 
 void api_server_adapter_disconnect(api_server_adapter_t *adapter) {
     if (!adapter) return;
@@ -480,11 +480,11 @@ gw_send_result_t api_server_adapter_send(
     const json_t *metadata
 ) {
     (void)adapter; (void)chat_id; (void)content; (void)reply_to; (void)metadata;
-/* PoP: api_server_adapter_get_chat_info @ gateway/platforms/api_server.py:send */
+/* PoP: api_server_adapter_get_chat_info @ plugins/platforms/yuanbao/adapter.py:send */
     gw_send_result_t result = {false, "API server uses HTTP request/response, not send()"};
     return result;
 }
-/* PoP: api_server_adapter_get_chat_info @ gateway/platforms/api_server.py:get_chat_info */
+/* PoP: api_server_adapter_get_chat_info @ plugins/platforms/yuanbao/adapter.py:get_chat_info */
 
 json_t *api_server_adapter_get_chat_info(api_server_adapter_t *adapter, const char *chat_id) {
     (void)chat_id;
@@ -496,7 +496,7 @@ json_t *api_server_adapter_get_chat_info(api_server_adapter_t *adapter, const ch
     return info;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_check_auth(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_check_auth(). */
 /* ── Authentication Helper ────────────────────────────────────────── */
 
 char *api_server_check_auth(api_server_adapter_t *adapter, const char *auth_header) {
@@ -514,7 +514,7 @@ char *api_server_check_auth(api_server_adapter_t *adapter, const char *auth_head
     return NULL;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_parse_session_key_header(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_parse_session_key_header(). */
 /* ── Header Parsing Helpers ───────────────────────────────────────── */
 
 char *api_server_parse_session_key_header(api_server_adapter_t *adapter, const char *header, char **error_out) {
@@ -565,14 +565,14 @@ char *api_server_parse_session_id_header(api_server_adapter_t *adapter, const ch
     return strdup(header);
 }
 
-/* Port of Python hermes_cli/goals.py:_get_session_db(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_get_session_db(). */
 /* ── Session Key Helpers ──────────────────────────────────────────── */
 
 db_t *get_session_db(void) {
     return g_gw.agent.db;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_coerce_port(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_coerce_port(). */
 /* ── Utility Functions ────────────────────────────────────────────── */
 
 int api_server_coerce_port(const char *value, int default_port) {
@@ -581,7 +581,7 @@ int api_server_coerce_port(const char *value, int default_port) {
     return (port > 0 && port <= 65535) ? port : default_port;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_coerce_request_bool(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_coerce_request_bool(). */
 bool api_server_coerce_request_bool(const char *value, bool default_val) {
     if (!value || !*value) return default_val;
 
@@ -594,7 +594,7 @@ bool api_server_coerce_request_bool(const char *value, bool default_val) {
     return default_val;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_derive_chat_session_id(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_derive_chat_session_id(). */
 char *api_server_derive_chat_session_id(const char *system_prompt, const char *first_user_message) {
     char seed[8192];
     snprintf(seed, sizeof(seed), "%s\n%s", system_prompt ? system_prompt : "", first_user_message ? first_user_message : "");
@@ -615,7 +615,7 @@ bool api_server_content_has_visible_payload(const char *content) {
     return false;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_make_request_fingerprint(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_make_request_fingerprint(). */
 char *api_server_make_request_fingerprint(const char *body, const char **keys, int key_count) {
     if (!body) return strdup("");
 
@@ -648,12 +648,12 @@ char *api_server_normalize_chat_content(const char *content, int max_depth, int 
     return strdup(content);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_normalize_multimodal_content(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_normalize_multimodal_content(). */
 char *api_server_normalize_multimodal_content(const char *content) {
     return api_server_normalize_chat_content(content, 10, 0);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_create_agent(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_create_agent(). */
 /* ── Agent Creation & Execution ───────────────────────────────────── */
 
 agent_state_t *api_server_create_agent(
@@ -741,7 +741,7 @@ void *agent_run_thread(void *arg) {
     return NULL;
 }
 
-/* Port of Python gateway/platforms/api_server.py:_run_agent(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_run_agent(). */
 char *api_server_run_agent(
     api_server_adapter_t *adapter,
     const char *user_message,
@@ -846,7 +846,7 @@ void run_status_set(api_server_adapter_t *adapter, const char *run_id, run_statu
     pthread_mutex_unlock(&adapter->run_lock);
 }
 
-/* Port of Python gateway/platforms/yuanbao.py:remove(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:remove(). */
 void run_status_remove(api_server_adapter_t *adapter, const char *run_id) {
     if (!adapter || !run_id) return;
     pthread_mutex_lock(&adapter->run_lock);
@@ -1007,7 +1007,7 @@ void sse_write_chunk(sse_writer_t *writer, const char *content, int index) {
     json_free(chunk);
 }
 
-/* PoP: sse_write_finish @ gateway/stream_consumer.py:finish */
+/* PoP: sse_write_finish @ plugins/platforms/yuanbao/adapter.py:finish */
 void sse_write_finish(sse_writer_t *writer, const char *usage_json) {
     if (!writer) return;
     json_t *chunk = json_object();
@@ -1069,7 +1069,7 @@ void register_api_server_platform(void) {
 /* End of api_server_adapter.c */
 /* ── gateway/platforms/api_server.py gap functions ───────────────── */
 
-/* PoP: gwapi_get_scoped_secret @ plugins/platforms/buzz/adapter.py:_get_scoped_secret */
+/* PoP: gwapi_get_scoped_secret @ plugins/platforms/yuanbao/adapter.py:_get_scoped_secret */
 char *gwapi_get_scoped_secret(const char *arg) {
     /* Python: scope-aware credential read with default-profile fallback.
      * Arg = "name\tvalue" (value empty = miss -> default). */
@@ -1079,7 +1079,7 @@ char *gwapi_get_scoped_secret(const char *arg) {
     return NULL;
 }
 
-/* PoP: gwapi_reap_disconnected_agent_processes @ gateway/platforms/api_server.py:_reap_disconnected_agent_processes */
+/* PoP: gwapi_reap_disconnected_agent_processes @ plugins/platforms/yuanbao/adapter.py:_reap_disconnected_agent_processes */
 int gwapi_reap_disconnected_agent_processes(const char *arg) {
     /* Python: reap background processes an abandoned API-server turn created.
      * Fire-and-forget on a daemon thread; epoch-gated. Arg = "task_id\tbaseline_present" */
@@ -1088,7 +1088,7 @@ int gwapi_reap_disconnected_agent_processes(const char *arg) {
     return 0;
 }
 
-/* PoP: gwapi_publish_turn_process_ownership @ gateway/platforms/api_server.py:_publish_turn_process_ownership */
+/* PoP: gwapi_publish_turn_process_ownership @ plugins/platforms/yuanbao/adapter.py:_publish_turn_process_ownership */
 int gwapi_publish_turn_process_ownership(const char *arg) {
     /* Python: snapshot process baseline and claim the task_id's epoch.
      * Arg = "task_id". */
@@ -1097,7 +1097,7 @@ int gwapi_publish_turn_process_ownership(const char *arg) {
     return 0;
 }
 
-/* PoP: gwapi_clear_turn_process_ownership @ gateway/platforms/api_server.py:_clear_turn_process_ownership */
+/* PoP: gwapi_clear_turn_process_ownership @ plugins/platforms/yuanbao/adapter.py:_clear_turn_process_ownership */
 int gwapi_clear_turn_process_ownership(const char *arg) {
     /* Python: clear turn ownership the moment the turn finishes.
      * Arg = "cleared" (1/0). */
@@ -1106,7 +1106,7 @@ int gwapi_clear_turn_process_ownership(const char *arg) {
     return 0;
 }
 
-/* PoP: gwapi_expected_api_key @ gateway/platforms/api_server.py:_expected_api_key */
+/* PoP: gwapi_expected_api_key @ plugins/platforms/yuanbao/adapter.py:_expected_api_key */
 char *gwapi_expected_api_key(const char *arg) {
     /* Python: API key authorized for the URL-selected profile.
      * Arg = "key". Empty = fail closed (no usable profile-scoped key). */
@@ -1114,7 +1114,7 @@ char *gwapi_expected_api_key(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: api_server_sse_frame @ gateway/platforms/api_server.py:_sse_frame */
+/* PoP: api_server_sse_frame @ plugins/platforms/yuanbao/adapter.py:_sse_frame */
 /* Returns malloc'd SSE frame string. Caller frees. */
 char *api_server_sse_frame(const char *data_json, const char *event) {
     if (!data_json) return strdup("");

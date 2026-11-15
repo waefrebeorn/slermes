@@ -339,7 +339,7 @@ static const char *get_skills_dir(void) {
  *  Scanning
  * ================================================================ */
 
-/* Port of Python hermes_cli/config.py:get_config_path(). */
+/* Port of Python agent/skill_commands.py:get_config_path(). */
 /* Helper: config path resolution (same logic as skill_utils) */
 static const char *get_config_path(void) {
     static char buf[SKILL_CMD_PATH_MAX];
@@ -845,7 +845,7 @@ int skill_cmd_scan_filtered(const char *disabled_csv) {
  * out_missing: (output) malloc'd comma-separated missing identifiers (caller free)
  *
  * Returns the number of skills successfully loaded.
- * Port of Python skill_commands.py:build_preloaded_skills_prompt(). */
+ * Port of Python agent/skill_commands.py:build_preloaded_skills_prompt(). */
 int build_preloaded_skills_prompt(const char *skill_identifiers,
                                      char **out_prompt,
                                      char **out_loaded,

@@ -26,7 +26,7 @@
 
 
 
-/* PoP: _dir_file_count @ tools/checkpoint_manager.py:_dir_file_count */ int _dir_file_count(const char *path) {
+/* PoP: _dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_file_count */ int _dir_file_count(const char *path) {
     DIR *d = opendir(path);
     if (!d) return 0;
     int count = 0;
@@ -41,7 +41,7 @@
 }
 
 
-/* PoP: _dir_size_bytes @ tools/checkpoint_manager.py:_dir_size_bytes */ long _dir_size_bytes(const char *path) {
+/* PoP: _dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_size_bytes */ long _dir_size_bytes(const char *path) {
     long total = 0;
     DIR *d = opendir(path);
     if (!d) return 0;
@@ -61,7 +61,7 @@
 }
 
 
-/* PoP: _init_shadow_repo @ tools/checkpoint_manager.py:_init_shadow_repo */
+/* PoP: _init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:_init_shadow_repo */
 static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) {
     mkdir(shadow_repo, 0755);
     _run_git(shadow_repo, "init --bare", NULL, 0);
@@ -74,7 +74,7 @@ static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) 
 }
 
 
-/* PoP: _delete_ref @ tools/checkpoint_maintenance.py:_delete_ref */
+/* PoP: _delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:_delete_ref */
 static bool _delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
     _shadow_repo_path("", shadow, sizeof(shadow));
@@ -84,7 +84,7 @@ static bool _delete_ref(const char *store, const char *ref) {
 }
 
 
-/* PoP: _validate_commit_hash @ tools/checkpoint_manager.py:_validate_commit_hash */
+/* PoP: _validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_commit_hash */
 bool _validate_commit_hash(const char *commit_hash) {
     if (!commit_hash) return false;
     for (const char *p = commit_hash; *p; p++) {
@@ -95,8 +95,8 @@ bool _validate_commit_hash(const char *commit_hash) {
 }
 
 
-/* PoP: _validate_file_path @ tools/checkpoint_manager.py:_validate_file_path */
-/* PoP: _validate_file_path @ tools/skill_manager_tool.py:_validate_file_path */
+/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
+/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
 bool _validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
@@ -104,16 +104,16 @@ bool _validate_file_path(const char *file_path, const char *working_dir) {
 }
 
 
-/* PoP: _normalize_path @ tools/checkpoint_manager.py:_normalize_path */
-/* PoP: _normalize_path @ gateway/platforms/msgraph_webhook.py:_normalize_path */
-/* PoP: _normalize_path @ gateway/platforms/whatsapp_cloud.py:_normalize_path */
+/* PoP: _normalize_path @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: _normalize_path @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: _normalize_path @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
 
-/* PoP: _migrate_legacy_store @ tools/checkpoint_manager.py:_migrate_legacy_store */
+/* PoP: _migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:_migrate_legacy_store */
 char* _migrate_legacy_store(const char *base) {
     (void)base;
     return NULL;

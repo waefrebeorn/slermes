@@ -22,7 +22,7 @@
  *  Internal: HTTP helpers via curl popen
  * ================================================================ */
 
-/* PoP: http_post @ tools/browser_camofox.py:_post */
+/* PoP: http_post @ plugins/platforms/yuanbao/adapter.py:_post */
 static char *http_post(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 
@@ -100,7 +100,7 @@ static char *http_post(const char *url, const char *auth_header, const char *jso
     return buf;
 }
 
-/* PoP: http_patch @ gateway/platforms/yuanbao.py:_patch */
+/* PoP: http_patch @ plugins/platforms/yuanbao/adapter.py:_patch */
 static char *http_patch(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 
@@ -237,7 +237,7 @@ static char *json_get_string(const char *json, const char *key, char *buf, size_
 /* ================================================================
  *  Port of Python: resolve_portal_base_url
  * ================================================================ */
-/* PoP: resolve_portal_base_url @ hermes_cli/dashboard_register.py:_resolve_portal_base_url */
+/* PoP: resolve_portal_base_url @ plugins/platforms/yuanbao/adapter.py:_resolve_portal_base_url */
 
 char *resolve_portal_base_url(void *ctx, void *state) {
     if (!ctx) {
@@ -474,7 +474,7 @@ char *absolutize_portal_url(void *ctx, const char *raw_portal_url) {
  *  Port of Python hermes_cli/nous_billing.py: billing auth helpers
  * ================================================================ */
 
-/* PoP: BillingAuthError @ hermes_cli/nous_billing.py:_billing_not_logged_in */
+/* PoP: BillingAuthError @ plugins/platforms/yuanbao/adapter.py:_billing_not_logged_in */
 /* Build the canonical "not logged in" billing auth error as a malloc'd JSON
  * string, mirroring Python BillingAuthError(status=401, error="invalid_token").
  * Caller frees. */
@@ -483,7 +483,7 @@ char *billing_not_logged_in_json(void) {
                   "\"message\":\"Not logged into Nous Portal \\u2014 run `hermes portal` to log in.\"}");
 }
 
-/* PoP: billing_resolve_token_and_base @ hermes_cli/nous_billing.py:_resolve_token_and_base */
+/* PoP: billing_resolve_token_and_base @ plugins/platforms/yuanbao/adapter.py:_resolve_token_and_base */
 /* Resolve (access_token, portal_base_url) for billing calls.
  * token_out receives the token (caller frees), base_out receives the base URL
  * (caller frees). Returns 0 on success, -1 if no usable Nous session.
@@ -578,7 +578,7 @@ char *billing_raise_for_error(int status, const char *payload_json, const char *
 #endif /* SRC_CLI_PORT_NOUS_BILLING_C */
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: hermes_cli_nous_billing_invalidate_cached_token @ hermes_cli/nous_billing.py:invalidate_cached_token */
+/* PoP: hermes_cli_nous_billing_invalidate_cached_token @ plugins/platforms/yuanbao/adapter.py:invalidate_cached_token */
 int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
     /* Python: clear 30s token cache. */
     (void)arg;
@@ -586,7 +586,7 @@ int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_u_request @ hermes_cli/nous_billing.py:_request */
+/* PoP: hermes_cli_nous_billing_u_request @ plugins/platforms/yuanbao/adapter.py:_request */
 int hermes_cli_nous_billing_u_request(const char *arg) {
     /* Python: 401 self-heal retry. Arg =
      * "state\tresult\terr". */
@@ -607,7 +607,7 @@ int hermes_cli_nous_billing_u_request(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_get_subscription_state @ hermes_cli/nous_billing.py:get_subscription_state */
+/* PoP: hermes_cli_nous_billing_get_subscription_state @ plugins/platforms/yuanbao/adapter.py:get_subscription_state */
 int hermes_cli_nous_billing_get_subscription_state(const char *arg) {
     /* Python: GET subscription. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -619,7 +619,7 @@ int hermes_cli_nous_billing_get_subscription_state(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_post_subscription_preview @ hermes_cli/nous_billing.py:post_subscription_preview */
+/* PoP: hermes_cli_nous_billing_post_subscription_preview @ plugins/platforms/yuanbao/adapter.py:post_subscription_preview */
 int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
     /* Python: POST preview quote. Arg = "tier_id\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -631,7 +631,7 @@ int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_put_subscription_pending_change @ hermes_cli/nous_billing.py:put_subscription_pending_change */
+/* PoP: hermes_cli_nous_billing_put_subscription_pending_change @ plugins/platforms/yuanbao/adapter.py:put_subscription_pending_change */
 int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) {
     /* Python: pending disposition. Arg =
      * "type\tstate\tresult\tmissing_tier". */
@@ -648,7 +648,7 @@ int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_delete_subscription_pending_change @ hermes_cli/nous_billing.py:delete_subscription_pending_change */
+/* PoP: hermes_cli_nous_billing_delete_subscription_pending_change @ plugins/platforms/yuanbao/adapter.py:delete_subscription_pending_change */
 int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) {
     /* Python: DELETE /api/billing/subscription/pending-change. Arg =
      * "timeout\tresult". */
@@ -660,7 +660,7 @@ int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) 
     return 0;
 }
 
-/* PoP: hermes_cli_nous_billing_post_subscription_upgrade @ hermes_cli/nous_billing.py:post_subscription_upgrade */
+/* PoP: hermes_cli_nous_billing_post_subscription_upgrade @ plugins/platforms/yuanbao/adapter.py:post_subscription_upgrade */
 int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) {
     /* Python: idempotency-keyed money route. Arg =
      * "tier_id\tstate\tresult\tkey_ok". */

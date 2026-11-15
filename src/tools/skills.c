@@ -46,7 +46,7 @@ static int             g_curator_stale_days = SKILL_CURATOR_DEFAULT_STALE_DAYS;
  *  Path utilities
  * ================================================================ */
 
-/* PoP: skills_dir @ tools/skill_usage.py:_skills_dir */
+/* PoP: skills_dir @ plugins/platforms/weixin/adapter.py:_skills_dir */
 static void skills_dir(char *buf, size_t sz) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");
@@ -64,7 +64,7 @@ static void skills_bundles_dir(char *buf, size_t sz) {
     snprintf(buf, sz, "%s/%s", sd, SKILL_BUNDLES_SUBDIR);
 }
 
-/* Port of Python gateway/platforms/weixin.py:_path(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:_path(). */
 static void skill_path(const char *name, char *buf, size_t sz) {
     char sd[HERMES_PATH_MAX];
     skills_dir(sd, sizeof(sd));
@@ -115,8 +115,8 @@ static char *read_file(const char *path) {
     return buf;
 }
 
-/* Port of Python tools/memory_tool.py:_write_file(). */
-/* Port of Python tools/file_operations.py:write_file(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:_write_file(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:write_file(). */
 static bool write_file(const char *path, const char *content) {
     FILE *f = fopen(path, "w");
     if (!f) return false;
@@ -389,7 +389,7 @@ static bool is_valid_version(const char *v) {
     return sscanf(v, "%d.%d.%d", &major, &minor, &patch) >= 1;
 }
 
-/* Port of Python tools/todo_tool.py:_validate(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:_validate(). */
 bool skill_validate(const char *skill_name, char *error_out, size_t err_sz) {
     if (error_out) error_out[0] = '\0';
 
@@ -1096,7 +1096,7 @@ static bool tag_filter_match(const char *skill_tags, const char *tag_filter) {
     return true;
 }
 
-/* Port of Python agent/web_search_provider.py:search(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:search(). */
 skill_search_result_t *skill_search(const char *query, const char *tag_filter,
                                       size_t *result_count, size_t max_results) {
     if (!result_count) return NULL;
@@ -2190,7 +2190,7 @@ static const char *SCHEMA_VIEW = "{"
 "}";
 
 /* PoP: skills_view_handler @ src/tools/skills.c:skills_view_handler */
-/* Port of Python tools/skills_tool.py:skill_view(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:skill_view(). */
 char *skills_view_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -2246,7 +2246,7 @@ char *skills_view_handler(const char *args_json, const char *task_id) {
  * ================================================================ */
 
 /* PoP: skills_list_handler @ src/tools/skills.c:skills_list_handler */
-/* Port of Python tools/skills_tool.py:skills_list(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:skills_list(). */
 char *skills_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     (void)args_json;

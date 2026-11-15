@@ -439,7 +439,7 @@ static char *google_build_request_body(const provider_t *p,
     return body;
 }
 
-/* Port of Python agent/shell_hooks.py:_parse_response(). */
+/* Port of Python agent/gemini_native_adapter.py:_parse_response(). */
 /* ================================================================
  *  Response parsing
  * ================================================================ */
@@ -1330,7 +1330,7 @@ json_t *google_build_gemini_contents(const json_t *messages) {
     return result;
 }
 
-/* Port of Python gemini_native_adapter.py:gemini_http_error().
+/* Port of Python agent/gemini_native_adapter.py:gemini_http_error().
  * Generate structured error info from a Gemini API HTTP response.
  * Returns JSON object with: code, message, retry_after, details.
  * Caller must free with json_free(). */
@@ -1345,7 +1345,7 @@ static json_t *json_obj_get_key(json_t *obj, const char *key) {
     return NULL;
 }
 
-/* Port of Python agent/gemini_cloudcode_adapter.py:_gemini_http_error(). */
+/* Port of Python agent/gemini_native_adapter.py:_gemini_http_error(). */
 json_t *gemini_http_error(int status_code, const char *body_text) {
     json_t *result = json_object();
     if (!result) return NULL;
@@ -1462,7 +1462,7 @@ json_t *gemini_http_error(int status_code, const char *body_text) {
  *  Tier probing
  * ================================================================ */
 
-/* Port of Python gemini_native_adapter.py:probe_gemini_tier().
+/* Port of Python agent/gemini_native_adapter.py:probe_gemini_tier().
  * Probe a Google AI Studio API key and return its tier.
  * Returns one of: "free", "paid", "unknown".
  * "unknown" means the probe failed; callers should proceed without blocking.
@@ -1611,7 +1611,7 @@ const char *google_probe_gemini_tier(const char *api_key,
     return result;
 }
 
-/* Port of Python gemini_native_adapter.py:is_free_tier_quota_error().
+/* Port of Python agent/gemini_native_adapter.py:is_free_tier_quota_error().
  * Return True when a Gemini 429 message indicates free-tier exhaustion.
  * Public wrapper — callers outside provider_google.c use this instead of
  * the static is_free_tier_quota_error() above. */
@@ -1627,7 +1627,7 @@ bool google_is_free_tier_quota_error(const char *error_message) {
     return false;
 }
 
-/* Port of Python gemini_native_adapter.py:build_gemini_request().
+/* Port of Python agent/gemini_native_adapter.py:build_gemini_request().
  * Build a Gemini native API request JSON from OpenAI-style arguments.
  * Returns a JSON string (caller must free).
  * Args are passed as individual params, not a single JSON object,
@@ -1696,7 +1696,7 @@ char *google_build_gemini_request(const json_t *messages,
     return body;
 }
 
-/* Port of Python gemini_native_adapter.py:_map_gemini_finish_reason().
+/* Port of Python agent/gemini_native_adapter.py:_map_gemini_finish_reason().
  * Map Google Gemini finishReason to OpenAI-compatible string.
  * Internal helper for translate_gemini_response and translate_stream_event. */
 static const char *map_gemini_finish_reason(const char *reason) {
@@ -1709,7 +1709,7 @@ static const char *map_gemini_finish_reason(const char *reason) {
     return "stop";
 }
 
-/* Port of Python gemini_native_adapter.py:_empty_response().
+/* Port of Python agent/gemini_native_adapter.py:_empty_response().
  * Build an empty chat-completion response for the given model.
  * Returns JSON string (caller must free). */
 char *google_empty_response(const char *model) {
@@ -1735,8 +1735,8 @@ char *google_empty_response(const char *model) {
     return body;
 }
 
-/* Port of Python agent/gemini_cloudcode_adapter.py:_translate_gemini_response(). */
-/* Port of Python gemini_native_adapter.py:translate_gemini_response().
+/* Port of Python agent/gemini_native_adapter.py:_translate_gemini_response(). */
+/* Port of Python agent/gemini_native_adapter.py:translate_gemini_response().
  * Translates a Gemini native API response dict into an OpenAI-compatible
  * chat completion response JSON string.
  * Returns malloc'd JSON string (caller must free). */
@@ -1886,9 +1886,9 @@ char *google_translate_gemini_response(const json_t *resp, const char *model) {
     return body;
 }
 
-/* Port of Python agent/gemini_cloudcode_adapter.py:_translate_stream_event(). */
-/* Port of Python gemini_native_adapter.py:translate_stream_event().
- * Port of Python gemini_native_adapter.py:_make_stream_chunk() — chunk creation is inlined here.
+/* Port of Python agent/gemini_native_adapter.py:_translate_stream_event(). */
+/* Port of Python agent/gemini_native_adapter.py:translate_stream_event().
+ * Port of Python agent/gemini_native_adapter.py:_make_stream_chunk() — chunk creation is inlined here.
  * Translate a Gemini SSE stream event into a list of OpenAI-compatible
  * stream chunk JSON strings (separated by newlines).
  * Caller must free the returned string.
@@ -1996,7 +1996,7 @@ const provider_ops_t PROVIDER_OPS_GOOGLE = {
     .name = "google"
 };
 
-/* Port of Python gemini_native_adapter.py:_iter_sse_events().
+/* Port of Python agent/gemini_native_adapter.py:_iter_sse_events().
  * Parse a Gemini SSE response body into a JSON array of parsed events.
  * Each event is a JSON object parsed from a "data: {...}" line.
  * Returns json_t* array (caller must json_free), or NULL on failure. */
@@ -2051,7 +2051,7 @@ json_t *google_iter_sse_events(const char *response_body) {
     return events;
 }
 
-/* Port of Python agent/gemini_cloudcode_adapter.py:wrap_code_assist_request().
+/* Port of Python agent/gemini_native_adapter.py:wrap_code_assist_request().
  * Build the Code Assist API request envelope wrapping an inner Gemini request. */
 char *wrap_code_assist_request(const char *project_id, const char *model,
                                 const char *inner_request_json,
@@ -2107,7 +2107,7 @@ char *gemini_native_adapter_bare_gemini_model_id(const char *model) {
     return out;
 }
 
-/* PoP: gemini_native_adapter__enter @ gateway/platforms/yuanbao.py:handle */
+/* PoP: gemini_native_adapter__enter @ agent/gemini_native_adapter.py:handle */
 /* Opaque native client handle (mirrors GeminiNativeClient: api_key, base_url,
  * _default_headers). _default_headers is currently empty in C (the Python
  * default is {}), so only api_key/base_url are material. */

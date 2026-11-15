@@ -657,7 +657,7 @@ bool webhook_subscription_deliver(int idx, const char *payload) {
     return false;
 }
 
-/* Port of Python gateway/platforms/feishu.py:_handle_webhook_request(). */
+/* Port of Python plugins/platforms/feishu/adapter.py:_handle_webhook_request(). */
 /* ================================================================
  *  Handle a single webhook request
  * ================================================================ */
@@ -1043,7 +1043,7 @@ static int g_wh_dyn_n = 0;
 static double g_wh_dyn_mtime = 0.0;
 
 /* ---- rate limiting ---- */
-/* PoP: wh_record_rate_limit_hit @ gateway/platforms/webhook.py:_record_rate_limit_hit */
+/* PoP: wh_record_rate_limit_hit @ plugins/platforms/feishu/adapter.py:_record_rate_limit_hit */
 static bool wh_record_rate_limit_hit(const char *route_name, double now) {
     wh_rate_win_t *w = NULL;
     for (int i = 0; i < g_wh_rate_n; i++)
@@ -1062,7 +1062,7 @@ static bool wh_record_rate_limit_hit(const char *route_name, double now) {
     return true;
 }
 
-/* PoP: wh_record_delivery_id @ gateway/platforms/webhook.py:_record_delivery_id */
+/* PoP: wh_record_delivery_id @ plugins/platforms/feishu/adapter.py:_record_delivery_id */
 static bool wh_record_delivery_id(const char *delivery_id, double now) {
     /* Ensure the hive is initialized. With block_cap=64, the first block's
      * slots 0..63 have numerically equal handles to the legacy dense indices,
@@ -1098,7 +1098,7 @@ static bool wh_record_delivery_id(const char *delivery_id, double now) {
     return true;
 }
 
-/* PoP: wh_prune_seen_deliveries @ gateway/platforms/webhook.py:_prune_seen_deliveries */
+/* PoP: wh_prune_seen_deliveries @ plugins/platforms/feishu/adapter.py:_prune_seen_deliveries */
 static void wh_prune_seen_deliveries(double now) {
     if (now < g_wh_next_prune) return;
     if (!g_wh_seen) return;
@@ -1141,7 +1141,7 @@ static void wh_prune_delivery_info(double now) {
     g_wh_info_n = j;
 }
 
-/* PoP: wh_reload_dynamic_routes @ gateway/platforms/webhook.py:_reload_dynamic_routes */
+/* PoP: wh_reload_dynamic_routes @ plugins/platforms/feishu/adapter.py:_reload_dynamic_routes */
 static void wh_reload_dynamic_routes(void) {
     const char *home = getenv("SLERMES_HOME"); if (!home) home = getenv("HERMES_HOME");
     if (!home) return;
@@ -1173,7 +1173,7 @@ static void wh_reload_dynamic_routes(void) {
 }
 
 /* ---- signature validation ---- */
-/* PoP: wh_validate_svix_signature @ gateway/platforms/webhook.py:_validate_svix_signature */
+/* PoP: wh_validate_svix_signature @ plugins/platforms/feishu/adapter.py:_validate_svix_signature */
 static bool wh_validate_svix_signature(const unsigned char *body, size_t body_len,
                                         const char *secret, const char *msg_id,
                                         const char *timestamp, const char *sig_header) {
@@ -1206,7 +1206,7 @@ static void wh_to_hex(const unsigned char *bin, char *out) {
     for (int i = 0; i < 32; i++) { out[i*2] = H[bin[i] >> 4]; out[i*2+1] = H[bin[i] & 0xf]; }
     out[32] = '\0';
 }
-/* PoP: wh_validate_signature @ gateway/platforms/webhook.py:_validate_signature */
+/* PoP: wh_validate_signature @ plugins/platforms/feishu/adapter.py:_validate_signature */
 static bool wh_validate_signature(const unsigned char *body, size_t body_len,
                                    const char *secret, const char *svix_id, const char *svix_ts,
                                    const char *svix_sig, const char *gh_sig) {
@@ -1226,7 +1226,7 @@ static bool wh_validate_signature(const unsigned char *body, size_t body_len,
 /* ---- templating ---- */
 static char *wh_resolve(json_t *payload, const char *key);
 
-/* PoP: wh_render_prompt @ gateway/platforms/webhook.py:_render_prompt */
+/* PoP: wh_render_prompt @ plugins/platforms/feishu/adapter.py:_render_prompt */
 static char *wh_render_prompt(const char *template, json_t *payload,
                                const char *event_type, const char *route_name) {
     if (!template || !*template) {
@@ -1270,7 +1270,7 @@ static char *wh_render_prompt(const char *template, json_t *payload,
     return out;
 }
 
-/* PoP: wh_render_delivery_extra @ gateway/platforms/webhook.py:_render_delivery_extra */
+/* PoP: wh_render_delivery_extra @ plugins/platforms/feishu/adapter.py:_render_delivery_extra */
 static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
     json_t *rendered = json_object();
     if (!rendered || !extra) return rendered;
@@ -1288,7 +1288,7 @@ static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
     return rendered;
 }
 
-/* PoP: DB @ gateway/platforms/webhook.py:_end_webhook_session */
+/* PoP: DB @ plugins/platforms/feishu/adapter.py:_end_webhook_session */
 /* Faithful port: resolve the per-delivery webhook session from g_gw by
  * chat_id and mark it ended in the session DB (first-writer-wins). Reuses the
  * real db_end_session port of SessionDB.end_session — no fake stub. */
@@ -1312,7 +1312,7 @@ static bool wh_end_webhook_session(const char *chat_id, const char *end_reason) 
 }
 
 /* ---- delivery dispatch ---- */
-/* PoP: wh_direct_deliver @ gateway/platforms/webhook.py:_direct_deliver */
+/* PoP: wh_direct_deliver @ plugins/platforms/feishu/adapter.py:_direct_deliver */
 static bool wh_direct_deliver(const char *content, json_t *delivery) {
     if (!delivery) return false;
     const char *type = json_get_str(delivery, "deliver", "log");
@@ -1344,7 +1344,7 @@ static bool wh_direct_deliver(const char *content, json_t *delivery) {
     return true;
 }
 
-/* PoP: wh_deliver_github_comment @ gateway/platforms/webhook.py:_deliver_github_comment */
+/* PoP: wh_deliver_github_comment @ plugins/platforms/feishu/adapter.py:_deliver_github_comment */
 static bool wh_deliver_github_comment(const char *content, json_t *delivery) {
     extern gateway_state_t g_gw;
     const char *repo = json_get_str(delivery, "repo", "");
@@ -1358,7 +1358,7 @@ static bool wh_deliver_github_comment(const char *content, json_t *delivery) {
     return ok;
 }
 
-/* PoP: wh_deliver_cross_platform @ gateway/platforms/webhook.py:_deliver_cross_platform */
+/* PoP: wh_deliver_cross_platform @ plugins/platforms/feishu/adapter.py:_deliver_cross_platform */
 static bool wh_deliver_cross_platform(const char *content, json_t *delivery) {
     json_t *targets = json_obj_get(delivery, "targets");
     if (targets && json_is_array(targets)) {
@@ -1426,12 +1426,12 @@ static bool wh_is_autonomous_silence_response(const char *content) {
     return first_line_silent || last_line_silent;
 }
 
-/* PoP: wh_is_webhook_silence_response @ gateway/platforms/webhook.py:_is_webhook_silence_response */
+/* PoP: wh_is_webhook_silence_response @ plugins/platforms/feishu/adapter.py:_is_webhook_silence_response */
 bool wh_is_webhook_silence_response(const char *content) {
     return wh_is_autonomous_silence_response(content);
 }
 
-/* PoP: string @ gateway/platforms/webhook.py:_route_allows_profile */
+/* PoP: string @ plugins/platforms/feishu/adapter.py:_route_allows_profile */
 /* Return whether a route is bound to the URL-selected profile.
  * route_config_json = serialized {"profile": "..."} (or {} for default).
  * request_profile = the profile string (or NULL for default).

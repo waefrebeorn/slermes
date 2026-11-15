@@ -72,7 +72,7 @@ void credential_sources_register(const removal_step_t *step) {
 
 /* Find the first matching removal step for a provider+source pair.
  * Port of Python agent/credential_sources.py:find_removal_step().
- * * Port of Python credential_sources.py:RemovalStep.matches() */
+ * * Port of Python agent/credential_sources.py:RemovalStep.matches() */
 const removal_step_t *find_removal_step(const char *provider, const char *source) {
     if (!provider || !source || !g_registry) return NULL;
     hive_iter_t it;
@@ -170,7 +170,7 @@ static bool clear_auth_store_provider(const char *provider) {
     return true;
 }
 
-/* Port of Python hermes_cli/auth.py:suppress_credential_source(). */
+/* Port of Python agent/credential_sources.py:suppress_credential_source(). */
 /* ================================================================
  *  Helper: suppress credential source in auth.json
  *  Adds an entry to auth_store.suppressed[provider] = source
@@ -243,7 +243,7 @@ void suppress_credential_source(const char *provider, const char *source) {
     free(out);
 }
 
-/* Port of Python hermes_cli/config.py:remove_env_value(). */
+/* Port of Python agent/credential_sources.py:remove_env_value(). */
 /* ================================================================
  *  Helper: remove env var from .env file
  *  Returns true if the var was found and removed.

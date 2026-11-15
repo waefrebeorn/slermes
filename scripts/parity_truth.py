@@ -169,9 +169,14 @@ def main():
     # it in, so the coverage figure stays honest.
     ver = doc.get("annotation_verifiability", {})
     if ver:
-        print("VERIFIABLE  annotations %d   ORPHAN %d (module absent from both "
-              "trees -- no oracle can check these)"
-              % (ver.get("verifiable", 0), ver.get("orphan", 0)))
+        print("ANNOTATIONS  total %d   claimed %d   verifiable %d   ORPHAN %d   "
+              "unattributed %d" % (ver.get("total", 0), ver.get("claimed", 0),
+                                   ver.get("verifiable", 0), ver.get("orphan", 0),
+                                   ver.get("unattributed", 0)))
+        print("  orphan = a module path is claimed and the file is in neither "
+              "tree (no oracle can check it)")
+        print("  unattributed = loose 'Port of Python: <prose>' with no module "
+              "path at all")
     drift = doc.get("drift", {})
     print("modules scanned: %d   drift(new=%s resolved=%s status=%s)"
           % (tot["modules_scanned"], drift.get("new_gap_count"),

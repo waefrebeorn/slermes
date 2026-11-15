@@ -300,7 +300,7 @@ static json_node_t *build_inline_keyboard(json_node_t *buttons) {
 }
 
 /* B08: Check if message text looks like HTML (contains HTML tags).
- * Port of Python send_message_tool.py:827 pattern
+ * Port of Python tools/send_message_tool.py:827 pattern
  *   re.search(r'<[a-zA-Z/][^>]*>', message)
  * Returns true if the message contains at least one HTML-like tag. */
 static bool message_looks_like_html(const char *msg) {

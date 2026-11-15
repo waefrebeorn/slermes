@@ -66,8 +66,8 @@ static bool json_is_true_val(const json_t *node) {
 
 /* ================================================================
  *  Trust policy resolution
-/* AG26: Port of Python agent/plugin_llm.py:_resolve_trust_policy() */
-/* AG26: Port of Python agent/plugin_llm.py:_coerce_allowlist() */
+/* AG26: Port of Python plugins/platforms/qqbot/chunked_upload.py:_resolve_trust_policy() */
+/* AG26: Port of Python plugins/platforms/qqbot/chunked_upload.py:_coerce_allowlist() */
 /* Port of Python: _resolve_trust_policy() + _coerce_allowlist() */
 /* ================================================================ */
 plugin_llm_trust_policy_t resolve_trust_policy(
@@ -652,12 +652,12 @@ static void free_message_array(message_t **arr, int count) {
 
 /* ================================================================
  *  Main API — complete
-/* AG26: Port of Python agent/plugin_llm.py:PluginLlm.complete() */
-/* AG26: Port of Python agent/plugin_llm.py:_invoke_sync() */
+/* AG26: Port of Python plugins/platforms/qqbot/chunked_upload.py:PluginLlm.complete() */
+/* AG26: Port of Python plugins/platforms/qqbot/chunked_upload.py:_invoke_sync() */
 /* Port of Python: PluginLlm.complete() + _invoke_sync() */
 /* ================================================================ */
-/* PoP: plugin_llm_complete @ gateway/platforms/qqbot/chunked_upload.py:_complete */
-/* Port of Python gateway/platforms/qqbot/chunked_upload.py:_complete(). */
+/* PoP: plugin_llm_complete @ plugins/platforms/qqbot/chunked_upload.py:_complete */
+/* Port of Python plugins/platforms/qqbot/chunked_upload.py:_complete(). */
 plugin_llm_result_t *plugin_llm_complete(
     const char *plugin_id,
     llm_config_t *llm_cfg,
@@ -1020,9 +1020,9 @@ plugin_llm_test_ctx_t *plugin_llm_make_for_test(
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_agent_plugin_llm_acomplete @ agent/plugin_llm.py:acomplete */
+/* PoP: cli_agent_plugin_llm_acomplete @ plugins/platforms/qqbot/chunked_upload.py:acomplete */
 
-/* Port of Python agent/plugin_llm.py:acomplete */
+/* Port of Python plugins/platforms/qqbot/chunked_upload.py:acomplete */
 /* Async completion via the plugin LLM. Delegates to llm_chat_completion. */
 char *cli_agent_plugin_llm_acomplete(
     const char **messages, int message_count,
@@ -1048,9 +1048,9 @@ char *cli_agent_plugin_llm_acomplete(
     return result;
 }
 
-/* PoP: cli_agent_plugin_llm_acomplete_structured @ agent/plugin_llm.py:acomplete_structured */
+/* PoP: cli_agent_plugin_llm_acomplete_structured @ plugins/platforms/qqbot/chunked_upload.py:acomplete_structured */
 
-/* Port of Python agent/plugin_llm.py:acomplete_structured */
+/* Port of Python plugins/platforms/qqbot/chunked_upload.py:acomplete_structured */
 /* Async structured completion via the plugin LLM. */
 char *cli_agent_plugin_llm_acomplete_structured(
     const char *instructions, const char **inputs, int input_count,
@@ -1076,9 +1076,9 @@ char *cli_agent_plugin_llm_acomplete_structured(
     return result;
 }
 
-/* PoP: cli_agent_plugin_llm__invoke_async @ agent/plugin_llm.py:_invoke_async */
+/* PoP: cli_agent_plugin_llm__invoke_async @ plugins/platforms/qqbot/chunked_upload.py:_invoke_async */
 
-/* Port of Python agent/plugin_llm.py:_invoke_async */
+/* Port of Python plugins/platforms/qqbot/chunked_upload.py:_invoke_async */
 /* Internal async invocation — delegates to the async caller or auxiliary_client. */
 char *cli_agent_plugin_llm__invoke_async(
     const char **messages, int message_count,

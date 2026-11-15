@@ -79,7 +79,7 @@ static int g_hook_count = 0;
 
 /* ── Config parsing ─────────────────────────────────────────────── */
 
-/* PoP: matcher @ agent/shell_hooks.py:__post_init__ */
+/* PoP: matcher @ plugins/platforms/qqbot/adapter.py:__post_init__ */
 /* ShellHookSpec.__post_init__: strip whitespace from the matcher (YAML folding
  * can introduce leading/trailing spaces that would silently break matching),
  * treat an empty result as "no matcher", and compile the matcher as a regex.
@@ -152,7 +152,7 @@ static int parse_single_hook(const char *event, const json_t *node) {
  * The object keys are event names, values are arrays of hook specs.
  * Returns number of parsed specs.
  * Port of Python agent/shell_hooks.py:_parse_hooks_block(). */
-/* PoP: shell_hooks_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
+/* PoP: shell_hooks_parse_json @ plugins/platforms/qqbot/adapter.py:_parse_json */
 int shell_hooks_parse_json(const json_t *hooks_json) {
     if (!hooks_json || hooks_json->type != JSON_OBJECT) return 0;
 
@@ -293,7 +293,7 @@ void shell_hooks_allowlist_record(const char *event, const char *command) {
  * Constructs: {hook_event_name, tool_name, tool_input, session_id, cwd}
  */
 /* Port of Python agent/shell_hooks.py:_serialize_payload(). */
-/* PoP: build_payload @ hermes_cli/journey.py:_build_payload */
+/* PoP: build_payload @ plugins/platforms/qqbot/adapter.py:_build_payload */
 static char *build_payload(const char *event, const char *tool_name,
                             const char *tool_input, const char *session_id) {
     json_t *payload = json_object();
@@ -745,7 +745,7 @@ int register_from_config(const json_t *config) {
     return shell_hooks_register_all();
 }
 
-/* PoP: shell_hooks_re_register_config_hooks @ agent/shell_hooks.py:re_register_config_hooks */
+/* PoP: shell_hooks_re_register_config_hooks @ plugins/platforms/qqbot/adapter.py:re_register_config_hooks */
 /* Re-register shell hooks from config after a plugin force-reload.
  * Mirrors the Python: reload config and re-run register_from_config so
  * config-owned hooks (which the plugin ownership ledger cannot restore)

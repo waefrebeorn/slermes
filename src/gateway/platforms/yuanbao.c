@@ -116,7 +116,7 @@ static char *yuanbao_send_and_wait(const uint8_t *buf, size_t len, uint32_t seq_
     return result;
 }
 
-/* Port of Python gateway/platforms/yuanbao_proto.py:encode_auth_bind(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:encode_auth_bind(). */
 /* Encode AuthBindReq */
 static int encode_auth_bind(uint8_t *buf, size_t buf_len) {
     uint8_t body[2048];
@@ -527,8 +527,8 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
     return *g_yb.app_id && *g_yb.app_secret;
 }
 
-/* PoP: yuanbao_start @ gateway/platforms/yuanbao.py:start */
-/* PoP: yuanbao_start @ gateway/platforms/yuanbao.py:connect */
+/* PoP: yuanbao_start @ plugins/platforms/yuanbao/adapter.py:start */
+/* PoP: yuanbao_start @ plugins/platforms/yuanbao/adapter.py:connect */
 void yuanbao_start(void) {
     if (!*g_yb.app_id || !*g_yb.app_secret) {
         fprintf(stderr, "[gateway:yuanbao] app_id and app_secret required\n");
@@ -559,8 +559,8 @@ void yuanbao_start(void) {
     }
 }
 
-/* PoP: yuanbao_stop @ gateway/platforms/yuanbao.py:stop */
-/* PoP: yuanbao_stop @ gateway/platforms/yuanbao.py:close */
+/* PoP: yuanbao_stop @ plugins/platforms/yuanbao/adapter.py:stop */
+/* PoP: yuanbao_stop @ plugins/platforms/yuanbao/adapter.py:close */
 void yuanbao_stop(void) {
     g_yb.running = false;
 }
@@ -570,9 +570,9 @@ bool yuanbao_is_running(void) {
 }
 
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
-/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
-/* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
-/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send */
+/* PoP: send_sticker @ plugins/platforms/yuanbao/adapter.py:send_sticker */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:send_sticker(). */
+/* PoP: send_sticker @ plugins/platforms/yuanbao/adapter.py:send */
 int send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {
@@ -599,7 +599,7 @@ int send_sticker(const char *to_uid, const char *sticker_id,
 
 /* Query group info synchronously. Returns JSON string or NULL. Caller must free(). */
 /* PoP: yuanbao_query_group_info @ plugins/platforms/yuanbao/adapter.py:query_group_info */
-/* Port of Python gateway/platforms/yuanbao.py:query_group_info(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:query_group_info(). */
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
     uint32_t seq_no;
@@ -612,7 +612,7 @@ char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
 
 /* Query group members synchronously. Returns JSON string or NULL. Caller must free(). */
 /* PoP: yuanbao_get_group_member_list @ plugins/platforms/yuanbao/adapter.py:get_group_member_list */
-/* Port of Python gateway/platforms/yuanbao.py:get_group_member_list(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:get_group_member_list(). */
 char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uint32_t limit, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
     uint32_t seq_no;
@@ -624,8 +624,8 @@ char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uin
 }
 
 /* Send a DM (C2C text message). Returns JSON string or NULL. Caller must free(). */
-/* PoP: yuanbao_send_dm @ gateway/platforms/yuanbao.py:send_dm */
-/* Port of Python gateway/platforms/yuanbao.py:send_dm(). */
+/* PoP: yuanbao_send_dm @ plugins/platforms/yuanbao/adapter.py:send_dm */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:send_dm(). */
 char *yuanbao_send_dm(const char *to_uid, const char *text) {
     if (!g_yb.ws || !g_yb.running || !to_uid || !*to_uid || !text) return NULL;
     int64_t now_ms;
@@ -688,13 +688,13 @@ static void yb_sign_cache_set(const char *app_key, const char *token, const char
     e->entry.expire_ts = expire_ts;
 }
 
-/* PoP: yuanbao_get_refresh_lock @ gateway/platforms/yuanbao.py:SignManager.get_refresh_lock */
+/* PoP: yuanbao_get_refresh_lock @ plugins/platforms/yuanbao/adapter.py:SignManager.get_refresh_lock */
 pthread_mutex_t *yuanbao_get_refresh_lock(const char *app_key) {
     (void)app_key;
     return &yb_sign_mutex;
 }
 
-/* PoP: yuanbao_compute_signature @ gateway/platforms/yuanbao.py:SignManager.compute_signature */
+/* PoP: yuanbao_compute_signature @ plugins/platforms/yuanbao/adapter.py:SignManager.compute_signature */
 char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
                                  const char *app_key, const char *app_secret) {
     if (!nonce || !timestamp || !app_key || !app_secret) return NULL;
@@ -705,7 +705,7 @@ char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
     return out;
 }
 
-/* PoP: yuanbao_build_timestamp @ gateway/platforms/yuanbao.py:SignManager.build_timestamp */
+/* PoP: yuanbao_build_timestamp @ plugins/platforms/yuanbao/adapter.py:SignManager.build_timestamp */
 char *yuanbao_build_timestamp(void) {
     time_t now = time(NULL);
     struct tm tm_utc;
@@ -719,14 +719,14 @@ char *yuanbao_build_timestamp(void) {
     return out;
 }
 
-/* PoP: is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */
+/* PoP: is_cache_valid @ plugins/platforms/yuanbao/adapter.py:SignManager.is_cache_valid */
 bool is_cache_valid(const yuanbao_token_entry_t *entry) {
     if (!entry) return false;
     double now = (double)time(NULL);
     return (entry->expire_ts - now) > YUANBAO_SIGN_CACHE_REFRESH_MARGIN_S;
 }
 
-/* PoP: clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */
+/* PoP: clear_locks @ plugins/platforms/yuanbao/adapter.py:SignManager.clear_locks */
 void clear_locks(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     /* In C we don't have per-app_key asyncio.Lock objects to clear;
@@ -734,7 +734,7 @@ void clear_locks(void) {
     pthread_mutex_unlock(&yb_sign_mutex);
 }
 
-/* PoP: purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */
+/* PoP: purge_expired @ plugins/platforms/yuanbao/adapter.py:SignManager.purge_expired */
 int purge_expired(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     double now = (double)time(NULL);
@@ -754,7 +754,7 @@ int purge_expired(void) {
     return purged;
 }
 
-/* PoP: yuanbao_fetch @ gateway/platforms/yuanbao.py:SignManager.fetch */
+/* PoP: yuanbao_fetch @ plugins/platforms/yuanbao/adapter.py:SignManager.fetch */
 yuanbao_sign_entry_t *yuanbao_fetch(const char *app_key, const char *app_secret,
                                      const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;
@@ -887,7 +887,7 @@ yuanbao_sign_entry_t *yuanbao_fetch(const char *app_key, const char *app_secret,
     return NULL;
 }
 
-/* PoP: yuanbao_get_token @ gateway/platforms/yuanbao.py:SignManager.get_token */
+/* PoP: yuanbao_get_token @ plugins/platforms/yuanbao/adapter.py:SignManager.get_token */
 yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_secret,
                                          const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;
@@ -923,7 +923,7 @@ yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_sec
     return entry;
 }
 
-/* PoP: yuanbao_force_refresh @ gateway/platforms/yuanbao.py:SignManager.force_refresh */
+/* PoP: yuanbao_force_refresh @ plugins/platforms/yuanbao/adapter.py:SignManager.force_refresh */
 yuanbao_sign_entry_t *yuanbao_force_refresh(const char *app_key, const char *app_secret,
                                              const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;

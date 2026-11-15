@@ -208,7 +208,7 @@ int cli_gateway_platforms_signal_rate_limit_estimate_wait(int retry_after, int *
     return wait;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit_acquire @ gateway/platforms/signal_rate_limit.py:acquire */
+/* PoP: cli_gateway_platforms_signal_rate_limit_acquire @ plugins/platforms/signal/signal_rate_limit.py:acquire */
 int cli_gateway_platforms_signal_rate_limit_acquire(int *bucket, int tokens_needed) {
     /*
      * Acquire tokens from the bucket. Returns 1 if successful, 0 if not enough tokens.
@@ -239,7 +239,7 @@ void cli_gateway_platforms_signal_rate_limit_feedback(int was_throttled, int ret
     }
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ gateway/platforms/signal_rate_limit.py:_token_bucket_init */
+/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ plugins/platforms/signal/signal_rate_limit.py:_token_bucket_init */
 json_node_t* cli_gateway_platforms_signal_rate_limit__token_bucket_init(int capacity, int tokens_per_second) {
     /*
      * Initialize a token bucket. Returns a JSON object with bucket state.
@@ -254,7 +254,7 @@ json_node_t* cli_gateway_platforms_signal_rate_limit__token_bucket_init(int capa
     return bucket;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ gateway/platforms/signal_rate_limit.py:_maybe_refill */
+/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ plugins/platforms/signal/signal_rate_limit.py:_maybe_refill */
 int cli_gateway_platforms_signal_rate_limit__maybe_refill(json_node_t *bucket) {
     /*
      * Refill the token bucket if enough time has passed.
@@ -273,7 +273,7 @@ int cli_gateway_platforms_signal_rate_limit__maybe_refill(json_node_t *bucket) {
     return tokens;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__update_from_response @ gateway/platforms/signal_rate_limit.py:_update_from_response */
+/* PoP: cli_gateway_platforms_signal_rate_limit__update_from_response @ plugins/platforms/signal/signal_rate_limit.py:_update_from_response */
 void cli_gateway_platforms_signal_rate_limit__update_from_response(json_node_t *bucket, int status_code, const char *retry_after) {
     /*
      * Update the rate limiter state based on an HTTP response.

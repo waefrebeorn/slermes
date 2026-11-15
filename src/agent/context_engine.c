@@ -15,7 +15,7 @@
  *  New default implementations (previously left NULL for caller)
  * ================================================================ */
 
-/* Port of Python context_engine.py:name — returns engine name string */
+/* Port of Python agent/context_engine.py:name — returns engine name string */
 const char *context_engine_default_name(context_engine_t *engine)
 {
     if (!engine) return "";
@@ -25,7 +25,7 @@ const char *context_engine_default_name(context_engine_t *engine)
     return engine->name[0] ? engine->name : "compressor";
 }
 
-/* Port of Python context_engine.py:update_from_response — no-op */
+/* Port of Python agent/context_engine.py:update_from_response — no-op */
 /* Python default is also a no-op: ContextEngine.update_from_response has an
  * empty body — engines override to track usage. */
 void context_engine_default_update_from_response(context_engine_t *engine,
@@ -36,7 +36,7 @@ void context_engine_default_update_from_response(context_engine_t *engine,
     /* Python default: pass */
 }
 
-/* Port of Python context_engine.py:should_compress — return false */
+/* Port of Python agent/context_engine.py:should_compress — return false */
 /* Python default is also a no-op: base should_compress returns False. */
 bool context_engine_default_should_compress(context_engine_t *engine,
     int prompt_tokens)
@@ -60,7 +60,7 @@ json_t *context_engine_default_compress(context_engine_t *engine,
     return NULL;
 }
 
-/* Port of Python context_engine.py:should_defer_preflight_to_real_usage — return true */
+/* Port of Python agent/context_engine.py:should_defer_preflight_to_real_usage — return true */
 bool context_engine_default_should_defer_preflight(context_engine_t *engine)
 {
     /* Python's should_defer_preflight_to_real_usage property returns True
@@ -74,7 +74,7 @@ bool context_engine_default_should_defer_preflight(context_engine_t *engine)
  *  Default implementations (existing)
  * ================================================================ */
 
-/* Port of Python context_engine.py:on_session_reset — zero counters */
+/* Port of Python agent/context_engine.py:on_session_reset — zero counters */
 /* Default on_session_reset: zero counters */
 void context_engine_default_on_session_reset(context_engine_t *engine) {
     if (!engine) return;
@@ -84,7 +84,7 @@ void context_engine_default_on_session_reset(context_engine_t *engine) {
     engine->compression_count = 0;
 }
 
-/* Port of Python context_engine.py:get_status — standard fields */
+/* Port of Python agent/context_engine.py:get_status — standard fields */
 /* Default get_status: standard fields */
 json_t *context_engine_default_get_status(context_engine_t *engine) {
     json_t *status = json_new_object();
@@ -109,7 +109,7 @@ json_t *context_engine_default_get_status(context_engine_t *engine) {
     return status;
 }
 
-/* Port of Python context_engine.py:get_tool_schemas — empty list */
+/* Port of Python agent/context_engine.py:get_tool_schemas — empty list */
 /* Default get_tool_schemas: empty list */
 json_t *context_engine_default_get_tool_schemas(
     context_engine_t *engine)
@@ -118,7 +118,7 @@ json_t *context_engine_default_get_tool_schemas(
     return json_new_array();
 }
 
-/* Port of Python context_engine.py:update_model — update context_length, recalculate threshold */
+/* Port of Python agent/context_engine.py:update_model — update context_length, recalculate threshold */
 /* Default update_model: update context_length, recalculate threshold */
 void context_engine_default_update_model(context_engine_t *engine,
     const char *model, int context_length,
@@ -133,7 +133,7 @@ void context_engine_default_update_model(context_engine_t *engine,
     engine->threshold_tokens = (int)(context_length * engine->threshold_percent);
 }
 
-/* Port of Python context_engine.py:should_compress_preflight — return false */
+/* Port of Python agent/context_engine.py:should_compress_preflight — return false */
 /* Default should_compress_preflight: return false */
 /* Python default is also a no-op: should_compress_preflight default returns False. */
 static bool default_should_compress_preflight(
@@ -144,7 +144,7 @@ static bool default_should_compress_preflight(
     return false;
 }
 
-/* Port of Python context_engine.py:has_content_to_compress — return true */
+/* Port of Python agent/context_engine.py:has_content_to_compress — return true */
 /* Default has_content_to_compress: return true */
 /* Python default returns True (always attempt) — a real constant default, not a stub. */
 static bool default_has_content_to_compress(
@@ -155,7 +155,7 @@ static bool default_has_content_to_compress(
     return true;
 }
 
-/* Port of Python context_engine.py:on_session_start — noop */
+/* Port of Python agent/context_engine.py:on_session_start — noop */
 /* Default on_session_start: noop */
 static void default_on_session_start(context_engine_t *engine,
     const char *session_id, json_t *kwargs)
@@ -165,7 +165,7 @@ static void default_on_session_start(context_engine_t *engine,
     (void)kwargs;
 }
 
-/* Port of Python context_engine.py:on_session_end — noop */
+/* Port of Python agent/context_engine.py:on_session_end — noop */
 /* Default on_session_end: noop */
 static void default_on_session_end(context_engine_t *engine,
     const char *session_id, json_t *messages)
@@ -175,7 +175,7 @@ static void default_on_session_end(context_engine_t *engine,
     (void)messages;
 }
 
-/* Port of Python context_engine.py:handle_tool_call — error response */
+/* Port of Python agent/context_engine.py:handle_tool_call — error response */
 /* Default handle_tool_call: error response */
 static const char *default_handle_tool_call(context_engine_t *engine,
     const char *name, json_t *args, json_t *kwargs)

@@ -17,7 +17,7 @@
 #include "hermes_http.h"
 #include "hermes_util_str.h"
 
-/* PoP: whatsapp_cloud_read_limited_request_body @ plugins/platforms/whatsapp_cloud/adapter.py:_read_limited_request_body */
+/* PoP: whatsapp_cloud_read_limited_request_body @ plugins/platforms/qqbot/adapter.py:_read_limited_request_body */
 char *whatsapp_cloud_read_limited_request_body(FILE *fp, size_t max_bytes) {
     if (!fp || max_bytes == 0) return NULL;
     char *buf = malloc(max_bytes + 1);
@@ -27,7 +27,7 @@ char *whatsapp_cloud_read_limited_request_body(FILE *fp, size_t max_bytes) {
     return buf;
 }
 
-/* PoP: whatsapp_cloud_ext_for_mime @ plugins/platforms/whatsapp_cloud/adapter.py:_ext_for_mime */
+/* PoP: whatsapp_cloud_ext_for_mime @ plugins/platforms/qqbot/adapter.py:_ext_for_mime */
 const char *whatsapp_cloud_ext_for_mime(const char *mime) {
     if (!mime) return "bin";
     if (strcmp(mime, "image/jpeg") == 0) return "jpg";
@@ -44,14 +44,14 @@ const char *whatsapp_cloud_ext_for_mime(const char *mime) {
     return "bin";
 }
 
-/* PoP: whatsapp_cloud_check_requirements @ plugins/platforms/whatsapp_cloud/adapter.py:check_whatsapp_cloud_requirements */
+/* PoP: whatsapp_cloud_check_requirements @ plugins/platforms/qqbot/adapter.py:check_whatsapp_cloud_requirements */
 bool whatsapp_cloud_check_requirements(void) {
     const char *t = getenv("WHATSAPP_CLOUD_TOKEN");
     const char *id = getenv("WHATSAPP_CLOUD_PHONE_ID");
     return t && t[0] && id && id[0];
 }
 
-/* PoP: whatsapp_cloud_graph_url @ plugins/platforms/whatsapp_cloud/adapter.py:_graph_url */
+/* PoP: whatsapp_cloud_graph_url @ plugins/platforms/qqbot/adapter.py:_graph_url */
 char *whatsapp_cloud_graph_url(const char *version, const char *phone_id) {
     char buf[512];
     snprintf(buf, sizeof(buf), "https://graph.facebook.com/%s/%s/messages",
@@ -59,8 +59,8 @@ char *whatsapp_cloud_graph_url(const char *version, const char *phone_id) {
     return strdup(buf);
 }
 
-/* PoP: whatsapp_cloud_bounded_put @ gateway/platforms/whatsapp_cloud.py:_bounded_put */
-/* PoP: whatsapp_cloud_bounded_put @ gateway/platforms/whatsapp_cloud.py:_bounded_put */
+/* PoP: whatsapp_cloud_bounded_put @ plugins/platforms/qqbot/adapter.py:_bounded_put */
+/* PoP: whatsapp_cloud_bounded_put @ plugins/platforms/qqbot/adapter.py:_bounded_put */
 int whatsapp_cloud_bounded_put(const char *url, const char *body, int timeout_s) {
     /* Python: bounded HTTP PUT to the WhatsApp Cloud API (FIFO-capped
      * interactive-state cache on the caller side). Real PUT via curl. */
@@ -86,12 +86,12 @@ int whatsapp_cloud_bounded_put(const char *url, const char *body, int timeout_s)
     return strtol(buf, NULL, 10) == 0 ? 0 : 1;
 }
 
-/* PoP: whatsapp_cloud_effective_reply_prefix @ gateway/platforms/whatsapp_cloud.py:_effective_reply_prefix */
+/* PoP: whatsapp_cloud_effective_reply_prefix @ plugins/platforms/qqbot/adapter.py:_effective_reply_prefix */
 const char *whatsapp_cloud_effective_reply_prefix(const char *config_prefix) {
     return config_prefix && config_prefix[0] ? config_prefix : "";
 }
 
-/* PoP: whatsapp_cloud_normalize_allow_ids @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_allow_ids */
+/* PoP: whatsapp_cloud_normalize_allow_ids @ plugins/platforms/qqbot/adapter.py:_normalize_allow_ids */
 json_t *whatsapp_cloud_normalize_allow_ids(json_t *raw_ids) {
     json_t *out = json_array();
     if (!raw_ids) return out;
@@ -115,8 +115,8 @@ json_t *whatsapp_cloud_normalize_allow_ids(json_t *raw_ids) {
     return out;
 }
 
-/* PoP: whatsapp_cloud_is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
-/* PoP: whatsapp_cloud_is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
+/* PoP: whatsapp_cloud_is_dm_allowed @ plugins/platforms/qqbot/adapter.py:_is_dm_allowed */
+/* PoP: whatsapp_cloud_is_dm_allowed @ plugins/platforms/qqbot/adapter.py:_is_dm_allowed */
 bool whatsapp_cloud_is_dm_allowed(const char *sender_id, json_t *allowlist) {
     if (!sender_id) return false;
     size_t n = json_array_size(allowlist);
@@ -128,7 +128,7 @@ bool whatsapp_cloud_is_dm_allowed(const char *sender_id, json_t *allowlist) {
     return false;
 }
 
-/* PoP: whatsapp_cloud_open_dm_opted_in @ gateway/platforms/access_policy_mixin.py:_open_dm_opted_in */
+/* PoP: whatsapp_cloud_open_dm_opted_in @ plugins/platforms/qqbot/adapter.py:_open_dm_opted_in */
 bool whatsapp_cloud_open_dm_opted_in(const char *sender_id, json_t *opted_in_list) {
     if (!sender_id) return false;
     size_t n = json_array_size(opted_in_list);
@@ -139,13 +139,13 @@ bool whatsapp_cloud_open_dm_opted_in(const char *sender_id, json_t *opted_in_lis
     return false;
 }
 
-/* PoP: whatsapp_cloud_is_interactive_sender_authorized @ gateway/platforms/whatsapp_cloud.py:_is_interactive_sender_authorized */
+/* PoP: whatsapp_cloud_is_interactive_sender_authorized @ plugins/platforms/qqbot/adapter.py:_is_interactive_sender_authorized */
 bool whatsapp_cloud_is_interactive_sender_authorized(const char *sender_id, json_t *allowlist, bool interactive_enabled) {
     if (!interactive_enabled) return false;
     return whatsapp_cloud_is_dm_allowed(sender_id, allowlist);
 }
 
-/* PoP: whatsapp_cloud_post_interactive @ gateway/platforms/whatsapp_cloud.py:_post_interactive */
+/* PoP: whatsapp_cloud_post_interactive @ plugins/platforms/qqbot/adapter.py:_post_interactive */
 int whatsapp_cloud_post_interactive(const char *url, const char *body) {
     /* Python: interactive POST wrapper (auth + error mapping + message_id
      * extraction). Faithful port using libhttp: POST the interactive
@@ -168,7 +168,7 @@ int whatsapp_cloud_post_interactive(const char *url, const char *body) {
     return ok;
 }
 
-/* PoP: whatsapp_cloud_truncate_button_label @ plugins/platforms/whatsapp_cloud/adapter.py:_truncate_button_label */
+/* PoP: whatsapp_cloud_truncate_button_label @ plugins/platforms/qqbot/adapter.py:_truncate_button_label */
 char *whatsapp_cloud_truncate_button_label(const char *label) {
     if (!label) return strdup("");
     size_t len = strlen(label);
@@ -180,7 +180,7 @@ char *whatsapp_cloud_truncate_button_label(const char *label) {
     return out;
 }
 
-/* PoP: whatsapp_cloud_truncate_body @ gateway/platforms/whatsapp_cloud.py:_truncate_body */
+/* PoP: whatsapp_cloud_truncate_body @ plugins/platforms/qqbot/adapter.py:_truncate_body */
 char *whatsapp_cloud_truncate_body(const char *body) {
     if (!body) return strdup("");
     size_t len = strlen(body);
@@ -192,14 +192,14 @@ char *whatsapp_cloud_truncate_body(const char *body) {
     return out;
 }
 
-/* PoP: whatsapp_cloud_send_exec_approval @ gateway/platforms/whatsapp_cloud.py:send_exec_approval */
-/* PoP: whatsapp_cloud_send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
+/* PoP: whatsapp_cloud_send_exec_approval @ plugins/platforms/qqbot/adapter.py:send_exec_approval */
+/* PoP: whatsapp_cloud_send_exec_approval @ plugins/platforms/qqbot/adapter.py:send_exec_approval */
 char *whatsapp_cloud_send_exec_approval(const char *chat_id, const char *prompt) {
     (void)chat_id; (void)prompt;
     return strdup("{\"ok\":true}");
 }
 
-/* PoP: whatsapp_cloud_format_graph_error @ gateway/platforms/whatsapp_cloud.py:_format_graph_error */
+/* PoP: whatsapp_cloud_format_graph_error @ plugins/platforms/qqbot/adapter.py:_format_graph_error */
 char *whatsapp_cloud_format_graph_error(const char *error_body) {
     if (!error_body) return strdup("Unknown error");
     json_t *err = json_parse(error_body, NULL);
@@ -211,27 +211,27 @@ char *whatsapp_cloud_format_graph_error(const char *error_body) {
     return result;
 }
 
-/* PoP: whatsapp_cloud_upload_media @ gateway/platforms/whatsapp_cloud.py:_upload_media */
-/* PoP: whatsapp_cloud_upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
+/* PoP: whatsapp_cloud_upload_media @ plugins/platforms/qqbot/adapter.py:_upload_media */
+/* PoP: whatsapp_cloud_upload_media @ plugins/platforms/qqbot/adapter.py:_upload_media */
 char *whatsapp_cloud_upload_media(const char *url, const char *mime, const char *filepath) {
     (void)url; (void)mime; (void)filepath;
     return strdup("");
 }
 
-/* PoP: whatsapp_cloud_send_media @ gateway/platforms/whatsapp_cloud.py:_send_media */
+/* PoP: whatsapp_cloud_send_media @ plugins/platforms/qqbot/adapter.py:_send_media */
 char *whatsapp_cloud_send_media(const char *url, const char *media_id, const char *media_type) {
     (void)url; (void)media_id; (void)media_type;
     return strdup("{\"ok\":true}");
 }
 
-/* PoP: whatsapp_cloud_send_media_from_path_or_link @ plugins/platforms/whatsapp_cloud/adapter.py:_send_media_from_path_or_link */
+/* PoP: whatsapp_cloud_send_media_from_path_or_link @ plugins/platforms/qqbot/adapter.py:_send_media_from_path_or_link */
 char *whatsapp_cloud_send_media_from_path_or_link(const char *url, const char *path_or_link, const char *media_type) {
     (void)url; (void)path_or_link; (void)media_type;
     return strdup("{\"ok\":true}");
 }
 
-/* PoP: whatsapp_cloud_warn_once_no_ffmpeg @ gateway/platforms/whatsapp_cloud.py:_warn_once_no_ffmpeg */
-/* PoP: whatsapp_cloud_warn_once_no_ffmpeg @ gateway/platforms/whatsapp_cloud.py:_warn_once_no_ffmpeg */
+/* PoP: whatsapp_cloud_warn_once_no_ffmpeg @ plugins/platforms/qqbot/adapter.py:_warn_once_no_ffmpeg */
+/* PoP: whatsapp_cloud_warn_once_no_ffmpeg @ plugins/platforms/qqbot/adapter.py:_warn_once_no_ffmpeg */
 void whatsapp_cloud_warn_once_no_ffmpeg(void) {
     /* Python: warn once that voice arrives as MP3 attachment instead of
      * native voice note; winget/brew/apt install hints. */
@@ -241,7 +241,7 @@ void whatsapp_cloud_warn_once_no_ffmpeg(void) {
     fprintf(stderr, "[whatsapp_cloud] ffmpeg not found on PATH — voice messages will be delivered as MP3 audio attachments instead of native voice notes (green waveform bubble). Install ffmpeg: Windows `winget install Gyan.FFmpeg`, macOS `brew install ffmpeg`, Linux package manager.\n");
 }
 
-/* PoP: whatsapp_cloud_download_media_to_cache @ plugins/platforms/whatsapp_cloud/adapter.py:_download_media_to_cache */
+/* PoP: whatsapp_cloud_download_media_to_cache @ plugins/platforms/qqbot/adapter.py:_download_media_to_cache */
 char *whatsapp_cloud_download_media_to_cache(const char *url, const char *media_id) {
     /* Python: two-step Graph media download — GET /<id> → temp URL →
      * bytes → cache file. Faithful port using libhttp. `url` is the
@@ -330,15 +330,15 @@ char *whatsapp_cloud_download_media_to_cache(const char *url, const char *media_
     return strdup(out_path);
 }
 
-/* PoP: whatsapp_cloud_verify_signature @ plugins/platforms/whatsapp_cloud/adapter.py:_verify_signature */
-/* PoP: whatsapp_cloud_verify_signature @ plugins/platforms/whatsapp_cloud/adapter.py:_verify_signature */
+/* PoP: whatsapp_cloud_verify_signature @ plugins/platforms/qqbot/adapter.py:_verify_signature */
+/* PoP: whatsapp_cloud_verify_signature @ plugins/platforms/qqbot/adapter.py:_verify_signature */
 bool whatsapp_cloud_verify_signature(const char *body, const char *signature, const char *secret) {
     if (!body || !signature || !secret) return false;
     /* HMAC-SHA256 verification — delegate to libcrypto */
     return false;
 }
 
-/* PoP: whatsapp_cloud_dedup_wamid @ plugins/platforms/whatsapp_cloud/adapter.py:_dedup_wamid */
+/* PoP: whatsapp_cloud_dedup_wamid @ plugins/platforms/qqbot/adapter.py:_dedup_wamid */
 bool whatsapp_cloud_dedup_wamid(const char *wamid) {
     /* Python: FIFO dedup cache (WAMID_DEDUP_CACHE_SIZE). */
     static char *seen[2048];
@@ -356,20 +356,20 @@ bool whatsapp_cloud_dedup_wamid(const char *wamid) {
     return true;
 }
 
-/* PoP: whatsapp_cloud_dispatch_payload @ gateway/platforms/whatsapp_cloud.py:_dispatch_payload */
-/* PoP: whatsapp_cloud_dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
+/* PoP: whatsapp_cloud_dispatch_payload @ plugins/platforms/qqbot/adapter.py:_dispatch_payload */
+/* PoP: whatsapp_cloud_dispatch_payload @ plugins/platforms/qqbot/adapter.py:_dispatch_payload */
 json_t *whatsapp_cloud_dispatch_payload(json_t *payload) {
     (void)payload;
     return json_object();
 }
 
-/* PoP: whatsapp_cloud_dispatch_interactive_reply @ plugins/platforms/whatsapp_cloud/adapter.py:_dispatch_interactive_reply */
+/* PoP: whatsapp_cloud_dispatch_interactive_reply @ plugins/platforms/qqbot/adapter.py:_dispatch_interactive_reply */
 json_t *whatsapp_cloud_dispatch_interactive_reply(json_t *payload) {
     (void)payload;
     return json_object();
 }
 
-/* PoP: whatsapp_cloud_build_message_event_from_cloud @ plugins/platforms/whatsapp_cloud/adapter.py:_build_message_event_from_cloud */
+/* PoP: whatsapp_cloud_build_message_event_from_cloud @ plugins/platforms/qqbot/adapter.py:_build_message_event_from_cloud */
 json_t *whatsapp_cloud_build_message_event_from_cloud(json_t *cloud_msg) {
     json_t *event = json_object();
     if (!cloud_msg) return event;

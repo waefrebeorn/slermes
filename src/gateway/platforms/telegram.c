@@ -20,8 +20,8 @@
 
 static char bot_username[128] = "";
 
-/* PoP: telegram_set_username @ gateway/platforms/telegram.py:set_username */
-/* Port of Python gateway/platforms/telegram.py:set_username(). */
+/* PoP: telegram_set_username @ plugins/platforms/telegram/adapter.py:set_username */
+/* Port of Python plugins/platforms/telegram/adapter.py:set_username(). */
 void telegram_set_username(const char *username) {
     if (username) snprintf(bot_username, sizeof(bot_username), "%s", username);
 }
@@ -32,8 +32,8 @@ const char *telegram_get_username(void) {
 
 /* L08: Check if message has @mention of the bot in entities or text.
  * Returns true if the bot is directly mentioned. */
-/* PoP: telegram_is_mentioned @ gateway/platforms/telegram.py:is_mentioned */
-/* Port of Python gateway/platforms/telegram.py:is_mentioned(). */
+/* PoP: telegram_is_mentioned @ plugins/platforms/telegram/adapter.py:is_mentioned */
+/* Port of Python plugins/platforms/telegram/adapter.py:is_mentioned(). */
 bool telegram_is_mentioned(json_node_t *update) {
     if (!update || !bot_username[0]) return true; /* No username = assume mentioned */
 
@@ -87,8 +87,8 @@ bool telegram_is_mentioned(json_node_t *update) {
 
 /* L08: Check if the message is from a group chat.
  * Returns true if chat type is group, supergroup, or channel. */
-/* PoP: telegram_is_group @ gateway/platforms/telegram.py:is_group */
-/* Port of Python gateway/platforms/telegram.py:is_group(). */
+/* PoP: telegram_is_group @ plugins/platforms/telegram/adapter.py:is_group */
+/* Port of Python plugins/platforms/telegram/adapter.py:is_group(). */
 bool telegram_is_group(json_node_t *update) {
     if (!update) return false;
     json_node_t *msg = json_obj_get(update, "message");
@@ -108,15 +108,15 @@ bool telegram_is_group(json_node_t *update) {
 
 static char api_base[512] = "https://api.telegram.org/bot";
 
-/* PoP: telegram_set_token @ gateway/platforms/telegram.py:set_token */
-/* Port of Python gateway/platforms/telegram.py:set_token(). */
+/* PoP: telegram_set_token @ plugins/platforms/telegram/adapter.py:set_token */
+/* Port of Python plugins/platforms/telegram/adapter.py:set_token(). */
 void telegram_set_token(const char *token) {
     snprintf(api_base, sizeof(api_base), "https://api.telegram.org/bot%s", token);
 }
 
 /* Fetch bot info from /getMe. Returns true on success, sets bot_username. */
-/* PoP: telegram_get_me @ gateway/platforms/telegram.py:get_me */
-/* Port of Python gateway/platforms/telegram.py:get_me(). */
+/* PoP: telegram_get_me @ plugins/platforms/telegram/adapter.py:get_me */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_me(). */
 bool telegram_get_me(http_client_t *http) {
     if (!http) return false;
     char url[512];
@@ -161,8 +161,8 @@ static http_response_t *tg_post(http_client_t *http, const char *method,
 /* D06: Telegram sendMessage wrapper. Returns true on HTTP 200.
  * Supports parse_mode (HTML/Markdown) and thread_id (topic threads).
  * Optional disable_preview disables link previews in the message. */
-/* PoP: telegram_send_message @ gateway/platforms/telegram.py:send_message */
-/* Port of Python gateway/platforms/telegram.py:send_message(). */
+/* PoP: telegram_send_message @ plugins/platforms/telegram/adapter.py:send_message */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_message(). */
 bool telegram_send_message(http_client_t *http, const char *chat_id,
                             const char *text, const char *parse_mode,
                             const char *thread_id, bool disable_notification, bool disable_preview,
@@ -194,8 +194,8 @@ bool telegram_send_message(http_client_t *http, const char *chat_id,
  *  P104: Send message with reply markup (inline keyboards)
  * ================================================================ */
 
-/* PoP: telegram_send_message_with_keyboard @ gateway/platforms/telegram.py:send_message_with_keyboard */
-/* Port of Python gateway/platforms/telegram.py:send_message_with_keyboard(). */
+/* PoP: telegram_send_message_with_keyboard @ plugins/platforms/telegram/adapter.py:send_message_with_keyboard */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_message_with_keyboard(). */
 bool telegram_send_message_with_keyboard(http_client_t *http,
                                           const char *chat_id,
                                           const char *text,
@@ -233,8 +233,8 @@ bool telegram_send_message_with_keyboard(http_client_t *http,
  *  P104: Edit message text
  * ================================================================ */
 
-/* PoP: telegram_edit_message_text @ gateway/platforms/telegram.py:edit_message_text */
-/* Port of Python gateway/platforms/telegram.py:edit_message_text(). */
+/* PoP: telegram_edit_message_text @ plugins/platforms/telegram/adapter.py:edit_message_text */
+/* Port of Python plugins/platforms/telegram/adapter.py:edit_message_text(). */
 bool telegram_edit_message_text(http_client_t *http, const char *chat_id,
                                  const char *message_id, const char *text,
                                  const char *parse_mode)
@@ -258,8 +258,8 @@ bool telegram_edit_message_text(http_client_t *http, const char *chat_id,
  *  P104: Delete message
  * ================================================================ */
 
-/* PoP: telegram_delete_message @ gateway/platforms/telegram.py:delete_message */
-/* Port of Python gateway/platforms/telegram.py:delete_message(). */
+/* PoP: telegram_delete_message @ plugins/platforms/telegram/adapter.py:delete_message */
+/* Port of Python plugins/platforms/telegram/adapter.py:delete_message(). */
 bool telegram_delete_message(http_client_t *http, const char *chat_id,
                               const char *message_id)
 {
@@ -279,8 +279,8 @@ bool telegram_delete_message(http_client_t *http, const char *chat_id,
  *  Send typing indicator
  * ================================================================ */
 
-/* PoP: telegram_send_chat_action @ gateway/platforms/telegram.py:send_chat_action */
-/* Port of Python gateway/platforms/telegram.py:send_chat_action(). */
+/* PoP: telegram_send_chat_action @ plugins/platforms/telegram/adapter.py:send_chat_action */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_chat_action(). */
 bool telegram_send_chat_action(http_client_t *http, const char *chat_id,
                                 const char *action)
 {
@@ -332,8 +332,8 @@ typing_state_t *telegram_start_typing(http_client_t *http, const char *chat_id) 
     return state;
 }
 
-/* PoP: telegram_stop_typing @ gateway/platforms/telegram.py:stop_typing */
-/* Port of Python gateway/platforms/telegram.py:stop_typing(). */
+/* PoP: telegram_stop_typing @ plugins/platforms/telegram/adapter.py:stop_typing */
+/* Port of Python plugins/platforms/telegram/adapter.py:stop_typing(). */
 void telegram_stop_typing(typing_state_t *state) {
     if (!state) return;
     state->running = false;
@@ -346,8 +346,8 @@ void telegram_stop_typing(typing_state_t *state) {
  *  P104: Answer inline query
  * ================================================================ */
 
-/* PoP: telegram_answer_inline_query @ gateway/platforms/telegram.py:answer_inline_query */
-/* Port of Python gateway/platforms/telegram.py:answer_inline_query(). */
+/* PoP: telegram_answer_inline_query @ plugins/platforms/telegram/adapter.py:answer_inline_query */
+/* Port of Python plugins/platforms/telegram/adapter.py:answer_inline_query(). */
 bool telegram_answer_inline_query(http_client_t *http, const char *inline_query_id,
                                    json_node_t *results)
 {
@@ -370,8 +370,8 @@ bool telegram_answer_inline_query(http_client_t *http, const char *inline_query_
  *  P104: Answer callback query
  * ================================================================ */
 
-/* PoP: telegram_answer_callback_query @ gateway/platforms/telegram.py:answer_callback_query */
-/* Port of Python gateway/platforms/telegram.py:answer_callback_query(). */
+/* PoP: telegram_answer_callback_query @ plugins/platforms/telegram/adapter.py:answer_callback_query */
+/* Port of Python plugins/platforms/telegram/adapter.py:answer_callback_query(). */
 bool telegram_answer_callback_query(http_client_t *http, const char *callback_query_id,
                                      const char *text, bool show_alert)
 {
@@ -393,8 +393,8 @@ bool telegram_answer_callback_query(http_client_t *http, const char *callback_qu
  *  P104: Send poll
  * ================================================================ */
 
-/* PoP: telegram_send_poll @ plugins/platforms/whatsapp/adapter.py:send_poll */
-/* Port of Python gateway/platforms/telegram.py:send_poll(). */
+/* PoP: telegram_send_poll @ plugins/platforms/telegram/adapter.py:send_poll */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_poll(). */
 bool telegram_send_poll(http_client_t *http, const char *chat_id,
                          const char *question, json_node_t *options,
                          bool is_anonymous, const char *poll_type,
@@ -424,8 +424,8 @@ bool telegram_send_poll(http_client_t *http, const char *chat_id,
  *  P104: Send media group (photos with captions)
  * ================================================================ */
 
-/* PoP: telegram_send_media_group @ gateway/platforms/telegram.py:send_media_group */
-/* Port of Python gateway/platforms/telegram.py:send_media_group(). */
+/* PoP: telegram_send_media_group @ plugins/platforms/telegram/adapter.py:send_media_group */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_media_group(). */
 bool telegram_send_media_group(http_client_t *http, const char *chat_id,
                                 json_node_t *media)
 {
@@ -448,8 +448,8 @@ bool telegram_send_media_group(http_client_t *http, const char *chat_id,
  *  E01-E05: Media send methods (sendPhoto, sendDocument, etc.)
  * ================================================================ */
 
-/* PoP: telegram_send_photo @ gateway/platforms/telegram.py:send_photo */
-/* Port of Python gateway/platforms/telegram.py:send_photo(). */
+/* PoP: telegram_send_photo @ plugins/platforms/telegram/adapter.py:send_photo */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_photo(). */
 bool telegram_send_photo(http_client_t *http, const char *chat_id,
                           const char *photo, const char *caption,
                           const char *parse_mode)
@@ -468,8 +468,8 @@ bool telegram_send_photo(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_send_document @ gateway/platforms/telegram.py:send_document */
-/* Port of Python gateway/platforms/telegram.py:send_document(). */
+/* PoP: telegram_send_document @ plugins/platforms/telegram/adapter.py:send_document */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_document(). */
 bool telegram_send_document(http_client_t *http, const char *chat_id,
                              const char *document, const char *caption,
                              const char *parse_mode)
@@ -488,8 +488,8 @@ bool telegram_send_document(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_send_voice @ gateway/platforms/telegram.py:send_voice */
-/* Port of Python gateway/platforms/telegram.py:send_voice(). */
+/* PoP: telegram_send_voice @ plugins/platforms/telegram/adapter.py:send_voice */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_voice(). */
 bool telegram_send_voice(http_client_t *http, const char *chat_id,
                           const char *voice, const char *caption,
                           const char *parse_mode)
@@ -508,8 +508,8 @@ bool telegram_send_voice(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_send_video @ gateway/platforms/telegram.py:send_video */
-/* Port of Python gateway/platforms/telegram.py:send_video(). */
+/* PoP: telegram_send_video @ plugins/platforms/telegram/adapter.py:send_video */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_video(). */
 bool telegram_send_video(http_client_t *http, const char *chat_id,
                           const char *video, const char *caption,
                           const char *parse_mode)
@@ -528,8 +528,8 @@ bool telegram_send_video(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_send_animation @ gateway/platforms/telegram.py:send_animation */
-/* Port of Python gateway/platforms/telegram.py:send_animation(). */
+/* PoP: telegram_send_animation @ plugins/platforms/telegram/adapter.py:send_animation */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_animation(). */
 bool telegram_send_animation(http_client_t *http, const char *chat_id,
                               const char *animation, const char *caption,
                               const char *parse_mode)
@@ -552,8 +552,8 @@ bool telegram_send_animation(http_client_t *http, const char *chat_id,
  *  E14: Forward message
  * ================================================================ */
 
-/* PoP: telegram_forward_message @ gateway/platforms/telegram.py:forward_message */
-/* Port of Python gateway/platforms/telegram.py:forward_message(). */
+/* PoP: telegram_forward_message @ plugins/platforms/telegram/adapter.py:forward_message */
+/* Port of Python plugins/platforms/telegram/adapter.py:forward_message(). */
 bool telegram_forward_message(http_client_t *http, const char *chat_id,
                                const char *from_chat_id,
                                const char *message_id)
@@ -573,8 +573,8 @@ bool telegram_forward_message(http_client_t *http, const char *chat_id,
  *  E15: Pin/unpin message
  * ================================================================ */
 
-/* PoP: telegram_pin_chat_message @ gateway/platforms/telegram.py:pin_chat_message */
-/* Port of Python gateway/platforms/telegram.py:pin_chat_message(). */
+/* PoP: telegram_pin_chat_message @ plugins/platforms/telegram/adapter.py:pin_chat_message */
+/* Port of Python plugins/platforms/telegram/adapter.py:pin_chat_message(). */
 bool telegram_pin_chat_message(http_client_t *http, const char *chat_id,
                                 const char *message_id)
 {
@@ -588,8 +588,8 @@ bool telegram_pin_chat_message(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_unpin_chat_message @ gateway/platforms/telegram.py:unpin_chat_message */
-/* Port of Python gateway/platforms/telegram.py:unpin_chat_message(). */
+/* PoP: telegram_unpin_chat_message @ plugins/platforms/telegram/adapter.py:unpin_chat_message */
+/* Port of Python plugins/platforms/telegram/adapter.py:unpin_chat_message(). */
 bool telegram_unpin_chat_message(http_client_t *http, const char *chat_id,
                                   const char *message_id)
 {
@@ -607,8 +607,8 @@ bool telegram_unpin_chat_message(http_client_t *http, const char *chat_id,
  *  E16: Message reactions
  * ================================================================ */
 
-/* PoP: telegram_set_message_reaction @ hermes_state_messages.py:set_message_reaction */
-/* Port of Python gateway/platforms/telegram.py:set_message_reaction(). */
+/* PoP: telegram_set_message_reaction @ plugins/platforms/telegram/adapter.py:set_message_reaction */
+/* Port of Python plugins/platforms/telegram/adapter.py:set_message_reaction(). */
 bool telegram_set_message_reaction(http_client_t *http, const char *chat_id,
                                     const char *message_id, const char *emoji)
 {
@@ -632,8 +632,8 @@ bool telegram_set_message_reaction(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_create_forum_topic @ gateway/platforms/telegram.py:create_forum_topic */
-/* Port of Python gateway/platforms/telegram.py:create_forum_topic(). */
+/* PoP: telegram_create_forum_topic @ plugins/platforms/telegram/adapter.py:create_forum_topic */
+/* Port of Python plugins/platforms/telegram/adapter.py:create_forum_topic(). */
 bool telegram_create_forum_topic(http_client_t *http, const char *chat_id,
                                   const char *name)
 {
@@ -649,8 +649,8 @@ bool telegram_create_forum_topic(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_edit_forum_topic @ gateway/platforms/telegram.py:edit_forum_topic */
-/* Port of Python gateway/platforms/telegram.py:edit_forum_topic(). */
+/* PoP: telegram_edit_forum_topic @ plugins/platforms/telegram/adapter.py:edit_forum_topic */
+/* Port of Python plugins/platforms/telegram/adapter.py:edit_forum_topic(). */
 bool telegram_edit_forum_topic(http_client_t *http, const char *chat_id,
                                 const char *message_thread_id, const char *name)
 {
@@ -668,8 +668,8 @@ bool telegram_edit_forum_topic(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_close_forum_topic @ gateway/platforms/telegram.py:close_forum_topic */
-/* Port of Python gateway/platforms/telegram.py:close_forum_topic(). */
+/* PoP: telegram_close_forum_topic @ plugins/platforms/telegram/adapter.py:close_forum_topic */
+/* Port of Python plugins/platforms/telegram/adapter.py:close_forum_topic(). */
 bool telegram_close_forum_topic(http_client_t *http, const char *chat_id,
                                  const char *message_thread_id)
 {
@@ -685,8 +685,8 @@ bool telegram_close_forum_topic(http_client_t *http, const char *chat_id,
     return ok;
 }
 
-/* PoP: telegram_reopen_forum_topic @ gateway/platforms/telegram.py:reopen_forum_topic */
-/* Port of Python gateway/platforms/telegram.py:reopen_forum_topic(). */
+/* PoP: telegram_reopen_forum_topic @ plugins/platforms/telegram/adapter.py:reopen_forum_topic */
+/* Port of Python plugins/platforms/telegram/adapter.py:reopen_forum_topic(). */
 bool telegram_reopen_forum_topic(http_client_t *http, const char *chat_id,
                                   const char *message_thread_id)
 {
@@ -706,8 +706,8 @@ bool telegram_reopen_forum_topic(http_client_t *http, const char *chat_id,
  *  Get updates (used by poll loop in server.c)
  * ================================================================ */
 
-/* PoP: telegram_get_updates @ gateway/platforms/telegram.py:get_updates */
-/* Port of Python gateway/platforms/telegram.py:get_updates(). */
+/* PoP: telegram_get_updates @ plugins/platforms/telegram/adapter.py:get_updates */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_updates(). */
 json_node_t *telegram_get_updates(http_client_t *http, int offset, int timeout)
 {
     if (!http) return NULL;
@@ -739,8 +739,8 @@ json_node_t *telegram_get_updates(http_client_t *http, int offset, int timeout)
  * ================================================================ */
 
 /* Get message text from any update type */
-/* PoP: telegram_get_text @ gateway/platforms/telegram.py:get_text */
-/* Port of Python gateway/platforms/telegram.py:get_text(). */
+/* PoP: telegram_get_text @ plugins/platforms/telegram/adapter.py:get_text */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_text(). */
 const char *telegram_get_text(json_node_t *update) {
     if (!update) return NULL;
 
@@ -904,8 +904,8 @@ const char *telegram_get_text(json_node_t *update) {
     return NULL;
 }
 
-/* PoP: telegram_get_chat_id @ gateway/platforms/telegram.py:get_chat_id */
-/* Port of Python gateway/platforms/telegram.py:get_chat_id(). */
+/* PoP: telegram_get_chat_id @ plugins/platforms/telegram/adapter.py:get_chat_id */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_chat_id(). */
 const char *telegram_get_chat_id(json_node_t *update) {
     static char buf[32];
     if (!update) return NULL;
@@ -998,8 +998,8 @@ const char *telegram_get_update_type(json_node_t *update) {
 }
 
 /* P104: Get callback query ID for answering */
-/* PoP: telegram_get_callback_query_id @ gateway/platforms/telegram.py:get_callback_query_id */
-/* Port of Python gateway/platforms/telegram.py:get_callback_query_id(). */
+/* PoP: telegram_get_callback_query_id @ plugins/platforms/telegram/adapter.py:get_callback_query_id */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_callback_query_id(). */
 const char *telegram_get_callback_query_id(json_node_t *update) {
     static char buf[64];
     if (!update) return NULL;
@@ -1012,8 +1012,8 @@ const char *telegram_get_callback_query_id(json_node_t *update) {
 }
 
 /* P104: Get inline query ID */
-/* PoP: telegram_get_inline_query_id @ gateway/platforms/telegram.py:get_inline_query_id */
-/* Port of Python gateway/platforms/telegram.py:get_inline_query_id(). */
+/* PoP: telegram_get_inline_query_id @ plugins/platforms/telegram/adapter.py:get_inline_query_id */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_inline_query_id(). */
 const char *telegram_get_inline_query_id(json_node_t *update) {
     static char buf[64];
     if (!update) return NULL;
@@ -1114,16 +1114,16 @@ char **telegram_parse_fallback_ips(const char *env_value, size_t *count) {
  * ================================================================ */
 
 /* E07: Send editable draft with placeholder text (no keyboard) */
-/* PoP: telegram_send_draft @ gateway/platforms/telegram.py:send_draft */
-/* Port of Python gateway/platforms/telegram.py:send_draft(). */
+/* PoP: telegram_send_draft @ plugins/platforms/telegram/adapter.py:send_draft */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_draft(). */
 bool telegram_send_draft(http_client_t *http, const char *chat_id,
                           const char *text, const char *parse_mode)
 {
     return telegram_send_message_with_keyboard(http, chat_id, text, parse_mode, NULL, NULL, false, false, NULL);
 }
 /* E08: Send clarification prompt with inline Yes/No/Explain buttons */
-/* PoP: telegram_send_clarify @ gateway/platforms/telegram.py:send_clarify */
-/* Port of Python gateway/platforms/telegram.py:send_clarify(). */
+/* PoP: telegram_send_clarify @ plugins/platforms/telegram/adapter.py:send_clarify */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_clarify(). */
 bool telegram_send_clarify(http_client_t *http, const char *chat_id,
                             const char *question, const char **options, int n_options,
                             const char *parse_mode)
@@ -1217,8 +1217,8 @@ bool telegram_send_confirm_prompt(http_client_t *http, const char *chat_id,
 }
 
 /* E11: Send model picker with inline keyboard of models */
-/* PoP: telegram_send_model_picker @ gateway/platforms/telegram.py:send_model_picker */
-/* Port of Python gateway/platforms/telegram.py:send_model_picker(). */
+/* PoP: telegram_send_model_picker @ plugins/platforms/telegram/adapter.py:send_model_picker */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_model_picker(). */
 bool telegram_send_model_picker(http_client_t *http, const char *chat_id,
                                  const char **models, int n_models,
                                  const char *current_model)
@@ -1262,8 +1262,8 @@ bool telegram_send_model_picker(http_client_t *http, const char *chat_id,
     return ok;
 }
 /* E12: Send update prompt with diff + Apply/Dismiss buttons */
-/* PoP: telegram_send_update_prompt @ gateway/platforms/telegram.py:send_update_prompt */
-/* Port of Python gateway/platforms/telegram.py:send_update_prompt(). */
+/* PoP: telegram_send_update_prompt @ plugins/platforms/telegram/adapter.py:send_update_prompt */
+/* Port of Python plugins/platforms/telegram/adapter.py:send_update_prompt(). */
 bool telegram_send_update_prompt(http_client_t *http, const char *chat_id,
                                   const char *diff_text, const char *summary,
                                   const char *parse_mode)
@@ -1335,8 +1335,8 @@ bool telegram_is_thread_not_found(const char *error_text) {
 
 /* Get chat type from a Telegram update: "private", "group", "supergroup", "channel".
  * Returns static string or "dm" as default. */
-/* PoP: telegram_get_chat_type @ gateway/platforms/telegram.py:get_chat_type */
-/* Port of Python gateway/platforms/telegram.py:get_chat_type(). */
+/* PoP: telegram_get_chat_type @ plugins/platforms/telegram/adapter.py:get_chat_type */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_chat_type(). */
 const char *telegram_get_chat_type(json_node_t *update) {
     if (!update) return "dm";
     json_node_t *msg = json_object_get(update, "message");
@@ -1356,8 +1356,8 @@ const char *telegram_get_chat_type(json_node_t *update) {
 
 /* Get chat display name (title for groups, first_name for DMs).
  * Returns static buffer or "Unknown". */
-/* PoP: telegram_get_chat_name @ gateway/platforms/telegram.py:get_chat_name */
-/* Port of Python gateway/platforms/telegram.py:get_chat_name(). */
+/* PoP: telegram_get_chat_name @ plugins/platforms/telegram/adapter.py:get_chat_name */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_chat_name(). */
 const char *telegram_get_chat_name(json_node_t *update) {
     static char buf[256];
     if (!update) return "Unknown";
@@ -1376,8 +1376,8 @@ const char *telegram_get_chat_name(json_node_t *update) {
 
 /* Get sender user ID from a Telegram update.
  * Returns static buffer or "0". */
-/* PoP: telegram_get_user_id @ gateway/platforms/telegram.py:get_user_id */
-/* Port of Python gateway/platforms/telegram.py:get_user_id(). */
+/* PoP: telegram_get_user_id @ plugins/platforms/telegram/adapter.py:get_user_id */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_user_id(). */
 const char *telegram_get_user_id(json_node_t *update) {
     static char buf[32];
     if (!update) return "0";
@@ -1393,8 +1393,8 @@ const char *telegram_get_user_id(json_node_t *update) {
 
 /* Get sender display name from a Telegram update (first_name + last_name).
  * Returns static buffer or "User". */
-/* PoP: telegram_get_user_name @ gateway/platforms/telegram.py:get_user_name */
-/* Port of Python gateway/platforms/telegram.py:get_user_name(). */
+/* PoP: telegram_get_user_name @ plugins/platforms/telegram/adapter.py:get_user_name */
+/* Port of Python plugins/platforms/telegram/adapter.py:get_user_name(). */
 const char *telegram_get_user_name(json_node_t *update) {
     static char buf[256];
     if (!update) return "User";
@@ -1416,8 +1416,8 @@ const char *telegram_get_user_name(json_node_t *update) {
 }
 
 /* Check if the sender is a bot. */
-/* PoP: telegram_is_bot @ gateway/platforms/telegram.py:is_bot */
-/* Port of Python gateway/platforms/telegram.py:is_bot(). */
+/* PoP: telegram_is_bot @ plugins/platforms/telegram/adapter.py:is_bot */
+/* Port of Python plugins/platforms/telegram/adapter.py:is_bot(). */
 bool telegram_is_bot(json_node_t *update) {
     if (!update) return false;
     json_node_t *msg = json_object_get(update, "message");

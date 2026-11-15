@@ -17,7 +17,7 @@ int yb_send_heartbeat_once(const char *arg);
 /* Active adapter instance (set_active). */
 static void *s_yb_active_adapter;
 
-/* PoP: yb_u__repr__ @ gateway/platforms/yuanbao.py:__repr__ */
+/* PoP: yb_u__repr__ @ plugins/platforms/yuanbao/adapter.py:__repr__ */
 int yb_u__repr__(const char *arg) {
     /* Python: f"<{cls.__name__} name={self.name!r}>". Arg = "cls\tname". */
     if (!arg || !*arg) { printf("<>\n"); return 0; }
@@ -367,7 +367,7 @@ int yb_u_extract_inbound_media_refs(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_extract_link_urls @ gateway/platforms/yuanbao.py:_extract_link_urls */
+/* PoP: yb_u_extract_link_urls @ plugins/platforms/yuanbao/adapter.py:_extract_link_urls */
 int yb_u_extract_link_urls(const char *arg) {
     /* Python: 1010/1007 link extract. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -674,7 +674,7 @@ int yb_u_resolve_download_url(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_download_and_cache @ gateway/platforms/yuanbao.py:_download_and_cache */
+/* PoP: yb_u_download_and_cache @ plugins/platforms/yuanbao/adapter.py:_download_and_cache */
 int yb_u_download_and_cache(const char *arg) {
     /* Python: TTL cache. Arg =
      * "path\tstate\tresult". */
@@ -765,7 +765,7 @@ int yb_u_consume_group_queue(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_build @ gateway/platforms/yuanbao.py:build */
+/* PoP: yb_build @ plugins/platforms/yuanbao/adapter.py:build */
 int yb_build(const char *arg) {
     /* Python: classmethod — InboundPipeline() with _DEFAULT_MIDDLEWARES
      * applied in order. Arg = "mw1\tmw2..." middleware names. */
@@ -774,7 +774,7 @@ int yb_build(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_connect_id @ gateway/platforms/yuanbao.py:connect_id */
+/* PoP: yb_connect_id @ plugins/platforms/yuanbao/adapter.py:connect_id */
 int yb_connect_id(const char *arg) {
     /* Python property: the active connect id. */
     static char g_id[256];
@@ -783,7 +783,7 @@ int yb_connect_id(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_reconnect_attempts @ gateway/platforms/yuanbao.py:reconnect_attempts */
+/* PoP: yb_reconnect_attempts @ plugins/platforms/yuanbao/adapter.py:reconnect_attempts */
 int yb_reconnect_attempts(const char *arg) {
     /* Python property: the reconnect attempt counter. */
     static int g_attempts = 0;
@@ -807,7 +807,7 @@ int yb_u_extract_connect_id(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_heartbeat_loop @ gateway/platforms/yuanbao.py:_heartbeat_loop */
+/* PoP: yb_u_heartbeat_loop @ plugins/platforms/yuanbao/adapter.py:_heartbeat_loop */
 int yb_u_heartbeat_loop(const char *arg) {
     /* Python: 30s ping. Arg =
      * "state\tresult". */
@@ -819,7 +819,7 @@ int yb_u_heartbeat_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_receive_loop @ gateway/platforms/yuanbao.py:_receive_loop */
+/* PoP: yb_u_receive_loop @ plugins/platforms/yuanbao/adapter.py:_receive_loop */
 int yb_u_receive_loop(const char *arg) {
     /* Python: frame dispatch. Arg =
      * "state\tresult\terr". */
@@ -943,7 +943,7 @@ int yb_u_do_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_cleanup_ws @ gateway/platforms/yuanbao.py:_cleanup_ws */
+/* PoP: yb_u_cleanup_ws @ plugins/platforms/yuanbao/adapter.py:_cleanup_ws */
 int yb_u_cleanup_ws(const char *arg) {
     /* Python: bounded close. Arg =
      * "closed\tstate\tresult". */
@@ -1006,7 +1006,7 @@ int yb_needs_cos_upload(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_acquire_file_2 @ gateway/platforms/yuanbao.py:ImageUrlHandler.acquire_file */
+/* PoP: yb_acquire_file_2 @ plugins/platforms/yuanbao/adapter.py:ImageUrlHandler.acquire_file */
 int yb_acquire_file_2(const char *arg) {
     /* ImageUrlHandler: download from URL, infer content_type/filename.
      * Arg layout mirrors yb_acquire_file base: "state\tresult\terr"
@@ -1014,45 +1014,45 @@ int yb_acquire_file_2(const char *arg) {
     return yb_acquire_file(arg);
 }
 
-/* PoP: yb_build_msg_body_2 @ gateway/platforms/yuanbao.py:ImageUrlHandler.build_msg_body */
+/* PoP: yb_build_msg_body_2 @ plugins/platforms/yuanbao/adapter.py:ImageUrlHandler.build_msg_body */
 int yb_build_msg_body_2(const char *arg) {
     /* ImageUrlHandler: delegate to yb_build_msg_body (image message body
      * with width/height/mime_type fields already handled). */
     return yb_build_msg_body(arg);
 }
 
-/* PoP: yb_acquire_file_3 @ gateway/platforms/yuanbao.py:ImageFileHandler.acquire_file */
+/* PoP: yb_acquire_file_3 @ plugins/platforms/yuanbao/adapter.py:ImageFileHandler.acquire_file */
 int yb_acquire_file_3(const char *arg) {
     /* ImageFileHandler: read local file path, os.path.isfile check.
      * Falls back to base for URL-based reads. */
     return yb_acquire_file(arg);
 }
 
-/* PoP: yb_build_msg_body_3 @ gateway/platforms/yuanbao.py:ImageFileHandler.build_msg_body */
+/* PoP: yb_build_msg_body_3 @ plugins/platforms/yuanbao/adapter.py:ImageFileHandler.build_msg_body */
 int yb_build_msg_body_3(const char *arg) {
     /* ImageFileHandler: build_image_msg_body with same fields. */
     return yb_build_msg_body(arg);
 }
 
-/* PoP: yb_acquire_file_4 @ gateway/platforms/yuanbao.py:FileUrlHandler.acquire_file */
+/* PoP: yb_acquire_file_4 @ plugins/platforms/yuanbao/adapter.py:FileUrlHandler.acquire_file */
 int yb_acquire_file_4(const char *arg) {
     /* FileUrlHandler: download → TIMFileElem (no width/height). */
     return yb_acquire_file(arg);
 }
 
-/* PoP: yb_build_msg_body_4 @ gateway/platforms/yuanbao.py:FileUrlHandler.build_msg_body */
+/* PoP: yb_build_msg_body_4 @ plugins/platforms/yuanbao/adapter.py:FileUrlHandler.build_msg_body */
 int yb_build_msg_body_4(const char *arg) {
     /* FileUrlHandler: build_file_msg_body via yb_build_msg_body. */
     return yb_build_msg_body(arg);
 }
 
-/* PoP: yb_acquire_file_5 @ gateway/platforms/yuanbao.py:DocumentHandler.acquire_file */
+/* PoP: yb_acquire_file_5 @ plugins/platforms/yuanbao/adapter.py:DocumentHandler.acquire_file */
 int yb_acquire_file_5(const char *arg) {
     /* DocumentHandler: read local file path → file bytes. */
     return yb_acquire_file(arg);
 }
 
-/* PoP: yb_build_msg_body_5 @ gateway/platforms/yuanbao.py:DocumentHandler.build_msg_body */
+/* PoP: yb_build_msg_body_5 @ plugins/platforms/yuanbao/adapter.py:DocumentHandler.build_msg_body */
 int yb_build_msg_body_5(const char *arg) {
     /* DocumentHandler: build_file_msg_body via yb_build_msg_body. */
     return yb_build_msg_body(arg);
@@ -1069,7 +1069,7 @@ int yb_needs_cos_upload_2(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_acquire_file_6 @ gateway/platforms/yuanbao.py:StickerHandler.acquire_file */
+/* PoP: yb_acquire_file_6 @ plugins/platforms/yuanbao/adapter.py:StickerHandler.acquire_file */
 int yb_acquire_file_6(const char *arg) {
     /* StickerHandler: no COS upload needed; return dummy (b"", "sticker",
      * "application/octet-stream") like Python. Delegate to base for format. */
@@ -1077,14 +1077,14 @@ int yb_acquire_file_6(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_build_msg_body_6 @ gateway/platforms/yuanbao.py:StickerHandler.build_msg_body */
+/* PoP: yb_build_msg_body_6 @ plugins/platforms/yuanbao/adapter.py:StickerHandler.build_msg_body */
 int yb_build_msg_body_6(const char *arg) {
     /* StickerHandler: build_face_msg_body / build_sticker_msg_body via
      * yb_build_msg_body (sticker uses TIMFaceElem, no file upload). */
     return yb_build_msg_body(arg);
 }
 
-/* PoP: yb_query_group_info_raw @ gateway/platforms/yuanbao.py:query_group_info_raw */
+/* PoP: yb_query_group_info_raw @ plugins/platforms/yuanbao/adapter.py:query_group_info_raw */
 int yb_query_group_info_raw(const char *arg) {
     /* Python: WS group info. Arg =
      * "state\tresult\terr". */
@@ -1098,7 +1098,7 @@ int yb_query_group_info_raw(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_get_group_member_list_raw @ gateway/platforms/yuanbao.py:get_group_member_list_raw */
+/* PoP: yb_get_group_member_list_raw @ plugins/platforms/yuanbao/adapter.py:get_group_member_list_raw */
 int yb_get_group_member_list_raw(const char *arg) {
     /* Python: WS member list. Arg =
      * "members\tstate\tresult". */
@@ -1111,7 +1111,7 @@ int yb_get_group_member_list_raw(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_query_session_members @ gateway/platforms/yuanbao.py:query_session_members */
+/* PoP: yb_query_session_members @ plugins/platforms/yuanbao/adapter.py:query_session_members */
 int yb_query_session_members(const char *arg) {
     /* Python: AI member query. Arg =
      * "members\tstate\tresult". */
@@ -1139,7 +1139,7 @@ int yb_send_heartbeat_once(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_worker @ gateway/platforms/yuanbao.py:_worker */
+/* PoP: yb_u_worker @ plugins/platforms/yuanbao/adapter.py:_worker */
 int yb_u_worker(const char *arg) {
     /* Python: 2s RUNNING loop. Arg =
      * "finished\tstate\tresult". */
@@ -1169,7 +1169,7 @@ int yb_u_notifier(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_cancel @ gateway/platforms/yuanbao.py:cancel */
+/* PoP: yb_cancel @ plugins/platforms/yuanbao/adapter.py:cancel */
 int yb_cancel(const char *arg) {
     /* Python: cancel pending notifier task for chat_id. Arg = "chat_id". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1177,7 +1177,7 @@ int yb_cancel(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_register_handler @ gateway/platforms/yuanbao.py:register_handler */
+/* PoP: yb_register_handler @ plugins/platforms/yuanbao/adapter.py:register_handler */
 int yb_register_handler(const char *arg) {
     /* Python: self._media_handlers[name] = handler — register (or replace)
      * a named media send handler. Arg = "name\thandler". */
@@ -1268,7 +1268,7 @@ int yb_send_text_chunk(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_send_c2c_message @ gateway/platforms/yuanbao.py:send_c2c_message */
+/* PoP: yb_send_c2c_message @ plugins/platforms/yuanbao/adapter.py:send_c2c_message */
 int yb_send_c2c_message(const char *arg) {
     /* Python: text c2c. Arg =
      * "state\tresult\terr". */
@@ -1285,7 +1285,7 @@ int yb_send_c2c_message(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_send_group_message @ gateway/platforms/yuanbao.py:send_group_message */
+/* PoP: yb_send_group_message @ plugins/platforms/yuanbao/adapter.py:send_group_message */
 int yb_send_group_message(const char *arg) {
     /* Python: mention-aware group. Arg =
      * "state\tresult\terr". */
@@ -1419,7 +1419,7 @@ int yb_strip_cron_wrapper(const char *content) {
     return 0;
 }
 
-/* PoP: yb_u_handle_send_start @ gateway/platforms/yuanbao.py:_handle_send_start */
+/* PoP: yb_u_handle_send_start @ plugins/platforms/yuanbao/adapter.py:_handle_send_start */
 int yb_u_handle_send_start(const char *arg) {
     /* Python: cancel slow notifier. Arg = "chat_id\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1430,7 +1430,7 @@ int yb_u_handle_send_start(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_handle_send_finish @ gateway/platforms/yuanbao.py:_handle_send_finish */
+/* PoP: yb_u_handle_send_finish @ plugins/platforms/yuanbao/adapter.py:_handle_send_finish */
 int yb_u_handle_send_finish(const char *arg) {
     /* Python: send FINISH heartbeat via HeartbeatManager.
      * Delegates to yb_send_heartbeat_once with WS_HEARTBEAT_FINISH.
@@ -1440,20 +1440,20 @@ int yb_u_handle_send_finish(const char *arg) {
     return yb_send_heartbeat_once("1\t1\t");
 }
 
-/* PoP: yb_send_media_2 @ gateway/platforms/yuanbao.py:OutboundManager.send_media */
+/* PoP: yb_send_media_2 @ plugins/platforms/yuanbao/adapter.py:OutboundManager.send_media */
 int yb_send_media_2(const char *arg) {
     /* MessageSender.send_media: dispatch to named handler strategy.
      * Delegate to yb_send_media (handler dispatch logic in base). */
     return yb_send_media(arg);
 }
 
-/* PoP: yb_send_direct_2 @ gateway/platforms/yuanbao.py:OutboundManager.send_direct */
+/* PoP: yb_send_direct_2 @ plugins/platforms/yuanbao/adapter.py:OutboundManager.send_direct */
 int yb_send_direct_2(const char *arg) {
     /* MessageSender.send_direct: text + media by extension. */
     return yb_send_direct(arg);
 }
 
-/* PoP: yb_start_typing @ gateway/platforms/yuanbao.py:start_typing */
+/* PoP: yb_start_typing @ plugins/platforms/yuanbao/adapter.py:start_typing */
 int yb_start_typing(const char *arg) {
     /* Python: OutboundManager.start_typing → HeartbeatManager.start.
      * Delegates to yb_send_heartbeat_once (RUNNING). Arg = chat_id. */
@@ -1462,7 +1462,7 @@ int yb_start_typing(const char *arg) {
     return yb_send_heartbeat_once("1\t1\t");
 }
 
-/* PoP: yb_start_slow_notifier @ gateway/platforms/yuanbao.py:start_slow_notifier */
+/* PoP: yb_start_slow_notifier @ plugins/platforms/yuanbao/adapter.py:start_slow_notifier */
 int yb_start_slow_notifier(const char *arg) {
     /* Python: OutboundManager.start_slow_notifier → SlowResponseNotifier.start.
      * Delegates to yb_u_notifier (slow-response push). Arg = chat_id. */
@@ -1471,7 +1471,7 @@ int yb_start_slow_notifier(const char *arg) {
     return yb_u_notifier("1\t1\t");
 }
 
-/* PoP: yb_cancel_slow_notifier @ gateway/platforms/yuanbao.py:cancel_slow_notifier */
+/* PoP: yb_cancel_slow_notifier @ plugins/platforms/yuanbao/adapter.py:cancel_slow_notifier */
 int yb_cancel_slow_notifier(const char *arg) {
     /* Python: self.slow_notifier.cancel(chat_id). */
     if (arg && *arg) printf("slow notifier cancelled for %s\n", arg);
@@ -1490,7 +1490,7 @@ int yb_get_chat_lock_2(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_chat_locks @ gateway/platforms/yuanbao.py:_chat_locks */
+/* PoP: yb_u_chat_locks @ plugins/platforms/yuanbao/adapter.py:_chat_locks */
 int yb_u_chat_locks(const char *arg) {
     /* Python: proxy to MessageSender._chat_locks — backward-compat alias.
      * Arg = sender id/name; the C port returns a lock token for it. */
@@ -1518,7 +1518,7 @@ int yb_validate_media_2(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_set_active @ gateway/platforms/yuanbao.py:set_active */
+/* PoP: yb_set_active @ plugins/platforms/yuanbao/adapter.py:set_active */
 void yb_set_active(void *adapter) {
     /* Python classmethod: register (or clear) the active adapter instance. */
     s_yb_active_adapter = adapter;
@@ -1546,7 +1546,7 @@ int yb_u_sender_may_designate_home(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_u_process_message_background @ gateway/platforms/yuanbao.py:_process_message_background */
+/* PoP: yb_u_process_message_background @ plugins/platforms/yuanbao/adapter.py:_process_message_background */
 int yb_u_process_message_background(const char *arg) {
     /* Python: notifier wrap. Arg =
      * "done\tstate\tresult". */
@@ -1570,7 +1570,7 @@ int yb_u_get_cached_token(const char *arg) {
     return 0;
 }
 
-/* PoP: yb_send_yuanbao_direct @ gateway/platforms/yuanbao.py:send_yuanbao_direct */
+/* PoP: yb_send_yuanbao_direct @ plugins/platforms/yuanbao/adapter.py:send_yuanbao_direct */
 int yb_send_yuanbao_direct(const char *arg) {
     /* Python: outbound delegate. Arg =
      * "state\tresult\terr". */

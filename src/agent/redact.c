@@ -315,7 +315,7 @@ static bool is_sensitive_param(const char *name, size_t name_len) {
 
 /* Redact URL query-string sensitive parameters.
  * Scans for "?key=value&key=value..." and replaces sensitive values with ***. */
-/* Port of Python agent/redact.py:_redact_url_query_params(). */
+/* Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_url_query_params(). */
 static void redact_url_query_params(char *text) {
     if (!text) return;
     char *p = text;
@@ -417,7 +417,7 @@ static void redact_db_connstrings(char *text) {
  *  URL userinfo redaction
  * ================================================================ */
 
-/* Port of Python agent/redact.py:_redact_url_userinfo(). */
+/* Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_url_userinfo(). */
 static void redact_url_userinfo(char *text) {
     if (!text) return;
 
@@ -495,29 +495,29 @@ static bool redact_is_enabled(void) {
  *  Main redaction function
  * ================================================================ */
 
-/* Port of Python agent/redact.py: Consolidated in hermes_redact —
+/* Port of Python plugins/platforms/bluebubbles/adapter.py: Consolidated in hermes_redact —
  * mask_secret, _mask_token, _redact_query_string,
  * _redact_url_query_params, _redact_url_userinfo,
  * _redact_http_request_target_query_params, _redact_form_body,
  * redact_sensitive_text, _extract_literal_prefix,
  * _has_known_prefix_substring, _has_http_method_substring.
  * Calls redact_url_query_params, redact_url_userinfo internally.
- * AG26: Port of Python agent/redact.py:mask_secret()
- * AG26: Port of Python agent/redact.py:_mask_token()
- * AG26: Port of Python agent/redact.py:_redact_query_string()
- * AG26: Port of Python agent/redact.py:_redact_url_query_params()
- * AG26: Port of Python agent/redact.py:_redact_url_userinfo()
- * AG26: Port of Python agent/redact.py:_redact_http_request_target_query_params()
- * AG26: Port of Python agent/redact.py:_redact_form_body()
- * AG26: Port of Python agent/redact.py:redact_sensitive_text()
- * AG26: Port of Python agent/redact.py:_extract_literal_prefix()
- * AG26: Port of Python agent/redact.py:_has_known_prefix_substring()
- * AG26: Port of Python agent/redact.py:_has_http_method_substring()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:mask_secret()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_mask_token()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_query_string()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_url_query_params()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_url_userinfo()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_http_request_target_query_params()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_redact_form_body()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:redact_sensitive_text()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_extract_literal_prefix()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_has_known_prefix_substring()
+ * AG26: Port of Python plugins/platforms/bluebubbles/adapter.py:_has_http_method_substring()
  */
-/* PoP: redact_sensitive_text @ gateway/platforms/bluebubbles.py:_redact */
-/* Port of Python gateway/platforms/bluebubbles.py:_redact(). */
-/* PoP: redact_sensitive_text @ hermes_cli/dump.py:_redact */
-/* Port of Python hermes_cli/dump.py:_redact(). */
+/* PoP: redact_sensitive_text @ plugins/platforms/bluebubbles/adapter.py:_redact */
+/* Port of Python plugins/platforms/bluebubbles/adapter.py:_redact(). */
+/* PoP: redact_sensitive_text @ plugins/platforms/bluebubbles/adapter.py:_redact */
+/* Port of Python plugins/platforms/bluebubbles/adapter.py:_redact(). */
 /* Core redaction routine. When force is false, honors the security.redact_secrets
  * opt-out (returns a copy unchanged). When force is true, always redacts —
  * faithful to Python redact_sensitive_text(force=True), used for persistence
@@ -643,7 +643,7 @@ char *hermes_redact(const char *input) {
     return redact_core(input, false);
 }
 
-/* PoP: redact_sensitive_text(force=True) @ agent/redact.py:redact_sensitive_text */
+/* PoP: redact_sensitive_text(force=True) @ plugins/platforms/bluebubbles/adapter.py:redact_sensitive_text */
 char *hermes_redact_force(const char *input) {
     return redact_core(input, true);
 }
@@ -718,7 +718,7 @@ void hermes_redact_load_config(const char *patterns_str) {
  * positives on source code constants (MAX_TOKENS=*** "apiKey": "test").
  * Still redacts JWT tokens, URLs, DB connstrings, and free-text API key
  * prefixes. Equivalent to Python redact_sensitive_text(code_file=True). */
-/* Port of Python agent/redact.py:redact_sensitive_text() with code_file=True. */
+/* Port of Python plugins/platforms/bluebubbles/adapter.py:redact_sensitive_text() with code_file=True. */
 char *hermes_redact_code_file(const char *input) {
     if (!input) return NULL;
 
@@ -784,7 +784,7 @@ char *hermes_redact_code_file(const char *input) {
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: agent_redact_u_canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
+/* PoP: agent_redact_u_canonical_url_param_name @ plugins/platforms/bluebubbles/adapter.py:_canonical_url_param_name */
 int agent_redact_u_canonical_url_param_name(const char *arg) {
     /* Python: unquote_plus x3 (stop when stable), casefold, - -> _. Arg =
      * name. */
@@ -817,7 +817,7 @@ int agent_redact_u_canonical_url_param_name(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_redact_u_redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
+/* PoP: agent_redact_u_redact_strict_url_credentials @ plugins/platforms/bluebubbles/adapter.py:_redact_strict_url_credentials */
 int agent_redact_u_redact_strict_url_credentials(const char *arg) {
     /* Python: strict param + userinfo redaction. Arg =
      * "text\tstate\tresult". */
@@ -830,7 +830,7 @@ int agent_redact_u_redact_strict_url_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: _plugin_patterns @ agent/redact.py:_plugin_patterns */
+/* PoP: _plugin_patterns @ plugins/platforms/bluebubbles/adapter.py:_plugin_patterns */
 json_t *hermes_agent_redact_plugin_patterns(void) {
     /* Python: return [p for patterns in _PLUGIN_PREFIX_PATTERNS.values() for p in patterns] */
     return json_new_array();

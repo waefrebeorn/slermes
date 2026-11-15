@@ -25,8 +25,8 @@
 
 
 
-/* PoP: _split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
-/* PoP: weixin_split_table_row @ plugins/platforms/slack/adapter.py:_split_table_row */
+/* PoP: _split_table_row @ plugins/platforms/weixin/adapter.py:_split_table_row */
+/* PoP: weixin_split_table_row @ plugins/platforms/weixin/adapter.py:_split_table_row */
 char **weixin_split_table_row(const char *line, int *count)
 {
     if (count) *count = 0;
@@ -59,8 +59,8 @@ char **weixin_split_table_row(const char *line, int *count)
 }
 
 
-/* PoP: _looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
-/* PoP: weixin_looks_like_heading_line @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
+/* PoP: _looks_like_heading_line_for_weixin @ plugins/platforms/weixin/adapter.py:_looks_like_heading_line_for_weixin */
+/* PoP: weixin_looks_like_heading_line @ plugins/platforms/weixin/adapter.py:_looks_like_heading_line_for_weixin */
 bool weixin_looks_like_heading_line(const char *line)
 {
     if (!line || !*line) return false;
@@ -328,7 +328,7 @@ static bool weixin_looks_like_chatty_line_for_weixin(const char *line) {
 }
 
 
-/* PoP: _looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
+/* PoP: _looks_like_heading_line_for_weixin @ plugins/platforms/weixin/adapter.py:_looks_like_heading_line_for_weixin */
 static bool weixin_looks_like_heading_line_for_weixin(const char *line) {
     const char *s = line;
     while (*s == ' ' || *s == '\t') s++;
@@ -504,7 +504,7 @@ char **weixin_split_delivery_units_for_weixin(const char *content, int *out_coun
 }
 
 
-/* PoP: truncate_message @ gateway/platforms/base.py:truncate_message */
+/* PoP: truncate_message @ plugins/platforms/weixin/adapter.py:truncate_message */
 /* Faithful port: split long content into <=max_length chunks, preserving
  * fenced-code-block boundaries (close orphan fences, reopen next chunk with the
  * same language tag), and append (i/total) indicators when multiple chunks. */

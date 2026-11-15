@@ -77,8 +77,8 @@ static const char *shell_escape(const char *s) {
 /* ------------------------------------------------------------------
  * Basic single-message send (original API)
  * ------------------------------------------------------------------ */
-/* PoP: signal_send_message @ gateway/platforms/signal.py:send_message */
-/* Port of Python gateway/platforms/signal.py:send_message(). */
+/* PoP: signal_send_message @ plugins/platforms/signal/adapter.py:send_message */
+/* Port of Python plugins/platforms/signal/adapter.py:send_message(). */
 bool signal_send_message(http_client_t *http, const char *to, const char *text) {
     (void)http;
     if (!to || !text || !g_signal_available) return false;
@@ -119,8 +119,8 @@ bool signal_send_group_message(http_client_t *http,
  *   signal-cli -a <number> send-reaction -e <emoji> \
  *     --target-author <author> --target-timestamp <ts> <recipient>
  * ------------------------------------------------------------------ */
-/* PoP: send_reaction @ gateway/platforms/signal.py:send_reaction */
-/* Port of Python gateway/platforms/signal.py:send_reaction(). */
+/* PoP: send_reaction @ plugins/platforms/signal/adapter.py:send_reaction */
+/* Port of Python plugins/platforms/signal/adapter.py:send_reaction(). */
 bool send_reaction(http_client_t *http,
                            const char *recipient,
                            const char *target_author,
@@ -175,10 +175,10 @@ bool signal_send_quote_reply(http_client_t *http,
  *   signal-cli -a <number> send -a <file_path> -m "<text>" <recipient>
  * If text is NULL or empty, sends the attachment without a text caption.
  * ------------------------------------------------------------------ */
-/* PoP: signal_send_attachment @ gateway/platforms/signal.py:_send_attachment */
-/* Port of Python gateway/platforms/signal.py:_send_attachment(). */
-/* PoP: signal_send_attachment @ gateway/platforms/signal.py:send_attachment */
-/* Port of Python gateway/platforms/signal.py:send_attachment(). */
+/* PoP: signal_send_attachment @ plugins/platforms/signal/adapter.py:_send_attachment */
+/* Port of Python plugins/platforms/signal/adapter.py:_send_attachment(). */
+/* PoP: signal_send_attachment @ plugins/platforms/signal/adapter.py:send_attachment */
+/* Port of Python plugins/platforms/signal/adapter.py:send_attachment(). */
 bool signal_send_attachment(http_client_t *http,
                              const char *recipient,
                              const char *text,
@@ -425,7 +425,7 @@ bool signal_is_rate_limit_error(const char *error_message) {
     return false;
 }
 
-/* Port of Python gateway/platforms/signal_rate_limit.py:_signal_send_timeout(). */
+/* Port of Python plugins/platforms/signal/adapter.py:_signal_send_timeout(). */
 /* ------------------------------------------------------------------
  * G08: Compute the HTTP timeout for a Signal send RPC based on
  * the number of attachments. Ported from Python
@@ -593,7 +593,7 @@ static const char *sig_ext_to_mime(const char *ext) {
     return _sig_ext_to_mime(buf);
 }
 
-/* PoP: sig_is_audio_ext @ gateway/platforms/signal.py:_is_audio_ext */
+/* PoP: sig_is_audio_ext @ plugins/platforms/signal/adapter.py:_is_audio_ext */
 /* _is_audio_ext(ext) / _is_image_ext(ext). */
 static bool sig_is_audio_ext(const char *ext) {
     if (!ext) return false;
@@ -604,8 +604,8 @@ static bool sig_is_audio_ext(const char *ext) {
            strcmp(buf, ".ogg") == 0 || strcmp(buf, ".m4a") == 0 ||
            strcmp(buf, ".aac") == 0;
 }
-/* PoP: sig_is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
-/* PoP: sig_is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
+/* PoP: sig_is_image_ext @ plugins/platforms/signal/adapter.py:_is_image_ext */
+/* PoP: sig_is_image_ext @ plugins/platforms/signal/adapter.py:_is_image_ext */
 static bool sig_is_image_ext(const char *ext) {
     if (!ext) return false;
     char buf[32]; size_t i = 0;
@@ -660,8 +660,8 @@ static bool sig_is_signal_service_id(const char *value) {
     return sig_is_uuid(value);
 }
 
-/* PoP: sig_parse_comma_list @ gateway/platforms/signal.py:_parse_comma_list */
-/* PoP: sig_parse_comma_list @ gateway/platforms/signal.py:_parse_comma_list */
+/* PoP: sig_parse_comma_list @ plugins/platforms/signal/adapter.py:_parse_comma_list */
+/* PoP: sig_parse_comma_list @ plugins/platforms/signal/adapter.py:_parse_comma_list */
 /* _parse_comma_list(value) — split on ',' strip → JSON array string. */
 static char *sig_parse_comma_list(const char *value) {
     if (!value) return strdup("[]");
@@ -690,7 +690,7 @@ static char *sig_parse_comma_list(const char *value) {
     return out;
 }
 
-/* PoP: sniff @ gateway/platforms/signal.py:_guess_extension */
+/* PoP: sniff @ plugins/platforms/signal/adapter.py:_guess_extension */
 /* _guess_extension(data) — magic-byte sniff (mirrors Python _guess_extension). */
 static const char *sig_guess_extension(const unsigned char *data, size_t n) {
     if (n >= 4 && data[0] == 0x89 && data[1] == 'P' && data[2] == 'N' && data[3] == 'G')
@@ -724,7 +724,7 @@ static bool sig_check_requirements(void) {
     return getenv("SIGNAL_HTTP_URL") != NULL && getenv("SIGNAL_ACCOUNT") != NULL;
 }
 
-/* PoP: equivalent @ gateway/platforms/signal.py:_markdown_to_signal */
+/* PoP: equivalent @ plugins/platforms/signal/adapter.py:_markdown_to_signal */
 /* _markdown_to_signal(text) — plain-text fallback (strip markdown).
  * The Python wrapper delegates to the shared markdown_to_signal(); the C
  * port's equivalent (gateway_signal_markdown_to_signal) is a plain-text
@@ -791,7 +791,7 @@ int gateway_platforms_signal_u_sse_listener(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_health_monitor @ gateway/platforms/signal.py:_health_monitor */
+/* PoP: gateway_platforms_signal_u_health_monitor @ plugins/platforms/signal/adapter.py:_health_monitor */
 int gateway_platforms_signal_u_health_monitor(const char *arg) {
     /* Python: SSE staleness. Arg =
      * "checked\tstate\tresult". */
@@ -887,7 +887,7 @@ int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_rpc @ gateway/platforms/signal.py:_rpc */
+/* PoP: gateway_platforms_signal_u_rpc @ plugins/platforms/signal/adapter.py:_rpc */
 int gateway_platforms_signal_u_rpc(const char *arg) {
     /* Python: JSON-RPC 2.0. Arg =
      * "state\tresult\terr". */
@@ -950,7 +950,7 @@ int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_remove_reaction @ gateway/platforms/signal.py:remove_reaction */
+/* PoP: gateway_platforms_signal_remove_reaction @ plugins/platforms/signal/adapter.py:remove_reaction */
 int gateway_platforms_signal_remove_reaction(const char *arg) {
     /* Python: empty emoji sendReaction. Arg =
      * "removed\tstate\tresult". */
@@ -988,7 +988,7 @@ int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
+/* PoP: gateway_platforms_signal_u_reactions_enabled @ plugins/platforms/signal/adapter.py:_reactions_enabled */
 int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
     /* Python: 2-gate check. Arg =
      * "env_on\tallowed\tstate\tresult". */
@@ -1005,7 +1005,7 @@ int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_on_processing_start @ gateway/platforms/signal.py:on_processing_start */
+/* PoP: gateway_platforms_signal_u_on_processing_start @ plugins/platforms/signal/adapter.py:on_processing_start */
 int gateway_platforms_signal_u_on_processing_start(const char *arg) {
     /* Python: react with 👀 when processing begins. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1016,7 +1016,7 @@ int gateway_platforms_signal_u_on_processing_start(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_platforms_signal_u_on_processing_complete @ gateway/platforms/signal.py:on_processing_complete */
+/* PoP: gateway_platforms_signal_u_on_processing_complete @ plugins/platforms/signal/adapter.py:on_processing_complete */
 int gateway_platforms_signal_u_on_processing_complete(const char *arg) {
     /* Python: swap 👀 for ✅ (success) / ❌ (failure); CANCELLED keeps 👀. */
     if (!arg || !*arg) { printf("0\n"); return 0; }

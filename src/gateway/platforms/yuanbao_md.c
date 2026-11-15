@@ -32,7 +32,7 @@
  * ================================================================ */
 
 /* Check whether text has an unclosed code fence (odd number of ``` lines). */
-/* PoP: yuanbao_md_has_unclosed_fence @ gateway/platforms/yuanbao.py:has_unclosed_fence */
+/* PoP: yuanbao_md_has_unclosed_fence @ plugins/platforms/yuanbao/adapter.py:has_unclosed_fence */
 bool yuanbao_md_has_unclosed_fence(const char *text)
 {
     if (!text) return false;
@@ -55,7 +55,7 @@ bool yuanbao_md_has_unclosed_fence(const char *text)
 
 
 /* Check if the last non-empty line starts and ends with | (table row). */
-/* PoP: yuanbao_md_ends_with_table_row @ gateway/platforms/yuanbao.py:ends_with_table_row */
+/* PoP: yuanbao_md_ends_with_table_row @ plugins/platforms/yuanbao/adapter.py:ends_with_table_row */
 bool yuanbao_md_ends_with_table_row(const char *text)
 {
     if (!text || !*text) return false;
@@ -81,7 +81,7 @@ bool yuanbao_md_ends_with_table_row(const char *text)
 
 /* Split text at nearest paragraph boundary within max_chars.
    Returns head (caller-free) and sets *tail_out (caller-free). */
-/* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/helpers.py:split_at_paragraph_boundary */
+/* PoP: yuanbao_md_split_at_paragraph_boundary @ plugins/platforms/yuanbao/adapter.py:split_at_paragraph_boundary */
 char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars, char **tail_out)
 {
     if (!text || !tail_out) return NULL;
@@ -158,7 +158,7 @@ char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
 
 
 /* Check if text (atom) is a code fence block (starts with ```). */
-/* PoP: yuanbao_md_is_fence_atom @ gateway/platforms/helpers.py:is_fence_atom */
+/* PoP: yuanbao_md_is_fence_atom @ plugins/platforms/yuanbao/adapter.py:is_fence_atom */
 bool yuanbao_md_is_fence_atom(const char *text)
 {
     if (!text) return false;
@@ -168,7 +168,7 @@ bool yuanbao_md_is_fence_atom(const char *text)
 
 
 /* Check if text (atom) is a table (first line starts and ends with |). */
-/* PoP: yuanbao_md_is_table_atom @ gateway/platforms/helpers.py:is_table_atom */
+/* PoP: yuanbao_md_is_table_atom @ plugins/platforms/yuanbao/adapter.py:is_table_atom */
 bool yuanbao_md_is_table_atom(const char *text)
 {
     if (!text) return false;
@@ -187,7 +187,7 @@ bool yuanbao_md_is_table_atom(const char *text)
 
 /* Split text into atoms (code fences, tables, paragraphs separated by blank lines).
    Returns a dynamically-allocated NULL-terminated array of strings. Caller frees each + array. */
-/* PoP: yuanbao_md_split_into_atoms @ gateway/platforms/yuanbao.py:split_into_atoms */
+/* PoP: yuanbao_md_split_into_atoms @ plugins/platforms/yuanbao/adapter.py:split_into_atoms */
 char **yuanbao_md_split_into_atoms(const char *text)
 {
     if (!text) {
@@ -303,7 +303,7 @@ char **yuanbao_md_split_into_atoms(const char *text)
 
 
 /* Infer separator between two chunks: "\n" if fence/table continuation, else "\n\n". */
-/* PoP: yuanbao_md_infer_block_separator @ gateway/platforms/helpers.py:infer_block_separator */
+/* PoP: yuanbao_md_infer_block_separator @ plugins/platforms/yuanbao/adapter.py:infer_block_separator */
 char *yuanbao_md_infer_block_separator(const char *prev_chunk, const char *next_chunk)
 {
     if (!prev_chunk || !next_chunk) return strdup("\n\n");
@@ -331,7 +331,7 @@ char *yuanbao_md_infer_block_separator(const char *prev_chunk, const char *next_
 
 
 /* Strip outer markdown fence when entire text is ```markdown\n...\n``` */
-/* PoP: yuanbao_md_strip_outer_markdown_fence @ gateway/platforms/yuanbao.py:strip_outer_markdown_fence */
+/* PoP: yuanbao_md_strip_outer_markdown_fence @ plugins/platforms/yuanbao/adapter.py:strip_outer_markdown_fence */
 char *yuanbao_md_strip_outer_markdown_fence(const char *text)
 {
     if (!text || !*text) return text ? strdup(text) : NULL;
@@ -393,7 +393,7 @@ char *yuanbao_md_strip_outer_markdown_fence(const char *text)
 
 
 /* Sanitize markdown table: normalize separator rows, remove empty table rows. */
-/* PoP: yuanbao_md_sanitize_markdown_table @ gateway/platforms/yuanbao.py:sanitize_markdown_table */
+/* PoP: yuanbao_md_sanitize_markdown_table @ plugins/platforms/yuanbao/adapter.py:sanitize_markdown_table */
 char *yuanbao_md_sanitize_markdown_table(const char *text)
 {
     if (!text) return NULL;
@@ -489,7 +489,7 @@ char *yuanbao_md_sanitize_markdown_table(const char *text)
 
 
 /* Return the markdown hint system prompt string (static). */
-/* PoP: yuanbao_md_markdown_hint_system_prompt @ gateway/platforms/yuanbao.py:markdown_hint_system_prompt */
+/* PoP: yuanbao_md_markdown_hint_system_prompt @ plugins/platforms/yuanbao/adapter.py:markdown_hint_system_prompt */
 const char *yuanbao_md_markdown_hint_system_prompt(void)
 {
     return "The current platform supports Markdown rendering. You can use the following formats:\n"
@@ -502,7 +502,7 @@ const char *yuanbao_md_markdown_hint_system_prompt(void)
 
 /* Merge adjacent chunks when current has unclosed fence and next starts with ```.
    Returns merged list (NULL-terminated array, caller frees each + array). */
-/* PoP: yuanbao_md_merge_block_streaming_fences @ gateway/platforms/yuanbao.py:merge_block_streaming_fences */
+/* PoP: yuanbao_md_merge_block_streaming_fences @ plugins/platforms/yuanbao/adapter.py:merge_block_streaming_fences */
 char **yuanbao_md_merge_block_streaming_fences(char **chunks)
 {
     if (!chunks || !chunks[0]) {

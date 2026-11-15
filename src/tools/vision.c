@@ -239,7 +239,7 @@ static char *extract_dimensions_native(const char *path) {
 }
 
 /* PoP: vision_validate_image_url @ src/tools/vision.c:vision_validate_image_url */
-/* Port of Python vision_tools.py:_validate_image_url(). */
+/* Port of Python tools/vision_tools.py:_validate_image_url(). */
 /* PoP: vision_validate_image_url @ tools/vision_tools.py:_validate_image_url */
 bool vision_validate_image_url(const char *url) {
     if (!url || !url[0]) return false;
@@ -267,7 +267,7 @@ bool vision_validate_image_url(const char *url) {
 }
 
 /* PoP: vision_supports_media_in_tool_results @ src/tools/vision.c:vision_supports_media_in_tool_results */
-/* Port of Python vision_tools.py:_supports_media_in_tool_results(). */
+/* Port of Python tools/vision_tools.py:_supports_media_in_tool_results(). */
 /* PoP: vision_supports_media_in_tool_results @ tools/vision_tools.py:_supports_media_in_tool_results */
 bool vision_supports_media_in_tool_results(const char *provider, const char *model) {
     if (!provider || !provider[0]) return false;
@@ -591,7 +591,7 @@ void registry_init_vision(void) {
 
 /* ─── image_source.py ports ────────────────────────────────────────── */
 
-/* PoP: image_source_get_active_env @ tools/image_source.py:_get_active_env */
+/* PoP: image_source_get_active_env @ tools/vision_tools.py:_get_active_env */
 /* Resolve the active terminal backend env for task_id (delegates to
  * terminal_env_registry; returns json_t borrowed from that registry). */
 json_t *image_source_get_active_env(const char *task_id) {
@@ -599,7 +599,7 @@ json_t *image_source_get_active_env(const char *task_id) {
     return term_get_active_env(task_id);
 }
 
-/* PoP: 4 @ tools/image_source.py:_detect_video_mime */
+/* PoP: 4 @ tools/vision_tools.py:_detect_video_mime */
 /* Video MIME from extension table, falling back to the ISO BMFF ftyp magic
  * at offset 4 (covers extensionless data: URLs, query-string URLs). */
 const char *image_source_detect_video_mime(const char *src, const unsigned char *data, size_t len) {

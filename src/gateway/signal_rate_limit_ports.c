@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: srl_init @ gateway/platforms/signal_rate_limit.py:__init__ */
+/* PoP: srl_init @ plugins/platforms/signal/signal_rate_limit.py:__init__ */
 char *srl_init(const char *message, double retry_after) {
     char *out = NULL;
     asprintf(&out, "{\"message\": \"%s\", \"retry_after\": %.1f}",
@@ -33,7 +33,7 @@ long srl_signal_send_timeout(void) {
     return 90;
 }
 
-/* PoP: srl_state @ gateway/platforms/signal_rate_limit.py:state */
+/* PoP: srl_state @ plugins/platforms/signal/signal_rate_limit.py:state */
 char *srl_state(void) {
     /* Python: read-only diagnostic state. */
     return strdup("{\"pending\": 0, \"running\": 0}");

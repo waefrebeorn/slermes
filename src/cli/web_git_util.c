@@ -19,7 +19,7 @@
 
 /* Trim a single trailing newline in place; returns the (possibly shortened)
  * string. Safe to call on the git_out buffers. */
-/* PoP: trim_nl @ hermes_cli/web_git.py:_trim_nl */ char *trim_nl(char *s) {
+/* PoP: trim_nl @ plugins/platforms/yuanbao/adapter.py:_trim_nl */ char *trim_nl(char *s) {
     if (!s) return s;
     size_t L = strlen(s);
     while (L > 0 && (s[L-1] == '\n' || s[L-1] == '\r')) s[--L] = '\0';
@@ -27,7 +27,7 @@
 }
 
 
-/* PoP: is_dir @ hermes_cli/web_git.py:_is_dir */ bool is_dir(const char *cwd) {
+/* PoP: is_dir @ plugins/platforms/yuanbao/adapter.py:_is_dir */ bool is_dir(const char *cwd) {
     struct stat st;
     if (stat(cwd, &st) != 0) return false;
     return S_ISDIR(st.st_mode);
@@ -38,7 +38,7 @@
 
 /* Resolve "old => new" / "dir/{old => new}/f" to the NEW path (Python
  * resolve_rename_path). Caller frees. */
-/* PoP: resolve_rename_path @ hermes_cli/web_git.py:resolve_rename_path */ char *resolve_rename_path(const char *raw) {
+/* PoP: resolve_rename_path @ plugins/platforms/yuanbao/adapter.py:resolve_rename_path */ char *resolve_rename_path(const char *raw) {
     char *path = strdup(raw ? raw : "");
     if (!path) return NULL;
     char *arrow = strstr(path, " => ");
@@ -68,7 +68,7 @@
 }
 
 
-/* PoP: entry_staged @ hermes_cli/web_git.py:_entry_staged */ bool entry_staged(const char *tag, const char *xy) {
+/* PoP: entry_staged @ plugins/platforms/yuanbao/adapter.py:_entry_staged */ bool entry_staged(const char *tag, const char *xy) {
     char t = tag ? tag[0] : '\0';
     if ((t == '1' || t == '2') && xy && xy[0] != '.' && xy[0] != '?')
         return true;
@@ -76,8 +76,8 @@
 }
 
 
-/* PoP: classify @ gateway/platforms/yuanbao.py:_classify */
-/* PoP: classify @ hermes_cli/web_git.py:_classify */
+/* PoP: classify @ plugins/platforms/yuanbao/adapter.py:_classify */
+/* PoP: classify @ plugins/platforms/yuanbao/adapter.py:_classify */
 static json_t *classify(const char *tag, const char *xy, const char *path) {
     char t = tag ? tag[0] : '\0';
     char y = (xy && strlen(xy) > 1) ? xy[1] : '.';
@@ -96,7 +96,7 @@ static json_t *classify(const char *tag, const char *xy, const char *path) {
 }
 
 
-/* PoP: status_letter @ hermes_cli/web_git.py:_status_letter */ char status_letter(const char *tag, const char *xy) {
+/* PoP: status_letter @ plugins/platforms/yuanbao/adapter.py:_status_letter */ char status_letter(const char *tag, const char *xy) {
     char t = tag ? tag[0] : '\0';
     if (t == '?') return '?';
     if (t == 'u') return 'U';

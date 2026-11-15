@@ -9,7 +9,7 @@
 
 /* ── gateway/platforms/signal.py: 4 missing functions ── */
 
-/* PoP: _sig_secret @ gateway/platforms/signal.py:_sig_secret */
+/* PoP: _sig_secret @ plugins/platforms/signal/adapter.py:_sig_secret */
 char *_sig_secret(void) { return strdup(""); }
 
 /* PoP: _utf16_offsets @ plugins/platforms/signal/adapter.py:_utf16_offsets */

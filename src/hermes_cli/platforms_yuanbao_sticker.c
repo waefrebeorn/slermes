@@ -164,7 +164,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id(const char 
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:_normalize_text */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ plugins/platforms/yuanbao/yuanbao_sticker.py:_normalize_text */
 char* cli_gateway_platforms_yuanbao_sticker__normalize_text(const char *raw, char *buf, size_t bufsz) {
     /*
      * Normalize text: NFKC normalization, strip, lowercase.

@@ -17,7 +17,7 @@
 #include <stdarg.h>
 
 
-/* Port of Python gateway/platforms/weixin.py:_send_message(). */ char *send_message(const char *channel_id, const char *content) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_send_message(). */ char *send_message(const char *channel_id, const char *content) {
     char url[512];
     snprintf(url, sizeof(url), "%s/channels/%s/messages", DISCORD_API_BASE, channel_id);
 
@@ -51,8 +51,8 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_delete_message(). */
-/* Port of Python gateway/platforms/base.py:delete_message(). */ char *delete_message(const char *channel_id, const char *message_id) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_delete_message(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:delete_message(). */ char *delete_message(const char *channel_id, const char *message_id) {
     char url[512];
     snprintf(url, sizeof(url), "%s/channels/%s/messages/%s", DISCORD_API_BASE, channel_id, message_id);
     tool_api_result_t *r = discord_api_call(url, "DELETE", NULL, 15, 2);
@@ -127,7 +127,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_search_members(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:_search_members(). */
 /* ================================================================
  *  Message actions (P43 — depth expansion)
  * ================================================================ */ char *search_members(const char *guild_id, const char *query, int limit) {
@@ -167,7 +167,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_pin_message(). */ char *pin_message(const char *channel_id, const char *message_id) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_pin_message(). */ char *pin_message(const char *channel_id, const char *message_id) {
     char url[512];
     snprintf(url, sizeof(url), "%s/channels/%s/pins/%s", DISCORD_API_BASE, channel_id, message_id);
     tool_api_result_t *r = discord_api_call(url, "PUT", NULL, 15, 2);
@@ -184,7 +184,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_unpin_message(). */ char *unpin_message(const char *channel_id, const char *message_id) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_unpin_message(). */ char *unpin_message(const char *channel_id, const char *message_id) {
     char url[512];
     snprintf(url, sizeof(url), "%s/channels/%s/pins/%s", DISCORD_API_BASE, channel_id, message_id);
     tool_api_result_t *r = discord_api_call(url, "DELETE", NULL, 15, 2);
@@ -201,7 +201,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_create_thread(). */ char *create_thread(const char *channel_id, const char *name, const char *message_id) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_create_thread(). */ char *create_thread(const char *channel_id, const char *name, const char *message_id) {
     char url[512];
     json_t *body = json_object();
     json_set(body, "name", json_string(name ? name : "new-thread"));
@@ -228,7 +228,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_add_role(). */
+/* Port of Python plugins/platforms/weixin/adapter.py:_add_role(). */
 /* ================================================================
  *  Role management actions (P43 — depth expansion)
  * ================================================================ */ char *add_role(const char *guild_id, const char *user_id, const char *role_id) {
@@ -249,7 +249,7 @@
 }
 
 
-/* Port of Python tools/discord_tool.py:_remove_role(). */ char *remove_role(const char *guild_id, const char *user_id, const char *role_id) {
+/* Port of Python plugins/platforms/weixin/adapter.py:_remove_role(). */ char *remove_role(const char *guild_id, const char *user_id, const char *role_id) {
     char url[512];
     snprintf(url, sizeof(url), "%s/guilds/%s/members/%s/roles/%s",
              DISCORD_API_BASE, guild_id, user_id, role_id);

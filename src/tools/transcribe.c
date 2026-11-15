@@ -49,7 +49,7 @@ char *transcribe_handler(const char *args_json, const char *task_id) {
     }
 
     /* Transcribe */
-/* PoP: init_transcribe @ tools/transcription_tools.py:transcribe_audio */
+/* PoP: init_transcribe @ agent/transcription_registry.py:transcribe_audio */
     char *result = transcribe_audio(file_path, model);
     json_free(args);
 
@@ -93,7 +93,7 @@ static int g_trans_provider_count = 0;
 
 /* Register a transcription provider. Returns true on success.
  * Rejects built-in names (logs warning, returns false).
- * Port of Python transcription_registry.py:register_provider(). */
+ * Port of Python agent/transcription_registry.py:register_provider(). */
 bool transcription_register_provider(const char *name, const char *provider_type) {
     if (!name || !name[0]) return false;
 

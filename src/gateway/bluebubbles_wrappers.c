@@ -39,7 +39,7 @@ int bb_u_normalize_server_url(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_api_url @ gateway/platforms/bluebubbles.py:_api_url */
+/* PoP: bb_u_api_url @ plugins/platforms/bluebubbles/adapter.py:_api_url */
 int bb_u_api_url(const char *arg) {
     /* Python: sep = "&" if "?" in path else "?"; return
      * f"{server_url}{path}{sep}password={quote(password, safe='')}".
@@ -62,13 +62,13 @@ int bb_u_api_url(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_compile_mention_patterns @ gateway/platforms/bluebubbles.py:_compile_mention_patterns */
+/* PoP: bb_u_compile_mention_patterns @ plugins/platforms/bluebubbles/adapter.py:_compile_mention_patterns */
 int bb_u_compile_mention_patterns(const char *arg) { (void)arg; return 0; }
 
-/* PoP: bb_u_message_matches_mention_patterns @ gateway/platforms/bluebubbles.py:_message_matches_mention_patterns */
+/* PoP: bb_u_message_matches_mention_patterns @ plugins/platforms/bluebubbles/adapter.py:_message_matches_mention_patterns */
 int bb_u_message_matches_mention_patterns(const char *arg) { (void)arg; return 0; }
 
-/* PoP: bb_u_clean_mention_text @ gateway/platforms/bluebubbles.py:_clean_mention_text */
+/* PoP: bb_u_clean_mention_text @ plugins/platforms/bluebubbles/adapter.py:_clean_mention_text */
 int bb_u_clean_mention_text(const char *arg) {
     /* Python: leading-only strip. Arg =
      * "cleaned\tstate\tresult". */
@@ -83,7 +83,7 @@ int bb_u_clean_mention_text(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_api_post @ gateway/platforms/bluebubbles.py:_api_post */
+/* PoP: bb_u_api_post @ plugins/platforms/bluebubbles/adapter.py:_api_post */
 int bb_u_api_post(const char *arg) {
     /* Python: REST post. Arg =
      * "state\tresult\terr". */
@@ -231,7 +231,7 @@ int bb_mark_read(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_download_attachment @ gateway/platforms/bluebubbles.py:_download_attachment */
+/* PoP: bb_u_download_attachment @ plugins/platforms/bluebubbles/adapter.py:_download_attachment */
 int bb_u_download_attachment(const char *arg) {
     /* Python: guid download. Arg =
      * "path\tstate\tresult". */
@@ -280,7 +280,7 @@ extern json_t *secret_scope_current_secret_scope(void);
 extern bool secret_scope_is_multiplex_active(void);
 extern const char *secret_scope_get_secret(const char *name, const char *default_val);
 
-/* PoP: bb_u_get_scoped_secret @ plugins/platforms/buzz/adapter.py:_get_scoped_secret */
+/* PoP: bb_u_get_scoped_secret @ plugins/platforms/bluebubbles/adapter.py:_get_scoped_secret */
 /* Scope-aware credential read with the default-profile startup fallback.
  * Secondary profiles construct their adapters under a profile secret scope —
  * the scope is authoritative and a scoped miss returns default (no cross-

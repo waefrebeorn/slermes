@@ -128,7 +128,7 @@ int context_ref_estimate_tokens(const char *text) {
     return (int)(len / 4) + 1;
 }
 
-/* Port of Python context_references.py:_is_binary_file(). */
+/* Port of Python agent/context_references.py:_is_binary_file(). */
 static bool is_binary_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return false;
@@ -141,7 +141,7 @@ static bool is_binary_file(const char *path) {
     return false;
 }
 
-/* Port of Python context_references.py:_code_fence_language(). */
+/* Port of Python agent/context_references.py:_code_fence_language(). */
 static const char *code_fence_language(const char *path) {
     const char *dot = strrchr(path, '.');
     if (!dot) return "";
@@ -207,7 +207,7 @@ static char *read_file_content(const char *path, int line_start, int line_end) {
 }
 
 /* Resolve path relative to cwd, with security checks */
-/* Port of Python context_references.py:_resolve_path(). */
+/* Port of Python agent/context_references.py:_resolve_path(). */
 static char *resolve_path(const char *cwd, const char *target, const char *allowed_root, char **err) {
     char full[4096];
     *err = NULL;
@@ -246,8 +246,8 @@ static char *resolve_path(const char *cwd, const char *target, const char *allow
     return strdup(resolved);
 }
 
-/* Port of Python context_references.py:_ensure_reference_path_allowed(). */
-/* PoP: is_sensitive_path @ hermes_cli/web_routers/files.py:_is_sensitive_path */
+/* Port of Python agent/context_references.py:_ensure_reference_path_allowed(). */
+/* PoP: is_sensitive_path @ agent/context_references.py:_is_sensitive_path */
 static bool is_sensitive_path(const char *path) {
     const char *home = getenv("HOME");
     if (!home) return false;
@@ -431,7 +431,7 @@ static bool match_at_ref(const char *p, const char **end, context_ref_t *ref) {
 }
 
 /* ---- parse_context_references (name parity) ---- */
-/* Port of Python context_references.py:parse_context_references(). */
+/* Port of Python agent/context_references.py:parse_context_references(). */
 int parse_context_references(const char *message, context_ref_t *refs, int max_refs) {
     if (!message) return 0;
     int count = 0;
@@ -463,7 +463,7 @@ int parse_context_references(const char *message, context_ref_t *refs, int max_r
  * Block is the expanded content to inject. Warning is a message.
  * Caller must free both. */
 
-/* Port of Python context_references.py:_expand_file_reference(). */
+/* Port of Python agent/context_references.py:_expand_file_reference(). */
 static void expand_file_ref(const context_ref_t *ref, const char *cwd,
                             const char *allowed_root,
                             char **warning, char **block) {
@@ -523,7 +523,7 @@ static void expand_file_ref(const context_ref_t *ref, const char *cwd,
     free(content);
 }
 
-/* Port of Python context_references.py:_expand_folder_reference(). */
+/* Port of Python agent/context_references.py:_expand_folder_reference(). */
 static void expand_folder_ref(const context_ref_t *ref, const char *cwd,
                               const char *allowed_root,
                               char **warning, char **block) {
@@ -685,7 +685,7 @@ static void run_git_command(const char *cwd, char *const *args,
     *output = buf;
 }
 
-/* Port of Python context_references.py:_expand_git_reference(). */
+/* Port of Python agent/context_references.py:_expand_git_reference(). */
 static void expand_git_ref(const context_ref_t *ref, const char *cwd,
                            char **warning, char **block) {
     *warning = NULL;
@@ -750,7 +750,7 @@ static void expand_git_ref(const context_ref_t *ref, const char *cwd,
     free(output);
 }
 
-/* Port of Python context_references.py:_expand_url_reference(). */
+/* Port of Python agent/context_references.py:_expand_url_reference(). */
 static void expand_url_ref(const context_ref_t *ref,
                            char **warning, char **block) {
     *warning = NULL;
@@ -785,7 +785,7 @@ static void expand_url_ref(const context_ref_t *ref,
  *  Remove reference tokens from message
  * ================================================================ */
 
-/* Port of Python context_references.py:_remove_reference_tokens(). */
+/* Port of Python agent/context_references.py:_remove_reference_tokens(). */
 static char *remove_ref_tokens(const char *message, const context_ref_t *refs, int ref_count) {
     size_t len = strlen(message) + 1;
     char *result = (char *)malloc(len);
@@ -818,7 +818,7 @@ static char *remove_ref_tokens(const char *message, const context_ref_t *refs, i
  *  Main expansion entry point
  * ================================================================ */
 
-/* Port of Python context_references.py:preprocess_context_references(). */
+/* Port of Python agent/context_references.py:preprocess_context_references(). */
 context_ref_result_t *context_ref_expand(const char *message,
                                           const char *cwd,
                                           int context_length,

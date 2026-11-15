@@ -1625,8 +1625,8 @@ void email_set_from(const char *from) {
 }
 
 /* Send a plain email (backward compat) */
-/* PoP: email_send_message @ gateway/platforms/email.py:send_message */
-/* Port of Python gateway/platforms/email.py:send_message(). */
+/* PoP: email_send_message @ plugins/platforms/email/adapter.py:send_message */
+/* Port of Python plugins/platforms/email/adapter.py:send_message(). */
 bool email_send_message(http_client_t *http, const char *to, const char *subject,
                         const char *body) {
     (void)http;

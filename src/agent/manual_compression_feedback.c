@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Port of Python manual_compression_feedback.py:describe_compression_lock_skip(). */
+/* Port of Python agent/manual_compression_feedback.py:describe_compression_lock_skip(). */
 char *describe_compression_lock_skip(const char *lock_signal) {
     static char buf[512];
     if (lock_signal && lock_signal[0]) {
@@ -28,7 +28,7 @@ char *describe_compression_lock_skip(const char *lock_signal) {
     );
 }
 
-/* Port of Python manual_compression_feedback.py:summarize_manual_compression(). */
+/* Port of Python agent/manual_compression_feedback.py:summarize_manual_compression(). */
 void summarize_manual_compression(int before_count, int after_count,
                                   int before_tokens, int after_tokens,
                                   compression_feedback_t *out)

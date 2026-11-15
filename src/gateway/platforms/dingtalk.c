@@ -53,8 +53,8 @@ static bool post_to_webhook(http_client_t *http, json_node_t *root) {
 /* ================================================================
  *  P113: Send plain text message
  * ================================================================ */
-/* PoP: dingtalk_send_message @ gateway/platforms/dingtalk.py:send_message */
-/* Port of Python gateway/platforms/dingtalk.py:send_message(). */
+/* PoP: dingtalk_send_message @ plugins/platforms/dingtalk/adapter.py:send_message */
+/* Port of Python plugins/platforms/dingtalk/adapter.py:send_message(). */
 bool dingtalk_send_message(http_client_t *http, const char *text) {
     if (!text) return false;
     json_node_t *root = json_new_object();
@@ -68,8 +68,8 @@ bool dingtalk_send_message(http_client_t *http, const char *text) {
 /* ================================================================
  *  P113: Send markdown message
  * ================================================================ */
-/* PoP: dingtalk_send_markdown @ gateway/platforms/dingtalk.py:send_markdown */
-/* Port of Python gateway/platforms/dingtalk.py:send_markdown(). */
+/* PoP: dingtalk_send_markdown @ plugins/platforms/dingtalk/adapter.py:send_markdown */
+/* Port of Python plugins/platforms/dingtalk/adapter.py:send_markdown(). */
 bool dingtalk_send_markdown(http_client_t *http, const char *title, const char *text) {
     if (!text) return false;
     if (!title) title = "";
@@ -153,8 +153,8 @@ bool dingtalk_send_markdown_with_at(http_client_t *http, const char *title,
  *  btns_json: JSON array of {"title":"...","actionURL":"..."}
  *  btn_orientation: "0" horizontal, "1" vertical
  * ================================================================ */
-/* PoP: dingtalk_send_action_card @ gateway/platforms/dingtalk.py:send_action_card */
-/* Port of Python gateway/platforms/dingtalk.py:send_action_card(). */
+/* PoP: dingtalk_send_action_card @ plugins/platforms/dingtalk/adapter.py:send_action_card */
+/* Port of Python plugins/platforms/dingtalk/adapter.py:send_action_card(). */
 bool dingtalk_send_action_card(http_client_t *http,
                                 const char *title, const char *text,
                                 const char *btns_json,
@@ -266,8 +266,8 @@ static time_t g_token_expires = 0;
 
 /* Get a valid access token, refreshing if needed.
  * Returns NULL if not available. */
-/* PoP: dingtalk_get_access_token @ gateway/platforms/dingtalk.py:_get_access_token */
-/* Port of Python gateway/platforms/dingtalk.py:_get_access_token(). */
+/* PoP: dingtalk_get_access_token @ plugins/platforms/dingtalk/adapter.py:_get_access_token */
+/* Port of Python plugins/platforms/dingtalk/adapter.py:_get_access_token(). */
 const char *dingtalk_get_access_token(http_client_t *http) {
     if (!g_app_id[0] || !g_app_secret[0]) return NULL;
 

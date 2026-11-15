@@ -85,7 +85,7 @@ const char* cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_dat
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards__make_callback_button @ gateway/platforms/qqbot/keyboards.py:_make_callback_button */
+/* PoP: cli_gateway_platforms_qqbot_keyboards__make_callback_button @ plugins/platforms/qqbot/keyboards.py:_make_callback_button */
 json_node_t* cli_gateway_platforms_qqbot_keyboards__make_callback_button(const char *btn_id, const char *label,
                                                                           const char *visited_label, const char *data,
                                                                           int style, const char *group_id) {
@@ -238,7 +238,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards_build_approval_text(json_node
     return cli_gateway_platforms_qqbot_keyboards__build_plugin_text(req);
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards__build_exec_text @ gateway/platforms/qqbot/keyboards.py:_build_exec_text */
+/* PoP: cli_gateway_platforms_qqbot_keyboards__build_exec_text @ plugins/platforms/qqbot/keyboards.py:_build_exec_text */
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_exec_text(json_node_t *req) {
     /*
      * Build the approval message text for exec approvals.
@@ -300,7 +300,7 @@ json_node_t* cli_gateway_platforms_qqbot_keyboards__build_exec_text(json_node_t 
     return result;
 }
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards__build_plugin_text @ gateway/platforms/qqbot/keyboards.py:_build_plugin_text */
+/* PoP: cli_gateway_platforms_qqbot_keyboards__build_plugin_text @ plugins/platforms/qqbot/keyboards.py:_build_plugin_text */
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_plugin_text(json_node_t *req) {
     /*
      * Build the approval message text for plugin tool approvals.

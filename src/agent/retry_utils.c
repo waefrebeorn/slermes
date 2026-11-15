@@ -30,7 +30,7 @@ static inline uint64_t xorshift64(uint64_t seed)
     return seed;
 }
 
-/* Port of Python retry_utils.py:jittered_backoff(). */
+/* Port of Python agent/retry_utils.py:jittered_backoff(). */
 double jittered_backoff(int attempt,
                         double base_delay,
                         double max_delay,
@@ -74,7 +74,7 @@ void jittered_backoff_reset(void)
     pthread_mutex_unlock(&g_jitter_lock);
 }
 
-/* Port of Python retry_utils.py:_error_text()
+/* Port of Python agent/retry_utils.py:_error_text()
  * Also exposed as `error_text` for parity-scanner matching. */
 char *retry_utils_error_text(const retry_utils_err_t *err)
 {
@@ -123,7 +123,7 @@ char *error_text(int status_code, const char *msg, const char *body, const char 
 }
 
 /* PoP: is_zai_coding_overload_error @ agent/retry_utils.py:is_zai_coding_overload_error */
-/* Port of Python retry_utils.py:is_zai_coding_overload_error(). */
+/* Port of Python agent/retry_utils.py:is_zai_coding_overload_error(). */
 bool is_zai_coding_overload_error(const char *base_url, const char *model, const retry_utils_err_t *err)
 {
     if (!err) return false;
@@ -174,7 +174,7 @@ static double retry_utils_jittered_backoff(int attempt, double base_delay, doubl
     return delay + jitter;
 }
 
-/* Port of Python retry_utils.py:adaptive_rate_limit_backoff()
+/* Port of Python agent/retry_utils.py:adaptive_rate_limit_backoff()
  * Returns malloc'd "W|label" or NULL if not a Z.AI overload. */
 char *retry_utils_adaptive_rate_limit_backoff(int attempt, const char *base_url, const char *model,
                                                const retry_utils_err_t *err, double default_wait,
@@ -200,7 +200,7 @@ char *retry_utils_adaptive_rate_limit_backoff(int attempt, const char *base_url,
 }
 
 /* PoP: zai_coding_overload_retry_ceiling @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */
-/* Port of Python retry_utils.py:zai_coding_overload_retry_ceiling(). */
+/* Port of Python agent/retry_utils.py:zai_coding_overload_retry_ceiling(). */
 int zai_coding_overload_retry_ceiling(int short_attempts)
 {
     static const double LONG_BACKOFF[] = { 30.0, 60.0, 90.0, 120.0 };

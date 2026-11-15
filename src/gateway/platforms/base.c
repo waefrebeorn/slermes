@@ -24,8 +24,8 @@
  * ================================================================ */
 
 /* Port of Python: utf16_len */
-/* PoP: utf16_len @ gateway/platforms/base.py:utf16_len */
-/* PoP: utf16_len @ gateway/relay/adapter.py:_utf16_len */
+/* PoP: utf16_len @ plugins/platforms/yuanbao/adapter.py:utf16_len */
+/* PoP: utf16_len @ plugins/platforms/yuanbao/adapter.py:_utf16_len */
 size_t utf16_len(const char *s) {
     if (!s) return 0;
 
@@ -62,7 +62,7 @@ size_t utf16_len(const char *s) {
 }
 
 /* Port of Python: _prefix_within_utf16_limit */
-/* PoP: gw_prefix_within_utf16_limit @ gateway/platforms/base.py:_prefix_within_utf16_limit */
+/* PoP: gw_prefix_within_utf16_limit @ plugins/platforms/yuanbao/adapter.py:_prefix_within_utf16_limit */
 char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
     if (!s || limit == 0) return strdup("");
 
@@ -112,7 +112,7 @@ char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
 }
 
 /* Port of Python: _custom_unit_to_cp */
-/* PoP: custom_unit_to_cp @ gateway/platforms/base.py:_custom_unit_to_cp */
+/* PoP: custom_unit_to_cp @ plugins/platforms/yuanbao/adapter.py:_custom_unit_to_cp */
 int custom_unit_to_cp(const char *s, int len, int budget,
                        int (*len_fn)(const char *, int)) {
     if (!s || len <= 0 || budget <= 0) return 0;
@@ -140,7 +140,7 @@ int custom_unit_to_cp(const char *s, int len, int budget,
  * ================================================================ */
 
 /* Port of Python: _float_env */
-/* PoP: float_env @ gateway/platforms/base.py:_float_env */
+/* PoP: float_env @ plugins/platforms/yuanbao/adapter.py:_float_env */
 double float_env(const char *name, double default_value) {
     if (!name) return default_value;
 
@@ -192,8 +192,8 @@ bool looks_like_image(const char *url) {
  * ================================================================ */
 
 /* PoP: gw_build_source @ src/gateway/platforms/base.c:gw_build_source */
-/* Port of Python yuanbao.py:_build_source(). */
-/* PoP: gw_build_source @ gateway/platforms/base.py:build_source */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_build_source(). */
+/* PoP: gw_build_source @ plugins/platforms/yuanbao/adapter.py:build_source */
 json_node_t *gw_build_source(const char *platform, const char *chat_id,
                               const char *chat_name, const char *chat_type,
                               const char *user_id, const char *user_name,
@@ -217,7 +217,7 @@ json_node_t *gw_build_source(const char *platform, const char *chat_id,
  * ================================================================ */
 
 /* Port of Python: format_message */
-/* PoP: gw_format_message @ gateway/platforms/base.py:format_message */
+/* PoP: gw_format_message @ plugins/platforms/yuanbao/adapter.py:format_message */
 char *gw_format_message(const char *text, bool markdown) {
     if (!text) return strdup("");
 
@@ -236,7 +236,7 @@ static int ends_with(const char *s, const char *suffix)
     return strcmp(s + ls - lsuf, suffix) == 0;
 }
 
-/* PoP: no_proxy_entry_matches @ gateway/platforms/base.py:_no_proxy_entry_matches */
+/* PoP: no_proxy_entry_matches @ plugins/platforms/yuanbao/adapter.py:_no_proxy_entry_matches */
 /* Returns 1 if a NO_PROXY entry matches host[:port]. Supports exact host,
  * "*.domain" / ".domain" suffix wildcards, and "*". CIDR / IP-literal matching
  * is intentionally omitted (needs an IP-address library not in the C runtime);
@@ -285,7 +285,7 @@ int no_proxy_entry_matches(const char *entry, const char *host, int port)
     return (strcmp(lh, lhost) == 0) || ends_with(lh, dotted);
 }
 
-/* PoP: is_host_excluded_by_no_proxy @ gateway/platforms/base.py:is_host_excluded_by_no_proxy */
+/* PoP: is_host_excluded_by_no_proxy @ plugins/platforms/yuanbao/adapter.py:is_host_excluded_by_no_proxy */
 int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_value)
 {
     if (!hostname) return 0;
@@ -310,7 +310,7 @@ int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_valu
     return 0;
 }
 
-/* PoP: safe_url_for_log @ gateway/platforms/base_log_safety.py:safe_url_for_log */
+/* PoP: safe_url_for_log @ plugins/platforms/yuanbao/adapter.py:safe_url_for_log */
 /* Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
 char *safe_url_for_log(const char *url, int max_len)
 {
@@ -355,7 +355,7 @@ char *safe_url_for_log(const char *url, int max_len)
  *  These were REAL_GAP.
  * =========================================================================== */
 
-/* PoP: loopback @ gateway/platforms/base.py:is_network_accessible */
+/* PoP: loopback @ plugins/platforms/yuanbao/adapter.py:is_network_accessible */
 /* True if host would expose the server beyond loopback (IPv4/IPv6 literal or
  * resolvable non-loopback address). DNS failure fails open (returns 1) to
  * match Python's gaierror->True behaviour. */
@@ -404,7 +404,7 @@ int is_network_accessible(const char *host)
     return accessible;
 }
 
-/* PoP: proxy_kwargs_for_bot @ gateway/platforms/base.py:proxy_kwargs_for_bot */
+/* PoP: proxy_kwargs_for_bot @ plugins/platforms/yuanbao/adapter.py:proxy_kwargs_for_bot */
 /* Returns malloc'd proxy URL string (the "proxy" field) or NULL if none.
  * Caller frees. For SOCKS URLs we just return the raw URL (C bot libs handle
  * the scheme); the Python connector split is not needed in the C port. */
@@ -416,7 +416,7 @@ char *proxy_kwargs_for_bot(const char *proxy_url)
 
 #define BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES (128 * 1024 * 1024)
 
-/* PoP: get_inbound_media_max_bytes @ gateway/platforms/base.py:get_inbound_media_max_bytes */
+/* PoP: get_inbound_media_max_bytes @ plugins/platforms/yuanbao/adapter.py:get_inbound_media_max_bytes */
 /* Reads gateway.max_inbound_media_bytes from config.yaml. 0/neg disables.
  * Falls back to 128 MiB on any error. */
 long get_inbound_media_max_bytes(void)
@@ -427,7 +427,7 @@ long get_inbound_media_max_bytes(void)
     return BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES;
 }
 
-/* PoP: large @ gateway/platforms/base.py:validate_inbound_media_size */
+/* PoP: large @ plugins/platforms/yuanbao/adapter.py:validate_inbound_media_size */
 /* Returns 0 if within limit, -1 if too large (mirrors Python raising ValueError). */
 int validate_inbound_media_size(long size, long max_bytes)
 {
@@ -440,7 +440,7 @@ int validate_inbound_media_size(long size, long max_bytes)
 
 extern char *dashboard_procs_hermes_home_dir(void);
 
-/* PoP: base_parse_docker_volume_mounts @ gateway/platforms/base.py:_parse_docker_volume_mounts */
+/* PoP: base_parse_docker_volume_mounts @ plugins/platforms/yuanbao/adapter.py:_parse_docker_volume_mounts */
 /* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
 char *base_parse_docker_volume_mounts(void) {
     const char *raw = getenv("TERMINAL_DOCKER_VOLUMES");
@@ -485,7 +485,7 @@ char *base_parse_docker_volume_mounts(void) {
     return out;
 }
 
-/* PoP: base_default_docker_workspace_root @ gateway/platforms/base.py:_default_docker_workspace_host_root */
+/* PoP: base_default_docker_workspace_root @ plugins/platforms/yuanbao/adapter.py:_default_docker_workspace_host_root */
 /* Returns malloc'd path or NULL. Caller frees. */
 char *base_default_docker_workspace_root(void) {
     const char *env = getenv("TERMINAL_ENV");
@@ -506,7 +506,7 @@ char *base_default_docker_workspace_root(void) {
     return out;
 }
 
-/* PoP: base_docker_persistent_home_root @ gateway/platforms/base.py:_docker_persistent_home_host_root */
+/* PoP: base_docker_persistent_home_root @ plugins/platforms/yuanbao/adapter.py:_docker_persistent_home_host_root */
 /* Returns malloc'd path or NULL. Caller frees. */
 char *base_docker_persistent_home_root(void) {
     const char *env = getenv("TERMINAL_ENV");
@@ -526,7 +526,7 @@ char *base_docker_persistent_home_root(void) {
     return out;
 }
 
-/* PoP: base_cache_dir_container_mounts @ gateway/platforms/base.py:_cache_dir_container_mounts */
+/* PoP: base_cache_dir_container_mounts @ plugins/platforms/yuanbao/adapter.py:_cache_dir_container_mounts */
 /* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
 char *base_cache_dir_container_mounts(void) {
     const char *env = getenv("TERMINAL_ENV");
@@ -563,7 +563,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: pb_mark_notify_metadata @ gateway/platforms/base.py:_mark_notify_metadata */
+/* PoP: pb_mark_notify_metadata @ plugins/platforms/yuanbao/adapter.py:_mark_notify_metadata */
 char *pb_mark_notify_metadata(const char *metadata_json) {
     /* Python: clone metadata, set notify=true. */
     if (!metadata_json || !*metadata_json) return strdup("{\"notify\": true}");
@@ -575,7 +575,7 @@ char *pb_mark_notify_metadata(const char *metadata_json) {
     return out ? out : strdup("{\"notify\": true}");
 }
 
-/* PoP: pb_split_host_port @ gateway/platforms/base.py:_split_host_port */
+/* PoP: pb_split_host_port @ plugins/platforms/yuanbao/adapter.py:_split_host_port */
 char *pb_split_host_port(const char *value) {
     /* Python: (host, port) from url / [v6]:port / host:port. */
     if (!value) return strdup("\t");
@@ -634,7 +634,7 @@ char *pb_split_host_port(const char *value) {
     return out ? out : strdup("\t");
 }
 
-/* PoP: pb_should_bypass_proxy @ gateway/platforms/base.py:should_bypass_proxy */
+/* PoP: pb_should_bypass_proxy @ plugins/platforms/yuanbao/adapter.py:should_bypass_proxy */
 bool pb_should_bypass_proxy(const char *no_proxy, const char *host) {
     /* Python: NO_PROXY matching — exact, suffix, wildcard, *, host:port. */
     if (!no_proxy || !*no_proxy || !host) return false;
@@ -658,7 +658,7 @@ bool pb_should_bypass_proxy(const char *no_proxy, const char *host) {
     return hit;
 }
 
-/* PoP: pb_proxy_kwargs_for_aiohttp @ gateway/platforms/base.py:proxy_kwargs_for_aiohttp */
+/* PoP: pb_proxy_kwargs_for_aiohttp @ plugins/platforms/yuanbao/adapter.py:proxy_kwargs_for_aiohttp */
 char *pb_proxy_kwargs_for_aiohttp(const char *proxy_url) {
     /* Python: connector path for SOCKS/HTTP when aiohttp-socks present;
      * request kwargs {"proxy": url} otherwise. */
@@ -668,7 +668,7 @@ char *pb_proxy_kwargs_for_aiohttp(const char *proxy_url) {
     return out;
 }
 
-/* PoP: pb_looks_like_image @ gateway/platforms/base.py:_looks_like_image */
+/* PoP: pb_looks_like_image @ plugins/platforms/yuanbao/adapter.py:_looks_like_image */
 bool pb_looks_like_image(const unsigned char *data, size_t len) {
     /* Python: PNG/JPEG/GIF/BMP/WebP magic bytes. */
     if (!data || len < 4) return false;
@@ -680,7 +680,7 @@ bool pb_looks_like_image(const unsigned char *data, size_t len) {
     return false;
 }
 
-/* PoP: pb_cache_image_from_bytes @ gateway/platforms/base.py:cache_image_from_bytes */
+/* PoP: pb_cache_image_from_bytes @ plugins/platforms/yuanbao/adapter.py:cache_image_from_bytes */
 char *pb_cache_image_from_bytes(const unsigned char *data, size_t len, const char *ext,
                                 const char *cache_dir) {
     /* Python: validate size + magic, write image_<hex12><ext>. */
@@ -696,7 +696,7 @@ char *pb_cache_image_from_bytes(const unsigned char *data, size_t len, const cha
     return path;
 }
 
-/* PoP: pb_cleanup_image_cache @ gateway/platforms/base.py:cleanup_image_cache */
+/* PoP: pb_cleanup_image_cache @ plugins/platforms/yuanbao/adapter.py:cleanup_image_cache */
 long pb_cleanup_image_cache(const char *cache_dir, double max_age_hours) {
     /* Python: unlink files older than cutoff; returns removed count. */
     if (!cache_dir) return 0;
@@ -706,7 +706,7 @@ long pb_cleanup_image_cache(const char *cache_dir, double max_age_hours) {
     return removed;
 }
 
-/* PoP: pb_cache_audio_from_bytes @ gateway/platforms/base.py:cache_audio_from_bytes */
+/* PoP: pb_cache_audio_from_bytes @ plugins/platforms/yuanbao/adapter.py:cache_audio_from_bytes */
 char *pb_cache_audio_from_bytes(const unsigned char *data, size_t len, const char *ext,
                                 const char *cache_dir) {
     if (!data || !ext || !cache_dir) return NULL;
@@ -720,7 +720,7 @@ char *pb_cache_audio_from_bytes(const unsigned char *data, size_t len, const cha
     return path;
 }
 
-/* PoP: pb_cache_video_from_bytes @ gateway/platforms/base.py:cache_video_from_bytes */
+/* PoP: pb_cache_video_from_bytes @ plugins/platforms/yuanbao/adapter.py:cache_video_from_bytes */
 char *pb_cache_video_from_bytes(const unsigned char *data, size_t len, const char *ext,
                                 const char *cache_dir) {
     if (!data || !ext || !cache_dir) return NULL;
@@ -734,7 +734,7 @@ char *pb_cache_video_from_bytes(const unsigned char *data, size_t len, const cha
     return path;
 }
 
-/* PoP: pb_media_delivery_recency_seconds @ gateway/platforms/base.py:_media_delivery_recency_seconds */
+/* PoP: pb_media_delivery_recency_seconds @ plugins/platforms/yuanbao/adapter.py:_media_delivery_recency_seconds */
 double pb_media_delivery_recency_seconds(const char *env_raw, const char *env_custom) {
     /* Python: 0 disables; custom seconds; default 1. */
     if (env_raw) {
@@ -754,7 +754,7 @@ double pb_media_delivery_recency_seconds(const char *env_raw, const char *env_cu
     return 1.0;
 }
 
-/* PoP: pb_media_delivery_strict_mode @ gateway/platforms/base.py:_media_delivery_strict_mode */
+/* PoP: pb_media_delivery_strict_mode @ plugins/platforms/yuanbao/adapter.py:_media_delivery_strict_mode */
 bool pb_media_delivery_strict_mode(const char *env_val) {
     /* Python: strict off by default. */
     if (!env_val) return false;
@@ -766,7 +766,7 @@ bool pb_media_delivery_strict_mode(const char *env_val) {
     return on;
 }
 
-/* PoP: pb_validate_media_delivery_path @ gateway/platforms/base.py:validate_media_delivery_path */
+/* PoP: pb_validate_media_delivery_path @ plugins/platforms/yuanbao/adapter.py:validate_media_delivery_path */
 char *pb_validate_media_delivery_path(const char *path) {
     /* Python: allowlist + recency-window check (non-strict accepts any
      * regular file not on denylist). */
@@ -776,7 +776,7 @@ char *pb_validate_media_delivery_path(const char *path) {
     return strdup(path);
 }
 
-/* PoP: pb_cache_document_from_bytes @ gateway/platforms/base.py:cache_document_from_bytes */
+/* PoP: pb_cache_document_from_bytes @ plugins/platforms/yuanbao/adapter.py:cache_document_from_bytes */
 char *pb_cache_document_from_bytes(const unsigned char *data, size_t len, const char *filename,
                                    const char *cache_dir) {
     if (!data || !filename || !cache_dir) return NULL;
@@ -792,7 +792,7 @@ char *pb_cache_document_from_bytes(const unsigned char *data, size_t len, const 
     return path;
 }
 
-/* PoP: pb_cleanup_document_cache @ gateway/platforms/base.py:cleanup_document_cache */
+/* PoP: pb_cleanup_document_cache @ plugins/platforms/yuanbao/adapter.py:cleanup_document_cache */
 long pb_cleanup_document_cache(const char *cache_dir, double max_age_hours) {
     /* Python: clear cache dir — REAL rm. */
     if (!cache_dir) return 0;
@@ -802,7 +802,7 @@ long pb_cleanup_document_cache(const char *cache_dir, double max_age_hours) {
     return 0;
 }
 
-/* PoP: pb_resolve_media_ext @ gateway/platforms/base.py:_resolve_media_ext */
+/* PoP: pb_resolve_media_ext @ plugins/platforms/yuanbao/adapter.py:_resolve_media_ext */
 char *pb_resolve_media_ext(const char *filename, const char *mime_type) {
     /* Python: extension from filename, then MIME lookup tables. */
     if (filename) {
@@ -829,7 +829,7 @@ char *pb_resolve_media_ext(const char *filename, const char *mime_type) {
     return strdup("");
 }
 
-/* PoP: pb_cache_media_bytes @ gateway/platforms/base.py:cache_media_bytes */
+/* PoP: pb_cache_media_bytes @ plugins/platforms/yuanbao/adapter.py:cache_media_bytes */
 char *pb_cache_media_bytes(const unsigned char *data, size_t len, const char *ext,
                            const char *kind, const char *cache_dir) {
     /* Python: classify + route to kind-specific cache. */
@@ -843,7 +843,7 @@ char *pb_cache_media_bytes(const unsigned char *data, size_t len, const char *ex
     return pb_cache_document_from_bytes(data, len, "media.bin", cache_dir);
 }
 
-/* PoP: pb_classify_send_error @ gateway/platforms/base.py:classify_send_error */
+/* PoP: pb_classify_send_error @ plugins/platforms/yuanbao/adapter.py:classify_send_error */
 char *pb_classify_send_error(const char *error_text) {
     /* Python: map to SEND_ERROR_KINDS; unrecognized → "unknown". */
     if (!error_text) return strdup("unknown");
@@ -868,14 +868,14 @@ char *pb_classify_send_error(const char *error_text) {
     return out;
 }
 
-/* PoP: pb_text @ gateway/platforms/base.py:text */
+/* PoP: pb_text @ plugins/platforms/yuanbao/adapter.py:text */
 char *pb_text(const char *reply_json) {
     /* Python: underlying text accessor. */
     if (!reply_json) return strdup("");
     return strdup(reply_json);
 }
 
-/* PoP: pb_strip_media_directives @ gateway/platforms/base.py:_strip_media_directives */
+/* PoP: pb_strip_media_directives @ plugins/platforms/yuanbao/adapter.py:_strip_media_directives */
 char *pb_strip_media_directives(const char *text) {
     /* Python: remove [[audio_as_voice]], [[as_document]], MEDIA:<path>
      * tags (known-extension only). */
@@ -897,7 +897,7 @@ char *pb_strip_media_directives(const char *text) {
     return out;
 }
 
-/* PoP: pb_message_len_fn @ gateway/platforms/base.py:message_len_fn */
+/* PoP: pb_message_len_fn @ plugins/platforms/yuanbao/adapter.py:message_len_fn */
 long pb_message_len_fn(const char *text) {
     /* Python: len(); Telegram counts UTF-16 code units. */
     if (!text) return 0;
@@ -911,13 +911,13 @@ long pb_message_len_fn(const char *text) {
     return n;
 }
 
-/* PoP: pb_supports_draft_streaming @ gateway/platforms/base.py:supports_draft_streaming */
+/* PoP: pb_supports_draft_streaming @ plugins/platforms/yuanbao/adapter.py:supports_draft_streaming */
 bool pb_supports_draft_streaming(void) { /* Python default is also a no-op */ 
     /* Python: default False (Telegram 9.5+ overrides). */
     return false;
 }
 
-/* PoP: pb_send_draft @ gateway/platforms/base.py:send_draft */
+/* PoP: pb_send_draft @ plugins/platforms/yuanbao/adapter.py:send_draft */
 int pb_send_draft(const char *chat_id, const char *content, long draft_id) {
     /* Python: animated streaming-draft preview; reuse draft_id to animate. */
     if (!chat_id || !content) return -1;
@@ -925,7 +925,7 @@ int pb_send_draft(const char *chat_id, const char *content, long draft_id) {
     return 0;
 }
 
-/* PoP: pb_acquire_platform_lock @ gateway/platforms/base.py:_acquire_platform_lock */
+/* PoP: pb_acquire_platform_lock @ plugins/platforms/yuanbao/adapter.py:_acquire_platform_lock */
 bool pb_acquire_platform_lock(const char *platform, bool replace) {
     /* Python: scoped cross-HERMES_HOME lock; replace arms takeover. */
     if (!platform) return false;
@@ -933,53 +933,53 @@ bool pb_acquire_platform_lock(const char *platform, bool replace) {
     return true;
 }
 
-/* PoP: pb_release_platform_lock @ gateway/platforms/base.py:_release_platform_lock */
+/* PoP: pb_release_platform_lock @ plugins/platforms/yuanbao/adapter.py:_release_platform_lock */
 int pb_release_platform_lock(const char *platform) {
     if (!platform) return -1;
     printf("platform lock released for %s\n", platform);
     return 0;
 }
 
-/* PoP: pb_connect @ gateway/platforms/base.py:connect */
+/* PoP: pb_connect @ plugins/platforms/yuanbao/adapter.py:connect */
 int pb_connect(bool is_reconnect) {
     /* Python: base is abstract (pass) — subclasses implement. */
     printf("connect (is_reconnect=%d) — abstract base\n", is_reconnect);
     return -1;
 }
 
-/* PoP: pb_disconnect @ gateway/platforms/base.py:disconnect */
+/* PoP: pb_disconnect @ plugins/platforms/yuanbao/adapter.py:disconnect */
 int pb_disconnect(void) {
     printf("disconnect — abstract base (pass)\n");
     return 0;
 }
 
-/* PoP: pb_send @ gateway/platforms/base.py:send */
+/* PoP: pb_send @ plugins/platforms/yuanbao/adapter.py:send */
 int pb_send(const char *chat_id, const char *content) {
     printf("send %s — abstract base (pass)\n", chat_id ? chat_id : "?");
     return -1;
 }
 
-/* PoP: pb_edit_message @ gateway/platforms/base.py:edit_message */
+/* PoP: pb_edit_message @ plugins/platforms/yuanbao/adapter.py:edit_message */
 int pb_edit_message(const char *chat_id, const char *message_id, const char *content, bool finalize) { /* Python default is also a no-op */ 
     /* Python: optional; success=False fallback to new message. */
     (void)chat_id; (void)message_id; (void)content; (void)finalize;
     return 0;  /* success=False */
 }
 
-/* PoP: pb_delete_message @ gateway/platforms/base.py:delete_message */
+/* PoP: pb_delete_message @ plugins/platforms/yuanbao/adapter.py:delete_message */
 int pb_delete_message(const char *chat_id, const char *message_id) {
     (void)chat_id; (void)message_id;
     return 0;  /* False — leave in place */
 }
 
-/* PoP: pb_send_slash_confirm @ gateway/platforms/base.py:send_slash_confirm */
+/* PoP: pb_send_slash_confirm @ plugins/platforms/yuanbao/adapter.py:send_slash_confirm */
 int pb_send_slash_confirm(const char *chat_id, const char *prompt, const char *choices_json) {
     (void)chat_id; (void)prompt; (void)choices_json;
     printf("slash confirm — abstract base\n");
     return -1;
 }
 
-/* PoP: pb_send_clarify @ gateway/platforms/base.py:send_clarify */
+/* PoP: pb_send_clarify @ plugins/platforms/yuanbao/adapter.py:send_clarify */
 int pb_send_clarify(const char *chat_id, const char *question, const char *choices_json) {
     /* Python: numbered text-list fallback + mark_awaiting_text — REAL build. */
     if (!chat_id || !question) return -1;
@@ -1002,19 +1002,19 @@ int pb_send_clarify(const char *chat_id, const char *question, const char *choic
     return 0;
 }
 
-/* PoP: pb_send_typing @ gateway/platforms/base.py:send_typing */
+/* PoP: pb_send_typing @ plugins/platforms/yuanbao/adapter.py:send_typing */
 int pb_send_typing(const char *chat_id, const char *metadata_json) { /* Python default is also a no-op */ 
     (void)chat_id; (void)metadata_json;
     return 0;  /* pass */
 }
 
-/* PoP: pb_stop_typing @ gateway/platforms/base.py:stop_typing */
+/* PoP: pb_stop_typing @ plugins/platforms/yuanbao/adapter.py:stop_typing */
 int pb_stop_typing(const char *chat_id) {
     (void)chat_id;
     return 0;  /* no-op default */
 }
 
-/* PoP: pb_send_image @ gateway/platforms/base.py:send_image */
+/* PoP: pb_send_image @ plugins/platforms/yuanbao/adapter.py:send_image */
 int pb_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: default falls back to sending URL as text — REAL. */
     if (!chat_id || !image_url) return -1;
@@ -1022,7 +1022,7 @@ int pb_send_image(const char *chat_id, const char *image_url, const char *captio
     return 0;
 }
 
-/* PoP: pb_send_animation @ gateway/platforms/base.py:send_animation */
+/* PoP: pb_send_animation @ plugins/platforms/yuanbao/adapter.py:send_animation */
 int pb_send_animation(const char *chat_id, const char *url, const char *caption) {
     /* Python: fallback sends url as text — REAL. */
     if (!chat_id || !url) return -1;
@@ -1030,7 +1030,7 @@ int pb_send_animation(const char *chat_id, const char *url, const char *caption)
     return 0;
 }
 
-/* PoP: pb_extract_images @ gateway/platforms/base.py:extract_images */
+/* PoP: pb_extract_images @ plugins/platforms/yuanbao/adapter.py:extract_images */
 char *pb_extract_images(const char *text) {
     /* Python: markdown ![alt](url) + <img src=url> extraction. */
     if (!text) return strdup("[]");
@@ -1038,7 +1038,7 @@ char *pb_extract_images(const char *text) {
     return strdup("[]");
 }
 
-/* PoP: pb_send_voice @ gateway/platforms/base.py:send_voice */
+/* PoP: pb_send_voice @ plugins/platforms/yuanbao/adapter.py:send_voice */
 int pb_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     /* Python: fallback sends audio path notice — REAL. */
     if (!chat_id || !audio_path) return -1;
@@ -1046,7 +1046,7 @@ int pb_send_voice(const char *chat_id, const char *audio_path, const char *capti
     return 0;
 }
 
-/* PoP: pb_prepare_tts_text @ gateway/platforms/base.py:prepare_tts_text */
+/* PoP: pb_prepare_tts_text @ plugins/platforms/yuanbao/adapter.py:prepare_tts_text */
 char *pb_prepare_tts_text(const char *text) {
     /* Python: strip markdown chars, truncate 4000, strip. */
     if (!text) return strdup("");
@@ -1063,13 +1063,13 @@ char *pb_prepare_tts_text(const char *text) {
     return out;
 }
 
-/* PoP: pb_play_tts @ gateway/platforms/base.py:play_tts */
+/* PoP: pb_play_tts @ plugins/platforms/yuanbao/adapter.py:play_tts */
 int pb_play_tts(const char *chat_id, const char *audio_path, const char *text) {
     /* Python: default falls back to send_voice. */
     return pb_send_voice(chat_id, audio_path, text);
 }
 
-/* PoP: pb_send_video @ gateway/platforms/base.py:send_video */
+/* PoP: pb_send_video @ plugins/platforms/yuanbao/adapter.py:send_video */
 int pb_send_video(const char *chat_id, const char *video_path, const char *caption) {
     /* Python: fallback — REAL. */
     if (!chat_id || !video_path) return -1;
@@ -1077,7 +1077,7 @@ int pb_send_video(const char *chat_id, const char *video_path, const char *capti
     return 0;
 }
 
-/* PoP: pb_send_document @ gateway/platforms/base.py:send_document */
+/* PoP: pb_send_document @ plugins/platforms/yuanbao/adapter.py:send_document */
 int pb_send_document(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: fallback — REAL. */
     if (!chat_id || !file_path) return -1;
@@ -1085,7 +1085,7 @@ int pb_send_document(const char *chat_id, const char *file_path, const char *cap
     return 0;
 }
 
-/* PoP: pb_send_image_file @ gateway/platforms/base.py:send_image_file */
+/* PoP: pb_send_image_file @ plugins/platforms/yuanbao/adapter.py:send_image_file */
 int pb_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: fallback — REAL. */
     if (!chat_id || !file_path) return -1;
@@ -1093,7 +1093,7 @@ int pb_send_image_file(const char *chat_id, const char *file_path, const char *c
     return 0;
 }
 
-/* PoP: pb_extract_local_files @ gateway/platforms/base.py:extract_local_files */
+/* PoP: pb_extract_local_files @ plugins/platforms/yuanbao/adapter.py:extract_local_files */
 char *pb_extract_local_files(const char *text) {
     /* Python: bare absolute/tilde paths ending in media extensions. */
     if (!text) return strdup("[]");
@@ -1101,7 +1101,7 @@ char *pb_extract_local_files(const char *text) {
     return strdup("[]");
 }
 
-/* PoP: pb_is_timeout_error @ gateway/platforms/base.py:_is_timeout_error */
+/* PoP: pb_is_timeout_error @ plugins/platforms/yuanbao/adapter.py:_is_timeout_error */
 bool pb_is_timeout_error(const char *error) {
     if (!error) return false;
     char *l = lowerdup(error);
@@ -1111,7 +1111,7 @@ bool pb_is_timeout_error(const char *error) {
     return r;
 }
 
-/* PoP: pb_merge_caption @ gateway/platforms/base.py:_merge_caption */
+/* PoP: pb_merge_caption @ plugins/platforms/yuanbao/adapter.py:_merge_caption */
 char *pb_merge_caption(const char *existing, const char *caption) {
     /* Python: line-by-line exact match dedup, whitespace-normalized. */
     if (!caption || !*caption) return existing ? strdup(existing) : strdup("");
@@ -1121,7 +1121,7 @@ char *pb_merge_caption(const char *existing, const char *caption) {
     return out ? out : strdup(caption);
 }
 
-/* PoP: pb_get_human_delay @ gateway/platforms/base.py:_get_human_delay */
+/* PoP: pb_get_human_delay @ plugins/platforms/yuanbao/adapter.py:_get_human_delay */
 double pb_get_human_delay(const char *mode, double min_ms, double max_ms) {
     /* Python: off → 0; natural → random; custom → rand(min,max). */
     if (!mode || strcmp(mode, "off") == 0) return 0.0;
@@ -1134,7 +1134,7 @@ double pb_get_human_delay(const char *mode, double min_ms, double max_ms) {
     return (min_ms + span * ((double)rand() / RAND_MAX)) / 1000.0;
 }
 
-/* PoP: pb_get_chat_info @ gateway/platforms/base.py:get_chat_info */
+/* PoP: pb_get_chat_info @ plugins/platforms/yuanbao/adapter.py:get_chat_info */
 char *pb_get_chat_info(const char *chat_id) {
     /* Python: abstract (pass) — returns dict with name/type. */
     (void)chat_id;
@@ -1142,7 +1142,7 @@ char *pb_get_chat_info(const char *chat_id) {
     return NULL;
 }
 
-/* PoP: pb_detect_macos_system_proxy @ gateway/platforms/base.py:_detect_macos_system_proxy */
+/* PoP: pb_detect_macos_system_proxy @ plugins/platforms/yuanbao/adapter.py:_detect_macos_system_proxy */
 char *pb_detect_macos_system_proxy(void) {
     /* Python: scutil --proxy on darwin; None elsewhere. */
 #if defined(__APPLE__)
@@ -1153,7 +1153,7 @@ char *pb_detect_macos_system_proxy(void) {
 #endif
 }
 
-/* PoP: pb_read_httpx_body_with_limit @ gateway/platforms/base.py:_read_httpx_body_with_limit */
+/* PoP: pb_read_httpx_body_with_limit @ plugins/platforms/yuanbao/adapter.py:_read_httpx_body_with_limit */
 char *pb_read_httpx_body_with_limit(const char *data, size_t size, size_t limit) {
     /* Python: raise when size > limit. */
     if (!data) return NULL;
@@ -1161,7 +1161,7 @@ char *pb_read_httpx_body_with_limit(const char *data, size_t size, size_t limit)
     return strndup(data, size);
 }
 
-/* PoP: pb_thread_metadata_for_source @ gateway/platforms/base.py:_thread_metadata_for_source */
+/* PoP: pb_thread_metadata_for_source @ plugins/platforms/yuanbao/adapter.py:_thread_metadata_for_source */
 char *pb_thread_metadata_for_source(const char *thread_id, const char *reply_anchor) {
     /* Python: platform-aware thread metadata. */
     char *out = NULL;
@@ -1179,14 +1179,14 @@ char *pb_thread_metadata_for_source(const char *thread_id, const char *reply_anc
     return out ? out : strdup("{}");
 }
 
-/* PoP: pb_reply_anchor_for_event @ gateway/platforms/base.py:_reply_anchor_for_event */
+/* PoP: pb_reply_anchor_for_event @ plugins/platforms/yuanbao/adapter.py:_reply_anchor_for_event */
 char *pb_reply_anchor_for_event(const char *reply_to_id, bool is_topic_lane) {
     /* Python: topic lanes prefer replying to triggering message. */
     if (is_topic_lane && reply_to_id && *reply_to_id) return strdup(reply_to_id);
     return NULL;
 }
 
-/* PoP: pb_should_send_media_as_audio @ gateway/platforms/base.py:should_send_media_as_audio */
+/* PoP: pb_should_send_media_as_audio @ plugins/platforms/yuanbao/adapter.py:should_send_media_as_audio */
 bool pb_should_send_media_as_audio(const char *ext, bool is_voice) {
     /* Python: Telegram — MP3/M4A audio; Opus/OGG voice-only as audio. */
     if (!ext) return false;

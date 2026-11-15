@@ -188,7 +188,7 @@ int wecom_crypto_init(wecom_crypto_t *ctx,
 }
 
 /* PoP: wecom_crypto_verify_url @ plugins/platforms/wecom/wecom_crypto.py:verify_url */
-/* Port of Python gateway/platforms/wecom_crypto.py:verify_url(). */
+/* Port of Python plugins/platforms/wecom/wecom_crypto.py:verify_url(). */
 int wecom_crypto_verify_url(wecom_crypto_t *ctx,
                              const char *msg_signature,
                              const char *timestamp,

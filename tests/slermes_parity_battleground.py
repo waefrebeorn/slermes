@@ -142,15 +142,17 @@ _PY_ROOTS = [Path(__file__).resolve().parent.parent,
 _PY_MODULE_CACHE: dict = {}
 
 
-def _py_module_exists(python_file: str) -> bool:
-    """True when the claimed Python module exists in either tree.
+def _py_module_exists(python_file: str):
+    """True/False when a module path was claimed, None when none was.
 
-    Both the repo (which carries its own agent/, gateway/, hermes_cli/) and the
-    upstream quarry are legitimate homes for a module, so a miss in one is not a
-    miss. Cached: this is called once per PoP annotation over ~20k of them.
+    Returns None for the loose "Port of Python: <free text>" annotations, which
+    claim no module at all. Folding those in with real orphans made the orphan
+    count look like ~1500 false claims when almost all of them are simply
+    UNATTRIBUTED -- the scanner scraped words like `backend` out of prose and
+    then reported them as missing files.
     """
     if not python_file:
-        return True
+        return None
     if python_file in _PY_MODULE_CACHE:
         return _PY_MODULE_CACHE[python_file]
     norm = python_file.replace("\\", "/").lstrip("./")
@@ -295,7 +297,7 @@ class CIndexer:
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*(?:[^*]|\*[^/])*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
-            re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
+            re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w/]+\.py)', re.MULTILINE),
             re.compile(r'\*\s*Port of Python\s+[\w/]+\.py:([\w_]+)\(', re.MULTILINE),
             re.compile(r'AG26:\s*Port of Python\s+[\w/]+\.py:([\w_]+)\(', re.MULTILINE),
             re.compile(r'Port of Python:\s+([\w_]+)', re.MULTILINE),
@@ -305,7 +307,10 @@ class CIndexer:
             re.compile(r'\*\s*Port of Python\s+[\w.]+\.([\w_]+)\(', re.MULTILINE),
             re.compile(r'\*\s*Port of Python\s+\w+\.py:[\w.]+\.([\w_]+)\(', re.MULTILINE),
             re.compile(r'\*\s*Port of Python\s+\w+\.py:([\w_]+)\(', re.MULTILINE),
-            re.compile(r'/\*\s*port of Python[^:]*:?\s*([^*]+)\*/', re.MULTILINE),
+            # Require a real module path: the old ([^*]+) swallowed prose such
+            # as "get_available_vision_backends()" and the scanner then recorded
+            # a function name as if it were a missing file.
+            re.compile(r'/\*\s*port of Python[^:]*:?\s*([\w/]+\.py)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+agent/(\w+)\.py\s*\([^)]+\)\s*\*/', re.MULTILINE),
             re.compile(r'\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             # Module-aware "Port of Python <mod>.py:<fn>" (2 groups: py_file, fn)
@@ -1770,12 +1775,16 @@ def annotation_verifiability():
     except Exception:
         return {"total": 0, "verifiable": 0, "orphan": 0, "orphan_modules": []}
     anns = getattr(idx, "pop_annotations", [])
-    orphan_mods = sorted({a.python_file for a in anns
-                          if not a.python_module_exists and a.python_file})
+    claimed = [a for a in anns if a.python_module_exists is not None]
+    orphan_mods = sorted({a.python_file for a in claimed
+                          if a.python_module_exists is False})
     return {
         "total": len(anns),
-        "verifiable": sum(1 for a in anns if a.python_module_exists),
-        "orphan": sum(1 for a in anns if not a.python_module_exists),
+        "claimed": len(claimed),
+        "verifiable": sum(1 for a in claimed if a.python_module_exists),
+        "orphan": len(orphan_mods) and sum(1 for a in claimed
+                                          if a.python_module_exists is False),
+        "unattributed": sum(1 for a in anns if a.python_module_exists is None),
         "orphan_modules": orphan_mods,
     }
 

@@ -61,10 +61,10 @@ void sse_write_event_fd(int fd, const char *event_type, const char *data) {
     dprintf(fd, "data: %s\n\n", data ? data : "");
 }
 
-/* Port of Python gateway/platforms/qqbot/utils.py:_get_hermes_version(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_get_hermes_version(). */
 /* ── Helper: Get Herm Version ─────────────────────────────────────── */
 
-/* PoP: get_hermes_version @ gateway/platforms/api_server.py:_hermes_version */
+/* PoP: get_hermes_version @ plugins/platforms/qqbot/utils.py:_hermes_version */
 static const char *get_hermes_version(void) {
     /* Would use hermes_cli.__version__ or package metadata */
     return "dev";
@@ -91,7 +91,7 @@ static void send_json_error(int fd, int status, const char *message, const char 
     json_free(err);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_origin_allowed(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_origin_allowed(). */
 /* ── Helper: Check if origin is allowed ───────────────────────────── */
 
 static bool origin_allowed(api_server_adapter_t *adapter, const char *origin) {
@@ -118,9 +118,9 @@ static void add_cors_headers(api_server_adapter_t *adapter, const char *origin, 
     json_set(root, "_cors_headers", headers);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_health(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_health(). */
 
-/* PoP: api_server_handle_health @ gateway/platforms/api_server.py:_handle_health */
+/* PoP: api_server_handle_health @ plugins/platforms/qqbot/utils.py:_handle_health */
 void api_server_handle_health(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;
@@ -137,9 +137,9 @@ void api_server_handle_health(api_server_adapter_t *adapter, int client_fd, cons
     json_free(root);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_capabilities(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_capabilities(). */
 
-/* PoP: api_server_handle_capabilities @ gateway/platforms/api_server.py:_handle_capabilities */
+/* PoP: api_server_handle_capabilities @ plugins/platforms/qqbot/utils.py:_handle_capabilities */
 void api_server_handle_capabilities(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;
@@ -163,9 +163,9 @@ void api_server_handle_capabilities(api_server_adapter_t *adapter, int client_fd
     json_free(root);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_models(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_models(). */
 
-/* PoP: api_server_handle_models @ gateway/platforms/api_server.py:_handle_models */
+/* PoP: api_server_handle_models @ plugins/platforms/qqbot/utils.py:_handle_models */
 void api_server_handle_models(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;
@@ -187,9 +187,9 @@ void api_server_handle_models(api_server_adapter_t *adapter, int client_fd, cons
     json_free(root);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_skills() + _handle_toolsets(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_skills() + _handle_toolsets(). */
 
-/* PoP: api_server_handle_skills @ gateway/platforms/api_server.py:_handle_skills */
+/* PoP: api_server_handle_skills @ plugins/platforms/qqbot/utils.py:_handle_skills */
 void api_server_handle_skills(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;
@@ -210,8 +210,8 @@ void api_server_handle_skills(api_server_adapter_t *adapter, int client_fd, cons
     json_free(root);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_toolsets(). */
-/* PoP: api_server_handle_toolsets @ gateway/platforms/api_server.py:_handle_toolsets */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_toolsets(). */
+/* PoP: api_server_handle_toolsets @ plugins/platforms/qqbot/utils.py:_handle_toolsets */
 void api_server_handle_toolsets(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;
@@ -232,7 +232,7 @@ void api_server_handle_toolsets(api_server_adapter_t *adapter, int client_fd, co
     json_free(root);
 }
 
-/* Port of Python gateway/platforms/api_server.py:_handle_options(). */
+/* Port of Python plugins/platforms/qqbot/utils.py:_handle_options(). */
 
 void api_server_handle_options(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;

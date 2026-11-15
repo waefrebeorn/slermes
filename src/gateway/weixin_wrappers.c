@@ -69,7 +69,7 @@ int wx_load_weixin_account(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_api_get @ gateway/platforms/weixin.py:_api_get */
+/* PoP: wx_u_api_get @ plugins/platforms/weixin/adapter.py:_api_get */
 int wx_u_api_get(const char *arg) {
     /* Python: iLink GET. Arg =
      * "state\tresult\terr". */
@@ -86,7 +86,7 @@ int wx_u_api_get(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_get_config @ gateway/platforms/weixin.py:_get_config */
+/* PoP: wx_u_get_config @ plugins/platforms/weixin/adapter.py:_get_config */
 int wx_u_get_config(const char *arg) {
     /* Python: EP_GET_CONFIG. Arg =
      * "state\tresult\terr". */
@@ -222,7 +222,7 @@ int wx_qr_login(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_poll_loop @ gateway/platforms/weixin.py:_poll_loop */
+/* PoP: wx_u_poll_loop @ plugins/platforms/weixin/adapter.py:_poll_loop */
 int wx_u_poll_loop(const char *arg) {
     /* Python: long-poll loop. Arg =
      * "state\tresult". */
@@ -245,7 +245,7 @@ int wx_u_process_message_safe(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
+/* PoP: wx_u_is_dm_intake_allowed @ plugins/platforms/weixin/adapter.py:_is_dm_intake_allowed */
 int wx_u_is_dm_intake_allowed(const char *arg) {
     /* Python: policy switch (disabled/allowlist/pairing/open). Arg =
      * "policy\tsender_id\tallowlist_json\topen_opted". */
@@ -278,7 +278,7 @@ int wx_u_is_dm_intake_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_text_batch_key @ gateway/platforms/weixin.py:_text_batch_key */
+/* PoP: wx_u_text_batch_key @ plugins/platforms/weixin/adapter.py:_text_batch_key */
 int wx_u_text_batch_key(const char *arg) {
     /* Python: session key from event source. Arg = "source\tprofile\tkey". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -290,7 +290,7 @@ int wx_u_text_batch_key(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_enqueue_text_event @ gateway/platforms/weixin.py:_enqueue_text_event */
+/* PoP: wx_u_enqueue_text_event @ plugins/platforms/weixin/adapter.py:_enqueue_text_event */
 int wx_u_enqueue_text_event(const char *arg) {
     /* Python: batch+flush timer. Arg =
      * "batched\tstate\tresult". */
@@ -305,7 +305,7 @@ int wx_u_enqueue_text_event(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_flush_text_batch @ gateway/platforms/weixin.py:_flush_text_batch */
+/* PoP: wx_u_flush_text_batch @ plugins/platforms/weixin/adapter.py:_flush_text_batch */
 int wx_u_flush_text_batch(const char *arg) {
     /* Python: quiet-period dispatch. Arg =
      * "flushed\tstate\tresult". */
@@ -333,7 +333,7 @@ int wx_u_collect_media(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_image @ tools/vision_tools.py:_download_image */
+/* PoP: wx_u_download_image @ plugins/platforms/weixin/adapter.py:_download_image */
 int wx_u_download_image(const char *arg) {
     /* Python: image_item media. Arg =
      * "path\tstate\tresult". */
@@ -346,7 +346,7 @@ int wx_u_download_image(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_download_video @ gateway/platforms/weixin.py:_download_video */
+/* PoP: wx_u_download_video @ plugins/platforms/weixin/adapter.py:_download_video */
 int wx_u_download_video(const char *arg) {
     /* Python: download + decrypt video media to cache. Arg =
      * "encrypted_query_param\tfull_url\taes_key_b64\tstate".
@@ -443,7 +443,7 @@ int wx_u_download_video(const char *arg) {
     return rc;
 }
 
-/* PoP: wx_u_download_voice @ gateway/platforms/weixin.py:_download_voice */
+/* PoP: wx_u_download_voice @ plugins/platforms/weixin/adapter.py:_download_voice */
 int wx_u_download_voice(const char *arg) {
     /* Python: voice_item media. Arg =
      * "path\tstate\tresult". */
@@ -456,7 +456,7 @@ int wx_u_download_voice(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_maybe_fetch_typing_ticket @ gateway/platforms/weixin.py:_maybe_fetch_typing_ticket */
+/* PoP: wx_u_maybe_fetch_typing_ticket @ plugins/platforms/weixin/adapter.py:_maybe_fetch_typing_ticket */
 int wx_u_maybe_fetch_typing_ticket(const char *arg) {
     /* Python: getConfig ticket. Arg =
      * "fetched\tstate\tresult". */
@@ -471,7 +471,7 @@ int wx_u_maybe_fetch_typing_ticket(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_split_text @ gateway/platforms/weixin.py:_split_text */
+/* PoP: wx_u_split_text @ plugins/platforms/weixin/adapter.py:_split_text */
 int wx_u_split_text(const char *arg) {
     /* Python: _split_text_for_weixin_delivery(content, MAX_MESSAGE_LENGTH,
      * _split_multiline_messages). Arg = content; the C port delegates to
@@ -488,7 +488,7 @@ int wx_u_split_text(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_open_rate_limit_circuit @ gateway/platforms/weixin.py:_open_rate_limit_circuit */
+/* PoP: wx_u_open_rate_limit_circuit @ plugins/platforms/weixin/adapter.py:_open_rate_limit_circuit */
 int wx_u_open_rate_limit_circuit(const char *arg) {
     /* Python: extend circuit-until by open seconds (monotonic). Arg =
      * "open_seconds\tuntil_monotonic" (seconds > 0 gates). */
@@ -515,7 +515,7 @@ int wx_u_record_rate_limit_event(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_reset_rate_limit_circuit @ gateway/platforms/weixin.py:_reset_rate_limit_circuit */
+/* PoP: wx_u_reset_rate_limit_circuit @ plugins/platforms/weixin/adapter.py:_reset_rate_limit_circuit */
 int wx_u_reset_rate_limit_circuit(const char *arg) {
     /* Python: circuit reset. Arg =
      * "reset\tstate\tresult". */
@@ -545,7 +545,7 @@ int wx_u_send_text_chunk(const char *arg) {
     return 0;
 }
 
-/* PoP: wx_u_send_text_chunk_locked @ gateway/platforms/weixin.py:_send_text_chunk_locked */
+/* PoP: wx_u_send_text_chunk_locked @ plugins/platforms/weixin/adapter.py:_send_text_chunk_locked */
 int wx_u_send_text_chunk_locked(const char *arg) {
     /* Python: locked impl. Arg =
      * "sent\tstate\tresult". */

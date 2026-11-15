@@ -265,7 +265,7 @@ int cleanup_image_cache(int max_age_hours) {
     return removed;
 }
 
-/* PoP: cleanup_audio_cache @ gateway/platforms/base.py:cleanup_audio_cache */
+/* PoP: cleanup_audio_cache @ plugins/platforms/telegram/telegram_network.py:cleanup_audio_cache */
 int cleanup_audio_cache(int max_age_hours) {
     char *cache_dir = get_cache_dir("audio", "audio_cache");
     int removed = 0;
@@ -293,7 +293,7 @@ int cleanup_audio_cache(int max_age_hours) {
     return removed;
 }
 
-/* PoP: cleanup_video_cache @ gateway/platforms/base.py:cleanup_video_cache */
+/* PoP: cleanup_video_cache @ plugins/platforms/telegram/telegram_network.py:cleanup_video_cache */
 int cleanup_video_cache(int max_age_hours) {
     char *cache_dir = get_cache_dir("videos", "video_cache");
     int removed = 0;
@@ -349,12 +349,12 @@ int cleanup_document_cache(int max_age_hours) {
     return removed;
 }
 
-/* PoP: get_screenshot_cache_dir @ gateway/platforms/base.py:get_screenshot_cache_dir */
+/* PoP: get_screenshot_cache_dir @ plugins/platforms/telegram/telegram_network.py:get_screenshot_cache_dir */
 char *get_screenshot_cache_dir(void) {
     return get_cache_dir("screenshots", "browser_screenshots");
 }
 
-/* PoP: cleanup_screenshot_cache @ gateway/platforms/base.py:cleanup_screenshot_cache */
+/* PoP: cleanup_screenshot_cache @ plugins/platforms/telegram/telegram_network.py:cleanup_screenshot_cache */
 int cleanup_screenshot_cache(int max_age_hours) {
     char *cache_dir = get_screenshot_cache_dir();
     int removed = 0;
@@ -503,10 +503,10 @@ bool should_bypass_proxy(const char *target_hosts) {
     return false; // Placeholder
 }
 
-/* PoP: resolve_proxy_url @ gateway/platforms/base.py:resolve_proxy_url */
-/* Port of Python telegram_network.py:_resolve_proxy_url(). */
+/* PoP: resolve_proxy_url @ plugins/platforms/telegram/telegram_network.py:resolve_proxy_url */
+/* Port of Python plugins/platforms/telegram/telegram_network.py:_resolve_proxy_url(). */
 /* PoP: resolve_proxy_url @ gateway/platforms/helpers:resolve_proxy_url */
-/* PoP: resolve_proxy_url @ gateway/platforms/base.py:resolve_proxy_url */
+/* PoP: resolve_proxy_url @ plugins/platforms/telegram/telegram_network.py:resolve_proxy_url */
 char *resolve_proxy_url(const char *platform_env_var, const char *target_hosts) {
     if (platform_env_var) {
         char *value = getenv(platform_env_var);

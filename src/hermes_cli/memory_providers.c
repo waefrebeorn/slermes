@@ -84,7 +84,7 @@ static const hermes_mp_provider_t *MEMORY_PROVIDERS[] = {
 /* ------------------------------------------------------------------ */
 /*  get_memory_provider                                                */
 /* ------------------------------------------------------------------ */
-/* PoP: hermes_mp_get_provider @ hermes_cli/memory_providers.py:get_memory_provider */
+/* PoP: hermes_mp_get_provider @ hermes_cli/web_routers/memory_providers.py:get_memory_provider */
 const hermes_mp_provider_t *hermes_mp_get_provider(const char *name)
 {
     if (!name) return NULL;
@@ -98,7 +98,7 @@ const hermes_mp_provider_t *hermes_mp_get_provider(const char *name)
 /* ------------------------------------------------------------------ */
 /*  ProviderField.allowed_values                                      */
 /* ------------------------------------------------------------------ */
-/* PoP: hermes_mp_allowed_values @ hermes_cli/memory_providers.py:ProviderField.allowed_values */
+/* PoP: hermes_mp_allowed_values @ hermes_cli/web_routers/memory_providers.py:ProviderField.allowed_values */
 int hermes_mp_allowed_values(const hermes_mp_provider_t *provider,
                               const char *key,
                               const char *out[], int out_cap)

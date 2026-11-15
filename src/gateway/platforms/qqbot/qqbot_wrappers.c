@@ -22,7 +22,7 @@ int qqbot_check_qq_requirements(const char *arg) { /* Python default is also a n
     return 1;
 }
 
-/* PoP: qqbot_u_coerce_list @ gateway/platforms/qqbot/adapter.py:_coerce_list */
+/* PoP: qqbot_u_coerce_list @ plugins/platforms/qqbot/adapter.py:_coerce_list */
 int qqbot_u_coerce_list(const char *arg) {
     /* Python: config value -> trimmed string list. Arg = "v1\tv2..." or
      * comma-sep. */
@@ -54,7 +54,7 @@ int qqbot_u_log_tag(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_fail_pending @ gateway/platforms/qqbot/adapter.py:_fail_pending */
+/* PoP: qqbot_u_fail_pending @ plugins/platforms/qqbot/adapter.py:_fail_pending */
 int qqbot_u_fail_pending(const char *arg) {
     /* Python: set_exception(RuntimeError(reason)) on all pending futures,
      * then clear. Arg = reason. */
@@ -101,7 +101,7 @@ int qqbot_u_open_ws(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */
+/* PoP: qqbot_u_listen_loop @ plugins/platforms/qqbot/adapter.py:_listen_loop */
 int qqbot_u_listen_loop(const char *arg) {
     /* Python: close-code handling. Arg =
      * "state\tresult". */
@@ -128,7 +128,7 @@ int qqbot_u_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_read_events @ gateway/platforms/qqbot/adapter.py:_read_events */
+/* PoP: qqbot_u_read_events @ plugins/platforms/qqbot/adapter.py:_read_events */
 int qqbot_u_read_events(const char *arg) {
     /* Python: frame loop. Arg =
      * "state\tresult\terr". */
@@ -149,7 +149,7 @@ int qqbot_u_read_events(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */
+/* PoP: qqbot_u_heartbeat_loop @ plugins/platforms/qqbot/adapter.py:_heartbeat_loop */
 int qqbot_u_heartbeat_loop(const char *arg) {
     /* Python: op 1 heartbeat. Arg =
      * "beating\tstate\tresult". */
@@ -194,7 +194,7 @@ int qqbot_u_send_resume(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
+/* PoP: qqbot_u_dispatch_payload @ plugins/platforms/qqbot/adapter.py:_dispatch_payload */
 int qqbot_u_dispatch_payload(const char *arg) {
     /* Python: route inbound WebSocket payloads by op/t. Arg =
      * "op\tt\ts\td_json". Implements the op dispatch table: op 10 Hello
@@ -246,7 +246,7 @@ int qqbot_u_dispatch_payload(const char *arg) {
     }
 }
 
-/* PoP: qqbot_u_handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */
+/* PoP: qqbot_u_handle_ready @ plugins/platforms/qqbot/adapter.py:_handle_ready */
 int qqbot_u_handle_ready(const char *arg) {
     /* Python: READY event stores session_id. Arg = "session_id". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -254,7 +254,7 @@ int qqbot_u_handle_ready(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
+/* PoP: qqbot_u_parse_json @ plugins/platforms/qqbot/adapter.py:_parse_json */
 int qqbot_u_parse_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: qqbot_u_next_msg_seq @ plugins/platforms/qqbot/adapter.py:_next_msg_seq */
@@ -268,7 +268,7 @@ int qqbot_u_next_msg_seq(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
+/* PoP: qqbot_u_on_message @ plugins/platforms/qqbot/adapter.py:_on_message */
 int qqbot_u_on_message(const char *arg) {
     /* Python: inbound route. Arg =
      * "routed\tstate\tresult". */
@@ -503,7 +503,7 @@ int qqbot_u_process_attachments(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */
+/* PoP: qqbot_u_download_and_cache @ plugins/platforms/qqbot/adapter.py:_download_and_cache */
 int qqbot_u_download_and_cache(const char *arg) {
     /* Python: safe-url gate. Arg =
      * "path\tstate\tresult". */
@@ -688,7 +688,7 @@ int qqbot_u_convert_audio_to_wav(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_api_request @ gateway/platforms/qqbot/adapter.py:_api_request */
+/* PoP: qqbot_u_api_request @ plugins/platforms/qqbot/adapter.py:_api_request */
 int qqbot_u_api_request(const char *arg) {
     /* Python: authenticated REST. Arg =
      * "state\tresult\terr". */
@@ -705,7 +705,7 @@ int qqbot_u_api_request(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
+/* PoP: qqbot_u_upload_media @ plugins/platforms/qqbot/adapter.py:_upload_media */
 int qqbot_u_upload_media(const char *arg) {
     /* Python: POST media to /v2/users/<id>/files (c2c) or
      * /v2/groups/<id>/files (group). Arg =
@@ -765,7 +765,7 @@ int qqbot_u_upload_media(const char *arg) {
     return ok ? 0 : -1;
 }
 
-/* PoP: qqbot_u_wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */
+/* PoP: qqbot_u_wait_for_reconnection @ plugins/platforms/qqbot/adapter.py:_wait_for_reconnection */
 int qqbot_u_wait_for_reconnection(const char *arg) {
     /* Python: race-window poll. Arg =
      * "reconnected\tstate\tresult". */
@@ -861,7 +861,7 @@ int qqbot_send_approval_request(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
+/* PoP: qqbot_send_exec_approval @ plugins/platforms/qqbot/adapter.py:send_exec_approval */
 int qqbot_send_exec_approval(const char *arg) {
     /* Python: 3-button approval prompt (allow-once / allow-always / deny).
      * Arg = "chat_id\tcommand\tsession_key\tdescription\tallow_permanent".
@@ -948,7 +948,7 @@ int qqbot_u_build_text_body(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_send_media @ gateway/platforms/qqbot/adapter.py:_send_media */
+/* PoP: qqbot_u_send_media @ plugins/platforms/qqbot/adapter.py:_send_media */
 int qqbot_u_send_media(const char *arg) {
     /* Python: url vs chunked. Arg =
      * "sent\tstate\tresult". */
@@ -984,7 +984,7 @@ int qqbot_u_upload_local_file(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_load_media @ gateway/platforms/qqbot/adapter.py:_load_media */
+/* PoP: qqbot_u_load_media @ plugins/platforms/qqbot/adapter.py:_load_media */
 int qqbot_u_load_media(const char *arg) {
     /* Python: url/local source. Arg =
      * "state\tresult\terr". */
@@ -1001,7 +1001,7 @@ int qqbot_u_load_media(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_is_url @ gateway/platforms/qqbot/adapter.py:_is_url */
+/* PoP: qqbot_u_is_url @ plugins/platforms/qqbot/adapter.py:_is_url */
 int qqbot_u_is_url(const char *arg) {
     /* Python: urlparse(str(source)).scheme in {"http", "https"}. */
     if (!arg || !*arg) return 0;
@@ -1009,7 +1009,7 @@ int qqbot_u_is_url(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */
+/* PoP: qqbot_u_guess_chat_type @ plugins/platforms/qqbot/adapter.py:_guess_chat_type */
 int qqbot_u_guess_chat_type(const char *arg) {
     /* Python: chat_type_map[chat_id] if known else "c2c". Arg =
      * "chat_id\tmapped_type" (mapped_type optional; no tab = unknown). */
@@ -1033,7 +1033,7 @@ int qqbot_u_strip_at_mention(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_is_dm_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_allowed */
+/* PoP: qqbot_u_is_dm_allowed @ plugins/platforms/qqbot/adapter.py:_is_dm_allowed */
 int qqbot_u_is_dm_allowed(const char *arg) {
     /* Python: strict DM policy (disabled/allowlist/open; pairing excluded).
      * Arg = "policy\tsender_id\tallowlist_json\topen_opted". */
@@ -1065,7 +1065,7 @@ int qqbot_u_is_dm_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_is_dm_intake_allowed @ gateway/platforms/access_policy_mixin.py:_is_dm_intake_allowed */
+/* PoP: qqbot_u_is_dm_intake_allowed @ plugins/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
 int qqbot_u_is_dm_intake_allowed(const char *arg) {
     /* Python: principal required; policy switch. Arg =
      * "principal\tpolicy\tallowlist_json\topen_opted". */
@@ -1100,7 +1100,7 @@ int qqbot_u_is_dm_intake_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
+/* PoP: qqbot_u_is_group_allowed @ plugins/platforms/qqbot/adapter.py:_is_group_allowed */
 int qqbot_u_is_group_allowed(const char *arg) {
     /* Python: group policy (disabled/allowlist/pairing/open). Arg =
      * "policy\tgroup_id\tallowlist_json\topen_opted". */
@@ -1133,7 +1133,7 @@ int qqbot_u_is_group_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */
+/* PoP: qqbot_u_entry_matches @ plugins/platforms/qqbot/adapter.py:_entry_matches */
 int qqbot_u_entry_matches(const char *arg) {
     /* Python: any(entry.strip().lower() == "*" or == target). Arg =
      * "target\tentry\tentry..." (tab-sep). */

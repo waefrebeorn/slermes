@@ -65,7 +65,7 @@ char *sig_remember_sent_message_timestamp(const char *cache_json, const char *ti
     return out ? out : strdup("[]");
 }
 
-/* PoP: sig_format_message @ gateway/platforms/signal.py:format_message */
+/* PoP: sig_format_message @ plugins/platforms/signal/adapter.py:format_message */
 char *sig_format_message(const char *content) {
     /* Python: strip markdown for plain-text fallback. */
     if (!content) return strdup("");
@@ -100,21 +100,21 @@ bool sig_consume_sent_timestamp(const char *cache_json, const char *ts) {
     return strstr(cache_json, ts) != NULL;
 }
 
-/* PoP: sig_send_typing @ gateway/platforms/signal.py:send_typing */
+/* PoP: sig_send_typing @ plugins/platforms/signal/adapter.py:send_typing */
 int sig_send_typing(const char *chat_id) {
     if (!chat_id) return -1;
     printf("signal typing indicator sent (%s)\n", chat_id);
     return 0;
 }
 
-/* PoP: sig_stop_typing @ gateway/platforms/signal.py:stop_typing */
+/* PoP: sig_stop_typing @ plugins/platforms/signal/adapter.py:stop_typing */
 int sig_stop_typing(const char *chat_id) {
     if (!chat_id) return -1;
     printf("signal typing indicator stopped (%s)\n", chat_id);
     return 0;
 }
 
-/* PoP: sig_send_multiple_images @ gateway/platforms/signal.py:send_multiple_images */
+/* PoP: sig_send_multiple_images @ plugins/platforms/signal/adapter.py:send_multiple_images */
 char *sig_send_multiple_images(const char *chat_id, const char *paths_json) {
     /* Python: chunked RPC batch; alts dropped. */
     if (!chat_id || !paths_json) return strdup("{\"success\": false}");
@@ -122,7 +122,7 @@ char *sig_send_multiple_images(const char *chat_id, const char *paths_json) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send_image @ gateway/platforms/signal.py:send_image */
+/* PoP: sig_send_image @ plugins/platforms/signal/adapter.py:send_image */
 char *sig_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: http(s):// + file:// URL resolution. */
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
@@ -130,35 +130,35 @@ char *sig_send_image(const char *chat_id, const char *image_url, const char *cap
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send_image_file @ gateway/platforms/signal.py:send_image_file */
+/* PoP: sig_send_image_file @ plugins/platforms/signal/adapter.py:send_image_file */
 char *sig_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("signal image file sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send_document @ gateway/platforms/signal.py:send_document */
+/* PoP: sig_send_document @ plugins/platforms/signal/adapter.py:send_document */
 char *sig_send_document(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("signal document sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send_voice @ gateway/platforms/signal.py:send_voice */
+/* PoP: sig_send_voice @ plugins/platforms/signal/adapter.py:send_voice */
 char *sig_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     if (!chat_id || !audio_path) return strdup("{\"success\": false}");
     printf("signal voice sent (%s)\n", audio_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send_video @ gateway/platforms/signal.py:send_video */
+/* PoP: sig_send_video @ plugins/platforms/signal/adapter.py:send_video */
 char *sig_send_video(const char *chat_id, const char *video_path, const char *caption) {
     if (!chat_id || !video_path) return strdup("{\"success\": false}");
     printf("signal video sent (%s)\n", video_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_send @ gateway/platforms/signal.py:send */
+/* PoP: sig_send @ plugins/platforms/signal/adapter.py:send */
 char *sig_send(const char *chat_id, const char *content) {
     /* Python: native markdown formatting send. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -166,7 +166,7 @@ char *sig_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: sig_get_chat_info @ gateway/platforms/signal.py:get_chat_info */
+/* PoP: sig_get_chat_info @ plugins/platforms/signal/adapter.py:get_chat_info */
 char *sig_get_chat_info(const char *chat_id) {
     /* Python: group: prefix → group metadata. */
     if (!chat_id) return NULL;

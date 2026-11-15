@@ -198,7 +198,7 @@ bool apisg_prefix_names_served_profile(const char *profile) {
     return strcmp(candidate, chome) == 0;
 }
 
-/* PoP: apisg_artifact_scope_facade_repr @ api_server.py:__repr__ */
+/* PoP: apisg_artifact_scope_facade_repr @ gateway/platforms/api_server.py:__repr__ */
 char *apisg_artifact_scope_facade_repr(const char *principal_id) {
     /* f"_ArtifactScopeFacade(principal={self.principal_id!r})" */
     size_t cap = strlen(principal_id ? principal_id : "") + 64;
@@ -226,7 +226,7 @@ json_t *apisg_approval_event_choices(bool smart_denied, bool allow_session,
     return arr;
 }
 
-/* PoP: apisg_browser_controller_ws_send @ api_server.py:_browser_controller_ws_sender */
+/* PoP: apisg_browser_controller_ws_send @ gateway/platforms/api_server.py:_browser_controller_ws_sender */
 int apisg_browser_controller_ws_send(void *ws, void *loop, const char *frame_json,
                                      double wait_timeout) {
     /* A closed controller socket is a hard ConnectionError, like Python. */
@@ -249,7 +249,7 @@ int apisg_browser_controller_ws_send(void *ws, void *loop, const char *frame_jso
     return 0;
 }
 
-/* PoP: apisg_request_reasoning_config @ gateway/platforms/api_server_request_options.py:_request_reasoning_config */
+/* PoP: apisg_request_reasoning_config @ gateway/platforms/api_server.py:_request_reasoning_config */
 json_t *apisg_request_reasoning_config(const json_t *model_options) {
     if (!json_is_object(model_options)) return NULL;
     const json_t *reasoning = json_obj_get(model_options, "reasoning");
@@ -550,7 +550,7 @@ api_reservation_t *apisg_reserve_pending_api_work(api_server_adapter_t *adapter)
     return r;
 }
 
-/* PoP: apisg_response_store_len @ api_server.py:__len__ */
+/* PoP: apisg_response_store_len @ gateway/platforms/api_server.py:__len__ */
 int apisg_response_store_len(response_store_t *store) {
     if (!store || !store->conn) return 0;
     sqlite3_stmt *stmt = NULL;
@@ -564,7 +564,7 @@ int apisg_response_store_len(response_store_t *store) {
     return n;
 }
 
-/* PoP: apisg_response_store_tighten_file_permissions @ gateway/platforms/api_server_response_store.py:_tighten_file_permissions */
+/* PoP: apisg_response_store_tighten_file_permissions @ gateway/platforms/api_server.py:_tighten_file_permissions */
 void apisg_response_store_tighten_file_permissions(response_store_t *store) {
     /* Force owner-only permissions on the DB and SQLite sidecars. */
     if (!store || !store->db_path) return;
@@ -1205,7 +1205,7 @@ void apisg_close_cached_session_dbs(api_server_adapter_t *adapter) {
     }
 }
 
-/* PoP: apisg_ensure_session_db @ api_server.py:_ensure_session_db */
+/* PoP: apisg_ensure_session_db @ gateway/platforms/api_server.py:_ensure_session_db */
 hermes_state_db_t *apisg_ensure_session_db(api_server_adapter_t *adapter) {
     /* Explicit override (tests / manual wiring) wins. */
     if (adapter->session_db_override)
@@ -1304,7 +1304,7 @@ json_t *apisg_parse_model_routes(const json_t *raw) {
     return routes;
 }
 
-/* PoP: apisg_resolve_route @ api_server.py:_resolve_route */
+/* PoP: apisg_resolve_route @ gateway/platforms/api_server.py:_resolve_route */
 json_t *apisg_resolve_route(api_server_adapter_t *adapter, const char *model_alias) {
     if (!adapter || !adapter->model_routes || !model_alias || !*model_alias)
         return NULL;
@@ -1805,19 +1805,19 @@ char *apisg_request_route_conflict_error(api_server_adapter_t *adapter,
 
 /* ── Browser control cluster ────────────────────────────────────────── */
 
-/* PoP: apisg_browser_control_enabled @ api_server.py:_browser_control_enabled */
+/* PoP: apisg_browser_control_enabled @ gateway/platforms/api_server.py:_browser_control_enabled */
 bool apisg_browser_control_enabled(void) {
     /* Feature flag; False unless explicitly enabled via config. */
     return bcb_browser_control_enabled(NULL) == 1;
 }
 
-/* PoP: apisg_browser_control_developer_mode @ api_server.py:_browser_control_developer_mode */
+/* PoP: apisg_browser_control_developer_mode @ gateway/platforms/api_server.py:_browser_control_developer_mode */
 bool apisg_browser_control_developer_mode(void) {
     /* Developer Mode gate for browser_evaluate / raw CDP; fail closed. */
     return bcb_browser_control_developer_mode(NULL) == 1;
 }
 
-/* PoP: apisg_derive_browser_control_principal @ api_server.py:_derive_browser_control_principal */
+/* PoP: apisg_derive_browser_control_principal @ gateway/platforms/api_server.py:_derive_browser_control_principal */
 char *apisg_derive_browser_control_principal(api_server_adapter_t *adapter,
                                              const char *profile) {
     /* sha256(profile NUL key)[:32] bound to the credential that authenticated
@@ -1841,7 +1841,7 @@ char *apisg_derive_browser_control_principal(api_server_adapter_t *adapter,
     return out;
 }
 
-/* PoP: apisg_browser_control_transport_family @ api_server.py:_browser_control_transport_family */
+/* PoP: apisg_browser_control_transport_family @ gateway/platforms/api_server.py:_browser_control_transport_family */
 const char *apisg_browser_control_transport_family(const char *peer_host) {
     /* Local vs remote API family decided by the loopback peer; the broker
      * treats the family as part of exact identity. */
@@ -1885,7 +1885,7 @@ static int apisg_artifact_validate_for_broker(void *store_ptr, const char *artif
     return rc == BCA_OK ? 0 : -1;
 }
 
-/* PoP: apisg_artifact_store_for @ api_server.py:_artifact_store_for */
+/* PoP: apisg_artifact_store_for @ gateway/platforms/api_server.py:_artifact_store_for */
 bca_store_t *apisg_artifact_store_for(api_server_adapter_t *adapter,
                                       const char *profile) {
     char profile_key[128];
@@ -1923,7 +1923,7 @@ bca_store_t *apisg_artifact_store_for(api_server_adapter_t *adapter,
     return store;
 }
 
-/* PoP: apisg_artifact_limiter @ api_server.py:_artifact_limiter */
+/* PoP: apisg_artifact_limiter @ gateway/platforms/api_server.py:_artifact_limiter */
 bca_rate_limiter_t *apisg_artifact_limiter(api_server_adapter_t *adapter) {
     /* Per-principal artifact route limiter (lazy): 30 req / 60s window. */
     if (!adapter->artifact_limiter)
@@ -1931,7 +1931,7 @@ bca_rate_limiter_t *apisg_artifact_limiter(api_server_adapter_t *adapter) {
     return adapter->artifact_limiter;
 }
 
-/* PoP: apisg_inject_browser_control_artifacts @ api_server.py:_inject_browser_control_artifacts */
+/* PoP: apisg_inject_browser_control_artifacts @ gateway/platforms/api_server.py:_inject_browser_control_artifacts */
 void apisg_inject_browser_control_artifacts(api_server_adapter_t *adapter,
                                             bca_store_t *store,
                                             bca_rate_limiter_t *limiter,
@@ -1942,7 +1942,7 @@ void apisg_inject_browser_control_artifacts(api_server_adapter_t *adapter,
     if (limiter) adapter->artifact_limiter = limiter;
 }
 
-/* PoP: apisg_artifact_auth_fail @ api_server.py:_artifact_auth_fail */
+/* PoP: apisg_artifact_auth_fail @ gateway/platforms/api_server.py:_artifact_auth_fail */
 void apisg_artifact_auth_fail(int client_fd, int status, const char *code,
                               const char *message) {
     json_t *err = apisg_openai_error(message,
@@ -1955,7 +1955,7 @@ void apisg_artifact_auth_fail(int client_fd, int status, const char *code,
     json_free(err);
 }
 
-/* PoP: apisg_handle_browser_control_register @ api_server.py:_handle_browser_control_register */
+/* PoP: apisg_handle_browser_control_register @ gateway/platforms/api_server.py:_handle_browser_control_register */
 int apisg_handle_browser_control_register(api_server_adapter_t *adapter, int client_fd,
                                           const char *auth_header, const char *body,
                                           const char *peer_host) {
@@ -2119,7 +2119,7 @@ int apisg_handle_browser_control_register(api_server_adapter_t *adapter, int cli
 }
 
 /* api_server.py:_handle_browser_control_ws — see note below. */
-/* PoP: apisg_handle_browser_control_ws_admit @ api_server.py:_handle_browser_control_ws */
+/* PoP: apisg_handle_browser_control_ws_admit @ gateway/platforms/api_server.py:_handle_browser_control_ws */
 /* Sec-WebSocket-Protocol subprotocol token is exchanged exactly once. */
 int apisg_handle_browser_control_ws_admit(api_server_adapter_t *adapter,
                                           const char *query_ticket,
@@ -2164,7 +2164,7 @@ int apisg_handle_browser_control_ws_admit(api_server_adapter_t *adapter,
     return 0;
 }
 
-/* PoP: apisg_handle_browser_control_frame @ api_server.py:_handle_browser_control_frame */
+/* PoP: apisg_handle_browser_control_frame @ gateway/platforms/api_server.py:_handle_browser_control_frame */
 json_t *apisg_handle_browser_control_frame(api_server_adapter_t *adapter,
                                            const bcb_scope_t *scope,
                                            const json_t *frame, void *owner) {
@@ -2230,7 +2230,7 @@ json_t *apisg_handle_browser_control_frame(api_server_adapter_t *adapter,
     return NULL;
 }
 
-/* PoP: apisg_handle_artifact_upload @ api_server.py:_handle_artifact_upload */
+/* PoP: apisg_handle_artifact_upload @ gateway/platforms/api_server.py:_handle_artifact_upload */
 int apisg_handle_artifact_upload(api_server_adapter_t *adapter, int client_fd,
                                  const unsigned char *data, size_t data_len,
                                  const char *content_type, const char *filename_hdr,
@@ -2343,7 +2343,7 @@ int apisg_handle_artifact_upload(api_server_adapter_t *adapter, int client_fd,
 }
 
 /* api_server.py:_handle_artifact_download — see note below. */
-/* PoP: apisg_handle_artifact_download @ api_server.py:_handle_artifact_download */
+/* PoP: apisg_handle_artifact_download @ gateway/platforms/api_server.py:_handle_artifact_download */
 /* transport via the out-parameters. */
 int apisg_handle_artifact_download(api_server_adapter_t *adapter, int client_fd,
                                    const char *artifact_id, const char *peer_host,
@@ -2529,7 +2529,7 @@ json_t *apisg_conversation_history_for_session(api_server_adapter_t *adapter,
     return json_array();
 }
 
-/* PoP: apisg_check_jobs_available @ api_server.py:_check_jobs_available */
+/* PoP: apisg_check_jobs_available @ gateway/platforms/api_server.py:_check_jobs_available */
 int apisg_check_jobs_available(int client_fd) {
     /* Return error response if cron module isn't available. */
     if (!APIsg_CRON_AVAILABLE) {
@@ -2544,7 +2544,7 @@ int apisg_check_jobs_available(int client_fd) {
 }
 
 /* api_server.py:_check_job_id — see note below. */
-/* PoP: apisg_check_job_id @ api_server.py:_check_job_id */
+/* PoP: apisg_check_job_id @ gateway/platforms/api_server.py:_check_job_id */
 /* Validate and extract job_id ([a-f0-9]{12} fullmatch). Returns 0 when OK. */
 int apisg_check_job_id(api_server_adapter_t *adapter, int client_fd,
                        const char *job_id) {
@@ -2629,7 +2629,7 @@ void send_binary_response(int fd, int status, const unsigned char *body,
 extern char *api_server_sse_frame(const char *data_json, const char *event);
 
 /* api_server.py:_write_sse_chat_completion — see note below. */
-/* PoP: apisg_write_sse_chat_completion @ gateway/platforms/api_server_openai_routes.py:_write_sse_chat_completion */
+/* PoP: apisg_write_sse_chat_completion @ gateway/platforms/api_server.py:_write_sse_chat_completion */
 /* (via gwapi_reap_disconnected_agent_processes). */
 int apisg_write_sse_chat_completion(api_server_adapter_t *adapter, int client_fd,
                                     const char *completion_id, const char *model,
@@ -2773,7 +2773,7 @@ int apisg_write_sse_chat_completion(api_server_adapter_t *adapter, int client_fd
 }
 
 /* api_server.py:_set_run_status — see note below. */
-/* PoP: apisg_set_run_status @ api_server.py:_set_run_status */
+/* PoP: apisg_set_run_status @ gateway/platforms/api_server.py:_set_run_status */
 /* Extra fields come in as a JSON object merged into the record. */
 json_t *apisg_set_run_status(api_server_adapter_t *adapter, const char *run_id,
                              const char *status, const json_t *fields) {
@@ -2801,7 +2801,7 @@ json_t *apisg_set_run_status(api_server_adapter_t *adapter, const char *run_id,
     return out;
 }
 
-/* PoP: apisg_make_run_event_callback_push @ api_server.py:_make_run_event_callback._push */
+/* PoP: apisg_make_run_event_callback_push @ gateway/platforms/api_server.py:_make_run_event_callback._push */
 static void apisg_run_event_push(api_server_adapter_t *adapter, const char *run_id,
                                  const json_t *event) {
     pthread_mutex_lock(&adapter->run_lock);
@@ -2825,7 +2825,7 @@ static void apisg_run_event_push(api_server_adapter_t *adapter, const char *run_
 }
 
 /* api_server.py:_make_run_event_callback — see note below. */
-/* PoP: apisg_make_run_event_callback @ api_server.py:_make_run_event_callback */
+/* PoP: apisg_make_run_event_callback @ gateway/platforms/api_server.py:_make_run_event_callback */
 /* queue. args_json carries the kwargs dict. */
 void apisg_make_run_event_callback(api_server_adapter_t *adapter, const char *run_id,
                                    const char *event_type, const char *tool_name,
@@ -2903,7 +2903,7 @@ void apisg_make_run_event_callback(api_server_adapter_t *adapter, const char *ru
     json_free(event);
 }
 
-/* PoP: apisg_response_messages_turn_start_index @ gateway/platforms/api_server_openai_routes.py:_response_messages_turn_start_index */
+/* PoP: apisg_response_messages_turn_start_index @ gateway/platforms/api_server.py:_response_messages_turn_start_index */
 int apisg_response_messages_turn_start_index(const json_t *conversation_history,
                                              const json_t *user_message,
                                              const json_t *result) {
@@ -2960,7 +2960,7 @@ int apisg_response_messages_turn_start_index(const json_t *conversation_history,
     return turn_start;
 }
 
-/* PoP: apisg_build_response_conversation_history @ gateway/platforms/api_server_openai_routes.py:_build_response_conversation_history */
+/* PoP: apisg_build_response_conversation_history @ gateway/platforms/api_server.py:_build_response_conversation_history */
 json_t *apisg_build_response_conversation_history(const json_t *conversation_history,
                                                   const json_t *user_message,
                                                   const json_t *result,
@@ -3012,7 +3012,7 @@ json_t *apisg_build_response_conversation_history(const json_t *conversation_his
     return full;
 }
 
-/* PoP: apisg_turn_transcript_messages @ gateway/platforms/api_server_openai_routes.py:_turn_transcript_messages */
+/* PoP: apisg_turn_transcript_messages @ gateway/platforms/api_server.py:_turn_transcript_messages */
 json_t *apisg_turn_transcript_messages(const json_t *conversation_history,
                                        const json_t *user_message,
                                        const json_t *result) {
@@ -3039,7 +3039,7 @@ json_t *apisg_turn_transcript_messages(const json_t *conversation_history,
     return out;
 }
 
-/* PoP: apisg_extract_output_items @ gateway/platforms/api_server_openai_routes.py:_extract_output_items */
+/* PoP: apisg_extract_output_items @ gateway/platforms/api_server.py:_extract_output_items */
 json_t *apisg_extract_output_items(const json_t *result, int start_index) {
     json_t *items = json_array();
     const json_t *messages = json_is_object(result) ? json_obj_get(result, "messages")
@@ -3111,7 +3111,7 @@ json_t *apisg_extract_output_items(const json_t *result, int start_index) {
 }
 
 /* api_server.py:_handle_steer_run — see note below. */
-/* PoP: apisg_handle_steer_run @ gateway/platforms/api_server_runs.py:_handle_steer_run */
+/* PoP: apisg_handle_steer_run @ gateway/platforms/api_server.py:_handle_steer_run */
 /* returns the status used. */
 int apisg_handle_steer_run(api_server_adapter_t *adapter, int client_fd,
                            const char *auth_error_json, const char *run_id,
@@ -3312,7 +3312,7 @@ int apisg_handle_session_model_lock(api_server_adapter_t *adapter, int client_fd
 }
 
 /* api_server.py:_sweep_orphaned_runs_once — see note below. */
-/* PoP: apisg_sweep_orphaned_runs_once @ api_server.py:_sweep_orphaned_runs_once */
+/* PoP: apisg_sweep_orphaned_runs_once @ gateway/platforms/api_server.py:_sweep_orphaned_runs_once */
 /* Expire old SSE buffers without treating transport age as run age. */
 void apisg_sweep_orphaned_runs_once(api_server_adapter_t *adapter, double now) {
     double ttl = (double)RUN_STREAM_TTL;
@@ -3359,7 +3359,7 @@ int apisg_check_api_server_requirements(void) {
 }
 
 /* api_server.py:_sweep_orphaned_runs — see note below. */
-/* PoP: apisg_sweep_orphaned_runs @ api_server.py:_sweep_orphaned_runs */
+/* PoP: apisg_sweep_orphaned_runs @ gateway/platforms/api_server.py:_sweep_orphaned_runs */
 /* Periodically expire transport buffers and terminal status records. */
 void *apisg_sweep_orphaned_runs_thread(void *arg) {
     api_server_adapter_t *adapter = (api_server_adapter_t *)arg;
@@ -3500,7 +3500,7 @@ static void apisg_rs_emit_text_delta(int fd, apisg_resp_state_t *st,
 }
 
 /* api_server.py:_write_sse_responses — see note below. */
-/* PoP: apisg_write_sse_responses @ gateway/platforms/api_server_openai_routes.py:_write_sse_responses */
+/* PoP: apisg_write_sse_responses @ gateway/platforms/api_server.py:_write_sse_responses */
 /* /v1/responses/{id} and previous_response_id chaining keep working. */
 int apisg_write_sse_responses(
     api_server_adapter_t *adapter, int client_fd, const char *response_id,

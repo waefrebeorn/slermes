@@ -11,7 +11,7 @@
 
 /* PoP: base64 @ plugins/platforms/qqbot/crypto.py:generate_bind_key */
 
-/* Port of Python gateway/platforms/qqbot/crypto.py:generate_bind_key */
+/* Port of Python plugins/platforms/qqbot/crypto.py:generate_bind_key */
 /* Generate a 256-bit random AES key and return it as base64 (caller free()). */
 char *cli_gateway_platforms_qqbot_crypto_generate_bind_key(void)
 {
@@ -28,7 +28,7 @@ char *cli_gateway_platforms_qqbot_crypto_generate_bind_key(void)
 
 /* PoP: IV @ plugins/platforms/qqbot/crypto.py:decrypt_secret */
 
-/* Port of Python gateway/platforms/qqbot/crypto.py:decrypt_secret */
+/* Port of Python plugins/platforms/qqbot/crypto.py:decrypt_secret */
 /* Decrypt a base64-encoded AES-256-GCM ciphertext.
  * Layout (after base64-decode): IV (12 bytes) || ciphertext || AuthTag (16 bytes).
  * Real decryption via libcrypto (OpenSSL AES-256-GCM). */

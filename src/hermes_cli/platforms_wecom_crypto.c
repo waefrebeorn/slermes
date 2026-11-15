@@ -12,7 +12,7 @@
 #include <time.h>
 #include <unistd.h>
 
-/* PoP: wecom_derive_key @ gateway/platforms/wecom_crypto.py:encode */
+/* PoP: wecom_derive_key @ plugins/platforms/wecom/wecom_crypto.py:encode */
 
 /* Derive the 32-byte AES-256 key from corp_id + secret (SHA-256 of the
  * composite identity string). Faithful to the WeCom encoding contract: the
@@ -25,7 +25,7 @@ static void wecom_derive_key(const char *corp_id, const char *secret,
     crypto_sha256((const unsigned char *)seed, (size_t)(n > 0 ? n : 0), key);
 }
 
-/* Port of Python gateway/platforms/wecom_crypto.py:encode */
+/* Port of Python plugins/platforms/wecom/wecom_crypto.py:encode */
 /* Encode a WeCom message: real AES-256-GCM encrypt (random 12-byte IV) of the
  * plaintext, then base64url-encode the IV||ciphertext||tag blob. */
 char *cli_gateway_platforms_wecom_crypto_encode(const char *corp_id, const char *secret,
@@ -64,9 +64,9 @@ char *cli_gateway_platforms_wecom_crypto_encode(const char *corp_id, const char 
     return result ? result : strdup("");
 }
 
-/* PoP: cli_gateway_platforms_wecom_crypto_decode @ gateway/platforms/wecom_crypto.py:decode */
+/* PoP: cli_gateway_platforms_wecom_crypto_decode @ plugins/platforms/wecom/wecom_crypto.py:decode */
 
-/* Port of Python gateway/platforms/wecom_crypto.py:decode */
+/* Port of Python plugins/platforms/wecom/wecom_crypto.py:decode */
 /* Decode a WeCom message: base64url-decode the blob, then real AES-256-GCM
  * decrypt with the corp_id/secret-derived key. Returns plaintext. */
 char *cli_gateway_platforms_wecom_crypto_decode(const char *corp_id, const char *secret,
@@ -120,7 +120,7 @@ char *cli_gateway_platforms_wecom_crypto_decode(const char *corp_id, const char 
 
 /* PoP: bytes @ plugins/platforms/wecom/wecom_crypto.py:_encrypt_bytes */
 
-/* Port of Python gateway/platforms/wecom_crypto.py:_encrypt_bytes */
+/* Port of Python plugins/platforms/wecom/wecom_crypto.py:_encrypt_bytes */
 /* Low-level AES-256-GCM encrypt with caller-supplied key + IV.
  * Returns raw ciphertext bytes (IV || ciphertext || tag, 12+ct+16) as hex string,
  * matching the helper used by the WeCom handshake. Real encryption via OpenSSL. */
@@ -186,7 +186,7 @@ char *cli_gateway_platforms_wecom_crypto__encrypt_bytes(const char *key, int key
 
 /* PoP: libcrypto @ plugins/platforms/wecom/wecom_crypto.py:_random_nonce */
 
-/* Port of Python gateway/platforms/wecom_crypto.py:_random_nonce */
+/* Port of Python plugins/platforms/wecom/wecom_crypto.py:_random_nonce */
 /* Generate a cryptographically random nonce of the given length.
  * Returns hex string. Real randomness via libcrypto (OpenSSL RAND_bytes). */
 char *cli_gateway_platforms_wecom_crypto__random_nonce(int length)

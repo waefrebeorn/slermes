@@ -24,7 +24,7 @@
 #define MAX_REFRESHES 3
 #define ONBOARD_POLL_INTERVAL 2
 
-/* PoP: qqbot_onboard__render_qr @ gateway/platforms/qqbot/onboard.py:_render_qr */
+/* PoP: qqbot_onboard__render_qr @ plugins/platforms/qqbot/onboard.py:_render_qr */
 /* No qrcode library in the C tree; return 0 so the caller prints the URL. */
 int qqbot_onboard__render_qr(const char *url)
 {
@@ -166,7 +166,7 @@ char *qqbot_onboard_build_connect_url(const char *task_id)
     return url;
 }
 
-/* PoP: qqbot_onboard_qr_register @ gateway/platforms/qqbot/onboard.py:qr_register */
+/* PoP: qqbot_onboard_qr_register @ plugins/platforms/qqbot/onboard.py:qr_register */
 int qqbot_onboard_qr_register(int timeout_seconds)
 {
     if (timeout_seconds <= 0) timeout_seconds = 600;

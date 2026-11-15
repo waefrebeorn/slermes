@@ -9,7 +9,7 @@
 
 /* PoP: cli_gateway_platforms_yuanbao_media__parse_jpeg_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_jpeg_size */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:_parse_jpeg_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_jpeg_size */
 /* Parses JPEG image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_jpeg_size(
     const unsigned char *data, int data_len, int *width, int *height)
@@ -34,7 +34,7 @@ int cli_gateway_platforms_yuanbao_media__parse_jpeg_size(
 
 /* PoP: cli_gateway_platforms_yuanbao_media__parse_gif_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_gif_size */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:_parse_gif_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_gif_size */
 /* Parses GIF image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_gif_size(
     const unsigned char *data, int data_len, int *width, int *height)
@@ -53,7 +53,7 @@ int cli_gateway_platforms_yuanbao_media__parse_gif_size(
 
 /* PoP: cli_gateway_platforms_yuanbao_media__parse_webp_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_webp_size */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:_parse_webp_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_webp_size */
 /* Parses WebP image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_webp_size(
     const unsigned char *data, int data_len, int *width, int *height)
@@ -83,7 +83,7 @@ int cli_gateway_platforms_yuanbao_media__parse_webp_size(
 
 /* PoP: cli_gateway_platforms_yuanbao_media_download_url @ plugins/platforms/yuanbao/yuanbao_media.py:download_url */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:download_url */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:download_url */
 /* Downloads media from a URL. */
 int cli_gateway_platforms_yuanbao_media_download_url(
     const char *url, const char *output_path)
@@ -97,7 +97,7 @@ int cli_gateway_platforms_yuanbao_media_download_url(
 
 /* PoP: COS @ plugins/platforms/yuanbao/yuanbao_media.py:get_cos_credentials */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:get_cos_credentials */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:get_cos_credentials */
 /* Gets COS (Cloud Object Storage) upload credentials. */
 int cli_gateway_platforms_yuanbao_media_get_cos_credentials(
     const char *api_url, char *secret_id, size_t id_size,
@@ -114,7 +114,7 @@ int cli_gateway_platforms_yuanbao_media_get_cos_credentials(
 
 /* PoP: cli_gateway_platforms_yuanbao_media_upload_to_cos @ plugins/platforms/yuanbao/yuanbao_media.py:upload_to_cos */
 
-/* Port of Python gateway/platforms/yuanbao_media.py:upload_to_cos */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:upload_to_cos */
 /* Uploads a file to COS. */
 int cli_gateway_platforms_yuanbao_media_upload_to_cos(
     const char *file_path, const char *cos_url,

@@ -15,9 +15,9 @@
 #define FEISHU_MAX_PAYLOAD 4096
 #define FEISHU_MAX_FIELDS 64
 
-/* PoP: cli_gateway_platforms_feishu_meeting_invite__as_dict @ gateway/platforms/feishu_meeting_invite.py:_as_dict */
+/* PoP: cli_gateway_platforms_feishu_meeting_invite__as_dict @ plugins/platforms/feishu/feishu_meeting_invite.py:_as_dict */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_as_dict */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_as_dict */
 /* Coerce a lark SDK object / dict / JSON string into a plain dict. */
 int cli_gateway_platforms_feishu_meeting_invite__as_dict(
     const char *value, char **keys_out, char **values_out, int max_fields, int *count_out)
@@ -77,7 +77,7 @@ int cli_gateway_platforms_feishu_meeting_invite__as_dict(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite__content_payload @ plugins/platforms/feishu/feishu_meeting_invite.py:_content_payload */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_content_payload */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_content_payload */
 /* Unwrap a Feishu body.content list carrying an application/json payload. */
 int cli_gateway_platforms_feishu_meeting_invite__content_payload(
     const char *container_json, char *payload_out, size_t payload_size)
@@ -132,7 +132,7 @@ int cli_gateway_platforms_feishu_meeting_invite__content_payload(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite__int_field @ plugins/platforms/feishu/feishu_meeting_invite.py:_int_field */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_int_field */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_int_field */
 /* Safely convert a value to int, defaulting to 0. */
 int cli_gateway_platforms_feishu_meeting_invite__int_field(const char *value)
 {
@@ -150,7 +150,7 @@ int cli_gateway_platforms_feishu_meeting_invite__int_field(const char *value)
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_user @ plugins/platforms/feishu/feishu_meeting_invite.py:_parse_user */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_parse_user */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_parse_user */
 /* Parse a Feishu user object from JSON. */
 int cli_gateway_platforms_feishu_meeting_invite__parse_user(
     const char *user_json,
@@ -217,7 +217,7 @@ int cli_gateway_platforms_feishu_meeting_invite__parse_user(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite__parse_meeting @ plugins/platforms/feishu/feishu_meeting_invite.py:_parse_meeting */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_parse_meeting */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_parse_meeting */
 /* Parse a Feishu meeting object from JSON. */
 int cli_gateway_platforms_feishu_meeting_invite__parse_meeting(
     const char *meeting_json,
@@ -292,7 +292,7 @@ int cli_gateway_platforms_feishu_meeting_invite__parse_meeting(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event @ plugins/platforms/feishu/feishu_meeting_invite.py:parse_meeting_invited_event */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:parse_meeting_invited_event */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:parse_meeting_invited_event */
 /* Parse a vc.bot.meeting_invited_v1 event into a MeetingInvitedPayload. */
 int cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event(
     const char *data_json,
@@ -355,7 +355,7 @@ int cli_gateway_platforms_feishu_meeting_invite_parse_meeting_invited_event(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt @ plugins/platforms/feishu/feishu_meeting_invite.py:build_meeting_invite_prompt */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:build_meeting_invite_prompt */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:build_meeting_invite_prompt */
 /* Build the prompt text for a meeting invite event. */
 int cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt(
     const char *meeting_topic, const char *meeting_no, const char *meeting_id,
@@ -392,7 +392,7 @@ int cli_gateway_platforms_feishu_meeting_invite_build_meeting_invite_prompt(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite__dedup_key @ plugins/platforms/feishu/feishu_meeting_invite.py:_dedup_key */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:_dedup_key */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:_dedup_key */
 /* Build a dedup key for a meeting invite event. */
 int cli_gateway_platforms_feishu_meeting_invite__dedup_key(
     const char *event_id, const char *meeting_id,
@@ -415,7 +415,7 @@ int cli_gateway_platforms_feishu_meeting_invite__dedup_key(
 
 /* PoP: cli_gateway_platforms_feishu_meeting_invite_handle_meeting_invited_event @ plugins/platforms/feishu/feishu_meeting_invite.py:handle_meeting_invited_event */
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py:handle_meeting_invited_event */
+/* Port of Python plugins/platforms/feishu/feishu_meeting_invite.py:handle_meeting_invited_event */
 /* Convert a vc.bot.meeting_invited_v1 event into a gateway MessageEvent. */
 int cli_gateway_platforms_feishu_meeting_invite_handle_meeting_invited_event(
     const char *data_json, const char *adapter_name,

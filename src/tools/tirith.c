@@ -28,7 +28,7 @@
 #define TIRITH_VERSION "1.0.0"
 #define MAX_PATH 4096
 
-/* PoP: _env_bool @ plugins/platforms/discord/adapter.py:_env_bool */
+/* PoP: _env_bool @ plugins/platforms/weixin/adapter.py:_env_bool */
 static bool _env_bool(const char *key, bool default_val) {
     const char *val = getenv(key);
     if (!val) return default_val;
@@ -36,7 +36,7 @@ static bool _env_bool(const char *key, bool default_val) {
            strcmp(val, "yes") == 0 || strcmp(val, "on") == 0;
 }
 
-/* PoP: _env_int @ tools/tirith_security.py:_env_int */
+/* PoP: _env_int @ plugins/platforms/weixin/adapter.py:_env_int */
 static int _env_int(const char *key, int default_val) {
     const char *val = getenv(key);
     if (!val) return default_val;
@@ -55,7 +55,7 @@ static struct {
 static char g_configured_path[512] = "tirith";
 static bool g_tirith_enabled = true;
 
-/* PoP: _load_security_config @ tools/tirith_security.py:_load_security_config */
+/* PoP: _load_security_config @ plugins/platforms/weixin/adapter.py:_load_security_config */
 char* _load_security_config(void) {
     /* Serialize the effective security config (env-overridable knobs). */
     json_t *cfg = json_object();
@@ -71,7 +71,7 @@ char* _load_security_config(void) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _warn_once @ tools/tirith_security.py:_warn_once */
+/* PoP: _warn_once @ plugins/platforms/weixin/adapter.py:_warn_once */
 void _warn_once(const char *key, const char *message, ...) {
     /* logger.warning but at-most-once per key for the process lifetime. */
     if (!key || !key[0] || !message) return;
@@ -95,7 +95,7 @@ void _warn_once(const char *key, const char *message, ...) {
     va_end(ap);
 }
 
-/* PoP: _reset_spawn_warning_state @ tools/tirith_security.py:_reset_spawn_warning_state */
+/* PoP: _reset_spawn_warning_state @ plugins/platforms/weixin/adapter.py:_reset_spawn_warning_state */
 void _reset_spawn_warning_state(void) {
     /* Clear the warn-once dedupe set so a subsequent failure after a fresh
      * (re)install surfaces again. */
@@ -105,7 +105,7 @@ void _reset_spawn_warning_state(void) {
     pthread_mutex_unlock(&g_warn_once.lock);
 }
 
-/* PoP: _failure_marker_path @ cron/scheduler.py:_get_hermes_home */
+/* PoP: _failure_marker_path @ plugins/platforms/weixin/adapter.py:_get_hermes_home */
 static const char* _get_hermes_home(void) {
     static char buf[MAX_PATH];
     if (buf[0] == '\0') {
@@ -119,12 +119,12 @@ static const char* _get_hermes_home(void) {
     return buf;
 }
 
-/* PoP: _failure_marker_path @ tools/tirith_security.py:_failure_marker_path */
+/* PoP: _failure_marker_path @ plugins/platforms/weixin/adapter.py:_failure_marker_path */
 static void _failure_marker_path(char *out_path, size_t out_len) {
     snprintf(out_path, out_len, "%s/tirith_failed", _get_hermes_home());
 }
 
-/* PoP: _is_install_failed_on_disk @ tools/tirith_security.py:_read_failure_reason */
+/* PoP: _is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:_read_failure_reason */
 char* _read_failure_reason(void) {
     char path[MAX_PATH];
     _failure_marker_path(path, sizeof(path));
@@ -136,14 +136,14 @@ char* _read_failure_reason(void) {
     return strdup(buf);
 }
 
-/* PoP: _is_install_failed_on_disk @ tools/tirith_security.py:_is_install_failed_on_disk */
+/* PoP: _is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:_is_install_failed_on_disk */
 bool _is_install_failed_on_disk(void) {
     char path[MAX_PATH];
     _failure_marker_path(path, sizeof(path));
     return access(path, F_OK) == 0;
 }
 
-/* PoP: _mark_install_failed @ tools/tirith_security.py:_mark_install_failed */
+/* PoP: _mark_install_failed @ plugins/platforms/weixin/adapter.py:_mark_install_failed */
 void _mark_install_failed(const char *reason) {
     char path[MAX_PATH];
     _failure_marker_path(path, sizeof(path));
@@ -154,22 +154,22 @@ void _mark_install_failed(const char *reason) {
     }
 }
 
-/* PoP: _clear_install_failed @ tools/tirith_security.py:_clear_install_failed */
+/* PoP: _clear_install_failed @ plugins/platforms/weixin/adapter.py:_clear_install_failed */
 void _clear_install_failed(void) {
     char path[MAX_PATH];
     _failure_marker_path(path, sizeof(path));
     unlink(path);
 }
 
-/* PoP: unsupported @ agent/proxy_sources/iron_proxy.py:_hermes_bin_dir */
-/* PoP: unsupported @ agent/secret_sources/bitwarden.py:_hermes_bin_dir */
-/* PoP: unsupported @ tools/tirith_security.py:_hermes_bin_dir */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
 static const char* _hermes_bin_dir(char *out, size_t out_len) {
     snprintf(out, out_len, "%s/bin", _get_hermes_home());
     return out;
 }
 
-/* PoP: unsupported @ tools/tirith_security.py:_detect_target */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_detect_target */
 /* Return the Rust target triple for the current platform, or NULL. Windows
  * is intentionally unsupported (tirith ships no Windows build). Mirrors
  * Python's platform.system()/machine() mapping. */
@@ -207,7 +207,7 @@ char* _detect_target(void) {
     return strdup(triple);
 }
 
-/* PoP: is_platform_supported @ tools/tirith_security.py:is_platform_supported */
+/* PoP: is_platform_supported @ plugins/platforms/weixin/adapter.py:is_platform_supported */
 /* True when tirith ships a prebuilt binary for this OS+arch (i.e. when
  * _detect_target() yields a triple rather than NULL). */
 bool is_platform_supported(void) {
@@ -217,8 +217,8 @@ bool is_platform_supported(void) {
     return true;
 }
 
-/* PoP: _download_file @ tools/tirith_security.py:_download_file */
-/* PoP: _download_file @ gateway/platforms/weixin.py:_download_file */
+/* PoP: _download_file @ plugins/platforms/weixin/adapter.py:_download_file */
+/* PoP: _download_file @ plugins/platforms/weixin/adapter.py:_download_file */
 bool _download_file(const char *url, const char *dest, int timeout) {
     if (!url || !url[0] || !dest || !dest[0]) return false;
 
@@ -267,7 +267,7 @@ static bool _which_exists(const char *prog) {
     return found;
 }
 
-/* PoP: _verify_cosign @ tools/tirith_security.py:_verify_cosign */
+/* PoP: _verify_cosign @ plugins/platforms/weixin/adapter.py:_verify_cosign */
 bool _verify_cosign(const char *checksums_path, const char *sig_path, const char *cert_path) {
     /* Verify cosign provenance signature on checksums.txt. Python returns a
      * tri-state (True / False / None); the C caller treats both False and
@@ -293,7 +293,7 @@ bool _verify_cosign(const char *checksums_path, const char *sig_path, const char
     return false;
 }
 
-/* PoP: _verify_checksum @ tools/tirith_security.py:_verify_checksum */
+/* PoP: _verify_checksum @ plugins/platforms/weixin/adapter.py:_verify_checksum */
 bool _verify_checksum(const char *archive_path, const char *checksums_path, const char *archive_name) {
     /* Verify SHA-256 of the archive against the "<hash>  <name>" line in
      * checksums.txt. */
@@ -349,7 +349,7 @@ bool _verify_checksum(const char *archive_path, const char *checksums_path, cons
     return true;
 }
 
-/* PoP: _extract_tirith_binary @ tools/tirith_security.py:_extract_tirith_binary */
+/* PoP: _extract_tirith_binary @ plugins/platforms/weixin/adapter.py:_extract_tirith_binary */
 char* _extract_tirith_binary(const char *tar_path, const char *dest_dir, const char *log) {
     /* Extract the tirith binary from the release archive into dest_dir and
      * return malloc'd path to dest_dir/tirith, or NULL (reason via log).
@@ -391,7 +391,7 @@ static char g_resolved_path[MAX_PATH] = "";
 static bool g_resolved_failed = false;
 static char g_failure_reason[64] = "";
 
-/* PoP: _install_tirith @ tools/tirith_security.py:_install_tirith */
+/* PoP: _install_tirith @ plugins/platforms/weixin/adapter.py:_install_tirith */
 char* _install_tirith(bool log_failures) {
     /* Download + verify + install tirith to $HERMES_HOME/bin/tirith.
      * Returns malloc'd installed path on success, NULL on failure (with
@@ -490,7 +490,7 @@ char* _install_tirith(bool log_failures) {
     return strdup(dest);
 }
 
-/* PoP: _is_explicit_path @ tools/tirith_security.py:_is_explicit_path */
+/* PoP: _is_explicit_path @ plugins/platforms/weixin/adapter.py:_is_explicit_path */
 bool _is_explicit_path(const char *configured_path) {
     /* True when the user explicitly configured a non-default tirith path. */
     return configured_path && configured_path[0]
@@ -515,7 +515,7 @@ static char *_which(const char *prog) {
     return found;
 }
 
-/* PoP: _resolve_tirith_path @ tools/tirith_security.py:_resolve_tirith_path */
+/* PoP: _resolve_tirith_path @ plugins/platforms/weixin/adapter.py:_resolve_tirith_path */
 char* _resolve_tirith_path(const char *configured_path) {
     /* Resolve the tirith binary path. Explicit user paths are authoritative
      * and never fall through to auto-download; the default "tirith" resolves
@@ -613,7 +613,7 @@ char* _resolve_tirith_path(const char *configured_path) {
     return NULL;
 }
 
-/* PoP: _background_install @ tools/tirith_security.py:_background_install */
+/* PoP: _background_install @ plugins/platforms/weixin/adapter.py:_background_install */
 static void *_background_install_thread(void *arg) {
     bool log_failures = *(bool *)arg;
     free(arg);
@@ -667,8 +667,8 @@ void _background_install(bool log_failures) {
         free(arg);
 }
 
-/* PoP: ensure_installed @ agent/thread_scoped_output.py:_ensure_installed */
-/* PoP: ensure_installed @ tools/tirith_security.py:ensure_installed */
+/* PoP: ensure_installed @ plugins/platforms/weixin/adapter.py:_ensure_installed */
+/* PoP: ensure_installed @ plugins/platforms/weixin/adapter.py:ensure_installed */
 bool ensure_installed(bool log_failures) {
     /* Ensure tirith is available: quick PATH/local checks synchronous,
      * network download kicked off in the background so startup never
@@ -732,7 +732,7 @@ bool ensure_installed(bool log_failures) {
     return false;
 }
 
-/* PoP: _is_app_tld_finding @ tools/tirith_security.py:check_command_security */
+/* PoP: _is_app_tld_finding @ plugins/platforms/weixin/adapter.py:check_command_security */
 char* check_command_security(const char *command) {
     if (!command) return strdup("{\"allowed\":true,\"reason\":\"\"}");
     json_t *result = json_object();
@@ -741,7 +741,7 @@ char* check_command_security(const char *command) {
     return json_serialize(result);
 }
 
-/* PoP: _is_app_tld_finding @ tools/tirith_security.py:_is_app_tld_finding */
+/* PoP: _is_app_tld_finding @ plugins/platforms/weixin/adapter.py:_is_app_tld_finding */
 bool _is_app_tld_finding(const char *finding_json) {
     /* True when this finding is a lookalike_tld warning for the .app TLD:
      * check rule_id and inspect common value/detail field names that
@@ -762,7 +762,7 @@ bool _is_app_tld_finding(const char *finding_json) {
     return hit;
 }
 
-/* PoP: tirith_policy_global_init @ tools/tirith_security.py:tirith_policy_global_init */
+/* PoP: tirith_policy_global_init @ plugins/platforms/weixin/adapter.py:tirith_policy_global_init */
 tirith_policy_t *tirith_policy_global_init(const security_config_t *sec_cfg) {
     (void)sec_cfg;
     static tirith_policy_t dummy;
@@ -770,7 +770,7 @@ tirith_policy_t *tirith_policy_global_init(const security_config_t *sec_cfg) {
     return &dummy;
 }
 
-/* PoP: tirith_set_path @ tools/tirith_security.py:set_configured_path */
+/* PoP: tirith_set_path @ plugins/platforms/weixin/adapter.py:set_configured_path */
 void tirith_set_path(const char *path) {
     /* Update the configured path + invalidate the process-level resolution
      * cache so _resolve_tirith_path re-runs against the new value. */
@@ -783,12 +783,12 @@ void tirith_set_path(const char *path) {
     pthread_mutex_unlock(&g_install_lock);
 }
 
-/* PoP: tirith_set_enabled @ tools/tirith_security.py:set_enabled */
+/* PoP: tirith_set_enabled @ plugins/platforms/weixin/adapter.py:set_enabled */
 void tirith_set_enabled(bool enabled) {
     g_tirith_enabled = enabled;
 }
 
-/* PoP: tirith_inline_scan @ tools/tirith_security.py:tirith_inline_scan */
+/* PoP: tirith_inline_scan @ plugins/platforms/weixin/adapter.py:tirith_inline_scan */
 tirith_verdict_t tirith_inline_scan(const char *command) {
     (void)command;
     return TIRITH_ALLOW;

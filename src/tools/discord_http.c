@@ -18,7 +18,7 @@
 #include <stdarg.h>
 
 
-/* Port of Python hermes_cli/proxy/server.py:_json_error(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:_json_error(). */
 /* ================================================================
  *  Error helpers
  * ================================================================ */
@@ -42,7 +42,7 @@ char *json_errorf(const char *fmt, ...) {
 }
 
 
-/* Port of Python gateway/platforms/yuanbao.py:get_token(). */
+/* Port of Python plugins/platforms/yuanbao/adapter.py:get_token(). */
 /* ================================================================
  *  Auth
  * ================================================================ */
