@@ -109,17 +109,29 @@ def load_header_ownership():
     """
     inc_re = re.compile(r'#\s*include\s*[<"]([^>"]+)[>"]')
     users = collections.defaultdict(set)
-    for c in sorted(REPO.glob("src/**/port_*.c")) + sorted(REPO.glob("src/**/*_ports.c")):
-        text = c.read_text(encoding="utf-8", errors="replace")
-        if not POP.search(text):
-            continue
-        rel = c.relative_to(REPO).as_posix()
-        for inc in inc_re.findall(text):
-            if (REPO / "include" / inc).exists():
-                users[inc].add(rel)
+    # ALL includers count, not just port units: a header included by a
+    # non-unit file (doctor.c, main.c, ...) is shared, and treating it as
+    # owned by the one port unit that also includes it renames it out from
+    # under every other caller.
+    for base in ("src", "include", "tests", "lib"):
+        for p in (REPO / base).rglob("*"):
+            if p.suffix not in (".c", ".h"):
+                continue
+            rel = p.relative_to(REPO).as_posix()
+            try:
+                text = p.read_bytes().decode("utf-8", errors="replace")
+            except OSError:
+                continue
+            for inc in inc_re.findall(text):
+                if (REPO / "include" / inc).exists():
+                    users[inc].add(rel)
     owned = {}
+    unit_rels = set()
+    for c in sorted(REPO.glob("src/**/port_*.c")) + sorted(REPO.glob("src/**/*_ports.c")):
+        if POP.search(c.read_text(encoding="utf-8", errors="replace")):
+            unit_rels.add(c.relative_to(REPO).as_posix())
     for inc, rels in users.items():
-        if len(rels) == 1:
+        if len(rels) == 1 and next(iter(rels)) in unit_rels:
             owned.setdefault(next(iter(rels)), []).append(Path(inc).name)
     return owned
 
@@ -128,8 +140,12 @@ def main() -> int:
     legacy = load_legacy_headers()
     legacy_pops = load_legacy_pops()
     owned = load_header_ownership()
+    # Names already taken by some unit's header. A rename is decidable only
+    # when its target is free -- a unit cannot claim its own target.
+    taken_headers = {h for hdrs in owned.values() for h in hdrs}
     units = sorted(REPO.glob("src/**/port_*.c")) + sorted(REPO.glob("src/**/*_ports.c"))
     bad_pop, bad_hdr, bad_name = [], [], []
+    undecidable_hdr = []
     legacy_hdr = 0
     checked = 0
 
@@ -147,28 +163,43 @@ def main() -> int:
             if not py_exists(mod) and (rel, mod) not in legacy_pops:
                 bad_pop.append((rel, mod))
 
-        # A unit's OWN header must follow the standard. Shared utility headers
-        # (hermes_json.h, hermes_strutil.h, ...) are included by many units and
-        # are not violations; units owning no header are not violations either.
-        for hdr_name in owned.get(rel, []):
-            if hdr_name != f"port_{stem}.h" and (rel, hdr_name) not in legacy:
-                bad_hdr.append((rel, hdr_name))
+        # Header standard: a unit's own header is port_<python module>.h.
+        # Only DECIDABLE cases are enforced -- a unit owning exactly one header
+        # whose target name is not already taken. Units owning several headers,
+        # or whose target collides (platform adapters all port a module called
+        # adapter.py), are reported as undecidable rather than forced.
+        mod = pops[0][1] if pops else ""
+        target = "port_" + Path(mod).stem + ".h" if mod else ""
+        owned_hdrs = owned.get(rel, [])
+        for hdr_name in owned_hdrs:
+            if hdr_name == target:
+                continue
+            if len(owned_hdrs) == 1 and target and target not in taken_headers:
+                if (rel, hdr_name) not in legacy:
+                    bad_hdr.append((rel, hdr_name))
+            else:
+                undecidable_hdr.append((rel, hdr_name, target))
 
         if rel in LINKED and (c.name.endswith("_wrappers.c") or c.name.endswith("_gaps.c")):
             bad_name.append(rel)
 
     print(f"naming gate: {checked} port units carry PoP annotations")
     print(f"  PoP -> missing Python module : {len(bad_pop)}")
-    print(f"  header not port_<stem>.h     : {len(bad_hdr)}"
-          f"  (+{legacy_hdr} allowlisted legacy)")
+    print(f"  header not port_<module>.h   : {len(bad_hdr)}"
+          f"  (+{len(undecidable_hdr)} undecidable: multi-header unit or name collision)")
     print(f"  scanner-invisible name linked: {len(bad_name)}")
 
     for rel, mod in bad_pop[:15]:
         print(f"    MISSING PY  {rel}  ->  {mod}")
     for rel, h in bad_hdr[:15]:
-        print(f"    ODD HEADER  {rel}  ->  include/{h} (expected port_{rel.split('/')[-1][5:-2]}.h)")
+        mod = POP.search((REPO / rel).read_text(encoding="utf-8",
+                                           errors="replace"))
+        want = "port_" + Path(mod.group(2)).stem + ".h" if mod else "?"
+        print(f"    ODD HEADER  {rel}  ->  include/{h} (expected {want})")
     for rel in bad_name[:15]:
         print(f"    BAD NAME    {rel} is linked but scanner-invisible")
+    for rel, hdr, target in undecidable_hdr[:15]:
+        print(f"    UNDECIDABLE {rel:46} {hdr} -> {target}")
 
     ok = not (bad_pop or bad_hdr or bad_name)
     print("naming gate:", "PASS" if ok else "FAIL")

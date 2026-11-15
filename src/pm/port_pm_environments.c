@@ -7,7 +7,7 @@
  * base_venv) stay out — callers pass the root they already resolved.
  */
 
-#include "port_pm_environments.h"
+#include "port_environments.h"
 
 #include <hash.h>
 
