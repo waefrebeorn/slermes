@@ -33,8 +33,11 @@ import sys
 REPO = Path("C:/Users/eman5/slermes")
 QUARRY = Path("C:/Users/eman5/hermes-agent")
 
-# Where the Python sources actually live, in search order.
-PY_ROOTS = [QUARRY, REPO.parent / "hermes-agent", REPO]
+# Where the Python sources actually live, in search order. The repo carries its
+# own Python tree (agent/, gateway/, hermes_cli/), and the quarry is the upstream
+# reference -- a module may legitimately live in either, so both must be checked
+# before a PoP target can be called missing.
+PY_ROOTS = [REPO, QUARRY, REPO.parent / "hermes-agent"]
 
 POP = re.compile(r"PoP:\s*(\S+)\s*@\s*([A-Za-z0-9_./-]+\.py)\s*:\s*(\S+)")
 
