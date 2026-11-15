@@ -105,5 +105,40 @@ int main(void)
         }
     }
 
+
+    /* ── install-method helpers ── */
+    {
+        static const char *const METHODS[] = {
+            "", "nix", "nixos", "home-manager", "docker", "apt", "git",
+            "unknown", "NIX", "NixOS", "snap", "  nix  ", "nix-manager",
+        };
+        for (size_t i = 0; i < sizeof(METHODS) / sizeof(METHODS[0]); i++) {
+            char cmd[1024];
+            cfg_recommended_update_command_for_method(METHODS[i], cmd, sizeof(cmd));
+            printf("{\"fn\":\"nixmethod\",\"arg\":");
+            jstr(METHODS[i]);
+            printf(",\"out\":%d}\n", cfg_is_nix_install_method(METHODS[i]));
+            printf("{\"fn\":\"updatecmd\",\"arg\":");
+            jstr(METHODS[i]);
+            printf(",\"out\":");
+            jstr(cmd);
+            fputs("}\n", stdout);
+            char warn[256];
+            cfg_format_unsupported_install_warning(METHODS[i], warn, sizeof(warn));
+            printf("{\"fn\":\"unsupwarn\",\"arg\":");
+            jstr(METHODS[i]);
+            printf(",\"out\":");
+            jstr(warn);
+            fputs("}\n", stdout);
+        }
+
+        printf("{\"fn\":\"uvinstall\",\"arg\":\"\",\"out\":%d}\n",
+               cfg_is_uv_tool_install());
+        printf("{\"fn\":\"unsupmethod\",\"arg\":\"nix\",\"out\":%d}\n",
+               cfg_is_unsupported_install_method("nix"));
+        printf("{\"fn\":\"unsupmethod\",\"arg\":\"\",\"out\":%d}\n",
+               cfg_is_unsupported_install_method(""));
+    }
+
     return 0;
 }

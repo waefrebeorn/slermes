@@ -34,6 +34,20 @@ WANTED_CONSTS = {
     "_ENV_VAR_NAME_DENY_PREFIXES",
     "_ENV_VAR_NAME_DENYLIST",
     "_ENV_CONFIG_KEYS",
+    "_NIX_UPDATE_MSG",
+    "_DOCKER_UPDATE_MESSAGE",
+    "_NIX_MANAGED_SYSTEMS",
+    "_UPDATE_COMMAND_BY_METHOD",
+}
+
+WANTED_INSTALL = {
+    "is_nix_install_method",
+    "recommended_update_command_for_method",
+    "format_docker_update_message",
+    "format_managed_message",
+    "is_uv_tool_install",
+    "is_unsupported_install_method",
+    "format_unsupported_install_warning",
 }
 
 ns = {"re": re, "platform": platform, "Optional": object,
@@ -51,7 +65,7 @@ sys.modules["hermes_cli.auth_external_process"] = _stub_mod
 
 picked = set()
 for node in tree.body:
-    if isinstance(node, ast.FunctionDef) and node.name in WANTED_FUNCS:
+    if isinstance(node, ast.FunctionDef) and node.name in (WANTED_FUNCS | WANTED_INSTALL):
         exec(compile(ast.get_source_segment(text, node), SRC, "exec"), ns)
         picked.add(node.name)
     elif isinstance(node, ast.Assign):
@@ -66,7 +80,7 @@ for node in tree.body:
             exec(compile(ast.get_source_segment(text, node), SRC, "exec"), ns)
             picked.add(node.target.id)
 
-missing = (WANTED_FUNCS | WANTED_CONSTS) - picked
+missing = (WANTED_FUNCS | WANTED_CONSTS | WANTED_INSTALL) - picked
 if missing:
     print(f"ORACLE config: FATAL, source not found: {sorted(missing)}")
     raise SystemExit(1)
@@ -102,7 +116,9 @@ for line in sys.stdin:
         c = json.loads(line)
     except json.JSONDecodeError:
         continue
-    fn, arg, win = c["fn"], c["arg"], c.get("win", 0)
+    fn = c["fn"]
+    arg = c.get("arg", "")
+    win = c.get("win", 0)
     got = c["out"]
     cases += 1
 
@@ -114,6 +130,16 @@ for line in sys.stdin:
         want = py_envkey(arg)
     elif fn == "validate":
         want = py_validate(arg, win)
+    elif fn == "nixmethod":
+        want = bool(ns["is_nix_install_method"](arg))
+    elif fn == "updatecmd":
+        want = ns["recommended_update_command_for_method"](arg)
+    elif fn == "unsupwarn":
+        want = ns["format_unsupported_install_warning"](arg)
+    elif fn == "uvinstall":
+        want = bool(ns["is_uv_tool_install"]())
+    elif fn == "unsupmethod":
+        want = bool(ns["is_unsupported_install_method"](arg))
     else:
         continue
 

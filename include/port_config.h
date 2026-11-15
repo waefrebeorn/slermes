@@ -20,4 +20,13 @@ int cfg_is_env_config_key(const char *key);
 enum { CFG_ENV_OK = 0, CFG_ENV_INVALID_NAME = 1, CFG_ENV_DENIED = 2 };
 int cfg_validate_env_var_name(const char *key, int is_windows);
 
+/* install-method helpers (detect_install_method itself reads the filesystem) */
+int cfg_is_nix_install_method(const char *method);
+void cfg_recommended_update_command_for_method(const char *method,
+                                               char *out, size_t cap);
+int cfg_is_uv_tool_install(void);
+int cfg_is_unsupported_install_method(const char *method);
+void cfg_format_unsupported_install_warning(const char *method,
+                                            char *out, size_t cap);
+
 #endif /* SLERMES_PORT_CONFIG_H */

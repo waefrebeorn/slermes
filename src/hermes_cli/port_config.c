@@ -189,3 +189,84 @@ cfg_validate_env_var_name(const char *key, int is_windows)
             return CFG_ENV_DENIED;
     return CFG_ENV_OK;
 }
+
+/* ── install-method helpers ──────────────────────────────────────────────
+ *
+ * PoP: cfg_is_nix_install_method            @ hermes_cli/config.py:is_nix_install_method
+ * PoP: cfg_recommended_update_command_for_method @ hermes_cli/config.py:recommended_update_command_for_method
+ * PoP: cfg_is_uv_tool_install               @ hermes_cli/config.py:is_uv_tool_install
+ * PoP: cfg_is_unsupported_install_method    @ hermes_cli/config.py:is_unsupported_install_method
+ * PoP: cfg_format_unsupported_install_warning @ hermes_cli/config.py:format_unsupported_install_warning
+ *
+ * format_docker_update_message and format_managed_message are NOT here: they
+ * are already ported and linked in src/hermes_cli/config_ports.c, and a second
+ * definition would collide at link time.
+ *
+ * detect_install_method / recommended_update_command are NOT here: they
+ * read the filesystem and the package-manager marker at call time.
+ */
+
+static const char *const NIX_UPDATE_MSG =
+    "Update Hermes through the Nix source that installed it (e.g. nix profile upgrade, or update your flake input and rebuild with nixos-rebuild or home-manager switch)";
+
+/* These three are deliberate shims in the Python: the old updater is
+ * disabled until relaunch. Ported as the constants they are, not as
+ * re-derived logic. */
+int
+cfg_is_uv_tool_install(void)
+{
+    return 0;
+}
+
+int
+cfg_is_unsupported_install_method(const char *method)
+{
+    (void)method;
+    return 0;
+}
+
+void
+cfg_format_unsupported_install_warning(const char *method, char *out, size_t cap)
+{
+    (void)method;
+    if (out && cap)
+        out[0] = '\0';
+}
+
+int
+cfg_is_nix_install_method(const char *method)
+{
+    static const char *const nix_systems[] = {
+        "home-manager",
+        "nixos",
+    };
+    if (!method)
+        return 0;
+    if (strcmp(method, "nix") == 0)
+        return 1;
+    for (size_t i = 0; i < sizeof(nix_systems) / sizeof(nix_systems[0]); i++)
+        if (strcmp(method, nix_systems[i]) == 0)
+            return 1;
+    return 0;
+}
+
+void
+cfg_recommended_update_command_for_method(const char *method, char *out, size_t cap)
+{
+    static const struct { const char *k, *v; } table[] = {
+        {"apt", "pkg upgrade hermes-agent"},
+        {"docker", "docker pull nousresearch/hermes-agent:latest"},
+    };
+    if (!out || cap == 0)
+        return;
+    if (cfg_is_nix_install_method(method)) {
+        snprintf(out, cap, "%s", NIX_UPDATE_MSG);
+        return;
+    }
+    for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++)
+        if (strcmp(method, table[i].k) == 0) {
+            snprintf(out, cap, "%s", table[i].v);
+            return;
+        }
+    snprintf(out, cap, "%s", "hermes update");
+}
