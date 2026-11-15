@@ -27,6 +27,7 @@ Rename-free: it reports violations instead of rewriting 200+ files, and it
 fails the build so the standard cannot silently rot.
 """
 from pathlib import Path
+import collections
 import re
 import sys
 
@@ -97,9 +98,36 @@ def load_legacy_pops() -> set:
     return out
 
 
+def load_header_ownership():
+    """Map each unit to the include/ headers it exclusively owns.
+
+    "A unit's own header" cannot be guessed from the filename: 147 of 332 port
+    units include no dedicated header at all, several units legitimately own more
+    than one, and a filename glob matches unrelated headers (it reported 89
+    off-standard where the real number is 49). Ownership -- included by exactly
+    one unit -- is the only measurement that means anything.
+    """
+    inc_re = re.compile(r'#\s*include\s*[<"]([^>"]+)[>"]')
+    users = collections.defaultdict(set)
+    for c in sorted(REPO.glob("src/**/port_*.c")) + sorted(REPO.glob("src/**/*_ports.c")):
+        text = c.read_text(encoding="utf-8", errors="replace")
+        if not POP.search(text):
+            continue
+        rel = c.relative_to(REPO).as_posix()
+        for inc in inc_re.findall(text):
+            if (REPO / "include" / inc).exists():
+                users[inc].add(rel)
+    owned = {}
+    for inc, rels in users.items():
+        if len(rels) == 1:
+            owned.setdefault(next(iter(rels)), []).append(Path(inc).name)
+    return owned
+
+
 def main() -> int:
     legacy = load_legacy_headers()
     legacy_pops = load_legacy_pops()
+    owned = load_header_ownership()
     units = sorted(REPO.glob("src/**/port_*.c")) + sorted(REPO.glob("src/**/*_ports.c"))
     bad_pop, bad_hdr, bad_name = [], [], []
     legacy_hdr = 0
@@ -119,13 +147,12 @@ def main() -> int:
             if not py_exists(mod) and (rel, mod) not in legacy_pops:
                 bad_pop.append((rel, mod))
 
-        hdr = REPO / "include" / f"port_{stem}.h"
-        hdr_any = list((REPO / "include").glob(f"*{stem}*.h"))
-        if hdr_any and not hdr.exists():
-            if (rel, hdr_any[0].name) in legacy:
-                legacy_hdr += 1
-            else:
-                bad_hdr.append((rel, hdr_any[0].name))
+        # A unit's OWN header must follow the standard. Shared utility headers
+        # (hermes_json.h, hermes_strutil.h, ...) are included by many units and
+        # are not violations; units owning no header are not violations either.
+        for hdr_name in owned.get(rel, []):
+            if hdr_name != f"port_{stem}.h" and (rel, hdr_name) not in legacy:
+                bad_hdr.append((rel, hdr_name))
 
         if rel in LINKED and (c.name.endswith("_wrappers.c") or c.name.endswith("_gaps.c")):
             bad_name.append(rel)
