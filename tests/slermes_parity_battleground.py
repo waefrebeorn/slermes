@@ -187,7 +187,10 @@ class PythonExtractor:
         if filepath in self.module_cache:
             return self.module_cache[filepath]
         try:
-            with open(filepath) as f:
+            # encoding is mandatory: the locale default here is cp1252, so any
+            # UTF-8 source raises UnicodeDecodeError and the module's features
+            # silently vanish from the census.
+            with open(filepath, encoding="utf-8", errors="replace") as f:
                 source = f.read()
         except Exception:
             self.module_cache[filepath] = []
@@ -253,7 +256,7 @@ class CIndexer:
             return
         content = objects_mk.read_text()
         for o in re.findall(r'(src/[^ ]*\.o)', content):
-            self._build_files.add(o.replace('.o', '.c'))
+            self._build_files.add(o.replace('\\', '/').replace('.o', '.c'))
 
     def build(self):
         if self._built:
@@ -303,7 +306,12 @@ class CIndexer:
                         continue
                     fpath = Path(root) / f
                     rel = fpath.relative_to(SLERMES_DIR)
-                    rel_str = str(rel)
+                    # Path separators must be normalised: `str()` emits '\' under
+                    # a native Windows Python and '/' under an MSYS2 one, while
+                    # _build_files comes from objects.mk with '/'. Without this
+                    # the membership test fails for EVERY file under one of the
+                    # two interpreters and the whole C index comes back empty.
+                    rel_str = str(rel).replace('\\', '/')
                     # Skip files not in the build (old stubs, dead code)
                     if self._build_files and rel_str not in self._build_files and '/ports/' not in rel_str:
                         continue
@@ -314,7 +322,13 @@ class CIndexer:
                     if st.st_size > 1024 * 1024:
                         continue
                     try:
-                        with open(fpath) as fp:
+                        # encoding is mandatory: without it Python uses the
+                        # locale default (cp1252 under this shell), so any C
+                        # source containing UTF-8 bytes raises UnicodeDecodeError
+                        # and is silently dropped from the index -- which makes
+                        # whole modules' PoP annotations invisible and the scan
+                        # report a false "PORTED 0".
+                        with open(fpath, encoding="utf-8", errors="replace") as fp:
                             content = fp.read()
                     except Exception:
                         continue
@@ -1121,7 +1135,7 @@ class ParityAnalyzer:
         if not pypath.exists():
             return False
         try:
-            tree = ast.parse(pypath.read_text(errors='ignore'))
+            tree = ast.parse(pypath.read_text(encoding="utf-8", errors="ignore"))
         except (OSError, SyntaxError):
             return False
         fn = None
@@ -1133,7 +1147,7 @@ class ParityAnalyzer:
         if fn is None:
             return False
         body = ast.get_source_segment(
-            pypath.read_text(errors='ignore'), fn)
+            pypath.read_text(encoding="utf-8", errors="ignore"), fn)
         if not body:
             return False
         # A function that ONLY prints (or returns constants) is trivial:
@@ -1386,7 +1400,7 @@ class ParityAnalyzer:
         fpath = SLERMES_DIR / c_file
         if not fpath.exists():
             return False
-        with open(fpath) as f:
+        with open(fpath, encoding="utf-8", errors="replace") as f:
             content = f.read()
         esc = re.escape(func_name)
         m = re.search(r'(?:static\s+)?(?:\w+\s+)*\*?\s*' + esc + r'\s*\([^)]*\)\s*\{', content)
