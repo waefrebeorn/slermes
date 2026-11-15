@@ -22,6 +22,8 @@ WANTED = {
         "_compression_threshold_for_model", "_model_recency_key",
         "_CODEX_GPT54_GPT55_COMPACTION_THRESHOLD",
         "_CODEX_SPARK_COMPACTION_THRESHOLD",
+        "_field", "_anthropic_event_has_content",
+        "_OR_HEADERS_BASE", "build_or_headers",
     ],
     "agent/model_metadata.py": [
         "_bare_codex_slug", "is_codex_900k_base", "_codex_variant_base",
@@ -29,10 +31,16 @@ WANTED = {
         "_CODEX_900K_SNAPSHOT_BASES", "_CODEX_900K_ELIGIBLE_BASES",
         "_CODEX_900K_SNAPSHOT_RE",
     ],
+    "utils.py": ["base_url_hostname", "_parse_base_url", "_hostname_of",
+                 "base_url_host_matches"],
+    "hermes_cli/version_info.py": ["hermes_user_agent"],
 }
 
-ns = {"re": re, "Optional": object, "Any": object, "logger": types.SimpleNamespace(),
-      "__name__": "oracle_aux_extracted"}
+import os
+from urllib.parse import urlparse
+
+ns = {"re": re, "Optional": object, "Any": object, "os": os, "urlparse": urlparse,
+      "logger": types.SimpleNamespace(), "__name__": "oracle_aux_extracted"}
 
 picked = set()
 for rel, names in WANTED.items():
@@ -67,6 +75,23 @@ _mm.is_codex_context_variant = ns["is_codex_context_variant"]
 sys.modules.setdefault("agent", types.ModuleType("agent"))
 sys.modules["agent.model_metadata"] = _mm
 
+# hermes_user_agent reads get_version_info().base_version. The C port takes the
+# base version explicitly, so stub the lookup to return the harness's value.
+_CUR_BASE = [""]
+
+
+class _VI:
+    @property
+    def base_version(self):
+        return _CUR_BASE[0]
+
+
+ns["get_version_info"] = lambda: _VI()
+
+# build_or_headers falls back to load_config_readonly() when or_config is None;
+# every case passes an explicit config, so the fallback is never taken.
+ns["load_config_readonly"] = lambda: {}
+
 
 def recency_key(model_id):
     """Canonical form of _model_recency_key's tuple: t:<text> / n:<float %.6f>."""
@@ -89,7 +114,8 @@ for line in sys.stdin:
         c = json.loads(line)
     except json.JSONDecodeError:
         continue
-    fn, arg = c["fn"], c["arg"]
+    fn = c["fn"]
+    arg = c.get("arg", "")
     prov = c.get("prov", "")
     cases += 1
 
@@ -121,16 +147,52 @@ for line in sys.stdin:
         continue
     elif fn == "recency":
         want = recency_key(arg)
+    elif fn == "hostname":
+        want = ns["base_url_hostname"](arg)
+    elif fn == "hostmatch":
+        want = bool(ns["base_url_host_matches"](arg, c.get("domain", "")))
+    elif fn == "nvidia":
+        want = bool(ns["base_url_host_matches"](arg, "integrate.api.nvidia.com"))
+    elif fn == "event":
+        try:
+            ev = json.loads(arg)
+        except Exception:
+            ev = None
+        # _field(None, "type") is getattr(None, "type", None) -> None -> False,
+        # so a JSON null event is simply "no content", not an error.
+        want = bool(ns["_anthropic_event_has_content"](ev))
+    elif fn == "aigateway":
+        _CUR_BASE[0] = arg
+        want = {"HTTP-Referer": "https://hermes-agent.nousresearch.com",
+                "X-Title": "Hermes Agent",
+                "User-Agent": ns["hermes_user_agent"]("HermesAgent")}
+    elif fn == "orheaders":
+        os.environ["HERMES_OPENROUTER_CACHE"] = c.get("env", "")
+        os.environ["HERMES_OPENROUTER_CACHE_TTL"] = c.get("envttl", "")
+        cfg = {}
+        if c.get("cfgcache"):
+            cfg["response_cache"] = True
+        if c.get("cfgtll") is not None:
+            cfg["response_cache_ttl"] = c["cfgtll"]
+        want = ns["build_or_headers"](cfg)
     else:
         continue
 
     got = c["out"]
     if isinstance(want, bool):
         got = bool(got)
+    else:
+        # The harness emits `out` as a JSON string holding serialised JSON;
+        # parse it back so objects compare as objects, not as strings.
+        if isinstance(got, str) and got != "MISSING":
+            try:
+                got = json.loads(got)
+            except json.JSONDecodeError:
+                pass
     if got != want:
         mismatches += 1
         if shown < 12:
-            print(f"MISMATCH {fn} {arg!r} prov={prov!r}: got {got!r} want {want!r}")
+            print(f"MISMATCH {fn} {json.dumps(c, sort_keys=True)}: got {got!r} want {want!r}")
             shown += 1
 
 print(f"ORACLE auxiliary_client: {cases} cases, {mismatches} mismatches")

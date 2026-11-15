@@ -17,6 +17,8 @@
  * (urlparse semantics). Each is a different unit.
  */
 #include "port_auxiliary_client.h"
+#include "port_version_info.h"
+#include "libjson/json.h"
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -322,4 +324,244 @@ ac_model_recency_key(const char *model_id, char *out, size_t cap)
         }
     }
     out[w] = '\0';
+}
+
+/* ── base_url_hostname / base_url_host_matches ─────────────────────────────
+ * Ported from utils.py. `urlparse` tolerates a bare host by prepending "//";
+ * `.hostname` drops the port and any userinfo and lower-cases.
+ */
+char *
+ac_base_url_hostname(const char *base_url)
+{
+    const char *raw = (base_url && *base_url) ? base_url : "";
+    while (isspace((unsigned char)*raw))
+        raw++;
+    size_t len = strlen(raw);
+    while (len && isspace((unsigned char)raw[len - 1]))
+        len--;
+    if (len == 0) {
+        /* urlparse("") -> None, but _hostname_of(None) -> "" -- an empty
+         * string, not an absent value. */
+        char *empty = (char *)malloc(1);
+        if (empty)
+            empty[0] = '\0';
+        return empty;
+    }
+
+    /* skip the scheme */
+    const char *auth = raw;
+    const char *sep = strstr(raw, "://");
+    if (sep)
+        auth = sep + 3;
+
+    /* authority ends at '/', '?' or '#' */
+    size_t alen = 0;
+    while (auth[alen] && auth[alen] != '/' && auth[alen] != '?' && auth[alen] != '#')
+        alen++;
+
+    /* drop userinfo up to the last '@' */
+    size_t start = 0;
+    for (size_t i = 0; i < alen; i++)
+        if (auth[i] == '@')
+            start = i + 1;
+
+    /* drop the port */
+    size_t hlen = alen - start;
+    for (size_t i = start; i < alen; i++)
+        if (auth[i] == ':') {
+            hlen = i - start;
+            break;
+        }
+
+    char *out = (char *)malloc(hlen + 1);
+    if (!out)
+        return NULL;
+    /* IPv6 literals arrive bracketed; urlparse's .hostname strips them. */
+    if (hlen && out != NULL && auth[start] == '[') {
+        size_t close = 0;
+        while (start + close < alen && auth[start + close] != ']')
+            close++;
+        start++;
+        hlen = close > 0 ? close - 1 : 0;
+    }
+    for (size_t i = 0; i < hlen; i++)
+        out[i] = (char)tolower((unsigned char)auth[start + i]);
+    while (hlen && out[hlen - 1] == '.')
+        hlen--;
+    out[hlen] = '\0';
+    return out;
+}
+
+int
+ac_base_url_host_matches(const char *base_url, const char *domain)
+{
+    char *host = ac_base_url_hostname(base_url);
+    if (!host || !*host) {
+        free(host);
+        return 0;
+    }
+    const char *d = (domain && *domain) ? domain : "";
+    while (isspace((unsigned char)*d))
+        d++;
+    size_t dl = strlen(d);
+    while (dl && (isspace((unsigned char)d[dl - 1]) || d[dl - 1] == '.'))
+        dl--;
+
+    int hit;
+    if (dl == 0) {
+        hit = 0;
+    } else {
+        char *dlower = (char *)malloc(dl + 1);
+        if (!dlower) { free(host); return 0; }
+        for (size_t i = 0; i < dl; i++)
+            dlower[i] = (char)tolower((unsigned char)d[i]);
+        dlower[dl] = '\0';
+        size_t hl = strlen(host);
+        hit = (hl == dl && strncmp(host, dlower, dl) == 0) ||
+              (hl > dl + 1 && host[hl - dl - 1] == '.' &&
+               strncmp(host + hl - dl, dlower, dl) == 0);
+        free(dlower);
+    }
+    free(host);
+    return hit;
+}
+
+int
+ac_nvidia_nim_host(const char *base_url)
+{
+    return ac_base_url_host_matches(base_url, "integrate.api.nvidia.com");
+}
+
+/* ── _anthropic_event_has_content ───────────────────────────────────────── */
+static const char *
+ac_json_str(const json_t *obj, const char *key)
+{
+    if (!obj || obj->type != JSON_OBJECT)
+        return NULL;
+    json_t *v = json_obj_get(obj, key);
+    if (!v || v->type != JSON_STRING)
+        return NULL;
+    return v->str_val;
+}
+
+/* Python `bool(value)`: a non-empty string, a non-zero number, true, or a
+ * non-empty array/object all count. Only the falsy shapes fall through. */
+static int
+ac_json_truthy(const json_t *v)
+{
+    if (!v)
+        return 0;
+    switch (v->type) {
+    case JSON_NULL:
+        return 0;
+    case JSON_BOOL:
+        return v->bool_val ? 1 : 0;
+    case JSON_NUMBER:
+        return v->num_val != 0.0;
+    case JSON_STRING:
+        return v->str_val && v->str_val[0] ? 1 : 0;
+    case JSON_ARRAY:
+    case JSON_OBJECT:
+        return v->c.count > 0;
+    }
+    return 0;
+}
+
+int
+ac_anthropic_event_has_content(const json_t *event)
+{
+    const char *etype = ac_json_str(event, "type");
+
+    if (etype && strcmp(etype, "content_block_delta") == 0) {
+        json_t *delta = json_obj_get(event, "delta");
+        static const char *const fields[] =
+            {"text", "thinking", "partial_json", "signature", "citation"};
+        for (size_t i = 0; i < sizeof(fields) / sizeof(fields[0]); i++)
+            if (ac_json_truthy(json_obj_get(delta, fields[i])))
+                return 1;
+        return 0;
+    }
+
+    if (etype && strcmp(etype, "content_block_start") == 0) {
+        json_t *block = json_obj_get(event, "content_block");
+        const char *bt = ac_json_str(block, "type");
+        if (!bt || strcmp(bt, "tool_use") != 0)
+            return 0;
+        return ac_json_truthy(json_obj_get(block, "id")) ||
+               ac_json_truthy(json_obj_get(block, "name"));
+    }
+    return 0;
+}
+
+/* ── header builders ────────────────────────────────────────────────────── */
+json_t *
+ac_ai_gateway_headers(const char *base_version)
+{
+    json_t *h = json_object();
+    if (!h)
+        return NULL;
+    char ua[256];
+    version_user_agent("HermesAgent", base_version ? base_version : "",
+                      ua, sizeof(ua));
+    json_set(h, "User-Agent", json_string(ua));
+    json_set(h, "HTTP-Referer", json_string("https://hermes-agent.nousresearch.com"));
+    json_set(h, "X-Title", json_string("Hermes Agent"));
+    return h;
+}
+
+static int
+ac_truthy_env(const char *s)
+{
+    if (!s || !*s)
+        return 0;
+    /* Python does .strip().lower() before the membership test. */
+    char low[64];
+    size_t i = 0;
+    while (s[i] && i + 1 < sizeof(low)) {
+        low[i] = (char)tolower((unsigned char)s[i]);
+        i++;
+    }
+    low[i] = '\0';
+    return strcmp(low, "1") == 0 || strcmp(low, "true") == 0 ||
+           strcmp(low, "yes") == 0 || strcmp(low, "on") == 0;
+}
+
+json_t *
+ac_build_or_headers(const char *env_cache, int cfg_cache,
+                    const char *env_ttl, double cfg_ttl)
+{
+    json_t *h = json_object();
+    if (!h)
+        return NULL;
+    json_set(h, "HTTP-Referer", json_string("https://hermes-agent.nousresearch.com"));
+    json_set(h, "X-Title", json_string("Hermes Agent"));
+    json_set(h, "X-OpenRouter-Categories",
+             json_string("productivity,cli-agent"));
+
+    int enabled = env_cache && *env_cache ? ac_truthy_env(env_cache)
+                                          : (cfg_cache != 0);
+    if (!enabled)
+        return h;
+
+    json_set(h, "X-OpenRouter-Cache", json_string("true"));
+
+    if (env_ttl && *env_ttl) {
+        /* isdigit() over the WHOLE string, then 1..86400 */
+        int alldig = 1;
+        for (const char *p = env_ttl; *p; p++)
+            if (!isdigit((unsigned char)*p)) { alldig = 0; break; }
+        if (alldig) {
+            long v = strtol(env_ttl, NULL, 10);
+            if (v >= 1 && v <= 86400) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%ld", v);
+                json_set(h, "X-OpenRouter-Cache-TTL", json_string(buf));
+            }
+        }
+    } else if (cfg_ttl >= 1.0 && cfg_ttl <= 86400.0) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%d", (int)cfg_ttl);
+        json_set(h, "X-OpenRouter-Cache-TTL", json_string(buf));
+    }
+    return h;
 }

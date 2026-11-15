@@ -8,6 +8,8 @@
 
 #include <stddef.h>
 
+#include "libjson/json.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -46,6 +48,31 @@ double ac_compression_threshold_for_model(const char *model,
  * Emits a canonical "|"-joined representation ("t:<text>" / "n:<number>") so a
  * C string and the Python tuple sort identically. Caller buffer. */
 void ac_model_recency_key(const char *model_id, char *out, size_t cap);
+
+/* _ai_gateway_headers -- Vercel AI Gateway attribution.
+ * `base_version` is passed in because the C version helper takes it explicitly
+ * rather than walking git at request time. Builds a JSON object; caller frees. */
+json_t *ac_ai_gateway_headers(const char *base_version);
+
+/* base_url_hostname / base_url_host_matches, ported from utils.py: exact-host
+ * comparison so `evil.com/moonshot.ai` cannot masquerade as a provider. */
+char *ac_base_url_hostname(const char *base_url);
+int ac_base_url_host_matches(const char *base_url, const char *domain);
+
+/* build_nvidia_nim_headers: cloud attribution applies only to the NVIDIA host. */
+int ac_nvidia_nim_host(const char *base_url);
+
+/* _anthropic_event_has_content -- whether a stream event carries a payload.
+ * `event` is the JSON object; returns 0/1. */
+int ac_anthropic_event_has_content(const json_t *event);
+
+/* build_or_headers -- OpenRouter headers plus the response-cache pair.
+ * Inputs stand in for os.environ and the openrouter config block:
+ *   env_cache  "1"/"true"/"yes"/"on" enables; empty means "use cfg_cache"
+ *   env_ttl    digits 1..86400; empty means "use cfg_ttl"
+ * Returns a JSON object; caller frees. */
+json_t *ac_build_or_headers(const char *env_cache, int cfg_cache,
+                            const char *env_ttl, double cfg_ttl);
 
 #ifdef __cplusplus
 }
