@@ -3,6 +3,16 @@
 import json
 import os
 import sys
+from pathlib import Path
+
+# run_one_oracle.sh hands the oracle a clean environment, so the quarry's
+# Path.home() / get_hermes_home() calls fail. Derive both from this file rather
+# than hard-coding them.
+_REPO = Path(__file__).resolve().parent.parent
+os.environ.setdefault("HOME", str(_REPO.parent.parent))
+os.environ.setdefault("USERPROFILE", str(_REPO.parent.parent))
+os.environ.setdefault("LOCALAPPDATA", str(_REPO.parent.parent / "AppData" / "Local"))
+os.environ.setdefault("HERMES_HOME", str(_REPO / ".testbin" / "dbg_home"))
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 sys.stdin.reconfigure(encoding="utf-8")
