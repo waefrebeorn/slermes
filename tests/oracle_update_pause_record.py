@@ -103,6 +103,19 @@ def main() -> int:
                     want = upr.merge_into(None, i["adopted"])
                 else:
                     want = upr.merge_into(tok, i["adopted"])
+            elif fn == "drop_never_stopped":
+                ve, vo = i["v_even"], i["v_odd"]
+
+                def fake_live(pid, ct, _ve=ve, _vo=vo):
+                    return _ve if int(pid) % 2 == 0 else _vo
+
+                _ul.incarnation_live = fake_live
+                # _asked reads the on-disk request markers; supply it.
+                def fake_asked(token, _a=i.get("asked") or [], _u=i.get("unknown") or []):
+                    return set(_a), set(_u)
+
+                upr._asked = fake_asked
+                want = upr.drop_never_stopped(i["token"])
             else:
                 continue
         except Exception as exc:                       # noqa: BLE001

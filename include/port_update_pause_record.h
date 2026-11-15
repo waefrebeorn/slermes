@@ -64,6 +64,14 @@ json_t *upr_split_draining(json_t *token, upr_incarnation_fn fn);
 /* merge_into -- fold an orphaned pause into `token`. Returns `token`. */
 json_t *upr_merge_into(json_t *token, const json_t *adopted);
 
+/* drop_never_stopped -- drop entries whose process is the same live incarnation
+ * and was never asked to stop. `_asked`'s two result sets are a seam (they come
+ * from reading the on-disk request markers): `asked` = pids actually asked,
+ * `unknown` = pids whose evidence exists but cannot be read. */
+json_t *upr_drop_never_stopped(json_t *token, upr_incarnation_fn fn,
+                               const char *const *asked, size_t n_asked,
+                               const char *const *unknown, size_t n_unknown);
+
 #ifdef __cplusplus
 }
 #endif

@@ -410,5 +410,72 @@ int main(void)
         fflush(stdout);
     }
 
+    /* drop_never_stopped */
+    {
+        const char *tokens[] = {
+            "{}",
+            "{\"stop_requested\":[\"1\",\"2\"],\"profiles\":{\"a\":\"1\",\"b\":\"2\"},"
+            "\"unmapped\":[{\"pid\":1},{\"pid\":2}],\"identities\":{\"1\":\"ct:1\",\"2\":\"ct:2\"}}",
+            NULL,
+        };
+        const char *askedsets[] = {"[]", "[\"1\"]", "[\"1\",\"2\"]", "[\"2\",\"3\"]", NULL};
+        const char *unksets[] = {"[]", "[\"2\"]", NULL};
+        const int pairs[][2] = {{1, 1}, {0, 0}, {1, 0}, {-1, 1}, {1, -1}};
+        for (int k = 0; k < 3; k++) {
+            for (int a = 0; askedsets[a]; a++) {
+                for (int u = 0; unksets[u]; u++) {
+                    for (int v = 0; v < 5; v++) {
+                        g_ve = pairs[v][0];
+                        g_vo = pairs[v][1];
+                        json_t *t = json_parse(tokens[k], NULL);
+                        json_t *pa = json_parse(askedsets[a], NULL);
+                        json_t *pu = json_parse(unksets[u], NULL);
+                        const char *aa[8], *au[8];
+                        char ba[8][16], bu[8][16];
+                        size_t na = 0, nu = 0;
+                        if (pa && pa->type == JSON_ARRAY) {
+                            for (size_t q = 0; q < pa->c.count && q < 8; q++) {
+                                if (pa->c.items[q]->type == JSON_STRING)
+                                    aa[na++] = pa->c.items[q]->str_val;
+                                else {
+                                    snprintf(ba[na], sizeof(ba[na]), "%lld",
+                                             (long long)pa->c.items[q]->num_val);
+                                    aa[na] = ba[na]; na++;
+                                }
+                            }
+                        }
+                        if (pu && pu->type == JSON_ARRAY) {
+                            for (size_t q = 0; q < pu->c.count && q < 8; q++) {
+                                if (pu->c.items[q]->type == JSON_STRING)
+                                    au[nu++] = pu->c.items[q]->str_val;
+                                else {
+                                    snprintf(bu[nu], sizeof(bu[nu]), "%lld",
+                                             (long long)pu->c.items[q]->num_val);
+                                    au[nu] = bu[nu]; nu++;
+                                }
+                            }
+                        }
+                        upr_drop_never_stopped(t, fake_live, aa, na, au, nu);
+                        printf("{\"case\":%d,\"fn\":\"drop_never_stopped\",\"in\":{"
+                               "\"token\":%s,\"asked\":%s,\"unknown\":%s,"
+                               "\"v_even\":%s,\"v_odd\":%s},\"out\":",
+                               ++cs, tokens[k], askedsets[a], unksets[u],
+                               pairs[v][0] == 1 ? "true" : pairs[v][0] == 0 ? "false" : "null",
+                               pairs[v][1] == 1 ? "true" : pairs[v][1] == 0 ? "false" : "null");
+                        char *s = t ? json_serialize(t) : NULL;
+                        fputs(s ? s : "null", stdout);
+                        free(s);
+                        printf("}\n");
+                        json_free(t);
+                        json_free(pa);
+                        json_free(pu);
+                    }
+                }
+            }
+        }
+        g_ve = g_vo = 1;
+        fflush(stdout);
+    }
+
     return 0;
 }

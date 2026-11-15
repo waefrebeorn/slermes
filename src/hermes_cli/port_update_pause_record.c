@@ -660,6 +660,62 @@ json_t *upr_merge_into(json_t *token, const json_t *adopted)
 }
 
 /* ===========================================================================
+ *  drop_never_stopped  (update_pause_record.py:drop_never_stopped)
+ *
+ *      if token.get("stop_requested") is None: return token
+ *      asked, unknown = _asked(token)
+ *      token["stop_sent"] = sorted(asked)
+ *      return _without(token, _live_pids(token) - asked - unknown)
+ * =========================================================================== */
+
+/* PoP: upr_drop_never_stopped @ hermes_cli/update_pause_record.py:drop_never_stopped */
+json_t *upr_drop_never_stopped(json_t *token, upr_incarnation_fn fn,
+                               const char *const *asked, size_t n_asked,
+                               const char *const *unknown, size_t n_unknown)
+{
+    if (!token || token->type != JSON_OBJECT)
+        return token;
+    if (!json_obj_get(token, "stop_requested"))
+        return token;                      /* no stop record at all: keep everything */
+
+    /* stop_sent = sorted(asked) -- lexicographic, as Python's sorted() on str. */
+    json_t *sent = json_array();
+    char **tmp = (char **)calloc(n_asked ? n_asked : 1, sizeof(char *));
+    for (size_t i = 0; i < n_asked; i++)
+        tmp[i] = (char *)(asked[i] ? asked[i] : "");
+    for (size_t i = 0; i < n_asked; i++) {
+        for (size_t j = i + 1; j < n_asked; j++) {
+            if (strcmp(tmp[j], tmp[i]) < 0) {
+                char *swap = tmp[i]; tmp[i] = tmp[j]; tmp[j] = swap;
+            }
+        }
+    }
+    for (size_t i = 0; i < n_asked; i++)
+        json_append(sent, json_string(tmp[i]));
+    free(tmp);
+    json_obj_del(token, "stop_sent");
+    json_set(token, "stop_sent", sent);
+
+    /* live - asked - unknown */
+    json_t *live = upr_live_pids(token, fn);
+    const char **drop = (const char **)calloc(live ? live->c.count : 1, sizeof(char *));
+    size_t n_drop = 0;
+    if (live && live->type == JSON_ARRAY) {
+        for (size_t i = 0; i < live->c.count; i++) {
+            const char *p = (live->c.items[i] && live->c.items[i]->type == JSON_STRING)
+                                ? live->c.items[i]->str_val : NULL;
+            if (in_pids(p, asked, n_asked) || in_pids(p, unknown, n_unknown))
+                continue;
+            drop[n_drop++] = p;
+        }
+    }
+    upr_without(token, drop, n_drop);
+    free(drop);
+    json_free(live);
+    return token;
+}
+
+/* ===========================================================================
  *  _live_pids  (update_pause_record.py:_live_pids)
  *
  *      {str(pid) for pid, ct in (token.get("identities") or {}).items()
