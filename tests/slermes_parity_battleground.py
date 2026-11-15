@@ -137,6 +137,28 @@ class CFunction:
     is_static: bool = False
     return_type: str = ""
 
+_PY_ROOTS = [Path(__file__).resolve().parent.parent,
+             Path("C:/Users/eman5/hermes-agent")]
+_PY_MODULE_CACHE: dict = {}
+
+
+def _py_module_exists(python_file: str) -> bool:
+    """True when the claimed Python module exists in either tree.
+
+    Both the repo (which carries its own agent/, gateway/, hermes_cli/) and the
+    upstream quarry are legitimate homes for a module, so a miss in one is not a
+    miss. Cached: this is called once per PoP annotation over ~20k of them.
+    """
+    if not python_file:
+        return True
+    if python_file in _PY_MODULE_CACHE:
+        return _PY_MODULE_CACHE[python_file]
+    norm = python_file.replace("\\", "/").lstrip("./")
+    ok = any((root / norm).exists() for root in _PY_ROOTS if root)
+    _PY_MODULE_CACHE[python_file] = ok
+    return ok
+
+
 @dataclass
 class PopAnnotation:
     c_function: str
@@ -146,6 +168,10 @@ class PopAnnotation:
     line: int = 0
     is_consolidated: bool = False
     full_text: str = ""
+    # False when no Python file with this name exists in either tree. Such an
+    # annotation is an ORPHAN: the C exists, but no oracle can ever diff it
+    # against the claimed source, so it must not count as verifiable parity.
+    python_module_exists: bool = True
 
 @dataclass
 class GapEntry:
@@ -397,7 +423,8 @@ class CIndexer:
                             self.pop_annotations.append(PopAnnotation(
                                 c_function=c_func_name, python_functions=py_funcs,
                                 c_file=rel_str, python_file=python_file, line=line,
-                                is_consolidated=len(py_funcs) > 1, full_text=m.group(0)[:200]))
+                                is_consolidated=len(py_funcs) > 1, full_text=m.group(0)[:200],
+                                python_module_exists=_py_module_exists(python_file)))
 
                     for m in wrapper_pattern.finditer(content):
                         wrapper_file = m.group(1)
