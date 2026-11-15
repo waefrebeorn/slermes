@@ -137,9 +137,36 @@ class CFunction:
     is_static: bool = False
     return_type: str = ""
 
-_PY_ROOTS = [Path(__file__).resolve().parent.parent,
-             Path("C:/Users/eman5/hermes-agent")]
+_PY_ROOTS = [SLERMES_DIR, Path("C:/Users/eman5/hermes-agent")]
 _PY_MODULE_CACHE: dict = {}
+
+
+_GATES = SLERMES_DIR / "tests" / "watercup" / "gates"
+_TWIN_CACHE: dict = {}
+
+
+def _twin_prefix(python_file: str) -> str:
+    """'agent/ssl_guard.py' -> 'real__agent_ssl_guard_py___'.
+
+    The repo carries per-feature Python twins at
+    tests/watercup/gates/real__<module with / -> _ and .py -> _py>___<fn>/twin.py
+    -- the reference implementations the oracles diff against. A module absent
+    as a file can still be fully present as twins.
+    """
+    norm = python_file.replace("\\", "/").lstrip("./")
+    stem = norm[:-3] if norm.endswith(".py") else norm
+    return "real__" + stem.replace("/", "_") + "_py___"
+
+
+def _twin_exists(python_file: str) -> bool:
+    if not _GATES.is_dir():
+        return False
+    key = _twin_prefix(python_file)
+    if key in _TWIN_CACHE:
+        return _TWIN_CACHE[key]
+    ok = any(p.name.startswith(key) for p in _GATES.iterdir() if p.is_dir())
+    _TWIN_CACHE[key] = ok
+    return ok
 
 
 def _py_module_exists(python_file: str):
@@ -150,13 +177,17 @@ def _py_module_exists(python_file: str):
     count look like ~1500 false claims when almost all of them are simply
     UNATTRIBUTED -- the scanner scraped words like `backend` out of prose and
     then reported them as missing files.
+
+    A module counts as present if it exists as a file in either tree OR as
+    per-feature twins under tests/watercup/gates/.
     """
     if not python_file:
         return None
     if python_file in _PY_MODULE_CACHE:
         return _PY_MODULE_CACHE[python_file]
     norm = python_file.replace("\\", "/").lstrip("./")
-    ok = any((root / norm).exists() for root in _PY_ROOTS if root)
+    ok = (any((root / norm).exists() for root in _PY_ROOTS if root)
+          or _twin_exists(python_file))
     _PY_MODULE_CACHE[python_file] = ok
     return ok
 
