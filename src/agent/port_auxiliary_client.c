@@ -755,3 +755,172 @@ ac_provider_vision_static(const char *provider, char *out, size_t cap)
         }
     return 0;
 }
+
+/* ── _is_free_model ─────────────────────────────────────────────────────── */
+int
+ac_is_free_model(const char *model)
+{
+    if (!model || !*model)
+        return 0;
+    /* str(model).strip() -- leading AND trailing whitespace is dropped first. */
+    const char *s = model;
+    while (isspace((unsigned char)*s))
+        s++;
+    size_t len = strlen(s);
+    while (len && isspace((unsigned char)s[len - 1]))
+        len--;
+    if (len >= 5 && strncmp(s + len - 5, ":free", 5) == 0)
+        return 1;
+    return strncmp(s, "stealth/", 8) == 0;
+}
+
+/* ── _contains_any ──────────────────────────────────────────────────────── */
+int
+ac_contains_any(const char *text, const char **needles, int n)
+{
+    if (!text || !needles)
+        return 0;
+    for (int i = 0; i < n; i++)
+        if (needles[i] && strstr(text, needles[i]) != NULL)
+            return 1;
+    return 0;
+}
+
+/* ── _normalize_chain_label ─────────────────────────────────────────────── */
+void
+ac_normalize_chain_label(const char *provider, char *out, size_t cap)
+{
+    static const struct { const char *k, *v; } aliases[] = {
+        {"openrouter", "openrouter"},
+        {"nous", "nous"},
+        {"custom", "local/custom"},
+        {"local/custom", "local/custom"},
+        {"openai-codex", "openai-codex"},
+        {"codex", "openai-codex"},
+    };
+    if (!out || cap == 0)
+        return;
+    out[0] = '\0';
+    if (!provider || !*provider)
+        return;
+
+    char lower[256];
+    size_t i = 0;
+    while (provider[i] && i + 1 < sizeof(lower)) {
+        lower[i] = (char)tolower((unsigned char)provider[i]);
+        i++;
+    }
+    lower[i] = '\0';
+    /* strip() before the lookup */
+    char *s = lower;
+    while (*s == ' ' || *s == '\t')
+        s++;
+    size_t l = strlen(s);
+    while (l && (s[l - 1] == ' ' || s[l - 1] == '\t'))
+        s[--l] = '\0';
+
+    for (size_t k = 0; k < sizeof(aliases) / sizeof(aliases[0]); k++)
+        if (strcmp(s, aliases[k].k) == 0) {
+            snprintf(out, cap, "%s", aliases[k].v);
+            return;
+        }
+    snprintf(out, cap, "%s", s);
+}
+
+/* ── _endpoint_speaks_anthropic_messages ────────────────────────────────── */
+int
+ac_endpoint_speaks_anthropic_messages(const char *base_url)
+{
+    if (!base_url)
+        return 0;
+    const char *s = base_url;
+    while (isspace((unsigned char)*s))
+        s++;
+    size_t len = strlen(s);
+    while (len && (s[len - 1] == '/' || isspace((unsigned char)s[len - 1])))
+        len--;
+    if (len == 0)
+        return 0;
+
+    char *norm = (char *)malloc(len + 1);
+    if (!norm)
+        return 0;
+    for (size_t i = 0; i < len; i++)
+        norm[i] = (char)tolower((unsigned char)s[i]);
+    norm[len] = '\0';
+
+    /* path ends with /anthropic or /anthropic/v1 */
+    const char *auth = norm;
+    const char *sep = strstr(norm, "://");
+    if (sep)
+        auth = sep + 3;
+    const char *path = strchr(auth, '/');
+    int hit = 0;
+    if (path) {
+        size_t pl = strlen(path);
+        while (pl && path[pl - 1] == '/')
+            pl--;
+        if ((pl >= 10 && strncmp(path + pl - 10, "/anthropic", 10) == 0) ||
+            (pl >= 13 && strncmp(path + pl - 13, "/anthropic/v1", 13) == 0))
+            hit = 1;
+    }
+
+    char *host = ac_base_url_hostname(norm);
+    if (!hit && host) {
+        if (strcmp(host, "api.anthropic.com") == 0)
+            hit = 1;
+        else if (strcmp(host, "api.kimi.com") == 0 && strstr(norm, "/coding") != NULL)
+            hit = 1;
+    }
+    free(host);
+    free(norm);
+    return hit;
+}
+
+/* ── _is_anthropic_compatible_host ──────────────────────────────────────── */
+int
+ac_is_anthropic_compatible_host(const char *url)
+{
+    if (!url || !*url)
+        return 0;
+    /* Raw urlparse, unlike base_url_hostname: a scheme-less string is parsed as
+     * a PATH, so its .hostname is None. Only a URL with "://" has a host. */
+    int hit = 0;
+    if (strstr(url, "://") != NULL) {
+        char *host = ac_base_url_hostname(url);
+        if (host && strcmp(host, "api.anthropic.com") == 0)
+            hit = 1;
+        free(host);
+    }
+
+    if (!hit) {
+        /* path ends with /anthropic or /anthropic/v1 */
+        const char *s = url;
+        while (isspace((unsigned char)*s))
+            s++;
+        size_t len = strlen(s);
+        while (len && s[len - 1] == '/')
+            len--;
+        const char *auth = s;
+        const char *sep = strstr(s, "://");
+        if (sep)
+            auth = sep + 3;
+        const char *path = strchr(auth, '/');
+        if (path) {
+            size_t pl = strlen(path);
+            while (pl && path[pl - 1] == '/')
+                pl--;
+            char *plower = (char *)malloc(pl + 1);
+            if (plower) {
+                for (size_t i = 0; i < pl; i++)
+                    plower[i] = (char)tolower((unsigned char)path[i]);
+                plower[pl] = '\0';
+                if ((pl >= 10 && strncmp(plower + pl - 10, "/anthropic", 10) == 0) ||
+                    (pl >= 13 && strncmp(plower + pl - 13, "/anthropic/v1", 13) == 0))
+                    hit = 1;
+                free(plower);
+            }
+        }
+    }
+    return hit;
+}

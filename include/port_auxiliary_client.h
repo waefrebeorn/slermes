@@ -90,6 +90,21 @@ int ac_task_can_prefer_fast(const char *task);
  * needs the provider registry). Returns 1 when a static entry matched. */
 int ac_provider_vision_static(const char *provider, char *out, size_t cap);
 
+/* _is_free_model -- :free suffix or stealth/ prefix. */
+int ac_is_free_model(const char *model);
+
+/* _contains_any -- any needle a substring of text. */
+int ac_contains_any(const char *text, const char **needles, int n);
+
+/* _normalize_chain_label -- resolved_provider to chain label. */
+void ac_normalize_chain_label(const char *provider, char *out, size_t cap);
+
+/* _endpoint_speaks_anthropic_messages -- Messages wire, not chat.completions. */
+int ac_endpoint_speaks_anthropic_messages(const char *base_url);
+
+/* _is_anthropic_compatible_host -- native host or a /anthropic gateway path. */
+int ac_is_anthropic_compatible_host(const char *url);
+
 #ifdef __cplusplus
 }
 #endif

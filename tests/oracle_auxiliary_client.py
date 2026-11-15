@@ -27,6 +27,9 @@ WANTED = {
         "_FAST_MODEL_FAMILIES", "_FAST_MODEL_EXCLUDE",
         "_API_KEY_PROVIDER_AUX_MODELS_FALLBACK", "_FAST_MODEL_TASKS",
         "_PROVIDER_VISION_MODELS", "_model_recency_key",
+        "_is_free_model", "_contains_any", "_normalize_chain_label",
+        "_is_anthropic_compatible_host", "_endpoint_speaks_anthropic_messages",
+        "_AUX_UNHEALTHY_LABEL_ALIASES", "_ANTHROPIC_COMPATIBLE_HOSTS",
     ],
     "agent/model_metadata.py": [
         "_bare_codex_slug", "is_codex_900k_base", "_codex_variant_base",
@@ -207,6 +210,22 @@ for line in sys.stdin:
         want = arg in ns["_FAST_MODEL_TASKS"]
     elif fn == "visionstatic":
         want = ns["_PROVIDER_VISION_MODELS"].get(arg)
+    elif fn == "freemodel":
+        want = bool(ns["_is_free_model"](arg))
+    elif fn == "contains":
+        sets = {
+            1: ("budget limit", "key limit"),
+            2: ("resource exhausted", "resource_exhausted", "resource-exhausted"),
+            3: ("credits", "insufficient funds"),
+            4: (),
+        }
+        want = bool(ns["_contains_any"](arg, sets.get(c.get("set"), ())))
+    elif fn == "chainlabel":
+        want = ns["_normalize_chain_label"](arg)
+    elif fn == "anthhost":
+        want = bool(ns["_is_anthropic_compatible_host"](arg))
+    elif fn == "anthmsg":
+        want = bool(ns["_endpoint_speaks_anthropic_messages"](arg))
     else:
         continue
 

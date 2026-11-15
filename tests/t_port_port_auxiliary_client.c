@@ -324,5 +324,92 @@ int main(void)
             fputs("}\n", stdout);
         }
     }
+
+    /* ── free model / contains_any ── */
+    {
+        static const char *const MODELS[] = {
+            "", "x:free", "x:Free", "stealth/llama", "STEALTH/x", "x:free ",
+            " x:free", "x:freex", "x:paid", "stealth", "/", "stealth/x:free",
+        };
+        for (size_t i = 0; i < sizeof(MODELS) / sizeof(MODELS[0]); i++) {
+            printf("{\"fn\":\"freemodel\",\"arg\":");
+            jstr(MODELS[i]);
+            printf(",\"out\":%d}\n", ac_is_free_model(MODELS[i]));
+        }
+
+        static const char *const TEXTS[] = {
+            "", "Budget limit exceeded", "nothing here", "RESOURCE_EXHAUSTED",
+            "resource-exhausted", "quota_exceeded", "credits",
+        };
+        static const char *const NEEDLES1[] = {"budget limit", "key limit"};
+        static const char *const NEEDLES2[] = {"resource exhausted",
+                                              "resource_exhausted",
+                                              "resource-exhausted"};
+        static const char *const NEEDLES3[] = {"credits", "insufficient funds"};
+        static const char *const NEEDLES4[] = {};
+        for (size_t i = 0; i < sizeof(TEXTS) / sizeof(TEXTS[0]); i++) {
+            printf("{\"fn\":\"contains\",\"arg\":");
+            jstr(TEXTS[i]);
+            printf(",\"set\":1,\"out\":%d}\n",
+                   ac_contains_any(TEXTS[i], NEEDLES1, 2));
+            printf("{\"fn\":\"contains\",\"arg\":");
+            jstr(TEXTS[i]);
+            printf(",\"set\":2,\"out\":%d}\n",
+                   ac_contains_any(TEXTS[i], NEEDLES2, 3));
+            printf("{\"fn\":\"contains\",\"arg\":");
+            jstr(TEXTS[i]);
+            printf(",\"set\":3,\"out\":%d}\n",
+                   ac_contains_any(TEXTS[i], NEEDLES3, 2));
+            printf("{\"fn\":\"contains\",\"arg\":");
+            jstr(TEXTS[i]);
+            printf(",\"set\":4,\"out\":%d}\n",
+                   ac_contains_any(TEXTS[i], NEEDLES4, 0));
+        }
+    }
+
+    /* ── chain labels ── */
+    {
+        static const char *const PROVS[] = {
+            "", "  ", "openrouter", "OpenRouter", "nous", "custom",
+            "local/custom", "openai-codex", "codex", "CODEX", "unknown-prov",
+            " openai-codex ", "LOCAL/CUSTOM",
+        };
+        for (size_t i = 0; i < sizeof(PROVS) / sizeof(PROVS[0]); i++) {
+            char out[256];
+            ac_normalize_chain_label(PROVS[i], out, sizeof(out));
+            printf("{\"fn\":\"chainlabel\",\"arg\":");
+            jstr(PROVS[i]);
+            printf(",\"out\":");
+            jstr(out);
+            fputs("}\n", stdout);
+        }
+    }
+
+    /* ── anthropic endpoint detection ── */
+    {
+        static const char *const URLS[] = {
+            "", "   ", "https://api.anthropic.com",
+            "https://api.anthropic.com/v1/messages",
+            "https://api.kimi.com/coding",
+            "https://api.kimi.com/v1", "https://api.kimi.com/coding/v1",
+            "https://gateway.example.com/anthropic",
+            "https://gateway.example.com/anthropic/v1",
+            "https://gateway.example.com/anthropic/",
+            "https://gateway.example.com/v1/anthropic",
+            "https://gateway.example.com/v1/messages",
+            "https://api.anthropic.com.evil.com/v1",
+            "https://evil.com/api.anthropic.com",
+            "API.ANTHROPIC.COM", "https://minimax.com/anthropic",
+        };
+        for (size_t i = 0; i < sizeof(URLS) / sizeof(URLS[0]); i++) {
+            printf("{\"fn\":\"anthhost\",\"arg\":");
+            jstr(URLS[i]);
+            printf(",\"out\":%d}\n", ac_is_anthropic_compatible_host(URLS[i]));
+            printf("{\"fn\":\"anthmsg\",\"arg\":");
+            jstr(URLS[i]);
+            printf(",\"out\":%d}\n",
+                   ac_endpoint_speaks_anthropic_messages(URLS[i]));
+        }
+    }
     return 0;
 }
