@@ -1,3 +1,18 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 8,778 / 34,262 (25.6%) |
+| REAL_GAP| 25,451 (74.3%) — no N/A |
+|  ├ DA-4 stubs | 43 |
+|  └ Genuine gaps | 25,408 |
+| PARTIAL | 33 (0.1%) |
+| BOOTLEG | 0 |
+| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+**Phase (v673):** PORT phase
+
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
+
+_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # S14 #6: Skill System Parity — Methodology Comparison
 
 **Methodology:** Function-level diff of Python `agent/skill_commands.py` (523 lines, 7 public functions) + `tools/skills_tool.py` + `hermes_cli/skills_cli.py` vs C `src/agent/skill_commands.c` (426 lines, 7 public functions) + `src/tools/skills.c` (2,517 lines) + `src/skills_hub.c` (245 lines) + `src/tools/skill_mgmt.c` (1,003 lines) + `src/agent/skill_bundles.c` (235 lines).

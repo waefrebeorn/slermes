@@ -1,3 +1,18 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 8,778 / 34,262 (25.6%) |
+| REAL_GAP| 25,451 (74.3%) — no N/A |
+|  ├ DA-4 stubs | 43 |
+|  └ Genuine gaps | 25,408 |
+| PARTIAL | 33 (0.1%) |
+| BOOTLEG | 0 |
+| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+**Phase (v673):** PORT phase
+
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
+
+_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 # S14 #4: Session Storage Parity — Methodology Comparison
 
 **Methodology:** Function-level diff of Python `hermes_state.py` SessionDB (3210 lines, 106 methods) vs C `session_crud.c` (348 lines), `session_search.c` (621 lines), CLI session commands (6 commands).

@@ -1,17 +1,15 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 6,466 / 18,219 (35.5%) |
-| REAL_GAP| 11,715 (64.3%) — no N/A |
-|  ├ DA-4 stubs | 11 |
-|  └ Genuine gaps | 11,704 |
-| PARTIAL | 38 (0.2%) |
+<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
+| REAL_GAP| 25,451 (74.3%) — no N/A |
+|  ├ DA-4 stubs | 43 |
+|  └ Genuine gaps | 25,408 |
+| PARTIAL | 33 (0.1%) |
 | BOOTLEG | 0 |
-| **Watercup** | 313 PASS / 22,604 (1.4%) · 0/6230 ported match · 11511/11511 gap mismatch |
-**Phase (v672):** PORT phase
+| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+**Phase (v673):** PORT phase
 
-**Upstream sync:** 2,072 ahead / 2,639 behind (last merge 2026-09-15 (upstream fetched))
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-09-15T06:22:36Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Water-Cup Gap List — Triple DA Audit
 

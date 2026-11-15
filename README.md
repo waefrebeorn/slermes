@@ -6,19 +6,22 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 ## What this is
 
-<!-- PARITY:AUTO -->| PORTED  | 6,466 / 18,219 (35.5%) |
-| REAL_GAP| 11,715 (64.3%) — no N/A |
-|  ├ DA-4 stubs | 11 |
-|  └ Genuine gaps | 11,704 |
-| PARTIAL | 38 (0.2%) |
+<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
+| REAL_GAP| 25,451 (74.3%) — no N/A |
+|  ├ DA-4 stubs | 43 |
+|  └ Genuine gaps | 25,408 |
+| PARTIAL | 33 (0.1%) |
 | BOOTLEG | 0 |
-| **Watercup** | unavailable — interactive hermes CLI flows (approvals/kanban/curator/hello) block the oracle; sync counts below are from the live scanner and are current |\n**Phase (v673):** PORT phase
+| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+**Phase (v673):** PORT phase
 
-**Upstream sync:** 2,082 ahead / 1,056 behind (last merge 2026-10-06 (upstream fetched))
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-10-07T05:29:39Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 ## Quick Start
+
+**Linux**
 
 ```bash
 git clone https://github.com/waefrebeorn/slermes
@@ -27,7 +30,25 @@ make -j$(nproc)
 ./slermes
 ```
 
-**Dependencies:** `build-essential libssl-dev libwayland-dev libxkbcommon-dev`
+**Windows (MSYS2 — the primary development platform)**
+
+```bash
+git clone https://github.com/waefrebeorn/slermes
+cd slermes
+source build/winlibs-env.sh
+make -j8 slermes USERPROFILE='C:\Users\<you>' LOCALAPPDATA='C:\Users\<you>\AppData\Local'
+./slermes.exe
+```
+
+`build/winlibs-env.sh` must be sourced first: it sets the compiler and the
+prebuilt third-party lib paths, and this bash drops exported env vars.
+
+**Dependencies**
+
+- Linux: `build-essential libssl-dev libwayland-dev libxkbcommon-dev`
+- Windows: MSYS2 with `mingw-w64-x86_64-gcc`; the prebuilt libs live under
+  `C:/winlibs` (see `build/winlibs-env.sh`). No Python runtime is needed to
+  build or run.
 
 ## Documentation
 
@@ -50,7 +71,27 @@ make -j$(nproc)
 
 ## How to read the parity numbers
 
-The live scanner (`tests/slermes_parity_battleground.py`) is the single source of truth for completion. Run `make parity-walkway` to refresh all walkway files. Any number not from the scanner is stale — trust the scanner, not prose.
+Two audits run over the same tree and they do **not** share a denominator:
+
+| Audit | Command | Total features | Counts |
+|-------|---------|----------------|--------|
+| Scanner (walkway) | `python scripts/parity_truth.py` | 27,877 | 6,248 PORTED · 21,596 REAL_GAP · 33 PARTIAL |
+| Body-level reality | `python tests/parity_reality.py` | 35,858 | 12,209 implemented · 686 placeholder · 22,963 missing |
+
+`scripts/parity_truth.py` is the only writer of parity numbers, and it is
+fail-closed: it refuses to emit one unless the Python ground truth is present
+and the scanner actually scanned it. `scripts/gen_parity_walkway.py` (or
+`make parity`) refreshes every `` block from that output,
+including this README.
+
+`tests/parity_reality.py` is the stricter audit and extracts more features,
+which is why its total is larger: a `(void)x; return 0;` body counts as
+*placeholder*, not *implemented*, while the scanner credits a PoP annotation
+even when the body is a stub. Quote the audit that matches the question, and
+never hand-edit a number inside a `` block.
+
+To find the next thing to port, rank by fan-in rather than file size:
+`python scripts/parity_coverage.py --fanin`.
 
 ## Fork sync
 

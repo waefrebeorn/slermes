@@ -6,22 +6,21 @@
 
 ## Overall Numbers (live)
 
-<!-- PARITY:AUTO -->
-| Classification | Count | Percentage | Meaning |
-|----------------|-------|------------|---------|
-| **PORTED** | 13,581 | 85.2% | C11 implementation with PoP annotation + real C body |
-| **REAL_GAP** | 2,329 | 14.6% | Honest gaps (not yet ported) |
-|  ├ DA-4 annotation-only stubs | 473 | — | PoP comment with NO C function body (scanner was fooled) |
-|  └ Genuine gaps (no C at all) | 1,856 | — | No C equivalent exists anywhere |
-| **PARTIAL** | 32 | 0.2% | All C fns now carry PoP annotations |
-| **BOOTLEG** | 0 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
-| **TOTAL** | 15,942 | 100% | All Python functions/methods scanned |
+<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
+| REAL_GAP| 25,451 (74.3%) — no N/A |
+|  ├ DA-4 stubs | 43 |
+|  └ Genuine gaps | 25,408 |
+| PARTIAL | 33 (0.1%) |
+| BOOTLEG | 0 |
+| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+**Phase (v673):** PORT phase
 
-> **Generated 2026-08-19T07:50:58Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
-<!-- /PARITY:AUTO -->
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-**Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner
-`tests/slermes_parity_battleground.py`. The PORT phase (v398→v667) is legacy —
+_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+
+**Generated:**  (post-sync,  checkpoint) from live scanner
+`tests/slermes_parity_battleground.py`. The PORT phase (→) is legacy —
 complete; every function does real observable work and matches the Python original.
 Closing REAL_GAPs is the path forward.
 
@@ -49,21 +48,21 @@ either implement the real C body or remove the misleading annotation.
 
 ## How Gaps Were Closed (recent history)
 
-### v668 — Upstream Sync (2026-08-03→04)
+###  — Upstream Sync (→04)
 - Merged 3,401 upstream commits into the parent Python quarry.
 - Fork-base `-s ours` merge in slermes (behind=0, C11 tree byte-identical).
-- 45 bootleg echo-stubs eradicated (v668 DA sweep): all platform connect/disconnect
+-  echo-stubs eradicated ( DA sweep): all platform connect/disconnect
   now delegate to real C infrastructure.
 
-### v667 — Last Close Session
-- 45 bootleg closures (platform lifecycle stubs → real C infra).
+###  — Last Close Session
+-  closures (platform lifecycle stubs → real C infra).
 - 7 printf-echo stubs closed by delegating to real C helpers.
 - Build green, oracle baselines unchanged.
 
-### v666 — Partial Clearance
+###  — Partial Clearance
 - All 37 misclassified PARTIALs received PoP annotations (PARTIAL → 0).
 
-### v665 → v666 — Lane 0 Closure
+###  →  — Lane 0 Closure
 - Final lane-0 residual ports completed.
 
 ## There is no N/A
