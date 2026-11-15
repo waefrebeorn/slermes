@@ -33,4 +33,12 @@ int cch_payload_has_error_shape(const json_t *payload);
  * array. *out_count receives the length. */
 json_t **cch_parse_provider_sse_events(const char *text, int *out_count);
 
+/* The four below are genuinely unported in the linked tree; see
+ * src/agent/chat_completion_helpers.c. */
+int agent_cch_image_part_chars(const json_t *part, int image_cost);
+int agent_cch_payload_chars(const json_t *value, int image_cost);
+double agent_cch_scale_stale_timeout_for_context(double base, int est_tokens);
+double agent_cch_bound_codex_stale_timeout(double stale_timeout, int est_tokens,
+                                           double hard);
+
 #endif /* PORT_CHAT_COMPLETION_HELPERS_H */
