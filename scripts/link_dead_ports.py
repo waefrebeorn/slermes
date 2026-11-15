@@ -28,7 +28,8 @@ REPO = Path("C:/Users/eman5/slermes")
 MK = REPO / "build" / "objects.mk"
 OUT = REPO / "build" / "ports_linked.mk"
 BIN = REPO / "slermes.exe"
-NM = "/mingw64/bin/nm"
+# Native Windows form: Python does not translate MSYS '/mingw64/...' paths.
+NM = "C:/msys64/mingw64/bin/nm.exe"
 
 
 def is_port_style(rel: str) -> bool:
@@ -37,14 +38,20 @@ def is_port_style(rel: str) -> bool:
 
 
 def symbols(obj: Path, kind: str) -> set[str]:
-    """kind='def' for defined, 'undef' for undefined."""
+    """kind='def' for defined, 'undef' for undefined.
+
+    Section symbols (.text/.bss/.data/.rdata/...) are NOT definitions -- they
+    appear in every object and would make every twin look like a collision.
+    """
     r = subprocess.run([NM, str(obj)], capture_output=True, text=True,
                        encoding="utf-8", errors="replace")
     out = set()
     for ln in r.stdout.splitlines():
         parts = ln.split()
         if kind == "def" and len(parts) >= 3 and parts[1] in "TtDdBbRrSs":
-            out.add(parts[2])
+            name = parts[2]
+            if not name.startswith("."):
+                out.add(name)
         elif kind == "undef" and parts and parts[0] == "U":
             out.add(parts[-1])
     return out
@@ -68,15 +75,21 @@ def main() -> int:
         cands.append(obj)
 
     print(f"candidates: {len(cands)}")
-    make = next((p for p in ("/c/msys64/usr/bin/make.exe", "/mingw64/bin/make.exe",
-                             "/c/msys64/usr/bin/make", "make")
+    # Native Windows form: Python does not translate MSYS '/c/...' paths.
+    make = next((p for p in ("C:/msys64/usr/bin/make.exe",
+                             "C:/msys64/mingw64/bin/make.exe",
+                             "make")
                  if Path(p).exists() or p == "make"), "make")
     r = subprocess.run([make, "-j8", *cands], cwd=REPO,
                        capture_output=True, text=True,
                        encoding="utf-8", errors="replace")
     compiled = [o for o in cands if (REPO / o).exists()]
-    print(f"compiled: {len(compiled)}/{len(cands)} "
-          f"(make rc={r.returncode}, {len(compiled) == len(cands) and 'all' or 'partial'})")
+    print(f"compiled: {len(compiled)}/{len(cands)} (make rc={r.returncode})")
+    if len(compiled) != len(cands):
+        errs = [ln for ln in (r.stdout + r.stderr).splitlines()
+                if "error:" in ln or "No rule" in ln or "Nothing to be done" in ln]
+        for ln in errs[:8]:
+            print(f"  {ln.strip()[:150]}")
 
     bin_syms = symbols(BIN, "def")
     print(f"binary defines {len(bin_syms)} symbols")

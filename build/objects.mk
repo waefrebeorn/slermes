@@ -11,6 +11,44 @@
 
 
 # ── CLI_OBJ ──
+CLI_OBJ = $(CUPBOARD_HERMES_CLI) $(CUPBOARD_CLI) $(CUPBOARD_AGENT) \
+    $(CUPBOARD_GATEWAY) $(CUPBOARD_TOOLS) $(CUPBOARD_CRON) $(CUPBOARD_MISC) \
+    $(PORT_OBJ)
+
+# ── PORT_OBJ ──
+PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
+    $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_GATEWAY) $(CUPBOARD_PORT_TOOLS) \
+    $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) $(CUPBOARD_PORT_MISC)
+
+# ── Object File Lists ──────────────────────────────────────────────
+# build/objects.mk -- cupboards and jars.
+#
+# Each CUPBOARD_* variable holds one subsystem's object files (the jars).
+# Add a new object to its subsystem's cupboard, never to a global list.
+# CLI_OBJ and PORT_OBJ are concatenations of their cupboards.
+#
+# Regenerate:  python scripts/organize_objects.py
+# Verify only: python scripts/organize_objects.py --check
+# Included by the top-level Makefile.
+
+
+# ── CLI_OBJ ──
+
+# ── PORT_OBJ ──
+
+# ── Object File Lists ──────────────────────────────────────────────
+# build/objects.mk -- cupboards and jars.
+#
+# Each CUPBOARD_* variable holds one subsystem's object files (the jars).
+# Add a new object to its subsystem's cupboard, never to a global list.
+# CLI_OBJ and PORT_OBJ are concatenations of their cupboards.
+#
+# Regenerate:  python scripts/organize_objects.py
+# Verify only: python scripts/organize_objects.py --check
+# Included by the top-level Makefile.
+
+
+# ── CLI_OBJ ──
 CUPBOARD_HERMES_CLI = src/hermes_cli/partial_compress.o \
     src/hermes_cli/setup_pure.o src/hermes_cli/dashboard_procs.o \
     src/hermes_cli/webhook.o src/hermes_cli/web_models.o \
@@ -165,9 +203,6 @@ CUPBOARD_CRON = src/cron/cron_jobs_time.o
 
 CUPBOARD_MISC = src/battery.o
 
-CLI_OBJ = $(CUPBOARD_HERMES_CLI) $(CUPBOARD_CLI) $(CUPBOARD_AGENT) \
-    $(CUPBOARD_GATEWAY) $(CUPBOARD_TOOLS) $(CUPBOARD_CRON) $(CUPBOARD_MISC) \
-    $(PORT_OBJ)
 
 # ── PORT_OBJ ──
 CUPBOARD_PORT_HERMES_CLI = src/hermes_cli/browser_connect_gaps.o \
@@ -509,7 +544,8 @@ CUPBOARD_PORT_AGENT = src/agent/auxiliary_client_gaps.o \
     src/agent/verification_evidence_gaps3.o src/agent/vertex_adapter_gaps3.o \
     src/agent/web_search_registry_gaps3.o src/agent/port_error_surface.o \
     src/agent/port_image_eviction_policy.o src/agent/port_compaction_events.o \
-    src/agent/port_markdown_tables.o src/agent/port_turn_liveness.o
+    src/agent/port_markdown_tables.o src/agent/port_turn_liveness.o \
+    src/agent/azure_identity_adapter_ports.o src/agent/browser_provider_ports.o src/agent/browser_registry_ports.o src/agent/codex_event_projector_ports.o src/agent/codex_responses_adapter_ports.o src/agent/context_engine_ports.o src/agent/credits_tracker_ports.o src/agent/file_safety_ports.o src/agent/hermes_tools_mcp_server_ports.o src/agent/insights_ports.o src/agent/iteration_budget_ports.o
 
 CUPBOARD_PORT_GATEWAY = src/gateway/run_gaps.o \
     src/gateway/hosted_room_driver_gaps.o \
@@ -661,9 +697,6 @@ CUPBOARD_PORT_MISC = src/skills/skills_parser.o src/sandbox_escape.o \
     lib/libwubuoffice/src/wubuzip/limitcode.o src/provider/token_exchange.o \
     src/hermes_logging.o src/infrastructure_stubs.o
 
-PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
-    $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_GATEWAY) $(CUPBOARD_PORT_TOOLS) \
-    $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) $(CUPBOARD_PORT_MISC)
 
 # ── Object File Lists ──────────────────────────────────────────────
 # All source file objects organized by subsystem
