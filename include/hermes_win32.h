@@ -3,7 +3,22 @@
  *
  * Only POSIX/ISO surfaces MinGW lacks live here. Behavioural gaps (no fork(),
  * no real tty attributes, no POSIX uids) fail closed rather than pretending to
- * succeed — a silent wrong answer would poison oracle parity. */
+ * succeed — a silent wrong answer would poison oracle parity.
+ *
+ * This header is also force-included into every translation unit via
+ * `-include hermes_win32.h`, so under PROFILE=strict its own ~1200 warnings
+ * drowned every project warning (see docs/dev/strict-baseline.md). Silence only
+ * the warning classes this shim provokes; project code is still fully checked. */
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wtype-limits"
+#pragma GCC diagnostic ignored "-Wbuiltin-declaration-mismatch"
+#endif
 #ifndef SLERMES_HERMES_WIN32_H
 #define SLERMES_HERMES_WIN32_H
 
@@ -789,4 +804,7 @@ static inline char *strndup(const char *s, size_t n) {
     out[len] = '\0';
     return out;
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 #endif /* SLERMES_HERMES_WIN32_H */
