@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_config_nested.py -- diffs the C nested-config port against Python.
+"""sta_oracle_config_nested.py -- diffs the C nested-config port against Python.
 
 Reads the harness's JSONL on stdin and compares each result with the real
 hermes_cli/config.py source, extracted by ast (the module itself cannot be

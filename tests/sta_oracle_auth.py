@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_auth.py -- diffs the C hermes_cli/auth.py port against the real source.
+"""sta_oracle_auth.py -- diffs the C hermes_cli/auth.py port against the real source.
 
 The Python reference is ast-extracted from auth.py (which is not importable: it
 pulls pm, agent.credential_persistence, webbrowser, threading, ...). urlparse is

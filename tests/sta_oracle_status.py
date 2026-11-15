@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_status.py -- diffs the C gateway/status.py port against the real source.
+"""sta_oracle_status.py -- diffs the C gateway/status.py port against the real source.
 
 Reads the harness JSONL on stdin. The Python reference is extracted with ast
 (the module imports heavy gateway machinery that is not importable here).

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_config.py -- diffs the C port of hermes_cli/config.py against Python.
+"""sta_oracle_config.py -- diffs the C port of hermes_cli/config.py against Python.
 
 Reads the harness's JSONL on stdin (one object per case, carrying the C result)
 and compares each `out` against the real Python source.

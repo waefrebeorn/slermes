@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_auxiliary_client.py -- diffs the C port against the real Python.
+"""sta_oracle_auxiliary_client.py -- diffs the C port against the real Python.
 
 Reads the harness JSONL on stdin. The Python reference is extracted with ast
 from agent/auxiliary_client.py (the module itself cannot be imported here:

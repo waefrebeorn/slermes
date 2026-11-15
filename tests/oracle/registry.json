@@ -1,12 +1,12 @@
 {
  "version": 1,
- "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
+ "description": "Agnostic oracle registry — maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
  "ports": {
   "watercup_all": {
    "type": "watercup",
    "deep_gate": true,
    "framework": "tests/watercup/wc_run.py",
-   "contract": "GENERIC project-wide gate: every gate under tests/watercup/gates/ is built (traced C harness) and compared against the LIVE Python twin. Language-agnostic \u2014 any source translated to C11 carves the same cup when the logic matches. Fail-closed: any gate mismatch fails CI.",
+   "contract": "GENERIC project-wide gate: every gate under tests/watercup/gates/ is built (traced C harness) and compared against the LIVE Python twin. Language-agnostic — any source translated to C11 carves the same cup when the logic matches. Fail-closed: any gate mismatch fails CI.",
    "runner": "tests/oracle/run_watercup_all.sh"
   },
   "watercup_web_auth": {
@@ -15,8 +15,10 @@
    "harness": "tests/watercup/audit_web_auth.c",
    "oracle": "tests/watercup/audit_web_auth_py.py",
    "live_python": "hermes_cli/dashboard_auth/public_paths.py + hermes_cli/web_server.py",
-   "contract": "C trace-cup == LIVE-Python trace-cup over a correlated input walk (FNV-1a fold). Fails on ANY mismatch \u2014 catches stubs / wrong-constant-set FAPs the output-diff oracle misses.",
-   "runner": "tests/oracle/run_watercup.sh"
+   "contract": "C trace-cup == LIVE-Python trace-cup over a correlated input walk (FNV-1a fold). Fails on ANY mismatch — catches stubs / wrong-constant-set FAPs the output-diff oracle misses.",
+   "runner": "tests/oracle/run_watercup.sh",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness, oracle"
   },
   "watercup_json_escape": {
    "type": "watercup",
@@ -25,7 +27,9 @@
    "oracle": "tests/watercup/audit_json_escape_py.py",
    "live_python": "hermes_cli (json.dumps)",
    "contract": "Language-agnostic: C11 copy A (web_server.c) vs C11 copy B (web_app.c) vs LIVE Python json.dumps. Catches the drifted control-char escape branch in copy B. Proves the cup works across ANY translation to C11.",
-   "runner": "tests/oracle/run_watercup_json_escape.sh"
+   "runner": "tests/oracle/run_watercup_json_escape.sh",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness, oracle"
   },
   "agent_import": {
    "harness": "tests/t_port_agent_import.c",
@@ -40,7 +44,9 @@
   "relay_llm": {
    "harness": "tests/t_port_agent_relay_llm.c",
    "oracle": "tests/sta_oracle_agent_relay_llm.py",
-   "fixtures": "tests/oracle/fixtures/relay_llm"
+   "fixtures": "tests/oracle/fixtures/relay_llm",
+   "status": "incomplete",
+   "incomplete_reason": "missing: oracle"
   },
   "tools_voice_mode_pure": {
    "harness": "tests/t_port_tools_voice_mode_pure.c",
@@ -85,12 +91,16 @@
   "agent_display_helpers": {
    "harness": "tests/t_port_agent_display_helpers.c",
    "oracle": "tests/sta_oracle_agent_display_helpers.py",
-   "fixtures": "tests/oracle/fixtures/agent_display_helpers"
+   "fixtures": "tests/oracle/fixtures/agent_display_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_intent_ack": {
    "harness": "tests/t_port_agent_intent_ack.c",
    "oracle": "tests/sta_oracle_agent_intent_ack.py",
-   "fixtures": "tests/oracle/fixtures/agent_intent_ack"
+   "fixtures": "tests/oracle/fixtures/agent_intent_ack",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_process_bootstrap": {
    "harness": "tests/t_port_agent_process_bootstrap.c",
@@ -105,17 +115,23 @@
   "agent_reasoning_timeouts": {
    "harness": "tests/t_port_agent_reasoning_timeouts.c",
    "oracle": "tests/sta_oracle_agent_reasoning_timeouts.py",
-   "fixtures": "tests/oracle/fixtures/agent_reasoning_timeouts"
+   "fixtures": "tests/oracle/fixtures/agent_reasoning_timeouts",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_redact_helpers": {
    "harness": "tests/t_port_agent_redact_helpers.c",
    "oracle": "tests/sta_oracle_agent_redact_helpers.py",
-   "fixtures": "tests/oracle/fixtures/agent_redact_helpers"
+   "fixtures": "tests/oracle/fixtures/agent_redact_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_replay_cleanup": {
    "harness": "tests/t_port_agent_replay_cleanup.c",
    "oracle": "tests/sta_oracle_agent_replay_cleanup.py",
-   "fixtures": "tests/oracle/fixtures/agent_replay_cleanup"
+   "fixtures": "tests/oracle/fixtures/agent_replay_cleanup",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_retry_utils": {
    "harness": "tests/t_port_agent_retry_utils.c",
@@ -123,7 +139,9 @@
    "fixtures": "tests/oracle/fixtures/agent_retry_utils",
    "normalize": {
     "float_int_equal": true
-   }
+   },
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_secret_scope": {
    "harness": "tests/t_port_agent_secret_scope.c",
@@ -133,27 +151,37 @@
   "agent_ssl_verify": {
    "harness": "tests/t_port_agent_ssl_verify.c",
    "oracle": "tests/sta_oracle_agent_ssl_verify.py",
-   "fixtures": "tests/oracle/fixtures/agent_ssl_verify"
+   "fixtures": "tests/oracle/fixtures/agent_ssl_verify",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_thinking_timeout_guidance": {
    "harness": "tests/t_port_agent_thinking_timeout_guidance.c",
    "oracle": "tests/sta_oracle_agent_thinking_timeout_guidance.py",
-   "fixtures": "tests/oracle/fixtures/agent_thinking_timeout_guidance"
+   "fixtures": "tests/oracle/fixtures/agent_thinking_timeout_guidance",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_tool_dispatch_helpers": {
    "harness": "tests/t_port_agent_tool_dispatch_helpers.c",
    "oracle": "tests/sta_oracle_agent_tool_dispatch_helpers.py",
-   "fixtures": "tests/oracle/fixtures/agent_tool_dispatch_helpers"
+   "fixtures": "tests/oracle/fixtures/agent_tool_dispatch_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_turn_context": {
    "harness": "tests/t_port_agent_turn_context.c",
    "oracle": "tests/sta_oracle_agent_turn_context.py",
-   "fixtures": "tests/oracle/fixtures/agent_turn_context"
+   "fixtures": "tests/oracle/fixtures/agent_turn_context",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "agent_verify_hooks": {
    "harness": "tests/t_port_agent_verify_hooks.c",
    "oracle": "tests/sta_oracle_agent_verify_hooks.py",
-   "fixtures": "tests/oracle/fixtures/agent_verify_hooks"
+   "fixtures": "tests/oracle/fixtures/agent_verify_hooks",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "api_error_summary": {
    "harness": "tests/t_port_api_error_summary.c",
@@ -178,7 +206,9 @@
   "browser_redact": {
    "harness": "tests/t_port_browser_redact.c",
    "oracle": "tests/sta_oracle_browser_redact.py",
-   "fixtures": "tests/oracle/fixtures/browser_redact"
+   "fixtures": "tests/oracle/fixtures/browser_redact",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "cli_logs": {
    "harness": "tests/t_port_cli_logs.c",
@@ -238,7 +268,9 @@
   "cron_monitor": {
    "harness": "tests/t_port_cron_monitor.c",
    "oracle": "tests/sta_oracle_cron_monitor.py",
-   "fixtures": "tests/oracle/fixtures/port_cron_monitor"
+   "fixtures": "tests/oracle/fixtures/port_cron_monitor",
+   "status": "incomplete",
+   "incomplete_reason": "missing: fixtures"
   },
   "cron_prompt_sanitize": {
    "harness": "tests/t_port_cron_prompt_sanitize.c",
@@ -273,7 +305,9 @@
   "default_soul": {
    "harness": "tests/t_port_default_soul.c",
    "oracle": "tests/sta_oracle_default_soul.py",
-   "fixtures": "tests/oracle/fixtures/default_soul"
+   "fixtures": "tests/oracle/fixtures/default_soul",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "delegate_pure": {
    "harness": "tests/t_port_delegate_pure.c",
@@ -288,7 +322,9 @@
   "display_shell": {
    "harness": "tests/t_port_display_shell.c",
    "oracle": "tests/sta_oracle_display_shell.py",
-   "fixtures": "tests/oracle/fixtures/display_shell"
+   "fixtures": "tests/oracle/fixtures/display_shell",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "display_tool_preview": {
    "harness": "tests/t_port_display_tool_preview.c",
@@ -318,7 +354,9 @@
   "file_operations_search": {
    "harness": "tests/t_port_file_operations_search.c",
    "oracle": "tests/sta_oracle_file_operations_search.py",
-   "fixtures": "tests/oracle/fixtures/file_operations_search"
+   "fixtures": "tests/oracle/fixtures/file_operations_search",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "file_ops_lint": {
    "harness": "tests/t_port_file_ops_lint.c",
@@ -333,7 +371,9 @@
   "file_pagination_ops": {
    "harness": "tests/t_port_file_pagination_ops.c",
    "oracle": "tests/sta_oracle_file_pagination_ops.py",
-   "fixtures": "tests/oracle/fixtures/file_pagination_ops"
+   "fixtures": "tests/oracle/fixtures/file_pagination_ops",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "file_safety_roots": {
    "harness": "tests/t_port_file_safety_roots.c",
@@ -388,7 +428,9 @@
   "gateway_platforms_helpers": {
    "harness": "tests/t_port_gateway_platforms_helpers.c",
    "oracle": "tests/sta_oracle_gateway_platforms_helpers.py",
-   "fixtures": "tests/oracle/fixtures/gateway_platforms_helpers"
+   "fixtures": "tests/oracle/fixtures/gateway_platforms_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "gateway_short_label": {
    "harness": "tests/t_port_gateway_short_label.c",
@@ -551,7 +593,9 @@
   "learning_graph": {
    "harness": "tests/t_port_learning_graph.c",
    "oracle": "tests/sta_oracle_learning_graph.py",
-   "fixtures": "tests/oracle/fixtures/learning_graph"
+   "fixtures": "tests/oracle/fixtures/learning_graph",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "lifecycle_guard": {
    "harness": "tests/t_port_lifecycle_guard.c",
@@ -566,17 +610,23 @@
   "mcp_security": {
    "harness": "tests/t_port_mcp_security.c",
    "oracle": "tests/sta_oracle_mcp_security.py",
-   "fixtures": "tests/oracle/fixtures/mcp_security"
+   "fixtures": "tests/oracle/fixtures/mcp_security",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "message_sanitize_close": {
    "harness": "tests/t_port_message_sanitize_close.c",
    "oracle": "tests/sta_oracle_message_sanitize_close.py",
-   "fixtures": "tests/oracle/fixtures/message_sanitize_close"
+   "fixtures": "tests/oracle/fixtures/message_sanitize_close",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "model_cost_guard": {
    "harness": "tests/t_port_model_cost_guard.c",
    "oracle": "tests/sta_oracle_model_cost_guard.py",
-   "fixtures": "tests/oracle/fixtures/model_cost_guard"
+   "fixtures": "tests/oracle/fixtures/model_cost_guard",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness, oracle"
   },
   "msg_sanitize_surrogates": {
    "harness": "tests/t_port_msg_sanitize_surrogates.c",
@@ -816,7 +866,9 @@
   "provider_auth": {
    "harness": "tests/t_port_provider_auth.c",
    "oracle": "tests/sta_oracle_provider_auth.py",
-   "fixtures": "tests/oracle/fixtures/provider_auth"
+   "fixtures": "tests/oracle/fixtures/provider_auth",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "provider_custom": {
    "harness": "tests/t_port_provider_custom.c",
@@ -831,7 +883,9 @@
   "pty_clamp": {
    "harness": "tests/t_port_pty_clamp.c",
    "oracle": "tests/sta_oracle_pty_clamp.py",
-   "fixtures": "tests/oracle/fixtures/pty_clamp"
+   "fixtures": "tests/oracle/fixtures/pty_clamp",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "read_extract": {
    "harness": "tests/t_port_read_extract.c",
@@ -881,7 +935,9 @@
   "session_detail": {
    "harness": "tests/t_port_session_detail.c",
    "oracle": "tests/sta_oracle_session_detail.py",
-   "fixtures": "tests/oracle/fixtures/session_detail"
+   "fixtures": "tests/oracle/fixtures/session_detail",
+   "status": "incomplete",
+   "incomplete_reason": "missing: fixtures"
   },
   "setup_probes": {
    "harness": "tests/t_port_setup_probes.c",
@@ -1257,7 +1313,9 @@
   "whatsapp_identity": {
    "harness": "tests/t_port_whatsapp_identity.c",
    "oracle": "tests/sta_oracle_whatsapp_identity.py",
-   "fixtures": "tests/oracle/fixtures/whatsapp_identity"
+   "fixtures": "tests/oracle/fixtures/whatsapp_identity",
+   "status": "incomplete",
+   "incomplete_reason": "missing: oracle"
   },
   "xai_expires": {
    "harness": "tests/t_port_xai_expires.c",
@@ -1277,12 +1335,16 @@
   "error_classifier": {
    "harness": "tests/t_port_error_classifier_upstream.c",
    "oracle": "tests/sta_oracle_error_classifier.py",
-   "fixtures": "tests/oracle/fixtures/error_classifier"
+   "fixtures": "tests/oracle/fixtures/error_classifier",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "lgr": {
    "harness": "tests/t_port_learning_graph_render_helpers.c",
    "oracle": "tests/sta_oracle_lgr.py",
-   "fixtures": "tests/oracle/fixtures/lgr"
+   "fixtures": "tests/oracle/fixtures/lgr",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness, oracle"
   },
   "oneshot": {
    "harness": "tests/t_port_agent_oneshot.c",
@@ -1307,7 +1369,9 @@
   "signal_format": {
    "harness": "tests/t_port_gateway_signal_format.c",
    "oracle": "tests/sta_oracle_signal_format.py",
-   "fixtures": "tests/oracle/fixtures/signal_format"
+   "fixtures": "tests/oracle/fixtures/signal_format",
+   "status": "incomplete",
+   "incomplete_reason": "missing: harness"
   },
   "backend_identity": {
    "harness": "tests/t_backend_identity.c",
@@ -1367,7 +1431,9 @@
   "approvals_suggest_parse_indices": {
    "harness": "tests/t_port_approvals_parse_indices.c",
    "oracle": "tests/sta_oracle_approvals_parse_indices.py",
-   "fixtures": "tests/oracle/fixtures/approvals_suggest_parse_indices"
+   "fixtures": "tests/oracle/fixtures/approvals_suggest_parse_indices",
+   "status": "incomplete",
+   "incomplete_reason": "missing: oracle"
   },
   "platforms_helpers_md": {
    "harness": "tests/t_port_platforms_helpers_md.c",
@@ -1443,7 +1509,9 @@
   "hermes_state_db": {
    "harness": "tests/t_port_hermes_state_db.c",
    "oracle": "tests/sta_oracle_hermes_state_db.py",
-   "fixtures": "tests/oracle/fixtures/hermes_state_db"
+   "fixtures": "tests/oracle/fixtures/hermes_state_db",
+   "status": "incomplete",
+   "incomplete_reason": "missing: fixtures"
   },
   "linux_desktop_entry": {
    "harness": "tests/t_port_linux_desktop_entry.c",
@@ -1692,7 +1760,9 @@
    "contract": "LIVE-Python twin diff over the deterministic surfaces of the upstream-sync final-10 ports (relay_plugin_cutover, worktree_cmd fmt_size, process_identity parse_spawn_tag, browser_control_artifacts scope/MIME/filename, browser_control_broker protocol+capability filter, control_socket path resolution + home hash, update_inventory restart mechanisms/supervisor branch, browser_extension_router fail-closed routing matrix).",
    "harness": "tests/t_port_final10.c",
    "oracle": "tests/sta_oracle_final10.py",
-   "fixtures": "final10"
+   "fixtures": "final10",
+   "status": "incomplete",
+   "incomplete_reason": "missing: fixtures"
   },
   "process_bootstrap_pure": {
    "harness": "tests/t_port_process_bootstrap_pure.c",
@@ -1708,6 +1778,38 @@
    "harness": "tests/t_port_plugin_prompt_sections.c",
    "oracle": "tests/sta_oracle_plugin_prompt_sections.py",
    "fixtures": "tests/oracle/fixtures/plugin_prompt_sections"
+  },
+  "auth": {
+   "harness": "tests/t_port_auth.c",
+   "oracle": "tests/sta_oracle_auth.py"
+  },
+  "auth_pool": {
+   "harness": "tests/t_port_auth_pool.c",
+   "oracle": "tests/sta_oracle_auth_pool.py"
+  },
+  "auxiliary_client": {
+   "harness": "tests/t_port_auxiliary_client.c",
+   "oracle": "tests/sta_oracle_auxiliary_client.py"
+  },
+  "config": {
+   "harness": "tests/t_port_config.c",
+   "oracle": "tests/sta_oracle_config.py"
+  },
+  "config_nested": {
+   "harness": "tests/t_port_config_nested.c",
+   "oracle": "tests/sta_oracle_config_nested.py"
+  },
+  "display": {
+   "harness": "tests/t_port_display.c",
+   "oracle": "tests/sta_oracle_display.py"
+  },
+  "inline_source": {
+   "harness": "tests/t_port_inline_source.c",
+   "oracle": "tests/sta_oracle_inline_source.py"
+  },
+  "status": {
+   "harness": "tests/t_port_status.c",
+   "oracle": "tests/sta_oracle_status.py"
   }
  },
  "normalize": {

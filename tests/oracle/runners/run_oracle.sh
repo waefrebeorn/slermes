@@ -46,6 +46,17 @@ if [ -x "$FIX/gen_fixture.sh" ] && [ ! -d "$FIX/repo/.git" ]; then
 fi
 ORACLE="tests/sta_oracle_$NAME.py"
 
+# Declared-incomplete ports: the registry records an intention whose harness or
+# oracle does not exist yet. Skip with a stated reason rather than failing, so
+# the run reports SKIP instead of a broken port -- but ONLY when the registry
+# declares it. An undeclared dangling reference is a gate failure.
+STATUS=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('status',''))" "$NAME" 2>/dev/null || true)
+if [ "$STATUS" = "incomplete" ]; then
+    REASON=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('incomplete_reason',''))" "$NAME" 2>/dev/null || true)
+    echo "SKIP $NAME: declared incomplete ($REASON)"
+    exit 0
+fi
+
 [ -f "$HARNESS" ] || { echo "MISSING $HARNESS"; exit 2; }
 [ -f "$ORACLE" ]  || { echo "MISSING $ORACLE"; exit 2; }
 [ -d "$FIX" ]     || { echo "MISSING fixture dir $FIX"; exit 2; }

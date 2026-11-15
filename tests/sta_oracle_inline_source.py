@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_inline_source.py -- diffs the C status_inline_source.py port.
+"""sta_oracle_inline_source.py -- diffs the C status_inline_source.py port.
 
 Reads the harness JSONL on stdin. The Python reference is extracted with ast;
 the two option tables are supplied directly (the function imports them from

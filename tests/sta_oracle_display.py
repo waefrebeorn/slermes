@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_display.py -- diffs the C agent/display.py port against the real source.
+"""sta_oracle_display.py -- diffs the C agent/display.py port against the real source.
 
 Reads the harness JSONL on stdin. The Python reference is ast-extracted, with the
 transitive helper (_scan_quoted) and the two shell word-sets included. The `t()`

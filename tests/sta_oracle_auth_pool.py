@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""oracle_auth_pool.py -- diffs the C auth.py credential-pool port.
+"""sta_oracle_auth_pool.py -- diffs the C auth.py credential-pool port.
 
 ast-extracted from hermes_cli/auth.py. The cooldown merge is a SEAM on both
 sides: the harness passes NULL and the oracle passes `lambda e, d, p: e`, so what

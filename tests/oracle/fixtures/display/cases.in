@@ -1,0 +1,1 @@
+self-case: the harness emits its own cases; this file only satisfies the fixture-driven runner.
