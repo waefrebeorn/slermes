@@ -110,6 +110,7 @@ declare -A DEPS=(
   [version_info]="src/cli/port_version_info.o"
   [shared_metrics_norm]="src/cli/port_shared_metrics_contract.o lib/libjson/json.o"
   [update_pause_record]="src/hermes_cli/port_update_pause_record.o lib/libhash/hash.o lib/libjson/json.o"
+  [left_core_migration]="src/hermes_cli/port_left_core_migration.o src/agent/auxiliary_client_runtime.o lib/libjson/json.o"
   [hermes_state_keys]="src/agent/hermes_state/port_hermes_state_keys.o lib/libhash/hash.o lib/libjson/json.o"
   [kanban_schemas]="src/cli/port_kanban_schemas.o lib/libjson/json.o"
   [rfb_filter]="src/cli/port_rfb_filter.o lib/libjson/json.o"
