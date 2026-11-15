@@ -106,6 +106,80 @@ def py_validate(key, win):
         return 1 if "Invalid environment variable name" in str(e) else 2
 
 
+
+ns["_issue"] = lambda issues, sev, msg, hint: issues.append(
+    {"severity": sev, "message": msg, "hint": hint})
+
+# TRANSCRIBED from hermes_cli/config.py:1016-1049, not exec'd: the extraction
+# path for these four is defective (see commit 4dc1b6fd69). Kept small so the
+# transcription can be checked against the source by eye.
+_CP_LIKE = {"base_url", "api_key", "rate_limit_delay", "api_mode"}
+_CP_HINT = ("Change to:\n  custom_providers:\n    - name: my-provider\n"
+            "      base_url: https://...\n      api_key: ...")
+
+
+def _req_fields(issues, entry, label, fields, suffix=""):
+    for field, hint in fields:
+        if not entry.get(field):
+            ns["_issue"](issues, "warning",
+                         f"{label} is missing '{field}' field{suffix}", hint)
+
+
+def _val_cp(issues, cp):
+    if isinstance(cp, dict):
+        ns["_issue"](issues, "error",
+                    "custom_providers is a dict \u2014 it must be a YAML list "
+                    "(items prefixed with '-')", _CP_HINT)
+        susp = sorted(set(cp.keys()) & _CP_LIKE)
+        if susp:
+            ns["_issue"](issues, "warning",
+                        f"Root-level keys {susp} look like custom_providers entry "
+                        "fields",
+                        "These should be indented under a '- name: ...' list "
+                        "entry, not at root level")
+    elif isinstance(cp, list):
+        for i, e in enumerate(cp):
+            if not isinstance(e, dict):
+                ns["_issue"](issues, "warning",
+                            f"custom_providers[{i}] is not a dict "
+                            f"(got {type(e).__name__})",
+                            "Each entry should have at minimum: name, base_url")
+            else:
+                _req_fields(issues, e, f"custom_providers[{i}]",
+                            (("name", "Add a name, e.g.: name: my-provider"),
+                             ("base_url", "Add the API endpoint URL, e.g.: "
+                              "base_url: https://api.example.com/v1")))
+    else:
+        ns["_issue"](issues, "error",
+                    f"custom_providers is a {type(cp).__name__} \u2014 it must be "
+                    "a YAML list (items prefixed with '-'); legacy "
+                    "custom_providers entries are ignored until it is", _CP_HINT)
+
+
+def _val_fb(issues, fb):
+    if isinstance(fb, list):
+        for i, e in enumerate(fb):
+            if not isinstance(e, dict):
+                ns["_issue"](issues, "error",
+                            f"fallback_model[{i}] should be a dict, "
+                            f"got {type(e).__name__}",
+                            "Each entry needs provider + model")
+            else:
+                _req_fields(issues, e, f"fallback_model[{i}]",
+                            (("provider", "Add: provider: openrouter (or another provider)"),
+                             ("model", "Add: model: <model-name>")))
+    elif not isinstance(fb, dict):
+        ns["_issue"](issues, "error",
+                    "fallback_model should be a dict with 'provider' and 'model', "
+                    f"got {type(fb).__name__}",
+                    "Change to:\n  fallback_model:\n    provider: openrouter\n"
+                    "    model: anthropic/claude-sonnet-4")
+    elif fb:
+        _req_fields(issues, fb, "fallback_model",
+                    (("provider", "Add: provider: openrouter (or another provider)"),
+                     ("model", "Add: model: anthropic/claude-sonnet-4 (or another model)")),
+                    suffix=" \u2014 fallback will be disabled")
+
 cases = mismatches = 0
 shown = 0
 for line in sys.stdin:
@@ -140,9 +214,25 @@ for line in sys.stdin:
         want = bool(ns["is_uv_tool_install"]())
     elif fn == "unsupmethod":
         want = bool(ns["is_unsupported_install_method"](arg))
+    elif fn == "valcp":
+        issues = []
+        _val_cp(issues, json.loads(c.get("arg", "null")))
+        want = issues
+    elif fn == "valfb":
+        issues = []
+        _val_fb(issues, json.loads(c.get("arg", "null")))
+        want = issues
     else:
         continue
 
+    got = c["out"]
+    # The harness emits `out` as a JSON string holding serialised JSON; parse it
+    # back so arrays/objects compare as objects, not as strings.
+    if isinstance(got, str) and got != "MISSING":
+        try:
+            got = json.loads(got)
+        except json.JSONDecodeError:
+            pass
     if got != want:
         mismatches += 1
         if shown < 12:

@@ -421,20 +421,28 @@ ac_validate_custom_providers(json_t *issues, json_t *cp)
         ac_cfg_issue(issues, "error",
                      "custom_providers is a dict — it must be a YAML list "
                      "(items prefixed with '-')", CP_LIST_HINT);
-        /* suspicious = sorted(set(cp) & LIKE_FIELDS), rendered as a Python list */
+        /* suspicious = sorted(set(cp) & LIKE_FIELDS) -- sorted, not table order */
+        const char *hits[sizeof(like_fields) / sizeof(like_fields[0])];
+        size_t nh = 0;
+        for (size_t k = 0; k < sizeof(like_fields) / sizeof(like_fields[0]); k++)
+            if (json_obj_get(cp, like_fields[k]))
+                hits[nh++] = like_fields[k];
+        for (size_t a = 1; a < nh; a++) {
+            const char *cur = hits[a];
+            size_t b = a;
+            while (b > 0 && strcmp(hits[b - 1], cur) > 0) {
+                hits[b] = hits[b - 1];
+                b--;
+            }
+            hits[b] = cur;
+        }
         char buf[512];
         size_t w = (size_t)snprintf(buf, sizeof(buf), "[");
-        int first = 1;
-        for (size_t k = 0; k < sizeof(like_fields) / sizeof(like_fields[0]); k++) {
-            if (!json_obj_get(cp, like_fields[k]))
-                continue;
-            if (!first)
-                w += (size_t)snprintf(buf + w, sizeof(buf) - w, ", ");
-            w += (size_t)snprintf(buf + w, sizeof(buf) - w, "'%s'", like_fields[k]);
-            first = 0;
-        }
+        for (size_t k = 0; k < nh; k++)
+            w += (size_t)snprintf(buf + w, sizeof(buf) - w, "%s'%s'",
+                                  k ? ", " : "", hits[k]);
         snprintf(buf + w, sizeof(buf) - w, "]");
-        if (!first) {
+        if (nh > 0) {
             char msg[1024];
             snprintf(msg, sizeof(msg),
                      "Root-level keys %s look like custom_providers entry fields",
@@ -466,7 +474,7 @@ ac_validate_fallback_model(json_t *issues, json_t *fb)
         "Change to:\n  fallback_model:\n    provider: openrouter\n"
         "    model: anthropic/claude-sonnet-4";
 
-    if (!fb || fb->type == JSON_NULL)
+    if (!fb)
         return;
     if (fb->type == JSON_ARRAY) {
         ac_validate_entry_list(issues, fb, "fallback_model",

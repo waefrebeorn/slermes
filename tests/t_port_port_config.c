@@ -140,5 +140,55 @@ int main(void)
                cfg_is_unsupported_install_method(""));
     }
 
+
+    {
+        static const char *const CPS[] = {
+            "null", "\"str\"", "42", "true", "{}",
+            "{\"base_url\":\"u\"}",
+            "{\"base_url\":\"u\",\"api_key\":\"k\",\"api_mode\":\"x\"}",
+            "[]", "[{\"name\":\"n\",\"base_url\":\"u\"}]",
+            "[{\"name\":\"n\"}]", "[null]", "[\"str\"]", "[42]",
+            "[{\"name\":\"n\",\"base_url\":\"u\"},{\"base_url\":\"u\"}]",
+        };
+        for (size_t i = 0; i < sizeof(CPS) / sizeof(CPS[0]); i++) {
+            json_t *cp = json_parse(CPS[i], NULL);
+            json_t *issues = json_array();
+            if (cp && issues) {
+                ac_validate_custom_providers(issues, cp);
+                char *out = json_serialize(issues);
+                printf("{\"fn\":\"valcp\",\"arg\":");
+                jstr(CPS[i]);
+                printf(",\"out\":");
+                jstr(out ? out : "");
+                fputs("}\n", stdout);
+                free(out);
+            }
+            json_free(cp);
+            json_free(issues);
+        }
+        static const char *const FBS[] = {
+            "null", "\"str\"", "42", "true", "{}",
+            "{\"provider\":\"openrouter\",\"model\":\"m\"}",
+            "{\"provider\":\"openrouter\"}", "{\"model\":\"m\"}",
+            "[]", "[{\"provider\":\"p\",\"model\":\"m\"}]",
+            "[{\"provider\":\"p\"}]", "[null]", "[\"str\"]", "[{}]",
+        };
+        for (size_t i = 0; i < sizeof(FBS) / sizeof(FBS[0]); i++) {
+            json_t *fb = json_parse(FBS[i], NULL);
+            json_t *issues = json_array();
+            if (fb && issues) {
+                ac_validate_fallback_model(issues, fb);
+                char *out = json_serialize(issues);
+                printf("{\"fn\":\"valfb\",\"arg\":");
+                jstr(FBS[i]);
+                printf(",\"out\":");
+                jstr(out ? out : "");
+                fputs("}\n", stdout);
+                free(out);
+            }
+            json_free(fb);
+            json_free(issues);
+        }
+    }
     return 0;
 }
