@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 # run_oracle.sh <port_name> [fixtures_subdir]
 #
+# The Hermes desktop app prepends its payload tools dir to PATH, and the
+# WindowsApps alias stubs in it (dirname, mkdir, grep, diff, bash) exit 0 for
+# --version but fail on real use with "Permission denied". That kills this
+# script at its first `dirname`. Filter those directories out using bash
+# builtins only, so the fix works even while PATH is still broken.
+_clean_path=""
+IFS=':' read -r -a _path_parts <<< "$PATH"
+for _d in "${_path_parts[@]}"; do
+  case "$_d" in
+    */WindowsApps*) continue ;;
+  esac
+  _clean_path="${_clean_path:+$_clean_path:}$_d"
+done
+PATH="$_clean_path"
+export PATH
+#
 # Generic "diff" oracle runner (contract B from README.md).
 # Compiles tests/t_port_<port_name>.c together with the project object set,
 # then for every fixture in tests/oracle/fixtures/<subdir|port_name>/:
@@ -113,10 +129,6 @@ LINKCMD=${LINKCMD//@slermes.link.rsp/@$RSP}
 # banner and the oracle compared two empty outputs. Put it first so its main()
 # wins under -Wl,--allow-multiple-definition.
 HARNESS_OBJ="$BUILD_DIR/obj/tests/t_port_$NAME.o"
-if [ ! -f "$HARNESS_OBJ" ]; then
-  echo "FATAL: harness object $HARNESS_OBJ was not compiled" >&2
-  exit 2
-fi
 LINKCMD="$LINKCMD $HARNESS_OBJ"
 # There is no `diff` on this box: MSYS2 here ships no diffutils, and PATH
 # resolves the name to a WindowsApps alias stub that fails with "Permission
@@ -175,7 +187,7 @@ for obj in $LINKCMD; do
             ;;
     esac
 done
-COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -I include $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
+COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -include hermes_win32.h -I include $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
 COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="\/share\/slermes\/docs"#g')
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
@@ -210,6 +222,11 @@ fi
 rm -f "$BUILD_DIR/tt_$NAME"
 # shellcheck disable=SC2086
 bash -c "$COMPILE" >/tmp/oracle_compile.log 2>&1 || true
+if [ ! -f "$HARNESS_OBJ" ]; then
+  echo "FATAL: harness did not compile -> $HARNESS_OBJ" >&2
+  head -12 /tmp/oracle_compile.log >&2
+  exit 2
+fi
 # shellcheck disable=SC2086
 bash -c "$LINKCMD -Wl,--allow-multiple-definition" >/tmp/oracle_link.log 2>&1 || true
 if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
