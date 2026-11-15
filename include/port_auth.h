@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 
+#include "libjson/json.h"
+
 /* _nonempty_str: True for a non-None str with non-whitespace content. */
 int st_nonempty_str(const char *value);
 
@@ -37,5 +39,39 @@ int st_is_actual_local_base_url(const char *base_url);
  * endpoint. *default_url* is the empty-input fallback (a seam, not a literal). */
 void st_normalize_actual_base_url(const char *base_url, const char *default_url,
                                   char *out, size_t cap);
+
+/* ==== credential-pool row helpers (JSON in/out) ==== */
+
+/* _credential_token_pair: (access_token, refresh_token) for a row; both empty
+ * when the row is not an object. Returns 1 when *row* is an object. */
+int st_credential_token_pair(json_t *row, char *access, size_t acap,
+                             char *refresh, size_t rcap);
+
+/* _entry_ids: rows with a truthy "id". *rows* holds borrowed pointers, *ids*
+ * malloc'd copies (caller frees). */
+int st_entry_ids(json_t *entries, json_t **rows, char **ids, int maxn);
+
+/* _token_pairs_by_id: one pair per row id, INCLUDING blank pairs. *access* and
+ * *refresh* are malloc'd (caller frees). */
+int st_token_pairs_by_id(json_t *entries, char **ids, char **access,
+                         char **refresh, int maxn);
+
+/* _suppressed_source_list: canonical list-form sources; a legacy mapping is
+ * MIGRATED to list form in place. *out* holds malloc'd strings. */
+int st_suppressed_source_list(json_t *suppressed, const char *provider_id,
+                              char **out, int maxn);
+
+/* _merge_pool_row_generation: keep a newer on-disk token generation
+ * authoritative. *cooldown_cb* stands in for _merge_disk_cooldown_state (a seam:
+ * that merge needs wall-clock and the PooledCredential model). base_access /
+ * base_refresh NULL means "no base". Serialises the result into *out*. */
+char *st_merge_pool_row_generation(json_t *entry, json_t *disk,
+                                   const char *provider_id,
+                                   const char *base_access,
+                                   const char *base_refresh,
+                                   int status_cleared,
+                                   json_t *(*cooldown_cb)(json_t *, json_t *,
+                                                         const char *),
+                                   char *out, size_t cap);
 
 #endif /* SLERMES_PORT_AUTH_H */

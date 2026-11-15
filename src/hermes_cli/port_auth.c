@@ -15,6 +15,8 @@
  */
 #include "port_auth.h"
 
+#include "libjson/json.h"
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -327,4 +329,206 @@ void st_normalize_actual_base_url(const char *base_url, const char *default_url,
     }
     if (cap)
         snprintf(out, cap, "%s", s);
+}
+
+/* ── credential-pool row helpers ──────────────────────────────────────────
+ * PoP: st_credential_token_pair    @ hermes_cli/auth.py:_credential_token_pair
+ * PoP: st_entry_ids                @ hermes_cli/auth.py:_entry_ids
+ * PoP: st_token_pairs_by_id        @ hermes_cli/auth.py:_token_pairs_by_id
+ * PoP: st_suppressed_source_list   @ hermes_cli/auth.py:_suppressed_source_list
+ * PoP: st_merge_pool_row_generation @ hermes_cli/auth.py:_merge_pool_row_generation
+ */
+
+static void jstr_or_empty(json_t *obj, const char *key, char *out, size_t cap)
+{
+    if (out && cap)
+        out[0] = '\0';
+    json_t *v = (obj && obj->type == JSON_OBJECT) ? json_obj_get(obj, key) : NULL;
+    if (v && v->type == JSON_STRING && out && cap)
+        snprintf(out, cap, "%s", v->str_val);
+}
+
+/* _credential_token_pair: (access_token, refresh_token) for a row; both empty
+ * when the row is not an object. Returns 1 when *row* is an object. */
+int st_credential_token_pair(json_t *row, char *access, size_t acap,
+                             char *refresh, size_t rcap)
+{
+    jstr_or_empty(row, "access_token", access, acap);
+    jstr_or_empty(row, "refresh_token", refresh, rcap);
+    return row && row->type == JSON_OBJECT;
+}
+
+/* _entry_ids: id -> row, for dict rows with a truthy "id". *rows* holds the
+ * borrowed element pointers; *ids* holds malloc'd copies. Caller frees ids. */
+int st_entry_ids(json_t *entries, json_t **rows, char **ids, int maxn)
+{
+    int n = 0;
+    if (!entries || entries->type != JSON_ARRAY)
+        return 0;
+    for (size_t i = 0; i < entries->c.count && n < maxn; i++) {
+        json_t *row = entries->c.items[i];
+        if (!row || row->type != JSON_OBJECT)
+            continue;
+        json_t *id = json_obj_get(row, "id");
+        if (!id || id->type != JSON_STRING || !id->str_val || !*id->str_val)
+            continue;
+        rows[n] = row;
+        ids[n] = strdup(id->str_val);
+        if (!ids[n])
+            break;
+        n++;
+    }
+    return n;
+}
+
+/* _token_pairs_by_id: one (access, refresh) pair per row id, INCLUDING blank
+ * pairs -- a blank base is a known generation, not an unknown one. */
+int st_token_pairs_by_id(json_t *entries, char **ids, char **access,
+                         char **refresh, int maxn)
+{
+    json_t *rows[256];
+    int n = st_entry_ids(entries, rows, ids, maxn > 256 ? 256 : maxn);
+    for (int i = 0; i < n; i++) {
+        access[i] = (char *)malloc(512);
+        refresh[i] = (char *)malloc(512);
+        if (!access[i] || !refresh[i])
+            break;
+        st_credential_token_pair(rows[i], access[i], 512, refresh[i], 512);
+    }
+    return n;
+}
+
+/* _suppressed_source_list: canonical list-form sources for *provider_id*. A
+ * legacy mapping (keys = source names) is MIGRATED to the list form in place.
+ * Returns the count, or 0 when the provider has no entry. */
+int st_suppressed_source_list(json_t *suppressed, const char *provider_id,
+                              char **out, int maxn)
+{
+    if (!suppressed || suppressed->type != JSON_OBJECT)
+        return 0;
+    json_t *raw = json_obj_get(suppressed, provider_id);
+    if (!raw)
+        return 0;
+
+    json_t *list = NULL;
+    if (raw->type == JSON_ARRAY) {
+        list = raw;
+    } else if (raw->type == JSON_OBJECT) {
+        list = json_array();
+        if (!list)
+            return 0;
+        for (size_t i = 0; i < raw->c.count; i++)
+            json_append(list, json_string(raw->c.keys[i]));
+        json_set(suppressed, provider_id, list);
+    } else {
+        return 0;
+    }
+
+    int n = 0;
+    for (size_t i = 0; i < list->c.count && n < maxn; i++) {
+        json_t *item = list->c.items[i];
+        if (!item || item->type != JSON_STRING || !item->str_val)
+            continue;
+        out[n++] = strdup(item->str_val);
+        if (!out[n - 1])
+            break;
+    }
+    return n;
+}
+
+static const char *const POOL_STATUS_FIELDS[] = {
+    "last_status", "last_status_at", "last_error_code", "last_error_reason",
+    "last_error_message", "last_error_reset_at", "status_cleared_at",
+};
+static const char *const POOL_TOKEN_GENERATION_FIELDS[] = {
+    "access_token", "refresh_token", "expires_at", "expires_at_ms",
+    "expires_in", "obtained_at", "last_refresh", "agent_key",
+    "agent_key_expires_at", "agent_key_expires_in", "agent_key_id",
+    "agent_key_obtained_at", "agent_key_reused", "scope", "inference_base_url",
+};
+
+/* _merge_pool_row_generation: keep a newer on-disk token generation
+ * authoritative during stale writes. *cooldown_cb* stands in for
+ * _merge_disk_cooldown_state (a seam; that merge needs wall-clock and the
+ * PooledCredential model). A NULL base access or refresh means "no base".
+ * Serialises the merged entry into *out*. */
+char *st_merge_pool_row_generation(json_t *entry, json_t *disk,
+                                   const char *provider_id,
+                                   const char *base_access,
+                                   const char *base_refresh,
+                                   int status_cleared,
+                                   json_t *(*cooldown_cb)(json_t *, json_t *,
+                                                         const char *),
+                                   char *out, size_t cap)
+{
+    json_t *merge_disk = status_cleared ? NULL : disk;
+
+    char da[512] = "", dr[512] = "";
+    st_credential_token_pair(disk, da, sizeof(da), dr, sizeof(dr));
+    int disk_has_pair = (*da != '\0') || (*dr != '\0');
+    int no_base = (base_access == NULL) && (base_refresh == NULL);
+    int same_pair = !no_base && strcmp(da, base_access ? base_access : "") == 0
+                    && strcmp(dr, base_refresh ? base_refresh : "") == 0;
+
+    json_t *target = entry;
+    json_t *owned = NULL;
+
+    if (!no_base && disk_has_pair && !same_pair) {
+        owned = json_copy(entry);
+        if (!owned) {
+            if (out && cap)
+                out[0] = '\0';
+            return NULL;
+        }
+        target = owned;
+
+        for (size_t k = 0; k < sizeof(POOL_TOKEN_GENERATION_FIELDS)
+                                / sizeof(POOL_TOKEN_GENERATION_FIELDS[0]); k++) {
+            const char *f = POOL_TOKEN_GENERATION_FIELDS[k];
+            json_t *v = (disk && disk->type == JSON_OBJECT) ? json_obj_get(disk, f)
+                                                            : NULL;
+            if (v)
+                json_set(target, f, json_copy(v));
+            else
+                json_obj_del(target, f);
+        }
+
+        json_t *ls = (entry && entry->type == JSON_OBJECT)
+                         ? json_obj_get(entry, "last_status") : NULL;
+        int is_dead = ls && ls->type == JSON_STRING && strcmp(ls->str_val, "dead") == 0;
+        if (!status_cleared && is_dead) {
+            for (size_t k = 0; k < sizeof(POOL_STATUS_FIELDS)
+                                    / sizeof(POOL_STATUS_FIELDS[0]); k++) {
+                const char *f = POOL_STATUS_FIELDS[k];
+                json_t *v = (disk && disk->type == JSON_OBJECT)
+                                ? json_obj_get(disk, f) : NULL;
+                if (v)
+                    json_set(target, f, json_copy(v));
+                else
+                    json_obj_del(target, f);
+            }
+            const char *f = "failure_reason";
+            json_t *v = (disk && disk->type == JSON_OBJECT) ? json_obj_get(disk, f)
+                                                            : NULL;
+            if (v)
+                json_set(target, f, json_copy(v));
+            else
+                json_obj_del(target, f);
+        }
+    }
+
+    json_t *result = cooldown_cb ? cooldown_cb(target, merge_disk, provider_id)
+                                 : target;
+    if (out && cap) {
+        if (result) {
+            char *s = json_serialize(result);
+            snprintf(out, cap, "%s", s ? s : "");
+            free(s);
+        } else {
+            snprintf(out, cap, "%s", "");
+        }
+    }
+    if (owned)
+        json_free(owned);
+    return out;
 }
