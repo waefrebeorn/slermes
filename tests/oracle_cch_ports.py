@@ -96,6 +96,10 @@ def main() -> int:
                 os.environ["HERMES_CODEX_HARD_TIMEOUT_SECONDS"] = str(i["hard"])
                 want = cch._bound_openai_codex_stale_timeout(
                     i["stale_timeout"], i["est_tokens"])
+            elif fn == "bedrock_floor":
+                got = cch._bedrock_reasoning_stale_floor(i["model_id"])
+                # C uses -1.0 where Python uses None.
+                want = -1.0 if got is None else got
             else:
                 continue
         except Exception as exc:                       # noqa: BLE001

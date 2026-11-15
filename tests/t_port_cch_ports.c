@@ -45,6 +45,27 @@ static void bound_case(double stale, int est, double hard)
     fflush(stdout);
 }
 
+static void bedrock_case(const char *id)
+{
+    double r = agent_cch_bedrock_reasoning_stale_floor(id);
+    printf("{\"case\":%d,\"fn\":\"bedrock_floor\",\"in\":{\"model_id\":", ++cs);
+    {
+        putchar('"');
+        for (const char *p = id; *p; p++) {
+            unsigned char ch = (unsigned char)*p;
+            if (ch == '"' || ch == '\\') {
+                putchar('\\');
+                putchar(ch);
+            } else {
+                putchar(ch);
+            }
+        }
+        putchar('"');
+    }
+    printf("},\"out\":%.17g}\n", r);
+    fflush(stdout);
+}
+
 int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -105,6 +126,27 @@ int main(void)
     bound_case(2000.0, 200000, -1.0);
     bound_case(1200.0, 200000, 1500.0);
     bound_case(300.0, 60000, 1500.0);
+
+    /* _bedrock_reasoning_stale_floor */
+    bedrock_case("");
+    bedrock_case("us.anthropic.claude-opus-4-6-v1:0");
+    bedrock_case("global.anthropic.claude-sonnet-4-5-v1:0");
+    bedrock_case("eu.anthropic.claude-sonnet-4.6-v1:0");
+    bedrock_case("apac.amazon.nova-pro-v1:0");
+    bedrock_case("us.meta.llama4-maverick-17b-instruct-v1:0");
+    bedrock_case("deepseek-r1-v1:0");
+    bedrock_case("us.deepseek.deepseek-r1-v1:0");
+    bedrock_case("anthropic.claude-opus-4-8");
+    bedrock_case("claude-opus-4-6");
+    bedrock_case("qwen3-235b-a22b");
+    bedrock_case("some-other-qwen3");
+    bedrock_case("llama-4-70b-o1-preview");
+    bedrock_case("o3-mini");
+    bedrock_case("o3");
+    bedrock_case("openrouter/qwen3");
+    bedrock_case("  US.Anthropic.Claude-Opus-4-6-v1:0  ");
+    bedrock_case("unknown-model-v1:0");
+    bedrock_case("af.grok-4-fast-reasoning");
 
     return 0;
 }

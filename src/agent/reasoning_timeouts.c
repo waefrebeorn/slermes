@@ -7,7 +7,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
-#include <regex.h>
+#include <strings.h>
 
 /* Faithful copy of _REASONING_STALE_TIMEOUT_FLOORS (slug, floor_seconds). */
 typedef struct { const char *slug; int floor; } rt_floor_t;
@@ -37,13 +37,18 @@ static const rt_floor_t RT_FLOORS[] = {
 #define RT_N (int)(sizeof(RT_FLOORS)/sizeof(RT_FLOORS[0]))
 
 /* PoP: rt_get_pattern @ agent/reasoning_timeouts.py:_get_pattern */
-/* Build the wrapper regex `^slug($|[-._])` for a slug — mirrors Python's
- * _get_pattern (start-of-slug + slug + end-or-separator right anchor).
- * Returns 0 on success, non-zero on overflow. */
-static int rt_get_pattern(const char *slug, char *out, size_t outsz)
+/* The pattern is `^slug($|[-._])`. That is a plain prefix test with an
+ * end-or-separator right anchor, so it is evaluated directly: including
+ * <regex.h> here resolves to include/compat/regex.h, a shim that requires a
+ * tre/regex.h this checkout does not carry, and libregex pulls in an image
+ * Smart App Control refuses to run. Returns 1 when `name` matches `slug`. */
+static int rt_pattern_matches(const char *slug, const char *name)
 {
-    int n = snprintf(out, outsz, "^%s($|[-._])", slug);
-    return (n < 0 || (size_t)n >= outsz) ? -1 : 0;
+    size_t sl = strlen(slug);
+    if (strncmp(name, slug, sl) != 0)
+        return 0;
+    char nx = name[sl];
+    return nx == '\0' || nx == '-' || nx == '.' || nx == '_';
 }
 
 /* PoP: floor @ agent/reasoning_timeouts.py:_match_any */
@@ -60,13 +65,8 @@ static double rt_match_any(const char *slug)
             }
     for (int k = 0; k < RT_N; k++) {
         const char *sl = RT_FLOORS[idx[k]].slug;
-        char pat[256];
-        if (rt_get_pattern(sl, pat, sizeof(pat)) != 0) continue;
-        regex_t re;
-        if (regcomp(&re, pat, REG_EXTENDED | REG_NOSUB) != 0) continue;
-        int rc = regexec(&re, slug, 0, NULL, 0);
-        regfree(&re);
-        if (rc == 0) return (double)RT_FLOORS[idx[k]].floor;
+        if (rt_pattern_matches(sl, slug))
+            return (double)RT_FLOORS[idx[k]].floor;
     }
     return -1.0;
 }

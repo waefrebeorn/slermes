@@ -364,6 +364,7 @@ src/hermes_cli/profile_gaps.o \
  src/agent/port_conversation_compression.o \
  src/agent/port_model_metadata.o \
  src/agent/chat_completion_helpers_pure.o \
+ src/agent/reasoning_timeouts.o \
  src/hermes_cli/smc_event_extractors.o \
  src/gateway/relay/relay_shared_metrics.o src/gateway/relay/command_manifest.o \
  src/hermes_cli/heartbeat.o \

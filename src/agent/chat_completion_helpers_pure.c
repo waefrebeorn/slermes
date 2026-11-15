@@ -112,3 +112,123 @@ double agent_cch_bound_codex_stale_timeout(double stale_timeout, int est_tokens,
         stale_timeout = floor;
     return (hard > 0.0 && stale_timeout > hard) ? hard : stale_timeout;
 }
+
+/* ===========================================================================
+ *  _bedrock_reasoning_stale_floor  (chat_completion_helpers.py:703)
+ *
+ *      name = model_id.strip().lower()
+ *      for prefix in REGION_PREFIXES: strip the first one that matches
+ *      base = [name]
+ *      if "." in name: base += [name.rsplit(".",1)[1], name.replace(".","-",1)]
+ *      candidates = dict.fromkeys(form for c in base for form in
+ *          (c, dash-between-digits -> ".", dot-between-digits -> "-"))
+ *      return first non-None floor, else None
+ *
+ *  Returns -1.0 for None. The floor table lives in reasoning_timeouts.c.
+ * =========================================================================== */
+
+/* PoP: agent_cch_bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
+double agent_reasoning_timeouts_get_floor(const char *model);
+
+#define CCH_BEDROCK_NONE (-1.0)
+
+/* Replace the first separator between digits with `to`. */
+static void fold_one_separator(const char *in, char out, char *buf, size_t cap)
+{
+    size_t k = 0;
+    for (size_t i = 0; in[i] && k + 1 < cap; i++) {
+        if ((in[i] == '-' || in[i] == '.')
+            && i > 0 && in[i - 1] >= '0' && in[i - 1] <= '9'
+            && in[i + 1] >= '0' && in[i + 1] <= '9') {
+            buf[k++] = out;
+        } else {
+            buf[k++] = in[i];
+        }
+    }
+    buf[k] = '\0';
+}
+
+double agent_cch_bedrock_reasoning_stale_floor(const char *model_id)
+{
+    static const char *const REGION_PREFIXES[] = {
+        "global.", "us.", "eu.", "apac.", "ap.", "au.", "jp.", "ca.", "sa.",
+        "me.", "af.", NULL
+    };
+    if (!model_id || !*model_id)
+        return CCH_BEDROCK_NONE;
+
+    char name[512];
+    size_t n = strlen(model_id);
+    if (n >= sizeof(name))
+        n = sizeof(name) - 1;
+    for (size_t i = 0; i < n; i++)
+        name[i] = (char)tolower((unsigned char)model_id[i]);
+    name[n] = '\0';
+    {
+        size_t s = 0, e = n;
+        while (s < e && (name[s] == ' ' || name[s] == '\t' || name[s] == '\n'
+                         || name[s] == '\r'))
+            s++;
+        while (e > s && (name[e - 1] == ' ' || name[e - 1] == '\t'
+                         || name[e - 1] == '\n' || name[e - 1] == '\r'))
+            e--;
+        if (s > 0 || e < n)
+            memmove(name, name + s, e - s);
+        name[e - s] = '\0';
+    }
+    if (!name[0])
+        return CCH_BEDROCK_NONE;
+
+    for (int i = 0; REGION_PREFIXES[i]; i++) {
+        size_t pl = strlen(REGION_PREFIXES[i]);
+        if (strncmp(name, REGION_PREFIXES[i], pl) == 0) {
+            memmove(name, name + pl, strlen(name + pl) + 1);
+            break;
+        }
+    }
+
+    /* Dedup-preserving-order candidate list, exactly dict.fromkeys(). */
+    char cands[6][512];
+    int nc = 0;
+    char base[3][512];
+    int nb = 0;
+    snprintf(base[nb], sizeof(base[nb]), "%s", name);
+    nb++;
+    if (strchr(name, '.')) {
+        const char *dot = strrchr(name, '.');
+        snprintf(base[nb], sizeof(base[nb]), "%s", dot + 1);
+        nb++;
+        /* first dot -> dash */
+        size_t k = 0;
+        int done = 0;
+        for (size_t i = 0; name[i] && k + 1 < sizeof(base[nb]); i++) {
+            base[nb][k++] = (!done && name[i] == '.') ? '-' : name[i];
+            if (name[i] == '.')
+                done = 1;
+        }
+        base[nb][k] = '\0';
+        nb++;
+    }
+
+    for (int b = 0; b < nb; b++) {
+        char folded_dot[512], folded_dash[512];
+        fold_one_separator(base[b], '.', folded_dot, sizeof(folded_dot));
+        fold_one_separator(base[b], '-', folded_dash, sizeof(folded_dash));
+        const char *forms[3] = { base[b], folded_dot, folded_dash };
+        for (int f = 0; f < 3; f++) {
+            int seen = 0;
+            for (int j = 0; j < nc; j++)
+                if (strcmp(cands[j], forms[f]) == 0)
+                    seen = 1;
+            if (!seen && nc < 6)
+                snprintf(cands[nc++], sizeof(cands[0]), "%s", forms[f]);
+        }
+    }
+
+    for (int i = 0; i < nc; i++) {
+        double f = agent_reasoning_timeouts_get_floor(cands[i]);
+        if (f >= 0.0)
+            return f;
+    }
+    return CCH_BEDROCK_NONE;
+}

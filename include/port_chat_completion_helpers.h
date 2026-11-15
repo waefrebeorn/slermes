@@ -40,5 +40,6 @@ int agent_cch_payload_chars(const json_t *value, int image_cost);
 double agent_cch_scale_stale_timeout_for_context(double base, int est_tokens);
 double agent_cch_bound_codex_stale_timeout(double stale_timeout, int est_tokens,
                                            double hard);
+double agent_cch_bedrock_reasoning_stale_floor(const char *model_id);
 
 #endif /* PORT_CHAT_COMPLETION_HELPERS_H */
