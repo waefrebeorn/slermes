@@ -223,13 +223,13 @@ static const char *rp_nous_api_mode(const char *model) {
 }
 
 /*
- * Port of Python: _config_base_url_trustworthy_for_bare_custom
+ * Port of Python: config_base_url_trustworthy_for_bare_custom
  * GitHub #14676/#27132: model.base_url may back bare ``custom`` only when
  * the YAML provider is already custom (or an alias resolving to custom),
  * and a stale OpenRouter URL can never hijack local custom sessions.
  */
-/* PoP: _config_base_url_trustworthy_for_bare_custom @ hermes_cli/runtime_provider.py:_config_base_url_trustworthy_for_bare_custom */
-bool _config_base_url_trustworthy_for_bare_custom(const char *cfg_base_url,
+/* PoP: config_base_url_trustworthy_for_bare_custom @ hermes_cli/runtime_provider.py:config_base_url_trustworthy_for_bare_custom */
+bool config_base_url_trustworthy_for_bare_custom(const char *cfg_base_url,
                                                   const char *cfg_provider)
 {
     char *provider_norm = rp_strip_lower(cfg_provider);
@@ -263,13 +263,13 @@ done:
 }
 
 /*
- * Port of Python: _fallback_api_mode
+ * Port of Python: fallback_api_mode
  * Precedence: URL detection first, then the provider overlay's declared
  * transport (``overlay`` — what providers.determine_api_mode resolves from
  * the registry transport map), then chat_completions.
  */
-/* PoP: _fallback_api_mode @ hermes_cli/runtime_provider.py:_fallback_api_mode */
-char *_fallback_api_mode(const char *provider, const char *base_url,
+/* PoP: fallback_api_mode @ hermes_cli/runtime_provider.py:fallback_api_mode */
+char *fallback_api_mode(const char *provider, const char *base_url,
                          const char *model, const char *overlay)
 {
     (void)model;
@@ -281,12 +281,12 @@ char *_fallback_api_mode(const char *provider, const char *base_url,
 }
 
 /*
- * Port of Python: _resolve_plain_custom_api_mode
+ * Port of Python: resolve_plain_custom_api_mode
  * Custom endpoints stay conservative: a persisted codex_responses mode only
  * survives when URL detection agrees the endpoint really speaks Responses.
  */
-/* PoP: _resolve_plain_custom_api_mode @ hermes_cli/runtime_provider.py:_resolve_plain_custom_api_mode */
-char *_resolve_plain_custom_api_mode(const json_t *model_cfg,
+/* PoP: resolve_plain_custom_api_mode @ hermes_cli/runtime_provider.py:resolve_plain_custom_api_mode */
+char *resolve_plain_custom_api_mode(const json_t *model_cfg,
                                      const char *base_url)
 {
     const char *configured_raw = rp_str_field(model_cfg, "api_mode");
@@ -310,12 +310,12 @@ char *_resolve_plain_custom_api_mode(const json_t *model_cfg,
 }
 
 /*
- * Port of Python: _auto_detect_local_model
+ * Port of Python: auto_detect_local_model
  * GET <base_url>/v1/models with a short timeout; when exactly one model is
  * loaded, return its id. Any failure → "".
  */
-/* PoP: _auto_detect_local_model @ hermes_cli/runtime_provider.py:_auto_detect_local_model */
-char *_auto_detect_local_model(const char *base_url)
+/* PoP: auto_detect_local_model @ hermes_cli/runtime_provider.py:auto_detect_local_model */
+char *auto_detect_local_model(const char *base_url)
 {
     if (!base_url || !*base_url) return strdup("");
     char *url = NULL;
@@ -358,15 +358,15 @@ char *_auto_detect_local_model(const char *base_url)
 }
 
 /*
- * Port of Python: _copilot_runtime_api_mode
+ * Port of Python: copilot_runtime_api_mode
  * Persisted explicit mode wins (when the config provider is copilot);
  * otherwise derive from the target model via the Copilot catalog rule:
  * GPT-5.x/codex-family models need codex_responses, everything else uses
  * chat_completions (the catalog network probe degrades to this static rule
  * in the C core, which links the model-family table statically).
  */
-/* PoP: _copilot_runtime_api_mode @ hermes_cli/runtime_provider.py:_copilot_runtime_api_mode */
-char *_copilot_runtime_api_mode(const json_t *model_cfg, const char *api_key,
+/* PoP: copilot_runtime_api_mode @ hermes_cli/runtime_provider.py:copilot_runtime_api_mode */
+char *copilot_runtime_api_mode(const json_t *model_cfg, const char *api_key,
                                 const char *target_model)
 {
     (void)api_key;
@@ -402,12 +402,12 @@ char *_copilot_runtime_api_mode(const json_t *model_cfg, const char *api_key,
 }
 
 /*
- * Port of Python: _nous_inference_base_url_override
+ * Port of Python: nous_inference_base_url_override
  * Trusted NOUS_INFERENCE_BASE_URL env override; trailing-slash stripped,
  * blank → "".
  */
-/* PoP: _nous_inference_base_url_override @ hermes_cli/runtime_provider.py:_nous_inference_base_url_override */
-char *_nous_inference_base_url_override(void)
+/* PoP: nous_inference_base_url_override @ hermes_cli/runtime_provider.py:nous_inference_base_url_override */
+char *nous_inference_base_url_override(void)
 {
     char *v = rp_getenv_stripped("NOUS_INFERENCE_BASE_URL");
     size_t n = strlen(v);
@@ -416,12 +416,12 @@ char *_nous_inference_base_url_override(void)
 }
 
 /*
- * Port of Python: _maybe_apply_codex_app_server_runtime
+ * Port of Python: maybe_apply_codex_app_server_runtime
  * Opt-in rewrite api_mode → "codex_app_server" for openai/openai-codex when
  * model.openai_runtime says so; no-op otherwise.
  */
-/* PoP: _maybe_apply_codex_app_server_runtime @ hermes_cli/runtime_provider.py:_maybe_apply_codex_app_server_runtime */
-char *_maybe_apply_codex_app_server_runtime(const char *provider,
+/* PoP: maybe_apply_codex_app_server_runtime @ hermes_cli/runtime_provider.py:maybe_apply_codex_app_server_runtime */
+char *maybe_apply_codex_app_server_runtime(const char *provider,
                                             const char *api_mode,
                                             const json_t *model_cfg)
 {
@@ -437,13 +437,13 @@ char *_maybe_apply_codex_app_server_runtime(const char *provider,
 }
 
 /*
- * Port of Python: _resolve_runtime_from_pool_entry
+ * Port of Python: resolve_runtime_from_pool_entry
  * Per-provider api_mode/base_url derivation from a selected pool entry.
  * ``entry_json`` mirrors PooledCredential fields (runtime_base_url, base_url,
  * runtime_api_key, access_token, agent_key, source).
  */
-/* PoP: _resolve_runtime_from_pool_entry @ hermes_cli/runtime_provider.py:_resolve_runtime_from_pool_entry */
-char *_resolve_runtime_from_pool_entry(const char *provider,
+/* PoP: resolve_runtime_from_pool_entry @ hermes_cli/runtime_provider.py:resolve_runtime_from_pool_entry */
+char *resolve_runtime_from_pool_entry(const char *provider,
                                        const json_t *entry_json,
                                        const char *requested_provider,
                                        const json_t *model_cfg,
@@ -525,12 +525,12 @@ char *_resolve_runtime_from_pool_entry(const char *provider,
         RP_SET_MODE("codex_responses");
     } else if (strcmp(provider, "nous") == 0) {
         RP_SET_MODE(rp_nous_api_mode(effective_model));
-        char *override = _nous_inference_base_url_override();
+        char *override = nous_inference_base_url_override();
         if (*override) { free(base_url); base_url = override; }
         else free(override);
     } else if (strcmp(provider, "copilot") == 0) {
         {
-            char *mode = _copilot_runtime_api_mode(mc, api_key, effective_model);
+            char *mode = copilot_runtime_api_mode(mc, api_key, effective_model);
             free(api_mode); api_mode = mode;
         }
         if (!*base_url) { free(base_url); base_url = strdup(RP_COPILOT_INFERENCE_BASE_URL); }
@@ -585,7 +585,7 @@ char *_resolve_runtime_from_pool_entry(const char *provider,
             RP_SET_MODE(configured_mode);
         } else {
             /* URL detection first, then the provider's declared transport. */
-            char *fm = _fallback_api_mode(provider, base_url, effective_model,
+            char *fm = fallback_api_mode(provider, base_url, effective_model,
                                           rp_str_field(mc, "api_mode"));
             free(api_mode);
             api_mode = fm;
@@ -596,7 +596,7 @@ char *_resolve_runtime_from_pool_entry(const char *provider,
 
     /* Optional opt-in: route OpenAI/Codex turns through codex app-server. */
     {
-        char *rewritten = _maybe_apply_codex_app_server_runtime(
+        char *rewritten = maybe_apply_codex_app_server_runtime(
             provider, api_mode, mc);
         free(api_mode);
         api_mode = rewritten;
@@ -637,12 +637,12 @@ char *_resolve_runtime_from_pool_entry(const char *provider,
 }
 
 /*
- * Port of Python: _try_resolve_from_custom_pool
+ * Port of Python: try_resolve_from_custom_pool
  * Resolve a credential-pool-backed runtime for a custom endpoint. Returns a
  * runtime JSON object, or NULL when no pool/key exists (Python None).
  */
-/* PoP: _try_resolve_from_custom_pool @ hermes_cli/runtime_provider_custom.py:_try_resolve_from_custom_pool */
-json_t *_try_resolve_from_custom_pool(const char *base_url,
+/* PoP: try_resolve_from_custom_pool @ hermes_cli/runtime_provider_custom.py:try_resolve_from_custom_pool */
+json_t *try_resolve_from_custom_pool(const char *base_url,
                                       const char *provider_label,
                                       const char *api_mode_override,
                                       const char *provider_name)
@@ -704,12 +704,12 @@ json_t *_try_resolve_from_custom_pool(const char *base_url,
 }
 
 /*
- * Port of Python: _lift_max_output_tokens
+ * Port of Python: lift_max_output_tokens
  * Propagate max_output_tokens / max_tokens (>0 int) from a custom-provider
  * entry onto the resolved runtime dict.
  */
-/* PoP: _lift_max_output_tokens @ hermes_cli/runtime_provider.py:_lift_max_output_tokens */
-void _lift_max_output_tokens(const json_t *entry, json_t *result)
+/* PoP: lift_max_output_tokens @ hermes_cli/runtime_provider.py:lift_max_output_tokens */
+void lift_max_output_tokens(const json_t *entry, json_t *result)
 {
     static const char *keys[] = {"max_output_tokens", "max_tokens"};
     for (size_t i = 0; i < 2; i++) {
@@ -724,12 +724,12 @@ void _lift_max_output_tokens(const json_t *entry, json_t *result)
 }
 
 /*
- * Port of Python: _lift_extra_headers
+ * Port of Python: lift_extra_headers
  * Copy a validated extra_headers dict from a provider entry.
  * SECURITY: values carry credentials — never log them.
  */
-/* PoP: _lift_extra_headers @ hermes_cli/runtime_provider_custom.py:_lift_extra_headers */
-void _lift_extra_headers(const json_t *entry, json_t *result)
+/* PoP: lift_extra_headers @ hermes_cli/runtime_provider_custom.py:lift_extra_headers */
+void lift_extra_headers(const json_t *entry, json_t *result)
 {
     if (!entry || !result) return;
     const json_t *raw = json_obj_get(entry, "extra_headers");
@@ -766,13 +766,13 @@ static bool rp_alias_matches(const char *requested_norm,
 }
 
 /*
- * Port of Python: _get_named_custom_provider
+ * Port of Python: get_named_custom_provider
  * Scan config providers:/custom_providers: for an entry matching the
  * requested name. Returns a JSON object (name/base_url/api_key/model/…),
  * or NULL (Python None). Caller json_free's.
  */
-/* PoP: _get_named_custom_provider @ hermes_cli/runtime_provider_custom.py:_get_named_custom_provider */
-json_t *_get_named_custom_provider(const char *requested_provider)
+/* PoP: get_named_custom_provider @ hermes_cli/runtime_provider_custom.py:get_named_custom_provider */
+json_t *get_named_custom_provider(const char *requested_provider)
 {
     char *requested_norm = provider_normalize_custom_name(
         requested_provider ? requested_provider : "");
@@ -844,7 +844,7 @@ json_t *_get_named_custom_provider(const char *requested_provider)
                         const json_t *extra_body = json_obj_get(entry, "extra_body");
                         if (extra_body && extra_body->type == JSON_OBJECT)
                             json_set(result, "extra_body", json_copy(extra_body));
-                        _lift_extra_headers(entry, result);
+                        lift_extra_headers(entry, result);
                         {
                             const char *key_cmd = rp_str_field(entry, "key_cmd");
                             if (*key_cmd) json_set(result, "key_cmd", json_string(key_cmd));
@@ -855,7 +855,7 @@ json_t *_get_named_custom_provider(const char *requested_provider)
                         if (!*mode_raw) mode_raw = rp_str_field(entry, "transport");
                         const char *mode = provider_parse_api_mode(mode_raw);
                         if (mode) json_set(result, "api_mode", json_string(mode));
-                        _lift_max_output_tokens(entry, result);
+                        lift_max_output_tokens(entry, result);
                     }
                     free(resolved_api_key);
                     json_free(config);
@@ -905,13 +905,13 @@ json_t *_get_named_custom_provider(const char *requested_provider)
                 const json_t *extra_body = json_obj_get(entry, "extra_body");
                 if (extra_body && extra_body->type == JSON_OBJECT)
                     json_set(result, "extra_body", json_copy(extra_body));
-                _lift_extra_headers(entry, result);
+                lift_extra_headers(entry, result);
                 const char *mode = provider_parse_api_mode(rp_str_field(entry, "api_mode"));
                 if (mode) json_set(result, "api_mode", json_string(mode));
                 char *mn = rp_strip(rp_str_field(entry, "model"));
                 if (*mn) json_set(result, "model", json_string(mn));
                 free(mn);
-                _lift_max_output_tokens(entry, result);
+                lift_max_output_tokens(entry, result);
             }
             json_free(compatible);
             free(requested_norm);
@@ -924,11 +924,11 @@ json_t *_get_named_custom_provider(const char *requested_provider)
 }
 
 /*
- * Port of Python: _custom_provider_request_overrides
+ * Port of Python: custom_provider_request_overrides
  * {"extra_body": copy} when the entry carries a non-empty extra_body dict.
  */
-/* PoP: _custom_provider_request_overrides @ hermes_cli/runtime_provider_custom.py:_custom_provider_request_overrides */
-json_t *_custom_provider_request_overrides(const json_t *custom_provider)
+/* PoP: custom_provider_request_overrides @ hermes_cli/runtime_provider_custom.py:custom_provider_request_overrides */
+json_t *custom_provider_request_overrides(const json_t *custom_provider)
 {
     const json_t *eb = custom_provider ? json_obj_get(custom_provider, "extra_body") : NULL;
     if (!eb || eb->type != JSON_OBJECT || json_array_size(eb) == 0)
@@ -958,15 +958,15 @@ static char *rp_pick_usable(char **cands, size_t n)
 }
 
 /*
- * Port of Python: _resolve_named_custom_runtime
+ * Port of Python: resolve_named_custom_runtime
  * Bare ``custom`` + explicit base_url → direct-alias runtime (with the
  * #27132 alias-to-custom normalization and host-gated env key fallbacks);
  * otherwise the named custom_providers/providers entry path, with credential
  * pool priority and model/max_output_tokens/extra_headers propagation.
  * Returns a runtime JSON object or NULL (no match).
  */
-/* PoP: _resolve_named_custom_runtime @ hermes_cli/runtime_provider_custom.py:_resolve_named_custom_runtime */
-json_t *_resolve_named_custom_runtime(const char *requested_provider,
+/* PoP: resolve_named_custom_runtime @ hermes_cli/runtime_provider_custom.py:resolve_named_custom_runtime */
+json_t *resolve_named_custom_runtime(const char *requested_provider,
                                       const char *explicit_api_key,
                                       const char *explicit_base_url,
                                       const char *target_model)
@@ -992,7 +992,7 @@ json_t *_resolve_named_custom_runtime(const char *requested_provider,
     json_t *result = NULL;
 
     if (strcmp(requested_norm, "custom") == 0 && *expl_url) {
-        json_t *pool_result = _try_resolve_from_custom_pool(expl_url, "custom", NULL, NULL);
+        json_t *pool_result = try_resolve_from_custom_pool(expl_url, "custom", NULL, NULL);
         if (pool_result) {
             json_set(pool_result, "source", json_string("direct-alias"));
             result = pool_result;
@@ -1026,7 +1026,7 @@ json_t *_resolve_named_custom_runtime(const char *requested_provider,
     }
 
     {
-        json_t *cp = _get_named_custom_provider(requested_provider);
+        json_t *cp = get_named_custom_provider(requested_provider);
         if (!cp) goto done;
 
         const char *cp_base = rp_str_field(cp, "base_url");
@@ -1037,7 +1037,7 @@ json_t *_resolve_named_custom_runtime(const char *requested_provider,
 
         /* Credential pool first — mirrors the bare-custom path. */
         {
-            json_t *pool_result = _try_resolve_from_custom_pool(
+            json_t *pool_result = try_resolve_from_custom_pool(
                 base_url, "custom", rp_str_field(cp, "api_mode"),
                 rp_str_field(cp, "name"));
             if (pool_result) {
@@ -1048,7 +1048,7 @@ json_t *_resolve_named_custom_runtime(const char *requested_provider,
                 if (mot && mot->type == JSON_NUMBER)
                     json_set(pool_result, "max_output_tokens", json_copy(mot));
                 {
-                    json_t *ov = _custom_provider_request_overrides(cp);
+                    json_t *ov = custom_provider_request_overrides(cp);
                     if (ov && ov->type == JSON_OBJECT && json_array_size(ov) > 0) {
                         json_t *merged = json_obj_get(pool_result, "request_overrides");
                         if (merged && merged->type == JSON_OBJECT) {
@@ -1126,7 +1126,7 @@ json_t *_resolve_named_custom_runtime(const char *requested_provider,
             if (eh && eh->type == JSON_OBJECT)
                 json_set(result, "extra_headers", json_copy(eh));
             {
-                json_t *ov = _custom_provider_request_overrides(cp);
+                json_t *ov = custom_provider_request_overrides(cp);
                 if (ov && ov->type == JSON_OBJECT && json_array_size(ov) > 0)
                     json_set(result, "request_overrides", ov);   /* steals */
                 else if (ov)
@@ -1200,14 +1200,14 @@ done:
 }
 
 /*
- * Port of Python: _resolve_openrouter_runtime
+ * Port of Python: resolve_openrouter_runtime
  * OpenAI-compatible fallback resolver (openrouter or bare custom endpoint):
  * base_url precedence explicit > CUSTOM_BASE_URL > trusted config base_url >
  * OPENROUTER_BASE_URL > default; host-gated API-key selection (#28660,
  * GHSA-76xc-57q6-vm5m); credential pool for custom endpoints.
  */
-/* PoP: _resolve_openrouter_runtime @ hermes_cli/runtime_provider_backends.py:_resolve_openrouter_runtime */
-json_t *_resolve_openrouter_runtime(const char *requested_provider,
+/* PoP: resolve_openrouter_runtime @ hermes_cli/runtime_provider_backends.py:resolve_openrouter_runtime */
+json_t *resolve_openrouter_runtime(const char *requested_provider,
                                     const char *explicit_api_key,
                                     const char *explicit_base_url)
 {
@@ -1257,7 +1257,7 @@ json_t *_resolve_openrouter_runtime(const char *requested_provider,
             if (!*cfg_provider || strcmp(cfg_provider, "auto") == 0)
                 use_config_base_url = true;
         } else if (strcmp(requested_norm, "custom") == 0 &&
-                   _config_base_url_trustworthy_for_bare_custom(cfg_base_url,
+                   config_base_url_trustworthy_for_bare_custom(cfg_base_url,
                                                                 cfg_provider)) {
             use_config_base_url = true;
         }
@@ -1311,7 +1311,7 @@ json_t *_resolve_openrouter_runtime(const char *requested_provider,
         strcmp(requested_norm, "custom") == 0 ? "custom" : "openrouter";
 
     if (strcmp(effective_provider, "custom") == 0 && *base_url) {
-        json_t *pool_result = _try_resolve_from_custom_pool(
+        json_t *pool_result = try_resolve_from_custom_pool(
             base_url, effective_provider,
             provider_parse_api_mode(rp_str_field(mc, "api_mode")),
             strcmp(requested_norm, "custom") != 0 ? requested_provider : NULL);
@@ -1335,14 +1335,14 @@ json_t *_resolve_openrouter_runtime(const char *requested_provider,
     if (out) {
         const char *mode = NULL;
         if (strcmp(effective_provider, "custom") == 0) {
-            mode = NULL;   /* filled by _resolve_plain_custom_api_mode below */
+            mode = NULL;   /* filled by resolve_plain_custom_api_mode below */
         } else {
             mode = provider_parse_api_mode(rp_str_field(mc, "api_mode"));
             if (!mode) mode = provider_detect_api_mode_for_url(base_url);
         }
         json_set(out, "provider", json_string(effective_provider));
         if (strcmp(effective_provider, "custom") == 0) {
-            char *pm = _resolve_plain_custom_api_mode(mc, base_url);
+            char *pm = resolve_plain_custom_api_mode(mc, base_url);
             json_set(out, "api_mode", json_string(pm));
             free(pm);
         } else {
@@ -1362,13 +1362,13 @@ json_t *_resolve_openrouter_runtime(const char *requested_provider,
 }
 
 /*
- * Port of Python: _resolve_azure_foundry_runtime
+ * Port of Python: resolve_azure_foundry_runtime
  * Azure Foundry: model.base_url + model.api_mode (+ entra_id auth), with
  * model-family Responses-API inference and /v1 stripping for Anthropic
  * endpoints. Missing credentials → {"auth_error": …} (Python AuthError).
  */
-/* PoP: _resolve_azure_foundry_runtime @ hermes_cli/runtime_provider_backends.py:_resolve_azure_foundry_runtime */
-json_t *_resolve_azure_foundry_runtime(const char *requested_provider,
+/* PoP: resolve_azure_foundry_runtime @ hermes_cli/runtime_provider_backends.py:resolve_azure_foundry_runtime */
+json_t *resolve_azure_foundry_runtime(const char *requested_provider,
                                        const json_t *model_cfg,
                                        const char *explicit_api_key,
                                        const char *explicit_base_url,
@@ -1512,13 +1512,13 @@ done_err:
 }
 
 /*
- * Port of Python: _resolve_explicit_runtime
+ * Port of Python: resolve_explicit_runtime
  * Runtime resolution when --api-key/--base-url were passed explicitly.
  * Returns a runtime JSON object, NULL when no explicit values apply, or an
  * {"auth_error": …} object where Python raises AuthError.
  */
-/* PoP: _resolve_explicit_runtime @ hermes_cli/runtime_provider.py:_resolve_explicit_runtime */
-json_t *_resolve_explicit_runtime(const char *provider,
+/* PoP: resolve_explicit_runtime @ hermes_cli/runtime_provider.py:resolve_explicit_runtime */
+json_t *resolve_explicit_runtime(const char *provider,
                                   const char *requested_provider,
                                   const json_t *model_cfg,
                                   const char *explicit_api_key,
@@ -1593,7 +1593,7 @@ json_t *_resolve_explicit_runtime(const char *provider,
     }
 
     if (strcmp(provider, "nous") == 0) {
-        char *override = _nous_inference_base_url_override();
+        char *override = nous_inference_base_url_override();
         char *state_url = rp_getenv_stripped("NOUS_INFERENCE_URL");
         char *burl = strdup(*expl_url ? expl_url
                             : (*override ? override
@@ -1628,7 +1628,7 @@ json_t *_resolve_explicit_runtime(const char *provider,
     }
 
     if (strcmp(provider, "azure-foundry") == 0) {
-        out = _resolve_azure_foundry_runtime(
+        out = resolve_azure_foundry_runtime(
             requested_provider, model_cfg, expl_key, expl_url, target_model);
         goto done;
     }
@@ -1668,7 +1668,7 @@ json_t *_resolve_explicit_runtime(const char *provider,
                     } else {
                         char *mode = NULL;
                         if (strcmp(provider, "copilot") == 0) {
-                            mode = _copilot_runtime_api_mode(
+                            mode = copilot_runtime_api_mode(
                                 model_cfg, resolved, target_model);
                         } else if (strcmp(provider, "xai") == 0 ||
                                    strcmp(provider, "actual") == 0) {
@@ -1682,7 +1682,7 @@ json_t *_resolve_explicit_runtime(const char *provider,
                             if (cm && provider_supports_explicit_api_mode(provider, cp2))
                                 mode = strdup(cm);
                             else
-                                mode = _fallback_api_mode(
+                                mode = fallback_api_mode(
                                     provider, burl,
                                     (target_model && *target_model)
                                         ? target_model
@@ -1708,13 +1708,13 @@ json_t *_resolve_explicit_runtime(const char *provider,
                 const char *cm = provider_parse_api_mode(
                     rp_str_field(model_cfg, "api_mode"));
                 if (strcmp(provider, "copilot") == 0)
-                    mode = _copilot_runtime_api_mode(model_cfg, expl_key, target_model);
+                    mode = copilot_runtime_api_mode(model_cfg, expl_key, target_model);
                 else if (strcmp(provider, "xai") == 0 || strcmp(provider, "actual") == 0)
                     mode = strdup("codex_responses");
                 else if (cm && provider_supports_explicit_api_mode(provider, cp2))
                     mode = strdup(cm);
                 else
-                    mode = _fallback_api_mode(
+                    mode = fallback_api_mode(
                         provider, burl,
                         (target_model && *target_model)
                             ? target_model : rp_str_field(model_cfg, "default"),
@@ -1821,14 +1821,14 @@ char *resolve_runtime_provider(const char *requested,
         const json_t *mn = mc ? json_obj_get(mc, "model") : NULL;
         if (mn && mn->type == JSON_OBJECT) mnode = json_copy(mn);
         if (mc) json_free(mc);
-        result = _resolve_azure_foundry_runtime(
+        result = resolve_azure_foundry_runtime(
             requested_provider, mnode, expl_key, expl_url, target_model);
         if (mnode) json_free(mnode);
         goto emit;
     }
 
     /* Named custom runtime (covers bare custom + direct aliases + entries). */
-    result = _resolve_named_custom_runtime(requested_provider, expl_key,
+    result = resolve_named_custom_runtime(requested_provider, expl_key,
                                            expl_url, target_model);
     if (result) goto emit;
 
@@ -1845,7 +1845,7 @@ char *resolve_runtime_provider(const char *requested,
             !provider_base_url_host_matches(cfg_base_url, "openrouter.ai") &&
             !provider_base_url_host_matches(cfg_base_url, "anthropic.com") &&
             !provider_base_url_host_matches(cfg_base_url, "openai.com")) {
-            result = _resolve_openrouter_runtime(requested_provider, expl_key,
+            result = resolve_openrouter_runtime(requested_provider, expl_key,
                                                  expl_url);
         }
         free(cfg_provider);
@@ -1857,7 +1857,7 @@ char *resolve_runtime_provider(const char *requested,
     /* Generic fallback: the OpenAI-compatible resolver handles openrouter,
      * auto-detected env-key providers, and unknown requests — the same final
      * fallback Python takes after its OAuth-specific branches. */
-    result = _resolve_openrouter_runtime(requested_provider, expl_key, expl_url);
+    result = resolve_openrouter_runtime(requested_provider, expl_key, expl_url);
 
 emit:
     if (result) {

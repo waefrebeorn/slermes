@@ -140,10 +140,10 @@
 #define allowlist_clear stub_shadowed_allowlist_clear
 #define allowlist_add stub_shadowed_allowlist_add
 #define agent_free stub_shadowed_agent_free
-#define _worktree_is_dirty stub_shadowed__worktree_is_dirty
-#define _worktree_has_unpushed_commits stub_shadowed__worktree_has_unpushed_commits
-#define _save_entry stub_shadowed__save_entry
-#define _save_entries stub_shadowed__save_entries
+#define worktree_is_dirty stub_shadowed__worktree_is_dirty
+#define worktree_has_unpushed_commits stub_shadowed__worktree_has_unpushed_commits
+#define save_entry stub_shadowed__save_entry
+#define save_entries stub_shadowed__save_entries
 
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
@@ -154,7 +154,7 @@
 static char g_slermes_home[4096] = "";
 static pthread_once_t g_home_once = PTHREAD_ONCE_INIT;
 
-static void _init_home(void) {
+static void init_home(void) {
     const char *home = getenv("HERMES_HOME");
     if (home && *home) {
         strncpy(g_slermes_home, home, sizeof(g_slermes_home) - 1);
@@ -172,14 +172,14 @@ static void _init_home(void) {
     mkdir(logs, 0755);
 }
 
-static void _ensure_home(void) {
-    if (g_slermes_home[0] == '\0') pthread_once(&g_home_once, _init_home);
+static void ensure_home(void) {
+    if (g_slermes_home[0] == '\0') pthread_once(&g_home_once, init_home);
 }
 
-const char *stub_shadowed_get_hermes_home(void) { _ensure_home(); return g_slermes_home; }
-const char *slermes_home(void) { _ensure_home(); return g_slermes_home; }
-const char *hermes_home_dir(void) { _ensure_home(); return g_slermes_home; }
-const char *stub_shadowed_hermes_get_home(void) { _ensure_home(); return g_slermes_home; }
+const char *stub_shadowed_get_hermes_home(void) { ensure_home(); return g_slermes_home; }
+const char *slermes_home(void) { ensure_home(); return g_slermes_home; }
+const char *hermes_home_dir(void) { ensure_home(); return g_slermes_home; }
+const char *stub_shadowed_hermes_get_home(void) { ensure_home(); return g_slermes_home; }
 
 /* ── Hermes config ── */
 static char g_config_path[4096] = "";
@@ -229,7 +229,7 @@ static provider_entry_t g_providers[64];
 static int g_provider_count = 0;
 static pthread_once_t g_provider_once = PTHREAD_ONCE_INIT;
 
-static void _init_providers(void) {
+static void init_providers(void) {
     provider_entry_t defaults[] = {
         {"openai", "https://api.openai.com/v1", "openai"},
         {"anthropic", "https://api.anthropic.com", "anthropic"},
@@ -240,12 +240,12 @@ static void _init_providers(void) {
     memcpy(g_providers, defaults, sizeof(defaults));
 }
 
-static void _ensure_providers(void) {
-    if (g_provider_count == 0) pthread_once(&g_provider_once, _init_providers);
+static void ensure_providers(void) {
+    if (g_provider_count == 0) pthread_once(&g_provider_once, init_providers);
 }
 
 const provider_entry_t *provider_registry_get(const char *name) {
-    _ensure_providers();
+    ensure_providers();
     if (!name) return NULL;
     for (int i = 0; i < g_provider_count; i++) {
         if (strcmp(g_providers[i].name, name) == 0) return &g_providers[i];
@@ -514,7 +514,7 @@ char *image_gen_path_looks_like_absolute_file_path(const char *p) {
     return strdup((p && p[0] == '/') ? "1" : "0");
 }
 
-int _parse_absolute_timestamp(const char *ts, double *out) { (void)ts; (void)out; return 0; }
+int parse_absolute_timestamp(const char *ts, double *out) { (void)ts; (void)out; return 0; }
 int stub_shadowed__worktree_is_dirty(void) { return 0; }
 int stub_shadowed__worktree_has_unpushed_commits(void) { return 0; }
 int stub_shadowed__save_entry(void) { return 0; }

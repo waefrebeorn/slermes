@@ -641,7 +641,7 @@ char *build_session_context_prompt(const gw_session_source_t *src) {
 /* Port of Python gateway/session.py:_should_reset(). */
 /* Check if a session should be reset based on the configured policy.
  * Returns true if the session has expired (idle timeout or daily boundary).
- * Mirrors Python SessionStore._is_session_expired().
+ * Mirrors Python SessionStore.is_session_expired().
  * session_sec: seconds since last activity (monotonic time). */
 
 /* Free a session entry (save, close DB, free agent, zero out).

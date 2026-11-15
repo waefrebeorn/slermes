@@ -161,12 +161,12 @@ void* cli_gateway_session__resolve_profile_for_key(void* p1, void* p2, void* p3,
 #define _GNU_SOURCE 1
 
 /* Declared in gw_session.c (same store). */
-extern void _save_entry(const char *session_key);
-extern void _save_entries(void);
+extern void save_entry(const char *session_key);
+extern void save_entries(void);
 
 /* ── timestamp helpers (Python: datetime.now().isoformat()) ─────────────── */
 
-static void _iso_now(char *buf, size_t sz) {
+static void iso_now(char *buf, size_t sz) {
     time_t t = time(NULL);
     struct tm tmv;
     localtime_r(&t, &tmv);
@@ -175,7 +175,7 @@ static void _iso_now(char *buf, size_t sz) {
 
 /* Parse "YYYY-MM-DDTHH:MM:SS" (Python isoformat, naive local) to epoch secs.
  * Returns -1 when unparseable (mirrors the Python TypeError → stale path). */
-static double _parse_iso(const char *s) {
+static double parse_iso(const char *s) {
     if (!s || strlen(s) < 19 || s[4] != '-' || s[7] != '-' || s[10] != 'T')
         return -1.0;
     struct tm tmv;
@@ -192,7 +192,7 @@ static double _parse_iso(const char *s) {
 }
 
 /* uuid4().hex — 32 lowercase hex chars from the kernel CSPRNG. */
-static void _gen_turn_token(char *out, size_t sz) {
+static void gen_turn_token(char *out, size_t sz) {
     static const char hex[] = "0123456789abcdef";
     unsigned char rnd[16];
     FILE *f = fopen("/dev/urandom", "rb");
@@ -229,15 +229,15 @@ bool session_mark_turn_active(const char *session_key, char *out_token, size_t o
     if (!se || !se->in_use) return false;
 
     char token[40];
-    _gen_turn_token(token, sizeof(token));
+    gen_turn_token(token, sizeof(token));
     char now_iso[32];
-    _iso_now(now_iso, sizeof(now_iso));
+    iso_now(now_iso, sizeof(now_iso));
 
     /* Durable write first (Python persists before publishing the marker). */
     snprintf(se->active_turn_token, sizeof(se->active_turn_token), "%s", token);
     snprintf(se->active_turn_started_at, sizeof(se->active_turn_started_at), "%s", now_iso);
     se->last_active = (double)time(NULL); /* keeps legacy startup heuristic effective */
-    _save_entry(session_key);
+    save_entry(session_key);
 
     if (out_token && out_sz > 0)
         snprintf(out_token, out_sz, "%s", token);
@@ -261,7 +261,7 @@ bool session_clear_turn_active(const char *session_key, const char *token) {
      * a failed write remains retryable instead of a false mismatch). */
     se->active_turn_token[0] = '\0';
     se->active_turn_started_at[0] = '\0';
-    _save_entry(session_key);
+    save_entry(session_key);
     return true;
 }
 
@@ -284,7 +284,7 @@ int session_recover_interrupted_turns(int max_age_seconds) {
         if (!se->in_use || se->active_turn_token[0] == '\0')
             continue;
 
-        double started = _parse_iso(se->active_turn_started_at);
+        double started = parse_iso(se->active_turn_started_at);
         bool marker_is_stale =
             (started < 0.0) ||
             (max_age_seconds > 0 && now - started > (double)max_age_seconds);
@@ -314,7 +314,7 @@ int session_recover_interrupted_turns(int max_age_seconds) {
 
     if (changed) {
         /* Cold-start batch: one durable rewrite beats per-entry upserts. */
-        _save_entries();
+        save_entries();
     }
     return promoted;
 }
@@ -338,7 +338,7 @@ int session_discard_active_turn_markers(void) {
     }
     pthread_mutex_unlock(&g_gw.session_mutex);
     if (cleared)
-        _save_entries();
+        save_entries();
     return cleared;
 }
 
@@ -346,7 +346,7 @@ int session_discard_active_turn_markers(void) {
 
 #define SPOOL_DROP_REASON "transcript_cap_drop"
 
-static void _spool_dir(char *out, size_t sz) {
+static void spool_dir(char *out, size_t sz) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !home[0]) home = getenv("HOME");
     if (!home || !home[0]) home = "/tmp";
@@ -354,8 +354,8 @@ static void _spool_dir(char *out, size_t sz) {
 }
 
 /* Replay one spooled message into the session's durable DB transcript
- * record (the C analog of self._append_transcript_message). */
-static bool _replay_transcript_message(const char *session_id, const char *message_json) {
+ * record (the C analog of self.append_transcript_message). */
+static bool replay_transcript_message(const char *session_id, const char *message_json) {
     int idx = lookup_by_session_id(session_id);
     if (idx < 0) return false;
     gw_session_entry_t *se = session_at(idx);
@@ -375,7 +375,7 @@ int session_drain_spooled_drops(const char *session_id) {
     if (!session_id || !session_id[0]) return -1;
 
     char dir[512];
-    _spool_dir(dir, sizeof(dir));
+    spool_dir(dir, sizeof(dir));
     char pattern[560];
     snprintf(pattern, sizeof(pattern), "%s/pending-*.json", dir);
 
@@ -468,7 +468,7 @@ int session_drain_spooled_drops(const char *session_id) {
     int remaining = 0;
     for (size_t i = 0; i < n_ents; i++) {
         if (remaining == 0) {
-            if (_replay_transcript_message(session_id, ents[i].msg)) {
+            if (replay_transcript_message(session_id, ents[i].msg)) {
                 remove(ents[i].path);
                 replayed++;
             } else {

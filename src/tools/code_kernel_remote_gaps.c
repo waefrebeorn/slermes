@@ -17,11 +17,11 @@ void _kill(void) {}
 
 
 
-/* PoP: _spawn_remote_kernel @ tools/code_kernel_remote.py:_spawn_remote_kernel */
-char *_spawn_remote_kernel(void) { return strdup("{}"); }
+/* PoP: spawn_remote_kernel @ tools/code_kernel_remote.py:spawn_remote_kernel */
+char *spawn_remote_kernel(void) { return strdup("{}"); }
 
 /* PoP: execute_in_remote_kernel @ tools/code_kernel_remote.py:execute_in_remote_kernel */
 char *execute_in_remote_kernel(void) { return strdup("{}"); }
 
-/* PoP: _run_remote_cell @ tools/code_kernel_remote.py:_run_remote_cell */
-char *_run_remote_cell(void) { return strdup("{}"); }
+/* PoP: run_remote_cell @ tools/code_kernel_remote.py:run_remote_cell */
+char *run_remote_cell(void) { return strdup("{}"); }

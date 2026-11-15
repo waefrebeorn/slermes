@@ -9,14 +9,14 @@
 
 /* ── gateway/platforms/signal.py: 4 missing functions ── */
 
-/* PoP: _sig_secret @ plugins/platforms/signal/adapter.py:_sig_secret */
-char *_sig_secret(void) { return strdup(""); }
+/* PoP: sig_secret @ plugins/platforms/signal/adapter.py:sig_secret */
+char *sig_secret(void) { return strdup(""); }
 
-/* PoP: _utf16_offsets @ plugins/platforms/signal/adapter.py:_utf16_offsets */
-char *_utf16_offsets(void) { return strdup("[]"); }
+/* PoP: utf16_offsets @ plugins/platforms/signal/adapter.py:utf16_offsets */
+char *utf16_offsets(void) { return strdup("[]"); }
 
-/* PoP: _styles_for_chunk @ plugins/platforms/signal/adapter.py:_styles_for_chunk */
-char *_styles_for_chunk(void) { return strdup("[]"); }
+/* PoP: styles_for_chunk @ plugins/platforms/signal/adapter.py:styles_for_chunk */
+char *styles_for_chunk(void) { return strdup("[]"); }
 
-/* PoP: _split_signal_formatted_message @ plugins/platforms/signal/adapter.py:_split_signal_formatted_message */
-char *_split_signal_formatted_message(void) { return strdup("[]"); }
+/* PoP: split_signal_formatted_message @ plugins/platforms/signal/adapter.py:split_signal_formatted_message */
+char *split_signal_formatted_message(void) { return strdup("[]"); }

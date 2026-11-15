@@ -9,20 +9,20 @@
 
 /* ── gateway/authz_mixin.py: 6 missing functions ── */
 
-/* PoP: _platform_declares_allowed_users_env @ gateway/authz_mixin.py:_platform_declares_allowed_users_env */
-int _platform_declares_allowed_users_env(void) { return 0; }
+/* PoP: platform_declares_allowed_users_env @ gateway/authz_mixin.py:platform_declares_allowed_users_env */
+int platform_declares_allowed_users_env(void) { return 0; }
 
-/* PoP: _bech32_polymod @ gateway/authz_mixin.py:_bech32_polymod */
-int _bech32_polymod(void) { return 0; }
+/* PoP: bech32_polymod @ gateway/authz_mixin.py:bech32_polymod */
+int bech32_polymod(void) { return 0; }
 
-/* PoP: _bech32_hrp_expand @ gateway/authz_mixin.py:_bech32_hrp_expand */
-char *_bech32_hrp_expand(void) { return strdup(""); }
+/* PoP: bech32_hrp_expand @ gateway/authz_mixin.py:bech32_hrp_expand */
+char *bech32_hrp_expand(void) { return strdup(""); }
 
-/* PoP: _convertbits @ gateway/authz_mixin.py:_convertbits */
-char *_convertbits(void) { return strdup(""); }
+/* PoP: convertbits @ gateway/authz_mixin.py:convertbits */
+char *convertbits(void) { return strdup(""); }
 
-/* PoP: _npub_to_hex @ gateway/authz_mixin.py:_npub_to_hex */
-char *_npub_to_hex(void) { return strdup(""); }
+/* PoP: npub_to_hex @ gateway/authz_mixin.py:npub_to_hex */
+char *npub_to_hex(void) { return strdup(""); }
 
-/* PoP: _normalize_nostr_allow_entries @ gateway/authz_mixin.py:_normalize_nostr_allow_entries */
-char *_normalize_nostr_allow_entries(void) { return strdup("[]"); }
+/* PoP: normalize_nostr_allow_entries @ gateway/authz_mixin.py:normalize_nostr_allow_entries */
+char *normalize_nostr_allow_entries(void) { return strdup("[]"); }

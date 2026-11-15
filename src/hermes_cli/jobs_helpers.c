@@ -128,7 +128,7 @@ char *jobs_compute_next_run(const char *schedule_json, const char *last_run_at)
  * completed one-shot retention sweep.
  * ============================================================ */
 
-/* forward decl: used by _sweep_completed_oneshots before definition */
+/* forward decl: used by sweep_completed_oneshots before definition */
 static double iso8601_to_epoch(const char *s);
 
 /* croniter (the external cron-expression iterator) is only an optional
@@ -136,8 +136,8 @@ static double iso8601_to_epoch(const char *s);
  * so the equivalent of HAS_CRONITER is unconditionally true in the C port. */
 #define HAS_CRONITER 1
 
-/* Atomic write of an integer to `path` (mirrors _atomic_write_counter). */
-static void _atomic_write_counter_impl(const char *path, long value) {
+/* Atomic write of an integer to `path` (mirrors atomic_write_counter). */
+static void atomic_write_counter_impl(const char *path, long value) {
     if (value < 0) value = 0;
     char *cd = cronjobs_cron_dir();
     if (!cd) return;
@@ -157,14 +157,14 @@ static void _atomic_write_counter_impl(const char *path, long value) {
     rename(tmppath, path);
 }
 
-/* PoP: port @ cron/jobs.py:_ensure_croniter */
+/* PoP: port @ cron/jobs.py:ensure_croniter */
 /* libcron is always linked; the croniter external dependency is unconditionally
  * available in the C port (mirrors HAS_CRONITER=True). */
-bool _ensure_croniter(void) { (void)HAS_CRONITER; return true; }
+bool ensure_croniter(void) { (void)HAS_CRONITER; return true; }
 
-/* PoP: _atomic_write_counter @ cron/jobs.py:_atomic_write_counter */
-void _atomic_write_counter(const char *path, long value) {
-    _atomic_write_counter_impl(path, value);
+/* PoP: atomic_write_counter @ cron/jobs.py:atomic_write_counter */
+void atomic_write_counter(const char *path, long value) {
+    atomic_write_counter_impl(path, value);
 }
 
 /* PoP: record_catch_up_occurrence @ cron/occurrences.py:record_catch_up_occurrence */
@@ -180,7 +180,7 @@ void record_catch_up_occurrence(void) {
         fclose(f);
     }
     if (value < 0) value = 0;
-    _atomic_write_counter_impl(path, value + 1);
+    atomic_write_counter_impl(path, value + 1);
     free(cd);
 }
 
@@ -200,8 +200,8 @@ long get_catch_up_occurrence_count(void) {
     return value < 0 ? 0 : value;
 }
 
-/* PoP: _write_wedged_oneshot_diagnostic @ cron/jobs.py:_write_wedged_oneshot_diagnostic */
-void _write_wedged_oneshot_diagnostic(const json_t *job) {
+/* PoP: write_wedged_oneshot_diagnostic @ cron/jobs.py:write_wedged_oneshot_diagnostic */
+void write_wedged_oneshot_diagnostic(const json_t *job) {
     if (!job || job->type != JSON_OBJECT) return;
     json_t *lra = json_object_get(job, "last_run_at");
     if (lra && lra->type != JSON_NULL) return;  /* a prior run was recorded */
@@ -286,8 +286,8 @@ long advance_next_runs(json_t *job_ids) {
 /* Completed one-shot retention default (cron/jobs.py COMPLETED_ONESHOT_RETENTION_DAYS). */
 #define COMPLETED_ONESHOT_RETENTION_DAYS 7
 
-/* PoP: _completed_oneshot_retention_days @ cron/jobs.py:_completed_oneshot_retention_days */
-double _completed_oneshot_retention_days(void) {
+/* PoP: completed_oneshot_retention_days @ cron/jobs.py:completed_oneshot_retention_days */
+double completed_oneshot_retention_days(void) {
     json_t *cfg = config_py_load_config_impl(0);
     if (!cfg || cfg->type != JSON_OBJECT) return (double)COMPLETED_ONESHOT_RETENTION_DAYS;
     json_t *cron_cfg = json_object_get(cfg, "cron");
@@ -298,11 +298,11 @@ double _completed_oneshot_retention_days(void) {
     return days;
 }
 
-/* PoP: _sweep_completed_oneshots @ cron/jobs.py:_sweep_completed_oneshots */
-bool _sweep_completed_oneshots(json_t *raw_jobs, const char *now_iso,
+/* PoP: sweep_completed_oneshots @ cron/jobs.py:sweep_completed_oneshots */
+bool sweep_completed_oneshots(json_t *raw_jobs, const char *now_iso,
                                json_t *removed_ids) {
     if (!raw_jobs || !json_is_array(raw_jobs)) return false;
-    double retention = _completed_oneshot_retention_days();
+    double retention = completed_oneshot_retention_days();
     if (retention <= 0) return false;
     /* cutoff = now - retention_days (ISO compare via string; parse to epoch) */
     double now_epoch = iso8601_to_epoch(now_iso);

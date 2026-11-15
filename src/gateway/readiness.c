@@ -37,7 +37,7 @@ int gateway_readiness_u_probe_config(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_readiness_u_probe_disk @ gateway/readiness.py:_probe_disk */
+/* PoP: gateway_readiness_u_probe_disk @ gateway/readiness.py:probe_disk */
 int gateway_readiness_u_probe_disk(const char *arg) {
     /* Python: disk usage -> ok/degraded. Arg = "home\tused_pct\tfree". */
     if (!arg || !*arg) { printf("degraded\n"); return 0; }

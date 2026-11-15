@@ -199,8 +199,8 @@ typedef struct PluginContext {
 /* ── manager lifecycle (support surface used by the ports) ────────────── */
 plug_manager_t *plugins_get_plugin_manager(void);      /* get_plugin_manager() */
 char *plugins_effective_home(void);                    /* override || home */
-const char *_plugin_home_scope(const char *home);      /* returns saved token */
-void _plugin_home_scope_reset(const char *token);
+const char *plugin_home_scope(const char *home);      /* returns saved token */
+void plugin_home_scope_reset(const char *token);
 
 #ifdef __cplusplus
 }

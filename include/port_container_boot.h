@@ -19,7 +19,7 @@ const char **cb_strip_argv_prefix(const char *const *argv, int *out_count);
  * exactly `gateway run` and does not carry --no-supervise. */
 int cb_is_legacy_gateway_run(const char *const *argv);
 
-/* container_boot.py:_is_dashboard_container -- the stripped argv starts with
+/* container_boot.py:is_dashboard_container -- the stripped argv starts with
  * `dashboard` (a dashboard container never supervises gateways). */
 int cb_is_dashboard_container(const char *const *argv);
 

@@ -4,7 +4,7 @@
  * Pure helpers ported from hermes_state_repair.py (56 defs, previously 0
  * ported).
  *
- *   sr_mask_volatile_header   <- _mask_volatile_header
+ *   sr_mask_volatile_header   <- mask_volatile_header
  *   sr_backup_headroom        <- _repair_backup_headroom_bytes
  *   sr_failure_consumes       <- _repair_failure_consumes_attempt
  *   sr_sidecar_names          <- _sidecars
@@ -38,7 +38,7 @@ static const char *const SR_SIDECAR_SUFFIXES[] = { "-wal", "-shm", "-journal" };
 #define SR_SQLITE_NOTADB 26
 
 /* ===========================================================================
- *  _mask_volatile_header  (hermes_state_repair.py:_mask_volatile_header)
+ *  mask_volatile_header  (hermes_state_repair.py:mask_volatile_header)
  *
  *      if len(head) < 96: return head
  *      buf = bytearray(head)
@@ -50,7 +50,7 @@ static const char *const SR_SIDECAR_SUFFIXES[] = { "-wal", "-shm", "-journal" };
  *  A short header is returned UNCHANGED. `head` is modified in place.
  * =========================================================================== */
 
-/* PoP: _mask_volatile_header @ hermes_state_repair.py:_mask_volatile_header */
+/* PoP: mask_volatile_header @ hermes_state_repair.py:mask_volatile_header */
 void sr_mask_volatile_header(unsigned char *head, size_t len)
 {
     if (!head || len < 96) return;

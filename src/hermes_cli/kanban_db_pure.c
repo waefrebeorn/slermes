@@ -13,9 +13,9 @@
  *   _resolve_claim_ttl_seconds        -> kanban_resolve_claim_ttl_seconds
  *   _resolve_crash_grace_seconds      -> kanban_resolve_crash_grace_seconds
  *   _resolve_rate_limit_cooldown_seconds -> kanban_resolve_rate_limit_cooldown_seconds
- *   _relative_age                     -> kanban_relative_age
- *   _normalize_board_slug             -> kanban_normalize_board_slug
- *   _default_board_display_name       -> kanban_default_board_display_name
+ *   relative_age                     -> kanban_relative_age
+ *   normalize_board_slug             -> kanban_normalize_board_slug
+ *   default_board_display_name       -> kanban_default_board_display_name
  *
  * Functions that Python reads from os.environ take an explicit `env`
  * argument (the env-var value, or NULL for "unset"). Callers receive
@@ -87,7 +87,7 @@ int kanban_resolve_rate_limit_cooldown_seconds(const char *env) {
     return KANBAN_DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS;
 }
 
-/* --- _relative_age ------------------------------------------------ */
+/* --- relative_age ------------------------------------------------ */
 char *kanban_relative_age(long ts, long now) {
     if (now <= 0) now = (long)time(NULL);
     long delta = now - ts;
@@ -105,7 +105,7 @@ char *kanban_relative_age(long ts, long now) {
     char b[32]; snprintf(b, sizeof(b), "%ldd ago", d); return strdup(b);
 }
 
-/* --- _normalize_board_slug ----------------------------------------  */
+/* --- normalize_board_slug ----------------------------------------  */
 /* Returns malloc'd slug, or NULL for empty, or "__ERR__: ..." invalid. */
 char *kanban_normalize_board_slug(const char *slug) {
     if (!slug) return NULL;
@@ -136,7 +136,7 @@ char *kanban_normalize_board_slug(const char *slug) {
     return s; /* malloc'd */
 }
 
-/* --- _default_board_display_name ---------------------------------- */
+/* --- default_board_display_name ---------------------------------- */
 char *kanban_default_board_display_name(const char *slug) {
     if (!slug) slug = "";
     /* slug.replace("_","-").split("-") -> capitalize each part -> join " " */

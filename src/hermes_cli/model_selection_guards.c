@@ -43,8 +43,8 @@ static json_t *selection_warning_new(const char *kind, const char *title,
     return o;
 }
 
-/* PoP: _cost_guard @ hermes_cli/model_selection_guards.py:_cost_guard */
-static json_t *_cost_guard(const char *model_name, const char *provider,
+/* PoP: cost_guard @ hermes_cli/model_selection_guards.py:cost_guard */
+static json_t *cost_guard(const char *model_name, const char *provider,
                            const char *base_url, const char *api_key,
                            const json_t *model_info,
                            const model_cost_guard_seams *seams)
@@ -64,8 +64,8 @@ static json_t *_cost_guard(const char *model_name, const char *provider,
     return out;
 }
 
-/* PoP: _data_policy_guard @ hermes_cli/model_selection_guards.py:_data_policy_guard */
-static json_t *_data_policy_guard(const char *model_name, const char *provider,
+/* PoP: data_policy_guard @ hermes_cli/model_selection_guards.py:data_policy_guard */
+static json_t *data_policy_guard(const char *model_name, const char *provider,
                                   const char *base_url)
 {
     DataTrainingWarning *warning =
@@ -94,9 +94,9 @@ json_t *selection_warnings(const char *model_name, const char *provider,
     json_t *warnings[2];
     const char *kinds[2] = { "cost", "data_policy" };
 
-    warnings[0] = _cost_guard(model_name, provider, base_url, api_key,
+    warnings[0] = cost_guard(model_name, provider, base_url, api_key,
                               model_info, seams);
-    warnings[1] = _data_policy_guard(model_name, provider, base_url);
+    warnings[1] = data_policy_guard(model_name, provider, base_url);
 
     for (int i = 0; i < 2; i++) {
         json_t *w = warnings[i];

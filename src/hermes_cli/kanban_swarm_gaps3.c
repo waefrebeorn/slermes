@@ -9,8 +9,8 @@
 
 /* ── hermes_cli/kanban_swarm.py: 2 missing functions ── */
 
-/* PoP: _activate_root_inline @ hermes_cli/kanban_swarm.py:_activate_root_inline */
-void _activate_root_inline(void) { }
+/* PoP: activate_root_inline @ hermes_cli/kanban_swarm.py:activate_root_inline */
+void activate_root_inline(void) { }
 
-/* PoP: _create_swarm_uncommitted @ hermes_cli/kanban_swarm.py:_create_swarm_uncommitted */
-void _create_swarm_uncommitted(void) { }
+/* PoP: create_swarm_uncommitted @ hermes_cli/kanban_swarm.py:create_swarm_uncommitted */
+void create_swarm_uncommitted(void) { }

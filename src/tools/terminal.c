@@ -80,11 +80,11 @@ static const char *SCHEMA = "{"
  *  Safe command preview
  * ================================================================ */
 
-/* PoP: buffer @ tools/terminal_tool_guards.py:_safe_command_preview */
+/* PoP: buffer @ tools/terminal_tool_guards.py:safe_command_preview */
 /* Return a log-safe preview of a command, truncated at limit bytes.
  * Returns pointer to a static buffer (NOT thread-safe — terminal.c
- * is single-threaded). Mirrors Python _safe_command_preview(). */
-static const char *_safe_command_preview(const char *command, int limit) {
+ * is single-threaded). Mirrors Python safe_command_preview(). */
+static const char *safe_command_preview(const char *command, int limit) {
     static char buf[512];
     if (!command) return "<None>";
     if (limit <= 0) limit = 200;
@@ -113,7 +113,7 @@ static char *run_command(const char *command, int timeout_sec) {
     if (!fp) {
         char buf[256];
         snprintf(buf, sizeof(buf), "{\"error\": \"popen failed: %s\", \"command_preview\": \"%s\"}",
-                 strerror(errno), _safe_command_preview(command, 100));
+                 strerror(errno), safe_command_preview(command, 100));
         return strdup(buf);
     }
 
@@ -817,11 +817,11 @@ static char *build_env_passthrough_export(void) {
  * ================================================================ */
 
 /* Validate workdir uses only safe filesystem characters.
- * Mirrors Python terminal_tool._validate_workdir().
+ * Mirrors Python terminal_tool.validate_workdir().
  * Uses allowlist: alphanumeric plus / \ _ : - . ~ space + @ = ,
  * Returns error string if dangerous, NULL if safe. */
-/* PoP: _validate_workdir @ tools/terminal_tool.py:_validate_workdir */
-static const char *_validate_workdir(const char *workdir) {
+/* PoP: validate_workdir @ tools/terminal_tool.py:validate_workdir */
+static const char *validate_workdir(const char *workdir) {
     if (!workdir || !workdir[0]) return NULL;
     static const char safe[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                "abcdefghijklmnopqrstuvwxyz"
@@ -840,8 +840,8 @@ static const char *_validate_workdir(const char *workdir) {
 }
 
 /* Check workdir filesystem path (exists, is directory). Returns warning or NULL.
- * Mirrors Python terminal_tool._validate_workdir() for existence check. */
-static const char *_check_workdir(const char *workdir) {
+ * Mirrors Python terminal_tool.validate_workdir() for existence check. */
+static const char *check_workdir(const char *workdir) {
     if (!workdir || !workdir[0]) return NULL;
     struct stat st;
     if (stat(workdir, &st) != 0)
@@ -852,8 +852,8 @@ static const char *_check_workdir(const char *workdir) {
 }
 
 /* Check free disk space on workdir's filesystem. Returns NULL if OK, warning if < 100MB free.
- * Port of Python terminal_tool._check_disk_usage_warning(). */
-static const char *_check_disk_usage(const char *workdir) {
+ * Port of Python terminal_tool.check_disk_usage_warning(). */
+static const char *check_disk_usage(const char *workdir) {
 #if defined(__linux__) || defined(__APPLE__)
     const char *path = workdir && workdir[0] ? workdir : "/tmp";
     struct statfs sfs;
@@ -872,7 +872,7 @@ static const char *_check_disk_usage(const char *workdir) {
 }
 
 /* Inject safety warnings into result JSON. Returns malloc'd string. */
-static char *_inject_warnings(const char *result_json,
+static char *inject_warnings(const char *result_json,
                                const char *wd_warn, const char *disk_warn,
                                const char *guidance) {
     json_t *rj = json_parse(result_json, NULL);
@@ -886,7 +886,7 @@ static char *_inject_warnings(const char *result_json,
 }
 
 /* Interpret exit code into human-readable message per command semantics.
- * Mirrors Python terminal_tool._interpret_exit_code(). */
+ * Mirrors Python terminal_tool.interpret_exit_code(). */
 static const char *exit_code_interpret(const char *command, int exit_code) {
     if (!command || exit_code == 0) return NULL;
 
@@ -963,7 +963,7 @@ static const char *exit_code_interpret(const char *command, int exit_code) {
 
 /* Check command output for sudo failure patterns and add a helpful tip.
  * Mirrors Python terminal_tool._handle_sudo_failure(). */
-static void _inject_sudo_failure(json_t *rj, const char *command) {
+static void inject_sudo_failure(json_t *rj, const char *command) {
     (void)command;
     if (!rj) return;
     const char *output = json_get_str(rj, "output", NULL);
@@ -985,7 +985,7 @@ static void _inject_sudo_failure(json_t *rj, const char *command) {
 }
 
 /* Check if sudo -n works without a password prompt.
- * Port of Python terminal_tool._sudo_nopasswd_works().
+ * Port of Python terminal_tool.sudo_nopasswd_works().
  * Returns true when local sudo works without prompting.
  * Only checks the local backend; Docker/SSH/etc return false.
  * No process-level cache — re-probes every call. */
@@ -1122,7 +1122,7 @@ static bool looks_like_env_assignment(const char *token) {
 }
 
 /* Forward declaration */
-/* PoP: free @ tools/terminal_tool_sudo.py:_read_shell_token */
+/* PoP: free @ tools/terminal_tool_sudo.py:read_shell_token */
 char *terminal_read_shell_token(const char *command, int start, int *end);
 
 /* B07: Rewrite bare 'sudo' command words to 'sudo -S -p ""' for piped password.
@@ -1246,13 +1246,13 @@ char *terminal_rewrite_sudo(const char *command, bool *found) {
 }
 
 /* Transform sudo commands to support password piping.
- * Port of Python terminal_tool._transform_sudo_command().
+ * Port of Python terminal_tool.transform_sudo_command().
  * Returns malloc'd string: rewritten command if sudo found and password available,
  * or original command if no sudo or passwordless sudo works.
  * If out_password is non-NULL and a password was obtained, sets *out_password
  * to a malloc'd password string (caller must free).
  * Caller must free() the returned command string. */
-static char *_transform_sudo(const char *command, char **out_password) {
+static char *transform_sudo(const char *command, char **out_password) {
     if (!command || !command[0]) {
         if (out_password) *out_password = NULL;
         return NULL;
@@ -1268,7 +1268,7 @@ static char *_transform_sudo(const char *command, char **out_password) {
     }
 
     /* Passwordless sudo check: skip rewrite if sudo -n works.
-     * Mirrors Python: if _sudo_nopasswd_works(): return command, None */
+     * Mirrors Python: if sudo_nopasswd_works(): return command, None */
     if (terminal_sudo_nopasswd_works()) {
         /* Sudo works without password — return original command unchanged */
         free(rewritten);
@@ -1301,7 +1301,7 @@ static char *_transform_sudo(const char *command, char **out_password) {
 }
 
 /* Rewrite compound background commands (e.g., "cmd1 & cmd2 &").
- * Port of Python terminal_tool._rewrite_compound_background(). */
+ * Port of Python terminal_tool.rewrite_compound_background(). */
 char *terminal_rewrite_compound_background(const char *command) {
     if (!command || !command[0]) return strdup(command ? command : "");
 
@@ -1389,7 +1389,7 @@ char *terminal_rewrite_compound_background(const char *command) {
 }
 
 /* Inject exit_code_interpretation field into result JSON */
-static char *_inject_interpretation(const char *result_json, const char *command) {
+static char *inject_interpretation(const char *result_json, const char *command) {
     if (!result_json) return NULL;
     json_t *rj = json_parse(result_json, NULL);
     if (!rj) return strdup(result_json);
@@ -1399,17 +1399,17 @@ static char *_inject_interpretation(const char *result_json, const char *command
     if (interpretation) {
         json_set(rj, "exit_code_interpretation", json_string(interpretation));
     }
-    _inject_sudo_failure(rj, command);
+    inject_sudo_failure(rj, command);
     char *out = json_serialize(rj);
     json_free(rj);
     return out;
 }
 
 /* Strip quoted content from command to prevent false-positive pattern matches.
- * Mirrors Python terminal_tool._strip_quotes().
+ * Mirrors Python terminal_tool.strip_quotes().
  * Removes content inside single quotes, double quotes (with escape handling),
  * and backtick-quoted strings. Replaces with empty quotes to preserve structure. */
-static char *_strip_quotes(const char *command) {
+static char *strip_quotes(const char *command) {
     if (!command) return NULL;
     size_t len = strlen(command);
     if (len == 0) return strdup("");
@@ -1521,8 +1521,8 @@ char *terminal_read_shell_token(const char *command, int start, int *end) {
 }
 
 /* Check command for shell-level background wrappers and suggest background=true.
- * Mirrors Python terminal_tool._foreground_background_guidance(). */
-static const char *_check_foreground_guidance(const char *command) {
+ * Mirrors Python terminal_tool.foreground_background_guidance(). */
+static const char *check_foreground_guidance(const char *command) {
     if (!command) return NULL;
 
     /* Skip leading whitespace to find first token */
@@ -1556,7 +1556,7 @@ static const char *_check_foreground_guidance(const char *command) {
     }
 
     /* Check if this is a help/version command — return no guidance needed.
-     * Mirrors Python terminal_tool._looks_like_help_or_version_command(). */
+     * Mirrors Python terminal_tool.looks_like_help_or_version_command(). */
     {
         char cmd_lower[512];
         size_t clen = strlen(command);
@@ -1577,7 +1577,7 @@ static const char *_check_foreground_guidance(const char *command) {
     }
 
     /* Strip quotes to avoid false positives on echoed text */
-    char *stripped = _strip_quotes(command);
+    char *stripped = strip_quotes(command);
     if (!stripped) return NULL;
     const char *check = stripped;
 
@@ -1822,7 +1822,7 @@ char *terminal_handler(const char *args_json, const char *task_id) {
     /* Check if command requires piped stdin instead of PTY.
      * Some CLIs (gh auth login --with-token) change behavior when stdin
      * is a TTY and hang forever waiting for piped input.
-     * Port of Python terminal_tool._command_requires_pipe_stdin(). */
+     * Port of Python terminal_tool.command_requires_pipe_stdin(). */
     if (use_pty && command_buf[0]) {
         char cmd_lower[512];
         size_t clen = strlen(command_buf);
@@ -1906,13 +1906,13 @@ char *terminal_handler(const char *args_json, const char *task_id) {
         return strdup("{\"error\": \"Missing required 'command' argument\", \"status\": \"error\"}");
 
     /* Safety checks: workdir validation + disk usage warning */
-    const char *wd_warn = _check_workdir(workdir);
-    const char *disk_warn = _check_disk_usage(workdir);
-    const char *guidance = _check_foreground_guidance(command);
+    const char *wd_warn = check_workdir(workdir);
+    const char *disk_warn = check_disk_usage(workdir);
+    const char *guidance = check_foreground_guidance(command);
 
     /* F14: Validate workdir uses only safe filesystem characters.
      * Blocking check (rejects command) — not a warning. */
-    const char *wd_valid = _validate_workdir(workdir);
+    const char *wd_valid = validate_workdir(workdir);
     if (wd_valid) {
         char err[512];
         snprintf(err, sizeof(err),
@@ -1934,13 +1934,13 @@ char *terminal_handler(const char *args_json, const char *task_id) {
     }
 
     /* B07: Transform sudo commands for piped password support.
-     * Calls _transform_sudo() which handles SUDO_PASSWORD env var,
+     * Calls transform_sudo() which handles SUDO_PASSWORD env var,
      * passwordless sudo detection, interactive prompt, and command rewrite.
      * The result replaces the command pointer for downstream use.
      * sudo_password persists for PTY stdin piping below. */
     char *sudo_password = NULL;
     {
-        char *transformed = _transform_sudo(command, &sudo_password);
+        char *transformed = transform_sudo(command, &sudo_password);
         if (transformed) {
             if (strcmp(transformed, command) != 0) {
                 /* Transformation changed the command — copy into command_buf */
@@ -1983,62 +1983,62 @@ char *terminal_handler(const char *args_json, const char *task_id) {
     if (use_pty) {
 #if defined(__linux__) || defined(__APPLE__)
         char *res1 = run_command_pty(full_command, timeout, sudo_password);
-        char *w1 = _inject_warnings(res1, wd_warn, disk_warn, guidance);
+        char *w1 = inject_warnings(res1, wd_warn, disk_warn, guidance);
         free(res1);
         free(sudo_password);
-        return _inject_interpretation(w1, command);
+        return inject_interpretation(w1, command);
 #else
         char *res1b = run_command(full_command, timeout);
-        char *w1b = _inject_warnings(res1b, wd_warn, disk_warn, guidance);
+        char *w1b = inject_warnings(res1b, wd_warn, disk_warn, guidance);
         free(res1b);
         free(sudo_password);
-        return _inject_interpretation(w1b, command);
+        return inject_interpretation(w1b, command);
 #endif
     }
 
     /* D84: Route to SSH execution backend if configured */
     if (backend && strcasecmp(backend, "ssh") == 0) {
         char *res2 = run_command_ssh(command, timeout);
-        char *w2 = _inject_warnings(res2, wd_warn, disk_warn, guidance);
+        char *w2 = inject_warnings(res2, wd_warn, disk_warn, guidance);
         free(res2);
-        return _inject_interpretation(w2, command);
+        return inject_interpretation(w2, command);
     }
 
     /* F11: Route to Docker execution backend if configured */
     if (backend && strcasecmp(backend, "docker") == 0) {
         char *res3 = run_command_docker(command, timeout, docker_image);
-        char *w3 = _inject_warnings(res3, wd_warn, disk_warn, guidance);
+        char *w3 = inject_warnings(res3, wd_warn, disk_warn, guidance);
         free(res3);
-        return _inject_interpretation(w3, command);
+        return inject_interpretation(w3, command);
     }
 
     /* D04: Route to Docker Compose backend if configured */
     if (backend && (strcasecmp(backend, "docker-compose") == 0 || strcasecmp(backend, "compose") == 0)) {
         char *res4 = run_command_docker_compose(command, timeout);
-        return _inject_interpretation(res4, command);
+        return inject_interpretation(res4, command);
     }
 
 /* M35: Route to Modal execution backend if configured */
     /* S01: Route to Singularity execution backend if configured */
     if (backend && strcasecmp(backend, "singularity") == 0) {
         char *res6 = run_command_singularity(command, timeout);
-        return _inject_interpretation(res6, command);
+        return inject_interpretation(res6, command);
     }
 
     if (backend && strcasecmp(backend, "modal") == 0) {
         char *res5 = run_command_modal(command, timeout);
-        return _inject_interpretation(res5, command);
+        return inject_interpretation(res5, command);
     }
 
     if (backend && strcasecmp(backend, "daytona") == 0) {
         char *res7 = daytona_run_command(command, timeout);
-        return _inject_interpretation(res7, command);
+        return inject_interpretation(res7, command);
     }
 
     char *res_default = run_command(full_command, timeout);
-    char *w_default = _inject_warnings(res_default, wd_warn, disk_warn, guidance);
+    char *w_default = inject_warnings(res_default, wd_warn, disk_warn, guidance);
     free(res_default);
-    return _inject_interpretation(w_default, command);
+    return inject_interpretation(w_default, command);
 }
 
 /* PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements */
@@ -2067,10 +2067,10 @@ void cleanup_vm(const char *task_id, bool force_remove) {
     term_cleanup_vm(task_id, force_remove);
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
+/* PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:looks_like_help_or_version_command */
 /* Check if command looks like --help or --version.
- * PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
-static bool _looks_like_help_or_version_command(const char *command) {
+ * PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:looks_like_help_or_version_command */
+static bool looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||
            (strstr(command, "-h") != NULL && strlen(command) < 10);

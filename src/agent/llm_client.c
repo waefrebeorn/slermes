@@ -71,7 +71,7 @@ static char *xstrdup(const char *s) {
 /* Port of Python setup_save_env: update a KEY=VALUE in .env file.
  * Reads existing .env, removes any line starting with KEY=, appends KEY=VALUE.
  * Works with SLERMES_HOME/.env, HERMES_HOME/.env, or ~/.slermes/.env. */
-static bool _update_env_value(const char *key, const char *value) {
+static bool update_env_value(const char *key, const char *value) {
     if (!key || !value || !*value) return false;
     const char *home = getenv("SLERMES_HOME");
     if (!home) home = getenv("HERMES_HOME");
@@ -121,7 +121,7 @@ static bool nous_auto_refresh(llm_config_t *cfg) {
         return false;
     }
     /* Update .env */
-    _update_env_value("NOUS_API_KEY", new_tok->access_token);
+    update_env_value("NOUS_API_KEY", new_tok->access_token);
     /* Update process environment */
     setenv("NOUS_API_KEY", new_tok->access_token, 1);
     /* Update config for immediate use */

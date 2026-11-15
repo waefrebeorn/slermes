@@ -308,7 +308,7 @@ char *hcli_strip_container_argv_prefix(const char *argv_line)
     return strdup(p);
 }
 
-/* PoP: hcli_is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */
+/* PoP: hcli_is_dashboard_container @ hermes_cli/container_boot.py:is_dashboard_container */
 bool hcli_is_dashboard_container(const char *argv_line)
 {
     if (!argv_line) return false;

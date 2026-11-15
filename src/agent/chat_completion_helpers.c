@@ -436,10 +436,10 @@ char *chat_completion_helpers__rewrite_prompt_model_identity(const char *sp, con
     return cur;
 }
 
-/* PoP: the @ agent/chat_completion_helpers.py:_fallback_entry_key */
+/* PoP: the @ agent/chat_completion_helpers.py:fallback_entry_key */
 /* Build the (provider_lower, model, base_url_no_trailing_slash) identity key for
  * a fallback entry. Writes the three parts to caller buffers. */
-void _fallback_entry_key(const json_t *fb,
+void fallback_entry_key(const json_t *fb,
     char *provider_out, size_t pcap,
     char *model_out, size_t mcap,
     char *base_url_out, size_t bcap)

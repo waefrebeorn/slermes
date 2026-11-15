@@ -144,7 +144,7 @@ char *ybm_parse_image_size(const unsigned char *buf, size_t len) {
     return out;
 }
 
-/* PoP: ybm_parse_png_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_png_size */
+/* PoP: ybm_parse_png_size @ plugins/platforms/yuanbao/yuanbao_media.py:parse_png_size */
 char *ybm_parse_png_size(const unsigned char *buf, size_t len) {
     if (!buf || len < 24 || buf[0] != 0x89 || buf[1] != 'P' || buf[2] != 'N' || buf[3] != 'G') return NULL;
     char *out = NULL;

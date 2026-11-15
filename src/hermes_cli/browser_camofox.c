@@ -39,8 +39,8 @@ char *get_camofox_url(void) {
     return strdup(buf);
 }
 
-/* PoP: _config_cdp_url @ tools/browser_camofox.py:_config_cdp_url */
-char *_config_cdp_url(const char *camofox_url) {
+/* PoP: config_cdp_url @ tools/browser_camofox.py:config_cdp_url */
+char *config_cdp_url(const char *camofox_url) {
     if (!camofox_url || !camofox_url[0]) return NULL;
     char buf[512];
     snprintf(buf, sizeof(buf), "%s/cdp", camofox_url);
@@ -85,8 +85,8 @@ char *get_vnc_url(void) {
 
 /* ── Camofox config helpers ─────────────────────────────────── */
 
-/* PoP: _get_camofox_config @ tools/browser_camofox.py:_get_camofox_config */
-json_t *_get_camofox_config(void) {
+/* PoP: get_camofox_config @ tools/browser_camofox.py:get_camofox_config */
+json_t *get_camofox_config(void) {
     json_t *cfg = json_object();
     /* Load from CAMEOFox_ env vars */
     const char *debug = getenv("CAMEOFox_DEBUG");
@@ -99,54 +99,54 @@ json_t *_get_camofox_config(void) {
     return cfg;
 }
 
-/* PoP: _managed_persistence_enabled @ tools/browser_camofox.py:_managed_persistence_enabled */
-bool _managed_persistence_enabled(void) {
+/* PoP: managed_persistence_enabled @ tools/browser_camofox.py:managed_persistence_enabled */
+bool managed_persistence_enabled(void) {
     const char *env = getenv("CAMEOFox_PERSISTENCE");
     return env && (strcmp(env, "1")==0 || strcmp(env, "true")==0 || strcmp(env, "enabled")==0);
 }
 
-/* PoP: _camofox_identity_override @ tools/browser_camofox.py:_camofox_identity_override */
-char *_camofox_identity_override(void) {
+/* PoP: camofox_identity_override @ tools/browser_camofox.py:camofox_identity_override */
+char *camofox_identity_override(void) {
     const char *id = getenv("CAMEOFox_IDENTITY");
     return id ? strdup(id) : NULL;
 }
 
-/* PoP: _env_flag @ tools/browser_camofox.py:_env_flag */
-bool _env_flag(const char *flag_name, bool default_val) {
+/* PoP: env_flag @ tools/browser_camofox.py:env_flag */
+bool env_flag(const char *flag_name, bool default_val) {
     const char *env = getenv(flag_name);
     if (!env) return default_val;
     return strcmp(env, "1")==0 || strcmp(env, "true")==0;
 }
 
-/* PoP: _adopt_existing_tab_enabled @ tools/browser_camofox.py:_adopt_existing_tab_enabled */
-bool _adopt_existing_tab_enabled(void) {
-    return _env_flag("CAMEOFox_ADOPT_TAB", true);
+/* PoP: adopt_existing_tab_enabled @ tools/browser_camofox.py:adopt_existing_tab_enabled */
+bool adopt_existing_tab_enabled(void) {
+    return env_flag("CAMEOFox_ADOPT_TAB", true);
 }
 
-/* PoP: _loopback_rewrite_enabled @ tools/browser_camofox.py:_loopback_rewrite_enabled */
-bool _loopback_rewrite_enabled(void) {
-    return _env_flag("CAMEOFox_REWRITE_LOOPBACK", false);
+/* PoP: loopback_rewrite_enabled @ tools/browser_camofox.py:loopback_rewrite_enabled */
+bool loopback_rewrite_enabled(void) {
+    return env_flag("CAMEOFox_REWRITE_LOOPBACK", false);
 }
 
-/* PoP: _loopback_rewrite_host @ tools/browser_camofox.py:_loopback_rewrite_host */
-char *_loopback_rewrite_host(void) {
+/* PoP: loopback_rewrite_host @ tools/browser_camofox.py:loopback_rewrite_host */
+char *loopback_rewrite_host(void) {
     const char *h = getenv("CAMEOFox_LOOPBACK_HOST");
     return h ? strdup(h) : strdup("localhost");
 }
 
-/* PoP: _is_loopback_hostname @ tools/browser_camofox.py:_is_loopback_hostname */
-bool _is_loopback_hostname(const char *hostname) {
+/* PoP: is_loopback_hostname @ tools/browser_camofox.py:is_loopback_hostname */
+bool is_loopback_hostname(const char *hostname) {
     if (!hostname) return false;
     return strcmp(hostname, "localhost")==0 ||
            strcmp(hostname, "127.0.0.1")==0 ||
            strcmp(hostname, "::1")==0;
 }
 
-/* PoP: _rewrite_loopback_url_for_camofox @ tools/browser_camofox.py:_rewrite_loopback_url_for_camofox */
-char *_rewrite_loopback_url_for_camofox(const char *url) {
+/* PoP: rewrite_loopback_url_for_camofox @ tools/browser_camofox.py:rewrite_loopback_url_for_camofox */
+char *rewrite_loopback_url_for_camofox(const char *url) {
     if (!url) return NULL;
-    if (!_is_loopback_hostname(url)) return strdup(url);
-    char *host = _loopback_rewrite_host();
+    if (!is_loopback_hostname(url)) return strdup(url);
+    char *host = loopback_rewrite_host();
     if (!host) return strdup(url);
     char buf[2048];
     snprintf(buf, sizeof(buf), "http://%s%s", host, strstr(url, "://") ?: url);
@@ -172,8 +172,8 @@ char *_adopt_existing_tab(const char *camofox_url, const char *url) {
     return NULL;
 }
 
-/* PoP: _ensure_tab @ tools/browser_camofox.py:_ensure_tab */
-char *_ensure_tab(const char *camofox_url, const char *url, bool new_window) {
+/* PoP: ensure_tab @ tools/browser_camofox.py:ensure_tab */
+char *ensure_tab(const char *camofox_url, const char *url, bool new_window) {
     if (!camofox_url) return NULL;
     char buf[1024];
     snprintf(buf, sizeof(buf),
@@ -190,8 +190,8 @@ char *_ensure_tab(const char *camofox_url, const char *url, bool new_window) {
     return NULL;
 }
 
-/* PoP: _drop_session @ tools/browser_camofox.py:_drop_session */
-void _drop_session(const char *camofox_url, const char *session_id) {
+/* PoP: drop_session @ tools/browser_camofox.py:drop_session */
+void drop_session(const char *camofox_url, const char *session_id) {
     if (!camofox_url || !session_id) return;
     char cmd[512];
     snprintf(cmd, sizeof(cmd), "curl -s -X DELETE %s/sessions/%s 2>/dev/null", camofox_url, session_id);
@@ -208,8 +208,8 @@ void camofox_soft_cleanup(const char *camofox_url) {
 
 /* ── Low-level HTTP helpers ─────────────────────────────────── */
 
-/* PoP: _get_raw @ tools/browser_camofox.py:_get_raw */
-char *_get_raw(const char *camofox_url, const char *path) {
+/* PoP: get_raw @ tools/browser_camofox.py:get_raw */
+char *get_raw(const char *camofox_url, const char *path) {
     if (!camofox_url || !path) return NULL;
     char cmd[1024];
     snprintf(cmd, sizeof(cmd), "curl -s %s%s 2>/dev/null", camofox_url, path);
@@ -440,8 +440,8 @@ char *camofox_console(const char *camofox_url, const char *session_id, const cha
 
 /* ── Private page block helper ───────────────────────────────── */
 
-/* PoP: _camofox_private_page_block @ tools/browser_camofox.py:_camofox_private_page_block */
-bool _camofox_private_page_block(const char *url) {
+/* PoP: camofox_private_page_block @ tools/browser_camofox.py:camofox_private_page_block */
+bool camofox_private_page_block(const char *url) {
     if (!url) return false;
     /* Block known tracking domains and private IP ranges */
     const char *blocked[] = {

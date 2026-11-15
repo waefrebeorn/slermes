@@ -39,9 +39,9 @@ double voice_get_beep_volume(const json_t *voice_cfg) {
     return vol;
 }
 
-/* -- _sounddevice_output_allowed ------------------------------------  */
-/* PoP: _sounddevice_output_allowed @ tools/voice_mode.py:_sounddevice_output_allowed */
-bool _sounddevice_output_allowed(void) {
+/* -- sounddevice_output_allowed ------------------------------------  */
+/* PoP: sounddevice_output_allowed @ tools/voice_mode.py:sounddevice_output_allowed */
+bool sounddevice_output_allowed(void) {
 #ifdef __APPLE__
     return false;
 #else
@@ -49,9 +49,9 @@ bool _sounddevice_output_allowed(void) {
 #endif
 }
 
-/* -- _is_wsl / _is_wsl2_env / _wsl_powershell_tts_available --------- */
+/* -- _is_wsl / is_wsl2_env / wsl_powershell_tts_available --------- */
 
-static const char *_proc_version(void) {
+static const char *proc_version(void) {
     static char buf[512];
     static int done = 0;
     if (done) return buf;
@@ -68,38 +68,38 @@ static const char *_proc_version(void) {
 
 /* PoP: _is_wsl @ tools/voice_mode.py:_is_wsl */
 bool _is_wsl(void) {
-    return strstr(_proc_version(), "microsoft") != NULL;
+    return strstr(proc_version(), "microsoft") != NULL;
 }
 
-/* PoP: _is_wsl2_env @ tools/voice_mode.py:_is_wsl2_env */
-bool _is_wsl2_env(void) {
-    return strstr(_proc_version(), "microsoft") != NULL;
+/* PoP: is_wsl2_env @ tools/voice_mode.py:is_wsl2_env */
+bool is_wsl2_env(void) {
+    return strstr(proc_version(), "microsoft") != NULL;
 }
 
-/* PoP: _wsl_powershell_tts_available @ tools/voice_mode.py:_wsl_powershell_tts_available */
-bool _wsl_powershell_tts_available(void) {
-    if (!_is_wsl2_env()) return false;
+/* PoP: wsl_powershell_tts_available @ tools/voice_mode.py:wsl_powershell_tts_available */
+bool wsl_powershell_tts_available(void) {
+    if (!is_wsl2_env()) return false;
     return access("/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", X_OK) == 0
         && access("/usr/bin/ffmpeg", X_OK) == 0;
 }
 
-/* -- _voice_debug_enabled ------------------------------------------  */
-/* PoP: _voice_debug_enabled @ tools/voice_mode.py:_voice_debug_enabled */
-bool _voice_debug_enabled(void) {
+/* -- voice_debug_enabled ------------------------------------------  */
+/* PoP: voice_debug_enabled @ tools/voice_mode.py:voice_debug_enabled */
+bool voice_debug_enabled(void) {
     const char *v = getenv("HERMES_VOICE_DEBUG");
     return v && strcmp(v, "1") == 0;
 }
 
-/* -- _vad_log ------------------------------------------------------  */
-/* PoP: _vad_log @ tools/voice_mode.py:_vad_log */
-void _vad_log(const char *msg) {
+/* -- vad_log ------------------------------------------------------  */
+/* PoP: vad_log @ tools/voice_mode.py:vad_log */
+void vad_log(const char *msg) {
     if (!msg) return;
     fprintf(stderr, "[voice-vad] %s\n", msg);
 }
 
-/* -- _load_voice_stop_phrases --------------------------------------  */
-/* PoP: _load_voice_stop_phrases @ tools/voice_mode_transcript.py:_load_voice_stop_phrases */
-char **_load_voice_stop_phrases(const json_t *voice_cfg, int *out_count) {
+/* -- load_voice_stop_phrases --------------------------------------  */
+/* PoP: load_voice_stop_phrases @ tools/voice_mode_transcript.py:load_voice_stop_phrases */
+char **load_voice_stop_phrases(const json_t *voice_cfg, int *out_count) {
     *out_count = 0;
     json_t *phrases = NULL;
     if (voice_cfg && voice_cfg->type == JSON_OBJECT)

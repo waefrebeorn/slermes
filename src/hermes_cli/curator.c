@@ -80,9 +80,9 @@ int hermes_cli_curator_u_cmd_restore(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_curator_u_cmd_archive @ hermes_cli/curator.py:_cmd_archive */
+/* PoP: hermes_cli_curator_u_cmd_archive @ hermes_cli/curator.py:cmd_archive */
 int hermes_cli_curator_u_cmd_archive(const char *arg) {
-    /* Python _cmd_archive: refuse pinned skills ("unpin first"), otherwise
+    /* Python cmd_archive: refuse pinned skills ("unpin first"), otherwise
      * archive_skill() and print its message. Arg = "skill\tpinned\tmsg". */
     if (!arg || !*arg) { printf("curator: archive requires a skill name\n"); return 1; }
     const char *t1 = strchr(arg, '\t');

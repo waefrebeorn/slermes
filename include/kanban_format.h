@@ -5,7 +5,7 @@
  * Self-contained, no network, no DB: the string/parse logic that turns a
  * task into a display line / dict, and parses the --workspace/--branch/
  * --duration flags. Mirrors the Python _fmt_ts / _fmt_task_line /
- * _task_to_dict / _run_state_kwargs / _parse_workspace_flag /
+ * task_to_dict / _run_state_kwargs / _parse_workspace_flag /
  * _parse_branch_flag / _parse_duration helpers.
  */
 
@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-/* Task shape (matches kanban_db.Task fields surfaced by _task_to_dict). */
+/* Task shape (matches kanban_db.Task fields surfaced by task_to_dict). */
 typedef struct {
     char *id;
     char *title;
@@ -56,7 +56,7 @@ char *kanban_fmt_ts(long ts);
 /* _fmt_task_line: one-line display (icon id status assignee [tenant] title) */
 char *kanban_fmt_task_line(const kanban_task_t *t);
 
-/* _task_to_dict: serialize task to a JSON object string (caller frees) */
+/* task_to_dict: serialize task to a JSON object string (caller frees) */
 char *kanban_task_to_json(const kanban_task_t *t);
 
 /* _run_state_kwargs: (state_type, state_name) -> JSON.

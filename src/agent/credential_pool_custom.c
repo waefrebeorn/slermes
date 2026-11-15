@@ -22,15 +22,15 @@ No god headers — only the minimal includes each module requires. C11 only.
 
 /*
  * Component 2/4 — custom OpenAI-compatible pool providers +
- * seeding/prune: get_pool_strategy / label_from_token / _next_priority /
- * _is_manual_source / _exhausted_ttl / _parse_absolute_timestamp /
- * _extract_retry_delay_seconds / _normalize_error_context /
- * _exhausted_until / _normalize_custom_pool_name / _iter_custom_providers /
+ * seeding/prune: get_pool_strategy / label_from_token / next_priority /
+ * is_manual_source / _exhausted_ttl / parse_absolute_timestamp /
+ * extract_retry_delay_seconds / normalize_error_context /
+ * exhausted_until / normalize_custom_pool_name / _iter_custom_providers /
  * get_custom_provider_pool_key / list_custom_pool_providers /
- * _get_custom_provider_config / _normalize_pool_priorities /
- * _seed_from_env / _seed_from_singletons / _seed_custom_pool /
- * _is_prunable / credential_pool_is_prunable / _is_suppressed /
- * _is_source_suppressed / _prune_stale_seeded_entries / cp_auth_json_path.
+ * get_custom_provider_config / normalize_pool_priorities /
+ * seed_from_env / seed_from_singletons / seed_custom_pool /
+ * is_prunable / credential_pool_is_prunable / _is_suppressed /
+ * _is_source_suppressed / prune_stale_seeded_entries / cp_auth_json_path.
  */
 
 /* PoP: label_from_token @ agent/credential_pool.py:label_from_token */
@@ -72,13 +72,13 @@ const char *label_from_token(const char *token, const char *fallback) {
     return fallback ? fallback : "credential";
 }
 
-/* Port of Python agent/credential_pool.py:_next_priority(). */
-int _next_priority(int current_max_priority) {
+/* Port of Python agent/credential_pool.py:next_priority(). */
+int next_priority(int current_max_priority) {
     return current_max_priority + 1;
 }
 
-/* Port of Python agent/credential_pool.py:_is_manual_source(). */
-bool _is_manual_source(const char *source) {
+/* Port of Python agent/credential_pool.py:is_manual_source(). */
+bool is_manual_source(const char *source) {
     if (!source) return false;
     return (strcasecmp(source, "manual") == 0 || strncasecmp(source, "manual:", 7) == 0);
 }
@@ -90,8 +90,8 @@ int _exhausted_ttl(int error_code) {
     return 60 * 60;                            /* 1 hour default */
 }
 
-/* Port of Python agent/credential_pool.py:_parse_absolute_timestamp(). */
-double _parse_absolute_timestamp(const char *value) {
+/* Port of Python agent/credential_pool.py:parse_absolute_timestamp(). */
+double parse_absolute_timestamp(const char *value) {
     if (!value || !*value) return 0;
     
     char *end = NULL;
@@ -134,16 +134,16 @@ double _parse_absolute_timestamp(const char *value) {
     return epoch;
 }
 
-/* Port of Python agent/credential_pool.py:_extract_retry_delay_seconds(). */
-double _extract_retry_delay_seconds(const char *message) {
+/* Port of Python agent/credential_pool.py:extract_retry_delay_seconds(). */
+double extract_retry_delay_seconds(const char *message) {
     if (!message) return 0;
     /* Simplified - look for common patterns */
     /* Full implementation would need regex */
     return 0;
 }
 
-/* Port of Python agent/credential_pool.py:_normalize_error_context(). */
-void _normalize_error_context(const char *input, char *output, size_t out_size) {
+/* Port of Python agent/credential_pool.py:normalize_error_context(). */
+void normalize_error_context(const char *input, char *output, size_t out_size) {
     if (!input || !output || out_size == 0) {
         if (output && out_size > 0) output[0] = '\0';
         return;
@@ -152,16 +152,16 @@ void _normalize_error_context(const char *input, char *output, size_t out_size) 
     output[out_size - 1] = '\0';
 }
 
-/* Port of Python agent/credential_pool.py:_exhausted_until(). */
-double _exhausted_until(const credential_entry_t *entry) {
+/* Port of Python agent/credential_pool.py:exhausted_until(). */
+double exhausted_until(const credential_entry_t *entry) {
     if (!entry || entry->status != CRED_EXHAUSTED) return 0;
     if (entry->rate_limit_reset > 0) return (double)entry->rate_limit_reset;
     if (entry->last_used > 0) return (double)(entry->last_used + 3600); /* 1 hour default */
     return 0;
 }
 
-/* Port of Python agent/credential_pool.py:_normalize_custom_pool_name(). */
-void _normalize_custom_pool_name(const char *name, char *out, size_t out_size) {
+/* Port of Python agent/credential_pool.py:normalize_custom_pool_name(). */
+void normalize_custom_pool_name(const char *name, char *out, size_t out_size) {
     if (!name || !out || out_size == 0) return;
     size_t j = 0;
     for (const char *p = name; *p && j < out_size - 1; p++) {
@@ -226,7 +226,7 @@ int credential_pool_iter_custom_providers(char **out_norm, char **out_entry, int
         json_t *name = json_obj_get(entry, "name");
         if (!name || name->type != JSON_STRING || !name->str_val[0]) continue;
         char norm[CREDENTIAL_POOL_NAME_MAX];
-        _normalize_custom_pool_name(name->str_val, norm, sizeof(norm));
+        normalize_custom_pool_name(name->str_val, norm, sizeof(norm));
         char *ser = json_serialize(entry);
         if (!ser) continue;
         out_norm[n] = strdup(norm);
@@ -257,14 +257,14 @@ const char *get_custom_provider_pool_key(const char *base_url, const char *provi
     /* 1. match by name first */
     if (provider_name && provider_name[0]) {
         char pnorm[CREDENTIAL_POOL_NAME_MAX];
-        _normalize_custom_pool_name(provider_name, pnorm, sizeof(pnorm));
+        normalize_custom_pool_name(provider_name, pnorm, sizeof(pnorm));
         for (size_t i = 0; i < count; i++) {
             json_t *e = json_array_get(cps, i);
             if (!e || e->type != JSON_OBJECT) continue;
             json_t *nm = json_obj_get(e, "name");
             if (nm && nm->type == JSON_STRING) {
                 char en[CREDENTIAL_POOL_NAME_MAX];
-                _normalize_custom_pool_name(nm->str_val, en, sizeof(en));
+                normalize_custom_pool_name(nm->str_val, en, sizeof(en));
                 if (strcmp(en, pnorm) == 0) { result = "custom:"; break; }
             }
         }
@@ -331,8 +331,8 @@ int list_custom_pool_providers(char **out_list, int max_entries)
     return n;
 }
 
-/* Port of Python agent/credential_pool.py:_get_custom_provider_config(). */
-bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t out_size)
+/* Port of Python agent/credential_pool.py:get_custom_provider_config(). */
+bool get_custom_provider_config(const char *pool_key, char *out_config, size_t out_size)
 {
     if (!pool_key || strncmp(pool_key, "custom:", 7) != 0) return false;
     const char *suffix = pool_key + 7;
@@ -346,7 +346,7 @@ bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t 
         json_t *nm = json_obj_get(e, "name");
         if (!nm || nm->type != JSON_STRING) continue;
         char en[CREDENTIAL_POOL_NAME_MAX];
-        _normalize_custom_pool_name(nm->str_val, en, sizeof(en));
+        normalize_custom_pool_name(nm->str_val, en, sizeof(en));
         if (strcmp(en, suffix) == 0) {
             char *ser = json_serialize(e);
             if (ser) { snprintf(out_config, out_size, "%s", ser); free(ser); found = true; }
@@ -358,7 +358,7 @@ bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t 
 }
 
 
-/* Port of Python agent/credential_pool.py:_normalize_pool_priorities(). */
+/* Port of Python agent/credential_pool.py:normalize_pool_priorities(). */
 /* Only anthropic has a curated source-priority ladder. Manual entries keep
  * priority order and come first; seeded entries sort by (source_rank,
  * priority, label) with Python's stable-sort tie-break preserved via the
@@ -399,7 +399,7 @@ static int cp_norm_cmp_seeded(const void *a, const void *b) {
     return (x->idx > y->idx) - (x->idx < y->idx);
 }
 
-bool _normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
+bool normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
     if (!provider || !pool || strcmp(provider, "anthropic") != 0)
         return false;
 
@@ -408,7 +408,7 @@ bool _normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
     for (int i = 0; i < pool->entry_count; i++) {
         credential_entry_t *e = &pool->entries[i];
         cp_norm_key_t k = { i, e->priority, e->label, e->source,
-                            _is_manual_source(e->source) };
+                            is_manual_source(e->source) };
         keys[i] = k;
         if (k.manual) n_manual++; else n_seeded++;
     }
@@ -438,10 +438,10 @@ bool _normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
     return changed;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_from_env().
+/* Port of Python agent/credential_pool.py:seed_from_env().
  * Reads `<PROVIDER>_API_KEY` (and a few common aliases) from the environment
  * and adds any present key to the pool. Returns true if any key was added. */
-bool _seed_from_env(const char *provider, credential_pool_t *pool)
+bool seed_from_env(const char *provider, credential_pool_t *pool)
 {
     if (!provider || !pool) return false;
     char env_name[128];
@@ -463,11 +463,11 @@ bool _seed_from_env(const char *provider, credential_pool_t *pool)
     return added;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_from_singletons().
+/* Port of Python agent/credential_pool.py:seed_from_singletons().
  * Reads persisted PooledCredential entries for this provider from
  * auth.json's credential_pool section and adds their access_token (the
  * actual API key) to the pool. Returns true if any key was added. */
-bool _seed_from_singletons(const char *provider, credential_pool_t *pool)
+bool seed_from_singletons(const char *provider, credential_pool_t *pool)
 {
     if (!provider || !pool) return false;
     char *path = cp_auth_json_path();
@@ -498,14 +498,14 @@ bool _seed_from_singletons(const char *provider, credential_pool_t *pool)
     return added;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_custom_pool().
+/* Port of Python agent/credential_pool.py:seed_custom_pool().
  * Reads the custom_providers config entry for pool_key and adds its api_key
  * (and a custom:<name> fallback) to the pool. Returns true if seeded. */
-bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool)
+bool seed_custom_pool(const char *pool_key, credential_pool_t *pool)
 {
     if (!pool_key || !pool) return false;
     char cfg[4096];
-    if (!_get_custom_provider_config(pool_key, cfg, sizeof(cfg))) return false;
+    if (!get_custom_provider_config(pool_key, cfg, sizeof(cfg))) return false;
     json_t *e = json_parse(cfg, NULL);
     if (!e || e->type != JSON_OBJECT) { if (e) json_free(e); return false; }
     bool added = false;
@@ -518,13 +518,13 @@ bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool)
     return added;
 }
 
-/* Port of Python agent/credential_pool.py:_is_prunable().
+/* Port of Python agent/credential_pool.py:is_prunable().
  * Decide whether a persisted entry may be removed during a prune pass.
  * `env:*` entries are references re-hydrated from the environment on every
  * load; a process that merely lacks the env var must NOT delete the on-disk
  * entry for every other process (that destructive read is bug #9331). Only
  * prune an env source when `prune_env_sources` is explicitly enabled. */
-static bool _is_prunable(const credential_entry_t *entry) {
+static bool is_prunable(const credential_entry_t *entry) {
     if (!entry) return false;
     if (entry->source[0] && strncmp(entry->source, "env:", 4) == 0) {
         return credential_pool_prune_env_sources_enabled;
@@ -540,7 +540,7 @@ static bool _is_prunable(const credential_entry_t *entry) {
 
 /* Public wrapper (declared in credential_pool.h). */
 bool credential_pool_is_prunable(const credential_entry_t *entry) {
-    return _is_prunable(entry);
+    return is_prunable(entry);
 }
 
 /* Port of Python agent/credential_pool.py:_is_suppressed(). */
@@ -579,19 +579,19 @@ bool _is_source_suppressed(const char *provider, const char *source) {
     return found;
 }
 
-/* Port of Python agent/credential_pool.py:_prune_stale_seeded_entries(). */
+/* Port of Python agent/credential_pool.py:prune_stale_seeded_entries(). */
 /* Keep manual entries, entries whose source is still actively seeded, and
  * non-prunable persisted entries; drop the rest. env:* entries are only
  * dropped when prune_env_sources was explicitly enabled (bug #9331 guard).
  * Returns whether any entry was removed. */
-bool _prune_stale_seeded_entries(credential_pool_t *pool,
+bool prune_stale_seeded_entries(credential_pool_t *pool,
                                  const char **active_sources, int num_sources) {
     if (!pool || pool->entry_count <= 0) return false;
 
     int w = 0;
     for (int i = 0; i < pool->entry_count; i++) {
         credential_entry_t *e = &pool->entries[i];
-        bool keep = _is_manual_source(e->source);
+        bool keep = is_manual_source(e->source);
         if (!keep && active_sources) {
             for (int s = 0; s < num_sources; s++) {
                 if (active_sources[s] && strcmp(e->source, active_sources[s]) == 0) {
@@ -601,7 +601,7 @@ bool _prune_stale_seeded_entries(credential_pool_t *pool,
             }
         }
         if (!keep)
-            keep = !_is_prunable(e);
+            keep = !is_prunable(e);
         if (keep) {
             if (w != i)
                 pool->entries[w] = pool->entries[i];

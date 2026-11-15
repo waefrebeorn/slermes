@@ -21,11 +21,11 @@
 #include "kanban_db.h"
 #include "lifecycle_ledger.h"
 
-/* Port of Python: _fire_kanban_lifecycle_hook */
-void _fire_kanban_lifecycle_hook(const char* event, const char* task_id)
+/* Port of Python: fire_kanban_lifecycle_hook */
+void fire_kanban_lifecycle_hook(const char* event, const char* task_id)
 {
     if (!event || !task_id) return;
-    hermes_log(LOG_DEBUG, "port", "_fire_kanban_lifecycle_hook: event=%s task=%s", event, task_id);
+    hermes_log(LOG_DEBUG, "port", "fire_kanban_lifecycle_hook: event=%s task=%s", event, task_id);
     hermes_log(LOG_INFO, "port", "kanban lifecycle: event=%s task=%s", event, task_id);
 
     /* Write lifecycle event to a log file for plugin consumption */
@@ -54,11 +54,11 @@ void _fire_kanban_lifecycle_hook(const char* event, const char* task_id)
     }
 }
 
-/* Port of Python: _dispatch_tick_lock */
-bool _dispatch_tick_lock(const char* db_path)
+/* Port of Python: dispatch_tick_lock */
+bool dispatch_tick_lock(const char* db_path)
 {
     if (!db_path) return false;
-    hermes_log(LOG_DEBUG, "port", "_dispatch_tick_lock: db=%s", db_path);
+    hermes_log(LOG_DEBUG, "port", "dispatch_tick_lock: db=%s", db_path);
 
     char lock_path[4096];
     snprintf(lock_path, sizeof(lock_path), "%s.lock", db_path);
@@ -66,7 +66,7 @@ bool _dispatch_tick_lock(const char* db_path)
     int fd = open(lock_path, O_CREAT | O_EXCL | O_WRONLY, 0644);
     if (fd < 0) {
         if (errno == EEXIST) {
-            hermes_log(LOG_DEBUG, "port", "_dispatch_tick_lock: lock already held");
+            hermes_log(LOG_DEBUG, "port", "dispatch_tick_lock: lock already held");
             return false;
         }
         return false;
@@ -80,43 +80,43 @@ bool _dispatch_tick_lock(const char* db_path)
     return true;
 }
 
-/* Port of Python: _is_linked_worktree_checkout */
-bool _is_linked_worktree_checkout(const char* path)
+/* Port of Python: is_linked_worktree_checkout */
+bool is_linked_worktree_checkout(const char* path)
 {
     if (!path) return false;
-    hermes_log(LOG_DEBUG, "port", "_is_linked_worktree_checkout: path=%s", path);
+    hermes_log(LOG_DEBUG, "port", "is_linked_worktree_checkout: path=%s", path);
 
     const char* gd = _git_dir(path);
-    const char* cd = _git_common_dir(path);
+    const char* cd = git_common_dir(path);
 
     if (!gd || !cd) return false;
     bool result = (strcmp(gd, cd) != 0);
     return result;
 }
 
-/* Port of Python: _repo_root_for_worktree_target */
-const char* _repo_root_for_worktree_target(const char* path)
+/* Port of Python: repo_root_for_worktree_target */
+const char* repo_root_for_worktree_target(const char* path)
 {
     if (!path) return NULL;
-    hermes_log(LOG_DEBUG, "port", "_repo_root_for_worktree_target: path=%s", path);
+    hermes_log(LOG_DEBUG, "port", "repo_root_for_worktree_target: path=%s", path);
 
-    const char* nearest = _nearest_existing_path(path);
+    const char* nearest = nearest_existing_path(path);
     if (!nearest) return NULL;
 
-    return _git_toplevel(nearest);
+    return git_toplevel(nearest);
 }
 
-/* Port of Python: _ensure_git_worktree */
-void _ensure_git_worktree(const char* repo_root, const char* target, const char* branch_name)
+/* Port of Python: ensure_git_worktree */
+void ensure_git_worktree(const char* repo_root, const char* target, const char* branch_name)
 {
     if (!repo_root || !target || !branch_name) return;
-    hermes_log(LOG_DEBUG, "port", "_ensure_git_worktree: root=%s target=%s branch=%s", repo_root, target, branch_name);
+    hermes_log(LOG_DEBUG, "port", "ensure_git_worktree: root=%s target=%s branch=%s", repo_root, target, branch_name);
 
     char target_common[4096];
     snprintf(target_common, sizeof(target_common), "%s/.git", target);
 
     if (access(target, F_OK) == 0 && access(target_common, F_OK) == 0) {
-        hermes_log(LOG_DEBUG, "port", "_ensure_git_worktree: target already exists");
+        hermes_log(LOG_DEBUG, "port", "ensure_git_worktree: target already exists");
         return;
     }
 
@@ -131,7 +131,7 @@ void _ensure_git_worktree(const char* repo_root, const char* target, const char*
     free(parent);
 
     char cmd[8192];
-    if (_git_branch_exists(repo_root, branch_name)) {
+    if (git_branch_exists(repo_root, branch_name)) {
         snprintf(cmd, sizeof(cmd), "git -C \"%s\" worktree add \"%s\" \"%s\" 2>/dev/null", repo_root, target, branch_name);
     } else {
         snprintf(cmd, sizeof(cmd), "git -C \"%s\" worktree add -b \"%s\" \"%s\" HEAD 2>/dev/null", repo_root, branch_name, target);
@@ -139,17 +139,17 @@ void _ensure_git_worktree(const char* repo_root, const char* target, const char*
 
     int ret = system(cmd);
     if (ret != 0) {
-        hermes_log(LOG_WARNING, "port", "_ensure_git_worktree: failed to create worktree");
+        hermes_log(LOG_WARNING, "port", "ensure_git_worktree: failed to create worktree");
     } else {
-        hermes_log(LOG_INFO, "port", "_ensure_git_worktree: created worktree at %s for branch %s", target, branch_name);
+        hermes_log(LOG_INFO, "port", "ensure_git_worktree: created worktree at %s for branch %s", target, branch_name);
     }
 }
 
-/* Port of Python: _resolve_worktree_workspace */
-json_t* _resolve_worktree_workspace(const char* task_id, const char* board)
+/* Port of Python: resolve_worktree_workspace */
+json_t* resolve_worktree_workspace(const char* task_id, const char* board)
 {
     if (!task_id) return NULL;
-    hermes_log(LOG_DEBUG, "port", "_resolve_worktree_workspace: task=%s board=%s", task_id, board ? board : "(default)");
+    hermes_log(LOG_DEBUG, "port", "resolve_worktree_workspace: task=%s board=%s", task_id, board ? board : "(default)");
 
     char branch_name[256];
     snprintf(branch_name, sizeof(branch_name), "wt/%s", task_id);
@@ -194,11 +194,11 @@ void set_branch_name(void* conn, const char* task_id, const char* branch_name)
     hermes_log(LOG_INFO, "port", "set_branch_name: task=%s -> branch=%s", task_id, branch_name);
 }
 
-/* Port of Python: _worker_survived_termination */
-bool _worker_survived_termination(json_t* termination)
+/* Port of Python: worker_survived_termination */
+bool worker_survived_termination(json_t* termination)
 {
     if (!termination) return false;
-    hermes_log(LOG_DEBUG, "port", "_worker_survived_termination: called");
+    hermes_log(LOG_DEBUG, "port", "worker_survived_termination: called");
 
     json_t* attempted = json_object_get(termination, "termination_attempted");
     json_t* host_local = json_object_get(termination, "host_local");
@@ -222,23 +222,23 @@ bool _worker_survived_termination(json_t* termination)
     return att && local && !done;
 }
 
-/* Port of Python: _defer_reclaim_for_live_worker */
-void _defer_reclaim_for_live_worker(void* conn, const char* task_id, const char* claim_lock,
+/* Port of Python: defer_reclaim_for_live_worker */
+void defer_reclaim_for_live_worker(void* conn, const char* task_id, const char* claim_lock,
                                     int now, json_t* termination, const char* reason)
 {
     if (!conn || !task_id) return;
-    hermes_log(LOG_DEBUG, "port", "_defer_reclaim_for_live_worker: task=%s reason=%s", task_id, reason ? reason : "(none)");
+    hermes_log(LOG_DEBUG, "port", "defer_reclaim_for_live_worker: task=%s reason=%s", task_id, reason ? reason : "(none)");
 
-    if (!_worker_survived_termination(termination)) return;
+    if (!worker_survived_termination(termination)) return;
 
     int grace = now + 30;
     hermes_log(LOG_INFO, "port", "deferring reclaim for live worker: task=%s grace_until=%d", task_id, grace);
 }
 
-/* Port of Python: _dispatch_once_locked */
-json_t* _dispatch_once_locked(void* conn, const char* board)
+/* Port of Python: dispatch_once_locked */
+json_t* dispatch_once_locked(void* conn, const char* board)
 {
-    hermes_log(LOG_DEBUG, "port", "_dispatch_once_locked: board=%s", board ? board : "(default)");
+    hermes_log(LOG_DEBUG, "port", "dispatch_once_locked: board=%s", board ? board : "(default)");
 
     const char* home = getenv("HOME");
     if (!home) home = ".";
@@ -246,7 +246,7 @@ json_t* _dispatch_once_locked(void* conn, const char* board)
     char db_path[4096];
     snprintf(db_path, sizeof(db_path), "%s/.hermes/kanban.db", home);
 
-    if (!_dispatch_tick_lock(db_path)) {
+    if (!dispatch_tick_lock(db_path)) {
         json_t* result = json_new_object();
         json_object_set(result, "status", json_new_string("locked"));
         json_object_set(result, "spawned", json_new_number(0));
@@ -289,17 +289,17 @@ json_t* _dispatch_once_locked(void* conn, const char* board)
 #include <ctype.h>
 
 /*
- * _git_toplevel — Return the git toplevel containing path, or NULL if not in a repo.
+ * git_toplevel — Return the git toplevel containing path, or NULL if not in a repo.
  *
- * Python: def _git_toplevel(path: Path) -> Optional[Path]:
+ * Python: def git_toplevel(path: Path) -> Optional[Path]:
  *   result = subprocess.run(["git", "-C", str(path), "rev-parse", "--show-toplevel"], ...)
  *   if result.returncode != 0: return None
  *   out = (result.stdout or "").strip()
  *   if not out: return None
  *   return Path(out)
  */
-/* Port of Python: _git_toplevel */
-const char* _git_toplevel(const char* path)
+/* Port of Python: git_toplevel */
+const char* git_toplevel(const char* path)
 {
     if (!path || !path[0]) return NULL;
 
@@ -348,14 +348,14 @@ const char* _git_toplevel(const char* path)
 }
 
 /*
- * _git_branch_exists — Check if a branch exists in a git repo.
+ * git_branch_exists — Check if a branch exists in a git repo.
  *
- * Python: def _git_branch_exists(repo_root: Path, branch_name: str) -> bool:
+ * Python: def git_branch_exists(repo_root: Path, branch_name: str) -> bool:
  *   result = subprocess.run(["git", "-C", repo_root, "show-ref", "--verify", f"refs/heads/{branch_name}"], ...)
  *   return result.returncode == 0
  */
-/* Port of Python: _git_branch_exists */
-bool _git_branch_exists(const char* repo_root, const char* branch_name)
+/* Port of Python: git_branch_exists */
+bool git_branch_exists(const char* repo_root, const char* branch_name)
 {
     if (!repo_root || !branch_name) return false;
 
@@ -393,13 +393,13 @@ bool _git_branch_exists(const char* repo_root, const char* branch_name)
 }
 
 /*
- * _git_common_dir — Return the git common dir for a path.
+ * git_common_dir — Return the git common dir for a path.
  *
- * Python: def _git_common_dir(path: Path) -> Optional[Path]:
+ * Python: def git_common_dir(path: Path) -> Optional[Path]:
  *   result = subprocess.run(["git", "-C", path, "rev-parse", "--path-format=absolute", "--git-common-dir"], ...)
  */
-/* Port of Python: _git_common_dir */
-const char* _git_common_dir(const char* path)
+/* Port of Python: git_common_dir */
+const char* git_common_dir(const char* path)
 {
     if (!path || !path[0]) return NULL;
 
@@ -490,13 +490,13 @@ const char* _git_dir(const char* path)
 }
 
 /*
- * _git_current_branch — Return the current branch name.
+ * git_current_branch — Return the current branch name.
  *
- * Python: def _git_current_branch(path: Path) -> Optional[str]:
+ * Python: def git_current_branch(path: Path) -> Optional[str]:
  *   result = subprocess.run(["git", "-C", path, "branch", "--show-current"], ...)
  */
-/* Port of Python: _git_current_branch */
-const char* _git_current_branch(const char* path)
+/* Port of Python: git_current_branch */
+const char* git_current_branch(const char* path)
 {
     if (!path || !path[0]) return NULL;
 
@@ -540,16 +540,16 @@ const char* _git_current_branch(const char* path)
 }
 
 /*
- * _nearest_existing_path — Walk up the directory tree to find an existing path.
+ * nearest_existing_path — Walk up the directory tree to find an existing path.
  *
- * Python: def _nearest_existing_path(path: Path) -> Path:
+ * Python: def nearest_existing_path(path: Path) -> Path:
  *   current = path
  *   while not current.exists() and current != current.parent:
  *       current = current.parent
  *   return current
  */
-/* Port of Python: _nearest_existing_path */
-const char* _nearest_existing_path(const char* path)
+/* Port of Python: nearest_existing_path */
+const char* nearest_existing_path(const char* path)
 {
     if (!path || !path[0]) return ".";
 
@@ -648,7 +648,7 @@ int resolve_rate_limit_cooldown_seconds(void)
 
 /*
  * Returns malloc'd coarse age string. Caller frees. */
-char *_relative_age(long ts, long now)
+char *relative_age(long ts, long now)
 {
     if (now <= 0) now = (long)time(NULL);
     long delta = now - ts;
@@ -661,7 +661,7 @@ char *_relative_age(long ts, long now)
 
 /*
  * Returns malloc'd normalized slug or NULL (invalid/empty). Caller frees. */
-char *_normalize_board_slug(const char *slug)
+char *normalize_board_slug(const char *slug)
 {
     if (!slug) return NULL;
     char s[128];
@@ -734,7 +734,7 @@ char *get_current_board(void)
     /* 1. HERMES_KANBAN_BOARD env (must be valid + exist) */
     const char *env = getenv("HERMES_KANBAN_BOARD");
     if (env && env[0]) {
-        char *normed = _normalize_board_slug(env);
+        char *normed = normalize_board_slug(env);
         if (normed) {
             if (kanban_board_exists(normed)) return normed;
             free(normed);
@@ -750,7 +750,7 @@ char *get_current_board(void)
             fclose(f);
             size_t n = strlen(buf);
             while (n > 0 && (buf[n-1]=='\n'||buf[n-1]=='\r'||buf[n-1]==' '||buf[n-1]=='\t')) buf[--n]=0;
-            char *normed = _normalize_board_slug(buf);
+            char *normed = normalize_board_slug(buf);
             if (normed) {
                 if (kanban_board_exists(normed)) return normed;
                 free(normed);
@@ -768,7 +768,7 @@ char *get_current_board(void)
 /* PoP: set_current_board @ hermes_cli/kanban_db.py:set_current_board */
 int set_current_board(const char *slug)
 {
-    char *normed = _normalize_board_slug(slug);
+    char *normed = normalize_board_slug(slug);
     if (!normed) return -1;
     char *cp = kanban_current_board_path();
     char dir[PATH_MAX];
@@ -788,7 +788,7 @@ int set_current_board(const char *slug)
 /* ===========================================================================
  *  Additional Kanban path / string / sqlite helpers
  *  Ported from hermes_cli/kanban_db.py (faithful; reuse kanban_home,
- *  kanban_boards_root, _normalize_board_slug, kanban_board_exists,
+ *  kanban_boards_root, normalize_board_slug, kanban_board_exists,
  *  get_current_board already ported above).
  * =========================================================================== */
 
@@ -797,7 +797,7 @@ int set_current_board(const char *slug)
 /* PoP: board_dir @ hermes_cli/kanban_db.py:board_dir */
 char *board_dir(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     char *br = kanban_boards_root();
     char out[PATH_MAX];
@@ -811,7 +811,7 @@ char *board_dir(const char *board)
  * PoP: board_exists @ hermes_cli/kanban_db.py:board_exists */
 int board_exists(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     int r = kanban_board_exists(slug);
     free(slug);
@@ -825,7 +825,7 @@ char *kanban_db_path(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_DB");
     if (override && override[0]) return strdup(override);
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = get_current_board();   /* may return a fresh malloc */
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -864,7 +864,7 @@ char *workspaces_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_WORKSPACES_ROOT");
     if (override && override[0]) return strdup(override);
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -887,7 +887,7 @@ char *attachments_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_ATTACHMENTS_ROOT");
     if (override && override[0]) return strdup(override);
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -920,7 +920,7 @@ char *task_attachments_dir(const char *task_id, const char *board)
 /* PoP: worker_logs_dir @ hermes_cli/kanban_db.py:worker_logs_dir */
 char *worker_logs_dir(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -941,7 +941,7 @@ char *worker_logs_dir(const char *board)
 /* PoP: board_metadata_path @ hermes_cli/kanban_db_boards.py:board_metadata_path */
 char *board_metadata_path(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     char *bd = board_dir(slug);
     char out[PATH_MAX];
@@ -953,7 +953,7 @@ char *board_metadata_path(const char *board)
 
 /*
  * Turns "atm10-server" -> "Atm10 Server". Returns malloc'd string. Caller frees. */
-char *_default_board_display_name(const char *slug)
+char *default_board_display_name(const char *slug)
 {
     /* Replace '_' with '-', split on '-', capitalize each part, join with space. */
     char tmp[256];
@@ -1080,7 +1080,7 @@ int looks_like_tls_record_at(const unsigned char *data, size_t len, size_t offse
 /*
  * Returns 1 if path is absent/empty/sqlite-header, 0 if a non-empty
  * non-sqlite file (caller should error). */
-int _validate_sqlite_header(const char *path)
+int validate_sqlite_header(const char *path)
 {
     struct stat st;
     if (stat(path, &st) != 0) return 1;          /* absent => OK (sqlite creates it) */
@@ -1097,7 +1097,7 @@ int _validate_sqlite_header(const char *path)
 /*
  * Normalises an error string for grouping identical failures.
  * Returns malloc'd fingerprint (lowercased, host details stripped). Caller frees. */
-char *_error_fingerprint(const char *error_text)
+char *error_fingerprint(const char *error_text)
 {
     if (!error_text) return strdup("");
     char buf[128];
@@ -1157,7 +1157,7 @@ char *rotated_log_path(const char *log_path, int generation)
 
 /*
  * Returns 1 when a command override is an explicit path, not a name. */
-int _looks_like_path(const char *value)
+int looks_like_path(const char *value)
 {
     if (!value || !value[0]) return 0;
     /* ~ expansion is best-effort; we check leading '~', absolute, has dirname,
@@ -1971,7 +1971,7 @@ int kdb_count_running_tasks_other_boards(const char *board)
 /* ════════════════════════════════════════════════════════════════════ */
 
 #include "memory_status.h"        /* classify_pressure */
-#include "cli_gaps_2026_08_25.h"  /* _worktree_is_dirty / _worktree_has_unpushed_commits */
+#include "cli_gaps_2026_08_25.h"  /* worktree_is_dirty / worktree_has_unpushed_commits */
 
 /* Python: from hermes_cli.lifecycle import has_hook / invoke_hook */
 extern int hermes_cli_lifecycle_has_hook(const char *arg);
@@ -2116,7 +2116,7 @@ int kdb_schema_is_present(sqlite3 *conn)
 }
 
 /* Remove a finished task's linked git worktree when it holds no work.
- * Mirrors cli._prune_stale_worktrees safety judgment: removal requires a
+ * Mirrors cli.prune_stale_worktrees safety judgment: removal requires a
  * clean working tree AND no unpushed commits; any doubt preserves it. The
  * auto-generated wt/<task-id> branch is deleted with it; custom branches
  * are kept. Best-effort — never blocks completion.
@@ -2130,8 +2130,8 @@ void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
     struct stat sb;
     if (stat(path, &sb) != 0 || !S_ISDIR(sb.st_mode)) return;
 
-    /* common = _git_common_dir(wp); must be a <repo>/.git directory */
-    const char *common_c = _git_common_dir(path);
+    /* common = git_common_dir(wp); must be a <repo>/.git directory */
+    const char *common_c = git_common_dir(path);
     if (!common_c) return;
     char common[4096];
     snprintf(common, sizeof(common), "%s", common_c);
@@ -2150,7 +2150,7 @@ void kdb_cleanup_worktree_workspace(const char *task_id, const char *path,
     if (strcmp(resolved_wp, resolved_root) == 0) return;
 
     /* safety predicates from the CLI startup pruner */
-    if (_worktree_is_dirty(path, 30) || _worktree_has_unpushed_commits(path, 30)) {
+    if (worktree_is_dirty(path, 30) || worktree_has_unpushed_commits(path, 30)) {
         hermes_log(LOG_INFO, "port",
                    "Preserving worktree for task %s: dirty or unpushed work at %s",
                    task_id ? task_id : "", path);

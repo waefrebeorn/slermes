@@ -9,13 +9,13 @@
 
 /* ── hermes_cli/web_server.py: dashboard + auth + file + cron cluster ── */
 
-/* PoP: _eager_reconcile_own_session_db @ hermes_cli/web_server_lifecycle.py:_eager_reconcile_own_session_db */
-void _eager_reconcile_own_session_db(void) {
+/* PoP: eager_reconcile_own_session_db @ hermes_cli/web_server_lifecycle.py:eager_reconcile_own_session_db */
+void eager_reconcile_own_session_db(void) {
     /* One writable open of this process's own state.db at startup */
 }
 
-/* PoP: _ssh_runtime_intact @ hermes_cli/web_server.py:_ssh_runtime_intact */
-int _ssh_runtime_intact(void) {
+/* PoP: ssh_runtime_intact @ hermes_cli/web_server.py:ssh_runtime_intact */
+int ssh_runtime_intact(void) {
     return 1;
 }
 
@@ -29,14 +29,14 @@ int should_require_dashboard_auth(const char *host) {
     return 0;
 }
 
-/* PoP: _desktop_loopback_auth_exempt @ hermes_cli/web_server_boundary.py:_desktop_loopback_auth_exempt */
-int _desktop_loopback_auth_exempt(const char *host) {
+/* PoP: desktop_loopback_auth_exempt @ hermes_cli/web_server_boundary.py:desktop_loopback_auth_exempt */
+int desktop_loopback_auth_exempt(const char *host) {
     (void)host;
     return 0;
 }
 
-/* PoP: _managed_file_response @ hermes_cli/web_routers/files.py:_managed_file_response */
-char *_managed_file_response(const char *path, const char *content_disposition_type) {
+/* PoP: managed_file_response @ hermes_cli/web_routers/files.py:managed_file_response */
+char *managed_file_response(const char *path, const char *content_disposition_type) {
     if (!path) return strdup("{\"error\":\"File not found\"}");
     char *response = malloc(strlen(path) + 256);
     snprintf(response, strlen(path) + 256, "{\"path\":\"%s\",\"disposition\":\"%s\"}", path, content_disposition_type ? content_disposition_type : "attachment");
@@ -45,24 +45,24 @@ char *_managed_file_response(const char *path, const char *content_disposition_t
 
 /* PoP: stream_managed_file @ hermes_cli/web_routers/files.py:stream_managed_file */
 char *stream_managed_file(const char *path) {
-    return _managed_file_response(path, "inline");
+    return managed_file_response(path, "inline");
 }
 
 /* PoP: fs_download @ hermes_cli/web_routers/files.py:fs_download */
 char *fs_download(const char *path) {
-    return _managed_file_response(path, "attachment");
+    return managed_file_response(path, "attachment");
 }
 
-/* PoP: _profile_gateway_writer_identity @ hermes_cli/web_server_gateway.py:_profile_gateway_writer_identity */
-char *_profile_gateway_writer_identity(const char *profile) {
+/* PoP: profile_gateway_writer_identity @ hermes_cli/web_server_gateway.py:profile_gateway_writer_identity */
+char *profile_gateway_writer_identity(const char *profile) {
     if (!profile) return strdup("default");
     char *identity = malloc(256);
     snprintf(identity, 256, "profile:%s", profile);
     return identity;
 }
 
-/* PoP: _owned_profile_platforms @ hermes_cli/web_server_gateway.py:_owned_profile_platforms */
-char *_owned_profile_platforms(const char *profile) {
+/* PoP: owned_profile_platforms @ hermes_cli/web_server_gateway.py:owned_profile_platforms */
+char *owned_profile_platforms(const char *profile) {
     (void)profile;
     return strdup("[]");
 }
@@ -73,27 +73,27 @@ char *get_install_id(void) {
     return strdup(id ? id : "legacy");
 }
 
-/* PoP: _is_profile_platform_status_key @ hermes_cli/web_routers/status.py:_is_profile_platform_status_key */
-int _is_profile_platform_status_key(const char *key) {
+/* PoP: is_profile_platform_status_key @ hermes_cli/web_routers/status.py:is_profile_platform_status_key */
+int is_profile_platform_status_key(const char *key) {
     if (!key) return 0;
     return strncmp(key, "platforms.", 10) == 0;
 }
 
-/* PoP: _status_platform_key_allowed @ hermes_cli/web_routers/status.py:_status_platform_key_allowed */
-int _status_platform_key_allowed(const char *key) {
-    return _is_profile_platform_status_key(key);
+/* PoP: status_platform_key_allowed @ hermes_cli/web_routers/status.py:status_platform_key_allowed */
+int status_platform_key_allowed(const char *key) {
+    return is_profile_platform_status_key(key);
 }
 
-/* PoP: _public_platform_entry @ hermes_cli/web_routers/status.py:_public_platform_entry */
-char *_public_platform_entry(const char *platform) {
+/* PoP: public_platform_entry @ hermes_cli/web_routers/status.py:public_platform_entry */
+char *public_platform_entry(const char *platform) {
     if (!platform) return strdup("{}");
     char *entry = malloc(256);
     snprintf(entry, 256, "{\"platform\":\"%s\",\"public\":true}", platform);
     return entry;
 }
 
-/* PoP: _merge_profile_gateway_platforms @ hermes_cli/web_routers/status.py:_merge_profile_gateway_platforms */
-char *_merge_profile_gateway_platforms(const char *profile, const char *platforms) {
+/* PoP: merge_profile_gateway_platforms @ hermes_cli/web_routers/status.py:merge_profile_gateway_platforms */
+char *merge_profile_gateway_platforms(const char *profile, const char *platforms) {
     (void)profile; (void)platforms;
     return strdup("[]");
 }
@@ -114,82 +114,82 @@ char *get_update_receipt(void) {
     return strdup("{}");
 }
 
-/* PoP: _dashboard_code_skew_guard @ hermes_cli/web_server_config.py:_dashboard_code_skew_guard */
-int _dashboard_code_skew_guard(void) {
+/* PoP: dashboard_code_skew_guard @ hermes_cli/web_server_config.py:dashboard_code_skew_guard */
+int dashboard_code_skew_guard(void) {
     return 0;
 }
 
-/* PoP: _dashboard_skew_restart_hint @ hermes_cli/web_server_config.py:_dashboard_skew_restart_hint */
-char *_dashboard_skew_restart_hint(void) {
+/* PoP: dashboard_skew_restart_hint @ hermes_cli/web_server_config.py:dashboard_skew_restart_hint */
+char *dashboard_skew_restart_hint(void) {
     return strdup("");
 }
 
-/* PoP: _broadcast_gateway_session_info @ hermes_cli/web_server_profiles.py:_broadcast_gateway_session_info */
-void _broadcast_gateway_session_info(void *server) {
+/* PoP: broadcast_gateway_session_info @ hermes_cli/web_server_profiles.py:broadcast_gateway_session_info */
+void broadcast_gateway_session_info(void *server) {
     (void)server;
 }
 
-/* PoP: _external_process_cli_command @ hermes_cli/web_server_oauth.py:_external_process_cli_command */
-char *_external_process_cli_command(const char *command) {
+/* PoP: external_process_cli_command @ hermes_cli/web_server_oauth.py:external_process_cli_command */
+char *external_process_cli_command(const char *command) {
     if (!command) return strdup("{\"error\":\"No command\"}");
     char *result = malloc(strlen(command) + 64);
     snprintf(result, strlen(command) + 64, "{\"command\":\"%s\",\"status\":\"executed\"}", command);
     return result;
 }
 
-/* PoP: _notify_cron_provider_for_profile @ hermes_cli/web_server_cron.py:_notify_cron_provider_for_profile */
-void _notify_cron_provider_for_profile(const char *profile, const char *event) {
+/* PoP: notify_cron_provider_for_profile @ hermes_cli/web_server_cron.py:notify_cron_provider_for_profile */
+void notify_cron_provider_for_profile(const char *profile, const char *event) {
     (void)profile; (void)event;
 }
 
-/* PoP: _mutate_cron_for_profile @ hermes_cli/web_server_cron.py:_mutate_cron_for_profile */
-char *_mutate_cron_for_profile(const char *profile, const char *mutation) {
+/* PoP: mutate_cron_for_profile @ hermes_cli/web_server_cron.py:mutate_cron_for_profile */
+char *mutate_cron_for_profile(const char *profile, const char *mutation) {
     (void)profile; (void)mutation;
     return strdup("{}");
 }
 
-/* PoP: _profile_env_value @ hermes_cli/web_server_cron.py:_profile_env_value */
-char *_profile_env_value(const char *profile, const char *key) {
+/* PoP: profile_env_value @ hermes_cli/web_server_cron.py:profile_env_value */
+char *profile_env_value(const char *profile, const char *key) {
     (void)profile;
     const char *val = getenv(key);
     return strdup(val ? val : "");
 }
 
-/* PoP: _gateway_fire_endpoint @ hermes_cli/web_server_cron.py:_gateway_fire_endpoint */
-char *_gateway_fire_endpoint(const char *endpoint, const char *payload) {
+/* PoP: gateway_fire_endpoint @ hermes_cli/web_server_cron.py:gateway_fire_endpoint */
+char *gateway_fire_endpoint(const char *endpoint, const char *payload) {
     (void)endpoint; (void)payload;
     return strdup("{\"status\":\"fired\"}");
 }
 
-/* PoP: _forward_cron_fire_to_gateway @ hermes_cli/web_server_cron.py:_forward_cron_fire_to_gateway */
-char *_forward_cron_fire_to_gateway(const char *payload) {
-    return _gateway_fire_endpoint("cron/fire", payload);
+/* PoP: forward_cron_fire_to_gateway @ hermes_cli/web_server_cron.py:forward_cron_fire_to_gateway */
+char *forward_cron_fire_to_gateway(const char *payload) {
+    return gateway_fire_endpoint("cron/fire", payload);
 }
 
-/* PoP: _gateway_intentionally_stopped @ hermes_cli/web_server_cron.py:_gateway_intentionally_stopped */
-int _gateway_intentionally_stopped(void) {
+/* PoP: gateway_intentionally_stopped @ hermes_cli/web_server_cron.py:gateway_intentionally_stopped */
+int gateway_intentionally_stopped(void) {
     return 0;
 }
 
-/* PoP: _plugin_terminal_backend_rows @ hermes_cli/web_server_profiles.py:_plugin_terminal_backend_rows */
-char *_plugin_terminal_backend_rows(void) {
+/* PoP: plugin_terminal_backend_rows @ hermes_cli/web_server_profiles.py:plugin_terminal_backend_rows */
+char *plugin_terminal_backend_rows(void) {
     return strdup("[]");
 }
 
-/* PoP: _gateway_ws_ticket_from_subprotocol @ hermes_cli/web_server_boundary.py:_gateway_ws_ticket_from_subprotocol */
-char *_gateway_ws_ticket_from_subprotocol(const char *subprotocol) {
+/* PoP: gateway_ws_ticket_from_subprotocol @ hermes_cli/web_server_boundary.py:gateway_ws_ticket_from_subprotocol */
+char *gateway_ws_ticket_from_subprotocol(const char *subprotocol) {
     if (!subprotocol) return strdup("");
     char *ticket = malloc(strlen(subprotocol) + 10);
     snprintf(ticket, strlen(subprotocol) + 10, "ticket:%s", subprotocol);
     return ticket;
 }
 
-/* PoP: _write_machine_sentinel_line @ hermes_cli/web_server_lifecycle.py:_write_machine_sentinel_line */
-void _write_machine_sentinel_line(const char *line) {
+/* PoP: write_machine_sentinel_line @ hermes_cli/web_server_lifecycle.py:write_machine_sentinel_line */
+void write_machine_sentinel_line(const char *line) {
     (void)line;
 }
 
-/* PoP: _dashboard_forwarded_allow_ips @ hermes_cli/web_server_lifecycle.py:_dashboard_forwarded_allow_ips */
-char *_dashboard_forwarded_allow_ips(void) {
+/* PoP: dashboard_forwarded_allow_ips @ hermes_cli/web_server_lifecycle.py:dashboard_forwarded_allow_ips */
+char *dashboard_forwarded_allow_ips(void) {
     return strdup("[]");
 }

@@ -379,9 +379,9 @@ int muv_rebuild_venv(const char *arg) { /* Python default is also a no-op */
  * UV_SELF_UPDATE_INTERVAL_SECONDS. */
 #define UV_SELF_UPDATE_INTERVAL_SECONDS (7 * 24 * 3600)
 
-/* PoP: _uv_self_update_is_fresh @ hermes_cli/managed_uv.py:_uv_self_update_is_fresh */
+/* PoP: uv_self_update_is_fresh @ hermes_cli/managed_uv.py:uv_self_update_is_fresh */
 /* stamp = HERMES_HOME/cache/.uv_self_update_stamp; True iff 0<=age<interval. */
-bool _uv_self_update_is_fresh(double now) {
+bool uv_self_update_is_fresh(double now) {
     const char *h = credfiles_get_hermes_home();
     if (!h || !*h) return false;
     char stamp[PATH_MAX];
@@ -392,8 +392,8 @@ bool _uv_self_update_is_fresh(double now) {
     return age >= 0.0 && age < (double)UV_SELF_UPDATE_INTERVAL_SECONDS;
 }
 
-/* PoP: _touch_uv_self_update_stamp @ hermes_cli/managed_uv.py:_touch_uv_self_update_stamp */
-void _touch_uv_self_update_stamp(void) {
+/* PoP: touch_uv_self_update_stamp @ hermes_cli/managed_uv.py:touch_uv_self_update_stamp */
+void touch_uv_self_update_stamp(void) {
     const char *h = credfiles_get_hermes_home();
     if (!h || !*h) return;
     char stamp[PATH_MAX];
@@ -417,11 +417,11 @@ void _touch_uv_self_update_stamp(void) {
     }
 }
 
-/* PoP: skew @ hermes_cli/managed_uv.py:_reload_hermes_constants */
+/* PoP: skew @ hermes_cli/managed_uv.py:reload_hermes_constants */
 /* Python re-executes hermes_constants from disk after git pull. The C port
  * has no runtime module cache skew (constants are compiled), so this is a
  * faithful no-op that mirrors Python's return-None semantics. */
-void _reload_hermes_constants(void) { /* Python default is also a no-op */ 
+void reload_hermes_constants(void) { /* Python default is also a no-op */ 
     /* No-op: C constants are compiled, not dynamically imported. */
 }
 
@@ -486,9 +486,9 @@ static char *capture_subprocess_real(char *const argv[], int timeout_sec) {
     return buf;  /* caller frees (may be NULL) */
 }
 
-/* PoP: _uv_version_string @ hermes_cli/managed_uv.py:_uv_version_string */
+/* PoP: uv_version_string @ hermes_cli/managed_uv.py:uv_version_string */
 /* uv_bin --version → stripped stdout, or "" on failure. Returns malloc'd. */
-char *_uv_version_string(const char *uv_bin) {
+char *uv_version_string(const char *uv_bin) {
     if (!uv_bin || !*uv_bin) return strdup("");
     char *const argv[] = { (char *)uv_bin, "--version", NULL };
     char *out = capture_subprocess_real(argv, 15);
@@ -500,12 +500,12 @@ char *_uv_version_string(const char *uv_bin) {
     return out;
 }
 
-/* PoP: _list_available_patches @ hermes_cli/managed_uv.py:_list_available_patches */
+/* PoP: list_available_patches @ hermes_cli/managed_uv.py:list_available_patches */
 /* uv python list --all-versions → newest-first list of (major,minor,patch).
  * Returns malloc'd array of triplets [m,m,p,m,m,p,...]; *out_n = number of
  * triplets (not ints). Caller frees. Faithful to Python's
  * sorted(set(versions), reverse=True). */
-void _list_available_patches(const char *uv_bin, const char *minor,
+void list_available_patches(const char *uv_bin, const char *minor,
                              int *out_n, int *out_versions) {
     *out_n = 0;
     if (!uv_bin || !minor || !out_versions) return;
@@ -581,13 +581,13 @@ static char *probe_sqlite_runtime_json(const char *python_exe) {
     return capture_subprocess_real(argv, 30);
 }
 
-/* PoP: _attempt_install_generation @ hermes_cli/managed_uv.py:_attempt_install_generation */
+/* PoP: attempt_install_generation @ hermes_cli/managed_uv.py:attempt_install_generation */
 /* One install+probe attempt for a version request. On success writes the
  * generation dir and resolved python path into out_generation/out_python (each
  * <= gen_sz/py_sz-1 bytes) and returns 0. On any failure returns -1 (and the
  * generation dir is cleaned up via _remove_tree). Faithful to Python's
  * (generation, python, candidate) tuple / None. */
-int _attempt_install_generation(const char *uv_bin, const char *request,
+int attempt_install_generation(const char *uv_bin, const char *request,
                                 const char *project_root, const char *python_root,
                                 const char *current_minor,
                                 char *out_generation, size_t gen_sz,
@@ -703,27 +703,27 @@ static int wal_reset_vulnerable_from_json(json_t *sv) {
     return 0;
 }
 
-/* PoP: uv @ hermes_cli/managed_uv.py:_refresh_managed_uv_catalog */
+/* PoP: uv @ hermes_cli/managed_uv.py:refresh_managed_uv_catalog */
 /* Re-bootstrap managed uv (curl | sh installer). Returns true iff the
  * version string changed. */
-bool _refresh_managed_uv_catalog(const char *uv_bin) {
+bool refresh_managed_uv_catalog(const char *uv_bin) {
     if (!uv_bin || !*uv_bin) return false;
     const char *hermes_home = credfiles_get_hermes_home();
     if (!hermes_home || !*hermes_home) return false;
     char before[256];
-    char *bv = _uv_version_string(uv_bin);
+    char *bv = uv_version_string(uv_bin);
     snprintf(before, sizeof(before), "%s", bv ? bv : "");
     free(bv);
     int rc = system("curl -LsSf https://astral.sh/uv/install.sh 2>/dev/null | sh");
     if (rc != 0) return false;
-    char *after = _uv_version_string(uv_bin);
+    char *after = uv_version_string(uv_bin);
     bool changed = (after && strcmp(after, before) != 0);
     free(after);
     return changed;
 }
 
 /* helper: build the venv python path into `out` (mirrors _venv_python) */
-static void _venv_python_into(const char *venv_dir, char *out, size_t outsz) {
+static void venv_python_into(const char *venv_dir, char *out, size_t outsz) {
     if (!venv_dir || !out) return;
 #ifdef _WIN32
     snprintf(out, outsz, "%s/Scripts/python.exe", venv_dir);
@@ -732,27 +732,27 @@ static void _venv_python_into(const char *venv_dir, char *out, size_t outsz) {
 #endif
 }
 
-/* PoP: _default_live_venv @ hermes_cli/managed_uv.py:_default_live_venv */
+/* PoP: default_live_venv @ hermes_cli/managed_uv.py:default_live_venv */
 /* Pick <root>/venv (if it has a python) else <root>/.venv.
  * Returns malloc'd path; caller frees. */
-char *_default_live_venv(const char *root) {
+char *default_live_venv(const char *root) {
     if (!root || !*root) return NULL;
     char primary[PATH_MAX];
     snprintf(primary, sizeof(primary), "%s/%s", root, "venv");
     char py[PATH_MAX];
-    _venv_python_into(primary, py, sizeof(py));
+    venv_python_into(primary, py, sizeof(py));
     if (access(py, X_OK) == 0) return strdup(primary);
     char fallback[PATH_MAX];
     snprintf(fallback, sizeof(fallback), "%s/%s", root, ".venv");
-    _venv_python_into(fallback, py, sizeof(py));
+    venv_python_into(fallback, py, sizeof(py));
     if (access(py, X_OK) == 0) return strdup(fallback);
     return strdup(primary);
 }
 
-/* PoP: _sweep_stale_runtime_backups @ hermes_cli/managed_uv.py:_sweep_stale_runtime_backups */
+/* PoP: sweep_stale_runtime_backups @ hermes_cli/managed_uv.py:sweep_stale_runtime_backups */
 /* Remove <live>.stale.runtime-* backups older than min_age_seconds, except `keep`.
  * Best-effort; never raises. */
-void _sweep_stale_runtime_backups(const char *live_path, const char *root,
+void sweep_stale_runtime_backups(const char *live_path, const char *root,
                                   const char *keep, double min_age_seconds) {
     if (!live_path || !root) return;
     /* dir = live.parent, prefix = live.name + ".stale.runtime-" */

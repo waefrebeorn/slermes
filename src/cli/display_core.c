@@ -1786,7 +1786,7 @@ int get_tool_preview_max_len(void)
  * Truncate a string to at most `limit` chars. If `limit` is 0, returns s
  * unchanged (no limit). When `path_mode` is true, uses "..." prefix for
  * overlong paths instead of "..." suffix. Returns pointer to static buf. */
-static const char *_trunc_or_path(const char *s, int limit, bool path_mode) {
+static const char *trunc_or_path(const char *s, int limit, bool path_mode) {
     if (!s) return "";
     if (limit <= 0) return s;
     size_t len = strlen(s);
@@ -1831,7 +1831,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     if (strcmp(tool_name, "web_search") == 0) {
         const char *q = json_get_str(args, "query", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x94\x8d search    %s  %s",
-                 skin_prefix, _trunc_or_path(q, 42, false), dur_buf);
+                 skin_prefix, trunc_or_path(q, 42, false), dur_buf);
     } else if (strcmp(tool_name, "web_extract") == 0) {
         json_t *urls = json_obj_get(args, "urls");
         if (urls && urls->type == JSON_ARRAY && json_len(urls) > 0) {
@@ -1853,10 +1853,10 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
                 size_t count = json_len(urls);
                 if (count > 1) {
                     snprintf(line, sizeof(line), "%s \xf0\x9f\x93\x84 fetch     %s +%zu  %s",
-                             skin_prefix, _trunc_or_path(domain, 35, false), count - 1, dur_buf);
+                             skin_prefix, trunc_or_path(domain, 35, false), count - 1, dur_buf);
                 } else {
                     snprintf(line, sizeof(line), "%s \xf0\x9f\x93\x84 fetch     %s  %s",
-                             skin_prefix, _trunc_or_path(domain, 35, false), dur_buf);
+                             skin_prefix, trunc_or_path(domain, 35, false), dur_buf);
                 }
             }
         }
@@ -1866,7 +1866,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     } else if (strcmp(tool_name, "terminal") == 0) {
         const char *cmd = json_get_str(args, "command", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x92\xbb $         %s  %s",
-                 skin_prefix, _trunc_or_path(cmd, 42, false), dur_buf);
+                 skin_prefix, trunc_or_path(cmd, 42, false), dur_buf);
     } else if (strcmp(tool_name, "process") == 0) {
         const char *action = json_get_str(args, "action", "?");
         const char *sid = json_get_str(args, "session_id", "");
@@ -1887,22 +1887,22 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     } else if (strcmp(tool_name, "read_file") == 0) {
         const char *p = json_get_str(args, "path", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x93\x96 read      %s  %s",
-                 skin_prefix, _trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
+                 skin_prefix, trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
     } else if (strcmp(tool_name, "write_file") == 0) {
         const char *p = json_get_str(args, "path", "");
         snprintf(line, sizeof(line), "%s \xe2\x9c\x8d\xef\xb8\x8f  write     %s  %s",
-                 skin_prefix, _trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
+                 skin_prefix, trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
     } else if (strcmp(tool_name, "patch") == 0) {
         const char *p = json_get_str(args, "path", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x94\xa7 patch     %s  %s",
-                 skin_prefix, _trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
+                 skin_prefix, trunc_or_path(p, g_tool_preview_max_len > 0 ? g_tool_preview_max_len : 35, true), dur_buf);
     } else if (strcmp(tool_name, "search_files") == 0) {
         const char *pattern = json_get_str(args, "pattern", "");
         const char *target = json_get_str(args, "target", "content");
         bool is_files = (strcmp(target, "files") == 0);
         snprintf(line, sizeof(line), "%s \xf0\x9f\x94\x8e %s %s  %s",
                  skin_prefix, is_files ? "find      " : "grep      ",
-                 _trunc_or_path(pattern, 35, false), dur_buf);
+                 trunc_or_path(pattern, 35, false), dur_buf);
     } else if (strcmp(tool_name, "browser_navigate") == 0) {
         const char *url = json_get_str(args, "url", "");
         const char *domain = url;
@@ -1918,7 +1918,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
             domain = domain_buf;
         }
         snprintf(line, sizeof(line), "%s \xf0\x9f\x8c\x90 navigate  %s  %s",
-                 skin_prefix, _trunc_or_path(domain, 35, false), dur_buf);
+                 skin_prefix, trunc_or_path(domain, 35, false), dur_buf);
     } else if (strcmp(tool_name, "browser_snapshot") == 0) {
         double full_flag = json_get_num(args, "full", 0);
         snprintf(line, sizeof(line), "%s \xf0\x9f\x93\xb8 snapshot  %s  %s",
@@ -1929,7 +1929,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     } else if (strcmp(tool_name, "browser_type") == 0) {
         const char *text = json_get_str(args, "text", "");
         snprintf(line, sizeof(line), "%s \xe2\x8c\xa8\xef\xb8\x8f  type      \"%s\"  %s",
-                 skin_prefix, _trunc_or_path(text, 30, false), dur_buf);
+                 skin_prefix, trunc_or_path(text, 30, false), dur_buf);
     } else if (strcmp(tool_name, "browser_scroll") == 0) {
         const char *d = json_get_str(args, "direction", "down");
         const char *arrow = "\xe2\x86\x93"; /* ↓ */
@@ -1985,24 +1985,24 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     } else if (strcmp(tool_name, "session_search") == 0) {
         const char *query = json_get_str(args, "query", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x94\x8d recall    \"%s\"  %s",
-                 skin_prefix, _trunc_or_path(query, 35, false), dur_buf);
+                 skin_prefix, trunc_or_path(query, 35, false), dur_buf);
     } else if (strcmp(tool_name, "memory") == 0) {
         const char *action = json_get_str(args, "action", "?");
         const char *target = json_get_str(args, "target", "");
         if (strcmp(action, "add") == 0) {
             const char *content = json_get_str(args, "content", "");
             snprintf(line, sizeof(line), "%s \xf0\x9f\xa7\xa0 memory    +%s: \"%s\"  %s",
-                     skin_prefix, target, _trunc_or_path(content, 30, false), dur_buf);
+                     skin_prefix, target, trunc_or_path(content, 30, false), dur_buf);
         } else if (strcmp(action, "replace") == 0) {
             const char *old = json_get_str(args, "old_text", NULL);
             if (!old) old = "<missing old_text>";
             snprintf(line, sizeof(line), "%s \xf0\x9f\xa7\xa0 memory    ~%s: \"%s\"  %s",
-                     skin_prefix, target, _trunc_or_path(old, 20, false), dur_buf);
+                     skin_prefix, target, trunc_or_path(old, 20, false), dur_buf);
         } else if (strcmp(action, "remove") == 0) {
             const char *old = json_get_str(args, "old_text", NULL);
             if (!old) old = "<missing old_text>";
             snprintf(line, sizeof(line), "%s \xf0\x9f\xa7\xa0 memory    -%s: \"%s\"  %s",
-                     skin_prefix, target, _trunc_or_path(old, 20, false), dur_buf);
+                     skin_prefix, target, trunc_or_path(old, 20, false), dur_buf);
         } else {
             snprintf(line, sizeof(line), "%s \xf0\x9f\xa7\xa0 memory    %s  %s", skin_prefix, action, dur_buf);
         }
@@ -2012,28 +2012,28 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
     } else if (strcmp(tool_name, "skill_view") == 0) {
         const char *name = json_get_str(args, "name", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x93\x9a skill     %s  %s",
-                 skin_prefix, _trunc_or_path(name, 30, false), dur_buf);
+                 skin_prefix, trunc_or_path(name, 30, false), dur_buf);
     } else if (strcmp(tool_name, "image_generate") == 0) {
         const char *prompt = json_get_str(args, "prompt", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x8e\xa8 create    %s  %s",
-                 skin_prefix, _trunc_or_path(prompt, 35, false), dur_buf);
+                 skin_prefix, trunc_or_path(prompt, 35, false), dur_buf);
     } else if (strcmp(tool_name, "text_to_speech") == 0) {
         const char *text = json_get_str(args, "text", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x94\x8a speak     %s  %s",
-                 skin_prefix, _trunc_or_path(text, 30, false), dur_buf);
+                 skin_prefix, trunc_or_path(text, 30, false), dur_buf);
     } else if (strcmp(tool_name, "vision_analyze") == 0) {
         const char *question = json_get_str(args, "question", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x91\x81\xef\xb8\x8f  vision    %s  %s",
-                 skin_prefix, _trunc_or_path(question, 30, false), dur_buf);
+                 skin_prefix, trunc_or_path(question, 30, false), dur_buf);
     } else if (strcmp(tool_name, "mixture_of_agents") == 0) {
         const char *prompt = json_get_str(args, "user_prompt", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\xa7\xa0 reason    %s  %s",
-                 skin_prefix, _trunc_or_path(prompt, 30, false), dur_buf);
+                 skin_prefix, trunc_or_path(prompt, 30, false), dur_buf);
     } else if (strcmp(tool_name, "send_message") == 0) {
         const char *target = json_get_str(args, "target", "?");
         const char *msg = json_get_str(args, "message", "");
         snprintf(line, sizeof(line), "%s \xf0\x9f\x93\xa8 send      %s: \"%s\"  %s",
-                 skin_prefix, target, _trunc_or_path(msg, 25, false), dur_buf);
+                 skin_prefix, target, trunc_or_path(msg, 25, false), dur_buf);
     } else if (strcmp(tool_name, "cronjob") == 0) {
         const char *action = json_get_str(args, "action", "?");
         if (strcmp(action, "create") == 0) {
@@ -2053,7 +2053,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
             }
             else label = "task";
             snprintf(line, sizeof(line), "%s \xe2\x8f\xb0 cron      create %s  %s",
-                     skin_prefix, _trunc_or_path(label, 24, false), dur_buf);
+                     skin_prefix, trunc_or_path(label, 24, false), dur_buf);
         } else if (strcmp(action, "list") == 0) {
             snprintf(line, sizeof(line), "%s \xe2\x8f\xb0 cron      listing  %s", skin_prefix, dur_buf);
         } else {
@@ -2068,7 +2068,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
         char *nl = strchr(first_line, '\n');
         if (nl) *nl = '\0';
         snprintf(line, sizeof(line), "%s \xf0\x9f\x90\x8d exec      %s  %s",
-                 skin_prefix, _trunc_or_path(first_line, 35, false), dur_buf);
+                 skin_prefix, trunc_or_path(first_line, 35, false), dur_buf);
     } else if (strcmp(tool_name, "delegate_task") == 0) {
         json_t *tasks = json_obj_get(args, "tasks");
         if (tasks && tasks->type == JSON_ARRAY) {
@@ -2077,7 +2077,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
         } else {
             const char *goal = json_get_str(args, "goal", "");
             snprintf(line, sizeof(line), "%s \xf0\x9f\x94\x80 delegate  %s  %s",
-                     skin_prefix, _trunc_or_path(goal, 35, false), dur_buf);
+                     skin_prefix, trunc_or_path(goal, 35, false), dur_buf);
         }
     }
 
@@ -2086,7 +2086,7 @@ char *display_cute_tool_message(const char *tool_name, const char *args_json,
         char *preview = display_tool_preview(tool_name, args_json);
         const char *preview_str = preview ? preview : "";
         snprintf(line, sizeof(line), "%s \xe2\x9a\xa1 %-9s %s  %s",
-                 skin_prefix, tool_name, _trunc_or_path(preview_str, 35, false), dur_buf);
+                 skin_prefix, tool_name, trunc_or_path(preview_str, 35, false), dur_buf);
         free(preview);
     }
 

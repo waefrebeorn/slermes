@@ -575,9 +575,9 @@ static int                _RAW_CONFIG_CACHE_N = 0;
 /* ---- small accessors reused below ---- */
 static json_t *raw_cfg_lookup_or_load(const char *path, int want_deepcopy);
 
-/* PoP: _raw_config_has_explicit_version @ hermes_cli/config.py:_raw_config_has_explicit_version */
+/* PoP: raw_config_has_explicit_version @ hermes_cli/config.py:raw_config_has_explicit_version */
 /* True iff config.yaml exists, parses, and carries a _config_version key. */
-bool _raw_config_has_explicit_version(void) {
+bool raw_config_has_explicit_version(void) {
     char path[HERMES_PATH_MAX];
     config_path(path, sizeof path);
     struct stat st;
@@ -671,9 +671,9 @@ static json_t *raw_cfg_lookup_or_load(const char *path, int want_deepcopy) {
     return want_deepcopy ? json_copy(obj) : obj;
 }
 
-/* PoP: _cron_model_drift_axis_for_config_key @ hermes_cli/config.py:_cron_model_drift_axis_for_config_key */
+/* PoP: cron_model_drift_axis_for_config_key @ hermes_cli/config.py:cron_model_drift_axis_for_config_key */
 	/* Return the cron drift-guard axis affected by a config key, or NULL. */
-const char *_cron_model_drift_axis_for_config_key(const char *key) {
+const char *cron_model_drift_axis_for_config_key(const char *key) {
     if (!key) return NULL;
     char norm[256];
     snprintf(norm, sizeof norm, "%s", key);
@@ -703,10 +703,10 @@ bool cron_model_drift_guard_enabled(json_t *config) {
     return true;  /* non-boolean → fail-closed */
 }
 
-/* PoP: default @ hermes_cli/config.py:_cron_fleet_default_covers_axis */
+/* PoP: default @ hermes_cli/config.py:cron_fleet_default_covers_axis */
 	/* True iff the explicit cron.fleet default (cron.model / cron.model_provider)
  * covers *axis*. */
-bool _cron_fleet_default_covers_axis(const char *axis, json_t *config) {
+bool cron_fleet_default_covers_axis(const char *axis, json_t *config) {
     if (!axis) return false;
     if (!config) config = config_py_load_config_impl(0);
     if (!config || config->type != JSON_OBJECT) return false;
@@ -718,11 +718,11 @@ bool _cron_fleet_default_covers_axis(const char *axis, json_t *config) {
     return v->str_val && strlen(v->str_val) > 0;
 }
 
-/* PoP: array @ hermes_cli/config.py:_load_cron_jobs_for_config_warning */
+/* PoP: array @ hermes_cli/config.py:load_cron_jobs_for_config_warning */
 	/* Best-effort read of the active profile's cron jobs database. Delegates to
  * cron.jobs.load_jobs (cronjobs_load_jobs) to reuse BOM/corruption handling.
  * Returns a json_t array (caller frees) — empty on any failure. */
-json_t *_load_cron_jobs_for_config_warning(void) {
+json_t *load_cron_jobs_for_config_warning(void) {
     char *err = NULL;
     json_t *jobs = cronjobs_load_jobs(&err);
     if (err) free(err);
@@ -735,10 +735,10 @@ json_t *_load_cron_jobs_for_config_warning(void) {
 	/* Warn when a global model/provider change will trip cron's drift guard. */
 void warn_unpinned_cron_jobs_after_model_config_change(
         const char *key, const char *value, json_t *config) {
-    const char *axis = _cron_model_drift_axis_for_config_key(key);
+    const char *axis = cron_model_drift_axis_for_config_key(key);
     if (!axis) return;
     if (!cron_model_drift_guard_enabled(config)) return;
-    if (_cron_fleet_default_covers_axis(axis, config)) return;
+    if (cron_fleet_default_covers_axis(axis, config)) return;
     char new_value[256];
     snprintf(new_value, sizeof new_value, "%s", value ? value : "");
     for (char *p = new_value; *p; p++) *p = (char)tolower((unsigned char)*p);
@@ -751,7 +751,7 @@ void warn_unpinned_cron_jobs_after_model_config_change(
     snprintf(snapshot_field, sizeof snapshot_field, "%s_snapshot", axis);
 
     int affected = 0;
-    json_t *jobs = _load_cron_jobs_for_config_warning();
+    json_t *jobs = load_cron_jobs_for_config_warning();
     size_t n = json_len(jobs);
     for (size_t i = 0; i < n; i++) {
         json_t *job = json_get(jobs, i);

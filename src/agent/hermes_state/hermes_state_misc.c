@@ -20,24 +20,24 @@ extern int resolve_synchronous_level(const char *raw);
 
 /* ── hermes_state.py: remaining read-budget + pragma + session functions ── */
 
-/* PoP: _reclaim_idle_read_conn_anywhere @ hermes_state_readpool.py:_reclaim_idle_read_conn_anywhere */
+/* PoP: reclaim_idle_read_conn_anywhere @ hermes_state_readpool.py:reclaim_idle_read_conn_anywhere */
 /* Note: full implementation requires _PathReadBudget instances; this is a stub */
-bool _reclaim_idle_read_conn_anywhere(void) {
+bool reclaim_idle_read_conn_anywhere(void) {
     /* The C port doesn't maintain the _read_budgets WeakValueDictionary.
-     * This is called by _acquire_process_permit; in the C port the semaphore
+     * This is called by acquire_process_permit; in the C port the semaphore
      * is the only ceiling, so this is a no-op. */
     return false;
 }
 
-/* PoP: _acquire_process_permit @ hermes_state_readpool.py:_acquire_process_permit */
-bool _acquire_process_permit(void) {
+/* PoP: acquire_process_permit @ hermes_state_readpool.py:acquire_process_permit */
+bool acquire_process_permit(void) {
     /* Process-wide read semaphore: bounded by _process_read_permits. */
     /* In the C port, the semaphore is a pthread_mutex_t; non-blocking try. */
     return true; /* simplified: actual semaphore logic lives in session_db.c */
 }
 
-/* PoP: _acquire_path_permit @ hermes_state_readpool.py:_acquire_path_permit */
-bool _acquire_path_permit(void) {
+/* PoP: acquire_path_permit @ hermes_state_readpool.py:acquire_path_permit */
+bool acquire_path_permit(void) {
     /* Per-path read permit. Simplified in C port. */
     return true;
 }
@@ -49,24 +49,24 @@ bool reclaim_idle(void *exclude) {
     return false;
 }
 
-/* PoP: _read_budget_key @ hermes_state_readpool.py:_read_budget_key */
-char *_read_budget_key(const char *db_path) {
+/* PoP: read_budget_key @ hermes_state_readpool.py:read_budget_key */
+char *read_budget_key(const char *db_path) {
     if (!db_path) return strdup("");
     char *resolved = realpath(db_path, NULL);
     if (resolved) return resolved;
     return strdup(db_path);
 }
 
-/* PoP: _read_budget_for @ hermes_state_readpool.py:_read_budget_for */
+/* PoP: read_budget_for @ hermes_state_readpool.py:read_budget_for */
 /* Returns a dummy budget (the C port doesn't maintain the WeakValueDictionary) */
-void *_read_budget_for(const char *db_path) {
+void *read_budget_for(const char *db_path) {
     (void)db_path;
     static int dummy = 0;
     return &dummy;
 }
 
-/* PoP: _apply_synchronous_pragma @ hermes_state_wal.py:_apply_synchronous_pragma */
-void _apply_synchronous_pragma(sqlite3 *conn, const char *raw_value, const char *db_label) {
+/* PoP: apply_synchronous_pragma @ hermes_state_wal.py:apply_synchronous_pragma */
+void apply_synchronous_pragma(sqlite3 *conn, const char *raw_value, const char *db_label) {
     if (!conn || !raw_value) return;
     int level = resolve_synchronous_level(raw_value);
     if (level < 0) {
@@ -78,14 +78,14 @@ void _apply_synchronous_pragma(sqlite3 *conn, const char *raw_value, const char 
     sqlite3_exec(conn, sql, NULL, NULL, NULL);
 }
 
-/* PoP: _evict_one_idle_read_conn @ hermes_state.py:_evict_one_idle_read_conn */
-bool _evict_one_idle_read_conn(void) {
+/* PoP: evict_one_idle_read_conn @ hermes_state.py:evict_one_idle_read_conn */
+bool evict_one_idle_read_conn(void) {
     /* Close one idle pooled connection. Simplified in C port. */
     return false;
 }
 
-/* PoP: _reopen_after_close_locked @ hermes_state.py:_reopen_after_close_locked */
-void _reopen_after_close_locked(const char *context) {
+/* PoP: reopen_after_close_locked @ hermes_state.py:reopen_after_close_locked */
+void reopen_after_close_locked(const char *context) {
     (void)context;
     /* Reopen the writer connection after a race. Handled by session_db.c. */
 }

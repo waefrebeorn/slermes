@@ -644,7 +644,7 @@ static const char *VERIZON_AI_GATEWAY_MODELS[] = {
     NULL,
 };
 
-/* Thread-safe inflight tracker for _spawn_swr_refresh (mirrors the Python
+/* Thread-safe inflight tracker for spawn_swr_refresh (mirrors the Python
  * _swr_refresh_inflight set + _swr_refresh_lock). Uses a fixed-size registry
  * (enough for the bounded provider slug space) — hive-backed would be ideal
  * but slermes keeps the SWR refresh bookkeeping in-process. */
@@ -652,8 +652,8 @@ static pthread_mutex_t _swr_refresh_lock = PTHREAD_MUTEX_INITIALIZER;
 static char *_swr_inflight_keys[64];
 static int   _swr_inflight_n = 0;
 
-/* PoP: _ai_gateway_model_is_free @ hermes_cli/models.py:_ai_gateway_model_is_free */
-bool _ai_gateway_model_is_free(const char *pricing_json) {
+/* PoP: ai_gateway_model_is_free @ hermes_cli/models.py:ai_gateway_model_is_free */
+bool ai_gateway_model_is_free(const char *pricing_json) {
     if (!pricing_json) return false;
     /* Parse "input" and "output" pricing; True iff both == 0. */
     double in_val = 0, out_val = 0;
@@ -672,12 +672,12 @@ bool _ai_gateway_model_is_free(const char *pricing_json) {
     return in_val == 0.0 && out_val == 0.0;
 }
 
-/* PoP: _provider_catalog_names @ hermes_cli/models.py:_provider_catalog_names */
+/* PoP: provider_catalog_names @ hermes_cli/models.py:provider_catalog_names */
 /* Returns malloc'd NULL-terminated array of "active+retired" model names for
  * a provider (caller frees each + the array). Faithful to Python's
  * active + retired aliases; the C static catalog already merges deepseek's
  * retired aliases into M_DEEPSEEK. */
-char **_provider_catalog_names(const char *provider, int *out_n) {
+char **provider_catalog_names(const char *provider, int *out_n) {
     if (out_n) *out_n = 0;
     if (!provider) return NULL;
     int n = model_provider_model_count(provider);
@@ -693,10 +693,10 @@ char **_provider_catalog_names(const char *provider, int *out_n) {
     return result;
 }
 
-/* PoP: mapping @ hermes_cli/models.py:_model_dedup_key */
+/* PoP: mapping @ hermes_cli/models.py:model_dedup_key */
 /* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
  * The alias table is the model_search.py mapping (ported from scratch). */
-char *_model_dedup_key(const char *model_id) {
+char *model_dedup_key(const char *model_id) {
     if (!model_id) return strdup("");
     /* _MODEL_ALIAS_CANONICAL — folded form of model_search.py aliases. */
     static const struct { const char *alias; const char *canonical; } aliases[] = {
@@ -725,10 +725,10 @@ char *_model_dedup_key(const char *model_id) {
     return strdup(start);
 }
 
-/* PoP: frees @ hermes_cli/models.py:_openai_discovery_base_url */
+/* PoP: frees @ hermes_cli/models.py:openai_discovery_base_url */
 /* Returns the effective OpenAI base URL for model discovery. Returns a
  * malloc'd string the caller frees (or a static default). */
-char *_openai_discovery_base_url(const char *provider) {
+char *openai_discovery_base_url(const char *provider) {
     const char *env = getenv("OPENAI_BASE_URL");
     if (env && *env) {
         char *s = strdup(env);
@@ -894,7 +894,7 @@ char *fetch_ai_gateway_models(double timeout_sec, bool force_refresh) {
                     if (live) {
                         json_t *price_obj = json_object_get(live, "pricing");
                         char *price_json = price_obj ? json_dumps(price_obj, 0) : NULL;
-                        const char *desc = _ai_gateway_model_is_free(price_json) ? "free" : "";
+                        const char *desc = ai_gateway_model_is_free(price_json) ? "free" : "";
                         free(price_json);
                         json_t *obj = json_object();
                         json_object_set(obj, "id", json_string(mid));
@@ -1018,14 +1018,14 @@ char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
     return result;
 }
 
-/* PoP: _swr_worker @ hermes_cli/models.py:_spawn_swr_refresh */
+/* PoP: swr_worker @ hermes_cli/models.py:spawn_swr_refresh */
 /* Fire-and-forget background refresh of a provider model-id cache entry.
  * At most one refresh in flight per cache_key (dedup via _swr_refresh_lock).
  * Failures are swallowed — the stale entry keeps being served. Mirrors the
  * Python daemon thread semantics. */
 typedef struct { char *cache_key; } swr_ctx_t;
 
-static void *_swr_worker(void *arg) {
+static void *swr_worker(void *arg) {
     swr_ctx_t *ctx = (swr_ctx_t *)arg;
     char *provider = ctx->cache_key;
     free(ctx);
@@ -1055,7 +1055,7 @@ static void *_swr_worker(void *arg) {
     return NULL;
 }
 
-void _spawn_swr_refresh(const char *cache_key) {
+void spawn_swr_refresh(const char *cache_key) {
     if (!cache_key) return;
     pthread_mutex_lock(&_swr_refresh_lock);
     for (int i = 0; i < _swr_inflight_n; i++) {
@@ -1073,7 +1073,7 @@ void _spawn_swr_refresh(const char *cache_key) {
     if (!ctx) return;
     ctx->cache_key = strdup(cache_key);
     pthread_t tid;
-    if (pthread_create(&tid, NULL, _swr_worker, ctx) != 0) {
+    if (pthread_create(&tid, NULL, swr_worker, ctx) != 0) {
         /* failed to spawn — remove from inflight and bail */
         pthread_mutex_lock(&_swr_refresh_lock);
         for (int i = 0; i < _swr_inflight_n; i++) {
@@ -1093,7 +1093,7 @@ void _spawn_swr_refresh(const char *cache_key) {
     pthread_detach(tid);  /* daemon thread — nobody joins */
 }
 
-/* ---- _spawn_catalog_swr_refresh (hermes_cli/model_catalog.py) ---- */
+/* ---- spawn_catalog_swr_refresh (hermes_cli/model_catalog.py) ---- */
 /* Thread-safe inflight guard (separate from the provider-model SWR inflight
  * set, mirroring Python's _catalog_swr_inflight + _catalog_swr_lock). */
 static pthread_mutex_t _catalog_swr_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -1105,7 +1105,7 @@ typedef struct { char *url; } catalog_swr_ctx_t;
  * writes fresh JSON to the provider-models cache on success. Degrades
  * silently (stale cache kept) on any failure, mirroring Python's
  * except-logger.debug + finally-claim-release semantics. */
-static void *_catalog_swr_worker(void *arg) {
+static void *catalog_swr_worker(void *arg) {
     catalog_swr_ctx_t *ctx = (catalog_swr_ctx_t *)arg;
     char *url = ctx->url;
     free(ctx);
@@ -1129,12 +1129,12 @@ static void *_catalog_swr_worker(void *arg) {
     return NULL;
 }
 
-/* PoP: get_catalog @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
-/* Port of Python _spawn_catalog_swr_refresh: refresh the catalog manifest
+/* PoP: get_catalog @ hermes_cli/model_catalog.py:spawn_catalog_swr_refresh */
+/* Port of Python spawn_catalog_swr_refresh: refresh the catalog manifest
  * off-thread (fire-and-forget, deduped via _catalog_swr_inflight). The
  * refreshed manifest lands on disk; the next get_catalog() picks it up
  * via the mtime/age check. Failures swallowed — stale entry kept. */
-void _spawn_catalog_swr_refresh(const char *url) {
+void spawn_catalog_swr_refresh(const char *url) {
     if (!url || !*url) return;
     pthread_mutex_lock(&_catalog_swr_lock);
     if (_catalog_swr_inflight) {
@@ -1161,7 +1161,7 @@ void _spawn_catalog_swr_refresh(const char *url) {
     }
 
     pthread_t tid;
-    if (pthread_create(&tid, NULL, _catalog_swr_worker, ctx) != 0) {
+    if (pthread_create(&tid, NULL, catalog_swr_worker, ctx) != 0) {
         /* Spawn failed — release claim and bail (failure swallowed). */
         pthread_mutex_lock(&_catalog_swr_lock);
         _catalog_swr_inflight = false;

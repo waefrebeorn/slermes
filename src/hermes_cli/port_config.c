@@ -1,7 +1,7 @@
 /* port_config.c -- pure helpers ported from hermes_cli/config.py.
  *
- * PoP: cfg_split_key_path        @ hermes_cli/config.py:_split_key_path
- * PoP: cfg_env_var_policy_name   @ hermes_cli/config.py:_env_var_policy_name
+ * PoP: cfg_split_key_path        @ hermes_cli/config.py:split_key_path
+ * PoP: cfg_env_var_policy_name   @ hermes_cli/config.py:env_var_policy_name
  * PoP: cfg_validate_env_var_name @ hermes_cli/config.py:validate_env_var_name_for_write
  * PoP: cfg_is_env_config_key     @ hermes_cli/config.py:_is_env_config_key
  *
@@ -17,7 +17,7 @@
 
 #include "libjson/json.h"
 
-/* ── _split_key_path ────────────────────────────────────────────────────────
+/* ── split_key_path ────────────────────────────────────────────────────────
  * Split a dotted config-key path, honouring backslash-escaped dots
  * (``a\.b`` -> one segment ``a.b``). A backslash before any other character is
  * preserved verbatim.
@@ -70,7 +70,7 @@ cfg_split_key_path(const char *key, char **out, int max)
     }
 }
 
-/* ── _env_var_policy_name ──────────────────────────────────────────────────
+/* ── env_var_policy_name ──────────────────────────────────────────────────
  * Windows env names are case-insensitive, POSIX are not: the name used for
  * policy comparisons is upper-cased on Windows only.
  */

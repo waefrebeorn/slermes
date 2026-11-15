@@ -23,8 +23,8 @@ char *sc_ensure_closed_code_fences(const char *text);
  *      GatewayStreamConsumer._metadata_for_send / _notify_before_finalize
  *      map onto (kept for the existing gateway call bridge).
  *   2. A clean opaque-struct C11 API (gw_stream_consumer_*) porting the
- *      synchronous text/state logic (_filter_and_accumulate,
- *      _flush_think_buffer, _reset_segment_state, _visible_prefix,
+ *      synchronous text/state logic (filter_and_accumulate,
+ *      flush_think_buffer, _reset_segment_state, _visible_prefix,
  *      has_delivered_text). See stream_consumer.h.
  *
  * The async transport (run()/_edit_message/draft streaming/adapter) is NOT
@@ -405,7 +405,7 @@ static int find_lower(const char *hay, int hlen, int start, const char *needle, 
     return -1;
 }
 
-/* Block-boundary test (mirrors Python _filter_and_accumulate's boundary rule):
+/* Block-boundary test (mirrors Python filter_and_accumulate's boundary rule):
  * a tag at `idx` is a real block open only if it sits at a line start
  * (preceded only by whitespace since the last newline, OR at the very start
  * of the accumulated stream). `buf` is the full current buffer, `idx` the tag
@@ -470,10 +470,10 @@ static int strip_orphan_close_tags(const char *text, int tlen, char *out, int ou
     return opos;
 }
 
-/* Port of GatewayStreamConsumer._filter_and_accumulate.
+/* Port of GatewayStreamConsumer.filter_and_accumulate.
  * Adds `text` to the buffer, suppressing inline think/reasoning blocks.
  * Returns pointer to the visible accumulated text (valid until next call). */
-/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
+/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer_think.py:filter_and_accumulate */
 const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const char *text)
 {
     if (!c || !text || !*text) return c ? c->accumulated : NULL;
@@ -591,8 +591,8 @@ const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const 
     return c->accumulated;
 }
 
-/* Port of GatewayStreamConsumer._flush_think_buffer. */
-/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
+/* Port of GatewayStreamConsumer.flush_think_buffer. */
+/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer_think.py:flush_think_buffer */
 const char *gw_stream_consumer_flush_think_buffer(gw_stream_consumer_t *c)
 {
     if (!c) return NULL;

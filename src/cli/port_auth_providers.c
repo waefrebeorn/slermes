@@ -59,7 +59,7 @@ int cpa_is_known_provider(const char *provider, int in_registry, int configured)
 
 /* ---- _resolve_custom_provider_input ---- */
 
-/* strip + lowercase + spaces-to-dashes (matches _normalize_custom_pool_name and
+/* strip + lowercase + spaces-to-dashes (matches normalize_custom_pool_name and
  * the input normalization). Returns malloc'd. */
 static char *apa_norm_token(const char *s, int dash_spaces)
 {

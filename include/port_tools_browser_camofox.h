@@ -14,29 +14,29 @@ extern "C" {
 
 /* Camofox URL resolution */
 char *get_camofox_url(void);
-char *_config_cdp_url(const char *camofox_url);
+char *config_cdp_url(const char *camofox_url);
 bool check_camofox_available(void);
 char *get_vnc_url(void);
 
 /* Camofox config helpers */
-json_t *_get_camofox_config(void);
-bool _managed_persistence_enabled(void);
-char *_camofox_identity_override(void);
-bool _env_flag(const char *flag_name, bool default_val);
-bool _adopt_existing_tab_enabled(void);
-bool _loopback_rewrite_enabled(void);
-char *_loopback_rewrite_host(void);
-bool _is_loopback_hostname(const char *hostname);
-char *_rewrite_loopback_url_for_camofox(const char *url);
+json_t *get_camofox_config(void);
+bool managed_persistence_enabled(void);
+char *camofox_identity_override(void);
+bool env_flag(const char *flag_name, bool default_val);
+bool adopt_existing_tab_enabled(void);
+bool loopback_rewrite_enabled(void);
+char *loopback_rewrite_host(void);
+bool is_loopback_hostname(const char *hostname);
+char *rewrite_loopback_url_for_camofox(const char *url);
 
 /* Tab management */
 char *_adopt_existing_tab(const char *camofox_url, const char *url);
-char *_ensure_tab(const char *camofox_url, const char *url, bool new_window);
-void _drop_session(const char *camofox_url, const char *session_id);
+char *ensure_tab(const char *camofox_url, const char *url, bool new_window);
+void drop_session(const char *camofox_url, const char *session_id);
 void camofox_soft_cleanup(const char *camofox_url);
 
 /* Low-level HTTP helpers */
-char *_get_raw(const char *camofox_url, const char *path);
+char *get_raw(const char *camofox_url, const char *path);
 
 /* Navigation */
 char *camofox_navigate(const char *camofox_url, const char *session_id, const char *url);
@@ -64,7 +64,7 @@ json_t *camofox_vision(const char *camofox_url, const char *session_id, const ch
 char *camofox_console(const char *camofox_url, const char *session_id, const char *cmd);
 
 /* Private page block helper */
-bool _camofox_private_page_block(const char *url);
+bool camofox_private_page_block(const char *url);
 
 #ifdef __cplusplus
 }

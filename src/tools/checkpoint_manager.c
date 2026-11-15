@@ -23,8 +23,8 @@
 #define CHECKPOINT_DIR ".hermes_checkpoints"
 #define MAX_PATH 4096
 
-/* PoP: _project_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_project_hash */
-static void _project_hash(const char *working_dir, char *out_hash, size_t out_len) {
+/* PoP: project_hash @ plugins/platforms/whatsapp_cloud/adapter.py:project_hash */
+static void project_hash(const char *working_dir, char *out_hash, size_t out_len) {
     if (!working_dir) {
         snprintf(out_hash, out_len, "default");
         return;
@@ -51,12 +51,12 @@ static void _store_path(const char *base, char *out_path, size_t out_len) {
     }
 }
 
-/* PoP: _shadow_repo_path @ plugins/platforms/whatsapp_cloud/adapter.py:_shadow_repo_path */
-static void _shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
+/* PoP: shadow_repo_path @ plugins/platforms/whatsapp_cloud/adapter.py:shadow_repo_path */
+static void shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
     char dir_hash[64];
-    _project_hash(working_dir, dir_hash, sizeof(dir_hash));
+    project_hash(working_dir, dir_hash, sizeof(dir_hash));
     snprintf(out_path, out_len, "%s/shadow/%s", store, dir_hash);
 }
 
@@ -67,26 +67,26 @@ static void _index_path(const char *base, const char *dir_hash, char *out_path, 
     snprintf(p, out_len - (p - out_path), "/index-%s.json", dir_hash);
 }
 
-/* PoP: _ref_name @ plugins/platforms/whatsapp_cloud/adapter.py:_ref_name */
-static void _ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
+/* PoP: ref_name @ plugins/platforms/whatsapp_cloud/adapter.py:ref_name */
+static void ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
     snprintf(out_ref, out_len, "refs/checkpoints/%s", dir_hash);
 }
 
-/* PoP: _project_meta_path @ plugins/platforms/whatsapp_cloud/adapter.py:_project_meta_path */
-static void _project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
+/* PoP: project_meta_path @ plugins/platforms/whatsapp_cloud/adapter.py:project_meta_path */
+static void project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/meta-%s.json", dir_hash);
 }
 
-/* PoP: _git_env @ plugins/platforms/whatsapp_cloud/adapter.py:_git_env */
-static void _git_env(void) {
+/* PoP: git_env @ plugins/platforms/whatsapp_cloud/adapter.py:git_env */
+static void git_env(void) {
     setenv("GIT_DIR", ".", 1);
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
-/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_run_git */
-static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
+/* PoP: run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:run_git */
+static bool run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
     FILE *fp = popen(full_cmd, "r");
@@ -99,8 +99,8 @@ static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t o
     return true;
 }
 
-/* PoP: _init_store @ plugins/platforms/whatsapp_cloud/adapter.py:_init_store */
-static void _init_store(const char *base, const char *working_dir, char *out_store, size_t out_len) {
+/* PoP: init_store @ plugins/platforms/whatsapp_cloud/adapter.py:init_store */
+static void init_store(const char *base, const char *working_dir, char *out_store, size_t out_len) {
     _store_path(base, out_store, out_len);
     mkdir(out_store, 0755);
     char shadows[MAX_PATH];
@@ -108,12 +108,12 @@ static void _init_store(const char *base, const char *working_dir, char *out_sto
     mkdir(shadows, 0755);
 }
 
-/* PoP: _register_project @ plugins/platforms/whatsapp_cloud/adapter.py:_register_project */
-static void _register_project(const char *store, const char *working_dir) {
+/* PoP: register_project @ plugins/platforms/whatsapp_cloud/adapter.py:register_project */
+static void register_project(const char *store, const char *working_dir) {
     char dir_hash[64];
-    _project_hash(working_dir, dir_hash, sizeof(dir_hash));
+    project_hash(working_dir, dir_hash, sizeof(dir_hash));
     char meta_path[MAX_PATH];
-    _project_meta_path(store, dir_hash, meta_path, sizeof(meta_path));
+    project_meta_path(store, dir_hash, meta_path, sizeof(meta_path));
     FILE *fp = fopen(meta_path, "w");
     if (fp) {
         time_t now = time(NULL);
@@ -123,12 +123,12 @@ static void _register_project(const char *store, const char *working_dir) {
     }
 }
 
-/* PoP: _touch_project @ plugins/platforms/whatsapp_cloud/adapter.py:_touch_project */
-static void _touch_project(const char *store, const char *working_dir) {
+/* PoP: touch_project @ plugins/platforms/whatsapp_cloud/adapter.py:touch_project */
+static void touch_project(const char *store, const char *working_dir) {
     char dir_hash[64];
-    _project_hash(working_dir, dir_hash, sizeof(dir_hash));
+    project_hash(working_dir, dir_hash, sizeof(dir_hash));
     char meta_path[MAX_PATH];
-    _project_meta_path(store, dir_hash, meta_path, sizeof(meta_path));
+    project_meta_path(store, dir_hash, meta_path, sizeof(meta_path));
     FILE *fp = fopen(meta_path, "r+");
     if (fp) {
         fseek(fp, 0, SEEK_END);
@@ -156,8 +156,8 @@ static void _touch_project(const char *store, const char *working_dir) {
 }
 
 
-/* PoP: _dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_file_count */
-static int _dir_file_count(const char *path) {
+/* PoP: dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:dir_file_count */
+static int dir_file_count(const char *path) {
     DIR *d = opendir(path);
     if (!d) return 0;
     int count = 0;
@@ -171,8 +171,8 @@ static int _dir_file_count(const char *path) {
     return count;
 }
 
-/* PoP: _dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_size_bytes */
-static long _dir_size_bytes(const char *path) {
+/* PoP: dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:dir_size_bytes */
+static long dir_size_bytes(const char *path) {
     long total = 0;
     DIR *d = opendir(path);
     if (!d) return 0;
@@ -191,26 +191,26 @@ static long _dir_size_bytes(const char *path) {
     return total;
 }
 
-/* PoP: _init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:_init_shadow_repo */
-static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) {
+/* PoP: init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:init_shadow_repo */
+static bool init_shadow_repo(const char *shadow_repo, const char *working_dir) {
     mkdir(shadow_repo, 0755);
-    _run_git(shadow_repo, "init --bare", NULL, 0);
+    run_git(shadow_repo, "init --bare", NULL, 0);
     /* Configure */
     char cmd[MAX_PATH];
     snprintf(cmd, sizeof(cmd), "config core.worktree '%s'", working_dir);
-    _run_git(shadow_repo, cmd, NULL, 0);
-    _run_git(shadow_repo, "config receive.denyCurrentBranch updateInstead", NULL, 0);
+    run_git(shadow_repo, cmd, NULL, 0);
+    run_git(shadow_repo, "config receive.denyCurrentBranch updateInstead", NULL, 0);
     return true;
 }
 
 
-/* PoP: _delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:_delete_ref */
-static bool _delete_ref(const char *store, const char *ref) {
+/* PoP: delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:delete_ref */
+static bool delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
-    _shadow_repo_path("", shadow, sizeof(shadow));
+    shadow_repo_path("", shadow, sizeof(shadow));
     char cmd[MAX_PATH];
     snprintf(cmd, sizeof(cmd), "update-ref -d %s", ref);
-    return _run_git(shadow, cmd, NULL, 0);
+    return run_git(shadow, cmd, NULL, 0);
 }
 
 
@@ -218,8 +218,8 @@ static bool _delete_ref(const char *store, const char *ref) {
 
 
 
-/* PoP: _validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_commit_hash */
-bool _validate_commit_hash(const char *commit_hash) {
+/* PoP: validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:validate_commit_hash */
+bool validate_commit_hash(const char *commit_hash) {
     if (!commit_hash) return false;
     for (const char *p = commit_hash; *p; p++) {
         if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') ||
@@ -228,24 +228,24 @@ bool _validate_commit_hash(const char *commit_hash) {
     return strlen(commit_hash) >= 7 && strlen(commit_hash) <= 40;
 }
 
-/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
-/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
-bool _validate_file_path(const char *file_path, const char *working_dir) {
+/* PoP: validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:validate_file_path */
+/* PoP: validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:validate_file_path */
+bool validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
     return file_path[0] != '\0' && strstr(file_path, "..") == NULL;
 }
 
-/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
-/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
-/* PoP: _run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
+/* PoP: run_git_idx @ plugins/platforms/whatsapp_cloud/adapter.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
-/* PoP: _migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:_migrate_legacy_store */
-char* _migrate_legacy_store(const char *base) {
+/* PoP: migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:migrate_legacy_store */
+char* migrate_legacy_store(const char *base) {
     if (!base || !base[0]) return NULL;
     struct stat st;
     if (stat(base, &st) != 0 || !S_ISDIR(st.st_mode)) return NULL;
@@ -287,10 +287,10 @@ char* _migrate_legacy_store(const char *base) {
     return need_legacy ? strdup(legacy_root) : NULL;
 }
 
-/* PoP: _run_git @ plugins/platforms/whatsapp_cloud/adapter.py:_run_git */
+/* PoP: run_git @ plugins/platforms/whatsapp_cloud/adapter.py:run_git */
 char* checkpoint_run_git(const char *repo_path, const char *cmd) {
     char out[4096];
-    if (_run_git(repo_path, cmd, out, sizeof(out))) {
+    if (run_git(repo_path, cmd, out, sizeof(out))) {
         return strdup(out);
     }
     return strdup("");
@@ -303,8 +303,8 @@ char* checkpoint_run_git(const char *repo_path, const char *cmd) {
  *  tools/checkpoint_manager.py:CheckpointManager.
  *  Operates on the git-shadow helper layer above.
  *
- *  Git semantics (matches Python _run_git): a bare "shadow" repo at
- *  _shadow_repo_path is the object database; the real working directory
+ *  Git semantics (matches Python run_git): a bare "shadow" repo at
+ *  shadow_repo_path is the object database; the real working directory
  *  is supplied as GIT_WORK_TREE; the per-project index as
  *  GIT_INDEX_FILE. Every git call is:
  *    GIT_DIR='<shadow>' GIT_WORK_TREE='<wd>'
@@ -332,7 +332,7 @@ struct checkpoint_manager {
 
 /* Run git against the bare shadow repo with the real worktree + per-project
  * index. Returns true if popen succeeded. */
-static bool _run_git_idx(const char *shadow_repo, const char *working_dir,
+static bool run_git_idx(const char *shadow_repo, const char *working_dir,
                           const char *index_file, const char *cmd,
                           char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 3];
@@ -354,12 +354,12 @@ static bool _run_git_idx(const char *shadow_repo, const char *working_dir,
     return true;
 }
 
-static bool _cm_git_available(void) {
+static bool cm_git_available(void) {
     return system("git --version >/dev/null 2>&1") == 0;
 }
 
 /* Parse git --shortstat output into the entry JSON fields. */
-static void _cm_parse_shortstat(const char *stat_line,
+static void cm_parse_shortstat(const char *stat_line,
                                 long *files, long *ins, long *del) {
     *files = 0; *ins = 0; *del = 0;
     if (!stat_line) return;
@@ -369,26 +369,26 @@ static void _cm_parse_shortstat(const char *stat_line,
     if ((p = strstr(stat_line, " deletion")) && sscanf(p, " %ld deletion", del) != 1) *del = 0;
 }
 
-static bool _cm_in_dirset(tool_checkpoint_mgr_t *self, const char *dir) {
+static bool cm_in_dirset(tool_checkpoint_mgr_t *self, const char *dir) {
     for (int i = 0; i < self->checkpointed_count; i++)
         if (strcmp(self->checkpointed_dirs[i], dir) == 0) return true;
     return false;
 }
 
-static void _cm_add_dir(tool_checkpoint_mgr_t *self, const char *dir) {
+static void cm_add_dir(tool_checkpoint_mgr_t *self, const char *dir) {
     if (self->checkpointed_count >= CM_MAX_CHECKPOINTED_DIRS) return;
     snprintf(self->checkpointed_dirs[self->checkpointed_count++],
              MAX_PATH, "%s", dir);
 }
 
 /* Drop staged files larger than max_file_size_mb from the per-project index. */
-static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
+static void cm_drop_oversize(tool_checkpoint_mgr_t *self,
                               const char *shadow_repo, const char *working_dir,
                               const char *index_file) {
     long cap = (long)self->max_file_size_mb * 1024L * 1024L;
     if (cap <= 0) return;
     char out[MAX_PATH * 8];
-    if (!_run_git_idx(shadow_repo, working_dir, index_file, "ls-files --cached -z", out, sizeof(out)))
+    if (!run_git_idx(shadow_repo, working_dir, index_file, "ls-files --cached -z", out, sizeof(out)))
         return;
     char paths[MAX_PATH * 64];
     int npaths = 0;
@@ -409,23 +409,23 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
         int off = snprintf(cmd, sizeof(cmd), "rm --cached --quiet --");
         for (int j = i; j < i + 200 && j < npaths; j++)
             off += snprintf(cmd + off, sizeof(cmd) - off, " '%s'", paths + j * MAX_PATH);
-        _run_git_idx(shadow_repo, working_dir, index_file, cmd, NULL, 0);
+        run_git_idx(shadow_repo, working_dir, index_file, cmd, NULL, 0);
     }
 }
 
 /* Keep only the last max_snapshots commits on the per-project ref. */
-/* PoP: _cm_prune @ plugins/platforms/whatsapp_cloud/adapter.py:_prune */
-static void _cm_prune(tool_checkpoint_mgr_t *self,
+/* PoP: cm_prune @ plugins/platforms/whatsapp_cloud/adapter.py:_prune */
+static void cm_prune(tool_checkpoint_mgr_t *self,
                        const char *shadow_repo, const char *working_dir,
                        const char *ref) {
     char out[MAX_PATH * 4];
-    if (!_run_git_idx(shadow_repo, working_dir, NULL, "rev-list --count ref", out, sizeof(out)))
+    if (!run_git_idx(shadow_repo, working_dir, NULL, "rev-list --count ref", out, sizeof(out)))
         return;
     long count = 0;
     if (sscanf(out, "%ld", &count) != 1) return;
     if (count <= self->max_snapshots) return;
 
-    if (!_run_git_idx(shadow_repo, working_dir, NULL, "rev-list --reverse ref", out, sizeof(out)))
+    if (!run_git_idx(shadow_repo, working_dir, NULL, "rev-list --reverse ref", out, sizeof(out)))
         return;
     char shas[256][64];
     int n = 0;
@@ -439,11 +439,11 @@ static void _cm_prune(tool_checkpoint_mgr_t *self,
     for (int i = start; i < n; i++) {
         char tree_cmd[MAX_PATH], log_cmd[MAX_PATH], commit_cmd[MAX_PATH * 2], out2[MAX_PATH];
         snprintf(tree_cmd, sizeof(tree_cmd), "rev-parse %s^{tree}", shas[i]);
-        if (!_run_git_idx(shadow_repo, working_dir, NULL, tree_cmd, out2, sizeof(out2))) return;
+        if (!run_git_idx(shadow_repo, working_dir, NULL, tree_cmd, out2, sizeof(out2))) return;
         out2[strcspn(out2, "\n")] = '\0';
         snprintf(log_cmd, sizeof(log_cmd), "log --format=%%s -1 %s", shas[i]);
         char msg[256] = "checkpoint";
-        if (_run_git_idx(shadow_repo, working_dir, NULL, log_cmd, out2, sizeof(out2)))
+        if (run_git_idx(shadow_repo, working_dir, NULL, log_cmd, out2, sizeof(out2)))
             snprintf(msg, sizeof(msg), "%s", out2);
         msg[strcspn(msg, "\n")] = '\0';
         if (new_parent)
@@ -452,25 +452,25 @@ static void _cm_prune(tool_checkpoint_mgr_t *self,
         else
             snprintf(commit_cmd, sizeof(commit_cmd),
                      "commit-tree %s -m %s --no-gpg-sign", out2, msg);
-        if (!_run_git_idx(shadow_repo, working_dir, NULL, commit_cmd, out2, sizeof(out2))) return;
+        if (!run_git_idx(shadow_repo, working_dir, NULL, commit_cmd, out2, sizeof(out2))) return;
         out2[strcspn(out2, "\n")] = '\0';
         new_parent = strdup(out2);
     }
     if (new_parent) {
         char upcmd[MAX_PATH];
         snprintf(upcmd, sizeof(upcmd), "update-ref %s %s", ref, new_parent);
-        _run_git_idx(shadow_repo, working_dir, NULL, upcmd, NULL, 0);
+        run_git_idx(shadow_repo, working_dir, NULL, upcmd, NULL, 0);
         free(new_parent);
-        _run_git_idx(shadow_repo, working_dir, NULL, "reflog expire --expire=now --all", NULL, 0);
+        run_git_idx(shadow_repo, working_dir, NULL, "reflog expire --expire=now --all", NULL, 0);
         char gccmd[MAX_PATH];
         snprintf(gccmd, sizeof(gccmd), "gc --prune=now --quiet");
-        _run_git_idx(shadow_repo, working_dir, NULL, gccmd, NULL, 0);
+        run_git_idx(shadow_repo, working_dir, NULL, gccmd, NULL, 0);
     }
 }
 
 /* If total store size exceeds max_total_size_mb, drop oldest checkpoints
  * across all projects until under the cap. */
-static void _cm_enforce_size_cap(tool_checkpoint_mgr_t *self, const char *store) {
+static void cm_enforce_size_cap(tool_checkpoint_mgr_t *self, const char *store) {
     if (self->max_total_size_mb <= 0) return;
     long cap_bytes = (long)self->max_total_size_mb * 1024L * 1024L;
     char base[MAX_PATH];
@@ -479,13 +479,13 @@ static void _cm_enforce_size_cap(tool_checkpoint_mgr_t *self, const char *store)
     if (slash) *slash = '\0';
 
     for (int iter = 0; iter < 20; iter++) {
-        long size = _dir_size_bytes(store);
+        long size = dir_size_bytes(store);
         if (size <= cap_bytes) break;
         char out[MAX_PATH * 4];
         char refs_cmd[MAX_PATH];
         snprintf(refs_cmd, sizeof(refs_cmd),
                  "for-each-ref --format=%%(refname) %s*", CM_REFS_PREFIX);
-        if (!_run_git_idx(base, base, NULL, refs_cmd, out, sizeof(out))) break;
+        if (!run_git_idx(base, base, NULL, refs_cmd, out, sizeof(out))) break;
         char *refs[256]; int nr = 0;
         char *save = NULL;
         for (char *tok = strtok_r(out, "\n", &save); tok && nr < 256; tok = strtok_r(NULL, "\n", &save))
@@ -494,17 +494,17 @@ static void _cm_enforce_size_cap(tool_checkpoint_mgr_t *self, const char *store)
         for (int r = 0; r < nr && !dropped; r++) {
             char cnt[MAX_PATH];
             snprintf(cnt, sizeof(cnt), "rev-list --count %s", refs[r]);
-            if (!_run_git_idx(base, base, NULL, cnt, out, sizeof(out))) { free(refs[r]); continue; }
+            if (!run_git_idx(base, base, NULL, cnt, out, sizeof(out))) { free(refs[r]); continue; }
             long c = 0; if (sscanf(out, "%ld", &c) != 1) c = 0;
             if (c <= 1) { free(refs[r]); continue; } /* keep >=1 per project */
             char lst[MAX_PATH * 2];
             snprintf(lst, sizeof(lst), "rev-list --reverse %s", refs[r]);
-            if (!_run_git_idx(base, base, NULL, lst, out, sizeof(out))) { free(refs[r]); continue; }
+            if (!run_git_idx(base, base, NULL, lst, out, sizeof(out))) { free(refs[r]); continue; }
             char *oldest = strtok_r(out, "\n", &(char *){0});
             if (oldest) {
                 char upcmd[MAX_PATH];
                 snprintf(upcmd, sizeof(upcmd), "update-ref -d %s %s", refs[r], oldest);
-                _run_git_idx(base, base, NULL, upcmd, NULL, 0);
+                run_git_idx(base, base, NULL, upcmd, NULL, 0);
                 dropped = 1;
             }
             free(refs[r]);
@@ -514,8 +514,8 @@ static void _cm_enforce_size_cap(tool_checkpoint_mgr_t *self, const char *store)
     }
 }
 
-static void _cm_repair_bare_repo_dirs(const char *store) {
-    /* Shadow repos are created on demand by _init_shadow_repo; a missing
+static void cm_repair_bare_repo_dirs(const char *store) {
+    /* Shadow repos are created on demand by init_shadow_repo; a missing
      * one is simply re-created on the next _take. Nothing to repair. */
     (void)store;
 }
@@ -549,7 +549,7 @@ void new_turn(tool_checkpoint_mgr_t *self) {
 bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
                              const char *working_dir, const char *reason) {
     if (!self || !self->enabled) return false;
-    if (self->git_available < 0) self->git_available = _cm_git_available() ? 1 : 0;
+    if (self->git_available < 0) self->git_available = cm_git_available() ? 1 : 0;
     if (!self->git_available) return false;
 
     char *n = _normalize_path(working_dir);
@@ -561,8 +561,8 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
     const char *home = getenv("HOME");
     if (strcmp(abs_dir, "/") == 0 || (home && strcmp(abs_dir, home) == 0))
         return false;
-    if (_cm_in_dirset(self, abs_dir)) return false;
-    _cm_add_dir(self, abs_dir);
+    if (cm_in_dirset(self, abs_dir)) return false;
+    cm_add_dir(self, abs_dir);
 /* PoP: take @ plugins/platforms/whatsapp_cloud/adapter.py:_take */
 
     return take(self, abs_dir, reason ? reason : "auto");
@@ -575,30 +575,30 @@ bool take(tool_checkpoint_mgr_t *self,
     _store_path(NULL, store, sizeof(store));
     char store_base[MAX_PATH];
     snprintf(store_base, sizeof(store_base), "%s", store);
-    _init_store(store_base, working_dir, store, sizeof(store));
-    _touch_project(store_base, working_dir);
+    init_store(store_base, working_dir, store, sizeof(store));
+    touch_project(store_base, working_dir);
 
-    if (_dir_file_count(working_dir) > CM_MAX_FILES) return false;
+    if (dir_file_count(working_dir) > CM_MAX_FILES) return false;
 
     char dir_hash[64];
-    _project_hash(working_dir, dir_hash, sizeof(dir_hash));
+    project_hash(working_dir, dir_hash, sizeof(dir_hash));
     char index_file[MAX_PATH];
     _index_path(NULL, dir_hash, index_file, sizeof(index_file));
     char shadow[MAX_PATH];
-    _shadow_repo_path(working_dir, shadow, sizeof(shadow));
+    shadow_repo_path(working_dir, shadow, sizeof(shadow));
     char ref[MAX_PATH];
-    _ref_name(dir_hash, ref, sizeof(ref));
+    ref_name(dir_hash, ref, sizeof(ref));
 
     struct stat stx;
     if (stat(index_file, &stx) == 0) {
         char out[MAX_PATH * 2], vc[MAX_PATH];
         snprintf(vc, sizeof(vc), "rev-parse --verify %s^{commit}", ref);
-        bool ok_ref = _run_git_idx(shadow, working_dir, NULL, vc, out, sizeof(out));
+        bool ok_ref = run_git_idx(shadow, working_dir, NULL, vc, out, sizeof(out));
         out[strcspn(out, "\n")] = '\0';
         if (ok_ref && out[0]) {
             char rt[MAX_PATH];
             snprintf(rt, sizeof(rt), "read-tree %s", out);
-            _run_git_idx(shadow, working_dir, index_file, rt, NULL, 0);
+            run_git_idx(shadow, working_dir, index_file, rt, NULL, 0);
         } else {
             unlink(index_file);
         }
@@ -607,37 +607,37 @@ bool take(tool_checkpoint_mgr_t *self,
         if (sl) { *sl = '\0'; mkdir(index_file, 0755); *sl = '/'; }
     }
 
-    if (!_run_git_idx(shadow, working_dir, index_file, "add -A", NULL, 0)) return false;
+    if (!run_git_idx(shadow, working_dir, index_file, "add -A", NULL, 0)) return false;
     if (self->max_file_size_mb > 0)
-        _cm_drop_oversize(self, shadow, working_dir, index_file);
+        cm_drop_oversize(self, shadow, working_dir, index_file);
 
     char out[MAX_PATH * 2], vc[MAX_PATH];
     snprintf(vc, sizeof(vc), "rev-parse --verify %s^{commit}", ref);
-    bool has_ref = _run_git_idx(shadow, working_dir, NULL, vc, out, sizeof(out)) && out[0];
+    bool has_ref = run_git_idx(shadow, working_dir, NULL, vc, out, sizeof(out)) && out[0];
     out[strcspn(out, "\n")] = '\0';
 
     if (has_ref) {
         char diff_cmd[MAX_PATH];
         snprintf(diff_cmd, sizeof(diff_cmd), "diff-index --cached --quiet %s", out);
         char dout[16];
-        _run_git_idx(shadow, working_dir, index_file, diff_cmd, dout, sizeof(dout));
+        run_git_idx(shadow, working_dir, index_file, diff_cmd, dout, sizeof(dout));
         /* diff-index --quiet exits 1 when changes exist; if the stage is
          * non-empty we still proceed (the quiet flag is best-effort). */
         char ls[MAX_PATH];
         snprintf(ls, sizeof(ls), "ls-files --cached");
         char lsout[MAX_PATH];
-        if (_run_git_idx(shadow, working_dir, index_file, ls, lsout, sizeof(lsout)) && !lsout[0])
+        if (run_git_idx(shadow, working_dir, index_file, ls, lsout, sizeof(lsout)) && !lsout[0])
             return false;
     } else {
         char ls[MAX_PATH];
         snprintf(ls, sizeof(ls), "ls-files --cached");
         char lsout[MAX_PATH];
-        if (_run_git_idx(shadow, working_dir, index_file, ls, lsout, sizeof(lsout)) && !lsout[0])
+        if (run_git_idx(shadow, working_dir, index_file, ls, lsout, sizeof(lsout)) && !lsout[0])
             return false;
     }
 
     char tree[MAX_PATH];
-    if (!_run_git_idx(shadow, working_dir, index_file, "write-tree", tree, sizeof(tree))) return false;
+    if (!run_git_idx(shadow, working_dir, index_file, "write-tree", tree, sizeof(tree))) return false;
     tree[strcspn(tree, "\n")] = '\0';
 
     char commit_cmd[MAX_PATH * 2];
@@ -649,7 +649,7 @@ bool take(tool_checkpoint_mgr_t *self,
         snprintf(commit_cmd, sizeof(commit_cmd),
                  "commit-tree %s -m %s --no-gpg-sign", tree, reason ? reason : "auto");
     char new_sha[MAX_PATH];
-    if (!_run_git_idx(shadow, working_dir, index_file, commit_cmd, new_sha, sizeof(new_sha))) return false;
+    if (!run_git_idx(shadow, working_dir, index_file, commit_cmd, new_sha, sizeof(new_sha))) return false;
     new_sha[strcspn(new_sha, "\n")] = '\0';
 
     char upcmd[MAX_PATH];
@@ -657,11 +657,11 @@ bool take(tool_checkpoint_mgr_t *self,
         snprintf(upcmd, sizeof(upcmd), "update-ref %s %s %s", ref, new_sha, out);
     else
         snprintf(upcmd, sizeof(upcmd), "update-ref %s %s", ref, new_sha);
-    if (!_run_git_idx(shadow, working_dir, NULL, upcmd, NULL, 0)) return false;
+    if (!run_git_idx(shadow, working_dir, NULL, upcmd, NULL, 0)) return false;
 
-    _cm_prune(self, shadow, working_dir, ref);
-    _cm_enforce_size_cap(self, store);
-    _cm_repair_bare_repo_dirs(store);
+    cm_prune(self, shadow, working_dir, ref);
+    cm_enforce_size_cap(self, store);
+    cm_repair_bare_repo_dirs(store);
     return true;
 }
 
@@ -679,17 +679,17 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
     if (stat(head, &hs) != 0) return strdup("[]");
 
     char dir_hash[64];
-    _project_hash(abs_dir, dir_hash, sizeof(dir_hash));
+    project_hash(abs_dir, dir_hash, sizeof(dir_hash));
     char ref[MAX_PATH];
-    _ref_name(dir_hash, ref, sizeof(ref));
+    ref_name(dir_hash, ref, sizeof(ref));
     char shadow[MAX_PATH];
-    _shadow_repo_path(abs_dir, shadow, sizeof(shadow));
+    shadow_repo_path(abs_dir, shadow, sizeof(shadow));
 
     char out[MAX_PATH * 8];
     char log_cmd[MAX_PATH];
     snprintf(log_cmd, sizeof(log_cmd),
              "log %s --format=%%H|%%h|%%aI|%%s -n %d", ref, self->max_snapshots);
-    if (!_run_git_idx(shadow, abs_dir, NULL, log_cmd, out, sizeof(out)) || !out[0])
+    if (!run_git_idx(shadow, abs_dir, NULL, log_cmd, out, sizeof(out)) || !out[0])
         return strdup("[]");
 
     size_t cap = 8192; char *res = malloc(cap); size_t len = 0;
@@ -702,8 +702,8 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
         char stat_out[MAX_PATH * 4], sc[MAX_PATH * 2];
         snprintf(sc, sizeof(sc), "diff --shortstat %s~1 %s", hash, hash);
         long files = 0, ins = 0, del = 0;
-        if (_run_git_idx(shadow, abs_dir, NULL, sc, stat_out, sizeof(stat_out)))
-            _cm_parse_shortstat(stat_out, &files, &ins, &del);
+        if (run_git_idx(shadow, abs_dir, NULL, sc, stat_out, sizeof(stat_out)))
+            cm_parse_shortstat(stat_out, &files, &ins, &del);
         len += snprintf(res + len, cap - len,
             "{\"hash\":\"%s\",\"short_hash\":\"%s\",\"timestamp\":\"%s\","
             "\"reason\":\"%s\",\"files_changed\":%ld,\"insertions\":%ld,"
@@ -718,7 +718,7 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
 char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
                             const char *working_dir, const char *commit_hash) {
     if (!self || !working_dir) return NULL;
-    if (!_validate_commit_hash(commit_hash))
+    if (!validate_commit_hash(commit_hash))
         return strdup("{\"success\":false,\"error\":\"invalid commit hash\"}");
 
     char *n = _normalize_path(working_dir);
@@ -735,25 +735,25 @@ char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
 
     char ct[MAX_PATH];
     snprintf(ct, sizeof(ct), "cat-file -t %s", commit_hash);
-    if (!_run_git_idx(store, abs_dir, NULL, ct, NULL, 0))
+    if (!run_git_idx(store, abs_dir, NULL, ct, NULL, 0))
         return strdup("{\"success\":false,\"error\":\"Checkpoint not found\"}");
 
     char dir_hash[64];
-    _project_hash(abs_dir, dir_hash, sizeof(dir_hash));
+    project_hash(abs_dir, dir_hash, sizeof(dir_hash));
     char index_file[MAX_PATH];
     _index_path(NULL, dir_hash, index_file, sizeof(index_file));
     char shadow[MAX_PATH];
-    _shadow_repo_path(abs_dir, shadow, sizeof(shadow));
+    shadow_repo_path(abs_dir, shadow, sizeof(shadow));
 
-    _run_git_idx(shadow, abs_dir, index_file, "add -A", NULL, 0);
+    run_git_idx(shadow, abs_dir, index_file, "add -A", NULL, 0);
     char stat_out[MAX_PATH * 4], diff_out[MAX_PATH * 16], sc[MAX_PATH * 2], dc[MAX_PATH * 2];
     snprintf(sc, sizeof(sc), "diff --stat %s --cached", commit_hash);
     snprintf(dc, sizeof(dc), "diff %s --cached --no-color", commit_hash);
-    bool ok_stat = _run_git_idx(shadow, abs_dir, index_file, sc, stat_out, sizeof(stat_out));
-    bool ok_diff = _run_git_idx(shadow, abs_dir, index_file, dc, diff_out, sizeof(diff_out));
+    bool ok_stat = run_git_idx(shadow, abs_dir, index_file, sc, stat_out, sizeof(stat_out));
+    bool ok_diff = run_git_idx(shadow, abs_dir, index_file, dc, diff_out, sizeof(diff_out));
     char ref[MAX_PATH];
-    _ref_name(dir_hash, ref, sizeof(ref));
-    _run_git_idx(shadow, abs_dir, index_file, ref, NULL, 0); /* read-tree ref (best-effort) */
+    ref_name(dir_hash, ref, sizeof(ref));
+    run_git_idx(shadow, abs_dir, index_file, ref, NULL, 0); /* read-tree ref (best-effort) */
 
     if (!ok_stat && !ok_diff)
         return strdup("{\"success\":false,\"error\":\"Could not generate diff\"}");
@@ -769,9 +769,9 @@ char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
                                const char *working_dir, const char *commit_hash,
                                const char *file_path) {
     if (!self || !working_dir) return NULL;
-    if (!_validate_commit_hash(commit_hash))
+    if (!validate_commit_hash(commit_hash))
         return strdup("{\"success\":false,\"error\":\"invalid commit hash\"}");
-    if (file_path && _validate_file_path(file_path, working_dir))
+    if (file_path && validate_file_path(file_path, working_dir))
         return strdup("{\"success\":false,\"error\":\"invalid file path\"}");
 
     char *n = _normalize_path(working_dir);
@@ -788,7 +788,7 @@ char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
 
     char ct[MAX_PATH];
     snprintf(ct, sizeof(ct), "cat-file -t %s", commit_hash);
-    if (!_run_git_idx(store, abs_dir, NULL, ct, NULL, 0))
+    if (!run_git_idx(store, abs_dir, NULL, ct, NULL, 0))
         return strdup("{\"success\":false,\"error\":\"Checkpoint not found\"}");
 
     char pre[256];
@@ -796,21 +796,21 @@ char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
     take(self, abs_dir, pre);
 
     char dir_hash[64];
-    _project_hash(abs_dir, dir_hash, sizeof(dir_hash));
+    project_hash(abs_dir, dir_hash, sizeof(dir_hash));
     char index_file[MAX_PATH];
     _index_path(NULL, dir_hash, index_file, sizeof(index_file));
     char shadow[MAX_PATH];
-    _shadow_repo_path(abs_dir, shadow, sizeof(shadow));
+    shadow_repo_path(abs_dir, shadow, sizeof(shadow));
     const char *target = file_path ? file_path : ".";
     char co[MAX_PATH * 2];
     snprintf(co, sizeof(co), "checkout %s -- %s", commit_hash, target);
-    if (!_run_git_idx(shadow, abs_dir, index_file, co, NULL, 0))
+    if (!run_git_idx(shadow, abs_dir, index_file, co, NULL, 0))
         return strdup("{\"success\":false,\"error\":\"Restore failed\"}");
 
     char lc[MAX_PATH];
     snprintf(lc, sizeof(lc), "log --format=%%s -1 %s", commit_hash);
     char reason[256] = "unknown";
-    _run_git_idx(shadow, abs_dir, NULL, lc, reason, sizeof(reason));
+    run_git_idx(shadow, abs_dir, NULL, lc, reason, sizeof(reason));
     reason[strcspn(reason, "\n")] = '\0';
 
     size_t cap = 512 + (file_path ? strlen(file_path) : 0);
@@ -855,7 +855,7 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     if (slash) *slash = '\0';
     char out[MAX_PATH * 4], refs_cmd[MAX_PATH];
     snprintf(refs_cmd, sizeof(refs_cmd), "for-each-ref --format=%%(refname) %s*", CM_REFS_PREFIX);
-    if (!_run_git_idx(base, base, NULL, refs_cmd, out, sizeof(out))) return false;
+    if (!run_git_idx(base, base, NULL, refs_cmd, out, sizeof(out))) return false;
     char *save = NULL;
     for (char *tok = strtok_r(out, "\n", &save); tok; tok = strtok_r(NULL, "\n", &save)) {
         tool_checkpoint_mgr_t mgr;
@@ -863,7 +863,7 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
         mgr.max_snapshots = keep > 0 ? keep : CM_DEFAULT_SNAPSHOTS;
         mgr.max_total_size_mb = 0;
         mgr.max_file_size_mb = 0;
-        _cm_prune(&mgr, base, working_dir ? working_dir : ".", tok);
+        cm_prune(&mgr, base, working_dir ? working_dir : ".", tok);
     }
     return true;
 }
@@ -871,7 +871,7 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
 /* PoP: maybe_auto_prune_checkpoints @ plugins/platforms/whatsapp_cloud/adapter.py:maybe_auto_prune_checkpoints */
 void maybe_auto_prune_checkpoints(const char *store, const char *working_dir) {
     (void)store; (void)working_dir;
-    /* Real pruning runs after each _take via _cm_prune / _cm_enforce_size_cap.
+    /* Real pruning runs after each _take via cm_prune / cm_enforce_size_cap.
      * This standalone hook is intentionally a no-op. */
 }
 
@@ -880,7 +880,7 @@ char *store_status(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
     (void)checkpoint_base;
-    long size = _dir_size_bytes(store);
+    long size = dir_size_bytes(store);
     size_t cap = 256; char *r = malloc(cap);
     snprintf(r, cap, "{\"projects\":0,\"total_checkpoints\":0,\"size_bytes\":%ld}", size);
     return r;

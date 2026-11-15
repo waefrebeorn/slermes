@@ -20,13 +20,13 @@ extern int resolve_synchronous_level(const char *raw);
 
 /* ── hermes_state.py: journal-mode + durability + maintenance cluster ── */
 
-/* PoP: _log_journal_mode_upgrade_once @ hermes_state_wal.py:_log_journal_mode_upgrade_once */
+/* PoP: log_journal_mode_upgrade_once @ hermes_state_wal.py:log_journal_mode_upgrade_once */
 static pthread_mutex_t _journal_upgrade_lock = PTHREAD_MUTEX_INITIALIZER;
 static char **_journal_upgrade_warned = NULL;
 static int _journal_upgrade_n = 0;
 static int _journal_upgrade_cap = 0;
 
-void _log_journal_mode_upgrade_once(const char *db_label, const char *prev_mode) {
+void log_journal_mode_upgrade_once(const char *db_label, const char *prev_mode) {
     if (!db_label) return;
     pthread_mutex_lock(&_journal_upgrade_lock);
     for (int i = 0; i < _journal_upgrade_n; i++) {
@@ -44,13 +44,13 @@ void _log_journal_mode_upgrade_once(const char *db_label, const char *prev_mode)
     hermes_log(LOG_WARNING, "hermes_state", "%s: on-disk journal_mode was %s and has been switched to WAL. This rewrites the database header and persists after this process exits.", db_label, prev_mode ? prev_mode : "?");
 }
 
-/* PoP: _log_configured_delete_overridden_once @ hermes_state.py:_log_configured_delete_overridden_once */
+/* PoP: log_configured_delete_overridden_once @ hermes_state.py:log_configured_delete_overridden_once */
 static pthread_mutex_t _delete_overridden_lock = PTHREAD_MUTEX_INITIALIZER;
 static char **_delete_overridden_warned = NULL;
 static int _delete_overridden_n = 0;
 static int _delete_overridden_cap = 0;
 
-void _log_configured_delete_overridden_once(const char *db_label) {
+void log_configured_delete_overridden_once(const char *db_label) {
     if (!db_label) return;
     pthread_mutex_lock(&_delete_overridden_lock);
     for (int i = 0; i < _delete_overridden_n; i++) {
@@ -84,8 +84,8 @@ bool apply_durability_barriers(sqlite3 *conn) {
     return true;
 }
 
-/* PoP: _probe_journal_mode_for_repair @ hermes_state_repair.py:_probe_journal_mode_for_repair */
-const char *_probe_journal_mode_for_repair(const char *db_path) {
+/* PoP: probe_journal_mode_for_repair @ hermes_state_repair.py:probe_journal_mode_for_repair */
+const char *probe_journal_mode_for_repair(const char *db_path) {
     static char mode[32];
     if (!db_path) return NULL;
     sqlite3 *conn = NULL;
@@ -110,8 +110,8 @@ const char *_probe_journal_mode_for_repair(const char *db_path) {
     return result;
 }
 
-/* PoP: _restore_journal_mode_after_repair @ hermes_state_repair.py:_restore_journal_mode_after_repair */
-void _restore_journal_mode_after_repair(const char *db_path, const char *before_mode) {
+/* PoP: restore_journal_mode_after_repair @ hermes_state_repair.py:restore_journal_mode_after_repair */
+void restore_journal_mode_after_repair(const char *db_path, const char *before_mode) {
     if (!db_path) return;
     sqlite3 *conn = NULL;
     if (sqlite3_open_v2(db_path, &conn, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
@@ -131,9 +131,9 @@ void _restore_journal_mode_after_repair(const char *db_path, const char *before_
     sqlite3_close(conn);
 }
 
-/* PoP: _try_acquire_auto_maintenance_lock @ hermes_state_repair.py:_try_acquire_auto_maintenance_lock */
+/* PoP: try_acquire_auto_maintenance_lock @ hermes_state_repair.py:try_acquire_auto_maintenance_lock */
 /* Returns a file handle (int fd) or -1. Caller must close. */
-int _try_acquire_auto_maintenance_lock(const char *db_path) {
+int try_acquire_auto_maintenance_lock(const char *db_path) {
     if (!db_path) return -1;
     char lock_path[4096];
     snprintf(lock_path, sizeof(lock_path), "%s.auto-maintenance.lock", db_path);
@@ -147,8 +147,8 @@ int _try_acquire_auto_maintenance_lock(const char *db_path) {
     return fd;
 }
 
-/* PoP: _release_auto_maintenance_lock @ hermes_state.py:_release_auto_maintenance_lock */
-void _release_auto_maintenance_lock(int handle) {
+/* PoP: release_auto_maintenance_lock @ hermes_state.py:release_auto_maintenance_lock */
+void release_auto_maintenance_lock(int handle) {
     if (handle < 0) return;
     struct flock fl = {.l_type = F_UNLCK, .l_whence = SEEK_SET, .l_start = 0, .l_len = 1};
     fcntl(handle, F_SETLK, &fl);

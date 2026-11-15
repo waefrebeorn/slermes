@@ -596,7 +596,7 @@ void cmd_remove(const char *name) {
         }
     }
 
-    /* _remove_plugin_core: swap the tree out through a staging dir so the
+    /* remove_plugin_core: swap the tree out through a staging dir so the
      * metadata write is all-or-nothing. */
     json_t *meta = p_read_install_metadata();
     int in_meta = json_obj_get(meta, name) != NULL ||

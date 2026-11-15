@@ -58,10 +58,10 @@ bool gwstatus_resolve_gateway_liveness(
     bool (*health_probe)(char **out_body),
     gwstatus_liveness_t *out);
 
-/* PoP: _profile_label_for_home @ gateway/status.py:_profile_label_for_home
+/* PoP: profile_label_for_home @ gateway/status.py:profile_label_for_home
  * Best-effort profile label for a HERMES_HOME path (see status.c).
  * default_root = deployment root home (get_default_hermes_root analog). */
-char *_profile_label_for_home(const char *home, const char *default_root);
+char *profile_label_for_home(const char *home, const char *default_root);
 
 /* PoP: scoped_lock_owner_label @ gateway/status.py:scoped_lock_owner_label
  * Profile label for a scoped-lock owner record (JSON object). */

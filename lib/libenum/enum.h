@@ -46,10 +46,10 @@ extern "C" {
 
 /* Parse string to enum value. Returns matching value or default_val. */
 #define ENUM_PARSE(type, names, str, default_val) \
-    _enum_parse_impl(type##_names, type##_count, (str), (int)(default_val))
+    enum_parse_impl(type##_names, type##_count, (str), (int)(default_val))
 
 /* Internal: linear search for string match */
-static inline int _enum_parse_impl(const char **names, int count,
+static inline int enum_parse_impl(const char **names, int count,
                                     const char *str, int default_val) {
     if (!str) return default_val;
     for (int i = 0; i < count; i++) {

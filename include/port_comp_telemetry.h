@@ -11,7 +11,7 @@
  * "aux_fallback_main" if has_aux_failure_error, else "llm_summary". */
 const char *ctele_method(int summary_fallback_used, int has_aux_failure_error);
 
-/* _note_aux_route_fallback's failure truncation: `failure` if len<=220, else
+/* note_aux_route_fallback's failure truncation: `failure` if len<=220, else
  * the first 217 chars rstripped + "...". Returns malloc'd string, caller frees. */
 char *ctele_clamp_failure(const char *failure);
 

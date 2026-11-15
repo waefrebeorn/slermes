@@ -8,10 +8,10 @@
  *   hr_bounded_int       <- hosted_rooms_common.py:bounded_int (via _bounded_int)
  *   hr_canonical_json    <- hosted_rooms_common.py:canonical_json
  *   hr_claim_values      <- hosted_rooms.py:_claim_values
- *   hr_grant_scope_key   <- hosted_rooms.py:_room_grant_scope_key
+ *   hr_grant_scope_key   <- hosted_rooms.py:room_grant_scope_key
  *   hr_reservation_superseded <- hosted_rooms.py:_reservation_superseded
- *   hr_remote_run_identity     <- hosted_rooms.py:_remote_run_identity
- *   hr_validate_members  <- hosted_rooms.py:_validate_members
+ *   hr_remote_run_identity     <- hosted_rooms.py:remote_run_identity
+ *   hr_validate_members  <- hosted_rooms.py:validate_members
  *   hr_user_event_id     <- hosted_rooms.py:user_event_id
  *
  * The room-level `_room_id` / `_event_id` / `_actor_json` / `_payload_json`
@@ -134,7 +134,7 @@ char **hr_claim_values(const char *const *claims, const char *const *keys,
 }
 
 /* ===========================================================================
- *  _room_grant_scope_key  (hosted_rooms.py:_room_grant_scope_key)
+ *  room_grant_scope_key  (hosted_rooms.py:room_grant_scope_key)
  *
  *      fields = _claim_values(claims, ("room_id", "home_install_id",
  *              "authority_gateway_id", "authority_epoch", "member_id",
@@ -146,7 +146,7 @@ char **hr_claim_values(const char *const *claims, const char *const *keys,
  *  with *err set when a field is empty.
  * =========================================================================== */
 
-/* PoP: _room_grant_scope_key @ gateway/hosted_rooms.py:_room_grant_scope_key */
+/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:room_grant_scope_key */
 char *hr_grant_scope_key(const char *const *claims, char **err)
 {
     if (err) *err = NULL;
@@ -198,7 +198,7 @@ int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
 }
 
 /* ===========================================================================
- *  _remote_run_identity  (hosted_rooms.py:_remote_run_identity)
+ *  remote_run_identity  (hosted_rooms.py:remote_run_identity)
  *
  *      return tuple(record[column] for column in _REMOTE_RUN_IDENTITY_COLUMNS)
  *
@@ -206,7 +206,7 @@ int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
  *  Caller frees the array and its strings.
  * =========================================================================== */
 
-/* PoP: _remote_run_identity @ gateway/hosted_rooms.py:_remote_run_identity */
+/* PoP: remote_run_identity @ gateway/hosted_rooms.py:remote_run_identity */
 char **hr_remote_run_identity(const char *const *record,
                               const char *const *columns, int ncols,
                               int *out_count, char **err)
@@ -234,7 +234,7 @@ char **hr_remote_run_identity(const char *const *record,
 }
 
 /* ===========================================================================
- *  _validate_members  (hosted_rooms.py:_validate_members)
+ *  validate_members  (hosted_rooms.py:validate_members)
  *
  *      if not isinstance(value, list): raise HostedRoomError("members must be a list")
  *      if len(value) > MAX_MEMBERS: raise HostedRoomError("too many room members")
@@ -248,7 +248,7 @@ char **hr_remote_run_identity(const char *const *record,
  *  the "not an object" case. *out_json receives the canonical JSON.
  * =========================================================================== */
 
-/* PoP: _validate_members @ gateway/hosted_rooms.py:_validate_members */
+/* PoP: validate_members @ gateway/hosted_rooms.py:validate_members */
 int hr_validate_members(json_t **members, int n, char **out_json, char **err)
 {
     if (out_json) *out_json = NULL;

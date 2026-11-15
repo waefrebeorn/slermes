@@ -25,7 +25,7 @@ static double sd_n_interval_seconds = 0.0;      /* from WATCHDOG_USEC/1e6 */
 static bool sd_n_unhealthy = false;
 static bool sd_n_stopping = false;
 static bool sd_n_stopping_notified = false;
-static double sd_n_lag_tolerance_seconds = 0.0; /* cached _lag_tolerance() */
+static double sd_n_lag_tolerance_seconds = 0.0; /* cached lag_tolerance() */
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -113,7 +113,7 @@ bool sd_n_unhealthy_state(void) {
     return sd_n_unhealthy;
 }
 
-/* PoP: sd_n_lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+/* PoP: sd_n_lag_tolerance @ gateway/systemd_notify.py:lag_tolerance */
 /* Python: max(0.1, interval*0.25) unless explicitly configured; configured
  * value clamped to >= 0. */
 double sd_n_lag_tolerance(double interval_seconds, double configured) {

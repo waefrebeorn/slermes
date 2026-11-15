@@ -6,7 +6,7 @@
  *
  *   uw_lower_dir_prefix     <- _lower_dir_prefix
  *   uw_cwd_prefix           <- _cwd_prefix
- *   uw_holder_subcommand    <- _hermes_holder_subcommand
+ *   uw_holder_subcommand    <- hermes_holder_subcommand
  *   uw_holder_kind          <- _venv_holder_kind
  *   uw_is_pausable_gateway  <- _is_pausable_gateway
  *   uw_gateway_subcommand   <- gateway/status.py:_gateway_command_subcommand
@@ -228,7 +228,7 @@ int uw_is_pausable_gateway(const char *cmdline)
 }
 
 /* ===========================================================================
- *  _hermes_holder_subcommand  (update_cmd_windows.py:_hermes_holder_subcommand)
+ *  hermes_holder_subcommand  (update_cmd_windows.py:hermes_holder_subcommand)
  *
  *  Token-based, never substring: find the hermes_cli.main / hermes(.exe) entry
  *  token, then return the first following token that is not a flag or a flag's
@@ -243,7 +243,7 @@ int uw_is_pausable_gateway(const char *cmdline)
  *  parser); `--flag value` consumes two tokens, `--flag=value` one.
  * =========================================================================== */
 
-/* PoP: _hermes_holder_subcommand @ hermes_cli/update_cmd_windows.py:_hermes_holder_subcommand */
+/* PoP: hermes_holder_subcommand @ hermes_cli/update_cmd_windows.py:hermes_holder_subcommand */
 char *uw_holder_subcommand(const char *cmdline)
 {
     if (!cmdline || !cmdline[0]) return NULL;
@@ -332,7 +332,7 @@ char *uw_holder_subcommand(const char *cmdline)
  *  _venv_holder_kind  (update_cmd_windows.py:_venv_holder_kind)
  *
  *      if _is_pausable_gateway(cmdline): return "gateway"
- *      subcommand = _hermes_holder_subcommand(cmdline)
+ *      subcommand = hermes_holder_subcommand(cmdline)
  *      if subcommand in ("serve", "dashboard"): return "backend"
  *      if subcommand: return f"hermes:{subcommand}"
  *      return "python"

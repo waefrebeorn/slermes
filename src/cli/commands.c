@@ -267,7 +267,7 @@
 /* PoP: cmd_sessions @ hermes_cli/active_sessions.py:active_session_registry_snapshot */
 /* PoP: cmd_sessions @ hermes_cli/active_sessions.py:release_active_session */
 /* PoP: cmd_sessions @ hermes_cli/active_sessions.py:try_acquire_active_session */
-/* PoP: cmd_setup @ hermes_cli/cli_agent_setup_mixin.py:_ensure_runtime_credentials */
+/* PoP: cmd_setup @ hermes_cli/cli_agent_setup_mixin.py:ensure_runtime_credentials */
 /* PoP: cmd_setup @ hermes_cli/cli_agent_setup_mixin.py:_resolve_turn_agent_config */
 /* PoP: cmd_setup @ hermes_cli/cli_output.py:prompt */
 /* PoP: cmd_setup @ hermes_cli/cli_output.py:prompt_yes_no */

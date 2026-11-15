@@ -6,7 +6,7 @@
 /* Port of Python: gateway/memory_status.py — the /api/status memory rollup.
  *
  * The pure read-side core is ported: value coercion (_nonneg_int, _mb),
- * ISO-8601 parsing with UTC normalisation (_parse_iso), the pressure
+ * ISO-8601 parsing with UTC normalisation (parse_iso), the pressure
  * classifier, and the status-dict assembly. `_read_state_files` (two file
  * reads to heartbeat/sentinel JSON) is runtime disk I/O and is NOT ported:
  * ms_collect_memory_status takes those two dicts as JSON inputs plus `now`,
@@ -29,7 +29,7 @@ long long ms_nonneg_int(const json_t *value);
 /* Python _mb: None when invalid, else kib // 1024. Returns -1 for None. */
 long long ms_mb(const json_t *kib);
 
-/* Python _parse_iso then convert to epoch-seconds-UTC. Returns -1 when absent
+/* Python parse_iso then convert to epoch-seconds-UTC. Returns -1 when absent
  * or unparsable; naive input is normalised to UTC (Python replace(tzinfo=UTC)). */
 double ms_parse_iso_epoch(const char *value);
 

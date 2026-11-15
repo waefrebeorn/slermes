@@ -432,7 +432,7 @@ ac_nvidia_nim_host(const char *base_url)
     return ac_base_url_host_matches(base_url, "integrate.api.nvidia.com");
 }
 
-/* ── _anthropic_event_has_content ───────────────────────────────────────── */
+/* ── anthropic_event_has_content ───────────────────────────────────────── */
 static const char *
 ac_json_str(const json_t *obj, const char *key)
 {

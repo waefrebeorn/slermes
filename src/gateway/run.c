@@ -2456,8 +2456,8 @@ json_t *build_verify_on_stop_nudge(const char *session_id, json_t *changed_paths
 #include <unistd.h>
 
 /* Declared in gw_session.c / session_gaps.c (same store). */
-extern void _save_entry(const char *session_key);
-extern void _save_entries(void);
+extern void save_entry(const char *session_key);
+extern void save_entries(void);
 int session_recover_interrupted_turns(int max_age_seconds);
 void suspend_recently_active(int max_age_secs);
 

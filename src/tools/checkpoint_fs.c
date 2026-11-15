@@ -15,7 +15,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <errno.h>
-#include "checkpoint_store.h"   /* _run_git, _shadow_repo_path */
+#include "checkpoint_store.h"   /* run_git, shadow_repo_path */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +26,7 @@
 
 
 
-/* PoP: _dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_file_count */ int _dir_file_count(const char *path) {
+/* PoP: dir_file_count @ plugins/platforms/whatsapp_cloud/adapter.py:dir_file_count */ int dir_file_count(const char *path) {
     DIR *d = opendir(path);
     if (!d) return 0;
     int count = 0;
@@ -41,7 +41,7 @@
 }
 
 
-/* PoP: _dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:_dir_size_bytes */ long _dir_size_bytes(const char *path) {
+/* PoP: dir_size_bytes @ plugins/platforms/whatsapp_cloud/adapter.py:dir_size_bytes */ long dir_size_bytes(const char *path) {
     long total = 0;
     DIR *d = opendir(path);
     if (!d) return 0;
@@ -61,31 +61,31 @@
 }
 
 
-/* PoP: _init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:_init_shadow_repo */
-static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) {
+/* PoP: init_shadow_repo @ plugins/platforms/whatsapp_cloud/adapter.py:init_shadow_repo */
+static bool init_shadow_repo(const char *shadow_repo, const char *working_dir) {
     mkdir(shadow_repo, 0755);
-    _run_git(shadow_repo, "init --bare", NULL, 0);
+    run_git(shadow_repo, "init --bare", NULL, 0);
     /* Configure */
     char cmd[MAX_PATH];
     snprintf(cmd, sizeof(cmd), "config core.worktree '%s'", working_dir);
-    _run_git(shadow_repo, cmd, NULL, 0);
-    _run_git(shadow_repo, "config receive.denyCurrentBranch updateInstead", NULL, 0);
+    run_git(shadow_repo, cmd, NULL, 0);
+    run_git(shadow_repo, "config receive.denyCurrentBranch updateInstead", NULL, 0);
     return true;
 }
 
 
-/* PoP: _delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:_delete_ref */
-static bool _delete_ref(const char *store, const char *ref) {
+/* PoP: delete_ref @ plugins/platforms/whatsapp_cloud/adapter.py:delete_ref */
+static bool delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
-    _shadow_repo_path("", shadow, sizeof(shadow));
+    shadow_repo_path("", shadow, sizeof(shadow));
     char cmd[MAX_PATH];
     snprintf(cmd, sizeof(cmd), "update-ref -d %s", ref);
-    return _run_git(shadow, cmd, NULL, 0);
+    return run_git(shadow, cmd, NULL, 0);
 }
 
 
-/* PoP: _validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_commit_hash */
-bool _validate_commit_hash(const char *commit_hash) {
+/* PoP: validate_commit_hash @ plugins/platforms/whatsapp_cloud/adapter.py:validate_commit_hash */
+bool validate_commit_hash(const char *commit_hash) {
     if (!commit_hash) return false;
     for (const char *p = commit_hash; *p; p++) {
         if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') ||
@@ -95,9 +95,9 @@ bool _validate_commit_hash(const char *commit_hash) {
 }
 
 
-/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
-/* PoP: _validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:_validate_file_path */
-bool _validate_file_path(const char *file_path, const char *working_dir) {
+/* PoP: validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:validate_file_path */
+/* PoP: validate_file_path @ plugins/platforms/whatsapp_cloud/adapter.py:validate_file_path */
+bool validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
     return file_path[0] != '\0' && strstr(file_path, "..") == NULL;
@@ -113,17 +113,17 @@ char* _normalize_path(const char *path_value) {
 }
 
 
-/* PoP: _migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:_migrate_legacy_store */
-char* _migrate_legacy_store(const char *base) {
+/* PoP: migrate_legacy_store @ plugins/platforms/whatsapp_cloud/adapter.py:migrate_legacy_store */
+char* migrate_legacy_store(const char *base) {
     (void)base;
     return NULL;
 }
- bool _cm_git_available(void) {
+ bool cm_git_available(void) {
     return system("git --version >/dev/null 2>&1") == 0;
 }
 
 
-/* Parse git --shortstat output into the entry JSON fields. */ void _cm_parse_shortstat(const char *stat_line,
+/* Parse git --shortstat output into the entry JSON fields. */ void cm_parse_shortstat(const char *stat_line,
                                 long *files, long *ins, long *del) {
     *files = 0; *ins = 0; *del = 0;
     if (!stat_line) return;

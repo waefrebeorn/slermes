@@ -172,7 +172,7 @@ char *credential_pool_entries_json(const credential_pool_t *pool);
  * Best-effort; skips under pytest. */
 void credential_pool_persist_entries(const credential_pool_t *pool);
 
-/* === Prune control (port of Python credential_pool._is_prunable + module global) ===
+/* === Prune control (port of Python credential_pool.is_prunable + module global) ===
  * `env:*` entries are re-hydrated from the environment on every load; a process
  * that merely lacks the env var must NOT delete the on-disk entry for every other
  * process (that destructive read is bug #9331). Pruning an env source is only

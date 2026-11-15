@@ -10,14 +10,14 @@
 /* ── gateway/hosted_room_replicas.py: 8 missing functions ── */
 
 
-/* PoP: _replica_transaction @ gateway/hosted_room_replicas.py:_replica_transaction */
-void *_replica_transaction(void) { return NULL; }
+/* PoP: replica_transaction @ gateway/hosted_room_replicas.py:replica_transaction */
+void *replica_transaction(void) { return NULL; }
 
-/* PoP: _event_bytes @ gateway/hosted_room_replicas.py:_event_bytes */
-int _event_bytes(void) { return 0; }
+/* PoP: event_bytes @ gateway/hosted_room_replicas.py:event_bytes */
+int event_bytes(void) { return 0; }
 
-/* PoP: _validate_page @ gateway/hosted_room_replicas.py:_validate_page */
-int _validate_page(void) { return 1; }
+/* PoP: validate_page @ gateway/hosted_room_replicas.py:validate_page */
+int validate_page(void) { return 1; }
 
 /* PoP: ingest_page @ gateway/hosted_room_replicas.py:ingest_page */
 char *ingest_page(void) { return strdup("{}"); }

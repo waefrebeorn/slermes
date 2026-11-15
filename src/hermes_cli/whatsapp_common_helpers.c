@@ -286,9 +286,9 @@ char *whatsapp_common_get_wsecret(const char *name, const char *default_value) {
  * lower-precedence or stale env value must not broaden access.
  * C adaptation: the adapter owns the instance state (_dm_allowlist_source key
  * string + _allow_from snapshot array). This function receives both as params
- * PoP: _live_dm_allow_from @ plugins/platforms/qqbot/adapter.py:_live_dm_allow_from
+ * PoP: live_dm_allow_from @ plugins/platforms/qqbot/adapter.py:live_dm_allow_from
  */
-/* PoP: whatsapp_common_live_dm_allow_from @ plugins/platforms/qqbot/adapter.py:_live_dm_allow_from */
+/* PoP: whatsapp_common_live_dm_allow_from @ plugins/platforms/qqbot/adapter.py:live_dm_allow_from */
 json_t *whatsapp_common_live_dm_allow_from(const char *dm_allowlist_source,
                                             json_t *allow_from_snapshot) {
     if (dm_allowlist_source && dm_allowlist_source[0] &&

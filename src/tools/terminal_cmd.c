@@ -100,7 +100,7 @@ int ssh_sync_download(const char *ssh_host, const char *ssh_user,
     return 0;
 }
 
-void _inject_sudo_failure(json_t *rj, const char *command) {
+void inject_sudo_failure(json_t *rj, const char *command) {
     (void)command;
     if (!rj) return;
     const char *output = json_get_str(rj, "output", NULL);

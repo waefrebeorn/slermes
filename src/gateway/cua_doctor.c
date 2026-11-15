@@ -43,7 +43,7 @@ static const char *glyph_for_overall(const char *s)
 }
 /* helper: bool from json node — Python `perms.get("x") is True` */
 static bool _json_is_true(const json_t *n) { return n && n->type==JSON_BOOL && n->bool_val; }
-static bool _json_is_false(const json_t *n) { return n && n->type==JSON_BOOL && !n->bool_val; }
+static bool json_is_false(const json_t *n) { return n && n->type==JSON_BOOL && !n->bool_val; }
 static const char *_jstr(const json_t *n) { return (n && n->type==JSON_STRING) ? n->str_val : NULL; }
 
 /* ── Validation ──────────────────────────────────────────── */
@@ -383,7 +383,7 @@ json_t *cua_doctor_compose_fallback_report(const char *binary,
         if (_json_is_true(axval)) {
             json_set(axc,"status",json_string("pass")); json_set(axc,"message",json_string("Accessibility is granted."));
             json_t *d=json_object(); json_set(d,"accessibility",json_bool(true)); json_set(axc,"data",d);
-        } else if (_json_is_false(axval)) {
+        } else if (json_is_false(axval)) {
             json_set(axc,"status",json_string("fail")); json_set(axc,"message",json_string("Accessibility is not granted."));
             json_set(axc,"hint",json_string("Grant Accessibility to CuaDriver in System Settings \xE2\x86\x92 Privacy & Security."));
             json_t *d=json_object(); json_set(d,"accessibility",json_bool(false)); json_set(axc,"data",d);
@@ -406,7 +406,7 @@ json_t *cua_doctor_compose_fallback_report(const char *binary,
                 json_set(src,"status",json_string("pass")); json_set(src,"message",json_string("Screen Recording is granted."));
                 json_t *d=json_object(); json_set(d,"screen_recording",json_bool(true)); json_set(d,"screen_recording_capturable",json_bool(capturable)); json_set(src,"data",d);
             }
-        } else if (_json_is_false(scr)) {
+        } else if (json_is_false(scr)) {
             json_set(src,"status",json_string("fail")); json_set(src,"message",json_string("Screen Recording is not granted."));
             json_set(src,"hint",json_string("Grant Screen Recording to CuaDriver in System Settings \xE2\x86\x92 Privacy & Security."));
             json_t *d=json_object(); json_set(d,"screen_recording",json_bool(false)); json_set(src,"data",d);

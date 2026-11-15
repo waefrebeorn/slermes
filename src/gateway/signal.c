@@ -24,17 +24,17 @@ static sent_timestamp_entry_t sent_timestamps[MAX_SENT_TIMESTAMPS];
 static int sent_timestamp_count = 0;
 
 /*
- * _extract_quote_author — Return the best available Signal sender identifier from quote metadata.
+ * extract_quote_author — Return the best available Signal sender identifier from quote metadata.
  *
- * Python: def _extract_quote_author(quote_data: Any) -> Optional[str]:
+ * Python: def extract_quote_author(quote_data: Any) -> Optional[str]:
  *   if not isinstance(quote_data, dict): return None
  *   for key in ("author", "authorNumber", "authorUuid", "authorAci", ...):
  *       val = quote_data.get(key)
  *       if val: return str(val)
  *   return None
  */
-/* Port of Python: _extract_quote_author */
-const char* _extract_quote_author(json_t* quote_data)
+/* Port of Python: extract_quote_author */
+const char* extract_quote_author(json_t* quote_data)
 {
     if (!quote_data || !json_node_is_object(quote_data)) {
         return NULL;
@@ -59,17 +59,17 @@ const char* _extract_quote_author(json_t* quote_data)
 }
 
 /*
- * _remember_sent_message_timestamp — Keep a bounded cache of outbound Signal timestamps.
+ * remember_sent_message_timestamp — Keep a bounded cache of outbound Signal timestamps.
  *
- * Python: def _remember_sent_message_timestamp(self, timestamp: Any) -> None:
+ * Python: def remember_sent_message_timestamp(self, timestamp: Any) -> None:
  *   if timestamp is None: return
  *   key = str(timestamp)
  *   self._sent_message_timestamps.pop(key, None)
  *   self._sent_message_timestamps[key] = None
  *   while len(...) > cap: pop oldest
  */
-/* Port of Python: _remember_sent_message_timestamp */
-void _remember_sent_message_timestamp(const char* timestamp)
+/* Port of Python: remember_sent_message_timestamp */
+void remember_sent_message_timestamp(const char* timestamp)
 {
     if (!timestamp || !timestamp[0]) return;
 
@@ -102,16 +102,16 @@ void _remember_sent_message_timestamp(const char* timestamp)
 }
 
 /*
- * _consume_sent_timestamp — Pop a timestamp if it matches one we sent.
+ * consume_sent_timestamp — Pop a timestamp if it matches one we sent.
  *
- * Python: def _consume_sent_timestamp(self, ts) -> bool:
+ * Python: def consume_sent_timestamp(self, ts) -> bool:
  *   if ts and ts in self._recent_sent_timestamps:
  *       self._recent_sent_timestamps.pop(ts, None)
  *       return True
  *   return False
  */
-/* Port of Python: _consume_sent_timestamp */
-bool _consume_sent_timestamp(const char* ts)
+/* Port of Python: consume_sent_timestamp */
+bool consume_sent_timestamp(const char* ts)
 {
     if (!ts || !ts[0]) return false;
 

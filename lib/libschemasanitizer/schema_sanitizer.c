@@ -16,13 +16,13 @@
 
 /* ─── Forward declarations ──────────────────────────────────────────── */
 static json_node_t *_sanitize_node(json_node_t *node, const char *path);
-static json_node_t *_sanitize_single_tool(json_node_t *tool);
+static json_node_t *sanitize_single_tool(json_node_t *tool);
 static json_node_t *_strip_top_level_combinators(json_node_t *params,
                                                   const char *path);
-static json_node_t *_collapse_nullable_unions(json_node_t *schema,
+static json_node_t *collapse_nullable_unions(json_node_t *schema,
                                                bool keep_nullable_hint);
-static void _walk_strip_pattern(json_node_t *node, int *stripped);
-static void _walk_strip_slash(json_node_t *node, int *stripped);
+static void walk_strip_pattern(json_node_t *node, int *stripped);
+static void walk_strip_slash(json_node_t *node, int *stripped);
 
 /* ─── Helpers ───────────────────────────────────────────────────────── */
 
@@ -114,7 +114,7 @@ char *sanitize_tool_schemas(const char *tools_json)
     for (size_t i = 0; i < count; i++) {
         json_node_t *tool = json_get(tools, i);
         if (is_dict(tool)) {
-            json_node_t *sanitized = _sanitize_single_tool(tool);
+            json_node_t *sanitized = sanitize_single_tool(tool);
             json_append(result, sanitized ? sanitized : json_copy(tool));
         } else {
             json_append(result, json_copy(tool));
@@ -129,7 +129,7 @@ char *sanitize_tool_schemas(const char *tools_json)
 
 /* ─── Internal: tool-level sanitizer ────────────────────────────────── */
 
-static json_node_t *_sanitize_single_tool(json_node_t *tool)
+static json_node_t *sanitize_single_tool(json_node_t *tool)
 {
     json_node_t *out = json_copy(tool);
 
@@ -172,7 +172,7 @@ static json_node_t *_sanitize_single_tool(json_node_t *tool)
                 json_set(top, "properties", json_new_object());
         }
         /* Collapse nullable unions */
-        json_node_t *collapsed = _collapse_nullable_unions(top, true);
+        json_node_t *collapsed = collapse_nullable_unions(top, true);
         json_set(fn, "parameters", collapsed);
 
         /* Strip top-level combinators */
@@ -408,14 +408,14 @@ static json_node_t *_strip_top_level_combinators(json_node_t *params,
 
 /* ─── Nullable union collapser ──────────────────────────────────────── */
 
-static json_node_t *_collapse_nullable_unions(json_node_t *schema,
+static json_node_t *collapse_nullable_unions(json_node_t *schema,
                                                bool keep_nullable_hint)
 {
     if (is_list(schema)) {
         json_node_t *out = json_new_array();
         size_t len = json_len(schema);
         for (size_t i = 0; i < len; i++) {
-            json_append(out, _collapse_nullable_unions(
+            json_append(out, collapse_nullable_unions(
                 json_get(schema, i), keep_nullable_hint));
         }
         return out;
@@ -430,7 +430,7 @@ static json_node_t *_collapse_nullable_unions(json_node_t *schema,
         json_node_t *val = json_obj_get(schema, keys[k]);
         if (val)
             json_set(out, keys[k],
-                     _collapse_nullable_unions(val, keep_nullable_hint));
+                     collapse_nullable_unions(val, keep_nullable_hint));
     }
     free_keys(keys, key_count);
 
@@ -477,7 +477,7 @@ static json_node_t *_collapse_nullable_unions(json_node_t *schema,
 
             json_free(non_null_arr);
             json_free(out);
-            return _collapse_nullable_unions(collapsed, keep_nullable_hint);
+            return collapse_nullable_unions(collapsed, keep_nullable_hint);
         }
         json_free(non_null_arr);
     }
@@ -510,14 +510,14 @@ char *strip_pattern_and_format(const char *tools_json, int *stripped_count)
         if (is_dict(fn)) {
             json_node_t *params = json_obj_get(fn, "parameters");
             if (is_dict(params))
-                _walk_strip_pattern(params, &stripped);
+                walk_strip_pattern(params, &stripped);
             continue;
         }
 
         /* Responses-format */
         json_node_t *params = json_obj_get(tool, "parameters");
         if (is_dict(params))
-            _walk_strip_pattern(params, &stripped);
+            walk_strip_pattern(params, &stripped);
     }
 
     if (stripped_count) *stripped_count = stripped;
@@ -526,7 +526,7 @@ char *strip_pattern_and_format(const char *tools_json, int *stripped_count)
     return out;
 }
 
-static void _walk_strip_pattern(json_node_t *node, int *stripped)
+static void walk_strip_pattern(json_node_t *node, int *stripped)
 {
     if (!node) return;
 
@@ -545,13 +545,13 @@ static void _walk_strip_pattern(json_node_t *node, int *stripped)
         char **keys = get_object_keys(node, &key_count);
         for (int i = 0; i < key_count; i++) {
             json_node_t *val = json_obj_get(node, keys[i]);
-            _walk_strip_pattern(val, stripped);
+            walk_strip_pattern(val, stripped);
         }
         free_keys(keys, key_count);
     } else if (node->type == JSON_ARRAY) {
         size_t len = json_len(node);
         for (size_t i = 0; i < len; i++)
-            _walk_strip_pattern(json_get(node, i), stripped);
+            walk_strip_pattern(json_get(node, i), stripped);
     }
 }
 
@@ -579,13 +579,13 @@ char *strip_slash_enum(const char *tools_json, int *stripped_count)
         if (is_dict(fn)) {
             json_node_t *params = json_obj_get(fn, "parameters");
             if (is_dict(params))
-                _walk_strip_slash(params, &stripped);
+                walk_strip_slash(params, &stripped);
             continue;
         }
 
         json_node_t *params = json_obj_get(tool, "parameters");
         if (is_dict(params))
-            _walk_strip_slash(params, &stripped);
+            walk_strip_slash(params, &stripped);
     }
 
     if (stripped_count) *stripped_count = stripped;
@@ -594,7 +594,7 @@ char *strip_slash_enum(const char *tools_json, int *stripped_count)
     return out;
 }
 
-static void _walk_strip_slash(json_node_t *node, int *stripped)
+static void walk_strip_slash(json_node_t *node, int *stripped)
 {
     if (!node) return;
 
@@ -619,12 +619,12 @@ static void _walk_strip_slash(json_node_t *node, int *stripped)
         char **keys = get_object_keys(node, &key_count);
         for (int i = 0; i < key_count; i++) {
             json_node_t *val = json_obj_get(node, keys[i]);
-            _walk_strip_slash(val, stripped);
+            walk_strip_slash(val, stripped);
         }
         free_keys(keys, key_count);
     } else if (node->type == JSON_ARRAY) {
         size_t len = json_len(node);
         for (size_t i = 0; i < len; i++)
-            _walk_strip_slash(json_get(node, i), stripped);
+            walk_strip_slash(json_get(node, i), stripped);
     }
 }

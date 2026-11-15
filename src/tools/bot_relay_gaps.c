@@ -10,8 +10,8 @@
 /* ── tools/bot_relay.py: 7 missing functions ── */
 
 
-/* PoP: _envelope_ttl_seconds @ tools/bot_relay.py:_envelope_ttl_seconds */
-int _envelope_ttl_seconds(void) { return 30; }
+/* PoP: envelope_ttl_seconds @ tools/bot_relay.py:envelope_ttl_seconds */
+int envelope_ttl_seconds(void) { return 30; }
 
 /* PoP: claim_pending_envelopes @ tools/bot_relay.py:claim_pending_envelopes */
 char *claim_pending_envelopes(void) { return strdup("[]"); }

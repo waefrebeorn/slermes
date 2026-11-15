@@ -234,7 +234,7 @@ char *fuzzy_match_apply_replacements(const char *content, long *matches, size_t 
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: fuzzy_match_reindent_replacement @ tools/fuzzy_match.py:_reindent_replacement */
+/* PoP: fuzzy_match_reindent_replacement @ tools/fuzzy_match.py:reindent_replacement */
 char *fuzzy_match_reindent_replacement(const char *file_region, const char *old_string, const char *new_string)
 {
     if (!new_string || !*new_string) return strdup(new_string ? new_string : "");
@@ -300,7 +300,7 @@ char *fuzzy_match_maybe_unescape_new_string(const char *new_string, const char *
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: fuzzy_match_detect_escape_drift @ tools/fuzzy_match.py:_detect_escape_drift */
+/* PoP: fuzzy_match_detect_escape_drift @ tools/fuzzy_match.py:detect_escape_drift */
 char *fuzzy_match_detect_escape_drift(const char *content, long *matches, size_t nmatch, const char *old_string, const char *new_string)
 {
     if (!new_string) return NULL;
@@ -622,7 +622,7 @@ void fuzzy_match_strategy_context_aware(const char *content, const char *pattern
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: fuzzy_match_preserve_unicode_in_replacement @ tools/fuzzy_match.py:_preserve_unicode_in_replacement */
+/* PoP: fuzzy_match_preserve_unicode_in_replacement @ tools/fuzzy_match.py:preserve_unicode_in_replacement */
 char *fuzzy_match_preserve_unicode_in_replacement(const char *content, long *matches, size_t nmatch, const char *old_string, const char *new_string)
 {
     ds_t reg; ds_init(&reg);

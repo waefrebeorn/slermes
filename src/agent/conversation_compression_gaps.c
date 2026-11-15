@@ -30,16 +30,16 @@ bool is_compaction_progress_status(const char *text) {
     return false;
 }
 
-/* PoP: _refresh_agent_tool_definitions @ agent/conversation_compression.py:_refresh_agent_tool_definitions */
-int _refresh_agent_tool_definitions(void *agent) {
+/* PoP: refresh_agent_tool_definitions @ agent/conversation_compression.py:refresh_agent_tool_definitions */
+int refresh_agent_tool_definitions(void *agent) {
     (void)agent;
     /* Refresh agent tools at compaction commit boundary */
     /* Simplified: full impl rebuilds dynamic tool schemas */
     return 1; /* success */
 }
 
-/* PoP: _claim_compressor_attempt @ agent/conversation_compression.py:_claim_compressor_attempt */
-unsigned int _claim_compressor_attempt(void *compressor) {
+/* PoP: claim_compressor_attempt @ agent/conversation_compression.py:claim_compressor_attempt */
+unsigned int claim_compressor_attempt(void *compressor) {
     static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
     static unsigned int generation = 0;
     (void)compressor;
@@ -49,22 +49,22 @@ unsigned int _claim_compressor_attempt(void *compressor) {
     return generation;
 }
 
-/* PoP: _compressor_attempt_is_current @ agent/conversation_compression.py:_compressor_attempt_is_current */
-bool _compressor_attempt_is_current(void *compressor, unsigned int generation) {
+/* PoP: compressor_attempt_is_current @ agent/conversation_compression.py:compressor_attempt_is_current */
+bool compressor_attempt_is_current(void *compressor, unsigned int generation) {
     (void)compressor;
     if (generation == 0) return true;
     /* Simplified: always current in C port */
     return true;
 }
 
-/* PoP: _install_compression_cancelled_check @ agent/conversation_compression.py:_install_compression_cancelled_check */
-void _install_compression_cancelled_check(void *compressor, void *check, unsigned int generation) {
+/* PoP: install_compression_cancelled_check @ agent/conversation_compression.py:install_compression_cancelled_check */
+void install_compression_cancelled_check(void *compressor, void *check, unsigned int generation) {
     (void)compressor; (void)check; (void)generation;
     /* Install F4 cancellation consult */
 }
 
-/* PoP: _clear_compression_cancelled_check_if_owner @ agent/conversation_compression.py:_clear_compression_cancelled_check_if_owner */
-bool _clear_compression_cancelled_check_if_owner(void *compressor, unsigned int generation) {
+/* PoP: clear_compression_cancelled_check_if_owner @ agent/conversation_compression.py:clear_compression_cancelled_check_if_owner */
+bool clear_compression_cancelled_check_if_owner(void *compressor, unsigned int generation) {
     (void)compressor; (void)generation;
     return true;
 }
@@ -120,8 +120,8 @@ void allow_cancelled_lock_release(void *deadline) {
     /* Undo retain_compression_lock_until_worker_done */
 }
 
-/* PoP: _join_cancelled_worker @ agent/conversation_compression.py:_join_cancelled_worker */
-int _join_cancelled_worker(void *deadline, void *cancel_event) {
+/* PoP: join_cancelled_worker @ agent/conversation_compression.py:join_cancelled_worker */
+int join_cancelled_worker(void *deadline, void *cancel_event) {
     (void)deadline; (void)cancel_event;
     return 0;
 }
@@ -132,14 +132,14 @@ bool compression_attempt_stalled(void *deadline) {
     return false;
 }
 
-/* PoP: _stall_source_fingerprint @ agent/conversation_compression.py:_stall_source_fingerprint */
-char *_stall_source_fingerprint(void *deadline) {
+/* PoP: stall_source_fingerprint @ agent/conversation_compression.py:stall_source_fingerprint */
+char *stall_source_fingerprint(void *deadline) {
     (void)deadline;
     return strdup("unknown");
 }
 
-/* PoP: _record_stall_interrupted_backoff @ agent/conversation_compression.py:_record_stall_interrupted_backoff */
-void _record_stall_interrupted_backoff(void *deadline, const char *source) {
+/* PoP: record_stall_interrupted_backoff @ agent/conversation_compression.py:record_stall_interrupted_backoff */
+void record_stall_interrupted_backoff(void *deadline, const char *source) {
     (void)deadline; (void)source;
 }
 

@@ -3,7 +3,7 @@
  *
  * Pure helpers ported from hermes_cli/gateway_windows.py (111 defs).
  *
- *   gw_normalize_path     <- _normalize_windows_path
+ *   gw_normalize_path     <- normalize_windows_path
  *   gw_sanitize_filename  <- _sanitize_filename
  *   gw_quote_vbs          <- _quote_vbs_string
  *   gw_should_fall_back   <- _should_fall_back
@@ -43,7 +43,7 @@ static const char *const GW_ACCESS_DENIED_WORDS =
     "\xe3\x82\xa2\xe3\x82\xaf\xe3\x82\xbb\xe3\x82\xb9\xe3\x81\x8c\xe6\x8b\x92\xe5\x90\xa6\xe3\x81\x95\xe3\x82\x8c\xe3\x81\xbe\xe3\x81\x97\xe3\x81\x9f|"
     "\xec\x95\xa1\xec\x84\xb8\xec\x8a\xa4\xea\xb0\x80 \xea\xb1\xb0\xeb\xb6\x80\xeb\x90\x98\xec\x97\x88\xec\x8a\xb5\xeb\x8b\x88\xeb\x8b\xa4";
 
-/* PoP: _normalize_windows_path @ hermes_cli/gateway_windows.py:_normalize_windows_path */
+/* PoP: normalize_windows_path @ hermes_cli/gateway_windows.py:normalize_windows_path */
 char *gw_normalize_path(const char *value)
 {
     if (!value) return strdup("");

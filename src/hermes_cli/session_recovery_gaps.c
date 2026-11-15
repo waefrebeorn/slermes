@@ -11,11 +11,11 @@
 
 
 
-/* PoP: _probe_populated_edge @ hermes_cli/session_recovery.py:_probe_populated_edge */
-int _probe_populated_edge(void) { return 0; }
+/* PoP: probe_populated_edge @ hermes_cli/session_recovery.py:probe_populated_edge */
+int probe_populated_edge(void) { return 0; }
 
-/* PoP: _lost_and_found_plausibility_errors @ hermes_cli/session_recovery.py:_lost_and_found_plausibility_errors */
-char *_lost_and_found_plausibility_errors(void) { return strdup("[]"); }
+/* PoP: lost_and_found_plausibility_errors @ hermes_cli/session_recovery.py:lost_and_found_plausibility_errors */
+char *lost_and_found_plausibility_errors(void) { return strdup("[]"); }
 
-/* PoP: _recover_via_lost_and_found @ hermes_cli/session_recovery.py:_recover_via_lost_and_found */
-char *_recover_via_lost_and_found(void) { return strdup("{}"); }
+/* PoP: recover_via_lost_and_found @ hermes_cli/session_recovery.py:recover_via_lost_and_found */
+char *recover_via_lost_and_found(void) { return strdup("{}"); }

@@ -5,8 +5,8 @@
  *   - BillingBlock dataclass (provider, provider_label, model, billing_url,
  *     is_nous, message) + to_dict()
  *   - is_nous_inference_route(provider, base_url)
- *   - _nous_billing_url()
- *   - _resolve_provider_link(slug, base_url)
+ *   - nous_billing_url()
+ *   - resolve_provider_link(slug, base_url)
  *   - build_billing_block(provider, base_url, model, message)
  *
  * Reuse (no reimplementation):
@@ -105,21 +105,21 @@ struct billing_block {
 
 /* Faithful port of hermes-agent/agent/billing_links.py */
 
-/* PoP: _nous_billing_url @ agent/billing_links.py:_nous_billing_url */
+/* PoP: nous_billing_url @ agent/billing_links.py:nous_billing_url */
 /* Best-effort Nous portal billing URL (text-surface fallback; Nous prefers
  * the in-app flow). Nous_portal_billing_url is not yet ported, so we fall back
  * to the canonical portal URL exactly as the Python try/except does. */
-static const char *_nous_billing_url(void) {
+static const char *nous_billing_url(void) {
     /* In Python this delegates to hermes_cli.nous_account.nous_portal_billing_url(None)
      * and falls back to the literal on any exception. The C port reuses the same
      * fallback literal; the in-app flow is preferred by surfaces anyway. */
     return "https://portal.nousresearch.com/billing";
 }
 
-/* PoP: out_url @ agent/billing_links.py:_resolve_provider_link */
+/* PoP: out_url @ agent/billing_links.py:resolve_provider_link */
 /* Resolve (label, url): exact slug -> base_url host -> readable-label fallback.
  * Caller must free *out_label and *out_url (strdup'd). url may be NULL. */
-static void _resolve_provider_link(const char *slug, const char *base_url,
+static void resolve_provider_link(const char *slug, const char *base_url,
                                    char **out_label, char **out_url) {
     if (out_label) *out_label = NULL;
     if (out_url)   *out_url   = NULL;
@@ -194,11 +194,11 @@ billing_block_t *billing_block_build(const char *provider,
 
     if (is_nous_inference_route(prov, base_url)) {
         b->provider_label = strdup("Nous Portal");
-        b->billing_url    = strdup(_nous_billing_url());
+        b->billing_url    = strdup(nous_billing_url());
         b->is_nous        = true;
     } else {
         char *lbl = NULL, *url = NULL;
-        _resolve_provider_link(slug, base_url ? base_url : "", &lbl, &url);
+        resolve_provider_link(slug, base_url ? base_url : "", &lbl, &url);
         b->provider_label = lbl ? lbl : strdup("your provider");
         b->billing_url    = url;   /* may be NULL -> JSON null (matches Python None) */
         b->is_nous        = false;

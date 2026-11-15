@@ -10,7 +10,7 @@
  *
  *   cb_strip_argv_prefix      <- container_boot.py:_strip_container_argv_prefix
  *   cb_is_legacy_gateway_run  <- container_boot.py:_is_legacy_gateway_run_request
- *   cb_is_dashboard_container <- container_boot.py:_is_dashboard_container
+ *   cb_is_dashboard_container <- container_boot.py:is_dashboard_container
  *   cb_boot_notice            <- container_boot.py:boot_notice
  *
  * An earlier revision of this file was a STUB: it took a single string and
@@ -107,7 +107,7 @@ int cb_is_legacy_gateway_run(const char *const *argv)
 }
 
 /* ===========================================================================
- *  _is_dashboard_container  (container_boot.py:_is_dashboard_container)
+ *  is_dashboard_container  (container_boot.py:is_dashboard_container)
  *
  *      args = _strip_container_argv_prefix(argv)
  *      return bool(args) and args[0] == "dashboard"
@@ -115,7 +115,7 @@ int cb_is_legacy_gateway_run(const char *const *argv)
  *  A dashboard-only container never supervises gateways.
  * =========================================================================== */
 
-/* PoP: _is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */
+/* PoP: is_dashboard_container @ hermes_cli/container_boot.py:is_dashboard_container */
 int cb_is_dashboard_container(const char *const *argv)
 {
     int n = 0;

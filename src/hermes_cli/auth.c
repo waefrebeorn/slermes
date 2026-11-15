@@ -20,10 +20,10 @@ long to_epoch(const char *val);
 #include <limits.h>
 #include <time.h>
 
-/* Port of Python: _codex_pool_rate_limit_status */
-json_t* _codex_pool_rate_limit_status(void)
+/* Port of Python: codex_pool_rate_limit_status */
+json_t* codex_pool_rate_limit_status(void)
 {
-    hermes_log(LOG_DEBUG, "port", "_codex_pool_rate_limit_status: called");
+    hermes_log(LOG_DEBUG, "port", "codex_pool_rate_limit_status: called");
 
     const char* home = getenv("HOME");
     if (!home) return NULL;
@@ -60,11 +60,11 @@ json_t* _codex_pool_rate_limit_status(void)
     return result ? result : json_new_object();
 }
 
-/* Port of Python: _xai_oauth_state_from_store */
-json_t* _xai_oauth_state_from_store(json_t* auth_store)
+/* Port of Python: xai_oauth_state_from_store */
+json_t* xai_oauth_state_from_store(json_t* auth_store)
 {
     if (!auth_store) return NULL;
-    hermes_log(LOG_DEBUG, "port", "_xai_oauth_state_from_store: called");
+    hermes_log(LOG_DEBUG, "port", "xai_oauth_state_from_store: called");
 
     json_t* providers = json_object_get(auth_store, "providers");
     json_t* xai_state = providers ? json_object_get(providers, "xai-oauth") : NULL;
@@ -104,11 +104,11 @@ json_t* _xai_oauth_state_from_store(json_t* auth_store)
     return NULL;
 }
 
-/* Port of Python: _xai_oauth_state_has_usable_tokens */
-bool _xai_oauth_state_has_usable_tokens(json_t* state)
+/* Port of Python: xai_oauth_state_has_usable_tokens */
+bool xai_oauth_state_has_usable_tokens(json_t* state)
 {
     if (!state) return false;
-    hermes_log(LOG_DEBUG, "port", "_xai_oauth_state_has_usable_tokens: called");
+    hermes_log(LOG_DEBUG, "port", "xai_oauth_state_has_usable_tokens: called");
 
     json_t* tokens = json_object_get(state, "tokens");
     if (!tokens) return false;
@@ -121,11 +121,11 @@ bool _xai_oauth_state_has_usable_tokens(json_t* state)
     return (at && at[0] && rt && rt[0]);
 }
 
-/* Port of Python: _profile_has_own_xai_oauth_state */
-bool _profile_has_own_xai_oauth_state(json_t* auth_store)
+/* Port of Python: profile_has_own_xai_oauth_state */
+bool profile_has_own_xai_oauth_state(json_t* auth_store)
 {
     if (!auth_store) return false;
-    hermes_log(LOG_DEBUG, "port", "_profile_has_own_xai_oauth_state: called");
+    hermes_log(LOG_DEBUG, "port", "profile_has_own_xai_oauth_state: called");
 
     json_t* providers = json_object_get(auth_store, "providers");
     if (!providers) return false;
@@ -134,11 +134,11 @@ bool _profile_has_own_xai_oauth_state(json_t* auth_store)
     return (xai != NULL);
 }
 
-/* Port of Python: _write_through_xai_oauth_to_global_root */
-void _write_through_xai_oauth_to_global_root(json_t* state)
+/* Port of Python: write_through_xai_oauth_to_global_root */
+void write_through_xai_oauth_to_global_root(json_t* state)
 {
     if (!state) return;
-    hermes_log(LOG_DEBUG, "port", "_write_through_xai_oauth_to_global_root: called");
+    hermes_log(LOG_DEBUG, "port", "write_through_xai_oauth_to_global_root: called");
 
     const char* home = getenv("HOME");
     if (!home) return;
@@ -185,10 +185,10 @@ void _write_through_xai_oauth_to_global_root(json_t* state)
     json_free(global_store);
 }
 
-/* Port of Python: _auth_file_cache_key */
-json_t* _auth_file_cache_key(void)
+/* Port of Python: auth_file_cache_key */
+json_t* auth_file_cache_key(void)
 {
-    hermes_log(LOG_DEBUG, "port", "_auth_file_cache_key: called");
+    hermes_log(LOG_DEBUG, "port", "auth_file_cache_key: called");
 
     const char* home = getenv("HOME");
     if (!home) home = ".";
@@ -404,10 +404,10 @@ char *auth_file_path(void)
 /*
  * Returns malloc'd global-root auth.json when in profile mode (root != home),
  * else NULL (classic mode). Caller frees result (or ignores NULL). */
-/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_auth_file_path */
-/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
-/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
-char *_global_auth_file_path(void)
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:_auth_file_path */
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:global_auth_file_path */
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:global_auth_file_path */
+char *global_auth_file_path(void)
 {
     const char *home = auth_hermes_home();
     /* get_default_hermes_root() resolves to ~/.hermes unless HERMES_ROOT set */
@@ -524,8 +524,8 @@ char *optional_base_url(const char *value)
 /*
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
-/* PoP: _decode_jwt_claims @ hermes_cli/auth_constants.py:_decode_jwt_claims */
-json_t *_decode_jwt_claims(const char *token)
+/* PoP: decode_jwt_claims @ hermes_cli/auth_constants.py:decode_jwt_claims */
+json_t *decode_jwt_claims(const char *token)
 {
     if (!token) return NULL;
     /* count dots */
@@ -642,8 +642,8 @@ char *spotify_scope_string(const char *raw_scope)
 
 /*
  * Returns malloc'd client_id from explicit/state/env, or NULL if missing. */
-/* PoP: _spotify_client_id @ hermes_cli/auth.py:_spotify_client_id */
-char *_spotify_client_id(const char *explicit, const char *state_client_id)
+/* PoP: spotify_client_id @ hermes_cli/auth.py:spotify_client_id */
+char *spotify_client_id(const char *explicit, const char *state_client_id)
 {
     const char *cands[4];
     cands[0] = explicit;
@@ -720,8 +720,8 @@ char *spotify_accounts_base_url(const char *state_accounts_base_url, const char 
 /*
  * Returns malloc'd PKCE code_verifier (urlsafe base64 of `length` random bytes,
  * stripped of '=' and truncated to 128). Caller frees. */
-/* PoP: _spotify_code_verifier @ hermes_cli/auth.py:_spotify_code_verifier */
-char *_spotify_code_verifier(int length)
+/* PoP: spotify_code_verifier @ hermes_cli/auth.py:spotify_code_verifier */
+char *spotify_code_verifier(int length)
 {
     if (length <= 0) length = 64;
     unsigned char raw[128];
@@ -753,7 +753,7 @@ char *spotify_code_challenge(const char *code_verifier)
  * PoP: _oauth_pkce_code_verifier @ hermes_cli/auth.py:_oauth_pkce_code_verifier */
 char *oauth_pkce_code_verifier(int length)
 {
-    return _spotify_code_verifier(length);
+    return spotify_code_verifier(length);
 }
 
 /*
@@ -765,8 +765,8 @@ char *oauth_pkce_code_challenge(const char *code_verifier)
 
 /*
  * Build the Spotify PKCE authorize URL. Returns malloc'd string. Caller frees. */
-/* PoP: _spotify_build_authorize_url @ hermes_cli/auth.py:_spotify_build_authorize_url */
-char *_spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
+/* PoP: spotify_build_authorize_url @ hermes_cli/auth.py:spotify_build_authorize_url */
+char *spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
                                   const char *scope, const char *state,
                                   const char *code_challenge, const char *accounts_base_url)
 {
@@ -791,8 +791,8 @@ char *_spotify_build_authorize_url(const char *client_id, const char *redirect_u
 /*
  * Validate a Spotify loopback redirect URI. Returns 0 on success (filling
  * *host_out, *port_out, *path_out via malloc), -1 on invalid (err filled). */
-/* PoP: _spotify_validate_redirect_uri @ hermes_cli/auth.py:_spotify_validate_redirect_uri */
-int _spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
+/* PoP: spotify_validate_redirect_uri @ hermes_cli/auth.py:spotify_validate_redirect_uri */
+int spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
                                   int *port_out, char **path_out, char *err, size_t errsz)
 {
     if (host_out) *host_out = NULL;
@@ -884,8 +884,8 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 
 /*
  * Returns access-token expiry as unix seconds. */
-/* PoP: _minimax_resolve_token_expiry_unix @ hermes_cli/auth_minimax.py:_minimax_resolve_token_expiry_unix */
-double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
+/* PoP: minimax_resolve_token_expiry_unix @ hermes_cli/auth_minimax.py:minimax_resolve_token_expiry_unix */
+double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
     long now_ms = (long)(now_unix * 1000.0);
     if (minimax_expired_in_looks_like_unix_ms(expired_in, now_ms))
@@ -895,8 +895,8 @@ double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 
 /*
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
-/* PoP: _qwen_cli_auth_path @ hermes_cli/auth_qwen.py:_qwen_cli_auth_path */
-char *_qwen_cli_auth_path(void)
+/* PoP: qwen_cli_auth_path @ hermes_cli/auth_qwen.py:qwen_cli_auth_path */
+char *qwen_cli_auth_path(void)
 {
     const char *home = getenv("HOME");
     if (!home) home = "~";
@@ -1005,7 +1005,7 @@ int auth_is_source_suppressed(const char *provider_id, const char *source, const
 /* === dissolved from ports_wrappers.c === */
 /* ── hermes_cli/auth.py gap functions ────────────────────────────── */
 
-/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
+/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:probe_single_zai_endpoint */
 int hermes_cli_auth_u_probe_single_zai_endpoint(const char *arg) {
     /* Python: probe Z.AI endpoint for a working model. Arg =
      * "ep_id\tbase_url\tprobe_status\tmodel". */

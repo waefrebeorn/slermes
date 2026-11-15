@@ -53,7 +53,7 @@ int model_cost_guard_pricing_from_model_info(const json_t *model_info,
 
 /* =========================================================================
  * expensive_model_warning (full port of the Python entry point) — added when
- * model_selection_guards.py was ported; _cost_guard calls this.
+ * model_selection_guards.py was ported; cost_guard calls this.
  * ========================================================================= */
 #include "model_cost_guard.h"
 #include <stdio.h>

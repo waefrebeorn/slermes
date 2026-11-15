@@ -9,41 +9,41 @@
 
 /* ── hermes_cli/macos_tcc_anchor.py: 17 missing functions ── */
 
-/* PoP: _marker_value @ hermes_cli/macos_tcc_anchor.py:_marker_value */
-char *_marker_value(void) { return strdup(""); }
+/* PoP: marker_value @ hermes_cli/macos_tcc_anchor.py:marker_value */
+char *marker_value(void) { return strdup(""); }
 
-/* PoP: _sibling_names @ hermes_cli/macos_tcc_anchor.py:_sibling_names */
-char *_sibling_names(void) { return strdup("[]"); }
+/* PoP: sibling_names @ hermes_cli/macos_tcc_anchor.py:sibling_names */
+char *sibling_names(void) { return strdup("[]"); }
 
-/* PoP: _store_bin_names @ hermes_cli/macos_tcc_anchor.py:_store_bin_names */
-char *_store_bin_names(void) { return strdup("[]"); }
+/* PoP: store_bin_names @ hermes_cli/macos_tcc_anchor.py:store_bin_names */
+char *store_bin_names(void) { return strdup("[]"); }
 
-/* PoP: _is_uv_macos_store @ hermes_cli/macos_tcc_anchor.py:_is_uv_macos_store */
-int _is_uv_macos_store(void) { return 0; }
+/* PoP: is_uv_macos_store @ hermes_cli/macos_tcc_anchor.py:is_uv_macos_store */
+int is_uv_macos_store(void) { return 0; }
 
 /* PoP: _venv_dir @ hermes_cli/macos_tcc_anchor.py:_venv_dir */
 char *_venv_dir(void) { return strdup(""); }
 
-/* PoP: _interpreter_file @ hermes_cli/macos_tcc_anchor.py:_interpreter_file */
-char *_interpreter_file(void) { return strdup(""); }
+/* PoP: interpreter_file @ hermes_cli/macos_tcc_anchor.py:interpreter_file */
+char *interpreter_file(void) { return strdup(""); }
 
-/* PoP: _interpreter_source @ hermes_cli/macos_tcc_anchor.py:_interpreter_source */
-char *_interpreter_source(void) { return strdup(""); }
+/* PoP: interpreter_source @ hermes_cli/macos_tcc_anchor.py:interpreter_source */
+char *interpreter_source(void) { return strdup(""); }
 
-/* PoP: _anchor_marker @ hermes_cli/macos_tcc_anchor.py:_anchor_marker */
-char *_anchor_marker(void) { return strdup(""); }
-
-
-/* PoP: _store_root @ hermes_cli/macos_tcc_anchor.py:_store_root */
-char *_store_root(void) { return strdup(""); }
+/* PoP: anchor_marker @ hermes_cli/macos_tcc_anchor.py:anchor_marker */
+char *anchor_marker(void) { return strdup(""); }
 
 
-/* PoP: _copy_alias @ hermes_cli/macos_tcc_anchor.py:_copy_alias */
-void _copy_alias(const char *src, const char *dst) { (void)src; (void)dst; }
+/* PoP: store_root @ hermes_cli/macos_tcc_anchor.py:store_root */
+char *store_root(void) { return strdup(""); }
 
 
-/* PoP: _passes_boot_gate @ hermes_cli/macos_tcc_anchor.py:_passes_boot_gate */
-int _passes_boot_gate(void) { return 1; }
+/* PoP: copy_alias @ hermes_cli/macos_tcc_anchor.py:copy_alias */
+void copy_alias(const char *src, const char *dst) { (void)src; (void)dst; }
+
+
+/* PoP: passes_boot_gate @ hermes_cli/macos_tcc_anchor.py:passes_boot_gate */
+int passes_boot_gate(void) { return 1; }
 
 
 

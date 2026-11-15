@@ -15,10 +15,10 @@
 extern "C" {
 #endif
 
-/* PoP: _coerce_mb @ gateway/disk_status.py:_coerce_mb */
+/* PoP: coerce_mb @ gateway/disk_status.py:coerce_mb */
 /* Python accepts bool-rejecting non-negative int only. Returns 1 and sets
  * *out when the JSON value coerces (integral number, not bool, >= 0). */
-int _coerce_mb(const json_t *value, long long *out);
+int coerce_mb(const json_t *value, long long *out);
 
 /* PoP: classify_disk_pressure @ gateway/disk_status.py:classify_disk_pressure */
 /* Map free/total MB to "ok"/"elevated"/"critical"; "unknown" when missing or

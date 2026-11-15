@@ -9,8 +9,8 @@
 
 /* ── hermes_cli/local_runtime/bootstrap.py: 12 missing functions ── */
 
-/* PoP: _detect_gpu_vendor @ hermes_cli/local_runtime/bootstrap.py:_detect_gpu_vendor */
-char *_detect_gpu_vendor(void) { return strdup(""); }
+/* PoP: detect_gpu_vendor @ hermes_cli/local_runtime/bootstrap.py:detect_gpu_vendor */
+char *detect_gpu_vendor(void) { return strdup(""); }
 
 /* PoP: models_dir @ hermes_cli/local_runtime/bootstrap.py:models_dir */
 char *models_dir(void) { return strdup(""); }
@@ -24,8 +24,8 @@ char *staged_models(void) { return strdup("[]"); }
 /* PoP: staged_model_ids @ hermes_cli/local_runtime/bootstrap.py:staged_model_ids */
 char *staged_model_ids(void) { return strdup("[]"); }
 
-/* PoP: _presets_stale @ hermes_cli/local_runtime/bootstrap.py:_presets_stale */
-int _presets_stale(void) { return 0; }
+/* PoP: presets_stale @ hermes_cli/local_runtime/bootstrap.py:presets_stale */
+int presets_stale(void) { return 0; }
 
 
 

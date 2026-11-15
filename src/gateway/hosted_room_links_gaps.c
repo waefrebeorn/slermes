@@ -15,8 +15,8 @@ char *from_record(const char *record) { return strdup("{}"); }
 /* PoP: as_record @ gateway/hosted_room_links.py:as_record */
 char *as_record(void) { return strdup("{}"); }
 
-/* PoP: _short_string @ gateway/hosted_room_links.py:_short_string */
-char *_short_string(const char *s) { return s ? strdup(s) : strdup(""); }
+/* PoP: short_string @ gateway/hosted_room_links.py:short_string */
+char *short_string(const char *s) { return s ? strdup(s) : strdup(""); }
 
 /* PoP: load_room_links @ gateway/hosted_room_links.py:load_room_links */
 char *load_room_links(void) { return strdup("[]"); }

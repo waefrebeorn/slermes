@@ -39,8 +39,8 @@ int _mb(const json_t *kib, long long *out)
     return 1;
 }
 
-/* PoP: _parse_iso @ gateway/memory_status.py:_parse_iso */
-int _parse_iso(const char *value, long long *epoch_s, int *usec)
+/* PoP: parse_iso @ gateway/memory_status.py:parse_iso */
+int parse_iso(const char *value, long long *epoch_s, int *usec)
 {
     if (!value || !*value)
         return 0;
@@ -136,8 +136,8 @@ static char *mem_status_home(const char *home)
     return strdup(buf);
 }
 
-/* PoP: _read_heartbeat @ gateway/memory_status.py:_read_heartbeat */
-json_t *_read_heartbeat(const char *home)
+/* PoP: read_heartbeat @ gateway/memory_status.py:read_heartbeat */
+json_t *read_heartbeat(const char *home)
 {
     /* get_loop_heartbeat_path: <home>/state/gateway.heartbeat */
     char *base = mem_status_home(home);
@@ -149,8 +149,8 @@ json_t *_read_heartbeat(const char *home)
     return llg_read_json(path);
 }
 
-/* PoP: _read_sentinel @ gateway/memory_status.py:_read_sentinel */
-json_t *_read_sentinel(const char *home)
+/* PoP: read_sentinel @ gateway/memory_status.py:read_sentinel */
+json_t *read_sentinel(const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
     if (!path)
@@ -196,13 +196,13 @@ json_t *collect_memory_status(const char *home, double now_epoch_s)
     json_set(status, "last_boot_suspected_oom", json_bool(false));
     json_set(status, "boot_id", json_null());
 
-    json_t *heartbeat = _read_heartbeat(home);
+    json_t *heartbeat = read_heartbeat(home);
     if (heartbeat) {
         json_t *updated = json_obj_get(heartbeat, "updated_at");
         long long epoch = 0;
         int usec = 0;
         int have_sampled = (updated && updated->type == JSON_STRING
-                            && _parse_iso(updated->str_val, &epoch, &usec));
+                            && parse_iso(updated->str_val, &epoch, &usec));
         json_t *mem = json_obj_get(heartbeat, "mem");
         if (mem && mem->type == JSON_OBJECT) {
             long long v;
@@ -243,7 +243,7 @@ json_t *collect_memory_status(const char *home, double now_epoch_s)
         json_free(heartbeat);
     }
 
-    json_t *sentinel = _read_sentinel(home);
+    json_t *sentinel = read_sentinel(home);
     if (sentinel) {
         json_set(status, "last_boot_unclean", json_bool(
             mem_json_truthy(json_obj_get(sentinel, "prior_unclean_exit"))));

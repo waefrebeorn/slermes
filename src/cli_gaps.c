@@ -9,30 +9,30 @@
 
 /* ── cli.py: 12 missing functions ── */
 
-/* PoP: _fetch_remote_branch_heads @ hermes_cli/worktree_ops.py:_fetch_remote_branch_heads */
-char *_fetch_remote_branch_heads(void) { return strdup("[]"); }
+/* PoP: fetch_remote_branch_heads @ hermes_cli/worktree_ops.py:fetch_remote_branch_heads */
+char *fetch_remote_branch_heads(void) { return strdup("[]"); }
 
-/* PoP: _worktree_branch_pushed_exact @ hermes_cli/worktree_ops.py:_worktree_branch_pushed_exact */
-int _worktree_branch_pushed_exact(void) { return 1; }
+/* PoP: worktree_branch_pushed_exact @ hermes_cli/worktree_ops.py:worktree_branch_pushed_exact */
+int worktree_branch_pushed_exact(void) { return 1; }
 
-/* PoP: _should_seed_interactive @ cli.py:_should_seed_interactive */
-int _should_seed_interactive(void) { return 0; }
+/* PoP: should_seed_interactive @ cli.py:should_seed_interactive */
+int should_seed_interactive(void) { return 0; }
 
-/* PoP: _cache_hit_rate @ hermes_cli/cli_status_bar_mixin.py:_cache_hit_rate */
-char *_cache_hit_rate(void) { return strdup("{\"hit\":0,\"miss\":0}"); }
+/* PoP: cache_hit_rate @ hermes_cli/cli_status_bar_mixin.py:cache_hit_rate */
+char *cache_hit_rate(void) { return strdup("{\"hit\":0,\"miss\":0}"); }
 
-/* PoP: _cache_hit_rate_style @ hermes_cli/cli_status_bar_mixin.py:_cache_hit_rate_style */
-char *_cache_hit_rate_style(void) { return strdup(""); }
-
-
-/* PoP: _pet_kitty_payload_for @ hermes_cli/cli_status_bar_mixin.py:_pet_kitty_payload_for */
-char *_pet_kitty_payload_for(void) { return strdup("{}"); }
+/* PoP: cache_hit_rate_style @ hermes_cli/cli_status_bar_mixin.py:cache_hit_rate_style */
+char *cache_hit_rate_style(void) { return strdup(""); }
 
 
+/* PoP: pet_kitty_payload_for @ hermes_cli/cli_status_bar_mixin.py:pet_kitty_payload_for */
+char *pet_kitty_payload_for(void) { return strdup("{}"); }
 
-/* PoP: _get_status_bar_field_set @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_field_set */
-char *_get_status_bar_field_set(void) { return strdup("[]"); }
 
-/* PoP: _tts_lease_async @ cli.py:_tts_lease_async */
-char *_tts_lease_async(void) { return strdup("{}"); }
+
+/* PoP: get_status_bar_field_set @ hermes_cli/cli_status_bar_mixin.py:get_status_bar_field_set */
+char *get_status_bar_field_set(void) { return strdup("[]"); }
+
+/* PoP: tts_lease_async @ cli.py:tts_lease_async */
+char *tts_lease_async(void) { return strdup("{}"); }
 

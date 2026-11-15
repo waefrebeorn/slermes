@@ -12,8 +12,8 @@
 /* PoP: serialized_messages_bytes @ agent/message_sanitization.py:serialized_messages_bytes */
 int serialized_messages_bytes(void) { return 0; }
 
-/* PoP: _looks_like_image_content_rejection @ agent/message_sanitization.py:_looks_like_image_content_rejection */
-int _looks_like_image_content_rejection(void) { return 0; }
+/* PoP: looks_like_image_content_rejection @ agent/message_sanitization.py:looks_like_image_content_rejection */
+int looks_like_image_content_rejection(void) { return 0; }
 
 /* PoP: stale_thinking_reaches_wire @ agent/message_sanitization.py:stale_thinking_reaches_wire */
 int stale_thinking_reaches_wire(void) { return 0; }

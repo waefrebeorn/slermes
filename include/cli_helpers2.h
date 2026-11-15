@@ -8,7 +8,7 @@
 /* PoP: _split_model_config_default @ cli.py:_split_model_config_default */
 void cli_split_model_config_default(const json_t *raw_default, char **out_model, char **out_provider);
 
-/* PoP: _worktree_branch_pr_merged @ cli.py:_worktree_branch_pr_merged */
+/* PoP: worktree_branch_pr_merged @ cli.py:worktree_branch_pr_merged */
 int cli_worktree_branch_pr_merged(const char *worktree_path, int timeout, json_t *cache);
 
 /* PoP: _cli_multiline_shortcuts_enabled @ cli.py:_cli_multiline_shortcuts_enabled */
@@ -23,7 +23,7 @@ int cli_is_ghostty_terminal(void);
 /* PoP: _cleanup_all_terminals @ cli.py:_cleanup_all_terminals */
 int cli_cleanup_all_terminals(void);
 
-/* PoP: _maintain_pack_health @ cli.py:_maintain_pack_health */
+/* PoP: maintain_pack_health @ cli.py:maintain_pack_health */
 void cli_maintain_pack_health(const char *repo_root);
 
 /* PoP: _select_classic_cli_pt_output @ cli.py:_select_classic_cli_pt_output */
@@ -38,11 +38,11 @@ void cli_wait_for_oneshot_background_completions(const char *task_id);
 /* PoP: _normalize_moa_model @ cli.py:_normalize_moa_model */
 int cli_normalize_moa_model(const char *model, char **out_provider, char **out_rest);
 
-/* PoP: _worktree_commits_all_merged_upstream @ cli.py:_worktree_commits_all_merged_upstream */
+/* PoP: worktree_commits_all_merged_upstream @ cli.py:worktree_commits_all_merged_upstream */
 int cli_worktree_commits_all_merged_upstream(const char *worktree_path, int timeout,
                                              int max_ahead, json_t *cache);
 
-/* PoP: _worktree_has_unpushed_commits @ cli.py:_worktree_has_unpushed_commits */
+/* PoP: worktree_has_unpushed_commits @ cli.py:worktree_has_unpushed_commits */
 int cli_worktree_has_unpushed_commits(const char *worktree_path, int timeout);
 
 /* PoP: _prepare_deferred_agent_startup @ cli.py:_prepare_deferred_agent_startup */
@@ -61,7 +61,7 @@ char *cli_reverse_alias_for_display(const char *model_name);
 void cli_mark_tui_input_modes_active(void);
 int cli_tui_input_modes_active(void);
 
-/* PoP: _path_is_within_root @ cli.py:_path_is_within_root */
+/* PoP: path_is_within_root @ cli.py:path_is_within_root */
 int cli_path_is_within_root(const char *path, const char *root);
 
 #endif /* CLI_HELPERS2_H */

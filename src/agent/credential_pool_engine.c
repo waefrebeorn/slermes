@@ -23,7 +23,7 @@ No god headers — only the minimal includes each module requires. C11 only.
  * Component 1/4 — pool engine: create / add / select / report /
  * rotate / stats / free / tick / recover, plus load_pool / select /
  * peek / current / mark_exhausted_and_rotate / reset_statuses /
- * has_available / add_entry / _upsert_entry / get_pool_strategy /
+ * has_available / add_entry / upsert_entry / get_pool_strategy /
  * cp_auth_json_path. Faithful port of the multi-key rotation core +
  * agent_runtime_helpers.py:recover_with_credential_pool.
  */
@@ -636,10 +636,10 @@ int add_entry(credential_pool_t *pool, const char *api_key, const char *label, c
     return idx;
 }
 
-/* Port of Python agent/credential_pool.py:_upsert_entry().
+/* Port of Python agent/credential_pool.py:upsert_entry().
  * Upsert an entry by source - update existing or add new.
  * Returns true if the pool was modified. */
-bool _upsert_entry(credential_pool_t *pool, const char *source, const char *api_key, const char *label) {
+bool upsert_entry(credential_pool_t *pool, const char *source, const char *api_key, const char *label) {
     if (!pool || !source || !api_key) return false;
 
     /* Find an existing entry with the same provenance (source). */

@@ -9,17 +9,17 @@
 
 /* ── tools/vision_tools.py: 5 missing functions ── */
 
-/* PoP: _supported_media_types @ tools/vision_tools_image_prep.py:_supported_media_types */
-char *_supported_media_types(void) { return strdup("[]"); }
+/* PoP: supported_media_types @ tools/vision_tools_image_prep.py:supported_media_types */
+char *supported_media_types(void) { return strdup("[]"); }
 
-/* PoP: _validate_raster_image_decodable @ tools/vision_tools_image_prep.py:_validate_raster_image_decodable */
-int _validate_raster_image_decodable(void) { return 1; }
+/* PoP: validate_raster_image_decodable @ tools/vision_tools_image_prep.py:validate_raster_image_decodable */
+int validate_raster_image_decodable(void) { return 1; }
 
-/* PoP: _stream_download_to_file @ tools/vision_tools.py:_stream_download_to_file */
-char *_stream_download_to_file(void) { return strdup("{}"); }
+/* PoP: stream_download_to_file @ tools/vision_tools.py:stream_download_to_file */
+char *stream_download_to_file(void) { return strdup("{}"); }
 
-/* PoP: _profile_rejects_tool_media @ tools/vision_tools.py:_profile_rejects_tool_media */
-int _profile_rejects_tool_media(void) { return 0; }
+/* PoP: profile_rejects_tool_media @ tools/vision_tools.py:profile_rejects_tool_media */
+int profile_rejects_tool_media(void) { return 0; }
 
-/* PoP: _materialize_video_from_terminal_backend @ tools/vision_tools.py:_materialize_video_from_terminal_backend */
-char *_materialize_video_from_terminal_backend(void) { return strdup("{}"); }
+/* PoP: materialize_video_from_terminal_backend @ tools/vision_tools.py:materialize_video_from_terminal_backend */
+char *materialize_video_from_terminal_backend(void) { return strdup("{}"); }

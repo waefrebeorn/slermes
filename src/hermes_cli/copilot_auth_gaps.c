@@ -10,18 +10,18 @@
 /* ── hermes_cli/copilot_auth.py: 7 missing functions ── */
 
 
-/* PoP: _probe_gh_cli_token @ hermes_cli/copilot_auth.py:_probe_gh_cli_token */
-char *_probe_gh_cli_token(void) { return strdup(""); }
+/* PoP: probe_gh_cli_token @ hermes_cli/copilot_auth.py:probe_gh_cli_token */
+char *probe_gh_cli_token(void) { return strdup(""); }
 
 /* PoP: copilot_device_code_login @ hermes_cli/copilot_auth.py:copilot_device_code_login */
 char *copilot_device_code_login(void) { return strdup("{}"); }
 
 
-/* PoP: _urlopen_bounded @ hermes_cli/copilot_auth.py:_urlopen_bounded */
-char *_urlopen_bounded(void) { return strdup("{}"); }
+/* PoP: urlopen_bounded @ hermes_cli/copilot_auth.py:urlopen_bounded */
+char *urlopen_bounded(void) { return strdup("{}"); }
 
-/* PoP: _exchange_copilot_token_locked @ hermes_cli/copilot_auth.py:_exchange_copilot_token_locked */
-char *_exchange_copilot_token_locked(void) { return strdup("{}"); }
+/* PoP: exchange_copilot_token_locked @ hermes_cli/copilot_auth.py:exchange_copilot_token_locked */
+char *exchange_copilot_token_locked(void) { return strdup("{}"); }
 
 /* PoP: get_copilot_api_token @ hermes_cli/copilot_auth.py:get_copilot_api_token */
 char *get_copilot_api_token(void) { return strdup(""); }

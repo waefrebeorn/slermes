@@ -1153,7 +1153,7 @@ char *pb_detect_macos_system_proxy(void) {
 #endif
 }
 
-/* PoP: pb_read_httpx_body_with_limit @ plugins/platforms/yuanbao/adapter.py:_read_httpx_body_with_limit */
+/* PoP: pb_read_httpx_body_with_limit @ plugins/platforms/yuanbao/adapter.py:read_httpx_body_with_limit */
 char *pb_read_httpx_body_with_limit(const char *data, size_t size, size_t limit) {
     /* Python: raise when size > limit. */
     if (!data) return NULL;

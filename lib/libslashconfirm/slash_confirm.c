@@ -30,7 +30,7 @@ static int _find_session(const char *session_key)
     return -1;
 }
 
-static void _remove_at(int idx)
+static void remove_at(int idx)
 {
     if (idx < 0 || idx >= g_pending_count) return;
     /* Free strings in the entry */
@@ -57,7 +57,7 @@ void slashconfirm_register(const char *session_key,
     /* Overwrite existing entry for same session */
     int idx = _find_session(session_key);
     if (idx >= 0) {
-        _remove_at(idx);
+        remove_at(idx);
     }
 
     /* Add new entry (or append if we're full) */
@@ -126,7 +126,7 @@ void slashconfirm_clear(const char *session_key)
     pthread_mutex_lock(&g_lock);
     int idx = _find_session(session_key);
     if (idx >= 0) {
-        _remove_at(idx);
+        remove_at(idx);
     }
     pthread_mutex_unlock(&g_lock);
 }
@@ -148,7 +148,7 @@ bool slashconfirm_clear_if_stale(const char *session_key,
     bool stale = (now - g_pending[idx].created_at) > timeout_seconds;
 
     if (stale) {
-        _remove_at(idx);
+        remove_at(idx);
     }
 
     pthread_mutex_unlock(&g_lock);
@@ -181,11 +181,11 @@ char *slashconfirm_resolve(const char *session_key,
                 handler = g_pending[idx].handler;
                 strncpy(command, g_pending[idx].command, sizeof(command) - 1);
                 command[sizeof(command) - 1] = '\0';
-                _remove_at(idx);
+                remove_at(idx);
                 found = true;
             } else {
                 /* Stale — remove without running */
-                _remove_at(idx);
+                remove_at(idx);
             }
         }
         /* If confirm_id doesn't match, leave the entry (superseded silently) */

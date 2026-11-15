@@ -13,16 +13,16 @@
 #include <unistd.h>
 
 /*
- * _install_method_project_root — Resolve the directory that holds the running code.
+ * install_method_project_root — Resolve the directory that holds the running code.
  *
- * Python: def _install_method_project_root(project_root: Optional[Path] = None) -> Path:
+ * Python: def install_method_project_root(project_root: Optional[Path] = None) -> Path:
  *   if project_root is not None: return project_root
  *   return Path(__file__).parent.parent.resolve()
  *
  * In C: returns the provided path, or a compiled-in default.
  */
-/* Port of Python: _install_method_project_root */
-const char* _install_method_project_root(const char* project_root)
+/* Port of Python: install_method_project_root */
+const char* install_method_project_root(const char* project_root)
 {
     if (project_root && project_root[0]) {
         return project_root;
@@ -36,9 +36,9 @@ const char* _install_method_project_root(const char* project_root)
 }
 
 /*
- * _running_in_container — Check if we're running inside a container.
+ * running_in_container — Check if we're running inside a container.
  *
- * Python: def _running_in_container() -> bool:
+ * Python: def running_in_container() -> bool:
  *   try:
  *       from hermes_constants import is_container
  *       return is_container()
@@ -47,9 +47,9 @@ const char* _install_method_project_root(const char* project_root)
  *
  * In C: check for .dockerenv, containerenv, or cgroup indicators.
  */
-/* Port of Python: _running_in_container */
-/* PoP: _running_in_container @ hermes_cli/security_audit_startup.py:_in_container */
-bool _running_in_container(void)
+/* Port of Python: running_in_container */
+/* PoP: running_in_container @ hermes_cli/security_audit_startup.py:_in_container */
+bool running_in_container(void)
 {
     /* Check for Docker container indicator */
     if (access("/.dockerenv", F_OK) == 0) {
@@ -76,9 +76,9 @@ bool _running_in_container(void)
 }
 
 /*
- * _strip_dotted_keys — Remove dotted leaf keys from a nested config dict.
+ * strip_dotted_keys — Remove dotted leaf keys from a nested config dict.
  *
- * Python: def _strip_dotted_keys(cfg: dict, dotted_keys: set) -> Tuple[dict, set]:
+ * Python: def strip_dotted_keys(cfg: dict, dotted_keys: set) -> Tuple[dict, set]:
  *   stripped = set()
  *   for dotted in dotted_keys:
  *       parts = dotted.split(".")
@@ -95,8 +95,8 @@ bool _running_in_container(void)
  * In C: we navigate the JSON object tree and use json_object_set to null out keys.
  * Returns the number of keys actually stripped.
  */
-/* Port of Python: _strip_dotted_keys */
-int _strip_dotted_keys(json_t* cfg, const char** dotted_keys, int num_keys)
+/* Port of Python: strip_dotted_keys */
+int strip_dotted_keys(json_t* cfg, const char** dotted_keys, int num_keys)
 {
     if (!cfg || !dotted_keys || num_keys <= 0) {
         return 0;
@@ -201,7 +201,7 @@ json_t *hermes_cli_config_config_command(void) {
  * Pure, portable helper functions ported from hermes_cli/config.py.
  * These contain no file I/O, no networking, and no os.* calls — only
  * string/value coercion and small data-normalization logic. Heavy
- * nested-dict manipulation (deep_merge, _strip_dotted_keys, etc.) stays
+ * nested-dict manipulation (deep_merge, strip_dotted_keys, etc.) stays
  * a genuine REAL_GAP; this file ports the self-contained primitives.
  *
  * Functions:
@@ -638,13 +638,13 @@ const char *known_top_level_keys(const char *prev)
 }
 
 /* ===========================================================================
- *  _validate_config_key
+ *  validate_config_key
  * =========================================================================== */
 
 /*
  * Return true if key is a valid dot-separated config path. */
-/* PoP: _validate_config_key @ hermes_cli/config.py:_validate_config_key */
-bool _validate_config_key(const char *key, char *suggestion, size_t sug_size)
+/* PoP: validate_config_key @ hermes_cli/config.py:validate_config_key */
+bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
 {
     if (suggestion && sug_size > 0) suggestion[0] = '\0';
     if (!key || !key[0]) return false;

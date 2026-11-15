@@ -266,7 +266,7 @@ int cli_agent_anthropic_adapter_sanitize_anthropic_kwargs(const char *model, int
 /* Return the first available Anthropic OAuth token from credential_pool
  * (read-only: never clears expired entries or triggers a network refresh, so a
  * bare resolve never mutates ~/.hermes/auth.json). Faithful to the Python
- * resolver: load_pool("anthropic")._available_entries(clear_expired=False,
+ * resolver: load_pool("anthropic").available_entries(clear_expired=False,
  * refresh=False), filter auth_type == "oauth", coerce access_token (may be an
  * explicit null in a partially-written entry) then strip; return the first
  * non-empty token. Returns a malloc'd token (caller frees) or NULL. */

@@ -24,7 +24,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cvl_image_error_max_dimension @ agent/turn_recovery.py:_image_error_max_dimension */
+/* PoP: cvl_image_error_max_dimension @ agent/turn_recovery.py:image_error_max_dimension */
 long cvl_image_error_max_dimension(const char *error) {
     /* Python: provider-reported image dimension ceiling. */
     if (!error) return 0;
@@ -113,14 +113,14 @@ bool cvl_print_billing_or_entitlement_guidance(const char *capability, const cha
     return true;
 }
 
-/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/turn_recovery.py:_try_refresh_nous_paid_entitlement_credentials */
+/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/turn_recovery.py:try_refresh_nous_paid_entitlement_credentials */
 int cvl_try_refresh_nous_paid_entitlement_credentials(void) {
     /* Python: refresh runtime credentials after paid check. */
     printf("nous paid-entitlement credentials refreshed\n");
     return 0;
 }
 
-/* PoP: cvl_restore_or_build_system_prompt @ agent/conversation_loop.py:_restore_or_build_system_prompt */
+/* PoP: cvl_restore_or_build_system_prompt @ agent/conversation_loop.py:restore_or_build_system_prompt */
 char *cvl_restore_or_build_system_prompt(const char *session_db_json, const char *fallback_prompt) {
     /* Python: cached from session DB or build fresh. */
     if (!fallback_prompt) return NULL;
@@ -158,7 +158,7 @@ char *cvl_get_continuation_prompt(bool is_partial_stub, const char *dropped_tool
     return strdup("Continue");
 }
 
-/* PoP: cvl_content_policy_blocked_result @ agent/conversation_loop.py:_content_policy_blocked_result */
+/* PoP: cvl_content_policy_blocked_result @ agent/conversation_loop.py:content_policy_blocked_result */
 char *cvl_content_policy_blocked_result(const char *reason) {
     /* Python: terminal turn result for content-policy block. */
     char *out = NULL;
@@ -388,7 +388,7 @@ static char *canon_serialize_sorted(const json_t *node) {
 }
 
 /* Eviction: FIFO — remove oldest entry when cache over capacity. */
-static void _canon_cache_evict_one(void) {
+static void canon_cache_evict_one(void) {
     if (_canon_args_cache_count <= 0) return;
     int slot = (_canon_args_cache_head) % DLG_CANON_CACHE_MAX;
     _canon_args_cache_bytes -= strlen(_canon_args_cache_keys[slot]) + strlen(_canon_args_cache_vals[slot]);
@@ -423,7 +423,7 @@ char *cvl_canonicalize_tool_call_arguments(const char *arg_str) {
     while ((_canon_args_cache_count >= DLG_CANON_CACHE_MAX ||
             (_canon_args_cache_bytes + key_len + val_len > DLG_CANON_CACHE_MAXBYTES &&
              _canon_args_cache_count > 0))) {
-        _canon_cache_evict_one();
+        canon_cache_evict_one();
     }
     int slot = (_canon_args_cache_head + _canon_args_cache_count) % DLG_CANON_CACHE_MAX;
     _canon_args_cache_keys[slot] = strdup(arg_str);

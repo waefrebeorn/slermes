@@ -225,7 +225,7 @@ json_t *control_socket_build_identify_payload(void)
     extern void hermes_get_home(char *, size_t);
     hermes_get_home(home, sizeof(home));
     json_set(payload, "hermes_home", json_string(home));
-    char *label = _profile_label_for_home(home, NULL);
+    char *label = profile_label_for_home(home, NULL);
     if (label) {
         json_set(payload, "profile", json_string(label));
         free(label);

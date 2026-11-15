@@ -30,11 +30,11 @@ No god headers — only the minimal includes each module requires. C11 only.
  * credential_entry_runtime_base_url / credential_entry_get_extra /
  * credential_pool_sync_anthropic_entry_from_credentials_file /
  * credential_pool_refresh_entry_impl + _sync_*_entry_from_auth_store /
- * _replace_entry / _mark_exhausted / _entry_needs_refresh / remove_index /
+ * replace_entry / mark_exhausted / entry_needs_refresh / remove_index /
  * acquire_lease / release_lease / try_refresh_current / resolve_target /
  * _write_through_provider_state_to_global_root / has_credentials /
- * entries / _is_terminal_auth_failure / _available_entries /
- * _select_unlocked.
+ * entries / is_terminal_auth_failure / available_entries /
+ * select_unlocked.
  */
 
 /* Port of Python agent/credential_pool.py:has_credentials(). */
@@ -49,15 +49,15 @@ int entries(const credential_pool_t *pool, const credential_entry_t **out_entrie
     return pool->entry_count;
 }
 
-/* Port of Python agent/credential_pool.py:_replace_entry(). */
-bool _replace_entry(credential_pool_t *pool, int index, const credential_entry_t *new_entry) {
+/* Port of Python agent/credential_pool.py:replace_entry(). */
+bool replace_entry(credential_pool_t *pool, int index, const credential_entry_t *new_entry) {
     if (!pool || index < 0 || index >= pool->entry_count || !new_entry) return false;
     pool->entries[index] = *new_entry;
     return true;
 }
 
-/* Port of Python agent/credential_pool.py:_is_terminal_auth_failure(). */
-bool _is_terminal_auth_failure(const credential_entry_t *entry, int http_status, const char *error_reason) {
+/* Port of Python agent/credential_pool.py:is_terminal_auth_failure(). */
+bool is_terminal_auth_failure(const credential_entry_t *entry, int http_status, const char *error_reason) {
     if (!entry || http_status != 401) return false;
     if (!error_reason) return false;
     
@@ -72,8 +72,8 @@ bool _is_terminal_auth_failure(const credential_entry_t *entry, int http_status,
     return false;
 }
 
-/* Port of Python agent/credential_pool.py:_mark_exhausted(). */
-bool _mark_exhausted(credential_pool_t *pool, int index, int http_status, const char *error_reason, const char *error_message, const char *reset_at) {
+/* Port of Python agent/credential_pool.py:mark_exhausted(). */
+bool mark_exhausted(credential_pool_t *pool, int index, int http_status, const char *error_reason, const char *error_message, const char *reset_at) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     
     credential_entry_t *e = &pool->entries[index];
@@ -85,7 +85,7 @@ bool _mark_exhausted(credential_pool_t *pool, int index, int http_status, const 
         strncpy(e->label, error_reason, sizeof(e->label) - 1); /* reuse label temporarily */
     
     if (reset_at) {
-        e->rate_limit_reset = (time_t)_parse_absolute_timestamp(reset_at);
+        e->rate_limit_reset = (time_t)parse_absolute_timestamp(reset_at);
     }
     
     return true;
@@ -103,14 +103,14 @@ static json_t *cp_sync_load_provider_state(const char *provider_id) {
     return state;
 }
 
-/* Port of Python agent/credential_pool.py:_sync_codex_entry_from_auth_store(). */
+/* Port of Python agent/credential_pool.py:sync_codex_entry_from_auth_store(). */
 /* Sync a Codex device_code pool entry from auth.json when tokens differ.
  * When a Codex OAuth access token expires the pool entry gets frozen with a
  * future last_error_reset_at even though fresh credentials may be sitting on
  * disk from another process's device-code login — this adopts them. Only
  * applies to device_code-sourced entries; env/API-key entries have no
  * auth.json shadow to sync from. Returns true when the entry was updated. */
-bool _sync_codex_entry_from_auth_store(credential_pool_t *pool, int index) {
+bool sync_codex_entry_from_auth_store(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     if (strcmp(pool->provider_name, "openai-codex") != 0) return false;
     credential_entry_t *e = &pool->entries[index];
@@ -150,7 +150,7 @@ bool _sync_codex_entry_from_auth_store(credential_pool_t *pool, int index) {
          * the persisted JSON; in-memory we reset the cooldown clock). */
         updated.consecutive_failures = 0;
         updated.status = CRED_OK;
-        _replace_entry(pool, index, &updated);
+        replace_entry(pool, index, &updated);
         changed = true;
     }
     json_free(state);
@@ -159,12 +159,12 @@ bool _sync_codex_entry_from_auth_store(credential_pool_t *pool, int index) {
     return changed;
 }
 
-/* Port of Python agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store(). */
+/* Port of Python agent/credential_pool.py:sync_xai_oauth_entry_from_auth_store(). */
 /* xAI OAuth refresh tokens are single-use: when another process refreshes,
  * it writes the new pair under providers["xai-oauth"]["tokens"]; without this
  * resync our in-memory entry replays a consumed refresh_token. Only applies
  * to device_code-sourced singleton entries. */
-bool _sync_xai_oauth_entry_from_auth_store(credential_pool_t *pool, int index) {
+bool sync_xai_oauth_entry_from_auth_store(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     if (strcmp(pool->provider_name, "xai-oauth") != 0) return false;
     credential_entry_t *e = &pool->entries[index];
@@ -190,7 +190,7 @@ bool _sync_xai_oauth_entry_from_auth_store(credential_pool_t *pool, int index) {
                  store_refresh[0] ? store_refresh : e->refresh_token);
         updated.consecutive_failures = 0;
         updated.status = CRED_OK;
-        _replace_entry(pool, index, &updated);
+        replace_entry(pool, index, &updated);
         changed = true;
     }
     json_free(state);
@@ -199,12 +199,12 @@ bool _sync_xai_oauth_entry_from_auth_store(credential_pool_t *pool, int index) {
     return changed;
 }
 
-/* Port of Python agent/credential_pool.py:_sync_nous_entry_from_auth_store(). */
+/* Port of Python agent/credential_pool.py:sync_nous_entry_from_auth_store(). */
 /* Nous OAuth refresh tokens are single-use: a concurrent cron refreshing via
  * resolve_nous_runtime_credentials writes fresh tokens to auth.json; the pool
  * entry detects that and adopts the newer pair (plus agent_key / base_url /
  * extra bookkeeping), avoiding a refresh-reuse revocation on the portal. */
-bool _sync_nous_entry_from_auth_store(credential_pool_t *pool, int index) {
+bool sync_nous_entry_from_auth_store(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     if (strcmp(pool->provider_name, "nous") != 0) return false;
     credential_entry_t *e = &pool->entries[index];
@@ -252,7 +252,7 @@ bool _sync_nous_entry_from_auth_store(credential_pool_t *pool, int index) {
             if (v && v->type != JSON_NULL)
                 json_set(updated.extra, *k, json_copy(v));
         }
-        _replace_entry(pool, index, &updated);
+        replace_entry(pool, index, &updated);
         changed = true;
     }
     json_free(state);
@@ -261,14 +261,14 @@ bool _sync_nous_entry_from_auth_store(credential_pool_t *pool, int index) {
     return changed;
 }
 
-/* Port of Python agent/credential_pool.py:_sync_device_code_entry_to_auth_store(). */
+/* Port of Python agent/credential_pool.py:sync_device_code_entry_to_auth_store(). */
 /* Write refreshed pool-entry tokens back to auth.json providers so the next
  * load_pool() cannot re-seed a consumed single-use refresh token. Applies to
  * any OAuth provider whose singleton lives in auth.json (nous / openai-codex /
  * xai-oauth) seeded from device_code; manual:* entries never write back.
  * set_active=false on every write: a pool sync-back is token-rotation side
  * effect, not a user provider choice (#74339 root-vs-profile write routing). */
-bool _sync_device_code_entry_to_auth_store(credential_pool_t *pool, int index) {
+bool sync_device_code_entry_to_auth_store(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     credential_entry_t *e = &pool->entries[index];
     if (strcmp(e->source, "device_code") != 0) return false;
@@ -354,23 +354,23 @@ bool _sync_device_code_entry_to_auth_store(credential_pool_t *pool, int index) {
     return ok;
 }
 
-/* Port of Python agent/credential_pool.py:_refresh_entry(). */
-bool _refresh_entry(credential_pool_t *pool, int index, bool force) {
+/* Port of Python agent/credential_pool.py:refresh_entry(). */
+bool refresh_entry(credential_pool_t *pool, int index, bool force) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     /* Full implementation would call OAuth refresh */
     return false;
 }
 
-/* Port of Python agent/credential_pool.py:_entry_needs_refresh(). */
-bool _entry_needs_refresh(const credential_pool_t *pool, int index) {
+/* Port of Python agent/credential_pool.py:entry_needs_refresh(). */
+bool entry_needs_refresh(const credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
     const credential_entry_t *e = &pool->entries[index];
     /* Simplified - check if token is expired */
     return e->rate_limit_reset > 0 && time(NULL) >= e->rate_limit_reset;
 }
 
-/* Port of Python agent/credential_pool.py:_available_entries(). */
-int _available_entries(const credential_pool_t *pool, const credential_entry_t ***out_entries) {
+/* Port of Python agent/credential_pool.py:available_entries(). */
+int available_entries(const credential_pool_t *pool, const credential_entry_t ***out_entries) {
     if (!pool || !out_entries) return 0;
     static const credential_entry_t *available[CREDENTIAL_POOL_MAX_KEYS];
     int count = 0;
@@ -386,8 +386,8 @@ int _available_entries(const credential_pool_t *pool, const credential_entry_t *
     return count;
 }
 
-/* Port of Python agent/credential_pool.py:_select_unlocked(). */
-int _select_unlocked(const credential_pool_t *pool) {
+/* Port of Python agent/credential_pool.py:select_unlocked(). */
+int select_unlocked(const credential_pool_t *pool) {
     if (!pool || pool->entry_count == 0) return -1;
     time_t now = time(NULL);
     
@@ -424,11 +424,11 @@ bool try_refresh_current(credential_pool_t *pool) {
     if (!pool || pool->entry_count == 0) return false;
     int idx = pool->current_index;
     if (idx < 0 || idx >= pool->entry_count) return false;
-    return _refresh_entry(pool, idx, true);
+    return refresh_entry(pool, idx, true);
 }
 
-/* Port of Python agent/credential_pool.py:_try_refresh_current_unlocked(). */
-bool _try_refresh_current_unlocked(credential_pool_t *pool) {
+/* Port of Python agent/credential_pool.py:try_refresh_current_unlocked(). */
+bool try_refresh_current_unlocked(credential_pool_t *pool) {
     return try_refresh_current(pool);
 }
 

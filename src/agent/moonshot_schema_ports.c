@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-static json_t *_msc_repair_node(json_t *node, bool is_schema);
+static json_t *msc_repair_node(json_t *node, bool is_schema);
 
 /* PoP: msc_repair_schema @ agent/moonshot_schema.py:_repair_schema */
 char *msc_repair_schema(const char *node_json, bool is_schema) {
@@ -30,7 +30,7 @@ char *msc_repair_schema(const char *node_json, bool is_schema) {
     json_t *node = json_parse(node_json, NULL);
     if (!node) return strdup(node_json);
 
-    json_t *repaired = _msc_repair_node(node, is_schema);
+    json_t *repaired = msc_repair_node(node, is_schema);
     json_free(node);
     if (!repaired) return strdup(node_json);
 
@@ -39,13 +39,13 @@ char *msc_repair_schema(const char *node_json, bool is_schema) {
     return ser ? ser : strdup(node_json);
 }
 
-static json_t *_msc_repair_node(json_t *node, bool is_schema) {
+static json_t *msc_repair_node(json_t *node, bool is_schema) {
     if (!node) return NULL;
     if (node->type == JSON_ARRAY) {
         for (size_t i = 0; i < json_len(node); i++) {
             json_t *item = json_get(node, i);
             if (item && item->type == JSON_OBJECT)
-                _msc_repair_node(item, true);
+                msc_repair_node(item, true);
         }
         return node;
     }
@@ -68,12 +68,12 @@ static json_t *_msc_repair_node(json_t *node, bool is_schema) {
     for (int k = 0; keys[k]; k++) {
         json_t *child = json_obj_get(node, keys[k]);
         if (child && child->type == JSON_OBJECT)
-            _msc_repair_node(child, true);
+            msc_repair_node(child, true);
         else if (child && child->type == JSON_ARRAY) {
             for (size_t i = 0; i < json_len(child); i++) {
                 json_t *elt = json_get(child, i);
                 if (elt && elt->type == JSON_OBJECT)
-                    _msc_repair_node(elt, true);
+                    msc_repair_node(elt, true);
             }
         }
     }
@@ -126,7 +126,7 @@ char *msc_sanitize_moonshot_tools(const char *tools_json) {
         }
         json_t *params = json_obj_get(fn, "parameters");
         if (params && params->type == JSON_OBJECT) {
-            json_t *repaired = _msc_repair_node(json_copy(params), true);
+            json_t *repaired = msc_repair_node(json_copy(params), true);
             if (repaired) {
                 json_set(fn, "parameters", repaired);
                 json_free(repaired);

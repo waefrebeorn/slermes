@@ -1,14 +1,14 @@
 /* port_config_nested.c -- dict navigation ported from hermes_cli/config.py.
  *
- * PoP: cfg_split_key_path       @ hermes_cli/config.py:_split_key_path
- * PoP: cfg_greedy_literal_match @ hermes_cli/config.py:_greedy_literal_match
- * PoP: cfg_phantom_sibling      @ hermes_cli/config.py:_phantom_sibling
+ * PoP: cfg_split_key_path       @ hermes_cli/config.py:split_key_path
+ * PoP: cfg_greedy_literal_match @ hermes_cli/config.py:greedy_literal_match
+ * PoP: cfg_phantom_sibling      @ hermes_cli/config.py:phantom_sibling
  * PoP: cfg_locate_nested        @ hermes_cli/config.py:_locate_nested
  * PoP: cfg_set_nested           @ hermes_cli/config.py:_set_nested
  * PoP: cfg_get_nested           @ hermes_cli/config.py:_get_nested
  * PoP: cfg_unset_nested         @ hermes_cli/config.py:_unset_nested
  *
- * `_split_key_path` is defined in port_config.c; it is reused here so the
+ * `split_key_path` is defined in port_config.c; it is reused here so the
  * escape semantics live in exactly one place.
  *
  * The #84064 family: config key names routinely contain dots (model IDs like
@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ── _greedy_literal_match ───────────────────────────────────────────────── */
+/* ── greedy_literal_match ───────────────────────────────────────────────── */
 int
 cfg_greedy_literal_match(json_t *container, char **parts, int nparts,
                          char *out, size_t cap)
@@ -54,7 +54,7 @@ cfg_greedy_literal_match(json_t *container, char **parts, int nparts,
     return 0;
 }
 
-/* ── _phantom_sibling ────────────────────────────────────────────────────── */
+/* ── phantom_sibling ────────────────────────────────────────────────────── */
 int
 cfg_phantom_sibling(json_t *container, const char *part,
                     char *out, size_t cap)

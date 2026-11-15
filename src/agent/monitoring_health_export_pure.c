@@ -47,7 +47,7 @@ static const char *const RESOURCE_ATTR_KEYS[] = {
     "telemetry.scope",
     NULL,
 };
-static bool _is_resource_attr_key(const char *key)
+static bool is_resource_attr_key(const char *key)
 {
     for (size_t i = 0; RESOURCE_ATTR_KEYS[i]; i++)
         if (strcmp(key, RESOURCE_ATTR_KEYS[i]) == 0) return true;
@@ -58,7 +58,7 @@ static bool _is_resource_attr_key(const char *key)
  * Use strspn instead of POSIX regex (avoid REG_ESPACE on joined patterns
  * per documented lesson #32 — though this is a single simple pattern,
  * strspn is still simpler and dependency-free for character-class matching). */
-static bool _safe_resource_value(const char *text)
+static bool safe_resource_value(const char *text)
 {
     if (!text || !*text) return false;
     size_t len = strlen(text);
@@ -113,7 +113,7 @@ char *ghe_safe_resource_attributes(const char *raw_json)
         for (size_t ki = 0; ki < raw->c.count; ki++) {
             const char *key = raw->c.keys[ki];
             json_t *value = raw->c.items[ki];
-            if (!_is_resource_attr_key(key)) continue;
+            if (!is_resource_attr_key(key)) continue;
             if (!value || value->type == JSON_NULL) continue;
 
             if (strcmp(key, "service.instance.id") == 0) {
@@ -135,7 +135,7 @@ char *ghe_safe_resource_attributes(const char *raw_json)
                 text = json_serialize(value); /* rough str() for non-strings */
 
             if (!text) continue;
-            if (!_safe_resource_value(text)) { free(text); continue; }
+            if (!safe_resource_value(text)) { free(text); continue; }
 
             /* if _redact_string(text, limit=128) != text: continue */
             char *redacted = otlp_exporter_redact_for_export(text);

@@ -27,7 +27,7 @@ int hr_canonical_json(const json_t *value, const char *label, int max_bytes,
 char **hr_claim_values(const char *const *claims, const char *const *keys,
                        int nkeys, int *out_count);
 
-/* hosted_rooms.py:_room_grant_scope_key -- sha256 hex of the compact JSON of
+/* hosted_rooms.py:room_grant_scope_key -- sha256 hex of the compact JSON of
  * the seven scope fields; NULL with *err when any field is empty. */
 char *hr_grant_scope_key(const char *const *claims, char **err);
 
@@ -36,13 +36,13 @@ char *hr_grant_scope_key(const char *const *claims, char **err);
 int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
                               const char *gateway_id, long long epoch);
 
-/* hosted_rooms.py:_remote_run_identity -- the record's columns projected into
+/* hosted_rooms.py:remote_run_identity -- the record's columns projected into
  * a tuple, in order. Caller frees the array and its strings. */
 char **hr_remote_run_identity(const char *const *record,
                               const char *const *columns, int ncols,
                               int *out_count, char **err);
 
-/* hosted_rooms.py:_validate_members -- at most MAX_MEMBERS (128) objects, then
+/* hosted_rooms.py:validate_members -- at most MAX_MEMBERS (128) objects, then
  * the canonical JSON bounded by MAX_MEMBERS_JSON_BYTES (128 KiB). */
 int hr_validate_members(json_t **members, int n, char **out_json, char **err);
 

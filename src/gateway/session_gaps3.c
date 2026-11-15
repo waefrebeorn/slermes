@@ -13,4 +13,4 @@
 void _db(void) { }
 
 /* PoP: _db @ gateway/session.py:_db (duplicate) */
-void _db_2(void) { }
+void db_2(void) { }

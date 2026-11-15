@@ -351,7 +351,7 @@ long cc_micro_compact_resolve_compact_cursor(cc_micro_compact_state_t *st,
             if (msg && msg->type == JSON_OBJECT) {
                 json_t *content = json_obj_get(msg, "content");
                 if (content && content->type == JSON_STRING && content->str_val) {
-                    char *recovered = _rolling_summary_from_marker(content->str_val);
+                    char *recovered = rolling_summary_from_marker(content->str_val);
                     if (recovered) {
                         strncpy(st->micro_compact_rolling_summary, recovered,
                                 sizeof(st->micro_compact_rolling_summary) - 1);
@@ -548,7 +548,7 @@ bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
         json_t *micro = json_obj_get(msg, "_micro_compact_marker");
         if (meta && meta->type == JSON_BOOL && meta->bool_val == true &&
             micro && micro->type == JSON_BOOL && micro->bool_val == true) {
-            char *rendered = _render_micro_marker_content(st->micro_compact_rolling_summary);
+            char *rendered = render_micro_marker_content(st->micro_compact_rolling_summary);
             json_t *new_content = json_string(rendered);
             json_set(msg, "content", new_content);
             json_free(new_content);
@@ -603,7 +603,7 @@ json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *s
         return json_copy(messages);
 
     /* Build the summary marker. */
-    char *rendered = _render_micro_marker_content(st->micro_compact_rolling_summary);
+    char *rendered = render_micro_marker_content(st->micro_compact_rolling_summary);
     json_t *marker = json_object();
     json_set(marker, "role", json_string("assistant"));
     json_set(marker, "content", json_string(rendered));
@@ -692,7 +692,7 @@ json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *s
             }
             /* Merge adjacent user turns left by the supersede. */
             json_t *merged = NULL;
-            _merge_adjacent_user_turns(superseded, &merged);
+            merge_adjacent_user_turns(superseded, &merged);
             if (merged) {
                 json_free(superseded);
                 superseded = merged;

@@ -9,20 +9,20 @@
 
 /* ── cron/incidents.py: 11 missing functions ── */
 
-/* PoP: _normalize_error @ cron/incidents.py:_normalize_error */
-char *_normalize_error(const char *error) { return error ? strdup(error) : strdup(""); }
+/* PoP: normalize_error @ cron/incidents.py:normalize_error */
+char *normalize_error(const char *error) { return error ? strdup(error) : strdup(""); }
 
-/* PoP: _redact_error @ cron/incidents.py:_redact_error */
-char *_redact_error(const char *error) { return strdup(""); }
+/* PoP: redact_error @ cron/incidents.py:redact_error */
+char *redact_error(const char *error) { return strdup(""); }
 
-/* PoP: _error_signature @ cron/incidents.py:_error_signature */
-char *_error_signature(const char *error) { return strdup(""); }
+/* PoP: error_signature @ cron/incidents.py:error_signature */
+char *error_signature(const char *error) { return strdup(""); }
 
-/* PoP: _incident_id @ cron/incidents.py:_incident_id */
-char *_incident_id(void) { return strdup(""); }
+/* PoP: incident_id @ cron/incidents.py:incident_id */
+char *incident_id(void) { return strdup(""); }
 
-/* PoP: _classify_failure_type @ cron/incidents.py:_classify_failure_type */
-char *_classify_failure_type(void) { return strdup("unknown"); }
+/* PoP: classify_failure_type @ cron/incidents.py:classify_failure_type */
+char *classify_failure_type(void) { return strdup("unknown"); }
 
 /* PoP: upsert_incident @ cron/incidents.py:upsert_incident */
 char *upsert_incident(void) { return strdup("{}"); }

@@ -70,7 +70,7 @@ static void cli_pi_init(void) {
 
 /* ---- git / worktree helpers ------------------------------------------- */
 
-/* PoP: cli__worktree_is_dirty @ hermes_cli/worktree_ops.py:_worktree_is_dirty */
+/* PoP: cli__worktree_is_dirty @ hermes_cli/worktree_ops.py:worktree_is_dirty */
 /* Real: run `git status --porcelain` in the worktree. Fails SAFE -> dirty. */
 int cli__worktree_is_dirty(const char *worktree_path, int timeout) {
     (void)timeout;
@@ -87,7 +87,7 @@ int cli__worktree_is_dirty(const char *worktree_path, int timeout) {
     return dirty;
 }
 
-/* PoP: cli__worktree_lock_is_live @ hermes_cli/worktree_ops.py:_worktree_lock_is_live */
+/* PoP: cli__worktree_lock_is_live @ hermes_cli/worktree_ops.py:worktree_lock_is_live */
 /* Returns malloc'd "live"/"dead"/NULL. Real: parse `git worktree list
  * --porcelain` and check the owning pid. Fails SAFE -> "live". */
 char *cli__worktree_lock_is_live(const char *repo_root, const char *worktree_path, int timeout) {

@@ -9,23 +9,23 @@
 
 /* ── hermes_cli/active_sessions.py: 12 missing functions ── */
 
-/* PoP: _registry_home @ hermes_cli/active_sessions.py:_registry_home */
-char *_registry_home(void) { return strdup(""); }
+/* PoP: registry_home @ hermes_cli/active_sessions.py:registry_home */
+char *registry_home(void) { return strdup(""); }
 
-/* PoP: _is_same_writer @ hermes_cli/active_sessions.py:_is_same_writer */
-int _is_same_writer(void) { return 1; }
+/* PoP: is_same_writer @ hermes_cli/active_sessions.py:is_same_writer */
+int is_same_writer(void) { return 1; }
 
 /* PoP: session_already_owned_message @ hermes_cli/active_sessions.py:session_already_owned_message */
 char *session_already_owned_message(void) { return strdup(""); }
 
-/* PoP: _lease_paths @ hermes_cli/active_sessions.py:_lease_paths */
-char *_lease_paths(void) { return strdup("[]"); }
+/* PoP: lease_paths @ hermes_cli/active_sessions.py:lease_paths */
+char *lease_paths(void) { return strdup("[]"); }
 
-/* PoP: _pid_liveness @ hermes_cli/active_sessions.py:_pid_liveness */
-int _pid_liveness(void) { return 1; }
+/* PoP: pid_liveness @ hermes_cli/active_sessions.py:pid_liveness */
+int pid_liveness(void) { return 1; }
 
-/* PoP: _lease_entry @ hermes_cli/active_sessions.py:_lease_entry */
-char *_lease_entry(void) { return strdup("{}"); }
+/* PoP: lease_entry @ hermes_cli/active_sessions.py:lease_entry */
+char *lease_entry(void) { return strdup("{}"); }
 
 
 
@@ -36,5 +36,5 @@ char *active_session_registry_snapshot(void) { return strdup("[]"); }
 char *active_session_liveness_guard(void) { return strdup("{}"); }
 
 
-/* PoP: _registry_home_for_lease @ hermes_cli/active_sessions.py:_registry_home_for_lease */
-char *_registry_home_for_lease(void) { return strdup(""); }
+/* PoP: registry_home_for_lease @ hermes_cli/active_sessions.py:registry_home_for_lease */
+char *registry_home_for_lease(void) { return strdup(""); }

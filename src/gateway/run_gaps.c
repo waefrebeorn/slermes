@@ -9,12 +9,12 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
-extern char *_normalize_telegram_topic_profile_name(const char *profile_name);
+extern char *normalize_telegram_topic_profile_name(const char *profile_name);
 
 /* ── gateway/run.py: hygiene + startup + handoff + scope cluster ── */
 
-/* PoP: _hygiene_compression_timeout_message @ gateway/run.py:_hygiene_compression_timeout_message */
-char *_hygiene_compression_timeout_message(int total_exhausted, float elapsed, float idle_timeout, int progress_observed) {
+/* PoP: hygiene_compression_timeout_message @ gateway/run.py:hygiene_compression_timeout_message */
+char *hygiene_compression_timeout_message(int total_exhausted, float elapsed, float idle_timeout, int progress_observed) {
     char *msg = malloc(512);
     if (!msg) return NULL;
     if (total_exhausted) {
@@ -40,26 +40,26 @@ int hygiene_wait_should_extend(float idle, float timeout, float waited, float ce
     return (idle < timeout) && (waited < ceiling);
 }
 
-/* PoP: _startup_warmup_timeout_secs @ gateway/run.py:_startup_warmup_timeout_secs */
-float _startup_warmup_timeout_secs(void) {
+/* PoP: startup_warmup_timeout_secs @ gateway/run.py:startup_warmup_timeout_secs */
+float startup_warmup_timeout_secs(void) {
     const char *raw = getenv("HERMES_STARTUP_WARMUP_TIMEOUT");
     if (!raw || !*raw) return 30.0f;
     float val = (float)atof(raw);
     return val > 0 ? val : 30.0f;
 }
 
-/* PoP: _warm_turn_machinery_sync @ gateway/run.py:_warm_turn_machinery_sync */
-int _warm_turn_machinery_sync(void) {
+/* PoP: warm_turn_machinery_sync @ gateway/run.py:warm_turn_machinery_sync */
+int warm_turn_machinery_sync(void) {
     return 0; /* number of tool schemas materialized */
 }
 
-/* PoP: _enable_multiplex_log_routing @ gateway/run.py:_enable_multiplex_log_routing */
-int _enable_multiplex_log_routing(int multiplex_profiles) {
+/* PoP: enable_multiplex_log_routing @ gateway/run.py:enable_multiplex_log_routing */
+int enable_multiplex_log_routing(int multiplex_profiles) {
     return multiplex_profiles ? 1 : 0;
 }
 
-/* PoP: _handoff_watch_scopes @ gateway/run.py:_handoff_watch_scopes */
-char **_handoff_watch_scopes(void *runner) {
+/* PoP: handoff_watch_scopes @ gateway/run.py:handoff_watch_scopes */
+char **handoff_watch_scopes(void *runner) {
     (void)runner;
     char **scopes = malloc(sizeof(char *) * 2);
     scopes[0] = strdup("unscoped");
@@ -67,44 +67,44 @@ char **_handoff_watch_scopes(void *runner) {
     return scopes;
 }
 
-/* PoP: _reclaim_stale @ gateway/run.py:_reclaim_stale */
-void _reclaim_stale(void *runner) {
+/* PoP: reclaim_stale @ gateway/run.py:reclaim_stale */
+void reclaim_stale(void *runner) {
     (void)runner;
     /* Fail handoffs left in 'running' by a dead gateway */
 }
 
-/* PoP: _terminal_scope_cwd @ gateway/run.py:_terminal_scope_cwd */
-char *_terminal_scope_cwd(const char *default_val) {
+/* PoP: terminal_scope_cwd @ gateway/run.py:terminal_scope_cwd */
+char *terminal_scope_cwd(const char *default_val) {
     const char *cwd = getenv("TERMINAL_CWD");
     return strdup(cwd ? cwd : (default_val ? default_val : ""));
 }
 
-/* PoP: _load_profile_secret_scope @ gateway/run.py:_load_profile_secret_scope */
-char *_load_profile_secret_scope(const char *profile_home) {
+/* PoP: load_profile_secret_scope @ gateway/run.py:load_profile_secret_scope */
+char *load_profile_secret_scope(const char *profile_home) {
     (void)profile_home;
     return strdup("{}");
 }
 
-/* PoP: _async_profile_runtime_scope @ gateway/run.py:_async_profile_runtime_scope */
-char *_async_profile_runtime_scope(const char *profile_home) {
+/* PoP: async_profile_runtime_scope @ gateway/run.py:async_profile_runtime_scope */
+char *async_profile_runtime_scope(const char *profile_home) {
     (void)profile_home;
     return strdup("{}");
 }
 
-/* PoP: _discover_gateway_mcp_tools @ gateway/run.py:_discover_gateway_mcp_tools */
-char *_discover_gateway_mcp_tools(void *gateway) {
+/* PoP: discover_gateway_mcp_tools @ gateway/run.py:discover_gateway_mcp_tools */
+char *discover_gateway_mcp_tools(void *gateway) {
     (void)gateway;
     return strdup("[]");
 }
 
-/* PoP: _deep_merge_request_overrides @ gateway/run.py:_deep_merge_request_overrides */
-char *_deep_merge_request_overrides(const char *base, const char *override) {
+/* PoP: deep_merge_request_overrides @ gateway/run.py:deep_merge_request_overrides */
+char *deep_merge_request_overrides(const char *base, const char *override) {
     (void)base; (void)override;
     return strdup("{}");
 }
 
-/* PoP: _voice_key_for_source @ gateway/run_voice.py:_voice_key_for_source */
-char *_voice_key_for_source(const char *source) {
+/* PoP: voice_key_for_source @ gateway/run_voice.py:voice_key_for_source */
+char *voice_key_for_source(const char *source) {
     if (!source) return strdup("default");
     size_t len = strlen(source) + 6;
     char *key = malloc(len);
@@ -112,18 +112,18 @@ char *_voice_key_for_source(const char *source) {
     return key;
 }
 
-/* PoP: _bind_voice_input_callback @ gateway/run_voice.py:_bind_voice_input_callback */
-void _bind_voice_input_callback(void *gateway, const char *source) {
+/* PoP: bind_voice_input_callback @ gateway/run_voice.py:bind_voice_input_callback */
+void bind_voice_input_callback(void *gateway, const char *source) {
     (void)gateway; (void)source;
 }
 
-/* PoP: _telegram_topic_profile_name @ gateway/run_topics.py:_telegram_topic_profile_name */
-char *_telegram_topic_profile_name(const char *profile_name) {
-    return _normalize_telegram_topic_profile_name(profile_name);
+/* PoP: telegram_topic_profile_name @ gateway/run_topics.py:telegram_topic_profile_name */
+char *telegram_topic_profile_name(const char *profile_name) {
+    return normalize_telegram_topic_profile_name(profile_name);
 }
 
-/* PoP: _telegram_topic_cooldown_key @ gateway/run_topics.py:_telegram_topic_cooldown_key */
-char *_telegram_topic_cooldown_key(const char *profile_name) {
+/* PoP: telegram_topic_cooldown_key @ gateway/run_topics.py:telegram_topic_cooldown_key */
+char *telegram_topic_cooldown_key(const char *profile_name) {
     if (!profile_name) return strdup("cooldown:default");
     size_t len = strlen(profile_name) + 10;
     char *key = malloc(len);
@@ -131,117 +131,117 @@ char *_telegram_topic_cooldown_key(const char *profile_name) {
     return key;
 }
 
-/* PoP: _active_deferred_agent_worker_count @ gateway/run_shutdown.py:_active_deferred_agent_worker_count */
-int _active_deferred_agent_worker_count(void) {
+/* PoP: active_deferred_agent_worker_count @ gateway/run_shutdown.py:active_deferred_agent_worker_count */
+int active_deferred_agent_worker_count(void) {
     return 0;
 }
 
-/* PoP: _track_deferred_agent_worker @ gateway/run_shutdown.py:_track_deferred_agent_worker */
-void _track_deferred_agent_worker(void *worker) {
+/* PoP: track_deferred_agent_worker @ gateway/run_shutdown.py:track_deferred_agent_worker */
+void track_deferred_agent_worker(void *worker) {
     (void)worker;
 }
 
-/* PoP: _interrupt_deferred_agent_workers @ gateway/run_shutdown.py:_interrupt_deferred_agent_workers */
-int _interrupt_deferred_agent_workers(void) {
+/* PoP: interrupt_deferred_agent_workers @ gateway/run_shutdown.py:interrupt_deferred_agent_workers */
+int interrupt_deferred_agent_workers(void) {
     return 0;
 }
 
-/* PoP: _rescue_orphaned_overflow @ gateway/run_busy.py:_rescue_orphaned_overflow */
-void _rescue_orphaned_overflow(void *gateway) {
+/* PoP: rescue_orphaned_overflow @ gateway/run_busy.py:rescue_orphaned_overflow */
+void rescue_orphaned_overflow(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _load_signal_interrupt_grace_timeout @ gateway/run_config_loaders.py:_load_signal_interrupt_grace_timeout */
-float _load_signal_interrupt_grace_timeout(void) {
+/* PoP: load_signal_interrupt_grace_timeout @ gateway/run_config_loaders.py:load_signal_interrupt_grace_timeout */
+float load_signal_interrupt_grace_timeout(void) {
     return 5.0f;
 }
 
-/* PoP: _post_interrupt_grace_timeout @ gateway/run_config_loaders.py:_post_interrupt_grace_timeout */
-float _post_interrupt_grace_timeout(void) {
+/* PoP: post_interrupt_grace_timeout @ gateway/run_config_loaders.py:post_interrupt_grace_timeout */
+float post_interrupt_grace_timeout(void) {
     return 2.0f;
 }
 
-/* PoP: _start_startup_warmup @ gateway/run_startup.py:_start_startup_warmup */
-void _start_startup_warmup(void *gateway) {
+/* PoP: start_startup_warmup @ gateway/run_startup.py:start_startup_warmup */
+void start_startup_warmup(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _warm_turn_prerequisites @ gateway/run_startup.py:_warm_turn_prerequisites */
-void _warm_turn_prerequisites(void *gateway) {
+/* PoP: warm_turn_prerequisites @ gateway/run_startup.py:warm_turn_prerequisites */
+void warm_turn_prerequisites(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _await_startup_warmup @ gateway/run_startup.py:_await_startup_warmup */
-int _await_startup_warmup(void *gateway, float timeout_secs) {
+/* PoP: await_startup_warmup @ gateway/run_startup.py:await_startup_warmup */
+int await_startup_warmup(void *gateway, float timeout_secs) {
     (void)gateway; (void)timeout_secs;
     return 1; /* warmup completed */
 }
 
-/* PoP: _clear_resume_pending_for_claimed_obligations @ gateway/run_startup.py:_clear_resume_pending_for_claimed_obligations */
-void _clear_resume_pending_for_claimed_obligations(void *gateway) {
+/* PoP: clear_resume_pending_for_claimed_obligations @ gateway/run_startup.py:clear_resume_pending_for_claimed_obligations */
+void clear_resume_pending_for_claimed_obligations(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _redeliver_failed_obligations_for_platform @ gateway/run_startup.py:_redeliver_failed_obligations_for_platform */
-int _redeliver_failed_obligations_for_platform(void *gateway, const char *platform) {
+/* PoP: redeliver_failed_obligations_for_platform @ gateway/run_startup.py:redeliver_failed_obligations_for_platform */
+int redeliver_failed_obligations_for_platform(void *gateway, const char *platform) {
     (void)gateway; (void)platform;
     return 0;
 }
 
-/* PoP: _start_hosted_room_worker_sync @ gateway/run_startup.py:_start_hosted_room_worker_sync */
-void _start_hosted_room_worker_sync(void *gateway) {
+/* PoP: start_hosted_room_worker_sync @ gateway/run_startup.py:start_hosted_room_worker_sync */
+void start_hosted_room_worker_sync(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _ensure_hosted_room_worker @ gateway/run_startup.py:_ensure_hosted_room_worker */
-void _ensure_hosted_room_worker(void *gateway) {
+/* PoP: ensure_hosted_room_worker @ gateway/run_startup.py:ensure_hosted_room_worker */
+void ensure_hosted_room_worker(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _hosted_room_worker_watcher @ gateway/run_startup.py:_hosted_room_worker_watcher */
-void _hosted_room_worker_watcher(void *gateway) {
+/* PoP: hosted_room_worker_watcher @ gateway/run_startup.py:hosted_room_worker_watcher */
+void hosted_room_worker_watcher(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _stop_hosted_room_worker @ gateway/run_startup.py:_stop_hosted_room_worker */
-void _stop_hosted_room_worker(void *gateway) {
+/* PoP: stop_hosted_room_worker @ gateway/run_startup.py:stop_hosted_room_worker */
+void stop_hosted_room_worker(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _model_catalog_refresh_watcher @ gateway/run_watchers.py:_model_catalog_refresh_watcher */
-void _model_catalog_refresh_watcher(void *gateway) {
+/* PoP: model_catalog_refresh_watcher @ gateway/run_watchers.py:model_catalog_refresh_watcher */
+void model_catalog_refresh_watcher(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _schedule_secondary_profile_startup_reconnect @ gateway/run_adapters.py:_schedule_secondary_profile_startup_reconnect */
-void _schedule_secondary_profile_startup_reconnect(void *gateway) {
+/* PoP: schedule_secondary_profile_startup_reconnect @ gateway/run_adapters.py:schedule_secondary_profile_startup_reconnect */
+void schedule_secondary_profile_startup_reconnect(void *gateway) {
     (void)gateway;
 }
 
-/* PoP: _is_user_authorized_for_source @ gateway/run.py:_is_user_authorized_for_source */
-int _is_user_authorized_for_source(void *gateway, const char *source) {
+/* PoP: is_user_authorized_for_source @ gateway/run.py:is_user_authorized_for_source */
+int is_user_authorized_for_source(void *gateway, const char *source) {
     (void)gateway; (void)source;
     return 1;
 }
 
-/* PoP: _instantiate_adapter @ gateway/run_adapters.py:_instantiate_adapter */
-void *_instantiate_adapter(const char *adapter_type) {
+/* PoP: instantiate_adapter @ gateway/run_adapters.py:instantiate_adapter */
+void *instantiate_adapter(const char *adapter_type) {
     (void)adapter_type;
     return NULL;
 }
 
-/* PoP: _gateway_plain_command_handlers @ gateway/run_busy.py:_gateway_plain_command_handlers */
-char *_gateway_plain_command_handlers(void) {
+/* PoP: gateway_plain_command_handlers @ gateway/run_busy.py:gateway_plain_command_handlers */
+char *gateway_plain_command_handlers(void) {
     return strdup("[]");
 }
 
-/* PoP: _drain_restart_safe_cron_deliveries @ gateway/run.py:_drain_restart_safe_cron_deliveries */
-int _drain_restart_safe_cron_deliveries(void *gateway) {
+/* PoP: drain_restart_safe_cron_deliveries @ gateway/run.py:drain_restart_safe_cron_deliveries */
+int drain_restart_safe_cron_deliveries(void *gateway) {
     (void)gateway;
     return 0;
 }
 
-/* PoP: _shutdown_mcp_servers_nonblocking @ gateway/run.py:_shutdown_mcp_servers_nonblocking */
-void _shutdown_mcp_servers_nonblocking(void *gateway) {
+/* PoP: shutdown_mcp_servers_nonblocking @ gateway/run.py:shutdown_mcp_servers_nonblocking */
+void shutdown_mcp_servers_nonblocking(void *gateway) {
     (void)gateway;
 }

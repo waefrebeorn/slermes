@@ -44,7 +44,7 @@ static char *_shell_basename(const char *head)
 
 /* _split_shell_words: split on whitespace, honoring ' and " quotes.
  * Returns malloc'd array of malloc'd strings; *count set; NULL term. */
-static char **_cli_split_shell_words(const char *segment, int *count)
+static char **cli_split_shell_words(const char *segment, int *count)
 {
     /* Two passes: count words, then allocate. Keep simple: tokenize into
      * a dynamic array. */
@@ -114,10 +114,10 @@ static void _free_words(char **words, int n)
 }
 
 /* _strip_shell_pipe_tail: drop words from the first "| <tail-head>" on. */
-static char *_cli_strip_shell_pipe_tail(const char *segment)
+static char *cli_strip_shell_pipe_tail(const char *segment)
 {
     int n = 0;
-    char **words = _cli_split_shell_words(segment, &n);
+    char **words = cli_split_shell_words(segment, &n);
     /* Build output up to (but not including) the "|" whose next word basename
      * is in _SHELL_PIPE_TAIL_HEADS. */
     int cut = n;
@@ -149,7 +149,7 @@ static char *_cli_strip_shell_pipe_tail(const char *segment)
 
 /* _split_shell_compound: split on ; & && || \n into segments (pipe-tail
  * stripped). Returns malloc'd array of malloc'd strings; *count set. */
-static char **_cli_split_shell_compound(const char *command, int *count)
+static char **cli_split_shell_compound(const char *command, int *count)
 {
     char **segs = NULL;
     int cap = 0, n = 0;
@@ -179,7 +179,7 @@ static char **_cli_split_shell_compound(const char *command, int *count)
             op_len = 1;
         if (op_len) {
             buf[blen] = '\0';
-            char *seg = _cli_strip_shell_pipe_tail(buf);
+            char *seg = cli_strip_shell_pipe_tail(buf);
             if (seg && *seg) {
                 if (n + 1 > cap) { cap = cap ? cap * 2 : 8; segs = (char **)realloc(segs, cap * sizeof(char *)); }
                 segs[n++] = seg;
@@ -192,7 +192,7 @@ static char **_cli_split_shell_compound(const char *command, int *count)
         i++;
     }
     buf[blen] = '\0';
-    char *seg = _cli_strip_shell_pipe_tail(buf);
+    char *seg = cli_strip_shell_pipe_tail(buf);
     if (seg && *seg) {
         if (n + 1 > cap) { cap = n + 1; segs = (char **)realloc(segs, cap * sizeof(char *)); }
         segs[n++] = seg;
@@ -205,10 +205,10 @@ static char **_cli_split_shell_compound(const char *command, int *count)
 
 /* _clean_shell_segment: drop redirection tokens (N>, >&, <&, etc.) and
  * bare N> / < operators. Returns malloc'd string. */
-static char *_cli_clean_shell_segment(const char *segment)
+static char *cli_clean_shell_segment(const char *segment)
 {
     int n = 0;
-    char **words = _cli_split_shell_words(segment, &n);
+    char **words = cli_split_shell_words(segment, &n);
     char **out = (char **)malloc((n + 1) * sizeof(char *));
     int m = 0;
     int i = 0;
@@ -245,10 +245,10 @@ static char *_cli_clean_shell_segment(const char *segment)
 }
 
 /* _is_shell_boundary_echo: detects `echo ... --... | _exit= | $? | PIPESTATUS` */
-static int _cli_is_shell_boundary_echo(const char *segment)
+static int cli_is_shell_boundary_echo(const char *segment)
 {
     int n = 0;
-    char **words = _cli_split_shell_words(segment, &n);
+    char **words = cli_split_shell_words(segment, &n);
     char *bn = _shell_basename(n > 0 ? words[0] : "");
     int is_echo = (strcmp(bn, "echo") == 0);
     free(bn);
@@ -274,31 +274,31 @@ static int _cli_is_shell_boundary_echo(const char *segment)
 /* PoP: cli_agent_display__split_shell_words @ agent/display.py:_split_shell_words */
 char **cli_agent_display__split_shell_words(const char *segment, int *count)
 {
-    return _cli_split_shell_words(segment, count);
+    return cli_split_shell_words(segment, count);
 }
 
 /* PoP: cli_agent_display__strip_shell_pipe_tail @ agent/display.py:_strip_shell_pipe_tail */
 char *cli_agent_display__strip_shell_pipe_tail(const char *segment)
 {
-    return _cli_strip_shell_pipe_tail(segment);
+    return cli_strip_shell_pipe_tail(segment);
 }
 
 /* PoP: cli_agent_display__split_shell_compound @ agent/display.py:_split_shell_compound */
 char **cli_agent_display__split_shell_compound(const char *command, int *count)
 {
-    return _cli_split_shell_compound(command, count);
+    return cli_split_shell_compound(command, count);
 }
 
 /* PoP: cli_agent_display__clean_shell_segment @ agent/display.py:_clean_shell_segment */
 char *cli_agent_display__clean_shell_segment(const char *segment)
 {
-    return _cli_clean_shell_segment(segment);
+    return cli_clean_shell_segment(segment);
 }
 
 /* PoP: cli_agent_display__is_shell_boundary_echo @ agent/display.py:_is_shell_boundary_echo */
 int cli_agent_display__is_shell_boundary_echo(const char *segment)
 {
-    return _cli_is_shell_boundary_echo(segment);
+    return cli_is_shell_boundary_echo(segment);
 }
 
 /* PoP: whitespace @ agent/display.py:_oneline */
@@ -326,13 +326,13 @@ char *cli_agent_display__oneline(const char *text)
     return out;
 }
 
-/* PoP: _cli_shell_head_word @ agent/display.py:_shell_head_word */
+/* PoP: cli_shell_head_word @ agent/display.py:_shell_head_word */
 /* First non-KEY= word, reduced to its basename. Caller frees. */
-static char *_cli_shell_head_word(const char *segment)
+static char *cli_shell_head_word(const char *segment)
 {
     if (!segment) return strdup("");
     int n = 0;
-    char **words = _cli_split_shell_words(segment, &n);
+    char **words = cli_split_shell_words(segment, &n);
     int index = 0;
     while (index < n) {
         char *w = words[index];
@@ -357,13 +357,13 @@ static char *_cli_shell_head_word(const char *segment)
     return bn; /* bn is a fresh strdup, caller frees */
 }
 
-/* PoP: _cli_is_silent_head @ agent/display.py:summarize_shell_command */
+/* PoP: cli_is_silent_head @ agent/display.py:summarize_shell_command */
 
 /* Silent compound-command heads (see _SHELL_SILENT_HEADS). */
 static const char *CLI_SHELL_SILENT_HEADS[] = {
     "cd", "pushd", "popd", "export", "set", "unset", "source", ".", "true", "false", ":", NULL
 };
-static int _cli_is_silent_head(const char *h)
+static int cli_is_silent_head(const char *h)
 {
     if (!h) return 0;
     for (int i = 0; CLI_SHELL_SILENT_HEADS[i]; i++)
@@ -379,9 +379,9 @@ char *cli_agent_display__summarize_shell_command(const char *command)
     if (!original || !original[0]) { free(original); return strdup(""); }
 
     int nseg = 0;
-    char **segments = _cli_split_shell_compound(original, &nseg);
+    char **segments = cli_split_shell_compound(original, &nseg);
     if (nseg <= 1) {
-        char *cleaned = (nseg == 1) ? _cli_clean_shell_segment(segments[0]) : strdup(original);
+        char *cleaned = (nseg == 1) ? cli_clean_shell_segment(segments[0]) : strdup(original);
         char *res = (cleaned && cleaned[0]) ? cleaned : strdup(original);
         for (int i = 0; i < nseg; i++) free(segments[i]);
         free(segments); free(original);
@@ -391,10 +391,10 @@ char *cli_agent_display__summarize_shell_command(const char *command)
     char **core = malloc((size_t)nseg * sizeof(char *));
     int core_n = 0;
     for (int s = 0; s < nseg; s++) {
-        char *cleaned = _cli_clean_shell_segment(segments[s]);
-        char *head = _cli_shell_head_word(cleaned);
-        int keep = cleaned && cleaned[0] && !_cli_is_silent_head(head) &&
-                   !_cli_is_shell_boundary_echo(cleaned);
+        char *cleaned = cli_clean_shell_segment(segments[s]);
+        char *head = cli_shell_head_word(cleaned);
+        int keep = cleaned && cleaned[0] && !cli_is_silent_head(head) &&
+                   !cli_is_shell_boundary_echo(cleaned);
         if (keep) core[core_n++] = cleaned;
         else free(cleaned);
         free(head);

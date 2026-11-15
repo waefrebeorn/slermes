@@ -1,10 +1,10 @@
 /*
  * port_auth_store.c — auth.json persistence layer ported from hermes_cli/auth.py.
  * See include/port_auth_store.h for the API surface. C11, opaque txn struct,
- * minimal includes. Reuses: auth_file_path/_global_auth_file_path/has_usable_secret
+ * minimal includes. Reuses: auth_file_path/global_auth_file_path/has_usable_secret
  * (port_auth_na.c), auth_helpers (JWT/scope/expiry), provider_registry,
  * config_py_* (config.yaml IO), sanitize_borrowed_credential_payload,
- * _parse_absolute_timestamp/_exhausted_ttl (credential_pool internals).
+ * parse_absolute_timestamp/_exhausted_ttl (credential_pool internals).
  */
 #include "port_auth_store.h"
 
@@ -28,8 +28,8 @@
 
 /* ── external reuse (port_auth_na.c) ── */
 extern char *auth_file_path(void);           /* malloc'd <home>/auth.json */
-/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
-extern char *_global_auth_file_path(void);    /* malloc'd or NULL */
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:global_auth_file_path */
+extern char *global_auth_file_path(void);    /* malloc'd or NULL */
 extern int   has_usable_secret(const char *value, int min_length);
 /* port_config_py_io.c */
 extern json_t *config_py_read_raw_config(void);
@@ -39,7 +39,7 @@ extern int     config_py_require_readable_config_before_write(const char *config
 extern char   *config_py_get_env_value_prefer_dotenv(const char *key);
 /* credential pool internals */
 extern json_node_t *sanitize_borrowed_credential_payload(const json_node_t *payload, const char *provider_id);
-extern double _parse_absolute_timestamp(const char *value);
+extern double parse_absolute_timestamp(const char *value);
 extern int    _exhausted_ttl(int error_code);
 /* provider alias resolution (port_provider_registry.c) */
 extern char *provider_resolve_alias(const char *requested);
@@ -276,7 +276,7 @@ json_t *authstore_load(const char *auth_file)
 /* PoP: authstore_load_global @ hermes_cli/auth.py:_load_global_auth_store */
 json_t *authstore_load_global(void)
 {
-    char *gpath = _global_auth_file_path();
+    char *gpath = global_auth_file_path();
     if (!gpath) return json_new_object();
     struct stat st;
     if (stat(gpath, &st) != 0) { free(gpath); return json_new_object(); }
@@ -365,7 +365,7 @@ json_t *authstore_load_provider_state_with_source(json_t *auth_store, const char
         }
     }
 
-    char *gpath = _global_auth_file_path();
+    char *gpath = global_auth_file_path();
     json_t *gstore = authstore_load_global();
     if (gstore) {
         json_t *gproviders = json_obj_get(gstore, "providers");
@@ -652,15 +652,15 @@ static const char *POOL_STATUS_FIELDS[] = {
 static const int POOL_STATUS_FIELDS_N =
     (int)(sizeof(POOL_STATUS_FIELDS)/sizeof(POOL_STATUS_FIELDS[0]));
 
-/* dict-shaped _exhausted_until: reset_at wins, else last_status_at + ttl(code). */
+/* dict-shaped exhausted_until: reset_at wins, else last_status_at + ttl(code). */
 static double pool_entry_exhausted_until(const json_t *disk_entry)
 {
     const char *reset_at = json_get_str(disk_entry, "last_error_reset_at", NULL);
     if (reset_at && *reset_at) {
-        double t = _parse_absolute_timestamp(reset_at);
+        double t = parse_absolute_timestamp(reset_at);
         if (t > 0) return t;
     }
-    double status_at = _parse_absolute_timestamp(
+    double status_at = parse_absolute_timestamp(
         json_get_str(disk_entry, "last_status_at", NULL));
     if (status_at > 0) {
         int code = (int)json_get_num(disk_entry, "last_error_code", 0);
@@ -689,8 +689,8 @@ json_t *auth_merge_disk_cooldown_state(const json_t *entry, const json_t *disk_e
     if (mem_access[0] && disk_access[0] && strcmp(mem_access, disk_access) != 0)
         return keep;
 
-    double disk_ts = _parse_absolute_timestamp(json_get_str(disk_entry, "last_status_at", NULL));
-    double mem_ts = _parse_absolute_timestamp(json_get_str(entry, "last_status_at", NULL));
+    double disk_ts = parse_absolute_timestamp(json_get_str(disk_entry, "last_status_at", NULL));
+    double mem_ts = parse_absolute_timestamp(json_get_str(entry, "last_status_at", NULL));
     if (disk_ts <= 0) disk_ts = 0;
     if (mem_ts <= 0) mem_ts = 0;
     if (disk_ts <= mem_ts) return keep;

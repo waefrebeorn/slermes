@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 
-/* _human_gb -- "%.1f GB" of n / (1 << 30) - a GiB, despite the label.
+/* human_gb -- "%.1f GB" of n / (1 << 30) - a GiB, despite the label.
  * Caller frees. */
 char *lm_human_gb(double n);
 

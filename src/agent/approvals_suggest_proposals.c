@@ -37,7 +37,7 @@ struct proposal {
     size_t examples_cap;
 };
 
-static void _ensure_cap_classes(proposal_t *p)
+static void ensure_cap_classes(proposal_t *p)
 {
     if (p->classes_len < p->classes_cap) return;
     size_t new_cap = p->classes_cap ? p->classes_cap * 2 : 8;
@@ -47,7 +47,7 @@ static void _ensure_cap_classes(proposal_t *p)
     p->classes_cap = new_cap;
 }
 
-static void _ensure_cap_examples(proposal_t *p)
+static void ensure_cap_examples(proposal_t *p)
 {
     if (p->examples_len < p->examples_cap) return;
     size_t new_cap = p->examples_cap ? p->examples_cap * 2 : 8;
@@ -124,18 +124,18 @@ int proposal_add_example(proposal_t *p, const char *command)
     for (size_t i = 0; i < p->examples_len; i++)
         if (strcmp(p->examples[i], shortbuf) == 0) return 0;
 
-    _ensure_cap_examples(p);
+    ensure_cap_examples(p);
     if (p->examples_len >= p->examples_cap) return -1;
     p->examples[p->examples_len++] = strdup(shortbuf);
     return 0;
 }
 
 /* Helper: add a class description if not already present */
-static void _add_class_uniq(proposal_t *p, const char *cls)
+static void add_class_uniq(proposal_t *p, const char *cls)
 {
     if (!cls) return;
     if (_str_in_array((const char **)p->classes, p->classes_len, cls)) return;
-    _ensure_cap_classes(p);
+    ensure_cap_classes(p);
     if (p->classes_len >= p->classes_cap) return;
     p->classes[p->classes_len++] = strdup(cls);
 }
@@ -233,7 +233,7 @@ proposal_t **build_proposals(
         free(glob);
 
         e->prop->count++;
-        _add_class_uniq(e->prop, description);
+        add_class_uniq(e->prop, description);
 
         /* normalize for example */
         char *norm2 = approval_normalize_command(command);

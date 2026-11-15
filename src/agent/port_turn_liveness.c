@@ -85,7 +85,7 @@ static char *node_to_text(const json_t *n)
     }
 }
 
-/* PoP: turn_liveness_invalid_value_message @ agent/turn_liveness.py:_warn_invalid_value */
+/* PoP: turn_liveness_invalid_value_message @ agent/turn_liveness.py:warn_invalid_value */
 char *turn_liveness_invalid_value_message(const char *key, const char *raw,
                                           double def)
 {
@@ -101,7 +101,7 @@ char *turn_liveness_invalid_value_message(const char *key, const char *raw,
     return msg;
 }
 
-/* PoP: turn_liveness_resolve_finite_seconds @ agent/turn_liveness.py:_resolve_finite_seconds */
+/* PoP: turn_liveness_resolve_finite_seconds @ agent/turn_liveness.py:resolve_finite_seconds */
 int turn_liveness_resolve_finite_seconds(const char *raw, double def,
                                          double *out)
 {

@@ -9,8 +9,8 @@
 
 /* ── gateway/platforms/base.py: 22 missing functions ── */
 
-/* PoP: _consume_detached_handler_exception @ gateway/platforms/base.py:_consume_detached_handler_exception */
-void _consume_detached_handler_exception(const char *handler) {
+/* PoP: consume_detached_handler_exception @ gateway/platforms/base.py:consume_detached_handler_exception */
+void consume_detached_handler_exception(const char *handler) {
     (void)handler;
 }
 
@@ -41,34 +41,34 @@ char *cache_video_from_bytes_async(const char *bytes, int len) {
     return strdup("{\"status\":\"cached\"}");
 }
 
-/* PoP: _tenv @ gateway/platforms/base.py:_tenv */
-char *_tenv(const char *key) {
+/* PoP: tenv @ gateway/platforms/base.py:tenv */
+char *tenv(const char *key) {
     const char *val = getenv(key);
     return strdup(val ? val : "");
 }
 
-/* PoP: _docker_sandbox_dir_candidates @ gateway/platforms/docker_media_paths.py:_docker_sandbox_dir_candidates */
-char *_docker_sandbox_dir_candidates(void) {
+/* PoP: docker_sandbox_dir_candidates @ gateway/platforms/docker_media_paths.py:docker_sandbox_dir_candidates */
+char *docker_sandbox_dir_candidates(void) {
     return strdup("[]");
 }
 
-/* PoP: _default_docker_workspace_host_roots @ gateway/platforms/docker_media_paths.py:_default_docker_workspace_host_roots */
-char *_default_docker_workspace_host_roots(void) {
+/* PoP: default_docker_workspace_host_roots @ gateway/platforms/docker_media_paths.py:default_docker_workspace_host_roots */
+char *default_docker_workspace_host_roots(void) {
     return strdup("[]");
 }
 
-/* PoP: _docker_persistent_home_host_roots @ gateway/platforms/base.py:_docker_persistent_home_host_roots */
-char *_docker_persistent_home_host_roots(void) {
+/* PoP: docker_persistent_home_host_roots @ gateway/platforms/base.py:docker_persistent_home_host_roots */
+char *docker_persistent_home_host_roots(void) {
     return strdup("[]");
 }
 
-/* PoP: _warn_unresolved_docker_media @ gateway/platforms/base.py:_warn_unresolved_docker_media */
-void _warn_unresolved_docker_media(const char *path) {
+/* PoP: warn_unresolved_docker_media @ gateway/platforms/base.py:warn_unresolved_docker_media */
+void warn_unresolved_docker_media(const char *path) {
     (void)path;
 }
 
-/* PoP: _translate_docker_container_media_path @ gateway/platforms/base.py:_translate_docker_container_media_path */
-char *_translate_docker_container_media_path(const char *path) {
+/* PoP: translate_docker_container_media_path @ gateway/platforms/base.py:translate_docker_container_media_path */
+char *translate_docker_container_media_path(const char *path) {
     (void)path;
     return strdup("");
 }
@@ -90,8 +90,8 @@ void send_path_degraded(const char *path) {
     (void)path;
 }
 
-/* PoP: _mark_degraded @ gateway/platforms/base.py:_mark_degraded */
-void _mark_degraded(const char *path) {
+/* PoP: mark_degraded @ gateway/platforms/base.py:mark_degraded */
+void mark_degraded(const char *path) {
     (void)path;
 }
 
@@ -106,14 +106,14 @@ void set_owner_profile(const char *profile) {
     (void)profile;
 }
 
-/* PoP: _session_key_profile @ gateway/platforms/base.py:_session_key_profile */
-char *_session_key_profile(const char *profile) {
+/* PoP: session_key_profile @ gateway/platforms/base.py:session_key_profile */
+char *session_key_profile(const char *profile) {
     if (!profile) return strdup("default");
     return strdup(profile);
 }
 
-/* PoP: _bounded_history_media_paths_for_session @ gateway/platforms/base.py:_bounded_history_media_paths_for_session */
-char *_bounded_history_media_paths_for_session(const char *session_id) {
+/* PoP: bounded_history_media_paths_for_session @ gateway/platforms/base.py:bounded_history_media_paths_for_session */
+char *bounded_history_media_paths_for_session(const char *session_id) {
     (void)session_id;
     return strdup("[]");
 }

@@ -14,8 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: _lineage_root @ agent/prompt_cache_scope.py:_lineage_root */
-char *_lineage_root(const char *session_id, const prompt_cache_scope_db *session_db)
+/* PoP: lineage_root @ agent/prompt_cache_scope.py:lineage_root */
+char *lineage_root(const char *session_id, const prompt_cache_scope_db *session_db)
 {
     if (!session_db || !session_db->get_compression_lineage)
         return NULL;
@@ -67,8 +67,8 @@ char *resolve_prompt_cache_scope(prompt_cache_scope_agent *agent)
 
     char *root = NULL;
     if (db != NULL) {
-        root = _lineage_root(raw_sid, db);
-        /* _lineage_root failure == degraded fallback, handled below exactly
+        root = lineage_root(raw_sid, db);
+        /* lineage_root failure == degraded fallback, handled below exactly
          * like Python's except-return-None path. */
     }
     const char *scope = (root && root[0]) ? root : raw_sid;

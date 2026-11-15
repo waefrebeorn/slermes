@@ -13,7 +13,7 @@ extern const int subagent_worktree_GIT_TIMEOUT;
 extern const char *subagent_worktree_WORKTREES_DIRNAME;
 extern const char *subagent_worktree_BRANCH_NAMESPACE;
 
-/* _run_git(args, cwd) -> (returncode, stdout, stderr). Injectable for tests. */
+/* run_git(args, cwd) -> (returncode, stdout, stderr). Injectable for tests. */
 typedef int (*subagent_worktree_run_git_fn)(const char *const args[],
                                             const char *cwd,
                                             char **out_stdout,

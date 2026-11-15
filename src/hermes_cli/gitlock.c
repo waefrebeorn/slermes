@@ -24,8 +24,8 @@ const char *GITLOCK_LOCK_NAMES[4] = {
     "shallow.lock", "index.lock", "HEAD.lock", "MERGE_HEAD.lock"
 };
 
-/* PoP: _git_proc_running @ hermes_cli/gitlock.py:_git_proc_running */
-int _git_proc_running(void)
+/* PoP: git_proc_running @ hermes_cli/gitlock.py:git_proc_running */
+int git_proc_running(void)
 {
     /* Conservative answer on any probe failure: False (Python's except path
      * returns False, treating the lock as possibly-live is the caller's job —
@@ -109,7 +109,7 @@ json_t *clear_stale_git_locks(const char *repo_root, long long min_age_seconds)
         min_age_seconds = GITLOCK_STALE_LOCK_MIN_AGE_SECONDS;
     return gitlock_clear_stale_git_locks_checked(repo_root, min_age_seconds,
                                                  (long long)time(NULL),
-                                                 _git_proc_running());
+                                                 git_proc_running());
 }
 
 /* PoP: is_ancestor_of_head @ hermes_cli/gitlock.py:is_ancestor_of_head */

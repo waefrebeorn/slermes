@@ -27,7 +27,7 @@ const json_t *ms_declared_item_id(const json_t *item);
  * from a str / {"id": {...}} mapping / list. Caller owns the array. */
 json_t *ms_declared_model_ids(const json_t *value);
 
-/* _entry_models_discovered -- entry-level models_discovered, or the legacy
+/* entry_models_discovered -- entry-level models_discovered, or the legacy
  * in-mapping __discovered_model_catalog__ sentinel. */
 int ms_entry_models_discovered(const json_t *entry);
 

@@ -20,34 +20,34 @@ bool is_nan(double value);
  * beep_volume in 0.0-1.0, defaulting to 0.3. */
 double voice_get_beep_volume(const json_t *voice_cfg);
 
-/* PoP: _sounddevice_output_allowed @ tools/voice_mode.py:_sounddevice_output_allowed
+/* PoP: sounddevice_output_allowed @ tools/voice_mode.py:sounddevice_output_allowed
  * False on macOS (Darwin) — sounddevice output triggers a TCC prompt there. */
-bool _sounddevice_output_allowed(void);
+bool sounddevice_output_allowed(void);
 
 /* PoP: _is_wsl @ tools/voice_mode.py:_is_wsl
  * True when running inside Windows Subsystem for Linux. */
 bool _is_wsl(void);
 
-/* PoP: _is_wsl2_env @ tools/voice_mode.py:_is_wsl2_env
+/* PoP: is_wsl2_env @ tools/voice_mode.py:is_wsl2_env
  * True when running inside WSL2. */
-bool _is_wsl2_env(void);
+bool is_wsl2_env(void);
 
-/* PoP: _wsl_powershell_tts_available @ tools/voice_mode.py:_wsl_powershell_tts_available
+/* PoP: wsl_powershell_tts_available @ tools/voice_mode.py:wsl_powershell_tts_available
  * Whether the WSL2 PowerShell TTS playback fallback can be used. */
-bool _wsl_powershell_tts_available(void);
+bool wsl_powershell_tts_available(void);
 
-/* PoP: _voice_debug_enabled @ tools/voice_mode.py:_voice_debug_enabled
+/* PoP: voice_debug_enabled @ tools/voice_mode.py:voice_debug_enabled
  * True when HERMES_VOICE_DEBUG=1. */
-bool _voice_debug_enabled(void);
+bool voice_debug_enabled(void);
 
-/* PoP: _vad_log @ tools/voice_mode.py:_vad_log
+/* PoP: vad_log @ tools/voice_mode.py:vad_log
  * VAD diagnostic logging to stderr. */
-void _vad_log(const char *msg);
+void vad_log(const char *msg);
 
-/* PoP: _load_voice_stop_phrases @ tools/voice_mode.py:_load_voice_stop_phrases
+/* PoP: load_voice_stop_phrases @ tools/voice_mode.py:load_voice_stop_phrases
  * voice_cfg is the "voice" section JSON. Returns a malloc'd char** array
  * (caller frees via free_voice_stop_phrases) of lowercased stripped phrases. */
-char **_load_voice_stop_phrases(const json_t *voice_cfg, int *out_count);
+char **load_voice_stop_phrases(const json_t *voice_cfg, int *out_count);
 
 /* Caller frees the array + each string. */
 void free_voice_stop_phrases(char **phrases, int count);

@@ -299,7 +299,7 @@ int fire_overdue_jobs(cron_scheduler_provider *provider, void *adapters,
          * stamp skips the job rather than firing it speculatively. */
         long long due_s = 0;
         int usec = 0;
-        if (_parse_iso(next_run_at, &due_s, &usec) != 0)
+        if (parse_iso(next_run_at, &due_s, &usec) != 0)
             continue;
         double overdue_seconds = now_s - ((double)due_s + usec / 1e6);
         if (overdue_seconds < grace_minutes * 60.0)

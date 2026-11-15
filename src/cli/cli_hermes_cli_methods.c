@@ -133,11 +133,11 @@ static bool is_ephemeral_scaffolding(const json_t *msg) {
 }
 
 /*
- * _comparison_content — port of the nested helper inside
+ * comparison_content — port of the nested helper inside
  * _rewind_persisted_user_turn. Normalises content for comparison:
  * multimodal → text summary, str roles → sanitized + stripped.
  */
-static json_t *_comparison_content(const json_t *message) {
+static json_t *comparison_content(const json_t *message) {
     if (!message || message->type != JSON_OBJECT)
         return json_null();
     json_t *content = json_obj_get(message, "content");
@@ -565,8 +565,8 @@ int hcli_rewind_persisted_user_turn(hcli_t *self,
     json_t *durable_target = json_get(durable, (size_t)durable_target_idx);
 
     json_t *warm_view = json_parse(warm_live_view_json, NULL);
-    json_t *d_content = _comparison_content(durable_target);
-    json_t *w_content = _comparison_content(warm_view);
+    json_t *d_content = comparison_content(durable_target);
+    json_t *w_content = comparison_content(warm_view);
     char *d_str = json_serialize(d_content);
     char *w_str = json_serialize(w_content);
     bool views_match = (d_str && w_str && strcmp(d_str, w_str) == 0);
@@ -1106,7 +1106,7 @@ void hcli_toggle_yolo(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_persist_model_switch_to_session @ hermes_cli/cli_model_switch_mixin.py:_persist_model_switch_to_session */
+/* PoP: hcli_persist_model_switch_to_session @ hermes_cli/cli_model_switch_mixin.py:persist_model_switch_to_session */
 void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
     if (!self || !self->session_db || !self->session_id ||
         !result || result->type != JSON_OBJECT) return;

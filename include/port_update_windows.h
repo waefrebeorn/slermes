@@ -25,7 +25,7 @@ char *uw_gateway_subcommand(const char *command);
 /* _is_pausable_gateway -- the gateway subcommand is "run". */
 int uw_is_pausable_gateway(const char *cmdline);
 
-/* _hermes_holder_subcommand -- the Hermes subcommand a venv-holder argv runs,
+/* hermes_holder_subcommand -- the Hermes subcommand a venv-holder argv runs,
  * or NULL. Token-based; never a substring match. Caller frees. */
 char *uw_holder_subcommand(const char *cmdline);
 

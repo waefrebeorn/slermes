@@ -93,8 +93,8 @@ bool karg_bool(kb_args_t *a, const char *dest) {
     kb_arg_val_t *f = kb_args_field(a, dest, false);
     return f && f->flag;
 }
-int _cmd_boards_list_cli(kb_args_t *a);
-int _cmd_diagnostics(kb_args_t *a);
+int cmd_boards_list_cli(kb_args_t *a);
+int cmd_diagnostics(kb_args_t *a);
 static json_t *kc_task_to_json(const kanban_task_t *t);
 
 void kb_args_free(kb_args_t *a) {
@@ -578,8 +578,8 @@ static int kc_parse_tokens(const kc_sub_spec_t *sub, char **toks, int ntoks,
     return 0;
 }
 
-/* PoP: _check_dispatcher_presence @ hermes_cli/kanban.py:_check_dispatcher_presence */
-bool _check_dispatcher_presence(char **message_out) {
+/* PoP: check_dispatcher_presence @ hermes_cli/kanban.py:check_dispatcher_presence */
+bool check_dispatcher_presence(char **message_out) {
     /* Return (running, message). Fail OPEN on any probe error — better to
      * miss a warning than cry wolf. C probe: the gateway PID file under
      * HERMES_HOME/run + config kanban.dispatch_in_gateway (default true). */
@@ -650,8 +650,8 @@ bool _check_dispatcher_presence(char **message_out) {
     return false;
 }
 
-/* PoP: _is_delegated_child_cli_mutation @ hermes_cli/kanban.py:_is_delegated_child_cli_mutation */
-bool _is_delegated_child_cli_mutation(kb_args_t *a) {
+/* PoP: is_delegated_child_cli_mutation @ hermes_cli/kanban.py:is_delegated_child_cli_mutation */
+bool is_delegated_child_cli_mutation(kb_args_t *a) {
     /* Delegated child processes may not run destructive board/task mutations:
      * denied actions list + delegated-context detection via env marker (the
      * C engine has no agent.delegation_context runtime; the env var is the
@@ -685,10 +685,10 @@ bool _is_delegated_child_cli_mutation(kb_args_t *a) {
     return env && *env;
 }
 
-/* PoP: _cmd_boards_create @ hermes_cli/kanban_boards.py:_cmd_boards_create */
-int _cmd_boards_create(kb_args_t *a) {
+/* PoP: cmd_boards_create @ hermes_cli/kanban_boards.py:cmd_boards_create */
+int cmd_boards_create(kb_args_t *a) {
     const char *slug_in = karg(a, "slug");
-    char *normed = _normalize_board_slug(slug_in);
+    char *normed = normalize_board_slug(slug_in);
     if (!normed || !*normed) {
         fprintf(stderr, "kanban boards create: %s\n",
                 normed ? "slug is required" : "invalid slug");
@@ -725,8 +725,8 @@ int _cmd_boards_create(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_rm @ hermes_cli/kanban_boards.py:_cmd_boards_rm */
-int _cmd_boards_rm(kb_args_t *a) {
+/* PoP: cmd_boards_rm @ hermes_cli/kanban_boards.py:cmd_boards_rm */
+int cmd_boards_rm(kb_args_t *a) {
     /* Alias `boards delete` never sets args.delete (the flag belongs to the
      * 'rm' subparser) — detect the alias and treat it as --delete (#23139). */
     const char *action = karg(a, "boards_action");
@@ -754,9 +754,9 @@ int _cmd_boards_rm(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_switch @ hermes_cli/kanban_boards.py:_cmd_boards_switch */
-int _cmd_boards_switch(kb_args_t *a) {
-    char *normed = _normalize_board_slug(karg(a, "slug"));
+/* PoP: cmd_boards_switch @ hermes_cli/kanban_boards.py:cmd_boards_switch */
+int cmd_boards_switch(kb_args_t *a) {
+    char *normed = normalize_board_slug(karg(a, "slug"));
     if (!normed || !*normed) {
         fprintf(stderr, "kanban boards switch: slug is required\n");
         free(normed);
@@ -793,8 +793,8 @@ static void kc_board_task_counts(sqlite3 *conn, json_t *counts, long *total) {
     }
 }
 
-/* PoP: _cmd_boards_show @ hermes_cli/kanban_boards.py:_cmd_boards_show */
-int _cmd_boards_show(kb_args_t *a) {
+/* PoP: cmd_boards_show @ hermes_cli/kanban_boards.py:cmd_boards_show */
+int cmd_boards_show(kb_args_t *a) {
     (void)a;
     char *current = get_current_board();
     char *meta_json = kdb_read_board_metadata(current);
@@ -828,10 +828,10 @@ int _cmd_boards_show(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_rename @ hermes_cli/kanban_boards.py:_cmd_boards_rename */
-int _cmd_boards_rename(kb_args_t *a) {
+/* PoP: cmd_boards_rename @ hermes_cli/kanban_boards.py:cmd_boards_rename */
+int cmd_boards_rename(kb_args_t *a) {
     const char *slug_in = karg(a, "slug");
-    char *normed = _normalize_board_slug(slug_in);
+    char *normed = normalize_board_slug(slug_in);
     if (!normed || !*normed || !kdb_board_exists(normed)) {
         fprintf(stderr, "kanban boards rename: board '%s' does not exist\n",
                 slug_in ? slug_in : "?");
@@ -849,11 +849,11 @@ int _cmd_boards_rename(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_boards_set_default_workdir @ hermes_cli/kanban_boards.py:_cmd_boards_set_default_workdir */
-int _cmd_boards_set_default_workdir(kb_args_t *a) {
+/* PoP: cmd_boards_set_default_workdir @ hermes_cli/kanban_boards.py:cmd_boards_set_default_workdir */
+int cmd_boards_set_default_workdir(kb_args_t *a) {
     const char *path = karg(a, "path");
     const char *slug_in = karg(a, "slug");
-    char *normed = _normalize_board_slug(slug_in);
+    char *normed = normalize_board_slug(slug_in);
     if (!normed || !*normed || !kdb_board_exists(normed)) {
         fprintf(stderr,
                 "kanban boards set-default-workdir: board '%s' does not exist\n",
@@ -875,38 +875,38 @@ int _cmd_boards_set_default_workdir(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _dispatch_boards @ hermes_cli/kanban_boards.py:_dispatch_boards */
-int _dispatch_boards(kb_args_t *a) {
+/* PoP: dispatch_boards @ hermes_cli/kanban_boards.py:dispatch_boards */
+int dispatch_boards(kb_args_t *a) {
     /* Boards management is filesystem-level (board dirs, `current` pointer,
      * board.json), deliberately separate from the task commands so a fresh
      * HERMES_HOME works before `kanban init`. */
     const char *sub = karg(a, "boards_action");
     sub = sub ? sub : "list";
     if (strcmp(sub, "list") == 0 || strcmp(sub, "ls") == 0)
-        return _cmd_boards_list_cli(a);
+        return cmd_boards_list_cli(a);
     if (strcmp(sub, "create") == 0 || strcmp(sub, "new") == 0)
-        return _cmd_boards_create(a);
+        return cmd_boards_create(a);
     if (strcmp(sub, "rm") == 0 || strcmp(sub, "remove") == 0 ||
         strcmp(sub, "delete") == 0)
-        return _cmd_boards_rm(a);
+        return cmd_boards_rm(a);
     if (strcmp(sub, "switch") == 0 || strcmp(sub, "use") == 0)
-        return _cmd_boards_switch(a);
+        return cmd_boards_switch(a);
     if (strcmp(sub, "show") == 0 || strcmp(sub, "current") == 0)
-        return _cmd_boards_show(a);
-    if (strcmp(sub, "rename") == 0) return _cmd_boards_rename(a);
+        return cmd_boards_show(a);
+    if (strcmp(sub, "rename") == 0) return cmd_boards_rename(a);
     if (strcmp(sub, "set-default-workdir") == 0)
-        return _cmd_boards_set_default_workdir(a);
+        return cmd_boards_set_default_workdir(a);
     fprintf(stderr, "kanban boards: unknown action '%s'\n", sub);
     return 2;
 }
 
 /* forward decl (defined with the other _cmd_* handlers below) */
-int _cmd_boards_list_cli(kb_args_t *a);
+int cmd_boards_list_cli(kb_args_t *a);
 
 
 /* boards list — already covered by the existing port when present; provide
  * the handler here only if the engine exposes kdb_list_boards (it does). */
-int _cmd_boards_list_cli(kb_args_t *a) {
+int cmd_boards_list_cli(kb_args_t *a) {
     char *boards_json = kdb_list_boards(karg_bool(a, "all") ? 1 : 0);
     json_t *boards = boards_json ? json_parse(boards_json, NULL) : NULL;
     free(boards_json);
@@ -933,8 +933,8 @@ int _cmd_boards_list_cli(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_init @ hermes_cli/kanban.py:_cmd_init */
-int _cmd_init(kb_args_t *a) {
+/* PoP: cmd_init @ hermes_cli/kanban.py:cmd_init */
+int cmd_init(kb_args_t *a) {
     (void)a;
     char *board = get_current_board();
     char *dbp = kanban_db_path(board);
@@ -965,8 +965,8 @@ int _cmd_init(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_heartbeat @ hermes_cli/kanban.py:_cmd_heartbeat */
-int _cmd_heartbeat(kb_args_t *a) {
+/* PoP: cmd_heartbeat @ hermes_cli/kanban.py:cmd_heartbeat */
+int cmd_heartbeat(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     sqlite3 *conn = kdb_connect(NULL); /* connect_closing analog */
     bool ok = false;
@@ -984,8 +984,8 @@ int _cmd_heartbeat(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_assignees @ hermes_cli/kanban.py:_cmd_assignees */
-int _cmd_assignees(kb_args_t *a) {
+/* PoP: cmd_assignees @ hermes_cli/kanban.py:cmd_assignees */
+int cmd_assignees(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     char *data_json = conn ? kdb_known_assignees(conn) : NULL;
     if (conn) kdb_close(conn);
@@ -1025,8 +1025,8 @@ int _cmd_assignees(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_create @ hermes_cli/kanban.py:_cmd_create */
-int _cmd_create(kb_args_t *a) {
+/* PoP: cmd_create @ hermes_cli/kanban.py:cmd_create */
+int cmd_create(kb_args_t *a) {
     const char *ws_flag = karg(a, "workspace");
     ws_flag = ws_flag ? ws_flag : "scratch";
     char err[256] = "";
@@ -1140,7 +1140,7 @@ int _cmd_create(kb_args_t *a) {
         if (strcmp(kdb_task_status(task), "ready") == 0 &&
             kdb_task_assignee(task)) {
             char *msg = NULL;
-            bool running = _check_dispatcher_presence(&msg);
+            bool running = check_dispatcher_presence(&msg);
             if (!running && msg && *msg)
                 fprintf(stderr, "\n⚠  %s\n", msg);
             free(msg);
@@ -1157,7 +1157,7 @@ int _cmd_create(kb_args_t *a) {
 }
 
 
-/* shared: render a kanban_task_t as the _task_to_dict JSON object */
+/* shared: render a kanban_task_t as the task_to_dict JSON object */
 static json_t *kc_task_to_json(const kanban_task_t *t) {
     json_t *d = json_object();
     json_set(d, "id", json_string(kdb_task_id(t)));
@@ -1181,8 +1181,8 @@ static json_t *kc_task_to_json(const kanban_task_t *t) {
     return d;
 }
 
-/* PoP: _cmd_swarm @ hermes_cli/kanban.py:_cmd_swarm */
-int _cmd_swarm(kb_args_t *a) {
+/* PoP: cmd_swarm @ hermes_cli/kanban.py:cmd_swarm */
+int cmd_swarm(kb_args_t *a) {
     int nworkers = 0;
     const char **workers_raw = kargv(a, "worker", &nworkers);
     if (!nworkers) {
@@ -1323,7 +1323,7 @@ static bool kc_run_state_kwargs(kb_args_t *a, char **stype, char **sname) {
 }
 
 /* PoP: _cmd_show @ hermes_cli/kanban.py:_cmd_show */
-int _cmd_show(kb_args_t *a) {
+int cmd_kanban_show(kb_args_t *a) {
     char *stype = NULL, *sname = NULL;
     if (!kc_run_state_kwargs(a, &stype, &sname))
         return 2;
@@ -1579,8 +1579,8 @@ static int kc_set_model_override(sqlite3 *conn, const char *task_id,
     return rc;
 }
 
-/* PoP: _cmd_assign @ hermes_cli/kanban.py:_cmd_assign */
-int _cmd_assign(kb_args_t *a) {
+/* PoP: cmd_assign @ hermes_cli/kanban.py:cmd_assign */
+int cmd_assign(kb_args_t *a) {
     const char *profile_raw = karg(a, "profile");
     const char *profile =
         (profile_raw && (strcasecmp(profile_raw, "none") == 0 ||
@@ -1598,8 +1598,8 @@ int _cmd_assign(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_set_model @ hermes_cli/kanban.py:_cmd_set_model */
-int _cmd_set_model(kb_args_t *a) {
+/* PoP: cmd_set_model @ hermes_cli/kanban.py:cmd_set_model */
+int cmd_set_model(kb_args_t *a) {
     const char *model_raw = karg(a, "model");
     const char *model = NULL;
     if (model_raw && !(strcasecmp(model_raw, "none") == 0 ||
@@ -1634,8 +1634,8 @@ int _cmd_set_model(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_reclaim @ hermes_cli/kanban.py:_cmd_reclaim */
-int _cmd_reclaim(kb_args_t *a) {
+/* PoP: cmd_reclaim @ hermes_cli/kanban.py:cmd_reclaim */
+int cmd_reclaim(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     bool ok = conn &&
               kdb_reclaim_task(conn, karg(a, "task_id"), karg(a, "reason")) == 1;
@@ -1649,8 +1649,8 @@ int _cmd_reclaim(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_reassign @ hermes_cli/kanban.py:_cmd_reassign */
-int _cmd_reassign(kb_args_t *a) {
+/* PoP: cmd_reassign @ hermes_cli/kanban.py:cmd_reassign */
+int cmd_reassign(kb_args_t *a) {
     const char *profile_raw = karg(a, "profile");
     const char *profile =
         (profile_raw && (strcasecmp(profile_raw, "none") == 0 ||
@@ -1677,8 +1677,8 @@ int _cmd_reassign(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_link @ hermes_cli/kanban.py:_cmd_link */
-int _cmd_link(kb_args_t *a) {
+/* PoP: cmd_link @ hermes_cli/kanban.py:cmd_link */
+int cmd_link(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     if (conn) kdb_link_tasks(conn, karg(a, "parent_id"), karg(a, "child_id"));
     printf("Linked %s -> %s\n", karg(a, "parent_id"), karg(a, "child_id"));
@@ -1686,8 +1686,8 @@ int _cmd_link(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_unlink @ hermes_cli/kanban.py:_cmd_unlink */
-int _cmd_unlink(kb_args_t *a) {
+/* PoP: cmd_unlink @ hermes_cli/kanban.py:cmd_unlink */
+int cmd_unlink(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     int ok = conn ? kdb_unlink_tasks(conn, karg(a, "parent_id"),
                                      karg(a, "child_id")) : 0;
@@ -1701,8 +1701,8 @@ int _cmd_unlink(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_claim @ hermes_cli/kanban.py:_cmd_claim */
-int _cmd_claim(kb_args_t *a) {
+/* PoP: cmd_claim @ hermes_cli/kanban.py:cmd_claim */
+int cmd_claim(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     long ttl = karg_int(a, "ttl", KANBAN_DEFAULT_CLAIM_TTL_SECONDS);
     sqlite3 *conn = kdb_connect(NULL);
@@ -1735,8 +1735,8 @@ int _cmd_claim(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_comment @ hermes_cli/kanban.py:_cmd_comment */
-int _cmd_comment(kb_args_t *a) {
+/* PoP: cmd_comment @ hermes_cli/kanban.py:cmd_comment */
+int cmd_comment(kb_args_t *a) {
     int nwords = 0;
     const char **words = kargv(a, "text", &nwords);
     char *body = NULL;
@@ -1784,8 +1784,8 @@ int _cmd_comment(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_attach @ hermes_cli/kanban.py:_cmd_attach */
-int _cmd_attach(kb_args_t *a) {
+/* PoP: cmd_attach @ hermes_cli/kanban.py:cmd_attach */
+int cmd_attach(kb_args_t *a) {
     /* Read the file off disk, store it under the task's attachments dir and
      * record the metadata row — same 25 MB cap + name sanitisation as the
      * dashboard upload path (kb.store_attachment_bytes). */
@@ -1845,8 +1845,8 @@ int _cmd_attach(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_attachments @ hermes_cli/kanban.py:_cmd_attachments */
-int _cmd_attachments(kb_args_t *a) {
+/* PoP: cmd_attachments @ hermes_cli/kanban.py:cmd_attachments */
+int cmd_attachments(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     if (!conn) return 1;
     if (!kdb_task_get(conn, karg(a, "task_id"))) {
@@ -1885,8 +1885,8 @@ int _cmd_attachments(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_attach_rm @ hermes_cli/kanban.py:_cmd_attach_rm */
-int _cmd_attach_rm(kb_args_t *a) {
+/* PoP: cmd_attach_rm @ hermes_cli/kanban.py:cmd_attach_rm */
+int cmd_attach_rm(kb_args_t *a) {
     long attachment_id = karg_int(a, "attachment_id", 0);
     sqlite3 *conn = kdb_connect(NULL);
     kanban_attach_t *removed = conn ? kdb_get_attachment(conn, attachment_id) : NULL;
@@ -1903,8 +1903,8 @@ int _cmd_attach_rm(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _goal_mode_handoff_rejection @ hermes_cli/kanban.py:_goal_mode_handoff_rejection */
-char *_goal_mode_handoff_rejection(const kanban_task_t *task,
+/* PoP: goal_mode_handoff_rejection @ hermes_cli/kanban.py:goal_mode_handoff_rejection */
+char *goal_mode_handoff_rejection(const kanban_task_t *task,
                                    const char *evidence) {
     /* Apply the goal judge to every terminal worker handoff. No auxiliary LLM
      * runtime in the C engine yet → no client means no rejection, exactly like
@@ -1914,8 +1914,8 @@ char *_goal_mode_handoff_rejection(const kanban_task_t *task,
 }
 
 
-/* PoP: _cmd_complete @ hermes_cli/kanban.py:_cmd_complete */
-int _cmd_complete(kb_args_t *a) {
+/* PoP: cmd_complete @ hermes_cli/kanban.py:cmd_complete */
+int cmd_complete(kb_args_t *a) {
     int nids = 0;
     const char **ids = kargv(a, "task_ids", &nids);
     if (!nids) {
@@ -1947,7 +1947,7 @@ int _cmd_complete(kb_args_t *a) {
     for (int i = 0; i < nids; i++) {
         const char *tid = ids[i];
         kanban_task_t *task = conn ? kdb_task_get(conn, tid) : NULL;
-        char *rejection = _goal_mode_handoff_rejection(
+        char *rejection = goal_mode_handoff_rejection(
             task, summary ? summary : (karg(a, "result") ? karg(a, "result") : ""));
         if (task) kdb_task_free(task);
         if (rejection) {
@@ -1973,8 +1973,8 @@ int _cmd_complete(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_edit @ hermes_cli/kanban.py:_cmd_edit */
-int _cmd_edit(kb_args_t *a) {
+/* PoP: cmd_edit @ hermes_cli/kanban.py:cmd_edit */
+int cmd_edit(kb_args_t *a) {
     const char *raw_meta = karg(a, "metadata");
     if (raw_meta) {
         json_t *m = json_parse(raw_meta, NULL);
@@ -2020,8 +2020,8 @@ static void kc_task_ids(kb_args_t *a, const char *single_dest,
     *out_n = n;
 }
 
-/* PoP: _cmd_block @ hermes_cli/kanban.py:_cmd_block */
-int _cmd_block(kb_args_t *a) {
+/* PoP: cmd_block @ hermes_cli/kanban.py:cmd_block */
+int cmd_block(kb_args_t *a) {
     int nreason = 0;
     const char **reason_words = kargv(a, "reason", &nreason);
     char *reason = NULL;
@@ -2075,8 +2075,8 @@ int _cmd_block(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_schedule @ hermes_cli/kanban.py:_cmd_schedule */
-int _cmd_schedule(kb_args_t *a) {
+/* PoP: cmd_schedule @ hermes_cli/kanban.py:cmd_schedule */
+int cmd_schedule(kb_args_t *a) {
     int nreason = 0;
     const char **reason_words = kargv(a, "reason", &nreason);
     char *reason = NULL;
@@ -2115,8 +2115,8 @@ int _cmd_schedule(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_unblock @ hermes_cli/kanban.py:_cmd_unblock */
-int _cmd_unblock(kb_args_t *a) {
+/* PoP: cmd_unblock @ hermes_cli/kanban.py:cmd_unblock */
+int cmd_unblock(kb_args_t *a) {
     int nids = 0;
     const char **raw_ids = kargv(a, "task_ids", &nids);
     if (!nids) {
@@ -2338,8 +2338,8 @@ static int kc_request_review(sqlite3 *conn, const char *task_id,
     return 1;
 }
 
-/* PoP: _cmd_request_review @ hermes_cli/kanban.py:_cmd_request_review */
-int _cmd_request_review(kb_args_t *a) {
+/* PoP: cmd_request_review @ hermes_cli/kanban.py:cmd_request_review */
+int cmd_request_review(kb_args_t *a) {
     const char *tid = karg(a, "task_id");
     const char *summary_in = karg(a, "summary");
     char *summary = summary_in ? strdup(summary_in) : NULL;
@@ -2362,7 +2362,7 @@ int _cmd_request_review(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     if (!conn) return 1;
     kanban_task_t *t = kdb_task_get(conn, tid);
-    char *rejection = _goal_mode_handoff_rejection(t, summary ? summary : "");
+    char *rejection = goal_mode_handoff_rejection(t, summary ? summary : "");
     if (t) kdb_task_free(t);
     if (rejection) {
         fprintf(stderr, "kanban: goal review handoff of %s rejected by judge: "
@@ -2397,7 +2397,7 @@ int _cmd_request_review(kb_args_t *a) {
 }
 
 
-/* ── PoP: _cmd_request_changes @ hermes_cli/kanban.py:_cmd_request_changes ──
+/* ── PoP: cmd_request_changes @ hermes_cli/kanban.py:cmd_request_changes ──
  * Engine mirror of kanban_db.py:request_changes (with_reason tuple). */
 static int kc_request_changes(sqlite3 *conn, const char *task_id,
                               const char *reason_in, long expected_run_id,
@@ -2545,7 +2545,7 @@ static int kc_request_changes(sqlite3 *conn, const char *task_id,
     return 1;
 }
 
-int _cmd_request_changes(kb_args_t *a) {
+int cmd_request_changes(kb_args_t *a) {
     const char *tid = karg(a, "task_id");
     int nreason = 0;
     const char **reason_words = kargv(a, "reason", &nreason);
@@ -2601,8 +2601,8 @@ static bool kc_reopen_review_task(sqlite3 *conn, const char *task_id) {
     return ok;
 }
 
-/* PoP: _cmd_reopen_review @ hermes_cli/kanban.py:_cmd_reopen_review */
-int _cmd_reopen_review(kb_args_t *a) {
+/* PoP: cmd_reopen_review @ hermes_cli/kanban.py:cmd_reopen_review */
+int cmd_reopen_review(kb_args_t *a) {
     int nids = 0;
     const char **ids = kargv(a, "task_ids", &nids);
     if (!nids) {
@@ -2641,8 +2641,8 @@ int _cmd_reopen_review(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_promote @ hermes_cli/kanban.py:_cmd_promote */
-int _cmd_promote(kb_args_t *a) {
+/* PoP: cmd_promote @ hermes_cli/kanban.py:cmd_promote */
+int cmd_promote(kb_args_t *a) {
     int nreason = 0;
     const char **reason_words = kargv(a, "reason", &nreason);
     char *reason = NULL;
@@ -2717,8 +2717,8 @@ int _cmd_promote(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_archive @ hermes_cli/kanban.py:_cmd_archive */
-int _cmd_archive(kb_args_t *a) {
+/* PoP: cmd_archive @ hermes_cli/kanban.py:cmd_archive */
+int cmd_archive(kb_args_t *a) {
     int nids = 0, npurge = 0;
     const char **ids = kargv(a, "task_ids", &nids);
     const char **purge_ids = kargv(a, "purge_ids", &npurge);
@@ -2752,12 +2752,12 @@ int _cmd_archive(kb_args_t *a) {
     return failed ? 1 : 0;
 }
 
-/* PoP: _cmd_tail @ hermes_cli/kanban_ops.py:_cmd_tail */
+/* PoP: cmd_tail @ hermes_cli/kanban_ops.py:cmd_tail */
 static volatile sig_atomic_t kc_interrupted = 0;
 #include <signal.h>
 static void kc_on_sigint(int sig) { (void)sig; kc_interrupted = 1; }
 
-int _cmd_tail(kb_args_t *a) {
+int cmd_tail(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     double interval = karg_float(a, "interval", 1.0);
     if (interval < 0.1) interval = 0.1;
@@ -2789,8 +2789,8 @@ int _cmd_tail(kb_args_t *a) {
 }
 
 
-/* PoP: _cmd_dispatch @ hermes_cli/kanban_ops.py:_cmd_dispatch */
-int _cmd_dispatch(kb_args_t *a) {
+/* PoP: cmd_dispatch @ hermes_cli/kanban_ops.py:cmd_dispatch */
+int cmd_dispatch(kb_args_t *a) {
     /* Honours kanban.default_assignee / max_in_progress(_per_profile) /
      * max_spawn with the same semantics as the gateway dispatch path. */
     long max_in_progress = -1;
@@ -2852,8 +2852,8 @@ int _cmd_dispatch(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_daemon @ hermes_cli/kanban_ops.py:_cmd_daemon */
-int _cmd_daemon(kb_args_t *a) {
+/* PoP: cmd_daemon @ hermes_cli/kanban_ops.py:cmd_daemon */
+int cmd_daemon(kb_args_t *a) {
     /* Deprecated — the dispatcher now runs inside the gateway. Default path
      * exits 2 with guidance so nobody runs two dispatchers against one DB. */
     if (!karg_bool(a, "force")) {
@@ -2934,8 +2934,8 @@ int _cmd_daemon(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_watch @ hermes_cli/kanban_ops.py:_cmd_watch */
-int _cmd_watch(kb_args_t *a) {
+/* PoP: cmd_watch @ hermes_cli/kanban_ops.py:cmd_watch */
+int cmd_watch(kb_args_t *a) {
     const char *assignee = karg(a, "assignee");
     const char *tenant = karg(a, "tenant");
     double interval = karg_float(a, "interval", 0.5);
@@ -3027,8 +3027,8 @@ int _cmd_watch(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_notify_subscribe @ hermes_cli/kanban.py:_cmd_notify_subscribe */
-int _cmd_notify_subscribe(kb_args_t *a) {
+/* PoP: cmd_notify_subscribe @ hermes_cli/kanban.py:cmd_notify_subscribe */
+int cmd_notify_subscribe(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     const char *platform = karg(a, "platform");
     const char *chat_id = karg(a, "chat_id");
@@ -3055,8 +3055,8 @@ int _cmd_notify_subscribe(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_notify_list @ hermes_cli/kanban.py:_cmd_notify_list */
-int _cmd_notify_list(kb_args_t *a) {
+/* PoP: cmd_notify_list @ hermes_cli/kanban.py:cmd_notify_list */
+int cmd_notify_list(kb_args_t *a) {
     const char *task_id = karg(a, "task_id"); /* may be NULL → all tasks */
     sqlite3 *conn = kdb_connect(NULL);
     if (!conn) return 1;
@@ -3097,8 +3097,8 @@ int _cmd_notify_list(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_notify_unsubscribe @ hermes_cli/kanban.py:_cmd_notify_unsubscribe */
-int _cmd_notify_unsubscribe(kb_args_t *a) {
+/* PoP: cmd_notify_unsubscribe @ hermes_cli/kanban.py:cmd_notify_unsubscribe */
+int cmd_notify_unsubscribe(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     const char *platform = karg(a, "platform");
     const char *chat_id = karg(a, "chat_id");
@@ -3119,7 +3119,7 @@ int _cmd_notify_unsubscribe(kb_args_t *a) {
 static void rm_rf(const char *path);
 static int hs_exec_kb(sqlite3 *db, const char *sql);
 
-/* ── PoP: _cmd_log @ hermes_cli/kanban.py:_cmd_log ──
+/* ── PoP: cmd_log @ hermes_cli/kanban.py:cmd_log ──
  * Engine mirror of kanban_db.py:read_worker_log. */
 static char *kc_read_worker_log(const char *task_id, long tail_bytes) {
     char *board = get_current_board();
@@ -3145,7 +3145,7 @@ static char *kc_read_worker_log(const char *task_id, long tail_bytes) {
     return buf;
 }
 
-int _cmd_log(kb_args_t *a) {
+int cmd_log(kb_args_t *a) {
     const char *task_id = karg(a, "task_id");
     long tail = karg(a, "tail") ? karg_int(a, "tail", 0) : 0;
     char *content = kc_read_worker_log(task_id, tail);
@@ -3161,8 +3161,8 @@ int _cmd_log(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_runs @ hermes_cli/kanban.py:_cmd_runs */
-int _cmd_runs(kb_args_t *a) {
+/* PoP: cmd_runs @ hermes_cli/kanban.py:cmd_runs */
+int cmd_runs(kb_args_t *a) {
     char *stype = NULL, *sname = NULL;
     if (!kc_run_state_kwargs(a, &stype, &sname))
         return 2;
@@ -3232,8 +3232,8 @@ int _cmd_runs(kb_args_t *a) {
     return 0;
 }
 
-/* PoP: _cmd_context @ hermes_cli/kanban.py:_cmd_context */
-int _cmd_context(kb_args_t *a) {
+/* PoP: cmd_context @ hermes_cli/kanban.py:cmd_context */
+int cmd_context(kb_args_t *a) {
     sqlite3 *conn = kdb_connect(NULL);
     if (!conn) return 1;
     char *text = kdb_build_worker_context(conn, karg(a, "task_id"));
@@ -3329,22 +3329,22 @@ static int kc_triage_cmd(const char *cmd_name, kb_args_t *a, bool decompose_mode
     return ok_count > 0 ? 0 : 1;
 }
 
-/* PoP: _cmd_specify @ hermes_cli/kanban.py:_cmd_specify */
-int _cmd_specify(kb_args_t *a) {
+/* PoP: cmd_specify @ hermes_cli/kanban.py:cmd_specify */
+int cmd_specify(kb_args_t *a) {
     /* Flesh out a triage task via the auxiliary LLM, then promote to todo.
      * Thin wrapper over kanban_specify. */
     return kc_triage_cmd("specify", a, false);
 }
 
-/* PoP: _cmd_decompose @ hermes_cli/kanban.py:_cmd_decompose */
-int _cmd_decompose(kb_args_t *a) {
+/* PoP: cmd_decompose @ hermes_cli/kanban.py:cmd_decompose */
+int cmd_decompose(kb_args_t *a) {
     /* Fan a triage task out into a graph of child tasks via the auxiliary
      * LLM. Thin wrapper over kanban_decompose. */
     return kc_triage_cmd("decompose", a, true);
 }
 
-/* PoP: _cmd_gc @ hermes_cli/kanban_ops.py:_cmd_gc */
-int _cmd_gc(kb_args_t *a) {
+/* PoP: cmd_gc @ hermes_cli/kanban_ops.py:cmd_gc */
+int cmd_gc(kb_args_t *a) {
     /* Remove scratch workspaces of archived tasks, prune old events, delete
      * old worker logs. Never deletes outside the scratch root. */
     long event_days = karg_int(a, "event_retention_days", 30);
@@ -3436,9 +3436,9 @@ static void rm_rf(const char *path) {
     }
 }
 
-/* ── PoP: _cmd_repair @ hermes_cli/kanban.py:_cmd_repair ──
+/* ── PoP: cmd_repair @ hermes_cli/kanban.py:cmd_repair ──
  * Engine mirror of kanban_db.py:repair_db (index-only REINDEX auto-repair). */
-int _cmd_repair(kb_args_t *a) {
+int cmd_repair(kb_args_t *a) {
     char *board = get_current_board();
     char *dbp = kanban_db_path(board);
     free(board);
@@ -3575,62 +3575,62 @@ static const char *KC_SLASH_HELP =
     "  /kanban notify-subscribe|notify-list|notify-unsubscribe ...\n";
 
 /* forward decls of every handler used by the dispatcher */
-int _cmd_boards_create(kb_args_t *a);
-int _cmd_boards_rm(kb_args_t *a);
-int _cmd_boards_switch(kb_args_t *a);
-int _cmd_boards_show(kb_args_t *a);
-int _cmd_boards_rename(kb_args_t *a);
-int _cmd_boards_set_default_workdir(kb_args_t *a);
+int cmd_boards_create(kb_args_t *a);
+int cmd_boards_rm(kb_args_t *a);
+int cmd_boards_switch(kb_args_t *a);
+int cmd_boards_show(kb_args_t *a);
+int cmd_boards_rename(kb_args_t *a);
+int cmd_boards_set_default_workdir(kb_args_t *a);
 
 static int kc_dispatch_command(const char *action, kb_args_t *args,
                                bool delegated_child_blocked) {
     if (delegated_child_blocked)
         return 3;
-    if (strcmp(action, "init") == 0) return _cmd_init(args);
-    if (strcmp(action, "boards") == 0) return _dispatch_boards(args);
-    if (strcmp(action, "create") == 0) return _cmd_create(args);
-    if (strcmp(action, "swarm") == 0) return _cmd_swarm(args);
-    if (strcmp(action, "heartbeat") == 0) return _cmd_heartbeat(args);
-    if (strcmp(action, "show") == 0) return _cmd_show(args);
-    if (strcmp(action, "assign") == 0) return _cmd_assign(args);
-    if (strcmp(action, "set-model") == 0) return _cmd_set_model(args);
-    if (strcmp(action, "reclaim") == 0) return _cmd_reclaim(args);
-    if (strcmp(action, "reassign") == 0) return _cmd_reassign(args);
+    if (strcmp(action, "init") == 0) return cmd_init(args);
+    if (strcmp(action, "boards") == 0) return dispatch_boards(args);
+    if (strcmp(action, "create") == 0) return cmd_create(args);
+    if (strcmp(action, "swarm") == 0) return cmd_swarm(args);
+    if (strcmp(action, "heartbeat") == 0) return cmd_heartbeat(args);
+    if (strcmp(action, "show") == 0) return cmd_kanban_show(args);
+    if (strcmp(action, "assign") == 0) return cmd_assign(args);
+    if (strcmp(action, "set-model") == 0) return cmd_set_model(args);
+    if (strcmp(action, "reclaim") == 0) return cmd_reclaim(args);
+    if (strcmp(action, "reassign") == 0) return cmd_reassign(args);
     if (strcmp(action, "diagnostics") == 0 || strcmp(action, "diag") == 0)
-        return _cmd_diagnostics(args);
-    if (strcmp(action, "link") == 0) return _cmd_link(args);
-    if (strcmp(action, "unlink") == 0) return _cmd_unlink(args);
-    if (strcmp(action, "claim") == 0) return _cmd_claim(args);
-    if (strcmp(action, "comment") == 0) return _cmd_comment(args);
-    if (strcmp(action, "attach") == 0) return _cmd_attach(args);
-    if (strcmp(action, "attachments") == 0) return _cmd_attachments(args);
-    if (strcmp(action, "attach-rm") == 0) return _cmd_attach_rm(args);
-    if (strcmp(action, "complete") == 0) return _cmd_complete(args);
-    if (strcmp(action, "edit") == 0) return _cmd_edit(args);
-    if (strcmp(action, "block") == 0) return _cmd_block(args);
-    if (strcmp(action, "schedule") == 0) return _cmd_schedule(args);
-    if (strcmp(action, "unblock") == 0) return _cmd_unblock(args);
-    if (strcmp(action, "request-review") == 0) return _cmd_request_review(args);
-    if (strcmp(action, "request-changes") == 0) return _cmd_request_changes(args);
-    if (strcmp(action, "reopen-review") == 0) return _cmd_reopen_review(args);
-    if (strcmp(action, "promote") == 0) return _cmd_promote(args);
-    if (strcmp(action, "archive") == 0) return _cmd_archive(args);
-    if (strcmp(action, "tail") == 0) return _cmd_tail(args);
-    if (strcmp(action, "dispatch") == 0) return _cmd_dispatch(args);
-    if (strcmp(action, "daemon") == 0) return _cmd_daemon(args);
-    if (strcmp(action, "watch") == 0) return _cmd_watch(args);
+        return cmd_diagnostics(args);
+    if (strcmp(action, "link") == 0) return cmd_link(args);
+    if (strcmp(action, "unlink") == 0) return cmd_unlink(args);
+    if (strcmp(action, "claim") == 0) return cmd_claim(args);
+    if (strcmp(action, "comment") == 0) return cmd_comment(args);
+    if (strcmp(action, "attach") == 0) return cmd_attach(args);
+    if (strcmp(action, "attachments") == 0) return cmd_attachments(args);
+    if (strcmp(action, "attach-rm") == 0) return cmd_attach_rm(args);
+    if (strcmp(action, "complete") == 0) return cmd_complete(args);
+    if (strcmp(action, "edit") == 0) return cmd_edit(args);
+    if (strcmp(action, "block") == 0) return cmd_block(args);
+    if (strcmp(action, "schedule") == 0) return cmd_schedule(args);
+    if (strcmp(action, "unblock") == 0) return cmd_unblock(args);
+    if (strcmp(action, "request-review") == 0) return cmd_request_review(args);
+    if (strcmp(action, "request-changes") == 0) return cmd_request_changes(args);
+    if (strcmp(action, "reopen-review") == 0) return cmd_reopen_review(args);
+    if (strcmp(action, "promote") == 0) return cmd_promote(args);
+    if (strcmp(action, "archive") == 0) return cmd_archive(args);
+    if (strcmp(action, "tail") == 0) return cmd_tail(args);
+    if (strcmp(action, "dispatch") == 0) return cmd_dispatch(args);
+    if (strcmp(action, "daemon") == 0) return cmd_daemon(args);
+    if (strcmp(action, "watch") == 0) return cmd_watch(args);
     if (strcmp(action, "notify-subscribe") == 0)
-        return _cmd_notify_subscribe(args);
-    if (strcmp(action, "notify-list") == 0) return _cmd_notify_list(args);
+        return cmd_notify_subscribe(args);
+    if (strcmp(action, "notify-list") == 0) return cmd_notify_list(args);
     if (strcmp(action, "notify-unsubscribe") == 0)
-        return _cmd_notify_unsubscribe(args);
-    if (strcmp(action, "log") == 0) return _cmd_log(args);
-    if (strcmp(action, "runs") == 0) return _cmd_runs(args);
-    if (strcmp(action, "context") == 0) return _cmd_context(args);
-    if (strcmp(action, "specify") == 0) return _cmd_specify(args);
-    if (strcmp(action, "decompose") == 0) return _cmd_decompose(args);
-    if (strcmp(action, "gc") == 0) return _cmd_gc(args);
-    if (strcmp(action, "repair") == 0) return _cmd_repair(args);
+        return cmd_notify_unsubscribe(args);
+    if (strcmp(action, "log") == 0) return cmd_log(args);
+    if (strcmp(action, "runs") == 0) return cmd_runs(args);
+    if (strcmp(action, "context") == 0) return cmd_context(args);
+    if (strcmp(action, "specify") == 0) return cmd_specify(args);
+    if (strcmp(action, "decompose") == 0) return cmd_decompose(args);
+    if (strcmp(action, "gc") == 0) return cmd_gc(args);
+    if (strcmp(action, "repair") == 0) return cmd_repair(args);
     return 2;
 }
 
@@ -3691,7 +3691,7 @@ char *run_slash(const char *rest) {
     dup2(out_fd, fileno(stdout)); dup2(err_fd, fileno(stderr));
     close(out_fd); close(err_fd);
     int handler_rc = kc_dispatch_command(
-        action, &args, _is_delegated_child_cli_mutation(&args));
+        action, &args, is_delegated_child_cli_mutation(&args));
     (void)handler_rc;
     fflush(stdout); fflush(stderr);
     dup2(saved_out_fd, fileno(stdout)); dup2(saved_err_fd, fileno(stderr));
@@ -3734,8 +3734,8 @@ char *run_slash(const char *rest) {
 }
 
 
-/* PoP: _cmd_diagnostics @ hermes_cli/kanban.py:_cmd_diagnostics */
-int _cmd_diagnostics(kb_args_t *a) {
+/* PoP: cmd_diagnostics @ hermes_cli/kanban.py:cmd_diagnostics */
+int cmd_diagnostics(kb_args_t *a) {
     /* List active diagnostics on the board — same rule engine surface the
      * dashboard uses so CLI output matches the UI. Single-task mode when
      * --task is given, fleet mode otherwise; --severity filters at-or-above
@@ -3914,14 +3914,14 @@ int cmk_kanban_command(kb_args_t *args) {
     }
 
     /* Fast-fail for delegated child CLI mutation contexts. */
-    if (_is_delegated_child_cli_mutation(args)) {
+    if (is_delegated_child_cli_mutation(args)) {
         printf("kanban: delegate_task child contexts cannot mutate Kanban tasks via the CLI\n");
         return 1;
     }
 
     /* Board-management commands operate on board metadata; ignore --board override. */
     if (strcmp(action, "boards") == 0) {
-        return _dispatch_boards(args);
+        return dispatch_boards(args);
     }
 
     /* --board <slug> applies to every subcommand below via env-var pin. */
@@ -3929,7 +3929,7 @@ int cmk_kanban_command(kb_args_t *args) {
     int board_scope_active = 0;
     if (board_override && board_override[0]) {
         int err = 0;
-        char *normed = _normalize_board_slug(board_override);
+        char *normed = normalize_board_slug(board_override);
         if (!normed) {
             printf("kanban: invalid board slug\n");
             return 2;
@@ -3952,7 +3952,7 @@ int cmk_kanban_command(kb_args_t *args) {
 
     /* repair must dispatch BEFORE auto-init (corrupt DB raises on init). */
     if (strcmp(action, "repair") == 0) {
-        int r = _cmd_repair(args);
+        int r = cmd_repair(args);
         if (board_scope_active) clear_current_board();
         return r;
     }
@@ -3968,16 +3968,16 @@ int cmk_kanban_command(kb_args_t *args) {
     }
 
     /* Dispatch table mirrors hermes_cli/kanban.py:kanban_command handlers dict.
-     * list→_cmd_show, stats→_cmd_diagnostics (Python aliases). */
+     * list→cmd_kanban_show, stats→cmd_diagnostics (Python aliases). */
     {
         int rc_local = 2;
-#define KB_MAP(name) do { if (strcmp(action, #name) == 0) { rc_local = _cmd_##name(args); } } while(0)
-#define KB_ALIAS(alias, target) do { if (strcmp(action, #alias) == 0) { rc_local = _cmd_##target(args); } } while(0)
+#define KB_MAP(name) do { if (strcmp(action, #name) == 0) { rc_local = cmd_##name(args); } } while(0)
+#define KB_ALIAS(alias, target) do { if (strcmp(action, #alias) == 0) { rc_local = cmd_##target(args); } } while(0)
         KB_MAP(init);
         KB_MAP(create);
         KB_MAP(swarm);
-        KB_ALIAS(show, show);
-        KB_ALIAS(list, show);
+        KB_ALIAS(show, kanban_show);
+        KB_ALIAS(list, kanban_show);
         KB_MAP(assign);
         KB_MAP(set_model);
         KB_MAP(reclaim);

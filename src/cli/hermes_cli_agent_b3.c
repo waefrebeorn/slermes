@@ -485,9 +485,9 @@ void hcli_flush_reasoning_preview(hcli_t *self, bool force)
     free(rest);
 }
 
-/* ── _format_submitted_user_message_preview helper ──────────────────────── */
+/* ── format_submitted_user_message_preview helper ──────────────────────── */
 
-/* PoP: b3_format_user_preview @ cli.py:HermesCLI._format_submitted_user_message_preview */
+/* PoP: b3_format_user_preview @ cli.py:HermesCLI.format_submitted_user_message_preview */
 /* Returns a malloc'd rich-markup string (caller frees). */
 char *b3_format_user_preview(hcli_t *self, const char *user_input)
 {
@@ -696,9 +696,9 @@ void hcli_busy_command_end(hcli_t *self)
     b3_invalidate(self);
 }
 
-/* ── paste-reference expansion (_expand_paste_references) ───────────────── */
+/* ── paste-reference expansion (expand_paste_references) ───────────────── */
 
-/* PoP: b3_expand_paste_references @ cli.py:HermesCLI._expand_paste_references */
+/* PoP: b3_expand_paste_references @ cli.py:HermesCLI.expand_paste_references */
 /* Expand "[Pasted text #N: M lines → path]" placeholders into file contents.
  * Returns malloc'd expanded text (caller frees). */
 char *b3_expand_paste_references(const char *text)

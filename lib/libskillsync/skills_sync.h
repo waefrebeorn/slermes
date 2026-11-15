@@ -174,7 +174,7 @@ int skills_sync_reset(const char *hermes_home,
 
 /**
  * Skill discovery context (port of Python tools/skills_sync.py skill
- * discovery). Filled by _discover_skills_in_dir().
+ * discovery). Filled by discover_skills_in_dir().
  */
 typedef struct {
     char names[SKILLS_SYNC_MAX_ENTRIES][SKILLS_SYNC_MAX_NAME];
@@ -188,7 +188,7 @@ typedef struct {
  * dir_path, appending each to ctx (cap SKILLS_SYNC_MAX_ENTRIES).
  * Port of Python tools/skills_sync.py:_discover_skills().
  */
-void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx);
+void discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx);
 
 #ifdef __cplusplus
 }

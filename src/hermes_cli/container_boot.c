@@ -60,19 +60,19 @@ void _strip_container_argv_prefix(void *ctx)
     }
 }
 
-/* Port of Python: _is_dashboard_container */
-bool _is_dashboard_container(void *ctx, void *argv)
+/* Port of Python: is_dashboard_container */
+bool is_dashboard_container(void *ctx, void *argv)
 {
     if (!ctx) {
-        hermes_log(LOG_WARNING, "port", "_is_dashboard_container: null context");
+        hermes_log(LOG_WARNING, "port", "is_dashboard_container: null context");
         return false;
     }
-    hermes_log(LOG_DEBUG, "port", "_is_dashboard_container: checking");
+    hermes_log(LOG_DEBUG, "port", "is_dashboard_container: checking");
     if (argv) {
         const char *arg = (const char *)argv;
         if (strstr(arg, "dashboard") || strstr(arg, "hermes-web") ||
             strstr(arg, "hermes_dashboard")) {
-            hermes_log(LOG_INFO, "port", "_is_dashboard_container: detected dashboard");
+            hermes_log(LOG_INFO, "port", "is_dashboard_container: detected dashboard");
             return true;
         }
     }

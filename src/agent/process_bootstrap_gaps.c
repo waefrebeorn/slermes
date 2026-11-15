@@ -9,20 +9,20 @@
 
 /* ── agent/process_bootstrap.py: 8 missing functions ── */
 
-/* PoP: _happy_eyeballs_create_connection @ hermes_bootstrap.py:_happy_eyeballs_create_connection */
-void *_happy_eyeballs_create_connection(void) { return NULL; }
+/* PoP: happy_eyeballs_create_connection @ hermes_bootstrap.py:happy_eyeballs_create_connection */
+void *happy_eyeballs_create_connection(void) { return NULL; }
 
-/* PoP: _default_backend @ agent/process_bootstrap.py:_default_backend */
-char *_default_backend(void) { return strdup(""); }
+/* PoP: default_backend @ agent/process_bootstrap.py:default_backend */
+char *default_backend(void) { return strdup(""); }
 
 
 
-/* PoP: _shared_transport_cls @ agent/process_bootstrap.py:_shared_transport_cls */
-char *_shared_transport_cls(void) { return strdup(""); }
+/* PoP: shared_transport_cls @ agent/process_bootstrap.py:shared_transport_cls */
+char *shared_transport_cls(void) { return strdup(""); }
 
-/* PoP: _shared_transport_key @ agent/process_bootstrap.py:_shared_transport_key */
-char *_shared_transport_key(void) { return strdup(""); }
+/* PoP: shared_transport_key @ agent/process_bootstrap.py:shared_transport_key */
+char *shared_transport_key(void) { return strdup(""); }
 
-/* PoP: _get_shared_transport @ agent/process_bootstrap.py:_get_shared_transport */
-void *_get_shared_transport(void) { return NULL; }
+/* PoP: get_shared_transport @ agent/process_bootstrap.py:get_shared_transport */
+void *get_shared_transport(void) { return NULL; }
 

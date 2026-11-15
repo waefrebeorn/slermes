@@ -9,8 +9,8 @@
 
 /* ── hermes_cli/local_runtime/presets.py: 5 missing functions ── */
 
-/* PoP: _args_to_keys @ hermes_cli/local_runtime/presets.py:_args_to_keys */
-char *_args_to_keys(void) { return strdup("[]"); }
+/* PoP: args_to_keys @ hermes_cli/local_runtime/presets.py:args_to_keys */
+char *args_to_keys(void) { return strdup("[]"); }
 
 /* PoP: generate_presets @ hermes_cli/local_runtime/presets.py:generate_presets */
 char *generate_presets(void) { return strdup("[]"); }
@@ -18,8 +18,8 @@ char *generate_presets(void) { return strdup("[]"); }
 /* PoP: read_preset_decisions @ hermes_cli/local_runtime/presets.py:read_preset_decisions */
 char *read_preset_decisions(void) { return strdup("{}"); }
 
-/* PoP: _strip_part @ hermes_cli/local_runtime/presets.py:_strip_part */
-char *_strip_part(void) { return strdup(""); }
+/* PoP: strip_part @ hermes_cli/local_runtime/presets.py:strip_part */
+char *strip_part(void) { return strdup(""); }
 
-/* PoP: _staged_in @ hermes_cli/local_runtime/presets.py:_staged_in */
-int _staged_in(void) { return 0; }
+/* PoP: staged_in @ hermes_cli/local_runtime/presets.py:staged_in */
+int staged_in(void) { return 0; }

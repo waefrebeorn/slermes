@@ -508,10 +508,10 @@ static const char *const B5_CLOSE_TAGS[] = {
     "</THINKING>", "</thinking>", "</thought>"
 };
 
-/* PoP: _reset_stream_state @ cli.py:HermesCLI._reset_stream_state */
+/* PoP: reset_stream_state @ cli.py:HermesCLI.reset_stream_state */
 /* Reset streaming state before each agent invocation (full field list from
- * cli.py:_reset_stream_state). */
-void _reset_stream_state(hcli_t *self)
+ * cli.py:reset_stream_state). */
+void reset_stream_state(hcli_t *self)
 {
     free(self->stream_buf);
     self->stream_buf = NULL;
@@ -549,7 +549,7 @@ void hcli_stream_delta(hcli_t *self, const char *text)
     if (!text) {                 /* intermediate turn boundary */
         if (self->stream_flush_fn)
             self->stream_flush_fn(self);
-        _reset_stream_state(self);
+        reset_stream_state(self);
         return;
     }
     if (!*text)

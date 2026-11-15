@@ -12,8 +12,8 @@
 
 /* ── gateway/hosted_rooms.py: room + link + grant cluster ── */
 
-/* PoP: _primary_key_columns @ gateway/hosted_rooms.py:_primary_key_columns */
-char **_primary_key_columns(sqlite3 *conn, const char *table) {
+/* PoP: primary_key_columns @ gateway/hosted_rooms.py:primary_key_columns */
+char **primary_key_columns(sqlite3 *conn, const char *table) {
     if (!conn || !table) return NULL;
     char sql[256];
     snprintf(sql, sizeof(sql), "PRAGMA table_info(%s)", table);
@@ -38,8 +38,8 @@ char **_primary_key_columns(sqlite3 *conn, const char *table) {
     return cols;
 }
 
-/* PoP: _migrate_remote_run_schema @ gateway/hosted_rooms.py:_migrate_remote_run_schema */
-void _migrate_remote_run_schema(sqlite3 *conn) {
+/* PoP: migrate_remote_run_schema @ gateway/hosted_rooms.py:migrate_remote_run_schema */
+void migrate_remote_run_schema(sqlite3 *conn) {
     if (!conn) return;
     /* Simplified: full migration logic is complex */
     sqlite3_exec(conn, "CREATE TABLE IF NOT EXISTS hosted_room_remote_runs (room_id TEXT PRIMARY KEY)", NULL, NULL, NULL);
@@ -60,8 +60,8 @@ char *_canonical_json(const char *value) {
     return strdup(value);
 }
 
-/* PoP: _validate_identifier @ gateway/hosted_rooms.py:_validate_identifier */
-char *_validate_identifier(const char *value) {
+/* PoP: validate_identifier @ gateway/hosted_rooms.py:validate_identifier */
+char *validate_identifier(const char *value) {
     if (!value) return strdup("");
     while (*value == ' ') value++;
     size_t len = strlen(value);
@@ -75,47 +75,47 @@ char *_validate_identifier(const char *value) {
 /* PoP: user_event_id @ gateway/hosted_rooms.py:user_event_id */
 char *user_event_id(const char *client_event_id) {
     if (!client_event_id) return strdup("");
-    char *normalized = _validate_identifier(client_event_id);
+    char *normalized = validate_identifier(client_event_id);
     free(normalized);
     return strdup("user:sha256hash"); /* simplified */
 }
 
-/* PoP: _validate_room_name @ gateway/hosted_rooms.py:_validate_room_name */
-char *_validate_room_name(const char *value) {
-    return _validate_identifier(value);
+/* PoP: validate_room_name @ gateway/hosted_rooms.py:validate_room_name */
+char *validate_room_name(const char *value) {
+    return validate_identifier(value);
 }
 
-/* PoP: _validate_members @ gateway/hosted_rooms.py:_validate_members */
-char *_validate_members(const char *value) {
+/* PoP: validate_members @ gateway/hosted_rooms.py:validate_members */
+char *validate_members(const char *value) {
     return _canonical_json(value);
 }
 
-/* PoP: _legacy_members_match @ gateway/hosted_rooms.py:_legacy_members_match */
-bool _legacy_members_match(const char *existing, const char *proposed) {
+/* PoP: legacy_members_match @ gateway/hosted_rooms.py:legacy_members_match */
+bool legacy_members_match(const char *existing, const char *proposed) {
     if (!existing || !proposed) return false;
     return strcmp(existing, proposed) == 0;
 }
 
-/* PoP: _validate_event_kind @ gateway/hosted_rooms.py:_validate_event_kind */
-char *_validate_event_kind(const char *value) {
-    return _validate_identifier(value);
+/* PoP: validate_event_kind @ gateway/hosted_rooms.py:validate_event_kind */
+char *validate_event_kind(const char *value) {
+    return validate_identifier(value);
 }
 
-/* PoP: _optional_actor_field @ gateway/hosted_rooms.py:_optional_actor_field */
-char *_optional_actor_field(const char *actor_json, const char *field) {
+/* PoP: optional_actor_field @ gateway/hosted_rooms.py:optional_actor_field */
+char *optional_actor_field(const char *actor_json, const char *field) {
     if (!actor_json || !field) return strdup("");
     /* Simplified: parse JSON and extract field */
     return strdup("");
 }
 
-/* PoP: _validate_actor @ gateway/hosted_rooms.py:_validate_actor */
-char *_validate_actor(const char *value, const char *kind) {
+/* PoP: validate_actor @ gateway/hosted_rooms.py:validate_actor */
+char *validate_actor(const char *value, const char *kind) {
     (void)kind;
     return _canonical_json(value);
 }
 
-/* PoP: _schema_is_current @ gateway/hosted_rooms.py:_schema_is_current */
-bool _schema_is_current(sqlite3 *conn) {
+/* PoP: schema_is_current @ gateway/hosted_rooms.py:schema_is_current */
+bool schema_is_current(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(conn, "SELECT 1 FROM sqlite_master WHERE type='index' AND name='idx_hosted_room_events_cursor'", -1, &st, NULL) != SQLITE_OK)
@@ -194,8 +194,8 @@ int delete_room_link_records(const char *db_path, const char *room_id) {
     return count;
 }
 
-/* PoP: _room_grant_scope_key @ gateway/hosted_rooms.py:_room_grant_scope_key */
-char *_room_grant_scope_key(const char *claims_json) {
+/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:room_grant_scope_key */
+char *room_grant_scope_key(const char *claims_json) {
     if (!claims_json) return strdup("");
     return strdup("sha256scopekey"); /* simplified */
 }

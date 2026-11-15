@@ -62,7 +62,7 @@ int ac_base_url_host_matches(const char *base_url, const char *domain);
 /* build_nvidia_nim_headers: cloud attribution applies only to the NVIDIA host. */
 int ac_nvidia_nim_host(const char *base_url);
 
-/* _anthropic_event_has_content -- whether a stream event carries a payload.
+/* anthropic_event_has_content -- whether a stream event carries a payload.
  * `event` is the JSON object; returns 0/1. */
 int ac_anthropic_event_has_content(const json_t *event);
 

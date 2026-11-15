@@ -448,7 +448,7 @@ void gc_draw_vline(gc_window_t *win, int x, int y, int h, gc_color_t color) {
     SDL_RenderDrawLine(win->renderer, x, y, x, y + h - 1);
 }
 
-static void _render_text(gc_window_t *win, gc_font_t *font,
+static void render_text(gc_window_t *win, gc_font_t *font,
                          const char *text, int x, int y,
                          gc_color_t color, int clip_w, bool centered,
                          gc_rect_t area) {
@@ -497,17 +497,17 @@ static void _render_text(gc_window_t *win, gc_font_t *font,
 
 void gc_draw_text(gc_window_t *win, gc_font_t *font, const char *text,
                   int x, int y, gc_color_t color) {
-    _render_text(win, font, text, x, y, color, 0, false, (gc_rect_t){0});
+    render_text(win, font, text, x, y, color, 0, false, (gc_rect_t){0});
 }
 
 void gc_draw_text_clipped(gc_window_t *win, gc_font_t *font, const char *text,
                           int x, int y, int clip_w, gc_color_t color) {
-    _render_text(win, font, text, x, y, color, clip_w, false, (gc_rect_t){0});
+    render_text(win, font, text, x, y, color, clip_w, false, (gc_rect_t){0});
 }
 
 void gc_draw_text_centered(gc_window_t *win, gc_font_t *font, const char *text,
                            gc_rect_t area, gc_color_t color) {
-    _render_text(win, font, text, 0, 0, color, 0, true, area);
+    render_text(win, font, text, 0, 0, color, 0, true, area);
 }
 
 int gc_draw_text_wrapped(gc_window_t *win, gc_font_t *font, const char *text,
@@ -537,7 +537,7 @@ int gc_draw_text_wrapped(gc_window_t *win, gc_font_t *font, const char *text,
                     int line_len = last_space;
                     char line_buf[512];
                     snprintf(line_buf, sizeof(line_buf), "%.*s", line_len, text + line_start);
-                    _render_text(win, font, line_buf, x, y + total_h,
+                    render_text(win, font, line_buf, x, y + total_h,
                                  color, 0, false, (gc_rect_t){0});
                     total_h += line_h;
                     line_start += line_len + 1;
@@ -550,7 +550,7 @@ int gc_draw_text_wrapped(gc_window_t *win, gc_font_t *font, const char *text,
         if (c == '\n') {
             char line_buf[512];
             snprintf(line_buf, sizeof(line_buf), "%.*s", i - line_start, text + line_start);
-            _render_text(win, font, line_buf, x, y + total_h,
+            render_text(win, font, line_buf, x, y + total_h,
                          color, 0, false, (gc_rect_t){0});
             total_h += line_h;
             line_start = i + 1;
@@ -560,7 +560,7 @@ int gc_draw_text_wrapped(gc_window_t *win, gc_font_t *font, const char *text,
         if (c == '\0' && i > line_start) {
             char line_buf[512];
             snprintf(line_buf, sizeof(line_buf), "%s", text + line_start);
-            _render_text(win, font, line_buf, x, y + total_h,
+            render_text(win, font, line_buf, x, y + total_h,
                          color, 0, false, (gc_rect_t){0});
             total_h += line_h;
         }

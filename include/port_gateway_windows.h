@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 
-/* _normalize_windows_path -- strip, lstrip('"'), '\'->'/', rstrip('/'),
+/* normalize_windows_path -- strip, lstrip('"'), '\'->'/', rstrip('/'),
  * casefold. Caller frees. */
 char *gw_normalize_path(const char *value);
 

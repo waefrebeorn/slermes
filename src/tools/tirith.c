@@ -55,8 +55,8 @@ static struct {
 static char g_configured_path[512] = "tirith";
 static bool g_tirith_enabled = true;
 
-/* PoP: _load_security_config @ plugins/platforms/weixin/adapter.py:_load_security_config */
-char* _load_security_config(void) {
+/* PoP: load_security_config @ plugins/platforms/weixin/adapter.py:load_security_config */
+char* load_security_config(void) {
     /* Serialize the effective security config (env-overridable knobs). */
     json_t *cfg = json_object();
     if (!cfg) return strdup("{}");
@@ -71,8 +71,8 @@ char* _load_security_config(void) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _warn_once @ plugins/platforms/weixin/adapter.py:_warn_once */
-void _warn_once(const char *key, const char *message, ...) {
+/* PoP: warn_once @ plugins/platforms/weixin/adapter.py:warn_once */
+void warn_once(const char *key, const char *message, ...) {
     /* logger.warning but at-most-once per key for the process lifetime. */
     if (!key || !key[0] || !message) return;
     va_list ap;
@@ -95,8 +95,8 @@ void _warn_once(const char *key, const char *message, ...) {
     va_end(ap);
 }
 
-/* PoP: _reset_spawn_warning_state @ plugins/platforms/weixin/adapter.py:_reset_spawn_warning_state */
-void _reset_spawn_warning_state(void) {
+/* PoP: reset_spawn_warning_state @ plugins/platforms/weixin/adapter.py:reset_spawn_warning_state */
+void reset_spawn_warning_state(void) {
     /* Clear the warn-once dedupe set so a subsequent failure after a fresh
      * (re)install surfaces again. */
     pthread_mutex_lock(&g_warn_once.lock);
@@ -105,7 +105,7 @@ void _reset_spawn_warning_state(void) {
     pthread_mutex_unlock(&g_warn_once.lock);
 }
 
-/* PoP: _failure_marker_path @ plugins/platforms/weixin/adapter.py:_get_hermes_home */
+/* PoP: failure_marker_path @ plugins/platforms/weixin/adapter.py:_get_hermes_home */
 static const char* _get_hermes_home(void) {
     static char buf[MAX_PATH];
     if (buf[0] == '\0') {
@@ -119,15 +119,15 @@ static const char* _get_hermes_home(void) {
     return buf;
 }
 
-/* PoP: _failure_marker_path @ plugins/platforms/weixin/adapter.py:_failure_marker_path */
-static void _failure_marker_path(char *out_path, size_t out_len) {
+/* PoP: failure_marker_path @ plugins/platforms/weixin/adapter.py:failure_marker_path */
+static void failure_marker_path(char *out_path, size_t out_len) {
     snprintf(out_path, out_len, "%s/tirith_failed", _get_hermes_home());
 }
 
-/* PoP: _is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:_read_failure_reason */
-char* _read_failure_reason(void) {
+/* PoP: is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:read_failure_reason */
+char* read_failure_reason(void) {
     char path[MAX_PATH];
-    _failure_marker_path(path, sizeof(path));
+    failure_marker_path(path, sizeof(path));
     FILE *fp = fopen(path, "r");
     if (!fp) return NULL;
     char buf[256];
@@ -136,17 +136,17 @@ char* _read_failure_reason(void) {
     return strdup(buf);
 }
 
-/* PoP: _is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:_is_install_failed_on_disk */
-bool _is_install_failed_on_disk(void) {
+/* PoP: is_install_failed_on_disk @ plugins/platforms/weixin/adapter.py:is_install_failed_on_disk */
+bool is_install_failed_on_disk(void) {
     char path[MAX_PATH];
-    _failure_marker_path(path, sizeof(path));
+    failure_marker_path(path, sizeof(path));
     return access(path, F_OK) == 0;
 }
 
-/* PoP: _mark_install_failed @ plugins/platforms/weixin/adapter.py:_mark_install_failed */
-void _mark_install_failed(const char *reason) {
+/* PoP: mark_install_failed @ plugins/platforms/weixin/adapter.py:mark_install_failed */
+void mark_install_failed(const char *reason) {
     char path[MAX_PATH];
-    _failure_marker_path(path, sizeof(path));
+    failure_marker_path(path, sizeof(path));
     FILE *fp = fopen(path, "w");
     if (fp) {
         if (reason) fprintf(fp, "%s", reason);
@@ -154,26 +154,26 @@ void _mark_install_failed(const char *reason) {
     }
 }
 
-/* PoP: _clear_install_failed @ plugins/platforms/weixin/adapter.py:_clear_install_failed */
-void _clear_install_failed(void) {
+/* PoP: clear_install_failed @ plugins/platforms/weixin/adapter.py:clear_install_failed */
+void clear_install_failed(void) {
     char path[MAX_PATH];
-    _failure_marker_path(path, sizeof(path));
+    failure_marker_path(path, sizeof(path));
     unlink(path);
 }
 
-/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
-/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
-/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_hermes_bin_dir */
-static const char* _hermes_bin_dir(char *out, size_t out_len) {
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:hermes_bin_dir */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:hermes_bin_dir */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:hermes_bin_dir */
+static const char* hermes_bin_dir(char *out, size_t out_len) {
     snprintf(out, out_len, "%s/bin", _get_hermes_home());
     return out;
 }
 
-/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:_detect_target */
+/* PoP: unsupported @ plugins/platforms/weixin/adapter.py:detect_target */
 /* Return the Rust target triple for the current platform, or NULL. Windows
  * is intentionally unsupported (tirith ships no Windows build). Mirrors
  * Python's platform.system()/machine() mapping. */
-char* _detect_target(void) {
+char* detect_target(void) {
     struct utsname u;
     if (uname(&u) != 0) return NULL;
 
@@ -209,9 +209,9 @@ char* _detect_target(void) {
 
 /* PoP: is_platform_supported @ plugins/platforms/weixin/adapter.py:is_platform_supported */
 /* True when tirith ships a prebuilt binary for this OS+arch (i.e. when
- * _detect_target() yields a triple rather than NULL). */
+ * detect_target() yields a triple rather than NULL). */
 bool is_platform_supported(void) {
-    char *target = _detect_target();
+    char *target = detect_target();
     if (!target) return false;
     free(target);
     return true;
@@ -250,7 +250,7 @@ bool _download_file(const char *url, const char *dest, int timeout) {
     "[^/]+@refs/tags/v[0-9]+\\.[0-9]+\\.[0-9]+$"
 #define TIRITH_COSIGN_ISSUER "https://token.actions.githubusercontent.com"
 
-static bool _which_exists(const char *prog) {
+static bool which_exists(const char *prog) {
     if (!prog || !prog[0]) return false;
     if (prog[0] == '/') return access(prog, X_OK) == 0;
     const char *path = getenv("PATH");
@@ -267,13 +267,13 @@ static bool _which_exists(const char *prog) {
     return found;
 }
 
-/* PoP: _verify_cosign @ plugins/platforms/weixin/adapter.py:_verify_cosign */
-bool _verify_cosign(const char *checksums_path, const char *sig_path, const char *cert_path) {
+/* PoP: verify_cosign @ plugins/platforms/weixin/adapter.py:verify_cosign */
+bool verify_cosign(const char *checksums_path, const char *sig_path, const char *cert_path) {
     /* Verify cosign provenance signature on checksums.txt. Python returns a
      * tri-state (True / False / None); the C caller treats both False and
      * "cosign unavailable" as abort — only true allows the install. */
     if (!checksums_path || !sig_path || !cert_path) return false;
-    if (!_which_exists("cosign")) {
+    if (!which_exists("cosign")) {
         fprintf(stderr, "tirith: cosign not found on PATH\n");
         return false;
     }
@@ -293,8 +293,8 @@ bool _verify_cosign(const char *checksums_path, const char *sig_path, const char
     return false;
 }
 
-/* PoP: _verify_checksum @ plugins/platforms/weixin/adapter.py:_verify_checksum */
-bool _verify_checksum(const char *archive_path, const char *checksums_path, const char *archive_name) {
+/* PoP: verify_checksum @ plugins/platforms/weixin/adapter.py:verify_checksum */
+bool verify_checksum(const char *archive_path, const char *checksums_path, const char *archive_name) {
     /* Verify SHA-256 of the archive against the "<hash>  <name>" line in
      * checksums.txt. */
     if (!archive_path || !checksums_path || !archive_name) return false;
@@ -349,8 +349,8 @@ bool _verify_checksum(const char *archive_path, const char *checksums_path, cons
     return true;
 }
 
-/* PoP: _extract_tirith_binary @ plugins/platforms/weixin/adapter.py:_extract_tirith_binary */
-char* _extract_tirith_binary(const char *tar_path, const char *dest_dir, const char *log) {
+/* PoP: extract_tirith_binary @ plugins/platforms/weixin/adapter.py:extract_tirith_binary */
+char* extract_tirith_binary(const char *tar_path, const char *dest_dir, const char *log) {
     /* Extract the tirith binary from the release archive into dest_dir and
      * return malloc'd path to dest_dir/tirith, or NULL (reason via log).
      * Python walks tar members rejecting ".." — GNU tar with --no-unsafe-paths
@@ -391,14 +391,14 @@ static char g_resolved_path[MAX_PATH] = "";
 static bool g_resolved_failed = false;
 static char g_failure_reason[64] = "";
 
-/* PoP: _install_tirith @ plugins/platforms/weixin/adapter.py:_install_tirith */
-char* _install_tirith(bool log_failures) {
+/* PoP: install_tirith @ plugins/platforms/weixin/adapter.py:install_tirith */
+char* install_tirith(bool log_failures) {
     /* Download + verify + install tirith to $HERMES_HOME/bin/tirith.
      * Returns malloc'd installed path on success, NULL on failure (with
      * reason recorded for the retryable-failure marker logic). */
     FILE *logfp = log_failures ? stderr : NULL;
 
-    char *target = _detect_target();
+    char *target = detect_target();
     if (!target) {
         fprintf(stderr, "tirith auto-install: unsupported platform\n");
         return NULL;
@@ -439,12 +439,12 @@ char* _install_tirith(bool log_failures) {
     /* Cosign provenance verification — preferred but not mandatory. A hard
      * rejection aborts; unavailability falls back to SHA-256 only. */
     bool cosign_verified = false;
-    if (_which_exists("cosign")) {
+    if (which_exists("cosign")) {
         char u1[512], u2[512];
         snprintf(u1, sizeof(u1), "%s/checksums.txt.sig", base_url);
         snprintf(u2, sizeof(u2), "%s/checksums.txt.pem", base_url);
         if (_download_file(u1, sig_path, 30) && _download_file(u2, cert_path, 30)) {
-            if (_verify_cosign(checksums_path, sig_path, cert_path))
+            if (verify_cosign(checksums_path, sig_path, cert_path))
                 cosign_verified = true;
             else {
                 if (logfp) fprintf(logfp,
@@ -457,15 +457,15 @@ char* _install_tirith(bool log_failures) {
         }
     }
 
-    if (!_verify_checksum(archive_path, checksums_path, archive_name))
+    if (!verify_checksum(archive_path, checksums_path, archive_name))
         return NULL;
 
-    char *src = _extract_tirith_binary(archive_path, tmpdir,
+    char *src = extract_tirith_binary(archive_path, tmpdir,
                                        log_failures ? "tirith" : NULL);
     if (!src) return NULL;
 
     char bindir[MAX_PATH], dest[MAX_PATH];
-    _hermes_bin_dir(bindir, sizeof(bindir));
+    hermes_bin_dir(bindir, sizeof(bindir));
     snprintf(dest, sizeof(dest), "%s/tirith", bindir);
     mkdir(bindir, 0755);
     if (rename(src, dest) != 0) {
@@ -485,13 +485,13 @@ char* _install_tirith(bool log_failures) {
 
     fprintf(stderr, "tirith installed to %s (%s)\n", dest,
             cosign_verified ? "cosign + SHA-256" : "SHA-256 only");
-    _clear_install_failed();
-    _reset_spawn_warning_state();
+    clear_install_failed();
+    reset_spawn_warning_state();
     return strdup(dest);
 }
 
-/* PoP: _is_explicit_path @ plugins/platforms/weixin/adapter.py:_is_explicit_path */
-bool _is_explicit_path(const char *configured_path) {
+/* PoP: is_explicit_path @ plugins/platforms/weixin/adapter.py:is_explicit_path */
+bool is_explicit_path(const char *configured_path) {
     /* True when the user explicitly configured a non-default tirith path. */
     return configured_path && configured_path[0]
         && strcmp(configured_path, "tirith") != 0;
@@ -515,8 +515,8 @@ static char *_which(const char *prog) {
     return found;
 }
 
-/* PoP: _resolve_tirith_path @ plugins/platforms/weixin/adapter.py:_resolve_tirith_path */
-char* _resolve_tirith_path(const char *configured_path) {
+/* PoP: resolve_tirith_path @ plugins/platforms/weixin/adapter.py:resolve_tirith_path */
+char* resolve_tirith_path(const char *configured_path) {
     /* Resolve the tirith binary path. Explicit user paths are authoritative
      * and never fall through to auto-download; the default "tirith" resolves
      * via PATH → $HERMES_HOME/bin → auto-install. Failed installs are cached
@@ -531,7 +531,7 @@ char* _resolve_tirith_path(const char *configured_path) {
 
     const char *expanded = (configured_path && configured_path[0])
         ? configured_path : "tirith";
-    bool explicit_path = _is_explicit_path(configured_path ? configured_path : "");
+    bool explicit_path = is_explicit_path(configured_path ? configured_path : "");
 
     if (!explicit_path && !is_platform_supported()) {
         pthread_mutex_lock(&g_install_lock);
@@ -577,11 +577,11 @@ char* _resolve_tirith_path(const char *configured_path) {
         g_resolved_failed = false;
         g_failure_reason[0] = '\0';
         pthread_mutex_unlock(&g_install_lock);
-        _clear_install_failed();
+        clear_install_failed();
         return found;
     }
     char bindir[MAX_PATH], hermes_bin[MAX_PATH];
-    _hermes_bin_dir(bindir, sizeof(bindir));
+    hermes_bin_dir(bindir, sizeof(bindir));
     snprintf(hermes_bin, sizeof(hermes_bin), "%s/tirith", bindir);
     if (stat(hermes_bin, &st) == 0 && S_ISREG(st.st_mode)
             && access(hermes_bin, X_OK) == 0) {
@@ -590,14 +590,14 @@ char* _resolve_tirith_path(const char *configured_path) {
         g_resolved_failed = false;
         g_failure_reason[0] = '\0';
         pthread_mutex_unlock(&g_install_lock);
-        _clear_install_failed();
+        clear_install_failed();
         return strdup(hermes_bin);
     }
 
     /* Local checks failed — attempt the network install synchronously here
      * (the C gateway has no daemon-thread pool; the failure marker bounds
      * retries just like Python's cached failure state). */
-    char *installed = _install_tirith(true);
+    char *installed = install_tirith(true);
     pthread_mutex_lock(&g_install_lock);
     if (installed) {
         snprintf(g_resolved_path, sizeof(g_resolved_path), "%s", installed);
@@ -609,12 +609,12 @@ char* _resolve_tirith_path(const char *configured_path) {
     g_resolved_failed = true;
     snprintf(g_failure_reason, sizeof(g_failure_reason), "download_failed");
     pthread_mutex_unlock(&g_install_lock);
-    _mark_install_failed("download_failed");
+    mark_install_failed("download_failed");
     return NULL;
 }
 
-/* PoP: _background_install @ plugins/platforms/weixin/adapter.py:_background_install */
-static void *_background_install_thread(void *arg) {
+/* PoP: background_install @ plugins/platforms/weixin/adapter.py:background_install */
+static void *background_install_thread(void *arg) {
     bool log_failures = *(bool *)arg;
     free(arg);
     pthread_mutex_lock(&g_install_lock);
@@ -625,7 +625,7 @@ static void *_background_install_thread(void *arg) {
     char *found = _which("tirith");
     if (!found) {
         char bindir[MAX_PATH], hermes_bin[MAX_PATH];
-        _hermes_bin_dir(bindir, sizeof(bindir));
+        hermes_bin_dir(bindir, sizeof(bindir));
         snprintf(hermes_bin, sizeof(hermes_bin), "%s/tirith", bindir);
         struct stat st;
         if (stat(hermes_bin, &st) == 0 && access(hermes_bin, X_OK) == 0)
@@ -639,7 +639,7 @@ static void *_background_install_thread(void *arg) {
         free(found);
         return NULL;
     }
-    char *installed = _install_tirith(log_failures);
+    char *installed = install_tirith(log_failures);
     pthread_mutex_lock(&g_install_lock);
     if (installed) {
         snprintf(g_resolved_path, sizeof(g_resolved_path), "%s", installed);
@@ -648,20 +648,20 @@ static void *_background_install_thread(void *arg) {
     } else {
         g_resolved_failed = true;
         snprintf(g_failure_reason, sizeof(g_failure_reason), "download_failed");
-        _mark_install_failed("download_failed");
+        mark_install_failed("download_failed");
     }
     pthread_mutex_unlock(&g_install_lock);
     return NULL;
 }
 
-void _background_install(bool log_failures) {
+void background_install(bool log_failures) {
     /* Background thread target: download and install tirith without
      * blocking startup. Detached — result lands in g_resolved_path. */
     bool *arg = malloc(sizeof(bool));
     if (!arg) return;
     *arg = log_failures;
     pthread_t tid;
-    if (pthread_create(&tid, NULL, _background_install_thread, arg) == 0)
+    if (pthread_create(&tid, NULL, background_install_thread, arg) == 0)
         pthread_detach(tid);
     else
         free(arg);
@@ -691,7 +691,7 @@ bool ensure_installed(bool log_failures) {
 
     if (!is_platform_supported()) return false;   /* silent fail-open */
 
-    if (_is_explicit_path(g_configured_path)) {
+    if (is_explicit_path(g_configured_path)) {
         struct stat st;
         if (stat(g_configured_path, &st) == 0 && access(g_configured_path, X_OK) == 0)
             return true;
@@ -712,11 +712,11 @@ bool ensure_installed(bool log_failures) {
         g_resolved_failed = false;
         g_failure_reason[0] = '\0';
         pthread_mutex_unlock(&g_install_lock);
-        _clear_install_failed();
+        clear_install_failed();
         return true;
     }
     char bindir[MAX_PATH], hermes_bin[MAX_PATH];
-    _hermes_bin_dir(bindir, sizeof(bindir));
+    hermes_bin_dir(bindir, sizeof(bindir));
     snprintf(hermes_bin, sizeof(hermes_bin), "%s/tirith", bindir);
     struct stat st;
     if (stat(hermes_bin, &st) == 0 && access(hermes_bin, X_OK) == 0) {
@@ -724,15 +724,15 @@ bool ensure_installed(bool log_failures) {
         snprintf(g_resolved_path, sizeof(g_resolved_path), "%s", hermes_bin);
         g_resolved_failed = false;
         pthread_mutex_unlock(&g_install_lock);
-        _clear_install_failed();
+        clear_install_failed();
         return true;
     }
-    if (!_is_install_failed_on_disk())
-        _background_install(log_failures);
+    if (!is_install_failed_on_disk())
+        background_install(log_failures);
     return false;
 }
 
-/* PoP: _is_app_tld_finding @ plugins/platforms/weixin/adapter.py:check_command_security */
+/* PoP: is_app_tld_finding @ plugins/platforms/weixin/adapter.py:check_command_security */
 char* check_command_security(const char *command) {
     if (!command) return strdup("{\"allowed\":true,\"reason\":\"\"}");
     json_t *result = json_object();
@@ -741,8 +741,8 @@ char* check_command_security(const char *command) {
     return json_serialize(result);
 }
 
-/* PoP: _is_app_tld_finding @ plugins/platforms/weixin/adapter.py:_is_app_tld_finding */
-bool _is_app_tld_finding(const char *finding_json) {
+/* PoP: is_app_tld_finding @ plugins/platforms/weixin/adapter.py:is_app_tld_finding */
+bool is_app_tld_finding(const char *finding_json) {
     /* True when this finding is a lookalike_tld warning for the .app TLD:
      * check rule_id and inspect common value/detail field names that
      * Tirith may use to carry the TLD string. */
@@ -773,7 +773,7 @@ tirith_policy_t *tirith_policy_global_init(const security_config_t *sec_cfg) {
 /* PoP: tirith_set_path @ plugins/platforms/weixin/adapter.py:set_configured_path */
 void tirith_set_path(const char *path) {
     /* Update the configured path + invalidate the process-level resolution
-     * cache so _resolve_tirith_path re-runs against the new value. */
+     * cache so resolve_tirith_path re-runs against the new value. */
     pthread_mutex_lock(&g_install_lock);
     snprintf(g_configured_path, sizeof(g_configured_path), "%s",
              (path && path[0]) ? path : "tirith");

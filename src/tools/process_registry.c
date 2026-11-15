@@ -46,20 +46,20 @@ static process_registry_env_exec_fn g_env_exec = NULL;
 static process_registry_close_sink_t g_close_sink = NULL;
 
 static const char *_env_temp_dir(void *env_ref, char *buf, size_t buflen);
-static void _prune_if_needed(void);
+static void prune_if_needed(void);
 
-/* PoP: _is_host_pid_alive @ tools/process_registry.py:ProcessRegistry._is_host_pid_alive */
-static bool _is_host_pid_alive(pid_t pid) {
+/* PoP: is_host_pid_alive @ tools/process_registry.py:ProcessRegistry.is_host_pid_alive */
+static bool is_host_pid_alive(pid_t pid) {
     if (pid <= 0) return false;
     /* Python delegates to gateway.status._pid_exists — reuse the ported
      * zombie-aware check (reports zombies as dead) instead of a bare kill(). */
     return gwstatus_pid_exists(pid);
 }
 
-/* PoP: PID @ tools/process_registry.py:ProcessRegistry._safe_host_start_time */
+/* PoP: PID @ tools/process_registry.py:ProcessRegistry.safe_host_start_time */
 /* Kernel start ticks for a host PID (/proc/<pid>/stat field 22), or 0 when
  * unavailable — mirrors Python's None. PID-reuse guard. */
-static long _safe_host_start_time(pid_t pid) {
+static long safe_host_start_time(pid_t pid) {
     if (pid <= 0) return 0;
     char path[64];
     snprintf(path, sizeof(path), "/proc/%d/stat", (int)pid);
@@ -211,8 +211,8 @@ static void emit_output(ProcessSession *s, const char *chunk) {
     free(copy);
 }
 
-/* PoP: _global_watch_admit @ tools/process_registry.py:ProcessRegistry._global_watch_admit */
-static bool _global_watch_admit(double now) {
+/* PoP: global_watch_admit @ tools/process_registry.py:ProcessRegistry.global_watch_admit */
+static bool global_watch_admit(double now) {
     pthread_mutex_lock(&g_registry.global_watch_lock);
     bool admit = true;
     if (g_registry.global_watch_tripped_until > 0 && now >= g_registry.global_watch_tripped_until) {
@@ -309,7 +309,7 @@ static void check_watch_patterns(ProcessSession *s, const char *new_text) {
         }
         return;
     }
-    if (!_global_watch_admit(now)) return;
+    if (!global_watch_admit(now)) return;
     char *text_copy = strdup(new_text);
     char *matched_out = NULL;
     char *matched_pattern = NULL;
@@ -411,7 +411,7 @@ static void move_to_finished(ProcessSession *s) {
     pthread_mutex_unlock(&g_registry.lock);
 }
 
-static bool _session_in_consumed(const char *session_id) {
+static bool session_in_consumed(const char *session_id) {
     if (!session_id) return false;
     for (int i = 0; i < g_registry.consumed_count; i++)
         if (g_registry.completion_consumed[i] &&
@@ -420,8 +420,8 @@ static bool _session_in_consumed(const char *session_id) {
     return false;
 }
 
-static void _mark_consumed(const char *session_id) {
-    if (_session_in_consumed(session_id)) return;
+static void mark_consumed(const char *session_id) {
+    if (session_in_consumed(session_id)) return;
     if (g_registry.consumed_count == g_registry.consumed_cap) {
         g_registry.consumed_cap *= 2;
         g_registry.completion_consumed = realloc(g_registry.completion_consumed,
@@ -432,7 +432,7 @@ static void _mark_consumed(const char *session_id) {
 
 /* ---- Poll-observed tracking (port of ProcessRegistry._poll_observed) ---- */
 
-static bool _session_in_poll_observed(const char *session_id) {
+static bool session_in_poll_observed(const char *session_id) {
     if (!session_id) return false;
     for (int i = 0; i < g_registry.poll_observed_count; i++)
         if (g_registry.poll_observed[i] &&
@@ -441,9 +441,9 @@ static bool _session_in_poll_observed(const char *session_id) {
     return false;
 }
 
-static void _mark_poll_observed(const char *session_id) {
+static void mark_poll_observed(const char *session_id) {
     if (!session_id || !*session_id) return;
-    if (_session_in_poll_observed(session_id)) return;
+    if (session_in_poll_observed(session_id)) return;
     if (g_registry.poll_observed_count == g_registry.poll_observed_cap) {
         int new_cap = g_registry.poll_observed_cap ? g_registry.poll_observed_cap * 2 : 8;
         g_registry.poll_observed = realloc(g_registry.poll_observed,
@@ -456,16 +456,16 @@ static void _mark_poll_observed(const char *session_id) {
 /* PoP: drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
 bool drain_should_skip(const char *session_id,
                                         bool skip_poll_observed) {
-    if (_session_in_consumed(session_id)) return true;
-    if (skip_poll_observed && _session_in_poll_observed(session_id)) return true;
+    if (session_in_consumed(session_id)) return true;
+    if (skip_poll_observed && session_in_poll_observed(session_id)) return true;
     return false;
 }
 
-/* PoP: _refresh_detached_session @ tools/process_registry.py:ProcessRegistry._refresh_detached_session */
+/* PoP: refresh_detached_session @ tools/process_registry.py:ProcessRegistry.refresh_detached_session */
 /* Reaps the direct child, emits a completion event on exit. Identity guard
  * compares kernel start time against the baseline captured at spawn so a
  * recycled PID is never reaped as our own. */
-static void _refresh_detached_session(ProcessSession *s) {
+static void refresh_detached_session(ProcessSession *s) {
     if (!s) return;
     if (s->detached && s->child_pid > 0) {
         int status;
@@ -527,7 +527,7 @@ static void *reader_loop(void *arg) {
             break;
         } else {
             if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) break;
-            _refresh_detached_session(s);
+            refresh_detached_session(s);
             struct timespec ts = {0, 10000000};
             nanosleep(&ts, NULL);
         }
@@ -606,20 +606,20 @@ static void *pty_reader_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: _host_pid_is_ours @ tools/process_registry.py:ProcessRegistry._host_pid_is_ours */
+/* PoP: host_pid_is_ours @ tools/process_registry.py:ProcessRegistry.host_pid_is_ours */
 /* Identity-aware liveness: alive AND start-time matches. Refuses recycled PIDs. */
-static bool _host_pid_is_ours(pid_t pid, long expected_start) {
+static bool host_pid_is_ours(pid_t pid, long expected_start) {
     if (pid <= 0) return false;
-    if (!_is_host_pid_alive(pid)) return false;
+    if (!is_host_pid_alive(pid)) return false;
     if (expected_start == 0) return true;
-    return _safe_host_start_time(pid) == expected_start;
+    return safe_host_start_time(pid) == expected_start;
 }
 
-/* PoP: zombie @ tools/process_registry.py:ProcessRegistry._proc_alive */
+/* PoP: zombie @ tools/process_registry.py:ProcessRegistry.proc_alive */
 /* True if running and not a zombie (a zombie is already dead — nothing to SIGKILL). */
-static bool _proc_alive(pid_t pid) {
+static bool proc_alive(pid_t pid) {
     if (pid <= 0) return false;
-    if (!_is_host_pid_alive(pid)) return false;
+    if (!is_host_pid_alive(pid)) return false;
     char path[64];
     snprintf(path, sizeof(path), "/proc/%d/stat", (int)pid);
     FILE *fp = fopen(path, "r");
@@ -640,12 +640,12 @@ static double _daemon_term_grace_seconds(void) {
     return strtod(raw, NULL);
 }
 
-/* PoP: group @ tools/process_registry.py:ProcessRegistry._terminate_host_pid */
+/* PoP: group @ tools/process_registry.py:ProcessRegistry.terminate_host_pid */
 /* SIGTERM the process group (children before parent), wait grace, SIGKILL stragglers.
  * PID-identity guarded: refuses recycled PIDs. */
-static void _terminate_host_pid(pid_t pid, long expected_start) {
+static void terminate_host_pid(pid_t pid, long expected_start) {
     if (pid <= 0) return;
-    if (!_host_pid_is_ours(pid, expected_start)) {
+    if (!host_pid_is_ours(pid, expected_start)) {
         hermes_log(LOG_WARNING, "process_registry",
             "Refusing to terminate host pid %d: start-time mismatch -- PID was recycled",
             (int)pid);
@@ -658,10 +658,10 @@ static void _terminate_host_pid(pid_t pid, long expected_start) {
     if (grace <= 0) return;
     double deadline = (double)time(NULL) + grace;
     while ((double)time(NULL) < deadline) {
-        if (!_proc_alive(pid)) break;
+        if (!proc_alive(pid)) break;
         usleep(50000);
     }
-    if (_proc_alive(pid)) {
+    if (proc_alive(pid)) {
         if (pgid > 0) kill(-pgid, SIGKILL);
         else kill(pid, SIGKILL);
         hermes_log(LOG_INFO, "process_registry",
@@ -727,7 +727,7 @@ ProcessSession* spawn_local(const char *command,
     s->child_pid = pid;
     s->stdin_fd = stdin_pipe[1];
     s->stdin_fd = stdout_pipe[0];
-    s->host_start_time = _safe_host_start_time(pid);
+    s->host_start_time = safe_host_start_time(pid);
     pthread_mutex_lock(&g_registry.lock);
     if (g_registry.running_count == g_registry.running_cap) {
         g_registry.running_cap *= 2;
@@ -831,7 +831,7 @@ char* process_registry_poll(const char *session_id) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
     if (!s) return strdup("{\"status\":\"not_found\",\"error\":\"No such session\"}");
-    _refresh_detached_session(s);
+    refresh_detached_session(s);
     reconcile_local_exit(s);
     char uptime_buf[64];
     format_uptime_short((int)(time(NULL) - s->started_at), uptime_buf, sizeof(uptime_buf));
@@ -860,7 +860,7 @@ char* process_registry_poll(const char *session_id) {
         /* Python: poll() is read-only, does NOT mark _completion_consumed
          * (that would suppress the watcher's autonomous delivery, #10156),
          * but DOES record _poll_observed so the CLI inline drain dedups. */
-        _mark_poll_observed(s->id);
+        mark_poll_observed(s->id);
     }
     return result;
 }
@@ -878,7 +878,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     if (timeout_sec > 0 && timeout_sec > max_timeout) effective = max_timeout;
     double deadline = (double)time(NULL) + effective;
     while ((double)time(NULL) < deadline) {
-        _refresh_detached_session(s);
+        refresh_detached_session(s);
         reconcile_local_exit(s);
         pthread_mutex_lock(&s->lock);
         bool exited = !s->running;
@@ -890,7 +890,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
         else outbuf[0]='\0';
         pthread_mutex_unlock(&s->lock);
         if (exited) {
-            _mark_consumed(session_id);
+            mark_consumed(session_id);
             char *result = malloc(4096);
             snprintf(result, 4096,
                 "{\"status\":\"exited\",\"command\":\"%s\",\"exit_code\":%d,"
@@ -944,7 +944,7 @@ char* process_registry_kill(const char *session_id, const char *source,
          * may still be alive in the systemd scope (#70716) — stop the unit. */
         if (has_systemd_unit)
             process_registry_stop_systemd_unit(systemd_unit);
-        if (consume_output) _mark_consumed(session_id);
+        if (consume_output) mark_consumed(session_id);
         char *result = malloc(1024);
         snprintf(result, 1024,
             "{\"status\":\"already_exited\",\"command\":\"%s\",\"exit_code\":%d,"
@@ -955,8 +955,8 @@ char* process_registry_kill(const char *session_id, const char *source,
     bool killed = false;
     if (s->pid > 0) {
         if (s->detached && s->pid_scope[0] == 'h') {
-            if (_host_pid_is_ours(s->pid, s->host_start_time)) {
-                _terminate_host_pid(s->pid, s->host_start_time);
+            if (host_pid_is_ours(s->pid, s->host_start_time)) {
+                terminate_host_pid(s->pid, s->host_start_time);
                 session_mark_exited(s, -15, "killed", source);
                 killed = true;
             } else {
@@ -969,7 +969,7 @@ char* process_registry_kill(const char *session_id, const char *source,
             session_mark_exited(s, -15, "killed", source);
             killed = true;
         } else if (s->child_pid > 0) {
-            _terminate_host_pid(s->child_pid, s->host_start_time);
+            terminate_host_pid(s->child_pid, s->host_start_time);
             session_mark_exited(s, -15, "killed", source);
             killed = true;
         }
@@ -978,7 +978,7 @@ char* process_registry_kill(const char *session_id, const char *source,
         if (has_systemd_unit)
             process_registry_stop_systemd_unit(systemd_unit);
         if (s->stdin_fd > 0) { close(s->stdin_fd); s->stdin_fd = -1; }
-        if (consume_output) _mark_consumed(session_id);
+        if (consume_output) mark_consumed(session_id);
         move_to_finished(s);
         write_checkpoint();
         char *result = malloc(1024);
@@ -1137,10 +1137,10 @@ int kill_started_since(const char *task_id,
         }
         if (excluded) continue;
         if (s->pid > 0) {
-            if (s->detached && s->pid_scope[0] == 'h' && _host_pid_is_ours(s->pid, s->host_start_time))
-                _terminate_host_pid(s->pid, s->host_start_time);
+            if (s->detached && s->pid_scope[0] == 'h' && host_pid_is_ours(s->pid, s->host_start_time))
+                terminate_host_pid(s->pid, s->host_start_time);
             else if (s->child_pid > 0)
-                _terminate_host_pid(s->child_pid, s->host_start_time);
+                terminate_host_pid(s->child_pid, s->host_start_time);
             else if (s->env_ref && g_env_exec) {
                 char kill_cmd[256];
                 snprintf(kill_cmd, sizeof(kill_cmd), "kill %d 2>/dev/null", (int)s->pid);
@@ -1148,7 +1148,7 @@ int kill_started_since(const char *task_id,
             }
         }
         session_mark_exited(s, -15, "killed", source ? source : "kill_started_since");
-        _mark_consumed(s->id);
+        mark_consumed(s->id);
         killed++;
     }
     pthread_mutex_unlock(&g_registry.lock);
@@ -1162,7 +1162,7 @@ int kill_started_since(const char *task_id,
         } else i++;
     }
     pthread_mutex_unlock(&g_registry.lock);
-    _prune_if_needed();
+    prune_if_needed();
     write_checkpoint();
     return killed;
 }
@@ -1180,10 +1180,10 @@ int kill_all(const char *task_id_filter, const char *source,
         if (task_id_filter && (!s->task_id || strcmp(s->task_id, task_id_filter) != 0))
             continue;
         if (s->pid > 0) {
-            if (s->detached && s->pid_scope[0] == 'h' && _host_pid_is_ours(s->pid, s->host_start_time))
-                _terminate_host_pid(s->pid, s->host_start_time);
+            if (s->detached && s->pid_scope[0] == 'h' && host_pid_is_ours(s->pid, s->host_start_time))
+                terminate_host_pid(s->pid, s->host_start_time);
             else if (s->child_pid > 0)
-                _terminate_host_pid(s->child_pid, s->host_start_time);
+                terminate_host_pid(s->child_pid, s->host_start_time);
             else if (s->env_ref && g_env_exec) {
                 char kill_cmd[256];
                 snprintf(kill_cmd, sizeof(kill_cmd), "kill -9 %d 2>/dev/null", (int)s->pid);
@@ -1192,7 +1192,7 @@ int kill_all(const char *task_id_filter, const char *source,
         }
         session_mark_exited(s, -9, "killed", source);
         if (s->stdin_fd > 0) { close(s->stdin_fd); s->stdin_fd = -1; }
-        if (consume_output) _mark_consumed(s->id);
+        if (consume_output) mark_consumed(s->id);
         killed++;
     }
     pthread_mutex_unlock(&g_registry.lock);
@@ -1204,7 +1204,7 @@ int kill_all(const char *task_id_filter, const char *source,
         else i++;
     }
     pthread_mutex_unlock(&g_registry.lock);
-    _prune_if_needed();
+    prune_if_needed();
     write_checkpoint();
     return killed;
 }
@@ -1268,7 +1268,7 @@ int recover_from_checkpoint(void) {
         char *hstp = strstr(p, "\"host_start_time\"");
         long host_start = 0;
         if (hstp) { hstp = strchr(hstp, ':'); hstp++; while (*hstp == ' ') hstp++; host_start = strtol(hstp, NULL, 10); }
-        if (pid > 0 && _is_host_pid_alive(pid)) {
+        if (pid > 0 && is_host_pid_alive(pid)) {
             ProcessSession *s = malloc(sizeof(ProcessSession));
             session_init(s, session_id, "recovered", "", "", pid, "", true, "host");
             s->host_start_time = host_start;
@@ -1288,8 +1288,8 @@ int recover_from_checkpoint(void) {
     return recovered;
 }
 
-/* PoP: _prune_if_needed @ tools/process_registry.py:ProcessRegistry._prune_if_needed */
-static void _prune_if_needed(void) {
+/* PoP: prune_if_needed @ tools/process_registry.py:ProcessRegistry.prune_if_needed */
+static void prune_if_needed(void) {
     pthread_mutex_lock(&g_registry.lock);
     time_t now = time(NULL);
     for (int i = 0; i < g_registry.finished_count; ) {
@@ -1387,7 +1387,7 @@ bool process_registry_completion_consumed(const char *session_id) {
     if (!session_id) return false;
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
-    bool found = _session_in_consumed(session_id);
+    bool found = session_in_consumed(session_id);
     pthread_mutex_unlock(&g_registry.lock);
     return found;
 }
@@ -1397,7 +1397,7 @@ bool is_session_waiting(const char *session_id) {
     if (!session_id || !*session_id) return false;
     ProcessSession *s = process_registry_get_session_ptr(session_id);
     if (!s) return false;
-    _refresh_detached_session(s);
+    refresh_detached_session(s);
     pthread_mutex_lock(&s->lock);
     bool exited = !s->running;
     int watch_hits = s->watch_hits;
@@ -1529,7 +1529,7 @@ char* drain_notifications(const char *session_key_filter,
             if (len + elen + 2 >= cap) { cap = (len + elen) * 2; result = realloc(result, cap); }
             memcpy(result + len, evt, elen);
             len += elen;
-            if (esid[0]) _mark_consumed(esid);
+            if (esid[0]) mark_consumed(esid);
         }
         free(evt);
     }
@@ -1651,8 +1651,8 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
-/* PoP: _format_async_delegation @ tools/process_registry_notifications.py:_format_async_delegation */
-char* _format_async_delegation(const char *json_evt) {
+/* PoP: format_async_delegation @ tools/process_registry_notifications.py:format_async_delegation */
+char* format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
     if (err) free(err);
@@ -1739,7 +1739,7 @@ char* format_process_notification(const char *json_evt) {
             strcpy(final, out); strcat(final, combined); free(combined); free(out); out = final;
         }
     } else if (strcmp(type, "async_delegation") == 0) {
-        out = _format_async_delegation(json_evt);
+        out = format_async_delegation(json_evt);
     } else {
         long exit_code = (long)json_get_num(evt, "exit_code", -1);
         const char *o = json_get_str(evt, "output", "");
@@ -1770,8 +1770,8 @@ char* format_process_notification(const char *json_evt) {
     return out;
 }
 
-/* PoP: _redact_process_result @ tools/process_registry.py:_redact_process_result */
-char* _redact_process_result(char *json_result) {
+/* PoP: redact_process_result @ tools/process_registry.py:redact_process_result */
+char* redact_process_result(char *json_result) {
     char *err = NULL;
     json_t *r = json_parse(json_result, &err);
     if (err) free(err);
@@ -1820,16 +1820,16 @@ char* process_registry_handle(const char *action,
     }
     if (strcmp(action, "poll") == 0) {
         char *r = process_registry_poll(session_id);
-        return _redact_process_result(r);
+        return redact_process_result(r);
     } else if (strcmp(action, "log") == 0) {
         char *r = read_log(session_id, offset, limit);
-        return _redact_process_result(r);
+        return redact_process_result(r);
     } else if (strcmp(action, "wait") == 0) {
         char *r = process_registry_wait(session_id, timeout);
-        return _redact_process_result(r);
+        return redact_process_result(r);
     } else if (strcmp(action, "kill") == 0) {
         char *r = process_registry_kill(session_id, NULL, true);
-        return _redact_process_result(r);
+        return redact_process_result(r);
     } else if (strcmp(action, "write") == 0) {
         return write_stdin(session_id, data ? data : "");
     } else if (strcmp(action, "submit") == 0) {
@@ -1957,7 +1957,7 @@ char *process_registry_wait_for_pending_completions(const char *task_id)
         ProcessSession *s = process_registry_get_session_ptr(ids[i]);
         if (!s) { free(ids[i]); continue; }
         while ((double)time(NULL) < deadline) {
-            _refresh_detached_session(s);
+            refresh_detached_session(s);
             reconcile_local_exit(s);
             pthread_mutex_lock(&s->lock);
             bool exited = !s->running;
@@ -2006,7 +2006,7 @@ static double pr_monotonic_seconds(void) {
 /* fork/exec helper with timeout: runs argv, captures stderr tail.
  * Returns 0 and sets *out_rc on completion; -1 on spawn failure.
  * out_stderr (optional) receives a malloc'd stderr tail (may be ""). */
-static int _pr_run_argv(char *const argv[], int timeout_s,
+static int pr_run_argv(char *const argv[], int timeout_s,
                         int *out_rc, char **out_stderr) {
     *out_rc = -1;
     if (out_stderr) *out_stderr = strdup("");
@@ -2054,7 +2054,7 @@ static int _pr_run_argv(char *const argv[], int timeout_s,
 }
 
 /* shutil.which equivalent over PATH. Caller frees; NULL if absent. */
-static char *_pr_which(const char *name) {
+static char *pr_which(const char *name) {
     const char *path = getenv("PATH");
     if (!path || !*path) path = "/usr/bin:/bin";
     char *dup = strdup(path);
@@ -2188,7 +2188,7 @@ bool process_registry_systemd_run_user_scope_available(void) {
     }
     bool available = false;
 #ifndef _WIN32
-    char *binary = _pr_which("systemd-run");
+    char *binary = pr_which("systemd-run");
     if (binary) {
         char mem_prop[64];
         snprintf(mem_prop, sizeof(mem_prop), "MemoryMax=%ld",
@@ -2203,7 +2203,7 @@ bool process_registry_systemd_run_user_scope_available(void) {
                         "--property", (char *)"OOMPolicy=kill",
                         "--", (char *)"/bin/true", NULL};
         int prc = -1; char *stderr_tail = NULL;
-        if (_pr_run_argv(argv, 3, &prc, &stderr_tail) == 0)
+        if (pr_run_argv(argv, 3, &prc, &stderr_tail) == 0)
             available = (prc == 0);
         if (!available)
             hermes_log(LOG_DEBUG, "process_registry",
@@ -2247,11 +2247,11 @@ bool process_registry_is_supervised_gateway_process(void) {
 /* PoP: process_registry_stop_systemd_unit @ tools/process_registry.py:_stop_systemd_unit */
 bool process_registry_stop_systemd_unit(const char *unit_name) {
     if (!unit_name || !*unit_name) return false;
-    char *binary = _pr_which("systemctl");
+    char *binary = pr_which("systemctl");
     if (!binary) return false;
     char *argv[] = {binary, "--user", (char *)"stop", (char *)unit_name, NULL};
     int rc = -1; char *stderr_tail = NULL;
-    int err = _pr_run_argv(argv, 15, &rc, &stderr_tail);
+    int err = pr_run_argv(argv, 15, &rc, &stderr_tail);
     free(binary);
     if (err != 0) { free(stderr_tail); return false; }
     if (rc != 0) {

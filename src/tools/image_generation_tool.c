@@ -575,7 +575,7 @@ json_t *image_gen_resolve_fal_model(void)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
-json_t *_build_fal_payload(const char *model_id, const char *prompt,
+json_t *build_fal_payload(const char *model_id, const char *prompt,
                                      const char *aspect_ratio, int seed,
                                      json_t *overrides)
 {
@@ -1022,7 +1022,7 @@ bool image_gen_is_krea_model(const char *model_id)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
-json_t *_maybe_route_managed_krea(const char *prompt, const char *aspect_ratio,
+json_t *maybe_route_managed_krea(const char *prompt, const char *aspect_ratio,
                                             const char *image_url, json_t *reference_image_urls)
 {
     /* In Python this checks:
@@ -1128,7 +1128,7 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
     }
 
     /* Try managed Krea routing */
-    json_t *krea_routed = _maybe_route_managed_krea(
+    json_t *krea_routed = maybe_route_managed_krea(
         prompt, aspect_ratio, image_url, reference_image_urls);
     if (krea_routed) {
         char *processed = image_gen_postprocess_image_generate_result(
@@ -1166,7 +1166,7 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
     }
 
     /* Build payload */
-    json_t *payload = _build_fal_payload(model_id, prompt, aspect_ratio, -1, NULL);
+    json_t *payload = build_fal_payload(model_id, prompt, aspect_ratio, -1, NULL);
     if (json_object_get(payload, "error")) {
         json_free(model_info);
         char *raw = json_dumps(payload, 0);
@@ -1404,14 +1404,14 @@ char *build_dynamic_image_schema(void)
     return json_dumps(schema, 0);
 }
 
-char *_build_fal_edit_payload(const char *model_id, const char *prompt,
+char *build_fal_edit_payload(const char *model_id, const char *prompt,
                               const char *image_urls, double aspect_ratio,
                               const char *seed, const char *overrides)
 {
     (void)model_id; (void)prompt; (void)image_urls; (void)aspect_ratio;
     (void)seed; (void)overrides;
     hermes_log(LOG_WARNING, "port",
-        "_build_fal_edit_payload: deprecated; use image_gen_build_fal_edit_payload");
+        "build_fal_edit_payload: deprecated; use image_gen_build_fal_edit_payload");
     return strdup("{\"error\": \"use image_gen_build_fal_edit_payload\"}");
 }
 

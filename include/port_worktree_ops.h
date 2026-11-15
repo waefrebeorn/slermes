@@ -8,12 +8,12 @@
 
 #include <stddef.h>
 
-/* _normalize_git_bash_path -- translate /c/.., /cygdrive/c/.., /mnt/c/.. to
+/* normalize_git_bash_path -- translate /c/.., /cygdrive/c/.., /mnt/c/.. to
  * C:\.. on Windows. `is_windows` stands in for sys.platform == "win32".
  * Caller frees. */
 char *wo_normalize_bash_path(const char *p, int is_windows);
 
-/* _path_is_within_root -- true when a resolved path stays within the root.
+/* path_is_within_root -- true when a resolved path stays within the root.
  * A path that merely shares a PREFIX is not within the root. */
 int wo_within_root(const char *path, const char *root);
 

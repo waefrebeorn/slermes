@@ -583,7 +583,7 @@ static __attribute__((unused)) bool openrouter_pricing_entry(const char *model_i
  *  Port of Python agent/usage_pricing.py:normalize_usage
  * ================================================================ */
 
-static long long _to_ll(const json_t *v)
+static long long to_ll(const json_t *v)
 {
     if (!v) return 0;
     if (v->type == JSON_NUMBER) return (long long)v->num_val;
@@ -591,9 +591,9 @@ static long long _to_ll(const json_t *v)
     return 0;
 }
 
-static long long _get_ll(const json_t *obj, const char *key)
+static long long get_ll(const json_t *obj, const char *key)
 {
-    return _to_ll(json_obj_get(obj, key));
+    return to_ll(json_obj_get(obj, key));
 }
 
 /* Normalize raw API response usage into canonical token buckets. */
@@ -628,30 +628,30 @@ usage_counts_t normalize_usage(const char *provider,
     long long cache_read_tokens = 0, cache_write_tokens = 0;
 
     if (strcmp(mode, "anthropic_messages") == 0 || strcmp(pname, "anthropic") == 0) {
-        input_tokens       = _get_ll(response_usage, "input_tokens");
-        output_tokens      = _get_ll(response_usage, "output_tokens");
-        cache_read_tokens  = _get_ll(response_usage, "cache_read_input_tokens");
-        cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+        input_tokens       = get_ll(response_usage, "input_tokens");
+        output_tokens      = get_ll(response_usage, "output_tokens");
+        cache_read_tokens  = get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = get_ll(response_usage, "cache_creation_input_tokens");
     } else if (strcmp(mode, "codex_responses") == 0) {
-        long long input_total = _get_ll(response_usage, "input_tokens");
-        output_tokens = _get_ll(response_usage, "output_tokens");
+        long long input_total = get_ll(response_usage, "input_tokens");
+        output_tokens = get_ll(response_usage, "output_tokens");
         json_t *details = json_obj_get(response_usage, "input_tokens_details");
-        cache_read_tokens  = _get_ll(details, "cached_tokens");
-        cache_write_tokens = _get_ll(details, "cache_creation_tokens");
+        cache_read_tokens  = get_ll(details, "cached_tokens");
+        cache_write_tokens = get_ll(details, "cache_creation_tokens");
         long long sub = cache_read_tokens + cache_write_tokens;
         input_tokens = input_total - sub;
         if (input_tokens < 0) input_tokens = 0;
     } else {
         /* OpenAI Chat Completions (and OpenAI-compatible proxies). */
-        long long prompt_total = _get_ll(response_usage, "prompt_tokens");
-        output_tokens = _get_ll(response_usage, "completion_tokens");
+        long long prompt_total = get_ll(response_usage, "prompt_tokens");
+        output_tokens = get_ll(response_usage, "completion_tokens");
         json_t *details = json_obj_get(response_usage, "prompt_tokens_details");
-        cache_read_tokens = _get_ll(details, "cached_tokens");
+        cache_read_tokens = get_ll(details, "cached_tokens");
         if (!cache_read_tokens)
-            cache_read_tokens = _get_ll(response_usage, "cache_read_input_tokens");
-        cache_write_tokens = _get_ll(details, "cache_write_tokens");
+            cache_read_tokens = get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = get_ll(details, "cache_write_tokens");
         if (!cache_write_tokens)
-            cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+            cache_write_tokens = get_ll(response_usage, "cache_creation_input_tokens");
         long long sub = cache_read_tokens + cache_write_tokens;
         input_tokens = prompt_total - sub;
         if (input_tokens < 0) input_tokens = 0;
@@ -659,7 +659,7 @@ usage_counts_t normalize_usage(const char *provider,
 
     long long reasoning_tokens = 0;
     json_t *odetails = json_obj_get(response_usage, "output_tokens_details");
-    if (odetails) reasoning_tokens = _get_ll(odetails, "reasoning_tokens");
+    if (odetails) reasoning_tokens = get_ll(odetails, "reasoning_tokens");
 
     u.input_tokens      = input_tokens;
     u.output_tokens     = output_tokens;

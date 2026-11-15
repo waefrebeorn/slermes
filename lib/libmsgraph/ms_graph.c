@@ -256,7 +256,7 @@ static void _build_auth_header(msgraph_token_provider_t *tp,
     }
 }
 
-static void _build_error(msgraph_error_t *err, int status,
+static void build_error(msgraph_error_t *err, int status,
                           const char *method, const char *url,
                           const char *body)
 {
@@ -297,7 +297,7 @@ static void _build_error(msgraph_error_t *err, int status,
     }
 }
 
-static char *_request_internal(msgraph_client_t *client,
+static char *request_internal(msgraph_client_t *client,
                                 const char *method,
                                 const char *path,
                                 const char *json_body,
@@ -371,7 +371,7 @@ static char *_request_internal(msgraph_client_t *client,
 
         if (resp->status == 401 && attempt < client->max_retries) {
             msgraph_clear_cache(client->provider);
-            _build_error(err, resp->status, method, url, resp->body);
+            build_error(err, resp->status, method, url, resp->body);
             last_was_401 = true;
             http_resp_free(resp);
             http_free(h);
@@ -383,7 +383,7 @@ static char *_request_internal(msgraph_client_t *client,
 
         bool retryable = (resp->status == 429 || resp->status >= 500);
         if (retryable && attempt < client->max_retries) {
-            _build_error(err, resp->status, method, url, resp->body);
+            build_error(err, resp->status, method, url, resp->body);
             last_was_401 = false;
             http_resp_free(resp);
             http_free(h);
@@ -393,7 +393,7 @@ static char *_request_internal(msgraph_client_t *client,
             continue;
         }
 
-        _build_error(err, resp->status, method, url, resp->body);
+        build_error(err, resp->status, method, url, resp->body);
         http_resp_free(resp);
         http_free(h);
         return NULL;
@@ -409,25 +409,25 @@ static char *_request_internal(msgraph_client_t *client,
 char *msgraph_get(msgraph_client_t *client, const char *path,
                    msgraph_error_t *err)
 {
-    return _request_internal(client, "GET", path, NULL, err);
+    return request_internal(client, "GET", path, NULL, err);
 }
 
 char *msgraph_post(msgraph_client_t *client, const char *path,
                     const char *body_json, msgraph_error_t *err)
 {
-    return _request_internal(client, "POST", path, body_json, err);
+    return request_internal(client, "POST", path, body_json, err);
 }
 
 char *msgraph_patch(msgraph_client_t *client, const char *path,
                      const char *body_json, msgraph_error_t *err)
 {
-    return _request_internal(client, "PATCH", path, body_json, err);
+    return request_internal(client, "PATCH", path, body_json, err);
 }
 
 char *msgraph_delete(msgraph_client_t *client, const char *path,
                       msgraph_error_t *err)
 {
-    return _request_internal(client, "DELETE", path, NULL, err);
+    return request_internal(client, "DELETE", path, NULL, err);
 }
 
 bool msgraph_download(msgraph_client_t *client, const char *path,
@@ -462,7 +462,7 @@ bool msgraph_download(msgraph_client_t *client, const char *path,
 
     if (!resp || resp->status < 200 || resp->status >= 300) {
         if (resp) {
-            _build_error(err, resp->status, "GET", url, resp->body);
+            build_error(err, resp->status, "GET", url, resp->body);
             http_resp_free(resp);
         }
         http_free(h);

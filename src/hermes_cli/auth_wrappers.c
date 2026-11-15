@@ -45,7 +45,7 @@ int auth_detect_zai_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_u_resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
+/* PoP: auth_u_resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:resolve_zai_base_url */
 int auth_u_resolve_zai_base_url(const char *arg) {
     /* Python: cached probe. Arg =
      * "env\tcached\tstate\tresult". */

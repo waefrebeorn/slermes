@@ -30,9 +30,9 @@ int hermes_cli_bundles_u_cmd_show(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_bundles_u_cmd_create @ hermes_cli/bundles.py:_cmd_create */
+/* PoP: hermes_cli_bundles_u_cmd_create @ hermes_cli/bundles.py:cmd_create */
 int hermes_cli_bundles_u_cmd_create(const char *arg) {
-    /* Python _cmd_create: a bundle must reference at least one skill;
+    /* Python cmd_create: a bundle must reference at least one skill;
      * otherwise save_bundle(name, skills, ...) writes the bundle file.
      * Arg = "name\tskills(;sep)\tpath". */
     if (!arg || !*arg) {
@@ -54,7 +54,7 @@ int hermes_cli_bundles_u_cmd_create(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_bundles_u_cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
+/* PoP: hermes_cli_bundles_u_cmd_delete @ hermes_cli/bundles.py:cmd_delete */
 int hermes_cli_bundles_u_cmd_delete(const char *arg) {
     /* Python: delete_bundle(name); FileNotFoundError -> red print + exit 1;
      * else "Deleted bundle: <path>". Arg = "name\tpath". */

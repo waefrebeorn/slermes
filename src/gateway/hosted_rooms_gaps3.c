@@ -34,8 +34,8 @@ int room_grant_is_revoked(const char *db_path, const char *room_id, const char *
     return 0;
 }
 
-/* PoP: _remote_run_identity @ gateway/hosted_rooms.py:_remote_run_identity */
-char *_remote_run_identity(const char *record) {
+/* PoP: remote_run_identity @ gateway/hosted_rooms.py:remote_run_identity */
+char *remote_run_identity(const char *record) {
     (void)record;
     return strdup("");
 }
@@ -57,31 +57,31 @@ char *remote_run_receipt(const char *db_path, const char *record) {
     return strdup("{}");
 }
 
-/* PoP: _read_connection @ gateway/hosted_rooms.py:_read_connection */
-void *_read_connection(const char *db_path) {
+/* PoP: read_connection @ gateway/hosted_rooms.py:read_connection */
+void *read_connection(const char *db_path) {
     (void)db_path;
     return NULL;
 }
 
-/* PoP: _raise_room_not_found @ gateway/hosted_rooms.py:_raise_room_not_found */
-void _raise_room_not_found(void *conn, const char *room_id) {
+/* PoP: raise_room_not_found @ gateway/hosted_rooms.py:raise_room_not_found */
+void raise_room_not_found(void *conn, const char *room_id) {
     (void)conn; (void)room_id;
 }
 
-/* PoP: _table_exists @ hermes_cli/kanban_db_connect.py:_table_exists */
-int _table_exists(void *conn, const char *table) {
+/* PoP: table_exists @ hermes_cli/kanban_db_connect.py:table_exists */
+int table_exists(void *conn, const char *table) {
     (void)conn; (void)table;
     return 1;
 }
 
-/* PoP: _room_from_row @ gateway/hosted_rooms.py:_room_from_row */
-char *_room_from_row(const char *row, int idempotent) {
+/* PoP: room_from_row @ gateway/hosted_rooms.py:room_from_row */
+char *room_from_row(const char *row, int idempotent) {
     (void)row; (void)idempotent;
     return strdup("{}");
 }
 
-/* PoP: _event_storage_bytes @ gateway/hosted_rooms.py:_event_storage_bytes */
-int _event_storage_bytes(const char *event_id, const char *kind, const char *actor_json, const char *payload_json) {
+/* PoP: event_storage_bytes @ gateway/hosted_rooms.py:event_storage_bytes */
+int event_storage_bytes(const char *event_id, const char *kind, const char *actor_json, const char *payload_json) {
     if (!event_id) event_id = "";
     if (!kind) kind = "";
     if (!actor_json) actor_json = "";
@@ -89,13 +89,13 @@ int _event_storage_bytes(const char *event_id, const char *kind, const char *act
     return strlen(event_id) + strlen(kind) + strlen(actor_json) + strlen(payload_json);
 }
 
-/* PoP: _assert_event_capacity @ gateway/hosted_rooms.py:_assert_event_capacity */
-void _assert_event_capacity(void *conn, const char *room, int additional_bytes, int allow_control) {
+/* PoP: assert_event_capacity @ gateway/hosted_rooms.py:assert_event_capacity */
+void assert_event_capacity(void *conn, const char *room, int additional_bytes, int allow_control) {
     (void)conn; (void)room; (void)additional_bytes; (void)allow_control;
 }
 
-/* PoP: _prune_disbanded_rooms_locked @ gateway/hosted_rooms.py:_prune_disbanded_rooms_locked */
-void _prune_disbanded_rooms_locked(void *conn) {
+/* PoP: prune_disbanded_rooms_locked @ gateway/hosted_rooms.py:prune_disbanded_rooms_locked */
+void prune_disbanded_rooms_locked(void *conn) {
     (void)conn;
 }
 
@@ -104,8 +104,8 @@ void prune_disbanded_rooms(const char *db_path) {
     (void)db_path;
 }
 
-/* PoP: _event_from_row @ gateway/hosted_rooms.py:_event_from_row */
-char *_event_from_row(const char *row) {
+/* PoP: event_from_row @ gateway/hosted_rooms.py:event_from_row */
+char *event_from_row(const char *row) {
     (void)row;
     return strdup("{}");
 }

@@ -20,13 +20,13 @@ typedef struct {
     int is_index;            /* 1 when the leaf is addressed by array index */
 } cfg_loc_t;
 
-/* _greedy_literal_match: longest dotted literal key present in `container`.
+/* greedy_literal_match: longest dotted literal key present in `container`.
  * Returns the number of consumed segments and copies the literal key into
  * `out` (caller buffer `cap`). 0 when there is no match. */
 int cfg_greedy_literal_match(json_t *container, char **parts, int nparts,
                              char *out, size_t cap);
 
-/* _phantom_sibling: an existing literal key starting with "<part>.".
+/* phantom_sibling: an existing literal key starting with "<part>.".
  * Copies it into `out`; returns 1 when one exists, else 0. */
 int cfg_phantom_sibling(json_t *container, const char *part,
                         char *out, size_t cap);

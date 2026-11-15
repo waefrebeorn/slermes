@@ -9,8 +9,8 @@
 
 /* ── gateway/session_db_recovery.py: 3 missing functions ── */
 
-/* PoP: _publish_health @ gateway/session_db_recovery.py:_publish_health */
-void _publish_health(void) { }
+/* PoP: publish_health @ gateway/session_db_recovery.py:publish_health */
+void publish_health(void) { }
 
 /* PoP: get @ gateway/session_db_recovery.py:get */
 char *get(void) { return strdup(""); }

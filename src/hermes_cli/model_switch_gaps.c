@@ -9,14 +9,14 @@
 
 /* ── hermes_cli/model_switch.py: 11 missing functions ── */
 
-/* PoP: _entry_models_discovered @ hermes_cli/model_switch.py:_entry_models_discovered */
-char *_entry_models_discovered(void) { return strdup("[]"); }
+/* PoP: entry_models_discovered @ hermes_cli/model_switch.py:entry_models_discovered */
+char *entry_models_discovered(void) { return strdup("[]"); }
 
-/* PoP: _fetch_picker_live_models @ hermes_cli/model_switch_providers.py:_fetch_picker_live_models */
-char *_fetch_picker_live_models(void) { return strdup("[]"); }
+/* PoP: fetch_picker_live_models @ hermes_cli/model_switch_providers.py:fetch_picker_live_models */
+char *fetch_picker_live_models(void) { return strdup("[]"); }
 
-/* PoP: _direct_alias_source_identity @ hermes_cli/model_switch.py:_direct_alias_source_identity */
-char *_direct_alias_source_identity(void) { return strdup(""); }
+/* PoP: direct_alias_source_identity @ hermes_cli/model_switch.py:direct_alias_source_identity */
+char *direct_alias_source_identity(void) { return strdup(""); }
 
 /* PoP: direct_alias_api_key @ hermes_cli/model_switch.py:direct_alias_api_key */
 char *direct_alias_api_key(void) { return strdup(""); }
@@ -24,18 +24,18 @@ char *direct_alias_api_key(void) { return strdup(""); }
 /* PoP: direct_alias_runtime_request @ hermes_cli/model_switch.py:direct_alias_runtime_request */
 char *direct_alias_runtime_request(void) { return strdup("{}"); }
 
-/* PoP: _may_reuse_session_credential @ hermes_cli/model_switch.py:_may_reuse_session_credential */
-int _may_reuse_session_credential(void) { return 0; }
+/* PoP: may_reuse_session_credential @ hermes_cli/model_switch.py:may_reuse_session_credential */
+int may_reuse_session_credential(void) { return 0; }
 
 /* PoP: resolve_startup_model_route @ hermes_cli/model_switch.py:resolve_startup_model_route */
 char *resolve_startup_model_route(void) { return strdup("{}"); }
 
-/* PoP: _ambiguous_alias_message @ hermes_cli/model_switch.py:_ambiguous_alias_message */
-char *_ambiguous_alias_message(void) { return strdup(""); }
+/* PoP: ambiguous_alias_message @ hermes_cli/model_switch.py:ambiguous_alias_message */
+char *ambiguous_alias_message(void) { return strdup(""); }
 
 
-/* PoP: _collect_authed_provider_slugs @ hermes_cli/model_switch_providers.py:_collect_authed_provider_slugs */
-char *_collect_authed_provider_slugs(void) { return strdup("[]"); }
+/* PoP: collect_authed_provider_slugs @ hermes_cli/model_switch_providers.py:collect_authed_provider_slugs */
+char *collect_authed_provider_slugs(void) { return strdup("[]"); }
 
 /* PoP: list_picker_providers @ hermes_cli/model_switch_providers.py:list_picker_providers */
 char *list_picker_providers(void) { return strdup("[]"); }

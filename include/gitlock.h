@@ -20,9 +20,9 @@ extern "C" {
 #define GITLOCK_STALE_LOCK_MIN_AGE_SECONDS (10 * 60)
 extern const char *GITLOCK_LOCK_NAMES[4];
 
-/* PoP: _git_proc_running @ hermes_cli/gitlock.py:_git_proc_running */
+/* PoP: git_proc_running @ hermes_cli/gitlock.py:git_proc_running */
 /* True when a `git` process is currently running (pgrep -x git). */
-int _git_proc_running(void);
+int git_proc_running(void);
 
 /* Deterministic seam mirroring clear_stale_git_locks' two environmental
  * inputs (the wall clock and the process probe) so the oracle can inject

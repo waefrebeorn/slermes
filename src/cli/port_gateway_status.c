@@ -124,7 +124,7 @@ int gs_fingerprints_match(const char *recorded, const char *current, int toleran
  *      if isinstance(profile, str) and _PROFILE_LABEL_RE.match(profile.strip()):
  *          return profile.strip()
  *      home = record.get("hermes_home")
- *      return _profile_label_for_home(home) if home else None
+ *      return profile_label_for_home(home) if home else None
  *
  *  `record` is a flat [key, value, ...] array. Returns a malloc'd label, or
  *  NULL for PID-only wording. Caller frees.
@@ -166,7 +166,7 @@ char *gs_lock_owner_label(const char *const *record, const char *default_root)
     }
 
     if (!home || !home[0]) return NULL;
-    /* _profile_label_for_home: <root>/profiles/<name> -> name */
+    /* profile_label_for_home: <root>/profiles/<name> -> name */
     char *canon = gs_canonical_home(home, NULL);
     if (!canon) return NULL;
 

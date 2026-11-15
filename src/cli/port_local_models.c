@@ -4,7 +4,7 @@
  * Pure helpers ported from hermes_cli/web_routers/local_models.py (54 defs,
  * previously 0 ported).
  *
- *   lm_human_gb      <- _human_gb
+ *   lm_human_gb      <- human_gb
  *   lm_k_label       <- _k_label
  *   lm_rate_and_eta  <- _rate_and_eta
  *   lm_record_rate   <- _record_rate's sample-window logic
@@ -27,7 +27,7 @@
 #define LM_RATE_WINDOW 8.0
 
 /* ===========================================================================
- *  _human_gb  (local_models.py:_human_gb)
+ *  human_gb  (local_models.py:human_gb)
  *
  *      return f"{n / (1 << 30):.1f} GB"
  *
@@ -35,7 +35,7 @@
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: _human_gb @ hermes_cli/web_routers/local_models.py:_human_gb */
+/* PoP: human_gb @ hermes_cli/web_routers/local_models.py:human_gb */
 char *lm_human_gb(double n)
 {
     char *out = (char *)malloc(32);

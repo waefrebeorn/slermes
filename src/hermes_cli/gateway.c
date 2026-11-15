@@ -19,9 +19,9 @@
 #include <sys/stat.h>
 
 /*
- * _capture_gateway_argv — Return the live argv of a running gateway process.
+ * capture_gateway_argv — Return the live argv of a running gateway process.
  *
- * Python: def _capture_gateway_argv(pid: int) -> list[str] | None:
+ * Python: def capture_gateway_argv(pid: int) -> list[str] | None:
  *   if pid <= 1: return None
  *   try: import psutil
  *   except ImportError: return None
@@ -35,8 +35,8 @@
 #define MAX_ARGV_LEN 4096
 #define MAX_ARGC 256
 
-/* Port of Python: _capture_gateway_argv */
-int _capture_gateway_argv(int pid, char** argv_out, int max_argc)
+/* Port of Python: capture_gateway_argv */
+int capture_gateway_argv(int pid, char** argv_out, int max_argc)
 {
     if (pid <= 1 || !argv_out || max_argc <= 0) {
         return 0;
@@ -75,10 +75,10 @@ int _capture_gateway_argv(int pid, char** argv_out, int max_argc)
 /*
  * _capture_gateway_argv_to_json — Return gateway argv as JSON array.
  */
-json_t* _capture_gateway_argv_json(int pid)
+json_t* capture_gateway_argv_json(int pid)
 {
     char* argv[MAX_ARGC];
-    int argc = _capture_gateway_argv(pid, argv, MAX_ARGC);
+    int argc = capture_gateway_argv(pid, argv, MAX_ARGC);
 
     json_t* result = json_new_array();
     if (!result) return NULL;
@@ -137,10 +137,10 @@ bool launch_detached_gateway_restart_by_cmdline(const char* run_argv[], int argc
 }
 
 /*
- * _spawn_gateway_restart_watcher — Spawn a watcher that monitors gateway restart.
+ * spawn_gateway_restart_watcher — Spawn a watcher that monitors gateway restart.
  */
-/* Port of Python: _spawn_gateway_restart_watcher */
-bool _spawn_gateway_restart_watcher(int old_pid, const char* run_argv[], int argc)
+/* Port of Python: spawn_gateway_restart_watcher */
+bool spawn_gateway_restart_watcher(int old_pid, const char* run_argv[], int argc)
 {
     if (old_pid <= 1) {
         return false;
@@ -158,13 +158,13 @@ bool _spawn_gateway_restart_watcher(int old_pid, const char* run_argv[], int arg
 }
 
 /*
- * _guard_named_profile_under_multiplexer — Guard against conflicting profiles.
+ * guard_named_profile_under_multiplexer — Guard against conflicting profiles.
  *
  * Python: checks if a named profile is running under a multiplexer and prevents
  * conflicts.
  */
-/* Port of Python: _guard_named_profile_under_multiplexer */
-void _guard_named_profile_under_multiplexer(const char* profile_name, bool force)
+/* Port of Python: guard_named_profile_under_multiplexer */
+void guard_named_profile_under_multiplexer(const char* profile_name, bool force)
 {
     if (!profile_name || !profile_name[0]) {
         return;

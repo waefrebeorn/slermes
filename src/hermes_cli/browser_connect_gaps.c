@@ -9,8 +9,8 @@
 
 /* ── hermes_cli/browser_connect.py: 25 missing functions ── */
 
-/* PoP: _real_profile_relparts @ hermes_cli/browser_connect.py:_real_profile_relparts */
-char *_real_profile_relparts(const char *browser) {
+/* PoP: real_profile_relparts @ hermes_cli/browser_connect.py:real_profile_relparts */
+char *real_profile_relparts(const char *browser) {
     if (!browser) return strdup("{}");
     char *buf = malloc(256);
     snprintf(buf, 256, "{\"browser\":\"%s\"}", browser);
@@ -40,19 +40,19 @@ char *_detect_default_windows(void) {
     return strdup("chrome");
 }
 
-/* PoP: _launchservices_https_handler @ hermes_cli/browser_connect.py:_launchservices_https_handler */
-char *_launchservices_https_handler(const char *dump) {
+/* PoP: launchservices_https_handler @ hermes_cli/browser_connect.py:launchservices_https_handler */
+char *launchservices_https_handler(const char *dump) {
     (void)dump;
     return strdup("com.google.chrome");
 }
 
-/* PoP: _detect_default_darwin @ hermes_cli/browser_connect.py:_detect_default_darwin */
-char *_detect_default_darwin(void) {
+/* PoP: detect_default_darwin @ hermes_cli/browser_connect.py:detect_default_darwin */
+char *detect_default_darwin(void) {
     return strdup("chrome");
 }
 
-/* PoP: _detect_default_linux @ hermes_cli/browser_connect.py:_detect_default_linux */
-char *_detect_default_linux(void) {
+/* PoP: detect_default_linux @ hermes_cli/browser_connect.py:detect_default_linux */
+char *detect_default_linux(void) {
     return strdup("google-chrome");
 }
 
@@ -68,60 +68,60 @@ char *real_profile_copy_dir(const char *browser) {
     return strdup("/tmp/hermes-profile-copy");
 }
 
-/* PoP: _last_used_profile @ hermes_cli/browser_connect.py:_last_used_profile */
-char *_last_used_profile(void) {
+/* PoP: last_used_profile @ hermes_cli/browser_connect.py:last_used_profile */
+char *last_used_profile(void) {
     return strdup("default");
 }
 
-/* PoP: _secure_snapshot_root @ hermes_cli/browser_connect.py:_secure_snapshot_root */
-char *_secure_snapshot_root(void) {
+/* PoP: secure_snapshot_root @ hermes_cli/browser_connect.py:secure_snapshot_root */
+char *secure_snapshot_root(void) {
     return strdup("/tmp/hermes-snapshots");
 }
 
-/* PoP: _secure_snapshot_contents @ hermes_cli/browser_connect.py:_secure_snapshot_contents */
-char *_secure_snapshot_contents(const char *snapshot_dir) {
+/* PoP: secure_snapshot_contents @ hermes_cli/browser_connect.py:secure_snapshot_contents */
+char *secure_snapshot_contents(const char *snapshot_dir) {
     (void)snapshot_dir;
     return strdup("[]");
 }
 
-/* PoP: _copy_auth_file @ hermes_cli/browser_connect.py:_copy_auth_file */
-void _copy_auth_file(const char *src, const char *dst) {
+/* PoP: copy_auth_file @ hermes_cli/browser_connect.py:copy_auth_file */
+void copy_auth_file(const char *src, const char *dst) {
     (void)src; (void)dst;
 }
 
-/* PoP: _mirror_profile_auth @ hermes_cli/browser_connect.py:_mirror_profile_auth */
-void _mirror_profile_auth(const char *src_dir, const char *dst_dir) {
+/* PoP: mirror_profile_auth @ hermes_cli/browser_connect.py:mirror_profile_auth */
+void mirror_profile_auth(const char *src_dir, const char *dst_dir) {
     (void)src_dir; (void)dst_dir;
 }
 
-/* PoP: _profile_cookie_db @ hermes_cli/browser_connect.py:_profile_cookie_db */
-char *_profile_cookie_db(const char *profile_dir) {
+/* PoP: profile_cookie_db @ hermes_cli/browser_connect.py:profile_cookie_db */
+char *profile_cookie_db(const char *profile_dir) {
     (void)profile_dir;
     return strdup("Cookies");
 }
 
-/* PoP: _profile_is_locked @ hermes_cli/browser_connect.py:_profile_is_locked */
-int _profile_is_locked(const char *profile_dir) {
+/* PoP: profile_is_locked @ hermes_cli/browser_connect.py:profile_is_locked */
+int profile_is_locked(const char *profile_dir) {
     (void)profile_dir;
     return 0;
 }
 
-/* PoP: _real_profile_pin @ hermes_cli/browser_connect.py:_real_profile_pin */
-void _real_profile_pin(const char *profile_dir) {
+/* PoP: real_profile_pin @ hermes_cli/browser_connect.py:real_profile_pin */
+void real_profile_pin(const char *profile_dir) {
     (void)profile_dir;
 }
 
-/* PoP: _resolve_source_profile @ hermes_cli/browser_connect.py:_resolve_source_profile */
-char *_resolve_source_profile(const char *browser) {
+/* PoP: resolve_source_profile @ hermes_cli/browser_connect.py:resolve_source_profile */
+char *resolve_source_profile(const char *browser) {
     (void)browser;
     return strdup("default");
 }
 
-/* PoP: _real_profile_autoclose @ hermes_cli/browser_connect.py:_real_profile_autoclose */
-int _real_profile_autoclose(void) { return 1; }
+/* PoP: real_profile_autoclose @ hermes_cli/browser_connect.py:real_profile_autoclose */
+int real_profile_autoclose(void) { return 1; }
 
-/* PoP: _processes_holding_profile @ hermes_cli/browser_connect.py:_processes_holding_profile */
-char *_processes_holding_profile(const char *profile_dir) {
+/* PoP: processes_holding_profile @ hermes_cli/browser_connect.py:processes_holding_profile */
+char *processes_holding_profile(const char *profile_dir) {
     (void)profile_dir;
     return strdup("[]");
 }

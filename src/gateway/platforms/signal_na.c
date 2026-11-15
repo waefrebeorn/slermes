@@ -12,11 +12,11 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Port of Python: _remux_aac_to_m4a */
-bool _remux_aac_to_m4a(const char* input_path, const char* output_path)
+/* Port of Python: remux_aac_to_m4a */
+bool remux_aac_to_m4a(const char* input_path, const char* output_path)
 {
     if (!input_path || !output_path) return false;
-    hermes_log(LOG_DEBUG, "port", "_remux_aac_to_m4a: %s -> %s", input_path, output_path);
+    hermes_log(LOG_DEBUG, "port", "remux_aac_to_m4a: %s -> %s", input_path, output_path);
 
     char cmd[4096];
     snprintf(cmd, sizeof(cmd),
@@ -25,17 +25,17 @@ bool _remux_aac_to_m4a(const char* input_path, const char* output_path)
 
     int ret = system(cmd);
     if (ret != 0) {
-        hermes_log(LOG_WARNING, "port", "_remux_aac_to_m4a: ffmpeg failed");
+        hermes_log(LOG_WARNING, "port", "remux_aac_to_m4a: ffmpeg failed");
         return false;
     }
     return true;
 }
 
-/* Port of Python: _quote_references_own_message */
-bool _quote_references_own_message(json_t* quote, const char* own_id)
+/* Port of Python: quote_references_own_message */
+bool quote_references_own_message(json_t* quote, const char* own_id)
 {
     if (!quote || !own_id) return false;
-    hermes_log(LOG_DEBUG, "port", "_quote_references_own_message: own_id=%s", own_id);
+    hermes_log(LOG_DEBUG, "port", "quote_references_own_message: own_id=%s", own_id);
 
     json_t* author = json_object_get(quote, "author");
     if (author) {
@@ -52,17 +52,17 @@ bool _quote_references_own_message(json_t* quote, const char* own_id)
     return false;
 }
 
-/* Port of Python: _validate_send_result */
-bool _validate_send_result(json_t* result)
+/* Port of Python: validate_send_result */
+bool validate_send_result(json_t* result)
 {
     if (!result) return false;
-    hermes_log(LOG_DEBUG, "port", "_validate_send_result: called");
+    hermes_log(LOG_DEBUG, "port", "validate_send_result: called");
 
     json_t* error = json_object_get(result, "error");
     if (error) {
         const char* err_str = json_node_get_string(error);
         if (err_str && err_str[0]) {
-            hermes_log(LOG_WARNING, "port", "_validate_send_result: error=%s", err_str);
+            hermes_log(LOG_WARNING, "port", "validate_send_result: error=%s", err_str);
             return false;
         }
     }

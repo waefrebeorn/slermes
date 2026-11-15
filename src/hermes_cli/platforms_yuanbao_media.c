@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_jpeg_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_jpeg_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_jpeg_size @ plugins/platforms/yuanbao/yuanbao_media.py:parse_jpeg_size */
 
-/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_jpeg_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:parse_jpeg_size */
 /* Parses JPEG image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_jpeg_size(
     const unsigned char *data, int data_len, int *width, int *height)
@@ -32,9 +32,9 @@ int cli_gateway_platforms_yuanbao_media__parse_jpeg_size(
     return -1;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_gif_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_gif_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_gif_size @ plugins/platforms/yuanbao/yuanbao_media.py:parse_gif_size */
 
-/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_gif_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:parse_gif_size */
 /* Parses GIF image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_gif_size(
     const unsigned char *data, int data_len, int *width, int *height)
@@ -51,9 +51,9 @@ int cli_gateway_platforms_yuanbao_media__parse_gif_size(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media__parse_webp_size @ plugins/platforms/yuanbao/yuanbao_media.py:_parse_webp_size */
+/* PoP: cli_gateway_platforms_yuanbao_media__parse_webp_size @ plugins/platforms/yuanbao/yuanbao_media.py:parse_webp_size */
 
-/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:_parse_webp_size */
+/* Port of Python plugins/platforms/yuanbao/yuanbao_media.py:parse_webp_size */
 /* Parses WebP image dimensions from binary data. */
 int cli_gateway_platforms_yuanbao_media__parse_webp_size(
     const unsigned char *data, int data_len, int *width, int *height)

@@ -121,7 +121,7 @@ bool curator_maybe_run(double idle_for_seconds) {
 
 /* ── Time helpers ───────────────────────────────────────────────── */
 
-/* Port of Python: _parse_iso
+/* Port of Python: parse_iso
  * Parse ISO-8601 datetime string to time_t.
  * Supports "YYYY-MM-DDTHH:MM:SS" and "YYYY-MM-DD" formats.
  * Returns 0 on parse failure (same as Python's None→epoch behavior).

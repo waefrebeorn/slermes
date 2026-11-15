@@ -37,10 +37,10 @@ typedef struct {
     char *memo_scope;          /* owned */
 } prompt_cache_scope_agent;
 
-/* PoP: _lineage_root @ agent/prompt_cache_scope.py:_lineage_root */
+/* PoP: lineage_root @ agent/prompt_cache_scope.py:lineage_root */
 /* Compression-lineage root of session_id, or NULL. Defensive about the DB
  * handle: non-list/empty results are ignored. Caller frees. */
-char *_lineage_root(const char *session_id, const prompt_cache_scope_db *session_db);
+char *lineage_root(const char *session_id, const prompt_cache_scope_db *session_db);
 
 /* PoP: resolve_prompt_cache_scope @ agent/prompt_cache_scope.py:resolve_prompt_cache_scope */
 char *resolve_prompt_cache_scope(prompt_cache_scope_agent *agent);

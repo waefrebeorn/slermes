@@ -25,8 +25,8 @@
 #define DISK_ELEVATED_HEADROOM_MB  4096
 #define DISK_BYTES_PER_MB          (1024ULL * 1024ULL)
 
-/* PoP: _coerce_mb @ gateway/disk_status.py:_coerce_mb */
-int _coerce_mb(const json_t *value, long long *out)
+/* PoP: coerce_mb @ gateway/disk_status.py:coerce_mb */
+int coerce_mb(const json_t *value, long long *out)
 {
     if (!value)
         return 0;
@@ -48,7 +48,7 @@ int _coerce_mb(const json_t *value, long long *out)
 const char *classify_disk_pressure(const json_t *free_mb, const json_t *total_mb)
 {
     long long free_v = 0, total_v = 0;
-    if (!_coerce_mb(free_mb, &free_v) || !_coerce_mb(total_mb, &total_v)
+    if (!coerce_mb(free_mb, &free_v) || !coerce_mb(total_mb, &total_v)
         || total_v <= 0)
         return "unknown";
     double used_percent = (1.0 - (double)free_v / (double)total_v) * 100.0;

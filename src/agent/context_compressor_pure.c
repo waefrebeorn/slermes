@@ -1046,7 +1046,7 @@ int cc_effective_protect_first_n(int compression_count, int has_previous_summary
     return protect_first_n > 0 ? protect_first_n : 0;
 }
 
-/* ── _template_visible_role ───────────────────────────────────────────── */
+/* ── template_visible_role ───────────────────────────────────────────── */
 
 static char *cc_str_strip(char *s) {
     if (!s) return NULL;
@@ -1076,8 +1076,8 @@ static int cc_str_is_blank(const char *s) {
     return 1;
 }
 
-/* PoP: skips @ agent/context_compressor.py:_template_visible_role */
-const char *_template_visible_role(const json_t *message) {
+/* PoP: skips @ agent/context_compressor.py:template_visible_role */
+const char *template_visible_role(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return NULL;
     const char *role = json_get_str(message, "role", NULL);
     if (!role) return NULL;
@@ -1089,10 +1089,10 @@ const char *_template_visible_role(const json_t *message) {
     return role;
 }
 
-/* ── _reasoning_details_text_chars ────────────────────────────────────── */
+/* ── reasoning_details_text_chars ────────────────────────────────────── */
 
-/* PoP: cc_reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
-long _reasoning_details_text_chars(const json_t *value) {
+/* PoP: cc_reasoning_details_text_chars @ agent/context_compressor.py:reasoning_details_text_chars */
+long reasoning_details_text_chars(const json_t *value) {
     if (!value) return 0;
     if (value->type == JSON_STRING) return (long)strlen(value->str_val);
     long total = 0;
@@ -1124,10 +1124,10 @@ long _reasoning_details_text_chars(const json_t *value) {
     return total;
 }
 
-/* ── _rolling_summary_from_marker ─────────────────────────────────────── */
+/* ── rolling_summary_from_marker ─────────────────────────────────────── */
 
-/* PoP: cc_rolling_summary_from_marker @ agent/micro_compaction.py:_rolling_summary_from_marker */
-char *_rolling_summary_from_marker(const char *content) {
+/* PoP: cc_rolling_summary_from_marker @ agent/micro_compaction.py:rolling_summary_from_marker */
+char *rolling_summary_from_marker(const char *content) {
     /* Python: if not isinstance(content, str) or not content.strip(): return "" */
     if (!content || cc_str_is_blank(content)) return strdup("");
     const char *body = content;
@@ -1147,10 +1147,10 @@ char *_rolling_summary_from_marker(const char *content) {
     return cc_str_strip(r);
 }
 
-/* ── _render_micro_marker_content ─────────────────────────────────────── */
+/* ── render_micro_marker_content ─────────────────────────────────────── */
 
-/* PoP: cc_render_micro_marker_content @ agent/micro_compaction.py:_render_micro_marker_content */
-char *_render_micro_marker_content(const char *summary_text) {
+/* PoP: cc_render_micro_marker_content @ agent/micro_compaction.py:render_micro_marker_content */
+char *render_micro_marker_content(const char *summary_text) {
     char *stripped = cc_str_strip(strdup(summary_text ? summary_text : ""));
     if (!stripped) stripped = strdup("");
     size_t len = strlen(CC_SUMMARY_PREFIX) + 2 + strlen(CC_HISTORICAL_TASK_HEADING) + 1
@@ -1164,14 +1164,14 @@ char *_render_micro_marker_content(const char *summary_text) {
     return r;
 }
 
-/* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
+/* ── merge_adjacent_user_turns ────────────────────────────────────────── */
 
-/* PoP: messages @ agent/micro_compaction.py:_merge_adjacent_user_turns */
+/* PoP: messages @ agent/micro_compaction.py:merge_adjacent_user_turns */
 /* Faithful port: builds a new list merging consecutive plain-text user turns */
 /* (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar */
 /* on merged messages (drop_stale_api_content). Returns the new count. The */
 /* caller frees the returned array via json_free. */
-int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
+int merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     *out_merged = json_array();
     if (!result || result->type != JSON_ARRAY) return 0;
     json_t *merged = *out_merged;
@@ -1336,7 +1336,7 @@ bool cc_is_nonempty_user_turn(const json_t *message) {
     return nonempty;
 }
 
-/* PoP: _reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
+/* PoP: reasoning_details_text_chars @ agent/context_compressor.py:reasoning_details_text_chars */
 /* Textual thinking chars inside a reasoning_details envelope; opaque envelope
  * blobs (signatures, redacted data, encrypted payloads) are skipped. */
 int cc_reasoning_details_text_chars(const json_t *value) {
@@ -1457,7 +1457,7 @@ bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_token
 
 /* ── batch 7: module-level pure helpers (previously REAL_GAP) ───────────── */
 
-/* PoP: _template_visible_role @ agent/context_compressor.py:_template_visible_role */
+/* PoP: template_visible_role @ agent/context_compressor.py:template_visible_role */
 /* Role as counted by strict chat-template alternation checks. Returns NULL for
  * messages the alternation check skips (tool results, and assistant messages
  * carrying tool_calls). */
@@ -1681,14 +1681,14 @@ void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens) 
  * (port_agent_context_compressor.c) uses; each delegates to the faithful
  * underscore-prefixed leaf port. */
 
-/* PoP: _render_micro_marker_content @ agent/micro_compaction.py:_render_micro_marker_content */
+/* PoP: render_micro_marker_content @ agent/micro_compaction.py:render_micro_marker_content */
 char *cc_render_micro_marker_content(const char *summary_text) {
-    return _render_micro_marker_content(summary_text);
+    return render_micro_marker_content(summary_text);
 }
 
-/* PoP: _rolling_summary_from_marker @ agent/micro_compaction.py:_rolling_summary_from_marker */
+/* PoP: rolling_summary_from_marker @ agent/micro_compaction.py:rolling_summary_from_marker */
 char *cc_rolling_summary_from_marker(const char *content) {
-    return _rolling_summary_from_marker(content);
+    return rolling_summary_from_marker(content);
 }
 
 /* PoP: cc_cursor_after_splice @ agent/micro_compaction.py:_cursor_after_splice */
@@ -1708,10 +1708,10 @@ int cc_cursor_after_splice(const json_t *result, int fallback) {
     return fallback;
 }
 
-/* PoP: cc_merge_adjacent_user_turns @ agent/micro_compaction.py:_merge_adjacent_user_turns */
+/* PoP: cc_merge_adjacent_user_turns @ agent/micro_compaction.py:merge_adjacent_user_turns */
 json_t *cc_merge_adjacent_user_turns(const json_t *result) {
     json_t *m = NULL;
-    int rc = _merge_adjacent_user_turns((json_t *)result, &m);
+    int rc = merge_adjacent_user_turns((json_t *)result, &m);
     (void)rc;
     return m ? m : json_array(); /* return empty array on failure, matching caller's `merged ? merged : json_array()` */
 }

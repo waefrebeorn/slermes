@@ -448,7 +448,7 @@ struct hcli {
     /* Attached images (_attached_images / _image_counter). */
     char **attached_images; size_t attached_images_len;
     int    image_counter;
-    /* Terminal input-mode recovery (_recover_terminal_input_modes). */
+    /* Terminal input-mode recovery (recover_terminal_input_modes). */
     double last_input_mode_recovery;            /* monotonic seconds */
     bool   input_mode_recovery_notice_shown;
     /* Cached LoopManager (_get_loop_manager). Opaque: loops_pure.h. */
@@ -631,7 +631,7 @@ bool hcli_is_session_yolo_active(hcli_t *self);
 void hcli_toggle_yolo(hcli_t *self);
 /* PoP: hcli_restore_session_yolo @ cli.py:_restore_session_yolo */
 void hcli_restore_session_yolo(hcli_t *self, const char *session_meta_json, bool quiet);
-/* PoP: hcli_persist_model_switch_to_session @ cli.py:_persist_model_switch_to_session */
+/* PoP: hcli_persist_model_switch_to_session @ cli.py:persist_model_switch_to_session */
 void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result);
 
 /* ── Batch 0 continuation: status-bar / formatting surface ─────────────── */
@@ -921,50 +921,50 @@ void hcli_stream_delta(hcli_t *self, const char *text);
 
 /* ══════════ Batch 6 (cli_gaps_2026_08_25 part 2) ═══════════════════════ */
 
-/* PoP: _hermes_call_output_screen_diff @ cli.py:_hermes_call_output_screen_diff */
+/* PoP: hermes_call_output_screen_diff @ cli.py:hermes_call_output_screen_diff */
 typedef struct cli_osd_args {
     void *app, *output, *screen, *current_pos, *last_style;
     void *attrs_for_style_string, *style_string_has_style, *size;
     int  color_depth;
     bool is_done, full_screen;
 } cli_osd_args_t;
-int _hermes_call_output_screen_diff(
+int hermes_call_output_screen_diff(
     int (*orig_osd)(const cli_osd_args_t *args, void *previous_screen),
     const cli_osd_args_t *args,
     int screen_height,
     int *previous_screen_height,   /* NULL = no previous screen */
     bool *retried_first_paint);
 
-/* PoP: _terminal_supports_extended_enter_keys @ cli.py:_terminal_supports_extended_enter_keys
+/* PoP: terminal_supports_extended_enter_keys @ cli.py:terminal_supports_extended_enter_keys
  * Allowlist check against environ (env=NULL). */
-bool _terminal_supports_extended_enter_keys(void);
+bool terminal_supports_extended_enter_keys(void);
 
-/* PoP: _enable_extended_enter_keys @ cli.py:_enable_extended_enter_keys
+/* PoP: enable_extended_enter_keys @ cli.py:enable_extended_enter_keys
  * Push Kitty keyboard disambiguate + modifyOtherKeys=2 on allowlisted
  * terminals (Ghostty gets modifyOtherKeys only). output/write_raw_fn/flush_fn
  * model output.write_raw(); when output is NULL the raw stdout TTY path is
  * used (stream.isatty() gate). */
-bool _enable_extended_enter_keys(void *output,
+bool enable_extended_enter_keys(void *output,
                                  void (*write_raw_fn)(void *, const char *),
                                  void (*flush_fn)(void *));
 
-/* PoP: _is_backslash_line_continuation @ cli.py:_is_backslash_line_continuation */
-bool _is_backslash_line_continuation(const char *text);
+/* PoP: is_backslash_line_continuation @ cli.py:is_backslash_line_continuation */
+bool is_backslash_line_continuation(const char *text);
 
-/* PoP: _apply_backslash_line_continuation @ cli.py:_apply_backslash_line_continuation
+/* PoP: apply_backslash_line_continuation @ cli.py:apply_backslash_line_continuation
  * Replace a trailing "\" marker (plus trailing blanks) with a real newline.
  * Malloc'd, caller frees. */
-char *_apply_backslash_line_continuation(const char *text);
+char *apply_backslash_line_continuation(const char *text);
 
-/* PoP: _status_bar_visible_from_display_config @ cli.py:_status_bar_visible_from_display_config
+/* PoP: status_bar_visible_from_display_config @ cli.py:status_bar_visible_from_display_config
  * display_config_json: JSON-encoded display config object (NULL/invalid → {}). */
-bool _status_bar_visible_from_display_config(const char *display_config_json);
+bool status_bar_visible_from_display_config(const char *display_config_json);
 
-/* PoP: _get_plugin_cmd_handler_names @ cli.py:_get_plugin_cmd_handler_names
+/* PoP: get_plugin_cmd_handler_names @ cli.py:get_plugin_cmd_handler_names
  * Plugin command names (no slash prefix). Malloc'd array of malloc'd
  * strings; caller frees each and the array. *out_len receives the count
  * (0 on the Python except path — empty set). */
-char **_get_plugin_cmd_handler_names(size_t *out_len);
+char **get_plugin_cmd_handler_names(size_t *out_len);
 
 /* PoP: hcli_close_reasoning_box @ cli.py:_close_reasoning_box
  * Tear down the open reasoning box: clear the buffer, mark it closed,
@@ -1064,16 +1064,16 @@ void hcli_on_notice(hcli_t *self, const char *notice_json);
 /* PoP: hcli_flush_credit_notices @ cli.py:_flush_credit_notices */
 void hcli_flush_credit_notices(hcli_t *self);
 
-/* PoP: hcli_on_notice_clear @ cli.py:_on_notice_clear */
+/* PoP: hcli_on_notice_clear @ cli.py:on_notice_clear */
 void hcli_on_notice_clear(hcli_t *self, const char *key);
 
-/* PoP: hcli_current_reasoning_callback @ cli.py:_current_reasoning_callback */
+/* PoP: hcli_current_reasoning_callback @ cli.py:current_reasoning_callback */
 void *hcli_current_reasoning_callback(hcli_t *self);
 
-/* PoP: hcli_slow_command_status @ cli.py:_slow_command_status */
+/* PoP: hcli_slow_command_status @ cli.py:slow_command_status */
 char *hcli_slow_command_status(hcli_t *self, const char *command);
 
-/* PoP: hcli_command_spinner_frame @ cli.py:_command_spinner_frame */
+/* PoP: hcli_command_spinner_frame @ cli.py:command_spinner_frame */
 char *hcli_command_spinner_frame(void);
 
 /* PoP: hcli_try_launch_chrome_debug @ cli.py:_try_launch_chrome_debug */

@@ -29,9 +29,9 @@ static int get_inbound_media_max_bytes(void)
 }
 
 /*
- * _read_httpx_body_with_limit — Read an HTTP response body without exceeding the media cap.
+ * read_httpx_body_with_limit — Read an HTTP response body without exceeding the media cap.
  *
- * Python: async def _read_httpx_body_with_limit(response, *, media_type: str) -> bytes:
+ * Python: async def read_httpx_body_with_limit(response, *, media_type: str) -> bytes:
  *   max_bytes = get_inbound_media_max_bytes()
  *   content_length = response.headers.get("content-length")
  *   if content_length:
@@ -46,8 +46,8 @@ static int get_inbound_media_max_bytes(void)
  *
  * In C: reads from a buffer with size limit checking.
  */
-/* Port of Python: _read_httpx_body_with_limit */
-json_t* _read_httpx_body_with_limit(const char* body_data, size_t body_len, const char* content_length_header)
+/* Port of Python: read_httpx_body_with_limit */
+json_t* read_httpx_body_with_limit(const char* body_data, size_t body_len, const char* content_length_header)
 {
     if (!body_data) {
         return json_new_string("");

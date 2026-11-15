@@ -26,8 +26,8 @@ char *cache_point_rejection_placement(void) { return strdup(""); }
 int cache_point_allowed(void) { return 1; }
 
 
-/* PoP: _is_cache_point_block @ agent/bedrock_adapter.py:_is_cache_point_block */
-int _is_cache_point_block(void) { return 0; }
+/* PoP: is_cache_point_block @ agent/bedrock_adapter.py:is_cache_point_block */
+int is_cache_point_block(void) { return 0; }
 
 /* PoP: strip_cache_points @ agent/bedrock_adapter.py:strip_cache_points */
 char *strip_cache_points(void) { return strdup(""); }

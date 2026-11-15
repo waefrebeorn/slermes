@@ -6,7 +6,7 @@
  *   _GIT_TIMEOUT                    -> subagent_worktree_GIT_TIMEOUT
  *   _WORKTREES_DIRNAME              -> subagent_worktree_WORKTREES_DIRNAME
  *   _BRANCH_NAMESPACE               -> subagent_worktree_BRANCH_NAMESPACE
- *   _run_git                        -> subagent_worktree__run_git (injectable hook)
+ *   run_git                        -> subagent_worktree__run_git (injectable hook)
  *   local_backend_active            -> local_backend_active (config via injectable hook)
  *   resolve_repo_root               -> resolve_repo_root
  *   _ensure_gitignore_entry         -> subagent_worktree__ensure_gitignore_entry
@@ -45,7 +45,7 @@ static void str_lower(char *s)
     for (; *s; s++) *s = (char)tolower((unsigned char)*s);
 }
 
-/* Real _run_git: fork/exec `git <args...>` with stdout+stderr captured into
+/* Real run_git: fork/exec `git <args...>` with stdout+stderr captured into
  * malloc'd strings. Never fails on non-zero exit; returns exit code, or -1
  * when the process could not be spawned at all (Python's raised exception). */
 int subagent_worktree__run_git_real(const char *const args[],

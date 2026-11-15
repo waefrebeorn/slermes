@@ -203,7 +203,7 @@ void skills_sync_read_skill_name(const char *path,
 /* ─── Directory hashing ──────────────────────────────────── */
 
 /* Simple recursive directory walk for hashing */
-static char *_hash_dir_recursive(const char *dir_path,
+static char *hash_dir_recursive(const char *dir_path,
                                  char *buf, size_t *pos, size_t *cap)
 {
     DIR *d = opendir(dir_path);
@@ -221,7 +221,7 @@ static char *_hash_dir_recursive(const char *dir_path,
         if (stat(full, &st) != 0) continue;
 
         if (S_ISDIR(st.st_mode)) {
-            buf = _hash_dir_recursive(full, buf, pos, cap);
+            buf = hash_dir_recursive(full, buf, pos, cap);
         } else if (S_ISREG(st.st_mode) && st.st_size <= MAX_FILE_SIZE) {
             /* Add relative path to hash */
             size_t name_len = strlen(entry->d_name);
@@ -269,7 +269,7 @@ void skills_sync_dir_hash(const char *dir_path, char *out_hash)
     if (!buf) return;
     size_t pos = 0;
 
-    buf = _hash_dir_recursive(dir_path, buf, &pos, &cap);
+    buf = hash_dir_recursive(dir_path, buf, &pos, &cap);
 
     if (pos > 0) {
         char *hex = hash_md5_hex((unsigned char *)buf, pos);
@@ -323,7 +323,7 @@ int skills_sync_remove_tree(const char *path)
 
 static discover_ctx_t g_discover_ctx __attribute__((unused));
 
-void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx)
+void discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx)
 {
     DIR *d = opendir(dir_path);
     if (!d) return;
@@ -352,7 +352,7 @@ void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx)
                 ctx->count++;
             } else {
                 /* Recurse into subdirectory (category nesting) */
-                _discover_skills_in_dir(full, ctx);
+                discover_skills_in_dir(full, ctx);
             }
         }
     }
@@ -403,7 +403,7 @@ int skills_sync(const char *hermes_home,
     discover_ctx_t ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.bundled_dir = bundled_dir;
-    _discover_skills_in_dir(bundled_dir, &ctx);
+    discover_skills_in_dir(bundled_dir, &ctx);
 
     out_result->total_bundled = ctx.count;
 
@@ -632,7 +632,7 @@ int skills_sync_reset(const char *hermes_home,
     discover_ctx_t ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.bundled_dir = bundled_dir;
-    _discover_skills_in_dir(bundled_dir, &ctx);
+    discover_skills_in_dir(bundled_dir, &ctx);
     bool is_bundled = false;
     char bundled_src[SKILLS_SYNC_MAX_PATH] = "";
     for (int i = 0; i < ctx.count; i++) {

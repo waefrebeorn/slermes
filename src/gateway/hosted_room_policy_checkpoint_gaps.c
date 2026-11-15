@@ -12,21 +12,21 @@
 /* PoP: _event_json @ gateway/hosted_room_policy_checkpoint.py:_event_json */
 char *_event_json(const char *event) { return event ? strdup(event) : strdup("{}"); }
 
-/* PoP: _store_active_event @ gateway/hosted_room_policy_checkpoint.py:_store_active_event */
-void _store_active_event(const char *event) { (void)event; }
+/* PoP: store_active_event @ gateway/hosted_room_policy_checkpoint.py:store_active_event */
+void store_active_event(const char *event) { (void)event; }
 
-/* PoP: _store_transcript_event @ gateway/hosted_room_policy_checkpoint.py:_store_transcript_event */
-void _store_transcript_event(const char *event) { (void)event; }
+/* PoP: store_transcript_event @ gateway/hosted_room_policy_checkpoint.py:store_transcript_event */
+void store_transcript_event(const char *event) { (void)event; }
 
-/* PoP: _event_from_room_row @ gateway/hosted_room_policy_checkpoint.py:_event_from_room_row */
-char *_event_from_room_row(const char *row) { return strdup("{}"); }
+/* PoP: event_from_room_row @ gateway/hosted_room_policy_checkpoint.py:event_from_room_row */
+char *event_from_room_row(const char *row) { return strdup("{}"); }
 
 
-/* PoP: _transcript_events @ gateway/hosted_room_policy_checkpoint.py:_transcript_events */
-char *_transcript_events(void) { return strdup("[]"); }
+/* PoP: transcript_events @ gateway/hosted_room_policy_checkpoint.py:transcript_events */
+char *transcript_events(void) { return strdup("[]"); }
 
-/* PoP: _apply_event @ gateway/hosted_room_policy_checkpoint.py:_apply_event */
-void _apply_event(const char *event) { (void)event; }
+/* PoP: apply_event @ gateway/hosted_room_policy_checkpoint.py:apply_event */
+void apply_event(const char *event) { (void)event; }
 
 /* PoP: publication_exists @ gateway/hosted_room_policy_checkpoint.py:publication_exists */
 int publication_exists(void) { return 0; }

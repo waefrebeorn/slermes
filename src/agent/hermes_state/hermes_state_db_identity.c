@@ -27,9 +27,9 @@ static bool sys_platform_is_linux(void) {
 
 /* ── hermes_state.py: SQLite file identity + generation + heartbeats ── */
 
-/* PoP: _pread_db_header @ hermes_state_dbfile.py:_pread_db_header */
+/* PoP: pread_db_header @ hermes_state_dbfile.py:pread_db_header */
 /* Returns malloc'd buffer (caller frees) or NULL. */
-char *_pread_db_header(const char *db_path, int length) {
+char *pread_db_header(const char *db_path, int length) {
     static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
     typedef struct { int fd; dev_t dev; ino_t ino; } cached_t;
     static cached_t *cache = NULL;
@@ -84,10 +84,10 @@ char *_pread_db_header(const char *db_path, int length) {
     return buf;
 }
 
-/* PoP: _read_sqlite_application_id @ hermes_state_dbfile.py:_read_sqlite_application_id */
-int _read_sqlite_application_id(const char *db_path) {
+/* PoP: read_sqlite_application_id @ hermes_state_dbfile.py:read_sqlite_application_id */
+int read_sqlite_application_id(const char *db_path) {
     if (!db_path) return -1;
-    char *hdr = _pread_db_header(db_path, 68);
+    char *hdr = pread_db_header(db_path, 68);
     if (!hdr) return -1;
     /* application_id is at offset 64, 4 bytes big-endian */
     if (hdr[0] != 'S' || hdr[1] != 'q' || hdr[2] != 'l') { free(hdr); return -1; }
@@ -96,9 +96,9 @@ int _read_sqlite_application_id(const char *db_path) {
     return id;
 }
 
-/* PoP: _stat_db_file_identity @ hermes_state.py:_stat_db_file_identity */
+/* PoP: stat_db_file_identity @ hermes_state.py:stat_db_file_identity */
 /* Returns malloc'd tuple string "dev,ino" or NULL */
-char *_stat_db_file_identity(const char *path) {
+char *stat_db_file_identity(const char *path) {
     if (!path) return NULL;
     struct stat st;
     if (stat(path, &st) != 0) return NULL;
@@ -107,15 +107,15 @@ char *_stat_db_file_identity(const char *path) {
     return strdup(buf);
 }
 
-/* PoP: _stat_sqlite_sidecar_identity @ hermes_state_dbfile.py:_stat_sqlite_sidecar_identity */
+/* PoP: stat_sqlite_sidecar_identity @ hermes_state_dbfile.py:stat_sqlite_sidecar_identity */
 /* Returns malloc'd JSON string {"-wal":"dev,ino","-shm":"dev,ino"} or NULL */
-char *_stat_sqlite_sidecar_identity(const char *db_path) {
+char *stat_sqlite_sidecar_identity(const char *db_path) {
     if (!db_path) return NULL;
     char wal_path[4096], shm_path[4096];
     snprintf(wal_path, sizeof(wal_path), "%s-wal", db_path);
     snprintf(shm_path, sizeof(shm_path), "%s-shm", db_path);
-    char *wal_id = _stat_db_file_identity(wal_path);
-    char *shm_id = _stat_db_file_identity(shm_path);
+    char *wal_id = stat_db_file_identity(wal_path);
+    char *shm_id = stat_db_file_identity(shm_path);
     char *result = malloc(256);
     if (!result) { free(wal_id); free(shm_id); return NULL; }
     snprintf(result, 256, "{\"%s\":\"%s\",\"%s\":\"%s\"}",
@@ -125,9 +125,9 @@ char *_stat_sqlite_sidecar_identity(const char *db_path) {
     return result;
 }
 
-/* PoP: _watched_sqlite_sidecar_paths @ hermes_state_dbfile.py:_watched_sqlite_sidecar_paths */
+/* PoP: watched_sqlite_sidecar_paths @ hermes_state_dbfile.py:watched_sqlite_sidecar_paths */
 /* Returns malloc'd comma-separated path list or NULL */
-char *_watched_sqlite_sidecar_paths(const char *db_path) {
+char *watched_sqlite_sidecar_paths(const char *db_path) {
     if (!db_path) return NULL;
     char wal_path[4096], shm_path[4096];
     snprintf(wal_path, sizeof(wal_path), "%s-wal", db_path);
@@ -147,7 +147,7 @@ char *_watched_sqlite_sidecar_paths(const char *db_path) {
 /* Returns malloc'd JSON array of [pid, target] pairs or empty array */
 char *iter_deleted_sqlite_sidecar_holders(const char *db_path) {
     if (!db_path || !sys_platform_is_linux()) return strdup("[]");
-    char *watched = _watched_sqlite_sidecar_paths(db_path);
+    char *watched = watched_sqlite_sidecar_paths(db_path);
     if (!watched) return strdup("[]");
     /* Parse watched paths into a set */
     char *wal_path = strdup(watched);
@@ -206,8 +206,8 @@ bool refuse_deleted_wal_generation(const char *db_path) {
     return found;
 }
 
-/* PoP: _own_profile_name @ hermes_state_sessions.py:_own_profile_name */
-const char *_own_profile_name(const char *db_path) {
+/* PoP: own_profile_name @ hermes_state_sessions.py:own_profile_name */
+const char *own_profile_name(const char *db_path) {
     static char result[256];
     if (!db_path) return NULL;
     char *root = getenv("HERMES_HOME");
@@ -288,18 +288,18 @@ int latest_conversation_boundary(const char *session_key, const char *source, sq
     return gen;
 }
 
-/* PoP: _dedupe_display_generations @ hermes_state_messages.py:_dedupe_display_generations */
+/* PoP: dedupe_display_generations @ hermes_state_messages.py:dedupe_display_generations */
 /* Simplified: returns the input JSON (full implementation needs message row dedup) */
-char *_dedupe_display_generations(const char *rows_json) {
+char *dedupe_display_generations(const char *rows_json) {
     if (!rows_json) return strdup("[]");
     /* Full implementation would parse JSON, build dedup key per row, prefer active/newest */
     /* For now, return input (callers that use this are display-read paths) */
     return strdup(rows_json);
 }
 
-/* PoP: _resume_lineage_ids @ hermes_state_messages.py:_resume_lineage_ids */
+/* PoP: resume_lineage_ids @ hermes_state_messages.py:resume_lineage_ids */
 /* Returns JSON array of session ids from root to tip */
-char *_resume_lineage_ids(const char *session_id, sqlite3 *conn) {
+char *resume_lineage_ids(const char *session_id, sqlite3 *conn) {
     if (!session_id || !conn) return strdup("[]");
     char *result = malloc(4096);
     if (!result) return strdup("[]");
@@ -349,7 +349,7 @@ int backfill_null_session_profiles(const char *profile_name, sqlite3 *conn) {
 /* PoP: get_compression_chain @ hermes_state_compression.py:get_compression_chain */
 /* Returns JSON array of session ids from root to tip */
 char *get_compression_chain(const char *session_id, sqlite3 *conn) {
-    return _resume_lineage_ids(session_id, conn);
+    return resume_lineage_ids(session_id, conn);
 }
 
 /* PoP: get_compression_tip @ hermes_state.py:get_compression_tip */

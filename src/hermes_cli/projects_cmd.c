@@ -98,7 +98,7 @@ int hermes_cli_projects_cmd_u_print_project(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_projects_cmd_u_cmd_create @ hermes_cli/projects_cmd.py:_cmd_create */
+/* PoP: hermes_cli_projects_cmd_u_cmd_create @ hermes_cli/projects_cmd.py:cmd_create */
 int hermes_cli_projects_cmd_u_cmd_create(const char *arg) {
     /* Python: create + optional use + report. Arg =
      * "slug\tpid\tstate\tresult". */
@@ -208,7 +208,7 @@ int hermes_cli_projects_cmd_u_cmd_use(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_projects_cmd_u_cmd_archive @ hermes_cli/projects_cmd.py:_cmd_archive */
+/* PoP: hermes_cli_projects_cmd_u_cmd_archive @ hermes_cli/projects_cmd.py:cmd_archive */
 int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) {
     /* Python: pdb.archive_project(conn, proj.id); print("Archived <slug>"). */
     if (arg && *arg) printf("Archived %s\n", arg);

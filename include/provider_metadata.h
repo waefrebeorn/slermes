@@ -438,7 +438,7 @@ int query_anthropic_context_length(const char *model, const char *base_url, cons
 int resolve_endpoint_context_length(const char *model, const char *base_url, const char *api_key);
 
 /* Fetch Codex OAuth context lengths from chatgpt.com/backend-api/codex/models.
- * Port of Python model_metadata._fetch_codex_oauth_context_lengths().
+ * Port of Python model_metadata.fetch_codex_oauth_context_lengths().
  * Returns json_t* dict of slug -> context_window (strings), or NULL on failure.
  * Caller must json_free(). */
 json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token);

@@ -13,11 +13,11 @@
 char *resolve_native_compaction_capabilities(void) { return strdup("{}"); }
 
 
-/* PoP: _extract_item_text @ agent/native_compaction.py:_extract_item_text */
-char *_extract_item_text(void) { return strdup(""); }
+/* PoP: extract_item_text @ agent/native_compaction.py:extract_item_text */
+char *extract_item_text(void) { return strdup(""); }
 
-/* PoP: _has_retainable_image_content @ agent/native_compaction.py:_has_retainable_image_content */
-int _has_retainable_image_content(void) { return 0; }
+/* PoP: has_retainable_image_content @ agent/native_compaction.py:has_retainable_image_content */
+int has_retainable_image_content(void) { return 0; }
 
-/* PoP: _is_summary_item @ agent/native_compaction.py:_is_summary_item */
-int _is_summary_item(void) { return 0; }
+/* PoP: is_summary_item @ agent/native_compaction.py:is_summary_item */
+int is_summary_item(void) { return 0; }

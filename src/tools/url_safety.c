@@ -996,8 +996,8 @@ int url_get_image_format(const char *mime_type) {
 }
 
 /* Parse PNG dimensions from raw bytes.
- * Mirrors Python yuanbao_media._parse_png_size(). */
-static bool _parse_png_size(const unsigned char *data, size_t len,
+ * Mirrors Python yuanbao_media.parse_png_size(). */
+static bool parse_png_size(const unsigned char *data, size_t len,
                             int *width, int *height) {
     if (len < 24) return false;
     if (data[0] != 0x89 || data[1] != 'P' || data[2] != 'N' || data[3] != 'G')
@@ -1008,8 +1008,8 @@ static bool _parse_png_size(const unsigned char *data, size_t len,
 }
 
 /* Parse JPEG dimensions from raw bytes.
- * Mirrors Python yuanbao_media._parse_jpeg_size(). */
-static bool _parse_jpeg_size(const unsigned char *data, size_t len,
+ * Mirrors Python yuanbao_media.parse_jpeg_size(). */
+static bool parse_jpeg_size(const unsigned char *data, size_t len,
                              int *width, int *height) {
     if (len < 4) return false;
     if (data[0] != 0xFF || data[1] != 0xD8) return false;
@@ -1032,8 +1032,8 @@ static bool _parse_jpeg_size(const unsigned char *data, size_t len,
 }
 
 /* Parse GIF dimensions from raw bytes.
- * Mirrors Python yuanbao_media._parse_gif_size(). */
-static bool _parse_gif_size(const unsigned char *data, size_t len,
+ * Mirrors Python yuanbao_media.parse_gif_size(). */
+static bool parse_gif_size(const unsigned char *data, size_t len,
                             int *width, int *height) {
     if (len < 10) return false;
     /* Check GIF signature */
@@ -1046,8 +1046,8 @@ static bool _parse_gif_size(const unsigned char *data, size_t len,
 
 /* Parse WebP dimensions from raw bytes.
  * Supports VP8 (lossy), VP8L (lossless), VP8X (extended).
- * Mirrors Python yuanbao_media._parse_webp_size(). */
-static bool _parse_webp_size(const unsigned char *data, size_t len,
+ * Mirrors Python yuanbao_media.parse_webp_size(). */
+static bool parse_webp_size(const unsigned char *data, size_t len,
                              int *width, int *height) {
     if (len < 16) return false;
     if (memcmp(data, "RIFF", 4) != 0 || memcmp(data + 8, "WEBP", 4) != 0)

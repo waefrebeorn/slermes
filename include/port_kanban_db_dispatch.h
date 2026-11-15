@@ -18,11 +18,11 @@ int kbd_wait_status_from_returncode(int returncode);
 int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code,
                        int *out_code);
 
-/* _error_fingerprint -- pid N / <TS> normalization, lowercased and stripped.
+/* error_fingerprint -- pid N / <TS> normalization, lowercased and stripped.
  * Caller frees. */
 char *kbd_error_fingerprint(const char *error_text);
 
-/* _worker_survived_termination -- `termination` is a flat [key, value, ...]
+/* worker_survived_termination -- `termination` is a flat [key, value, ...]
  * array; boolean values are "1"/"0". */
 int kbd_worker_survived_termination(const char *const *termination);
 

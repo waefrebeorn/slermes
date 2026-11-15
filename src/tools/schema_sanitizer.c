@@ -163,7 +163,7 @@ static json_t *sanitize_node_walk(json_t *node)
     return out;
 }
 
-/* PoP: object @ tools/schema_sanitizer.py:_sanitize_single_tool */
+/* PoP: object @ tools/schema_sanitizer.py:sanitize_single_tool */
 
 /* Core: sanitize an OpenAI-format tool object (deep-copied, mutated in place
  * on the returned copy). Caller frees the returned json_t. */

@@ -49,10 +49,10 @@ static char *str_lower_dup(const char *s)
     return d;
 }
 
-/* PoP: _is_meta_contributor @ hermes_cli/model_data_policy_guard.py:_is_meta_contributor */
+/* PoP: is_meta_contributor @ hermes_cli/model_data_policy_guard.py:is_meta_contributor */
 /* Meta Model API "contributor" tier. Match the id suffix; do not require a
  * specific provider id. */
-static int _is_meta_contributor(const char *model_lower,
+static int is_meta_contributor(const char *model_lower,
                                 const char *provider_lower)
 {
     (void)provider_lower;
@@ -100,7 +100,7 @@ static const struct {
     mdp_predicate_t predicate;
     const char *message;
 } MDP_RULES[] = {
-    { _is_meta_contributor, _META_CONTRIBUTOR_MESSAGE },
+    { is_meta_contributor, _META_CONTRIBUTOR_MESSAGE },
 };
 
 void data_training_warning_free(DataTrainingWarning *w)

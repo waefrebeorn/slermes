@@ -17,13 +17,13 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
-extern char *_stat_db_file_identity(const char *path);
-extern char *_stat_sqlite_sidecar_identity(const char *db_path);
+extern char *stat_db_file_identity(const char *path);
+extern char *stat_sqlite_sidecar_identity(const char *db_path);
 
 /* ── hermes_state.py: session lifecycle + compression + handoff cluster ── */
 
-/* PoP: _bump_conversation_generation @ hermes_state_messages.py:_bump_conversation_generation */
-void _bump_conversation_generation(sqlite3 *conn, const char *session_id, const char *end_reason) {
+/* PoP: bump_conversation_generation @ hermes_state_messages.py:bump_conversation_generation */
+void bump_conversation_generation(sqlite3 *conn, const char *session_id, const char *end_reason) {
     if (!conn || !session_id || !end_reason) return;
     /* Only reset-end reasons count: compression, session_reset, etc. */
     static const char *reset_reasons[] = {"session_reset", "session_switch", "idle", "daily", "suspended", "resume_pending_expired", NULL};
@@ -88,8 +88,8 @@ void update_session_tool_names(const char *session_id, const char *tool_names_js
     sqlite3_finalize(st);
 }
 
-/* PoP: _freelist_ratio @ hermes_state_maintenance.py:_freelist_ratio */
-float _freelist_ratio(sqlite3 *conn) {
+/* PoP: freelist_ratio @ hermes_state_maintenance.py:freelist_ratio */
+float freelist_ratio(sqlite3 *conn) {
     if (!conn) return -1.0f;
     int64_t page_count = 0, freelist = 0;
     sqlite3_stmt *st = NULL;
@@ -129,8 +129,8 @@ int reclaim_stale_running_handoffs(const char *error, sqlite3 *conn) {
     return count;
 }
 
-/* PoP: _db_has_trigram_tool_calls_projection @ hermes_state_fts.py:_db_has_trigram_tool_calls_projection */
-bool _db_has_trigram_tool_calls_projection(sqlite3 *conn) {
+/* PoP: db_has_trigram_tool_calls_projection @ hermes_state_fts.py:db_has_trigram_tool_calls_projection */
+bool db_has_trigram_tool_calls_projection(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(conn, "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'messages_fts_trigram'", -1, &st, NULL) != SQLITE_OK) return false;
@@ -152,15 +152,15 @@ bool _db_has_trigram_tool_calls_projection(sqlite3 *conn) {
     return has;
 }
 
-/* PoP: _db_needs_fts_storage_upgrade @ hermes_state_fts.py:_db_needs_fts_storage_upgrade */
-bool _db_needs_fts_storage_upgrade(sqlite3 *conn) {
+/* PoP: db_needs_fts_storage_upgrade @ hermes_state_fts.py:db_needs_fts_storage_upgrade */
+bool db_needs_fts_storage_upgrade(sqlite3 *conn) {
     if (!conn) return false;
     /* True when legacy inline FTS or trigram tool_calls projection exists */
-    return _db_has_trigram_tool_calls_projection(conn);
+    return db_has_trigram_tool_calls_projection(conn);
 }
 
-/* PoP: _ensure_db_file_generation @ hermes_state.py:_ensure_db_file_generation */
-void _ensure_db_file_generation(const char *db_path, const char *token, sqlite3 *conn) {
+/* PoP: ensure_db_file_generation @ hermes_state.py:ensure_db_file_generation */
+void ensure_db_file_generation(const char *db_path, const char *token, sqlite3 *conn) {
     if (!conn || !token) return;
     /* Insert or ignore generation token */
     sqlite3_stmt *st = NULL;
@@ -186,11 +186,11 @@ void _ensure_db_file_generation(const char *db_path, const char *token, sqlite3 
     sqlite3_finalize(st);
 }
 
-/* PoP: _record_db_file_identity @ hermes_state.py:_record_db_file_identity */
-void _record_db_file_identity(const char *db_path, sqlite3 *conn) {
+/* PoP: record_db_file_identity @ hermes_state.py:record_db_file_identity */
+void record_db_file_identity(const char *db_path, sqlite3 *conn) {
     if (!db_path || !conn) return;
     /* Snapshot inode + sidecar identity */
-    char *identity = _stat_db_file_identity(db_path);
+    char *identity = stat_db_file_identity(db_path);
     if (identity) {
         /* Store in session or log */
         hermes_log(LOG_DEBUG, "hermes_state", "state.db identity: %s", identity);
@@ -198,46 +198,46 @@ void _record_db_file_identity(const char *db_path, sqlite3 *conn) {
     }
 }
 
-/* PoP: _db_file_was_replaced @ hermes_state.py:_db_file_was_replaced */
-bool _db_file_was_replaced(const char *db_path, const char *recorded_identity) {
+/* PoP: db_file_was_replaced @ hermes_state.py:db_file_was_replaced */
+bool db_file_was_replaced(const char *db_path, const char *recorded_identity) {
     if (!db_path || !recorded_identity) return false;
-    char *current = _stat_db_file_identity(db_path);
+    char *current = stat_db_file_identity(db_path);
     if (!current) return false;
     bool replaced = strcmp(current, recorded_identity) != 0;
     free(current);
     return replaced;
 }
 
-/* PoP: _halt_db_replaced @ hermes_state.py:_halt_db_replaced */
-void _halt_db_replaced(const char *db_path) {
+/* PoP: halt_db_replaced @ hermes_state.py:halt_db_replaced */
+void halt_db_replaced(const char *db_path) {
     hermes_log(LOG_ERROR, "hermes_state", "state.db at %s has been replaced (identity mismatch)", db_path);
 }
 
-/* PoP: _wal_generation_was_lost @ hermes_state.py:_wal_generation_was_lost */
-bool _wal_generation_was_lost(const char *db_path, const char *recorded_sidecar) {
+/* PoP: wal_generation_was_lost @ hermes_state.py:wal_generation_was_lost */
+bool wal_generation_was_lost(const char *db_path, const char *recorded_sidecar) {
     if (!db_path || !recorded_sidecar) return false;
-    char *current = _stat_sqlite_sidecar_identity(db_path);
+    char *current = stat_sqlite_sidecar_identity(db_path);
     if (!current) return false;
     bool lost = strcmp(current, recorded_sidecar) != 0;
     free(current);
     return lost;
 }
 
-/* PoP: _halt_deleted_wal_generation @ hermes_state.py:_halt_deleted_wal_generation */
-void _halt_deleted_wal_generation(const char *db_path) {
+/* PoP: halt_deleted_wal_generation @ hermes_state.py:halt_deleted_wal_generation */
+void halt_deleted_wal_generation(const char *db_path) {
     hermes_log(LOG_ERROR, "hermes_state", "state.db at %s: WAL generation was lost", db_path);
 }
 
-/* PoP: _raise_if_db_replaced @ hermes_state.py:_raise_if_db_replaced */
-void _raise_if_db_replaced(const char *db_path, const char *recorded_identity) {
+/* PoP: raise_if_db_replaced @ hermes_state.py:raise_if_db_replaced */
+void raise_if_db_replaced(const char *db_path, const char *recorded_identity) {
     if (!db_path || !recorded_identity) return;
-    if (_db_file_was_replaced(db_path, recorded_identity)) {
-        _halt_db_replaced(db_path);
+    if (db_file_was_replaced(db_path, recorded_identity)) {
+        halt_db_replaced(db_path);
     }
 }
 
-/* PoP: _is_structural_corruption_error @ hermes_state.py:_is_structural_corruption_error */
-bool _is_structural_corruption_error(const char *msg) {
+/* PoP: is_structural_corruption_error @ hermes_state.py:is_structural_corruption_error */
+bool is_structural_corruption_error(const char *msg) {
     if (!msg) return false;
     static const char *markers[] = {"malformed", "not a database", "database corruption", NULL};
     char lower[1024];
@@ -252,27 +252,27 @@ bool _is_structural_corruption_error(const char *msg) {
     return false;
 }
 
-/* PoP: _corrupt_error @ hermes_state.py:_corrupt_error */
-void _corrupt_error(const char *prefix, const char *db_path) {
+/* PoP: corrupt_error @ hermes_state.py:corrupt_error */
+void corrupt_error(const char *prefix, const char *db_path) {
     hermes_log(LOG_ERROR, "hermes_state", "%s%s: structural corruption detected", prefix ? prefix : "", db_path);
 }
 
-/* PoP: _halt_db_corrupt @ hermes_state.py:_halt_db_corrupt */
-void _halt_db_corrupt(const char *db_path, const char *exc_msg) {
+/* PoP: halt_db_corrupt @ hermes_state.py:halt_db_corrupt */
+void halt_db_corrupt(const char *db_path, const char *exc_msg) {
     hermes_log(LOG_ERROR, "hermes_state", "state.db at %s reported structural corruption: %s", db_path, exc_msg ? exc_msg : "unknown");
 }
 
-/* PoP: _disable_close_time_checkpoint @ hermes_state.py:_disable_close_time_checkpoint */
-void _disable_close_time_checkpoint(void) {
+/* PoP: disable_close_time_checkpoint @ hermes_state.py:disable_close_time_checkpoint */
+void disable_close_time_checkpoint(void) {
     /* Best-effort: mark that close-time checkpoint should be skipped */
     /* In the C port, this is a no-op (the Python version sets a flag) */
 }
 
-/* PoP: _raise_if_db_corrupt @ hermes_state.py:_raise_if_db_corrupt */
-void _raise_if_db_corrupt(const char *db_path, const char *exc_msg) {
+/* PoP: raise_if_db_corrupt @ hermes_state.py:raise_if_db_corrupt */
+void raise_if_db_corrupt(const char *db_path, const char *exc_msg) {
     if (!db_path || !exc_msg) return;
-    if (_is_structural_corruption_error(exc_msg)) {
-        _halt_db_corrupt(db_path, exc_msg);
+    if (is_structural_corruption_error(exc_msg)) {
+        halt_db_corrupt(db_path, exc_msg);
     }
 }
 

@@ -1622,13 +1622,13 @@ void gwstatus_clear_planned_stop_marker(void) {
  * <root>/profiles/<name> layouts, "default" for the deployment root home,
  * NULL when no label can be inferred. Never fails — diagnostics only.
  * default_hermes_root/platform_default are injectable for determinism. 
- * PoP: _profile_label_for_home @ gateway/status.py:_profile_label_for_home
+ * PoP: profile_label_for_home @ gateway/status.py:profile_label_for_home
  */
 static const char *gwstatus_profile_home_regex(void) {
     return "^[a-z0-9][a-z0-9_-]{0,63}$";
 }
 
-char *_profile_label_for_home(const char *home,
+char *profile_label_for_home(const char *home,
                               const char *default_root) {
     if (!home || !home[0]) return NULL;
     /* _canonical_hermes_home: expanduser + absolute. Only ~ needs expansion. */
@@ -1699,6 +1699,6 @@ char *scoped_lock_owner_label(json_t *record, const char *default_root) {
     }
     json_t *home = json_object_get(record, "hermes_home");
     if (home && home->type == JSON_STRING && home->str_val[0])
-        return _profile_label_for_home(home->str_val, default_root);
+        return profile_label_for_home(home->str_val, default_root);
     return NULL;
 }

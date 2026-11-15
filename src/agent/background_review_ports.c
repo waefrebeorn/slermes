@@ -228,7 +228,7 @@ json_t *brv_digest_history(const json_t *messages_snapshot, int tail) {
 
 #define BRV_REVIEW_MAX_INPUT_TOKENS_DEFAULT 600000
 
-/* PoP: _classify_review_result @ agent/background_review.py:_classify_review_result
+/* PoP: classify_review_result @ agent/background_review.py:classify_review_result
  * Prefix-based (not free-text substring) on the summarize_background_review_actions
  * formats: "Skill …", "📝 Skill …", "Memory …", "User profile …". */
 char *brv_classify_review_result(json_t *actions)
@@ -271,7 +271,7 @@ bool brv_is_background_review_enabled(int task_enabled_truthy)
     return task_enabled_truthy != 0;
 }
 
-/* PoP: _review_input_token_budget @ agent/background_review.py
+/* PoP: review_input_token_budget @ agent/background_review.py
  * max_input_tokens with LIVE default 600000; <=0 → unlimited (NULL).
  * Returns malloc'd int-boxed budget or NULL. Caller frees. */
 int *brv_review_input_token_budget(long raw_budget, bool raw_present)
@@ -454,8 +454,8 @@ static void *brv_interrupt_worker(void *arg)
     return NULL;
 }
 
-/* PoP: _interrupt_background_review @ agent/background_review.py:_interrupt_background_review */
-void _interrupt_background_review(void *review_agent)
+/* PoP: interrupt_background_review @ agent/background_review.py:interrupt_background_review */
+void interrupt_background_review(void *review_agent)
 {
     void **args = malloc(3 * sizeof(*args));
     if (!args) return;
@@ -491,12 +491,12 @@ void cancel_background_review_for_live_turn(brv_agent_slots_t *agent,
     }
 
     if (!run) {
-        if (legacy_agent) _interrupt_background_review(legacy_agent);
+        if (legacy_agent) interrupt_background_review(legacy_agent);
         return;
     }
 
     void *review_agent = brv_cancel(run);
-    if (review_agent) _interrupt_background_review(review_agent);
+    if (review_agent) interrupt_background_review(review_agent);
 
     struct timespec deadline;
     clock_gettime(CLOCK_REALTIME, &deadline);
@@ -543,10 +543,10 @@ static json_t *brv_load_config(void)
     return cfg;
 }
 
-/* PoP: _background_review_task_config @ agent/background_review.py:_background_review_task_config
+/* PoP: background_review_task_config @ agent/background_review.py:background_review_task_config
  * Return auxiliary.background_review (or {} on any failure). When task_cfg
  * is non-NULL it is returned verbatim when it is an object, else {}. */
-json_t *_background_review_task_config(const json_t *task_cfg)
+json_t *background_review_task_config(const json_t *task_cfg)
 {
     if (task_cfg) {
         if (task_cfg->type == JSON_OBJECT) return json_copy(task_cfg);
@@ -566,13 +566,13 @@ json_t *_background_review_task_config(const json_t *task_cfg)
     return out ? out : json_object();
 }
 
-/* PoP: _review_input_token_budget @ agent/background_review.py:_review_input_token_budget
+/* PoP: review_input_token_budget @ agent/background_review.py:review_input_token_budget
  * Aggregate input-token budget for one review fork (NULL = unlimited).
  * max_input_tokens <=0 disables the cap explicitly; unparseable falls back
  * to the 600000 default. Returns malloc'd int or NULL. Caller frees. */
-int *_review_input_token_budget(const json_t *task_cfg)
+int *review_input_token_budget(const json_t *task_cfg)
 {
-    json_t *task = _background_review_task_config(task_cfg);
+    json_t *task = background_review_task_config(task_cfg);
     long budget = BRV_REVIEW_MAX_INPUT_TOKENS_DEFAULT;
     const json_t *raw = json_obj_get(task, "max_input_tokens");
     if (raw) {
@@ -647,10 +647,10 @@ bool is_background_review_enabled(const json_t *task_cfg)
     return enabled;
 }
 
-/* PoP: _snapshot_review_usage @ agent/background_review.py:_snapshot_review_usage
+/* PoP: snapshot_review_usage @ agent/background_review.py:snapshot_review_usage
  * Snapshot in-memory usage counters from a review fork (pre-close).
  * ``review_agent`` mirrors the fork counter fields. */
-json_t *_snapshot_review_usage(const json_t *review_agent)
+json_t *snapshot_review_usage(const json_t *review_agent)
 {
     json_t *out = json_object();
     if (!out) return NULL;
@@ -675,12 +675,12 @@ static double brv_num_field(const json_t *o, const char *k) {
     return (v && v->type == JSON_NUMBER) ? v->num_val : 0.0;
 }
 
-/* PoP: _record_review_usage_to_parent @ agent/background_review.py:_record_review_usage_to_parent
+/* PoP: record_review_usage_to_parent @ agent/background_review.py:record_review_usage_to_parent
  * Attribute a background-review fork's usage to the parent session through
  * the aux-accounting chokepoint. Best-effort by contract: never fails the
  * review. ``db`` is the parent's SessionDB handle (NULL → no-op, mirroring
  * the getattr(_session_db)/session_id guard). */
-bool _record_review_usage_to_parent(state_usage_db_t *db, const char *session_id,
+bool record_review_usage_to_parent(state_usage_db_t *db, const char *session_id,
                                     const json_t *usage)
 {
     if (!db || !session_id || !*session_id) return false;
@@ -708,8 +708,8 @@ bool _record_review_usage_to_parent(state_usage_db_t *db, const char *session_id
     return ok;
 }
 
-/* PoP: _classify_review_result @ agent/background_review.py:_classify_review_result */
-char *_classify_review_result(json_t *actions)
+/* PoP: classify_review_result @ agent/background_review.py:classify_review_result */
+char *classify_review_result(json_t *actions)
 {
     if (!actions || actions->type != JSON_ARRAY || json_array_size(actions) == 0)
         return strdup("none");
@@ -740,9 +740,9 @@ char *_classify_review_result(json_t *actions)
     return strdup("none");
 }
 
-/* PoP: _log_review_completion @ agent/background_review.py:_log_review_completion
+/* PoP: log_review_completion @ agent/background_review.py:log_review_completion
  * Emit a per-fork completion line so cost is visible where it is incurred. */
-void _log_review_completion(const json_t *usage, const char *result)
+void log_review_completion(const json_t *usage, const char *result)
 {
     fprintf(stderr,
             "info: Background review complete: thread=bg-review calls=%lld "

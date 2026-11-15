@@ -2018,7 +2018,7 @@ int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *ar
 /* ── review budget + compression rearm + billing labels (gap closure) ──── */
 
 /* PoP: _review_input_budget_exhausted @ agent/conversation_loop.py
- * Only forks carrying an explicit _review_input_token_budget are gated.
+ * Only forks carrying an explicit review_input_token_budget are gated.
  * has_budget=false → not a review fork (False). used >= budget fires. */
 bool ccl_review_input_budget_exhausted(bool has_budget, long budget,
                                        bool has_used, long used)

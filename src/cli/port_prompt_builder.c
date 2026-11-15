@@ -7,7 +7,7 @@
  *   pb_strip_yaml_frontmatter <- _strip_yaml_frontmatter
  *   pb_format_steer_marker   <- format_steer_marker
  *   pb_format_backend_probe  <- _format_backend_probe
- *   pb_plugin_backend_is_remote <- _plugin_backend_is_remote
+ *   pb_plugin_backend_is_remote <- plugin_backend_is_remote
  *
  * The config / file-scan / guidance half stays in Python.
  */
@@ -159,7 +159,7 @@ char *pb_format_backend_probe(const char *output)
 }
 
 /* ===========================================================================
- *  _plugin_backend_is_remote  (prompt_builder.py:_plugin_backend_is_remote)
+ *  plugin_backend_is_remote  (prompt_builder.py:plugin_backend_is_remote)
  *
  *      return bool(backend and backend != "local"
  *                  and backend not in _REMOTE_TERMINAL_BACKENDS
@@ -170,7 +170,7 @@ char *pb_format_backend_probe(const char *output)
  *  so an unknown-but-explicitly-remote backend is still remote.
  * =========================================================================== */
 
-/* PoP: _plugin_backend_is_remote @ agent/prompt_builder.py:_plugin_backend_is_remote */
+/* PoP: plugin_backend_is_remote @ agent/prompt_builder.py:plugin_backend_is_remote */
 int pb_plugin_backend_is_remote(const char *backend, int attr_is_remote)
 {
     if (!backend || !backend[0]) return 0;

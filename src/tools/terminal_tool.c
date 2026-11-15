@@ -44,8 +44,8 @@
 #define MAX_ENV_LIFETIME 300
 #define MAX_COMMAND_LEN 16384
 
-/* PoP: _safe_command_preview @ tools/terminal_tool_guards.py:_safe_command_preview */
-static const char *_safe_command_preview(const char *command, int limit) {
+/* PoP: safe_command_preview @ tools/terminal_tool_guards.py:safe_command_preview */
+static const char *safe_command_preview(const char *command, int limit) {
     static char buf[512];
     if (!command) return "<None>";
     if (limit <= 0) limit = 200;
@@ -70,8 +70,8 @@ static bool _looks_like_env_assignment(const char *token) {
     return true;
 }
 
-/* PoP: _read_shell_token @ tools/terminal_tool_sudo.py:_read_shell_token */
-static int _read_shell_token(const char *command, int start, char *out_token, int max_len) {
+/* PoP: read_shell_token @ tools/terminal_tool_sudo.py:read_shell_token */
+static int read_shell_token(const char *command, int start, char *out_token, int max_len) {
     int i = start;
     int len = strlen(command);
     while (i < len && (command[i] == ' ' || command[i] == '\t')) i++;
@@ -107,8 +107,8 @@ static int _read_shell_token(const char *command, int start, char *out_token, in
     return out_i;
 }
 
-/* PoP: _sudo_nopasswd_works @ tools/terminal_tool_sudo.py:_rewrite_compound_background */
-char* _rewrite_compound_background(const char *command) {
+/* PoP: sudo_nopasswd_works @ tools/terminal_tool_sudo.py:rewrite_compound_background */
+char* rewrite_compound_background(const char *command) {
     if (!command) return NULL;
     
     char *result = strdup(command);
@@ -124,15 +124,15 @@ char* _rewrite_compound_background(const char *command) {
     return result;
 }
 
-/* PoP: _sudo_nopasswd_works @ tools/environments/base.py:_sudo_nopasswd_works */
-static bool _sudo_nopasswd_works(void) {
+/* PoP: sudo_nopasswd_works @ tools/environments/base.py:sudo_nopasswd_works */
+static bool sudo_nopasswd_works(void) {
     FILE *fp = popen("sudo -n true 2>/dev/null", "r");
     if (fp) pclose(fp);
     return true; /* Simplified */
 }
 
-/* PoP: _transform_sudo_command @ tools/terminal_tool_sudo.py:_transform_sudo_command */
-void _transform_sudo_command(const char *command, char **out_cmd, char **out_sudo_pass) {
+/* PoP: transform_sudo_command @ tools/terminal_tool_sudo.py:transform_sudo_command */
+void transform_sudo_command(const char *command, char **out_cmd, char **out_sudo_pass) {
     if (!command || !strncmp(command, "sudo ", 5)) {
         *out_cmd = strdup(command ? command : "");
         *out_sudo_pass = NULL;
@@ -150,19 +150,19 @@ void _transform_sudo_command(const char *command, char **out_cmd, char **out_sud
     }
 }
 
-/* PoP: _maybe_reap_docker_orphans @ tools/terminal_tool.py:_maybe_reap_docker_orphans */
-void _maybe_reap_docker_orphans(const char *container_config_json) {
+/* PoP: maybe_reap_docker_orphans @ tools/terminal_tool.py:maybe_reap_docker_orphans */
+void maybe_reap_docker_orphans(const char *container_config_json) {
     /* Simplified - no Docker in C core */
     (void)container_config_json;
 }
 
-/* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_get_env_config */
-char* _get_env_config(void) {
+/* PoP: cleanup_inactive_envs @ tools/terminal_tool.py:get_env_config */
+char* get_env_config(void) {
     json_t *cfg = term_get_env_config();
     return json_serialize(cfg);   /* caller owns; NULL if empty */
 }
 
-/* PoP: _cleanup_inactive_envs @ tools/terminal_tool_backends.py:_create_environment */
+/* PoP: cleanup_inactive_envs @ tools/terminal_tool_backends.py:_create_environment */
 char* _create_environment(const char *env_type, const char *image, const char *cwd,
                           int timeout, const char *task_id, const char *env_vars_json) {
     (void)image; (void)env_vars_json;
@@ -185,8 +185,8 @@ char* _create_environment(const char *env_type, const char *image, const char *c
     return out;
 }
 
-/* PoP: _cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:_cleanup_inactive_envs */
-void _cleanup_inactive_envs(int lifetime_seconds) {
+/* PoP: cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:cleanup_inactive_envs */
+void cleanup_inactive_envs(int lifetime_seconds) {
     if (lifetime_seconds <= 0) lifetime_seconds = 300;
     term_cleanup_inactive_envs(lifetime_seconds);
 }
@@ -205,8 +205,8 @@ bool is_persistent_env_port(const char *task_id) {
 }
 
 
-/* PoP: _command_requires_pipe_stdin @ tools/terminal_tool_result.py:_interpret_exit_code */
-const char* _interpret_exit_code(const char *command, int exit_code) {
+/* PoP: command_requires_pipe_stdin @ tools/terminal_tool_result.py:interpret_exit_code */
+const char* interpret_exit_code(const char *command, int exit_code) {
     (void)command;
     if (exit_code == 0) return "success";
     if (exit_code == 130) return "interrupted";
@@ -214,10 +214,10 @@ const char* _interpret_exit_code(const char *command, int exit_code) {
     return "error";
 }
 
-/* PoP: _command_requires_pipe_stdin @ tools/terminal_tool.py:_command_requires_pipe_stdin */
+/* PoP: command_requires_pipe_stdin @ tools/terminal_tool.py:command_requires_pipe_stdin */
 /* Faithful port: PTY mode breaks stdin-driven commands (e.g. `gh auth login
  * --with-token` reads the token from a piped stdin and waits for EOF). */
-bool _command_requires_pipe_stdin(const char *command) {
+bool command_requires_pipe_stdin(const char *command) {
     if (!command) return false;
     /* normalized = " ".join(command.lower().split()) */
     char lower[2048];
@@ -243,8 +243,8 @@ bool _command_requires_pipe_stdin(const char *command) {
            strstr(norm, "--with-token") != NULL;
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_strip_quotes */
-char* _strip_quotes(const char *command) {
+/* PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:strip_quotes */
+char* strip_quotes(const char *command) {
     if (!command) return NULL;
     char *result = strdup(command);
     if (!result) return NULL;
@@ -259,26 +259,26 @@ char* _strip_quotes(const char *command) {
     return result;
 }
 
-/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
-bool _looks_like_help_or_version_command(const char *command) {
+/* PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:looks_like_help_or_version_command */
+bool looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||
            (strstr(command, "-h") != NULL && strlen(command) < 10);
 }
 
-/* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool_guards.py:_foreground_background_guidance */
+/* PoP: resolve_notification_flag_conflict @ tools/terminal_tool_guards.py:foreground_background_guidance */
 /* Faithful port: suggest background mode when a foreground command looks
  * long-lived. Returns a malloc'd guidance string (caller frees) or NULL.
  * Mirrors the Python regex/prefix analysis (help/version short-circuit,
  * quote stripping, shell-level wrappers, inline/trailing '&', and the
  * long-lived foreground patterns). */
-const char* _foreground_background_guidance(const char *command) {
+const char* foreground_background_guidance(const char *command) {
     if (!command) return NULL;
-    if (_looks_like_help_or_version_command(command)) return NULL;
+    if (looks_like_help_or_version_command(command)) return NULL;
 
     /* Strip quoted content so keywords inside strings don't false-positive.
-     * We reuse _strip_quotes which removes ', ", ` quoted spans. */
-    char *unquoted = _strip_quotes(command);
+     * We reuse strip_quotes which removes ', ", ` quoted spans. */
+    char *unquoted = strip_quotes(command);
 
     /* _SHELL_LEVEL_BACKGROUND_RE: (?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\(\s*)
      *                              (?:nohup|disown|setsid)\b  (case-insensitive) */
@@ -370,8 +370,8 @@ const char* _foreground_background_guidance(const char *command) {
     return NULL;
 }
 
-/* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool.py:_resolve_notification_flag_conflict */
-void _resolve_notification_flag_conflict(bool *notify_on_complete, bool *watch_interval) {
+/* PoP: resolve_notification_flag_conflict @ tools/terminal_tool.py:resolve_notification_flag_conflict */
+void resolve_notification_flag_conflict(bool *notify_on_complete, bool *watch_interval) {
     /* Python: when both notify_on_complete and watch_patterns are set,
      * drop watch_patterns (the *watch_interval seam here) in favor of the
      * single "let me know when it's done" notify signal, to avoid duplicate
@@ -381,8 +381,8 @@ void _resolve_notification_flag_conflict(bool *notify_on_complete, bool *watch_i
     }
 }
 
-/* PoP: register_terminal_tool @ tools/terminal_tool.py:_resolve_command_cwd */
-char* _resolve_command_cwd(const char *command, const char *workdir) {
+/* PoP: register_terminal_tool @ tools/terminal_tool.py:resolve_command_cwd */
+char* resolve_command_cwd(const char *command, const char *workdir) {
     (void)command;
     return workdir ? strdup(workdir) : strdup(".");
 }
@@ -396,7 +396,7 @@ char* terminal_tool(const char *command, int timeout, bool pty, bool force,
 
     char *transformed_cmd = NULL;
     char *sudo_pass = NULL;
-    _transform_sudo_command(command, &transformed_cmd, &sudo_pass);
+    transform_sudo_command(command, &transformed_cmd, &sudo_pass);
     const char *exec_cmd = transformed_cmd ? transformed_cmd : command;
 
     /* Use popen for local execution */
@@ -411,7 +411,7 @@ char* terminal_tool(const char *command, int timeout, bool pty, bool force,
         free(sudo_pass);
         char buf[256];
         snprintf(buf, sizeof(buf), "{\"error\":\"popen failed: %s\",\"command\":\"%s\"}",
-                 strerror(errno), _safe_command_preview(command, 100));
+                 strerror(errno), safe_command_preview(command, 100));
         return strdup(buf);
     }
 
@@ -463,8 +463,8 @@ char* terminal_tool(const char *command, int timeout, bool pty, bool force,
 }
 
 
-/* PoP: register_terminal_tool @ tools/terminal_tool.py:_handle_terminal */
-char* _handle_terminal(const char *args_json) {
+/* PoP: register_terminal_tool @ tools/terminal_tool.py:handle_terminal */
+char* handle_terminal(const char *args_json) {
     char *error_msg = NULL;
     json_t *args = json_parse(args_json, &error_msg);
     if (!args) {
@@ -517,7 +517,7 @@ void register_terminal_tool(void) {
 #include <time.h>
 
 /* Declared in terminal_tool.c (same subsystem). */
-char *_get_env_config(void);          /* serialized env-config JSON; caller frees */
+char *get_env_config(void);          /* serialized env-config JSON; caller frees */
 char *_create_environment(const char *env_type, const char *image, const char *cwd,
                           int timeout, const char *task_id, const char *env_vars_json);
 char *get_active_env(const char *task_id);
@@ -640,7 +640,7 @@ void terminal_container_config_from_config(char *out_json, size_t out_sz) {
  * an environment is active afterwards; false when local or when creation
  * failed (best-effort: failure leaves the caller's fail-closed path intact). */
 bool terminal_ensure_task_env(const char *task_id) {
-    char *cfg_json = _get_env_config();
+    char *cfg_json = get_env_config();
     if (!cfg_json) return false; /* local default: no remote env to bring up */
     json_t *config = json_parse(cfg_json, NULL);
     free(cfg_json);
@@ -731,9 +731,9 @@ void terminal_evict_environment(const char *task_id) {
 /* === merged from truly_missing_gaps.c === */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ─── _check_disk_usage_warning() ─── */
-/* PoP: _check_disk_usage_warning @ tools/terminal_tool.py:_check_disk_usage_warning */
-json_t *_check_disk_usage_warning(void) {
+/* ─── check_disk_usage_warning() ─── */
+/* PoP: check_disk_usage_warning @ tools/terminal_tool.py:check_disk_usage_warning */
+json_t *check_disk_usage_warning(void) {
     struct statvfs sv;
     if (statvfs("/", &sv) != 0) return NULL;
     unsigned long total = sv.f_blocks * sv.f_frsize;

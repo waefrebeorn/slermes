@@ -18,20 +18,20 @@ extern "C" {
 /* kib//1024 for a non-negative int (bools/floats/negatives rejected). */
 int _mb(const json_t *kib, long long *out);
 
-/* PoP: _parse_iso @ gateway/memory_status.py:_parse_iso */
+/* PoP: parse_iso @ gateway/memory_status.py:parse_iso */
 /* Parse an ISO-8601 timestamp string; naive values are treated as UTC.
  * On success returns 1 and fills *epoch_s / *usec. */
-int _parse_iso(const char *value, long long *epoch_s, int *usec);
+int parse_iso(const char *value, long long *epoch_s, int *usec);
 
 /* PoP: classify_pressure @ gateway/memory_status.py:classify_pressure */
 /* Map MemAvailable/MemTotal to ok/elevated/critical; unknown when malformed. */
 const char *classify_pressure(const json_t *available_kib, const json_t *total_kib);
 
-/* PoP: _read_heartbeat @ gateway/memory_status.py:_read_heartbeat */
-json_t *_read_heartbeat(const char *home);
+/* PoP: read_heartbeat @ gateway/memory_status.py:read_heartbeat */
+json_t *read_heartbeat(const char *home);
 
-/* PoP: _read_sentinel @ gateway/memory_status.py:_read_sentinel */
-json_t *_read_sentinel(const char *home);
+/* PoP: read_sentinel @ gateway/memory_status.py:read_sentinel */
+json_t *read_sentinel(const char *home);
 
 /* PoP: collect_memory_status @ gateway/memory_status.py:collect_memory_status */
 /* Build the "memory" block. home==NULL => process profile home;

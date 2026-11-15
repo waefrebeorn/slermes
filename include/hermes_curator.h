@@ -173,7 +173,7 @@ bool needle_in_path_component(const char *needle, const char *path);
 
 /**
  * Parse ISO-8601 datetime string to time_t.
- * Port of Python agent/curator.py:_parse_iso().
+ * Port of Python agent/curator.py:parse_iso().
  */
 time_t parse_iso_time(const char *ts);
 

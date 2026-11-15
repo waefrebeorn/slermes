@@ -9,8 +9,8 @@
 
 /* ── tools/lazy_deps.py: 4 missing functions ── */
 
-/* PoP: _installed_dist_roots @ tools/lazy_deps.py:_installed_dist_roots */
-char *_installed_dist_roots(void) { return strdup("[]"); }
+/* PoP: installed_dist_roots @ tools/lazy_deps.py:installed_dist_roots */
+char *installed_dist_roots(void) { return strdup("[]"); }
 
 
 

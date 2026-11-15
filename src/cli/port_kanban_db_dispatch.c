@@ -6,8 +6,8 @@
  *
  *   kbd_wait_status_from_returncode <- _wait_status_from_returncode
  *   kbd_exit_code_kind             <- _exit_code_kind
- *   kbd_error_fingerprint          <- _error_fingerprint
- *   kbd_worker_survived_termination<- _worker_survived_termination
+ *   kbd_error_fingerprint          <- error_fingerprint
+ *   kbd_worker_survived_termination<- worker_survived_termination
  *
  * The sqlite / process / signal half stays in Python.
  */
@@ -61,7 +61,7 @@ int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code
 }
 
 /* ===========================================================================
- *  _error_fingerprint  (kanban_db_dispatch.py:_error_fingerprint)
+ *  error_fingerprint  (kanban_db_dispatch.py:error_fingerprint)
  *
  *      fp = re.sub(r'\bpid \d+\b', 'pid N', error_text[:80])
  *      fp = re.sub(r'\b\d{10,}\b', '<TS>', fp)
@@ -72,7 +72,7 @@ int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code
  *  number becomes "<TS>"; a shorter one is left alone. Caller frees.
  * =========================================================================== */
 
-/* PoP: _error_fingerprint @ hermes_cli/kanban_db_dispatch.py:_error_fingerprint */
+/* PoP: error_fingerprint @ hermes_cli/kanban_db_dispatch.py:error_fingerprint */
 char *kbd_error_fingerprint(const char *error_text)
 {
     const char *src = error_text ? error_text : "";
@@ -149,7 +149,7 @@ char *kbd_error_fingerprint(const char *error_text)
 }
 
 /* ===========================================================================
- *  _worker_survived_termination  (kanban_db_dispatch.py:_worker_survived_termination)
+ *  worker_survived_termination  (kanban_db_dispatch.py:worker_survived_termination)
  *
  *      return bool(
  *          termination.get("host_local")
@@ -162,7 +162,7 @@ char *kbd_error_fingerprint(const char *error_text)
  *  are "1"/"0" for the boolean fields.
  * =========================================================================== */
 
-/* PoP: _worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:_worker_survived_termination */
+/* PoP: worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
 int kbd_worker_survived_termination(const char *const *termination)
 {
     int host_local = 0, attempted = 0, refused = 0, terminated = 0;

@@ -8,7 +8,7 @@
  * What is portable is the modifier arithmetic:
  *
  *   pti_lock_variants <- pt_input_extras.py:_lock_variants
- *   pti_lock_twins    <- pt_input_extras.py:_lock_twins
+ *   pti_lock_twins    <- pt_input_extras.py:lock_twins
  */
 
 #include "hermes_json.h"
@@ -39,7 +39,7 @@ int *pti_lock_variants(int modifier)
 }
 
 /* ===========================================================================
- *  _lock_twins  (pt_input_extras.py:_lock_twins)
+ *  lock_twins  (pt_input_extras.py:lock_twins)
  *
  *      _lock_variants(modifier)[1:]
  *
@@ -48,7 +48,7 @@ int *pti_lock_variants(int modifier)
  *  Returns a newly allocated array of 3 ints; caller frees.
  * =========================================================================== */
 
-/* PoP: _lock_twins @ hermes_cli/pt_input_extras.py:_lock_twins */
+/* PoP: lock_twins @ hermes_cli/pt_input_extras.py:lock_twins */
 int *pti_lock_twins(int modifier)
 {
     int *all = pti_lock_variants(modifier);

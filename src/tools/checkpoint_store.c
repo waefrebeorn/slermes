@@ -19,7 +19,7 @@
 #include <errno.h>
 
 
-/* PoP: _project_hash @ tools/checkpoint_manager.py:_project_hash */ void _project_hash(const char *working_dir, char *out_hash, size_t out_len) {
+/* PoP: project_hash @ tools/checkpoint_manager.py:project_hash */ void project_hash(const char *working_dir, char *out_hash, size_t out_len) {
     if (!working_dir) {
         snprintf(out_hash, out_len, "default");
         return;
@@ -47,11 +47,11 @@
 }
 
 
-/* PoP: _shadow_repo_path @ tools/checkpoint_manager.py:_shadow_repo_path */ void _shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
+/* PoP: shadow_repo_path @ tools/checkpoint_manager.py:shadow_repo_path */ void shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
     char dir_hash[64];
-    _project_hash(working_dir, dir_hash, sizeof(dir_hash));
+    project_hash(working_dir, dir_hash, sizeof(dir_hash));
     snprintf(out_path, out_len, "%s/shadow/%s", store, dir_hash);
 }
 
@@ -63,26 +63,26 @@
 }
 
 
-/* PoP: _ref_name @ tools/checkpoint_manager.py:_ref_name */ void _ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
+/* PoP: ref_name @ tools/checkpoint_manager.py:ref_name */ void ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
     snprintf(out_ref, out_len, "refs/checkpoints/%s", dir_hash);
 }
 
 
-/* PoP: _project_meta_path @ tools/checkpoint_manager.py:_project_meta_path */ void _project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
+/* PoP: project_meta_path @ tools/checkpoint_manager.py:project_meta_path */ void project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/meta-%s.json", dir_hash);
 }
 
 
-/* PoP: _git_env @ tools/checkpoint_manager.py:_git_env */
-static void _git_env(void) {
+/* PoP: git_env @ tools/checkpoint_manager.py:git_env */
+static void git_env(void) {
     setenv("GIT_DIR", ".", 1);
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
 
-/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */ bool _run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
+/* PoP: run_git @ tools/checkpoint_manager.py:run_git */ bool run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
     FILE *fp = popen(full_cmd, "r");
@@ -97,7 +97,7 @@ static void _git_env(void) {
 
 
 /* Run git against the bare shadow repo with the real worktree + per-project
- * index. Returns true if popen succeeded. */ bool _run_git_idx(const char *shadow_repo, const char *working_dir,
+ * index. Returns true if popen succeeded. */ bool run_git_idx(const char *shadow_repo, const char *working_dir,
                           const char *index_file, const char *cmd,
                           char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 3];

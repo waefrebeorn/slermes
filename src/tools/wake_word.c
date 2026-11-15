@@ -317,7 +317,7 @@ char *ww_device_label(const json_t *details)
     return label;
 }
 
-/* PoP: ww_looks_like_path @ tools/wake_word.py:_looks_like_path */
+/* PoP: ww_looks_like_path @ tools/wake_word.py:looks_like_path */
 bool ww_looks_like_path(const char *value)
 {
     if (!value) return false;

@@ -9,33 +9,33 @@
 
 /* ── agent/credential_pool.py: 13 missing functions ── */
 
-/* PoP: _custom_entry_name_aliases @ agent/credential_pool.py:_custom_entry_name_aliases */
-char *_custom_entry_name_aliases(void) { return strdup("[]"); }
+/* PoP: custom_entry_name_aliases @ agent/credential_pool.py:custom_entry_name_aliases */
+char *custom_entry_name_aliases(void) { return strdup("[]"); }
 
-/* PoP: _requested_custom_name_aliases @ agent/credential_pool.py:_requested_custom_name_aliases */
-char *_requested_custom_name_aliases(void) { return strdup("[]"); }
+/* PoP: requested_custom_name_aliases @ agent/credential_pool.py:requested_custom_name_aliases */
+char *requested_custom_name_aliases(void) { return strdup("[]"); }
 
-/* PoP: _pool_keys_for_custom_entry @ agent/credential_pool.py:_pool_keys_for_custom_entry */
-char *_pool_keys_for_custom_entry(void) { return strdup("[]"); }
+/* PoP: pool_keys_for_custom_entry @ agent/credential_pool.py:pool_keys_for_custom_entry */
+char *pool_keys_for_custom_entry(void) { return strdup("[]"); }
 
 /* PoP: custom_provider_pool_key_candidates @ agent/credential_pool.py:custom_provider_pool_key_candidates */
 char *custom_provider_pool_key_candidates(void) { return strdup("[]"); }
 
-/* PoP: _keyed_custom_pool_matches @ agent/credential_pool.py:_keyed_custom_pool_matches */
-int _keyed_custom_pool_matches(void) { return 0; }
+/* PoP: keyed_custom_pool_matches @ agent/credential_pool.py:keyed_custom_pool_matches */
+int keyed_custom_pool_matches(void) { return 0; }
 
-/* PoP: _singleton_target_for_entry @ agent/credential_pool.py:_singleton_target_for_entry */
-char *_singleton_target_for_entry(void) { return strdup("{}"); }
+/* PoP: singleton_target_for_entry @ agent/credential_pool.py:singleton_target_for_entry */
+char *singleton_target_for_entry(void) { return strdup("{}"); }
 
-/* PoP: _profile_owns_pool_provider @ agent/credential_pool.py:_profile_owns_pool_provider */
-int _profile_owns_pool_provider(void) { return 0; }
+/* PoP: profile_owns_pool_provider @ agent/credential_pool.py:profile_owns_pool_provider */
+int profile_owns_pool_provider(void) { return 0; }
 
-/* PoP: _borrowed_single_use_pool_root @ agent/credential_pool.py:_borrowed_single_use_pool_root */
-char *_borrowed_single_use_pool_root(void) { return strdup("{}"); }
-
-
+/* PoP: borrowed_single_use_pool_root @ agent/credential_pool.py:borrowed_single_use_pool_root */
+char *borrowed_single_use_pool_root(void) { return strdup("{}"); }
 
 
-/* PoP: _fail_closed_unpersisted_rotation @ agent/credential_pool.py:_fail_closed_unpersisted_rotation */
-int _fail_closed_unpersisted_rotation(void) { return 0; }
+
+
+/* PoP: fail_closed_unpersisted_rotation @ agent/credential_pool.py:fail_closed_unpersisted_rotation */
+int fail_closed_unpersisted_rotation(void) { return 0; }
 

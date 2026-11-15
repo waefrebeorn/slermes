@@ -20,7 +20,7 @@ static const char *IGNORED_DIRS[] = {
     "__pycache__", ".venv", "venv", "node_modules", NULL
 };
 
-static bool _is_ignored_dir(const char *name)
+static bool is_ignored_dir(const char *name)
 {
     for (int i = 0; IGNORED_DIRS[i]; i++) {
         if (strcmp(name, IGNORED_DIRS[i]) == 0)
@@ -39,7 +39,7 @@ static bool _ends_with(const char *str, const char *suffix)
 }
 
 /* Check if a string looks like a quoted literal (starts with ' or ") */
-static bool _is_literal_arg(const char *s)
+static bool is_literal_arg(const char *s)
 {
     if (!s) return false;
     while (*s == ' ' || *s == '\t') s++;
@@ -47,7 +47,7 @@ static bool _is_literal_arg(const char *s)
 }
 
 /* Add a finding to the result set */
-static void _add_finding(skill_audit_result_t *r, const char *file,
+static void add_finding(skill_audit_result_t *r, const char *file,
                           int line, const char *pid, const char *desc)
 {
     if (r->count >= SKILLAUDIT_MAX_FINDINGS) return;
@@ -64,7 +64,7 @@ static void _add_finding(skill_audit_result_t *r, const char *file,
 
 /* ── Line scanner ── */
 
-static void _scan_line(const char *line, int lineno,
+static void scan_line(const char *line, int lineno,
                         const char *rel_path, skill_audit_result_t *r)
 {
     /* Trim leading whitespace for matching but keep original for comparison */
@@ -73,7 +73,7 @@ static void _scan_line(const char *line, int lineno,
 
     /* 1. importlib.import_module(...) */
     if (strstr(p, "importlib.import_module(")) {
-        _add_finding(r, rel_path, lineno, "dynamic_import",
+        add_finding(r, rel_path, lineno, "dynamic_import",
                      "importlib.import_module() — loads arbitrary modules at runtime");
     }
 
@@ -84,8 +84,8 @@ static void _scan_line(const char *line, int lineno,
         const char *imp = strstr(p, "__import__(");
         if (imp) {
             const char *arg_start = imp + 11; /* after "__import__(" */
-            if (!_is_literal_arg(arg_start)) {
-                _add_finding(r, rel_path, lineno, "dynamic_import_computed",
+            if (!is_literal_arg(arg_start)) {
+                add_finding(r, rel_path, lineno, "dynamic_import_computed",
                              "__import__ with non-literal module name — possible dynamic import");
             }
         }
@@ -108,8 +108,8 @@ static void _scan_line(const char *line, int lineno,
                 comma++;
                 /* Skip whitespace before second arg */
                 while (*comma == ' ' || *comma == '\t') comma++;
-                if (!_is_literal_arg(comma)) {
-                    _add_finding(r, rel_path, lineno, "dynamic_getattr",
+                if (!is_literal_arg(comma)) {
+                    add_finding(r, rel_path, lineno, "dynamic_getattr",
                                  "getattr with non-literal attribute name — computed attribute access");
                 }
             }
@@ -121,8 +121,8 @@ static void _scan_line(const char *line, int lineno,
         /* Check if the subscript is not a literal */
         const char *dict = strstr(p, ".__dict__[");
         const char *slice = dict + 11; /* after ".__dict__[" */
-        if (slice && *slice && !_is_literal_arg(slice)) {
-            _add_finding(r, rel_path, lineno, "dict_access",
+        if (slice && *slice && !is_literal_arg(slice)) {
+            add_finding(r, rel_path, lineno, "dict_access",
                          "__dict__[<computed>] — dynamic attribute access");
         } else if (slice && *slice) {
             /* Literal subscript — not flagged */
@@ -165,7 +165,7 @@ static void _scan_line(const char *line, int lineno,
                 }
                 strncat(desc, suffix, SKILLAUDIT_DESC_LEN - strlen(desc) - 1);
 
-                _add_finding(r, rel_path, lineno, "importlib_import", desc);
+                add_finding(r, rel_path, lineno, "importlib_import", desc);
             }
         }
     }
@@ -195,7 +195,7 @@ skill_audit_result_t skill_audit_scan_file(const char *path)
 
     while (fgets(buf, sizeof(buf), f)) {
         lineno++;
-        _scan_line(buf, lineno, name, &result);
+        scan_line(buf, lineno, name, &result);
     }
 
     fclose(f);
@@ -209,7 +209,7 @@ typedef struct {
 } path_entry_t;
 
 /* Simple stack-based directory traversal to avoid recursion depth issues */
-static int _collect_py_files(const char *dir, path_entry_t *files, int max_files)
+static int collect_py_files(const char *dir, path_entry_t *files, int max_files)
 {
     int count = 0;
     path_entry_t *dirs = malloc(sizeof(path_entry_t) * 256);
@@ -232,7 +232,7 @@ static int _collect_py_files(const char *dir, path_entry_t *files, int max_files
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                 continue;
 
-            if (_is_ignored_dir(entry->d_name))
+            if (is_ignored_dir(entry->d_name))
                 continue;
 
             char full[SKILLAUDIT_MAX_PATH];
@@ -272,7 +272,7 @@ skill_audit_result_t skill_audit_scan_directory(const char *dir_path)
 
     path_entry_t *py_files = malloc(sizeof(path_entry_t) * 512);
     if (!py_files) return result;
-    int n_files = _collect_py_files(dir_path, py_files, 512);
+    int n_files = collect_py_files(dir_path, py_files, 512);
 
     /* Get the base directory name for relative paths */
     const char *base_name = strrchr(dir_path, '/');
@@ -294,7 +294,7 @@ skill_audit_result_t skill_audit_scan_directory(const char *dir_path)
         int lineno = 0;
         while (fgets(buf, sizeof(buf), f)) {
             lineno++;
-            _scan_line(buf, lineno, rel, &result);
+            scan_line(buf, lineno, rel, &result);
         }
         fclose(f);
     }

@@ -1270,7 +1270,7 @@ bool mcp_server_ping(mcp_server_t *srv) {
 /* ── Pagination helper: send list request with optional cursor ── */
 /* Sends method (e.g. "tools/list") with cursor if non-NULL/non-empty.
  * Returns parsed JSON response (caller must json_free). */
-static json_t *_mcp_send_list_page(mcp_server_t *srv, const char *method,
+static json_t *mcp_send_list_page(mcp_server_t *srv, const char *method,
                                     const char *cursor, int timeout_ms) {
     json_t *params = NULL;
     if (cursor && cursor[0]) {
@@ -1296,7 +1296,7 @@ static json_t *_mcp_send_list_page(mcp_server_t *srv, const char *method,
  * Returns count on success, -1 on error. */
 typedef bool (*_mcp_parse_item_fn)(void *item, json_t *json, void *ctx);
 
-static int _mcp_list_paginated(mcp_server_t *srv, const char *cursor_method,
+static int mcp_list_paginated(mcp_server_t *srv, const char *cursor_method,
                                 const char *item_key, size_t item_size,
                                 _mcp_parse_item_fn parse_item, void *cb_ctx,
                                 void **items_out) {
@@ -1306,7 +1306,7 @@ static int _mcp_list_paginated(mcp_server_t *srv, const char *cursor_method,
     char *items = NULL;
 
     while (1) {
-        json_t *resp = _mcp_send_list_page(srv, cursor_method,
+        json_t *resp = mcp_send_list_page(srv, cursor_method,
                                             cursor[0] ? cursor : NULL,
                                             srv->tool_timeout * 1000);
         if (!resp) {
@@ -1378,7 +1378,7 @@ static int _mcp_list_paginated(mcp_server_t *srv, const char *cursor_method,
 }
 
 /* Parse callback for mcp_tool_t */
-static bool _mcp_parse_tool_item(void *item, json_t *t, void *ctx) {
+static bool mcp_parse_tool_item(void *item, json_t *t, void *ctx) {
     (void)ctx;
     mcp_tool_t *tool = (mcp_tool_t *)item;
 
@@ -1412,9 +1412,9 @@ int mcp_server_list_tools(mcp_server_t *srv, mcp_tool_t **tools_out) {
     }
 
     void *items = NULL;
-    int count = _mcp_list_paginated(srv, "tools/list", "tools",
+    int count = mcp_list_paginated(srv, "tools/list", "tools",
                                      sizeof(mcp_tool_t),
-                                     _mcp_parse_tool_item, NULL,
+                                     mcp_parse_tool_item, NULL,
                                      &items);
     *tools_out = (mcp_tool_t *)items;
     return count;
@@ -1675,7 +1675,7 @@ void mcp_tool_list_free(mcp_tool_t *tools, int count) {
  * ================================================================ */
 
 /* Parse callback for mcp_resource_t */
-static bool _mcp_parse_resource_item(void *item, json_t *r, void *ctx) {
+static bool mcp_parse_resource_item(void *item, json_t *r, void *ctx) {
     (void)ctx;
     mcp_resource_t *res = (mcp_resource_t *)item;
 
@@ -1703,9 +1703,9 @@ int mcp_server_list_resources(mcp_server_t *srv, mcp_resource_t **resources_out)
     }
 
     void *items = NULL;
-    int count = _mcp_list_paginated(srv, "resources/list", "resources",
+    int count = mcp_list_paginated(srv, "resources/list", "resources",
                                      sizeof(mcp_resource_t),
-                                     _mcp_parse_resource_item, NULL,
+                                     mcp_parse_resource_item, NULL,
                                      &items);
     *resources_out = (mcp_resource_t *)items;
     return count;
@@ -2078,7 +2078,7 @@ int mcp_server_process_incoming(mcp_server_t *srv) {
  * ================================================================ */
 
 /* Parse callback for mcp_prompt_t */
-static bool _mcp_parse_prompt_item(void *item, json_t *p, void *ctx) {
+static bool mcp_parse_prompt_item(void *item, json_t *p, void *ctx) {
     (void)ctx;
     mcp_prompt_t *prompt = (mcp_prompt_t *)item;
 
@@ -2110,9 +2110,9 @@ int mcp_server_list_prompts(mcp_server_t *srv, mcp_prompt_t **prompts_out) {
     }
 
     void *items = NULL;
-    int count = _mcp_list_paginated(srv, "prompts/list", "prompts",
+    int count = mcp_list_paginated(srv, "prompts/list", "prompts",
                                      sizeof(mcp_prompt_t),
-                                     _mcp_parse_prompt_item, NULL,
+                                     mcp_parse_prompt_item, NULL,
                                      &items);
     *prompts_out = (mcp_prompt_t *)items;
     return count;

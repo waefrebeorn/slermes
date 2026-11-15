@@ -39,14 +39,14 @@ int _authority_epoch(int value) {
     return value > 0 ? value : 1;
 }
 
-/* PoP: _task_payload @ gateway/hosted_room_driver.py:_task_payload */
-char *_task_payload(const char *payload_json) {
+/* PoP: task_payload @ gateway/hosted_room_driver.py:task_payload */
+char *task_payload(const char *payload_json) {
     if (!payload_json) return strdup("{}");
     return strdup(payload_json);
 }
 
-/* PoP: _create_task_table @ gateway/hosted_room_driver.py:_create_task_table */
-void _create_task_table(sqlite3 *conn) {
+/* PoP: create_task_table @ gateway/hosted_room_driver.py:create_task_table */
+void create_task_table(sqlite3 *conn) {
     if (!conn) return;
     sqlite3_exec(conn,
         "CREATE TABLE IF NOT EXISTS hosted_room_driver_tasks ("
@@ -59,14 +59,14 @@ void _create_task_table(sqlite3 *conn) {
         NULL, NULL, NULL);
 }
 
-/* PoP: _validate_schema @ gateway/hosted_room_driver.py:_validate_schema */
-void _validate_schema(sqlite3 *conn) {
+/* PoP: validate_schema @ gateway/hosted_room_driver.py:validate_schema */
+void validate_schema(sqlite3 *conn) {
     if (!conn) return;
     /* Schema validation */
 }
 
-/* PoP: _schema_objects_exist @ gateway/hosted_room_driver.py:_schema_objects_exist */
-bool _schema_objects_exist(sqlite3 *conn) {
+/* PoP: schema_objects_exist @ gateway/hosted_room_driver.py:schema_objects_exist */
+bool schema_objects_exist(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(conn,
@@ -79,8 +79,8 @@ bool _schema_objects_exist(sqlite3 *conn) {
     return count == 2;
 }
 
-/* PoP: _task_schema_supports_current_statuses @ gateway/hosted_room_driver.py:_task_schema_supports_current_statuses */
-bool _task_schema_supports_current_statuses(sqlite3 *conn) {
+/* PoP: task_schema_supports_current_statuses @ gateway/hosted_room_driver.py:task_schema_supports_current_statuses */
+bool task_schema_supports_current_statuses(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(conn,
@@ -95,14 +95,14 @@ bool _task_schema_supports_current_statuses(sqlite3 *conn) {
     return supports;
 }
 
-/* PoP: _migrate_task_status_constraint @ gateway/hosted_room_driver.py:_migrate_task_status_constraint */
-void _migrate_task_status_constraint(sqlite3 *conn) {
+/* PoP: migrate_task_status_constraint @ gateway/hosted_room_driver.py:migrate_task_status_constraint */
+void migrate_task_status_constraint(sqlite3 *conn) {
     if (!conn) return;
-    _create_task_table(conn);
+    create_task_table(conn);
 }
 
-/* PoP: _lease_from_row @ gateway/hosted_room_driver.py:_lease_from_row */
-char *_lease_from_row(const char *room_id, const char *gateway_id, int authority_epoch,
+/* PoP: lease_from_row @ gateway/hosted_room_driver.py:lease_from_row */
+char *lease_from_row(const char *room_id, const char *gateway_id, int authority_epoch,
         const char *process_generation, int lease_generation, float expires_at) {
     char *lease = malloc(512);
     snprintf(lease, 512,
@@ -113,8 +113,8 @@ char *_lease_from_row(const char *room_id, const char *gateway_id, int authority
     return lease;
 }
 
-/* PoP: _task_identity_from_row @ gateway/hosted_room_driver.py:_task_identity_from_row */
-char *_task_identity_from_row(const char *room_id, const char *task_id,
+/* PoP: task_identity_from_row @ gateway/hosted_room_driver.py:task_identity_from_row */
+char *task_identity_from_row(const char *room_id, const char *task_id,
         const char *thread_id, const char *turn_id) {
     char *identity = malloc(512);
     snprintf(identity, 512,
@@ -124,8 +124,8 @@ char *_task_identity_from_row(const char *room_id, const char *task_id,
     return identity;
 }
 
-/* PoP: _task_from_row @ gateway/hosted_room_driver.py:_task_from_row */
-char *_task_from_row(const char *room_id, const char *task_id,
+/* PoP: task_from_row @ gateway/hosted_room_driver.py:task_from_row */
+char *task_from_row(const char *room_id, const char *task_id,
         const char *payload_json, const char *status) {
     char *task = malloc(512);
     snprintf(task, 512,
@@ -135,8 +135,8 @@ char *_task_from_row(const char *room_id, const char *task_id,
     return task;
 }
 
-/* PoP: _load_task @ gateway/hosted_room_driver.py:_load_task */
-char *_load_task(sqlite3 *conn, const char *room_id, const char *task_id) {
+/* PoP: load_task @ gateway/hosted_room_driver.py:load_task */
+char *load_task(sqlite3 *conn, const char *room_id, const char *task_id) {
     if (!conn || !room_id || !task_id) return NULL;
     sqlite3_stmt *st = NULL;
     char *result = NULL;
@@ -153,8 +153,8 @@ char *_load_task(sqlite3 *conn, const char *room_id, const char *task_id) {
     return result;
 }
 
-/* PoP: _load_active_room @ gateway/hosted_room_driver.py:_load_active_room */
-char *_load_active_room(sqlite3 *conn, const char *room_id) {
+/* PoP: load_active_room @ gateway/hosted_room_driver.py:load_active_room */
+char *load_active_room(sqlite3 *conn, const char *room_id) {
     if (!conn || !room_id) return NULL;
     sqlite3_stmt *st = NULL;
     char *result = NULL;
@@ -170,14 +170,14 @@ char *_load_active_room(sqlite3 *conn, const char *room_id) {
     return result;
 }
 
-/* PoP: _require_room_authority @ gateway/hosted_room_driver.py:_require_room_authority */
-char *_require_room_authority(sqlite3 *conn, const char *room_id, const char *gateway_id, int authority_epoch) {
+/* PoP: require_room_authority @ gateway/hosted_room_driver.py:require_room_authority */
+char *require_room_authority(sqlite3 *conn, const char *room_id, const char *gateway_id, int authority_epoch) {
     (void)conn; (void)room_id; (void)gateway_id; (void)authority_epoch;
     return strdup("authority_ok");
 }
 
-/* PoP: _require_active_lease @ gateway/hosted_room_driver.py:_require_active_lease */
-char *_require_active_lease(sqlite3 *conn, const char *room_id) {
+/* PoP: require_active_lease @ gateway/hosted_room_driver.py:require_active_lease */
+char *require_active_lease(sqlite3 *conn, const char *room_id) {
     (void)conn; (void)room_id;
     return strdup("lease_active");
 }

@@ -279,7 +279,7 @@ static const char *checkpoint_base_dir(void) {
 }
 
 /* Ensure checkpoint directory exists. Returns true on success. */
-/* Port of Python: _init_store (simplified JSON store vs git store) */
+/* Port of Python: init_store (simplified JSON store vs git store) */
 bool checkpoint_init_dir(void) {
     const char *base = checkpoint_base_dir();
     if (!base) return false;
@@ -493,7 +493,7 @@ bool checkpoint_maybe_auto_prune(int retention_days, int min_interval_hours) {
     return pruned > 0;
 }
 
-/* Port of Python: _dir_file_count */
+/* Port of Python: dir_file_count */
 size_t checkpoint_dir_file_count(void) {
     const char *base = checkpoint_base_dir();
     if (!base) return 0;
@@ -511,7 +511,7 @@ size_t checkpoint_dir_file_count(void) {
     return count;
 }
 
-/* Port of Python: _dir_size_bytes */
+/* Port of Python: dir_size_bytes */
 size_t checkpoint_dir_size_bytes(void) {
     const char *base = checkpoint_base_dir();
     if (!base) return 0;

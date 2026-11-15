@@ -47,7 +47,7 @@ int gateway_systemd_notify_unhealthy(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_systemd_notify_u_lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+/* PoP: gateway_systemd_notify_u_lag_tolerance @ gateway/systemd_notify.py:lag_tolerance */
 int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
     /* Python: configured float or max(0.1, interval*0.25). Arg =
      * "interval\tconfigured". */

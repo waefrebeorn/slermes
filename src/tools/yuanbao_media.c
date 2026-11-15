@@ -11,7 +11,7 @@
  * Port of Python: md5_hex — crypto_md5_hex (libcrypto)
  * Port of Python: generate_file_id
  * Port of Python: parse_image_size — PNG/JPEG/GIF/WebP header parser (implemented)
- * Port of Python: _parse_png_size, _parse_jpeg_size, _parse_gif_size, _parse_webp_size — implemented (static)
+ * Port of Python: parse_png_size, parse_jpeg_size, parse_gif_size, parse_webp_size — implemented (static)
  * Port of Python: build_image_msg_body
  * Port of Python: build_file_msg_body
  * Port of Python: _basename_from_url — uses url_extract_basename

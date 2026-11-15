@@ -246,7 +246,7 @@ static int is_block_boundary(const char *text, int pos, int last_nl) {
 /* PoP: think_scrubber_strip_orphan_close_tags @ gateway/stream_consumer.py:_strip_orphan_close_tags */
 /* PoP: think_scrubber_strip_orphan_close_tags @ agent/think_scrubber.py:_strip_orphan_close_tags */
 /* Promoted to non-static so gateway/stream_consumer.c (the port of
- * GatewayStreamConsumer._filter_and_accumulate) reuses it instead of
+ * GatewayStreamConsumer.filter_and_accumulate) reuses it instead of
  * duplicating the orphan-close-tag logic. */
 int think_scrubber_strip_orphan_close_tags(const char *src, int len, char *dst, int dst_cap) {
     return strip_orphan(src, len, dst, dst_cap);

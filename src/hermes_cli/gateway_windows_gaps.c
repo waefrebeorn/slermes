@@ -9,16 +9,16 @@
 
 /* ── hermes_cli/gateway_windows.py: 7 missing functions ── */
 
-/* PoP: _confirm_gateway_stable @ hermes_cli/gateway_windows.py:_confirm_gateway_stable */
-int _confirm_gateway_stable(void) { return 1; }
+/* PoP: confirm_gateway_stable @ hermes_cli/gateway_windows.py:confirm_gateway_stable */
+int confirm_gateway_stable(void) { return 1; }
 
-/* PoP: _start_attestation_path @ hermes_cli/gateway_windows.py:_start_attestation_path */
-char *_start_attestation_path(void) { return strdup(""); }
+/* PoP: start_attestation_path @ hermes_cli/gateway_windows.py:start_attestation_path */
+char *start_attestation_path(void) { return strdup(""); }
 
 
 
-/* PoP: _attested_pid_exited_cleanly @ hermes_cli/gateway_windows.py:_attested_pid_exited_cleanly */
-int _attested_pid_exited_cleanly(void) { return 1; }
+/* PoP: attested_pid_exited_cleanly @ hermes_cli/gateway_windows.py:attested_pid_exited_cleanly */
+int attested_pid_exited_cleanly(void) { return 1; }
 
 /* PoP: check_start_attestation @ hermes_cli/gateway_windows.py:check_start_attestation */
 char *check_start_attestation(void) { return strdup("{}"); }

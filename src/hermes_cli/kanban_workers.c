@@ -18,8 +18,8 @@
  *     kdb_list_tasks / kdb_task_get + accessors / kdb_list_runs /
  *     kdb_list_comments / kdb_list_attachments / kdb_add_comment
  *     (kanban_tasks.c / kanban_runs.c / kanban_query.c / kanban_model.c)
- *   - worker_logs_dir / _normalize_board_slug / get_current_board /
- *     to_epoch / _relative_age / _error_fingerprint / _looks_like_path /
+ *   - worker_logs_dir / normalize_board_slug / get_current_board /
+ *     to_epoch / relative_age / error_fingerprint / looks_like_path /
  *     is_windows_batch_shim (port_kanban_db.c)
  *   - sqlite_util helpers + bundled libdb/sqlite3
  *
@@ -421,7 +421,7 @@ char **kdb_resolve_hermes_argv(void)
 {
     const char *env_bin = getenv("HERMES_BIN");
     if (env_bin && env_bin[0]) {
-        if (_looks_like_path(env_bin)) {
+        if (looks_like_path(env_bin)) {
             return kdb_hermes_path_argv(env_bin);
         }
         char *r = kdb_safe_which_no_cwd(env_bin);
@@ -1042,7 +1042,7 @@ int kdb_reap_worker_zombies(void)
 }
 
 /* ===================================================================== */
-/* _cross_process_init_lock / _dispatch_tick_lock (flock)             */
+/* _cross_process_init_lock / dispatch_tick_lock (flock)             */
 /* ===================================================================== */
 
 /* PoP: flock @ hermes_cli/kanban_db_connect.py:_cross_process_init_lock */
@@ -1087,7 +1087,7 @@ void kdb_init_lock_release(void *handle)
 #endif
 }
 
-/* PoP: kdb_dispatch_tick_lock_acquire @ hermes_cli/kanban_db_connect.py:_dispatch_tick_lock */
+/* PoP: kdb_dispatch_tick_lock_acquire @ hermes_cli/kanban_db_connect.py:dispatch_tick_lock */
 /* Non-blocking single-writer guard around one dispatcher tick. Returns 0;
  * sets *held_out=1 when this process owns the board's dispatch lock. */
 int kdb_dispatch_tick_lock_acquire(const char *db_path, int *held_out, void **handle_out)
@@ -1181,8 +1181,8 @@ int kdb_heartbeat_worker(sqlite3 *conn, const char *task_id,
 }
 
 /* ===================================================================== */
-/* _terminate_reclaimed_worker / _worker_survived_termination /       */
-/* _defer_reclaim_for_live_worker (host-local SIGTERM/SIGKILL)         */
+/* _terminate_reclaimed_worker / worker_survived_termination /       */
+/* defer_reclaim_for_live_worker (host-local SIGTERM/SIGKILL)         */
 /* ===================================================================== */
 
 /* PoP: attempt @ hermes_cli/kanban_db_dispatch.py:_terminate_reclaimed_worker */
@@ -1229,7 +1229,7 @@ static char *kb_terminate_reclaimed_worker(long pid, const char *claim_lock)
     return info;
 }
 
-/* PoP: kb_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:_worker_survived_termination */
+/* PoP: kb_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
 static int kb_worker_survived_termination(const char *term_json)
 {
     if (!term_json) return 0;
@@ -1240,7 +1240,7 @@ static int kb_worker_survived_termination(const char *term_json)
     return attempted && host_local && !terminated;
 }
 
-/* PoP: kb_defer_reclaim_for_live_worker @ hermes_cli/kanban_db_dispatch.py:_defer_reclaim_for_live_worker */
+/* PoP: kb_defer_reclaim_for_live_worker @ hermes_cli/kanban_db_dispatch.py:defer_reclaim_for_live_worker */
 static void kb_defer_reclaim_for_live_worker(sqlite3 *conn, const char *task_id,
                                               const char *claim_lock, long now,
                                               const char *term_json, const char *reason)
@@ -2116,7 +2116,7 @@ long kdb_default_spawn(sqlite3 *conn, const char *task_id,
     char *wr = workspaces_root(board);
     if (wr) { char ev[PATH_MAX+32]; snprintf(ev,sizeof(ev),"HERMES_KANBAN_WORKSPACES_ROOT=%s",wr); env[ei++]=strdup(ev); free(wr); }
     char *rb = get_current_board();
-    char *slug = _normalize_board_slug(board ? board : (rb ? rb : "default"));
+    char *slug = normalize_board_slug(board ? board : (rb ? rb : "default"));
     char board_env[PATH_MAX+32];
     snprintf(board_env, sizeof(board_env), "HERMES_KANBAN_BOARD=%s", slug ? slug : "default");
     env[ei++] = strdup(board_env);
@@ -2290,7 +2290,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
             shown++;
             time_t st = (time_t)kdb_run_started_at(runs[i]);
             char ts[64]; strftime(ts, sizeof(ts), "%Y-%m-%d %H:%M", localtime(&st));
-            char *age = _relative_age(st, now);
+            char *age = relative_age(st, now);
             const char *outcome = kdb_run_outcome(runs[i]) ? kdb_run_outcome(runs[i]) : kdb_run_status(runs[i]);
             const char *profile = kdb_run_profile(runs[i]) ? kdb_run_profile(runs[i]) : "(unknown)";
             KB_APPEND("### Attempt %d — %s (%s, %s%s)\n", first + shown - 1, outcome, profile, ts, age ? age : "");
@@ -2336,7 +2336,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
                 wrote = 1;
             }
             long done_ts = best ? kdb_run_ended_at(best) : kdb_task_completed_at(pt);
-            char *age = _relative_age(done_ts, now);
+            char *age = relative_age(done_ts, now);
             KB_APPEND("### %s%s\n", pid, age ? age : "");
             if (age) free(age);
             const char *psum = best ? kdb_run_summary(best) : NULL;
@@ -2372,7 +2372,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
                 const char *rsum = (const char *)sqlite3_column_text(rr, 2);
                 time_t rend = sqlite3_column_type(rr, 3) == SQLITE_NULL ? 0 : (time_t)sqlite3_column_int64(rr, 3);
                 char ts[64]; if (rend) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime(&rend)); } else ts[0]=0;
-                char *age = _relative_age(rend, now);
+                char *age = relative_age(rend, now);
                 KB_APPEND("- %s — %s (%s%s): %s\n", rid, rtitle ? rtitle : "", ts, age?age:"",
                           rsum ? rsum : "(no summary)");
                 if (age) free(age);
@@ -2393,7 +2393,7 @@ char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
         for (int i = off; i < nc; i++) {
             time_t cat = (time_t)kdb_comment_created_at(comments[i]);
             char ts[64]; if (cat) { strftime(ts,sizeof(ts),"%Y-%m-%d %H:%M",localtime(&cat)); } else ts[0]=0;
-            char *age = _relative_age(cat, now);
+            char *age = relative_age(cat, now);
             const char *author = kdb_comment_author(comments[i]) ? kdb_comment_author(comments[i]) : "";
             char safe_author[256];
             snprintf(safe_author, sizeof(safe_author), "%s", author);

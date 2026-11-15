@@ -606,7 +606,7 @@ static bool pr_is_bare_candidate(const char *norm) {
            strcmp(norm,"auto")==0 || strcmp(norm,"openrouter")==0;
 }
 
-/* Faithful existence subset of runtime_provider._get_named_custom_provider:
+/* Faithful existence subset of runtime_provider.get_named_custom_provider:
  * does `candidate` name a real providers:/custom_providers: entry that has a
  * usable base_url? Matches on ep_name, normalized name, "custom:<norm>", and
  * the entry's display name (raw + normalized + "custom:<disp_norm>"). */
@@ -687,7 +687,7 @@ static bool pr_named_custom_exists(const char *candidate) {
 
 /*
  * True when config defines a providers:/custom_providers: entry matching the
- * requested name (thin public wrapper over the _get_named_custom_provider
+ * requested name (thin public wrapper over the get_named_custom_provider
  * existence scan; Python's try/except → false maps to the scan's own
  * PoP: has_named_custom_provider @ hermes_cli/runtime_provider_custom.py:has_named_custom_provider
  */

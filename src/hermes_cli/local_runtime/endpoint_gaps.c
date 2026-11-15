@@ -9,12 +9,12 @@
 
 /* ── hermes_cli/local_runtime/endpoint.py: 4 missing functions ── */
 
-/* PoP: _state_endpoint @ hermes_cli/local_runtime/endpoint.py:_state_endpoint */
-char *_state_endpoint(void) { return strdup(""); }
+/* PoP: state_endpoint @ hermes_cli/local_runtime/endpoint.py:state_endpoint */
+char *state_endpoint(void) { return strdup(""); }
 
 /* PoP: resolve_llamacpp_endpoint @ hermes_cli/local_runtime/endpoint.py:resolve_llamacpp_endpoint */
 char *resolve_llamacpp_endpoint(void) { return strdup(""); }
 
 
-/* PoP: _boot_in_flight @ hermes_cli/local_runtime/endpoint.py:_boot_in_flight */
-int _boot_in_flight(void) { return 0; }
+/* PoP: boot_in_flight @ hermes_cli/local_runtime/endpoint.py:boot_in_flight */
+int boot_in_flight(void) { return 0; }

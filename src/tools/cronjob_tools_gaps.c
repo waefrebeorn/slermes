@@ -9,36 +9,36 @@
 
 /* ── tools/cronjob_tools.py: 12 missing functions ── */
 
-/* PoP: _mode_guidance_notes @ tools/cronjob_job_args.py:_mode_guidance_notes */
-char *_mode_guidance_notes(void) { return strdup("[]"); }
+/* PoP: mode_guidance_notes @ tools/cronjob_job_args.py:mode_guidance_notes */
+char *mode_guidance_notes(void) { return strdup("[]"); }
 
-/* PoP: _split_monitor_arg @ tools/cronjob_job_args.py:_split_monitor_arg */
-char *_split_monitor_arg(const char *arg) { return strdup(""); }
+/* PoP: split_monitor_arg @ tools/cronjob_job_args.py:split_monitor_arg */
+char *split_monitor_arg(const char *arg) { return strdup(""); }
 
-/* PoP: _validate_bot_chat_deliver @ tools/cronjob_job_args.py:_validate_bot_chat_deliver */
-int _validate_bot_chat_deliver(void) { return 1; }
+/* PoP: validate_bot_chat_deliver @ tools/cronjob_job_args.py:validate_bot_chat_deliver */
+int validate_bot_chat_deliver(void) { return 1; }
 
-/* PoP: _resolve_cron_context_deliver @ tools/cronjob_job_args.py:_resolve_cron_context_deliver */
-char *_resolve_cron_context_deliver(void) { return strdup("{}"); }
+/* PoP: resolve_cron_context_deliver @ tools/cronjob_job_args.py:resolve_cron_context_deliver */
+char *resolve_cron_context_deliver(void) { return strdup("{}"); }
 
-/* PoP: _forward_relay_fronted_run @ tools/cronjob_tools.py:_forward_relay_fronted_run */
-char *_forward_relay_fronted_run(void) { return strdup("{}"); }
+/* PoP: forward_relay_fronted_run @ tools/cronjob_tools.py:forward_relay_fronted_run */
+char *forward_relay_fronted_run(void) { return strdup("{}"); }
 
-/* PoP: _manual_run_delivery_note @ tools/cronjob_tools.py:_manual_run_delivery_note */
-char *_manual_run_delivery_note(void) { return strdup(""); }
+/* PoP: manual_run_delivery_note @ tools/cronjob_tools.py:manual_run_delivery_note */
+char *manual_run_delivery_note(void) { return strdup(""); }
 
-/* PoP: _run_claimed_job @ tools/cronjob_tools.py:_run_claimed_job */
-char *_run_claimed_job(void) { return strdup("{}"); }
+/* PoP: run_claimed_job @ tools/cronjob_tools.py:run_claimed_job */
+char *run_claimed_job(void) { return strdup("{}"); }
 
-/* PoP: _latest_job_output_excerpt @ tools/cronjob_tools.py:_latest_job_output_excerpt */
-char *_latest_job_output_excerpt(void) { return strdup(""); }
+/* PoP: latest_job_output_excerpt @ tools/cronjob_tools.py:latest_job_output_excerpt */
+char *latest_job_output_excerpt(void) { return strdup(""); }
 
-/* PoP: _try_dispatch_background_run @ tools/cronjob_tools.py:_try_dispatch_background_run */
-char *_try_dispatch_background_run(void) { return strdup("{}"); }
+/* PoP: try_dispatch_background_run @ tools/cronjob_tools.py:try_dispatch_background_run */
+char *try_dispatch_background_run(void) { return strdup("{}"); }
 
 
-/* PoP: _gateway_liveness_notice @ tools/cronjob_job_args.py:_gateway_liveness_notice */
-char *_gateway_liveness_notice(void) { return strdup(""); }
+/* PoP: gateway_liveness_notice @ tools/cronjob_job_args.py:gateway_liveness_notice */
+char *gateway_liveness_notice(void) { return strdup(""); }
 
 /* PoP: _cronjob_handler @ tools/cronjob_tools.py:_cronjob_handler */
 char *_cronjob_handler(void) { return strdup("{}"); }

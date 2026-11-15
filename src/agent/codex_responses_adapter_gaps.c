@@ -9,11 +9,11 @@
 
 /* ── agent/codex_responses_adapter.py: 4 missing functions ── */
 
-/* PoP: _sanitize_replayed_fn_name @ agent/codex_responses_adapter.py:_sanitize_replayed_fn_name */
-char *_sanitize_replayed_fn_name(void) { return strdup(""); }
+/* PoP: sanitize_replayed_fn_name @ agent/codex_responses_adapter.py:sanitize_replayed_fn_name */
+char *sanitize_replayed_fn_name(void) { return strdup(""); }
 
-/* PoP: _canonical_call_id_from_fc @ agent/codex_responses_adapter.py:_canonical_call_id_from_fc */
-char *_canonical_call_id_from_fc(void) { return strdup(""); }
+/* PoP: canonical_call_id_from_fc @ agent/codex_responses_adapter.py:canonical_call_id_from_fc */
+char *canonical_call_id_from_fc(void) { return strdup(""); }
 
 /* PoP: classify_responses_route @ agent/codex_responses_adapter.py:classify_responses_route */
 char *classify_responses_route(void) { return strdup(""); }

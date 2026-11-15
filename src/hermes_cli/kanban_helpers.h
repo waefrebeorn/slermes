@@ -1,7 +1,7 @@
 #ifndef PORT_HERMES_CLI_KANBAN_HELPERS_H
 #define PORT_HERMES_CLI_KANBAN_HELPERS_H
 
-/* Minimal task shape used by _task_to_dict / _fmt_task_line ports.
+/* Minimal task shape used by task_to_dict / _fmt_task_line ports.
  * Mirrors the Python kb.Task attribute set. Declared here so command
  * handlers (cli_cmd_kanban.c) can build one from JSON and render it. */
 typedef struct {

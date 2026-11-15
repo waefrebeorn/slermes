@@ -7,8 +7,8 @@
  * (GatewayStreamConsumer).
  *
  * This module ports only the dependency-light, oracle-verifiable logic:
- *   - GatewayStreamConsumer._filter_and_accumulate  (think-block state machine)
- *   - GatewayStreamConsumer._flush_think_buffer
+ *   - GatewayStreamConsumer.filter_and_accumulate  (think-block state machine)
+ *   - GatewayStreamConsumer.flush_think_buffer
  *   - GatewayStreamConsumer._reset_segment_state
  *   - GatewayStreamConsumer._visible_prefix
  *   - GatewayStreamConsumer.has_delivered_text

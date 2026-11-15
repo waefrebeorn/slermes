@@ -9,96 +9,96 @@
 
 /* ── cron/scheduler.py: 22 missing functions ── */
 
-/* PoP: _detect_gateway_code_skew @ cron/scheduler.py:_detect_gateway_code_skew */
-int _detect_gateway_code_skew(void) { return 0; }
+/* PoP: detect_gateway_code_skew @ cron/scheduler.py:detect_gateway_code_skew */
+int detect_gateway_code_skew(void) { return 0; }
 
-/* PoP: _should_yield_tick_to_fresh_gateway @ cron/scheduler.py:_should_yield_tick_to_fresh_gateway */
-int _should_yield_tick_to_fresh_gateway(void) { return 0; }
+/* PoP: should_yield_tick_to_fresh_gateway @ cron/scheduler.py:should_yield_tick_to_fresh_gateway */
+int should_yield_tick_to_fresh_gateway(void) { return 0; }
 
-/* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
-void _log_tick_yield_once(void) {}
+/* PoP: log_tick_yield_once @ cron/scheduler_tick.py:log_tick_yield_once */
+void log_tick_yield_once(void) {}
 
-/* PoP: _upsert_incident_for_failure @ cron/scheduler.py:_upsert_incident_for_failure */
-void _upsert_incident_for_failure(const char *job_id, const char *error) {
+/* PoP: upsert_incident_for_failure @ cron/scheduler.py:upsert_incident_for_failure */
+void upsert_incident_for_failure(const char *job_id, const char *error) {
     (void)job_id; (void)error;
 }
 
-/* PoP: _mark_incident_alerted @ cron/scheduler.py:_mark_incident_alerted */
-void _mark_incident_alerted(const char *job_id) {
+/* PoP: mark_incident_alerted @ cron/scheduler.py:mark_incident_alerted */
+void mark_incident_alerted(const char *job_id) {
     (void)job_id;
 }
 
-/* PoP: _inactivity_watchdog_loop @ cron/scheduler_liveness.py:_inactivity_watchdog_loop */
-void _inactivity_watchdog_loop(void) {}
+/* PoP: inactivity_watchdog_loop @ cron/scheduler_liveness.py:inactivity_watchdog_loop */
+void inactivity_watchdog_loop(void) {}
 
-/* PoP: _target_mirror_eligible @ cron/scheduler_delivery.py:_target_mirror_eligible */
-int _target_mirror_eligible(const char *target) {
+/* PoP: target_mirror_eligible @ cron/scheduler_delivery.py:target_mirror_eligible */
+int target_mirror_eligible(const char *target) {
     (void)target;
     return 0;
 }
 
-/* PoP: _inchannel_seed_allowed @ cron/scheduler_delivery.py:_inchannel_seed_allowed */
-int _inchannel_seed_allowed(const char *channel) {
+/* PoP: inchannel_seed_allowed @ cron/scheduler_delivery.py:inchannel_seed_allowed */
+int inchannel_seed_allowed(const char *channel) {
     (void)channel;
     return 1;
 }
 
-/* PoP: _delivery_lane_value @ cron/scheduler_delivery.py:_delivery_lane_value */
-char *_delivery_lane_value(const char *lane) {
+/* PoP: delivery_lane_value @ cron/scheduler_delivery.py:delivery_lane_value */
+char *delivery_lane_value(const char *lane) {
     if (!lane) return strdup("default");
     return strdup(lane);
 }
 
-/* PoP: _cron_delivery_notify_enabled @ cron/scheduler_delivery.py:_cron_delivery_notify_enabled */
-int _cron_delivery_notify_enabled(void) { return 1; }
+/* PoP: cron_delivery_notify_enabled @ cron/scheduler_delivery.py:cron_delivery_notify_enabled */
+int cron_delivery_notify_enabled(void) { return 1; }
 
-/* PoP: _record_delivery_verification @ cron/scheduler_delivery.py:_record_delivery_verification */
-void _record_delivery_verification(const char *job_id, int success) {
+/* PoP: record_delivery_verification @ cron/scheduler_delivery.py:record_delivery_verification */
+void record_delivery_verification(const char *job_id, int success) {
     (void)job_id; (void)success;
 }
 
 
-/* PoP: _get_session_db_timeout @ cron/scheduler_script.py:_get_session_db_timeout */
-int _get_session_db_timeout(void) { return 30; }
+/* PoP: get_session_db_timeout @ cron/scheduler_script.py:get_session_db_timeout */
+int get_session_db_timeout(void) { return 30; }
 
-/* PoP: _terminate_cron_script_tree @ cron/scheduler_script.py:_terminate_cron_script_tree */
-void _terminate_cron_script_tree(const char *pid) {
+/* PoP: terminate_cron_script_tree @ cron/scheduler_script.py:terminate_cron_script_tree */
+void terminate_cron_script_tree(const char *pid) {
     (void)pid;
 }
 
-/* PoP: _primary_profile_routes_for_current_home @ cron/scheduler_preflight.py:_primary_profile_routes_for_current_home */
-char *_primary_profile_routes_for_current_home(void) {
+/* PoP: primary_profile_routes_for_current_home @ cron/scheduler_preflight.py:primary_profile_routes_for_current_home */
+char *primary_profile_routes_for_current_home(void) {
     return strdup("[]");
 }
 
-/* PoP: _delivery_platform_routed_from_primary_gateway @ cron/scheduler_preflight.py:_delivery_platform_routed_from_primary_gateway */
-int _delivery_platform_routed_from_primary_gateway(void) { return 1; }
+/* PoP: delivery_platform_routed_from_primary_gateway @ cron/scheduler_preflight.py:delivery_platform_routed_from_primary_gateway */
+int delivery_platform_routed_from_primary_gateway(void) { return 1; }
 
-/* PoP: _wait_for_external_cron_worker_body @ cron/scheduler.py:_wait_for_external_cron_worker_body */
-char *_wait_for_external_cron_worker_body(const char *payload) {
+/* PoP: wait_for_external_cron_worker_body @ cron/scheduler.py:wait_for_external_cron_worker_body */
+char *wait_for_external_cron_worker_body(const char *payload) {
     (void)payload;
     return strdup("{\"status\":\"done\"}");
 }
 
-/* PoP: _wait_for_external_cron_worker @ cron/scheduler.py:_wait_for_external_cron_worker */
-char *_wait_for_external_cron_worker(const char *payload) {
-    return _wait_for_external_cron_worker_body(payload);
+/* PoP: wait_for_external_cron_worker @ cron/scheduler.py:wait_for_external_cron_worker */
+char *wait_for_external_cron_worker(const char *payload) {
+    return wait_for_external_cron_worker_body(payload);
 }
 
-/* PoP: _launch_external_cron_worker @ cron/scheduler.py:_launch_external_cron_worker */
-char *_launch_external_cron_worker(const char *payload) {
+/* PoP: launch_external_cron_worker @ cron/scheduler.py:launch_external_cron_worker */
+char *launch_external_cron_worker(const char *payload) {
     (void)payload;
     return strdup("{\"status\":\"launched\"}");
 }
 
-/* PoP: _run_external_worker_payload @ cron/scheduler.py:_run_external_worker_payload */
-char *_run_external_worker_payload(const char *payload) {
+/* PoP: run_external_worker_payload @ cron/scheduler.py:run_external_worker_payload */
+char *run_external_worker_payload(const char *payload) {
     (void)payload;
     return strdup("{\"status\":\"done\"}");
 }
 
-/* PoP: _worktree_maintenance_repos @ cron/scheduler.py:_worktree_maintenance_repos */
-char *_worktree_maintenance_repos(void) {
+/* PoP: worktree_maintenance_repos @ cron/scheduler.py:worktree_maintenance_repos */
+char *worktree_maintenance_repos(void) {
     return strdup("[]");
 }
 

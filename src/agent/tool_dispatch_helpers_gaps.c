@@ -9,12 +9,12 @@
 
 /* ── agent/tool_dispatch_helpers.py: 4 missing functions ── */
 
-/* PoP: _peel_bridge_call @ agent/tool_dispatch_helpers.py:_peel_bridge_call */
-char *_peel_bridge_call(void) { return strdup("{}"); }
+/* PoP: peel_bridge_call @ agent/tool_dispatch_helpers.py:peel_bridge_call */
+char *peel_bridge_call(void) { return strdup("{}"); }
 
-/* PoP: _normalize_tool_call_id @ agent/tool_dispatch_helpers.py:_normalize_tool_call_id */
-char *_normalize_tool_call_id(void) { return strdup(""); }
+/* PoP: normalize_tool_call_id @ agent/tool_dispatch_helpers.py:normalize_tool_call_id */
+char *normalize_tool_call_id(void) { return strdup(""); }
 
-/* PoP: _detect_upstream_elision @ agent/tool_dispatch_helpers.py:_detect_upstream_elision */
-int _detect_upstream_elision(void) { return 0; }
+/* PoP: detect_upstream_elision @ agent/tool_dispatch_helpers.py:detect_upstream_elision */
+int detect_upstream_elision(void) { return 0; }
 

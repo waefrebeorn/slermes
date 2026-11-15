@@ -20,9 +20,9 @@
 /* These engine functions are not yet declared in the public headers; declare
  * them here so the port wrappers can delegate to the real implementations. */
 extern credential_pool_t *load_pool(const char *provider);
-extern bool _seed_from_singletons(const char *provider, credential_pool_t *pool);
-extern bool _seed_from_env(const char *provider, credential_pool_t *pool);
-extern bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool);
+extern bool seed_from_singletons(const char *provider, credential_pool_t *pool);
+extern bool seed_from_env(const char *provider, credential_pool_t *pool);
+extern bool seed_custom_pool(const char *pool_key, credential_pool_t *pool);
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -53,7 +53,7 @@ char *cpl_post_init(const char *provider, const char *access_token, const char *
     return out;
 }
 
-/* PoP: cpl_seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
+/* PoP: cpl_seed_from_singletons @ agent/credential_pool.py:seed_from_singletons */
 char *cpl_seed_from_singletons(const char *provider) {
     /* Python: seed pool from auth-store singletons (anthropic, openai, etc.),
      * honoring suppression gate. Returns JSON summary of active_sources. */
@@ -61,20 +61,20 @@ char *cpl_seed_from_singletons(const char *provider) {
     /* Delegate to real engine implementation. */
     credential_pool_t *pool = load_pool(provider);
     if (!pool) return strdup("{}");
-    _seed_from_singletons(provider, pool);
+    seed_from_singletons(provider, pool);
     char *out = credential_pool_entries_json(pool);
     credential_pool_free(pool);
     return out ? out : strdup("[]");
 }
 
-/* PoP: cpl_seed_from_env @ agent/credential_pool.py:_seed_from_env */
+/* PoP: cpl_seed_from_env @ agent/credential_pool.py:seed_from_env */
 char *cpl_seed_from_env(const char *provider) {
     /* Python: seed pool from ~/.hermes/.env (authoritative) or env vars,
      * honoring suppression gate. Returns JSON summary of active_sources. */
     if (!provider) return strdup("{}");
     credential_pool_t *pool = load_pool(provider);
     if (!pool) return strdup("{}");
-    _seed_from_env(provider, pool);
+    seed_from_env(provider, pool);
     char *out = credential_pool_entries_json(pool);
     credential_pool_free(pool);
     return out ? out : strdup("[]");
@@ -91,7 +91,7 @@ bool cpl_seed_custom_pool(void) {
     for (int i = 0; i < n; i++) {
         credential_pool_t *pool = load_pool(list[i]);
         if (!pool) { free(list[i]); continue; }
-        if (_seed_custom_pool(list[i], pool)) any = true;
+        if (seed_custom_pool(list[i], pool)) any = true;
         credential_pool_free(pool);
         free(list[i]);
     }
@@ -109,7 +109,7 @@ char *cpl_from_dict(const char *payload_json) {
     if (last && last->type == JSON_STRING) {
         const char *iso = json_string_value(last);
         if (iso) {
-            double epoch = _parse_absolute_timestamp(iso);
+            double epoch = parse_absolute_timestamp(iso);
             if (epoch >= 0) {
                 json_set(j, "last_status_at_epoch", json_number(epoch));
             }
@@ -144,7 +144,7 @@ char *cpl_to_dict(const char *entry_json) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: cpl_next_priority @ agent/credential_pool.py:_next_priority */
+/* PoP: cpl_next_priority @ agent/credential_pool.py:next_priority */
 int cpl_next_priority(const char *entries_json) {
     /* Python: max(entry.priority for entry in entries, default=-1) + 1. */
     if (!entries_json || strcmp(entries_json, "[]") == 0) return 0;
@@ -163,7 +163,7 @@ int cpl_next_priority(const char *entries_json) {
     return max_p + 1;
 }
 
-/* PoP: cpl_is_manual_source @ agent/credential_pool.py:_is_manual_source */
+/* PoP: cpl_is_manual_source @ agent/credential_pool.py:is_manual_source */
 bool cpl_is_manual_source(const char *source) {
     /* Python: "manual" or "manual:<id>". */
     if (!source) return false;
@@ -187,7 +187,7 @@ long cpl_exhausted_ttl(long error_code) {
     return 120;
 }
 
-/* PoP: cpl_parse_absolute_timestamp @ agent/credential_pool_timestamps.py:_parse_absolute_timestamp */
+/* PoP: cpl_parse_absolute_timestamp @ agent/credential_pool_timestamps.py:parse_absolute_timestamp */
 double cpl_parse_absolute_timestamp(const char *value) {
     /* Python: epoch seconds, epoch ms, ISO-8601 → seconds. */
     if (!value || !*value) return -1;
@@ -207,7 +207,7 @@ double cpl_parse_absolute_timestamp(const char *value) {
     return -1;
 }
 
-/* PoP: cpl_extract_retry_delay_seconds @ agent/credential_pool.py:_extract_retry_delay_seconds */
+/* PoP: cpl_extract_retry_delay_seconds @ agent/credential_pool.py:extract_retry_delay_seconds */
 double cpl_extract_retry_delay_seconds(const char *message) {
     /* Python: quotaResetDelay regex (ms|s suffix). */
     if (!message) return -1;
@@ -223,15 +223,15 @@ double cpl_extract_retry_delay_seconds(const char *message) {
     return v;
 }
 
-/* PoP: cpl_normalize_error_context @ agent/credential_pool.py:_normalize_error_context */
+/* PoP: cpl_normalize_error_context @ agent/credential_pool.py:normalize_error_context */
 char *cpl_normalize_error_context(const char *error_context_json) {
     /* Python: reason/message/reset_at extraction + retry_delay_seconds fallback. */
     char buf[4096];
-    _normalize_error_context(error_context_json, buf, sizeof(buf));
+    normalize_error_context(error_context_json, buf, sizeof(buf));
     return strdup(buf);
 }
 
-/* PoP: cpl_exhausted_until @ agent/credential_pool.py:_exhausted_until */
+/* PoP: cpl_exhausted_until @ agent/credential_pool.py:exhausted_until */
 double cpl_exhausted_until(const char *entry_json) {
     /* Python: reset_at from last_error_reset_at when STATUS_EXHAUSTED. */
     if (!entry_json || !strstr(entry_json, "\"exhausted\"")) return -1;
@@ -249,7 +249,7 @@ double cpl_exhausted_until(const char *entry_json) {
     return t;
 }
 
-/* PoP: cpl_normalize_custom_pool_name @ agent/credential_pool.py:_normalize_custom_pool_name */
+/* PoP: cpl_normalize_custom_pool_name @ agent/credential_pool.py:normalize_custom_pool_name */
 char *cpl_normalize_custom_pool_name(const char *name) {
     /* Python: strip().lower().replace(" ", "-"). */
     if (!name) return NULL;
@@ -292,12 +292,12 @@ char *cpl_list_custom_pool_providers(void) {
     return out ? out : strdup("[]");
 }
 
-/* PoP: cpl_get_custom_provider_config @ agent/credential_pool.py:_get_custom_provider_config */
+/* PoP: cpl_get_custom_provider_config @ agent/credential_pool.py:get_custom_provider_config */
 char *cpl_get_custom_provider_config(const char *pool_key) {
     /* Python: config entry matching the custom:<suffix> pool key, else {}. */
     if (!pool_key || strncmp(pool_key, "custom:", 7) != 0) return NULL;
     char buf[8192];
-    if (!_get_custom_provider_config(pool_key, buf, sizeof(buf))) {
+    if (!get_custom_provider_config(pool_key, buf, sizeof(buf))) {
         return strdup("{}");
     }
     return strdup(buf);
@@ -336,7 +336,7 @@ bool cpl_has_credentials(const char *entries_json) {
 
 /* PoP: cpl_has_available @ agent/credential_pool.py:has_available */
 bool cpl_has_available(const char *entries_json) {
-    /* Python: bool(self._available_entries()) — true iff >=1 entry not in
+    /* Python: bool(self.available_entries()) — true iff >=1 entry not in
      * exhaustion cooldown. */
     if (!entries_json || strcmp(entries_json, "[]") == 0) return false;
     json_t *arr = json_parse(entries_json, NULL);
@@ -379,7 +379,7 @@ char *cpl_current(const char *current_json) {
     return current_json ? strdup(current_json) : NULL;
 }
 
-/* PoP: cpl_replace_entry @ agent/credential_pool.py:_replace_entry */
+/* PoP: cpl_replace_entry @ agent/credential_pool.py:replace_entry */
 int cpl_replace_entry(const char *old_id, const char *new_json, const char *entries_json) {
     /* Python: in-place swap by id preserving sort order. */
     if (!old_id || !new_json || !entries_json) return -1;
@@ -397,7 +397,7 @@ int cpl_persist(const char *provider, const char *entries_json, const char *remo
     return 0;
 }
 
-/* PoP: cpl_is_terminal_auth_failure @ agent/credential_pool.py:_is_terminal_auth_failure */
+/* PoP: cpl_is_terminal_auth_failure @ agent/credential_pool.py:is_terminal_auth_failure */
 bool cpl_is_terminal_auth_failure(long error_code, const char *error_reason) {
     /* Python: 401 + token_invalidated/token_revoked etc. */
     if (error_code != 401) return false;
@@ -411,7 +411,7 @@ bool cpl_is_terminal_auth_failure(long error_code, const char *error_reason) {
     return r;
 }
 
-/* PoP: cpl_mark_exhausted @ agent/credential_pool.py:_mark_exhausted */
+/* PoP: cpl_mark_exhausted @ agent/credential_pool.py:mark_exhausted */
 int cpl_mark_exhausted(const char *entry_id, long error_code, const char *error_context_json) {
     /* Python: DEAD for terminal OAuth, EXHAUSTED + TTL otherwise. */
     if (!entry_id) return -1;
@@ -422,7 +422,7 @@ int cpl_mark_exhausted(const char *entry_id, long error_code, const char *error_
     return dead ? 0 : 1;
 }
 
-/* PoP: cpl_sync_codex_entry_from_auth_store @ agent/credential_pool.py:_sync_codex_entry_from_auth_store */
+/* PoP: cpl_sync_codex_entry_from_auth_store @ agent/credential_pool.py:sync_codex_entry_from_auth_store */
 int cpl_sync_codex_entry_from_auth_store(const char *entry_json) {
     /* Python: refresh pool entry when auth.json tokens differ. */
     if (!entry_json) return -1;
@@ -430,7 +430,7 @@ int cpl_sync_codex_entry_from_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: cpl_sync_xai_oauth_entry_from_auth_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store */
+/* PoP: cpl_sync_xai_oauth_entry_from_auth_store @ agent/credential_pool.py:sync_xai_oauth_entry_from_auth_store */
 int cpl_sync_xai_oauth_entry_from_auth_store(const char *entry_json) {
     /* Python: single-use RT race guard across processes. */
     if (!entry_json) return -1;
@@ -438,14 +438,14 @@ int cpl_sync_xai_oauth_entry_from_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: cpl_sync_nous_entry_from_auth_store @ agent/credential_pool.py:_sync_nous_entry_from_auth_store */
+/* PoP: cpl_sync_nous_entry_from_auth_store @ agent/credential_pool.py:sync_nous_entry_from_auth_store */
 int cpl_sync_nous_entry_from_auth_store(const char *entry_json) {
     if (!entry_json) return -1;
     printf("nous entry synced from auth store (concurrent cron refresh guard)\n");
     return 0;
 }
 
-/* PoP: cpl_sync_device_code_entry_to_auth_store @ agent/credential_pool.py:_sync_device_code_entry_to_auth_store */
+/* PoP: cpl_sync_device_code_entry_to_auth_store @ agent/credential_pool.py:sync_device_code_entry_to_auth_store */
 int cpl_sync_device_code_entry_to_auth_store(const char *entry_json) {
     /* Python: write fresh pool tokens back to auth.json providers. */
     if (!entry_json) return -1;
@@ -453,7 +453,7 @@ int cpl_sync_device_code_entry_to_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: cpl_refresh_entry @ agent/credential_pool.py:_refresh_entry */
+/* PoP: cpl_refresh_entry @ agent/credential_pool.py:refresh_entry */
 char *cpl_refresh_entry(const char *entry_json, bool force) {
     /* Python: oauth refresh w/ codex/xai special paths. */
     if (!entry_json) return NULL;
@@ -462,7 +462,7 @@ char *cpl_refresh_entry(const char *entry_json, bool force) {
     return strdup(entry_json);
 }
 
-/* PoP: cpl_entry_needs_refresh @ agent/credential_pool.py:_entry_needs_refresh */
+/* PoP: cpl_entry_needs_refresh @ agent/credential_pool.py:entry_needs_refresh */
 bool cpl_entry_needs_refresh(const char *entry_json) {
     /* Python: oauth + expires_at_ms within threshold. */
     if (!entry_json) return false;
@@ -486,7 +486,7 @@ char *cpl_select(const char *entries_json) {
     return NULL;
 }
 
-/* PoP: cpl_available_entries @ agent/credential_pool.py:_available_entries */
+/* PoP: cpl_available_entries @ agent/credential_pool.py:available_entries */
 char *cpl_available_entries(const char *entries_json, bool clear_expired, bool refresh) {
     /* Python: cooldown-filtered; expired → STATUS_OK + persist —
      * REAL: drop entries whose last_status is exhausted/dead. */
@@ -532,7 +532,7 @@ char *cpl_available_entries(const char *entries_json, bool clear_expired, bool r
     return out;
 }
 
-/* PoP: cpl_select_unlocked @ agent/credential_pool.py:_select_unlocked */
+/* PoP: cpl_select_unlocked @ agent/credential_pool.py:select_unlocked */
 char *cpl_select_unlocked(const char *entries_json, bool refresh) {
     if (!entries_json) return NULL;
     printf("entry selected unlocked (strategy-aware)\n");
@@ -591,7 +591,7 @@ char *cpl_try_refresh_current(const char *current_json) {
     return NULL;
 }
 
-/* PoP: cpl_try_refresh_current_unlocked @ agent/credential_pool.py:_try_refresh_current_unlocked */
+/* PoP: cpl_try_refresh_current_unlocked @ agent/credential_pool.py:try_refresh_current_unlocked */
 char *cpl_try_refresh_current_unlocked(const char *current_json) {
     if (!current_json) return NULL;
     printf("current entry refreshed (unlocked)\n");
@@ -633,14 +633,14 @@ char *cpl_add_entry(const char *entry_json, int max_priority) {
         return strdup(entry_json);
     }
     int next_p = cpl_next_priority("[]");  /* default priority for first entry */
-    (void)max_priority;  /* Python uses _next_priority(entries) internally */
+    (void)max_priority;  /* Python uses next_priority(entries) internally */
     json_set(j, "priority", json_number((double)next_p));
     char *out = json_serialize(j);
     json_free(j);
     return out ? out : strdup(entry_json);
 }
 
-/* PoP: cpl_upsert_entry @ agent/credential_pool.py:_upsert_entry */
+/* PoP: cpl_upsert_entry @ agent/credential_pool.py:upsert_entry */
 char *cpl_upsert_entry(const char *entries_json, const char *source) {
     /* Python: replace by source or append. */
     if (!entries_json || !source) return strdup("[]");
@@ -648,14 +648,14 @@ char *cpl_upsert_entry(const char *entries_json, const char *source) {
     return strdup(entries_json);
 }
 
-/* PoP: cpl_normalize_pool_priorities @ agent/credential_pool.py:_normalize_pool_priorities */
+/* PoP: cpl_normalize_pool_priorities @ agent/credential_pool.py:normalize_pool_priorities */
 bool cpl_normalize_pool_priorities(const char *provider) {
     /* Python: anthropic-only source ranking. */
     if (!provider) return false;
     return strcmp(provider, "anthropic") == 0;
 }
 
-/* PoP: cpl_prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */
+/* PoP: cpl_prune_stale_seeded_entries @ agent/credential_pool.py:prune_stale_seeded_entries */
 long cpl_prune_stale_seeded_entries(const char *entries_json) {
     /* Python: drop env:* entries whose env var vanished. */
     if (!entries_json) return 0;

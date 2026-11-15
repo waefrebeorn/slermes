@@ -9,11 +9,11 @@
 
 /* ── agent/turn_liveness.py: 7 missing functions ── */
 
-/* PoP: _warn_invalid_value @ agent/turn_liveness.py:_warn_invalid_value */
-void _warn_invalid_value(const char *val) { (void)val; }
+/* PoP: warn_invalid_value @ agent/turn_liveness.py:warn_invalid_value */
+void warn_invalid_value(const char *val) { (void)val; }
 
-/* PoP: _resolve_finite_seconds @ agent/turn_liveness.py:_resolve_finite_seconds */
-int _resolve_finite_seconds(void) { return 0; }
+/* PoP: resolve_finite_seconds @ agent/turn_liveness.py:resolve_finite_seconds */
+int resolve_finite_seconds(void) { return 0; }
 
 /* PoP: resolve_turn_liveness_settings @ agent/turn_liveness.py:resolve_turn_liveness_settings */
 char *resolve_turn_liveness_settings(void) { return strdup("{}"); }
@@ -21,7 +21,7 @@ char *resolve_turn_liveness_settings(void) { return strdup("{}"); }
 /* PoP: _sample @ agent/turn_liveness.py:_sample */
 int _sample(void) { return 0; }
 
-/* PoP: _abort_message @ agent/turn_liveness.py:_abort_message */
-char *_abort_message(void) { return strdup(""); }
+/* PoP: abort_message @ agent/turn_liveness.py:abort_message */
+char *abort_message(void) { return strdup(""); }
 
 

@@ -14,14 +14,14 @@ char *restart_safe_gateway_child_argv(void) { return strdup("[]"); }
 
 
 
-/* PoP: _model_not_found_patterns @ tools/process_registry_notifications.py:_model_not_found_patterns */
-char *_model_not_found_patterns(void) { return strdup("[]"); }
+/* PoP: model_not_found_patterns @ tools/process_registry_notifications.py:model_not_found_patterns */
+char *model_not_found_patterns(void) { return strdup("[]"); }
 
-/* PoP: _delegation_config @ tools/process_registry_notifications.py:_delegation_config */
-char *_delegation_config(void) { return strdup("{}"); }
+/* PoP: delegation_config @ tools/process_registry_notifications.py:delegation_config */
+char *delegation_config(void) { return strdup("{}"); }
 
-/* PoP: _delegation_model_not_found @ tools/process_registry_notifications.py:_delegation_model_not_found */
-int _delegation_model_not_found(void) { return 0; }
+/* PoP: delegation_model_not_found @ tools/process_registry_notifications.py:delegation_model_not_found */
+int delegation_model_not_found(void) { return 0; }
 
-/* PoP: _delegation_model_not_found_notice @ tools/process_registry_notifications.py:_delegation_model_not_found_notice */
-char *_delegation_model_not_found_notice(void) { return strdup(""); }
+/* PoP: delegation_model_not_found_notice @ tools/process_registry_notifications.py:delegation_model_not_found_notice */
+char *delegation_model_not_found_notice(void) { return strdup(""); }

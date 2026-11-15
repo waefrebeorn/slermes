@@ -54,7 +54,7 @@ static char *_str_replace_char(const char *s, char from, char to) {
 /* PoP: match @ fuzzy_match:fuzzy_find_and_replace */
 /* Strategy 1: Exact match (returns 1 if found, 0 if not).
  * Sets *match_start = position in content, *match_len = pattern length. */
-static int _fuzzy_exact(const char *content, const char *pattern,
+static int fuzzy_exact(const char *content, const char *pattern,
                          size_t *match_start, size_t *match_len)
 {
     const char *p = strstr(content, pattern);
@@ -66,7 +66,7 @@ static int _fuzzy_exact(const char *content, const char *pattern,
 
 /* Strategy 2: Line-trimmed — strip leading/trailing whitespace per line,
  * then find as sequence of trimmed lines in trimmed content. */
-static int _fuzzy_line_trimmed(const char *content, const char *pattern,
+static int fuzzy_line_trimmed(const char *content, const char *pattern,
                                 size_t *match_start, size_t *match_len)
 {
     int plines = _count_lines(pattern);
@@ -147,7 +147,7 @@ static int _fuzzy_line_trimmed(const char *content, const char *pattern,
 }
 
 /* Strategy 3: Whitespace normalized — collapse multiple spaces/tabs to single space */
-static int _fuzzy_whitespace_normalized(const char *content, const char *pattern,
+static int fuzzy_whitespace_normalized(const char *content, const char *pattern,
                                          size_t *match_start, size_t *match_len)
 {
     /* Normalize pattern: collapse spaces, tabs to single space, trim */
@@ -222,7 +222,7 @@ static int _fuzzy_whitespace_normalized(const char *content, const char *pattern
 }
 
 /* Strategy 4: Indentation flexible — ignore leading whitespace */
-static int _fuzzy_indentation_flexible(const char *content, const char *pattern,
+static int fuzzy_indentation_flexible(const char *content, const char *pattern,
                                         size_t *match_start, size_t *match_len)
 {
     /* Same as line_trimmed but only left-strip, not right-strip */
@@ -298,7 +298,7 @@ static int _fuzzy_indentation_flexible(const char *content, const char *pattern,
  * strings: 2*M/(len_a+len_b) where M is the longest-common-subsequence length
  * (computed via LCS on the two char sequences). Lines are short, so O(n^2) is
  * fine. Returns a double in [0,1]. */
-static double _line_sim(const char *a, const char *b)
+static double line_sim(const char *a, const char *b)
 {
     int la = (int)strlen(a), lb = (int)strlen(b);
     if (la == 0 && lb == 0) return 1.0;
@@ -316,7 +316,7 @@ static double _line_sim(const char *a, const char *b)
 
 /* Calculate start/end byte positions of a line span [start_line, end_line)
  * (0-based, end exclusive) in content. Mirrors _calculate_line_positions. */
-static void _line_positions(const char *content, int start_line, int end_line,
+static void line_positions(const char *content, int start_line, int end_line,
                             size_t *start, size_t *end, size_t content_len)
 {
     size_t sp = 0;
@@ -342,7 +342,7 @@ static void _line_positions(const char *content, int start_line, int end_line,
 
 /* Strategy 5: escape_normalized — convert \\n \\t \\r literals in the PATTERN to
  * real control characters, then exact-match. Skip if pattern has no escapes. */
-static int _fuzzy_escape_normalized(const char *content, const char *pattern,
+static int fuzzy_escape_normalized(const char *content, const char *pattern,
                                     size_t *match_start, size_t *match_len)
 {
     if (!strstr(pattern, "\\n") && !strstr(pattern, "\\t") && !strstr(pattern, "\\r"))
@@ -362,14 +362,14 @@ static int _fuzzy_escape_normalized(const char *content, const char *pattern,
         unesc[k++] = pattern[i];
     }
     unesc[k] = '\0';
-    int rc = _fuzzy_exact(content, unesc, match_start, match_len);
+    int rc = fuzzy_exact(content, unesc, match_start, match_len);
     free(unesc);
     return rc;
 }
 
 /* Strategy 6: trimmed_boundary — trim first & last pattern lines, then match a
  * line block where the block's first/last lines (trimmed) equal the pattern's. */
-static int _fuzzy_trimmed_boundary(const char *content, const char *pattern,
+static int fuzzy_trimmed_boundary(const char *content, const char *pattern,
                                    size_t *match_start, size_t *match_len)
 {
     /* Split pattern into lines */
@@ -409,7 +409,7 @@ static int _fuzzy_trimmed_boundary(const char *content, const char *pattern,
     free(pc); free(cc);
     if (!found) return 0;
     size_t sp, ep;
-    _line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
+    line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
     *match_start = sp; *match_len = ep - sp;
     return 1;
 }
@@ -439,7 +439,7 @@ static int _utf8_len(const unsigned char *s)
  * Works in CODExPOINT units (matching Python's model): pos_map[] has
  * (n_codepoints+1) entries mapping each original codepoint index to its
  * normalized codepoint index. Returns malloc'd normalized string (UTF-8). */
-static char *_unicode_normalize_map(const char *s, size_t **pos_map_out, size_t *n_codepoints_out)
+static char *unicode_normalize_map(const char *s, size_t **pos_map_out, size_t *n_codepoints_out)
 {
     size_t n = strlen(s);
     /* worst case: every byte is a 1-byte codepoint */
@@ -500,20 +500,20 @@ static void _norm_to_orig(size_t *pm, size_t n_codepoints, size_t nstart, size_t
 }
 
 /* Preserve Unicode characters from the file in the replacement string.
- * Mirrors Python's _preserve_unicode_in_replacement: the file region has
+ * Mirrors Python's preserve_unicode_in_replacement: the file region has
  * Unicode (em-dashes, smart quotes) but old/new are ASCII; writing new_string
  * verbatim would corrupt the file's Unicode. Diff old->new in normalized space
  * and apply only the actual edits, keeping the file's original text (with its
  * Unicode) for unchanged spans. Returns malloc'd string (caller frees). */
-static char *_preserve_unicode_in_replacement(const char *file_region,
+static char *preserve_unicode_in_replacement(const char *file_region,
                                                const char *old_string,
                                                const char *new_string)
 {
     size_t *opm = NULL, onp = 0;
-    char *norm_old = _unicode_normalize_map(old_string, &opm, &onp);
+    char *norm_old = unicode_normalize_map(old_string, &opm, &onp);
     if (!norm_old) return strdup(new_string);
     size_t *fpm = NULL, fnp = 0;
-    char *norm_file = _unicode_normalize_map(file_region, &fpm, &fnp);
+    char *norm_file = unicode_normalize_map(file_region, &fpm, &fnp);
     if (!norm_file) { free(norm_old); free(opm); return strdup(new_string); }
 
     if (strcmp(norm_old, norm_file) != 0) { /* sanity: should match */
@@ -591,17 +591,17 @@ static char *_preserve_unicode_in_replacement(const char *file_region,
 }
 
 /* Strategy 7: unicode_normalized. */
-static int _fuzzy_unicode_normalized(const char *content, const char *pattern,
+static int fuzzy_unicode_normalized(const char *content, const char *pattern,
                                      size_t *match_start, size_t *match_len)
 {
     size_t *cpm = NULL, *ppm = NULL, cnp = 0, pnp = 0;
-    char *nc = _unicode_normalize_map(content, &cpm, &cnp);
-    char *np = _unicode_normalize_map(pattern, &ppm, &pnp);
+    char *nc = unicode_normalize_map(content, &cpm, &cnp);
+    char *np = unicode_normalize_map(pattern, &ppm, &pnp);
     if (!nc || !np) { free(nc); free(np); free(cpm); free(ppm); return 0; }
     int rc = 0;
     if (strcmp(nc, content) != 0 || strcmp(np, pattern) != 0) {
         size_t ms = 0, ml = 0;
-        if (_fuzzy_exact(nc, np, &ms, &ml) || _fuzzy_line_trimmed(nc, np, &ms, &ml)) {
+        if (fuzzy_exact(nc, np, &ms, &ml) || fuzzy_line_trimmed(nc, np, &ms, &ml)) {
             size_t os, oe;
             _norm_to_orig(cpm, cnp, ms, ms + ml, content, &os, &oe);
             *match_start = os; *match_len = oe - os;
@@ -614,13 +614,13 @@ static int _fuzzy_unicode_normalized(const char *content, const char *pattern,
 
 /* Strategy 8: block_anchor — match first/last pattern lines (unicode-trimmed),
  * accept when middle similarity >= 0.50 (single candidate) or 0.70 (multiple). */
-static int _fuzzy_block_anchor(const char *content, const char *pattern,
+static int fuzzy_block_anchor(const char *content, const char *pattern,
                                size_t *match_start, size_t *match_len)
 {
     /* Use normalized content/pattern for line comparison; original for offsets. */
     size_t *cpm = NULL, *ppm = NULL;
-    char *norm_c = _unicode_normalize_map(content, &cpm, NULL);
-    char *norm_p = _unicode_normalize_map(pattern, &ppm, NULL);
+    char *norm_c = unicode_normalize_map(content, &cpm, NULL);
+    char *norm_p = unicode_normalize_map(pattern, &ppm, NULL);
     if (!norm_c || !norm_p) { free(norm_c); free(norm_p); free(cpm); free(ppm); return 0; }
     int npat = 0; char *pl[1024];
     char *s1 = NULL, *t = strtok_r(norm_p, "\n", &s1);
@@ -653,20 +653,20 @@ static int _fuzzy_block_anchor(const char *content, const char *pattern,
             char cb[8192] = {0}, pb[8192] = {0};
             for (int j = 0; j < m; j++) { strncat(cb, cmid[j], sizeof(cb) - strlen(cb) - 1); strncat(cb, "\n", 1); }
             for (int j = 0; j < pm; j++) { strncat(pb, pmid[j], sizeof(pb) - strlen(pb) - 1); strncat(pb, "\n", 1); }
-            sim = _line_sim(cb, pb);
+            sim = line_sim(cb, pb);
         }
         if (sim >= threshold) { found = 1; start_line = i; break; }
     }
     free(norm_c); free(norm_p); free(cpm); free(ppm);
     if (!found) return 0;
     size_t sp, ep;
-    _line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
+    line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
     *match_start = sp; *match_len = ep - sp;
     return 1;
 }
 
 /* Strategy 9: context_aware — block where >= 50% of lines have line-sim >= 0.80. */
-static int _fuzzy_context_aware(const char *content, const char *pattern,
+static int fuzzy_context_aware(const char *content, const char *pattern,
                                 size_t *match_start, size_t *match_len)
 {
     int npat = 0; char *pl[1024];
@@ -688,23 +688,23 @@ static int _fuzzy_context_aware(const char *content, const char *pattern,
             char *a = pl[j], *b = cl[i + j];
             while (*a == ' ' || *a == '\t') a++;
             while (*b == ' ' || *b == '\t') b++;
-            if (_line_sim(a, b) >= 0.80) high++;
+            if (line_sim(a, b) >= 0.80) high++;
         }
         if (high >= npat * 0.5) { found = 1; start_line = i; break; }
     }
     free(pc); free(cc);
     if (!found) return 0;
     size_t sp, ep;
-    _line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
+    line_positions(content, start_line, start_line + npat, &sp, &ep, strlen(content));
     *match_start = sp; *match_len = ep - sp;
     return 1;
 }
 
-/* Escape-drift guard (mirrors _detect_escape_drift): if new_string carries a
+/* Escape-drift guard (mirrors detect_escape_drift): if new_string carries a
  * spurious \' or \" that was copy-pasted as context but is absent from the
  * matched file region, refuse the edit. Returns 1 if drift detected (sets
  * *err), 0 otherwise. */
-static int _detect_escape_drift(const char *content, size_t ms, size_t ml,
+static int detect_escape_drift(const char *content, size_t ms, size_t ml,
                                 const char *old_string, const char *new_string, char *err, size_t errsz)
 {
     if (!strstr(new_string, "\\'") && !strstr(new_string, "\\\"")) return 0;
@@ -728,8 +728,8 @@ static int _detect_escape_drift(const char *content, size_t ms, size_t ml,
 }
 
 /* Re-indent new_string to the file region's actual base indent (mirrors
- * _reindent_replacement). Returns malloc'd adjusted string. */
-static char *_reindent_replacement(const char *file_region, const char *old_string, const char *new_string)
+ * reindent_replacement). Returns malloc'd adjusted string. */
+static char *reindent_replacement(const char *file_region, const char *old_string, const char *new_string)
 {
     /* leading whitespace length of first meaningful line of old and file.
      * Mirrors Python's _leading_whitespace(_first_meaningful_line(...)). */
@@ -770,22 +770,22 @@ static char *_reindent_replacement(const char *file_region, const char *old_stri
  * Now mirrors Python's 9-strategy chain (exact, line_trimmed,
  * whitespace_normalized, indentation_flexible, escape_normalized,
  * trimmed_boundary, unicode_normalized, block_anchor, context_aware). */
-static int _fuzzy_find(const char *content, const char *pattern,
+static int fuzzy_find(const char *content, const char *pattern,
                        size_t *match_start, size_t *match_len, const char **strategy_out)
 {
     typedef int (*fuzzy_fn)(const char *, const char *, size_t *, size_t *);
     typedef struct { const char *name; fuzzy_fn fn; } strategy_entry;
 
     strategy_entry chain[] = {
-        {"exact", _fuzzy_exact},
-        {"line_trimmed", _fuzzy_line_trimmed},
-        {"indentation_flexible", _fuzzy_indentation_flexible},
-        {"whitespace_normalized", _fuzzy_whitespace_normalized},
-        {"escape_normalized", _fuzzy_escape_normalized},
-        {"trimmed_boundary", _fuzzy_trimmed_boundary},
-        {"unicode_normalized", _fuzzy_unicode_normalized},
-        {"block_anchor", _fuzzy_block_anchor},
-        {"context_aware", _fuzzy_context_aware},
+        {"exact", fuzzy_exact},
+        {"line_trimmed", fuzzy_line_trimmed},
+        {"indentation_flexible", fuzzy_indentation_flexible},
+        {"whitespace_normalized", fuzzy_whitespace_normalized},
+        {"escape_normalized", fuzzy_escape_normalized},
+        {"trimmed_boundary", fuzzy_trimmed_boundary},
+        {"unicode_normalized", fuzzy_unicode_normalized},
+        {"block_anchor", fuzzy_block_anchor},
+        {"context_aware", fuzzy_context_aware},
     };
     int n = sizeof(chain) / sizeof(chain[0]);
 
@@ -1067,7 +1067,7 @@ static char *apply_v4a_hunk(const char *file_content, v4a_hunk_t *hunk,
         /* Try all 4 fuzzy strategies */
         size_t ms, ml;
         const char *best_strategy = NULL;
-        if (!_fuzzy_find(file_content, search_str, &ms, &ml, &best_strategy)) {
+        if (!fuzzy_find(file_content, search_str, &ms, &ml, &best_strategy)) {
             size_t content_len = strlen(file_content);
             *error_out = malloc(512);
             if (*error_out) {
@@ -1328,15 +1328,15 @@ static char *apply_patch(const char *path, const char *old_str,
 
     if (count == 0) {
         /* Try fuzzy matching strategies */
-        if (_fuzzy_find(content, old_str, &match_offset, &match_length, &strategy_used)) {
+        if (fuzzy_find(content, old_str, &match_offset, &match_length, &strategy_used)) {
             count = 1;
             /* Update old_len to match_length for correct result_size calculation */
             old_len = match_length;
 
-            /* Escape-drift guard (mirrors Python _detect_escape_drift): refuse the
+            /* Escape-drift guard (mirrors Python detect_escape_drift): refuse the
              * edit if new_str carries a spurious \' or \" absent from the file region. */
             char drift_err[512];
-            if (_detect_escape_drift(content, match_offset, match_length, old_str,
+            if (detect_escape_drift(content, match_offset, match_length, old_str,
                                     new_str ? new_str : "", drift_err, sizeof(drift_err))) {
                 free(content);
                 char *out = malloc(512 + strlen(drift_err));
@@ -1503,7 +1503,7 @@ static char *apply_patch(const char *path, const char *old_str,
         }
     }
 
-    /* Unicode preservation (mirrors Python _preserve_unicode_in_replacement):
+    /* Unicode preservation (mirrors Python preserve_unicode_in_replacement):
      * for a unicode_normalized match, keep the file's original Unicode chars in
      * unchanged spans (e.g. smart quotes stay smart) instead of writing the
      * ASCII-normalized new_string verbatim. */
@@ -1512,7 +1512,7 @@ static char *apply_patch(const char *path, const char *old_str,
         if (region) {
             memcpy(region, content + match_offset, match_length);
             region[match_length] = '\0';
-            char *pres = _preserve_unicode_in_replacement(region, old_str, effective_new_str);
+            char *pres = preserve_unicode_in_replacement(region, old_str, effective_new_str);
             free(region);
             if (pres) {
                 if (unescaped_new_str) { free(unescaped_new_str); unescaped_new_str = NULL; }
@@ -1522,7 +1522,7 @@ static char *apply_patch(const char *path, const char *old_str,
         }
     }
 
-    /* Indent-realignment (mirrors Python _reindent_replacement): when the match
+    /* Indent-realignment (mirrors Python reindent_replacement): when the match
      * came from a non-exact fuzzy strategy, shift effective_new_str so its
      * indentation matches the file region's actual base indent. */
     if (strcmp(strategy_used, "exact") != 0 && effective_new_str[0]) {
@@ -1530,7 +1530,7 @@ static char *apply_patch(const char *path, const char *old_str,
         if (region) {
             memcpy(region, content + match_offset, match_length);
             region[match_length] = '\0';
-            char *reind = _reindent_replacement(region, old_str, effective_new_str);
+            char *reind = reindent_replacement(region, old_str, effective_new_str);
             free(region);
             if (reind) {
                 if (unescaped_new_str) { free(unescaped_new_str); unescaped_new_str = NULL; }

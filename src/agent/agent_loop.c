@@ -769,10 +769,10 @@ int agent_session_migrate(agent_state_t *state) {
  *  Port of Python agent/conversation_loop.py functions (REAL_GAP closure)
  * ================================================================ */
 
-/* Port of Python agent/conversation_loop.py:_image_error_max_dimension().
+/* Port of Python agent/conversation_loop.py:image_error_max_dimension().
  * Extract a provider-reported image dimension ceiling from an error message.
  * Returns the dimension or 0 if not found. */
-int _image_error_max_dimension(const char *error_str) {
+int image_error_max_dimension(const char *error_str) {
     if (!error_str) return 0;
     
     /* Search for "max allowed size" pattern in error message */
@@ -792,7 +792,7 @@ int _image_error_max_dimension(const char *error_str) {
     return 0;
 }
 
-/* Port of Python agent/conversation_loop.py:_try_refresh_nous_paid_entitlement_credentials().
+/* Port of Python agent/conversation_loop.py:try_refresh_nous_paid_entitlement_credentials().
  * Refresh Nous runtime credentials after a fresh paid-entitlement check.
  * Returns true if credentials were refreshed.
  *
@@ -802,7 +802,7 @@ int _image_error_max_dimension(const char *error_str) {
  * access token. Mirrors hermes_cli/auth.py:refresh_nous_oauth_pure().
  * If no refresh is needed (token still valid), returns false — same as
  * Python's no-op path. */
-static json_t *_arl_load_nous_state(void) {
+static json_t *arl_load_nous_state(void) {
     /* Reuse the auth.json reader from chat_completion_helpers —
      * but that's static, so we inline the equivalent logic here. */
     const char *home = getenv("HERMES_HOME");
@@ -832,7 +832,7 @@ static json_t *_arl_load_nous_state(void) {
     return result;
 }
 
-static int _arl_save_nous_state(json_t *new_state) {
+static int arl_save_nous_state(json_t *new_state) {
     /* Write the updated nous provider state back to auth.json.
      * We load the full auth.json, update the nous key, and write it back. */
     const char *home = getenv("HERMES_HOME");
@@ -880,7 +880,7 @@ static int _arl_save_nous_state(json_t *new_state) {
     return 0;
 }
 
-bool _try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
+bool try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
     if (!state) return false;
 
     /* Only refresh for Nous provider */
@@ -888,7 +888,7 @@ bool _try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
         return false;
 
     /* Load the current auth state */
-    json_t *auth_state = _arl_load_nous_state();
+    json_t *auth_state = arl_load_nous_state();
     if (!auth_state) {
         hermes_log(LOG_WARNING, "agent",
             "nous credential refresh: no auth state found");
@@ -1003,7 +1003,7 @@ bool _try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
     }
 
     /* Save updated state back to auth.json */
-    _arl_save_nous_state(auth_state);
+    arl_save_nous_state(auth_state);
 
     /* Update the agent state's API key with the new access token */
     snprintf(state->llm.api_key, sizeof(state->llm.api_key), "%s", new_access);
@@ -1017,7 +1017,7 @@ bool _try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
     return true;
 }
 
-/* Port of Python agent/conversation_loop.py:_restore_or_build_system_prompt().
+/* Port of Python agent/conversation_loop.py:restore_or_build_system_prompt().
  * Restore the cached system prompt from session DB or build it fresh.
  * Mutates state->cached_system_prompt and persists a freshly-built prompt.
  * Uses session DB meta_json "system_prompt" key for persistence. */
@@ -1051,7 +1051,7 @@ static bool save_system_prompt_to_db(db_t *db, const char *session_id, const cha
     return db_save_meta(db, session_id, &meta);
 }
 
-void _restore_or_build_system_prompt(agent_state_t *state, const char *system_message, bool has_conversation_history) {
+void restore_or_build_system_prompt(agent_state_t *state, const char *system_message, bool has_conversation_history) {
     if (!state) return;
 
     /* If we have a cached system prompt, use it */
@@ -1096,10 +1096,10 @@ void _restore_or_build_system_prompt(agent_state_t *state, const char *system_me
     }
 }
 
-/* Port of Python agent/conversation_loop.py:_content_policy_blocked_result().
+/* Port of Python agent/conversation_loop.py:content_policy_blocked_result().
  * Build the terminal turn result for a content-policy block.
  * Returns a JSON string that caller must free. */
-char *_content_policy_blocked_result(const char *messages_json, int api_call_count,
+char *content_policy_blocked_result(const char *messages_json, int api_call_count,
                                       const char *final_response, const char *error_detail) {
     if (!final_response) final_response = "";
     if (!error_detail) error_detail = "content policy blocked";

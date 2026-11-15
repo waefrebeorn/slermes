@@ -30,27 +30,27 @@
 
 #ifdef HAS_NCURSES_TUI
 /* ── Forward declarations (ncurses mode) ──────────────────── */
-static bool _try_curses_init(void);
-static void _init_colors(void);
-static int  _filter_indices(const char **labels, int count, const char *query, int **out);
-static cw_nav_action_t _decode_key(int key);
+static bool try_curses_init(void);
+static void init_colors(void);
+static int  filter_indices(const char **labels, int count, const char *query, int **out);
+static cw_nav_action_t decode_key(int key);
 static void _flush_stdin(void);
-static int  _reconcile_cursor(int *filtered, int filter_count, int cursor, int *cursor_pos);
+static int  reconcile_cursor(int *filtered, int filter_count, int cursor, int *cursor_pos);
 static int  _move_cursor(int *filtered, int filter_count, int cursor_pos, int delta);
-static int  _scroll_for_cursor(int scroll_offset, int cursor_pos, int visible_rows, int total_rows);
-static int  _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
+static int  scroll_for_cursor(int scroll_offset, int cursor_pos, int visible_rows, int total_rows);
+static int  menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
                              cw_key_handler_fn custom_keys, void *custom_ctx);
-static void _draw_menu(cw_menu_config_t *cfg, int cursor, int scroll_offset,
+static void draw_menu(cw_menu_config_t *cfg, int cursor, int scroll_offset,
                         int *filtered, int filter_count, const char *search_query);
-static cw_selection_t _checklist_interactive(const char *title, char **items, int item_count,
+static cw_selection_t checklist_interactive(const char *title, char **items, int item_count,
                                     int *initial_selection, int initial_count,
                                     const char *status_text);
-static int  _radiolist_interactive(const char *title, char **items, int item_count,
+static int  radiolist_interactive(const char *title, char **items, int item_count,
                                     int initial_selection, int cancel_value,
                                     const char *description, bool searchable);
-static int  _picker_interactive(const char *title, char **items, int item_count,
+static int  picker_interactive(const char *title, char **items, int item_count,
                                  int default_index, bool searchable, const char *cancel_label);
-static bool _confirm_interactive(const char *title, const char *message);
+static bool confirm_interactive(const char *title, const char *message);
 #endif
 
 /* ════════════════════════════════════════════════════════════════
@@ -77,7 +77,7 @@ void cw_init_colors(void) {
 
 cw_nav_action_t cw_read_key(int key) {
 #ifdef HAS_NCURSES_TUI
-    return _decode_key(key);
+    return decode_key(key);
 #else
     (void)key;
     return CW_NAV_NONE;
@@ -88,7 +88,7 @@ int cw_run_menu(cw_menu_config_t *cfg, int cancel_value,
                 cw_key_handler_fn custom_keys, void *custom_ctx)
 {
 #ifdef HAS_NCURSES_TUI
-    return _menu_event_loop(cfg, cancel_value, custom_keys, custom_ctx);
+    return menu_event_loop(cfg, cancel_value, custom_keys, custom_ctx);
 #else
     (void)cfg;
     (void)cancel_value;
@@ -106,7 +106,7 @@ cw_selection_t cw_checklist(
 {
 #ifdef HAS_NCURSES_TUI
     /* Try ncurses interactive first */
-    cw_selection_t chosen = _checklist_interactive(title, items, item_count,
+    cw_selection_t chosen = checklist_interactive(title, items, item_count,
                                                      initial_selection, initial_count,
                                                      status_text);
     if (chosen.indices != NULL) return chosen;
@@ -122,7 +122,7 @@ int cw_radiolist(
     const char *description, bool searchable)
 {
 #ifdef HAS_NCURSES_TUI
-    int result = _radiolist_interactive(title, items, item_count,
+    int result = radiolist_interactive(title, items, item_count,
                                          initial_selection, cancel_value,
                                          description, searchable);
     if (result != -2) return result;  /* -2 means curses unavailable */
@@ -138,7 +138,7 @@ int cw_picker(
     int default_index, bool searchable, const char *cancel_label)
 {
 #ifdef HAS_NCURSES_TUI
-    int result = _picker_interactive(title, items, item_count,
+    int result = picker_interactive(title, items, item_count,
                                       default_index, searchable, cancel_label);
     if (result != -2) return result;
 #endif
@@ -149,7 +149,7 @@ int cw_picker(
 
 bool cw_confirm(const char *title, const char *message) {
 #ifdef HAS_NCURSES_TUI
-    return _confirm_interactive(title, message);
+    return confirm_interactive(title, message);
 #endif
     /* Text fallback */
     printf("\n  \033[33m%s\033[0m\n", title);
@@ -291,7 +291,7 @@ int cw_fallback_picker(const char *title, char **items, int item_count,
 
 /* Detect whether we're in an interactive terminal that supports curses.
  * Returns true if ncurses fullscreen TUI is usable. */
-static bool _try_curses_init(void) {
+static bool try_curses_init(void) {
     if (!isatty(STDOUT_FILENO) || !isatty(STDERR_FILENO))
         return false;
 
@@ -317,7 +317,7 @@ static bool _try_curses_init(void) {
 
 /* ── Colour initialisation ───────────────────────────────── */
 
-static void _init_colors(void) {
+static void init_colors(void) {
     cw_init_colors();
 }
 
@@ -326,7 +326,7 @@ static void _init_colors(void) {
 /* Filter items by case-insensitive substring match.
  * Returns the number of matching items, or -1 on allocation failure.
  * *out receives a heap-allocated array of original indices (caller frees). */
-static int _filter_indices(const char **labels, int count, const char *query, int **out) {
+static int filter_indices(const char **labels, int count, const char *query, int **out) {
     if (!query || !*query) {
         /* No query: return all items */
         int *all = malloc(sizeof(int) * (size_t)count);
@@ -354,7 +354,7 @@ static int _filter_indices(const char **labels, int count, const char *query, in
 /* After filter changes, ensure cursor is on a valid filtered item.
  * Returns the ORIGINAL index (the item the cursor should point to).
  * *cursor_pos is updated to the filtered-list position. */
-static int _reconcile_cursor(int *filtered, int filter_count, int cursor, int *cursor_pos) {
+static int reconcile_cursor(int *filtered, int filter_count, int cursor, int *cursor_pos) {
     if (filter_count == 0) {
         *cursor_pos = 0;
         return cursor;
@@ -385,7 +385,7 @@ static int _move_cursor(int *filtered, int filter_count, int cursor_pos, int del
 
 /* Calculate scroll offset to keep cursor_pos visible.
  * Returns the new scroll offset. */
-static int _scroll_for_cursor(int scroll_offset, int cursor_pos, int visible_rows, int total_rows) {
+static int scroll_for_cursor(int scroll_offset, int cursor_pos, int visible_rows, int total_rows) {
     if (total_rows <= visible_rows) return 0;
     if (cursor_pos < scroll_offset)
         return cursor_pos;
@@ -401,7 +401,7 @@ static void _flush_stdin(void) {
     tcflush(STDIN_FILENO, TCIFLUSH);
 }
 
-static cw_nav_action_t _decode_key(int key) {
+static cw_nav_action_t decode_key(int key) {
     if (key == KEY_UP || key == 'k')
         return CW_NAV_UP;
     if (key == KEY_DOWN || key == 'j')
@@ -440,7 +440,7 @@ static cw_nav_action_t _decode_key(int key) {
 
 /* Draw the entire menu screen: header, items (with scrolling), footer.
  * Uses the config's callbacks for header/row/footer. */
-static void _draw_menu(cw_menu_config_t *cfg, int cursor, int scroll_offset,
+static void draw_menu(cw_menu_config_t *cfg, int cursor, int scroll_offset,
                         int *filtered, int filter_count, const char *search_query)
 {
     erase();
@@ -510,7 +510,7 @@ static void _draw_menu(cw_menu_config_t *cfg, int cursor, int scroll_offset,
  * custom_keys: optional handler for extra keys (return CW_NAV_NONE to fall through)
  * custom_ctx: passed to custom_keys
  */
-static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
+static int menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
                              cw_key_handler_fn custom_keys, void *custom_ctx)
 {
     if (!cfg || cfg->item_count <= 0)
@@ -518,7 +518,7 @@ static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
 
     /* Build full index list (no filter initially) */
     int *filtered = NULL;
-    int filter_count = _filter_indices(NULL, cfg->item_count, "", &filtered);
+    int filter_count = filter_indices(NULL, cfg->item_count, "", &filtered);
     if (filter_count < 0) return cancel_value;
 
     int cursor_pos = 0;
@@ -526,7 +526,7 @@ static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
     if (cursor < 0 || cursor >= cfg->item_count) cursor = 0;
 
     /* Reconcile cursor with initial filter */
-    cursor = _reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
+    cursor = reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
 
     char search_query[256] = "";
     bool searching = false;
@@ -554,28 +554,28 @@ static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
         /* Rebuild filtered list if search active */
         if (searching && search_query[0]) {
             int *new_filtered = NULL;
-            int new_count = _filter_indices(cfg->search_labels ? cfg->search_labels : NULL,
+            int new_count = filter_indices(cfg->search_labels ? cfg->search_labels : NULL,
                                              cfg->item_count, search_query, &new_filtered);
             if (new_count >= 0) {
                 free(filtered);
                 filtered = new_filtered;
                 filter_count = new_count;
-                cursor = _reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
+                cursor = reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
             }
         } else if (searching && !search_query[0]) {
             /* No search query — show all */
             free(filtered);
-            filter_count = _filter_indices(NULL, cfg->item_count, "", &filtered);
+            filter_count = filter_indices(NULL, cfg->item_count, "", &filtered);
             if (filter_count >= 0) {
-                cursor = _reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
+                cursor = reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
             }
         }
 
-        scroll_offset = _scroll_for_cursor(scroll_offset, cursor_pos,
+        scroll_offset = scroll_for_cursor(scroll_offset, cursor_pos,
                                             visible_rows, filter_count);
 
         /* Draw */
-        _draw_menu(cfg, cursor, scroll_offset, filtered, filter_count,
+        draw_menu(cfg, cursor, scroll_offset, filtered, filter_count,
                    searching ? search_query : NULL);
 
         /* Read key */
@@ -590,9 +590,9 @@ static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
                 search_pos = 0;
                 /* Rebuild full list */
                 free(filtered);
-                filter_count = _filter_indices(NULL, cfg->item_count, "", &filtered);
+                filter_count = filter_indices(NULL, cfg->item_count, "", &filtered);
                 if (filter_count >= 0)
-                    cursor = _reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
+                    cursor = reconcile_cursor(filtered, filter_count, cursor, &cursor_pos);
             } else if (key == KEY_BACKSPACE || key == 127 || key == '\b') {
                 if (search_pos > 0) {
                     search_query[--search_pos] = '\0';
@@ -613,7 +613,7 @@ static int _menu_event_loop(cw_menu_config_t *cfg, int cancel_value,
             continue;
         }
 
-        cw_nav_action_t action = _decode_key(key);
+        cw_nav_action_t action = decode_key(key);
 
         /* Custom key handler */
         if (action == CW_NAV_NONE && custom_keys) {
@@ -685,7 +685,7 @@ typedef struct {
     const char *status_text;
 } checklist_ctx_t;
 
-static int _checklist_draw_header(void *ctx, int max_y, int max_x,
+static int checklist_draw_header(void *ctx, int max_y, int max_x,
                                    bool search_active, const char *search_query) {
     (void)max_y;
     (void)search_active;
@@ -699,7 +699,7 @@ static int _checklist_draw_header(void *ctx, int max_y, int max_x,
     return 2;
 }
 
-static void _checklist_draw_row(void *ctx, int y, int idx,
+static void checklist_draw_row(void *ctx, int y, int idx,
                                  bool is_cursor, int max_x) {
     (void)max_x;
     checklist_ctx_t *c = (checklist_ctx_t *)ctx;
@@ -717,13 +717,13 @@ static void _checklist_draw_row(void *ctx, int y, int idx,
         attroff(A_REVERSE);
 }
 
-static cw_nav_action_t _checklist_custom_keys(void *ctx, int key) {
+static cw_nav_action_t checklist_custom_keys(void *ctx, int key) {
     (void)ctx;
     if (key == ' ') return CW_NAV_TOGGLE;
     return CW_NAV_NONE;
 }
 
-static cw_selection_t _checklist_interactive(
+static cw_selection_t checklist_interactive(
     const char *title, char **items, int item_count,
     int *initial_selection, int initial_count,
     const char *status_text)
@@ -731,12 +731,12 @@ static cw_selection_t _checklist_interactive(
     cw_selection_t result = {0};
 
     /* Try to init curses */
-    if (!_try_curses_init()) {
+    if (!try_curses_init()) {
         /* Return empty selection to signal fallback */
         return result;
     }
 
-    _init_colors();
+    init_colors();
 
     /* Build selected set */
     checklist_ctx_t ctx;
@@ -760,8 +760,8 @@ static cw_selection_t _checklist_interactive(
     cw_menu_config_t cfg = {0};
     cfg.initial_cursor = 0;
     cfg.item_count = item_count;
-    cfg.draw_header = _checklist_draw_header;
-    cfg.draw_row = _checklist_draw_row;
+    cfg.draw_header = checklist_draw_header;
+    cfg.draw_row = checklist_draw_row;
     cfg.draw_ctx = &ctx;
     cfg.reserve_bottom = 1;
     cfg.searchable = true;
@@ -777,7 +777,7 @@ static cw_selection_t _checklist_interactive(
     /* Run menu event loop with toggle handling */
     /* We override the menu loop to handle toggle: on toggle, we toggle
      * the current item and redraw, on confirm we return the selected set. */
-    int chosen = _menu_event_loop(&cfg, -1, _checklist_custom_keys, &ctx);
+    int chosen = menu_event_loop(&cfg, -1, checklist_custom_keys, &ctx);
 
     /* If user confirmed (chosen >= 0), wrap selected set into result */
     if (chosen >= 0 || chosen != -1) {
@@ -804,7 +804,7 @@ typedef struct {
     const char *title;
 } radiolist_ctx_t;
 
-static int _radiolist_draw_header(void *ctx, int max_y, int max_x,
+static int radiolist_draw_header(void *ctx, int max_y, int max_x,
                                    bool search_active, const char *search_query) {
     (void)max_y;
     (void)search_active;
@@ -839,7 +839,7 @@ static int _radiolist_draw_header(void *ctx, int max_y, int max_x,
     return 2;
 }
 
-static void _radiolist_draw_row(void *ctx, int y, int idx,
+static void radiolist_draw_row(void *ctx, int y, int idx,
                                  bool is_cursor, int max_x) {
     (void)max_x;
     radiolist_ctx_t *r = (radiolist_ctx_t *)ctx;
@@ -854,14 +854,14 @@ static void _radiolist_draw_row(void *ctx, int y, int idx,
         attroff(A_REVERSE);
 }
 
-static int _radiolist_interactive(
+static int radiolist_interactive(
     const char *title, char **items, int item_count,
     int initial_selection, int cancel_value,
     const char *description, bool searchable)
 {
-    if (!_try_curses_init()) return -2;  /* -2 signals ncurses unavailable */
+    if (!try_curses_init()) return -2;  /* -2 signals ncurses unavailable */
 
-    _init_colors();
+    init_colors();
 
     radiolist_ctx_t ctx;
     ctx.items = items;
@@ -873,8 +873,8 @@ static int _radiolist_interactive(
     cw_menu_config_t cfg = {0};
     cfg.initial_cursor = initial_selection;
     cfg.item_count = item_count;
-    cfg.draw_header = _radiolist_draw_header;
-    cfg.draw_row = _radiolist_draw_row;
+    cfg.draw_header = radiolist_draw_header;
+    cfg.draw_row = radiolist_draw_row;
     cfg.draw_ctx = &ctx;
     cfg.reserve_bottom = 1;
     cfg.searchable = searchable;
@@ -888,7 +888,7 @@ static int _radiolist_interactive(
         }
     }
 
-    int result = _menu_event_loop(&cfg, cancel_value, NULL, NULL);
+    int result = menu_event_loop(&cfg, cancel_value, NULL, NULL);
 
     if (cfg.search_labels) free((void *)cfg.search_labels);
     return result;
@@ -904,7 +904,7 @@ typedef struct {
     const char *cancel_label;
 } picker_ctx_t;
 
-static int _picker_draw_header(void *ctx, int max_y, int max_x,
+static int picker_draw_header(void *ctx, int max_y, int max_x,
                                 bool search_active, const char *search_query) {
     (void)max_y;
     (void)search_active;
@@ -917,7 +917,7 @@ static int _picker_draw_header(void *ctx, int max_y, int max_x,
     return 2;
 }
 
-static void _picker_draw_row(void *ctx, int y, int idx,
+static void picker_draw_row(void *ctx, int y, int idx,
                               bool is_cursor, int max_x) {
     (void)max_x;
     picker_ctx_t *p = (picker_ctx_t *)ctx;
@@ -934,13 +934,13 @@ static void _picker_draw_row(void *ctx, int y, int idx,
         attroff(A_REVERSE);
 }
 
-static int _picker_interactive(
+static int picker_interactive(
     const char *title, char **items, int item_count,
     int default_index, bool searchable, const char *cancel_label)
 {
-    if (!_try_curses_init()) return -2;
+    if (!try_curses_init()) return -2;
 
-    _init_colors();
+    init_colors();
 
     picker_ctx_t ctx;
     ctx.items = items;
@@ -972,8 +972,8 @@ static int _picker_interactive(
     cw_menu_config_t cfg = {0};
     cfg.initial_cursor = default_index;
     cfg.item_count = total_count;
-    cfg.draw_header = _picker_draw_header;
-    cfg.draw_row = _picker_draw_row;
+    cfg.draw_header = picker_draw_header;
+    cfg.draw_row = picker_draw_row;
     cfg.draw_ctx = &ctx;
     cfg.reserve_bottom = 1;
     cfg.searchable = searchable;
@@ -986,7 +986,7 @@ static int _picker_interactive(
         }
     }
 
-    int result = _menu_event_loop(&cfg, -1, NULL, NULL);
+    int result = menu_event_loop(&cfg, -1, NULL, NULL);
 
     free((void *)cfg.search_labels);
     free(search_labels);
@@ -999,14 +999,14 @@ static int _picker_interactive(
 
 /* ── Confirm dialog interactive ──────────────────────────── */
 
-static bool _confirm_interactive(const char *title, const char *message) {
-    if (!_try_curses_init()) {
+static bool confirm_interactive(const char *title, const char *message) {
+    if (!try_curses_init()) {
         /* Can't init curses — fall through to text fallback.
          * Return value doesn't matter; caller will use text fallback. */
         return true;
     }
 
-    _init_colors();
+    init_colors();
 
     cbreak();
     noecho();

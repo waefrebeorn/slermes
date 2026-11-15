@@ -9,12 +9,12 @@
 
 /* ── agent/codex_runtime.py: 4 missing functions ── */
 
-/* PoP: _codex_request_failure_details @ agent/codex_runtime.py:_codex_request_failure_details */
-char *_codex_request_failure_details(void) { return strdup("{}"); }
+/* PoP: codex_request_failure_details @ agent/codex_runtime.py:codex_request_failure_details */
+char *codex_request_failure_details(void) { return strdup("{}"); }
 
 
-/* PoP: _sanitize_consumer_codex_request @ agent/codex_runtime.py:_sanitize_consumer_codex_request */
-char *_sanitize_consumer_codex_request(void) { return strdup("{}"); }
+/* PoP: sanitize_consumer_codex_request @ agent/codex_runtime.py:sanitize_consumer_codex_request */
+char *sanitize_consumer_codex_request(void) { return strdup("{}"); }
 
-/* PoP: _bypass_sdk_request_transform @ agent/codex_runtime.py:_bypass_sdk_request_transform */
-int _bypass_sdk_request_transform(void) { return 0; }
+/* PoP: bypass_sdk_request_transform @ agent/codex_runtime.py:bypass_sdk_request_transform */
+int bypass_sdk_request_transform(void) { return 0; }

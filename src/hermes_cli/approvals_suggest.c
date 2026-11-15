@@ -4,7 +4,7 @@
  *
  * Ports: default_db_path, _connect_readonly, _iter_terminal_calls,
  *   _blocked_tool_call_ids, scan_approval_history, apply_proposals,
- *   _render_text, suggest_command, approvals_command.
+ *   render_text, suggest_command, approvals_command.
  *
  * Reuses:
  *   - build_proposals() + proposal_*  (port_approvals_suggest_proposals.c)
@@ -59,7 +59,7 @@ static const char *_k_block_markers[] = {
     "Asking the user for approval", "approval_required",
     "BLOCKED by user deny rule", NULL
 };
-static bool _is_blocked_result(const char *content) {
+static bool is_blocked_result(const char *content) {
     if (!content) return false;
     for (int i = 0; _k_block_markers[i]; i++)
         if (strstr(content, _k_block_markers[i])) return true;
@@ -127,7 +127,7 @@ int asuggest_blocked_tool_call_ids(sqlite3 *db, double since_ts, as_set_t *out) 
         const unsigned char *tcid = sqlite3_column_text(st, 0);
         const unsigned char *content = sqlite3_column_text(st, 1);
         if (!tcid || !content) continue;
-        if (!_is_blocked_result((const char *)content)) continue;
+        if (!is_blocked_result((const char *)content)) continue;
         as_set_append(out, (const char *)tcid);
     }
     sqlite3_finalize(st);
@@ -182,7 +182,7 @@ typedef struct { as_records_t *recs; as_set_t *blocked; } as_scan_ctx_t;
 
 /* PoP: _record_denial is in port_approval_helpers2.c; reused here only if needed.
  * scan_approval_history: mine implied approvals from session DB. */
-static int _scan_on_terminal(void *ctxp, const char *tc_id, const char *command) {
+static int scan_on_terminal(void *ctxp, const char *tc_id, const char *command) {
     as_scan_ctx_t *ctx = (as_scan_ctx_t *)ctxp;
     if (as_set_contains(ctx->blocked, tc_id)) return 0;
     char *hard = approval_detect_hardline_command(command);
@@ -221,7 +221,7 @@ int asuggest_scan_approval_history(const char *db_path, int days,
     as_set_t blocked = {0};
     asuggest_blocked_tool_call_ids(db, since_ts, &blocked);
     as_scan_ctx_t ctx = { out, &blocked };
-    asuggest_iter_terminal_calls(db, since_ts, _scan_on_terminal, &ctx);
+    asuggest_iter_terminal_calls(db, since_ts, scan_on_terminal, &ctx);
     as_set_free(&blocked);
     sqlite3_close(db);
     free(real_path);
@@ -275,7 +275,7 @@ int asuggest_apply_proposals(proposal_t **props, size_t n, const int *indices, i
     return 0;
 }
 
-/* PoP: asuggest_render_text @ hermes_cli/approvals_suggest.py:_render_text */
+/* PoP: asuggest_render_text @ hermes_cli/approvals_suggest.py:render_text */
 void asuggest_render_text(proposal_t **props, size_t n, int days) {
     const char *window = (days <= 0) ? "all history" : NULL;
     char *winbuf = NULL;
@@ -417,7 +417,7 @@ int asuggest_approvals_command(const char *sub, const as_suggest_args_t *args) {
     return 1;
 }
 
-/* PoP: approvals_test_render_text @ hermes_cli/approvals_test.py:_render_text */
+/* PoP: approvals_test_render_text @ hermes_cli/approvals_test.py:render_text */
 /* Returns malloc'd text representation of a verdict. verdict_json = {"command":...,"env_type":...,"verdict":...,"exit_code":...,"rule":...,"detail":...,"normalized_variants":[...]}. Caller frees. */
 char *approvals_test_render_text(const char *verdict_json) {
     if (!verdict_json) return strdup("");

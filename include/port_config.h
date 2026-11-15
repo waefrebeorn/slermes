@@ -6,12 +6,12 @@
 
 #include "libjson/json.h"
 
-// _split_key_path: split a dotted key, honouring backslash-escaped dots.
+// split_key_path: split a dotted key, honouring backslash-escaped dots.
 // Writes up to `max` NUL-terminated segments into `out`; returns the segment
 // count, or -1 on overflow / bad args.
 int cfg_split_key_path(const char *key, char **out, int max);
 
-// _env_var_policy_name: upper-case on Windows, verbatim elsewhere.
+// env_var_policy_name: upper-case on Windows, verbatim elsewhere.
 void cfg_env_var_policy_name(const char *key, int is_windows,
                              char *out, size_t cap);
 

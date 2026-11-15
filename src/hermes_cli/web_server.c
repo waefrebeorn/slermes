@@ -191,7 +191,7 @@ char *gateway_subcommand_fn(const char *profile, const char *verb)
     return sub;
 }
 
-/* PoP: gemini_cli_status_fn @ hermes_cli/web_server.py:_gemini_cli_status */
+/* PoP: gemini_cli_status_fn @ hermes_cli/web_server.py:gemini_cli_status */
 char *gemini_cli_status_fn(void)
 {
     const char *gemini = getenv("GEMINI_CLI_ENABLED");
@@ -221,8 +221,8 @@ char *memory_provider_config_path(const char *provider)
     return path;
 }
 
-/* PoP: memory_provider_payload_fn @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
-/* Port of Python: _memory_provider_payload */
+/* PoP: memory_provider_payload_fn @ hermes_cli/web_routers/memory_providers.py:memory_provider_payload */
+/* Port of Python: memory_provider_payload */
 char *memory_provider_payload_fn(const char *provider)
 {
     if (!provider) return strdup("{}");
@@ -277,8 +277,8 @@ char *read_field_value(const char *field, json_t *data)
     return val ? strdup(val) : strdup("");
 }
 
-/* PoP: read_memory_provider_file_fn @ hermes_cli/web_server.py:_read_memory_provider_file */
-/* Port of Python: _read_memory_provider_file */
+/* PoP: read_memory_provider_file_fn @ hermes_cli/web_server.py:read_memory_provider_file */
+/* Port of Python: read_memory_provider_file */
 char *read_memory_provider_file_fn(const char *provider)
 {
     return memory_provider_payload_fn(provider);
@@ -339,7 +339,7 @@ void _get_chat_argv_lock(void *ctx)
 
 /* PoP: _gateway_subcommand @ hermes_cli/web_server_gateway.py:_gateway_subcommand */
 /* Port of Python: _gateway_subcommand (proper return version) */
-char *_gateway_subcommand_ret(const char *profile, const char *verb)
+char *gateway_subcommand_ret(const char *profile, const char *verb)
 {
     if (!profile || !verb) return strdup("");
     char *sub = malloc(512);
@@ -358,9 +358,9 @@ char *_gateway_display_command(void *ctx, void *profile, void *verb)
         verb ? (const char *)verb : "status");
 }
 
-/* PoP: _gemini_cli_status @ hermes_cli/web_server.py:_gemini_cli_status */
-/* Port of Python: _gemini_cli_status (returns JSON string) */
-char *_gemini_cli_status(void *ctx)
+/* PoP: gemini_cli_status @ hermes_cli/web_server.py:gemini_cli_status */
+/* Port of Python: gemini_cli_status (returns JSON string) */
+char *gemini_cli_status(void *ctx)
 {
     (void)ctx; /* unused */
     char *status = gemini_cli_status_fn();
@@ -369,9 +369,9 @@ char *_gemini_cli_status(void *ctx)
     return status;
 }
 
-/* PoP: _build_oauth_catalog_fn @ hermes_cli/web_server.py:_build_oauth_catalog_fn */
-/* Port of Python: _build_oauth_catalog_fn (returns catalog string) */
-char *_build_oauth_catalog_fn(void *ctx)
+/* PoP: build_oauth_catalog_fn @ hermes_cli/web_server.py:build_oauth_catalog_fn */
+/* Port of Python: build_oauth_catalog_fn (returns catalog string) */
+char *build_oauth_catalog_fn(void *ctx)
 {
     (void)ctx; /* unused */
     char *catalog = build_oauth_catalog();
@@ -427,9 +427,9 @@ bool validate_messaging_env_value_ret(void *ctx, void *platform_id, void *key, v
     return true;
 }
 
-/* PoP: _read_memory_provider_file @ hermes_cli/web_server.py:_read_memory_provider_file */
-/* Port of Python: _read_memory_provider_file (returns JSON string) */
-char *_read_memory_provider_file(void *ctx)
+/* PoP: read_memory_provider_file @ hermes_cli/web_server.py:read_memory_provider_file */
+/* Port of Python: read_memory_provider_file (returns JSON string) */
+char *read_memory_provider_file(void *ctx)
 {
     if (!ctx) return strdup("{}");
     char *content = memory_provider_payload_fn((const char *)ctx);
@@ -473,9 +473,9 @@ bool field_is_set(void *ctx, void *field, void *data)
     return false;
 }
 
-/* PoP: _memory_provider_payload @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
-/* Port of Python: _memory_provider_payload (returns JSON string) */
-char *_memory_provider_payload(void *ctx)
+/* PoP: memory_provider_payload @ hermes_cli/web_routers/memory_providers.py:memory_provider_payload */
+/* Port of Python: memory_provider_payload (returns JSON string) */
+char *memory_provider_payload(void *ctx)
 {
     if (!ctx) return strdup("{}");
     char *payload = memory_provider_payload_fn((const char *)ctx);

@@ -36,7 +36,7 @@ extern json_t *plug_get_commands(void);
 #include <time.h>
 #include <errno.h>
 
-/* ── cli.py constants used by _enable_extended_enter_keys ────────────────── */
+/* ── cli.py constants used by enable_extended_enter_keys ────────────────── */
 /* _MODIFY_OTHER_KEYS_SEQ = "\x1b[>4;2m" — xterm modifyOtherKeys level 2. */
 static const char _MODIFY_OTHER_KEYS_SEQ[]  = "\x1b[>4;2m";
 /* _EXTENDED_ENTER_KEYS_SEQ = Kitty push + modifyOtherKeys (concatenation). */
@@ -731,51 +731,51 @@ json_t *hcli_secret_capture_callback(hcli_t *self,
 
 /* Port of Python cli:_prepare_deferred_agent_startup */
 
-/* Port of Python cli:_run_cleanup */
+/* Port of Python cli:run_cleanup */
 
-/* Port of Python cli:_should_emit_cleanup_session_finalize */
+/* Port of Python cli:should_emit_cleanup_session_finalize */
 
 /* Port of Python cli:_notify_session_finalize */
 
-/* Port of Python cli:_emit_interrupted_session_end */
+/* Port of Python cli:emit_interrupted_session_end */
 
-/* Port of Python cli:_notify_single_query_session_finalize */
+/* Port of Python cli:notify_single_query_session_finalize */
 
-/* Port of Python cli:_finalize_single_query */
+/* Port of Python cli:finalize_single_query */
 
-/* Port of Python cli:_reset_terminal_input_modes_on_exit */
+/* Port of Python cli:reset_terminal_input_modes_on_exit */
 
-/* Port of Python cli:_normalize_git_bash_path */
+/* Port of Python cli:normalize_git_bash_path */
 
 /* Port of Python cli:_git_repo_root */
 
-/* Port of Python cli:_path_is_within_root */
+/* Port of Python cli:path_is_within_root */
 
-/* Port of Python cli:_setup_worktree */
+/* Port of Python cli:setup_worktree */
 
-/* Port of Python cli:_worktree_has_unpushed_commits */
+/* Port of Python cli:worktree_has_unpushed_commits */
 
-/* Port of Python cli:_cleanup_worktree */
+/* Port of Python cli:cleanup_worktree */
 
-/* Port of Python cli:_run_state_db_auto_maintenance */
+/* Port of Python cli:run_state_db_auto_maintenance */
 
-/* Port of Python cli:_run_checkpoint_auto_maintenance */
+/* Port of Python cli:run_checkpoint_auto_maintenance */
 
-/* Port of Python cli:_prune_stale_worktrees */
+/* Port of Python cli:prune_stale_worktrees */
 
 /* Port of Python cli:_prune_orphaned_branches */
 
-/* Port of Python cli:_hex_to_ansi */
+/* Port of Python cli:hex_to_ansi */
 
-/* Port of Python cli:_luminance_from_hex */
+/* Port of Python cli:luminance_from_hex */
 
-/* Port of Python cli:_query_osc11_background */
+/* Port of Python cli:query_osc11_background */
 
-/* Port of Python cli:_detect_light_mode */
+/* Port of Python cli:detect_light_mode */
 
-/* Port of Python cli:_maybe_remap_for_light_mode */
+/* Port of Python cli:maybe_remap_for_light_mode */
 
-/* Port of Python cli:_install_skin_light_mode_hook */
+/* Port of Python cli:install_skin_light_mode_hook */
 
 /* Port of Python cli:__str__ */
 
@@ -902,7 +902,7 @@ char *cli_cli_build_skill_invocation_message(const char *cmd_key,
     return msg;
 }
 
-/* PoP: _get_plugin_cmd_handler_names @ cli.py:_get_plugin_cmd_handler_names */
+/* PoP: get_plugin_cmd_handler_names @ cli.py:get_plugin_cmd_handler_names */
 /*
  * Return plugin command names (without slash prefix) as a JSON array of
  * strings. Delegates to the live plugin registry; empty array on any error
@@ -930,7 +930,7 @@ json_t *cli_get_plugin_cmd_handler_names(void) {
     return arr;
 }
 
-/* PoP: cli_is_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:_is_backslash_line_continuation */
+/* PoP: cli_is_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:is_backslash_line_continuation */
 /* True when Enter should turn a trailing backslash into a newline.
  * _BACKSLASH_LINE_CONTINUATION_RE = r"\\\\[ \\t]*$" — trailing backslash
  * optionally followed by spaces/tabs then end-of-string. */
@@ -956,7 +956,7 @@ bool cli_is_backslash_line_continuation(const char *text) {
     return false;
 }
 
-/* PoP: cli_apply_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:_apply_backslash_line_continuation */
+/* PoP: cli_apply_backslash_line_continuation @ hermes_cli/cli_terminal_input.py:apply_backslash_line_continuation */
 char *cli_apply_backslash_line_continuation(const char *text) {
     if (!text) text = "";
     size_t len = strlen(text);
@@ -1178,7 +1178,7 @@ char *hcli_build_status_bar_text(hcli_t *self, int width);
 /* PoP: hcli_get_status_bar_fragments @ hermes_cli/cli_status_bar_mixin.py:_get_status_bar_fragments */
 hcli_fragment_t *hcli_get_status_bar_fragments(hcli_t *self, size_t *out_len);
 
-/* PoP: hcli_slow_command_status @ hermes_cli/cli_stream_mixin.py:_slow_command_status */
+/* PoP: hcli_slow_command_status @ hermes_cli/cli_stream_mixin.py:slow_command_status */
 char *hcli_slow_command_status(hcli_t *self, const char *command) {
     (void)self;
     if (!command) return strdup("Processing command...");
@@ -1204,7 +1204,7 @@ char *hcli_slow_command_status(hcli_t *self, const char *command) {
     return strdup("Processing command...");
 }
 
-/* PoP: hcli_command_spinner_frame @ hermes_cli/cli_stream_mixin.py:_command_spinner_frame */
+/* PoP: hcli_command_spinner_frame @ hermes_cli/cli_stream_mixin.py:command_spinner_frame */
 static const char *cmd_spinner_frames[10] = {
     "\xe2\x8ebf", "\xe2\x8ec9", "\xe2\x8ecb", "\xe2\x8ece",
     "\xe2\x8ecb", "\xe2\x8ecf", "\xe2\x8ec1", "\xe2\x8ecb",
@@ -1289,7 +1289,7 @@ void hcli_flush_credit_notices(hcli_t *self) {
     self->pending_notice_count = 0;
 }
 
-/* PoP: hcli_on_notice_clear @ cli.py:_on_notice_clear */
+/* PoP: hcli_on_notice_clear @ cli.py:on_notice_clear */
 void hcli_on_notice_clear(hcli_t *self, const char *key) {
     (void)self;
     (void)key;
@@ -1297,7 +1297,7 @@ void hcli_on_notice_clear(hcli_t *self, const char *key) {
 }
 
 
-/* PoP: hcli_current_reasoning_callback @ hermes_cli/cli_stream_mixin.py:_current_reasoning_callback */
+/* PoP: hcli_current_reasoning_callback @ hermes_cli/cli_stream_mixin.py:current_reasoning_callback */
 void *hcli_current_reasoning_callback(hcli_t *self) {
     if (!self) return NULL;
     if (self->show_reasoning && self->streaming_enabled)
@@ -1311,9 +1311,9 @@ void *hcli_current_reasoning_callback(hcli_t *self) {
 
 /* Port of Python cli:_flush_reasoning_preview */
 
-/* Port of Python cli:_format_submitted_user_message_preview */
+/* Port of Python cli:format_submitted_user_message_preview */
 
-/* Port of Python cli:_expand_paste_references */
+/* Port of Python cli:expand_paste_references */
 
 /* Port of Python cli:_print_user_message_preview */
 
@@ -1323,11 +1323,11 @@ void *hcli_current_reasoning_callback(hcli_t *self) {
 
 /* Port of Python cli:_flush_stream */
 
-/* Port of Python cli:_reset_stream_state */
+/* Port of Python cli:reset_stream_state */
 
-/* Port of Python cli:_slow_command_status */
+/* Port of Python cli:slow_command_status */
 
-/* Port of Python cli:_command_spinner_frame */
+/* Port of Python cli:command_spinner_frame */
 
 /* Port of Python cli:_busy_command */
 
@@ -1364,25 +1364,25 @@ void hcli_register_extra_tui_keybindings(hcli_t *self, void *kb, void *input_are
      * Wrapper CLIs override this to add keybindings. */
 }
 
-/* Port of Python cli:_ensure_tirith_security */
+/* Port of Python cli:ensure_tirith_security */
 
-/* Port of Python cli:_show_security_advisories */
+/* Port of Python cli:show_security_advisories */
 
 /* Port of Python cli:show_banner */
 
 /* Port of Python cli:_restore_session_cwd */
 
-/* Port of Python cli:_render_resume_history_panel_lines */
+/* Port of Python cli:render_resume_history_panel_lines */
 
-/* Port of Python cli:_try_attach_clipboard_image */
+/* Port of Python cli:try_attach_clipboard_image */
 
-/* Port of Python cli:_resolve_checkpoint_ref */
+/* Port of Python cli:resolve_checkpoint_ref */
 
-/* Port of Python cli:_write_osc52_clipboard */
+/* Port of Python cli:write_osc52_clipboard */
 
-/* Port of Python cli:_recover_terminal_input_modes */
+/* Port of Python cli:recover_terminal_input_modes */
 
-/* Port of Python cli:_preprocess_images_with_vision */
+/* Port of Python cli:preprocess_images_with_vision */
 
 /* Port of Python cli:_show_tool_availability_warnings */
 
@@ -1783,7 +1783,7 @@ void hcli_close_model_picker(hcli_t *self) {
 
 /* Port of Python cli:_get_tui_prompt_symbols */
 
-/* PoP: cli_status_bar_visible_from_display_config @ hermes_cli/cli_terminal_input.py:_status_bar_visible_from_display_config */
+/* PoP: cli_status_bar_visible_from_display_config @ hermes_cli/cli_terminal_input.py:status_bar_visible_from_display_config */
 bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     if (!display_config || !json_is_object(display_config)) return true;
     json_t *sc = json_object_get(display_config, "statusbar");
@@ -1830,7 +1830,7 @@ bool cli_status_bar_visible_from_display_config(json_t *display_config) {
     return true;
 }
 
-/* PoP: cli_terminal_supports_extended_enter_keys @ hermes_cli/cli_terminal_input.py:_terminal_supports_extended_enter_keys */
+/* PoP: cli_terminal_supports_extended_enter_keys @ hermes_cli/cli_terminal_input.py:terminal_supports_extended_enter_keys */
 bool cli_terminal_supports_extended_enter_keys(void) {
     const char *term_program = "";
     const char *term = "";
@@ -1871,7 +1871,7 @@ bool cli_terminal_supports_extended_enter_keys(void) {
     return false;
 }
 
-/* PoP: cli_hermes_call_output_screen_diff @ hermes_cli/cli_terminal_input.py:_hermes_call_output_screen_diff */
+/* PoP: cli_hermes_call_output_screen_diff @ hermes_cli/cli_terminal_input.py:hermes_call_output_screen_diff */
 int cli_hermes_call_output_screen_diff(
     cli_w4b_output_screen_diff_fn orig_osd, void *orig_osd_user,
     void *app, void *output, cli_w4b_screen_t *screen, int current_pos,
@@ -1934,8 +1934,8 @@ void hcli_clear_prompt_toolkit_screen(hcli_t *self, void *app,
 
 /* Port of Python cli:_get_extra_tui_widgets */
 
-/* PoP: _enable_extended_enter_keys @ hermes_cli/cli_terminal_input.py:_enable_extended_enter_keys */
-bool _enable_extended_enter_keys(void *output,
+/* PoP: enable_extended_enter_keys @ hermes_cli/cli_terminal_input.py:enable_extended_enter_keys */
+bool enable_extended_enter_keys(void *output,
                                  void (*write_raw_fn)(void *, const char *),
                                  void (*flush_fn)(void *)) {
     if (!cli_terminal_supports_extended_enter_keys()) return false;

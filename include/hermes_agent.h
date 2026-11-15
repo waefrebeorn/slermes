@@ -139,7 +139,7 @@ size_t  checkpoint_persist_list(char (*ids)[64], size_t max_count);
 size_t  checkpoint_persist_prune(int retention_days);
 /* Port of Python: maybe_auto_prune_checkpoints */
 bool    checkpoint_maybe_auto_prune(int retention_days, int min_interval_hours);
-/* Port of Python: _dir_file_count, _dir_size_bytes, clear_all */
+/* Port of Python: dir_file_count, dir_size_bytes, clear_all */
 size_t  checkpoint_dir_file_count(void);
 size_t  checkpoint_dir_size_bytes(void);
 size_t  checkpoint_clear_all(void);

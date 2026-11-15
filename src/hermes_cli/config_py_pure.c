@@ -85,7 +85,7 @@ void config_format_config_get_value(const char *value, int as_json, char *out, s
 
 /* PoP: config_suggest_closest_key @ hermes_cli/config.py:_suggest_closest_key */
 bool config_suggest_closest_key(const char *key, char *suggestion, size_t sug_size) {
-    return _validate_config_key(key, suggestion, sug_size);
+    return validate_config_key(key, suggestion, sug_size);
 }
 
 /* PoP: config_py_deep_merge @ hermes_cli/config.py:_deep_merge */
@@ -1216,7 +1216,7 @@ static bool cli_cron_model_drift_guard_enabled(const json_t *config) {
 }
 
 /*
- * PoP: cli_cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis
+ * PoP: cli_cron_fleet_default_covers_axis @ hermes_cli/config.py:cron_fleet_default_covers_axis
  */
 static bool cli_cron_fleet_default_covers_axis(const char *axis, const json_t *config) {
     if (!config) {

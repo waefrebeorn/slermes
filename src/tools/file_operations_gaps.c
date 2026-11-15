@@ -10,8 +10,8 @@
 
 /* ── tools/file_operations.py: file ops + search + sample ── */
 
-/* PoP: _normalized_filename_search_root @ tools/file_operations_search.py:_normalized_filename_search_root */
-char *_normalized_filename_search_root(const char *root, const char *fallback_cwd) {
+/* PoP: normalized_filename_search_root @ tools/file_operations_search.py:normalized_filename_search_root */
+char *normalized_filename_search_root(const char *root, const char *fallback_cwd) {
     if (!root) return strdup(fallback_cwd ? fallback_cwd : ".");
     if (root[0] == '/') return strdup(root);
     char *result = malloc(strlen(fallback_cwd) + strlen(root) + 2);
@@ -19,36 +19,36 @@ char *_normalized_filename_search_root(const char *root, const char *fallback_cw
     return result;
 }
 
-/* PoP: _filename_search_root_keys @ tools/file_operations_search.py:_filename_search_root_keys */
-char **_filename_search_root_keys(const char **roots, int n_roots, const char *fallback_cwd) {
+/* PoP: filename_search_root_keys @ tools/file_operations_search.py:filename_search_root_keys */
+char **filename_search_root_keys(const char **roots, int n_roots, const char *fallback_cwd) {
     char **keys = malloc(sizeof(char *) * (n_roots + 1));
     for (int i = 0; i < n_roots; i++) {
-        keys[i] = _normalized_filename_search_root(roots[i], fallback_cwd);
+        keys[i] = normalized_filename_search_root(roots[i], fallback_cwd);
     }
     keys[n_roots] = NULL;
     return keys;
 }
 
-/* PoP: _acquire_filename_search_roots @ tools/file_operations_search.py:_acquire_filename_search_roots */
-int _acquire_filename_search_roots(void) { return 1; }
+/* PoP: acquire_filename_search_roots @ tools/file_operations_search.py:acquire_filename_search_roots */
+int acquire_filename_search_roots(void) { return 1; }
 
-/* PoP: _macos_protected_search_exclusions @ tools/file_operations_search.py:_macos_protected_search_exclusions */
-char **_macos_protected_search_exclusions(const char *path) {
+/* PoP: macos_protected_search_exclusions @ tools/file_operations_search.py:macos_protected_search_exclusions */
+char **macos_protected_search_exclusions(const char *path) {
     (void)path;
     char **exclusions = malloc(sizeof(char *) * 1);
     exclusions[0] = NULL;
     return exclusions;
 }
 
-/* PoP: _new_sentinel @ tools/file_operations.py:_new_sentinel */
-char *_new_sentinel(const char *prefix) {
+/* PoP: new_sentinel @ tools/file_operations.py:new_sentinel */
+char *new_sentinel(const char *prefix) {
     char *sentinel = malloc(40);
     snprintf(sentinel, 40, "%s%x__", prefix ? prefix : "", (unsigned)rand());
     return sentinel;
 }
 
-/* PoP: _split_segments @ tools/file_operations.py:_split_segments */
-char **_split_segments(const char *output, const char *sentinel) {
+/* PoP: split_segments @ tools/file_operations.py:split_segments */
+char **split_segments(const char *output, const char *sentinel) {
     if (!output || !sentinel) {
         char **segs = malloc(sizeof(char *));
         segs[0] = NULL;
@@ -77,20 +77,20 @@ char **_split_segments(const char *output, const char *sentinel) {
     return segs;
 }
 
-/* PoP: _modified_rg_capability_error @ tools/file_operations_search.py:_modified_rg_capability_error */
-char *_modified_rg_capability_error(const char *executable) {
+/* PoP: modified_rg_capability_error @ tools/file_operations_search.py:modified_rg_capability_error */
+char *modified_rg_capability_error(const char *executable) {
     if (!executable) return NULL;
     return NULL; /* assume rg >= 14 */
 }
 
-/* PoP: _quote_executable @ tools/file_operations_search.py:_quote_executable */
-char *_quote_executable(const char *executable) {
+/* PoP: quote_executable @ tools/file_operations_search.py:quote_executable */
+char *quote_executable(const char *executable) {
     if (!executable) return strdup("");
     return strdup(executable);
 }
 
-/* PoP: _sample_file_bytes @ tools/file_operations.py:_sample_file_bytes */
-char *_sample_file_bytes(const char *path, int length) {
+/* PoP: sample_file_bytes @ tools/file_operations.py:sample_file_bytes */
+char *sample_file_bytes(const char *path, int length) {
     if (!path) return NULL;
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
@@ -101,8 +101,8 @@ char *_sample_file_bytes(const char *path, int length) {
     return sample;
 }
 
-/* PoP: _decode_base64_sample @ tools/file_operations.py:_decode_base64_sample */
-char *_decode_base64_sample(const char *text) {
+/* PoP: decode_base64_sample @ tools/file_operations.py:decode_base64_sample */
+char *decode_base64_sample(const char *text) {
     if (!text) return strdup("");
     /* Simplified: skip whitespace and decode */
     char *joined = malloc(strlen(text) + 1);
@@ -117,8 +117,8 @@ char *_decode_base64_sample(const char *text) {
     return joined;
 }
 
-/* PoP: _escape_native_tool_arg @ tools/file_operations.py:_escape_native_tool_arg */
-char *_escape_native_tool_arg(const char *arg) {
+/* PoP: escape_native_tool_arg @ tools/file_operations.py:escape_native_tool_arg */
+char *escape_native_tool_arg(const char *arg) {
     if (!arg) return strdup("''");
     size_t len = strlen(arg);
     char *escaped = malloc(len * 4 + 1);
@@ -137,8 +137,8 @@ char *_escape_native_tool_arg(const char *arg) {
     return escaped;
 }
 
-/* PoP: _try_read_utf16 @ tools/file_operations.py:_try_read_utf16 */
-char *_try_read_utf16(const char *path) {
+/* PoP: try_read_utf16 @ tools/file_operations.py:try_read_utf16 */
+char *try_read_utf16(const char *path) {
     if (!path) return NULL;
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
@@ -152,11 +152,11 @@ char *_try_read_utf16(const char *path) {
     return content;
 }
 
-/* PoP: _native_read_enabled @ tools/file_operations.py:_native_read_enabled */
-int _native_read_enabled(void) { return 1; }
+/* PoP: native_read_enabled @ tools/file_operations.py:native_read_enabled */
+int native_read_enabled(void) { return 1; }
 
-/* PoP: _read_file_native @ tools/file_operations.py:_read_file_native */
-char *_read_file_native(const char *path, int offset, int limit) {
+/* PoP: read_file_native @ tools/file_operations.py:read_file_native */
+char *read_file_native(const char *path, int offset, int limit) {
     if (!path) return NULL;
     FILE *f = fopen(path, "r");
     if (!f) return NULL;
@@ -172,38 +172,38 @@ char *_read_file_native(const char *path, int offset, int limit) {
     return content;
 }
 
-/* PoP: _image_redirect_result @ tools/file_operations.py:_image_redirect_result */
-char *_image_redirect_result(const char *result) {
+/* PoP: image_redirect_result @ tools/file_operations.py:image_redirect_result */
+char *image_redirect_result(const char *result) {
     return result ? strdup(result) : strdup("");
 }
 
-/* PoP: _read_probe_cmd @ tools/file_operations.py:_read_probe_cmd */
-char *_read_probe_cmd(const char *path) {
+/* PoP: read_probe_cmd @ tools/file_operations.py:read_probe_cmd */
+char *read_probe_cmd(const char *path) {
     if (!path) return strdup("");
     char *cmd = malloc(strlen(path) + 32);
     sprintf(cmd, "cat %s", path);
     return cmd;
 }
 
-/* PoP: _read_file_missing @ tools/file_operations.py:_read_file_missing */
-char *_read_file_missing(const char *path) {
+/* PoP: read_file_missing @ tools/file_operations.py:read_file_missing */
+char *read_file_missing(const char *path) {
     char *msg = malloc(strlen(path) + 64);
     sprintf(msg, "File not found: %s", path);
     return msg;
 }
 
-/* PoP: _read_binary_file @ tools/file_operations.py:_read_binary_file */
-char *_read_binary_file(const char *path) {
-    return _read_file_native(path, 0, 4096);
+/* PoP: read_binary_file @ tools/file_operations.py:read_binary_file */
+char *read_binary_file(const char *path) {
+    return read_file_native(path, 0, 4096);
 }
 
-/* PoP: _read_file_sequential @ tools/file_operations.py:_read_file_sequential */
-char *_read_file_sequential(const char *path, int offset, int limit) {
-    return _read_file_native(path, offset, limit);
+/* PoP: read_file_sequential @ tools/file_operations.py:read_file_sequential */
+char *read_file_sequential(const char *path, int offset, int limit) {
+    return read_file_native(path, offset, limit);
 }
 
-/* PoP: _assemble_read_result @ tools/file_operations.py:_assemble_read_result */
-char *_assemble_read_result(const char *content, int truncated) {
+/* PoP: assemble_read_result @ tools/file_operations.py:assemble_read_result */
+char *assemble_read_result(const char *content, int truncated) {
     if (!content) return strdup("");
     if (truncated) {
         char *result = malloc(strlen(content) + 32);
@@ -213,33 +213,33 @@ char *_assemble_read_result(const char *content, int truncated) {
     return strdup(content);
 }
 
-/* PoP: _unicode_variant_match @ tools/file_operations.py:_unicode_variant_match */
-int _unicode_variant_match(const char *text, const char *pattern) {
+/* PoP: unicode_variant_match @ tools/file_operations.py:unicode_variant_match */
+int unicode_variant_match(const char *text, const char *pattern) {
     if (!text || !pattern) return 0;
     return strstr(text, pattern) != NULL;
 }
 
-/* PoP: _write_probe_cmd @ tools/file_operations.py:_write_probe_cmd */
-char *_write_probe_cmd(const char *path) {
+/* PoP: write_probe_cmd @ tools/file_operations.py:write_probe_cmd */
+char *write_probe_cmd(const char *path) {
     if (!path) return strdup("");
     char *cmd = malloc(strlen(path) + 32);
     sprintf(cmd, "test -w %s", path);
     return cmd;
 }
 
-/* PoP: _probe_write_target @ tools/file_operations.py:_probe_write_target */
-int _probe_write_target(const char *path) {
+/* PoP: probe_write_target @ tools/file_operations.py:probe_write_target */
+int probe_write_target(const char *path) {
     if (!path) return 0;
     return access(path, W_OK) == 0;
 }
 
-/* PoP: _probe_write_target_sequential @ tools/file_operations.py:_probe_write_target_sequential */
-int _probe_write_target_sequential(const char *path) {
-    return _probe_write_target(path);
+/* PoP: probe_write_target_sequential @ tools/file_operations.py:probe_write_target_sequential */
+int probe_write_target_sequential(const char *path) {
+    return probe_write_target(path);
 }
 
-/* PoP: _has_ancestor_tsconfig @ tools/file_operations_lint.py:_has_ancestor_tsconfig */
-int _has_ancestor_tsconfig(const char *path) {
+/* PoP: has_ancestor_tsconfig @ tools/file_operations_lint.py:has_ancestor_tsconfig */
+int has_ancestor_tsconfig(const char *path) {
     if (!path) return 0;
     char *p = strdup(path);
     char *slash = strrchr(p, '/');
@@ -254,24 +254,24 @@ int _has_ancestor_tsconfig(const char *path) {
     return 0;
 }
 
-/* PoP: _macos_search_exclusions @ tools/file_operations_search.py:_macos_search_exclusions */
-char **_macos_search_exclusions(const char *path) {
-    return _macos_protected_search_exclusions(path);
+/* PoP: macos_search_exclusions @ tools/file_operations_search.py:macos_search_exclusions */
+char **macos_search_exclusions(const char *path) {
+    return macos_protected_search_exclusions(path);
 }
 
-/* PoP: _effective_macos_search_exclusions @ tools/file_operations_search.py:_effective_macos_search_exclusions */
-char **_effective_macos_search_exclusions(const char *path) {
-    return _macos_protected_search_exclusions(path);
+/* PoP: effective_macos_search_exclusions @ tools/file_operations_search.py:effective_macos_search_exclusions */
+char **effective_macos_search_exclusions(const char *path) {
+    return macos_protected_search_exclusions(path);
 }
 
-/* PoP: _macos_protected_search_warning @ tools/file_operations_search.py:_macos_protected_search_warning */
-char *_macos_protected_search_warning(const char *path) {
+/* PoP: macos_protected_search_warning @ tools/file_operations_search.py:macos_protected_search_warning */
+char *macos_protected_search_warning(const char *path) {
     (void)path;
     return strdup("");
 }
 
-/* PoP: _search_prune_glob_args @ tools/file_operations_search.py:_search_prune_glob_args */
-char **_search_prune_glob_args(const char **args) {
+/* PoP: search_prune_glob_args @ tools/file_operations_search.py:search_prune_glob_args */
+char **search_prune_glob_args(const char **args) {
     if (!args) {
         char **result = malloc(sizeof(char *));
         result[0] = NULL;
@@ -285,24 +285,24 @@ char **_search_prune_glob_args(const char **args) {
     return pruned;
 }
 
-/* PoP: _is_broad_local_search_root @ tools/file_operations_search.py:_is_broad_local_search_root */
-int _is_broad_local_search_root(const char *root) {
+/* PoP: is_broad_local_search_root @ tools/file_operations_search.py:is_broad_local_search_root */
+int is_broad_local_search_root(const char *root) {
     if (!root) return 0;
     return strcmp(root, "/") == 0 || strcmp(root, ".") == 0;
 }
 
-/* PoP: _search_with_grep_pruned @ tools/file_operations_search.py:_search_with_grep_pruned */
-char *_search_with_grep_pruned(const char *pattern, const char **roots, int n_roots) {
+/* PoP: search_with_grep_pruned @ tools/file_operations_search.py:search_with_grep_pruned */
+char *search_with_grep_pruned(const char *pattern, const char **roots, int n_roots) {
     (void)pattern; (void)roots; (void)n_roots;
     return strdup("");
 }
 
-/* PoP: _parse_grep_search_output @ tools/file_operations.py:_parse_grep_search_output */
-char **_parse_grep_search_output(const char *output) {
+/* PoP: parse_grep_search_output @ tools/file_operations.py:parse_grep_search_output */
+char **parse_grep_search_output(const char *output) {
     if (!output) {
         char **result = malloc(sizeof(char *));
         result[0] = NULL;
         return result;
     }
-    return _split_segments(output, "\n");
+    return split_segments(output, "\n");
 }

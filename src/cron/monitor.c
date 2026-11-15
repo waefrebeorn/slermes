@@ -112,18 +112,18 @@ bool cron_monitor_run_source(const char *script, const char *url,
 }
 
 /* True iff a non-NULL, non-whitespace-only string has content after strip. */
-static bool _cron_monitor_strip_has_nonempty(const char *s);
+static bool cron_monitor_strip_has_nonempty(const char *s);
 
 /* PoP: cron_monitor_has @ cron/monitor.py:job_has_monitor */
 bool cron_monitor_has(const char *monitor_script, const char *monitor_url) {
     /* Python: (monitor_script or "").strip() — strip whitespace first. */
     const char *s = monitor_script ? monitor_script : "";
     const char *u = monitor_url    ? monitor_url    : "";
-    return _cron_monitor_strip_has_nonempty(s) || _cron_monitor_strip_has_nonempty(u);
+    return cron_monitor_strip_has_nonempty(s) || cron_monitor_strip_has_nonempty(u);
 }
 
 /* True iff a non-NULL, non-whitespace-only string has content after strip. */
-static bool _cron_monitor_strip_has_nonempty(const char *s) {
+static bool cron_monitor_strip_has_nonempty(const char *s) {
     if (!s) return false;
     while (*s && isspace((unsigned char)*s)) s++;
     if (!*s) return false;

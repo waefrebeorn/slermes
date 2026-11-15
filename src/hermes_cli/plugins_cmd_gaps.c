@@ -32,7 +32,7 @@
 #include "plugins_core.h"               /* plugins_collect_directory_manifests() */
 
 /* forward declarations used before their definitions in this file */
-char *_scrub_git_url(const char *git_url);
+char *scrub_git_url(const char *git_url);
 static void pcmd_log_pass(const char *plugin_dir, const char *reason);
 static void pcmd_log_info(const char *fmt, ...);
 static void rm_rf(const char *path);
@@ -278,9 +278,9 @@ static void completed_process_free(completed_process_t *r) {
  * Scan-on-install
  * ====================================================================== */
 
-/* PoP: _scan_on_install_enabled @ hermes_cli/plugins_cmd.py:_scan_on_install_enabled */
+/* PoP: scan_on_install_enabled @ hermes_cli/plugins_cmd.py:scan_on_install_enabled */
 /* On by default; disable via plugins.scan_on_install: false. */
-bool _scan_on_install_enabled(void) {
+bool scan_on_install_enabled(void) {
     json_t *cfg = config_py_load_config_readonly();
     if (!cfg) return true;
     const json_t *plugins_n = json_obj_get(cfg, "plugins");
@@ -291,17 +291,17 @@ bool _scan_on_install_enabled(void) {
     return enabled;
 }
 
-/* PoP: _scan_plugin_tree @ hermes_cli/plugins_cmd.py:_scan_plugin_tree */
+/* PoP: scan_plugin_tree @ hermes_cli/plugins_cmd.py:scan_plugin_tree */
 /*
  * Verdicts: safe -> proceed (rc 0); caution -> needs confirmation via
  * scan_decision_cb or force; dangerous/other-not-allowed -> blocked
  * (rc -1, PluginScanBlocked message in pcmd_last_error()). Returns the scan
  * report as fresh JSON when scanning ran, else NULL with rc 0. */
-json_t *_scan_plugin_tree(const char *plugin_dir, const char *identifier,
+json_t *scan_plugin_tree(const char *plugin_dir, const char *identifier,
                           bool force,
                           bool (*scan_decision_cb)(const json_t *report),
                           char **blocked_message) {
-    if (!_scan_on_install_enabled()) return NULL;
+    if (!scan_on_install_enabled()) return NULL;
     pg_plugin_scan_result_t *result =
         plugin_guard_scan_plugin(plugin_dir, identifier);
 
@@ -358,11 +358,11 @@ static void pcmd_log_info(const char *fmt, ...) {
     va_end(ap);
 }
 
-/* PoP: _print_python_dependencies @ hermes_cli/plugins_cmd.py:_print_python_dependencies */
+/* PoP: print_python_dependencies @ hermes_cli/plugins_cmd.py:print_python_dependencies */
 /*
  * Surface declared python_dependencies at install time (#64165): declaration
  * seam only, never auto-installed. */
-void _print_python_dependencies(const json_t *manifest) {
+void print_python_dependencies(const json_t *manifest) {
     const json_t *deps = manifest ? json_obj_get(manifest, "python_dependencies") : NULL;
     if (!deps || !json_is_array(deps) || json_len(deps) == 0) return;
     const char *name =
@@ -392,9 +392,9 @@ void _print_python_dependencies(const json_t *manifest) {
     free(hint);
 }
 
-/* PoP: _install_metadata_path @ hermes_cli/plugins_cmd_git.py:_install_metadata_path */
+/* PoP: install_metadata_path @ hermes_cli/plugins_cmd_git.py:install_metadata_path */
 /* <hermes home>/plugins/.install-metadata.json. Caller frees. */
-char *_install_metadata_path(void) {
+char *install_metadata_path(void) {
     char *home = get_hermes_home() ? strdup(get_hermes_home())
                                    : strdup(".");
     char *plugins_dir = path_join_c(home, "plugins");
@@ -406,7 +406,7 @@ char *_install_metadata_path(void) {
 
 /* metadata read/write helpers shared by the cmd ports below */
 static json_t *read_install_metadata(void) {
-    char *path = _install_metadata_path();
+    char *path = install_metadata_path();
     if (!path) return NULL;
     json_t *meta = NULL;
     if (file_exists_c(path)) {
@@ -423,7 +423,7 @@ static json_t *read_install_metadata(void) {
     return meta;
 }
 static int write_install_metadata(const json_t *meta) {
-    char *path = _install_metadata_path();
+    char *path = install_metadata_path();
     if (!path) return -1;
     char *dir = strdup(path);
     char *slash = strrchr(dir, '/');
@@ -440,9 +440,9 @@ static int write_install_metadata(const json_t *meta) {
  * Git plumbing
  * ====================================================================== */
 
-/* PoP: _normalize_exact_revision @ hermes_cli/plugins_cmd_git.py:_normalize_exact_revision */
+/* PoP: normalize_exact_revision @ hermes_cli/plugins_cmd_git.py:normalize_exact_revision */
 /* --ref must be a full 40-character commit SHA. Caller frees. */
-char *_normalize_exact_revision(const char *ref) {
+char *normalize_exact_revision(const char *ref) {
     if (!ref || strlen(ref) != 40) goto invalid;
     for (const char *p = ref; *p; p++)
         if (!isxdigit((unsigned char)*p)) goto invalid;
@@ -458,9 +458,9 @@ invalid:
     return NULL;
 }
 
-/* PoP: _safe_git_error @ hermes_cli/plugins_cmd_git.py:_safe_git_error */
+/* PoP: safe_git_error @ hermes_cli/plugins_cmd_git.py:safe_git_error */
 /* Diagnosable Git output without echoing embedded credentials. Caller frees. */
-char *_safe_git_error(const completed_process_t *result, const char *source_url) {
+char *safe_git_error(const completed_process_t *result, const char *source_url) {
     const char *raw =
         result->stderr_data && result->stderr_data[0]
             ? result->stderr_data
@@ -472,7 +472,7 @@ char *_safe_git_error(const completed_process_t *result, const char *source_url)
     while (L && strchr("\r\n\t ", error[L-1])) error[--L] = '\0';
 
     if (source_url && *source_url) {
-        char *scrubbed = _scrub_git_url(source_url);
+        char *scrubbed = scrub_git_url(source_url);
         if (scrubbed) {
             /* replace every occurrence of source_url with scrubbed */
             char *pos, *cur = error;
@@ -506,11 +506,11 @@ char *_safe_git_error(const completed_process_t *result, const char *source_url)
     return redacted ? redacted : strdup("");
 }
 
-/* PoP: _scrub_git_url @ hermes_cli/plugins_cmd_git.py:_scrub_git_url */
+/* PoP: scrub_git_url @ hermes_cli/plugins_cmd_git.py:scrub_git_url */
 /*
  * Strip credentials and query/fragment data from an HTTP(S) Git URL.
  * Other schemes are returned unchanged. Caller frees. */
-char *_scrub_git_url(const char *git_url) {
+char *scrub_git_url(const char *git_url) {
     if (!git_url) return NULL;
     /* scheme://user:pass@host:port/path?query#fragment */
     const char *scheme_sep = strstr(git_url, "://");
@@ -538,10 +538,10 @@ char *_scrub_git_url(const char *git_url) {
     return out;
 }
 
-/* PoP: _canonical_source @ hermes_cli/plugins_cmd_git.py:_canonical_source */
+/* PoP: canonical_source @ hermes_cli/plugins_cmd_git.py:canonical_source */
 /* Scrubbed URL plus "#subdir" when one was requested. Caller frees. */
-char *_canonical_source(const char *git_url, const char *subdir) {
-    char *scrubbed = _scrub_git_url(git_url);
+char *canonical_source(const char *git_url, const char *subdir) {
+    char *scrubbed = scrub_git_url(git_url);
     if (!scrubbed) return NULL;
     if (!subdir || !*subdir) return scrubbed;
     char *out = malloc(strlen(scrubbed) + strlen(subdir) + 2);
@@ -551,9 +551,9 @@ char *_canonical_source(const char *git_url, const char *subdir) {
     return out;
 }
 
-/* PoP: _run_plugin_git @ hermes_cli/plugins_cmd_git.py:_run_plugin_git */
+/* PoP: run_plugin_git @ hermes_cli/plugins_cmd_git.py:run_plugin_git */
 /* Run one git command inside a plugin checkout (non-interactive). */
-completed_process_t _run_plugin_git(const char *git_exe, const char *target,
+completed_process_t run_plugin_git(const char *git_exe, const char *target,
                                     const char *const *args, size_t n_args,
                                     int timeout_s) {
     const char **argv = calloc(n_args + 2, sizeof(char *));
@@ -567,16 +567,16 @@ completed_process_t _run_plugin_git(const char *git_exe, const char *target,
     return r;
 }
 
-/* PoP: _git_head_revision @ hermes_cli/plugins_cmd_git.py:_git_head_revision */
+/* PoP: git_head_revision @ hermes_cli/plugins_cmd_git.py:git_head_revision */
 /*
  * HEAD of an installed checkout; PluginOperationError maps to NULL +
  * pcmd_last_error(). Caller frees. */
-char *_git_head_revision(const char *repo, const char *git_exe) {
+char *git_head_revision(const char *repo, const char *git_exe) {
     const char *argv[] = { "rev-parse", "HEAD" };
     completed_process_t r =
-        _run_plugin_git(git_exe, repo, argv, 2, 15);
+        run_plugin_git(git_exe, repo, argv, 2, 15);
     if (r.returncode != 0) {
-        char *err = _safe_git_error(&r, NULL);
+        char *err = safe_git_error(&r, NULL);
         pcmd_seterr("Could not determine installed Git revision:\n%s",
                     err ? err : "");
         free(err);
@@ -592,14 +592,14 @@ char *_git_head_revision(const char *repo, const char *git_exe) {
     return head;
 }
 
-/* PoP: _checkout_exact_revision @ hermes_cli/plugins_cmd_git.py:_checkout_exact_revision */
+/* PoP: checkout_exact_revision @ hermes_cli/plugins_cmd_git.py:checkout_exact_revision */
 /*
  * Fetch and detach at one immutable commit, then verify the resulting HEAD.
  * 0 ok; -1 maps PluginOperationError into pcmd_last_error(). */
-int _checkout_exact_revision(const char *repo, const char *git_exe,
+int checkout_exact_revision(const char *repo, const char *git_exe,
                              const char *revision) {
     const char *fetch_argv[] = { "fetch", "--depth", "1", "origin", revision };
-    completed_process_t fetched = _run_plugin_git(git_exe, repo, fetch_argv, 5, 60);
+    completed_process_t fetched = run_plugin_git(git_exe, repo, fetch_argv, 5, 60);
     if (fetched.returncode == -1) {
         pcmd_seterr("Git fetch of commit '%s' timed out after 60 seconds.",
                     revision);
@@ -607,7 +607,7 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
         return -1;
     }
     if (fetched.returncode != 0) {
-        char *err = _safe_git_error(&fetched, NULL);
+        char *err = safe_git_error(&fetched, NULL);
         pcmd_seterr("Git commit '%s' could not be fetched:\n%s",
                     revision, err ? err : "");
         free(err);
@@ -617,7 +617,7 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
     completed_process_free(&fetched);
 
     const char *co_argv[] = { "checkout", "--detach", revision };
-    completed_process_t checked_out = _run_plugin_git(git_exe, repo, co_argv, 3, 60);
+    completed_process_t checked_out = run_plugin_git(git_exe, repo, co_argv, 3, 60);
     if (checked_out.returncode == -1) {
         pcmd_seterr("Git checkout of commit '%s' timed out after 60 seconds.",
                     revision);
@@ -625,7 +625,7 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
         return -1;
     }
     if (checked_out.returncode != 0) {
-        char *err = _safe_git_error(&checked_out, NULL);
+        char *err = safe_git_error(&checked_out, NULL);
         pcmd_seterr("Git checkout of commit '%s' failed:\n%s",
                     revision, err ? err : "");
         free(err);
@@ -634,7 +634,7 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
     }
     completed_process_free(&checked_out);
 
-    char *actual = _git_head_revision(repo, git_exe);
+    char *actual = git_head_revision(repo, git_exe);
     if (!actual || strcmp(actual, revision) != 0) {
         pcmd_seterr("Checked-out revision '%s' does not match requested commit '%s'.",
                     actual ? actual : "?", revision);
@@ -645,23 +645,23 @@ int _checkout_exact_revision(const char *repo, const char *git_exe,
     return 0;
 }
 
-/* PoP: _scrub_cloned_origin @ hermes_cli/plugins_cmd_git.py:_scrub_cloned_origin */
+/* PoP: scrub_cloned_origin @ hermes_cli/plugins_cmd_git.py:scrub_cloned_origin */
 /*
  * Ensure credentials used for cloning do not survive in .git/config.
  * 0 ok; -1 maps PluginOperationError. */
-int _scrub_cloned_origin(const char *repo, const char *git_exe,
+int scrub_cloned_origin(const char *repo, const char *git_exe,
                          const char *git_url) {
-    char *scrubbed = _scrub_git_url(git_url);
+    char *scrubbed = scrub_git_url(git_url);
     if (!scrubbed) return -1;
     if (strcmp(scrubbed, git_url ? git_url : "") == 0) {
         free(scrubbed);
         return 0;
     }
     const char *seturl[] = { "remote", "set-url", "origin", scrubbed };
-    completed_process_t r = _run_plugin_git(git_exe, repo, seturl, 4, 15);
+    completed_process_t r = run_plugin_git(git_exe, repo, seturl, 4, 15);
     free(scrubbed);
     if (r.returncode != 0) {
-        char *err = _safe_git_error(&r, git_url);
+        char *err = safe_git_error(&r, git_url);
         pcmd_seterr("Could not sanitize installed Git remote:\n%s", err ? err : "");
         free(err);
         completed_process_free(&r);
@@ -678,7 +678,7 @@ int _scrub_cloned_origin(const char *repo, const char *git_exe,
 char *_stash_ref(const char *git_exe, const char *target) {
     const char *probe_argv[] = { "rev-parse", "--verify", "refs/stash" };
     completed_process_t probe =
-        _run_plugin_git(git_exe, target, probe_argv, 3, 60);
+        run_plugin_git(git_exe, target, probe_argv, 3, 60);
     char *out = NULL;
     if (probe.returncode == 0 && probe.stdout_data) {
         out = strdup(probe.stdout_data);
@@ -697,9 +697,9 @@ char *_stash_ref(const char *git_exe, const char *target) {
  * Index resolution
  * ====================================================================== */
 
-/* PoP: _looks_like_bare_index_name @ hermes_cli/plugins_cmd.py:_looks_like_bare_index_name */
+/* PoP: looks_like_bare_index_name @ hermes_cli/plugins_cmd.py:looks_like_bare_index_name */
 /* True when identifier is a bare plugin name (no slash, not a URL). */
-bool _looks_like_bare_index_name(const char *identifier) {
+bool looks_like_bare_index_name(const char *identifier) {
     if (!identifier || !*identifier) return false;
     if (strchr(identifier, '/') || strchr(identifier, '\\')) return false;
     static const char *SCHEMES[] = {
@@ -711,12 +711,12 @@ bool _looks_like_bare_index_name(const char *identifier) {
     return true;
 }
 
-/* PoP: _resolve_index_name @ hermes_cli/plugins_cmd.py:_resolve_index_name */
+/* PoP: resolve_index_name @ hermes_cli/plugins_cmd.py:resolve_index_name */
 /*
  * Resolve a bare plugin name to (install_identifier, pinned_ref). Exits with
  * an error when unknown/ambiguous; the ref is only used when it is an exact
  * 40-char SHA. Caller frees both outputs. */
-int _resolve_index_name(const char *identifier, char **out_identifier,
+int resolve_index_name(const char *identifier, char **out_identifier,
                         char **out_pinned_ref) {
     if (out_identifier) *out_identifier = NULL;
     if (out_pinned_ref) *out_pinned_ref = NULL;
@@ -822,11 +822,11 @@ int _resolve_index_name(const char *identifier, char **out_identifier,
  * Capabilities & consent
  * ====================================================================== */
 
-/* PoP: _declared_capabilities_from_manifest @ hermes_cli/plugins_cmd_capabilities.py:_declared_capabilities_from_manifest */
+/* PoP: declared_capabilities_from_manifest @ hermes_cli/plugins_cmd_capabilities.py:declared_capabilities_from_manifest */
 /*
  * Extract + normalize the capabilities: declaration from a manifest. Returns
  * a fresh JSON array; caller frees. */
-json_t *_declared_capabilities_from_manifest(const json_t *manifest,
+json_t *declared_capabilities_from_manifest(const json_t *manifest,
                                              const char *plugin_name) {
     extern char *pc_parse_declared_capabilities(const char *raw_json,
                                                 const char *plugin_name);
@@ -847,11 +847,11 @@ json_t *_declared_capabilities_from_manifest(const json_t *manifest,
     return arr;
 }
 
-/* PoP: _declared_capabilities_for_key @ hermes_cli/plugins_cmd_capabilities.py:_declared_capabilities_for_key */
+/* PoP: declared_capabilities_for_key @ hermes_cli/plugins_cmd_capabilities.py:declared_capabilities_for_key */
 /*
  * Read the declared capabilities for an installed/bundled plugin by key.
  * entry tuple = (name, version, description, source, dir_path, key). */
-json_t *_declared_capabilities_for_key(const char *key) {
+json_t *declared_capabilities_for_key(const char *key) {
     json_t *out = json_array();
     extern json_t *plugins_cmd_discover_all_plugins(void);
     json_t *entries = plugins_cmd_discover_all_plugins();
@@ -908,7 +908,7 @@ json_t *_declared_capabilities_for_key(const char *key) {
         }
         free(mpath);
         json_free(out);
-        out = _declared_capabilities_from_manifest(manifest, ns ? ns : "?");
+        out = declared_capabilities_from_manifest(manifest, ns ? ns : "?");
         if (manifest) json_free(manifest);
         json_free(entries);
         return out;
@@ -917,11 +917,11 @@ json_t *_declared_capabilities_for_key(const char *key) {
     return out;
 }
 
-/* PoP: _print_capability_list @ hermes_cli/plugins_cmd.py:_print_capability_list */
+/* PoP: print_capability_list @ hermes_cli/plugins_cmd.py:print_capability_list */
 /*
  * Consent screen body: one line per capability with its risk description.
  * Descriptions come from the capability registry port when linked. */
-void _print_capability_list(const json_t *capabilities) {
+void print_capability_list(const json_t *capabilities) {
     extern const char *pc_capability_description(const char *cap_id);
     size_t n = capabilities && json_is_array(capabilities)
                    ? json_len(capabilities) : 0;
@@ -934,12 +934,12 @@ void _print_capability_list(const json_t *capabilities) {
     }
 }
 
-/* PoP: _run_capability_consent @ hermes_cli/plugins_cmd_capabilities.py:_run_capability_consent */
+/* PoP: run_capability_consent @ hermes_cli/plugins_cmd_capabilities.py:run_capability_consent */
 /*
  * Show the consent screen and record the decision. On consent the pending
  * capabilities are granted; on decline — or in ANY non-interactive context —
  * they stay ungranted (fail closed). Returns True when consent was granted. */
-bool _run_capability_consent(const char *plugin_id, const json_t *declared,
+bool run_capability_consent(const char *plugin_id, const json_t *declared,
                              const char *context) {
     extern int pc_record_consent(const char *plugin_id,
                                  const char *pending_json,
@@ -976,7 +976,7 @@ bool _run_capability_consent(const char *plugin_id, const json_t *declared,
            "capabilities:\033[0m\n", plugin_id,
            context && strcmp(context, "install") == 0 ? "requests"
                                                       : "now requests");
-    _print_capability_list(pending);
+    print_capability_list(pending);
     printf("  \033[2mGranting trusts the plugin author with these host "
            "surfaces. This is consent, not a sandbox — plugins run as "
            "regular code in-process.\033[0m\n");
@@ -1021,12 +1021,12 @@ done:
     return granted;
 }
 
-/* PoP: _bundled_default_on @ hermes_cli/plugins_cmd.py:_bundled_default_on */
+/* PoP: bundled_default_on @ hermes_cli/plugins_cmd.py:bundled_default_on */
 /*
  * True when a bundled plugin at dir_path is active without an explicit
  * plugins.enabled entry: backend/platform/model-provider kinds are default-on,
  * standalone/exclusive opt-in, portable packages have no kind. */
-bool _bundled_default_on(const char *dir_path) {
+bool bundled_default_on(const char *dir_path) {
     static const char *DEFAULT_ON_KINDS[] = {
         "backend", "platform", "model-provider", NULL,
     };
@@ -1123,7 +1123,7 @@ static void strset_load(json_t *arr, strset_t *s) {
 static bool git_pull_plugin_dir(const char *target, char **out_output) {
     const char *argv[] = { "-C", target, "pull", "--ff-only", NULL };
     completed_process_t r =
-        _run_plugin_git("git", NULL, argv, 4, 60);
+        run_plugin_git("git", NULL, argv, 4, 60);
     bool ok = r.returncode == 0;
     if (out_output) {
         size_t ol = r.stdout_data ? strlen(r.stdout_data) : 0;
@@ -1251,7 +1251,7 @@ void plugins_cmd_cmd_update(const char *name) {
     }
 
     if (metadata && json_obj_get(metadata, name)) {
-        char *head = _git_head_revision(target, "git");
+        char *head = git_head_revision(target, "git");
         if (head) {
             json_set((json_t *)json_obj_get(metadata, name),
                      "revision", json_string(head));
@@ -1262,7 +1262,7 @@ void plugins_cmd_cmd_update(const char *name) {
 
     /* Re-scan after update — a dangerous verdict disables the plugin rather
      * than leaving it active. */
-    if (_scan_on_install_enabled()) {
+    if (scan_on_install_enabled()) {
         pg_plugin_scan_result_t *scan_result =
             plugin_guard_scan_plugin(target, name);
         int allowed = 0;
@@ -1324,7 +1324,7 @@ void plugins_cmd_cmd_update(const char *name) {
             updated_manifest ? json_get_str(updated_manifest, "name", name) : name;
         if (!plugin_id || !*plugin_id) plugin_id = name;
         json_t *declared_caps =
-            _declared_capabilities_from_manifest(updated_manifest, plugin_id);
+            declared_capabilities_from_manifest(updated_manifest, plugin_id);
         if (declared_caps && json_is_array(declared_caps) &&
             json_len(declared_caps) > 0) {
             extern char *pc_pending_capabilities(const char *, const char *, const char *);
@@ -1343,7 +1343,7 @@ void plugins_cmd_cmd_update(const char *name) {
             const char *stored = consent ? json_get_str(consent, "hash", "") : "";
             bool changed = stored[0] && new_hash && strcmp(stored, new_hash) != 0;
             if ((pending && pending[0] && strcmp(pending, "[]") != 0) || changed)
-                _run_capability_consent(plugin_id, declared_caps, "update");
+                run_capability_consent(plugin_id, declared_caps, "update");
             free(pending); free(new_hash); free(caps_json); free(cfg_json);
         } else if (declared_caps) {
             json_free(declared_caps);
@@ -1365,11 +1365,11 @@ void plugins_cmd_cmd_update(const char *name) {
     free(target);
 }
 
-/* PoP: _remove_plugin_core @ hermes_cli/plugins_cmd_remove.py:_remove_plugin_core */
+/* PoP: remove_plugin_core @ hermes_cli/plugins_cmd_remove.py:remove_plugin_core */
 /*
  * Remove one plugin and its metadata without splitting their state:
  * stage metadata first, move the tree aside, and restore on failure. */
-void _remove_plugin_core(const char *target_path) {
+void remove_plugin_core(const char *target_path) {
     json_t *metadata = read_install_metadata();
     const char *name = strrchr(target_path ? target_path : "", '/');
     name = name ? name + 1 : (target_path ? target_path : "");

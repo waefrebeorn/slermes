@@ -18,8 +18,8 @@ char *runtimes_root(void) { return strdup(""); }
 /* PoP: installed_tags @ hermes_cli/local_runtime/binaries.py:installed_tags */
 char *installed_tags(void) { return strdup("[]"); }
 
-/* PoP: _host_os_arch @ hermes_cli/local_runtime/binaries.py:_host_os_arch */
-char *_host_os_arch(void) { return strdup(""); }
+/* PoP: host_os_arch @ hermes_cli/local_runtime/binaries.py:host_os_arch */
+char *host_os_arch(void) { return strdup(""); }
 
 /* PoP: select_backend @ hermes_cli/local_runtime/binaries.py:select_backend */
 char *select_backend(void) { return strdup(""); }

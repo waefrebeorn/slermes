@@ -90,17 +90,17 @@ const char* _electron_dir(const char* project_root)
 }
 
 /*
- * _electron_dist_binary — Return the path to the Electron main binary.
+ * electron_dist_binary — Return the path to the Electron main binary.
  *
- * Python: def _electron_dist_binary(project_root: Path) -> Path:
+ * Python: def electron_dist_binary(project_root: Path) -> Path:
  *   dist = _electron_dir(project_root) / "dist"
  *   if sys.platform == "darwin": return dist / "Electron.app" / "Contents" / "MacOS" / "Electron"
  *   if sys.platform == "win32": return dist / "electron.exe"
  *   return dist / "electron"
  */
-/* PoP: _electron_dist_ok @ plugins/platforms/qqbot/adapter.py:_electron_dist_ok */
-/* Port of Python: _electron_dist_binary */
-const char* _electron_dist_binary(const char* project_root)
+/* PoP: electron_dist_ok @ plugins/platforms/qqbot/adapter.py:electron_dist_ok */
+/* Port of Python: electron_dist_binary */
+const char* electron_dist_binary(const char* project_root)
 {
     const char* electron = _electron_dir(project_root);
     static char path[4096];
@@ -117,16 +117,16 @@ const char* _electron_dist_binary(const char* project_root)
 }
 
 /*
- * _electron_dist_ok — Check if electron dist has a usable binary.
+ * electron_dist_ok — Check if electron dist has a usable binary.
  *
- * Python: def _electron_dist_ok(project_root: Path) -> bool:
- *   try: return _electron_dist_binary(project_root).exists()
+ * Python: def electron_dist_ok(project_root: Path) -> bool:
+ *   try: return electron_dist_binary(project_root).exists()
  *   except OSError: return false
  */
-/* Port of Python: _electron_dist_ok */
-bool _electron_dist_ok(const char* project_root)
+/* Port of Python: electron_dist_ok */
+bool electron_dist_ok(const char* project_root)
 {
-    const char* binary = _electron_dist_binary(project_root);
+    const char* binary = electron_dist_binary(project_root);
     struct stat st;
     if (stat(binary, &st) != 0) {
         return false;
@@ -136,9 +136,9 @@ bool _electron_dist_ok(const char* project_root)
 }
 
 /*
- * _build_provider_choices — Build the --provider choices list.
+ * build_provider_choices — Build the --provider choices list.
  *
- * Python: def _build_provider_choices() -> list[str]:
+ * Python: def build_provider_choices() -> list[str]:
  *   try:
  *       from hermes_cli.models import CANONICAL_PROVIDERS as _cp
  *       return ["auto"] + [p.slug for p in _cp]
@@ -147,8 +147,8 @@ bool _electron_dist_ok(const char* project_root)
  *
  * In C: return a JSON array of provider slug strings.
  */
-/* Port of Python: _build_provider_choices */
-json_t* _build_provider_choices(void)
+/* Port of Python: build_provider_choices */
+json_t* build_provider_choices(void)
 {
     json_t* choices = json_new_array();
     if (!choices) return NULL;
@@ -171,9 +171,9 @@ json_t* _build_provider_choices(void)
 }
 
 /*
- * _restore_tui_workspace — Try to restore a missing ui-tui/ from git.
+ * restore_tui_workspace — Try to restore a missing ui-tui/ from git.
  *
- * Python: def _restore_tui_workspace(tui_dir: Path) -> bool:
+ * Python: def restore_tui_workspace(tui_dir: Path) -> bool:
  *   git = shutil.which("git")
  *   if not git or not (tui_dir.parent / ".git").exists(): return False
  *   try:
@@ -181,8 +181,8 @@ json_t* _build_provider_choices(void)
  *       return tui_dir.is_dir()
  *   except: return False
  */
-/* Port of Python: _restore_tui_workspace */
-bool _restore_tui_workspace(const char* tui_dir)
+/* Port of Python: restore_tui_workspace */
+bool restore_tui_workspace(const char* tui_dir)
 {
     if (!tui_dir || !tui_dir[0]) return false;
 
@@ -232,18 +232,18 @@ bool _restore_tui_workspace(const char* tui_dir)
 }
 
 /*
- * _ensure_tui_workspace — Ensure ui-tui/ exists before npm/node uses it.
+ * ensure_tui_workspace — Ensure ui-tui/ exists before npm/node uses it.
  *
- * Python: def _ensure_tui_workspace(tui_dir: Path) -> None:
+ * Python: def ensure_tui_workspace(tui_dir: Path) -> None:
  *   if tui_dir.is_dir(): return
- *   if _restore_tui_workspace(tui_dir):
+ *   if restore_tui_workspace(tui_dir):
  *       if not os.environ.get("HERMES_QUIET"):
  *           print(f"Restored missing TUI workspace: {tui_dir}")
  *       return
  *   raise SystemExit(...)
  */
-/* Port of Python: _ensure_tui_workspace */
-void _ensure_tui_workspace(const char* tui_dir)
+/* Port of Python: ensure_tui_workspace */
+void ensure_tui_workspace(const char* tui_dir)
 {
     if (!tui_dir || !tui_dir[0]) return;
 
@@ -252,7 +252,7 @@ void _ensure_tui_workspace(const char* tui_dir)
         return; /* Already exists */
     }
 
-    if (_restore_tui_workspace(tui_dir)) {
+    if (restore_tui_workspace(tui_dir)) {
         hermes_log(LOG_INFO, "port", "Restored missing TUI workspace: %s", tui_dir);
         return;
     }
@@ -321,11 +321,11 @@ void _atomic_replace_dir(const char* src, const char* dst)
 #include <unistd.h>
 #include <sys/stat.h>
 
-/* Port of Python: _electron_pkg_staged_missing_dist */
-/* PoP: _electron_pkg_staged_missing_dist @ plugins/platforms/qqbot/adapter.py:_electron_pkg_staged_missing_dist */
-bool _electron_pkg_staged_missing_dist(const char* project_root)
+/* Port of Python: electron_pkg_staged_missing_dist */
+/* PoP: electron_pkg_staged_missing_dist @ plugins/platforms/qqbot/adapter.py:electron_pkg_staged_missing_dist */
+bool electron_pkg_staged_missing_dist(const char* project_root)
 {
-    hermes_log(LOG_DEBUG, "port", "_electron_pkg_staged_missing_dist: called");
+    hermes_log(LOG_DEBUG, "port", "electron_pkg_staged_missing_dist: called");
 
     const char* home = project_root ? project_root : getenv("HOME");
     if (!home) home = ".";
@@ -363,12 +363,12 @@ bool electron_dist_download_unimplemented(const char* project_root, const char* 
     return false;
 }
 
-/* Port of Python: _try_redownload_electron_dist */
-bool _try_redownload_electron_dist(const char* project_root, const char* env)
+/* Port of Python: try_redownload_electron_dist */
+bool try_redownload_electron_dist(const char* project_root, const char* env)
 {
-    hermes_log(LOG_DEBUG, "port", "_try_redownload_electron_dist: called");
+    hermes_log(LOG_DEBUG, "port", "try_redownload_electron_dist: called");
 
-    if (!_electron_pkg_staged_missing_dist(project_root)) return true;
+    if (!electron_pkg_staged_missing_dist(project_root)) return true;
 
     return electron_dist_download_unimplemented(project_root, env);
 }

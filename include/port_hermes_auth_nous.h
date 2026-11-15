@@ -8,7 +8,7 @@
  * The device-code flow, token refresh, shared-store mirroring and JWT selection
  * are runtime/network and are NOT ported. The pure helpers below are,
  * reproducing exact Python semantics. Env/profile-secret lookup
- * (_nous_inference_env_override) and JWT claim decoding (_decode_jwt_claims)
+ * (_nous_inference_env_override) and JWT claim decoding (decode_jwt_claims)
  * are the two impure seams: the former arrives as a parameter, the latter is
  * out of scope (the fingerprint/expiry helpers that need a decoded token take
  * the claim dict instead).

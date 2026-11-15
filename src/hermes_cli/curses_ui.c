@@ -3,7 +3,7 @@
  * hermes_cli/curses_ui.py
  *
  * Ported: _query_matches, _is_boundary, _token_score, _fuzzy_score,
- * _filter_indices, _reconcile_cursor.
+ * filter_indices, reconcile_cursor.
  * Curses/IO-coupled functions (_run_curses_menu, curses_checklist, etc.)
  * left as REAL_GAP.
  */
@@ -154,7 +154,7 @@ double curses_fuzzy_score(const char *label, const char *query, int *matched) {
     return total;
 }
 
-/* PoP: curses_filter_indices @ hermes_cli/curses_ui.py:_filter_indices */
+/* PoP: curses_filter_indices @ hermes_cli/curses_ui.py:filter_indices */
 json_t *curses_filter_indices(json_t *items, const char *query) {
     json_t *out = json_array();
     if (!items || items->type != JSON_ARRAY) return out;
@@ -208,7 +208,7 @@ json_t *curses_filter_indices(json_t *items, const char *query) {
     return out;
 }
 
-/* PoP: curses_reconcile_cursor @ hermes_cli/curses_ui.py:_reconcile_cursor */
+/* PoP: curses_reconcile_cursor @ hermes_cli/curses_ui.py:reconcile_cursor */
 void curses_reconcile_cursor(json_t *filtered, int cursor, int *out_cursor, int *out_pos) {
     if (!filtered || filtered->type != JSON_ARRAY || json_len(filtered) == 0) {
         *out_cursor = cursor;
@@ -321,7 +321,7 @@ int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_curses_ui_u_scroll_for_cursor @ hermes_cli/curses_ui.py:_scroll_for_cursor */
+/* PoP: hermes_cli_curses_ui_u_scroll_for_cursor @ hermes_cli/curses_ui.py:scroll_for_cursor */
 int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) {
     /* Python: clamp scroll so cursor visible. Arg = "cursor\tscroll\tvisible\ttotal". */
     if (!arg || !*arg) { printf("0\n"); return 0; }

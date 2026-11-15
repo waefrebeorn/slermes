@@ -16,9 +16,9 @@
 
 /* ── Forward declarations for internal helpers ── */
 static bool _path_is_absolute(const char *path);
-static bool _contains_path_traversal(const char *path);
+static bool contains_path_traversal(const char *path);
 static bool _file_exists(const char *path);
-static char *_str_trim(char *s);
+static char *str_trim(char *s);
 static void _normalize_path(char *out, size_t out_size, const char *base, const char *rel);
 
 /* ── Singleton registry — hive-backed ── */
@@ -52,7 +52,7 @@ static bool _path_is_absolute(const char *path)
     return path && path[0] == '/';
 }
 
-static bool _contains_path_traversal(const char *path)
+static bool contains_path_traversal(const char *path)
 {
     if (!path) return false;
     /* Check for ".." as a path component */
@@ -80,7 +80,7 @@ static bool _dir_exists(const char *path)
     return (stat(path, &st) == 0 && S_ISDIR(st.st_mode));
 }
 
-static char *_str_trim(char *s)
+static char *str_trim(char *s)
 {
     if (!s) return NULL;
     /* Skip leading whitespace */
@@ -129,7 +129,7 @@ bool credfiles_register_file(const char *relative_path,
         return false;
 
     /* Reject path traversal */
-    if (_contains_path_traversal(relative_path))
+    if (contains_path_traversal(relative_path))
         return false;
 
     /* Resolve HERMES_HOME */
@@ -273,8 +273,8 @@ credfiles_path_list_t credfiles_load_config_mounts(void)
 
     char *token = strtok(buf, ":");
     while (token && result.count < CREDFILES_MAX_ENTRIES) {
-        char *trimmed = _str_trim(token);
-        if (*trimmed && !_path_is_absolute(trimmed) && !_contains_path_traversal(trimmed)) {
+        char *trimmed = str_trim(token);
+        if (*trimmed && !_path_is_absolute(trimmed) && !contains_path_traversal(trimmed)) {
             char host_path[CREDFILES_MAX_PATH];
             _normalize_path(host_path, sizeof(host_path), hermes_home, trimmed);
 

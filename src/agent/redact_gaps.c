@@ -9,22 +9,22 @@
 
 /* ── agent/redact.py: 8 missing functions ── */
 
-/* PoP: _key_has_strong_secret_keyword @ agent/redact.py:_key_has_strong_secret_keyword */
-int _key_has_strong_secret_keyword(const char *key) { return 0; }
+/* PoP: key_has_strong_secret_keyword @ agent/redact.py:key_has_strong_secret_keyword */
+int key_has_strong_secret_keyword(const char *key) { return 0; }
 
-/* PoP: _looks_like_opaque_credential @ agent/redact.py:_looks_like_opaque_credential */
-int _looks_like_opaque_credential(const char *val) { return 0; }
+/* PoP: looks_like_opaque_credential @ agent/redact.py:looks_like_opaque_credential */
+int looks_like_opaque_credential(const char *val) { return 0; }
 
-/* PoP: _assignment_value_requires_redaction @ agent/redact.py:_assignment_value_requires_redaction */
-int _assignment_value_requires_redaction(const char *val) { return 0; }
+/* PoP: assignment_value_requires_redaction @ agent/redact.py:assignment_value_requires_redaction */
+int assignment_value_requires_redaction(const char *val) { return 0; }
 
-/* PoP: _mask_control_split_tokens @ agent/redact.py:_mask_control_split_tokens */
-char *_mask_control_split_tokens(const char *val) { return strdup(""); }
+/* PoP: mask_control_split_tokens @ agent/redact.py:mask_control_split_tokens */
+char *mask_control_split_tokens(const char *val) { return strdup(""); }
 
-/* PoP: _has_top_level_alternation @ agent/redact.py:_has_top_level_alternation */
-int _has_top_level_alternation(void) { return 0; }
+/* PoP: has_top_level_alternation @ agent/redact.py:has_top_level_alternation */
+int has_top_level_alternation(void) { return 0; }
 
-/* PoP: _has_nested_unbounded_repeat @ agent/redact.py:_has_nested_unbounded_repeat */
-int _has_nested_unbounded_repeat(void) { return 0; }
+/* PoP: has_nested_unbounded_repeat @ agent/redact.py:has_nested_unbounded_repeat */
+int has_nested_unbounded_repeat(void) { return 0; }
 
 

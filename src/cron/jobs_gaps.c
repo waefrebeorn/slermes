@@ -9,28 +9,28 @@
 
 /* ── cron/jobs.py: 11 missing functions ── */
 
-/* PoP: _is_recoverable_error_job @ cron/jobs.py:_is_recoverable_error_job */
-int _is_recoverable_error_job(void) { return 0; }
+/* PoP: is_recoverable_error_job @ cron/jobs.py:is_recoverable_error_job */
+int is_recoverable_error_job(void) { return 0; }
 
-/* PoP: _is_named_profile_path @ cron/jobs.py:_is_named_profile_path */
-int _is_named_profile_path(void) { return 0; }
+/* PoP: is_named_profile_path @ cron/jobs.py:is_named_profile_path */
+int is_named_profile_path(void) { return 0; }
 
 
 /* PoP: normalize_repeat_value @ cron/jobs.py:normalize_repeat_value */
 char *normalize_repeat_value(const char *val) { return val ? strdup(val) : strdup(""); }
 
-/* PoP: _parse_clock_time @ cron/jobs.py:_parse_clock_time */
-char *_parse_clock_time(const char *time) { return strdup(""); }
+/* PoP: parse_clock_time @ cron/jobs.py:parse_clock_time */
+char *parse_clock_time(const char *time) { return strdup(""); }
 
-/* PoP: _natural_every_to_cron @ cron/jobs.py:_natural_every_to_cron */
-char *_natural_every_to_cron(const char *val) { return strdup(""); }
+/* PoP: natural_every_to_cron @ cron/jobs.py:natural_every_to_cron */
+char *natural_every_to_cron(const char *val) { return strdup(""); }
 
-/* PoP: _classify_dispatch_lateness @ cron/jobs.py:_classify_dispatch_lateness */
-char *_classify_dispatch_lateness(void) { return strdup(""); }
+/* PoP: classify_dispatch_lateness @ cron/jobs.py:classify_dispatch_lateness */
+char *classify_dispatch_lateness(void) { return strdup(""); }
 
 
-/* PoP: _classify_stale_cron_next_run @ cron/jobs.py:_classify_stale_cron_next_run */
-char *_classify_stale_cron_next_run(void) { return strdup(""); }
+/* PoP: classify_stale_cron_next_run @ cron/jobs.py:classify_stale_cron_next_run */
+char *classify_stale_cron_next_run(void) { return strdup(""); }
 
 
 /* PoP: get_timezone_migration_catchup_stats @ cron/jobs.py:get_timezone_migration_catchup_stats */

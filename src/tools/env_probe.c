@@ -32,7 +32,7 @@ static const char *SCHEMA = "{"
 
 /* ─── Helpers ─────────────────────────────────────────────── */
 
-static int _cmd_exists(const char *cmd) {
+static int cmd_exists(const char *cmd) {
     char buf[512];
     snprintf(buf, sizeof(buf), "command -v %s >/dev/null 2>&1", cmd);
     return system(buf) == 0;
@@ -67,15 +67,15 @@ static char *_run_cmd(const char *cmd, size_t max_len) {
 
 /* ─── Probe Functions ─────────────────────────────────────── */
 
-static char *_probe_gpu(void) {
+static char *probe_gpu(void) {
     /* Check for NVIDIA GPU via nvidia-smi */
-    if (_cmd_exists("nvidia-smi")) {
+    if (cmd_exists("nvidia-smi")) {
         char *out = _run_cmd("nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null | head -1", 256);
         if (out && out[0]) return out;
         free(out);
     }
     /* Check for ROCm */
-    if (_cmd_exists("rocm-smi")) {
+    if (cmd_exists("rocm-smi")) {
         return strdup("AMD GPU (ROCm)");
     }
     /* Check for Apple Silicon GPU */
@@ -96,7 +96,7 @@ static char *_probe_gpu(void) {
     return NULL;
 }
 
-static char *_probe_os(void) {
+static char *probe_os(void) {
     struct utsname uts;
     if (uname(&uts) != 0) return NULL;
 
@@ -111,7 +111,7 @@ static char *_probe_os(void) {
     return strdup(buf);
 }
 
-static char *_probe_memory(void) {
+static char *probe_memory(void) {
 #ifdef __linux__
     struct sysinfo si;
     if (sysinfo(&si) == 0) {
@@ -142,14 +142,14 @@ static char *_probe_memory(void) {
     return NULL;
 }
 
-static char *_probe_disk(void) {
+static char *probe_disk(void) {
     char *df = _run_cmd("df -h / 2>/dev/null | tail -1 | awk '{print $2\" total, \"$4\" free, \"$5\" used\"}'", 128);
     if (df && df[0]) return df;
     free(df);
     return NULL;
 }
 
-static char *_probe_cpu(void) {
+static char *probe_cpu(void) {
     char *cpu = NULL;
 #ifdef __linux__
     cpu = _run_cmd("nproc 2>/dev/null", 16);
@@ -189,7 +189,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     int notable = 0;
 
     /* OS */
-    char *os = _probe_os();
+    char *os = probe_os();
     if (os) {
         json_node_t *f = json_new_object();
         json_object_set(f, "type", json_new_string("os"));
@@ -199,7 +199,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     }
 
     /* CPU */
-    char *cpu_info = _probe_cpu();
+    char *cpu_info = probe_cpu();
     if (cpu_info) {
         json_node_t *f = json_new_object();
         json_object_set(f, "type", json_new_string("cpu"));
@@ -209,7 +209,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     }
 
     /* Memory */
-    char *mem = _probe_memory();
+    char *mem = probe_memory();
     if (mem) {
         json_node_t *f = json_new_object();
         json_object_set(f, "type", json_new_string("memory"));
@@ -219,7 +219,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     }
 
     /* Disk */
-    char *disk = _probe_disk();
+    char *disk = probe_disk();
     if (disk) {
         json_node_t *f = json_new_object();
         json_object_set(f, "type", json_new_string("disk"));
@@ -229,7 +229,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     }
 
     /* GPU */
-    char *gpu = _probe_gpu();
+    char *gpu = probe_gpu();
     if (gpu) {
         json_node_t *f = json_new_object();
         json_object_set(f, "type", json_new_string("gpu"));
@@ -243,7 +243,7 @@ char *env_probe_handler(const char *args_json, const char *task_id) {
     const char *key_bins[] = {"git", "docker", "python3", "node", "go", "rustc", "cmake", "make", "ffmpeg", "curl", "wget", "ssh", "tmux", "vim", "nano", NULL};
     json_node_t *bins = json_new_array();
     for (int i = 0; key_bins[i]; i++) {
-        if (_cmd_exists(key_bins[i])) {
+        if (cmd_exists(key_bins[i])) {
             json_array_append(bins, json_new_string(key_bins[i]));
         }
     }

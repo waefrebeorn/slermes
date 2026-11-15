@@ -33,11 +33,11 @@ char *recommended_entry(void) { return strdup("{}"); }
 /* PoP: recommended_id @ hermes_cli/local_runtime/catalog.py:recommended_id */
 char *recommended_id(void) { return strdup(""); }
 
-/* PoP: _asset_from @ hermes_cli/local_runtime/catalog.py:_asset_from */
-char *_asset_from(void) { return strdup("{}"); }
+/* PoP: asset_from @ hermes_cli/local_runtime/catalog.py:asset_from */
+char *asset_from(void) { return strdup("{}"); }
 
-/* PoP: _packaged_catalog @ hermes_cli/local_runtime/catalog.py:_packaged_catalog */
-char *_packaged_catalog(void) { return strdup("{}"); }
+/* PoP: packaged_catalog @ hermes_cli/local_runtime/catalog.py:packaged_catalog */
+char *packaged_catalog(void) { return strdup("{}"); }
 
 
 

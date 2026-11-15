@@ -10,7 +10,7 @@
  *   _get, _provider, _input_device, _sensitivity,
  *   _confirmation_frames, wake_phrase, wake_surface_enabled,
  *   resolve_inference_framework (platform flag passed in),
- *   _device_label, _looks_like_path, _bundled_wakeword_path.
+ *   _device_label, looks_like_path, _bundled_wakeword_path.
  *
  * Heavy machinery (ONNX/tflite/sherpa/porcupine engines, sounddevice
  * capture, machine lock, listener lifecycle) remains in Python; this
@@ -88,7 +88,7 @@ char *ww_resolve_inference_framework(const json_t *cfg, bool is_macos_arm64);
  * when a hostapi is present. malloc'd string. */
 char *ww_device_label(const json_t *details);
 
-/* PoP: _looks_like_path @ tools/wake_word.py:_looks_like_path */
+/* PoP: looks_like_path @ tools/wake_word.py:looks_like_path */
 /* True when value contains a path separator or ends with a known
  * model extension (.onnx/.tflite/.ppn). The Python original also
  * checks os.path.exists(value); that I/O is intentionally left to

@@ -19,7 +19,7 @@ char *pb_format_steer_marker(const char *steer_text);
  * "  OS: <os> <kernel>", or "" when neither is usable. Caller frees. */
 char *pb_format_backend_probe(const char *output);
 
-/* _plugin_backend_is_remote -- `attr_is_remote` stands in for the plugin
+/* plugin_backend_is_remote -- `attr_is_remote` stands in for the plugin
  * attribute lookup (0 when the backend is unknown to the registry). */
 int pb_plugin_backend_is_remote(const char *backend, int attr_is_remote);
 

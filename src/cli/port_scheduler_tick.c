@@ -29,7 +29,7 @@ int js_is_recurring(const char *job_json)
     return r;
 }
 
-/* _log_tick_yield_once decision + message. The Python body reads the module
+/* log_tick_yield_once decision + message. The Python body reads the module
  * global _last_yield_log for last_reason/last_at and time.monotonic() for now;
  * those are passed in here (the caller keeps the once-per-episode state). */
 #define JS_YIELD_LOG_INTERVAL_SECONDS 3600.0
@@ -43,7 +43,7 @@ int js_tick_yield_should_log(const char *last_reason, double last_at,
     return (now - last_at) >= JS_YIELD_LOG_INTERVAL_SECONDS;
 }
 
-/* PoP: _log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
+/* PoP: log_tick_yield_once @ cron/scheduler_tick.py:log_tick_yield_once */
 char *js_tick_yield_message(const char *reason)
 {
     const char *r = reason ? reason : "";

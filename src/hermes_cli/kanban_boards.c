@@ -5,12 +5,12 @@
  * board.json metadata read/write, board creation/listing/removal, and the
  * "default" board special-case. Pure filesystem + JSON; reuses the path
  * helpers (board_dir / boards_root / board_metadata_path / kanban_home /
- * _normalize_board_slug / get_current_board) from port_kanban_db.c.
+ * normalize_board_slug / get_current_board) from port_kanban_db.c.
  *
  * Faithful to:
  *   create_board, list_boards, read_board_metadata, write_board_metadata,
  *   remove_board, board_exists, scoped_current_board (no-op),
- *   _normalize_board_slug, board_dir, boards_root, board_metadata_path.
+ *   normalize_board_slug, board_dir, boards_root, board_metadata_path.
  *
  * Opaque structs + minimal includes. C11.
  */
@@ -66,7 +66,7 @@ static void js_str(char **buf, size_t *len, size_t *cap, const char *s)
 }
 
 /* Turn a slug into a presentable default display name (mirrors Python's
- * _default_board_display_name): title-case on '-'/'_' boundaries. */
+ * default_board_display_name): title-case on '-'/'_' boundaries. */
 static void default_display_name(const char *slug, char *out, size_t outsz)
 {
     size_t j = 0; int cap_next = 1;
@@ -179,7 +179,7 @@ static long meta_get_long(const char *json, const char *key, long def)
 /* PoP: kdb_board_exists @ hermes_cli/kanban_db.py:board_exists */
 int kdb_board_exists(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     int exists;
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -200,7 +200,7 @@ int kdb_board_exists(const char *board)
 /* PoP: kdb_read_board_metadata @ hermes_cli/kanban_db_boards.py:read_board_metadata */
 char *kdb_read_board_metadata(const char *board)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     char *jp = board_metadata_path(slug);
 
@@ -251,7 +251,7 @@ char *kdb_write_board_metadata(const char *board,
                                int archived_set, int archived,
                                const char *default_workdir)
 {
-    char *slug = _normalize_board_slug(board);
+    char *slug = normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
 
     /* Start from existing metadata, then overlay provided fields. */
@@ -304,7 +304,7 @@ char *kdb_create_board(const char *slug,
                        const char *icon, const char *color,
                        const char *default_workdir)
 {
-    char *normed = _normalize_board_slug(slug);
+    char *normed = normalize_board_slug(slug);
     if (!normed) return NULL; /* bad slug -> error (NULL) */
 
     char *meta = kdb_write_board_metadata(normed, name, description, icon,
@@ -334,7 +334,7 @@ char *kdb_list_boards(int include_archived)
 #ifdef _DIRENT_HAVE_D_TYPE
                 if (!hermes_dirent_is_dir(root, e->d_name)) continue;
 #endif
-                char *slug = _normalize_board_slug(e->d_name);
+                char *slug = normalize_board_slug(e->d_name);
                 if (!slug) continue;
                 if (strcmp(slug, KB_DEFAULT_BOARD) == 0) { free(slug); continue; }
                 char *bd = board_dir(slug);
@@ -417,7 +417,7 @@ static void remove_dir_recursive(const char *path)
 /* PoP: kdb_remove_board @ hermes_cli/kanban_db_boards.py:remove_board */
 char *kdb_remove_board(const char *slug, int archive)
 {
-    char *normed = _normalize_board_slug(slug);
+    char *normed = normalize_board_slug(slug);
     if (!normed) { return NULL; }
     if (strcmp(normed, KB_DEFAULT_BOARD) == 0) { free(normed); return NULL; }
     char *bd = board_dir(normed);

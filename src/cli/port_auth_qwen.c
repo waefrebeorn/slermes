@@ -35,7 +35,7 @@ static char *str_strip_dup(const char *s)
     return out;
 }
 
-/* PoP: qwen_auth_path @ hermes_cli/auth_qwen.py:_qwen_cli_auth_path */
+/* PoP: qwen_auth_path @ hermes_cli/auth_qwen.py:qwen_cli_auth_path */
 char *qwen_auth_path(const char *home)
 {
     if (!home || !*home) return NULL;

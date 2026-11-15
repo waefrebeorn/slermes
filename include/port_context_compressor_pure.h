@@ -27,7 +27,7 @@ extern "C" {
 /* Deep-copy a message dict, stripping _db_persisted. Caller owns result. */
 json_t *cc_fresh_compaction_message_copy(json_t *msg);
 
-/* ── _template_visible_role ──────────────────────────────────── */
+/* ── template_visible_role ──────────────────────────────────── */
 /* Returns role string, or NULL for messages the alternation check skips. */
 const char *cc_template_visible_role(json_t *message);
 

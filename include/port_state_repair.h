@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 
-/* _mask_volatile_header -- zero the commit-counter fields (24-27 and 92-95) so
+/* mask_volatile_header -- zero the commit-counter fields (24-27 and 92-95) so
  * ordinary writes do not re-key the ledger. A header shorter than 96 bytes is
  * left unchanged. Modifies `head` in place. */
 void sr_mask_volatile_header(unsigned char *head, size_t len);

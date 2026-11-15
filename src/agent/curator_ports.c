@@ -257,7 +257,7 @@ bool cur_get_consolidate(const char *config_json) {
     return strstr(colon, "true") != NULL;
 }
 
-/* PoP: cur_parse_iso @ agent/curator.py:_parse_iso */
+/* PoP: cur_parse_iso @ agent/curator.py:parse_iso */
 double cur_parse_iso(const char *ts) {
     /* Python: datetime.fromisoformat → epoch. */
     if (!ts || !*ts) return -1;

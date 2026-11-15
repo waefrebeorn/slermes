@@ -51,7 +51,7 @@ char *cfg_get_managed_update_command(const char *managed_system) {
     return NULL;
 }
 
-/* PoP: cfg_install_method_project_root @ hermes_cli/config.py:_install_method_project_root */
+/* PoP: cfg_install_method_project_root @ hermes_cli/config.py:install_method_project_root */
 char *cfg_install_method_project_root(const char *module_dir) {
     /* Python: parent of hermes_cli/ = git checkout root. */
     if (!module_dir) return NULL;
@@ -60,7 +60,7 @@ char *cfg_install_method_project_root(const char *module_dir) {
     return out;
 }
 
-/* PoP: cfg_running_in_container @ hermes_cli/config.py:_running_in_container */
+/* PoP: cfg_running_in_container @ hermes_cli/config.py:running_in_container */
 bool cfg_running_in_container(void) {
     /* Python: container detection — REAL /proc/.dockerenv probe. */
     return access("/proc/.dockerenv", F_OK) == 0;
@@ -237,7 +237,7 @@ int cfg_warn_deprecated_cwd_env_vars(const char *env_contents) {
     return 0;
 }
 
-/* PoP: cfg_strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */
+/* PoP: cfg_strip_dotted_keys @ hermes_cli/config.py:strip_dotted_keys */
 char *cfg_strip_dotted_keys(const char *config_json, const char *keys_json) {
     /* Python: prune dotted leaf keys; returns (pruned, present-set). */
     if (!config_json) return strdup("{}");

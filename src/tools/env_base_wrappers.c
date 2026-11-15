@@ -376,7 +376,7 @@ int envb_u__del__(const char *arg) {
 
 /* PoP: envb_u_prepare_command @ tools/environments/base.py:_prepare_command */
 int envb_u_prepare_command(const char *arg) {
-    /* Python: _transform_sudo_command(command) when SUDO_PASSWORD present.
+    /* Python: transform_sudo_command(command) when SUDO_PASSWORD present.
      * Arg = command (passes through; sudo transform is env-gated). */
     if (!arg) arg = "";
     const char *sp = getenv("SUDO_PASSWORD");

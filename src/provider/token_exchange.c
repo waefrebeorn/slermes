@@ -259,7 +259,7 @@ const char *oauth_last_error(void) {
  *  URL-encode a simple key=value pair and append to buffer
  * ================================================================ */
 
-static int _append_form_field(char *buf, size_t bufsz, size_t *pos,
+static int append_form_field(char *buf, size_t bufsz, size_t *pos,
                                const char *key, const char *value)
 {
     if (!key || !value) return -1;
@@ -281,7 +281,7 @@ static int _append_form_field(char *buf, size_t bufsz, size_t *pos,
  *  Build form-urlencoded body for PKCE token exchange
  * ================================================================ */
 
-static char *_build_token_exchange_body(
+static char *build_token_exchange_body(
     const char *code,
     const char *redirect_uri,
     const char *client_id,
@@ -294,23 +294,23 @@ static char *_build_token_exchange_body(
 
     size_t pos = 0;
 
-    if (_append_form_field(body, 1024, &pos, "grant_type", "authorization_code") < 0)
+    if (append_form_field(body, 1024, &pos, "grant_type", "authorization_code") < 0)
         goto fail;
-    if (_append_form_field(body, 1024, &pos, "code", code) < 0)
+    if (append_form_field(body, 1024, &pos, "code", code) < 0)
         goto fail;
-    if (_append_form_field(body, 1024, &pos, "redirect_uri", redirect_uri) < 0)
+    if (append_form_field(body, 1024, &pos, "redirect_uri", redirect_uri) < 0)
         goto fail;
-    if (_append_form_field(body, 1024, &pos, "client_id", client_id) < 0)
+    if (append_form_field(body, 1024, &pos, "client_id", client_id) < 0)
         goto fail;
-    if (_append_form_field(body, 1024, &pos, "code_verifier", code_verifier) < 0)
+    if (append_form_field(body, 1024, &pos, "code_verifier", code_verifier) < 0)
         goto fail;
 
     /* Defense-in-depth: echo code_challenge + method for providers
      * (like xAI, #26990) that re-validate at token endpoint */
     if (code_challenge && code_challenge[0]) {
-        if (_append_form_field(body, 1024, &pos, "code_challenge", code_challenge) < 0)
+        if (append_form_field(body, 1024, &pos, "code_challenge", code_challenge) < 0)
             goto fail;
-        if (_append_form_field(body, 1024, &pos, "code_challenge_method", "S256") < 0)
+        if (append_form_field(body, 1024, &pos, "code_challenge_method", "S256") < 0)
             goto fail;
     }
 
@@ -325,7 +325,7 @@ fail:
  *  Parse token response JSON into oauth_token_t
  * ================================================================ */
 
-static oauth_token_t *_parse_token_response(const char *json_body) {
+static oauth_token_t *parse_token_response(const char *json_body) {
     char *err_msg = NULL;
     json_node_t *root = json_parse(json_body, &err_msg);
     if (!root) {
@@ -426,7 +426,7 @@ oauth_token_t *oauth_exchange_code(
     }
 
     /* Build form-urlencoded body */
-    char *body = _build_token_exchange_body(
+    char *body = build_token_exchange_body(
         code, redirect_uri, client_id, code_verifier, code_challenge);
     if (!body) {
         _set_error("Failed to build token exchange request body");
@@ -484,7 +484,7 @@ oauth_token_t *oauth_exchange_code(
         return NULL;
     }
 
-    oauth_token_t *tok = _parse_token_response(resp->body);
+    oauth_token_t *tok = parse_token_response(resp->body);
     http_response_free(resp);
     http_client_free(client);
 
@@ -813,7 +813,7 @@ void auth_store_free(auth_entry_t *entries, int count) {
  * ================================================================ */
 
 oauth_device_code_t *oauth_device_code_new(void);
-static oauth_token_t *_parse_token_response_helper(json_t *root);
+static oauth_token_t *parse_token_response_helper(json_t *root);
 
 oauth_device_code_t *oauth_device_code_new(void) {
     oauth_device_code_t *dc = (oauth_device_code_t *)calloc(1, sizeof(oauth_device_code_t));
@@ -846,12 +846,12 @@ oauth_device_code_t *oauth_device_code_request(
     /* Build form-urlencoded body */
     char body[2048];
     size_t pos = 0;
-    if (_append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
         _set_error("Failed to build device code request body");
         return NULL;
     }
     if (scope && scope[0]) {
-        if (_append_form_field(body, sizeof(body), &pos, "scope", scope) < 0) {
+        if (append_form_field(body, sizeof(body), &pos, "scope", scope) < 0) {
             _set_error("Failed to build device code request body (scope)");
             return NULL;
         }
@@ -972,16 +972,16 @@ oauth_token_t *oauth_device_code_poll(
     /* Build body: grant_type=urn:ietf:params:oauth:grant-type:device_code */
     char body[2048];
     size_t pos = 0;
-    if (_append_form_field(body, sizeof(body), &pos,
+    if (append_form_field(body, sizeof(body), &pos,
             "grant_type", "urn:ietf:params:oauth:grant-type:device_code") < 0) {
         _set_error("Failed to build poll body");
         return NULL;
     }
-    if (_append_form_field(body, sizeof(body), &pos, "device_code", device_code) < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "device_code", device_code) < 0) {
         _set_error("Failed to build poll body (device_code)");
         return NULL;
     }
-    if (_append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
         _set_error("Failed to build poll body (client_id)");
         return NULL;
     }
@@ -1054,11 +1054,11 @@ oauth_token_t *oauth_device_code_poll(
     http_free(h);
 
     /* Parse token response */
-    oauth_token_t *tok = _parse_token_response_helper(root);
+    oauth_token_t *tok = parse_token_response_helper(root);
     json_free(root);
 
     if (!tok) {
-        /* _parse_token_response_helper sets last_error */
+        /* parse_token_response_helper sets last_error */
         return NULL;
     }
 
@@ -1066,8 +1066,8 @@ oauth_token_t *oauth_device_code_poll(
 }
 
 /* Internal helper: parse token from already-parsed JSON root.
- * Same as _parse_token_response but takes json_t* instead of string. */
-static oauth_token_t *_parse_token_response_helper(json_t *root) {
+ * Same as parse_token_response but takes json_t* instead of string. */
+static oauth_token_t *parse_token_response_helper(json_t *root) {
     if (!root || root->type != JSON_OBJECT) {
         _set_error("Token response is not a JSON object");
         return NULL;
@@ -1219,15 +1219,15 @@ oauth_token_t *oauth_refresh_token(
     /* Build body: grant_type=refresh_token */
     char body[2048];
     size_t pos = 0;
-    if (_append_form_field(body, sizeof(body), &pos, "grant_type", "refresh_token") < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "grant_type", "refresh_token") < 0) {
         _set_error("Failed to build refresh body");
         return NULL;
     }
-    if (_append_form_field(body, sizeof(body), &pos, "refresh_token", refresh_token) < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "refresh_token", refresh_token) < 0) {
         _set_error("Failed to build refresh body (refresh_token)");
         return NULL;
     }
-    if (_append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
+    if (append_form_field(body, sizeof(body), &pos, "client_id", client_id) < 0) {
         _set_error("Failed to build refresh body (client_id)");
         return NULL;
     }
@@ -1274,7 +1274,7 @@ oauth_token_t *oauth_refresh_token(
         return NULL;
     }
 
-    oauth_token_t *tok = _parse_token_response(resp->body);
+    oauth_token_t *tok = parse_token_response(resp->body);
     http_resp_free(resp);
     http_free(h);
 
@@ -1300,7 +1300,7 @@ extern bool crypto_random_bytes(unsigned char *buf, size_t len);
  *  Build xAI OAuth authorize URL
  * ================================================================ */
 
-static char *_xai_build_authorize_url(const char *redirect_uri,
+static char *xai_build_authorize_url(const char *redirect_uri,
                                        const char *code_challenge,
                                        const char *state,
                                        const char *nonce) {
@@ -1336,7 +1336,7 @@ static char *_xai_build_authorize_url(const char *redirect_uri,
 }
 
 /* Simple URL percent-decode in-place (replaces %XX with actual byte) */
-static char *_simple_url_decode(const char *src) {
+static char *simple_url_decode(const char *src) {
     if (!src) return NULL;
     size_t len = strlen(src);
     char *out = (char *)malloc(len + 1);
@@ -1363,7 +1363,7 @@ static char *_simple_url_decode(const char *src) {
  *  Parse xAI OAuth callback HTTP GET
  * ================================================================ */
 
-static int _parse_xai_callback(int fd,
+static int parse_xai_callback(int fd,
                                 char **out_code,
                                 char **out_state,
                                 char **out_error) {
@@ -1411,7 +1411,7 @@ static int _parse_xai_callback(int fd,
         if (eq) {
             *eq = '\0';
             char *val = eq + 1;
-            char *decoded = _simple_url_decode(val);
+            char *decoded = simple_url_decode(val);
             if (!decoded) { tok = strtok(NULL, "&"); continue; }
             if (strcmp(tok, "code") == 0) code = strdup(decoded);
             else if (strcmp(tok, "state") == 0) state = strdup(decoded);
@@ -1435,7 +1435,7 @@ static int _parse_xai_callback(int fd,
  *  Send success HTML response
  * ================================================================ */
 
-static void _send_callback_response(int fd) {
+static void send_callback_response(int fd) {
     const char *body =
         "<!DOCTYPE html><html><head><meta charset='utf-8'>"
         "<title>Hermes xAI OAuth</title>"
@@ -1561,7 +1561,7 @@ oauth_token_t *xai_oauth_callback_login(int timeout_sec) {
     for (int i = 0; i < 32; i++)
         snprintf(nonce + i*2, 3, "%02x", rand_buf[i]);
 
-    char *auth_url = _xai_build_authorize_url(
+    char *auth_url = xai_build_authorize_url(
         redirect_uri, code_challenge, state, nonce);
     if (!auth_url) {
         _set_error("Failed to build authorize URL");
@@ -1601,14 +1601,14 @@ oauth_token_t *xai_oauth_callback_login(int timeout_sec) {
         return NULL;
     }
 
-    if (_parse_xai_callback(client_fd, &code, &cb_state, &cb_error) != 0) {
+    if (parse_xai_callback(client_fd, &code, &cb_state, &cb_error) != 0) {
         _set_error("Failed to parse OAuth callback request");
         free(auth_url); free(code_verifier); free(code_challenge);
         close(client_fd); close(server_fd);
         return NULL;
     }
 
-    _send_callback_response(client_fd);
+    send_callback_response(client_fd);
     close(client_fd);
     close(server_fd);
 

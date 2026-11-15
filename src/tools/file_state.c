@@ -10,7 +10,7 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_file_state_u_lock_for @ tools/file_state.py:_lock_for */
+/* PoP: tools_file_state_u_lock_for @ tools/file_state.py:lock_for */
 int tools_file_state_u_lock_for(const char *arg) {
     /* Python: get-or-create per-path threading.Lock. Arg = resolved path. */
     if (!arg || !*arg) { printf("\n"); return 0; }

@@ -4,8 +4,8 @@
  * Pure helpers ported from hermes_cli/worktree_ops.py (50 defs, previously 0
  * ported).
  *
- *   wo_normalize_bash_path <- _normalize_git_bash_path
- *   wo_within_root         <- _path_is_within_root
+ *   wo_normalize_bash_path <- normalize_git_bash_path
+ *   wo_within_root         <- path_is_within_root
  *   wo_include_entries     <- _worktreeinclude_entries
  *
  * The git execution / worktree setup / maintenance half stays in Python.
@@ -18,7 +18,7 @@
 #include <string.h>
 
 /* ===========================================================================
- *  _normalize_git_bash_path  (worktree_ops.py:_normalize_git_bash_path)
+ *  normalize_git_bash_path  (worktree_ops.py:normalize_git_bash_path)
  *
  *      if not p or sys.platform != "win32": return p
  *      m = re.match(r"^/(?:(?:cygdrive|mnt)/)?([a-zA-Z])/(.*)$", p)
@@ -31,7 +31,7 @@
  *  `is_windows` stands in for sys.platform != "win32". Caller frees.
  * =========================================================================== */
 
-/* PoP: _normalize_git_bash_path @ hermes_cli/worktree_ops.py:_normalize_git_bash_path */
+/* PoP: normalize_git_bash_path @ hermes_cli/worktree_ops.py:normalize_git_bash_path */
 char *wo_normalize_bash_path(const char *p, int is_windows)
 {
     if (!p || !is_windows) return p ? strdup(p) : NULL;
@@ -63,7 +63,7 @@ char *wo_normalize_bash_path(const char *p, int is_windows)
 }
 
 /* ===========================================================================
- *  _path_is_within_root  (worktree_ops.py:_path_is_within_root)
+ *  path_is_within_root  (worktree_ops.py:path_is_within_root)
  *
  *      try: path.relative_to(root); return True
  *      except ValueError: return False
@@ -74,7 +74,7 @@ char *wo_normalize_bash_path(const char *p, int is_windows)
  *  within "C:/a/b".
  * =========================================================================== */
 
-/* PoP: _path_is_within_root @ hermes_cli/worktree_ops.py:_path_is_within_root */
+/* PoP: path_is_within_root @ hermes_cli/worktree_ops.py:path_is_within_root */
 int wo_within_root(const char *path, const char *root)
 {
     if (!path || !root) return 0;

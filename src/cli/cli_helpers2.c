@@ -107,7 +107,7 @@ void cli_split_model_config_default(const json_t *raw_default, char **out_model,
     split_model_config_default(raw_default, out_model, out_provider);
 }
 
-/* PoP: _worktree_branch_pr_merged @ hermes_cli/worktree_ops.py:_worktree_branch_pr_merged */
+/* PoP: worktree_branch_pr_merged @ hermes_cli/worktree_ops.py:worktree_branch_pr_merged */
 int cli_worktree_branch_pr_merged(const char *worktree_path, int timeout, json_t *cache)
 {
     if (!worktree_path) return 0;
@@ -302,7 +302,7 @@ int cli_cleanup_all_terminals(void)
 
 #define H2_PACK_SPRAWL_THRESHOLD 15
 
-/* PoP: _maintain_pack_health @ hermes_cli/worktree_ops.py:_maintain_pack_health */
+/* PoP: maintain_pack_health @ hermes_cli/worktree_ops.py:maintain_pack_health */
 void cli_maintain_pack_health(const char *repo_root)
 {
     if (!repo_root) return;
@@ -398,7 +398,7 @@ int cli_normalize_moa_model(const char *model, char **out_provider, char **out_r
     return 1;
 }
 
-/* PoP: _worktree_commits_all_merged_upstream @ hermes_cli/worktree_ops.py:_worktree_commits_all_merged_upstream */
+/* PoP: worktree_commits_all_merged_upstream @ hermes_cli/worktree_ops.py:worktree_commits_all_merged_upstream */
 int cli_worktree_commits_all_merged_upstream(const char *worktree_path, int timeout,
                                              int max_ahead, json_t *cache)
 {
@@ -477,7 +477,7 @@ int cli_worktree_commits_all_merged_upstream(const char *worktree_path, int time
 #undef H2_MEMO
 }
 
-/* PoP: _worktree_has_unpushed_commits @ hermes_cli/worktree_ops.py:_worktree_has_unpushed_commits */
+/* PoP: worktree_has_unpushed_commits @ hermes_cli/worktree_ops.py:worktree_has_unpushed_commits */
 int cli_worktree_has_unpushed_commits(const char *worktree_path, int timeout)
 {
     if (!worktree_path) return 1;
@@ -697,7 +697,7 @@ int cli_tui_input_modes_active(void)
     return g_tui_input_modes_active;
 }
 
-/* Clear-side setter used by _reset_terminal_input_modes_on_exit
+/* Clear-side setter used by reset_terminal_input_modes_on_exit
  * (cli_gaps_2026_08_25.c): Python clears _tui_input_modes_active so a
  * re-armed cleanup never re-emits the reset codes. */
 void cli_mark_tui_input_modes_active_set(int v)
@@ -705,7 +705,7 @@ void cli_mark_tui_input_modes_active_set(int v)
     g_tui_input_modes_active = v ? 1 : 0;
 }
 
-/* PoP: _path_is_within_root @ hermes_cli/worktree_ops.py:_path_is_within_root */
+/* PoP: path_is_within_root @ hermes_cli/worktree_ops.py:path_is_within_root */
 int cli_path_is_within_root(const char *path, const char *root)
 {
     /* Path.relative_to() is lexical: child must equal root or sit below it

@@ -309,8 +309,8 @@ void skill_usage_get_record(const skill_usage_map_t *map,
     }
 }
 
-/* PoP: seed_record_if_missing @ skill_usage:_mutate_load */
-static int _mutate_load(const char *hermes_home,
+/* PoP: seed_record_if_missing @ skill_usage:mutate_load */
+static int mutate_load(const char *hermes_home,
                          skill_usage_map_t *map,
                          const char *skill_name)
 {
@@ -334,7 +334,7 @@ static int _mutate_load(const char *hermes_home,
     return idx;
 }
 
-static int _mutate_save(const char *hermes_home,
+static int mutate_save(const char *hermes_home,
                          skill_usage_map_t *map,
                          int idx)
 {
@@ -352,14 +352,14 @@ static int _mutate_save(const char *hermes_home,
 int skill_usage_bump_view(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     skill_usage_record_t *r = &map.records[idx];
     r->view_count++;
     skill_usage_now_iso(r->last_viewed_at);
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: bump_use @ skill_usage:skill_usage_bump_use */
@@ -368,14 +368,14 @@ int skill_usage_bump_view(const char *hermes_home, const char *skill_name)
 int skill_usage_bump_use(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     skill_usage_record_t *r = &map.records[idx];
     r->use_count++;
     skill_usage_now_iso(r->last_used_at);
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: bump_patch @ skill_usage:skill_usage_bump_patch */
@@ -384,14 +384,14 @@ int skill_usage_bump_use(const char *hermes_home, const char *skill_name)
 int skill_usage_bump_patch(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     skill_usage_record_t *r = &map.records[idx];
     r->patch_count++;
     skill_usage_now_iso(r->last_patched_at);
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* ================================================================
@@ -404,13 +404,13 @@ int skill_usage_bump_patch(const char *hermes_home, const char *skill_name)
 int skill_usage_mark_agent_created(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     skill_usage_record_t *r = &map.records[idx];
     strncpy(r->created_by, "agent", sizeof(r->created_by) - 1);
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: set_state @ skill_usage:skill_usage_set_state */
@@ -424,7 +424,7 @@ int skill_usage_set_state(const char *hermes_home, const char *skill_name,
         return -1; /* invalid state */
 
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     skill_usage_record_t *r = &map.records[idx];
@@ -436,7 +436,7 @@ int skill_usage_set_state(const char *hermes_home, const char *skill_name,
         r->archived_at[0] = '\0';
     }
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: set_pinned @ skill_usage:skill_usage_set_pinned */
@@ -446,12 +446,12 @@ int skill_usage_set_pinned(const char *hermes_home, const char *skill_name,
                             bool pinned)
 {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
 
     map.records[idx].pinned = pinned;
 
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: forget @ skill_usage:skill_usage_forget */
@@ -931,10 +931,10 @@ bool skill_usage_is_curator_managed_record(const skill_usage_record_t *record) {
 int skill_usage_set_sync(const char *hermes_home, const char *skill_name,
                           bool sync) {
     skill_usage_map_t map;
-    int idx = _mutate_load(hermes_home, &map, skill_name);
+    int idx = mutate_load(hermes_home, &map, skill_name);
     if (idx < 0) return -1;
     map.records[idx].sync = sync;
-    return _mutate_save(hermes_home, &map, idx);
+    return mutate_save(hermes_home, &map, idx);
 }
 
 /* PoP: is_sync_enabled @ tools/skill_usage.py:is_sync_enabled */
@@ -951,7 +951,7 @@ bool skill_usage_is_sync_enabled(const char *hermes_home, const char *skill_name
  * Walks hermes_home/skills/SKILL.md files, reads each skill name, filters per
  * the Python logic, and returns a sorted JSON array of names.
  */
-static bool _name_in_json_array(json_t *arr, const char *name) {
+static bool name_in_json_array(json_t *arr, const char *name) {
     if (!arr || arr->type != JSON_ARRAY || !name) return false;
     for (size_t i = 0; i < arr->c.count; i++) {
         json_t *item = arr->c.items[i];
@@ -962,7 +962,7 @@ static bool _name_in_json_array(json_t *arr, const char *name) {
     return false;
 }
 
-static json_t *_skill_usage_collect_names(const char *hermes_home,
+static json_t *skill_usage_collect_names(const char *hermes_home,
                                            bool curator_managed, bool include_unmanaged) {
     (void)include_unmanaged;
     json_t *result = json_array();
@@ -1038,8 +1038,8 @@ static json_t *_skill_usage_collect_names(const char *hermes_home,
             }
 
             /* Apply filters (mirror Python list_agent_created_skill_names) */
-            if (_name_in_json_array(hub_names, name)) continue;
-            if (_name_in_json_array(bundled_names, name)) {
+            if (name_in_json_array(hub_names, name)) continue;
+            if (name_in_json_array(bundled_names, name)) {
                 if (curator_managed) continue;
                 /* unmanaged: built-ins are excluded from curation candidates */
                 continue;
@@ -1092,16 +1092,16 @@ static json_t *_skill_usage_collect_names(const char *hermes_home,
 json_t *skill_usage_list_agent_created_names(const char *hermes_home) {
     /* Python: walk SKILL.md files, filter out hub/bundled/protected, require
      * _is_curator_managed_record on the usage record, return sorted list. */
-    /* Delegates to the shared walker: _skill_usage_collect_names handles the
+    /* Delegates to the shared walker: skill_usage_collect_names handles the
      * directory traversal + filtering, with a predicate for curator-managed. */
-    return _skill_usage_collect_names(hermes_home, /*curator_managed=*/true, /*include_unmanaged=*/false);
+    return skill_usage_collect_names(hermes_home, /*curator_managed=*/true, /*include_unmanaged=*/false);
 }
 
 /* PoP: list_unmanaged_skill_names @ tools/skill_usage.py:list_unmanaged_skill_names */
 json_t *skill_usage_list_unmanaged_names(const char *hermes_home) {
     /* Python: walk SKILL.md files, filter out hub/bundled/protected/curator-managed,
      * require is_curation_eligible, return sorted list. */
-    return _skill_usage_collect_names(hermes_home, /*curator_managed=*/false, /*include_unmanaged=*/true);
+    return skill_usage_collect_names(hermes_home, /*curator_managed=*/false, /*include_unmanaged=*/true);
 }
 
 /* PoP: _is_curator_managed @ tools/skill_usage.py:is_curator_managed */

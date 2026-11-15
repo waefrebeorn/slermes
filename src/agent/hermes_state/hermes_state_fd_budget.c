@@ -17,8 +17,8 @@
 
 /* ── hermes_state.py: FD budget + read-budget cluster ── */
 
-/* PoP: _open_fd_count @ hermes_state_readpool.py:_open_fd_count */
-int _open_fd_count(void) {
+/* PoP: open_fd_count @ hermes_state_readpool.py:open_fd_count */
+int open_fd_count(void) {
     static const char *const fd_dirs[] = { "/proc/self/fd", "/dev/fd", NULL };
     for (int i = 0; fd_dirs[i]; i++) {
         DIR *d = opendir(fd_dirs[i]);
@@ -36,8 +36,8 @@ int _open_fd_count(void) {
     return -1;
 }
 
-/* PoP: _fd_soft_limit @ hermes_state_readpool.py:_fd_soft_limit */
-int _fd_soft_limit(void) {
+/* PoP: fd_soft_limit @ hermes_state_readpool.py:fd_soft_limit */
+int fd_soft_limit(void) {
 #ifdef __linux__
     struct rlimit rl;
     if (getrlimit(RLIMIT_NOFILE, &rl) != 0) return -1;
@@ -54,9 +54,9 @@ static struct { double stamp; int cached; pthread_mutex_t lock; } _fd_cache = {
 #define FD_USAGE_CACHE_SECONDS 5.0
 #define FD_HEADROOM_RESERVE 16
 
-/* PoP: _fd_headroom_ok @ hermes_state_readpool.py:_fd_headroom_ok */
-bool _fd_headroom_ok(void) {
-    int soft = _fd_soft_limit();
+/* PoP: fd_headroom_ok @ hermes_state_readpool.py:fd_headroom_ok */
+bool fd_headroom_ok(void) {
+    int soft = fd_soft_limit();
     if (soft < 0) return true;
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -66,7 +66,7 @@ bool _fd_headroom_ok(void) {
     int cached = _fd_cache.cached;
     pthread_mutex_unlock(&_fd_cache.lock);
     if (!fresh) {
-        cached = _open_fd_count();
+        cached = open_fd_count();
         pthread_mutex_lock(&_fd_cache.lock);
         _fd_cache.stamp = now;
         _fd_cache.cached = cached;
@@ -76,8 +76,8 @@ bool _fd_headroom_ok(void) {
     return (soft - cached) > FD_HEADROOM_RESERVE;
 }
 
-/* PoP: _normalize_telegram_topic_profile_name @ hermes_state_telegram.py:_normalize_telegram_topic_profile_name */
-const char *_normalize_telegram_topic_profile_name(const char *profile_name) {
+/* PoP: normalize_telegram_topic_profile_name @ hermes_state_telegram.py:normalize_telegram_topic_profile_name */
+const char *normalize_telegram_topic_profile_name(const char *profile_name) {
     static char result[256];
     if (!profile_name || !*profile_name) return "default";
     while (*profile_name == ' ' || *profile_name == '\t') profile_name++;
@@ -89,8 +89,8 @@ const char *_normalize_telegram_topic_profile_name(const char *profile_name) {
     return result;
 }
 
-/* PoP: _database_has_content @ hermes_state_wal.py:_database_has_content */
-bool _database_has_content(sqlite3 *conn) {
+/* PoP: database_has_content @ hermes_state_wal.py:database_has_content */
+bool database_has_content(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(conn, "PRAGMA page_count", -1, &st, NULL) != SQLITE_OK)
@@ -122,8 +122,8 @@ bool is_transient_sqlite_error(const char *msg) {
     return false;
 }
 
-/* PoP: _is_transient_read_only_ioerr @ hermes_state.py:_is_transient_read_only_ioerr */
-bool _is_transient_read_only_ioerr(const char *msg, int attempt) {
+/* PoP: is_transient_read_only_ioerr @ hermes_state.py:is_transient_read_only_ioerr */
+bool is_transient_read_only_ioerr(const char *msg, int attempt) {
     if (attempt >= 3) return false;
     if (!msg) return false;
     char lower[1024];
