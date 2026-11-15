@@ -114,6 +114,7 @@ declare -A DEPS=(
   [model_switch]="src/hermes_cli/port_model_switch.o lib/libjson/json.o"
   [gateway_windows]="src/hermes_cli/windows.o lib/libregex/hermes_regex.o lib/libjson/json.o"
   [conversation_compression]="src/agent/port_conversation_compression.o lib/libjson/json.o"
+  [model_metadata]="src/agent/port_model_metadata.o lib/libjson/json.o"
   [hermes_state_keys]="src/agent/hermes_state/port_hermes_state_keys.o lib/libhash/hash.o lib/libjson/json.o"
   [kanban_schemas]="src/cli/port_kanban_schemas.o lib/libjson/json.o"
   [rfb_filter]="src/cli/port_rfb_filter.o lib/libjson/json.o"
