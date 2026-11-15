@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 # run_oracle.sh <port_name> [fixtures_subdir]
 #
-# The Hermes desktop app prepends its payload tools dir to PATH, and the
-# WindowsApps alias stubs in it (dirname, mkdir, grep, diff, bash) exit 0 for
-# --version but fail on real use with "Permission denied". That kills this
-# script at its first `dirname`. Filter those directories out using bash
-# builtins only, so the fix works even while PATH is still broken.
+# --- environment -----------------------------------------------------
+# This runner must work when the caller has set nothing up. A Hermes-promoted
+# background process inherits a pure Windows PATH: no /usr/bin, no
+# /mingw64/bin, no winlibs, and WindowsApps alias stubs that exit 0 for
+# --version then die with "Permission denied" on real use. So build the
+# environment here rather than trusting the caller.
+_sd="${0%/*}"
+_env_file="$_sd/../../../build/winlibs-env.sh"
+if [ -f "$_env_file" ]; then
+  . "$_env_file" >/dev/null 2>&1 || true
+fi
 _clean_path=""
 IFS=':' read -r -a _path_parts <<< "$PATH"
 for _d in "${_path_parts[@]}"; do
@@ -15,6 +21,15 @@ for _d in "${_path_parts[@]}"; do
   _clean_path="${_clean_path:+$_clean_path:}$_d"
 done
 PATH="$_clean_path"
+export PATH
+# Fallback tool dirs for hosts without build/winlibs-env.sh (Linux/macOS).
+# /usr/bin carries no gcc or python3 here. /mingw64/bin DOES carry gcc -- the
+# MSYS2 one whose backend is blocked on this box -- so it is only added when no
+# compiler is resolvable at all; otherwise it shadows the winlibs toolchain.
+[ -d /usr/bin ] && PATH="/usr/bin:$PATH"
+if ! command -v gcc >/dev/null 2>&1; then
+  [ -d /mingw64/bin ] && PATH="/mingw64/bin:$PATH"
+fi
 export PATH
 #
 # Generic "diff" oracle runner (contract B from README.md).
@@ -37,6 +52,17 @@ ROOT="$(pwd)"
 # All artifacts live under tests/oracle/build/ — never /tmp.
 # This keeps them version-controllable, inspectable, and survives reboots.
 BUILD_DIR="tests/oracle/build"
+# Temp files live under BUILD_DIR, not /tmp. A Hermes-promoted background
+# process has a broken /tmp mapping and mktemp then yields a path that does not
+# exist, so the oracle dies with FileNotFoundError. This also matches the
+# runner's own rule that artifacts stay under tests/oracle/build.
+_tmp_seq=0
+tmpfile() {
+  _tmp_seq=$((_tmp_seq + 1))
+  local _f="$BUILD_DIR/tmp_${NAME:-run}_$$_${_tmp_seq}"
+  : > "$_f"
+  printf '%s' "$_f"
+}
 mkdir -p "$BUILD_DIR"
 
 NAME="${1:?usage: run_oracle.sh <port_name> [fixtures_subdir]}"
@@ -89,6 +115,11 @@ LINKCMD=$(make -B -n slermes 2>/dev/null \
   | awk '/ -o slermes /{f=1} f{print} /libwhisper\.a/{exit}' \
   | sed -e ':a;N;$!ba;s/\\\n//g' \
   | sed 's/  */ /g; s/\\"//g')
+# ccache cannot exec the compiler from a Hermes-promoted background process
+# ("execute_noreturn of ... failed: No such file or directory") even though the
+# same gcc runs fine directly. The harness link is one invocation and gains
+# nothing from caching, so drop the wrapper.
+LINKCMD="${LINKCMD#ccache }"
 
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o "$BUILD_DIR/tt_$NAME" }
@@ -264,7 +295,7 @@ FLOAT_INT_EQUAL=$(python3 -c "import json,sys; d=json.load(open('$REG_JSON')); p
 
 normalize_out() {  # $1 = file
   local f="$1"
-  local tmp; tmp="$(mktemp)"
+  local tmp; tmp="$(tmpfile)"
   cp "$f" "$tmp"
   # Canonicalize every JSON line: JSON object key order is semantically
   # irrelevant, but C's serializer emits insertion order while Python's
@@ -272,7 +303,7 @@ normalize_out() {  # $1 = file
   # sort_keys=True so both sides compare on sorted keys (byte-identical diff).
   # float_int_equal additionally coerces integral floats to ints (C's JSON
   # writer renders 1.0 as "1" via %.0f; Python emits "1.0").
-  tmp2="$(mktemp)"
+  tmp2="$(tmpfile)"
   python3 - "$tmp" "$FLOAT_INT_EQUAL" <<'PY' > "$tmp2"
 import json, sys
 FLOAT_INT_EQUAL = sys.argv[2] == "1"
@@ -297,7 +328,7 @@ PY
   mv "$tmp2" "$tmp"
   # strip_patterns: treat each as a Python regex, remove every match
   if [ -n "$STRIP_PATTERNS" ]; then
-    tmp2="$(mktemp)"
+    tmp2="$(tmpfile)"
     python3 - "$tmp" "$STRIP_PATTERNS" <<'PY' > "$tmp2" || cp "$tmp" "$tmp2"
 import re, sys
 src, pats = sys.argv[1], sys.argv[2]
@@ -313,7 +344,7 @@ PY
   fi
   # strip_fields: drop top-level JSON object keys (per-line JSON)
   if [ -n "$STRIP_FIELDS" ]; then
-    tmp2="$(mktemp)"
+    tmp2="$(tmpfile)"
     python3 - "$tmp" $STRIP_FIELDS <<'PY' > "$tmp2"
 import json, sys
 src = sys.argv[1]; fields = set(sys.argv[2:])
@@ -381,7 +412,7 @@ for f in "$FIX"/*.in; do
   #   @NOW@ -> a fixed timestamp (so time-relative ops are deterministic and
   #            identical on both the C and Python sides)
   # We substitute both in a temp copy and feed that to BOTH sides.
-  FSUB="$(mktemp)"
+  FSUB="$(tmpfile)"
   # @NOTREPO@ -> a path guaranteed to be OUTSIDE any git repo and free of project
   # markers (so functions that probe cwd/git return deterministic empty output
   # instead of leaking the developer's real repo root / branch / commit hashes).
