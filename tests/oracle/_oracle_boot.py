@@ -20,6 +20,15 @@ then runs the requested oracle module.
 import os
 import sys
 
+# The C harness writes UTF-8 JSON. On Windows the default stdio codec is
+# cp1252, which raises UnicodeEncodeError the moment a case emits non-ASCII
+# and takes down the whole oracle run. Force UTF-8 on all three streams.
+for _stream in (sys.stdin, sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 # Developer tree = parent of the slermes checkout that contains this file.
 DEV_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 

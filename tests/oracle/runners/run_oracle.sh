@@ -71,11 +71,64 @@ fi
 # escapes quotes for display, so we strip \" and join continuations.
 LINKCMD=$(make -B -n slermes 2>/dev/null \
   | awk '/ -o slermes /{f=1} f{print} /libwhisper\.a/{exit}' \
-  | tr -d '\\\n' | sed 's/  */ /g; s/\\"//g')
+  | sed -e ':a;N;$!ba;s/\\\n//g' \
+  | sed 's/  */ /g; s/\\"//g')
 
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o "$BUILD_DIR/tt_$NAME" }
 LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
+# The slermes link recipe passes its objects through @slermes.link.rsp, a file
+# the recipe creates and deletes. `make -n` never creates it, so the extracted
+# command named a nonexistent file, the link failed, and -- because a failed
+# run was not treated as a failure -- the oracle reported MATCH against an
+# EMPTY C-side output. Substitute the real closure from `make print-objs`.
+OBJS=$(make -s --no-print-directory print-objs 2>/dev/null)
+if [ -z "$OBJS" ]; then
+  echo "FATAL: 'make print-objs' returned nothing; cannot link the harness" >&2
+  exit 2
+fi
+# Inlining 2,158 objects into the command line exceeds the Windows limit, and
+# the tail of the list is silently dropped -- the link then fails with ~125
+# undefined references from whichever object sat earliest. The real build uses
+# a response file for exactly this reason, so write one and pass @file.
+RSP="$BUILD_DIR/tt_$NAME.rsp"
+# The harness replaces src/main.o, but src/main.o also carries WinMain, which
+# -lSDL2main requires. Drop it from the object list and satisfy WinMain with a
+# stub, so the harness's own main() is the one that runs (linking src/main.o
+# too lets its main win and the harness prints the banner instead of JSON).
+OBJS=$(printf '%s\n' $OBJS | grep -v '^src/main\.o$' | tr '\n' ' ')
+: > "$RSP"
+for o in $OBJS; do echo "$o" >> "$RSP"; done
+STUB_OBJ="$BUILD_DIR/winmain_stub_$NAME.o"
+ccache gcc -c "$ROOT/tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
+  -I include -I lib >/dev/null 2>&1 \
+  || gcc -c "$ROOT/tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
+       -I include -I lib >/dev/null 2>&1 || true
+LINKCMD=${LINKCMD//@slermes.link.rsp/@$RSP}
+[ -f "$STUB_OBJ" ] && LINKCMD="$LINKCMD $STUB_OBJ"
+# The harness object must be on the link line. It used to be substituted in via
+# `src/main.o`, but src/main.o now lives inside the response file, so that
+# substitution matched nothing: the harness was compiled and then never linked,
+# and main() came from src/hermes_cli/main.o -- the binary printed the agent
+# banner and the oracle compared two empty outputs. Put it first so its main()
+# wins under -Wl,--allow-multiple-definition.
+HARNESS_OBJ="$BUILD_DIR/obj/tests/t_port_$NAME.o"
+if [ ! -f "$HARNESS_OBJ" ]; then
+  echo "FATAL: harness object $HARNESS_OBJ was not compiled" >&2
+  exit 2
+fi
+LINKCMD="$LINKCMD $HARNESS_OBJ"
+# There is no `diff` on this box: MSYS2 here ships no diffutils, and PATH
+# resolves the name to a WindowsApps alias stub that fails with "Permission
+# denied". Depending on an external diff would also make the runner fragile on
+# the Linux/macOS targets, so compare bytes with Python -- the runner already
+# requires python3 for the oracle side.
+files_equal() {
+  python3 -c 'import sys
+a = open(sys.argv[1], "rb").read()
+b = open(sys.argv[2], "rb").read()
+sys.exit(0 if a == b else 1)' "$1" "$2"
+}
 # Strip build-version metadata macros' malformed values (e.g. "0.19.0-slermes",
 # "2026.7.20") which contain multiple dots / undeclared identifiers that break
 # compilation of harnesses that #include the production .c files that expand
@@ -149,13 +202,20 @@ if ! python3 "$ROOT/tests/oracle/runners/mklink_dir.py" \
     echo "WARN: could not link \$TMPH/.hermes/hermes-agent -> $DEV_ROOT; oracles that resolve the live source through Path.home() will not find it" >&2
 fi
 
+# A stale harness binary must not be diffed, and a failed link must FAIL the
+# run. Previously the binary was left in place and the run continued: the
+# harness produced a 0-byte C output, the oracle read empty stdin, self-reported
+# "0 mismatches", and the runner exited 0. That is a false pass, and it is worse
+# than a red gate.
+rm -f "$BUILD_DIR/tt_$NAME"
 # shellcheck disable=SC2086
 bash -c "$COMPILE" >/tmp/oracle_compile.log 2>&1 || true
 # shellcheck disable=SC2086
 bash -c "$LINKCMD -Wl,--allow-multiple-definition" >/tmp/oracle_link.log 2>&1 || true
 if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
   echo "LINK FAILED for $NAME:" >&2
-  grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -5 >&2
+  grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -8 >&2
+  exit 1
 fi
 # Remove any stale subprocess-style binary from prior runs so a failed
 # link cannot be masked by diffing an old binary (false-pass bug).
@@ -336,7 +396,7 @@ for f in "$FIX"/*.in; do
   fi
   normalize_out "$ORACLE_OUT" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
   normalize_out "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json"
-  if diff -q "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json" "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json" >/dev/null; then
+  if files_equal "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json" "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"; then
     echo "$case: MATCH"
   else
     # Some oracles are self-summarizing: they print "MISMATCH ..." lines on

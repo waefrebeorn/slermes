@@ -68,13 +68,26 @@ TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64
 # command-line limit (~32k); gcc then reports "Argument list too long" and the
 # build dies at the final step with all objects already compiled. Put the
 # object list in a response file and pass @file instead.
-slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
+#
+# The list lives in a variable so `make print-objs` can hand the identical
+# closure to the oracle runner. The response file is created and deleted inside
+# one recipe, so `make -n` never produces it and a consumer that extracts the
+# link command verbatim references a file that does not exist.
+SLERMES_OBJS = $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
+slermes: $(SLERMES_OBJS)
 	@: > slermes.link.rsp; for o in $^; do echo $$o >> slermes.link.rsp; done
 	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lws2_32 -lpcre2-8 -ltre -lSDL2main \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS)) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@rm -f slermes.link.rsp
 	@echo "  slermes binary: $@ $$(ls -lh $@ | awk '{print $$5}')$(if $(WHISPER_LIBS), with whisper, without whisper)"
+
+# Print the resolved slermes object closure, one per line. Consumed by
+# tests/oracle/runners/run_oracle.sh, which links a harness against the same
+# objects the shipped binary uses.
+.PHONY: print-objs
+print-objs:
+	@for o in $(SLERMES_OBJS); do echo $$o; done
 
 # ncurses full-screen TUI build (shared libs from system)
 TUI_LIB_OBJ = $(filter-out lib/libcurses_widget/curses_widget.o, $(LIB_OBJ_FILTERED)) lib/libcurses_widget/curses_widget_tui.o
