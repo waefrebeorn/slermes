@@ -135,7 +135,19 @@ rm -rf "$TMPH"; mkdir -p "$TMPH/.hermes/cron"
 # developer tree (the slermes parent) so the oracles read the real source
 # without escaping the isolated home. DEV_ROOT = parent of the slermes root.
 DEV_ROOT="$(cd "$ROOT/.." && pwd)"
-ln -sfn "$DEV_ROOT" "$TMPH/.hermes/hermes-agent"
+# MSYS2's `ln -s` silently COPIES when it cannot create a symlink. Linking the
+# developer home that way copied all of C:/Users/eman5 -- 13 GB, including
+# .git-credentials -- into tests/oracle/build/home_<port>/ on every oracle run.
+# Use a real Windows directory link, and if that is unavailable leave the path
+# absent and WARN: a missing link fails loudly in the oracle that needs it,
+# while a copy fails silently and fills the disk.
+rm -rf "$TMPH/.hermes/hermes-agent"
+if command -v cmd >/dev/null 2>&1 && command -v cygpath >/dev/null 2>&1; then
+    cmd //c mklink //D "$(cygpath -w "$TMPH/.hermes/hermes-agent")" "$(cygpath -w "$DEV_ROOT")" >/dev/null 2>&1 || true
+fi
+if [ ! -e "$TMPH/.hermes/hermes-agent" ]; then
+    echo "WARN: could not link \$TMPH/.hermes/hermes-agent -> $DEV_ROOT; oracles that resolve the live source through Path.home() will not find it" >&2
+fi
 
 # shellcheck disable=SC2086
 bash -c "$COMPILE" >/tmp/oracle_compile.log 2>&1 || true
