@@ -142,10 +142,10 @@ DEV_ROOT="$(cd "$ROOT/.." && pwd)"
 # absent and WARN: a missing link fails loudly in the oracle that needs it,
 # while a copy fails silently and fills the disk.
 rm -rf "$TMPH/.hermes/hermes-agent"
-if command -v cmd >/dev/null 2>&1 && command -v cygpath >/dev/null 2>&1; then
-    cmd //c mklink //D "$(cygpath -w "$TMPH/.hermes/hermes-agent")" "$(cygpath -w "$DEV_ROOT")" >/dev/null 2>&1 || true
-fi
-if [ ! -e "$TMPH/.hermes/hermes-agent" ]; then
+# A directory junction needs no privilege (unlike a symlink, which needs
+# SeCreateSymbolicLinkPrivilege) and is transparent to POSIX path resolution.
+if ! python3 "$ROOT/tests/oracle/runners/mklink_dir.py" \
+        "$TMPH/.hermes/hermes-agent" "$DEV_ROOT" >/dev/null 2>&1; then
     echo "WARN: could not link \$TMPH/.hermes/hermes-agent -> $DEV_ROOT; oracles that resolve the live source through Path.home() will not find it" >&2
 fi
 
