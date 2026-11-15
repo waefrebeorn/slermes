@@ -28,6 +28,37 @@ WHISPER_LIBS := $(wildcard lib/whisper_cpp/lib/libwhisper.a lib/whisper_cpp/lib/
 # C11 Whisper: pure C11 replacement for whisper.cpp C++ wrapper
 C11_WHISPER_OBJ = lib/c11_whisper/c11_whisper_model.o lib/c11_whisper/c11_whisper_math.o lib/c11_whisper/c11_whisper_encoder.o lib/c11_whisper/c11_whisper_compat.o
 WHISPER_EXTRA_OBJ := $(if $(WHISPER_LIBS),$(C11_WHISPER_OBJ))
+
+# ── Object lists the link lines above reference ─────────────────────
+# Every $(VAR) named on a link line must be DEFINED. GNU make expands an
+# undefined variable to the empty string, so an omitted definition does not
+# fail -- it silently drops objects from the link. These four were referenced
+# by slermes/tui/desktop/desktop-gui and defined nowhere.
+
+# The pet objects already ride in CUPBOARD_PORT_MISC (see objects.mk), which is
+# part of PORT_OBJ. Defining PET_OBJ as those objects would link them twice, so
+# it is deliberately empty and the link lines keep working unchanged.
+PET_OBJ =
+
+# src/desktop_*.c does not build on this toolchain yet: desktop_app.c uses
+# ICC_EDIT_CLASSES, which is not a Win32 commctrl constant. Until that is
+# fixed the desktop targets cannot carry objects, and saying so beats an
+# invisible empty expansion.
+DESKTOP_CORE_OBJ =
+DESKTOP_APP_OBJ =
+DESKTOP_GUI_OBJ =
+DESKTOP_LIBS_FILTER =
+
+ifeq ($(strip $(DESKTOP_CORE_OBJ)$(DESKTOP_APP_OBJ)$(DESKTOP_GUI_OBJ)),)
+$(warning desktop targets link no desktop objects: src/desktop_*.c does not build yet (ICC_EDIT_CLASSES))
+endif
+
+# Ordering-only targets. Object compilation is parallel via -j, so these
+# exist to sequence links; they carry no object list of their own.
+PHASE1_OBJ =
+PHASE2_OBJ =
+PHASE3_OBJ =
+PHASE4_OBJ =
 LIB_OBJ_FILTERED := $(if $(WHISPER_LIBS),$(filter-out lib/whisper_cpp/whisper_stubs.o,$(LIB_OBJ)),$(LIB_OBJ))
 # Detect system ncurses libs (full paths — app_desktop.o always needs them)
 NCURSES_LIBS := $(wildcard /usr/lib/x86_64-linux-gnu/libncursesw.so /usr/lib/x86_64-linux-gnu/libncursesw.so.6)
