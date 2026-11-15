@@ -312,8 +312,18 @@ class CIndexer:
                     # the membership test fails for EVERY file under one of the
                     # two interpreters and the whole C index comes back empty.
                     rel_str = str(rel).replace('\\', '/')
-                    # Skip files not in the build (old stubs, dead code)
-                    if self._build_files and rel_str not in self._build_files and '/ports/' not in rel_str:
+                    # Only files the build actually links may carry parity credit.
+                    # Parity is a claim about the BINARY, so an unlinked
+                    # translation unit must never move the number.
+                    #
+                    # An earlier version also exempted any path containing the
+                    # literal '/ports/'. Measured: exactly ONE file in the tree
+                    # matches that (src/ports/agent/transports/hermes_tools_mcp_server.c,
+                    # worth 5 features), while the 347 port_*/ *_ports.c twins do
+                    # NOT contain '/ports/' and were excluded by the base filter
+                    # anyway. The exemption is gone so the rule is simply
+                    # "linked, or it does not count".
+                    if self._build_files and rel_str not in self._build_files:
                         continue
                     try:
                         st = fpath.stat()

@@ -166,6 +166,18 @@ def main():
         for f in fixed:
             print(f"  - {f}")
 
+    # ---- port-object gate --------------------------------------------------
+    # Parity is a claim about the linked binary, so a translation unit that
+    # carries PoP credit must be in build/objects.mk. Runs here so the one gate
+    # people already invoke covers it.
+    port_gate = subprocess.run([sys.executable, str(ROOT / "tests" / "verify_port_objects.py")],
+                               capture_output=True, text=True,
+                               encoding="utf-8", errors="replace")
+    sys.stdout.write(port_gate.stdout)
+    if port_gate.returncode != 0:
+        print("port object gate: FAIL")
+        return 1
+
     # ---- link check -------------------------------------------------------
     # -fsyntax-only proves a file parses. It does NOT prove the symbols resolve.
     # A duplicate definition or a missing object leaves every source "clean"
