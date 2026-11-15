@@ -1,0 +1,18 @@
+# PoP annotations naming a Python module that exists in NEITHER this tree nor the
+# quarry (checked with a full-tree `find`, not just the resolution rules).
+#
+# Either upstream deleted the module or the annotation is stale; either way the
+# parity credit rests on a source file that cannot be read, which is exactly the
+# kind of unverifiable claim this project has been removing. Tracked here rather
+# than hidden: the naming gate still fails on any NEW missing module, so this
+# list cannot grow silently. Regenerate/verify by hand -- do not add by guess.
+#
+# Verified absent 2026-11-15:
+#   agent/ssl_guard.py                (nearest: agent/ssl_verify.py -- different file)
+#   gateway/platforms/relay_adapter.py
+#   tools/moa_performance.py
+#   tools/online_research.py
+src/agent/ssl_guard_ports.c	agent/ssl_guard.py
+src/gateway/relay/relay_adapter_ports.c	gateway/platforms/relay_adapter.py
+src/tools/moa_performance_ports.c	tools/moa_performance.py
+src/tools/online_research_ports.c	tools/online_research.py

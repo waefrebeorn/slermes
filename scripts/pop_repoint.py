@@ -46,6 +46,7 @@ def resolve(mod: str):
     """Return the canonical annotation path for `mod`, or None."""
     norm = mod.replace("\\", "/").lstrip("./")
     stem = Path(norm).stem
+    parts = norm.split("/")
 
     # 1. exact
     for root in ROOTS:
@@ -60,14 +61,13 @@ def resolve(mod: str):
         return hits[0][1].as_posix()
     if len(hits) > 1:
         top = parts[0] if len(parts) > 1 else None
-        same = [h for h in hits if top and h[1].parts[0].as_posix() == top]
+        same = [h for h in hits if top and h[1].parts[0] == top]
         if len(same) == 1:
             return same[0][1].as_posix()
 
     # 3/4. rehomed platform package. Two shapes:
     #     gateway/platforms/<pkg>/<file>.py -> plugins/platforms/<pkg>/<file>.py
     #     gateway/platforms/<name>.py        -> plugins/platforms/<name>/adapter.py
-    parts = norm.split("/")
     if len(parts) >= 2:
         pkg = parts[-2]
         fname = parts[-1]
