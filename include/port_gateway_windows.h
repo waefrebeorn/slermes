@@ -37,4 +37,17 @@ char **gw_run_argv(const char *python_exe, const char *const *profile_arg,
 int gw_owns_service(const char *name, const char *binpath,
                     const char *const *hermes_roots);
 
+/* _quote_cmd_script_arg -- quote one argument inside a .cmd body. Refuses a
+ * newline: returns NULL and sets *err. Caller frees both. */
+char *gw_quote_cmd(const char *value, char **err);
+
+/* _stdin_is_interactive -- isatty and console_mode_ok is not False.
+ * console_mode_ok: 1 true, 0 false, -1 unknown (not Windows). */
+int gw_stdin_interactive(int isatty, int console_mode_ok);
+
+/* _prepend_pythonpath -- non-empty entries plus the existing PYTHONPATH,
+ * joined with ';' (Windows os.pathsep). NULL when there is nothing to set. */
+char *gw_prepend_pythonpath(const char *const *entries, int n_entries,
+                            const char *existing);
+
 #endif /* PORT_GATEWAY_WINDOWS_H */

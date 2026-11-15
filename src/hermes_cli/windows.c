@@ -217,3 +217,106 @@ int gw_owns_service(const char *name, const char *binpath,
     free(candidate);
     return owned;
 }
+
+/* PoP: _quote_cmd_script_arg @ hermes_cli/gateway_windows.py:_quote_cmd_script_arg
+ *
+ *      if "\r" in value or "\n" in value: raise ValueError(...)
+ *      if not value: return '""'
+ *      if not re.search(r'[ \t"]', value): return value
+ *      return '"' + value.replace('"', '""') + '"'
+ */
+char *gw_quote_cmd(const char *value, char **err)
+{
+    if (err) *err = NULL;
+    if (!value) return strdup("\"\"");
+
+    size_t n = strlen(value);
+    for (size_t i = 0; i < n; i++) {
+        if (value[i] == '\r' || value[i] == '\n') {
+            if (err) {
+                *err = (char *)malloc(96);
+                if (*err) snprintf(*err, 96,
+                                   "refusing to quote value containing newline: %s", value);
+            }
+            return NULL;
+        }
+    }
+    if (n == 0) return strdup("\"\"");
+
+    /* Only quote when a space, tab or double quote is present. */
+    int needs = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (value[i] == ' ' || value[i] == '\t' || value[i] == '"') { needs = 1; break; }
+    }
+    if (!needs) return strdup(value);
+
+    size_t quotes = 0;
+    for (size_t i = 0; i < n; i++) if (value[i] == '"') quotes++;
+    char *out = (char *)malloc(n + quotes + 3);
+    if (!out) return NULL;
+    size_t k = 0;
+    out[k++] = '"';
+    for (size_t i = 0; i < n; i++) {
+        if (value[i] == '"') { out[k++] = '"'; out[k++] = '"'; }
+        else out[k++] = value[i];
+    }
+    out[k++] = '"';
+    out[k] = '\0';
+    return out;
+}
+
+/* PoP: _stdin_is_interactive @ hermes_cli/gateway_windows.py:_stdin_is_interactive
+ *      return isatty and console_mode_ok is not False
+ * `console_mode_ok` is 1 true, 0 false, -1 where the fact does not exist.
+ */
+int gw_stdin_interactive(int isatty, int console_mode_ok)
+{
+    return isatty && console_mode_ok != 0;
+}
+
+/* PoP: _prepend_pythonpath @ hermes_cli/gateway_windows.py:_prepend_pythonpath
+ *      clean_entries = [e for e in entries if e]
+ *      if not clean_entries: return
+ *      existing = os.environ.get("PYTHONPATH", "")
+ *      if existing: clean_entries.append(existing)
+ *      env_overlay["PYTHONPATH"] = os.pathsep.join(clean_entries)
+ * Returns NULL when there is nothing to set (Python leaves the key alone).
+ */
+char *gw_prepend_pythonpath(const char *const *entries, int n_entries,
+                            const char *existing)
+{
+    if (!entries || n_entries <= 0) return NULL;
+
+    size_t count = 0;
+    for (int i = 0; i < n_entries; i++)
+        if (entries[i] && entries[i][0]) count++;
+    if (count == 0) return NULL;
+
+    size_t total = 0;
+    for (int i = 0; i < n_entries; i++)
+        if (entries[i] && entries[i][0]) total += strlen(entries[i]) + 1;
+    if (existing && existing[0]) total += strlen(existing) + 1;
+
+    char *out = (char *)malloc(total + 1);
+    if (!out) return NULL;
+    out[0] = '\0';
+
+    size_t k = 0;
+    int first = 1;
+    for (int i = 0; i < n_entries; i++) {
+        if (!entries[i] || !entries[i][0]) continue;
+        if (!first) out[k++] = ';';
+        size_t l = strlen(entries[i]);
+        memcpy(out + k, entries[i], l);
+        k += l;
+        first = 0;
+    }
+    if (existing && existing[0]) {
+        if (!first) out[k++] = ';';
+        size_t l = strlen(existing);
+        memcpy(out + k, existing, l);
+        k += l;
+    }
+    out[k] = '\0';
+    return out;
+}
