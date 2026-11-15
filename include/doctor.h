@@ -1,5 +1,5 @@
-#ifndef HERMES_DOCTOR_H
-#define HERMES_DOCTOR_H
+#ifndef DOCTOR_H
+#define DOCTOR_H
 
 #include "json.h"
 
@@ -16,4 +16,4 @@ const char *doctor_tool_availability_detail(const char *toolset, const char *kan
 }
 #endif
 
-#endif /* HERMES_DOCTOR_H */
+#endif /* DOCTOR_H */
