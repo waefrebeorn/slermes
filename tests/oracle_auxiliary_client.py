@@ -24,6 +24,9 @@ WANTED = {
         "_CODEX_SPARK_COMPACTION_THRESHOLD",
         "_field", "_anthropic_event_has_content",
         "_OR_HEADERS_BASE", "build_or_headers",
+        "_FAST_MODEL_FAMILIES", "_FAST_MODEL_EXCLUDE",
+        "_API_KEY_PROVIDER_AUX_MODELS_FALLBACK", "_FAST_MODEL_TASKS",
+        "_PROVIDER_VISION_MODELS", "_model_recency_key",
     ],
     "agent/model_metadata.py": [
         "_bare_codex_slug", "is_codex_900k_base", "_codex_variant_base",
@@ -88,9 +91,24 @@ class _VI:
 
 ns["get_version_info"] = lambda: _VI()
 
-# build_or_headers falls back to load_config_readonly() when or_config is None;
-# every case passes an explicit config, so the fallback is never taken.
+# load_config_readonly() is never reached: every case passes an explicit config.
 ns["load_config_readonly"] = lambda: {}
+
+# _fast_model_from_catalog's selection core, extracted verbatim from its body
+# (lines 770-783): sort the ids newest-first by _model_recency_key, then walk
+# _FAST_MODEL_FAMILIES and take the first id containing a family and no exclude.
+# The network fetch above it cannot run here, so only this half is compared.
+_FM_SRC = (
+    "def _fast_model_from_catalog_ids(catalog_ids):\n"
+    "    ids = sorted((str(m) for m in catalog_ids), key=_model_recency_key, reverse=True)\n"
+    "    for family in _FAST_MODEL_FAMILIES:\n"
+    "        for model_id in ids:\n"
+    "            lowered = model_id.lower()\n"
+    "            if family in lowered and not any(x in lowered for x in _FAST_MODEL_EXCLUDE):\n"
+    "                return model_id\n"
+    "    return ''\n"
+)
+exec(compile(_FM_SRC, "<fast-model core>", "exec"), ns)
 
 
 def recency_key(model_id):
@@ -175,6 +193,20 @@ for line in sys.stdin:
         if c.get("cfgtll") is not None:
             cfg["response_cache_ttl"] = c["cfgtll"]
         want = ns["build_or_headers"](cfg)
+    elif fn == "fastselect":
+        # Reconstruct the catalog from the emitted case: the harness sends the
+        # first id plus the count, so rebuild the full list from the raw line.
+        ids = c.get("ids") or []
+        if not ids:
+            # fall back to the single emitted arg when the list was not sent
+            ids = [arg]
+        want = ns["_fast_model_from_catalog_ids"](ids)
+    elif fn == "auxfallback":
+        want = ns["_API_KEY_PROVIDER_AUX_MODELS_FALLBACK"].get(arg, "")
+    elif fn == "fasttask":
+        want = arg in ns["_FAST_MODEL_TASKS"]
+    elif fn == "visionstatic":
+        want = ns["_PROVIDER_VISION_MODELS"].get(arg)
     else:
         continue
 

@@ -565,3 +565,193 @@ ac_build_or_headers(const char *env_cache, int cfg_cache,
     }
     return h;
 }
+
+/* ── _model_recency_key comparison ─────────────────────────────────────────
+ * The Python sorts by a tuple of (0, 0.0, text) / (1, float, "") tags, so
+ * text tokens sort before numeric ones and numbers compare numerically --
+ * a plain string compare of the canonical form would put "10" before "5.4".
+ */
+static int
+ac_recency_cmp(const char *a, const char *b)
+{
+    const char *pa = a, *pb = b;
+    for (;;) {
+        if (!*pa && !*pb)
+            return 0;
+        if (!*pa)
+            return -1;
+        if (!*pb)
+            return 1;
+
+        int ta = (pa[0] == 't');
+        int tb = (pb[0] == 't');
+        const char *va = pa + 2, *vb = pb + 2;
+
+        if (ta != tb)
+            return ta ? -1 : 1;              /* text token before number token */
+
+        if (ta) {
+            /* compare the text up to the next '|' */
+            const char *ea = strchr(va, '|');
+            const char *eb = strchr(vb, '|');
+            size_t la = ea ? (size_t)(ea - va) : strlen(va);
+            size_t lb = eb ? (size_t)(eb - vb) : strlen(vb);
+            size_t m = la < lb ? la : lb;
+            int c = strncmp(va, vb, m);
+            if (c)
+                return c;
+            if (la != lb)
+                return la < lb ? -1 : 1;
+        } else {
+            double da = strtod(va, NULL), db = strtod(vb, NULL);
+            if (da < db) return -1;
+            if (da > db) return 1;
+        }
+        pa = strchr(pa, '|');
+        pb = strchr(pb, '|');
+        if (!pa && !pb) return 0;
+        if (!pa) return -1;
+        if (!pb) return 1;
+        pa++; pb++;
+    }
+}
+
+/* ── _fast_model_from_catalog: the selection core ──────────────────────────
+ * Python sorts the live catalog ids by _model_recency_key (newest first) then
+ * walks _FAST_MODEL_FAMILIES, returning the first id that contains the family
+ * and none of the excludes. The fetch itself is network -- this is the pure
+ * half, so it is testable without a catalog.
+ */
+void
+ac_fast_model_select(const char **ids, int n, char *out, size_t cap)
+{
+    static const char *const families[] = {
+        "gpt-mini-latest", "gpt-nano-latest", "claude-haiku-latest",
+        "gemini-flash-latest", "gpt-5.4-nano", "gpt-5.4-mini", "gpt-5-mini",
+        "haiku-4.5", "gemini-3.6-flash", "flash-lite",
+        "-nano", "-mini", "-flash", "haiku",
+    };
+    static const char *const exclude[] = {
+        "thinking", "reason", "-r1", "minilm", ":batch", ":free",
+        "o1-", "o3-", "o4-", "codex", "audio", "-vl", "embed",
+        "-tts", "-transcribe", "-realtime", "-image", "-search-preview",
+    };
+    if (!out || cap == 0)
+        return;
+    out[0] = '\0';
+    if (!ids || n <= 0)
+        return;
+
+    /* index sort, newest first (stable so ties keep catalog order) */
+    int *order = (int *)malloc(sizeof(int) * (size_t)n);
+    char **keys = (char **)malloc(sizeof(char *) * (size_t)n);
+    if (!order || !keys) { free(order); free(keys); return; }
+    for (int i = 0; i < n; i++) {
+        order[i] = i;
+        keys[i] = NULL;
+    }
+    for (int i = 0; i < n; i++) {
+        keys[i] = (char *)malloc(512);
+        if (!keys[i]) { for (int k = 0; k < i; k++) free(keys[k]); free(order); free(keys); return; }
+        ac_model_recency_key(ids[i], keys[i], 512);
+    }
+    /* simple insertion sort on the recency key, descending */
+    for (int i = 1; i < n; i++) {
+        int cur = order[i];
+        char curkey[512];
+        snprintf(curkey, sizeof(curkey), "%s", keys[cur]);
+        int j = i - 1;
+        while (j >= 0 && ac_recency_cmp(keys[order[j]], curkey) < 0) {
+            order[j + 1] = order[j];
+            j--;
+        }
+        order[j + 1] = cur;
+    }
+
+    for (size_t f = 0; f < sizeof(families) / sizeof(families[0]); f++) {
+        for (int k = 0; k < n; k++) {
+            const char *id = ids[order[k]];
+            size_t il = strlen(id);
+            char *low = (char *)malloc(il + 1);
+            if (!low)
+                continue;
+            for (size_t x = 0; x < il; x++)
+                low[x] = (char)tolower((unsigned char)id[x]);
+            low[il] = '\0';
+            if (strstr(low, families[f]) != NULL) {
+                int bad = 0;
+                for (size_t e = 0; e < sizeof(exclude) / sizeof(exclude[0]); e++)
+                    if (strstr(low, exclude[e]) != NULL) { bad = 1; break; }
+                if (!bad) {
+                    snprintf(out, cap, "%s", id);
+                    free(low);
+                    goto done;
+                }
+            }
+            free(low);
+        }
+    }
+done:
+    for (int i = 0; i < n; i++) free(keys[i]);
+    free(order);
+    free(keys);
+}
+
+/* ── _API_KEY_PROVIDER_AUX_MODELS_FALLBACK ───────────────────────────────── */
+void
+ac_aux_model_fallback(const char *provider, char *out, size_t cap)
+{
+    static const struct { const char *k, *v; } table[] = {
+        {"gemini", "gemini-3.6-flash"},
+        {"zai", "glm-4.5-flash"},
+        {"kimi-coding", "kimi-k2-turbo-preview"},
+        {"stepfun", "step-3.5-flash"},
+        {"kimi-coding-cn", "kimi-k2-turbo-preview"},
+        {"gmi", "google/gemini-3.1-flash-lite-preview"},
+        {"anthropic", "claude-haiku-4-5-20251001"},
+        {"ai-gateway", "google/gemini-3-flash"},
+        {"opencode-zen", "gemini-3-flash"},
+        {"opencode-go", "glm-5"},
+        {"kilocode", "google/gemini-3.6-flash"},
+        {"ollama-cloud", "nemotron-3-nano:30b"},
+        {"tencent-tokenhub", "hy4-preview"},
+        {"tencent-tokenplan", "hy4-preview"},
+    };
+    if (!out || cap == 0)
+        return;
+    out[0] = '\0';
+    if (!provider)
+        return;
+    for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++)
+        if (strcmp(provider, table[i].k) == 0) {
+            snprintf(out, cap, "%s", table[i].v);
+            return;
+        }
+}
+
+/* ── _FAST_MODEL_TASKS / _PROVIDER_VISION_MODELS ────────────────────────── */
+int
+ac_task_can_prefer_fast(const char *task)
+{
+    return task && strcmp(task, "title_generation") == 0;
+}
+
+int
+ac_provider_vision_static(const char *provider, char *out, size_t cap)
+{
+    static const struct { const char *k, *v; } table[] = {
+        {"xiaomi", "mimo-v2.5"},
+        {"zai", "glm-5.3-flash"},
+    };
+    if (!out || cap == 0)
+        return 0;
+    out[0] = '\0';
+    if (!provider)
+        return 0;
+    for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++)
+        if (strcmp(provider, table[i].k) == 0) {
+            snprintf(out, cap, "%s", table[i].v);
+            return 1;
+        }
+    return 0;
+}

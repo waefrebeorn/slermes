@@ -74,6 +74,22 @@ int ac_anthropic_event_has_content(const json_t *event);
 json_t *ac_build_or_headers(const char *env_cache, int cfg_cache,
                             const char *env_ttl, double cfg_ttl);
 
+/* _fast_model_from_catalog: the pure selection half (the fetch is network).
+ * Sorts `ids` newest-first by _model_recency_key, then walks the fast-model
+ * families and returns the first id containing a family and no exclude.
+ * Empty when nothing qualifies. */
+void ac_fast_model_select(const char **ids, int n, char *out, size_t cap);
+
+/* _API_KEY_PROVIDER_AUX_MODELS_FALLBACK lookup. */
+void ac_aux_model_fallback(const char *provider, char *out, size_t cap);
+
+/* _FAST_MODEL_TASKS membership. */
+int ac_task_can_prefer_fast(const char *task);
+
+/* _resolve_provider_vision_default: the static table half (the profile lookup
+ * needs the provider registry). Returns 1 when a static entry matched. */
+int ac_provider_vision_static(const char *provider, char *out, size_t cap);
+
 #ifdef __cplusplus
 }
 #endif

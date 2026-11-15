@@ -242,5 +242,87 @@ int main(void)
             }
         }
     }
+
+    /* ── catalog selection ── */
+    {
+        static const char *const CATS[][8] = {
+            {"gpt-5.4-nano", "gpt-5.4-mini", "claude-haiku-4.5", "grok-4.6"},
+            {"gpt-5-mini", "gpt-5.10-mini", "gpt-5.9-mini"},
+            {"gemini-3.6-flash", "gemini-2.5-flash", "gemini-3-flash-lite"},
+            {"claude-3-5-sonnet", "claude-haiku-4.5", "claude-opus-5"},
+            {"llama-3-1-8b", "mistral-small"},
+            {"gpt-5.4-nano-thinking", "gpt-5.4-nano"},
+            {"gpt-5.4-nano:free", "gpt-5.4-nano"},
+            {"o1-mini", "o3-mini", "gpt-5.4-mini"},
+            {"text-embedding-3-small", "gpt-5.4-mini"},
+            {"gpt-5.4-turbo-vl", "gpt-5.4-mini"},
+            {"nvidia/nemotron-3-nano:30b", "gpt-5.4-nano"},
+            {"gemini-flash-latest", "gemini-3.6-flash"},
+            {"gpt-nano-latest", "gpt-5.4-nano"},
+            {"haiku", "gpt-5.4-mini"},
+            {"my-haiku-model", "gpt-5.4-mini"},
+            {"deepseek-r1", "gpt-5.4-mini"},
+        };
+        static const int CATN[] = {4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+        for (size_t c = 0; c < sizeof(CATN) / sizeof(CATN[0]); c++) {
+            char picked[512];
+            ac_fast_model_select(CATS[c], CATN[c], picked, sizeof(picked));
+            printf("{\"fn\":\"fastselect\",\"ids\":[");
+            for (int k = 0; k < CATN[c]; k++) {
+                if (k) putchar(',');
+                jstr(CATS[c][k]);
+            }
+            printf("],\"out\":");
+            jstr(picked);
+            fputs("}\n", stdout);
+        }
+    }
+
+    /* ── aux-model fallback table ── */
+    {
+        static const char *const PROVS[] = {
+            "gemini", "zai", "kimi-coding", "stepfun", "kimi-coding-cn", "gmi",
+            "anthropic", "ai-gateway", "opencode-zen", "opencode-go", "kilocode",
+            "ollama-cloud", "tencent-tokenhub", "tencent-tokenplan",
+            "deepinfra", "nous", "openai", "", "GEMINI",
+        };
+        for (size_t i = 0; i < sizeof(PROVS) / sizeof(PROVS[0]); i++) {
+            char out[256];
+            ac_aux_model_fallback(PROVS[i], out, sizeof(out));
+            printf("{\"fn\":\"auxfallback\",\"arg\":");
+            jstr(PROVS[i]);
+            printf(",\"out\":");
+            jstr(out);
+            fputs("}\n", stdout);
+        }
+    }
+
+    /* ── fast-model task set ── */
+    {
+        static const char *const TASKS[] = {
+            "title_generation", "title-generation", "", "summarize", ""
+        };
+        for (size_t i = 0; i < sizeof(TASKS) / sizeof(TASKS[0]); i++) {
+            printf("{\"fn\":\"fasttask\",\"arg\":");
+            jstr(TASKS[i] ? TASKS[i] : "");
+            printf(",\"out\":%d}\n", ac_task_can_prefer_fast(TASKS[i]));
+        }
+    }
+
+    /* ── provider vision static table ── */
+    {
+        static const char *const PROVS[] = {
+            "xiaomi", "zai", "gemini", "openai", "", "XIAOMI",
+        };
+        for (size_t i = 0; i < sizeof(PROVS) / sizeof(PROVS[0]); i++) {
+            char out[256];
+            int hit = ac_provider_vision_static(PROVS[i], out, sizeof(out));
+            printf("{\"fn\":\"visionstatic\",\"arg\":");
+            jstr(PROVS[i]);
+            printf(",\"hit\":%d,\"out\":", hit);
+            if (hit) jstr(out); else fputs("null", stdout);
+            fputs("}\n", stdout);
+        }
+    }
     return 0;
 }
