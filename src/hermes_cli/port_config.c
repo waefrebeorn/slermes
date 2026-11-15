@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libjson/json.h"
+
 /* ── _split_key_path ────────────────────────────────────────────────────────
  * Split a dotted config-key path, honouring backslash-escaped dots
  * (``a\.b`` -> one segment ``a.b``). A backslash before any other character is
@@ -269,4 +271,218 @@ cfg_recommended_update_command_for_method(const char *method, char *out, size_t 
             return;
         }
     snprintf(out, cap, "%s", "hermes update");
+}
+
+/* ── config-structure validation ───────────────────────────────────────────
+ * PoP: ac_require_fields            @ hermes_cli/config.py:_require_fields
+ * PoP: ac_validate_entry_list       @ hermes_cli/config.py:_validate_entry_list
+ * PoP: ac_validate_custom_providers @ hermes_cli/config.py:_validate_custom_providers
+ * PoP: ac_validate_fallback_model   @ hermes_cli/config.py:_validate_fallback_model
+ *
+ * Issues are modelled as a JSON array of {severity, message, hint}, mirroring
+ * ConfigIssue. validate_config_structure itself is NOT here: it loads config
+ * from disk.
+ */
+
+static void
+ac_cfg_issue(json_t *issues, const char *severity, const char *message,
+             const char *hint)
+{
+    if (!issues || issues->type != JSON_ARRAY)
+        return;
+    json_t *e = json_object();
+    if (!e)
+        return;
+    json_set(e, "severity", json_string(severity ? severity : ""));
+    json_set(e, "message", json_string(message ? message : ""));
+    json_set(e, "hint", json_string(hint ? hint : ""));
+    json_append(issues, e);
+}
+
+/* Python type(x).__name__ for a JSON value. */
+static const char *
+ac_json_typename(const json_t *v)
+{
+    if (!v)
+        return "NoneType";
+    switch (v->type) {
+    case JSON_OBJECT: return "dict";
+    case JSON_ARRAY:  return "list";
+    case JSON_STRING: return "str";
+    case JSON_NUMBER: return "int";      /* Python ints are the common case */
+    case JSON_BOOL:   return "bool";
+    case JSON_NULL:   return "NoneType";
+    }
+    return "unknown";
+}
+
+/* Substitute {i} and {type} in a message template. Caller frees. */
+static char *
+ac_fmt_msg(const char *tpl, int i, const char *type)
+{
+    size_t cap = strlen(tpl) + 64;
+    char *out = (char *)malloc(cap);
+    if (!out)
+        return NULL;
+    size_t w = 0;
+    for (const char *p = tpl; *p && w + 1 < cap; p++) {
+        if (p[0] == '{' && p[1] == 'i' && p[2] == '}') {
+            w += (size_t)snprintf(out + w, cap - w, "%d", i);
+            p += 2;
+        } else if (p[0] == '{' && p[1] == 't' && p[2] == 'y' && p[3] == 'p' &&
+                   p[4] == 'e' && p[5] == '}') {
+            w += (size_t)snprintf(out + w, cap - w, "%s", type);
+            p += 5;
+        } else {
+            out[w++] = *p;
+        }
+    }
+    out[w] = '\0';
+    return out;
+}
+
+void
+ac_require_fields(json_t *issues, json_t *entry, const char *label,
+                  const char **fields, int nfields, const char *suffix)
+{
+    if (!entry || entry->type != JSON_OBJECT)
+        return;
+    for (int i = 0; i < nfields; i++) {
+        const char *field = fields[2 * i];
+        const char *hint = fields[2 * i + 1];
+        json_t *v = json_obj_get(entry, field);
+        int falsy = (!v) ||
+                    (v->type == JSON_NULL) ||
+                    (v->type == JSON_STRING && (!v->str_val || !v->str_val[0])) ||
+                    (v->type == JSON_ARRAY && v->c.count == 0) ||
+                    (v->type == JSON_OBJECT && v->c.count == 0) ||
+                    (v->type == JSON_BOOL && !v->bool_val);
+        if (falsy) {
+            char msg[1024];
+            snprintf(msg, sizeof(msg), "%s is missing '%s' field%s",
+                     label ? label : "", field, suffix ? suffix : "");
+            ac_cfg_issue(issues, "warning", msg, hint ? hint : "");
+        }
+    }
+}
+
+void
+ac_validate_entry_list(json_t *issues, json_t *entries, const char *label,
+                       const char **fields, int nfields,
+                       const char *severity, const char *message,
+                       const char *hint)
+{
+    if (!entries || entries->type != JSON_ARRAY)
+        return;
+    for (size_t i = 0; i < entries->c.count; i++) {
+        json_t *entry = entries->c.items[i];
+        if (!entry || entry->type != JSON_OBJECT) {
+            char *m = ac_fmt_msg(message ? message : "", (int)i,
+                                 ac_json_typename(entry));
+            ac_cfg_issue(issues, severity ? severity : "warning",
+                         m ? m : "", hint ? hint : "");
+            free(m);
+        } else {
+            char lbl[512];
+            snprintf(lbl, sizeof(lbl), "%s[%d]", label ? label : "", (int)i);
+            ac_require_fields(issues, entry, lbl, fields, nfields, "");
+        }
+    }
+}
+
+static const char *const CP_REQUIRED_FIELDS[] = {
+    "name", "Add a name, e.g.: name: my-provider",
+    "base_url", "Add the API endpoint URL, e.g.: base_url: https://api.example.com/v1",
+};
+static const char *const FB_REQUIRED_FIELDS[] = {
+    "provider", "Add: provider: openrouter (or another provider)",
+    "model", "Add: model: <model-name>",
+};
+static const char *const FB_SINGLE_REQUIRED_FIELDS[] = {
+    "provider", "Add: provider: openrouter (or another provider)",
+    "model", "Add: model: anthropic/claude-sonnet-4 (or another model)",
+};
+
+static const char *const CP_LIST_HINT =
+    "Change to:\n  custom_providers:\n    - name: my-provider\n"
+    "      base_url: https://...\n      api_key: ...";
+
+void
+ac_validate_custom_providers(json_t *issues, json_t *cp)
+{
+    static const char *const like_fields[] =
+        {"base_url", "api_key", "rate_limit_delay", "api_mode"};
+
+    if (!cp) {
+        /* Absent key: the Python never sees it (the caller .get()s it). */
+        return;
+    }
+    if (cp->type == JSON_OBJECT) {
+        ac_cfg_issue(issues, "error",
+                     "custom_providers is a dict — it must be a YAML list "
+                     "(items prefixed with '-')", CP_LIST_HINT);
+        /* suspicious = sorted(set(cp) & LIKE_FIELDS), rendered as a Python list */
+        char buf[512];
+        size_t w = (size_t)snprintf(buf, sizeof(buf), "[");
+        int first = 1;
+        for (size_t k = 0; k < sizeof(like_fields) / sizeof(like_fields[0]); k++) {
+            if (!json_obj_get(cp, like_fields[k]))
+                continue;
+            if (!first)
+                w += (size_t)snprintf(buf + w, sizeof(buf) - w, ", ");
+            w += (size_t)snprintf(buf + w, sizeof(buf) - w, "'%s'", like_fields[k]);
+            first = 0;
+        }
+        snprintf(buf + w, sizeof(buf) - w, "]");
+        if (!first) {
+            char msg[1024];
+            snprintf(msg, sizeof(msg),
+                     "Root-level keys %s look like custom_providers entry fields",
+                     buf);
+            ac_cfg_issue(issues, "warning", msg,
+                         "These should be indented under a '- name: ...' list "
+                         "entry, not at root level");
+        }
+    } else if (cp->type == JSON_ARRAY) {
+        ac_validate_entry_list(issues, cp, "custom_providers",
+                               CP_REQUIRED_FIELDS, 2,
+                               "warning",
+                               "custom_providers[{i}] is not a dict (got {type})",
+                               "Each entry should have at minimum: name, base_url");
+    } else {
+        char msg[512];
+        snprintf(msg, sizeof(msg),
+                 "custom_providers is a %s — it must be a YAML list (items "
+                 "prefixed with '-'); legacy custom_providers entries are "
+                 "ignored until it is", ac_json_typename(cp));
+        ac_cfg_issue(issues, "error", msg, CP_LIST_HINT);
+    }
+}
+
+void
+ac_validate_fallback_model(json_t *issues, json_t *fb)
+{
+    static const char *const CHANGE_HINT =
+        "Change to:\n  fallback_model:\n    provider: openrouter\n"
+        "    model: anthropic/claude-sonnet-4";
+
+    if (!fb || fb->type == JSON_NULL)
+        return;
+    if (fb->type == JSON_ARRAY) {
+        ac_validate_entry_list(issues, fb, "fallback_model",
+                               FB_REQUIRED_FIELDS, 2,
+                               "error",
+                               "fallback_model[{i}] should be a dict, got {type}",
+                               "Each entry needs provider + model");
+    } else if (fb->type != JSON_OBJECT) {
+        char msg[512];
+        snprintf(msg, sizeof(msg),
+                 "fallback_model should be a dict with 'provider' and 'model', "
+                 "got %s", ac_json_typename(fb));
+        ac_cfg_issue(issues, "error", msg, CHANGE_HINT);
+    } else if (fb->c.count > 0) {
+        ac_require_fields(issues, fb, "fallback_model",
+                          FB_SINGLE_REQUIRED_FIELDS, 2,
+                          " — fallback will be disabled");
+    }
 }

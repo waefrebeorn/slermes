@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 
+#include "libjson/json.h"
+
 // _split_key_path: split a dotted key, honouring backslash-escaped dots.
 // Writes up to `max` NUL-terminated segments into `out`; returns the segment
 // count, or -1 on overflow / bad args.
@@ -28,5 +30,16 @@ int cfg_is_uv_tool_install(void);
 int cfg_is_unsupported_install_method(const char *method);
 void cfg_format_unsupported_install_warning(const char *method,
                                             char *out, size_t cap);
+
+/* config-structure validation. `issues` is a JSON array; each entry appended
+ * is {severity, message, hint}, mirroring ConfigIssue. */
+void ac_require_fields(json_t *issues, json_t *entry, const char *label,
+                       const char **fields, int nfields, const char *suffix);
+void ac_validate_entry_list(json_t *issues, json_t *entries, const char *label,
+                            const char **fields, int nfields,
+                            const char *severity, const char *message,
+                            const char *hint);
+void ac_validate_custom_providers(json_t *issues, json_t *cp);
+void ac_validate_fallback_model(json_t *issues, json_t *fb);
 
 #endif /* SLERMES_PORT_CONFIG_H */
