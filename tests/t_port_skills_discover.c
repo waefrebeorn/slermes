@@ -1,6 +1,6 @@
 /*
  * t_port_skills_discover.c — faithful verification harness for
- * _discover_skills_in_dir() in lib/libskillsync/skills_sync.c.
+ * discover_skills_in_dir() in lib/libskillsync/skills_sync.c.
  *
  * The fixture (argv[1]) describes a skill tree; one directive per line:
  *   skill   <name>            -> dir <root>/<name>/SKILL.md  (a skill)
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 
     discover_ctx_t ctx;
     memset(&ctx, 0, sizeof(ctx));
-    _discover_skills_in_dir(root, &ctx);
+    discover_skills_in_dir(root, &ctx);
 
     /* emit sorted names */
     /* simple insertion sort by name */

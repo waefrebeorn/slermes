@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     fseek(f, 0, SEEK_END); long sz = ftell(f); fseek(f, 0, SEEK_SET);
     char *buf = malloc(sz + 1); fread(buf, 1, sz, f); buf[sz] = 0; fclose(f);
 
-    const char *err = NULL;
+    char *err = NULL;
     json_t *root = json_parse(buf, &err);
     free(buf);
     if (!root) { fprintf(stderr, "json parse fail: %s\n", err ? err : "?"); return 2; }

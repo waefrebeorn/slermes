@@ -58,25 +58,25 @@ int main(int argc, char **argv) {
         } else if (strcmp(name, "get_beep_volume") == 0) {
             json_t *vc = json_obj_get(c, "voice_cfg");
             printf("%.6g\n", voice_get_beep_volume(vc));
-        } else if (strcmp(name, "_sounddevice_output_allowed") == 0) {
-            printf("%s\n", _sounddevice_output_allowed() ? "true" : "false");
+        } else if (strcmp(name, "sounddevice_output_allowed") == 0) {
+            printf("%s\n", sounddevice_output_allowed() ? "true" : "false");
         } else if (strcmp(name, "_is_wsl") == 0) {
             printf("%s\n", _is_wsl() ? "true" : "false");
-        } else if (strcmp(name, "_is_wsl2_env") == 0) {
-            printf("%s\n", _is_wsl2_env() ? "true" : "false");
-        } else if (strcmp(name, "_wsl_powershell_tts_available") == 0) {
-            printf("%s\n", _wsl_powershell_tts_available() ? "true" : "false");
-        } else if (strcmp(name, "_voice_debug_enabled") == 0) {
-            printf("%s\n", _voice_debug_enabled() ? "true" : "false");
-        } else if (strcmp(name, "_vad_log") == 0) {
+        } else if (strcmp(name, "is_wsl2_env") == 0) {
+            printf("%s\n", is_wsl2_env() ? "true" : "false");
+        } else if (strcmp(name, "wsl_powershell_tts_available") == 0) {
+            printf("%s\n", wsl_powershell_tts_available() ? "true" : "false");
+        } else if (strcmp(name, "voice_debug_enabled") == 0) {
+            printf("%s\n", voice_debug_enabled() ? "true" : "false");
+        } else if (strcmp(name, "vad_log") == 0) {
             json_t *m = json_obj_get(c, "msg");
             const char *msg = m && m->type == JSON_STRING ? m->str_val : "";
-            _vad_log(msg);
+            vad_log(msg);
             printf("null\n");
-        } else if (strcmp(name, "_load_voice_stop_phrases") == 0) {
+        } else if (strcmp(name, "load_voice_stop_phrases") == 0) {
             json_t *vc = json_obj_get(c, "voice_cfg");
             int count = 0;
-            char **phrases = _load_voice_stop_phrases(vc, &count);
+            char **phrases = load_voice_stop_phrases(vc, &count);
             json_t *arr = json_array();
             for (int i = 0; i < count; i++) json_append(arr, json_string(phrases[i]));
             char *s = json_serialize(arr); printf("%s\n", s); free(s); free(arr);

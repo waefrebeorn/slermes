@@ -59,7 +59,7 @@ int main(void) {
         if (strcmp(op, "tok") == 0) {
             char *d = decode_nl(rest);
             char toks[64][64];
-            int n = tool_search_tokenize(d ? d : "", toks, 64);
+            int n = tool_search_assemble(d ? d : "", toks, 64);
             printf("{\"op\":\"tok\",\"in\":");
             emit_json_string(d ? d : "");
             printf(",\"tokens\":[");

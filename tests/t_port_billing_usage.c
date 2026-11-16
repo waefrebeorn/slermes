@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
                    out ? json_dumps(json_string(out), 0) : "null");
             free(out);
         } else if (strcmp(op, "model") == 0) {
-            json_t *root = json_parse(rest, strlen(rest));
+            json_t *root = json_parse(rest, NULL);
             usage_model_t *m = usage_model_from_account(root);
             if (!m) {
                 printf("{\"op\":\"model\",\"out\":null}\n");
