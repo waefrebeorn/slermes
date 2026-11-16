@@ -6,10 +6,10 @@
 | S2 | header exists and is included | 2 |
 | S3 | harness exists | 63 |
 | S4 | oracle exists | 30 |
-| S5 | instrument green (harness + oracle run) | 1 |
-| S6 | parity: cases MATCH | 7 |
+| S5 | instrument green (harness + oracle run) | 0 |
+| S6 | parity: cases MATCH | 8 |
 
-**118 / 2601** Python modules have a C unit; **7** reach parity.
+**118 / 2601** Python modules have a C unit; **8** reach parity.
 S5/S6 measured from the oracle-suite run under `tests/oracle/build/` (ports with no run are not measured, not assumed).
 
 | Package | Modules | At parity |
@@ -21,7 +21,7 @@ S5/S6 measured from the oracle-suite run under `tests/oracle/build/` (ports with
 | docker | 1 | 0 |
 | evals | 121 | 0 |
 | gateway | 328 | 3 |
-| hermes_cli | 728 | 1 |
+| hermes_cli | 728 | 2 |
 | hermes_platform | 11 | 0 |
 | optional-skills | 88 | 0 |
 | plugins | 81 | 0 |
