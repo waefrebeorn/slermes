@@ -455,6 +455,11 @@ ISO="$ISO ORACLE_FIXDIR=$(pwd)/$FIX"
 # into pure-function outputs anyway. Also do NOT override PATH: the python
 # oracle must keep the venv on PATH (httpx and other deps live there).
 ISO="$ISO HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= NO_PROXY= no_proxy= ALL_PROXY= all_proxy="
+# The batch oracle writes JSON that legitimately contains non-ASCII (U+2500 box
+# rules, accented text). On a cp1252 console stdout, print() raises
+# UnicodeEncodeError mid-line, truncating the output and turning a correct port
+# into a MISMATCH. Force UTF-8 on the interpreter's stdio for both sides.
+ISO="$ISO PYTHONIOENCODING=utf-8 PYTHONUTF8=1"
 
 mark harness-link
 # ---- phase 1: run the C harness for every case --------------------------

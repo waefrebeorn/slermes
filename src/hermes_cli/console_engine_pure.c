@@ -303,13 +303,96 @@ static char **posix_shlex_split(const char *line, char *errbuf, size_t errsz) {
     return argv;
 }
 
+/* Windows-safe splitter (hermes_cli/_subprocess_compat.split_command_line).
+ *
+ * On POSIX, _split_line is exactly shlex.split(posix=True). On Windows,
+ * shlex.split(posix=True) eats backslashes -- C:\Users\me\out.txt silently
+ * becomes C:Usersmeout.txt (#83934) and valid hook scripts report "not
+ * executable" (#78293) -- so Python uses posix=False and then strips ONE layer
+ * of matching quotes per token.
+ *
+ * posix=False keeps the quote characters in the token (they still group), so
+ * the post-pass is what removes them: `a 'single quoted' b` -> ['a',
+ * "'single quoted'", 'b'] -> ['a', 'single quoted', 'b'], while a backslash
+ * stays literal: `echo hello\ world` -> ['echo', 'hello\', 'world'].
+ */
+static char **windows_shlex_split(const char *line, char *errbuf, size_t errsz) {
+    size_t cap = 8, n = 0;
+    char **argv = (char **)malloc(sizeof(char *) * cap);
+    size_t cur_cap = 64;
+    char *cur = (char *)malloc(cur_cap);
+    size_t cl = 0;
+    int quote = 0; /* 0 none, 1 single, 2 double */
+    size_t L = strlen(line);
+    size_t i = 0;
+    int rc = 0;
+    while (i < L) {
+        char c = line[i];
+        if (quote) {
+            /* quotes are RETAINED in non-posix mode; the post-pass strips one
+             * matching layer. A backslash is an ordinary character. */
+            if (c == (quote == 1 ? '\'' : '"')) quote = 0;
+            if (cl + 2 >= cur_cap) { cur_cap *= 2; cur = (char *)realloc(cur, cur_cap); }
+            cur[cl++] = c; i++; continue;
+        }
+        if (c == '\'' || c == '"') {
+            quote = (c == '\'') ? 1 : 2;
+            if (cl + 2 >= cur_cap) { cur_cap *= 2; cur = (char *)realloc(cur, cur_cap); }
+            cur[cl++] = c; i++; continue;
+        }
+        if (isspace((unsigned char)c)) {
+            if (cl) {
+                cur[cl++] = '\0';
+                if (n == cap) { cap *= 2; argv = (char **)realloc(argv, sizeof(char *) * cap); }
+                argv[n++] = cur;
+                cur = (char *)malloc(cur_cap);
+                cl = 0;
+            }
+            i++; continue;
+        }
+        if (cl + 2 >= cur_cap) { cur_cap *= 2; cur = (char *)realloc(cur, cur_cap); }
+        cur[cl++] = c; i++;
+    }
+    if (quote) {
+        rc = 1;
+        snprintf(errbuf, errsz, "Could not parse command: unbalanced quote");
+    }
+    if (cl) {
+        cur[cl++] = '\0';
+        if (n == cap) { cap *= 2; argv = (char **)realloc(argv, sizeof(char *) * cap); }
+        argv[n++] = cur;
+    } else {
+        free(cur);
+    }
+    if (rc) {
+        for (size_t k = 0; k < n; k++) free(argv[k]);
+        free(argv);
+        return NULL;
+    }
+    /* Strip one layer of matching surrounding quotes per token. */
+    for (size_t k = 0; k < n; k++) {
+        size_t l = strlen(argv[k]);
+        if (l >= 2 && (argv[k][0] == '\'' || argv[k][0] == '"') && argv[k][l-1] == argv[k][0]) {
+            memmove(argv[k], argv[k] + 1, l - 2);
+            argv[k][l-2] = '\0';
+        }
+    }
+    argv = (char **)realloc(argv, sizeof(char *) * (n + 1));
+    argv[n] = NULL;
+    return argv;
+}
+
 /* --- _split_line -------------------------------------------------  */
 /* Returns a JSON array string of tokens (or an error marker). We return
  * the tokens as a malloc'd JSON array string for easy oracle diffing. */
 char *console_engine_split_line(const char *line, char *errbuf, size_t errsz) {
     if (errbuf) errbuf[0] = '\0';
     if (!line) return strdup("[]");
+#ifdef _WIN32
+    char **argv = windows_shlex_split(line, errbuf, errsz);
+#else
     char **argv = posix_shlex_split(line, errbuf, errsz);
+#endif
     if (!argv) return NULL; /* unbalanced quote -> caller raises  */
 /* build JSON array */
     size_t total = 2;
@@ -318,7 +401,10 @@ char *console_engine_split_line(const char *line, char *errbuf, size_t errsz) {
     res[0] = '[';
     size_t o = 1;
     for (size_t k = 0; argv[k]; k++) {
-        if (k) res[o++] = ',';
+        /* Python's json.dumps default separators are (', ', ': '), so a list
+         * renders as ["a", "b"]. Emitting a bare ',' produced ["a","b"], which
+         * the oracle's json.dumps(toks) never matches. */
+        if (k) { res[o++] = ','; res[o++] = ' '; }
         res[o++] = '"';
         for (char *q = argv[k]; *q; q++) {
             if (*q == '"' || *q == '\\') res[o++] = '\\';
@@ -423,6 +509,52 @@ char *console_engine_format_sessions(const char *json_sessions) {
 }
 
 /* --- _format_job ------------------------------------------------- */
+/* cron.jobs.effective_job_state -- the operator-facing state.
+ *
+ * Reads ONLY "state". The port used to fall back to job["status"], which is not
+ * a scheduler state: {"job_id":"j2","name":"one-off","status":"done"} displayed
+ * as "[done]" where Python derives "scheduled" (no "state" key at all).
+ *
+ *   stored = str(job.get("state")).strip()          # None -> ""
+ *   stored in {completed, error}          -> stored
+ *   not enabled:                              (enabled defaults True)
+ *       paused marker or stored == paused -> "paused"
+ *       otherwise                         -> stored or "paused"
+ *   stored == paused or paused_at         -> "scheduled"
+ *   otherwise                             -> stored or "scheduled"
+ */
+static int ce_json_truthy(const json_t *v) {
+    if (!v) return 0;
+    switch (v->type) {
+        case JSON_NULL:   return 0;
+        case JSON_BOOL:   return v->bool_val ? 1 : 0;
+        case JSON_NUMBER: return v->num_val != 0.0;
+        case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+        case JSON_ARRAY:
+        case JSON_OBJECT: return v->c.count > 0;
+    }
+    return 0;
+}
+
+static char *ce_effective_job_state(json_t *job) {
+    const char *raw = json_get_str(job, "state", NULL);
+    char stored[256];
+    snprintf(stored, sizeof(stored), "%s", raw ? raw : "");
+    char *s = stored;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t l = strlen(s);
+    while (l > 0 && (s[l-1]==' '||s[l-1]=='\t'||s[l-1]=='\n'||s[l-1]=='\r')) s[--l] = '\0';
+
+    const int enabled = json_get_bool(job, "enabled", 1) ? 1 : 0;
+    const int paused_at = ce_json_truthy(json_object_get(job, "paused_at"));
+    const int paused_marker = (strcmp(s, "paused") == 0) || paused_at;
+
+    if (strcmp(s, "completed") == 0 || strcmp(s, "error") == 0) return strdup(s);
+    if (!enabled) return strdup(paused_marker ? "paused" : (*s ? s : "paused"));
+    if (strcmp(s, "paused") == 0 || paused_at) return strdup("scheduled");
+    return strdup(*s ? s : "scheduled");
+}
+
 char *console_engine_format_job(const char *json_job, const char *action) {
     if (!json_job) return strdup("");
     json_t *job = json_parse(json_job, NULL);
@@ -430,12 +562,12 @@ char *console_engine_format_job(const char *json_job, const char *action) {
     const char *job_id = json_get_str(job, "id", "");
     if (!job_id || !*job_id) job_id = json_get_str(job, "job_id", "?");
     const char *name = json_get_str(job, "name", "(unnamed)");
-    /* effective_job_state: job.get("state") or job.get("status") or "?" */
-    const char *state = json_get_str(job, "state", NULL);
-    if (!state) state = json_get_str(job, "status", "?");
+    /* effective_job_state(job): reads "state" only, never "status". */
+    char *state = ce_effective_job_state(job);
     char buf[512];
     snprintf(buf, sizeof(buf), "%s job: %s (%s) [%s]", action ? action : "",
              name ? name : "(unnamed)", job_id ? job_id : "?", state ? state : "?");
+    free(state);
     json_free(job);
     return strdup(buf);
 }

@@ -15,7 +15,6 @@ ALLOW = {
     "sta_oracle_command_clamp.py:24": "hermes_cli.commands._clamp_command_names",
     "sta_oracle_command_priority.py:35": "hermes_cli.commands._prioritize_telegram_menu_commands",
     "sta_oracle_command_sanitize.py:20": "hermes_cli.commands._sanitize_slack_name",
-    "sta_oracle_console_engine_pure.py:52": "arity:_table_summary called with 2 positional, def takes 1..1",
     "sta_oracle_context_compressor_pure.py:27": "agent.context_compressor._truncate_tool_call_args_json",
     "sta_oracle_copilot_acp_toolcall.py:12": "agent.copilot_acp_client._completion_to_stream_chunks",
     "sta_oracle_credential_persistence.py:20": "agent.credential_persistence._fingerprint_value",
