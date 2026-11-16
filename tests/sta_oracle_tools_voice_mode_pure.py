@@ -33,6 +33,7 @@ class _MockConfigPackage:
 
 
 import sys, types
+import os
 _hc_mod = types.ModuleType("hermes_cli")
 _hc_mod.__path__ = []
 _cfg_mod = types.ModuleType("hermes_cli.config")

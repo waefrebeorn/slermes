@@ -5,8 +5,9 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path("/home/wubu/hermes-agent-dev")))
+sys.path.insert(0, str(Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))))
 from hermes_state import SessionDB  # noqa: E402
+import os
 
 
 def main():

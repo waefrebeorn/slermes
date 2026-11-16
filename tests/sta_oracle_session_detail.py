@@ -11,7 +11,7 @@ import os
 import sys
 import json
 
-_PY = "/home/wubu/.hermes/hermes-agent"
+_PY = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 if _PY not in sys.path:
     sys.path.insert(0, _PY)
 

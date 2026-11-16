@@ -9,12 +9,13 @@ Emits one JSON line per op ({"out", "error", "ttl"} / {"out"}).
 import json
 import sys
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from agent.command_token_source import (
     CommandTokenError,
     _mint,
     build_command_token_provider,
 )
+import os
 
 
 def out_line(o):

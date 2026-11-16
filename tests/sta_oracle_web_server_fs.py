@@ -13,7 +13,7 @@ import stat as stat_mod
 import sys
 from pathlib import Path
 
-WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
+WEB_SERVER = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/web_server.py")
 
 WANT_FUNCS = {"_fs_path", "_fs_mime_type", "_fs_looks_binary",
               "_fs_regular_file"}

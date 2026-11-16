@@ -20,8 +20,9 @@ diffed byte-for-byte.
 import json
 import sys
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from hermes_cli.config_defaults import DEFAULT_CONFIG, OPTIONAL_ENV_VARS
+import os
 
 
 _MISSING = object()

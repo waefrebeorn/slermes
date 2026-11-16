@@ -8,6 +8,7 @@ if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints, _warm_nous_token, _has_nous_credential, check_bfl_requirements, _delivers_as_an_attachment, _default_directory
+import os
 
 
 def run(c):

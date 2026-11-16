@@ -6,6 +6,7 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from hermes_cli.approvals_suggest import is_unsafe_class, derive_glob
+import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(__file__),

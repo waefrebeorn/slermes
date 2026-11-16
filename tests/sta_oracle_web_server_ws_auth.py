@@ -7,9 +7,10 @@ import json
 import sys
 import types
 from pathlib import Path
+import os
 
-WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
-WS_TICKETS = Path("/home/wubu/hermes-agent-dev/hermes_cli/dashboard_auth/ws_tickets.py")
+WEB_SERVER = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/web_server.py")
+WS_TICKETS = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/dashboard_auth/ws_tickets.py")
 
 WANT_FUNCS = {
     "_ws_client_reason", "_ws_client_is_allowed", "_ws_host_origin_reason",

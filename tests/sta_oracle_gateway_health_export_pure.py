@@ -1,11 +1,12 @@
 """Oracle for agent/monitoring/gateway_health_export.py pure helpers."""
 import json, sys
 
-DEV_ROOT = "/home/wubu/hermes-agent-dev"
+DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.monitoring import gateway_health_export as ghe_mod
+import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else "cases.in"
 with open(cases_file) as f:

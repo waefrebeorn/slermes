@@ -17,6 +17,7 @@ from tools.managed_tool_gateway import (
     managed_gateway_auth_headers,
     _read_user_token_override,
 )
+import os
 
 
 def run(c):

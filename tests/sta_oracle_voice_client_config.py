@@ -12,8 +12,8 @@ import json
 import os
 import sys
 
-SRC = "/home/wubu/hermes-agent-dev/tools/voice_client_config.py"
-TT_SRC = "/home/wubu/hermes-agent-dev/tools/transcription_tools.py"
+SRC = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/tools/voice_client_config.py"
+TT_SRC = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/tools/transcription_tools.py"
 
 
 def extract(fn_name):

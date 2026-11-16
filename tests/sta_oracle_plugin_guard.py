@@ -8,7 +8,7 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from tools.plugin_guard import scan_plugin, should_allow_plugin_install
 
 

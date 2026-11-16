@@ -6,6 +6,7 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from gateway.channel_directory import _normalize_adapter_channels
+import os
 
 
 def run(c):

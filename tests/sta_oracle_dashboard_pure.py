@@ -6,7 +6,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.getcwd())
-sys.path.insert(0, "/home/wubu/.hermes/hermes-agent")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "")
 
 from hermes_cli.dashboard_procs import (
     _is_desktop_local_serve_cmdline,

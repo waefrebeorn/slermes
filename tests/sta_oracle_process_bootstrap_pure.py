@@ -11,7 +11,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from agent.process_bootstrap import _interleave_addrinfos  # noqa: E402
 
 

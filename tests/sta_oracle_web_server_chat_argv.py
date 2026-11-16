@@ -10,7 +10,7 @@ import sys
 import types
 from pathlib import Path
 
-HERMES = Path("/home/wubu/hermes-agent-dev")
+HERMES = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 WEB_SERVER = HERMES / "hermes_cli/web_server.py"
 
 

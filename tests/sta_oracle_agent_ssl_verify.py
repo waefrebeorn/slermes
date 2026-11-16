@@ -3,6 +3,7 @@
 import json, sys, os, types
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
+import os
 spec = importlib.util.spec_from_file_location("sv_mod", "C:/Users/eman5/hermes-agent/agent/ssl_verify.py")
 mod = importlib.util.module_from_spec(spec)
 # only stub 'utils' if needed; use real 'ssl'

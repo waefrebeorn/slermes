@@ -9,9 +9,10 @@ import json
 import sys
 import threading
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from hermes_cli.middleware import OBSERVER_SCHEMA_VERSION
 import agent.plugin_stream_hooks as ps
+import os
 
 # name -> recorded kwargs list (registration order preserved)
 CALLS = {}

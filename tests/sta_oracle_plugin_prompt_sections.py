@@ -9,21 +9,21 @@ import json
 import os
 import sys
 
-sys.path.insert(0, "/home/wubu/hermes-agent-dev")
-sys.path.insert(0, os.path.join("/home/wubu/hermes-agent-dev", "slermes"))
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
+sys.path.insert(0, os.path.join(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"), "slermes"))
 
 from hermes_cli import plugins as PL  # noqa: E402
 import importlib.util  # noqa: E402
 
 _spec = importlib.util.spec_from_file_location(
     "wc_live_sp",
-    "/home/wubu/hermes-agent-dev/agent/system_prompt.py")
+    os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/agent/system_prompt.py")
 # system_prompt.py imports heavy agent deps at module scope — extract just
 # the restore function via AST exec with stubbed globals.
 import ast  # noqa: E402
 import re  # noqa: E402
 
-_src = open("/home/wubu/hermes-agent-dev/agent/system_prompt.py",
+_src = open(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/agent/system_prompt.py",
             encoding="utf-8").read()
 _tree = ast.parse(_src)
 _pieces = []

@@ -22,7 +22,7 @@ from typing import Optional  # noqa: E402
 # The canonical source lives in the LIVE installed package, not the slermes
 # repo. Make the oracle self-contained by ensuring that path is on sys.path
 # even when the runner invokes python3 without PYTHONPATH.
-_LIVE = "/home/wubu/.hermes/hermes-agent"
+_LIVE = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 if _LIVE not in sys.path:
     sys.path.insert(0, _LIVE)
 

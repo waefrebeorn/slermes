@@ -2,7 +2,7 @@
 import json, sys, os, importlib.util
 from pathlib import Path
 
-DEV_ROOT = "/home/wubu/hermes-agent-dev"
+DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
@@ -16,6 +16,7 @@ from hermes_cli.agent_import import (
     extract_markdown_entries, sanitize_mcp_env,
     parse_existing_memory_entries, merge_entries,
 )
+import os
 
 # Load the module without triggering the CLI import side-effects.
 # We need default_source_dir, backup_memory_file, load_yaml_file,

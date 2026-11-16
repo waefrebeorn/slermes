@@ -6,6 +6,7 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.model_metadata import _msg_fingerprint
+import os
 
 
 # Module-level counter to track which pin index we're at.

@@ -11,6 +11,7 @@ from agent.context_breakdown import (
     render_context_details_lines,
     render_context_breakdown_lines,
 )
+import os
 
 
 def run(c):

@@ -15,7 +15,7 @@ from types import SimpleNamespace
 
 PY_ROOT = str(Path.home() / ".hermes" / "hermes-agent")
 if not os.path.isdir(PY_ROOT):
-    PY_ROOT = "/home/wubu/hermes-agent-dev"
+    PY_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
 sys.path.insert(0, PY_ROOT)
 
 

@@ -17,8 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # Import the real Python module under test.
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", ".hermes", "hermes-agent", "tools"))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "..", ".hermes", "hermes-agent"))
-sys.path.insert(0, "/home/wubu/.hermes/hermes-agent/tools")
-sys.path.insert(0, "/home/wubu/.hermes/hermes-agent")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "/tools")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "")
 
 import tools.voice_mode as vm  # noqa: E402
 

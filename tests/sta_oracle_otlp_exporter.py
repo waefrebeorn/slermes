@@ -11,6 +11,7 @@ from agent.monitoring.otlp_exporter import (
     is_enabled,
     _span_attrs,
 )
+import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(__file__),

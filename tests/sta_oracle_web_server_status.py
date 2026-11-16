@@ -10,8 +10,9 @@ expected count with the SAME SQL predicate the Python web_server uses
 the bounded-ring contract.
 """
 import sys, os, json, tempfile, sqlite3, time
+import os
 
-WEB = "/home/wubu/.hermes/hermes-agent"
+WEB = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 sys.path.insert(0, WEB)
 
 

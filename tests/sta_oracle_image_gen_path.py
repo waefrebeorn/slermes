@@ -8,8 +8,9 @@ exact-compares. When C disagrees, fix the C.
 import json, subprocess, sys
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.image_generation_tool as igt
+import os
 
-proc = subprocess.run(["/home/wubu/hermes-agent-dev/slermes/tests/oracle/build/tt_image_gen_path"], capture_output=True, text=True)
+proc = subprocess.run([os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/slermes/tests/oracle/build/tt_image_gen_path"], capture_output=True, text=True)
 if proc.returncode != 0:
     print("HARNESS CRASHED:", proc.stderr); sys.exit(2)
 

@@ -8,6 +8,7 @@ honest error / no-op rather than a fake success).
 import sys, os, json
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.cronjob_tools as ct
+import os
 
 def env_enabled(v):
     return str(v).strip().lower() in ("1", "true", "yes", "on")

@@ -11,7 +11,7 @@ def _import_live():
     candidates = [
         os.environ.get("HERMES_LIVE_ROOT"),
         os.path.join(os.path.expanduser("~"), ".hermes/hermes-agent"),
-        "/home/wubu/.hermes/hermes-agent",
+        os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "",
     ]
     last = None
     for root in candidates:

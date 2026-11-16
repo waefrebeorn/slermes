@@ -17,10 +17,11 @@ import sys, os, json, tempfile, textwrap
 
 # Make the live Hermes Python package importable.
 HERE = os.path.dirname(os.path.abspath(__file__))
-HERMES_PY = "/home/wubu/.hermes/hermes-agent"
+HERMES_PY = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 sys.path.insert(0, HERMES_PY)
 
 import cron.scheduler as S  # noqa: E402
+import os
 
 SILENT = S.SILENT_MARKER  # "[SILENT]"
 

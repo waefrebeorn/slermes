@@ -18,6 +18,7 @@ import json
 import sys
 import re
 import hashlib
+import os
 
 LOOP_COMPLETE_MARKER = "LOOP_COMPLETE"
 DEFAULT_MAX_TICKS = 100
@@ -178,7 +179,7 @@ def _run_manager_ops(ops):
     """Execute manager-level ops against the real LoopManager with an
     in-memory store; emit one JSON line per op."""
     import importlib, sys as _sys, types, time as _time
-    dev = "/home/wubu/hermes-agent-dev"
+    dev = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
     if dev not in _sys.path:
         _sys.path.insert(0, dev)
     import hermes_cli.loops as loops

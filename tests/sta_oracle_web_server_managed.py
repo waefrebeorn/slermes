@@ -11,8 +11,9 @@ import json
 import re as _re
 import sys
 from pathlib import Path
+import os
 
-WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
+WEB_SERVER = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/web_server.py")
 
 WANT_FUNCS = {
     "_is_sensitive_filename",

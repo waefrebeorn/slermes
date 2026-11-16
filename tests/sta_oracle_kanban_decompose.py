@@ -28,6 +28,7 @@ ROOT = os.path.expanduser("~/hermes-agent-dev")
 sys.path.insert(0, ROOT)
 
 import hermes_cli.kanban_decompose as kd
+import os
 
 _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 

@@ -14,7 +14,7 @@ import os
 import pathlib
 import sys
 
-sys.path.insert(0, "/home/wubu/.hermes/hermes-agent")
+sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "")
 from hermes_state import SessionDB  # noqa: E402
 
 

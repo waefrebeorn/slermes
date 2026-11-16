@@ -7,9 +7,10 @@ import json
 import sys
 from pathlib import Path
 
-HERMES = Path("/home/wubu/hermes-agent-dev")  # live upstream tree
+HERMES = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))  # live upstream tree
 sys.path.insert(0, str(HERMES))
 from hermes_state import SessionDB  # noqa: E402
+import os
 
 WEB_SERVER = HERMES / "hermes_cli/web_server.py"
 

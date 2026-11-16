@@ -16,6 +16,7 @@ from agent.message_sanitization import (
     reapply_reasoning_echo,
     uniquify_tool_call_ids,
 )
+import os
 
 
 def run(c):

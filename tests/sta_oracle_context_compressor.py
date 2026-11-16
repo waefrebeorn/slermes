@@ -18,8 +18,8 @@ def _load():
     # real Hermes package are in separate directories). Prefer the canonical
     # checkout so the oracle compares against real upstream behavior.
     candidates = [
-        "/home/wubu/.hermes/hermes-agent",
-        "/home/wubu/hermes-agent-dev",
+        os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + "",
+        os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"),
         os.getcwd(),
     ]
     for base in candidates:

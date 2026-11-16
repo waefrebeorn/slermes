@@ -6,6 +6,7 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.monitoring.gateway_health_export import _resolve_headers
+import os
 
 
 def run(c):
