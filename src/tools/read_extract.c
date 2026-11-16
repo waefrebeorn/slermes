@@ -23,7 +23,7 @@
 #include "hermes_logger.h"
 #include "wubuoxml/reader.h"
 #include "wubuoxml/docx_text.h"
-#include "ansi_strip.h"
+#include "libansi/ansi_strip.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -620,8 +620,7 @@ static void *snapshot_loop(void *arg) {
 void *he_start_snapshot_thread(const char *config_json, void *stop_event) {
     if (!config_json) return NULL;
     /* interval = max(5, gh.get("logs_export_interval_seconds", 5)) */
-    json_t *gh = he_gateway_health_config(config_json);
-    char *gh_str = gh ? json_serialize(gh) : NULL;
+    char *gh_str = he_gateway_health_config(config_json);
     double interval = 5.0;
     if (gh_str) {
         json_t *g = json_parse(gh_str, NULL);
@@ -632,7 +631,6 @@ void *he_start_snapshot_thread(const char *config_json, void *stop_event) {
         }
         free(gh_str);
     }
-    if (gh) json_free(gh);
 
     snapshot_ctx_t *ctx = malloc(sizeof(snapshot_ctx_t));
     if (!ctx) return NULL;
@@ -731,9 +729,12 @@ char *he_start_gateway_health_export(const char *config_json) {
     free(runtime.reason);
     runtime.reason = strdup("enabled");
 
-    json_t *gh = he_gateway_health_config(config_json);
+    char *gh_str = he_gateway_health_config(config_json);
+    json_t *gh = gh_str ? json_parse(gh_str, NULL) : NULL;
     bool metrics_enabled = gh ? json_get_bool(gh, "metrics_enabled", true) : true;
     bool diag_enabled = gh ? json_get_bool(gh, "diagnostic_events_enabled", true) : true;
+    if (gh) json_free(gh);
+    free(gh_str);
 
     /* Attach the diagnostic log handler (Python calls _attach_log_handler).
      * Best-effort; failure is non-fatal (Python guards with try/except). */

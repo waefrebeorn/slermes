@@ -184,7 +184,7 @@ int monitoring_emitter_emit(monitoring_emitter_t *em, const json_t *event) {
         payload = json_object();
     }
     /* inject ts_ns if absent */
-    if (json_get(payload, "ts_ns") == NULL) {
+    if (json_obj_get(payload, "ts_ns") == NULL) {
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         long long ns = (long long)ts.tv_sec * 1000000000LL + ts.tv_nsec;

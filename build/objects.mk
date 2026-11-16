@@ -26,7 +26,7 @@ PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
     $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_GATEWAY) $(CUPBOARD_PORT_TOOLS) \
     $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) $(CUPBOARD_PORT_MISC) \
  \
-    $(PORTS_LINKED_OBJ)
+    $(PORTS_LINKED_OBJ) $(CUPBOARD_UNBUILT_MODS)
 # ── Object File Lists ──────────────────────────────────────────────
 # build/objects.mk -- cupboards and jars.
 #
@@ -407,3 +407,81 @@ HERMES_CLI_PORT_OBJ = src/hermes_cli/service_manager.o src/hermes_cli/agent_plug
 HERMES_CLI_PORT_EXTRA_OBJ = \
  src/hermes_cli/tips.o \
  src/hermes_cli/subcommands_parsers.o \
+
+# ── Implemented but previously unbuilt modules ─────────────────────
+# Exist as source and are referenced by oracle harnesses, but were in no
+# build variable, so the linked binary did not contain them and every
+# harness touching them failed to link. input_sanitize.c is excluded: it
+# duplicates the already-linked src/cli/port_input_sanitize.o.
+CUPBOARD_UNBUILT_MODS = \
+    lib/libwubuoffice/src/wubuoxml/docx_text.o \
+    lib/libwubuoffice/src/wubuoxml/package.o \
+    lib/libwubuoffice/src/wubuoxml/reader.o \
+    lib/libwubuoffice/src/wubuoxml/rels_path.o \
+    lib/libwubuoffice/src/wubuzip/bitw.o \
+    lib/libwubuoffice/src/wubuzip/deflate.o \
+    lib/libwubuoffice/src/wubuzip/lz77.o \
+    lib/libwubuoffice/src/wubuzip/reader.o \
+    lib/libwubuoffice/src/wubuzip/zip.o \
+    src/agent/approvals_suggest_proposals.o \
+    src/agent/backend_identity.o \
+    src/agent/billing_links.o \
+    src/agent/billing_pure.o \
+    src/agent/coding_context.o \
+    src/agent/command_token_source.o \
+    src/agent/copilot_acp_client.o \
+    src/agent/credential_persistence.o \
+    src/agent/credential_pool_persistence.o \
+    src/agent/health.o \
+    src/agent/message_sanitization_pure.o \
+    src/agent/model_metadata.o \
+    src/agent/monitoring/monitoring_emitter.o \
+    src/agent/monitoring_health_export.o \
+    src/agent/monitoring_health_export_pure.o \
+    src/agent/otlp_exporter.o \
+    src/agent/plugin_prompt_sections.o \
+    src/agent/process_bootstrap_pure.o \
+    src/agent/prompt_cache_scope.o \
+    src/agent/proxy_utils.o \
+    src/agent/replay_cleanup.o \
+    src/agent/retry_utils.o \
+    src/agent/title_generator.o \
+    src/agent/tool_executor.o \
+    src/agent/turn_retry_state.o \
+    src/cron/suggestion_catalog.o \
+    src/gateway/dead_targets.o \
+    src/gateway/disk_status.o \
+    src/gateway/display_config.o \
+    src/gateway/platforms/http_client_limits.o \
+    src/gateway/platforms/platforms_helpers_md.o \
+    src/gateway/platforms/yuanbao_md.o \
+    src/gateway/restart_loop_guard.o \
+    src/gateway/runtime_footer.o \
+    src/gateway/session_state.o \
+    src/hermes_cli/auth_helpers2.o \
+    src/hermes_cli/status_pure.o \
+    src/hermes_error.o \
+    src/provider/google_oauth.o \
+    src/tools/account_usage.o \
+    src/tools/apply_layout_tool.o \
+    src/tools/bot_mode_dm.o \
+    src/tools/bot_mode_probe.o \
+    src/tools/bot_relay.o \
+    src/tools/cua_backend_helpers.o \
+    src/tools/curator_backup.o \
+    src/tools/curator_tar.o \
+    src/tools/file_fs_ops.o \
+    src/tools/file_lint.o \
+    src/tools/mcp_tool_pure.o \
+    src/tools/memory_tool_pure.o \
+    src/tools/patch_parser.o \
+    src/tools/patch_parser_util.o \
+    src/tools/read_extract.o \
+    src/tools/setup_mcp_tool.o \
+    src/tools/skill_linter.o \
+    src/tools/spill_safety.o \
+    src/tools/terminal_tool_ports.o \
+    src/tools/tool_output_limits.o \
+    src/tools/toolsets.o \
+    src/tools/transcription_tools_pure.o \
+    src/tools/tts_text_normalize.o
