@@ -11,7 +11,7 @@ import json
 import os
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PY_RUN = os.path.join(ROOT, "gateway", "run.py")
 
 SRC = open(PY_RUN, encoding="utf-8").read()

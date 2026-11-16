@@ -37,7 +37,7 @@ def _load_session_mod():
     # Deterministic LIVE-Python resolution: prefer the canonical dev repo
     # (parent of slermes/) over any installed/stale copy on sys.path
     # (e.g. ~/.hermes/hermes-agent), which would manufacture false FAPs.
-    _repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    _repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if _repo not in sys.path:
         sys.path.insert(0, _repo)
     for base in sys.path:

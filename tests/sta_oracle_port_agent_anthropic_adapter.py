@@ -3,7 +3,7 @@ import os, sys, json, importlib.util
 
 MODS = {}
 def _load(rel):
-    repo = os.path.realpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    repo = os.path.realpath(os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     devroot = os.path.dirname(repo)  # hermes_cli/ lives in the dev-tree parent of slermes
     for p in (repo, devroot):
         if p not in sys.path: sys.path.insert(0, p)

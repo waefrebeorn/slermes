@@ -14,7 +14,7 @@ import importlib.util
 
 
 def _load(rel):
-    repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if repo not in sys.path:
         sys.path.insert(0, repo)
     for base in sys.path:

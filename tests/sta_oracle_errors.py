@@ -31,7 +31,7 @@ CLASSES = ["SSLConfigurationError", "EmptyStreamError", "MoAPresetNotFoundError"
 
 
 def _load_errors():
-    _repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    _repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if _repo not in sys.path:
         sys.path.insert(0, _repo)
     for base in sys.path:

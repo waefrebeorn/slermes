@@ -23,7 +23,7 @@ import importlib.util
 
 def _load_module():
     here = os.path.dirname(os.path.abspath(__file__))
-    repo = os.path.dirname(os.path.dirname(os.path.dirname(here)))
+    repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(here))
     cand = os.path.join(repo, "hermes_cli", "models.py")
     spec = importlib.util.spec_from_file_location("live_models", cand)
     mod = importlib.util.module_from_spec(spec)

@@ -23,14 +23,28 @@ done
 PATH="$_clean_path"
 export PATH
 # Fallback tool dirs for hosts without build/winlibs-env.sh (Linux/macOS).
-# /usr/bin carries no gcc or python3 here. /mingw64/bin DOES carry gcc -- the
+# /usr/bin carries no gcc or "$PY" here. /mingw64/bin DOES carry gcc -- the
 # MSYS2 one whose backend is blocked on this box -- so it is only added when no
 # compiler is resolvable at all; otherwise it shadows the winlibs toolchain.
 [ -d /usr/bin ] && PATH="/usr/bin:$PATH"
 if ! command -v gcc >/dev/null 2>&1; then
-  [ -d /mingw64/bin ] && PATH="/mingw64/bin:$PATH"
+  [ -d /c/msys64/mingw64/bin ] && PATH="/c/msys64/mingw64/bin:$PATH"
 fi
 export PATH
+
+# Resolve the interpreter ABSOLUTELY. PATH lookup of `python3` is unreliable on
+# this box: WindowsApps App Execution Aliases shadow the name and intermittently
+# resolve to a stub that prints "Python was not found", which under
+# `set -euo pipefail` silently kills a runner mid-suite.
+PY=""
+# Prefer the Hermes venv: the oracles import the dev tree's modules, which pull
+# third-party deps (httpx, ...). The MSYS interpreters carry none.
+for _c in /c/Users/eman5/hermes-agent/.venv/Scripts/python.exe \
+          /c/msys64/mingw64/bin/python3.exe /c/msys64/usr/bin/python3.exe \
+          /usr/bin/python3.exe /c/winlibs/mingw64/bin/python3.exe; do
+  if [ -x "$_c" ]; then PY="$_c"; break; fi
+done
+[ -n "$PY" ] || { echo "FATAL: no python3 interpreter found" >&2; exit 2; }
 #
 # Generic "diff" oracle runner (contract B from README.md).
 # Compiles tests/t_port_<port_name>.c together with the project object set,
@@ -76,7 +90,7 @@ if command -v jq >/dev/null 2>&1; then
     REG_HARNESS=$(jq -r ".ports[\"$NAME\"].harness // empty" tests/oracle/registry.json 2>/dev/null)
     [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
 elif [ -f tests/oracle/registry.json ]; then
-    REG_HARNESS=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('harness',''))" "$NAME" 2>/dev/null)
+    REG_HARNESS=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('harness',''))" "$NAME" 2>/dev/null)
     [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
 fi
 # Fixture setup: some fixtures need a git repo / binary blob / seeded DB that
@@ -92,9 +106,9 @@ ORACLE="tests/sta_oracle_$NAME.py"
 # oracle does not exist yet. Skip with a stated reason rather than failing, so
 # the run reports SKIP instead of a broken port -- but ONLY when the registry
 # declares it. An undeclared dangling reference is a gate failure.
-STATUS=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('status',''))" "$NAME" 2>/dev/null || true)
+STATUS=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('status',''))" "$NAME" 2>/dev/null || true)
 if [ "$STATUS" = "incomplete" ]; then
-    REASON=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('incomplete_reason',''))" "$NAME" 2>/dev/null || true)
+    REASON=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('incomplete_reason',''))" "$NAME" 2>/dev/null || true)
     echo "SKIP $NAME: declared incomplete ($REASON)"
     exit 0
 fi
@@ -147,9 +161,9 @@ OBJS=$(printf '%s\n' $OBJS | grep -v '^src/main\.o$' | tr '\n' ' ')
 : > "$RSP"
 for o in $OBJS; do echo "$o" >> "$RSP"; done
 STUB_OBJ="$BUILD_DIR/winmain_stub_$NAME.o"
-ccache gcc -c "$ROOT/tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
+ccache gcc -c "tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
   -I include -I lib >/dev/null 2>&1 \
-  || gcc -c "$ROOT/tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
+  || gcc -c "tests/oracle/runners/winmain_stub.c" -o "$STUB_OBJ" \
        -I include -I lib >/dev/null 2>&1 || true
 LINKCMD=${LINKCMD//@slermes.link.rsp/@$RSP}
 [ -f "$STUB_OBJ" ] && LINKCMD="$LINKCMD $STUB_OBJ"
@@ -169,9 +183,9 @@ LINKCMD=${LINKCMD//@$RSP/@$RSP $HARNESS_OBJ}
 # resolves the name to a WindowsApps alias stub that fails with "Permission
 # denied". Depending on an external diff would also make the runner fragile on
 # the Linux/macOS targets, so compare bytes with Python -- the runner already
-# requires python3 for the oracle side.
+# requires "$PY" for the oracle side.
 files_equal() {
-  python3 -c 'import sys
+  "$PY" -c 'import sys
 a = open(sys.argv[1], "rb").read()
 b = open(sys.argv[2], "rb").read()
 sys.exit(0 if a == b else 1)' "$1" "$2"
@@ -248,7 +262,7 @@ DEV_ROOT="$(cd "$ROOT/.." && pwd)"
 rm -rf "$TMPH/.hermes/hermes-agent"
 # A directory junction needs no privilege (unlike a symlink, which needs
 # SeCreateSymbolicLinkPrivilege) and is transparent to POSIX path resolution.
-if ! python3 "$ROOT/tests/oracle/runners/mklink_dir.py" \
+if ! "$PY" "tests/oracle/runners/mklink_dir.py" \
         "$TMPH/.hermes/hermes-agent" "$DEV_ROOT" >/dev/null 2>&1; then
     echo "WARN: could not link \$TMPH/.hermes/hermes-agent -> $DEV_ROOT; oracles that resolve the live source through Path.home() will not find it" >&2
 fi
@@ -263,8 +277,37 @@ rm -f "$BUILD_DIR/tt_$NAME"
 bash -c "$COMPILE" >$BUILD_DIR/oracle_compile_$NAME.log 2>&1 || true
 if [ ! -f "$HARNESS_OBJ" ]; then
   echo "FATAL: harness did not compile -> $HARNESS_OBJ" >&2
-  head -12 $BUILD_DIR/oracle_compile_$NAME.log >&2
+  head -12 "$BUILD_DIR/oracle_compile_$NAME.log" >&2
   exit 2
+fi
+# Minimal closure (default on). Linking every harness against all 1,231
+# objects costs ~19 s each; a typical harness needs 2-20. The index is built
+# once from `make print-objs` and cached, so the per-port cost is one BFS.
+# Set ORACLE_MINIMAL=0 to link the full closure.
+if [ "${ORACLE_MINIMAL:-1}" = "1" ]; then
+  if [ ! -s "$BUILD_DIR/sym_index.json" ]; then
+    make -s --no-print-directory print-objs 2>/dev/null > "$BUILD_DIR/objs.txt"
+    "$PY" "tests/oracle/runners/sym_index.py" build "@$BUILD_DIR/objs.txt" >/dev/null 2>&1
+  fi
+  # Fail safe: if the closure cannot be computed, keep the full object list.
+  # A slow correct link beats a fast wrong one.
+  # `|| true`: under `set -euo pipefail` a failing substitution in an
+  # assignment aborts the whole runner silently (exit 2, no message).
+  MINOBJS=$("$PY" "tests/oracle/runners/sym_index.py" closure \
+              "$BUILD_DIR/sym_index.json" "$HARNESS_OBJ" 2>/dev/null \
+            | "$PY" -c 'import json,sys
+try:
+    d = json.load(sys.stdin)
+    print(" ".join(d["objects"]))
+except Exception:
+    pass' || true)
+  if [ -n "$MINOBJS" ]; then
+    : > "$RSP"
+    for o in $MINOBJS; do echo "$o" >> "$RSP"; done
+    echo "minimal closure: $(printf '%s' "$MINOBJS" | wc -w) objects" >&2
+  else
+    echo "WARN: minimal closure unavailable; linking the full object set" >&2
+  fi
 fi
 # shellcheck disable=SC2086
 bash -c "$LINKCMD -Wl,--allow-multiple-definition" >$BUILD_DIR/oracle_link_$NAME.log 2>&1 || true
@@ -287,7 +330,7 @@ FAIL=0
 # harness correctly classify FALSE FAPs (env noise — real cwd, git status,
 # hostname) as non-failures instead of spurious MISMATCHes.
 REG_JSON="${REG_JSON:-tests/oracle/registry.json}"
-STRIP_PATTERNS=$(python3 -c "
+STRIP_PATTERNS=$("$PY" -c "
 import json,sys
 d = json.load(open('$REG_JSON'))
 norm = d.get('normalize',{}).get('strip_patterns',[])
@@ -295,11 +338,11 @@ port = d.get('ports',{}).get(sys.argv[1],{})
 port_strip = port.get('strip_patterns',[]) if isinstance(port, dict) else []
 print('\\n'.join(list(norm) + list(port_strip)))
 " "$NAME" 2>/dev/null)
-STRIP_FIELDS=$(python3 -c "import json,sys; print(' '.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_fields',[])))" 2>/dev/null)
+STRIP_FIELDS=$("$PY" -c "import json,sys; print(' '.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_fields',[])))" 2>/dev/null)
 # Per-port float/int canonicalization: C's JSON writer renders integral
 # doubles as "1" while Python emits "1.0"; when the port opts in
 # (normalize.float_int_equal), rewrite integral floats to ints on both sides.
-FLOAT_INT_EQUAL=$(python3 -c "import json,sys; d=json.load(open('$REG_JSON')); print(1 if d.get('ports',{}).get(sys.argv[1],{}).get('normalize',{}).get('float_int_equal') else 0)" "$NAME" 2>/dev/null)
+FLOAT_INT_EQUAL=$("$PY" -c "import json,sys; d=json.load(open('$REG_JSON')); print(1 if d.get('ports',{}).get(sys.argv[1],{}).get('normalize',{}).get('float_int_equal') else 0)" "$NAME" 2>/dev/null)
 
 normalize_out() {  # $1 = file
   local f="$1"
@@ -312,7 +355,7 @@ normalize_out() {  # $1 = file
   # float_int_equal additionally coerces integral floats to ints (C's JSON
   # writer renders 1.0 as "1" via %.0f; Python emits "1.0").
   tmp2="$(tmpfile)"
-  python3 - "$tmp" "$FLOAT_INT_EQUAL" <<'PY' > "$tmp2"
+  "$PY" - "$tmp" "$FLOAT_INT_EQUAL" <<'PY' > "$tmp2"
 import json, sys
 FLOAT_INT_EQUAL = sys.argv[2] == "1"
 def canon(o):
@@ -337,7 +380,7 @@ PY
   # strip_patterns: treat each as a Python regex, remove every match
   if [ -n "$STRIP_PATTERNS" ]; then
     tmp2="$(tmpfile)"
-    python3 - "$tmp" "$STRIP_PATTERNS" <<'PY' > "$tmp2" || cp "$tmp" "$tmp2"
+    "$PY" - "$tmp" "$STRIP_PATTERNS" <<'PY' > "$tmp2" || cp "$tmp" "$tmp2"
 import re, sys
 src, pats = sys.argv[1], sys.argv[2]
 text = open(src, encoding='utf-8', errors='replace').read()
@@ -353,7 +396,7 @@ PY
   # strip_fields: drop top-level JSON object keys (per-line JSON)
   if [ -n "$STRIP_FIELDS" ]; then
     tmp2="$(tmpfile)"
-    python3 - "$tmp" $STRIP_FIELDS <<'PY' > "$tmp2"
+    "$PY" - "$tmp" $STRIP_FIELDS <<'PY' > "$tmp2"
 import json, sys
 src = sys.argv[1]; fields = set(sys.argv[2:])
 out = []
@@ -411,6 +454,9 @@ ISO="$ISO ORACLE_FIXDIR=$(pwd)/$FIX"
 # oracle must keep the venv on PATH (httpx and other deps live there).
 ISO="$ISO HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= NO_PROXY= no_proxy= ALL_PROXY= all_proxy="
 
+# ---- phase 1: run the C harness for every case --------------------------
+BATCH_TSV="$BUILD_DIR/batch_$NAME.tsv"
+: > "$BATCH_TSV"
 for f in "$FIX"/*.in; do
   case="$(basename "$f" .in)"
   extra=""
@@ -437,18 +483,42 @@ for f in "$FIX"/*.in; do
   # The C engine resolves its home via SLERMES_HOME (kanban_home()), while the
   # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
   # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
-  # BOTH the harness and the oracle. That gives each side a single, shared,
-  # isolated home so profiles the harness writes are exactly what the oracle
-  # reads (and neither ever touches the developer's real ~/.hermes).
-  # The harness's stdout is also piped to the oracle's stdin: oracles such as
-  # file_safety_roots read the C output from stdin rather than argv, and this
-  # is harmless for oracles that ignore stdin.
-  env $ISO "$ROOT/tests/oracle/build/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  # BOTH the harness and the oracle.
+  env $ISO "tests/oracle/build/tt_$NAME" "$FSUB" $extra \
+    > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  printf '%s\t%s\t%s\t%s\n' "$case" "$FSUB" \
+         "$BUILD_DIR/oracle_${NAME}_c_${case}.json" "$extra" >> "$BATCH_TSV"
+done
+
+# ---- phase 2: one Python process runs every case ------------------------
+# Spawning the oracle per case cost 182 interpreter startups on a 182-case
+# port, which dwarfed the C side. One process, modules imported once.
+SPEC="$BUILD_DIR/batch_$NAME.json"
+if ! "$PY" "tests/oracle/runners/make_batch_spec.py" \
+       "$BATCH_TSV" "$ORACLE" "$BUILD_DIR" > /dev/null 2>&1; then
+  echo "WARN: batch spec builder failed for $NAME" >&2
+fi
+BATCH_OUT="$BUILD_DIR/batch_$NAME.results.json"
+if [ -n "$SPEC" ] && env $ISO "$PY" "tests/oracle/_oracle_boot.py" --batch "@$SPEC" \
+     > "$BATCH_OUT" 2>"$BUILD_DIR/batch_$NAME.err"; then
+  :
+else
+  echo "WARN: batch oracle failed for $NAME; see $BUILD_DIR/batch_$NAME.err" >&2
+fi
+
+# ---- phase 3: compare ---------------------------------------------------
+while IFS=$'\t' read -r case FSUB C_OUT EXTRA; do
+  [ -z "$case" ] && continue
   ORACLE_OUT="$BUILD_DIR/oracle_${NAME}_py_${case}.json"
-  if env $ISO python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$ORACLE_OUT" 2>/dev/null; then
-    ORACLE_RC=0
-  else
-    ORACLE_RC=$?
+  ORACLE_RC=0
+  [ -s "$ORACLE_OUT" ] || ORACLE_RC=1
+  # A missing/empty oracle output must never compare equal to anything. Two
+  # empty files are byte-identical, so without this guard a failed oracle
+  # reports MATCH -- the false pass this runner was rebuilt to prevent.
+  if [ "$ORACLE_RC" -ne 0 ]; then
+    echo "$case: MISMATCH (oracle produced no output)"; FAIL=1
+    rm -f "$FSUB"
+    continue
   fi
   normalize_out "$ORACLE_OUT" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
   normalize_out "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json"
@@ -472,6 +542,6 @@ for f in "$FIX"/*.in; do
     fi
   fi
   rm -f "$FSUB"
-done
+done < "$BATCH_TSV"
 rm -rf "$TMPH"
 exit $FAIL
