@@ -127,11 +127,11 @@ def main():
             # also appears in comments and call sites ("...sqlite_util.open_db
             # (WAL, ...)"), and those are not definitions.
             hnames = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", htext))
-            for m in DEF.finditer(text):
-                fn = m.group(1)
+            for dm in DEF.finditer(text):
+                fn = dm.group(1)
                 if fn in KEYWORDS:
                     continue
-                line_start = m.start(1)
+                line_start = dm.start(1)
                 # `static` may share the line with the name, or sit on the
                 # line above it. Checking only the previous line misses the
                 # common single-line form and calls a static function exported.
@@ -147,6 +147,20 @@ def main():
         b = check_r7(text)
         if b:
             findings["R7"].append(f"{rel}:{','.join(b[:3])}")
+
+        # R8 lives in its own loop below: it is about files that are NOT
+        # port_*.c, so it can never fire inside this one.
+
+    # R8 -- a file carrying PoP annotations is CLAIMING port status, so it must
+    # follow the port naming standard. Infrastructure files (src/acp/*,
+    # src/agent/agent_init.c, ...) are not ports and are allowlisted; a NEW
+    # PoP-annotated file must be named port_<stem>.c.
+    for c in sorted(SRC.rglob("*.c")):
+        if c.name.startswith("port_") or c.name.endswith("_ports.c"):
+            continue
+        rel8 = c.relative_to(REPO).as_posix()
+        if "PoP:" in c.read_text(encoding="utf-8", errors="replace"):
+            findings["R8"].append(rel8)
 
     # apply the allowlist, and flag allowlist entries that no longer fire
     dead = []

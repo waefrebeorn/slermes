@@ -32,6 +32,7 @@ WHY = {
     "R5": "header guard off-standard (pre-standard)",
     "R6": "exported fn missing from its header",
     "R7": "formatting (pre-standard)",
+    "R8": "PoP-annotated but not named port_<stem>.c (pre-standard)",
 }
 
 
@@ -82,6 +83,14 @@ def main():
         if b:
             findings["R7"].append(f"{rel}:{','.join(b[:3])}")
 
+        pass  # R8 is computed in its own loop below
+
+    for c in sorted(m.SRC.rglob("*.c")):
+        if c.name.startswith("port_") or c.name.endswith("_ports.c"):
+            continue
+        if "PoP:" in c.read_text(encoding="utf-8", errors="replace"):
+            findings["R8"].append(c.relative_to(m.REPO).as_posix())
+
     out = ['"""DEBT, not policy: files still violating docs/dev/c-standards.md.',
            "",
            "Regenerate with scripts/gen_c_standards_allowlist.py -- do not hand-edit.",
@@ -90,7 +99,7 @@ def main():
            '"""',
            "# rule -> {path: reason}",
            "ALLOW = {"]
-    for r in ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]:
+    for r in ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8"]:
         out.append(f'    "{r}": {{')
         for v in sorted(set(findings.get(r, []))):
             out.append(f'        "{v}": "{WHY[r]}",')
