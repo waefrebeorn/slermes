@@ -28,6 +28,7 @@ fails the build so the standard cannot silently rot.
 """
 from pathlib import Path
 import collections
+import os
 import re
 import sys
 
@@ -113,10 +114,30 @@ def load_header_ownership():
     # non-unit file (doctor.c, main.c, ...) is shared, and treating it as
     # owned by the one port unit that also includes it renames it out from
     # under every other caller.
-    for base in ("src", "include", "tests", "lib"):
-        for p in (REPO / base).rglob("*"):
-            if p.suffix not in (".c", ".h"):
+    # os.scandir with pruning, NOT rglob: rglob descends into tests/watercup
+    # (22,614 files, a vendored tree) before filtering, which alone took this
+    # gate past 180 seconds.
+    skipdirs = {"watercup", "build", "__pycache__", "node_modules", "oracle",
+                "run_agent", ".git"}
+
+    def walk(d: Path):
+        try:
+            entries = list(os.scandir(d))
+        except OSError:
+            return
+        for e in entries:
+            if e.name.startswith(".") or e.name in skipdirs:
                 continue
+            try:
+                if e.is_dir(follow_symlinks=False):
+                    walk(Path(e.path))
+                elif e.name.endswith((".c", ".h")):
+                    yield Path(e.path)
+            except OSError:
+                continue
+
+    for base in ("src", "include", "tests", "lib"):
+        for p in walk(REPO / base):
             rel = p.relative_to(REPO).as_posix()
             try:
                 text = p.read_bytes().decode("utf-8", errors="replace")
