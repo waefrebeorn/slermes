@@ -33,16 +33,18 @@ POP = re.compile(r"PoP:\s+([A-Za-z_]\w*)\s+@\s+([\w./]+):([A-Za-z_]\w*)")
 DEF = re.compile(r"^[A-Za-z_][\w \t\*]*?\b([A-Za-z_]\w*)\s*\([^;]*?\)\s*\{", re.M)
 STATIC = re.compile(r"^static\b", re.M)
 
-# rule -> {path: reason}
-ALLOW = {
-    "R1": {},
-    "R2": {},
-    "R3": {},
-    "R4": {},
-    "R5": {},
-    "R6": {},
-    "R7": {},
-}
+# rule -> {path: reason}; see tests/c_standards_allowlist.py (generated, then
+# hand-reviewed). A gate that always fails is not a gate.
+try:
+    from c_standards_allowlist import ALLOW          # noqa: E402
+except ImportError:                                   # pragma: no cover
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        "c_standards_allowlist",
+        str(Path(__file__).with_name("c_standards_allowlist.py")))
+    _mod = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    ALLOW = _mod.ALLOW
 
 
 def stem_of(c_path):
@@ -134,14 +136,18 @@ def main():
     dead = []
     for rule, entries in ALLOW.items():
         live = findings.get(rule, [])
-        livestr = set(live)
+        # An entry is keyed either by path (whole-file rules) or by
+        # "path:symbol" (per-symbol rules), so match both.
+        livestr = set(live) | {v.split(":")[0] for v in live}
         for path, why in entries.items():
             if path not in livestr:
                 dead.append(f"{rule} {path} ({why}) -- no longer violates")
 
     ok = True
     for rule in sorted(findings):
-        live = [v for v in findings[rule] if v.split(":")[0] not in ALLOW.get(rule, {})]
+        entries = ALLOW.get(rule, {})
+        live = [v for v in findings[rule]
+                if v not in entries and v.split(":")[0] not in entries]
         if live:
             ok = False
             print(f"FAIL {rule}: {len(live)} violation(s)")
