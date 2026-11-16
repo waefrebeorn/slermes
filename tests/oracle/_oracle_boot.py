@@ -76,6 +76,9 @@ sys.meta_path[:] = kept
 # 4) Developer tree first.
 os.environ.setdefault("SLERMES_DEV_ROOT", DEV_ROOT)
 sys.path.insert(0, DEV_ROOT)
+# The slermes checkout (this file is at <slermes>/tests/oracle/).
+SLERMES_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
 
 if __name__ == "__main__":
     import contextlib
@@ -122,6 +125,16 @@ if __name__ == "__main__":
                 sys.stdin = old_stdin
             with open(case["out"], "w", encoding="utf-8", newline="") as fh:
                 fh.write(buf.getvalue())
+            # Emulate a fresh interpreter for the next case. runpy re-executes
+            # the oracle in THIS process, so without a purge a @dataclass in an
+            # already-imported module finds sys.modules[cls.__module__] is None
+            # and dies with "'NoneType' object has no attribute '__dict__'".
+            # Drop project modules; keep stdlib and site-packages.
+            for name in list(sys.modules):
+                mod = sys.modules.get(name)
+                f = getattr(mod, "__file__", None) or ""
+                if f and (DEV_ROOT in f or f.startswith(SLERMES_ROOT)):
+                    sys.modules.pop(name, None)
             results.append({"case": case["name"], "rc": rc})
         print(json.dumps(results))
         sys.exit(0)

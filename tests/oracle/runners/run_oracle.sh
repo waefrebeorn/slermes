@@ -194,6 +194,24 @@ a = open(sys.argv[1], "rb").read()
 b = open(sys.argv[2], "rb").read()
 sys.exit(0 if a == b else 1)' "$1" "$2"
 }
+# Comparator controls. A comparator that cannot fail reports MATCH forever and
+# makes the whole suite meaningless; two empty files compare equal, so this is
+# the guard that the guard works. Both must hold or the run fails.
+# Named explicitly: tmpfile() is called in command substitutions, and each
+# subshell restarts its counter, so two tmpfile calls can return one name.
+_ctl_a="$BUILD_DIR/ctl_pos_$$"
+_ctl_b="$BUILD_DIR/ctl_neg_$$"
+printf 'x\n' > "$_ctl_a"; printf 'y\n' > "$_ctl_b"
+if files_equal "$_ctl_a" "$_ctl_b"; then
+  echo "FATAL: comparator positive control failed -- different inputs compared equal" >&2
+  rm -f "$_ctl_a" "$_ctl_b"; exit 2
+fi
+if ! files_equal "$_ctl_a" "$_ctl_a"; then
+  echo "FATAL: comparator negative control failed -- identical inputs compared different" >&2
+  rm -f "$_ctl_a" "$_ctl_b"; exit 2
+fi
+rm -f "$_ctl_a" "$_ctl_b"
+echo "comparator controls: OK" >&2
 # Strip build-version metadata macros' malformed values (e.g. "0.19.0-slermes",
 # "2026.7.20") which contain multiple dots / undeclared identifiers that break
 # compilation of harnesses that #include the production .c files that expand
