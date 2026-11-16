@@ -6,6 +6,7 @@
  * emits one JSON line per op (same shape as sta_oracle_plugin_packs_pure.py).
  */
 
+#include "oracle/harness_json.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "plugin_packs_pure.h"
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
     json_t *ops = json_object_get(root, "ops");
     if (ops && ops->type == JSON_ARRAY) {
         for (size_t i = 0; i < json_len(ops); i++) {
-            json_t *c = json_object_get_at(ops, i);
+            json_t *c = json_array_get(ops, i);
             const char *op = js(c, "op", "");
             if (strcmp(op, "is_exact_sha") == 0) {
                 int r = plugin_pack_is_exact_sha(js(c, "ref", ""));
@@ -52,7 +53,9 @@ int main(int argc, char **argv) {
                 json_t *item = json_object_get(c, "item");
                 int idx = (int)json_get_num(c, "index", 0);
                 char *r = plugin_pack_entry_label(item, idx);
-                printf("{\"op\": \"entry_label\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"entry_label\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r);
             } else if (strcmp(op, "validate_config_seed") == 0) {
                 const char *pid = js(c, "plugin_id", "");

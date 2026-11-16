@@ -6,6 +6,7 @@
  * emits one JSON line per op (same shape as sta_oracle_foreign_sessions_pure.py).
  */
 
+#include "oracle/harness_json.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "foreign_sessions_pure.h"
@@ -52,7 +53,9 @@ int main(int argc, char **argv) {
                 json_t *content = json_object_get(c, "content");
                 char *cj = json_serialize(content);
                 char *r = foreign_sessions_flatten_blocks(cj ? cj : "null", js(c, "source", "claude"));
-                printf("{\"op\": \"flatten_blocks\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"flatten_blocks\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r); free(cj);
             } else if (strcmp(op, "merge_turns") == 0) {
                 json_t *turns = json_object_get(c, "turns");
@@ -62,7 +65,9 @@ int main(int argc, char **argv) {
                 free(r); free(tj);
             } else if (strcmp(op, "session_label") == 0) {
                 char *r = foreign_sessions_session_label(js(c, "source", ""), js(c, "title", ""), js(c, "stem", ""));
-                printf("{\"op\": \"session_label\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"session_label\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r);
             }
         }

@@ -7,6 +7,7 @@
  * emits one JSON line per op (same shape as sta_oracle_plugin_capabilities_pure.py).
  */
 
+#include "oracle/harness_json.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "plugin_capabilities_pure.h"
@@ -59,7 +60,9 @@ int main(int argc, char **argv) {
                 json_t *caps = json_object_get(c, "caps");
                 char *cj = json_serialize(caps);
                 char *r = pc_capability_set_hash(cj ? cj : "[]");
-                printf("{\"op\": \"capability_set_hash\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"capability_set_hash\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r); free(cj);
             } else if (strcmp(op, "granted_capabilities") == 0) {
                 json_t *cfg = json_object_get(c, "config");

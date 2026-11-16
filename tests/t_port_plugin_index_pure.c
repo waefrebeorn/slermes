@@ -9,6 +9,7 @@
  * _parse_entries call) and feeds the normalized JSON to resolve/search.
  */
 
+#include "oracle/harness_json.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "plugin_index_pure.h"
@@ -50,7 +51,9 @@ int main(int argc, char **argv) {
             const char *op = js(c, "op", "");
             if (strcmp(op, "install_identifier") == 0) {
                 char *r = pindex_install_identifier(js(c, "repo", ""), js(c, "subdir", ""));
-                printf("{\"op\": \"install_identifier\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"install_identifier\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r);
             } else if (strcmp(op, "parse_entries") == 0) {
                 json_t *rawj = json_object_get(c, "raw");

@@ -2,6 +2,7 @@
  * t_port_terminal_breadcrumbs_pure.c — faithful parity harness for
  * src/hermes_cli/terminal_breadcrumbs_pure.c.
  */
+#include "oracle/harness_json.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "terminal_breadcrumbs_pure.h"
@@ -42,7 +43,9 @@ int main(int argc, char **argv) {
             const char *op = js(c, "op", "");
             if (strcmp(op, "sanitize") == 0) {
                 char *r = tbr_sanitize(js(c, "raw", ""));
-                printf("{\"op\": \"sanitize\", \"out\": %s}\n", r ? r : "\"\"");
+                printf("{\"op\": \"sanitize\", \"out\": ");
+                hj_str(r ? r : "");
+                printf("}\n");
                 free(r);
             } else if (strcmp(op, "is_stale") == 0) {
                 double ts = json_get_num(c, "ts", 0.0);
