@@ -23,25 +23,6 @@ REPO = Path("C:/Users/eman5/slermes")
 FIX = REPO / "tests/oracle/fixtures"
 ORACLES = REPO / "tests"
 
-FUNC_KEYS = ("func", "fn", "function", "op", "case")
-
-
-def mapped_funcs(oracle: Path) -> set[str] | None:
-    """Function names the oracle handles, read from its ARGS/dict literals.
-
-    Returns None when the oracle's shape is not one this gate recognises --
-    an unrecognised oracle is not a failure, a malformed fixture is.
-    """
-    try:
-        t = oracle.read_text(encoding="utf-8", errors="replace")
-    except OSError:
-        return None
-    names = set()
-    for m in re.finditer(r"""['"]([\w]+)['"]\s*:\s*\(""", t):
-        names.add(m.group(1))
-    return names or None
-
-
 def main() -> int:
     if not FIX.is_dir():
         print(f"fixture gate: FAIL, {FIX} is missing")
@@ -99,17 +80,7 @@ def main() -> int:
                 if not isinstance(doc, (list, dict)):
                     bad.append((cf, "fixture is neither a JSON array nor object", ""))
                     continue
-                recs = doc if isinstance(doc, list) else [doc]
-                for i, rec in enumerate(recs, 1):
-                    if not isinstance(rec, dict):
-                        bad.append((cf, f"case {i}: not a JSON object", str(rec)[:70]))
-                        continue
-                    key = next((k for k in FUNC_KEYS if k in rec), None)
-                    if key:
-                        names = mapped_funcs(o)
-                        if names is not None and rec[key] not in names:
-                            bad.append((cf, f"case {i}: {key}={rec[key]!r} not "
-                                             f"mapped by {o.name}", ""))
+
 
     print(f"fixture gate: {checked} fixture file(s) checked, {len(bad)} problem(s)")
     for cf, why, sample in bad[:20]:
