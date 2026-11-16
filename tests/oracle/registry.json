@@ -61,7 +61,9 @@
   "agent_delegation_context": {
    "harness": "tests/t_port_agent_delegation_context.c",
    "oracle": "tests/sta_oracle_agent_delegation_context.py",
-   "fixtures": "tests/oracle/fixtures/agent_delegation_context"
+   "fixtures": "tests/oracle/fixtures/agent_delegation_context",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_agent_delegation_context.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "shared_metrics": {
    "harness": "tests/t_port_shared_metrics.c",
@@ -146,7 +148,9 @@
   "agent_secret_scope": {
    "harness": "tests/t_port_agent_secret_scope.c",
    "oracle": "tests/sta_oracle_agent_secret_scope.py",
-   "fixtures": "tests/oracle/fixtures/agent_secret_scope"
+   "fixtures": "tests/oracle/fixtures/agent_secret_scope",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_agent_secret_scope.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "agent_ssl_verify": {
    "harness": "tests/t_port_agent_ssl_verify.c",
@@ -383,7 +387,9 @@
   "file_search": {
    "harness": "tests/t_port_file_search.c",
    "oracle": "tests/sta_oracle_file_search.py",
-   "fixtures": "tests/oracle/fixtures/file_search"
+   "fixtures": "tests/oracle/fixtures/file_search",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'tools/port_file_operations_search.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "file_text_ops": {
    "harness": "tests/t_port_file_text_ops.c",
@@ -398,7 +404,9 @@
   "fuzzy_match": {
    "harness": "tests/t_port_fuzzy_match.c",
    "oracle": "tests/sta_oracle_fuzzy_match.py",
-   "fixtures": "tests/oracle/fixtures/fuzzy_match"
+   "fixtures": "tests/oracle/fixtures/fuzzy_match",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_fuzzy_match.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "fuzzy_match_helpers": {
    "harness": "tests/t_port_fuzzy_match_helpers.c",
@@ -413,12 +421,16 @@
   "gateway_cgroup_cleanup": {
    "harness": "tests/t_port_gateway_cgroup_cleanup.c",
    "oracle": "tests/sta_oracle_gateway_cgroup_cleanup.py",
-   "fixtures": "tests/oracle/fixtures/gateway_cgroup_cleanup"
+   "fixtures": "tests/oracle/fixtures/gateway_cgroup_cleanup",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'gateway/port_gateway_cgroup_cleanup.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "gateway_drain_control": {
    "harness": "tests/t_port_gateway_drain_control.c",
    "oracle": "tests/sta_oracle_gateway_drain_control.py",
-   "fixtures": "tests/oracle/fixtures/gateway_drain_control"
+   "fixtures": "tests/oracle/fixtures/gateway_drain_control",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'gateway/port_gateway_drain_control.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "gateway_own_policy": {
    "harness": "tests/t_port_gateway_own_policy.c",
@@ -518,7 +530,9 @@
   "hermes_cli_kanban_db": {
    "harness": "tests/t_port_hermes_cli_kanban_db.c",
    "oracle": "tests/sta_oracle_hermes_cli_kanban_db.py",
-   "fixtures": "tests/oracle/fixtures/hermes_cli_kanban_db"
+   "fixtures": "tests/oracle/fixtures/hermes_cli_kanban_db",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_kanban_db.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "hermes_cli_kanban_decompose": {
    "harness": "tests/t_port_hermes_cli_kanban_decompose.c",
@@ -548,7 +562,9 @@
   "hermes_cli_moa_slash": {
    "harness": "tests/t_port_hermes_cli_moa_slash.c",
    "oracle": "tests/sta_oracle_hermes_cli_moa_slash.py",
-   "fixtures": "tests/oracle/fixtures/hermes_cli_moa_slash"
+   "fixtures": "tests/oracle/fixtures/hermes_cli_moa_slash",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_moa_slash.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "hermes_cli_model_catalog": {
    "harness": "tests/t_port_hermes_cli_model_catalog.c",
@@ -600,7 +616,9 @@
   "lifecycle_guard": {
    "harness": "tests/t_port_lifecycle_guard.c",
    "oracle": "tests/sta_oracle_lifecycle_guard.py",
-   "fixtures": "tests/oracle/fixtures/lifecycle_guard"
+   "fixtures": "tests/oracle/fixtures/lifecycle_guard",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'cron/port_lifecycle_guard.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "markdown_tables": {
    "harness": "tests/t_port_markdown_tables.c",
@@ -1017,27 +1035,37 @@
   "tools_approval": {
    "harness": "tests/t_port_tools_approval.c",
    "oracle": "tests/sta_oracle_tools_approval.py",
-   "fixtures": "tests/oracle/fixtures/tools_approval"
+   "fixtures": "tests/oracle/fixtures/tools_approval",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_approval.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_browser_camofox": {
    "harness": "tests/t_port_tools_browser_camofox.c",
    "oracle": "tests/sta_oracle_tools_browser_camofox.py",
-   "fixtures": "tests/oracle/fixtures/tools_browser_camofox"
+   "fixtures": "tests/oracle/fixtures/tools_browser_camofox",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_browser_camofox.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_clarify_gateway": {
    "harness": "tests/t_port_tools_clarify_gateway.c",
    "oracle": "tests/sta_oracle_tools_clarify_gateway.py",
-   "fixtures": "tests/oracle/fixtures/tools_clarify_gateway"
+   "fixtures": "tests/oracle/fixtures/tools_clarify_gateway",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_clarify_gateway.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_clarify_tool": {
    "harness": "tests/t_port_tools_clarify_tool.c",
    "oracle": "tests/sta_oracle_tools_clarify_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_clarify_tool"
+   "fixtures": "tests/oracle/fixtures/tools_clarify_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_clarify_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_credential_files": {
    "harness": "tests/t_port_tools_credential_files.c",
    "oracle": "tests/sta_oracle_tools_credential_files.py",
-   "fixtures": "tests/oracle/fixtures/tools_credential_files"
+   "fixtures": "tests/oracle/fixtures/tools_credential_files",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_credential_files.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_delegate_tool": {
    "harness": "tests/t_port_tools_delegate_tool.c",
@@ -1047,47 +1075,65 @@
   "tools_env_passthrough": {
    "harness": "tests/t_port_tools_env_passthrough.c",
    "oracle": "tests/sta_oracle_tools_env_passthrough.py",
-   "fixtures": "tests/oracle/fixtures/tools_env_passthrough"
+   "fixtures": "tests/oracle/fixtures/tools_env_passthrough",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_env_passthrough.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_env_probe": {
    "harness": "tests/t_port_tools_env_probe.c",
    "oracle": "tests/sta_oracle_tools_env_probe.py",
-   "fixtures": "tests/oracle/fixtures/tools_env_probe"
+   "fixtures": "tests/oracle/fixtures/tools_env_probe",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_env_probe.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_feishu_drive_tool": {
    "harness": "tests/t_port_tools_feishu_drive_tool.c",
    "oracle": "tests/sta_oracle_tools_feishu_drive_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_feishu_drive_tool"
+   "fixtures": "tests/oracle/fixtures/tools_feishu_drive_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_feishu_drive_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_image_generation_tool": {
    "harness": "tests/t_port_tools_image_generation_tool.c",
    "oracle": "tests/sta_oracle_tools_image_generation_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_image_generation_tool"
+   "fixtures": "tests/oracle/fixtures/tools_image_generation_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_image_generation_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_interrupt": {
    "harness": "tests/t_port_tools_interrupt.c",
    "oracle": "tests/sta_oracle_tools_interrupt.py",
-   "fixtures": "tests/oracle/fixtures/tools_interrupt"
+   "fixtures": "tests/oracle/fixtures/tools_interrupt",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_interrupt.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_kanban_tools": {
    "harness": "tests/t_port_tools_kanban_tools.c",
    "oracle": "tests/sta_oracle_tools_kanban_tools.py",
-   "fixtures": "tests/oracle/fixtures/tools_kanban_tools"
+   "fixtures": "tests/oracle/fixtures/tools_kanban_tools",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_kanban_tools.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_managed_tool_gateway": {
    "harness": "tests/t_port_tools_managed_tool_gateway.c",
    "oracle": "tests/sta_oracle_tools_managed_tool_gateway.py",
-   "fixtures": "tests/oracle/fixtures/tools_managed_tool_gateway"
+   "fixtures": "tests/oracle/fixtures/tools_managed_tool_gateway",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_managed_tool_gateway.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_mcp_oauth_manager": {
    "harness": "tests/t_port_tools_mcp_oauth_manager.c",
    "oracle": "tests/sta_oracle_tools_mcp_oauth_manager.py",
-   "fixtures": "tests/oracle/fixtures/tools_mcp_oauth_manager"
+   "fixtures": "tests/oracle/fixtures/tools_mcp_oauth_manager",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_mcp_oauth_manager.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_microsoft_graph_auth": {
    "harness": "tests/t_port_tools_microsoft_graph_auth.c",
    "oracle": "tests/sta_oracle_tools_microsoft_graph_auth.py",
-   "fixtures": "tests/oracle/fixtures/tools_microsoft_graph_auth"
+   "fixtures": "tests/oracle/fixtures/tools_microsoft_graph_auth",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_microsoft_graph_auth.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_moa_performance": {
    "harness": "tests/t_port_tools_moa_performance.c",
@@ -1097,7 +1143,9 @@
   "tools_openrouter_client": {
    "harness": "tests/t_port_tools_openrouter_client.c",
    "oracle": "tests/sta_oracle_tools_openrouter_client.py",
-   "fixtures": "tests/oracle/fixtures/tools_openrouter_client"
+   "fixtures": "tests/oracle/fixtures/tools_openrouter_client",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_openrouter_client.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_process_registry": {
    "harness": "tests/t_port_tools_process_registry.c",
@@ -1107,7 +1155,9 @@
   "tools_read_terminal_tool": {
    "harness": "tests/t_port_tools_read_terminal_tool.c",
    "oracle": "tests/sta_oracle_tools_read_terminal_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_read_terminal_tool"
+   "fixtures": "tests/oracle/fixtures/tools_read_terminal_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_read_terminal_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_skill_manager_tool": {
    "harness": "tests/t_port_tools_skill_manager_tool.c",
@@ -1117,27 +1167,37 @@
   "tools_skill_usage": {
    "harness": "tests/t_port_tools_skill_usage.c",
    "oracle": "tests/sta_oracle_tools_skill_usage.py",
-   "fixtures": "tests/oracle/fixtures/tools_skill_usage"
+   "fixtures": "tests/oracle/fixtures/tools_skill_usage",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_skills_sync.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_skills_hub": {
    "harness": "tests/t_port_tools_skills_hub.c",
    "oracle": "tests/sta_oracle_tools_skills_hub.py",
-   "fixtures": "tests/oracle/fixtures/tools_skills_hub"
+   "fixtures": "tests/oracle/fixtures/tools_skills_hub",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_skills_hub.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_skills_sync": {
    "harness": "tests/t_port_tools_skills_sync.c",
    "oracle": "tests/sta_oracle_tools_skills_sync.py",
-   "fixtures": "tests/oracle/fixtures/tools_skills_sync"
+   "fixtures": "tests/oracle/fixtures/tools_skills_sync",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_skills_sync.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_slash_confirm": {
    "harness": "tests/t_port_tools_slash_confirm.c",
    "oracle": "tests/sta_oracle_tools_slash_confirm.py",
-   "fixtures": "tests/oracle/fixtures/tools_slash_confirm"
+   "fixtures": "tests/oracle/fixtures/tools_slash_confirm",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'tools/port_tools_slash_confirm.h', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_threat_patterns": {
    "harness": "tests/t_port_tools_threat_patterns.c",
    "oracle": "tests/sta_oracle_tools_threat_patterns.py",
-   "fixtures": "tests/oracle/fixtures/tools_threat_patterns"
+   "fixtures": "tests/oracle/fixtures/tools_threat_patterns",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_threat_patterns.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_tirith_security": {
    "harness": "tests/t_port_tools_tirith_security.c",
@@ -1147,22 +1207,30 @@
   "tools_todo_tool": {
    "harness": "tests/t_port_tools_todo_tool.c",
    "oracle": "tests/sta_oracle_tools_todo_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_todo_tool"
+   "fixtures": "tests/oracle/fixtures/tools_todo_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_todo_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_tool_backend_helpers": {
    "harness": "tests/t_port_tools_tool_backend_helpers.c",
    "oracle": "tests/sta_oracle_tools_tool_backend_helpers.py",
-   "fixtures": "tests/oracle/fixtures/tools_tool_backend_helpers"
+   "fixtures": "tests/oracle/fixtures/tools_tool_backend_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_tool_backend_helpers.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_tool_output_limits": {
    "harness": "tests/t_port_tools_tool_output_limits.c",
    "oracle": "tests/sta_oracle_tools_tool_output_limits.py",
-   "fixtures": "tests/oracle/fixtures/tools_tool_output_limits"
+   "fixtures": "tests/oracle/fixtures/tools_tool_output_limits",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_tool_output_limits.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_tts_tool": {
    "harness": "tests/t_port_tools_tts_tool.c",
    "oracle": "tests/sta_oracle_tools_tts_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_tts_tool"
+   "fixtures": "tests/oracle/fixtures/tools_tts_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tts_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_tts_text_normalize": {
    "harness": "tests/t_port_tools_tts_text_normalize.c",
@@ -1175,37 +1243,51 @@
   "tools_url_safety": {
    "harness": "tests/t_port_tools_url_safety.c",
    "oracle": "tests/sta_oracle_tools_url_safety.py",
-   "fixtures": "tests/oracle/fixtures/tools_url_safety"
+   "fixtures": "tests/oracle/fixtures/tools_url_safety",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_url_safety.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_video_generation_tool": {
    "harness": "tests/t_port_tools_video_generation_tool.c",
    "oracle": "tests/sta_oracle_tools_video_generation_tool.py",
-   "fixtures": "tests/oracle/fixtures/tools_video_generation_tool"
+   "fixtures": "tests/oracle/fixtures/tools_video_generation_tool",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_video_generation_tool.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_voice_mode": {
    "harness": "tests/t_port_tools_voice_mode.c",
    "oracle": "tests/sta_oracle_tools_voice_mode.py",
-   "fixtures": "tests/oracle/fixtures/tools_voice_mode"
+   "fixtures": "tests/oracle/fixtures/tools_voice_mode",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_voice_mode.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_web_tools": {
    "harness": "tests/t_port_tools_web_tools.c",
    "oracle": "tests/sta_oracle_tools_web_tools.py",
-   "fixtures": "tests/oracle/fixtures/tools_web_tools"
+   "fixtures": "tests/oracle/fixtures/tools_web_tools",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_web_tools.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_website_policy": {
    "harness": "tests/t_port_tools_website_policy.c",
    "oracle": "tests/sta_oracle_tools_website_policy.py",
-   "fixtures": "tests/oracle/fixtures/tools_website_policy"
+   "fixtures": "tests/oracle/fixtures/tools_website_policy",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_website_policy.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_write_approval": {
    "harness": "tests/t_port_tools_write_approval.c",
    "oracle": "tests/sta_oracle_tools_write_approval.py",
-   "fixtures": "tests/oracle/fixtures/tools_write_approval"
+   "fixtures": "tests/oracle/fixtures/tools_write_approval",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_write_approval.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "tools_yuanbao_tools": {
    "harness": "tests/t_port_tools_yuanbao_tools.c",
    "oracle": "tests/sta_oracle_tools_yuanbao_tools.py",
-   "fixtures": "tests/oracle/fixtures/tools_yuanbao_tools"
+   "fixtures": "tests/oracle/fixtures/tools_yuanbao_tools",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_yuanbao_tools.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "toolsets": {
    "harness": "tests/t_port_toolsets.c",
@@ -1354,17 +1436,23 @@
   "output_cap": {
    "harness": "tests/t_port_model_metadata_output_cap.c",
    "oracle": "tests/sta_oracle_output_cap.py",
-   "fixtures": "tests/oracle/fixtures/output_cap"
+   "fixtures": "tests/oracle/fixtures/output_cap",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_agent_model_metadata.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "response_filters": {
    "harness": "tests/t_port_gateway_response_filters.c",
    "oracle": "tests/sta_oracle_response_filters.py",
-   "fixtures": "tests/oracle/fixtures/response_filters"
+   "fixtures": "tests/oracle/fixtures/response_filters",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_gateway_response_filters.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "safe_result_filename": {
    "harness": "tests/t_port_tool_result_storage_filename.c",
    "oracle": "tests/sta_oracle_safe_result_filename.py",
-   "fixtures": "tests/oracle/fixtures/safe_result_filename"
+   "fixtures": "tests/oracle/fixtures/safe_result_filename",
+   "status": "incomplete",
+   "incomplete_reason": "harness includes 'port_tools_tool_result_storage.c', which does not exist anywhere in the tree -- the port implementation was never written or was removed"
   },
   "signal_format": {
    "harness": "tests/t_port_gateway_signal_format.c",
