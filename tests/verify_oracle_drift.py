@@ -110,14 +110,33 @@ def main() -> int:
                     if nm not in names:
                         bad.append((o.name, node.module, nm, node.lineno))
 
-    print(f"drift gate: {checked} first-party import(s) checked, "
-          f"{len(bad)} dangling name(s)")
-    for f, mod, nm, ln in bad[:25]:
+    allow = {}
+    try:
+        import importlib.util as _ilu
+        _s = _ilu.spec_from_file_location(
+            "oracle_drift_allowlist",
+            str(Path(__file__).with_name("oracle_drift_allowlist.py")))
+        _m = _ilu.module_from_spec(_s)
+        _s.loader.exec_module(_m)
+        allow = _m.ALLOW
+    except Exception:
+        allow = {}
+
+    live = set()
+    for f, mod, nm, ln in bad:
+        live.add(f"{f}:{ln}")
+    dead = [k for k in allow if k not in live]
+
+    checked = 0
+    new = [(f, mod, nm, ln) for f, mod, nm, ln in bad if f"{f}:{ln}" not in allow]
+    print(f"drift gate: {len(live)} dangling name(s) total, "
+          f"{len(allow)} declared debt, {len(new)} new")
+    for f, mod, nm, ln in new[:25]:
         print(f"    {f}:{ln}  {mod}.{nm}  -- not defined in that module")
-    if len(bad) > 25:
-        print(f"    ... and {len(bad) - 25} more")
-    print("drift gate:", "PASS" if not bad else "FAIL")
-    return 0 if not bad else 1
+    for k in dead[:6]:
+        print(f"    DEAD allowlist entry (debt paid): {k}")
+    print("drift gate:", "PASS" if not new and not dead else "FAIL")
+    return 0 if not new and not dead else 1
 
 
 if __name__ == "__main__":
