@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_auth_qwen.py — Oracle for the file/env half of hermes_cli/auth_qwen.py.
@@ -6,7 +7,6 @@ Replays the same cases against the LIVE module (path, base URL, expiry skew,
 token-file reading with BOM, save round trip).
 """
 import json
-import os
 import re
 import sys
 import tempfile

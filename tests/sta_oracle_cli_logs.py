@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cli_logs.py — Oracle for hermes_cli/logs.py
@@ -9,7 +10,6 @@ emitted JSON with the C harness output (read from stdin).
 import sys, os, io, json, re, tempfile, contextlib
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from hermes_cli import logs as L
-import os
 
 def main():
     data = sys.stdin.read()

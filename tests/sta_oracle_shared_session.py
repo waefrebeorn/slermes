@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 import os
+#!/usr/bin/env python3
 """
 sta_oracle_shared_session.py — oracle for t_port_shared_session.c.
 

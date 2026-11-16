@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_web_server_status.py — LIVE-Python oracle for the dashboard
@@ -10,7 +11,6 @@ expected count with the SAME SQL predicate the Python web_server uses
 the bounded-ring contract.
 """
 import sys, os, json, tempfile, sqlite3, time
-import os
 
 WEB = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 sys.path.insert(0, WEB)

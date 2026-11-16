@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for hermes_cli_moa_slash (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from hermes_cli.moa_slash import (register_moa_slash_handler)

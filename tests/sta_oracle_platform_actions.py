@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_platform_actions.py — Python twin for
 hermes_cli/platform_actions.py, mirrored by src/hermes_cli/platform_actions.c.

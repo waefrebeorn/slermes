@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_path_security.py — Python oracle for the path-safety helpers in
@@ -13,7 +14,6 @@ one JSON object per line, sorted keys, ensure_ascii=False, compact separators.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 

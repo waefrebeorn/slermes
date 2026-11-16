@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_skills_guard.py — Python oracle for the skills_guard helpers in
@@ -13,7 +14,6 @@ compact separators, ensure_ascii=False.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_model_data_policy_guard.py — Python twin for
 src/hermes_cli/model_data_policy_guard.c. Imports the LIVE module (spec-loaded
@@ -6,7 +7,6 @@ directly) and mirrors the C ops:
 """
 import importlib.util
 import json
-import os
 import sys
 from pathlib import Path
 

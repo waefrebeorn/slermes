@@ -7,6 +7,7 @@ JSON array for byte-diffing.
 argv[1] = fixture path. Fixture:
   {"home": "/tmp/xxx", "now": 1000.0, "cases":[{"op":..., "args":[...]}]}
 """
+import os
 import sys, os, json
 from pathlib import Path
 
@@ -15,7 +16,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import importlib.util
-import os
 spec = importlib.util.spec_from_file_location(
     "restart_loop_guard_oracle", str(ROOT / "gateway" / "restart_loop_guard.py"))
 mod = importlib.util.module_from_spec(spec)

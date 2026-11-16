@@ -7,8 +7,8 @@ sentinel semantics and diffs the JSON records emitted by the C harness.
 The C harness writes one JSON record per step. We replay the equivalent Python
 calls (via subprocess, importing agent.estop) and assert the same transitions.
 """
-import json
 import os
+import json
 import sys
 
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))

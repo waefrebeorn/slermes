@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_apply_layout_tool.py — Python twin for tools/apply_layout_tool.py,
 mirrored by src/tools/apply_layout_tool.c.

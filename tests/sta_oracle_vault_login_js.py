@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_vault_login_js.py — Oracle for the two JS builders in

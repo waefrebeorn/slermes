@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for agent_secret_scope (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.secret_scope import (is_multiplex_active)

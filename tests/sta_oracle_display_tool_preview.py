@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/display build_tool_preview / build_tool_label /
 redact_tool_args_for_display vs LIVE Python.

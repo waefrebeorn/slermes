@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the kanban_db engine port.
 
@@ -45,7 +46,6 @@ def norm_id(rid):
 # TMPH would otherwise let one side observe the other's writes. Use a
 # per-process subdir under the oracle home (mirrors the C harness).
 import tempfile
-import os
 base = os.environ.get("SLERMES_HOME") or os.environ.get("HOME")
 if base:
     priv = tempfile.mkdtemp(prefix="eng_", dir=base)

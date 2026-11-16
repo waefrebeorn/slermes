@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_tool_search.py — Python oracle for the PURE tool-search helpers in
@@ -14,7 +15,6 @@ object per line, sorted keys, ensure_ascii=False, compact separators.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

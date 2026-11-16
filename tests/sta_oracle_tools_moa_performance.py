@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_moa_performance (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.moa_performance import (__aenter__, __aexit__, _ensure_session, _init_db, clear_expired, close_global_clients)

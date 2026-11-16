@@ -7,6 +7,7 @@ match the C harness for byte-diffing.
 
 argv[1] = fixture: {"path":"/tmp/...","ops":[...]}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 

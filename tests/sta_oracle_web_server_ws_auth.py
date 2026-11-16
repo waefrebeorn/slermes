@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_ws_auth.py — LIVE-Python oracle for the WS gate
 family. Extracts the real functions from web_server.py + the real
@@ -7,7 +8,6 @@ import json
 import sys
 import types
 from pathlib import Path
-import os
 
 WEB_SERVER = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/web_server.py")
 WS_TICKETS = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/dashboard_auth/ws_tickets.py")

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for hermes_cli/heartbeat.py — pure functions over fixtures.
 

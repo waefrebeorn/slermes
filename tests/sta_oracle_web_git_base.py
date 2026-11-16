@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_git_base.py — LIVE Python web_git oracle (imports the real
 module; it has no FastAPI deps)."""
@@ -7,7 +8,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))))
 from hermes_cli import web_git  # noqa: E402
-import os
 
 
 def main():

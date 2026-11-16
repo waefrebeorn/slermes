@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_tool_output_limits (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.tool_output_limits import (_reset_tool_output_limits_cache, get_max_bytes, get_max_line_length, get_max_lines)

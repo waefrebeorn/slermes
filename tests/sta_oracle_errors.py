@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_errors.py — oracle for t_port_errors.c.
@@ -16,7 +17,6 @@ manufacture false FAPs.
 """
 
 import sys
-import os
 import importlib.util
 import json as _json
 

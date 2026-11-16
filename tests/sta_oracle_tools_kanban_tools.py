@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_kanban_tools (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.kanban_tools import (_check_kanban_mode, _check_kanban_orchestrator_mode, _goal_judge_available, _profile_has_kanban_toolset)

@@ -4,8 +4,8 @@ Reads a JSON array fixture from argv[1]; each element is {"op":<fn>, ...args}.
 Recomputes from the LIVE Python source and emits one JSON object per line,
 matching tests/t_port_agent_relay_llm.c byte-for-byte (after normalization).
 """
-import json
 import os
+import json
 import sys
 
 # The oracle reads the live Python source via the developer tree symlinked at

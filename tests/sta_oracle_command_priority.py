@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_command_priority.py — Python oracle for the PURE Telegram menu
@@ -17,7 +18,6 @@ op per case, sorted keys, ensure_ascii=False, compact separators.
 """
 
 import json
-import os
 import sys
 import tempfile
 import yaml

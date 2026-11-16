@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: gateway/platforms/helpers.py table helpers vs LIVE Python.
 Reads newline-delimited JSON; compares each line vs live Python."""

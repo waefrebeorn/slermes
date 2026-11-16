@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure triage/roster helpers in hermes_cli/kanban_decompose.py.
 
@@ -28,7 +29,6 @@ ROOT = os.path.expanduser("~/hermes-agent-dev")
 sys.path.insert(0, ROOT)
 
 import hermes_cli.kanban_decompose as kd
-import os
 
 _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 

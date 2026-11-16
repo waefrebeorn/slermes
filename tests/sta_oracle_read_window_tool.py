@@ -1,7 +1,7 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_read_window_tool.py — Python twin for src/tools/read_window_tool.c."""
 import json
-import os
 import sys
 
 

@@ -1,10 +1,10 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_dev.py — Python twin for tests/t_port_plugin_dev.c
 (hermes_cli/plugin_dev.py deterministic surface). Imports the REAL module.
 """
 import contextlib
 import json
-import os
 import sys
 from pathlib import Path, PosixPath
 from types import SimpleNamespace

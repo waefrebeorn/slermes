@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_spill_safety.py — Python twin for tools/spill_safety.py,
 mirrored by src/tools/spill_safety.c.
@@ -9,7 +10,6 @@ start), and emits one JSON line per op plus a final recursive lstat listing,
 matching tests/t_port_spill_safety.c exactly.
 """
 import json
-import os
 import stat as stat_mod
 import sys
 from pathlib import Path

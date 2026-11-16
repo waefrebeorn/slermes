@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_skills_sync_fs.py — oracle for skills_sync_fs helpers.

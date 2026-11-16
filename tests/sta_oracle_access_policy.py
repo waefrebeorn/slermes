@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/platforms/access_policy_mixin.py: _is_dm_allowed,
 _is_dm_intake_allowed, _is_group_allowed (plus the _open_dm_opted_in /

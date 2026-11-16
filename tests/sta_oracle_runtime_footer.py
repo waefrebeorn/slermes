@@ -5,6 +5,7 @@ compact JSON array of the resulting footer strings for byte-diffing.
 
 argv[1] = fixture path. HOME is pinned so _home_relative_cwd is deterministic.
 """
+import os
 import sys, os, json
 from pathlib import Path
 
@@ -13,7 +14,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import importlib.util
-import os
 spec = importlib.util.spec_from_file_location(
     "runtime_footer_oracle", str(ROOT / "gateway" / "runtime_footer.py"))
 assert spec and spec.loader

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_stream_hooks.py — Python twin for
 agent/plugin_stream_hooks.py, mirrored by src/agent/plugin_stream_hooks.c.
@@ -12,7 +13,6 @@ import threading
 sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from hermes_cli.middleware import OBSERVER_SCHEMA_VERSION
 import agent.plugin_stream_hooks as ps
-import os
 
 # name -> recorded kwargs list (registration order preserved)
 CALLS = {}

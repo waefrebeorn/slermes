@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_url_safety.py — Python oracle for the PURE, deterministic SSRF-safety
@@ -16,7 +17,6 @@ sorted keys, ensure_ascii=False (raw UTF-8), compact separators.
 """
 
 import json
-import os
 import sys
 
 # Make the hermes-agent-dev tree importable.

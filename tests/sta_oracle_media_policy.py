@@ -1,8 +1,8 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_media_policy.py — Python twin for src/gateway/media_policy.c."""
 import importlib.util
 import json
-import os
 import sys
 
 _LIVE = os.environ.get(

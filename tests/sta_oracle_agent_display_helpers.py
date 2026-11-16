@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/display.py pure helpers vs LIVE Python."""
 import json, sys, os, types

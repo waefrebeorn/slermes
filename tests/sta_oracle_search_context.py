@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_search_context.py — Python oracle for the PURE search-context-line
@@ -12,7 +13,6 @@ None), so both sides are directly comparable.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

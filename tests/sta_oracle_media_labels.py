@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure helpers in gateway/relay/media.py (media_base_url,
 is_relay_media_url), hermes_cli/platforms.py (_plugin_label), and

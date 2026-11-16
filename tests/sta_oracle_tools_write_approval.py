@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_write_approval (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.write_approval import (_interactive_approval_available, is_background)

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_file_search.py — Python oracle for the PURE file-search diagnostics
@@ -11,7 +12,6 @@ uses literal \\n / \\t tokens decoded to real chars on BOTH sides.
 """
 
 import json
-import os
 import re
 import sys
 

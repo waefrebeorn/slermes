@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_partial_compress_keep.py — Oracle for
@@ -7,7 +8,6 @@ Reads C harness JSON lines (case/token/ret) from stdin, recomputes each case
 against LIVE Python and compares the returned ints.
 """
 import sys
-import os
 import json
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")

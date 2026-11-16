@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_memory_status.py — Python twin for src/gateway/memory_status.c.
 
@@ -9,7 +10,6 @@ Emits one JSON line per op (same order).
 """
 import importlib.util
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_message_metadata.py — Python twin for agent/message_metadata.py.
 

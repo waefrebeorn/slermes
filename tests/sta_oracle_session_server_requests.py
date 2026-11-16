@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/session_server_requests.py::is_response_frame."""
 import json

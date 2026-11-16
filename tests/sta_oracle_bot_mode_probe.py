@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_bot_mode_probe.py — oracle twin for tools/bot_mode_probe.py.
 
@@ -32,7 +33,6 @@ and passes the resolved absolute home to the probe functions (which honor
 HERMES_HOME only when their home arg is falsy — here we always pass explicit).
 """
 import json
-import os
 import sys
 import tempfile
 import importlib.util

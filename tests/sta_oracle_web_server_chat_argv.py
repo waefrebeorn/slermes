@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_chat_argv.py — LIVE-Python oracle for the chat
 argv/env cluster. Uses the REAL hermes_cli.profiles module, the REAL
@@ -64,7 +65,6 @@ def main():
 
     if op == "profile_dir":
         sys.path.insert(0, str(HERMES))
-        import os
         os.environ["HERMES_HOME"] = fx.get("home", "/nonexistent")
         from hermes_cli import profiles as profiles_mod
         from typing import Optional

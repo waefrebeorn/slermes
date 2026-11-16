@@ -7,6 +7,7 @@ the C harness (set/reset -> null, get -> string, is_bg -> bool) for byte-diff.
 
 argv[1] = fixture: {"ops":[...]}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 

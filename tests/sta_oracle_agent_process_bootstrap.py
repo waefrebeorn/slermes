@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for agent_process_bootstrap (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.auxiliary_client import (_install_safe_stdio)

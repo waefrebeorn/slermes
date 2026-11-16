@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/outbound_webhooks.py: _serialize_payload, _build_delivery
 (HMAC-SHA256 signature), and _parse_single_target (webhook target validator).

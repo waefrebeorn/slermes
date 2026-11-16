@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_agent_retry_utils.py — oracle for
 agent/retry_utils.py vs LIVE Python C harness.
@@ -11,7 +12,6 @@ run_oracle.sh pipes the C harness's JSONL on stdin (ignored here) and diffs
 this stdout against the C output byte-for-byte (after normalization).
 """
 import json
-import os
 import sys
 
 _repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

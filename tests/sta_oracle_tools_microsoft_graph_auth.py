@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_microsoft_graph_auth (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.microsoft_graph_auth import (clear_cache)

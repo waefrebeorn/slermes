@@ -1,4 +1,5 @@
 """AUTO-GENERATED integration oracle for port_file_operations (gen_integration_oracle.py)."""
+import os
 import os, sys, json, importlib.util
 
 MODS = {}

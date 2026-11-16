@@ -1,4 +1,5 @@
 """AUTO-GENERATED integration oracle for port_gateway_shutdown_forensics (gen_integration_oracle.py)."""
+import os
 import os, sys, json, importlib.util
 
 MODS = {}

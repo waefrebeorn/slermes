@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_voice_mode (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.voice_mode import (_audio_available, _pulse_socket_reachable, _termux_api_app_installed, _termux_voice_capture_available)

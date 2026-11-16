@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_website_policy (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.website_policy import (_get_default_config_path, invalidate_cache)

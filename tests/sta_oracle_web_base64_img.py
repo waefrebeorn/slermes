@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_web_base64_img.py — oracle for web_convert_base64_images_to_links.

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_prune.py — LIVE-Python oracle for the prune engine.
 Uses the REAL SessionDB class for candidates/prune, and the REAL extracted
@@ -10,7 +11,6 @@ from pathlib import Path
 HERMES = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))  # live upstream tree
 sys.path.insert(0, str(HERMES))
 from hermes_state import SessionDB  # noqa: E402
-import os
 
 WEB_SERVER = HERMES / "hermes_cli/web_server.py"
 

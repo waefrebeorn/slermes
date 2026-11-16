@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Faithfulness oracle for port_file_operations.c: the three v549 linters.
 

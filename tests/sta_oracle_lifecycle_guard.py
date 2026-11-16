@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: cron/lifecycle_guard.contains_gateway_lifecycle_command vs LIVE Python."""
 import json, sys, os, types

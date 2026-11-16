@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Faithfulness oracle for tests/t_port_tools_tts_text_normalize.c.
 
@@ -10,7 +11,6 @@ run_oracle.sh pipes the C harness's JSONL on stdin (ignored here) and diffs
 this stdout against the C output byte-for-byte.
 """
 import json
-import os
 import sys
 
 

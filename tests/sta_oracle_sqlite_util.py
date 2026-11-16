@@ -9,6 +9,7 @@ sqlite3 connection, serializing results to match the C harness for byte-diff:
 
 argv[1] = fixture: {"db":"/tmp/x.db","ops":[...]}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 

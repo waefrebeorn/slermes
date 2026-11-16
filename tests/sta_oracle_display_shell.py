@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Faithfulness oracle for port_agent_display.c shell-summarization helpers.
 

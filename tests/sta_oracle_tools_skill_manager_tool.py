@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_skill_manager_tool (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.checkpoint_manager import (_git_env)

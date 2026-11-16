@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_side_question_request.py — Oracle for has_server_side_tools and

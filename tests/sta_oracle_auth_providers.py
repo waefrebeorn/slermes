@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for hermes_cli/auth_commands.py: _is_known_provider (live,
 ast-extracted; PROVIDER_REGISTRY + CUSTOM_POOL_PREFIX globals provided) and

@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_mcp_oauth_manager (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.mcp_oauth_manager import (_make_hermes_provider_class, reset_manager_for_tests)

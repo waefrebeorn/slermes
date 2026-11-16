@@ -1,7 +1,7 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure helpers of hermes_cli/dashboard_procs.py ported to C."""
 import json
-import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

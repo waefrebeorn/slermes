@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_anthropic_message_convert.py — Oracle for the block-shaping helpers

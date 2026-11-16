@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/session_activity.py pure core.
 

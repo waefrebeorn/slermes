@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cronjob_tools_gap.py — oracle for residual-façade closure (v558).
@@ -8,7 +9,6 @@ honest error / no-op rather than a fake success).
 import sys, os, json
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.cronjob_tools as ct
-import os
 
 def env_enabled(v):
     return str(v).strip().lower() in ("1", "true", "yes", "on")

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Faithfulness oracle for port_tools_tool_result_storage.c:_safe_result_filename.
 

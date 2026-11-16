@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_foreign_sessions_pure.py — oracle twin for foreign_sessions_pure.c.
 
@@ -11,7 +12,6 @@ Fixture ops:
   {"op": "session_label", "source": "claude", "title": "My Session", "stem": "abc"}
 """
 import json
-import os
 import sys
 import importlib.util
 

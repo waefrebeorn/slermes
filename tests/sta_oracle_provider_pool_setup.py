@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_provider_pool_setup.py — oracle for
@@ -22,7 +23,6 @@ diffs them, so any drift between the C registry snapshot and the live registry
 is caught.
 """
 import sys
-import os
 import json
 import importlib.util
 

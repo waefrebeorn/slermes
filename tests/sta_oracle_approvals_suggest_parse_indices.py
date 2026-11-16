@@ -3,6 +3,7 @@
 Tests the parsing logic in isolation — imports the function and calls it
 directly. The C port uses -1 for ValueError equivalents (None/error → null).
 """
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
@@ -10,7 +11,6 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from hermes_cli.approvals_suggest import parse_apply_indices
-import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(__file__),

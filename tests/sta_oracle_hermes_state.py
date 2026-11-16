@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure, DB-free helpers of hermes_state.py ported to C.
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure URL/key-shape predicates of hermes_cli/auth.py.
 

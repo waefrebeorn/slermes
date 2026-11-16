@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure render/path helpers of hermes_cli/linux_desktop_entry.py
 ported to C (port_linux_desktop_entry.c).
@@ -6,7 +7,6 @@ Reads the JSON cases fixture (argv[1]), recomputes each case from LIVE
 hermes_cli/linux_desktop_entry.py, and emits one JSON object per case.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

@@ -15,8 +15,8 @@ active-turn sets, the profile-key cache) rather than a stub.
 
 Reads the C harness output on stdin; prints MISMATCH lines for any divergence.
 """
-import json
 import os
+import json
 import sys
 
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))

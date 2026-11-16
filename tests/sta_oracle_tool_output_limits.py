@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_tool_output_limits.py — Python oracle for the PURE tool-output-limit
@@ -12,7 +13,6 @@ sorted keys, ensure_ascii=False, compact separators.
 """
 
 import json
-import os
 import sys
 import tempfile
 

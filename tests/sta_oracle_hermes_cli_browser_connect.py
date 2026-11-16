@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for hermes_cli_browser_connect (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from hermes_cli.pt_input_extras import (install_ignored_terminal_sequences)

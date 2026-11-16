@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 import os
+#!/usr/bin/env python3
 """
 sta_oracle_usage_pricing.py — oracle for t_port_usage_pricing.c.
 

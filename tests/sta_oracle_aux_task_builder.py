@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for hermes_cli/plugins_aux_tasks.py build_auxiliary_task_entry.
 The function is ast-extracted (it raises ValueError, so a None C output must

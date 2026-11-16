@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_browser_camofox (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.browser_camofox import (_adopt_existing_tab_enabled, _loopback_rewrite_enabled, _managed_persistence_enabled, check_camofox_available)

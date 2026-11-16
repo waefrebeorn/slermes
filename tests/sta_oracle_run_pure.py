@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_run_pure.py — Python oracle for the PURE gateway/run.py helpers
@@ -12,7 +13,6 @@ isolated namespace, then evaluates each fixture through the real Python code.
 
 This is the exact source text the C port was translated from — no reimplementation.
 """
-import os
 import re
 import ast
 import sys

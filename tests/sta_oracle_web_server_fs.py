@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_web_server_fs.py — LIVE-Python oracle for the /api/fs cluster.
@@ -8,7 +9,6 @@ fixture ops as the C harness against the same real filesystem sandbox.
 import ast
 import base64
 import json
-import os
 import stat as stat_mod
 import sys
 from pathlib import Path

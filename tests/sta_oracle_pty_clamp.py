@@ -2,6 +2,7 @@
 sta_oracle_pty_clamp.py — oracle for pty bridge clamps.
 Mirrors the Python int() coercion: non-int -> _MIN_DIMENSION(1), else clamp.
 """
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 

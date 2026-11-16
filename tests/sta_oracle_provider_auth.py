@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_provider_auth.py — oracle for t_port_provider_auth.c.
@@ -15,7 +16,6 @@ the C table is caught.
 """
 
 import sys
-import os
 import importlib.util
 import json as _json
 

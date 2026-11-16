@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_error_surface.py — Oracle for agent/error_surface.py.

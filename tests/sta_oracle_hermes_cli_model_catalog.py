@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for hermes_cli_model_catalog (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.pet.manifest import (_cache_is_warm, clear_cache, prefetch)

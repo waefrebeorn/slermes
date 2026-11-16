@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_sessions_admin.py — LIVE-Python oracle using the
 REAL hermes_state.SessionDB class (no extraction, no mocks)."""
@@ -7,7 +8,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))))
 from hermes_state import SessionDB  # noqa: E402
-import os
 
 
 def main():

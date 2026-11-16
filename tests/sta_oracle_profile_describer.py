@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for hermes_cli/profile_describer.py _sample_skills. The function is
 ast-extracted and run live (MAX_SKILLS_FOR_PROMPT seeded).

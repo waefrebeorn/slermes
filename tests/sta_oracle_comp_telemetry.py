@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/context_compressor_telemetry.py pure helpers:
 _compression_method and the aux-route failure error truncation. Both are

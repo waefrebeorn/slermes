@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_setup_probes.py — oracle for t_port_setup_probes.c.

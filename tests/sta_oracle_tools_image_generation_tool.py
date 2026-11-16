@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_image_generation_tool (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.image_generation_tool import (_load_fal_client)

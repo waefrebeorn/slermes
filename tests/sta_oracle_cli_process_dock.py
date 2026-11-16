@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for hermes_cli/cli_process_dock.py pure helpers: _last_output_line,
 process_status, process_glyph. The three are ast-extracted live; the module

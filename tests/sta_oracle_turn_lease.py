@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/turn_lease.py formatting helpers: _holder_desc,
 TurnLeaseToken.__repr__, and the TurnLeaseTimeoutError message. All three are

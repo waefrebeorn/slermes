@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_memory_tool_pure.py — oracle twin for memory_tool_pure.c.
 
@@ -16,7 +17,6 @@ get_memory_dir is environment-dependent (HERMES_HOME) — covered by a
 best-effort string-prefix check, but not strict-diffed.
 """
 import json
-import os
 import sys
 import importlib.util
 

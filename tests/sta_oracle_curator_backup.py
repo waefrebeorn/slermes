@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_curator_backup.py — oracle for t_port_curator_backup.c.
@@ -8,7 +9,6 @@ we monkeypatch THAT to return the parsed YAML document, so is_enabled/get_keep
 run with their exact canonical logic. Emits one JSON line per case (same
 shape as the C harness). The runner diffs them.
 """
-import os
 import sys
 import importlib
 import yaml as pyyaml

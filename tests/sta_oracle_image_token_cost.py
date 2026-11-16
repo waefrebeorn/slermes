@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for image_token_cost::count_images / model_metadata::_count_image_tokens.
 

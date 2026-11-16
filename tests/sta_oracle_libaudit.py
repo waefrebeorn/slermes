@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_libaudit.py — Python-twin oracle for the 2026-08-22 lib audit.
 

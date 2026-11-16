@@ -3,6 +3,7 @@ agent/agent_runtime_helpers.intent_ack_continuation_mode. The Python helper
 takes an agent object; we emulate it with a tiny object carrying the three
 attributes the helper reads. Replays each harness input and compares the
 resolved mode string exactly."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.agent_runtime_helpers import intent_ack_continuation_mode

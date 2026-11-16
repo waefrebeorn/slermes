@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_coding_context.py — oracle for t_port_coding_context.c.
@@ -6,7 +7,6 @@ Recomputes each case from the LIVE agent/coding_context.py and emits one JSON
 line per case (same shape as the C harness). The runner diffs them byte-for-byte.
 """
 import json
-import os
 import sys
 from pathlib import Path
 

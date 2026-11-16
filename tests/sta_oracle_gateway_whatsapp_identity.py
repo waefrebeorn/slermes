@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure JID helpers of gateway/whatsapp_identity.py (live import)."""
 import json

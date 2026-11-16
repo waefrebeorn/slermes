@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_learning_graph.py — Oracle for agent/learning_graph.py pure-transform
@@ -7,7 +8,6 @@ Reads the C harness JSON lines from stdin, recomputes each case against LIVE
 Python, and compares structurally (Python edge/stat semantics are the truth).
 """
 import sys
-import os
 import json
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")

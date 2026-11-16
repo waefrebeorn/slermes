@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_verify_cmd.py — Python twin for hermes_cli/verify_cmd.py,
 mirrored by src/hermes_cli/verify_cmd.c.

@@ -1,7 +1,7 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_terminal_breadcrumbs_pure.py — oracle twin for terminal_breadcrumbs_pure.c."""
 import json
-import os
 import sys
 import importlib.util
 

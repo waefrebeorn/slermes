@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_voice_client_config.py — LIVE-Python oracle for the
 voice_client_config pure core.
@@ -9,7 +10,6 @@ LIVE BUILTIN_STT_PROVIDERS frozenset.
 """
 import ast
 import json
-import os
 import sys
 
 SRC = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/tools/voice_client_config.py"

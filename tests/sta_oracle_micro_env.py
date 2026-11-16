@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the micro pure helpers: terminal_env_provider Base
 (strip_env_keys, env_description), access_policy_mixin._allow_all_env_names

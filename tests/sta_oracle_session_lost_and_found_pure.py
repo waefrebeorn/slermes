@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_session_lost_and_found_pure.py — oracle twin for session_lost_and_found_pure.c.
 
@@ -11,7 +12,6 @@ Fixture ops:
   {"op": "heuristic_started_at", "cells": [1234567890, "x"]}
 """
 import json
-import os
 import sys
 import importlib.util
 

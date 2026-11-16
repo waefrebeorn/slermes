@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_goals_pure.py — oracle twin for goals_pure.c.
 
@@ -19,7 +20,6 @@ Fixture shape:
 }
 """
 import json
-import os
 import sys
 import importlib.util
 

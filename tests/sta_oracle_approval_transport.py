@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_approval_transport.py — Python twin for
 hermes_cli/approval_transport.py, mirrored by

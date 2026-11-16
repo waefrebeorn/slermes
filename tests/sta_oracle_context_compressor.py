@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_context_compressor.py — oracle for t_port_context_compressor.c.
@@ -9,7 +10,6 @@ libjson's serialization exactly.
 """
 import json
 import sys
-import os
 import importlib.util
 
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_command_sanitize.py — Python oracle for the PURE command-name
@@ -10,7 +11,6 @@ line, sorted keys, ensure_ascii=False, compact separators.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

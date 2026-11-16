@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the three pure service-tier helpers in agent/fast_mode.py.
 

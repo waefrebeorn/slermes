@@ -5,10 +5,10 @@ value computed from LIVE Python (the parent repo's agent/turn_summary.py).
 Prints `agent/turn_summary oracle: N cases, M mismatches` and one
 `MISMATCH case=...` line per divergence. Exit 0 on full match.
 """
+import os
 
 import sys
 import json
-import os
 
 _PARENT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _PARENT not in sys.path:

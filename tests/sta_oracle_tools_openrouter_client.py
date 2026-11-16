@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_openrouter_client (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.openrouter_client import (check_api_key)

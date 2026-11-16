@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: gateway/display_config.py (_normalise / resolve_display_setting)
 vs LIVE Python. Reads the same self-describing fixture JSON from argv[1].

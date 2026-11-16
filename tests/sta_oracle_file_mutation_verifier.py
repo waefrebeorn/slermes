@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_file_mutation_verifier.py — Python oracle for the file-mutation

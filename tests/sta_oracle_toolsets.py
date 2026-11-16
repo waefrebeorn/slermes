@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_toolsets.py — live-Python oracle for the toolsets +
 platform-tools stack. Reads fixture lines:
@@ -9,7 +10,6 @@ Emits one JSON line per case: {"case": ..., "out": [...]}, matching
 tests/t_port_toolsets.c.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.environ.get(

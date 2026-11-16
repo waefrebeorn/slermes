@@ -1,11 +1,11 @@
 """Oracle for agent/billing_view.py pure helpers."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
 sys.path.insert(0, DEV_ROOT)
 
 from agent.billing_view import _parse_payment_method
-import os
 
 
 def run(c):

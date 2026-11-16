@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure discriminators of gateway/profile_routing.py (live import)."""
 import json

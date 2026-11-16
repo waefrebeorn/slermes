@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_billing_links.py — Python oracle for agent/billing_links.py,
@@ -9,7 +10,6 @@ emit the to_dict() JSON (compact, sorted keys off to match asdict order).
 Output contract: one JSON object per line, compact separators, ensure_ascii=False.
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

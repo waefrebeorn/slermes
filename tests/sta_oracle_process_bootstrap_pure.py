@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_process_bootstrap_pure.py — LIVE-Python oracle for
 pbs_interleave_addrinfos (agent/process_bootstrap.py:_interleave_addrinfos).
@@ -8,7 +9,6 @@ Reads a JSON array of addrinfo rows
 the emitted sockaddr sequence as one JSON array per line.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))

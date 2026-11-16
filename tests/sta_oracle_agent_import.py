@@ -1,4 +1,5 @@
 """Oracle for hermes_cli.agent_import pure helpers."""
+import os
 import json, sys, os, importlib.util
 from pathlib import Path
 
@@ -22,7 +23,6 @@ from hermes_cli.agent_import import (
     extract_markdown_entries, sanitize_mcp_env,
     parse_existing_memory_entries, merge_entries,
 )
-import os
 
 # Load the module without triggering the CLI import side-effects.
 # We need default_source_dir, backup_memory_file, load_yaml_file,

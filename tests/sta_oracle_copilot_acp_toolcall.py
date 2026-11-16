@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_copilot_acp_toolcall.py — oracle for v560 copilot_acp_client

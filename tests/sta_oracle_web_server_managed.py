@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_web_server_managed.py — LIVE-Python oracle for the managed-files
@@ -11,7 +12,6 @@ import json
 import re as _re
 import sys
 from pathlib import Path
-import os
 
 WEB_SERVER = Path(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev") + "/hermes_cli/web_server.py")
 

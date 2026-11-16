@@ -3,6 +3,7 @@
 Reads JSON array fixture from argv[1]; each element {"op":<fn>, ...}.
 Recomputes from LIVE Python source.
 """
+import os
 import importlib, json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
@@ -35,7 +36,6 @@ def _ensure_private_directory(path):
     p.mkdir(parents=True, exist_ok=True)
     try: p.chmod(0o700)
     except OSError: pass
-    import os
     return oct(p.stat().st_mode & 0o777) if p.exists() else "none"
 
 
@@ -45,7 +45,6 @@ def _ensure_private_file(path):
     p.touch(mode=0o600, exist_ok=True)
     try: p.chmod(0o600)
     except OSError: pass
-    import os
     return oct(p.stat().st_mode & 0o777) if p.exists() else "none"
 
 
@@ -59,7 +58,6 @@ def run(c):
         from pathlib import Path
         path = Path(c.get("path", ""))
         _mod.SharedMetricsStore._ensure_private_directory(path)
-        import os
         try:
             mode = os.stat(path).st_mode & 0o777
             mode_val = mode
@@ -70,7 +68,6 @@ def run(c):
         from pathlib import Path
         path = Path(c.get("path", ""))
         _mod.SharedMetricsStore._ensure_private_file(path)
-        import os
         try:
             mode = os.stat(path).st_mode & 0o777
             mode_val = mode

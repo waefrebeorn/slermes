@@ -6,6 +6,7 @@ fixture's env overrides, emitting the same compact JSON the C harness does
 
 argv[1] = fixture: {"env": {...}}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 
@@ -15,7 +16,6 @@ if str(ROOT) not in sys.path:
 sys.path.insert(0, str(ROOT / "gateway" / "platforms"))
 
 import importlib.util
-import os
 spec = importlib.util.spec_from_file_location(
     "gateway.platforms._http_client_limits",
     str(ROOT / "gateway" / "platforms" / "_http_client_limits.py"))

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_billing_usage.py — Python oracle for agent/billing_usage.py,
@@ -15,7 +16,6 @@ paid_service_access) so the genuine Python function runs unmodified.
 Output contract: one JSON object per line (compact, ensure_ascii=False).
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

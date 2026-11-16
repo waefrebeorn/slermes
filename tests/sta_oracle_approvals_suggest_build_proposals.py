@@ -1,4 +1,5 @@
 """Oracle for hermes_cli/approvals_suggest.py build_proposals + add_example."""
+import os
 import json, sys
 
 DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
@@ -10,7 +11,6 @@ from hermes_cli.approvals_suggest import (
     Proposal,
     normalize_command,
 )
-import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else "cases.in"
 

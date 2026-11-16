@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for cron/scheduler_tick.py pure core:
 - is_recurring (cron/constants.py) — ast-extracted, run live on job JSON.

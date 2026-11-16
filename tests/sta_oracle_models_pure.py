@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_models_pure.py — oracle twin for models_pure.c.
 
@@ -16,7 +17,6 @@ Fixture shape:
 }
 """
 import json
-import os
 import sys
 import importlib.util
 

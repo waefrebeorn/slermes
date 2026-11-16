@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cron_delivery.py — Python oracle for the cron delivery/origin/mirror
@@ -9,7 +10,6 @@ sets, so the runner can diff C vs PY output line-by-line.
 
 Run by tests/oracle/runners/run_oracle.sh as the "cron_delivery" group.
 """
-import os
 import sys
 import json
 

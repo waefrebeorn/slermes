@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_msgraph_error.py — oracle for t_port_msgraph_error.c.

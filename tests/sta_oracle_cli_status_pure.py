@@ -1,4 +1,5 @@
 """Oracle for cli.py _status_bar_goal_segment + _fmt_stash_age."""
+import os
 import json, sys
 
 DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
@@ -7,7 +8,6 @@ if DEV_ROOT not in sys.path:
 
 import cli as cli_mod
 import time as _time
-import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else "cases.in"
 with open(cases_file) as f:

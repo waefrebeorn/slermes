@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_file_ops_pure.py — Python oracle for the PURE, deterministic
@@ -14,7 +15,6 @@ parser (classification matches for standard valid/invalid inputs).
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_tirith_security (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.tirith_security import (_clear_install_failed, _detect_target, _get_hermes_home, _is_install_failed_on_disk, _load_security_config, _read_failure_reason, _reset_spawn_warning_state, is_platform_supported)

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """PLUMBER ADVERSARIAL FUZZ ORACLE — v551 extracted modules.
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_message_sanitize_close.py — Oracle for
@@ -8,7 +9,6 @@ against LIVE Python (mutating an equivalent list of dicts), and compares
 structurally.
 """
 import sys
-import os
 import json
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")

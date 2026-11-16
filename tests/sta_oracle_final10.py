@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_final10.py — LIVE-Python twin for t_port_final10.c.
@@ -12,7 +13,6 @@ and emits one JSON line per case, byte-equal to the C harness's output.
 import hashlib
 import importlib.util
 import json
-import os
 import sys
 
 _repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

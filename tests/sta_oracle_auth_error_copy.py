@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_auth_error_copy.py — Oracle for hermes_cli/auth_error_copy.py.

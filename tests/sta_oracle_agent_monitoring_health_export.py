@@ -1,4 +1,5 @@
 """Oracle for agent/monitoring/gateway_health_export.py pure helpers."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
@@ -6,7 +7,6 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.monitoring.gateway_health_export import _resolve_headers
-import os
 
 
 def run(c):

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_skills_sync_manifest.py — oracle twin for
 src/tools/skills_sync_client.c pure sync-manifest helpers.
@@ -6,7 +7,6 @@ Mirrors t_port_skills_sync_manifest.c: reads the fixture, runs the REAL Python
 functions from tools/skills_sync_client.py, and emits one JSON line per op.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))

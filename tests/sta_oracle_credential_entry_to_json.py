@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_credential_entry_to_json.py — Python oracle for the DISK-SAFE entry
@@ -12,7 +13,6 @@ contract matches tests/t_port_credential_entry_to_json.c.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

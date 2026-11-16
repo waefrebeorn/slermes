@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/tool_dispatch_helpers.py mutation helpers vs LIVE Python.
 Newline-delimited JSON."""

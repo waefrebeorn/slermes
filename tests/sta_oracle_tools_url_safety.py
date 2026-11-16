@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_url_safety (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.url_safety import (_global_allow_private_urls, _reset_allow_private_cache)

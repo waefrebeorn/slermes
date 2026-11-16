@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/backend_identity.py — faithful C11 port parity test.
 

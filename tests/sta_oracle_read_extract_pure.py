@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure range/format helpers of tools/read_extract.py ported to C.
 
@@ -5,7 +6,6 @@ Reads the JSON cases fixture (argv[1]), recomputes each case from LIVE
 tools/read_extract.py, and emits one JSON object per case.
 """
 import json
-import os
 import re
 import sys
 

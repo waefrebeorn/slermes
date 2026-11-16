@@ -6,6 +6,7 @@ json_serialize output for byte-diffing.
 
 argv[1] = fixture: {"op":"seed","keys":[...]|null} or {"op":"classify_path"}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 

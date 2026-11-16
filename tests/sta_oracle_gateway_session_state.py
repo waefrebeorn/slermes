@@ -5,10 +5,10 @@ expected value computed from LIVE Python (the parent repo's gateway/session_stat
 Prints `gateway/session_state oracle: N cases, M mismatches` and one
 `MISMATCH case=... PY=... C=...` line per divergence. Exit code 0 on full match.
 """
+import os
 
 import sys
 import json
-import os
 
 # Load the live Python module from the parent repo (the oracle/spec).
 _PARENT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

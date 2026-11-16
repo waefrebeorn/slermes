@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_api_error_summary.py — Python oracle for summarize_api_error().

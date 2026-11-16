@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_capabilities_pure.py — oracle twin for plugin_capabilities_pure.c.
 
@@ -13,7 +14,6 @@ Fixture ops:
   {"op": "plugin_capability_granted", "plugin_id": "p", "capability": "tools.override", "config": {...}}
 """
 import json
-import os
 import sys
 import importlib.util
 

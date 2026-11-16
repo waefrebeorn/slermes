@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_yuanbao_markdown.py — v561 verification oracle proving the 9

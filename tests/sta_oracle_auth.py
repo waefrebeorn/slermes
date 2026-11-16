@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_auth.py -- diffs the C hermes_cli/auth.py port against the real source.
 

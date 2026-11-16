@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_clarify_gateway (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.clarify_gateway import (get_clarify_timeout)

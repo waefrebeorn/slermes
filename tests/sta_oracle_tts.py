@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 import os
+#!/usr/bin/env python3
 """
 sta_oracle_tts.py — oracle for t_port_tts.c.
 

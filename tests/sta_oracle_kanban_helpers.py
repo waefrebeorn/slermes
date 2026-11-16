@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_kanban_helpers.py — Python oracle for the PURE kanban helpers port
@@ -11,7 +12,6 @@ run_state as flat top-level fields), so the runner can diff them line-by-line.
 
 Run by tests/oracle/runners/run_oracle.sh as the "kanban_helpers" group.
 """
-import os
 import sys
 import json
 

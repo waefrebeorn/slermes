@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for agent_prompt_builder (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.prompt_builder import (_clear_backend_probe_cache, _skill_should_show)

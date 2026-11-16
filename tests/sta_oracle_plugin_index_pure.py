@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_index_pure.py — oracle twin for plugin_index_pure.c.
 
@@ -11,7 +12,6 @@ Fixture ops:
   {"op": "search_index", "entries": [{...}], "term": "foo", "capability": null}
 """
 import json
-import os
 import sys
 import importlib.util
 

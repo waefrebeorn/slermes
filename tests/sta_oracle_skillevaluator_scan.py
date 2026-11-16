@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_skillevaluator_scan.py — Python twin for the C harness
 tests/t_port_skillevaluator_scan.c (tools/skillevaluator_scan.py port).
@@ -7,7 +8,6 @@ the C harness exactly so outputs can be diffed. Imports the REAL module.
 """
 import importlib.util
 import json
-import os
 import sys
 import tempfile
 from pathlib import Path

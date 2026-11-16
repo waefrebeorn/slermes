@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_read_extract.py — Python oracle for the PURE document-type helpers in
@@ -11,7 +12,6 @@ No sample files required (pure extension classification).
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

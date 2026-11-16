@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_auxiliary_client.py -- diffs the C port against the real Python.
 
@@ -43,7 +44,6 @@ WANTED = {
     "hermes_cli/version_info.py": ["hermes_user_agent"],
 }
 
-import os
 from urllib.parse import urlparse
 
 ns = {"re": re, "Optional": object, "Any": object, "os": os, "urlparse": urlparse,

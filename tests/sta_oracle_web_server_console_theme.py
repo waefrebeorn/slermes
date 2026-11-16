@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_console_theme.py — LIVE-Python oracle for the
 console frame protocol + theme cluster. Extracts real sources from
@@ -65,7 +66,6 @@ def load_ns(home=None):
                 if isinstance(t, ast.Name) and t.id in WANT_CONSTS:
                     pieces.append(ast.get_source_segment(src, node))
 
-    import os
     import typing
     import yaml as yaml_mod
 

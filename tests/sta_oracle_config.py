@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_config.py -- diffs the C port of hermes_cli/config.py against Python.
 

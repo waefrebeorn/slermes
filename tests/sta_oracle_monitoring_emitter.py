@@ -5,10 +5,10 @@ value computed from LIVE Python (the parent repo's agent/monitoring/emitter.py).
 Prints `agent/monitoring/emitter oracle: N cases, M mismatches` and one
 `MISMATCH case=...` line per divergence. Exit 0 on full match.
 """
+import os
 
 import sys
 import json
-import os
 import threading
 import time
 

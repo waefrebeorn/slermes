@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_hermes_cli_shared_metrics_contract.py — Python oracle for
@@ -7,7 +8,6 @@ Reads op-code fixtures from a file (argv[1], one per line, op|arg0|arg1|...),
 calls the REAL Python function, emits JSON results to stdout.
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

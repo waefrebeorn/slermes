@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_foreign_sessions_parse.py — oracle twin for the session parsers
 in src/hermes_cli/foreign_sessions_pure.c
@@ -6,7 +7,6 @@ in src/hermes_cli/foreign_sessions_pure.c
 Mirrors t_port_foreign_sessions_parse.c using the REAL Python functions.
 """
 import json
-import os
 import sys
 import importlib.util
 

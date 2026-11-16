@@ -1,7 +1,7 @@
 """Oracle for tools/computer_use/cua_backend.py _wsl_windows_path_to_posix."""
+import os
 import json, os, sys, re
 from pathlib import PureWindowsPath
-import os
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
 if DEV_ROOT and DEV_ROOT not in sys.path:

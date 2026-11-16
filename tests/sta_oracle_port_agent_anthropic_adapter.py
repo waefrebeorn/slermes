@@ -1,4 +1,5 @@
 """AUTO-GENERATED integration oracle for port_agent_anthropic_adapter (gen_integration_oracle.py)."""
+import os
 import os, sys, json, importlib.util
 
 MODS = {}

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_file_text_ops.py — Python oracle for the PURE text helpers in
@@ -13,7 +14,6 @@ tokens decoded identically on both sides.
 """
 
 import json
-import os
 import sys
 import tempfile
 

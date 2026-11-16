@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_video_gen_cache_dir.py — Oracle for
@@ -8,7 +9,6 @@ Python in the SAME HERMES_HOME (set by the test runner) and compares the path
 string and the created-directory existence.
 """
 import sys
-import os
 import json
 from pathlib import Path
 

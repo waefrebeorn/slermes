@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for store_error_response's status decision — the pure branch logic
 transcribed from gateway/platforms/api_server_authority_runs.py as the

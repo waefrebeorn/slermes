@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_console_engine_pure.py — oracle twin for console_engine_pure.c.
 
@@ -20,7 +21,6 @@ Fixture shape:
 }
 """
 import json
-import os
 import sys
 import importlib.util
 

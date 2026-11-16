@@ -7,8 +7,8 @@ Curated mapping (verified by reading both sources):
   tools_url_safety_has_sensitive_query_params(const char*)
     -> has_sensitive_query_params(url: str) -> bool
 """
-import json
 import os
+import json
 import sys
 import importlib.util
 

@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_managed_tool_gateway (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.managed_tool_gateway import (auth_json_path, get_tool_gateway_scheme)

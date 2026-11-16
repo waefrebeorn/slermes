@@ -4,6 +4,7 @@ Tests managed_vendor_base_path, managed_vendor_upload_path,
 is_managed_nous_gateway_url, managed_gateway_auth_headers,
 _read_user_token_override — against LIVE Python source.
 """
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
@@ -17,7 +18,6 @@ from tools.managed_tool_gateway import (
     managed_gateway_auth_headers,
     _read_user_token_override,
 )
-import os
 
 
 def run(c):

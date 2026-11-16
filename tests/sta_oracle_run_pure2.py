@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure helpers of gateway/run.py ported in run_pure2.c.
 
@@ -5,7 +6,6 @@ Reads the JSON cases fixture (argv[1]), recomputes each case from LIVE
 gateway/run.py, emits one JSON object per case.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

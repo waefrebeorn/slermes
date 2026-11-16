@@ -1,10 +1,10 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_events.py — LIVE-Python oracle for the events/PTY
 support layer. Extracts the real function sources from web_server.py and
 execs them with faithful app-state doubles."""
 import ast
 import json
-import os
 import sys
 import urllib.parse
 from pathlib import Path

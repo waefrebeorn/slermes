@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_env_passthrough (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.env_passthrough import (clear_env_passthrough)

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/parked_route_refusal.py _notice_due. The function is
 ast-extracted and run live on a stub adapter; the monotonic clock is stubbed.

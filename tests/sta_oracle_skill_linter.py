@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: tools/skill_linter.py lint_content vs LIVE Python.
 
@@ -16,7 +17,6 @@ import json, os, sys, tempfile, shutil
 sys.path.insert(0, os.environ.get('SLERMES_PYROOT', '/home/wubu/hermes-agent-dev'))
 from tools.skill_linter import lint_content as py_lint_content
 from pathlib import Path
-import os
 
 
 def make_temp_dir(tag):

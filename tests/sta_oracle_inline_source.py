@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_inline_source.py -- diffs the C status_inline_source.py port.
 

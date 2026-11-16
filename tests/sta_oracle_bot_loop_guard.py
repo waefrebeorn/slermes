@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/bot_loop_guard.py pure coercion + settings helpers.
 

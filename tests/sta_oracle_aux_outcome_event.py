@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure helpers in agent/auxiliary_call_outcome.py
 (embedded_provider_error, is_cancellation) and gateway/platforms/event.py

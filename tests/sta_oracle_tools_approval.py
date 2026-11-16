@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_approval (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.approval import (_YOLO_MODE_FROZEN, _is_gateway_approval_context, _is_interactive_cli, disable_session_yolo, is_approval_bypass_active, is_current_session_yolo_enabled, load_permanent, reset_current_observability_context, reset_current_session_key, unregister_gateway_notify)

@@ -1,6 +1,7 @@
 """Oracle for tools/flux3_video_tool.py.
 Tests _still_generating, _resolve_destination, _free_path against Python.
 """
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
@@ -8,7 +9,6 @@ if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints, _warm_nous_token, _has_nous_credential, check_bfl_requirements, _delivers_as_an_attachment, _default_directory
-import os
 
 
 def run(c):

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_skills_discover.py — oracle for t_port_skills_discover.c.
@@ -9,7 +10,6 @@ The C harness builds the same tree from the fixture and runs the real
 _discover_skills_in_dir(); the runner diffs the two.
 """
 import sys
-import os
 import tempfile
 
 

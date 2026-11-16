@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_display.py -- diffs the C agent/display.py port against the real source.
 

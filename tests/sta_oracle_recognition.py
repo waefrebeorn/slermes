@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Python oracle for recognition parity (tools/voice_mode.py).
 
@@ -10,7 +11,6 @@ Reads the same fixture JSON the C harness reads and prints the same shape.
 """
 import json
 import math
-import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))

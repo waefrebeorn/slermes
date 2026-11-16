@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for v555 browser_redact extraction: C == LIVE agent.redact.
 

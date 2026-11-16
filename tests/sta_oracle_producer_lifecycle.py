@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/session_producer_lifecycle.py:_executed_outcome. The
 source function and the ProcessingOutcome enum are ast-extracted and run live.

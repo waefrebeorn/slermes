@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_title_stack.py — Python oracle for the title-generation stack:
@@ -15,7 +16,6 @@ Fixture ops (one per line; \\e -> ESC, \\n -> newline, \\x1e -> RS in text):
 Output: one compact JSON object per line (ensure_ascii=True).
 """
 import json
-import os
 import pwd
 import sys
 

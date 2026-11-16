@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_kanban_db_pure.py — oracle twin for kanban_db_pure.c.
 
@@ -18,7 +19,6 @@ Fixture shape:
 }
 """
 import json
-import os
 import sys
 import importlib.util
 

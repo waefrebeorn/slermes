@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_setup_mcp_tool.py — Python twin for tools/setup_mcp_tool.py,
 mirrored by src/tools/setup_mcp_tool.c. The real module imports

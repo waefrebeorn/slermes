@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_battery.py — Python oracle for agent/battery.py,
@@ -15,7 +16,6 @@ Fixture line:  status <available> <percent|null> <plugged|null>
 Output: one JSON object per line (compact, ensure_ascii=False so glyphs show).
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

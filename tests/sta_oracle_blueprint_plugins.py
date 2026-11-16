@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for cron/blueprint_plugins.py pure validators: _text, _strings,
 _placeholders. The three defs are ast-extracted and run live; _placeholders

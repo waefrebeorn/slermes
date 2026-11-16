@@ -1,4 +1,5 @@
 """Oracle for agent/context_breakdown.py renderers."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
@@ -11,7 +12,6 @@ from agent.context_breakdown import (
     render_context_details_lines,
     render_context_breakdown_lines,
 )
-import os
 
 
 def run(c):

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the byte-layer binary helpers of tools/file_operations.py ported
 to C (file_fs_ops.c).
@@ -7,7 +8,6 @@ tools/file_operations.py, emits one JSON object per case.
 """
 import base64
 import json
-import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

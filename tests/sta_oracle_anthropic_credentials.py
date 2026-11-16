@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_anthropic_credentials.py — Oracle for the classification core of
@@ -8,7 +9,6 @@ base_url_hostname/is_native_anthropic_host, anthropic_route_is_oauth,
 is_claude_code_token_valid and claude_code_credentials_path.
 """
 import json
-import os
 import sys
 import time
 from pathlib import Path

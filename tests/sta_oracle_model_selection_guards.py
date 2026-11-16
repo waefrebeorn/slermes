@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_model_selection_guards.py — Python twin for
 src/hermes_cli/model_selection_guards.c. Imports the LIVE modules
@@ -8,7 +9,6 @@ seams — both sides then run the pure model_info-trusted path only.
 """
 import importlib.util
 import json
-import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_prompt_sections.py — LIVE-Python oracle for
 plugin_prompt_sections.c (format + restore round-trip).
@@ -6,7 +7,6 @@ Uses the LIVE hermes_cli.plugins formatters and the LIVE
 agent/system_prompt.py _restore_plugin_prompt_sections.
 """
 import json
-import os
 import sys
 
 sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))

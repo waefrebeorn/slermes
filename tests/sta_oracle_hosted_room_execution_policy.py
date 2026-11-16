@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_hosted_room_execution_policy.py — Oracle for

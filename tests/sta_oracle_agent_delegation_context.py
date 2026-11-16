@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for agent_delegation_context (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.delegation_context import (delegated_child_context, is_delegated_child_context, is_delegated_child_process_context)

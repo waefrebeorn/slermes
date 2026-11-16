@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_env_probe (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.env_probe import (_reset_cache_for_tests)

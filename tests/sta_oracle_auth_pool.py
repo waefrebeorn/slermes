@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_auth_pool.py -- diffs the C auth.py credential-pool port.
 

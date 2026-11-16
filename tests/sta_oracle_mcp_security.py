@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: hermes_cli/mcp_security.py vs LIVE Python."""
 import json, sys, os, types

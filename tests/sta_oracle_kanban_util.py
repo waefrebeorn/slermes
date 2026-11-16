@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the portable kanban helpers in hermes_cli/kanban_db.py that have
 been ported into src/cli/kanban_util.c.
@@ -25,7 +26,6 @@ ROOT = os.environ.get("SLERMES_SRC") or "C:/Users/eman5/hermes-agent"
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 import hermes_cli.kanban_db as kdb
-import os
 
 # The C engine resolves its home via SLERMES_HOME; the Python profiles module
 # via HERMES_HOME. The runner exports BOTH to the same temp dir for BOTH

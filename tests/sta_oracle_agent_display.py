@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/display.summarize_shell_command vs LIVE Python.
 

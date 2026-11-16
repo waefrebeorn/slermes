@@ -5,6 +5,7 @@ Replays each harness input through the LIVE Python module and compares the
 resulting floor exactly. Python returns Optional[float]; we serialize None
 as JSON null and a float as its numeric value, matching the C harness output.
 """
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.reasoning_timeouts import get_reasoning_stale_timeout_floor

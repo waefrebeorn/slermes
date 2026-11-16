@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/provider_registry.py: lower_key + configured_provider_name.
 

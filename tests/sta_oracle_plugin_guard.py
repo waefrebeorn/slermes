@@ -1,10 +1,10 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_guard.py — Python twin for tools/plugin_guard.py,
 mirrored by src/tools/plugin_guard.c. Plugin dirs resolve against
 $ORACLE_FIXDIR. scanned_at is excluded (nondeterministic).
 """
 import json
-import os
 import sys
 from pathlib import Path
 

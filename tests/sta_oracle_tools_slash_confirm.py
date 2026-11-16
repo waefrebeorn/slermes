@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: tools/slash_confirm.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types, asyncio

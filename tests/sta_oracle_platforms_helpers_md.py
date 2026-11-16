@@ -1,4 +1,5 @@
 """Oracle for gateway/platforms/helpers.py markdown chunking pure functions."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
@@ -17,7 +18,6 @@ from gateway.platforms.helpers import (
     balance_fences_across_chunks,
     split_text_fence_aware,
 )
-import os
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(__file__),

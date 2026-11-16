@@ -3,6 +3,7 @@
 Reads a JSON array fixture from argv[1]; each element is {"op":<fn>, ...args}.
 Recomputes from the LIVE Python source and emits each result on its own line.
 """
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
@@ -33,7 +34,6 @@ class _MockConfigPackage:
 
 
 import sys, types
-import os
 _hc_mod = types.ModuleType("hermes_cli")
 _hc_mod.__path__ = []
 _cfg_mod = types.ModuleType("hermes_cli.config")

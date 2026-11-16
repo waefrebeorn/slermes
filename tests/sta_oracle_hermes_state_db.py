@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the DB-backed model_config methods of hermes_state.py ported to C.
 
@@ -10,7 +11,6 @@ this oracle opens it — so we must replay the identical sequence (reads + patch
 so both sides observe identical state at every step.
 """
 import json
-import os
 import pathlib
 import sys
 

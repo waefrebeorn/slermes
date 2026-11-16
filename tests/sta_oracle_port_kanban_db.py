@@ -1,4 +1,5 @@
 """AUTO-GENERATED integration oracle for port_kanban_db (gen_integration_oracle.py)."""
+import os
 import os, sys, json, importlib.util
 
 MODS = {}

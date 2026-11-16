@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_working_diff.py — Python oracle for tools/working_diff.py,
@@ -10,7 +11,6 @@ per line matching the C harness's output shape:
   {"success", "error", "empty", "stat", "diff", "untracked"}
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

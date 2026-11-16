@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/plugin_messages.py _err, _fit, _supports_edit.
 Ast-extracted and run live; the adapter measure is stubbed to len.

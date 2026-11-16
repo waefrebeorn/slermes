@@ -1,6 +1,7 @@
 """
 sta_oracle_fuzzy_match.py — oracle for tools/fuzzy_match._map_normalized_positions.
 """
+import os
 import sys, json, os, ast
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.fuzzy_match import _map_normalized_positions

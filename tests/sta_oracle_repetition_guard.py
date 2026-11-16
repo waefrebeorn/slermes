@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_repetition_guard.py — Python twin for src/agent/repetition_guard.c.
 
@@ -6,7 +7,6 @@ harness answers, so outputs can be diffed byte-for-byte.
 """
 import importlib.util
 import json
-import os
 import sys
 
 _LIVE = os.environ.get(

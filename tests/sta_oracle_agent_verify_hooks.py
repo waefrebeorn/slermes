@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/verify_hooks.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types

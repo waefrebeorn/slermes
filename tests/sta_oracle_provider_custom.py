@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 import os
+#!/usr/bin/env python3
 """
 sta_oracle_provider_custom.py — oracle for t_port_provider_custom.c.
 

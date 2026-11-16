@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: tools/schema_sanitizer strip_* + sanitize_tool_schemas vs LIVE Python.
 

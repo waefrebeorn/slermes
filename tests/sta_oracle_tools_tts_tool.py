@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_tts_tool (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.tts_tool import (_has_openai_audio_backend, _import_edge_tts, _import_elevenlabs, _import_kittentts, _import_mistral_client, _import_openai_client, _import_piper, _import_sounddevice)

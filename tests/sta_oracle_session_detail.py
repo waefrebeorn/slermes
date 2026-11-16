@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_session_detail.py — Python oracle for the web_server
 session-detail stack. Opens the SAME seed.db the C harness used and computes
@@ -7,7 +8,6 @@ can exact-compare against t_port_session_detail.c output.
 
 Usage: sta_oracle_session_detail.py <seed.db>
 """
-import os
 import sys
 import json
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_prompt_cache_scope.py — Python twin for
 src/agent/prompt_cache_scope.c. Imports the LIVE agent/prompt_cache_scope.py
@@ -10,7 +11,6 @@ Emits {"out": scope-or-null, "memo": [sid, db_present, scope] | null}.
 """
 import importlib.util
 import json
-import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace

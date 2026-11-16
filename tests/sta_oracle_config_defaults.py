@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_config_defaults.py — Python twin for the pure-data tables in
 hermes_cli/config_defaults.py, mirrored by src/hermes_cli/config_defaults.c.
@@ -22,7 +23,6 @@ import sys
 
 sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
 from hermes_cli.config_defaults import DEFAULT_CONFIG, OPTIONAL_ENV_VARS
-import os
 
 
 _MISSING = object()

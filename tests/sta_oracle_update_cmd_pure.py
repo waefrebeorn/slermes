@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_update_cmd_pure.py — Python oracle for the pure helpers ported from
@@ -17,7 +18,6 @@ Covered functions:
 """
 
 import json
-import os
 import sys
 import tempfile
 import shutil

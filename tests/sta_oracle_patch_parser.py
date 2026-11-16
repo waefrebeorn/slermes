@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: tools/patch_parser.parse_v4a_patch vs LIVE Python.
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: gateway/drain_control.py vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os, types
@@ -8,7 +9,6 @@ mod = importlib.util.module_from_spec(spec)
 utils_mod = types.ModuleType("utils")
 import json as _json
 def _atomic_json_write(path, data, indent=None):
-    import os
     tmp = str(path) + ".tmp"
     with open(tmp, "w") as f:
         _json.dump(data, f)

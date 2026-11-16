@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_fuzzy_utils.py — oracle for t_port_fuzzy_utils.c.

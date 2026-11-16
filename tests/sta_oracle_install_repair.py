@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_install_repair.py — Python twin for tests/t_port_install_repair.c
 (hermes_cli/_install_repair.py). Imports the REAL module; side effects are
@@ -6,7 +7,6 @@ monkeypatched with fixture-driven fakes. One JSON output line per op.
 import contextlib
 import io
 import json
-import os
 import subprocess
 import sys
 import tempfile

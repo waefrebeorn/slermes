@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_fuzzy_match_helpers.py — Python oracle for the PURE fuzzy-match
@@ -11,7 +12,6 @@ literal \\n / \\t tokens decoded identically on both sides.
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

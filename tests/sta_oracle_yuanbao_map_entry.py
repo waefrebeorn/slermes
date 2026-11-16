@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_yuanbao_map_entry.py — oracle twin for the map-entry codec
 helpers in src/hermes_cli/yuanbao_proto_helpers.c
@@ -6,7 +7,6 @@ helpers in src/hermes_cli/yuanbao_proto_helpers.c
 Mirrors t_port_yuanbao_map_entry.c using the REAL Python functions.
 """
 import json
-import os
 import sys
 import importlib.util
 

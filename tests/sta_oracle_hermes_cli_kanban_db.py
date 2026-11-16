@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for hermes_cli_kanban_db (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from hermes_cli.kanban_db import (clear_current_board)

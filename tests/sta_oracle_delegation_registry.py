@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for agent/delegation_registry.py: _bundled_disabled + backend_status
 reason strings.

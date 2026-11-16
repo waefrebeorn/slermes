@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_gitlock.py — Python twin for src/hermes_cli/gitlock.c.
 
@@ -10,7 +11,6 @@ Emits one JSON line per op (same order).
 """
 import importlib.util
 import json
-import os
 import sys
 from pathlib import Path
 

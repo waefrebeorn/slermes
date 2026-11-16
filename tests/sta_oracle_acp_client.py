@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_acp_client.py — Oracle for the JSON-RPC / session-model shaping in

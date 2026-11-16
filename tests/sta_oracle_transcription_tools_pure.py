@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the config-parse helpers of tools/transcription_tools.py ported
 to C (transcription_tools_pure.c).
@@ -7,7 +8,6 @@ tools/transcription_tools.py, and emits one JSON object per case. The C harness
 emits the same shape; the runner exact-compares.
 """
 import json
-import os
 import sys
 
 # Quarry root (parent of slermes) so `import tools.transcription_tools` works.

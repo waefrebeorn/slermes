@@ -6,6 +6,7 @@ TurnRetryState instance, serializing (set -> null, get -> bool, iter ->
 
 argv[1] = fixture: {"ops":[...]}.
 """
+import os
 import sys, os, json
 from pathlib import Path
 

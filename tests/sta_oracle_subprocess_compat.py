@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_subprocess_compat.py — oracle twin for subprocess_compat_split_command_line
 in src/hermes_cli/subprocess_compat_pure.c

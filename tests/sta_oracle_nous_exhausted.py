@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_nous_exhausted.py — Oracle for
@@ -7,7 +8,6 @@ Reads C harness JSON lines (case/ret) from stdin, rebuilds equivalent
 SimpleNamespace states, replays LIVE Python, and compares the bools.
 """
 import sys
-import os
 import json
 import types
 

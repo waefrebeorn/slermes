@@ -1,4 +1,5 @@
 """Oracle for agent/context_compressor.py pure helpers."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
@@ -30,7 +31,6 @@ from agent.context_compressor import (
     _append_text_to_content, _template_visible_role,
     _fresh_compaction_message_copy,
 )
-import os
 
 OPS = {
     "safe_int": lambda a: _safe_int(a),

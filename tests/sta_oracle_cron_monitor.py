@@ -15,6 +15,7 @@ Fixture format (one JSON record per line), same shape as the C harness input:
   {"fn":"diff","old":"<prev>","new":"<curr>"}
   {"fn":"has","script":"<s>","url":"<u>"}
 """
+import os
 import os, sys, json
 
 # Resolve the live Python source (DEV_ROOT is the hermes-agent checkout root).

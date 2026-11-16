@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for the pure core of gateway/platforms/webhook_coalesce.py.
 

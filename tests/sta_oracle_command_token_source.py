@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_command_token_source.py — Python twin for
 agent/command_token_source.py, mirrored by src/agent/command_token_source.c.
@@ -15,7 +16,6 @@ from agent.command_token_source import (
     _mint,
     build_command_token_provider,
 )
-import os
 
 
 def out_line(o):

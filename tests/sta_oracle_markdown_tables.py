@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/markdown_tables.realign_markdown_tables vs LIVE Python.
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_backup_sqlite.py — Oracle for hermes_cli/backup_sqlite.py.
@@ -8,7 +9,6 @@ observable contract: the missing-db message, the keep-two prune, snapshot
 validity, and WAL detection.
 """
 import json
-import os
 import sqlite3
 import sys
 import tempfile

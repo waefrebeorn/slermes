@@ -1,4 +1,5 @@
 """Oracle for agent/model_metadata.py _msg_fingerprint."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
@@ -6,7 +7,6 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.model_metadata import _msg_fingerprint
-import os
 
 
 # Module-level counter to track which pin index we're at.

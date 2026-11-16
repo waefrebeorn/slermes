@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_config_nested.py -- diffs the C nested-config port against Python.
 

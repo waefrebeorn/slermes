@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_disk_status.py — Python twin for src/gateway/disk_status.c.
 
@@ -9,7 +10,6 @@ Emits one JSON line per op (same order).
 """
 import importlib.util
 import json
-import os
 import sys
 from collections import namedtuple
 from pathlib import Path

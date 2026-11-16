@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_computer_use_tool.py — Python twin for src/tools/computer_use_tool.c.
 
@@ -6,7 +7,6 @@ registry.register) plus the real tool.py functions, and answers the same ops
 as the C harness.
 """
 import json
-import os
 import sys
 
 def _import_live():

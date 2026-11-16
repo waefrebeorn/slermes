@@ -1,4 +1,5 @@
 """AUTO-GENERATED integration oracle for port_agent_auxiliary_client_helpers (gen_integration_oracle.py)."""
+import os
 import os, sys, json, importlib.util
 
 MODS = {}

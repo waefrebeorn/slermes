@@ -1,6 +1,7 @@
 """sta_oracle_agent_thinking_timeout_guidance.py — oracle for
 agent/thinking_timeout_guidance.is_thinking_timeout. Replays each harness
 input through the live Python function and compares the boolean exactly."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from agent.thinking_timeout_guidance import is_thinking_timeout

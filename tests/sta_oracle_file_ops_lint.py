@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for v552 fixes: file_ops_looks_like_linter_unusable + delete_path guard.
 

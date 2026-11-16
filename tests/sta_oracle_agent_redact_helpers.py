@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/redact.py helper subset vs LIVE Python (newline-delimited JSON)."""
 import json, sys, os

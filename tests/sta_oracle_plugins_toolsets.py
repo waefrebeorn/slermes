@@ -5,8 +5,8 @@ Replays the SAME fixture directives the C harness (tests/t_port_plugins_toolsets
 consumes, calling the LIVE Python functions, and emits one JSON record per
 directive in the identical shape. The runner diffs the two streams.
 """
-import json
 import os
+import json
 import sys
 import types
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Faithfulness oracle for port_tools_xai_http.c:_coerce_expires_after.
 

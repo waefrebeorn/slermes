@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_loops_pure.py — Python twin for the deterministic helpers in
 hermes_cli/loops.py, mirrored by src/hermes_cli/loops_pure.c.
@@ -18,7 +19,6 @@ import json
 import sys
 import re
 import hashlib
-import os
 
 LOOP_COMPLETE_MARKER = "LOOP_COMPLETE"
 DEFAULT_MAX_TICKS = 100

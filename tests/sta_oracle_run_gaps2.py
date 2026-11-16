@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_run_gaps2.py — live-Python twin for the run_gaps2 oracle.
 
@@ -8,7 +9,6 @@ their module-level deps) and exec them — no reimplementation.
 """
 import ast
 import json
-import os
 import sys
 
 ROOT = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -116,7 +116,6 @@ def main():
             text = GR._final_text_for_post_turn_hooks(ar, ev_obj)
             print(json.dumps({"kind": "final_text", "text": text}))
         elif k == "reconnect":
-            import os
             os.environ.pop("HERMES_RECONNECT_ATTENTION_AFTER_SECONDS", None)
             info = dict(op["info"])
             needs = ns["_reconnect_needs_attention"](info, op["now"])

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: tools/file_operations.py search-diagnostics helpers vs LIVE Python.
 Newline-delimited JSON; compares C output to live Python for identical inputs."""

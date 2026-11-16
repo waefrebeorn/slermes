@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle for gateway/run.py:_own_policy_open_startup_violation.
 
@@ -10,7 +11,6 @@ Note: we do NOT import gateway.run (it has heavy platform deps that fail to
 import here). We copy the function body verbatim so the oracle is the same
 logic running on the real loaded config object.
 """
-import os
 import sys
 import json
 

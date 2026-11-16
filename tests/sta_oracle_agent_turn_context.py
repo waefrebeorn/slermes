@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Oracle: agent/turn_context.py _compression_made_progress vs LIVE Python."""
 import json, sys, os

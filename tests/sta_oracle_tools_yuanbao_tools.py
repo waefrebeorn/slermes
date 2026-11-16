@@ -1,4 +1,5 @@
 """AUTO-GENERATED oracle for tools_yuanbao_tools (gen_oracle.py)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 from tools.yuanbao_tools import (_check_yuanbao)

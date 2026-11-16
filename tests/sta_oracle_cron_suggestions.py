@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cron_suggestions.py — v562 verification oracle for

@@ -1,4 +1,5 @@
 """Oracle for gateway/channel_directory.py _normalize_adapter_channels."""
+import os
 import json, os, sys
 
 DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
@@ -6,7 +7,6 @@ if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from gateway.channel_directory import _normalize_adapter_channels
-import os
 
 
 def run(c):

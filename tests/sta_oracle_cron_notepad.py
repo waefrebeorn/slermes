@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cron_notepad.py — Oracle for cron/notepad.py.

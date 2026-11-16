@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Oracle for port_web_server_auth — runs the C harness and the Python reference

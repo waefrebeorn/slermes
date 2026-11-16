@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_cron_scheduler_orchestr.py — LIVE-Python oracle for the cron
@@ -21,7 +22,6 @@ HERMES_PY = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 sys.path.insert(0, HERMES_PY)
 
 import cron.scheduler as S  # noqa: E402
-import os
 
 SILENT = S.SILENT_MARKER  # "[SILENT]"
 

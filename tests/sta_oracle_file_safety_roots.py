@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_file_safety_roots.py — Oracle for
@@ -8,7 +9,6 @@ LIVE Python get_safe_write_roots() in the SAME HERMES_WRITE_SAFE_ROOT env and
 compares the sorted root sets.
 """
 import sys
-import os
 import json
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")

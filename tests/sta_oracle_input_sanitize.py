@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_input_sanitize.py — Python oracle for hermes_cli/input_sanitize.py,
@@ -9,7 +10,6 @@ sanitize_user_prompt_text() on each fixture line. One JSON object per line:
 raw (matching the C harness which prints bytes).
 """
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

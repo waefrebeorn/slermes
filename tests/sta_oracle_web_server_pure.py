@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_web_server_pure.py — Python oracle for the pure helpers in
 port_web_server_schema_path.c.
@@ -22,7 +23,6 @@ module's namespace are the constants `_FS_MIME_TYPES` and
 """
 import json
 import mimetypes
-import os
 import stat as _stat_mod
 import sys
 from pathlib import Path

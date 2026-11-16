@@ -1,6 +1,7 @@
 """sta_oracle_gateway_cgroup_cleanup.py — oracle for the _own_cgroup_path
 parser rule (^0::(.+)$). Replays each harness input through the equivalent
 Python extraction and compares the extracted path (or None)."""
+import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
 

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_plugin_packs_pure.py — oracle twin for plugin_packs_pure.c.
 
@@ -12,7 +13,6 @@ Fixture ops:
      C port's {"error":"..."} contract; otherwise the validated dict.)
 """
 import json
-import os
 import sys
 import importlib.util
 

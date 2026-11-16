@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 sta_oracle_credential_sanitize.py — Python oracle for the DISK-SAFETY boundary
@@ -11,7 +12,6 @@ compact, sorted-key serialization).
 """
 
 import json
-import os
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

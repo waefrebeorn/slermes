@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """sta_oracle_subagent_worktree.py — Python twin for tools/subagent_worktree.py.
 
@@ -45,7 +46,6 @@ def make_module(git):
     def resolve_repo_root(path):
         if not path:
             return None
-        import os
         candidate = os.path.abspath(os.path.expanduser(str(path)))
         if not os.path.isdir(candidate):
             return None
@@ -99,7 +99,6 @@ def make_module(git):
         base_commit = info.get("base_commit", "")
         payload = {"path": path, "branch": branch, "commits": 0,
                    "dirty": False, "pruned": False}
-        import os
         if not path or not os.path.isdir(path):
             payload["pruned"] = True
             return payload
@@ -176,7 +175,6 @@ def main():
             out = mod.unproven_worktree_payload(c.get("info", {}), c.get("reason", ""))
         elif kind == "finalize":
             # finalize probes isdir(path): fixture says whether to pretend it exists
-            import os
             pth = (c.get("info") or {}).get("path", "")
             exists = c.get("exists", False)
             real = os.path.isdir(pth)
