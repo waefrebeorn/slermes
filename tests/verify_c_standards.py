@@ -30,7 +30,14 @@ SRC = REPO / "src"
 INC = REPO / "include"
 
 POP = re.compile(r"PoP:\s+([A-Za-z_]\w*)\s+@\s+([\w./]+):([A-Za-z_]\w*)")
-DEF = re.compile(r"^[A-Za-z_][\w \t\*]*?\b([A-Za-z_]\w*)\s*\([^;]*?\)\s*\{", re.M)
+# A definition is `name(args) {`. Not anchored to a line start: the return type
+# frequently sits on the PREVIOUS line (`static char *\nac_bare_model(...)`),
+# and a line-anchored pattern silently misses every one of those -- which made
+# 120 PoP annotations look unbacked when the functions were right there.
+# No nested parens, so function-pointer declarators are not matched.
+DEF = re.compile(r"(?<![\w])([A-Za-z_]\w*)\s*\([^;{}()]*\)\s*\{")
+KEYWORDS = {"if", "for", "while", "switch", "sizeof", "return", "do", "else",
+            "catch", "defined", "__attribute__"}
 STATIC = re.compile(r"^static\b", re.M)
 
 # rule -> {path: reason}; see tests/c_standards_allowlist.py (generated, then
@@ -122,6 +129,8 @@ def main():
             hnames = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", htext))
             for m in DEF.finditer(text):
                 fn = m.group(1)
+                if fn in KEYWORDS:
+                    continue
                 line_start = m.start(1)
                 # `static` may share the line with the name, or sit on the
                 # line above it. Checking only the previous line misses the

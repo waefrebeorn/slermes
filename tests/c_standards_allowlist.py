@@ -1,3 +1,9 @@
+"""DEBT, not policy: files still violating docs/dev/c-standards.md.
+
+Regenerate with scripts/gen_c_standards_allowlist.py -- do not hand-edit.
+An entry whose file stops violating is reported as DEAD by the gate and
+fails the build, so debt must be paid to disappear.
+"""
 # rule -> {path: reason}
 ALLOW = {
     "R1": {
@@ -27,15 +33,6 @@ ALLOW = {
         "src/tools/port_browser_tool.c": "no PoP annotation (pre-standard)",
     },
     "R3": {
-        "src/agent/port_auxiliary_client.c:ac_bare_model": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_codex_route_bare_model": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_compression_threshold_for_model": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_is_arcee_trinity_thinking": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_is_codex_gpt54_or_gpt55": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_is_codex_spark": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_is_kimi_model": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_is_openai_default_temperature_only": "PoP C-slot ambiguous -- needs a human",
-        "src/agent/port_auxiliary_client.c:ac_model_recency_key": "PoP C-slot ambiguous -- needs a human",
         "src/agent/port_compaction_events.c:_payload": "PoP C-slot ambiguous -- needs a human",
         "src/agent/port_display.c:st_shell_basename": "PoP C-slot ambiguous -- needs a human",
         "src/agent/port_image_eviction_policy.c:_retire_count_for_request": "PoP C-slot ambiguous -- needs a human",
@@ -43,7 +40,9 @@ ALLOW = {
         "src/cli/port_auth_commands.c:_format_exhausted_status": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_banner.c:_display_toolset_name": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_banner.c:_format_context_length": "PoP C-slot ambiguous -- needs a human",
+        "src/cli/port_browser_connect.c:bc_classify_default": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_browser_launcher.c:build_chromium_argv": "PoP C-slot ambiguous -- needs a human",
+        "src/cli/port_clipboard.c:cb_is_remote_shell_session": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_codex_models.c:_add_forward_compat_models": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_compression_facade.c:_report_compression_timeout": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_container_boot.c:_is_legacy_gateway_run_request": "PoP C-slot ambiguous -- needs a human",
@@ -81,6 +80,7 @@ ALLOW = {
         "src/cli/port_nous_subscription.c:_section": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_scheduler_tick.c:log_tick_yield_once": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_secrets_cli.c:_missing_noninteractive_flags": "PoP C-slot ambiguous -- needs a human",
+        "src/cli/port_secrets_cli.c:secrets_fetch_status": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_server.c:_canonical_profile_request": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_server.c:_current_profile_name": "PoP C-slot ambiguous -- needs a human",
         "src/cli/port_server.c:_load_busy_input_mode": "PoP C-slot ambiguous -- needs a human",
@@ -125,31 +125,8 @@ ALLOW = {
         "src/cron/port_cron_jobs.c:cronjobs_cron_output_keep": "PoP C-slot ambiguous -- needs a human",
         "src/cron/port_cron_jobs.c:cronjobs_prune_job_output": "PoP C-slot ambiguous -- needs a human",
         "src/gateway/port_gateway_run.c:_select_cached_agent_history": "PoP C-slot ambiguous -- needs a human",
-        "src/gateway/port_inline_source.c:st_command_line_runs_inline": "PoP C-slot ambiguous -- needs a human",
-        "src/gateway/port_inline_source.c:st_inline_source_flag_index": "PoP C-slot ambiguous -- needs a human",
-        "src/gateway/port_status.c:st_command_line_names_home": "PoP C-slot ambiguous -- needs a human",
-        "src/gateway/port_status.c:st_hermes_home_assignments": "PoP C-slot ambiguous -- needs a human",
-        "src/gateway/port_status.c:st_profile_name_for_home": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:ac_require_fields": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:ac_validate_custom_providers": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:ac_validate_entry_list": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:ac_validate_fallback_model": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_env_var_policy_name": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_format_unsupported_install_warning": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_is_env_config_key": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_is_nix_install_method": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_is_unsupported_install_method": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_is_uv_tool_install": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_recommended_update_command_for_method": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_split_key_path": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config.c:cfg_validate_env_var_name": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_get_nested": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_greedy_literal_match": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_locate_nested": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_phantom_sibling": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_set_nested": "PoP C-slot ambiguous -- needs a human",
+        "src/hermes_cli/port_auth.c:st_merge_pool_row_generation": "PoP C-slot ambiguous -- needs a human",
         "src/hermes_cli/port_config_nested.c:cfg_split_key_path": "PoP C-slot ambiguous -- needs a human",
-        "src/hermes_cli/port_config_nested.c:cfg_unset_nested": "PoP C-slot ambiguous -- needs a human",
         "src/plugins/port_web_common.c:origin_http_error": "PoP C-slot ambiguous -- needs a human",
     },
     "R4": {
