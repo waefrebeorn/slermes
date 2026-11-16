@@ -142,6 +142,69 @@ def _incomplete() -> set[str]:
     return out
 
 
+def _oracle_module(tree: ast.AST) -> Path | None:
+    """The live module an oracle loads by literal path, if any."""
+    for node in ast.walk(tree):
+        parts = _literal_join(node)
+        if not parts:
+            continue
+        rel = "/".join(parts)
+        if not rel.endswith(".py"):
+            continue
+        for b in DEV_ROOTS:
+            cand = b / rel
+            if cand.exists():
+                return cand
+    return None
+
+
+def _arity(fn: ast.FunctionDef | ast.AsyncFunctionDef) -> tuple[int, int]:
+    """(min positional, max positional); max is None-ish via a big number."""
+    a = fn.args
+    pos = list(a.posonlyargs) + list(a.args)
+    ndef = len(a.defaults)
+    minp = len(pos) - ndef
+    maxp = len(pos)
+    if a.vararg:
+        maxp = 10 ** 6
+    return minp, maxp
+
+
+def sig_drift(tree: ast.AST, modpath: Path) -> list[tuple[int, str, str]]:
+    """`mod.f(a, b)` where the live `f` no longer accepts that arity.
+
+    Name-level drift is not enough: `get_bot_mode_protocol_section(h, False)`
+    still resolves, then dies with "takes from 0 to 1 positional arguments but
+    2 were given". That is a crash the port reports as "oracle produced no
+    output", so it belongs in the pre-run gate.
+    """
+    try:
+        modtree = ast.parse(modpath.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, SyntaxError):
+        return []
+    defs: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {}
+    for node in ast.walk(modtree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            defs.setdefault(node.name, node)
+    out = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        fn = node.func
+        if not (isinstance(fn, ast.Attribute) and isinstance(fn.value, ast.Name)
+                and fn.value.id == "mod"):
+            continue
+        d = defs.get(fn.attr)
+        if d is None:
+            continue
+        minp, maxp = _arity(d)
+        np_ = len(node.args)
+        if np_ < minp or np_ > maxp:
+            out.append((node.lineno, fn.attr,
+                        f"called with {np_} positional, def takes {minp}..{maxp}"))
+    return out
+
+
 def main() -> int:
     incomplete = _incomplete()
     bad = []
@@ -191,6 +254,7 @@ def main() -> int:
         allow = {}
 
     pathbad = []
+    sigbad = []
     for o in sorted(TESTS.glob("sta_oracle_*.py")):
         if o.name in incomplete:
             continue
@@ -200,9 +264,17 @@ def main() -> int:
             continue
         for ln, rel in path_drift(tree):
             pathbad.append((o.name, ln, rel))
+        modpath = _oracle_module(tree)
+        if modpath is not None:
+            for ln, name, why in sig_drift(tree, modpath):
+                sigbad.append((o.name, ln, f"{name}: {why}"))
 
     live = set()
     for f, mod, nm, ln in bad:
+        live.add(f"{f}:{ln}")
+    for f, ln, _rel in pathbad:
+        live.add(f"{f}:{ln}")
+    for f, ln, _w in sigbad:
         live.add(f"{f}:{ln}")
     dead = [k for k in allow if k not in live]
 
@@ -217,9 +289,13 @@ def main() -> int:
         print(f"    {f}:{ln}  {mod}.{nm}  -- not defined in that module")
     for f, ln, rel in newpaths[:25]:
         print(f"    {f}:{ln}  {rel}  -- no such module in either tree")
+    newsigs = [(f, ln, w) for f, ln, w in sigbad if f"{f}:{ln}" not in allow]
+    print(f"drift gate: {len(sigbad)} arity mismatch(es), {len(newsigs)} new")
+    for f, ln, w in newsigs[:25]:
+        print(f"    {f}:{ln}  {w}")
     for k in dead[:6]:
         print(f"    DEAD allowlist entry (debt paid): {k}")
-    ok = not new and not dead and not newpaths
+    ok = not new and not dead and not newpaths and not newsigs
     print("drift gate:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
