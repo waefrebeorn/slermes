@@ -61,6 +61,9 @@ prebuilt third-party lib paths, and this bash drops exported env vars.
 | [Pet System](docs/pet/index.md) | Petdex mascot install, configure, animate |
 | [Build System](docs/architecture/build-system.md) | Make targets, dependencies, packaging |
 | [Development](docs/dev/index.md) | Building, testing, contributing |
+| [C Standards](docs/dev/c-standards.md) | The enforced C standard (naming, headers, interfaces, formatting) |
+| [Naming Standard](docs/dev/naming.md) | Unit/file naming: why parity joins on the module name |
+| [Port Stages](docs/port-stages.md) | Staged, per-module port progress (S0–S6) |
 | [Parity Summary](docs/parity-summary.md) | Live parity scan results (what's ported vs. not) |
 | [Real Gap List](docs/real-gap-list.md) | Honest REAL_GAPs across modules |
 | [FAP](docs/fap.md) | Behavioral divergences the scanner can't see + the oracle harness |
@@ -69,14 +72,41 @@ prebuilt third-party lib paths, and this bash drops exported env vars.
 | [Lib Audit](docs/archive/lib_audit_2026-08-22.md) | Dependency libs vs Python twins |
 | [Full Documentation](docs/index.md) | Complete documentation index |
 
+## Staged progress
+
+A single percentage cannot answer "what next", and a number that moves for
+unknown reasons is worse than none. Progress is therefore reported as a funnel
+of stages that every Python module advances through; a module counts at the
+highest stage it **fully** satisfies, so a port with a broken oracle is not
+counted as parity.
+
+| Stage | Meaning |
+|---|---|
+| S0 | no C unit |
+| S1 | `src/**/port_<stem>.c` exists |
+| S2 | `include/port_<stem>.h` exists |
+| S3 | harness `tests/t_port_<stem>.c` exists |
+| S4 | oracle `tests/sta_oracle_<stem>.py` exists |
+| S5 | instrument green: harness compiles, emits output, oracle runs |
+| S6 | parity: the oracle's cases MATCH |
+
+Full table, per-package rollup and the raw JSON:
+**[Port Stages](docs/port-stages.md)** · `python scripts/gen_port_stages.py`
+( add `--json` ).
+
 ## How to read the parity numbers
 
 Two audits run over the same tree and they do **not** share a denominator:
 
 | Audit | Command | Total features | Counts |
 |-------|---------|----------------|--------|
-| Scanner (walkway) | `python scripts/parity_truth.py` | 27,877 | 6,248 PORTED · 21,596 REAL_GAP · 33 PARTIAL |
-| Body-level reality | `python tests/parity_reality.py` | 35,858 | 12,209 implemented · 686 placeholder · 22,963 missing |
+| Scanner (walkway) | `python scripts/parity_truth.py` | see docs | see docs |
+| Body-level reality | `python tests/parity_reality.py` | see docs | see docs |
+
+Both audits are generated into
+[Parity Summary](docs/parity-summary.md) from their own tools; the numbers are
+not re-typed here, because a number copied by hand is a number that has already
+gone stale.
 
 `scripts/parity_truth.py` is the only writer of parity numbers, and it is
 fail-closed: it refuses to emit one unless the Python ground truth is present
@@ -88,7 +118,7 @@ including this README.
 which is why its total is larger: a `(void)x; return 0;` body counts as
 *placeholder*, not *implemented*, while the scanner credits a PoP annotation
 even when the body is a stub. Quote the audit that matches the question, and
-never hand-edit a number inside a `` block.
+never hand-edit a number inside a `<!-- PARITY:AUTO -->` block.
 
 To find the next thing to port, rank by fan-in rather than file size:
 `python scripts/parity_coverage.py --fanin`.
