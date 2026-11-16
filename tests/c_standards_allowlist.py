@@ -157,7 +157,6 @@ ALLOW = {
     "R5": {
     },
     "R6": {
-        "src/cli/port_file_operations_native.c:open_regular": "exported fn missing from its header",
         "src/cli/port_inventory.c:json_pyrepr": "exported fn missing from its header",
         "src/cli/port_turn_summary.c:ts_extract_line_deltas": "exported fn missing from its header",
         "src/cli/port_turn_summary.c:ts_format_elapsed": "exported fn missing from its header",

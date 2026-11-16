@@ -115,14 +115,21 @@ def main():
             guard = f"PORT_{stem.upper()}_H"
             if f"#ifndef {guard}" not in htext:
                 findings["R5"].append(hrel)
-            # R6 -- exported functions declared in the header
+            # R6 -- exported functions declared in the header.
+            # Use the DEFINITION match position, not a fresh search: the name
+            # also appears in comments and call sites ("...sqlite_util.open_db
+            # (WAL, ...)"), and those are not definitions.
             hnames = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", htext))
-            for fn in DEF.findall(text):
-                line_start = text.find(fn + "(")
-                if line_start < 0:
-                    continue
-                before = text[:line_start].rstrip().split("\n")[-1]
-                if before.lstrip().startswith("static "):
+            for m in DEF.finditer(text):
+                fn = m.group(1)
+                line_start = m.start(1)
+                # `static` may share the line with the name, or sit on the
+                # line above it. Checking only the previous line misses the
+                # common single-line form and calls a static function exported.
+                ls = text.rfind("\n", 0, line_start) + 1
+                line_prefix = text[ls:line_start]
+                prev = text[:ls].rstrip().split("\n")[-1] if ls else ""
+                if line_prefix.lstrip().startswith("static ") or prev.lstrip().startswith("static "):
                     continue
                 if fn not in hnames and fn != "main":
                     findings["R6"].append(f"{rel}:{fn}")
