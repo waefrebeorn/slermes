@@ -24,13 +24,22 @@
 /* PoP: tbr_sanitize @ hermes_cli/terminal_breadcrumbs.py:_SANITIZE_RE */
 char *tbr_sanitize(const char *raw) {
     char *s = strdup(raw ? raw : "");
-    /* strip leading/trailing whitespace + slashes */
-    char *p = s; while (*p == ' ' || *p == '\t') p++;
-    size_t l = strlen(p); while (l > 0 && (p[l - 1] == ' ' || p[l - 1] == '\t' || p[l - 1] == '/')) p[--l] = 0;
+    /* Python: raw.strip().strip("/") -- strip() removes ALL whitespace, then
+     * strip("/") removes slashes from BOTH ends. The front strip here omitted
+     * '/', so a leading slash was replaced by '-' instead of removed:
+     * "/dev/pts/3" gave "-dev-pts-3" where Python gives "dev-pts-3". */
+    char *p = s;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r' ||
+           *p == '\v' || *p == '\f' || *p == '/') p++;
+    size_t l = strlen(p);
+    while (l > 0 && (p[l - 1] == ' ' || p[l - 1] == '\t' || p[l - 1] == '\n' ||
+                     p[l - 1] == '\r' || p[l - 1] == '\v' ||
+                     p[l - 1] == '\f' || p[l - 1] == '/')) p[--l] = '\0';
     /* replace invalid chars with '-' */
     char *out = (char *)malloc(128);
     size_t o = 0;
-    for (size_t i = 0; p[i] && o < 119; i++) {
+    /* Python [:120] keeps 120 characters (indices 0..119). */
+    for (size_t i = 0; p[i] && o < 120; i++) {
         char c = p[i];
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
             (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-') {
@@ -45,12 +54,16 @@ char *tbr_sanitize(const char *raw) {
 }
 
 /* Mirrors read_breadcrumb's staleness gate: ts (epoch float) older than the
- * window from now is stale. Returns 1 if stale, 0 otherwise. A non-finite /
- * missing ts is treated as stale (best-effort: drop).  */
+ * window from now is stale. Returns 1 if stale, 0 otherwise.
+ * Python (terminal_breadcrumbs.py:95) is
+ *   isinstance(ts, (int, float)) and time.time() - ts > _STALE_AFTER_SECONDS
+ * so only a NON-NUMERIC ts is unconditionally stale. Treating ts <= 0 as stale
+ * was invented here and is wrong: ts=0 is an int, Python compares it, and
+ * (now - 0) > window is False for a sane `now`. */
 /* PoP: tbr_is_stale_payload @ hermes_cli/terminal_breadcrumbs.py:_STALE_AFTER_SECONDS */
 
 int tbr_is_stale_payload(double ts, double now) {
-    if (!(ts == ts) || ts <= 0.0) return 1;  /* NaN or missing -> stale */
+    if (!(ts == ts)) return 1;  /* NaN: not a number -> stale */
     return (now - ts) > (double)TBR_STALE_AFTER_SECONDS;
 }
 

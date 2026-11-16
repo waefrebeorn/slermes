@@ -78,9 +78,21 @@ int console_engine_is_status_footer_rule(const char *line) {
     size_t start = 0;
     while (start < len && isspace((unsigned char)s[start])) start++;
     if (len - start < 8) { free(clean); return 0; }
+    /* Python's len() counts CHARACTERS, not bytes. Six U+2500 rules are 18
+     * bytes but 6 code points, so a byte count let a short footer through the
+     * >= 8 gate. */
+    size_t chars = 0;
+    for (size_t i = start; i < len; ) {
+        size_t n = 1;
+        uint32_t cp = ansi_utf8_decode((const unsigned char *)s + i, len - i, &n);
+        if (cp == (uint32_t)-1) n = 1;
+        i += n;
+        chars++;
+    }
+    if (chars < 8) { free(clean); return 0; }
     for (size_t i = start; i < len; i++) {
         char c = s[i];
-        if (c == '\xe2' && (size_t)(len - i) >= 3 &&
+        if ((unsigned char)c == 0xe2 && (size_t)(len - i) >= 3 &&
             (unsigned char)s[i+1] == 0x94 && (unsigned char)s[i+2] == 0x80) {
             /* U+2500 box-drawing light horizontal - treat as '-' */
             i += 2;

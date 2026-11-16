@@ -49,7 +49,7 @@ def main():
         elif op == "strip_footer":
             out.append({"op": op, "out": mod._strip_console_status_footer(case.get("text", "")) or ""})
         elif op == "table_summary":
-            out.append({"op": op, "out": mod._table_summary(case.get("summary", ""), case.get("limit", 76)) or ""})
+            out.append({"op": op, "out": mod._table_summary(case.get("summary", ""), limit=case.get("limit", 76)) or ""})
         elif op == "split_line":
             try:
                 toks = mod._split_line(case.get("line", ""))

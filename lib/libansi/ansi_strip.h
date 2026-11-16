@@ -56,6 +56,13 @@ char *strip_unicode_tags_buf(const char *text, char *buf, size_t buf_size);
  * Safe to call with buf == text (in-place stripping). */
 char *ansi_strip_buf(const char *text, char *buf, size_t buf_size);
 
+/* Decode the UTF-8 code point at s[0..]. Sets *bytes to its length (1-4) and
+ * returns the code point, or (uint32_t)-1 on an invalid leading byte.
+ * Public because byte-range tests are wrong for non-ASCII: C1 controls are
+ * CODE POINTS U+0080..U+009F, and a byte test also matches UTF-8 continuation
+ * bytes (0x94/0x80 are the tail of U+2500). */
+uint32_t ansi_utf8_decode(const unsigned char *s, size_t avail, size_t *bytes);
+
 /* Fast-path check: returns true if text contains any ESC or C1 byte.
  * Useful when you want to skip the full strip on clean text. */
 bool ansi_has_escape(const char *text);

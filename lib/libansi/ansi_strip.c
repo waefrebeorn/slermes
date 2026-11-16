@@ -20,6 +20,9 @@
 #include <string.h>
 #include <stdint.h>
 
+/* defined below; needed by the state machine's C1 test */
+uint32_t ansi_utf8_decode(const unsigned char *s, size_t avail, size_t *bytes);
+
 /* --- State machine states --- */
 typedef enum {
     ST_NORMAL,         /* Copying normal text */
@@ -100,9 +103,27 @@ char *ansi_strip_buf(const char *text, char *buf, size_t buf_size) {
                     /* 8-bit OSC */
                     state = ST_C1_OSC;
                     src_i++;
-                } else if (c >= 0x80 && c <= 0x9F) {
-                    /* Other 8-bit C1 controls — skip single byte */
-                    src_i++;
+                } else if (c >= 0x80) {
+                    /* C1 controls are CODE POINTS U+0080..U+009F. The Python
+                     * original regexes a str, so [\x80-\x9f] matches the
+                     * code-point range. Testing raw BYTES here also matched
+                     * UTF-8 continuation bytes -- 0x94 and 0x80 are the tail
+                     * of U+2500 (E2 94 80), so box-drawing rules were reduced
+                     * to a lone 0xE2 and is_footer_rule() saw a non-'-'
+                     * character. Decode first, then range-test the codepoint. */
+                    size_t n = 1;
+                    uint32_t cp = ansi_utf8_decode(
+                        (const unsigned char *)text + src_i, text_len - src_i, &n);
+                    if (cp != (uint32_t)-1 && cp >= 0x80 && cp <= 0x9F) {
+                        src_i += n;      /* a real C1 control: drop it */
+                    } else if (cp != (uint32_t)-1) {
+                        for (size_t k = 0; k < n && dst_i < buf_size - 1; k++)
+                            buf[dst_i++] = text[src_i++];
+                    } else {
+                        /* invalid leading byte: copy one byte, stay lossless */
+                        buf[dst_i++] = (char)c;
+                        src_i++;
+                    }
                 } else {
                     buf[dst_i++] = (char)c;
                     src_i++;
@@ -253,7 +274,7 @@ char *strip_ansi(const char *text) {
 
 /* Decode the codepoint at s[0..] (UTF-8). Sets *bytes to the UTF-8 length
  * (1-4) and returns the codepoint, or (uint32_t)-1 on invalid leading byte. */
-static uint32_t utf8_decode(const unsigned char *s, size_t avail, size_t *bytes) {
+uint32_t ansi_utf8_decode(const unsigned char *s, size_t avail, size_t *bytes) {
     unsigned char b0 = s[0];
     if (b0 < 0x80) { *bytes = 1; return b0; }
     if ((b0 & 0xE0) == 0xC0) {
@@ -300,7 +321,7 @@ char *strip_unicode_tags_buf(const char *text, char *buf, size_t buf_size) {
     size_t si = 0, di = 0;
     while (si < srclen && di < buf_size - 1) {
         size_t blen;
-        uint32_t cp = utf8_decode(src + si, srclen - si, &blen);
+        uint32_t cp = ansi_utf8_decode(src + si, srclen - si, &blen);
         if (cp == (uint32_t)-1) { /* invalid byte — copy verbatim */ }
         if (cp == 0x1F3F4) {
             /* Potential emoji tag sequence: U+1F3F4 + U+E0020..U+E007E{1,} + U+E007F */
@@ -311,7 +332,7 @@ char *strip_unicode_tags_buf(const char *text, char *buf, size_t buf_size) {
                 /* first spec char must be in range */
                 size_t spec_start = probe;
                 while (probe < srclen) {
-                    size_t pb; uint32_t pcp = utf8_decode(src + probe, srclen - probe, &pb);
+                    size_t pb; uint32_t pcp = ansi_utf8_decode(src + probe, srclen - probe, &pb);
                     if (pcp >= 0xE0020 && pcp <= 0xE007E) { probe += pb; continue; }
                     if (pcp == 0xE007F) { valid = (probe > spec_start); break; }
                     break;
@@ -324,7 +345,7 @@ char *strip_unicode_tags_buf(const char *text, char *buf, size_t buf_size) {
                 /* find cancel tag end */
                 size_t probe = si + blen;
                 while (probe < srclen) {
-                    size_t pb; uint32_t pcp = utf8_decode(src + probe, srclen - probe, &pb);
+                    size_t pb; uint32_t pcp = ansi_utf8_decode(src + probe, srclen - probe, &pb);
                     if (pcp == 0xE007F) { probe += pb; break; }
                     probe += pb;
                 }
