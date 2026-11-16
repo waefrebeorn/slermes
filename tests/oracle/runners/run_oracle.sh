@@ -176,9 +176,13 @@ LINKCMD=${LINKCMD//@slermes.link.rsp/@$RSP}
 HARNESS_OBJ="$BUILD_DIR/obj/tests/t_port_$NAME.o"
 # Object files must precede the libraries: the link line ends with
 # $(LDFLAGS) $(LIBS) (-lssl -lcrypto ...), and appending the harness after them
-# leaves its references (e.g. MD5_Init from libcrypto) unresolved. Insert it
-# right after the response file instead.
-LINKCMD=${LINKCMD//@$RSP/@$RSP $HARNESS_OBJ}
+# leaves its references (e.g. MD5_Init from libcrypto) unresolved.
+#
+# The harness must also come BEFORE the object list. With
+# -Wl,--allow-multiple-definition the first definition wins, and the minimal
+# closure can pull in an object that defines main() -- if that object precedes
+# the harness, the harness never runs and produces no output at all.
+LINKCMD=${LINKCMD//@slermes.link.rsp/$HARNESS_OBJ @$RSP}
 # There is no `diff` on this box: MSYS2 here ships no diffutils, and PATH
 # resolves the name to a WindowsApps alias stub that fails with "Permission
 # denied". Depending on an external diff would also make the runner fragile on
@@ -484,8 +488,17 @@ for f in "$FIX"/*.in; do
   # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
   # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
   # BOTH the harness and the oracle.
-  env $ISO "tests/oracle/build/tt_$NAME" "$FSUB" $extra \
-    > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  # Two harness conventions: some read the fixture from argv[1], some read it
+  # from stdin (fgets(stdin)). Feed it the way the harness expects; getting
+  # this wrong makes a harness run, produce nothing, and look like an
+  # oracle-side failure.
+  if grep -q "stdin" "$HARNESS"; then
+    env $ISO "$ROOT/tests/oracle/build/tt_$NAME" $extra < "$FSUB" \
+      > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  else
+    env $ISO "$ROOT/tests/oracle/build/tt_$NAME" "$FSUB" $extra \
+      > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  fi
   printf '%s\t%s\t%s\t%s\n' "$case" "$FSUB" \
          "$BUILD_DIR/oracle_${NAME}_c_${case}.json" "$extra" >> "$BATCH_TSV"
 done
