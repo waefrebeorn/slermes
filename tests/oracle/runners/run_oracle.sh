@@ -218,7 +218,11 @@ for obj in $LINKCMD; do
             ;;
     esac
 done
-COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -include hermes_win32.h -I include $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
+# The harness must compile with the same include paths as the real build. It
+# was missing -I include/compat (the POSIX shims: sys/wait.h, sys/socket.h,
+# sys/utsname.h, regex.h, ...) and CFLAGS_EXTRA (the borrowed third-party
+# headers), so 70 harnesses failed on headers the shipped build resolves fine.
+COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -include hermes_win32.h -I include/compat -I include $LIBINCS $SRCINCS $CFLAGS_EXTRA -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
 COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="\/share\/slermes\/docs"#g')
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
@@ -252,17 +256,17 @@ fi
 # than a red gate.
 rm -f "$BUILD_DIR/tt_$NAME"
 # shellcheck disable=SC2086
-bash -c "$COMPILE" >/tmp/oracle_compile.log 2>&1 || true
+bash -c "$COMPILE" >$BUILD_DIR/oracle_compile_$NAME.log 2>&1 || true
 if [ ! -f "$HARNESS_OBJ" ]; then
   echo "FATAL: harness did not compile -> $HARNESS_OBJ" >&2
-  head -12 /tmp/oracle_compile.log >&2
+  head -12 $BUILD_DIR/oracle_compile_$NAME.log >&2
   exit 2
 fi
 # shellcheck disable=SC2086
-bash -c "$LINKCMD -Wl,--allow-multiple-definition" >/tmp/oracle_link.log 2>&1 || true
+bash -c "$LINKCMD -Wl,--allow-multiple-definition" >$BUILD_DIR/oracle_link_$NAME.log 2>&1 || true
 if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
   echo "LINK FAILED for $NAME:" >&2
-  grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -8 >&2
+  grep -iE 'error|undefined|multiple' $BUILD_DIR/oracle_link_$NAME.log | head -8 >&2
   exit 1
 fi
 # Remove any stale subprocess-style binary from prior runs so a failed
