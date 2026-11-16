@@ -44,10 +44,13 @@ for line in Path(tsv).read_text(encoding="utf-8").splitlines():
     cases.append({
         "name": case,
         "fixture": fixture,
-        # The oracle's INPUT is the fixture -- the same bytes the C harness is
-        # handed. It used to receive the C output here, which let a
-        # stdin-reading oracle echo its own input and report MATCH.
-        "stdin": fixture,
+        # CONTRACT: the oracle's stdin is the C program's OUTPUT -- the oracle
+        # is a differential comparator, it must read what the port produced.
+        # The fixture goes on argv, where an oracle that needs its input reads
+        # it. Feeding the fixture to stdin instead silently breaks every port
+        # whose harness emits its own cases (config_nested's fixture is literally
+        # a placeholder saying so) and produced 9 JSONDecodeError ports.
+        "stdin": c_output,
         "c_out": c_output,
         "out": (out_dir / f"oracle_{name}_py_{case}.json").as_posix(),
         "extra": extra,
