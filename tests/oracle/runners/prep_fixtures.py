@@ -41,4 +41,10 @@ for f in sorted(fixdir.glob("*.in")):
                     .replace("@NOTREPO@", "/tmp"))
         out.write_text(text, encoding="utf-8", newline="")
     rows.append(f"{case}\t{out.as_posix()}\t{extra}")
+# The runner reads this TSV with bash `read -r case FSUB extra`, which strips
+# the trailing \n but NOT a \r. Python's stdout translates \n -> \r\n on
+# Windows, so every row ended with a stray CR in the `extra` field -- the C
+# harness received "\r" as argv[1], failed to open it as its fixture, and
+# printed nothing. That read as "C produced no output" for 10 ports.
+sys.stdout.reconfigure(newline="")
 print("\n".join(rows))

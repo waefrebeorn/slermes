@@ -70,7 +70,15 @@ static void list_dir(const char *base, const char *prefix) {
     for (size_t i = 0; i < nn; i++) {
         char ppath[4096], rel[4096];
         snprintf(ppath, sizeof ppath, "%s/%s", base, names[i]);
-        if (prefix[0]) snprintf(rel, sizeof rel, "%s/%s", prefix, names[i]);
+        /* The listing is filesystem evidence and must read like the Python
+         * module's, whose `str(Path.relative_to(root))` uses the PLATFORM
+         * separator: "\" on Windows, "/" elsewhere. Syscalls below keep "/",
+         * which Windows accepts; only the emitted text is platform-shaped. */
+        const char *sep = "/";
+#ifdef _WIN32
+        sep = "\\";
+#endif
+        if (prefix[0]) snprintf(rel, sizeof rel, "%s%s%s", prefix, sep, names[i]);
         else snprintf(rel, sizeof rel, "%s", names[i]);
         struct stat st;
         if (lstat(ppath, &st) != 0) continue;
@@ -130,9 +138,14 @@ int main(int argc, char **argv) {
     char root[4096];
     snprintf(root, sizeof root, "tests/oracle/build/spill_safety_ws/%s", casebase);
 
-    /* wipe + recreate the sandbox */
+    /* wipe + recreate the sandbox.
+     * `system()` on Windows goes through cmd.exe, where `rm` does not exist and
+     * single quotes are not quoting -- the command died with "The syntax of the
+     * command is incorrect." and the port reported "C produced no output".
+     * `sh -c` is the portable form: same command on MSYS2, Linux and macOS. */
     char cmd[4352];
-    snprintf(cmd, sizeof cmd, "rm -rf '%s' && mkdir -p '%s'", root, root);
+    snprintf(cmd, sizeof cmd, "sh -c \"rm -rf '%s' && mkdir -p '%s'\"",
+             root, root);
     if (system(cmd) != 0) { fprintf(stderr, "sandbox reset failed\n"); return 1; }
 
     json_t *ops = json_object_get(rootj, "ops");

@@ -467,6 +467,14 @@ PREP_TSV="$BUILD_DIR/prep_$NAME.tsv"
 "$PY" tests/oracle/runners/prep_fixtures.py "$FIX" "$BUILD_DIR/subst_$NAME" "$TMPH" > "$PREP_TSV"
 while IFS=$'\t' read -r case FSUB extra; do
   [ -z "$case" ] && continue
+  # Defence in depth: a CR smuggled into `extra` becomes argv[1] for the C
+  # harness, which then fails to open it and prints nothing -- 10 ports read as
+  # "C produced no output" before the producer was found. Strip it here too so
+  # no future producer can reintroduce the class.
+  extra=${extra%$'
+'}
+  case=${case%$'
+'}
   # Fixtures use placeholders the harness/oracle must resolve: @SBX@ -> the
   # isolated shared home, @NOW@ -> a fixed timestamp (so time-relative ops are
   # deterministic and identical on both the C and Python sides), @NOTREPO@ ->
