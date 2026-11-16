@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_ANON_AUTH_H
-#define SLERMES_PORT_ANON_AUTH_H
+#ifndef PORT_ANON_AUTH_H
+#define PORT_ANON_AUTH_H
 
 #include <hermes_json.h>
 #include <stddef.h>
@@ -35,4 +35,4 @@ void anon_trial_model(json_t *state, int guest_allowed, char *out,
 void anon_failure_copy(const char *code, double retry_after, char *out,
                        size_t outsz);
 
-#endif /* SLERMES_PORT_ANON_AUTH_H */
+#endif /* PORT_ANON_AUTH_H */

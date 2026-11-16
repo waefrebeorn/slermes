@@ -16,6 +16,7 @@
  * contract the other error-copying ports in this tree use.
  */
 
+#include "port_service_manager.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -40,7 +41,7 @@
  *  Returns 0 when valid, -1 when not, with the Python message text in err.
  * =========================================================================== */
 
-/* PoP: validate_profile_name @ hermes_cli/service_manager.py:validate_profile_name */
+/* PoP: sm_validate_profile_name @ hermes_cli/service_manager.py:validate_profile_name */
 int sm_validate_profile_name(const char *name, char *err, size_t errlen)
 {
     if (err && errlen) err[0] = '\0';
@@ -86,7 +87,7 @@ int sm_validate_profile_name(const char *name, char *err, size_t errlen)
  *  prefix is absent (unlike a naive strip), so "gateway-" alone yields "".
  * =========================================================================== */
 
-/* PoP: _profile_from_service @ hermes_cli/service_manager.py:_profile_from_service */
+/* PoP: sm_profile_from_service @ hermes_cli/service_manager.py:_profile_from_service */
 char *sm_profile_from_service(const char *name)
 {
     const char *in = name ? name : "";

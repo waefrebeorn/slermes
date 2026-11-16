@@ -49,7 +49,7 @@ static const char *const PB_REMOTE_BACKENDS[] = {
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: _strip_yaml_frontmatter @ agent/prompt_builder.py:_strip_yaml_frontmatter */
+/* PoP: pb_strip_yaml_frontmatter @ agent/prompt_builder.py:_strip_yaml_frontmatter */
 char *pb_strip_yaml_frontmatter(const char *content)
 {
     if (!content) return NULL;
@@ -79,7 +79,7 @@ char *pb_strip_yaml_frontmatter(const char *content)
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: format_steer_marker @ agent/prompt_builder.py:format_steer_marker */
+/* PoP: pb_format_steer_marker @ agent/prompt_builder.py:format_steer_marker */
 char *pb_format_steer_marker(const char *steer_text)
 {
     const char *text = steer_text ? steer_text : "";
@@ -105,7 +105,7 @@ char *pb_format_steer_marker(const char *steer_text)
  *  and the result is "" when neither key is usable. Caller frees.
  * =========================================================================== */
 
-/* PoP: _format_backend_probe @ agent/prompt_builder.py:_format_backend_probe */
+/* PoP: pb_format_backend_probe @ agent/prompt_builder.py:_format_backend_probe */
 char *pb_format_backend_probe(const char *output)
 {
     char *os_val = NULL, *kernel_val = NULL;
@@ -170,7 +170,7 @@ char *pb_format_backend_probe(const char *output)
  *  so an unknown-but-explicitly-remote backend is still remote.
  * =========================================================================== */
 
-/* PoP: plugin_backend_is_remote @ agent/prompt_builder.py:plugin_backend_is_remote */
+/* PoP: pb_plugin_backend_is_remote @ agent/prompt_builder.py:plugin_backend_is_remote */
 int pb_plugin_backend_is_remote(const char *backend, int attr_is_remote)
 {
     if (!backend || !backend[0]) return 0;

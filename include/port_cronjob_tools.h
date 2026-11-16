@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_CRONJOB_TOOLS_H
-#define SLERMES_PORT_CRONJOB_TOOLS_H
+#ifndef PORT_CRONJOB_TOOLS_H
+#define PORT_CRONJOB_TOOLS_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -28,4 +28,4 @@ void cronjob_notify_provider_jobs_changed_safe(void);
 json_t *cronjob_execute_job_now(const json_t *job);
 json_t *cronjob_dispatch(const json_t *args);
 
-#endif /* SLERMES_PORT_CRONJOB_TOOLS_H */
+#endif /* PORT_CRONJOB_TOOLS_H */

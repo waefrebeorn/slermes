@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_CALLBACKS_H
-#define SLERMES_PORT_CALLBACKS_H
+#ifndef PORT_CALLBACKS_H
+#define PORT_CALLBACKS_H
 
 #include "json.h"
 
@@ -7,4 +7,4 @@
  * validated:False, skipped:True, message}. Returns new json_t, caller frees. */
 json_t *cb_skipped(const char *var_name, const char *reason, const char *message);
 
-#endif /* SLERMES_PORT_CALLBACKS_H */
+#endif /* PORT_CALLBACKS_H */

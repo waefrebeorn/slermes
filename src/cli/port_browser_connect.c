@@ -15,8 +15,8 @@
  * launch_chrome_debug (subprocess), is_browser_debug_ready (sockets).
  */
 
-#include "hermes_json.h"
 #include "port_browser_connect.h"
+#include "hermes_json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,7 +38,7 @@
  *  {fragment, canonical} pairs.
  * =========================================================================== */
 
-/* PoP: _classify_default @ hermes_cli/browser_connect.py:_classify_default */
+/* PoP: bc_classify_default @ hermes_cli/browser_connect.py:_classify_default */
 const char *bc_classify_default(const char *value,
                                 const char *const *channels,
                                 const bc_fragment_t *table,
@@ -63,7 +63,7 @@ const char *bc_classify_default(const char *value,
  *  pointer aliases the input array - caller owns nothing.
  * =========================================================================== */
 
-/* PoP: _first_present @ hermes_cli/browser_connect.py:_first_present */
+/* PoP: bc_first_present @ hermes_cli/browser_connect.py:_first_present */
 const char *bc_first_present(const char *const *paths)
 {
     if (!paths) return NULL;

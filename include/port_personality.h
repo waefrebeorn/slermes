@@ -5,8 +5,8 @@
  * operating on a raw config json_t dict. `persist_personality` (the file-op
  * atomic roundtrip) is NOT ported here — it needs the yaml roundtrip helper.
  */
-#ifndef SLERMES_PORT_PERSONALITY_H
-#define SLERMES_PORT_PERSONALITY_H
+#ifndef PORT_PERSONALITY_H
+#define PORT_PERSONALITY_H
 
 #include "hermes_json.h"
 
@@ -65,4 +65,4 @@ char *per_resolve_ephemeral_system_prompt(const json_t *cfg);
 }
 #endif
 
-#endif /* SLERMES_PORT_PERSONALITY_H */
+#endif /* PORT_PERSONALITY_H */

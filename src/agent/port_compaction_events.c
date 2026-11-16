@@ -124,7 +124,7 @@ static const char *micro_outcome_for(const char *outcome)
     return "failed";
 }
 
-/* PoP: _closed @ agent/compaction_events.py:_closed */
+/* PoP: ce_closed @ agent/compaction_events.py:_closed */
 json_t *ce_closed(json_t *value, const char *const *allowed, int nallowed,
                   const char *dflt)
 {
@@ -139,7 +139,7 @@ json_t *ce_closed(json_t *value, const char *const *allowed, int nallowed,
     return dflt ? json_new_string(dflt) : json_new_null();
 }
 
-/* PoP: _int @ agent/compaction_events.py:_int */
+/* PoP: ce_int @ agent/compaction_events.py:_int */
 json_t *ce_int(json_t *value)
 {
     if (!json_is_number(value) || json_is_bool(value))
@@ -178,7 +178,7 @@ static json_t *copy_or_null(json_t *v)
     return v ? json_copy(v) : json_new_null();
 }
 
-/* PoP: failure_class @ agent/compaction_events.py:failure_class */
+/* PoP: ce_failure_class @ agent/compaction_events.py:failure_class */
 json_t *ce_failure_class(json_t *value)
 {
     if (!json_is_string(value))
@@ -202,7 +202,7 @@ json_t *ce_failure_class(json_t *value)
     return json_new_string("other");
 }
 
-/* PoP: event_name @ agent/compaction_events.py:event_name */
+/* PoP: ce_event_name @ agent/compaction_events.py:event_name */
 const char *ce_event_name(json_t *payload)
 {
     json_t *outcome = json_obj_get(payload, "outcome");
@@ -288,7 +288,7 @@ json_t *ce_payload(json_t *values)
     return p;
 }
 
-/* PoP: _attempt_outcome @ agent/compaction_events.py:_attempt_outcome */
+/* PoP: ce_attempt_outcome @ agent/compaction_events.py:_attempt_outcome */
 json_t *ce_attempt_outcome(json_t *commit_status, json_t *failure,
                            json_t *history_rewritten)
 {
@@ -306,7 +306,7 @@ json_t *ce_attempt_outcome(json_t *commit_status, json_t *failure,
                : json_new_string("failed");
 }
 
-/* PoP: _attempt_trigger @ agent/compaction_events.py:_attempt_trigger */
+/* PoP: ce_attempt_trigger @ agent/compaction_events.py:_attempt_trigger */
 json_t *ce_attempt_trigger(json_t *trigger_source)
 {
     json_t *arr = json_new_array();
@@ -344,7 +344,7 @@ static const char *const ATTEMPT_INTS[][2] = {
     {"summary_input_omitted_chars", "summary_input_omitted_chars"},
 };
 
-/* PoP: attempt_payload @ agent/compaction_events.py:attempt_payload */
+/* PoP: ce_attempt_payload @ agent/compaction_events.py:attempt_payload */
 json_t *ce_attempt_payload(json_t *record, json_t *compression_count)
 {
     json_t *values = json_new_object();
@@ -411,7 +411,7 @@ json_t *ce_attempt_payload(json_t *record, json_t *compression_count)
     return ce_payload(values);
 }
 
-/* PoP: micro_payload @ agent/compaction_events.py:micro_payload */
+/* PoP: ce_micro_payload @ agent/compaction_events.py:micro_payload */
 json_t *ce_micro_payload(json_t *record)
 {
     const char *raw = NULL;
@@ -455,7 +455,7 @@ json_t *ce_micro_payload(json_t *record)
     return ce_payload(v);
 }
 
-/* PoP: prune_payload @ agent/compaction_events.py:prune_payload */
+/* PoP: ce_prune_payload @ agent/compaction_events.py:prune_payload */
 json_t *ce_prune_payload(const char *session_id, long tokens_before,
                          long tokens_after, long messages, long tool_results_pruned)
 {
@@ -479,7 +479,7 @@ json_t *ce_prune_payload(const char *session_id, long tokens_before,
     return ce_payload(v);
 }
 
-/* PoP: provider_native_payload @ agent/compaction_events.py:provider_native_payload */
+/* PoP: ce_provider_native_payload @ agent/compaction_events.py:provider_native_payload */
 json_t *ce_provider_native_payload(const char *session_id, json_t *compression_count)
 {
     json_t *v = json_new_object();

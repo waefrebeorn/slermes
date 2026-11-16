@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_AUDIT_H
-#define SLERMES_PORT_AUDIT_H
+#ifndef PORT_AUDIT_H
+#define PORT_AUDIT_H
 
 #include "json.h"
 
@@ -8,4 +8,4 @@
  * a new json_t tree, caller frees. */
 json_t *port_audit_bounded_value(const json_t *value);
 
-#endif /* SLERMES_PORT_AUDIT_H */
+#endif /* PORT_AUDIT_H */

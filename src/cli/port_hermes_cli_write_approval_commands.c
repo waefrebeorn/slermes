@@ -167,5 +167,3 @@ int cli_hermes_cli_write_approval_commands__set_approval(
              subsystem, enabled ? "on" : "off");
     return 0;
 }
-
-

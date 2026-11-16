@@ -49,7 +49,7 @@ static char *py_str(const json_t *v)
 
 /* --- Result shapes (key order is part of the contract) --- */
 
-/* PoP: search_ok @ plugins/web/_common.py:search_ok */
+/* PoP: webc_search_ok @ plugins/web/_common.py:search_ok */
 json_t *webc_search_ok(json_t *web_results)
 {
     json_t *out = json_new_object();
@@ -60,7 +60,7 @@ json_t *webc_search_ok(json_t *web_results)
     return out;
 }
 
-/* PoP: search_fail @ plugins/web/_common.py:search_fail */
+/* PoP: webc_search_fail @ plugins/web/_common.py:search_fail */
 json_t *webc_search_fail(const char *error)
 {
     json_t *out = json_new_object();
@@ -69,7 +69,7 @@ json_t *webc_search_fail(const char *error)
     return out;
 }
 
-/* PoP: web_hit @ plugins/web/_common.py:web_hit */
+/* PoP: webc_web_hit @ plugins/web/_common.py:web_hit */
 json_t *webc_web_hit(const char *url, const char *title, const char *description,
                      long position)
 {
@@ -81,7 +81,7 @@ json_t *webc_web_hit(const char *url, const char *title, const char *description
     return out;
 }
 
-/* PoP: title_hit @ plugins/web/_common.py:title_hit */
+/* PoP: webc_title_hit @ plugins/web/_common.py:title_hit */
 json_t *webc_title_hit(const char *title, const char *url, const char *description,
                        long position)
 {
@@ -93,7 +93,7 @@ json_t *webc_title_hit(const char *title, const char *url, const char *descripti
     return out;
 }
 
-/* PoP: document @ plugins/web/_common.py:document */
+/* PoP: webc_document @ plugins/web/_common.py:document */
 json_t *webc_document(const char *url, const char *title, const char *content,
                       const char *source_url)
 {
@@ -110,7 +110,7 @@ json_t *webc_document(const char *url, const char *title, const char *content,
     return out;
 }
 
-/* PoP: page_error @ plugins/web/_common.py:page_error */
+/* PoP: webc_page_error @ plugins/web/_common.py:page_error */
 json_t *webc_page_error(const char *url, const char *error)
 {
     json_t *out = json_new_object();
@@ -121,7 +121,7 @@ json_t *webc_page_error(const char *url, const char *error)
     return out;
 }
 
-/* PoP: extract_fail @ plugins/web/_common.py:extract_fail */
+/* PoP: webc_extract_fail @ plugins/web/_common.py:extract_fail */
 json_t *webc_extract_fail(json_t *urls, const char *error)
 {
     json_t *out = json_new_array();
@@ -136,7 +136,7 @@ json_t *webc_extract_fail(json_t *urls, const char *error)
     return out;
 }
 
-/* PoP: _extract_interrupted @ plugins/web/_common.py:_extract_interrupted */
+/* PoP: webc_extract_interrupted @ plugins/web/_common.py:_extract_interrupted */
 json_t *webc_extract_interrupted(json_t *urls)
 {
     json_t *out = json_new_array();
@@ -157,7 +157,7 @@ json_t *webc_extract_interrupted(json_t *urls)
 
 /* --- Origin HTTP status (the target page's answer, not the vendor API's) --- */
 
-/* PoP: is_origin_http_error @ plugins/web/_common.py:is_origin_http_error */
+/* PoP: webc_is_origin_http_error @ plugins/web/_common.py:is_origin_http_error */
 int webc_is_origin_http_error(const char *error)
 {
     if (!error)
@@ -222,7 +222,7 @@ json_t *webc_origin_http_error(json_t *status, const char *reason)
     return j;
 }
 
-/* PoP: exa_crawl_status @ plugins/web/_common.py:exa_crawl_status */
+/* PoP: webc_exa_crawl_status @ plugins/web/_common.py:exa_crawl_status */
 json_t *webc_exa_crawl_status(const char *text)
 {
     if (!text)
@@ -268,7 +268,7 @@ static int keenable_message_match(const char *m)
     return *m == '\0' || !is_word_char(*m);
 }
 
-/* PoP: keenable_origin_error @ plugins/web/_common.py:keenable_origin_error */
+/* PoP: webc_keenable_origin_error @ plugins/web/_common.py:keenable_origin_error */
 json_t *webc_keenable_origin_error(json_t *status, const char *body)
 {
     json_t *data = json_parse(body ? body : "", NULL);
@@ -299,7 +299,7 @@ json_t *webc_keenable_origin_error(json_t *status, const char *body)
     return out;
 }
 
-/* PoP: with_origin_status @ plugins/web/_common.py:with_origin_status */
+/* PoP: webc_with_origin_status @ plugins/web/_common.py:with_origin_status */
 json_t *webc_with_origin_status(json_t *entry, json_t *status, const char *reason)
 {
     json_t *err = webc_origin_http_error(status, reason);
@@ -310,7 +310,7 @@ json_t *webc_with_origin_status(json_t *entry, json_t *status, const char *reaso
     return entry;
 }
 
-/* PoP: vendor_error_entry @ plugins/web/_common.py:vendor_error_entry */
+/* PoP: webc_vendor_error_entry @ plugins/web/_common.py:vendor_error_entry */
 json_t *webc_vendor_error_entry(const char *url, json_t *status,
                                 const char *reason, const char *body)
 {
@@ -341,7 +341,7 @@ static int json_obj_has(const json_t *obj, const char *key)
     return 0;
 }
 
-/* PoP: titled_rows @ plugins/web/_common.py:titled_rows */
+/* PoP: webc_titled_rows @ plugins/web/_common.py:titled_rows */
 json_t *webc_titled_rows(json_t *raw_results, const char *description_key)
 {
     json_t *out = json_new_array();
@@ -375,7 +375,7 @@ json_t *webc_titled_rows(json_t *raw_results, const char *description_key)
     return out;
 }
 
-/* PoP: setup_schema @ plugins/web/_common.py:setup_schema */
+/* PoP: webc_setup_schema @ plugins/web/_common.py:setup_schema */
 json_t *webc_setup_schema(const char *name, const char *badge, const char *tag,
                           const char *key_env, const char *prompt, const char *url,
                           json_t *extra)
@@ -405,7 +405,7 @@ json_t *webc_setup_schema(const char *name, const char *badge, const char *tag,
     return out;
 }
 
-/* PoP: keyless_variant_schema @ plugins/web/_common.py:keyless_variant_schema */
+/* PoP: webc_keyless_variant_schema @ plugins/web/_common.py:keyless_variant_schema */
 json_t *webc_keyless_variant_schema(const char *display, const char *key_env,
                                     const char *key_url, const char *free_tag,
                                     const char *paid_tag)

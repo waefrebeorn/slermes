@@ -40,7 +40,7 @@
  *  The record field order is: pid (when requested), then the keys in order.
  * =========================================================================== */
 
-/* PoP: _str_records @ hermes_cli/update_receipt.py:_str_records */
+/* PoP: ur_str_records @ hermes_cli/update_receipt.py:_str_records */
 char ***ur_str_records(const char *const *const *entries,
                        const char *const *keys, int want_pid,
                        int *out_count)

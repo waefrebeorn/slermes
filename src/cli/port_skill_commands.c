@@ -45,7 +45,7 @@
  *  character class). Caller frees.
  * =========================================================================== */
 
-/* PoP: slugify_skill_name @ agent/skill_commands.py:slugify_skill_name */
+/* PoP: sc_slugify_skill_name @ agent/skill_commands.py:slugify_skill_name */
 char *sc_slugify_skill_name(const char *name)
 {
     if (!name) return strdup("");
@@ -100,7 +100,7 @@ char *sc_slugify_skill_name(const char *name)
  *  lstrip("/") strips ALL leading slashes, not one. Returns a new flat array.
  * =========================================================================== */
 
-/* PoP: command_snapshot @ agent/skill_commands.py:command_snapshot */
+/* PoP: sc_command_snapshot @ agent/skill_commands.py:command_snapshot */
 char **sc_command_snapshot(const char *const *cmds, int *out_count)
 {
     int n = 0;
@@ -140,7 +140,7 @@ static int sc_cmp_str(const void *a, const void *b)
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
 
-/* PoP: diff_command_snapshots @ agent/skill_commands.py:diff_command_snapshots */
+/* PoP: sc_diff_command_snapshots @ agent/skill_commands.py:diff_command_snapshots */
 char *sc_diff_command_snapshots(const char *const *before, const char *const *after)
 {
     int nb = 0, na = 0;
@@ -217,7 +217,7 @@ char *sc_diff_command_snapshots(const char *const *before, const char *const *af
  *  exact form wins when both exist.
  * =========================================================================== */
 
-/* PoP: resolve_slash_key @ agent/skill_commands.py:resolve_slash_key */
+/* PoP: sc_resolve_slash_key @ agent/skill_commands.py:resolve_slash_key */
 char *sc_resolve_slash_key(const char *command, const char *const *table)
 {
     if (!command || !command[0]) return NULL;
@@ -259,7 +259,7 @@ char *sc_resolve_slash_key(const char *command, const char *const *table)
  *  setup_note branch. Returns a malloc'd string or NULL.
  * =========================================================================== */
 
-/* PoP: _setup_note @ agent/skill_commands.py:_setup_note */
+/* PoP: sc_setup_note @ agent/skill_commands.py:_setup_note */
 char *sc_setup_note(int setup_skipped, const char *gateway_setup_hint,
                     int setup_needed, const char *setup_note)
 {
@@ -279,7 +279,7 @@ char *sc_setup_note(int setup_skipped, const char *gateway_setup_hint,
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: format_missing_skills @ agent/skill_commands.py:format_missing_skills */
+/* PoP: sc_format_missing_skills @ agent/skill_commands.py:format_missing_skills */
 char *sc_format_missing_skills(const char *const *missing)
 {
     int n = 0;

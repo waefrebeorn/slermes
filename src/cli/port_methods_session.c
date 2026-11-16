@@ -74,7 +74,7 @@ int ms_is_truthy(int kind, const char *sval, int ival, int dflt)
  *  found value (0 = absent). Caller frees.
  * =========================================================================== */
 
-/* PoP: _str_param @ tui_gateway/methods_session.py:_str_param */
+/* PoP: ms_str_param @ tui_gateway/methods_session.py:_str_param */
 char *ms_str_param(const char *const *params, const char *key, const char *dflt)
 {
     const char *val = NULL;
@@ -112,7 +112,7 @@ char *ms_str_param(const char *const *params, const char *key, const char *dflt)
  *  default) - so a missing flag is off.
  * =========================================================================== */
 
-/* PoP: _flag @ tui_gateway/methods_session.py:_flag */
+/* PoP: ms_flag @ tui_gateway/methods_session.py:_flag */
 int ms_flag(const char *const *params, const char *name)
 {
     const char *val = NULL;
@@ -132,7 +132,7 @@ int ms_flag(const char *const *params, const char *name)
  *  is a flat [key, value, ...] array; the value is the raw string.
  * =========================================================================== */
 
-/* PoP: _int_param @ tui_gateway/methods_session.py:_int_param */
+/* PoP: ms_int_param @ tui_gateway/methods_session.py:_int_param */
 int ms_int_param(const char *const *params, const char *key, int dflt)
 {
     const char *val = NULL;
@@ -167,7 +167,7 @@ int ms_int_param(const char *const *params, const char *key, int dflt)
  *  flat [key, value, ...] array.
  * =========================================================================== */
 
-/* PoP: _denied_source @ tui_gateway/methods_session.py:_denied_source */
+/* PoP: ms_denied_source @ tui_gateway/methods_session.py:_denied_source */
 int ms_denied_source(const char *const *row)
 {
     const char *val = NULL;

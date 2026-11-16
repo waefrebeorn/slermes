@@ -29,7 +29,7 @@
  *  returncode (-15, i.e. killed by SIGTERM) becomes 240, not 0xFFFFFFxx.
  * =========================================================================== */
 
-/* PoP: _wait_status_from_returncode @ hermes_cli/kanban_db_dispatch.py:_wait_status_from_returncode */
+/* PoP: kbd_wait_status_from_returncode @ hermes_cli/kanban_db_dispatch.py:_wait_status_from_returncode */
 int kbd_wait_status_from_returncode(int returncode)
 {
     return (returncode & 0xFF) << 8;
@@ -49,7 +49,7 @@ int kbd_wait_status_from_returncode(int returncode)
  *  3=nonzero_exit; `out_code` receives the code as given.
  * =========================================================================== */
 
-/* PoP: _exit_code_kind @ hermes_cli/kanban_db_dispatch.py:_exit_code_kind */
+/* PoP: kbd_exit_code_kind @ hermes_cli/kanban_db_dispatch.py:_exit_code_kind */
 int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code,
                        int *out_code)
 {
@@ -72,7 +72,7 @@ int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code
  *  number becomes "<TS>"; a shorter one is left alone. Caller frees.
  * =========================================================================== */
 
-/* PoP: error_fingerprint @ hermes_cli/kanban_db_dispatch.py:error_fingerprint */
+/* PoP: kbd_error_fingerprint @ hermes_cli/kanban_db_dispatch.py:error_fingerprint */
 char *kbd_error_fingerprint(const char *error_text)
 {
     const char *src = error_text ? error_text : "";
@@ -162,7 +162,7 @@ char *kbd_error_fingerprint(const char *error_text)
  *  are "1"/"0" for the boolean fields.
  * =========================================================================== */
 
-/* PoP: worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
+/* PoP: kbd_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
 int kbd_worker_survived_termination(const char *const *termination)
 {
     int host_local = 0, attempted = 0, refused = 0, terminated = 0;

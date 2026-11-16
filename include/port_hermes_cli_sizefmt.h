@@ -4,8 +4,8 @@
  * Small shared byte-formatting helper for CLI/agent output. Sibling of the
  * timefmt port.
  */
-#ifndef SLERMES_PORT_HERMES_CLI_SIZEFMT_H
-#define SLERMES_PORT_HERMES_CLI_SIZEFMT_H
+#ifndef PORT_HERMES_CLI_SIZEFMT_H
+#define PORT_HERMES_CLI_SIZEFMT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,4 +20,4 @@ char *szf_format_bytes(const char *input);
 }
 #endif
 
-#endif /* SLERMES_PORT_HERMES_CLI_SIZEFMT_H */
+#endif /* PORT_HERMES_CLI_SIZEFMT_H */

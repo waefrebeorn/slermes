@@ -13,6 +13,7 @@
  * The env lookup is a parameter so the C side does not own os.environ.
  */
 
+#include "port_clipboard.h"
 #include "hermes_json.h"
 
 #include <stdlib.h>
@@ -29,7 +30,7 @@
  *  lookup; a NULL or empty value is falsy, matching dict.get's `or` chain.
  * =========================================================================== */
 
-/* PoP: is_remote_shell_session @ hermes_cli/clipboard.py:is_remote_shell_session */
+/* PoP: cb_is_remote_shell_session @ hermes_cli/clipboard.py:is_remote_shell_session */
 int cb_is_remote_shell_session(int (*env_has)(const char *name))
 {
     if (!env_has) return 0;
@@ -45,7 +46,7 @@ int cb_is_remote_shell_session(int (*env_has)(const char *name))
  *  UTF-8 string literals; the guillemets are C2 AB / C2 BB.
  * =========================================================================== */
 
-/* PoP: _macos_has_bitmap @ hermes_cli/clipboard.py:_macos_has_bitmap */
+/* PoP: cb_macos_has_bitmap @ hermes_cli/clipboard.py:_macos_has_bitmap */
 int cb_macos_has_bitmap(const char *info)
 {
     if (!info) return 0;

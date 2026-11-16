@@ -1,4 +1,5 @@
 /* Slermes C port — agent/markdown_tables.py (CJK/wide-char markdown table
+/* port_markdown_tables.c -- see the PoP annotations below. */
  * re-alignment). Pure string transform; no I/O.
  *
  * Faithful to LIVE Python (tests/sta_oracle_markdown_tables.py):
@@ -132,7 +133,7 @@ static bool md_looks_like_table_row(const char *row)
     return count >= 2;
 }
 
-/* PoP: _hard_break @ agent/markdown_tables.py:_hard_break */
+/* PoP: md_hard_break @ agent/markdown_tables.py:_hard_break */
 /* hard-break a single word into its first <=width display-cell piece. */
 static char *md_hard_break(const char *word, int width)
 {
@@ -310,7 +311,7 @@ static char **md_render_block(md_row_t *rows, size_t nrows, size_t ncols,
 
 /* ---------- top-level ---------- */
 
-/* PoP: realign_markdown_tables @ agent/markdown_tables.py:realign_markdown_tables */
+/* PoP: md_realign_markdown_tables @ agent/markdown_tables.py:realign_markdown_tables */
 char *md_realign_markdown_tables(const char *text, int available_width /* -1 = None */)
 {
     setlocale(LC_ALL, "C.UTF-8");

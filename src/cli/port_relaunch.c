@@ -52,7 +52,7 @@ static const int          RL_PRE_VALUES[] = { 1,           1  };
  *  NULL-terminated array of borrowed pointers; the caller frees the ARRAY only.
  * =========================================================================== */
 
-/* PoP: _extract_inherited_flags @ hermes_cli/relaunch.py:_extract_inherited_flags */
+/* PoP: rl_extract_inherited_flags @ hermes_cli/relaunch.py:_extract_inherited_flags */
 const char **rl_extract_inherited_flags(const char *const *argv,
                                         const char *const *table_flags,
                                         const int *table_values, int table_n,
@@ -116,7 +116,7 @@ const char **rl_extract_inherited_flags(const char *const *argv,
  *  NULL-terminated array of borrowed pointers; free the ARRAY only.
  * =========================================================================== */
 
-/* PoP: build_relaunch_argv @ hermes_cli/relaunch.py:build_relaunch_argv */
+/* PoP: rl_build_relaunch_argv @ hermes_cli/relaunch.py:build_relaunch_argv */
 const char **rl_build_relaunch_argv(const char *bin_path, const char *python_exe,
                                     const char *const *original_argv,
                                     int preserve_inherited,

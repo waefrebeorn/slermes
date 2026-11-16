@@ -6,6 +6,7 @@
  * side only ever sees parsed JSON, so that branch is unreachable here.
  */
 
+#include "port_dashboard_auth_audit.h"
 #include "hermes_json.h"
 
 #include <stdlib.h>

@@ -11,6 +11,7 @@
  *   pti_lock_twins    <- pt_input_extras.py:lock_twins
  */
 
+#include "port_pt_input_extras.h"
 #include "hermes_json.h"
 
 #include <stdlib.h>
@@ -28,7 +29,7 @@ static const int PTI_LOCK_BIT_OFFSETS[4] = { 0, 64, 128, 192 };
  *  Returns a newly allocated array of 4 ints; caller frees.
  * =========================================================================== */
 
-/* PoP: _lock_variants @ hermes_cli/pt_input_extras.py:_lock_variants */
+/* PoP: pti_lock_variants @ hermes_cli/pt_input_extras.py:_lock_variants */
 int *pti_lock_variants(int modifier)
 {
     int *out = (int *)malloc(sizeof(PTI_LOCK_BIT_OFFSETS));
@@ -48,7 +49,7 @@ int *pti_lock_variants(int modifier)
  *  Returns a newly allocated array of 3 ints; caller frees.
  * =========================================================================== */
 
-/* PoP: lock_twins @ hermes_cli/pt_input_extras.py:lock_twins */
+/* PoP: pti_lock_twins @ hermes_cli/pt_input_extras.py:lock_twins */
 int *pti_lock_twins(int modifier)
 {
     int *all = pti_lock_variants(modifier);

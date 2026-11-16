@@ -13,6 +13,7 @@
  *   banner_toolset_name      <- banner.py:_display_toolset_name
  */
 
+#include "port_banner.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -30,7 +31,7 @@
  *  irregulars. Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _plural @ hermes_cli/banner.py:_plural */
+/* PoP: banner_plural @ hermes_cli/banner.py:_plural */
 char *banner_plural(int n, const char *word)
 {
     const char *w = word ? word : "";

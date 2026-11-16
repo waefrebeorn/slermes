@@ -3,8 +3,8 @@
  * Model-slug and provider-route predicates plus the per-model compression
  * threshold. No network, no client objects, no registry.
  */
-#ifndef SLERMES_PORT_AUXILIARY_CLIENT_H
-#define SLERMES_PORT_AUXILIARY_CLIENT_H
+#ifndef PORT_AUXILIARY_CLIENT_H
+#define PORT_AUXILIARY_CLIENT_H
 
 #include <stddef.h>
 
@@ -114,4 +114,4 @@ void ac_translate_response_format(json_t *anthropic_kwargs,
 }
 #endif
 
-#endif /* SLERMES_PORT_AUXILIARY_CLIENT_H */
+#endif /* PORT_AUXILIARY_CLIENT_H */

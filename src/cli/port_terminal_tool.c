@@ -116,7 +116,7 @@ int tt_is_isolation_key(const char *key)
  *  single-profile gateway, which keep the raw key. Caller frees.
  * =========================================================================== */
 
-/* PoP: _qualify_task_key @ tools/terminal_tool.py:_qualify_task_key */
+/* PoP: tt_qualify_task_key @ tools/terminal_tool.py:_qualify_task_key */
 char *tt_qualify_task_key(const char *key, const char *scope)
 {
     if (!scope || !scope[0]) return strdup(key ? key : "");
@@ -142,7 +142,7 @@ char *tt_qualify_task_key(const char *key, const char *scope)
  *  [child, parent, ...] array. Caller frees.
  * =========================================================================== */
 
-/* PoP: _resolve_container_alias @ tools/terminal_tool.py:_resolve_container_alias */
+/* PoP: tt_resolve_container_alias @ tools/terminal_tool.py:_resolve_container_alias */
 char *tt_resolve_container_alias(const char *task_id, const char *const *aliases)
 {
     const char *key = task_id;

@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_BROWSER_SUPERVISOR_H
-#define SLERMES_PORT_BROWSER_SUPERVISOR_H
+#ifndef PORT_BROWSER_SUPERVISOR_H
+#define PORT_BROWSER_SUPERVISOR_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -55,4 +55,4 @@ void port_browser_supervisor_dialog_timeout_expired(port_browser_supervisor_stat
 void port_browser_supervisor_enable_child_domains(port_browser_supervisor_state_t *state, const char *session_id);
 char *port_browser_supervisor_cdp(port_browser_supervisor_state_t *state, const char *method, json_t *params);
 
-#endif /* SLERMES_PORT_BROWSER_SUPERVISOR_H */
+#endif /* PORT_BROWSER_SUPERVISOR_H */

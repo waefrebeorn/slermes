@@ -14,6 +14,7 @@
  * parameter so the caller owns the auth lookup.
  */
 
+#include "port_nous_account.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -34,7 +35,7 @@
  *  Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _normalize_tier @ hermes_cli/nous_account.py:_normalize_tier */
+/* PoP: nous_normalize_tier @ hermes_cli/nous_account.py:_normalize_tier */
 char *nous_normalize_tier(const char *value)
 {
     /* A non-string is "" (Python's isinstance guard); NULL is the C spelling
@@ -70,7 +71,7 @@ char *nous_normalize_tier(const char *value)
  *  flag on it. Both must hold.
  * =========================================================================== */
 
-/* PoP: _is_anonymous_tier @ hermes_cli/nous_account.py:_is_anonymous_tier */
+/* PoP: nous_is_anonymous_tier @ hermes_cli/nous_account.py:_is_anonymous_tier */
 int nous_is_anonymous_tier(int has_account_info, int is_anonymous_tier)
 {
     return has_account_info && is_anonymous_tier;

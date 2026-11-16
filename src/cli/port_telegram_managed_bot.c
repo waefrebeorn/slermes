@@ -14,6 +14,7 @@
  * The env lookup is a parameter because a C body should not own os.environ.
  */
 
+#include "port_telegram_managed_bot.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -39,7 +40,7 @@
  *  `env_value` stands in for os.environ.get. Caller frees.
  * =========================================================================== */
 
-/* PoP: _api_url @ hermes_cli/telegram_managed_bot.py:_api_url */
+/* PoP: tg_api_url @ hermes_cli/telegram_managed_bot.py:_api_url */
 char *tg_api_url(const char *api_url, const char *env_value)
 {
     const char *chosen = (api_url && api_url[0]) ? api_url
@@ -102,7 +103,7 @@ int tg_is_valid_bot_token(const char *token)
  *  Returns the parsed id, or 0 for None.
  * =========================================================================== */
 
-/* PoP: _parse_owner_user_id @ hermes_cli/telegram_managed_bot.py:_parse_owner_user_id */
+/* PoP: tg_parse_owner_user_id @ hermes_cli/telegram_managed_bot.py:_parse_owner_user_id */
 long long tg_parse_owner_user_id(int kind, long long int_val, const char *str_val)
 {
     switch (kind) {

@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_SKILLS_SYNC_H
-#define SLERMES_PORT_SKILLS_SYNC_H
+#ifndef PORT_SKILLS_SYNC_H
+#define PORT_SKILLS_SYNC_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -27,4 +27,4 @@ json_t *discover_bundled_skills(const char *bundled_dir);
 char *compute_relative_dest(const char *skill_dir, const char *bundled_dir);
 char *safe_rel_install_path(const char *path, const char *base);
 
-#endif /* SLERMES_PORT_SKILLS_SYNC_H */
+#endif /* PORT_SKILLS_SYNC_H */

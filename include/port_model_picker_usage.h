@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_MODEL_PICKER_USAGE_H
-#define SLERMES_PORT_MODEL_PICKER_USAGE_H
+#ifndef PORT_MODEL_PICKER_USAGE_H
+#define PORT_MODEL_PICKER_USAGE_H
 
 #include <hermes_json.h>
 #include <stddef.h>
@@ -39,4 +39,4 @@ void mpu_capitalize(const char *text, char *out, size_t outsz);
 /* _get(obj, name, default): dict lookup, else attribute, else default. */
 json_t *mpu_obj_get(json_t *obj, const char *name, json_t *dflt);
 
-#endif /* SLERMES_PORT_MODEL_PICKER_USAGE_H */
+#endif /* PORT_MODEL_PICKER_USAGE_H */

@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_WEB_COMMON_H
-#define SLERMES_PORT_WEB_COMMON_H
+#ifndef PORT_WEB_COMMON_H
+#define PORT_WEB_COMMON_H
 
 #include <hermes_json.h>
 
@@ -44,4 +44,4 @@ json_t *webc_keyless_variant_schema(const char *display, const char *key_env,
                                     const char *key_url, const char *free_tag,
                                     const char *paid_tag);
 
-#endif /* SLERMES_PORT_WEB_COMMON_H */
+#endif /* PORT_WEB_COMMON_H */

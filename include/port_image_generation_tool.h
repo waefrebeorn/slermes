@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_IMAGE_GENERATION_TOOL_H
-#define SLERMES_PORT_IMAGE_GENERATION_TOOL_H
+#ifndef PORT_IMAGE_GENERATION_TOOL_H
+#define PORT_IMAGE_GENERATION_TOOL_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -18,4 +18,4 @@ json_t *image_gen_resolve_fal_model(void);
 json_t *image_gen_build_fal_payload(const char *model_id, const char *prompt, const char *aspect_ratio, int seed, json_t *overrides);
 json_t *image_gen_upscale_image(const char *image_url, const char *original_prompt);
 
-#endif /* SLERMES_PORT_IMAGE_GENERATION_TOOL_H */
+#endif /* PORT_IMAGE_GENERATION_TOOL_H */

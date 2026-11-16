@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_TOOLS_BROWSER_CDP_TOOL_H
-#define SLERMES_PORT_TOOLS_BROWSER_CDP_TOOL_H
+#ifndef PORT_TOOLS_BROWSER_CDP_TOOL_H
+#define PORT_TOOLS_BROWSER_CDP_TOOL_H
 
 #include <stddef.h>
 
@@ -25,4 +25,4 @@ char *browser_cdp_tool__cdp_call(const char *ws_url, const char *method,
                                   const char *params, const char *target_id,
                                   double timeout);
 
-#endif /* SLERMES_PORT_TOOLS_BROWSER_CDP_TOOL_H */
+#endif /* PORT_TOOLS_BROWSER_CDP_TOOL_H */

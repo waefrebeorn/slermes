@@ -13,6 +13,7 @@
  * The network call stays in Python; a C body would have to invent it.
  */
 
+#include "port_dingtalk_auth.h"
 #include "hermes_json.h"
 
 #include <stdio.h>

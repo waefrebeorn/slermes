@@ -16,6 +16,7 @@
  *   sub_uses_gateway      <- nous_subscription.py:_uses_gateway
  */
 
+#include "port_nous_subscription.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -60,7 +61,7 @@ static char *sub_norm_json(const char *value)
     return sub_norm_str(value, "");
 }
 
-/* PoP: _norm @ hermes_cli/nous_subscription.py:_norm */
+/* PoP: sub_norm @ hermes_cli/nous_subscription.py:_norm */
 char *sub_norm(const json_t *value, const char *fallback)
 {
     const char *raw = NULL;
@@ -116,7 +117,7 @@ const json_t *sub_section(const json_t *config, const char *key, json_t **create
  *  owned by config - caller frees nothing.
  * =========================================================================== */
 
-/* PoP: _ensure_section @ hermes_cli/nous_subscription.py:_ensure_section */
+/* PoP: sub_ensure_section @ hermes_cli/nous_subscription.py:_ensure_section */
 json_t *sub_ensure_section(json_t *config, const char *key)
 {
     if (!config || config->type != JSON_OBJECT) return NULL;
@@ -134,7 +135,7 @@ json_t *sub_ensure_section(json_t *config, const char *key)
  *      _norm(_section(config, "model").get("provider")) == "nous"
  * =========================================================================== */
 
-/* PoP: _provider_is_nous @ hermes_cli/nous_subscription.py:_provider_is_nous */
+/* PoP: sub_provider_is_nous @ hermes_cli/nous_subscription.py:_provider_is_nous */
 int sub_provider_is_nous(const json_t *config)
 {
     json_t *created = NULL;
@@ -161,7 +162,7 @@ int sub_provider_is_nous(const json_t *config)
  *  likewise. Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _audio_provider @ hermes_cli/nous_subscription.py:_audio_provider */
+/* PoP: sub_audio_provider @ hermes_cli/nous_subscription.py:_audio_provider */
 char *sub_audio_provider(const json_t *cfg, const char *fallback, int gw)
 {
     const char *provider = NULL;
@@ -194,7 +195,7 @@ char *sub_audio_provider(const json_t *cfg, const char *fallback, int gw)
  *  (true/yes/on/1). `section` being a non-object is simply False.
  * =========================================================================== */
 
-/* PoP: _uses_gateway @ hermes_cli/nous_subscription.py:_uses_gateway */
+/* PoP: sub_uses_gateway @ hermes_cli/nous_subscription.py:_uses_gateway */
 int sub_uses_gateway(const json_t *section)
 {
     if (!section || section->type != JSON_OBJECT) return 0;

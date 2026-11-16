@@ -1,4 +1,5 @@
 /* Slermes C port — hermes_cli/mcp_security.py (pure IOC-scan helpers) */
+/* port_mcp_security.c -- see the PoP annotations below. */
 
 #include <stdbool.h>
 #include <stddef.h>

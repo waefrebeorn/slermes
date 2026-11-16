@@ -92,7 +92,7 @@ static char *hrc_join(const char **items, int n)
  *  value; `err` receives the message. Returns 0 / -1.
  * =========================================================================== */
 
-/* PoP: identifier @ gateway/hosted_rooms_common.py:identifier */
+/* PoP: hrc_identifier @ gateway/hosted_rooms_common.py:identifier */
 int hrc_identifier(int kind, const char *value, const char *label,
                    int max_chars, int use_pattern,
                    const char *invalid_msg, char **out, char **err)
@@ -161,7 +161,7 @@ static int hrc_cmp_str(const void *a, const void *b)
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
 
-/* PoP: exact_fields @ gateway/hosted_rooms_common.py:exact_fields */
+/* PoP: hrc_exact_fields @ gateway/hosted_rooms_common.py:exact_fields */
 int hrc_exact_fields(const char *const *keys, int nkeys,
                      const char *const *required, int nrequired,
                      const char *const *optional, int noptional,
@@ -215,7 +215,7 @@ int hrc_exact_fields(const char *const *keys, int nkeys,
  *  check runs on the STRIPPED one.
  * =========================================================================== */
 
-/* PoP: text @ gateway/hosted_rooms_common.py:text */
+/* PoP: hrc_text @ gateway/hosted_rooms_common.py:text */
 int hrc_text(int kind, const char *value, const char *label,
              int max_bytes, int strip, char **out, char **err)
 {
@@ -267,7 +267,7 @@ static int hrc_cmp_kv(const void *a, const void *b)
     return strcmp(ka->key, kb->key);
 }
 
-/* PoP: compact_json @ gateway/hosted_rooms_common.py:compact_json */
+/* PoP: hrc_compact_json @ gateway/hosted_rooms_common.py:compact_json */
 char *hrc_compact_json(const json_t *value)
 {
     if (!value) return NULL;
@@ -372,7 +372,7 @@ char *hrc_compact_json(const json_t *value)
  *  part's bytes (identical result).
  * =========================================================================== */
 
-/* PoP: utf8_len @ gateway/hosted_rooms_common.py:utf8_len */
+/* PoP: hrc_utf8_len @ gateway/hosted_rooms_common.py:utf8_len */
 size_t hrc_utf8_len(const char *const *parts, int nparts)
 {
     size_t total = 0;

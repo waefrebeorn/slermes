@@ -124,7 +124,7 @@ static char *ml_unquote(const char *v, size_t n)
     return ml_strndup(v, n);
 }
 
-/* PoP: _content_disposition_filename @ gateway/relay/media.py:_content_disposition_filename */
+/* PoP: ml_content_disposition_filename @ gateway/relay/media.py:_content_disposition_filename */
 char *ml_content_disposition_filename(const char *header)
 {
     const char *s = header ? header : "";

@@ -35,7 +35,7 @@
  *  "C:/hermes" matches "C:/hermes/bin" but not "C:/hermes2". Caller frees.
  * =========================================================================== */
 
-/* PoP: _lower_dir_prefix @ hermes_cli/update_cmd_windows.py:_lower_dir_prefix */
+/* PoP: uw_lower_dir_prefix @ hermes_cli/update_cmd_windows.py:_lower_dir_prefix */
 char *uw_lower_dir_prefix(const char *path, const char *resolved)
 {
     const char *raw = (resolved && resolved[0]) ? resolved : (path ? path : "");
@@ -62,7 +62,7 @@ char *uw_lower_dir_prefix(const char *path, const char *resolved)
  *  path, which yields a bare separator). Caller frees.
  * =========================================================================== */
 
-/* PoP: _cwd_prefix @ hermes_cli/update_cmd_windows.py:_cwd_prefix */
+/* PoP: uw_cwd_prefix @ hermes_cli/update_cmd_windows.py:_cwd_prefix */
 char *uw_cwd_prefix(const char *cwd)
 {
     if (!cwd) return strdup("\\");   /* the except path */
@@ -217,7 +217,7 @@ char *uw_gateway_subcommand(const char *command)
  *  refuse to stop a process it does not own.
  * =========================================================================== */
 
-/* PoP: _is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
+/* PoP: uw_is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
 int uw_is_pausable_gateway(const char *cmdline)
 {
     char *sub = uw_gateway_subcommand(cmdline);

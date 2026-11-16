@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_FILE_OPERATIONS_H
-#define SLERMES_PORT_FILE_OPERATIONS_H
+#ifndef PORT_FILE_OPERATIONS_H
+#define PORT_FILE_OPERATIONS_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -18,4 +18,4 @@ char *file_ops_normalize_line_endings(const char *text, const char *target);
 char *file_ops_strip_bom(const char *text);
 bool file_ops_has_bom(const char *text);
 
-#endif /* SLERMES_PORT_FILE_OPERATIONS_H */
+#endif /* PORT_FILE_OPERATIONS_H */

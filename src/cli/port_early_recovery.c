@@ -35,7 +35,7 @@
  *  "abc...def\n" does not match and neither does a 41-char id.
  * =========================================================================== */
 
-/* PoP: is_object_id @ hermes_cli/_early_recovery.py:is_object_id */
+/* PoP: er_is_object_id @ hermes_cli/_early_recovery.py:is_object_id */
 int er_is_object_id(const char *value)
 {
     const char *s = (value && value[0]) ? value : "";
@@ -61,7 +61,7 @@ int er_is_object_id(const char *value)
  *  the read; when `.git` is a directory both are ignored. Caller frees.
  * =========================================================================== */
 
-/* PoP: _git_dir @ hermes_cli/_early_recovery.py:_git_dir */
+/* PoP: er_git_dir @ hermes_cli/_early_recovery.py:_git_dir */
 char *er_git_dir(const char *root, int dot_git_is_file, const char *dot_git_text)
 {
     size_t cap = strlen(root) + 16;
@@ -107,7 +107,7 @@ char *er_git_dir(const char *root, int dot_git_is_file, const char *dot_git_text
  *  `dot_git_is_file` / `dot_git_text` stand in for the `.git` stat and read.
  * =========================================================================== */
 
-/* PoP: recovery_closure_dir @ hermes_cli/_early_recovery.py:recovery_closure_dir */
+/* PoP: er_recovery_closure_dir @ hermes_cli/_early_recovery.py:recovery_closure_dir */
 char *er_recovery_closure_dir(const char *root, const char *pre,
                               int dot_git_is_file, const char *dot_git_text,
                               char **err)

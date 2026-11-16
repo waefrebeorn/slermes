@@ -35,7 +35,7 @@
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: human_gb @ hermes_cli/web_routers/local_models.py:human_gb */
+/* PoP: lm_human_gb @ hermes_cli/web_routers/local_models.py:human_gb */
 char *lm_human_gb(double n)
 {
     char *out = (char *)malloc(32);
@@ -52,7 +52,7 @@ char *lm_human_gb(double n)
  *  INTEGER division (//), so 2047 -> "1K", not "2K". Caller frees.
  * =========================================================================== */
 
-/* PoP: _k_label @ hermes_cli/web_routers/local_models.py:_k_label */
+/* PoP: lm_k_label @ hermes_cli/web_routers/local_models.py:_k_label */
 char *lm_k_label(long long tokens)
 {
     char *out = (char *)malloc(24);
@@ -82,7 +82,7 @@ char *lm_k_label(long long tokens)
  *  `out_rate` / `out_eta` receive the results; `out_eta` is set to -1 for None.
  * =========================================================================== */
 
-/* PoP: _rate_and_eta @ hermes_cli/web_routers/local_models.py:_rate_and_eta */
+/* PoP: lm_rate_and_eta @ hermes_cli/web_routers/local_models.py:_rate_and_eta */
 void lm_rate_and_eta(const double *samples, int nsamples,
                      long long done, long long total,
                      int *have_rate, double *out_rate,

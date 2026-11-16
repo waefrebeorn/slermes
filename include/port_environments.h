@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_PM_ENVIRONMENTS_H
-#define SLERMES_PORT_PM_ENVIRONMENTS_H
+#ifndef PORT_ENVIRONMENTS_H
+#define PORT_ENVIRONMENTS_H
 
 #include <stddef.h>
 
@@ -41,4 +41,4 @@ void pm_venv_bin_dir(const char *venv, int windows, char *out, size_t outsz);
 /* PoP: venv_python @ pm/environments.py:venv_python */
 void pm_venv_python(const char *venv, int windows, char *out, size_t outsz);
 
-#endif /* SLERMES_PORT_PM_ENVIRONMENTS_H */
+#endif /* PORT_ENVIRONMENTS_H */

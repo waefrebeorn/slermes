@@ -1,6 +1,6 @@
 /* port_config.h -- pure helpers ported from hermes_cli/config.py. */
-#ifndef SLERMES_PORT_CONFIG_H
-#define SLERMES_PORT_CONFIG_H
+#ifndef PORT_CONFIG_H
+#define PORT_CONFIG_H
 
 #include <stddef.h>
 
@@ -42,4 +42,4 @@ void ac_validate_entry_list(json_t *issues, json_t *entries, const char *label,
 void ac_validate_custom_providers(json_t *issues, json_t *cp);
 void ac_validate_fallback_model(json_t *issues, json_t *fb);
 
-#endif /* SLERMES_PORT_CONFIG_H */
+#endif /* PORT_CONFIG_H */

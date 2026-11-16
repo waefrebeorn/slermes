@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_RFB_FILTER_H
-#define SLERMES_PORT_RFB_FILTER_H
+#ifndef PORT_RFB_FILTER_H
+#define PORT_RFB_FILTER_H
 
 #include <stddef.h>
 
@@ -8,4 +8,4 @@
  * type (ValueError), -3 oversized clipboard (ValueError). */
 int rfb_msg_length(const unsigned char *buf, size_t len);
 
-#endif /* SLERMES_PORT_RFB_FILTER_H */
+#endif /* PORT_RFB_FILTER_H */

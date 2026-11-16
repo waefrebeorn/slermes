@@ -58,7 +58,7 @@ char *sb_bundle_key(const char *name)
  *  case. Caller frees.
  * =========================================================================== */
 
-/* PoP: bundle_path_for @ agent/skill_bundles.py:bundle_path_for */
+/* PoP: sb_bundle_path_for @ agent/skill_bundles.py:bundle_path_for */
 char *sb_bundle_path_for(const char *name, const char *dir, int *err)
 {
     if (err) *err = 0;
@@ -107,7 +107,7 @@ static int sb_cmp_entry(const void *a, const void *b)
     return strcmp(ea[1], eb[1]);
 }
 
-/* PoP: _bundles_sig @ agent/skill_bundles.py:_bundles_sig */
+/* PoP: sb_bundles_sig @ agent/skill_bundles.py:_bundles_sig */
 void sb_bundles_sig(const char *const *paths, const char *const *contents,
                     char ***out_paths, char ***out_digests, int *out_count)
 {

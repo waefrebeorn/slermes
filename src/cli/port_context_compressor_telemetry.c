@@ -87,7 +87,7 @@ long long cct_safe_int(const char *value_json, int *is_none)
         else json_set((obj), (key), json_number((double)_v));               \
     } while (0)
 
-/* PoP: _begin_compression_telemetry @ agent/context_compressor_telemetry.py:_begin_compression_telemetry */
+/* PoP: cct_begin_compression_telemetry @ agent/context_compressor_telemetry.py:_begin_compression_telemetry */
 char *cct_begin_compression_telemetry(
     const char *current_tokens, const char *attempt_id, const char *session_id,
     const char *trigger_source, const char *provider, const char *model,

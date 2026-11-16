@@ -50,7 +50,7 @@
  *  Returns 0 / -1; *out receives the value.
  * =========================================================================== */
 
-/* PoP: bounded_int @ gateway/hosted_rooms_common.py:bounded_int */
+/* PoP: hr_bounded_int @ gateway/hosted_rooms_common.py:bounded_int */
 int hr_bounded_int(int kind, long long ival, const char *message,
                    long long low, int has_high, long long high,
                    long long *out, char **err)
@@ -79,7 +79,7 @@ int hr_bounded_int(int kind, long long ival, const char *message,
  *  here, so only the byte bound is enforced. Returns 0 / -1.
  * =========================================================================== */
 
-/* PoP: canonical_json @ gateway/hosted_rooms_common.py:canonical_json */
+/* PoP: hr_canonical_json @ gateway/hosted_rooms_common.py:canonical_json */
 int hr_canonical_json(const json_t *value, const char *label, int max_bytes,
                       char **out, char **err)
 {
@@ -112,7 +112,7 @@ int hr_canonical_json(const json_t *value, const char *label, int max_bytes,
  *  order given. Caller frees the array and its strings.
  * =========================================================================== */
 
-/* PoP: _claim_values @ gateway/hosted_rooms.py:_claim_values */
+/* PoP: hr_claim_values @ gateway/hosted_rooms.py:_claim_values */
 char **hr_claim_values(const char *const *claims, const char *const *keys,
                        int nkeys, int *out_count)
 {
@@ -188,7 +188,7 @@ char *hr_grant_scope_key(const char *const *claims, char **err)
  *          or (row_epoch == epoch and str(row["authority_gateway_id"]) != gateway_id)
  * =========================================================================== */
 
-/* PoP: _reservation_superseded @ gateway/hosted_rooms.py:_reservation_superseded */
+/* PoP: hr_reservation_superseded @ gateway/hosted_rooms.py:_reservation_superseded */
 int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
                               const char *gateway_id, long long epoch)
 {
@@ -206,7 +206,7 @@ int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
  *  Caller frees the array and its strings.
  * =========================================================================== */
 
-/* PoP: remote_run_identity @ gateway/hosted_rooms.py:remote_run_identity */
+/* PoP: hr_remote_run_identity @ gateway/hosted_rooms.py:remote_run_identity */
 char **hr_remote_run_identity(const char *const *record,
                               const char *const *columns, int ncols,
                               int *out_count, char **err)
@@ -248,7 +248,7 @@ char **hr_remote_run_identity(const char *const *record,
  *  the "not an object" case. *out_json receives the canonical JSON.
  * =========================================================================== */
 
-/* PoP: validate_members @ gateway/hosted_rooms.py:validate_members */
+/* PoP: hr_validate_members @ gateway/hosted_rooms.py:validate_members */
 int hr_validate_members(json_t **members, int n, char **out_json, char **err)
 {
     if (out_json) *out_json = NULL;
@@ -287,7 +287,7 @@ int hr_validate_members(json_t **members, int n, char **out_json, char **err)
  *  stripped, shape-checked value. Caller frees.
  * =========================================================================== */
 
-/* PoP: user_event_id @ gateway/hosted_rooms.py:user_event_id */
+/* PoP: hr_user_event_id @ gateway/hosted_rooms.py:user_event_id */
 char *hr_user_event_id(const char *client_event_id, char **err)
 {
     if (err) *err = NULL;

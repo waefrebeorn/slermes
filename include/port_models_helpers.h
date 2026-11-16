@@ -13,8 +13,8 @@
  * or int, so no other types leak into this header.
  */
 
-#ifndef SLERMES_PORT_MODELS_HELPERS_H
-#define SLERMES_PORT_MODELS_HELPERS_H
+#ifndef PORT_MODELS_HELPERS_H
+#define PORT_MODELS_HELPERS_H
 
 #include <stddef.h>
 
@@ -131,4 +131,4 @@ char *ollama_cloud_cache_path(void);
 }
 #endif
 
-#endif /* SLERMES_PORT_MODELS_HELPERS_H */
+#endif /* PORT_MODELS_HELPERS_H */

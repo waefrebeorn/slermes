@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_VERSION_INFO_H
-#define SLERMES_PORT_VERSION_INFO_H
+#ifndef PORT_VERSION_INFO_H
+#define PORT_VERSION_INFO_H
 
 #include <stddef.h>
 
@@ -29,4 +29,4 @@ void version_display(const char *base_version, const char *derived_version,
 void version_user_agent(const char *product, const char *base_version,
                         char *out, size_t outsz);
 
-#endif /* SLERMES_PORT_VERSION_INFO_H */
+#endif /* PORT_VERSION_INFO_H */

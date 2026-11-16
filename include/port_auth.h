@@ -1,6 +1,6 @@
 /* port_auth.h -- pure helpers ported from hermes_cli/auth.py. */
-#ifndef SLERMES_PORT_AUTH_H
-#define SLERMES_PORT_AUTH_H
+#ifndef PORT_AUTH_H
+#define PORT_AUTH_H
 
 #include <stddef.h>
 
@@ -74,4 +74,4 @@ char *st_merge_pool_row_generation(json_t *entry, json_t *disk,
                                                          const char *),
                                    char *out, size_t cap);
 
-#endif /* SLERMES_PORT_AUTH_H */
+#endif /* PORT_AUTH_H */

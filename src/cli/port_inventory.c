@@ -19,6 +19,7 @@
  *   inv_with_overrides     <- inventory.py:ConfigContext.with_overrides
  */
 
+#include "port_inventory.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -192,7 +193,7 @@ char *inv_slug(const json_t *row)
  *  it owns); the source rows are untouched.
  * =========================================================================== */
 
-/* PoP: _without_slug @ hermes_cli/inventory.py:_without_slug */
+/* PoP: inv_without_slug @ hermes_cli/inventory.py:_without_slug */
 json_t *inv_without_slug(const json_t *rows, const char *slug)
 {
     json_t *out = json_array();
@@ -221,7 +222,7 @@ json_t *inv_without_slug(const json_t *rows, const char *slug)
  *  because the caller overrides it for user-defined rows. Returns a NEW object.
  * =========================================================================== */
 
-/* PoP: _row @ hermes_cli/inventory.py:_row */
+/* PoP: inv_row @ hermes_cli/inventory.py:_row */
 json_t *inv_row(const char *slug, const char *name, int is_current)
 {
     json_t *row = json_object();
@@ -243,7 +244,7 @@ json_t *inv_row(const char *slug, const char *name, int is_current)
  *  Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _iso_from_epoch @ hermes_cli/inventory.py:_iso_from_epoch */
+/* PoP: inv_iso_from_epoch @ hermes_cli/inventory.py:_iso_from_epoch */
 char *inv_iso_from_epoch(double epoch)
 {
     time_t secs = (time_t)epoch;
@@ -286,7 +287,7 @@ char *inv_iso_from_epoch(double epoch)
  *  overrides", which the Python side expresses by returning self.
  * =========================================================================== */
 
-/* PoP: with_overrides @ hermes_cli/inventory.py:ConfigContext.with_overrides */
+/* PoP: inv_with_overrides @ hermes_cli/inventory.py:ConfigContext.with_overrides */
 json_t *inv_with_overrides(const json_t *ctx,
                            const char *current_provider,
                            const char *current_model,

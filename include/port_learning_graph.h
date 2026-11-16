@@ -10,8 +10,8 @@
  * Opaque JSON strings are used at the module boundary (callers pass/recv
  * malloc'd JSON); no god-header — only what consumers need.
  */
-#ifndef HERMES_PORT_LEARNING_GRAPH_H
-#define HERMES_PORT_LEARNING_GRAPH_H
+#ifndef PORT_LEARNING_GRAPH_H
+#define PORT_LEARNING_GRAPH_H
 
 #include <stddef.h>
 
@@ -54,4 +54,4 @@ char *learning_graph_skill_roots(const char *hermes_home, const char *repo_skill
 /* Full desktop learning-graph payload (nodes/edges/clusters/memory/stats). */
 char *learning_graph_build(const char *hermes_home, const char *repo_skills_dir);
 
-#endif /* HERMES_PORT_LEARNING_GRAPH_H */
+#endif /* PORT_LEARNING_GRAPH_H */

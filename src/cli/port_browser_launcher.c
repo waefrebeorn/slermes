@@ -43,7 +43,7 @@ static const char *const BL_BYPASS_ARGS[] = { "--no-sandbox", "--disable-dev-shm
  *  `env` is a flat [key, value, ...] array; a missing or empty value is falsy.
  * =========================================================================== */
 
-/* PoP: _has_display @ tools/browser_launcher.py:_has_display */
+/* PoP: bl_has_display @ tools/browser_launcher.py:_has_display */
 int bl_has_display(const char *const *env)
 {
     for (int i = 0; env && env[i]; i += 2) {

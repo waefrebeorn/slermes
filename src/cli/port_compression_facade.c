@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: _warn_commit_overrun @ agent/compression_facade.py:_warn_commit_overrun */
+/* PoP: cf_warn_commit_overrun @ agent/compression_facade.py:_warn_commit_overrun */
 char *cf_warn_commit_overrun(double waited, double ceiling)
 {
     char num[64];

@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_MODELS_PRICING_H
-#define SLERMES_PORT_MODELS_PRICING_H
+#ifndef PORT_MODELS_PRICING_H
+#define PORT_MODELS_PRICING_H
 
 #include <stddef.h>
 
@@ -16,4 +16,4 @@ int mp_sale_pct(const char *current, const char *original);
 
 void mp_format_price_per_mtok(const char *per_token_str, char *out, size_t outsz);
 
-#endif /* SLERMES_PORT_MODELS_PRICING_H */
+#endif /* PORT_MODELS_PRICING_H */

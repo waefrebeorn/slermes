@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_SEND_MESSAGE_TOOL_H
-#define SLERMES_PORT_SEND_MESSAGE_TOOL_H
+#ifndef PORT_SEND_MESSAGE_TOOL_H
+#define PORT_SEND_MESSAGE_TOOL_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -18,4 +18,4 @@ char *send_message_display_chat_id(const char *platform_name, const char *chat_i
 double send_message_telegram_retry_delay(const char *error_text, int attempt);
 int send_message_parse_target_ref(const char *platform_name, const char *target_ref, char *chat_id_out, size_t chat_id_size, char *thread_id_out, size_t thread_id_size);
 
-#endif /* SLERMES_PORT_SEND_MESSAGE_TOOL_H */
+#endif /* PORT_SEND_MESSAGE_TOOL_H */

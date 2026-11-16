@@ -120,7 +120,7 @@ const char *smc_bucket(double value, const smc_threshold_t *thresholds, size_t n
  *  isinstance(value, bool) guard must run FIRST). Returns 1 when `out` is set.
  * =========================================================================== */
 
-/* PoP: _non_negative_number @ hermes_cli/observability/shared_metrics_contract.py:_non_negative_number */
+/* PoP: smc_non_negative_number @ hermes_cli/observability/shared_metrics_contract.py:_non_negative_number */
 int smc_non_negative_number(int kind, long long ival, double dval, double *out)
 {
     double number;
@@ -138,14 +138,14 @@ int smc_non_negative_number(int kind, long long ival, double dval, double *out)
  *  The ten public bucket functions.
  * =========================================================================== */
 
-/* PoP: long_size_bucket @ hermes_cli/observability/shared_metrics_contract.py:long_size_bucket */
+/* PoP: smc_long_size_bucket @ hermes_cli/observability/shared_metrics_contract.py:long_size_bucket */
 const char *smc_long_size_bucket(long long count)
 {
     double v = (double)(count > 0 ? count : 0);
     return smc_bucket(v, long_size_thr, LONG_SIZE_N, "gte_1001");
 }
 
-/* PoP: update_duration_bucket @ hermes_cli/observability/shared_metrics_contract.py:update_duration_bucket */
+/* PoP: smc_update_duration_bucket @ hermes_cli/observability/shared_metrics_contract.py:update_duration_bucket */
 const char *smc_update_duration_bucket(int kind, long long ival, double dval)
 {
     double value;
@@ -154,7 +154,7 @@ const char *smc_update_duration_bucket(int kind, long long ival, double dval)
     return smc_bucket(value, update_dur_thr, UPDATE_DUR_N, "gte_15m");
 }
 
-/* PoP: version_age_bucket @ hermes_cli/observability/shared_metrics_contract.py:version_age_bucket */
+/* PoP: smc_version_age_bucket @ hermes_cli/observability/shared_metrics_contract.py:version_age_bucket */
 const char *smc_version_age_bucket(int kind, long long ival, double dval)
 {
     double value;
@@ -163,7 +163,7 @@ const char *smc_version_age_bucket(int kind, long long ival, double dval)
     return smc_bucket(value, version_age_thr, VERSION_AGE_N, "gte_90d");
 }
 
-/* PoP: desktop_active_minutes_bucket @ hermes_cli/observability/shared_metrics_contract.py:desktop_active_minutes_bucket */
+/* PoP: smc_desktop_active_minutes_bucket @ hermes_cli/observability/shared_metrics_contract.py:desktop_active_minutes_bucket */
 const char *smc_desktop_active_minutes_bucket(int kind, long long ival, double dval)
 {
     double value;
@@ -179,14 +179,14 @@ const char *smc_duration_bucket(long long duration_ms)
     return smc_bucket(v, duration_thr, DURATION_N, "gte_10m");
 }
 
-/* PoP: count_bucket @ hermes_cli/observability/shared_metrics_contract.py:count_bucket */
+/* PoP: smc_count_bucket @ hermes_cli/observability/shared_metrics_contract.py:count_bucket */
 const char *smc_count_bucket(long long count)
 {
     double v = (double)(count > 0 ? count : 0);
     return smc_bucket(v, count_thr, COUNT_N, "gte_11");
 }
 
-/* PoP: tool_retry_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_retry_bucket */
+/* PoP: smc_tool_retry_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_retry_bucket */
 const char *smc_tool_retry_bucket(int kind, long long ival)
 {
     /* only explicit int retries; bool / non-int / negative -> unknown */
@@ -194,7 +194,7 @@ const char *smc_tool_retry_bucket(int kind, long long ival)
     return smc_count_bucket(ival);
 }
 
-/* PoP: tool_latency_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_latency_bucket */
+/* PoP: smc_tool_latency_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_latency_bucket */
 const char *smc_tool_latency_bucket(int kind, long long ival, double dval,
                                     int fb_kind, long long fb_ival, double fb_dval)
 {
@@ -223,7 +223,7 @@ const char *smc_size_bucket(long long count)
  *  `str(value or "")` means None / "" / 0 / false all become "".
  * =========================================================================== */
 
-/* PoP: _norm @ hermes_cli/observability/shared_metrics_contract.py:_norm */
+/* PoP: smc_norm @ hermes_cli/observability/shared_metrics_contract.py:_norm */
 char *smc_norm(const char *value)
 {
     if (!value) value = "";
@@ -255,7 +255,7 @@ static const char *const arch_aliases[][2] = {
 };
 #define ARCH_ALIASES_N (sizeof(arch_aliases) / sizeof(arch_aliases[0]))
 
-/* PoP: client_os_family @ hermes_cli/observability/shared_metrics_contract.py:client_os_family */
+/* PoP: smc_client_os_family @ hermes_cli/observability/shared_metrics_contract.py:client_os_family */
 const char *smc_client_os_family(const char *value)
 {
     char *n = smc_norm(value);
@@ -268,7 +268,7 @@ const char *smc_client_os_family(const char *value)
     return result;
 }
 
-/* PoP: client_architecture @ hermes_cli/observability/shared_metrics_contract.py:client_architecture */
+/* PoP: smc_client_architecture @ hermes_cli/observability/shared_metrics_contract.py:client_architecture */
 const char *smc_client_architecture(const char *value)
 {
     char *n = smc_norm(value);
@@ -432,7 +432,7 @@ static char *smc_strip_dup(const char *value)
  *  stays valid after the caller frees its own string.
  * =========================================================================== */
 
-/* PoP: _allowlisted @ hermes_cli/observability/shared_metrics_contract.py:_allowlisted */
+/* PoP: smc_allowlisted @ hermes_cli/observability/shared_metrics_contract.py:_allowlisted */
 const char *smc_allowlisted(const char *normalized, const char *const *allowed, size_t n)
 {
     if (normalized) {
@@ -450,7 +450,7 @@ const char *smc_allowlisted(const char *normalized, const char *const *allowed, 
  *      return _allowlisted("nixos" if normalized == "nix" else normalized, CLIENT_INSTALL_METHODS)
  * =========================================================================== */
 
-/* PoP: client_install_method @ hermes_cli/observability/shared_metrics_contract.py:client_install_method */
+/* PoP: smc_client_install_method @ hermes_cli/observability/shared_metrics_contract.py:client_install_method */
 const char *smc_client_install_method(const char *value)
 {
     char *n = smc_norm(value);
@@ -471,7 +471,7 @@ const char *smc_client_install_method(const char *value)
  *  `hermes_version` is stripped but NOT case-folded, unlike the other fields.
  * =========================================================================== */
 
-/* PoP: client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
+/* PoP: smc_client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
 json_t *smc_client_resource(const char *hermes_version, const char *os_name,
                             const char *architecture, const char *install_method)
 {
@@ -495,7 +495,7 @@ json_t *smc_client_resource(const char *hermes_version, const char *os_name,
  *      and os_family / architecture / install_method are in their taxonomies
  * =========================================================================== */
 
-/* PoP: client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
+/* PoP: smc_client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
 int smc_client_resource_is_valid(json_t *resource)
 {
     if (!resource || resource->type != JSON_OBJECT) return 0;
@@ -525,7 +525,7 @@ int smc_client_resource_is_valid(json_t *resource)
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: _metric_identifier @ hermes_cli/observability/shared_metrics_contract.py:_metric_identifier */
+/* PoP: smc_metric_identifier @ hermes_cli/observability/shared_metrics_contract.py:_metric_identifier */
 char *smc_metric_identifier(const char *value, size_t max_length)
 {
     if (!value) return strdup("unknown");       /* not isinstance(value, str) */
@@ -550,7 +550,7 @@ char *smc_metric_identifier(const char *value, size_t max_length)
  *      return _allowlisted(_norm(value), SKILL_PROVENANCES)
  * =========================================================================== */
 
-/* PoP: skill_provenance @ hermes_cli/observability/shared_metrics_contract.py:skill_provenance */
+/* PoP: smc_skill_provenance @ hermes_cli/observability/shared_metrics_contract.py:skill_provenance */
 const char *smc_skill_provenance(const char *value)
 {
     char *n = smc_norm(value);
@@ -680,7 +680,7 @@ static char *smc_kw_str(json_t *kwargs, const char *key)
  *      else "other"
  * =========================================================================== */
 
-/* PoP: tool_category @ hermes_cli/observability/shared_metrics_contract.py:tool_category */
+/* PoP: smc_tool_category @ hermes_cli/observability/shared_metrics_contract.py:tool_category */
 const char *smc_tool_category(json_t *kwargs)
 {
     char *tool_name = smc_kw_str(kwargs, "tool_name");
@@ -720,7 +720,7 @@ const char *smc_tool_category(json_t *kwargs)
  *      return _TOOL_STATUS_OUTCOMES.get(_norm(status), "unknown")
  * =========================================================================== */
 
-/* PoP: tool_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_outcome */
+/* PoP: smc_tool_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_outcome */
 const char *smc_tool_outcome(json_t *kwargs)
 {
     char *status = smc_kw_str(kwargs, "status");
@@ -743,7 +743,7 @@ const char *smc_tool_outcome(json_t *kwargs)
  *      return reason if reason in MODEL_ERROR_CLASSES - {"none"} else "unknown"
  * =========================================================================== */
 
-/* PoP: model_error_class @ hermes_cli/observability/shared_metrics_contract.py:model_error_class */
+/* PoP: smc_model_error_class @ hermes_cli/observability/shared_metrics_contract.py:model_error_class */
 const char *smc_model_error_class(json_t *kwargs)
 {
     char *reason = smc_kw_str(kwargs, "reason");

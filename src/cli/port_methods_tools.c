@@ -30,7 +30,7 @@
  *  default. `params` is a flat [key, value, ...] array; caller frees.
  * =========================================================================== */
 
-/* PoP: _str_arg @ tui_gateway/methods_tools.py:_str_arg */
+/* PoP: mt_str_arg @ tui_gateway/methods_tools.py:_str_arg */
 char *mt_str_arg(const char *const *params, const char *key)
 {
     const char *val = NULL;
@@ -62,7 +62,7 @@ char *mt_str_arg(const char *const *params, const char *key)
  *  wrong advice — say to wait instead. Caller frees.
  * =========================================================================== */
 
-/* PoP: busy_message @ tui_gateway/user_messages.py:busy_message */
+/* PoP: mt_busy_message @ tui_gateway/user_messages.py:busy_message */
 char *mt_busy_message(const char *command, int compressing)
 {
     /* command.lstrip('/') - strip LEADING slashes only */
@@ -182,7 +182,7 @@ int mt_plugin_error(const char *rid, const char *name,
  *  produced, 0 when the command may run.
  * =========================================================================== */
 
-/* PoP: _busy_error @ tui_gateway/methods_tools.py:_busy_error */
+/* PoP: mt_busy_error @ tui_gateway/methods_tools.py:_busy_error */
 int mt_busy_error(const char *rid, const char *const *session, const char *cmd,
                   char *out, size_t cap)
 {

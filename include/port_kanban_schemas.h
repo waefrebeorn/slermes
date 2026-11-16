@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_KANBAN_SCHEMAS_H
-#define SLERMES_PORT_KANBAN_SCHEMAS_H
+#ifndef PORT_KANBAN_SCHEMAS_H
+#define PORT_KANBAN_SCHEMAS_H
 
 #include "json.h"
 
@@ -13,4 +13,4 @@ json_t *kts_prop(const char *type_, const char *description);
 json_t *kts_schema(const char *name, const char *description,
                    const char *properties_json, const char *required_json);
 
-#endif /* SLERMES_PORT_KANBAN_SCHEMAS_H */
+#endif /* PORT_KANBAN_SCHEMAS_H */

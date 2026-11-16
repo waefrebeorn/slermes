@@ -150,4 +150,3 @@ char *pic_learned_image_token_cost(const char *model, const char *base_url,
     if (table) json_free(table);
     return out;
 }
-

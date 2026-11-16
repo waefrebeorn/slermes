@@ -34,7 +34,7 @@ static double py_round(double x)
     return fmod(f, 2.0) == 0.0 ? f : f + 1.0;
 }
 
-/* PoP: friendly_wait @ hermes_cli/anon_auth.py:friendly_wait */
+/* PoP: anon_friendly_wait @ hermes_cli/anon_auth.py:friendly_wait */
 void anon_friendly_wait(double seconds, char *out, size_t outsz)
 {
     if (!out || outsz == 0)
@@ -55,7 +55,7 @@ void anon_friendly_wait(double seconds, char *out, size_t outsz)
     }
 }
 
-/* PoP: is_guest_state @ hermes_cli/anon_auth.py:is_guest_state */
+/* PoP: anon_is_guest_state @ hermes_cli/anon_auth.py:is_guest_state */
 int anon_is_guest_state(json_t *state)
 {
     if (!json_is_object(state))
@@ -64,7 +64,7 @@ int anon_is_guest_state(json_t *state)
     return json_is_string(m) && strcmp(json_string_value(m), ANON_AUTH_METHOD) == 0;
 }
 
-/* PoP: welcome_hosts @ hermes_cli/anon_auth.py:welcome_hosts */
+/* PoP: anon_welcome_hosts @ hermes_cli/anon_auth.py:welcome_hosts */
 json_t *anon_welcome_hosts(void)
 {
     json_t *out = json_new_array();
@@ -141,7 +141,7 @@ static char *url_hostname(const char *base_url)
     return out;
 }
 
-/* PoP: route_is_welcome_host @ hermes_cli/anon_auth.py:route_is_welcome_host */
+/* PoP: anon_route_is_welcome_host @ hermes_cli/anon_auth.py:route_is_welcome_host */
 int anon_route_is_welcome_host(const char *base_url)
 {
     char *host = url_hostname(base_url);
@@ -166,7 +166,7 @@ int anon_route_is_welcome_host(const char *base_url)
     return found;
 }
 
-/* PoP: route_can_serve_model @ hermes_cli/anon_auth.py:route_can_serve_model */
+/* PoP: anon_route_can_serve_model @ hermes_cli/anon_auth.py:route_can_serve_model */
 int anon_route_can_serve_model(const char *provider, const char *base_url,
                                const char *model)
 {
@@ -176,7 +176,7 @@ int anon_route_can_serve_model(const char *provider, const char *base_url,
     return !model || !*model || strcmp(model, GUEST_MODEL) == 0;
 }
 
-/* PoP: pin_model_for_route @ hermes_cli/anon_auth.py:pin_model_for_route */
+/* PoP: anon_pin_model_for_route @ hermes_cli/anon_auth.py:pin_model_for_route */
 void anon_pin_model_for_route(const char *provider, const char *base_url,
                               const char *model, char *out, size_t outsz)
 {
@@ -190,7 +190,7 @@ void anon_pin_model_for_route(const char *provider, const char *base_url,
     snprintf(out, outsz, "%s", model ? model : "");
 }
 
-/* PoP: free_inference_active @ hermes_cli/anon_auth.py:free_inference_active */
+/* PoP: anon_free_inference_active @ hermes_cli/anon_auth.py:free_inference_active */
 int anon_free_inference_active(json_t *state, int guest_allowed)
 {
     if (!anon_is_guest_state(state) || !guest_allowed)
@@ -199,19 +199,19 @@ int anon_free_inference_active(json_t *state, int guest_allowed)
     return json_is_bool(flag) && json_bool_value(flag);
 }
 
-/* PoP: guest_without_free_tier @ hermes_cli/anon_auth.py:guest_without_free_tier */
+/* PoP: anon_guest_without_free_tier @ hermes_cli/anon_auth.py:guest_without_free_tier */
 int anon_guest_without_free_tier(json_t *state, int guest_allowed)
 {
     return anon_is_guest_state(state) && !anon_free_inference_active(state, guest_allowed);
 }
 
-/* PoP: has_free_tier_account @ hermes_cli/anon_auth.py:has_free_tier_account */
+/* PoP: anon_has_free_tier_account @ hermes_cli/anon_auth.py:has_free_tier_account */
 int anon_has_free_tier_account(json_t *state, int guest_allowed)
 {
     return anon_free_inference_active(state, guest_allowed);
 }
 
-/* PoP: trial_model @ hermes_cli/anon_auth.py:trial_model */
+/* PoP: anon_trial_model @ hermes_cli/anon_auth.py:trial_model */
 void anon_trial_model(json_t *state, int guest_allowed, char *out, size_t outsz)
 {
     if (!out || outsz == 0)

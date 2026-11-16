@@ -283,7 +283,7 @@ int gna_accepts_parameters_schema(const char *base_url)
  *  Error classification.
  * =========================================================================== */
 
-/* PoP: is_free_tier_quota_error @ agent/gemini_native_adapter.py:is_free_tier_quota_error */
+/* PoP: gna_is_free_tier_quota_error @ agent/gemini_native_adapter.py:is_free_tier_quota_error */
 int gna_is_free_tier_quota_error(const char *error_message)
 {
     if (!error_message || !error_message[0]) return 0;
@@ -326,7 +326,7 @@ int gna_is_standard_key_error(int status, const char *error_message,
  *  non-text item. Caller frees.
  * =========================================================================== */
 
-/* PoP: _coerce_content_to_text @ agent/gemini_native_adapter.py:_coerce_content_to_text */
+/* PoP: gna_coerce_content_to_text @ agent/gemini_native_adapter.py:_coerce_content_to_text */
 char *gna_coerce_content_to_text(const char *const *items)
 {
     if (!items) return strdup("");

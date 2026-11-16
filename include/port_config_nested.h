@@ -3,8 +3,8 @@
  * These operate on libjson's json_t DOM. Python dicts map to JSON_OBJECT and
  * Python lists to JSON_ARRAY, which is exactly the shape config.yaml parses to.
  */
-#ifndef SLERMES_PORT_CONFIG_NESTED_H
-#define SLERMES_PORT_CONFIG_NESTED_H
+#ifndef PORT_CONFIG_NESTED_H
+#define PORT_CONFIG_NESTED_H
 
 #include <stddef.h>
 
@@ -47,4 +47,4 @@ json_t *cfg_get_nested(json_t *root, const char *dotted_key);
  * Empty object containers left behind are dropped, as in the Python. */
 int cfg_unset_nested(json_t *root, const char *dotted_key);
 
-#endif /* SLERMES_PORT_CONFIG_NESTED_H */
+#endif /* PORT_CONFIG_NESTED_H */

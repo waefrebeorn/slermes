@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_BROWSER_TOOL_H
-#define SLERMES_PORT_BROWSER_TOOL_H
+#ifndef PORT_BROWSER_TOOL_H
+#define PORT_BROWSER_TOOL_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -125,4 +125,4 @@ void port_browser_tool_cleanup_single_browser_session(port_browser_tool_state_t 
 json_t *port_browser_tool_check_browser_requirements(port_browser_tool_state_t *state);
 json_t *port_browser_tool_check_browser_vision_requirements(port_browser_tool_state_t *state);
 
-#endif /* SLERMES_PORT_BROWSER_TOOL_H */
+#endif /* PORT_BROWSER_TOOL_H */

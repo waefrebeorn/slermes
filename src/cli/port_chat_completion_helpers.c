@@ -39,7 +39,7 @@
  *  Returns the code, or -1 for None.
  * =========================================================================== */
 
-/* PoP: _status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value */
+/* PoP: cch_status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value */
 int cch_status_code_from_value(int kind, long long ival, const char *sval)
 {
     if (kind == 1) {
@@ -98,7 +98,7 @@ int cch_status_code_from_value(int kind, long long ival, const char *sval)
  *  `payload` is a json_t object (or NULL for a non-dict).
  * =========================================================================== */
 
-/* PoP: _status_code_from_payload @ agent/chat_completion_helpers.py:_status_code_from_payload */
+/* PoP: cch_status_code_from_payload @ agent/chat_completion_helpers.py:_status_code_from_payload */
 int cch_status_code_from_payload(const json_t *payload)
 {
     if (!payload || payload->type != JSON_OBJECT) return -1;
@@ -146,7 +146,7 @@ int cch_status_code_from_payload(const json_t *payload)
  *  Caller frees the returned json_t.
  * =========================================================================== */
 
-/* PoP: _json_object_from_text @ agent/chat_completion_helpers.py:_json_object_from_text */
+/* PoP: cch_json_object_from_text @ agent/chat_completion_helpers.py:_json_object_from_text */
 json_t *cch_json_object_from_text(const char *text)
 {
     if (!text) return NULL;
@@ -172,7 +172,7 @@ json_t *cch_json_object_from_text(const char *text)
  *  an error_code, or a parseable status code.
  * =========================================================================== */
 
-/* PoP: _payload_has_error_shape @ agent/chat_completion_helpers.py:_payload_has_error_shape */
+/* PoP: cch_payload_has_error_shape @ agent/chat_completion_helpers.py:_payload_has_error_shape */
 int cch_payload_has_error_shape(const json_t *payload)
 {
     if (!payload || payload->type != JSON_OBJECT) return 0;
@@ -266,7 +266,7 @@ static void cch_sse_flush(json_t **events, int *n, const char *event,
     (*n)++;
 }
 
-/* PoP: _parse_provider_sse_events @ agent/chat_completion_helpers.py:_parse_provider_sse_events */
+/* PoP: cch_parse_provider_sse_events @ agent/chat_completion_helpers.py:_parse_provider_sse_events */
 json_t **cch_parse_provider_sse_events(const char *text, int *out_count)
 {
     json_t **events = (json_t **)calloc(64, sizeof(json_t *));

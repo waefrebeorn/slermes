@@ -112,7 +112,7 @@ static long acm_code(const char *code)
     return v;
 }
 
-/* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
+/* PoP: acm_display_source @ hermes_cli/auth_commands.py:_display_source */
 char *acm_display_source(const char *source)
 {
     const char *s = source ? source : "";

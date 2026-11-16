@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-/* PoP: session_owned @ gateway/session_connections.py:session_owned */
+/* PoP: sco_session_owned @ gateway/session_connections.py:session_owned */
 int sco_session_owned(const char *params_json)
 {
     json_t *params = params_json ? json_parse(params_json, NULL) : NULL;

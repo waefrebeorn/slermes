@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_HERMES_STATE_KEYS_H
-#define SLERMES_PORT_HERMES_STATE_KEYS_H
+#ifndef PORT_HERMES_STATE_KEYS_H
+#define PORT_HERMES_STATE_KEYS_H
 
 #include <hermes_json.h>
 #include <stddef.h>
@@ -40,4 +40,4 @@ int hsr_mutation_receipt_key(const char *principal_id, const char *session_id,
                              json_t *expected_generation, char **key_out,
                              char **digest_out);
 
-#endif /* SLERMES_PORT_HERMES_STATE_KEYS_H */
+#endif /* PORT_HERMES_STATE_KEYS_H */

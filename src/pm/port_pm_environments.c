@@ -33,7 +33,7 @@ static void path_join(const char *a, const char *b, char *out, size_t outsz)
         snprintf(out, outsz, "%s/%s", a ? a : "", b);
 }
 
-/* PoP: install_key @ pm/environments.py:install_key */
+/* PoP: pm_install_key @ pm/environments.py:install_key */
 void pm_install_key(const char *canonical_project_root, char *out,
                     size_t outsz)
 {
@@ -50,13 +50,13 @@ void pm_install_key(const char *canonical_project_root, char *out,
     free(hex);
 }
 
-/* PoP: installs_root @ pm/environments.py:installs_root */
+/* PoP: pm_installs_root @ pm/environments.py:installs_root */
 void pm_installs_root(const char *dependency_root, char *out, size_t outsz)
 {
     path_join(dependency_root, INSTALLS_DIR, out, outsz);
 }
 
-/* PoP: install_state_dir @ pm/environments.py:install_state_dir */
+/* PoP: pm_install_state_dir @ pm/environments.py:install_state_dir */
 void pm_install_state_dir(const char *canonical_project_root,
                           const char *dependency_root, char *out, size_t outsz)
 {
@@ -67,7 +67,7 @@ void pm_install_state_dir(const char *canonical_project_root,
     path_join(root, key, out, outsz);
 }
 
-/* PoP: runtime_facts_path @ pm/environments.py:runtime_facts_path */
+/* PoP: pm_runtime_facts_path @ pm/environments.py:runtime_facts_path */
 void pm_runtime_facts_path(const char *canonical_project_root,
                            const char *dependency_root, char *out,
                            size_t outsz)
@@ -78,7 +78,7 @@ void pm_runtime_facts_path(const char *canonical_project_root,
     path_join(state, FACTS_FILE, out, outsz);
 }
 
-/* PoP: activation_inputs_dir @ pm/environments.py:activation_inputs_dir */
+/* PoP: pm_activation_inputs_dir @ pm/environments.py:activation_inputs_dir */
 void pm_activation_inputs_dir(const char *canonical_project_root,
                               const char *dependency_root, char *out,
                               size_t outsz)
@@ -89,13 +89,13 @@ void pm_activation_inputs_dir(const char *canonical_project_root,
     path_join(state, INPUTS_DIR, out, outsz);
 }
 
-/* PoP: venv_bin_dir @ pm/environments.py:venv_bin_dir */
+/* PoP: pm_venv_bin_dir @ pm/environments.py:venv_bin_dir */
 void pm_venv_bin_dir(const char *venv, int windows, char *out, size_t outsz)
 {
     path_join(venv, windows ? WINDOWS_SCRIPTS : POSIX_BIN, out, outsz);
 }
 
-/* PoP: venv_python @ pm/environments.py:venv_python */
+/* PoP: pm_venv_python @ pm/environments.py:venv_python */
 void pm_venv_python(const char *venv, int windows, char *out, size_t outsz)
 {
     char bin[4096];

@@ -58,7 +58,7 @@ static int json_as_long(const json_t *v, long *out)
     return 0;
 }
 
-/* PoP: clamp_fraction @ hermes_cli/model_picker_usage.py:clamp_fraction */
+/* PoP: mpu_clamp_fraction @ hermes_cli/model_picker_usage.py:clamp_fraction */
 double mpu_clamp_fraction(double value)
 {
     if (value < 0.0)
@@ -66,7 +66,7 @@ double mpu_clamp_fraction(double value)
     return value < 1.0 ? value : 1.0;
 }
 
-/* PoP: gauge_style @ hermes_cli/model_picker_usage.py:gauge_style */
+/* PoP: mpu_gauge_style @ hermes_cli/model_picker_usage.py:gauge_style */
 const char *mpu_gauge_style(double left_fraction)
 {
     double left = mpu_clamp_fraction(left_fraction);
@@ -77,7 +77,7 @@ const char *mpu_gauge_style(double left_fraction)
     return "green";
 }
 
-/* PoP: _filled_cells @ hermes_cli/model_picker_usage.py:_filled_cells */
+/* PoP: mpu_filled_cells @ hermes_cli/model_picker_usage.py:_filled_cells */
 long mpu_filled_cells(double fraction, long width)
 {
     double value = mpu_clamp_fraction(fraction);
@@ -89,7 +89,7 @@ long mpu_filled_cells(double fraction, long width)
     return filled;
 }
 
-/* PoP: render_bar @ hermes_cli/model_picker_usage.py:render_bar */
+/* PoP: mpu_render_bar @ hermes_cli/model_picker_usage.py:render_bar */
 void mpu_render_bar(double fraction, long width, char *out, size_t outsz)
 {
     if (!out || outsz == 0)
@@ -110,7 +110,7 @@ void mpu_render_bar(double fraction, long width, char *out, size_t outsz)
     out[p] = '\0';
 }
 
-/* PoP: format_percent_used @ hermes_cli/model_picker_usage.py:format_percent_used */
+/* PoP: mpu_format_percent_used @ hermes_cli/model_picker_usage.py:format_percent_used */
 void mpu_format_percent_used(double used_fraction, char *out, size_t outsz)
 {
     if (!out || outsz == 0)
@@ -124,7 +124,7 @@ void mpu_format_percent_used(double used_fraction, char *out, size_t outsz)
         snprintf(out, outsz, "%ld%%", bp / 100);
 }
 
-/* PoP: compact_duration @ hermes_cli/model_picker_usage.py:compact_duration */
+/* PoP: mpu_compact_duration @ hermes_cli/model_picker_usage.py:compact_duration */
 void mpu_compact_duration(json_t *resets_at_ms, json_t *now_ms, char *out,
                           size_t outsz)
 {
@@ -156,7 +156,7 @@ void mpu_compact_duration(json_t *resets_at_ms, json_t *now_ms, char *out,
         snprintf(out, outsz, "%ldm", minutes);
 }
 
-/* PoP: format_resets_in @ hermes_cli/model_picker_usage.py:format_resets_in */
+/* PoP: mpu_format_resets_in @ hermes_cli/model_picker_usage.py:format_resets_in */
 void mpu_format_resets_in(json_t *resets_at_ms, json_t *now_ms, char *out,
                           size_t outsz)
 {
@@ -170,7 +170,7 @@ void mpu_format_resets_in(json_t *resets_at_ms, json_t *now_ms, char *out,
         snprintf(out, outsz, "resets soon");
 }
 
-/* PoP: split_recommended @ hermes_cli/model_picker_usage.py:split_recommended */
+/* PoP: mpu_split_recommended @ hermes_cli/model_picker_usage.py:split_recommended */
 json_t *mpu_split_recommended(json_t *model_ids, json_t *featured, json_t **rest)
 {
     json_t *head = json_new_array();
@@ -233,7 +233,7 @@ json_t *mpu_split_recommended(json_t *model_ids, json_t *featured, json_t **rest
     return head;
 }
 
-/* PoP: featured_first @ hermes_cli/model_picker_usage.py:featured_first */
+/* PoP: mpu_featured_first @ hermes_cli/model_picker_usage.py:featured_first */
 json_t *mpu_featured_first(json_t *model_ids, json_t *featured)
 {
     json_t *rest = NULL;
@@ -254,7 +254,7 @@ json_t *mpu_featured_first(json_t *model_ids, json_t *featured)
     return out;
 }
 
-/* PoP: _credits_pay @ hermes_cli/model_picker_usage.py:_credits_pay */
+/* PoP: mpu_credits_pay @ hermes_cli/model_picker_usage.py:_credits_pay */
 int mpu_credits_pay(json_t *info, json_t *window)
 {
     json_t *keep = mpu_obj_get(window, "keep_going_on_credits", NULL);
@@ -267,7 +267,7 @@ int mpu_credits_pay(json_t *info, json_t *window)
     return json_number_value(purchased) > 0.0 ? 1 : 0;
 }
 
-/* PoP: is_free_model @ hermes_cli/model_picker_usage.py:is_free_model */
+/* PoP: mpu_is_free_model @ hermes_cli/model_picker_usage.py:is_free_model */
 int mpu_is_free_model(json_t *pricing_row)
 {
     if (!json_is_object(pricing_row))
@@ -282,7 +282,7 @@ int mpu_is_free_model(json_t *pricing_row)
     return has_in && has_out && inp <= 0.0 && out <= 0.0;
 }
 
-/* PoP: _capitalize @ hermes_cli/model_picker_usage.py:_capitalize */
+/* PoP: mpu_capitalize @ hermes_cli/model_picker_usage.py:_capitalize */
 void mpu_capitalize(const char *text, char *out, size_t outsz)
 {
     if (!out || outsz == 0)
@@ -299,7 +299,7 @@ void mpu_capitalize(const char *text, char *out, size_t outsz)
     out[n] = '\0';
 }
 
-/* PoP: _get @ hermes_cli/model_picker_usage.py:_get */
+/* PoP: mpu_obj_get @ hermes_cli/model_picker_usage.py:_get */
 json_t *mpu_obj_get(json_t *obj, const char *name, json_t *dflt)
 {
     if (!obj || json_is_null(obj))

@@ -54,7 +54,7 @@ static int lenient_double(const char *s, double *out)
     return 1;
 }
 
-/* PoP: _strip_v1 @ hermes_cli/models_pricing.py:_strip_v1 */
+/* PoP: mp_strip_v1 @ hermes_cli/models_pricing.py:_strip_v1 */
 void mp_strip_v1(const char *url, char *out, size_t outsz)
 {
     if (!out || outsz == 0)
@@ -72,7 +72,7 @@ void mp_strip_v1(const char *url, char *out, size_t outsz)
     out[n] = '\0';
 }
 
-/* PoP: _price_float @ hermes_cli/models_pricing.py:_price_float */
+/* PoP: mp_price_float @ hermes_cli/models_pricing.py:_price_float */
 int mp_price_float(const char *raw, int positive, double *out)
 {
     double n;
@@ -85,7 +85,7 @@ int mp_price_float(const char *raw, int positive, double *out)
     return 1;
 }
 
-/* PoP: _sale_pct @ hermes_cli/models_pricing.py:_sale_pct  (-1 == None) */
+/* PoP: mp_sale_pct @ hermes_cli/models_pricing.py:_sale_pct  (-1 == None) */
 int mp_sale_pct(const char *current, const char *original)
 {
     double cur, orig;
@@ -96,7 +96,7 @@ int mp_sale_pct(const char *current, const char *original)
     return py_round((1.0 - (cur / orig)) * 100.0);
 }
 
-/* PoP: _format_price_per_mtok @ hermes_cli/models_pricing.py:_format_price_per_mtok */
+/* PoP: mp_format_price_per_mtok @ hermes_cli/models_pricing.py:_format_price_per_mtok */
 void mp_format_price_per_mtok(const char *per_token_str, char *out, size_t outsz)
 {
     if (!out || outsz == 0)

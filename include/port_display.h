@@ -1,6 +1,6 @@
 /* port_display.h -- pure helpers ported from agent/display.py. */
-#ifndef SLERMES_PORT_DISPLAY_H
-#define SLERMES_PORT_DISPLAY_H
+#ifndef PORT_DISPLAY_H
+#define PORT_DISPLAY_H
 
 #include <stddef.h>
 
@@ -40,4 +40,4 @@ int st_is_shell_boundary_echo(const char *segment);
 void st_summarize_shell_command(const char *command, const char *plus_one,
                                 const char *plus_many, char *out, size_t cap);
 
-#endif /* SLERMES_PORT_DISPLAY_H */
+#endif /* PORT_DISPLAY_H */

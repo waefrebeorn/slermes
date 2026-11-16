@@ -90,5 +90,5 @@ char *cli_tools_path_security_validate_within_dir(const char *path_str, const ch
     return NULL; /* path is safe */
 }
 
-/* PoP: has_unsafe_path_chars @ tools/path_security.py:has_unsafe_path_chars */
+/* PoP: tools_path_security_has_unsafe_path_chars @ tools/path_security.py:has_unsafe_path_chars */
 int tools_path_security_has_unsafe_path_chars(void) { return 0; }

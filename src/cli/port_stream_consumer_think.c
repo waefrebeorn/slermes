@@ -80,7 +80,7 @@ int sct_at_block_boundary(const char *accumulated, const char *buf, int idx)
     return 1;
 }
 
-/* PoP: _earliest_open_tag @ gateway/stream_consumer_think.py:_earliest_open_tag */
+/* PoP: sct_earliest_open_tag @ gateway/stream_consumer_think.py:_earliest_open_tag */
 int sct_earliest_open_tag(const char *accumulated, const char *buf,
                           const char *lower_buf, int *out_idx, int *out_len)
 {
@@ -115,5 +115,5 @@ int sct_earliest_open_tag(const char *accumulated, const char *buf,
     return best_idx >= 0 ? 1 : 0;
 }
 
-/* PoP: _at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
+/* PoP: sct_at_block_boundary @ gateway/stream_consumer_think.py:_at_block_boundary */
 /* (defined above as sct_at_block_boundary) */

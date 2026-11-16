@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_COMPACTION_EVENTS_H
-#define SLERMES_PORT_COMPACTION_EVENTS_H
+#ifndef PORT_COMPACTION_EVENTS_H
+#define PORT_COMPACTION_EVENTS_H
 
 #include <hermes_json.h>
 
@@ -46,4 +46,4 @@ json_t *ce_prune_payload(const char *session_id, long tokens_before,
 json_t *ce_provider_native_payload(const char *session_id,
                                    json_t *compression_count);
 
-#endif /* SLERMES_PORT_COMPACTION_EVENTS_H */
+#endif /* PORT_COMPACTION_EVENTS_H */

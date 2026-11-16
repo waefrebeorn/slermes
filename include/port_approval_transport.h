@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_APPROVAL_TRANSPORT_H
-#define SLERMES_PORT_APPROVAL_TRANSPORT_H
+#ifndef PORT_APPROVAL_TRANSPORT_H
+#define PORT_APPROVAL_TRANSPORT_H
 
 /* _validate_decision(kind, value, completed_at, deadline, request): maps a
  * worker result to a failure code string ("timeout"/"error"/"invalid"/"stale")
@@ -17,4 +17,4 @@ const char *atr_validate_decision(
     const char *req_digest,
     const char *req_allowed);
 
-#endif /* SLERMES_PORT_APPROVAL_TRANSPORT_H */
+#endif /* PORT_APPROVAL_TRANSPORT_H */

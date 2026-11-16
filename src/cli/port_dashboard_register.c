@@ -14,6 +14,7 @@
  * the credential store.
  */
 
+#include "port_dashboard_register.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -35,7 +36,7 @@
  *  string the caller frees ("" included).
  * =========================================================================== */
 
-/* PoP: _public_url_from_redirect @ hermes_cli/dashboard_register.py:_public_url_from_redirect */
+/* PoP: dr_public_url_from_redirect @ hermes_cli/dashboard_register.py:_public_url_from_redirect */
 char *dr_public_url_from_redirect(const char *redirect_uri)
 {
     const char *s = (redirect_uri && redirect_uri[0]) ? redirect_uri : "";
@@ -94,7 +95,7 @@ char *dr_public_url_from_redirect(const char *redirect_uri)
  *  trailing slash, not just one. Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _resolve_portal_base_url @ hermes_cli/dashboard_register.py:_resolve_portal_base_url */
+/* PoP: dr_resolve_portal_base_url @ hermes_cli/dashboard_register.py:_resolve_portal_base_url */
 char *dr_resolve_portal_base_url(const char *override,
                                  const char *stored_base,
                                  const char *default_base)

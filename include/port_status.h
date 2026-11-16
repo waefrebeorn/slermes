@@ -1,6 +1,6 @@
 /* port_status.h -- pure helpers ported from gateway/status.py. */
-#ifndef SLERMES_PORT_STATUS_H
-#define SLERMES_PORT_STATUS_H
+#ifndef PORT_STATUS_H
+#define PORT_STATUS_H
 
 #include <stddef.h>
 
@@ -17,4 +17,4 @@ int st_command_line_names_home(const char *command_lc, const char *home_lc);
  * Caller frees. */
 char *st_profile_name_for_home(const char *profile_home);
 
-#endif /* SLERMES_PORT_STATUS_H */
+#endif /* PORT_STATUS_H */

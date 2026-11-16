@@ -17,6 +17,7 @@
  * directly; a C body should not own that).
  */
 
+#include "port_secrets_cli.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -36,7 +37,7 @@
  *  which, so it knows what to free.
  * =========================================================================== */
 
-/* PoP: section_cfg @ hermes_cli/_secrets_common.py:section_cfg */
+/* PoP: secrets_section_cfg @ hermes_cli/_secrets_common.py:section_cfg */
 const json_t *secrets_section_cfg(const json_t *cfg, const char *section, json_t **created)
 {
     if (created) *created = NULL;
@@ -61,7 +62,7 @@ const json_t *secrets_section_cfg(const json_t *cfg, const char *section, json_t
  *      section_cfg(cfg, "bitwarden")
  * =========================================================================== */
 
-/* PoP: _bw_cfg @ hermes_cli/secrets_cli.py:_bw_cfg */
+/* PoP: secrets_bw_cfg @ hermes_cli/secrets_cli.py:_bw_cfg */
 const json_t *secrets_bw_cfg(const json_t *cfg, json_t **created)
 {
     return secrets_section_cfg(cfg, "bitwarden", created);
@@ -78,7 +79,7 @@ const json_t *secrets_bw_cfg(const json_t *cfg, json_t **created)
  *  Returns a NEW string the caller frees.
  * =========================================================================== */
 
-/* PoP: _fetch_status @ hermes_cli/secrets_cli.py:_fetch_status */
+/* PoP: secrets_fetch_status @ hermes_cli/secrets_cli.py:_fetch_status */
 char *secrets_fetch_status(const char *key, const char *token_env,
                            int (*env_has)(const char *name))
 {

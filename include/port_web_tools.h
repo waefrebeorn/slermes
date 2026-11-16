@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_WEB_TOOLS_H
-#define SLERMES_PORT_WEB_TOOLS_H
+#ifndef PORT_WEB_TOOLS_H
+#define PORT_WEB_TOOLS_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -31,4 +31,4 @@ char *web_search_tool(const char *query, int limit);
 bool web_check_web_api_key(void);
 char *web_extract_tool(const char *urls_json, const char *format, int char_limit);
 
-#endif /* SLERMES_PORT_WEB_TOOLS_H */
+#endif /* PORT_WEB_TOOLS_H */

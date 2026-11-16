@@ -1,8 +1,8 @@
 /*
  * port_tools_browser_camofox.h — Public surface for port_tools_browser_camofox.c
  */
-#ifndef PORT_TOOLS_BROWSER_CAMEFOX_H
-#define PORT_TOOLS_BROWSER_CAMEFOX_H
+#ifndef PORT_TOOLS_BROWSER_CAMOFOX_H
+#define PORT_TOOLS_BROWSER_CAMOFOX_H
 
 #include <stdbool.h>
 
@@ -70,4 +70,4 @@ bool camofox_private_page_block(const char *url);
 }
 #endif
 
-#endif /* PORT_TOOLS_BROWSER_CAMEFOX_H */
+#endif /* PORT_TOOLS_BROWSER_CAMOFOX_H */

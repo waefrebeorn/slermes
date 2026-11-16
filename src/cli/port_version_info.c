@@ -45,7 +45,7 @@ void version_derived(const char *base_version, long distance, int has_distance,
     snprintf(out, outsz, "%s", base);
 }
 
-/* PoP: _parse_nonnegative @ hermes_cli/version_info.py:_parse_nonnegative */
+/* PoP: version_parse_nonnegative @ hermes_cli/version_info.py:_parse_nonnegative */
 long version_parse_nonnegative(const char *value, int *ok)
 {
     if (!ok)

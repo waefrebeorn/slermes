@@ -12,6 +12,7 @@
  * -900k eligibility table, which is a separate port.
  */
 
+#include "port_codex_models.h"
 #include "hermes_json.h"
 
 #include <stdio.h>
@@ -44,7 +45,7 @@ static const char *const CM_FORWARD_COMPAT[][4] = {
  *  string pointers (borrowed, not copied); caller frees the ARRAY only.
  * =========================================================================== */
 
-/* PoP: _dedupe @ hermes_cli/codex_models.py:_dedupe */
+/* PoP: cm_dedupe @ hermes_cli/codex_models.py:_dedupe */
 const char **cm_dedupe(const char *const *model_ids, int *out_count)
 {
     int n = 0;

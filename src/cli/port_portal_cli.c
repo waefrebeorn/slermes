@@ -33,7 +33,7 @@
  *  caller renders the string and the colour.
  * =========================================================================== */
 
-/* PoP: _feature_state @ hermes_cli/portal_cli.py:_feature_state */
+/* PoP: pc_feature_state @ hermes_cli/portal_cli.py:_feature_state */
 int pc_feature_state(int managed_by_nous, int active, const char *current_provider)
 {
     if (managed_by_nous) return PC_VIA_NOUS;

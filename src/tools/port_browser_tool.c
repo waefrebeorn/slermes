@@ -51,4 +51,3 @@ void port_browser_tool_cleanup(port_browser_tool_state_t *state)
     browser_tool_cdp_cleanup(state->cdp);
     free(state);
 }
-

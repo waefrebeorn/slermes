@@ -1,5 +1,5 @@
-#ifndef SLERMES_PORT_DASHBOARD_AUTH_AUDIT_H
-#define SLERMES_PORT_DASHBOARD_AUTH_AUDIT_H
+#ifndef PORT_DASHBOARD_AUTH_AUDIT_H
+#define PORT_DASHBOARD_AUTH_AUDIT_H
 
 #include "hermes_json.h"
 
@@ -8,4 +8,4 @@
  * chars plus marker. Mirrors the live audit-log field cap. Caller frees. */
 json_t *dab_bounded_value(const json_t *value, int max_len, const char *marker);
 
-#endif /* SLERMES_PORT_DASHBOARD_AUTH_AUDIT_H */
+#endif /* PORT_DASHBOARD_AUTH_AUDIT_H */

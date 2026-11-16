@@ -33,7 +33,7 @@ static const char *const HD_GENERATION_FENCE =
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: _task_update @ gateway/hosted_room_driver.py:_task_update */
+/* PoP: hd_task_update @ gateway/hosted_room_driver.py:_task_update */
 char *hd_task_update(const char *set_clause, const char *fence)
 {
     size_t cap = strlen(set_clause ? set_clause : "") + strlen(fence ? fence : "") + 96;
@@ -55,7 +55,7 @@ char *hd_task_update(const char *set_clause, const char *fence)
  *  the recovery family). Caller frees.
  * =========================================================================== */
 
-/* PoP: _generation_update @ gateway/hosted_room_driver.py:_generation_update */
+/* PoP: hd_generation_update @ gateway/hosted_room_driver.py:_generation_update */
 char *hd_generation_update(const char *set_clause, const char *status)
 {
     size_t cap = strlen(status ? status : "") + strlen(HD_GENERATION_FENCE) + 32;
@@ -83,7 +83,7 @@ char *hd_generation_update(const char *set_clause, const char *status)
  *  returned via `err` when the value is rejected.
  * =========================================================================== */
 
-/* PoP: _finite @ gateway/hosted_room_driver.py:_finite */
+/* PoP: hd_finite @ gateway/hosted_room_driver.py:_finite */
 double hd_finite(const char *candidate, int *ok, int positive,
                  const char *message, char **err)
 {
@@ -115,7 +115,7 @@ double hd_finite(const char *candidate, int *ok, int positive,
  *  check. Caller frees `err`.
  * =========================================================================== */
 
-/* PoP: _timestamp @ gateway/hosted_room_driver.py:_timestamp */
+/* PoP: hd_timestamp @ gateway/hosted_room_driver.py:_timestamp */
 double hd_timestamp(const char *clock_value, int is_callable, int *ok, char **err)
 {
     if (!is_callable) {
@@ -141,7 +141,7 @@ double hd_timestamp(const char *clock_value, int is_callable, int *ok, char **er
  *  Returns 1 on success, 0 when validation failed (err set).
  * =========================================================================== */
 
-/* PoP: _lease_window @ gateway/hosted_room_driver.py:_lease_window */
+/* PoP: hd_lease_window @ gateway/hosted_room_driver.py:_lease_window */
 int hd_lease_window(const char *ttl_seconds, const char *clock_value, int is_callable,
                     double *now_out, double *expires_out, char **err)
 {

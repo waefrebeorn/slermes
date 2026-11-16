@@ -118,7 +118,7 @@ char *sv_current_profile(const char *active)
  *  JSON-RPC notification envelope into `out`.
  * =========================================================================== */
 
-/* PoP: _event_frame @ tui_gateway/server.py:_event_frame */
+/* PoP: sv_event_frame @ tui_gateway/server.py:_event_frame */
 void sv_event_frame(char *out, size_t cap, const char *event, const char *sid,
                     const char *payload)
 {

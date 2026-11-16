@@ -50,7 +50,7 @@ char *gs_canonical_home(const char *path, const char *resolved);
  *  profile's identity from colliding with another's. Caller frees.
  * =========================================================================== */
 
-/* PoP: _scope_hash @ gateway/status.py:_scope_hash */
+/* PoP: gs_scope_hash @ gateway/status.py:_scope_hash */
 char *gs_scope_hash(const char *identity)
 {
     if (!identity) identity = "";
@@ -73,7 +73,7 @@ char *gs_scope_hash(const char *identity)
  *  `recorded` is a NULL-terminated array of numeric strings. Returns 1/0.
  * =========================================================================== */
 
-/* PoP: _start_times_agree @ gateway/status.py:_start_times_agree */
+/* PoP: gs_start_times_agree @ gateway/status.py:_start_times_agree */
 int gs_start_times_agree(const char *current, const char *const *recorded)
 {
     char *end = NULL;
@@ -237,7 +237,7 @@ char *gs_canonical_home(const char *path, const char *resolved)
  *  `left_resolved` / `right_resolved` stand in for the two resolve() answers.
  * =========================================================================== */
 
-/* PoP: _same_hermes_home @ gateway/status.py:_same_hermes_home */
+/* PoP: gs_same_hermes_home @ gateway/status.py:_same_hermes_home */
 int gs_same_hermes_home(const char *left, const char *left_resolved,
                         const char *right, const char *right_resolved)
 {

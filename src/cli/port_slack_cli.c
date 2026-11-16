@@ -48,7 +48,7 @@ static int cmp_str(const void *a, const void *b);
  *  messaging_experience value is invalid (the Python raises ValueError).
  * =========================================================================== */
 
-/* PoP: _build_full_manifest @ hermes_cli/slack_cli.py:_build_full_manifest */
+/* PoP: sl_build_full_manifest @ hermes_cli/slack_cli.py:_build_full_manifest */
 char *sl_build_full_manifest(const char *bot_name, const char *bot_description,
                              int include_assistant, const char *messaging_experience,
                              const char *long_description,
