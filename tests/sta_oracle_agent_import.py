@@ -115,7 +115,7 @@ for c in cases:
     elif op == "dump_yaml_file":
         d = json.loads(arg) if isinstance(arg, str) else arg
         print(json.dumps(yaml.safe_dump(d, default_flow_style=False, sort_keys=False,
-                                        allow_unicode=True).rstrip("\n")))
+                                        allow_unicode=True)))
     elif op == "default_source_dir":
         print(json.dumps(str(_default_source_dir(arg))))
     elif op == "detect_agents":
