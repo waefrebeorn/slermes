@@ -40,5 +40,5 @@ for f in sorted(fixdir.glob("*.in")):
                     .replace("@NOW@", "1700000000.0")
                     .replace("@NOTREPO@", "/tmp"))
         out.write_text(text, encoding="utf-8", newline="")
-    rows.append(f"{case}\t{out}\t{extra}")
+    rows.append(f"{case}\t{out.as_posix()}\t{extra}")
 print("\n".join(rows))

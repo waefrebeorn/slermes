@@ -374,8 +374,33 @@ except Exception:
   fi
 fi
 # shellcheck disable=SC2086
-bash -c "$LINKCMD -Wl,--allow-multiple-definition" >$BUILD_DIR/oracle_link_$NAME.log 2>&1 || true
-if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
+# Cache the linked harness. The link depends only on the harness object, the
+# closure objects and the link command, so it is keyed on those -- object
+# MTIMES, which is what make itself uses: any rebuild changes them, and a
+# rebuilt object must not be linked against a stale binary.
+LK=$("$PY" - "$RSP" "$HK" "$LINKCMD -Wl,--allow-multiple-definition" <<'PY'
+import hashlib, sys
+from pathlib import Path
+rsp, hk, cmd = sys.argv[1], sys.argv[2], sys.argv[3]
+h = hashlib.sha256()
+h.update(cmd.encode("utf-8")); h.update(hk.encode("utf-8"))
+for line in Path(rsp).read_text(encoding="utf-8").splitlines():
+    line = line.strip()
+    if not line:
+        continue
+    try:
+        h.update(f"{line}:{Path(line).stat().st_mtime_ns}".encode("utf-8"))
+    except OSError:
+        h.update(line.encode("utf-8"))
+print(h.hexdigest())
+PY
+)
+if [ -f "$HCACHE/bin_$LK" ]; then
+  cp "$HCACHE/bin_$LK" "$BUILD_DIR/tt_$NAME"
+  echo "harness link: cache hit" >&2
+elif bash -c "$LINKCMD -Wl,--allow-multiple-definition" >$BUILD_DIR/oracle_link_$NAME.log 2>&1; then
+  cp "$BUILD_DIR/tt_$NAME" "$HCACHE/bin_$LK"
+else
   echo "LINK FAILED for $NAME:" >&2
   grep -iE 'error|undefined|multiple' $BUILD_DIR/oracle_link_$NAME.log | head -8 >&2
   exit 1
@@ -465,7 +490,7 @@ while IFS=$'\t' read -r case FSUB extra; do
   fi
   printf '%s\t%s\t%s\t%s\n' "$case" "$FSUB" \
          "$BUILD_DIR/oracle_${NAME}_c_${case}.json" "$extra" >> "$BATCH_TSV"
-done
+done < "$PREP_TSV"
 
 mark c-cases
 # ---- phase 2: one Python process runs every case ------------------------

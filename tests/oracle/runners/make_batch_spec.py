@@ -49,7 +49,7 @@ for line in Path(tsv).read_text(encoding="utf-8").splitlines():
         # stdin-reading oracle echo its own input and report MATCH.
         "stdin": fixture,
         "c_out": c_output,
-        "out": str(out_dir / f"oracle_{name}_py_{case}.json"),
+        "out": (out_dir / f"oracle_{name}_py_{case}.json").as_posix(),
         "extra": extra,
     })
 
