@@ -489,4 +489,9 @@ CUPBOARD_UNBUILT_MODS = \
     src/tools/voice_client_config.o \
     src/tools/tts_text_normalize.o \
     src/agent/billing_usage.o \
+    src/tools/file_ops_lint.o \
+    src/tools/flux3_video_tool.o \
+    src/tools/tool_search.o \
+    src/tools/interrupt.o \
+    src/tools/flux3_video.o \
     src/compat/net6_classify.o

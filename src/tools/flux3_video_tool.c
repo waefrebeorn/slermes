@@ -194,7 +194,7 @@ json_t *flux3_endpoints(void)
     if (managed_vendor_endpoints(NULL, "bfl", base_url, sizeof(base_url),
                                  upload_path, sizeof(upload_path)) != 0)
         return NULL;
-    char *r = json_object();
+    json_t *r = json_object();
         char origin[GW_URL_MAX];
         managed_gw_build_url("tool", origin, sizeof(origin));
         json_set(r, "origin", json_string(origin));
