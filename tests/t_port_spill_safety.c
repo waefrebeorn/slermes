@@ -19,6 +19,30 @@
 #include <unistd.h>
 #include <libgen.h>
 
+/* Recursive delete, in-process. The harness used to shell out:
+ *   system("sh -c \"rm -rf '<root>' && mkdir -p '<root>'\"")
+ * On Windows system() goes through cmd.exe, whose PATH resolves `sh` to a
+ * denied WindowsApps alias stub -- the command died with "Access is denied"
+ * and the port flaked to NO-OUTPUT. Doing it here removes the shell (and the
+ * stub) from the equation and behaves identically on MSYS2/Linux/macOS. */
+static int rm_rf(const char *path) {
+    struct stat st;
+    if (lstat(path, &st) != 0) return 0;   /* already gone: nothing to do */
+    if (!S_ISDIR(st.st_mode)) return unlink(path) == 0 ? 0 : -1;
+    DIR *d = opendir(path);
+    if (!d) return -1;
+    int rc = 0;
+    struct dirent *e;
+    while ((e = readdir(d)) != NULL) {
+        if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
+        char child[4096];
+        snprintf(child, sizeof child, "%s/%s", path, e->d_name);
+        if (rm_rf(child) != 0) rc = -1;
+    }
+    closedir(d);
+    return rmdir(path) == 0 ? rc : -1;
+}
+
 static char *read_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) { fprintf(stderr, "cannot read %s\n", path); exit(1); }
@@ -143,10 +167,11 @@ int main(int argc, char **argv) {
      * single quotes are not quoting -- the command died with "The syntax of the
      * command is incorrect." and the port reported "C produced no output".
      * `sh -c` is the portable form: same command on MSYS2, Linux and macOS. */
-    char cmd[4352];
-    snprintf(cmd, sizeof cmd, "sh -c \"rm -rf '%s' && mkdir -p '%s'\"",
-             root, root);
-    if (system(cmd) != 0) { fprintf(stderr, "sandbox reset failed\n"); return 1; }
+    /* wipe + recreate the sandbox, in-process (see rm_rf). */
+    if (rm_rf(root) != 0 || mkdir(root, 0755) != 0) {
+        fprintf(stderr, "sandbox reset failed\n");
+        return 1;
+    }
 
     json_t *ops = json_object_get(rootj, "ops");
     if (ops && ops->type == JSON_ARRAY) {
