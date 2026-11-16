@@ -55,6 +55,16 @@ def main() -> int:
             # assuming an array flagged raw-text fixtures (agent_display feeds
             # shell commands; agent_estop feeds bare case names).
             o = ORACLES / f"sta_oracle_{d.name}.py"
+            # A port may declare itself incomplete in the registry; that is
+            # tracked debt, not a dangling fixture, and the runner SKIPs it.
+            try:
+                reg = json.loads((REPO / "tests/oracle/registry.json")
+                                 .read_text(encoding="utf-8"))
+                ent = reg.get("ports", {}).get(d.name) or {}
+            except Exception:
+                ent = {}
+            if ent.get("status") == "incomplete":
+                continue
             otext = o.read_text(encoding="utf-8", errors="replace") if o.exists() else ""
             wants_lines = bool(re.search(r"for\s+line\s+in\b.*:\s*$\n?\s*json\.loads\(line",
                                          otext, re.M))

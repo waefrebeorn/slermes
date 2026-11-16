@@ -9,7 +9,7 @@
   {"op": "read_only_hint", "arg": {"annotations": {"readOnlyHint": true}}},
   {"op": "read_only_hint", "arg": {"annotations": {"readOnlyHint": false}}},
   {"op": "read_only_hint", "arg": {"annotations": {}}},
-  {"op": "read_only_hint", "arg": {"annotations": None}},
+  {"op": "read_only_hint", "arg": {"annotations": null}},
   {"op": "read_only_hint", "arg": {"name": "t1"}},
   {"op": "read_only_hint", "arg": null},
   {"op": "read_only_hint", "arg": "not-an-object"},

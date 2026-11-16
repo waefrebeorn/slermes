@@ -284,7 +284,9 @@
   "cron_scheduler_orchestr": {
    "harness": "tests/t_port_cron_scheduler_orchestr.c",
    "oracle": "tests/sta_oracle_cron_scheduler_orchestr.py",
-   "fixtures": "tests/oracle/fixtures/cron_scheduler_orchestr"
+   "fixtures": "tests/oracle/fixtures/cron_scheduler_orchestr",
+   "status": "incomplete",
+   "incomplete_reason": "fixture is the placeholder 'single'; oracle reads one JSON case from argv and none was written"
   },
   "cron_suggestions": {
    "harness": "tests/t_port_cron_suggestions.c",
@@ -1314,7 +1316,9 @@
   "url_safety_helpers": {
    "harness": "tests/t_port_url_safety_helpers.c",
    "oracle": "tests/sta_oracle_url_safety_helpers.py",
-   "fixtures": "tests/oracle/fixtures/url_safety_helpers"
+   "fixtures": "tests/oracle/fixtures/url_safety_helpers",
+   "status": "incomplete",
+   "incomplete_reason": "fixture is the placeholder 'single'; oracle reads a JSON case list from argv and none was written"
   },
   "usage_pricing": {
    "harness": "tests/t_port_usage_pricing.c",
