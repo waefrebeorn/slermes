@@ -101,7 +101,16 @@ if __name__ == "__main__":
         spec = json.loads(Path(raw[1:]).read_text(encoding="utf-8")
                          if raw.startswith("@") else raw)
         oracle = spec["oracle"]
+        cfg = spec.get("cfg") or {}
+        # Normalise + compare in THIS interpreter. The runner used to spawn
+        # Python three times per case (~170 ms each) for the same work.
+        import importlib.util as _ilu
+        _cs = _ilu.spec_from_file_location(
+            "canon_compare", Path(__file__).parent / "runners" / "canon_compare.py")
+        cc = _ilu.module_from_spec(_cs)
+        _cs.loader.exec_module(cc)
         results = []
+        verdicts = []
         for case in spec["cases"]:
             sys.argv = [oracle, case["fixture"]] + list(case.get("extra", []))
             buf = io.StringIO()
@@ -136,7 +145,30 @@ if __name__ == "__main__":
                 if f and (DEV_ROOT in f or f.startswith(SLERMES_ROOT)):
                     sys.modules.pop(name, None)
             results.append({"case": case["name"], "rc": rc})
+            py_text = buf.getvalue()
+            v, reason = "MISMATCH", "output differs"
+            c_norm = py_norm = ""
+            c_path = case.get("c_out")
+            c_text = ""
+            if c_path and Path(c_path).exists():
+                c_text = Path(c_path).read_text(encoding="utf-8", errors="replace")
+            # Empty on either side must never compare equal: two empty files are
+            # byte-identical, so without this guard a failed run reports MATCH.
+            if not py_text.strip():
+                v, reason = "MISMATCH", "oracle produced no output"
+            elif not c_text.strip():
+                v, reason = "MISMATCH", "C produced no output"
+            else:
+                v, c_norm, py_norm = cc.verdict(c_text, py_text, cfg, rc)
+                if v == "MATCH":
+                    reason = ""
+            verdicts.append({"name": case["name"], "verdict": v, "reason": reason,
+                             "c_norm": c_norm, "py_norm": py_norm})
         print(json.dumps(results))
+        if verdicts:
+            vpath = Path(raw[1:] if raw.startswith("@") else raw)
+            vpath = vpath.with_name(vpath.stem + ".verdicts.json")
+            vpath.write_text(json.dumps(verdicts), encoding="utf-8")
         sys.exit(0)
 
     # argv: [boot.py, <oracle_script.py>, ...rest]

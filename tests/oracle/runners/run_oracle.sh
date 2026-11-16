@@ -79,6 +79,17 @@ tmpfile() {
 }
 mkdir -p "$BUILD_DIR"
 
+# Phase timing, off by default. Speed work needs measured phase costs, not
+# assumptions: ORACLE_TIME=1 prints elapsed milliseconds per phase to stderr.
+ORACLE_TIME="${ORACLE_TIME:-0}"
+_T_MARK=$(date +%s%N)
+mark() {  # $1 = phase label
+  [ "$ORACLE_TIME" = 1 ] || return 0
+  local _now; _now=$(date +%s%N)
+  printf 'TIME %-22s %6d ms\n' "$1" $(( (_now - _T_MARK) / 1000000 )) >&2
+  _T_MARK=$_now
+}
+
 NAME="${1:?usage: run_oracle.sh <port_name> [fixtures_subdir]}"
 SUB="${2:-$NAME}"
 FIX="tests/oracle/fixtures/$SUB"
@@ -86,13 +97,10 @@ FIX="tests/oracle/fixtures/$SUB"
 # differently-named harness, e.g. t_port_error_classifier_upstream.c for the
 # error_classifier port); fall back to the conventional t_port_<name>.c.
 HARNESS="tests/t_port_$NAME.c"
-if command -v jq >/dev/null 2>&1; then
-    REG_HARNESS=$(jq -r ".ports[\"$NAME\"].harness // empty" tests/oracle/registry.json 2>/dev/null)
-    [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
-elif [ -f tests/oracle/registry.json ]; then
-    REG_HARNESS=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('harness',''))" "$NAME" 2>/dev/null)
-    [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
+if [ -f tests/oracle/registry.json ]; then
+    eval "$("$PY" tests/oracle/runners/registry_lookup.py "$NAME" 2>/dev/null)"
 fi
+[ -n "${REG_HARNESS:-}" ] && HARNESS="$REG_HARNESS"
 # Fixture setup: some fixtures need a git repo / binary blob / seeded DB that
 # cannot be committed (nested .git, binary artifacts). A gen_fixture.sh in the
 # fixture dir, when present and executable, (re)materializes the fixture in
@@ -106,10 +114,8 @@ ORACLE="tests/sta_oracle_$NAME.py"
 # oracle does not exist yet. Skip with a stated reason rather than failing, so
 # the run reports SKIP instead of a broken port -- but ONLY when the registry
 # declares it. An undeclared dangling reference is a gate failure.
-STATUS=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('status',''))" "$NAME" 2>/dev/null || true)
-if [ "$STATUS" = "incomplete" ]; then
-    REASON=$("$PY" -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('incomplete_reason',''))" "$NAME" 2>/dev/null || true)
-    echo "SKIP $NAME: declared incomplete ($REASON)"
+if [ "${REG_STATUS:-}" = "incomplete" ]; then
+    echo "SKIP $NAME: declared incomplete (${REG_REASON:-})"
     exit 0
 fi
 
@@ -117,6 +123,7 @@ fi
 [ -f "$ORACLE" ]  || { echo "MISSING $ORACLE"; exit 2; }
 [ -d "$FIX" ]     || { echo "MISSING fixture dir $FIX"; exit 2; }
 
+mark setup
 # Extract the EXACT link command `make` uses for the real `slermes` binary and
 # adapt it for the oracle harness. This guarantees the oracle links the same
 # resolvable object/lib/static-archive closure the shipped binary uses — no
@@ -125,16 +132,29 @@ fi
 # final `libwhisper.a` static archive — the true end of the link command), drop
 # the output target, and swap src/main.o for the oracle harness .c. make -n
 # escapes quotes for display, so we strip \" and join continuations.
-LINKCMD=$(make -B -n slermes 2>/dev/null \
-  | awk '/ -o slermes /{f=1} f{print} /libwhisper\.a/{exit}' \
-  | sed -e ':a;N;$!ba;s/\\\n//g' \
-  | sed 's/  */ /g; s/\\"//g')
-# ccache cannot exec the compiler from a Hermes-promoted background process
-# ("execute_noreturn of ... failed: No such file or directory") even though the
-# same gcc runs fine directly. The harness link is one invocation and gains
-# nothing from caching, so drop the wrapper.
-LINKCMD="${LINKCMD#ccache }"
+#
+# This depends only on the makefiles, not on the port, so it is computed ONCE
+# per tree state and shared by every port. `make -B -n` forces make to consider
+# rebuilding the whole tree, which made it the largest fixed cost per port.
+LINKCACHE="$BUILD_DIR/linkcmd.cache"
+LINKKEY=$(stat -c '%n %Y %s' Makefile build/*.mk 2>/dev/null | sha256sum | cut -d' ' -f1)
+if [ -s "$LINKCACHE" ] && [ "$(head -n 1 "$LINKCACHE")" = "$LINKKEY" ]; then
+  LINKCMD=$(tail -n +2 "$LINKCACHE")
+fi
+if [ -z "${LINKCMD:-}" ]; then
+  LINKCMD=$(make -B -n slermes 2>/dev/null \
+    | awk '/ -o slermes /{f=1} f{print} /libwhisper\.a/{exit}' \
+    | sed -e ':a;N;$!ba;s/\\\n//g' \
+    | sed 's/  */ /g; s/\\"//g')
+  # ccache cannot exec the compiler from a Hermes-promoted background process
+  # ("execute_noreturn of ... failed: No such file or directory") even though the
+  # same gcc runs fine directly. The harness link is one invocation and gains
+  # nothing from caching, so drop the wrapper.
+  LINKCMD="${LINKCMD#ccache }"
+  { printf '%s\n' "$LINKKEY"; printf '%s\n' "$LINKCMD"; } > "$LINKCACHE"
+fi
 
+mark make-probes
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o "$BUILD_DIR/tt_$NAME" }
 LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
@@ -143,7 +163,17 @@ LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
 # command named a nonexistent file, the link failed, and -- because a failed
 # run was not treated as a failure -- the oracle reported MATCH against an
 # EMPTY C-side output. Substitute the real closure from `make print-objs`.
-OBJS=$(make -s --no-print-directory print-objs 2>/dev/null)
+# Separate cache: the object list also depends only on the makefiles.
+OBJCACHE="$BUILD_DIR/objs.cache"
+if [ -s "$OBJCACHE" ] && [ "$(head -n 1 "$OBJCACHE")" = "$LINKKEY" ]; then
+  OBJS=$(tail -n +2 "$OBJCACHE")
+fi
+if [ -z "${OBJS:-}" ]; then
+  OBJS=$(make -s --no-print-directory print-objs 2>/dev/null)
+  if [ -n "$OBJS" ]; then
+    { printf '%s\n' "$LINKKEY"; printf '%s\n' "$OBJS"; } > "$OBJCACHE"
+  fi
+fi
 if [ -z "$OBJS" ]; then
   echo "FATAL: 'make print-objs' returned nothing; cannot link the harness" >&2
   exit 2
@@ -183,35 +213,35 @@ HARNESS_OBJ="$BUILD_DIR/obj/tests/t_port_$NAME.o"
 # closure can pull in an object that defines main() -- if that object precedes
 # the harness, the harness never runs and produces no output at all.
 LINKCMD=${LINKCMD//@slermes.link.rsp/$HARNESS_OBJ @$RSP}
-# There is no `diff` on this box: MSYS2 here ships no diffutils, and PATH
-# resolves the name to a WindowsApps alias stub that fails with "Permission
-# denied". Depending on an external diff would also make the runner fragile on
-# the Linux/macOS targets, so compare bytes with Python -- the runner already
-# requires "$PY" for the oracle side.
-files_equal() {
-  "$PY" -c 'import sys
-a = open(sys.argv[1], "rb").read()
-b = open(sys.argv[2], "rb").read()
-sys.exit(0 if a == b else 1)' "$1" "$2"
-}
 # Comparator controls. A comparator that cannot fail reports MATCH forever and
-# makes the whole suite meaningless; two empty files compare equal, so this is
-# the guard that the guard works. Both must hold or the run fails.
-# Named explicitly: tmpfile() is called in command substitutions, and each
-# subshell restarts its counter, so two tmpfile calls can return one name.
-_ctl_a="$BUILD_DIR/ctl_pos_$$"
-_ctl_b="$BUILD_DIR/ctl_neg_$$"
-printf 'x\n' > "$_ctl_a"; printf 'y\n' > "$_ctl_b"
-if files_equal "$_ctl_a" "$_ctl_b"; then
-  echo "FATAL: comparator positive control failed -- different inputs compared equal" >&2
-  rm -f "$_ctl_a" "$_ctl_b"; exit 2
+# makes the whole suite meaningless. These exercise the REAL comparator --
+# canon_compare.verdict, the code path phase 3 uses. Controlling a separate
+# helper would validate something that no longer does the comparing.
+if ! "$PY" - <<'PY'
+import importlib.util
+s = importlib.util.spec_from_file_location(
+    "canon_compare", "tests/oracle/runners/canon_compare.py")
+cc = importlib.util.module_from_spec(s)
+s.loader.exec_module(cc)
+cfg = {"strip_patterns": [], "strip_fields": [], "float_int_equal": False}
+# positive control: differing input must be a mismatch
+v, _, _ = cc.verdict('{"a":1}\n', '{"a":2}\n', cfg)
+assert v == "MISMATCH", v
+# negative control: identical input must match
+v, _, _ = cc.verdict('{"a":1}\n', '{"a":1}\n', cfg)
+assert v == "MATCH", v
+# key order must not matter -- normalisation sorts keys
+v, _, _ = cc.verdict('{"a":1,"b":2}\n', '{"b":2,"a":1}\n', cfg)
+assert v == "MATCH", v
+# empty oracle output must never compare equal to real output
+v, _, _ = cc.verdict('{"a":1}\n', '', cfg)
+assert v == "MISMATCH", v
+print("comparator controls: OK")
+PY
+then
+  echo "FATAL: comparator controls failed" >&2
+  exit 2
 fi
-if ! files_equal "$_ctl_a" "$_ctl_a"; then
-  echo "FATAL: comparator negative control failed -- identical inputs compared different" >&2
-  rm -f "$_ctl_a" "$_ctl_b"; exit 2
-fi
-rm -f "$_ctl_a" "$_ctl_b"
-echo "comparator controls: OK" >&2
 # Strip build-version metadata macros' malformed values (e.g. "0.19.0-slermes",
 # "2026.7.20") which contain multiple dots / undeclared identifiers that break
 # compilation of harnesses that #include the production .c files that expand
@@ -296,12 +326,24 @@ fi
 # than a red gate.
 rm -f "$BUILD_DIR/tt_$NAME"
 # shellcheck disable=SC2086
-bash -c "$COMPILE" >$BUILD_DIR/oracle_compile_$NAME.log 2>&1 || true
-if [ ! -f "$HARNESS_OBJ" ]; then
+# Cache the harness object by the CONTENT of its transitive includes, not just
+# the harness source: a harness #includes the port's .c, so hashing only the
+# harness would reuse a stale object after a port edit and report a parity
+# result for code that was never compiled. ~3.3 s saved per unchanged port.
+HCACHE="$BUILD_DIR/cache"
+mkdir -p "$HCACHE"
+HK=$("$PY" tests/oracle/runners/harness_deps.py "$HARNESS" "$COMPILE")
+if [ -f "$HCACHE/$HK.o" ]; then
+  cp "$HCACHE/$HK.o" "$HARNESS_OBJ"
+  echo "harness compile: cache hit" >&2
+elif bash -c "$COMPILE" >$BUILD_DIR/oracle_compile_$NAME.log 2>&1; then
+  cp "$HARNESS_OBJ" "$HCACHE/$HK.o"
+else
   echo "FATAL: harness did not compile -> $HARNESS_OBJ" >&2
   head -12 "$BUILD_DIR/oracle_compile_$NAME.log" >&2
   exit 2
 fi
+mark harness-compile
 # Minimal closure (default on). Linking every harness against all 1,231
 # objects costs ~19 s each; a typical harness needs 2-20. The index is built
 # once from `make print-objs` and cached, so the per-port cost is one BFS.
@@ -352,93 +394,6 @@ FAIL=0
 # harness correctly classify FALSE FAPs (env noise — real cwd, git status,
 # hostname) as non-failures instead of spurious MISMATCHes.
 REG_JSON="${REG_JSON:-tests/oracle/registry.json}"
-STRIP_PATTERNS=$("$PY" -c "
-import json,sys
-d = json.load(open('$REG_JSON'))
-norm = d.get('normalize',{}).get('strip_patterns',[])
-port = d.get('ports',{}).get(sys.argv[1],{})
-port_strip = port.get('strip_patterns',[]) if isinstance(port, dict) else []
-print('\\n'.join(list(norm) + list(port_strip)))
-" "$NAME" 2>/dev/null)
-STRIP_FIELDS=$("$PY" -c "import json,sys; print(' '.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_fields',[])))" 2>/dev/null)
-# Per-port float/int canonicalization: C's JSON writer renders integral
-# doubles as "1" while Python emits "1.0"; when the port opts in
-# (normalize.float_int_equal), rewrite integral floats to ints on both sides.
-FLOAT_INT_EQUAL=$("$PY" -c "import json,sys; d=json.load(open('$REG_JSON')); print(1 if d.get('ports',{}).get(sys.argv[1],{}).get('normalize',{}).get('float_int_equal') else 0)" "$NAME" 2>/dev/null)
-
-normalize_out() {  # $1 = file
-  local f="$1"
-  local tmp; tmp="$(tmpfile)"
-  cp "$f" "$tmp"
-  # Canonicalize every JSON line: JSON object key order is semantically
-  # irrelevant, but C's serializer emits insertion order while Python's
-  # json.dumps may sort (or preserve dict order). Always re-serialize with
-  # sort_keys=True so both sides compare on sorted keys (byte-identical diff).
-  # float_int_equal additionally coerces integral floats to ints (C's JSON
-  # writer renders 1.0 as "1" via %.0f; Python emits "1.0").
-  tmp2="$(tmpfile)"
-  "$PY" - "$tmp" "$FLOAT_INT_EQUAL" <<'PY' > "$tmp2"
-import json, sys
-FLOAT_INT_EQUAL = sys.argv[2] == "1"
-def canon(o):
-    if FLOAT_INT_EQUAL and isinstance(o, float) and o == int(o):
-        return int(o)
-    if isinstance(o, dict):
-        return {k: canon(v) for k, v in o.items()}
-    if isinstance(o, list):
-        return [canon(v) for v in o]
-    return o
-out = []
-for line in open(sys.argv[1], encoding='utf-8', errors='replace'):
-    line = line.strip()
-    if not line: continue
-    try:
-        out.append(json.dumps(canon(json.loads(line)), sort_keys=True))
-    except Exception:
-        out.append(line)
-sys.stdout.write('\n'.join(out) + '\n')
-PY
-  mv "$tmp2" "$tmp"
-  # strip_patterns: treat each as a Python regex, remove every match
-  if [ -n "$STRIP_PATTERNS" ]; then
-    tmp2="$(tmpfile)"
-    "$PY" - "$tmp" "$STRIP_PATTERNS" <<'PY' > "$tmp2" || cp "$tmp" "$tmp2"
-import re, sys
-src, pats = sys.argv[1], sys.argv[2]
-text = open(src, encoding='utf-8', errors='replace').read()
-for p in pats.split('\n'):
-    p = p.strip()
-    if p:
-        text = re.sub(p, '', text)
-open(sys.argv[1].replace('/tmp/','/tmp/n_'), 'w').write(text) if False else None
-sys.stdout.write(text)
-PY
-    mv "$tmp2" "$tmp"
-  fi
-  # strip_fields: drop top-level JSON object keys (per-line JSON)
-  if [ -n "$STRIP_FIELDS" ]; then
-    tmp2="$(tmpfile)"
-    "$PY" - "$tmp" $STRIP_FIELDS <<'PY' > "$tmp2"
-import json, sys
-src = sys.argv[1]; fields = set(sys.argv[2:])
-out = []
-for line in open(src, encoding='utf-8', errors='replace'):
-    line = line.strip()
-    if not line: continue
-    try:
-        obj = json.loads(line)
-        if isinstance(obj, dict):
-            obj = {k: v for k, v in obj.items() if k not in fields}
-            line = json.dumps(obj)
-    except Exception:
-        pass
-    out.append(line)
-sys.stdout.write('\n'.join(out) + '\n')
-PY
-    mv "$tmp2" "$tmp"
-  fi
-  cat "$tmp"; rm -f "$tmp"
-}
 
 # (a) ENV-ISOLATION: both the C harness and the Python oracle run with a
 # sanitized env so non-pure / env-dependent functions oracle deterministically
@@ -476,32 +431,23 @@ ISO="$ISO ORACLE_FIXDIR=$(pwd)/$FIX"
 # oracle must keep the venv on PATH (httpx and other deps live there).
 ISO="$ISO HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= NO_PROXY= no_proxy= ALL_PROXY= all_proxy="
 
+mark harness-link
 # ---- phase 1: run the C harness for every case --------------------------
 BATCH_TSV="$BUILD_DIR/batch_$NAME.tsv"
 : > "$BATCH_TSV"
-for f in "$FIX"/*.in; do
-  case="$(basename "$f" .in)"
-  extra=""
-  [ -f "$FIX/args.$case" ] && extra="$(cat "$FIX/args.$case")"
-  # Fixtures use placeholders the harness/oracle must resolve:
-  #   @SBX@ -> TMPH (the isolated shared home exported to both sides)
-  #   @NOW@ -> a fixed timestamp (so time-relative ops are deterministic and
-  #            identical on both the C and Python sides)
-  # We substitute both in a temp copy and feed that to BOTH sides.
-  FSUB="$(tmpfile)"
-  # @NOTREPO@ -> a path guaranteed to be OUTSIDE any git repo and free of project
-  # markers (so functions that probe cwd/git return deterministic empty output
-  # instead of leaking the developer's real repo root / branch / commit hashes).
-  # /tmp is universally non-repo and marker-free.
-  # Binary fixtures (e.g. session_detail's *.in IS a seeded sqlite DB) must NOT
-  # go through sed — placeholder substitution on binary data corrupts it.
-  # Detect via NUL-byte DENSITY in the first 8KB (a real DB is mostly NULs; a
-  # text fixture may contain at most a stray NUL) and copy verbatim instead.
-  if head -c 8192 "$f" | tr -cd '\0' | wc -c | awk '{exit ($1 > 16) ? 0 : 1}'; then
-    cp "$f" "$FSUB"
-  else
-    sed -e "s#@SBX@#$TMPH#g" -e "s#@NOW@#1700000000.0#g" -e "s#@NOTREPO@#/tmp#g" "$f" > "$FSUB"
-  fi
+# Substitution happens in ONE Python process for the whole directory. Doing it
+# per case cost `head|tr|wc|awk` (~103 ms) plus `sed` (~66 ms) -- more process
+# startup than the C harness it was preparing input for.
+PREP_TSV="$BUILD_DIR/prep_$NAME.tsv"
+"$PY" tests/oracle/runners/prep_fixtures.py "$FIX" "$BUILD_DIR/subst_$NAME" "$TMPH" > "$PREP_TSV"
+while IFS=$'\t' read -r case FSUB extra; do
+  [ -z "$case" ] && continue
+  # Fixtures use placeholders the harness/oracle must resolve: @SBX@ -> the
+  # isolated shared home, @NOW@ -> a fixed timestamp (so time-relative ops are
+  # deterministic and identical on both the C and Python sides), @NOTREPO@ ->
+  # a path guaranteed to be outside any git repo and free of project markers.
+  # Binary fixtures (*.in that is really a seeded sqlite DB) are copied
+  # verbatim: text substitution would corrupt them.
   # The C engine resolves its home via SLERMES_HOME (kanban_home()), while the
   # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
   # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
@@ -521,6 +467,7 @@ for f in "$FIX"/*.in; do
          "$BUILD_DIR/oracle_${NAME}_c_${case}.json" "$extra" >> "$BATCH_TSV"
 done
 
+mark c-cases
 # ---- phase 2: one Python process runs every case ------------------------
 # Spawning the oracle per case cost 182 interpreter startups on a 182-case
 # port, which dwarfed the C side. One process, modules imported once.
@@ -537,42 +484,38 @@ else
   echo "WARN: batch oracle failed for $NAME; see $BUILD_DIR/batch_$NAME.err" >&2
 fi
 
-# ---- phase 3: compare ---------------------------------------------------
-while IFS=$'\t' read -r case FSUB C_OUT EXTRA; do
-  [ -z "$case" ] && continue
-  ORACLE_OUT="$BUILD_DIR/oracle_${NAME}_py_${case}.json"
-  ORACLE_RC=0
-  [ -s "$ORACLE_OUT" ] || ORACLE_RC=1
-  # A missing/empty oracle output must never compare equal to anything. Two
-  # empty files are byte-identical, so without this guard a failed oracle
-  # reports MATCH -- the false pass this runner was rebuilt to prevent.
-  if [ "$ORACLE_RC" -ne 0 ]; then
-    echo "$case: MISMATCH (oracle produced no output)"; FAIL=1
-    rm -f "$FSUB"
-    continue
-  fi
-  normalize_out "$ORACLE_OUT" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
-  normalize_out "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json"
-  if files_equal "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json" "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"; then
-    echo "$case: MATCH"
+# ---- phase 3: report verdicts the batch process already computed ---------
+# Normalisation and comparison happen inside the single oracle interpreter.
+# Doing it here cost three Python spawns per case (~170 ms each), which for a
+# 182-case port was ~93 s of interpreter startup -- more than the C side it
+# was measuring.
+mark oracle+compare
+VERDICTS="$BUILD_DIR/batch_$NAME.verdicts.json"
+if [ -s "$VERDICTS" ]; then
+  if "$PY" - "$VERDICTS" <<'PY'
+import json, sys
+vs = json.load(open(sys.argv[1], encoding="utf-8"))
+bad = 0
+for v in vs:
+    line = f"{v['name']}: {v['verdict']}"
+    if v.get("reason"):
+        line += f" ({v['reason']})"
+    print(line)
+    if v["verdict"] != "MATCH":
+        bad += 1
+        c = (v.get("c_norm") or "").strip()
+        p = (v.get("py_norm") or "").strip()
+        if c: print("  C : " + c[:400])
+        if p: print("  PY: " + p[:400])
+sys.exit(1 if bad else 0)
+PY
+  then
+    echo "cases: MATCH"
   else
-    # Some oracles are self-summarizing: they print "MISMATCH ..." lines on
-    # failure and exit non-zero, otherwise print "RESULT: X/Y match, 0 mismatch"
-    # (or "oracle: 0 mismatches") and exit 0. The raw JSON diff above can't parse
-    # that framing, so honor the oracle's own verdict when present.
-    if grep -q "MISMATCH" "$ORACLE_OUT"; then
-      echo "$case: MISMATCH"; FAIL=1
-      echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
-      echo "  PY: $(cat "$ORACLE_OUT")"
-    elif [ "$ORACLE_RC" -eq 0 ] && grep -qE "RESULT: .*0 mismatch|oracle: 0 mismatch|0 mismatches|0 failed" "$ORACLE_OUT"; then
-      echo "$case: MATCH"
-    else
-      echo "$case: MISMATCH"; FAIL=1
-      echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
-      echo "  PY: $(cat "$ORACLE_OUT")"
-    fi
+    echo "cases: MISMATCH"; FAIL=1
   fi
-  rm -f "$FSUB"
-done < "$BATCH_TSV"
+else
+  echo "cases: MISMATCH (no verdicts produced)"; FAIL=1
+fi
 rm -rf "$TMPH"
 exit $FAIL

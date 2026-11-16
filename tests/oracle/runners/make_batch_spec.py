@@ -13,7 +13,27 @@ import sys
 from pathlib import Path
 
 tsv, oracle, out_dir = sys.argv[1], sys.argv[2], Path(sys.argv[3])
-name = Path(tsv).stem[len("batch_"):] if Path(tsv).stem.startswith("batch_") else Path(tsv).stem
+stem = Path(tsv).stem
+name = stem[len("batch_"):] if stem.startswith("batch_") else stem
+
+# Normalisation config, read here rather than by three `python -c` spawns in
+# the shell. The spec then carries everything the single batch interpreter
+# needs to normalise AND compare, so the runner spawns nothing per case.
+cfg = {"strip_patterns": [], "strip_fields": [], "float_int_equal": False}
+try:
+    reg = json.loads(Path("tests/oracle/registry.json").read_text(encoding="utf-8"))
+    norm = reg.get("normalize", {}) or {}
+    cfg["strip_patterns"] = list(norm.get("strip_patterns", []) or [])
+    cfg["strip_fields"] = list(norm.get("strip_fields", []) or [])
+    port = (reg.get("ports", {}) or {}).get(name)
+    if isinstance(port, dict):
+        cfg["strip_patterns"] += list(port.get("strip_patterns", []) or [])
+        pcfg = port.get("normalize", {}) or {}
+        cfg["float_int_equal"] = bool(pcfg.get("float_int_equal"))
+        cfg["strip_fields"] += list(pcfg.get("strip_fields", []) or [])
+except Exception:
+    pass
+
 cases = []
 for line in Path(tsv).read_text(encoding="utf-8").splitlines():
     if not line.strip():
@@ -24,11 +44,15 @@ for line in Path(tsv).read_text(encoding="utf-8").splitlines():
     cases.append({
         "name": case,
         "fixture": fixture,
-        "stdin": c_output,
+        # The oracle's INPUT is the fixture -- the same bytes the C harness is
+        # handed. It used to receive the C output here, which let a
+        # stdin-reading oracle echo its own input and report MATCH.
+        "stdin": fixture,
+        "c_out": c_output,
         "out": str(out_dir / f"oracle_{name}_py_{case}.json"),
         "extra": extra,
     })
 
 out = out_dir / (Path(tsv).stem + ".json")
-out.write_text(json.dumps({"oracle": oracle, "cases": cases}), encoding="utf-8")
+out.write_text(json.dumps({"oracle": oracle, "cfg": cfg, "cases": cases}), encoding="utf-8")
 print(out)
