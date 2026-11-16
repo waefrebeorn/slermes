@@ -1,4 +1,3 @@
-import os
 #!/usr/bin/env python3
 """
 sta_oracle_title_stack.py — Python oracle for the title-generation stack:
@@ -15,8 +14,9 @@ Fixture ops (one per line; \\e -> ESC, \\n -> newline, \\x1e -> RS in text):
   summarize <text>
 Output: one compact JSON object per line (ensure_ascii=True).
 """
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/oracle")
 import json
-import pwd
 import sys
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

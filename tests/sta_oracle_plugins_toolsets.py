@@ -23,9 +23,9 @@ def _bind_live_python():
     """
     # The runner overrides $HOME for isolation, so expanduser("~") points at the
     # temp home. Resolve the REAL account home from the password database.
-    import pwd as _pwd
+    from real_home import REAL_HOME as _real_home
     try:
-        real_home = _pwd.getpwuid(os.getuid()).pw_dir
+        real_home = _real_home
     except Exception:
         real_home = os.path.expanduser("~")
     # Under the runner's isolated HOME, $HOME/.hermes/hermes-agent is a symlink
