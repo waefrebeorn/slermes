@@ -87,7 +87,13 @@ def main():
     total = 0
     for f in sorted(BUILD.glob("suite_*.rc")):
         total += 1
-        port = f.stem[6:]
+        # A CR in the rc filename (a port list written in Python text mode on
+        # Windows ends up CRLF, and the CR becomes part of the name) otherwise
+        # makes every port unreadable: the gate derives the port from the rc
+        # name and then looks for suite_<port>.log, which does not exist, so
+        # all 338 ports bucket as OTHER. Strip it so a stray CR degrades one
+        # port instead of the whole run.
+        port = f.stem[6:].rstrip("\r")
         if f.read_text(encoding="utf-8", errors="replace").strip() == "0":
             buckets["PASS"] += 1
             continue
