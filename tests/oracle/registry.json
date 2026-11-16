@@ -1166,7 +1166,9 @@
     "tools_skill_manager_tool": {
       "harness": "tests/t_port_tools_skill_manager_tool.c",
       "oracle": "tests/sta_oracle_tools_skill_manager_tool.py",
-      "fixtures": "tests/oracle/fixtures/tools_skill_manager_tool"
+      "fixtures": "tests/oracle/fixtures/tools_skill_manager_tool",
+      "status": "incomplete",
+      "incomplete_reason": "Phantom entry: no port source (src/tools/port_tools_skill_manager_tool.c does not exist), the harness is an auto-generated stub whose main() calls a no-op git_env() annotated to a DIFFERENT module (plugins/platforms/whatsapp_cloud/adapter.py), the fixture is the literal word 'single', and the oracle calls tools.checkpoint_manager._git_env (3 args) with 0. Nothing here measures anything; it only produces the NO-OUTPUT bucket. Real work is writing the harness against the actual port."
     },
     "tools_skill_usage": {
       "harness": "tests/t_port_tools_skill_usage.c",
