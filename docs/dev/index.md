@@ -113,13 +113,22 @@ char *my_tool_handler(const char *args_json, const char *task_id) {
 
 ## Code Style
 
-- Pure C11 (`-std=c11`): No C++, no VLAs, no GNU extensions
-- Snake_case for functions and variables
-- `static` for file-internal functions
+The full standard is **[docs/dev/c-standards.md](c-standards.md)**; naming is
+**[docs/dev/naming.md](naming.md)**. Both are enforced by gates.
+
+In brief:
+
+- Pure C11 (`-std=c11`): no C++, no VLAs, no GNU extensions
+- Snake case; a per-unit prefix on every exported symbol (`st_`, `ai_`, ...)
+- `static` for file-internal functions; exported functions declared in
+  `include/port_<stem>.h` and nowhere else
 - Error returns as `bool` or `NULL` on failure
-- JSON for structured data I/O
+- JSON for structured data I/O, built with the `json_t` API
 - All buffers initialized: `char buf[1024] = {0};`
-- Check malloc/calloc returns
+- Check malloc/calloc returns; every allocation has exactly one owner
+- 4 spaces, no tabs, LF endings, one final newline
+- Every ported function carries a `PoP:` annotation naming the Python function
+  it ports — without one the parity scanner cannot see the work
 
 ## Testing
 
