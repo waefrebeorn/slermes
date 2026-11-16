@@ -3,8 +3,14 @@ import json, sys, os, importlib.util
 from pathlib import Path
 
 DEV_ROOT = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev")
-if DEV_ROOT not in sys.path:
-    sys.path.insert(0, DEV_ROOT)
+# Upstream moved hermes_cli/agent_import.py out of core into the agent-importers
+# plugin (dev-tree commit 1342ab8553), and that plugin is not vendored in this
+# checkout -- so the dev tree has no such module and the import fails. The port
+# was taken from the copy THIS repo carries, so oracle against that first.
+SLERMES_ROOT = os.environ.get("SLERMES_ROOT")
+for _root in (SLERMES_ROOT, DEV_ROOT):
+    if _root and _root not in sys.path:
+        sys.path.insert(0, _root)
 
 try:
     import yaml
@@ -22,7 +28,11 @@ import os
 # We need default_source_dir, backup_memory_file, load_yaml_file,
 # dump_yaml_file, detect_agents — which use Path.home() / filesystem.
 _spec = importlib.util.spec_from_file_location(
-    "agent_import_mod", os.path.join(DEV_ROOT, "hermes_cli/agent_import.py"))
+    "agent_import_mod",
+    os.path.join(SLERMES_ROOT, "hermes_cli/agent_import.py")
+    if SLERMES_ROOT and os.path.exists(
+        os.path.join(SLERMES_ROOT, "hermes_cli/agent_import.py"))
+    else os.path.join(DEV_ROOT, "hermes_cli/agent_import.py"))
 agent_import_mod = importlib.util.module_from_spec(_spec)
 if _spec and _spec.loader:
     _spec.loader.exec_module(agent_import_mod)

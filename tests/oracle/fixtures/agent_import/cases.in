@@ -34,5 +34,5 @@
   {"op": "default_source_dir", "arg": "codex"},
   {"op": "detect_agents", "arg": "dummy"},
   {"op": "backup_memory_file", "arg": "@SBX@/memories/MEMORY.md"},
-  {"op": "backup_memory_file", "arg": "@SBX@/nonexistent.md"},
+  {"op": "backup_memory_file", "arg": "@SBX@/nonexistent.md"}
 ]

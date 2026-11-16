@@ -79,6 +79,10 @@ sys.path.insert(0, DEV_ROOT)
 # The slermes checkout (this file is at <slermes>/tests/oracle/).
 SLERMES_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
+# Exported, not just computed: a handful of ports were taken from Python sources
+# this repo vendors (hermes_cli/agent_import.py among them) because upstream
+# moved or deleted them. Those oracles need the checkout on their path.
+os.environ.setdefault("SLERMES_ROOT", SLERMES_ROOT)
 
 if __name__ == "__main__":
     import contextlib

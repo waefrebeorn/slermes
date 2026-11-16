@@ -179,11 +179,15 @@ int main(int argc, char **argv) {
             free(r);
         } else if (strcmp(op, "default_source_dir") == 0) {
             const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
-            char *r = ai_default_source_dir(s, "@SBX@");
+            const char *sbx = getenv("SLERMES_HOME");
+            if (!sbx || !*sbx) sbx = getenv("HOME");
+            char *r = ai_default_source_dir(s, sbx ? sbx : "");
             if (r) { printf("\"%s\"\n", r); free(r); }
             else { printf("null\n"); }
         } else if (strcmp(op, "detect_agents") == 0) {
-            char **r = ai_detect_agents("@SBX@");
+            const char *sbx = getenv("SLERMES_HOME");
+            if (!sbx || !*sbx) sbx = getenv("HOME");
+            char **r = ai_detect_agents(sbx ? sbx : "");
             print_str_array(r);
             if (r) {
                 for (size_t j = 0; r[j]; j++) free(r[j]);
