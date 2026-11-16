@@ -42,7 +42,8 @@ FLAGS_BY_FILE = {}
 # makefile change; everybody else waits for, or reuses, that result.
 PROBE_CACHE = ROOT / ".build_probe.json"
 PROBE_LOCK = ROOT / ".build_probe.lock"
-PROBE_LOCK_STALE_S = 1800
+PROBE_STALE_S = 120       # a make -n dry run takes seconds
+PROBE_WAIT_S = 120        # how long to wait on a lock we cannot reclaim
 
 
 def _probe_key() -> str:
@@ -68,12 +69,16 @@ def _read_probe(key: str):
 
 
 def _acquire_lock() -> bool:
+    # STALE_S and WAIT_S are deliberately different. A `make -n -B` dry run takes
+    # seconds, so a lock older than two minutes is a crashed run, not a live one.
+    # Using one 1800 s constant for both meant a killed run blocked every later
+    # gate for half an hour -- the wait bound must be far shorter than the stale
+    # age, or the lock is never reclaimed in practice.
     try:
         fd = os.open(PROBE_LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
-        # A crashed run leaves the lock behind; retire it after a stale age.
         try:
-            if time.time() - os.path.getmtime(PROBE_LOCK) > PROBE_LOCK_STALE_S:
+            if time.time() - os.path.getmtime(PROBE_LOCK) > PROBE_STALE_S:
                 os.unlink(PROBE_LOCK)
                 return _acquire_lock()
         except OSError:
@@ -91,14 +96,19 @@ def make_probe() -> str:
         return cached
     if not _acquire_lock():
         # Another process is probing; wait for it rather than racing the tree.
-        for _ in range(PROBE_LOCK_STALE_S):
+        for _ in range(PROBE_WAIT_S):
             time.sleep(1)
             cached = _read_probe(key)
             if cached is not None:
                 return cached
         raise SystemExit("timed out waiting for the build-probe lock")
     try:
-        r = subprocess.run(["make", "-n", "-B"], cwd=ROOT, capture_output=True,
+        # A target is REQUIRED. `make -n -B` with no target walks every goal
+        # in the tree and took past 280 s; `make -n -B slermes` is 3 s and
+        # covers every source the product compiles, which is the only thing
+        # this gate needs.
+        r = subprocess.run(["make", "-n", "-B", "slermes"], cwd=ROOT,
+                           capture_output=True,
                            text=True, encoding="utf-8", errors="replace")
         PROBE_CACHE.write_text(json.dumps({"key": key, "stdout": r.stdout}),
                                encoding="utf-8")
@@ -164,21 +174,42 @@ def sources():
     return sorted(out)
 
 
-def check(path):
-    cmd = FLAGS_BY_FILE.get(path)
-    if cmd:
-        shell_cmd = f'{cmd} -fsyntax-only "{path}"'
-    else:
-        shell_cmd = f'{CC} -fsyntax-only "{path}"'
-    r = subprocess.run(
-        ["sh", "-c", shell_cmd],
-        cwd=ROOT, capture_output=True, text=True,
-        encoding="utf-8", errors="replace",
-    )
-    if r.returncode == 0:
-        return None
-    n = sum(1 for ln in r.stderr.splitlines() if "error:" in ln)
-    return {"file": path, "errors": n}
+def check_many(paths):
+    """Syntax-check a batch of files with ONE compiler invocation.
+
+    The per-file version spawned `sh -c "cc -fsyntax-only <file>"` 2,010 times
+    (~0.2 s of process startup each, 4 workers) which took the gate past 420
+    seconds. gcc accepts several sources with -fsyntax-only and reports each
+    file's errors with its own path prefix, so batching loses no information.
+
+    Files are grouped by their flag set first: FLAGS_BY_FILE exists precisely
+    because some units need different flags, and mixing them would be wrong.
+    """
+    by_cmd = {}
+    for p in paths:
+        by_cmd.setdefault(FLAGS_BY_FILE.get(p, CC), []).append(p)
+
+    out = []
+    for cmd, files in by_cmd.items():
+        for i in range(0, len(files), 64):
+            chunk = files[i:i + 16]
+            argv = ["sh", "-c", cmd + " -fsyntax-only " +
+                    " ".join(f'"{f}"' for f in chunk)]
+            r = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace")
+            if r.returncode == 0:
+                continue
+            counts = {}
+            for ln in r.stderr.splitlines():
+                if "error:" not in ln:
+                    continue
+                for f in chunk:
+                    if ln.startswith(f + ":") or f in ln[:200]:
+                        counts[f] = counts.get(f, 0) + 1
+                        break
+            for f, n in counts.items():
+                out.append({"file": f, "errors": n})
+    return out
 
 
 def main():
@@ -200,7 +231,8 @@ def main():
     # spawns -- the same fork-exhaustion family as the oracle suite). 4 is the
     # largest count that stays green; override with HEALTH_JOBS.
     with ThreadPoolExecutor(max_workers=int(os.environ.get("HEALTH_JOBS", "4"))) as ex:
-        results = [r for r in ex.map(check, files) if r]
+        chunks = [files[i:i + 64] for i in range(0, len(files), 64)]
+        results = [r for rs in ex.map(check_many, chunks) for r in rs]
 
     failing = sorted(results, key=lambda r: -r["errors"])
     total = len(files)
