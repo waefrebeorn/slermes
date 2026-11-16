@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     json_t *ops = json_object_get(root, "ops");
     if (ops && ops->type == JSON_ARRAY) {
         for (size_t i = 0; i < json_len(ops); i++) {
-            json_t *c = json_object_get_at(ops, i);
+            json_t *c = json_array_get(ops, i);
             const char *op = js(c, "op", "");
             if (strcmp(op, "is_session_id") == 0) {
                 int r = laf_is_session_id(js(c, "value", ""));
