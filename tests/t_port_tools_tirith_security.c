@@ -16,13 +16,13 @@ static const char *js(const char *s){
 }
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  printf("{\"func\":\"_load_security_config\",\"ret\":%s}\n", js(_load_security_config()));
-  _reset_spawn_warning_state();
+  printf("{\"func\":\"load_security_config\",\"ret\":%s}\n", js(load_security_config()));
+  reset_spawn_warning_state();
   printf("{\"func\":\"_get_hermes_home\",\"ret\":%s}\n", js(_get_hermes_home()));
-  printf("{\"func\":\"_read_failure_reason\",\"ret\":%s}\n", js(_read_failure_reason()));
-  printf("{\"func\":\"_is_install_failed_on_disk\",\"ret\":%d}\n", (int)_is_install_failed_on_disk());
-  _clear_install_failed();
-  printf("{\"func\":\"_detect_target\",\"ret\":%s}\n", js(_detect_target()));
+  printf("{\"func\":\"read_failure_reason\",\"ret\":%s}\n", js(read_failure_reason()));
+  printf("{\"func\":\"is_install_failed_on_disk\",\"ret\":%d}\n", (int)is_install_failed_on_disk());
+  clear_install_failed();
+  printf("{\"func\":\"detect_target\",\"ret\":%s}\n", js(detect_target()));
   printf("{\"func\":\"is_platform_supported\",\"ret\":%d}\n", (int)is_platform_supported());
   return 0;
 }

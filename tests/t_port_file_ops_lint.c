@@ -61,14 +61,14 @@ int main(void)
 
     /* ---- delete_path write-deny guard ---- */
     emit_bool2("delete_path_denied", "/etc/passwd", "",
-        file_ops_delete_path("/etc/passwd"));
+        file_ops_delete_path("/etc/passwd") == NULL);
     emit_bool2("delete_path_denied", "~/.ssh/id_rsa", "",
-        file_ops_delete_path("~/.ssh/id_rsa"));
+        file_ops_delete_path("~/.ssh/id_rsa") == NULL);
     /* a real temp file INSIDE the safe root should delete successfully */
     char tp[256];
     snprintf(tp, sizeof(tp), "/tmp/hermes-lint-test-home/del-%d.txt", (int)getpid());
     FILE *f = fopen(tp, "w"); if (f) { fputs("x", f); fclose(f); }
-    emit_bool2("delete_path_ok", tp, "", file_ops_delete_path(tp));
+    emit_bool2("delete_path_ok", tp, "", file_ops_delete_path(tp) == NULL);
 
     return 0;
 }

@@ -16,6 +16,6 @@ static const char *js(const char *s){
 }
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  _git_env();
+  git_env();
   return 0;
 }

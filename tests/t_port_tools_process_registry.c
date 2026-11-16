@@ -20,8 +20,8 @@ static const char *js(const char *s){
 }
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  process_registry_set_close_sink();
-  printf("{\"func\":\"process_registry_get_session\",\"ret\":%d}\n", process_registry_get_session());
-  printf("{\"func\":\"process_registry_recover_from_checkpoint\",\"ret\":%d}\n", process_registry_recover_from_checkpoint());
+  process_registry_set_close_sink(NULL);
+  printf("{\"func\":\"process_registry_get_session\",\"ret\":%d}\n", process_registry_get_session("", NULL));
+  printf("{\"func\":\"recover_from_checkpoint\",\"ret\":%d}\n", recover_from_checkpoint());
   return 0;
 }

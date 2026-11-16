@@ -62,9 +62,8 @@ int main(int argc, char **argv) {
             char *r = flux3_default_directory();
             printf("%s\n", r ? r : "null"); free(r);
         } else if (strcmp(name, "_resolve_destination") == 0) {
-            const char *save_to = json_obj_get(c, "save_to");
-            save_to = save_to ? json_get_str(c, "save_to", "") : "";
-            const char *filename = json_obj_get(c, "filename");
+            const char *save_to = json_get_str(c, "save_to", "");
+            const char *filename = json_get_str(c, "filename", "");
             char *r = flux3_resolve_destination(
                 json_has(c, "save_to") ? json_get_str(c, "save_to", "") : NULL,
                 json_has(c, "filename") ? json_get_str(c, "filename", "") : NULL);
