@@ -6,7 +6,7 @@
  * sanitize_user_prompt_text() and emits {"in":...,"out":...} (raw bytes).
  */
 
-#include "input_sanitize.h"
+#include "port_input_sanitize.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     while ((line = read_line_alloc(fp)) != NULL) {
         if (!*line || line[0] == '#') { free(line); continue; }
         char *decoded = decode_escapes(line);
-        char *result = sanitize_user_prompt_text(decoded);
+        char *result = input_sanitize_sanitize_user_prompt_text(decoded);
 
         /* Emit {"in":...,"out":...} as JSON strings (mirrors oracle
          * json.dumps ensure_ascii=True; libjson escapes control chars the

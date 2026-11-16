@@ -484,4 +484,8 @@ CUPBOARD_UNBUILT_MODS = \
     src/tools/tool_output_limits.o \
     src/tools/toolsets.o \
     src/tools/transcription_tools_pure.o \
-    src/tools/tts_text_normalize.o
+    src/tools/url_safety_ssrf.o \
+    src/tools/video_gen.o \
+    src/tools/voice_client_config.o \
+    src/tools/tts_text_normalize.o \
+    src/compat/net6_classify.o

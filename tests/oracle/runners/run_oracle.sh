@@ -160,7 +160,11 @@ LINKCMD=${LINKCMD//@slermes.link.rsp/@$RSP}
 # banner and the oracle compared two empty outputs. Put it first so its main()
 # wins under -Wl,--allow-multiple-definition.
 HARNESS_OBJ="$BUILD_DIR/obj/tests/t_port_$NAME.o"
-LINKCMD="$LINKCMD $HARNESS_OBJ"
+# Object files must precede the libraries: the link line ends with
+# $(LDFLAGS) $(LIBS) (-lssl -lcrypto ...), and appending the harness after them
+# leaves its references (e.g. MD5_Init from libcrypto) unresolved. Insert it
+# right after the response file instead.
+LINKCMD=${LINKCMD//@$RSP/@$RSP $HARNESS_OBJ}
 # There is no `diff` on this box: MSYS2 here ships no diffutils, and PATH
 # resolves the name to a WindowsApps alias stub that fails with "Permission
 # denied". Depending on an external diff would also make the runner fragile on

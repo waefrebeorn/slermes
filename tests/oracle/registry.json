@@ -839,7 +839,9 @@
   "port_tools_browser_camofox": {
    "harness": "tests/t_port_port_tools_browser_camofox.c",
    "oracle": "tests/sta_oracle_port_tools_browser_camofox.py",
-   "fixtures": "tests/oracle/fixtures/port_tools_browser_camofox"
+   "fixtures": "tests/oracle/fixtures/port_tools_browser_camofox",
+   "status": "incomplete",
+   "incomplete_reason": "harness references _is_loopback_hostname, which no first-party source defines -- harness drift against an API that does not exist"
   },
   "port_tools_env_passthrough": {
    "harness": "tests/t_port_port_tools_env_passthrough.c",
@@ -1592,7 +1594,9 @@
   "hermes_state": {
    "harness": "tests/t_port_hermes_state.c",
    "oracle": "tests/sta_oracle_hermes_state.py",
-   "fixtures": "tests/oracle/fixtures/hermes_state"
+   "fixtures": "tests/oracle/fixtures/hermes_state",
+   "status": "incomplete",
+   "incomplete_reason": "harness references hermes_state_is_disk_full_error, which no first-party source defines -- harness drift against an API that does not exist"
   },
   "hermes_state_db": {
    "harness": "tests/t_port_hermes_state_db.c",
