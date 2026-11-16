@@ -18,6 +18,7 @@ def load_module():
                      "gateway", "platforms", "yuanbao_proto.py"),
     )
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['yuanbao_proto'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

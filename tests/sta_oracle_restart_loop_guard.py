@@ -19,6 +19,7 @@ import importlib.util
 spec = importlib.util.spec_from_file_location(
     "restart_loop_guard_oracle", str(ROOT / "gateway" / "restart_loop_guard.py"))
 mod = importlib.util.module_from_spec(spec)
+sys.modules['restart_loop_guard_oracle'] = mod  # dataclasses need this
 spec.loader.exec_module(mod)
 
 

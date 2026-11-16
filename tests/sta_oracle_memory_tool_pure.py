@@ -27,6 +27,7 @@ def _load_module():
     cand = os.path.join(repo, "tools", "memory_tool.py")
     spec = importlib.util.spec_from_file_location("live_memory_tool", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_memory_tool'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

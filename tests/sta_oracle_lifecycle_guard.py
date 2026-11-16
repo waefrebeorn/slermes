@@ -7,6 +7,7 @@ import importlib.util
 spec = importlib.util.spec_from_file_location("lg_mod", "C:/Users/eman5/hermes-agent/cron/lifecycle_guard.py")
 mod = importlib.util.module_from_spec(spec)
 try:
+    sys.modules['lg_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

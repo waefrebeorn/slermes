@@ -22,6 +22,7 @@ def _load_module():
     cand = os.path.join(repo, "hermes_cli", "foreign_sessions.py")
     spec = importlib.util.spec_from_file_location("live_foreign_sessions", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_foreign_sessions'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

@@ -21,6 +21,7 @@ def load_module():
         os.path.join(hermes, "tools", "skills_sync_client.py"),
     )
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['skills_sync_client'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

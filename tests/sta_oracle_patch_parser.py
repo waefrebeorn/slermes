@@ -17,6 +17,7 @@ import importlib.util as u
 spec = u.spec_from_file_location("pp", "C:/Users/eman5/hermes-agent/tools/patch_parser.py")
 mod = u.module_from_spec(spec)
 try:
+    sys.modules['pp'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

@@ -27,6 +27,7 @@ def _load_usage_pricing():
         try:
             spec = importlib.util.spec_from_file_location("live_usage_pricing", cand)
             mod = importlib.util.module_from_spec(spec)
+            sys.modules['live_usage_pricing'] = mod  # dataclasses need this
             spec.loader.exec_module(mod)
             return mod
         except Exception:

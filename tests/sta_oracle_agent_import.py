@@ -35,6 +35,7 @@ _spec = importlib.util.spec_from_file_location(
     else os.path.join(DEV_ROOT, "hermes_cli/agent_import.py"))
 agent_import_mod = importlib.util.module_from_spec(_spec)
 if _spec and _spec.loader:
+    sys.modules['agent_import_mod'] = agent_import_mod  # dataclasses need this
     _spec.loader.exec_module(agent_import_mod)
 
 _ENTRY_DELIMITER = agent_import_mod.ENTRY_DELIMITER

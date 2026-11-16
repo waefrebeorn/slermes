@@ -23,6 +23,7 @@ def _load_module():
     # module imports sqlite3/subprocess at load; that's fine in CPython
     spec = importlib.util.spec_from_file_location("live_laf", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_laf'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

@@ -18,6 +18,7 @@ def load_module():
                      "foreign_sessions.py"),
     )
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['foreign_sessions'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

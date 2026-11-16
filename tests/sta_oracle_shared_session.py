@@ -45,6 +45,7 @@ def _load_session_mod():
         try:
             spec = importlib.util.spec_from_file_location("live_session", cand)
             mod = importlib.util.module_from_spec(spec)
+            sys.modules['live_session'] = mod  # dataclasses need this
             spec.loader.exec_module(mod)
             return mod
         except Exception:

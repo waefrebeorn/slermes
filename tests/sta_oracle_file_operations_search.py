@@ -14,6 +14,7 @@ for name in ["agent.tool_result_classification", "tools.terminal", "tools.patch"
         m.FILE_MUTATING_TOOL_NAMES = {"write_file", "patch"}
     sys.modules[name] = m
 try:
+    sys.modules['fo_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

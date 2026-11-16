@@ -30,6 +30,7 @@ def _load_module():
     cand = os.path.join(repo, "hermes_cli", "goals.py")
     spec = importlib.util.spec_from_file_location("live_goals", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_goals'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

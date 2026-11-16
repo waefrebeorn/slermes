@@ -24,6 +24,7 @@ def _load_module():
     cand = os.path.join(repo, "hermes_cli", "plugin_capabilities.py")
     spec = importlib.util.spec_from_file_location("live_pc", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_pc'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

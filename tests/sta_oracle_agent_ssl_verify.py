@@ -9,6 +9,7 @@ mod = importlib.util.module_from_spec(spec)
 # only stub 'utils' if needed; use real 'ssl'
 sys.modules.setdefault("utils", __import__("types").ModuleType("utils"))
 try:
+    sys.modules['sv_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

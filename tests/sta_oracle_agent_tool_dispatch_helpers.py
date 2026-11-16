@@ -10,6 +10,7 @@ mod = importlib.util.module_from_spec(spec)
 m = types.ModuleType("agent.tool_result_classification"); m.FILE_MUTATING_TOOL_NAMES = {"write_file", "patch"}
 sys.modules["agent.tool_result_classification"] = m
 try:
+    sys.modules['tdh_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

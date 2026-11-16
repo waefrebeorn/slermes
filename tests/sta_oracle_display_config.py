@@ -15,6 +15,7 @@ SPEC = "C:/Users/eman5/hermes-agent/gateway/display_config.py"
 def load_module():
     spec = importlib.util.spec_from_file_location("display_config", SPEC)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['display_config'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

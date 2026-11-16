@@ -31,6 +31,7 @@ def _load_module():
     cand = os.path.join(repo, "hermes_cli", "console_engine.py")
     spec = importlib.util.spec_from_file_location("live_console_engine", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_console_engine'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

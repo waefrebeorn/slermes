@@ -12,6 +12,7 @@ utils_mod.is_truthy_value = lambda v, default=False: (
     (str(v).strip().lower() in {"1","true","yes","on"}) if isinstance(v, str) else bool(v))
 sys.modules["utils"] = utils_mod
 try:
+    sys.modules['vh_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

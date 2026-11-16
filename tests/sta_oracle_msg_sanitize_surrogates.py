@@ -29,6 +29,7 @@ def _load():
         try:
             spec = importlib.util.spec_from_file_location("live_ms", cand)
             mod = importlib.util.module_from_spec(spec)
+            sys.modules['live_ms'] = mod  # dataclasses need this
             spec.loader.exec_module(mod)
             return mod
         except Exception:

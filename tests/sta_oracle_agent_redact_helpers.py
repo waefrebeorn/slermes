@@ -6,6 +6,7 @@ sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import importlib.util
 spec = importlib.util.spec_from_file_location("redact_mod", "C:/Users/eman5/hermes-agent/agent/redact.py")
 mod = importlib.util.module_from_spec(spec)
+sys.modules['redact_mod'] = mod  # dataclasses need this
 spec.loader.exec_module(mod)
 
 mm = 0

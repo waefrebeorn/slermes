@@ -13,6 +13,7 @@ def _load(rel):
         try:
             spec = importlib.util.spec_from_file_location('live_' + rel.replace('/', '_').replace('.', '_'), cand)
             mod = importlib.util.module_from_spec(spec)
+            sys.modules['live_'] = mod  # dataclasses need this
             spec.loader.exec_module(mod)
             return mod
         except Exception:

@@ -16,6 +16,7 @@ def _atomic_json_write(path, data, indent=None):
 utils_mod.atomic_json_write = _atomic_json_write
 sys.modules["utils"] = utils_mod
 try:
+    sys.modules['dc_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

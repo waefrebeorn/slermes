@@ -25,6 +25,7 @@ def _import_ref():
     import importlib.util
     spec = importlib.util.spec_from_file_location("port_web_server_auth_ref", PY_REF)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['port_web_server_auth_ref'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

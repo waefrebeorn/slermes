@@ -13,6 +13,7 @@ import importlib.util as u
 spec = u.spec_from_file_location("disp", "C:/Users/eman5/hermes-agent/agent/display.py")
 mod = u.module_from_spec(spec)
 try:
+    sys.modules['disp'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)

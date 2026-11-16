@@ -18,6 +18,7 @@ spec = importlib.util.spec_from_file_location(
     "runtime_footer_oracle", str(ROOT / "gateway" / "runtime_footer.py"))
 assert spec and spec.loader
 mod = importlib.util.module_from_spec(spec)
+sys.modules['runtime_footer_oracle'] = mod  # dataclasses need this
 spec.loader.exec_module(mod)
 
 

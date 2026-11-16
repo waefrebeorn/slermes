@@ -29,6 +29,7 @@ def _load_module():
     cand = os.path.join(repo, "hermes_cli", "kanban_db.py")
     spec = importlib.util.spec_from_file_location("live_kanban_db", cand)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules['live_kanban_db'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
     return mod
 

@@ -8,6 +8,7 @@ spec = importlib.util.spec_from_file_location("sc_mod", "C:/Users/eman5/hermes-a
 mod = importlib.util.module_from_spec(spec)
 # stub heavy deps (threading/logging fine; asyncio fine)
 try:
+    sys.modules['sc_mod'] = mod  # dataclasses need this
     spec.loader.exec_module(mod)
 except Exception as e:
     print("IMPORT_FAIL", repr(e)); sys.exit(2)
