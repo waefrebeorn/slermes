@@ -5,6 +5,8 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "process_registry.h"
+/* declared here: the harness's includes do not reach it */
+void process_registry_set_close_sink(process_registry_close_sink_t sink);
 
 static const char *js(const char *s){
   static char b[4][4096]; static int t=0; t=(t+1)&3; char *q=b[t]; *q++='"';

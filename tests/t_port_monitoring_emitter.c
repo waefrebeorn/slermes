@@ -8,6 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+/* declared here: the harness's includes do not reach it */
+json_t * json_deep_copy(const json_t *v);
+/* the harness's includes do not reach this declaration */
+void monitoring_mark_subscriber_failed(void);
 
 static const char *jb(bool v) { return v ? "true" : "false"; }
 

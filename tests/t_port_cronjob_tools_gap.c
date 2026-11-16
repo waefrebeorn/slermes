@@ -17,6 +17,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+/* declared here: the harness's includes do not reach it */
+void cronjob_notify_provider_jobs_changed_safe(void);
+/* declared here: the harness's includes do not reach it */
+json_t * cronjob_execute_job_now(const json_t *job);
+/* declared here: the harness's includes do not reach it */
+json_t * cronjob_dispatch(const json_t *args);
+/* declared here: the harness's includes do not reach it */
+char * cronjob_validate_cron_script_path(const char *script);
+/* declared here: the harness's includes do not reach it */
+char * cronjob_validate_cron_base_url(const char *provider, const char *base_url);
+/* declared here: the harness's includes do not reach it */
+json_t * cronjob_format_job(const json_t *job);
+/* the harness's includes do not reach this declaration */
+bool cronjob_check_cronjob_requirements(void);
 
 /* minimal JSON string escaper for harness output */
 static void esc_print(const char *s) {

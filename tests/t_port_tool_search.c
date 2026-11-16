@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hermes_tool_search.h"
+/* declared here: the harness's includes do not reach it */
+char * tool_search_assemble(const char *tool_schemas[], int schema_count, int context_length, const tool_search_config_t *config, tool_search_assembly_t *out_result);
 
 static void emit_json_string(const char *s) {
     if (!s) { printf("null"); return; }

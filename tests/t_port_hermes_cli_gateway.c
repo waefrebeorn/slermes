@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "port_gateway.c"
+/* the harness's includes do not reach this declaration */
+bool supports_systemd_services(void);
 
 static const char *js(const char *s){
   static char b[4][4096]; static int t=0; t=(t+1)&3; char *q=b[t]; *q++='"';

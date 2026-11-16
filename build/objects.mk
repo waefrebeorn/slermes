@@ -488,4 +488,5 @@ CUPBOARD_UNBUILT_MODS = \
     src/tools/video_gen.o \
     src/tools/voice_client_config.o \
     src/tools/tts_text_normalize.o \
+    src/agent/billing_usage.o \
     src/compat/net6_classify.o
