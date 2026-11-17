@@ -434,7 +434,9 @@ static json_t *dc_build_platform_defaults(void)
     json_set(p, "dingtalk", json_copy(low));
 
     json_t *min = dc_tier("off", 0, false, false, false, false);
-    json_set(p, "email", json_copy(min));
+    /* email is not in upstream's built-in _PLATFORM_DEFAULTS; the live
+     * platform registry gives it the high display tier ("all"). */
+    json_set(p, "email", json_copy(high));
     json_set(p, "sms", json_copy(min));
     json_set(p, "webhook", json_copy(min));
     json_set(p, "homeassistant", json_copy(min));
