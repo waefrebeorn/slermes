@@ -9,6 +9,7 @@ if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.monitoring import gateway_health_export as ghe_mod
+from agent.monitoring.redaction import redact_bounded
 _ldm.rebind_used(ghe_mod, 'ghe_mod', ["agent.monitoring.otlp_exporter"], Path(__file__))
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else "cases.in"
@@ -22,7 +23,6 @@ for c in cases:
         limit = c.get("limit", 500)
         # _redact_string was deleted upstream (7eb8ccc315) and replaced by
         # agent.monitoring.redaction.redact_bounded, same signature/semantics.
-        from agent.monitoring.redaction import redact_bounded
         print(json.dumps(redact_bounded(raw, limit=limit)))
     elif op == "_safe_resource_attributes":
         raw_json = c.get("raw_json", "{}")
