@@ -18,6 +18,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#ifndef PATH_SEP_CHAR
+#ifdef _WIN32
+#define PATH_SEP_CHAR 92   /* ASCII backslash */
+#else
+#define PATH_SEP_CHAR 47   /* ASCII slash */
+#endif
+#endif
 #include <ctype.h>
 #include <unistd.h>
 #include <time.h>
@@ -333,20 +341,55 @@ char *cronjob_validate_cron_script_path(const char *script)
     while (*raw == ' ' || *raw == '\t') raw++;
     if (*raw == '\0') return NULL;
 
+    /* get_hermes_home(): HERMES_HOME env, else the platform default. Python
+     * embeds the RESOLVED scripts dir in its message (str(Path)), so a literal
+     * "~/.hermes/scripts/" can never match on Windows. */
+    const char *home = getenv("HERMES_HOME");
+    static char _home_buf[1024];
+    if (!home || !*home) {
+        const char *lad = getenv("LOCALAPPDATA");
+        if (lad && *lad)
+            snprintf(_home_buf, sizeof(_home_buf), "%s/hermes", lad);
+        else
+            snprintf(_home_buf, sizeof(_home_buf), "%s/.hermes",
+                     getenv("USERPROFILE") ? getenv("USERPROFILE") : ".");
+        home = _home_buf;
+    }
+    /* str(Path(home)) on Windows renders every '/' as '\\'. Native Windows
+     * homes are unaffected; this also normalises the MSYS-style paths the
+     * oracle isolation env supplies. */
+    char home_win[1024];
+    if (home[0] == '/' && isalpha((unsigned char)home[1]) && home[2] == '/') {
+        /* MSYS /c/... -> C:/... (what Windows Python's os.environ sees). */
+        snprintf(home_win, sizeof(home_win), "%c:/%s",
+                 toupper((unsigned char)home[1]), home + 3);
+        home = home_win;
+    }
+    char home_norm[1024];
+    size_t hn = 0;
+    for (const char *q = home; *q && hn + 1 < sizeof(home_norm); q++)
+        home_norm[hn++] = (*q == '/') ? 92 : *q;
+    home_norm[hn] = '\0';
+    home = home_norm;
+
+    char scripts_dir[1200];
+    snprintf(scripts_dir, sizeof(scripts_dir), "%s%cscripts", home, PATH_SEP_CHAR);
+
     if (raw[0] == '/' || raw[0] == '~' ||
         (strlen(raw) >= 2 && raw[1] == ':')) {
         char *msg;
         asprintf(&msg,
-                 "Script path must be relative to ~/.hermes/scripts/. "
+                 "Script path must be relative to %s/. "
                  "Got absolute or home-relative path: '%s'. "
-                 "Place scripts in ~/.hermes/scripts/ and use just the filename.",
-                 raw);
+                 "Place scripts in %s/ and use just the filename.",
+                 scripts_dir, raw, scripts_dir);
         return msg;
     }
 
     const char *seg = raw;
     while (*seg) {
-        if (seg[0] == '.' && seg[1] == '.' && (seg[2] == '/' || seg[2] == '\\' || seg[2] == '\0')) {
+        if (seg[0] == '.' && seg[1] == '.' &&
+            (seg[2] == '/' || seg[2] == '\\' || seg[2] == '\0')) {
             char *msg;
             asprintf(&msg,
                      "Script path escapes the scripts directory via traversal: '%s'",
@@ -355,6 +398,25 @@ char *cronjob_validate_cron_script_path(const char *script)
         }
         while (*seg && *seg != '/' && *seg != '\\') seg++;
         if (*seg) seg++;
+    }
+
+    /* Python's resolved_script.is_file(): a well-formed relative path that
+     * does not exist is rejected, not silently allowed. */
+    /* Path(scripts_dir) / raw normalises every separator, so mirror that
+     * before stat() and before embedding the path in the message. */
+    char rel_norm[1024];
+    size_t rn = 0;
+    for (const char *q = raw; *q && rn + 1 < sizeof(rel_norm); q++)
+        rel_norm[rn++] = (*q == '/') ? 92 : *q;
+    rel_norm[rn] = 0;
+    char full[1400];
+    snprintf(full, sizeof(full), "%s%c%s", scripts_dir, PATH_SEP_CHAR, rel_norm);
+    struct stat st;
+    if (stat(full, &st) != 0 || !S_ISREG(st.st_mode)) {
+        char *msg;
+        asprintf(&msg, "Script file not found: %s. Create it in %s/ first.",
+                 full, scripts_dir);
+        return msg;
     }
     return NULL;
 }
@@ -471,7 +533,8 @@ char *cronjob_validate_cron_base_url(const char *provider, const char *base_url)
     char *msg;
     asprintf(&msg,
              "base_url '%s' is not allowed for provider '%s'. A named "
-             "provider's stored credential may only be sent to its own endpoint; "
+             "provider's stored credential may only be sent to its own endpoint "
+             "(same scheme, host and port); "
              "use a configured custom provider (provider=\"custom\") for a custom base_url.",
              bu, prov);
     return msg;

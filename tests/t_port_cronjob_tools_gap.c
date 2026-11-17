@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 /* declared here: the harness's includes do not reach it */
 void cronjob_notify_provider_jobs_changed_safe(void);
 /* declared here: the harness's includes do not reach it */
@@ -191,7 +192,13 @@ int main(void)
     json_t *jref = json_object();
     json_set(jref, "id", json_string("gap_test_job"));
     json_set(jref, "name", json_string("gap_test_job"));
+    fflush(stdout);
+    int _saved_out = dup(1);
+    freopen("NUL", "w", stdout); /* suppress the job-exit notice on stdout */
     json_t *ej = cronjob_execute_job_now(jref);
+    fflush(stdout);
+    dup2(_saved_out, 1);
+    close(_saved_out);
     json_free(jref);
     printf("{\"fn\":\"execnow_real\",\"claimed\":%s,\"success\":%s}\n",
            json_is_true(json_obj_get(ej, "claimed")) ? "true" : "false",

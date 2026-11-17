@@ -1,164 +1,107 @@
-import load_dev_module as _ldm
-from pathlib import Path
-import os
 #!/usr/bin/env python3
+"""Pure reference oracle for cronjob_tools_gap.
+
+The previous version read the C output on stdin and printed ok/MISMATCH prose,
+which is a validator rather than a reference: the batch comparator needs both
+sides to emit the same JSON records. This version reads the fixture on argv and
+emits Python's reference records in the C harness's shape. Contract-only ops
+(dispatch/notify/execnow) have no Python counterpart backend, so they emit the
+documented contracts the C side is required to honour.
 """
-sta_oracle_cronjob_tools_gap.py — oracle for residual-façade closure (v558).
-Recomputes each case against LIVE Python tools/cronjob_tools and asserts the
-C output matches (or, for honestly-demoted functions, that C returns an
-honest error / no-op rather than a fake success).
-"""
-import sys, os, json
+import json
+import os
+import sys
+from pathlib import Path
+
+# MSYS hands the C harness "/c/..." but the Windows Python process may see
+# "\c\..." for the same env var. Normalise to a drive path before any import
+# caches HERMES_HOME, so both sides resolve the same scripts directory.
+_hh = os.environ.get("HERMES_HOME", "")
+if (len(_hh) > 2 and _hh[1].isalpha()
+        and ((_hh[0] == "/" and _hh[2] == "/") or
+             (_hh[0] == "\\" and _hh[2] == "\\"))):
+    os.environ["HERMES_HOME"] = _hh[1].upper() + ":" + _hh[2:]
+
+import load_dev_module as _ldm
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.cronjob_tools as ct
-_ldm.rebind_used(ct, 'ct', ["tools.cronjob_job_args"], Path(__file__))
+_ldm.rebind_used(ct, "ct", ["tools.cronjob_job_args"], Path(__file__))
 
-def env_enabled(v):
+PROMPT = ("This is a very long prompt that exceeds one hundred characters to "
+          "force the preview truncation logic to kick in properly and verify "
+          "the ellipsis is appended at the cut point.")
+
+
+def _env_enabled(v):
     return str(v).strip().lower() in ("1", "true", "yes", "on")
 
-def py_req():
-    for k in ("HERMES_INTERACTIVE", "HERMES_GATEWAY_SESSION", "HERMES_EXEC_ASK"):
-        os.environ.pop(k, None)
-    yield ("none", False)
-    os.environ["HERMES_INTERACTIVE"] = "1"
-    yield ("interactive=1", True)
-    os.environ.pop("HERMES_INTERACTIVE")
-    os.environ["HERMES_GATEWAY_SESSION"] = "true"
-    yield ("gateway=true", True)
-    os.environ["HERMES_GATEWAY_SESSION"] = "no"
-    os.environ["HERMES_EXEC_ASK"] = "off"
-    yield ("falsey", False)
-    for k in ("HERMES_INTERACTIVE", "HERMES_GATEWAY_SESSION", "HERMES_EXEC_ASK"):
-        os.environ.pop(k, None)
 
 def main():
+    # The harness carries its case list in code (the fixture is the literal
+    # "single"), so the reference must enumerate the same sequence itself.
     cases = []
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            cases.append(json.loads(line))
-        except Exception:
-            continue
-
-    mism = 0
-    total = 0
+    for env in ("none", "interactive=1", "gateway=true", "falsey"):
+        cases.append({"fn": "req", "env": env})
+    for s in ("scripts/myjob.sh", "/abs/path.sh", "~/cripts/x.sh",
+              "C:/windows.sh", "../escape.sh", "ok/../../bad.sh", ""):
+        cases.append({"fn": "script", "in": s})
+    for prov, bu in ((None, None), ("openai", "https://evil.example.com"),
+                     ("custom", "https://my.endpoint.com"),
+                     ("custom:acme", "https://acme.endpoint.com"),
+                     (None, "https://x.com"), ("openai", None)):
+        cases.append({"fn": "baseurl", "prov": prov, "bu": bu})
+    cases += [
+        {"fn": "format"}, {"fn": "notify"}, {"fn": "dispatch_add"},
+        {"fn": "dispatch_list"}, {"fn": "execnow_real"},
+        {"fn": "execnow_missing"}, {"fn": "execnow_noid"},
+        {"fn": "dispatch_remove"},
+    ]
     for c in cases:
-        fn = c["fn"]
-        total += 1
-        ok = True
-        detail = ""
+        fn = c.get("fn")
         if fn == "req":
-            gen = dict(py_req())
-            exp = gen.get(c["env"])
-            ok = (c["out"] == exp)
-            detail = f"C={c['out']} PY={exp}"
+            vals = {
+                "none": False,
+                "interactive=1": _env_enabled("1"),
+                "gateway=true": _env_enabled("true"),
+                "falsey": _env_enabled("no") or _env_enabled("off"),
+            }
+            out = {"fn": "req", "env": c["env"], "out": vals[c["env"]]}
         elif fn == "script":
-            inp = c["in"]
-            py = ct._validate_cron_script_path(inp)
-            cout = c["out"]
-            if py is None:
-                ok = (cout is None)
-            else:
-                ok = (cout is not None and cout == py)
-            detail = f"C={cout!r} PY={py!r}"
+            out = {"fn": "script", "in": c["in"],
+                   "out": ct._validate_cron_script_path(c["in"])}
         elif fn == "baseurl":
-            prov = c["prov"]
-            bu = c["bu"]
-            py = ct._validate_cron_base_url(prov, bu)
-            cout = c["out"]
-            py_blocked = py is not None
-            c_blocked = cout is not None
-            # C fails closed with a different message; the SECURITY DECISION
-            # (block vs allow) must match Python's.
-            ok = (py_blocked == c_blocked)
-            detail = f"C_blocked={c_blocked}({cout!r}) PY_blocked={py_blocked}"
+            out = {"fn": "baseurl", "prov": c.get("prov"), "bu": c.get("bu"),
+                   "out": ct._validate_cron_base_url(c.get("prov"), c.get("bu"))}
         elif fn == "format":
-            job = {
-                "prompt": "This is a very long prompt that exceeds one hundred characters to force the preview truncation logic to kick in properly and verify the ellipsis is appended at the cut point.",
-                "id": "job-123", "skill": "daily_report", "model": "gpt-4",
-                "provider": "openai", "schedule_display": "0 9 * * *",
-                "repeat": {"times": 1}, "deliver": "telegram",
-                "enabled": True, "state": "scheduled",
-            }
-            py = ct._format_job(job)
-            f = c["fields"]
-            checks = {
-                "job_id": py.get("job_id"),
-                "name": py.get("name"),
-                "skill": py.get("skill"),
-                "model": py.get("model"),
-                "provider": py.get("provider"),
-                "schedule": py.get("schedule"),
-                "deliver": py.get("deliver"),
-                "enabled": py.get("enabled"),
-                "state": py.get("state"),
-            }
-            for k, pv in checks.items():
-                cv = f.get(k)
-                cv = None if cv == "null" else cv
-                if str(cv) != str(pv):
-                    ok = False
-                    detail = f"field {k}: C={cv!r} PY={pv!r}"
-                    break
-            else:
-                # prompt_preview length: Python truncates at 100 + "..."
-                exp_len = min(100, len(job["prompt"])) + (3 if len(job["prompt"]) > 100 else 0)
-                if f.get("prompt_preview_len") != exp_len:
-                    ok = False
-                    detail = f"preview_len C={f['prompt_preview_len']} PY={exp_len}"
-                else:
-                    detail = "fields match"
+            py = ct._format_job({
+                "prompt": PROMPT, "id": "job-123", "skill": "daily_report",
+                "model": "gpt-4", "provider": "openai",
+                "schedule_display": "0 9 * * *", "repeat": {"times": 1},
+                "deliver": "telegram", "enabled": True, "state": "scheduled",
+            })
+            fields = {k: py.get(k) for k in (
+                "job_id", "name", "skill", "model", "provider",
+                "schedule", "deliver", "enabled", "state")}
+            fields["prompt_preview_len"] = min(100, len(PROMPT)) + (3 if len(PROMPT) > 100 else 0)
+            out = {"fn": "format", "fields": fields}
         elif fn == "notify":
-            # Python _notify_provider_jobs_changed_safe returns None (best-effort,
-            # never raises). C mirrors: void, must not crash. Reaching here = ok.
-            ok = (c.get("out") == "ok")
-            detail = "best-effort notify (returned cleanly)"
+            out = {"fn": "notify", "out": "ok"}
         elif fn == "dispatch_add":
-            # LIVE Python cronjob(action='create',...) returns success=True with a
-            # job_id. The C dispatcher uses action='add' over its own store and
-            # returns status='added'. Different backend, same CONTRACT: the create
-            # succeeds without error. (Oracle-rule: assert contract when backends
-            # differ — Python's create also returns no error for a valid job.)
-            ok = (c.get("status") == "added" and c.get("has_error") is False)
-            detail = f"status={c.get('status')} has_error={c.get('has_error')}"
+            out = {"fn": "dispatch_add", "status": "added", "has_error": False}
         elif fn == "dispatch_list":
-            # Python cronjob(action='list') returns {'success':True,'jobs':[...]}.
-            # Contract: the just-created job appears in the listing.
-            ok = (c.get("found") is True and c.get("count", 0) >= 1)
-            detail = f"count={c.get('count')} found={c.get('found')}"
+            out = {"fn": "dispatch_list", "count": 1, "found": True}
         elif fn == "execnow_real":
-            # Python _execute_job_now(job) for an active job returns
-            # claimed=True and success reflects the run. C runs `true` -> success.
-            ok = (c.get("claimed") is True and c.get("success") is True)
-            detail = f"claimed={c.get('claimed')} success={c.get('success')}"
+            out = {"fn": "execnow_real", "claimed": True, "success": True}
         elif fn == "execnow_missing":
-            # Python: a job that can't be claimed/found does not fire ->
-            # claimed=False. C mirrors for an unknown job.
-            ok = (c.get("claimed") is False)
-            detail = f"claimed={c.get('claimed')}"
+            out = {"fn": "execnow_missing", "claimed": False}
         elif fn == "execnow_noid":
-            # No id/name: nothing to fire -> claimed=False with an error string.
-            ok = (c.get("claimed") is False and c.get("has_error") is True)
-            detail = f"claimed={c.get('claimed')} has_error={c.get('has_error')}"
+            out = {"fn": "execnow_noid", "claimed": False, "has_error": True}
         elif fn == "dispatch_remove":
-            # Python cronjob(action='remove') returns success=True; C returns
-            # status='removed'. Contract: the removal reports success.
-            ok = (c.get("status") == "removed")
-            detail = f"status={c.get('status')}"
+            out = {"fn": "dispatch_remove", "status": "removed"}
         else:
-            ok = False
-            detail = f"unknown fn {fn}"
+            out = {"fn": fn, "error": "unknown op"}
+        print(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
 
-        if not ok:
-            mism += 1
-            print(f"MISMATCH [{fn}] {detail}")
-        else:
-            print(f"ok [{fn}] {detail}")
-
-    print(f"\nRESULT: {total - mism}/{total} match, {mism} mismatch")
-    sys.exit(1 if mism else 0)
 
 if __name__ == "__main__":
     main()
