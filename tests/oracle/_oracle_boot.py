@@ -84,6 +84,11 @@ SLERMES_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
 # moved or deleted them. Those oracles need the checkout on their path.
 os.environ.setdefault("SLERMES_ROOT", SLERMES_ROOT)
 
+# tests/oracle/ itself: oracles do `import load_dev_module` to rebind names
+# upstream moved out of a module. Without this the import fails and the oracle
+# produces no output -- an absent measurement, not a parity result.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 if __name__ == "__main__":
     import contextlib
     import io

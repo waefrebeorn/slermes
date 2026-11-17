@@ -1,3 +1,5 @@
+from pathlib import Path
+import load_dev_module as _ldm
 import os
 #!/usr/bin/env python3
 """
@@ -22,6 +24,7 @@ HERMES_PY = os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent") + ""
 sys.path.insert(0, HERMES_PY)
 
 import cron.scheduler as S  # noqa: E402
+_ldm.rebind_used(S, 'S', ["cron.__init__", "cron.blueprint_catalog", "cron.blueprint_plugins", "cron.bot_chat_legacy", "cron.cancellation", "cron.constants", "cron.delivery_outcome", "cron.delivery_queue", "cron.env_settings", "cron.execution_identity", "cron.executions", "cron.extra_fire", "cron.incidents", "cron.job_definition", "cron.jobs", "cron.jobs_invariants", "cron.jobs_model_pin", "cron.jobs_oneshot_diagnostics", "cron.jobs_time", "cron.lifecycle_guard", "cron.missed_runs", "cron.monitor", "cron.notepad", "cron.occurrences", "cron.quota_hold", "cron.scheduler_authority", "cron.scheduler_bookkeeping", "cron.scheduler_delivery", "cron.scheduler_delivery_origin", "cron.scheduler_detached_worker", "cron.scheduler_diagnostics", "cron.scheduler_failure_copy", "cron.scheduler_gateway_gate", "cron.scheduler_liveness", "cron.scheduler_ownership", "cron.scheduler_preflight", "cron.scheduler_prompt", "cron.scheduler_provider", "cron.scheduler_script", "cron.scheduler_thread", "cron.scheduler_tick", "cron.scheduler_worker_env", "cron.scheduler_worker_failure", "cron.scheduler_worktree_maintenance", "cron.store_health", "cron.suggestion_catalog", "cron.suggestions", "cron.unreachable_retry", "cron.worker_bootstrap"], Path(__file__))
 
 SILENT = S.SILENT_MARKER  # "[SILENT]"
 

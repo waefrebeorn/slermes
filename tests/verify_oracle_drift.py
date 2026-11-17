@@ -282,6 +282,30 @@ def _module_top_names(path: Path) -> set[str]:
     return names
 
 
+def _rebound_aliases(tree: ast.AST) -> set[str]:
+    """Aliases an oracle restores at runtime via load_dev_module.rebind_*.
+
+    `rebind_used(kdb, "kdb", [...])` takes the missing names from sibling
+    modules, so the attribute is legitimately absent from the module it was
+    imported from. This is a repair, not drift, and the gate must not report it.
+    """
+    out = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        f = node.func
+        name = f.id if isinstance(f, ast.Name) else (
+            f.attr if isinstance(f, ast.Attribute) else "")
+        if name not in ("rebind_used", "rebind_moved") or len(node.args) < 2:
+            continue
+        a0 = node.args[0]
+        if isinstance(a0, ast.Name):
+            out.add(a0.id)
+        elif isinstance(node.args[1], ast.Constant) and isinstance(node.args[1].value, str):
+            out.add(node.args[1].value)
+    return out
+
+
 def attr_drift(tree: ast.AST) -> list[tuple[int, str, str]]:
     """`alias._helper` where the live module no longer defines `_helper`.
 
@@ -297,6 +321,7 @@ def attr_drift(tree: ast.AST) -> list[tuple[int, str, str]]:
     aliases = _module_aliases(tree)
     if not aliases:
         return []
+    rebound = _rebound_aliases(tree)
     cache: dict[str, set[str] | None] = {}
     out: list[tuple[int, str, str]] = []
     seen: set[tuple[int, str]] = set()
@@ -308,7 +333,7 @@ def attr_drift(tree: ast.AST) -> list[tuple[int, str, str]]:
         if not node.attr.startswith("_"):
             continue
         dotted = aliases.get(node.value.id)
-        if not dotted:
+        if not dotted or node.value.id in rebound:
             continue
         if dotted not in cache:
             p = _resolve_module(dotted)
@@ -327,6 +352,8 @@ def attr_drift(tree: ast.AST) -> list[tuple[int, str, str]]:
 
 
 def main() -> int:
+    import sys as _sys
+    dump = "--dump" in _sys.argv
     incomplete = _incomplete()
     bad = []
     checked = 0
@@ -419,7 +446,21 @@ def main() -> int:
     print(f"drift gate: {len(sigbad)} arity mismatch(es), {len(newsigs)} new")
     for f, ln, w in newsigs[:25]:
         print(f"    {f}:{ln}  {w}")
-    newattrs = [(f, ln, w) for f, ln, w in attrbad if f"{f}:{ln}" not in allow]
+    newattrs = ([] if dump else
+                [(f, ln, w) for f, ln, w in attrbad if f"{f}:{ln}" not in allow])
+    if dump:
+        # Every finding, uncapped and unfiltered: reconciliation needs the true
+        # live set, and the normal report prints only NEW findings (max 25 per
+        # class), which can never show a dead entry.
+        for f, mod, nm, ln in bad:
+            print(f"    {f}:{ln}  {mod}.{nm}  -- not defined in that module")
+        for f, ln, rel in pathbad:
+            print(f"    {f}:{ln}  {rel}  -- no such module in either tree")
+        for f, ln, w in sigbad:
+            print(f"    {f}:{ln}  {w}")
+        for f, ln, w in attrbad:
+            print(f"    {f}:{ln}  {w}")
+        return 0
     print(f"drift gate: {len(attrbad)} attribute mismatch(es), {len(newattrs)} new")
     for f, ln, w in newattrs[:25]:
         print(f"    {f}:{ln}  {w}")

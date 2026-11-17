@@ -1,3 +1,5 @@
+from pathlib import Path
+import load_dev_module as _ldm
 """Oracle for agent/monitoring/gateway_health_export.py pure helpers."""
 import os
 import json, sys
@@ -7,6 +9,7 @@ if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from agent.monitoring import gateway_health_export as ghe_mod
+_ldm.rebind_used(ghe_mod, 'ghe_mod', ["agent.monitoring.__init__", "agent.monitoring.cron_health", "agent.monitoring.emitter", "agent.monitoring.events", "agent.monitoring.gateway_health", "agent.monitoring.otlp_exporter", "agent.monitoring.policy", "agent.monitoring.redaction"], Path(__file__))
 
 cases_file = sys.argv[1] if len(sys.argv) > 1 else "cases.in"
 with open(cases_file) as f:
