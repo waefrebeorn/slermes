@@ -33,6 +33,7 @@ GATES = [
     ("build-vars",    ["tests/verify_build_vars.py"],           True),
     ("port-objects",  ["tests/verify_port_objects.py"],         True),
     ("oracle-registry", ["tests/verify_oracle_registry.py"],    True),
+    ("harness-reads",  ["tests/verify_harness_reads.py"],        True),
     ("oracle-fixtures", ["tests/verify_oracle_fixtures.py"],    True),
     ("oracle-drift",  ["tests/verify_oracle_drift.py"],         True),
     ("build-health",  ["tests/verify_build_health.py", "--no-link"], True),
