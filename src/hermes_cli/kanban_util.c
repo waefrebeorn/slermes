@@ -19,6 +19,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <limits.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <fcntl.h>
@@ -557,6 +558,32 @@ int kdb_is_busy_error(const char *msg)
  * normpath(join(cwd, path)) - without this the empty string produced
  * "<cwd>/" while Python produced "<cwd>", and "a/./b" style inputs would
  * diverge the same way. */
+/* Mirror os.path.isabs for the host platform. On Windows this Python's
+ * ntpath.isabs is deliberately strict -- absolute only for a drive+root
+ * ("C:\") or a UNC prefix ("\\") -- so a bare leading "/" is NOT absolute and
+ * abspath joins it onto the cwd. That is why Python turned "/abs/y.sh" into
+ * "C:\abs\y.sh". This port used a POSIX test and kept "/abs/y.sh" whole. */
+static int kdb_path_is_abs(const char *p)
+{
+    if (!p || !p[0]) return 0;
+    size_t n = strlen(p);
+#ifdef _WIN32
+    if (n >= 2 && p[0] == '\\' && p[1] == '\\') return 1;
+    if (n >= 3 && p[1] == ':' && (p[2] == '\\' || p[2] == '/')) return 1;
+    /* MSYS2 spells a drive path as /c/Users/... or /C:/Users/... and this port's
+     * own home comes back that way (slermes_home -> HERMES_HOME, which the
+     * runner exports as an MSYS path). It is still absolute: without this,
+     * abspath prefixes the cwd and yields /c/cwd/c/Users/... Note /abs/y.sh is
+     * NOT matched -- p[2] is 'b', not '/' or ':' -- so it keeps ntpath's
+     * behaviour above. */
+    if (n >= 3 && p[0] == '/' && isalpha((unsigned char)p[1])
+        && (p[2] == '/' || p[2] == ':')) return 1;
+    return 0;
+#else
+    return p[0] == '/';
+#endif
+}
+
 static char *kdb_normpath(const char *p)
 {
     if (!p || !p[0]) return strdup("/");
@@ -566,7 +593,7 @@ static char *kdb_normpath(const char *p)
     if (!out) return NULL;
     out[0] = '\0';
     size_t o = 0;
-    int is_abs = (p[0] == '/');
+    int is_abs = kdb_path_is_abs(p);
     const char *s = p;
     /* processed segment stack (indices into a scratch buffer) */
     char *scratch = malloc(cap);
@@ -610,6 +637,20 @@ static char *kdb_normpath(const char *p)
     return out;
 }
 
+/* Current drive as "C:". realpath(".") may come back native ("C:\...") or
+ * MSYS-spelled ("/c/..."), so accept both. */
+static int kdb_current_drive(char *out, size_t sz)
+{
+    char cwd[PATH_MAX];
+    if (realpath(".", cwd) == NULL) return 0;
+    if (cwd[1] == ':') { snprintf(out, sz, "%c:", cwd[0]); return 1; }
+    if (cwd[0] == '/' && isalpha((unsigned char)cwd[1]) && cwd[2] == '/') {
+        snprintf(out, sz, "%c:", cwd[1]);
+        return 1;
+    }
+    return 0;
+}
+
 char *kdb_absolute_hermes_path(const char *path)
 {
     if (!path) return NULL;
@@ -628,11 +669,36 @@ char *kdb_absolute_hermes_path(const char *path)
         exp = strdup(path);
     }
     if (!exp) return NULL;
-    if (exp[0] == '/') {
+    if (kdb_path_is_abs(exp)) {
         /* already absolute: still normalize (abspath semantics) */
         char *norm = kdb_normpath(exp);
         free(exp);
         return norm;
+    }
+    if (exp[0] == '/' || exp[0] == '\\') {
+        /* Drive-relative: rooted but carries no drive. Win32 GetFullPathName
+         * resolves this against the CURRENT DRIVE, not the cwd, so Python's
+         * abspath turned "/abs/y.sh" into "C:\abs\y.sh". */
+        char drv[8];
+        if (kdb_current_drive(drv, sizeof(drv))) {
+            size_t L = strlen(drv) + 2 + strlen(exp);
+            char *j = malloc(L);
+            snprintf(j, L, "%s\\%s", drv, exp + 1);
+            free(exp);
+            /* Normalise the body on its own: kdb_normpath prepends a POSIX root
+             * to an absolute path, which would yield "\C:\abs". */
+            char *body = kdb_normpath(j + strlen(drv) + 1);
+            free(j);
+            if (!body) return NULL;
+            char *res = malloc(strlen(drv) + 2 + strlen(body));
+            if (!res) { free(body); return NULL; }
+            snprintf(res, strlen(drv) + 2 + strlen(body), "%s\\%s", drv, body);
+            free(body);
+            /* ntpath.normpath emits '\' separators. */
+            for (char *q = res; *q; q++)
+                if (*q == '/') *q = '\\';
+            return res;
+        }
     }
     char cwd[PATH_MAX];
     if (realpath(".", cwd) == NULL) { free(exp); return NULL; }
@@ -652,10 +718,56 @@ char *kdb_absolute_hermes_path(const char *path)
 /* PoP: kdb_path_search_names @ hermes_cli/kanban_db_dispatch.py:_path_search_names */
 char **kdb_path_search_names(const char *command)
 {
+    if (!command) return NULL;
+#ifndef _WIN32
     char **out = malloc(sizeof(char*) * 2);
     out[0] = strdup(command);
     out[1] = NULL;
     return out;
+#else
+    /* _path_search_names: an unqualified command is tried with each PATHEXT
+     * suffix; a command that already carries an extension is returned as-is.
+     * os.path.splitext ignores a dot in a directory component, so only the
+     * basename's last dot counts, and a leading dot is not an extension. */
+    const char *base = command;
+    for (const char *q = command; *q; q++)
+        if (*q == '/' || *q == '\\') base = q + 1;
+    const char *dot = strrchr(base, '.');
+    if (dot && dot != base) {
+        char **out = malloc(sizeof(char*) * 2);
+        out[0] = strdup(command);
+        out[1] = NULL;
+        return out;
+    }
+    const char *raw = getenv("PATHEXT");
+    if (!raw || !*raw) raw = ".COM;.EXE;.BAT;.CMD";
+    size_t n = 0;
+    for (const char *p = raw; ; ) {
+        size_t l = strcspn(p, ";");
+        if (l) n++;
+        if (!p[l]) break;
+        p += l + 1;
+    }
+    char **out = malloc(sizeof(char*) * (n + 1));
+    if (!out) return NULL;
+    size_t i = 0;
+    for (const char *p = raw; ; ) {
+        size_t l = strcspn(p, ";");
+        if (l) {
+            out[i] = malloc(strlen(command) + l + 1);
+            if (out[i]) {
+                memcpy(out[i], command, strlen(command));
+                memcpy(out[i] + strlen(command), p, l);
+                out[i][strlen(command) + l] = '\0';
+                i++;
+            }
+        }
+        if (!p[l]) break;
+        p += l + 1;
+    }
+    out[i] = NULL;
+    return out;
+#endif
 }
 
 /* PoP: kdb_safe_which_no_cwd @ hermes_cli/kanban_db_dispatch.py:_safe_which_no_cwd */
@@ -667,7 +779,15 @@ char *kdb_safe_which_no_cwd(const char *command)
     char **names = kdb_path_search_names(command);
     char tmp[PATH_MAX];
     char *result = NULL;
-    const char *sep = (strchr(path_env, ':') ? ":" : ";");
+    /* os.pathsep, not a sniff of the PATH contents: a Windows PATH is ';'-separated
+     * but every entry starts "C:\...", so a strchr(':') probe picks ':' and the
+     * whole PATH is read as one directory. */
+    const char *sep =
+#ifdef _WIN32
+        ";";
+#else
+        ":";
+#endif
     for (const char *pp = path_env; ; ) {
         size_t len = strcspn(pp, sep);
         if (!(len == 0 || (len == 1 && pp[0] == '.'))) {
@@ -681,7 +801,15 @@ char *kdb_safe_which_no_cwd(const char *command)
                 else ed = strdup(dir);
             } else ed = strdup(dir);
             for (int i = 0; names[i] && !result; i++) {
-                snprintf(tmp, sizeof(tmp), "%s/%s", ed, names[i]);
+                /* os.path.join: no doubled separator, and '\' on Windows. */
+                size_t el = strlen(ed);
+                const char *jsep = (el && (ed[el-1] == '/' || ed[el-1] == '\\')) ? "" :
+#ifdef _WIN32
+                    "\\";
+#else
+                    "/";
+#endif
+                snprintf(tmp, sizeof(tmp), "%s%s%s", ed, jsep, names[i]);
                 struct stat stt;
                 if (stat(tmp, &stt) == 0 && S_ISREG(stt.st_mode)
 #ifdef X_OK

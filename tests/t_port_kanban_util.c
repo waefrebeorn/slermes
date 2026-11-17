@@ -10,6 +10,7 @@
 
 #include "kanban_db.h"
 #include "hermes_json.h"
+#include "oracle/harness_json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,14 +37,20 @@ static void print_path_masked(const char *s)
     if (!s) { printf("null"); return; }
     char *home = kanban_home();
     size_t hl = home ? strlen(home) : 0;
-    printf("\"");
+    char *masked = NULL;
     if (home && strncmp(s, home, hl) == 0 && (s[hl] == '/' || s[hl] == 0)) {
-        printf("<HOME>%s", s + hl);
+        size_t L = strlen("<HOME>") + strlen(s + hl) + 1;
+        masked = malloc(L);
+        snprintf(masked, L, "<HOME>%s", s + hl);
     } else {
-        printf("%s", s);
+        masked = strdup(s);
     }
-    printf("\"");
     free(home);
+    /* hj_str, not printf("%s"): a real Windows path carries backslashes, and a
+     * raw one is an invalid JSON escape -- the normaliser then falls back to
+     * text comparison and every later case reads as a diff. */
+    hj_str(masked);
+    free(masked);
 }
 
 /* Map a fixture placeholder (T0/T1/T2) to the real task id returned by

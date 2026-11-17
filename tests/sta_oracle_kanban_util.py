@@ -26,6 +26,19 @@ ROOT = os.environ.get("SLERMES_SRC") or "C:/Users/eman5/hermes-agent"
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 import hermes_cli.kanban_db as kdb
+_ORACLE_DIR = os.path.dirname(os.path.abspath(__file__))
+if _ORACLE_DIR not in sys.path:
+    sys.path.insert(0, _ORACLE_DIR)
+import load_dev_module as _ldm
+# Upstream split kanban_db into kanban_db_workspace / _dispatch / _connect, so
+# the helpers this oracle reaches are now spread over three modules. Rebind the
+# whole surface it actually uses rather than chasing one AttributeError at a
+# time.
+_ldm.rebind_used(kdb, "kdb",
+                 ("hermes_cli.kanban_db_dispatch",
+                  "hermes_cli.kanban_db_workspace",
+                  "hermes_cli.kanban_db_connect"),
+                 Path(__file__))
 
 # The C engine resolves its home via SLERMES_HOME; the Python profiles module
 # via HERMES_HOME. The runner exports BOTH to the same temp dir for BOTH
@@ -76,7 +89,8 @@ def main():
             parts.append('{"op":"link","ok":true}')
         elif name == "find_missing_parents":
             parents = [ids.get(x, x) for x in a.get("parents", [])]
-            miss = kdb._find_missing_parents(conn, parents)
+            # Renamed upstream to _missing_task_ids (6b206f90ae), same body.
+            miss = kdb._missing_task_ids(conn, parents)
             parts.append('{"op":"find_missing_parents","missing":[%s]}'
                          % ",".join(jprint_str(m) for m in miss))
         elif name == "scan_prose":
@@ -124,7 +138,12 @@ def main():
         elif name == "absolute_hermes_path":
             ph = a.get("path", "")
             out = kdb._absolute_hermes_path(ph)
-            masked = (out or "").replace(SLERMES_HOME, "<HOME>")
+            # The harness prints <HOME> in place of the home it was given
+            # (SLERMES_HOME). Python resolves ~ through os.path.expanduser, which
+            # on Windows prefers USERPROFILE over HOME, so mask that root too or
+            # the oracle emits a real path the harness never prints.
+            masked = (out or "").replace(os.path.expanduser("~"), "<HOME>")
+            masked = masked.replace(SLERMES_HOME, "<HOME>")
             parts.append('{"op":"absolute_hermes_path","path":%s}' % jprint_str(masked))
         elif name == "path_search_names":
             cmd = a.get("cmd", "")

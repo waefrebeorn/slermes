@@ -49,6 +49,47 @@ def find(rel: str):
     return None
 
 
+def rebind_moved(mod, attrs, modules):
+    """Restore attributes upstream moved out of `mod`.
+
+    `from hermes_cli import kanban_db as kdb` then `kdb._scratch_tip_shown(...)`
+    dies with AttributeError once the helper moves to kanban_db_workspace. The
+    oracle's contract is with the module surface it was written against, so take
+    the name from wherever it now lives instead of allowlisting the drift as an
+    absent measurement.
+
+    `attrs` are the names the oracle reaches on `mod`; `modules` are candidate
+    donors (module objects or dotted names) in priority order. A name `mod`
+    still defines itself is never overridden.
+    """
+    import importlib
+    donors = [importlib.import_module(m) if isinstance(m, str) else m
+              for m in modules]
+    for a in attrs:
+        if hasattr(mod, a):
+            continue
+        for d in donors:
+            if hasattr(d, a):
+                setattr(mod, a, getattr(d, a))
+                break
+    return mod
+
+
+def rebind_used(mod, alias: str, modules, source: Path):
+    """Rebind every `<alias>.NAME` this oracle source actually reaches for.
+
+    Writing the moved names by hand means one AttributeError per missing name;
+    deriving them from the AST fixes the whole surface in one edit and cannot
+    drift from what the oracle really calls.
+    """
+    import ast
+    tree = ast.parse(Path(source).read_text(encoding="utf-8", errors="replace"))
+    names = sorted({n.attr for n in ast.walk(tree)
+                    if isinstance(n, ast.Attribute)
+                    and isinstance(n.value, ast.Name) and n.value.id == alias})
+    return rebind_moved(mod, names, modules)
+
+
 def load(name: str, candidates: list[str], package: str | None = None):
     """Load the first existing candidate under `name` and register it."""
     for rel in candidates:
