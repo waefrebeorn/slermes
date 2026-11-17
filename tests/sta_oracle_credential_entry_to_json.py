@@ -34,7 +34,10 @@ def emit(obj):
 
 
 def main():
-    for raw in sys.stdin:
+    # The batch spec supplies the fixture on argv; stdin is the C output.
+    # Read the fixture so this stays a reference oracle.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         line = raw.rstrip("\n")
         if not line.strip() or line.startswith("#"):
             continue
@@ -70,7 +73,17 @@ def main():
         result = ce.to_dict()
 
         # Behavioral parity: keep only the fields credential_entry_t persists.
-        filtered = {k: v for k, v in result.items() if k in _C_FIELDS}
+        # Arbitrary `extra` keys are persisted too (credential_entry_t has an
+        # extra JSON object), so include the case's own extra keys.
+        allowed = set(_C_FIELDS) | set(extra)
+        # The C serializer emits its fixed fields first, then extra keys.
+        # `out` is an embedded JSON string, so the comparator cannot sort it.
+        order = ["label", "source", "scope", "base_url", "inference_base_url",
+                 "agent_key_expires_at", "expires_at_ms", "api_key",
+                 "access_token", "refresh_token", "agent_key", "extra"]
+        filtered = {k: result[k] for k in order if k in result and k in allowed}
+        filtered.update({k: v for k, v in result.items()
+                         if k in allowed and k not in filtered})
 
         emit({"provider": provider, "out": json.dumps(filtered, separators=(",", ":"), ensure_ascii=False)})
 

@@ -470,7 +470,7 @@ char **context_breakdown_render_category_lines(const char *payload_json, size_t 
         double pct = denom ? (double)tokens / (double)denom * 100.0 : 0.0;
         char tokbuf[32];
         format_with_commas(tokbuf, sizeof(tokbuf), tokens);
-        snprintf(buf, sizeof(buf), "%s %-*s %9s tokens %5.1f%%", glyph, (int)width, label, tokbuf, pct);
+        snprintf(buf, sizeof(buf), "%s %-*s ~%9s tokens ~%5.1f%%", glyph, (int)width, label, tokbuf, pct);
         lines[n++] = strdup(buf);
     }
     if (context_max > 0) {
@@ -479,7 +479,7 @@ char **context_breakdown_render_category_lines(const char *payload_json, size_t 
         double pct = (double)free_tokens / (double)context_max * 100.0;
         char tokbuf[32];
         format_with_commas(tokbuf, sizeof(tokbuf), free_tokens);
-        snprintf(buf, sizeof(buf), "%s %-*s %9s tokens %5.1f%%", FREE_GLYPH, (int)width, "Free space", tokbuf, pct);
+        snprintf(buf, sizeof(buf), "%s %-*s ~%9s tokens ~%5.1f%%", FREE_GLYPH, (int)width, "Free space", tokbuf, pct);
         lines[n++] = strdup(buf);
     }
     json_free(payload);
@@ -511,7 +511,7 @@ char **context_breakdown_render_details_lines(const char *details_json, size_t *
             long st = json_get_num(g, "schema_tokens", 0);
             char tokbuf[32];
             format_with_commas(tokbuf, sizeof(tokbuf), st);
-            snprintf(buf, sizeof(buf), "  %-24s %3ld tools %8s tokens", ts, tc, tokbuf);
+            snprintf(buf, sizeof(buf), "  %-24s %3ld tools ~%8s tokens", ts, tc, tokbuf);
             lines[n++] = strdup(buf);
         }
         if (toolsets->c.count > LIMIT) {
@@ -545,9 +545,9 @@ char **context_breakdown_render_details_lines(const char *details_json, size_t *
             if (mdj && mdj->type == JSON_NUMBER) {
                 long md = (long)mdj->num_val;
                 format_with_commas(mdstr, sizeof(mdstr), md);
-                snprintf(buf, sizeof(buf), "  %-28s index %6s  SKILL.md %8s tokens", name, idxbuf, mdstr);
+                snprintf(buf, sizeof(buf), "  %-28s index ~%6s  SKILL.md ~%8s tokens", name, idxbuf, mdstr);
             } else {
-                snprintf(buf, sizeof(buf), "  %-28s index %6s  SKILL.md %8s tokens", name, idxbuf, "n/a");
+                snprintf(buf, sizeof(buf), "  %-28s index ~%6s  SKILL.md %8s tokens", name, idxbuf, "n/a");
             }
             lines[n++] = strdup(buf);
         }

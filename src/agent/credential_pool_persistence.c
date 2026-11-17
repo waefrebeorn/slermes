@@ -127,13 +127,18 @@ json_node_t *credential_entry_to_json(const credential_entry_t *e, const char *p
     if (e->refresh_token[0]) json_set(obj, "refresh_token", json_string(e->refresh_token));
     if (e->agent_key[0]) json_set(obj, "agent_key", json_string(e->agent_key));
 
-    /* Extra key/value bag (mirrors Python 'extra'). */
+    /* Python's to_dict() HOISTS extra keys onto the top level before calling
+     * sanitize(); nesting them under "extra" hid secret-looking keys from the
+     * disk-safety boundary. */
     if (e->extra && e->extra->type == JSON_OBJECT) {
-        char *extra_ser = json_serialize(e->extra);
-        if (extra_ser) {
-            json_node_t *extra_copy = json_parse(extra_ser, NULL);
-            free(extra_ser);
-            if (extra_copy) json_set(obj, "extra", extra_copy);
+        for (size_t i = 0; i < e->extra->c.count; i++) {
+            const char *key = e->extra->c.keys[i];
+            json_t *val = e->extra->c.items[i];
+            if (!key || !val || val->type == JSON_NULL) continue;
+            char *vstr = json_serialize(val);
+            json_t *vcopy = vstr ? json_parse(vstr, NULL) : NULL;
+            free(vstr);
+            if (vcopy) json_set(obj, key, vcopy);
         }
     }
 
