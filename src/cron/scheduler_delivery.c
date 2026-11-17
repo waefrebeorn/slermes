@@ -24,35 +24,20 @@
 
 /* ── Built-in tables (mirror the Python module constants) ───────────────── */
 
+/* Mirror of Python's _KNOWN_DELIVERY_PLATFORMS. Upstream narrowed this to
+ * {"webhook", "wecom_callback"} in 0663bdf98c: every other platform is known
+ * only through a plugin's cron_deliver_env_var, which the accessor below reads
+ * from g_plugin_platforms. This table previously still held the old 19-name
+ * frozenset, so telegram/discord/homeassistant read as known when Python says
+ * they are not. */
 static const char *KNOWN_DELIVERY_PLATFORMS[] = {
-    "telegram", "discord", "slack", "whatsapp", "signal",
-    "matrix", "mattermost", "homeassistant", "dingtalk", "feishu",
-    "wecom", "wecom_callback", "weixin", "sms", "email", "webhook",
-    "bluebubbles", "qqbot", "yuanbao",
+    "webhook", "wecom_callback",
     NULL
 };
 
-/* platform -> home-channel env var (primary). Telegram thread override +
- * legacy QQ fallback handled in the accessor functions. */
-static const struct { const char *platform; const char *env; } HOME_ENV_VARS[] = {
-    { "matrix",      "MATRIX_HOME_ROOM" },
-    { "telegram",    "TELEGRAM_HOME_CHANNEL" },
-    { "discord",     "DISCORD_HOME_CHANNEL" },
-    { "slack",       "SLACK_HOME_CHANNEL" },
-    { "signal",      "SIGNAL_HOME_CHANNEL" },
-    { "mattermost",  "MATTERMOST_HOME_CHANNEL" },
-    { "sms",         "SMS_HOME_CHANNEL" },
-    { "email",       "EMAIL_HOME_ADDRESS" },
-    { "dingtalk",    "DINGTALK_HOME_CHANNEL" },
-    { "feishu",      "FEISHU_HOME_CHANNEL" },
-    { "wecom",       "WECOM_HOME_CHANNEL" },
-    { "weixin",      "WEIXIN_HOME_CHANNEL" },
-    { "bluebubbles", "BLUEBUBBLES_HOME_CHANNEL" },
-    { "qqbot",       "QQBOT_HOME_CHANNEL" },
-    { "whatsapp",    "WHATSAPP_HOME_CHANNEL" },
-    { "whatsapp_cloud", "WHATSAPP_CLOUD_HOME_CHANNEL" },
-    { NULL, NULL }
-};
+/* platform -> home-channel env var: DELETED. Python removed this static table
+ * in 0663bdf98c; the env var now comes only from a plugin's
+ * cron_deliver_env_var (see scheduler_resolve_home_env_var). */
 
 /* legacy env var names kept for back-compat (primary -> legacy). */
 static const struct { const char *cur; const char *legacy; } LEGACY_HOME_ENV[] = {
@@ -88,17 +73,12 @@ static int is_known_builtin(const char *name)
     return 0;
 }
 
-static const char *builtin_home_env(const char *name)
-{
-    char low[64];
-    lc(low, name, sizeof(low));
-    for (int i = 0; HOME_ENV_VARS[i].platform; i++) {
-        if (strcmp(low, HOME_ENV_VARS[i].platform) == 0)
-            return HOME_ENV_VARS[i].env;
-    }
-    return NULL;
-}
-
+/* Python deleted its static platform -> env table in 0663bdf98c:
+ * _resolve_home_env_var is now exactly _plugin_cron_env_var(name.lower()), i.e.
+ * PLUGIN REGISTRY ONLY. This C port still consulted a 19-entry static table
+ * first, so telegram/matrix/qqbot resolved to env vars Python no longer reports
+ * and every downstream home_chat/home_thread read came back populated where
+ * Python's was empty. */
 static const char *legacy_env_for(const char *cur)
 {
     for (int i = 0; LEGACY_HOME_ENV[i].cur; i++) {
@@ -181,8 +161,6 @@ int scheduler_is_known_delivery_platform(const char *name)
 const char *scheduler_resolve_home_env_var(const char *name)
 {
     if (!name || !name[0]) return NULL;
-    const char *e = builtin_home_env(name);
-    if (e) return e;
     char low[64];
     lc(low, name, sizeof(low));
     for (int i = 0; i < g_plugin_count; i++) {
@@ -213,13 +191,17 @@ char *scheduler_get_home_target_chat_id(const char *name)
 /* PoP: scheduler_get_home_target_thread_id @ cron/scheduler_delivery.py:_get_home_target_thread_id */
 char *scheduler_get_home_target_thread_id(const char *name)
 {
-    const char *env = scheduler_resolve_home_env_var(name);
-    if (!env) { char *r = malloc(1); r[0] = '\0'; return r; }
-
+    /* Python checks TELEGRAM_CRON_THREAD_ID FIRST, before resolving the home
+     * env var -- so a telegram thread override works with no plugin registered.
+     * This port returned early when the env var was absent, losing the
+     * override. */
     if (name && strcasecmp(name, "telegram") == 0) {
         const char *ct = getenv("TELEGRAM_CRON_THREAD_ID");
         if (ct && ct[0]) return strdup(ct);
     }
+    const char *env = scheduler_resolve_home_env_var(name);
+    if (!env) { char *r = malloc(1); r[0] = '\0'; return r; }
+
     /* read the THREAD_ID env (env var is the home-channel var, not the thread) */
     char thread_env[256];
     snprintf(thread_env, sizeof(thread_env), "%s_THREAD_ID", env);
@@ -239,19 +221,36 @@ char *scheduler_get_home_target_thread_id(const char *name)
 
 /* PoP: _iter_home_target_platforms @ cron/scheduler_delivery.py:_iter_home_target_platforms */
 /* PoP: scheduler_iter_home_target_platforms @ cron/scheduler_delivery.py:_iter_home_target_platforms */
+/* Mirror of Python's _HOME_TARGET_PRIORITY: the order plugin platforms are
+ * yielded in when they expose a cron home channel. */
+static const char *HOME_TARGET_PRIORITY[] = {
+    "matrix", "telegram", "discord", "slack", "signal", "mattermost", "sms",
+    "email", "dingtalk", "feishu", "wecom", "weixin", "bluebubbles", "qqbot",
+    "whatsapp", "whatsapp_cloud",
+    NULL
+};
+
 int scheduler_iter_home_target_platforms(const char **names_out, int max)
 {
+    /* Python yields PLUGIN platforms only (those with a cron_deliver_env_var),
+     * _HOME_TARGET_PRIORITY first, then the rest in registry order. There is no
+     * built-in list any more: this port used to emit a 19-name static table
+     * here, which invented home targets Python does not have. */
     int n = 0;
-    for (int i = 0; HOME_ENV_VARS[i].platform && n < max; i++) {
-        names_out[n++] = HOME_ENV_VARS[i].platform;
+    for (int p = 0; HOME_TARGET_PRIORITY[p] && n < max; p++) {
+        for (int i = 0; i < g_plugin_count; i++) {
+            if (strcasecmp(HOME_TARGET_PRIORITY[p], g_plugin_platforms[i].name) == 0) {
+                names_out[n++] = g_plugin_platforms[i].name;
+                break;
+            }
+        }
     }
     for (int i = 0; i < g_plugin_count && n < max; i++) {
-        /* skip dup names already present (built-ins) */
-        int dup = 0;
+        int listed = 0;
         for (int j = 0; j < n; j++) {
-            if (strcasecmp(names_out[j], g_plugin_platforms[i].name) == 0) { dup = 1; break; }
+            if (strcasecmp(names_out[j], g_plugin_platforms[i].name) == 0) { listed = 1; break; }
         }
-        if (!dup) names_out[n++] = g_plugin_platforms[i].name;
+        if (!listed) names_out[n++] = g_plugin_platforms[i].name;
     }
     return n;
 }
@@ -337,22 +336,17 @@ int scheduler_resolve_single_delivery_target(const scheduler_job_t *job,
         const char *rest = colon + 1;
         char pk[64];
         lc(pk, platform_key, sizeof(pk));
-        /* Faithful behaviour: the Python path explicitly parses `rest` as
-         * "chat_id" or "chat_id:thread_id" via _parse_target_ref, and resolves
-         * human-friendly labels via resolve_channel_name. We replicate the
-         * documented core: `rest` is "chat_id" or "chat_id:thread_id". */
+        /* Python does NOT split `rest` on ':' unconditionally. It runs
+         * _parse_target_ref(platform, rest), whose only non-plugin explicit
+         * cases (E.164, bare numeric, matrix !room/@user, xmpp JID) all yield
+         * thread_id=None; a plugin parser -- absent for built-in platforms --
+         * is the only thing that ever produces a thread. With no explicit parse
+         * it falls through to resolve_channel_name and then, under
+         * pass_unresolved_references, hands the WHOLE rest to the adapter
+         * unchanged. So for a built-in platform like telegram, "chat:thread"
+         * stays a single chat_id and thread_id is empty. */
         strncpy(out->platform, pk, sizeof(out->platform) - 1);
-        char restbuf[512];
-        strncpy(restbuf, rest, sizeof(restbuf) - 1);
-        restbuf[sizeof(restbuf) - 1] = '\0';
-        char *rcolon = strchr(restbuf, ':');
-        if (rcolon) {
-            *rcolon = '\0';
-            strncpy(out->chat_id, restbuf, sizeof(out->chat_id) - 1);
-            strncpy(out->thread_id, rcolon + 1, sizeof(out->thread_id) - 1);
-        } else {
-            strncpy(out->chat_id, restbuf, sizeof(out->chat_id) - 1);
-        }
+        strncpy(out->chat_id, rest, sizeof(out->chat_id) - 1);
         return 1;
     }
 

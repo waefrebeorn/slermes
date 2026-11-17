@@ -24,7 +24,7 @@ for _c in _CANDIDATES:
     if _c and os.path.isdir(os.path.join(_c, "cron")):
         sys.path.insert(0, os.path.abspath(_c))
         break
-import cron.scheduler as S  # noqa: E402
+import cron.scheduler_delivery as S  # noqa: E402
 
 # In-process plugin registry mirroring the C scheduler_register_plugin_platform
 # hook, so the oracle can verify the same plugin-platform contract. We patch the
