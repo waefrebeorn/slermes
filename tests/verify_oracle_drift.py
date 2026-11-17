@@ -40,11 +40,32 @@ THIRD_PARTY = {"yaml", "json", "os", "sys", "re", "io", "time", "pathlib",
                "subprocess", "shutil", "tempfile", "unittest", "importlib"}
 
 
+def is_shim(path: Path) -> bool:
+    """True for the stale redirect stubs this tree carries.
+
+    Some files under the repo are not Python at all -- their whole content is a
+    single absolute path (e.g. agent/anthropic_credentials.py containing
+    "/home/wubu/hermes-agent-dev/agent/anthropic_credentials.py"). Resolving a
+    module to one of those parses to zero top-level names, which made every
+    attribute look missing and produced a wall of false drift.
+    """
+    try:
+        raw = path.read_bytes()
+    except OSError:
+        return True
+    if len(raw) > 512:
+        return False
+    txt = raw.decode("utf-8", errors="replace").strip()
+    if not txt or "\n" in txt.strip():
+        return False
+    return txt.startswith("/") or txt.startswith("C:") or txt.startswith("~")
+
+
 def module_file(mod: str) -> Path | None:
     rel = mod.replace(".", "/")
     for base in DEV_ROOTS:
         for cand in (base / f"{rel}.py", base / rel / "__init__.py"):
-            if cand.exists():
+            if cand.exists() and not is_shim(cand):
                 return cand
     return None
 
@@ -182,6 +203,7 @@ def sig_drift(tree: ast.AST, modpath: Path) -> list[tuple[int, str, str]]:
         modtree = ast.parse(modpath.read_text(encoding="utf-8", errors="replace"))
     except (OSError, SyntaxError):
         return []
+    aliases = _module_aliases(tree)
     defs: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {}
     for node in ast.walk(modtree):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -191,8 +213,10 @@ def sig_drift(tree: ast.AST, modpath: Path) -> list[tuple[int, str, str]]:
         if not isinstance(node, ast.Call):
             continue
         fn = node.func
-        if not (isinstance(fn, ast.Attribute) and isinstance(fn.value, ast.Name)
-                and fn.value.id == "mod"):
+        if not isinstance(fn, ast.Attribute):
+            continue
+        base = fn.value
+        if not (isinstance(base, ast.Name) and base.id in aliases):
             continue
         d = defs.get(fn.attr)
         if d is None:
@@ -202,6 +226,103 @@ def sig_drift(tree: ast.AST, modpath: Path) -> list[tuple[int, str, str]]:
         if np_ < minp or np_ > maxp:
             out.append((node.lineno, fn.attr,
                         f"called with {np_} positional, def takes {minp}..{maxp}"))
+    return out
+
+
+def _module_aliases(tree: ast.AST) -> dict[str, str]:
+    """local name -> dotted module, from this oracle's import statements."""
+    aliases: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for a in node.names:
+                aliases[a.asname or a.name.split(".")[0]] = a.name
+        elif isinstance(node, ast.ImportFrom):
+            if node.module and not node.level:
+                for a in node.names:
+                    if a.name != "*":
+                        aliases[a.asname or a.name] = f"{node.module}.{a.name}"
+    return aliases
+
+
+def _resolve_module(dotted: str) -> Path | None:
+    parts = dotted.split(".")
+    # Quarry first: this repo carries stale path-redirect shims (see is_shim)
+    # that would otherwise shadow the real upstream module.
+    for b in reversed(DEV_ROOTS):
+        for cand in (b / Path(*parts).with_suffix(".py"),
+                     b / Path(*parts) / "__init__.py"):
+            if cand.exists() and not is_shim(cand):
+                return cand
+    return None
+
+
+def _module_top_names(path: Path) -> set[str]:
+    """Names a module DEFINES at top level (defs, classes, assignments).
+
+    Deliberately only its own definitions: an oracle reaching for a name the
+    module merely re-exports is not drift in the module.
+    """
+    try:
+        mt = ast.parse(path.read_text(encoding="utf-8", errors="replace"))
+    except (OSError, SyntaxError):
+        return set()
+    names: set[str] = set()
+    for node in mt.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            names.add(node.name)
+        elif isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name):
+                    names.add(t.id)
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            names.add(node.target.id)
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            for a in node.names:
+                names.add(a.asname or a.name.split(".")[0])
+    return names
+
+
+def attr_drift(tree: ast.AST) -> list[tuple[int, str, str]]:
+    """`alias._helper` where the live module no longer defines `_helper`.
+
+    Name-level drift (`from X import Y`) cannot see this: `from hermes_cli
+    import banner as m` resolves fine, then `m._canonical_github_remote(...)`
+    dies with AttributeError and the port reports "oracle produced no output".
+    That is an absent measurement, so it belongs in this gate.
+
+    Restricted to underscore-prefixed attributes: those are the module-private
+    helpers an oracle targets, which keeps re-exported and method-style accesses
+    out of the result.
+    """
+    aliases = _module_aliases(tree)
+    if not aliases:
+        return []
+    cache: dict[str, set[str] | None] = {}
+    out: list[tuple[int, str, str]] = []
+    seen: set[tuple[int, str]] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Attribute):
+            continue
+        if not isinstance(node.value, ast.Name):
+            continue
+        if not node.attr.startswith("_"):
+            continue
+        dotted = aliases.get(node.value.id)
+        if not dotted:
+            continue
+        if dotted not in cache:
+            p = _resolve_module(dotted)
+            cache[dotted] = _module_top_names(p) if p else None
+        names = cache[dotted]
+        if names is None:
+            continue            # the module itself is gone: path_drift owns it
+        if node.attr in names:
+            continue
+        key = (node.lineno, node.attr)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append((node.lineno, node.attr, f"not defined in {dotted}"))
     return out
 
 
@@ -255,6 +376,7 @@ def main() -> int:
 
     pathbad = []
     sigbad = []
+    attrbad = []
     for o in sorted(TESTS.glob("sta_oracle_*.py")):
         if o.name in incomplete:
             continue
@@ -268,6 +390,8 @@ def main() -> int:
         if modpath is not None:
             for ln, name, why in sig_drift(tree, modpath):
                 sigbad.append((o.name, ln, f"{name}: {why}"))
+        for ln, name, why in attr_drift(tree):
+            attrbad.append((o.name, ln, f"{name}: {why}"))
 
     live = set()
     for f, mod, nm, ln in bad:
@@ -275,6 +399,8 @@ def main() -> int:
     for f, ln, _rel in pathbad:
         live.add(f"{f}:{ln}")
     for f, ln, _w in sigbad:
+        live.add(f"{f}:{ln}")
+    for f, ln, _w in attrbad:
         live.add(f"{f}:{ln}")
     dead = [k for k in allow if k not in live]
 
@@ -293,9 +419,13 @@ def main() -> int:
     print(f"drift gate: {len(sigbad)} arity mismatch(es), {len(newsigs)} new")
     for f, ln, w in newsigs[:25]:
         print(f"    {f}:{ln}  {w}")
+    newattrs = [(f, ln, w) for f, ln, w in attrbad if f"{f}:{ln}" not in allow]
+    print(f"drift gate: {len(attrbad)} attribute mismatch(es), {len(newattrs)} new")
+    for f, ln, w in newattrs[:25]:
+        print(f"    {f}:{ln}  {w}")
     for k in dead[:6]:
         print(f"    DEAD allowlist entry (debt paid): {k}")
-    ok = not new and not dead and not newpaths and not newsigs
+    ok = not new and not dead and not newpaths and not newsigs and not newattrs
     print("drift gate:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 

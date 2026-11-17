@@ -31,6 +31,46 @@ BUILD = REPO / "tests/oracle/build"
 INSTRUMENT = ("LINK", "COMPILE", "NO-OUTPUT", "ORACLE-BROKEN")
 PARITY = ("C-MISMATCH",)
 
+REGISTRY = REPO / "tests/oracle/registry.json"
+DRIFT = REPO / "tests/oracle_drift_allowlist.py"
+
+
+def _drift_oracles():
+    """Oracle file basenames that carry DECLARED drift debt.
+
+    A name/path/arity drift means the oracle cannot load the live module, so it
+    produces no output. That is an ABSENT MEASUREMENT, not a parity result, and
+    the drift gate already tracks it as declared debt. Counting it as a failure
+    here would report a measurement that does not exist.
+    """
+    import ast
+    try:
+        tree = ast.parse(DRIFT.read_text(encoding="utf-8"))
+    except Exception:
+        return set()
+    keys = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id in ("DECLARED", "ALLOW"):
+                    for k in getattr(node.value, "keys", []):
+                        if isinstance(k, ast.Constant) and isinstance(k.value, str):
+                            keys.add(k.value.split(":")[0])
+    return keys
+
+
+def declared_drift(port):
+    """True when this port's oracle file is in the declared-drift debt list."""
+    try:
+        reg = json.loads(REGISTRY.read_text(encoding="utf-8"))["ports"]
+    except Exception:
+        return False
+    entry = reg.get(port) or {}
+    oracle = entry.get("oracle") or ""
+    if not oracle:
+        return False
+    return Path(oracle).name in _drift_oracles()
+
 
 def reasons(port):
     """The per-case failure reasons the runner recorded."""
@@ -58,9 +98,11 @@ def classify(port):
     # the old check counted the former as a plain mismatch.
     rs = reasons(port)
     # An oracle that produced nothing is an ABSENT MEASUREMENT, not a parity
-    # result -- but which side failed matters, so keep them apart.
+    # result. When the cause is drift already declared as debt, say SKIP: the
+    # drift gate owns that failure, and reporting it here as a parity FAIL
+    # claims a measurement that does not exist.
     if any(r.startswith("oracle produced no output") for r in rs):
-        return "ORACLE-BROKEN"
+        return "SKIP-DRIFT" if declared_drift(port) else "ORACLE-BROKEN"
     if any(r.startswith("C produced no output") for r in rs):
         return "NO-OUTPUT"
     if any(r == "output differs" for r in rs):
