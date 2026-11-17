@@ -2,7 +2,7 @@
 import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from agent.auxiliary_client import (_install_safe_stdio)
+from agent.process_bootstrap import (_install_safe_stdio)
 
 mism = 0; n = 0
 for line in sys.stdin:

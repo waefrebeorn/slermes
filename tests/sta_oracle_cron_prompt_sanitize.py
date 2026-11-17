@@ -20,8 +20,8 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-from tools.cronjob_tools import (  # noqa: E402
-    _check_invisible_unicode,
+from tools.cronjob_prompt_scan import (  # noqa: E402
+    _scan_cron_prompt as _check_invisible_unicode,
     _strip_invisible_unicode,
     _scan_cron_skill_assembled,
 )
@@ -35,9 +35,9 @@ def dec(s):
     """Decode fixture tokens into real characters (mirror of C harness)."""
     if s is None:
         return ""
-    s = s.replace("@ZWSP@", "​")   # U+200B
-    s = s.replace("@ZWJ@", "​")    # U+200D
-    s = s.replace("@ZWNJ@", "​")   # U+200C
+    s = s.replace("@ZWSP@", chr(0x200B))
+    s = s.replace("@ZWJ@", chr(0x200D))
+    s = s.replace("@ZWNJ@", chr(0x200C))
     s = s.replace("@BOM@", "﻿")    # U+FEFF
     s = s.replace("@LTR@", "‎")    # U+200E
     s = s.replace("@RLM@", "‏")    # U+200F
@@ -54,7 +54,9 @@ def split_kv(line):
 
 
 def main():
-    for raw in sys.stdin:
+    # Reference oracle: read the FIXTURE (argv), not the C output on stdin.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue

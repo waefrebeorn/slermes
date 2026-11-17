@@ -28,7 +28,7 @@
 #include "port_utils_ports.h"
 
 #define CURATOR_BACKUP_VERSION "1.0.0"
-#define DEFAULT_KEEP 5
+#define DEFAULT_KEEP 2
 #define SNAPSHOT_ID_MAX 128
 #define PATH_MAX_LEN 4096
 

@@ -7,6 +7,7 @@ longer has. Disposition is per-entry: repoint (moved), drop the case
 re-run the drift gate -- do not hand-edit to swallow a NEW finding.
 """
 ALLOW = {
+    "sta_oracle_context_compressor_pure.py:28": "_strip_image_parts_from_parts / _truncate_tool_call_args_json: upstream moved",
     "sta_oracle_install_repair.py:109": "upstream helper deleted; the C port still implements it",
     "sta_oracle_install_repair.py:80": "upstream helper deleted; the C port still implements it",
     "sta_oracle_install_repair.py:81": "upstream helper deleted; the C port still implements it",
@@ -16,13 +17,7 @@ ALLOW = {
     "sta_oracle_video_gen_cache_dir.py:37": "upstream helper deleted; the C port still implements it",
     "sta_oracle_agent_estop.py:23": "agent.estop",
     "sta_oracle_agent_estop.py:35": "agent.estop",
-    "sta_oracle_agent_process_bootstrap.py:5": "agent.auxiliary_client._install_safe_stdio",
-    "sta_oracle_context_compressor_pure.py:27": "agent.context_compressor._truncate_tool_call_args_json",
-    "sta_oracle_copilot_acp_toolcall.py:12": "agent.copilot_acp_client._completion_to_stream_chunks",
-    "sta_oracle_credential_persistence.py:20": "agent.credential_persistence._fingerprint_value",
-    "sta_oracle_cron_prompt_sanitize.py:23": "tools.cronjob_tools._scan_cron_skill_assembled",
     "sta_oracle_dashboard_pure.py:11": "hermes_cli.dashboard_procs._valid_lockfile_payload",
-    "sta_oracle_delegate_pure.py:20": "tools.delegate_tool._looks_like_error_output",
     "sta_oracle_file_lint.py:18": "tools.file_operations._lint_json_inproc",
     "sta_oracle_file_ops_pure.py:24": "tools.file_operations._lint_python_inproc",
     "sta_oracle_file_search.py:22": "tools.file_operations._split_tool_diagnostics",

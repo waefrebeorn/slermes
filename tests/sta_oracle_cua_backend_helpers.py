@@ -28,5 +28,7 @@ for c in cases:
         if not drive:
             result = path
         else:
-            result = os.path.join("/mnt", drive, *(str(p) for p in win.parts[1:]))
+            # os.path.join uses "\\\\" on Windows; the C port builds a POSIX
+            # WSL-style path, so force "/" explicitly.
+            result = "/".join(["/mnt", drive] + [str(p) for p in win.parts[1:]])
     print(result)

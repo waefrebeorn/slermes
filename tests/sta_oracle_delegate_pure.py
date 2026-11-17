@@ -17,9 +17,10 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
+from tools.delegate_tool_results import (  # noqa: E402
+    _stringify_tool_content, _looks_like_error_output,
+)
 from tools.delegate_tool import (  # noqa: E402
-    _stringify_tool_content,
-    _looks_like_error_output,
     _normalize_role,
 )
 
@@ -37,7 +38,9 @@ def split_kv(line):
 
 
 def main():
-    for raw in sys.stdin:
+    # Reference oracle: read the FIXTURE (argv), not the C output on stdin.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue

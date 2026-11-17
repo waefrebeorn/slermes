@@ -20,7 +20,7 @@ if _ROOT not in sys.path:
 from agent.credential_persistence import (  # noqa: E402
     _normalize_key,
     _is_secret_payload_key,
-    _fingerprint_value,
+    fingerprint_secret_value as _fingerprint_value,
     _credential_secret_fingerprint,
 )
 
@@ -38,7 +38,9 @@ def split_kv(line):
 
 
 def main():
-    for raw in sys.stdin:
+    # Reference oracle: read the FIXTURE (argv), not the C output on stdin.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue
@@ -57,7 +59,11 @@ def main():
                 payload = _json.loads(v) if v else None
             except Exception:
                 payload = None
-            emit({"op": "fpj", "in": v, "out": _credential_secret_fingerprint(payload) if payload is not None else None})
+            # The C helper fails closed on a non-object payload; mirror that
+            # instead of letting Python raise on a JSON list.
+            fp = (_credential_secret_fingerprint(payload)
+                  if isinstance(payload, dict) else None)
+            emit({"op": "fpj", "in": v, "out": fp})
         else:
             emit({"op": "unknown", "raw": raw.rstrip("\n")})
 

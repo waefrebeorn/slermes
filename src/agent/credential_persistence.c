@@ -71,11 +71,15 @@ static const char *SECRET_VALUE_SUFFIXES[] = {
 /* PoP: credential_normalize_key @ agent/credential_persistence.py:_normalize_key */
 void credential_normalize_key(const char *key, char *out, size_t out_sz) {
     if (!key || !out || out_sz == 0) return;
+    /* Python: str(key).strip(), then lower/hyphen/dot only. Internal spaces
+     * are preserved; only leading/trailing whitespace is removed. */
+    while (*key == ' ' || *key == '\t') key++;
+    size_t len = strlen(key);
+    while (len > 0 && (key[len - 1] == ' ' || key[len - 1] == '\t')) len--;
     size_t j = 0;
     int prev_lower = 0;
-    for (size_t i = 0; key[i] && j < out_sz - 1; i++) {
+    for (size_t i = 0; i < len && j < out_sz - 1; i++) {
         char c = key[i];
-        if (c == ' ' || c == '\t') { prev_lower = 0; continue; }
         if (c == '-' || c == '.') c = '_';
         if (isupper((unsigned char)c) && prev_lower) {
             if (j < out_sz - 2) out[j++] = '_';

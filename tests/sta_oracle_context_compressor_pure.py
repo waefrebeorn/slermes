@@ -24,8 +24,9 @@ except Exception:
     sys.modules['hermes_cli'] = type(sys)('hermes_cli')
     sys.modules['hermes_cli'].__version__ = "0.dev"
 
+from agent.context_compressor_telemetry import _safe_int
 from agent.context_compressor import (
-    _safe_int, _skill_pruned_marker, _extract_pruned_skill_names,
+    _skill_pruned_marker, _extract_pruned_skill_names,
     _is_image_part, _content_has_images, _strip_images_from_content,
     _strip_image_parts_from_parts, _truncate_tool_call_args_json,
     _append_text_to_content, _template_visible_role,

@@ -443,6 +443,45 @@ static void delegate_unregister_subagent(const char *subagent_id)
  * --------------------------------------------------------------------------- */
 /* PoP: content @ tools/delegate_tool_results.py:_stringify_tool_content */
 /* Stable text representation for tool-result content (string / list / dict). */
+/* Python json.dumps(ensure_ascii=False) uses ", " and ": " separators;
+ * json_serialize() emits compact JSON. Observability previews compare against
+ * the Python string, so mirror the spacing for containers. */
+static void py_json_dump(const json_node_t *n, char *out, size_t sz) {
+    if (!n || !out || !sz) return;
+    out[0] = '\0';
+    size_t pos = 0;
+#define APPEND(...) do { \
+    int _w = snprintf(out + pos, sz - pos, __VA_ARGS__); \
+    if (_w > 0) pos += (size_t)_w < sz - pos ? (size_t)_w : sz - pos - 1; \
+} while (0)
+    if (n->type == JSON_OBJECT) {
+        APPEND("{");
+        for (size_t i = 0; i < n->c.count; i++) {
+            if (i) APPEND(", ");
+            APPEND("\"%s\": ", n->c.keys[i] ? n->c.keys[i] : "");
+            char vbuf[2048];
+            py_json_dump(json_object_get(n, n->c.keys[i]), vbuf, sizeof(vbuf));
+            APPEND("%s", vbuf);
+        }
+        APPEND("}");
+    } else if (n->type == JSON_ARRAY) {
+        APPEND("[");
+        for (size_t i = 0; i < n->c.count; i++) {
+            if (i) APPEND(", ");
+            char vbuf[2048];
+            py_json_dump(json_get(n, i), vbuf, sizeof(vbuf));
+            APPEND("%s", vbuf);
+        }
+        APPEND("]");
+    } else {
+        char *js = json_serialize(n);
+        APPEND("%s", js ? js : "null");
+        free(js);
+    }
+#undef APPEND
+    out[sz - 1] = '\0';
+}
+
 char *delegate_stringify_tool_content(const json_node_t *content, char *out, size_t out_sz)
 {
     if (out && out_sz) out[0] = '\0';
@@ -462,10 +501,12 @@ char *delegate_stringify_tool_content(const json_node_t *content, char *out, siz
                 if (txt && txt->type == JSON_STRING) {
                     snprintf(buf, sizeof(buf), "%s", txt->str_val ? txt->str_val : "");
                 } else {
-                    char *js = json_serialize(item);
-                    snprintf(buf, sizeof(buf), "%s", js ? js : "");
-                    if (js) free(js);
+                    py_json_dump(item, buf, sizeof(buf));
                 }
+            } else if (item->type == JSON_STRING) {
+                /* Python uses str(item): a string item is emitted raw, not
+                 * re-serialised with quotes. */
+                snprintf(buf, sizeof(buf), "%s", item->str_val ? item->str_val : "");
             } else {
                 char *js = json_serialize(item);
                 snprintf(buf, sizeof(buf), "%s", js ? js : "");
@@ -481,15 +522,14 @@ char *delegate_stringify_tool_content(const json_node_t *content, char *out, siz
         return out;
     }
     if (content->type == JSON_OBJECT) {
-        char *js = json_serialize(content);
-        snprintf(out, out_sz, "%s", js ? js : "");
-        if (js) free(js);
+        py_json_dump(content, out, out_sz);
         return out;
     }
     /* primitives */
     char buf[256];
     if (content->type == JSON_NUMBER) snprintf(buf, sizeof(buf), "%g", content->num_val);
-    else if (content->type == JSON_BOOL) snprintf(buf, sizeof(buf), "%s", content->bool_val ? "true" : "false");
+    else if (content->type == JSON_BOOL) snprintf(buf, sizeof(buf), "%s", content->bool_val ? "True" : "False");
+    else if (content->type == JSON_NULL) snprintf(buf, sizeof(buf), "%s", "");
     else snprintf(buf, sizeof(buf), "%s", "unknown");
     snprintf(out, out_sz, "%s", buf);
     return out;
@@ -533,10 +573,17 @@ bool delegate_looks_like_error_output(const json_node_t *content)
     if (nl) *nl = '\0';
     char *line = buf;
     while (*line == ' ' || *line == '\t') line++;
-    bool res = (strncmp(line, "error:", 6) == 0 ||
-                strncmp(line, "failed:", 7) == 0 ||
-                strncmp(line, "traceback", 8) == 0 ||
-                strncmp(line, "exception:", 10) == 0);
+    /* Upstream lowercases the first line before matching the markers. */
+    char low[256];
+    size_t ln = strlen(line);
+    if (ln >= sizeof(low)) ln = sizeof(low) - 1;
+    for (size_t i = 0; i < ln; i++)
+        low[i] = (char)tolower((unsigned char)line[i]);
+    low[ln] = '\0';
+    bool res = (strncmp(low, "error:", 6) == 0 ||
+                strncmp(low, "failed:", 7) == 0 ||
+                strncmp(low, "traceback ", 10) == 0 ||
+                strncmp(low, "exception:", 10) == 0);
     if (nl) *nl = '\n';
     return res;
 }

@@ -9,8 +9,9 @@ may differ, so we compare via Python dict/structural equality).
 """
 import sys, os, json
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
-from agent.copilot_acp_client import (
-    _build_openai_tool_call, _completion_to_stream_chunks,
+from agent.acp_openai_bridge import (
+    build_openai_tool_call as _build_openai_tool_call,
+    completion_to_stream_chunks as _completion_to_stream_chunks,
 )
 from types import SimpleNamespace
 
