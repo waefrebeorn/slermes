@@ -298,8 +298,24 @@ char **cli_logs_read_tail(const char *path, int num_lines, int has_filters,
         int raw_cap = num_lines * 20 > 2000 ? num_lines * 20 : 2000;
         char **raw = cli_logs_read_last_n_lines(path, raw_cap, &raw_n);
         char **out = NULL; int oc = 0, ocap = 0;
+        /* _LineFilter carries the last stamped record's verdict onto
+         * unstamped continuation lines (tracebacks, wrapped messages). */
+        int carry = -1;
         for (int i = 0; i < raw_n; i++) {
-            if (cli_logs_matches_filters(raw[i], min_level, session_filter, since, comp_prefixes, ncomp)) {
+            time_t ts = cli_logs_parse_line_timestamp(raw[i]);
+            int keep;
+            if (ts != (time_t)-1) {
+                carry = cli_logs_matches_filters(raw[i], min_level,
+                            session_filter, since, comp_prefixes, ncomp);
+                keep = carry;
+            } else if (carry == -1) {
+                int timed = (min_level && *min_level) || since != (time_t)-1;
+                keep = !timed && cli_logs_matches_filters(raw[i], min_level,
+                            session_filter, since, comp_prefixes, ncomp);
+            } else {
+                keep = carry;
+            }
+            if (keep) {
                 if (oc >= ocap) { ocap = ocap ? ocap*2 : 64; out = realloc(out, ocap*sizeof(char*)); }
                 out[oc++] = raw[i];
             } else {

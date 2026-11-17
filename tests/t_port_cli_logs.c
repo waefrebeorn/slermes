@@ -36,7 +36,8 @@ static json_t *lines_to_json(char **lines, int n)
         /* strip trailing newline for clean comparison (Python lines keep \n;
            we keep parity by stripping both sides in the oracle) */
         size_t L = lines[i] ? strlen(lines[i]) : 0;
-        if (L && lines[i][L-1] == '\n') lines[i][L-1] = 0;
+        if (L && lines[i][L-1] == '\n') lines[i][--L] = 0;
+        if (L && lines[i][L-1] == '\r') lines[i][--L] = 0;
         json_array_append(arr, json_string(lines[i] ? lines[i] : ""));
     }
     return arr;
@@ -119,10 +120,41 @@ int main(void)
     for (int i = 0; i < n; i++) free(ft[i]); free(ft);
     emit_case_j("read_tail_filt", arr2, json_number(n));
 
-    /* 9. list_logs — emit listing block between markers */
-    printf("{\"case\":\"list_logs_start\"}\n");
+    /* 9. list_logs — the header carries a temp path and relative times that
+     * differ between harness and oracle. Capture the listing and emit only
+     * the stable per-file rows, as the reference oracle does. */
+    fflush(stdout);
+    int saved = dup(1);
+    FILE *cap = tmpfile();
+    dup2(fileno(cap), 1);
     cli_logs_list();
-    printf("{\"case\":\"list_logs_end\"}\n");
+    fflush(stdout);
+    dup2(saved, 1);
+    close(saved);
+    rewind(cap);
+    char line[1024];
+    char rows[4096];
+    size_t rn = 0;
+    rows[0] = '\0';
+    while (fgets(line, sizeof(line), cap)) {
+        char *end = line + strlen(line);
+        while (end > line && (end[-1] == '\n' || end[-1] == '\r')) *--end = '\0';
+        char *p = line;
+        while (*p == ' ') p++;
+        size_t tl = strlen(p);
+        if (tl > 4 && strcmp(p + tl - 4, ".log") == 0) {
+            rn += snprintf(rows + rn, sizeof(rows) - rn, "%s%s", rn ? "," : "", p);
+        }
+    }
+    fclose(cap);
+    /* Mirror emit_case_j's shape exactly, including store:null. */
+    json_t *rows_arr = json_array();
+    char *rbegin = rows;
+    for (char *tok = strtok(rbegin, ","); tok; tok = strtok(NULL, ",")) {
+        json_array_append(rows_arr, json_string(tok));
+    }
+    emit_case_j("list_logs", NULL, rows_arr);
+    json_free(rows_arr);
 
     return 0;
 }
