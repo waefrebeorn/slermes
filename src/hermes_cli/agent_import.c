@@ -804,22 +804,24 @@ static void ai_yaml_emit_value(struct ai_yaml_buf *b, const json_t *val, int ind
                     json_t *item = val->c.items[i];
                     for (int j = 0; j < indent; j++) ai_buf_putc(b, ' ');
                     ai_buf_puts(b, key);
-                    ai_buf_puts(b, ": ");
-                    if (item && (item->type == JSON_OBJECT || item->type == JSON_ARRAY)) {
-                        if (item->type == JSON_ARRAY && item->c.count == 0) {
-                            ai_buf_puts(b, "[]\n");
-                        } else if (item->type == JSON_OBJECT && item->c.count == 0) {
-                            ai_buf_puts(b, "{}\n");
-                        } else if (item->type == JSON_ARRAY) {
-                            ai_buf_putc(b, '\n');
-                            ai_yaml_emit_value(b, item, indent + 2);
-                        } else {
-                            ai_buf_putc(b, '\n');
-                            ai_yaml_emit_value(b, item, indent + 2);
-                        }
+                    /* PyYAML writes "key:" with no trailing space for a block
+                     * value, and "key: value" for a scalar. */
+                    bool block_value = item &&
+                        (item->type == JSON_OBJECT || item->type == JSON_ARRAY) &&
+                        item->c.count > 0;
+                    ai_buf_puts(b, block_value ? ":\n" : ": ");
+                    if (block_value) {
+                        /* PyYAML puts sequence dashes at the PARENT key's
+                         * indent, but maps two spaces in. */
+                        ai_yaml_emit_value(b, item,
+                            item->type == JSON_ARRAY ? indent : indent + 2);
                     } else if (item && item->type == JSON_STRING) {
                         ai_buf_puts(b, item->str_val);
                         ai_buf_putc(b, '\n');
+                    } else if (item && item->type == JSON_ARRAY) {
+                        ai_buf_puts(b, "[]\n");
+                    } else if (item && item->type == JSON_OBJECT) {
+                        ai_buf_puts(b, "{}\n");
                     } else {
                         char *serialized = json_serialize(item);
                         ai_buf_puts(b, serialized ? serialized : "null");
@@ -847,30 +849,9 @@ char *ai_dump_yaml_to_string(const char *json_dict) {
     }
     struct ai_yaml_buf b;
     ai_buf_init(&b);
-    for (size_t i = 0; i < data->c.count; i++) {
-        const char *key = data->c.keys[i];
-        json_t *val = data->c.items[i];
-        ai_buf_puts(&b, key);
-        ai_buf_puts(&b, ": ");
-        if (val && (val->type == JSON_OBJECT || val->type == JSON_ARRAY)) {
-            if (val->type == JSON_ARRAY && val->c.count == 0) {
-                ai_buf_puts(&b, "[]\n");
-            } else if (val->type == JSON_OBJECT && val->c.count == 0) {
-                ai_buf_puts(&b, "{}\n");
-            } else {
-                ai_buf_putc(&b, '\n');
-                ai_yaml_emit_value(&b, val, 2);
-            }
-        } else if (val && val->type == JSON_STRING) {
-            ai_buf_puts(&b, val->str_val);
-            ai_buf_putc(&b, '\n');
-        } else {
-            char *serialized = json_serialize(val);
-            ai_buf_puts(&b, serialized ? serialized : "null");
-            ai_buf_putc(&b, '\n');
-            free(serialized);
-        }
-    }
+    /* One emitter for both levels: the old top-level loop
+     * duplicated (and disagreed with) the recursive one. */
+    ai_yaml_emit_value(&b, data, 0);
     json_free(data);
     if (!b.buf) b.buf = strdup("");
     return b.buf;

@@ -118,7 +118,10 @@ for c in cases:
         print(json.dumps(yaml.safe_dump(d, default_flow_style=False, sort_keys=False,
                                         allow_unicode=True)))
     elif op == "default_source_dir":
-        print(json.dumps(str(_default_source_dir(arg))))
+        # Path.home() on Windows renders the MSYS home "/c/..." as "\c\...";
+        # the C side keeps the raw env string. Normalise separators to compare
+        # the same path rather than its spelling.
+        print(json.dumps(str(_default_source_dir(arg)).replace("\\", "/")))
     elif op == "detect_agents":
         print(json.dumps(_detect_agents()))
     elif op == "backup_memory_file":
