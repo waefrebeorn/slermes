@@ -41,7 +41,10 @@ def split_kv(line):
 
 def main():
     fo = ShellFileOperations(terminal_env=_DummyEnv())
-    for raw in sys.stdin:
+    # The batch spec supplies the fixture on argv and the C output on stdin.
+    # A reference oracle must read the FIXTURE and compute Python's values.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue
