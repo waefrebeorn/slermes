@@ -26,7 +26,8 @@ typedef struct {
 } errors_entry_t;
 
 static const errors_entry_t ENTRIES[] = {
-    { HERMES_ERR_SSL_CONFIG,           "SSLConfigurationError", 0 }, /* Exception */
+    /* SSLConfigurationError was removed upstream (agent/errors.py now
+     * defines only these two domain errors). */
     { HERMES_ERR_EMPTY_STREAM,         "EmptyStreamError",      1 }, /* RuntimeError */
     { HERMES_ERR_MOA_PRESET_NOT_FOUND, "MoAPresetNotFoundError", 2 }, /* ValueError */
 };

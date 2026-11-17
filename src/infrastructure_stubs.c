@@ -419,7 +419,11 @@ char *file_text_ops_escape_shell_arg(const char *arg) {
     e[0] = '\'';
     size_t j = 1;
     for (size_t i = 0; i < len; i++) {
-        if (arg[i] == '\'') { e[j++] = '\''; e[j++] = '\\'; e[j++] = '\''; e[j++] = '\''; }
+        /* Upstream: "'" + arg.replace("'", "'\"'\"'") + "'". */
+        if (arg[i] == '\'') {
+            e[j++] = '\''; e[j++] = '"'; e[j++] = '\'';
+            e[j++] = '"'; e[j++] = '\'';
+        }
         else e[j++] = arg[i];
     }
     e[j++] = '\''; e[j] = '\0';
@@ -810,5 +814,50 @@ int stub_shadowed_delegate_handler(void) { return 0; }
 int cub_is_available(void) { return 0; }
 int stub_shadowed__save_entries(void) { return 0; }
 int stub_shadowed_yuanbao_send_dm(void) { return 0; }
-int file_text_ops_add_line_numbers(void) { return 0; }
+/* The orphan harnesses link this stub object, not src/tools/file_text_ops.o.
+ * Keep the real signature and behaviour so those harnesses do not silently
+ * call a wrong-signature stub (it returned 0 and read garbage as a char*). */
+char *file_text_ops_add_line_numbers(const char *content, int start_line, int max_line_length)
+{
+    if (!content) return strdup("");
+    /* Python removes exactly one trailing newline before numbering: it ends
+     * the last line rather than starting a phantom empty one. */
+    size_t len = strlen(content);
+    if (len > 0 && content[len - 1] == '\n') len--;
+    char *tmp = (char *)malloc(len + 1);
+    if (!tmp) return NULL;
+    memcpy(tmp, content, len);
+    tmp[len] = '\0';
+    char *out = (char *)malloc(len * 2 + 128);
+    if (!out) { free(tmp); return NULL; }
+    size_t oi = 0;
+    int line = start_line > 0 ? start_line : 1;
+    const char *p = tmp;
+    bool at_start = true;
+    while (true) {
+        if (at_start) {
+            oi += (size_t)snprintf(out + oi, len * 2 + 128 - oi, "%d|", line);
+            at_start = false;
+        }
+        if (*p == '\0') break;
+        if (*p == '\n') {
+            out[oi++] = '\n'; line++; at_start = true; p++; continue;
+        }
+        if (max_line_length > 0) {
+            const char *nl2 = strchr(p, '\n');
+            size_t ll = nl2 ? (size_t)(nl2 - p) : strlen(p);
+            if (ll > (size_t)max_line_length) {
+                for (int k = 0; k < max_line_length; k++) out[oi++] = p[k];
+                const char *suf = "... [truncated]";
+                for (const char *s = suf; *s; s++) out[oi++] = *s;
+                p = nl2 ? nl2 : p + ll;
+                continue;
+            }
+        }
+        out[oi++] = *p++;
+    }
+    out[oi] = '\0';
+    free(tmp);
+    return out;
+}
 

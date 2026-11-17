@@ -52,7 +52,9 @@ def split_kv(line):
 
 def main():
     fo = ShellFileOperations(terminal_env=_DummyEnv())
-    for raw in sys.stdin:
+    # Reference oracle: read the fixture, not the C output.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue
