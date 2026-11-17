@@ -16,7 +16,7 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-from tools.skills_hub import github_provider_for  # noqa: E402
+from tools.skills_hub_github import github_provider_for  # noqa: E402
 
 
 def emit(obj):
@@ -24,7 +24,8 @@ def emit(obj):
 
 
 def main():
-    for raw in sys.stdin:
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         repo = raw.rstrip("\n")
         if not repo.strip() or repo.startswith("#"):
             continue

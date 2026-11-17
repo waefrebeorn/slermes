@@ -187,8 +187,13 @@ char *goals_parse_contract(const char *text) {
     headline[0] = '\0';
 
     if (!text || !*text) {
-        char *out = (char *)malloc(64);
-        snprintf(out, 64, "{\"headline\":\"\",\"contract\":{}}");
+        /* Upstream returns an empty GoalContract; to_dict() still has all
+         * five fields, so emit the same shape as the non-empty path. */
+        static const char *empty_contract =
+            "{\"headline\":\"\",\"contract\":{\"outcome\":\"\",\"verification\":\"\","
+            "\"constraints\":\"\",\"boundaries\":\"\",\"stop_when\":\"\"}}";
+        char *out = (char *)malloc(strlen(empty_contract) + 1);
+        if (out) strcpy(out, empty_contract);
         return out;
     }
 
@@ -207,6 +212,7 @@ char *goals_parse_contract(const char *text) {
         if (!l[0]) { free(l); continue; }
         int matched = 0;
         char *colon = strchr(l, ':');
+        char colon_ch = colon ? *colon : '\0';
         if (colon) {
             *colon = '\0';
             char *prefix = strdup(l);
@@ -229,11 +235,15 @@ char *goals_parse_contract(const char *text) {
                 }
                 fields[field][fcount[field]++] = v;
                 matched = 1;
+            } else {
+                free(v);
             }
-            free(v);
             free(prefix);
         }
         if (!matched) {
+            /* The colon was nulled for prefix matching; restore the original
+             * line so an unrecognised "Title: detail" stays whole. */
+            if (colon) *colon = colon_ch;
             size_t hl = strlen(headline);
             size_t need = hl + strlen(l) + 2;
             if (need > sizeof(headline)) need = sizeof(headline);
@@ -288,7 +298,6 @@ typedef struct goals_gate {
     int attempts;
     int last_exit_code;   /* -1 sentinel for None */
     char last_output_tail[1024];
-    char last_failed_fingerprint[1024];
 } goals_gate_t;
 
 static void json_str_escape(const char *s, char *out, size_t outsz) {
@@ -304,20 +313,18 @@ static void json_str_escape(const char *s, char *out, size_t outsz) {
 }
 
 char *goals_gate_to_json(const goals_gate_t *g) {
-    char cmd[2048], tail[2048], fp[2048];
+    char cmd[2048], tail[2048];
     json_str_escape(g->command, cmd, sizeof(cmd));
     json_str_escape(g->last_output_tail, tail, sizeof(tail));
-    json_str_escape(g->last_failed_fingerprint, fp, sizeof(fp));
     char ec[8];
     if (g->last_exit_code < 0) strcpy(ec, "null");
     else snprintf(ec, sizeof(ec), "%d", g->last_exit_code);
-    size_t cap = strlen(cmd) + strlen(tail) + strlen(fp) + 256;
+    size_t cap = strlen(cmd) + strlen(tail) + 256;
     char *out = (char *)malloc(cap);
     snprintf(out, cap,
         "{\"command\":\"%s\",\"timeout_seconds\":%d,\"max_retries\":%d,"
-        "\"attempts\":%d,\"last_exit_code\":%s,\"last_output_tail\":\"%s\","
-        "\"last_failed_fingerprint\":\"%s\"}",
-        cmd, g->timeout_seconds, g->max_retries, g->attempts, ec, tail, fp);
+        "\"attempts\":%d,\"last_exit_code\":%s,\"last_output_tail\":\"%s\"}",
+        cmd, g->timeout_seconds, g->max_retries, g->attempts, ec, tail);
     return out;
 }
 /* PoP: goals_gate_from_json @ hermes_cli/goals.py:GoalGate.from_dict */
@@ -330,7 +337,6 @@ int goals_gate_from_json(goals_gate_t *g, const char *json_str) {
     g->attempts = 0;
     g->last_exit_code = -1;
     g->last_output_tail[0] = '\0';
-    g->last_failed_fingerprint[0] = '\0';
     if (!json_str || !*json_str) return 0;
     json_t *root = json_parse(json_str, NULL);
     if (!root || root->type != JSON_OBJECT) { if (root) json_free(root); return 0; }
@@ -347,8 +353,6 @@ int goals_gate_from_json(goals_gate_t *g, const char *json_str) {
     else g->last_exit_code = -1;
     const char *t = json_get_str(root, "last_output_tail", "");
     strncpy(g->last_output_tail, t, sizeof(g->last_output_tail) - 1); g->last_output_tail[sizeof(g->last_output_tail)-1]='\0';
-    const char *f = json_get_str(root, "last_failed_fingerprint", "");
-    strncpy(g->last_failed_fingerprint, f, sizeof(g->last_failed_fingerprint) - 1); g->last_failed_fingerprint[sizeof(g->last_failed_fingerprint)-1]='\0';
     json_free(root);
     return 0;
 }

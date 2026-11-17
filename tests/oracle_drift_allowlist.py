@@ -18,7 +18,6 @@ ALLOW = {
     "sta_oracle_agent_estop.py:35": "agent.estop",
     "sta_oracle_dashboard_pure.py:11": "hermes_cli.dashboard_procs._valid_lockfile_payload",
     "sta_oracle_file_search.py:22": "tools.file_operations._split_tool_diagnostics",
-    "sta_oracle_github_provider.py:19": "tools.skills_hub.github_provider_for",
     "sta_oracle_hermes_cli_shared_metrics_contract.py:17": "hermes_cli.observability.shared_metrics_contract.tool_approval_outcome",
     "sta_oracle_managed_tool_gateway.py:14": "tools.managed_tool_gateway.managed_gateway_auth_headers",
     "sta_oracle_mcp_identity.py:15": "tools.mcp_tool._apply_identity_header",

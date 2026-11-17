@@ -30,6 +30,18 @@ static char *read_all(const char *path) {
     return buf;
 }
 
+static void emit_str(const char *s) {
+    putchar('"');
+    for (const unsigned char *p = (const unsigned char *)(s ? s : ""); *p; p++) {
+        if (*p == '"' || *p == '\\') { putchar('\\'); putchar(*p); }
+        else if (*p == '\n') fputs("\\n", stdout);
+        else if (*p == '\r') fputs("\\r", stdout);
+        else if (*p == '\t') fputs("\\t", stdout);
+        else putchar(*p);
+    }
+    putchar('"');
+}
+
 static const char *js(json_t *c, const char *k, const char *d) {
     return json_get_str(c, k, d);
 }
@@ -48,7 +60,9 @@ int main(int argc, char **argv) {
             const char *op = js(c, "op", "");
             if (strcmp(op, "parse_contract") == 0) {
                 char *r = goals_parse_contract(js(c, "text", ""));
-                printf("%s\n", r ? r : "{\"headline\":\"\",\"contract\":{}}");
+                printf("{\"op\": \"parse_contract\", \"out\": ");
+                emit_str(r ? r : "{\"headline\":\"\",\"contract\":{}}");
+                printf("}\n");
                 free(r);
             } else if (strcmp(op, "contract_is_empty") == 0) {
                 json_t *d = json_object_get(c, "contract");
@@ -80,7 +94,9 @@ int main(int argc, char **argv) {
                 goals_contract_t *cc = goals_contract_new();
                 goals_contract_from_json(cc, dj);
                 char *r = goals_contract_render_block(cc);
-                printf("{\"op\": \"contract_render\", \"out\": \"%s\"}\n", r ? r : "");
+                printf("{\"op\": \"contract_render\", \"out\": ");
+                emit_str(r);
+                printf("}\n");
                 goals_contract_free(cc); free(r); free(dj);
             } else if (strcmp(op, "gate_to_dict") == 0) {
                 json_t *g = json_object_get(c, "gate");

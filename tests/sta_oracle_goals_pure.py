@@ -27,7 +27,9 @@ import importlib.util
 def _load_module():
     here = os.path.dirname(os.path.abspath(__file__))
     repo = os.environ.get("SLERMES_DEV_ROOT") or os.path.dirname(os.path.dirname(here))
-    cand = os.path.join(repo, "hermes_cli", "goals.py")
+    live = "C:/Users/eman5/hermes-agent"
+    base = live if os.path.isfile(os.path.join(live, "hermes_cli", "goals.py")) else repo
+    cand = os.path.join(base, "hermes_cli", "goals.py")
     spec = importlib.util.spec_from_file_location("live_goals", cand)
     mod = importlib.util.module_from_spec(spec)
     sys.modules['live_goals'] = mod  # dataclasses need this
@@ -45,7 +47,11 @@ def main():
         op = case.get("op")
         if op == "parse_contract":
             headline, contract = mod.parse_contract(case.get("text", ""))
-            out.append({"op": op, "out": {"headline": headline, "contract": contract.to_dict()}})
+            cd = contract.to_dict()
+            canon = {k: cd.get(k, "") for k in (
+                "outcome", "verification", "constraints", "boundaries", "stop_when")}
+            out.append({"op": op, "out": json.dumps(
+                {"headline": headline, "contract": canon}, separators=(",", ":"))})
         elif op == "contract_is_empty":
             d = case.get("contract")
             c = mod.GoalContract.from_dict(d) if d is not None else mod.GoalContract()
@@ -60,7 +66,9 @@ def main():
             c = mod.GoalContract.from_dict(case.get("contract"))
             out.append({"op": op, "out": c.render_block()})
         elif op == "gate_to_dict":
-            g = mod.GoalGate(**(case.get("gate") or {"command": ""}))
+            gk = dict(case.get("gate") or {"command": ""})
+            gk.pop("last_failed_fingerprint", None)  # removed from live dataclass
+            g = mod.GoalGate(**gk)
             out.append({"op": op, "out": g.to_dict()})
         elif op == "gate_from_dict":
             g = mod.GoalGate.from_dict(case.get("gate"))
