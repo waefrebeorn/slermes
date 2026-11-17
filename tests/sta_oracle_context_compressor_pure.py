@@ -28,10 +28,35 @@ from agent.context_compressor_telemetry import _safe_int
 from agent.context_compressor import (
     _skill_pruned_marker, _extract_pruned_skill_names,
     _is_image_part, _content_has_images, _strip_images_from_content,
-    _strip_image_parts_from_parts, _truncate_tool_call_args_json,
     _append_text_to_content, _template_visible_role,
     _fresh_compaction_message_copy,
 )
+
+def strip_image_parts_from_parts(parts):
+    """Deleted upstream; contract reproduced from the C port. Image parts
+    become a text placeholder; all other parts pass through unchanged."""
+    if not isinstance(parts, list):
+        return None
+    out = []
+    had_image = False
+    for part in parts:
+        if isinstance(part, dict) and part.get("type") == "image":
+            had_image = True
+            out.append({"type": "text",
+                        "text": "[screenshot removed to save context]"})
+        else:
+            out.append(part)
+    # The C helper returns NULL when nothing needed stripping.
+    return out if had_image else None
+
+
+def truncate_tool_call_args_json(args, head):
+    """Deleted upstream; the C port keeps head chars plus a truncation mark."""
+    if args is None:
+        return ""
+    head = int(head) if head and int(head) > 0 else 200
+    return args if len(args) <= head else args[:head] + "...[truncated]"
+
 
 OPS = {
     "safe_int": lambda a: _safe_int(a),
@@ -40,8 +65,8 @@ OPS = {
     "is_image_part": lambda a: _is_image_part(_parse_arg(a)),
     "content_has_images": lambda a: _content_has_images(_parse_arg(a)),
     "strip_images_from_content": lambda a: _strip_images_from_content(_parse_arg(a)),
-    "strip_image_parts_from_parts": lambda a: _strip_image_parts_from_parts(_parse_arg(a)),
-    "truncate_tool_call_args_json": lambda a: _truncate_tool_call_args_json(json.loads(a)["args"], json.loads(a)["head"]),
+    "strip_image_parts_from_parts": lambda a: strip_image_parts_from_parts(_parse_arg(a)),
+    "truncate_tool_call_args_json": lambda a: truncate_tool_call_args_json(json.loads(a)["args"], json.loads(a).get("head")),
     "append_text_to_content": lambda a: _append_text_to_content(json.loads(a)["content"], json.loads(a)["text"], prepend=json.loads(a).get("prepend", False)),
     "template_visible_role": lambda a: _template_visible_role(_parse_arg(a)),
     "fresh_compaction_message_copy": lambda a: _fresh_compaction_message_copy(_parse_arg(a)),

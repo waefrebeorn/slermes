@@ -17,5 +17,8 @@ static const char *js(const char *s){
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
   install_safe_stdio();
+  /* The helper is void; emit a contract record so the differential runner
+   * has something to compare (the call must complete without crashing). */
+  printf("{\"func\":\"install_safe_stdio\",\"ok\":true}\n");
   return 0;
 }

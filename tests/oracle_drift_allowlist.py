@@ -7,7 +7,6 @@ longer has. Disposition is per-entry: repoint (moved), drop the case
 re-run the drift gate -- do not hand-edit to swallow a NEW finding.
 """
 ALLOW = {
-    "sta_oracle_context_compressor_pure.py:28": "_strip_image_parts_from_parts / _truncate_tool_call_args_json: upstream moved",
     "sta_oracle_install_repair.py:109": "upstream helper deleted; the C port still implements it",
     "sta_oracle_install_repair.py:80": "upstream helper deleted; the C port still implements it",
     "sta_oracle_install_repair.py:81": "upstream helper deleted; the C port still implements it",
