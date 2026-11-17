@@ -17,7 +17,6 @@ ALLOW = {
     "sta_oracle_agent_estop.py:23": "agent.estop",
     "sta_oracle_agent_estop.py:35": "agent.estop",
     "sta_oracle_agent_process_bootstrap.py:5": "agent.auxiliary_client._install_safe_stdio",
-    "sta_oracle_command_priority.py:35": "hermes_cli.commands._prioritize_telegram_menu_commands",
     "sta_oracle_context_compressor_pure.py:27": "agent.context_compressor._truncate_tool_call_args_json",
     "sta_oracle_copilot_acp_toolcall.py:12": "agent.copilot_acp_client._completion_to_stream_chunks",
     "sta_oracle_credential_persistence.py:20": "agent.credential_persistence._fingerprint_value",

@@ -1,40 +1,34 @@
-import os
 #!/usr/bin/env python3
+"""Pure reference oracle for command_priority.
+
+Reads the fixture on argv and emits the same JSON records as the C harness:
+one "priority" record and one "sort" record per case. The old version read the
+C output on stdin and printed ok/MISMATCH prose, which the batch comparator
+can never match.
+
+Upstream replaced _telegram_effective_priority /
+_prioritize_telegram_menu_commands with the rank-table based
+_prioritize_telegram_menu_candidates; the effective priority list is the
+sanitized merge of the configured list and _TELEGRAM_MENU_PRIORITY.
 """
-sta_oracle_command_priority.py — Python oracle for the PURE Telegram menu
-prioritization helpers in hermes_cli/commands.py:
-  _telegram_effective_priority()        (mirrors commands_telegram_effective_priority)
-  _prioritize_telegram_menu_commands()  (mirrors commands_prioritize_telegram_menu)
-
-Faithful E2E: for each case we write the fixture's command_menu config block to
-a temp HERMES_HOME/config.yaml (the exact path _telegram_command_menu_config()
-reads), then call the REAL Python functions. The C harness receives the same
-raw command_menu JSON and calls commands_telegram_effective_priority /
-commands_prioritize_telegram_menu. Both derive their ordering from the same
-config, so a difference is a genuine divergence.
-
-Output contract matches tests/t_port_command_priority.c: one JSON object per
-op per case, sorted keys, ensure_ascii=False, compact separators.
-"""
-
 import json
+import os
 import sys
 import tempfile
-import yaml
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-# Configure a temp HERMES_HOME BEFORE importing the config-dependent module.
 _TMP = tempfile.mkdtemp(prefix="slermes_oracle_priority_")
 os.environ["HERMES_HOME"] = _TMP
-# Some installs gate on HERMES_DEV; not required for read_raw_config.
 os.makedirs(_TMP, exist_ok=True)
 
-from hermes_cli.commands import (  # noqa: E402
-    _telegram_effective_priority,
-    _prioritize_telegram_menu_commands,
+from hermes_cli.commands_platforms import (  # noqa: E402
+    _TELEGRAM_MENU_PRIORITY,
+    _prioritize_telegram_menu_candidates,
+    _sanitize_telegram_name,
+    _telegram_command_menu_config,
 )
 
 
@@ -44,59 +38,66 @@ def emit(obj):
 
 def write_config(command_menu):
     cfg = {"platforms": {"telegram": {"extra": {"command_menu": command_menu}}}}
-    with open(os.path.join(_TMP, "config.yaml"), "w", encoding="utf-8") as fh:
-        yaml.safe_dump(cfg, fh)
+    with open(os.path.join(_TMP, "config.yaml"), "w", encoding="utf-8") as f:
+        json.dump(cfg, f)
 
 
-def split_case(line):
-    line = line.rstrip("\n")
-    if not line.strip():
-        return None
-    return line
+def sanitized(names):
+    out, seen = [], set()
+    for raw in names:
+        name = _sanitize_telegram_name(str(raw))
+        if name and name not in seen:
+            seen.add(name)
+            out.append(name)
+    return out
+
+
+def effective_priority():
+    cfg = _telegram_command_menu_config()
+    configured = sanitized(cfg["priority"])
+    defaults = sanitized(_TELEGRAM_MENU_PRIORITY)
+    mode = cfg["priority_mode"]
+    if mode == "replace":
+        return configured
+    if mode == "append":
+        return defaults + [n for n in configured if n not in defaults]
+    return configured + [n for n in defaults if n not in configured]
 
 
 def main():
-    # buffer current case
     cur_cfg = None
-    cur_entries = []
+    entries = []
 
-    def flush(cfg, entries):
-        if cfg is None and not entries:
+    def flush():
+        if cur_cfg is None and not entries:
             return
-        # Write config so _telegram_command_menu_config() reads it.
-        write_config(cfg if cfg is not None else {})
-        # effective priority
-        eff = list(_telegram_effective_priority())
-        emit({"op": "priority", "priority": eff})
-        # sort
+        write_config(cur_cfg or {})
+        emit({"op": "priority", "priority": effective_priority()})
         if entries:
-            result = _prioritize_telegram_menu_commands(list(entries))
-            order = [e[0] for e in result]
-            emit({"op": "sort", "order": order})
+            candidates = [(name, desc, "core", name) for name, desc in entries]
+            ordered = _prioritize_telegram_menu_candidates(candidates)
+            emit({"op": "sort", "order": [c[0] for c in ordered]})
 
-    for raw in sys.stdin:
-        line = raw.rstrip("\n")
-        if line.startswith("==="):
-            flush(cur_cfg, cur_entries)
-            cur_cfg = None
-            cur_entries = []
-            continue
-        if not line.strip():
-            continue
-        if line.startswith("cfg "):
-            cur_cfg = json.loads(line[4:])
-            continue
-        if line.startswith("entry "):
-            e = line[6:]
-            parts = e.split("|")
-            name = parts[0]
-            desc = parts[1] if len(parts) > 1 else ""
-            key = parts[2] if len(parts) > 2 else ""
-            cur_entries.append((name, desc, key))
-            continue
-
-    flush(cur_cfg, cur_entries)
+    with open(sys.argv[1], encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("==="):
+                flush()
+                cur_cfg, entries = None, []
+            elif line.startswith("cfg "):
+                try:
+                    cur_cfg = json.loads(line[4:])
+                except Exception:
+                    cur_cfg = {}
+            elif line.startswith("entry "):
+                parts = line[6:].split("|")
+                name = parts[0] if parts else ""
+                desc = parts[1] if len(parts) > 1 else ""
+                entries.append((name, desc))
+    flush()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

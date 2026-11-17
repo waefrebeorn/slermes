@@ -19,9 +19,9 @@
 /* ── Built-in Telegram menu priority (mirrors _TELEGRAM_MENU_PRIORITY) ── */
 
 static const char *TELEGRAM_MENU_PRIORITY[] = {
-    "help", "new", "stop", "status", "resume", "sessions", "model",
+    "help", "new", "stop", "status", "egress", "resume", "sessions", "model",
     "debug", "restart", "update", "verbose", "commands",
-    "approve", "deny", "queue", "steer", "background",
+    "approve", "deny", "queue", "steer", "bg", "btw",
     "reasoning", "usage", "platforms", "platform", "profile", "whoami",
     NULL
 };
@@ -264,21 +264,30 @@ char **commands_telegram_effective_priority(const char *raw_cfg_json, int *out_n
 
     int rc = 0;
     char **result = malloc(sizeof(char *) * (size_t)(ncfg + ndef + 1));
-    if (mode == TG_PRIORITY_MODE_REPLACE) {
-        for (int i = 0; i < ncfg; i++) result[rc++] = configured[i];
-        /* configured owns the strings now; don't free them individually */
-        free(configured); configured = NULL; ncfg = 0;
-    } else if (mode == TG_PRIORITY_MODE_APPEND) {
-        for (int i = 0; i < ndef; i++) result[rc++] = defaults[i];
-        for (int i = 0; i < ncfg; i++) result[rc++] = configured[i];
-        free(defaults); defaults = NULL; ndef = 0;
-        free(configured); configured = NULL; ncfg = 0;
-    } else { /* prepend */
-        for (int i = 0; i < ncfg; i++) result[rc++] = configured[i];
-        for (int i = 0; i < ndef; i++) result[rc++] = defaults[i];
-        free(defaults); defaults = NULL; ndef = 0;
-        free(configured); configured = NULL; ncfg = 0;
+    /* Upstream builds rank tables: a name present in BOTH lists appears only
+     * once, at its first (highest-priority) position. */
+#define ADD_UNIQUE(list, count) \
+    for (int i = 0; i < (count); i++) { \
+        bool seen = false; \
+        for (int j = 0; j < rc; j++) \
+            if (strcmp(result[j], (list)[i]) == 0) { seen = true; break; } \
+        if (!seen) result[rc++] = (list)[i]; \
     }
+
+    if (mode == TG_PRIORITY_MODE_REPLACE) {
+        ADD_UNIQUE(configured, ncfg)
+    } else if (mode == TG_PRIORITY_MODE_APPEND) {
+        ADD_UNIQUE(defaults, ndef)
+        ADD_UNIQUE(configured, ncfg)
+    } else { /* prepend */
+        ADD_UNIQUE(configured, ncfg)
+        ADD_UNIQUE(defaults, ndef)
+    }
+#undef ADD_UNIQUE
+    /* Strings are now owned by result; only free the pointer arrays. */
+    free(defaults);
+    free(configured);
+    result[rc] = NULL;  /* callers scan until NULL; the +1 slot must be set */
     if (out_n) *out_n = rc;
     return result;
 }
