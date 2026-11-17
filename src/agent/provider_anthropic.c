@@ -28,6 +28,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Model-aware helpers
@@ -3335,7 +3336,7 @@ void anthropic_write_claude_code_creds(const char *access_token,
     fsync(fd);
     close(fd);
 
-    rename(tmp_path, path);
+    util_rename_replace(tmp_path, path);
     json_free(existing);
 }
 

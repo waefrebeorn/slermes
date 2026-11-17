@@ -32,6 +32,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* ── Contract constants (mirror skills_sync_client.py + src/sync/manifest.ts) ── */
 
@@ -669,7 +670,7 @@ static void save_usage_sidecar(json_t *usage) {
     fsync(fileno(f));
     fclose(f);
     free(ser);
-    rename(tmp, path);
+    util_rename_replace(tmp, path);
 }
 
 /* Whether skill_name is currently opted into sync (usage sidecar sync:true). */
@@ -1575,7 +1576,7 @@ int ssc_write_sync_state(json_t *data) {
         free(ser);
     }
     fclose(f);
-    int rc = rename(tmp, path) == 0 ? 0 : -1;
+    int rc = util_rename_replace(tmp, path) == 0 ? 0 : -1;
     if (rc != 0) unlink(tmp);
     return rc;
 }

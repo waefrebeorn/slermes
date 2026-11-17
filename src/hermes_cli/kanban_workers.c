@@ -50,6 +50,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <ctype.h>
+#include "port_utils_ports.h"
 
 /* ---- module constants (mirror kanban_db.py) ---------------------------- */
 #define KB_RATE_LIMIT_EXIT_CODE 75
@@ -536,11 +537,11 @@ int kdb_rotate_worker_log(const char *log_path, long max_bytes, int backup_count
         char *src = kb_rotated_log_path(log_path, g);
         if (stat(src, &stt) != 0) { free(src); continue; }
         char *dst = kb_rotated_log_path(log_path, g + 1);
-        rename(src, dst);
+        util_rename_replace(src, dst);
         free(src); free(dst);
     }
     char *one = kb_rotated_log_path(log_path, 1);
-    rename(log_path, one);
+    util_rename_replace(log_path, one);
     free(one);
     return 1;
 }

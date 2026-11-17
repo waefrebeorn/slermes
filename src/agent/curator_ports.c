@@ -19,6 +19,7 @@
 #include "yaml.h"
 #include "hermes_agent.h"
 #include "hermes_curator.h"
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -121,7 +122,7 @@ int cur_save_state(const char *hermes_home, const char *data_json) {
     if (w < 0) { close(fd); unlink(tmp); free(path); return -1; }
     if (fsync(fd) != 0) { close(fd); unlink(tmp); free(path); return -1; }
     close(fd);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(path); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(path); return -1; }
     free(path);
     return 0;
 }

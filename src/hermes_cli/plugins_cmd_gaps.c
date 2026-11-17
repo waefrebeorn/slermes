@@ -30,6 +30,7 @@
 #include "plugin_guard.h"               /* plugin_guard_scan_plugin() */
 #include "plugin_index_pure.h"
 #include "plugins_core.h"               /* plugins_collect_directory_manifests() */
+#include "port_utils_ports.h"
 
 /* forward declarations used before their definitions in this file */
 char *scrub_git_url(const char *git_url);
@@ -1410,7 +1411,7 @@ void remove_plugin_core(const char *target_path) {
     char backup[4400];
     snprintf(backup, sizeof(backup), "%.*s/plugin", (int)(strlen(staging_real)),
              staging_real);
-    if (rename(target_path, backup) != 0) {
+    if (util_rename_replace(target_path, backup) != 0) {
         pcmd_seterr("could not stage plugin removal: %s", strerror(errno));
         json_free(metadata);
         rmdir(staging_real);
@@ -1418,7 +1419,7 @@ void remove_plugin_core(const char *target_path) {
     }
     if (write_install_metadata(metadata) != 0) {
         /* restore */
-        rename(backup, target_path);
+        util_rename_replace(backup, target_path);
         pcmd_seterr("Plugin metadata update failed and '%s' could not be "
                     "restored automatically; recovery copy remains at %s.",
                     name, backup);

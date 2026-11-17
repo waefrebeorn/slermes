@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <strings.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* ------------------------------------------------------------------ */
 /* Path concatenation helper (no allocation beyond the buffer).        */
@@ -612,12 +613,12 @@ bool main_electron_pkg_staged_missing_dist(const char *project_root)
 int main_atomic_replace_dir(const char *src, const char *dst)
 {
     if (!src || !dst) return -1;
-    if (rename(src, dst) == 0) return 0;
+    if (util_rename_replace(src, dst) == 0) return 0;
     /* Fallback: dst may exist; remove then retry. */
     char cmd[PATH_MAX + 64];
     snprintf(cmd, sizeof(cmd), "rm -rf -- '%s'", dst);
     (void)system(cmd);
-    if (rename(src, dst) == 0) return 0;
+    if (util_rename_replace(src, dst) == 0) return 0;
     return -1;
 }
 

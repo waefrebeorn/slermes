@@ -24,6 +24,7 @@
 #include "hash.h"            /* hash_sha256_hex */
 #include "hermes_json.h"     /* libjson shim */
 #include "port_web_server_paths.h" /* get_hermes_home */
+#include "port_utils_ports.h"
 
 /* ── Actor override (mirrors Python contextvars) ─────────────────────────── */
 /* Thread-local token stack is overkill for a single var; use a simple
@@ -140,7 +141,7 @@ char *store_blob(const unsigned char *data, size_t len) {
     if (!f) { free(digest); return NULL; }
     if (fwrite(data, 1, len, f) != len) { fclose(f); remove(tmp); free(digest); return NULL; }
     fclose(f);
-    if (rename(tmp, dest) != 0) { remove(tmp); free(digest); return NULL; }
+    if (util_rename_replace(tmp, dest) != 0) { remove(tmp); free(digest); return NULL; }
     return digest;
 }
 

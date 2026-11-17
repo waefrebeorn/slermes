@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -94,7 +95,7 @@ int flt_write_file_tool(const char *path, const char *content, bool cross_profil
     fwrite(content, 1, strlen(content), w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); free(resolved); return -1; }
     fclose(w);
-    if (rename(tmp, resolved) != 0) { unlink(tmp); free(tmp); free(resolved); return -1; }
+    if (util_rename_replace(tmp, resolved) != 0) { unlink(tmp); free(tmp); free(resolved); return -1; }
     free(tmp);
     free(resolved);
     printf("file written (cross_profile=%d)\n", cross_profile);

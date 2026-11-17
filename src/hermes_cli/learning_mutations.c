@@ -31,6 +31,7 @@ void *agent_learning_mutations_skill_detail(void) { return NULL; }
 #include "port_learning_graph.h"
 #include "libskillusage/skill_usage.h"
 #include "hermes_system_prompt.h"
+#include "port_utils_ports.h"
 
 /* ENTRY_DELIMITER mirrors tools/memory_tool.py (ENTRY_DELIMITER = "\n§\n"). */
 #define LM_ENTRY_DELIM "\n§\n"
@@ -218,7 +219,7 @@ int learning_mutations_write_memory_file(const char *path, char **chunks, int n)
     int closed = fclose(f);
     free(buf);
     if (w != (size_t)len || closed != 0) { unlink(tmp); return -1; }
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Internal helpers
@@ -530,7 +531,7 @@ static bool save_pairing_json(json_t *data) {
     fclose(f);
     free(json_str);
 
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         unlink(tmp_path);
         return false;
     }

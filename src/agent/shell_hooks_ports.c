@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "json.h"  /* libjson — for _parse_response / _fail_closed_block / _evaluate_result */
+#include "port_utils_ports.h"
 
 /* Constants shared across shell-hook ports. Mirrors Python
  * agent/shell_hooks.py constants: BLOCK_EXIT_CODE, _STDERR_MESSAGE_LIMIT,
@@ -252,7 +253,7 @@ int shk_save_allowlist(const char *hermes_home, const char *data_json) {
     fputc('\n', w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); free(path); return -1; }
     fclose(w);
-    int rc = rename(tmp, path);
+    int rc = util_rename_replace(tmp, path);
     if (rc != 0) unlink(tmp);
     free(tmp); free(path);
     return rc == 0 ? 0 : -1;

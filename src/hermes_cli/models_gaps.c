@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* Exported from src/hermes_cli/moa_pure_helpers.c (its PoP lives there). */
 extern const char *silent_default_for_provider(const char *provider);
@@ -927,7 +928,7 @@ static void mg_caps_disk_write(const char *url, const json_t *caps) {
         snprintf(tmp, plen + 8, "%s.tmp", path);
         FILE *f = fopen(tmp, "w");
         if (f) { fputs(ser, f); fclose(f);
-                 if (rename(tmp, path) == 0) wrote = 1; else unlink(tmp); }
+                 if (util_rename_replace(tmp, path) == 0) wrote = 1; else unlink(tmp); }
     }
     if (!wrote) {
         FILE *f2 = fopen(path, "w");

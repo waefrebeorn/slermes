@@ -46,6 +46,7 @@
 #include <sys/stat.h>
 #include <libgen.h>
 #include <strings.h>
+#include "port_utils_ports.h"
 
 /* ---- constants (mirror cron/suggestions.py) ---- */
 #define CRON_SUGG_MAX_PENDING 5
@@ -178,7 +179,7 @@ bool cron_sugg_save_raw(json_t *suggestions_list)
     free(serialized);
 
     if (!ok) { unlink(tmp); return false; }
-    if (rename(tmp, path) != 0) { unlink(tmp); return false; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return false; }
     cron_sugg_secure_file(path);
     return true;
 }

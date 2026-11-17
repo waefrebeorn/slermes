@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 #define DEFAULT_MEMORY_LIMIT 2200
 #define DEFAULT_USER_LIMIT   1375
@@ -119,7 +120,7 @@ static int atomic_write_file(const char *path, const char *content) {
     }
     fsync(fd);
     close(fd);
-    if (rename(tmpl, path) != 0) { unlink(tmpl); return -1; }
+    if (util_rename_replace(tmpl, path) != 0) { unlink(tmpl); return -1; }
     return 0;
 }
 

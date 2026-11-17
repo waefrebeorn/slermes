@@ -29,6 +29,7 @@
 #include "port_config_py_helpers.h"
 #include "cron_jobs.h"
 #include "hermes_core_types.h"  /* HERMES_PATH_MAX */
+#include "port_utils_ports.h"
 
 /* Reuse the agent-side ISO-8601 UTC timestamp helper (agent/shell_hooks.c,
  * Port of agent/shell_hooks.py:_utc_now_iso). Returns malloc'd string. */
@@ -154,7 +155,7 @@ static void atomic_write_counter_impl(const char *path, long value) {
     dprintf(fd, "%ld", value);
     fsync(fd);
     close(fd);
-    rename(tmppath, path);
+    util_rename_replace(tmppath, path);
 }
 
 /* PoP: port @ cron/jobs.py:ensure_croniter */

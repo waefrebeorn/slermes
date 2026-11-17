@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <libtoml/toml.h>
+#include "port_utils_ports.h"
 
 install_repair_find_uv_fn install_repair_find_uv_hook = NULL;
 install_repair_run_cmd_fn install_repair_run_cmd_hook = NULL;
@@ -250,7 +251,7 @@ size_t install_repair_quarantine_running_hermes_exe(const char *scripts_dir,
         m = snprintf(NULL, 0, "%s/%s.exe.old.%lld", scripts_dir, all[i], ms);
         char *qname = malloc(m + 1);
         snprintf(qname, m + 1, "%s/%s.exe.old.%lld", scripts_dir, all[i], ms);
-        if (rename(shim, qname) == 0) {
+        if (util_rename_replace(shim, qname) == 0) {
             moved = realloc(moved, (nmoved + 1) * sizeof(*moved));
             moved[nmoved].original = shim;
             moved[nmoved].quarantined = qname;

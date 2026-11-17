@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <zlib.h>
+#include "port_utils_ports.h"
 
 #define CURATOR_BACKUP_VERSION "1.0.0"
 #define DEFAULT_KEEP 5
@@ -852,7 +853,7 @@ static char *curator_rollback_handler(const char *args_json, const char *task_id
             char src[PATH_MAX_LEN], dst[PATH_MAX_LEN];
             snprintf(src, sizeof(src), "%s/%s", skills, ent->d_name);
             snprintf(dst, sizeof(dst), "%s/%s", staging, ent->d_name);
-            rename(src, dst);
+            util_rename_replace(src, dst);
         }
         closedir(sd);
     }
@@ -869,7 +870,7 @@ static char *curator_rollback_handler(const char *args_json, const char *task_id
                 char src[PATH_MAX_LEN], dst[PATH_MAX_LEN];
                 snprintf(src, sizeof(src), "%s/%s", staging, ent->d_name);
                 snprintf(dst, sizeof(dst), "%s/%s", skills, ent->d_name);
-                rename(src, dst);
+                util_rename_replace(src, dst);
             }
             closedir(rd);
         }

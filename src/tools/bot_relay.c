@@ -25,6 +25,7 @@
 #include "uuid.h"
 #include "port_config_py_helpers.h"
 #include "libregex/hermes_regex.h"
+#include "port_utils_ports.h"
 
 /* ROSTER_FRESH_SECONDS @ tools/bot_relay.py:60 */
 static const double BR_ROSTER_FRESH_SECONDS = 600.0;
@@ -336,7 +337,7 @@ static int br_atomic_write(const char *dir, const char *prefix,
     ssize_t put = write(fd, payload, len);
     int werr = (put < 0 || (size_t)put != len);
     if (close(fd) != 0) werr = 1;
-    if (werr || rename(tmp, final_path) != 0) { unlink(tmp); return -1; }
+    if (werr || util_rename_replace(tmp, final_path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

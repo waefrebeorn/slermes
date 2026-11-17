@@ -19,6 +19,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Internal: get cache file path
@@ -90,7 +91,7 @@ static bool sticker_cache_save(json_node_t *cache) {
     close(fd);
 
     /* Atomic rename */
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         unlink(tmp_path);
         free(json_str);
         return false;

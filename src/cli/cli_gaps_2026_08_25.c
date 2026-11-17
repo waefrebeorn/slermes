@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include "../../lib/libskin/skin.h"
+#include "port_utils_ports.h"
 
 char *realpath(const char *path, char *resolved);
 
@@ -1483,7 +1484,7 @@ void save_worktree_merge_cache(json_t *verdicts)
             ok = fwrite(ser, 1, strlen(ser), f) == strlen(ser);
             fclose(f);
             if (ok)
-                ok = rename(tmp, path) == 0;
+                ok = util_rename_replace(tmp, path) == 0;
             if (!ok)
                 unlink(tmp);
         }

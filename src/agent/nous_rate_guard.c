@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 /* --- Constants --- */
 
@@ -78,7 +79,7 @@ static int atomic_write(const char *path, const char *content) {
         return -1;
     }
     /* Atomic rename */
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         int rename_err = errno;
         unlink(tmp_path);
         free(tmp_path);

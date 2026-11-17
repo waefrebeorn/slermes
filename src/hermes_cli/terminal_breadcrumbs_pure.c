@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "port_utils_ports.h"
 
 #define TBR_STALE_AFTER_SECONDS (30LL * 24 * 3600)
 
@@ -241,7 +242,7 @@ void tbr_write_breadcrumb(const char *session_id, const char *cwd) {
     if (f) {
         fputs(payload, f);
         fclose(f);
-        rename(tmp_path, final_path);
+        util_rename_replace(tmp_path, final_path);
     }
 
     tbr_prune_stale(dir, now);

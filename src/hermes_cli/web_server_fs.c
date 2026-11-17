@@ -25,6 +25,7 @@
 
 #include "hermes_web_server_pure.h"
 #include "base64.h"
+#include "port_utils_ports.h"
 
 /* ── Python _FS_READDIR_HIDDEN ───────────────────────────────────────────── */
 /* PoP: ws_fs_readdir_hidden @ hermes_cli/web_server.py:_FS_READDIR_HIDDEN */
@@ -288,7 +289,7 @@ int ws_fs_write_text(const char *path, const char *content, size_t content_len) 
         free(target);
         return 500;
     }
-    if (rename(tmp, target) != 0) {
+    if (util_rename_replace(tmp, target) != 0) {
         int rc = (errno == EACCES) ? 403 : 500;
         unlink(tmp);
         free(target);

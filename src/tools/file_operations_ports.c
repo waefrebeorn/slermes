@@ -15,6 +15,7 @@
 #include <errno.h>
 #include "hermes_json.h"
 #include <dirent.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -66,7 +67,7 @@ char *fo_delete_file(const char *path) {
 char *fo_move_file(const char *src, const char *dst) {
     /* Python: rename; WriteResult. */
     if (!src || !dst) return strdup("{\"error\": \"no path\"}");
-    if (rename(src, dst) != 0) {
+    if (util_rename_replace(src, dst) != 0) {
         char *out = NULL;
         asprintf(&out, "{\"error\": \"move failed: %s\"}", strerror(errno));
         return out;
@@ -95,7 +96,7 @@ int fo_atomic_write(const char *path, const char *content) {
     fwrite(content, 1, strlen(content), w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }

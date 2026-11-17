@@ -23,6 +23,7 @@
 #include <inttypes.h>
 #include "hermes_json.h"
 #include "credential_files.h"
+#include "port_utils_ports.h"
 
 /* forward declarations for static helpers defined later */
 static void cleanup_generation(const char *generation, const char *python_root);
@@ -254,7 +255,7 @@ int muv_u_rename_with_retry(const char *arg) {
             struct timespec ts = {0, (long)(delays[i] * 1e9)};
             nanosleep(&ts, NULL);
         }
-        if (rename(src, dst) == 0) { printf("1\n"); return 0; }
+        if (util_rename_replace(src, dst) == 0) { printf("1\n"); return 0; }
     }
     printf("0\n");
     return 1;

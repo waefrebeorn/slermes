@@ -22,6 +22,7 @@
 #include <pthread.h>
 #include <stdarg.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 /* ──────────────────────────────────────────────
  *  Static state
@@ -86,7 +87,7 @@ static void rotate_if_needed(FILE **fpp, const char *path) {
     /* Rename agent.log → agent.log.1, errors.log → errors.log.1 */
     char old_path[1024];
     snprintf(old_path, sizeof(old_path), "%s.1", path);
-    rename(path, old_path);
+    util_rename_replace(path, old_path);
 
     *fpp = fopen(path, "a");
 }

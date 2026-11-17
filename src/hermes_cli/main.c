@@ -53,6 +53,7 @@ int hermes_cli_entry(int argc, char **argv) {
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 /*
  * _electron_dir — Return the Electron package directory.
@@ -296,11 +297,11 @@ void _atomic_replace_dir(const char* src, const char* dst)
     }
 
     /* Atomic rename */
-    if (rename(tmp, dst) != 0) {
+    if (util_rename_replace(tmp, dst) != 0) {
         /* Fallback: rm dst, mv tmp dst */
         snprintf(rm_cmd, sizeof(rm_cmd), "rm -rf '%s'", dst);
         system(rm_cmd);
-        if (rename(tmp, dst) != 0) {
+        if (util_rename_replace(tmp, dst) != 0) {
             return;
         }
     }
@@ -752,7 +753,7 @@ int main_g_record_bytecode_fingerprint(const char *project_root) {
     if (!f) { free(fingerprint); return -1; }
     fputs(fingerprint, f);
     fclose(f);
-    rename(tmp, stamp);
+    util_rename_replace(tmp, stamp);
     free(fingerprint);
     return 0;
 }

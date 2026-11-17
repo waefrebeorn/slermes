@@ -26,6 +26,7 @@
 #include "port_config_py_helpers.h"
 #include "plugin_index_pure.h"
 #include "plugins_core.h"
+#include "port_utils_ports.h"
 
 /* sibling ports (defined in plugins_cmd_wrappers.c / plugin_packs_pure.c) */
 extern char *pcmd_resolve_git_url(const char *identifier, char **out_subdir);
@@ -431,7 +432,7 @@ static int p_write_install_metadata(const json_t *meta) {
     fputc('\n', f);
     fclose(f);
     free(text);
-    return rename(tmp, path);
+    return util_rename_replace(tmp, path);
 }
 
 /* ------------------------------------------------------------------ */
@@ -616,7 +617,7 @@ void cmd_remove(const char *name) {
     }
     snprintf(staging, sizeof staging, "%s/plugin", staging_tpl);
 
-    if (rename(target, staging) != 0) {
+    if (util_rename_replace(target, staging) != 0) {
         fprintf(stderr, "Error: Could not remove plugin '%s'.\n", name);
         rmdir(staging_tpl);
         json_free(meta);
@@ -625,7 +626,7 @@ void cmd_remove(const char *name) {
     if (in_meta) {
         json_obj_del(meta, meta_key);
         if (p_write_install_metadata(meta) != 0) {
-            rename(staging, target); /* restore */
+            util_rename_replace(staging, target); /* restore */
             fprintf(stderr,
                     "Error: Could not remove plugin '%s': metadata update "
                     "failed; recovery copy remains at %s.\n",

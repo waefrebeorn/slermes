@@ -16,6 +16,7 @@
 #include <pthread.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Audit Log State
@@ -125,14 +126,14 @@ static void audit_check_rotate(void) {
         char old_name[4160], new_name[4160];
         snprintf(old_name, sizeof(old_name), "%s.%d.log", g_audit_path, i);
         snprintf(new_name, sizeof(new_name), "%s.%d.log", g_audit_path, i + 1);
-        rename(old_name, new_name);
+        util_rename_replace(old_name, new_name);
     }
 
     /* Rename current → .1.log */
     {
         char rotated[4160];
         snprintf(rotated, sizeof(rotated), "%s.1.log", g_audit_path);
-        rename(g_audit_path, rotated);
+        util_rename_replace(g_audit_path, rotated);
     }
 
     /* Open new log */

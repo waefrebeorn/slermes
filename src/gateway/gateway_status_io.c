@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 
 
@@ -113,7 +114,7 @@ long gwstatus_get_process_start_time(pid_t pid) {
     fclose(f);
     free(ser);
     if (wrote != len) { unlink(tmp); return -1; }
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

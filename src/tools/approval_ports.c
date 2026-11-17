@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -202,7 +203,7 @@ int apr_save_permanent_allowlist(const char *config_path, const char *patterns_j
     if (!w) { free(tmp); return -1; }
     fprintf(w, "command_allowlist: %s\n", patterns_json);
     fclose(w);
-    int rc = rename(tmp, config_path);
+    int rc = util_rename_replace(tmp, config_path);
     if (rc != 0) unlink(tmp);
     free(tmp);
     return rc == 0 ? 0 : -1;

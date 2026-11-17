@@ -20,6 +20,7 @@
 #include <time.h>
 #include <errno.h>
 #include <ctype.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Internal constants
@@ -625,7 +626,7 @@ bool skill_sync_from_hub(const char *hub_url, const char *branch, char *log_out,
                     if (hub_content) {
                         char backup[HERMES_PATH_MAX];
                         snprintf(backup, sizeof(backup), "%s/SKILL.md.local_backup", dst_path);
-                        rename(sk_dst, backup);
+                        util_rename_replace(sk_dst, backup);
                         write_file(sk_dst, hub_content);
                         free(hub_content);
                         if (log) fprintf(log, "    Updated SKILL.md (hub is newer, backed up local)\n");

@@ -17,6 +17,7 @@
 #include "hermes_json.h"
 #include "port_config_py_helpers.h"
 #include "hermes_curator.h"
+#include "port_utils_ports.h"
 
 /* PoP: main_u_exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */
 int main_u_exit_after_oneshot(const char *arg) {
@@ -2446,7 +2447,7 @@ int main_u_restore_quarantined_exes(const char *arg) {
             memcpy(quar, t1 + 1, qlen); quar[qlen] = '\0';
             struct stat so, sq;
             if (stat(orig, &so) != 0 && stat(quar, &sq) == 0) {
-                if (rename(quar, orig) == 0) restored++;
+                if (util_rename_replace(quar, orig) == 0) restored++;
             }
         }
         p = t2 ? t2 + 1 : t1 + 1 + qlen;

@@ -24,6 +24,7 @@
 #include "libyaml/yaml.h"
 #include "libjson/json.h"
 #include "libtoml/toml.h"
+#include "port_utils_ports.h"
 
 #define AI_ENTRY_DELIMITER "\n\xC2\xA7\n" /* "\n§\n" (UTF-8) */
 
@@ -1425,7 +1426,7 @@ char **ai_merge_memory_entries(AgentImporter *imp, const char *kind,
         fputc('\n', out);
         fclose(out);
     }
-    if (!ok || rename(tmp, dest_path) != 0) {
+    if (!ok || util_rename_replace(tmp, dest_path) != 0) {
         ai_imp_record(imp, kind, source, dest_path, "error",
                       "Could not write merged memory file", details);
     } else {

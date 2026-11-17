@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -104,7 +105,7 @@ int obd_mark_seen(const char *config_path, const char *flag) {
     if (!w) { free(tmp); return -1; }
     fprintf(w, "\nonboarding:\n  seen:\n    %s: true\n", flag);
     fclose(w);
-    int rc = rename(tmp, config_path);
+    int rc = util_rename_replace(tmp, config_path);
     if (rc != 0) unlink(tmp);
     free(tmp);
     return rc == 0 ? 0 : -1;

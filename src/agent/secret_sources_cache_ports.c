@@ -13,6 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -91,7 +92,7 @@ int scc_write(const char *path, const char *entry_json, long ttl_seconds) {
     fputc('\n', w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }

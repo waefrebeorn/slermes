@@ -17,6 +17,7 @@
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <pthread.h>
+#include "port_utils_ports.h"
 
 #define MODELS_DEV_URL "https://models.dev/api.json"
 
@@ -126,7 +127,7 @@ int mdv_save_disk_cache(const char *cache_path, const char *registry_json) {
     fputc('\n', w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
     fclose(w);
-    if (rename(tmp, cache_path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, cache_path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }
@@ -630,7 +631,7 @@ int mdv_save_etag(const char *etag) {
     fwrite(etag, 1, strlen(etag), w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); free(path); return -1; }
     fclose(w);
-    int rc = rename(tmp, path);
+    int rc = util_rename_replace(tmp, path);
     if (rc != 0) unlink(tmp);
     free(tmp);
     free(path);
@@ -693,7 +694,7 @@ void mdv_quarantine_corrupt_cache(const char *cache_path) {
         /* Python uses with_suffix(".json.corrupt"): replaces ".json". */
         char *dot = strrchr(dst, '.');
         (void)dot;
-        if (rename(cache_path, dst) != 0)
+        if (util_rename_replace(cache_path, dst) != 0)
             hermes_log(LOG_DEBUG, "models_dev", "Could not quarantine corrupt models.dev cache");
         free(dst);
     }

@@ -20,6 +20,7 @@
 #include <time.h>
 #include "hermes_http.h"
 #include "hermes_json.h"
+#include "port_utils_ports.h"
 
 /* Mirror the connector's MEDIA_MAX_BYTES (mediaStore.ts) */
 #define RELAY_MEDIA_MAX_BYTES (25 * 1024 * 1024)
@@ -207,7 +208,7 @@ char *relay_media_client_download(relay_media_client_t *c, const char *url,
     if (fd < 0) { http_resp_free(resp); return NULL; }
     char final_path[512];
     snprintf(final_path, sizeof(final_path), "%s%s", tmpl, ext);
-    if (rename(tmpl, final_path) != 0) {
+    if (util_rename_replace(tmpl, final_path) != 0) {
         snprintf(final_path, sizeof(final_path), "%s", tmpl);
     }
     FILE *out = fopen(final_path, "wb");

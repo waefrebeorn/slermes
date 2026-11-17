@@ -19,6 +19,7 @@
 #include <time.h>
 #include <glob.h>
 #include "hash.h"
+#include "port_utils_ports.h"
 
 
 
@@ -81,7 +82,7 @@
 
 
 /* Port of Python tools/file_operations.py:move_file(). */ bool move_file(const char *src, const char *dst) {
-    if (rename(src, dst) == 0) return true;
+    if (util_rename_replace(src, dst) == 0) return true;
     /* Cross-filesystem: copy + unlink */
     if (!copy_file(src, dst)) return false;
     unlink(src);

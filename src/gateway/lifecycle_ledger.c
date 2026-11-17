@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 #define LLG_STATE_REL "state/gateway.lifecycle.json"
 #define LLG_EXIT_DIAG_REL "logs/gateway-exit-diag.log"
@@ -220,7 +221,7 @@ void llg_write_sentinel(const json_t *payload, const char *home)
         fflush(f);
         fsync(fileno(f));
         fclose(f);
-        rename(tmp, path);
+        util_rename_replace(tmp, path);
     }
     free(tmp);
     free(ser);

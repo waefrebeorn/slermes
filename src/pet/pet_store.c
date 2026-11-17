@@ -18,6 +18,7 @@
 #include "hermes_http.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include "port_utils_ports.h"
 
 /* PoP: pet_safe_slug @ agent/pet/store.py:_safe_slug */
 const char *pet_safe_slug(const char *slug) {
@@ -434,14 +435,14 @@ const char *pet_rename_pet(const char *slug, const char *display_name) {
         snprintf(new_dir, sizeof(new_dir), "%s/%s", base, desired);
         struct stat st;
         if (stat(new_dir, &st) != 0) {
-            if (rename(dir, new_dir) == 0) {
+            if (util_rename_replace(dir, new_dir) == 0) {
                 snprintf(new_slug, sizeof(new_slug), "%s", desired);
                 json_set(meta, "id", json_string(desired));
 
                 char old_thumb[1024], new_thumb[1024];
                 snprintf(old_thumb, sizeof(old_thumb), "%s/.thumbs/%s.png", base, safe);
                 snprintf(new_thumb, sizeof(new_thumb), "%s/.thumbs/%s.png", base, desired);
-                rename(old_thumb, new_thumb);
+                util_rename_replace(old_thumb, new_thumb);
 
                 snprintf(dir, sizeof(dir), "%s/%s", base, desired);
             }
@@ -713,7 +714,7 @@ bool pet_download_file(const char *url, const char *dest_path, int timeout_sec)
         http_resp_free(resp); return false;
     }
 
-    if (rename(tmp_path, dest_path) != 0) {
+    if (util_rename_replace(tmp_path, dest_path) != 0) {
         unlink(tmp_path); free(tmp_path);
         http_resp_free(resp); return false;
     }

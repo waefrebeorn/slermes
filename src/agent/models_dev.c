@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
+#include "port_utils_ports.h"
 
 /* ── constants ──────────────────────────────────────────────────────── */
 #define MODELS_DEV_URL       "https://models.dev/api.json"
@@ -120,7 +121,7 @@ static bool save_disk_cache(json_t *data) {
     fclose(f);
     free(json_str);
 
-    rename(tmp_path, path);
+    util_rename_replace(tmp_path, path);
     free(path);
     return true;
 }

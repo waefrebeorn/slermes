@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <regex.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 static char *read_file_text(const char *path)
 {
@@ -36,7 +37,7 @@ static bool write_file_atomic(const char *path, const char *content)
     if (!f) return false;
     fputs(content, f);
     fclose(f);
-    return rename(tmp, path) == 0;
+    return util_rename_replace(tmp, path) == 0;
 }
 
 /* PoP: current_instantiation_epoch @ gateway/drain_control.py:current_instantiation_epoch */

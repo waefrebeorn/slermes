@@ -27,6 +27,7 @@
 #include "hermes_logger.h"
 #include "hermes_core_types.h"
 #include "cron_jobs.h"
+#include "port_utils_ports.h"
 
 /* ---- local helpers ---- */
 
@@ -86,7 +87,7 @@ static int write_config_json(const char *path, const json_t *data) {
     }
     close(fd);
     free(js);
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

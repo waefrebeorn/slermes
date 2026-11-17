@@ -13,6 +13,7 @@
 #include "json.h"
 #include "fallback_cmd.h"
 #include <hermes_json.h>
+#include "port_utils_ports.h"
 
 /* Strip leading + trailing whitespace in place (Python .strip()). */
 static void strip_inplace(char *s) {
@@ -271,7 +272,7 @@ static int fb_write_chain(json_t *chain) {
     fputs(text, f);
     fclose(f);
     free(text);
-    return rename(tmp, path);
+    return util_rename_replace(tmp, path);
 }
 
 /* Restore config["model"] from a snapshot (NULL pops the key). */
@@ -292,7 +293,7 @@ static int fb_restore_model_cfg(const json_t *model_before) {
     fputs(text, f);
     fclose(f);
     free(text);
-    return rename(tmp, path);
+    return util_rename_replace(tmp, path);
 }
 
 /* auth.json active_provider snapshot/restore is best-effort in this port:

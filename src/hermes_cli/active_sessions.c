@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <sys/file.h>
 #include <signal.h>
+#include "port_utils_ports.h"
 
 
 /* === dissolved from ports_wrappers.c === */
@@ -124,7 +125,7 @@ int hermes_cli_active_sessions_u_write_entries(const char *arg) {
     if (!fp) { printf("0\n"); return 0; }
     fprintf(fp, "{\"entries\": %s}\n", entries);
     fclose(fp);
-    if (rename(tmp, path) != 0) { unlink(tmp); printf("0\n"); return 0; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); printf("0\n"); return 0; }
     printf("1\n");
     return 0;
 }

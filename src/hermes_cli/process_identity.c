@@ -23,6 +23,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <limits.h>
+#include "port_utils_ports.h"
 
 const char *const PROCESS_IDENTITY_REAPABLE_PURPOSES[] = {
     "serve", "dashboard", "gateway", NULL,
@@ -253,7 +254,7 @@ void process_identity_quarantine_ledger(const char *path)
     if (!path) return;
     char parked[1100];
     snprintf(parked, sizeof(parked), "%s.corrupt", path);
-    rename(path, parked); /* best-effort; OSError swallowed */
+    util_rename_replace(path, parked); /* best-effort; OSError swallowed */
 }
 
 static int pi_file_exists(const char *path)
@@ -430,7 +431,7 @@ int process_identity_register_self(const char *purpose,
                 free(payload);
             }
             fclose(fp);
-            ok = rename(tmp, path) == 0;
+            ok = util_rename_replace(tmp, path) == 0;
             if (!ok) unlink(tmp);
         }
         json_free(pruned);

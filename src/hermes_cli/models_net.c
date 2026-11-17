@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 /* ── Injectable transport ────────────────────────────────────────────────
  * typedef int (*http_fetch_fn)(const char *url, const char *headers_json,
@@ -440,7 +441,7 @@ void models_write_nous_recommended_disk(const char *base, const char *data_json)
     if (f) {
         fputs(serialized, f);
         fclose(f);
-        rename(tmp, path);
+        util_rename_replace(tmp, path);
     } else {
         /* Fall back to direct write. */
         FILE *f2 = fopen(path, "w");
@@ -728,7 +729,7 @@ static void models_save_reasoning_caps_disk(const char *url, const json_t *map) 
         if (f) {
             fputs(ser, f);
             fclose(f);
-            if (rename(tmp, path) != 0) unlink(tmp);
+            if (util_rename_replace(tmp, path) != 0) unlink(tmp);
         } else {
             free(tmp);
             tmp = NULL;

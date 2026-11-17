@@ -19,6 +19,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 #define CHECKPOINT_DIR ".hermes_checkpoints"
 #define MAX_PATH 4096
@@ -281,7 +282,7 @@ char* migrate_legacy_store(const char *base) {
         char src_path[MAX_PATH], dst_path[MAX_PATH];
         snprintf(src_path, sizeof(src_path), "%s/%s", base, name);
         snprintf(dst_path, sizeof(dst_path), "%s/%s", legacy_root, name);
-        if (rename(src_path, dst_path) != 0) { /* best-effort */ }
+        if (util_rename_replace(src_path, dst_path) != 0) { /* best-effort */ }
     }
     closedir(dir);
     return need_legacy ? strdup(legacy_root) : NULL;

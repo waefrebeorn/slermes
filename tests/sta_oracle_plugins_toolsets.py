@@ -145,8 +145,15 @@ def cache_roundtrip(keys_csv, mcp_csv):
         P.get_plugin_toolsets = orig_toolsets
         P.get_plugin_manager = orig_manager
 
-    blob = P._read_plugin_keys_cache()
-    if blob is None:
+    # _read_plugin_keys_cache was deleted upstream; its body now lives inline in
+    # _nowait_plugin_set (json.loads of the cache path, utf-8-sig). Replay that
+    # read against the live path rather than keeping a dead helper alive.
+    try:
+        text = P._plugin_toolset_keys_cache_path().read_text(encoding="utf-8-sig")
+        blob = json.loads(text)
+    except Exception:
+        blob = None
+    if not isinstance(blob, dict):
         return None
     # Compact serialization matching C's json_serialize (no spaces).
     return json.dumps(blob, separators=(",", ":"))

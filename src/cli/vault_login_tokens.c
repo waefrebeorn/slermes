@@ -96,7 +96,11 @@ char *vl_normalize_text(const char *value)
     out[o] = '\0';
     return out;
 }
- int tokenize(const char *normalized, char **tokens, int max)
+ /* File-local: src/tools/tool_search.c already exports an API `tokenize` with a
+ * different signature (include/hermes_tool_search.h), and two non-static
+ * definitions of the same name only surfaced as a link error once a full
+ * rebuild put both objects on one link line. */
+int vlt_tokenize(const char *normalized, char **tokens, int max)
 {
     int n = 0;
     const char *p = normalized;

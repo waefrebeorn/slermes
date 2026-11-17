@@ -25,6 +25,7 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include "port_provider_registry.h"
+#include "port_utils_ports.h"
 
 /* ── external reuse (port_auth_na.c) ── */
 extern char *auth_file_path(void);           /* malloc'd <home>/auth.json */
@@ -333,7 +334,7 @@ char *authstore_save(json_t *auth_store, const char *target_path)
     fsync(fd);
     close(fd);
     free(payload);
-    if (wr != (ssize_t)(len + 1) || rename(tmp, path) != 0) {
+    if (wr != (ssize_t)(len + 1) || util_rename_replace(tmp, path) != 0) {
         unlink(tmp); free(path); return NULL;
     }
     /* fsync parent dir */
@@ -1715,7 +1716,7 @@ void auth_write_shared_nous_state(const json_t *state)
                 ssize_t wr = write(fd, payload, len);
                 fsync(fd);
                 close(fd);
-                if (wr == (ssize_t)len && rename(tmp, path) == 0) {
+                if (wr == (ssize_t)len && util_rename_replace(tmp, path) == 0) {
                     json_t *fields = json_new_object();
                     json_set(fields, "path", json_new_string(path));
                     char *fp = _token_fingerprint(refresh_token);

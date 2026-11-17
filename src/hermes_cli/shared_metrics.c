@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <uuid.h>   /* lib/libuuid → uuid_v4() */
 #include <sqlite3.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Constants
@@ -320,7 +321,7 @@ static int sm_write_json_file(const char *path, const char *content) {
     fputs(content, f);
     fclose(f);
     chmod(tmp, 0600);
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

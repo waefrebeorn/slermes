@@ -32,6 +32,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 #define CHECK_FN_TTL_SECONDS         30.0
 #define CHECK_FN_FAILURE_GRACE_SECONDS 60.0
@@ -147,7 +148,7 @@ void save_discovery_cache(const json_t *cache) {
     fsync(fileno(fh));
     fclose(fh);
     /* atomic rename: tmp → path */
-    rename(tmp, path);
+    util_rename_replace(tmp, path);
     free(tmp); free(path); free(serialized);
 }
 

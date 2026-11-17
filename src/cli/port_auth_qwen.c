@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 static char *dup_str(const char *s)
 {
@@ -167,7 +168,7 @@ int qwen_save_tokens(const char *path, const char *json_text)
     /* owner-only before any byte is visible under the real name */
     chmod(tmp_path, 0600);
     remove(path);
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         remove(tmp_path);
         free(tmp_path);
         return 0;

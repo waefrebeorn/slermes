@@ -41,6 +41,7 @@
 #include <sys/statvfs.h>
 #include <openssl/evp.h>
 #include "gateway_status.h"
+#include "port_utils_ports.h"
 
 /* ── _format_time_ago ──────────────────────────────────────────── */
 /* PoP: uc_format_time_ago @ hermes_cli/update_cmd_maint.py:_format_time_ago */
@@ -1608,7 +1609,7 @@ char *uc_stage_replacement(const char *src, const char *dst)
     struct stat st;
     /* Restore dst from backup if dst is missing but backup exists. */
     if (stat(dst, &st) != 0 && stat(backup, &st) == 0) {
-        rename(backup, dst);
+        util_rename_replace(backup, dst);
     }
     /* Clear stale staging/backup leftovers. */
     for (int i = 0; i < 2; i++) {
@@ -1675,7 +1676,7 @@ int uc_commit_staged_replacements(const char **staged_pairs)
         snprintf(backup, sizeof(backup), "%s.hermes-update-old", dst);
         struct stat st;
         if (stat(dst, &st) == 0) {
-            if (rename(dst, backup) != 0) goto rollback;
+            if (util_rename_replace(dst, backup) != 0) goto rollback;
             strncpy(swapped[swapped_count], dst, 4095);
             swapped[swapped_count][4095] = '\0';
             strncpy(backups[swapped_count], backup, 4095);
@@ -1687,7 +1688,7 @@ int uc_commit_staged_replacements(const char **staged_pairs)
             backups[swapped_count][0] = '\0';
             swapped_count++;
         }
-        if (rename(staging, dst) != 0) goto rollback;
+        if (util_rename_replace(staging, dst) != 0) goto rollback;
     }
 
     /* All swaps succeeded — drop backups (best-effort). */
@@ -1862,7 +1863,7 @@ char *uc_gateway_prompt(const char *default_home, const char *prompt_text,
     fputs(payload, f);
     fclose(f);
     free(payload);
-    if (rename(tmp_path, prompt_path) != 0) { remove(tmp_path); return NULL; }
+    if (util_rename_replace(tmp_path, prompt_path) != 0) { remove(tmp_path); return NULL; }
 
     /* Poll for response. */
     double deadline = (double)time(NULL) + timeout_sec;

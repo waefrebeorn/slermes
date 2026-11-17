@@ -22,6 +22,7 @@
 #include "hash.h"
 #include "binary.h"
 #include "yaml.h"
+#include "port_utils_ports.h"
 
 /* WSL path translation — convert Windows to /mnt/ form (static buf, single-thread) */
 static const char *wsl_translate_path(const char *path) {
@@ -276,7 +277,7 @@ static char *handle_write(const char *args_json) {
 #ifdef _WIN32
     int rename_rc = MoveFileExA(tmp_path, path, MOVEFILE_REPLACE_EXISTING) ? 0 : -1;
 #else
-    int rename_rc = rename(tmp_path, path);
+    int rename_rc = util_rename_replace(tmp_path, path);
 #endif
     if (rename_rc != 0) {
         unlink(tmp_path);

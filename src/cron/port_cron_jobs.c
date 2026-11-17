@@ -45,6 +45,7 @@
 #include <sys/file.h>
 #include <dirent.h>
 #include <limits.h>
+#include "port_utils_ports.h"
 
 /* cron/lifecycle_guard.py port — reject gateway-lifecycle cron commands.
  * Returns a malloc'd error message when the command is rejected, else NULL. */
@@ -204,7 +205,7 @@ bool cronjobs_save_jobs(const json_t *jobs) {
         if (write(fd, text, len) == (ssize_t)len) {
             fsync(fd);
             close(fd);
-            if (rename(tmp, path) == 0) {
+            if (util_rename_replace(tmp, path) == 0) {
                 cronjobs_secure_file(path);
                 ok = true;
             } else unlink(tmp);
@@ -1072,7 +1073,7 @@ char *cronjobs_save_job_output(const char *job_id, const char *output) {
         size_t len = output ? strlen(output) : 0;
         if (write(fd, output ? output : "", len) == (ssize_t)len) {
             fsync(fd); close(fd);
-            if (rename(tmp, outfile) == 0) { cronjobs_secure_file(outfile); result = xstrdup(outfile); }
+            if (util_rename_replace(tmp, outfile) == 0) { cronjobs_secure_file(outfile); result = xstrdup(outfile); }
             else unlink(tmp);
         } else { close(fd); unlink(tmp); }
     }

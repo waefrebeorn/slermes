@@ -35,6 +35,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 
 
@@ -94,7 +95,7 @@ static void atomic_write_epoch(const char *path) {
     if (write(fd, buf, (size_t)L) == L) {
         fsync(fd);
         close(fd);
-        if (rename(tmp, path) != 0) unlink(tmp);
+        if (util_rename_replace(tmp, path) != 0) unlink(tmp);
     } else {
         close(fd);
         unlink(tmp);

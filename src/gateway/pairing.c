@@ -20,6 +20,7 @@ extern char *normalize_whatsapp_identifier(const char *value);
 #include <sys/random.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include "port_utils_ports.h"
 
 struct pairing_store {
     char *dir;
@@ -223,7 +224,7 @@ static void save_json(pairing_store_t *st, const char *name, pj_val_t *obj) {
     out[pos++]='\n'; out[pos]='\0';
     char tmpl[4096]; snprintf(tmpl,sizeof(tmpl),"%s.tmp",path);
     FILE *f=fopen(tmpl,"wb");
-    if (f){ fwrite(out,1,pos,f); fclose(f); rename(tmpl,path); chmod(path,0600); }
+    if (f){ fwrite(out,1,pos,f); fclose(f); util_rename_replace(tmpl, path); chmod(path,0600); }
     free(out); free(path);
 }
 
@@ -861,7 +862,7 @@ static void merge_pairing_dir(const char *active_dir, const char *alternate_dir)
             out[pos++] = '\n'; out[pos] = '\0';
             char tmpl[4200]; snprintf(tmpl, sizeof(tmpl), "%s.tmp", act);
             FILE *f = fopen(tmpl, "wb");
-            if (f) { fwrite(out, 1, pos, f); fclose(f); rename(tmpl, act); chmod(act, 0600); }
+            if (f) { fwrite(out, 1, pos, f); fclose(f); util_rename_replace(tmpl, act); chmod(act, 0600); }
             free(out);
         }
         pj_free(merged); pj_free(current);

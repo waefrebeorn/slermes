@@ -13,6 +13,7 @@
 
 #include "hermes_cron.h"
 #include "scheduler.h"
+#include "port_utils_ports.h"
 
 /* Forward declarations from scheduler.c */
 bool cron_add_job(const char *name, const char *schedule, const char *command);
@@ -906,7 +907,7 @@ static void atomic_write_epoch(const char *path) {
     if (write(fd, buf, (size_t)L) == L) {
         fsync(fd);
         close(fd);
-        if (rename(tmp, path) != 0) unlink(tmp);
+        if (util_rename_replace(tmp, path) != 0) unlink(tmp);
     } else {
         close(fd);
         unlink(tmp);
@@ -1037,7 +1038,7 @@ bool cronjobs_save_jobs(const json_t *jobs) {
         if (write(fd, text, len) == (ssize_t)len) {
             fsync(fd);
             close(fd);
-            if (rename(tmp, path) == 0) {
+            if (util_rename_replace(tmp, path) == 0) {
                 cronjobs_secure_file(path);
                 ok = true;
             } else unlink(tmp);
@@ -2207,7 +2208,7 @@ char *cronjobs_save_job_output(const char *job_id, const char *output) {
         size_t len = output ? strlen(output) : 0;
         if (write(fd, output ? output : "", len) == (ssize_t)len) {
             fsync(fd); close(fd);
-            if (rename(tmp, outfile) == 0) { cronjobs_secure_file(outfile); result = xstrdup(outfile); }
+            if (util_rename_replace(tmp, outfile) == 0) { cronjobs_secure_file(outfile); result = xstrdup(outfile); }
             else unlink(tmp);
         } else { close(fd); unlink(tmp); }
     }

@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdarg.h>
+#include "port_utils_ports.h"
 
 /* local printf-style dup (libjson has no variant) */
 static char *xstrdup_printf(const char *fmt, ...) {
@@ -802,7 +803,7 @@ void models_save_ollama_cloud_cache(const char *json) {
     char tmp[PATH_MAX];
     snprintf(tmp, sizeof(tmp), "%s.tmp", path);
     FILE *f = fopen(tmp, "w");
-    if (f) { fputs(json, f); fclose(f); rename(tmp, path); }
+    if (f) { fputs(json, f); fclose(f); util_rename_replace(tmp, path); }
     else { FILE *f2 = fopen(path, "w"); if (f2) { fputs(json, f2); fclose(f2); } }
     free(path);
 }

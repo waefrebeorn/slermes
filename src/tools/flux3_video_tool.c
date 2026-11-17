@@ -26,6 +26,7 @@
 #include "slermes_home.h"  /* slermes_home */
 #include "libhttp/http.h"  /* http_t, http_get, http_request, http_resp_t */
 #include "port_tools_flux3_video.h"  /* f3_error, f3_delivery_lead_in, f3_looks_like_local_path, etc. */
+#include "port_utils_ports.h"
 
 /* Forward declaration — defined in src/tools/port_interrupt.c */
 extern int tools_interrupt_is_interrupted(unsigned long thread_id);
@@ -564,7 +565,7 @@ char *f3_download_video(const char *url, const char *save_to, double started) {
             result = json_serialize(err);
             json_free(err);
         } else {
-            rename(partial, target);
+            util_rename_replace(partial, target);
             json_t *ok = json_object();
             json_set(ok, "path", json_string(target));
             json_set(ok, "bytes", json_number((double)st.st_size));

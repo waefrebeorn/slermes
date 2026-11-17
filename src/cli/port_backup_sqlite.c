@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 #define ROLLBACK_STEP_SECONDS      0.1
 #define ROLLBACK_FIRST_STEP_PAGES  256
@@ -357,7 +358,7 @@ json_t *bsq_preflight_state_db(const char *home)
             if (stat(staged, &sst) != 0) failed = 1;
             else {
                 remove(destination);
-                if (rename(staged, destination) != 0) {
+                if (util_rename_replace(staged, destination) != 0) {
                     /* Windows rename does not replace; the remove above handles it */
                     failed = 1;
                 } else {

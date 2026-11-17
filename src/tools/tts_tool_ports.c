@@ -15,6 +15,7 @@
 #include <signal.h>
 #include "libjson/json.h"
 #include "hermes_logger.h"
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -766,7 +767,7 @@ char *tts_ffmpeg_transcode_to_opus(const char *input_path, const char *ogg_path)
         return NULL;
     }
     if (work_path) {
-        rename(work_path, out);
+        util_rename_replace(work_path, out);
         free(work_path);
     }
     return out;
@@ -791,7 +792,7 @@ char *tts_repair_ogg_container(const char *file_str) {
     honest[flen - 4] = '\0';
     strcat(honest, ".");
     strcat(honest, container);
-    rename(file_str, honest);
+    util_rename_replace(file_str, honest);
     return honest;
 }
 

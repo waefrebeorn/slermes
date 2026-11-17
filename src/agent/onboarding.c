@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  Hint text generators
@@ -204,7 +205,7 @@ bool mark_seen(const char *onboarding_path, const char *flag) {
     fwrite(json_str, 1, strlen(json_str), f);
     fclose(f);
 
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         remove(tmp_path);
         free(json_str);
         free(auto_path);

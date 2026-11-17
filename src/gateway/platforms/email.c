@@ -25,6 +25,7 @@
 #include <openssl/rand.h>
 #include <ctype.h>
 #include "hermes_encode.h"
+#include "port_utils_ports.h"
 
 
 /* ================================================================
@@ -1995,7 +1996,7 @@ json_node_t *email_poll_messages(http_client_t *http) {
         /* Move to cur/ so we don't process again */
         char cur_path[2048];
         snprintf(cur_path, sizeof(cur_path), "%s/cur/%s", g_email.poll_dir, entry->d_name);
-        rename(path, cur_path);
+        util_rename_replace(path, cur_path);
     }
     closedir(d);
 

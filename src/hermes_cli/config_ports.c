@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -328,7 +329,7 @@ int cfg_save_config(const char *path, const char *config_json) {
     fputc('\n', w);
     if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }

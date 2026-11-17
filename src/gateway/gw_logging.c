@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include "port_utils_ports.h"
 
 void gw_log_open(void) {
     const char *home = getenv("SLERMES_HOME");
@@ -40,7 +41,7 @@ void gw_log_open(void) {
     if (stat(g_gw_log_path, &st) == 0 && st.st_size > GW_LOG_MAX_BYTES) {
         char old[GW_LOG_PATH_MAX];
         snprintf(old, sizeof(old), "%s.1", g_gw_log_path);
-        rename(g_gw_log_path, old);
+        util_rename_replace(g_gw_log_path, old);
     }
 
     g_gw_log_fp = fopen(g_gw_log_path, "a");

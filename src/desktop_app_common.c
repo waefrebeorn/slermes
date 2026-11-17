@@ -67,6 +67,7 @@
 #include <shlobj.h>
 #else
 #include <pwd.h>
+#include "port_utils_ports.h"
 #endif
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -531,7 +532,7 @@ bool desktop_update_download(const char *url, const char *dest_path) {
             size_t wr = fwrite(resp->body, 1, resp->body_len, f);
             fflush(f);
             fclose(f);
-            if (wr == resp->body_len && rename(tmp, dest_path) == 0) {
+            if (wr == resp->body_len && util_rename_replace(tmp, dest_path) == 0) {
                 chmod(dest_path, 0755);
                 ok = true;
             } else {
@@ -569,12 +570,12 @@ bool desktop_update_apply(const char *update_path) {
     char backup[1088];
     snprintf(backup, sizeof(backup), "%s.old", self);
     unlink(backup);
-    if (rename(self, backup) != 0) {
+    if (util_rename_replace(self, backup) != 0) {
         fprintf(stderr, "desktop_update_apply: cannot back up current binary: %s\n",
                 strerror(errno));
         return false;
     }
-    if (rename(update_path, self) != 0) {
+    if (util_rename_replace(update_path, self) != 0) {
         /* cross-device rename fails: fall back to copy */
         FILE *in = fopen(update_path, "rb");
         FILE *out = in ? fopen(self, "wb") : NULL;
@@ -589,7 +590,7 @@ bool desktop_update_apply(const char *update_path) {
         if (in) fclose(in);
         if (out) fclose(out);
         if (!copied) {
-            rename(backup, self);   /* roll back */
+            util_rename_replace(backup, self);   /* roll back */
             fprintf(stderr, "desktop_update_apply: install failed, rolled back\n");
             return false;
         }
@@ -602,7 +603,7 @@ bool desktop_update_apply(const char *update_path) {
     /* only reached when exec failed — roll back */
     fprintf(stderr, "desktop_update_apply: exec failed: %s — rolling back\n",
             strerror(errno));
-    rename(backup, self);
+    util_rename_replace(backup, self);
     return false;
 }
 

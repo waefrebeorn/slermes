@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctype.h>
+#include "port_utils_ports.h"
 
 /* ------------------------------------------------------------------ */
 /* small JSON helpers (board.json is flat; we hand-roll to avoid a dep) */
@@ -433,7 +434,7 @@ char *kdb_remove_board(const char *slug, int archive)
         char archd[PATH_MAX];
         snprintf(archd, sizeof(archd), "%s/kanban/boards/_archived", home);
         ensure_dir(archd);
-        rename(bd, new_path);
+        util_rename_replace(bd, new_path);
     } else {
         snprintf(new_path, need, "");
         remove_dir_recursive(bd);

@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>   /* flock */
 #include <sys/types.h>
+#include "port_utils_ports.h"
 
 /* ── Constants (mirror gateway/status.py) ────────────────────────────── */
 
@@ -460,7 +461,7 @@ static int write_json_file(const char *path, json_t *payload) {
     fclose(f);
     free(ser);
     if (wrote != len) { unlink(tmp); return -1; }
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 

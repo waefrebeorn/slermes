@@ -35,6 +35,7 @@
 #include "hermes_tirith.h"
 #include "registry.h"
 #include "banner_boot.h"
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  State
@@ -1299,7 +1300,7 @@ void cli_save_worktree_merge_cache(json_t *verdicts) {
     if (f) {
         fputs(payload, f);
         fclose(f);
-        rename(tmp_path, path);
+        util_rename_replace(tmp_path, path);
     } else {
         /* Best-effort cleanup of temp file on failure. */
         unlink(tmp_path);

@@ -18,6 +18,7 @@
 
 #include "hermes_json.h"
 #include "../../lib/libcrypto/crypto.h"
+#include "port_utils_ports.h"
 
 /* ── module constants (mirror the Python module-level names) ───────────── */
 
@@ -774,7 +775,14 @@ void plugins_persist_toolset_keys(const char *const *toolset_keys,
             bool ok = write(fd, text, len) == (ssize_t)len;
             close(fd);
             if (ok) {
-                if (rename(tmp, path) != 0) unlink(tmp);
+                if (util_rename_replace(tmp, path) != 0) {
+                    /* POSIX rename() replaces the destination atomically;
+                     * Windows/MinGW rename() FAILS when it exists, so every
+                     * write after the first silently left the stale file in
+                     * place. Python's os.replace overwrites on all platforms. */
+                    if (remove(path) == 0) util_rename_replace(tmp, path);
+                    else unlink(tmp);
+                }
             } else {
                 unlink(tmp);
             }

@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -66,7 +67,7 @@ int smt_write_file(const char *skill_name, const char *file_path, const char *co
     if (!w) { free(tmp); free(path); return -1; }
     fwrite(content, 1, strlen(content), w);
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); free(path); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); free(path); return -1; }
     free(tmp);
     free(path);
     return 0;

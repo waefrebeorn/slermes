@@ -21,6 +21,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* Forward declaration (evaluate_gate calls write_approval_enabled). */
 int cli_tools_write_approval_write_approval_enabled(const char *subsystem);
@@ -313,7 +314,7 @@ json_node_t *cli_tools_write_approval_stage_write(const char *subsystem,
         if (f) {
             fputs(ser, f);
             fclose(f);
-            rename(tmp, final);   /* atomic replace */
+            util_rename_replace(tmp, final);   /* atomic replace */
         }
         free(ser);
     }

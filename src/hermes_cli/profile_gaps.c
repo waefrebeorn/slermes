@@ -35,6 +35,7 @@
 #include "slermes_home.h"
 #include "profile_store.h"
 #include "libjson/json.h"
+#include "port_utils_ports.h"
 
 /* ── help functions ────────────────────────────────────────────── */
 static char *gap_profile_dir_for(const char *name) {
@@ -333,7 +334,7 @@ bool profile_rename_profile(const char *old_name, const char *new_name) {
         return false;
     }
 
-    if (rename(old_dir, new_dir) != 0) {
+    if (util_rename_replace(old_dir, new_dir) != 0) {
         hermes_log(LOG_ERROR, "profiles", "rename(%s, %s) failed: %s", old_dir, new_dir, strerror(errno));
         free(old_dir); free(new_dir); free(old_canon); free(new_canon);
         return false;

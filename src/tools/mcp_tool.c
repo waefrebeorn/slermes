@@ -28,6 +28,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 /* ================================================================
  *  State
@@ -1296,7 +1297,7 @@ static bool credential_store_save(const char *server_name,
     fclose(out);
     free(serialized);
 
-    rename(tmp_path, g_credential_store_path);
+    util_rename_replace(tmp_path, g_credential_store_path);
     return true;
 }
 

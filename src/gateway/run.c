@@ -39,6 +39,7 @@
 #include <math.h>
 #include <time.h>
 #include <pthread.h>
+#include "port_utils_ports.h"
 
 /* Forward declarations — defined in gw_thread.c / gw_dispatch.c (same link unit).
  * Not in gateway_run_helpers.h to avoid a circular header dependency. */
@@ -3916,7 +3917,7 @@ bool gw_clear_restart_failure_count(const char *session_key)
         fputs(dump, o);
         fclose(o);
         free(dump);
-        rename(tmp, path);   /* atomic_json_write equivalent */
+        util_rename_replace(tmp, path);   /* atomic_json_write equivalent */
     } else {
         json_free(counts);
         remove(path);        /* empty map -> unlink(missing_ok=True) */

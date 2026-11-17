@@ -18,6 +18,15 @@ int util_atomic_yaml_write(const char *path, const char *yaml_text);
 /* PoP: atomic_json_write @ utils.py:atomic_yaml_write */
 int util_atomic_json_write(const char *path, const char *data_json);
 
+/* util_rename_replace @ os.replace -- atomic replace that WORKS on Windows.
+ *
+ * POSIX rename() overwrites an existing destination; Windows/MinGW rename()
+ * fails with EEXIST instead. Every atomic-write path here (temp file + rename)
+ * therefore silently kept the STALE file after its first write, so a config
+ * edit, a cache refresh or a state update looked like it succeeded and then
+ * read back the old contents. os.replace overwrites on all platforms. */
+int util_rename_replace(const char *src, const char *dst);
+
 /* PoP: fast_safe_load @ utils.py:fast_safe_load */
 char *util_fast_safe_load(const char *yaml_text);
 

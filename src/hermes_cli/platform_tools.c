@@ -28,8 +28,8 @@ static const char *const CONFIGURABLE_KEYS[] = {
 
 /* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:_DEFAULT_OFF_TOOLSETS */
 static const char *const DEFAULT_OFF[] = {
-    "homeassistant", "spotify", "discord", "discord_admin", "video",
-    "video_gen", "x_search", NULL
+    "spotify", "discord", "discord_admin", "video",
+    "video_gen", "x_search", "a2a", "kanban", NULL
 };
 
 /* PLATFORMS registry (hermes_cli/platforms.py) */

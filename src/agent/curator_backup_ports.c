@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -176,7 +177,7 @@ int cub_write_manifest(const char *snap_dir, const char *manifest_json) {
     fwrite(manifest_json, 1, strlen(manifest_json), w);
     fputc('\n', w);
     fclose(w);
-    int rc = rename(tmp, path);
+    int rc = util_rename_replace(tmp, path);
     if (rc != 0) unlink(tmp);
     free(tmp);
     free(path);

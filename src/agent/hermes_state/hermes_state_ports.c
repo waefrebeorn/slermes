@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include "hermes_state_internal.h"
+#include "port_utils_ports.h"
 
 /* Forward decls — log helpers defined below in this unit. */
 int hermes_state_log_wal_reset_bug_once(const char *db_label, bool kept_wal);
@@ -281,7 +282,7 @@ int hermes_state_quarantine_zeroed_state_db(const char *path) {
     if (!path || !*path) return -1;
     char *q = NULL;
     asprintf(&q, "%s.zeroed-%ld", path, (long)hermes_state_now_epoch());
-    int rc = rename(path, q);
+    int rc = util_rename_replace(path, q);
     free(q);
     return rc == 0 ? 0 : -1;
 }

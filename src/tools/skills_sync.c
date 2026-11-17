@@ -20,6 +20,7 @@
 #include <libgen.h>
 #include <errno.h>
 #include <time.h>
+#include "port_utils_ports.h"
 
 /* Opaque struct definition - private to this translation unit */
 struct port_skills_sync_state {
@@ -331,7 +332,7 @@ void write_manifest(json_t *manifest)
     }
     fclose(f);
 
-    rename(tmp_path, manifest_path);
+    util_rename_replace(tmp_path, manifest_path);
 }
 
 /* PoP: read_skill_name @ tools/skills_sync.py:_read_skill_name */
@@ -725,7 +726,7 @@ char *move_to_restore_backup(const char *path, const char *backup_root)
     }
 
     /* Move the directory */
-    if (rename(path, final_target) != 0) return NULL;
+    if (util_rename_replace(path, final_target) != 0) return NULL;
 
     return strdup(rel);
 }
@@ -1090,7 +1091,7 @@ json_t *sync_skills(bool quiet)
         snprintf(orphan, sizeof(orphan), "%s.bak", dest);
         if (access(orphan, F_OK) == 0 && access(dest, F_OK) != 0) {
             mkdir(dirname(strdup(dest)), 0755);
-            rename(orphan, dest);
+            util_rename_replace(orphan, dest);
             if (!quiet) printf("  Recovered orphaned skill backup: %s\n", orphan);
         }
 

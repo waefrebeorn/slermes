@@ -15,6 +15,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include "port_utils_ports.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -74,7 +75,7 @@ int util_restore_file_mode(const char *path, long mode) {
 int util_atomic_replace(const char *tmp_path, const char *target) {
     /* Python: os.replace preserving symlinks. */
     if (!tmp_path || !target) return -1;
-    if (rename(tmp_path, target) != 0) return -1;
+    if (util_rename_replace(tmp_path, target) != 0) return -1;
     return 0;
 }
 
@@ -92,7 +93,7 @@ int util_atomic_json_write(const char *path, const char *data_json) {
         fclose(w); unlink(tmp); free(tmp); return -1;
     }
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }
@@ -124,7 +125,7 @@ int util_atomic_yaml_write(const char *path, const char *yaml_text) {
         fclose(w); unlink(tmp); free(tmp); return -1;
     }
     fclose(w);
-    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    if (util_rename_replace(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
     free(tmp);
     return 0;
 }
@@ -281,7 +282,7 @@ int util_atomic_write_text(const char *path, const char *content, const char *tm
     if (fsync(fileno(w)) != 0) rc = -1;
     if (fclose(w) != 0) rc = -1;
     if (rc == 0) {
-        if (rename(tmp_path, path) != 0) rc = -1;
+        if (util_rename_replace(tmp_path, path) != 0) rc = -1;
     }
     if (rc != 0) unlink(tmp_path);
     return rc;

@@ -24,6 +24,7 @@
 #include <errno.h>
 
 #include "libcrypto/crypto.h"
+#include "port_utils_ports.h"
 
 /* ─── Constants ────────────────────────────────────────────────── */
 
@@ -253,7 +254,7 @@ bool save_credentials(const google_oauth_creds_t *creds) {
     fsync(fd);
     close(fd);
 
-    if (rename(tmp_path, path) != 0) {
+    if (util_rename_replace(tmp_path, path) != 0) {
         unlink(tmp_path);
         free(json_str);
         return false;

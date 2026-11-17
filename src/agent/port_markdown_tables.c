@@ -1,5 +1,5 @@
-/* Slermes C port — agent/markdown_tables.py (CJK/wide-char markdown table
-/* port_markdown_tables.c -- see the PoP annotations below. */
+/* port_markdown_tables.c -- see the PoP annotations below.
+ * Slermes C port — agent/markdown_tables.py (CJK/wide-char markdown table
  * re-alignment). Pure string transform; no I/O.
  *
  * Faithful to LIVE Python (tests/sta_oracle_markdown_tables.py):

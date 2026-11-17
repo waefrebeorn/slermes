@@ -24,6 +24,7 @@
 #include <stdarg.h>
 #include <pthread.h>
 #include "libcrypto/crypto.h"
+#include "port_utils_ports.h"
 
 #define TIRITH_VERSION "1.0.0"
 #define MAX_PATH 4096
@@ -468,7 +469,7 @@ char* install_tirith(bool log_failures) {
     hermes_bin_dir(bindir, sizeof(bindir));
     snprintf(dest, sizeof(dest), "%s/tirith", bindir);
     mkdir(bindir, 0755);
-    if (rename(src, dest) != 0) {
+    if (util_rename_replace(src, dest) != 0) {
         /* Cross-device move: plain copy + unlink fallback. */
         FILE *in = fopen(src, "rb"), *out = fopen(dest, "wb");
         if (!in || !out) { if (out) fclose(out); if (in) fclose(in); free(src); return NULL; }

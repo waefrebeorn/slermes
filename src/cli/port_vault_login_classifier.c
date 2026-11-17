@@ -271,7 +271,7 @@ int vl_classify_login_control(const vl_control_t *control, vl_classified_t *out)
     if (!norm) return 1;
 
     char *t[VL_MAX_TOKENS];
-    int n = tokenize(norm, t, VL_MAX_TOKENS);
+    int n = vlt_tokenize(norm, t, VL_MAX_TOKENS);
     int result = 1;
     if (is_excluded_password(t, n)) {
         result = 1;
@@ -336,7 +336,7 @@ int vl_classify_checkout_control(const vl_control_t *control,
     if (!norm) return 1;
 
     char *t[VL_MAX_TOKENS];
-    int n = tokenize(norm, t, VL_MAX_TOKENS);
+    int n = vlt_tokenize(norm, t, VL_MAX_TOKENS);
     const char *token = checkout_token(t, n);
     vl_free_tokens(t, n);
     free(norm);
@@ -383,7 +383,7 @@ int vl_classify_otp_controls(const vl_control_t *controls, int n,
         free(joined);
         if (!norm) continue;
         char *t[VL_MAX_TOKENS];
-        int tn = tokenize(norm, t, VL_MAX_TOKENS);
+        int tn = vlt_tokenize(norm, t, VL_MAX_TOKENS);
         int otp = is_otp_text(t, tn);
         vl_free_tokens(t, tn);
         free(norm);

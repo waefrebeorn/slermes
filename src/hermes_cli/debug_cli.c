@@ -12,6 +12,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "port_utils_ports.h"
 
 #define AUTO_DELETE_SECONDS 21600
 #define GRACE_SECONDS 86400
@@ -119,7 +120,7 @@ bool debug_save_pending(const char *hermes_home, debug_pending_t *entries, int n
     }
     fprintf(f, "]\n");
     fclose(f);
-    rename(tmp, path); /* atomic-ish on same fs */
+    util_rename_replace(tmp, path); /* atomic-ish on same fs */
     free(tmp); free(path);
     return true;
 }

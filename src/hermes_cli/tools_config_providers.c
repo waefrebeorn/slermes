@@ -172,7 +172,21 @@ static json_t *g_toolset_env_requirements = NULL; /* borrowed */
 void tools_config_register_tool_categories(json_t *categories) {
     g_tool_categories = categories;
 }
-json_t *tools_config_tool_categories(void) { return g_tool_categories; }
+
+/* Built once from the generated upstream table (tool_categories_data.c) unless
+ * an embedder registered its own document. Without this the whole
+ * provider-aware surface -- valid_post_setup_keys, _visible_providers, the
+ * reconfigure flows -- read a NULL registry and silently returned empty. */
+static json_t *g_built_categories = NULL;
+
+json_t *tools_config_tool_categories(void) {
+    if (g_tool_categories) return g_tool_categories;
+    if (!g_built_categories) {
+        extern json_t *tool_categories_build(void);
+        g_built_categories = tool_categories_build();
+    }
+    return g_built_categories;
+}
 
 void tools_config_register_toolset_env_requirements(json_t *reqs) {
     g_toolset_env_requirements = reqs;

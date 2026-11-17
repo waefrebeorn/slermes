@@ -8,12 +8,6 @@
 # Regenerate:  python scripts/organize_objects.py
 # Verify only: python scripts/organize_objects.py --check
 # Included by the top-level Makefile.
-#
-# Dead port-style twins that compile AND link without a collision on this
-# platform. Regenerate per platform:  python scripts/link_dead_ports.py
-# POSIX-only twins (pthread_timedjoin_np, dirent d_type, sys/syscall.h) are
-# picked up automatically on Linux/macOS.
--include build/ports_linked.mk
 
 
 # ── CLI_OBJ ──
@@ -25,8 +19,29 @@ CLI_OBJ = $(CUPBOARD_HERMES_CLI) $(CUPBOARD_CLI) $(CUPBOARD_AGENT) \
 PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
     $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_GATEWAY) $(CUPBOARD_PORT_TOOLS) \
     $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) $(CUPBOARD_PORT_MISC) \
- \
     $(PORTS_LINKED_OBJ) $(CUPBOARD_UNBUILT_MODS)
+
+# ── Object File Lists ──────────────────────────────────────────────
+# build/objects.mk -- cupboards and jars.
+#
+# Each CUPBOARD_* variable holds one subsystem's object files (the jars).
+# Add a new object to its subsystem's cupboard, never to a global list.
+# CLI_OBJ and PORT_OBJ are concatenations of their cupboards.
+#
+# Regenerate:  python scripts/organize_objects.py
+# Verify only: python scripts/organize_objects.py --check
+# Included by the top-level Makefile.
+#
+# Dead port-style twins that compile AND link without a collision on this
+# platform. Regenerate per platform:  python scripts/link_dead_ports.py
+# POSIX-only twins (pthread_timedjoin_np, dirent d_type, sys/syscall.h) are
+# picked up automatically on Linux/macOS.
+-include build/ports_linked.mk
+
+
+# ── CLI_OBJ ──
+
+# ── PORT_OBJ ──
 # ── Object File Lists ──────────────────────────────────────────────
 # build/objects.mk -- cupboards and jars.
 #
@@ -57,6 +72,8 @@ PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
 
 # ── CLI_OBJ ──
 CUPBOARD_HERMES_CLI = src/hermes_cli/partial_compress.o \
+    src/hermes_cli/tool_categories_data.o \
+    src/hermes_cli/fs_replace.o \
     src/hermes_cli/setup_pure.o src/hermes_cli/dashboard_procs.o \
     src/hermes_cli/webhook.o src/hermes_cli/web_models.o \
     src/hermes_cli/vercel_auth.o src/hermes_cli/urllib_security.o \
