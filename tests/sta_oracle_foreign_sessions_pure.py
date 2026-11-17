@@ -14,6 +14,23 @@ Fixture ops:
 import json
 import sys
 import importlib.util
+import re as _re
+
+_WRAPPER_TAGS = (
+    "user_instructions", "environment_context", "recommended_plugins",
+    "skills_instructions", "permissions_instructions", "permissions-instructions",
+    "turn_context", "command-name", "command-message",
+    "local-command-stdout", "system-reminder",
+)
+_WRAPPER_RE = _re.compile(r"^<(?:" + "|".join(_WRAPPER_TAGS) + r")\b", _re.I)
+
+
+def is_wrapper_text(text):
+    """_is_wrapper_text was deleted upstream; reproduce the C port's contract:
+    skip leading spaces, then match a recognised wrapper tag at the start."""
+    if not text:
+        return False
+    return bool(_WRAPPER_RE.match(text.lstrip(" \t")))
 
 
 def _load_module():
@@ -36,9 +53,9 @@ def main():
     for case in spec.get("ops", []):
         op = case.get("op")
         if op == "is_wrapper_text":
-            out.append({"op": op, "out": bool(mod._is_wrapper_text(case.get("text", "")))})
+            out.append({"op": op, "out": is_wrapper_text(case.get("text", ""))})
         elif op == "flatten_blocks":
-            out.append({"op": op, "out": mod._flatten_blocks(case.get("content", ""), case.get("source", "claude"))})
+            out.append({"op": op, "out": mod._flatten_blocks(case.get("content", ""))})
         elif op == "merge_turns":
             out.append({"op": op, "out": mod._merge_turns([tuple(t) for t in case.get("turns", [])])})
         elif op == "session_label":

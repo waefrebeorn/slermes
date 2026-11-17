@@ -122,13 +122,27 @@ char *foreign_sessions_flatten_blocks(const char *content_json, const char *sour
 
 char *foreign_sessions_merge_turns(const char *raw_turns_json) {
     json_t *raw = json_parse(raw_turns_json, NULL);
-    /* Build output as JSON manually for clarity. */
-    char *out = (char *)malloc(2);
+    /* Growable buffer: the previous version allocated 2 bytes and strcat'd
+     * whole objects into it, corrupting the heap on every non-empty case. */
+    size_t cap = 256, len = 1;
+    char *out = (char *)malloc(cap);
+    if (!out) return NULL;
     out[0] = '['; out[1] = '\0';
-    size_t outlen = 1;
+
+#define APPEND(str) do {                                                   \
+        const char *_s = (str);                                            \
+        size_t _n = strlen(_s);                                            \
+        if (len + _n + 2 > cap) {                                          \
+            while (len + _n + 2 > cap) cap *= 2;                           \
+            char *_p = (char *)realloc(out, cap);                          \
+            if (!_p) { free(out); return NULL; }                           \
+            out = _p;                                                      \
+        }                                                                  \
+        memcpy(out + len, _s, _n);                                        \
+        len += _n; out[len] = '\0';                                       \
+    } while (0)
 
     if (raw && raw->type == JSON_ARRAY) {
-        /* merged list as (role, text) pairs kept in temp arrays */
         char **mrole = NULL; char **mtext = NULL;
         size_t mcap = 0, mcount = 0;
         size_t n = json_len(raw);
@@ -140,22 +154,25 @@ char *foreign_sessions_merge_turns(const char *raw_turns_json) {
             if (!rj || !tj) continue;
             const char *role = (rj->type == JSON_STRING) ? rj->str_val : "";
             const char *text = (tj->type == JSON_STRING) ? tj->str_val : "";
-            /* strip text */
             char *tx = strdup(text);
-            char *q = tx; while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r') q++;
-            size_t L = strlen(q); while (L>0 && (q[L-1]==' '||q[L-1]=='\t'||q[L-1]=='\n'||q[L-1]=='\r')) q[--L]=0;
+            char *q = tx;
+            while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+            size_t L = strlen(q);
+            while (L > 0 && (q[L-1] == ' ' || q[L-1] == '\t' ||
+                             q[L-1] == '\n' || q[L-1] == '\r')) q[--L] = 0;
             if (!*q) { free(tx); continue; }
             if (mcount && strcmp(mrole[mcount-1], role) == 0) {
-                /* merge */
                 size_t oldlen = strlen(mtext[mcount-1]);
                 char *nt = (char *)realloc(mtext[mcount-1], oldlen + 2 + L + 1);
-                strcat(nt, "\n\n"); strcat(nt, q);
+                if (!nt) { free(tx); continue; }
+                memcpy(nt + oldlen, "\n\n", 2);
+                memcpy(nt + oldlen + 2, q, L + 1);
                 mtext[mcount-1] = nt;
             } else {
                 if (mcount >= mcap) {
-                    mcap = mcap ? mcap*2 : 8;
-                    mrole = (char **)realloc(mrole, mcap*sizeof(char*));
-                    mtext = (char **)realloc(mtext, mcap*sizeof(char*));
+                    mcap = mcap ? mcap * 2 : 8;
+                    mrole = (char **)realloc(mrole, mcap * sizeof(char *));
+                    mtext = (char **)realloc(mtext, mcap * sizeof(char *));
                 }
                 mrole[mcount] = strdup(role);
                 mtext[mcount] = strdup(q);
@@ -163,12 +180,12 @@ char *foreign_sessions_merge_turns(const char *raw_turns_json) {
             }
             free(tx);
         }
-        /* leading assistant -> prepend user stub */
         if (mcount && strcmp(mrole[0], "assistant") == 0) {
-            /* shift */
-            mrole = (char **)realloc(mrole, (mcount+1)*sizeof(char*));
-            mtext = (char **)realloc(mtext, (mcount+1)*sizeof(char*));
-            for (size_t k = mcount; k > 0; k--) { mrole[k]=mrole[k-1]; mtext[k]=mtext[k-1]; }
+            mrole = (char **)realloc(mrole, (mcount + 1) * sizeof(char *));
+            mtext = (char **)realloc(mtext, (mcount + 1) * sizeof(char *));
+            for (size_t k = mcount; k > 0; k--) {
+                mrole[k] = mrole[k-1]; mtext[k] = mtext[k-1];
+            }
             mrole[0] = strdup("user");
             mtext[0] = strdup("(imported conversation begins with an assistant reply)");
             mcount++;
@@ -176,22 +193,21 @@ char *foreign_sessions_merge_turns(const char *raw_turns_json) {
         for (size_t i = 0; i < mcount; i++) {
             char buf[2048];
             snprintf(buf, sizeof(buf), "%s{\"role\":\"%s\",\"content\":",
-                     (i? ",":""), mrole[i]);
-            /* JSON-escape content */
+                     (i ? "," : ""), mrole[i]);
             json_t *escnode = json_string(mtext[i]);
             char *esc = escnode ? json_serialize(escnode) : NULL;
             if (escnode) json_free(escnode);
-            strcat(out, buf);
-            if (esc) { strcat(out, esc); free(esc); }
-            else strcat(out, "\"\"");
-            strcat(out, "}");
+            APPEND(buf);
+            APPEND(esc ? esc : "\"\"");
+            APPEND("}");
+            free(esc);
             free(mrole[i]); free(mtext[i]);
         }
         free(mrole); free(mtext);
     }
     json_free(raw);
-    out = (char *)realloc(out, outlen + 2);
-    strcat(out, "]");
+    APPEND("]");
+#undef APPEND
     return out;
 }
 
