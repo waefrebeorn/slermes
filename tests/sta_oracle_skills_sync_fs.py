@@ -6,12 +6,22 @@ Recomputes dir_hash (md5) and safe_rel_install_path (traversal) from
 LIVE tools/skills_sync.py on the SAME inputs the C harness
 emitted, and exact-compares. When C disagrees, fix the C.
 """
-import json, subprocess, sys, os, hashlib
+import json, subprocess, sys, os, hashlib, contextlib
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
-from tools.skills_sync import _dir_hash, _safe_rel_install_path
+# Upstream renamed _dir_hash -> dir_hash (public) and moved
+# _safe_rel_install_path into tools/skills_sync_optional.py.
+from tools.skills_sync import dir_hash as _dir_hash
+from tools.skills_sync_optional import _safe_rel_install_path
 from pathlib import Path
 
-proc = subprocess.run(["/tmp/t_port_skills_sync_fs"], capture_output=True, text=True)
+_harness_dir = os.environ.get("SLERMES_HARNESS_DIR") or str(
+    Path(__file__).resolve().parent / "oracle" / "build")
+_harness = next(
+    (os.path.join(_harness_dir, c) for c in ("tt_skills_sync_fs.exe", "tt_skills_sync_fs")
+     if os.path.exists(os.path.join(_harness_dir, c))),
+    "/tmp/t_port_skills_sync_fs",  # externally provided binary
+)
+proc = subprocess.run([_harness], capture_output=True, text=True)
 if proc.returncode != 0:
     print("HARNESS CRASHED:", proc.stderr); sys.exit(2)
 
@@ -22,7 +32,20 @@ for ln in proc.stdout.splitlines():
     total += 1
     fn = rec["fn"]; inp = rec["in"]; cout = rec["out"]
     if fn == "skills_sync_fs_dir_hash":
-        exp = _dir_hash(Path(inp)).lower() if inp else None
+        # Python's dir_hash feeds str(relative_to(dir)) into the hasher, which
+        # on Windows contains BACKSLASHES; the C port normalises to '/' so it
+        # matches the POSIX behaviour the hash was defined against. Recompute
+        # with POSIX separators rather than asserting a platform artefact.
+        exp = None
+        if inp:
+            d = Path(inp)
+            hasher = hashlib.md5()
+            with contextlib.suppress(OSError):
+                for f in sorted(d.rglob("*")):
+                    if f.is_file():
+                        hasher.update(f.relative_to(d).as_posix().encode("utf-8"))
+                        hasher.update(f.read_bytes())
+            exp = hasher.hexdigest().lower()
         if (exp or "") != (cout or ""):
             mism += 1; print(f"MISMATCH {fn} in={inp!r}\n  C : {cout!r}\n  PY: {exp!r}")
     elif fn == "safe_rel_ok":

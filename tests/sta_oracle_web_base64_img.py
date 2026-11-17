@@ -7,14 +7,22 @@ inputs the C harness emitted, and exact-compares. When C disagrees, the bug
 is in C (fix the C, never the oracle).
 """
 import json, subprocess, sys, re
+from pathlib import Path
 
 # import the LIVE parent-repo Python module (NOT inside slermes/)
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 from tools.web_tools import convert_base64_images_to_links as py_fn
 
 # the C harness prints one JSON line per case
+_harness_dir = os.environ.get("SLERMES_HARNESS_DIR") or str(
+    Path(__file__).resolve().parent / "oracle" / "build")
+_harness = next(
+    (os.path.join(_harness_dir, c) for c in ("tt_web_base64_img.exe", "tt_web_base64_img")
+     if os.path.exists(os.path.join(_harness_dir, c))),
+    "/tmp/t_port_web_base64_img",  # externally provided binary
+)
 proc = subprocess.run(
-    ["/tmp/t_port_web_base64_img"],
+    [_harness],
     capture_output=True, text=True,
 )
 if proc.returncode != 0:

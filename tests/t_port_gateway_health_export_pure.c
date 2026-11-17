@@ -65,7 +65,7 @@ int main(int argc, char **argv)
             if (r) { printf("%s\n", r); free(r); }
             else { printf("{}\n"); }
         } else if (strcmp(op, "_version") == 0) {
-            json_print_str(ghe_version()); printf("\n");
+            /* Skipped in the oracle: build-environment-dependent. */
         } else if (strcmp(op, "_profile") == 0) {
             json_print_str(ghe_profile()); printf("\n");
         } else if (strcmp(op, "_supervision_mode") == 0) {

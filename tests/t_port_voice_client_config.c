@@ -25,6 +25,9 @@ int main(int argc, char **argv)
         if (!r) break;
         len += r;
     }
+    /* fread does not NUL-terminate; realloc memory is uninitialised. */
+    if (len + 1 > cap) { cap = len + 1; buf = realloc(buf, cap); if (!buf) return 2; }
+    buf[len] = '\0';
     fclose(f);
     if (!buf) return 2;
 

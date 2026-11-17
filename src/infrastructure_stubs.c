@@ -587,7 +587,6 @@ int stub_shadowed_gateway_config_load(void) { return 0; }
 /* ── Send message target ── */
 char *send_message_target_parse_target_ref(const char *ref) { (void)ref; return strdup("{}"); }
 char *send_message_target_telegram_retry_delay(void) { return strdup("1"); }
-char *send_message_target_display_chat_id(void) { return strdup(""); }
 
 /* ── Secret scope ── */
 const char *secret_scope_current_secret_scope(void) { return ""; }

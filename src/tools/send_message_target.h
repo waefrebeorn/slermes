@@ -20,9 +20,6 @@ int send_message_target_parse_target_ref(const char *platform_name, const char *
                                           char *chat_id_out, size_t chat_id_size,
                                           char *thread_id_out, size_t thread_id_size);
 
-/* Log-safe chat id; redacts signal group ids to "group:***". */
-char *send_message_target_display_chat_id(const char *platform_name, const char *chat_id);
-
 /* Telegram retry backoff seconds; negative => do not retry. */
 double send_message_target_telegram_retry_delay(const char *error_text, int attempt);
 

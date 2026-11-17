@@ -118,7 +118,7 @@ static char *sub_first(char *text, const char *needle, const char *repl)
     return out;
 }
 
-char *otlp_exporter_redact_for_export(const char *text)
+static char *redact_for_export_impl(const char *text, bool rewrite_secret_literals)
 {
     if (!text) return NULL;
     /* Step 1: hermes_redact_force (redact_sensitive_text force=True) */
@@ -211,7 +211,9 @@ char *otlp_exporter_redact_for_export(const char *text)
     }
 
     /* Step 4: Secret literals (***) → [redacted] */
-    out = sub_first(out, "***", "[redacted]");
+    if (rewrite_secret_literals) {
+        out = sub_first(out, "***", "[redacted]");
+    }
 
     /* Step 5: Bearer residue (Bearer [something]) */
     char *br = out;
@@ -320,6 +322,20 @@ char *otlp_exporter_redact_for_export(const char *text)
 /* keep_by_kind keys and their attribute column sets, mirroring the Python dict. */
 
 /* PoP: otlp_exporter_span_attrs @ agent/monitoring/otlp_exporter.py:_span_attrs */
+/* Current upstream: agent/monitoring/redaction.py::redact_for_export.
+ * Secrets via redact_for_egress (which emits "***" for short values), then
+ * email/UUID/phone PII regexes. Deliberately no "***" -> "[redacted]" step. */
+char *agent_monitoring_redact_for_export(const char *text)
+{
+    return redact_for_export_impl(text, false);
+}
+
+/* Legacy otlp-exporter-local path (keeps the historical secret-literal step). */
+char *otlp_exporter_redact_for_export(const char *text)
+{
+    return redact_for_export_impl(text, true);
+}
+
 char *otlp_exporter_span_attrs(const char *event_json)
 {
     if (!event_json) return strdup("{}");

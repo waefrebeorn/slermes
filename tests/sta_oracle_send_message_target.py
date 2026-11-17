@@ -13,11 +13,25 @@ xmpp/etc.) are a documented C subset and are NOT asserted here.
 """
 import json, subprocess, sys
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
+# The runner sets HERMES_BUNDLED_PLUGINS to slermes/plugins, which carries only
+# buzz/discord/photon. Telegram's target syntax is plugin-provided upstream
+# (plugins/platforms/telegram/telegram_ids.py:parse_send_target), so with that
+# dir the registry has no parser and _parse_target_ref returns (None, None,
+# False) for "123456:789" -- a platform artefact, not a C defect. Point
+# discovery at the live tree so both sides see the same platform set.
+os.environ["HERMES_BUNDLED_PLUGINS"] = "C:/Users/eman5/hermes-agent/plugins"
 import tools.send_message_tool as sm
 _ldm.rebind_used(sm, 'sm', ["tools.send_message_senders", "tools.send_message_targets"], Path(__file__))
 
 
-proc = subprocess.run(["/tmp/t_port_send_message_target"], capture_output=True, text=True)
+_harness_dir = os.environ.get("SLERMES_HARNESS_DIR") or str(
+    Path(__file__).resolve().parent / "oracle" / "build")
+_harness = next(
+    (os.path.join(_harness_dir, c) for c in ("tt_send_message_target.exe", "tt_send_message_target")
+     if os.path.exists(os.path.join(_harness_dir, c))),
+    "/tmp/t_port_send_message_target",  # externally provided binary
+)
+proc = subprocess.run([_harness], capture_output=True, text=True)
 if proc.returncode != 0:
     print("HARNESS CRASHED:", proc.stderr); sys.exit(2)
 
@@ -34,10 +48,10 @@ for ln in proc.stdout.splitlines():
     fn = rec["fn"]
 
     if fn == "disp":
-        exp = sm._display_chat_id(rec["platform"], rec["chat"])
-        if exp != rec["out"]:
-            mism += 1
-            print(f"MISMATCH disp plat={rec['platform']!r} chat={rec['chat']!r}\n  C : {rec['out']!r}\n  PY: {exp!r}")
+        # _display_chat_id was deleted upstream (691e2f7d9f) with no
+        # replacement; the C helper is gone too. Nothing to assert.
+        total -= 1
+        continue
 
     elif fn == "retry":
         exp = sm._telegram_retry_delay(Exception(rec["err"]), rec["attempt"])

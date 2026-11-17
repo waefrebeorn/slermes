@@ -117,16 +117,8 @@ int send_message_target_parse_target_ref(const char *platform_name, const char *
     return 0;
 }
 
-/* PoP: send_message_target_display_chat_id @ tools/send_message_tool.py:_display_chat_id */
-/* Log-safe id: redact signal group ids to group:***. */
-char *send_message_target_display_chat_id(const char *platform_name, const char *chat_id)
-{
-    if (!platform_name) return strdup("unknown:unknown");
-    if (strcmp(platform_name, "signal") == 0 && chat_id && strncmp(chat_id, "group:", 6) == 0) {
-        return strdup("group:***");
-    }
-    return strdup(chat_id ? chat_id : "default");
-}
+/* _display_chat_id was deleted upstream (691e2f7d9f) with no replacement, so
+ * this log-safe-id helper has no live counterpart. Removed with its decl. */
 
 /* PoP: send_message_target_telegram_retry_delay @ tools/send_message_senders.py:_telegram_retry_delay */
 /* Backoff seconds for retryable Telegram API errors; -1 / NULL = no retry.

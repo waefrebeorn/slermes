@@ -43,7 +43,6 @@ ALLOW = {
     "sta_oracle_skills_guard.py:24": "tools.skills_guard._finding_dict",
     "sta_oracle_skills_hub_filter.py:25": "tools.skills_hub._filter_results_by_provider",
     "sta_oracle_skills_hub_path.py:20": "tools.skills_hub._validate_install_parent_path",
-    "sta_oracle_skills_sync_fs.py:11": "tools.skills_sync._safe_rel_install_path",
     "sta_oracle_tool_search.py:24": "tools.tool_search._tokenize",
     "sta_oracle_tools_approval.py:5": "tools.approval.unregister_gateway_notify",
     "sta_oracle_tools_interrupt.py:5": "tools.interrupt._ThreadAwareEventProxy",

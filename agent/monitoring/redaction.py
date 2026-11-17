@@ -18,7 +18,7 @@ remains available for a future, explicitly gated redacted-message detail mode.
 from __future__ import annotations
 
 import re
-from typing import Optional
+from typing import Any, Optional
 
 # ── secret shapes (belt-and-suspenders on top of agent/redact.py) ───────────
 _BEARER_RE = re.compile(r"\bBearer\s+[A-Za-z0-9._~+\-/]+=*", re.IGNORECASE)
@@ -66,6 +66,19 @@ def redact_for_export(text: Optional[str]) -> Optional[str]:
     return out
 
 
+def redact_bounded(raw: Any, *, limit: int = 500,
+                   empty: str = "[redacted]",
+                   unavailable: str = "[redaction-unavailable]") -> str:
+    """Redact ``str(raw or "")`` and length-bound it; ``empty`` replaces an
+    empty result, ``unavailable`` is returned if redaction itself raises.
+    Mirrors the current upstream agent/monitoring/redaction.py helper. """
+    try:
+        return (redact_for_export(str(raw or "")) or empty)[:limit]
+    except Exception:
+        return unavailable
+
+
 __all__ = [
+    "redact_bounded",
     "redact_for_export",
 ]

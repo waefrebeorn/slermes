@@ -11,8 +11,15 @@ agent/system_prompt.py _restore_plugin_prompt_sections.
 import json
 import sys
 
+# Path setup. An earlier revision inserted <DEV_ROOT>/slermes here; on this
+# machine that is a migrated USER-DATA directory that happens to contain a stale
+# hermes_cli/ package, and putting it at sys.path[0] shadowed the live tree --
+# hermes_cli.config_defaults resolved to the stale copy whose OPTIONAL_ENV_VARS
+# is a plain dict, so importing hermes_cli.plugins died on
+# `'dict' object has no attribute 'arm'`. The live tree goes first; slermes is
+# APPENDED so vendored ports are still importable but can never shadow it.
 sys.path.insert(0, os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"))
-sys.path.insert(0, os.path.join(os.environ.get("SLERMES_DEV_ROOT", "/home/wubu/hermes-agent-dev"), "slermes"))
+sys.path.append(os.environ.get("SLERMES_ROOT", ""))
 
 from hermes_cli import plugins as PL  # noqa: E402
 _ldm.rebind_used(PL, 'PL', ["hermes_cli.plugins_dispatch"], Path(__file__))

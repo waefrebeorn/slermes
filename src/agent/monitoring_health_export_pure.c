@@ -77,10 +77,14 @@ static bool safe_resource_value(const char *text)
 /* PoP: limit @ agent/monitoring/gateway_health_export.py:_redact_string */
 /* redact_for_export(str(raw or ""), fail-open → "[redaction-unavailable]").
  * Truncated to limit (default 500). Returns malloc'd string. */
+/* Current upstream redaction has no "***" -> "[redacted]" step; that lived in
+ * the old otlp-exporter-local helper. Use the faithful variant so short secrets
+ * render as "***" exactly like agent.monitoring.redaction.redact_for_export. */
+extern char *agent_monitoring_redact_for_export(const char *text);
 char *ghe_redact_string(const char *raw, int limit)
 {
     if (limit <= 0) limit = 500;
-    char *redacted = otlp_exporter_redact_for_export(raw ? raw : "");
+    char *redacted = agent_monitoring_redact_for_export(raw ? raw : "");
     if (!redacted) {
         char *fallback = strdup("[redaction-unavailable]");
         return fallback; /* no truncation needed */

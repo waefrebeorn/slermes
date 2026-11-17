@@ -32,17 +32,10 @@ static const char *js(const char *s)
 
 int main(void)
 {
-    /* display_chat_id */
-    const char *disp[][2] = {
-        {"signal", "group:abc123"}, {"signal", "user@signal"},
-        {"telegram", "-100123"}, {"slack", "C123"}, {NULL, NULL}
-    };
-    for (int i = 0; disp[i][0]; i++) {
-        char *r = send_message_target_display_chat_id(disp[i][0], disp[i][1]);
-        printf("{\"fn\":\"disp\",\"platform\":%s,\"chat\":%s,\"out\":%s}\n",
-               js(disp[i][0]), js(disp[i][1]), js(r ? r : ""));
-        free(r);
-    }
+    /* display_chat_id: DROPPED. _display_chat_id was deleted upstream with no
+     * replacement (691e2f7d9f), so the C helper had no live counterpart and no
+     * product caller. send_message_target_display_chat_id and
+     * send_message_display_chat_id were removed with it. */
 
     /* telegram_retry_delay */
     struct { const char *err; int attempt; } retry[] = {

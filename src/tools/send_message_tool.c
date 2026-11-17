@@ -109,14 +109,7 @@ static json_t *send_message_handle_send(json_t *args);
 
 #include <sys/types.h>
 
-/* PoP: send_message_display_chat_id @ tools/send_message_tool.py:_display_chat_id */
-/* Delegate to the focused send_message_target module. */
-char *send_message_display_chat_id(const char *platform_name, const char *chat_id)
-{
-    return send_message_target_display_chat_id(platform_name, chat_id);
-}
-
-/* PoP: send_message_telegram_retry_delay @ tools/send_message_senders.py:_telegram_retry_delay */
+/* PoP: send_message_telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
 /* Delegate to the focused send_message_target module. */
 double send_message_telegram_retry_delay(const char *error_text, int attempt)
 {

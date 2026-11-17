@@ -29,14 +29,10 @@ ns = {"Dict": dict, "Any": object}
 exec("from typing import Any, Dict\n" + extract("_relay"), ns)
 _relay = ns["_relay"]
 
-# LIVE builtin set for membership semantics
-ttree = ast.parse(open(TT_SRC, encoding="utf-8").read())
-BUILTIN = None
-import re as _re
-_tt_src = open(TT_SRC, encoding="utf-8").read()
-_m = _re.search(r"BUILTIN_STT_PROVIDERS\s*=\s*frozenset\(\{(.*?)\}\)", _tt_src, _re.S)
-assert _m, "BUILTIN_STT_PROVIDERS not found"
-BUILTIN = {s.strip().strip("\"'") for s in _m.group(1).split(",") if s.strip()}
+# LIVE builtin set for membership semantics. It moved upstream from
+# tools/transcription_tools.py to tools/transcription_common.py; importing it
+# directly is both simpler and immune to future source-layout moves.
+from tools.transcription_common import BUILTIN_STT_PROVIDERS as BUILTIN
 
 
 def main():
