@@ -1,3 +1,1 @@
-{
-  "ops": []
-}
+{"ops": [{"op": "is_nous_free_tier", "account": {"paid_service_access": {"allowed": false}}}]}

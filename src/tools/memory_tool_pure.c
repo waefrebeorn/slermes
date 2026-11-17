@@ -85,6 +85,18 @@ char *memory_tool_read_failed_error(const char *path_name) {
 typedef struct memory_tool_pure_store {
     int consolidation_failures;
 } memory_tool_pure_store_t;
+
+/* Declared in the header but never defined — the harness that exercises the
+ * consolidation counter could not allocate a store at all. */
+memory_tool_pure_store_t *memory_tool_pure_store_new(void)
+{
+    return (memory_tool_pure_store_t *)calloc(1, sizeof(memory_tool_pure_store_t));
+}
+
+void memory_tool_pure_store_free(memory_tool_pure_store_t *s)
+{
+    free(s);
+}
 /* PoP: memory_tool_pure_store_reset_consolidation_failures @ tools/memory_tool_store.py:reset_consolidation_failures */
 
 void memory_tool_pure_store_reset_consolidation_failures(memory_tool_pure_store_t *s) {

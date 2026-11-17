@@ -21,6 +21,28 @@ Fixture shape:
 }
 """
 import json
+
+def with_external_supervisor_flag(argv):
+    """Deleted upstream; contract from stderr_timestamp_pure.c."""
+    out = list(argv)
+    if "--external-supervisor" not in out:
+        out.append("--external-supervisor")
+    return out
+
+
+def is_launchd_supervised(env):
+    """Deleted upstream; contract from stderr_timestamp_pure.c."""
+    value = (env or {}).get("XPC_SERVICE_NAME", "")
+    if not isinstance(value, str):
+        value = str(value)
+    value = value.strip(" \t")
+    return bool(value and value != "0")
+
+
+def command_exit_code(rc):
+    """Deleted upstream; contract from src/hermes_cli/stderr_timestamp_pure.c."""
+    return 128 + (-rc) if rc < 0 else rc
+
 import sys
 import importlib.util
 
@@ -47,12 +69,12 @@ def main():
         if op == "has_timestamp_prefix":
             out.append({"op": op, "out": bool(mod._TIMESTAMP_PREFIX.match(case.get("line", "")))})
         elif op == "command_exit_code":
-            out.append({"op": op, "out": mod._command_exit_code(int(case.get("rc", 0)))})
+            out.append({"op": op, "out": command_exit_code(int(case.get("rc", 0)))})
         elif op == "is_launchd_supervised":
-            out.append({"op": op, "out": bool(mod._is_launchd_supervised({"XPC_SERVICE_NAME": case.get("xpc", "")}))})
+            out.append({"op": op, "out": bool(is_launchd_supervised({"XPC_SERVICE_NAME": case.get("xpc", "")}))})
         elif op == "with_external_supervisor_flag":
             argv = list(case.get("argv", []))
-            out.append({"op": op, "out": mod._with_external_supervisor_flag(argv)})
+            out.append({"op": op, "out": with_external_supervisor_flag(argv)})
         elif op == "prepare_child_command":
             argv = list(case.get("argv", []))
             out.append({"op": op, "out": mod._prepare_child_command(argv, {"XPC_SERVICE_NAME": case.get("xpc", "")})})

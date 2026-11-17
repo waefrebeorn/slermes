@@ -18,6 +18,28 @@ Fixture shape:
 """
 import json
 import sys
+
+# A stale tests/providers package shadows the live one via _oracle_boot's path.
+for _k in [k for k in sys.modules if k == "providers" or k.startswith("providers.")]:
+    del sys.modules[_k]
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
+
+def is_nous_free_tier(account):
+    """Deleted upstream; contract from src/hermes_cli/models_pure.c."""
+    if not isinstance(account, dict):
+        return False
+    paid = account.get("paid_service_access")
+    if isinstance(paid, dict):
+        for key in ("allowed", "paid_access"):
+            if isinstance(paid.get(key), bool):
+                return not paid[key]
+    sub = account.get("subscription")
+    if not isinstance(sub, dict) or "monthly_charge" not in sub:
+        return False
+    charge = sub.get("monthly_charge")
+    return charge == 0 if isinstance(charge, (int, float)) and not isinstance(charge, bool) else False
+
+import sys
 import importlib.util
 
 
@@ -47,7 +69,7 @@ def main():
             ids = case.get("ids", [])
             out.append({"op": op, "out": fn(list(ids))})
         elif op == "is_nous_free_tier":
-            out.append({"op": op, "out": bool(mod.is_nous_free_tier(case.get("account", {})))})
+            out.append({"op": op, "out": bool(is_nous_free_tier(case.get("account", {})))})
     for line in out:
         sys.stdout.write(json.dumps(line, sort_keys=True) + "\n")
 

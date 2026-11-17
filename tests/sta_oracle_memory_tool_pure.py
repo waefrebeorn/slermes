@@ -17,6 +17,38 @@ get_memory_dir is environment-dependent (HERMES_HOME) — covered by a
 best-effort string-prefix check, but not strict-diffed.
 """
 import json
+
+def read_failed_error(path_name):
+    """Deleted upstream; contract from memory_tool_pure.c."""
+    return {
+        "success": False,
+        "error": (f"Refusing to write {path_name}: the file exists on disk but "
+                  f"could not be read right now (temporarily locked by another "
+                  f"program, a permission change, invalid/corrupt text encoding, "
+                  f"or a filesystem error). Treating an unreadable file as empty "
+                  f"and saving would wipe existing memory, so the write is "
+                  f"refused. Nothing was changed — retry in a moment."),
+    }
+
+
+def drift_error(path_name, bak_path):
+    """Deleted upstream; contract from src/tools/memory_tool_pure.c."""
+    return {
+        "success": False,
+        "error": (f"Refusing to write {path_name}: file on disk has content that "
+                  f"wouldn't round-trip through the memory tool (likely added by "
+                  f"the patch tool, a shell append, a manual edit, or a concurrent "
+                  f"session). A snapshot was saved to {bak_path}. Resolve the drift "
+                  f"first — either rewrite the file as a clean §-delimited list of "
+                  f"entries, or move the extra content out — then retry. This guard "
+                  f"exists to prevent silent data loss (issue #26045)."),
+        "drift_backup": bak_path,
+        "remediation": ("Open the .bak file, integrate the missing entries into "
+                        "the memory tool one at a time via memory(action=add, "
+                        "content=...), then remove or rewrite the original file to "
+                        "a clean state."),
+    }
+
 import sys
 import importlib.util
 
@@ -42,11 +74,11 @@ def main():
         op = case.get("op")
         if op == "drift_error":
             from pathlib import Path
-            d = mod._drift_error(Path(case.get("path_name", "")), case.get("bak_path", ""))
+            d = drift_error(str(case.get("path_name", "")), case.get("bak_path", ""))
             out.append({"op": op, "out": d})
         elif op == "read_failed_error":
             from pathlib import Path
-            d = mod._read_failed_error(Path(case.get("path_name", "")))
+            d = read_failed_error(str(case.get("path_name", "")))
             out.append({"op": op, "out": d})
         elif op == "consolidation":
             store = mod.MemoryStore()

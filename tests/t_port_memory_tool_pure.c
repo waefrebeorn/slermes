@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
             } else if (strcmp(op, "consolidation") == 0) {
                 json_t *resp = json_object_get(c, "response");
                 char *rj = json_serialize(resp);
-                memory_tool_pure_store_t *s = NULL;
+                memory_tool_pure_store_t *s = memory_tool_pure_store_new();
                 int calls = (int)json_get_num(c, "calls", 1);
                 char *last = NULL;
                 for (int k = 0; k < calls; k++) {
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
                     last = memory_tool_pure_store_consolidation_failure(s, rj ? rj : "{}");
                 }
                 printf("{\"op\": \"consolidation\", \"out\": %s}\n", last ? last : "{}");
-                free(last); free(rj);
+                free(last); free(rj); memory_tool_pure_store_free(s);
             }
         }
     }
