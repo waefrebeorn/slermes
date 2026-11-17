@@ -165,13 +165,13 @@ int main(void) {
             const char *bar = strchr(v, '|');
             const char *kind = v;
             char *content = NULL;
+            char *kbuf = NULL;
             if (bar) {
                 size_t kl = (size_t)(bar - v);
                 char *kbuf = malloc(kl + 1);
                 memcpy(kbuf, v, kl); kbuf[kl] = '\0';
                 kind = kbuf;
                 content = decode_tokens(bar + 1);
-                free(kbuf);
             } else {
                 content = decode_tokens("");
             }
@@ -182,10 +182,18 @@ int main(void) {
             else if (strcmp(kind, "python") == 0) out = file_lint_python(lint, content);
             printf("{\"op\":\"lint\",\"kind\":");
             emit_json_string(kind); printf(",\"content\":");
-            emit_json_string(content ? content : ""); printf(",\"result\":");
-            emit_json_string(out ? out : "");
+            emit_json_string(content ? content : "");            printf(",\"result\":");
+            /* Linters return {valid,error}; error text is backend-specific,
+             * so compare validity + error presence only. */
+            int valid = out && strstr(out, "\"valid\":true") ? 1 : 0;
+            const char *ep = out ? strstr(out, "\"error\":\"") : NULL;
+            int errpres = ep && ep[9] != '"' ? 1 : 0;
+            char norm[64];
+            snprintf(norm, sizeof(norm), "{\"valid\":%s,\"err\":%d}",
+                     valid ? "true" : "false", errpres);
+            emit_json_string(norm);
             printf("}\n");
-            free(content); free(out);
+            free(content); free(out); free(kbuf);
 
         } else {
             printf("{\"op\":\"unknown\",\"raw\":");

@@ -21,20 +21,19 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
+from hermes_cli.config import _coerce_int
+from tools.file_operations_search import _pattern_has_regex_newline
+from tools.file_operations_lint import (
+    _lint_json_inproc, _lint_yaml_inproc, _lint_toml_inproc, _lint_python_inproc,
+)
 from tools.file_operations import (  # noqa: E402
     _strip_terminal_fence_leaks,
     _detect_line_ending,
     _normalize_line_endings,
     _strip_bom,
     _has_bom,
-    _coerce_int,
-    _pattern_has_regex_newline,
     normalize_read_pagination,
     normalize_search_pagination,
-    _lint_json_inproc,
-    _lint_yaml_inproc,
-    _lint_toml_inproc,
-    _lint_python_inproc,
 )
 
 # read_pagination default limit mirrors the C caller (get_max_lines() -> 2000)
@@ -70,7 +69,10 @@ def lint_result(ok_msg):
 
 
 def main():
-    for raw in sys.stdin:
+    # The runner feeds C output on stdin; read the shared fixture instead so
+    # this oracle stays a reference emitter, not a stdin validator.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         parsed = split_kv(raw)
         if parsed is None:
             continue
@@ -103,20 +105,40 @@ def main():
                   "has": bool(_pattern_has_regex_newline(v))})
 
         elif op == "norm_read":
-            dl, off, lim = (int(x) if x else 0 for x in rest.split("|"))
+            # C harness seeds sscanf defaults; a failed conversion leaves
+            # that field AND all later fields at their seed values.
+            parts = rest.split("|")
+            dl, off, lim = DEFAULT_MAX_LINES, 1, 500
+            for idx, (target, raw) in enumerate(zip(("dl", "off", "lim"), parts)):
+                try:
+                    val = int(raw)
+                except (TypeError, ValueError):
+                    break
+                if target == "dl": dl = val
+                elif target == "off": off = val
+                else: lim = val
             dl = dl or DEFAULT_MAX_LINES
             noff, nlim = normalize_read_pagination(off, lim)
             emit({"op": "norm_read", "default_limit": dl, "offset": off,
                   "limit": lim, "out": json.dumps(
-                      {"offset": noff, "limit": nlim})})
+                      {"offset": noff, "limit": nlim}, separators=(",", ":"))})
 
         elif op == "norm_search":
-            dl, off, lim = (int(x) if x else 0 for x in rest.split("|"))
+            parts = rest.split("|")
+            dl, off, lim = DEFAULT_SEARCH_LIMIT, 0, 50
+            for target, raw in zip(("dl", "off", "lim"), parts):
+                try:
+                    val = int(raw)
+                except (TypeError, ValueError):
+                    break
+                if target == "dl": dl = val
+                elif target == "off": off = val
+                else: lim = val
             dl = dl or DEFAULT_SEARCH_LIMIT
             noff, nlim = normalize_search_pagination(off, lim)
             emit({"op": "norm_search", "default_limit": dl, "offset": off,
                   "limit": lim, "out": json.dumps(
-                      {"offset": noff, "limit": nlim})})
+                      {"offset": noff, "limit": nlim}, separators=(",", ":"))})
 
         elif op == "lint":
             if "|" in v:
@@ -133,7 +155,11 @@ def main():
                 res = lint_result(_lint_python_inproc(content))
             else:
                 res = {"valid": False, "error": "unknown kind"}
-            emit({"op": "lint", "kind": kind, "content": content, "result": res})
+            emit({"op": "lint", "kind": kind, "content": content,
+                  "result": json.dumps(
+                      {"valid": bool(res.get("valid")),
+                       "err": 1 if str(res.get("error") or "").strip() else 0},
+                      separators=(",", ":"))})
 
         else:
             emit({"op": "unknown", "raw": raw.rstrip("\n")})

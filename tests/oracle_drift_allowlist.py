@@ -17,7 +17,6 @@ ALLOW = {
     "sta_oracle_agent_estop.py:23": "agent.estop",
     "sta_oracle_agent_estop.py:35": "agent.estop",
     "sta_oracle_dashboard_pure.py:11": "hermes_cli.dashboard_procs._valid_lockfile_payload",
-    "sta_oracle_file_ops_pure.py:24": "tools.file_operations._lint_python_inproc",
     "sta_oracle_file_search.py:22": "tools.file_operations._split_tool_diagnostics",
     "sta_oracle_github_provider.py:19": "tools.skills_hub.github_provider_for",
     "sta_oracle_hermes_cli_shared_metrics_contract.py:17": "hermes_cli.observability.shared_metrics_contract.tool_approval_outcome",

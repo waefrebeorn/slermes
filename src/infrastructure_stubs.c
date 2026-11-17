@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include "hermes_logger.h"
+#include "libjson/json.h"
 
 /* stub_shadowed defines (auto) */
 #define agent_backend_identity_build stub_shadowed_agent_backend_identity_build
@@ -721,15 +722,196 @@ int file_fs_ops_is_image(const char *path) { (void)path; return 0; }
 int file_fs_ops_file_has_bom(const char *path) { (void)path; return 0; }
 char *file_fs_ops_detect_file_line_ending(const char *path) { (void)path; return strdup("\n"); }
 int file_fs_ops_delete_path(const char *path) { (void)path; return 0; }
-char *file_text_ops_strip_terminal_fence_leaks(const char *text) { (void)text; return strdup(""); }
-char *file_text_ops_strip_bom(const char *text) { (void)text; return strdup(""); }
+/* Orphan harnesses link this stub object, not src/tools/file_text_ops.o.
+ * Keep the real contract so they do not test a no-op. */
+char *file_text_ops_strip_terminal_fence_leaks(const char *text)
+{
+    if (!text) return strdup("");
+    size_t len = strlen(text);
+    char *out = malloc(len + 1);
+    if (!out) return NULL;
+    size_t oi = 0;
+
+    const char *p = text;
+    while (*p) {
+        /* extract one line (with trailing \n if present) */
+        const char *line_start = p;
+        const char *nl = strchr(p, '\n');
+        size_t line_len = nl ? (size_t)(nl - p) : strlen(p);
+        int had_wrapper = (strncmp(line_start, "__HERMES_FENCE_", 15) == 0) ||
+                          (line_len >= 2 && line_start[0] == '\033' && line_start[1] == ']');
+
+        /* clean the line into a temp buffer */
+        char *clean = malloc(line_len + 1);
+        if (!clean) { free(out); return NULL; }
+        size_t ci = 0;
+        for (size_t i = 0; i < line_len; i++) {
+            char c = line_start[i];
+            if (c == '\033') {
+                if (i + 1 < line_len && line_start[i + 1] == ']') {  /* OSC */
+                    i += 2;
+                    while (i < line_len && line_start[i] != '\007' &&
+                           !(line_start[i] == '\033' && i + 1 < line_len && line_start[i + 1] == '\\'))
+                        i++;
+                    if (i < line_len && line_start[i] == '\007') i++;
+                    else if (i + 1 < line_len && line_start[i] == '\033' && line_start[i + 1] == '\\') i += 2;
+                    i--;  /* loop will ++ */
+                    continue;
+                }
+                clean[ci++] = c;  /* CSI or other ESC: keep */
+                continue;
+            }
+            if (c == '\007') continue;  /* bell */
+            if (strncmp(line_start + i, "__HERMES_FENCE_", 15) == 0) {
+                i += 15;
+                size_t j = i;
+                while (i < line_len && ((line_start[i] >= 'A' && line_start[i] <= 'Z') ||
+                       (line_start[i] >= 'a' && line_start[i] <= 'z') ||
+                       (line_start[i] >= '0' && line_start[i] <= '9'))) i++;
+                /* Python _FENCE_MARKER_RE requires [A-Za-z0-9]+__ (closing __).
+                 * If no closing '__', the marker is incomplete -> keep the
+                 * literal prefix and continue scanning the rest (no strip). */
+                if (i > j && i + 1 < line_len && line_start[i] == '_' && line_start[i + 1] == '_') {
+                    i += 1;  /* past first '_'; loop's i++ lands after '__' */
+                } else {
+                    memcpy(clean + ci, "__HERMES_FENCE_", 15);
+                    ci += 15;
+                    i = j - 1;  /* loop re-processes the alnum tail, no rewind */
+                }
+                continue;
+            }
+            clean[ci++] = c;
+        }
+        clean[ci] = '\0';
+
+        if (had_wrapper && strspn(clean, "'\r\n\t ") == ci) {
+            /* whole line was a terminal wrapper and is now empty -> drop it */
+        } else {
+            memcpy(out + oi, clean, ci);
+            oi += ci;
+            if (nl) out[oi++] = '\n';
+        }
+        free(clean);
+        p = nl ? nl + 1 : p + line_len;
+    }
+    out[oi] = '\0';
+    return out;
+}
+char *file_text_ops_strip_bom(const char *text)
+{
+    if (!text) return strdup("");
+    if (strncmp(text, "\xEF\xBB\xBF", 3) == 0) return strdup(text + 3);
+    return strdup(text);
+}
 char *file_text_ops_parse_search_context_line(const char *line) { (void)line; return strdup("{}"); }
-char *file_text_ops_normalize_line_endings(const char *text) { (void)text; return strdup(""); }
-int file_text_ops_has_bom(const char *text) { (void)text; return 0; }
-int file_text_ops_detect_line_ending(const char *text) { (void)text; return 0; }
-int file_pagination_ops_pattern_has_regex_newline(const char *pattern) { (void)pattern; return 0; }
-char *file_pagination_ops_normalize_search_pagination(const char *args) { (void)args; return strdup("{}"); }
-char *file_pagination_ops_normalize_read_pagination(const char *args) { (void)args; return strdup("{}"); }
+char *file_text_ops_normalize_line_endings(const char *text, const char *target)
+{
+    if (!text) return strdup("");
+    if (!target || !*target) target = "\n";
+    size_t len = strlen(text);
+    char *lf = malloc(len + 1);
+    if (!lf) return NULL;
+    size_t li = 0;
+    /* collapse to LF */
+    for (size_t i = 0; i < len; i++) {
+        if (text[i] == '\r') {
+            if (text[i + 1] == '\n') i++;
+            lf[li++] = '\n';
+        } else {
+            lf[li++] = text[i];
+        }
+    }
+    lf[li] = '\0';
+
+    if (strcmp(target, "\r\n") != 0) {
+        return lf; /* target is "\n" (or unknown) — LF form is final */
+    }
+    /* expand LF -> CRLF */
+    char *out = malloc(li * 2 + 1);
+    if (!out) { free(lf); return NULL; }
+    size_t oi = 0;
+    for (size_t i = 0; i < li; i++) {
+        if (lf[i] == '\n') out[oi++] = '\r';
+        out[oi++] = lf[i];
+    }
+    out[oi] = '\0';
+    free(lf);
+    return out;
+}
+bool file_text_ops_has_bom(const char *text)
+{
+    if (!text) return false;
+    return strncmp(text, "\xEF\xBB\xBF", 3) == 0;
+}
+char *file_text_ops_detect_line_ending(const char *sample)
+{
+    if (!sample || !*sample) return strdup("unknown");
+    size_t head = strlen(sample);
+    if (head > 4096) head = 4096;
+    if (memchr(sample, '\r', head) && memchr(sample, '\n', head) &&
+        strstr(sample, "\r\n")) {
+        return strdup("crlf");
+    }
+    if (memchr(sample, '\n', head)) return strdup("lf");
+    /* No newline present -> Python returns None (undetermined) -> "unknown". */
+    return strdup("unknown");
+}
+#define MAX_LINES 2000
+static int clamp_read_limit(int limit, int default_limit)
+{
+    (void)default_limit;
+    if (limit < 1) return 1;
+    if (limit > MAX_LINES) return MAX_LINES;
+    return limit;
+}
+static int clamp_search_limit(int limit, int default_limit)
+{
+    (void)default_limit;
+    return limit < 1 ? 1 : limit;
+}
+bool file_pagination_ops_pattern_has_regex_newline(const char *pattern)
+{
+    if (!pattern) return false;
+    if (strchr(pattern, '\n')) return true;
+    /* emulate _REGEX_NEWLINE_ESCAPE_RE = r"(?<!\\)(?:\\\\)*\\n" */
+    size_t len = strlen(pattern);
+    for (size_t i = 0; i + 1 < len; i++) {
+        if (pattern[i] == '\\' && pattern[i + 1] == 'n') {
+            /* count backslashes ending at position i (inclusive) */
+            size_t bs = 0;
+            size_t j = i;
+            while (j > 0 && pattern[j - 1] == '\\') { bs++; j--; }
+            bs++;  /* pattern[i] itself */
+            if (bs % 2 == 1) return true;  /* odd => the \n is an escape */
+        }
+    }
+    return false;
+}
+char *file_pagination_ops_normalize_search_pagination(int offset, int limit, int default_limit)
+{
+    int normalized_offset = offset < 0 ? 0 : offset;          /* max(0, offset) */
+    int normalized_limit = clamp_search_limit(limit, default_limit);
+
+    json_t *root = json_object();
+    json_set(root, "offset", json_number(normalized_offset));
+    json_set(root, "limit", json_number(normalized_limit));
+    char *s = json_serialize(root);
+    json_free(root);
+    return s;
+}
+
+char *file_pagination_ops_normalize_read_pagination(int offset, int limit, int default_limit)
+{
+    int normalized_offset = offset < 1 ? 1 : offset;          /* max(1, offset) */
+    int normalized_limit = clamp_read_limit(limit, default_limit);
+
+    json_t *root = json_object();
+    json_set(root, "offset", json_number(normalized_offset));
+    json_set(root, "limit", json_number(normalized_limit));
+    char *s = json_serialize(root);
+    json_free(root);
+    return s;
+}
 int file_pagination_ops_maybe_warn_line_oriented_newline_pattern(const char *pattern) { (void)pattern; return 0; }
 int file_pagination_ops_is_line_oriented_newline_error(const char *error) { (void)error; return 0; }
 
