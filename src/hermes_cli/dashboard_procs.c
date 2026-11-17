@@ -60,8 +60,11 @@ int dashboard_procs_is_desktop_local_serve_cmdline(const char *command) {
         if (!has_serve && (p == cmd || *(p-1) == ' ') &&
             (strncasecmp(p, "serve", 5) == 0 && (p[5] == ' ' || p[5] == '\0' || p[5] == '\t')))
             has_serve = 1;
-        if (!has_hermes && (strncasecmp(p, "hermes_cli", 10) == 0 ||
-            (strncasecmp(p, "hermes", 6) == 0 && (p[6] == ' ' || p[6] == '\0' || p[6] == '\t' || p[6] == '_'))))
+        /* Canonical entry tokens are hermes / hermes.exe only; bare
+         * "hermes_cli" is NOT an entry (upstream _hermes_holder_subcommand). */
+        if (!has_hermes && strncasecmp(p, "hermes", 6) == 0 &&
+            (p[6] == ' ' || p[6] == '\0' || p[6] == '\t' ||
+             (p[6] == '.' && strncasecmp(p + 6, ".exe", 4) == 0)))
             has_hermes = 1;
         p++;
     }

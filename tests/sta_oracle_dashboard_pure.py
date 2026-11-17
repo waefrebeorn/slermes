@@ -24,7 +24,7 @@ def main():
             out = bool(_is_desktop_local_serve_cmdline(c.get("cmd", "")))
             print(json.dumps({"op": "is_desktop_serve", "out": out}))
         elif op == "hermes_home":
-            out = str(_hermes_home_dir())
+            out = str(_hermes_home_dir()).replace("\\", "/")
             print(json.dumps({"op": "hermes_home", "out": out}))
         elif op == "valid_lockfile":
             raw = c.get("json", "{}")
