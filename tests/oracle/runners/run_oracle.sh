@@ -303,8 +303,17 @@ rm -rf "$TMPH"; mkdir -p "$TMPH/.hermes/cron"
 # Under the runner's HOME=$TMPH isolation this would resolve into the temp
 # home and never find the source. Symlink that exact path back to the
 # developer tree (the slermes parent) so the oracles read the real source
-# without escaping the isolated home. DEV_ROOT = parent of the slermes root.
-DEV_ROOT="$(cd "$ROOT/.." && pwd)"
+# without escaping the isolated home. The link target must be the Hermes
+# CHECKOUT (~/.hermes/hermes-agent/hermes_cli/...), not the slermes parent:
+# linking the parent put C:/Users/eman5/hermes_cli on the path, which does not
+# exist, so every oracle that resolves the live source through Path.home() died.
+for _cand in "$ROOT/../hermes-agent" "$ROOT/../hermes-agent-dev" "$ROOT/../hermes"; do
+    if [ -f "$ROOT/../$(basename "$_cand")/hermes_cli/plugins.py" ]; then
+        DEV_ROOT="$(cd "$_cand" && pwd)"
+        break
+    fi
+done
+DEV_ROOT="${DEV_ROOT:-$(cd "$ROOT/.." && pwd)}"
 # MSYS2's `ln -s` silently COPIES when it cannot create a symlink. Linking the
 # developer home that way copied all of C:/Users/eman5 -- 13 GB, including
 # .git-credentials -- into tests/oracle/build/home_<port>/ on every oracle run.

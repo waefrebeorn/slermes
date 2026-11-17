@@ -133,7 +133,16 @@ if __name__ == "__main__":
                 with contextlib.redirect_stdout(buf):
                     runpy.run_path(oracle, run_name="__main__")
             except SystemExit as exc:
-                rc = exc.code if isinstance(exc.code, int) else 0
+                # A SystemExit carrying a MESSAGE is a failure, not a clean
+                # exit: `raise SystemExit("no importable live Hermes tree
+                # found")` recorded rc=0 and the empty output silently became
+                # "oracle produced no output".
+                if isinstance(exc.code, int):
+                    rc = exc.code
+                else:
+                    if exc.code:
+                        print(exc.code, file=sys.stderr)
+                    rc = 1
             except Exception:
                 traceback.print_exc(file=sys.stderr)
                 rc = 1

@@ -266,30 +266,6 @@ int main(int argc, char **argv) {
             emit_list(op, a1, keys, n);
             tools_config_free_list(keys, n);
 
-        } else if (strcmp(op, "restorable_dep") == 0) {
-            const char *module = NULL;
-            const char *const *args = NULL;
-            bool ok = tools_config_restorable_python_tool_dependency(
-                a1, &module, &args);
-            json_t *o = json_object();
-            json_set(o, "op", json_string(op));
-            json_set(o, "arg", json_string(a1));
-            if (!ok) {
-                json_set(o, "value", json_null());
-            } else {
-                json_t *v = json_object();
-                json_set(v, "module", json_string(module ?: ""));
-                json_t *arr = json_array();
-                for (const char *const *p = args; p && *p; p++)
-                    json_append(arr, json_string(*p));
-                json_set(v, "install_args", arr);
-                json_set(o, "value", v);
-            }
-            char *t = json_serialize(o);
-            printf("%s\n", t ? t : "{}");
-            free(t);
-            json_free(o);
-
         } else if (strcmp(op, "detect_active_provider") == 0) {
             json_t *providers = json_parse(a1, NULL);
             size_t idx = tools_config_detect_active_provider_index(providers,

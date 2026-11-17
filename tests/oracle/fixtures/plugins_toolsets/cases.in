@@ -59,13 +59,6 @@ checklist_keys	discord
 known_platforms	
 effective_toolsets	
 post_setup_keys	
-restorable_dep	faster_whisper
-restorable_dep	kittentts
-restorable_dep	piper
-restorable_dep	ddgs
-restorable_dep	langfuse
-restorable_dep	nope
-restorable_dep	
 apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	cli:enable:memory,todo
 apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	cli:disable:web
 apply_toolset_change	{"platforms": {"cli": {"tools": ["web", "file"]}}}	telegram:enable:web

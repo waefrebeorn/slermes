@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import ast
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -126,7 +127,11 @@ def main() -> int:
                 found |= (module_names(cand) & set(missing))
             if found:
                 pkg = dotted.rsplit(".", 1)[0]
-                donors = ['"%s.%s"' % (pkg, c.stem) for c in sib if c != path]
+                # Only donors that actually define one of the missing names:
+                # importing every sibling forces optional deps (mcp, yaml) that
+                # the oracle has no business requiring.
+                donors = ['"%s.%s"' % (pkg, c.stem) for c in sib
+                          if c != path and (module_names(c) & set(missing))]
             if not donors:
                 continue
             inserts.append((alias, donors))

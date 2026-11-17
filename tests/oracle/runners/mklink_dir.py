@@ -15,11 +15,21 @@ import subprocess
 import sys
 
 
+def _native(p):
+    """MSYS2 hands this script /c/Users/... paths; Windows Python cannot stat
+    those (`os.path.isdir` returns False), so the junction silently never gets
+    created and every oracle that resolves the live source through Path.home()
+    dies. Convert /c/foo -> c:/foo."""
+    if len(p) >= 3 and p[0] == "/" and p[1].isalpha() and p[2] == "/":
+        return p[1] + ":" + p[2:]
+    return p
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         print("usage: mklink_dir.py <link> <target>", file=sys.stderr)
         return 2
-    link, target = sys.argv[1], sys.argv[2]
+    link, target = _native(sys.argv[1]), _native(sys.argv[2])
     if not os.path.isdir(target):
         print(f"mklink_dir: target is not a directory: {target}", file=sys.stderr)
         return 1

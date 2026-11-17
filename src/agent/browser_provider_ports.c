@@ -41,7 +41,7 @@ bool brp_is_available(void) {
     for (int i = 0; i < n && list && list[i]; i++) {
         if (list[i]->is_available && list[i]->is_available(list[i])) { avail = true; break; }
     }
-    free((void *)list);
+    /* Borrowed pointer to the registry's static array -- do not free. */
     return avail;
 }
 

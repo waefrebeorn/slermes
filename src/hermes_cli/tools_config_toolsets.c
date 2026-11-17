@@ -11,6 +11,7 @@
  */
 #define _GNU_SOURCE
 #include "tools_config_toolsets.h"
+#include "tools_config_providers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,20 +46,19 @@ static const tools_config_toolset_row_t CONFIGURABLE_TOOLSETS[] = {
     { "video",          "🎬 Video Analysis",         "video_analyze (requires video-capable model)" },
     { "image_gen",      "🎨 Image Generation",       "image_generate" },
     { "video_gen",      "🎬 Video Generation",       "video_generate (text/image/reference)" },
-    { "bfl",            "🎬 BFL FLUX 3 Video",       "bfl_flux3_*" },
     { "x_search",       "🐦 X (Twitter) Search",     "x_search (requires xAI OAuth or XAI_API_KEY)" },
     { "tts",            "🔊 Text-to-Speech",         "text_to_speech" },
     { "stt",            "🎙️ Speech-to-Text",         "voice transcription (gateway voice messages + voice mode)" },
     { "skills",         "📚 Skills",                 "list, view, manage" },
-    { "todo",           "📋 Task Planning",          "todo" },
+    { "todo",           "📋 Task Planning",          "todo_list" },
+    { "kanban",         "📌 Kanban",                 "opt-in task board tools for this platform" },
     { "memory",         "💾 Memory",                 "persistent memory across sessions" },
     { "context_engine", "🧩 Context Engine",         "runtime tools from the active context engine" },
     { "session_search", "🔎 Session Search",         "search past conversations" },
+    { "connections",    "🔌 Connections",            "remote connector tools and account authorization" },
     { "clarify",        "❓ Clarifying Questions",    "clarify" },
     { "delegation",     "👥 Task Delegation",        "delegate_task" },
     { "cronjob",        "⏰ Cron Jobs",               "create/list/update/pause/resume/run, with optional attached skills" },
-    { "homeassistant",  "🏠 Home Assistant",         "smart home device control" },
-    { "spotify",        "🎵 Spotify",                "playback, search, playlists, library" },
     { "discord",        "💬 Discord (read/participate)", "fetch messages, search members, create thread" },
     { "discord_admin",  "🛡️  Discord Server Admin",   "list channels/roles, pin, assign roles" },
     { "yuanbao",        "🤖 Yuanbao",                "group info, member queries, DM" },
@@ -68,31 +68,6 @@ static const tools_config_toolset_row_t CONFIGURABLE_TOOLSETS[] = {
 
 /* _CONFIG_ONLY_TOOLSETS = {"stt"} */
 static const char *const CONFIG_ONLY_TOOLSETS[] = { "stt", NULL };
-
-/* _RESTORABLE_PYTHON_TOOL_DEPENDENCIES */
-typedef struct {
-    const char *name;
-    const char *module;
-    const char *const *install_args;
-} restorable_dep_t;
-static const char *const DEP_FASTER_WHISPER[] = { "-U", "faster-whisper", NULL };
-static const char *const DEP_KITTENTTS[] = {
-    "-U",
-    "https://github.com/KittenML/KittenTTS/releases/download/"
-    "0.8.1/kittentts-0.8.1-py3-none-any.whl",
-    "soundfile", NULL
-};
-static const char *const DEP_PIPER[] = { "-U", "piper-tts", NULL };
-static const char *const DEP_DDGS[] = { "-U", "ddgs", NULL };
-static const char *const DEP_LANGFUSE[] = { "langfuse", NULL };
-static const restorable_dep_t RESTORABLE_DEPS[] = {
-    { "faster_whisper", "faster_whisper", DEP_FASTER_WHISPER },
-    { "kittentts",      "kittentts",      DEP_KITTENTTS },
-    { "piper",          "piper",          DEP_PIPER },
-    { "ddgs",           "ddgs",           DEP_DDGS },
-    { "langfuse",       "langfuse",       DEP_LANGFUSE },
-    { NULL, NULL, NULL }
-};
 
 /* Every post_setup key declared by a TOOL_CATEGORIES provider row. */
 static const char *const POST_SETUP_KEYS[] = {
@@ -333,7 +308,7 @@ char **tools_config_known_tool_platforms(size_t *out_n) {
     /* Built-in PLATFORMS (the platform_tools PLATFORMS registry). */
     static const char *const BUILTIN_PLATFORMS[] = {
         "cli", "telegram", "discord", "slack", "whatsapp", "whatsapp_cloud",
-        "signal", "bluebubbles", "email", "homeassistant", "mattermost",
+        "signal", "bluebubbles", "email", "mattermost",
         "matrix", "dingtalk", "feishu", "wecom", "wecom_callback", "weixin",
         "qqbot", "yuanbao", "webhook", "api_server", "cron", NULL
     };
@@ -425,10 +400,47 @@ size_t tools_config_detect_active_provider_index(const json_t *providers,
     return 0;
 }
 
-/* PoP: tools_config_valid_post_setup_keys @ hermes_cli/tools_config_post_setup.py:valid_post_setup_keys */
+/* PoP: tools_config_valid_post_setup_keys @ hermes_cli/tools_config_post_setup.py:valid_post_setup_keys
+ * Derived, not tabulated: every `post_setup` declared by a TOOL_CATEGORIES
+ * provider row, plus the four plugin provider catalogs. A static list here
+ * drifted (it still offered bfl/camofox/langfuse/spotify after upstream moved
+ * or deleted them) and the dashboard validates user input against this set. */
 char **tools_config_valid_post_setup_keys(size_t *out_n) {
     tct_set_t s = { 0 };
-    for (const char *const *k = POST_SETUP_KEYS; *k; k++) tct_set_add(&s, *k);
+    const json_t *cats = tools_config_tool_categories();
+    /* json_get/json_len are ARRAY-only; objects iterate through c.keys/c.items. */
+    if (cats && cats->type == JSON_OBJECT) {
+        for (size_t i = 0; i < cats->c.count; i++) {
+            const json_t *cat = cats->c.items[i];
+            if (!cat || cat->type != JSON_OBJECT) continue;
+            const json_t *provs = json_obj_get(cat, "providers");
+            if (!provs || provs->type != JSON_ARRAY) continue;
+            for (size_t j = 0; j < provs->c.count; j++) {
+                const json_t *prov = provs->c.items[j];
+                if (!prov || prov->type != JSON_OBJECT) continue;
+                const json_t *ps = json_obj_get(prov, "post_setup");
+                if (ps && ps->type == JSON_STRING && ps->str_val && ps->str_val[0])
+                    tct_set_add(&s, ps->str_val);
+            }
+        }
+    }
+    json_t *(*builders[])(void) = { tools_config_plugin_web_search_providers,
+                                    tools_config_plugin_image_gen_providers,
+                                    tools_config_plugin_video_gen_providers,
+                                    tools_config_plugin_browser_providers };
+    for (size_t b = 0; b < 4; b++) {
+        json_t *provs = builders[b]();
+        if (provs && provs->type == JSON_ARRAY) {
+            for (size_t j = 0; j < provs->c.count; j++) {
+                const json_t *prov = provs->c.items[j];
+                if (!prov || prov->type != JSON_OBJECT) continue;
+                const json_t *ps = json_obj_get(prov, "post_setup");
+                if (ps && ps->type == JSON_STRING && ps->str_val && ps->str_val[0])
+                    tct_set_add(&s, ps->str_val);
+            }
+        }
+        json_free(provs);
+    }
     return tct_set_sorted(&s, out_n);
 }
 
@@ -495,49 +507,6 @@ bool tools_config_module_installed(const char *module_name) {
         p = sep + 1;
     }
     return false;
-}
-
-/* PoP: tools_config_restorable_python_tool_dependency @ hermes_cli/tools_config.py:restorable_python_tool_dependency */
-bool tools_config_restorable_python_tool_dependency(
-    const char *name, const char **out_module,
-    const char *const **out_install_args) {
-    if (!name) return false;
-    for (size_t i = 0; RESTORABLE_DEPS[i].name; i++) {
-        if (strcmp(RESTORABLE_DEPS[i].name, name) != 0) continue;
-        if (out_module) *out_module = RESTORABLE_DEPS[i].module;
-        if (out_install_args) *out_install_args = RESTORABLE_DEPS[i].install_args;
-        return true;
-    }
-    return false;
-}
-
-/* PoP: tools_config_active_restorable_python_tool_dependencies @ hermes_cli/tools_config.py:active_restorable_python_tool_dependencies */
-char **tools_config_active_restorable_python_tool_dependencies(size_t *out_n) {
-    size_t total = 0;
-    while (RESTORABLE_DEPS[total].name) total++;
-    char **out = (char **)calloc(total ? total : 1, sizeof *out);
-    if (!out) { if (out_n) *out_n = 0; return NULL; }
-    size_t k = 0;
-    /* Declaration order (dict iteration order), NOT sorted. */
-    for (size_t i = 0; i < total; i++)
-        if (tools_config_module_installed(RESTORABLE_DEPS[i].module))
-            out[k++] = tct_strdup(RESTORABLE_DEPS[i].name);
-    if (out_n) *out_n = k;
-    return out;
-}
-
-/* PoP: tools_config_homeassistant_credentials_present @ hermes_cli/tools_config.py:_homeassistant_credentials_present */
-bool tools_config_homeassistant_credentials_present(void) {
-    /* Python: bool((get_secret("HASS_TOKEN","") or "").strip()) */
-    char *v = config_py_get_env_value_prefer_dotenv("HASS_TOKEN");
-    bool present = false;
-    if (v) {
-        const char *s = v;
-        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
-        present = *s != '\0';
-        free(v);
-    }
-    return present;
 }
 
 /* PoP: tools_config_hidden_nous_gateway_message @ hermes_cli/tools_config.py:_hidden_nous_gateway_message */
@@ -710,9 +679,9 @@ done:
 void tools_config_enable_recently_shipped_toolsets(json_t *enabled_toolsets,
                                                    const json_t *config,
                                                    const char *platform) {
-    /* _RECENTLY_SHIPPED_TOOLSETS = frozenset({"bfl"}) — must ship in the same
-     * release as the toolset it names and be emptied in the next one. */
-    static const char *const RECENTLY_SHIPPED[] = { "bfl", NULL };
+    /* _RECENTLY_SHIPPED_TOOLSETS = frozenset() -- upstream emptied it when the
+     * BFL FLUX 3 promo toolset was removed (76e306c458). */
+    static const char *const RECENTLY_SHIPPED[] = { NULL };
 
     json_t *known = json_obj_get((json_t *)config, "known_builtin_toolsets");
     bool declined_bfl = false;

@@ -76,20 +76,6 @@ json_t *tools_config_estimate_tool_tokens(void);
  * importlib.util.find_spec: is the capability present on this system). */
 bool tools_config_module_installed(const char *module_name);
 
-/* PoP: tools_config_restorable_python_tool_dependency @ hermes_cli/tools_config.py:restorable_python_tool_dependency
- * Import probe + pip args for an allowlisted tool dependency, or false when
- * the name isn't allowlisted. Both out params are borrowed. */
-bool tools_config_restorable_python_tool_dependency(
-    const char *name, const char **out_module,
-    const char *const **out_install_args);
-
-/* PoP: tools_config_active_restorable_python_tool_dependencies @ hermes_cli/tools_config.py:active_restorable_python_tool_dependencies
- * Allowlisted dependency names present in this runtime, in declaration order. */
-char **tools_config_active_restorable_python_tool_dependencies(size_t *out_n);
-
-/* PoP: tools_config_homeassistant_credentials_present @ hermes_cli/tools_config.py:_homeassistant_credentials_present */
-bool tools_config_homeassistant_credentials_present(void);
-
 /* PoP: tools_config_hidden_nous_gateway_message @ hermes_cli/tools_config.py:_hidden_nous_gateway_message
  * Deprecated no-op: Nous Tool Gateway rows are never hidden. Always "". */
 const char *tools_config_hidden_nous_gateway_message(void);

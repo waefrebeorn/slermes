@@ -20,9 +20,9 @@ extern char *config_py_get_env_value_prefer_dotenv(const char *key);
 /* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:CONFIGURABLE_TOOLSETS */
 static const char *const CONFIGURABLE_KEYS[] = {
     "web", "browser", "terminal", "file", "code_execution", "vision",
-    "video", "image_gen", "video_gen", "bfl", "x_search", "tts", "stt",
-    "skills", "todo", "memory", "context_engine", "session_search",
-    "clarify", "delegation", "cronjob", "homeassistant", "spotify",
+    "video", "image_gen", "video_gen", "x_search", "tts", "stt",
+    "skills", "todo", "kanban", "memory", "context_engine", "session_search",
+    "connections", "clarify", "delegation", "cronjob",
     "discord", "discord_admin", "yuanbao", "computer_use", NULL
 };
 
@@ -564,32 +564,37 @@ char **platform_tools_get(const json_t *config, const char *platform,
     }
 
     /* PoP: _enable_recently_shipped_toolsets @ hermes_cli/tools_config.py:
-     * turn on toolsets that shipped after this platform's saved list ("bfl").
-     * Only where the composite default would have enabled it anyway. */
+     * turn on toolsets that shipped after this platform's saved list.
+     * Only where the composite default would have enabled it anyway.
+     * _RECENTLY_SHIPPED_TOOLSETS is EMPTY upstream (the BFL FLUX 3 promo
+     * toolset was removed in 76e306c458), so the loop below has no iterations.
+     * It stays data-driven rather than being deleted: the set is config, and a
+     * re-shipped toolset must work without touching this function. */
     {
-        bool declined = false;
+        static const char *const RECENTLY_SHIPPED[] = { NULL };
+        pset_t declined = { 0 };
         {
-            char *known = NULL;
-            /* declined = recorded in known_builtin_toolsets */
             const json_t *kt = config ? json_obj_get(config, "known_builtin_toolsets") : NULL;
-            if (kt && kt->type == JSON_ARRAY) {
-                for (size_t i = 0; i < json_len(kt) && !declined; i++) {
-                    char *s = json_scalar_to_str(json_get(kt, i));
-                    if (s && strcmp(s, "bfl") == 0) declined = true;
-                    free(s);
+            if (kt && kt->type == JSON_OBJECT) {
+                const json_t *off = json_obj_get(kt, platform);
+                if (off && off->type == JSON_ARRAY) {
+                    for (size_t i = 0; i < json_len(off); i++) {
+                        char *s = json_scalar_to_str(json_get(off, i));
+                        if (s) { ps_add(&declined, s); free(s); }
+                    }
                 }
             }
-            (void)known;
         }
-        if (!declined && !explicit_empty_selection &&
-            !ps_has(&enabled, "bfl") &&
-            toolset_allowed_for_platform("bfl", platform)) {
-            pset_t bfl_tools = {0};
+        for (const char *const *rp = RECENTLY_SHIPPED; *rp; rp++) {
+            const char *ts_key = *rp;
+            if (ps_has(&enabled, ts_key) || ps_has(&declined, ts_key)) continue;
+            if (!toolset_allowed_for_platform(ts_key, platform)) continue;
+            pset_t ts_tools = { 0 };
             size_t bn = 0;
-            char **bt = toolsets_resolve("bfl", true, &bn);
-            for (size_t j = 0; j < bn; j++) ps_add(&bfl_tools, bt[j]);
+            char **bt = toolsets_resolve(ts_key, true, &bn);
+            for (size_t j = 0; j < bn; j++) ps_add(&ts_tools, bt[j]);
             toolsets_free_list(bt, bn);
-            if (bfl_tools.n > 0) {
+            if (ts_tools.n > 0) {
                 /* composite default: hermes-<platform> (or the platform's
                  * registered default) resolved WITHOUT the registry */
                 const char *def = platform_tools_default_toolset(platform);
@@ -598,19 +603,20 @@ char **platform_tools_get(const json_t *config, const char *platform,
                     snprintf(fallback, sizeof(fallback), "hermes-%s", platform);
                     def = fallback;
                 }
-                pset_t composite = {0};
+                pset_t composite = { 0 };
                 size_t cn = 0;
                 char **ct = toolsets_resolve(def, false, &cn);
                 for (size_t j = 0; j < cn; j++) ps_add(&composite, ct[j]);
                 toolsets_free_list(ct, cn);
                 bool subset = composite.n > 0;
-                for (size_t j = 0; j < bfl_tools.n && subset; j++)
-                    if (!ps_has(&composite, bfl_tools.v[j])) subset = false;
-                if (subset) ps_add(&enabled, "bfl");
+                for (size_t j = 0; j < ts_tools.n && subset; j++)
+                    if (!ps_has(&composite, ts_tools.v[j])) subset = false;
+                if (subset) ps_add(&enabled, ts_key);
                 ps_free(&composite);
             }
-            ps_free(&bfl_tools);
+            ps_free(&ts_tools);
         }
+        ps_free(&declined);
     }
 
     /* recovery + plugin + context-engine + passthrough + MCP + disabled */

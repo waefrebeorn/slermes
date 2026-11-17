@@ -63,8 +63,17 @@ def rebind_moved(mod, attrs, modules):
     still defines itself is never overridden.
     """
     import importlib
-    donors = [importlib.import_module(m) if isinstance(m, str) else m
-              for m in modules]
+    donors = []
+    for m in modules:
+        if not isinstance(m, str):
+            donors.append(m)
+            continue
+        try:
+            donors.append(importlib.import_module(m))
+        except Exception:
+            # A donor needing an optional dependency (mcp, yaml, ...) must not
+            # sink the oracle. Skip it; the next donor may still have the name.
+            continue
     for a in attrs:
         if hasattr(mod, a):
             continue

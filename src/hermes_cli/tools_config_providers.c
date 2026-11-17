@@ -319,7 +319,9 @@ json_t *tools_config_plugin_browser_providers(void) {
         json_set(row, "browser_plugin_name", json_string(provider->name));
         json_append(rows, row);
     }
-    free(list);
+    /* browser_registry_list returns a borrowed pointer to the registry's
+     * internal static array (g_providers), NOT a copy -- freeing it corrupts
+     * the heap. */
     return rows;
 }
 
