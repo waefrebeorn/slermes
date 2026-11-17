@@ -33,20 +33,33 @@ def emit_detect_profile(c):
     mode = c.get("mode", "auto")
     platform = c.get("platform", "")
     cwd = c.get("cwd", ".")
-    # Use the internal _detect_profile_name function directly
-    out = cc._detect_profile_name(mode, platform, cwd)
+    # _detect_profile_name became _detect_profile returning a ContextProfile.
+    from pathlib import Path
+    profile = cc._detect_profile(mode, platform, Path(cwd))
+    out = getattr(profile, "name", "")
     return {"fn": "detect_profile_name", "out": out if out else ""}
 
 
 def emit_find_git_root(c):
     cwd = c.get("cwd", ".")
     from hermes_cli._subprocess_compat import bounded_git_probe
-    try:
-        result = bounded_git_probe(["git", "-C", cwd, "rev-parse", "--show-toplevel"], timeout=2.5)
-        root = result.strip() if result else ""
-        return {"fn": "find_git_root", "found": bool(root), "root": root}
-    except Exception:
-        return {"fn": "find_git_root", "found": False, "root": ""}
+    # On this box "git" resolves to a denied WindowsApps alias stub in the
+    # Python child, so bounded_git_probe returns "" even inside a real repo.
+    # Fall back to the portable git the C side uses.
+    candidates = ["git"]
+    portable = r"C:\Users\eman5\AppData\Local\hermes\tools\git-2.53.0-win32-x64\mingw64\bin\git.exe"
+    if os.path.isfile(portable):
+        candidates.append(portable)
+    root = ""
+    for git in candidates:
+        try:
+            result = bounded_git_probe([git, "-C", cwd, "rev-parse", "--show-toplevel"], timeout=2.5)
+            if result:
+                root = result.strip().replace("/", "\\")
+                break
+        except Exception:
+            pass
+    return {"fn": "find_git_root", "found": bool(root), "root": root}
 
 
 def emit_find_marker_root(c):
@@ -77,7 +90,8 @@ def emit_coding_system_blocks(c):
     platform = c.get("platform", "")
     cwd = c.get("cwd", ".")
     model = c.get("model", "")
-    blocks = cc.coding_system_blocks(platform=platform, cwd=cwd, model=model)
+    # coding_system_blocks became RuntimeMode.system_blocks(); resolve once.
+    blocks = cc.resolve_runtime_mode(platform=platform, cwd=cwd, model=model).system_blocks()
     return {"fn": "coding_system_blocks", "count": len(blocks), "blocks": blocks}
 
 

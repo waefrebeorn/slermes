@@ -21,7 +21,7 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-from hermes_cli.commands import _clamp_command_names  # noqa: E402
+from hermes_cli.commands_platforms import _clamp_command_names  # noqa: E402
 
 
 def emit(obj):
@@ -32,7 +32,10 @@ def main():
     case_no = 0
     entries = []
     reserved = set()
-    for raw in sys.stdin:
+    # Read the FIXTURE (argv), not the C output (stdin). This is a
+    # reference oracle, not a validator of the C stream.
+    with open(sys.argv[1], encoding="utf-8") as f:
+      for raw in f:
         line = raw.rstrip("\n")
         if line.startswith("==="):
             result = _clamp_command_names(list(entries), reserved)
@@ -52,9 +55,11 @@ def main():
             reserved.add(line[9:].strip())
             continue
         parts = line.split("|")
-        name = parts[0]
-        desc = parts[1] if len(parts) > 1 else ""
-        key = parts[2] if len(parts) > 2 else ""
+        # cmd_entry_t.name is char[CMD_NAME_LIMIT+1]; the harness caps at 32,
+        # so the C function never sees the original longer name. Mirror that.
+        name = parts[0][:32]
+        desc = parts[1] if len(parts) > 1 else None
+        key = parts[2] if len(parts) > 2 else None
         entries.append((name, desc, key))
 
     # flush trailing case

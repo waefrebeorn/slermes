@@ -12,15 +12,6 @@
 extern "C" {
 #endif
 
-/* PoP: _canonical_github_remote @ hermes_cli/banner.py:_canonical_github_remote */
-/* Return "host/owner/repo" for common GitHub remote URL forms. Caller frees. */
-char *banner_canonical_github_remote(const char *url);
-
-/* PoP: _is_ssh_remote @ hermes_cli/banner.py:_is_ssh_remote */
-bool banner_is_ssh_remote(const char *url);
-
-/* PoP: _is_official_ssh_remote @ hermes_cli/banner.py:_is_official_ssh_remote */
-bool banner_is_official_ssh_remote(const char *url);
 
 /* PoP: _format_context_length @ hermes_cli/banner.py:_format_context_length */
 /* Format a token count: 128000 -> "128K", 1048576 -> "1M". Caller frees. */

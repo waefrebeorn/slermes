@@ -72,17 +72,7 @@ int main(int argc, char **argv) {
         int arg_is_null = (arg && arg->type == JSON_NULL);
         const char *arglit = arg_is_null ? "null" : jesc(s);
 
-        if (strcmp(op, "canonical") == 0) {
-            char *r = banner_canonical_github_remote(s);
-            printf("{\"op\":\"canonical\",\"arg\":%s,\"out\":%s}\n", arglit, jesc(r ? r : ""));
-            free(r);
-        } else if (strcmp(op, "is_ssh") == 0) {
-            printf("{\"op\":\"is_ssh\",\"arg\":%s,\"out\":%s}\n",
-                   arglit, banner_is_ssh_remote(s) ? "true" : "false");
-        } else if (strcmp(op, "is_official_ssh") == 0) {
-            printf("{\"op\":\"is_official_ssh\",\"arg\":%s,\"out\":%s}\n",
-                   arglit, banner_is_official_ssh_remote(s) ? "true" : "false");
-        } else if (strcmp(op, "ctx_len") == 0) {
+        if (strcmp(op, "ctx_len") == 0) {
             long long v = (arg && arg->type == JSON_NUMBER) ? (long long)arg->num_val : 0;
             char *r = banner_format_context_length(v);
             printf("{\"op\":\"ctx_len\",\"out\":%s}\n", jesc(r ? r : ""));

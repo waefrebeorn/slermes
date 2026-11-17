@@ -141,7 +141,7 @@ static const char *VERIFY_TARGETS[] = {
     "paths for the same flaw and fix the class, not just the reported site.\n" \
     "- When fixing linter/type errors on a file, stop after about three " \
     "attempts on the same file and ask the user rather than looping.\n" \
-    "- Track multi-step work with `todo`. Reference code as `path:line` instead " \
+    "- Track multi-step work with `todo_list`. Reference code as `path:line` instead " \
     "of pasting whole files.\n" \
     "\n" \
     "Respect the user's repo: don't commit, push, or rewrite history unless " \

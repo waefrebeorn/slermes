@@ -21,16 +21,7 @@ def main():
     for c in cases:
         op = c.get("op")
         arg = c.get("arg", "")
-        if op == "canonical":
-            out = m._canonical_github_remote(arg)
-            print(json.dumps({"op": "canonical", "arg": arg, "out": out}))
-        elif op == "is_ssh":
-            out = bool(m._is_ssh_remote(arg))
-            print(json.dumps({"op": "is_ssh", "arg": arg, "out": out}))
-        elif op == "is_official_ssh":
-            out = bool(m._is_official_ssh_remote(arg))
-            print(json.dumps({"op": "is_official_ssh", "arg": arg, "out": out}))
-        elif op == "ctx_len":
+        if op == "ctx_len":
             out = m._format_context_length(int(arg))
             print(json.dumps({"op": "ctx_len", "out": out}))
         elif op == "toolset":
