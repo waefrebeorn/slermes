@@ -42,9 +42,13 @@ def main():
             out.append({"op": op, "out": bool(mod._looks_like_source(case.get("value")))})
         elif op == "classify_row":
             res = mod.classify_lost_and_found_row(int(case.get("nfield", 0)), tuple(case.get("cells", [])))
-            out.append({"op": op, "out": res if res is not None else "null"})
+            out.append({"op": op, "out": res})
         elif op == "heuristic_started_at":
-            out.append({"op": op, "out": mod._heuristic_started_at(tuple(case.get("cells", [])))})
+            ts = mod._heuristic_started_at(tuple(case.get("cells", [])))
+            # C prints integral doubles without a decimal point.
+            if isinstance(ts, float) and ts == 0.0:
+                ts = 0  # C emits the integer zero for the no-timestamp path
+            out.append({"op": op, "out": ts})
     for line in out:
         sys.stdout.write(json.dumps(line, sort_keys=True) + "\n")
 

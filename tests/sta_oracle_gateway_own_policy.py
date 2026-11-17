@@ -14,46 +14,8 @@ logic running on the real loaded config object.
 import sys
 import json
 
-
-def _own_policy_open_startup_violation(config):
-    _OWN_POLICY_OPEN_ENV = {
-        "wecom": ("WECOM_DM_POLICY", "WECOM_GROUP_POLICY", "WECOM_ALLOW_ALL_USERS"),
-        "weixin": ("WEIXIN_DM_POLICY", "WEIXIN_GROUP_POLICY", "WEIXIN_ALLOW_ALL_USERS"),
-        "yuanbao": ("YUANBAO_DM_POLICY", "YUANBAO_GROUP_POLICY", "YUANBAO_ALLOW_ALL_USERS"),
-        "qqbot": (None, None, "QQ_ALLOW_ALL_USERS"),
-        "whatsapp": ("WHATSAPP_DM_POLICY", "WHATSAPP_GROUP_POLICY", "WHATSAPP_ALLOW_ALL_USERS"),
-    }
-    # Python: config.platforms is keyed by Platform enum; .value is the string.
-    platforms = getattr(config, "platforms", {})
-    for platform, platform_config in platforms.items():
-        pname = platform.value if hasattr(platform, "value") else platform
-        if not getattr(platform_config, "enabled", False):
-            continue
-        open_env = _OWN_POLICY_OPEN_ENV.get(pname)
-        if not open_env:
-            continue
-        dm_env, group_env, allow_all_env = open_env
-        extra = getattr(platform_config, "extra", None) or {}
-        dm_policy = str(
-            extra.get("dm_policy")
-            or (os.getenv(dm_env, "pairing") if dm_env else "pairing")
-        ).strip().lower()
-        group_policy = str(
-            extra.get("group_policy")
-            or (os.getenv(group_env, "pairing") if group_env else "pairing")
-        ).strip().lower()
-        if dm_policy != "open" and group_policy != "open":
-            continue
-        gateway_allow_all = os.getenv("GATEWAY_ALLOW_ALL_USERS", "").lower() in {"true", "1", "yes"}
-        platform_opted_in = gateway_allow_all or (
-            allow_all_env
-            and os.getenv(allow_all_env, "").lower() in {"true", "1", "yes"}
-        )
-        if platform_opted_in:
-            continue
-        # Real Python returns f"{platform.value}: open policy without allow-all opt-in"
-        return f"{pname}: open policy without allow-all opt-in"
-    return None
+sys.path.insert(0, "C:/Users/eman5/hermes-agent")
+from gateway.run import _own_policy_open_startup_violation
 
 
 def main():
@@ -62,6 +24,11 @@ def main():
         return
     fixture = sys.argv[1]
     home = os.environ.get("HERMES_HOME", ".")
+    # The runner passes an MSYS path; Windows Python would treat /c/... as
+    # drive-relative and hand a mangled path to load_gateway_config.
+    if len(home) > 2 and home[0] == "/" and home[2] == "/":
+        home = home[1].upper() + ":" + home[2:]
+        os.environ["HERMES_HOME"] = home
     os.makedirs(home, exist_ok=True)
 
     # Optional env file: env.<casename> with KEY=VALUE lines, exported before
@@ -82,30 +49,27 @@ def main():
     with open(os.path.join(home, "config.yaml"), "wb") as f:
         f.write(content)
 
-    # load_gateway_config honours HERMES_HOME for config.yaml location.
-    try:
-        from gateway.config import load_gateway_config
-        cfg = load_gateway_config()
-    except Exception as e:
-        # If the helper import chain breaks, fall back to parsing the YAML
-        # directly so the oracle still reflects real config values.
-        cfg = None
+    # The live config loader resolves the isolated HERMES_HOME differently
+    # from the C harness and can fall back to a default config, silently
+    # dropping the fixture. Parse the small fixture shape directly instead.
+    import yaml
+    doc = yaml.safe_load(content) or {}
+    plats = ((doc.get("gateway") or {}).get("platforms") or {})
 
-    if cfg is None:
-        # Minimal fallback: parse gateway.platforms ourselves.
-        try:
-            import yaml
-            with open(os.path.join(home, "config.yaml")) as f:
-                doc = yaml.safe_load(f) or {}
-            gw = doc.get("gateway", {}) or {}
-            plats = gw.get("platforms", {}) or {}
-            class _P:
-                def __init__(self, d):
-                    self.enabled = bool(d.get("enabled", False))
-                    self.extra = d.get("extra") or {}
-            cfg = type("C", (), {"platforms": {k: _P(v) for k, v in plats.items()}})()
-        except Exception:
-            cfg = type("C", (), {"platforms": {}})()
+    class _Platform:
+        def __init__(self, value, d):
+            self.value = value
+            self.enabled = bool((d or {}).get("enabled", False))
+            self.extra = (d or {}).get("extra") or {}
+
+    class _Key:
+        def __init__(self, value):
+            self.value = value
+
+    class _Cfg:
+        platforms = {_Key(k): _Platform(k, v) for k, v in plats.items()}
+
+    cfg = _Cfg()
 
     r = _own_policy_open_startup_violation(cfg)
     print(json.dumps({"out": r}))
