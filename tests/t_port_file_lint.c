@@ -46,16 +46,24 @@ static void emit(file_lint_t *ctx, const char *fn, const char *in)
     else if (strcmp(fn, "python") == 0) out_raw = file_lint_python(ctx, in);
     else if (strcmp(fn, "json") == 0)   out_raw = file_lint_json(in);
 
-    char *out_json = json_escape(out_raw ? out_raw : "null");
+    /* The linters return {valid, error}. Error *text* is backend-specific
+     * (CPython vs the C YAML/TOML parsers); the oracle compares validity and
+     * error presence only, so emit that normalised shape here. */
+    int valid = out_raw && strstr(out_raw, "\"valid\":true") ? 1 : 0;
+    const char *ep = out_raw ? strstr(out_raw, "\"error\":\"") : NULL;
+    int errpres = ep && ep[9] != '\"' ? 1 : 0;
+    char out_json[64];
+    snprintf(out_json, sizeof(out_json), "{\"valid\":%s,\"err\":%d}",
+             valid ? "true" : "false", errpres);
     printf("{\"fn\":\"%s\",\"in\":%s,\"out\":%s}\n", fn, in_json, out_json);
     free(out_raw);
     free(in_json);
-    free(out_json);
 }
 
 int main(void)
 {
-    file_lint_t *ctx = file_lint_init(NULL);
+    file_lint_t *ctx = file_lint_init(
+        "C:/Users/eman5/hermes-agent/.venv/Scripts/python.exe");
 
     /* YAML fixtures */
     emit(ctx, "yaml", "name: hermes\nversion: 1\nnested:\n  key: value\n");

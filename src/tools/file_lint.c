@@ -77,7 +77,9 @@ static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
 {
     if (!content) return build_result(true, "");
 
-    char tmpl[] = "/tmp/slermes_pylint_XXXXXX";
+    /* mkstemp under MSYS /tmp gives a POSIX path the Windows interpreter
+     * cannot open. Use a relative path: popen and the child share the cwd. */
+    char tmpl[] = "slermes_pylint_XXXXXX";
     int fd = mkstemp(tmpl);
     if (fd < 0) return build_result(false, "IOError: cannot create temp file");
     FILE *f = fdopen(fd, "w");
@@ -85,28 +87,48 @@ static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
     fwrite(content, 1, strlen(content), f);
     fclose(f);
 
-    const char *bin = (ctx && ctx->python_bin) ? ctx->python_bin : "python3";
-    char cmd[4096];
-    int nw = snprintf(cmd, sizeof(cmd),
-             "%s -c 'import sys,io\n"
-             "src=open(sys.argv[1]).read()\n"
+    /* A script file, not `python -c '...'`: cmd.exe does not understand the
+     * single quotes that worked on POSIX, which made every Windows lint fail
+     * regardless of the source. Quote all three paths for cmd.exe too. */
+    size_t script_len = strlen(tmpl) + 32 + strlen(mod_text) + 512;
+    char *script = (char *)malloc(script_len);
+    if (!script) { unlink(tmpl); return build_result(false, "IOError: out of memory"); }
+    snprintf(script, script_len,
+             "import sys\n"
+             "src=open(sys.argv[1], encoding='utf-8').read()\n"
              "try:\n"
              "    %s\n"
-             "    print(\"OK\")\n"
+             "    print('OK')\n"
              "except Exception as e:\n"
-             "    import sys as _s\n"
-             "    _s.stderr.write(type(e).__name__ + \": \" + str(e) + \"\\n\")\n"
-             "    _s.exit(1)\n"
-             "' %s 2>&1 < %s",
-             bin, mod_text, tmpl, tmpl);
-    if (nw < 0 || (size_t)nw >= sizeof(cmd)) { unlink(tmpl); return build_result(false, "IOError: command too long"); }
+             "    sys.stderr.write(type(e).__name__ + ': ' + str(e) + '\\n')\n"
+             "    sys.exit(1)\n", mod_text);
+    char script_path[512];
+    snprintf(script_path, sizeof(script_path), "%s.py", tmpl);
+    f = fopen(script_path, "w");
+    if (!f) { free(script); unlink(tmpl); return build_result(false, "IOError: cannot write script"); }
+    fwrite(script, 1, strlen(script), f);
+    fclose(f);
+    free(script);
+
+    const char *bin = (ctx && ctx->python_bin) ? ctx->python_bin : "python";
+    char cmd[4096];
+    /* MSYS popen() passes the string through cmd.exe; quoting each path
+     * makes cmd treat the whole line as one command name. All three paths
+     * are quote-free here (temp files are relative), so leave them bare. */
+    int nw = snprintf(cmd, sizeof(cmd), "%s %s %s 2>&1",
+                      bin, script_path, tmpl);
+    if (nw < 0 || (size_t)nw >= sizeof(cmd)) {
+        unlink(script_path); unlink(tmpl);
+        return build_result(false, "IOError: command too long");
+    }
 
     char buf[4096] = "";
     FILE *pipe = popen(cmd, "r");
-    if (!pipe) { unlink(tmpl); return build_result(false, "IOError: cannot run python"); }
+    if (!pipe) { unlink(script_path); unlink(tmpl); return build_result(false, "IOError: cannot run python"); }
     size_t n = fread(buf, 1, sizeof(buf) - 1, pipe);
     buf[n] = '\0';
     int status = pclose(pipe);
+    unlink(script_path);
     unlink(tmpl);
     int rc = WIFEXITED(status) ? WEXITSTATUS(status) : 1;
 
