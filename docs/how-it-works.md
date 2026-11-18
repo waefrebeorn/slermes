@@ -252,8 +252,13 @@ Standalone Escape switches INSERT → NORMAL; the prompt shows a
 
 ### Command registration
 
-Commands are declared in the `COMMANDS[]` table in `src/cli/commands.c`
-using `command_def_t` (fields: `.name`, `.alias`, `.description`,
+Commands are declared in the `COMMANDS[]` table in
+**`src/hermes_cli/partial_compress.c`** (historical filename — the file
+header reads "commands.c — Slash command definitions"; it is the first
+entry of `CUPBOARD_HERMES_CLI`, so it is the definition linked into the
+binary). `src/cli/commands.c` is an **unlinked legacy twin** (96 entries,
+in no object list) — it is NOT the dispatch table. Entries use
+`command_def_t` (fields: `.name`, `.alias`, `.description`,
 `.category`, `.args_hint`, `.subcommands`, `.handler`, `.cli_only`,
 `.gateway_only`):
 
@@ -268,9 +273,11 @@ const command_def_t COMMANDS[] = {
 };
 ```
 
-The table currently holds **96 commands and 20 aliases across 14
-categories** (count at rewrite time; the runtime source of truth is
-`commands_count()` in `commands.c`).
+The table currently holds **110 commands and 26 aliases across 17
+categories** (count it yourself:
+`grep -c '{\.name="/' src/hermes_cli/partial_compress.c`; the runtime
+source of truth is `commands_count()` in the same file). The full
+per-command reference is [cli/index.md](cli/index.md).
 
 ### Dispatch
 
@@ -293,19 +300,22 @@ fallbacks when dispatch returns false:
 The same surface works one-shot from the shell: `slermes /model list`
 (cli_main resolves through the same `COMMANDS[]` table).
 
-### Command categories (verified counts)
+### Command categories (counted from the linked registry)
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Session | 32 | /new, /undo, /save, /retry, /compress, /branch, /snapshot, /queue, /steer |
-| System | 14 | /exit, /stop, /update, /doctor, /dump, /logs, /dashboard, /deps, /python |
+| Session | 38 | /new, /undo, /save, /retry, /compress, /branch, /snapshot, /queue, /steer |
+| System | 13 | /exit, /stop, /update, /doctor, /dump, /logs, /dashboard, /deps, /python |
 | Config | 12 | /model, /config, /setup, /voice, /fast, /topic, /yolo, /reasoning |
 | Tools | 7 | /tools, /tools-verify, /commands, /toolsets, /image, /paste, /browser |
 | Gateway | 7 | /platforms, /gateway, /webhook, /platform, /restart, /sethome, /handoff |
 | Display | 7 | /redraw, /verbose, /skin, /indicator, /statusbar, /busy, /pet |
 | Security | 5 | /approve, /deny, /secrets, /auth, /key |
 | Skills | 5 | /skills-hub, /skills, /bundles, /curator, /reload-skills |
+| Tools & Skills | 4 | parity commands spanning both surfaces |
+| Configuration | 3 | parity config commands |
 | MCP | 2 | /mcp, /reload-mcp |
+| Info | 2 | /usage, /insights |
 | Plugins | 1 | /plugins |
 | Memory | 1 | /memory |
 | Cron | 1 | /cron |
@@ -619,7 +629,8 @@ slermes/
 │   ├── main.c                 ← REAL entry point (strcmp dispatch)
 │   ├── cli/
 │   │   ├── cli.c              ← interactive CLI loop + cli_main
-│   │   ├── commands.c         ← COMMANDS[] slash table + dispatch
+│   │   ├── commands.c         ← legacy twin (NOT linked; live table is
+│   │   │                          hermes_cli/partial_compress.c COMMANDS[])
 │   │   ├── config.c           ← config.yaml loading (libyaml)
 │   │   ├── config_setup.c     ← init / interactive setup
 │   │   ├── config_setup_wizard.c, setup_wizard_ui.c,

@@ -140,11 +140,15 @@ test-goals-data:
 		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
 
 # CLI command registry + completion walk (commands.py registry + completion.py:_walk).
+# The registry port lives at src/hermes_cli/command_registry.c (the old
+# src/cli/port_cli_command_registry.o path never existed); output goes to
+# .testbin because a native gcc cannot resolve /tmp.
 test-cli-command-registry:
-	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/cli_command_registry_test.c \
-		src/cli/port_cli_command_registry.o src/cli/port_completion.o \
-		-o /tmp/t_ccr 2>/dev/null \
-		&& /tmp/t_ccr 2>&1 || echo "(cli command registry test failed)"
+	@mkdir -p .testbin
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I lib/libjson -I lib $(LIB_INCS) tests/cli_command_registry_test.c \
+		src/hermes_cli/command_registry.o src/hermes_cli/completion.o \
+		-o .testbin/t_ccr 2>/dev/null \
+		&& ./.testbin/t_ccr 2>&1 || echo "(cli command registry test failed)"
 
 # Tools-config pure helpers (display/config slice of tools_config.py).
 test-tools-config-helpers:
