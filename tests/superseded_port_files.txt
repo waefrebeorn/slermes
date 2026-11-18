@@ -149,7 +149,6 @@ src/hermes_cli/cli_ports.c
 src/hermes_cli/kanban_db_ports.c
 src/hermes_cli/main_ports.c
 src/hermes_cli/plugins_ports.c
-src/pm/port_pm_environments.c
 src/ports/agent/transports/hermes_tools_mcp_server.c
 src/tools/checkpoint_manager_ports.c
 src/tools/debug_helpers_ports.c

@@ -44,6 +44,10 @@ if [ -z "$OBJARG" ] || [ "$OBJARG" = "FULL" ]; then
   find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ' > "$OBJSET"
   echo >> "$OBJSET"
   OBJARG="@$OBJSET"
+else
+  # Explicit object list: build any missing dependency objects (SAC-safe -O0
+  # hash image, local stubs, unbuilt port objects) before the link.
+  bash tests/ensure_oracle_deps.sh $OBJARG || { echo "ORACLE $NAME: dependency build failed" >&2; exit 1; }
 fi
 EXTRA_LIBS=""
 WIN_LIBS=""

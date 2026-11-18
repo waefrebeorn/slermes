@@ -12,12 +12,13 @@ from urllib.parse import urlparse
 # left_core_migration._at_host imports utils.base_url_host_matches lazily, and
 # importing the quarry's utils pulls in ruamel (absent here). Supply the same
 # function directly so the comparison stays about the port's own logic.
+# Mirrors LIVE utils.py: base_url_host_matches -> base_url_hostname ->
+# _hostname_of, which LOWERCASES and RSTRIPS "." from the hostname (a stale
+# copy without the rstrip reported false FAPs on trailing-dot hosts).
 def _bh(base_url, domain):
-    try:
-        hostname = urlparse(base_url if "://" in base_url
-                            else "//" + base_url).hostname
-    except ValueError:
-        raise
+    raw = (base_url or "").strip()
+    parsed = urlparse(raw if "://" in raw else "//" + raw) if raw else None
+    hostname = (parsed.hostname or "").lower().rstrip(".") if parsed else ""
     domain = (domain or "").strip().lower().rstrip(".")
     return bool(hostname and domain) and (hostname == domain
                                           or hostname.endswith("." + domain))

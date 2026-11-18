@@ -66,8 +66,15 @@ def run(cmd, cwd=REPO, check=True, capture=True, timeout=None):
             if remaining <= 0:
                 # TIMEOUT: kill the entire process group so ProcessPoolExecutor
                 # worker forks (and the oracle's interactive hermes flows) die.
+                # Windows has no process groups / SIGKILL: kill the child tree
+                # via taskkill /T, then the process itself.
                 try:
-                    os.killpg(proc.pid, signal.SIGKILL)
+                    if os.name == "nt":
+                        subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                                       capture_output=True)
+                        proc.kill()
+                    else:
+                        os.killpg(proc.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
                 sys.stderr.write("STAGE TIMEOUT: %s (killed process group after %ss)\n"
@@ -81,7 +88,12 @@ def run(cmd, cwd=REPO, check=True, capture=True, timeout=None):
                 continue
     except KeyboardInterrupt:
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                               capture_output=True)
+                proc.kill()
+            else:
+                os.killpg(proc.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
         raise

@@ -46,7 +46,10 @@ def main() -> int:
         i = c.get("in") or {}
         try:
             if fn == "install_key":
-                want = hashlib.sha256(normcase(i["root"]).encode("utf-8")).hexdigest()[:12]
+                if i["root"] is None:
+                    want = ""          # C: NULL root -> empty key, no hash
+                else:
+                    want = hashlib.sha256(normcase(i["root"]).encode("utf-8")).hexdigest()[:12]
             elif fn == "digest_file":
                 path = os.path.join(TMP, i["name"])
                 if i["missing"]:
@@ -124,6 +127,14 @@ def main() -> int:
             continue
         raw = c["out"]
         got = raw["str"] if isinstance(raw, dict) and set(raw) == {"str"} else raw
+        if fn in ("accepted_path", "retired_path"):
+            # str(Path) uses backslashes on Windows; the C port preserves the
+            # input's separators. Normalise both sides before comparison
+            # (same convention as oracle_pm_environments.py).
+            if isinstance(got, str):
+                got = got.replace("\\", "/")
+            if isinstance(want, str):
+                want = want.replace("\\", "/")
         if got != want:
             mism += 1
             print(f"MISMATCH {c.get('case')} ({fn}): C={str(c['out'])[:300]} "

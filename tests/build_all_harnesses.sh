@@ -56,10 +56,23 @@ esac
 
 # LIBINCS is identical for every harness; compute it once.
 LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | tr '\n' ' ')
+# Harnesses #include the port .c by bare name; add every src subdir.
+SRCINCS=$(find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ')
+
+# Ensure every explicit dependency object exists (SAC-safe -O0 hash image,
+# local stubs, unbuilt port objects) before the batch link.
+ALL_OBJS=""
+for spec in "${LIVE[@]}"; do
+  IFS=$'\t' read -r _n _h o <<< "$spec"
+  [ "$o" = "FULL" ] && continue
+  ALL_OBJS="$ALL_OBJS $o"
+done
+# shellcheck disable=SC2086
+bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >&2; exit 1; }
 
 {
   echo "CC      := gcc"
-  echo "CFLAGS  := -O2 -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src $LIBINCS -I C:/winlibs/extra-inc"
+  echo "CFLAGS  := -O2 -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src -I lib $SRCINCS $LIBINCS -I C:/winlibs/extra-inc"
   echo "LDFLAGS := -L C:/winlibs/extra-libs -Wl,--allow-multiple-definition"
   echo "LIBS    := $LINK_LIBS"
   echo

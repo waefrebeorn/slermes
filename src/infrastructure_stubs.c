@@ -257,68 +257,12 @@ int stub_shadowed_config_py_save_value(const char *key, const char *val) { (void
 char *stub_shadowed_config_py_normalize_extra_headers(const char *h) { return h ? strdup(h) : strdup(""); }
 int stub_shadowed_config_py_atomic_config_write(const char *data) { (void)data; return 0; }
 
-/* ── Provider registry ── */
-typedef struct { char name[128]; char base_url[1024]; char api_mode[64]; } provider_entry_t;
-
-static provider_entry_t g_providers[64];
-static int g_provider_count = 0;
-static pthread_once_t g_provider_once = PTHREAD_ONCE_INIT;
-
-static void init_providers(void) {
-    provider_entry_t defaults[] = {
-        {"openai", "https://api.openai.com/v1", "openai"},
-        {"anthropic", "https://api.anthropic.com", "anthropic"},
-        {"gemini", "https://generativelanguage.googleapis.com", "gemini"},
-        {"xai", "https://api.x.ai/v1", "openai"},
-    };
-    g_provider_count = sizeof(defaults) / sizeof(defaults[0]);
-    memcpy(g_providers, defaults, sizeof(defaults));
-}
-
-static void ensure_providers(void) {
-    if (g_provider_count == 0) pthread_once(&g_provider_once, init_providers);
-}
-
-const provider_entry_t *provider_registry_get(const char *name) {
-    ensure_providers();
-    if (!name) return NULL;
-    for (int i = 0; i < g_provider_count; i++) {
-        if (strcmp(g_providers[i].name, name) == 0) return &g_providers[i];
-    }
-    return NULL;
-}
-
-int provider_base_url_host_matches(const char *url, const char *host) {
-    return (url && host && strstr(url, host)) ? 1 : 0;
-}
-
-int provider_base_url_hostname(const char *url) { return url && url[0] ? 1 : 0; }
-
-const char *provider_parse_api_mode(const char *raw) {
-    if (!raw) return "openai";
-    if (strcasecmp(raw, "anthropic") == 0) return "anthropic";
-    if (strcasecmp(raw, "gemini") == 0) return "gemini";
-    return "openai";
-}
-
-const char *provider_detect_api_mode_for_url(const char *url) {
-    if (!url) return "openai";
-    if (strstr(url, "anthropic")) return "anthropic";
-    if (strstr(url, "googleapis")) return "gemini";
-    return "openai";
-}
-
-int provider_supports_explicit_api_mode(const char *provider) { (void)provider; return 1; }
-
-char *provider_host_derived_api_key(const char *host) { (void)host; return strdup(""); }
-
-char *provider_resolve_alias(const char *name) { return name ? strdup(name) : strdup(""); }
-
-char *provider_canonical_custom_identity(const char *id) { return id ? strdup(id) : strdup(""); }
-
-char *provider_loopback_hostname(void) { return strdup("127.0.0.1"); }
-
-int provider_anthropic_base_url_override_ok(const char *url) { (void)url; return 1; }
+/* ── Provider registry: real port in src/hermes_cli/provider_registry.c ──
+ * The stubs that lived here were wrong-shape facades: strstr host matching
+ * (matched lookalike domains and path substrings), an int returned where
+ * callers read a char* hostname, a 4-entry provider_entry_t table where
+ * callers read catalog_provider_t, and no-op alias/api-mode resolution.
+ * One definition, in the port. */
 
 /* ── Billing ── */
 const char *billing_fallback_portal_url(void) { return "https://billing.hermes.ai"; }
@@ -945,7 +889,6 @@ void recipe_free(void *r) { free(r); }
 int reasoning_parse_effort(void) { return 0; }
 int stub_shadowed_psize_compute_toolsets_breakdown(void) { return 0; }
 int stub_shadowed_psize_compute_skills_breakdown(void) { return 0; }
-char *provider_normalize_custom_name(const char *name) { return name ? strdup(name) : strdup(""); }
 int stub_shadowed_profile_validate_name(const char *name) { (void)name; return 1; }
 char *stub_shadowed_process_registry_list(void) { return strdup("[]"); }
 char *stub_shadowed_plug_get_commands(void) { return strdup("[]"); }
