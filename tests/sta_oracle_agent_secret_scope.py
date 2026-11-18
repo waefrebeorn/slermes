@@ -1,7 +1,11 @@
 """AUTO-GENERATED oracle for agent_secret_scope (gen_oracle.py)."""
 import os
 import sys, json, os
-sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
+for _quarry in ("~/hermes-agent", "~/hermes-agent-dev"):
+    _p = os.path.expanduser(_quarry)
+    if os.path.isdir(os.path.join(_p, "agent")):
+        sys.path.insert(0, _p)
+        break
 from agent.secret_scope import (is_multiplex_active)
 
 mism = 0; n = 0
@@ -19,7 +23,7 @@ for line in sys.stdin:
         continue
     pyf, pargs = ARGS[fn]
     try:
-        exp = pyf(*pargs)
+        exp = globals()[pyf](*pargs)
     except Exception as e:
         print('PYERR', fn, e); continue
     got = rec['ret']

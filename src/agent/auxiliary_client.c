@@ -56,6 +56,7 @@
  */
 
 #include "auxiliary_client.h"
+#include "port_agent_secret_scope.h"
 #include "hermes_logger.h"
 #include "hermes_url_safety.h"
 #include "hermes_auth.h"   /* auth_store_load_provider_state */
@@ -2616,10 +2617,10 @@ char *auxc_scoped_key_env(const char *name) {
      * scope; unscoped paths fall back to os.environ. The C port reads the
      * process env (the C secret-scope installs the same process env). */
     if (!name || !name[0]) return strdup("");
-    extern char *secret_scope_get_secret(const char *name);
-    char *scoped = secret_scope_get_secret(name);
-    if (scoped && scoped[0]) return scoped;
-    if (scoped) free(scoped);
+    /* get_secret returns a BORROWED pointer (scope string or getenv);
+     * copy it — the caller of auxc_scoped_key_env owns the result. */
+    const char *scoped = secret_scope_get_secret(name, NULL);
+    if (scoped && scoped[0]) return strdup(scoped);
     const char *env = getenv(name);
     return strdup(env ? env : "");
 }

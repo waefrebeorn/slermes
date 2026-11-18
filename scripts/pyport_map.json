@@ -623,7 +623,7 @@
  },
  "agent/secret_scope.py": {
   "marker_files": [
-   "src/agent/secret_scope.c"
+   "src/agent/port_agent_secret_scope.c"
   ],
   "func_match_files": []
  },
@@ -4680,7 +4680,7 @@
  },
  "secret_scope.py": {
   "marker_files": [
-   "src/agent/secret_scope.c",
+   "src/agent/port_agent_secret_scope.c",
    "src/gateway/bluebubbles_ports.c",
    "src/gateway/bluebubbles_wrappers.c",
    "src/gateway/platforms/weixin.c",

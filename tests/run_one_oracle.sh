@@ -18,6 +18,14 @@ if [ ! -s "$LIBINCS_FILE" ] || [ "build/libs-config.mk" -nt "$LIBINCS_FILE" ]; t
   grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | tr '\n' ' ' > "$LIBINCS_FILE"
 fi
 LIBINCS=$(cat "$LIBINCS_FILE")
+# Harnesses #include the port .c by bare name; those files live in src/<area>/
+# subdirs, so every src subdir must be on the include path (same fix the
+# tests/oracle runner carries as SRCINCS). Cached: the dir set rarely changes.
+SRCINCS_FILE=".testbin/srcincs.cache"
+if [ ! -s "$SRCINCS_FILE" ]; then
+  find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ' > "$SRCINCS_FILE"
+fi
+SRCINCS=$(cat "$SRCINCS_FILE")
 # Windows/MinGW: the inline object list overflows the command line (gcc then
 # silently drops the tail), /tmp is a POSIX path a native gcc.exe cannot
 # resolve, and there is no libdl/libpthread. Use a response file + .testbin.
@@ -87,7 +95,7 @@ fi
 build() {   # build <out> <opt>
   # -L MUST precede the -l flags: the linker resolves each -l against the
   # search path as it is encountered, so a -L placed after them finds nothing.
-  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src -I lib $LIBINCS \
+  $COMPILER "$2" -std=gnu11 -D_GNU_SOURCE -include hermes_win32.h -I include/compat -I include -I src -I lib $LIBINCS $SRCINCS \
     -I "${ORACLE_INC:-C:/winlibs/extra-inc}" \
     "tests/t_port_$NAME.c" $OBJARG -o "$1" \
     "${ORACLE_LIBDIR_ARGS[@]}" \

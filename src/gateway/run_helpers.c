@@ -24,18 +24,15 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include "port_agent_secret_scope.h"
 #include "yaml.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 
-/* secret_scope_* are defined in port_agent_secret_scope.c (not yet in a
- * subsystem header) — declared extern here, one definition there. */
-typedef json_t *secret_scope_token_t;
-secret_scope_token_t secret_scope_set_secret_scope(const char *secrets_json);
-void secret_scope_reset_secret_scope(secret_scope_token_t token);
-json_t *secret_scope_build_profile_secret_scope(const char *hermes_home);
+/* secret_scope_* are declared in port_agent_secret_scope.h and defined in
+ * port_agent_secret_scope.c — one definition there. */
 
 /* ================================================================
  * _status_template_to_regex

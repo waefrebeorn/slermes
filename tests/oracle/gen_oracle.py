@@ -206,7 +206,7 @@ def gen_oracle(name, pymod, simple):
     L.append("        continue")
     L.append("    pyf, pargs = ARGS[fn]")
     L.append("    try:")
-    L.append("        exp = pyf(*pargs)")
+    L.append("        exp = (pyf if callable(pyf) else globals()[pyf])(*pargs)")
     L.append("    except Exception as e:")
     L.append("        print('PYERR', fn, e); continue")
     L.append("    got = rec['ret']")

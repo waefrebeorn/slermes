@@ -389,7 +389,7 @@ ALLOW = {
         "src/agent/runtime_cwd.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/runtime_cwd_gaps3.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/secret_common.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
-        "src/agent/secret_scope.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
+        "src/agent/port_agent_secret_scope.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/secret_sources/registry_gaps3.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/secret_sources_helpers.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/session_activity.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",

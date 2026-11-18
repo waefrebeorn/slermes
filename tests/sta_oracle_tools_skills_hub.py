@@ -24,7 +24,7 @@ for line in sys.stdin:
         if pyf == '_avail':
             exp = HermesIndexSource(GitHubAuth()).is_available
         else:
-            exp = pyf(*pargs)
+            exp = (pyf if callable(pyf) else globals()[pyf])(*pargs)
     except Exception as e:
         print('PYERR', fn, e); continue
     got = rec['ret']

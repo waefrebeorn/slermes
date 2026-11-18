@@ -593,11 +593,7 @@ int stub_shadowed_gateway_config_load(void) { return 0; }
 char *send_message_target_parse_target_ref(const char *ref) { (void)ref; return strdup("{}"); }
 char *send_message_target_telegram_retry_delay(void) { return strdup("1"); }
 
-/* ── Secret scope ── */
-const char *secret_scope_current_secret_scope(void) { return ""; }
-const char *secret_scope_get_secret(const char *name) { (void)name; return NULL; }
-int secret_scope_is_multiplex_active(void) { return 0; }
-int secret_scope_is_global_env_fn(void) { return 0; }
+/* ── Secret scope: real port in src/agent/port_agent_secret_scope.c ── */
 
 /* ── WS helpers ── */
 int ws_u_create_cron_job_sync(void) { return 0; }

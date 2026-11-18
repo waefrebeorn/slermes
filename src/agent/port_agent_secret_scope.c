@@ -5,6 +5,8 @@
  * Implements profile-scoped credential resolution for multi-profile gateway multiplexing.
  */
 
+#include "port_agent_secret_scope.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,12 +71,24 @@ bool secret_scope_is_multiplex_active(void)
 
 static const char *global_env_exact[] = {
     "HERMES_HOME", "HERMES_PROFILE", "HERMES_GATEWAY_LOCK_DIR",
-    "HERMES_MAX_ITERATIONS", "HERMES_MAX_TOKENS", "HERMES_API_TIMEOUT",
+    "HERMES_MAX_ITERATIONS", "HERMES_API_TIMEOUT",
     "HERMES_REDACT_SECRETS", "HERMES_NOUS_TIMEOUT_SECONDS",
     "_HERMES_GATEWAY",
     "PATH", "HOME", "USER", "LANG", "LC_ALL", "TZ", "PWD", "SHELL", "TMPDIR",
     "VIRTUAL_ENV", "PYTHONPATH", "SSL_CERT_FILE",
     "HERMES_KANBAN_DB", "HERMES_KANBAN_WORKSPACES_ROOT", "HERMES_KANBAN_BOARD",
+    /* API-server LISTENER settings — deployment config, not credentials.
+     * API_SERVER_KEY is a credential and stays profile-scoped. */
+    "API_SERVER_ENABLED", "API_SERVER_HOST", "API_SERVER_PORT",
+    "API_SERVER_CORS_ORIGINS",
+    /* Relay-connector ROUTING stamps injected by managed deploys. The
+     * GATEWAY_RELAY_SECRET/_ID/_DELIVERY_KEY and IDP_* auth material stays
+     * profile-scoped. */
+    "GATEWAY_RELAY_URL", "GATEWAY_RELAY_ENDPOINT",
+    "GATEWAY_RELAY_ALLOW_DIRECT_PLATFORMS",
+    "GATEWAY_RELAY_PLATFORMS", "GATEWAY_RELAY_BOT_IDS",
+    "GATEWAY_RELAY_ROUTE_KEYS", "GATEWAY_RELAY_INSTANCE_ID",
+    "GATEWAY_RELAY_WAKE_URL", "GATEWAY_RELAY_DISPLAY_NAME",
     NULL
 };
 
@@ -101,9 +115,7 @@ static bool secret_scope_is_global_env(const char *name)
     return false;
 }
 
-/* ── Secret scope token for reset (opaque pointer to previous scope) ──── */
-
-typedef json_t *secret_scope_token_t;
+/* ── Secret scope token for reset: typedef in port_agent_secret_scope.h ── */
 
 /* PoP: secret_scope_set_secret_scope @ agent/secret_scope.py:set_secret_scope */
 secret_scope_token_t secret_scope_set_secret_scope(const char *secrets_json)

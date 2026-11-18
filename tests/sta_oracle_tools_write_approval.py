@@ -20,7 +20,7 @@ for line in sys.stdin:
         continue
     pyf, pargs = ARGS[fn]
     try:
-        exp = pyf(*pargs)
+        exp = (pyf if callable(pyf) else globals()[pyf])(*pargs)
     except Exception as e:
         print('PYERR', fn, e); continue
     got = rec['ret']
