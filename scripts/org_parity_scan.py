@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # --- repo/quarry roots (was a hard-coded /home/wubu/... path) ---
 import os as _os
+import sys as _sys
+# Windows console defaults to cp1252; the report uses arrows/box chars.
+for _s in (_sys.stdout, _sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 def _find_quarry(_repo):
     """The Python quarry is the sibling dir that actually is Hermes."""
@@ -330,12 +337,12 @@ def main():
         for o in c_orphan: L.append(o+'.c')
         L.append('```')
     doc='\n'.join(L)+'\n'
-    open(ROOT+'/docs/organization-parity.md','w').write(doc)
+    open(ROOT+'/docs/organization-parity.md','w',encoding='utf-8').write(doc)
     json.dump({'ok':ok,'alias':alias,'partial':partial,'gap':gap,
                'c_twin':c_twin,'c_partial':c_partial,'c_method':c_method,
                'c_split':c_split,'c_platform':c_platform,'c_native':c_native,
                'c_orphan':c_orphan,'total':total,'coverage_pct':round(cov,1)},
-              open(ROOT+'/docs/organization-parity.json','w'),indent=1)
+              open(ROOT+'/docs/organization-parity.json','w',encoding='utf-8'),indent=1)
     print(f'coverage {cov:.1f}% · ORG_GAP {len(gap)} · C_ORPHAN {len(c_orphan)} · C_METHOD {len(c_method)}')
 
 main()
