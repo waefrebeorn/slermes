@@ -1,32 +1,47 @@
+<!-- PARITY:AUTO -->
+| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
+**Phase (v673):** PORT phase
+
+**Upstream sync:** 0 ahead / 0 behind (last merge unknown)
+
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
+
 <!-- PARITY:AUTO:STAGES -->
 | Stage | Meaning | Modules |
 |---|---|---|
-| S0 | no C unit | 2483 |
-| S1 | unit exists | 15 |
+| S0 | no C unit | 2492 |
+| S1 | unit exists | 16 |
 | S2 | header exists and is included | 2 |
 | S3 | harness exists | 63 |
-| S4 | oracle exists | 30 |
+| S4 | oracle exists | 38 |
 | S5 | instrument green (harness + oracle run) | 0 |
-| S6 | parity: cases MATCH | 8 |
+| S6 | parity: cases MATCH | 0 |
 
-**118 / 2601** Python modules have a C unit; **8** reach parity.
+**119 / 2611** Python modules have a C unit; **0** reach parity.
 S5/S6 measured from the oracle-suite run under `tests/oracle/build/` (ports with no run are not measured, not assumed).
 
 | Package | Modules | At parity |
 |---|---|---|
-| acp_adapter | 18 | 1 |
-| agent | 396 | 2 |
+| acp_adapter | 18 | 0 |
+| agent | 396 | 0 |
 | apps | 5 | 0 |
 | cron | 49 | 0 |
 | docker | 1 | 0 |
 | evals | 121 | 0 |
-| gateway | 328 | 3 |
-| hermes_cli | 728 | 2 |
+| gateway | 328 | 0 |
+| hermes_cli | 728 | 0 |
 | hermes_platform | 11 | 0 |
 | optional-skills | 88 | 0 |
 | plugins | 81 | 0 |
 | pm | 36 | 0 |
-| scripts | 243 | 0 |
+| scripts | 253 | 0 |
 | skills | 42 | 0 |
 | slermes | 7 | 0 |
 | tools | 336 | 0 |

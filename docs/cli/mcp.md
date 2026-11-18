@@ -1,21 +1,28 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # MCP Commands
 
+2 commands in the `MCP` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`). Both handlers live in
+`src/hermes_cli/cli_cmd_mcp.c`.
+
 ## `/mcp`
 
-Manage MCP (Model Context Protocol) servers: status, list, test.
+MCP (Model Context Protocol) server management. Registry subcommands: `status`, `list`,
+`test <name>`. The handler additionally accepts `add`, `remove` (alias `rm`), and
+`reload` forms. With no argument it behaves like `status`/`list` and shows servers and
+their tools.
 
 ```
 /mcp [status|list|test <name>]
@@ -30,7 +37,10 @@ Manage MCP (Model Context Protocol) servers: status, list, test.
 
 ## `/reload-mcp`
 
-Reload MCP server configurations from config.yaml. Applies changes without restarting.
+**Print-only in the current build.** The handler reports how many MCP servers are loaded
+and instructs you to edit `mcp_servers` in `~/.slermes/config.yaml` and restart — it does
+not hot-reload configuration. Older docs claimed "applies changes without restarting";
+that is not what the code does.
 
 ```
 /reload-mcp

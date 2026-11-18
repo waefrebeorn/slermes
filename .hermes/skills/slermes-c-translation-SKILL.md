@@ -27,27 +27,31 @@ metadata:
 
 ## Overview
 
-Slermes is a C translation of the Hermes Agent Python codebase. Python reference: `/home/wubu/hermes-agent-dev/agent/`. C code: `slermes/src/` (main) + `slermes/lib/` (libraries).
+Slermes is a C11 translation of the Hermes Agent Python codebase. Python reference (quarry): `C:/Users/eman5/hermes-agent/` (`agent/`, `tools/`, `hermes_cli/`, `gateway/`, `plugins/`). C code: `slermes/src/` (main) + `slermes/lib/` (libraries). Port branch: `integrate`.
 
 ## Build & Test
 
 ```bash
-cd slermes && make -j4            # build
-cd slermes && ./test_runner.sh    # run tests (4 basic tests)
-PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m "..."  # commit
+# Windows dev box — one MSYS2 bash child:
+/c/msys64/usr/bin/bash -lc 'source /c/Users/eman5/slermes/build/winlibs-env.sh; \
+  cd /c/Users/eman5/slermes && make -j8 slermes \
+  USERPROFILE="C:\Users\eman5" LOCALAPPDATA="C:\Users\eman5\AppData\Local"'
+python tests/verify_build_health.py --no-link   # sources + port-object gate
+bash tests/run_all_oracles.sh                   # ORACLE_JOBS=1 on MSYS2
+bash tests/run_slv_tests.sh
+make parity                                     # refresh parity sentinels
 ```
 
-**Pre-existing build warnings** (NOT new errors):
-- `agent_loop.c:865`: incompatible pointer type (`memory_entry_t *` → `char *`)
-- `file_safety.c:539`: dangling pointer to `r_home`
-- `send_message.c:192`: implicit declaration of `is_write_denied`
+The enforced C standard is `docs/dev/c-standards.md`; naming is
+`docs/dev/naming.md`; gates are `docs/dev/gates.md`. This skill carries
+pitfalls, not the standard — where they disagree, the standard wins.
 
 ## Python Reference Access
 
 ```bash
-cat /home/wubu/hermes-agent-dev/agent/<module>.py
-cat /home/wubu/hermes-agent-dev/tools/<tool>.py
-cat /home/wubu/hermes-agent-dev/hermes_cli/<cmd>.py
+cat C:/Users/eman5/hermes-agent/agent/<module>.py
+cat C:/Users/eman5/hermes-agent/tools/<tool>.py
+cat C:/Users/eman5/hermes-agent/hermes_cli/<cmd>.py
 ```
 
 Key directories:
@@ -59,9 +63,19 @@ Key directories:
 
 ## Naming Strategy
 
-**Core rule:** Match Python function names exactly. See `references/naming-strategy.md` for full details including decision tree and 5 naming patterns.
+**The enforced standard is `docs/dev/naming.md` + `docs/dev/c-standards.md`
+(gate-checked by `tests/verify_naming.py` / `verify_c_standards.py`):**
+units are named for the Python module (`src/<py_top_dir>/port_<stem>.c`,
+`include/port_<stem>.h`, guard `PORT_<STEM>_H`), exported symbols carry a
+per-unit prefix (`st_`, `ai_`, …), and parity joins on the
+`/* PoP: <c_fn> @ <module.py>:<py_fn> */` annotation — C name first.
 
-### Quick Reference
+The historical "match Python names exactly" analysis below is superseded
+for NEW work; it still describes much of the legacy tree. When touching a
+legacy unit, follow the standard; don't mass-rename (header re-pointing is a
+deliberate pass, not a mechanical one).
+
+### Legacy quick reference (historical)
 
 | Pattern | Rule | Example |
 |---------|------|---------|

@@ -1,175 +1,121 @@
-# 🗺️ Slermes Roadmap — What's Next
+# Slermes Roadmap — SLERM the Whole Ecosystem
 
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-> "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
-> The real work of making Slermes *the* C11 AI agent starts here.
->
-` blocks).
+> Rewriting from scratch in C11 is the point. There is no N/A, no "out of
+> scope", no "not doable" — every feature of the Python ecosystem, and every
+> third-party dependency under it, is work to SLERM. We don't give up; we do
+> it because we are doing it in C11.
 
----
+The sentinel above is the live scanner verdict, owned by `make parity`. The
+fronts below are the battle order; per-module detail lives in
+[docs/real-gap-list.md](docs/real-gap-list.md) (generator-owned) and the
+ranked work list in [docs/WORK_DASHBOARD.md](docs/WORK_DASHBOARD.md).
 
-## ✅ Done (Missions 1–8)
+## Front 1 — Close the REAL_GAPs (the main front)
 
-| Mission | Claim | Reality |
-|---------|-------|---------|
-| **5** | Docs serving (`/api/docs*`) | ✅ 6 endpoints, 749 upstream .md files served |
-| **6** | Skills parser + `/api/skills` | ✅ 121 skills parsed from 77 SKILL.md files |
-| **7** | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Packaging scripts exist, **multi-OS release CI just added** |
-| **8** | Tests (API, CLI, state_db, UI) | ✅ 63+ test cases, 200+ unit tests |
+Per-area coverage measured by `python scripts/parity_coverage.py --dirs`
+(snapshot below — re-run for live numbers; never quote these from memory):
 
----
+| Area | Covered | Total | % |
+|---|---:|---:|---:|
+| hermes_cli | 465 | 810 | 57% |
+| agent | 247 | 412 | 60% |
+| tools | 257 | 366 | 70% |
+| gateway | 145 | 340 | 43% |
+| plugins | 44 | 304 | 14% |
+| tui_gateway | 7 | 122 | 6% |
+| pm | 4 | 53 | 8% |
+| cron | 23 | 52 | 44% |
+| acp_adapter | 6 | 22 | 27% |
+| hermes_platform | 0 | 15 | 0% |
 
-## 🎯 Near-Term (v0.16–0.18)
+**Pick the axis that matches the ask:** fan-in for reuse
+(`parity_coverage.py --fanin`), short-gap count among low-ported modules for
+throughput, `real_gaps × LOC` for the largest hole. Per-area gap order:
+`hermes_cli` > `agent` > `gateway` > `tools` > `cron`.
 
-### Release Engineering (v0.16)
-| Priority | Item | Why |
-|----------|------|-----|
-| P0 | **GitHub Releases with multi-platform binaries** | Users should download a binary, not build from source |
-| P0 | **macOS x86_64 build** (Intel Macs) | Current CI only builds ARM64 (native Apple Silicon) |
-| P1 | **Windows native CI** (MSYS2/MinGW) in GitHub Actions | Cross-compile from Linux is fragile; native CI gives real coverage |
-| P1 | **AppImage auto-build in CI** | Currently manual; should be part of every release |
-| P2 | **Homebrew tap formula deploy** | Auto-update the formula on release |
-| P2 | **Nix flake** (flake-based, not plain nix-build) | Modern Nix convention |
+**The loop (one module at a time, finish it):**
 
-### CI/CD Hardening (v0.17)
-| Priority | Item | Why |
-|----------|------|-----|
-| P0 | **Pass CI green on all platforms** | Currently macOS and cross-compile builds haven't been tested end-to-end |
-| P1 | **Integration test suite in CI** | Currently only smoke tests (`--version`, `--help`) |
-| P1 | **AddressSanitizer CI job** | Catch memory errors on every push |
-| P1 | **Valgrind/memcheck CI job** | Deep memory analysis |
-| P2 | **Coverage report + threshold gate in CI** | Prevent coverage regression |
-| P2 | **Static analysis (cppcheck, clang-tidy)** | Catch bugs before runtime |
+1. `python tests/slermes_parity_battleground.py --detail` filtered to the module.
+2. Grep `src/ include/ lib/` for each symbol **before writing anything** —
+   naming gaps (behavior exists under another name) are the cheapest real fix.
+3. Implement the real behavior, or expose the existing one under the name
+   callers use. Never an empty body with a PoP comment.
+4. Prove it: differential oracle (`tests/run_one_oracle.sh`) and, for pure
+   helpers, a watercup gate. Wire new suites into the standing gates.
+5. Build, run the gates, commit the bite to `integrate`.
 
-### Vault & Legacy Management (v0.18)
-| Priority | Item | Why |
-|----------|------|-----|
-| P0 | **`vault/` directory for stale/inert code** | Move dead code out of active tree |
-| P1 | **Mark stale `port_*.c` files with deprecation headers** | Clarity on what's truly active vs. heritage |
-| P2 | **Upstream Python changelog sync** | Track what upstream changed that affects our C port |
+A module is done when its tests pass — not when its gap count hits zero.
 
----
+## Front 2 — SLERM the third-party dependencies
 
-## 🚀 Mid-Term (v0.19–0.24)
+The binary must stand alone: every vendored dependency is a SLERM target, not
+a permanent resident. Status and targets in
+[docs/third-party.md](docs/third-party.md). Active examples:
 
-### Performance & Optimization
-| Item | Notes |
-|------|-------|
-| **Thread pool for gateway platforms** | Currently serial dispatch; parallelize for multi-platform users |
-| **Connection reuse / keepalive in libhttp** | Every API call opens a new TCP connection today |
-| **LTO (Link-Time Optimization) builds** | Enable `-flto` in Makefile for smaller/faster binary |
-| **Docker multi-arch images** | Push `linux/amd64`, `linux/arm64`, `linux/arm/v7` manifests |
-| **Precompiled headers for build speed** | Current full rebuild ~30s; could be <10s |
+- **whisper.cpp → `lib/c11_whisper/`** — pure-C11 speech-to-text port
+  (model/math/encoder/compat units exist; the vendored `lib/whisper_cpp/`
+  headers are the reference, not the destination).
+- **SQLite amalgamation (`lib/libdb/sqlite3.c`, 8.7 MB vendored)** — the db
+  layer (`db.c`) is ours; the engine underneath is a SLERM target.
+- **ncurses (`lib/libncurses/`)** — vendored; the UI direction is the
+  slerm-Lua substrate (Front 3), which retires the ncurses dependency on
+  Windows entirely.
+- **ctranslate2 (`lib/ctranslate2_src/`)** — translation backend slot; the
+  C11 implementation is the work.
 
-### Testing Coverage
-| Item | Notes |
-|------|-------|
-| **Fuzz harness in CI** | `tests/fuzz_*.c` exists but not run in CI |
-| **Gateway platform E2E tests** | Mock server + real protocol tests per platform |
-| **GUI harness tests** | SDL2 desktop GUI has no automated tests |
-| **Performance regression benchmarks** | Track build time, binary size, startup time |
+The rule is the same as for Python features: reference in, from-scratch C11
+out, oracle/watercup proof, no escape hatches.
 
-### Port Completeness
-| Item | Notes |
-|------|-------|
-| **Audit all port_*.c vs upstream Python** | Find functions ported as stubs vs fully implemented |
-| **Run upstream Python test suite against C port** | Cross-language verification |
-| **Generate stub coverage report** | What % of Python signatures are covered |
+## Front 3 — Lua is the UI substrate (and it serves parity)
 
----
+Slermes follows WWW: **C11 owns memory, the ECS, physics and the spatial
+index; Lua owns game logic, GUI and mods.** The ncurses TUI is a dead end on
+Windows — build on the `src/lv/` slerm-Lua interpreter (`slv_*`, upstream is
+[Wua](https://github.com/waefrebeorn/Wua)) with the Lua-driven terminal host
+at `src/lua/slv_ui.c`.
 
-## 🌟 Long-Term (v0.25+)
+**Lua/Wua is a MEANS, not the mission** — when the gap list and the Lua
+roadmap compete, the gap list wins.
 
-### Platform Expansion
-| Platform | Status | Priority |
-|----------|--------|----------|
-| **FreeBSD** | ❌ Not built | Low |
-| **Termux (Android)** | Partially detected in Makefile | Medium |
-| **WebAssembly (WASM)** | ❌ Not explored | Low |
-| **RISC-V Linux** | ❌ Not explored | Low |
+## Front 4 — Deepen the verification net
 
-### Feature Parity with Upstream
-| Feature | Slermes | Upstream Hermes |
-|---------|---------|-----------------|
-| Electron desktop (470 TS files → ~30/111 GUI features) | 🟡 27% | ✅ |
-| Multi-tenant gateway | ✅ | ✅ |
-| Plugin system (19 .so files) | ✅ | ✅ |
-| Cron scheduler | ✅ | ✅ |
-| ACP protocol | ✅ | ✅ |
-| MCP server | ✅ | ✅ |
-| Petdex / floating pets | ✅ | ✅ |
-| Voice (TTS/STT) | ✅ | ✅ |
-| **Agent delegation** (sub-agents) | ✅ | ✅ |
-| **Memory system** (long-term + working) | ✅ | ✅ |
-| **Skills system** (SKILL.md parser + executor) | ✅ | ✅ |
-| **Web dashboard** (React SPA) | ✅ | ✅ |
-| **File browser + side-by-side preview** | ✅ | ✅ |
-| **MCP client** (external tool servers) | ✅ | ✅ |
-| **Computer Use** (browser + desktop automation) | ✅ port exists | ✅ |
+Parity is only as honest as its detectors:
 
-### Known Gaps vs Upstream
-| Gap | Impact |
-|-----|--------|
-| **Python code executor** (exec_code tool) | Currently delegates to `python3` on PATH; no sandboxed runtime |
-| **Electron desktop parity** (file drag-drop, tray, notifications, system dialogs) | SDL2 desktop has 30/111 features; missing 81 |
-| **Plugin discoverability** (store/browse/install via CLI) | `hermes tools` equivalent in C? |
-| **`port_*.c` audit accuracy** | Many functions are stubs with PoP annotations only |
+- Expand watercup coverage across the pure-function twin pool (each gate is
+  3 files: `gate.json` + `harness.c` + `twin.py`; `wc_run.py` does the rest).
+- Keep the oracle registry covering every committed port; a FAP that never
+  runs is still a FAP.
+- Keep the gates fail-closed: empty selection ≠ success, a suite that cannot
+  build is a failure, a sanitizer that did not run is not a pass.
 
----
+## Front 5 — Distribution (when the binary earns it)
 
-## 🏛️ Museum / Vault
+Packaging scaffolding exists (`packaging/appimage|docker|homebrew|nix|nsis`,
+`.github/workflows/release.yml`). Release engineering is downstream of
+parity: ship binaries when the gates are green on all three platforms, not
+before. **Windows, Linux and macOS must all build** — a change that compiles
+on one only is not done.
 
-Legacy content lives on the `vault` branch:
+## Definition of done
 
-```bash
-git checkout vault
-```
-
-Contains:
-- Legacy `port_*.c` files that were replaced by native C implementations
-- Old build scripts no longer used
-- Historical notes and design decisions
-- Upstream Python reference snapshots
-
-**Commitment:** The vault is append-only and never rebased. Every tagged release links to the vault snapshot at that time.
-
----
-
-## 📊 Key Metrics to Track
-
-| Metric | Current | Target |
-|--------|---------|--------|
-| Binary size (Linux x86_64) | ~46 MB | <30 MB (with LTO + stripping) |
-| Build time (4 cores) | ~30s | <15s |
-| CI pass rate | Unknown (new multi-OS CI) | 100% on all platforms |
-| Platform coverage | Linux only in CI | 5 platforms (Linux ×3, macOS, Windows) |
-| Test count | 263+ | 500+ |
-| CLI tools ported | ~45 | All upstream tools |
-| Gateway platforms | 29 | 29 (parity) |
-
----
-
-## How to Contribute
-
-1. Pick something from the **Near-Term** list above
-2. Open a PR — CI will build it on all platforms
-3. Tag releases go through the Release workflow
-
-```bash
-# Create a release
-git tag v0.16.0
-git push origin v0.16.0
-# GitHub Actions builds + publishes everything
-```
+- Every Python feature has a C11 body that does real work (no stubs, no
+  placeholder credit — `tests/parity_reality.py` is the honest scoreboard).
+- Every ported function passes its differential oracle **and** its watercup
+  gate where one exists.
+- Every third-party dependency is SLERMed or actively being SLERMed — none is
+  declared "not doable".
+- `make parity` reports REAL_GAP 0 and BOOTLEG 0; the phase flips to COMPLETE
+  on its own. No hand-edited victory.

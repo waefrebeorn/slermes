@@ -13,10 +13,24 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 # Index — Slermes C
 
-> 🔗 **[mind-palace/index.md](mind-palace/index.md)** — Central navigation hub (battleship index)
-> 📋 **[battleship.md](battleship.md)** — Function-level gap map ( / 73 PARTIAL of 9,731)
-> 📜 **[state.md](state.md)** — Session state and build status
-> 🎯 **[goal-mantra.md](goal-mantra.md)** — Goal and mantra
-> 🗺️ **[plan.md](plan.md)** — Roadmap
-> 🏆 **[prestige.md](prestige.md)** — Prestige ritual log
-> 📊 **[README](../README.md)** — Project overview and quick start
+> 🔗 **[mind-palace/index.md](mind-palace/index.md)** — navigation hub
+> 📋 **[battleship.md](battleship.md)** — the REAL_GAP battleground map
+> 🧭 **[battleship-user.md](battleship-user.md)** — usage-level gap candidates (mined)
+> 📜 **[state.md](state.md)** — current state + how to re-derive it
+> 🎯 **[goal-mantra.md](goal-mantra.md)** — goal and mantra
+> 🗺️ **[roadmap.md](roadmap.md)** — fronts and battle order
+> 🚀 **[next-session/steamroll-goal.md](next-session/steamroll-goal.md)** — handoff
+> 📊 **[README](../README.md)** — project overview
+
+**Live numbers live in the sentinel above** (owned by `make parity`). Any
+count typed into prose below a sentinel is stale by construction — run the
+tools, don't quote the prose:
+
+```bash
+make parity                              # scan -> watercup -> walkway
+python scripts/parity_coverage.py --dirs # per-area module coverage
+python tests/parity_reality.py           # body-level honest scoreboard
+```
+
+Historical session artifacts are preserved in [museum/](museum/) and
+[mind-palace/archive/](mind-palace/archive/) — they are history, not state.

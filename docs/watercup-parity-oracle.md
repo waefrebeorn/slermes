@@ -1,27 +1,28 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # The Water-Cup Parity Oracle
 
-**Status:** design + reference implementation (v1) + **project-wide framework (v2)**.
-**Problem it solves:** the existing oracle (`tests/oracle/`) diffs *output*
-fixtures. That is gameable: a C port can return a hardcoded `json_object`
-(or a copy of the expected vector) and pass every fixture while doing *none* of
-the real work. The parity scanner (`slermes_parity_battleground.py`) is even
-weaker — it never executes anything, so a `/* PoP: */` annotation on an empty
-`{ return json_object; }` body closes the gap.
+**Status:** project-wide fleet — **22,603 gates** under `tests/watercup/gates/`,
+run by the generic engine `wc_run.py` / `wc_run_parallel.py`.
 
-The water-cup oracle makes parity *behavioral and path-dependent*, so faking
+**Problem it solves:** the diff oracle (`tests/oracle/`) compares *output*
+fixtures. That is gameable: a C port can return a hardcoded `json_object`
+(or a copy of the expected vector) and pass every fixture while doing *none*
+of the real work. The parity scanner is weaker still — it never executes
+anything, so a `/* PoP: */` annotation on an empty body closes the gap.
+
+The water-cup oracle makes parity *behavioral and path-dependent*: faking
 the output without flowing water through the real control structure fails.
 
 ## Metaphor
@@ -38,165 +39,148 @@ or degenerate and never matches the Python cup.
 
 ## Three nesting cups (deeper = harder to game)
 
-1. **Trace-cup (control-flow signature).** Record, in execution order, a
-   compact event stream:
-     - `B<depth>` when a significant branch is taken (T/F as 1/0),
-     - `L<depth>` per loop iteration,
-     - `R<depth>` per recursion entry/exit,
-     - `V<hash>` the hash of each significant intermediate value
-       (arguments, loop accumulators, the compared operand of each branch).
-   The whole stream is folded into one **cup hash** per (function, input).
-
+1. **Trace-cup (control-flow signature).** Record, in execution order:
+   `B<depth>` per significant branch (T/F as 1/0), `L<depth>` per loop
+   iteration, `R<depth>`/`r<depth>` per recursion entry/exit, `V<hash>` per
+   significant intermediate value. The stream folds into one **cup hash**
+   per (function, input).
 2. **Stream-cup (response-surface coupling).** Feed a *correlated* input
-   stream (a fuzz walk or a Markov step over the input domain). The cup is the
-   *ordered* sequence of cup-hashes. A faithful port matches Python's hash
-   sequence step-by-step — not just at isolated sample points — because the
-   gradient of the response surface (how the trace changes as the input
-   changes) is determined by the real algorithm, which a stub cannot fake.
-
-3. **Equivalence-cup (invariant shape).** Assert *behavioral invariants* the
-   water must satisfy on every input in the stream, independent of path:
-   idempotence, monotonicity, symmetry, token-conservation, bounds. Both sides
-   must satisfy the *same* invariants. A cheater that coincidentally matches
-   some outputs but violates an invariant is caught.
+   stream (fuzz walk / Markov step). The cup is the *ordered* sequence of
+   cup-hashes — a faithful port matches step-by-step, because the gradient
+   of the response surface is determined by the real algorithm.
+3. **Equivalence-cup (invariant shape).** Behavioral invariants the water
+   must satisfy on every input: idempotence, monotonicity, symmetry,
+   token-conservation, bounds. Both sides must satisfy the same invariants.
 
 **Anti-gaming property:** the shape is *derived from execution*, not from the
-declared result. You cannot `return json_object` (or a copied vector) *and*
-reproduce the branch/loop/recursion trace of the real algorithm, because that
-trace is a function of the input in a way a stub does not compute.
+declared result. You cannot `return json_object` *and* reproduce the real
+trace. The only way to make the cup match is to **execute the same
+algorithm** — which is exactly what a faithful port does.
 
-## Reference implementation (this directory)
+## Language-agnostic
 
-- `tests/watercup/watercup.h` — C tracer API (`WCUP_PUSH`, `WCUP_BRANCH`,
-  `WCUP_LOOP`, `WCUP_VAL`, `WCUP_RECURSE`) + `wcup_finalize` returning the
-  cup-hash hex string. Compiles to a no-op when `WCUP_DISABLED` is defined, so
-  it is zero-cost in production builds.
-- `tests/watercup/watercup_py.py` — Python equivalent tracer using
-  `sys.settrace` + value hashing, emitting the identical cup-hash format.
-- `tests/watercup/match.py` — given a fixture stream, runs BOTH tracers,
-  compares trace-cup + stream-cup + equivalence-cup, emits
-  `cups: MATCH | MISMATCH` with the divergence point.
-- `tests/watercup/registry.json` — per-function invariant declarations
-  (the equivalence-cup rules) and the fixture streams.
+The cup is a byte stream of events folded with **FNV-1a**. Any source
+translated to C11 — Python, TypeScript, Rust — carves the same shape when
+the logic is identical. Doubles encode via `"%.17g"` so Python and C carve
+identical bytes. This is what lets the fleet scale project-wide: a generic
+registry-driven engine runs every gate, not hand-built demos.
 
-## How it sits on the existing harness
+## Layout
 
-It is **contract C** layered *on top of* `tests/oracle/` (the diff oracle).
-The diff oracle stays as the coarse gate; the water-cup is the deep gate that
-catches FAPs the diff oracle misses (the "returns right JSON but wrong path"
-class). A port is parity-closed only when BOTH say MATCH.
+```
+tests/watercup/
+  watercup.h          # C tracer (WCUP_* macros; no-op under WCUP_DISABLED)
+  watercup_py.py      # Python tracer, byte-identical FNV-1a fold
+  wc_run.py           # generic engine: build gate, run C + LIVE twin, diff cups
+  wc_run_parallel.py  # parallel fleet runner (bounded workers, per-gate timeout)
+  _twin_driver.py     # subprocess isolation for entry-point (py_fn: "main") gates
+  gates/<name>/
+    gate.json         # {name, subsystem, c_src, c_fn, py_module, py_fn, inputs}
+    harness.c         # traced C copy of the port (or extra_src links the real .c)
+    twin.py           # imports LIVE Python, traces the SAME branch ladder
+  build/              # harness binaries + results.jsonl (never /tmp)
+  demo/               # the original cheater-vs-faithful demonstration
+```
 
-## What makes it "harder than the oracle"
+## Run
+
+```bash
+python tests/watercup/wc_run.py                  # all gates, fail-closed
+python tests/watercup/wc_run.py <gate> [...]     # selected gates
+python tests/watercup/wc_run.py --list           # gate names
+python tests/watercup/wc_run.py --coverage       # subsystem coverage map
+python tests/watercup/wc_run.py --json           # machine-readable report
+python tests/watercup/wc_run_parallel.py --port-only   # structural subset (fast)
+```
+
+`make parity` runs the `--port-only` structural subset as its watercup stage
+(the full 22k sweep is the documented batch op: `--full`). Every run appends
+per-gate verdicts to `tests/watercup/build/results.jsonl`; the parity
+pipeline truncates it first so a stale run cannot poison the walkway stats.
+Builds are cached: a harness recompiles only when its sources, `watercup.h`,
+or `gate.json` are newer than the binary (stale binaries were the #1
+historical source of false REDs). Compile and link are split so ccache can
+cache every TU.
+
+## Adding a gate (no runner changes needed)
+
+1. `mkdir tests/watercup/gates/<fn>`
+2. `gate.json` — name the LIVE python module + fn, list a correlated input
+   walk; optional `cflags`/`extra_src` to link the real ported `.c`.
+3. `harness.c` — traced copy of the C11 port (or link the real `.c` via
+   `extra_src` so the cup traces shipped code), `main` dispatches `<c_fn>`.
+   Print EXACTLY one 16-hex cup per input on stdout — results/diagnostics go
+   to stderr; any extra stdout breaks the line diff.
+4. `twin.py` — `run(inputs) -> [cup, ...]`, importing the LIVE python source
+   and tracing the **same branch ladder in the same order** (so divergence
+   = real logic difference, not tracing convention).
+
+## Runner hardening (fixed — do not regress)
+
+- **Empty selection ≠ success.** Filtering to zero gates exits 2 with the
+  reason; a CI gate wired to it can never go green having verified nothing.
+- **SystemExit is caught per gate** (not BaseException — Ctrl+C still
+  aborts). CLI-entry twins calling `argparse` exit into a traced
+  `ERROR:SystemExit(2)` cup, visible in the report, never fatal.
+- **Per-gate timeout** (`WATERCUP_GATE_TIMEOUT`, default 120s) bounds wedged
+  workers; the pool abandons with `wait=False, cancel_futures=True`.
+- **Entry-point isolation.** The 20 gates with `py_fn: "main"` execute REAL
+  CLI/server entry points (gateway run, MCP server, container boot, …).
+  In-process they crashed the host (five WSL deaths observed); they now run
+  via `_twin_driver.py` in a subprocess with the sandbox env. The worst a
+  gate can do is die in its own process.
+- **Operator-state isolation.** Both runners export `SLERMES_HOME` /
+  `HERMES_HOME` to a throwaway dir (`build/home_watercup/`) before any LIVE
+  import — twins like `agent/estop.py` write sentinels that otherwise engage
+  the real operator's gateway pause. Override with
+  `WATERCUP_REAL_HERMES_HOME=1` to trace the real home deliberately.
+- **Interpreter dependency check.** Twins import LIVE modules that pull
+  PyYAML transitively; the runner checks up front and names the fix instead
+  of letting gates fail with a bare `No module named 'yaml'` indistinguishable
+  from a parity failure. Bypass: `WATERCUP_SKIP_DEP_CHECK=1`.
+
+**Do not run the full fleet from inside an agent session** — run it from a
+plain shell. To iterate on a subset inside a session, exclude the
+entry-point gates (the `py_fn: "main"` set; see `tests/watercup/README.md`
+for the exclusion list).
+
+## Tracer-convention pitfalls (learned the hard way)
+
+1. **Rung order is the contract.** A mismatch can be a real FAP *or*
+   tracing-convention drift. Align the twin's ladder to the harness's; if
+   the cup then matches, the drift was convention (fix the twin). If it
+   still mismatches, you found a real divergence.
+2. **V events on both sides or neither.** `WCUP_VALSTR` in C with no matching
+   `c.valstr` in the twin mismatches every cup.
+3. **Harness stdout is the cup stream.** One 16-hex cup per input, nothing
+   else.
+4. **Boolean fixture fields**: `json_get_num` on a JSON boolean returns the
+   default — use `json_bool_value`.
+
+## Historical regression pins
+
+The first project-wide gates (billing money format/parse, `format_size`,
+loops parse/format, model vendor detection, prompt-cache scope, repetition
+guard, registry arg validation, tier-row rendering, tool dispatch retry /
+idempotency / result classification, usage-pricing cost labels + Anthropic /
+Bedrock normalization, web auth allowlist, JSON control-char escape) were
+each born from a real RED finding that was then fixed. They stay as
+regression pins. The live fleet status is never hand-typed here — run
+`wc_run.py --coverage` / `--json`, or read the Watercup line of any
+`` sentinel after `make parity`.
+
+## How it sits on the diff oracle
+
+The water-cup is the **deep gate** layered on top of `tests/oracle/` (the
+coarse output-diff gate). It catches the "right output, wrong path" class
+the diff oracle can never see:
 
 | Vector | Diff oracle | Water-cup |
 |---|---|---|
 | hardcoded `return json_object` | passes if fixture expects `{}` | **fails**: empty trace-cup |
-| copied expected vector | passes on that fixture | **fails**: trace diverges on the *stream* |
+| copied expected vector | passes on that fixture | **fails**: trace diverges on the stream |
 | right output, wrong path | **passes** (the gap) | **fails**: branch/loop trace differs |
 | right output, invariant-violating | **passes** | **fails**: equivalence-cup |
 
-The only way to make the cup match is to **execute the same algorithm** — which
-is exactly what a faithful port does. There is no shortcut.
-
-## v2 — Project-wide framework (language-agnostic)
-
-The water-cup is **not Python-specific**. The cup is a byte stream of
-`B<depth>:<0|1>` / `L<depth>` / `R<depth>` / `r<depth>` / `V<hash>` events folded
-with FNV-1a. Any source language translated to C11 — Python, TypeScript, Rust —
-carves the **same shape** when the logic is identical. A stub that returns a
-constant cannot reproduce the real trace, so the cup never matches.
-
-This is what makes it scale "project wide": instead of 600 hand-built demos, a
-**generic registry-driven engine** runs every gate.
-
-### Layout
-```
-tests/watercup/
-  watercup.h          # C tracer (no-op under WCUP_DISABLED)
-  watercup_py.py      # Python tracer, byte-identical FNV-1a
-  wc_run.py           # GENERIC engine: build each gate, run C + LIVE twin, diff cups
-  gates/<name>/
-    gate.json         # {name, subsystem, c_src, c_fn, py_module, py_fn, inputs}
-    harness.c         # traced C copy of the ported fn (+ main dispatch)
-    twin.py           # imports LIVE Python twin, traces SAME branch ladder
-  run_watercup_all.sh # CI deep-gate (fail-closed)
-```
-
-### Adding a gate (no code in the runner)
-1. `mkdir tests/watercup/gates/<fn>`
-2. Write `gate.json` (name the LIVE python module + fn, list a correlated input
-   walk; optional `cflags`/`extra_src` to link the real ported `.c`).
-3. Write `harness.c` — a traced copy of the C11 port (or link the real `.c`
-   via `extra_src` so the cup traces shipped code), with `main` dispatching
-   `<c_fn>` over `argv`. Print EXACTLY one cup hash per input on stdout —
-   any extra output (results, labels) breaks the line diff.
-4. Write `twin.py` exposing `run(inputs) -> [cup, ...]`, tracing the **same
-   branch ladder in the same order** as the C harness (so divergence = real
-   logic difference, not tracing convention).
-
-`wc_run.py` builds (with stale-binary detection), runs, and diffs
-automatically. The `watercup_all` port in `tests/oracle/registry.json` makes
-`run_oracles.sh` dispatch it in CI alongside the diff oracle.
-
-### Runner flags (v3)
-```
-python3 tests/watercup/wc_run.py                    # all gates, fail-closed
-python3 tests/watercup/wc_run.py <gate> [<gate>...]  # selected gates
-python3 tests/watercup/wc_run.py --list             # gate names
-python3 tests/watercup/wc_run.py --verbose <gate>    # per-gate detail
-python3 tests/watercup/wc_run.py --json             # machine-readable report
-python3 tests/watercup/wc_run.py --coverage          # subsystem coverage map
-python3 tests/watercup/wc_run.py --force             # rebuild all harnesses
-```
-Every run appends per-gate pass/fail to `tests/watercup/build/results.jsonl`.
-Builds are cached: a harness recompiles only when its sources, `watercup.h`,
-or `gate.json` are newer than the binary (the #1 historical source of false
-REDs was a stale binary).
-
-### Tracer-convention pitfalls (learned the hard way)
-1. **Rung order is the contract.** The cup encodes *which rung fired, in
-   position order*. A mismatch can be a real FAP **or** a tracing-convention
-   drift (twin traces the same set in a different order). Always verify
-   fixability: align the twin's ladder to the C harness's; if the cup then
-   matches, the drift was convention (fix the twin). If it still mismatches,
-   you found a real divergence.
-2. **V events must exist on both sides or neither.** `WCUP_VALSTR` in C with
-   no matching `c.valstr` in the twin (or vice versa) mismatches every cup.
-   For pure branch-ladder gates, emit V events on NEITHER side.
-3. **Harness stdout is the cup stream.** Print one 16-hex cup per input and
-   nothing else — route results/diagnostics to stderr.
-4. **Boolean fixture fields**: reading a JSON boolean via `json_get_num`
-   returns the default (0) — use `json_bool_value`. Same class of bug as the
-   loops oracle's `--times` fixture.
-
-### Current gates (v3 runner, all GREEN as of )
-
-| gate | subsystem | cups | what it pins |
-|------|-----------|------|--------------|
-| `billing_format_money` | agent | 13 | money formatting (Decimal vs C rounding) |
-| `billing_parse_money` | agent | 10 | money parsing ladder |
-| `cch_status_code_from_value` | agent | 16 | status-code mapping |
-| `format_size` | tools | 12 | byte sizes B..TB (GB-cap gap fixed) |
-| `loops_format_interval` | hermes_cli | 13 | h/m/s assembly, `0s` fallback |
-| `loops_parse_loop_args` | hermes_cli | 13 | 7-rung /loop argument parser |
-| `model_normalize_detect_vendor` | hermes_cli | 10 | vendor detection incl. empty-guard |
-| `prompt_cache_scope` | agent | 6 | rotation-stable scope (#79017): memo, lineage, fallback |
-| `repetition_guard` | agent | 5 | repetition-loop guard (#86581): fail-open, fast+general paths |
-| `registry_validate_args` | tools | unit | registry arg validation contract |
-| `subscription_view_format_tier_row` | agent | 7 | tier-row rendering |
-| `tool_dispatch_retry` | tools | unit | retry classification contract |
-| `tool_idempotency` (+persist) | tools | unit | idempotency contract |
-| `tool_result_classification` | tools | unit | result classification contract |
-| `usage_pricing_format_cost_label` | agent | 14 | cost labels (rounding parity) |
-| `usage_pricing_normalize_anthropic_model` | agent | 8 | Anthropic model names |
-| `usage_pricing_normalize_bedrock_model` | agent | 9 | Bedrock model names |
-| `watercup_json_escape` | web | unit | `<0x20` escape (C11-vs-C11 drift caught) |
-| `watercup_web_auth` | web | unit | auth allowlist vs LIVE PUBLIC_API_PATHS |
-
-Earlier RED findings (rounding FAP, empty-string guard, auth allowlist,
-control-char escape) were fixed after the cup flagged them; the gates stay
-as regression pins. Run `python3 tests/watercup/wc_run.py --coverage` for
-the live subsystem map, and `--json`/`--verbose` for machine/human detail.
-
-A port is parity-closed only when **both** the diff oracle AND the water-cup say
-MATCH. The cup is the deep gate that catches the "right output, wrong path" class.
+**A port is parity-closed only when BOTH the diff oracle AND the water-cup
+say MATCH.**

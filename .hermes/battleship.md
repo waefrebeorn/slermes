@@ -1,12 +1,3 @@
-# Battleship  — REAL_GAP Elimination Battleground
-
-**Build:** Clean · 
-
-## State
-
-> Live counts are owned by `make parity-walkway` — the table below is the
-> authoritative sentinel (do not hand-edit).
-
 <!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
 | REAL_GAP| 25,451 (74.3%) — no N/A |
 |  ├ DA-4 stubs | 43 |
@@ -20,50 +11,49 @@
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-**Rewriting from scratch in C is the point.** Stubs = REAL_GAP.
+# Battleship — REAL_GAP Elimination Battleground
 
-## What Changed ()
-- All STUB classifications in scanner changed to REAL_GAP
-- 3 sites in `classify_feature`: `classification="STUB"` → `"REAL_GAP"`, severity `MEDIUM` → `HIGH`
-- Rationale: project goal is C rewrite, not stub generation. A stub that logs+returns NULL is not an implementation.
+The sentinel above is the live scanner verdict (`make parity` owns it).
+**Rewriting from scratch in C is the point.** Stubs = REAL_GAP. There is no
+N/A: every unported feature is work, and nothing is "not doable" — we do it
+because we are doing it in C11.
 
-## Missions
+## The battleground map (derive it live, never from prose)
 
-> Mission counts below are computed from the live scanner (, ) —
-> per-directory REAL_GAP totals. Port files are the C homes for each mission.
+```bash
+python tests/slermes_parity_battleground.py --json        # full scan
+python tests/slermes_parity_battleground.py --detail      # per-module gaps
+python scripts/parity_coverage.py --dirs                  # per-area rollup
+python scripts/parity_coverage.py --fanin                 # rank by reuse
+```
 
-### M1: CLI Core (283 REAL_GAPs, CLI + hermes_cli dirs)
-**Priority: HIGHEST** — User-facing CLI commands
-**Port files:** src/cli/hermes_cli_*.c, src/cli/port_cli.c
-**Top modules:** hermes_cli/web_routers/profiles.py (15), sessions.py (14), cron.py (13),
-sqlite_safe_read.py (13), skills.py (12), tools.py (12)
+The scanner's REAL_GAP list is regenerated into
+[docs/real-gap-list.md](../docs/real-gap-list.md) by `make parity` — that
+file, not this one, is the function-level map. Mission areas follow the
+Python package tree: `hermes_cli`, `agent`, `gateway`, `tools`, `cron`,
+`plugins`, `pm`, `tui_gateway`, `acp_adapter` — each with C homes under
+`src/<area>/` named for the module they port.
 
-### M2: Gateway Platforms (79 REAL_GAPs, gateway dir)
-**Priority: HIGH** — Platform adapters
-**Port files:** src/cli/port_gateway_*.c, src/gateway/
+## Resolution protocol
 
-### M3: Tools (246 REAL_GAPs, tools dir)
-**Priority: MEDIUM** — Tool implementations
-**Port files:** src/cli/port_tools_*.c, src/tools/
-**Top modules:** tools/process_registry.py (32), cua_backend.py (14), doctor.py (14)
-
-### M4: Agent (114 REAL_GAPs, agent dir)
-**Priority: MEDIUM** — Agent runtime
-**Port files:** src/cli/port_agent_*.c
-
-### M5: Cron (19 REAL_GAPs, cron dir)
-**Priority: LOW** — Cron management
-**Port files:** src/cli/port_cron_*.c
-
-## Resolution Protocol
-1. Pick next module from roadmap (lowest gap count first)
+1. Pick the next module from the live gap list (match the axis to the ask:
+   fan-in for reuse, short-gap count for throughput, gaps×LOC for the hole).
 2. For each REAL_GAP function:
-   a. Read Python source
-   b. Implement real C logic (not hermes_log + return NULL)
-   c. Build, test, commit
-3. Scanner re-run: verify PORTED++ REAL_GAP--
-4. Move to next module
+   a. Read the LIVE Python source in the quarry.
+   b. Grep `src/ include/ lib/` — behavior under another name is a naming
+      gap; expose it, don't double-code.
+   c. Implement real C logic (never hermes_log + return NULL).
+   d. Prove it: oracle (`tests/run_one_oracle.sh`) and watercup gate for
+      pure helpers.
+3. Build, run the gates, commit the bite.
+4. Re-scan: verify the gap actually closed with a real body behind it. A
+   falling gap count with an empty body behind it is scoreboard gaming, not
+   progress — `tests/parity_reality.py` is the honest scoreboard.
 
 No choices. No questions. Never stop between gaps.
 
-Scanner: `tests/slermes_parity_battleground.py` — 9,035 features across 377 modules.
+## Usage-level candidates
+
+[battleship-user.md](battleship-user.md) carries mined usage-gap candidates
+(from the Python test suite, issues, and config docs). They are candidates,
+not verified state — check each against the live code before working it.

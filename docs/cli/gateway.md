@@ -1,54 +1,57 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Gateway Commands
 
+7 commands in the `Gateway` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`). Handlers: `src/cli/cli_cmd_gateway.c` and
+`src/hermes_cli/write_approval_commands.c`.
+
+Commands flagged `gateway_only` are skipped by `commands_dispatch()` in CLI mode — they
+are meant for the gateway/messaging surface. Commands flagged `cli_only` are the reverse.
+
 ## `/gateway`
 
-Manage the gateway: status, list active platforms, stop, setup, restart.
+Manage the gateway: `status`, `list`, `stop`, `setup`, `restart`.
 
 ```
 /gateway [status|list|stop|setup|restart]
 ```
 
-**Examples:**
-```
-/gateway status
-/gateway list
-/gateway restart
-```
-
 ## `/platforms`
 
-Show the status of all gateway/messaging platforms. Gateway-only.
+Shows configured gateway/messaging platforms and (with `-v`/`verbose`) credential status.
+Gateway-only.
 
 ```
-/platforms
+/platforms [-v|verbose|list]
 ```
-
-Shows connected platforms, connection status, and message counts.
 
 ## `/webhook`
 
 Manage webhook subscriptions. Gateway-only.
 
 ```
-/webhook [list|add|remove]
+/webhook list
+/webhook add <url> [secret]
+/webhook remove <id>
 ```
 
 ## `/restart`
 
-Gracefully restart the gateway without losing active sessions.
+Saves the current session, then re-execs the binary. The handler resolves the executable
+via `/proc/self/exe` and reads original arguments from `/proc` — a POSIX-only path that
+does not work on native Windows.
 
 ```
 /restart
@@ -56,24 +59,27 @@ Gracefully restart the gateway without losing active sessions.
 
 ## `/sethome`
 
-Set the current chat channel as the home/default channel. Gateway-only.
+Sets the home channel. Gateway-only. With no argument, prints the current home channel.
 
 ```
-/sethome
+/sethome <platform:chat_id>
 ```
 
 ## `/handoff`
 
-Hand off the current session to a messaging platform. CLI-only.
+Session handoff to a messaging platform. CLI-only. Subcommands verified in the handler:
+`request <platform>`, `claim <id>`, `complete <id>`, `status`, `list`.
 
 ```
-/handoff
+/handoff [request|claim|complete|status|list]
 ```
 
 ## `/platform` (`/pf`)
 
-Pause, resume, or list gateway platforms.
+Gateway platform control. The registry description says "pause, resume, or list", but the
+current handler (`cmd_platform` in `src/cli/cli_cmd_gateway.c`) implements the overview
+(no argument) and `list` only — pause/resume are not wired in this handler.
 
 ```
-/platform
+/platform [list]
 ```

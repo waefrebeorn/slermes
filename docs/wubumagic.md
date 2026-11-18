@@ -1,15 +1,15 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # WuBuMagic Doctrine
 
@@ -40,7 +40,7 @@ Every WuBuMagic port MUST:
 | `dict.get(key, default)` | `json_object_get(obj, key)` + null check + default |
 | `dict[key] = val` | `json_set(obj, key, val)` |
 | `json.dumps(obj)` | `json_serialize(obj)` |
-| `json.loads(s)` | `json_parse(s, strlen(s))` |
+| `json.loads(s)` | `json_parse(s, &err)` |
 | `session.query(Model).filter(...).first()` | `sqlite3_prepare_v2` + `sqlite3_bind_*` + `sqlite3_step` |
 | `os.path.join(a, b)` | `path_join(a, b)` (libpath) |
 | `subprocess.run(...)` | `proc_spawn(...)` (libproc) |
@@ -65,19 +65,26 @@ Every WuBuMagic port MUST:
 3. **C11 only** — no C++, no compiler extensions, `-std=c11`
 4. **Error handling** — every allocation/operation checked, `goto cleanup` for multi-step
 5. **No landlocked statics** — oversized arrays → hive (lib/libhive)
-6. **Name parity** — C function name MUST match Python name exactly (drop leading `_`)
+6. **Naming standard** — units are named for the Python module they port
+   (`port_<stem>.c`), exported symbols carry a per-unit prefix (`st_`, `ai_`),
+   and the `/* PoP: <c_fn> @ <module.py>:<py_fn> */` annotation is the parity
+   join — see docs/dev/c-standards.md and docs/dev/naming.md (gate-enforced)
 
-### File Organization
-- One C file per Python module: `src/ports/<module_path>.c`
-- Header: `src/ports/<module_path>.h` (only if other files need the API)
-- Include guard: `#pragma once`
-- Self-contained: compile independently
+### File Organization (the enforced standard)
+- Implementation: `src/<py_top_dir>/port_<py_module_stem>.c`
+- Interface: `include/port_<stem>.h`, guard `PORT_<STEM>_H`
+- Oracle: `tests/sta_oracle_<stem>.py` + harness `tests/t_port_<stem>.c`
+- The unit's own header is included first; no `.c` includes, ever
+- Self-contained: compile independently; register the object in the right
+  `build/objects.mk` cupboard (registered ≠ reachable — check the link line)
 
 ### Verification
 1. `make slermes` — must build clean
-2. `make parity-walkway` — scanner says PORTED
-3. Oracle test (if available) — differential proof
-4. Manual review — does the C do what the Python does?
+2. `python tests/verify_build_health.py --no-link` — sources + port-object gate
+3. Oracle — differential proof vs LIVE Python (`tests/run_one_oracle.sh`)
+4. Watercup gate for pure helpers — path parity, not just output
+5. `make parity` — scanner sentinel refreshed from live sources
+A port is parity-closed only when oracle AND watercup say MATCH.
 
 ## The Startup Process
 
@@ -90,7 +97,8 @@ When the user says "~ WuBu ~ <module>":
 5. **TRANSLATE** — Write faithful C using the pattern map above
 6. **WIRE** — Add to `build/objects.mk` if new file
 7. **BUILD** — `rm -f slermes && make slermes` MUST pass
-8. **VERIFY** — Scanner says PORTED, oracle passes (if available)
+8. **VERIFY** — oracle passes (mandatory where one exists), watercup gate
+   for pure helpers, then `make parity` refreshes the scanner sentinel
 9. **COMMIT** — One commit per function or logical group
 
 ## The Anti-Patterns (FIRED OFFENSES)

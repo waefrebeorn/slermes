@@ -1,72 +1,60 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Config Commands
 
-12 commands for managing configuration, models, and behavior.
+12 commands in the `Config` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`), plus 3 parity commands registered under
+`Configuration` (listed at the bottom). Handlers are mainly in
+`src/cli/cli_cmd_config.c` and `src/hermes_cli/cli_cmd_parity.c`. Behavior notes below
+were checked against the handler bodies; parity vs Python is proven by the oracle suites.
 
 ## `/model` (`/m`)
 
-Model management — list available models, show current model, list providers, set active.
+Model management. Handler accepts `list` (alias `ls`), `show`, `info`, `providers`
+(alias `prov`), and `set <model>`.
 
 ```
-/model [list|show|providers|set]
-```
-
-**Examples:**
-```
-/model list
-/model show
-/model set gpt-4
-/model providers
+/model [list|show|info|providers|set <model>]
 ```
 
 ## `/config` (`/cfg`)
 
-Show current configuration or set a specific key. CLI-only.
+Show or edit configuration. CLI-only. Beyond plain `/config [key] [val]`, the handler
+implements `show`, `get <key>`, `set <key> <val>`, `diff`, `export`, `groups`, `migrate`,
+`profile`, `schema`, and `validate` forms.
 
 ```
 /config [key] [val]
-```
-
-**Examples:**
-```
-/config
-/config display.pet.enabled true
-/config display.pet.scale 0.5
+/config set display.pet.scale 0.5
 ```
 
 ## `/setup`
 
-Launch the setup wizard for initial provider/model configuration.
+Setup wizard (provider, model, API key). CLI-only. Flags verified in `cmd_setup`:
+`--quick`/`-q`, `--non-interactive`/`-n`, `--reset`/`-r`, `--reconfigure`, `--portal`/`-p`.
+Sections: `model`, `tts`, `terminal`, `gateway`, `tools`, `agent`.
 
 ```
-/setup [--quick|--non-interactive|--reset|--portal|section]
+/setup [--quick|--non-interactive|--reset|--reconfigure|--portal|section]
 ```
-
-**Examples:**
-```
-/setup
-/setup --quick
-/setup model
-/setup --reset
-```
-
-Sections: `model`, `tts`, `terminal`, `gateway`, `tools`, `agent`
 
 ## `/uninstall`
 
-Remove Slermes entirely — deletes binary, config directory, and .env. CLI-only.
+Removes installed binaries from the POSIX install paths it knows about
+(`/usr/local/bin/slermes`, `/usr/bin/slermes`, `~/.local/bin/slermes`). CLI-only.
+It does **not** auto-delete config or `.env`: it reports whether they exist and prints
+manual removal instructions. On Windows the POSIX binary paths do not apply.
 
 ```
 /uninstall
@@ -74,55 +62,53 @@ Remove Slermes entirely — deletes binary, config directory, and .env. CLI-only
 
 ## `/backup`
 
-Back up configuration, .env file, and session data.
+Copies `config.yaml` and `.env` into `<home>/backups/slermes-backup-<timestamp>/`.
+CLI-only. `full` additionally backs up sessions and plugin files.
 
 ```
 /backup [config|full]
 ```
 
-- `config` — Backup config.yaml and .env only
-- `full` — Full backup including sessions
-
 ## `/topic` (`/t`)
 
-Set the system topic or personality for the conversation.
+Sets or replaces the system message with the given text.
 
 ```
 /topic <text>
 ```
 
-**Example:**
-```
-/topic You are a helpful coding assistant who writes clean C code.
-```
-
 ## `/reasoning` (`/re`)
 
-Control reasoning effort level and display settings.
+Manages reasoning effort and display. Verified levels: `none`, `minimal`, `low`,
+`medium`, `high`, `xhigh`; `on` maps to `medium`, `off` maps to `none`; `show` prints the
+current effort; `hide` hides reasoning display.
 
 ```
-/reasoning [on|off|show|hide|low|medium|high]
+/reasoning [none|minimal|low|medium|high|xhigh|on|off|show|hide]
 ```
 
 ## `/fast`
 
-Toggle fast mode — reduces output verbosity for faster responses.
+Toggles the fast-mode flag (priority processing). Accepts `normal`/`off`, `fast`/`on`,
+and `status`; with no argument it prints the current mode. It is not a verbosity control
+(older docs described it as one).
 
 ```
-/fast
+/fast [normal|fast|status]
 ```
 
 ## `/voice`
 
-Toggle voice input/output mode on/off.
+Voice input/output mode. Handler accepts `on`, `off`, `status` (alias `st`), `config`,
+`tts`, and `key <...>` forms.
 
 ```
-/voice
+/voice [on|off|status|config|tts|key]
 ```
 
 ## `/yolo`
 
-Toggle YOLO mode — skip dangerous command approvals.
+Toggles YOLO mode: when enabled, dangerous-command approvals are skipped.
 
 ```
 /yolo
@@ -130,16 +116,29 @@ Toggle YOLO mode — skip dangerous command approvals.
 
 ## `/personality` (`/p`)
 
-Set a predefined personality as the system message.
+Sets the system message (personality). The handler takes free text and installs it as
+the system message — it does not look up predefined personality names.
 
 ```
-/personality <name>
+/personality <system prompt text>
 ```
 
 ## `/footer`
 
-Toggle gateway metadata footer on replies.
+Toggles the gateway metadata footer on replies: `on`, `off`, `status`.
 
 ```
 /footer [on|off|status]
 ```
+
+## Related parity commands (`Configuration` category)
+
+These are registered under `Configuration` (not `Config`) and implemented in
+`src/hermes_cli/cli_cmd_parity.c`:
+
+- `/battery [on|off|status]` — color-coded battery indicator in the status bar; reads
+  real battery state via `battery_read()`.
+- `/codex-runtime` (`/codex_runtime`) `[auto|codex_app_server|status]` — toggles the codex
+  app-server runtime for OpenAI/Codex models (persisted as `codex.runtime`).
+- `/timestamps` (`/ts`) `[on|off|status]` — toggles `[HH:MM]` timestamps on messages and
+  `/history`; delegates to `ccm_handle_timestamps_command`.

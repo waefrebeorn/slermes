@@ -1,21 +1,28 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Display Commands
 
+7 commands in the `Display` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`). All are CLI-only. Handlers:
+`src/hermes_cli/write_approval_commands.c` (`/redraw`, `/verbose`, `/skin`,
+`/statusbar`, `/busy`, `/indicator`) and `src/hermes_cli/cli_cmd_display.c` (`/pet`).
+`/footer` is a **Config**-category command — see [config.md](config.md).
+
 ## `/redraw`
 
-Force a full UI repaint. Useful after terminal resize or display corruption. CLI-only.
+Forces a repaint. The CLI handler emits ANSI clear-screen + cursor-home and prints a
+confirmation; the ncurses TUI has its own redraw path (`Ctrl+L`).
 
 ```
 /redraw
@@ -23,7 +30,8 @@ Force a full UI repaint. Useful after terminal resize or display corruption. CLI
 
 ## `/verbose`
 
-Toggle tool progress display verbosity. CLI-only.
+Cycles tool-progress verbosity through three levels: `off` → `normal` → `verbose`
+(not a binary toggle).
 
 ```
 /verbose
@@ -31,46 +39,45 @@ Toggle tool progress display verbosity. CLI-only.
 
 ## `/skin`
 
-Show current skin/theme or change to a different one. CLI-only.
+Shows or changes the display skin/theme. `/skin list` lists built-in skins;
+`/skin <name>` activates one.
 
 ```
-/skin <name>
+/skin [list|<name>]
 ```
 
 ## `/statusbar`
 
-Toggle the context/model status bar at the bottom of the TUI. CLI-only.
+Shows or hides the context/model status bar: `on`, `off`, `status`.
 
 ```
-/statusbar
+/statusbar [on|off|status]
 ```
 
 ## `/busy`
 
-Control what Enter does while the agent is working. CLI-only.
+Controls what Enter does while the agent is working: `queue`, `steer`, `interrupt`,
+`status`.
 
 ```
 /busy [queue|steer|interrupt|status]
 ```
 
-Modes:
-- `queue` — Queue prompts during busy state
-- `steer` — Enable mid-turn steering
-- `interrupt` — Allow interrupting the agent
-- `status` — Show current busy mode
-
 ## `/indicator`
 
-Pick the TUI busy-indicator animation style. CLI-only.
+Picks the busy-indicator style. Verified options: `default`, `dots`, `bar`, `face`.
+With no argument it prints the current style.
 
 ```
-/indicator
+/indicator [default|dots|bar|face]
 ```
 
-## `/footer`
+## `/pet`
 
-Toggle gateway metadata footer on replies.
+Petdex mascot management: `info`, `gallery`, `select <slug>`, `remove <slug>`,
+`disable`, `scale <n>` (plus `enable` and `hatch` forms accepted by the handler).
+Full documentation: [Pet System](../pet/index.md).
 
 ```
-/footer [on|off|status]
+/pet [info|gallery|select <slug>|remove <slug>|disable|scale <n>]
 ```

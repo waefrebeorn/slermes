@@ -1,19 +1,19 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Getting Started
 
-Build, configure, and run Slermes in 2 minutes.
+Build, configure, and run Slermes.
 
 ## Build
 
@@ -22,22 +22,36 @@ Build, configure, and run Slermes in 2 minutes.
 ```bash
 git clone https://github.com/waefrebeorn/slermes
 cd slermes
-make -j$(nproc)
+make -j$(nproc) slermes
 ```
 
-**Windows (MSYS2 — the primary development platform)**
+**Windows (MSYS2 + winlibs — the primary development platform)**
 
 ```bash
 git clone https://github.com/waefrebeorn/slermes
 cd slermes
+# inside MSYS2 bash:
 source build/winlibs-env.sh
 make -j8 slermes USERPROFILE='C:\Users\<you>' LOCALAPPDATA='C:\Users\<you>\AppData\Local'
 ```
 
-This produces a single binary: `./slermes` (~44 MB with whisper). On Windows it
-is `slermes.exe`. `build/winlibs-env.sh` must be sourced first — it sets the
-compiler and the prebuilt third-party lib paths, and this bash drops exported
-env vars.
+This produces a single native binary: `./slermes` on Linux, `slermes.exe`
+on Windows (the current Windows release build is ~12 MB with whisper
+support; size varies with profile and linked libs — `PROFILE=dev` links a
+much larger unstripped debug binary).
+
+Toolchain rules that matter on the dev box (full doctrine:
+[dev/gates.md](dev/gates.md)):
+
+- `build/winlibs-env.sh` must be sourced **in the same shell** that runs
+  make — it puts winlibs GCC first and sets the prebuilt lib paths.
+- `USERPROFILE`/`LOCALAPPDATA` go as **make variables**, not exports: this
+  box's shell drops exported env vars before native children see them, and
+  ccache refuses to run without them.
+- Use the explicit target `make slermes` — bare `make` historically built
+  only the first object and reported success without compiling anything.
+- No Python runtime is needed to build or run; Python is only for the
+  verification tooling (oracles, scanners, generators).
 
 ## Run
 
@@ -46,40 +60,57 @@ env vars.
 ./slermes.exe      # Windows
 ```
 
-On first run, Slermes creates `~/.slermes/` and launches the setup wizard. You'll need to configure at least one LLM provider.
+The entry point (`src/main.c`) resolves its home as `$SLERMES_HOME` →
+`~/.slermes` → `~/.hermes`, loads `.env` from there (credential values are
+ASCII-sanitized), and dispatches on argv:
 
-## Basic Configuration
+| Invocation | What it does |
+|---|---|
+| `slermes` | interactive CLI (line editor, slash commands) |
+| `slermes "message"` | one-shot conversation |
+| `slermes --tui` | full-screen TUI |
+| `slermes gateway` | multi-platform gateway |
+| `slermes cron` | scheduler |
+| `slermes setup` / `init` | configuration wizard / init |
+| `slermes doctor` | config + key health check |
+| `slermes acp` | ACP server (JSON-RPC over stdio) |
+| `slermes mcp-serve [port]` | MCP HTTP server (default 9100) |
+| `slermes api-server [port]` | OpenAI-compatible REST API (default 9101) |
+| `slermes update` | self-update |
+| `slermes completions bash\|zsh` | shell completions |
+| `slermes --version` / `--help` | banner / usage |
 
-### API Key
+Top-level flags: `--json`, `--session <id>`, `--profile <name>`,
+`--eval/-e`, `--tui`. Unknown leading-dash flags exit 2 (argparse parity).
+
+> Dev-box note: on the Windows dev machine Smart App Control can refuse
+> freshly linked binaries (rc 127 with no output); this is an environment
+> block, not a build failure — the compile/link gates remain valid evidence.
+> See [POST_REBOOT_RESUME](../POST_REBOOT_RESUME.md).
+
+## Basic configuration
+
+Config lives under the resolved home (`~/.slermes` by default):
+`config.yaml` for settings, `.env` for secrets only.
 
 ```bash
-/key set openai
+slermes setup            # interactive wizard
+slermes doctor           # verify config + keys
 ```
 
-Or set `HERMES_OPENAI_API_KEY` in `~/.slermes/.env`.
+Or edit `~/.slermes/.env` directly:
 
-### Model
-
-```bash
-/model list
-/model set gpt-4
+```
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-### Setup Wizard
+In-session slash commands (`/model`, `/key`, `/setup`, …) are listed in
+[cli/index.md](cli/index.md).
 
-```bash
-/setup
-```
+## Next steps
 
-Or non-interactive:
-
-```bash
-/setup --quick
-```
-
-## Next Steps
-
-- [CLI Commands](cli/index.md) — Full command reference
-- [Pet System](pet/index.md) — Install a mascot
-- [Architecture](architecture/overview.md) — How it works
-- [Parity Summary](parity-summary.md) — What's ported vs. not
+- [CLI Commands](cli/index.md) — command reference
+- [Architecture](architecture/overview.md) — how it works
+- [Work Dashboard](WORK_DASHBOARD.md) — where the port stands and what's next
+- [Parity Summary](parity-summary.md) — what's ported vs. not

@@ -251,15 +251,16 @@ def main():
             os.chdir(sandbox)
             sys.path.insert(0, HERE)
             import wc_run
-            gj = os.path.join(GATES, gate, "gate.json")
+            gd = os.path.join(GATES, gate)
+            gj = os.path.join(gd, "gate.json")
             g = _json.load(open(gj))
             res["subsystem"] = g.get("subsystem", "?")
             res["classification"] = g.get("classification", "legacy")
             kind = g.get("kind", "cup")
             if kind == "unit":
-                fail, lines = wc_run.run_unit_gate(gj, g, verbose=False)
+                fail, lines = wc_run.run_unit_gate(gd, g, verbose=False)
             else:
-                fail, lines = wc_run.run_cup_gate(gj, g, verbose=False)
+                fail, lines = wc_run.run_cup_gate(gd, g, verbose=False)
             res["ok"] = (fail == 0)
             res["mismatches"] = fail
         except SystemExit as e:

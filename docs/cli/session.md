@@ -1,165 +1,253 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Session Commands
 
-18 commands for managing conversations, sessions, and context.
+38 commands in the `Session` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`). Handlers are mainly in `src/cli/cli_cmd_session.c`
+and `src/hermes_cli/cli_cmd_parity.c`. Descriptions below were checked against the handler
+bodies; behavioral parity vs Python is proven by the oracle suites, not by this page.
 
 ## `/new` (`/n`)
 
-Start a brand new conversation session. Clears all messages and resets state.
-
-```
-/new
-```
+Saves the previous session first (if a DB is open and messages exist), then clears context and generates a new session ID.
 
 ## `/clear` (`/c`)
 
-Clear conversation context while keeping the session alive. CLI-only.
-
-```
-/clear
-```
+Wipes messages but preserves the session ID and iteration count. CLI-only.
 
 ## `/undo` (`/u`)
 
-Remove the last assistant response. Useful when the model went off-track.
-
-```
-/undo
-```
+Restores the previous agent snapshot when one is available; otherwise removes the last turn (pops trailing messages until a user/system message is reached).
 
 ## `/save` (`/s`)
 
-Save the current session to persistent storage. CLI-only.
-
-```
-/save
-```
+Opens the session DB if needed, then persists the current session. CLI-only.
 
 ## `/load`
 
-Load a previously saved session by ID.
+Loads a saved session by ID.
 
 ```
 /load <session_id>
 ```
 
-**Example:**
-```
-/load abc123
-```
-
 ## `/sessions`
 
-List all saved sessions with timestamps.
-
-```
-/sessions
-```
+Lists saved sessions from the session store.
 
 ## `/stats`
 
-Show statistics for the current session — message count, token usage, model info.
-
-```
-/stats
-```
+Prints message count, iterations, session ID, registered tool count, model, and provider.
 
 ## `/recap`
 
-Summarize the current conversation.
-
-```
-/recap
-```
+Summarizes recent activity: turn counts by role and tool usage over a recent window.
 
 ## `/conv`
 
-Show recent messages in the current session.
-
-```
-/conv
-```
+Shows recent messages (default 10). Supports `/conv [N] [-role <role>]`.
 
 ## `/history`
 
-Show full conversation history.
-
-```
-/history
-```
+Shows full history; supports count, `-role` filter, and search-term arguments. CLI-only.
 
 ## `/reset` (`/r`)
 
-Clear and start fresh — same as `/new` but also resets config.
-
-```
-/reset
-```
+Saves the previous session, clears all messages, and starts a fresh session ID. It does **not** reset configuration (older docs claimed it did).
 
 ## `/retry`
 
-Retry the last LLM call with the same prompt.
-
-```
-/retry
-```
+Finds the last user message and re-runs the LLM call from it.
 
 ## `/compress` (`/cctx`)
 
-Compress the conversation context to save tokens.
+Requires more than 4 messages. Keeps the system message plus the 3 most recent messages and replaces the dropped range with a generated summary message. The argument is used as a *focus* text embedded in the summary — note the registry's `args_hint` says `<keep_count>`, but the handler (`cmd_compress` in `src/cli/cli_cmd_session.c`) treats it as focus text.
 
 ```
-/compress
+/compress <keep_count>
 ```
 
 ## `/branch`
 
-Create a branch of the current session.
+Branches at a message index (default: end of conversation): generates a new session ID and drops messages after the branch point. The argument is a numeric index, not a name.
 
 ```
-/branch <name>
+/branch [message_index]
 ```
 
 ## `/snapshot` (`/snap`)
 
-Save a named snapshot of the current session state.
+Stores a named checkpoint (`SNAP_<session>_<name>`, or a timestamped name when no argument is given). CLI-only.
 
 ```
-/snapshot <name>
+/snapshot [name]
 ```
 
 ## `/status` (`/st`)
 
-Show configuration and status information.
+Shows session status and configuration info; `/status gateway` (or `platform`) prints gateway/platform status text.
+
+## `/pause`
+
+Engages the global emergency stop (new work is paused). `/pause off` resumes; `resume`, `stop`, and `disengage` are accepted as resume aliases. Backed by the estop sentinel (`src/hermes_cli/cli_cmd_parity.c`).
 
 ```
-/status
+/pause [reason | off]
+```
+
+## `/title`
+
+Sets a user title for the session and saves it to the DB immediately.
+
+```
+/title <title>
 ```
 
 ## `/resume`
 
-Resume a previously paused session.
+Loads a saved session by ID (`/resume <session_id>`). It resumes *saved* sessions, not 'paused' ones.
 
 ```
-/resume
+/resume <id>
 ```
+
+## `/usage`
+
+Shows token/character usage statistics for the current session; `/usage tokens` focuses on token counts.
+
+## `/background` (`/bg`)
+
+Runs the prompt through `agent_chat` and prints the result. Note: the current handler executes synchronously despite the name.
+
+```
+/background <prompt>
+```
+
+## `/whoami`
+
+Prints a fixed access level (`admin (C translation build)`) and a hardcoded platform string. It is a display handler, not a live authorization check. CLI-only.
+
+## `/profile`
+
+Shows the active profile; `/profile home` prints the Slermes home directory, `/profile model` the active model. CLI-only.
+
+## `/goal`
+
+Sets a standing goal; `/goal show` and `/goal clear` manage it. Goal data is handled by the goals port.
+
+```
+/goal <text>
+```
+
+## `/agents`
+
+Lists active subagents and running tasks via `delegate_list`.
 
 ## `/rollback`
 
-List and restore previous session snapshots.
+Without arguments, lists available checkpoints; with a name, restores that snapshot.
+
+## `/queue`
+
+Without arguments, shows the queued prompt; with a prompt, queues it for the next turn.
 
 ```
-/rollback
+/queue <prompt>
 ```
+
+## `/subgoal`
+
+Adds extra criteria to the active goal. The current CLI handler acknowledges the criteria text; goal judging lives in the goals module.
+
+```
+/subgoal <text>
+```
+
+## `/insights`
+
+Usage insights/analytics; supports `--days N` and `--source S` filters.
+
+```
+/insights [--days N]
+```
+
+## `/steer`
+
+Injects a message into the conversation. Role options: `-u/--user`, `-a/--assistant`, `-s/--system` (default system).
+
+```
+/steer <text>
+```
+
+## `/session-search`
+
+Searches past sessions via the `session_search` tool handler; default limit 10.
+
+```
+/session-search <query> [--limit N]
+```
+
+## `/session-export`
+
+Exports a saved session as JSON or markdown (default: markdown).
+
+```
+/session-export <session_id> [json|markdown]
+```
+
+Subcommands: `json`, `markdown`.
+
+## `/session-import`
+
+Imports a session from a JSON export file.
+
+```
+/session-import <filepath>
+```
+
+## `/egress`
+
+Reports Docker egress-proxy state from `HERMES_EGRESS_PROXY` / `HERMES_EGRESS_ENABLED` environment variables.
+
+```
+/egress [status]
+```
+
+Subcommands: `status`.
+
+## `/journey` (`/learning`)
+
+Opens the learning-journey timeline; delegates to `ccm_handle_journey_command` (`src/hermes_cli/commands_mixin_wrappers.c`). Subcommands: `list`, `delete <id>`, `edit <id>`. CLI-only.
+
+```
+/journey [list|delete <id>|edit <id>]
+```
+
+Subcommands: `list`, `delete`, `edit`.
+
+## `/moa`
+
+Runs one prompt through the default Mixture-of-Agents preset, then restores the model; delegates to `hermes_cli_moa_cmd_cmd_moa` (`src/hermes_cli/moa_cmd.c`).
+
+```
+/moa <prompt>
+```
+
+## `/prompt`
+
+Composes the next prompt in `$EDITOR` (markdown), then sends it; delegates to `ccm_handle_prompt_compose_command`.
+
+## `/start`
+
+Acknowledges a platform start ping without sending a reply — print-only by design, mirroring Python.

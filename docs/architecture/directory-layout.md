@@ -1,196 +1,101 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Directory Layout — Complete File Map
+# Directory Layout — Subsystem Map
 
-## Source Files by Subsystem
+The complete file list is the tree itself (`find src -name '*.c'` — ~2,089
+files at the latest run); a hand-maintained per-file table goes stale faster
+than it can be written. This map gives the verified anchors per subsystem.
+The old per-file table (82-command registry, `src/cli/main.c` entry, …) was
+wrong and is retracted; the facts below were checked against the tree.
 
-### CLI Subsystem (`src/cli/`)
-
-| File | Purpose |
-|------|---------|
-| `port_cli_command_registry.c` | 82 slash command handlers + dispatch table |
-| `config.c` | YAML config load/save/diff/merge |
-| `display.c` | Terminal output formatting |
-| `display_core.c` | Core display routines |
-| `main.c` | CLI entry point |
-| `cli.c` | CLI initialization |
-| `doctor.c` | System diagnostics |
-| `setup_wizard.c` | First-run setup |
-| `tui_json_rpc.c` | TUI JSON-RPC methods (92 registered) |
-| `tui_fullscreen.c` | Fullscreen TUI mode |
-| `paths.c` | Path resolution |
-| `cli_gaps.c` | CLI compatibility stubs |
-
-### Agent Subsystem (`src/agent/`)
+## Entry & top-level units (`src/*.c`)
 
 | File | Purpose |
 |------|---------|
-| `agent_loop.c` | Main conversation loop |
-| `agent_init.c` | Agent initialization |
-| `agent_runtime_helpers.c` | Runtime helper functions |
-| `provider.c` | LLM provider abstraction |
-| `provider_openai.c` | OpenAI provider |
-| `provider_anthropic.c` | Anthropic provider |
-| `provider_google.c` | Google/Gemini provider |
-| `provider_deepseek.c` | DeepSeek provider |
-| `provider_xai.c` | xAI provider |
-| `provider_openrouter.c` | OpenRouter provider |
-| `provider_azure.c` | Azure OpenAI |
-| `provider_bedrock.c` | AWS Bedrock |
-| `provider_custom.c` | Custom endpoint provider |
-| `llm_client.c` | Low-level LLM HTTP client |
-| `context.c` | Context window management |
-| `context_engine.c` | Context compression engine |
-| `system_prompt.c` | System prompt builder |
-| `tool_executor.c` | Tool call dispatch |
-| `credential_pool.c` | API key credential pool |
-| `conversation_loop.c` | Turn-by-turn conversation |
-| `memory_manager.c` | Memory system |
-| `memory_provider.c` | Memory provider abstraction |
-| `skill_commands.c` | Skill integration |
-| `onboarding.c` | First-run onboarding |
+| `main.c` | **The entry point.** argv dispatch: CLI, gateway, cron, init, setup, doctor, update, completions, acp, mcp-serve, api-server; flags --version/--help/--json/--session/--profile/--eval/--tui |
+| `api_server.c`, `api_server_http.c`, `api_server_sse.c`, `api_server_readonly.c` | OpenAI-compatible REST API server |
+| `app_state.c`, `app_desktop.c` | application state / desktop shell |
+| `desktop_*.c` | SDL2 desktop GUI (gui, input, models, profiles, pty, sessions, settings) |
+| `chat_composer.c`, `chat_render.c`, `chat_view.c` | chat rendering |
+| `web_dashboard.c`, `web_app.c` | web dashboard |
+| `infrastructure_stubs.c` | dependency stubs for unported callees — **never** stub a function that has a real port (wrong-shape facades here are binary-wide FAPs) |
 
-### Tool Subsystem (`src/tools/`)
+## CLI (`src/cli/`, `src/hermes_cli/`)
 
-| File | Purpose |
+| Anchor | Purpose |
 |------|---------|
-| `registry.c` | Tool registration |
-| `terminal.c` | Terminal/command execution |
-| `file.c` | File read/write/search/patch |
-| `web.c` | Web search |
-| `browser.c` | Browser automation |
-| `exec_code.c` | Code execution sandbox |
-| `memory.c` | Memory tool |
-| `todo.c` | Task list management |
-| `process.c` | Process management |
-| `cronjob.c` | Scheduled job management |
-| `session_search.c` | Session search |
-| `session_crud.c` | Session CRUD |
-| `vision.c` | Image analysis |
-| `delegate.c` | Subagent delegation |
-| `voice_mode.c` | Voice I/O |
-| `image_gen.c` | Image generation |
-| `mcp_tool.c` | MCP tool integration |
-| `kanban.c` | Kanban board |
-| `transcribe.c` | Speech-to-text |
-| `tts.c` | Text-to-speech |
-| `video_gen.c` | Video generation |
+| `src/hermes_cli/partial_compress.c` | **The live slash-command registry** `COMMANDS[]` — 110 commands (historical filename; header reads "commands.c"). Count: `grep -c '{\.name="/'` |
+| `src/cli/cli.c` | CLI interactive loop |
+| `src/cli/paths.c` | SLERMES_HOME / profile path resolution |
+| `src/cli/cli_cmd_*.c` | command handler families (session, config, gateway, security, memory, …) |
+| `src/cli/tui_*.c` | ncurses TUI units (Linux target; dead end on Windows — Lua is the direction) |
+| `src/hermes_cli/command_registry.c` | secondary registry metadata (not the dispatch table) |
 
-### Gateway Subsystem (`src/gateway/`)
+## Agent (`src/agent/`)
 
-| File | Purpose |
+| Anchor | Purpose |
 |------|---------|
-| `server.c` | Gateway server |
-| `gateway_runtime.c` | Runtime management |
-| `config.c` | Gateway configuration |
-| `session.c` | Session tracking |
-| `session_context.c` | Session context |
-| `delivery.c` | Message delivery |
-| `run.c` | Gateway main loop |
-| `platforms/telegram.c` | Telegram adapter |
-| `platforms/discord.c` | Discord adapter |
-| `platforms/slack.c` | Slack adapter |
-| `platforms/signal.c` | Signal adapter |
-| `platforms/whatsapp.c` | WhatsApp adapter |
-| `platforms/matrix.c` | Matrix adapter |
-| `platforms/email.c` | Email adapter |
-| `platforms/webhook.c` | Webhook adapter |
-| `platforms/sms.c` | SMS (Twilio) adapter |
-| `platforms/feishu.c` | Feishu/Lark adapter |
-| `platforms/wecom.c` | WeCom adapter |
-| `platforms/dingtalk.c` | DingTalk adapter |
-| `platforms/qqbot.c` | QQ Bot adapter |
-| `platforms/bluebubbles.c` | BlueBubbles (iMessage) adapter |
-| `platforms/weixin.c` | Weixin adapter |
-| `platforms/yuanbao.c` | Yuanbao adapter |
-| `platforms/homeassistant.c` | Home Assistant adapter |
+| `agent_loop.c`, `conversation_loop.c` | conversation loop + tool dispatch/retry |
+| `turn_finalizer.c` | post-loop finalization |
+| `prompt_builder.c`, `system_prompt.c` | prompt assembly |
+| `context_compressor*.c`, `context.c` | context management |
+| `provider_*.c` (18 units) | LLM provider adapters |
+| `llm_client.c`, `auxiliary_client*.c` | LLM transport |
+| `credential_pool*.c`, `port_agent_secret_scope.c` | credentials + profile secret scope |
+| `hermes_state/` | session/state persistence |
 
-### Pet Subsystem (`src/pet/`)
+## Tools (`src/tools/`)
 
-| File | Purpose |
+| Anchor | Purpose |
 |------|---------|
-| `pet_constants.c` | Scale, frame geometry, state aliases |
-| `pet_state.c` | State machine derivation |
-| `pet_manifest.c` | Manifest fetching + TTL cache |
-| `pet_store.c` | Install/list/resolve/remove pets |
-| `pet_render.c` | Terminal detection, frame count, kitty encoding |
-| `pet_commands.c` | Global state, JSON builders, CLI dispatch |
+| `registry.c` | `registry_dispatch` — validation (`validate_args_json`), idempotency cache, retry classification |
+| `tool_idempotency.c`, `tool_result_classification.c` | safe-retry primitives (watercup-gated) |
+| 357 `.c` files total | terminal, file, web, browser, vision, voice, code exec, MCP, … |
 
-### ACP Subsystem (`src/acp/`)
+## Gateway (`src/gateway/`)
 
-| File | Purpose |
+| Anchor | Purpose |
 |------|---------|
-| `server.c` | ACP server |
-| `events.c` | Event handling |
-| `permissions.c` | Permission management |
-| `resource.c` | Resource management |
-| `edit_approval.c` | Edit approval flow |
+| `run.c`, `gateway_runner.c`, `gateway_runtime.c` | gateway runtime |
+| `platforms/` (60 `.c`) | telegram, discord, slack, signal, whatsapp, matrix, feishu, wecom, weixin, yuanbao, qqbot, dingtalk, email, sms, webhook, homeassistant, mattermost, bluebubbles, msgraph_webhook, api_server, … |
+| `relay/` | relay-connector runtime |
+| `session.c`, `session_context.c`, `gw_session.c` | session management |
+| `profile_routing*`, `authz_mixin.c` | multi-profile routing + authz |
 
-### Cron Subsystem (`src/cron/`)
+## Other subsystems
 
-| File | Purpose |
+| Dir | Purpose |
 |------|---------|
-| `scheduler.c` | Cron scheduler |
-| `jobs.c` | Job management |
-| `cron_sqlite.c` | SQLite job store |
-| `cron_cli.c` | Cron CLI commands |
+| `src/cron/` | scheduler (`scheduler.c`, `cron_jobs_time.c`, …) |
+| `src/pet/` | Petdex mascots (8 `.c`: manifest, store, render, state, commands, prompts, constants, atlas) |
+| `src/plugins/` | native C plugins `plugin_*.c` → `.so` |
+| `src/acp/`, `src/acp_adapter/` | Agent Communication Protocol |
+| `src/provider/` | OAuth/token exchange |
+| `src/skills/` | skills markdown parser |
+| `src/pm/` | dependency-environment paths (`port_pm_environments.c`) |
+| `src/lv/` | slerm-Lua interpreter (`slv_*`, upstream Wua) |
+| `src/lua/` | Lua terminal host (`slv_ui.c`) |
+| `src/ports/` | legacy port twins — per-platform linkage audit (`scripts/link_dead_ports.py`) |
+| `src/compat/` + `include/compat/` | POSIX shims for the Windows build |
 
-## Include Files (`include/`)
+## Support trees
 
-127 header files. Key ones:
-
-| Header | Purpose |
-|--------|---------|
-| `hermes.h` | Main project header, config types |
-| `hermes_agent.h` | Agent state and API |
-| `hermes_http.h` | HTTP client API |
-| `pet.h` | Pet system API |
-| `hermes_cli.h` | CLI subsystem |
-| `hermes_gateway.h` | Gateway subsystem |
-| `hermes_tools.h` | Tool registry |
-| `hermes_json.h` | JSON API shim |
-| `json.h` | libjson API |
-| `hermes_logger.h` | Logging API |
-
-## Library Files (`lib/`)
-
-77 internal libraries:
-
-| Library | Purpose |
-|---------|---------|
-| `libjson/` | JSON parser/generator |
-| `libhttp/` | HTTP/HTTPS client |
-| `libyaml/` | YAML parser |
-| `libtui/` | Terminal UI framework |
-| `libdb/` | SQLite wrapper |
-| `libproc/` | Process spawn/management |
-| `libcrypto/` | Crypto utilities |
-| `libwebsocket/` | WebSocket client |
-| `libmcp/` | Model Context Protocol |
-| `libskin/` | Skinning/themming |
-| `libcron/` | Cron expression parser |
-| `libpath/` | Path utilities |
-| `libdatetime/` | Date/time formatting |
-| `libcsv/` | CSV parsing |
-| `libhash/` | Hash tables |
-| `libuuid/` | UUID generation |
-| `libbase64/` | Base64 encode/decode |
-| `libhtml/` | HTML sanitization |
-| `libregex/` | Regex engine |
-| `libglob/` | Glob pattern matching |
-| `libsignal/` | Signal handling |
-| `libansi/` | ANSI escape processing |
-| `libtranscribe/` | Speech-to-text providers |
-| `libplugin/` | Plugin loader |
-| `libcurses_widget/` | ncurses widget toolkit |
+| Dir | Purpose |
+|------|---------|
+| `include/` | 708 headers: `port_<stem>.h` unit headers, `hermes_*.h`, `compat/` shims |
+| `lib/` | 79 libraries — ours (libjson, libhttp, libyaml, libdb, libhash, libregex, liblineedit, libtui, libomap, …) + vendored SLERM targets (whisper_cpp, sqlite amalgamation, ncurses) |
+| `build/` | config.mk (profiles), objects.mk (cupboards), rules.mk, targets.mk, test.mk, winlibs-env.sh, msys2-env.sh |
+| `tests/` | `t_port_*.c` harnesses + `sta_oracle_*.py`/`oracle_*.py` references, `oracle/` registry+fixtures, `watercup/` (22,603 gates), gates, mission8 suites |
+| `scripts/` | parity pipeline (`run_parity_workflow.py`, `parity_truth.py`, `gen_parity_walkway.py`), audits, generators |
+| `.hermes/` | project navigation: battleship, state, mantra, mind-palace, museum |

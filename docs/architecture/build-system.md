@@ -1,92 +1,105 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Build System
 
-Slermes uses a single `Makefile` with 24 build targets. No autotools, no cmake — pure GNU Make.
+Pure GNU Make — no autotools, no cmake. The top-level `Makefile` includes
+`build/config.mk` (flags + profiles), `build/objects.mk` (cupboard-organized
+object lists), `build/rules.mk` (pattern rules), `build/targets.mk` (binary
+targets) and `build/test.mk` (per-port test targets). Run `make help` for the
+live target list.
 
-## Build Targets
+## Primary targets
 
 | Target | Description |
 |--------|-------------|
-| `make` / `make all` | Build the `slermes` binary |
-| `make clean` | Remove build artifacts |
-| `make install` | Install to `PREFIX` (default: `/usr/local`) |
-| `make uninstall` | Remove installed files |
-| `make test` | Run test suite |
-| `make docs` | Build documentation |
-| `make packaging` | Create distribution packages |
+| `make slermes` | Build the `slermes` binary (the explicit, honest target) |
+| `make all` / `make` | Default goal → the binary |
+| `make clean` | Remove build artifacts (also clears the `.profile` stamp) |
+| `make test` | Build + run the test suite |
+| `make install` / `uninstall` | Install to `PREFIX` (default `/usr/local`) |
+| `make plugins` | Build the loadable `.so` plugins |
+| `make desktop-gui` | SDL2 desktop GUI binary |
+| `make parity` | scan → watercup → walkway (refresh every parity sentinel) |
+| `make org-parity` | structural module ↔ C-home scan |
+| `make gap-triage` | ranked gap list |
+| `make dist-appimage` / `dist-docker` / `dist-nix` / `dist-nsis` | packaging |
+| `make static` | `-static -Os -s` static binary |
+| `make asan` / `valgrind` / `coverage` / `fuzz` / `static-analysis` | diagnostics |
 
-## Quick Build
+**Use the explicit target `make slermes`.** Bare `make` historically built
+only the first object in an included `.mk` and exited 0 without compiling
+anything; `.DEFAULT_GOAL` is now pinned, but the explicit target is the
+honest habit. Never verify a change with `make | grep -i error`.
+
+## Build profiles (`make PROFILE=<name>`)
+
+| Profile | Flags | Use |
+|---|---|---|
+| `release` (default) | `-O3` + LTO | the shipped binary |
+| `dev` | `-O0 -g3` | fastest rebuild, easiest to diff against the oracle |
+| `strict` | `-O2 -g` + full warning set | the bar before committing new work |
+| `analyzer` | `-O1 -g -fanalyzer` | static NULL-deref / OOB / leak analysis |
+| `sanitize` | `-O1 -g -fsanitize=address,undefined` | needs a toolchain with the runtimes; **refuses loudly** when absent — a sanitizer that did not run is not a pass |
+
+An unknown profile is a hard error. `PROFILE` is not an object-file
+dependency, so switching it on a built tree requires `make clean` (the
+`build/.profile` stamp guards the mismatch). `dev` links a large unstripped
+binary; `release` is the small shipped one — say which profile produced a
+binary before quoting its size.
+
+## Quick build
 
 ```bash
-make -j$(nproc)
+# Linux / macOS
+make -j$(nproc) slermes
+
+# Windows (one MSYS2 bash child; this box drops exported env vars)
+/c/msys64/usr/bin/bash -lc 'source /c/Users/eman5/slermes/build/winlibs-env.sh; \
+  cd /c/Users/eman5/slermes && make -j8 slermes \
+  USERPROFILE="C:\Users\eman5" LOCALAPPDATA="C:\Users\eman5\AppData\Local"'
 ```
 
-Output: `./slermes` (~47 MB static binary)
+Output: `./slermes` / `slermes.exe`. The current Windows release build is
+~12 MB with whisper support (size varies with profile and linked libs).
 
-## Build Dependencies
+## Toolchain & dependencies
 
-| Package | Required | Notes |
-|---------|----------|-------|
-| gcc (C11) | Yes | `-std=c11` |
-| GNU Make | Yes | libssl-dev | Yes | HTTPS support |
-| libwayland-dev | Linux desktop | Wayland compositor |
-| libxkbcommon-dev | Linux desktop | Keyboard handling |
-| libegl1-mesa-dev | Linux desktop | GPU rendering |
-| libgles2-mesa-dev | Linux desktop | GPU rendering |
+- **C11** (`-std=c11`), no GNU extensions in project code, no C++, no VLAs.
+- **Windows**: MSYS2 (bash/make/python) + winlibs GCC under `C:/winlibs`.
+  `build/winlibs-env.sh` puts winlibs first, sets lib paths, unsets
+  `GCC_EXEC_PREFIX`/`COMPILER_PATH`. `USERPROFILE`/`LOCALAPPDATA` go as
+  **make variables** (ccache refuses without them). ccache is wired into `CC`.
+- **Linux**: `build-essential libssl-dev libwayland-dev libxkbcommon-dev
+  libegl1-mesa-dev libgles2-mesa-dev`.
+- **macOS**: Xcode command-line tools + `brew install openssl`.
+- Link line (Windows): `-lws2_32 -lgdi32 -lz -lpcre2-8 -ltre -lssl -lcrypto`
+  (+ SDL2 for the GUI), `-L C:/winlibs/extra-libs` ahead of them. No
+  `libtinfo` (folded into ncursesw); no `-lasound`/`-lwebp` on Windows.
 
-## Installation
+The three-flag rule: `-include hermes_win32.h -D_GNU_SOURCE -I include/compat`
+belong in every compile path (CFLAGS **and** the pattern rules) — a merge
+that trims them makes every shim invisible.
 
-```bash
-make install              # /usr/local (default)
-make install PREFIX=~/opt # Custom prefix
-```
+## Object organization
 
-Installs:
-- `PREFIX/bin/slermes` — Main binary
-- `PREFIX/share/slermes/` — Documentation and assets
-- `PREFIX/share/man/man1/slermes.1` — Man page
-
-## Build Details
-
-The Makefile compiles:
-- **352 C source files** in `src/`
-- **73 libraries** in `lib/`
-- **127 headers** in `include/`
-
-Compilation flags:
-- `-std=c11` — C11 standard
-- `-O2 -g` — Optimized with debug symbols
-- `-Wall` — Full warnings (many suppressed for third-party code)
+`build/objects.mk` is cupboard-organized: one `CUPBOARD_*` per subsystem;
+`CLI_OBJ`/`PORT_OBJ` concatenate them. After editing run
+`python scripts/organize_objects.py` (refuses to write unless the expanded
+object multiset is identical). **Registered ≠ reachable** — confirm a new
+object is on the link line: `make -n slermes | grep -c '<obj>.o'`.
 
 ## Packaging
 
-```bash
-make packaging
-```
-
-Creates:
-- AppImage (Linux)
-- Homebrew formula (macOS)
-- NSIS installer (Windows)
-- Docker image
-- Nix flake
-
-## Cross-Compilation
-
-The CI targets 5 platforms:
-- Linux x86_64 (native + test)
-- macOS arm64
-- Linux aarch64/armv7
-- Windows x86_64 (cross-compile)
+`packaging/{appimage,docker,homebrew,nix,nsis}` + `make dist-*` targets.
+Release engineering is downstream of parity (see [ROADMAP](../../ROADMAP.md)).

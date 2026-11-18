@@ -1,33 +1,91 @@
 # Slermes ↔ Hermes Parity Ledger (honest, whole-project)
-Generated 2026-11-07 — whole production tree, every top-level `def`, except indirect-scan tooling.
 
-## Method
-- **PORTED-faithful**: Python fn whose C port carries a `/* PoP: <cfn> @ <module.py>:<pyfn> */` annotation naming THIS module+fn (exact, plus basename-resolved).
-- **PORTED-cname**: no PoP, but an identically-named C def exists somewhere (mostly name collisions — NOT counted as ported).
-- **REAL_GAP**: no C counterpart found.
-- Scope: production `hermes_cli/ agent/ tools/ gateway/ cron/`. Excludes `tests/` (7,508 files), plugins, evals, scripts, optional-skills.
-- The 47 "undefined calls" in `depth_check_results.json` are a scanner FALSE POSITIVE: every flagged symbol (`json_object_set/get`, `json_new_*`, `json_array_*`) is a macro/inline defined in `include/hermes_json.h`, and the final linked binary (`nm slermes.exe`) resolves all of them. Not a defect.
+**This file is a dated snapshot, not a live source.** The live numbers are
+owned by `make parity` and stamped into the `<!-- PARITY:AUTO -->` sentinels
+(README, BANNER, ROADMAP, docs/parity-summary.md, .hermes/). When this ledger
+and a sentinel disagree, the sentinel is newer — regenerate this snapshot
+from the commands below rather than trusting either from memory.
 
-## Totals
-- Total top-level Python defs: **36545**
-- **PORTED-faithful: 3132 (8%)**
-- PORTED-cname (ambiguous): 763 (2%)
-- **REAL_GAP: 32650 (89%)**
+Snapshot measured **2026-11-18** on the Windows dev box, branch `integrate`
+(latest `make parity` run; the sentinels carry the live copy).
 
-## By area
-| area | defs | faithful | % | cname | gap |
-|---|---|---:|---:|---:|---:|
-| hermes_cli | 15012 | 1091 | 7% | 269 | 13652 |
-| agent | 7440 | 850 | 11% | 270 | 6320 |
-| tools | 6593 | 585 | 8% | 115 | 5893 |
-| gateway | 6662 | 499 | 7% | 104 | 6059 |
-| cron | 838 | 107 | 12% | 5 | 726 |
+## The three audits (different denominators, on purpose)
 
-## Why this differs from STATE.md (66.1% PORTED at v621)
-STATE.md's 9,733-fn scoped scanner counted functions across a narrower/module-overlapping set and did
-not require a per-function PoP identity — it matched on module/file presence and counted the C unported
-margin unit by unit. The identity-led scan above is stricter: a Python def is PORTED only when the C
-port explicitly claims that exact module+function (`PoP ... @ module.py:fn`). By that standard the
-project is at **~8–9% production parity**, and the oracle suite (81 harnesses, ~4,100 cases) covers
-only a fraction of the faithful slice. The two numbers are measuring different things; the ledger here
-is the conservative, decision-ready one.
+| Audit | Command | Question it answers |
+|---|---|---|
+| Battleground scanner | `python scripts/parity_truth.py` | Which Python functions carry a verifiable C PoP claim? (static; a stub with a comment still counts) |
+| Body-level reality | `python tests/parity_reality.py` | Which C bodies actually do work? (`(void)x; return 0;` = placeholder, not implemented) |
+| Port stages | `python scripts/gen_port_stages.py` | Which modules have advanced unit → header → harness → oracle → green → MATCH? |
+
+The scanner is triage; reality is the honest scoreboard; stages is the
+funnel that answers "what next". A port is parity-closed only when its
+differential oracle **and** its watercup gate say MATCH — no static audit
+can grant that.
+
+## Scanner snapshot (feature-level, PoP-claimed)
+
+`scripts/parity_truth.py` → `live_parity_scan.json`, fail-closed (refuses to
+emit unless the Python quarry is present and actually scanned):
+
+- Total features: **34,262** across **1,978** modules
+- **PORTED: 8,377 (24.4%)**
+- PARTIAL: 45 · STUB: 0 · BOOTLEG: 2 (hunter)
+- **REAL_GAP: 25,840** — of which DA-4 annotation-only stubs: **13**,
+  genuine gaps (no C at all): **25,827**
+- Annotations: 26,686 total · 20,521 claimed · 19,875 verifiable ·
+  **611 orphan** (claimed module absent from both trees and no twin) ·
+  6,165 unattributed (loose prose, no module path) · 61 non-python claims
+
+Orphan ≠ unattributed: an orphan is a claim that cannot be checked;
+unattributed is a comment that makes no claim. Never fold them together.
+
+### By area (scanner scope: the five production packages)
+
+| Area | Features | Ported | % | Real gaps |
+|---|---:|---:|---:|---:|
+| hermes_cli | 14,049 | 3,431 | 24.4% | 10,594 |
+| agent | 7,079 | 1,835 | 25.9% | 5,243 |
+| tools | 6,213 | 1,866 | 30.0% | 4,328 |
+| gateway | 6,135 | 971 | 15.8% | 5,158 |
+| cron | 786 | 252 | 32.1% | 534 |
+
+(`python scripts/parity_coverage.py --dirs` rolls up a wider module set —
+plugins, tui_gateway, pm, acp_adapter, hermes_platform — at module level;
+its percentages are a different cut, not a contradiction.)
+
+## Body-level reality snapshot
+
+`tests/parity_reality.py` (placeholder bodies do not count):
+
+- Total Python features extracted: **35,858**
+- **Implemented: 12,234 (34.1%)**
+- Placeholder only: **704 (2.0%)**
+- Missing entirely: **22,920 (63.9%)**
+
+The reality audit extracts more features than the scanner and judges bodies,
+not comments — which is why its totals differ. Quote the audit that matches
+the question.
+
+## Method notes
+
+- **PORTED** (scanner): a Python function whose C port carries a
+  `/* PoP: <cfn> @ <module.py>:<pyfn> */` annotation naming that module+fn,
+  and the C unit is linked (the scanner indexes only files named in
+  `build/objects.mk` — parity is a claim about the binary).
+- **REAL_GAP**: no verifiable C counterpart. There is no N/A: rewriting from
+  scratch in C is the point, so every unported feature is work.
+- The DA-4 bucket is the cheat surface: PoP comment, no real body. It is
+  reported separately so it can never hide inside PORTED.
+- `tests/recursive_false_gap_hunter.py` hunts BOOTLEG echo stubs; the
+  pipeline runs it and stamps the count (0 at this snapshot).
+
+## Regenerate
+
+```bash
+make parity        # scan -> watercup -> walkway: refreshes every sentinel
+python tests/parity_reality.py
+python scripts/gen_port_stages.py
+```
+
+Never hand-edit a number inside a sentinel, and never quote a snapshot as
+live. A number copied by hand is a number that has already gone stale.

@@ -1,86 +1,121 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Slermes Documentation
 
-**Slermes** is an in-progress C11 reimplementation of Hermes Agent — Nous Research's Python/Electron AI agent. One binary, zero Python dependencies.
+**Slermes** is a from-scratch C11 SLERM of Hermes Agent — Nous Research's
+Python/Electron AI agent. One native binary, zero Python at runtime. The
+mission covers the whole ecosystem: agent, tools, platforms, plugins, and
+every third-party dependency. Nothing is N/A; nothing is "not doable".
 
-## Quick Links
+## Start here
 
-| Category | Doc | Description |
-|----------|-----|-------------|
-| Getting Started | [getting-started.md](getting-started.md) | Build, configure, run in 2 minutes |
-| Architecture | [overview.md](architecture/overview.md) | System design, data flow, directory layout |
-| Build System | [build-system.md](architecture/build-system.md) | Make targets, dependencies, packaging |
-| CLI | [index.md](cli/index.md) | Slash commands with examples |
-| TUI | [index.md](tui/index.md) | Terminal UI features, RPC methods |
-| Pet System | [index.md](pet/index.md) | Petdex mascot install, configure, animate |
-| Development | [index.md](dev/index.md) | Building, testing, contributing |
-| Parity | [parity-summary.md](parity-summary.md) | Live parity scan results |
-| Gaps | [real-gap-list.md](real-gap-list.md) | Live REAL_GAPs across modules |
-| Contracts | [relay-connector-contract.md](architecture/relay-connector-contract.md) | Platform relay protocol |
-| Contracts | [chronos-managed-cron-contract.md](architecture/chronos-managed-cron-contract.md) | Cron scheduler interface |
-| Operations | [streaming-tts.md](operations/streaming-tts.md) | TTS pipeline docs |
-| Security | [profile-routing.md](security/profile-routing.md) | Auth and routing |
-| Security | [network-egress-isolation.md](security/network-egress-isolation.md) | Network isolation |
-| FAP | [fap.md](fap.md) | Behavioral divergences + oracle harness |
-| Watercup | [watercup-parity-oracle.md](watercup-parity-oracle.md) | Trace-cup deep gate |
-| Sessions | [session-lifecycle.md](session-lifecycle.md) | Session lifecycle |
-| State | [state.md](state.md) | Project state and history |
-| Organization | [organization-parity.md](organization-parity.md) | Module ↔ C file mapping |
-| Module Map | [module-map.md](module-map.md) | Complete module map |
-| Changelog | [CHANGELOG-SLERMES.md](CHANGELOG-SLERMES.md) | Version history |
+| Doc | Description |
+|----------|-------------|
+| [Work Dashboard](WORK_DASHBOARD.md) | **The walk-in doc**: live detectors + ranked work |
+| [Getting Started](getting-started.md) | Build, configure, run |
+| [Roadmap](../ROADMAP.md) | The fronts: gaps, dependencies, Lua UI, verification |
+| [Gates](dev/gates.md) | Every verification gate and how to run it |
+| [C Standards](dev/c-standards.md) | The enforced C11 standard |
+| [soul.md](../soul.md) | The operating contract (angel coder) |
 
-## How to read the parity numbers
+## Architecture & subsystems
 
-The live scanner (`tests/slermes_parity_battleground.py`) is the single source of truth for completion. Run `make parity-walkway` to refresh all walkway files. Any number not from the scanner is stale — trust the scanner, not prose.
+| Doc | Description |
+|----------|-------------|
+| [Overview](architecture/overview.md) | System design, data flow, directory layout |
+| [Build System](architecture/build-system.md) | Make targets, profiles, dependencies |
+| [Directory Layout](architecture/directory-layout.md) | Where everything lives |
+| [How It Works](how-it-works.md) | CLI entry, loop, line editor depth |
+| [CLI Commands](cli/index.md) | Slash command reference |
+| [TUI Reference](tui/index.md) | Terminal UI (and the Lua direction) |
+| [Pet System](pet/index.md) | Petdex mascots |
+| [Session Lifecycle](session-lifecycle.md) | Gateway session lifecycle |
+| [Relay Connector Contract](architecture/relay-connector-contract.md) | Platform relay protocol |
+| [Chronos Managed Cron Contract](architecture/chronos-managed-cron-contract.md) | Cron scheduler interface |
+| [Billing Lifecycle](architecture/billing-lifecycle.md) | Usage/billing flow |
+| [Streaming TTS](operations/streaming-tts.md) | TTS pipeline |
+| [Profile Routing](security/profile-routing.md) | Auth and routing |
+| [Network Egress Isolation](security/network-egress-isolation.md) | Network isolation |
+
+## Parity & verification
+
+| Doc | Description |
+|----------|-------------|
+| [Parity Summary](parity-summary.md) | Live sentinel + how to read the numbers |
+| [Parity Ledger](../PARITY_LEDGER.md) | Dated snapshot of all three audits |
+| [Port Stages](port-stages.md) | Per-module funnel S0–S6 (generator-owned) |
+| [Real Gap List](real-gap-list.md) | Every REAL_GAP, function level (generator-owned) |
+| [FAP](fap.md) | Behavioral divergences the scanner can't see |
+| [Water-Cup Parity Oracle](watercup-parity-oracle.md) | Trace-cup deep gate |
+| [Third-Party SLERMing](third-party.md) | Plugins, providers, dependency front |
+| [Organization Parity](organization-parity.md) | Module ↔ C home structural scan |
+| [Module Map](module-map.md) | Python agent/ ↔ C mapping |
+| [Naming Standard](dev/naming.md) | Parity joins on the module name |
+| [Changelog](CHANGELOG-SLERMES.md) | Deliberate C-vs-Python deltas (historical log) |
 
 ## Project structure
 
 ```
 src/
-├── cli/          # CLI command dispatch, slash commands, command registry
-├── gateway/      # Platform adapters (Telegram, Discord, Slack, etc.)
-├── agent/        # Core agent logic (memory, tools, skills, planning)
-├── tools/        # Tool implementations (terminal, file, web, browser, etc.)
-├── pet/          # Petdex mascot system
-├── hermes_cli/   # CLI command modules (config, session, model, etc.)
-├── provider/     # LLM provider integrations
-├── skills/       # Skill loader and registry
-├── plugins/      # Plugin system
-├── cron/         # Built-in scheduler
-├── tui/          # Terminal UI (ncurses-based)
-├── web_server/   # Built-in HTTP server
-├── desktop_app/  # Custom C11 desktop (SDL2/Wayland)
+├── main.c        # entry point: argv dispatch (CLI, gateway, cron, acp, mcp-serve, api-server…)
+├── cli/          # CLI loop, slash commands, config, display, TUI units
+├── hermes_cli/   # ports of the hermes_cli Python package
+├── agent/        # agent loop, providers, credentials, memory, context
+├── gateway/      # platform adapters + relay + gateway runtime
+│   └── platforms/
+├── tools/        # tool implementations
+├── plugins/      # native C plugins (plugin_*.c → .so)
+├── cron/         # scheduler
+├── pet/          # Petdex mascots
+├── lv/           # slerm-Lua interpreter (slv_*, upstream Wua)
+├── lua/          # Lua-driven terminal host (slv_ui.c)
 └── ...
+include/          # headers incl. port_<stem>.h unit headers + compat/ shims
+lib/              # our C libraries + vendored third-party SLERM targets
+tests/            # oracles (sta_oracle_*.py + t_port_*.c), watercup/, gates
+scripts/          # parity pipeline, audits, generators
+.hermes/          # project navigation: battleship, state, mantra, mind-palace
 ```
 
-The docs directory mirrors this layout — each subsystem has its own subdirectory.
-
-## Build
+## Build (quick reference)
 
 ```bash
-make              # Build slermes binary (~37 MB)
-make test         # Run Mission8 test suite
-make parity-walkway  # Refresh all parity docs from live scanner
+# Linux
+make -j$(nproc) slermes
+
+# Windows (inside MSYS2 bash)
+source build/winlibs-env.sh
+make -j8 slermes USERPROFILE='C:\Users\<you>' LOCALAPPDATA='C:\Users\<you>\AppData\Local'
+
+make test            # Mission8 test suite
+make parity          # scan -> watercup -> walkway: refresh every parity doc
 ```
 
-## How to contribute
+Full toolchain doctrine and gates: [dev/gates.md](dev/gates.md).
 
-See [Development](dev/index.md) for building, testing, and contributing.
+## How to read the parity numbers
+
+The live scanner (`tests/slermes_parity_battleground.py`, wrapped by
+`scripts/parity_truth.py`) is the single source of the sentinel counts;
+`make parity` refreshes every walkway file. Any number not from a live run
+is stale — trust the generator, not prose. Three audits exist with different
+denominators (scanner / body-level reality / port stages); see
+[Parity Summary](parity-summary.md) and [Parity Ledger](../PARITY_LEDGER.md).
 
 ## About this project
 
-Slermes is a fork of `NousResearch/hermes-agent`. We pull Python source from upstream and port features to C11. We never push C code back to upstream. The two repos have separate git histories by design.
-
-See `BANNER.md` for the full project workflow, sync instructions, and fork reconciliation procedure.
+Slermes pulls Python source from upstream (`NousResearch/hermes-agent`)
+into the quarry and ports the delta to C11. C work is never pushed back
+upstream; port commits land on `integrate`. See [BANNER](../BANNER.md) for
+the sync workflow.

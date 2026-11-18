@@ -13,6 +13,11 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 # Python → C Function Name Parity Reference
 
+> **Historical rename record (v76).** The enforced naming standard is now
+> `docs/dev/naming.md` (unit named for the Python module, per-unit prefix,
+> PoP join). This table documents a past bulk-rename batch — history, not a
+> rule for new work.
+
 **Generated:** v76 (post-rename batch)
 **Status:** 87 exact matches (22.0% of 396 Python public functions in agent/)
 **Total renamed: 49 functions across 64 files, 265+ replacements (cumulative)**

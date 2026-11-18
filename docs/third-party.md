@@ -1,167 +1,101 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->
+| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._
+<!-- /PARITY:AUTO -->
 
-# Third-Party Plugins — Port Status
+# Third-Party SLERMing — Plugins, Providers, and the Dependency Front
 
-All third-party plugins from the Python Hermes Agent have been ported to C.
-Each plugin has a C implementation in `src/plugins/` and a corresponding
-`port_*.c` file in `src/cli/` for the Python module functions.
+The mission is the whole ecosystem: not just the agent, but every plugin,
+provider and platform adapter — and the third-party libraries underneath
+them — reimplemented from scratch in C11. Nothing here is "not doable";
+every dependency is either SLERMed, being SLERMed, or queued to be.
 
-## Platform Adapters (17 adapters)
+**Status discipline:** this file lists what C units EXIST. Existence is not
+parity. Behavioral parity is proven per-port by the differential oracle and
+the watercup gate, and the live counts are owned by `make parity`
+(see the sentinels in README/BANNER and `docs/parity-summary.md`). The
+per-area module coverage rollup is `python scripts/parity_coverage.py --dirs`
+— at the latest run the `plugins` area sat at 44/304 modules (14%),
+which is the honest headline: the plugin front is early, not done.
 
-| Plugin | Python Source | C Port | Status |
-|--------|--------------|--------|--------|
-| Discord | `plugins/platforms/discord/` | `port_plugins_platforms_discord_adapter.c` + `plugin_platforms.c` | ✅ PORTED |
-| Google Chat | `plugins/platforms/google_chat/` | `port_plugins_platforms_google_chat_adapter.c` | ✅ PORTED |
-| LINE | `plugins/platforms/line/` | `port_plugins_platforms_line_adapter.c` | ✅ PORTED |
-| Mattermost | `plugins/platforms/mattermost/` | `port_plugins_platforms_mattermost_adapter.c` | ✅ PORTED |
-| Ntfy | `plugins/platforms/ntfy/` | `port_plugins_platforms_ntfy_adapter.c` | ✅ PORTED |
-| Photon | `plugins/platforms/photon/` | `port_plugins_platforms_photon_adapter.c` | ✅ PORTED |
-| Simplex | `plugins/platforms/simplex/` | `port_plugins_platforms_simplex_adapter.c` | ✅ PORTED |
-| Teams | `plugins/platforms/teams/` | `port_plugins_platforms_teams_adapter.c` | ✅ PORTED |
-| IRC | `plugins/platforms/irc/` | `port_plugins_platforms_irc_adapter.c` | ✅ PORTED |
-| Home Assistant | `plugins/platforms/homeassistant/` | `port_plugins_platforms_homeassistant_adapter.c` | ✅ PORTED |
-| DingTalk | `plugins/platforms/dingtalk/` | `gateway/platforms/dingtalk.c` | ✅ PORTED |
-| QQBot | `plugins/platforms/qqbot/` | `gateway/platforms/qqbot_adapter.c` | ✅ PORTED |
-| Signal | `plugins/platforms/signal/` | `gateway/platforms/signal.c` | ✅ PORTED |
-| Slack | `plugins/platforms/slack/` | `gateway/platforms/slack.c` | ✅ PORTED |
-| WhatsApp | `plugins/platforms/whatsapp/` | `gateway/platforms/whatsapp.c` | ✅ PORTED |
-| WeCom | `plugins/platforms/wecom/` | `gateway/platforms/wecom.c` | ✅ PORTED |
-| Feishu | `plugins/platforms/feishu/` | `gateway/platforms/feishu.c` | ✅ PORTED |
-| Matrix | `plugins/platforms/matrix/` | `gateway/platforms/matrix.c` | ✅ PORTED |
-| Telegram | `plugins/platforms/telegram/` | `gateway/platforms/telegram.c` | ✅ PORTED |
-| Yuanbao | `plugins/platforms/yuanbao/` | `gateway/platforms/yuanbao.c` | ✅ PORTED |
+## Platform adapters
 
-## Model Providers (28 providers)
+The gateway platform adapters live in `src/gateway/platforms/` (60 `.c`
+files at this writing — telegram, discord, slack, signal, whatsapp, matrix,
+feishu, wecom, weixin, yuanbao, qqbot, dingtalk, email, sms, webhook,
+homeassistant, mattermost, bluebubbles, msgraph_webhook, api_server, …).
+Upstream rehomed the Python adapters from `gateway/platforms/<name>.py` to
+`plugins/platforms/<name>/adapter.py`; PoP annotations were re-pointed to
+the new layout (`scripts/pop_repoint.py`). Adapter parity is tracked by the
+scanner per module — `gateway` area coverage was 145/340 (43%) at the
+latest run.
 
-| Provider | C Implementation |
-|----------|-----------------|
-| OpenAI | `src/agent/provider_openai.c` |
-| Anthropic | `src/agent/provider_anthropic.c` + `src/agent/anthropic_adapter.c` |
-| Google (Gemini) | `src/agent/provider_google.c` + `src/agent/gemini_*.c` |
-| DeepSeek | `src/agent/provider_deepseek.c` |
-| OpenRouter | `src/agent/provider_openrouter.c` |
-| Azure OpenAI | `src/agent/provider_azure.c` |
-| Bedrock | `src/agent/provider_bedrock.c` |
-| Moonshot | `src/agent/provider_moonshot.c` |
-| Copilot | `src/agent/provider_copilot.c` |
-| LM Studio | `src/agent/lmstudio.c` |
-| Ollama | `src/agent/provider_ollama.c` |
-| Together | `src/agent/provider_together.c` |
-| Fireworks | `src/agent/provider_fireworks.c` |
-| Groq | `src/agent/provider_groq.c` |
-| Perplexity | `src/agent/provider_perplexity.c` |
-| xAI | `src/agent/provider_xai.c` |
-| + 12 more | `src/agent/provider_*.c` |
+## Model providers
 
-## Memory Plugins
+`src/agent/provider_*.c` (18 units: openai, anthropic, google, deepseek,
+openrouter, azure, bedrock, xai, codex_responses, custom, …) plus the
+adapter layers (`anthropic_adapter.c`, `gemini_*`, `lmstudio`, ollama,
+together, fireworks, groq, perplexity, moonshot, copilot paths in the
+provider registry). The provider-auth table is oracle-gated
+(`provider_auth` — regenerated from LIVE Python `PROVIDER_REGISTRY` when
+the last FAP was closed).
 
-| Plugin | C Implementation | Status |
-|--------|-----------------|--------|
-| Honcho | `src/plugins/plugin_honcho.c` + `port_plugins_memory_honcho_*.c` | ✅ PORTED |
-| Holographic | `src/plugins/plugin_holographic.c` + `port_plugins_memory_holographic_*.c` | ✅ PORTED |
-| File Memory | `src/plugins/plugin_file_memory.c` | ✅ PORTED |
+## Plugins
 
-## Web Tools
+Native C plugin units in `src/plugins/` (`plugin_*.c`, ~30 units:
+honcho, holographic/file memory, spotify, image_gen, video_gen,
+security_guidance, dashboard_auth, context_engine, disk_cleanup, kanban,
+observability, skills, achievements, browser, google_meet, …), built as
+loadable `.so` plugins alongside the static tree. The Python plugin
+modules' function-level parity is the `plugins` area of the scanner —
+14% module coverage means most plugin functions are still REAL_GAP work.
+The old version of this file claimed every plugin "✅ PORTED" via
+`port_plugins_*.c` files that do not exist in the tree; that claim was
+false and is retracted. Existence of a `plugin_<name>.c` unit proves a
+native implementation exists, nothing more.
 
-| Tool | C Implementation | Status |
-|------|-----------------|--------|
-| Brave Search | `port_plugins_web_brave_free_provider.c` | ✅ PORTED |
-| DuckDuckGo | `port_plugins_web_ddgs_provider.c` | ✅ PORTED |
-| Exa | `port_plugins_web_exa_provider.c` | ✅ PORTED |
-| Firecrawl | `port_plugins_web_firecrawl_provider.c` | ✅ PORTED |
-| Parallel | `port_plugins_web_parallel_provider.c` | ✅ PORTED |
-| SearXNG | `port_plugins_web_searxng_provider.c` | ✅ PORTED |
-| Tavily | `port_plugins_web_tavily_provider.c` | ✅ PORTED |
-| xAI Search | `port_plugins_web_xai_provider.c` | ✅ PORTED |
+## Bundled libraries — the SLERM dependency front
 
-## Google Meet
+`lib/` holds the project's own C libraries (libjson, libhttp, libyaml,
+libwebsocket, libregex, libhash, libcrypto, libdb, liblineedit, libtui,
+libomap, libglob, libdifflib, libansi, … — these are already ours) AND the
+vendored third-party code that is the SLERM target list:
 
-| Module | C Implementation | Status |
-|--------|-----------------|--------|
-| Meet Bot | `src/plugins/plugin_google_meet.c` + `port_plugins_google_meet_*.c` | ✅ PORTED |
-| Audio Bridge | `port_plugins_google_meet_audio_bridge.c` | ✅ PORTED |
-| Node Protocol | `port_plugins_google_meet_node_*.c` | ✅ PORTED |
+| Dependency | Today | SLERM target |
+|---|---|---|
+| whisper.cpp (+ ggml) | vendored prebuilt libs under `lib/whisper_cpp/lib/`, headers in `lib/whisper_cpp/include/` | **`lib/c11_whisper/` — ACTIVE**: pure-C11 model/math/encoder/compat units, linked into the binary when the whisper libs are present (`C11_WHISPER_OBJ` in `build/targets.mk`; the current build is "12M with whisper"). Finish the port, retire the vendored libs. |
+| SQLite 3.45.1 | vendored amalgamation `lib/libdb/sqlite3.c` (8.7 MB) behind our own `db.c` layer | C11 engine SLERM — the db layer is ours; the engine underneath is work. |
+| ncurses | vendored `lib/libncurses/` (+ `libcurses_widget`, `libtui`) | Retired by the Lua UI substrate (`src/lv/`, `src/lua/slv_ui.c`) — the ncurses TUI is a dead end on Windows. |
+| ctranslate2 | `lib/ctranslate2_src/` slot (empty) | C11 translation backend — the slot exists, the implementation is the work. |
+| OpenSSL, zlib, pcre2, tre, SDL2 | prebuilt under `C:/winlibs/extra-libs`, linked via `-L` | Long-horizon SLERM targets (crypto, inflate, regex, raster). The regex engine already has our own `lib/libregex` wrapper; full replacement is queued, never refused. |
 
-## Teams Pipeline
+The rule is identical to Python features: reference in, from-scratch C11
+out, oracle/watercup proof, no escape hatches. A dependency we have not
+started is REAL_GAP work on this front, not an exception.
 
-| Module | C Implementation | Status |
-|--------|-----------------|--------|
-| Pipeline | `port_plugins_teams_pipeline_pipeline.c` | ✅ PORTED |
-| CLI | `port_plugins_teams_pipeline_cli.c` | ✅ PORTED |
-| Meetings | `port_plugins_teams_pipeline_meetings.c` | ✅ PORTED |
-| Models | `port_plugins_teams_pipeline_models.c` | ✅ PORTED |
-| Runtime | `port_plugins_teams_pipeline_runtime.c` | ✅ PORTED |
-| Store | `port_plugins_teams_pipeline_store.c` | ✅ PORTED |
-| Subscriptions | `port_plugins_teams_pipeline_subscriptions.c` | ✅ PORTED |
+## Optional skills
 
-## Other Plugins
+The Python optional-skill modules (blockchain clients, creative tools,
+finance, health, MCP templates, migration, ML ops, productivity, research,
+security) are scanned as part of the quarry; their function-level status is
+in `docs/real-gap-list.md` like everything else. No blanket "all ported"
+claim is made — the scanner is the only scoreboard.
 
-| Plugin | C Implementation | Status |
-|--------|-----------------|--------|
-| Spotify | `src/plugins/plugin_spotify.c` + `port_plugins_spotify_*.c` | ✅ PORTED |
-| Image Gen | `src/plugins/plugin_image_gen.c` | ✅ PORTED |
-| Video Gen | `src/plugins/plugin_video_gen.c` | ✅ PORTED |
-| Security Guidance | `src/plugins/plugin_security_guidance.c` | ✅ PORTED |
-| Dashboard Auth | `src/plugins/plugin_dashboard_auth.c` | ✅ PORTED |
-| Context Engine | `src/plugins/plugin_context_engine.c` | ✅ PORTED |
-| Disk Cleanup | `src/plugins/plugin_disk_cleanup.c` | ✅ PORTED |
-| Kanban | `src/plugins/plugin_kanban.c` | ✅ PORTED |
-| Observability | `src/plugins/plugin_observability.c` | ✅ PORTED |
-| Skills | `src/plugins/plugin_skills.c` | ✅ PORTED |
-| Achievements | `src/plugins/plugin_achievements.c` | ✅ PORTED |
+## Verify, don't trust
 
-## Optional Skills
-
-All 55 optional-skill modules are ported to C in `src/cli/port_optional_skills_*.c`:
-
-- **Blockchain**: EVM client, Solana client, Hyperliquid client
-- **Creative**: Pixel art, meme generation, ComfyUI workflows, Excalidraw
-- **Finance**: Stocks client, DCF model, Excel authoring
-- **Health**: Fitness/nutrition calculator
-- **MCP**: FastMCP templates (API wrapper, database server, file processor)
-- **Migration**: OpenClaw migration scripts
-- **ML Ops**: TRL fine-tuning templates
-- **Productivity**: Telephony, Memento flashcards, Google Workspace, OCR, PowerPoint
-- **Research**: Arxiv search, Polymarket, Drug discovery, Darwinian evolver, OSINT investigation
-- **Security**: Godmode, OSS forensics
-
-## Bundled C Libraries
-
-| Library | Purpose | Location |
-|---------|---------|----------|
-| libjson | JSON parsing | `lib/libjson/` |
-| libhttp | HTTP client | `lib/libhttp/` |
-| libyaml | YAML parsing | `lib/libyaml/` |
-| libssl | SSL/TLS (OpenSSL wrapper) | `lib/libssl/` |
-| libwebsocket | WebSocket client | `lib/libwebsocket/` |
-| libncurses | Terminal UI | bundled with system |
-| whisper-cpp | Local speech-to-text | `lib/whisper_cpp/` |
-| libprotobuf | Protocol Buffers | `lib/libprotobuf/` |
-| libtoml | TOML parsing | `lib/libtoml/` |
-| libregex | Regex engine | `lib/libregex/` |
-| libsignal | Signal protocol | `lib/libsignal/` |
-| libxai | xAI HTTP client | `lib/libxai_http/` |
-| libfal | FAL AI client | `lib/libfal_common/` |
-| libmcp | MCP OAuth | `lib/libmcp_oauth/` |
-| libcredential | Credential management | `lib/libcredential/` |
-| librateguard | Rate limiting | `lib/librateguard/` |
-| libenvpassthrough | Environment passthrough | `lib/libenvpassthrough/` |
-| libtooloutput | Tool output formatting | `lib/libtooloutput/` |
-| libthreatpatterns | Security threat patterns | `lib/libthreatpatterns/` |
-| libtextwrap | Text wrapping | `lib/libtextwrap/` |
-| libglob | Glob matching | `lib/libglob/` |
-| libdifflib | Diff engine | `lib/libdifflib/` |
-| libansi | ANSI escape codes | `lib/libansi/` |
-| libjson5 | JSON5 parsing | `lib/libjson5/` |
-| libcurses_widget | ncurses widgets | `lib/libcurses_widget/` |
+```bash
+python scripts/parity_coverage.py --dirs        # per-area module coverage
+python scripts/parity_coverage.py --by-module   # every module, defs + importers
+make parity                                     # live sentinels everywhere
+bash tests/run_one_oracle.sh <port>             # behavioral proof per port
+```

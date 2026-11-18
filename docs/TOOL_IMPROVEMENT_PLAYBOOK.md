@@ -1,15 +1,15 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Tool Improvement Playbook (research-backed, )
 
@@ -38,33 +38,51 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - **Zylos / MCP code-execution** — load tool *definitions* on demand (hierarchical
   selection), not all upfront; cuts context noise + selection errors.
 
-## Current state in slermes (measured this session)
-- **511 `src/tools/*.c` files**, dispatched via `register_tool` (namespace-prefixed
-  `plugin_register_tool`) in `src/agent/tool_executor*.c`.
-- **112 tool files** hand-roll `json_parse`/`json_get` arg extraction — **no central
-  schema-validation layer**. Each tool re-implements parsing; validation is inconsistent
-  and absent by default.
-- **No idempotency / retry-classification / dedupe** scaffolding in the core executor
-  (only incidental "idempotent" comments in wrappers).
-- **Trace exists** (`trace_upload` port of `build_trace_jsonl`, logging in
-  `tool_executor`) but not as nested OTel-style spans — can't replay *why*.
-- `tool_search_ports.c` + `mcp_tool.c` exist → the seed for on-demand discovery.
+## Current state in slermes (re-measured live)
+- **357 `src/tools/*.c` files**, dispatched via `registry_dispatch`
+  (`src/tools/registry.c`); plugins register through `plugin_register_tool`.
+- **P0 validation SHIPPED**: `validate_args_json` runs BEFORE coercion and
+  the handler on both dispatch paths (main + repaired); rejects non-object
+  args, type mismatches, missing required keys with a structured
+  `tool_error` (`retryable:false` + recovery hint). Pinned by the
+  `registry_validate_args` watercup gate.
+- **P1 error classification SHIPPED**: `tool_result_classification.c` —
+  `tool_classify_error` returns NONE/TRANSIENT/PERMANENT, explicit
+  `retryable` field wins, **default PERMANENT (fail-closed)**;
+  `tool_error_with_class` tags results. Watercup-gated.
+- **P1 idempotency SHIPPED**: `tool_idempotency.c` — omap-backed cache,
+  `tool_idem_key/put/get` with TTL, wired into `registry_dispatch`
+  (lookup-before-exec, no double side effect), restart-survival via
+  `tool_idem_attach` (JSON under HERMES_HOME). Watercup-gated
+  (`tool_idempotency`, `tool_idempotency_persist`).
+- **Loop consumption SHIPPED**: `conversation_loop.c` `dispatch_with_retry`
+  retries TRANSIENT up to TOOL_RETRY_MAX with backoff; safe because the
+  registry is idempotent. Watercup-gated (`tool_dispatch_retry`).
+- **Remaining**: P2 on-demand discovery, P2 OTel-style nested spans, P3
+  output shaping (below). Trace exists (`trace_upload`) but not as nested
+  spans — can't yet replay *why*.
 
-## The 6 improvements (ranked by ROI)
+## The improvements (P0/P1 shipped; the rest ranked by ROI)
 
-### P0 — Centralized tool-input validation  (highest ROI, lowest risk)
-Add `tool_arg_schema_t` + `tool_validate_args` in `src/agent/tool_executor.c`. Each
+### P0 — Centralized tool-input validation  (SHIPPED — registry_validate_args gate)
+Implemented as `validate_args_json` in `src/tools/registry.c` (runs before
+coerce + handler on both dispatch paths). Each tool's `schema_json` declares
+expected keys/types/required; malformed calls get a structured error
+**before** the body runs. The original proposal:
 tool declares expected keys/types/ranges/required. Executor rejects malformed calls
 with a structured error **before** the body runs. Kills the 112-file duplicated-parse
 problem and blocks injection-driven bad calls. *This is the first thing to build.*
 
-### P1 — Error classification: retryable vs permanent
-Replace ad-hoc `printf("error: ...")` returns with `tool_result_t { ok; retryable;
+### P1 — Error classification: retryable vs permanent  (SHIPPED — watercup-gated)
+Implemented in `src/tools/tool_result_classification.c`
+(`tool_classify_error`, fail-closed PERMANENT default, `tool_error_with_class`).
+The original proposal:
 code; message; recovery_hint; }`. Executor branches on `retryable`; `recovery_hint`
 tells the agent how to fix (Arcade Recovery Guide).
 
-### P1 — Idempotency keys for side-effecting tools
-Side-effecting tools accept `idem_key`; executor maintains a Hive-backed idem-key→result
+### P1 — Idempotency keys for side-effecting tools  (SHIPPED — watercup-gated)
+Implemented in `src/tools/tool_idempotency.c`, wired into `registry_dispatch`
+with restart-survival (`tool_idem_attach`). The original proposal:
 cache (survives restart via session DB). Prevents double-send/double-write on timeout
 retry. Directly addresses TianPan's "structurally broken retries."
 

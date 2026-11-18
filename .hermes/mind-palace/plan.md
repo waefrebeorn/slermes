@@ -1,5 +1,3 @@
-# Plan — Slermes C Translation
-
 <!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
 | REAL_GAP| 25,451 (74.3%) — no N/A |
 |  ├ DA-4 stubs | 43 |
@@ -15,30 +13,36 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 ## Next Actions
 
-### 1. Watercup Pass Rate ↑
-- Fix ported gates: read real C signatures from PoP files, emit correct harnesses (int/bool/char*/size_t/long)
-- Fix gap sentinels: gap functions need real C stubs, not constant returns
-- Fix twin.py: handle class methods, complex types, import failures
-- Target: 10% pass rate (2,260 gates) by end of next session
+### 1. Close REAL_GAPs (the main front)
+- Pure functions first (no I/O, no global state, no complex types) — they
+  are the ones an oracle can differentially test.
+- Pick the axis that matches the ask: fan-in for reuse, short-gap count for
+  throughput, gaps×LOC for the largest hole.
+- `python scripts/parity_coverage.py --by-module` for the ranked list;
+  `--detail` on the scanner for per-function gaps.
+- Grep before writing; naming gaps are the cheapest real fix.
 
-### 2. Gap Closure Priority
-- Focus on pure functions first (no I/O, no state, no complex types)
-- Modules with highest pure-function yield: `tools/`, `agent/`, `hermes_cli/`
-- Use `gap_triage.py --top 25` for ranked list
+### 2. Deepen the watercup net
+- Add gates over the pure-function twin pool (3 files each; the engine does
+  the rest). Fix ported-gate harnesses to read real C signatures.
+- A gap function needs a real C body, not a constant-return sentinel.
 
-### 3. Upstream Sync
-- 2,639 behind — need to rebase onto latest upstream/main
-- New Python features to port after sync
+### 3. SLERM third-party dependencies
+- Finish c11_whisper; queue the SQLite engine, ncurses retirement (Lua UI),
+  ctranslate2. See docs/third-party.md.
 
-## System Health
+### 4. Upstream sync
+- When the sentinel's behind-count is non-zero, run the BANNER sync flow;
+  the new Python delta becomes REAL_GAP work.
 
-- `make parity` → refreshes all walkway files from live scanner
-- `make watercup` → runs 22,604 trace-cup gates in parallel
-- `make test` → Mission 8: 77 tests
-- `make build` → Clean, 0 errors
+## System Health (run, don't quote)
+
+- `make parity` → refresh all walkway files from the live scanner
+- `make watercup` / `wc_run_parallel.py` → trace-cup fleet
+- `make test` → Mission 8 suite
+- `make slermes` → the binary
 
 ## Documentation
 
-- All walkway files in `.hermes/` are PARITY:AUTO sentinel-owned
-- All docs in `docs/` organized by subsystem
-- No hand-edited parity numbers anywhere
+- Walkway files carry generator-owned PARITY:AUTO sentinels.
+- No hand-edited parity numbers anywhere.

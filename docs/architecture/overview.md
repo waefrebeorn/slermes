@@ -1,45 +1,67 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Architecture Overview
 
-Slermes is a single-process C11 application organized into subsystems that mirror the Python Hermes Agent.
+Slermes is a single-process C11 application organized into subsystems that
+mirror the Python Hermes Agent package tree. One native binary, zero Python
+at runtime. (Counts below measured live; re-derive with `find`/`ls`
+rather than trusting prose.)
 
 ## Directory Layout
 
 ```
 slermes/
 ├── src/
-│   ├── cli/          — CLI frontend, commands, config, display, TUI
-│   ├── agent/        — Core agent loop, LLM client, provider adapters
-│   ├── tools/        — Tool implementations (terminal, file, web, browser, etc.)
-│   ├── gateway/      — Messaging gateway (telegram, discord, slack, signal, etc.)
-│   │   └── platforms/  — 14+ messaging platform adapters
-│   ├── pet/          — Petdex mascot system (8 files)
-│   ├── acp/          — Agent Communication Protocol
-│   ├── cron/         — Scheduled task runner
-│   ├── provider/     — OAuth/token exchange providers
-│   ├── skills/       — Skills markdown parser
-│   ├── plugins/      — Plugin loader
-│   ├── tui/          — Terminal UI (ncurses)
-│   ├── web_server/   — Built-in HTTP server + API endpoints
-│   ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
-│   └── ...
-├── include/          — Header files
-├── lib/              — 77 internal libraries (libjson, libhttp, libtui, libdb, libyaml, libproc, libsignal, libpngdec, ...)
-├── tests/            — Test suite + oracle harness
-└── docs/             — Documentation
+│   ├── main.c        — entry point: argv dispatch (CLI/gateway/cron/acp/
+│   │                   mcp-serve/api-server/setup/doctor/update/…)
+│   ├── cli/          — CLI loop, slash commands, config, display, TUI units
+│   ├── hermes_cli/   — ports of the hermes_cli Python package
+│   ├── agent/        — agent loop, LLM client, provider adapters, context
+│   ├── tools/        — tool implementations + registry.c (registry_dispatch)
+│   ├── gateway/      — messaging gateway runtime + relay
+│   │   └── platforms/  — platform adapters (60 .c files: telegram, discord,
+│   │                     slack, signal, whatsapp, matrix, feishu, weixin, …)
+│   ├── hermes_state/ — session/state persistence ports
+│   ├── pet/          — Petdex mascot system (8 .c files)
+│   ├── acp/ acp_adapter/ — Agent Communication Protocol
+│   ├── cron/         — scheduled task runner
+│   ├── provider/     — OAuth/token exchange
+│   ├── skills/       — skills markdown parser
+│   ├── plugins/      — native C plugins (plugin_*.c → .so)
+│   ├── pm/           — dependency-environment path resolution
+│   ├── lv/           — slerm-Lua interpreter (slv_*, upstream Wua)
+│   ├── lua/          — Lua-driven terminal host (slv_ui.c)
+│   ├── ports/        — legacy port twins (per-platform linkage audit)
+│   └── *.c           — top-level units: api_server*, desktop_*, web_*,
+│                       chat_*, app_state, battery, …
+├── include/          — 708 headers: port_<stem>.h unit headers + compat/ shims
+├── lib/              — 79 libraries: ours (libjson, libhttp, libyaml, libdb,
+│                       libtui, liblineedit, libhash, libregex, …) + vendored
+│                       third-party SLERM targets (whisper_cpp, sqlite, ncurses)
+├── build/            — config.mk (profiles/flags), objects.mk (cupboards),
+│                       rules.mk, targets.mk, winlibs-env.sh / msys2-env.sh
+├── tests/            — oracles (sta_oracle_*.py + t_port_*.c), watercup/,
+│                       gates, mission8 suites, fixtures
+├── scripts/          — parity pipeline, audits, generators
+└── docs/             — documentation (mirrors the subsystem layout)
 ```
+
+`src/` holds ~2,089 `.c` files. The desktop GUI is SDL2-based
+(`desktop_*.c`, `desktop-gui` target); the web server/API is
+`api_server*.c` / `web_*.c`; the ncurses TUI units live in `src/cli/tui_*.c`
+and are a dead end on Windows — the Lua substrate (`src/lv/` + `src/lua/`)
+is the UI direction.
 
 ## Core Loop
 
@@ -47,51 +69,51 @@ slermes/
 User Input → CLI/TUI/Gateway → Agent Loop → LLM Call → Tool Execution → Response
 ```
 
-1. **Input**: CLI, TUI, or messaging gateway receives user message
-2. **Agent Loop**: Builds context, calls LLM, handles streaming
-3. **Tool Execution**: Intercepts tool calls, runs C11 tool handlers
-4. **Response**: Sends response back through same path
+1. **Input**: CLI, TUI, or messaging gateway receives the user message.
+2. **Agent Loop** (`src/agent/agent_loop.c`, `conversation_loop.c`): builds
+   context, calls the LLM, handles streaming.
+3. **Tool Execution**: tool calls dispatch through `registry_dispatch`
+   (`src/tools/registry.c`) to C11 handlers.
+4. **Response**: returns through the same path; `turn_finalizer.c` handles
+   post-loop finalization.
 
 ## Key Subsystems
 
-### CLI (`src/cli/`)
-- 82 slash command handlers registered in `port_cli_command_registry.c`
-- Config system (YAML-based, `cli_cmd_config.c`)
-- TUI display system (`cli_cmd_display.c`)
-- Doctor/diagnostics (`cli_cmd_system.c`)
+### CLI (`src/cli/`, `src/hermes_cli/`)
+- **110 slash commands** registered in `COMMANDS[]`
+  (`src/hermes_cli/partial_compress.c` — historical filename; the header
+  reads "commands.c — Slash command definitions"). Count it yourself:
+  `grep -c '{\.name="/' src/hermes_cli/partial_compress.c`. See
+  [cli/index.md](../cli/index.md).
+- Config (YAML via libyaml), display, doctor/diagnostics units.
 
 ### Agent (`src/agent/`)
-- Agent loop (`agent_loop.c`)
-- LLM provider layer (`provider.c`, `provider_openai.c`, etc.)
-- Context management (`context_compressor.c`, `context.c`)
-- System prompt building (`prompt_builder.c`)
-- Memory (FTS5 session search, LLM summarization)
+- Agent loop, LLM provider layer (`provider_*.c`, 18 provider units),
+  context compression, prompt building, credential pool, memory.
 
 ### Tools (`src/tools/`)
-- 40+ tool handlers
-- Terminal, file, web search, browser, image gen, voice, code exec
-- Each tool has a handler function registered in the tool registry
+- Handlers registered via `tools_init_all()`; `registry_dispatch` is the
+  real dispatcher (input validation, idempotency cache, retry classification).
 
 ### Gateway (`src/gateway/`)
-- 14+ messaging platforms in C
-- Telegram, Discord, Slack, Signal, WhatsApp, Matrix, QQ Bot, WeChat, Yuanbao, relay adapters
-- Session management, delivery, streaming
+- 60 platform-adapter `.c` files + relay runtime, session management,
+  delivery, streaming, profile routing.
 
 ### Pet System (`src/pet/`)
-- 6 C11 files, 1 header
-- Manifest fetching, pet store, rendering, animation state
-- Kitty terminal protocol support
+- 8 C11 files: manifest, store, render, state, commands, prompts, constants,
+  atlas. Kitty terminal protocol support.
 
 ## Data Flow
 
 ```
-config.yaml → hermes_config_t (config.c)
+config.yaml → hermes_config_t (config load)
                     ↓
 agent_state_t → agent_loop.c → llm_client.c → provider_*.c
                     ↓                    ↓
-              tool_executor.c     provider_openai.c
-                    ↓                    ↓
-              tools/*.c           HTTP (libhttp)
+              registry_dispatch    HTTP (libhttp + winsock on Windows)
+                    ↓
+              tools/*.c handlers
 ```
 
-See [Directory Layout](directory-layout.md) for the complete file map.
+See [Directory Layout](directory-layout.md) for the file map and
+[Build System](build-system.md) for targets and profiles.

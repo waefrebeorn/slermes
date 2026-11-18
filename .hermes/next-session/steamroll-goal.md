@@ -1,10 +1,4 @@
-# Next Session: Function + Feature Parity — Steamroll All Remaining REAL_GAPs
-
-## Goal: Close the remaining REAL_GAPs. Rewriting from scratch in C is the point;
-there is NO N/A and no "out of scope". Agentic work takes minutes.
-
-> **Live parity counts are regenerated at the bottom of this file (the
-> `<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
+<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
 | REAL_GAP| 25,451 (74.3%) — no N/A |
 |  ├ DA-4 stubs | 43 |
 |  └ Genuine gaps | 25,408 |
@@ -16,3 +10,44 @@ there is NO N/A and no "out of scope". Agentic work takes minutes.
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+
+# Next Session: Function + Feature Parity — Steamroll All Remaining REAL_GAPs
+
+## Goal: Close the remaining REAL_GAPs and SLERM the whole ecosystem.
+Rewriting from scratch in C is the point; there is NO N/A, no "out of scope",
+and nothing "not doable". Every Python feature AND every third-party
+dependency is work. Agentic work takes minutes — keep taking concrete bites.
+
+> Live parity counts are owned by `make parity` and stamped into the sentinel
+> above. Never hand-type a count here; run the tools and read the sentinel.
+
+## The loop (one module at a time, finish it)
+
+1. `python tests/slermes_parity_battleground.py --detail` filtered to the
+   module (or `scripts/parity_coverage.py --by-module` to pick it).
+2. Grep `src/ include/ lib/` for each symbol BEFORE writing — behavior under
+   another name is a naming gap, the cheapest real fix.
+3. Implement real C logic, or expose the existing function under the name
+   callers use. Never an empty body with a PoP comment.
+4. Prove it: `bash tests/run_one_oracle.sh <name> ...` and a watercup gate
+   for pure helpers. Wire new suites into the standing gates.
+5. Build, run the gates, commit the bite to `integrate`.
+
+## Honest scoreboards
+
+- Scanner (`make parity`) — feature-level PoP claims; a pointer, not a verdict.
+- `tests/parity_reality.py` — body-level reality; placeholders don't count.
+- Oracle + watercup — the only behavioral proof. Parity-closed = BOTH MATCH.
+
+A falling gap count with `void f(void){}` behind it is scoreboard gaming, not
+progress. The only honest parity number is the fraction of features with a C
+body that does real work.
+
+## Dependency front
+
+whisper.cpp → c11_whisper (active); SQLite engine, ncurses (retire via the
+Lua UI), ctranslate2, and the long-horizon crypto/inflate/regex/raster
+targets. See docs/third-party.md. Same rule: reference in, from-scratch C11
+out, oracle/watercup proof, no escape hatches.
+
+No choices. No questions. Never stop between gaps.

@@ -1,24 +1,32 @@
-<!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
+| REAL_GAP| 25,840 (75.4%) — no N/A |
+|  ├ DA-4 stubs | 13 |
+|  └ Genuine gaps | 25,827 |
+| PARTIAL | 45 (0.1%) |
+| BOOTLEG | 2 |
+| **Watercup** | unavailable — oracle produced no verdicts |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-18T22:16:00Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Skills Commands
 
+5 commands in the `Skills` category of the live registry (`COMMANDS[]` in
+`src/hermes_cli/partial_compress.c`). All handlers live in
+`src/hermes_cli/cli_cmd_skills.c`.
+
 ## `/skills-hub` (`/hub`)
 
-Access the skills hub — search, show, list, and sync skills.
+Skills hub catalog: `list`, `search <query>`, `show <slug>`, `sync` (refresh catalog
+from network). The handler fetches the catalog and prints matching skill metadata.
+(The same file also contains the wider hub router `hermes_cli_skills_hub_skills_command`
+with install/inspect/audit/etc. actions; the slash handler exposes the four subcommands
+above.)
 
 ```
-/skills-hub [search|show|list|sync]
+/skills-hub [list|search <query>|show <slug>|sync]
 ```
 
 **Examples:**
@@ -30,15 +38,16 @@ Access the skills hub — search, show, list, and sync skills.
 
 ## `/skills`
 
-Search and manage installed skills. CLI-only.
+Search and manage installed skills. CLI-only. Prints the skills directory
+(`~/.slermes/skills`) and supports `search` / `search-hub <query>` and `install <slug>`.
 
 ```
-/skills
+/skills [search <query>|search-hub <query>|install <slug>]
 ```
 
 ## `/bundles`
 
-List available skill bundles.
+Lists skill bundles from the bundles directory under the Slermes home.
 
 ```
 /bundles
@@ -46,15 +55,17 @@ List available skill bundles.
 
 ## `/curator`
 
-Show background skill maintenance/curation status.
+Background skill maintenance: `status` (default), `run` (triggers a curator review of
+the last tool result), `pause`, `resume`, `help`. State is persisted by the handler.
 
 ```
-/curator
+/curator [status|run|pause|resume|help]
 ```
 
 ## `/reload-skills`
 
-Re-scan the skills directory for changes. Picks up new or modified skills without restarting.
+Re-scans the skills directory (`~/.slermes/skills`) for changes so new or modified
+skills are picked up without restarting.
 
 ```
 /reload-skills

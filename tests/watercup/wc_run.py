@@ -192,9 +192,60 @@ def _compiler():
     override = os.environ.get("WATERCUP_CC", "").strip()
     if override:
         return override.split()
+    # Prefer gcc: on the Windows dev box "cc" resolves to MSYS2's compiler
+    # (whose headers/backend the project does not build with) while winlibs
+    # gcc is first on PATH as "gcc". On Linux cc and gcc are equivalent.
+    cc = "gcc" if shutil.which("gcc") else "cc"
     if shutil.which("ccache"):
-        return ["ccache", "cc"]
-    return ["cc"]
+        return ["ccache", cc]
+    return [cc]
+
+
+def _linker():
+    """Bare compiler for LINK steps (ccache refuses links: no -c)."""
+    override = os.environ.get("WATERCUP_CC", "").strip()
+    if override:
+        return override.split()[0]
+    return "gcc" if shutil.which("gcc") else "cc"
+
+
+def _run_link(args):
+    """Run a link command through a response file. Windows CreateProcess caps
+    the command line (~32k chars); a full-object harness link exceeds it and
+    dies with WinError 206 before the compiler ever runs. gcc @file parsing
+    treats backslash as an escape, so paths are normalised to forward slashes.
+    """
+    os.makedirs(BUILD, exist_ok=True)
+    rsp = os.path.join(BUILD, "link_%d.rsp" % os.getpid())
+    norm = _EXTRA_LIBDIR + [a.replace("\\", "/") for a in args[1:]]
+    with open(rsp, "w") as f:
+        f.write(" ".join('"%s"' % a if (" " in a or "\t" in a) else a
+                         for a in norm))
+    try:
+        return subprocess.run([args[0], "@" + rsp],
+                              capture_output=True, text=True)
+    finally:
+        try:
+            os.remove(rsp)
+        except OSError:
+            pass
+
+
+# Winlibs extra-libs live outside the default search path on the dev box;
+# every harness link needs them for -lssl/-lcrypto/-lpcre2-8/-ltre.
+_EXTRA_LIBDIR = (["-L", "C:/winlibs/extra-libs"]
+                 if os.path.isdir("C:/winlibs/extra-libs") else [])
+
+
+def _plat_syslibs(libs):
+    """Drop POSIX-only libs on Windows and add the Winsock set the vendored
+    http/crypto objects need there."""
+    if os.name == "nt":
+        drop = {"-ldl", "-lpthread", "-lasound"}
+        return [l for l in libs if l not in drop] + [
+            "-lws2_32", "-lgdi32", "-lcrypt32", "-ladvapi32", "-luser32",
+            "-lshell32", "-lole32", "-luuid"]
+    return libs
 
 
 def _compile_one(g, src_path):
@@ -289,7 +340,13 @@ def _resolve_cflags(g):
             if os.path.isdir(sub) and any(f.endswith(".h")
                                           for f in os.listdir(sub)):
                 std_inc += ["-I", sub]
-    return std_inc + cflags
+    # The project's three-flag compat surface (same rule as the main build):
+    # without it every POSIX shim is invisible on Windows and harnesses fail
+    # on localtime_r/mkdir/etc. hermes_win32.h is _WIN32-guarded internally, so
+    # these flags are safe on Linux/macOS too.
+    compat = ["-include", "hermes_win32.h", "-D_GNU_SOURCE",
+              "-I", os.path.join(REPO, "include", "compat")]
+    return compat + std_inc + cflags
 
 
 def build_harness(gate_dir, g, force=False):
@@ -362,8 +419,8 @@ def build_harness(gate_dir, g, force=False):
         if stub_obj:
             objs.append(stub_obj)
 
-    lcmd = ["cc"] + objs + ["-o", out] + _GC_LINK + ["-lm"] + libs
-    r = subprocess.run(lcmd, capture_output=True, text=True)
+    lcmd = [_linker()] + objs + ["-o", out] + _GC_LINK + ["-lm"] + libs
+    r = _run_link(lcmd)
     if r.returncode != 0:
         # System libs the vendored objects need (http.o -> OpenSSL). Computed
         # here so the first retry can use them; the linker resolves them only
@@ -376,8 +433,8 @@ def build_harness(gate_dir, g, force=False):
         # main" for EVERY lib, leaving the list empty and the symbols unlinked).
         for cand in ("-lcrypto", "-lssl", "-lz", "-ldl", "-lpthread",
                      "-lpcre2-8", "-lasound", "-lm"):
-            if subprocess.run(["cc", cand, "-shared", "-o", "/dev/null",
-                               "-x", "c", "-"],
+            if subprocess.run([_linker(), cand, "-shared", "-o", os.devnull,
+                               "-x", "c", "-"] + _EXTRA_LIBDIR,
                               input=b"int _probe;", capture_output=True
                               ).returncode == 0:
                 ssl_libs.append(cand)
@@ -408,10 +465,10 @@ def build_harness(gate_dir, g, force=False):
         # -lm and the system libs must come AFTER --end-group: sqlite3.o's FTS5
         # code calls log(), and with -lm before the group the linker has already
         # passed libm when it pulls sqlite's object in.
-        retry = (["cc"] + objs + ["-o", out] + _GC_LINK +
+        retry = ([_linker()] + objs + ["-o", out] + _GC_LINK +
                  ["-Wl,--start-group"] + vendored
                  + ["-Wl,--end-group", "-lm"] + ssl_libs + libs)
-        r2 = subprocess.run(retry, capture_output=True, text=True)
+        r2 = _run_link(retry)
         if r2.returncode == 0:
             return out
 
@@ -459,9 +516,8 @@ def build_harness(gate_dir, g, force=False):
         # hermes_get_home, which paths.c also defines — and paths.c is in
         # COMMON_SRC). Probe with nothing extra; a duplicate means the stub is
         # the offender and its object must come off the link line.
-        probe = subprocess.run(
-            ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
-            capture_output=True, text=True)
+        probe = _run_link(
+            [_linker()] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs)
         if probe.returncode != 0:
             # The linker names the OFFENDER object on the line that carries
             # "multiple definition of `sym'", and the keeper after "first
@@ -480,9 +536,8 @@ def build_harness(gate_dir, g, force=False):
                 objs = [o for o in objs
                         if os.path.basename(o) not in offenders]
                 if len(objs) != before:
-                    probe = subprocess.run(
-                        ["cc"] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs,
-                        capture_output=True, text=True)
+                    probe = _run_link(
+                        [_linker()] + objs + ["-o", out] + _GC_LINK + base_lib_objs + ["-lm"] + ssl_libs + libs)
         r2 = probe
         # FULL-OBJECT TIER FIRST: one link with every prebuilt main object
         # (~1-3s, --gc-sections keeps the binary minimal) resolves
@@ -491,8 +546,8 @@ def build_harness(gate_dir, g, force=False):
         # before ever reaching the tier - the kanban gates (battery_*,
         # browser_supervisor_*, ... deep closures) timed out mid-rounds and
         # never linked. Tier first; rounds become the fallback.
-        _syslibs0 = ["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
-                     "-lz", "-lpcre2-8", "-lasound"]
+        _syslibs0 = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
+                     "-lz", "-lpcre2-8", "-lasound"])
         import glob as _glob0
         _main_objs0 = sorted(
             _glob0.glob(os.path.join(REPO, "src", "**", "*.o"),
@@ -502,11 +557,11 @@ def build_harness(gate_dir, g, force=False):
         _main_objs0 = [o for o in _main_objs0
                        if os.path.basename(o) != "main.o"]
         if _main_objs0:
-            _t0 = (["cc", "-Wl,--allow-multiple-definition",
+            _t0 = ([_linker(), "-Wl,--allow-multiple-definition",
                     "-Wl,--start-group"] + _main_objs0
                    + objs + ["-Wl,--end-group", "-o", out]
                    + _GC_LINK + base_lib_objs + _syslibs0 + libs)
-            _r0 = subprocess.run(_t0, capture_output=True, text=True)
+            _r0 = _run_link(_t0)
             if _r0.returncode == 0:
                 return out
             r2 = _r0  # the tier's error is the best starting state for rounds
@@ -601,11 +656,11 @@ def build_harness(gate_dir, g, force=False):
             # symbol the tier had already resolved - the link oscillates
             # until the gate times out. Tier-set + rounds' additions
             # converges in one pass.
-            retry2 = (["cc", "-Wl,--allow-multiple-definition",
+            retry2 = ([_linker(), "-Wl,--allow-multiple-definition",
                        "-Wl,--start-group"] + _main_objs0 + objs
                       + added_objs + ["-Wl,--end-group", "-o", out]
                       + _GC_LINK + base_lib_objs + _syslibs0 + libs)
-            r2 = subprocess.run(retry2, capture_output=True, text=True)
+            r2 = _run_link(retry2)
             r = r2  # remember the last attempt for the final error message
             if r2.returncode == 0:
                 return out
@@ -636,17 +691,17 @@ def build_harness(gate_dir, g, force=False):
             # the wubuzip/pngdec paths, pcre2 for hermes_regex's pcre2_*
             # entry points, plus the ssl/dl/pthread/m set the vendored libs
             # need.
-            syslibs = ["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
-                       "-lz", "-lpcre2-8", "-lasound"]
+            syslibs = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
+                       "-lz", "-lpcre2-8", "-lasound"])
             if main_objs:
                 tier_objs = list(objs) + added_objs
                 for _pass in range(6):
-                    retry3 = (["cc", "-Wl,--allow-multiple-definition",
+                    retry3 = ([_linker(), "-Wl,--allow-multiple-definition",
                                "-Wl,--start-group"] + main_objs
                               + tier_objs + ["-Wl,--end-group", "-o", out]
                               + _GC_LINK + base_lib_objs
                               + syslibs)
-                    r3 = subprocess.run(retry3, capture_output=True, text=True)
+                    r3 = _run_link(retry3)
                     if r3.returncode == 0:
                         return out
                     dupes = re.findall(

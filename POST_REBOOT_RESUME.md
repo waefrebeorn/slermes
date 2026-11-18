@@ -1,41 +1,63 @@
-# POST-REBOOT RESUME (2026-11-05)
+# Resume — current dev-box state and how to pick the work back up
 
-Written just before the machine was rebooted to activate the Smart App Control
-flip. After restart, run:
+Rewritten 2026-11-18. This replaces the 2026-11-05 post-reboot handoff (SAC
+flip era), which is obsolete: the machine state it described no longer holds.
 
-1. Smoke: `./slermes.exe --version`  (previously blocked; should now print)
-2. Full gates:
-   `cd C:\Users\eman5\slermes && /c/msys64/usr/bin/bash -lc "export PATH=/mingw64/bin:/usr/bin:$PATH; cd /c/Users/eman5/slermes && python tests/verify_build_health.py"`
-   `bash tests/run_mission8_tests.sh`
-3. Finish the two oracle runs marked PENDING in their commits (they were
-   blocked because SAC refused every fresh link at every -O):
+## Dev box (Windows 11)
 
-   - `tests/t_port_image_token_cost.c` + `tests/sta_oracle_image_token_cost.py`
-     commit `2c895e4` — port VERIFIED 23/0 already (a single -O0 link slipped
-     through post-flip); re-run to confirm.
-   - `tests/t_port_session_activity.c` + `tests/sta_oracle_session_activity.py`
-     commit `3c06209` — oracle written but run BLOCKED, still unverified.
-     Run with: `MINIMAL_OBJS='src/cli/port_session_activity.o
-     lib/libjson/json.o' bash tests/run_one_oracle.sh session_activity`
+- Repo: `C:\Users\eman5\slermes`, port branch **`integrate`** (push to
+  `origin integrate`; `origin/main` is upstream history + docs).
+- Python quarry: `C:\Users\eman5\hermes-agent` (upstream =
+  NousResearch/hermes-agent). The scanner resolves ground truth through the
+  package links beside the repo.
+- Toolchain: MSYS2 bash + winlibs GCC (`C:/winlibs`), ccache warm. Every
+  build/gate goes through one MSYS2 child that sources the env script:
 
-## Admin state already in place
-- SAC policy registry `VerifiedAndReputablePolicyState = 0` (needs the reboot
-  to load; `CodeIntegrityPolicyEnforcementStatus` was still 2 before it).
-  One-way flip — re-enabling requires a Windows reinstall.
-- Defender exclusions added (survive reboot) for `C:\Users\eman5\slermes`,
-  `.testbin`, and `C:\Users\eman5\AppData\Local\hermes` — these should stop
-  the flaky rc-126 refusals of freshly linked test binaries so the oracle loop
-  stops needing the `-O0` lottery.
+```bash
+/c/msys64/usr/bin/bash -lc 'source /c/Users/eman5/slermes/build/winlibs-env.sh; \
+  cd /c/Users/eman5/slermes && make -j8 slermes \
+  USERPROFILE="C:\Users\eman5" LOCALAPPDATA="C:\Users\eman5\AppData\Local"'
+```
 
-## Repo state at handoff
-HEAD `3c06209` (`session_activity` ported, 7 stubs removed).
-- placeholders (parity_reality): implemented 3289, placeholder-only 630,
-  missing 31939. Build health (last pre-reboot): 744/744, LINK OK.
-- Tree clean except untracked `.testbin/` artifacts and `trajectory_samples.jsonl`.
+## Environment facts that shape every run
 
-## Method reminder for the oracle loop
-`tests/run_one_oracle.sh <name>` compiles `tests/t_port_<name>.c` with
-`MINIMAL_OBJS` when set. If Smart App Control still refuses a fresh link
-(rc 126), relink at `-O0` under a new `.exe` name and feed its stdout into
-`tests/sta_oracle_<name>.py` — but with the exclusions + SAC off this should
-no longer be needed.
+- **Smart App Control** refuses freshly linked images containing
+  `lib/libhash/hash.o` (SHA-256), `lib/libregex/hermes_regex.o`, or
+  `src/agent/auxiliary_client_runtime.o` (rc 127). Harnesses that need those
+  link a local no-op stub for the *dependency* (never the code under test)
+  and name the real object in DEPS. Prebuilt harnesses still run.
+- `./slermes.exe --version` exits 127 with no output on this box even at
+  clean HEAD — pre-existing CLI/environment behavior, not a build regression.
+  The gates (compile + link + oracles) remain valid evidence.
+- This box's shell strips `VAR=value cmd` env prefixes; pass per-invocation
+  config as script arguments or `export` inside the child shell.
+- Defender exclusions cover the repo, `.testbin`, and the Hermes local dir;
+  freshly linked test binaries can still hit transient rc-126 refusals —
+  retry with backoff before calling a suite blocked.
+
+## Pick-up procedure (discover, don't synthesize)
+
+```bash
+cd C:/Users/eman5/slermes
+git branch --show-current && git log --oneline -3 && git status --short
+make parity                 # live scanner + watercup + walkway (fail-closed)
+python tests/verify_build_health.py --no-link   # inside the MSYS2 env child
+bash tests/run_all_oracles.sh                   # ORACLE_JOBS=1 on MSYS2
+bash tests/run_slv_tests.sh
+```
+
+Then read `docs/WORK_DASHBOARD.md` §2 and take the top item. The loop:
+scanner detail → grep before writing → implement/alias → oracle + watercup
+proof → build → commit. One module at a time; never stop between gaps.
+
+## Standing gates (all must be green before a commit is "done")
+
+1. `make -j8 slermes` — reaches "Phase 5 complete".
+2. `python tests/verify_build_health.py --no-link` — N/N clean, port-object
+   gate PASS, cupboard check OK.
+3. `bash tests/run_all_oracles.sh` — 0 mismatches; every "not run" names a
+   real platform gap, never a silent skip.
+4. `bash tests/run_slv_tests.sh` — slerm-Lua interpreter suites.
+5. `make parity` — sentinels regenerated from live sources.
+
+A gate that did not run is not a pass.

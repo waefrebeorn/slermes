@@ -11,21 +11,27 @@
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Goal & Mantra — Slermes C Translation
+# Goal & Mantra — mind palace
 
 ## Mantra
-"Rewriting from scratch in C is the point. Every function must have real logic. No façades. No stubs. No placeholders."
+"Rewriting from scratch in C is the point. Every function must have real
+logic. No façades. No stubs. No placeholders."
 
 ## Core Directive
-Close REAL_GAPs. Every watercup MISMATCH that flips to MATCH is a win.
+Close REAL_GAPs across the whole ecosystem — agent, tools, platforms,
+plugins, and every third-party dependency. Nothing is N/A; nothing is "not
+doable". Every watercup MISMATCH that flips to MATCH is a win; every oracle
+that goes green with real cases behind it is a win.
 
-## System ()
-- Live scanner → `live_parity_scan.json` → walkway files (PARITY:AUTO)
-- Watercup oracle → 22,604 trace-cup gates in parallel
-- Bootleg hunter → 0 fake-looking stubs
-- Gap triage → ranked by pure-function yield
+## System (the detectors, not hand-typed numbers)
+- Live scanner → `live_parity_scan.json` → walkway sentinels (`make parity`)
+- Diff oracle → C vs LIVE Python outputs
+- Watercup → trace-cup path parity (22,603 gates)
+- Bootleg hunter → echo/no-work stubs
+- Reality audit → body-level honest scoreboard
 
 ## Next Mission
-1. Fix ported watercup gates (read real C signatures)
-2. Close pure-function gaps
-3. Sync upstream (2,639 behind)
+1. Close pure-function REAL_GAPs (oracle + watercup proof per bite).
+2. Expand watercup coverage; fix ported-gate harness signatures.
+3. SLERM the third-party dependency front.
+4. Sync upstream when behind; port the delta.

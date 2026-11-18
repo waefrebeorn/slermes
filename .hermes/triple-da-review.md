@@ -13,10 +13,22 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 # Triple DA Review — Slermes C Translation
 
-> **This file has moved.** The Triple DA audit findings are archived in `mind-palace/vault/achievements.md`
-> and `mind-palace/battleship-v40.md`.
->
-> The latest audit is **** at `mind-palace/battleship-v40.md`.
->
-> 🔗 **[mind-palace/battleship-v40.md](mind-palace/battleship-v40.md)**
-> 🔗 **[mind-palace/vault/achievements.md](mind-palace/vault/achievements.md)**
+> Historical Triple-DA audit artifacts are preserved in
+> [mind-palace/archive/](mind-palace/archive/) and [museum/](museum/).
+> They are history, not current state.
+
+The standing adversarial review today is the verification stack itself:
+
+- **DA-1 (does it exist?)** — battleground scanner + port-object gate:
+  every PoP-credited port must be linked into the binary.
+- **DA-2 (does it work?)** — differential oracle vs LIVE Python; any
+  MISMATCH is a FAP candidate ([docs/fap.md](../docs/fap.md)).
+- **DA-3 (does it work the right way?)** — watercup trace-cups: right
+  output by the wrong path still fails.
+- **DA-4 (is the credit honest?)** — annotation-only stubs are reported
+  separately in the sentinel; `tests/parity_reality.py` scores bodies, not
+  comments; `scripts/audit_annotations.py` verifies each PoP credits the
+  module that defines the function.
+
+Run `make parity` for the live verdict; never quote an archived audit as
+current.

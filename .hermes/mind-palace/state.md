@@ -11,38 +11,28 @@
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# State — Slermes C Translation (, PORT phase)
+# State — mind palace
 
-- Build: `make slermes` = 0 errors, binary links clean
-- Tests: Mission 8: 77 passed, 0 failed
-- Watercup: 313 PASS / 22,604 total (1.4%)
-- Upstream: 2,072 ahead / 2,639 behind
+The sentinel above is the live scanner verdict (`make parity` owns it). This
+file keeps no hand-typed counts — they go stale the moment they are written.
 
-## This Session ()
+## Re-establish state
 
-### Watercup Oracle System
-- `gen_parity_walkway.py` rewritten: dynamic file discovery, auto-sentinel injection, 17 stale patterns purged
-- `gen_watercup_comprehensive.py`: generate gates for ALL 18k+ functions from scan
-- `wc_run_parallel.py`: ProcessPoolExecutor at ~3,700 gates/sec
-- `fix_ported_gates.py`: read real C signatures, emit correct harnesses
-- `pop_index.json`: 9212-entry PoP index for O(1) lookup
-- 22,604 watercup gates (6,230 ported, 11,511 real gap, 38 partial, 4,825 legacy)
+```bash
+cd C:/Users/eman5/slermes
+git log --oneline -3 && git status --short
+make parity
+python tests/verify_build_health.py --no-link   # MSYS2 env child
+bash tests/run_all_oracles.sh                   # ORACLE_JOBS=1
+bash tests/run_slv_tests.sh
+python tests/parity_reality.py
+```
 
-### Documentation Reorganization
-- Moved STATE.md, WUBUMAGIC.md, THIRD_PARTY.md → docs/
-- Created docs/archive/ for old session prestige files
-- Created docs/operations/ for streaming TRC, RCA
-- Created docs/architecture/ for billing, contracts
-- Fixed broken links in README.md
-- Root now has only: BANNER.md, README.md, ROADMAP.md
+## Structural truths
 
-### Current State
+- Single native C11 binary, zero Python at runtime; port branch `integrate`.
+- Verification stack: scanner → diff oracle → watercup → build/port gates.
+  Parity-closed = oracle AND watercup MATCH.
+- Whole-ecosystem mission incl. third-party dependencies; no N/A.
 
-| Metric | Value |
-|--------|-------|
-| PORTED | 6,466 / 18,219 (35.5%) |
-| REAL_GAP | 11,715 (64.3%) |
-| Watercup | 313 PASS / 22,604 total |
-| Build | Clean, 0 errors |
-| Tests | 77/0/0 (Mission 8) |
-| Upstream | 2,072 ahead / 2,639 behind |
+Historical session states: `archive/`, `vault/`, and `../museum/`.

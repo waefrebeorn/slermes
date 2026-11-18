@@ -11,37 +11,34 @@
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Next Session Prompt — Copy-Paste Ready ()
-
----
+# Next Session Prompt — copy-paste ready
 
 ```
-Goal: Close function-level parity gaps (REAL_GAP) across ALL Python modules.
-Rewriting from scratch in C is the point; there is NO N/A.
+Goal: Close function-level parity gaps (REAL_GAP) across ALL Python modules
+and SLERM the third-party dependencies. Rewriting from scratch in C is the
+point; there is NO N/A and nothing "not doable".
 
 Form-not-function gap: any C function whose body is (a) a hardcoded return
-default with an excuse comment, (b) printf+return-0 echo, or (c) a PoP annotation
-with an empty/stub body — is a REAL_GAP. Vault + close, do not hand-wave.
+default with an excuse comment, (b) printf+return-0 echo, or (c) a PoP
+annotation with an empty/stub body — is a REAL_GAP. Close it with real logic.
 
-Live counts:
-| PORTED  | 6,466 / 18,219 (35.5%) |
-| REAL_GAP| 11,715 (64.3%) — no N/A |
-| PARTIAL | 38 (0.2%) |
-| BOOTLEG | 0 |
-
-Watercup oracle: 313 PASS / 22,604 total (1.4%). When a gap closes, its watercup
-auto-flips MISMATCH → MATCH.
+Live counts: run `make parity` and read the sentinel. Do NOT trust any
+hand-typed number in this prompt — the sentinel is the only live truth.
 
 System:
-- `make parity` → refresh all walkway files from live scanner
-- `make watercup` → run 22,604 trace-cup gates in parallel (~6 sec)
-- `make test` → Mission 8: 77 tests
-- `make build` → Clean, 0 errors
+- make parity        -> scan + watercup + walkway (refresh all sentinels)
+- bash tests/run_all_oracles.sh   -> differential oracle gate (ORACLE_JOBS=1)
+- bash tests/run_slv_tests.sh     -> slerm-Lua suites
+- python tests/verify_build_health.py --no-link  -> build + port-object gate
+- python tests/parity_reality.py  -> body-level honest scoreboard
 
 Priority:
-1. Fix ported watercup gates (read real C signatures, emit correct harnesses)
-2. Close pure-function gaps (no I/O, no state, no complex types)
-3. Sync upstream (2,639 behind)
+1. Close pure-function REAL_GAPs (oracle + watercup proof per bite).
+2. Expand watercup coverage; fix ported-gate harness signatures.
+3. SLERM the dependency front (c11_whisper, SQLite engine, ncurses->Lua).
+4. Sync upstream when the sentinel's behind-count is non-zero.
 
-Upstream: 2,072 ahead / 2,639 behind (last merge ).
+Loop: scanner detail -> grep src/include/lib before writing -> implement or
+alias -> oracle + watercup -> build -> commit to integrate. One module at a
+time; never stop between gaps. Behavior first, annotations last.
 ```

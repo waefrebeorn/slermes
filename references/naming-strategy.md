@@ -1,5 +1,11 @@
 # Python → C Naming Strategy
 
+> **SUPERSEDED for new work.** The enforced naming standard is
+> `docs/dev/naming.md` + `docs/dev/c-standards.md` (unit named for the Python
+> module, per-unit symbol prefix, PoP annotation is the parity join). This
+> document is a historical analysis of the legacy tree's naming patterns —
+> useful for reading old code, not a rule for writing new code.
+
 **Purpose:** Establish consistent naming conventions for Python→C function translation.
 **Source:** Analysis of 50+ "Port of Python" comments across slermes/src/ and slermes/lib/.
 

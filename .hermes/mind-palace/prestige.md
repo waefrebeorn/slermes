@@ -1,5 +1,3 @@
-# Prestige — Slermes C Translation
-
 <!-- PARITY:AUTO -->| PORTED  | 8,778 / 34,262 (25.6%) |
 | REAL_GAP| 25,451 (74.3%) — no N/A |
 |  ├ DA-4 stubs | 43 |
@@ -13,28 +11,23 @@
 
 _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-## This Session ()
+# Prestige — session wrap-up ritual
 
-### Watercup Oracle
-- Rewrote `gen_parity_walkway.py`: dynamic file discovery, auto-sentinel injection, stale purge
-- Added `gen_watercup_comprehensive.py`: generate gates for ALL 18k+ functions
-- Added `wc_run_parallel.py`: ProcessPoolExecutor at ~3,700 gates/sec
-- Added `fix_ported_gates.py`: read real C signatures, emit correct harnesses
-- Added `pop_index.json`: 9212-entry PoP index for O(1) lookup
-- 22,604 watercup gates generated (6,230 ported, 11,511 real gap, 38 partial, 4,825 legacy)
+Prestige is earned by verified bites, not by narrative. At session end:
 
-### Documentation
-- Reorganized `docs/`: moved STATE.md/WUBUMAGIC.md/THIRD_PARTY.md into docs/
-- Created `docs/archive/` for old session prestige files
-- Created `docs/operations/` for streaming TTS, RCA docs
-- Created `docs/architecture/` for billing, contracts
-- Fixed broken links in README.md
+1. **Gates green** — build health, oracle suite, slv suites, `make parity`
+   all run and passing (or every failure named with its cause). A gate that
+   did not run is not a pass.
+2. **Commits landed** — each bite self-contained on `integrate`, message
+   stating what is proven (cases, mismatches, gate results). Source only,
+   no artifacts.
+3. **Sentinels refreshed** — `make parity` stamped every walkway file from
+   live sources; no hand-typed numbers left behind.
+4. **Handoff written** — `next-session-prompt.md` updated with the next
+   concrete bite, derived from the live gap list.
+5. **History preserved** — superseded session artifacts moved to
+   `archive/` / `../museum/`, never deleted, never quoted as current.
 
-### Current State
-
-| Metric | Value |
-|--------|-------|
-| Build | Clean, 0 errors |
-| Tests | 77/0/0 (Mission 8) |
-| Watercup | 313 PASS / 22,604 total |
-| Upstream | 2,072 ahead / 2,639 behind |
+The ritual's only metric is the honest one: real bodies doing real work,
+proven against LIVE Python. A falling gap count with stubs behind it is not
+prestige — it is debt.
