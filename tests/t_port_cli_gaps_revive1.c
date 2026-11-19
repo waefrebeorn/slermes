@@ -12,7 +12,7 @@
  *   bash tests/run_one_oracle.sh cli_gaps_revive1 oracle_cli_gaps_revive1.py "" \
  *        "src/cli/cli_gaps.o lib/libjson/json.o"
  */
-#include "cli_gaps.c"
+#include "cli/cli_gaps.c"
 
 #include <stdio.h>
 #include <stdlib.h>

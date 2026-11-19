@@ -118,6 +118,11 @@ def load_ns(relpath, seeds, want_funcs=(), want_classes=(), strict_consts=True):
     sys.modules[modname] = mod
     ns = mod.__dict__
     ns.update(seeds)
+    # seeds may carry a shorter __name__ alias; py3.14 dataclasses resolves
+    # annotations via sys.modules[cls.__module__] — register the alias too.
+    alias = ns.get("__name__", modname)
+    if alias != modname:
+        sys.modules[alias] = mod
     consts = [n for n in tree.body
               if isinstance(n, (ast.Assign, ast.AnnAssign))
               and n.value is not None
@@ -157,6 +162,8 @@ def base_seeds(modname):
         "dataclass": __import__("dataclasses").dataclass,
         "field": __import__("dataclasses").field,
         "contextlib": __import__("contextlib"),
+        "contextmanager": __import__("contextlib").contextmanager,
+        "asynccontextmanager": __import__("contextlib").asynccontextmanager,
         "threading": types.SimpleNamespace(Lock=NoopLock),
         "weakref": types.SimpleNamespace(WeakKeyDictionary=dict),
         "logging": logging_double,

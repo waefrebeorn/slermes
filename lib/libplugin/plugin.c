@@ -1473,8 +1473,10 @@ void py_plugin_set_seam(json_t *(*call)(void *, const char *, const json_t *),
  * node owned by the caller (NULL == None). */
 static json_t *py_seam(const char *name, json_t *args) {
     json_t *r = NULL;
+    /* Contract (header): args is OWNED BY THE SEAM — the callee frees it.
+     * Do NOT free here too (double free -> STATUS_HEAP_CORRUPTION). */
     if (g_py_seam.call) r = g_py_seam.call(g_py_seam.ctx, name, args);
-    json_free(args);
+    else json_free(args); /* no seam installed: we still own it */
     return r;
 }
 

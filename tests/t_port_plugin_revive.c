@@ -144,6 +144,7 @@ int main(void) {
             ret = json_bool(plugin_tool_override_allowed(json_get_str(in, "name", "")));
         } else if (strcmp(fn, "_platform_name_from_manifest") == 0) {
             json_t *mf = json_obj_get(in, "manifest");
+            py_plugin_install_call_ctx(NULL, NULL, NULL, mf);
             const char *s = plugin_platform_name_from_manifest(mf);
             emit_str(out, "ret", s);
             ret = NULL; /* already emitted */
@@ -226,7 +227,13 @@ int main(void) {
             json_set(e, "msg", json_string(py_plugin_exc_msg()));
             json_set(out, "err", e);
         } else {
-            json_set(out, "ret", ret ? ret : json_null());
+            /* Some branches pre-emit a string ret (emit_str) and set ret=NULL
+             * to mean "already emitted" — do NOT clobber it with json_null. */
+            if (!json_obj_get(out, "ret")) {
+                json_set(out, "ret", ret ? ret : json_null());
+            } else if (ret) {
+                json_free(ret);
+            }
             json_set(out, "err", json_null());
         }
         json_set(out, "extra", extra);
