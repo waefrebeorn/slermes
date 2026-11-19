@@ -48,7 +48,9 @@ def nm_definers(syms):
             except Exception:
                 continue
             for l in out.splitlines():
-                if " T " in l:
+                # Global text AND data symbols — provider tables etc. are
+                # 'D'/'R', not 'T'; indexing only text left them unresolved.
+                if len(l.split()) >= 3 and l.split()[1] in ("T", "D", "R", "B"):
                     _NM_INDEX.setdefault(l.split()[-1], SAC_SUB.get(rel, rel))
     return {s: _NM_INDEX[s] for s in syms if s in _NM_INDEX}
 
