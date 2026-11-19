@@ -70,7 +70,8 @@ for name in NAMES:
             continue
         total += 1
         out = rec.get("out", rec)
-        s = json.dumps(out, ensure_ascii=False)
+        if not isinstance(out, dict):
+            continue  # list-shaped envelopes carry no raise verdict key
         # raise verdicts: ret/raise carrying __raise__ (scripted seam raises
         # inside trace don't count — only the case verdict)
         verdict = json.dumps({k: out.get(k) for k in ("ret", "raise", "exc")},
