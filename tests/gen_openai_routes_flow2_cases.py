@@ -560,6 +560,12 @@ case("rs_write_event", state=dict(WE_STATE, durable_key=DK),
 case("rs_write_event", state=dict(WE_STATE, durable_key=DK),
      event_type="response.created", data={"type": "response.created"},
      seams={"sse_frame": "frame", "response.write": {"__raise__": "ConnectionResetError", "msg": "gone"}})
+case("rs_write_event", state=dict(WE_STATE, sequence_number="x"),
+     event_type="response.created", data={"type": "response.created"}, seams={})
+case("rs_write_event", state=dict(WE_STATE, sequence_number=[1]),
+     event_type="response.created", data={"type": "response.created"}, seams={})
+case("rs_write_event", state=dict(WE_STATE, sequence_number=None),
+     event_type="response.created", data={"type": "response.created"}, seams={})
 
 
 def main():

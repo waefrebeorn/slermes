@@ -2001,7 +2001,13 @@ json_t *or2_rs_write_event(json_t *state, const json_t *event_type, const json_t
     if (!json_has(d, "sequence_number"))
         json_set(d, "sequence_number", json_copy(seq));
     if (!(is_num(seq) || is_bool(seq))) {
-        char *m = xsf("unsupported operand type(s) for +: '%s' and 'int'", py_type_name(seq));
+        /* seq += 1 (AUGASSIGN): str falls back to the concatenation message;
+         * list.__iadd__ EXTENDS ("'int' object is not iterable"); other types
+         * raise the += operand-type message (probe-verified on py3.14). */
+        char *m;
+        if (is_str(seq)) m = xsf("can only concatenate str (not \"int\") to str");
+        else if (is_arr(seq)) m = xsf("'int' object is not iterable");
+        else m = xsf("unsupported operand type(s) for +=: '%s' and 'int'", py_type_name(seq));
         json_t *r = raise_type(m);
         free(m);
         json_free(d);

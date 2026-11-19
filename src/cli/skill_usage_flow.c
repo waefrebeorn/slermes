@@ -1050,26 +1050,30 @@ static json_t *su_scan_local_skills(su_io_t *io) {
         free(fb);
         json_t *nm = su_call(io, "read_skill_name", na);
         if (su_is_raise(nm)) { json_free(names); json_free(mds); json_free(hub); json_free(bundled); json_free(usage); return nm; }
-        const char *name = su_jstr(nm);
+        /* Own the name: su_jstr(nm) borrows into nm's storage, which is freed
+         * right below — a borrowed pointer here is a UAF (the freed slot gets
+         * reused by later allocations, yielding drifting garbage names). */
+        char *name = strdup(su_jstr(nm));
         json_free(nm);
-        if (su_set_contains(hub, name)) continue;
+        if (su_set_contains(hub, name)) { free(name); continue; }
         json_t *pa = json_object();
         json_set(pa, "skill_name", json_string(name));
         json_t *prot = su_call(io, "is_protected_builtin", pa);
-        if (su_is_raise(prot)) { json_free(names); json_free(mds); json_free(hub); json_free(bundled); json_free(usage); return prot; }
+        if (su_is_raise(prot)) { free(name); json_free(names); json_free(mds); json_free(hub); json_free(bundled); json_free(usage); return prot; }
         int isprot = su_truthy(prot);
         json_free(prot);
-        if (isprot) continue;
+        if (isprot) { free(name); continue; }
         json_t *ka = json_object();
         json_set(ka, "name", json_string(name));
         json_set(ka, "skill_md", json_string(md));
         json_set(ka, "bundled", json_copy(bundled));
         json_set(ka, "usage", json_copy(usage));
         json_t *keep = su_call(io, "keep", ka);
-        if (su_is_raise(keep)) { json_free(names); json_free(mds); json_free(hub); json_free(bundled); json_free(usage); return keep; }
+        if (su_is_raise(keep)) { free(name); json_free(names); json_free(mds); json_free(hub); json_free(bundled); json_free(usage); return keep; }
         int k = su_truthy(keep);
         json_free(keep);
         if (k) su_set_add(names, name);
+        free(name);
     }
     json_free(mds); json_free(hub); json_free(bundled); json_free(usage);
     json_t *out = su_sorted_unique(names);

@@ -752,7 +752,7 @@ def restore_case(saved):
     sys.modules["hermes_cli.main"].PROJECT_ROOT = saved["project_root"]
 
 
-def drive(func, inp, ctx):
+def drive(func, inp, ctx, held_by_ref=None):
     f = NS[func]
     state = None
     if func == "_packaged_resources_dir":
@@ -760,8 +760,7 @@ def drive(func, inp, ctx):
     elif func == "_recover_interrupted_swap":
         ret = f(FakePath(inp["live"]), FakePath(inp["aside"]))
     elif func == "_move_live_app_aside":
-        hb = inp.get("held_by")
-        held_by = list(hb) if hb is not None else None
+        held_by = held_by_ref["hb"]
         ret = f(FakePath(inp["live_root"]), FakePath(inp["previous"]),
                 held_by, inp.get("consent"))
         state = {"held_by": held_by}
@@ -867,11 +866,17 @@ def run_case(func, inp):
     saved = install_case(func, inp, ctx)
     ret = None
     state = None
+    held_by_ref = {}
+    if func == "_move_live_app_aside":
+        hb = inp.get("held_by")
+        held_by_ref["hb"] = list(hb) if hb is not None else None
     try:
         with _real_contextlib.redirect_stdout(cap_out), _real_contextlib.redirect_stderr(cap_err):
-            ret, state = drive(func, inp, ctx)
+            ret, state = drive(func, inp, ctx, held_by_ref)
     except BaseException as exc:   # noqa: BLE001 - SystemExit included
         ret = proj_exc(exc)
+        if func == "_move_live_app_aside":
+            state = {"held_by": held_by_ref["hb"]}
     finally:
         restore_case(saved)
         CURRENT_CTX = None

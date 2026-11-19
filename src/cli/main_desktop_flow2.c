@@ -87,6 +87,9 @@
  *     White_Space set (incl \x1c-\x1f); splitlines boundaries are
  *     \n \r \r\n \v \f \x1c \x1d \x1e (NOT \x1f).
  *   - in.platform models sys.platform (default "linux").
+ *   - path.resolve is an IDENTITY ECHO seam (fixture paths are canonical):
+ *     the dispatcher records {"path"} and returns the input path; a script
+ *     marker is required and scripted raises are honored. No queue accounting.
  *
  * libjson-only (gate: run_one_oracle.sh main_desktop_flow2
  * oracle_main_desktop_flow2.py "" "lib/libjson/json.o"). Self-contained:
@@ -1884,10 +1887,10 @@ static json_t *md2_swap_in_new_macos_bundle(md2_io_t *io, json_t *in) {
 }
 
 /* ── _running_macos_app_bundles ────────────────────────────────────────── */
-/* PoP: md2_running_macos_app_bundles @ hermes_cli/main_desktop.py:_running_macos_app_bundles */
 static int md2_cmp_strp(const void *a, const void *b) {
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
+/* PoP: md2_running_macos_app_bundles @ hermes_cli/main_desktop.py:_running_macos_app_bundles */
 static json_t *md2_running_macos_app_bundles(md2_io_t *io, json_t *in) {
     (void)in;
     json_t *a = json_object();

@@ -1688,21 +1688,25 @@ static json_t *rsu2_handoff_resolve_scope(rsu2_env *e, const json_t *profile_nam
     }
     json_t *cfg = rsu2_call(e, "run.load_gateway_config", rsu2_args());
     if (rsu2_raised(cfg)) {
-        if (rsu2_swallow_exc(cfg)) return cfg;
+        /* Snapshot str(exc) BEFORE rsu2_swallow_exc frees the spec on the
+         * Exception path — the except body formats it into the RuntimeError.
+         * Reading cfg->message after the helper freed it is a UAF, and a
+         * second json_free(cfg) here is a double-free (0xC0000374). */
+        char *em = strdup(rsu2_msg(cfg));
+        if (rsu2_swallow_exc(cfg)) { free(em); return cfg; }
         json_t *la = json_array();
         json_append(la, profile_name ? json_copy((json_t *)profile_name) : json_null());
         json_t *lr = rsu2_log(e, "error",
             "Handoff: could not load config for profile %s; failing the handoff instead of "
             "delivering via the primary's config", la, true);
-        if (rsu2_raised(lr)) return lr;
+        if (rsu2_raised(lr)) { free(em); return lr; }
         json_free(lr);
         char *pns = rsu2_py_str(profile_name);
-        const char *em = rsu2_msg(cfg);
         size_t n = strlen(pns) + strlen(em) + 64;
         char *msg = malloc(n);
         snprintf(msg, n, "could not load config for profile '%s': %s", pns, em);
         free(pns);
-        json_free(cfg);
+        free(em);
         json_t *r = rsu2_raise("RuntimeError", msg);
         free(msg);
         return r;

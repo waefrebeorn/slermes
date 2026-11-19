@@ -161,7 +161,11 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     } else if (!strcmp(func, "update_run_channel")) {
         ret = uc_update_run_channel(sp, J("args"));
     } else if (!strcmp(func, "settle_windows_resume")) {
-        workstate = J("request") ? json_copy(J("request")) : NULL;
+        /* NULL == None convention: a JSON-null request is Python None, not a
+         * JSON_NULL node — the oracle maps a None statewin to {} in the echo,
+         * so materialise null as NULL to keep both sides identical. */
+        const json_t *rq = J("request");
+        workstate = (rq && rq->type != JSON_NULL) ? json_copy(rq) : NULL;
         ret = uc_settle_windows_resume(sp, workstate);
         echo_state = true;
     } else if (!strcmp(func, "resume_paused_gateways_at_exit")) {

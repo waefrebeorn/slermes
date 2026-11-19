@@ -222,7 +222,10 @@ static char *mm_comma_int(double d) {
     if (sign[0]) r[o++] = sign[0];
     size_t lead = n % 3; if (lead == 0) lead = 3;
     for (size_t i = 0; i < n; i++) {
-        if (i > 0 && (i - lead) % 3 == 0) r[o++] = ',';
+        /* i >= lead guard: (i - lead) underflows size_t for i < lead, and
+         * SIZE_MAX-k % 3 == 0 planted extra commas AND overflowed the buffer
+         * sized for groups-1 commas (1-byte heap overflow -> 0xC0000374). */
+        if (i >= lead && (i - lead) % 3 == 0) r[o++] = ',';
         r[o++] = body[i];
     }
     r[o] = '\0';
@@ -1122,9 +1125,14 @@ static json_t *mm_cached_codex_catalog_max(mm_ctx *ctx, json_t *in) {
 /* drop branch: log(msg, model, base_url, shown) then _invalidate_cached_context_length.
  * Returns NULL (None); a seam raise propagates via ctx->exc. */
 static json_t *mm_vcl_drop(mm_ctx *ctx, json_t *in, const char *level, const char *msg, json_t *shown) {
+    /* log(msg, model, base_url, shown): POSITIONAL args — an array built with
+     * json_append (mm_arg/json_set is a silent no-op on arrays). None stays
+     * null in the positional list (the oracle only drops None KWARGS keys). */
     json_t *la = json_array();
-    mm_arg(la, "model", mm_get(in, "model"));
-    mm_arg(la, "base_url", mm_get(in, "base_url"));
+    json_t *m = mm_get(in, "model");
+    json_t *b = mm_get(in, "base_url");
+    json_append(la, m ? json_copy(m) : json_null());
+    json_append(la, b ? json_copy(b) : json_null());
     json_append(la, shown ? shown : json_null());
     mm_log(ctx, level, msg, la);
     if (mm_exc_pending(ctx)) return NULL;
@@ -1186,9 +1194,12 @@ static json_t *mm_validate_cached_context_length(mm_ctx *ctx, json_t *in) {
     if (mm_exc_pending(ctx)) { json_free(inf); return NULL; }
     if (mm_is_str(inf) && mm_str_eq(inf->str_val, "nous")) {
         json_free(inf);
+        /* logger.debug(msg, model, base_url): positional array, not mm_arg. */
         json_t *la = json_array();
-        mm_arg(la, "model", mm_get(in, "model"));
-        mm_arg(la, "base_url", mm_get(in, "base_url"));
+        json_t *m = mm_get(in, "model");
+        json_t *b = mm_get(in, "base_url");
+        json_append(la, m ? json_copy(m) : json_null());
+        json_append(la, b ? json_copy(b) : json_null());
         mm_log(ctx, "debug", "Bypassing persistent cache for %s@%s (Nous portal authoritative)", la);
         if (mm_exc_pending(ctx)) return NULL;
         return json_null();
@@ -1277,7 +1288,9 @@ static const char *MM_CONTEXT_LENGTH_KEYS[] = {
 };
 
 /* _add_model_aliases(cache, model_id, entry): seam + the IDENTICAL state effect
- * (cache[model_id]=entry; if "/" in model_id: cache.setdefault(slug, entry)). */
+ * (cache[model_id]=entry; if "/" in model_id:
+ *  cache.setdefault(model_id.split("/", 1)[1], entry) — the part AFTER the
+ *  first slash, e.g. "org/m1" -> "m1"). */
 static bool mm_add_model_aliases(mm_ctx *ctx, json_t *cache, const char *model_id, json_t *entry) {
     json_t *aa = json_object();
     mm_arg(aa, "cache", cache);
@@ -1287,13 +1300,8 @@ static bool mm_add_model_aliases(mm_ctx *ctx, json_t *cache, const char *model_i
     json_free(ar);
     if (mm_exc_pending(ctx)) return false;
     json_set(cache, model_id, json_copy(entry));
-    if (strchr(model_id, '/')) {
-        char *slug = mm_split_first(model_id, '/');
-        if (slug) {
-            if (!json_has(cache, slug)) json_set(cache, slug, json_copy(entry));
-            free(slug);
-        }
-    }
+    const char *slash = strchr(model_id, '/');
+    if (slash && !json_has(cache, slash + 1)) json_set(cache, slash + 1, json_copy(entry));
     return true;
 }
 

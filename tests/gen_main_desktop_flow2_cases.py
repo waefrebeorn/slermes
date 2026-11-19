@@ -637,7 +637,7 @@ case("build_prepared_desktop", desktop_dir=DD, source_mode=False, pnpm="pnpm",
 CONTENTS = APP + "/Contents"
 FWDIR = CONTENTS + "/Frameworks"
 FWB = FWDIR + "/Electron Framework.framework"
-HELPER = FWDIR + "/Hermes Helper.app"
+HELPER = FWDIR + "/Helpers/Hermes Helper.app"  # deeper than FWB: distinct part count (set-sort tie domain)
 WALK1 = [
     {"root": CONTENTS + "/MacOS", "dirs": [],
      "files": ["app.node", "chrome_crashpad_handler", "Hermes"]},
