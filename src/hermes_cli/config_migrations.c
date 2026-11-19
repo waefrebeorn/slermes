@@ -247,10 +247,12 @@ void cm_migrate_to_12(json_t *results, bool quiet) {
             }
             /* trial_key is the final unique key (owned) */
 
-            /* normalize entry via existing port */
+            /* normalize entry via existing port (returns serialized JSON) */
             char *ser = json_serialize(entry);
-            json_t *norm = normalize_custom_provider_entry_json(ser, trial_key);
+            char *norm_ser = normalize_custom_provider_entry_json(ser, trial_key);
             free(ser);
+            json_t *norm = norm_ser ? json_parse(norm_ser, NULL) : NULL;
+            free(norm_ser);
             if (!norm) { free(trial_key); continue; }
 
             /* Pop name if empty */
@@ -524,7 +526,7 @@ void cm_migrate_to_21(json_t *results, bool quiet) {
                 char *names[256];
                 int nnames = 0;
                 while ((entry = readdir(d)) != NULL && nnames < 256) {
-                    if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+                    if (hermes_dirent_is_dir(plugins_dir, entry->d_name) && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
                         char full[4096];
                         snprintf(full, sizeof(full), "%s/%s", plugins_dir, entry->d_name);
                         struct stat st;

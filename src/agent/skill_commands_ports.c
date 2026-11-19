@@ -70,7 +70,7 @@ char *skc_scan_skill_commands(void) {
     struct dirent *e;
     while ((e = readdir(d)) != NULL) {
         if (e->d_name[0] == '.') continue;
-        if (e->d_type != DT_DIR) continue;
+        if (!hermes_dirent_is_dir(dir, e->d_name)) continue;
         char *md = NULL;
         asprintf(&md, "%s/%s/SKILL.md", dir, e->d_name);
         if (access(md, F_OK) != 0) { free(md); continue; }

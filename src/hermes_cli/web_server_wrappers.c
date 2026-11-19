@@ -898,7 +898,7 @@ json_t *ws_u_cron_profile_dicts(void) {
         if (d) {
             struct dirent *e;
             while ((e = readdir(d))) {
-                if (e->d_type != DT_DIR && e->d_type != DT_UNKNOWN) continue;
+                if (!hermes_dirent_is_dir(root, e->d_name)) continue;
                 if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
                 if (strcmp(e->d_name, "default") == 0) continue;
                 if (!profile_validate_name(e->d_name, NULL)) continue;

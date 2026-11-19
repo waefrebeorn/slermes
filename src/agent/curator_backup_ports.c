@@ -151,7 +151,7 @@ long cub_count_skill_files(const char *base) {
         if (e->d_name[0] == '.') continue;
         char *sub = NULL;
         asprintf(&sub, "%s/%s", base, e->d_name);
-        if (e->d_type == DT_DIR) {
+        if (hermes_dirent_is_dir(base, e->d_name)) {
             char *md = NULL;
             asprintf(&md, "%s/SKILL.md", sub);
             if (access(md, F_OK) == 0) count++;

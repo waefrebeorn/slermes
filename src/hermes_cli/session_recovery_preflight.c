@@ -117,7 +117,9 @@ static int sr_copy_file(const char *src, const char *dst) {
         /* copy2 preserves mtime */
         struct stat st;
         if (stat(src, &st) == 0) {
-            struct timespec times[2] = { st.st_atim, st.st_mtim };
+            /* MinGW stat exposes time_t seconds, not POSIX st_atim/st_mtim
+             * timespecs; second precision is the platform ceiling here. */
+            struct timespec times[2] = { { st.st_atime, 0 }, { st.st_mtime, 0 } };
             utimensat(AT_FDCWD, dst, times, 0);
         }
     }

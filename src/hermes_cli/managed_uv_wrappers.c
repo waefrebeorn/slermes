@@ -409,11 +409,15 @@ void touch_uv_self_update_stamp(void) {
     }
     int fd = open(stamp, O_CREAT | O_WRONLY, 0644);
     if (fd >= 0) {
-        /* update mtime to now (utimensat on the fd) */
-        struct timespec ts[2];
-        ts[0].tv_sec = ts[0].tv_nsec = 0;       /* atime unchanged */
-        ts[1].tv_sec = time(NULL); ts[1].tv_nsec = 0;  /* mtime = now */
-        futimens(fd, ts);
+        /* update mtime to now; MinGW has no futimens — SetFileTime on the
+         * OS handle leaves atime untouched (NULL) and sets write time. */
+        HANDLE h = (HANDLE)_get_osfhandle(fd);
+        if (h != INVALID_HANDLE_VALUE) {
+            SYSTEMTIME st; FILETIME ft;
+            GetSystemTime(&st);
+            if (SystemTimeToFileTime(&st, &ft))
+                SetFileTime(h, NULL, NULL, &ft);
+        }
         close(fd);
     }
 }

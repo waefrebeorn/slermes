@@ -37,6 +37,7 @@
  */
 
 #include "desktop_app.h"
+#include "port_utils_ports.h"
 #include "desktop_state.h"
 #include "hermes.h"
 #include "hive.h"

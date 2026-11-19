@@ -138,7 +138,7 @@ char *crf_expand_folder_reference(const char *cwd, const char *target, const cha
             out = nb;
         }
         len += sprintf(out + len, "- %s%s\n", e->d_name,
-                       e->d_type == DT_DIR ? "/" : "");
+                       hermes_dirent_is_dir(path, e->d_name) ? "/" : "");
     }
     closedir(d);
     free(path);

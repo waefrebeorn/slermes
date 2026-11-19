@@ -295,7 +295,7 @@ int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {
                     char files[64][1024];
                     int nf = 0;
                     while ((de = readdir(dir)) != NULL && nf < 64) {
-                        if (de->d_type == DT_REG) {
+                        if (hermes_dirent_is_file(resolved, de->d_name)) {
                             const char *dot = strrchr(de->d_name, '.');
                             if (dot && (strcasecmp(dot, ".yaml") == 0 || strcasecmp(dot, ".yml") == 0))
                                 snprintf(files[nf++], 1024, "%s/%s", resolved, de->d_name);

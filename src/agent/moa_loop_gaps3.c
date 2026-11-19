@@ -11,6 +11,3 @@
 
 /* PoP: last_reference_metrics @ agent/moa_loop.py:last_reference_metrics */
 char *last_reference_metrics(void) { return strdup(""); }
-
-/* PoP: last_reference_metrics @ agent/moa_loop.py:last_reference_metrics */
-char *last_reference_metrics(void) { return strdup(""); }
