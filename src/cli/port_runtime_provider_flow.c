@@ -370,9 +370,23 @@ static json_t *openrouter_fallback_of(rpf_io_t *io, const char *requested_provid
 
 /* _runtime(provider, api_mode, base_url, api_key, **extra) — REAL sibling.
  * extra is a borrowed object merged in insertion order (overwrite keeps
- * position, new keys append). Returns a NEW dict (or raise). */
+ * position, new keys append). Returns a NEW dict (or raise).
+ * Call-site binding first: the caller spreads extra as **kwargs against the
+ * four positional parameters; a duplicate key raises TypeError BEFORE any
+ * body seam (first hit in SIGNATURE order; 3.14 names the bare qualname). */
 static json_t *runtime_build(rpf_io_t *io, const char *provider, const char *api_mode,
                              const json_t *base_url, const json_t *api_key, const json_t *extra) {
+    if (j_is_obj(extra)) {
+        static const char *positional[] = {"provider", "api_mode", "base_url", "api_key"};
+        for (int i = 0; i < 4; i++) {
+            if (json_obj_get(extra, positional[i])) {
+                char m[128];
+                snprintf(m, sizeof(m), "_runtime() got multiple values for argument '%s'",
+                         positional[i]);
+                return raise_desc("TypeError", m);
+            }
+        }
+    }
     json_t *rargs = json_object();
     json_set_hdr(rargs, "provider", provider);
     json_set(rargs, "base_url", base_url ? json_copy(base_url) : json_null());

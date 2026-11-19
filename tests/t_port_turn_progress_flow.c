@@ -98,8 +98,15 @@ static void tpf_run_case(const char *func, const json_t *in, json_t *out) {
         state = json_object();
     }
     static const char *sects[] = {"st", "ctx", "adapters", "consumers"};
+    /* The oracle keeps st/ctx None when the mirror omits them (a pure leaf
+     * like _append_progress_repeat_count never touches state); remember which
+     * sections were absent/null so an untouched auto-vivified empty object is
+     * emitted as null, matching norm_state. A section the port DID populate
+     * stays visible (live would have raised AttributeError on None). */
+    bool sect_null[4];
     for (int i = 0; i < 4; i++) {
         json_t *s = json_obj_get(state, sects[i]);
+        sect_null[i] = !s || s->type == JSON_NULL;
         if (!s) json_set(state, sects[i], json_object());
     }
     tpf_script_ctx ctx = {
@@ -120,6 +127,13 @@ static void tpf_run_case(const char *func, const json_t *in, json_t *out) {
     if (env.exc) {   /* propagated BaseException / unhandled raise */
         json_free(ret);
         ret = env.exc;
+    }
+    for (int i = 0; i < 2; i++) {   /* st / ctx only: adapters/consumers norm {} */
+        if (sect_null[i]) {
+            json_t *s = json_obj_get(state, sects[i]);
+            if (s && s->type == JSON_OBJECT && s->c.count == 0)
+                json_set(state, sects[i], json_null());
+        }
     }
     json_set(out, "ret", ret ? ret : json_null());
     json_set(out, "trace", ctx.trace);

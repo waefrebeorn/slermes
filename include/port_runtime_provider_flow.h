@@ -64,7 +64,13 @@
  *   avoid integral-float forms ("1.0") and leading zeros.
  * - _runtime builds {"provider","api_mode","base_url","api_key", **extra}:
  *   extra keys overwrite in place (position kept) or append, matching dict
- *   update semantics; insertion order is preserved by libjson.
+ *   update semantics; insertion order is preserved by libjson. Call-site
+ *   binding fires FIRST: an extra key duplicating a positional parameter
+ *   (checked provider/api_mode/base_url/api_key in signature order) raises
+ *   TypeError "_runtime() got multiple values for argument '<name>'" before
+ *   any seam event.
+ * - BaseException objects passed as logger.debug args project to str(exc)
+ *   (the %s rendering) on both sides.
  *
  * Ownership: every rpf_* function returns a NEW json_t* (caller frees).
  * Args passed to rpf_call are borrowed (the dispatcher copies what it

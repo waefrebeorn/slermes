@@ -297,19 +297,26 @@ static void gwss_adopt_snapshot(json_t *s, const json_t *snap) {
 static json_t *gwss_call_args(const json_t *method, const json_t *abandon,
                               const json_t *params, json_t **raise_out) {
     if (params && params->type != JSON_OBJECT) {
+        /* store.call(method, **params) call-site binding (3.14 ** message:
+         * module.qualname() prefix; the class lives in the oracle's
+         * gw_session_store_extracted namespace). */
         gwss_raise_fmt(raise_out, "TypeError",
-                       "argument of type '%s' is not a mapping", gwss_typename(params));
+                       "gw_session_store_extracted.GatewaySessionStore.call() "
+                       "argument after ** must be a mapping, not %s", gwss_typename(params));
         return NULL;
     }
     if (params && params->type == JSON_OBJECT && json_obj_get(params, "method")) {
-        gwss_raise(raise_out, "TypeError", "call() got multiple values for argument 'method'");
+        gwss_raise(raise_out, "TypeError",
+                   "GatewaySessionStore.call() got multiple values for argument 'method'");
         return NULL;
     }
     bool have_abandon = !gwss_is_null(abandon);
     if (have_abandon && params && params->type == JSON_OBJECT
         && json_obj_get(params, "abandon")) {
+        /* connection.call(method, abandon=abandon, **params) binding: abandon
+         * is kwonly on the live signature (ConnDouble keeps it). */
         gwss_raise(raise_out, "TypeError",
-                   "call() got multiple values for keyword argument 'abandon'");
+                   "ConnDouble.call() got multiple values for keyword argument 'abandon'");
         return NULL;
     }
     json_t *args = json_object();
@@ -335,23 +342,29 @@ static json_t *gwss_store_call(gwss_store_t *st, const json_t *method,
  * identity, not truthiness (abandon=0/"" still takes the direct branch).
  * The caller's **params spread binds against _call's OWN signature first:
  * a non-mapping params, or a params carrying method/abandon, raises TypeError
- * at the call site (prefix "_call()") BEFORE the body routes anything. */
+ * at the call site BEFORE the body routes anything. 3.14 message shapes:
+ * duplicate argument uses qualname ("GatewaySessionStore._call()"); a bad **
+ * spread uses module.qualname ("gw_session_store_extracted.GatewaySessionStore.
+ * _call() argument after ** must be a mapping, not <type>"). */
 static json_t *gwss__call(gwss_store_t *st, const json_t *method, const json_t *abandon,
                           const json_t *params, gwss_io_t *io, json_t **raise_out) {
     if (params && params->type != JSON_OBJECT) {
         /* explicit None (or any non-mapping) spread raises; an ABSENT params
          * (NULL pointer) models the caller's default {} and spreads nothing. */
         gwss_raise_fmt(raise_out, "TypeError",
-                       "argument of type '%s' is not a mapping", gwss_typename(params));
+                       "gw_session_store_extracted.GatewaySessionStore._call() "
+                       "argument after ** must be a mapping, not %s", gwss_typename(params));
         return NULL;
     }
     if (params && params->type == JSON_OBJECT) {
         if (json_obj_get(params, "method")) {
-            gwss_raise(raise_out, "TypeError", "_call() got multiple values for argument 'method'");
+            gwss_raise(raise_out, "TypeError",
+                       "GatewaySessionStore._call() got multiple values for argument 'method'");
             return NULL;
         }
         if (json_obj_get(params, "abandon")) {
-            gwss_raise(raise_out, "TypeError", "_call() got multiple values for argument 'abandon'");
+            gwss_raise(raise_out, "TypeError",
+                       "GatewaySessionStore._call() got multiple values for argument 'abandon'");
             return NULL;
         }
     }
@@ -1029,8 +1042,10 @@ json_t *gwss_open_session(gwss_store_t *st, const json_t *in, gwss_io_t *io, jso
     if (gwss_truth(resumed)) {
         json_t *csid = cli ? json_obj_get(cli, "session_id") : NULL;
         if (!csid) {
+            /* cli materializes as types.SimpleNamespace; 3.14 attribute errors
+             * name the type's module.qualname. */
             gwss_raise(raise_out, "AttributeError",
-                       "'SimpleNamespace' object has no attribute 'session_id'");
+                       "'types.SimpleNamespace' object has no attribute 'session_id'");
             goto done;
         }
         json_t *ain = json_object();

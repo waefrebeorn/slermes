@@ -34,6 +34,12 @@ Representation contract (shared with the C port header):
   normalize to ints on both sides before comparison.
 - `except Exception` does NOT catch SystemExit/KeyboardInterrupt/GeneratorExit;
   the top-level catch is BaseException so those project to a raise sentinel.
+- BaseException objects passed as logger.debug args project to str(exc) (the
+  %s rendering); the C port records the same string.
+- _runtime call-site binding: an extra key duplicating a positional parameter
+  (provider/api_mode/base_url/api_key, checked in signature order) raises
+  TypeError "_runtime() got multiple values for argument '<name>'" before any
+  seam event.
 """
 import ast
 import contextlib
@@ -342,7 +348,11 @@ def install_recorders(ctx):
     NS["_resolve_vertex_runtime"] = lambda requested_provider: ctx.call(
         "_resolve_vertex_runtime", {"requested_provider": requested_provider})
     NS["logger"] = types.SimpleNamespace(
-        debug=lambda fmt, *a: ctx.call("logger.debug", {"fmt": fmt, "args": list(a)}),
+        debug=lambda fmt, *a: ctx.call("logger.debug", {
+            "fmt": fmt,
+            # BaseException log args project to str(exc) (the %s rendering),
+            # matching the C port and the sibling flow oracles' RecLogger.
+            "args": [str(x) if isinstance(x, BaseException) else x for x in a]}),
         info=lambda *a, **k: None, warning=lambda *a, **k: None, error=lambda *a, **k: None)
 
 

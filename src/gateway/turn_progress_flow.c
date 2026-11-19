@@ -46,8 +46,12 @@
  *    == a raised exception. BaseException kinds (SystemExit, KeyboardInterrupt,
  *    GeneratorExit, CancelledError) pass through every `except Exception` site
  *    via env->exc; Exception kinds are swallowed exactly where live swallows.
- *  - Clock seams return floats; a null clock result raises the live TypeError
- *    (operand type names: number -> "float", null -> "NoneType").
+ *  - Clock seams return floats; a null clock result raises the live TypeError.
+ *    Operand type names: the monotonic seam float()-wraps numbers (left operand
+ *    "float"); mirror/script values keep their JSON type, and integral numbers
+ *    round-trip as int through the harness echo (right operand "int"/"float").
+ *    wait from retry_after is float()-coerced ("float"); wait from
+ *    flood_wait_seconds keeps the scripted return type.
  *  - Self-contained: the harness #includes this .c; every symbol is static.
  */
 #ifndef _GNU_SOURCE
@@ -375,6 +379,9 @@ static bool tpf_py_float(const char *s, double *out) {
     if (!buf) return false;
     size_t k = 0;
     for (size_t i = 0; i < n; i++) if (start[i] != '_') buf[k++] = start[i];
+    /* d already skipped trailing White_Space; drop it from the copy too or
+     * strtod's endp lands on it and the full-consumption check fails. */
+    while (k > 0 && tpf_ws((unsigned char)buf[k - 1])) k--;
     buf[k] = '\0';
     char *endp = NULL;
     double v = strtod(buf, &endp);
@@ -745,6 +752,8 @@ static bool tpf_note_flood_core(tpf_env *e, json_t *st, const json_t *result) {
     /* wait = float(getattr(result, "retry_after", None) or 0.0) */
     json_t *ra = result ? json_obj_get(result, "retry_after") : NULL;
     double wait = 0.0;
+    bool wait_from_fn = false;   /* wait keeps the flood_wait_seconds return */
+    json_t *waitv = NULL;        /* owned fn return (NULL == None) */
     if (gflow_truth(ra)) {
         if (ra->type == JSON_NUMBER) wait = ra->num_val;
         else if (ra->type == JSON_BOOL) wait = ra->bool_val ? 1.0 : 0.0;
@@ -760,29 +769,35 @@ static bool tpf_note_flood_core(tpf_env *e, json_t *st, const json_t *result) {
         json_set(fa, "default", json_number(30.0));
         json_t *fr = tpf_call(e, "flood_wait_seconds", fa);
         if (tpf_is_raise(fr)) { tpf_park(e, fr); return false; }
-        if (!fr || fr->type != JSON_NUMBER) {
-            char m[160];
-            snprintf(m, sizeof(m), "unsupported operand type(s) for +: '%s' and 'float'",
-                     tpf_clock_type(fr));
-            json_free(fr);
-            tpf_park(e, tpf_raise_spec("TypeError", m));
-            return false;
-        }
-        wait = fr->num_val;
-        json_free(fr);
+        /* wait = flood_wait_seconds(...): the return keeps its scripted type
+         * (no float() coercion live); a non-number surfaces only at the +. */
+        waitv = fr;
+        wait_from_fn = true;
+        if (fr && fr->type == JSON_NUMBER) wait = fr->num_val;
+        else if (fr && fr->type == JSON_BOOL) wait = fr->bool_val ? 1.0 : 0.0;
     }
     json_t *mr = tpf_monotonic(e);
-    if (tpf_is_raise(mr)) { tpf_park(e, mr); return false; }
-    if (!mr || mr->type != JSON_NUMBER) {
+    if (tpf_is_raise(mr)) { tpf_park(e, mr); json_free(waitv); return false; }
+    /* st.flood_until = time.monotonic() + wait — the clock seam float()-wraps
+     * numbers (left operand type "float"); the right operand is "float" on the
+     * retry_after path (float() coercion) else the fn return's mirror type
+     * (integral JSON numbers round-trip as int through the harness echo). */
+    bool mr_num = mr && (mr->type == JSON_NUMBER || mr->type == JSON_BOOL);
+    bool wait_num = wait_from_fn
+        ? (waitv && (waitv->type == JSON_NUMBER || waitv->type == JSON_BOOL))
+        : true;
+    if (!mr_num || !wait_num) {
         char m[160];
-        snprintf(m, sizeof(m), "unsupported operand type(s) for +: '%s' and 'float'",
-                 tpf_clock_type(mr));
+        snprintf(m, sizeof(m), "unsupported operand type(s) for +: '%s' and '%s'",
+                 tpf_clock_type(mr), wait_from_fn ? tpf_py_type(waitv) : "float");
         json_free(mr);
+        json_free(waitv);
         tpf_park(e, tpf_raise_spec("TypeError", m));
         return false;
     }
-    double now = mr->num_val;
+    double now = mr->type == JSON_BOOL ? (mr->bool_val ? 1.0 : 0.0) : mr->num_val;
     json_free(mr);
+    json_free(waitv);
     json_set(st, "flood_until", json_number(now + wait));
     json_set(st, "flood_pending", json_bool(true));
     return true;
@@ -792,15 +807,21 @@ static bool tpf_in_flood_window_core(tpf_env *e, json_t *st) {
     json_t *mr = tpf_monotonic(e);
     if (tpf_is_raise(mr)) { tpf_park(e, mr); return false; }
     json_t *until = json_obj_get(st, "flood_until");
-    if (!mr || mr->type != JSON_NUMBER || !until || until->type != JSON_NUMBER) {
+    bool mr_num = mr && (mr->type == JSON_NUMBER || mr->type == JSON_BOOL);
+    bool un_num = until && (until->type == JSON_NUMBER || until->type == JSON_BOOL);
+    if (!mr_num || !un_num) {
+        /* left: clock seam float()-wraps numbers; right: mirror type (integral
+         * JSON numbers round-trip as int through the harness echo). */
         char m[160];
         snprintf(m, sizeof(m), "'<' not supported between instances of '%s' and '%s'",
-                 tpf_clock_type(mr), tpf_clock_type(until));
+                 tpf_clock_type(mr), tpf_py_type(until));
         json_free(mr);
         tpf_park(e, tpf_raise_spec("TypeError", m));
         return false;
     }
-    bool r = mr->num_val < until->num_val;
+    double mv = mr->type == JSON_BOOL ? (mr->bool_val ? 1.0 : 0.0) : mr->num_val;
+    double uv = until->type == JSON_BOOL ? (until->bool_val ? 1.0 : 0.0) : until->num_val;
+    bool r = mv < uv;
     json_free(mr);
     return r;
 }
@@ -1541,7 +1562,8 @@ static json_t *tpf_progress_callback(tpf_env *e, const json_t *in) {
         const char *pv = gflow_str(preview);
         char *line;
         if (gflow_truth(preview)) {
-            size_t n = strlen(ts) + 2 + strlen(tool_name) + 1 + 1 + strlen(pv) + 1 + 1;
+            /* ts + "  " + tool + ": " + '"' + pv + '"' + NUL */
+            size_t n = strlen(ts) + 2 + strlen(tool_name) + 2 + 1 + strlen(pv) + 1 + 1;
             line = (char *)malloc(n);
             if (line) snprintf(line, n, "%s  %s: \"%s\"", ts, tool_name, pv);
             else line = strdup("");
