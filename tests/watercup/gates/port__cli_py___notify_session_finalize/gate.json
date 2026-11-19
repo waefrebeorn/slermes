@@ -22,8 +22,8 @@
     "src/cli/cli_helpers2.c",
     "src/hermes_cli/_subprocess_compat.c",
     "src/hermes_cli/lifecycle.c",
-    "src/agent/hermes_state/hermes_state_ops.c",
-    "src/agent/hermes_state/hermes_state_ports.c"
+    "src/persistence/sqlite_state/hermes_state_ops.c",
+    "src/persistence/sqlite_state/hermes_state_ports.c"
   ],
   "cflags": [
     "-I",

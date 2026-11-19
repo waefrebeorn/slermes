@@ -11,7 +11,7 @@ import json
 import re
 import sys
 
-SRC = "C:/Users/eman5/hermes-agent/tools/cronjob_prompt_scan.py"
+SRC = "C:/Users/eman5/hermes-agent/cron/prompt_scan.py"
 
 
 def main() -> int:

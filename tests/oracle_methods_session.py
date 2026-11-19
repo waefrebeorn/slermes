@@ -12,7 +12,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
 SRC = r"C:\Users\eman5\hermes-agent\tui_gateway\methods_session.py"
-UTILS = r"C:\Users\eman5\hermes-agent\utils.py"
+UTILS = r"C:\Users\eman5\hermes-agent\utils\env.py"
 WANTED = ["_str_param", "_flag", "_int_param", "_denied_source",
           "_auto_resume_denied_source"]
 

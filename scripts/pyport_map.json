@@ -454,7 +454,7 @@
  "agent/monitoring/__init__.py": {
   "marker_files": [],
   "func_match_files": [
-   "src/agent/hermes_state/hermes_state_open.c",
+   "src/persistence/sqlite_state/hermes_state_open.c",
    "src/agent/think_scrubber.c",
    "src/agent/transcription_provider.c",
    "src/cli/display_core.c",
@@ -579,7 +579,7 @@
  "agent/proxy_sources/__init__.py": {
   "marker_files": [],
   "func_match_files": [
-   "src/agent/hermes_state/hermes_state_open.c",
+   "src/persistence/sqlite_state/hermes_state_open.c",
    "src/agent/think_scrubber.c",
    "src/agent/transcription_provider.c",
    "src/cli/display_core.c",
@@ -852,7 +852,7 @@
    "src/agent/batch14_gaps.c",
    "src/agent/conversation_loop.c",
    "src/agent/credential_pool_engine.c",
-   "src/agent/hermes_state/hermes_state_repair.c",
+   "src/persistence/sqlite_state/hermes_state_repair.c",
    "src/agent/intent_ack.c",
    "src/agent/llm_client.c",
    "src/agent/ports_wrappers.c",
@@ -2754,7 +2754,7 @@
  "hermes_cli/observability/__init__.py": {
   "marker_files": [],
   "func_match_files": [
-   "src/agent/hermes_state/hermes_state_open.c",
+   "src/persistence/sqlite_state/hermes_state_open.c",
    "src/agent/think_scrubber.c",
    "src/agent/transcription_provider.c",
    "src/cli/display_core.c",
@@ -2955,7 +2955,7 @@
  "hermes_cli/web_routers/__init__.py": {
   "marker_files": [],
   "func_match_files": [
-   "src/agent/hermes_state/hermes_state_open.c",
+   "src/persistence/sqlite_state/hermes_state_open.c",
    "src/agent/think_scrubber.c",
    "src/agent/transcription_provider.c",
    "src/cli/display_core.c",
@@ -2995,13 +2995,13 @@
  "hermes_cli/web_routers/sessions.py": {
   "marker_files": [],
   "func_match_files": [
-   "src/agent/hermes_state/hermes_state_gaps.c",
-   "src/agent/hermes_state/hermes_state_lifecycle.c",
-   "src/agent/hermes_state/hermes_state_locks.c",
-   "src/agent/hermes_state/hermes_state_misc.c",
-   "src/agent/hermes_state/hermes_state_open.c",
-   "src/agent/hermes_state/hermes_state_ports.c",
-   "src/agent/hermes_state/hermes_state_tokens.c",
+   "src/persistence/sqlite_state/hermes_state_gaps.c",
+   "src/persistence/sqlite_state/hermes_state_lifecycle.c",
+   "src/persistence/sqlite_state/hermes_state_locks.c",
+   "src/persistence/sqlite_state/hermes_state_misc.c",
+   "src/persistence/sqlite_state/hermes_state_open.c",
+   "src/persistence/sqlite_state/hermes_state_ports.c",
+   "src/persistence/sqlite_state/hermes_state_tokens.c",
    "src/cli/cli_cmd_session.c",
    "src/gateway/whatsapp_identity_ports.c",
    "src/hermes_cli/session_recovery/session_recovery_orphans.c",
@@ -3618,7 +3618,7 @@
  "memory_manager.py": {
   "marker_files": [
    "src/agent/batch15_gaps.c",
-   "src/agent/hermes_state/hermes_state_misc.c",
+   "src/persistence/sqlite_state/hermes_state_misc.c",
    "src/agent/memory_manager.c",
    "src/agent/memory_manager_helpers.c",
    "src/agent/memory_manager_ports.c",

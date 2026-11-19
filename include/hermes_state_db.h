@@ -5,7 +5,7 @@
  * read/write through — the single source of truth for session state in C.
  *
  * Every method here is a byte-faithful mirror of its Python counterpart's
- * SQL + control flow. Implemented in src/agent/hermes_state/ over the
+ * SQL + control flow. Implemented in src/persistence/sqlite_state/ over the
  * vendored sqlite3 (lib/libdb/sqlite3.c). Opaque handle; no god headers.
  */
 

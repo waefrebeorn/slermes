@@ -16,7 +16,7 @@ HERMES_ROOT = r"C:\Users\eman5\hermes-agent"
 if HERMES_ROOT not in sys.path:
     sys.path.insert(0, HERMES_ROOT)
 
-REPAIR = r"C:\Users\eman5\hermes-agent\persistence.sqlite._state.repair.py"
+REPAIR = r"C:\Users\eman5\hermes-agent\persistence/sqlite/_state/repair.py"
 WANTED = ["_mask_volatile_header", "_repair_backup_headroom_bytes",
           "_repair_failure_consumes_attempt", "_sidecars"]
 

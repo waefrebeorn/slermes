@@ -101,7 +101,7 @@ PYTHON_SOURCE_DIRS = {
 
 # Top-level fork modules beyond cli.py that are runtime surface with C
 # ports (utils.py -> src/agent/proxy_utils.c etc.; hermes_state.py ->
-# src/agent/hermes_state/*.c). Tracked so their parity is visible.
+# src/persistence/sqlite_state/*.c). Tracked so their parity is visible.
 ROOT_PY_MODULES = ["utils.py", "hermes_state.py"]
 
 SLERMES_SRC_DIRS = [
@@ -711,7 +711,7 @@ class ParityAnalyzer:
         def add(py, c): M[py] = c
         # agent/
         add("agent/pet/constants.py","src/pet/pet_constants.c")
-        add("hermes_state.py","src/agent/hermes_state/port_hermes_state.c")
+        add("hermes_state.py","src/persistence/sqlite_state/port_hermes_state.c")
         add("hermes_cli/_startup_fast.py","src/cli/port_startup_fast.c")
         add("agent/pet/state.py","src/pet/pet_state.c")
         add("agent/pet/manifest.py","src/pet/pet_manifest.c")

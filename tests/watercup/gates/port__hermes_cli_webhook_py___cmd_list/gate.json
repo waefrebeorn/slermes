@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/util_helpers.c",
-    "src/agent/hermes_state/hermes_state_msgs.c",
+    "src/persistence/sqlite_state/hermes_state_msgs.c",
     "src/hermes_cli/kanban_schema.c",
     "src/hermes_cli/kanban_tasks.c",
     "src/hermes_cli/kanban_model.c",

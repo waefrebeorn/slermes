@@ -33,6 +33,18 @@ def _base_url_hostname(base_url):
 
 _utils.base_url_hostname = _base_url_hostname
 _utils.atomic_json_write = lambda *a, **k: None
+
+
+def _base_url_host_matches(base_url, domain):
+    # Transcribed from LIVE utils/urls.py:base_url_host_matches (the quarry
+    # module imports it from utils since the 2026-11-18 reorg).
+    hostname = _base_url_hostname(base_url)
+    domain = (domain or "").strip().lower().rstrip(".")
+    return bool(hostname and domain) and (
+        hostname == domain or hostname.endswith("." + domain))
+
+
+_utils.base_url_host_matches = _base_url_host_matches
 sys.modules["utils"] = _utils
 
 import agent.anthropic_credentials as AC  # noqa: E402

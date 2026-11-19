@@ -48,7 +48,10 @@ def symbols(obj: Path, kind: str) -> set[str]:
     out = set()
     for ln in r.stdout.splitlines():
         parts = ln.split()
-        if kind == "def" and len(parts) >= 3 and parts[1] in "TtDdBbRrSs":
+        if kind == "def" and len(parts) >= 3 and parts[1] in "TDBRS":
+            # GLOBAL symbols only (uppercase). Lowercase t/d/b/r are
+            # file-local statics — they can never collide across objects,
+            # and counting them dropped linkable ports (fields.0 etc.).
             name = parts[2]
             if not name.startswith("."):
                 out.add(name)

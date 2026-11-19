@@ -24,8 +24,8 @@
     "src/agent/context_breakdown.c",
     "src/hermes_cli/pet_input.c",
     "src/hermes_cli/route_identity.c",
-    "src/agent/hermes_state/hermes_state_lineage.c",
-    "src/agent/hermes_state/hermes_state_session2.c"
+    "src/persistence/sqlite_state/hermes_state_lineage.c",
+    "src/persistence/sqlite_state/hermes_state_session2.c"
   ],
   "cflags": [
     "-I",

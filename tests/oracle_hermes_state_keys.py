@@ -19,9 +19,8 @@ from persistence.sqlite._state.keys import (                          # noqa: E4
     prefix_range, profile_from_session_key,
     profile_from_session_key_namespace,
 )
-from hermes_state_runtime import (                       # noqa: E402
-    mutation_receipt_key, replacement_binding,
-)
+from persistence.authority.runtime import mutation_receipt_key
+from persistence.sqlite.authority._runtime import replacement_binding
 
 
 def main() -> int:

@@ -5,7 +5,7 @@
  * gateway routing/hygiene state, the cross-process session turn lease,
  * and the message/prune helpers. Backed by lib/libdb sqlite3 (the same
  * amalgamation Python's sqlite3 module wraps) and libjson for mixed-type
- * dict returns. Extends the existing src/agent/hermes_state/ units —
+ * dict returns. Extends the existing src/persistence/sqlite_state/ units —
  * no symbol duplication.
  */
 #define _POSIX_C_SOURCE 200809L

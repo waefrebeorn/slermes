@@ -902,7 +902,7 @@ const char *ipx_find_iron_proxy(void) { return NULL; }
 const char *igr_get_provider(void) { return NULL; }
 int igp_is_available(void) { return 0; }
 int stub_shadowed_hub_validate_skill_name(const char *name) { (void)name; return 1; }
-/* 2026-10-20: the real SessionDB port (src/agent/hermes_state/, 322 public
+/* 2026-10-20: the real SessionDB port (src/persistence/sqlite_state/, 322 public
  * symbols, 8.4k lines) is now wired into the link. These four legacy stubs
  * shadowed the REAL ports for every linked caller (session recovery, kanban
  * retag, console engine) — db_open returned NULL and db_close was a no-op.

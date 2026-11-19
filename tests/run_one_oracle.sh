@@ -68,7 +68,12 @@ if [ -s "$PYCACHE" ] && "$(cat "$PYCACHE")" -c "import hashlib,json" >/dev/null 
 else
   mkdir -p .testbin
   pick_python() {
-    for cand in "${PYTHON_BIN:-}" /c/Users/*/AppData/Local/hermes/tools/python-*/python.exe \
+    # The quarry venv FIRST: oracles execute LIVE quarry code, and the new
+    # utils.files -> hermes_yaml -> ruamel chain (2026-11-18 upstream reorg)
+    # makes the bare hermes-tools python die on import. The venv carries every
+    # quarry dependency; hashlib works there too.
+    for cand in "${PYTHON_BIN:-}" /c/Users/*/hermes-agent/.venv/Scripts/python.exe \
+                /c/Users/*/AppData/Local/hermes/tools/python-*/python.exe \
                 python python3 py; do
       [ -n "$cand" ] || continue
       if { command -v "$cand" >/dev/null 2>&1 || [ -x "$cand" ]; } &&

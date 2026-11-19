@@ -13,7 +13,7 @@ import json
 import sys
 import time
 
-SRC = "C:/Users/eman5/hermes-agent/tools/microsoft_graph_auth.py"
+SRC = "C:/Users/eman5/hermes-agent/plugins/teams_pipeline/graph_auth.py"
 
 # `from __future__ import annotations` keeps the class-body annotations (which
 # reference GraphCredentials/httpx) from being evaluated at def time.

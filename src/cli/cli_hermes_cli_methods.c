@@ -55,12 +55,12 @@ extern json_t *cc_history_before_user_originated_turn(json_t *messages,
                                                        long index,
                                                        long *out_target_index);
 
-/* Declared in src/agent/hermes_state/hermes_state_gaps.c. */
+/* Declared in src/persistence/sqlite_state/hermes_state_gaps.c. */
 extern long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
                                                       const char *session_id,
                                                       int *out_n);
 
-/* Declared in src/agent/hermes_state/hermes_state_misc.c. */
+/* Declared in src/persistence/sqlite_state/hermes_state_misc.c. */
 extern char *hermes_state_sanitize_context(const char *text);
 extern int hermes_state_set_session_yolo(hermes_state_db_t *db,
                                          const char *session_id,
@@ -83,10 +83,10 @@ extern char *resolve_runtime_provider(const char *requested,
                                       const char *explicit_api_key,
                                       const char *explicit_base_url,
                                       const char *target_model);
-/* Declared in src/agent/hermes_state/hermes_state_gaps.c. */
+/* Declared in src/persistence/sqlite_state/hermes_state_gaps.c. */
 extern json_t *session_gateway_runtime(const json_t *session_meta);
 
-/* Declared in src/agent/hermes_state/hermes_state_messages.c (orphan). */
+/* Declared in src/persistence/sqlite_state/hermes_state_messages.c (orphan). */
 extern char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
                                                     const char *session_id);
 

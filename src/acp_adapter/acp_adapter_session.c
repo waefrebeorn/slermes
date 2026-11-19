@@ -4,7 +4,7 @@
  * updated-at formatting/sort keys, task-cwd registry).
  *
  * The AcpSession class itself composes the agent core + state DB, both of
- * which exist natively in C (src/gateway/session.c, src/agent/hermes_state/);
+ * which exist natively in C (src/gateway/session.c, src/persistence/sqlite_state/);
  * the helpers here are the pure surface the session object uses.
  */
 #define _GNU_SOURCE

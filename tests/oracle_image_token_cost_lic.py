@@ -30,9 +30,9 @@ def _load_def(path, name, ns):
 
 
 ns = {}
-_load_def("C:/Users/eman5/hermes-agent/utils.py", "_parse_base_url", ns)
-_load_def("C:/Users/eman5/hermes-agent/utils.py", "_hostname_of", ns)
-_load_def("C:/Users/eman5/hermes-agent/utils.py", "base_url_hostname", ns)
+_load_def("C:/Users/eman5/hermes-agent/utils/urls.py", "_parse_base_url", ns)
+_load_def("C:/Users/eman5/hermes-agent/utils/urls.py", "_hostname_of", ns)
+_load_def("C:/Users/eman5/hermes-agent/utils/urls.py", "base_url_hostname", ns)
 _load_def("C:/Users/eman5/hermes-agent/agent/image_token_cost.py", "_key", ns)
 # _key does `from utils import base_url_hostname` at runtime — route that to the
 # ast-extracted def instead of the real (ruamel-poisonous) module.

@@ -1,6 +1,6 @@
 /*
  * t_hermes_state.c — behavioral test for the faithful C11 port of the
- * hermes_state.py SessionDB surface (src/agent/hermes_state/*). Mirrors the
+ * hermes_state.py SessionDB surface (src/persistence/sqlite_state/*). Mirrors the
  * invariants asserted by tests/hermes_state/*.py against a real sqlite
  * state.db. Self-verifying; exit 0 = all assertions pass.
  */
