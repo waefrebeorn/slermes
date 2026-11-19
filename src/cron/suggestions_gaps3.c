@@ -9,5 +9,4 @@
 
 /* ── cron/suggestions.py: 1 missing functions ── */
 
-/* PoP: current_suggestions_file @ cron/suggestions.py:_current_suggestions_file */
 void current_suggestions_file(void) { }

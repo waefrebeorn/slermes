@@ -23,7 +23,6 @@ char *model_not_found_patterns(void) { return strdup("[]"); }
 /* PoP: delegation_config @ tools/process_registry_notifications.py:_delegation_config */
 char *delegation_config(void) { return strdup("{}"); }
 
-/* PoP: delegation_model_not_found @ tools/process_registry_notifications.py:_delegation_model_not_found */
 int delegation_model_not_found(void) { return 0; }
 
 /* PoP: delegation_model_not_found_notice @ tools/process_registry_notifications.py:_delegation_model_not_found_notice */

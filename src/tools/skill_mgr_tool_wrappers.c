@@ -158,10 +158,8 @@ int smt_u_curator_consolidation_delete_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: smt_u_validate_category @ tools/skill_manager_tool.py:_validate_category */
 int smt_u_validate_category(const char *arg) { (void)arg; return 0; }
 
-/* PoP: smt_u_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
 int smt_u_validate_frontmatter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: smt_u_resolve_skill_dir @ tools/skill_manager_tool.py:_resolve_skill_dir */

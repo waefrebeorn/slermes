@@ -1,0 +1,173 @@
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":null}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":null,"multiplex_active":false}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_ACCESS_KEY_ID":" AKIA123 ","AWS_SECRET_ACCESS_KEY":" secret "}}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_PROFILE":" prod "}}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_ACCESS_KEY_ID":"AKIA123","AWS_SESSION_TOKEN":" tok "},"multiplex_active":true}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_ACCESS_KEY_ID":"AKIA123"},"multiplex_active":false}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_SECRET_ACCESS_KEY":"s","AWS_PROFILE":"p"}}}}
+{"func":"scoped_aws_session_kwargs","in":{"io":{"home_override":"/profiles/p1","secret_scope":{"AWS_ACCESS_KEY_ID":"   ","AWS_SECRET_ACCESS_KEY":"s"},"multiplex_active":false}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{"bedrock":{"region":" eu-west-1 "}}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":null,"io":{"load_config":{"bedrock":{"region":"ap-south-1"}}}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":null,"io":{"load_config":{"__raise__":"Exception","msg":"disk gone"}},"env":{"AWS_REGION":"us-west-2"}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":null,"io":{"load_config":{}},"env":{"AWS_DEFAULT_REGION":" ca-central-1 "}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{},"env":{},"io":{"botocore_region":"eu-north-1"}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{"bedrock":{"region":""}},"env":{},"io":{"botocore_region":null}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{"bedrock":null},"env":{},"io":{"botocore_region":{"__raise__":"Exception","msg":"no botocore"}}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{"bedrock":{"region":"  "}},"env":{"AWS_REGION":" ","AWS_DEFAULT_REGION":"sa-east-1"}}}
+{"func":"resolve_bedrock_runtime_region","in":{"config":{"bedrock":{"region":null}},"env":{},"io":{"botocore_region":"eu-west-3"}}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"https://bedrock-runtime.us-east-1.amazonaws.com/model/x/converse"}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"https://bedrock-runtime.eu-west-2.amazonaws.com"}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"https://bedrock-runtime.US-EAST-1.amazonaws.com"}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":null}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"https://bedrock-mantle.us-east-1.api.aws"}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"bedrock-runtime.ap-south-1."}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"https://bedrock-runtime.amazonaws.com"}}
+{"func":"bedrock_region_from_runtime_url","in":{"base_url":"bedrock-runtime.us-east-1"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"openai.gpt-5.5"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"us.openai.gpt-6-astra"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"global.openai.gpt-6.1-sol"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"in.openai.gpt-5.6-terra"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"  OPENAI.GPT-5.4  "}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"openai.gpt-oss-120b"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"xx.openai.gpt-5.5"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"us.anthropic.claude-opus-4-6"}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":null}}
+{"func":"parse_bedrock_openai_model_id","in":{"model_id":"us.openai.gpt-5.5.extra"}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1"}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://bedrock-mantle.eu-west-1.api.aws"}}
+{"func":"_mantle_url_parts","in":{"base_url":"HTTPS://BEDROCK-MANTLE.AP-SOUTH-1.API.AWS/OpenAI/V1///"}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://u:***@bedrock-mantle.us-west-2.api.aws:443/openai/"}}
+{"func":"_mantle_url_parts","in":{"base_url":"bedrock-mantle.us-east-1.api.aws/openai/v1"}}
+{"func":"_mantle_url_parts","in":{"base_url":null}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://bedrock-mantle..api.aws/openai"}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://example.com/openai/v1"}}
+{"func":"_mantle_url_parts","in":{"base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1?x=1#f"}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1"}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","stream_processing_mode":"async","trace":"enabled"}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1"}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":null,"io":{"load_config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":"enabled_full"}}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":null,"io":{"load_config":{"__raise__":"Exception","msg":"no config"}}}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"","guardrail_version":"1"}}}}}
+{"func":"bedrock_guardrail_config","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","stream_processing_mode":"","trace":"enabled_full"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":"enabled"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":"ENABLED_FULL"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":"true"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":"disabled"}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":null}}}}}
+{"func":"bedrock_guardrail_headers","in":{"config":{"bedrock":{"guardrail":{"guardrail_identifier":"g1","guardrail_version":"1","trace":true}}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{"amazon-bedrock-guardrailAction":"INTERVENED"}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{"amazon-bedrock-guardrailAction":"intervened"}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{"amazon-bedrock-guardrailAction":"Intervened"}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{"amazon-bedrock-guardrailAction":"blocked"}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{}}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":null}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{}}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":null}}
+{"func":"anthropic_response_guardrail_intervened","in":{"response":{"model_extra":{"amazon-bedrock-guardrailAction":null}}}}
+{"func":"_parse_tool_args","in":{"args":"{\"city\": \"Paris\", \"n\": 5}"}}
+{"func":"_parse_tool_args","in":{"args":"not json"}}
+{"func":"_parse_tool_args","in":{"args":""}}
+{"func":"_parse_tool_args","in":{"args":"{\"a\":1,}"}}
+{"func":"_parse_tool_args","in":{"args":42}}
+{"func":"_parse_tool_args","in":{"args":null}}
+{"func":"_parse_tool_args","in":{"args":{"already":"dict"}}}
+{"func":"_parse_tool_args","in":{"args":"[1, 2]"}}
+{"func":"_parse_tool_args","in":{"args":"null"}}
+{"func":"_parse_tool_args","in":{"args":"  {\"k\": true}  "}}
+{"func":"_decode_redacted","in":{"encoded":"aGVsbG8="}}
+{"func":"_decode_redacted","in":{"encoded":"AB=="}}
+{"func":"_decode_redacted","in":{"encoded":""}}
+{"func":"_decode_redacted","in":{"encoded":null}}
+{"func":"_decode_redacted","in":{"encoded":"aGVsbG8"}}
+{"func":"_decode_redacted","in":{"encoded":"aGVs bG8="}}
+{"func":"_decode_redacted","in":{"encoded":"!!!!"}}
+{"func":"_decode_redacted","in":{"encoded":42}}
+{"func":"_decode_redacted","in":{"encoded":"Zm9vYmFy"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/png;base64,aGVsbG8="}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/jpeg;base64,Zm9vYmFy"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:;base64,aGVsbG8="}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/svg+xml;base64,PHN2Zz4="}}
+{"func":"_image_block_from_data_url","in":{"url":"data:text/plain,hello world"}}
+{"func":"_image_block_from_data_url","in":{"url":"https://example.com/x.png"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/png;base64,!!!"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/png;base64,héllo"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/webp"}}
+{"func":"_image_block_from_data_url","in":{"url":"data:image/png;base64,aGVs bG8="}}
+{"func":"_system_blocks","in":{"content":"hello"}}
+{"func":"_system_blocks","in":{"content":"   "}}
+{"func":"_system_blocks","in":{"content":[{"type":"text","text":"a"},{"type":"text","text":"  "},{"type":"image"}]}}
+{"func":"_system_blocks","in":{"content":["plain",{"type":"text","text":"b"},5,null]}}
+{"func":"_system_blocks","in":{"content":null}}
+{"func":"_system_blocks","in":{"content":{"not":"list"}}}
+{"func":"_system_blocks","in":{"content":[{"type":"text"}]}}
+{"func":"_system_blocks","in":{"content":[{"type":"text","text":42}]}}
+{"func":"_system_blocks","in":{"content":""}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"text":"hi"},{"toolUse":{"toolUseId":"t1","name":"f","input":{"a":1}}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"reasoningContent":{"text":"think","signature":"sig"}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"reasoningContent":{"text":"t","redactedContentBase64":"aGVsbG8="}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"reasoningContent":{"redactedContentBase64":"bad!"}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"text":5},"skip",{"toolUse":{"name":"g"}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"reasoningContent":"notdict"}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"reasoningContent":{"text":"","signature":""}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"text":"a","reasoningContent":{"text":"b"}}]}}
+{"func":"_replay_ordered_blocks","in":{"blocks":[{"toolUse":{"toolUseId":"t","name":"n","input":null}}]}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"t","signature":"s"}]},"claude":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"t","signature":"s"}]},"claude":false}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"t","signature":"s"}]},"claude":true,"own":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"t"}]},"claude":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"  "}],"reasoning_content":"fallback"},"claude":false}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"redacted_thinking","data":"aGVsbG8="}]},"claude":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"redacted_thinking","redactedContentBase64":"Zm9vYmFy"}]},"claude":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"redacted_thinking","data":"bad"}],"reasoning_content":"rc"},"claude":false}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"t","signature":"s"}]},"claude":false,"own":true}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[5,{"type":"thinking","thinking":"x"}]},"claude":false}}
+{"func":"_reasoning_details_blocks","in":{"msg":{"reasoning_details":[{"type":"redacted_thinking","data":"","redactedContentBase64":"aGVsbG8="}]},"claude":true}}
+{"func":"_assistant_blocks","in":{"msg":{"bedrock_content_blocks":[{"text":"ordered"}]},"content":"ignored"}}
+{"func":"_assistant_blocks","in":{"msg":{"bedrock_content_blocks":[],"anthropic_content_blocks":[{"type":"text","text":"a"}]},"claude":true}}
+{"func":"_assistant_blocks","in":{"msg":{"anthropic_content_blocks":[{"type":"thinking","thinking":"t","signature":"s"},{"type":"text","text":"  "},{"type":"tool_use","id":"tu1","name":"f","input":{"x":1}}],"tool_calls":[{"id":"tu1","function":{"name":"f","arguments":"{\"y\": 2}"}}]},"claude":true}}
+{"func":"_assistant_blocks","in":{"msg":{},"content":"hello","claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{},"content":["part",{"type":"text","text":""}],"claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{"tool_calls":[{"id":"t1","function":{"name":"fn","arguments":"bad"}}]},"content":null,"claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{"reasoning_details":[{"type":"thinking","thinking":"r"}]},"content":"txt","claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{"bedrock_content_blocks":[{"reasoningContent":{"redactedContentBase64":"bad"}}]},"content":null,"claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{"anthropic_content_blocks":[{"type":"redacted_thinking","data":"!!"},{"type":"text","text":"ok"}]},"claude":true}}
+{"func":"_assistant_blocks","in":{"msg":{},"content":[{"type":"image_url","image_url":{"url":"https://x/i.png"}}],"claude":false}}
+{"func":"_assistant_blocks","in":{"msg":{"anthropic_content_blocks":[{"type":"tool_use","name":"g","input":{"z":3}}]},"claude":true}}
+{"func":"_converse_replay_policy","in":{"model":null}}
+{"func":"_converse_replay_policy","in":{"model":"anthropic.claude-sonnet-4-6"}}
+{"func":"_converse_replay_policy","in":{"model":"us.anthropic.claude-opus-4-6"}}
+{"func":"_converse_replay_policy","in":{"model":"openai.gpt-6-astra"}}
+{"func":"_converse_replay_policy","in":{"model":"deepseek.r1"}}
+{"func":"_converse_replay_policy","in":{"model":"moonshotai.kimi-k3"}}
+{"func":"_converse_replay_policy","in":{"model":"amazon.nova-pro"}}
+{"func":"_converse_replay_policy","in":{"model":"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123","io":{"resolve_profile":{"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123":"arn:aws:bedrock:us-east-1:123456789012:foundation-model/anthropic.claude-v2"}}}}
+{"func":"_converse_replay_policy","in":{"model":"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123","io":{"resolve_profile":{}}}}
+{"func":"_converse_replay_policy","in":{"model":"meta.llama4-maverick"}}
+{"func":"_converse_replay_policy","in":{"model":"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123","io":{"resolve_profile":{"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123":"arn:aws:bedrock:us-east-1:123456789012:foundation-model/deepseek.r1"}}}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":null,"own":false,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":null,"own":false,"in_loop":true}}
+{"func":"_reasoning_filter","in":{"policy":"strip","issuer":null,"own":false,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"strip","issuer":null,"own":false,"in_loop":true}}
+{"func":"_reasoning_filter","in":{"policy":"unsigned","issuer":null,"own":false,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"issuer","issuer":null,"own":false,"in_loop":true}}
+{"func":"_reasoning_filter","in":{"policy":"strip","issuer":null,"own":true,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"unsigned","issuer":null,"own":true,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":"openai.gpt-6-astra","own":false,"in_loop":true}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":"anthropic.claude-x","own":false}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123","own":false,"io":{"resolve_profile":{}}}}
+{"func":"_reasoning_filter","in":{"policy":"signed","issuer":"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123","own":false,"io":{"resolve_profile":{"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123":"arn:aws:bedrock:us-east-1:123456789012:foundation-model/openai.gpt-6-astra"}}}}
+{"func":"_reasoning_filter","in":{"policy":"issuer","issuer":"deepseek.r1","own":false,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"bogus","issuer":null,"own":false,"in_loop":false}}
+{"func":"_reasoning_filter","in":{"policy":"strip","issuer":null,"own":true,"in_loop":true}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[{"role":"user","content":[{"text":"hi"}]}]}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[{"role":"assistant","content":[{"reasoningContent":{"redactedContent":"x"}},{"text":"keep"}]}]}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[{"role":"assistant","content":[{"reasoningContent":{"redactedContent":"x"}}]},{"role":"user","content":[{"text":"u"}]}]}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":"notlist"}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[null,{"role":"assistant","content":[{"reasoningContent":{"redactedContent":"x"}},{"text":"k"}]}]}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[{"role":"assistant","content":[{"reasoningContent":"str"},{"reasoningContent":{"redactedContent":"x"}}]}]}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"modelId":"m","messages":[{"role":"assistant","content":[{"reasoningContent":{"redactedContent":"x"}},{"text":"k"}]}],"inferenceConfig":{"maxTokens":5}}}}
+{"func":"strip_redacted_reasoning","in":{"kwargs":{"messages":[{"role":"user"},{"role":"assistant","content":[{"reasoningContent":{"redactedContent":"x"}},{"text":"k"}]}]}}}

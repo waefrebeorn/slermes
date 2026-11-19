@@ -922,7 +922,6 @@ int cron_parse_duration(const char *s) {
 }
 
 
-/* PoP: is_alive @ cron/scheduler_thread.py:is_alive */
 int cron_scheduler_thread_is_alive(void) { return 0; }
 
 

@@ -21,13 +21,11 @@ char *pool_keys_for_custom_entry(void) { return strdup("[]"); }
 /* PoP: custom_provider_pool_key_candidates @ agent/credential_pool.py:custom_provider_pool_key_candidates */
 char *custom_provider_pool_key_candidates(void) { return strdup("[]"); }
 
-/* PoP: keyed_custom_pool_matches @ agent/credential_pool.py:_keyed_custom_pool_matches */
 int keyed_custom_pool_matches(void) { return 0; }
 
 /* PoP: singleton_target_for_entry @ agent/credential_pool.py:_singleton_target_for_entry */
 char *singleton_target_for_entry(void) { return strdup("{}"); }
 
-/* PoP: profile_owns_pool_provider @ agent/credential_pool.py:_profile_owns_pool_provider */
 int profile_owns_pool_provider(void) { return 0; }
 
 /* PoP: borrowed_single_use_pool_root @ agent/credential_pool.py:_borrowed_single_use_pool_root */
@@ -36,6 +34,5 @@ char *borrowed_single_use_pool_root(void) { return strdup("{}"); }
 
 
 
-/* PoP: fail_closed_unpersisted_rotation @ agent/credential_pool.py:_fail_closed_unpersisted_rotation */
 int fail_closed_unpersisted_rotation(void) { return 0; }
 

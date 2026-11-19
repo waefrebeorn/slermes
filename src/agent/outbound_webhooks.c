@@ -532,7 +532,6 @@ void ow_deliver(const json_t *delivery) {
     free(hdr_str);
 }
 
-/* PoP: ow_make_callback @ agent/outbound_webhooks.py:_make_callback */
 void *ow_make_callback(const char *event, const ow_webhook_target_t *target) {
     (void)event;
     (void)target;
@@ -612,7 +611,7 @@ void ow_targets_free(ow_webhook_target_t **targets) {
 }
 
 /* PoP: ow_redirect_request @ agent/outbound_webhooks.py:redirect_request */
-void *ow_redirect_request(const char *req, const char *newurl, int code) { /* Python default is also a no-op */ 
+void *ow_redirect_request(const char *req, const char *newurl, int code) { /* Python default is also a no-op */
     /* Python: _NoRedirectHandler.redirect_request returns None — any 3xx is
      * treated as a delivery failure (signing/headers would be wrong on
      * follow). C HTTP client returns NULL (no redirect) to signal failure. */

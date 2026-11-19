@@ -10,7 +10,6 @@
 /* ── agent/agent_runtime_helpers.py: 12 missing functions ── */
 
 
-/* PoP: provider_supplied_client @ agent/agent_runtime_helpers.py:_provider_supplied_client */
 int provider_supplied_client(void) { return 0; }
 
 /* PoP: profile_for_base_url @ agent/agent_runtime_helpers.py:_profile_for_base_url */

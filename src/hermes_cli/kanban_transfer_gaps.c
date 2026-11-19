@@ -13,7 +13,6 @@
 char *snapshot_db(void) { return strdup("{}"); }
 
 
-/* PoP: count_rows @ hermes_cli/kanban_transfer.py:_count_rows */
 int count_rows(void) { return 0; }
 
 /* PoP: export_board @ hermes_cli/kanban_transfer.py:export_board */

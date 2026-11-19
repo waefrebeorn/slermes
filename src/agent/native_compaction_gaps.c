@@ -16,7 +16,6 @@ char *resolve_native_compaction_capabilities(void) { return strdup("{}"); }
 /* PoP: extract_item_text @ agent/native_compaction.py:_extract_item_text */
 char *extract_item_text(void) { return strdup(""); }
 
-/* PoP: has_retainable_image_content @ agent/native_compaction.py:_has_retainable_image_content */
 int has_retainable_image_content(void) { return 0; }
 
 /* PoP: is_summary_item @ agent/native_compaction.py:is_summary_item */

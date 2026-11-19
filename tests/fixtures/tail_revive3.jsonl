@@ -1,0 +1,361 @@
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": 123.5, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}, "get_process_start_time": 123.5}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": 123.5, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}, "get_process_start_time": 999.0}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": "chrome.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "--port", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9333, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": {"__script__": true, "raise": {"type": "NoSuchProcess", "message": "gone"}}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": 0, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}, "get_process_start_time": 1.0}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": "9222", "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["serve", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": "lightpanda serve 9222"}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": true, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}, "get_process_start_time": 1}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": 5, "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": 100, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["lightpanda", "serve", "--port", "9222"]}, "get_process_start_time": 100.0}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": 9222, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "raise": {"type": "PermissionError", "message": "no"}}}}}
+{"func": "is_lightpanda_process", "in": {"pid": 4242, "port": null, "start_time": null, "io": {"psutil_process": null, "proc_name": "LightPanda.exe", "proc_cmdline": {"__script__": true, "ret": ["serve", "None"]}}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": "t"}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "localhost", "env": {"HERMES_DESKTOP": "1"}, "ssh_session_token": "s"}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "::1", "env": {"HERMES_DESKTOP": "1"}, "ssh_owner_nonce": "n"}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "example.com", "env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": "t"}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {"HERMES_DESKTOP": "0", "HERMES_DASHBOARD_SESSION_TOKEN": "t"}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": ""}, "ssh_session_token": null, "ssh_owner_nonce": null}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": null, "env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": "t"}}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {"HERMES_DESKTOP": "1"}, "ssh_session_token": "", "ssh_owner_nonce": ""}}
+{"func": "desktop_loopback_auth_exempt", "in": {"host": "127.0.0.1", "env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": ""}, "ssh_owner_nonce": "n"}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openai", "read_main_model": "gpt-4o"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "OpenAI-Codex", "read_main_model": ""}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "openai/gpt-4o"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "nous", "read_main_model": "anthropic/claude"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "azure-openai", "read_main_model": "whatever"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "", "read_main_model": "o3-mini"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "gpt.5"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "chatgpt-latest"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "codex-1"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "openai/o1"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": null, "read_main_model": null}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": 5}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openai", "read_main_model": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "  OpenAI  ", "read_main_model": "x"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "meta/llama"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": false, "read_main_model": "gpt-4"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "codex", "read_main_model": "x"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "o4-mini"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "o5"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "o1x"}}}
+{"func": "is_openai_family_main", "in": {"io": {"read_main_provider": "openrouter", "read_main_model": "xgpt-4"}}}
+{"func": "looks_like_opaque_credential", "in": {"value": "***"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "«redacted:token»"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abcdef0123456789"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abcdefghijkl"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abcdefghijklmnopqrst"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "CPU"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "local"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "Abcdef123456"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abc123"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "aaaaaaaaaaaa1"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "AAAAAAAAAAAA"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "aBééééééééé"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "aBéééééééééé"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "sk-ant-oat01-1234567abcdef"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "ghp_1234567890abcdefghij"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abcdefghij123456789"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "abcdefghijklmnopqrs"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "hello world123"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "1234567890123456"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "zzzzzzzzzzzzzzzz"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "ABCDEF0123456789ABC"}}
+{"func": "looks_like_opaque_credential", "in": {"value": "token_./+=-abcdefghij"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "ab|cd"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "ab|cd"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "ab(?:x|y)"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "ab(?:x|y)"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a+)+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a+)+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a{2,})+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a{2,})+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a{2,3})+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a{2,3})+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a|aa)+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a|aa)+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "a*b"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "a*b"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "[a|b]+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "[a|b]+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "\\|x"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "\\|x"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a(b+)+)"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a(b+)+)"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "a{2,}"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "a{2,}"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(?:a+)*"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(?:a+)*"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "((a+)*)+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "((a+)*)+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "a|b|c"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "a|b|c"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a|b)"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a|b)"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "[]"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "[]"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "[)]+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "[)]+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a{2,})*"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a{2,})*"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "x{abc,}"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "x{abc,}"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a+){2}"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a+){2}"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a+)*x|y"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a+)*x|y"}}
+{"func": "has_top_level_alternation", "in": {"pattern": ""}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": ""}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "a)"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "a)"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "\\(a+)+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "\\(a+)+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a{,})+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a{,})+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "[\\]]+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "[\\]]+"}}
+{"func": "has_top_level_alternation", "in": {"pattern": "(a+|b)+"}}
+{"func": "has_nested_unbounded_repeat", "in": {"pattern": "(a+|b)+"}}
+{"func": "in_excluded_root_dir", "in": {"path": "models/foo"}}
+{"func": "in_excluded_root_dir", "in": {"path": "runtimes/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "node/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "installs/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "tools/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/foo"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/images/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/generated/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/audio"}}
+{"func": "in_excluded_root_dir", "in": {"path": "browser_profiles/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "bws_cache.json"}}
+{"func": "in_excluded_root_dir", "in": {"path": "op_cache.json"}}
+{"func": "in_excluded_root_dir", "in": {"path": "photon-sidecar.json"}}
+{"func": "in_excluded_root_dir", "in": {"path": "bws_cache.enc.json"}}
+{"func": "in_excluded_root_dir", "in": {"path": "platforms/whatsapp/bridge.log"}}
+{"func": "in_excluded_root_dir", "in": {"path": "platforms/whatsapp/bridge.log.1"}}
+{"func": "in_excluded_root_dir", "in": {"path": "whatsapp/bridge.log"}}
+{"func": "in_excluded_root_dir", "in": {"path": "whatsapp/bridge.log.1"}}
+{"func": "in_excluded_root_dir", "in": {"path": "whatsapp/other.log"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/models/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/cache/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/cache/images/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/whatsapp/bridge.log"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/skills/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "skills/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": ""}}
+{"func": "in_excluded_root_dir", "in": {"path": "."}}
+{"func": "in_excluded_root_dir", "in": {"path": "a/./b"}}
+{"func": "in_excluded_root_dir", "in": {"path": "//models//x/"}}
+{"func": "in_excluded_root_dir", "in": {"path": "/models/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/browser_profiles/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/documents"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/citations/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/screenshots"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/videos"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/other"}}
+{"func": "in_excluded_root_dir", "in": {"path": "profiles/p1/tools/x"}}
+{"func": "in_excluded_root_dir", "in": {"path": "cache/images"}}
+{"func": "in_excluded_root_dir", "in": {"path": "platforms/whatsapp/bridge.log.2"}}
+{"func": "in_excluded_root_dir", "in": {"path": "a/../models"}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": "oauth"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": " OAuth "}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": "OAUTH", "refresh_token": ""}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": "r"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": "   "}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"access_token": "sk-ant-oat01-1234567"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"access_token": "sk-ant-api03-xxx"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": "api_key"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": null}}
+{"func": "is_oauth_pool_payload", "in": {"entry": []}}
+{"func": "is_oauth_pool_payload", "in": {"entry": "oauth"}}
+{"func": "is_oauth_pool_payload", "in": {"entry": 5}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": null, "refresh_token": null, "access_token": null}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": 0}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": true}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": 123}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": ["x"]}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": {}}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": {"a": 1}}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"access_token": "sk-ant-oat"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": "oauthx"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": false, "access_token": "sk-ant-oat01-x"}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": 0}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"refresh_token": false}}}
+{"func": "is_oauth_pool_payload", "in": {"entry": {"auth_type": "oauth", "refresh_token": "r"}}}
+{"func": "query_is_concrete", "in": {"query": "a=b"}}
+{"func": "query_is_concrete", "in": {"query": "a"}}
+{"func": "query_is_concrete", "in": {"query": ""}}
+{"func": "query_is_concrete", "in": {"query": "a&"}}
+{"func": "query_is_concrete", "in": {"query": "&a"}}
+{"func": "query_is_concrete", "in": {"query": "a=b&c=d"}}
+{"func": "query_is_concrete", "in": {"query": "a=b&c"}}
+{"func": "query_is_concrete", "in": {"query": "=v"}}
+{"func": "query_is_concrete", "in": {"query": "a="}}
+{"func": "query_is_concrete", "in": {"query": "x.md"}}
+{"func": "query_is_concrete", "in": {"query": "?x"}}
+{"func": "query_is_concrete", "in": {"query": "%41"}}
+{"func": "query_is_concrete", "in": {"query": "%4"}}
+{"func": "query_is_concrete", "in": {"query": "%GG"}}
+{"func": "query_is_concrete", "in": {"query": "a~b_c-d"}}
+{"func": "query_is_concrete", "in": {"query": "a.b=c"}}
+{"func": "query_is_concrete", "in": {"query": "héllo"}}
+{"func": "query_is_concrete", "in": {"query": "a&b&c"}}
+{"func": "query_is_concrete", "in": {"query": "a=b&&c=d"}}
+{"func": "query_is_concrete", "in": {"query": "%41%42"}}
+{"func": "query_is_concrete", "in": {"query": "a%41"}}
+{"func": "query_is_concrete", "in": {"query": "a%4"}}
+{"func": "query_is_concrete", "in": {"query": "x?=y"}}
+{"func": "query_is_concrete", "in": {"query": "a+b"}}
+{"func": "query_is_concrete", "in": {"query": "a/b"}}
+{"func": "query_is_concrete", "in": {"query": "flag"}}
+{"func": "query_is_concrete", "in": {"query": "a=b=c"}}
+{"func": "query_is_concrete", "in": {"query": "%zz"}}
+{"func": "query_is_concrete", "in": {"query": "~-_"}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "text/event-stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"content-type": "TEXT/EVENT-STREAM; charset=utf-8"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "application/json"}}}
+{"func": "content_type_is_sse", "in": {"headers": {}}}
+{"func": "content_type_is_sse", "in": {"headers": null}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "", "content-type": "text/event-stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": 0, "content-type": "text/event-stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": false, "content-type": "text/event-stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "text/event-stream", "content-type": "application/json"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "application/json", "content-type": "text/event-stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": []}}
+{"func": "content_type_is_sse", "in": {"headers": "text/event-stream"}}
+{"func": "content_type_is_sse", "in": {"headers": 5}}
+{"func": "content_type_is_sse", "in": {"headers": true}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "Text/Event-Stream"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "text/event-stream "}}}
+{"func": "content_type_is_sse", "in": {"headers": {"content-type": null}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": 123}}}
+{"func": "content_type_is_sse", "in": {"headers": {"Content-Type": "text/event-streamx"}}}
+{"func": "content_type_is_sse", "in": {"headers": {"content-type": "application/json"}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://127.0.0.1:8080/", "io": {"state_endpoint": {"base_url": "http://127.0.0.1:8080"}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x/", "io": {"state_endpoint": {"base_url": "http://y"}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": null, "io": {"state_endpoint": {"base_url": ""}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": null}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": []}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": {"base_url": null}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "None", "io": {"state_endpoint": {"base_url": null}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x///", "io": {"state_endpoint": {"base_url": "http://x/"}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": {}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "", "io": {"state_endpoint": {}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "123", "io": {"state_endpoint": {"base_url": 123}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": "str"}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "http://x", "io": {"state_endpoint": {"base_url": true}}}}
+{"func": "is_managed_endpoint", "in": {"base_url": "True", "io": {"state_endpoint": {"base_url": true}}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "/api/v1/runs", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": ""}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": null}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs/", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runsX", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "v1/runs", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": 0}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": ["x"]}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": {}}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": {"__script__": true, "raise": {"type": "PermissionError", "message": "denied"}}}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": {"__script__": true, "raise": {"type": "SystemExit", "message": "exit"}}}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/run", "io": {"room_grant_token": "tok"}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": false}}}
+{"func": "uses_room_run_auth", "in": {"path": "/v1/runs", "io": {"room_grant_token": {"a": 1}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": "memory"}}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": null}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": []}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["memory"]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"__script__": true, "ret": ["web", "memory"]}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web", "core"]}, "io": {"resolve_toolset": [{"__script__": true, "ret": ["web"]}, {"__script__": true, "ret": ["core", "memory"]}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": "memory"}}], "disabled_toolsets": ["memory"]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": ["all"], "enabled_toolsets": ["memory"]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": ["*"]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": [], "enabled_toolsets": null}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": null}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": 5}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": "memory"}}, {"function": null}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": ["x", 5], "enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"__script__": true, "ret": ["web"]}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": 5}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": "memory"}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": "web"}, "io": {"resolve_toolset": [{"__script__": true, "ret": ["memory"]}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": {"web": 1}}, "io": {"resolve_toolset": {"__script__": true, "ret": ["memory"]}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": {"memory": 1}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": 5}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": 5}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": "memory", "enabled_toolsets": null}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"disabled_toolsets": {"memory": 1}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": "other"}}], "enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"__script__": true, "ret": ["memory"]}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": {}, "enabled_toolsets": []}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": "xmemoryx"}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ["web"]}, "io": {"resolve_toolset": {"memory": 1}}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": "memory"}}], "enabled_toolsets": ["web"]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": false}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"enabled_toolsets": ""}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": "x"}]}}}
+{"func": "memory_provider_tools_exposed", "in": {"agent": {"tools": [{"function": {"name": 5}}], "enabled_toolsets": []}}}
+{"func": "metadata", "in": {"runtime_overrides": null, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": {"b": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": {"x": 1}}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": {"x": 1}}, "slot_extra_body": {"x": 9, "y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": null}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": {}}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {}, "slot_extra_body": {}}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": {}}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": 5}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": "x"}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": []}}
+{"func": "metadata", "in": {"runtime_overrides": {"a": 1}, "slot_extra_body": true}}
+{"func": "metadata", "in": {"runtime_overrides": "x", "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": 5, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": true, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": 5}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": "x"}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": 0, "slot_extra_body": {"b": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": "", "slot_extra_body": {"b": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": false, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": [], "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": {"x": 1}, "a": 2}, "slot_extra_body": {"y": 3}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": false}, "slot_extra_body": {"y": 2}}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": {"x": 1}}, "slot_extra_body": null}}
+{"func": "metadata", "in": {"runtime_overrides": {"extra_body": []}, "slot_extra_body": {"y": 2}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/usr/bin/python3", "sys_executable": "/usr/bin/python3", "sys_prefix": "/usr"}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a/python", "sys_executable": "/b/python", "sys_prefix": "/usr", "io": {"realpath": ["/real/python", "/real/python"]}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y", "/p"], "python_environment_prefix": "/p"}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y", "/p"], "python_environment_prefix": "/q"}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": {"__script__": true, "raise": {"type": "OSError", "message": "bad"}}}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}]}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y"], "python_environment_prefix": {"__script__": true, "raise": {"type": "ValueError", "message": "probe"}}}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y", {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone"}}], "python_environment_prefix": "/p"}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": [5, 5]}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": [null, null]}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y", null], "python_environment_prefix": null}}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/a", "sys_prefix": "/usr"}}
+{"func": "uses_hermes_python_environment", "in": {"python_path": "/a", "sys_executable": "/b", "sys_prefix": "/usr", "io": {"realpath": ["/x", "/y", "/q"], "python_environment_prefix": "/p"}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": null}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "missing"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"__script__": true, "raise": {"type": "PermissionError", "message": "denied"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "gateway runtime lock", "io": {"stat": {"__script__": true, "raise": {"type": "OSError", "message": "bad"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"__script__": true, "raise": {"type": "ValueError", "message": "v"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "x", "io": {"stat": {"__script__": true, "raise": {"type": "TimeoutError", "message": "t"}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "", "io": {"stat": {"__script__": true, "raise": {"type": "PermissionError", "message": ""}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "lock", "io": {"stat": {"st_mode": 0}}}}
+{"func": "strict_path_exists", "in": {"path": "/x/lock", "label": "L", "io": {"stat": {"__script__": true, "raise": {"type": "NotADirectoryError", "message": "nd"}}}}}

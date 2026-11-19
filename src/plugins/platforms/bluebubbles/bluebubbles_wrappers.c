@@ -12,7 +12,7 @@
 #include "hermes_json.h"
 
 /* PoP: bb_check_bluebubbles_requirements @ plugins/platforms/bluebubbles/adapter.py:check_bluebubbles_requirements */
-int bb_check_bluebubbles_requirements(const char *arg) { /* Python default is also a no-op */ 
+int bb_check_bluebubbles_requirements(const char *arg) { /* Python default is also a no-op */
     /* C port implements the BlueBubbles adapter natively; deps present. */
     return 1;
 }
@@ -62,10 +62,8 @@ int bb_u_api_url(const char *arg) {
     return 0;
 }
 
-/* PoP: bb_u_compile_mention_patterns @ plugins/platforms/bluebubbles/adapter.py:_compile_mention_patterns */
 int bb_u_compile_mention_patterns(const char *arg) { (void)arg; return 0; }
 
-/* PoP: bb_u_message_matches_mention_patterns @ plugins/platforms/bluebubbles/adapter.py:_message_matches_mention_patterns */
 int bb_u_message_matches_mention_patterns(const char *arg) { (void)arg; return 0; }
 
 /* PoP: bb_u_clean_mention_text @ plugins/platforms/bluebubbles/adapter.py:_clean_mention_text */

@@ -28,7 +28,6 @@ char *ssb_fetch(const char *cfg_json) {
     return NULL;
 }
 
-/* PoP: ssb_override_existing @ agent/secret_sources/base.py:override_existing */
 bool ssb_override_existing(void) {
     /* Python default is also a no-op: base.py returns
      * bool(cfg.get("override_existing", False)) — the base-class default is

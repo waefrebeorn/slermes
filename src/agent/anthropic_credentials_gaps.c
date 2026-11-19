@@ -20,7 +20,6 @@ char *read_spent_rotation_sidecar(void) { return strdup("[]"); }
 
 
 
-/* PoP: is_rotation_consumed_uncommitted @ agent/anthropic_credentials.py:is_rotation_consumed_uncommitted */
 int is_rotation_consumed_uncommitted(void) { return 0; }
 
 /* PoP: claude_code_credentials_path @ agent/anthropic_credentials.py:claude_code_credentials_path */

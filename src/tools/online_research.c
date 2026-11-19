@@ -1,6 +1,6 @@
 /*
  * online_research.c — Online Research Module for MoA (Hermes C/slermes)
- * 
+ *
  * Provides web search capabilities for dynamic model selection and context enrichment.
  * - Multi-source web search (DuckDuckGo HTML, Brave API, Google CSE)
  * - Research quality scoring
@@ -49,14 +49,14 @@ static char *make_cache_key(const char *query, const char *intent) {
     size_t len = strlen(query) + strlen(intent) + 2;
     char *combined = malloc(len);
     snprintf(combined, len, "%s|%s", intent, query);
-    
+
     // Simple hash
     unsigned long hash = 5381;
     for (size_t i = 0; combined[i]; i++) {
         hash = ((hash << 5) + hash) + combined[i];
     }
     free(combined);
-    
+
     char *key = malloc(33);
     snprintf(key, 33, "%lx", hash);
     return key;
@@ -66,7 +66,7 @@ static research_summary_t *cache_get(const char *query, const char *intent) {
     cache_init();
     char *key = make_cache_key(query, intent);
     research_summary_t *result = NULL;
-    
+
     pthread_mutex_lock(&g_cache.mutex);
     for (int i = 0; i < g_cache.count; i++) {
         if (g_cache.entries[i] && strcmp(g_cache.entries[i]->cache_key, key) == 0) {
@@ -97,14 +97,14 @@ static research_summary_t *cache_get(const char *query, const char *intent) {
         }
     }
     pthread_mutex_unlock(&g_cache.mutex);
-    
+
     free(key);
     return result;
 }
 
 static void cache_set(research_summary_t *summary) {
     cache_init();
-    
+
     pthread_mutex_lock(&g_cache.mutex);
     if (g_cache.count >= g_cache.capacity) {
         g_cache.capacity *= 2;
@@ -140,7 +140,7 @@ bool online_research_session_active(void) {
 void moa_research_clear_expired_cache() {
     cache_init();
     time_t now = time(NULL);
-    
+
     pthread_mutex_lock(&g_cache.mutex);
     for (int i = 0; i < g_cache.count; ) {
         if (now - g_cache.entries[i]->timestamp >= g_cache_ttl) {
@@ -183,7 +183,7 @@ static char *url_encode(const char *str) {
         unsigned char c = str[i];
         if (c == ' ') {
             *p++ = '+';
-        } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || 
+        } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                    (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.' || c == '~') {
             *p++ = c;
         } else {
@@ -199,31 +199,31 @@ static char *url_encode(const char *str) {
 static research_result_t *parse_duckduckgo_html(const char *html, int *out_count, int max_results) {
     research_result_t *results = calloc(max_results, sizeof(research_result_t));
     int count = 0;
-    
+
     regex_t regex;
     if (regcomp(&regex, "class=\"result__snippet\">([^<]+)</a>.*?class=\"result__url\">([^<]+)</a>", REG_EXTENDED) != 0) {
         free(results);
         return NULL;
     }
-    
+
     regmatch_t matches[3];
     const char *cursor = html;
     while (count < max_results && regexec(&regex, cursor, 3, matches, 0) == 0) {
         int snippet_len = matches[1].rm_eo - matches[1].rm_so;
         results[count].snippet = strndup(cursor + matches[1].rm_so, snippet_len);
         results[count].title = strndup(results[count].snippet, 80);
-        
+
         int url_len = matches[2].rm_eo - matches[2].rm_so;
         results[count].url = strndup(cursor + matches[2].rm_so, url_len);
-        
+
         results[count].source = strdup("duckduckgo");
         results[count].relevance_score = 0.7f;
         results[count].timestamp = time(NULL);
-        
+
         count++;
         cursor += matches[0].rm_eo;
     }
-    
+
     regfree(&regex);
     *out_count = count;
     return results;
@@ -235,18 +235,18 @@ static research_result_t *search_duckduckgo(const char *query, int num_results) 
     char url[1024];
     snprintf(url, sizeof(url), "https://html.duckduckgo.com/html/?q=%s", encoded);
     free(encoded);
-    
+
     http_t *http = http_new(30);
     if (!http) return NULL;
-    
+
     http_resp_t *resp = http_request(http, HTTP_GET, url, "User-Agent: Hermes-MoA/1.0\nAccept: text/html\n", NULL, 0);
     http_free(http);
-    
+
     if (!resp || resp->status != 200 || !resp->body) {
         if (resp) http_resp_free(resp);
         return NULL;
     }
-    
+
     int count = 0;
     research_result_t *results = parse_duckduckgo_html(resp->body, &count, num_results);
     http_resp_free(resp);
@@ -256,42 +256,42 @@ static research_result_t *search_duckduckgo(const char *query, int num_results) 
 static research_result_t *search_brave(const char *query, int num_results) {
     const char *api_key = getenv("BRAVE_API_KEY");
     if (!api_key) return NULL;
-    
+
     char *encoded = url_encode(query);
     char url[512];
     snprintf(url, sizeof(url), "https://api.search.brave.com/res/v1/web/search?q=%s&count=%d", encoded, num_results);
     free(encoded);
-    
+
     http_t *http = http_new(30);
     if (!http) return NULL;
-    
+
     char auth_header[512];
     snprintf(auth_header, sizeof(auth_header), "Authorization: Bearer %s\nAccept: application/json\n", api_key);
-    
+
     http_resp_t *resp = http_request(http, HTTP_GET, url, auth_header, NULL, 0);
     http_free(http);
-    
+
     if (!resp || resp->status != 200 || !resp->body) {
         if (resp) http_resp_free(resp);
         return NULL;
     }
-    
+
     json_t *data = json_parse(resp->body, NULL);
     http_resp_free(resp);
-    
+
     if (!data) return NULL;
-    
+
     json_t *web = json_obj_get(data, "web");
     json_t *results_arr = web ? json_obj_get(web, "results") : NULL;
-    
+
     if (!results_arr || results_arr->type != JSON_ARRAY) {
         json_free(data);
         return NULL;
     }
-    
+
     int count = results_arr->c.count < num_results ? results_arr->c.count : num_results;
     research_result_t *results = calloc(count, sizeof(research_result_t));
-    
+
     for (int i = 0; i < count; i++) {
         json_t *item = json_get(results_arr, i);
         results[i].title = strdup(json_get_str(item, "title", ""));
@@ -301,7 +301,7 @@ static research_result_t *search_brave(const char *query, int num_results) {
         results[i].relevance_score = 0.85f;
         results[i].timestamp = time(NULL);
     }
-    
+
     json_free(data);
     return results;
 }
@@ -310,38 +310,38 @@ static research_result_t *search_google_cse(const char *query, int num_results) 
     const char *api_key = getenv("GOOGLE_CSE_KEY");
     const char *cse_id = getenv("GOOGLE_CSE_ID");
     if (!api_key || !cse_id) return NULL;
-    
+
     char *encoded = url_encode(query);
     char url[512];
-    snprintf(url, sizeof(url), "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s&num=%d", 
+    snprintf(url, sizeof(url), "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s&num=%d",
              api_key, cse_id, encoded, num_results);
     free(encoded);
-    
+
     http_t *http = http_new(30);
     if (!http) return NULL;
-    
+
     http_resp_t *resp = http_request(http, HTTP_GET, url, "Accept: application/json\n", NULL, 0);
     http_free(http);
-    
+
     if (!resp || resp->status != 200 || !resp->body) {
         if (resp) http_resp_free(resp);
         return NULL;
     }
-    
+
     json_t *data = json_parse(resp->body, NULL);
     http_resp_free(resp);
-    
+
     if (!data) return NULL;
-    
+
     json_t *items = json_obj_get(data, "items");
     if (!items || items->type != JSON_ARRAY) {
         json_free(data);
         return NULL;
     }
-    
+
     int count = items->c.count < num_results ? items->c.count : num_results;
     research_result_t *results = calloc(count, sizeof(research_result_t));
-    
+
     for (int i = 0; i < count; i++) {
         json_t *item = json_get(items, i);
         results[i].title = strdup(json_get_str(item, "title", ""));
@@ -351,7 +351,7 @@ static research_result_t *search_google_cse(const char *query, int num_results) 
         results[i].relevance_score = 0.9f;
         results[i].timestamp = time(NULL);
     }
-    
+
     json_free(data);
     return results;
 }
@@ -363,11 +363,11 @@ static float score_relevance(const research_result_t *result, const char *query,
     size_t text_len = strlen(result->title) + strlen(result->snippet) + 1;
     char *text = malloc(text_len);
     snprintf(text, text_len, "%s %s", result->title, result->snippet);
-    
+
     for (char *p = text; *p; p++) *p = tolower(*p);
     char *query_lower = strdup(query);
     for (char *p = query_lower; *p; p++) *p = tolower(*p);
-    
+
     // Benchmark terms
     const char *benchmark_terms[] = {
         "swe-bench", "terminal-bench", "livecodebench", "aa coding",
@@ -377,24 +377,24 @@ static float score_relevance(const research_result_t *result, const char *query,
     for (int i = 0; i < sizeof(benchmark_terms)/sizeof(char*); i++) {
         if (strstr(text, benchmark_terms[i])) score += 0.15f;
     }
-    
+
     // Model name terms
     const char *model_terms[] = {
-        "nemotron", "kimi", "glm-5", "minimax", "qwen", "deepseek", 
+        "nemotron", "kimi", "glm-5", "minimax", "qwen", "deepseek",
         "llama", "gemma", "phi", "mistral", "gpt-oss"
     };
     for (int i = 0; i < sizeof(model_terms)/sizeof(char*); i++) {
         if (strstr(text, model_terms[i])) score += 0.1f;
     }
-    
+
     // Recency boost
     if (strstr(text, "2025") || strstr(text, "2026") || strstr(text, "latest") || strstr(text, "new")) {
         score += 0.05f;
     }
-    
+
     free(text);
     free(query_lower);
-    
+
     return fminf(1.0f, score);
 }
 
@@ -416,30 +416,30 @@ static void extract_model_scores(const research_result_t *results, int count,
         {"nvidia_nim:meta/llama-3.1-405b-instruct", "llama-405b"},
     };
     int num_patterns = sizeof(model_patterns) / sizeof(model_patterns[0]);
-    
+
     *out_model_ids = calloc(num_patterns, sizeof(char*));
     *out_scores = calloc(num_patterns, sizeof(float));
     *out_num = 0;
-    
+
     for (int i = 0; i < count; i++) {
         size_t text_len = strlen(results[i].title) + strlen(results[i].snippet) + 1;
         char *text = malloc(text_len);
         snprintf(text, text_len, "%s %s", results[i].title, results[i].snippet);
         for (char *p = text; *p; p++) *p = tolower(*p);
-        
+
         for (int m = 0; m < num_patterns; m++) {
             char *pattern = strdup(model_patterns[m][1]);
             for (char *p = pattern; *p; p++) *p = tolower(*p);
-            
+
             if (strstr(text, pattern)) {
                 float best_score = 0.5f;  // Default if mentioned
-                
+
                 // Look for percentage scores
                 regex_t pct_regex;
                 if (regcomp(&pct_regex, "([0-9]+\\.?[0-9]*)%", REG_EXTENDED) == 0) {
                     regmatch_t pct_match[2];
                     if (regexec(&pct_regex, text, 2, pct_match, 0) == 0) {
-                        char *pct_str = strndup(text + pct_match[1].rm_so, 
+                        char *pct_str = strndup(text + pct_match[1].rm_so,
                                                pct_match[1].rm_eo - pct_match[1].rm_so);
                         float val = atof(pct_str);
                         if (val >= 0 && val <= 100) best_score = fmaxf(best_score, val / 100.0f);
@@ -447,7 +447,7 @@ static void extract_model_scores(const research_result_t *results, int count,
                     }
                     regfree(&pct_regex);
                 }
-                
+
                 // Update or add
                 int found = 0;
                 for (int k = 0; k < *out_num; k++) {
@@ -473,26 +473,26 @@ static void extract_model_scores(const research_result_t *results, int count,
 
 research_summary_t *moa_research_for_prompt(const char *user_prompt) {
     if (!user_prompt) return NULL;
-    
+
     // Build research query focused on benchmarks
     char query[512];
     snprintf(query, sizeof(query), "%s AI model benchmark SWE-Bench Terminal-Bench LiveCodeBench 2025 2026", user_prompt);
-    
+
     // Check cache first
     research_summary_t *cached = cache_get(query, "benchmark_update");
     if (cached) {
         hermes_log(LOG_INFO, "moa", "Research cache hit for: %.60s", query);
         return cached;
     }
-    
+
     hermes_log(LOG_INFO, "moa", "Researching: %.80s", query);
-    
+
     // Collect from all sources
     research_result_t *all_results = NULL;
     int total_results = 0;
     int capacity = 30;
     all_results = calloc(capacity, sizeof(research_result_t));
-    
+
     // DuckDuckGo (always available)
     research_result_t *ddg_results = search_duckduckgo(query, 10);
     if (ddg_results) {
@@ -518,7 +518,7 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
         }
         free(ddg_results);
     }
-    
+
     // Brave (if API key available)
     int brave_count = 0;
     research_result_t *brave_results = search_brave(query, 10);
@@ -545,7 +545,7 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
         }
         free(brave_results);
     }
-    
+
     // Google CSE (if API key available)
     int google_count = 0;
     research_result_t *google_results = search_google_cse(query, 10);
@@ -572,12 +572,12 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
         }
         free(google_results);
     }
-    
+
     // Score all results
     for (int i = 0; i < total_results; i++) {
         all_results[i].relevance_score = score_relevance(&all_results[i], query, "benchmark_update");
     }
-    
+
     // Sort by relevance (simple bubble sort, small N)
     for (int i = 0; i < total_results - 1; i++) {
         for (int j = 0; j < total_results - i - 1; j++) {
@@ -588,7 +588,7 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
             }
         }
     }
-    
+
     // Limit to 15 results
     if (total_results > 15) {
         for (int i = 15; i < total_results; i++) {
@@ -599,13 +599,13 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
         }
         total_results = 15;
     }
-    
+
     // Extract model scores
     char **model_ids = NULL;
     float *model_scores = NULL;
     int num_model_scores = 0;
     extract_model_scores(all_results, total_results, &model_ids, &model_scores, &num_model_scores);
-    
+
     // Create summary
     research_summary_t *summary = calloc(1, sizeof(research_summary_t));
     summary->query = strdup(query);
@@ -618,9 +618,9 @@ research_summary_t *moa_research_for_prompt(const char *user_prompt) {
     summary->confidence = fminf(1.0f, total_results / 5.0f);
     summary->timestamp = time(NULL);
     summary->cache_key = make_cache_key(query, "benchmark_update");
-    
+
     cache_set(summary);
-    
+
     hermes_log(LOG_INFO, "moa", "Research complete: %d findings, %d model scores", total_results, num_model_scores);
     return summary;
 }
@@ -647,34 +647,34 @@ void moa_research_free(research_summary_t *summary) {
 
 void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_summary_t *research) {
     if (!research || research->num_model_scores == 0 || *count == 0) return;
-    
+
     // Build current model IDs
     char **current_ids = malloc(*count * sizeof(char*));
     for (int i = 0; i < *count; i++) {
         current_ids[i] = malloc(strlen((*refs)[i].provider) + strlen((*refs)[i].model) + 2);
         sprintf(current_ids[i], "%s:%s", (*refs)[i].provider, (*refs)[i].model);
     }
-    
+
     // Score each model: (1-w)*original_position + w*research_score
     const float w = 0.3f;  // Research weight
     typedef struct { int idx; float score; } scored_t;
     scored_t *scored = malloc(*count * sizeof(scored_t));
-    
+
     for (int i = 0; i < *count; i++) {
         scored[i].idx = i;
         float orig_score = 1.0f - ((float)i / *count);
         float research_score = 0.5f;
-        
+
         for (int r = 0; r < research->num_model_scores; r++) {
             if (strcmp(current_ids[i], research->model_ids[r]) == 0) {
                 research_score = research->model_scores[r];
                 break;
             }
         }
-        
+
         scored[i].score = (1.0f - w) * orig_score + w * research_score;
     }
-    
+
     // Sort by score descending
     for (int i = 0; i < *count - 1; i++) {
         for (int j = 0; j < *count - i - 1; j++) {
@@ -685,13 +685,13 @@ void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_sum
             }
         }
     }
-    
+
     // Rebuild refs in new order
     moa_ref_model_t *new_refs = malloc(*count * sizeof(moa_ref_model_t));
     for (int i = 0; i < *count; i++) {
         new_refs[i] = (*refs)[scored[i].idx];
     }
-    
+
     // Log top 5
     char logbuf[512] = "";
     for (int i = 0; i < 5 && i < *count; i++) {
@@ -702,7 +702,7 @@ void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_sum
         }
     }
     hermes_log(LOG_INFO, "moa", "Totem pole reordered by research: %s...", logbuf);
-    
+
     // Cleanup old refs and IDs
     free(*refs);
     for (int i = 0; i < *count; i++) {
@@ -710,7 +710,7 @@ void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_sum
     }
     free(current_ids);
     free(scored);
-    
+
     *refs = new_refs;
 }
 
@@ -744,7 +744,6 @@ int tools_online_research_clear_expired(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_online_research_u__aenter__ @ hermes_cli/gateway_client.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) {
     /* Python: open aiohttp ClientSession with timeout.
      * REAL: the C researcher keeps a session handle; opening just

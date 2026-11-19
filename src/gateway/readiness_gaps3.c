@@ -9,5 +9,4 @@
 
 /* ── gateway/readiness.py: 1 missing functions ── */
 
-/* PoP: probe_session_store @ gateway/readiness.py:_probe_session_store */
 void probe_session_store(void) { }

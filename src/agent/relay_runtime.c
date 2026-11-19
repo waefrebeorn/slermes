@@ -820,7 +820,6 @@ char *relay_noop_apply_tool_request_intercepts(const char *session_id,
 void relay_noop_retain_managed_execution(const char *consumer) { /* Python default is also a no-op */  (void)consumer; }
 /* PoP: relay_noop_release_managed_execution @ agent/relay_runtime.py:release_managed_execution */
 void relay_noop_release_managed_execution(const char *consumer) { (void)consumer; }
-/* PoP: relay_noop_managed_execution_enabled @ agent/relay_runtime.py:managed_execution_enabled */
 bool relay_noop_managed_execution_enabled(void) { return false; }
 /* PoP: relay_noop_shutdown @ agent/relay_runtime.py:shutdown */
 /* Python (NoopRelayRuntime.shutdown): no resources are allocated on

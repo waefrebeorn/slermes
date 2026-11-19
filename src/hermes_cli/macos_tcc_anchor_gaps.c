@@ -18,7 +18,6 @@ char *sibling_names(void) { return strdup("[]"); }
 /* PoP: store_bin_names @ hermes_cli/macos_tcc_anchor.py:store_bin_names */
 char *store_bin_names(void) { return strdup("[]"); }
 
-/* PoP: is_uv_macos_store @ hermes_cli/macos_tcc_anchor.py:_is_uv_macos_store */
 int is_uv_macos_store(void) { return 0; }
 
 /* PoP: _venv_dir @ hermes_cli/macos_tcc_anchor.py:_venv_dir */

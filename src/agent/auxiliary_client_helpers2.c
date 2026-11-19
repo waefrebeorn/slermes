@@ -121,11 +121,10 @@ char *aux2_create(const char *kwargs_json) {
     return ser ? ser : strdup("{}");
 }
 
-/* PoP: create @ agent/auxiliary_client.py:close */
 /* Python: self._real_client.close(). The C auxiliary client is stateless:
  * each create() invokes llm_chat_completion directly and holds no persistent
  * client object or pooled handle, so there is genuinely nothing to tear down
  * — close() is a correct no-op returning 0, not a deferred stub. */
-int aux2_close(void) { /* Python default is also a no-op */ 
+int aux2_close(void) { /* Python default is also a no-op */
     return 0;
 }

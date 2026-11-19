@@ -35,5 +35,4 @@ char *list_incidents(void) { return strdup("[]"); }
 /* PoP: get_incident @ cron/incidents.py:get_incident */
 char *get_incident(void) { return strdup("{}"); }
 
-/* PoP: count_incidents @ cron/incidents.py:count_incidents */
 int count_incidents(void) { return 0; }

@@ -12,7 +12,6 @@
 /* PoP: session_end_reason @ tools/session_search_tool.py:session_end_reason */
 char *session_end_reason(void) { return strdup(""); }
 
-/* PoP: session_left_live_context @ tools/session_search_tool.py:_session_left_live_context */
 int session_left_live_context(void) { return 0; }
 
 /* PoP: is_fresh_reset_session @ tools/session_search_tool.py:is_fresh_reset_session */

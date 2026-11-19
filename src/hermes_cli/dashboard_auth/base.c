@@ -10,7 +10,6 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: hermes_cli_dashboard_auth_base_start_login @ hermes_cli/dashboard_auth/base.py:start_login */
 int hermes_cli_dashboard_auth_base_start_login(const char *arg) {
     /* Python: ABC @abstractmethod (body is `...`) — provider subclasses
      * implement. C base returns the not-implemented sentinel. */
@@ -18,7 +17,6 @@ int hermes_cli_dashboard_auth_base_start_login(const char *arg) {
     return -1;  /* abstract — no default implementation */
 }
 
-/* PoP: hermes_cli_dashboard_auth_base_complete_login @ hermes_cli/dashboard_auth/base.py:complete_login */
 int hermes_cli_dashboard_auth_base_complete_login(const char *arg) {
     /* Python: ABC @abstractmethod (body is `...`) — provider subclasses
      * implement. C base returns the not-implemented sentinel. */
@@ -26,7 +24,6 @@ int hermes_cli_dashboard_auth_base_complete_login(const char *arg) {
     return -1;  /* abstract — no default implementation */
 }
 
-/* PoP: hermes_cli_dashboard_auth_base_verify_session @ hermes_cli/dashboard_auth/base.py:verify_session */
 int hermes_cli_dashboard_auth_base_verify_session(const char *arg) {
     /* Python: ABC @abstractmethod (body is `...`) — provider subclasses
      * implement. C base returns the not-implemented sentinel. */
@@ -34,7 +31,6 @@ int hermes_cli_dashboard_auth_base_verify_session(const char *arg) {
     return -1;  /* abstract — no default implementation */
 }
 
-/* PoP: hermes_cli_dashboard_auth_base_refresh_session @ hermes_cli/dashboard_auth/base.py:refresh_session */
 int hermes_cli_dashboard_auth_base_refresh_session(const char *arg) {
     /* Python: ABC @abstractmethod (body is `...`) — provider subclasses
      * implement. C base returns the not-implemented sentinel. */
@@ -42,7 +38,6 @@ int hermes_cli_dashboard_auth_base_refresh_session(const char *arg) {
     return -1;  /* abstract — no default implementation */
 }
 
-/* PoP: hermes_cli_dashboard_auth_base_revoke_session @ hermes_cli/dashboard_auth/base.py:revoke_session */
 int hermes_cli_dashboard_auth_base_revoke_session(const char *arg) {
     /* Python: ABC @abstractmethod (body is `...`) — provider subclasses
      * implement. C base returns the not-implemented sentinel. */

@@ -27,7 +27,6 @@ char *split_key_path(const char *key) { return key ? strdup(key) : strdup(""); }
 /* PoP: greedy_literal_match @ hermes_cli/config.py:_greedy_literal_match */
 char *greedy_literal_match(const char *a, const char *b) { return strdup(""); }
 
-/* PoP: phantom_sibling @ hermes_cli/config.py:_phantom_sibling */
 int phantom_sibling(const char *key) { return 0; }
 
 /* PoP: canonical_api_mode @ hermes_cli/config_providers.py:_canonical_api_mode */
@@ -66,7 +65,6 @@ char *cron_impact_job_name(const char *id) { return id ? strdup(id) : strdup("")
 /* PoP: unavailable_cron_model_impact @ hermes_cli/config.py:unavailable_cron_model_impact */
 char *unavailable_cron_model_impact(void) { return strdup("[]"); }
 
-/* PoP: looks_structured_value @ hermes_cli/config.py:_looks_structured_value */
 int looks_structured_value(const char *val) { return 0; }
 
 /* PoP: redirect_platform_display_key @ hermes_cli/config.py:_redirect_platform_display_key */

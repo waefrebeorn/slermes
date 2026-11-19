@@ -342,7 +342,6 @@ int banner_get_update_result(double timeout_seconds) {
     return banner_update_result;
 }
 
-/* PoP: banner_defer_update_notice @ hermes_cli/banner.py:_defer_update_notice */
 void banner_defer_update_notice(void) {
 }
 

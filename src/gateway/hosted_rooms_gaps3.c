@@ -16,7 +16,6 @@ void reserve_peer_room(const char *db_path, const char *claims, double expires_a
     (void)db_path; (void)claims; (void)expires_at; (void)now;
 }
 
-/* PoP: peer_room_is_reserved @ gateway/hosted_rooms.py:peer_room_is_reserved */
 int peer_room_is_reserved(const char *db_path, const char *room_id, const char *target_profile, double now) {
     (void)db_path; (void)room_id; (void)target_profile; (void)now;
     return 0;
@@ -28,7 +27,6 @@ int peer_room_grant_is_current(const char *db_path, const char *claims, double n
     return 1;
 }
 
-/* PoP: room_grant_is_revoked @ gateway/hosted_rooms.py:room_grant_is_revoked */
 int room_grant_is_revoked(const char *db_path, const char *room_id, const char *target_profile, double now) {
     (void)db_path; (void)room_id; (void)target_profile; (void)now;
     return 0;

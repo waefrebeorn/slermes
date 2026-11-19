@@ -9,7 +9,6 @@
 
 /* ── hermes_cli/image_provenance.py: 2 missing functions ── */
 
-/* PoP: _invalid @ hermes_cli/image_provenance.py:_invalid */
 void _invalid(void) { }
 
 /* PoP: read_image_provenance @ hermes_cli/image_provenance.py:read_image_provenance */

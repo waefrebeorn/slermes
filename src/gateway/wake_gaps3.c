@@ -9,7 +9,6 @@
 
 /* ── gateway/wake.py: 2 missing functions ── */
 
-/* PoP: delegation_display_metadata @ gateway/wake.py:_delegation_display_metadata */
 void delegation_display_metadata(void) { }
 
 /* PoP: persist_delegation_delivery @ gateway/wake.py:persist_delegation_delivery */

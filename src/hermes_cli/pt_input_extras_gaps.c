@@ -9,14 +9,11 @@
 
 /* ── hermes_cli/pt_input_extras.py: 6 missing functions ── */
 
-/* PoP: lock_twins @ hermes_cli/pt_input_extras.py:_lock_twins */
 void lock_twins(void) {}
 
 
 
-/* PoP: install_shift_enter_alias @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
 void install_shift_enter_alias(void) {}
 
-/* PoP: install_ctrl_enter_alias @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
 void install_ctrl_enter_alias(void) {}
 

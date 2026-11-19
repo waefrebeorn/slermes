@@ -57,7 +57,6 @@ bool webhook_hmac_str_equal(const char *provided, const char *expected) {
     return diff == 0;
 }
 
-/* PoP: webhook_check_requirements @ gateway/platforms/webhook.py:check_webhook_requirements */
 /* Returns whether required webhook dependencies are available. The HTTP stack is
  * always present in the C build, so this mirrors "deps available" (true). */
 bool webhook_check_requirements(void) { /* Python default is also a no-op */ 

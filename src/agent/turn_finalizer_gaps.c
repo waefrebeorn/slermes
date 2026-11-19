@@ -9,7 +9,6 @@
 
 /* ── agent/turn_finalizer.py: 4 missing functions ── */
 
-/* PoP: assistant_row_missing_visible_text @ agent/turn_finalizer.py:_assistant_row_missing_visible_text */
 int assistant_row_missing_visible_text(void) { return 0; }
 
 /* PoP: fill_assistant_tail_content @ agent/turn_finalizer.py:fill_assistant_tail_content */

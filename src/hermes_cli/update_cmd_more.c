@@ -16,7 +16,6 @@
 #include <unistd.h>
 
 /* ── _shim_quarantine_error_type ──────────────────────────────────── */
-/* PoP: uc_shim_quarantine_error_type @ hermes_cli/update_cmd.py:_shim_quarantine_error_type */
 /* The strict-quarantine refusal type, resolved lazily through _m().
  * Falls back to a never-raised private type when main.py lacks it.
  * In C, we return a boolean indicating whether the type exists. */

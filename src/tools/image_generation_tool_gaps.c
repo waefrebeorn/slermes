@@ -18,7 +18,6 @@ char *resolve_fal_model(void) { return strdup(""); }
 /* PoP: upscale_image @ tools/image_generation_tool.py:_upscale_image */
 char *upscale_image(void) { return strdup("{}"); }
 
-/* PoP: check_fal_api_key @ tools/image_generation_tool.py:check_fal_api_key */
 int check_fal_api_key(void) { return 0; }
 
 /* PoP: normalize_krea_model @ tools/image_generation_tool.py:_normalize_krea_model */

@@ -103,7 +103,6 @@ long opw_apply_onepassword_secrets(const char *refs_json) {
     return applied;
 }
 
-/* PoP: opw_override_existing @ agent/secret_sources/base.py:override_existing */
 bool opw_override_existing(void) {
     /* Python: explicit VAR→op:// binding is strongest intent. */
     return true;

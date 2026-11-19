@@ -378,14 +378,12 @@ bool file_tools_check_file_reqs(const char *path, size_t max_bytes)
     return true;
 }
 
-/* PoP: file_tools_registered_task_cwd_override @ tools/file_tools_paths.py:_registered_task_cwd_override */
 char *file_tools_registered_task_cwd_override(const char *task_id)
 {
     (void)task_id;
     return NULL;
 }
 
-/* PoP: file_tools_get_container_mirror_prefix_for_task @ tools/file_tools_write_guards.py:_get_container_mirror_prefix_for_task */
 char *file_tools_get_container_mirror_prefix_for_task(const char *task_id)
 {
     (void)task_id;

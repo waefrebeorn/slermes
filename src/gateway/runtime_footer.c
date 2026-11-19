@@ -228,8 +228,57 @@ char *build_footer_line(json_node_t *user_config,
 }
 
 
-/* PoP: _env_cwd @ gateway/runtime_footer.py:_env_cwd */
-const char *gateway_runtime_footer_env_cwd(void) { return NULL; }
+/* ── tail_revive4 seam infrastructure (runtime_footer) ─────────────────────
+ * fn(rft_io_t *io, json_t *in); rft_seam records {ev,args,ret} (args adopted).
+ * _env_cwd's `from tools.terminal_scope import terminal_env` becomes the
+ * "import_terminal_env" seam (ImportError/ModuleNotFoundError -> the
+ * os.environ fallback via "environ_get"); the call itself is "terminal_env".
+ * Only ImportError is caught — anything else propagates. */
+typedef struct rft_io {
+    json_t *(*call)(struct rft_io *io, const char *name, json_t *args);
+    json_t *trace;
+    void *ctx;
+} rft_io_t;
 
-/* PoP: _format_latency @ gateway/runtime_footer.py:_format_latency */
+static int rft_is_raise(const json_t *r) {
+    return r && r->type == JSON_OBJECT && json_obj_get(r, "__raise__") != NULL;
+}
+
+static json_t *rft_seam(rft_io_t *io, const char *name, json_t *args) {
+    json_t *ret = io->call(io, name, args);
+    json_t *ev = json_object();
+    json_set_hdr(ev, "ev", name);
+    json_set(ev, "args", args ? args : json_object());
+    json_set(ev, "ret", ret ? json_copy(ret) : json_null());
+    json_append(io->trace, ev);
+    return ret;
+}
+
+/* PoP: _env_cwd @ gateway/runtime_footer.py:_env_cwd */
+json_t *gateway_runtime_footer_env_cwd(rft_io_t *io, json_t *in) {
+    (void)in;
+    json_t *imp = rft_seam(io, "import_terminal_env", NULL);
+    if (rft_is_raise(imp)) {
+        const char *t = json_get_str(imp, "__raise__", "");
+        if (strcmp(t, "ImportError") != 0 && strcmp(t, "ModuleNotFoundError") != 0)
+            return imp;  /* only ImportError is caught */
+        json_free(imp);
+        json_t *args = json_object();
+        json_set_hdr(args, "key", "TERMINAL_CWD");
+        json_set_hdr(args, "default", "");
+        json_t *r = rft_seam(io, "environ_get", args);
+        if (rft_is_raise(r)) return r;
+        return r ? r : json_null();
+    }
+    json_free(imp);
+    json_t *args = json_object();
+    json_set_hdr(args, "name", "TERMINAL_CWD");
+    json_set_hdr(args, "default", "");
+    json_t *r = rft_seam(io, "terminal_env", args);
+    if (rft_is_raise(r)) return r;
+    return r ? r : json_null();
+}
+
+/* _format_latency is already ported above as format_latency (same live def);
+ * this placeholder stays unimplemented and untagged. */
 const char *gateway_runtime_footer_format_latency(double ms) { (void)ms; return NULL; }

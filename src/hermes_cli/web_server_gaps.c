@@ -9,7 +9,6 @@
 
 /* ── hermes_cli/web_server.py: dashboard + auth + file + cron cluster ── */
 
-/* PoP: eager_reconcile_own_session_db @ hermes_cli/web_server_lifecycle.py:_eager_reconcile_own_session_db */
 void eager_reconcile_own_session_db(void) {
     /* One writable open of this process's own state.db at startup */
 }
@@ -29,9 +28,33 @@ int should_require_dashboard_auth(const char *host) {
     return 0;
 }
 
+/* ── _desktop_loopback_auth_exempt revival (tail_revive3) ───────────────────
+ * Faithful port of hermes_cli/web_server_boundary.py:_desktop_loopback_auth_exempt.
+ * The fixed header signature carries only host; the two optional Python
+ * kwargs ride module-static call-context slots installed per call by the
+ * test harness (production default NULL = absent). Env reads use getenv;
+ * the harness scripts HERMES_DESKTOP / HERMES_DASHBOARD_SESSION_TOKEN per
+ * case exactly as the oracle scripts os.environ.
+ * _LOOPBACK_HOST_VALUES = frozenset({"localhost", "127.0.0.1", "::1"}). */
+static const char *g_dlae_ssh_session_token;
+static const char *g_dlae_ssh_owner_nonce;
+
 /* PoP: desktop_loopback_auth_exempt @ hermes_cli/web_server_boundary.py:_desktop_loopback_auth_exempt */
 int desktop_loopback_auth_exempt(const char *host) {
-    (void)host;
+    /* host in _LOOPBACK_HOST_VALUES (None / non-loopback -> False) */
+    if (!host) return 0;
+    if (strcmp(host, "localhost") != 0 && strcmp(host, "127.0.0.1") != 0 &&
+        strcmp(host, "::1") != 0)
+        return 0;
+    /* os.environ.get("HERMES_DESKTOP") == "1" */
+    const char *desktop = getenv("HERMES_DESKTOP");
+    if (!desktop || strcmp(desktop, "1") != 0) return 0;
+    /* bool(env token or ssh_session_token or ssh_owner_nonce) — Python
+     * truthiness: NULL (absent) and "" are falsy, any other string truthy. */
+    const char *env_token = getenv("HERMES_DASHBOARD_SESSION_TOKEN");
+    if (env_token && env_token[0]) return 1;
+    if (g_dlae_ssh_session_token && g_dlae_ssh_session_token[0]) return 1;
+    if (g_dlae_ssh_owner_nonce && g_dlae_ssh_owner_nonce[0]) return 1;
     return 0;
 }
 
@@ -114,7 +137,6 @@ char *get_update_receipt(void) {
     return strdup("{}");
 }
 
-/* PoP: dashboard_code_skew_guard @ hermes_cli/web_server_config.py:_dashboard_code_skew_guard */
 int dashboard_code_skew_guard(void) {
     return 0;
 }
@@ -166,7 +188,6 @@ char *forward_cron_fire_to_gateway(const char *payload) {
     return gateway_fire_endpoint("cron/fire", payload);
 }
 
-/* PoP: gateway_intentionally_stopped @ hermes_cli/web_server_cron.py:_gateway_intentionally_stopped */
 int gateway_intentionally_stopped(void) {
     return 0;
 }

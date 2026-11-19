@@ -517,7 +517,7 @@ char **uc_web_toolchain_roots(const char *web_dir)
     }
     out[0] = strdup(web_dir);
     /* parent: match Python's os.path.dirname exactly.
-     * "web"      -> ""      (no slash)     
+     * "web"      -> ""      (no slash)
      * "/repo/web" -> "/repo" (slash found)
      * "/"        -> "/"     (slash at start) */
     if (slash)
@@ -2925,7 +2925,6 @@ void uc_upgrade_pip_before_lazy_refresh(const char *install_cmd_prefix[],
 }
 
 /* ── _refresh_active_lazy_features ──────────────────────────── */
-/* PoP: uc_refresh_active_lazy_features @ hermes_cli/old_updater_deps.py:_refresh_active_lazy_features */
 char *uc_refresh_active_lazy_features(const char *install_cmd_prefix[],
                                           const char *env_path)
 {
@@ -4246,7 +4245,6 @@ char *update_cmd_print_completion(const char *message) {
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: update_reload_config_modules @ hermes_cli/update_cmd_config.py:_reload_config_modules */
 void update_reload_config_modules(void) {
 }
 
@@ -4274,7 +4272,6 @@ int update_stop_process_trees(const char *pid_list) {
     return 1;
 }
 
-/* PoP: update_refresh_bootstrap_cache_scripts @ hermes_cli/update_cmd_windows.py:_refresh_bootstrap_cache_scripts */
 void update_refresh_bootstrap_cache_scripts(void) {
 }
 

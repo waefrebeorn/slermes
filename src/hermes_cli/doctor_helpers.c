@@ -162,7 +162,6 @@ bool doctor_check_s6_supervision(void) {
     return true;
 }
 
-/* PoP: doctor_check_gateway_service_linger @ hermes_cli/doctor_platform.py:_check_gateway_service_linger */
 bool doctor_check_gateway_service_linger(void) { return false; }
 
 /* PoP: doctor_build_apikey_providers_list @ hermes_cli/doctor_connectivity.py:_build_apikey_providers_list */

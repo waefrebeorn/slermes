@@ -12,7 +12,6 @@
 /* PoP: platform_declares_allowed_users_env @ gateway/authz_mixin.py:platform_declares_allowed_users_env */
 int platform_declares_allowed_users_env(void) { return 0; }
 
-/* PoP: bech32_polymod @ gateway/authz_mixin.py:_bech32_polymod */
 int bech32_polymod(void) { return 0; }
 
 /* PoP: bech32_hrp_expand @ gateway/authz_mixin.py:_bech32_hrp_expand */

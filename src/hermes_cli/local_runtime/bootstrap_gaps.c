@@ -24,7 +24,6 @@ char *staged_models(void) { return strdup("[]"); }
 /* PoP: staged_model_ids @ hermes_cli/local_runtime/bootstrap.py:staged_model_ids */
 char *staged_model_ids(void) { return strdup("[]"); }
 
-/* PoP: presets_stale @ hermes_cli/local_runtime/bootstrap.py:_presets_stale */
 int presets_stale(void) { return 0; }
 
 

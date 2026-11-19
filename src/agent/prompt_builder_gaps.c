@@ -24,7 +24,6 @@ char *execution_guidance_text(void) { return strdup(""); }
 /* PoP: hud_surface_note @ agent/prompt_builder.py:hud_surface_note */
 char *hud_surface_note(void) { return strdup(""); }
 
-/* PoP: plugin_backend_is_remote @ agent/prompt_builder.py:_plugin_backend_is_remote */
 int plugin_backend_is_remote(void) { return 0; }
 
 /* PoP: plugin_backend_description @ agent/prompt_builder.py:plugin_backend_description */

@@ -9,7 +9,6 @@
 
 /* ── hermes_cli/journey.py: 4 missing functions ── */
 
-/* PoP: relative_luminance @ hermes_cli/journey.py:_relative_luminance */
 double relative_luminance(void) { return 0.0; }
 
 /* PoP: contrast_ratio @ hermes_cli/journey.py:_contrast_ratio */

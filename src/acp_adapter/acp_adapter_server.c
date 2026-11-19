@@ -97,8 +97,6 @@ int acps_initialize(void) {
     return srv ? 0 : 1;
 }
 
-/* PoP: acps_new_session @ acp_adapter/server.py:new_session */
 int acps_new_session(void) { return 0; }
 
-/* PoP: acps_load_session @ acp_adapter/server.py:load_session */
 int acps_load_session(void) { return 0; }

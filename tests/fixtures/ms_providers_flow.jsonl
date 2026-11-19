@@ -1,0 +1,154 @@
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": {"a": {}}}, "model_ids": ["a"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": {"a": {}, "b": {}}, "models_discovered": true}, "model_ids": ["a", "b"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": {"a": {}, "b": {}}, "models_discovered": true}, "model_ids": ["a", "c"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": {"b": {}, "a": {}}, "models_discovered": true}, "model_ids": ["a", "b"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": {"__discovered_model_catalog__": true, "a": {}}}, "model_ids": ["a"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": [{"id": "a"}]}, "model_ids": ["a"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": ["a", "b"]}, "model_ids": ["a", "b"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": ["a"]}, "model_ids": ["a", "b"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {}, "model_ids": ["a"]}}
+{"func": "_discovered_catalog_stale", "in": {"entry": {"models": null}, "model_ids": ["a"]}}
+{"func": "_any_env", "in": {"env_vars": []}}
+{"func": "_any_env", "in": {"env_vars": ["A", "B"], "io": {"read_env": {"$seq": ["yes", "no"]}}}}
+{"func": "_any_env", "in": {"env_vars": ["A", "B"], "io": {"read_env": {"$seq": ["", "yes"]}}}}
+{"func": "_any_env", "in": {"env_vars": ["A", "B"], "io": {"read_env": {"$seq": ["", null]}}}}
+{"func": "_any_env", "in": {"env_vars": ["A"]}}
+{"func": "_any_env", "in": {"env_vars": ["A"], "io": {"read_env": "0"}}}
+{"func": "_any_env", "in": {"env_vars": ["A"], "io": {"read_env": " "}}}
+{"func": "_skip", "in": {"seen": ["openai"], "excluded": [], "keys": ["OpenAI"]}}
+{"func": "_skip", "in": {"seen": [], "excluded": ["nous"], "keys": ["nous"]}}
+{"func": "_skip", "in": {"seen": ["a"], "excluded": ["b"], "keys": ["c"]}}
+{"func": "_skip", "in": {"seen": ["x"], "excluded": [], "keys": ["a", "X"]}}
+{"func": "_skip", "in": {"seen": ["a"], "excluded": ["b"], "keys": []}}
+{"func": "_skip", "in": {"seen": ["k"], "excluded": ["k"], "keys": ["K"]}}
+{"func": "_skip", "in": {"seen": [], "excluded": ["nous"], "keys": ["NOUS"]}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"providers": {"openai": {}}}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["x", "openai"], "io": {"load_auth_store": {"providers": {"openai": {}}}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": null}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"providers": null}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"other": 1}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"providers": {"openai": null}}}}}
+{"func": "_auth_store_has_provider", "in": {"keys": ["openai"], "io": {"load_auth_store": {"__raise__": "SystemExit"}}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": null}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"credential_pool": {"openai": ["x"]}}, "credential_pool_is_usable": true}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"credential_pool": {"openai": ["x"]}}, "credential_pool_is_usable": false}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "for_picker": true, "io": {"load_auth_store": {"credential_pool": {"openai": ["x"]}}, "credential_pool_is_usable": true}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"credential_pool": {"openai": []}}}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"__raise__": "OSError"}}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"credential_pool": null}}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"credential_pool": {"openai": ["x"]}}, "credential_pool_is_usable": {"__raise__": "ValueError"}}}}
+{"func": "_raw_pool_usable", "in": {"hermes_id": "openai", "io": {"load_auth_store": {"other": 1}}}}
+{"func": "_pool_usable", "in": {"slug": "openai", "io": {"credential_pool_is_usable": true}}}
+{"func": "_pool_usable", "in": {"slug": "openai", "io": {"credential_pool_is_usable": false}}}
+{"func": "_pool_usable", "in": {"slug": "openai", "io": {"credential_pool_is_usable": {"__raise__": "ValueError"}}}}
+{"func": "_pool_usable", "in": {"slug": "openai", "for_picker": true, "io": {"credential_pool_is_usable": true}}}
+{"func": "_pool_usable", "in": {"slug": "openai", "io": {"credential_pool_is_usable": {"__raise__": "SystemExit"}}}}
+{"func": "_pool_usable", "in": {"slug": "openai"}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "p", "hermes_slug": "s", "overlay": {"auth_type": "vertex", "extra_env_vars": []}, "io": {"has_vertex_credentials": true}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "p", "hermes_slug": "s", "overlay": {"auth_type": "vertex", "extra_env_vars": []}, "io": {"has_vertex_credentials": {"__raise__": "RuntimeError"}}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "p", "hermes_slug": "s", "overlay": {"auth_type": "api_key", "extra_env_vars": ["E1"]}, "io": {"read_env": {"$seq": ["yes"]}}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "pid1", "hermes_slug": "slug1", "overlay": {"auth_type": "api_key", "extra_env_vars": []}, "env": {"provider_registry": {"pid1": {"api_key_env_vars": ["K1"]}}}, "io": {"read_env": "yes"}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "pidX", "hermes_slug": "slug1", "overlay": {"auth_type": "api_key", "extra_env_vars": []}, "env": {"provider_registry": {"slug1": {"api_key_env_vars": ["K2"]}}}, "io": {"read_env": "yes"}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "p", "hermes_slug": "azure-foundry", "overlay": {"auth_type": "api_key", "extra_env_vars": []}, "io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "entra_id", "base_url": "http://x"}}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "p", "hermes_slug": "other", "overlay": {"auth_type": "api_key", "extra_env_vars": []}}}
+{"func": "_overlay_has_env_creds", "in": {"pid": "pid1", "hermes_slug": "s", "overlay": {"auth_type": "api_key", "extra_env_vars": ["E1"]}, "env": {"provider_registry": {"pid1": {"api_key_env_vars": ["K1"]}}}, "io": {"read_env": {"$seq": ["", "yes"]}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "openai", "auth_mode": "entra_id", "base_url": "x"}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "key", "base_url": "x"}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "entra_id", "base_url": "http://x"}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "entra_id", "base_url": "  "}, "read_env": "http://env"}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "entra_id"}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": " Azure-Foundry ", "auth_mode": " Entra_ID ", "base_url": "http://x"}}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": null}}}
+{"func": "_azure_entra_configured", "in": {"io": {"get_model_config_dict": {"provider": "azure-foundry", "auth_mode": "entra_id", "base_url": ""}, "read_env": " "}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["tok"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "ak", "sk"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "ak", "", "prof"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "", " ", "rel"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "", "", "", "full"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "", "", "", "", "web"]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}}}}
+{"func": "_has_fast_aws_sdk_signal", "in": {"io": {"read_env": {"$seq": ["  ", "ak", "sk"]}}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "bedrock", "current_provider": "other", "io": {"read_env": {"$seq": ["tok"]}}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "bedrock", "current_provider": "other", "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "Bedrock", "current_provider": "bedrock", "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}, "has_aws_credentials": true}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "bedrock", "current_provider": "bedrock", "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}, "has_aws_credentials": false}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "bedrock", "current_provider": "bedrock", "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}, "has_aws_credentials": {"__raise__": "RuntimeError"}}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": null, "current_provider": null, "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}, "has_aws_credentials": true}}}
+{"func": "_has_aws_sdk_creds_for_listing", "in": {"slug": "bedrock", "current_provider": "bedrock", "io": {"read_env": {"$seq": ["", "", "", "", "", "", ""]}, "has_aws_credentials": {"__raise__": "SystemExit"}}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": ["m1"], "without_generation_models": ["m1"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"openai": ["c1", "c2"]}, "fallback_keys": ["openai"], "io": {"cached_provider_model_ids": [], "without_generation_models": ["c1", "c2"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"openai": ["c1"]}, "fallback_keys": [], "io": {"cached_provider_model_ids": [], "without_generation_models": ["c1"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"openai": ["c1"]}, "fallback_keys": ["openai"], "env": {"models_dev_preferred": ["openai"]}, "io": {"cached_provider_model_ids": [], "merge_with_models_dev": ["c1", "mdev"], "without_generation_models": ["c1", "mdev"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"openai": ["c1"]}, "fallback_keys": ["openai"], "merge_models_dev": false, "env": {"models_dev_preferred": ["openai"]}, "io": {"cached_provider_model_ids": [], "without_generation_models": ["c1"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {}, "fallback_keys": [], "non_blocking": true, "io": {"cached_provider_model_ids": ["m1"], "without_generation_models": ["m1"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"openai": ["c1"]}, "fallback_keys": ["openai"], "io": {"cached_provider_model_ids": null, "without_generation_models": ["c1"]}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {"a": [], "b": []}, "fallback_keys": ["a", "b"], "io": {"cached_provider_model_ids": [], "without_generation_models": []}}}
+{"func": "_live_or_curated_ids", "in": {"slug": "openai", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": {"__raise__": "RuntimeError"}}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": ["m1"], "without_generation_models": ["m1"]}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": [], "without_generation_models": []}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {"bedrock": ["c1"]}, "fallback_keys": ["bedrock"], "io": {"cached_provider_model_ids": {"__raise__": "OSError"}}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {"bedrock": ["c1"]}, "fallback_keys": ["bedrock"], "io": {"cached_provider_model_ids": ["m1"], "without_generation_models": {"__raise__": "ValueError"}}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": {"__raise__": "OSError"}}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {"x": ["a"], "bedrock": ["b"]}, "fallback_keys": ["x", "bedrock"], "io": {"cached_provider_model_ids": {"__raise__": "OSError"}}}}
+{"func": "_aws_live_or_curated_ids", "in": {"slug": "bedrock", "curated": {}, "fallback_keys": [], "io": {"cached_provider_model_ids": {"__raise__": "SystemExit"}}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1", "f1"], {}], "restrict_to_nous_policy": ["n1", "f1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "check_nous_free_tier": false, "union_with_portal_paid_recommendations": [["n1", "p1"], {}], "union_with_nous_on_sale_models": ["n1", "p1", "s1"], "restrict_to_nous_policy": ["n1", "p1", "s1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"__raise__": "RuntimeError"}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "restrict_to_nous_policy": ["n1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"__raise__": "OSError"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1"], {}], "restrict_to_nous_policy": ["n1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": {"__raise__": "ValueError"}, "nous_picker_usage": null, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1", "f1"], {}]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": {"featured_model_ids": ["f1"]}, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1", "f1"], {}], "restrict_to_nous_policy": ["n1", "f1"], "featured_first": ["f1", "n1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "force_fresh_nous_tier": true, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1"], {}], "restrict_to_nous_policy": ["n1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": {"__raise__": "RuntimeError"}, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1", "f1"], {}], "restrict_to_nous_policy": ["n1", "f1"]}}}
+{"func": "_nous_picker_model_ids", "in": {"curated": {"nous": ["n1"]}, "io": {"get_pricing_for_provider": {"p": 1}, "get_provider_auth_state": {"portal_base_url": "http://portal"}, "nous_policy_allowed_ids": ["n1"], "nous_picker_usage": null, "check_nous_free_tier": true, "union_with_portal_free_recommendations": [["n1"], {}], "restrict_to_nous_policy": []}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": false}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": true, "guest_allowed": false}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": true, "guest_allowed": true, "free_inference_active": false}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": true, "guest_allowed": true, "free_inference_active": true}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": []}, "io": {"has_guest": true, "guest_allowed": true, "free_inference_active": true}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": {"__raise__": "RuntimeError"}}}}
+{"func": "_free_tier_nous_row", "in": {"row": {"name": "Nous", "models": ["n1"], "total_models": 1}, "io": {"has_guest": true, "guest_allowed": {"__raise__": "SystemExit"}}}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": null}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": 1, "slug": "nous"}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": 2, "slug": "openai"}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": 0, "slug": "openai"}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": 0, "slug": "nous"}}
+{"func": "_cap_models", "in": {"model_ids": ["a"], "max_models": 10, "slug": "x"}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b"], "max_models": 1}}
+{"func": "_cap_models", "in": {"model_ids": ["a", "b", "c"], "max_models": 1, "slug": "opencode-zen"}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": true, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": {"__native__": []}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": true, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": {"__native__": ["m"]}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": {"__native__": []}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": true, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": ["m"]}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": true, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": []}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": []}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": null}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": false, "io": {"fetch_picker_live_models": {"__raise__": "RuntimeError"}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": {"__native__": []}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": ["m"]}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": []}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": {"__raise__": "ValueError"}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": {"__raise__": "KeyError"}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": {"__raise__": "HTTPException"}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": true, "fast_custom_probe": false, "io": {"cached_fetch_api_models": {"__raise__": "SystemExit"}}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": true, "discovery_allowed": false, "fast_custom_probe": true, "io": {"fetch_picker_live_models": ["m"]}}}
+{"func": "_discover_endpoint_models", "in": {"api_key": "k", "api_url": "http://x", "native_catalog_provider": "custom", "has_explicit_models": false, "headers": null, "api_mode": null, "probe_live": false, "discovery_allowed": false, "fast_custom_probe": false}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": false, "is_user_defined": false, "models": ["a1"], "total_models": 5, "source": "built-in"}, {"slug": "b", "name": "b", "is_current": true, "is_user_defined": false, "models": ["b1"], "total_models": 2, "source": "built-in"}, {"slug": "c", "name": "c", "is_current": false, "is_user_defined": false, "models": ["c1"], "total_models": 9, "source": "built-in"}], "user_providers": null, "current_model": ""}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": false, "is_user_defined": false, "models": ["a1"], "total_models": 5, "source": "built-in"}, {"slug": "b", "name": "b", "is_current": true, "is_user_defined": false, "models": ["b1"], "total_models": 2, "source": "built-in"}], "user_providers": {"a": {"enabled": false}}, "current_model": "", "io": {"is_provider_enabled": false}}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": false, "is_user_defined": false, "models": ["a1"], "total_models": 5, "source": "built-in", "provider_id": "pa"}, {"slug": "b", "name": "b", "is_current": true, "is_user_defined": false, "models": ["b1"], "total_models": 2, "source": "built-in"}], "user_providers": {"pa": {}}, "current_model": "", "io": {"is_provider_enabled": false}}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": false, "is_user_defined": false, "models": ["a1"], "total_models": 5, "source": "built-in"}, {"slug": "b", "name": "b", "is_current": true, "is_user_defined": false, "models": ["b1"], "total_models": 2, "source": "built-in"}], "user_providers": {"a": {}}, "current_model": "", "io": {"is_provider_enabled": {"__raise__": "RuntimeError"}}}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": true, "is_user_defined": false, "models": ["old"], "total_models": 1, "source": "built-in"}], "user_providers": null, "current_model": "new"}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": true, "is_user_defined": false, "models": ["old"], "total_models": 1, "source": "built-in"}], "user_providers": null, "current_model": "old"}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": true, "is_user_defined": false, "models": [], "total_models": 0, "source": "built-in", "native_catalog_empty": true}, {"slug": "b", "name": "b", "is_current": true, "is_user_defined": false, "models": ["x"], "total_models": 1, "source": "built-in"}], "user_providers": null, "current_model": "new"}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": true, "is_user_defined": false, "models": ["old"], "total_models": 1, "source": "built-in"}], "user_providers": null, "current_model": "new", "io": {"model_requires_account_discovery": true}}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": false, "is_user_defined": false, "models": ["a1"], "total_models": 5, "source": "built-in"}, {"slug": "b", "name": "b", "is_current": false, "is_user_defined": false, "models": ["b1"], "total_models": 5, "source": "built-in"}], "user_providers": null, "current_model": ""}}
+{"func": "_finalize_picker_rows", "in": {"results": [{"slug": "a", "name": "a", "is_current": true, "is_user_defined": false, "models": ["old"], "total_models": 1, "source": "built-in"}], "user_providers": null, "current_model": "new", "io": {"model_requires_account_discovery": {"__raise__": "SystemExit"}}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {}}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": "str"}}}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": {"base_url": "http://a", "url": "http://b"}}}, "same_base_url_origin": {"$seq": [true, false]}}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": {"base_url": "http://b"}}}, "same_base_url_origin": false}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": {"base_url": "  ", "url": "", "api": "http://c"}}}, "same_base_url_origin": false}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": {"base_url": "http://a"}}}, "same_base_url_origin": true}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"__raise__": "OSError"}}}}
+{"func": "_saved_entry_on_other_origin", "in": {"name": "p", "base_url": "http://a", "io": {"load_config": {"providers": {"p": {"baseUrl": "http://b"}}}, "same_base_url_origin": false}}}

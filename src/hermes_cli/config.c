@@ -930,7 +930,6 @@ int config_save_config(const char *config_json) {
     return 0;
 }
 
-/* PoP: config_invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache */
 void config_invalidate_env_cache(void) {
     /* Clear the load_env() process-level memo.
      * In C, env vars are read directly from environ, no cache to invalidate. */

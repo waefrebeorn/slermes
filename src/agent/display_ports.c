@@ -361,7 +361,6 @@ bool disp_spinner_is_tty(void) {
     return isatty(STDOUT_FILENO) == 1;
 }
 
-/* PoP: disp_spinner_is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */
 bool disp_spinner_is_patch_stdout_proxy(void) {
     /* Python: prompt_toolkit StdoutProxy detection. */
     return false;
@@ -375,7 +374,6 @@ int disp_spinner_animate(const char *frames_json) {
     return 0;
 }
 
-/* PoP: disp_spinner_start @ agent/display.py:start */
 int disp_spinner_start(void) {
     /* Python: spinner thread start. */
     return 0;

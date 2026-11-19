@@ -1539,7 +1539,6 @@ bool gw_abandon_timed_out_gateway_turn(GatewayRunner *self, const char *session_
     return true;
 }
 
-/* PoP: gw_watch_gateway_turn_inactivity @ gateway/run.py:_watch_gateway_turn_inactivity */
 void *gw_watch_gateway_turn_inactivity(void *arg)
 {
     (void)arg;

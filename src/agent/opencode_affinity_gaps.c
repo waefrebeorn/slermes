@@ -9,7 +9,6 @@
 
 /* ── agent/opencode_affinity.py: 3 missing functions ── */
 
-/* PoP: is_opencode_target @ agent/opencode_affinity.py:is_opencode_target */
 int is_opencode_target(void) { return 0; }
 
 /* PoP: opencode_session_headers @ agent/opencode_affinity.py:opencode_session_headers */

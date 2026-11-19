@@ -9,5 +9,4 @@
 
 /* ── gateway/drain_control.py: 1 missing functions ── */
 
-/* PoP: marker_is_expired @ gateway/drain_control.py:_marker_is_expired */
 void marker_is_expired(void) { }

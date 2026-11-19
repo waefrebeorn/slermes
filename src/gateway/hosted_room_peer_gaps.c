@@ -63,5 +63,4 @@ int verify_room_grant(const char *grant) { return grant ? 1 : 0; }
 /* PoP: decode_room_grant @ gateway/hosted_room_peer.py:decode_room_grant */
 char *decode_room_grant(const char *grant) { return strdup("{}"); }
 
-/* PoP: room_grant_needs_dispatch_refresh @ gateway/hosted_room_peer.py:room_grant_needs_dispatch_refresh */
 int room_grant_needs_dispatch_refresh(void) { return 0; }

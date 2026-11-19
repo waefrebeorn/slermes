@@ -24,7 +24,6 @@ char *direct_alias_api_key(void) { return strdup(""); }
 /* PoP: direct_alias_runtime_request @ hermes_cli/model_switch.py:direct_alias_runtime_request */
 char *direct_alias_runtime_request(void) { return strdup("{}"); }
 
-/* PoP: may_reuse_session_credential @ hermes_cli/model_switch.py:_may_reuse_session_credential */
 int may_reuse_session_credential(void) { return 0; }
 
 /* PoP: resolve_startup_model_route @ hermes_cli/model_switch.py:resolve_startup_model_route */

@@ -29,20 +29,17 @@ bool reclaim_idle_read_conn_anywhere(void) {
     return false;
 }
 
-/* PoP: acquire_process_permit @ persistence/sqlite/_state/readpool.py:_acquire_process_permit */
 bool acquire_process_permit(void) {
     /* Process-wide read semaphore: bounded by _process_read_permits. */
     /* In the C port, the semaphore is a pthread_mutex_t; non-blocking try. */
     return true; /* simplified: actual semaphore logic lives in session_db.c */
 }
 
-/* PoP: acquire_path_permit @ persistence/sqlite/_state/readpool.py:_acquire_path_permit */
 bool acquire_path_permit(void) {
     /* Per-path read permit. Simplified in C port. */
     return true;
 }
 
-/* PoP: reclaim_idle @ persistence/sqlite/_state/readpool.py:reclaim_idle */
 bool reclaim_idle(void *exclude) {
     (void)exclude;
     /* Close one idle pooled connection. Simplified in C port. */

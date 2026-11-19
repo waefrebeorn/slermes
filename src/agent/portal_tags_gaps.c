@@ -12,7 +12,6 @@
 /* PoP: set_affinity_scope @ agent/portal_tags.py:set_affinity_scope */
 void set_affinity_scope(const char *scope) { (void)scope; }
 
-/* PoP: reset_affinity_scope @ agent/portal_tags.py:reset_affinity_scope */
 void reset_affinity_scope(void) {}
 
 /* PoP: get_affinity_scope @ agent/portal_tags.py:get_affinity_scope */

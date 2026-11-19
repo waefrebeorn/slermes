@@ -508,7 +508,6 @@ int process_identity_spawner_is_dead(json_t *entry)
 }
 
 /* Windows-only by contract; POSIX builds faithfully report failure. */
-/* PoP: process_identity_attach_self_to_kill_on_close_job @hermes_cli/process_identity.py:attach_self_to_kill_on_close_job */
 int process_identity_attach_self_to_kill_on_close_job(void)
 {
     return 0; /* _IS_WINDOWS is false on this platform */

@@ -15,7 +15,6 @@ char *plugin_session_info(void) { return strdup(""); }
 /* PoP: frozen_plugin_prompt_sections @ agent/system_prompt.py:_frozen_plugin_prompt_sections */
 char *frozen_plugin_prompt_sections(void) { return strdup("[]"); }
 
-/* PoP: session_start_like @ agent/system_prompt.py:_session_start_like */
 int session_start_like(void) { return 0; }
 
 /* PoP: agent_skills_dir @ agent/system_prompt.py:_agent_skills_dir */

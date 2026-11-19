@@ -213,13 +213,13 @@ static const int MOA_PROVIDERS_COUNT = sizeof(MOA_PROVIDERS) / sizeof(MOA_PROVID
 
 /* ─── SYSTEM PROMPTS ─────────────────────────────────────────────── */
 
-static const char *MOA_STANDARD_SYSTEM = 
+static const char *MOA_STANDARD_SYSTEM =
     "You are an expert AI assistant participating in a Mixture of Agents ensemble.\n"
     "Your role: Provide a thorough, accurate, and well-reasoned response to the user's query.\n"
     "Draw on your specific strengths (coding, reasoning, analysis, creativity) as appropriate.\n"
     "Be concise but comprehensive. Focus on actionable, correct information.";
 
-static const char *MOA_DEVIL_AGGREGATOR_SYSTEM = 
+static const char *MOA_DEVIL_AGGREGATOR_SYSTEM =
     "You are the aggregator for a Devil's Advocate Mixture of Agents.\n"
     "Three critics have challenged the problem from different angles:\n"
     "- Critic 1 (Skeptic): Challenges assumptions, finds holes, questions premises\n"
@@ -228,7 +228,7 @@ static const char *MOA_DEVIL_AGGREGATOR_SYSTEM =
     "Synthesize their adversarial perspectives into a robust, bulletproof final answer.\n"
     "Address every criticism. Strengthen every weakness. Produce the most resilient solution possible.";
 
-static const char *MOA_TREPIDATION_AGGREGATOR_SYSTEM = 
+static const char *MOA_TREPIDATION_AGGREGATOR_SYSTEM =
     "You are the aggregator for a Trepidation (Uncertainty Quantification) Mixture of Agents.\n"
     "Multiple cautious models have provided responses with explicit confidence intervals,\n"
     "uncertainty assessments, and variance analysis.\n\n"
@@ -240,7 +240,7 @@ static const char *MOA_TREPIDATION_AGGREGATOR_SYSTEM =
     "- Provide calibrated probabilities where possible\n\n"
     "Do not overstate certainty. The user needs to know what's reliable vs speculative.";
 
-static const char *MOA_TOKEN_MAXX_AGGREGATOR_SYSTEM = 
+static const char *MOA_TOKEN_MAXX_AGGREGATOR_SYSTEM =
     "You are the aggregator for a Token Maxxing Mixture of Agents.\n"
     "Multiple high-capacity models have provided exhaustive, detailed responses\n"
     "with maximum token budgets and optimal sampling parameters.\n\n"
@@ -251,7 +251,7 @@ static const char *MOA_TOKEN_MAXX_AGGREGATOR_SYSTEM =
     "- Include code examples, proofs, derivations where relevant\n"
     "- Structure for maximum utility: executive summary -> deep dive -> references";
 
-static const char *MOA_STANDARD_AGGREGATOR_SYSTEM = 
+static const char *MOA_STANDARD_AGGREGATOR_SYSTEM =
     "You are the final aggregator in a Mixture of Agents ensemble.\n"
     "Multiple expert models have provided their perspectives on the user's query.\n"
     "Synthesize their responses into a single, coherent, high-quality answer.\n\n"
@@ -262,20 +262,20 @@ static const char *MOA_STANDARD_AGGREGATOR_SYSTEM =
     "- Structure clearly: summary -> details -> actionable conclusion\n"
     "- Credit the ensemble approach when relevant";
 
-static const char *MOA_DEVIL_SYSTEM = 
+static const char *MOA_DEVIL_SYSTEM =
     "You are a DEVIL'S ADVOCATE critic in a Mixture of Agents ensemble.\n"
     "Your role: Challenge the problem aggressively. Find flaws, holes, edge cases, wrong assumptions.\n"
     "Be ruthless but constructive. Your criticism makes the final answer stronger.\n"
     "Focus on: logical gaps, missing edge cases, security risks, performance issues, wrong assumptions.";
 
-static const char *MOA_TREPIDATION_SYSTEM = 
+static const char *MOA_TREPIDATION_SYSTEM =
     "You are a CAUTIOUS ANALYST in a Mixture of Agents ensemble.\n"
     "Your role: Quantify uncertainty. Report confidence intervals. Flag disagreement.\n"
     "For every claim, state your confidence (0-100%). Note where you're uncertain.\n"
     "Distinguish: what you know vs what you assume vs what's speculative.\n"
     "Be precise about variance sources.";
 
-static const char *MOA_TOKEN_MAXX_SYSTEM = 
+static const char *MOA_TOKEN_MAXX_SYSTEM =
     "You are a MAXIMUM QUALITY contributor in a Mixture of Agents ensemble.\n"
     "Your role: Exhaustive, thorough, maximum detail. Use your full token budget.\n"
     "Provide: complete derivations, full code with tests, comprehensive analysis,\n"
@@ -359,17 +359,17 @@ static const moa_ref_model_t MOA_TOKEN_MAXX_REFS[] = {
     { "nvidia_nim", "meta/llama-4-maverick-17b-128e-instruct", 0.7f, 8192, "medium", "creative", 2 },
     { "nvidia_nim", "poolside/laguna-xs-2.1", 0.7f, 8192, "high", "analytical", 2 },
     { "nvidia_nim", "google/diffusiongemma-26b-a4b-it", 0.7f, 8192, "medium", "creative", 2 },
-    
+
     // Cross-provider redundancy for maxxing
     { "nvidia_nim", "deepseek-ai/deepseek-v4-pro", 0.7f, 8192, "xhigh", "analytical", 1 },
     { "nvidia_nim", "minimaxai/minimax-m2.7", 0.7f, 8192, "xhigh", "analytical", 1 },
     { "nvidia_nim", "moonshotai/kimi-k2.6", 0.7f, 8192, "xhigh", "analytical", 1 },
-    
+
     // OpenRouter free tier redundancy
     { "openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free", 0.8f, 8192, "xhigh", "analytical", 1 },
     { "openrouter", "nvidia/nemotron-3-super-120b-a12b:free", 0.7f, 8192, "xhigh", "analytical", 1 },
     { "openrouter", "inclusionai/ring-2.6-1t:free", 0.7f, 8192, "high", "creative", 2 },
-    
+
     // Nous Portal
     { "nous_portal", "meta-llama/llama-3.1-405b-instruct:free", 0.7f, 8192, "medium", "synthesizer", 3 },
     { "nous_portal", "deepseek/deepseek-v4-flash", 0.7f, 8192, "high", "analytical", 3 },
@@ -476,11 +476,11 @@ static int get_provider_index(const char *provider_name) {
 static int is_provider_healthy(const char *provider_name) {
     int idx = get_provider_index(provider_name);
     if (idx < 0) return 1;  // Unknown provider = healthy by default
-    
+
     pthread_mutex_lock(&health_mutex);
     int healthy = provider_health[idx].healthy;
     time_t now = time(NULL);
-    
+
     // Auto-recovery after 60 seconds
     if (!healthy && (now - provider_health[idx].last_failure_time > 60)) {
         provider_health[idx].healthy = 1;
@@ -494,7 +494,7 @@ static int is_provider_healthy(const char *provider_name) {
 static void record_provider_success(const char *provider_name) {
     int idx = get_provider_index(provider_name);
     if (idx < 0) return;
-    
+
     pthread_mutex_lock(&health_mutex);
     provider_health[idx].healthy = 1;
     provider_health[idx].consecutive_failures = 0;
@@ -505,7 +505,7 @@ static void record_provider_success(const char *provider_name) {
 static void record_provider_failure(const char *provider_name) {
     int idx = get_provider_index(provider_name);
     if (idx < 0) return;
-    
+
     pthread_mutex_lock(&health_mutex);
     provider_health[idx].consecutive_failures++;
     provider_health[idx].last_failure_time = time(NULL);
@@ -529,7 +529,7 @@ typedef struct {
 static size_t moa_http_write_callback(const char *data, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     moa_http_response_t *resp = (moa_http_response_t *)userp;
-    
+
     if (resp->size + realsize + 1 > resp->capacity) {
         resp->capacity = (resp->size + realsize + 1) * 2;
         resp->buffer = realloc(resp->buffer, resp->capacity);
@@ -549,53 +549,53 @@ static char *moa_call_model(
     if (!is_provider_healthy(provider->name)) {
         return NULL;
     }
-    
+
     // Build JSON payload
     json_t *payload = json_object();
     json_t *messages = json_array();
-    
+
     if (system_prompt && strlen(system_prompt) > 0) {
         json_t *sys_msg = json_object();
         json_set(sys_msg, "role", json_string("system"));
         json_set(sys_msg, "content", json_string(system_prompt));
         json_append(messages, sys_msg);
     }
-    
+
     json_t *user_msg = json_object();
     json_set(user_msg, "role", json_string("user"));
     json_set(user_msg, "content", json_string(user_prompt));
     json_append(messages, user_msg);
-    
+
     json_set(payload, "model", json_string(ref->model));
     json_set(payload, "messages", messages);
     json_set(payload, "temperature", json_number(ref->temperature));
     json_set(payload, "max_tokens", json_number(ref->max_tokens));
     json_set(payload, "stream", json_bool(0));
-    
+
     if (strcmp(ref->reasoning_effort, "none") != 0) {
         json_t *reasoning = json_object();
         json_set(reasoning, "effort", json_string(ref->reasoning_effort));
         json_set(reasoning, "enabled", json_bool(1));
         json_set(payload, "reasoning", reasoning);
     }
-    
+
     char *payload_str = json_serialize(payload);
     json_free(payload);
-    
+
     // Build URL
     char url[512];
     snprintf(url, sizeof(url), "%s/chat/completions", provider->base_url);
-    
+
     // Get API key from environment
         const char *api_key = getenv(provider->api_key_env);
-    
+
         // Make HTTP request using libhttp
         http_t *http = http_new(300);  // 5 minute timeout
         if (!http) {
             free(payload_str);
             return NULL;
         }
-    
+
         // Build headers
         char headers[1024] = "";
         strcat(headers, "Content-Type: application/json\n");
@@ -605,10 +605,10 @@ static char *moa_call_model(
             snprintf(auth_header, sizeof(auth_header), "Authorization: Bearer %s\n", api_key);
             strcat(headers, auth_header);
         }
-    
+
     http_resp_t *resp = http_request(http, HTTP_POST, url, headers, payload_str, strlen(payload_str));
     free(payload_str);
-    
+
     int status = 0;
     char *body = NULL;
     if (resp) {
@@ -618,9 +618,9 @@ static char *moa_call_model(
         }
         http_resp_free(resp);
     }
-    
+
     http_free(http);
-    
+
     if (status != 200) {
         if (status == 401) {
             hermes_log(LOG_WARNING, "moa", "%s auth failed - check %s", provider->name, provider->api_key_env);
@@ -631,16 +631,16 @@ static char *moa_call_model(
         free(body);
         return NULL;
     }
-    
+
     // Parse JSON response
     json_t *data = json_parse(body, NULL);
     free(body);
-    
+
     if (!data) {
         record_provider_failure(provider->name);
         return NULL;
     }
-    
+
     const char *content = NULL;
     json_t *choices = json_obj_get(data, "choices");
     if (choices && choices->type == JSON_ARRAY && choices->c.count > 0) {
@@ -657,7 +657,7 @@ static char *moa_call_model(
             }
         }
     }
-    
+
     char *result_str = NULL;
     if (content && strlen(content) > 0) {
         result_str = strdup(content);
@@ -665,7 +665,7 @@ static char *moa_call_model(
     } else {
         record_provider_failure(provider->name);
     }
-    
+
     json_free(data);
     return result_str;
 }
@@ -697,7 +697,7 @@ static int moa_query_all_references_impl(
 ) {
     moa_query_task_t *tasks = calloc(ref_count, sizeof(moa_query_task_t));
     pthread_t *threads = calloc(ref_count, sizeof(pthread_t));
-    
+
     // Create threads
     for (int i = 0; i < ref_count; i++) {
         // Find provider config
@@ -713,22 +713,22 @@ static int moa_query_all_references_impl(
             tasks[i].done = 1;
             continue;
         }
-        
+
         tasks[i].provider = provider;
         tasks[i].ref = &refs[i];
         tasks[i].system_prompt = system_prompt;
         tasks[i].user_prompt = user_prompt;
         tasks[i].result = NULL;
         tasks[i].done = 0;
-        
+
         pthread_create(&threads[i], NULL, moa_query_thread, &tasks[i]);
     }
-    
+
     // Wait for all threads
     for (int i = 0; i < ref_count; i++) {
         pthread_join(threads[i], NULL);
     }
-    
+
     free(threads);
     *out_tasks = tasks;
     return ref_count;
@@ -782,23 +782,23 @@ static const moa_ref_model_t *get_ref_models(moa_mode_t mode, int *out_count) {
 
 char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     (void)task_id;  // Unused for now
-    
+
     if (!args_json) {
         return strdup("{\"error\":\"Missing arguments\",\"success\":false}");
     }
-    
+
     // Parse arguments
     json_t *args = json_parse(args_json, NULL);
     if (!args) {
         return strdup("{\"error\":\"Invalid JSON\",\"success\":false}");
     }
-    
+
     const char *user_prompt = json_get_str(args, "user_prompt", "");
     if (!user_prompt || strlen(user_prompt) == 0) {
         json_free(args);
         return strdup("{\"error\":\"Missing user_prompt\",\"success\":false}");
     }
-    
+
     const char *mode_str = json_get_str(args, "mode", "standard");
     moa_mode_t mode = MOA_MODE_MEGA_TOTEM;
     if (strcmp(mode_str, "devil_advocate") == 0 || strcmp(mode_str, "devil") == 0) {
@@ -810,29 +810,29 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     } else if (strcmp(mode_str, "math") == 0) {
         mode = MOA_MODE_MATH;
     }
-    
+
     // Optional: enable/disable online research
     int use_online_research = json_get_bool(args, "use_online_research", 1);
     (void)json_get_str(args, "research_intent", "benchmark_update");  // Used for future intent-specific research
-    
+
     // Initialize health tracking
     static int health_inited = 0;
     if (!health_inited) {
         init_provider_health();
         health_inited = 1;
     }
-    
+
     // Get reference models
     int ref_count;
     const moa_ref_model_t *refs = get_ref_models(mode, &ref_count);
-    
+
     // Create mutable copy of refs for potential reordering
     moa_ref_model_t *mutable_refs = malloc(ref_count * sizeof(moa_ref_model_t));
     for (int i = 0; i < ref_count; i++) {
         mutable_refs[i] = refs[i];
     }
     int mutable_ref_count = ref_count;
-    
+
     // Optional: Online research for dynamic totem pole reordering
     research_summary_t *research = NULL;
     if (use_online_research && mode != MOA_MODE_MATH) {
@@ -842,7 +842,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             moa_apply_research_to_refs(&mutable_refs, &mutable_ref_count, research);
         }
     }
-    
+
     // Filter to healthy providers
     moa_ref_model_t *healthy_refs = malloc(mutable_ref_count * sizeof(moa_ref_model_t));
     int healthy_count = 0;
@@ -851,7 +851,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             healthy_refs[healthy_count++] = mutable_refs[i];
         }
     }
-    
+
     if (healthy_count == 0) {
         free(healthy_refs);
         free(mutable_refs);
@@ -859,25 +859,25 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         json_free(args);
         return strdup("{\"error\":\"No healthy providers available\",\"success\":false}");
     }
-    
+
     hermes_log(LOG_INFO, "moa", "Querying %d reference models in %s mode...", healthy_count, mode_str);
-    
+
     // Get system prompts
     const char *ref_system = get_system_prompt(mode, 0);
     const char *agg_system = get_system_prompt(mode, 1);
-    
+
     // Parallel reference queries
     moa_query_task_t *tasks = NULL;
     moa_query_all_references_impl(healthy_refs, healthy_count, ref_system, user_prompt, &tasks);
-    
+
     // Collect successful responses
     int successful_count = 0;
     for (int i = 0; i < healthy_count; i++) {
         if (tasks[i].result) successful_count++;
     }
-    
+
     hermes_log(LOG_INFO, "moa", "Got %d/%d successful responses", successful_count, healthy_count);
-    
+
     if (successful_count == 0) {
         free(tasks);
         free(healthy_refs);
@@ -886,7 +886,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         json_free(args);
         return strdup("{\"error\":\"All reference models failed\",\"success\":false}");
     }
-    
+
     // Build aggregation prompt
     json_t *agg_prompt_json = json_object();
     json_t *agg_parts = json_array();
@@ -900,7 +900,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         if (tasks[i].result) {
             json_t *part = json_object();
             char header[256];
-            snprintf(header, sizeof(header), "--- %s:%s (%s) ---", 
+            snprintf(header, sizeof(header), "--- %s:%s (%s) ---",
                      tasks[i].ref->provider, tasks[i].ref->model, tasks[i].ref->role);
             json_set(part, "content", json_string(header));
             json_append(agg_parts, part);
@@ -920,7 +920,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     // Select aggregator (best healthy provider)
     const char *agg_provider = "nvidia_nim";
     const char *agg_model = "nvidia/nemotron-3-ultra-550b-a55b";
-    
+
     for (int p = 0; p < MOA_PROVIDERS_COUNT; p++) {
         if (is_provider_healthy(MOA_PROVIDERS[p].name) && MOA_PROVIDERS[p].num_free_models > 0) {
             agg_provider = MOA_PROVIDERS[p].name;
@@ -928,7 +928,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             break;
         }
     }
-    
+
     // Find provider config for aggregator
     const moa_provider_config_t *agg_provider_config = NULL;
     for (int p = 0; p < MOA_PROVIDERS_COUNT; p++) {
@@ -937,7 +937,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             break;
         }
     }
-    
+
     char *agg_response = NULL;
     if (agg_provider_config) {
         moa_ref_model_t agg_ref = {
@@ -949,12 +949,12 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             .role = "synthesizer",
             .benchmark_tier = 1,
         };
-        
+
         agg_response = moa_call_model(agg_provider_config, &agg_ref, agg_system, agg_prompt);
     }
-    
+
     free(agg_prompt);
-    
+
     if (!agg_response) {
         // Fallback to first successful response
         for (int i = 0; i < healthy_count; i++) {
@@ -964,12 +964,12 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             }
         }
     }
-    
+
     // Build result JSON
     json_t *result = json_new_object();
     json_set(result, "success", json_bool(1));
     json_set(result, "mode", json_string(mode_str));
-    
+
     json_t *ref_responses = json_array();
     for (int i = 0; i < healthy_count; i++) {
         if (tasks[i].result) {
@@ -985,10 +985,10 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     }
     json_set(result, "reference_responses", ref_responses);
     json_free(ref_responses);
-    
+
     json_set(result, "aggregator_response", json_string(agg_response ? agg_response : ""));
     json_set(result, "aggregator_model", json_string(agg_response ? "aggregator" : "fallback"));
-    
+
     // Provider health summary
     json_t *health = json_object();
     for (int p = 0; p < MOA_PROVIDERS_COUNT; p++) {
@@ -999,7 +999,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     }
     json_set(result, "provider_health", health);
     json_free(health);
-    
+
     // Include research metadata if available
     if (research) {
         json_t *research_json = json_object();
@@ -1007,7 +1007,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         json_set(research_json, "intent", json_string(research->intent));
         json_set(research_json, "findings_count", json_number(research->num_findings));
         json_set(research_json, "confidence", json_number(research->confidence));
-        
+
         // Model scores
         json_t *model_scores = json_object();
         for (int i = 0; i < research->num_model_scores; i++) {
@@ -1015,7 +1015,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         }
         json_set(research_json, "model_scores", model_scores);
         json_free(model_scores);
-        
+
         // Top sources
         json_t *top_sources = json_array();
         for (int i = 0; i < research->num_findings && i < 5; i++) {
@@ -1028,18 +1028,18 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         }
         json_set(research_json, "top_sources", top_sources);
         json_free(top_sources);
-        
+
         json_set(result, "research", research_json);
         json_free(research_json);
     }
-    
+
     free(agg_response);
     free(tasks);
     free(healthy_refs);
     free(mutable_refs);
     if (research) moa_research_free(research);
     json_free(args);
-    
+
     return json_dumps(result, 2);
 }
 
@@ -1151,9 +1151,7 @@ char *moa_mixture_of_agents_math(const char *user_prompt) {
 }
 
 /* Context-manager no-ops (Python __aenter__ / __aexit__ on MoAHttpClient). */
-/* PoP: moa_http_client_enter @ hermes_cli/gateway_client.py:__aenter__ */
 void moa_http_client_enter(void) { /* session lifecycle handled by engine */ }
-/* PoP: moa_http_client_exit @ hermes_cli/gateway_client.py:__aexit__ */
 void moa_http_client_exit(void) { /* no-op */ }
 
 /* ─── REGISTRY INTEGRATION ───────────────────────────────────────── */

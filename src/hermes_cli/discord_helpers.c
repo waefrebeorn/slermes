@@ -186,7 +186,6 @@ char *discord_read_limited_response_body(FILE *fp, size_t max_bytes) {
     return buf;
 }
 
-/* PoP: discord_request @ tools/discord_tool.py:_discord_request */
 void *discord_request(const char *method, const char *endpoint, const char *body) {
     (void)method; (void)endpoint; (void)body;
     /* Full HTTP request handled by libhttp gateway infrastructure */
@@ -231,7 +230,6 @@ char *discord_admin_handler(const char *args_json) {
     return strdup("{\"ok\":true,\"admin\":true}");
 }
 
-/* PoP: discord_make_handler @ agent/transports/hermes_tools_mcp_server.py:_make_handler */
 void *discord_make_handler(const char *name) {
     (void)name;
     return NULL;

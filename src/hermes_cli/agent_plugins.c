@@ -132,7 +132,6 @@ void ap_read_agent_plugin_manifest(const char *root, char *out_json, size_t out_
     ap_validate_manifest(root, out_json, out_sz);
 }
 
-/* PoP: ap_has_enabled_agent_plugin_mcp @ hermes_cli/agent_plugins.py:has_enabled_agent_plugin_mcp */
 int ap_has_enabled_agent_plugin_mcp(void) {
     return 0;
 }

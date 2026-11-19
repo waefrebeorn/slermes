@@ -818,10 +818,8 @@ void random_wechat_uin(char *out, size_t out_sz)
 
 /* ── Simple utility ports ───────────────────────────────────────────── */
 
-/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
-/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
 bool weixin_check_requirements(void)
-{ /* Python default is also a no-op */ 
+{ /* Python default is also a no-op */
     return true; /* C port: always available in compiled binary */
 }
 

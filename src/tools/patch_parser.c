@@ -345,7 +345,6 @@ void patch_parser_print_canonical(const patch_parse_result_t *r)
     putchar('\n');
 }
 
-/* PoP: false @ tools/patch_parser.py:_write_file_accepts_pre_content */
 /* True when file_ops.write_file accepts a pre_content kwarg. In the C port
  * the write_file tool has a fixed arity and does NOT accept pre_content, so
  * this conservatively returns false (mirroring the Python path where an

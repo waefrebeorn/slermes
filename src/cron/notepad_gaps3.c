@@ -9,5 +9,4 @@
 
 /* ── cron/notepad.py: 1 missing functions ── */
 
-/* PoP: current_notepad_file @ cron/notepad.py:_current_notepad_file */
 void current_notepad_file(void) { }

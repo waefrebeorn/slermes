@@ -100,7 +100,6 @@ char *profile_cookie_db(const char *profile_dir) {
     return strdup("Cookies");
 }
 
-/* PoP: profile_is_locked @ hermes_cli/browser_connect.py:_profile_is_locked */
 int profile_is_locked(const char *profile_dir) {
     (void)profile_dir;
     return 0;

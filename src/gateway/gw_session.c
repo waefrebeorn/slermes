@@ -550,7 +550,6 @@ double auto_continue_freshness_window(void) {
     return g_gw.auto_continue_freshness_secs;
 }
 
-/* PoP: has_active_processes_safe @ gateway/session.py:_has_active_processes_safe */
 bool has_active_processes_safe(void) {
     /* Safe check: no subprocesses tracked in C gateway */
     return false;

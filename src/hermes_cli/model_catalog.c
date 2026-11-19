@@ -477,7 +477,6 @@ void model_parse_model_input(const char *raw, const char *current_provider,
 
 /* Resolve a short alias to (provider, model) using the static catalog.
  * Returns 1 and fills out_* on match, else 0. */
-/* PoP: resolve_static_model_alias @ hermes_cli/models.py:_resolve_static_model_alias */
 static int resolve_static_model_alias(const char *name_lower,
                                       char *provider_out, size_t poutsz,
                                       char *model_out, size_t moutsz,

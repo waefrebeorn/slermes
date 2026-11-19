@@ -1173,7 +1173,6 @@ void gw_skill_slug_from_frontmatter(const char *skill_md_content,
     }
 }
 
-/* PoP: gw_check_unavailable_skill @ gateway/run.py:_check_unavailable_skill */
 const char *gw_check_unavailable_skill(const char *command_name)
 {
     /* Returns a string if the command is a known disabled/unavailable skill,

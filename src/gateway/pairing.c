@@ -996,7 +996,6 @@ static void iter_live_gateway_adapters(const char *platform,
      * truth (authz union honors both). Nothing to iterate. */
 }
 
-/* PoP: pairing_adapter_platform_name @ gateway/pairing.py:_adapter_platform_name */
 static const char *pairing_adapter_platform_name(void *adapter) {
     (void)adapter;
     /* The C gateway adapters expose platform via adapter->platform.value or

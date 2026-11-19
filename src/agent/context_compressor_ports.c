@@ -295,7 +295,6 @@ static long cc_role_idx(const char *messages_json, const char *want, long end_id
     return -1;
 }
 
-/* PoP: cc_on_session_reset @ agent/context_compressor.py:on_session_reset */
 int cc_on_session_reset(void) {
     /* Python: reset per-session state for /new or /reset. */
     return 0;

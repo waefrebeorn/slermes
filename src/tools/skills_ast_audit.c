@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -180,6 +181,27 @@ char *cli_tools_skills_ast_audit_format_ast_report(const char *findings_json, co
     return report;
 }
 
+/* tail_revive4: pure port; name == "importlib" or name.startswith("importlib.").
+ * A non-str name compares False then raises AttributeError on .startswith. */
 /* PoP: _is_importlib @ tools/skills_ast_audit.py:_is_importlib */
-int tools_skills_ast_audit_is_importlib(void) { return 0; }
+json_t *tools_skills_ast_audit_is_importlib(void *io, json_t *in) {
+    (void)io;
+    json_t *name = json_obj_get(in, "name");
+    if (name && name->type == JSON_STRING) {
+        const char *s = name->str_val ? name->str_val : "";
+        int hit = strcmp(s, "importlib") == 0 || strncmp(s, "importlib.", 10) == 0;
+        return json_bool(hit ? true : false);
+    }
+    const char *tn = !name || name->type == JSON_NULL ? "NoneType" :
+                     name->type == JSON_BOOL ? "bool" :
+                     name->type == JSON_NUMBER ?
+                         (name->num_val == (double)(long long)name->num_val ? "int" : "float") :
+                     name->type == JSON_ARRAY ? "list" : "dict";
+    char msg[160];
+    snprintf(msg, sizeof msg, "'%s' object has no attribute 'startswith'", tn);
+    json_t *e = json_object();
+    json_set_hdr(e, "__raise__", "AttributeError");
+    json_set_hdr(e, "message", msg);
+    return e;
+}
 

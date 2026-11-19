@@ -585,7 +585,7 @@ char **tts_tool_split_oversized_sentence(const char *sentence, int max_chars,
         size_t wl = strlen(tok);
         if ((int)wl > max_chars) {
             /* hard split this word */
-            if (*current) { 
+            if (*current) {
                 if (n == cap) { cap = cap ? cap * 2 : 8; chunks = realloc(chunks, cap * sizeof(char*)); }
                 chunks[n++] = current; current = strdup("");
             }
@@ -639,7 +639,6 @@ char **tts_tool_split_oversized_sentence(const char *sentence, int max_chars,
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: tts_target_file_bytes @ tools/tts_tool_delivery.py:target_file_bytes */
 int tts_target_file_bytes(const char *path, char *out_data, size_t out_sz) {
     (void)path; (void)out_data; (void)out_sz;
     return 0;

@@ -525,7 +525,6 @@ static int cs_start_posix(control_socket_server_t *srv)
 /* PoP: start @gateway/control_socket.py:start */
 /* The proactor named-pipe transport exists only on win32; POSIX builds
  * faithfully report "not started" and consumers use the scan layer. */
-/* PoP: cs_start_windows @gateway/control_socket.py:_start_windows */
 static int cs_start_windows(control_socket_server_t *srv)
 {
     (void)srv;

@@ -531,7 +531,6 @@ int doctor_run_live_checks(char *out_json, size_t out_sz) {
     return 0;
 }
 
-/* PoP: doctor_maybe_run_live_checks @ hermes_cli/doctor_live.py:maybe_run_live_checks */
 int doctor_maybe_run_live_checks(void) {
     return 0; /* No-op in C */
 }

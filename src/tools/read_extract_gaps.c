@@ -15,10 +15,8 @@ char *anydoc_missing_error(void) { return strdup(""); }
 /* PoP: hosted_ocr_config @ tools/read_extract.py:_hosted_ocr_config */
 char *hosted_ocr_config(void) { return strdup("{}"); }
 
-/* PoP: hosted_ocr_available @ tools/read_extract.py:hosted_ocr_available */
 int hosted_ocr_available(void) { return 0; }
 
-/* PoP: needs_ocr_warning @ tools/read_extract.py:_needs_ocr_warning */
 int needs_ocr_warning(void) { return 0; }
 
 /* PoP: sheet_rows @ tools/read_extract.py:_sheet_rows */

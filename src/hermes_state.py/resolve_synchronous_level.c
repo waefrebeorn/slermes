@@ -1,4 +1,3 @@
-/* PoP: resolve_synchronous_level @ sqlite_support.py:resolve_synchronous_level */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

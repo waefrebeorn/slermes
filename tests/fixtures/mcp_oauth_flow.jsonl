@@ -1,0 +1,184 @@
+{"func": "refresh_lock_path", "in": {"path": "mcp-tokens/s.json"}}
+{"func": "refresh_lock_path", "in": {"path": "tokens"}}
+{"func": "refresh_lock_path", "in": {"path": ".hidden"}}
+{"func": "refresh_lock_path", "in": {"path": "a.tar.gz"}}
+{"func": "refresh_lock_path", "in": {"path": "dir.d/name"}}
+{"func": "refresh_lock_path", "in": {"path": "a."}}
+{"func": "refresh_lock_path", "in": {"path": "dir/"}}
+{"func": "refresh_lock_path", "in": {"path": "a/./b"}}
+{"func": "refresh_lock_path", "in": {"path": "/abs/t.json"}}
+{"func": "refresh_lock_path", "in": {"path": "a/../b.json"}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"raise": {"type": "OSError", "message": "denied", "errno": 13}}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "posix", "io": {"mkdir_under_hermes_home": {"raise": {"type": "OSError", "message": "no home", "errno": 2}}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": [{"ret": 100.0}, {"ret": 100.1}], "fcntl.flock": [{"raise": {"type": "OSError", "message": "locked", "errno": 11}}, {"ret": null}], "asyncio.sleep": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": [{"ret": 100.0}, {"ret": 200.0}], "fcntl.flock": [{"raise": {"type": "OSError", "message": "locked", "errno": 11}}, {"raise": {"type": "OSError", "message": "locked", "errno": 11}}], "os.close": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"raise": {"type": "OSError", "message": "EIO", "errno": 5}}, "os.close": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "windows", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 9}, "time.monotonic": {"ret": 100.0}, "msvcrt.locking": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "none", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "os.close": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "os.close": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": [{"ret": 100.0}, {"ret": 100.1}], "fcntl.flock": [{"raise": {"type": "OSError", "message": "locked", "errno": 11}}, {"ret": null}], "asyncio.sleep": {"raise": {"type": "CancelledError", "message": ""}}, "os.close": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": [{"ret": 100.0}, {"ret": 200.0}], "fcntl.flock": {"raise": {"type": "OSError", "message": "locked", "errno": 11}}, "os.close": {"raise": {"type": "OSError", "message": "bad fd", "errno": 9}}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"raise": {"type": "OSError", "message": "insecure", "errno": 13}}, "os.open": {"ret": 7}, "time.monotonic": {"ret": 100.0}, "fcntl.flock": {"ret": null}}}}
+{"func": "acquire_refresh_fence", "in": {"path": "t/s.json", "timeout": 60.0, "platform": "posix", "io": {"mkdir_under_hermes_home": {"ret": null}, "secure_parent_dir": {"ret": null}, "os.open": {"ret": 7}, "time.monotonic": [{"ret": 100.0}, {"ret": 100.1}, {"ret": 100.2}], "fcntl.flock": [{"raise": {"type": "OSError", "message": "again", "errno": 11}}, {"raise": {"type": "OSError", "message": "deadlk", "errno": 35}}, {"ret": null}], "asyncio.sleep": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"ret": null}, "os.close": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"raise": {"type": "OSError", "message": "unlock fail", "errno": 13}}, "os.close": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"ret": null}, "os.close": {"raise": {"type": "OSError", "message": "close fail", "errno": 9}}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "windows", "io": {"msvcrt.locking": {"ret": null}, "os.close": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "os.close": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "os.close": {"raise": {"type": "OSError", "message": "x", "errno": 9}}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "none", "io": {"os.close": {"ret": null}}}}
+{"func": "release_refresh_fence", "in": {"fd": 7, "platform": "posix", "io": {"fcntl.flock": {"raise": {"type": "RuntimeError", "message": "boom"}}, "os.close": {"raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"ret": {"OAuthClientProvider": "P"}}, "import_shared_auth": {"ret": {"OAuthClientInformationFull": "F", "OAuthClientMetadata": "M", "OAuthMetadata": "D", "OAuthToken": "T"}}}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"raise": {"type": "ImportError", "message": "no sdk"}}, "logger.debug": {"ret": null}}}}
+{"func": "sdk_class", "in": {"name": "OAuthMetadata", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"ret": {"OAuthClientProvider": "P"}}, "import_shared_auth": {"ret": {"OAuthClientInformationFull": "F"}}, "logger.debug": {"ret": null}}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {"OAuthClientProvider": null, "OAuthClientInformationFull": null, "OAuthClientMetadata": null, "OAuthMetadata": null, "OAuthToken": "T"}, "_OAUTH_AVAILABLE": true}, "io": {}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {"OAuthClientProvider": null, "OAuthClientInformationFull": null, "OAuthClientMetadata": null, "OAuthMetadata": null, "OAuthToken": null}, "_OAUTH_AVAILABLE": false}, "io": {}}}
+{"func": "sdk_class", "in": {"name": "OAuthClientProvider", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"ret": {}}, "import_shared_auth": {"ret": {"OAuthClientInformationFull": "F", "OAuthClientMetadata": "M", "OAuthMetadata": "D", "OAuthToken": "T"}}, "logger.debug": {"ret": null}}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"ret": {"OAuthClientProvider": "P"}}, "import_shared_auth": {"raise": {"type": "ImportError", "message": "no shared"}}, "logger.debug": {"ret": null}}}}
+{"func": "sdk_class", "in": {"name": "Nope", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"ret": {"OAuthClientProvider": "P"}}, "import_shared_auth": {"ret": {"OAuthClientInformationFull": "F", "OAuthClientMetadata": "M", "OAuthMetadata": "D", "OAuthToken": "T"}}}}}
+{"func": "sdk_class", "in": {"name": "OAuthToken", "state": {"_SDK_CLASSES": {}, "_OAUTH_AVAILABLE": true}, "io": {"import_client_auth": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"ret": ["127.0.0.1", 54321]}}}}
+{"func": "bind_reserved", "in": {"port": 8080, "state": {"_reserved_sockets": {}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"raise": {"type": "OSError", "message": "in use", "errno": 98}}, "sock.getsockname": {"ret": ["127.0.0.1", 54321]}, "sock.close": {"ret": null}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"raise": {"type": "OSError", "message": "ephemeral fail", "errno": 98}}, "sock.getsockname": {"ret": ["127.0.0.1", 54321]}, "sock.close": {"ret": null}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {"10001": "a", "10002": "b", "10003": "c", "10004": "d", "10005": "e", "10006": "f", "10007": "g", "10008": "h"}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"ret": ["127.0.0.1", 20000]}, "sock.close": {"ret": null}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {"27890": "c", "10001": "a", "10002": "b", "10003": "c", "10004": "d", "10005": "e", "10006": "f", "10007": "g"}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"ret": ["127.0.0.1", 20001]}, "sock.close": {"ret": null}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {"10001": "a", "10002": "b", "10003": "c", "10004": "d", "10005": "e", "10006": "f", "10007": "g", "10008": "h"}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"ret": ["127.0.0.1", 20002]}, "sock.close": {"raise": {"type": "OSError", "message": "close fail", "errno": 9}}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {"54321": "old"}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"ret": ["127.0.0.1", 54321]}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "sock.getsockname": {"ret": ["127.0.0.1", 54321]}}}}
+{"func": "bind_reserved", "in": {"port": 0, "state": {"_reserved_sockets": {}}, "io": {"socket.socket": {"ret": "s1"}, "sock.bind": {"ret": null}, "sock.getsockname": {"raise": {"type": "OSError", "message": "no name", "errno": 9}}}}}
+{"func": "cached_client_info", "in": {"storage": null, "io": {}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"client_id": "c1"}}}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": [1, 2]}}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": null}}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"raise": {"type": "ValueError", "message": "bad json"}}}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"raise": {"type": "AttributeError", "message": "no path"}}, "_read_json": {"ret": {}}}}}
+{"func": "cached_client_info", "in": {"storage": {"broken": true}, "io": {}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "cached_client_info", "in": {"storage": {}, "io": {"storage._client_info_path": {"raise": {"type": "TypeError", "message": "bad"}}, "_read_json": {"ret": {}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["https://proxy.example/cb", "http://127.0.0.1:8080/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://localhost:99/callback", "https://p/cb"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://127.0.0.1:notaport/callback", "http://127.0.0.1:70/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://h:99999/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": [123, "http://127.0.0.1:80/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": [null, "https://x/cb"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["https://", "http://localhost:5/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["HTTP://USER@LOCALHOST:80/callback", "HTTPS://P/cb"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://[::1]:8080/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://[::1/callback", "http://127.0.0.1:9/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://127.0.0.1:80/other"]}}}}}
+{"func": "cached_redirect", "in": {"storage": null, "io": {}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": [1, 2]}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": "notastring"}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": [true, "http://127.0.0.1:3/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://127.0.0.1.:80/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://127.0.0.1:80/callback?x=1#f"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://127.0.0.1:/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://[abc]:80/callback", "http://localhost:4/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["http://[1.2.3.4]:80/callback", "http://127.0.0.1:6/callback"]}}}}}
+{"func": "cached_redirect", "in": {"storage": {}, "io": {"storage._client_info_path": {"ret": "/h/mcp-tokens/s.client.json"}, "_read_json": {"ret": {"redirect_uris": ["https://x.com", "http://127.0.0.1:80/callback", "https://second/cb"]}}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": [1, 2]}, "logger.warning": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": {"a": 1}}, "_sdk_class": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"ret": {"access_token": "x"}}}}}
+{"func": "load_model", "in": {"path": "/h/s.meta.json", "sdk_name": "OAuthMetadata", "label": "OAuth metadata", "io": {"_read_json": {"ret": {"device_authorization_endpoint": "https://d"}}, "_sdk_class": {"ret": "OAuthMetadata"}, "import_device_metadata": {"ret": "DeviceOAuthMetadata"}, "model_validate": {"ret": {"ok": true}}}}}
+{"func": "load_model", "in": {"path": "/h/s.meta.json", "sdk_name": "OAuthMetadata", "label": "OAuth metadata", "io": {"_read_json": {"ret": {"device_authorization_endpoint": ""}}, "_sdk_class": {"ret": "OAuthMetadata"}, "model_validate": {"ret": {"ok": true}}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "fixup": true, "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"ret": {"access_token": "x"}}, "fixup": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "fixup": true, "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"ret": {"access_token": "x"}}, "fixup": {"raise": {"type": "ValueError", "message": "bad fixup"}}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"raise": {"type": "ValueError", "message": "invalid", "errors": [{"loc": ["access_token"]}, {"loc": ["expires_in", 0]}]}}, "logger.warning": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"raise": {"type": "KeyError", "message": "", "key": "refresh_token"}}, "logger.warning": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": {"access_token": "x"}}, "_sdk_class": {"ret": "OAuthToken"}, "model_validate": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "load_model", "in": {"path": "/h/s.meta.json", "sdk_name": "OAuthMetadata", "label": "OAuth metadata", "io": {"_read_json": {"ret": {"device_authorization_endpoint": "https://d"}}, "_sdk_class": {"ret": "OAuthMetadata"}, "import_device_metadata": {"raise": {"type": "ImportError", "message": "no device"}}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": "hello"}, "logger.warning": {"ret": null}}}}
+{"func": "load_model", "in": {"path": "/h/s.json", "sdk_name": "OAuthToken", "label": "tokens", "io": {"_read_json": {"ret": 5}, "logger.warning": {"ret": null}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_at": 2000.0}, "io": {"time.time": {"ret": 1000.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_at": 500.0}, "io": {"time.time": {"ret": 1000.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_at": null, "expires_in": 3600}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"ret": {"st_mtime": 1000.0}}, "time.time": {"ret": 1500.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": 3600}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"raise": {"type": "OSError", "message": "no stat", "errno": 2}}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": "100"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"ret": {"st_mtime": 1000.0}}, "time.time": {"ret": 1050.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": null}, "io": {}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_at": "x"}, "io": {"time.time": {"ret": 1000.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {}, "io": {}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": [1]}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"ret": {"st_mtime": 1000.0}}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_at": 2000.9}, "io": {"time.time": {"ret": 1000.5}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": true}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"ret": {"st_mtime": 1000.0}}, "time.time": {"ret": 1000.0}}}}
+{"func": "rebase_expires_in", "in": {"data": {"expires_in": 3600}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"raise": {"type": "TypeError", "message": "bad"}}}}}
+{"func": "fixup_loaded_tokens", "in": {"data": {"hermes_issuer": "iss1", "expires_at": 2000.0}, "state": {"loaded_issuer": null}, "io": {"time.time": {"ret": 1000.0}}}}
+{"func": "fixup_loaded_tokens", "in": {"data": {"expires_at": 2000.0}, "state": {"loaded_issuer": "prev"}, "io": {"time.time": {"ret": 1000.0}}}}
+{"func": "fixup_loaded_tokens", "in": {"data": {"hermes_issuer": null}, "state": {"loaded_issuer": "prev"}, "io": {}}}
+{"func": "fixup_loaded_tokens", "in": {"data": {"hermes_issuer": "i", "expires_in": 100}, "state": {"loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "path.stat": {"ret": {"st_mtime": 1000.0}}, "time.time": {"ret": 1050.0}}}}
+{"func": "fixup_loaded_tokens", "in": {"data": {}, "state": {"loaded_issuer": "prev"}, "io": {}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"access_token": "x"}}, "_write_json": {"ret": null}}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": null}}}}
+{"func": "stamp_issuer", "in": {"issuer": "new", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"hermes_issuer": "old"}}}}}
+{"func": "stamp_issuer", "in": {"issuer": "new", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"hermes_issuer": ""}}, "_write_json": {"ret": null}}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"access_token": "x"}}, "_write_json": {"raise": {"type": "OSError", "message": "disk full", "errno": 28}}, "logger.debug": {"ret": null}}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": [1]}}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": [{"ret": "/h/s.json"}, {"raise": {"type": "OSError", "message": "path fail", "errno": 2}}], "_read_json": {"ret": {"access_token": "x"}}, "logger.debug": {"ret": null}}}}
+{"func": "stamp_issuer", "in": {"issuer": "iss1", "state": {"_server_name": "s", "loaded_issuer": null}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"access_token": "x"}}, "_write_json": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"refresh_token": "r", "hermes_issuer": "i", "access_token": "a"}}, "_write_json": {"ret": null}, "logger.info": {"ret": null}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": null}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"access_token": "a"}}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"refresh_token": ""}}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"refresh_token": "r"}}, "_write_json": {"raise": {"type": "OSError", "message": "disk", "errno": 28}}, "logger.warning": {"ret": null}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": {"refresh_token": "r"}}, "_write_json": {"ret": null}, "logger.info": {"ret": null}}}}
+{"func": "strip_refresh_token", "in": {"state": {"_server_name": "s", "loaded_issuer": "old"}, "io": {"storage._tokens_path": {"ret": "/h/s.json"}, "_read_json": {"ret": [1]}}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s"}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s", "token_endpoint_auth_method": "none"}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s", "token_endpoint_auth_method": ""}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s", "token_endpoint_auth_method": "client_secret_basic"}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": ""}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s", "token_endpoint_auth_method": null}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": "s", "token_endpoint_auth_method": "client_secret_post"}}}
+{"func": "coerce_secret_auth_method", "in": {"data": {"client_secret": 0}}}
+{"func": "result_taken", "in": {"result": {}}}
+{"func": "result_taken", "in": {"result": {"auth_code": ""}}}
+{"func": "result_taken", "in": {"result": {"auth_code": null, "error": null}}}
+{"func": "result_taken", "in": {"result": {"error": "x"}}}
+{"func": "result_taken", "in": {"result": {"auth_code": 0}}}
+{"func": "result_taken", "in": {"result": {"error": false}}}
+{"func": "result_taken", "in": {"result": {"auth_code": "c", "state": "s"}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "state": null, "error": null, "iss": null}, "values": {"auth_code": "c", "state": "s"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": "existing", "state": null, "error": null, "iss": null}, "values": {"auth_code": "c"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "state": null, "error": "e", "iss": null}, "values": {"auth_code": "c"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "state": null, "error": null, "iss": null}, "values": {"error": "access_denied"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "error": null}, "values": {"auth_code": "c"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "state": null, "error": null, "iss": null}, "values": {"auth_code": "c"}, "io": {"lock.__enter__": {"raise": {"type": "RuntimeError", "message": "x"}}, "lock.__exit__": {"ret": null}}}}
+{"func": "claim_result", "in": {"result": {"auth_code": null, "state": null, "error": null, "iss": null}, "values": {"auth_code": "c"}, "io": {"lock.__enter__": {"ret": null}, "lock.__exit__": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.server_bind": {"ret": null}, "server.server_activate": {"ret": null}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {"8080": "parked"}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.socket.close": {"ret": null}, "reserved.getsockname": {"ret": ["127.0.0.1", 8080]}, "server.server_activate": {"ret": null}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {}}, "io": {"CallbackServer": {"raise": {"type": "OSError", "message": "in use", "errno": 98}}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.server_bind": {"raise": {"type": "OSError", "message": "bind fail", "errno": 98}}, "server.server_activate": {"ret": null}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.server_bind": {"ret": null}, "server.server_activate": {"raise": {"type": "OSError", "message": "activate fail", "errno": 98}}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {"8080": "p"}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.socket.close": {"ret": null}, "reserved.getsockname": {"raise": {"type": "OSError", "message": "no name", "errno": 9}}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {"8080": "p"}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.socket.close": {"raise": {"type": "OSError", "message": "close fail", "errno": 9}}, "reserved.getsockname": {"ret": ["127.0.0.1", 8080]}}}}
+{"func": "start_callback_server", "in": {"port": 8080, "handler": "H", "state": {"_reserved_sockets": {}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.server_bind": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "server.server_activate": {"ret": null}}}}
+{"func": "start_callback_server", "in": {"port": 9090, "handler": "H", "state": {"_reserved_sockets": {"9090": "p"}}, "io": {"CallbackServer": {"ret": {"server": "srv1", "socket": "s0"}}, "server.socket.close": {"ret": null}, "reserved.getsockname": {"ret": ["127.0.0.1", 9090]}, "server.server_activate": {"ret": null}}}}
+{"func": "callback_outcome", "in": {"result": {"error": "__hermes_user_skipped__", "auth_code": null, "state": null}, "cimd_url": null, "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": "access_denied", "auth_code": null, "state": null}, "cimd_url": null, "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": null, "auth_code": null, "state": null}, "cimd_url": null, "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": null, "auth_code": null, "state": null}, "cimd_url": "https://nousresearch.github.io/hermes-agent/docs/oauth/client-metadata.json", "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": null, "auth_code": "c", "state": "s", "iss": "i"}, "cimd_url": null, "io": {"authorization_code_result": {"ret": ["c", "s"]}}}}
+{"func": "callback_outcome", "in": {"result": {"error": "", "auth_code": "c", "state": "s"}, "cimd_url": null, "io": {"authorization_code_result": {"ret": {"code": "c", "state": "s", "iss": null}}}}}
+{"func": "callback_outcome", "in": {"result": {"error": null, "auth_code": "", "state": "s"}, "cimd_url": null, "io": {"authorization_code_result": {"ret": ["", "s"]}}}}
+{"func": "callback_outcome", "in": {"result": {"auth_code": "c"}, "cimd_url": null, "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": null, "auth_code": "c"}, "cimd_url": null, "io": {}}}
+{"func": "callback_outcome", "in": {"result": {"error": 5, "auth_code": null}, "cimd_url": null, "io": {}}}
+{"func": "login_connect_timeout", "in": {"config": {}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": 600}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": {"timeout": 600}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": 100, "oauth": {"timeout": 600}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": "45"}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": null}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": null}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": {"timeout": "abc"}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": -5}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": "x"}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": true}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": {"timeout": 0}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": "nan"}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": {"timeout": "1e2"}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": " 45.5 "}}}
+{"func": "login_connect_timeout", "in": {"config": {"oauth": {}}}}
+{"func": "login_connect_timeout", "in": {"config": {"connect_timeout": 400.5, "oauth": {"timeout": 100}}}}

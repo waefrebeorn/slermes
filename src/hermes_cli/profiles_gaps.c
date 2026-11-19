@@ -10,10 +10,8 @@
 /* ── hermes_cli/profiles.py: 6 missing functions ── */
 
 
-/* PoP: served_by_running_multiplexer @ hermes_cli/profiles.py:_served_by_running_multiplexer */
 int served_by_running_multiplexer(void) { return 0; }
 
-/* PoP: inside_git_checkout @ hermes_cli/profiles.py:_inside_git_checkout */
 int inside_git_checkout(void) { return 0; }
 
 /* PoP: profile_export_directory @ hermes_cli/profiles.py:_profile_export_directory */

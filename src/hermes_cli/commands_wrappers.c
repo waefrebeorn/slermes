@@ -48,7 +48,6 @@ bool cmd_should_bypass_active_session(const char *command_name) {
 json_t *cmd_resolve_config_gates(const char *hermes_home) {
     (void)hermes_home; return json_object();
 }
-/* PoP: cmd_is_gateway_available @ hermes_cli/commands.py:_is_gateway_available */
 bool cmd_is_gateway_available(void) { return true; }
 /* PoP: cmd_gateway_help_lines @ hermes_cli/commands.py:gateway_help_lines */
 const char *cmd_gateway_help_lines(void) {

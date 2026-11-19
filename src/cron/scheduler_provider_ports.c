@@ -78,7 +78,6 @@ char *schp_resolve_cron_scheduler(const char *config_yaml) {
     return r;
 }
 
-/* PoP: schp_register_job @ cron/scheduler_provider.py:register_job */
 void *schp_register_job(const char *job_json) {
     /* Register the first external trigger for one newly persisted job.
      * The built-in provider reads the local store on every tick, so its

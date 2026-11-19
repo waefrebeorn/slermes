@@ -213,7 +213,6 @@ long bw_apply_bitwarden_secrets(const char *secrets_json) {
     return applied;
 }
 
-/* PoP: bw_override_existing @ agent/secret_sources/base.py:override_existing */
 bool bw_override_existing(void) {
     /* Python default is also a no-op: bitwarden.py returns
      * cfg.get("override_existing", True) — TRUE is the documented default. */

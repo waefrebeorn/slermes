@@ -1023,7 +1023,6 @@ int gw_base__release_session_guard(const char *session_key) {
     pthread_mutex_unlock(&g_gw.lock);
     return 0;
 }
-/* PoP: gw_base__session_task_is_stale @ gateway/platforms/base.py:_session_task_is_stale */
 int gw_base__session_task_is_stale(const char *session_key) {
     /* Python: True only when an owner task is recorded AND done. The C port
      * never records owner tasks (the runner owns processing), so the lookup

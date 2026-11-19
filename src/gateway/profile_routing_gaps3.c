@@ -9,9 +9,7 @@
 
 /* ── gateway/profile_routing.py: 3 missing functions ── */
 
-/* PoP: is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
 void is_whatsapp_non_user_chat(void) { }
 
 
-/* PoP: coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
 void coerce_route_id(void) { }

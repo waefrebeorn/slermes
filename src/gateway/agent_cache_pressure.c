@@ -233,7 +233,6 @@ int acb_read_anon_rss_mb(void) {
 
 /* ── transcript_persistence_caught_up(agent) ──
  * Safe default: false (never evict a potentially-in-flight agent). */
-/* PoP: acb_transcript_persistence_caught_up @ gateway/agent_cache_pressure.py:transcript_persistence_caught_up */
 bool acb_transcript_persistence_caught_up(const void *agent) {
     (void)agent;
     return false;

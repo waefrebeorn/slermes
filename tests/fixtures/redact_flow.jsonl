@@ -1,0 +1,134 @@
+{"func": "should_redact_assignment", "in": {"key": "API_KEY", "value": "os.getenv('X')", "check_keyword": true, "io": {"env_lookup_match": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "API_KEY", "value": "***", "check_keyword": true, "io": {"env_lookup_match": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "API_KEY", "value": "«redacted:ghp_…»", "check_keyword": true, "io": {"env_lookup_match": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "API_KEY", "value": "TRUE", "check_keyword": true, "io": {"env_lookup_match": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "NAME", "value": "abcdef", "check_keyword": true, "io": {"env_lookup_match": {"ret": false}, "key_has_secret_keyword": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "DB_PASSWORD", "value": "hunter2", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": true}, "path_or_var_match": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "DB_PASSWORD", "value": "$HOME/x", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": true}, "path_or_var_match": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "SSH_AUTH_SOCK", "value": "/home/u/.docker", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": true}, "opaque_path_segment_fullmatch": [{"ret": false}, {"ret": false}, {"ret": false}]}}}
+{"func": "should_redact_assignment", "in": {"key": "SECRET", "value": "/wJalrXUtnFEMIK7MDENG/bPxRf", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": true}, "opaque_path_segment_fullmatch": [{"ret": false}, {"ret": true}], "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": false}, "is_qualified_key_name": {"ret": false}, "looks_like_opaque_credential": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "API_TOKEN", "value": "short", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "PGPASSWORD", "value": "x", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "signing_key", "value": "abc", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": false}, "is_qualified_key_name": {"ret": true}, "config_placeholder_fullmatch": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "signing_key", "value": "<your key>", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": false}, "is_qualified_key_name": {"ret": true}, "config_placeholder_fullmatch": {"ret": true}, "looks_like_opaque_credential": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "token", "value": "abcdef1234567890ABCDEF", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": false}, "is_qualified_key_name": {"ret": false}, "looks_like_opaque_credential": {"ret": true}}}}
+{"func": "should_redact_assignment", "in": {"key": "token", "value": "CPU", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "has_word_bounded_keyword_password": {"ret": false}, "has_password_keyword": {"ret": false}, "path_or_var_match": {"ret": false}, "has_word_bounded_keyword_strong": {"ret": false}, "is_glued_credential_env": {"ret": false}, "is_qualified_key_name": {"ret": false}, "looks_like_opaque_credential": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "API_KEY", "value": "x", "check_keyword": true, "io": {"env_lookup_match": {"raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "api_key", "value": "v", "io": {"json_key_names_full_fullmatch": {"ret": true}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "foo", "value": "v", "io": {"json_key_names_full_fullmatch": {"ret": false}, "has_word_bounded_keyword_yaml": {"ret": false}, "has_password_keyword": {"ret": false}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "passwordChanged", "value": "v", "io": {"json_key_names_full_fullmatch": {"ret": false}, "has_word_bounded_keyword_yaml": {"ret": true}, "dsn_pw_placeholder_fullmatch": {"ret": true}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "passwordChanged", "value": "v", "io": {"json_key_names_full_fullmatch": {"ret": false}, "has_word_bounded_keyword_yaml": {"ret": true}, "dsn_pw_placeholder_fullmatch": {"ret": false}, "should_redact_assignment": {"ret": false}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "passwordValue", "value": "s3cret", "io": {"json_key_names_full_fullmatch": {"ret": false}, "has_word_bounded_keyword_yaml": {"ret": false}, "has_password_keyword": {"ret": true}, "dsn_pw_placeholder_fullmatch": {"ret": false}, "should_redact_assignment": {"ret": true}, "json_value_suffix_sub": {"ret": "password"}, "is_python_repr_secret_key": {"ret": true}}}}
+{"func": "json_affixed_key_secret", "in": {"key": "secret_id", "value": "abc123", "io": {"json_key_names_full_fullmatch": {"ret": false}, "has_word_bounded_keyword_yaml": {"ret": true}, "dsn_pw_placeholder_fullmatch": {"ret": false}, "should_redact_assignment": {"ret": true}, "json_value_suffix_sub": {"ret": "secret_id"}, "is_python_repr_secret_key": {"ret": false}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "token", "io": {"canonical_url_param_name": {"ret": "token"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "accessToken", "io": {"canonical_url_param_name": {"ret": "accesstoken"}, "decode_url_param_name": {"ret": "accessToken"}, "json_key_names_full_fullmatch": {"ret": true}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "api_key_value", "io": {"canonical_url_param_name": {"ret": "api_key_value"}, "decode_url_param_name": {"ret": "api_key_value"}, "json_key_names_full_fullmatch": {"ret": false}, "json_value_suffix_sub": {"ret": "api_key"}, "is_python_repr_secret_key": {"ret": true}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "page", "io": {"canonical_url_param_name": {"ret": "page"}, "decode_url_param_name": {"ret": "page"}, "json_key_names_full_fullmatch": {"ret": false}, "json_value_suffix_sub": {"ret": "page"}, "is_python_repr_secret_key": {"ret": false}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "x-amz-signature", "io": {"canonical_url_param_name": {"ret": "x-amz-signature"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "private_token", "io": {"canonical_url_param_name": {"ret": "private_token"}, "decode_url_param_name": {"ret": "private_token"}, "json_key_names_full_fullmatch": {"ret": false}, "json_value_suffix_sub": {"ret": "private_token"}, "is_python_repr_secret_key": {"ret": true}}}}
+{"func": "redact_log_urls", "in": {"text": ""}}
+{"func": "redact_log_urls", "in": {"text": null}}
+{"func": "redact_log_urls", "in": {"text": "plain text"}}
+{"func": "redact_log_urls", "in": {"text": "https://x?token=abc", "io": {"redact_enabled": {"ret": false}}}}
+{"func": "redact_log_urls", "in": {"text": "https://x?token=abc", "io": {"redact_enabled": {"ret": true}, "redact_strict_url_credentials": {"ret": "https://x?token=***"}}}}
+{"func": "redact_log_urls", "in": {"text": "https://x", "io": {"redact_enabled": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "redact_for_egress", "in": {"text": "hello", "io": {"redact_sensitive_text": {"ret": "hello"}}}}
+{"func": "redact_for_egress", "in": {"text": null, "io": {"redact_sensitive_text": {"ret": ""}}}}
+{"func": "redact_for_egress", "in": {"text": "Bearer abc", "io": {"redact_sensitive_text": {"ret": "Bearer abc"}, "bearer_residue_sub": {"ret": "Bearer [redacted]"}}}}
+{"func": "redact_for_egress", "in": {"text": "the bearer of news", "io": {"redact_sensitive_text": {"ret": "the bearer of news"}}}}
+{"func": "redact_for_egress", "in": {"text": "x", "urls": true, "keep_phone_numbers": true, "io": {"redact_sensitive_text": {"ret": "x"}}}}
+{"func": "redact_for_egress", "in": {"text": "x", "io": {"redact_sensitive_text": {"raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "redact_for_egress", "in": {"text": "x", "io": {"redact_sensitive_text": {"raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "redact_for_egress", "in": {"text": "x", "io": {"redact_sensitive_text": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "redact_code_output", "in": {"output": "MAX_TOKENS=100", "force": false, "io": {"redact_sensitive_text": {"ret": "MAX_TOKENS=100"}, "redact_enabled": {"ret": true}, "env_dump_line_sub": {"ret": "MAX_TOKENS=100"}}}}
+{"func": "redact_code_output", "in": {"output": "", "force": false, "io": {"redact_sensitive_text": {"ret": ""}}}}
+{"func": "redact_code_output", "in": {"output": "no equals", "force": false, "io": {"redact_sensitive_text": {"ret": "no equals"}}}}
+{"func": "redact_code_output", "in": {"output": "A=1", "force": false, "io": {"redact_sensitive_text": {"ret": "A=1"}, "redact_enabled": {"ret": false}}}}
+{"func": "redact_code_output", "in": {"output": "DB_PASSWORD=x", "force": true, "io": {"redact_sensitive_text": {"ret": "DB_PASSWORD=x"}, "env_dump_line_sub": {"ret": "DB_PASSWORD=***"}}}}
+{"func": "redact_code_output", "in": {"output": "A=1", "force": false, "io": {"redact_sensitive_text": {"raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "redact_derived_text", "in": {"text": null, "io": {"redact_sensitive_text": {"ret": ""}}}}
+{"func": "redact_derived_text", "in": {"text": "secret", "io": {"redact_sensitive_text": {"ret": "***"}}}}
+{"func": "redact_derived_text", "in": {"text": 123, "io": {"redact_sensitive_text": {"ret": "123"}}}}
+{"func": "redact_derived_text", "in": {"text": true, "io": {"redact_sensitive_text": {"ret": "True"}}}}
+{"func": "redact_derived_text", "in": {"text": "x", "io": {"redact_sensitive_text": {"raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "redact_enabled", "in": {"state": {"_REDACT_ENABLED": false}, "io": {"get_hermes_home_override": {"ret": null}}}}
+{"func": "redact_enabled", "in": {"state": {"_REDACT_ENABLED": true}, "io": {"get_hermes_home_override": {"ret": null}}}}
+{"func": "redact_enabled", "in": {"state": {"_REDACT_ENABLED": true}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": {"HERMES_REDACT_SECRETS": "false"}}}}}
+{"func": "redact_enabled", "in": {"state": {"_REDACT_ENABLED": true}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": {"HERMES_REDACT_SECRETS": "YES"}}}}}
+{"func": "redact_enabled", "in": {"state": {"_ENV_POLICY_BY_HOME": {"h1": "1"}}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": null}}}}
+{"func": "redact_enabled", "in": {"state": {"_ENV_POLICY_BY_HOME": {"h1": null}, "_CONFIG_POLICY_BY_HOME": {"h1": "off"}}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": null}}}}
+{"func": "redact_enabled", "in": {"state": {"_ENV_POLICY_BY_HOME": {}}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": null}}}}
+{"func": "redact_enabled", "in": {"state": {"_ENV_POLICY_BY_HOME": {"h1": null}, "_CONFIG_POLICY_BY_HOME": {}}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": {}}}}}
+{"func": "redact_enabled", "in": {"state": {"_REDACT_ENABLED": true}, "io": {"get_hermes_home_override": {"ret": "/h"}, "hermes_home_key": {"ret": "h1"}, "current_secret_scope": {"ret": {"OTHER": "x"}}}}}
+{"func": "command_reads_secret_file", "in": {"command": null}}
+{"func": "command_reads_secret_file", "in": {"command": ""}}
+{"func": "command_reads_secret_file", "in": {"command": "cat .env", "io": {"command_segments": {"ret": ["cat .env"]}, "is_secret_file_arg": {"ret": true}}}}
+{"func": "command_reads_secret_file", "in": {"command": "echo hi", "io": {"command_segments": {"ret": ["echo hi"]}}}}
+{"func": "command_reads_secret_file", "in": {"command": "grep .bashrc app.py", "io": {"command_segments": {"ret": ["grep .bashrc app.py"]}, "is_secret_file_arg": [{"ret": false}, {"ret": true}]}}}
+{"func": "command_reads_secret_file", "in": {"command": "Get-Content -Path:.netrc", "io": {"command_segments": {"ret": ["Get-Content -Path:.netrc"]}, "ps_colon_param_fullmatch": {"ret": ".netrc"}, "is_secret_file_arg": {"ret": true}}}}
+{"func": "command_reads_secret_file", "in": {"command": "grep -Path:.env x", "io": {"command_segments": {"ret": ["grep -Path:.env x"]}}}}
+{"func": "command_reads_secret_file", "in": {"command": "cat a.txt; cat .env", "io": {"command_segments": {"ret": ["cat a.txt", "cat .env"]}, "is_secret_file_arg": [{"ret": false}, {"ret": true}]}}}
+{"func": "command_reads_secret_file", "in": {"command": "cat .env", "io": {"command_segments": {"raise": {"type": "ValueError", "message": "seg"}}}}}
+{"func": "is_secret_file_arg", "in": {"arg": ".env"}}
+{"func": "is_secret_file_arg", "in": {"arg": "'/home/u/.bashrc'"}}
+{"func": "is_secret_file_arg", "in": {"arg": "C:\\Users\\u\\.netrc"}}
+{"func": "is_secret_file_arg", "in": {"arg": "/home/u/.aws/credentials"}}
+{"func": "is_secret_file_arg", "in": {"arg": "/home/u/.aws/config"}}
+{"func": "is_secret_file_arg", "in": {"arg": "main.py"}}
+{"func": "is_secret_file_arg", "in": {"arg": "$HERMES_HOME/config.yaml"}}
+{"func": "is_secret_file_arg", "in": {"arg": "${HOME}/.hermes/config.yaml"}}
+{"func": "is_secret_file_arg", "in": {"arg": "/x/config.yaml", "io": {"is_under_hermes_home": {"ret": true}}}}
+{"func": "is_secret_file_arg", "in": {"arg": "/x/config.yaml", "io": {"is_under_hermes_home": {"ret": false}}}}
+{"func": "is_secret_file_arg", "in": {"arg": "$HOME/$VAR/config.yaml"}}
+{"func": "is_secret_file_arg", "in": {"arg": "/x/config.yaml.good.123", "io": {"is_under_hermes_home": {"ret": true}}}}
+{"func": "is_secret_file_arg", "in": {"arg": "''"}}
+{"func": "note_env_policy", "in": {"home_key": "h1", "raw": "false", "state": {"_ENV_POLICY_BY_HOME": {}}}}
+{"func": "note_env_policy", "in": {"home_key": "h1", "raw": null, "state": {"_ENV_POLICY_BY_HOME": {"h1": "x"}}}}
+{"func": "note_env_policy", "in": {"home_key": "h2", "raw": true, "state": {"_ENV_POLICY_BY_HOME": {"h1": "1"}}}}
+{"func": "note_env_policy", "in": {"home_key": "h1", "raw": 0, "state": {"_ENV_POLICY_BY_HOME": {}}}}
+{"func": "note_env_policy", "in": {"home_key": "h1", "raw": "on", "state": {"_ENV_POLICY_BY_HOME": {"h1": "off"}}}}
+{"func": "note_config_policy", "in": {"home_key": "h1", "raw": "false", "state": {"_CONFIG_POLICY_BY_HOME": {}}}}
+{"func": "note_config_policy", "in": {"home_key": "h1", "raw": null, "state": {"_CONFIG_POLICY_BY_HOME": {"h1": "x"}}}}
+{"func": "note_config_policy", "in": {"home_key": "h2", "raw": false, "state": {"_CONFIG_POLICY_BY_HOME": {}}}}
+{"func": "note_config_policy", "in": {"home_key": "h1", "raw": "yes", "state": {"_CONFIG_POLICY_BY_HOME": {"h1": "no"}}}}
+{"func": "note_config_policy", "in": {"home_key": "h1", "raw": 1, "state": {"_CONFIG_POLICY_BY_HOME": {}}}}
+{"func": "key_name_words", "in": {"key": "awsSecretAccessKey"}}
+{"func": "key_name_words", "in": {"key": "aws_secret_access_key"}}
+{"func": "key_name_words", "in": {"key": "APIToken"}}
+{"func": "key_name_words", "in": {"key": "client-key.data"}}
+{"func": "key_name_words", "in": {"key": ""}}
+{"func": "key_name_words", "in": {"key": "ABC"}}
+{"func": "key_name_words", "in": {"key": "key"}}
+{"func": "is_qualified_key_name", "in": {"key": "aws_secret_access_key"}}
+{"func": "is_qualified_key_name", "in": {"key": "privateKey"}}
+{"func": "is_qualified_key_name", "in": {"key": "public_key"}}
+{"func": "is_qualified_key_name", "in": {"key": "key"}}
+{"func": "is_qualified_key_name", "in": {"key": "hotkey"}}
+{"func": "is_qualified_key_name", "in": {"key": "master_key"}}
+{"func": "is_qualified_key_name", "in": {"key": "key_id"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "API_KEY"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "UserPassword"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "token_count"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "privateKey"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "password_policy"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "credential"}}
+{"func": "is_python_repr_secret_key", "in": {"key": "SECRET_NAME"}}
+{"func": "is_secret_field_name", "in": {"key": "token"}}
+{"func": "is_secret_field_name", "in": {"key": "max_tokens"}}
+{"func": "is_secret_field_name", "in": {"key": 123}}
+{"func": "is_secret_field_name", "in": {"key": null}}
+{"func": "is_secret_field_name", "in": {"key": "signing_key"}}
+{"func": "is_secret_field_name", "in": {"key": ["token"]}}
+{"func": "decode_url_param_name", "in": {"name": "token"}}
+{"func": "decode_url_param_name", "in": {"name": "a%2Db"}}
+{"func": "decode_url_param_name", "in": {"name": "a+b"}}
+{"func": "decode_url_param_name", "in": {"name": "%2520"}}
+{"func": "decode_url_param_name", "in": {"name": "caf%C3%A9"}}
+{"func": "decode_url_param_name", "in": {"name": "%ZZ"}}
+{"func": "decode_url_param_name", "in": {"name": "x%2"}}
+{"func": "canonical_url_param_name", "in": {"name": "X-Amz-Signature"}}
+{"func": "canonical_url_param_name", "in": {"name": "AccessToken"}}
+{"func": "canonical_url_param_name", "in": {"name": "api-key"}}
+{"func": "canonical_url_param_name", "in": {"name": "TOKEN"}}
+{"func": "canonical_url_param_name", "in": {"name": "x-goog-signature"}}
+{"func": "canonical_url_param_name", "in": {"name": "usertoken"}}

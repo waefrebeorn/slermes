@@ -242,7 +242,6 @@ char *mct_snapshot_child_pids(void) {
     return out;
 }
 
-/* PoP: mct_ensure_mcp_loop @ tools/mcp_tool_loop.py:_ensure_mcp_loop */
 int mct_ensure_mcp_loop(void) {
     /* Python: start bg loop thread if absent (lock-guarded). */
     return 0;
@@ -276,7 +275,6 @@ char *mct_existing_tool_names(void) {
     return strdup("[]");
 }
 
-/* PoP: mct_has_registered_mcp_tools @ tools/mcp_tool_discovery.py:has_registered_mcp_tools */
 bool mct_has_registered_mcp_tools(void) {
     /* Python: global name map non-empty. */
     /* global name-map non-empty: mcp_remove_server existence is the registry */
@@ -317,13 +315,11 @@ long mct_kill_orphaned_mcp_children(void) {
     return killed;
 }
 
-/* PoP: mct_stop_mcp_loop_if_idle @ tools/mcp_tool_lifecycle.py:_stop_mcp_loop_if_idle */
 int mct_stop_mcp_loop_if_idle(void) {
     /* Python: stop only when no registered server owns it. */
     return 0;
 }
 
-/* PoP: mct_stop_mcp_loop @ tools/mcp_tool_loop.py:_stop_mcp_loop */
 int mct_stop_mcp_loop(void) {
     /* Python: stop bg loop + join its thread. The C core has no
      * background asyncio loop — REAL: no loop exists, nothing to stop. */

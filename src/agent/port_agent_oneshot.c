@@ -87,9 +87,6 @@ char *cli_agent_oneshot__strip_code_fence(const char *text)
 
 
 /* ── PoP declaration-only placeholders (no bodies) ── */
-/* PoP: agent_oneshot_commit_message_template @ agent/oneshot.py:_commit_message_template */
 void *agent_oneshot_commit_message_template(void) { return NULL; }
-/* PoP: agent_oneshot_render_template @ agent/oneshot.py:render_template */
 void *agent_oneshot_render_template(void) { return NULL; }
-/* PoP: agent_oneshot_run_oneshot @ agent/oneshot.py:run_oneshot */
 void agent_oneshot_run_oneshot(void) { }

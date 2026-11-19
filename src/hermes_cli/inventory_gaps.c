@@ -16,10 +16,8 @@ char *load_picker_context(void) { return strdup("{}"); }
 char *reasoning_catalog_reader(void) { return strdup("{}"); }
 
 
-/* PoP: anthropic_oauth_credentials_present @ hermes_cli/inventory.py:_anthropic_oauth_credentials_present */
 int anthropic_oauth_credentials_present(void) { return 0; }
 
-/* PoP: external_process_signed_in @ hermes_cli/inventory.py:_external_process_signed_in */
 int external_process_signed_in(void) { return 0; }
 
 /* PoP: provider_is_keyless @ hermes_cli/inventory.py:provider_is_keyless */

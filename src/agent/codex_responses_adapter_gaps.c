@@ -18,5 +18,4 @@ char *canonical_call_id_from_fc(void) { return strdup(""); }
 /* PoP: classify_responses_route @ agent/codex_responses_adapter.py:classify_responses_route */
 char *classify_responses_route(void) { return strdup(""); }
 
-/* PoP: estimate_native_responses_preflight_tokens @ agent/codex_responses_adapter.py:estimate_native_responses_preflight_tokens */
 int estimate_native_responses_preflight_tokens(void) { return 0; }

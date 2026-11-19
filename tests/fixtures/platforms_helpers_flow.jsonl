@@ -1,0 +1,180 @@
+{"func": "display_width", "in": {"args": {"text": ""}}}
+{"func": "display_width", "in": {"args": {"text": "hello world"}}}
+{"func": "display_width", "in": {"args": {"text": "한국어 라벨"}}}
+{"func": "display_width", "in": {"args": {"text": "ａｂｃ"}}}
+{"func": "display_width", "in": {"args": {"text": "a中é😀b"}}}
+{"func": "display_width", "in": {"args": {"text": "┌─┐│"}}}
+{"func": "display_width", "in": {"args": {"text": "　中"}}}
+{"func": "_clip_text", "in": {"args": {"text": "short", "limit": 10, "len_fn": null}}}
+{"func": "_clip_text", "in": {"args": {"text": "hello world", "limit": 5, "len_fn": null}}}
+{"func": "_clip_text", "in": {"args": {"text": "abc", "limit": 0, "len_fn": null}}}
+{"func": "_clip_text", "in": {"args": {"text": "abc", "limit": -2, "len_fn": null}}}
+{"func": "_clip_text", "in": {"args": {"text": "中文测试", "limit": 3, "len_fn": null}}}
+{"func": "_clip_text", "in": {"args": {"text": "abcdef", "limit": 3, "len_fn": "seam"}, "io": {"len_fn": 100}}}
+{"func": "_clip_text", "in": {"args": {"text": "abcdef", "limit": 3, "len_fn": "seam"}, "io": {"len_fn": 2}}}
+{"func": "_clip_text", "in": {"args": {"text": "abcde", "limit": 3, "len_fn": "seam"}, "io": {"len_fn": [10, 4, 2]}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "short", "each": 10, "anchor": 0}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abcdefghijklmnop", "each": 8, "anchor": 0}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abcdefghijklmnop", "each": 8, "anchor": 15}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abcdefghijklmnop", "each": 8, "anchor": 8}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abcdefgh", "each": 3, "anchor": 3}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abc", "each": 2, "anchor": 3}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "中文测试字符串", "each": 4, "anchor": 3}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "abc", "each": 1, "anchor": 1}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "ab", "each": 1, "anchor": 1}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["same", "same"], "each": 10, "prefix": [[4, 4], [4, 4]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["alpha long option one", "alpha long option two"], "each": 12, "prefix": [[21, 18], [18, 21]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["prefix AAA suffix", "prefix BBB suffix", "prefix CCC suffix"], "each": 10, "prefix": [[17, 7, 7], [7, 17, 7], [7, 7, 17]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["only one"], "each": 3, "prefix": [[8]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["ab", "ab", "cd"], "each": 5, "prefix": [[2, 2, 0], [2, 2, 0], [0, 0, 2]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["x common y one", "x common y two", "z different"], "each": 8, "prefix": [[14, 11, 0], [11, 14, 0], [0, 0, 11]]}}}
+{"func": "_distinct_shortenings", "in": {"args": {"texts": ["repeated wording here", "repeated wording there"], "each": 1, "prefix": [[21, 17], [17, 22]]}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["a", "b"], "max_label_cols": 10, "escape": null, "max_chars": null, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["short", "a very long choice label"], "max_label_cols": 5, "escape": null, "max_chars": null, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["  padded  ", "x"], "max_label_cols": 3, "escape": null, "max_chars": null, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["a long option to shrink", "another long option here"], "max_label_cols": 0, "escape": null, "max_chars": 20, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["aa", "bb"], "max_label_cols": 0, "escape": "seam", "max_chars": null, "len_fn": null}, "io": {"escape": "<x>"}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["aa", "bb"], "max_label_cols": 0, "escape": "seam", "max_chars": null, "len_fn": null}, "io": {"escape": ["<1>", "<2>"]}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["long one", "long two"], "max_label_cols": 0, "escape": null, "max_chars": 10, "len_fn": "seam"}, "io": {"len_fn": 5}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["a long option to shrink", "another long option here"], "max_label_cols": 0, "escape": null, "max_chars": 20, "len_fn": "seam"}, "io": {"len_fn": 100}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": [], "max_label_cols": 0, "escape": null, "max_chars": null, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": [123, null, true], "max_label_cols": 0, "escape": null, "max_chars": null, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["long option number one", "long option number two"], "max_label_cols": 0, "escape": null, "max_chars": 0, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "Question?", "choices": ["a", "b"], "limit": 100, "max_label_cols": 10, "escape": null, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "Which option do you prefer for the deployment?", "choices": ["the first long option", "the second long option"], "limit": 60, "max_label_cols": 5, "escape": null, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "Pick one please", "choices": ["long option aaa", "long option bbb"], "limit": 10, "max_label_cols": 5, "escape": null, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "Pick one please", "choices": ["a very long option"], "limit": 10, "max_label_cols": 5, "escape": null, "len_fn": "seam"}, "io": {"len_fn": 8}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "", "choices": ["long option one", "long option two"], "limit": 30, "max_label_cols": 5, "escape": null, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "A long head that will be clipped", "choices": ["x", "y"], "limit": -5, "max_label_cols": 10, "escape": null, "len_fn": null}}}
+{"func": "clarify_text_with_choices", "in": {"args": {"head": "Pick", "choices": ["option alpha", "option beta"], "limit": 40, "max_label_cols": 3, "escape": "seam", "len_fn": null}, "io": {"escape": "E"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "label", "group2": "https://x.com"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "https://x.com", "group2": "https://x.com"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "mail", "group2": "mailto:a@b.c"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": " padded ", "group2": " https://x.com "}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "x", "group2": "HTTPS://X.COM"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "rel", "group2": "relative/path"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": " pad ", "group2": "mailto:a"}}}
+{"func": "_keep_link_target", "in": {"args": {"group1": "x", "group2": "http://"}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1, "b": 2}, "key": "c", "value": 3, "cap": 3}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1, "b": 2, "c": 3}, "key": "a", "value": 9, "cap": 3}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1, "b": 2, "c": 3}, "key": "d", "value": 4, "cap": 3}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1, "b": 2}, "key": "c", "value": 3, "cap": 0}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1, "b": 2}, "key": "b", "value": 5, "cap": 1}}}
+{"func": "bounded_put", "in": {"args": {"store": {}, "key": "k", "value": null, "cap": 2}}}
+{"func": "bounded_put", "in": {"args": {"store": {}, "key": "x", "value": {"nested": true}, "cap": 2}}}
+{"func": "bounded_put", "in": {"args": {"store": {"a": 1}, "key": "b", "value": 2, "cap": -1}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 22}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 0}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 9}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 29}}}
+{"func": "table_row_start", "in": {"args": {"text": "hello\nworld", "split_at": 8}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 3}}}
+{"func": "table_row_start", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 12}}}
+{"func": "table_row_start", "in": {"args": {"text": "a|b\nc|d", "split_at": 5}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |", "split_at": 22, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |", "split_at": 22, "fits": "seam"}, "io": {"fits": false}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |", "split_at": 5, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "intro\n| a | b |\n|---|---|\n| 1 | 2 |", "split_at": 28, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "| a | b |\n|---|---|\nplain", "split_at": 12, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "plain\ntext", "split_at": 3, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "| a | b |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |", "split_at": 22, "fits": "seam"}, "io": {"fits": {"__script__": true, "raise": {"type": "ValueError", "message": "fits blew up"}}}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n|---|---|\n| 1 | 2 |", "rest": "| 3 | 4 |", "max_units": 100, "len_fn": null}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n|---|---|\n| 1 | 2 |", "rest": "| 3 | 4 |", "max_units": 5, "len_fn": null}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "plain", "rest": "text", "max_units": 100, "len_fn": null}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n| 1 | 2 |", "rest": "| 3 |", "max_units": 100, "len_fn": null}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n|---|---|\n| 1 | 2 |", "rest": "| 3 | 4 |", "max_units": 5, "len_fn": "seam"}, "io": {"len_fn": 5}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n|---|---|\n| 1 | 2 |", "rest": "| 3 | 4 |", "max_units": 0, "len_fn": "seam"}, "io": {"len_fn": 1}}}
+{"func": "table_header_to_repeat", "in": {"args": {"chunk": "| a | b |\n|---|---|\n| 1 |\n", "rest": "| 2 |", "max_units": 100, "len_fn": null}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": 131072}, "name": "general"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": 0}, "name": "___hidden___"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": 0}, "name": "general"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {}, "name": "___hidden___"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"name": "general"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": {"__float__": true, "v": 131072.0}}, "name": "general"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": true}, "name": "general"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": -1}, "name": "x"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": null, "name": "___hidden___"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": 131072}}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {"flags": {"value": "131072"}, "name": "___hidden___"}}}}
+{"func": "is_discord_channel_obfuscated", "in": {"args": {"channel": {}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_reply_document": "own"}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_document": "null"}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_reply_document": 5, "send_document": "own"}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_reply_document": "own", "send_document": "own"}, "attrs": {}}}}}
+{"func": "reply_document_sender", "in": {"args": {"adapter": {"hooks": {"send_reply_document": null}, "attrs": {}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {}, "attrs": {"MAX_SPLIT_MESSAGES": 5}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 1}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 0}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": true}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": {"__float__": true, "v": 5.0}}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_reply_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5}}}}}
+{"func": "reply_message_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": "5"}}}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 10}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 10}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": {"k": 1}}, "io": {"reply_message_count": 3}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 10}}, "content": "", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 100}}, "content": "xxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 10}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {}, "attrs": {"MAX_MESSAGE_LENGTH": 10}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": "abc"}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": null}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": {"__float__": true, "v": 10.9}}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": 10}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": {"__script__": true, "raise": {"type": "RuntimeError", "message": "count failed"}}}}}
+{"func": "_over_reply_cap", "in": {"args": {"adapter": {"hooks": {"send_document": "own", "reply_message_count": "own"}, "attrs": {"MAX_SPLIT_MESSAGES": 5, "MAX_MESSAGE_LENGTH": " 4096 "}}, "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "metadata": null}, "io": {"reply_message_count": 7}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "hello", "limit_bytes": 10}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "", "limit_bytes": 5}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "ab\ncdefgh", "limit_bytes": 6}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "xxxxx\nyyyyy", "limit_bytes": 8}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "abcdefghij", "limit_bytes": 4}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "中文中文", "limit_bytes": 4}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "a\nb\nc\n", "limit_bytes": 2}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "😀😀", "limit_bytes": 4}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "中\n中", "limit_bytes": 4}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 30, "upload_seconds": 0}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 30, "upload_seconds": -5}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 30, "upload_seconds": 10}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 30, "upload_seconds": 10000}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 4000, "upload_seconds": 10}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 60, "upload_seconds": 0.5}}}
+{"func": "scaled_upload_deadline", "in": {"args": {"deadline": 0, "upload_seconds": 100}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": []}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/a/b"]}, "io": {"os.stat": {"st_size": 131072}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/a", "/b"]}, "io": {"os.stat": [{"st_size": 131072}, {"st_size": 65536}]}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "pathlike", "path": "/p"}]}, "io": {"os.stat": {"st_size": 262144}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "file", "fileno": 3}]}, "io": {"os.fstat": {"st_size": 131072}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [5, null, true, [1], {"kind": "bare"}]}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/x"]}, "io": {"os.stat": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone", "errno": 2}}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/x"]}, "io": {"os.stat": {"__script__": true, "raise": {"type": "ValueError", "message": "embedded null"}}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/x"]}, "io": {"os.stat": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/x"]}, "io": {"os.stat": null}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "file", "fileno": 3}]}, "io": {"os.fstat": null}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "file", "fileno_raise": {"type": "OSError", "message": "bad fd", "errno": 9}}]}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "file", "fileno_raise": {"type": "RuntimeError", "message": "x"}}]}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": ["/a", {"kind": "file", "fileno": 7}, {"kind": "bare"}]}, "io": {"os.stat": {"st_size": 100}, "os.fstat": {"st_size": 200}}}}
+{"func": "media_upload_seconds", "in": {"args": {"sources": [{"kind": "file", "fileno": 3}]}, "io": {"os.fstat": {"__script__": true, "raise": {"type": "OSError", "message": "bad fd", "errno": 9}}}}}
+{"func": "display_width", "in": {"args": {"text": "😀baa中한😀"}}}
+{"func": "display_width", "in": {"args": {"text": "한c中a中어a😀a中文😀bａ어中"}}}
+{"func": "display_width", "in": {"args": {"text": "c中ａ中b국한中a국c어文"}}}
+{"func": "display_width", "in": {"args": {"text": "c한한😀ab文😀ａａ한c한文😀b中ａ文한"}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "7h2hd5 txu1bn e ", "each": 7, "anchor": 1}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "cfym71 tjfwi", "each": 1, "anchor": 12}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "cy ih w0hq pn ru4b", "each": 11, "anchor": 18}}}
+{"func": "_shorten_choice", "in": {"args": {"text": "3xjrhlghun607u67yahs2i", "each": 14, "anchor": 8}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "cexdx中é 😀😀\nabxf😀c文\nfc文éc中cbée文中ee中c😀😀ff", "limit_bytes": 10}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "c\nd\ne\n中文 文éx文 b x \néeb😀e\n😀b\né中 e", "limit_bytes": 11}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "cb文fféecba", "limit_bytes": 4}}}
+{"func": "reply_file_parts", "in": {"args": {"text": "\n\nab  aa\nexba\nedbxe\n c\n  x f\n\nb\nbx", "limit_bytes": 2}}}
+{"func": "table_row_start", "in": {"args": {"text": "|---|---|\n| 1 | 2 |\n| a | b |\n|:-|-:|", "split_at": 19}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "|---|---|\n| 1 | 2 |\n| a | b |\n|:-|-:|", "split_at": 19, "fits": "seam"}, "io": {"fits": false}}}
+{"func": "table_row_start", "in": {"args": {"text": "plain text\n", "split_at": 1}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "plain text\n", "split_at": 1, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "table_row_start", "in": {"args": {"text": "  | p | q |  \n| 1 | 2 |\n---|---\n| a | b |\n|---|---|", "split_at": 11}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "  | p | q |  \n| 1 | 2 |\n---|---\n| a | b |\n|---|---|", "split_at": 11, "fits": "seam"}, "io": {"fits": false}}}
+{"func": "table_row_start", "in": {"args": {"text": "---|---\n  | p | q |  \n| 1 | 2 |\n---|---\n|---|---|", "split_at": 28}}}
+{"func": "table_rollback_point", "in": {"args": {"text": "---|---\n  | p | q |  \n| 1 | 2 |\n---|---\n|---|---|", "split_at": 28, "fits": "seam"}, "io": {"fits": true}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["pic   o13", "pic   9yduo2"], "max_label_cols": 0, "escape": null, "max_chars": 12, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["p  tn8b", "p  jy", "p   yi", "p  g"], "max_label_cols": 0, "escape": null, "max_chars": 25, "len_fn": null}}}
+{"func": "numbered_clarify_choices", "in": {"args": {"choices": ["6 i2hk", "6 i2s4npwwx3", "6 i2no ", "6 i24g"], "max_label_cols": 0, "escape": null, "max_chars": 23, "len_fn": null}}}

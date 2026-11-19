@@ -1,0 +1,222 @@
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": "webhook"}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": "msgraph_webhook"}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": "api_server"}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": "telegram"}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": ""}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": null}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": {"__script__": true, "raise": {"type": "SystemExit", "message": "boom"}}}}}
+{"func": "is_unattended_platform_approval_context", "in": {"io": {"session_env": {"__script__": true, "ret": [1, 2]}}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": true}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": false, "session_env": "1"}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": false, "session_env": " TRUE "}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": false, "session_env": "0"}}}
+{"func": "is_single_query_approval_context", "in": {"finite_import": false, "io": {"session_env": "yes"}}}
+{"func": "is_single_query_approval_context", "in": {"finite_import": false, "io": {"session_env": ""}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": {"__script__": true, "raise": {"type": "ImportError", "message": "call raised"}}}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": false, "session_env": {"__script__": true, "raise": {"type": "SystemExit", "message": "sq"}}}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": 1, "session_env": "on"}}}
+{"func": "is_single_query_approval_context", "in": {"io": {"finite_turn_required": null, "session_env": "nope"}}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": true, "approval_callback": {}, "notify_cb": null}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": true, "approval_callback": null, "notify_cb": null}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": true, "approval_callback": {}, "notify_cb": {}}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": false, "approval_callback": {}, "notify_cb": null}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": 0, "approval_callback": {}, "notify_cb": null}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": "", "approval_callback": {}, "notify_cb": null}}
+{"func": "should_fall_through_to_cli_approval", "in": {"is_cli": "yes", "approval_callback": {}, "notify_cb": null}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "spliced verb example", "io": {"lifecycle_guard": true}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "git status", "io": {"lifecycle_guard": false}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "x", "guard_import": false}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "x", "io": {"lifecycle_guard": {"__script__": true, "raise": {"type": "RuntimeError", "message": "guard down"}}}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "x", "io": {"lifecycle_guard": {"__script__": true, "raise": {"type": "ImportError", "message": "no cron"}}}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "x", "io": {"lifecycle_guard": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "", "io": {"lifecycle_guard": false}}}
+{"func": "is_shell_token_spliced_gateway_lifecycle", "in": {"command": "x", "io": {"lifecycle_guard": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["hermes", "gateway", "run"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["gateway", "run", "--x"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["gateway", "start"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": []}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["gateway"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["run", "gateway"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": [1, "gateway", "run"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["gateway", 2, "run"]}}
+{"func": "argv_is_gateway_run", "in": {"argv": ["x", "gateway", "run"]}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "win32"}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "darwin"}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": null}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": ""}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": {"returncode": 0}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": {"returncode": 1}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": {"__script__": true, "raise": {"type": "OSError", "message": "no exec"}}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": {"__script__": true, "raise": {"type": "TimeoutExpired", "message": "Command 'x' timed out after 5 seconds", "cmd": "x", "timeout": 5}}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": {"__script__": true, "raise": {"type": "RuntimeError", "message": "z"}}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": {"__script__": true, "raise": {"type": "SystemExit", "message": "which"}}}}}
+{"func": "desktop_linux_userns_sandbox_available", "in": {"platform": "linux", "io": {"shutil.which": "/usr/bin/unshare", "subprocess.run": null}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "win32", "packaged_executable": "/opt/hermes/hermes"}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": null}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": {"st_mode": 35309, "st_uid": 0}}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": {"st_mode": 33261, "st_uid": 0}}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": {"st_mode": 33261, "st_uid": 1000}}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": {"st_mode": 16877, "st_uid": 0}}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"sandbox": "/opt/hermes/chrome-sandbox", "st": {"st_mode": 35309, "st_uid": 1000}}}}}
+{"func": "desktop_linux_needs_disable_setuid_sandbox", "in": {"platform": "linux", "packaged_executable": "/opt/hermes/hermes", "io": {"sandbox_helper_lstat": {"__script__": true, "raise": {"type": "SystemExit", "message": "lstat"}}}}}
+{"func": "is_plugin_id", "in": {"raw": ""}}
+{"func": "is_plugin_id", "in": {"raw": "."}}
+{"func": "is_plugin_id", "in": {"raw": ".."}}
+{"func": "is_plugin_id", "in": {"raw": "a"}}
+{"func": "is_plugin_id", "in": {"raw": "plug/in"}}
+{"func": "is_plugin_id", "in": {"raw": "a/./b"}}
+{"func": "is_plugin_id", "in": {"raw": "a/../b"}}
+{"func": "is_plugin_id", "in": {"raw": "../a"}}
+{"func": "is_plugin_id", "in": {"raw": "/a"}}
+{"func": "is_plugin_id", "in": {"raw": "C:a"}}
+{"func": "is_plugin_id", "in": {"raw": "C:/a"}}
+{"func": "is_plugin_id", "in": {"raw": "C:.."}}
+{"func": "is_plugin_id", "in": {"raw": "//server/share"}}
+{"func": "is_plugin_id", "in": {"raw": "a/."}}
+{"func": "is_plugin_id", "in": {"raw": ".hidden"}}
+{"func": "is_plugin_id", "in": {"raw": "a\\\\b"}}
+{"func": "is_plugin_id", "in": {"raw": "a/..b"}}
+{"func": "is_plugin_id", "in": {"raw": "plug/in/"}}
+{"func": "is_plugin_id", "in": {"raw": "a/.../b"}}
+{"func": "is_plugin_id", "in": {"raw": "...."}}
+{"func": "is_plugin_id", "in": {"raw": "C:"}}
+{"func": "is_plugin_id", "in": {"raw": "a b"}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"parameters": ["VAR_KEYWORD"]}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"parameters": ["POSITIONAL_OR_KEYWORD", "VAR_KEYWORD"]}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"parameters": ["POSITIONAL_OR_KEYWORD"]}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"parameters": []}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"parameters": ["VAR_POSITIONAL", "KEYWORD_ONLY"]}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"__script__": true, "raise": {"type": "TypeError", "message": "not callable"}}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"__script__": true, "raise": {"type": "ValueError", "message": "no sig"}}}}}
+{"func": "accepts_var_kwargs", "in": {"io": {"inspect.signature": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [true]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [false], "path.is_symlink": [true]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [false, true], "path.is_symlink": [false]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [false, false, false], "path.is_symlink": [false, false, true]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [false, false, false], "path.is_symlink": [false, false, false]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [{"__script__": true, "raise": {"type": "OSError", "message": "perm"}}]}}}
+{"func": "_has_manifest", "in": {"path": "/plugins/x", "io": {"path.exists": [false], "path.is_symlink": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": false}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": true, "has_manifest": true}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": true, "has_manifest": false, "category_plugins": {"__script__": true, "ret": ["p1"]}}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": true, "has_manifest": false, "category_plugins": {"__script__": true, "ret": []}}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": {"__script__": true, "raise": {"type": "RuntimeError", "message": "dir"}}}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": true, "has_manifest": {"__script__": true, "raise": {"type": "SystemExit", "message": "hm"}}}}}
+{"func": "holds_plugin", "in": {"path": "/plugins/x", "io": {"path.is_dir": true, "has_manifest": false, "category_plugins": {"__script__": true, "raise": {"type": "ValueError", "message": "cat"}}}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": false, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "bool", "value": true}, "is_windows": false, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 0}, "is_windows": false, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": -5}, "is_windows": false, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "float", "value": 123.0}, "is_windows": true, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "str", "value": "123"}, "is_windows": true, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "null", "value": null}, "is_windows": true, "expected_start_time": null}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": null, "io": {"process_start_time": 1000, "process_command_is_hermes": true}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": 1000, "io": {"process_start_time": 1000, "process_command_is_hermes": true}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": 999, "io": {"process_start_time": 1000}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": null, "io": {"process_start_time": null}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": null, "io": {"process_start_time": {"__script__": true, "raise": {"type": "OSError", "message": "gone"}}}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": null, "io": {"process_start_time": 1000, "process_command_is_hermes": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": true, "expected_start_time": null, "io": {"process_start_time": 1000, "process_command_is_hermes": {"__script__": true, "raise": {"type": "SystemExit", "message": "pid"}}}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": false, "expected_start_time": 500, "io": {"process_start_time": 500}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": false, "expected_start_time": 500, "io": {"process_start_time": {"__script__": true, "raise": {"type": "ValueError", "message": "st"}}}}}
+{"func": "pid_is_hermes", "in": {"pid": {"kind": "int", "value": 123}, "is_windows": false, "expected_start_time": 500, "io": {"process_start_time": null}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": {"__script__": true, "raise": {"type": "NoSuchProcess", "message": "no such process"}}}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": ["python", "hermes_cli/main.py"]}, "psutil.exe": ""}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": ["C:\\Users\\x\\.hermes\\bin\\hermes.exe"]}, "psutil.exe": null}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": ["shermesa"]}, "psutil.exe": ""}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": null, "psutil.exe": "/usr/bin/hermes"}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": []}, "psutil.exe": ""}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "raise": {"type": "OSError", "message": "cl"}}}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": ["x"]}, "psutil.exe": {"__script__": true, "raise": {"type": "SystemExit", "message": "exe"}}}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": [123]}}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": {"__script__": true, "raise": {"type": "SystemExit", "message": "proc"}}}}}
+{"func": "process_command_is_hermes", "in": {"pid": 7, "io": {"psutil.Process": true, "psutil.cmdline": {"__script__": true, "ret": ["notepad.exe"]}, "psutil.exe": "C:\\hermes\\x.exe"}}}
+{"func": "text_names_hermes", "in": {"text": "hermes"}}
+{"func": "text_names_hermes", "in": {"text": "C:\\x\\hermes.exe run"}}
+{"func": "text_names_hermes", "in": {"text": "shermesa"}}
+{"func": "text_names_hermes", "in": {"text": ".hermes"}}
+{"func": "text_names_hermes", "in": {"text": "x=hermes;y"}}
+{"func": "text_names_hermes", "in": {"text": "HERMES"}}
+{"func": "text_names_hermes", "in": {"text": "hermes\u00a0x"}}
+{"func": "text_names_hermes", "in": {"text": ""}}
+{"func": "text_names_hermes", "in": {"text": "a/hermes/b"}}
+{"func": "text_names_hermes", "in": {"text": "hermesx"}}
+{"func": "text_names_hermes", "in": {"text": "xhermes"}}
+{"func": "text_names_hermes", "in": {"text": "her'mes"}}
+{"func": "text_names_hermes", "in": {"text": "hermes\u2028y"}}
+{"func": "text_names_hermes", "in": {"text": "\u001chermes"}}
+{"func": "serialized_messages_bytes", "in": {"messages": []}}
+{"func": "serialized_messages_bytes", "in": {"messages": null}}
+{"func": "serialized_messages_bytes", "in": {"messages": {}}}
+{"func": "serialized_messages_bytes", "in": {"messages": [{"role": "user", "content": "hi"}]}}
+{"func": "serialized_messages_bytes", "in": {"messages": [{"role": "assistant", "content": "h\u00e9llo\n\t\"q\"\u0001"}]}}
+{"func": "serialized_messages_bytes", "in": {"messages": [1, 2, 3]}}
+{"func": "serialized_messages_bytes", "in": {"messages": [{"a": [true, false, null]}]}}
+{"func": "serialized_messages_bytes", "in": {"messages": "x"}}
+{"func": "serialized_messages_bytes", "in": {"messages": [{"k": "\u2028\u00e9\ud83d\ude00", "n": -12}]}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "Only 'text' content type is supported"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "Model does not support image input"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "everything is fine"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": null}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": ""}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "UNKNOWN VARIANT `IMAGE_URL`, EXPECTED `TEXT`"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "is not a multimodal model"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": 0}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "unexpected item type in content"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "image_url'. Expected one of"}}
+{"func": "looks_like_image_content_rejection", "in": {"error_body": "no endpoints found that support image input"}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}, "spilled": true}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "Other (desc)", "gpu_pci_id": 771756254}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": 305402078}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": false, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": false, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 0.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X (12GB)", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 3, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 1000}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}}}
+{"func": "predicted_decode_tok_s", "in": {"entry": {"id": "qwen3.8-27b", "mtp": true, "mtp_draft_depth": 2, "decode_fraction": 1.0}, "variant": {"quant": "UD-Q4_K_M", "files": [{"path": "m.gguf", "size_bytes": 0}]}, "budget": {"uma": true, "platform": "win32", "gpu_name": "NVIDIA RTX Spark N1X", "gpu_pci_id": null}, "backend": "cuda"}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": null, "draft": null, "mtp_head": null}, "variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 100}, {"path": "a.gguf", "size_bytes": 200}]}}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": {"path": "a.gguf", "size_bytes": 50}, "draft": null, "mtp_head": null}, "variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 100}, {"path": "a.gguf", "size_bytes": 200}]}}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": {"path": "a.gguf", "size_bytes": 50}, "draft": {"path": "a.gguf", "size_bytes": 70}, "mtp_head": {"path": "a.gguf", "size_bytes": 90}}, "variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 100}, {"path": "a.gguf", "size_bytes": 200}]}}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": null, "draft": null, "mtp_head": null}, "variant": {"quant": "q", "files": []}}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": null, "draft": null, "mtp_head": {"path": "a.gguf", "size_bytes": 5}}, "variant": {"quant": "q", "files": []}}}
+{"func": "download_bytes", "in": {"entry": {"id": "e", "mmproj": null, "draft": {"path": "a.gguf", "size_bytes": 11}, "mtp_head": null}, "variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 1}]}}}
+{"func": "weights_bytes", "in": {"variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 1000}, {"path": "a.gguf", "size_bytes": 2000}], "lazy_bytes": 300}}}
+{"func": "weights_bytes", "in": {"variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 1000}, {"path": "a.gguf", "size_bytes": 2000}], "lazy_bytes": 0}}}
+{"func": "weights_bytes", "in": {"variant": {"quant": "q", "files": [], "lazy_bytes": 0}}}
+{"func": "weights_bytes", "in": {"variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 100}], "lazy_bytes": 500}}}
+{"func": "weights_bytes", "in": {"variant": {"quant": "q", "files": [{"path": "a.gguf", "size_bytes": 42}]}}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "int", "value": 151936}, "mtp_capable": false}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "int", "value": 151936}, "mtp_capable": true}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "int", "value": 151936}, "mtp_capable": true, "mtp_prefill": true}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "int", "value": -5}, "mtp_capable": false}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "float", "value": 151936.9}, "mtp_capable": false}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "bool", "value": true}, "mtp_capable": false}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "float", "value": -2.5}, "mtp_capable": true, "mtp_prefill": true}}
+{"func": "ub_logits_bytes", "in": {"n_vocab": {"kind": "int", "value": 0}, "mtp_capable": true, "mtp_prefill": true}}
+{"func": "is_routable_provider", "in": {"provider": null}}
+{"func": "is_routable_provider", "in": {"provider": "  "}}
+{"func": "is_routable_provider", "in": {"provider": "AUTO"}}
+{"func": "is_routable_provider", "in": {"provider": "Custom"}}
+{"func": "is_routable_provider", "in": {"provider": " custom "}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {"providers": {"nous": {}}}, "get_compatible_custom_providers": {}, "resolve_provider_full": {"name": "nous"}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {}, "get_compatible_custom_providers": {}, "resolve_provider_full": null}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {}, "get_compatible_custom_providers": {}, "resolve_provider_full": {"__script__": true, "raise": {"type": "RuntimeError", "message": "resolve"}}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {"__script__": true, "raise": {"type": "ValueError", "message": "cfg"}}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {"__script__": true, "raise": {"type": "SystemExit", "message": "cfg"}}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {}, "get_compatible_custom_providers": {}, "resolve_provider_full": {"__script__": true, "raise": {"type": "ImportError", "message": "no providers module"}}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": {}, "get_compatible_custom_providers": {"__script__": true, "raise": {"type": "SystemExit", "message": "cc"}}}}}
+{"func": "is_routable_provider", "in": {"provider": "nous", "io": {"load_config": null}}}
+{"func": "is_external_process_provider", "in": {"provider": null}}
+{"func": "is_external_process_provider", "in": {"provider": ""}}
+{"func": "is_external_process_provider", "in": {"provider": " Claude_CLI ", "io": {"registry_get": {"auth_type": "external_process"}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": {"auth_type": "api_key"}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": null, "get_provider_profile": {"auth_type": "external_process"}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": null, "get_provider_profile": null}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": null, "get_provider_profile": {}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "reg"}}, "get_provider_profile": {"auth_type": "external_process"}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": {"__script__": true, "raise": {"type": "SystemExit", "message": "reg"}}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": null, "get_provider_profile": {"__script__": true, "raise": {"type": "ImportError", "message": "no providers"}}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": {"no_auth": 1}, "get_provider_profile": {"auth_type": "external_process"}}}}
+{"func": "is_external_process_provider", "in": {"provider": "claude_cli", "io": {"registry_get": {"auth_type": null}}}}

@@ -9,8 +9,6 @@
 
 /* ── agent/web_search_registry.py: 2 missing functions ── */
 
-/* PoP: keyless_preference @ agent/web_search_registry.py:_keyless_preference */
 void keyless_preference(void) { }
 
-/* PoP: _keyless_tier_enabled @ agent/web_search_registry.py:_keyless_tier_enabled */
 void _keyless_tier_enabled(void) { }

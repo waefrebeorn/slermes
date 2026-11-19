@@ -18,7 +18,6 @@ char *backend_cache_key(void) { return strdup(""); }
 /* PoP: resolve_lightpanda_cdp @ tools/browser_use_cli.py:resolve_lightpanda_cdp */
 char *resolve_lightpanda_cdp(void) { return strdup("{}"); }
 
-/* PoP: real_profile_consented @ tools/browser_use_cli.py:_real_profile_consented */
 int real_profile_consented(void) { return 0; }
 
 /* PoP: resolve_real_profile_cdp @ tools/browser_use_cli.py:_resolve_real_profile_cdp */

@@ -507,7 +507,6 @@ char *ipx_tail_log(const char *path) {
     return buf;
 }
 
-/* PoP: ipx_reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */
 int ipx_reset_for_tests(void) {
     /* Python: clear version cache + nonce globals. */
     return 0;

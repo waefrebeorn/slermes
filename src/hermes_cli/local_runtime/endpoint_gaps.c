@@ -16,5 +16,4 @@ char *state_endpoint(void) { return strdup(""); }
 char *resolve_llamacpp_endpoint(void) { return strdup(""); }
 
 
-/* PoP: boot_in_flight @ hermes_cli/local_runtime/endpoint.py:_boot_in_flight */
 int boot_in_flight(void) { return 0; }

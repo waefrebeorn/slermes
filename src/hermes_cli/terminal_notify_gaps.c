@@ -11,6 +11,5 @@
 
 
 
-/* PoP: warp_supported @ hermes_cli/terminal_notify.py:warp_supported */
 int warp_supported(void) { return 0; }
 

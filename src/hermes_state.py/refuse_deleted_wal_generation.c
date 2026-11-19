@@ -1,4 +1,3 @@
-/* PoP: refuse_deleted_wal_generation @ persistence/sqlite/_state/dbfile.py:refuse_deleted_wal_generation */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

@@ -9,10 +9,8 @@
 
 /* ── tools/code_kernel_remote.py: 7 missing functions ── */
 
-/* PoP: _is_alive @ tools/code_kernel_remote.py:is_alive */
 int _is_alive(void) { return 0; }
 
-/* PoP: _kill @ tools/code_kernel_remote.py:kill */
 void _kill(void) {}
 
 

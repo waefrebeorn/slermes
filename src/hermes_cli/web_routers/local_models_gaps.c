@@ -47,7 +47,6 @@ char *_models_dir(void) {
     return strdup("~/.hermes/models");
 }
 
-/* PoP: engine_too_old @ hermes_cli/web_routers/local_models.py:_engine_too_old */
 int engine_too_old(const char *min_engine) {
     (void)min_engine;
     return 0;

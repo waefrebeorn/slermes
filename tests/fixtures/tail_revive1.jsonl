@@ -1,0 +1,183 @@
+{"func": "compression_cancelled", "in": {"state": {}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": null}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": 42}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": "fn"}, "io": {"cancelled_check": true}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": "fn"}, "io": {"cancelled_check": 0}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": "fn"}, "io": {"cancelled_check": {"__raise__": "RuntimeError", "msg": "boom"}, "log_debug": null}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": "fn"}, "io": {"cancelled_check": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "compression_cancelled", "in": {"state": {"_compression_cancelled_check": "fn"}, "io": {"cancelled_check": [false, true]}}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": null}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": ""}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": "Session Hygiene Compression Timed Out"}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": "  hygiene compression deferred: turn-hold budget expired  "}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": "auxiliary model failed"}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": 0}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": ["session hygiene compression timed out"]}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": false}}
+{"func": "is_hygiene_preagent_only_cooldown", "in": {"error": "prefix session hygiene compression timed out suffix"}}
+{"func": "stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": true}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {"api_mode": "anthropic_messages", "provider": "anthropic", "model": "claude", "base_url": "https://api.anthropic.com"}, "io": {"stale_thinking_reaches_wire": false}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {"api_mode": 0, "provider": "", "model": null, "base_url": false}, "io": {"stale_thinking_reaches_wire": true}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {"api_mode": "chat_completions"}, "io": {"stale_thinking_reaches_wire": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": 1}}}
+{"func": "stale_thinking_on_wire", "in": {"state": {"api_mode": 42}, "io": {"stale_thinking_reaches_wire": false}}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 100}, "current_tokens": null}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 100}, "current_tokens": 100}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 100}, "current_tokens": 99}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 0}, "current_tokens": 5}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": -5}, "current_tokens": 0}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 1}, "current_tokens": true}}
+{"func": "billed_basis_over_threshold", "in": {"state": {}, "current_tokens": 5}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": "x"}, "current_tokens": 5}}
+{"func": "billed_basis_over_threshold", "in": {"state": {"threshold_tokens": 100}, "current_tokens": "50"}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": false}}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {"api_mode": "anthropic_messages", "provider": "anthropic", "model": "claude", "base_url": ""}, "io": {"stale_thinking_reaches_wire": true}}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {"model": 0, "base_url": []}, "io": {"stale_thinking_reaches_wire": false}}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {}, "io": {"stale_thinking_reaches_wire": {"__raise__": "SystemExit", "msg": "s"}}}}
+{"func": "agent_stale_thinking_on_wire", "in": {"state": {"provider": 7}, "io": {"stale_thinking_reaches_wire": true}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": true, "_turn_received_provider_response": false}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": true, "_turn_received_provider_response": true}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": 1, "_turn_received_provider_response": 0}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": "", "_turn_received_provider_response": false}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": true, "_turn_received_provider_response": null}}}
+{"func": "review_fork_first_request_pending", "in": {"state": {"_review_defer_compaction_before_first_response": [], "_turn_received_provider_response": {}}}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 1024]]}, "window": 1000, "flash_attention": true}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["swa", 2048]], "swa_window": 512}, "window": 4096, "flash_attention": true}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["recurrent", 999]]}, "window": 8192, "flash_attention": true}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 1024]]}, "window": 1000, "flash_attention": false}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 1024]], "kv_q8_ok": false}, "window": 1000, "flash_attention": true}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 1]], "kv_scale": 1.2}, "window": 3, "flash_attention": false}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 100]], "window_compute_per_token": 7}, "window": 100, "flash_attention": false}}
+{"func": "ctx_bytes", "in": {"profile": {"layers": [["full", 512], ["swa", 256], ["recurrent", 0]], "swa_window": 1024, "kv_scale": 1.2, "window_compute_per_token": 3}, "window": 2048, "flash_attention": true}}
+{"func": "per_token_kv_f16", "in": {"layers": [["full", 100], ["swa", 50], ["recurrent", 999]]}}
+{"func": "per_token_kv_f16", "in": {"layers": []}}
+{"func": "per_token_kv_f16", "in": {"layers": [["recurrent", 1], ["recurrent", 2]]}}
+{"func": "per_token_kv_f16", "in": {"layers": [["swa", 7]]}}
+{"func": "per_token_kv_f16", "in": {"layers": [["full", 1], ["full", 2], ["swa", 3]]}}
+{"func": "recurrent_layer_count", "in": {"layers": [["full", 1], ["recurrent", 0], ["swa", 2]]}}
+{"func": "recurrent_layer_count", "in": {"layers": []}}
+{"func": "recurrent_layer_count", "in": {"layers": [["full", 1]]}}
+{"func": "recurrent_layer_count", "in": {"layers": [["recurrent", 0], ["recurrent", 0], ["recurrent", 0], ["recurrent", 0]]}}
+{"func": "recurrent_layer_count", "in": {"layers": [["recurrent", 5], ["swa", 1], ["recurrent", 6]]}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": true, "kv_q8_ok": true}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": true, "kv_q8_ok": false}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": false, "kv_q8_ok": true}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": false, "kv_q8_ok": false}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": 1, "kv_q8_ok": true}}
+{"func": "kv_dtype_factor", "in": {"flash_attention": true, "kv_q8_ok": 0}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": null}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [8000, true]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [8000, false]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [8000, null]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [16000, null]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 0, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [16000, null]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__script__": true, "ret": [1]}}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": 5}}}
+{"func": "unified_pool_bytes", "in": {"smi_total": 4000, "ram_total": 16000, "io": {"device_pool_view": {"__raise__": "OSError", "msg": "smi gone"}}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": null}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": {"total_bytes": 100, "free_bytes": 50, "gpu_name": "Test GPU"}}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": {"total_bytes": 100, "free_bytes": 50, "gpu_name": "X", "gpu_pci_id": 123}}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": {"total_bytes": 100, "gpu_name": "X"}}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": 5}}}
+{"func": "nvidia_vram", "in": {"io": {"cached_nvidia_gpu_query": {"__raise__": "OSError", "msg": "no smi"}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://a.com/x", "io": {"web_config": {}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://preview.mysite.dev/x", "io": {"web_config": {"cache_exempt_hosts": ["mysite.dev"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://mysite.dev/x", "io": {"web_config": {"cache_exempt_hosts": ["mysite.dev"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://mysite.dev/x", "io": {"web_config": {"cache_exempt_hosts": null}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://mysite.dev/x", "io": {"web_config": {"cache_exempt_hosts": "mysite.dev"}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "not a url", "io": {"web_config": {"cache_exempt_hosts": ["mysite.dev"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://mysite.dev/x", "io": {"web_config": null}}}
+{"func": "is_cache_exempt_host", "in": {"url": "http://[::1", "io": {"web_config": {"cache_exempt_hosts": ["mysite.dev"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://sub.mysite.dev/", "io": {"web_config": {"cache_exempt_hosts": [".mysite.dev.", "*.mysite.dev"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://mysite.dev/x", "io": {"web_config": {"__raise__": "SystemExit", "msg": "stop"}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://42/", "io": {"web_config": {"cache_exempt_hosts": [42]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "http://[::1]/x", "io": {"web_config": {"cache_exempt_hosts": ["::1"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "http://[1.2.3.4]/x", "io": {"web_config": {"cache_exempt_hosts": ["1.2.3.4"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "https://[fe80::1%25eth0]/x", "io": {"web_config": {"cache_exempt_hosts": ["fe80::1%25eth0"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "http://[v1.x]/x", "io": {"web_config": {"cache_exempt_hosts": ["v1.x"]}}}}
+{"func": "is_cache_exempt_host", "in": {"url": "http://[zz]/x", "io": {"web_config": {"cache_exempt_hosts": ["zz"]}}}}
+{"func": "host_matches_pattern", "in": {"host": "mysite.dev", "pattern": "mysite.dev"}}
+{"func": "host_matches_pattern", "in": {"host": "preview.mysite.dev", "pattern": "mysite.dev"}}
+{"func": "host_matches_pattern", "in": {"host": "preview.mysite.dev", "pattern": "*.mysite.dev"}}
+{"func": "host_matches_pattern", "in": {"host": "MYSITE.DEV", "pattern": "MySite.Dev"}}
+{"func": "host_matches_pattern", "in": {"host": ".mysite.dev.", "pattern": ".mysite.dev."}}
+{"func": "host_matches_pattern", "in": {"host": "mysite.dev", "pattern": ""}}
+{"func": "host_matches_pattern", "in": {"host": "mysite.dev", "pattern": null}}
+{"func": "host_matches_pattern", "in": {"host": "xmysite.dev", "pattern": "mysite.dev"}}
+{"func": "host_matches_pattern", "in": {"host": ".x", "pattern": "x"}}
+{"func": "host_matches_pattern", "in": {"host": "mysite.dev", "pattern": "*."}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 0, "watchdog_delay": 100}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 30, "watchdog_delay": 100}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 50, "cron_drain_timeout": 30, "watchdog_delay": 100}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 30, "watchdog_delay": 20, "elapsed": 5}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 30, "watchdog_delay": 10, "elapsed": 5}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": "2.5", "cron_drain_timeout": "30", "watchdog_delay": "100"}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": null, "cron_drain_timeout": 30, "watchdog_delay": 100}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 30, "watchdog_delay": 100, "cleanup_reserve_s": "abc"}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": "nan", "watchdog_delay": 100}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": 5, "cron_drain_timeout": 30, "watchdog_delay": 100, "elapsed": null, "cleanup_reserve_s": null}}
+{"func": "resolve_cron_drain_budget", "in": {"drain_timeout": -2, "cron_drain_timeout": "1_0", "watchdog_delay": 100, "elapsed": "1.5", "cleanup_reserve_s": 2.5}}
+{"func": "is_global_startup_conflict", "in": {"error_code": "telegram_lock"}}
+{"func": "is_global_startup_conflict", "in": {"error_code": "lock_conflict"}}
+{"func": "is_global_startup_conflict", "in": {"error_code": " LOCK_CONFLICT "}}
+{"func": "is_global_startup_conflict", "in": {"error_code": ""}}
+{"func": "is_global_startup_conflict", "in": {"error_code": null}}
+{"func": "is_global_startup_conflict", "in": {"error_code": "lock"}}
+{"func": "is_global_startup_conflict", "in": {"error_code": "xlock_conflict"}}
+{"func": "is_global_startup_conflict", "in": {"error_code": "discord_lock "}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": null}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": ""}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "   "}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": 0}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "0"}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": 2.5}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "abc"}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "inf"}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "-3"}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": true}}
+{"func": "parse_signal_interrupt_grace_timeout", "in": {"raw": "1_0"}}
+{"func": "buzz_terminal_context_active", "in": {"env": {"BUZZ_MANAGED_AGENT": "1"}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": "buzz"}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": " Buzz "}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": "telegram"}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {"BUZZ_MANAGED_AGENT": ""}, "io": {"get_session_env": "buzz"}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": {"__raise__": "RuntimeError", "msg": "no ctx"}}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": {"__raise__": "SystemExit", "msg": "exit"}}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {}, "io": {"get_session_env": 42}}}
+{"func": "buzz_terminal_context_active", "in": {"env": {"BUZZ_MANAGED_AGENT": 0}, "io": {"get_session_env": "buzz"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "BUZZ_PRIVATE_KEY", "env": {"BUZZ_MANAGED_AGENT": "1"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "OPENAI_API_KEY", "env": {"BUZZ_MANAGED_AGENT": "1"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "buzz_x", "env": {}, "io": {"get_session_env": "buzz"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "BUZZ_", "env": {}, "io": {"get_session_env": "telegram"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "BUZZX", "env": {"BUZZ_MANAGED_AGENT": "1"}}}
+{"func": "is_terminal_first_party_env", "in": {"name": "BUZZ_A", "env": {}, "io": {"get_session_env": {"__raise__": "SystemExit", "msg": "x"}}}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": "BUZZ_X"}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": "buzz_x"}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": "BUZZ_"}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": "BUZZ"}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": ""}}
+{"func": "matches_terminal_first_party_prefix", "in": {"name": "XBUZZ_"}}
+{"func": "skill_should_show", "in": {"conditions": {}, "available_tools": null, "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"session_platforms": ["telegram"]}, "available_tools": null, "available_toolsets": null, "session_platform": "discord"}}
+{"func": "skill_should_show", "in": {"conditions": {"session_platforms": ["telegram"]}, "available_tools": null, "available_toolsets": null, "session_platform": " Telegram "}}
+{"func": "skill_should_show", "in": {"conditions": {"session_platforms": ["telegram"]}, "available_tools": null, "available_toolsets": null, "session_platform": null}}
+{"func": "skill_should_show", "in": {"conditions": {"requires_tools": ["terminal"]}, "available_tools": ["terminal"], "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"requires_tools": ["terminal"]}, "available_tools": [], "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"fallback_for_tools": ["web"]}, "available_tools": ["web"], "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"fallback_for_tools": ["web"]}, "available_tools": [], "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"requires_toolsets": ["core"]}, "available_tools": null, "available_toolsets": ["core"]}}
+{"func": "skill_should_show", "in": {"conditions": {"requires_toolsets": ["core"]}, "available_tools": null, "available_toolsets": []}}
+{"func": "skill_should_show", "in": {"conditions": {"session_platforms": [null, "  ", "Telegram"]}, "available_tools": null, "available_toolsets": null, "session_platform": "telegram"}}
+{"func": "skill_should_show", "in": {"conditions": {"requires_tools": null}, "available_tools": ["terminal"], "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {"session_platforms": 5}, "available_tools": null, "available_toolsets": null}}
+{"func": "skill_should_show", "in": {"conditions": {}, "available_tools": null, "available_toolsets": ["x"]}}
+{"func": "skill_should_show", "in": {"conditions": {"fallback_for_toolsets": ["a"]}, "available_tools": null, "available_toolsets": []}}
+{"func": "skill_should_show", "in": {"conditions": {"fallback_for_toolsets": ["a"], "requires_tools": ["t"]}, "available_tools": ["t"], "available_toolsets": ["a"]}}
+{"func": "clear_backend_probe_cache", "in": {"state": {"cache": {}}}}
+{"func": "clear_backend_probe_cache", "in": {"state": {"cache": {"k1": "v1", "k2": "v2"}}}}
+{"func": "clear_backend_probe_cache", "in": {"state": {"cache": {"k": {"nested": [1, 2]}}}}}
+{"func": "clear_backend_probe_cache", "in": {"state": {"cache": {"a": ""}}}}
+{"func": "clear_backend_probe_cache", "in": {"state": {"cache": {"x": null, "y": false}}}}

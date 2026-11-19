@@ -9,10 +9,8 @@
 
 /* ── cron/jobs.py: 11 missing functions ── */
 
-/* PoP: is_recoverable_error_job @ cron/jobs.py:_is_recoverable_error_job */
 int is_recoverable_error_job(void) { return 0; }
 
-/* PoP: is_named_profile_path @ cron/jobs.py:_is_named_profile_path */
 int is_named_profile_path(void) { return 0; }
 
 

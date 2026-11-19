@@ -9,7 +9,6 @@
 
 /* ── utils.py: 5 missing functions ── */
 
-/* PoP: is_contended_windows_replace_error @ utils/files.py:_is_contended_windows_replace_error */
 int is_contended_windows_replace_error(void) { return 0; }
 
 /* PoP: rewrite_in_place @ utils/files.py:_rewrite_in_place */

@@ -15,7 +15,6 @@ char *fetch_remote_branch_heads(void) { return strdup("[]"); }
 /* PoP: worktree_branch_pushed_exact @ hermes_cli/worktree_ops.py:_worktree_branch_pushed_exact */
 int worktree_branch_pushed_exact(void) { return 1; }
 
-/* PoP: should_seed_interactive @ cli.py:_should_seed_interactive */
 int should_seed_interactive(void) { return 0; }
 
 /* PoP: cache_hit_rate @ hermes_cli/cli_status_bar_mixin.py:_cache_hit_rate */

@@ -12,13 +12,11 @@
 /* PoP: warn_invalid_value @ agent/turn_liveness.py:_warn_invalid_value */
 void warn_invalid_value(const char *val) { (void)val; }
 
-/* PoP: resolve_finite_seconds @ agent/turn_liveness.py:_resolve_finite_seconds */
 int resolve_finite_seconds(void) { return 0; }
 
 /* PoP: resolve_turn_liveness_settings @ agent/turn_liveness.py:resolve_turn_liveness_settings */
 char *resolve_turn_liveness_settings(void) { return strdup("{}"); }
 
-/* PoP: _sample @ agent/turn_liveness.py:_sample */
 int _sample(void) { return 0; }
 
 /* PoP: abort_message @ agent/turn_liveness.py:abort_message */

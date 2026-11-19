@@ -445,8 +445,7 @@ bool otlp_exporter_require_sdk(char **err_out) {
     return false;
 }
 
-/* PoP: otlp_exporter_is_available @ agent/monitoring/otlp_exporter.py:is_available */
-bool otlp_exporter_is_available(void) { /* Python default is also a no-op */ 
+bool otlp_exporter_is_available(void) { /* Python default is also a no-op */
     /* No OTel SDK in the C runtime — pure availability check, never auto-installs. */
     return false;
 }

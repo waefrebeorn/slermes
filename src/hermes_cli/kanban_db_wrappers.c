@@ -409,5 +409,4 @@ int kdbport_u_protocol_violation_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: kdbport_list_runs @ hermes_cli/kanban_db.py:list_runs */
 int kdbport_list_runs(const char *arg) { (void)arg; return 0; }

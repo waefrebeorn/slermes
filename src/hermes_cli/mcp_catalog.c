@@ -283,7 +283,6 @@ int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: is_installed @ hermes_cli/mcp_catalog.py:is_installed */
 int hermes_cli_mcp_catalog_is_installed(const char *name) {
     /* Python: return name in installed_servers() */
     (void)name;

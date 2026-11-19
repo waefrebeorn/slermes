@@ -317,5 +317,4 @@ const char *load_skills_config(void) {
     return "{}";
 }
 
-/* PoP: _is_community_hub_skill @ agent/skill_preprocessing.py:_is_community_hub_skill */
 int skill_preprocessing_is_community_hub_skill(const char *skill_dir) { (void)skill_dir; return 0; }

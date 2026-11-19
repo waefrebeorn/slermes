@@ -154,8 +154,6 @@ void weixin_random_wechat_uin(char *out, size_t out_sz)
 
 /* ── Simple utility ports ───────────────────────────────────────────── */
 
-/* PoP: _check_weixin_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
-/* PoP: weixin_check_requirements @ plugins/platforms/weixin/adapter.py:check_weixin_requirements */
 bool weixin_check_requirements(void)
 {
     return true; /* C port: always available in compiled binary */

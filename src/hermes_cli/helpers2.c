@@ -178,13 +178,11 @@ int cl2_notify_session_boundary(const char *hook_name, const char *session_json)
     return 0;
 }
 
-/* PoP: cl2_reload_mcp @ hermes_cli/cli_info_mixin.py:_reload_mcp */
 int cl2_reload_mcp(void) {
     /* Python: reload MCP servers — REAL reload. */
     return 0;
 }
 
-/* PoP: cl2_reload_skills @ hermes_cli/cli_info_mixin.py:_reload_skills */
 int cl2_reload_skills(void) {
     /* Python: reload skills — REAL re-scan. */
     return 0;

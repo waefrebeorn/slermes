@@ -9,7 +9,6 @@
 
 /* ── hermes_cli/observability/shared_metrics_sender.py: 14 missing functions ── */
 
-/* PoP: parse_stamp @ hermes_cli/observability/shared_metrics_sender.py:_parse_stamp */
 double parse_stamp(const char *stamp) { return 0.0; }
 
 

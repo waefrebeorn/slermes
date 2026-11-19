@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <time.h>
 #include <ctype.h>
 #include <sys/stat.h>
@@ -1497,33 +1498,412 @@ const char *session_cwd_override(void) {
     return g_session_cwd;
 }
 
-/* Port of Python: _clear_backend_probe_cache — reset backend probe cache */
-/* PoP: clear_backend_probe_cache @ agent/prompt_builder.py:_clear_backend_probe_cache */
-void clear_backend_probe_cache(void) { /* Python default is also a no-op */ 
-    /* Static probe cache lives in system_prompt.c; clear it */
-    /* The cache stores env_type:cwd_hint -> result strings */
-    /* For now, nothing to do — C doesn't cache probes at module level */
+/* ================================================================
+ * tail_revive1 ports (wave 3): _clear_backend_probe_cache and
+ * _skill_should_show. Both keep their historical (void) signatures
+ * (tests/t_port_agent_prompt_builder.c calls them unconditionally);
+ * Python arguments/state ride module-static context slots installed
+ * per case via skill_should_show_ctx_install() / the cache reference
+ * accessor. A TypeError raised by live iteration of a non-iterable
+ * conditions value is parked in a raise slot the harness reads with
+ * skill_should_show_take_raise() (the bool signature cannot carry it).
+ *
+ * Modeling: available_tools/available_toolsets are JSON arrays standing
+ * in for sets (NULL == None); conditions is a JSON object; the probe
+ * cache is a JSON object whose keys model the live tuple keys (clear()
+ * is key-type agnostic). str(p) renders Python scalar/container syntax;
+ * integral JSON numbers model Python ints; lower/strip are ASCII.
+ * ================================================================ */
+
+static json_t *pbss_conditions = NULL;
+static json_t *pbss_tools = NULL;
+static json_t *pbss_toolsets = NULL;
+static char *pbss_platform = NULL;
+static json_t *pbss_raise = NULL;
+static json_t *pbss_cache = NULL;
+
+void skill_should_show_ctx_install(const json_t *conditions,
+                                   const json_t *available_tools,
+                                   const json_t *available_toolsets,
+                                   const char *session_platform)
+{
+    if (pbss_conditions) json_free(pbss_conditions);
+    if (pbss_tools) json_free(pbss_tools);
+    if (pbss_toolsets) json_free(pbss_toolsets);
+    free(pbss_platform);
+    pbss_conditions = conditions ? json_copy(conditions) : NULL;
+    pbss_tools = (available_tools && available_tools->type != JSON_NULL)
+               ? json_copy(available_tools) : NULL;
+    pbss_toolsets = (available_toolsets && available_toolsets->type != JSON_NULL)
+                  ? json_copy(available_toolsets) : NULL;
+    pbss_platform = session_platform ? strdup(session_platform) : NULL;
 }
 
-/* Port of Python: _skill_should_show — check if skill should be shown based on conditions */
-/* C note: ARCHITECTURAL N/A. C prompt builder loads skills statically at startup
- * via config, not dynamically at prompt-build time. Python's dynamic filtering
- * by available_tools/available_toolsets doesn't apply in C architecture.
- * This stub is retained for source-level parity; the real filtering happens
- * at skill-load time in skill_preprocessing.c. */
+json_t *skill_should_show_take_raise(void)
+{
+    json_t *r = pbss_raise;
+    pbss_raise = NULL;
+    return r;
+}
+
+json_t *pb_backend_probe_cache_ref(void)
+{
+    if (!pbss_cache) pbss_cache = json_object();
+    return pbss_cache;
+}
+
+static int pbss_jtruth(const json_t *v)
+{
+    if (!v) return 0;
+    switch (v->type) {
+    case JSON_NULL:   return 0;
+    case JSON_BOOL:   return v->bool_val ? 1 : 0;
+    case JSON_NUMBER: return v->num_val != 0.0 ? 1 : 0;
+    case JSON_STRING: return v->str_val && v->str_val[0] ? 1 : 0;
+    case JSON_ARRAY:
+    case JSON_OBJECT: return v->c.count > 0 ? 1 : 0;
+    }
+    return 0;
+}
+
+static void pbss_sb(char **buf, size_t *len, size_t *cap, const char *s)
+{
+    size_t n = strlen(s);
+    if (*len + n + 1 > *cap) {
+        *cap = (*len + n + 1) * 2;
+        *buf = realloc(*buf, *cap);
+    }
+    memcpy(*buf + *len, s, n + 1);
+    *len += n;
+}
+
+static void pbss_float_repr(char *out, size_t outsz, double x)
+{
+    if (isnan(x)) { snprintf(out, outsz, "nan"); return; }
+    if (isinf(x)) { snprintf(out, outsz, x < 0 ? "-inf" : "inf"); return; }
+    if (x == 0.0) { snprintf(out, outsz, signbit(x) ? "-0.0" : "0.0"); return; }
+    int p;
+    char tmp[64];
+    for (p = 1; p <= 17; p++) {
+        snprintf(tmp, sizeof tmp, "%.*g", p, x);
+        if (strtod(tmp, NULL) == x) break;
+    }
+    if (p > 17) p = 17;
+    snprintf(tmp, sizeof tmp, "%.*e", p - 1, x);
+    int exp = atoi(strchr(tmp, 'e') + 1);
+    char digits[40];
+    size_t dn = 0;
+    int neg = 0;
+    for (const char *c = tmp; *c && *c != 'e'; c++) {
+        if (*c == '-') { neg = 1; continue; }
+        if (*c == '.') continue;
+        digits[dn++] = *c;
+    }
+    digits[dn] = 0;
+    while (dn > 1 && digits[dn - 1] == '0') digits[--dn] = 0;
+    char body[96];
+    if (exp >= -4 && exp < 16) {
+        size_t o = 0;
+        if (neg) body[o++] = '-';
+        if (exp >= 0) {
+            int ip = exp + 1;
+            for (int i = 0; i < ip; i++)
+                body[o++] = (i < (int)dn) ? digits[i] : '0';
+            body[o++] = '.';
+            if ((int)dn > ip) {
+                for (int i = ip; i < (int)dn; i++) body[o++] = digits[i];
+            } else {
+                body[o++] = '0';
+            }
+        } else {
+            body[o++] = '0'; body[o++] = '.';
+            for (int i = 0; i < -exp - 1; i++) body[o++] = '0';
+            for (int i = 0; i < (int)dn; i++) body[o++] = digits[i];
+        }
+        body[o] = 0;
+    } else {
+        char mant[48];
+        size_t o = 0;
+        mant[o++] = digits[0];
+        if (dn > 1) {
+            mant[o++] = '.';
+            for (size_t i = 1; i < dn; i++) mant[o++] = digits[i];
+        }
+        mant[o] = 0;
+        snprintf(body, sizeof body, "%s%se%s%02d",
+                 neg ? "-" : "", mant, exp < 0 ? "-" : "+",
+                 exp < 0 ? -exp : exp);
+    }
+    snprintf(out, outsz, "%s", body);
+}
+
+static void pbss_repr_str(char **buf, size_t *len, size_t *cap, const char *s)
+{
+    char q = '\'';
+    if (strchr(s, '\'') && !strchr(s, '"')) q = '"';
+    char tmp[2] = { q, 0 };
+    pbss_sb(buf, len, cap, tmp);
+    for (const unsigned char *c = (const unsigned char *)s; *c; c++) {
+        char esc[8];
+        if (*c == '\\') pbss_sb(buf, len, cap, "\\\\");
+        else if (*c == '\n') pbss_sb(buf, len, cap, "\\n");
+        else if (*c == '\r') pbss_sb(buf, len, cap, "\\r");
+        else if (*c == '\t') pbss_sb(buf, len, cap, "\\t");
+        else if (*c == (unsigned char)q) {
+            esc[0] = '\\'; esc[1] = (char)q; esc[2] = 0;
+            pbss_sb(buf, len, cap, esc);
+        } else if (*c < 0x20 || *c == 0x7f) {
+            snprintf(esc, sizeof esc, "\\x%02x", *c);
+            pbss_sb(buf, len, cap, esc);
+        } else {
+            tmp[0] = (char)*c; tmp[1] = 0;
+            pbss_sb(buf, len, cap, tmp);
+        }
+    }
+    tmp[0] = q; tmp[1] = 0;
+    pbss_sb(buf, len, cap, tmp);
+}
+
+static void pbss_render(char **buf, size_t *len, size_t *cap, const json_t *v, int repr_mode)
+{
+    char tmp[64];
+    if (!v || v->type == JSON_NULL) { pbss_sb(buf, len, cap, "None"); return; }
+    switch (v->type) {
+    case JSON_BOOL:
+        pbss_sb(buf, len, cap, v->bool_val ? "True" : "False");
+        return;
+    case JSON_NUMBER: {
+        double x = v->num_val;
+        if (x == floor(x) && fabs(x) < 1e16) {
+            snprintf(tmp, sizeof tmp, "%.0f", x);
+            pbss_sb(buf, len, cap, tmp);
+        } else {
+            pbss_float_repr(tmp, sizeof tmp, x);
+            pbss_sb(buf, len, cap, tmp);
+        }
+        return;
+    }
+    case JSON_STRING:
+        if (repr_mode) pbss_repr_str(buf, len, cap, v->str_val ? v->str_val : "");
+        else pbss_sb(buf, len, cap, v->str_val ? v->str_val : "");
+        return;
+    case JSON_ARRAY:
+        pbss_sb(buf, len, cap, "[");
+        for (size_t i = 0; i < v->c.count; i++) {
+            if (i) pbss_sb(buf, len, cap, ", ");
+            pbss_render(buf, len, cap, v->c.items[i], 1);
+        }
+        pbss_sb(buf, len, cap, "]");
+        return;
+    case JSON_OBJECT:
+        pbss_sb(buf, len, cap, "{");
+        for (size_t i = 0; i < v->c.count; i++) {
+            if (i) pbss_sb(buf, len, cap, ", ");
+            pbss_repr_str(buf, len, cap, v->c.keys[i]);
+            pbss_sb(buf, len, cap, ": ");
+            pbss_render(buf, len, cap, v->c.items[i], 1);
+        }
+        pbss_sb(buf, len, cap, "}");
+        return;
+    default:
+        return;
+    }
+}
+
+static char *pbss_py_str(const json_t *v)
+{
+    char *buf = malloc(16);
+    size_t len = 0, cap = 16;
+    buf[0] = 0;
+    pbss_render(&buf, &len, &cap, v, 0);
+    return buf;
+}
+
+static int pbss_is_ws(char c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f';
+}
+
+static char *pbss_strip_lower(const char *s)
+{
+    while (*s && pbss_is_ws(*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && pbss_is_ws(s[n - 1])) n--;
+    char *r = malloc(n + 1);
+    for (size_t i = 0; i < n; i++) r[i] = (char)tolower((unsigned char)s[i]);
+    r[n] = 0;
+    return r;
+}
+
+/* Python == over the scalar members a set can hold (bool/number cross). */
+static int pbss_eq(const json_t *a, const json_t *b)
+{
+    if (!a || !b) return a == b;
+    int an = a->type == JSON_NUMBER || a->type == JSON_BOOL;
+    int bn = b->type == JSON_NUMBER || b->type == JSON_BOOL;
+    if (an && bn) {
+        double av = a->type == JSON_BOOL ? (a->bool_val ? 1.0 : 0.0) : a->num_val;
+        double bv = b->type == JSON_BOOL ? (b->bool_val ? 1.0 : 0.0) : b->num_val;
+        return av == bv;
+    }
+    if (a->type != b->type) return 0;
+    if (a->type == JSON_STRING)
+        return strcmp(a->str_val ? a->str_val : "", b->str_val ? b->str_val : "") == 0;
+    if (a->type == JSON_NULL) return 1;
+    return 0;
+}
+
+static int pbss_contains(const json_t *set_arr, const json_t *item)
+{
+    if (!set_arr || set_arr->type != JSON_ARRAY) return 0;
+    for (size_t i = 0; i < set_arr->c.count; i++) {
+        if (pbss_eq(set_arr->c.items[i], item)) return 1;
+    }
+    return 0;
+}
+
+static void pbss_set_raise(const char *kind, const char *msg)
+{
+    if (pbss_raise) json_free(pbss_raise);
+    pbss_raise = json_object();
+    json_set(pbss_raise, "__raise__", json_string(kind));
+    json_set(pbss_raise, "msg", json_string(msg));
+}
+
+/* Materialize Python iteration of a conditions value as owned json
+ * nodes (array items / string chars / dict keys). or_falsy models the
+ * `or []` guard. Returns 0 and parks a TypeError when not iterable. */
+static json_t **pbss_iter(const json_t *v, int or_falsy, size_t *count)
+{
+    *count = 0;
+    if (!v || (or_falsy && !pbss_jtruth(v))) return NULL;
+    if (!v) {
+        pbss_set_raise("TypeError", "'NoneType' object is not iterable");
+        return NULL;
+    }
+    if (v->type == JSON_NULL) {
+        pbss_set_raise("TypeError", "'NoneType' object is not iterable");
+        return NULL;
+    }
+    if (v->type == JSON_ARRAY) {
+        if (v->c.count == 0) return NULL;
+        json_t **els = malloc(v->c.count * sizeof(json_t *));
+        for (size_t i = 0; i < v->c.count; i++) els[i] = json_copy(v->c.items[i]);
+        *count = v->c.count;
+        return els;
+    }
+    if (v->type == JSON_STRING) {
+        size_t n = strlen(v->str_val ? v->str_val : "");
+        if (n == 0) return NULL;
+        json_t **els = malloc(n * sizeof(json_t *));
+        for (size_t i = 0; i < n; i++) {
+            char c[2] = { v->str_val[i], 0 };
+            els[i] = json_string(c);
+        }
+        *count = n;
+        return els;
+    }
+    if (v->type == JSON_OBJECT) {
+        if (v->c.count == 0) return NULL;
+        json_t **els = malloc(v->c.count * sizeof(json_t *));
+        for (size_t i = 0; i < v->c.count; i++) els[i] = json_string(v->c.keys[i]);
+        *count = v->c.count;
+        return els;
+    }
+    const char *tn = v->type == JSON_BOOL ? "bool"
+                   : (v->num_val == floor(v->num_val) ? "int" : "float");
+    char msg[96];
+    snprintf(msg, sizeof msg, "'%s' object is not iterable", tn);
+    pbss_set_raise("TypeError", msg);
+    return NULL;
+}
+
+static void pbss_iter_free(json_t **els, size_t count)
+{
+    for (size_t i = 0; i < count; i++) json_free(els[i]);
+    free(els);
+}
+
+/* Port of Python: _clear_backend_probe_cache — drop the probe cache */
+/* PoP: clear_backend_probe_cache @ agent/prompt_builder.py:_clear_backend_probe_cache */
+void clear_backend_probe_cache(void)
+{
+    /* _BACKEND_PROBE_CACHE.clear() — the dict identity survives */
+    if (!pbss_cache) return;
+    for (size_t i = 0; i < pbss_cache->c.count; i++) {
+        json_free(pbss_cache->c.items[i]);
+        free(pbss_cache->c.keys[i]);
+    }
+    free(pbss_cache->c.items);
+    free(pbss_cache->c.keys);
+    pbss_cache->c.items = NULL;
+    pbss_cache->c.keys = NULL;
+    pbss_cache->c.count = 0;
+}
+
+/* Port of Python: _skill_should_show — conditional skill activation */
 /* PoP: skill_should_show @ agent/prompt_builder.py:_skill_should_show */
-bool skill_should_show(void) { /* Python default is also a no-op */ 
-    /* In C, skill filtering is done at load time, not at prompt-build time.
-     * All loaded skills are always shown in the prompt.
-     * Python checks available_tools/available_toolsets dynamically;
-     * C achieves the same effect by filtering during skill_load(). */
-    return true;
+bool skill_should_show(void)
+{
+    if (pbss_raise) { json_free(pbss_raise); pbss_raise = NULL; }
+    const json_t *conds = pbss_conditions; /* NULL models {} for legacy callers */
+    /* wanted_platforms = [str(p).strip().lower() for p in
+     *     (conditions.get("session_platforms") or []) if str(p).strip()] */
+    json_t *sp = conds ? json_obj_get(conds, "session_platforms") : NULL;
+    size_t wn = 0;
+    json_t **wels = pbss_iter(sp, 1, &wn);
+    if (pbss_raise) return false;
+    char **wanted = wn ? malloc(wn * sizeof(char *)) : NULL;
+    size_t wc = 0;
+    for (size_t i = 0; i < wn; i++) {
+        char *s = pbss_py_str(wels[i]);
+        char *t = pbss_strip_lower(s);
+        free(s);
+        if (t[0]) wanted[wc++] = t;
+        else free(t);
+    }
+    pbss_iter_free(wels, wn);
+    int excluded = 0;
+    if (wc > 0 && pbss_platform && pbss_platform[0]) {
+        char *norm = pbss_strip_lower(pbss_platform);
+        int found = 0;
+        for (size_t i = 0; i < wc; i++) {
+            if (strcmp(norm, wanted[i]) == 0) { found = 1; break; }
+        }
+        free(norm);
+        if (!found) excluded = 1; /* gateway-channel gate fails closed */
+    }
+    for (size_t i = 0; i < wc; i++) free(wanted[i]);
+    free(wanted);
+    if (excluded) return false;
+    if (!pbss_tools && !pbss_toolsets) return true; /* no filtering info */
+    /* fallback_for hides when the primary IS available; requires hides
+     * when a requirement is NOT. any() order is source order. */
+    static const char *keys[] = {
+        "fallback_for_toolsets", "fallback_for_tools",
+        "requires_toolsets", "requires_tools",
+    };
+    for (size_t k = 0; k < 4 && !excluded; k++) {
+        const json_t *set = (k == 0 || k == 2) ? pbss_toolsets : pbss_tools;
+        int hide_when_present = k < 2;
+        json_t *v = conds ? json_obj_get(conds, keys[k]) : NULL;
+        /* .get(k, []): absent -> empty; present null -> TypeError */
+        size_t en = 0;
+        json_t **els = v ? pbss_iter(v, 0, &en) : NULL;
+        if (pbss_raise) { pbss_iter_free(els, en); return false; }
+        for (size_t i = 0; i < en; i++) {
+            int in_set = pbss_contains(set, els[i]);
+            if (hide_when_present ? in_set : !in_set) { excluded = 1; break; }
+        }
+        pbss_iter_free(els, en);
+    }
+    return !excluded;
 }
 
 /* Port of Python: _parse_skill_file — read SKILL.md, check compatibility */
 /* Returns (is_compatible, frontmatter_json, description) */
 /* PoP: parse_skill_file @ agent/prompt_builder.py:_parse_skill_file */
-bool parse_skill_file(const char *skill_path, char *frontmatter_out, size_t fm_sz, 
+bool parse_skill_file(const char *skill_path, char *frontmatter_out, size_t fm_sz,
                        char *desc_out, size_t desc_sz) {
     if (!skill_path || !skill_path[0]) return true;
     /* Read file content */
@@ -1649,5 +2029,3 @@ int drain_truncation_warnings(char *output, size_t out_sz) {
     n_truncation_warnings = 0; /* Drain */
     return count;
 }
-
-

@@ -11,7 +11,6 @@
 #include "hermes_logger.h"
 #include <stddef.h>
 
-/* PoP: hlog_setup_logging @ hermes_logging.py:setup_logging */
 int hlog_setup_logging(const char *mode) {
     /* The C logger initializes its rotating file writers lazily on first
      * hermes_log() call (logger.c); mode selects which component log also

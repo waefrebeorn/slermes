@@ -30,7 +30,6 @@ int wrapper_targets_checkout(void) { return 1; }
 /* PoP: known_wrapper_candidates @ hermes_cli/linux_desktop_entry.py:_known_wrapper_candidates */
 char *known_wrapper_candidates(void) { return strdup("[]"); }
 
-/* PoP: shebang_escapes_running_env @ hermes_cli/linux_desktop_entry.py:_shebang_escapes_running_env */
 int shebang_escapes_running_env(void) { return 0; }
 
 /* PoP: png_dimensions @ hermes_cli/linux_desktop_entry.py:_png_dimensions */

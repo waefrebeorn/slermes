@@ -28,7 +28,6 @@ char *transcript_events(void) { return strdup("[]"); }
 /* PoP: apply_event @ gateway/hosted_room_policy_checkpoint.py:apply_event */
 void apply_event(const char *event) { (void)event; }
 
-/* PoP: publication_exists @ gateway/hosted_room_policy_checkpoint.py:publication_exists */
 int publication_exists(void) { return 0; }
 
 /* PoP: events_for_task @ gateway/hosted_room_policy_checkpoint.py:events_for_task */

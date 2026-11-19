@@ -17,7 +17,7 @@
 static void *g_qqbot_interaction_callback = NULL;
 
 /* PoP: qqbot_check_qq_requirements @ plugins/platforms/qqbot/adapter.py:check_qq_requirements */
-int qqbot_check_qq_requirements(const char *arg) { /* Python default is also a no-op */ 
+int qqbot_check_qq_requirements(const char *arg) { /* Python default is also a no-op */
     /* C port implements the QQ adapter natively; deps are present. */
     return 1;
 }
@@ -254,7 +254,6 @@ int qqbot_u_handle_ready(const char *arg) {
     return 0;
 }
 
-/* PoP: qqbot_u_parse_json @ plugins/platforms/qqbot/adapter.py:_parse_json */
 int qqbot_u_parse_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: qqbot_u_next_msg_seq @ plugins/platforms/qqbot/adapter.py:_next_msg_seq */

@@ -124,7 +124,6 @@ static bool marker_epoch_is_stale(const char *body, const char *current_epoch)
     return stale;
 }
 
-/* PoP: body @ gateway/drain_control.py:read_drain_request */
 /* Returns malloc'd JSON body (possibly "{}") or NULL if absent. Caller frees. */
 char *gateway_drain_control_read_drain_request(const char *home)
 {

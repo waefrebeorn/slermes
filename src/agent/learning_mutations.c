@@ -1,10 +1,8 @@
 
 
 
-/* PoP: _memory_detail @ agent/learning_mutations.py:_memory_detail */
 void *agent_learning_mutations_memory_detail(void) { return NULL; }
 
-/* PoP: _skill_detail @ agent/learning_mutations.py:_skill_detail */
 void *agent_learning_mutations_skill_detail(void) { return NULL; }
 /*
  * port_learning_mutations.c — C port of agent/learning_mutations.py.

@@ -80,13 +80,11 @@ int ceg_on_session_start(void) {
     return 0;
 }
 
-/* PoP: ceg_on_session_end @ agent/context_engine.py:on_session_end */
 int ceg_on_session_end(void) {
     /* Python: real session boundaries. */
     return 0;
 }
 
-/* PoP: ceg_on_session_reset @ agent/context_engine.py:on_session_reset */
 int ceg_on_session_reset(void) {
     /* Python: /new or /reset. */
     return 0;

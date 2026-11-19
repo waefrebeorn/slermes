@@ -61,7 +61,7 @@ char *strip_aux_credential(const char *value) {
 /* Port of Python: _needle_in_path_component */
 bool needle_in_path_component(const char *needle, const char *path) {
     if (!needle || !path || !*needle) return false;
-    
+
     /* Normalise needle: hyphens → underscores */
     size_t nlen = strlen(needle);
     char norm_needle[256];
@@ -70,19 +70,19 @@ bool needle_in_path_component(const char *needle, const char *path) {
         norm_needle[ni++] = (needle[i] == '-') ? '_' : needle[i];
     }
     norm_needle[ni] = '\0';
-    
+
     /* Copy path and split by '/' */
     char path_copy[1024];
     size_t plen = strlen(path);
     if (plen >= sizeof(path_copy)) plen = sizeof(path_copy) - 1;
     memcpy(path_copy, path, plen);
     path_copy[plen] = '\0';
-    
+
     /* Normalise path separators */
     for (size_t i = 0; path_copy[i]; i++) {
         if (path_copy[i] == '\\') path_copy[i] = '/';
     }
-    
+
     char *save;
     const char *part = strtok_r(path_copy, "/", &save);
     while (part) {
@@ -950,55 +950,130 @@ bool get_consolidate(void) {
     return false; /* DEFAULT_CONSOLIDATE = false */
 }
 
-/* PoP: metadata @ agent/curator.py:_merge_request_overrides */
-/* Merge resolver metadata (runtime_overrides) with task-local request
- * body fields (slot_extra_body).  Mirrors the Python dict merge:
+/* ── _merge_request_overrides revival (tail_revive3) ────────────────────────
+ * Faithful port of agent/curator.py:_merge_request_overrides:
  *   merged = dict(runtime_overrides or {})
  *   if isinstance(slot_extra_body, dict) and slot_extra_body:
- *       extra_body = dict(merged.get("extra_body") or {})
- *       extra_body.update(slot_extra_body)
- *       merged["extra_body"] = extra_body
+ *       merged["extra_body"] = {**(merged.get("extra_body") or {}),
+ *                               **slot_extra_body}
  *   return merged
- *
- * Both arguments may be NULL (treated as empty dict).
- * The caller owns the returned json_t object. */
+ * Fidelity notes:
+ *  - `or {}` is Python truthiness: null/false/0/""/empty object/empty array
+ *    all become {}. A truthy non-mapping runtime_overrides raises exactly
+ *    like dict(): str -> ValueError (update-sequence message), number/bool
+ *    -> TypeError "'X' object is not iterable". Non-empty arrays are out of
+ *    fixture scope (documented); the port fails closed with TypeError.
+ *  - existing extra_body is MERGED under the slot keys (slot wins), and an
+ *    existing truthy non-mapping extra_body raises TypeError "'X' object is
+ *    not a mapping" ({**x}). Falsy extra_body -> {}.
+ *  - json_set ADOPTS: every borrowed value is json_copy'd; the merged
+ *    object escapes owned by the caller. Existing "extra_body" keeps its
+ *    key position (json_set replaces in place).
+ * Raises park in g_cur_pending_raise (harness emits {"__raise__": ...});
+ * production callers see NULL on the raise paths. */
+
+static json_t *g_cur_pending_raise; /* owned */
+
+static int cur_jtruth(const json_t *v) {
+    if (!v) return 0;
+    switch (v->type) {
+        case JSON_NULL: return 0;
+        case JSON_BOOL: return v->bool_val ? 1 : 0;
+        case JSON_NUMBER: return v->num_val != 0.0 ? 1 : 0;
+        case JSON_STRING: return v->str_val && v->str_val[0] ? 1 : 0;
+        default: return v->c.count > 0 ? 1 : 0;
+    }
+}
+
+static const char *cur_type_name(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+        case JSON_BOOL: return "bool";
+        case JSON_NUMBER: return "int";
+        case JSON_STRING: return "str";
+        case JSON_ARRAY: return "list";
+        default: return "dict";
+    }
+}
+
+static void cur_raise(const char *cls, const char *msg) {
+    json_t *e = json_object();
+    json_set_hdr(e, "__raise__", cls);
+    json_set_hdr(e, "message", msg);
+    json_free(g_cur_pending_raise);
+    g_cur_pending_raise = e;
+}
+
+static void cur_raise_fmt(const char *cls, const char *fmt, const char *arg) {
+    char msg[256];
+    snprintf(msg, sizeof msg, fmt, arg);
+    cur_raise(cls, msg);
+}
+
+/* Merge resolver metadata (runtime_overrides) with task-local request
+ * body fields (slot_extra_body). Both arguments may be NULL (treated as
+ * absent -> falsy -> {}). The caller owns the returned json_t object;
+ * NULL is returned when the live dict merge would raise (the exception
+ * spec parks in g_cur_pending_raise for the test harness). */
+/* PoP: metadata @ agent/curator.py:_merge_request_overrides */
 json_t *curator_merge_request_overrides(json_t *runtime_overrides,
                                         json_t *slot_extra_body)
 {
+    json_free(g_cur_pending_raise);
+    g_cur_pending_raise = NULL;
     json_t *merged = json_object();
-    json_t *extra_body = NULL;
-    const char *key;
-    json_t *val;
+    if (!merged) return NULL;
 
-    if (!merged)
-        return NULL;
-
-    /* Start with runtime_overrides contents as base */
-    if (runtime_overrides && json_is_object(runtime_overrides)) {
-        for (size_t i = 0; i < json_object_size(runtime_overrides); i++) {
-            const char *k = json_object_get_key_at(runtime_overrides, i);
-            json_t *v = json_object_get_at(runtime_overrides, i);
-            if (k) json_set(merged, k, v);
+    /* merged = dict(runtime_overrides or {}) */
+    if (cur_jtruth(runtime_overrides)) {
+        if (runtime_overrides->type == JSON_OBJECT) {
+            for (size_t i = 0; i < json_object_size(runtime_overrides); i++) {
+                const char *k = json_object_get_key_at(runtime_overrides, i);
+                json_t *v = json_object_get_at(runtime_overrides, i);
+                if (k) json_set(merged, k, json_copy(v));
+            }
+        } else if (runtime_overrides->type == JSON_STRING) {
+            json_free(merged);
+            cur_raise("ValueError",
+                      "dictionary update sequence element #0 has length 1; 2 is required");
+            return NULL;
+        } else if (runtime_overrides->type == JSON_ARRAY) {
+            /* non-empty array: dict(array) element-shape dependent; out of
+             * documented fixture scope — fail closed. */
+            json_free(merged);
+            cur_raise("TypeError", "cannot convert dictionary update sequence element #0 to a sequence");
+            return NULL;
+        } else {
+            json_free(merged);
+            cur_raise_fmt("TypeError", "'%s' object is not iterable",
+                          cur_type_name(runtime_overrides));
+            return NULL;
         }
     }
 
-    /* If slot_extra_body is a non-empty object, merge its keys */
-    if (slot_extra_body && json_is_object(slot_extra_body)) {
-        int has_keys = 0;
+    /* if isinstance(slot_extra_body, dict) and slot_extra_body: */
+    if (slot_extra_body && slot_extra_body->type == JSON_OBJECT &&
+        json_object_size(slot_extra_body) > 0) {
+        json_t *existing = json_obj_get(merged, "extra_body");
+        json_t *base;
+        if (cur_jtruth(existing)) {
+            if (existing->type != JSON_OBJECT) {
+                json_free(merged);
+                cur_raise_fmt("TypeError", "'%s' object is not a mapping",
+                              cur_type_name(existing));
+                return NULL;
+            }
+            base = json_copy(existing);
+        } else {
+            base = json_object();
+        }
+        if (!base) { json_free(merged); return NULL; }
         for (size_t i = 0; i < json_object_size(slot_extra_body); i++) {
             const char *k = json_object_get_key_at(slot_extra_body, i);
             json_t *v = json_object_get_at(slot_extra_body, i);
-            if (!k) continue;
-            if (!has_keys) {
-                extra_body = json_object();
-                has_keys = 1;
-            }
-            if (extra_body) json_set(extra_body, k, v);
+            if (k) json_set(base, k, json_copy(v));
         }
-        if (extra_body) {
-            json_set(merged, "extra_body", extra_body);
-            json_free(extra_body);
-        }
+        json_set(merged, "extra_body", base); /* adopts; keeps position */
     }
 
     return merged;

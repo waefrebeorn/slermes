@@ -1,0 +1,88 @@
+{"func":"normalize_empty_agent_response","in":{"agent_result":{},"response":"All done.","history_len":3,"overflow_verdict":false,"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"failed":true,"error":"HTTP 400: {\"error\":\"context length exceeded\"}"},"response":"HTTP 400: {\"error\":\"context length exceeded\"}","history_len":80,"overflow_verdict":true,"provider_verdicts":[["HTTP 400: {\"error\":\"context length exceeded\"}",true]],"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"failed":true,"error":"Session storage write failed: disk full","failure_reason":"session_persistence_failed:disk"},"response":"","overflow_verdict":false,"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"failed":true,"error":"ValueError('boom')"},"response":"","overflow_verdict":false,"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"interrupted":true,"api_calls":0},"response":"","overflow_verdict":false,"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"api_calls":2,"partial":true,"failure_reason":"truncated","error":"Response truncated due to output length limit"},"response":"","overflow_verdict":false,"hidden_verdict":false,"provider_verdicts":[["Response truncated due to output length limit",false]],"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"api_calls":1,"partial":true,"failure_reason":"loop_error","error":"HTTP 500: upstream boom"},"response":"","overflow_verdict":false,"hidden_verdict":false,"provider_verdicts":[["HTTP 500: upstream boom",true]],"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"normalize_empty_agent_response","in":{"agent_result":{"api_calls":0},"response":"","overflow_verdict":false,"i18n":{"gateway.shared.unknown_error":"unknown error","gateway.errors.session_storage_unavailable":"STORAGE","gateway.errors.session_storage_unavailable_disk":"STORAGE_DISK","gateway.errors.context_overflow":"OVERFLOW","gateway.errors.generic_failed":"GENERIC_FAILED","gateway.errors.interrupted_before_start":"INTERRUPTED_BEFORE_START","gateway.errors.processing_incomplete":"processing incomplete","gateway.errors.stopped_before_finishing":"STOPPED{reason}","gateway.errors.no_response":"NO_RESPONSE","gateway.errors.previous_turn_cleanup":"PREV_CLEANUP"}}}
+{"func":"build_replay_entry","in":{"role":"assistant","content":"answer","msg":{"content":"answer","api_content":"answer","reasoning":"think","reasoning_content":"","finish_reason":"stop","timestamp":123,"message_uid":"u1","_db_persisted":true,"_merged_durable_rows":2},"preserve_timestamp":true,"metadata_fields":{"display_metadata":{"x":1}},"identity_fields":{"message_uid":"u1"}}}
+{"func":"build_replay_entry","in":{"role":"user","content":"hi","msg":{"content":"hi","api_content":"hi","timestamp":999,"reasoning":"ignored"},"preserve_timestamp":false,"metadata_fields":{},"identity_fields":{}}}
+{"func":"build_replay_entry","in":{"role":"assistant","content":"rewritten","msg":{"content":"original","api_content":"original"},"preserve_timestamp":false,"metadata_fields":{},"identity_fields":{}}}
+{"func":"build_replay_entry","in":{"role":"assistant","content":"x","msg":{"content":"x","reasoning_content":null,"reasoning":null,"finish_reason":""},"preserve_timestamp":false,"metadata_fields":{},"identity_fields":{}}}
+{"func":"build_replay_entry","in":{"role":"tool","content":"out","msg":{"content":"out","api_content":"out","timestamp":5},"preserve_timestamp":true,"metadata_fields":{},"identity_fields":{}}}
+{"func":"build_replay_entry","in":{"role":"user","content":"c","msg":{"content":"c","_absorbed_message_uids":["a","b"],"_unnamed_durable_rows":1,"_retired_durable_rows":0,"_db_persisted":false},"preserve_timestamp":false,"metadata_fields":{},"identity_fields":{"_absorbed_message_uids":["a","b"]}}}
+{"func":"has_replayable_sidecar","in":{"role":"assistant","content":"","msg":{"api_content":"text"}}}
+{"func":"has_replayable_sidecar","in":{"role":"assistant","content":"visible","msg":{"api_content":"text"}}}
+{"func":"has_replayable_sidecar","in":{"role":"user","content":"","msg":{"api_content":"text"}}}
+{"func":"has_replayable_sidecar","in":{"role":"assistant","content":"","msg":{"api_content":["x"]}}}
+{"func":"has_replayable_sidecar","in":{"role":"assistant","content":"","msg":{"api_content":""}}}
+{"func":"has_replayable_sidecar","in":{"role":"assistant","content":null,"msg":{"api_content":"promoted"}}}
+{"func":"command_origin_for_source","in":{"source":{"platform":{"value":"telegram"},"chat_id":123,"chat_name":"Group","thread_id":"7"}}}
+{"func":"command_origin_for_source","in":{"source":{"platform":"slack","chat_id":"C1"}}}
+{"func":"command_origin_for_source","in":{"source":{"platform":"telegram"}}}
+{"func":"command_origin_for_source","in":{"source":{"platform":"telegram","chat_id":0}}}
+{"func":"command_origin_for_source","in":{"source":{"platform":"telegram","chat_id":"c"},"platform_raises":true}}
+{"func":"command_origin_for_source","in":{"source":{"platform":null,"chat_id":"c"}}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{},"session_key":"agent:main"}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":null},"session_key":"agent:main"}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":{},"_agent_cache_lock":true},"session_key":"agent:main","entry_tuple":[{"id":"agent1"},{"meta":1}]}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":{}},"session_key":"k2","entry_value":{"id":"a2"}}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":{},"_agent_cache_lock":true},"session_key":"k3","cache_get_raises":true}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":{},"_agent_cache_lock":true},"session_key":"k4","entry_tuple":[]}}
+{"func":"cached_agent_for_hygiene","in":{"gateway":{"_agent_cache":{}},"session_key":"k5"}}
+{"func":"get_or_create_pool","in":{"state":{},"attr":"_executor","make_pool_ret":{"id":"pool1","_shutdown":false}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":true,"_executor":{"id":"old","_shutdown":false}},"attr":"_executor","make_pool_ret":{"id":"unused"}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":true,"_executor":{"id":"old","_shutdown":true}},"attr":"_executor","make_pool_ret":{"id":"new","_shutdown":false}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_closing":true},"attr":"_executor","make_pool_ret":{"id":"unused"}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":true,"_executor_closing":true,"_executor":{"id":"x","_shutdown":false}},"attr":"_housekeeping_executor","make_pool_ret":{"id":"unused"}}}
+{"func":"stop_pool","in":{"executor":null}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1","t2"]}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1"]},"shutdown_typeerror":true}}
+{"func":"stop_pool","in":{"executor":{}}}
+{"func":"resolve_session_key_or_none","in":{"source":{},"session_key":"agent:main:x","derive_ret":"unused"}}
+{"func":"resolve_session_key_or_none","in":{"source":{"platform":"telegram"},"session_key":"","derive_ret":"agent:main:telegram:1"}}
+{"func":"resolve_session_key_or_none","in":{"source":null,"session_key":null}}
+{"func":"resolve_session_key_or_none","in":{"source":{"platform":"slack"},"session_key":null,"derive_raises":true}}
+{"func":"resolve_session_key_or_none","in":{"source":{"platform":"slack"},"session_key":null,"derive_ret":"agent:work:slack:C1"}}
+{"func":"cron_profile_gate","in":{"name":"p1","home":"/h/p1","probe_raises":true,"probe_error":"boom","self_pid":100}}
+{"func":"cron_profile_gate","in":{"name":"p2","home":"/h/p2","liveness":{"running":false,"pid":999},"self_pid":100}}
+{"func":"cron_profile_gate","in":{"name":"p3","home":"/h/p3","liveness":{"running":true,"pid":null},"self_pid":100}}
+{"func":"cron_profile_gate","in":{"name":"default","home":"/h/d","liveness":{"running":true,"pid":100},"self_pid":100}}
+{"func":"cron_profile_gate","in":{"name":"work","home":"/h/w","liveness":{"running":true,"pid":200},"self_pid":100}}
+{"func":"cron_profile_gate","in":{"name":"p6","home":"/h/p6","liveness":{"running":false,"pid":null},"self_pid":100}}
+{"func":"cron_tick_profile_homes","in":{"config":{},"homes":[["default","/h/default"],["work","/h/work"]],"active":"work","profile_dir":"/unused"}}
+{"func":"cron_tick_profile_homes","in":{"config":{},"homes":[["default","/h/default"]],"active":"custom","profile_dir":"/custom/home"}}
+{"func":"cron_tick_profile_homes","in":{"config":{},"homes":[["work","/h/work"]],"active":null,"profile_dir":"/h/default"}}
+{"func":"cron_tick_profile_homes","in":{"config":{},"homes":[["default","/h/default"]],"active":"custom","dir_raises":true}}
+{"func":"cron_tick_profile_homes","in":{"config":{},"homes":[],"active":"","profile_dir":"/h/default"}}
+{"func":"handoff_watch_scopes","in":{"runner":{}}}
+{"func":"handoff_watch_scopes","in":{"runner":{"config":null}}}
+{"func":"handoff_watch_scopes","in":{"runner":{"config":{"multiplex_profiles":false}}}}
+{"func":"handoff_watch_scopes","in":{"runner":{"config":{"multiplex_profiles":true}},"homes":[["default","/h/d"],["work","/h/w"],["","/h/x"],["ghost",null]]}}
+{"func":"handoff_watch_scopes","in":{"runner":{"config":{"multiplex_profiles":true}},"homes_raise":true}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":{"outcome":"refuse","message":"REFUSED_PRE"},"claim_outcome":"acquired"}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"acquired"}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"could-not-open","claim_error":"EROFS: read-only lock dir"}}
+{"func":"claim_host_gateway_role","in":{"force":true,"hermes_home":"/home/user/.hermes","claim_outcome":"held-by-other","read_record_raises":true}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"held-by-other","read_record":{"home":"/other/.hermes","pid":5},"describe_ret":"gateway@/other","tenant":true}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"held-by-other","read_record":{"home":"/home/user/.hermes","pid":9},"describe_ret":"gateway@home","tenant":false,"standalone_profile":true,"live_owner":{"pid":9},"attach_decision_recheck":{"outcome":"start","message":""}}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"held-by-other","read_record":null,"tenant":false,"standalone_profile":false,"owner_standalone":true,"migrate_command":"hermes gateway migrate --multiplex"}}
+{"func":"claim_host_gateway_role","in":{"force":false,"hermes_home":"/home/user/.hermes","attach_decision":null,"claim_outcome":"held-by-other","read_record":{"home":"/home/user/.hermes","pid":9},"describe_ret":"gateway@home","tenant":false,"standalone_profile":false,"owner_standalone":false}}
+{"func":"owner_is_standalone","in":{"owner":null,"self_pid":100}}
+{"func":"owner_is_standalone","in":{"owner":{"pid":100},"self_pid":100}}
+{"func":"owner_is_standalone","in":{"owner":{"pid":200},"self_pid":100,"hermes_home":"/home/user/.hermes","profile_name":"work","answered":{"standalone":true}}}
+{"func":"owner_is_standalone","in":{"owner":{"pid":200},"self_pid":100,"hermes_home":"/home/user/.hermes","profile_name":"work","answered":null}}
+{"func":"owner_is_standalone","in":{"host_gateway_raises":true,"self_pid":100}}
+{"func":"owner_is_standalone","in":{"owner":{"pid":200},"self_pid":100,"hermes_home":"/home/user/.hermes","profile_name":"work","serve_raises":true}}
+{"func":"refuse_second_host_gateway","in":{"owner":{"home":"/home/user/.hermes","pid":9},"describe_ret":"gateway@home","migrate_command":"hermes gateway migrate --multiplex"}}
+{"func":"refuse_second_host_gateway","in":{"owner":null,"migrate_command":"hermes gateway migrate --multiplex"}}
+{"func":"refuse_second_host_gateway","in":{"owner":{"home":"/h2"},"describe_ret":"gw2","migrate_command":"hermes gateway migrate --multiplex"}}
+{"func":"refuse_second_host_gateway","in":{"owner":{"home":"/home/user/.hermes"},"describe_ret":"","migrate_command":"hermes gateway migrate --multiplex"}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":{"multiplex_profiles":true}},"owns":false}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":{"multiplex_profiles":true}},"owns":true,"hermes_home":"/home/user/.hermes","served_names":["default","work"]}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":{"multiplex_profiles":false}},"owns":true,"hermes_home":"/home/user/.hermes","profile_name":"default"}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":null},"owns":true,"hermes_home":"/home/user/.hermes","profile_name":"default"}}
+{"func":"refresh_host_gateway_record","in":{"runner":{},"owns":true,"hermes_home":"/home/user/.hermes"}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":{"multiplex_profiles":true}},"owns_raises":true}}
+{"func":"refresh_host_gateway_record","in":{"runner":{"config":{"multiplex_profiles":true}},"owns":true,"hermes_home":"/home/user/.hermes","served_raises":true}}
