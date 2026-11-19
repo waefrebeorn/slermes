@@ -728,6 +728,10 @@ def install_stubs(ns):
     })
     for verb in ("start", "stop", "restart", "uninstall", "install"):
         ns["systemd_" + verb] = systemd_stub(verb)
+    # launchd_install keeps its DEDICATED stub (live _cmd_install calls
+    # launchd_install(force, start_now=..., force_unit_path=...) directly);
+    # the generic loop used to overwrite it with launchd_stub("install").
+    for verb in ("start", "stop", "restart", "uninstall"):
         ns["launchd_" + verb] = launchd_stub(verb)
 
     # ── seed lazy-import modules ──

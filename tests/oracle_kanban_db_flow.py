@@ -394,8 +394,15 @@ def run_case(func, inp):
             r = NS[py](inp.get("model"), inp.get("provider"))
         elif func == "_normalize_task_skills":
             # module constant recomputed per case via the SAME seam the C
-            # port calls at function entry (first trace event).
-            names = NS["get_toolset_names"]()
+            # port calls at function entry — but ONLY when skills is not
+            # None: C returns before the seam call on the null path (live
+            # makes no runtime call at all), so recording it there leaks a
+            # call neither side makes.
+            if inp.get("skills") is not None:
+                names = NS["get_toolset_names"]()
+            else:
+                script = (inp.get("io") or {}).get("get_toolset_names") or {}
+                names = script.get("ret")
             NS["KNOWN_TOOLSET_NAMES"] = frozenset(
                 str(n).casefold() for n in (names or []))
             r = NS[py](inp.get("skills"))

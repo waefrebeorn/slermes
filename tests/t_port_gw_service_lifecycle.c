@@ -351,6 +351,9 @@ static char *sf_unit_read_text(void *ctx, const char *path, bool *raised) {
     *raised = in_bool(c, "unit_read_raises");
     char *r = NULL;
     if (!*raised && v && v->type == JSON_STRING) r = strdup(v->str_val);
+    /* live: unit_path.read_text(encoding="utf-8-sig") strips a leading BOM */
+    if (r && (unsigned char)r[0] == 0xEF && (unsigned char)r[1] == 0xBB && (unsigned char)r[2] == 0xBF)
+        memmove(r, r + 3, strlen(r + 3) + 1);
     json_t *e = ev("unit_read_text"); evs(e, "path", path); evs(e, "ret", r); evb(e, "raised", *raised); rec(c, e);
     return r;
 }

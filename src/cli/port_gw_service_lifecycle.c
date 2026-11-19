@@ -600,7 +600,7 @@ gwsl_verdict_t gwsl_restart_all_as_host_flow(const json_t *owner, bool system, b
     bool service_stopped = gwsl_stop_installed_service(system, s, exc);
     if (exc_stop(exc, &v)) return v;
     int total;
-    if (owner) {
+    if (owner && owner->type != JSON_NULL) {
         int stopped = s->stop_host_multiplexer(s->ctx, owner);
         total = stopped + (service_stopped ? 1 : 0);
         if (total) {
