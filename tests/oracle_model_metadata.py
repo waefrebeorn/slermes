@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Oracle for the pure slice of agent/model_metadata.py."""
 import json
+import os
 import sys
 
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
@@ -38,7 +39,23 @@ if "httpx" not in sys.modules:
     _hx.get = lambda *a, **k: None
     sys.modules["httpx"] = _hx
 
-from agent import model_metadata as mm   # noqa: E402
+try:
+    from agent import model_metadata as mm   # noqa: E402
+    # Call-time deps of the batch-2 ports: _strip_openrouter_routing_variant
+    # infers the provider via the registry, and _is_codex_route imports the
+    # config helpers even when the custom-provider list is passed explicitly.
+    # Pre-import them so a missing dep triggers the venv re-exec below rather
+    # than a false mismatch at comparison time.
+    import providers                        # noqa: F401,E402
+    from hermes_cli import config as _hcfg  # noqa: F401,E402
+except ImportError:
+    _venv = os.path.expanduser("~/hermes-agent/.venv/Scripts/python.exe")
+    if not os.path.isfile(_venv):
+        _venv = os.path.expanduser("~/hermes-agent/.venv/bin/python")
+    if os.path.isfile(_venv) and \
+            os.path.abspath(sys.executable) != os.path.abspath(_venv):
+        os.execv(_venv, [_venv, os.path.abspath(__file__)] + sys.argv[1:])
+    raise
 
 
 def main() -> int:
@@ -78,6 +95,57 @@ def main() -> int:
                 want = mm._server_root(i["base_url"])
             elif fn == "lmstudio_root":
                 want = mm._lmstudio_server_root(i["base_url"])
+            elif fn == "strip_or_variant":
+                want = mm._strip_openrouter_routing_variant(
+                    i["model"], i["base_url"], i["provider"])
+            elif fn == "codex_route":
+                want = mm._is_codex_route(
+                    i["provider"], i["base_url"], i["custom_providers"])
+            elif fn == "flat_ctx":
+                want = mm._extract_flat_context_length(i["payload"])
+            elif fn == "model_payload_ctx":
+                want = mm._context_length_from_model_payload(i["payload"])
+            elif fn == "token_rates":
+                want = mm._normalize_token_rates(dict(i["pricing"]),
+                                                 i.get("unit"))
+            elif fn == "split_budget":
+                want = mm._completion_split_budget(i["error_lower"])
+            elif fn == "sglang":
+                want = mm._sglang_window_and_input(i["error_lower"])
+                if want is not None:
+                    want = list(want)
+            elif fn == "phrase_group":
+                want = mm._any_phrase_group(
+                    i["text"], tuple(tuple(g) for g in i["groups"]))
+            elif fn == "suggests_minimax":
+                want = mm._model_name_suggests_minimax(i["model"])
+            elif fn == "stale_32k":
+                want = mm._model_name_suggests_stale_32k_underreport(i["model"])
+            elif fn == "positive_int":
+                want = mm._positive_int(i["value"])
+            elif fn == "bare_codex_slug":
+                want = mm._bare_codex_slug(i["model"])
+            elif fn == "codex_variant_base":
+                want = mm._codex_variant_base(i["model"])
+            elif fn == "bedrock_ctx":
+                want = mm._is_bedrock_context(i["base_url"], i["provider"])
+            elif fn == "codex_catalog_key":
+                want = mm._codex_catalog_key(i["keys"], i["slug"])
+            elif fn == "parse_base_url":
+                p = mm._parse_base_url(i["base_url"], i.get("scheme") or "http")
+                if p is None:
+                    want = None
+                else:
+                    try:
+                        port, perr = p.port, False
+                    except ValueError:
+                        port, perr = None, True
+                    want = {"scheme": p.scheme, "netloc": p.netloc,
+                            "path": p.path, "params": p.params,
+                            "query": p.query, "fragment": p.fragment,
+                            "hostname": p.hostname, "port": port,
+                            "port_invalid": perr, "username": p.username,
+                            "password": p.password}
             else:
                 continue
         except Exception as exc:                       # noqa: BLE001
