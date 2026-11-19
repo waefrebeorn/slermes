@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <pthread.h>
+#include "libjson/json.h"
 
 /* Environment backend hook (tools/environments/base.py:execute).
  * env_ref passed by the caller; returns a malloc'd JSON result string
@@ -259,5 +260,48 @@ char *process_registry_request_close_terminal(const char *session_id);
  * Returns malloc'd JSON {"waited":[...],"completed":[...],"timed_out":[...]}.
  * Caller frees. */
 char *process_registry_wait_for_pending_completions(const char *task_id);
+
+/* ── Pure-function gap closures (src/tools/process_registry_gaps.c) ──────
+ * Session-shaped inputs are json_t objects carrying the ProcessSession
+ * dataclass fields; dict results are malloc'd json_t (caller json_free's). */
+
+/* PoP: process_registry_not_found @ tools/process_registry.py:_not_found */
+json_t *process_registry_not_found(const char *session_id);
+
+/* PoP: process_registry_output_tail @ tools/process_registry.py:_output_tail
+ * Last n code points of output_buffer, ANSI-stripped (malloc'd, caller frees).
+ * n==0 keeps the whole buffer; n<0 drops the first |n| code points. */
+char *process_registry_output_tail(const char *output_buffer, long n);
+
+/* PoP: process_registry_completion_output @ tools/process_registry.py:_completion_output */
+json_t *process_registry_completion_output(const json_t *session);
+
+/* PoP: process_registry_exit_fields @ tools/process_registry.py:ProcessRegistry._exit_fields */
+json_t *process_registry_exit_fields(const json_t *session);
+
+/* PoP: process_registry_status_head @ tools/process_registry.py:ProcessRegistry._status_head */
+json_t *process_registry_status_head(const json_t *session);
+
+/* PoP: process_registry_exit_snapshot @ tools/process_registry.py:ProcessRegistry._exit_snapshot */
+json_t *process_registry_exit_snapshot(const json_t *session, const char *status);
+
+/* PoP: process_registry_global_watch_event @ tools/process_registry.py:ProcessRegistry._global_watch_event */
+json_t *process_registry_global_watch_event(const char *type_, const char *message,
+                                            const json_t *extra);
+
+/* PoP: process_registry_watch_event_base @ tools/process_registry.py:ProcessRegistry._watch_event_base
+ * event_id is the uuid4().hex the live def mints, injected for determinism. */
+json_t *process_registry_watch_event_base(const json_t *session, const char *event_id);
+
+/* PoP: process_registry_session_post_init @ tools/process_registry.py:ProcessSession.__post_init__
+ * Defaults owner_task_id to task_id in place; returns the same object. */
+json_t *process_registry_session_post_init(json_t *session);
+
+/* PoP: process_registry_owns_event @ tools/process_registry.py:ProcessRegistry._owns_event
+ * visible = event_visible(evt); owns_verdict: NULL = no callback, else 1/0
+ * result or -1 when the callback raised (fail closed). */
+bool process_registry_owns_event(const json_t *evt, const char *session_key,
+                                 const int *owns_verdict, bool is_async_delegation,
+                                 bool visible);
 
 #endif /* HERMES_PROCESS_REGISTRY_H */
