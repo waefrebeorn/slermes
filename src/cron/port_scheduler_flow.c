@@ -409,22 +409,26 @@ json_t *sf_stale_code_yield_labels(const char *recorded_error) {
         !sf_startswith(recorded_error, "CronTickYielded")) {
         return json_null();
     }
-    /* _STALE_YIELD_RE = r"stale code: booted on (\S+), disk is at (\S+)\)" */
+    /* _STALE_YIELD_RE = r"stale code: booted on (\S+), disk is at (\S+)\)"
+     * Group 1 is the non-whitespace run ending at the literal comma: the
+     * regex backtracks \S+ off the comma, so locate the ", disk is at "
+     * separator first and validate the run before it. Group 2 backtracks
+     * \S+ to the first ')' inside its non-whitespace run. */
     const char *anchor = strstr(recorded_error, "stale code: booted on ");
     if (!anchor) return json_null();
     const char *p = anchor + strlen("stale code: booted on ");
-    const char *g1 = p;
-    while (*p && !sf_is_ws((unsigned char)*p)) p++;
-    if (p == g1) return json_null();
-    size_t g1len = (size_t)(p - g1);
-    if (strncmp(p, ", disk is at ", 13) != 0) return json_null();
-    p += 13;
-    const char *g2 = p;
-    while (*p && !sf_is_ws((unsigned char)*p)) p++;
-    if (p == g2) return json_null();
-    size_t g2len = (size_t)(p - g2);
-    if (*p != ')') return json_null();
-    char *b = malloc(g1len + 1); memcpy(b, g1, g1len); b[g1len] = '\0';
+    const char *sep = strstr(p, ", disk is at ");
+    if (!sep || sep == p) return json_null();
+    for (const char *q = p; q < sep; q++) {
+        if (sf_is_ws((unsigned char)*q)) return json_null();
+    }
+    size_t g1len = (size_t)(sep - p);
+    const char *g2 = sep + strlen(", disk is at ");
+    const char *p2 = g2;
+    while (*p2 && !sf_is_ws((unsigned char)*p2) && *p2 != ')') p2++;
+    if (p2 == g2 || *p2 != ')') return json_null();
+    size_t g2len = (size_t)(p2 - g2);
+    char *b = malloc(g1len + 1); memcpy(b, p, g1len); b[g1len] = '\0';
     char *d = malloc(g2len + 1); memcpy(d, g2, g2len); d[g2len] = '\0';
     json_t *out = json_array();
     json_append(out, json_string(b));
@@ -544,6 +548,12 @@ bool sf_repeat_alert_withheld(sf_flow_io_t *io, const json_t *incident) {
     bool ok = sf_parse_iso_epoch(as, &last);
     free(as);
     if (!ok) return false;  /* TypeError/ValueError -> False */
+    /* _ensure_aware(dt) resolves its default target tz via _hermes_now().tzinfo
+     * BEFORE the elapsed comparison takes its own now sample (two clock calls).
+     * The tz lookup cannot change the absolute instant, so only the call is
+     * modeled here; the epoch arithmetic below is timezone-independent. */
+    json_t *tz_now = seam(io, "_hermes_now", NULL);
+    json_free(tz_now);
     json_t *now = seam(io, "_hermes_now", NULL);
     char *ns = sf_pystr(now);
     json_free(now);

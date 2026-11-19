@@ -286,6 +286,19 @@ def install_module_stubs():
     hc = mod("hermes_constants", parse_reasoning_effort=_stub_fn("parse_reasoning_effort"),
              resolve_reasoning_config=_stub_fn("resolve_reasoning_config"),
              hermes_home_key=_stub_fn("hermes_home_key"))
+    # In-function imports: `from hermes_cli.config import load_config` inside
+    # _cron_cleanup_timeout_seconds bypasses the NS["load_config"] seed.
+    hcli = sys.modules.setdefault("hermes_cli", types.ModuleType("hermes_cli"))
+    hcli.__path__ = []
+    mod("hermes_cli.config", load_config=_stub_fn("load_config"))
+    # _CronRunScope.enter/exit inner imports.
+    gw = sys.modules.setdefault("gateway", types.ModuleType("gateway"))
+    gw.__path__ = []
+    mod("gateway.session_context", clear_session_vars=_stub_fn("clear_session_vars"),
+        set_session_vars=_stub_fn("set_session_vars"))
+    mod("tools.terminal_tool", clear_session_cwd=_stub_fn("clear_session_cwd"),
+        record_session_cwd=_stub_fn("record_session_cwd"))
+    mod("tools.mcp_tool_costs", bind_run=_stub_fn("bind_run"), unbind_run=_stub_fn("unbind_run"))
     return jobs, hc
 
 
@@ -334,6 +347,27 @@ def extract():
                         exec(compile(ast.Module(body=[sub], type_ignores=[]), SRC, "exec"), ns)
                     except Exception:
                         pass
+    # CronTickYielded: stale_code_yield_labels keys off its __name__.
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef) and node.name == "CronTickYielded":
+            exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec"), ns)
+    # _FireOwnership double: __init__'s _CancelEventLike annotations cannot exec
+    # in the extracted namespace, so bind the real methods onto a bare class and
+    # let run_case set the post-init state (job/owner/events) from the fixture.
+    class _FireOwnershipDouble:
+        pass
+    for nm in ("lost", "transport_cancelled", "operator_cancelled", "side_effect_fence"):
+        if nm in ns:
+            setattr(_FireOwnershipDouble, nm, ns[nm])
+    ns["_FireOwnership"] = _FireOwnershipDouble
+    # Markers imported at the bottom of scheduler.py from cron.scheduler_preflight;
+    # _compose_run_delivery reads them as module globals.
+    pf_src = open(str(QUARRY / "cron" / "scheduler_preflight.py"), encoding="utf-8").read()
+    for node in ast.parse(pf_src).body:
+        if isinstance(node, ast.Assign) and any(
+                isinstance(t, ast.Name) and t.id in ("BLOCKED_CONFIG_MARKER", "BLOCKED_CONFIG_SILENT_MARKER")
+                for t in node.targets):
+            exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec"), ns)
     # pure helpers from cron/jobs.py used by _repeat_alert_withheld
     jsrc = open(JOBS_SRC, encoding="utf-8").read()
     jtree = ast.parse(jsrc)
@@ -375,7 +409,6 @@ def seed_case(ctx, inp):
     else:
         NS["fcntl"] = None
         NS["msvcrt"] = None
-    NS["open"] = lambda *a, **k: _LockFile(ctx, ctx.recorder("open")(*a, **k))
     # module globals mirroring state
     NS["_running_job_ids"] = {tuple(k) for k in ctx.state.get("_running_job_ids", [])}
     NS["_running_fire_owners"] = {tuple(k): {} for k in ctx.state.get("_running_fire_owners", [])}
@@ -386,6 +419,10 @@ def seed_case(ctx, inp):
     # external I/O recorders
     for nm in IO_NAMES:
         NS[nm] = ctx.recorder(nm)
+    # open() must return a file DOUBLE (live calls .close()/.fileno() on it);
+    # seed AFTER the IO_NAMES loop, which would otherwise overwrite it with the
+    # bare recorder returning the scripted int fd.
+    NS["open"] = lambda *a, **k: _LockFile(ctx, ctx.recorder("open")(*a, **k))
     for nm in SEAM_DEFS:
         NS[nm] = ctx.recorder(nm)
     NS["hermes_home_key"] = ctx.recorder("hermes_home_key")
@@ -517,7 +554,16 @@ def run_case(func, inp):
                     ctx.recorder("future.add_done_callback")()
                     self._cb = cb
                 def exception(self):
-                    return ctx.recorder("future.exception")()
+                    ctx.recorder("future.exception")()
+                    # The per-future script is the exception the future carries;
+                    # live logs it via exc_info=(type, exc, exc.__traceback__),
+                    # so a scripted text must become a REAL exception instance.
+                    e = self._exc
+                    if e is None or isinstance(e, BaseException):
+                        return e
+                    if isinstance(e, dict):
+                        return make_exc(e)
+                    return Exception(str(e))
             fo = _F(f.get("exception"))
             futures.append(fo)
         NS[py](futures)
@@ -538,7 +584,9 @@ def run_case(func, inp):
         out["ret"] = None
     elif func == "fire_ownership_lost":
         own = inp.get("ownership") or {}
-        fence = NS["_FireOwnership"](job)
+        fence = NS["_FireOwnership"]()
+        fence.job = job
+        fence.operator_cancel = None
         fence.owner = own.get("owner")
         fence.transport_cancel = _Event(ctx, "transport_cancel") if own.get("transport_cancel") is not None else None
         if fence.transport_cancel is not None:
@@ -566,6 +614,10 @@ def run_case(func, inp):
     elif func in ("cron_run_scope_enter", "cron_run_scope_exit"):
         scope = copy.deepcopy(inp.get("scope") or {})
         obj = types.SimpleNamespace(**scope)
+        # enter/exit are extracted _CronRunScope methods; bind them onto the
+        # state double (a bare SimpleNamespace has no such attributes).
+        obj.enter = types.MethodType(NS["enter"], obj)
+        obj.exit = types.MethodType(NS["exit"], obj)
         obj._cron_session_var = types.SimpleNamespace(
             set=ctx.recorder("cron_session_var.set"), reset=ctx.recorder("cron_session_var.reset"))
         obj._var_map = {n: types.SimpleNamespace(set=ctx.recorder("var_map.set"))

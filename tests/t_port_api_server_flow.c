@@ -185,7 +185,9 @@ static json_t *sf_check_auth(void *ctx, const json_t *request) {
     json_t *e = ev("check_auth");
     evj(e, "ret", r);
     rec(c, e);
-    return r ? json_copy(r) : NULL;
+    /* Seam contract: NULL == None. A scripted JSON null must come back as a
+     * NULL pointer, not a json_null node the flow would read as an error. */
+    return (r && r->type != JSON_NULL) ? json_copy(r) : NULL;
 }
 static json_t *sf_draining(void *ctx) {
     script_ctx_t *c = ctx;
@@ -193,7 +195,7 @@ static json_t *sf_draining(void *ctx) {
     json_t *e = ev("draining_response");
     evj(e, "ret", r);
     rec(c, e);
-    return r ? json_copy(r) : NULL;
+    return (r && r->type != JSON_NULL) ? json_copy(r) : NULL;
 }
 static json_t *sf_handler(void *ctx, const json_t *request) {
     script_ctx_t *c = ctx;
@@ -202,7 +204,7 @@ static json_t *sf_handler(void *ctx, const json_t *request) {
     json_t *e = ev("handler");
     evj(e, "ret", r);
     rec(c, e);
-    return r ? json_copy(r) : json_null();
+    return (r && r->type != JSON_NULL) ? json_copy(r) : NULL;
 }
 static char *sf_scan(void *ctx, const char *prompt) {
     script_ctx_t *c = ctx;

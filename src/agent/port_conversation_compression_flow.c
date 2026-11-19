@@ -1777,9 +1777,6 @@ json_t *ccflow_acquire_compression_lease(const json_t *in)
                            && strcmp(last->str_val, sid) == 0);
             if (warned)
                 json_set(agent, "_last_compression_lock_error_sid", json_string(sid));
-            json_t *la = act("lock_api_absent");
-            set_bool(la, "warned", warned);
-            push(log, la);
             acquired = 1;
         } else {
             int setup_ok = 1;
@@ -1977,11 +1974,13 @@ json_t *ccflow_adopt_grown_durable_parent(const json_t *in)
     size_t n_msgs = (messages && messages->type == JSON_ARRAY) ? messages->c.count : 0;
     if (!db_present || !sid[0]) {
         set_val(ret, "v", NULL);
+        set_val(ret, "watermark", jget(in, "watermark"));
         ret_event(log, ret);
         return log;
     }
     if (!jtruth(jget(in, "store_present")) && !jtruth(jget(in, "loader_present"))) {
         set_val(ret, "v", NULL);
+        set_val(ret, "watermark", jget(in, "watermark"));
         ret_event(log, ret);
         return log;
     }
@@ -1992,6 +1991,7 @@ json_t *ccflow_adopt_grown_durable_parent(const json_t *in)
     push(log, l1);
     if (!d1 || d1->type != JSON_ARRAY || d1->c.count <= n_msgs) {
         set_val(ret, "v", NULL);
+        set_val(ret, "watermark", jget(in, "watermark"));
         ret_event(log, ret);
         return log;
     }
@@ -2013,6 +2013,7 @@ json_t *ccflow_adopt_grown_durable_parent(const json_t *in)
     }
     if (!preflush_ok) {
         set_val(ret, "v", NULL);
+        set_val(ret, "watermark", jget(in, "watermark"));
         ret_event(log, ret);
         return log;
     }
@@ -2024,6 +2025,7 @@ json_t *ccflow_adopt_grown_durable_parent(const json_t *in)
     if (!d2 || d2->type != JSON_ARRAY || d2->c.count <= n_msgs) {
         json_free(d2);
         set_val(ret, "v", NULL);
+        set_val(ret, "watermark", jget(in, "watermark"));
         ret_event(log, ret);
         return log;
     }
@@ -2188,10 +2190,6 @@ json_t *ccflow_resolve_compress_call(const json_t *in)
                        && strcmp(last->str_val, engine) == 0);
         if (warned)
             json_set(agent, "_last_memory_context_unsupported_engine", json_string(engine));
-        json_t *mu = act("memory_context_unsupported");
-        set_str(mu, "engine", engine);
-        set_bool(mu, "warned", warned);
-        push(log, mu);
     }
     json_t *ret = json_object();
     set_val(ret, "kwargs", kwargs);
@@ -2955,7 +2953,8 @@ json_t *ccflow_rebuild_system_prompt_at_boundary(const json_t *in)
     json_t *agent = copy_state(in, "agent");
     json_t *ret = json_object();
     const json_t *cached = jget(agent, "_cached_system_prompt");
-    if (jtruth(jget(in, "retain_seeded"))) {
+    const json_t *retain = jget(agent, "_retain_seeded_system_prompt");
+    if (retain && retain->type == JSON_BOOL && retain->bool_val) {
         if (jtruth(cached)) {
             json_t *rc = act("reconstruct_static_prefix");
             set_str(rc, "log_label", "compression seeded-prompt");
@@ -2977,8 +2976,11 @@ json_t *ccflow_rebuild_system_prompt_at_boundary(const json_t *in)
     const char *new_prompt;
     if (cached && cached->type != JSON_NULL && cached->type == JSON_STRING
         && strcmp(cached->str_val ? cached->str_val : "", rebuilt) == 0) {
-        new_prompt = cached->str_val ? cached->str_val : "";
+        /* json_set frees the OLD node: read the kept bytes from the replacement,
+         * never from `cached` (use-after-free otherwise). */
         json_set(agent, "_cached_system_prompt", json_copy(cached));
+        const json_t *kept = jget(agent, "_cached_system_prompt");
+        new_prompt = kept->str_val ? kept->str_val : "";
         json_t *rc = act("reconstruct_static_prefix");
         set_str(rc, "log_label", "compression keep-prompt");
         push(log, rc);
@@ -3031,7 +3033,7 @@ json_t *ccflow_commit_compaction(const json_t *in)
         set_str(ret, "split_status", split_status);
         set_bool(ret, "session_commit_succeeded", 0);
         set_bool(ret, "compacted_in_place", 0);
-        set_bool(ret, "made_progress", 0);
+        set_bool(ret, "made_progress", made_progress);
         json_set(ret, "state", agent);
         json_set(ret, "compressor", comp);
         json_free(messages);
@@ -3054,7 +3056,7 @@ json_t *ccflow_commit_compaction(const json_t *in)
     const json_t *salv = jget(in, "salvage");
     int refused = jtruth(jget(salv, "refused"));
     set_bool(sg, "refused", refused);
-    set_str(sg, "prompt", jgets(salv, "prompt"));
+    set_val(sg, "prompt", jget(salv, "prompt"));
     push(log, sg);
     if (refused) {
         json_free(compressed);
@@ -3086,7 +3088,7 @@ json_t *ccflow_commit_compaction(const json_t *in)
             json_set(comp, resets->c.keys[i], json_copy(resets->c.items[i]));
     }
     for (int i = 0; i < 3; i++) {
-        json_set(comp, tfields[i], held[i]);
+        json_set(comp, tfields[i], held[i] ? held[i] : json_null());
         held[i] = NULL;
     }
     json_t *mce = act("commit_memory_session");
@@ -3857,7 +3859,13 @@ json_t *ccflow_run_pinned_compression_retry(const json_t *in)
     set_str(ve, "kind", det_fallback ? "deterministic_fallback" : "recovered");
     set_str(ve, "label", label);
     push(log, ve);
-    json_set(ret, "v", json_copy(jget(run, "result")));
+    const json_t *rres = jget(run, "result");
+    json_t *rv = json_array();
+    const json_t *rmsgs = jget(rres, "messages");
+    const json_t *rprompt = jget(rres, "prompt");
+    json_append(rv, rmsgs ? json_copy(rmsgs) : json_null());
+    json_append(rv, rprompt ? json_copy(rprompt) : json_null());
+    json_set(ret, "v", rv);
     ret_event(log, ret);
     return log;
 }
@@ -3968,12 +3976,16 @@ json_t *ccflow_await_worker_within_budget(const json_t *in)
             ret_event(log, ret);
             return log;
         }
-        double waited = now - wait_started;
-        int deadline_exceeded = have_dl && now >= dl->num_val;
-        if (!deadline_exceeded && since_progress < idle) {
+        const json_t *nt = (i + 1 < n) ? ticks->c.items[i + 1] : t;
+        double now2 = json_get_num(nt, "now", 0);
+        double waited = now2 - wait_started;
+        double sp2 = json_get_num(nt, "since_progress", 0);
+        const json_t *dl2 = jget(nt, "deadline");
+        int deadline_exceeded = dl2 && dl2->type == JSON_NUMBER && now2 >= dl2->num_val;
+        if (!deadline_exceeded && sp2 < idle) {
             json_t *le = act("log_extending_wait");
             set_num(le, "waited", waited);
-            set_num(le, "since_progress", since_progress);
+            set_num(le, "since_progress", sp2);
             set_num(le, "ceiling", ceiling);
             push(log, le);
             continue;

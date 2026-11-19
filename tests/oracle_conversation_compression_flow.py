@@ -126,6 +126,8 @@ def jnorm(x):
         return {str(k): jnorm(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
         return [jnorm(v) for v in x]
+    if isinstance(x, (set, frozenset)):
+        return sorted(jnorm(v) for v in x)
     if isinstance(x, (threading.Lock,)):
         return True
     if isinstance(x, threading.local):
@@ -142,8 +144,25 @@ def norm_state(obj):
         return {}
 
 
+def flow_state(obj, seams=()):
+    """Agent/compressor state observation window: the instance's own attributes
+    minus the oracle-injected seam doubles (scripted I/O handles, not state).
+    Slotted minimal doubles (no __dict__) are read through their slots."""
+    try:
+        d = dict(vars(obj))
+    except TypeError:
+        d = {}
+        for cls in type(obj).__mro__:
+            for s in getattr(cls, "__slots__", ()):
+                if isinstance(s, str) and hasattr(obj, s):
+                    d[s] = getattr(obj, s)
+    return {k: jnorm(v) for k, v in d.items() if k not in seams}
+
+
 class Frozen:
-    __slots__ = ()
+    # Minimal double: vars() raises TypeError, but the timeout mirror attribute
+    # is writable (the live fallback path sets it).
+    __slots__ = ("_last_compression_timed_out",)
 
 
 def mk_state_obj(d, frozen=False):
@@ -315,10 +334,8 @@ def h_steer_markers(i):
     if i.get("import_error"):
         mods = {"agent.prompt_builder": None}
     else:
-        m = types.ModuleType("agent.prompt_builder")
-        m.STEER_MARKER_OPEN = i.get("open", "")
-        m.STEER_MARKER_CLOSE = i.get("close", "")
-        mods = {"agent.prompt_builder": m}
+        mods = {"agent.prompt_builder": {"STEER_MARKER_OPEN": i.get("open", ""),
+                                          "STEER_MARKER_CLOSE": i.get("close", "")}}
     with stub_modules(mods):
         return list(cc._steer_markers())
 
@@ -561,7 +578,7 @@ def h_set_timeout(i):
     cc._set_context_compression_timeout_outcome(agent, bool(i.get("timed_out")))
     if not bool(i.get("no_vars")) and not isinstance(before, threading.local):
         rec(ev, "local_created")
-    return {"seq": ev, "state": norm_state(agent), "ret": None}
+    return {"seq": ev, "state": flow_state(agent), "ret": None}
 
 
 @handler("reset_context_compression_timeout_outcome")
@@ -572,7 +589,7 @@ def h_reset_timeout(i):
     cc.reset_context_compression_timeout_outcome(agent)
     if not bool(i.get("no_vars")) and not isinstance(before, threading.local):
         rec(ev, "local_created")
-    return {"seq": ev, "state": norm_state(agent), "ret": None}
+    return {"seq": ev, "state": flow_state(agent), "ret": None}
 
 
 @handler("mark_context_compression_timed_out")
@@ -583,7 +600,7 @@ def h_mark_timeout(i):
     cc.mark_context_compression_timed_out(agent)
     if not bool(i.get("no_vars")) and not isinstance(before, threading.local):
         rec(ev, "local_created")
-    return {"seq": ev, "state": norm_state(agent), "ret": None}
+    return {"seq": ev, "state": flow_state(agent), "ret": None}
 
 
 @handler("mark_compression_blocked_transient")
@@ -610,7 +627,7 @@ def h_feasibility_notice(i):
     warning_agent(agent, ev)
     cc._emit_feasibility_notice(agent, i.get("msg", ""))
     emitted = any(e["a"] == "emit_warning" for e in ev)
-    ret_ev(ev, emitted=emitted, state=norm_state(agent))
+    ret_ev(ev, emitted=emitted, state=flow_state(agent, ("_emit_warning",)))
     return ev
 
 
@@ -623,7 +640,7 @@ def h_warn_summary(i):
     agent.context_compressor = mk_state_obj(i.get("compressor"))
     warning_agent(agent, ev)
     cc._warn_summary_or_aux_fallback(agent)
-    ret_ev(ev, state=norm_state(agent))
+    ret_ev(ev, state=flow_state(agent, ("context_compressor", "_emit_warning")))
     return ev
 
 
@@ -849,7 +866,7 @@ def h_gate_blocks(i):
         orig_mark(a, c, reason)
     with patched(cc, "_mark_compression_blocked_transient", mark_wrapper):
         r = cc._automatic_compression_gate_blocks(agent, bypass, include_cooldown=include_cooldown)
-    ret_ev(ev, v=r, state=norm_state(agent))
+    ret_ev(ev, v=r, state=flow_state(agent, ("context_compressor",)))
     return ev
 
 
@@ -894,21 +911,26 @@ def h_begin_attempt(i):
                 trigger=i.get("trigger"), approx_tokens=i.get("approx_tokens"),
                 overflow_reason=i.get("overflow_reason"))
         except RuntimeError:
-            ret_ev(ev, raised="RuntimeError", state=norm_state(agent),
+            ret_ev(ev, raised="RuntimeError",
+                   state=flow_state(agent, ("context_compressor",
+                                            "_pending_context_engine_compression_notification")),
                    compressor=norm_state(comp))
             return ev
     ret_ev(ev, attempt={"snapshot": jnorm(attempt.snapshot),
                         "generation": attempt.generation,
                         "started_at": attempt.started_at,
                         "seed": jnorm(attempt.seed)},
-           state=norm_state(agent), compressor=norm_state(comp))
+           state=flow_state(agent, ("context_compressor",
+                                    "_pending_context_engine_compression_notification")),
+           compressor=norm_state(comp))
     return ev
 
 
 @handler("announce_compression_start")
 def h_announce(i):
     ev = []
-    agent = NS(session_id=i.get("session_id"), model=i.get("model"))
+    agent = NS(session_id=i.get("session_id"), model=i.get("model"),
+               context_compressor=NS())
 
     def emit_status(text):
         rec(ev, "emit_status", text=str(text))
@@ -1030,8 +1052,9 @@ def h_try_acquire(i):
     return ev
 
 
-def _mk_lifecycle(i):
-    lc = cc._CompactionLifecycle(NS(), bool((i.get("lifecycle") or {}).get("status_emitted")))
+def _mk_lifecycle(i, agent=None):
+    lc = cc._CompactionLifecycle(agent if agent is not None else NS(),
+                                 bool((i.get("lifecycle") or {}).get("status_emitted")))
     lc.commit_status = (i.get("lifecycle") or {}).get("commit_status", "aborted")
     lc._done_emitted = bool((i.get("lifecycle") or {}).get("done_emitted"))
     return lc
@@ -1049,7 +1072,7 @@ def h_abort_lease(i):
             if i.get("callback_raises"):
                 raise RuntimeError("callback failed")
         agent.status_callback = status_cb
-    lc = _mk_lifecycle(i)
+    lc = _mk_lifecycle(i, agent)
     attempt = NS(started_at=float(i.get("started_at", 0)), seed=i.get("seed") or {})
     with patched(cc, "_emit_aborted_attempt_telemetry", telemetry_stub(ev, "aborted")), \
          patched(cc, "_existing_system_prompt", existing_prompt_wrapper(ev, cc._existing_system_prompt)):
@@ -1095,7 +1118,9 @@ def h_sit_out(i):
     with patched(cc, "_abort_lease", abort_stub), \
          patched(cc, "_existing_system_prompt", existing_prompt_wrapper(ev, cc._existing_system_prompt)):
         r = cc._sit_out_lock_contention(agent, lease, lc, "sys", None, attempt)
-    ret_ev(ev, v=[r[0], r[1]], state=norm_state(agent))
+    ret_ev(ev, v=[r[0], r[1]],
+           state=flow_state(agent, ("_emit_warning", "_cached_system_prompt",
+                                    "_build_system_prompt")))
     return ev
 
 
@@ -1178,14 +1203,16 @@ def h_acquire_lease(i):
         lease, prompt = cc._acquire_compression_lease(
             agent, commit_fence=fence, lifecycle=lc, system_message="sys",
             approx_tokens=None, attempt=attempt)
+    _acq_seams = ("_session_db", "_cached_system_prompt", "_build_system_prompt",
+                  "_compression_lock_ttl_seconds")
     if lease is None:
-        ret_ev(ev, v=[None, prompt], state=norm_state(agent))
+        ret_ev(ev, v=[None, prompt], state=flow_state(agent, _acq_seams))
     else:
         ret_ev(ev, v=[{"db_present": lease.db is not None,
                        "store_present": lease.store is not None,
                        "sid": lease.sid, "ttl": lease.ttl,
                        "holder": lease.holder, "watermark": lease.watermark}, None],
-               state=norm_state(agent))
+               state=flow_state(agent, _acq_seams))
     return ev
 # ---------------------------------------------------------------- adoption / summary
 
@@ -1207,7 +1234,8 @@ def h_adopt_rotated(i):
         return copy.deepcopy(i.get("recovered")) if i.get("recovered") is not None else None
     lease = NS(db=object() if db_present else None, sid=i.get("sid"), store=None)
     lease.release = lambda: rec(ev, "lease_release")
-    agent = NS(_cached_system_prompt=i.get("cached"),
+    agent = NS(session_id=i.get("sid"),
+               _cached_system_prompt=i.get("cached"),
                _build_system_prompt=lambda sm: i.get("build_result", ""))
     attempt = NS(started_at=float(i.get("started_at", 0)), seed=i.get("seed") or {})
     messages = copy.deepcopy(i.get("messages") or [])
@@ -1329,7 +1357,7 @@ def h_resolve_call(i):
             agent, approx_tokens=i.get("approx_tokens"), focus_topic=i.get("focus_topic"),
             force=bool(i.get("force")), memory_context=i.get("memory_context", ""),
             bypass_cooldown=bool(i.get("bypass_cooldown")))
-    ret_ev(ev, kwargs=jnorm(kwargs), state=norm_state(agent))
+    ret_ev(ev, kwargs=jnorm(kwargs), state=flow_state(agent, ("context_compressor",)))
     return ev
 
 
@@ -1527,18 +1555,20 @@ def h_summary_phase(i):
         except BaseException as exc:
             raised = type(exc).__name__
             phase = None
+    _phase_seams = ("context_compressor", "_cached_system_prompt", "_build_system_prompt")
     if raised:
-        ret_ev(ev, raised=raised, state=norm_state(agent), compressor=norm_state(comp))
+        ret_ev(ev, raised=raised, state=flow_state(agent, _phase_seams),
+               compressor=norm_state(comp))
     elif phase.abort_prompt is not None:
         ret_ev(ev, phase={"messages": jnorm(phase.messages), "abort_prompt": phase.abort_prompt},
-               state=norm_state(agent), compressor=norm_state(comp))
+               state=flow_state(agent, _phase_seams), compressor=norm_state(comp))
     else:
         ret_ev(ev, phase={"messages": jnorm(phase.messages),
                           "compressed": jnorm(phase.compressed),
                           "messages_before_compression": jnorm(phase.messages_before_compression),
                           "approx_tokens": phase.approx_tokens,
                           "pre_msg_count": phase.pre_msg_count},
-               state=norm_state(agent), compressor=norm_state(comp))
+               state=flow_state(agent, _phase_seams), compressor=norm_state(comp))
     return ev
 
 
@@ -1546,6 +1576,9 @@ def h_summary_phase(i):
 def h_candidate_rejected(i):
     ev = []
     agent = mk_state_obj(i.get("agent"))
+    sid_injected = not hasattr(agent, "session_id")
+    if sid_injected:
+        agent.session_id = "s1"
     comp = mk_state_obj(i.get("compressor"))
     agent.context_compressor = comp
     warning_agent(agent, ev, raises=bool(i.get("emit_raises")))
@@ -1562,7 +1595,8 @@ def h_candidate_rejected(i):
     before = copy.deepcopy(i.get("before"))
     with patched(cc, "_emit_aborted_attempt_telemetry", telemetry_stub(ev, "aborted")):
         r = cc._candidate_rejected(agent, compressed, before, before, attempt=attempt)
-    ret_ev(ev, v=r, state=norm_state(agent))
+    seams = ("context_compressor", "_emit_warning") + (("session_id",) if sid_injected else ())
+    ret_ev(ev, v=r, state=flow_state(agent, seams))
     return ev
 
 
@@ -1614,7 +1648,8 @@ def h_salvage(i):
          patched(cc, "_existing_system_prompt", existing_prompt_wrapper(ev, cc._existing_system_prompt)):
         r = cc._salvage_or_refuse_grown_transcript(agent, compressed, compressed,
                                                    system_message="sys", attempt=attempt)
-    ret_ev(ev, v=jnorm(list(r)), compressor=norm_state(comp))
+    ret_ev(ev, v=jnorm(list(r)),
+           compressor=flow_state(comp, ("record_rejected_compaction",)))
     return ev
 
 
@@ -1636,12 +1671,17 @@ def h_fold_todo(i):
                 rec(ev, "todo_append")
             return super().append(item)
     compressed = FoldList(copy.deepcopy(i.get("compressed") or []))
-    store = NS(format_for_injection=lambda: i.get("todo_snapshot", ""))
+
+    def fmt():
+        r = i.get("todo_snapshot", "")
+        rec(ev, "todo_format", ret=r)
+        return r
+    store = NS(format_for_injection=fmt)
     hi = i.get("has_items") or {}
     if hi.get("present"):
         def has_items():
             raised = bool(hi.get("raises"))
-            r = bool(hi.get("result"))
+            r = bool(hi.get("result")) and not raised
             rec(ev, "todo_has_items", raised=raised, ret=r)
             if raised:
                 raise RuntimeError("has_items failed")
@@ -1674,10 +1714,12 @@ def h_fold_todo(i):
                 merged["done"] = True
         orig_replace(msg, content)
 
+    orig_append = CX._append_text_to_content
+
     def append_text_stub(content, text, *, prepend=False):
         rec(ev, "todo_merge_append")
         merged["done"] = True
-        return CX._append_text_to_content(content, text, prepend=prepend)
+        return orig_append(content, text, prepend=prepend)
     with patched(cc, "_pruned_skill_reload_notice", notice_stub), \
          patched(cc, "_is_real_user_message", real_probe), \
          patched(cc, "_replace_message_content", replace_wrapper), \
@@ -1695,8 +1737,18 @@ def h_fold_todo(i):
 def h_rebuild_prompt(i):
     ev = []
     agent = mk_state_obj(i.get("agent"))
+    if not hasattr(agent, "_cached_system_prompt"):
+        agent._cached_system_prompt = None
+    sid_injected = not hasattr(agent, "session_id")
+    if sid_injected:
+        agent.session_id = "s1"
     agent._invalidate_system_prompt = lambda: rec(ev, "invalidate_system_prompt")
-    agent._build_system_prompt = lambda sm: i.get("build_result", "")
+
+    def build(sm):
+        r = i.get("build_result", "")
+        rec(ev, "build_system_prompt", ret=r)
+        return r
+    agent._build_system_prompt = build
 
     def refresh(a):
         rec(ev, "refresh_tool_definitions", raised=bool(i.get("refresh_raises")))
@@ -1709,7 +1761,8 @@ def h_rebuild_prompt(i):
     with patched(cc, "_refresh_agent_tool_definitions", refresh), \
          stub_modules({"agent.system_prompt": {"reconstruct_static_prefix": reconstruct}}):
         r = cc._rebuild_system_prompt_at_boundary(agent, "sys")
-    ret_ev(ev, v=r, state=norm_state(agent))
+    seams = ("_invalidate_system_prompt", "_build_system_prompt") +         (("session_id",) if sid_injected else ())
+    ret_ev(ev, v=r, state=flow_state(agent, seams))
     return ev
 # ---------------------------------------------------------------- commit / boundary
 
@@ -1834,7 +1887,9 @@ def h_commit(i):
            split_status=outcome.split_status,
            session_commit_succeeded=outcome.session_commit_succeeded,
            compacted_in_place=outcome.compacted_in_place, made_progress=outcome.made_progress,
-           state=norm_state(agent), compressor=norm_state(comp))
+           state=flow_state(agent, ("context_compressor", "_session_db",
+                                    "commit_memory_session")),
+           compressor=flow_state(comp, ("_record_compression_failure_cooldown",)))
     return ev
 
 
@@ -1842,7 +1897,15 @@ def h_commit(i):
 def h_finish_boundary(i):
     ev = []
     agent = mk_state_obj(i.get("agent"))
-    comp = mk_state_obj(i.get("compressor"))
+    tools_injected = not hasattr(agent, "tools")
+    if tools_injected:
+        agent.tools = None
+
+    class CompD:
+        pass
+    comp = CompD()
+    for k, v in (i.get("compressor") or {}).items():
+        setattr(comp, k, copy.deepcopy(v))
     agent.context_compressor = comp
     warning_agent(agent, ev)
     old_sid = i.get("old_session_id")
@@ -1890,11 +1953,10 @@ def h_finish_boundary(i):
     def anchor(a, value):
         rec(ev, "set_usage_anchor")
     if i.get("record_boundary_present"):
-        class Comp2(type(comp)):
-            def record_completed_compaction(self, used_fallback=None, feasibility_skip=None):
-                rec(ev, "record_completed_compaction", used_fallback=bool(used_fallback),
-                    feasibility_skip=bool(feasibility_skip))
-        comp.__class__ = Comp2
+        def record_completed_compaction(self, used_fallback=None, feasibility_skip=None):
+            rec(ev, "record_completed_compaction", used_fallback=bool(used_fallback),
+                feasibility_skip=bool(feasibility_skip))
+        CompD.record_completed_compaction = record_completed_compaction
 
     def dedup(task_id, session_id=""):
         rec(ev, "reset_read_dedup", task_id=task_id, session_id=session_id)
@@ -1914,13 +1976,17 @@ def h_finish_boundary(i):
             compression_used_fallback=bool(i.get("compression_used_fallback")),
             compression_feasibility_skip=bool(i.get("compression_feasibility_skip")),
             task_id=i.get("task_id", ""))
-    ret_ev(ev, v=r, state=norm_state(agent), compressor=norm_state(comp))
+    seams = ("context_compressor", "_emit_warning", "_memory_manager",
+             "event_callback", "_session_db") + (("tools",) if tools_injected else ())
+    ret_ev(ev, v=r, state=flow_state(agent, seams), compressor=norm_state(comp))
     return ev
 
 
 @handler("publish_rotated_compaction")
 def h_publish(i):
     ev = []
+    _pub_seams = ("_session_db", "_session_init_model_config", "model",
+                  "_flush_messages_to_session_db", "_session_messages")
     agent = mk_state_obj(i.get("agent"))
     messages = copy.deepcopy(i.get("messages") or [])
     compressed = copy.deepcopy(i.get("compressed") or [])
@@ -2036,11 +2102,11 @@ def h_publish(i):
         except Exception as exc:
             raised = type(exc).__name__
             if raised == "RuntimeError" and str(exc).startswith("Compression parent already ended"):
-                ret_ev(ev, raised=raised, message=str(exc), state=norm_state(agent))
+                ret_ev(ev, raised=raised, message=str(exc), state=flow_state(agent, _pub_seams))
                 return ev
-            ret_ev(ev, raised=raised, state=norm_state(agent))
+            ret_ev(ev, raised=raised, state=flow_state(agent, _pub_seams))
             return ev
-    out = {"state": norm_state(agent), "compressed": jnorm(compressed)}
+    out = {"state": flow_state(agent, _pub_seams), "compressed": jnorm(compressed)}
     if i.get("session_messages_separate"):
         out["session_messages"] = jnorm(agent._session_messages)
     ret_ev(ev, **out)
@@ -2116,6 +2182,7 @@ def h_codex_route(i):
         fence.begin_commit = begin_commit
         fence.finish_commit = lambda: rec(ev, "finish_commit")
     agent = NS(_hard_interrupt_requested=None,
+               context_compressor=NS(),
                _cached_system_prompt=i.get("cached"),
                _build_system_prompt=lambda sm: i.get("build_result", ""))
     attempt = NS(started_at=float(i.get("started_at", 0)), seed=i.get("seed") or {})
@@ -2168,7 +2235,11 @@ def h_retry_chain(i):
     ev = []
     agent = NS()
     if i.get("hard_cancel_present"):
-        agent._hard_interrupt_requested = NS(is_set=lambda: bool(i.get("hard_cancel_set")))
+        def is_set():
+            v = bool(i.get("hard_cancel_set"))
+            rec(ev, "hard_cancel_check", set=v)
+            return v
+        agent._hard_interrupt_requested = NS(is_set=is_set)
     routes = copy.deepcopy(i.get("routes") or [])
     results = list(i.get("pinned_results") or [])
     calls = {"n": 0}
@@ -2260,8 +2331,10 @@ def h_pinned_retry(i):
     nf_arg = new_fence if nf.get("present") else None
     if not route.get("deterministic"):
         rec(ev, "budget_check", now=now, deadline=precommit, spent=now >= precommit)
-    rec(ev, "new_fence", present=bool(nf.get("present")), raised=bool(nf.get("raises")),
-        valid=bool(nf.get("valid")) and not nf.get("raises"))
+    # Live short-circuits BEFORE the fence stage when the shared budget is spent.
+    if route.get("deterministic") or now < precommit:
+        rec(ev, "new_fence", present=bool(nf.get("present")), raised=bool(nf.get("raises")),
+            valid=bool(nf.get("valid")) and not nf.get("raises"))
 
     @contextlib.contextmanager
     def pin(r):
@@ -2397,20 +2470,18 @@ def h_await_worker(i):
 
     class Future:
         def __init__(self):
-            self.second = False
             self.cur = {}
 
         def result(self, timeout=None):
-            if self.second:
+            if timeout is None:
+                # done() branch: the settled future's own result, no new wait
                 rec(ev, "settled_done")
                 return self.cur.get("result")
             self.cur = tick()
             t = self.cur
-            if t.get("outcome") == "result":
-                pos["k"] += 1
-                return t.get("result")
-            self.second = True
             pos["k"] += 1
+            if t.get("outcome") == "result":
+                return t.get("result")
             raise concurrent.futures.TimeoutError()
 
         def done(self):
@@ -2446,11 +2517,11 @@ def h_await_commit(i):
 
     class Future:
         def __init__(self):
-            self.second = False
             self.cur = {}
 
         def result(self, timeout=None):
-            if self.second:
+            if timeout is None:
+                # done() branch: the settled future's own result, no new wait
                 rec(ev, "settled_done")
                 return self.cur.get("result")
             self.cur = tick()
@@ -2460,11 +2531,9 @@ def h_await_commit(i):
             if remaining <= 0:
                 remaining = min(30.0, max(ceiling, 0.05))
             rec(ev, "commit_poll", waited=waited, remaining=remaining)
-            if t.get("outcome") == "result":
-                pos["k"] += 1
-                return t.get("result")
-            self.second = True
             pos["k"] += 1
+            if t.get("outcome") == "result":
+                return t.get("result")
             raise concurrent.futures.TimeoutError()
 
         def done(self):

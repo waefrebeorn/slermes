@@ -460,11 +460,13 @@ def drive(ns, func, inp):
         return {"ret": AdapterDouble._cron_error_response(Exception(inp.get("exc_text", "")))}
     if func == "expected_api_key":
         AdapterDouble._check_auth = real_check_auth
-        self_d = types.SimpleNamespace(_api_key=inp.get("api_key", ""))
+        self_d = AdapterDouble()
+        self_d._api_key = inp.get("api_key", "")
         return {"ret": AdapterDouble._expected_api_key(self_d)}
     if func == "check_auth":
         AdapterDouble._check_auth = real_check_auth
-        self_d = types.SimpleNamespace(_api_key=inp.get("api_key", ""))
+        self_d = AdapterDouble()
+        self_d._api_key = inp.get("api_key", "")
         return {"ret": AdapterDouble._check_auth(self_d, req_double(inp))}
     if func == "require_auth":
         AdapterDouble._check_auth = scripted_check_auth
@@ -474,14 +476,14 @@ def drive(ns, func, inp):
             rec({"ev": "handler", "ret": r})
             return r
         wrapped = ns["_require_auth"](handler)
-        self_d = types.SimpleNamespace()
+        self_d = AdapterDouble()
         ret = asyncio_real.run(wrapped(self_d, req_double(inp)))
         AdapterDouble._check_auth = real_check_auth
         return {"ret": ret}
     if func == "cron_request_guard":
         AdapterDouble._check_auth = scripted_check_auth
         ns["_CRON_AVAILABLE"] = inp.get("cron_available", True)
-        self_d = types.SimpleNamespace()
+        self_d = AdapterDouble()
         job_id, err = AdapterDouble._cron_request_guard(
             self_d, req_double(inp), need_job_id=inp.get("need_job_id", False),
             check_draining=inp.get("check_draining", False))
@@ -496,21 +498,24 @@ def drive(ns, func, inp):
             ns["_scan_cron_prompt"] = scan_stub
         else:
             ns["_scan_cron_prompt"] = None
-        self_d = types.SimpleNamespace()
+        self_d = AdapterDouble()
         return {"ret": AdapterDouble._validate_cron_prompt(self_d, inp.get("prompt", ""))}
     if func == "parse_session_key_header":
-        self_d = types.SimpleNamespace(_api_key=inp.get("api_key", ""))
+        self_d = AdapterDouble()
+        self_d._api_key = inp.get("api_key", "")
         key, err = AdapterDouble._parse_session_key_header(self_d, req_double(inp))
         return {"ret": err, "key": key}
     if func == "sse_headers":
-        self_d = types.SimpleNamespace()
+        self_d = AdapterDouble()
         return {"ret": AdapterDouble._sse_headers(self_d, req_double(inp), inp.get("extra"))}
     if func == "approval_request_event":
         fields = dict(inp.get("fields") or {})
         return {"ret": ns["_approval_request_event"](inp.get("run_id", ""),
                                                      inp.get("approval_data"), **fields)}
     if func == "register_session_stream_approval":
-        self_d = types.SimpleNamespace(_run_approval_sessions={})
+        self_d = AdapterDouble()
+        self_d._run_approval_sessions = dict(
+            (inp.get("state") or {}).get("run_approval_sessions") or {})
         AdapterDouble._register_session_stream_approval(
             self_d, inp.get("run_id", ""), None, inp.get("message_id", ""))
         return {"ret": None, "state": {"run_approval_sessions": self_d._run_approval_sessions}}
@@ -560,6 +565,18 @@ def drive(ns, func, inp):
     raise ValueError("unknown func: %s" % func)
 
 
+def canon(o):
+    """JSON-round-trip normalization: live tuples (queue events) compare as
+    lists, integral floats as ints — representation, not logic."""
+    if isinstance(o, dict):
+        return {k: canon(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [canon(v) for v in o]
+    if isinstance(o, float) and o.is_integer():
+        return int(o)
+    return o
+
+
 def main():
     try:
         ns = extract()
@@ -595,6 +612,7 @@ def main():
             print("PYERR %s: %r" % (func, e))
             continue
         want["trace"] = CUR["trace"]
+        want = canon(want)
         if want != got:
             mism += 1
             print("MISMATCH %s" % func)
