@@ -16,6 +16,8 @@ runs in the Python ecosystem, it is work to port, and we do it because we are
 doing it in C11. See [Third-Party SLERMing](docs/third-party.md) for the
 dependency front and [Roadmap](ROADMAP.md) for the battle order.
 
+> **~WuBu~ AGI** — one system, many repositories. This is the **agent, reimplemented in C11**. The Body is [WuBuOS](https://github.com/waefrebeorn/WuBuOS), the Brain wubuwizard, the Compiler WuBuNOS.
+
 ## Where the port stands (live)
 
 <!-- PARITY:AUTO -->| PORTED  | 8,377 / 34,262 (24.4%) |
