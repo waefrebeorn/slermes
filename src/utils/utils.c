@@ -25,7 +25,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: util_preserve_file_mode @ utils/files.py:_preserve_file_mode */
+/* PoP: util_preserve_file_mode @ utils/files.py:preserve_file_mode */
 long util_preserve_file_mode(const char *path) {
     /* Python: permission bits or 0 when missing. */
     if (!path) return 0;
@@ -34,7 +34,7 @@ long util_preserve_file_mode(const char *path) {
     return (long)(st.st_mode & 07777);
 }
 
-/* PoP: util_preserve_file_owner @ utils/files.py:_preserve_file_owner */
+/* PoP: util_preserve_file_owner @ utils/files.py:preserve_file_owner */
 char *util_preserve_file_owner(const char *path) {
     /* Python: (uid, gid) when platform supports. */
     if (!path) return strdup("null");
@@ -45,7 +45,7 @@ char *util_preserve_file_owner(const char *path) {
     return out;
 }
 
-/* PoP: util_restore_file_owner @ utils/files.py:_restore_file_owner */
+/* PoP: util_restore_file_owner @ utils/files.py:restore_file_owner */
 int util_restore_file_owner(const char *path, const char *owner_json) {
     /* Python: re-apply uid/gid when permitted. */
     if (!path || !owner_json) return -1;
@@ -63,7 +63,7 @@ int util_restore_file_owner(const char *path, const char *owner_json) {
     return 0;
 }
 
-/* PoP: util_restore_file_mode @ utils/files.py:_restore_file_mode */
+/* PoP: util_restore_file_mode @ utils/files.py:restore_file_mode */
 int util_restore_file_mode(const char *path, long mode) {
     /* Python: re-apply mode after atomic replace. */
     if (!path || mode <= 0) return -1;

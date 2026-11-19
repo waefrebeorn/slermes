@@ -895,7 +895,7 @@ static void rsm_end_pending_model_calls(rsm_session_t *session,
         rsm_finish_model_call(session, pending[i], outcome);
 }
 
-/* PoP: rsm_runtime_end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.end_pending_model_calls */
+/* PoP: rsm_runtime_end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_model_calls */
 int rsm_runtime_end_pending_model_calls(relay_runtime_t *host, const char *session_id,
                                         const char *task_id, const char *turn_id,
                                         const char *event_json) {

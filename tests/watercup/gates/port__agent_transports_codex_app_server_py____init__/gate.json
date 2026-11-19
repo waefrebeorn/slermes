@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\transports\\codex_app_server_ports.c",
-    "src\\plugins\\platforms\\email\\codex_app_server_client.c"
+    "src/agent/transports/codex_app_server_ports.c",
+    "src/plugins/platforms/email/codex_app_server_client.c"
   ],
   "cflags": [
     "-I",

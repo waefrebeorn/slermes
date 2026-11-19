@@ -22,7 +22,7 @@ int ctxc_u_begin_compression_telemetry(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_u_record_compression_regions @ agent/context_compressor_telemetry.py:record_compression_regions */
+/* PoP: ctxc_u_record_compression_regions @ agent/context_compressor_telemetry.py:_record_compression_regions */
 int ctxc_u_record_compression_regions(const char *arg) {
     /* Python: telemetry head/middle/tail token estimates. Arg =
      * "head\tmiddle\ttail". */
@@ -34,7 +34,7 @@ int ctxc_u_record_compression_regions(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_u_record_aux_compression_call @ agent/context_compressor_telemetry.py:record_aux_compression_call */
+/* PoP: ctxc_u_record_aux_compression_call @ agent/context_compressor_telemetry.py:_record_aux_compression_call */
 int ctxc_u_record_aux_compression_call(const char *arg) {
     /* Python: aux telemetry accumulate. Arg =
      * "prompt_tokens\tmax_tokens\tduration_ms\tstate\tresult". */

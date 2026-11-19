@@ -405,8 +405,8 @@ char *auth_file_path(void)
  * Returns malloc'd global-root auth.json when in profile mode (root != home),
  * else NULL (classic mode). Caller frees result (or ignores NULL). */
 /* PoP: global_auth_file_path @ hermes_cli/auth.py:_auth_file_path */
-/* PoP: global_auth_file_path @ hermes_cli/auth.py:global_auth_file_path */
-/* PoP: global_auth_file_path @ hermes_cli/auth.py:global_auth_file_path */
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
+/* PoP: global_auth_file_path @ hermes_cli/auth.py:_global_auth_file_path */
 char *global_auth_file_path(void)
 {
     const char *home = auth_hermes_home();
@@ -524,7 +524,7 @@ char *optional_base_url(const char *value)
 /*
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
-/* PoP: decode_jwt_claims @ hermes_cli/auth_constants.py:decode_jwt_claims */
+/* PoP: decode_jwt_claims @ hermes_cli/auth_constants.py:_decode_jwt_claims */
 json_t *decode_jwt_claims(const char *token)
 {
     if (!token) return NULL;
@@ -884,7 +884,7 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 
 /*
  * Returns access-token expiry as unix seconds. */
-/* PoP: minimax_resolve_token_expiry_unix @ hermes_cli/auth_minimax.py:minimax_resolve_token_expiry_unix */
+/* PoP: minimax_resolve_token_expiry_unix @ hermes_cli/auth_minimax.py:_minimax_resolve_token_expiry_unix */
 double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
     long now_ms = (long)(now_unix * 1000.0);
@@ -895,7 +895,7 @@ double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 
 /*
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
-/* PoP: qwen_cli_auth_path @ hermes_cli/auth_qwen.py:qwen_cli_auth_path */
+/* PoP: qwen_cli_auth_path @ hermes_cli/auth_qwen.py:_qwen_cli_auth_path */
 char *qwen_cli_auth_path(void)
 {
     const char *home = getenv("HOME");
@@ -1005,7 +1005,7 @@ int auth_is_source_suppressed(const char *provider_id, const char *source, const
 /* === dissolved from ports_wrappers.c === */
 /* ── hermes_cli/auth.py gap functions ────────────────────────────── */
 
-/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:probe_single_zai_endpoint */
+/* PoP: hermes_cli_auth_u_probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
 int hermes_cli_auth_u_probe_single_zai_endpoint(const char *arg) {
     /* Python: probe Z.AI endpoint for a working model. Arg =
      * "ep_id\tbase_url\tprobe_status\tmodel". */

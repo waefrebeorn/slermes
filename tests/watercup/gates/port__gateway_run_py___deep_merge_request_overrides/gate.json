@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\run_gaps.c",
-    "src\\persistence\\sqlite\\_state\\hermes_state_fd_budget.c"
+    "src/gateway/run_gaps.c",
+    "src/persistence/sqlite/_state/hermes_state_fd_budget.c"
   ],
   "cflags": [
     "-I",

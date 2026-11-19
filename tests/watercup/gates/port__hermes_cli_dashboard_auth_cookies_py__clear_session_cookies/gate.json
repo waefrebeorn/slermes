@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\dashboard_auth\\dashboard_auth_cookies.c"
+    "src/hermes_cli/dashboard_auth/dashboard_auth_cookies.c"
   ],
   "cflags": [
     "-I",

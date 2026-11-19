@@ -13,7 +13,7 @@
 /* PoP: should_append_done @ hermes_cli/proxy/sse_done.py:should_append_done */
 int should_append_done(void) { return 1; }
 
-/* PoP: consume_line @ hermes_cli/proxy/sse_done.py:consume_line */
+/* PoP: consume_line @ hermes_cli/proxy/sse_done.py:_consume_line */
 char *consume_line(void) { return strdup(""); }
 
 

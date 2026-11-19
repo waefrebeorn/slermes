@@ -1364,7 +1364,7 @@ json_t *ws_u_fire_cron_job_for_profile(const char *profile, const char *job_id) 
 
 
 
-/* PoP: ws_u_normalize_mcp_server_create @ hermes_cli/web_server_mcp.py:_normalize_mcp_server_create */
+/* PoP: ws_u_normalize_mcp_server_create @ hermes_cli/web_server_mcp.py:normalize_mcp_server_create */
 json_t *ws_u_normalize_mcp_server_create(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: ws_list_mcp_servers @ hermes_cli/web_routers/mcp.py:list_mcp_servers */

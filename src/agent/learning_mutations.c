@@ -327,7 +327,7 @@ static int lm_locate_memory(const char *hermes_home, const char *source, int gid
     return 0;
 }
 
-/* PoP: lm_node_detail @ agent/learning_mutations.py:_node_detail */
+/* PoP: lm_node_detail @ agent/learning_mutations.py:node_detail */
 static char *lm_node_detail(const char *node_id)
 {
     char home[LM_MAX_PATH];

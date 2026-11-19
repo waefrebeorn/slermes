@@ -425,7 +425,7 @@ int cron_sugg_clear_resolved(void)
     return removed;
 }
 
-/* PoP: current_suggestions_file @ cron/suggestions.py:current_suggestions_file */
+/* PoP: current_suggestions_file @ cron/suggestions.py:_current_suggestions_file */
 const char *cron_suggestions_current_suggestions_file(void) { return NULL; }
 
 /* PoP: _pending @ cron/suggestions.py:_pending */

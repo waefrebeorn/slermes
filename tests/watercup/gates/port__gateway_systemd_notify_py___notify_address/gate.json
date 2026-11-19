@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\systemd_notify.c"
+    "src/gateway/systemd_notify.c"
   ],
   "cflags": [
     "-I",

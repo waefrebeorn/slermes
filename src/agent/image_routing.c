@@ -871,7 +871,7 @@ char *image_routing__resolve_inference_base_url(const json_t *cfg, const char *p
     return result ? result : strdup("");
 }
 
-/* PoP: should_probe_ollama_vision @ agent/image_routing.py:should_probe_ollama_vision */
+/* PoP: should_probe_ollama_vision @ agent/image_routing.py:_should_probe_ollama_vision */
 /* True when the active provider likely fronts a local Ollama server. */
 bool should_probe_ollama_vision(const char *provider, const char *base_url)
 {

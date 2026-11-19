@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\terminal_env_registry.c"
+    "src/tools/terminal_env_registry.c"
   ],
   "cflags": [
     "-I",

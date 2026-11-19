@@ -15,5 +15,5 @@ int gemini_major_version(void) { return 0; }
 /* PoP: gemini_requires_tool_call_ids @ agent/gemini_native_adapter.py:gemini_requires_tool_call_ids */
 int gemini_requires_tool_call_ids(void) { return 0; }
 
-/* PoP: looks_like_json_schema @ agent/gemini_native_adapter.py:looks_like_json_schema */
+/* PoP: looks_like_json_schema @ agent/gemini_native_adapter.py:_looks_like_json_schema */
 int looks_like_json_schema(void) { return 0; }

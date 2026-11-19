@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\qqbot\\main.c",
-    "src\\gateway\\platform_registry_ports.c",
-    "src\\hermes_cli\\startup_fast.c"
+    "src/plugins/platforms/qqbot/main.c",
+    "src/gateway/platform_registry_ports.c",
+    "src/hermes_cli/startup_fast.c"
   ],
   "cflags": [
     "-I",

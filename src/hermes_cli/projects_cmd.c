@@ -98,7 +98,7 @@ int hermes_cli_projects_cmd_u_print_project(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_projects_cmd_u_cmd_create @ hermes_cli/projects_cmd.py:cmd_create */
+/* PoP: hermes_cli_projects_cmd_u_cmd_create @ hermes_cli/projects_cmd.py:_cmd_create */
 int hermes_cli_projects_cmd_u_cmd_create(const char *arg) {
     /* Python: create + optional use + report. Arg =
      * "slug\tpid\tstate\tresult". */

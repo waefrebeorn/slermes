@@ -12,11 +12,11 @@
 /* PoP: is_stall_guard_repeatable @ agent/tool_guardrails.py:is_stall_guard_repeatable */
 int is_stall_guard_repeatable(void) { return 0; }
 
-/* PoP: is_non_interactive_platform @ agent/tool_guardrails.py:is_non_interactive_platform */
+/* PoP: is_non_interactive_platform @ agent/tool_guardrails.py:_is_non_interactive_platform */
 int is_non_interactive_platform(void) { return 0; }
 
 
 
 
-/* PoP: build_result_reference_stub @ agent/tool_guardrails.py:build_result_reference_stub */
+/* PoP: build_result_reference_stub @ agent/tool_guardrails.py:_build_result_reference_stub */
 char *build_result_reference_stub(void) { return strdup("{}"); }

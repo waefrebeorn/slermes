@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\environments\\vercel_sandbox_env.c",
-    "src\\tools\\environments\\vercel_sandbox_helpers.c"
+    "src/tools/environments/vercel_sandbox_env.c",
+    "src/tools/environments/vercel_sandbox_helpers.c"
   ],
   "cflags": [
     "-I",

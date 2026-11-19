@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\relay\\relay_adapter_ports.c",
-    "src\\gateway\\relay\\relay_adapter.c"
+    "src/gateway/relay/relay_adapter_ports.c",
+    "src/gateway/relay/relay_adapter.c"
   ],
   "cflags": [
     "-I",

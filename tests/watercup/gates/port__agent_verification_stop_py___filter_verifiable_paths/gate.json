@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\verification_stop_helpers.c",
-    "src\\agent\\verify\\verify_recipes.c",
-    "src\\agent\\verify\\verify_environment.c"
+    "src/hermes_cli/verification_stop_helpers.c",
+    "src/agent/verify/verify_recipes.c",
+    "src/agent/verify/verify_environment.c"
   ],
   "cflags": [
     "-I",

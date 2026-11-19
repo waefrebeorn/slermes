@@ -12,7 +12,7 @@
 
 
 
-/* PoP: capped_read_limit @ cron/lifecycle_guard.py:capped_read_limit */
+/* PoP: capped_read_limit @ cron/lifecycle_guard.py:_capped_read_limit */
 int capped_read_limit(void) { return 0; }
 
 /* PoP: lifecycle_scan_root_within_budget @ cron/lifecycle_guard.py:lifecycle_scan_root_within_budget */

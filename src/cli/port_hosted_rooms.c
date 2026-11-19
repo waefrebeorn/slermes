@@ -146,7 +146,7 @@ char **hr_claim_values(const char *const *claims, const char *const *keys,
  *  with *err set when a field is empty.
  * =========================================================================== */
 
-/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:room_grant_scope_key */
+/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:_room_grant_scope_key */
 char *hr_grant_scope_key(const char *const *claims, char **err)
 {
     if (err) *err = NULL;
@@ -248,7 +248,7 @@ char **hr_remote_run_identity(const char *const *record,
  *  the "not an object" case. *out_json receives the canonical JSON.
  * =========================================================================== */
 
-/* PoP: hr_validate_members @ gateway/hosted_rooms.py:validate_members */
+/* PoP: hr_validate_members @ gateway/hosted_rooms.py:_validate_members */
 int hr_validate_members(json_t **members, int n, char **out_json, char **err)
 {
     if (out_json) *out_json = NULL;

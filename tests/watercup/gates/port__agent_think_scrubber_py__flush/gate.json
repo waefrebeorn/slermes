@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\think_scrubber.c"
+    "src/agent/think_scrubber.c"
   ],
   "cflags": [
     "-I",

@@ -158,7 +158,7 @@ static void atomic_write_counter_impl(const char *path, long value) {
     util_rename_replace(tmppath, path);
 }
 
-/* PoP: port @ cron/jobs.py:ensure_croniter */
+/* PoP: port @ cron/jobs.py:_ensure_croniter */
 /* libcron is always linked; the croniter external dependency is unconditionally
  * available in the C port (mirrors HAS_CRONITER=True). */
 bool ensure_croniter(void) { (void)HAS_CRONITER; return true; }
@@ -287,7 +287,7 @@ long advance_next_runs(json_t *job_ids) {
 /* Completed one-shot retention default (cron/jobs.py COMPLETED_ONESHOT_RETENTION_DAYS). */
 #define COMPLETED_ONESHOT_RETENTION_DAYS 7
 
-/* PoP: completed_oneshot_retention_days @ cron/jobs.py:completed_oneshot_retention_days */
+/* PoP: completed_oneshot_retention_days @ cron/jobs.py:_completed_oneshot_retention_days */
 double completed_oneshot_retention_days(void) {
     json_t *cfg = config_py_load_config_impl(0);
     if (!cfg || cfg->type != JSON_OBJECT) return (double)COMPLETED_ONESHOT_RETENTION_DAYS;
@@ -299,7 +299,7 @@ double completed_oneshot_retention_days(void) {
     return days;
 }
 
-/* PoP: sweep_completed_oneshots @ cron/jobs.py:sweep_completed_oneshots */
+/* PoP: sweep_completed_oneshots @ cron/jobs.py:_sweep_completed_oneshots */
 bool sweep_completed_oneshots(json_t *raw_jobs, const char *now_iso,
                                json_t *removed_ids) {
     if (!raw_jobs || !json_is_array(raw_jobs)) return false;

@@ -1,0 +1,141 @@
+{"func": "job_route_pinned", "in": {"job": {}}}
+{"func": "job_route_pinned", "in": {"job": {"provider": "openai"}}}
+{"func": "job_route_pinned", "in": {"job": {"model": "  "}}}
+{"func": "job_route_pinned", "in": {"job": {"base_url": "http://x"}}}
+{"func": "normalize_newlines", "in": {"text": "a\r\nb\rc\n"}}
+{"func": "normalize_newlines", "in": {"text": ""}}
+{"func": "normalize_newlines", "in": {"text": "x\ry"}}
+{"func": "normalize_newlines", "in": {"text": "no change"}}
+{"func": "cron_failure_marker_error", "in": {"text": "[CRON_FAILURE]\nreason here"}}
+{"func": "cron_failure_marker_error", "in": {"text": "[CRON_FAILURE]"}}
+{"func": "cron_failure_marker_error", "in": {"text": "hello\n[CRON_FAILURE]"}}
+{"func": "cron_failure_marker_error", "in": {"text": "[CRON_FAILURE]  \n  evidence  "}}
+{"func": "apply_agent_failure_marker", "in": {"job": {}, "success": true, "error": null, "final_response": "[CRON_FAILURE]\nbad"}}
+{"func": "apply_agent_failure_marker", "in": {"job": {"no_agent": true}, "success": true, "error": null, "final_response": "[CRON_FAILURE]\nbad"}}
+{"func": "apply_agent_failure_marker", "in": {"job": {}, "success": false, "error": "err", "final_response": "ok"}}
+{"func": "apply_agent_failure_marker", "in": {"job": {}, "success": true, "error": null, "final_response": "ok"}}
+{"func": "is_lock_contention_errno", "in": {"errno": "EAGAIN", "platform": "fcntl"}}
+{"func": "is_lock_contention_errno", "in": {"errno": "EMFILE", "platform": "fcntl"}}
+{"func": "is_lock_contention_errno", "in": {"errno": "EACCES", "platform": "msvcrt"}}
+{"func": "is_lock_contention_errno", "in": {"errno": "", "platform": "fcntl"}}
+{"func": "is_lock_contention_errno", "in": {"errno": "EDEADLK", "platform": "msvcrt"}}
+{"func": "is_fd_exhaustion_text", "in": {"text": "Too Many Open Files"}}
+{"func": "is_fd_exhaustion_text", "in": {"text": "EMFILE somewhere"}}
+{"func": "is_fd_exhaustion_text", "in": {"text": "disk full"}}
+{"func": "is_fd_exhaustion", "in": {"exc": {"type": "OSError", "errno": "EMFILE", "message": "x"}}}
+{"func": "is_fd_exhaustion", "in": {"exc": {"type": "RuntimeError", "errno": "", "message": "Too many open files"}}}
+{"func": "is_fd_exhaustion", "in": {"exc": {"type": "OSError", "errno": "EACCES", "message": "no"}}}
+{"func": "stale_code_yield_labels", "in": {"recorded_error": "CronTickYielded: Cron tick yielded (stale code: booted on abc123, disk is at def456)"}}
+{"func": "stale_code_yield_labels", "in": {"recorded_error": "RuntimeError: boom"}}
+{"func": "stale_code_yield_labels", "in": {"recorded_error": ""}}
+{"func": "stale_code_yield_labels", "in": {"recorded_error": "CronTickYielded: no marker here"}}
+{"func": "inflight_key", "in": {"job_id": "j1", "home": null, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "inflight_key", "in": {"job_id": "j2", "home": "/p", "io": {"hermes_home_key": {"ret": "/p"}}}}
+{"func": "inflight_key", "in": {"job_id": "j3", "home": null, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "is_job_running", "in": {"job_id": "j1", "home": null, "state": {"_running_job_ids": [["/h", "j1"]], "_running_fire_owners": []}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "is_job_running", "in": {"job_id": "j2", "home": null, "state": {"_running_job_ids": [["/h", "j1"]], "_running_fire_owners": []}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "is_job_running", "in": {"job_id": "j1", "home": "/other", "state": {"_running_job_ids": [["/h", "j1"]], "_running_fire_owners": []}, "io": {"hermes_home_key": {"ret": "/other"}}}}
+{"func": "is_job_running", "in": {"job_id": "j9", "home": null, "state": {"_running_job_ids": [], "_running_fire_owners": [["/h", "j9"]]}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "job_interval_minutes", "in": {"job": {"schedule": {"kind": "interval", "minutes": 5}}}}
+{"func": "job_interval_minutes", "in": {"job": {"schedule": {"kind": "interval", "minutes": 0}}}}
+{"func": "job_interval_minutes", "in": {"job": {"schedule": {"kind": "cron", "expr": "0 9 * * *"}}, "io": {"_cron_interval_minutes": {"ret": 1440}}}}
+{"func": "job_interval_minutes", "in": {"job": {"schedule": {"kind": "once"}}}}
+{"func": "job_interval_minutes", "in": {"job": {"schedule": "every 5m"}, "io": {"parse_schedule": {"ret": {"kind": "interval", "minutes": 5}}}}}
+{"func": "failure_repeat_alert_hours", "in": {"io": {"_cron_config_number": {"ret": 6.0}}}}
+{"func": "failure_repeat_alert_hours", "in": {"io": {"_cron_config_number": {"ret": 0}}}}
+{"func": "failure_repeat_alert_hours", "in": {"io": {"_cron_config_number": {"ret": 12.5}}}}
+{"func": "repeat_alert_withheld", "in": {"incident": {"alerted_at": "2026-01-01T00:00:00+00:00"}, "io": {"_cron_config_number": {"ret": 6.0}, "_hermes_now": {"ret": "2026-01-01T01:00:00+00:00"}}}}
+{"func": "repeat_alert_withheld", "in": {"incident": {"alerted_at": "2026-01-01T00:00:00+00:00"}, "io": {"_cron_config_number": {"ret": 6.0}, "_hermes_now": {"ret": "2026-01-01T07:00:00+00:00"}}}}
+{"func": "repeat_alert_withheld", "in": {"incident": {"alerted_at": "2026-01-01T00:00:00+00:00"}, "io": {"_cron_config_number": {"ret": 0}}}}
+{"func": "repeat_alert_withheld", "in": {"incident": {"alerted_at": null}, "io": {"_cron_config_number": {"ret": 6.0}}}}
+{"func": "failure_streak_nudge", "in": {"job": {"schedule": {"kind": "cron"}, "failure_streak": 2, "name": "Brief"}, "io": {"load_config": {"ret": {"cron": {"failure_nudge_threshold": 3}}}}}}
+{"func": "failure_streak_nudge", "in": {"job": {"schedule": {"kind": "cron"}, "failure_streak": 1, "name": "Brief"}, "io": {"load_config": {"ret": {"cron": {"failure_nudge_threshold": 3}}}}}}
+{"func": "failure_streak_nudge", "in": {"job": {"schedule": {"kind": "once"}, "failure_streak": 9}}}
+{"func": "failure_streak_nudge", "in": {"job": {"schedule": {"kind": "interval"}, "failure_streak": 5, "id": "j1"}, "io": {"load_config": {"ret": {"cron": {"failure_nudge_threshold": 0}}}}}}
+{"func": "inflight_min_allowance_minutes", "in": {"io": {"load_config": {"ret": {"cron": {"inflight_max_minutes": 45}}}}}}
+{"func": "inflight_min_allowance_minutes", "in": {"io": {"load_config": {"ret": {}}, "cron_env_setting": {"ret": "60"}}}}
+{"func": "inflight_min_allowance_minutes", "in": {"io": {"load_config": {"ret": {}}, "cron_env_setting": {"ret": ""}}}}
+{"func": "inflight_min_allowance_minutes", "in": {"io": {"load_config": {"ret": {"cron": {"inflight_max_minutes": 0}}}, "cron_env_setting": {"ret": ""}}}}
+{"func": "cron_cleanup_timeout_seconds", "in": {"io": {"load_config": {"ret": {"cron": {"cleanup_timeout_seconds": 20}}}}}}
+{"func": "cron_cleanup_timeout_seconds", "in": {"io": {"load_config": {"ret": {}}}}}
+{"func": "cron_cleanup_timeout_seconds", "in": {"io": {"load_config": {"ret": {"cron": {"cleanup_timeout_seconds": -1}}}}}}
+{"func": "resolve_job_workdir", "in": {"job": {"workdir": "/w"}, "job_id": "j1", "io": {"is_dir": {"ret": true}}}}
+{"func": "resolve_job_workdir", "in": {"job": {"workdir": "/w"}, "job_id": "j1", "io": {"is_dir": {"ret": false}}}}
+{"func": "resolve_job_workdir", "in": {"job": {"workdir": "  "}, "job_id": "j1"}}
+{"func": "resolve_job_workdir", "in": {"job": {}, "job_id": "j1"}}
+{"func": "resolve_job_reasoning_config", "in": {"job": {"reasoning_effort": "high"}, "cfg": {}, "model": "m", "io": {"parse_reasoning_effort": {"ret": {"effort": "high"}}}}}
+{"func": "resolve_job_reasoning_config", "in": {"job": {"reasoning_effort": "bogus"}, "cfg": {}, "model": "m", "io": {"parse_reasoning_effort": {"ret": null}, "resolve_reasoning_config": {"ret": {"effort": "low"}}}}}
+{"func": "resolve_job_reasoning_config", "in": {"job": {}, "cfg": {}, "model": "m", "io": {"resolve_reasoning_config": {"ret": null}}}}
+{"func": "acquire_tick_lock", "in": {"lock_file": "/h/cron/.tick.lock", "state": {"platform": "fcntl"}, "io": {"open": {"ret": 7}, "fcntl.flock": {"ret": null}}}}
+{"func": "acquire_tick_lock", "in": {"lock_file": "/l", "state": {"platform": "fcntl"}, "io": {"open": {"ret": 7}, "fcntl.flock": {"raise": {"type": "OSError", "errno": "EAGAIN", "message": "locked"}}, "close": {"ret": null}}}}
+{"func": "acquire_tick_lock", "in": {"lock_file": "/l", "state": {"platform": "fcntl"}, "io": {"open": {"raise": {"type": "OSError", "errno": "EMFILE", "message": "too many"}}}}}
+{"func": "acquire_tick_lock", "in": {"lock_file": "/l", "state": {"platform": "fcntl"}, "io": {"open": {"ret": 7}, "fcntl.flock": {"raise": {"type": "OSError", "errno": "EROFS", "message": "ro"}}, "close": {"ret": null}}}}
+{"func": "release_tick_lock", "in": {"lock_fd": 7, "state": {"platform": "fcntl"}, "io": {"fcntl.flock": {"ret": null}, "close": {"ret": null}}}}
+{"func": "release_tick_lock", "in": {"lock_fd": 7, "state": {"platform": "fcntl"}, "io": {"fcntl.flock": {"raise": {"type": "OSError", "errno": "EAGAIN", "message": "x"}}, "close": {"ret": null}}}}
+{"func": "release_tick_lock", "in": {"lock_fd": 7, "state": {"platform": "msvcrt"}, "io": {"msvcrt.locking": {"ret": null}, "close": {"ret": null}}}}
+{"func": "maybe_reap_dead_owners", "in": {"state": {"_last_dead_owner_reap_at": {}}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}, "time.monotonic": {"ret": 1000}, "recover_interrupted_executions": {"ret": 2}}}}
+{"func": "maybe_reap_dead_owners", "in": {"state": {"_last_dead_owner_reap_at": {"/h": 900}}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}, "time.monotonic": {"ret": 1000}}}}
+{"func": "maybe_reap_dead_owners", "in": {"state": {"_last_dead_owner_reap_at": {}}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}, "time.monotonic": {"ret": 1000}, "recover_interrupted_executions": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "sweep_stale_inflight_for_tick", "in": {"due_jobs": [{"id": "j1"}], "state": {"_running_job_ids": [["/h", "j1"]]}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}, "sweep_stale_inflight": {"ret": []}}}}
+{"func": "sweep_stale_inflight_for_tick", "in": {"due_jobs": [], "state": {"_running_job_ids": [["/h", "j1"]]}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}, "load_jobs": {"ret": [{"id": "j1"}]}, "sweep_stale_inflight": {"ret": []}}}}
+{"func": "sweep_stale_inflight_for_tick", "in": {"due_jobs": [{"id": "j1"}], "state": {"_running_job_ids": []}, "io": {"_get_hermes_home": {"ret": "/h"}, "hermes_home_key": {"ret": "/h"}}}}
+{"func": "resolve_max_parallel_workers", "in": {"io": {"cron_env_setting": {"ret": "4"}}}}
+{"func": "resolve_max_parallel_workers", "in": {"io": {"cron_env_setting": {"ret": "0"}}}}
+{"func": "resolve_max_parallel_workers", "in": {"io": {"cron_env_setting": {"ret": ""}, "load_config": {"ret": {"cron": {"max_parallel_jobs": 3}}}}}}
+{"func": "resolve_max_parallel_workers", "in": {"io": {"cron_env_setting": {"ret": "abc"}, "load_config": {"ret": {}}}}}
+{"func": "sweep_mcp_orphans", "in": {"io": {"_kill_orphaned_mcp_children": {"ret": null}}}}
+{"func": "sweep_mcp_orphans", "in": {"io": {"_kill_orphaned_mcp_children": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "sweep_mcp_orphans_when_all_done", "in": {"futures": [], "io": {"_kill_orphaned_mcp_children": {"ret": null}}}}
+{"func": "sweep_mcp_orphans_when_all_done", "in": {"futures": [{"exception": null}, {"exception": "boom"}], "io": {"_kill_orphaned_mcp_children": {"ret": null}}}}
+{"func": "sweep_mcp_orphans_when_all_done", "in": {"futures": [{"exception": null}], "io": {"_kill_orphaned_mcp_children": {"ret": null}}}}
+{"func": "process_due_job", "in": {"job": {"id": "j1", "execution_id": "e1", "name": "N"}, "io": {"claim_job_for_fire": {"ret": {"id": "j1", "foo": 1}}, "run_one_job": {"ret": true}}}}
+{"func": "process_due_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"claim_job_for_fire": {"ret": false}, "finish_execution": {"ret": null}}}}
+{"func": "process_due_job", "in": {"job": {"id": "j1", "execution_id": "e1", "name": "N"}, "io": {"claim_job_for_fire": {"raise": {"type": "OSError", "errno": "EROFS", "message": "ro"}}, "note_unwritable": {"ret": null}, "settle_unstarted_execution": {"ret": null}}}}
+{"func": "process_due_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"claim_job_for_fire": {"raise": {"type": "RuntimeError", "message": "boom"}}, "settle_unstarted_execution": {"ret": null}}}}
+{"func": "record_fire_ownership_lost", "in": {"job": {"id": "j1"}, "fire_owner": "own1", "execution_id": "e1", "io": {"heartbeat_fire_claim": {"ret": true}, "is_retry_run": {"ret": false}, "mark_job_run": {"ret": null}, "finish_execution": {"ret": null}}}}
+{"func": "record_fire_ownership_lost", "in": {"job": {"id": "j1"}, "fire_owner": "own1", "execution_id": "e1", "io": {"heartbeat_fire_claim": {"ret": false}, "finish_lost_execution": {"ret": null}}}}
+{"func": "record_fire_ownership_lost", "in": {"job": {"id": "j1"}, "fire_owner": null, "execution_id": "e1", "io": {"finish_lost_execution": {"ret": null}}}}
+{"func": "record_fire_ownership_lost", "in": {"job": {"id": "j1"}, "fire_owner": "own1", "execution_id": "e1", "io": {"heartbeat_fire_claim": {"ret": true}, "is_retry_run": {"ret": true}, "mark_job_run": {"ret": null}, "finish_execution": {"ret": null}}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": null, "transport_cancel": {"set": true}}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": null, "transport_cancel": null}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": "o", "transport_cancel": null, "claim_lost": null}, "io": {"self_removal_delivery_allowed": {"ret": true}}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": "o", "claim_lost": {"set": false}}, "io": {"self_removal_delivery_allowed": {"ret": false}, "heartbeat_fire_claim": {"ret": true}}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": "o", "claim_lost": {"set": false}}, "io": {"self_removal_delivery_allowed": {"ret": false}, "heartbeat_fire_claim": {"ret": false}}}}
+{"func": "fire_ownership_lost", "in": {"job": {"id": "j1"}, "ownership": {"owner": "o", "claim_lost": {"set": true}}, "io": {"self_removal_delivery_allowed": {"ret": false}, "heartbeat_fire_claim": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "mark_incident_alerted", "in": {"incident_id": "i1", "io": {"set_incident_state": {"ret": null}}}}
+{"func": "mark_incident_alerted", "in": {"incident_id": null}}
+{"func": "mark_incident_alerted", "in": {"incident_id": "i1", "io": {"set_incident_state": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "resolve_incidents_for_recovered_job", "in": {"job": {"id": "j1"}, "io": {"close_incidents_for_recovered_job": {"ret": null}}}}
+{"func": "resolve_incidents_for_recovered_job", "in": {"job": {"id": "j1"}, "io": {"close_incidents_for_recovered_job": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "upsert_incident_for_failure", "in": {"job": {"id": "j1", "name": "N"}, "error": "err", "io": {"upsert_incident": {"ret": ["i1", true]}, "get_incident": {"ret": {"state": "open"}}}}}
+{"func": "upsert_incident_for_failure", "in": {"job": {"id": "j1"}, "error": "err", "io": {"upsert_incident": {"ret": ["i1", false]}, "get_incident": {"ret": {"state": "closed"}}}}}
+{"func": "upsert_incident_for_failure", "in": {"job": {"id": "j1"}, "error": "err", "io": {"upsert_incident": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "upsert_incident_for_failure", "in": {"job": {"id": "j1"}, "error": "err", "io": {"upsert_incident": {"ret": ["i1", false]}, "get_incident": {"ret": {"state": "alerted", "alerted_at": "2026-01-01T00:00:00+00:00"}}, "_cron_config_number": {"ret": 6.0}, "_hermes_now": {"ret": "2026-01-01T01:00:00+00:00"}}}}
+{"func": "record_stale_release", "in": {"job": {"id": "j1", "name": "N"}, "job_id": "j1", "age": 120, "allowance": 60, "reason": "age", "io": {"_record_forced_release": {"ret": null}, "mark_job_run": {"ret": null}}}}
+{"func": "record_stale_release", "in": {"job": {"id": "j1", "name": "N"}, "job_id": "j1", "age": 120, "allowance": 60, "reason": "ledger-terminal", "io": {"_record_forced_release": {"ret": null}}}}
+{"func": "record_stale_release", "in": {"job": {"id": "j1", "name": "N", "repeat": {"times": 3}}, "job_id": "j1", "age": 120, "allowance": 60, "reason": "age", "io": {"_record_forced_release": {"ret": null}}}}
+{"func": "record_stale_release", "in": {"job": {"id": "j1"}, "job_id": "j1", "age": 120, "allowance": 60, "reason": "age", "io": {"_record_forced_release": {"ret": null}, "mark_job_run": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "discard_parallel_pools", "in": {"home_keys": ["/h"], "state": {"_parallel_pools": {"/h": 1, "/p": 1}, "_parallel_pool_max_workers": {"/h": 4, "/p": 2}}, "io": {"pool.shutdown": {"ret": null}}}}
+{"func": "discard_parallel_pools", "in": {"home_keys": ["/x"], "state": {"_parallel_pools": {"/h": 1}, "_parallel_pool_max_workers": {"/h": 4}}}}
+{"func": "discard_parallel_pools", "in": {"home_keys": ["/h", "/p"], "state": {"_parallel_pools": {"/h": 1, "/p": 1}, "_parallel_pool_max_workers": {"/h": 4, "/p": 2}}, "io": {"pool.shutdown": {"ret": null}}}}
+{"func": "cron_run_scope_enter", "in": {"scope": {"task_id": "cron:j1:e1", "_ctx_tokens": {}, "_cron_session_token": null, "_non_dispatcher_token": null, "_spend_token": null}, "io": {"cron_session_var.set": {"ret": "t1"}, "enter_non_dispatcher_owned_context": {"ret": "t2"}, "bind_run": {"ret": "t3"}}}}
+{"func": "cron_run_scope_enter", "in": {"scope": {"task_id": "cron:j2:e2", "_ctx_tokens": {}, "_cron_session_token": null, "_non_dispatcher_token": null, "_spend_token": null}, "io": {"cron_session_var.set": {"ret": "a"}, "enter_non_dispatcher_owned_context": {"ret": "b"}, "bind_run": {"ret": "c"}}}}
+{"func": "cron_run_scope_exit", "in": {"scope": {"task_id": "cron:j1:e1", "_ctx_tokens": {}, "_cron_session_token": "t1", "_non_dispatcher_token": "t2", "_spend_token": "t3"}, "io": {"clear_session_cwd": {"ret": null}, "clear_session_vars": {"ret": null}, "cron_session_var.reset": {"ret": null}, "exit_non_dispatcher_owned_context": {"ret": null}, "unbind_run": {"ret": null}, "var_map.set": {"ret": null}}}}
+{"func": "cron_run_scope_exit", "in": {"scope": {"task_id": "cron:j1:e1", "_ctx_tokens": {}, "_cron_session_token": null, "_non_dispatcher_token": null, "_spend_token": null}, "io": {"clear_session_cwd": {"ret": null}, "clear_session_vars": {"ret": null}, "var_map.set": {"ret": null}}}}
+{"func": "run_with_fire_claim_heartbeat", "in": {"job": {"id": "j1", "execution_id": "e1", "fire_claim": {"by": "own"}}, "io": {"heartbeat_fire_claim": {"ret": true}, "_start_heartbeat_thread": {"ret": true}, "run": {"ret": true}, "stop.set": {"ret": null}, "thread.join": {"ret": null}}}}
+{"func": "run_with_fire_claim_heartbeat", "in": {"job": {"id": "j1", "fire_claim": {}}, "io": {"run": {"ret": false}}}}
+{"func": "run_with_fire_claim_heartbeat", "in": {"job": {"id": "j1", "execution_id": "e1", "fire_claim": {"by": "own"}}, "io": {"heartbeat_fire_claim": {"ret": false}, "finish_lost_execution": {"ret": null}}}}
+{"func": "run_with_fire_claim_heartbeat", "in": {"job": {"id": "j1", "execution_id": "e1", "fire_claim": {"by": "own"}}, "io": {"heartbeat_fire_claim": {"raise": {"type": "RuntimeError", "message": "x"}}, "finish_lost_execution": {"ret": null}}}}
+{"func": "run_with_fire_claim_heartbeat", "in": {"job": {"id": "j1", "execution_id": "e1", "fire_claim": {"by": "own"}}, "io": {"heartbeat_fire_claim": {"ret": true}, "_start_heartbeat_thread": {"ret": null}, "finish_lost_execution": {"ret": null}}}}
+{"func": "compose_run_delivery", "in": {"job": {"id": "j1", "name": "N"}, "success": true, "error": null, "final_response": "done", "io": {"close_incidents_for_recovered_job": {"ret": null}}}}
+{"func": "compose_run_delivery", "in": {"job": {"id": "j1", "name": "N"}, "success": false, "error": "[blocked_config:silent] bad", "final_response": "", "io": {"blocked_config_notice": {"ret": "notice"}}}}
+{"func": "compose_run_delivery", "in": {"job": {"id": "j1", "name": "N"}, "success": false, "error": "boom", "final_response": "", "agent_declared": true, "io": {"upsert_incident": {"ret": ["i1", true]}, "get_incident": {"ret": {"state": "open"}}, "generic_failure_notice": {"ret": "gen"}}}}
+{"func": "compose_run_delivery", "in": {"job": {"id": "j1", "name": "N"}, "success": false, "error": "boom", "final_response": "", "agent_declared": false, "io": {"upsert_incident": {"ret": ["i1", true]}, "get_incident": {"ret": {"state": "open"}}, "_summarize_cron_failure_for_delivery": {"ret": "sum"}, "hold_notice": {"ret": ""}}}}
+{"func": "compose_run_delivery", "in": {"job": {"id": "j1"}, "success": false, "error": "boom", "final_response": "", "io": {"upsert_incident": {"ret": ["i1", false]}, "get_incident": {"ret": {"state": "closed"}}}}}
+{"func": "deliver_crash_failure", "in": {"job": {"id": "j1", "name": "N"}, "err_text": "boom", "io": {"_delivery_lane_value": {"ret": "origin"}, "_normalize_deliver_value": {"ret": "origin"}, "upsert_incident": {"ret": ["i1", true]}, "get_incident": {"ret": {"state": "open"}}, "_summarize_cron_failure_for_delivery": {"ret": "sum"}, "_deliver_result": {"ret": null}, "_resolve_delivery_targets": {"ret": []}, "_classify_delivery_outcome": {"ret": "not_configured"}, "set_incident_state": {"ret": null}}}}
+{"func": "deliver_crash_failure", "in": {"job": {"id": "j1"}, "err_text": "boom", "io": {"_delivery_lane_value": {"ret": "origin"}, "_normalize_deliver_value": {"ret": "origin"}, "upsert_incident": {"ret": ["i1", false]}, "get_incident": {"ret": {"state": "closed"}}}}}
+{"func": "deliver_crash_failure", "in": {"job": {"id": "j1"}, "err_text": "boom", "io": {"_delivery_lane_value": {"ret": "local"}, "_normalize_deliver_value": {"ret": "local"}, "upsert_incident": {"ret": ["i1", true]}, "get_incident": {"ret": {"state": "open"}}, "_summarize_cron_failure_for_delivery": {"ret": "sum"}, "_deliver_result": {"ret": "send failed"}, "_classify_delivery_outcome": {"ret": "failed"}}}}
+{"func": "sweep_mcp_orphans", "in": {"io": {"_kill_orphaned_mcp_children": {"ret": 3}}}}
+{"func": "resolve_incidents_for_recovered_job", "in": {"job": {"id": "j2"}, "io": {"close_incidents_for_recovered_job": {"ret": null}}}}
+{"func": "cron_run_scope_enter", "in": {"scope": {"task_id": "cron:j3:e3", "_ctx_tokens": {}, "_cron_session_token": null, "_non_dispatcher_token": null, "_spend_token": null}, "io": {"cron_session_var.set": {"ret": "x"}, "enter_non_dispatcher_owned_context": {"ret": "y"}, "bind_run": {"ret": "z"}}}}
+{"func": "cron_run_scope_exit", "in": {"scope": {"task_id": "cron:j1:e1", "_ctx_tokens": {}, "_cron_session_token": "t1", "_non_dispatcher_token": null, "_spend_token": null}, "io": {"clear_session_cwd": {"ret": null}, "clear_session_vars": {"ret": null}, "cron_session_var.reset": {"ret": null}, "var_map.set": {"ret": null}}}}

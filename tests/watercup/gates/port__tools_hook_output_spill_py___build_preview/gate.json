@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\hook_output_spill.c"
+    "src/tools/hook_output_spill.c"
   ],
   "cflags": [
     "-I",

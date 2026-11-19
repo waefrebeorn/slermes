@@ -15,13 +15,13 @@ char *trim_snapshot_for_fork(void) { return strdup(""); }
 /* PoP: render_history_for_side_question @ agent/side_question.py:render_history_for_side_question */
 char *render_history_for_side_question(void) { return strdup(""); }
 
-/* PoP: side_question_task_config @ agent/side_question.py:side_question_task_config */
+/* PoP: side_question_task_config @ agent/side_question.py:_side_question_task_config */
 char *side_question_task_config(void) { return strdup("{}"); }
 
-/* PoP: answer_via_fork @ agent/side_question.py:answer_via_fork */
+/* PoP: answer_via_fork @ agent/side_question.py:_answer_via_fork */
 char *answer_via_fork(void) { return strdup("{}"); }
 
-/* PoP: answer_via_oneshot @ agent/side_question.py:answer_via_oneshot */
+/* PoP: answer_via_oneshot @ agent/side_question.py:_answer_via_oneshot */
 char *answer_via_oneshot(void) { return strdup("{}"); }
 
 /* PoP: answer_side_question @ agent/side_question.py:answer_side_question */

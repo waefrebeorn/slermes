@@ -9,14 +9,14 @@
 
 /* ── agent/system_prompt.py: 4 missing functions ── */
 
-/* PoP: plugin_session_info @ agent/system_prompt.py:plugin_session_info */
+/* PoP: plugin_session_info @ agent/system_prompt.py:_plugin_session_info */
 char *plugin_session_info(void) { return strdup(""); }
 
-/* PoP: frozen_plugin_prompt_sections @ agent/system_prompt.py:frozen_plugin_prompt_sections */
+/* PoP: frozen_plugin_prompt_sections @ agent/system_prompt.py:_frozen_plugin_prompt_sections */
 char *frozen_plugin_prompt_sections(void) { return strdup("[]"); }
 
-/* PoP: session_start_like @ agent/system_prompt.py:session_start_like */
+/* PoP: session_start_like @ agent/system_prompt.py:_session_start_like */
 int session_start_like(void) { return 0; }
 
-/* PoP: agent_skills_dir @ agent/system_prompt.py:agent_skills_dir */
+/* PoP: agent_skills_dir @ agent/system_prompt.py:_agent_skills_dir */
 char *agent_skills_dir(void) { return strdup(""); }

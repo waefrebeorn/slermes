@@ -212,7 +212,7 @@ const char *kdb_task_result(const kanban_task_t *t)        { return t ? t->resul
 int         kdb_task_consecutive_failures(const kanban_task_t *t){ return t ? t->consecutive_failures : 0; }
 /* PoP: kdb_task_last_failure_error @ hermes_cli/kanban_db.py:last_failure_error */
 const char *kdb_task_last_failure_error(const kanban_task_t *t){ return (t && t->last_failure_error && t->last_failure_error[0]) ? t->last_failure_error : NULL; }
-/* PoP: kdb_task_current_run_id @ hermes_cli/kanban_db.py:current_run_id */
+/* PoP: kdb_task_current_run_id @ hermes_cli/kanban_db.py:_current_run_id */
 long        kdb_task_current_run_id(const kanban_task_t *t){ return t ? t->current_run_id : 0; }
 /* PoP: kdb_task_block_kind @ hermes_cli/kanban_db.py:block_kind */
 const char *kdb_task_block_kind(const kanban_task_t *t)    { return t ? t->block_kind : NULL; }

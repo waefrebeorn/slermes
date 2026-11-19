@@ -43,7 +43,7 @@ static json_t *selection_warning_new(const char *kind, const char *title,
     return o;
 }
 
-/* PoP: cost_guard @ hermes_cli/model_selection_guards.py:cost_guard */
+/* PoP: cost_guard @ hermes_cli/model_selection_guards.py:_cost_guard */
 static json_t *cost_guard(const char *model_name, const char *provider,
                            const char *base_url, const char *api_key,
                            const json_t *model_info,
@@ -64,7 +64,7 @@ static json_t *cost_guard(const char *model_name, const char *provider,
     return out;
 }
 
-/* PoP: data_policy_guard @ hermes_cli/model_selection_guards.py:data_policy_guard */
+/* PoP: data_policy_guard @ hermes_cli/model_selection_guards.py:_data_policy_guard */
 static json_t *data_policy_guard(const char *model_name, const char *provider,
                                   const char *base_url)
 {

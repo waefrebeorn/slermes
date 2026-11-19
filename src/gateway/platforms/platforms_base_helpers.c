@@ -170,7 +170,7 @@ char *gw_base__resolve_channel_prompt(const char *extra_json, const char *channe
     return result;
 }
 
-/* PoP: gw_base__ssrf_redirect_guard @ gateway/platforms/base.py:_ssrf_redirect_guard */
+/* PoP: gw_base__ssrf_redirect_guard @ gateway/platforms/base.py:ssrf_redirect_guard */
 /* Validate a redirect target is not pointing at an internal/loopback address
  * (SSRF mitigation). Returns 1 if the URL is safe to follow, 0 otherwise. */
 int gw_base__ssrf_redirect_guard(const char *url) {

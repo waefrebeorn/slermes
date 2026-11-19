@@ -15,7 +15,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\display_tool_preview.c"
+    "src/hermes_cli/display_tool_preview.c"
   ],
   "cflags": [
     "-I",

@@ -1106,7 +1106,7 @@ void hcli_toggle_yolo(hcli_t *self) {
     }
 }
 
-/* PoP: hcli_persist_model_switch_to_session @ hermes_cli/cli_model_switch_mixin.py:persist_model_switch_to_session */
+/* PoP: hcli_persist_model_switch_to_session @ hermes_cli/cli_model_switch_mixin.py:_persist_model_switch_to_session */
 void hcli_persist_model_switch_to_session(hcli_t *self, const json_t *result) {
     if (!self || !self->session_db || !self->session_id ||
         !result || result->type != JSON_OBJECT) return;

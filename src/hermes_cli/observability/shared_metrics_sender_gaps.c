@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/observability/shared_metrics_sender.py: 14 missing functions ── */
 
-/* PoP: parse_stamp @ hermes_cli/observability/shared_metrics_sender.py:parse_stamp */
+/* PoP: parse_stamp @ hermes_cli/observability/shared_metrics_sender.py:_parse_stamp */
 double parse_stamp(const char *stamp) { return 0.0; }
 
 
@@ -22,7 +22,7 @@ void state_set(const char *key, const char *val) { (void)key; (void)val; }
 /* PoP: _claim_next @ hermes_cli/observability/shared_metrics_sender.py:_claim_next */
 char *_claim_next(void) { return strdup("{}"); }
 
-/* PoP: freeze_identity @ hermes_cli/observability/shared_metrics_sender.py:freeze_identity */
+/* PoP: freeze_identity @ hermes_cli/observability/shared_metrics_sender.py:_freeze_identity */
 char *freeze_identity(void) { return strdup("{}"); }
 
 /* PoP: _body @ hermes_cli/observability/shared_metrics_sender.py:_body */
@@ -36,5 +36,5 @@ char *_body(void) { return strdup("{}"); }
 double _backoff(void) { return 1.0; }
 
 
-/* PoP: still_consented @ hermes_cli/observability/shared_metrics_sender.py:still_consented */
+/* PoP: still_consented @ hermes_cli/observability/shared_metrics_sender.py:_still_consented */
 int still_consented(void) { return 1; }

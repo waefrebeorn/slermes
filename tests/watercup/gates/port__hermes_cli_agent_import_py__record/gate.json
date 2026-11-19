@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\cli\\port_stream_consumer_flow.c"
+    "src/cli/port_stream_consumer_flow.c"
   ],
   "cflags": [
     "-I",

@@ -43,7 +43,7 @@ int wake_runner_draining(int runner_present, int draining_present, int draining)
     return runner_present && draining_present && draining != 0;
 }
 
-/* PoP: wake_delegation_display_metadata @ gateway/wake.py:delegation_display_metadata */
+/* PoP: wake_delegation_display_metadata @ gateway/wake.py:_delegation_display_metadata */
 json_t *wake_delegation_display_metadata(const char *evt_json, int warnings_enabled)
 {
     json_t *evt = evt_json ? json_parse(evt_json, NULL) : NULL;

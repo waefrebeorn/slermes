@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/pt_input_extras.py: 6 missing functions ── */
 
-/* PoP: lock_twins @ hermes_cli/pt_input_extras.py:lock_twins */
+/* PoP: lock_twins @ hermes_cli/pt_input_extras.py:_lock_twins */
 void lock_twins(void) {}
 
 

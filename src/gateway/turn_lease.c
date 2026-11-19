@@ -30,7 +30,7 @@ int gateway_turn_lease_u__len__(const char *arg) {
     return 0;
 }
 
-/* PoP: gateway_turn_lease_u_evict_idle @ gateway/turn_lease.py:evict_idle */
+/* PoP: gateway_turn_lease_u_evict_idle @ gateway/turn_lease.py:_evict_idle */
 int gateway_turn_lease_u_evict_idle(const char *arg) {
     /* Python: idle-only cap. Arg =
      * "evicted\tstate\tresult". */

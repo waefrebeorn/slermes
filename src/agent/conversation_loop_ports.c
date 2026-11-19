@@ -24,7 +24,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cvl_image_error_max_dimension @ agent/turn_recovery.py:image_error_max_dimension */
+/* PoP: cvl_image_error_max_dimension @ agent/turn_recovery.py:_image_error_max_dimension */
 long cvl_image_error_max_dimension(const char *error) {
     /* Python: provider-reported image dimension ceiling. */
     if (!error) return 0;
@@ -113,14 +113,14 @@ bool cvl_print_billing_or_entitlement_guidance(const char *capability, const cha
     return true;
 }
 
-/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/turn_recovery.py:try_refresh_nous_paid_entitlement_credentials */
+/* PoP: cvl_try_refresh_nous_paid_entitlement_credentials @ agent/turn_recovery.py:_try_refresh_nous_paid_entitlement_credentials */
 int cvl_try_refresh_nous_paid_entitlement_credentials(void) {
     /* Python: refresh runtime credentials after paid check. */
     printf("nous paid-entitlement credentials refreshed\n");
     return 0;
 }
 
-/* PoP: cvl_restore_or_build_system_prompt @ agent/conversation_loop.py:restore_or_build_system_prompt */
+/* PoP: cvl_restore_or_build_system_prompt @ agent/conversation_loop.py:_restore_or_build_system_prompt */
 char *cvl_restore_or_build_system_prompt(const char *session_db_json, const char *fallback_prompt) {
     /* Python: cached from session DB or build fresh. */
     if (!fallback_prompt) return NULL;
@@ -158,7 +158,7 @@ char *cvl_get_continuation_prompt(bool is_partial_stub, const char *dropped_tool
     return strdup("Continue");
 }
 
-/* PoP: cvl_content_policy_blocked_result @ agent/conversation_loop.py:content_policy_blocked_result */
+/* PoP: cvl_content_policy_blocked_result @ agent/conversation_loop.py:_content_policy_blocked_result */
 char *cvl_content_policy_blocked_result(const char *reason) {
     /* Python: terminal turn result for content-policy block. */
     char *out = NULL;

@@ -39,7 +39,7 @@ int _authority_epoch(int value) {
     return value > 0 ? value : 1;
 }
 
-/* PoP: task_payload @ gateway/hosted_room_driver.py:task_payload */
+/* PoP: task_payload @ gateway/hosted_room_driver.py:_task_payload */
 char *task_payload(const char *payload_json) {
     if (!payload_json) return strdup("{}");
     return strdup(payload_json);

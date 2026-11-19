@@ -15,10 +15,10 @@ char *harden_git_argv(void) { return strdup("[]"); }
 /* PoP: resolve_node_command @ hermes_cli/_subprocess_compat.py:resolve_node_command */
 char *resolve_node_command(void) { return strdup(""); }
 
-/* PoP: text_names_hermes @ hermes_cli/_subprocess_compat.py:text_names_hermes */
+/* PoP: text_names_hermes @ hermes_cli/_subprocess_compat.py:_text_names_hermes */
 int text_names_hermes(void) { return 0; }
 
-/* PoP: process_command_is_hermes @ hermes_cli/_subprocess_compat.py:process_command_is_hermes */
+/* PoP: process_command_is_hermes @ hermes_cli/_subprocess_compat.py:_process_command_is_hermes */
 int process_command_is_hermes(void) { return 0; }
 
 /* PoP: pid_is_hermes @ hermes_cli/_subprocess_compat.py:pid_is_hermes */

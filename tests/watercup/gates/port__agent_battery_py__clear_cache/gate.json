@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\battery.c",
-    "src\\battery.c"
+    "src/agent/battery.c",
+    "src/battery.c"
   ],
   "cflags": [
     "-I",

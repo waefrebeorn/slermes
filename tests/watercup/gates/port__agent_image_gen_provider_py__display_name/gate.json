@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\web_app.c"
+    "src/web_app.c"
   ],
   "cflags": [
     "-I",

@@ -1088,7 +1088,7 @@ void kdb_init_lock_release(void *handle)
 #endif
 }
 
-/* PoP: kdb_dispatch_tick_lock_acquire @ hermes_cli/kanban_db_connect.py:dispatch_tick_lock */
+/* PoP: kdb_dispatch_tick_lock_acquire @ hermes_cli/kanban_db_connect.py:_dispatch_tick_lock */
 /* Non-blocking single-writer guard around one dispatcher tick. Returns 0;
  * sets *held_out=1 when this process owns the board's dispatch lock. */
 int kdb_dispatch_tick_lock_acquire(const char *db_path, int *held_out, void **handle_out)
@@ -1230,7 +1230,7 @@ static char *kb_terminate_reclaimed_worker(long pid, const char *claim_lock)
     return info;
 }
 
-/* PoP: kb_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
+/* PoP: kb_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:_worker_survived_termination */
 static int kb_worker_survived_termination(const char *term_json)
 {
     if (!term_json) return 0;
@@ -1241,7 +1241,7 @@ static int kb_worker_survived_termination(const char *term_json)
     return attempted && host_local && !terminated;
 }
 
-/* PoP: kb_defer_reclaim_for_live_worker @ hermes_cli/kanban_db_dispatch.py:defer_reclaim_for_live_worker */
+/* PoP: kb_defer_reclaim_for_live_worker @ hermes_cli/kanban_db_dispatch.py:_defer_reclaim_for_live_worker */
 static void kb_defer_reclaim_for_live_worker(sqlite3 *conn, const char *task_id,
                                               const char *claim_lock, long now,
                                               const char *term_json, const char *reason)

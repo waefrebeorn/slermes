@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\cli_agent_setup_mixin.c"
+    "src/hermes_cli/cli_agent_setup_mixin.c"
   ],
   "cflags": [
     "-I",

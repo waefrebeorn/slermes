@@ -9,13 +9,13 @@
 
 /* ── utils.py: 5 missing functions ── */
 
-/* PoP: is_contended_windows_replace_error @ utils/files.py:is_contended_windows_replace_error */
+/* PoP: is_contended_windows_replace_error @ utils/files.py:_is_contended_windows_replace_error */
 int is_contended_windows_replace_error(void) { return 0; }
 
-/* PoP: rewrite_in_place @ utils/files.py:rewrite_in_place */
+/* PoP: rewrite_in_place @ utils/files.py:_rewrite_in_place */
 int rewrite_in_place(void) { return 1; }
 
-/* PoP: copy_fallback @ utils/files.py:copy_fallback */
+/* PoP: copy_fallback @ utils/files.py:_copy_fallback */
 int copy_fallback(void) { return 1; }
 
 /* PoP: atomic_roundtrip_yaml_save @ utils/files.py:atomic_roundtrip_yaml_save */

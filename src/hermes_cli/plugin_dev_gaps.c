@@ -9,17 +9,17 @@
 
 /* ── hermes_cli/plugin_dev.py: 5 missing functions ── */
 
-/* PoP: doctor_runtime @ hermes_cli/plugin_dev.py:doctor_runtime */
+/* PoP: doctor_runtime @ hermes_cli/plugin_dev.py:_doctor_runtime */
 char *doctor_runtime(void) { return strdup(""); }
 
 /* PoP: _has_manifest @ hermes_cli/plugin_dev.py:_has_manifest */
 int _has_manifest(void) { return 0; }
 
-/* PoP: holds_plugin @ hermes_cli/plugin_dev.py:holds_plugin */
+/* PoP: holds_plugin @ hermes_cli/plugin_dev.py:_holds_plugin */
 int holds_plugin(void) { return 0; }
 
-/* PoP: is_plugin_id @ hermes_cli/plugin_dev.py:is_plugin_id */
+/* PoP: is_plugin_id @ hermes_cli/plugin_dev.py:_is_plugin_id */
 int is_plugin_id(void) { return 0; }
 
-/* PoP: accepts_var_kwargs @ hermes_cli/plugin_dev.py:accepts_var_kwargs */
+/* PoP: accepts_var_kwargs @ hermes_cli/plugin_dev.py:_accepts_var_kwargs */
 int accepts_var_kwargs(void) { return 0; }

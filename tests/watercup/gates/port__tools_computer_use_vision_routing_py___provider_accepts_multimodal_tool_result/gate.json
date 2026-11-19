@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\computer_use\\computer_use_vision_routing.c"
+    "src/tools/computer_use/computer_use_vision_routing.c"
   ],
   "cflags": [
     "-I",

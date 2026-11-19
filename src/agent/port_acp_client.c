@@ -168,7 +168,7 @@ json_t *acp_session_model_ids(const char *session_json)
     return acp_legacy_session_model_ids(session_json);
 }
 
-/* PoP: acp_model_selection_request @ agent/acp_client.py:model_selection_request */
+/* PoP: acp_model_selection_request @ agent/acp_client.py:_model_selection_request */
 json_t *acp_model_selection_request(const char *session_json,
                                     const char *requested_model,
                                     const char *placeholder)

@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\signal\\platforms_signal_rate_limit.c"
+    "src/plugins/platforms/signal/platforms_signal_rate_limit.c"
   ],
   "cflags": [
     "-I",

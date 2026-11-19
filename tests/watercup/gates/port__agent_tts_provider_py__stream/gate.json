@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\codex_responses_adapter.c"
+    "src/agent/codex_responses_adapter.c"
   ],
   "cflags": [
     "-I",

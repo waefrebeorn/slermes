@@ -359,7 +359,7 @@ char *strip_vendor_prefix(const char *model_id)
     return out;
 }
 
-/* PoP: is_openai_fast_model @ hermes_cli/models.py:is_openai_fast_model */
+/* PoP: is_openai_fast_model @ hermes_cli/models.py:_is_openai_fast_model */
 int is_openai_fast_model(const char *model_id)
 {
     char *raw = strip_vendor_prefix(model_id);
@@ -686,7 +686,7 @@ static pthread_mutex_t _swr_refresh_lock = PTHREAD_MUTEX_INITIALIZER;
 static char *_swr_inflight_keys[64];
 static int   _swr_inflight_n = 0;
 
-/* PoP: ai_gateway_model_is_free @ hermes_cli/models.py:ai_gateway_model_is_free */
+/* PoP: ai_gateway_model_is_free @ hermes_cli/models.py:_ai_gateway_model_is_free */
 bool ai_gateway_model_is_free(const char *pricing_json) {
     if (!pricing_json) return false;
     /* Parse "input" and "output" pricing; True iff both == 0. */
@@ -706,7 +706,7 @@ bool ai_gateway_model_is_free(const char *pricing_json) {
     return in_val == 0.0 && out_val == 0.0;
 }
 
-/* PoP: provider_catalog_names @ hermes_cli/models.py:provider_catalog_names */
+/* PoP: provider_catalog_names @ hermes_cli/models.py:_provider_catalog_names */
 /* Returns malloc'd NULL-terminated array of "active+retired" model names for
  * a provider (caller frees each + the array). Faithful to Python's
  * active + retired aliases; the C static catalog already merges deepseek's
@@ -727,7 +727,7 @@ char **provider_catalog_names(const char *provider, int *out_n) {
     return result;
 }
 
-/* PoP: mapping @ hermes_cli/models.py:model_dedup_key */
+/* PoP: mapping @ hermes_cli/models.py:_model_dedup_key */
 /* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
  * The alias table is the model_search.py mapping (ported from scratch). */
 char *model_dedup_key(const char *model_id) {
@@ -759,7 +759,7 @@ char *model_dedup_key(const char *model_id) {
     return strdup(start);
 }
 
-/* PoP: frees @ hermes_cli/models.py:openai_discovery_base_url */
+/* PoP: frees @ hermes_cli/models.py:_openai_discovery_base_url */
 /* Returns the effective OpenAI base URL for model discovery. Returns a
  * malloc'd string the caller frees (or a static default). */
 char *openai_discovery_base_url(const char *provider) {
@@ -1052,7 +1052,7 @@ char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
     return result;
 }
 
-/* PoP: swr_worker @ hermes_cli/models.py:spawn_swr_refresh */
+/* PoP: swr_worker @ hermes_cli/models.py:_spawn_swr_refresh */
 /* Fire-and-forget background refresh of a provider model-id cache entry.
  * At most one refresh in flight per cache_key (dedup via _swr_refresh_lock).
  * Failures are swallowed — the stale entry keeps being served. Mirrors the
@@ -1163,7 +1163,7 @@ static void *catalog_swr_worker(void *arg) {
     return NULL;
 }
 
-/* PoP: get_catalog @ hermes_cli/model_catalog.py:spawn_catalog_swr_refresh */
+/* PoP: get_catalog @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
 /* Port of Python spawn_catalog_swr_refresh: refresh the catalog manifest
  * off-thread (fire-and-forget, deduped via _catalog_swr_inflight). The
  * refreshed manifest lands on disk; the next get_catalog() picks it up

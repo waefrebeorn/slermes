@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\secret_sources\\secret_sources_cache_ports.c"
+    "src/agent/secret_sources/secret_sources_cache_ports.c"
   ],
   "cflags": [
     "-I",

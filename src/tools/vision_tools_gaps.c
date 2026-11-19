@@ -9,16 +9,16 @@
 
 /* ── tools/vision_tools.py: 5 missing functions ── */
 
-/* PoP: supported_media_types @ tools/vision_tools_image_prep.py:supported_media_types */
+/* PoP: supported_media_types @ tools/vision_tools_image_prep.py:_supported_media_types */
 char *supported_media_types(void) { return strdup("[]"); }
 
-/* PoP: validate_raster_image_decodable @ tools/vision_tools_image_prep.py:validate_raster_image_decodable */
+/* PoP: validate_raster_image_decodable @ tools/vision_tools_image_prep.py:_validate_raster_image_decodable */
 int validate_raster_image_decodable(void) { return 1; }
 
 /* PoP: stream_download_to_file @ tools/vision_tools.py:stream_download_to_file */
 char *stream_download_to_file(void) { return strdup("{}"); }
 
-/* PoP: profile_rejects_tool_media @ tools/vision_tools.py:profile_rejects_tool_media */
+/* PoP: profile_rejects_tool_media @ tools/vision_tools.py:_profile_rejects_tool_media */
 int profile_rejects_tool_media(void) { return 0; }
 
 /* PoP: materialize_video_from_terminal_backend @ tools/vision_tools.py:materialize_video_from_terminal_backend */

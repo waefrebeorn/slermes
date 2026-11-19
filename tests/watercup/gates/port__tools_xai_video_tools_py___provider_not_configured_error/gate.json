@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\xai_video_tools.c"
+    "src/tools/xai_video_tools.c"
   ],
   "cflags": [
     "-I",

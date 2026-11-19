@@ -34,7 +34,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: mn_restore_tui_workspace @ hermes_cli/main_tui_launch.py:restore_tui_workspace */
+/* PoP: mn_restore_tui_workspace @ hermes_cli/main_tui_launch.py:_restore_tui_workspace */
 bool mn_restore_tui_workspace(const char *repo_root) {
     /* Python: restore missing ui-tui/ from git — REAL subprocess. */
     if (!repo_root) return false;
@@ -55,7 +55,7 @@ bool mn_restore_tui_workspace(const char *repo_root) {
     return ok;
 }
 
-/* PoP: mn_ensure_tui_workspace @ hermes_cli/main_tui_launch.py:ensure_tui_workspace */
+/* PoP: mn_ensure_tui_workspace @ hermes_cli/main_tui_launch.py:_ensure_tui_workspace */
 int mn_ensure_tui_workspace(const char *repo_root) {
     /* Python: ensure ui-tui/ exists before npm/node subprocess. */
     if (!repo_root) return -1;

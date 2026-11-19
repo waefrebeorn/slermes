@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\checkpoints\\checkpoint_manager_ports.c"
+    "src/agent/checkpoints/checkpoint_manager_ports.c"
   ],
   "cflags": [
     "-I",

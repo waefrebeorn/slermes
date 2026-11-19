@@ -50,7 +50,7 @@ static const char *const SR_SIDECAR_SUFFIXES[] = { "-wal", "-shm", "-journal" };
  *  A short header is returned UNCHANGED. `head` is modified in place.
  * =========================================================================== */
 
-/* PoP: sr_mask_volatile_header @ persistence/sqlite/_state/repair.py:mask_volatile_header */
+/* PoP: sr_mask_volatile_header @ persistence/sqlite/_state/repair.py:_mask_volatile_header */
 void sr_mask_volatile_header(unsigned char *head, size_t len)
 {
     if (!head || len < 96) return;

@@ -10,13 +10,13 @@
 /* ── hermes_cli/profiles.py: 6 missing functions ── */
 
 
-/* PoP: served_by_running_multiplexer @ hermes_cli/profiles.py:served_by_running_multiplexer */
+/* PoP: served_by_running_multiplexer @ hermes_cli/profiles.py:_served_by_running_multiplexer */
 int served_by_running_multiplexer(void) { return 0; }
 
-/* PoP: inside_git_checkout @ hermes_cli/profiles.py:inside_git_checkout */
+/* PoP: inside_git_checkout @ hermes_cli/profiles.py:_inside_git_checkout */
 int inside_git_checkout(void) { return 0; }
 
-/* PoP: profile_export_directory @ hermes_cli/profiles.py:profile_export_directory */
+/* PoP: profile_export_directory @ hermes_cli/profiles.py:_profile_export_directory */
 char *profile_export_directory(void) { return strdup(""); }
 
 /* PoP: get_profile_export_path @ hermes_cli/profiles.py:get_profile_export_path */

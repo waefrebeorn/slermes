@@ -166,7 +166,7 @@ bool bluebubbles_send_tapback(http_client_t *http,
 
 /* PoP: bluebubbles_send_attachment @ plugins/platforms/bluebubbles/adapter.py:_send_attachment */
 /* Port of Python plugins/platforms/bluebubbles/adapter.py:_send_attachment(). */
-/* PoP: bluebubbles_send_attachment @ plugins/platforms/bluebubbles/adapter.py:send_attachment */
+/* PoP: bluebubbles_send_attachment @ plugins/platforms/bluebubbles/adapter.py:_send_attachment */
 /* Port of Python plugins/platforms/bluebubbles/adapter.py:send_attachment(). */
 bool bluebubbles_send_attachment(http_client_t *http,
                                   const char *chat_id,

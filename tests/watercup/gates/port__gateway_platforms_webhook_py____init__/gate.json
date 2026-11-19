@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\platforms\\webhook_ports.c",
-    "src\\gateway\\gw_pollers.c"
+    "src/gateway/platforms/webhook_ports.c",
+    "src/gateway/gw_pollers.c"
   ],
   "cflags": [
     "-I",

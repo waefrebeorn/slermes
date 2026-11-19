@@ -40,7 +40,7 @@ double voice_get_beep_volume(const json_t *voice_cfg) {
 }
 
 /* -- sounddevice_output_allowed ------------------------------------  */
-/* PoP: sounddevice_output_allowed @ tools/voice_mode.py:sounddevice_output_allowed */
+/* PoP: sounddevice_output_allowed @ tools/voice_mode.py:_sounddevice_output_allowed */
 bool sounddevice_output_allowed(void) {
 #ifdef __APPLE__
     return false;
@@ -76,7 +76,7 @@ bool is_wsl2_env(void) {
     return strstr(proc_version(), "microsoft") != NULL;
 }
 
-/* PoP: wsl_powershell_tts_available @ tools/voice_mode.py:wsl_powershell_tts_available */
+/* PoP: wsl_powershell_tts_available @ tools/voice_mode.py:_wsl_powershell_tts_available */
 bool wsl_powershell_tts_available(void) {
     if (!is_wsl2_env()) return false;
     return access("/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", X_OK) == 0
@@ -91,14 +91,14 @@ bool voice_debug_enabled(void) {
 }
 
 /* -- vad_log ------------------------------------------------------  */
-/* PoP: vad_log @ tools/voice_mode.py:vad_log */
+/* PoP: vad_log @ tools/voice_mode.py:_vad_log */
 void vad_log(const char *msg) {
     if (!msg) return;
     fprintf(stderr, "[voice-vad] %s\n", msg);
 }
 
 /* -- load_voice_stop_phrases --------------------------------------  */
-/* PoP: load_voice_stop_phrases @ tools/voice_mode_transcript.py:load_voice_stop_phrases */
+/* PoP: load_voice_stop_phrases @ tools/voice_mode_transcript.py:_load_voice_stop_phrases */
 char **load_voice_stop_phrases(const json_t *voice_cfg, int *out_count) {
     *out_count = 0;
     json_t *phrases = NULL;

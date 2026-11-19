@@ -38,7 +38,7 @@ char **primary_key_columns(sqlite3 *conn, const char *table) {
     return cols;
 }
 
-/* PoP: migrate_remote_run_schema @ gateway/hosted_rooms.py:migrate_remote_run_schema */
+/* PoP: migrate_remote_run_schema @ gateway/hosted_rooms.py:_migrate_remote_run_schema */
 void migrate_remote_run_schema(sqlite3 *conn) {
     if (!conn) return;
     /* Simplified: full migration logic is complex */
@@ -85,12 +85,12 @@ char *validate_room_name(const char *value) {
     return validate_identifier(value);
 }
 
-/* PoP: validate_members @ gateway/hosted_rooms.py:validate_members */
+/* PoP: validate_members @ gateway/hosted_rooms.py:_validate_members */
 char *validate_members(const char *value) {
     return _canonical_json(value);
 }
 
-/* PoP: legacy_members_match @ gateway/hosted_rooms.py:legacy_members_match */
+/* PoP: legacy_members_match @ gateway/hosted_rooms.py:_legacy_members_match */
 bool legacy_members_match(const char *existing, const char *proposed) {
     if (!existing || !proposed) return false;
     return strcmp(existing, proposed) == 0;
@@ -108,13 +108,13 @@ char *optional_actor_field(const char *actor_json, const char *field) {
     return strdup("");
 }
 
-/* PoP: validate_actor @ gateway/hosted_rooms.py:validate_actor */
+/* PoP: validate_actor @ gateway/hosted_rooms.py:_validate_actor */
 char *validate_actor(const char *value, const char *kind) {
     (void)kind;
     return _canonical_json(value);
 }
 
-/* PoP: schema_is_current @ gateway/hosted_rooms.py:schema_is_current */
+/* PoP: schema_is_current @ gateway/hosted_rooms.py:_schema_is_current */
 bool schema_is_current(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
@@ -194,7 +194,7 @@ int delete_room_link_records(const char *db_path, const char *room_id) {
     return count;
 }
 
-/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:room_grant_scope_key */
+/* PoP: room_grant_scope_key @ gateway/hosted_rooms.py:_room_grant_scope_key */
 char *room_grant_scope_key(const char *claims_json) {
     if (!claims_json) return strdup("");
     return strdup("sha256scopekey"); /* simplified */

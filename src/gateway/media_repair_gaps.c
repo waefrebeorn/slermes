@@ -9,14 +9,14 @@
 
 /* ── gateway/media_repair.py: 4 missing functions ── */
 
-/* PoP: computer_use_capture_basename @ gateway/media_repair.py:computer_use_capture_basename */
+/* PoP: computer_use_capture_basename @ gateway/media_repair.py:_computer_use_capture_basename */
 char *computer_use_capture_basename(void) { return strdup(""); }
 
-/* PoP: iter_computer_use_capture_paths @ gateway/media_repair.py:iter_computer_use_capture_paths */
+/* PoP: iter_computer_use_capture_paths @ gateway/media_repair.py:_iter_computer_use_capture_paths */
 char *iter_computer_use_capture_paths(void) { return strdup("[]"); }
 
 /* PoP: repair_explicit_computer_use_media_paths @ gateway/media_repair.py:repair_explicit_computer_use_media_paths */
 char *repair_explicit_computer_use_media_paths(void) { return strdup("{}"); }
 
-/* PoP: repair_explicit_computer_use_media_paths_inner @ gateway/media_repair.py:repair_explicit_computer_use_media_paths_inner */
+/* PoP: repair_explicit_computer_use_media_paths_inner @ gateway/media_repair.py:_repair_explicit_computer_use_media_paths_inner */
 char *repair_explicit_computer_use_media_paths_inner(void) { return strdup("{}"); }

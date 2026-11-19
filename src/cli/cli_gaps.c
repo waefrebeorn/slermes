@@ -451,13 +451,13 @@ void error_class(void) { }
 
 
 
-/* PoP: record_compression_regions @ agent/context_compressor_telemetry.py:record_compression_regions */
+/* PoP: record_compression_regions @ agent/context_compressor_telemetry.py:_record_compression_regions */
 void record_compression_regions(void) { }
 
-/* PoP: record_aux_compression_call @ agent/context_compressor_telemetry.py:record_aux_compression_call */
+/* PoP: record_aux_compression_call @ agent/context_compressor_telemetry.py:_record_aux_compression_call */
 void record_aux_compression_call(void) { }
 
-/* PoP: note_aux_route_fallback @ agent/context_compressor_telemetry.py:note_aux_route_fallback */
+/* PoP: note_aux_route_fallback @ agent/context_compressor_telemetry.py:_note_aux_route_fallback */
 void note_aux_route_fallback(void) { }
 
 
@@ -484,7 +484,7 @@ void re_register_config_hooks(void) { }
 /* PoP: _enqueue @ agent/outbound_webhooks.py:_enqueue */
 void _enqueue(void) { }
 
-/* PoP: worker_loop @ agent/outbound_webhooks.py:worker_loop */
+/* PoP: worker_loop @ agent/outbound_webhooks.py:_worker_loop */
 void worker_loop(void) { }
 
 /* PoP: redirect_request @ agent/outbound_webhooks.py:redirect_request */
@@ -537,7 +537,7 @@ void blocked(void) { }
 
 
 
-/* PoP: live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:live_dm_allow_from */
+/* PoP: live_dm_allow_from @ gateway/platforms/access_policy_mixin.py:_live_dm_allow_from */
 void live_dm_allow_from(void) { }
 
 
@@ -560,7 +560,7 @@ void checkin(void) { }
 /* PoP: close_all @ gateway/platforms/api_server_memory_sessions.py:close_all */
 void close_all(void) { }
 
-/* PoP: shutdown_async @ gateway/platforms/api_server_memory_sessions.py:shutdown_async */
+/* PoP: shutdown_async @ gateway/platforms/api_server_memory_sessions.py:_shutdown_async */
 void shutdown_async(void) { }
 
 /* PoP: _timer @ gateway/platforms/webhook_coalesce.py:_timer */
@@ -611,7 +611,7 @@ void respond(void) { }
 /* PoP: mutate @ gateway/session_contract.py:mutate */
 void mutate(void) { }
 
-/* PoP: publish_health @ gateway/session_db_recovery.py:publish_health */
+/* PoP: publish_health @ gateway/session_db_recovery.py:_publish_health */
 void publish_health(void) { }
 
 
@@ -624,7 +624,7 @@ void last_error(void) { }
 
 
 
-/* PoP: lock_for @ gateway/session_managed_worker_log.py:lock_for */
+/* PoP: lock_for @ gateway/session_managed_worker_log.py:_lock_for */
 void lock_for(void) { }
 
 
@@ -646,23 +646,23 @@ void take(void) { }
 /* PoP: compose @ gateway/session_retry_admission.py:compose */
 void compose(void) { }
 
-/* PoP: filter_and_accumulate @ gateway/stream_consumer_think.py:filter_and_accumulate */
+/* PoP: filter_and_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
 void filter_and_accumulate(void) { }
 
-/* PoP: flush_think_buffer @ gateway/stream_consumer_think.py:flush_think_buffer */
+/* PoP: flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
 void flush_think_buffer(void) { }
 
 
 /* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
 void watchdog_interval_seconds(void) { }
 
-/* PoP: lag_tolerance @ gateway/systemd_notify.py:lag_tolerance */
+/* PoP: lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
 void lag_tolerance(void) { }
 
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
 void record_tick(void) { }
 
-/* PoP: evict_idle @ gateway/turn_lease.py:evict_idle */
+/* PoP: evict_idle @ gateway/turn_lease.py:_evict_idle */
 void evict_idle(void) { }
 
 /* PoP: rebind @ gateway/turn_lease.py:rebind */
@@ -684,13 +684,13 @@ void __setattr__(void) { }
 void __delattr__(void) { }
 
 
-/* PoP: probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:probe_single_zai_endpoint */
+/* PoP: probe_single_zai_endpoint @ hermes_cli/auth_zai_kimi.py:_probe_single_zai_endpoint */
 void probe_single_zai_endpoint(void) { }
 
 /* PoP: detect_zai_endpoint @ hermes_cli/auth_zai_kimi.py:detect_zai_endpoint */
 void detect_zai_endpoint(void) { }
 
-/* PoP: resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:resolve_zai_base_url */
+/* PoP: resolve_zai_base_url @ hermes_cli/auth_zai_kimi.py:_resolve_zai_base_url */
 void resolve_zai_base_url(void) { }
 
 
@@ -700,7 +700,7 @@ void active_count(void) { }
 /* PoP: prepare @ hermes_cli/backend_retirement.py:prepare */
 void prepare(void) { }
 
-/* PoP: get_custom_provider_entries @ hermes_cli/auth_commands.py:get_custom_provider_entries */
+/* PoP: get_custom_provider_entries @ hermes_cli/auth_commands.py:_get_custom_provider_entries */
 void get_custom_provider_entries(void) { }
 
 
@@ -720,10 +720,10 @@ void _fail(void) { }
 /* PoP: _cmd_show @ hermes_cli/bundles.py:_cmd_show */
 void _cmd_show(void) { }
 
-/* PoP: cmd_create @ hermes_cli/bundles.py:cmd_create */
+/* PoP: cmd_create @ hermes_cli/bundles.py:_cmd_create */
 void cmd_create(void) { }
 
-/* PoP: cmd_delete @ hermes_cli/bundles.py:cmd_delete */
+/* PoP: cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
 void cmd_delete(void) { }
 
 /* PoP: register_cli @ hermes_cli/bundles.py:register_cli */

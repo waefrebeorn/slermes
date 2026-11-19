@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\todo_tool_ports.c"
+    "src/tools/todo_tool_ports.c"
   ],
   "cflags": [
     "-I",

@@ -9,44 +9,44 @@
 
 /* ── gateway/platforms/api_server.py: 16 missing functions ── */
 
-/* PoP: declared_conversation_session @ gateway/platforms/api_server.py:declared_conversation_session */
+/* PoP: declared_conversation_session @ gateway/platforms/api_server.py:_declared_conversation_session */
 char *declared_conversation_session(void) { return strdup("{}"); }
 
 
-/* PoP: run_idempotency_scope @ gateway/platforms/api_server.py:run_idempotency_scope */
+/* PoP: run_idempotency_scope @ gateway/platforms/api_server.py:_run_idempotency_scope */
 char *run_idempotency_scope(void) { return strdup(""); }
 
-/* PoP: room_grant_token @ gateway/platforms/api_server.py:room_grant_token */
+/* PoP: room_grant_token @ gateway/platforms/api_server.py:_room_grant_token */
 char *room_grant_token(void) { return strdup(""); }
 
-/* PoP: room_grant_secret @ gateway/platforms/api_server.py:room_grant_secret */
+/* PoP: room_grant_secret @ gateway/platforms/api_server.py:_room_grant_secret */
 char *room_grant_secret(void) { return strdup(""); }
 
-/* PoP: room_grant_claims @ gateway/platforms/api_server.py:room_grant_claims */
+/* PoP: room_grant_claims @ gateway/platforms/api_server.py:_room_grant_claims */
 char *room_grant_claims(void) { return strdup("{}"); }
 
-/* PoP: check_run_auth @ gateway/platforms/api_server.py:check_run_auth */
+/* PoP: check_run_auth @ gateway/platforms/api_server.py:_check_run_auth */
 int check_run_auth(void) { return 1; }
 
 
-/* PoP: normalize_room_dispatch @ gateway/platforms/api_server.py:normalize_room_dispatch */
+/* PoP: normalize_room_dispatch @ gateway/platforms/api_server.py:_normalize_room_dispatch */
 char *normalize_room_dispatch(void) { return strdup("{}"); }
 
-/* PoP: handle_room_member_invitation @ gateway/platforms/api_server_room_grants.py:handle_room_member_invitation */
+/* PoP: handle_room_member_invitation @ gateway/platforms/api_server_room_grants.py:_handle_room_member_invitation */
 char *handle_room_member_invitation(void) { return strdup("{}"); }
 
-/* PoP: handle_room_member_capabilities @ gateway/platforms/api_server_room_grants.py:handle_room_member_capabilities */
+/* PoP: handle_room_member_capabilities @ gateway/platforms/api_server_room_grants.py:_handle_room_member_capabilities */
 char *handle_room_member_capabilities(void) { return strdup("{}"); }
 
-/* PoP: handle_room_member_grant_refresh @ gateway/platforms/api_server_room_grants.py:handle_room_member_grant_refresh */
+/* PoP: handle_room_member_grant_refresh @ gateway/platforms/api_server_room_grants.py:_handle_room_member_grant_refresh */
 char *handle_room_member_grant_refresh(void) { return strdup("{}"); }
 
-/* PoP: handle_room_member_grant_revoke @ gateway/platforms/api_server_room_grants.py:handle_room_member_grant_revoke */
+/* PoP: handle_room_member_grant_revoke @ gateway/platforms/api_server_room_grants.py:_handle_room_member_grant_revoke */
 char *handle_room_member_grant_revoke(void) { return strdup("{}"); }
 
-/* PoP: durable_run_status @ gateway/platforms/api_server.py:durable_run_status */
+/* PoP: durable_run_status @ gateway/platforms/api_server.py:_durable_run_status */
 char *durable_run_status(void) { return strdup("{}"); }
 
-/* PoP: request_owns_run @ gateway/platforms/api_server.py:request_owns_run */
+/* PoP: request_owns_run @ gateway/platforms/api_server.py:_request_owns_run */
 int request_owns_run(void) { return 1; }
 

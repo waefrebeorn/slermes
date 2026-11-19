@@ -1,4 +1,4 @@
-/* PoP: divert_session_transcript_jsonl @ hermes_state.py:divert_session_transcript_jsonl */
+/* PoP: divert_session_transcript_jsonl @ hermes_state.py:_divert_session_transcript_jsonl */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

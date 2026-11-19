@@ -18,16 +18,16 @@ void *db_2(void) { return NULL; }
 /* PoP: routing_db @ gateway/session_persistence.py:routing_db */
 void *routing_db(void) { return NULL; }
 
-/* PoP: named_profile_for_key @ gateway/session_persistence.py:named_profile_for_key */
+/* PoP: named_profile_for_key @ gateway/session_persistence.py:_named_profile_for_key */
 char *named_profile_for_key(const char *key) { return strdup(""); }
 
-/* PoP: profile_home_for_key @ gateway/session_persistence.py:profile_home_for_key */
+/* PoP: profile_home_for_key @ gateway/session_persistence.py:_profile_home_for_key */
 char *profile_home_for_key(const char *key) { return strdup(""); }
 
 /* PoP: db_for_key @ gateway/session_persistence.py:db_for_key */
 void *db_for_key(const char *key) { return NULL; }
 
-/* PoP: owner_key_for_session_id @ gateway/session_persistence.py:owner_key_for_session_id */
+/* PoP: owner_key_for_session_id @ gateway/session_persistence.py:_owner_key_for_session_id */
 char *owner_key_for_session_id(const char *id) { return strdup(""); }
 
 /* PoP: db_for_session_id @ gateway/session_persistence.py:db_for_session_id */
@@ -35,5 +35,5 @@ void *db_for_session_id(const char *id) { return NULL; }
 
 
 
-/* PoP: get_transcript_drain_lock @ gateway/session_transcript.py:get_transcript_drain_lock */
+/* PoP: get_transcript_drain_lock @ gateway/session_transcript.py:_get_transcript_drain_lock */
 char *get_transcript_drain_lock(void) { return strdup("{}"); }

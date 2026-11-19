@@ -80,7 +80,7 @@ static const char *SCHEMA = "{"
  *  Safe command preview
  * ================================================================ */
 
-/* PoP: buffer @ tools/terminal_tool_guards.py:safe_command_preview */
+/* PoP: buffer @ tools/terminal_tool_guards.py:_safe_command_preview */
 /* Return a log-safe preview of a command, truncated at limit bytes.
  * Returns pointer to a static buffer (NOT thread-safe — terminal.c
  * is single-threaded). Mirrors Python safe_command_preview(). */
@@ -1122,7 +1122,7 @@ static bool looks_like_env_assignment(const char *token) {
 }
 
 /* Forward declaration */
-/* PoP: free @ tools/terminal_tool_sudo.py:read_shell_token */
+/* PoP: free @ tools/terminal_tool_sudo.py:_read_shell_token */
 char *terminal_read_shell_token(const char *command, int start, int *end);
 
 /* B07: Rewrite bare 'sudo' command words to 'sudo -S -p ""' for piped password.
@@ -2067,7 +2067,7 @@ void cleanup_vm(const char *task_id, bool force_remove) {
     term_cleanup_vm(task_id, force_remove);
 }
 
-/* PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:looks_like_help_or_version_command */
+/* PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:_looks_like_help_or_version_command */
 /* Check if command looks like --help or --version.
  * PoP: looks_like_help_or_version_command @ tools/terminal_tool_guards.py:looks_like_help_or_version_command */
 static bool looks_like_help_or_version_command(const char *command) {

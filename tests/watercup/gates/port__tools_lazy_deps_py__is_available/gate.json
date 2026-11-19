@@ -18,12 +18,12 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\util_helpers.c",
-    "src\\tools\\async_delegation.c",
-    "src\\tools\\browser_supervisor.c",
-    "src\\tools\\port_lazy_deps.c",
-    "src\\tools\\mixture_of_agents.c",
-    "src\\tools\\send_message_tool.c"
+    "src/tools/util_helpers.c",
+    "src/tools/async_delegation.c",
+    "src/tools/browser_supervisor.c",
+    "src/tools/port_lazy_deps.c",
+    "src/tools/mixture_of_agents.c",
+    "src/tools/send_message_tool.c"
   ],
   "cflags": [
     "-I",

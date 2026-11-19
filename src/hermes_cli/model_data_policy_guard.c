@@ -49,7 +49,7 @@ static char *str_lower_dup(const char *s)
     return d;
 }
 
-/* PoP: is_meta_contributor @ hermes_cli/model_data_policy_guard.py:is_meta_contributor */
+/* PoP: is_meta_contributor @ hermes_cli/model_data_policy_guard.py:_is_meta_contributor */
 /* Meta Model API "contributor" tier. Match the id suffix; do not require a
  * specific provider id. */
 static int is_meta_contributor(const char *model_lower,

@@ -9,12 +9,12 @@
 
 /* ── agent/turn_finalizer.py: 4 missing functions ── */
 
-/* PoP: assistant_row_missing_visible_text @ agent/turn_finalizer.py:assistant_row_missing_visible_text */
+/* PoP: assistant_row_missing_visible_text @ agent/turn_finalizer.py:_assistant_row_missing_visible_text */
 int assistant_row_missing_visible_text(void) { return 0; }
 
 /* PoP: fill_assistant_tail_content @ agent/turn_finalizer.py:fill_assistant_tail_content */
 char *fill_assistant_tail_content(void) { return strdup(""); }
 
 
-/* PoP: clone_background_review_messages @ agent/turn_finalizer.py:clone_background_review_messages */
+/* PoP: clone_background_review_messages @ agent/turn_finalizer.py:_clone_background_review_messages */
 char *clone_background_review_messages(void) { return strdup("[]"); }

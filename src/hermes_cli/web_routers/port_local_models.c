@@ -35,7 +35,7 @@
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: lm_human_gb @ hermes_cli/web_routers/local_models.py:human_gb */
+/* PoP: lm_human_gb @ hermes_cli/web_routers/local_models.py:_human_gb */
 char *lm_human_gb(double n)
 {
     char *out = (char *)malloc(32);

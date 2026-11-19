@@ -315,7 +315,7 @@ long gw_delivery_ledger_prune(double now, double retention_seconds)
     return pruned;
 }
 
-/* PoP: gw_weixin_send_typing @ plugins/platforms/weixin/adapter.py:_send_typing */
+/* PoP: gw_weixin_send_typing @ plugins/platforms/weixin/adapter.py:send_typing */
 int gw_weixin_send_typing(const char *base_url, const char *token,
                           const char *to_user_id, long status)
 {

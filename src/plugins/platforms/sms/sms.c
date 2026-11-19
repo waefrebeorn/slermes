@@ -373,7 +373,7 @@ void sms_queue_message(const char *chat_id, const char *text,
 /* Handle incoming Twilio webhook POST. Parses body and queues message. */
 /* PoP: sms_handle_webhook @ plugins/platforms/sms/adapter.py:_handle_webhook */
 /* Port of Python plugins/platforms/sms/adapter.py:_handle_webhook(). */
-/* PoP: sms_handle_webhook @ plugins/platforms/sms/adapter.py:handle_webhook */
+/* PoP: sms_handle_webhook @ plugins/platforms/sms/adapter.py:_handle_webhook */
 /* Port of Python plugins/platforms/sms/adapter.py:handle_webhook(). */
 void sms_handle_webhook(const char *body) {
     if (!body || !body[0]) return;

@@ -18,13 +18,13 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\cli\\cli_gaps_2026_08_25.c",
-    "src\\agent\\checkpoint.c",
-    "src\\cli\\cli_helpers2.c",
-    "src\\hermes_cli\\_subprocess_compat.c",
-    "src\\hermes_cli\\lifecycle.c",
-    "src\\persistence\\sqlite\\_state\\hermes_state_ops.c",
-    "src\\persistence\\sqlite\\_state\\hermes_state_ports.c"
+    "src/cli/cli_gaps_2026_08_25.c",
+    "src/agent/checkpoint.c",
+    "src/cli/cli_helpers2.c",
+    "src/hermes_cli/_subprocess_compat.c",
+    "src/hermes_cli/lifecycle.c",
+    "src/persistence/sqlite/_state/hermes_state_ops.c",
+    "src/persistence/sqlite/_state/hermes_state_ports.c"
   ],
   "cflags": [
     "-I",

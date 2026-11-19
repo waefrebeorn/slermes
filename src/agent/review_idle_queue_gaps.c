@@ -24,11 +24,11 @@ char *review_targets_managed_local(void) { return strdup("[]"); }
 /* PoP: _quiet_for @ agent/review_idle_queue.py:_quiet_for */
 int _quiet_for(void) { return 0; }
 
-/* PoP: pop_dispatchable @ agent/review_idle_queue.py:pop_dispatchable */
+/* PoP: pop_dispatchable @ agent/review_idle_queue.py:_pop_dispatchable */
 char *pop_dispatchable(void) { return strdup("{}"); }
 
-/* PoP: still_enabled @ agent/review_idle_queue.py:still_enabled */
+/* PoP: still_enabled @ agent/review_idle_queue.py:_still_enabled */
 int still_enabled(void) { return 1; }
 
-/* PoP: managed_server_idle @ agent/review_idle_queue.py:managed_server_idle */
+/* PoP: managed_server_idle @ agent/review_idle_queue.py:_managed_server_idle */
 int managed_server_idle(void) { return 1; }

@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: qkb_to_dict @ plugins/platforms/qqbot/keyboards.py:to_dict */
+/* PoP: qkb_to_dict @ plugins/platforms/qqbot/keyboards.py:_to_dict */
 char *qkb_to_dict(const char *type, const char *extra_json) {
     /* Python: {"type": ...} + extras. */
     if (!type) return strdup("{}");

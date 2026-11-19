@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\cron\\scheduler_provider_ports.c"
+    "src/cron/scheduler_provider_ports.c"
   ],
   "cflags": [
     "-I",

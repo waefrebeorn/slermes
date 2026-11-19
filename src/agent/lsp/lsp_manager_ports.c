@@ -84,7 +84,7 @@ char *lspm_current_diags_async(const char *file_path) {
     return strdup("[]");
 }
 
-/* PoP: lspm_shutdown_async @ agent/lsp/manager.py:shutdown_async */
+/* PoP: lspm_shutdown_async @ agent/lsp/manager.py:_shutdown_async */
 int lspm_shutdown_async(void) {
     /* Python: shutdown all clients. Delegate to the real LSP service
      * teardown (port_lsp_init_ports.c owns the process-wide singleton). */

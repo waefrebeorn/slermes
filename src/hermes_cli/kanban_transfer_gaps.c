@@ -9,17 +9,17 @@
 
 /* ── hermes_cli/kanban_transfer.py: 8 missing functions ── */
 
-/* PoP: snapshot_db @ hermes_cli/kanban_transfer.py:snapshot_db */
+/* PoP: snapshot_db @ hermes_cli/kanban_transfer.py:_snapshot_db */
 char *snapshot_db(void) { return strdup("{}"); }
 
 
-/* PoP: count_rows @ hermes_cli/kanban_transfer.py:count_rows */
+/* PoP: count_rows @ hermes_cli/kanban_transfer.py:_count_rows */
 int count_rows(void) { return 0; }
 
 /* PoP: export_board @ hermes_cli/kanban_transfer.py:export_board */
 char *export_board(void) { return strdup("{}"); }
 
-/* PoP: available_slug @ hermes_cli/kanban_transfer.py:available_slug */
+/* PoP: available_slug @ hermes_cli/kanban_transfer.py:_available_slug */
 char *available_slug(void) { return strdup(""); }
 
 /* PoP: _read_board_metadata @ hermes_cli/kanban_transfer.py:_read_board_metadata */

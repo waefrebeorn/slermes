@@ -18,13 +18,13 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\auth_store.c",
-    "src\\agent\\credential_pool_custom.c",
-    "src\\hermes_cli\\auth.c",
-    "src\\hermes_cli\\config_py_io.c",
-    "src\\skills\\skills_parser.c",
-    "src\\hermes_cli\\provider_registry.c",
-    "src\\agent\\credential_pool_persistence.c"
+    "src/hermes_cli/auth_store.c",
+    "src/agent/credential_pool_custom.c",
+    "src/hermes_cli/auth.c",
+    "src/hermes_cli/config_py_io.c",
+    "src/skills/skills_parser.c",
+    "src/hermes_cli/provider_registry.c",
+    "src/agent/credential_pool_persistence.c"
   ],
   "cflags": [
     "-I",

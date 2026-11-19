@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\delegate_tool.c",
-    "src\\tools\\tool_init.c"
+    "src/tools/delegate_tool.c",
+    "src/tools/tool_init.c"
   ],
   "cflags": [
     "-I",

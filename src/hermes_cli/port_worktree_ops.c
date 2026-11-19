@@ -31,7 +31,7 @@
  *  `is_windows` stands in for sys.platform != "win32". Caller frees.
  * =========================================================================== */
 
-/* PoP: normalize_git_bash_path @ hermes_cli/worktree_ops.py:normalize_git_bash_path */
+/* PoP: normalize_git_bash_path @ hermes_cli/worktree_ops.py:_normalize_git_bash_path */
 char *wo_normalize_bash_path(const char *p, int is_windows)
 {
     if (!p || !is_windows) return p ? strdup(p) : NULL;
@@ -74,7 +74,7 @@ char *wo_normalize_bash_path(const char *p, int is_windows)
  *  within "C:/a/b".
  * =========================================================================== */
 
-/* PoP: path_is_within_root @ hermes_cli/worktree_ops.py:path_is_within_root */
+/* PoP: path_is_within_root @ hermes_cli/worktree_ops.py:_path_is_within_root */
 int wo_within_root(const char *path, const char *root)
 {
     if (!path || !root) return 0;

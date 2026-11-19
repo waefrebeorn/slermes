@@ -141,7 +141,7 @@ int hermes_cli_journey_u_cmd_show(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_journey_u_cmd_delete @ hermes_cli/journey.py:cmd_delete */
+/* PoP: hermes_cli_journey_u_cmd_delete @ hermes_cli/journey.py:_cmd_delete */
 int hermes_cli_journey_u_cmd_delete(const char *arg) {
     /* Python: confirm + delete node. Arg = "label\tok\tconfirmed". */
     if (!arg || !*arg) { printf("  not found\n"); return 1; }
@@ -155,7 +155,7 @@ int hermes_cli_journey_u_cmd_delete(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_journey_u_cmd_edit @ hermes_cli/journey.py:cmd_edit */
+/* PoP: hermes_cli_journey_u_cmd_edit @ hermes_cli/journey.py:_cmd_edit */
 int hermes_cli_journey_u_cmd_edit(const char *arg) {
     /* Python cmd_edit: node_detail(node) → open content in $EDITOR →
      * edit_node with the edited text. Arg = "node\tcontent\tedited".

@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\port_conversation_compression_flow.c",
-    "src\\agent\\port_conversation_compression.c"
+    "src/agent/port_conversation_compression_flow.c",
+    "src/agent/port_conversation_compression.c"
   ],
   "cflags": [
     "-I",

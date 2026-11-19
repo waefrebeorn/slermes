@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/local_runtime/gguf.py: 13 missing functions ── */
 
-/* PoP: arch_key @ hermes_cli/local_runtime/gguf.py:arch_key */
+/* PoP: arch_key @ hermes_cli/local_runtime/gguf.py:_arch_key */
 char *arch_key(void) { return strdup(""); }
 
 /* PoP: n_layer @ hermes_cli/local_runtime/gguf.py:n_layer */

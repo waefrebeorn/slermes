@@ -9,10 +9,10 @@
 
 /* ── agent/prompt_cache_scope.py: 4 missing functions ── */
 
-/* PoP: agent_source @ agent/prompt_cache_scope.py:agent_source */
+/* PoP: agent_source @ agent/prompt_cache_scope.py:_agent_source */
 char *agent_source(void) { return strdup(""); }
 
-/* PoP: conversation_generation @ agent/prompt_cache_scope.py:conversation_generation */
+/* PoP: conversation_generation @ agent/prompt_cache_scope.py:_conversation_generation */
 char *conversation_generation(void) { return strdup(""); }
 
 /* PoP: declared_conversation_scope @ agent/prompt_cache_scope.py:declared_conversation_scope */

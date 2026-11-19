@@ -115,7 +115,7 @@ int cb_is_legacy_gateway_run(const char *const *argv)
  *  A dashboard-only container never supervises gateways.
  * =========================================================================== */
 
-/* PoP: cb_is_dashboard_container @ hermes_cli/container_boot.py:is_dashboard_container */
+/* PoP: cb_is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */
 int cb_is_dashboard_container(const char *const *argv)
 {
     int n = 0;

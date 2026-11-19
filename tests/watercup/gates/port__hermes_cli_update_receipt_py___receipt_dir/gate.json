@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\update_receipt.c",
-    "src\\skills\\skills_parser.c"
+    "src/hermes_cli/update_receipt.c",
+    "src/skills/skills_parser.c"
   ],
   "cflags": [
     "-I",

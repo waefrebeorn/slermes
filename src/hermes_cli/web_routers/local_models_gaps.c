@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/web_routers/local_models.py: 26 missing functions ── */
 
-/* PoP: human_gb @ hermes_cli/web_routers/local_models.py:human_gb */
+/* PoP: human_gb @ hermes_cli/web_routers/local_models.py:_human_gb */
 char *human_gb(int n) {
     char *buf = malloc(32);
     snprintf(buf, 32, "%.1f GB", (double)n / 1073741824.0);
@@ -30,13 +30,13 @@ int probe_range_support(const char *url) {
     return 0;
 }
 
-/* PoP: model_id_for @ hermes_cli/web_routers/local_models.py:model_id_for */
+/* PoP: model_id_for @ hermes_cli/web_routers/local_models.py:_model_id_for */
 char *model_id_for(const char *gguf) {
     if (!gguf) return strdup("");
     return strdup(gguf);
 }
 
-/* PoP: variant_files_on_disk @ hermes_cli/web_routers/local_models.py:variant_files_on_disk */
+/* PoP: variant_files_on_disk @ hermes_cli/web_routers/local_models.py:_variant_files_on_disk */
 char *variant_files_on_disk(const char *model_id) {
     (void)model_id;
     return strdup("[]");
@@ -47,13 +47,13 @@ char *_models_dir(void) {
     return strdup("~/.hermes/models");
 }
 
-/* PoP: engine_too_old @ hermes_cli/web_routers/local_models.py:engine_too_old */
+/* PoP: engine_too_old @ hermes_cli/web_routers/local_models.py:_engine_too_old */
 int engine_too_old(const char *min_engine) {
     (void)min_engine;
     return 0;
 }
 
-/* PoP: runtime_section @ hermes_cli/web_routers/local_models.py:runtime_section */
+/* PoP: runtime_section @ hermes_cli/web_routers/local_models.py:_runtime_section */
 char *runtime_section(void) {
     return strdup("{}");
 }
@@ -79,7 +79,7 @@ char *local_models_catalog(void) {
     return strdup("[]");
 }
 
-/* PoP: runtime_progress_hook @ hermes_cli/web_routers/local_models.py:runtime_progress_hook */
+/* PoP: runtime_progress_hook @ hermes_cli/web_routers/local_models.py:_runtime_progress_hook */
 void runtime_progress_hook(const char *phase, double progress) {
     (void)phase; (void)progress;
 }

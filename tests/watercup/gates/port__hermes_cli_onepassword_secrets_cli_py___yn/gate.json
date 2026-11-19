@@ -15,7 +15,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\onepassword_secrets_cli.c"
+    "src/hermes_cli/onepassword_secrets_cli.c"
   ],
   "cflags": [
     "-I",

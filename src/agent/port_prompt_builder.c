@@ -170,7 +170,7 @@ char *pb_format_backend_probe(const char *output)
  *  so an unknown-but-explicitly-remote backend is still remote.
  * =========================================================================== */
 
-/* PoP: pb_plugin_backend_is_remote @ agent/prompt_builder.py:plugin_backend_is_remote */
+/* PoP: pb_plugin_backend_is_remote @ agent/prompt_builder.py:_plugin_backend_is_remote */
 int pb_plugin_backend_is_remote(const char *backend, int attr_is_remote)
 {
     if (!backend || !backend[0]) return 0;

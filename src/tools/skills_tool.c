@@ -88,7 +88,7 @@ char *skills_tool_scan_signature(const char *dirs_csv, const char *disabled_csv)
  * _skill_lookup_path_error @ tools/skills_tool.py:_skill_lookup_path_error
  * Validate a skill lookup name stays within search roots.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_lookup_path_error @ tools/skills_tool.py:_skill_lookup_path_error */
+/* PoP: skills_tool_lookup_path_error @ tools/skills_tool.py:skill_lookup_path_error */
 char *skills_tool_lookup_path_error(const char *name)
 {
     if (!name) return strdup("Skill name must be a string.");
@@ -440,7 +440,7 @@ int skills_tool_is_skill_disabled(const char *name, const char *platform)
  * _sort_skills @ tools/skills_tool.py:_sort_skills
  * Sort skill JSON array by category then name.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_sort_skills @ tools/skills_tool.py:_sort_skills */
+/* PoP: skills_tool_sort_skills @ tools/skills_tool.py:sort_skills */
 json_t *skills_tool_sort_skills(json_t *skills)
 {
     if (!skills || skills->type != JSON_ARRAY) return skills;
@@ -472,7 +472,7 @@ json_t *skills_tool_sort_skills(json_t *skills)
  * Walk skills dir, parse frontmatter, filter by platform/environment,
  * return JSON array of {name, description, category}.
  * ------------------------------------------------------------------------- */
-/* PoP: skills_tool_find_all_skills @ tools/skills_tool.py:_find_all_skills */
+/* PoP: skills_tool_find_all_skills @ tools/skills_tool.py:find_all_skills */
 json_t *skills_tool_find_all_skills(int skip_disabled)
 {
     json_t *arr = json_array();

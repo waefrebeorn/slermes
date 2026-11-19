@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\qqbot\\qqbot_wrappers.c",
-    "src\\plugins\\platforms\\qqbot\\qqbot.c"
+    "src/plugins/platforms/qqbot/qqbot_wrappers.c",
+    "src/plugins/platforms/qqbot/qqbot.c"
   ],
   "cflags": [
     "-I",

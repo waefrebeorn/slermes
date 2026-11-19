@@ -703,7 +703,7 @@ bool skills_hub_install_from_source(const char *source_id, const char *identifie
     hub_lock_record_install(&lock_entry);
 
     /* Audit log */
-/* PoP: skills_hub_uninstall @ tools/skills_hub.py:_append_audit_log */
+/* PoP: skills_hub_uninstall @ tools/skills_hub.py:append_audit_log */
     hub_append_audit_log(HUB_AUDIT_INSTALL, lock_entry.name,
                           source_id, HUB_TRUST_BUILTIN,
                           HUB_SCAN_CLEAN, "installed via source");
@@ -735,7 +735,7 @@ bool skills_hub_uninstall(const char *skill_name) {
     if (removed) {
 /* PoP: skills_hub_list_installed @ tools/skills_hub.py:_lock_record_uninstall */
         hub_lock_record_uninstall(skill_name);
-/* PoP: skills_hub_list_installed @ tools/skills_hub.py:_append_audit_log */
+/* PoP: skills_hub_list_installed @ tools/skills_hub.py:append_audit_log */
         hub_append_audit_log(HUB_AUDIT_UNINSTALL, skill_name,
                               "unknown", HUB_TRUST_BUILTIN,
                               HUB_SCAN_CLEAN, "uninstalled");

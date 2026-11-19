@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\observability\\relay_shared_metrics.c",
-    "src\\hermes_cli\\observability\\smc_event_extractors.c",
-    "src\\hermes_cli\\shared_metrics_contract.c"
+    "src/hermes_cli/observability/relay_shared_metrics.c",
+    "src/hermes_cli/observability/smc_event_extractors.c",
+    "src/hermes_cli/shared_metrics_contract.c"
   ],
   "cflags": [
     "-I",

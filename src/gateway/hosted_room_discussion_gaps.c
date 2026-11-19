@@ -17,7 +17,7 @@ char *append_kwargs(const char *room_id) {
     return kwargs;
 }
 
-/* PoP: zero_based_int @ gateway/hosted_room_discussion.py:zero_based_int */
+/* PoP: zero_based_int @ gateway/hosted_room_discussion.py:_zero_based_int */
 int zero_based_int(int value, int maximum) {
     return (value >= 0 && value <= maximum) ? value : 0;
 }
@@ -33,7 +33,7 @@ char *validate_user_payload(const char *payload) {
     return strdup(payload);
 }
 
-/* PoP: validate_member_target @ gateway/hosted_room_discussion.py:validate_member_target */
+/* PoP: validate_member_target @ gateway/hosted_room_discussion.py:_validate_member_target */
 char *validate_member_target(const char *value, const char *profile) {
     (void)value; (void)profile;
     return strdup("{}");
@@ -68,39 +68,39 @@ char *resolve_mentions(const char *text) {
     return strdup("[]");
 }
 
-/* PoP: unaddressed_member_mentions @ gateway/hosted_room_discussion.py:unaddressed_member_mentions */
+/* PoP: unaddressed_member_mentions @ gateway/hosted_room_discussion.py:_unaddressed_member_mentions */
 char *unaddressed_member_mentions(const char *text) {
     (void)text;
     return strdup("[]");
 }
 
-/* PoP: validate_event @ gateway/hosted_room_discussion.py:validate_event */
+/* PoP: validate_event @ gateway/hosted_room_discussion.py:_validate_event */
 char *validate_event(const char *event) {
     return event ? strdup(event) : strdup("{}");
 }
 
-/* PoP: member_by_id @ gateway/hosted_room_discussion.py:member_by_id */
+/* PoP: member_by_id @ gateway/hosted_room_discussion.py:_member_by_id */
 char *member_by_id(const char *room_json, const char *member_id) {
     (void)room_json; (void)member_id;
     return strdup("{}");
 }
 
-/* PoP: validate_turn_coordinates @ gateway/hosted_room_discussion.py:validate_turn_coordinates */
+/* PoP: validate_turn_coordinates @ gateway/hosted_room_discussion.py:_validate_turn_coordinates */
 void validate_turn_coordinates(const char *payload) {
     (void)payload;
 }
 
-/* PoP: validate_member_message @ gateway/hosted_room_discussion.py:validate_member_message */
+/* PoP: validate_member_message @ gateway/hosted_room_discussion.py:_validate_member_message */
 void validate_member_message(const char *payload) {
     (void)payload;
 }
 
-/* PoP: validate_terminal_event @ gateway/hosted_room_discussion.py:validate_terminal_event */
+/* PoP: validate_terminal_event @ gateway/hosted_room_discussion.py:_validate_terminal_event */
 void validate_terminal_event(const char *kind, const char *payload) {
     (void)kind; (void)payload;
 }
 
-/* PoP: validated_events @ gateway/hosted_room_discussion.py:validated_events */
+/* PoP: validated_events @ gateway/hosted_room_discussion.py:_validated_events */
 char *validated_events(const char *events) {
     return events ? strdup(events) : strdup("[]");
 }
@@ -133,7 +133,7 @@ char *_rotate(const char *value) {
     return value ? strdup(value) : strdup("");
 }
 
-/* PoP: truncate_utf8_text @ gateway/hosted_room_discussion.py:truncate_utf8_text */
+/* PoP: truncate_utf8_text @ gateway/hosted_room_discussion.py:_truncate_utf8_text */
 char *truncate_utf8_text(const char *text, int max_bytes) {
     if (!text) return strdup("");
     size_t len = strlen(text);
@@ -158,7 +158,7 @@ char *_task_id(const char *room_id, const char *thread_id, int round_index, int 
     return id;
 }
 
-/* PoP: make_task_plan @ gateway/hosted_room_discussion.py:make_task_plan */
+/* PoP: make_task_plan @ gateway/hosted_room_discussion.py:_make_task_plan */
 char *make_task_plan(const char *room_json) {
     (void)room_json;
     return strdup("[]");
@@ -176,7 +176,7 @@ char *reconstruct_task_plan(const char *room_json) {
     return strdup("[]");
 }
 
-/* PoP: terminal_text @ gateway/hosted_room_discussion.py:terminal_text */
+/* PoP: terminal_text @ gateway/hosted_room_discussion.py:_terminal_text */
 char *terminal_text(const char *text) {
     return text ? strdup(text) : strdup("");
 }

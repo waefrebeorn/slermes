@@ -18,11 +18,11 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\platforms\\api_server_ports.c",
-    "src\\agent\\context.c",
-    "src\\plugins\\platforms\\bluebubbles\\redact.c",
-    "src\\agent\\compaction_display.c",
-    "src\\gateway\\platforms\\base_ext2.c"
+    "src/gateway/platforms/api_server_ports.c",
+    "src/agent/context.c",
+    "src/plugins/platforms/bluebubbles/redact.c",
+    "src/agent/compaction_display.c",
+    "src/gateway/platforms/base_ext2.c"
   ],
   "cflags": [
     "-I",

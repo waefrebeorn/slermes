@@ -44,7 +44,7 @@ static const char *GW_SUPERVISION_MODES[] = {
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_allowed_logger */
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_metric_value */
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_base_attrs */
-/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_metric */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:metric */
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_profile */
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_version */
 /* PoP: str_in_list @ agent/monitoring/gateway_health.py:_coerce_pid */

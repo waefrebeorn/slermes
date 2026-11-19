@@ -48,7 +48,7 @@ static long long days_from_civil(long long y, unsigned m, unsigned d)
     return era * 146097 + (long long)doe - 719468;
 }
 
-/* PoP: ms_parse_iso_epoch @ gateway/memory_status.py:parse_iso */
+/* PoP: ms_parse_iso_epoch @ gateway/memory_status.py:_parse_iso */
 double ms_parse_iso_epoch(const char *value)
 {
     /* "YYYY-MM-DD[T ]HH:MM[:SS[.ffffff]][+HH:MM|Z]" — the ISO subset the

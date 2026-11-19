@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\dashboard_auth\\hermes_cli_ws_tickets.c"
+    "src/hermes_cli/dashboard_auth/hermes_cli_ws_tickets.c"
   ],
   "cflags": [
     "-I",

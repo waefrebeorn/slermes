@@ -275,7 +275,7 @@ int asuggest_apply_proposals(proposal_t **props, size_t n, const int *indices, i
     return 0;
 }
 
-/* PoP: asuggest_render_text @ hermes_cli/approvals_suggest.py:render_text */
+/* PoP: asuggest_render_text @ hermes_cli/approvals_suggest.py:_render_text */
 void asuggest_render_text(proposal_t **props, size_t n, int days) {
     const char *window = (days <= 0) ? "all history" : NULL;
     char *winbuf = NULL;
@@ -417,7 +417,7 @@ int asuggest_approvals_command(const char *sub, const as_suggest_args_t *args) {
     return 1;
 }
 
-/* PoP: approvals_test_render_text @ hermes_cli/approvals_test.py:render_text */
+/* PoP: approvals_test_render_text @ hermes_cli/approvals_test.py:_render_text */
 /* Returns malloc'd text representation of a verdict. verdict_json = {"command":...,"env_type":...,"verdict":...,"exit_code":...,"rule":...,"detail":...,"normalized_variants":[...]}. Caller frees. */
 char *approvals_test_render_text(const char *verdict_json) {
     if (!verdict_json) return strdup("");

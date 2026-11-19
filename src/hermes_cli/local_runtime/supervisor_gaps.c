@@ -9,17 +9,17 @@
 
 /* ── hermes_cli/local_runtime/supervisor.py: 16 missing functions ── */
 
-/* PoP: free_port @ hermes_cli/local_runtime/supervisor.py:free_port */
+/* PoP: free_port @ hermes_cli/local_runtime/supervisor.py:_free_port */
 int free_port(void) { return 8080; }
 
-/* PoP: stable_port @ hermes_cli/local_runtime/supervisor.py:stable_port */
+/* PoP: stable_port @ hermes_cli/local_runtime/supervisor.py:_stable_port */
 int stable_port(void) { return 8080; }
 
-/* PoP: stable_api_key @ hermes_cli/local_runtime/supervisor.py:stable_api_key */
+/* PoP: stable_api_key @ hermes_cli/local_runtime/supervisor.py:_stable_api_key */
 char *stable_api_key(void) { return strdup(""); }
 
 
-/* PoP: wait_health @ hermes_cli/local_runtime/supervisor.py:wait_health */
+/* PoP: wait_health @ hermes_cli/local_runtime/supervisor.py:_wait_health */
 int wait_health(void) { return 1; }
 
 

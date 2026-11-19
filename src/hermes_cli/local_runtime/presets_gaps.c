@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/local_runtime/presets.py: 5 missing functions ── */
 
-/* PoP: args_to_keys @ hermes_cli/local_runtime/presets.py:args_to_keys */
+/* PoP: args_to_keys @ hermes_cli/local_runtime/presets.py:_args_to_keys */
 char *args_to_keys(void) { return strdup("[]"); }
 
 /* PoP: generate_presets @ hermes_cli/local_runtime/presets.py:generate_presets */

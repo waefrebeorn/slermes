@@ -9,19 +9,19 @@
 
 /* ── cron/incidents.py: 11 missing functions ── */
 
-/* PoP: normalize_error @ cron/incidents.py:normalize_error */
+/* PoP: normalize_error @ cron/incidents.py:_normalize_error */
 char *normalize_error(const char *error) { return error ? strdup(error) : strdup(""); }
 
-/* PoP: redact_error @ cron/incidents.py:redact_error */
+/* PoP: redact_error @ cron/incidents.py:_redact_error */
 char *redact_error(const char *error) { return strdup(""); }
 
-/* PoP: error_signature @ cron/incidents.py:error_signature */
+/* PoP: error_signature @ cron/incidents.py:_error_signature */
 char *error_signature(const char *error) { return strdup(""); }
 
-/* PoP: incident_id @ cron/incidents.py:incident_id */
+/* PoP: incident_id @ cron/incidents.py:_incident_id */
 char *incident_id(void) { return strdup(""); }
 
-/* PoP: classify_failure_type @ cron/incidents.py:classify_failure_type */
+/* PoP: classify_failure_type @ cron/incidents.py:_classify_failure_type */
 char *classify_failure_type(void) { return strdup("unknown"); }
 
 /* PoP: upsert_incident @ cron/incidents.py:upsert_incident */

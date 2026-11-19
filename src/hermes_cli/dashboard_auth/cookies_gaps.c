@@ -10,7 +10,7 @@
 /* ── hermes_cli/dashboard_auth/cookies.py: 4 missing functions ── */
 
 
-/* PoP: pkce_attrs @ hermes_cli/dashboard_auth/cookies.py:pkce_attrs */
+/* PoP: pkce_attrs @ hermes_cli/dashboard_auth/cookies.py:_pkce_attrs */
 char *pkce_attrs(void) { return strdup("{}"); }
 
 /* PoP: encode_pkce_payload @ hermes_cli/dashboard_auth/cookies.py:encode_pkce_payload */

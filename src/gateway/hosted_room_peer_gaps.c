@@ -9,7 +9,7 @@
 
 /* ── gateway/hosted_room_peer.py: 19 missing functions ── */
 
-/* PoP: gateway_room_grant_secret_for_home @ gateway/hosted_room_peer.py:gateway_room_grant_secret_for_home */
+/* PoP: gateway_room_grant_secret_for_home @ gateway/hosted_room_peer.py:_gateway_room_grant_secret_for_home */
 char *gateway_room_grant_secret_for_home(void) { return strdup(""); }
 
 /* PoP: gateway_room_grant_secret @ gateway/hosted_room_peer.py:gateway_room_grant_secret */
@@ -39,10 +39,10 @@ char *local_catalog_mapping(void) { return strdup("{}"); }
 /* PoP: local_room_link_endpoint @ gateway/hosted_room_peer.py:local_room_link_endpoint */
 char *local_room_link_endpoint(void) { return strdup(""); }
 
-/* PoP: room_link_url_from_config @ gateway/hosted_room_peer.py:room_link_url_from_config */
+/* PoP: room_link_url_from_config @ gateway/hosted_room_peer.py:_room_link_url_from_config */
 char *room_link_url_from_config(void) { return strdup(""); }
 
-/* PoP: configured_room_link_url @ gateway/hosted_room_peer.py:configured_room_link_url */
+/* PoP: configured_room_link_url @ gateway/hosted_room_peer.py:_configured_room_link_url */
 char *configured_room_link_url(void) { return strdup(""); }
 
 /* PoP: validate_room_link_url @ gateway/hosted_room_peer.py:validate_room_link_url */

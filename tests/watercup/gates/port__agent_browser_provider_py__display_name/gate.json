@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\browser_provider_ports.c",
-    "src\\agent\\browser_registry.c"
+    "src/agent/browser_provider_ports.c",
+    "src/agent/browser_registry.c"
   ],
   "cflags": [
     "-I",

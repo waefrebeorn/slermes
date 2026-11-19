@@ -279,7 +279,7 @@ bool term_is_unusable_container_cwd(const char *cwd) {
     return false;
 }
 
-/* PoP: term_get_env_config @ tools/terminal_tool.py:get_env_config */
+/* PoP: term_get_env_config @ tools/terminal_tool.py:_get_env_config */
 /* Build the full terminal env config dict from TERMINAL_* env vars. */
 json_t *term_get_env_config(void) {
     /* _ensure_terminal_env_bridged() — the C launcher bridges terminal.*
@@ -512,7 +512,7 @@ int term_cleanup_all_environments(void) {
     return (int)got;
 }
 
-/* PoP: term_cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:cleanup_inactive_envs */
+/* PoP: term_cleanup_inactive_envs @ tools/terminal_tool_lifecycle.py:_cleanup_inactive_envs */
 int term_cleanup_inactive_envs(long lifetime_seconds) {
     if (lifetime_seconds <= 0) lifetime_seconds = 300;
     double now = (double)time(NULL);

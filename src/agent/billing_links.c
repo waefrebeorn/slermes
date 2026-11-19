@@ -105,7 +105,7 @@ struct billing_block {
 
 /* Faithful port of hermes-agent/agent/billing_links.py */
 
-/* PoP: nous_billing_url @ agent/billing_links.py:nous_billing_url */
+/* PoP: nous_billing_url @ agent/billing_links.py:_nous_billing_url */
 /* Best-effort Nous portal billing URL (text-surface fallback; Nous prefers
  * the in-app flow). Nous_portal_billing_url is not yet ported, so we fall back
  * to the canonical portal URL exactly as the Python try/except does. */
@@ -116,7 +116,7 @@ static const char *nous_billing_url(void) {
     return "https://portal.nousresearch.com/billing";
 }
 
-/* PoP: out_url @ agent/billing_links.py:resolve_provider_link */
+/* PoP: out_url @ agent/billing_links.py:_resolve_provider_link */
 /* Resolve (label, url): exact slug -> base_url host -> readable-label fallback.
  * Caller must free *out_label and *out_url (strdup'd). url may be NULL. */
 static void resolve_provider_link(const char *slug, const char *base_url,

@@ -9,7 +9,7 @@
 
 /* ── tools/web_result_cache.py: 15 missing functions ── */
 
-/* PoP: web_config @ tools/web_result_cache.py:web_config */
+/* PoP: web_config @ tools/web_result_cache.py:_web_config */
 char *web_config(void) { return strdup("{}"); }
 
 /* PoP: bucket_limit @ tools/web_result_cache.py:bucket_limit */
@@ -29,19 +29,19 @@ char *_cache_dir(void) { return strdup(""); }
 char *_load_index(void) { return strdup("{}"); }
 
 
-/* PoP: url_digest @ tools/web_result_cache.py:url_digest */
+/* PoP: url_digest @ tools/web_result_cache.py:_url_digest */
 char *url_digest(const char *url) { return strdup(""); }
 
-/* PoP: entry_file_path @ tools/web_result_cache.py:entry_file_path */
+/* PoP: entry_file_path @ tools/web_result_cache.py:_entry_file_path */
 char *entry_file_path(const char *digest) { return strdup(""); }
 
-/* PoP: host_matches_pattern @ tools/web_result_cache.py:host_matches_pattern */
+/* PoP: host_matches_pattern @ tools/web_result_cache.py:_host_matches_pattern */
 int host_matches_pattern(const char *host, const char *pattern) { return 0; }
 
-/* PoP: is_cache_exempt_host @ tools/web_result_cache.py:is_cache_exempt_host */
+/* PoP: is_cache_exempt_host @ tools/web_result_cache.py:_is_cache_exempt_host */
 int is_cache_exempt_host(const char *host) { return 0; }
 
-/* PoP: is_local_dev_url @ tools/web_result_cache.py:is_local_dev_url */
+/* PoP: is_local_dev_url @ tools/web_result_cache.py:_is_local_dev_url */
 int is_local_dev_url(const char *url) { return 0; }
 
 /* PoP: extract_cache_get @ tools/web_result_cache.py:extract_cache_get */

@@ -980,7 +980,7 @@ json_t *plugin_list_skills(void) { return json_array(); }
 bool plugin_remove_skill(const char *name) { (void)name; return true; }
 /* PoP: get_plugin_manager @ hermes_cli/plugins.py:get_plugin_manager */
 plugin_registry_t *plugin_get_manager(void) { return g_plugin_registry; }
-/* PoP: get_pre_tool_call_directive_details @ hermes_cli/plugins.py:get_pre_tool_call_directive_details */
+/* PoP: get_pre_tool_call_directive_details @ hermes_cli/plugins.py:_get_pre_tool_call_directive_details */
 json_t *plugin_get_pre_tool_call_directive_details(void) { return json_object(); }
 /* PoP: get_pre_tool_call_directive @ hermes_cli/plugins.py:get_pre_tool_call_directive */
 const char *plugin_get_pre_tool_call_directive(const char *tool_name) { (void)tool_name; return NULL; }

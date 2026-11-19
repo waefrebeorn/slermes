@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/local_runtime/load_progress.py: 5 missing functions ── */
 
-/* PoP: composite_percent @ hermes_cli/local_runtime/load_progress.py:composite_percent */
+/* PoP: composite_percent @ hermes_cli/local_runtime/load_progress.py:_composite_percent */
 int composite_percent(void) { return 0; }
 
 /* PoP: _endpoint @ hermes_cli/local_runtime/load_progress.py:_endpoint */

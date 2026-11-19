@@ -72,7 +72,7 @@ int kbd_exit_code_kind(int code, int rate_limit_code, int terminal_provider_code
  *  number becomes "<TS>"; a shorter one is left alone. Caller frees.
  * =========================================================================== */
 
-/* PoP: kbd_error_fingerprint @ hermes_cli/kanban_db_dispatch.py:error_fingerprint */
+/* PoP: kbd_error_fingerprint @ hermes_cli/kanban_db_dispatch.py:_error_fingerprint */
 char *kbd_error_fingerprint(const char *error_text)
 {
     const char *src = error_text ? error_text : "";
@@ -162,7 +162,7 @@ char *kbd_error_fingerprint(const char *error_text)
  *  are "1"/"0" for the boolean fields.
  * =========================================================================== */
 
-/* PoP: kbd_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:worker_survived_termination */
+/* PoP: kbd_worker_survived_termination @ hermes_cli/kanban_db_dispatch.py:_worker_survived_termination */
 int kbd_worker_survived_termination(const char *const *termination)
 {
     int host_local = 0, attempted = 0, refused = 0, terminated = 0;

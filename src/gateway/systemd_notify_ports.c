@@ -113,7 +113,7 @@ bool sd_n_unhealthy_state(void) {
     return sd_n_unhealthy;
 }
 
-/* PoP: sd_n_lag_tolerance @ gateway/systemd_notify.py:lag_tolerance */
+/* PoP: sd_n_lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
 /* Python: max(0.1, interval*0.25) unless explicitly configured; configured
  * value clamped to >= 0. */
 double sd_n_lag_tolerance(double interval_seconds, double configured) {

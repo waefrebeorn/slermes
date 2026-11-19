@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: sku_read_skill_name @ tools/skill_usage.py:_read_skill_name */
+/* PoP: sku_read_skill_name @ tools/skill_usage.py:read_skill_name */
 char *sku_read_skill_name(const char *content) {
     /* Python: name: field from YAML frontmatter. */
     if (!content) return NULL;

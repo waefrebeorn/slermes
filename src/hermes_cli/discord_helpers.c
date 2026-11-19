@@ -159,7 +159,7 @@ json_t *discord_get_dynamic_schema_admin(void) {
     return s;
 }
 
-/* PoP: discord_enrich_403 @ tools/discord_tool.py:get_dynamic_schema */
+/* PoP: discord_enrich_403 @ tools/discord_tool.py:_get_dynamic_schema */
 /* discord_get_dynamic_schema is defined above as the core variant */
 
 /* PoP: discord_enrich_403 @ tools/discord_tool.py:_enrich_403 */

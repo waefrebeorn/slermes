@@ -38,10 +38,10 @@ char *real_profile_cdp(void) { return strdup("{}"); }
 /* PoP: browser_session_backend @ tools/browser_tool.py:browser_session_backend */
 char *browser_session_backend(void) { return strdup("chromium"); }
 
-/* PoP: session_owner_scope @ tools/browser_session_lifecycle.py:session_owner_scope */
+/* PoP: session_owner_scope @ tools/browser_session_lifecycle.py:_session_owner_scope */
 char *session_owner_scope(void) { return strdup("{}"); }
 
-/* PoP: create_lightpanda_session @ tools/browser_session.py:create_lightpanda_session */
+/* PoP: create_lightpanda_session @ tools/browser_session.py:_create_lightpanda_session */
 char *create_lightpanda_session(void) { return strdup("{}"); }
 
 /* PoP: local_backend_process_dead @ tools/browser_tool.py:local_backend_process_dead */

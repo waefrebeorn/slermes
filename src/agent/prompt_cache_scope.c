@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: lineage_root @ agent/prompt_cache_scope.py:lineage_root */
+/* PoP: lineage_root @ agent/prompt_cache_scope.py:_lineage_root */
 char *lineage_root(const char *session_id, const prompt_cache_scope_db *session_db)
 {
     if (!session_db || !session_db->get_compression_lineage)

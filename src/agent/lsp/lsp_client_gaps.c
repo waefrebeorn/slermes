@@ -12,6 +12,6 @@
 /* PoP: _folder @ agent/lsp/client.py:_folder */
 char *_folder(void) { return strdup(""); }
 
-/* PoP: connection_is_open @ agent/lsp/client.py:connection_is_open */
+/* PoP: connection_is_open @ agent/lsp/client.py:_connection_is_open */
 int connection_is_open(void) { return 0; }
 

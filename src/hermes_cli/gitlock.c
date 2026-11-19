@@ -24,7 +24,7 @@ const char *GITLOCK_LOCK_NAMES[4] = {
     "shallow.lock", "index.lock", "HEAD.lock", "MERGE_HEAD.lock"
 };
 
-/* PoP: git_proc_running @ hermes_cli/gitlock.py:git_proc_running */
+/* PoP: git_proc_running @ hermes_cli/gitlock.py:_git_proc_running */
 int git_proc_running(void)
 {
     /* Conservative answer on any probe failure: False (Python's except path

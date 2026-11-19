@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\qqbot\\qqbot_adapter_ports.c",
-    "src\\plugins\\platforms\\qqbot\\qqbot.c",
-    "src\\agent\\port_agent_secret_scope.c"
+    "src/plugins/platforms/qqbot/qqbot_adapter_ports.c",
+    "src/plugins/platforms/qqbot/qqbot.c",
+    "src/agent/port_agent_secret_scope.c"
   ],
   "cflags": [
     "-I",

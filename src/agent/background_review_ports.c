@@ -454,7 +454,7 @@ static void *brv_interrupt_worker(void *arg)
     return NULL;
 }
 
-/* PoP: interrupt_background_review @ agent/background_review.py:interrupt_background_review */
+/* PoP: interrupt_background_review @ agent/background_review.py:_interrupt_background_review */
 void interrupt_background_review(void *review_agent)
 {
     void **args = malloc(3 * sizeof(*args));
@@ -708,7 +708,7 @@ bool record_review_usage_to_parent(state_usage_db_t *db, const char *session_id,
     return ok;
 }
 
-/* PoP: classify_review_result @ agent/background_review.py:classify_review_result */
+/* PoP: classify_review_result @ agent/background_review.py:_classify_review_result */
 char *classify_review_result(json_t *actions)
 {
     if (!actions || actions->type != JSON_ARRAY || json_array_size(actions) == 0)

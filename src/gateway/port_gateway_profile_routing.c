@@ -40,7 +40,7 @@ char *pr_bot_profile_key(const char *name)
     return o;
 }
 
-/* PoP: pr_coerce_route_id @ gateway/profile_routing.py:coerce_route_id */
+/* PoP: pr_coerce_route_id @ gateway/profile_routing.py:_coerce_route_id */
 char *pr_coerce_route_id(const json_t *value)
 {
     if (!value || value->type == JSON_NULL)
@@ -60,7 +60,7 @@ char *pr_coerce_route_id(const json_t *value)
     return NULL;
 }
 
-/* PoP: pr_is_whatsapp_non_user_chat @ gateway/profile_routing.py:is_whatsapp_non_user_chat */
+/* PoP: pr_is_whatsapp_non_user_chat @ gateway/profile_routing.py:_is_whatsapp_non_user_chat */
 int pr_is_whatsapp_non_user_chat(const char *chat_id)
 {
     if (!chat_id || !chat_id[0])

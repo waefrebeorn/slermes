@@ -49,7 +49,7 @@ int *pti_lock_variants(int modifier)
  *  Returns a newly allocated array of 3 ints; caller frees.
  * =========================================================================== */
 
-/* PoP: pti_lock_twins @ hermes_cli/pt_input_extras.py:lock_twins */
+/* PoP: pti_lock_twins @ hermes_cli/pt_input_extras.py:_lock_twins */
 int *pti_lock_twins(int modifier)
 {
     int *all = pti_lock_variants(modifier);

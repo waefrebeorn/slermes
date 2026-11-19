@@ -188,7 +188,7 @@ json_t *ms_declared_model_ids(const json_t *value)
  *      or (isinstance(models, dict) and models.get("__discovered_model_catalog__") is True)
  * =========================================================================== */
 
-/* PoP: ms_entry_models_discovered @ hermes_cli/model_switch.py:entry_models_discovered */
+/* PoP: ms_entry_models_discovered @ hermes_cli/model_switch.py:_entry_models_discovered */
 int ms_entry_models_discovered(const json_t *entry)
 {
     if (!entry || entry->type != JSON_OBJECT)

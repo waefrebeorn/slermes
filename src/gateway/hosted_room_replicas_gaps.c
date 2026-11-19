@@ -16,7 +16,7 @@ void *replica_transaction(void) { return NULL; }
 /* PoP: event_bytes @ gateway/hosted_room_replicas.py:event_bytes */
 int event_bytes(void) { return 0; }
 
-/* PoP: validate_page @ gateway/hosted_room_replicas.py:validate_page */
+/* PoP: validate_page @ gateway/hosted_room_replicas.py:_validate_page */
 int validate_page(void) { return 1; }
 
 /* PoP: ingest_page @ gateway/hosted_room_replicas.py:ingest_page */

@@ -177,7 +177,7 @@ bool signal_send_quote_reply(http_client_t *http,
  * ------------------------------------------------------------------ */
 /* PoP: signal_send_attachment @ plugins/platforms/signal/adapter.py:_send_attachment */
 /* Port of Python plugins/platforms/signal/adapter.py:_send_attachment(). */
-/* PoP: signal_send_attachment @ plugins/platforms/signal/adapter.py:send_attachment */
+/* PoP: signal_send_attachment @ plugins/platforms/signal/adapter.py:_send_attachment */
 /* Port of Python plugins/platforms/signal/adapter.py:send_attachment(). */
 bool signal_send_attachment(http_client_t *http,
                              const char *recipient,

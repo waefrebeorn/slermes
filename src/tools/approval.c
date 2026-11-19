@@ -1542,7 +1542,7 @@ void reset_hermes_interactive_context(void *token)
     }
 }
 
-/* PoP: is_interactive_cli @ tools/approval_context.py:is_interactive_cli */
+/* PoP: is_interactive_cli @ tools/approval_context.py:_is_interactive_cli */
 bool is_interactive_cli(void)
 {
     pthread_once(&s_interactive_key_once, make_interactive_key);

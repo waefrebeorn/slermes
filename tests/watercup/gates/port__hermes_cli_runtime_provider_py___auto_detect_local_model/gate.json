@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\runtime_provider.c",
-    "src\\agent\\credential_pool_engine.c",
-    "src\\hermes_cli\\model_catalog.c"
+    "src/hermes_cli/runtime_provider.c",
+    "src/agent/credential_pool_engine.c",
+    "src/hermes_cli/model_catalog.c"
   ],
   "cflags": [
     "-I",

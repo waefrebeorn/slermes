@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\session_search_tool.c",
-    "src\\cli\\paths.c"
+    "src/tools/session_search_tool.c",
+    "src/cli/paths.c"
   ],
   "cflags": [
     "-I",

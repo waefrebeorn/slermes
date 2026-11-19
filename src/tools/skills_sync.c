@@ -564,7 +564,7 @@ char *content_hash(const char *directory)
     return dir_hash(directory);
 }
 
-/* PoP: dir_hash @ tools/skills_sync.py:_dir_hash */
+/* PoP: dir_hash @ tools/skills_sync.py:dir_hash */
 /* Delegate to the focused skills_sync_fs module. */
 char *dir_hash(const char *directory)
 {

@@ -15,8 +15,8 @@ char *prepare_send_message_platforms(void) { return strdup("[]"); }
 /* PoP: resolve_send_target @ gateway/outbound/targets.py:resolve_send_target */
 char *resolve_send_target(void) { return strdup("{}"); }
 
-/* PoP: bounded_send_error @ gateway/outbound/send.py:bounded_send_error */
+/* PoP: bounded_send_error @ gateway/outbound/send.py:_bounded_send_error */
 char *bounded_send_error(void) { return strdup(""); }
 
-/* PoP: send_live_adapter_media @ gateway/outbound/send.py:send_live_adapter_media */
+/* PoP: send_live_adapter_media @ gateway/outbound/send.py:_send_live_adapter_media */
 char *send_live_adapter_media(void) { return strdup("{}"); }

@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\lsp\\lsp_manager_ports.c",
-    "src\\agent\\lsp\\lsp_init_ports.c"
+    "src/agent/lsp/lsp_manager_ports.c",
+    "src/agent/lsp/lsp_init_ports.c"
   ],
   "cflags": [
     "-I",

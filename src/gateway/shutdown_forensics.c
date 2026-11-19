@@ -427,7 +427,7 @@ char *forensics_context_to_json(json_node_t *ctx) {
  *  Port of Python _parse_systemd_duration_to_us()
  * ================================================================ */
 
-/* PoP: forensics_parse_systemd_duration_us @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+/* PoP: forensics_parse_systemd_duration_us @ gateway/shutdown_forensics.py:parse_systemd_duration_to_us */
 long forensics_parse_systemd_duration_us(const char *raw) {
     if (!raw || !*raw) return 0;
 

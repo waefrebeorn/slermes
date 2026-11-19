@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\core_helpers.c",
-    "src\\plugins\\platforms\\bluebubbles\\redact.c"
+    "src/agent/core_helpers.c",
+    "src/plugins/platforms/bluebubbles/redact.c"
   ],
   "cflags": [
     "-I",

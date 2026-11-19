@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\qqbot\\qqbot_chunked_upload_ports.c"
+    "src/plugins/platforms/qqbot/qqbot_chunked_upload_ports.c"
   ],
   "cflags": [
     "-I",

@@ -9,25 +9,25 @@
 
 /* ── hermes_cli/local_runtime/hardware.py: 8 missing functions ── */
 
-/* PoP: ram_bytes @ hermes_cli/local_runtime/hardware.py:ram_bytes */
+/* PoP: ram_bytes @ hermes_cli/local_runtime/hardware.py:_ram_bytes */
 int ram_bytes(void) { return 0; }
 
-/* PoP: nvidia_smi_path @ hermes_cli/local_runtime/hardware.py:nvidia_smi_path */
+/* PoP: nvidia_smi_path @ hermes_cli/local_runtime/hardware.py:_nvidia_smi_path */
 char *nvidia_smi_path(void) { return strdup(""); }
 
-/* PoP: nvidia_vram @ hermes_cli/local_runtime/hardware.py:nvidia_vram */
+/* PoP: nvidia_vram @ hermes_cli/local_runtime/hardware.py:_nvidia_vram */
 int nvidia_vram(void) { return 0; }
 
-/* PoP: cuda_driver_pool @ hermes_cli/local_runtime/hardware.py:cuda_driver_pool */
+/* PoP: cuda_driver_pool @ hermes_cli/local_runtime/hardware.py:_cuda_driver_pool */
 char *cuda_driver_pool(void) { return strdup("[]"); }
 
-/* PoP: engine_device_pool @ hermes_cli/local_runtime/hardware.py:engine_device_pool */
+/* PoP: engine_device_pool @ hermes_cli/local_runtime/hardware.py:_engine_device_pool */
 char *engine_device_pool(void) { return strdup("[]"); }
 
-/* PoP: device_pool_view @ hermes_cli/local_runtime/hardware.py:device_pool_view */
+/* PoP: device_pool_view @ hermes_cli/local_runtime/hardware.py:_device_pool_view */
 char *device_pool_view(void) { return strdup("[]"); }
 
-/* PoP: unified_pool_bytes @ hermes_cli/local_runtime/hardware.py:unified_pool_bytes */
+/* PoP: unified_pool_bytes @ hermes_cli/local_runtime/hardware.py:_unified_pool_bytes */
 int unified_pool_bytes(void) { return 0; }
 
 /* PoP: probe_budget @ hermes_cli/local_runtime/hardware.py:probe_budget */

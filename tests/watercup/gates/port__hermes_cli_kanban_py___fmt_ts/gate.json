@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\kanban_format.c",
-    "src\\hermes_cli\\kanban_schema.c",
-    "src\\hermes_cli\\kanban_boards.c"
+    "src/hermes_cli/kanban_format.c",
+    "src/hermes_cli/kanban_schema.c",
+    "src/hermes_cli/kanban_boards.c"
   ],
   "cflags": [
     "-I",

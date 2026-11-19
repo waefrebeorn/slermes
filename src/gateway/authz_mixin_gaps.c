@@ -12,17 +12,17 @@
 /* PoP: platform_declares_allowed_users_env @ gateway/authz_mixin.py:platform_declares_allowed_users_env */
 int platform_declares_allowed_users_env(void) { return 0; }
 
-/* PoP: bech32_polymod @ gateway/authz_mixin.py:bech32_polymod */
+/* PoP: bech32_polymod @ gateway/authz_mixin.py:_bech32_polymod */
 int bech32_polymod(void) { return 0; }
 
-/* PoP: bech32_hrp_expand @ gateway/authz_mixin.py:bech32_hrp_expand */
+/* PoP: bech32_hrp_expand @ gateway/authz_mixin.py:_bech32_hrp_expand */
 char *bech32_hrp_expand(void) { return strdup(""); }
 
-/* PoP: convertbits @ gateway/authz_mixin.py:convertbits */
+/* PoP: convertbits @ gateway/authz_mixin.py:_convertbits */
 char *convertbits(void) { return strdup(""); }
 
-/* PoP: npub_to_hex @ gateway/authz_mixin.py:npub_to_hex */
+/* PoP: npub_to_hex @ gateway/authz_mixin.py:_npub_to_hex */
 char *npub_to_hex(void) { return strdup(""); }
 
-/* PoP: normalize_nostr_allow_entries @ gateway/authz_mixin.py:normalize_nostr_allow_entries */
+/* PoP: normalize_nostr_allow_entries @ gateway/authz_mixin.py:_normalize_nostr_allow_entries */
 char *normalize_nostr_allow_entries(void) { return strdup("[]"); }

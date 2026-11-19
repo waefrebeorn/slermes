@@ -39,7 +39,7 @@ int _mb(const json_t *kib, long long *out)
     return 1;
 }
 
-/* PoP: parse_iso @ gateway/memory_status.py:parse_iso */
+/* PoP: parse_iso @ gateway/memory_status.py:_parse_iso */
 int parse_iso(const char *value, long long *epoch_s, int *usec)
 {
     if (!value || !*value)

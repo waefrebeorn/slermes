@@ -221,7 +221,7 @@ char *memory_provider_config_path(const char *provider)
     return path;
 }
 
-/* PoP: memory_provider_payload_fn @ hermes_cli/web_routers/memory_providers.py:memory_provider_payload */
+/* PoP: memory_provider_payload_fn @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
 /* Port of Python: memory_provider_payload */
 char *memory_provider_payload_fn(const char *provider)
 {
@@ -473,7 +473,7 @@ bool field_is_set(void *ctx, void *field, void *data)
     return false;
 }
 
-/* PoP: memory_provider_payload @ hermes_cli/web_routers/memory_providers.py:memory_provider_payload */
+/* PoP: memory_provider_payload @ hermes_cli/web_routers/memory_providers.py:_memory_provider_payload */
 /* Port of Python: memory_provider_payload (returns JSON string) */
 char *memory_provider_payload(void *ctx)
 {

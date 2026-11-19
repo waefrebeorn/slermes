@@ -413,7 +413,7 @@ static bool enqueue(const json_t *delivery) {
     return true;
 }
 
-/* PoP: ow_worker_thread @ agent/outbound_webhooks.py:worker_loop */
+/* PoP: ow_worker_thread @ agent/outbound_webhooks.py:_worker_loop */
 static void *ow_worker_thread(void *arg) {
     (void)arg;
     while (1) {

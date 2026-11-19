@@ -52,7 +52,7 @@ char *ath_get_active_provider(const char *auth_store_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: ath_codex_pool_rate_limit_status @ hermes_cli/auth_codex.py:codex_pool_rate_limit_status */
+/* PoP: ath_codex_pool_rate_limit_status @ hermes_cli/auth_codex.py:_codex_pool_rate_limit_status */
 char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     /* Python: pool-only codex credential in quota cooldown. */
     if (!cred_json) return strdup("{}");
@@ -60,7 +60,7 @@ char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     return strdup(cred_json);
 }
 
-/* PoP: ath_xai_oauth_state_from_store @ hermes_cli/auth_xai.py:xai_oauth_state_from_store */
+/* PoP: ath_xai_oauth_state_from_store @ hermes_cli/auth_xai.py:_xai_oauth_state_from_store */
 char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     /* Python: usable xAI oauth from provider state or pool. */
     if (!auth_store_json) return NULL;
@@ -70,7 +70,7 @@ char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     return strdup("{}");
 }
 
-/* PoP: ath_xai_oauth_state_has_usable_tokens @ hermes_cli/auth_xai.py:xai_oauth_state_has_usable_tokens */
+/* PoP: ath_xai_oauth_state_has_usable_tokens @ hermes_cli/auth_xai.py:_xai_oauth_state_has_usable_tokens */
 bool ath_xai_oauth_state_has_usable_tokens(const char *state_json) {
     /* Python: tokens + access_token/refresh_token present. */
     if (!state_json) return false;
@@ -88,7 +88,7 @@ bool ath_profile_has_own_xai_oauth_state(const char *auth_store_json) {
     return strstr(p, "xai-oauth") != NULL;
 }
 
-/* PoP: ath_write_through_xai_oauth_to_global_root @ hermes_cli/auth_xai.py:write_through_xai_oauth_to_global_root */
+/* PoP: ath_write_through_xai_oauth_to_global_root @ hermes_cli/auth_xai.py:_write_through_xai_oauth_to_global_root */
 int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
     /* Python: persist rotated state into global-root auth.json.
      * REAL: merge providers.xai-oauth into ~/.hermes/auth.json. */
@@ -105,7 +105,7 @@ int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
     return 0;
 }
 
-/* PoP: ath_auth_file_cache_key @ hermes_cli/auth.py:auth_file_cache_key */
+/* PoP: ath_auth_file_cache_key @ hermes_cli/auth.py:_auth_file_cache_key */
 char *ath_auth_file_cache_key(const char *auth_file_path) {
     /* Python: resolved-path cache key. */
     if (!auth_file_path) return NULL;
@@ -250,7 +250,7 @@ typedef struct auth_lazy_httpx {
     int   (*del)(void *target, const char *name);
 } auth_lazy_httpx_t;
 
-/* PoP: auth_lazy_httpx_resolve @ hermes_cli/auth.py:_LazyHttpx._resolve */
+/* PoP: auth_lazy_httpx_resolve @ hermes_cli/auth.py:_LazyHttpx.resolve */
 void *auth_lazy_httpx_resolve(auth_lazy_httpx_t *self)
 {
     if (!self || !self->resolve) return NULL;

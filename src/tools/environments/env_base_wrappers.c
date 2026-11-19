@@ -61,7 +61,7 @@ int envb_set_activity_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: envb_u_get_activity_callback @ tools/environments/base.py:_get_activity_callback */
+/* PoP: envb_u_get_activity_callback @ tools/environments/base.py:get_activity_callback */
 int envb_u_get_activity_callback(const char *arg) {
     /* Python: getattr(_activity_callback_local, "callback", None). Return the
      * registered activity callback name (real state read of the module

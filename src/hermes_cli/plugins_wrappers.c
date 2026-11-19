@@ -171,7 +171,7 @@ json_t *plug_list_skills(void) { return plugin_list_skills(); }
 bool plug_remove_skill(const char *name) { return plugin_remove_skill(name); }
 /* PoP: plug_get_manager @ hermes_cli/plugins.py:get_plugin_manager */
 plugin_registry_t *plug_get_manager(void) { return plugin_get_manager(); }
-/* PoP: plug_get_pre_tool_call_directive_details @ hermes_cli/plugins.py:get_pre_tool_call_directive_details */
+/* PoP: plug_get_pre_tool_call_directive_details @ hermes_cli/plugins.py:_get_pre_tool_call_directive_details */
 json_t *plug_get_pre_tool_call_directive_details(void) {
     return plugin_get_pre_tool_call_directive_details();
 }

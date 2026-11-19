@@ -9,7 +9,7 @@
 
 /* ── hermes_cli/auth_commands.py: 9 missing functions ── */
 
-/* PoP: get_custom_provider_entries @ hermes_cli/auth_commands.py:get_custom_provider_entries */
+/* PoP: get_custom_provider_entries @ hermes_cli/auth_commands.py:_get_custom_provider_entries */
 char *get_custom_provider_entries(void) { return strdup("[]"); }
 
 /* PoP: auth_add_command @ hermes_cli/auth_commands.py:auth_add_command */

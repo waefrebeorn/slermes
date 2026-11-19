@@ -9,7 +9,7 @@
 
 /* ── agent/memory_manager.py: 4 missing functions ── */
 
-/* PoP: accepts_require_checkpoint @ agent/memory_manager.py:accepts_require_checkpoint */
+/* PoP: accepts_require_checkpoint @ agent/memory_manager.py:_accepts_require_checkpoint */
 int accepts_require_checkpoint(void) { return 0; }
 
 /* PoP: memory_provider_tools_exposed @ agent/memory_manager_tools.py:memory_provider_tools_exposed */

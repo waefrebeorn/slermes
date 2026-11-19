@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\skill_commands_ports.c"
+    "src/agent/skill_commands_ports.c"
   ],
   "cflags": [
     "-I",

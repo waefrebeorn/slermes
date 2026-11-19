@@ -9,19 +9,19 @@
 
 /* ── tools/code_kernel_remote.py: 7 missing functions ── */
 
-/* PoP: _is_alive @ tools/code_kernel_remote.py:_is_alive */
+/* PoP: _is_alive @ tools/code_kernel_remote.py:is_alive */
 int _is_alive(void) { return 0; }
 
-/* PoP: _kill @ tools/code_kernel_remote.py:_kill */
+/* PoP: _kill @ tools/code_kernel_remote.py:kill */
 void _kill(void) {}
 
 
 
-/* PoP: spawn_remote_kernel @ tools/code_kernel_remote.py:spawn_remote_kernel */
+/* PoP: spawn_remote_kernel @ tools/code_kernel_remote.py:_spawn_remote_kernel */
 char *spawn_remote_kernel(void) { return strdup("{}"); }
 
 /* PoP: execute_in_remote_kernel @ tools/code_kernel_remote.py:execute_in_remote_kernel */
 char *execute_in_remote_kernel(void) { return strdup("{}"); }
 
-/* PoP: run_remote_cell @ tools/code_kernel_remote.py:run_remote_cell */
+/* PoP: run_remote_cell @ tools/code_kernel_remote.py:_run_remote_cell */
 char *run_remote_cell(void) { return strdup("{}"); }

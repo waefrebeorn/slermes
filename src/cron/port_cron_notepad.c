@@ -47,7 +47,7 @@ static char *join3(const char *a, const char *b, const char *c)
     return out;
 }
 
-/* PoP: cn_notepad_file @ cron/notepad.py:current_notepad_file */
+/* PoP: cn_notepad_file @ cron/notepad.py:_current_notepad_file */
 char *cn_notepad_file(const char *home, const char *override_path)
 {
     if (override_path && *override_path) return dup_str(override_path);

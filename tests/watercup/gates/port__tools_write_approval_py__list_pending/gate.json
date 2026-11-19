@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\tools\\write_approval.c"
+    "src/tools/write_approval.c"
   ],
   "cflags": [
     "-I",

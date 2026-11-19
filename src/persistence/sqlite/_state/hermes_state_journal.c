@@ -20,7 +20,7 @@ extern int resolve_synchronous_level(const char *raw);
 
 /* ── hermes_state.py: journal-mode + durability + maintenance cluster ── */
 
-/* PoP: log_journal_mode_upgrade_once @ sqlite_support.py:log_journal_mode_upgrade_once */
+/* PoP: log_journal_mode_upgrade_once @ sqlite_support.py:_log_journal_mode_upgrade_once */
 static pthread_mutex_t _journal_upgrade_lock = PTHREAD_MUTEX_INITIALIZER;
 static char **_journal_upgrade_warned = NULL;
 static int _journal_upgrade_n = 0;
@@ -84,7 +84,7 @@ bool apply_durability_barriers(sqlite3 *conn) {
     return true;
 }
 
-/* PoP: probe_journal_mode_for_repair @ persistence/sqlite/_state/repair.py:probe_journal_mode_for_repair */
+/* PoP: probe_journal_mode_for_repair @ persistence/sqlite/_state/repair.py:_probe_journal_mode_for_repair */
 const char *probe_journal_mode_for_repair(const char *db_path) {
     static char mode[32];
     if (!db_path) return NULL;
@@ -110,7 +110,7 @@ const char *probe_journal_mode_for_repair(const char *db_path) {
     return result;
 }
 
-/* PoP: restore_journal_mode_after_repair @ persistence/sqlite/_state/repair.py:restore_journal_mode_after_repair */
+/* PoP: restore_journal_mode_after_repair @ persistence/sqlite/_state/repair.py:_restore_journal_mode_after_repair */
 void restore_journal_mode_after_repair(const char *db_path, const char *before_mode) {
     if (!db_path) return;
     sqlite3 *conn = NULL;
@@ -131,7 +131,7 @@ void restore_journal_mode_after_repair(const char *db_path, const char *before_m
     sqlite3_close(conn);
 }
 
-/* PoP: try_acquire_auto_maintenance_lock @ persistence/sqlite/_state/repair.py:try_acquire_auto_maintenance_lock */
+/* PoP: try_acquire_auto_maintenance_lock @ persistence/sqlite/_state/repair.py:_try_acquire_auto_maintenance_lock */
 /* Returns a file handle (int fd) or -1. Caller must close. */
 int try_acquire_auto_maintenance_lock(const char *db_path) {
     if (!db_path) return -1;

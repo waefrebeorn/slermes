@@ -15,10 +15,10 @@ void register_platform_handler(const char *handler) { (void)handler; }
 /* PoP: register_telegram_handler @ hermes_cli/plugins.py:register_telegram_handler */
 void register_telegram_handler(const char *handler) { (void)handler; }
 
-/* PoP: resolve_hook_callback_timeout @ hermes_cli/plugins.py:resolve_hook_callback_timeout */
+/* PoP: resolve_hook_callback_timeout @ hermes_cli/plugins.py:_resolve_hook_callback_timeout */
 int resolve_hook_callback_timeout(void) { return 30; }
 
-/* PoP: hook_uses_callback_timeout @ hermes_cli/plugins_dispatch.py:hook_uses_callback_timeout */
+/* PoP: hook_uses_callback_timeout @ hermes_cli/plugins_dispatch.py:_hook_uses_callback_timeout */
 int hook_uses_callback_timeout(void) { return 0; }
 
 /* PoP: pre_tool_call_timeout_block @ hermes_cli/plugins.py:pre_tool_call_timeout_block */

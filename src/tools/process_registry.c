@@ -48,7 +48,7 @@ static process_registry_close_sink_t g_close_sink = NULL;
 static const char *_env_temp_dir(void *env_ref, char *buf, size_t buflen);
 static void prune_if_needed(void);
 
-/* PoP: is_host_pid_alive @ tools/process_registry.py:ProcessRegistry.is_host_pid_alive */
+/* PoP: is_host_pid_alive @ tools/process_registry.py:ProcessRegistry._is_host_pid_alive */
 static bool is_host_pid_alive(pid_t pid) {
     if (pid <= 0) return false;
     /* Python delegates to gateway.status._pid_exists — reuse the ported
@@ -56,7 +56,7 @@ static bool is_host_pid_alive(pid_t pid) {
     return gwstatus_pid_exists(pid);
 }
 
-/* PoP: PID @ tools/process_registry.py:ProcessRegistry.safe_host_start_time */
+/* PoP: PID @ tools/process_registry.py:ProcessRegistry._safe_host_start_time */
 /* Kernel start ticks for a host PID (/proc/<pid>/stat field 22), or 0 when
  * unavailable — mirrors Python's None. PID-reuse guard. */
 static long safe_host_start_time(pid_t pid) {
@@ -211,7 +211,7 @@ static void emit_output(ProcessSession *s, const char *chunk) {
     free(copy);
 }
 
-/* PoP: global_watch_admit @ tools/process_registry.py:ProcessRegistry.global_watch_admit */
+/* PoP: global_watch_admit @ tools/process_registry.py:ProcessRegistry._global_watch_admit */
 static bool global_watch_admit(double now) {
     pthread_mutex_lock(&g_registry.global_watch_lock);
     bool admit = true;
@@ -461,7 +461,7 @@ bool drain_should_skip(const char *session_id,
     return false;
 }
 
-/* PoP: refresh_detached_session @ tools/process_registry.py:ProcessRegistry.refresh_detached_session */
+/* PoP: refresh_detached_session @ tools/process_registry.py:ProcessRegistry._refresh_detached_session */
 /* Reaps the direct child, emits a completion event on exit. Identity guard
  * compares kernel start time against the baseline captured at spawn so a
  * recycled PID is never reaped as our own. */
@@ -606,7 +606,7 @@ static void *pty_reader_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: host_pid_is_ours @ tools/process_registry.py:ProcessRegistry.host_pid_is_ours */
+/* PoP: host_pid_is_ours @ tools/process_registry.py:ProcessRegistry._host_pid_is_ours */
 /* Identity-aware liveness: alive AND start-time matches. Refuses recycled PIDs. */
 static bool host_pid_is_ours(pid_t pid, long expected_start) {
     if (pid <= 0) return false;
@@ -1288,7 +1288,7 @@ int recover_from_checkpoint(void) {
     return recovered;
 }
 
-/* PoP: prune_if_needed @ tools/process_registry.py:ProcessRegistry.prune_if_needed */
+/* PoP: prune_if_needed @ tools/process_registry.py:ProcessRegistry._prune_if_needed */
 static void prune_if_needed(void) {
     pthread_mutex_lock(&g_registry.lock);
     time_t now = time(NULL);
@@ -1651,7 +1651,7 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
-/* PoP: format_async_delegation @ tools/process_registry_notifications.py:format_async_delegation */
+/* PoP: format_async_delegation @ tools/process_registry_notifications.py:_format_async_delegation */
 char* format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1770,7 +1770,7 @@ char* format_process_notification(const char *json_evt) {
     return out;
 }
 
-/* PoP: redact_process_result @ tools/process_registry.py:redact_process_result */
+/* PoP: redact_process_result @ tools/process_registry.py:_redact_process_result */
 char* redact_process_result(char *json_result) {
     char *err = NULL;
     json_t *r = json_parse(json_result, &err);

@@ -473,7 +473,7 @@ static int strip_orphan_close_tags(const char *text, int tlen, char *out, int ou
 /* Port of GatewayStreamConsumer.filter_and_accumulate.
  * Adds `text` to the buffer, suppressing inline think/reasoning blocks.
  * Returns pointer to the visible accumulated text (valid until next call). */
-/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer_think.py:filter_and_accumulate */
+/* PoP: gw_stream_consumer_filter_accumulate @ gateway/stream_consumer_think.py:_filter_and_accumulate */
 const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const char *text)
 {
     if (!c || !text || !*text) return c ? c->accumulated : NULL;
@@ -592,7 +592,7 @@ const char *gw_stream_consumer_filter_accumulate(gw_stream_consumer_t *c, const 
 }
 
 /* Port of GatewayStreamConsumer.flush_think_buffer. */
-/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer_think.py:flush_think_buffer */
+/* PoP: gw_stream_consumer_flush_think_buffer @ gateway/stream_consumer_think.py:_flush_think_buffer */
 const char *gw_stream_consumer_flush_think_buffer(gw_stream_consumer_t *c)
 {
     if (!c) return NULL;

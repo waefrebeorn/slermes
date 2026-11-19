@@ -12,16 +12,16 @@
 /* PoP: floor_subprocess_path @ tools/browser_use_cli.py:floor_subprocess_path */
 char *floor_subprocess_path(void) { return strdup(""); }
 
-/* PoP: backend_cache_key @ tools/browser_use_cli.py:backend_cache_key */
+/* PoP: backend_cache_key @ tools/browser_use_cli.py:_backend_cache_key */
 char *backend_cache_key(void) { return strdup(""); }
 
 /* PoP: resolve_lightpanda_cdp @ tools/browser_use_cli.py:resolve_lightpanda_cdp */
 char *resolve_lightpanda_cdp(void) { return strdup("{}"); }
 
-/* PoP: real_profile_consented @ tools/browser_use_cli.py:real_profile_consented */
+/* PoP: real_profile_consented @ tools/browser_use_cli.py:_real_profile_consented */
 int real_profile_consented(void) { return 0; }
 
-/* PoP: resolve_real_profile_cdp @ tools/browser_use_cli.py:resolve_real_profile_cdp */
+/* PoP: resolve_real_profile_cdp @ tools/browser_use_cli.py:_resolve_real_profile_cdp */
 char *resolve_real_profile_cdp(void) { return strdup("{}"); }
 
 /* PoP: lightpanda_engine_in_use @ tools/browser_use_cli.py:lightpanda_engine_in_use */

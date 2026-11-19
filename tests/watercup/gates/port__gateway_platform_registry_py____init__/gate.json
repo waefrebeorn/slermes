@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\platform_registry_ports.c"
+    "src/gateway/platform_registry_ports.c"
   ],
   "cflags": [
     "-I",

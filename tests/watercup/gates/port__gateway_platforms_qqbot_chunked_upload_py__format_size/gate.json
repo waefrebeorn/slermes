@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\plugin_disk_cleanup.c"
+    "src/plugins/plugin_disk_cleanup.c"
   ],
   "cflags": [
     "-I",

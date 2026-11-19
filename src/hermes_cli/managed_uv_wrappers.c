@@ -418,7 +418,7 @@ void touch_uv_self_update_stamp(void) {
     }
 }
 
-/* PoP: skew @ hermes_cli/managed_uv.py:reload_hermes_constants */
+/* PoP: skew @ hermes_cli/managed_uv.py:_reload_hermes_constants */
 /* Python re-executes hermes_constants from disk after git pull. The C port
  * has no runtime module cache skew (constants are compiled), so this is a
  * faithful no-op that mirrors Python's return-None semantics. */

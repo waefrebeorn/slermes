@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\whatsapp_cloud\\checkpoint_manager.c"
+    "src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c"
   ],
   "cflags": [
     "-I",

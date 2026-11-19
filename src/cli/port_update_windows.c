@@ -243,7 +243,7 @@ int uw_is_pausable_gateway(const char *cmdline)
  *  parser); `--flag value` consumes two tokens, `--flag=value` one.
  * =========================================================================== */
 
-/* PoP: hermes_holder_subcommand @ hermes_cli/update_cmd_windows.py:hermes_holder_subcommand */
+/* PoP: hermes_holder_subcommand @ hermes_cli/update_cmd_windows.py:_hermes_holder_subcommand */
 char *uw_holder_subcommand(const char *cmdline)
 {
     if (!cmdline || !cmdline[0]) return NULL;

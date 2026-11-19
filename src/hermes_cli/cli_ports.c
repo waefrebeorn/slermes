@@ -28,7 +28,7 @@ bool gwc2_running(bool service_running, const char *gateway_pids_json) {
     return strstr(gateway_pids_json, "\"") != NULL && strcmp(gateway_pids_json, "[]") != 0;
 }
 
-/* PoP: gwc2_capture_gateway_argv @ hermes_cli/gateway.py:capture_gateway_argv */
+/* PoP: gwc2_capture_gateway_argv @ hermes_cli/gateway.py:_capture_gateway_argv */
 char *gwc2_capture_gateway_argv(const char *pid) {
     /* Python: live argv of running gateway. */
     if (!pid) return NULL;
@@ -70,7 +70,7 @@ int gwc2_launch_detached_gateway_restart_by_cmdline(const char *run_argv) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: gwc2_spawn_gateway_restart_watcher @ hermes_cli/gateway.py:spawn_gateway_restart_watcher */
+/* PoP: gwc2_spawn_gateway_restart_watcher @ hermes_cli/gateway.py:_spawn_gateway_restart_watcher */
 int gwc2_spawn_gateway_restart_watcher(const char *old_pid, const char *run_argv) {
     /* Python: detached watcher respawns after old_pid exits. */
     if (!old_pid || !run_argv) return -1;
@@ -101,7 +101,7 @@ char *gwc2_str(const char *args_json) {
     return strndup(p, (size_t)(e - p));
 }
 
-/* PoP: gwc2_guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:guard_named_profile_under_multiplexer */
+/* PoP: gwc2_guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */
 bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name) {
     /* Python: named-profile guard — REAL check. */
     if (!profile_name || !*profile_name) return false;

@@ -228,7 +228,7 @@ json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(doubl
     return result;
 }
 
-/* PoP: pending @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+/* PoP: pending @ gateway/shutdown_forensics.py:parse_systemd_duration_to_us */
 /* Faithful port of the Python tokenizer: digits/'.' accumulate a number,
  * alpha accumulates a unit token; on whitespace the pending (digits, unit)
  * pair is applied. Units: us/ms/s/sec/min/h/hr. A bare number (no unit)

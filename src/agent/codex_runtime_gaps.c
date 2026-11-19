@@ -9,11 +9,11 @@
 
 /* ── agent/codex_runtime.py: 4 missing functions ── */
 
-/* PoP: codex_request_failure_details @ agent/codex_runtime.py:codex_request_failure_details */
+/* PoP: codex_request_failure_details @ agent/codex_runtime.py:_codex_request_failure_details */
 char *codex_request_failure_details(void) { return strdup("{}"); }
 
 
-/* PoP: sanitize_consumer_codex_request @ agent/codex_runtime.py:sanitize_consumer_codex_request */
+/* PoP: sanitize_consumer_codex_request @ agent/codex_runtime.py:_sanitize_consumer_codex_request */
 char *sanitize_consumer_codex_request(void) { return strdup("{}"); }
 
 /* PoP: bypass_sdk_request_transform @ agent/codex_runtime.py:bypass_sdk_request_transform */

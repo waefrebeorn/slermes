@@ -36,7 +36,7 @@ static char *git_run(const char *dir, const char *args) {
     return *buf ? strdup(buf) : NULL;
 }
 
-/* PoP: kdb_fire_kanban_lifecycle_hook @ hermes_cli/kanban_db.py:fire_kanban_lifecycle_hook */
+/* PoP: kdb_fire_kanban_lifecycle_hook @ hermes_cli/kanban_db.py:_fire_kanban_lifecycle_hook */
 int kdb_fire_kanban_lifecycle_hook(const char *event, const char *payload_json) {
     /* Python: best-effort plugin hook. */
     if (!event) return -1;
@@ -53,14 +53,14 @@ char *kdb_init(const char *db_path, const char *backup_path, const char *reason)
     return out;
 }
 
-/* PoP: kdb_git_toplevel @ hermes_cli/kanban_db_workspace.py:git_toplevel */
+/* PoP: kdb_git_toplevel @ hermes_cli/kanban_db_workspace.py:_git_toplevel */
 char *kdb_git_toplevel(const char *path) {
     /* Python: git toplevel or None. */
     if (!path) return NULL;
     return git_run(path, "rev-parse --show-toplevel");
 }
 
-/* PoP: kdb_git_branch_exists @ hermes_cli/kanban_db_workspace.py:git_branch_exists */
+/* PoP: kdb_git_branch_exists @ hermes_cli/kanban_db_workspace.py:_git_branch_exists */
 bool kdb_git_branch_exists(const char *repo_root, const char *branch) {
     /* Python: git show-ref --verify. */
     if (!repo_root || !branch) return false;
@@ -84,13 +84,13 @@ char *kdb_git_dir(const char *path) {
     return git_run(path, "rev-parse --git-dir");
 }
 
-/* PoP: kdb_git_current_branch @ hermes_cli/kanban_db_workspace.py:git_current_branch */
+/* PoP: kdb_git_current_branch @ hermes_cli/kanban_db_workspace.py:_git_current_branch */
 char *kdb_git_current_branch(const char *path) {
     if (!path) return NULL;
     return git_run(path, "branch --show-current");
 }
 
-/* PoP: kdb_is_linked_worktree_checkout @ hermes_cli/kanban_db_workspace.py:is_linked_worktree_checkout */
+/* PoP: kdb_is_linked_worktree_checkout @ hermes_cli/kanban_db_workspace.py:_is_linked_worktree_checkout */
 bool kdb_is_linked_worktree_checkout(const char *path) {
     /* Python: git-dir differs from common-dir → linked worktree. */
     if (!path) return false;
@@ -102,7 +102,7 @@ bool kdb_is_linked_worktree_checkout(const char *path) {
     return linked;
 }
 
-/* PoP: kdb_nearest_existing_path @ hermes_cli/kanban_db_workspace.py:nearest_existing_path */
+/* PoP: kdb_nearest_existing_path @ hermes_cli/kanban_db_workspace.py:_nearest_existing_path */
 char *kdb_nearest_existing_path(const char *path) {
     /* Python: walk up to first existing ancestor. */
     if (!path) return NULL;
@@ -118,7 +118,7 @@ char *kdb_nearest_existing_path(const char *path) {
     return cur;
 }
 
-/* PoP: kdb_repo_root_for_worktree_target @ hermes_cli/kanban_db_workspace.py:repo_root_for_worktree_target */
+/* PoP: kdb_repo_root_for_worktree_target @ hermes_cli/kanban_db_workspace.py:_repo_root_for_worktree_target */
 char *kdb_repo_root_for_worktree_target(const char *path) {
     /* Python: nearest existing ancestor then its git toplevel. */
     if (!path) return NULL;
@@ -129,7 +129,7 @@ char *kdb_repo_root_for_worktree_target(const char *path) {
     return root;
 }
 
-/* PoP: kdb_ensure_git_worktree @ hermes_cli/kanban_db_workspace.py:ensure_git_worktree */
+/* PoP: kdb_ensure_git_worktree @ hermes_cli/kanban_db_workspace.py:_ensure_git_worktree */
 int kdb_ensure_git_worktree(const char *repo_root, const char *target, const char *branch) {
     /* Python: materialize linked worktree. */
     if (!repo_root || !target || !branch) return -1;
@@ -141,7 +141,7 @@ int kdb_ensure_git_worktree(const char *repo_root, const char *target, const cha
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: kdb_resolve_worktree_workspace @ hermes_cli/kanban_db_workspace.py:resolve_worktree_workspace */
+/* PoP: kdb_resolve_worktree_workspace @ hermes_cli/kanban_db_workspace.py:_resolve_worktree_workspace */
 char *kdb_resolve_worktree_workspace(const char *task_json, const char *fallback_dir) {
     /* Python: resolve + materialize worktree for task. */
     if (!task_json) return fallback_dir ? strdup(fallback_dir) : NULL;
@@ -149,7 +149,7 @@ char *kdb_resolve_worktree_workspace(const char *task_json, const char *fallback
     return fallback_dir ? strdup(fallback_dir) : NULL;
 }
 
-/* PoP: kdb_dispatch_once_locked @ hermes_cli/kanban_db_dispatch.py:dispatch_once_locked */
+/* PoP: kdb_dispatch_once_locked @ hermes_cli/kanban_db_dispatch.py:_dispatch_once_locked */
 char *kdb_dispatch_once_locked(const char *state_json) {
     /* Python: one dispatcher tick; reclaim stale (TTL). */
     if (!state_json) return strdup("{}");

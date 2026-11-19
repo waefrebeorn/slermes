@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\agent\\tts_provider_ports.c",
-    "src\\tools\\tts.c"
+    "src/agent/tts_provider_ports.c",
+    "src/tools/tts.c"
   ],
   "cflags": [
     "-I",

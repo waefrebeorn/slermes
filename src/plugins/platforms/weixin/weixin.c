@@ -326,7 +326,7 @@ static char *get_updates(void) {
     snprintf(payload, sizeof(payload),
              "{\"get_updates_buf\":\"%s\"", g_wx.sync_buf);
 
-/* PoP: send_message @ plugins/platforms/weixin/adapter.py:api_post */
+/* PoP: send_message @ plugins/platforms/weixin/adapter.py:_api_post */
     char *resp = wx_api_post(EP_GET_UPDATES, payload, LONG_POLL_TIMEOUT_MS, NULL);
     if (!resp) {
         /* Timeout is normal — return empty result */

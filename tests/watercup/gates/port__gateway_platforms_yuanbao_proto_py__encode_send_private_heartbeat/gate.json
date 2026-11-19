@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src\\plugins\\platforms\\yuanbao\\yuanbao_proto_helpers.c"
+    "src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -68,13 +68,13 @@ void raise_room_not_found(void *conn, const char *room_id) {
     (void)conn; (void)room_id;
 }
 
-/* PoP: table_exists @ hermes_cli/kanban_db_connect.py:table_exists */
+/* PoP: table_exists @ hermes_cli/kanban_db_connect.py:_table_exists */
 int table_exists(void *conn, const char *table) {
     (void)conn; (void)table;
     return 1;
 }
 
-/* PoP: room_from_row @ gateway/hosted_rooms.py:room_from_row */
+/* PoP: room_from_row @ gateway/hosted_rooms.py:_room_from_row */
 char *room_from_row(const char *row, int idempotent) {
     (void)row; (void)idempotent;
     return strdup("{}");
@@ -94,7 +94,7 @@ void assert_event_capacity(void *conn, const char *room, int additional_bytes, i
     (void)conn; (void)room; (void)additional_bytes; (void)allow_control;
 }
 
-/* PoP: prune_disbanded_rooms_locked @ gateway/hosted_rooms.py:prune_disbanded_rooms_locked */
+/* PoP: prune_disbanded_rooms_locked @ gateway/hosted_rooms.py:_prune_disbanded_rooms_locked */
 void prune_disbanded_rooms_locked(void *conn) {
     (void)conn;
 }
@@ -104,7 +104,7 @@ void prune_disbanded_rooms(const char *db_path) {
     (void)db_path;
 }
 
-/* PoP: event_from_row @ gateway/hosted_rooms.py:event_from_row */
+/* PoP: event_from_row @ gateway/hosted_rooms.py:_event_from_row */
 char *event_from_row(const char *row) {
     (void)row;
     return strdup("{}");

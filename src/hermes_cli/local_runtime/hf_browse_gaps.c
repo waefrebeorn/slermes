@@ -12,7 +12,7 @@
 /* PoP: search_models @ hermes_cli/local_runtime/hf_browse.py:search_models */
 char *search_models(void) { return strdup("[]"); }
 
-/* PoP: quant_label @ hermes_cli/local_runtime/hf_browse.py:quant_label */
+/* PoP: quant_label @ hermes_cli/local_runtime/hf_browse.py:_quant_label */
 char *quant_label(void) { return strdup(""); }
 
 /* PoP: repo_files @ hermes_cli/local_runtime/hf_browse.py:repo_files */

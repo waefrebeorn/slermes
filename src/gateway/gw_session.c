@@ -408,7 +408,7 @@ int session_get_or_create(const char *platform, const char *chat_id) {
     return session_create(platform, chat_id);
 }
 
-/* PoP: session_find_by_key @ gateway/session_recovery.py:find_gateway_session_row */
+/* PoP: session_find_by_key @ gateway/session_recovery.py:_find_gateway_session_row */
 int session_find_by_key(const char *session_key) {
     if (!session_key || !g_gw.sessions) return -1;
     hive_iter_t it;
@@ -459,7 +459,7 @@ void session_limit_max(int max_sessions) {
     g_gw.max_concurrent_sessions = max_sessions;
 }
 
-/* PoP: hash_id @ gateway/session.py:hash_id */
+/* PoP: hash_id @ gateway/session.py:_hash_id */
 unsigned long hash_id(const char *id) {
     if (!id || !id[0]) return 0;
     unsigned long h = 5381;
@@ -467,10 +467,10 @@ unsigned long hash_id(const char *id) {
     return h;
 }
 
-/* PoP: hash_chat_id @ gateway/session.py:hash_chat_id */
+/* PoP: hash_chat_id @ gateway/session.py:_hash_chat_id */
 unsigned long hash_chat_id(const char *chat_id) { return hash_id(chat_id); }
 
-/* PoP: hash_sender_id @ gateway/session.py:hash_sender_id */
+/* PoP: hash_sender_id @ gateway/session.py:_hash_sender_id */
 unsigned long hash_sender_id(const char *sender_id) { return hash_id(sender_id); }
 
 /* PoP: is_session_key_unsafe @ gateway/session.py:is_session_key_unsafe */
@@ -479,7 +479,7 @@ bool is_session_key_unsafe(const char *key) {
     return strstr(key, "..") != NULL || key[0] == '~';
 }
 
-/* PoP: slack_tools_loaded @ gateway/session.py:slack_tools_loaded */
+/* PoP: slack_tools_loaded @ gateway/session.py:_slack_tools_loaded */
 bool slack_tools_loaded(void) {
     for (int i = 0; i < g_gw.platform_count; i++) {
         if (strcasecmp(g_gw.platforms[i], "slack") == 0) return true;
@@ -487,7 +487,7 @@ bool slack_tools_loaded(void) {
     return false;
 }
 
-/* PoP: format_untrusted_prompt_value @ gateway/session.py:format_untrusted_prompt_value */
+/* PoP: format_untrusted_prompt_value @ gateway/session.py:_format_untrusted_prompt_value */
 char *format_untrusted_prompt_value(const char *value, size_t max_len) {
     if (!value) return NULL;
     size_t len = strlen(value);
@@ -550,7 +550,7 @@ double auto_continue_freshness_window(void) {
     return g_gw.auto_continue_freshness_secs;
 }
 
-/* PoP: has_active_processes_safe @ gateway/session.py:has_active_processes_safe */
+/* PoP: has_active_processes_safe @ gateway/session.py:_has_active_processes_safe */
 bool has_active_processes_safe(void) {
     /* Safe check: no subprocesses tracked in C gateway */
     return false;
@@ -670,14 +670,14 @@ void suspend_recently_active(int max_age_secs) {
     }
 }
 
-/* PoP: generate_session_key @ gateway/session_recovery.py:generate_session_key */
+/* PoP: generate_session_key @ gateway/session_recovery.py:_generate_session_key */
 char *generate_session_key(const char *platform, const char *chat_id) {
     char buf[256];
     snprintf(buf, sizeof(buf), "%s:%s", platform ? platform : "", chat_id ? chat_id : "");
     return strdup(buf);
 }
 
-/* PoP: legacy_slack_session_key @ gateway/session_recovery.py:legacy_slack_session_key */
+/* PoP: legacy_slack_session_key @ gateway/session_recovery.py:_legacy_slack_session_key */
 char *legacy_slack_session_key(const char *channel_id) {
     if (!channel_id) return NULL;
     char buf[256];
@@ -685,7 +685,7 @@ char *legacy_slack_session_key(const char *channel_id) {
     return strdup(buf);
 }
 
-/* PoP: claim_legacy_slack_key @ gateway/session_recovery.py:claim_legacy_slack_key */
+/* PoP: claim_legacy_slack_key @ gateway/session_recovery.py:_claim_legacy_slack_key */
 int claim_legacy_slack_key(const char *channel_id) {
     char *key = legacy_slack_session_key(channel_id);
     if (!key) return -1;
@@ -694,7 +694,7 @@ int claim_legacy_slack_key(const char *channel_id) {
     return idx;
 }
 
-/* PoP: is_session_expired @ plugins/platforms/weixin/adapter.py:is_session_expired */
+/* PoP: is_session_expired @ plugins/platforms/weixin/adapter.py:_is_session_expired */
 bool is_session_expired(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return true;
@@ -711,14 +711,14 @@ bool is_session_finalizable(const char *session_key) {
     return se ? se->in_use : false;
 }
 
-/* PoP: compression_tip_for_session_id @ gateway/session_transcript.py:compression_tip_for_session_id */
+/* PoP: compression_tip_for_session_id @ gateway/session_transcript.py:_compression_tip_for_session_id */
 char *compression_tip_for_session_id(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return NULL;
     return strdup("Consider running /compress to reduce context size");
 }
 
-/* PoP: heal_compression_tip_locked @ gateway/session_transcript.py:heal_compression_tip_locked */
+/* PoP: heal_compression_tip_locked @ gateway/session_transcript.py:_heal_compression_tip_locked */
 bool heal_compression_tip_locked(gw_session_entry_t *entry,
                                   const char *original_session_id,
                                   const char *canonical_session_id) {
@@ -739,7 +739,7 @@ bool heal_compression_tip_locked(gw_session_entry_t *entry,
     return true;
 }
 
-/* PoP: save_sessions_json @ gateway/session_persistence.py:save_sessions_json */
+/* PoP: save_sessions_json @ gateway/session_persistence.py:_save_sessions_json */
 char *save_sessions_json(void) {
     json_t *arr = json_array();
     if (g_gw.sessions) {
@@ -760,7 +760,7 @@ char *save_sessions_json(void) {
     return json_dumps(arr, 0);
 }
 
-/* PoP: save_entries @ gateway/session_persistence.py:save_entries */
+/* PoP: save_entries @ gateway/session_persistence.py:_save_entries */
 void save_entries(void) {
     /* Snapshot latest state under the session lock and persist it after
      * releasing the lock — the full-rewrite structural save path. */
@@ -796,13 +796,13 @@ const char *_profile_from_session_key(const char *session_key) {
     return se->source.chat_name[0] ? se->source.chat_name : "default";
 }
 
-/* PoP: recovered_row_allowed_for_active_profile @ gateway/session_recovery.py:recovered_row_allowed_for_active_profile */
+/* PoP: recovered_row_allowed_for_active_profile @ gateway/session_recovery.py:_recovered_row_allowed_for_active_profile */
 bool recovered_row_allowed_for_active_profile(const char *row_profile) {
     if (!row_profile || !row_profile[0]) return true;
     return strcmp(row_profile, g_gw.active_profile) == 0;
 }
 
-/* PoP: create_entry_from_recovered_row @ gateway/session_recovery.py:create_entry_from_recovered_row */
+/* PoP: create_entry_from_recovered_row @ gateway/session_recovery.py:_create_entry_from_recovered_row */
 int create_entry_from_recovered_row(json_t *row) {
     if (!row) return -1;
     const char *platform = json_get_str(row, "platform", "");
@@ -810,17 +810,17 @@ int create_entry_from_recovered_row(json_t *row) {
     return session_create(platform, chat_id);
 }
 
-/* PoP: find_gateway_session_row @ gateway/session_recovery.py:find_gateway_session_row */
+/* PoP: find_gateway_session_row @ gateway/session_recovery.py:_find_gateway_session_row */
 int find_gateway_session_row(const char *platform, const char *chat_id) {
     return session_find(platform, chat_id);
 }
 
-/* PoP: recover_session_from_db @ gateway/session_recovery.py:recover_session_from_db */
+/* PoP: recover_session_from_db @ gateway/session_recovery.py:_recover_session_from_db */
 int recover_session_from_db(const char *session_key) {
     return session_find_by_key(session_key);
 }
 
-/* PoP: query_recoverable_session @ gateway/session_recovery.py:query_recoverable_session */
+/* PoP: query_recoverable_session @ gateway/session_recovery.py:_query_recoverable_session */
 json_t *query_recoverable_session(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return json_null();
@@ -840,7 +840,7 @@ void _record_gateway_session_peer(const char *session_key, const char *peer_id) 
     }
 }
 
-/* PoP: get_or_create_session_impl @ gateway/session.py:get_or_create_session_impl */
+/* PoP: get_or_create_session_impl @ gateway/session.py:_get_or_create_session_impl */
 int get_or_create_session_impl(const char *platform, const char *chat_id) {
     return session_get_or_create(platform, chat_id);
 }
@@ -871,7 +871,7 @@ const char *peek_session_id(int session_idx) {
     return se->session_id;
 }
 
-/* PoP: is_fts_corruption_error @ gateway/session_transcript.py:is_fts_corruption_error */
+/* PoP: is_fts_corruption_error @ gateway/session_transcript.py:_is_fts_corruption_error */
 bool is_fts_corruption_error(int sqlite_rc) {
     return sqlite_rc == SQLITE_CORRUPT || sqlite_rc == 26; /* SQLITE_NOTADB */
 }
@@ -984,7 +984,7 @@ static const char *transcript_id_for_key(const char *session_key,
     return buf;
 }
 
-/* PoP: clear_dirty_transcript @ gateway/session_transcript.py:clear_dirty_transcript */
+/* PoP: clear_dirty_transcript @ gateway/session_transcript.py:_clear_dirty_transcript */
 void clear_dirty_transcript(const char *session_id) {
     /* Drop queued pending messages for a transcript so /retry, /undo and
      * /compress don't leave stale rows that would be re-inserted later. */
@@ -997,7 +997,7 @@ void clear_dirty_transcript(const char *session_id) {
     pthread_mutex_unlock(&g_dirty_mutex);
 }
 
-/* PoP: ensure_loaded_locked @ gateway/session_persistence.py:ensure_loaded_locked */
+/* PoP: ensure_loaded_locked @ gateway/session_persistence.py:_ensure_loaded_locked */
 static int g_routing_loaded = 0;
 void ensure_loaded_locked(int session_idx) {
     (void)session_idx;
@@ -1053,10 +1053,10 @@ void ensure_loaded_locked(int session_idx) {
     db_close(db);
 }
 
-/* PoP: prune_stale_sessions_locked @ gateway/session_persistence.py:prune_stale_sessions_locked */
+/* PoP: prune_stale_sessions_locked @ gateway/session_persistence.py:_prune_stale_sessions_locked */
 void prune_stale_sessions_locked(void) { prune_old_entries(86400); }
 
-/* PoP: snapshot_routing_locked @ gateway/session_persistence.py:snapshot_routing_locked */
+/* PoP: snapshot_routing_locked @ gateway/session_persistence.py:_snapshot_routing_locked */
 json_t *snapshot_routing_locked(void) { return json_object(); }
 
 /* Shared routing-generation counter. Both full snapshots and single-entry
@@ -1064,13 +1064,13 @@ json_t *snapshot_routing_locked(void) { return json_object(); }
  * next_routing_generation_locked). */
 static int64_t g_routing_generation = 0;
 
-/* PoP: next_routing_generation_locked @ gateway/session_persistence.py:next_routing_generation_locked */
+/* PoP: next_routing_generation_locked @ gateway/session_persistence.py:_next_routing_generation_locked */
 int64_t next_routing_generation_locked(void) {
     g_routing_generation += 1;
     return g_routing_generation;
 }
 
-/* PoP: save_entry @ gateway/session_persistence.py:save_entry */
+/* PoP: save_entry @ gateway/session_persistence.py:_save_entry */
 void save_entry(const char *session_key) {
     /* Persist ONE routing entry via UPSERT — the per-turn fast path.
      * The C session store keeps the entry in the hive; the durable
@@ -1085,7 +1085,7 @@ void save_entry(const char *session_key) {
     se->last_active = (int64_t)time(NULL);
 }
 
-/* PoP: persist_routing_data @ gateway/session_persistence.py:persist_routing_data */
+/* PoP: persist_routing_data @ gateway/session_persistence.py:_persist_routing_data */
 void persist_routing_data(json_t *data) {
     /* Persist the FULL routing index snapshot as the "_gateway_routing"
      * record in the session DB — the durable analog of Python's state.db
@@ -1108,7 +1108,7 @@ void persist_routing_data(json_t *data) {
     free(serialized);
 }
 
-/* PoP: recovered_row_matches_source_scope @ gateway/session_recovery.py:recovered_row_matches_source_scope */
+/* PoP: recovered_row_matches_source_scope @ gateway/session_recovery.py:_recovered_row_matches_source_scope */
 bool recovered_row_matches_source_scope(const gw_session_source_t *row_src, const char *routing_scope) {
     (void)routing_scope;
     if (!row_src) return false;
@@ -1156,7 +1156,7 @@ void set_expiry_finalized(const char *session_key) {
         db_end_session(se->db, se->session_id, "session_reset");
 }
 
-/* PoP: is_session_ended_in_db @ gateway/session_lifecycle.py:is_session_ended_in_db */
+/* PoP: is_session_ended_in_db @ gateway/session_lifecycle.py:_is_session_ended_in_db */
 bool is_session_ended_in_db(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return true;
@@ -1297,7 +1297,7 @@ void append_to_transcript(const char *session_key, const char *role, const char 
     json_free(msg);
 }
 
-/* PoP: append_to_transcript_serialized @ gateway/session_transcript.py:append_to_transcript_serialized */
+/* PoP: append_to_transcript_serialized @ gateway/session_transcript.py:_append_to_transcript_serialized */
 void append_to_transcript_serialized(const char *session_key, const char *serialized) {
     /* Append one serialized message JSON to the session's transcript store.
      * Python appends to a pending queue + retries on DB errors; C does a
@@ -1336,7 +1336,7 @@ void append_to_transcript_serialized(const char *session_key, const char *serial
     json_free(doc);
 }
 
-/* PoP: append_transcript_message @ gateway/session_transcript.py:append_transcript_message */
+/* PoP: append_transcript_message @ gateway/session_transcript.py:_append_transcript_message */
 void append_transcript_message(const char *session_key, json_t *msg) {
     /* Write one transcript message. Python hands the row to
      * SessionDB.append_message and lets the caller retry-queue on failure;
@@ -1378,7 +1378,7 @@ void append_transcript_message(const char *session_key, json_t *msg) {
         mark_dirty_transcript(sid);
 }
 
-/* PoP: rebuild_fts_once @ gateway/session_transcript.py:rebuild_fts_once */
+/* PoP: rebuild_fts_once @ gateway/session_transcript.py:_rebuild_fts_once */
 bool rebuild_fts_once(int session_idx) {
     /* Attempt an index rebuild once per store lifetime after append
      * corruption. Python delegates to SessionDB.rebuild_fts() (FTS5

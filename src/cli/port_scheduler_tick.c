@@ -43,7 +43,7 @@ int js_tick_yield_should_log(const char *last_reason, double last_at,
     return (now - last_at) >= JS_YIELD_LOG_INTERVAL_SECONDS;
 }
 
-/* PoP: log_tick_yield_once @ cron/scheduler_tick.py:log_tick_yield_once */
+/* PoP: log_tick_yield_once @ cron/scheduler_tick.py:_log_tick_yield_once */
 char *js_tick_yield_message(const char *reason)
 {
     const char *r = reason ? reason : "";
