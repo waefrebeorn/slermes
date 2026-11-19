@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___parse_shortstat — GAP sentinel for _parse_shortstat */
+/* gate: real__agent_checkpoints_manager_py___parse_shortstat — GAP sentinel for _parse_shortstat */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

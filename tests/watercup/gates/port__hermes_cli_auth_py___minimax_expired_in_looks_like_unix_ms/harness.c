@@ -1,38 +1,32 @@
-/* gate: port__hermes_cli_auth_py___minimax_expired_in_looks_like_unix_ms — GAP sentinel for hermes_cli/auth.py:_minimax_expired_in_looks_like_unix_ms */
+/* gate: port__hermes_cli_auth_py___minimax_expired_in_looks_like_unix_ms — traced copy of minimax_expired_in_looks_like_unix_ms (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_minimax_expired_in_looks_like_unix_ms");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_minimax_expired_in_looks_like_unix_ms");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_minimax_expired_in_looks_like_unix_ms");
-}
+extern int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _minimax_expired_in_looks_like_unix_ms <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s minimax_expired_in_looks_like_unix_ms <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("minimax_expired_in_looks_like_unix_ms");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = minimax_expired_in_looks_like_unix_ms((long)strtol(argv[i], NULL, 10), (long)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("minimax_expired_in_looks_like_unix_ms");
     }
     return 0;
 }

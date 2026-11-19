@@ -1,4 +1,4 @@
-/* gate: real__utils_py___preserve_file_mode — GAP sentinel for _preserve_file_mode */
+/* gate: real__utils_files_py___preserve_file_mode — GAP sentinel for _preserve_file_mode */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_browser_connect_py___resolve_source_profile — traced copy of _resolve_source_profile (charptr_simple) */
+/* gate: port__hermes_cli_browser_connect_py___resolve_source_profile — traced copy of _resolve_source_profile (int_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern char * _resolve_source_profile(const char *browser);
+extern int _resolve_source_profile(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _resolve_source_profile <input>...\n", argv[0]); return 2; }
@@ -17,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    char * result = _resolve_source_profile(argv[i]);
+    int result = _resolve_source_profile();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? result : "");
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,4 +1,4 @@
-/* gate: real__tools_send_message_tool_py___sanitize_error_text — GAP sentinel for _sanitize_error_text */
+/* gate: real__gateway_outbound_send_py___sanitize_error_text — GAP sentinel for _sanitize_error_text */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

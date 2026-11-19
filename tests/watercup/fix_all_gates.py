@@ -36,6 +36,9 @@ COMMON_SRC = [
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    # logger.c:rotate_if_needed calls util_rename_replace (Windows-safe
+    # os.replace port); without it every logger-linked gate fails to link.
+    "src/hermes_cli/fs_replace.c",
 ]
 
 # symbol -> defining .c file, built once. Lets the per-gate loop resolve a

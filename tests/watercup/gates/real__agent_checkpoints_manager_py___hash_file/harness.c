@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___hash_file — GAP sentinel for _hash_file */
+/* gate: real__agent_checkpoints_manager_py___hash_file — GAP sentinel for _hash_file */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

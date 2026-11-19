@@ -1,4 +1,4 @@
-/* gate: real__tools_send_message_tool_py___send_live_adapter_media — GAP sentinel for _send_live_adapter_media */
+/* gate: real__gateway_outbound_send_py___send_live_adapter_media — GAP sentinel for _send_live_adapter_media */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

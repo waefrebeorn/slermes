@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___retry_delay — GAP sentinel for _retry_delay */
+/* gate: real__plugins_teams_pipeline_graph_client_py___retry_delay — GAP sentinel for _retry_delay */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

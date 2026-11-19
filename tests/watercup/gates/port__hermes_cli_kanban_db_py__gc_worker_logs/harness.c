@@ -1,38 +1,43 @@
-/* gate: port__hermes_cli_kanban_db_py__gc_worker_logs — GAP sentinel for hermes_cli/kanban_db.py:gc_worker_logs */
+/* gate: port__hermes_cli_kanban_db_py__gc_worker_logs — traced copy of kdb_gc_worker_logs (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("gc_worker_logs");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "gc_worker_logs");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("gc_worker_logs");
-}
+extern int kdb_gc_worker_logs(long older_than_seconds, const char *board);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s gc_worker_logs <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s kdb_gc_worker_logs <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("kdb_gc_worker_logs");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_cap = tmpfile();
+    if (_cap) dup2(fileno(_cap), 1);
+    int result = kdb_gc_worker_logs((long)strtol(argv[i], NULL, 10), argv[2 + (i - 2 + 1) % 5]);
+    fflush(stdout);
+    if (_cap) {
+        dup2(_sv, 1); close(_sv);
+        rewind(_cap);
+        char _ob[4096]; size_t _on = 0; int _ch;
+        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
+            _ob[_on++] = (char)_ch;
+        _ob[_on] = '\0';
+        /* strip the trailing newline the port emits */
+        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
+            _ob[--_on] = '\0';
+        WCUP_VALSTR(_ob);
+        fclose(_cap);
+    }
+
+
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("kdb_gc_worker_logs");
     }
     return 0;
 }

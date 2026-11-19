@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/_early_recovery.c"
+    "src\\hermes_cli\\_early_recovery.c"
   ],
   "cflags": [
     "-I",

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/dashboard_procs.c"
+    "src\\hermes_cli\\dashboard_procs.c"
   ],
   "cflags": [
     "-I",

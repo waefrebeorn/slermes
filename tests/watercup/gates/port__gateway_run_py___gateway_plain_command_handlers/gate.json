@@ -14,11 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/gateway/run_gaps.c",
-    "src/persistence/sqlite/_state/hermes_state_fd_budget.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

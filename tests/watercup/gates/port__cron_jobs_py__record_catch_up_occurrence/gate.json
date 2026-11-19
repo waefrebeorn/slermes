@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/cron/jobs_helpers.c"
+    "src\\cron\\jobs_helpers.c",
+    "src\\plugins\\platforms\\qqbot\\shell_hooks.c"
   ],
   "cflags": [
     "-I",

@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___drop_oversize_from_index — GAP sentinel for _drop_oversize_from_index */
+/* gate: real__agent_checkpoints_manager_py___drop_oversize_from_index — GAP sentinel for _drop_oversize_from_index */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

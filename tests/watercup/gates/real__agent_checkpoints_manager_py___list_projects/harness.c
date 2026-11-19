@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___list_projects — GAP sentinel for _list_projects */
+/* gate: real__agent_checkpoints_manager_py___list_projects — GAP sentinel for _list_projects */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

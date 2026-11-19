@@ -14,7 +14,11 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/logger.c",
+    "src/cli/paths.c",
+    "src\\agent\\port_conversation_compression_flow.c",
+    "src\\agent\\port_conversation_compression.c"
   ],
   "cflags": [
     "-I",

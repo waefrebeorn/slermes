@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___dir_size_bytes — GAP sentinel for _dir_size_bytes */
+/* gate: real__agent_checkpoints_manager_py___dir_size_bytes — GAP sentinel for _dir_size_bytes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

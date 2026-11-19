@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___repair_bare_repo_dirs — GAP sentinel for _repair_bare_repo_dirs */
+/* gate: real__agent_checkpoints_manager_py___repair_bare_repo_dirs — GAP sentinel for _repair_bare_repo_dirs */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

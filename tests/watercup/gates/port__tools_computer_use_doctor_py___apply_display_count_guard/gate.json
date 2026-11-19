@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/computer_use/doctor_gaps3.c"
+    "src\\tools\\computer_use\\doctor_gaps3.c"
   ],
   "cflags": [
     "-I",

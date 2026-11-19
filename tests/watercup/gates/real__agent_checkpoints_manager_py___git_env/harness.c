@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___git_env — GAP sentinel for _git_env */
+/* gate: real__agent_checkpoints_manager_py___git_env — GAP sentinel for _git_env */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

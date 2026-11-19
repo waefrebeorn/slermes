@@ -1,4 +1,4 @@
-/* gate: real__utils_py___is_contended_windows_replace_error — GAP sentinel for _is_contended_windows_replace_error */
+/* gate: real__utils_files_py___is_contended_windows_replace_error — GAP sentinel for _is_contended_windows_replace_error */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

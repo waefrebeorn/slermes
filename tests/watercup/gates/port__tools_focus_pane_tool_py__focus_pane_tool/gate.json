@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/focus_pane_tool.c"
+    "src\\tools\\focus_pane_tool.c"
   ],
   "cflags": [
     "-I",

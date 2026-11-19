@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/kanban_swarm_gaps3.c"
+    "src\\hermes_cli\\kanban_swarm_gaps3.c"
   ],
   "cflags": [
     "-I",

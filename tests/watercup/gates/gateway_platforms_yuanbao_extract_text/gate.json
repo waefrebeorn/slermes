@@ -5,9 +5,9 @@
   "c_src": "harness.c",
   "c_fn": "yb2_extract_text",
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libhive",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
+    "-IC:/Users/eman5/slermes/include",
+    "-IC:/Users/eman5/slermes/lib/libhive",
+    "-IC:/Users/eman5/slermes/lib/libjson"
   ],
   "extra_src": [],
   "py_module": "gateway/platforms/yuanbao.py",

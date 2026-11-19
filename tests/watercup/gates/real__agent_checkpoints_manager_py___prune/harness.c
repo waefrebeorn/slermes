@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___prune — GAP sentinel for _prune */
+/* gate: real__agent_checkpoints_manager_py___prune — GAP sentinel for _prune */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

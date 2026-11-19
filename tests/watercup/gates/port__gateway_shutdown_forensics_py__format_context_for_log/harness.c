@@ -1,24 +1,30 @@
-/* gate: port__gateway_shutdown_forensics_py__format_context_for_log — traced copy of cli_gateway_shutdown_forensics_format_context_for_log (int_str) */
+/* gate: port__gateway_shutdown_forensics_py__format_context_for_log — traced copy of cli_gateway_shutdown_forensics_format_context_for_log (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
-extern int cli_gateway_shutdown_forensics_format_context_for_log(const char *input);
+
+extern char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cli_gateway_shutdown_forensics_format_context_for_log <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("cli_gateway_shutdown_forensics_format_context_for_log");
+    json_t *_j0 = json_parse(argv[i], NULL);
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = cli_gateway_shutdown_forensics_format_context_for_log(argv[i]);
+    char* result = cli_gateway_shutdown_forensics_format_context_for_log(_j0);
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
     char buf[32];
     snprintf(buf, sizeof(buf), "%d", result);
     WCUP_VALSTR(buf);

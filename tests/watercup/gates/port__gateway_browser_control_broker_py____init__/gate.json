@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/browser_control_broker.c"
+    "src\\gateway\\browser_control_broker.c",
+    "src\\skills\\skills_parser.c"
   ],
   "cflags": [
     "-I",

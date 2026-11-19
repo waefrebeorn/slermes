@@ -14,7 +14,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/browser_camofox.c"
+    "src\\hermes_cli\\browser_camofox.c"
   ],
   "cflags": [
     "-I",

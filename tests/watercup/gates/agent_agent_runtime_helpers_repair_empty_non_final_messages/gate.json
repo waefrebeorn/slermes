@@ -5,9 +5,9 @@
   "c_src": "harness.c",
   "c_fn": "repair_empty_non_final_messages",
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson"
+    "-IC:/Users/eman5/slermes/include",
+    "-IC:/Users/eman5/slermes/lib",
+    "-IC:/Users/eman5/slermes/lib/libjson"
   ],
   "extra_src": [],
   "py_module": "agent/agent_runtime_helpers.py",

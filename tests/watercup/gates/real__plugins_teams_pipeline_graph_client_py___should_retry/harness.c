@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___should_retry — GAP sentinel for _should_retry */
+/* gate: real__plugins_teams_pipeline_graph_client_py___should_retry — GAP sentinel for _should_retry */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

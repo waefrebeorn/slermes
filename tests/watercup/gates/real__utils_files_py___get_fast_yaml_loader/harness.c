@@ -1,4 +1,4 @@
-/* gate: real__utils_py___get_fast_yaml_loader — GAP sentinel for _get_fast_yaml_loader */
+/* gate: real__utils_files_py___get_fast_yaml_loader — GAP sentinel for _get_fast_yaml_loader */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_container_boot_u_register_service(const char *arg);
 
 int main(int argc, char **argv) {

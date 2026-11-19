@@ -17,7 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/terminal.c"
+    "src\\agent\\port_conversation_compression_flow.c",
+    "src\\agent\\port_conversation_compression.c"
   ],
   "cflags": [
     "-I",

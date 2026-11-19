@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___dir_file_count — GAP sentinel for _dir_file_count */
+/* gate: real__agent_checkpoints_manager_py___dir_file_count — GAP sentinel for _dir_file_count */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

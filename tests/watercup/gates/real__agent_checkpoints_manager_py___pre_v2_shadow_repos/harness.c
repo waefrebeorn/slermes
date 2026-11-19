@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___pre_v2_shadow_repos — GAP sentinel for _pre_v2_shadow_repos */
+/* gate: real__agent_checkpoints_manager_py___pre_v2_shadow_repos — GAP sentinel for _pre_v2_shadow_repos */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

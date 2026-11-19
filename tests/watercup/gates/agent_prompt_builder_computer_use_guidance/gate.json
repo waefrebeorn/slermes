@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "computer_use_guidance",
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include"
+    "-IC:/Users/eman5/slermes/include"
   ],
   "extra_src": [],
   "py_module": "agent/prompt_builder.py",

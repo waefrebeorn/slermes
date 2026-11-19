@@ -1,4 +1,4 @@
-/* gate: real__tools_send_message_tool_py___is_telegram_thread_not_found — GAP sentinel for _is_telegram_thread_not_found */
+/* gate: real__gateway_outbound_send_py___is_telegram_thread_not_found — GAP sentinel for _is_telegram_thread_not_found */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

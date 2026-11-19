@@ -1,4 +1,4 @@
-/* gate: real__tools_send_message_tool_py___error — GAP sentinel for _error */
+/* gate: real__gateway_outbound_send_py___error — GAP sentinel for _error */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

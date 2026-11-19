@@ -1,4 +1,4 @@
-/* gate: port__tools_microsoft_graph_auth_py___fetch_access_token — traced copy of cli_tools_microsoft_graph_auth__fetch_access_token (outparam) */
+/* gate: port__plugins_teams_pipeline_graph_auth_py___fetch_access_token — traced copy of cli_tools_microsoft_graph_auth__fetch_access_token (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

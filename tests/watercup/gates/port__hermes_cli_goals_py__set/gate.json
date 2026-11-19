@@ -17,13 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/tools_config_toolsets.c",
-    "src/agent/auxiliary_client_helpers.c",
-    "src/agent/web_search_provider.c",
-    "src/hermes_cli/config_py_io.c",
-    "src/hermes_cli/config.c",
-    "src/hermes_cli/curses_ui.c",
-    "src/hermes_cli/cli_output.c"
+    "src\\agent\\port_conversation_compression_flow.c",
+    "src\\agent\\port_conversation_compression.c"
   ],
   "cflags": [
     "-I",

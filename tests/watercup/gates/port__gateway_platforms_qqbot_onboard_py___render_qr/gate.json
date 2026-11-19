@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/plugins/platforms/qqbot/platforms_qqbot_onboard.c"
+    "src\\plugins\\platforms\\qqbot\\platforms_qqbot_onboard.c"
   ],
   "cflags": [
     "-I",

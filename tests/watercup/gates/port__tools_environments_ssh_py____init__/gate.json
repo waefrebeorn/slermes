@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/environments/env_ssh_ports.c"
+    "src\\tools\\environments\\env_ssh_ports.c"
   ],
   "cflags": [
     "-I",

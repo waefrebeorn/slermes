@@ -1,38 +1,30 @@
-/* gate: port__tools_browser_camofox_py___env_flag — GAP sentinel for tools/browser_camofox.py:_env_flag */
+/* gate: port__tools_browser_camofox_py___env_flag — traced copy of _env_flag (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static int gap_sentinel(const char *input) {
-    (void)input;
-    return 0;
-}
 
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_env_flag");
-    int result = gap_sentinel(input);
-#if 1
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s", "_env_flag");
-    WCUP_VALSTR(buf);
-#else
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", (int)result);
-    WCUP_VALSTR(buf);
-#endif
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_env_flag");
-}
+extern bool _env_flag(const char *flag_name, bool default_val);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _env_flag <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_env_flag");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    bool result = _env_flag(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(result ? "true" : "false");
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_env_flag");
     }
     return 0;
 }

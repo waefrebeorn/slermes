@@ -1,4 +1,4 @@
-/* gate: port__tools_send_message_tool_py___parse_target_ref — traced copy of send_message_parse_target_ref (outparam) */
+/* gate: port__gateway_outbound_send_py___parse_target_ref — traced copy of send_message_parse_target_ref (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

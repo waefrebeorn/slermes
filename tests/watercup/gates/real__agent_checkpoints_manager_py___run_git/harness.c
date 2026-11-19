@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___run_git — GAP sentinel for _run_git */
+/* gate: real__agent_checkpoints_manager_py___run_git — GAP sentinel for _run_git */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

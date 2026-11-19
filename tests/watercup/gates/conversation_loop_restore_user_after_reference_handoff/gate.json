@@ -10,7 +10,7 @@
     "lib/libjson/json.c"
   ],
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include"
+    "-IC:/Users/eman5/slermes/include"
   ],
   "inputs": [
     "hello",

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/thread_scoped_output.c"
+    "src\\agent\\thread_scoped_output.c"
   ],
   "cflags": [
     "-I",

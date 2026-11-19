@@ -1,4 +1,4 @@
-/* gate: real__utils_py___restore_file_owner — GAP sentinel for _restore_file_owner */
+/* gate: real__utils_files_py___restore_file_owner — GAP sentinel for _restore_file_owner */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

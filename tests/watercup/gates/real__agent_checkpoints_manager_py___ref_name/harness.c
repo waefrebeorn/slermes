@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___ref_name — GAP sentinel for _ref_name */
+/* gate: real__agent_checkpoints_manager_py___ref_name — GAP sentinel for _ref_name */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

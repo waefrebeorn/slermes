@@ -17,8 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/web_dashboard.c",
-    "src/tools/session_crud.c"
+    "src\\desktop_app_common.c"
   ],
   "cflags": [
     "-I",

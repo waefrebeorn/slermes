@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/relay/command_manifest.c"
+    "src\\gateway\\relay\\command_manifest.c"
   ],
   "cflags": [
     "-I",

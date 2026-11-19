@@ -3,7 +3,9 @@ import os, sys, importlib.util as ilu
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
-DEV = os.path.dirname(SLERMES)
+DEV = os.environ.get("WATERCUP_QUARRY") or os.path.join(os.path.dirname(SLERMES), "hermes-agent")
+if not os.path.isdir(os.path.join(DEV, "agent")):
+    DEV = os.path.dirname(SLERMES)  # legacy sibling-package layout
 sys.path.insert(0, DEV)
 
 from watercup_py import Cup

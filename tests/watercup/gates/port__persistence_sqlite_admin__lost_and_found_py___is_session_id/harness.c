@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_session_lost_and_found_py___is_session_id — traced copy of laf_is_session_id (int_str) */
+/* gate: port__persistence_sqlite_admin__lost_and_found_py___is_session_id — traced copy of laf_is_session_id (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

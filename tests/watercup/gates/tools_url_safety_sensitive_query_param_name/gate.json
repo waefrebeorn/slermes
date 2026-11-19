@@ -5,8 +5,8 @@
   "c_src": "harness.c",
   "c_fn": "sensitive_query_param_name",
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib"
+    "-IC:/Users/eman5/slermes/include",
+    "-IC:/Users/eman5/slermes/lib"
   ],
   "extra_src": [],
   "py_module": "tools/url_safety.py",

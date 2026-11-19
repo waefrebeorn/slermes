@@ -1,4 +1,4 @@
-/* gate: port__agent_auxiliary_client_py___nous_policy_blocks — traced copy of _nous_policy_blocks (charptr_noargs) */
+/* gate: port__agent_auxiliary_client_py___nous_policy_blocks — traced copy of _nous_policy_blocks (int_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern char * _nous_policy_blocks(void);
+extern int _nous_policy_blocks(void);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _nous_policy_blocks <input>...\n", argv[0]); return 2; }
@@ -17,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    char * result = _nous_policy_blocks();
+    int result = _nous_policy_blocks();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%p", (void*)&result);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

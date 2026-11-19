@@ -5,9 +5,9 @@
   "c_src": "harness.c",
   "c_fn": "equivalent_needles",
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libdb"
+    "-IC:/Users/eman5/slermes/include",
+    "-IC:/Users/eman5/slermes/lib",
+    "-IC:/Users/eman5/slermes/lib/libdb"
   ],
   "extra_src": [],
   "py_module": "agent/verification_evidence.py",

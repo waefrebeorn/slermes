@@ -14,7 +14,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/cron/scheduler_ports.c"
+    "src\\cron\\scheduler_ports.c"
   ],
   "cflags": [
     "-I",

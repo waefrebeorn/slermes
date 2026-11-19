@@ -68,7 +68,7 @@ _GC_LINK = ["-Wl,--gc-sections"]
 # Repo root is two levels up: tests/watercup -> tests -> slermes.
 REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.dirname(REPO))  # parent quarry for LIVE module imports
+sys.path.insert(0, os.environ.get("WATERCUP_QUARRY") or os.path.join(os.path.dirname(REPO), "hermes-agent"))  # quarry for LIVE module imports
 
 # ---------------------------------------------------------------------------
 # Operator-state isolation.
@@ -833,7 +833,9 @@ def load_live_module(py_module):
     mod = importlib.util.module_from_spec(spec)
     sys.modules[modname] = mod   # register before exec (dataclasses need it)
     # Prepend parent quarry to sys.path so dev version takes precedence
-    parent_quarry = os.path.dirname(REPO)
+    parent_quarry = os.environ.get("WATERCUP_QUARRY") or os.path.join(os.path.dirname(REPO), "hermes-agent")
+    if not os.path.isdir(os.path.join(parent_quarry, "agent")):
+        parent_quarry = os.path.dirname(REPO)
     old_path = sys.path[:]
     sys.path.insert(0, parent_quarry)
     try:

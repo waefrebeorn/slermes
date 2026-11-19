@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___workdir_is_observably_gone — GAP sentinel for _workdir_is_observably_gone */
+/* gate: real__agent_checkpoints_manager_py___workdir_is_observably_gone — GAP sentinel for _workdir_is_observably_gone */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

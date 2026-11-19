@@ -1,25 +1,33 @@
-/* gate: port__hermes_cli_proxy_adapters_nous_portal_py___get_credential — GAP sentinel for _get_credential */
+/* gate: port__hermes_cli_proxy_adapters_nous_portal_py___get_credential — traced copy of success (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_get_credential";
-}
+
+extern int success(const char *auth_path, char *bearer_out, size_t bearer_size,
+    char *base_url_out, size_t url_size);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _get_credential <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s success <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_get_credential");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("success");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = success(argv[i], argv[2 + (i - 2 + 1) % 5], (long)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10), argv[2 + (i - 2 + 3) % 5], (long)strtol(argv[2 + (i - 2 + 4) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_get_credential");
+        WCUP_END("success");
     }
     return 0;
 }

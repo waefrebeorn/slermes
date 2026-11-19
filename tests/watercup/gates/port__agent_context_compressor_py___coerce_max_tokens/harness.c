@@ -1,25 +1,31 @@
-/* gate: port__agent_context_compressor_py___coerce_max_tokens — GAP sentinel for _coerce_max_tokens */
+/* gate: port__agent_context_compressor_py___coerce_max_tokens — traced copy of value (scalar_outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_coerce_max_tokens";
-}
+
+extern int value(const char *raw, int *out);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _coerce_max_tokens <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s value <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_coerce_max_tokens");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("value");
+    int _o1 = 0;
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = value(argv[i], &_o1);
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    { char _b[32]; snprintf(_b, sizeof(_b), "%d", (int)_o1); WCUP_VALSTR(_b); }
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_coerce_max_tokens");
+        WCUP_END("value");
     }
     return 0;
 }

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/skill_ledger.c"
+    "src\\tools\\skill_ledger.c"
   ],
   "cflags": [
     "-I",

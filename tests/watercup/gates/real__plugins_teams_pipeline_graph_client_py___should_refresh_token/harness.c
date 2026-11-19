@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___should_refresh_token — GAP sentinel for _should_refresh_token */
+/* gate: real__plugins_teams_pipeline_graph_client_py___should_refresh_token — GAP sentinel for _should_refresh_token */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

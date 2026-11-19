@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/bounded_response.c"
+    "src\\agent\\bounded_response.c"
   ],
   "cflags": [
     "-I",

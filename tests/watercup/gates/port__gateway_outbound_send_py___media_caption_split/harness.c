@@ -1,4 +1,4 @@
-/* gate: port__tools_send_message_tool_py___media_caption_split — traced copy of tools_send_message_tool_u_media_caption_split (int_str) */
+/* gate: port__gateway_outbound_send_py___media_caption_split — traced copy of tools_send_message_tool_u_media_caption_split (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

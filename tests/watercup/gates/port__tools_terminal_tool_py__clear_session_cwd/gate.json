@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/terminal_env_registry.c"
+    "src\\tools\\terminal_env_registry.c"
   ],
   "cflags": [
     "-I",

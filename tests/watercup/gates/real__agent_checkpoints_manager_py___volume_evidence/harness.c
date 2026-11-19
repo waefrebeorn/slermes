@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___volume_evidence — GAP sentinel for _volume_evidence */
+/* gate: real__agent_checkpoints_manager_py___volume_evidence — GAP sentinel for _volume_evidence */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

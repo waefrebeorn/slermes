@@ -1,4 +1,4 @@
-/* gate: port__tools_microsoft_graph_client_py____init__ — traced copy of mgc_init (scalar_multi) */
+/* gate: port__plugins_teams_pipeline_graph_client_py____init__ — traced copy of mgc_init (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

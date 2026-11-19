@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/transports/chat_completions_gaps3.c"
+    "src\\agent\\transports\\chat_completions_gaps3.c"
   ],
   "cflags": [
     "-I",

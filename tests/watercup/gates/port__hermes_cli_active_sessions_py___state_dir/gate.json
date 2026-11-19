@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/browser_camofox_state.c"
+    "src\\tools\\browser_camofox_state.c"
   ],
   "cflags": [
     "-I",

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_container_boot_u_read_desired_state(const char *arg);
 
 int main(int argc, char **argv) {

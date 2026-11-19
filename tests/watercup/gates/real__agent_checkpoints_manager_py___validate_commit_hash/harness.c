@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___validate_commit_hash — GAP sentinel for _validate_commit_hash */
+/* gate: real__agent_checkpoints_manager_py___validate_commit_hash — GAP sentinel for _validate_commit_hash */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

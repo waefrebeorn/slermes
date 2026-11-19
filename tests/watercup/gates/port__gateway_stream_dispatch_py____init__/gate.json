@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/stream_dispatch_ports.c"
+    "src\\gateway\\stream_dispatch_ports.c"
   ],
   "cflags": [
     "-I",

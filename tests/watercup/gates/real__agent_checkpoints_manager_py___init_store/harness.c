@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___init_store — GAP sentinel for _init_store */
+/* gate: real__agent_checkpoints_manager_py___init_store — GAP sentinel for _init_store */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

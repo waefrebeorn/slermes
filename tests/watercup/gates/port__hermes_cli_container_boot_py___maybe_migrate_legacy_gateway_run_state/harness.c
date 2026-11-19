@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *arg);
 
 int main(int argc, char **argv) {

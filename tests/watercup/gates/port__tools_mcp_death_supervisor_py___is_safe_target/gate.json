@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/mcp_death_supervisor_gaps3.c"
+    "src\\tools\\mcp_death_supervisor_gaps3.c"
   ],
   "cflags": [
     "-I",

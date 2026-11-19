@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/agent/interrupt_compat.c"
+    "src\\agent\\interrupt_compat.c"
   ],
   "cflags": [
     "-I",

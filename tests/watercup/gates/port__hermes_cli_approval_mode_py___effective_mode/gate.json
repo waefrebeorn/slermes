@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/approval_mode.c"
+    "src\\hermes_cli\\approval_mode.c"
   ],
   "cflags": [
     "-I",

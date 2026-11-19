@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___resolve_url — GAP sentinel for _resolve_url */
+/* gate: real__plugins_teams_pipeline_graph_client_py___resolve_url — GAP sentinel for _resolve_url */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

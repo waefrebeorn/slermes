@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 
+
 extern void cli_hermes_cli_dashboard_auth_prefix__warn_if_malformed(const char *source, const char *raw);
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    cli_hermes_cli_dashboard_auth_prefix__warn_if_malformed(argv[i], argv[2 + (i - 2 + 1) % 5]);
+    cli_hermes_cli_dashboard_auth_prefix__warn_if_malformed();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR("void");

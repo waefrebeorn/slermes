@@ -1,4 +1,4 @@
-/* gate: port__tools_microsoft_graph_auth_py__clear_cache — traced copy of token (void) */
+/* gate: port__tools_microsoft_graph_auth_py__clear_cache — traced copy of token (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern void token(void);
+extern int token(const char *input);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s token <input>...\n", argv[0]); return 2; }
@@ -17,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    token();
+    int result = token(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

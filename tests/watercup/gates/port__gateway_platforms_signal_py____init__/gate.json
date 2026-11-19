@@ -17,8 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/plugins/platforms/signal/signal_helpers2.c",
-    "src/plugins/platforms/signal/signal.c"
+    "src\\plugins\\platforms\\signal\\signal_helpers2.c",
+    "src\\plugins\\platforms\\signal\\signal.c"
   ],
   "cflags": [
     "-I",

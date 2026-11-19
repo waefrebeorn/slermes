@@ -8,10 +8,10 @@
   "py_fn": "_strip_context_summary_handoff_message",
   "extra_src": [],
   "cflags": [
-    "-I/home/wubu/hermes-agent-dev/slermes/include",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib/libjson",
-    "-I/home/wubu/hermes-agent-dev/slermes",
-    "-I/home/wubu/hermes-agent-dev/slermes/lib"
+    "-IC:/Users/eman5/slermes/include",
+    "-IC:/Users/eman5/slermes/lib/libjson",
+    "-IC:/Users/eman5/slermes",
+    "-IC:/Users/eman5/slermes/lib"
   ],
   "inputs": [
     "hello",

@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___build_api_error — GAP sentinel for _build_api_error */
+/* gate: real__plugins_teams_pipeline_graph_client_py___build_api_error — GAP sentinel for _build_api_error */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

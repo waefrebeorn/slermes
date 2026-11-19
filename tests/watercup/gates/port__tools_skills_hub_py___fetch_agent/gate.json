@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/skills_hub_ports.c"
+    "src\\tools\\skills_hub_ports.c"
   ],
   "cflags": [
     "-I",

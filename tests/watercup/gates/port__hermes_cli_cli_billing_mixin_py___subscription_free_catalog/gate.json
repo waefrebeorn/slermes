@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/cli_billing_mixin.c"
+    "src\\hermes_cli\\cli_billing_mixin.c"
   ],
   "cflags": [
     "-I",

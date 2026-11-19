@@ -18,20 +18,4 @@ int main(int argc, char **argv) {
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("cli_tools_yuanbao_tools_search_sticker");
     fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    json_node_t* result = cli_tools_yuanbao_tools_search_sticker(argv[i], (int)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char *_js = result ? json_serialize(result) : NULL;
-    WCUP_VALSTR(_js ? _js : "null");
-    if (result) json_free(result);
-    if (_js) free(_js);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("cli_tools_yuanbao_tools_search_sticker");
-    }
-    return 0;
-}
+    int _sv 

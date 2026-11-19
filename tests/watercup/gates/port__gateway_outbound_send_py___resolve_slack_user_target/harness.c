@@ -1,4 +1,4 @@
-/* gate: port__tools_send_message_tool_py___resolve_slack_user_target — traced copy of tools_send_message_tool_u_resolve_slack_user_target (int_str) */
+/* gate: port__gateway_outbound_send_py___resolve_slack_user_target — traced copy of tools_send_message_tool_u_resolve_slack_user_target (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

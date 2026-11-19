@@ -1,4 +1,4 @@
-/* gate: port__tools_checkpoint_manager_py____init__ — traced copy of ckm_init (scalar_multi) */
+/* gate: port__agent_checkpoints_manager_py____init__ — traced copy of ckm_init (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

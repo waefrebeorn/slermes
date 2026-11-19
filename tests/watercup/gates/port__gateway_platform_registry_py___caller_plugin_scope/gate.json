@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/platform_registry_gaps3.c"
+    "src\\gateway\\platform_registry_gaps3.c"
   ],
   "cflags": [
     "-I",

@@ -1,25 +1,32 @@
-/* gate: port__tools_tool_result_storage_py__get_spillover_dir — GAP sentinel for get_spillover_dir */
+/* gate: port__tools_tool_result_storage_py__get_spillover_dir — traced copy of tools_tool_result_storage_get_spillover_dir (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "get_spillover_dir";
-}
+
+extern int tools_tool_result_storage_get_spillover_dir(char *out, size_t sz);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s get_spillover_dir <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s tools_tool_result_storage_get_spillover_dir <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("get_spillover_dir");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("tools_tool_result_storage_get_spillover_dir");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = tools_tool_result_storage_get_spillover_dir(argv[i], (long)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("get_spillover_dir");
+        WCUP_END("tools_tool_result_storage_get_spillover_dir");
     }
     return 0;
 }

@@ -1,25 +1,32 @@
-/* gate: port__hermes_cli_doctor_live_py___probe_tts — GAP sentinel for _probe_tts */
+/* gate: port__hermes_cli_doctor_live_py___probe_tts — traced copy of doctor_probe_tts (scalar_multi) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
 #include "watercup.h"
 
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_probe_tts";
-}
+
+extern int doctor_probe_tts(char *out_result, size_t out_sz);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _probe_tts <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s doctor_probe_tts <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_probe_tts");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
+        WCUP_BEGIN("doctor_probe_tts");
+    fflush(stdout);
+    int _sv = dup(1);
+    FILE *_dn = fopen("/dev/null", "w");
+    if (_dn) dup2(fileno(_dn), 1);
+    int result = doctor_probe_tts(argv[i], (long)strtol(argv[2 + (i - 2 + 1) % 5], NULL, 10));
+    fflush(stdout);
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_probe_tts");
+        WCUP_END("doctor_probe_tts");
     }
     return 0;
 }

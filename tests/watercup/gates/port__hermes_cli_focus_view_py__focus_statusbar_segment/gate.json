@@ -14,7 +14,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/focus_view.c"
+    "src\\hermes_cli\\focus_view.c"
   ],
   "cflags": [
     "-I",

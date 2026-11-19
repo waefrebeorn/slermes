@@ -1,4 +1,4 @@
-/* gate: real__utils_py___rewrite_in_place — GAP sentinel for _rewrite_in_place */
+/* gate: real__utils_files_py___rewrite_in_place — GAP sentinel for _rewrite_in_place */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

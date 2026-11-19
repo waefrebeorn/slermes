@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/file_operations_gaps.c"
+    "src\\tools\\file_operations_gaps.c"
   ],
   "cflags": [
     "-I",

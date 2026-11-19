@@ -1,4 +1,4 @@
-/* gate: real__utils_py___copy_fallback — GAP sentinel for _copy_fallback */
+/* gate: real__utils_files_py___copy_fallback — GAP sentinel for _copy_fallback */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

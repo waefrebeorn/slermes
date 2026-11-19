@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___validate_file_path — GAP sentinel for _validate_file_path */
+/* gate: real__agent_checkpoints_manager_py___validate_file_path — GAP sentinel for _validate_file_path */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-/* gate: port__tools_microsoft_graph_auth_py___extract_error_detail — traced copy of cli_tools_microsoft_graph_auth__extract_error_detail (outparam) */
+/* gate: port__plugins_teams_pipeline_graph_auth_py___extract_error_detail — traced copy of cli_tools_microsoft_graph_auth__extract_error_detail (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

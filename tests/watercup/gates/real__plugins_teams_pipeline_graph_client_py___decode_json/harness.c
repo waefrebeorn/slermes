@@ -1,4 +1,4 @@
-/* gate: real__tools_microsoft_graph_client_py___decode_json — GAP sentinel for _decode_json */
+/* gate: real__plugins_teams_pipeline_graph_client_py___decode_json — GAP sentinel for _decode_json */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

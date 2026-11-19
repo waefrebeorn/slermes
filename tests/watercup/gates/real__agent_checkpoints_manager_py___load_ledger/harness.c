@@ -1,4 +1,4 @@
-/* gate: real__tools_checkpoint_manager_py___load_ledger — GAP sentinel for _load_ledger */
+/* gate: real__agent_checkpoints_manager_py___load_ledger — GAP sentinel for _load_ledger */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

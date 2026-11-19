@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/subcommands/uninstall.c"
+    "src\\hermes_cli\\subcommands\\uninstall.c"
   ],
   "cflags": [
     "-I",
