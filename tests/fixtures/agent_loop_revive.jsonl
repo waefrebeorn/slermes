@@ -1,0 +1,91 @@
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": 300}}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": 600, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": 300}}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": 100, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": 300}}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": 0}}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": true}}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": {"__raise__": "OSError", "message": "unreadable"}, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": null, "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": [1, 2], "logger_debug": null}}}
+{"func": "resolve_stream_max_lifetime", "in": {"stale_timeout": null, "io": {"load_config_readonly": {"agent": {"stream_max_lifetime": -5}}, "logger_debug": null}}}
+{"func": "exceeded", "in": {"attempt": 1, "state": {"cap": 0, "attempt": null, "started": 100}, "io": {"time_time": 200}}}
+{"func": "exceeded", "in": {"attempt": 1, "state": {"cap": 10, "attempt": null, "started": 100}, "io": {"time_time": 200}}}
+{"func": "exceeded", "in": {"attempt": 1, "state": {"cap": 10, "attempt": 1, "started": 100}, "io": {"time_time": 105}}}
+{"func": "exceeded", "in": {"attempt": 1, "state": {"cap": 10, "attempt": 1, "started": 100}, "io": {"time_time": 120}}}
+{"func": "exceeded", "in": {"attempt": 1, "state": {"cap": null, "attempt": 1, "started": 100}, "io": {"time_time": 200}}}
+{"func": "exceeded", "in": {"attempt": "b", "state": {"cap": 10, "attempt": "a", "started": 100}, "io": {"time_time": 200}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": {"session_id": "sess-1"}}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": {"session_id": 42}}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": {"session_id": null}}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": {}}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": null}}}
+{"func": "reserved_session_id", "in": {"state": {"scope": {"other": "x"}}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "openai", "base_url": "http://127.0.0.1:8080", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llamacpp", "base_url": "http://example.com", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llamacpp", "base_url": "http://127.0.0.1:8080", "model": "m"}, "compressor": {"context_length": 0}, "request_tokens": 100, "io": {}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llamacpp", "base_url": "http://localhost:8080", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {"maybe_grow_window": 8192}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llamacpp", "base_url": "http://localhost:8080", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {"maybe_grow_window": null}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "custom", "base_url": "http://127.0.0.1:1", "model": "m"}, "compressor": {"context_length": "abc"}, "request_tokens": 100, "io": {"logger_debug": null}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llama-cpp", "base_url": "http://localhost:1", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": "xyz", "io": {"logger_debug": null}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "llamacpp", "base_url": "http://127.0.0.1:1", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {"maybe_grow_window": {"__raise__": "RuntimeError", "message": "grow failed"}, "logger_debug": null}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": 5, "base_url": "http://127.0.0.1:1", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {}}}
+{"func": "_maybe_grow_local_window", "in": {"agent": {"provider": "  LLamaCPP  ", "base_url": "http://localhost:1", "model": "m"}, "compressor": {"context_length": 4096}, "request_tokens": 100, "io": {"maybe_grow_window": 8192}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [{"role": "user"}], "effective_system": "sys", "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": 100}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": -1, "_estimate_tools_tokens_rough": 50}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": true, "_estimate_tools_tokens_rough": 50}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": 5.5, "_estimate_tools_tokens_rough": 50}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": "50", "_estimate_tools_tokens_rough": 50}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": null, "_estimate_tools_tokens_rough": 50}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": [{"name": "t1"}]}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": {"__raise__": "RuntimeError", "message": "no native"}, "_estimate_tools_tokens_rough": 50, "logger_debug": null}}}
+{"func": "_midturn_request_pressure_tokens", "in": {"agent": {"tools": []}, "api_messages": [], "effective_system": null, "approx_tokens": 500, "io": {"estimate_native_responses_preflight_tokens": -1}}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": 1000, "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": 300, "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": 1000, "awaiting_real_usage_after_compression": true}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": null, "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": 999.9, "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": "800", "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": "abc", "awaiting_real_usage_after_compression": false}, "rough_tokens": 500}}
+{"func": "_pressure_with_real_floor", "in": {"compressor": {"last_real_prompt_tokens": true, "awaiting_real_usage_after_compression": false}, "rough_tokens": 0}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {"chat": {"completions": {"prepare": {"__call__": true}}}}}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {"chat": {"completions": {"prepare": 5}}}}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {"chat": {"completions": {}}}}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {"chat": {}}}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {}}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": null}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": 5}}
+{"func": "_moa_client_consumes_prepared_request", "in": {"client": {"chat": {"completions": {"prepare": null}}}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": {"kind": "RuntimeError", "message": "cannot schedule new futures after interpreter shutdown"}, "io": {"interpreter_shutting_down": true}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": {"kind": "RuntimeError", "message": "some other error"}, "io": {"interpreter_shutting_down": false}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": {"kind": "ValueError", "message": "cannot schedule new futures"}, "io": {}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": null, "io": {}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": {"kind": "MyRTE", "message": "cannot schedule new futures", "bases": ["RuntimeError"]}, "io": {"interpreter_shutting_down": true}}}
+{"func": "_is_interpreter_shutdown_error", "in": {"exc": {"kind": "TypeError", "message": "x"}, "io": {}}}
+{"func": "_target_mirror_eligible", "in": {"job": {}, "target": {}, "global_mirror": false, "origin_match": true, "io": {}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"attach_to_session": true}, "target": {"_resolved_from": "explicit"}, "global_mirror": false, "origin_match": false, "io": {}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"origin": {"platform": "telegram", "chat_id": "1"}}, "target": {"platform": "telegram", "chat_id": "1"}, "global_mirror": false, "origin_match": null, "io": {"_resolve_origin": {"platform": "telegram", "chat_id": "1"}, "_target_matches_origin": true}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"attach_to_session": true}, "target": {"_resolved_from": "origin_fallback"}, "global_mirror": false, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_target_mirror_eligible", "in": {"job": {}, "target": {"_resolved_from": "home"}, "global_mirror": true, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"attach_to_session": true}, "target": {"_resolved_from": "explicit"}, "global_mirror": false, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"attach_to_session": 1}, "target": {"_resolved_from": "explicit"}, "global_mirror": true, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_target_mirror_eligible", "in": {"job": {}, "target": {"_resolved_from": "broadcast"}, "global_mirror": true, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_target_mirror_eligible", "in": {"job": {"attach_to_session": false}, "target": {"_resolved_from": "origin_fallback"}, "global_mirror": true, "origin_match": null, "io": {"_resolve_origin": null, "_target_matches_origin": false}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": null}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": null}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": "/h/p1", "owns_cron_tick_for": true}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": "/h/p1", "owns_cron_tick_for": false, "live_gateway_ticking": null}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": "/h/p1", "owns_cron_tick_for": false, "live_gateway_ticking": {"code_sha": "other"}}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": "/h/p1", "owns_cron_tick_for": false, "live_gateway_ticking": {"code_sha": "disk1"}}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": {"__raise__": "OSError", "message": "no home"}}}}
+{"func": "_should_yield_tick_to_fresh_gateway", "in": {"io": {"_detect_gateway_code_skew": ["boot1", "disk1"], "_current_gateway_code_sha": "disk1", "_get_hermes_home": "/h/p1", "owns_cron_tick_for": false, "live_gateway_ticking": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [true]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false]}, "future_done": {"__seq__": [true]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false]}, "future_done": {"__seq__": [false]}, "get_idle_seconds": {"__seq__": [30]}, "meter_measure": {"__seq__": [10, 600]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false]}, "future_done": {"__seq__": [false]}, "get_idle_seconds": {"__seq__": [{"__raise__": "ValueError", "message": "idle err"}]}, "meter_measure": {"__seq__": [600]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false]}, "future_done": {"__seq__": [false]}, "get_idle_seconds": {"__seq__": ["45.5"]}, "meter_measure": {"__seq__": [600]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false, false, true]}, "future_done": {"__seq__": [false]}, "get_idle_seconds": {"__seq__": [30]}, "meter_measure": {"__seq__": [10]}}}}
+{"func": "_inactivity_watchdog_loop", "in": {"limit_s": 600, "poll_s": 1, "io": {"stop_wait": {"__seq__": [false]}, "future_done": {"__seq__": [false]}, "get_idle_seconds": {"__seq__": [{"__raise__": "SystemExit", "message": "bye"}]}}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": ["bootA", "diskB"]}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": {"__raise__": "ImportError", "message": "no module"}}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": null}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": ["b2", "d2"]}}}
+{"func": "_detect_gateway_code_skew", "in": {"io": {"detect_code_skew": {"__raise__": "ValueError", "message": "bad"}}}}

@@ -30,6 +30,16 @@ from typing import Any, Optional, NamedTuple, Callable
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
+# The runner hands the oracle a scrubbed environment: expanduser("~/...")
+# fails without HOME/USERPROFILE. Derive them from the oracle's own location.
+from pathlib import Path
+_REPO = Path(__file__).resolve().parent.parent
+_HOME = _REPO.parent
+os.environ.setdefault("HOME", str(_HOME))
+os.environ.setdefault("USERPROFILE", str(_HOME))
+os.environ.setdefault("LOCALAPPDATA", str(_HOME / "AppData" / "Local"))
+os.environ.setdefault("HERMES_HOME", str(_REPO / ".testbin" / "dbg_home"))
+
 Q = os.path.expanduser("~/hermes-agent")
 SRC = os.path.join(Q, "agent", "auxiliary_client.py")
 POLICY_SRC = os.path.join(Q, "agent", "auxiliary_error_policy.py")
@@ -373,6 +383,15 @@ def proj_client_full(c):
         d[k] = v
     return d
 
+# C records the FULL client object {id,base_url,api_key,...} for these two
+# seams (the harness forwards the registry object); mirror that projection.
+FULL_CLIENT_SEAMS = {"_effective_provider_for_client", "_recoverable_pool_provider"}
+
+def proj_seam_arg(name, v):
+    if name in FULL_CLIENT_SEAMS and isinstance(v, ClientNS):
+        return proj_client_full(v)
+    return proj(v)
+
 def proj_arg(a):
     # step args: strip-function tuples project to their names
     if isinstance(a, tuple) and a and all(callable(x) for x in a):
@@ -422,6 +441,9 @@ def proj(v):
         return {k: proj(x) for k, x in v.items()}
     if isinstance(v, types.SimpleNamespace):
         return {"__obj__": True, **{k: proj(x) for k, x in vars(v).items()}}
+    # strip functions project to their registered names, never repr objects
+    if callable(v) and id(v) in STRIP_NAME_OF:
+        return STRIP_NAME_OF[id(v)]
     return v
 
 def norm_ret(r):
@@ -547,9 +569,9 @@ class CaseCtx:
                 pos = SEAM_POS.get(name, [])
                 canon = {}
                 for i, a in enumerate(args):
-                    canon[pos[i] if i < len(pos) else f"arg{i}"] = proj(a)
+                    canon[pos[i] if i < len(pos) else f"arg{i}"] = proj_seam_arg(name, a)
                 for k, v in kwargs.items():
-                    canon[k] = proj(v)
+                    canon[k] = proj_seam_arg(name, v)
             ctx.trace.append({"name": name, "args": canon})
             entry = ctx.script_next(name)
             if isinstance(entry, dict) and entry.get("__script__"):
@@ -567,6 +589,9 @@ class CaseCtx:
     def convert(self, name, ret, args, kwargs):
         if name == "classify_attempt":
             return make_verdict(ret)
+        if name == "resolve_compression_fast_lane":
+            # live reads lane.reasoning_config (attribute access, not dict get)
+            return types.SimpleNamespace(**ret) if isinstance(ret, dict) else ret
         if name == "_resolve_task_provider_model":
             d = ret or {}
             return (d.get("resolved_provider"), d.get("resolved_model"),
@@ -1130,6 +1155,11 @@ def run_case(func, inp):
             out["trace"] = ctx.trace
             out["relay_context"] = proj(ctx.relay_context) if ctx.relay_context is not None else None
             return out
+        # C wraps raises of these two ladders in their {"ret": ...} out shape
+        if func == "_ladder_provider_fallback":
+            ret = {"ret": ret, "route_info": p["route"].route_info}
+        elif func == "_fallback_candidate_ladder":
+            ret = {"ret": ret}
     out["ret"] = ret
     out["trace"] = ctx.trace
     out["relay_context"] = proj(ctx.relay_context) if ctx.relay_context is not None else None

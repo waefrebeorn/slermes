@@ -867,9 +867,9 @@ add("_plan_aux_call", task="compression", provider=None, model=None, base_url=No
 
 # ── fallback candidates ───────────────────────────────────────────────────
 FB_REQ = {"messages": [{"role": "user", "content": "x"}], "tools": None, "temperature": None,
-          "max_tokens": None, "extra_body": {}, "reasoning_config": None}
+          "max_tokens": None, "effective_extra_body": {}, "reasoning_config": None}
 add("_fallback_request_kwargs", destination=DEST(), task="chat", effective_timeout=30.0,
-    effective_extra_body={}, fallback_entry={}, task_config={}, apply_fast_lane=False,
+    fallback_entry={}, task_config={}, apply_fast_lane=False,
     clients=LADDER_CLIENTS,
     io={"_replan_synchronous_cache_sections": {"messages": [{"role": "user", "content": "x"}], "tools": None},
         "_build_call_kwargs": {"model": "m2"}}, **FB_REQ)

@@ -165,6 +165,31 @@ static char *acf_client_base_url(const json_t *client) {
     return s;
 }
 
+static json_t *acf_client_obj(acf_io_t *io, const json_t *id);
+
+/* Full client projection for seam args (_effective_provider_for_client /
+ * _recoverable_pool_provider): the oracle records proj_client_full(client) —
+ * the registry object minus the harness-only "kind" tag (ClientNS stores it
+ * as _acf_kind, excluded from the projection). Id strings resolve through the
+ * registry; absent clients project to null. Returns an OWNED node. */
+static json_t *acf_client_full(acf_io_t *io, const json_t *client) {
+    json_t *obj = NULL;
+    if (client && client->type == JSON_OBJECT) obj = (json_t *)client;
+    else if (client && client->type == JSON_STRING) obj = acf_client_obj(io, client);
+    if (!obj) return json_null();
+    json_t *copy = json_copy(obj);
+    json_obj_del(copy, "kind");
+    return copy;
+}
+
+/* replace dst's contents with src's (in-place dict mirror) */
+static void acf_dict_mirror(json_t *dst, const json_t *src) {
+    if (!dst || dst->type != JSON_OBJECT || !src || src->type != JSON_OBJECT) return;
+    while (dst->c.count > 0) json_obj_del(dst, dst->c.keys[0]);
+    for (size_t i = 0; i < src->c.count; i++)
+        json_set(dst, src->c.keys[i], json_copy(src->c.items[i]));
+}
+
 /* PROFILE_REASONING_KEYS (agent/auxiliary_profile_gates.py). */
 static const char *ACF_PROFILE_REASONING_KEYS[] = {
     "reasoning", "reasoning_effort", "thinking", "thinking_config", "thinkingconfig",
@@ -1017,7 +1042,7 @@ json_t *acf_classification_provider(acf_io_t *io, json_t *in) {
         return json_copy(backend);
     /* label = _fallback_provider_from_label(_effective_provider_for_client(client, fallback)) */
     json_t *a1 = json_object();
-    json_set(a1, "client", acf_copy_or_null(client));
+    json_set(a1, "client", acf_client_full(io, client));
     json_set(a1, "fallback", acf_copy_or_null(acf_get(in, "fallback")));
     json_t *eff = acf_call(io, "_effective_provider_for_client", a1);
     json_free(a1);
@@ -1046,7 +1071,7 @@ json_t *acf_classification_provider(acf_io_t *io, json_t *in) {
     json_free(a4);
     json_t *a5 = json_object();
     json_set_hdr(a5, "resolved_provider", strcmp(route, "custom") == 0 ? "custom" : "auto");
-    json_set(a5, "client", acf_copy_or_null(client));
+    json_set(a5, "client", acf_client_full(io, client));
     json_set(a5, "main_runtime", norm_rt);   /* ownership transferred */
     json_set(a5, "same_path", json_bool(true));
     json_t *pool = acf_call(io, "_recoverable_pool_provider", a5);
@@ -1068,7 +1093,11 @@ json_t *acf_provider_for_host(acf_io_t *io, json_t *in) {
         for (size_t i = 0; i < json_len(table); i++) {
             json_t *row = json_get(table, i);
             if (!row || row->type != JSON_ARRAY || json_len(row) < 2) continue;
-            const char *host = json_get_str(json_get(row, 0), NULL, "");
+            /* row[0] is a STRING node: json_get_str(node, NULL, def) is an
+             * object-field accessor and always yields def here — read str_val. */
+            json_t *hnode = json_get(row, 0);
+            const char *host = (hnode && hnode->type == JSON_STRING && hnode->str_val)
+                ? hnode->str_val : "";
             json_t *args = json_object();
             json_set_hdr(args, "base_url", base_url);
             json_set_hdr(args, "domain", host);
@@ -1467,6 +1496,9 @@ json_t *acf_unwrap_data_envelope(acf_io_t *io, json_t *in) {
             json_t *msg = acf_is_dict(ch) ? acf_get(ch, "message") : NULL;
             if (!acf_is_dict(msg)) continue;
             json_t *choice = json_object();
+            /* choice=SimpleNamespace(message=..., finish_reason=...) — an
+             * object, not a dict (the oracle proj marks it __obj__). */
+            json_set(choice, "__obj__", json_bool(true));
             /* message=SimpleNamespace(**msg) — an object, not a dict */
             json_t *msg_obj = json_copy(msg);
             json_set(msg_obj, "__obj__", json_bool(true));
@@ -2271,7 +2303,7 @@ json_t *acf_failure_pool(acf_io_t *io, json_t *in) {
      *                                            main_runtime=route.main_runtime) */
     json_t *a1 = json_object();
     json_set(a1, "resolved_provider", acf_copy_or_null(acf_get(route, "resolved_provider")));
-    json_set(a1, "client", acf_copy_or_null(route_client));
+    json_set(a1, "client", acf_client_full(io, route_client));
     json_set(a1, "main_runtime", acf_copy_or_null(acf_get(route, "main_runtime")));
     json_t *pool = acf_call(io, "_recoverable_pool_provider", a1);
     json_free(a1);
@@ -2282,7 +2314,7 @@ json_t *acf_failure_pool(acf_io_t *io, json_t *in) {
     if (!sender_is_route) {
         json_t *a2 = json_object();
         json_set(a2, "resolved_provider", acf_copy_or_null(acf_get(route, "resolved_provider")));
-        json_set(a2, "client", acf_copy_or_null(sender));
+        json_set(a2, "client", acf_client_full(io, sender));
         json_set(a2, "main_runtime", acf_copy_or_null(acf_get(route, "main_runtime")));
         json_t *other = acf_call(io, "_recoverable_pool_provider", a2);
         json_free(a2);
@@ -2353,7 +2385,7 @@ json_t *acf_ladder_credential_rungs(acf_io_t *io, json_t *in) {
     /* auth_refresh_provider = _auth_refresh_provider_for_route(resolved_provider,
      *     route.base_info, _effective_provider_for_client(client, "")) */
     json_t *ea = json_object();
-    json_set(ea, "client", acf_copy_or_null(client_id));
+    json_set(ea, "client", acf_client_full(io, client_id));
     json_set_hdr(ea, "fallback", "");
     json_t *eff = acf_call(io, "_effective_provider_for_client", ea);
     json_free(ea);
@@ -2648,6 +2680,27 @@ json_t *acf_ladder_provider_fallback(acf_io_t *io, json_t *in) {
         json_set_hdr(ca, "task", task);
         json_t *cfg = acf_call(io, "_get_auxiliary_task_config", ca);
         json_free(ca);
+        if (!cfg || cfg->type != JSON_OBJECT) {
+            /* live: <non-dict>.get(...) raises AttributeError (None.get when
+             * the script is absent) BEFORE the reason gate below. */
+            const char *tn = "object";
+            if (!cfg || cfg->type == JSON_NULL) tn = "NoneType";
+            else if (cfg->type == JSON_STRING) tn = "str";
+            else if (cfg->type == JSON_BOOL) tn = "bool";
+            else if (cfg->type == JSON_ARRAY) tn = "list";
+            else if (cfg->type == JSON_NUMBER) tn = "float";
+            char msg[96];
+            snprintf(msg, sizeof(msg), "'%s' object has no attribute 'get'", tn);
+            json_t *raise = json_object();
+            json_set_hdr(raise, "__raise__", "AttributeError");
+            json_set_hdr(raise, "message", msg);
+            json_free(cfg);
+            json_free(reason_j);
+            json_t *rout = json_object();
+            json_set(rout, "ret", raise);
+            json_set(rout, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
+            return rout;
+        }
         task_chain = acf_copy_or_null(acf_get(cfg, "fallback_chain"));
         json_free(cfg);
     }
@@ -2670,7 +2723,7 @@ json_t *acf_ladder_provider_fallback(acf_io_t *io, json_t *in) {
         json_t *sender_obj = acf_client_obj(io, sender_id);
         json_t *pa = json_object();
         json_set(pa, "resolved_provider", acf_copy_or_null(resolved_provider));
-        json_set(pa, "client", acf_copy_or_null(sender_id));
+        json_set(pa, "client", acf_client_full(io, sender_id));
         json_set(pa, "main_runtime", acf_copy_or_null(acf_get(route, "main_runtime")));
         json_set(pa, "same_path", json_bool(true));
         json_t *failed_provider = acf_call(io, "_recoverable_pool_provider", pa);
@@ -2683,7 +2736,7 @@ json_t *acf_ladder_provider_fallback(acf_io_t *io, json_t *in) {
             mark_provider = json_copy(failed_provider);
         } else {
             json_t *cp_in = json_object();
-            json_set(cp_in, "client", acf_copy_or_null(sender_obj));
+            json_set(cp_in, "client", acf_client_full(io, sender_id));
             json_set(cp_in, "fallback", acf_copy_or_null(resolved_provider));
             json_set(cp_in, "main_runtime", acf_copy_or_null(acf_get(route, "main_runtime")));
             mark_provider = acf_classification_provider(io, cp_in);
@@ -2922,7 +2975,6 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
         json_free(kwargs);
         json_set(out, "ret", pr);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", json_null());
         json_free(route);
         return out;
     }
@@ -2930,12 +2982,22 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
     kwargs = acf_copy_or_null(acf_get(pr, "kwargs"));
     json_t *first_err = acf_copy_or_null(acf_get(pr, "failure"));
     json_t *repairs = acf_copy_or_null(acf_get(pr, "repairs"));
+    /* A strip rebinding detaches the caller's original kwargs dict (live
+     * strips return copies); with NO strip the working dict still IS the
+     * original, so later in-place rung edits (the Nous model heal) must
+     * mirror back into it. */
+    bool kwargs_detached = repairs && repairs->type == JSON_ARRAY && json_len(repairs) > 0;
     json_t *response = acf_copy_or_null(acf_get(pr, "response"));
     json_free(pr);
     if (!first_err || first_err->type == JSON_NULL) {
         json_set(out, "ret", response);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", kwargs);
+        /* live emits the caller's ORIGINAL kwargs dict: after a strip it is
+         * untouched; without a strip, in-place rung edits were mirrored in. */
+        json_t *kwargs_out = acf_is_dict(kwargs_in) ? json_copy(kwargs_in)
+            : (kwargs_detached ? json_object() : json_copy(kwargs));
+        json_free(kwargs);
+        json_set(out, "kwargs", kwargs_out);
         json_free(first_err); json_free(repairs); json_free(route);
         return out;
     }
@@ -2965,12 +3027,12 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
         json_free(first_err); json_free(repairs); json_free(kwargs);
         json_set(out, "ret", nr);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", json_null());
         json_free(route);
         return out;
     }
     json_free(kwargs);
     kwargs = acf_copy_or_null(acf_get(nr, "kwargs"));
+    if (!kwargs_detached) acf_dict_mirror(kwargs_in, kwargs);
     json_free(first_err);
     first_err = acf_copy_or_null(acf_get(nr, "failure"));
     response = acf_copy_or_null(acf_get(nr, "response"));
@@ -2978,7 +3040,12 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
     if (!first_err || first_err->type == JSON_NULL) {
         json_set(out, "ret", response);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", kwargs);
+        /* live emits the caller's ORIGINAL kwargs dict: after a strip it is
+         * untouched; without a strip, in-place rung edits were mirrored in. */
+        json_t *kwargs_out = acf_is_dict(kwargs_in) ? json_copy(kwargs_in)
+            : (kwargs_detached ? json_object() : json_copy(kwargs));
+        json_free(kwargs);
+        json_set(out, "kwargs", kwargs_out);
         json_free(first_err); json_free(repairs); json_free(route);
         return out;
     }
@@ -2996,12 +3063,12 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
         json_free(first_err); json_free(repairs); json_free(kwargs);
         json_set(out, "ret", cr);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", json_null());
         json_free(route);
         return out;
     }
     json_free(kwargs);
     kwargs = acf_copy_or_null(acf_get(cr, "kwargs"));
+    if (!kwargs_detached) acf_dict_mirror(kwargs_in, kwargs);
     json_free(first_err);
     first_err = acf_copy_or_null(acf_get(cr, "failure"));
     response = acf_copy_or_null(acf_get(cr, "response"));
@@ -3009,7 +3076,12 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
     if (!first_err || first_err->type == JSON_NULL) {
         json_set(out, "ret", response);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", kwargs);
+        /* live emits the caller's ORIGINAL kwargs dict: after a strip it is
+         * untouched; without a strip, in-place rung edits were mirrored in. */
+        json_t *kwargs_out = acf_is_dict(kwargs_in) ? json_copy(kwargs_in)
+            : (kwargs_detached ? json_object() : json_copy(kwargs));
+        json_free(kwargs);
+        json_set(out, "kwargs", kwargs_out);
         json_free(first_err); json_free(repairs); json_free(route);
         return out;
     }
@@ -3037,14 +3109,18 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
         json_free(first_err); json_free(repairs); json_free(kwargs);
         json_set(out, "ret", fb_resp);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", json_null());
         json_free(route);
         return out;
     }
     if (fb_resp && fb_resp->type != JSON_NULL) {
         json_set(out, "ret", fb_resp);
         json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-        json_set(out, "kwargs", kwargs);
+        /* live emits the caller's ORIGINAL kwargs dict: after a strip it is
+         * untouched; without a strip, in-place rung edits were mirrored in. */
+        json_t *kwargs_out = acf_is_dict(kwargs_in) ? json_copy(kwargs_in)
+            : (kwargs_detached ? json_object() : json_copy(kwargs));
+        json_free(kwargs);
+        json_set(out, "kwargs", kwargs_out);
         json_free(first_err); json_free(repairs); json_free(route);
         return out;
     }
@@ -3065,7 +3141,7 @@ json_t *acf_aux_recovery_ladder(acf_io_t *io, json_t *in) {
     json_t *raised = acf_copy_or_null(acf_get(first_err, "error"));
     json_set(out, "ret", raised);
     json_set(out, "route_info", acf_copy_or_null(acf_get(route, "route_info")));
-    json_set(out, "kwargs", kwargs);
+    json_free(kwargs);   /* raise shape is {"ret","route_info"} only */
     json_free(first_err);
     json_free(repairs);
     json_free(route);
@@ -3824,9 +3900,8 @@ json_t *acf_candidate_classification_provider(acf_io_t *io, json_t *in) {
     json_set(da, "fb_label", acf_copy_or_null(acf_get(in, "fb_label")));
     json_t *destination = acf_call(io, "_fallback_destination", da);
     json_free(da);
-    json_t *fb_client_obj = acf_client_obj(io, acf_get(in, "fb_client"));
     json_t *cp_in = json_object();
-    json_set(cp_in, "client", acf_copy_or_null(fb_client_obj));
+    json_set(cp_in, "client", acf_client_full(io, acf_get(in, "fb_client")));
     json_set(cp_in, "fallback", acf_copy_or_null(acf_get(destination, "provider")));
     json_set(cp_in, "main_runtime", json_null());
     json_t *out = acf_classification_provider(io, cp_in);
