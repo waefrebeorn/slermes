@@ -227,14 +227,11 @@ void tools_init_all(void) {
  * connects via pipes, and returns the collected result.
  * Until the full spawn/process pipeline is wired, we register with a handler
  * that returns a "delegation not available in this build" message. */
-static json_t *delegate_handler(const json_t *args, void *ctx) {
-    (void)args; (void)ctx;
-    json_t *resp = json_new_object();
-    json_object_set(resp, "error", json_string(
-        "delegate_task: agent delegation requires full subprocess spawning "
-        "which is not available in this build. Use execute_code for "
-        "parallel computation instead."));
-    return resp;
+static char *delegate_handler(const char *args_json, const char *task_id) {
+    (void)args_json; (void)task_id;
+    return strdup("{\"error\":\"delegate_task: agent delegation requires full "
+        "subprocess spawning which is not available in this build. Use "
+        "execute_code for parallel computation instead.\"}");
 }
 
 void registry_init_delegate(void) {

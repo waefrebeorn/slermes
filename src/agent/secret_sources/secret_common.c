@@ -287,13 +287,13 @@ char **secret_registry_list(secret_registry_t *reg)
 
 /* ── apply_all orchestrator (port of registry.apply_all) ───────────────── */
 /* Helper: read a JSON "K=V" environ into a small lookup; we mutate in place. */
-static const char *env_lookup(char **environ, const char *key)
+static const char *env_lookup(char **envp, const char *key)
 {
-    if (!environ) return NULL;
+    if (!envp) return NULL;
     size_t kl = strlen(key);
-    for (size_t i = 0; environ[i]; i++) {
-        if (strncmp(environ[i], key, kl) == 0 && environ[i][kl] == '=')
-            return environ[i] + kl + 1;
+    for (size_t i = 0; envp[i]; i++) {
+        if (strncmp(envp[i], key, kl) == 0 && envp[i][kl] == '=')
+            return envp[i] + kl + 1;
     }
     return NULL;
 }
@@ -302,7 +302,7 @@ static const char *env_lookup(char **environ, const char *key)
 apply_report_t *secret_apply_all(secret_registry_t *reg,
                                  const char *secrets_cfg_json,
                                  const char *home_path,
-                                 char **environ)
+                                 char **envp)
 {
     apply_report_t *rep = calloc(1, sizeof(apply_report_t));
     if (!reg) return rep;
@@ -400,7 +400,7 @@ apply_report_t *secret_apply_all(secret_registry_t *reg,
                 if (strcmp(claimed[c], var) == 0) { claimed_before = true; break; }
             if (claimed_before) continue;
             /* pre-existing env? */
-            const char *existed = env_lookup(environ, var);
+            const char *existed = env_lookup(envp, var);
             if (existed) {
                 if (preserve_list && strstr(preserve_list, var)) continue;
                 if (!override) continue;

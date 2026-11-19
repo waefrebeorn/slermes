@@ -281,7 +281,7 @@ char *thint_annotate_masked_success(const char *command, const char *output)
         "sed", "strings", "zcat", "journalctl", "dmesg", "echo", "printf",
         NULL,
     };
-    static const char *const PASSTHROUGH[] = {
+    static const char *const THINT_PASSTHROUGH[] = {
         "tail", "head", "cat", "tee", "less", "more", "wc", "sort", "uniq",
         NULL,
     };
@@ -362,9 +362,9 @@ char *thint_annotate_masked_success(const char *command, const char *output)
         if (last_pipe) {
             const char *seg = last_pipe + 1;
             while (*seg == ' ') seg++;
-            for (int i = 0; PASSTHROUGH[i]; i++) {
-                size_t l = strlen(PASSTHROUGH[i]);
-                if (strncmp(seg, PASSTHROUGH[i], l) == 0 &&
+            for (int i = 0; THINT_PASSTHROUGH[i]; i++) {
+                size_t l = strlen(THINT_PASSTHROUGH[i]);
+                if (strncmp(seg, THINT_PASSTHROUGH[i], l) == 0 &&
                     !strchr(seg, '|')) {
                     masking_pipe = true;
                     break;

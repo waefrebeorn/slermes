@@ -134,7 +134,7 @@ char **secret_registry_list(secret_registry_t *reg);  /* NULL-terminated, owned 
 apply_report_t *secret_apply_all(secret_registry_t *reg,
                                  const char *secrets_cfg_json,
                                  const char *home_path,
-                                 char **environ);
+                                 char **envp);
 
 /* Global registry (lazy singleton). */
 secret_registry_t *secret_registry_init(void);

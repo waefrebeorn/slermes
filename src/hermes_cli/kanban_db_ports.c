@@ -122,10 +122,10 @@ char *kdb_nearest_existing_path(const char *path) {
 char *kdb_repo_root_for_worktree_target(const char *path) {
     /* Python: nearest existing ancestor then its git toplevel. */
     if (!path) return NULL;
-    char *near = kdb_nearest_existing_path(path);
-    if (!near) return NULL;
-    char *root = kdb_git_toplevel(near);
-    free(near);
+    char *nearest = kdb_nearest_existing_path(path);
+    if (!nearest) return NULL;
+    char *root = kdb_git_toplevel(nearest);
+    free(nearest);
     return root;
 }
 

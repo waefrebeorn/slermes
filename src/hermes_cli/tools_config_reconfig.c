@@ -810,6 +810,21 @@ void tools_config_print_tools_list(const json_t *enabled_toolsets,
     tools_config_free_toolset_rows(effective_all, all_n);
 }
 
+/* platform_tools_get returns a malloc'd char** list; the command flows want
+ * a json array of toolset names. Wrap once, free the C list. */
+static json_t *tools_enabled_json(const json_t *config, const char *platform)
+{
+    size_t n = 0;
+    char **list = platform_tools_get(config, platform, false, &n);
+    json_t *arr = json_array();
+    for (size_t i = 0; i < n; i++) {
+        json_append(arr, json_string(list[i]));
+        free(list[i]);
+    }
+    free(list);
+    return arr;
+}
+
 /* PoP: tools_config_disable_enable_command @ hermes_cli/tools_config_mcp.py:tools_disable_enable_command */
 void tools_config_disable_enable_command(const char *action,
                                          const char *platform,
@@ -836,7 +851,7 @@ void tools_config_disable_enable_command(const char *action,
     }
 
     if (strcmp(action, "list") == 0) {
-        json_t *enabled = platform_tools_get(config, platform, false, NULL);
+        json_t *enabled = tools_enabled_json(config, platform);
         json_t *mcp = json_obj_get(config, "mcp_servers");
         tools_config_print_tools_list(enabled, mcp, platform);
         json_free(enabled);
@@ -898,7 +913,7 @@ void tools_config_disable_enable_command(const char *action,
 
     /* Apply toolset change via the shared add/remove path. */
     if (toolset_targets.n > 0) {
-        json_t *enabled = platform_tools_get(config, platform, false, NULL);
+        json_t *enabled = tools_enabled_json(config, platform);
         for (size_t i = 0; i < toolset_targets.n; i++) {
             const char *k = toolset_targets.v[i];
             bool present = false;
