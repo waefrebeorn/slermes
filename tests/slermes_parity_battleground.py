@@ -97,6 +97,16 @@ PYTHON_SOURCE_DIRS = {
     "persistence": HERMES_DIR / "persistence",
     "acp_adapter": HERMES_DIR / "acp_adapter",
     "hermes_platform": HERMES_DIR / "hermes_platform",
+    # 2026-11-19 recursive audit (DA-6): the universe was selection-biased —
+    # only walked/claimed modules were counted, hiding the largest unclaimed
+    # surfaces (platform adapters, TUI gateway, provider/session/pm packages).
+    "plugins": HERMES_DIR / "plugins",
+    "tui_gateway": HERMES_DIR / "tui_gateway",
+    "providers": HERMES_DIR / "providers",
+    "session_rules": HERMES_DIR / "session_rules",
+    "pm": HERMES_DIR / "pm",
+    "hermes_agent": HERMES_DIR / "hermes_agent",
+    "apps": HERMES_DIR / "apps",
 }
 
 # Top-level fork modules beyond cli.py that are runtime surface with C
