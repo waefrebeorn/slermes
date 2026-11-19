@@ -478,7 +478,9 @@ bool cp_codex_entry_tracks_singleton(cp_flow_io_t *io, const json_t *entry, cons
 
 /* PoP: cp_norm_url @ agent/credential_pool.py:_norm_url */
 char *cp_norm_url(const json_t *url) {
-    char *s = cp_pystr(cp_truthy(url) ? url : NULL);
+    /* live: str(url or "").strip().rstrip("/") — falsy url renders "", NOT
+     * str(None)="None" (cp_pystr(NULL) would produce "None"). */
+    char *s = cp_truthy(url) ? cp_pystr(url) : strdup("");
     char *t = cp_strip(s);
     free(s);
     char *r = cp_rstrip_slash(t);

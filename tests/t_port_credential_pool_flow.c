@@ -97,7 +97,8 @@ static json_t *entry_struct(const json_t *entry) {
     json_t *o = json_object();
     json_set(o, "id", json_string(cp_get_str(entry, "id", "")));
     json_set(o, "source", json_string(cp_get_str(entry, "source", "")));
-    json_set(o, "priority", json_copy(cp_get(entry, "priority")));
+    json_t *pri = cp_get(entry, "priority");
+    json_set(o, "priority", pri ? json_copy(pri) : json_number(0));
     json_set(o, "label", json_string(cp_get_str(entry, "label", "")));
     json_set(o, "access_token", json_string(cp_get_str(entry, "access_token", "")));
     json_t *st = cp_get(entry, "last_status");
@@ -143,7 +144,7 @@ static json_t *run_case(const char *func, json_t *in) {
         ret = json_bool(cp_is_terminal_auth_failure((long)json_get_num(in, "status_code", 0),
             json_obj_get(in, "normalized_error")));
     } else if (strcmp(func, "is_sole_credential") == 0) {
-        ret = json_bool(cp_is_sole_credential(json_obj_get(in, "entries")));
+        ret = json_bool(cp_is_sole_credential(json_obj_get(state, "_entries")));
     } else if (strcmp(func, "next_priority") == 0) {
         ret = json_number((double)cp_next_priority(json_obj_get(in, "entries")));
     } else if (strcmp(func, "is_manual_source") == 0) {

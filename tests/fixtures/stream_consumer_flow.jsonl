@@ -1,0 +1,130 @@
+{"func":"drain_queue","in":{"queue":[]}}
+{"func":"drain_queue","in":{"state":{"_use_native_streaming":true},"queue":[{"kind":"text","text":"Hello"},{"kind":"text","text":" world"},{"kind":"tool_progress","line":"searching…"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"text","text":"a"},{"kind":"done"},{"kind":"text","text":"b"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"new_segment"},{"kind":"text","text":"x"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"text","text":"a"},{"kind":"commentary","text":"note"},{"kind":"done"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"text","text":"a"},{"kind":"flush","event":7},{"kind":"done"}]}}
+{"func":"drain_queue","in":{"state":{"_accumulated":"abc","_stream_ledger":"abc","_turn_split_delivery":true},"queue":[{"kind":"final_text","text":"abcdef"},{"kind":"done"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"tool_progress","line":"x"},{"kind":"reopen_seed"},{"kind":"done"}]}}
+{"func":"drain_queue","in":{"queue":[{"kind":"approval_boundary","future":3,"cancelled":false},{"kind":"done"}]}}
+{"func":"drain_queue","in":{"state":{"_ceiling_hit":true},"queue":[{"kind":"text","text":"abc"}]}}
+{"func":"should_edit","in":{"tick":{"got_done":true}}}
+{"func":"should_edit","in":{"cfg":{"buffer_only":true},"tick":{}}}
+{"func":"should_edit","in":{"state":{"_use_native_streaming":true,"_accumulated":"hi","_settled_for":"hi","_redacted_prefix":"hi"},"tick":{}}}
+{"func":"should_edit","in":{"state":{"_accumulated":"hello","_last_edit_time":9.0,"_current_edit_interval":0.8,"_settled_for":"hello","_redacted_prefix":"hello"},"tick":{},"seams":{"clock":[10.0]}}}
+{"func":"should_edit","in":{"cfg":{"buffer_threshold":24},"state":{"_accumulated":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","_last_edit_time":9.9,"_current_edit_interval":0.8,"_flood_strikes":2,"_settled_for":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","_redacted_prefix":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"},"tick":{},"seams":{"clock":[10.0]}}}
+{"func":"should_edit","in":{"cfg":{"buffer_threshold":24},"state":{"_accumulated":"yyyyyyyyyyyyyyyyyyyyyyyy","_last_edit_time":9.99,"_flood_strikes":0,"_settled_for":"yyyyyyyyyyyyyyyyyyyyyyyy","_redacted_prefix":"yyyyyyyyyyyyyyyyyyyyyyyy"},"tick":{},"seams":{"clock":[10.0]}}}
+{"func":"should_edit","in":{"state":{"_use_native_streaming":true,"_accumulated":"NO","_settled_for":"NO","_redacted_prefix":"NO"},"tick":{},"seams":{"is_partial_silence_marker":{"map":{"NO":true}}}}}
+{"func":"should_edit","in":{"state":{"_use_native_streaming":true,"_accumulated":"answer\n\nNO","_settled_for":"answer\n\nNO","_redacted_prefix":"answer\n\nNO"},"tick":{},"seams":{"ends_with_partial_silence_marker":{"map":{"answer\n\nNO":true}}}}}
+{"func":"should_edit","in":{"state":{"_accumulated":"text MEDIA:pic.png","_settled_for":"","_redacted_prefix":""},"tick":{},"seams":{"redact_settled":[{"text":"text MEDIA:pic.png","settled":5}],"has_pending_media_directive":{"map":{"text ":true}}}}}
+{"func":"should_edit","in":{"state":{"_use_draft_streaming":true,"_accumulated":"abc","_settled_for":"abc","_redacted_prefix":"abc"},"tick":{},"seams":{"should_push_draft":[true]}}}
+{"func":"tick_ends_text","in":{"tick":{"got_done":true}}}
+{"func":"tick_ends_text","in":{"tick":{"got_segment_break":true}}}
+{"func":"tick_ends_text","in":{"tick":{"commentary_text":"note"}}}
+{"func":"tick_ends_text","in":{"state":{"_use_native_streaming":true},"tick":{"commentary_text":"note"}}}
+{"func":"tick_ends_text","in":{"state":{"_use_draft_streaming":true},"tick":{"commentary_text":"note"},"seams":{"stream_is_message":[true]}}}
+{"func":"tick_ends_text","in":{"tick":{}}}
+{"func":"tick_ends_text","in":{"state":{"_use_draft_streaming":true},"tick":{"commentary_text":"note"},"seams":{"stream_is_message":[false]}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"abc","_settled_for":"abc","_redacted_prefix":"ab"},"args":{"done":false}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"abc secret def","_settled_for":"","_redacted_prefix":""},"args":{"done":false},"seams":{"redact_settled":[{"text":"abc [REDACTED] def","settled":14}]}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"abc","_settled_for":"abc","_redacted_prefix":"abc"},"args":{"done":true},"seams":{"redact_settled":[{"text":"abc","settled":3}]}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"héllo wörld","_settled_for":"","_redacted_prefix":""},"args":{"done":false},"seams":{"redact_settled":[{"text":"héllo wörld","settled":5}]}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"","_settled_for":"","_redacted_prefix":""},"args":{"done":false}}}
+{"func":"redact_settled_text","in":{"state":{"_accumulated":"secret","_settled_for":""},"args":{"done":false},"seams":{"redact_settled":[{"text":"[REDACTED]","settled":0}]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_accumulated":"hello","_settled_for":"hello","_redacted_prefix":"hello","_last_edit_time":1.0},"tick":{},"seams":{"clock":[5.0]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_use_native_streaming":true,"_accumulated":"body","_settled_for":"body","_redacted_prefix":"body","_tool_progress_lines":["working"],"_tool_progress_active":true},"tick":{},"seams":{"compose_frame_content":{"map":{"body":"body\n\n---\nworking"}},"clock":[7.0]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_use_native_streaming":true,"_accumulated":"","_settled_for":"","_redacted_prefix":""},"tick":{},"seams":{"compose_frame_content":{"map":{"":""}},"clock":[7.5]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_use_draft_streaming":true,"_accumulated":"final","_settled_for":"final","_redacted_prefix":"final","_message_id":null},"tick":{"got_done":true},"seams":{"clock":[9.0]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_accumulated":"seg","_settled_for":"seg","_redacted_prefix":"seg"},"tick":{"got_segment_break":true},"seams":{"clock":[3.0]}}}
+{"func":"push_update","in":{"state":{"_accumulated":"x","_settled_for":"x","_redacted_prefix":"x","_last_edit_time":1.0,"_tool_progress_active":true},"tick":{},"seams":{"send_or_edit":[{"raise":true}],"clock":[99.0]}}}
+{"func":"push_update","in":{"cfg":{"cursor":" ▉"},"state":{"_accumulated":"hello world","_settled_for":"","_redacted_prefix":""},"tick":{},"seams":{"redact_settled":[{"text":"hello world","settled":5}],"clock":[4.0]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"short","_safe_limit":100},"args":{}}}
+{"func":"seal_overflow_heads","in":{"args":{"final":true},"seams":{"ceiling_final_cut":[true]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"head line\nmore text here","_safe_limit":10,"_settled_for":"","_redacted_prefix":""},"args":{"done":true},"seams":{"redact_settled":[{"text":"head line\nmore text here","settled":24}],"custom_unit_to_cp":[10],"send_or_edit":[true]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"head line\nmore text here","_safe_limit":10,"_settled_for":"","_redacted_prefix":""},"args":{"done":true},"seams":{"redact_settled":[{"text":"head line\nmore text here","settled":24}],"custom_unit_to_cp":[10],"send_or_edit":[false]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"head line\nmore text here","_safe_limit":10,"_settled_for":"","_redacted_prefix":""},"args":{"done":true},"seams":{"redact_settled":[{"text":"head line\nmore text here","settled":24}],"custom_unit_to_cp":[10],"send_or_edit":[{"ret":true,"fallback":true}]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"   \nmore text","_safe_limit":5,"_settled_for":"","_redacted_prefix":""},"args":{},"seams":{"redact_settled":[{"text":"   \nmore text","settled":13}],"custom_unit_to_cp":[5]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"abcdefghij\nrest","_safe_limit":8,"_settled_for":"","_redacted_prefix":""},"args":{},"seams":{"redact_settled":[{"text":"abcdefghij\nrest","settled":4}],"custom_unit_to_cp":[8],"send_or_edit":[true]}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_edit_supported":false,"_accumulated":"xxxxxxxxxxxxxxxxxxxx","_safe_limit":5},"args":{}}}
+{"func":"seal_overflow_heads","in":{"state":{"_message_id":"m1","_accumulated":"head line\nmore text here","_safe_limit":10,"_settled_for":"","_redacted_prefix":""},"args":{"done":true},"seams":{"redact_settled":[{"text":"head line\nmore text here","settled":24}],"custom_unit_to_cp":[10],"ceiling_seal_cut":[true]}}}
+{"func":"split_first_send","in":{"tick":{},"seams":{"ceiling_split_first_send":[true]}}}
+{"func":"split_first_send","in":{"tick":{},"seams":{"ceiling_split_first_send":[false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"   ","_settled_for":"","_redacted_prefix":""},"tick":{},"seams":{"redact_settled":[{"text":"   ","settled":3}]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"head tail","_settled_for":"","_redacted_prefix":"","_safe_limit":100},"tick":{},"seams":{"redact_settled":[{"text":"head tail","settled":4}],"clock":[5.0],"send_new_chunk":["h1"],"turn_reset":[false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"AAAABBBBCC","_settled_for":"","_redacted_prefix":"","_safe_limit":4,"_initial_reply_to_id":"r0"},"tick":{},"seams":{"redact_settled":[{"text":"AAAABBBBCC","settled":10}],"truncate_for_stream":[["AAAA","BBBB","CC"]],"send_new_chunk":["h1","h2"],"clock":[6.0],"turn_reset":[false,false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"AAAABBBBCC","_settled_for":"","_redacted_prefix":"","_safe_limit":4,"_initial_reply_to_id":"r0"},"tick":{},"seams":{"redact_settled":[{"text":"AAAABBBBCC","settled":10}],"truncate_for_stream":[["AAAA","BBBB","CC"]],"send_new_chunk":["h1",null],"clock":[6.0],"turn_reset":[false,false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"AAAABBBB","_settled_for":"","_redacted_prefix":"","_safe_limit":4},"tick":{"got_done":true},"seams":{"redact_settled":[{"text":"AAAABBBB","settled":8}],"truncate_for_stream":[["AAAA","BBBB"]],"send_new_chunk":["__partial__"]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"head tail","_settled_for":"","_redacted_prefix":"","_safe_limit":100},"tick":{"got_done":true},"seams":{"redact_settled":[{"text":"head tail","settled":4}],"send_new_chunk":["h1"],"send_or_edit":[true],"clock":[7.0],"turn_reset":[false],"display_payload":{"map":{" tail":"tail"}}}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"head","_settled_for":"","_redacted_prefix":"","_safe_limit":100},"tick":{"got_done":true},"seams":{"redact_settled":[{"text":"head","settled":4}],"send_new_chunk":["h1"],"clock":[8.0],"turn_reset":[false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"AAAABBBBCC","_settled_for":"","_redacted_prefix":"","_safe_limit":4,"_initial_reply_to_id":"r0"},"tick":{},"seams":{"redact_settled":[{"text":"AAAABBBBCC","settled":10}],"truncate_for_stream":[["AAAA","BBBB","CC"]],"send_new_chunk":["__no_edit__","h2"],"clock":[9.0],"turn_reset":[false,false]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"AAAABBBBCC","_settled_for":"","_redacted_prefix":"","_safe_limit":4,"_initial_reply_to_id":"r0"},"tick":{},"seams":{"redact_settled":[{"text":"AAAABBBBCC","settled":10}],"truncate_for_stream":[["AAAA","BBBB","CC"]],"send_new_chunk":["h1","h2"],"clock":[6.0],"turn_reset":[false,true]}}}
+{"func":"split_first_send","in":{"state":{"_accumulated":"head tail","_settled_for":"","_redacted_prefix":"","_safe_limit":100,"_fallback_final_send":true,"_fallback_prefix":"pfx"},"tick":{"got_segment_break":true},"seams":{"redact_settled":[{"text":"head tail","settled":4}],"send_new_chunk":["h1"],"clock":[10.0],"turn_reset":[false]}}}
+{"func":"finalize_edit","in":{"args":{"text":"final answer","record":true},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit","in":{"args":{"text":"x","record":false},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit","in":{"args":{"text":"x","record":true},"seams":{"send_or_edit":[false]}}}
+{"func":"finalize_edit","in":{"args":{"text":"x","record":true},"seams":{"send_or_edit":[{"raise":true}]}}}
+{"func":"finalize_edit","in":{"state":{"_turn_split_delivery":true,"_stream_ledger":"full ledger text"},"args":{"text":"tail","record":true},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit","in":{"args":{"text":"","record":true},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit_path","in":{"state":{"_fallback_final_send":true,"_accumulated":"unsent"},"tick":{}}}
+{"func":"finalize_edit_path","in":{"state":{"_final_response_sent":true,"_accumulated":"acc"},"tick":{}}}
+{"func":"finalize_edit_path","in":{"cfg":{"cursor":" ▉"},"state":{"_accumulated":"acc","_last_sent_text":"acc ▉"},"tick":{"update_visible":true}}}
+{"func":"finalize_edit_path","in":{"cfg":{"cursor":""},"state":{"_adapter_requires_finalize":true,"_last_edit_overflowed":true,"_last_sent_text":"acc","_accumulated":"acc"},"tick":{"update_visible":true}}}
+{"func":"finalize_edit_path","in":{"cfg":{"cursor":""},"state":{"_adapter_requires_finalize":true,"_last_sent_text":"acc","_accumulated":"acc"},"tick":{"update_visible":true,"draft_final_fresh_send":true}}}
+{"func":"finalize_edit_path","in":{"state":{"_message_id":"m1","_accumulated":"acc"},"tick":{},"seams":{"send_or_edit":[{"ret":false,"fallback":true}]}}}
+{"func":"finalize_edit_path","in":{"state":{"_message_id":"m1","_accumulated":"acc"},"tick":{},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit_path","in":{"state":{"_accumulated":"acc"},"tick":{},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_edit_path","in":{"state":{"_already_sent":true,"_accumulated":"acc"},"tick":{}}}
+{"func":"finalize_edit_path","in":{"state":{"_adapter_requires_finalize":true,"_message_id":"m1","_accumulated":"acc"},"tick":{"update_visible":true},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_turn","in":{"tick":{},"seams":{"ceiling_finish":[true]}}}
+{"func":"finalize_turn","in":{"state":{"_use_native_streaming":true,"_accumulated":"body","_message_id":"m1"},"tick":{"update_visible":true},"seams":{"hook":{"ret":"ok"}},"hook_present":true}}
+{"func":"finalize_turn","in":{"state":{"_use_native_streaming":true,"_accumulated":""},"tick":{},"seams":{"send_or_edit":[true]}}}
+{"func":"finalize_turn","in":{"state":{"_accumulated":"answer","_message_id":"m1"},"tick":{"update_visible":true}}}
+{"func":"finalize_turn","in":{"state":{"_use_native_streaming":true,"_awaiting_reopen_after_boundary":true,"_native_stream_opened":false,"_accumulated":"","_message_id":null},"tick":{}}}
+{"func":"finalize_turn","in":{"state":{"_reopen_seeded_eagerly":true,"_native_stream_opened":true,"_use_native_streaming":true,"_accumulated":""},"tick":{"update_visible":false}}}
+{"func":"finalize_turn","in":{"state":{"_use_native_streaming":true,"_accumulated":"body","_superseded_reply_ids":["old2","old1"],"_message_id":"m1"},"tick":{"update_visible":true}}}
+{"func":"finalize_turn","in":{"state":{"_accumulated":"x","_use_native_streaming":true},"tick":{"update_visible":true},"seams":{"hook":{"ret":"raise"}},"hook_present":true}}
+{"func":"finalize_turn","in":{"state":{"_accumulated":"x","_use_native_streaming":true},"tick":{"update_visible":true},"seams":{"hook":{"ret":"awaitable"}},"hook_present":true}}
+{"func":"finalize_turn","in":{"tick":{}}}
+{"func":"finalize_turn","in":{"state":{"_before_finalize_notified":true,"_accumulated":"x","_use_native_streaming":true},"tick":{"update_visible":true},"hook_present":true}}
+{"func":"end_segment","in":{"state":{"_use_native_streaming":true},"tick":{}}}
+{"func":"end_segment","in":{"state":{"_accumulated":"pre-boundary","_message_id":"m1","_message_created_ts":12.5,"_last_sent_text":"pre-boundary"},"tick":{"update_visible":false},"seams":{"stale_preview_ids":[["m1"]]}}}
+{"func":"end_segment","in":{"state":{"_message_id":"__no_edit__","_accumulated":"text","_last_sent_text":"text"},"tick":{}}}
+{"func":"end_segment","in":{"state":{"_accumulated":"text","_message_id":"m1","_last_sent_text":"text"},"tick":{"update_visible":true}}}
+{"func":"end_segment","in":{"state":{"_use_draft_streaming":true,"_message_id":"m1","_last_sent_text":"seg","_accumulated":"seg"},"tick":{"update_visible":true},"seams":{"stream_is_message":[false,false],"stale_preview_ids":[["m1"]]},"draft_id_counter":41}}
+{"func":"end_segment","in":{"state":{"_message_id":"m1","_last_sent_text":"","_accumulated":""},"tick":{}}}
+{"func":"on_cancelled","in":{"seams":{"ceiling_cancelled":[true]}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"partial answer","_message_id":"m1"},"seams":{"send_or_edit":[true]}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"partial answer","_message_id":"m1"},"seams":{"send_or_edit":[{"raise":true}]}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"partial answer","_message_id":"m1"},"seams":{"send_or_edit":[false]}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"x","_message_id":null}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"x","_message_id":""}}}
+{"func":"on_cancelled","in":{"state":{"_accumulated":"x","_message_id":"m1","_final_response_sent":true,"_delivered_final_text":"prior"},"seams":{"send_or_edit":[true]}}}
+{"func":"adopt_final_text","in":{"args":{"final_raw":"x"},"seams":{"ceiling_adopt_final":[true]}}}
+{"func":"adopt_final_text","in":{"args":{"final_raw":"x"}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"old","_stream_ledger":"old"},"args":{"final_raw":"new final"},"seams":{"clean_for_display":{"map":{"new final":"new final","old":"old"}}}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"same","_stream_ledger":"same"},"args":{"final_raw":"same"},"seams":{"clean_for_display":{"map":{"same":"same"}}}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"old","_stream_ledger":"old"},"args":{"final_raw":"MEDIA:x.png"},"seams":{"clean_for_display":{"map":{"MEDIA:x.png":""}}}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"abc","_stream_ledger":"abc","_turn_split_delivery":true},"args":{"final_raw":"abcdef"}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"abc","_stream_ledger":"abc","_turn_split_delivery":true},"args":{"final_raw":"xyzabc"}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"abc","_stream_ledger":"abc","_turn_split_delivery":true},"args":{"final_raw":"abc"}}}
+{"func":"adopt_final_text","in":{"state":{"_accumulated":"NO_REPLY","_stream_ledger":"NO_REPLY","_message_id":null,"_last_segment_delivery":["m9",5.0,"the answer",["m9"]],"_delivered_segment_texts":["the answer"]},"args":{"final_raw":"the answer"},"seams":{"is_intentional_silence_response":{"map":{"NO_REPLY":true,"the answer":false}}}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_message_id":"m1"},"args":{"final_raw":"x"}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_use_native_streaming":true,"_message_id":null},"args":{"final_raw":"x"}}}
+{"func":"adopt_recovered_reply","in":{"args":{"final_raw":"x"}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_accumulated":"real text","_last_segment_delivery":["m1",null,"t",["m1"]],"_delivered_segment_texts":["t"]},"args":{"final_raw":"x"}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_accumulated":"NO_REPLY","_last_segment_delivery":["m1",null,"t",["m1"]],"_delivered_segment_texts":["t"]},"args":{"final_raw":"NO_REPLY"},"seams":{"is_intentional_silence_response":{"map":{"NO_REPLY":true}}}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_accumulated":"NO_REPLY","_stream_ledger":"NO_REPLY","_last_segment_delivery":["m9",5.0,"the answer",["m9"]],"_delivered_segment_texts":["the answer"]},"args":{"final_raw":"the answer"},"seams":{"is_intentional_silence_response":{"map":{"NO_REPLY":true,"the answer":false}}}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_accumulated":"NO_REPLY","_stream_ledger":"NO_REPLY","_last_segment_delivery":["m9",5.0,"prior text",["m9","h2","h1"]],"_delivered_segment_texts":["prior text"],"_preview_message_ids":["stale"]},"args":{"final_raw":"new augmented answer"},"seams":{"is_intentional_silence_response":{"map":{"NO_REPLY":true}}}}}
+{"func":"adopt_recovered_reply","in":{"state":{"_accumulated":"NO_REPLY","_stream_ledger":"NO_REPLY","_last_segment_delivery":["m9",5.0,"prior text",["m9","h1"]],"_delivered_segment_texts":[]},"args":{"final_raw":"new augmented answer"},"seams":{"is_intentional_silence_response":{"map":{"NO_REPLY":true}}}}}
+{"func":"wake_flush_waiters","in":{"queue":[]}}
+{"func":"wake_flush_waiters","in":{"queue":[{"kind":"flush","event":1},{"kind":"text","text":"x"},{"kind":"flush","event":2}]}}
+{"func":"wake_flush_waiters","in":{"queue":[{"kind":"commentary","text":"c"},{"kind":"done"},{"kind":"new_segment"}]}}
+{"func":"wake_flush_waiters","in":{"queue":[{"kind":"flush","event":1},{"kind":"flush","event":2}],"seams":{"flush_set_raise":true}}}
+{"func":"wake_flush_waiters","in":{"queue":[{"kind":"approval_boundary","future":5,"cancelled":false},{"kind":"flush","event":3}]}}
+{"func":"wake_flush_waiters","in":{"queue":[{"kind":"text","text":"a"},{"kind":"reopen_seed"},{"kind":"flush","event":4}]}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":" ▉"},"state":{"_last_sent_text":"answer ▉"}}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":" ▉"},"state":{"_last_sent_text":"","_accumulated":"acc ▉"}}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":""},"state":{"_last_sent_text":"answer"}}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":" ▉"},"state":{"_last_sent_text":"answer"}}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":" ▉"},"state":{"_last_sent_text":"tail ▉","_turn_split_delivery":true,"_stream_ledger":"whole answer"}}}
+{"func":"mark_skip_redundant_finalize","in":{"cfg":{"cursor":" ⌛"},"state":{"_last_sent_text":"done ⌛"}}}

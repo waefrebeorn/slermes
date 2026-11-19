@@ -1,0 +1,169 @@
+{"func": "service_backend", "in": {"supports_systemd": true}}
+{"func": "service_backend", "in": {"supports_systemd": false, "is_macos": true}}
+{"func": "service_backend", "in": {"is_windows": true}}
+{"func": "service_backend", "in": {}}
+{"func": "service_backend", "in": {"is_windows": true, "windows": false}}
+{"func": "service_backend", "in": {"supports_systemd": true, "is_macos": true, "is_windows": true}}
+{"func": "service_backend", "in": {"is_macos": false, "is_windows": true, "windows": true}}
+{"func": "installed_service_kind_for", "in": {"systemd_unit_installed": true}}
+{"func": "installed_service_kind_for", "in": {"is_macos": true, "launchd_plist_exists": true}}
+{"func": "installed_service_kind_for", "in": {"is_macos": true, "launchd_plist_exists": false, "windows_thunk": true}}
+{"func": "installed_service_kind_for", "in": {"windows_thunk": false}}
+{"func": "installed_service_kind_for", "in": {"is_macos": false, "windows_thunk": true}}
+{"func": "installed_service_kind_for", "in": {"systemd_unit_installed": true, "windows_thunk": true}}
+{"func": "installed_service_kind", "in": {"systemd_unit_installed": true}}
+{"func": "installed_service_kind", "in": {"is_macos": true, "launchd_plist_exists": true}}
+{"func": "installed_service_kind", "in": {"is_windows": true, "gw_windows_calls": [{"ret": true}]}}
+{"func": "installed_service_kind", "in": {"is_windows": true, "gw_windows_calls": [{"ret": false}]}}
+{"func": "installed_service_kind", "in": {"is_windows": false}}
+{"func": "installed_service_kind", "in": {"is_macos": false, "is_windows": true, "gw_windows_calls": [{"ret": true}]}}
+{"func": "service_call", "in": {"backend": "windows", "verb": "start"}}
+{"func": "service_call", "in": {"backend": "launchd", "verb": "stop"}}
+{"func": "service_call", "in": {"backend": "systemd", "verb": "restart", "system": false}}
+{"func": "service_call", "in": {"backend": "systemd", "verb": "start"}}
+{"func": "service_call", "in": {"backend": "systemd", "verb": "stop", "system": true, "systemd_calls": [{"exc": "CalledProcessError"}]}}
+{"func": "service_call", "in": {"backend": "windows", "verb": "stop", "gw_windows_calls": [{"exc": "RuntimeError"}]}}
+{"func": "service_call", "in": {"backend": "launchd", "verb": "uninstall"}}
+{"func": "stop_installed_service", "in": {"system": false}}
+{"func": "stop_installed_service", "in": {"systemd_unit_installed": true, "systemd_calls": [{}]}}
+{"func": "stop_installed_service", "in": {"systemd_unit_installed": true, "systemd_calls": [{"exc": "CalledProcessError"}]}}
+{"func": "stop_installed_service", "in": {"is_windows": true, "gw_windows_calls": [{"ret": true}, {"exc": "RuntimeError"}]}}
+{"func": "stop_installed_service", "in": {"systemd_unit_installed": true, "systemd_calls": [{"exc": "RuntimeError"}]}}
+{"func": "stop_installed_service", "in": {"is_macos": true, "launchd_plist_exists": true, "launchd_calls": [{"exc": "CalledProcessError"}]}}
+{"func": "stop_installed_service", "in": {"systemd_unit_installed": true, "systemd_calls": [{"exc": "OSError"}]}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/work", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/work", "default": "C:/other"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/Work", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/a_b-c9", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/x/y", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/-bad", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/gwsl/profiles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "default": "C:/gwsl"}}
+{"func": "profile_name_from_home", "in": {"home": "C:/GWSL/profiles/work", "default": "C:/gwsl"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"HERMES_HOME=C:/h\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=HERMES_HOME=/plain\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"HERMES_HOME=C:\\\\path\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"HERMES_HOME=%%HOME%%\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"OTHER=x\"\nEnvironment=\"HERMES_HOME=y\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"HERMES_HOME=\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Nothing=here\n"}}
+{"func": "unit_environment_value", "in": {"unit_read_raises": true}}
+{"func": "unit_environment_value", "in": {"unit_text": "﻿Environment=\"HERMES_HOME=bom\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "Environment=\"HERMES_HOME=a\\\"b\"\n"}}
+{"func": "unit_environment_value", "in": {"unit_text": "  Environment=\"HERMES_HOME=spaced\"  \n", "name": "HERMES_HOME"}}
+{"func": "positive_pid", "in": {"value": "123"}}
+{"func": "positive_pid", "in": {"value": 0}}
+{"func": "positive_pid", "in": {"value": null}}
+{"func": "positive_pid", "in": {"value": "abc"}}
+{"func": "positive_pid", "in": {"value": 12.9}}
+{"func": "positive_pid", "in": {"value": true}}
+{"func": "positive_pid", "in": {"value": "-5"}}
+{"func": "positive_pid", "in": {"value": ""}}
+{"func": "positive_pid", "in": {"value": "  7  "}}
+{"func": "positive_pid", "in": {"value": "0"}}
+{"func": "no_backend_exit", "in": {"subcommand": "install", "reason": "termux"}}
+{"func": "no_backend_exit", "in": {"subcommand": "install", "reason": "s6"}}
+{"func": "no_backend_exit", "in": {"subcommand": "install", "reason": "container"}}
+{"func": "no_backend_exit", "in": {"subcommand": "start", "reason": "wsl"}}
+{"func": "no_backend_exit", "in": {"subcommand": "uninstall", "reason": "unsupported"}}
+{"func": "no_backend_exit", "in": {"subcommand": "start", "reason": "s6"}}
+{"func": "no_backend_exit", "in": {"subcommand": "uninstall", "reason": "wsl"}}
+{"func": "no_backend_exit", "in": {"subcommand": "install", "reason": "wsl"}}
+{"func": "handle_no_backend", "in": {"subcommand": "install", "wsl": true, "is_wsl": true}}
+{"func": "handle_no_backend", "in": {"subcommand": "install", "wsl": false, "is_container": true, "s6": true, "detect_service_mgr": "s6"}}
+{"func": "handle_no_backend", "in": {"subcommand": "install", "wsl": false, "is_container": true, "s6": false}}
+{"func": "handle_no_backend", "in": {"subcommand": "install", "wsl": false, "is_container": false}}
+{"func": "handle_no_backend", "in": {"subcommand": "start", "wsl": true, "is_wsl": false, "is_container": true, "s6": false}}
+{"func": "handle_no_backend", "in": {"subcommand": "uninstall", "wsl": false, "is_container": true, "s6": true, "detect_service_mgr": "s6"}}
+{"func": "handle_no_backend", "in": {"subcommand": "install", "wsl": true, "is_wsl": false, "is_container": false}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": false, "leave_restart_pending": true}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": false, "leave_restart_pending": false}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "wait_systemd_restart": true}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "wait_systemd_restart": false, "replacement_observed": [true]}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "systemd_start_limited": true}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "unit_props": {}}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "unit_props": {"ActiveState": "active"}}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "unit_props": {"ActiveState": "inactive", "SubState": "dead", "MainPID": "0"}}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "unit_props": {"MainPID": "999"}}}
+{"func": "systemd_graceful_restart_action", "in": {"pid": 100, "graceful_sigusr1": true, "unit_props": {"ActiveState": "inactive", "SubState": "auto-restart"}}}
+{"func": "cmd_install", "in": {"args": {}, "is_managed": true}}
+{"func": "cmd_install", "in": {"args": {"if_missing": true}, "systemd_unit_installed": true}}
+{"func": "cmd_install", "in": {"args": {}, "supports_systemd": true, "install_systemd_cli_calls": [{}], "systemd_unit_installed": true}}
+{"func": "cmd_install", "in": {"args": {"system": true}, "supports_systemd": true, "refuses_container": true}}
+{"func": "cmd_install", "in": {"args": {"start_now": false}, "is_macos": true, "launchd_install_calls": [{}], "launchd_plist_exists": true}}
+{"func": "cmd_install", "in": {"args": {"force": true}, "is_windows": true, "gw_windows_calls": [{"ret": null}, {"ret": true}]}}
+{"func": "cmd_install", "in": {"args": {}, "is_termux": true}}
+{"func": "cmd_install", "in": {"args": {}, "is_container": true, "detect_service_mgr": "s6"}}
+{"func": "cmd_install", "in": {"args": {}, "guard_named_profile_calls": [{"exit": 78}]}}
+{"func": "cmd_install", "in": {"args": {}, "supports_systemd": true, "install_systemd_cli_calls": [{"exit": 1}]}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_supervised": true}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_managed": true}}
+{"func": "cmd_uninstall", "in": {"args": {"system": true}, "supports_systemd": true, "systemd_calls": [{}]}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_termux": true}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_container": true, "detect_service_mgr": "s6"}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_windows": true, "gw_windows_calls": [{"ret": null}]}}
+{"func": "cmd_uninstall", "in": {"args": {}, "is_macos": true, "launchd_calls": [{}]}}
+{"func": "cmd_start", "in": {"args": {}, "profile_lifecycle": true}}
+{"func": "cmd_start", "in": {"args": {"all": true}, "host_owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}}}
+{"func": "cmd_start", "in": {"args": {"all": true, "force": true}, "kill_processes": 2, "supports_systemd": true, "systemd_calls": [{}]}}
+{"func": "cmd_start", "in": {"args": {}, "dispatch_s6_calls": [{"ret": true}]}}
+{"func": "cmd_start", "in": {"args": {}, "dispatch_s6_calls": [{"ret": false}], "supports_systemd": true, "systemd_calls": [{}]}}
+{"func": "cmd_start", "in": {"args": {}, "is_container": true}}
+{"func": "cmd_start", "in": {"args": {}, "is_termux": true}}
+{"func": "cmd_start", "in": {"args": {"all": true}, "host_owner": null, "kill_processes": 0, "is_windows": true, "gw_windows_calls": [{"ret": null}]}}
+{"func": "cmd_start", "in": {"args": {}, "guard_named_profile_calls": [{"exit": 75}]}}
+{"func": "cmd_stop", "in": {"args": {}, "is_supervised": true}}
+{"func": "cmd_stop", "in": {"args": {}, "profile_lifecycle": true}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [], "served_owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}, "current_profile_name": "work"}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [100], "systemd_unit_installed": true, "systemd_calls": [{}], "service_name": "hermes-gateway"}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [100], "stop_profile": true}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [100], "stop_profile": false}}
+{"func": "cmd_stop", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": true}]}}
+{"func": "cmd_stop", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": false}], "host_owner": null, "kill_processes": 3}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [], "served_owner": null, "named_served": true, "current_profile_name": "work"}}
+{"func": "cmd_stop", "in": {"args": {}, "find_pids": [100], "refuse_sessions_live_calls": [{"exit": 1}]}}
+{"func": "cmd_stop", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": false}], "host_owner": null, "systemd_unit_installed": true, "systemd_calls": [{}], "kill_processes": 0}}
+{"func": "cmd_restart", "in": {"args": {}, "is_supervised": true}}
+{"func": "cmd_restart", "in": {"args": {}, "profile_lifecycle": true}}
+{"func": "cmd_restart", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": true}]}}
+{"func": "cmd_restart", "in": {"args": {}, "dispatch_s6_calls": [{"ret": true}]}}
+{"func": "cmd_restart", "in": {"args": {}, "systemd_unit_installed": true, "systemd_calls": [{}]}}
+{"func": "cmd_restart", "in": {"args": {}, "systemd_unit_installed": true, "systemd_calls": [{"exc": "CalledProcessError"}], "supports_systemd": true, "linger_ok": false, "getuser": "alice"}}
+{"func": "cmd_restart", "in": {"args": {}, "systemd_unit_installed": true, "systemd_calls": [{"exc": "CalledProcessError"}], "supports_systemd": true, "linger_ok": true}}
+{"func": "cmd_restart", "in": {"args": {}, "is_windows": true, "gw_windows_calls": [{"ret": true}, {"ret": true}, {"exc": "RuntimeError"}]}}
+{"func": "cmd_restart", "in": {"args": {}, "get_running_pid": 500, "declares_external_supervisor": true}}
+{"func": "cmd_restart", "in": {"args": {}, "get_running_pid": null, "stop_profile": true, "start_restart_replacement_calls": [{}]}}
+{"func": "cmd_restart", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": false}], "host_owner": null, "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "cmd_restart", "in": {"args": {}, "reap_orphans": [{"exc": "RuntimeError", "msg": "scan boom"}], "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "cmd_status", "in": {"args": {}, "print_parked_status": true, "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {}, "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [100, 200], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {}, "snapshot": {"manager": "s6", "service_installed": false, "service_running": true, "gateway_pids": [], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {}, "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {"deep": true, "full": true}, "systemd_unit_installed": true, "snapshot": {"manager": "manual", "service_installed": true, "service_running": true, "gateway_pids": [], "service_scope": null}, "systemd_status_calls": [{}]}}
+{"func": "cmd_status", "in": {"args": {}, "is_windows": true, "gw_windows_calls": [{"ret": true}, {"ret": null}], "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {}, "named_served": true, "active_profile_name": "work", "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [], "service_scope": null}}}
+{"func": "cmd_status", "in": {"args": {}, "active_profile_name": "work", "profile_is_standalone": true, "systemd_unit_installed": true, "snapshot": {"manager": "manual", "service_installed": true, "service_running": true, "gateway_pids": [], "service_scope": null}, "systemd_status_calls": [{}]}}
+{"func": "cmd_status", "in": {"args": {}, "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [100], "service_scope": null}, "report_incompat_owner": true}}
+{"func": "cmd_status", "in": {"args": {}, "is_windows": true, "gw_windows_calls": [{"ret": true}, {"ret": null}], "snapshot": {"manager": "manual", "service_installed": false, "service_running": false, "gateway_pids": [], "service_scope": null}, "is_termux": true}}
+{"func": "restart_all", "in": {"host_owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}, "host_is_ours": false}}
+{"func": "restart_all", "in": {"host_owner": null, "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "restart_all", "in": {"host_owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}, "host_is_ours": true, "stop_host_multiplexer": 1}}
+{"func": "restart_all", "in": {"host_owner": null, "detach": true, "spawn_detached": false}}
+{"func": "restart_all", "in": {"host_owner": null, "systemd_unit_installed": true, "systemd_calls": [{}]}}
+{"func": "restart_all", "in": {"host_owner": {"pid": 7, "profile_label": "work", "profiles": ["work"], "describe": "d"}, "host_is_ours": false}}
+{"func": "restart_all_as_host", "in": {"owner": null, "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "restart_all_as_host", "in": {"owner": null, "detach": true, "spawn_detached": true}}
+{"func": "restart_all_as_host", "in": {"owner": null, "detach": true, "spawn_detached": false}}
+{"func": "restart_all_as_host", "in": {"owner": null, "systemd_unit_installed": true, "systemd_calls": [{}]}}
+{"func": "restart_all_as_host", "in": {"owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}, "stop_host_multiplexer": 1, "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "restart_all_as_host", "in": {"owner": null, "named_profile_home": "C:/h/profiles/work", "spawn_detached": true}}
+{"func": "restart_all_as_host", "in": {"owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "host gateway (PID 500)"}, "stop_host_multiplexer": 0, "systemd_unit_installed": true, "systemd_calls": [{}]}}
+{"func": "cmd_start", "in": {"args": {"all": true, "force": true}, "is_termux": true}}
+{"func": "cmd_start", "in": {"args": {"all": true, "force": true}, "is_container": true}}
+{"func": "cmd_stop", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": false}], "host_owner": null, "systemd_unit_installed": true, "systemd_calls": [{"exc": "OSError"}]}}
+{"func": "cmd_restart", "in": {"args": {"all": true}, "dispatch_all_s6_calls": [{"ret": false}], "host_owner": {"pid": 500, "profile_label": "default", "profiles": ["default"], "describe": "d"}, "host_is_ours": false}}
+{"func": "restart_all_as_host", "in": {"owner": {"pid": 500, "profile_label": "default", "profiles": ["default", "work"], "describe": "d"}, "stop_host_multiplexer": 1, "systemd_unit_installed": true, "systemd_calls": [{"exc": "CalledProcessError"}], "get_running_pid": null, "start_restart_replacement_calls": [{}]}}
+{"func": "cmd_status", "in": {"args": {"system": true}, "systemd_unit_installed": true, "snapshot": {"manager": "systemd", "service_installed": true, "service_running": true, "gateway_pids": [], "service_scope": "system"}, "systemd_status_calls": [{}]}}
+{"func": "cmd_install", "in": {"args": {"if_missing": true}, "is_windows": true, "gw_windows_calls": [{"ret": true}]}}
+{"func": "service_call", "in": {"backend": "systemd", "verb": "restart", "system": true, "systemd_calls": [{"exit": 78}]}}

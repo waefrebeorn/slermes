@@ -1,0 +1,123 @@
+{"func": "error_json", "in": {"error": "boom"}}
+{"func": "error_json", "in": {"error": "", "status": "pending_approval", "extra": {"approval_pending": true, "command": "c"}}}
+{"func": "error_json", "in": {"error": "e", "exit_code": 126, "status": "error", "extra": {"output": "over", "x": 1}}}
+{"func": "error_json", "in": {"error": "x", "exit_code": 0}}
+{"func": "error_json", "in": {"error": null}}
+{"func": "error_json", "in": {"error": "ünïcödé — dash"}}
+{"func": "error_json", "in": {"error": "plain", "status": "blocked", "extra": {"user_summary": "s"}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": true}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "force": true}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": true, "user_approved": true, "description": "rm -rf"}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": true, "smart_approved": true}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": true, "pre_approved": {"k": 1}}, "preapproval_note_ret": "PRE"}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": false, "status": "pending_approval"}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": false, "description": "d", "user_summary": "s"}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": false, "message": "custom"}}}
+{"func": "run_approval_guards", "in": {"command": "ls", "approval": {"approved": false, "message": null}}}
+{"func": "pre_exec_block", "in": {"command": "ls"}}
+{"func": "pre_exec_block", "in": {"command": "hermes gateway stop", "lifecycle_block": "{\"blocked\":1}"}}
+{"func": "pre_exec_block", "in": {"command": "ls", "workdir": "/bad;dir", "workdir_error": "Blocked: bad char"}}
+{"func": "pre_exec_block", "in": {"command": "ls", "workdir": "/gone", "refuse_local_reject": "{\"exit_code\":126}"}}
+{"func": "pre_exec_block", "in": {"command": "git commit", "self_repo_block": "{\"blocked\":2}"}}
+{"func": "pre_exec_block", "in": {"command": "tee skill", "locked_skill_block": "{\"blocked\":3}"}}
+{"func": "pre_exec_block", "in": {"command": "ls", "env_type": "docker", "self_repo_block": "{\"never\":1}", "locked_skill_block": "{\"never\":1}"}}
+{"func": "plan_execution", "in": {"command": "ls", "config": {"env_type": "local", "cwd": "/w", "timeout": 180}, "task_id": "t1", "container_task_id": "t1"}}
+{"func": "plan_execution", "in": {"command": 5, "command_py_type": "int"}}
+{"func": "plan_execution", "in": {"command": "ls", "config": {"env_type": "local", "cwd": "/w", "timeout": 180}, "timeout": 0}}
+{"func": "plan_execution", "in": {"command": "npm run dev", "config": {"env_type": "local", "cwd": "/w", "timeout": 180}, "guidance": "GUIDANCE"}}
+{"func": "plan_execution", "in": {"command": "make test", "config": {"env_type": "local", "cwd": "/w", "timeout": 180}, "timeout": 900}}
+{"func": "plan_execution", "in": {"command": "sleep 1 &", "config": {"env_type": "local", "cwd": "/w", "timeout": 180}, "auto_bg": "sleep 1"}}
+{"func": "plan_execution", "in": {"command": "ls", "config": {"env_type": "docker", "cwd": "/workspace", "timeout": 180}, "host_local": true, "container_task_id": "c1", "is_container": true, "overrides": {"cwd": "C:/Users/me/proj"}, "host_cwd": "C:/Users/me/proj", "unusable_cwd": true, "coerced_cwd": "C:/Users/me/proj"}}
+{"func": "plan_execution", "in": {"command": "ls", "config": {"env_type": "docker", "cwd": "/workspace", "timeout": 180}, "refusal_raises": true, "refusal_msg": "no policy"}}
+{"func": "with_promoted_note", "in": {"result_json": "{\"session_id\":\"s1\",\"notify_on_complete\":true}", "requested_timeout": 900}}
+{"func": "with_promoted_note", "in": {"result_json": "{\"session_id\":\"s1\"}", "requested_timeout": 700}}
+{"func": "with_promoted_note", "in": {"result_json": "{\"error\":\"x\"}", "requested_timeout": 900}}
+{"func": "with_promoted_note", "in": {"result_json": "not json", "requested_timeout": 900}}
+{"func": "with_promoted_note", "in": {"result_json": "[1,2]", "requested_timeout": 900}}
+{"func": "with_promoted_note", "in": {"result_json": "{\"notify_on_complete\":false,\"pid\":5}", "requested_timeout": 1200}}
+{"func": "run_foreground", "in": {"command": "ls", "execute_results": [{"ret": {"output": "ok", "returncode": 0}}]}}
+{"func": "run_foreground", "in": {"command": "ls", "execute_results": [{"exc_type": "ConnectionError", "exc_msg": "ssh reset"}, {"exc_type": "ConnectionError", "exc_msg": "ssh reset"}, {"ret": {"output": "ok", "returncode": 0}}]}}
+{"func": "run_foreground", "in": {"command": "ls", "effective_timeout": 30, "execute_results": [{"exc_type": "TimeoutError", "exc_msg": "command Timeout exceeded"}]}}
+{"func": "run_foreground", "in": {"command": "ls", "execute_results": [{"exc_type": "OSError", "exc_msg": "boom1"}, {"exc_type": "OSError", "exc_msg": "boom2"}, {"exc_type": "OSError", "exc_msg": "boom3"}, {"exc_type": "OSError", "exc_msg": "boom4"}]}}
+{"func": "run_foreground", "in": {"command": "ls", "execute_results": [{"ret": {"output": "partial", "yielded_session_id": "s9", "pid": 42}}]}}
+{"func": "run_foreground", "in": {"command": "ls", "clear_interrupt": true, "metered": false, "execute_results": [{"ret": {"output": "ok", "returncode": 0}}]}}
+{"func": "run_foreground", "in": {"command": "ls", "env": {"host_cwd": "/host"}, "plan_host_cwd": "/plan", "workdir": "/named", "execute_results": [{"ret": {"output": "ok", "returncode": 0}}]}}
+{"func": "terminal_deadline_floor", "in": {"args": {"background": true}}}
+{"func": "terminal_deadline_floor", "in": {"args": {"timeout": 30}}}
+{"func": "terminal_deadline_floor", "in": {"args": {"timeout": 601}}}
+{"func": "terminal_deadline_floor", "in": {"args": {"timeout": "abc"}}}
+{"func": "terminal_deadline_floor", "in": {"args": {}}}
+{"func": "terminal_deadline_floor", "in": {"args": {}, "parse_env_raises": true}}
+{"func": "terminal_deadline_floor", "in": {"args": {}, "parse_env_ret": 240}}
+{"func": "degraded_result", "in": {"reason": "ssh host down", "retry_hint": "check host"}}
+{"func": "degraded_result", "in": {"reason": "docker down", "tenv_ret": " FAIL ", "fatal_ret": "{\"fatal\":1}"}}
+{"func": "degraded_result", "in": {"reason": "x", "evict_raises": true}}
+{"func": "degraded_result", "in": {"reason": "modal unreachable", "retry_hint": "retry later", "task_id": "t9"}}
+{"func": "degraded_result", "in": {"reason": "x", "tenv_ret": "warn"}}
+{"func": "degraded_result", "in": {"reason": "y", "tenv_ret": "FAIL"}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls"}}}
+{"func": "handle_terminal", "in": {"args": {"code": "print(1)"}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "notify": true}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "background": true, "notify": ["ready"]}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "background": true, "heartbeat": 30}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "heartbeat": true}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "heartbeat": 60.0}, "heartbeat_py_type": "float"}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "pty": true}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "background": true, "notify": "yes"}}}
+{"func": "handle_terminal", "in": {"args": {"command": "ls", "background": true, "persist_on_release": true}}}
+{"func": "spawn_background", "in": {"command": "sleep 1", "proc_session": {"id": "s1", "pid": 100}}}
+{"func": "spawn_background", "in": {"command": "make test", "proc_session": {"id": "s2", "pid": 101}, "notify_on_complete": true, "async_notify": true, "async_watch": null, "delegated_child": false, "heartbeat_seconds": 90, "arm_heartbeat_ret": 90}}
+{"func": "spawn_background", "in": {"command": "gh pr checks 1 | jq .", "proc_session": {"id": "s3", "pid": 102}}}
+{"func": "spawn_background", "in": {"command": "sleep 1", "proc_session": {"id": "s4", "pid": 103, "cwd": "/fallback"}, "command_cwd": "/requested", "msys_path_ret": "C:/requested"}}
+{"func": "spawn_background", "in": {"command": "sleep 1", "proc_session": {"id": "s5", "pid": 104}, "notify_on_complete": true, "watch_patterns": ["x"], "async_notify": true, "async_watch": ["x"], "async_session_patch": {"watcher_platform": "telegram"}, "delegated_child": true}}
+{"func": "spawn_background", "in": {"command": "sleep 1", "proc_session": {"id": "s6", "pid": 105}, "spawn_exc": "no spawn"}}
+{"func": "spawn_background", "in": {"command": "sleep 1", "proc_session": {"id": "s7", "pid": 106}, "auto_backgrounded": true, "heartbeat_seconds": 60}}
+{"func": "finalize_foreground", "in": {"command": "ls", "result": {"output": "hi", "returncode": 0}}}
+{"func": "finalize_foreground", "in": {"command": "cd /x", "result": {"output": "ok", "returncode": 0, "cwd_observed": true, "cwd": "/x"}, "command_cwd": "/w", "realpaths": {"/x": "/x", "/w": "/w"}}}
+{"func": "finalize_foreground", "in": {"command": "ls", "result": {"output": "x", "returncode": 130}, "approval_note": "Approved.", "sudo_ann": {"output": "x [Command interrupted]", "auth_failed": false, "cache_cleared": false}}}
+{"func": "finalize_foreground", "in": {"command": "ls", "result": {"output": "  out  ", "returncode": 1, "environment_recreated": true, "cwd_fallback": {"requested": "/a", "used": "/b"}, "full_output_path": "/spill", "output_total_chars": 9999}, "exit_note": "NOTE", "failure_hint": "HINT", "spill_pairs": [["output_total_chars", 9999], ["full_output_path", "/spill"], ["truncation_note", "TN"]], "verification": {"status": "ok"}, "sudo_ann": {"output": "  out  ", "auth_failed": true, "cache_cleared": true}}}
+{"func": "finalize_foreground", "in": {"command": "ls", "result": {"output": "ok", "returncode": 0, "cwd_observed": true}, "env": {"cwd": "/envcwd"}, "command_cwd": "/w", "workdir": "/named", "realpaths": {"/envcwd": "/envcwd", "/w": "/w"}}}
+{"func": "finalize_foreground", "in": {"command": "ls", "result": {"output": "ok", "returncode": 0}, "transform_raises": true, "failure_hint_raises": true, "verification_raises": true}}
+{"func": "cwd_fallback_note", "in": {"fallback": null}}
+{"func": "cwd_fallback_note", "in": {"fallback": {"used": ""}}}
+{"func": "cwd_fallback_note", "in": {"fallback": {"used": "/b", "requested": null}}}
+{"func": "cwd_fallback_note", "in": {"fallback": {"used": "/b", "requested": "/a"}}}
+{"func": "cwd_fallback_note", "in": {"fallback": "str"}}
+{"func": "cwd_fallback_note", "in": {"fallback": {"used": "/c", "requested": "/d", "extra": 1}}}
+{"func": "interpret_exit_code", "in": {"command": "grep x f", "exit_code": 1}}
+{"func": "interpret_exit_code", "in": {"command": "cat a && rg pat", "exit_code": 1}}
+{"func": "interpret_exit_code", "in": {"command": "FOO=bar /usr/bin/grep x", "exit_code": 1}}
+{"func": "interpret_exit_code", "in": {"command": "curl -s x", "exit_code": 28}}
+{"func": "interpret_exit_code", "in": {"command": "grep x", "exit_code": 0}}
+{"func": "interpret_exit_code", "in": {"command": "grep x", "exit_code": -9, "signal_note": "SIGNOTE"}}
+{"func": "interpret_exit_code", "in": {"command": "grep x |", "exit_code": 1}}
+{"func": "host_path_key", "in": {"path": "C:\\Users\\x\\"}}
+{"func": "host_path_key", "in": {"path": "C:/"}}
+{"func": "host_path_key", "in": {"path": "/a/b///"}}
+{"func": "host_path_key", "in": {"path": null}}
+{"func": "host_path_key", "in": {"path": "abc"}}
+{"func": "host_path_key", "in": {"path": "D:\\"}}
+{"func": "host_path_key", "in": {"path": ""}}
+{"func": "translate_mounted_host_path", "in": {"path": "C:\\Users\\me\\proj", "host_root": "C:/Users/me/proj", "container_root": "/workspace"}}
+{"func": "translate_mounted_host_path", "in": {"path": "C:/Users/me/proj/sub", "host_root": "c:\\users\\me\\proj", "container_root": "/workspace"}}
+{"func": "translate_mounted_host_path", "in": {"path": "C:/Users/me/proj-other", "host_root": "C:/Users/me/proj", "container_root": "/workspace"}}
+{"func": "translate_mounted_host_path", "in": {"path": "/a", "host_root": "/", "container_root": "/w"}}
+{"func": "translate_mounted_host_path", "in": {"path": "", "host_root": "C:/x", "container_root": "/w"}}
+{"func": "translate_mounted_host_path", "in": {"path": "C:/x", "host_root": "C:/x", "container_root": "/"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "~/x", "env_type": "ssh"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "", "env_type": "ssh"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "rel/path", "env_type": "ssh"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/opt/data/home", "env_type": "ssh", "subprocess_home": "/opt/data/home", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/opt/data/home/sub", "env_type": "ssh", "subprocess_home": "/opt/data/home", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/opt/data", "env_type": "ssh", "subprocess_home": "/opt/data/home", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/abs", "env_type": "ssh", "subprocess_home": "", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/opt/hermes", "env_type": "ssh", "launch_dir": true, "subprocess_home": "/opt/data/home", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/home/user/x", "env_type": "ssh", "subprocess_home": "/home/user", "real_home": "/home/user"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": null, "env_type": "ssh"}}
+{"func": "coerce_ssh_remote_cwd", "in": {"cwd": "/abs", "env_type": "local"}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": "gh pr view 1 --json statusCheckRollup"}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": "gh pr checks 1 | jq ."}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": "echo $(jq .)"}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": "gh pr view 1"}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": "echo statusCheckRollup"}}
+{"func": "looks_like_homebrew_ci_poller", "in": {"command": ""}}
