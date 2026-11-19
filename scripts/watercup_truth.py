@@ -22,7 +22,7 @@ RESULTS = REPO / "tests/watercup/build/results.jsonl"
 
 
 def main():
-    path = Path(sys.argv[1]) if len(sys.argv) > 1 else RESULTS
+    path = Path(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else RESULTS
     rows = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
