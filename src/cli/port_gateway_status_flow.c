@@ -276,7 +276,7 @@ static bool parse_iso(const char *s, double *epoch, bool *has_tz) {
     if (n < 10) return false;
     int y, mo, d;
     if (!digits_n(s, 4, &y) || s[4] != '-' || !digits_n(s + 5, 2, &mo)
-        || s[8] != '-' || !digits_n(s + 9, 2, &d)) return false;
+        || s[7] != '-' || !digits_n(s + 8, 2, &d)) return false;
     if (mo < 1 || mo > 12 || d < 1) return false;
     static const int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     int maxd = mdays[mo - 1];

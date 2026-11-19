@@ -169,6 +169,11 @@ int main(void) {
         const json_t *in = json_obj_get(c, "in");
         json_t *empty = json_object();
         json_t *out = json_object();
+        /* Reserve envelope key positions: the oracle's want is built
+         * {ret, trace, st} and canon() treats insertion order as semantic.
+         * Dispatch replaces ret/trace in place; st is appended last. */
+        json_set(out, "ret", json_null());
+        json_set(out, "trace", json_array());
         run_case(func, in ? in : empty, out);
         json_free(empty);
         char *in_s = json_serialize(in);
