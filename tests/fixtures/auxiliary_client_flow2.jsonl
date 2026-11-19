@@ -1,0 +1,233 @@
+{"func": "_tick_hook", "in": {"local": {}, "label": "progress"}}
+{"func": "_tick_hook", "in": {"local": {"hook": null}, "label": "dispatch"}}
+{"func": "_tick_hook", "in": {"local": {"hook": {"h": 1}}, "label": "progress", "io": {"hook": null}}}
+{"func": "_tick_hook", "in": {"local": {"hook": {"h": 1}}, "label": "dispatch", "io": {"hook": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_tick_hook", "in": {"local": {"hook": {"h": 1}}, "label": "progress", "io": {"hook": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_tick_hook", "in": {"local": {"hook": {"h": 1}}, "label": "x", "io": {"hook": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_notify_aux_dispatch", "in": {"local": {}}}
+{"func": "_notify_aux_dispatch", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": null}}}
+{"func": "_notify_aux_dispatch", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_notify_aux_dispatch", "in": {"local": {"hook": null}}}
+{"func": "_notify_aux_dispatch", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "_notify_aux_timing_response", "in": {"local": {}}}
+{"func": "_notify_aux_timing_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": null}}}
+{"func": "_notify_aux_timing_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_notify_aux_timing_response", "in": {"local": {"hook": null}}}
+{"func": "_notify_aux_timing_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_notify_aux_provider_response", "in": {"local": {}, "io": {"_notify_aux_progress": null}}}
+{"func": "_notify_aux_provider_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": null, "_notify_aux_progress": null}}}
+{"func": "_notify_aux_provider_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "ValueError", "msg": "x"}, "_notify_aux_progress": null}}}
+{"func": "_notify_aux_provider_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": null, "_notify_aux_progress": {"__raise__": "RuntimeError", "msg": "p"}}}}
+{"func": "_notify_aux_provider_response", "in": {"local": {"hook": {"h": 1}}, "io": {"hook": {"__raise__": "SystemExit", "msg": ""}, "_notify_aux_progress": null}}}
+{"func": "_ai_gateway_headers", "in": {"io": {"hermes_user_agent": "HermesAgent/1.0"}}}
+{"func": "_ai_gateway_headers", "in": {"io": {"hermes_user_agent": ""}}}
+{"func": "_ai_gateway_headers", "in": {"io": {"hermes_user_agent": {"__raise__": "RuntimeError", "msg": "ua"}}}}
+{"func": "_ai_gateway_headers", "in": {"io": {"hermes_user_agent": null}}}
+{"func": "_ai_gateway_headers", "in": {"io": {"hermes_user_agent": "X/2"}}}
+{"func": "_auth_json_path", "in": {"env": {"auth_json_path": "/a/auth.json", "auth_json_path_at_import": "/b/auth.json"}}}
+{"func": "_auth_json_path", "in": {"env": {"auth_json_path": "/a/auth.json", "auth_json_path_at_import": "/a/auth.json"}, "io": {"_auth_file_path": "/live/auth.json"}}}
+{"func": "_auth_json_path", "in": {"env": {"auth_json_path": "/a/auth.json", "auth_json_path_at_import": "/a/auth.json"}, "io": {"_auth_file_path": {"__raise__": "RuntimeError", "msg": "no"}}}}
+{"func": "_auth_json_path", "in": {"env": {"auth_json_path": "/x", "auth_json_path_at_import": "/y"}}}
+{"func": "_auth_json_path", "in": {"env": {"auth_json_path": "/a", "auth_json_path_at_import": "/a"}, "io": {"_auth_file_path": null}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "nous", "note": "", "io": {"load_pool": null}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "nous", "note": " n", "io": {"load_pool": {"p": 1}, "pool.has_credentials": true}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "nous", "io": {"load_pool": {"p": 1}, "pool.has_credentials": false}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "nous", "note": " note", "io": {"load_pool": {"__raise__": "RuntimeError", "msg": "load fail"}}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "nous", "io": {"load_pool": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_load_pool_with_credentials", "in": {"provider": "x", "io": {"load_pool": {"p": 1}, "pool.has_credentials": {"__raise__": "ValueError", "msg": "hc"}}}}
+{"func": "_close_quietly", "in": {"target": {}, "failure_note": null}}
+{"func": "_close_quietly", "in": {"target": {"close": true}, "failure_note": null, "io": {"close": null}}}
+{"func": "_close_quietly", "in": {"target": {"close": true}, "failure_note": "note", "io": {"close": {"__raise__": "RuntimeError", "msg": "c"}}}}
+{"func": "_close_quietly", "in": {"target": {"close": true}, "failure_note": null, "io": {"close": {"__raise__": "RuntimeError", "msg": "c"}}}}
+{"func": "_close_quietly", "in": {"target": {"close": true}, "failure_note": "n", "io": {"close": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_close_quietly", "in": {"target": {"close": null}, "failure_note": "n"}}
+{"func": "_attempt_stream_socket", "in": {"stream": {}}}
+{"func": "_attempt_stream_socket", "in": {"stream": {"response": {}}}}
+{"func": "_attempt_stream_socket", "in": {"stream": {"response": {"extensions": {}}}}}
+{"func": "_attempt_stream_socket", "in": {"stream": {"response": {"extensions": {"network_stream": {"s": 1}}}}, "io": {"_socket_from_stream": {"sock": 1}}}}
+{"func": "_attempt_stream_socket", "in": {"stream": {"response": {"extensions": {"network_stream": {"s": 1}}}}, "io": {"_socket_from_stream": null}}}
+{"func": "_attempt_stream_socket", "in": {"stream": {"response": {"extensions": "notdict"}}}}
+{"func": "_route_client_headers", "in": {"base_url": "https://x", "provider": "openrouter", "io": {"route_answer": {"X": "1"}}}}
+{"func": "_route_client_headers", "in": {"base_url": "https://x", "provider": "", "io": {"route_answer": null}}}
+{"func": "_route_client_headers", "in": {"base_url": "https://x", "provider": "p", "is_vision": true, "io": {"route_answer": {"A": "b"}}}}
+{"func": "_route_client_headers", "in": {"base_url": "https://x", "provider": "p", "io": {"route_answer": {}}}}
+{"func": "_route_client_headers", "in": {"base_url": "https://x", "provider": "p", "io": {"route_answer": {"__raise__": "RuntimeError", "msg": "ra"}}}}
+{"func": "_profile_default_headers", "in": {"provider": ""}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": {"default_headers": {"User-Agent": "gmi"}}}}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": null}}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": {"default_headers": null}}}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": {"__raise__": "RuntimeError", "msg": "gp"}}}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_profile_default_headers", "in": {"provider": "gmi", "io": {"get_provider_profile": {"other": 1}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://api.kimi.com/v1", "provider": "kimi", "io": {"base_url_host_matches": true, "_apply_user_default_headers": {"User-Agent": "claude-code/0.1.0"}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://x", "provider": "p", "io": {"base_url_host_matches": false, "route_answer": {"R": "1"}, "_apply_user_default_headers": {"R": "1"}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://integrate.api.nvidia.com", "provider": "nvidia", "io": {"base_url_host_matches": {"$seq": [false, true]}, "build_nvidia_nim_headers": {"N": "1"}, "_apply_user_default_headers": {"N": "1"}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://api.x.ai", "provider": "xai", "xai": true, "io": {"base_url_host_matches": {"$seq": [false, false, true]}, "hermes_xai_default_headers": {"X": "1"}, "_apply_user_default_headers": {"X": "1"}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://other", "provider": "gmi", "io": {"base_url_host_matches": false, "route_answer": null, "get_provider_profile": {"default_headers": {"G": "1"}}, "_apply_user_default_headers": {"G": "1"}}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://other", "provider": "", "io": {"base_url_host_matches": false, "route_answer": null, "_apply_user_default_headers": null}}}
+{"func": "_endpoint_default_headers", "in": {"base_url": "https://api.kimi.com", "provider": "kimi", "io": {"base_url_host_matches": true, "_apply_user_default_headers": null}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": "https://x/v1/"}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": "https://x///"}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": ""}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": "https://x"}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": null}}}
+{"func": "_codex_base_url_override", "in": {"io": {"_scoped_key_env": {"__raise__": "RuntimeError", "msg": "env"}}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": "Anthropic", "io": {"get_provider_profile": {"api_mode": "anthropic_messages"}}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": "openai", "io": {"get_provider_profile": {"api_mode": "chat_completions"}}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": null, "io": {"get_provider_profile": null}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": "  X  ", "io": {"get_provider_profile": {"api_mode": "anthropic_messages"}}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": "p", "io": {"get_provider_profile": {"__raise__": "RuntimeError", "msg": "gp"}}}}
+{"func": "_profile_declared_messages_wire", "in": {"provider": "p", "io": {"get_provider_profile": {}}}}
+{"func": "_route_client", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client_obj": {"kind": "OpenAI"}, "final_model_str": "m"}}
+{"func": "_route_client", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client_obj": {"kind": "OpenAI"}, "final_model_str": "m", "io": {"_to_async_client": [{"kind": "AsyncOpenAI"}, "m"]}}}
+{"func": "_route_client", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": true, "task": null, "pool_choice": null}, "client_obj": {"kind": "C"}, "final_model_str": "m", "io": {"_to_async_client": [{"kind": "AC"}, "m"]}}}
+{"func": "_route_client", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client_obj": null, "final_model_str": null}}
+{"func": "_route_client", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client_obj": {"kind": "C"}, "final_model_str": "m", "io": {"_to_async_client": {"__raise__": "RuntimeError", "msg": "async"}}}}
+{"func": "_route_or_warn", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client": null, "default": "d", "unavailable_msg": "no %s", "args": ["x"]}}
+{"func": "_route_or_warn", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client": {"kind": "C"}, "default": "d", "unavailable_msg": "msg", "io": {"_normalize_resolved_model": "m"}}}
+{"func": "_route_or_warn", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client": {"kind": "C"}, "default": "d", "unavailable_msg": "msg", "io": {"_normalize_resolved_model": "d"}}}
+{"func": "_route_or_warn", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client": {"kind": "C"}, "default": "d", "unavailable_msg": "msg", "io": {"_normalize_resolved_model": "m", "_to_async_client": [{"kind": "AC"}, "m"]}}}
+{"func": "_route_or_warn", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "client": null, "default": null, "unavailable_msg": "m"}}
+{"func": "_resolve_openrouter_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_openrouter": [{"kind": "C"}, "d"], "_normalize_resolved_model": "m"}}}
+{"func": "_resolve_openrouter_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_openrouter": [null, null], "_describe_openrouter_unavailable": "no key"}}}
+{"func": "_resolve_openrouter_branch", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_openrouter": [{"kind": "C"}, "d"], "_normalize_resolved_model": "d"}}}
+{"func": "_resolve_openrouter_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_openrouter": [{"kind": "C"}, "d"], "_normalize_resolved_model": "m", "_to_async_client": [{"kind": "AC"}, "m"]}}}
+{"func": "_resolve_openrouter_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_openrouter": {"__raise__": "RuntimeError", "msg": "or"}}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_nous": [{"kind": "C", "api_key": "k", "base_url": "https://b"}, "d"], "_normalize_resolved_model": "m", "nous_api_mode": "chat_completions", "_maybe_wrap_anthropic": {"kind": "C", "api_key": "k", "base_url": "https://b"}}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_nous": [null, null]}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": "mimo-v2-omni", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_nous": [{"kind": "C", "api_key": "", "base_url": ""}, "d"], "_normalize_resolved_model": "mimo-v2-omni", "nous_api_mode": "anthropic_messages", "_maybe_wrap_anthropic": {"kind": "W"}}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": "xiaomi", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": true, "task": null, "pool_choice": null}, "io": {"_try_nous": [{"kind": "C"}, "d"], "_normalize_resolved_model": "xiaomi", "nous_api_mode": "chat_completions", "_maybe_wrap_anthropic": {"kind": "C"}}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": "m", "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_nous": [{"kind": "C", "api_key": "k", "base_url": "b"}, "d"], "_normalize_resolved_model": "m", "nous_api_mode": "chat_completions", "_maybe_wrap_anthropic": {"kind": "C"}, "_to_async_client": [{"kind": "AC"}, "m"]}}}
+{"func": "_resolve_nous_branch", "in": {"req": {"provider": "nous", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_nous": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_resolve_xai_oauth_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "grok", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_xai_oauth_aux_client": [{"kind": "C"}, "grok"], "_normalize_resolved_model": "grok"}}}
+{"func": "_resolve_xai_oauth_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_xai_oauth_aux_client": [null, null]}}}
+{"func": "_resolve_xai_oauth_branch", "in": {"req": {"provider": "xai-oauth", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_xai_oauth_aux_client": [{"kind": "C"}, "d"], "_normalize_resolved_model": "d"}}}
+{"func": "_resolve_xai_oauth_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "grok", "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_xai_oauth_aux_client": [{"kind": "C"}, "grok"], "_normalize_resolved_model": "grok", "_to_async_client": [{"kind": "AC"}, "grok"]}}}
+{"func": "_resolve_xai_oauth_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "grok", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_xai_oauth_aux_client": {"__raise__": "RuntimeError", "msg": "xai"}}}}
+{"func": "_resolve_azure_foundry_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_azure_foundry": [{"kind": "C"}, "m"], "_normalize_resolved_model": "m"}}}
+{"func": "_resolve_azure_foundry_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_azure_foundry": [null, null]}}}
+{"func": "_resolve_azure_foundry_branch", "in": {"req": {"provider": "azure-foundry", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_azure_foundry": [{"kind": "C"}, "d"], "_normalize_resolved_model": "d"}}}
+{"func": "_resolve_azure_foundry_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": true, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_azure_foundry": [{"kind": "C"}, "m"], "_normalize_resolved_model": "m", "_to_async_client": [{"kind": "AC"}, "m"]}}}
+{"func": "_resolve_azure_foundry_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_try_azure_foundry": {"__raise__": "RuntimeError", "msg": "az"}}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "gpt-5-codex", "async_mode": false, "raw_codex": true, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_resolve_codex_credential_and_base": ["tok", "https://b"], "_codex_cloudflare_headers": {"CF": "1"}, "_create_openai_client": {"kind": "RawOpenAI"}, "_normalize_resolved_model": "gpt-5-codex"}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "gpt-5-codex", "async_mode": false, "raw_codex": true, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_resolve_codex_credential_and_base": [null, "https://b"]}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "gpt-5-codex", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_codex_client": [{"kind": "Codex"}, "d"], "_normalize_resolved_model": "gpt-5-codex"}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "gpt-5-codex", "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_build_codex_client": [null, null]}}}
+{"func": "_resolve_openai_codex_branch", "in": {"req": {"provider": "openrouter", "original_provider": "openrouter", "model": "m", "async_mode": true, "raw_codex": true, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "io": {"_resolve_codex_credential_and_base": ["tok", "https://b"], "_codex_cloudflare_headers": {"CF": "1"}, "_create_openai_client": {"kind": "Raw"}, "_normalize_resolved_model": "m"}}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": ""}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": "auto"}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": "  AUTO  "}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": "openrouter", "task": "compression"}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": "nous", "task": null}}
+{"func": "_discovery_chain_allowed", "in": {"main_provider": null}}
+{"func": "_log_once_debug", "in": {"seen": [], "key": "k", "msg": "m %s", "args": ["a"]}}
+{"func": "_log_once_debug", "in": {"seen": ["k"], "key": "k", "msg": "m", "args": []}}
+{"func": "_log_once_debug", "in": {"seen": ["other"], "key": "k", "msg": "m", "args": []}}
+{"func": "_log_once_debug", "in": {"seen": [], "key": "k", "msg": "m", "args": ["a", "b"]}}
+{"func": "_log_once_debug", "in": {"seen": ["k", "j"], "key": "k", "msg": "m %s %s", "args": ["a", "b"]}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "openrouter", "env": {"warned": false}, "io": {"os.getenv": "https://stale"}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "custom", "env": {"warned": false}, "io": {"os.getenv": "https://stale"}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "custom:x", "env": {"warned": false}, "io": {"os.getenv": "https://stale"}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "", "env": {"warned": false}, "io": {"os.getenv": "https://stale", "_read_main_provider": "nous"}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "openrouter", "env": {"warned": true}, "io": {"os.getenv": "https://stale"}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "openrouter", "env": {"warned": false}, "io": {"os.getenv": ""}}}
+{"func": "_warn_stale_openai_base_url", "in": {"runtime_provider": "openrouter", "env": {"warned": false}, "io": {"os.getenv": null}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "actual", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "https://x", "io": {"is_actual_route": true}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "https://x", "io": {"is_actual_route": {"$seq": [false, true]}, "_normalize_main_runtime": {"provider": "actual", "base_url": "https://x"}, "normalize_actual_base_url": {"$seq": ["https://x", "https://x"]}, "normalize_route_base_url": {"$seq": ["https://x", "https://x"]}}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "", "io": {"is_actual_route": false, "_normalize_main_runtime": {"provider": "a", "base_url": "b"}}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "https://x", "io": {"is_actual_route": {"$seq": [false, false]}, "_normalize_main_runtime": {"provider": "a", "base_url": "b"}}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "https://x", "io": {"is_actual_route": {"$seq": [false, true]}, "_normalize_main_runtime": {"provider": "a", "base_url": "https://y"}, "normalize_actual_base_url": {"$seq": ["https://x", "https://y"]}, "normalize_route_base_url": {"$seq": ["https://x", "https://y"]}}}}
+{"func": "_is_actual_auxiliary_route", "in": {"req": {"provider": "p", "original_provider": "openrouter", "model": null, "async_mode": false, "raw_codex": false, "explicit_base_url": null, "explicit_api_key": null, "api_mode": null, "main_runtime": null, "is_vision": false, "task": null, "pool_choice": null}, "base_url": "https://x", "io": {"is_actual_route": false, "_normalize_main_runtime": null}}}
+{"func": "_main_route_target", "in": {"runtime": {"provider": "nous", "model": "m", "base_url": "b", "api_key": "k", "api_mode": "chat_completions"}, "task": null}}
+{"func": "_main_route_target", "in": {"runtime": {}, "task": null, "io": {"_read_main_provider": "openrouter", "_read_main_model": "d"}}}
+{"func": "_main_route_target", "in": {"runtime": {"provider": "nous", "model": "m"}, "task": "title", "io": {"_task_prefers_fast_model": true, "fast_catalog_provider": "nous", "_get_aux_model_for_provider": "fast"}}}
+{"func": "_main_route_target", "in": {"runtime": {"provider": "moa", "model": "preset", "base_url": "moa://x", "api_key": "k", "api_mode": "chat"}, "task": null, "io": {"_resolve_moa_aggregator": ["agg", "aggmodel"]}}}
+{"func": "_main_route_target", "in": {"runtime": {"provider": "moa", "model": "preset"}, "task": null, "io": {"_resolve_moa_aggregator": [null, null]}}}
+{"func": "_main_route_target", "in": {"runtime": {"provider": "auto", "model": "m"}, "task": "title", "io": {"_task_prefers_fast_model": true}}}
+{"func": "_main_route_target", "in": {"runtime": null, "task": null}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "io": {"_runtime_main_value": "  Override  "}}}
+{"func": "_read_main_field", "in": {"field": "provider", "readonly": true, "lower": true, "io": {"_runtime_main_value": "  Nous  "}}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "io": {"_runtime_main_value": null, "load_config_readonly": {"model": {"default": "cfgmodel"}}}}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "io": {"_runtime_main_value": "", "load_config_readonly": {"model": "  strmodel  "}}}}
+{"func": "_read_main_field", "in": {"field": "api_key", "readonly": false, "io": {"_runtime_main_value": null, "load_config": {"model": {"api_key": "  key  "}}}}}
+{"func": "_read_main_field", "in": {"field": "base_url", "readonly": false, "lower": true, "io": {"_runtime_main_value": null, "load_config": {"model": {"base_url": "  URL  "}}}}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "io": {"_runtime_main_value": null, "load_config_readonly": {"__raise__": "RuntimeError", "msg": "cfg"}}}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "env": {"config_import_fails": true}, "io": {"_runtime_main_value": null}}}
+{"func": "_read_main_field", "in": {"field": "model", "readonly": true, "io": {"_runtime_main_value": null, "load_config_readonly": null}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": {"$seq": [["https", "x", 443], ["https", "x", 443]]}, "_normalize_main_runtime": {"base_url": "https://x/v1", "api_key": "k"}, "_read_main_base_url": "https://x/v1", "_read_main_api_key": "cfgkey"}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "", "io": {"base_url_origin": ["", "", 0]}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": {"$seq": [["https", "x", 443], ["https", "x", 443]]}, "_normalize_main_runtime": {"base_url": "https://x/v1", "api_key": "livekey"}}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": {"$seq": [["https", "x", 443], ["https", "y", 443]]}, "_normalize_main_runtime": {"base_url": "https://y/v1", "api_key": "livekey"}}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": {"$seq": [["https", "x", 443], ["https", "x", 443]]}, "_normalize_main_runtime": {}, "_read_main_base_url": "https://x/v1", "_read_main_api_key": "cfgkey"}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": {"$seq": [["https", "x", 443], ["https", "y", 443]]}, "_normalize_main_runtime": {}, "_read_main_base_url": "https://y/v1"}}}
+{"func": "_read_main_api_key_if_same_origin", "in": {"aux_base_url": "https://x/v1", "io": {"base_url_origin": ["https", "x", 443], "_normalize_main_runtime": null}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "nous", "base_url": "https://x", "api_key": "k", "runtime": {}, "io": {"_normalize_aux_provider": "nous"}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "custom", "base_url": null, "api_key": null, "runtime": {"base_url": "https://rt", "api_key": "rtkey"}, "io": {"_normalize_aux_provider": "custom", "_runtime_cache_discriminator": "disc"}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "custom", "base_url": "https://x", "api_key": "explicit", "runtime": {}, "io": {"_normalize_aux_provider": "custom", "_normalize_api_key": "explicit"}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "custom", "base_url": "https://x", "api_key": null, "runtime": {}, "io": {"_normalize_aux_provider": "custom", "_normalize_api_key": null, "_to_openai_base_url": "https://x/v1", "base_url_origin": ["https", "x", 443], "_normalize_main_runtime": {}, "_read_main_base_url": "https://x/v1", "_read_main_api_key": "borrowed", "_runtime_cache_discriminator": "disc"}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "custom", "base_url": "https://x", "api_key": null, "runtime": {}, "io": {"_normalize_aux_provider": "custom", "_normalize_api_key": null, "_to_openai_base_url": "https://x/v1", "base_url_origin": ["https", "x", 443], "_normalize_main_runtime": {}, "_read_main_base_url": "https://y/v1", "_read_main_api_key": "", "declared_custom_credential_identity": {"$seq": [null, "declared"]}, "_runtime_cache_discriminator": "disc"}}}
+{"func": "_borrowed_main_credential_key", "in": {"provider": "custom", "base_url": "https://x", "api_key": null, "runtime": {}, "io": {"_normalize_aux_provider": "custom", "_normalize_api_key": null, "_to_openai_base_url": "https://x/v1", "base_url_origin": ["https", "x", 443], "_normalize_main_runtime": {}, "_read_main_base_url": "https://y/v1", "_read_main_api_key": "", "declared_custom_credential_identity": {"$seq": [null, null]}, "_runtime_cache_discriminator": "disc"}}}
+{"func": "_cached_semaphore", "in": {"store": {}, "key": "k", "limit": 4, "io": {"factory": {"sem": 1}}}}
+{"func": "_cached_semaphore", "in": {"store": {"k": [4, {"sem": 1}]}, "key": "k", "limit": 4}}
+{"func": "_cached_semaphore", "in": {"store": {"k": [2, {"sem": 1}]}, "key": "k", "limit": 4, "io": {"factory": {"sem": 2}}}}
+{"func": "_cached_semaphore", "in": {"store": {"k": null}, "key": "k", "limit": 4, "io": {"factory": {"sem": 1}}}}
+{"func": "_cached_semaphore", "in": {"store": {}, "key": "k", "limit": 4, "io": {"factory": {"__raise__": "RuntimeError", "msg": "f"}}}}
+{"func": "_cached_semaphore", "in": {"store": {"k": [4, {"sem": 1}]}, "key": "k", "limit": 8, "io": {"factory": {"sem": 8}}}}
+{"func": "_current_event_loop", "in": {"io": {"asyncio.get_event_loop": {"loop": 1}}}}
+{"func": "_current_event_loop", "in": {"io": {"asyncio.get_event_loop": {"__raise__": "RuntimeError", "msg": "no loop"}}}}
+{"func": "_current_event_loop", "in": {"io": {"asyncio.get_event_loop": null}}}
+{"func": "_current_event_loop", "in": {"io": {"asyncio.get_event_loop": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_current_event_loop", "in": {"io": {"asyncio.get_event_loop": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "AsyncCodexAuxiliaryClient"}}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "AsyncAnthropicAuxiliaryClient"}}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "AsyncBedrockAuxiliaryClient"}}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "CodexAuxiliaryClient"}}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "OpenAI"}}}
+{"func": "_async_client_streams_internally", "in": {"client": null}}
+{"func": "_async_client_streams_internally", "in": {"client": {"kind": "SubAsyncCodex"}}}
+{"func": "_refresh_codex_credentials", "in": {"io": {"resolve_codex_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": true}}}
+{"func": "_refresh_codex_credentials", "in": {"io": {"resolve_codex_runtime_credentials": {}, "_creds_have_api_key": false}}}
+{"func": "_refresh_codex_credentials", "in": {"io": {"resolve_codex_runtime_credentials": {"__raise__": "RuntimeError", "msg": "r"}}}}
+{"func": "_refresh_codex_credentials", "in": {"io": {"resolve_codex_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": {"__raise__": "ValueError", "msg": "c"}}}}
+{"func": "_refresh_codex_credentials", "in": {"io": {"resolve_codex_runtime_credentials": null, "_creds_have_api_key": false}}}
+{"func": "_refresh_nous_credentials", "in": {"io": {"env_float": 15, "resolve_nous_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": true}}}
+{"func": "_refresh_nous_credentials", "in": {"io": {"env_float": 30, "resolve_nous_runtime_credentials": {}, "_creds_have_api_key": false}}}
+{"func": "_refresh_nous_credentials", "in": {"io": {"env_float": 15, "resolve_nous_runtime_credentials": {"__raise__": "RuntimeError", "msg": "r"}}}}
+{"func": "_refresh_nous_credentials", "in": {"io": {"env_float": {"__raise__": "ValueError", "msg": "ef"}}}}
+{"func": "_refresh_nous_credentials", "in": {"io": {"env_float": 15, "resolve_nous_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": ""}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": {"p": 1}, "pool.entry_id_for_api_key": "eid", "pool.try_refresh_matching": {"r": 1}}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": {"p": 1}, "pool.entry_id_for_api_key": "eid", "pool.try_refresh_matching": null}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": {"p": 1}, "pool.entry_id_for_api_key": null, "read_claude_code_credentials": {"accessToken": "tok", "refreshToken": "rt"}, "_refresh_oauth_token": {"new": 1}}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": {"p": 1}, "pool.entry_id_for_api_key": null, "read_claude_code_credentials": {"accessToken": "other", "refreshToken": "rt"}}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": {"p": 1}, "pool.entry_id_for_api_key": null, "read_claude_code_credentials": null}}}
+{"func": "_refresh_anthropic_credentials", "in": {"failed_api_key": "tok", "io": {"load_pool": null}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": {"p": 1}, "pool.has_credentials": true, "pool.select": null, "pool.try_refresh_current": {"runtime_api_key": "new"}}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": {"p": 1}, "pool.has_credentials": true, "pool.select": null, "pool.try_refresh_current": null, "resolve_xai_oauth_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": true}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": null, "resolve_xai_oauth_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": true}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": {"p": 1}, "pool.has_credentials": false, "resolve_xai_oauth_runtime_credentials": {}, "_creds_have_api_key": false}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": {"p": 1}, "pool.has_credentials": true, "pool.select": null, "pool.try_refresh_current": {"runtime_api_key": "  "}, "resolve_xai_oauth_runtime_credentials": {"api_key": "k"}, "_creds_have_api_key": true}}}
+{"func": "_refresh_xai_oauth_credentials", "in": {"io": {"load_pool": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": ["tok", "https://b"]}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": ["", "https://b"]}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": ["tok", ""]}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": [null, "https://b"]}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": ["tok", null]}}}
+{"func": "_refresh_vertex_credentials", "in": {"io": {"get_vertex_config": {"__raise__": "RuntimeError", "msg": "v"}}}}
+{"func": "_deepinfra_strict_vision_backend", "in": {"model": "vision-m", "io": {"resolve_provider_client": [{"kind": "C"}, "vision-m"]}}}
+{"func": "_deepinfra_strict_vision_backend", "in": {"model": null, "io": {"_resolve_provider_vision_default": "dv", "resolve_provider_client": [{"kind": "C"}, "dv"]}}}
+{"func": "_deepinfra_strict_vision_backend", "in": {"model": null, "io": {"_resolve_provider_vision_default": null}}}
+{"func": "_deepinfra_strict_vision_backend", "in": {"model": "", "io": {"_resolve_provider_vision_default": "dv", "resolve_provider_client": [{"kind": "C"}, "dv"]}}}
+{"func": "_deepinfra_strict_vision_backend", "in": {"model": "m", "io": {"resolve_provider_client": {"__raise__": "RuntimeError", "msg": "rpc"}}}}
+{"func": "_finalize_vision_client", "in": {"resolved_provider": "nous", "sync_client": null, "default_model": "d", "resolved_model": null, "async_mode": false}}
+{"func": "_finalize_vision_client", "in": {"resolved_provider": "nous", "sync_client": {"kind": "C"}, "default_model": "d", "resolved_model": null, "async_mode": false}}
+{"func": "_finalize_vision_client", "in": {"resolved_provider": "nous", "sync_client": {"kind": "C"}, "default_model": "d", "resolved_model": "override", "async_mode": false}}
+{"func": "_finalize_vision_client", "in": {"resolved_provider": "nous", "sync_client": {"kind": "C"}, "default_model": "d", "resolved_model": null, "async_mode": true, "io": {"_to_async_client": [{"kind": "AC"}, "d"]}}}
+{"func": "_finalize_vision_client", "in": {"resolved_provider": "nous", "sync_client": {"kind": "C"}, "default_model": "d", "resolved_model": "ov", "async_mode": true, "io": {"_to_async_client": [{"kind": "AC"}, "ov"]}}}
+{"func": "_vision_auto_route", "in": {"runtime": {"provider": "nous", "model": "m"}, "resolved_model": null, "resolved_api_mode": null, "async_mode": false, "io": {"_vision_main_provider_client": [{"kind": "C"}, "dm"]}}}
+{"func": "_vision_auto_route", "in": {"runtime": {}, "resolved_model": null, "resolved_api_mode": null, "async_mode": false, "io": {"_read_main_provider": "openrouter", "_read_main_model": "m", "_vision_main_provider_client": [null, null], "_resolve_strict_vision_backend": [{"kind": "C"}, "dv"]}}}
+{"func": "_vision_auto_route", "in": {"runtime": {"provider": "moa", "model": "preset"}, "resolved_model": null, "resolved_api_mode": null, "async_mode": false, "io": {"_resolve_moa_aggregator": ["agg", "aggmodel"], "_vision_main_provider_client": [{"kind": "C"}, "dm"]}}}
+{"func": "_vision_auto_route", "in": {"runtime": {"provider": "auto"}, "resolved_model": null, "resolved_api_mode": null, "async_mode": false, "io": {"_read_main_provider": "", "_read_main_model": "", "_resolve_strict_vision_backend": {"$seq": [[null, null], [{"kind": "C"}, "dv"]]}}}}
+{"func": "_vision_auto_route", "in": {"runtime": {"provider": "nous", "model": "m"}, "resolved_model": "ov", "resolved_api_mode": null, "async_mode": true, "io": {"_vision_main_provider_client": [{"kind": "C"}, "dm"], "_to_async_client": [{"kind": "AC"}, "ov"]}}}
+{"func": "_vision_auto_route", "in": {"runtime": {"provider": "nous", "model": "m"}, "resolved_model": null, "resolved_api_mode": null, "async_mode": false, "io": {"_vision_main_provider_client": [null, null], "_resolve_strict_vision_backend": {"$seq": [[null, null], [null, null], [null, null]]}}}}

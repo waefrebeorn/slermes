@@ -118,7 +118,10 @@ static char *cx_strip_dup(const char *s) {
         const char *p = start;
         const char *last = p;
         unsigned cp = 0;
-        while (*p) { last = p; cp = cx_cp_next(&p); }
+        /* Bound the scan by `end`, not NUL: scanning to NUL every iteration
+         * recomputes the SAME original last codepoint, so `end = last` never
+         * decreases -> infinite loop on any trailing whitespace. */
+        while (p < end) { last = p; cp = cx_cp_next(&p); }
         if (!cx_isspace_cp(cp)) break;
         end = last;
     }

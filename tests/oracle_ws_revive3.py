@@ -322,8 +322,16 @@ assert NS_FILES["_CHAT_IMAGE_MAGIC"][0][0] == b"\x89PNG\r\n\x1a\n"
 def make_rec(script, trace):
     def rec(name, argb, make=None):
         def call(*a, **k):
-            r = script.next(name)
             ev = {"ev": name, "args": argb(a, k), "ret": None}
+            try:
+                r = script.next(name)
+            except RuntimeError as e:
+                # w3_seam records the failed call (raise-spec ret) before
+                # propagating; mirror that, or unscripted/exhausted seams
+                # silently vanish from the PY trace.
+                ev["ret"] = {"__raise__": "RuntimeError", "message": str(e)}
+                trace.append(ev)
+                raise
             if isinstance(r, Raise):
                 ev["ret"] = r.spec
                 trace.append(ev)

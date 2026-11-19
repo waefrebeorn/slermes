@@ -200,6 +200,12 @@ NS_KW = load_ns("gateway/kanban_watchers_notifier.py", base_seeds("quarry_r3_kw"
 
 NS_HB["replace"] = dataclasses.replace
 NS_SL["os"] = types.SimpleNamespace(path=posixpath)  # POSIX os.path.normpath for _rel_posix
+# kanban_watchers_notifier imports `logger` from kanban_watchers_common at
+# module level; the AST namespace needs the name itself (a silent double —
+# the C port models the except-path logger.debug as a noop).
+NS_KW["logger"] = types.SimpleNamespace(
+    debug=lambda *a, **k: None, warning=lambda *a, **k: None,
+    info=lambda *a, **k: None, error=lambda *a, **k: None)
 
 
 # ── recording seam factory ──────────────────────────────────────────────────

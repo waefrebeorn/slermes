@@ -996,7 +996,7 @@ json_t *scf_render_only(scf_ctx *ctx, const json_t *args, const json_t *sessions
     free(os);
     json_free(cnt);
     json_t *ret = json_array();
-    json_append(ret, rendered);
+    json_append(ret, rendered ? rendered : json_null());
     json_append(ret, scf_sb_json(&sb));
     return ret;
 }
@@ -1028,7 +1028,7 @@ json_t *scf_render_html(scf_ctx *ctx, const json_t *args, const json_t *sessions
                    single ? "session" : "sessions", os);
     free(os);
     json_t *ret = json_array();
-    json_append(ret, content);
+    json_append(ret, content ? content : json_null());
     json_append(ret, scf_sb_json(&sb));
     return ret;
 }

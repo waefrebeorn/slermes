@@ -1,0 +1,288 @@
+{"func": "_live_or_column", "in": {"args": {"message": {"_x": 1, "x": 2}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {"_x": null, "x": 2}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {"x": 2}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {"_x": "", "x": "col"}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {"x": null}, "live_key": "_x", "column": "x"}}}
+{"func": "_live_or_column", "in": {"args": {"message": {"_x": {"a": 1}}, "live_key": "_x", "column": "x"}}}
+{"func": "_count", "in": {"args": {"value": 5}}}
+{"func": "_count", "in": {"args": {"value": 0}}}
+{"func": "_count", "in": {"args": {"value": -3}}}
+{"func": "_count", "in": {"args": {"value": true}}}
+{"func": "_count", "in": {"args": {"value": false}}}
+{"func": "_count", "in": {"args": {"value": "5"}}}
+{"func": "_count", "in": {"args": {"value": null}}}
+{"func": "_count", "in": {"args": {"value": {"__float__": true, "v": 3.0}}}}
+{"func": "_count", "in": {"args": {"value": {"__float__": true, "v": 1.5}}}}
+{"func": "_count", "in": {"args": {"value": 1}}}
+{"func": "_json_text", "in": {"args": {"value": 5, "empty": []}}}
+{"func": "_json_text", "in": {"args": {"value": null, "empty": "fallback"}}}
+{"func": "_json_text", "in": {"args": {"value": {"a": 1}, "empty": []}}}
+{"func": "_json_text", "in": {"args": {"value": [1, 2], "empty": {}}}}
+{"func": "_json_text", "in": {"args": {"value": "[1, 2]", "empty": []}, "io": {"json.loads": [1, 2]}}}
+{"func": "_json_text", "in": {"args": {"value": "{\"a\": 1}", "empty": {}}, "io": {"json.loads": {"a": 1}}}}
+{"func": "_json_text", "in": {"args": {"value": "3.5", "empty": null}, "io": {"json.loads": {"__float__": true, "v": 3.5}}}}
+{"func": "_json_text", "in": {"args": {"value": "\"txt\"", "empty": []}, "io": {"json.loads": "txt"}}}
+{"func": "_json_text", "in": {"args": {"value": "bad", "empty": []}, "io": {"json.loads": {"__script__": true, "raise": {"type": "ValueError", "message": "Expecting value: line 1 column 1 (char 0)"}}}}}
+{"func": "_json_text", "in": {"args": {"value": "bad", "empty": {"d": 1}}, "io": {"json.loads": {"__script__": true, "raise": {"type": "ValueError", "message": "Expecting value"}}}}}
+{"func": "_json_text", "in": {"args": {"value": "x", "empty": []}, "io": {"json.loads": {"__script__": true, "raise": {"type": "TypeError", "message": "boom"}}}}}
+{"func": "_json_text", "in": {"args": {"value": "null", "empty": "e"}, "io": {"json.loads": null}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "user", "content": "hi"}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "user", "content": "hi", "merged_durable_rows": 2, "unnamed_durable_rows": 3, "absorbed_row_ids": {"__tuple__": true, "v": [1, 2]}}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "", "content": "hi"}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": null, "content": "hi"}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "merged_durable_rows": true}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "merged_durable_rows": {"__float__": true, "v": 2.0}}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "merged_durable_rows": -1}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "unnamed_durable_rows": "2"}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_row_ids": [1, 2]}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_row_ids": {"__tuple__": true, "v": [true]}}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_row_ids": {"__tuple__": true, "v": [0]}}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_row_ids": {"__tuple__": true, "v": [1, -2]}}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"content": "c"}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {}}}}
+{"func": "NewMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "bogus": 1}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "user", "content": "hi", "timestamp": {"__float__": true, "v": 1.5}, "tool_name": "t", "tool_call_id": "c1", "display_kind": "dk", "api_content": "ap", "display_metadata": {"m": 1}, "effect_disposition": "ed", "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "reasoning_details": {"d": 1}, "codex_reasoning_items": [1], "codex_message_items": {"x": 1}, "token_count": 9}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": "[{\"id\": \"c1\"}]"}}, "io": {"json.loads": [{"id": "c1"}]}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": "bad"}}, "io": {"json.loads": {"__script__": true, "raise": {"type": "ValueError", "message": "Expecting value"}}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": [{"id": "x"}]}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": 5}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": "notjson"}}, "io": {"json.loads": "notjson"}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uids": {"a": "u1"}, "tool_call_uids": {"b": "u2"}}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_call_uids": "{\"b\": \"u2\"}"}}, "io": {"json.loads": {"b": "u2"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uids": "bad"}}, "io": {"json.loads": {"__script__": true, "raise": {"type": "ValueError", "message": "Expecting value"}}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uids": "5"}}, "io": {"json.loads": 5}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_message_uids": "[\"a\", \"b\"]"}}, "io": {"json.loads": ["a", "b"]}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "absorbed_message_uids": ["c"]}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_message_uids": 5}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uid": "tu1", "tool_call_uid": "tu2"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_call_uid": ""}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "tool_call_uid": 5}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": 7, "_db_row_snapshot": "s1", "message_uid": "m1"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": true}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": {"__float__": true, "v": 3.0}}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": "7"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_db_row_snapshot": 5, "message_uid": ""}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "message_uid": 9}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "platform_message_id": "", "message_id": "pm"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "platform_message_id": "direct", "message_id": "pm"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "message_id": ""}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "data_use": ["x", "y"]}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "data_use": "ab"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "data_use": 5}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "data_use": null}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_row_ids": [1, 2, true, 0, -3, "x", {"__float__": true, "v": 4.0}]}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_row_ids": "nope"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_restored_from_store": true}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_restored_from_store": 1}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "u", "content": "c", "_compressed_summary": 1, "observed": "yes"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"role": "", "content": "c"}}}}
+{"func": "NewMessage.from_live", "in": {"args": {"message": {"content": "c"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "canonical_row": {"k": "v"}, "message_uid": "mu", "tool_call_uids": {"c": "u"}, "tool_call_uid": "tu"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "tool_call_uids": {}}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": {"__float__": true, "v": 3.7}, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": "7", "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": null, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1, "disposition": "bogus", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1}}}}
+{"func": "RowOutcome.as_row_annotation", "in": {"args": {"outcome": {"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "bogus": 2}}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {"outcomes": []}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {"outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 2, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 3, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {"outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 2, "disposition": "repaired", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 3, "disposition": "adopted", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {"outcomes": [{"id": 1, "disposition": "repaired", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 2, "disposition": "adopted", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {"outcomes": [{"id": 1, "disposition": "bogus", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}
+{"func": "BatchAppendResult.inserted", "in": {"args": {}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": {"__progress__": true, "v": {"outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}], "uids": [{"message_uid": "mu"}]}}}}}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": {"__progress__": true, "v": {"outcomes": [{"id": 1, "disposition": "repaired", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": 2, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}], "uids": [{}, {"tool_call_uid": "tu", "tool_call_uids": {"c": "u"}}]}}}}}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": {"__progress__": true, "v": {"outcomes": [{"id": 1, "disposition": "bogus", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}], "uids": []}}}}}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": 5}}}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": null}}}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {}}}}}
+{"func": "batch_progress", "in": {"args": {"error": 5}}}
+{"func": "batch_progress", "in": {"args": {"error": null}}}
+{"func": "batch_progress", "in": {"args": {"error": {"attrs": {"batch_progress": {"__progress__": true, "v": {"outcomes": [], "uids": []}}}}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "user", "content": "hi"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "user", "content": "hi", "tool_call_id": "c1", "tool_calls": {"__tuple__": true, "v": [{"id": "t"}]}, "timestamp": {"__float__": true, "v": 1.5}, "row_id": 3, "persisted": true, "db_row_snapshot": "s", "message_uid": "m", "absorbed_row_ids": {"__tuple__": true, "v": [1]}, "merged_durable_rows": 2, "retired_durable_rows": {"__tuple__": true, "v": [{"__held__": true, "v": {"role": "user", "content": "old"}}]}, "tool_call_ids": {"__tuple__": true, "v": ["t"]}, "own_row": true, "retired_row": false}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": 5, "content": "c"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "", "content": "c"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_id": 5}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_calls": []}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "timestamp": true}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "timestamp": "1"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "timestamp": {"__float__": true, "v": 0.5}}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "row_id": 0}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "row_id": true}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "persisted": 1}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "merged_durable_rows": -1}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "retired_durable_rows": []}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "retired_durable_rows": {"__tuple__": true, "v": [{"role": "u", "content": "c"}]}}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "retired_durable_rows": {"__tuple__": true, "v": [{"__held__": true, "v": {"role": "", "content": "c"}}]}}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_ids": []}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "own_row": 1}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "retired_row": "x"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"content": "c"}}}}
+{"func": "HeldMessage.__post_init__", "in": {"args": {"fields": {"role": "u", "content": "c", "timestamp": null, "row_id": null}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"covered_ids": {"__tuple__": true, "v": [1, 2]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"covered_ids": [1]}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"covered_ids": {"__tuple__": true, "v": [true]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"covered_ids": {"__tuple__": true, "v": [0]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"unresolved": {"__tuple__": true, "v": [{"__held__": true, "v": {"role": "u", "content": "c"}}]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"unresolved": {"__tuple__": true, "v": [{"role": "u", "content": "c"}]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"unresolved": []}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"unresolved": {"__tuple__": true, "v": [{"__held__": true, "v": {"role": "u", "content": "c", "persisted": 1}}]}}}}}
+{"func": "HeldCoverage.__post_init__", "in": {"args": {"fields": {"covered_ids": {"__tuple__": true, "v": [1]}, "unresolved": {"__tuple__": true, "v": [{"__held__": true, "v": {"role": "a", "content": "b"}}]}}}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {"rows": []}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {"rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 2, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 3, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {"rows": [{"id": {"__float__": true, "v": 3.7}, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {"rows": [{"id": "7", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {}}}
+{"func": "ReplaceResult.survivor_ids", "in": {"args": {"rows": [{"id": null, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a", "_canonical_row": {"x": 1}}, {"role": "a", "content": "b"}], "result": null}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a", "_canonical_row": {"x": 1}}], "result": {"kind": "batch", "outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "canonical_row": {"k": "v"}, "message_uid": "mu", "tool_call_uids": {"c": "u"}, "tool_call_uid": "tu"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}, {"role": "u", "content": "b"}], "result": {"kind": "batch", "outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}, {"role": "u", "content": "b"}], "result": {"kind": "batch", "outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}, {"id": null, "disposition": "repaired", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}, {"role": "u", "content": "b"}], "result": {"kind": "progress", "outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}], "uids": [{"message_uid": "mu", "tool_call_uid": "tu", "tool_call_uids": {"c": "u"}}, {"message_uid": "m2"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}], "result": {"kind": "progress", "outcomes": [], "uids": [{"message_uid": "", "tool_call_uid": null, "tool_call_uids": {}}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}, {"role": "u", "content": "b"}], "result": {"kind": "replace", "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 2, "timestamp": {"__float__": true, "v": 2.5}, "db_row_snapshot": "s2", "message_uid": "u2", "tool_call_uids": {"c": "u"}, "tool_call_uid": "tu"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a", "message_uid": "keep", "timestamp": {"__float__": true, "v": 9.0}}], "result": {"kind": "replace", "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": null, "message_uid": "mu"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}], "result": {"kind": "replace", "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": ""}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}, {"role": "u", "content": "b"}], "result": {"kind": "replace", "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [], "result": {"kind": "batch", "outcomes": [{"id": 1, "disposition": "appended", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a"}], "result": {"kind": "progress", "outcomes": [{"id": 1, "disposition": "bogus", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap"}], "uids": [{}]}}}}
+{"func": "stamp_live", "in": {"args": {"messages": [{"role": "u", "content": "a", "_canonical_row": null}], "result": {"kind": "replace", "rows": [{"id": "7", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"active_count": 0, "rows": []}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"active_count": 3, "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 2, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 3, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"active_count": 1, "rows": [{"id": {"__float__": true, "v": 3.7}, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"rows": []}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"active_count": 1}}}
+{"func": "CompactionResult.row_ids", "in": {"args": {"active_count": 1, "rows": [{"id": "7", "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}]}}}
+{"func": "CompactionResult.row_snapshots", "in": {"args": {"active_count": 0, "rows": []}}}
+{"func": "CompactionResult.row_snapshots", "in": {"args": {"active_count": 2, "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "snap", "message_uid": "mu"}, {"id": 2, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": null, "message_uid": "mu"}]}}}
+{"func": "CompactionResult.row_snapshots", "in": {"args": {"active_count": 1, "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "", "message_uid": "mu"}]}}}
+{"func": "CompactionResult.row_snapshots", "in": {"args": {"active_count": 1}}}
+{"func": "CompactionResult.row_snapshots", "in": {"args": {"active_count": 2, "rows": [{"id": 1, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "a", "message_uid": "mu"}, {"id": 2, "timestamp": {"__float__": true, "v": 1.0}, "db_row_snapshot": "b", "message_uid": "mu"}]}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": true, "until": {"__float__": true, "v": 5.0}, "error": "e"}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": false}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": false, "until": null, "error": null}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": false, "until": {"__float__": true, "v": 1.0}}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": false, "error": "e"}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": 0, "until": {"__float__": true, "v": 1.0}}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": "yes", "error": "e"}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {}}}}
+{"func": "CooldownSnapshot.__post_init__", "in": {"args": {"fields": {"present": true}}}}
+{"func": "ConversationRevision.as_tuple", "in": {"args": {"fields": {"lineage_ids": {"__tuple__": true, "v": ["s1", "s2"]}, "active_count": 3, "max_active_id": 9, "transcript_revision": 12}}}}
+{"func": "ConversationRevision.as_tuple", "in": {"args": {"fields": {"lineage_ids": ["s1"], "active_count": 0, "max_active_id": 0, "transcript_revision": 0}}}}
+{"func": "ConversationRevision.as_tuple", "in": {"args": {"fields": {"lineage_ids": {"__tuple__": true, "v": []}, "active_count": 1, "max_active_id": 1, "transcript_revision": 1}}}}
+{"func": "ConversationRevision.as_tuple", "in": {"args": {"fields": {"lineage_ids": {"__tuple__": true, "v": ["s1"]}}}}}
+{"func": "ConversationRevision.as_tuple", "in": {"args": {"fields": {"lineage_ids": {"__tuple__": true, "v": ["s1"]}, "active_count": 2, "max_active_id": 5, "transcript_revision": 7, "bogus": 1}}}}
+{"func": "ResumeTooLarge.__init__", "in": {"args": {"message_count": 12, "limit": 10}}}
+{"func": "ResumeTooLarge.__init__", "in": {"args": {"message_count": 11, "limit": 10, "scope": "the tip session"}}}
+{"func": "ResumeTooLarge.__init__", "in": {"args": {"message_count": 0, "limit": 0}}}
+{"func": "ResumeTooLarge.__init__", "in": {"args": {"message_count": 100001, "limit": 100000}}}
+{"func": "ResumeTooLarge.__init__", "in": {"args": {"message_count": 1, "limit": 0, "scope": ""}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1"}}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {}}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": ""}}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": false}}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": 0}}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": null}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": []}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done"}}}}
+{"func": "DelegationDelivery.__post_init__", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": 5}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1", "delivery_notice": "n"}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1"}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1", "delivery_notice": null}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1", "delivery_notice": ""}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": 5}}}}}
+{"func": "DelegationDelivery.identity", "in": {"args": {"fields": {"content": "done", "metadata": {"delegation_id": "d1", "delivery_notice": {"__float__": true, "v": 1.5}}}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "user", "content": "hi"}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "assistant", "content": null, "db_persisted": false}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "db_persisted": 0}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "assistant", "content": "x", "db_row_snapshot": "s", "row_id": 5, "message_uid": "m", "tool_call_uids": {"c": "u"}, "tool_call_uid": "tu", "absorbed_message_uids": {"__tuple__": true, "v": ["a"]}, "api_content": "ap", "display_kind": "dk", "display_metadata": {"m": 1}, "data_use": {"__tuple__": true, "v": ["x"]}, "compressed_summary": true, "timestamp": {"__float__": true, "v": 1.5}, "tool_call_id": "c1", "tool_name": "t", "effect_disposition": "ed", "tool_calls": {"__tuple__": true, "v": [{"id": "t"}]}, "message_id": "pm", "observed": true, "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "reasoning_details": {"d": 1}, "codex_reasoning_items": [1], "codex_message_items": {"x": 1}, "absorbed_row_ids": {"__tuple__": true, "v": [1, 2]}, "merged_turn_prefix": "mp", "merged_durable_rows": 2, "unnamed_durable_rows": 1, "retired_durable_rows": [{"role": "u"}]}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_uid": "u9", "_tool_call_uid_stored": true}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_uid": "u9", "_tool_call_uid_stored": true, "absorbed_message_uids": {"__tuple__": true, "v": ["a", "b"]}}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_uid": "", "_tool_call_uid_stored": true}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_call_uid": "u9"}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "reasoning_content": "", "reasoning_details": [], "codex_reasoning_items": [], "codex_message_items": null}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "row_id": {"__float__": true, "v": 3.7}}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "row_id": "7"}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "tool_calls": 5}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_row_ids": {"__tuple__": true, "v": ["x"]}}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "timestamp": 0, "message_uid": "", "data_use": {"__tuple__": true, "v": []}, "observed": false, "compressed_summary": false}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "absorbed_message_uids": {"__tuple__": true, "v": ["a"]}, "data_use": {"__tuple__": true, "v": ["x", "y"]}, "tool_calls": {"__tuple__": true, "v": []}}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u", "content": "c", "row_id": true}}}}
+{"func": "ConversationMessage.as_openai_message", "in": {"args": {"fields": {"role": "u"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "user", "content": "hi"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "user", "content": "hi", "_db_persisted": true}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_db_persisted": 1}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_db_persisted": false}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "bogus": 1}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"content": "c"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uids": {"a": "b"}, "_tool_call_uid": "u1"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "api_content": "ap", "_tool_call_uid": "u1"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_tool_call_uid": "u1", "timestamp": {"__float__": true, "v": 1.0}}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": "7"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": {"__float__": true, "v": 3.7}}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": null}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_row_id": "x"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": [{"id": "t"}]}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": "ab"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "tool_calls": 5}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_row_ids": [1, 2]}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_row_ids": ["x"]}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_row_ids": null}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "data_use": {"a": 1, "b": 2}}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "observed": 1, "_compressed_summary": "yes"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": 5, "content": "c"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_db_persisted": true, "_row_id": 5, "message_uid": "m", "_tool_call_uids": {"c": "u"}, "_absorbed_message_uids": ["a"], "api_content": "ap", "display_kind": "dk", "display_metadata": {"m": 1}, "data_use": ["x"], "_compressed_summary": true, "timestamp": {"__float__": true, "v": 1.5}, "tool_call_id": "c1", "tool_name": "t", "effect_disposition": "ed", "tool_calls": [{"id": "t"}], "message_id": "pm", "observed": true, "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "reasoning_details": {"d": 1}, "codex_reasoning_items": [1], "codex_message_items": {"x": 1}, "_tool_call_uid": "tu", "_absorbed_row_ids": [1, 2], "_merged_turn_prefix": "mp", "_merged_durable_rows": 2, "_unnamed_durable_rows": 1, "_retired_durable_rows": [{"role": "u"}]}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "_absorbed_message_uids": "ab"}}}}
+{"func": "ConversationMessage.from_openai_message", "in": {"args": {"message": {"role": "u", "content": "c", "weird'key": 1}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "latest": true}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "offset": 2}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "view": "display"}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "include_lineage": true}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "view": "all"}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": null, "latest": true, "offset": 3}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "offset": 0, "view": "active"}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"view": "bogus"}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"after_id": 5, "latest": "yes"}}}}
+{"func": "TranscriptRead.__post_init__", "in": {"args": {"fields": {"view": "display", "limit": 10, "offset": 2}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 3, "session_id": "s", "role": "user", "content": "c", "timestamp": {"__float__": true, "v": 1.5}, "visibility": "active"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 3, "session_id": "s", "role": "user", "content": "c", "timestamp": {"__float__": true, "v": 1.5}, "visibility": "compaction_archived", "observed": true, "compressed_summary": true}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 3, "session_id": "s", "role": "user", "content": "c", "timestamp": {"__float__": true, "v": 1.5}, "visibility": "rewound"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 3, "session_id": "s", "role": "tool", "content": {"parts": [1]}, "timestamp": {"__float__": true, "v": 1.5}, "visibility": "active", "tool_call_id": "c1", "tool_calls": [{"id": "t"}], "tool_name": "t", "effect_disposition": "ed", "token_count": 5, "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "reasoning_details": "rd", "codex_reasoning_items": "cri", "codex_message_items": "cmi", "platform_message_id": "pm", "api_content": "ap", "display_kind": "dk", "display_metadata": {"m": 1}, "message_uid": "m", "absorbed_message_uids": "amu", "tool_call_uids": "tcu", "tool_call_uid": "tcuid"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": "7", "session_id": "s", "role": "u", "content": "c", "timestamp": {"__float__": true, "v": 1.0}, "visibility": "active"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": null, "session_id": "s", "role": "u", "content": "c", "timestamp": {"__float__": true, "v": 1.0}, "visibility": "active"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 1, "session_id": 9, "role": "u", "content": "c", "timestamp": {"__float__": true, "v": 1.0}, "visibility": "active"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 1, "session_id": "s", "role": "u", "content": "c", "timestamp": {"__float__": true, "v": 1.0}, "visibility": "bogus"}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": 1}}}}
+{"func": "TranscriptRow.as_wire_row", "in": {"args": {"fields": {"id": {"__float__": true, "v": 3.7}, "session_id": "s", "role": "u", "content": "c", "timestamp": {"__float__": true, "v": 1.0}, "visibility": "active", "observed": "yes"}}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"check": "seam", "pinned": true}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"check": "seam", "pinned": false}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"check": "seam", "pinned": "x"}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"check": "seam"}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"check": 5, "pinned": true}}}
+{"func": "ReadCheck.__init__", "in": {"args": {"pinned": true}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": true}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": false}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": 5}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": null}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": ""}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": [1]}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": {"__script__": true, "raise": {"type": "ValueError", "message": "check failed"}}}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}, "io": {"check": [true, false]}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": 5, "pinned": true}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": null, "pinned": true}}}
+{"func": "ReadCheck.__call__", "in": {"args": {"check": "seam", "pinned": true}}, "fail_closed": true}
+{"func": "_same", "in": {"args": {"value": 5}}}
+{"func": "_same", "in": {"args": {"value": "txt"}}}
+{"func": "_same", "in": {"args": {"value": null}}}
+{"func": "_same", "in": {"args": {"value": {"a": 1}}}}
+{"func": "_same", "in": {"args": {"value": [1, 2]}}}
+{"func": "_same", "in": {"args": {"value": {"__float__": true, "v": 1.5}}}}
+{"func": "_same", "in": {"args": {"value": true}}}

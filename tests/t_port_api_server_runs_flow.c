@@ -22,7 +22,7 @@
 #include <stdbool.h>
 
 #include "hermes_json.h"
-#include "api_server_runs_flow.c"
+#include "gateway/platforms/api_server_runs_flow.c"
 
 typedef struct {
     const json_t *in;
@@ -360,18 +360,21 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         json_set(out, "ret", ret);
     } else if (strcmp(func, "run_user_message") == 0) {
         json_t *err_desc = NULL;
-        json_t *msg = asrun_run_user_message(json_obj_get(in, "raw_input"), &s, &err_desc);
+        json_t *msg = asrun_run_user_message(json_obj_get(in, "raw_input"), &s, &err_desc, &err);
         json_t *ret = json_array();
         json_append(ret, msg ? msg : json_null());
         json_append(ret, err_desc ? err_desc : json_null());
         json_set(out, "ret", ret);
+    } else if (strcmp(func, "call_id") == 0) {
+        json_set(out, "ret", asrun_call_id(json_obj_get(in, "kw")));
     } else if (strcmp(func, "tool_completed_preview") == 0) {
         char *r = asrun_tool_completed_preview(json_obj_get(in, "result"), &s);
         json_set(out, "ret", json_string(r ? r : ""));
         free(r);
     } else if (strcmp(func, "run_event") == 0) {
-        json_set(out, "ret", asrun_run_event(run_id, in_str(&ctx, "name", ""),
-                                             json_obj_get(in, "fields"), &s));
+        json_t *r = asrun_run_event(run_id, in_str(&ctx, "name", ""),
+                                    json_obj_get(in, "fields"), &s, &err);
+        json_set(out, "ret", r ? r : json_null());
     } else if (strcmp(func, "room_permission_for") == 0) {
         json_set(out, "ret", json_string(asrun_room_permission_for(request)));
     } else if (strcmp(func, "room_run_scope") == 0) {

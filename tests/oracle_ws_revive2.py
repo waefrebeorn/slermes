@@ -238,7 +238,12 @@ def install_mod(dotted, **attrs):
 
 
 def uninstall_mod(dotted):
-    sys.modules.pop(dotted, None)
+    # Block re-import, don't just pop: the quarry venv's editable-install
+    # meta-path finder resurrects the REAL module even under a stub parent
+    # (__path__=[]), so a bare pop cannot simulate an unavailable module.
+    # None in sys.modules makes `import dotted` raise ImportError — exactly
+    # what the live `except Exception` import guards catch.
+    sys.modules[dotted] = None
     parent, _, leaf = dotted.rpartition(".")
     if parent and parent in sys.modules:
         p = sys.modules[parent]
@@ -361,8 +366,16 @@ NS_WMODELS = extract_method(
 def make_rec(script, trace):
     def rec(name, argb, make=None):
         def call(*a, **k):
-            r = script.next(name)
             ev = {"ev": name, "args": argb(a, k), "ret": None}
+            try:
+                r = script.next(name)
+            except RuntimeError as e:
+                # The C dispatcher records the failed call (raise-spec ret)
+                # before propagating; mirror that, or unscripted/exhausted
+                # seams silently vanish from the PY trace.
+                ev["ret"] = {"__raise__": "RuntimeError", "message": str(e)}
+                trace.append(ev)
+                raise
             if isinstance(r, Raise):
                 ev["ret"] = r.spec
                 trace.append(ev)
@@ -564,8 +577,13 @@ def d_update_provider_config(work, trace, script):
     holder = {}
 
     def load_config_call(*a, **k):
-        r = script.next("load_config")
         ev = {"ev": "load_config", "args": {}, "ret": None}
+        try:
+            r = script.next("load_config")
+        except RuntimeError as e:
+            ev["ret"] = {"__raise__": "RuntimeError", "message": str(e)}
+            trace.append(ev)
+            raise
         if isinstance(r, Raise):
             ev["ret"] = r.spec
             trace.append(ev)
@@ -613,8 +631,13 @@ def d_whatsapp_linked(work, trace, script):
         def read_text(self, encoding="utf-8"):
             # Dedicated recorder: the utf-8-sig BOM strip happens BEFORE
             # the event is recorded, exactly as the C dispatcher does.
-            r = script.next("read_text")
             args = {"path": self.s, "encoding": encoding}
+            try:
+                r = script.next("read_text")
+            except RuntimeError as e:
+                trace.append({"ev": "read_text", "args": args,
+                              "ret": {"__raise__": "RuntimeError", "message": str(e)}})
+                raise
             if isinstance(r, Raise):
                 trace.append({"ev": "read_text", "args": args, "ret": r.spec})
                 raise r.exc

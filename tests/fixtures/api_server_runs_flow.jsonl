@@ -137,3 +137,23 @@
 {"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": 42, "status": {"status": "queued"}}, "profile": "p1", "api_key_ret": "k1"}}
 {"func": "resolve_conversation_history", "in": {"body": {"previous_response_id": "p1", "instructions": null}, "stored_ret": {"conversation_history": [{"role": "user", "content": "h"}], "session_id": "s1", "instructions": "si"}}}
 {"func": "remember_room_retention", "in": {"claims": {"expires_at": 3}, "request_set_raises": "RuntimeError"}}
+{"func": "call_id", "in": {"kw": {}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": "c1"}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": ""}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": null}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": 0}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": 123}}}
+{"func": "call_id", "in": {"kw": {"other": "x"}}}
+{"func": "call_id", "in": {"kw": {"tool_call_id": false}}}
+{"func": "run_user_message", "in": {"raw_input": ["s"]}}
+{"func": "run_user_message", "in": {"raw_input": [true]}}
+{"func": "run_user_message", "in": {"raw_input": [null]}}
+{"func": "run_user_message", "in": {"raw_input": [[]]}}
+{"func": "run_user_message", "in": {"raw_input": [5.5]}}
+{"func": "run_user_message", "in": {"raw_input": [{"content": "a"}, 7]}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "n", "fields": {"name": "y"}, "clock": 1}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "n", "fields": {"name": "y", "run_id": "x"}, "clock": 1}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "n", "fields": {"run_id": "x", "name": "y"}, "clock": 1}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "state": {"run_statuses": {"r1": null}}, "store_record": {"status": {"status": "completed"}, "owner_pid": 0}}}
+{"func": "tool_completed_preview", "in": {"result": {"msg": "he said \"hi\"\nbye", "u": "café"}}}
+{"func": "terminal_run_status", "in": {"result": {"failed": true, "turn_exit_reason": 42, "pending_steer": {"text": "go"}}}}

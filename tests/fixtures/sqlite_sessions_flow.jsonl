@@ -1,0 +1,243 @@
+{"func": "_stripped", "in": {"value": "  hi  "}}
+{"func": "_stripped", "in": {"value": ""}}
+{"func": "_stripped", "in": {"value": "   "}}
+{"func": "_stripped", "in": {"value": null}}
+{"func": "_stripped", "in": {"value": 5}}
+{"func": "_stripped", "in": {"value": "x"}}
+{"func": "_stripped", "in": {"value": "\t\n\r "}}
+{"func": "_stripped", "in": {"value": " a b "}}
+{"func": "_json_value", "in": {"text": "{\"a\": 1}"}}
+{"func": "_json_value", "in": {"text": ""}}
+{"func": "_json_value", "in": {"text": null}}
+{"func": "_json_value", "in": {"text": 5}}
+{"func": "_json_value", "in": {"text": "bad"}}
+{"func": "_json_value", "in": {"text": "[1, 2]"}}
+{"func": "_json_value", "in": {"text": "\"s\""}}
+{"func": "_json_value", "in": {"text": "01"}}
+{"func": "_json_value", "in": {"text": "{\"a\": 1} x"}}
+{"func": "_json_value", "in": {"text": "true"}}
+{"func": "_json_value", "in": {"text": "null"}}
+{"func": "_json_value", "in": {"text": "{\"a\": 1,}"}}
+{"func": "_json_value", "in": {"text": "{\"a\": \"\\q\"}"}}
+{"func": "_json_value", "in": {"text": "tru"}}
+{"func": "_json_value", "in": {"text": " \n {\"a\": 1} \t "}}
+{"func": "_json_value", "in": {"text": "-"}}
+{"func": "_json_value", "in": {"text": "1."}}
+{"func": "_json_value", "in": {"text": "1e"}}
+{"func": "_tool_pin", "in": {"text": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6abcd"}}
+{"func": "_tool_pin", "in": {"text": "1111111111111111111111111111111111111111111111111111111111111111"}}
+{"func": "_tool_pin", "in": {"text": "111111111111111111111111111111111111111111111111111111111111111"}}
+{"func": "_tool_pin", "in": {"text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}}
+{"func": "_tool_pin", "in": {"text": "{\"tools\": []}"}}
+{"func": "_tool_pin", "in": {"text": null}}
+{"func": "_tool_pin", "in": {"text": "[]"}}
+{"func": "_tool_pin", "in": {"text": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6abcd "}}
+{"func": "_ids", "in": {"values": ["a", "b"]}}
+{"func": "_ids", "in": {"values": []}}
+{"func": "_ids", "in": {"values": null}}
+{"func": "_ids", "in": {"values": ["a", "a"]}}
+{"func": "_ids", "in": {"values": ["one"]}}
+{"func": "_removed", "in": {"values": ["a", "b", "a"]}}
+{"func": "_removed", "in": {"values": []}}
+{"func": "_removed", "in": {"values": null}}
+{"func": "_removed", "in": {"values": ["b", "a", "b", "c", "a"]}}
+{"func": "_removed", "in": {"values": ["x"]}}
+{"func": "_removed", "in": {"values": ["a", "a", "a"]}}
+{"func": "_listed", "in": {"values": ["a"]}}
+{"func": "_listed", "in": {"values": []}}
+{"func": "_listed", "in": {"values": null}}
+{"func": "_listed", "in": {"values": [""]}}
+{"func": "_listed", "in": {"values": ["a", "b"]}}
+{"func": "_optional_list", "in": {"values": []}}
+{"func": "_optional_list", "in": {"values": null}}
+{"func": "_optional_list", "in": {"values": ["a"]}}
+{"func": "_optional_list", "in": {"values": [""]}}
+{"func": "_optional_list", "in": {"values": ["a", "b"]}}
+{"func": "_sql_limit", "in": {"window": {"limit": null}}}
+{"func": "_sql_limit", "in": {"window": {"limit": 5}}}
+{"func": "_sql_limit", "in": {"window": {"limit": 0}}}
+{"func": "_sql_limit", "in": {"window": {"limit": -1}}}
+{"func": "_sql_limit", "in": {"window": {"limit": 3, "offset": -1}}}
+{"func": "_sql_limit", "in": {"window": {"limit": 3, "offset": 2}}}
+{"func": "_sql_limit", "in": {"window": {}}}
+{"func": "_last_active", "in": {"row": {"last_active": null}}}
+{"func": "_last_active", "in": {"row": {}}}
+{"func": "_last_active", "in": {"row": {"last_active": 5}}}
+{"func": "_last_active", "in": {"row": {"last_active": "1.5"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "abc"}}}
+{"func": "_last_active", "in": {"row": {"last_active": []}}}
+{"func": "_last_active", "in": {"row": {"last_active": true}}}
+{"func": "_last_active", "in": {"row": {"last_active": " 2e1 "}}}
+{"func": "_last_active", "in": {"row": {"last_active": 0}}}
+{"func": "_last_active", "in": {"row": {"last_active": ""}}}
+{"func": "_roster_session", "in": {"fields": null}}
+{"func": "_roster_session", "in": {"fields": {"id": "s1", "resolved_id": "s2", "title": "T", "root_title": "R", "preview": "p", "started_at": 100, "last_active": 200, "message_count": 4}}}
+{"func": "_roster_session", "in": {"fields": {"resolved_id": "s2", "title": "T", "root_title": "R", "preview": "p", "started_at": 100, "last_active": 200, "message_count": 4}}}
+{"func": "_roster_session", "in": {"fields": {"id": "s1", "title": "T", "root_title": "R", "preview": "p", "started_at": 100, "last_active": 200, "message_count": 4}}}
+{"func": "_roster_session", "in": {"fields": {"id": "s1", "resolved_id": "s2", "root_title": "R", "preview": "p", "started_at": 100, "last_active": 200, "message_count": 4}}}
+{"func": "_roster_session", "in": {"fields": {"id": "s1", "resolved_id": "s2", "title": "T", "root_title": "R", "preview": "p", "started_at": 100, "last_active": 200, "message_count": 4, "extra": 1}}}
+{"func": "_roster_session", "in": {"fields": {"id": "s1"}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "model_config": "{\"_delegate_from\": \"p1\"}"}, "io": {"_parse_model_config": {"__script__": true, "ret": {"_delegate_from": "p1"}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "model_config": "{\"_branched_from\": \"p2\", \"_reset_from\": \"p3\"}"}, "io": {"_parse_model_config": {"__script__": true, "ret": {"_branched_from": "p2", "_reset_from": "p3"}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "model_config": "{\"_reset_from\": \"  \", \"_delegate_from\": \"d\"}"}, "io": {"_parse_model_config": {"__script__": true, "ret": {"_reset_from": "  ", "_delegate_from": "d"}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "origin_json": "{\"k\": \"v\"}"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "origin_json": "[1, 2]"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "origin_json": "bad"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": null, "tool_call_count": null, "git_metadata_generation": "3", "compression_fallback_streak": null, "rewind_count": true, "transcript_revision": "7"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "title_source": "user", "tool_names": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6abcd"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "title_source": "bogus", "tool_names": "[\"t1\"]"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"source": "local"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": null, "message_count": 3, "tool_call_count": 1, "ended_at": 1700000005}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, 1700000005], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000001, "message_count": 3, "tool_call_count": 1, "ended_at": null}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [1700000001, null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "model_config": "corrupt{", "expiry_finalized": 1, "archived": "yes", "pinned": 0, "hidden": null}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": true}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null], "is_corrupt_model_config": false}}}
+{"func": "session_record", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}}}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "unread": 1, "preview": "hello"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false, "session_unread": true}}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "unread": 0, "preview": null, "compact": true}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}, "compact": true}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "_lineage_root_id": "root", "_lineage_ids": ["root", "s1"], "continuation_kind": "compression", "last_active": "9.5"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "_lineage_ids": null, "last_active": null}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false, "session_unread": false}}}
+{"func": "_list_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_recency_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": 123}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_recency_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": "4.5"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_recency_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_recency_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": "zz"}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_recency_entry", "in": {"row": {"id": "s1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": null}, "io": {"_parse_model_config": {"__script__": true, "ret": {}}, "stored_instant": [null, null], "is_corrupt_model_config": false}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"ret": "ok"}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"ret": null}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "Title 'mine' is already in use by session s9"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "Title '' is already in use by session s9"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "Title 'a' is already in use by session s9' is already in use by session s8"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "This is the bot's canonical Bot Chat \u2014 no rename"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "Title too long (300 chars, max 200)"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "_title_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "Title 'x' is already in use by session "}}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local"}, "io": {"create_session": null}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "lineage_kind": "delegate", "parent_session_id": "p1"}, "io": {"create_session": null}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "lineage_kind": "branch", "parent_session_id": "p2", "model_config": {"k": 1}}, "io": {"create_session": null}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "lineage_kind": "reset", "parent_session_id": "p3", "model_config": {}}, "io": {"create_session": null}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "origin": {"plat": "telegram", "n": 5, "ok": true, "z": null}, "model": "m", "user_id": "u", "cwd": "/w"}, "io": {"create_session": null}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local"}, "io": {"create_session": {"__raise__": "AuthorityRefusal", "message": "not_found"}}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local"}, "io": {"create_session": {"__raise__": "AuthorityRefusal", "message": "permission_denied"}}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local"}, "io": {"create_session": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local"}, "io": {}}}
+{"func": "create", "in": {"spec": {"session_id": "", "source": "local"}, "io": {}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": ""}, "io": {}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "lineage_kind": "delegate"}, "io": {}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "lineage_kind": "bogus"}, "io": {}}}
+{"func": "create", "in": {"spec": {"session_id": "n1", "source": "local", "bogus": 1}, "io": {}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": true}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": false}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": null, "io": {"set_session_title": null}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": {"__raise__": "ValueError", "message": "Title 'T' is already in use by session s2"}}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "Bot Chat", "io": {"set_session_title": {"__raise__": "ValueError", "message": "This is the bot's canonical Bot Chat locked"}}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": {"__raise__": "ValueError", "message": "Title too long (300 chars, max 200)"}}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {"set_session_title": {"__raise__": "KeyError", "message": "s1"}}}}
+{"func": "set_title", "in": {"session_id": "s1", "title": "T", "io": {}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "user", "io": {"set_auto_title": true}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "llm", "io": {"set_auto_title": false}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "derived", "io": {"set_auto_title": 1}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "bogus", "io": {}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "user", "io": {"set_auto_title": {"__raise__": "ValueError", "message": "Title 'T' is already in use by session s7"}}}}
+{"func": "set_auto_title", "in": {"session_id": "s1", "title": "T", "source": "user", "io": {"set_auto_title": {"__raise__": "GeneratorExit", "message": ""}}}}
+{"func": "delete", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session": {"__script__": true, "ret": ["s1"]}}}}
+{"func": "delete", "in": {"session_id": "s1", "expected_ids": ["s1", "c1"], "media_root": "/m", "io": {"delete_session": {"__script__": true, "ret": ["s1", "c1", "s1"]}}}}
+{"func": "delete", "in": {"session_id": "s1", "expected_display": {"s1": [{"role": "user", "text": "hi"}], "c1": []}, "media_root": "/m", "io": {"delete_session": {"__script__": true, "ret": []}}}}
+{"func": "delete", "in": {"session_id": "s1", "refuse_guarded": true, "include_compression_chain": true, "media_root": "/m", "io": {"delete_session": {"__script__": true, "ret": ["s1", "s2"]}}}}
+{"func": "delete", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session": {"__raise__": "RuntimeError", "message": "disk"}}}}
+{"func": "delete", "in": {"session_id": "s1", "media_root": "/m", "io": {}}}
+{"func": "delete_if_empty", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session_if_empty": {"__script__": true, "ret": []}}}}
+{"func": "delete_if_empty", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session_if_empty": {"__script__": true, "ret": ["s1"]}}}}
+{"func": "delete_if_empty", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session_if_empty": {"__script__": true, "ret": ["s1", "s1"]}}}}
+{"func": "delete_if_empty", "in": {"session_id": "s1", "media_root": "/m", "io": {"delete_session_if_empty": {"__raise__": "ValueError", "message": "guarded"}}}}
+{"func": "delete_if_empty", "in": {"session_id": "s1", "media_root": "/m", "io": {}}}
+{"func": "backfill_session_owners", "in": {"stamp": null, "io": {"_own_profile_name": "p", "backfill_null_session_profiles": 5}}}
+{"func": "backfill_session_owners", "in": {"stamp": null, "io": {"_own_profile_name": null, "backfill_null_session_profiles": 5}}}
+{"func": "backfill_session_owners", "in": {"stamp": null, "io": {"_own_profile_name": "", "backfill_null_session_profiles": 5}}}
+{"func": "backfill_session_owners", "in": {"stamp": "s", "io": {"backfill_null_session_profiles": null}}}
+{"func": "backfill_session_owners", "in": {"stamp": "", "io": {}}}
+{"func": "backfill_session_owners", "in": {"stamp": "s", "io": {"backfill_null_session_profiles": 0}}}
+{"func": "backfill_session_owners", "in": {"stamp": null, "io": {"_own_profile_name": "p"}}}
+{"func": "backfill_session_owners", "in": {"stamp": "s", "io": {"backfill_null_session_profiles": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": "user"}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": "llm"}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": "derived"}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": null}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": "bogus"}}}
+{"func": "get_title_source", "in": {"session_id": "s1", "io": {"get_session_title_source": {"__raise__": "KeyError", "message": "s1"}}}}
+{"func": "title_holder", "in": {"title": "", "excluding": "s1", "io": {}}}
+{"func": "title_holder", "in": {"title": "T", "excluding": "s1", "io": {"conn.execute": {"__script__": true, "ret": ["s9"]}}}}
+{"func": "title_holder", "in": {"title": "T", "excluding": "s1", "io": {"conn.execute": null}}}
+{"func": "title_holder", "in": {"title": "T", "excluding": "s1", "io": {"conn.execute": {"__script__": true, "ret": []}}}}
+{"func": "title_holder", "in": {"title": null, "excluding": "s1", "io": {}}}
+{"func": "title_holder", "in": {"title": "T", "excluding": "s1", "io": {"conn.execute": {"__raise__": "RuntimeError", "message": "closed"}}}}
+{"func": "title_holder", "in": {"title": "T", "excluding": "s1", "io": {}}}
+{"func": "list_recent_sessions", "in": {"query": {}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": [{"id": "r1", "source": "local", "model": "m", "title": "T", "started_at": 100, "ended_at": null, "end_reason": null, "message_count": 2, "tool_call_count": 0, "last_active": 150, "preview": "p", "_lineage_root_id": null, "unread": 1}]}}}}
+{"func": "list_recent_sessions", "in": {"query": {"limit": 1}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": []}}}}
+{"func": "list_recent_sessions", "in": {"query": {"limit": 500, "exclude_sources": ["tool"]}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": [{"id": "r1", "source": "local", "model": "m", "title": "T", "started_at": 100, "ended_at": null, "end_reason": null, "message_count": 2, "tool_call_count": 0, "last_active": 150, "preview": "p", "_lineage_root_id": null, "unread": 1}]}}}}
+{"func": "list_recent_sessions", "in": {"query": {"limit": 3, "candidate_limit": 5, "lineage_limit": 2, "timeout_seconds": -2}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": [{"id": "r1", "source": "local", "model": "m", "title": "T", "started_at": 100, "ended_at": null, "end_reason": null, "message_count": 2, "tool_call_count": 0, "last_active": 150, "preview": "p", "_lineage_root_id": null, "unread": 1}]}}}}
+{"func": "list_recent_sessions", "in": {"query": {"limit": 0, "timeout_seconds": 0}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": [{"id": "r1", "source": "local", "model": "m", "title": "T", "started_at": null, "ended_at": null, "end_reason": null, "message_count": 2, "tool_call_count": 0, "last_active": "8.5", "preview": null, "_lineage_root_id": "root", "unread": null}]}}}}
+{"func": "list_recent_sessions", "in": {"query": {}, "io": {"list_recent_sessions_bounded": {"__raise__": "TimeoutError", "message": "browse timed out after 3s"}}}}
+{"func": "list_recent_sessions", "in": {"query": {}, "io": {"list_recent_sessions_bounded": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "list_recent_sessions", "in": {"query": {}, "io": {"list_recent_sessions_bounded": {"__script__": true, "ret": [{"id": "r1", "source": "local", "title": "T", "started_at": 100, "ended_at": null, "end_reason": null, "message_count": 2, "tool_call_count": 0, "last_active": 150, "preview": "p", "_lineage_root_id": null, "unread": 1}]}}}}
+{"func": "list_recent_sessions", "in": {"query": {}, "io": {}}}
+{"func": "list_recent_sessions", "in": {"query": {"bogus": 1}, "io": {}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": null, "limit": 10, "io": {"_own_profile_name": "p", "list_unlinked_telegram_sessions_for_user": {"__script__": true, "ret": [{"id": "f1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": 99, "preview": "hi"}]}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": null, "io": {"_own_profile_name": null, "list_unlinked_telegram_sessions_for_user": {"__script__": true, "ret": [{"id": "f1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": 99, "preview": "hi"}]}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": "custom", "limit": 3, "io": {"list_unlinked_telegram_sessions_for_user": {"__script__": true, "ret": [{"id": "f1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": 99, "preview": "hi"}]}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": "custom", "io": {"list_unlinked_telegram_sessions_for_user": {"__script__": true, "ret": []}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": null, "io": {"_own_profile_name": "", "list_unlinked_telegram_sessions_for_user": {"__script__": true, "ret": [{"id": "f1", "source": "local", "started_at": 1700000000, "message_count": 3, "tool_call_count": 1, "last_active": 99, "preview": "hi"}]}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": "custom", "io": {"list_unlinked_telegram_sessions_for_user": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "list_unlinked_telegram_sessions", "in": {"user_id": "u1", "profile_name": "custom", "io": {}}}
+{"func": "_json_value", "in": {"text": "{\"k0\": {\"k0\": false, \"k1\": [true, null, true], \"k2\": true, \"k3\": {\"k0\": true, \"k1\": null}}, \"k1\": [[], [true, null, null, -131], true], \"k2\": {\"k0\": [null, null, \"b0\", null], \"k1\": [null, false, 333, null]}, \"k3\": {\"k0\": {\"k0\": -922, \"k1\": false, \"k2\": \"1cXX91\"}}}"}}
+{"func": "_json_value", "in": {"text": "{\"k0\": [true]}"}}
+{"func": "_json_value", "in": {"text": "[[-228]]"}}
+{"func": "_json_value", "in": {"text": "[]"}}
+{"func": "_json_value", "in": {"text": "false"}}
+{"func": "_json_value", "in": {"text": "{\"k0\": false}"}}
+{"func": "_json_value", "in": {"text": "58"}}
+{"func": "_json_value", "in": {"text": "{\"k0\": {\"k0\": {}, \"k1\": {\"k0\": null, \"k1\": \"10Z1a\", \"k2\": false}, \"k2\": true}, \"k1\": [[false], true, [false]], \"k2\": [[-78, true, true, false], {\"k0\": null}, {\"k0\": -1, \"k1\": 15, \"k2\": 446}, {\"k0\": false, \"k1\": true, \"k2\": null}], \"k3\": 570}"}}
+{"func": "_json_value", "in": {"text": "[{\"k0\": true}, false, -986, true]"}}
+{"func": "_json_value", "in": {"text": "-472"}}
+{"func": "_json_value", "in": {"text": "[false]"}}
+{"func": "_json_value", "in": {"text": "[\"9X\"]"}}
+{"func": "_tool_pin", "in": {"text": "{\"k0\": [{\"k0\": -519, \"k1\": \"01cbZb0a\"}, null, \"\", 498], \"k1\": {\"k0\": [null, false, null, null], \"k1\": {\"k0\": true, \"k1\": -422, \"k2\": \"bZa_a\"}}, \"k2\": {\"k0\": \"09 \", \"k1\": [\"Y c0c \", null, 422, -814], \"k2\": {\"k0\": -255, \"k1\": 309, \"k2\": -394}}, \"k3\": null}"}}
+{"func": "_tool_pin", "in": {"text": "{\"k0\": {\"k0\": [-15, false], \"k1\": [true, 81, true, \"\"]}}"}}
+{"func": "_tool_pin", "in": {"text": "{}"}}
+{"func": "_tool_pin", "in": {"text": "{}"}}
+{"func": "_tool_pin", "in": {"text": "{\"k0\": true, \"k1\": [], \"k2\": {\"k0\": {\"k0\": true, \"k1\": 708, \"k2\": 97, \"k3\": \"X_1bZX0\"}, \"k1\": {\"k0\": true}, \"k2\": {}, \"k3\": null}}"}}
+{"func": "_tool_pin", "in": {"text": "[true, [{}], [false, [null, 271, false], {}], {}]"}}
+{"func": "_removed", "in": {"values": []}}
+{"func": "_ids", "in": {"values": []}}
+{"func": "_removed", "in": {"values": []}}
+{"func": "_ids", "in": {"values": []}}
+{"func": "_removed", "in": {"values": ["id3", "id4", "id2"]}}
+{"func": "_ids", "in": {"values": ["id3", "id4", "id2"]}}
+{"func": "_removed", "in": {"values": ["id2", "id3", "id4", "id2", "id2"]}}
+{"func": "_ids", "in": {"values": ["id2", "id3", "id4", "id2", "id2"]}}
+{"func": "_removed", "in": {"values": []}}
+{"func": "_ids", "in": {"values": []}}
+{"func": "_removed", "in": {"values": ["id0", "id1"]}}
+{"func": "_ids", "in": {"values": ["id0", "id1"]}}
+{"func": "_removed", "in": {"values": ["id4", "id1", "id2", "id0", "id0", "id4"]}}
+{"func": "_ids", "in": {"values": ["id4", "id1", "id2", "id0", "id0", "id4"]}}
+{"func": "_removed", "in": {"values": ["id3", "id1", "id1", "id2", "id0", "id4"]}}
+{"func": "_ids", "in": {"values": ["id3", "id1", "id1", "id2", "id0", "id4"]}}
+{"func": "_last_active", "in": {"row": {"last_active": "5514"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "-842721.6475615973"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "  -85.63574658322138\t"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "-365720.83082926564"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "4189"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "ZY"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "-239879.82541082078"}}}
+{"func": "_last_active", "in": {"row": {"last_active": "ZbcX"}}}
+{"func": "_stripped", "in": {"value": "bb\t"}}
+{"func": "_stripped", "in": {"value": " \n"}}
+{"func": "_stripped", "in": {"value": "bba"}}
+{"func": "_stripped", "in": {"value": "\t\n\tb\n"}}
+{"func": "_stripped", "in": {"value": "\na"}}
+{"func": "_stripped", "in": {"value": "\n ab "}}

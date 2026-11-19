@@ -407,6 +407,8 @@ def _drive(ns, func, inp):
     if func == "run_user_message":
         msg, err = ns["_run_user_message"](inp.get("raw_input"), openai_error_stub)
         return {"ret": [msg, err]}
+    if func == "call_id":
+        return {"ret": ns["_call_id"](inp.get("kw") or {})}
     if func == "tool_completed_preview":
         return {"ret": ns["_tool_completed_preview"](inp.get("result"), redact_stub)}
     if func == "run_event":

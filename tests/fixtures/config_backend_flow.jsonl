@@ -1,0 +1,262 @@
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_read_user_doc_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_read_user_doc_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "FileNotFoundError", "msg": "no config"}, "backend_read_user_doc_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "SystemExit", "msg": "bye"}, "backend_read_user_doc_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_read_user_doc_readonly": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_read_user_doc_readonly": {"__raise__": "ConfigBackendUnavailable", "msg": "no backend"}}}}
+{"func": "read_config_doc_readonly", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "FileNotFoundError", "msg": "no config"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "SystemExit", "msg": "bye"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "ConfigBackendUnavailable", "msg": "no backend"}}}}
+{"func": "config_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_probe_readable": null}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_probe_readable": null}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "FileNotFoundError", "msg": "no config"}, "backend_probe_readable": null}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "SystemExit", "msg": "bye"}, "backend_probe_readable": null}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_probe_readable": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_probe_readable": {"__raise__": "ConfigBackendUnavailable", "msg": "no backend"}}}}
+{"func": "probe_config_readable", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_exists": true}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_exists": true}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "FileNotFoundError", "msg": "no config"}, "backend_exists": true}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "SystemExit", "msg": "bye"}, "backend_exists": true}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_exists": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_exists": {"__raise__": "ConfigBackendUnavailable", "msg": "no backend"}}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_destination": "/h/u/config.yaml"}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_destination": "/h/u/config.yaml"}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "FileNotFoundError", "msg": "no config"}, "backend_destination": "/h/u/config.yaml"}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "SystemExit", "msg": "bye"}, "backend_destination": "/h/u/config.yaml"}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_destination": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_destination": {"__raise__": "ConfigBackendUnavailable", "msg": "no backend"}}}}
+{"func": "config_destination", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_exists": false}}}
+{"func": "config_exists", "in": {"config_path": "/h/u/other.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_exists": true}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "ConfigBackendUnavailable", "msg": "nb"}}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"__raise__": "OSError", "msg": "route io"}}}}
+{"func": "config_version_or_none", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0], "backend_cache_version": [1000, 5, 1, 0, "d"]}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": {"__raise__": "FileNotFoundError", "msg": "absent"}, "backend_cache_version": [1000, 5, 1, 0, "d"]}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": [{"backend": {"name": "remote"}, "home": "/h/u"}, {"__raise__": "OSError", "msg": "second route"}], "backend_version": [1000, 5, 1, 0], "backend_cache_version": [1000, 5, 1, 0, "d"]}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0], "backend_cache_version": {"__raise__": "OSError", "msg": "digest io"}}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0], "backend_cache_version": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "config_cache_version", "in": {"config_path": "/h/u/config.yaml", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_version": [1000, 5, 1, 0]}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/config.yaml", "document": {"a": 1}, "extra_content_on_create": "# hi\n", "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/config.yaml", "document": null, "extra_content_on_create": null, "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/config.yaml", "document": {"a": 1}, "seams": {"route": {"__raise__": "OSError", "msg": "route io"}}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/config.yaml", "document": {"a": 1}, "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": {"__raise__": "ConfigLockedError", "msg": "model is locked by the managed level", "path": "model", "locked_by": "managed"}}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/config.yaml", "document": {"a": 1}, "seams": {"route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "write_config_document", "in": {"config_path": "/h/u/other.yaml", "document": {"b": 2}, "extra_content_on_create": null, "seams": {"route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/config.yaml", "key_path": "model", "value": "y", "seams": {"write_config_keys": null}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/config.yaml", "key_path": "model", "value": null, "seams": {"write_config_keys": null}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/config.yaml", "key_path": "a.b", "value": 3, "seams": {"write_config_keys": {"__raise__": "ConfigValueError", "msg": "bad value"}}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/config.yaml", "key_path": "model", "value": "y", "seams": {"write_config_keys": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/other.yaml", "key_path": "k", "value": "v", "seams": {"write_config_keys": null}}}
+{"func": "write_config_key", "in": {"config_path": "/h/u/config.yaml", "key_path": "model", "value": "y", "seams": {}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"name": "file"}, "backend_preserve_read_base": {"__cm__": "nullcontext"}, "read_config_doc": {"model": "x", "provider": "p"}}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"name": "remote"}, "backend_preserve_read_base": {"__cm__": "nullcontext"}, "read_config_doc": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"name": "remote"}, "backend_preserve_read_base": {"__raise__": "OSError", "msg": "cm"}}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"name": "file"}, "backend_preserve_read_base": {"__cm__": "nullcontext"}, "read_config_doc": null}}}
+{"func": "keeping_read_base", "in": {"config_path": "/h/u/config.yaml", "seams": {"get_config_backend": {"name": "file"}, "read_config_doc": {"model": "x", "provider": "p"}}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"refuse_redacted_sets": null, "route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": null, "set": {}, "unset": [], "extra_content_on_create": null}, "seams": {"refuse_redacted_sets": null, "route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"refuse_redacted_sets": {"__raise__": "ConfigValueError", "msg": "redacted"}, "route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": {"a": 1}, "set": {}, "unset": [], "extra_content_on_create": "# hi\n"}, "seams": {"refuse_redacted_sets": null, "route": {"__raise__": "OSError", "msg": "io"}, "backend_write_changes": null}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"refuse_redacted_sets": null, "route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": {"__raise__": "ConfigLockedError", "msg": "model is locked by the managed level", "path": "model", "locked_by": "managed"}}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"refuse_redacted_sets": null, "route": {"backend": {"name": "remote"}, "home": "/h/u"}, "backend_write_changes": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "write_changes_flow", "in": {"config_path": "/h/u/config.yaml", "changes": {"document": {"a": 1}, "set": {}, "unset": [], "extra_content_on_create": "# hi\n"}, "seams": {"refuse_redacted_sets": null, "route": {"backend": {"name": "file"}, "home": "/h/u"}, "backend_write_changes": null}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}, "backend_deployment_env_names": ["HERMES_CONFIG_BACKEND", "HERMES_PLANE"]}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"name": "file"}, "backend_deployment_env_names": ["HERMES_CONFIG_BACKEND", "HERMES_PLANE"]}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}, "backend_deployment_env_names": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}, "backend_supports_file_tooling": true}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"name": "file"}, "backend_supports_file_tooling": true}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}, "backend_supports_file_tooling": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}}}}
+{"func": "deployment_env_names_flow", "in": {"seams": {"get_config_backend": {"name": "file"}, "backend_deployment_env_names": []}}}
+{"func": "supports_file_tooling_flow", "in": {"seams": {"get_config_backend": {"name": "remote"}, "backend_supports_file_tooling": false}}}
+{"func": "require_file_tooling", "in": {"what": "profile clone", "seams": {"get_config_backend": {"name": "file"}, "backend_supports_file_tooling": true}}}
+{"func": "require_file_tooling", "in": {"what": "profile clone", "seams": {"get_config_backend": [{"name": "remote"}, {"name": "remote"}], "backend_supports_file_tooling": false}}}
+{"func": "require_file_tooling", "in": {"what": "backup", "seams": {"get_config_backend": [{"name": "file"}, {"name": "file"}], "backend_supports_file_tooling": false}}}
+{"func": "require_file_tooling", "in": {"what": "config edit", "seams": {"get_config_backend": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "require_file_tooling", "in": {"what": "restore", "seams": {"get_config_backend": [{"name": "remote"}, {"__raise__": "OSError", "msg": "second"}], "backend_supports_file_tooling": false}}}
+{"func": "require_file_tooling", "in": {"what": "clone", "seams": {"get_config_backend": {"name": "remote"}}}}
+{"func": "bootstrap_names", "in": {"kind": "remote", "seams": {"backend_for": {"name": "remote"}, "backend_bootstrap_env_names": ["A", "B"]}}}
+{"func": "bootstrap_names", "in": {"kind": "file", "seams": {"backend_for": {"name": "file"}, "backend_bootstrap_env_names": []}}}
+{"func": "bootstrap_names", "in": {"kind": "nope", "seams": {"backend_for": {"__raise__": "ConfigBackendUnavailable", "msg": "unknown"}}}}
+{"func": "bootstrap_names", "in": {"kind": "remote", "seams": {"backend_for": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "bootstrap_names", "in": {"kind": "remote", "seams": {"backend_for": {"__raise__": "ImportError", "msg": "broken backend"}}}}
+{"func": "bootstrap_names", "in": {"kind": "remote", "seams": {"backend_for": {"name": "remote"}, "backend_bootstrap_env_names": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "bootstrap_deployment", "in": {"home": "/h/u", "project_env": "/h/u/.env", "seams": {"bootstrap": null}}}
+{"func": "bootstrap_deployment", "in": {"home": null, "project_env": null, "seams": {"bootstrap": null}}}
+{"func": "bootstrap_deployment", "in": {"home": "/h/u", "project_env": null, "seams": {"bootstrap": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "bootstrap_deployment", "in": {"home": "/h/u", "project_env": "/p/.env", "seams": {"bootstrap": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "bootstrap_deployment", "in": {"home": null, "project_env": "/p/.env", "seams": {"bootstrap": null}}}
+{"func": "bootstrap_deployment", "in": {"home": "/h/u", "project_env": "/h/u/.env", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "/h/u/config.yaml", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "/h/u/other.yaml", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "/a/b/c.yaml", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "rel.yaml", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "/only.yaml", "seams": {}}}
+{"func": "local_file_layer", "in": {"config_path": "/h/u/sub/config.yaml", "seams": {}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"st_mode": 420}}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"st_mode": 438}, "os_chmod": null}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": "managed"}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": true}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"st_mode": 391}, "os_chmod": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "drop_other_access", "in": {"path": "/h/u/config.yaml", "seams": {"get_managed_system": null, "container_or_chmod_skipped": false, "path_stat": {"st_mode": 384}}}}
+{"func": "refusing_locked_omissions", "in": {"prefixes": ["model"], "cv": {"refuse": [], "pinned": []}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "refusing_locked_omissions", "in": {"prefixes": ["model", "provider"], "cv": {"refuse": ["existing"], "pinned": []}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "refusing_locked_omissions", "in": {"prefixes": [], "cv": {"refuse": [], "pinned": ["p"]}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "refusing_locked_omissions", "in": {"prefixes": ["model"], "cv": {"refuse": [], "pinned": []}, "seams": {"cm_body": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "refusing_locked_omissions", "in": {"prefixes": ["b"], "cv": {"refuse": ["a"], "pinned": []}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "pinning_keys", "in": {"keys": ["model"], "cv": {"refuse": [], "pinned": []}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "pinning_keys", "in": {"keys": ["model", "provider"], "cv": {"refuse": [], "pinned": ["existing"]}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "pinning_keys", "in": {"keys": [], "cv": {"refuse": ["r"], "pinned": []}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "pinning_keys", "in": {"keys": ["k"], "cv": {"refuse": [], "pinned": []}, "seams": {"cm_body": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "pinning_keys", "in": {"keys": ["b"], "cv": {"refuse": [], "pinned": ["a"]}, "seams": {"cm_body": null, "cm_after": null}}}
+{"func": "refused_locked_omission_prefixes", "in": {"cv": {"refuse": [], "pinned": []}, "seams": {}}}
+{"func": "refused_locked_omission_prefixes", "in": {"cv": {"refuse": ["a", "b"], "pinned": []}, "seams": {}}}
+{"func": "refused_locked_omission_prefixes", "in": {"cv": {"refuse": [], "pinned": ["x"]}, "seams": {}}}
+{"func": "refused_locked_omission_prefixes", "in": {"cv": {"refuse": ["model"], "pinned": ["provider"]}, "seams": {}}}
+{"func": "refused_locked_omission_prefixes", "in": {"cv": {}, "seams": {}}}
+{"func": "pinned_keys", "in": {"cv": {"refuse": [], "pinned": []}, "seams": {}}}
+{"func": "pinned_keys", "in": {"cv": {"refuse": ["a", "b"], "pinned": []}, "seams": {}}}
+{"func": "pinned_keys", "in": {"cv": {"refuse": [], "pinned": ["x"]}, "seams": {}}}
+{"func": "pinned_keys", "in": {"cv": {"refuse": ["model"], "pinned": ["provider"]}, "seams": {}}}
+{"func": "pinned_keys", "in": {"cv": {}, "seams": {}}}
+{"func": "file_config_path", "in": {"home": "/h/u", "seams": {}}}
+{"func": "file_describe", "in": {"home": "/h/u", "seams": {}}}
+{"func": "file_destination", "in": {"home": "/h/u", "seams": {}}}
+{"func": "file_config_path", "in": {"home": "/h/alice", "seams": {}}}
+{"func": "file_describe", "in": {"home": "/h/alice", "seams": {}}}
+{"func": "file_destination", "in": {"home": "/h/alice", "seams": {}}}
+{"func": "file_config_path", "in": {"home": "/x", "seams": {}}}
+{"func": "file_describe", "in": {"home": "/x", "seams": {}}}
+{"func": "file_destination", "in": {"home": "/x", "seams": {}}}
+{"func": "file_config_path", "in": {"home": "rel", "seams": {}}}
+{"func": "file_describe", "in": {"home": "rel", "seams": {}}}
+{"func": "file_destination", "in": {"home": "rel", "seams": {}}}
+{"func": "file_config_path", "in": {"home": "/h/u/sub", "seams": {}}}
+{"func": "file_describe", "in": {"home": "/h/u/sub", "seams": {}}}
+{"func": "file_destination", "in": {"home": "/h/u/sub", "seams": {}}}
+{"func": "file_version_path", "in": {"path": "/h/u/config.yaml", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [1000, 5, 1, 0]}}}
+{"func": "file_version_path", "in": {"path": "/h/u/config.yaml", "seams": {"path_stat": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_version_path", "in": {"path": "/h/u/config.yaml", "seams": {"path_stat": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_version_path", "in": {"path": "/h/u/config.yaml", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": {"__raise__": "OSError", "msg": "sig"}}}}
+{"func": "file_version_path", "in": {"path": "/h/u/other.yaml", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [2000, 9, 2, 1]}}}
+{"func": "file_read_path", "in": {"path": "/h/u/config.yaml", "seams": {"open": "/h/u/config.yaml", "fast_safe_load": {"model": "x", "provider": "p"}}}}
+{"func": "file_read_path", "in": {"path": "/h/u/config.yaml", "seams": {"open": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_read_path", "in": {"path": "/h/u/config.yaml", "seams": {"open": "/h/u/config.yaml", "fast_safe_load": {"__raise__": "ValueError", "msg": "yaml"}}}}
+{"func": "file_read_path", "in": {"path": "/h/u/config.yaml", "seams": {"open": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_read_path", "in": {"path": "/h/u/config.yaml", "seams": {"open": "/h/u/config.yaml", "fast_safe_load": null}}}
+{"func": "file_read_path", "in": {"path": "/h/u/other.yaml", "seams": {"open": "/h/u/other.yaml", "fast_safe_load": {"k": "v"}}}}
+{"func": "file_read_path_readonly", "in": {"path": "/h/u/config.yaml", "seams": {"load_yaml_file_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "file_read_path_readonly", "in": {"path": "/h/u/config.yaml", "seams": {"load_yaml_file_readonly": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_read_path_readonly", "in": {"path": "/h/u/config.yaml", "seams": {"load_yaml_file_readonly": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_read_path_readonly", "in": {"path": "/h/u/config.yaml", "seams": {"load_yaml_file_readonly": null}}}
+{"func": "file_read_path_readonly", "in": {"path": "/h/u/other.yaml", "seams": {"load_yaml_file_readonly": {"a": 1}}}}
+{"func": "file_read_user_doc", "in": {"home": "/h/u", "seams": {"open": "/h/u/config.yaml", "fast_safe_load": {"model": "x", "provider": "p"}}}}
+{"func": "file_read_user_doc", "in": {"home": "/h/u", "seams": {"open": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_read_user_doc", "in": {"home": "/h/u", "seams": {"open": "/h/u/config.yaml", "fast_safe_load": {"__raise__": "ValueError", "msg": "yaml"}}}}
+{"func": "file_read_user_doc", "in": {"home": "/h/u", "seams": {"open": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_read_user_doc", "in": {"home": "/h/alice", "seams": {"open": "/h/alice/config.yaml", "fast_safe_load": null}}}
+{"func": "file_read_user_doc_readonly", "in": {"home": "/h/u", "seams": {"load_yaml_file_readonly": {"model": "x", "provider": "p"}}}}
+{"func": "file_read_user_doc_readonly", "in": {"home": "/h/u", "seams": {"load_yaml_file_readonly": {"__raise__": "FileNotFoundError", "msg": "a"}}}}
+{"func": "file_read_user_doc_readonly", "in": {"home": "/h/u", "seams": {"load_yaml_file_readonly": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_read_user_doc_readonly", "in": {"home": "/h/u", "seams": {"load_yaml_file_readonly": null}}}
+{"func": "file_read_user_doc_readonly", "in": {"home": "/h/alice", "seams": {"load_yaml_file_readonly": {"z": 1}}}}
+{"func": "file_version", "in": {"home": "/h/u", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [1000, 5, 1, 0]}}}
+{"func": "file_version", "in": {"home": "/h/u", "seams": {"path_stat": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_version", "in": {"home": "/h/u", "seams": {"path_stat": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_version", "in": {"home": "/h/u", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": {"__raise__": "OSError", "msg": "sig"}}}}
+{"func": "file_version", "in": {"home": "/h/alice", "seams": {"path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [1000, 5, 1, 0]}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": null, "path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [1000, 5, 1, 0], "racy_content_digest": "d1"}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": {"snap": 1}}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": null, "path_stat": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": null, "path_stat": {"st_mode": 420, "st_mtime_ns": 1000, "st_size": 5, "st_ino": 1}, "file_signature": [1000, 5, 1, 0], "racy_content_digest": {"__raise__": "OSError", "msg": "d"}}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [1000, 5, 1, 0], "seams": {"worker_config_snapshot": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_cache_version", "in": {"home": "/h/u", "version": [7, 8], "seams": {"worker_config_snapshot": {"snap": 1}}}}
+{"func": "file_exists", "in": {"home": "/h/u", "seams": {"path_exists": true}}}
+{"func": "file_exists", "in": {"home": "/h/u", "seams": {"path_exists": false}}}
+{"func": "file_exists", "in": {"home": "/h/alice", "seams": {"path_exists": true}}}
+{"func": "file_exists", "in": {"home": "/h/u", "seams": {"path_exists": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "file_exists", "in": {"home": "/h/u", "seams": {"path_exists": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_probe_readable", "in": {"home": "/h/u", "seams": {"open": "/h/u/config.yaml", "file_read": "x"}}}
+{"func": "file_probe_readable", "in": {"home": "/h/u", "seams": {"open": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "file_probe_readable", "in": {"home": "/h/u", "seams": {"open": "/h/u/config.yaml", "file_read": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "file_probe_readable", "in": {"home": "/h/u", "seams": {"open": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_probe_readable", "in": {"home": "/h/alice", "seams": {"open": "/h/alice/config.yaml", "file_read": "y"}}}
+{"func": "file_write_changes", "in": {"home": "/h/u", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"write_path": null}}}
+{"func": "file_write_changes", "in": {"home": "/h/u", "changes": {"document": {"a": 1}, "set": {}, "unset": [], "extra_content_on_create": "# hi\n"}, "seams": {"write_path": null}}}
+{"func": "file_write_changes", "in": {"home": "/h/u", "changes": {"document": null, "set": {}, "unset": [], "extra_content_on_create": null}, "seams": {"write_path": {"__raise__": "ConfigLockedError", "msg": "model is locked by the managed level", "path": "model", "locked_by": "managed"}}}}
+{"func": "file_write_changes", "in": {"home": "/h/u", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"write_path": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_write_changes", "in": {"home": "/h/alice", "changes": {"document": null, "set": {"model": "y", "provider": null}, "unset": ["old"], "extra_content_on_create": null}, "seams": {"write_path": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "file_locked", "in": {"home": "/h/u", "dotted": "model0", "seams": {}}}
+{"func": "file_boot", "in": {"home": "/h/u", "seams": {}}}
+{"func": "file_doctor_warnings", "in": {"home": "/h/u", "seams": {}}}
+{"func": "file_apply_in_memory", "in": {"home": "/h/u", "doc": {"m": 0}, "seams": {}}}
+{"func": "file_locked", "in": {"home": "/h/alice", "dotted": "model1", "seams": {}}}
+{"func": "file_boot", "in": {"home": "/h/alice", "seams": {}}}
+{"func": "file_doctor_warnings", "in": {"home": "/h/alice", "seams": {}}}
+{"func": "file_apply_in_memory", "in": {"home": "/h/alice", "doc": {"m": 1}, "seams": {}}}
+{"func": "file_locked", "in": {"home": "/x", "dotted": "model2", "seams": {}}}
+{"func": "file_boot", "in": {"home": "/x", "seams": {}}}
+{"func": "file_doctor_warnings", "in": {"home": "/x", "seams": {}}}
+{"func": "file_apply_in_memory", "in": {"home": "/x", "doc": {"m": 2}, "seams": {}}}
+{"func": "file_locked", "in": {"home": "rel", "dotted": "model3", "seams": {}}}
+{"func": "file_boot", "in": {"home": "rel", "seams": {}}}
+{"func": "file_doctor_warnings", "in": {"home": "rel", "seams": {}}}
+{"func": "file_apply_in_memory", "in": {"home": "rel", "doc": {"m": 3}, "seams": {}}}
+{"func": "file_locked", "in": {"home": "/h/u/sub", "dotted": "model4", "seams": {}}}
+{"func": "file_boot", "in": {"home": "/h/u/sub", "seams": {}}}
+{"func": "file_doctor_warnings", "in": {"home": "/h/u/sub", "seams": {}}}
+{"func": "file_apply_in_memory", "in": {"home": "/h/u/sub", "doc": {"m": 4}, "seams": {}}}
+{"func": "file_supports_file_tooling", "in": {"seams": {}}}
+{"func": "file_honors_managed_config", "in": {"seams": {}}}
+{"func": "file_protected_env_names", "in": {"seams": {}}}
+{"func": "file_deployment_env_names", "in": {"seams": {}}}
+{"func": "file_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "file_preserve_read_base", "in": {"seams": {}}}
+{"func": "file_supports_file_tooling", "in": {"seams": {}}}
+{"func": "file_honors_managed_config", "in": {"seams": {}}}
+{"func": "file_protected_env_names", "in": {"seams": {}}}
+{"func": "file_deployment_env_names", "in": {"seams": {}}}
+{"func": "file_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "file_preserve_read_base", "in": {"seams": {}}}
+{"func": "file_supports_file_tooling", "in": {"seams": {}}}
+{"func": "file_honors_managed_config", "in": {"seams": {}}}
+{"func": "file_protected_env_names", "in": {"seams": {}}}
+{"func": "file_deployment_env_names", "in": {"seams": {}}}
+{"func": "file_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "file_preserve_read_base", "in": {"seams": {}}}
+{"func": "file_supports_file_tooling", "in": {"seams": {}}}
+{"func": "file_honors_managed_config", "in": {"seams": {}}}
+{"func": "file_protected_env_names", "in": {"seams": {}}}
+{"func": "file_deployment_env_names", "in": {"seams": {}}}
+{"func": "file_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "file_preserve_read_base", "in": {"seams": {}}}
+{"func": "file_supports_file_tooling", "in": {"seams": {}}}
+{"func": "file_honors_managed_config", "in": {"seams": {}}}
+{"func": "file_protected_env_names", "in": {"seams": {}}}
+{"func": "file_deployment_env_names", "in": {"seams": {}}}
+{"func": "file_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "file_preserve_read_base", "in": {"seams": {}}}
+{"func": "explicit_config_path", "in": {"path": "/h/u/other.yaml", "home": "/h/u", "seams": {}}}
+{"func": "explicit_config_path", "in": {"path": "/h/u/config.yaml", "home": "/other", "seams": {}}}
+{"func": "explicit_config_path", "in": {"path": "/a/b.yaml", "home": "/a", "seams": {}}}
+{"func": "explicit_config_path", "in": {"path": "rel.yaml", "home": ".", "seams": {}}}
+{"func": "explicit_config_path", "in": {"path": "/only.yaml", "home": "/", "seams": {}}}

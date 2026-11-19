@@ -151,9 +151,14 @@ json_t *asrun_req_state_new(const json_t *in);
 json_t *asrun_terminal_run_status(const json_t *result, char **status_out);
 
 /* NEW user-message node (string, or the raw last-content value) or NULL;
- * *err_out = NEW 400 descriptor on the two refusal branches. */
+ * *err_out = NEW 400 descriptor on the two refusal branches; *exc_out =
+ * malloc'd "AttributeError: '<type>' object has no attribute 'get'" when a
+ * non-empty list's last element is not a dict (live raw_input[-1].get raises).
+ * The .get-AttributeError type-name domain excludes integral-float literals
+ * (a JSON "5.0" is a float in live json.loads but reads as int here). */
 /* PoP: asrun_run_user_message @ gateway/platforms/api_server_runs.py:_run_user_message */
-json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s, json_t **err_out);
+json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s,
+                               json_t **err_out, char **exc_out);
 
 /* malloc'd bounded redacted preview ("" for None; redact BEFORE truncation;
  * 500 code points, cut at 497 + "..."). Non-string results json.dumps with
@@ -163,10 +168,18 @@ json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s, 
 char *asrun_tool_completed_preview(const json_t *result, const asrun_seams_t *s);
 
 /* NEW SSE envelope {"event", "run_id", "timestamp", **fields} — key order is
- * wire format; fields may override the envelope keys. */
+ * wire format; fields may override the envelope keys. *exc_out = malloc'd
+ * "TypeError: _run_event() got multiple values for argument '<key>'" when a
+ * fields key collides with a positional parameter (first colliding key in
+ * fields order); the clock seam is NOT reached on that branch. */
 /* PoP: asrun_run_event @ gateway/platforms/api_server_runs.py:_run_event */
 json_t *asrun_run_event(const char *run_id, const char *name, const json_t *fields,
-                        const asrun_seams_t *s);
+                        const asrun_seams_t *s, char **exc_out);
+
+/* NEW {"tool_call_id": kw["tool_call_id"]} when kw.get("tool_call_id") is
+ * truthy, else {} (pure leaf; no seams, no reachable KeyError). */
+/* PoP: asrun_call_id @ gateway/platforms/api_server_runs.py:_call_id */
+json_t *asrun_call_id(const json_t *kw);
 
 /* ── Room-grant auth fences ─────────────────────────────────────────────── */
 

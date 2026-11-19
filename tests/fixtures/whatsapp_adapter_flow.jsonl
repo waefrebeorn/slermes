@@ -1,0 +1,285 @@
+{"func": "_safe_ints", "in": {"args": {"tokens": ["1", "2", "3"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": [" 42 ", "+7", "-3", "0"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": ["abc", "", "12x", "5"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": ["1_0", "_1", "1__0", "1_"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": [null]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": [3.9, -3.9, true, false]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": [" 12 ", "1\u001c"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": []}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": ["1", "1 ", " + 5", "0x10"]}, "io": {}}}
+{"func": "_safe_ints", "in": {"args": {"tokens": ["-51292", "815593", "173927", "796971", "938210", "638333", "-23462", "-52439", "65020", "793160", "231835", "-601747", "x", "", "9_9", "_", "1_2_3"]}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 0}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 59}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 60}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 3599}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 3600}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 3661}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 86400}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 90061}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": -5}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "90"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": " 12.9 "}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": null}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "abc"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "nan"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "inf"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "-Infinity"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": true}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": 3.9}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": "1_0e2"}, "io": {}}}
+{"func": "_fmt_uptime", "in": {"args": {"seconds": [1]}, "io": {}}}
+{"func": "_bridge_auth_headers", "in": {"args": {"token": "abc"}, "io": {}}}
+{"func": "_bridge_auth_headers", "in": {"args": {"token": ""}, "io": {}}}
+{"func": "_bridge_auth_headers", "in": {"args": {"token": null}, "io": {}}}
+{"func": "_bridge_auth_headers", "in": {"args": {"token": "tokén"}, "io": {}}}
+{"func": "_bridge_auth_headers", "in": {"args": {"token": 123}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.jpg", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.MP4", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.ogg", "is_voice": true, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.png", "is_voice": false, "force_document": true}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.xyz", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "/x/.hidden", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "C:\\x\\y.JPG", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": null, "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.jpg", "is_voice": true, "force_document": true}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "x/.jpg", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_media_type", "in": {"args": {"file_path": "a.3gp", "is_voice": false, "force_document": false}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "token", "challenge": "challenge"}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "", "challenge": ""}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "kéy", "challenge": "challengé"}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "challenge": "x"}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "t", "challenge": ""}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": null, "challenge": "c"}, "io": {}}}
+{"func": "_bridge_auth_proof", "in": {"args": {"token": "t", "challenge": null}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {}, "package_hash": ""}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"WHATSAPP_MODE": "self-chat"}, "package_hash": "abc"}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"WHATSAPP_ALLOWED_USERS": "1,2", "WHATSAPP_ALLOW_FROM": "", "WHATSAPP_DM_POLICY": "pairing", "WHATSAPP_GROUP_POLICY": "open", "WHATSAPP_GROUP_ALLOWED_USERS": null, "WHATSAPP_GROUP_ALLOW_FROM": "3", "WHATSAPP_REQUIRE_MENTION": "true", "WHATSAPP_MENTION_PATTERNS": "[]", "WHATSAPP_FREE_RESPONSE_CHATS": "", "WHATSAPP_DEBUG": true, "WHATSAPP_FORWARD_OWNER_MESSAGES": false, "WHATSAPP_MAX_MESSAGE_LENGTH": 4096, "WHATSAPP_CHUNK_DELAY_MS": 0, "WHATSAPP_SEND_TIMEOUT_MS": 30000, "WHATSAPP_MODE": "self-chat", "WHATSAPP_REPLY_PREFIX": "", "WHATSAPP_SEND_READ_RECEIPTS": "false", "HERMES_IMAGE_CACHE_DIR": "/i", "HERMES_AUDIO_CACHE_DIR": "/a", "HERMES_DOCUMENT_CACHE_DIR": "/d"}, "package_hash": "ph"}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"WHATSAPP_REPLY_PREFIX": ""}}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"WHATSAPP_REPLY_PREFIX": null}}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"WHATSAPP_DEBUG": true, "WHATSAPP_MAX_MESSAGE_LENGTH": 4096}}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": null}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {}, "package_hash": null}, "io": {}}}
+{"func": "_bridge_config_fingerprint", "in": {"args": {"bridge_env": {"UNRELATED_KEY": "x", "WHATSAPP_MODE": "group"}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "location"}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "live_location"}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "sticker"}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"hasMedia": false}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "image/jpeg", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "video/mp4", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "audio/ogg", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "ptt", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "audio/ptt", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": "application/pdf", "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": null, "hasMedia": true}}, "io": {}}}
+{"func": "_classify_bridge_message", "in": {"args": {"data": {"mediaType": 5, "hasMedia": true}}, "io": {}}}
+{"func": "_wenv", "in": {"args": {"name": "WHATSAPP_MODE"}, "io": {"get_scoped_secret": "self-chat"}}}
+{"func": "_wenv", "in": {"args": {"name": "WHATSAPP_REPLY_PREFIX", "default": "d"}, "io": {"get_scoped_secret": null}}}
+{"func": "_wenv", "in": {"args": {"name": "X"}, "io": {"get_scoped_secret": ""}}}
+{"func": "_wenv", "in": {"args": {"name": "X"}, "io": {"get_scoped_secret": {"__script__": true, "raise": {"type": "RuntimeError", "message": "scoped"}}}}}
+{"func": "_wenv", "in": {"args": {"name": "X"}, "io": {}}, "fail_closed": true}
+{"func": "_wenv", "in": {"args": {"name": "X"}, "io": {"get_scoped_secret": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_connected", "in": {"args": {"config": {"enabled": true, "extra": {"x": 1}}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"enabled": true, "extra": {}}}, "io": {"get_env_value": "true"}}}
+{"func": "_is_connected", "in": {"args": {"config": {"enabled": false}}, "io": {"get_env_value": "false"}}}
+{"func": "_is_connected", "in": {"args": {"config": null}, "io": {"get_env_value": " YES "}}}
+{"func": "_is_connected", "in": {"args": {"config": {}}, "io": {"get_env_value": null}}}
+{"func": "_is_connected", "in": {"args": {"config": {"enabled": true, "extra": null}}, "io": {"get_env_value": "1"}}}
+{"func": "_is_connected", "in": {"args": {"config": "str"}, "io": {"get_env_value": "0"}}}
+{"func": "_is_connected", "in": {"args": {"config": null}, "io": {"get_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_connected", "in": {"args": {"config": null}, "io": {"get_env_value": 5}}}
+{"func": "_is_connected", "in": {"args": {"config": null}, "io": {}}, "fail_closed": true}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": "/i", "get_audio_cache_dir": "/a", "get_video_cache_dir": "/v", "get_document_cache_dir": "/d"}}}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": "/i", "get_audio_cache_dir": null, "get_video_cache_dir": "/v", "get_document_cache_dir": "/d"}}}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": "/i"}}, "fail_closed": true}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": "/i", "get_audio_cache_dir": "/a", "get_video_cache_dir": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_cache_dirs", "in": {"args": {}, "io": {"get_image_cache_dir": "", "get_audio_cache_dir": "", "get_video_cache_dir": "", "get_document_cache_dir": ""}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": null}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone"}}}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": {"__script__": true, "raise": {"type": "PermissionError", "message": "no"}}}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {"unlink": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_unlink_quietly", "in": {"args": {"path": "/s/bridge.pid"}, "io": {}}, "fail_closed": true}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": true}, "io": {"chmod": null}}}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": false}, "io": {}}}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": true}, "io": {"chmod": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": true}, "io": {"chmod": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": true}, "io": {"chmod": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_tighten_bridge_log", "in": {"args": {"path": "/s/bridge.log", "private": true}, "io": {}}, "fail_closed": true}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": "tok"}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": "  tok  "}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": "﻿tok"}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": ""}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": null}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {"read_text": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_read_bridge_token", "in": {"args": {"session_path": "/s"}, "io": {}}, "fail_closed": true}
+{"func": "_write_bridge_fingerprint", "in": {"args": {"session_path": "/s", "fingerprint": "fp"}, "io": {"write_text": null}}}
+{"func": "_write_bridge_fingerprint", "in": {"args": {"session_path": "/s", "fingerprint": ""}, "io": {"write_text": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_write_bridge_fingerprint", "in": {"args": {"session_path": "/s", "fingerprint": "fp"}, "io": {"write_text": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_write_bridge_fingerprint", "in": {"args": {"session_path": "/s", "fingerprint": "fp"}, "io": {"write_text": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_write_bridge_fingerprint", "in": {"args": {"session_path": "/s", "fingerprint": "fp"}, "io": {}}, "fail_closed": true}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": null, "write_text": null}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": 999, "write_text": null}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123, "port": 3000}, "io": {"get_process_start_time": 999, "write_text": null}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123, "port": 3000}, "io": {"get_process_start_time": null, "write_text": null}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": 999, "write_text": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": 999, "write_text": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {"get_process_start_time": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_write_bridge_pidfile", "in": {"args": {"session_path": "/s", "pid": 123}, "io": {}}, "fail_closed": true}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": false}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "123"}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "123\n999\n3000"}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "123\n\n3000"}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": " 123 \n 999 "}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "abc"}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "﻿123\n999"}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": null}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {}}, "fail_closed": true}
+{"func": "_read_bridge_pidfile", "in": {"args": {"session_path": "/s"}, "io": {"exists": true, "read_text": "123\n999\nbad"}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": false}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": null}, "io": {"_pid_exists": true}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": true, "get_process_start_time": 999}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": true, "get_process_start_time": 998}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": true, "get_process_start_time": null}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": true, "get_process_start_time": "999"}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {"_pid_exists": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_bridge_pid_is_ours", "in": {"args": {"pid": 101, "expected_start": 999}, "io": {}}, "fail_closed": true}
+{"func": "_pids_alive", "in": {"args": {"pids": [1, 2, 3]}, "io": {"_pid_exists": [true, false, true]}}}
+{"func": "_pids_alive", "in": {"args": {"pids": [1, 2]}, "io": {"_pid_exists": false}}}
+{"func": "_pids_alive", "in": {"args": {"pids": []}, "io": {}}}
+{"func": "_pids_alive", "in": {"args": {"pids": [1]}, "io": {"_pid_exists": null}}}
+{"func": "_pids_alive", "in": {"args": {"pids": [1]}, "io": {"_pid_exists": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_pids_alive", "in": {"args": {"pids": [1]}, "io": {"_pid_exists": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pids_alive", "in": {"args": {"pids": [1]}, "io": {}}, "fail_closed": true}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": [0], "_pids_alive": {"__script__": true, "ret": []}}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": [0, 0.05], "_pids_alive": [[1], []], "time.sleep": null}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": [0, 0.05, 5.1], "_pids_alive": [[1], [1]], "time.sleep": null}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1], "timeout": 2}, "io": {"time.monotonic": [0, 3], "_pids_alive": {"__script__": true, "ret": [1]}}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": null}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": [0, "x"], "_pids_alive": {"__script__": true, "ret": [1]}}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {"time.monotonic": [0], "_pids_alive": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1]}, "io": {}}, "fail_closed": true}
+{"func": "_wait_pids_exit", "in": {"args": {"pids": [1], "timeout": 0}, "io": {"time.monotonic": [0, 0], "_pids_alive": {"__script__": true, "ret": [1]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "node.exe", "cmdline": []}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash", "cmdline": ["node", "bridge.js"]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash", "cmdline": ["/usr/bin/nodejs", "x"]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash", "cmdline": ["python", "node"]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": null, "cmdline": ["node"]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "Node", "cmdline": []}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash"}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": 5, "cmdline": ["node"]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": null}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"__script__": true, "raise": {"type": "NoSuchProcess", "message": "gone"}}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash", "cmdline": ["node", 5]}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {"psutil.Process": {"name": "bash", "cmdline": null}}}}
+{"func": "_pid_looks_like_node_bridge", "in": {"args": {"pid": 101}, "io": {}}, "fail_closed": true}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"stdout": "  TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING    1234\n  TCP    0.0.0.0:3001    0.0.0.0:0    LISTENING    5678\n  TCP    0.0.0.0:3000    0.0.0.0:0    ESTABLISHED  9999\n  TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING\n", "returncode": 0}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 300}, "io": {"windows_hide_flags": 8, "subprocess.run": {"stdout": "  TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING    1234\n  TCP    0.0.0.0:3001    0.0.0.0:0    LISTENING    5678\n  TCP    0.0.0.0:3000    0.0.0.0:0    ESTABLISHED  9999\n  TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING\n", "returncode": 0}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"stdout": "", "returncode": 0}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"stdout": "  TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING    abc\n", "returncode": 0}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": {"__script__": true, "raise": {"type": "RuntimeError", "message": "flags"}}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "netstat"}}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": null}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"returncode": 0}}}}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {}}, "fail_closed": true}
+{"func": "_windows_listener_pids", "in": {"args": {"port": 3000}, "io": {"windows_hide_flags": 8, "subprocess.run": {"stdout": "TCP 0.0.0.0:3000 x LISTENING 42\r\nTCP [::]:3000 x LISTENING 43\n", "returncode": 0}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"stdout": "111\n222\n", "returncode": 0}]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"stdout": "pid=333 pid=444", "returncode": 0}]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "ss"}}], "psutil.net_connections": {"__script__": true, "ret": []}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "ss"}}], "psutil.net_connections": {"__script__": true, "ret": [{"status": "LISTEN", "laddr": {"port": 3000}, "pid": 555}, {"status": "ESTABLISHED", "laddr": {"port": 3000}, "pid": 666}, {"status": "LISTEN", "laddr": {"port": 3001}, "pid": 777}, {"status": "LISTEN", "laddr": null, "pid": 888}, {"status": "LISTEN", "laddr": {"port": 3000}, "pid": 0}, {"status": "LISTEN", "laddr": {}, "pid": 999}]}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"stdout": "", "returncode": 0}, {"stdout": "nope pid=100", "returncode": 0}]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"stdout": "abc\n", "returncode": 0}, {"stdout": "pid=7", "returncode": 0}]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "ss"}}], "psutil.net_connections": {"__script__": true, "raise": {"type": "RuntimeError", "message": "psutil"}}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "ss"}}], "psutil.net_connections": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "ss"}}], "psutil.net_connections": {"__script__": true, "ret": [{"laddr": {"port": 3000}, "pid": 1}]}}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [null]}}}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {}}, "fail_closed": true}
+{"func": "_listener_pids_on_port", "in": {"args": {"port": 3000}, "io": {"subprocess.run": [{"__script__": true, "raise": {"type": "FileNotFoundError", "message": "lsof"}}, {"stdout": "pid=pid=5 pid=6x", "returncode": 0}]}}}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": true}, "io": {"_windows_listener_pids": {"__script__": true, "ret": [1, 2]}}}}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_listener_pids_on_port": {"__script__": true, "ret": [3]}}}}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": true}, "io": {"_windows_listener_pids": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_listener_pids_on_port": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": true}, "io": {}}, "fail_closed": true}
+{"func": "_port_listener_pids", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_listener_pids_on_port": {"__script__": true, "ret": []}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101, 102]}, "_pid_looks_like_node_bridge": [true, true], "os.kill": null, "_wait_pids_exit": [[], []]}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [0, 101]}, "_pid_looks_like_node_bridge": [true], "logger.warning": null, "os.kill": null, "_wait_pids_exit": [[], []]}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [false], "logger.warning": null}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "os.kill": {"__script__": true, "raise": {"type": "OSError", "message": "perm"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true, true], "os.kill": [null, null], "logger.warning": null, "_wait_pids_exit": [[101], []]}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true, false], "os.kill": null, "logger.warning": null, "_wait_pids_exit": [[101], []]}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101, 102]}, "_pid_looks_like_node_bridge": [true], "os.kill": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "raise": {"type": "RuntimeError", "message": "scan"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "os.kill": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": true}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "windows_hide_flags": 8, "subprocess.run": {"stdout": "", "returncode": 0}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": true}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "windows_hide_flags": 8, "subprocess.run": {"__script__": true, "raise": {"type": "SubprocessError", "message": "taskkill"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": true}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "windows_hide_flags": 8, "subprocess.run": {"__script__": true, "raise": {"type": "OSError", "message": "missing"}}}}}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {}}, "fail_closed": true}
+{"func": "_kill_port_process", "in": {"args": {"port": 3000, "is_windows": false}, "io": {"_port_listener_pids": {"__script__": true, "ret": [101]}, "_pid_looks_like_node_bridge": [true], "os.kill": null, "_wait_pids_exit": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": false}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [null, null, null]}, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true, true], "os.kill": [null, null], "logger.info": null, "logger.warning": null, "_wait_pids_exit": [[101], []], "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true], "os.kill": null, "logger.info": null, "_wait_pids_exit": {"__script__": true, "ret": []}, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": true}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true], "os.kill": null, "logger.info": null, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, null, null]}, "_bridge_pid_is_ours": [false], "_pid_exists": true, "logger.warning": null, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [false], "_pid_exists": true, "logger.warning": null, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [false], "_pid_exists": false, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": true}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true], "os.kill": {"__script__": true, "raise": {"type": "OSError", "message": "perm"}}, "_unlink_quietly": null}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true], "os.kill": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {}}, "fail_closed": true}
+{"func": "_kill_stale_bridge_by_pidfile", "in": {"args": {"session_path": "/s", "is_windows": false}, "io": {"exists": true, "_read_bridge_pidfile": {"__script__": true, "ret": [101, 999, null]}, "_bridge_pid_is_ours": [true], "os.kill": null, "logger.info": {"__script__": true, "raise": {"type": "OSError", "message": "log"}}, "_wait_pids_exit": {"__script__": true, "ret": []}, "_unlink_quietly": null}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/usr/bin/node", "with_hermes_node_path": {}, "subprocess.run": {"returncode": 0}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/usr/bin/node", "with_hermes_node_path": {}, "subprocess.run": {"returncode": 1}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": null, "lazy_installs_allowed": true}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": null, "lazy_installs_allowed": false}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "", "lazy_installs_allowed": true}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/n", "with_hermes_node_path": {}, "subprocess.run": {"__script__": true, "raise": {"type": "RuntimeError", "message": "run"}}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/n", "with_hermes_node_path": {}, "subprocess.run": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/n", "with_hermes_node_path": {"__script__": true, "raise": {"type": "ValueError", "message": "env"}}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/n", "with_hermes_node_path": {}, "subprocess.run": {}}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {"find_node_executable": "/n", "with_hermes_node_path": {}, "subprocess.run": null}}}
+{"func": "check_whatsapp_requirements", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": "hello"}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": ""}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": "héllo"}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": {"__script__": true, "raise": {"type": "OSError", "message": "io"}}}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone"}}}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": null}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {"read_bytes": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_file_content_hash", "in": {"args": {"path": "/x/package.json"}, "io": {}}, "fail_closed": true}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": ["a", "b"]}}}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": ["a", {"__script__": true, "raise": {"type": "OSError", "message": "io"}}]}}}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": [{"__script__": true, "raise": {"type": "OSError", "message": "io"}}]}}}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": ["a", null]}}}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {}}, "fail_closed": true}
+{"func": "_bridge_source_hash", "in": {"args": {"bridge_path": "/x/bridge.js"}, "io": {"read_bytes": ["", ""]}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n", "/x/bridge.js", "--port", "3000"], "log_fh": "fh", "env": {"A": "1"}}, "io": {"windows_detach_flags": 0, "spawn_owned": {"pid": 42}}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n"], "log_fh": null, "env": {}}, "io": {"windows_detach_flags": 256, "spawn_owned": {"pid": 7}}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n"], "log_fh": "fh", "env": {}, "umask": 63}, "io": {"windows_detach_flags": 0, "spawn_owned": {"pid": 7}}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n"], "log_fh": "fh", "env": {}}, "io": {"windows_detach_flags": 0, "spawn_owned": {"__script__": true, "raise": {"type": "RuntimeError", "message": "spawn"}}}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n"], "log_fh": "fh", "env": {}}, "io": {"windows_detach_flags": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": ["/n"], "log_fh": "fh", "env": {}}, "io": {}}, "fail_closed": true}
+{"func": "_spawn_bridge_process", "in": {"args": {"argv": [], "log_fh": "fh", "env": {}, "umask": -1}, "io": {"windows_detach_flags": 0, "spawn_owned": null}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["a", "b", "a"]}, "io": {"normalize_whatsapp_mention_jid": ["1@a", "2@a", "1@a"]}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["x", "y", "z"]}, "io": {"normalize_whatsapp_mention_jid": ["1@a", null, ""]}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": null}, "io": {}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": []}, "io": {}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["x"]}, "io": {"normalize_whatsapp_mention_jid": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["x"]}, "io": {"normalize_whatsapp_mention_jid": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["x"]}, "io": {}}, "fail_closed": true}
+{"func": "_normalize_outbound_mentions", "in": {"args": {"mentions": ["x", "y"]}, "io": {"normalize_whatsapp_mention_jid": ["", null]}}}

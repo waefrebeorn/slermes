@@ -58,7 +58,11 @@ static json_t *ws4h_entry_result(json_t *entry) {
 /* Universal dispatcher: consumes the script, records {ev, args, ret} in
  * call order, ADOPTS args, returns a fresh result node (port frees). */
 static json_t *ws4h_dispatch(void *io, const char *name, json_t *args) {
-    ws4h_script_t *sc = (ws4h_script_t *)io;
+    /* The port passes the CHANNEL (g_ws4_io), like ws_revive2/3; the
+     * script state rides chan.ctx. Casting io straight to the script
+     * struct read the call-pointer as io_map (every lookup failed ->
+     * "no script") and stack garbage as trace (json_append no-op). */
+    ws4h_script_t *sc = (ws4h_script_t *)((ws4_io_t *)io)->ctx;
     json_t *entry = sc->io_map ? json_obj_get(sc->io_map, name) : NULL;
     json_t *result;
     if (!entry) {

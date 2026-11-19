@@ -111,7 +111,7 @@ static char *sw_strip_dup(const char *s) {
         const char *p = start;
         const char *last = p;
         unsigned cp = 0;
-        while (*p) { last = p; cp = sw_cp_next(&p); }
+        while (p < end) { last = p; cp = sw_cp_next(&p); }
         if (!sw_isspace_cp(cp)) break;
         end = last;
     }

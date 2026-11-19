@@ -465,21 +465,86 @@ static int ws2_none_or_empty(const json_t *v) {
     return ws2_is_str(v) && (!v->str_val || !v->str_val[0]);
 }
 
-/* ── numeric addition with Python TypeError messages ── */
+/* ── addition with Python TypeError messages ── */
 
-static double ws2_num_add(const json_t *a, const json_t *b, json_t **err) {
+/* Live TypeError text for a failed + / += : str on the LEFT is the
+ * concatenation message (str.__add__/__iadd__), everything else the
+ * generic binary-op message with the actual operator. */
+static void ws2_add_msg(char *msg, size_t cap, const json_t *a, const json_t *b,
+                        const char *op) {
+    if (ws2_is_str(a))
+        snprintf(msg, cap, "can only concatenate str (not \"%s\") to str",
+                 ws2_type_name(b));
+    else
+        snprintf(msg, cap, "unsupported operand type(s) for %s: '%s' and '%s'",
+                 op, ws2_type_name(a), ws2_type_name(b));
+}
+
+/* Numeric + / += (bool coerces numerically). Used where the result feeds a
+ * numeric sort key (_token_volume). */
+static double ws2_num_add(const json_t *a, const json_t *b, const char *op,
+                          json_t **err) {
     int aok = ws2_is_num(a) || ws2_is_bool(a);
     int bok = ws2_is_num(b) || ws2_is_bool(b);
     if (!aok || !bok) {
         char msg[256];
-        snprintf(msg, sizeof msg, "unsupported operand type(s) for +: '%s' and '%s'",
-                 ws2_type_name(a), ws2_type_name(b));
+        ws2_add_msg(msg, sizeof msg, a, b, op);
         *err = ws2_raise("TypeError", msg);
         return 0.0;
     }
     double x = ws2_is_bool(a) ? (a->bool_val ? 1.0 : 0.0) : a->num_val;
     double y = ws2_is_bool(b) ? (b->bool_val ? 1.0 : 0.0) : b->num_val;
     return x + y;
+}
+
+/* Full + / += on JSON values: numbers add, str+str concatenates, anything
+ * else raises the live TypeError. Returns a NEW node, or NULL with *err. */
+static json_t *ws2_add(const json_t *a, const json_t *b, const char *op,
+                       json_t **err) {
+    *err = NULL;
+    int aok = ws2_is_num(a) || ws2_is_bool(a);
+    int bok = ws2_is_num(b) || ws2_is_bool(b);
+    if (aok && bok)
+        return json_number(ws2_num_add(a, b, op, err));
+    if (ws2_is_str(a) && ws2_is_str(b)) {
+        const char *sa = a->str_val ? a->str_val : "";
+        const char *sb = b->str_val ? b->str_val : "";
+        size_t la = strlen(sa), lb = strlen(sb);
+        char *buf = malloc(la + lb + 1);
+        if (!buf) return json_string("");
+        memcpy(buf, sa, la);
+        memcpy(buf + la, sb, lb + 1);
+        json_t *r = json_string(buf);
+        free(buf);
+        return r;
+    }
+    char msg[256];
+    ws2_add_msg(msg, sizeof msg, a, b, op);
+    *err = ws2_raise("TypeError", msg);
+    return NULL;
+}
+
+/* Python dict-key identity for a TRUTHY JSON value: strings key by text,
+ * numbers/bools by numeric value (5 == 5.0 == True share one key), so an
+ * int task 5 and a str task "5" stay DISTINCT entries. NULL = unhashable
+ * (list/dict). Caller frees. */
+static char *ws2_dict_key(const json_t *v) {
+    if (ws2_is_str(v)) {
+        const char *s = v->str_val ? v->str_val : "";
+        size_t n = strlen(s);
+        char *k = malloc(n + 3);
+        if (!k) return NULL;
+        k[0] = 's'; k[1] = ':';
+        memcpy(k + 2, s, n + 1);
+        return k;
+    }
+    if (ws2_is_num(v) || ws2_is_bool(v)) {
+        double d = ws2_is_bool(v) ? (v->bool_val ? 1.0 : 0.0) : v->num_val;
+        char buf[64];
+        snprintf(buf, sizeof buf, "n:%.17g", d);
+        return ws2_strdup(buf);
+    }
+    return NULL;
 }
 
 /* ── float() / int() coercion ── */
@@ -865,7 +930,7 @@ static double ws2_token_volume(const json_t *row, json_t **err) {
     json_t *zero = json_number(0);
     json_t *a = json_obj_get(row, "input_tokens");
     json_t *b = json_obj_get(row, "output_tokens");
-    double r = ws2_num_add(ws2_truthy(a) ? a : zero, ws2_truthy(b) ? b : zero, err);
+    double r = ws2_num_add(ws2_truthy(a) ? a : zero, ws2_truthy(b) ? b : zero, "+", err);
     json_free(zero);
     return r;
 }
@@ -1340,11 +1405,21 @@ json_t *ws_u_aux_task_summary(json_t *req) {
             break;
         }
         json_t *task = json_obj_get(aux, "task");
-        char *tsk = ws2_truthy(task) ? ws2_pystr(task) : ws2_strdup("");
+        /* task = aux.get("task") or "" — the RAW value is the dict key, so
+         * int 5 and str "5" are distinct tasks (and the row keeps the
+         * original type). Unhashable truthy tasks raise live. */
+        const json_t *tval = ws2_truthy(task) ? task : NULL;
+        char *tsk = tval ? ws2_dict_key(tval) : ws2_strdup("s:");
+        if (!tsk) {
+            char msg[64];
+            snprintf(msg, sizeof msg, "unhashable type: '%s'", ws2_type_name(task));
+            result = ws2_raise("TypeError", msg);
+            break;
+        }
         json_t *d = ws2_map_get(&by_task, tsk);
         if (!d) {
             d = json_object();
-            json_set_hdr(d, "task", tsk);
+            json_set(d, "task", tval ? json_copy(tval) : json_string(""));
             json_set(d, "input_tokens", json_number(0));
             json_set(d, "output_tokens", json_number(0));
             json_set(d, "estimated_cost", json_number(0));
@@ -1359,10 +1434,12 @@ json_t *ws_u_aux_task_summary(json_t *req) {
             json_t *add = json_obj_get(aux, key);
             json_t *zero = json_number(0);
             json_t *aerr = NULL;
-            double sum = ws2_num_add(cur, ws2_truthy(add) ? add : zero, &aerr);
+            /* d[key] += aux.get(key) or 0 — augmented assignment: the live
+             * TypeError names += , and str+str concatenates. */
+            json_t *sum = ws2_add(cur, ws2_truthy(add) ? add : zero, "+=", &aerr);
             json_free(zero);
             if (aerr) { result = aerr; break; }
-            json_set(d, key, json_number(sum));
+            json_set(d, key, sum);
         }
         if (result) break;
         json_t *model = json_obj_get(aux, "model");
@@ -1422,7 +1499,14 @@ json_t *ws_u_merge_aux_into_by_model(json_t *req) {
             break;
         }
         json_t *m = json_obj_get(row, "model");
-        char *key = ws2_truthy(m) ? ws2_pystr(m) : ws2_strdup("unknown");
+        /* Raw-value dict keys (see ws2_dict_key): falsy -> "unknown". */
+        char *key = ws2_truthy(m) ? ws2_dict_key(m) : ws2_strdup("s:unknown");
+        if (!key) {
+            char msg[64];
+            snprintf(msg, sizeof msg, "unhashable type: '%s'", ws2_type_name(m));
+            result = ws2_raise("TypeError", msg);
+            break;
+        }
         ws2_map_set(&merged, key, row);
         free(key);
     }
@@ -1435,11 +1519,17 @@ json_t *ws_u_merge_aux_into_by_model(json_t *req) {
             break;
         }
         json_t *m = json_obj_get(aux, "model");
-        char *key = ws2_truthy(m) ? ws2_pystr(m) : ws2_strdup("unknown");
+        char *key = ws2_truthy(m) ? ws2_dict_key(m) : ws2_strdup("s:unknown");
+        if (!key) {
+            char msg[64];
+            snprintf(msg, sizeof msg, "unhashable type: '%s'", ws2_type_name(m));
+            result = ws2_raise("TypeError", msg);
+            break;
+        }
         json_t *target = ws2_map_get(&merged, key);
         if (!target) {
             target = json_object();
-            json_set_hdr(target, "model", key);
+            json_set(target, "model", ws2_truthy(m) ? json_copy(m) : json_string("unknown"));
             json_set(target, "input_tokens", json_number(0));
             json_set(target, "output_tokens", json_number(0));
             json_set(target, "estimated_cost", json_number(0));
@@ -1455,10 +1545,13 @@ json_t *ws_u_merge_aux_into_by_model(json_t *req) {
             json_t *add = json_obj_get(aux, ck);
             json_t *zero = json_number(0);
             json_t *aerr = NULL;
-            double sum = ws2_num_add(ws2_truthy(cur) ? cur : zero, ws2_truthy(add) ? add : zero, &aerr);
+            /* (target.get(key) or 0) + (aux.get(key) or 0) — plain + : a str
+             * left operand raises the concatenation TypeError. */
+            json_t *sum = ws2_add(ws2_truthy(cur) ? cur : zero,
+                                  ws2_truthy(add) ? add : zero, "+", &aerr);
             json_free(zero);
             if (aerr) { result = aerr; break; }
-            json_set(target, ck, json_number(sum));
+            json_set(target, ck, sum);
         }
         if (result) break;
         json_t *tasks = json_obj_get(target, "aux_tasks");
@@ -1474,9 +1567,8 @@ json_t *ws_u_merge_aux_into_by_model(json_t *req) {
         }
         json_t *entry = json_object();
         json_t *task = json_obj_get(aux, "task");
-        char *ts = ws2_truthy(task) ? ws2_pystr(task) : ws2_strdup("");
-        json_set_hdr(entry, "task", ts);
-        free(ts);
+        /* {"task": aux.get("task") or "", ...} keeps the raw value type. */
+        json_set(entry, "task", ws2_truthy(task) ? json_copy(task) : json_string(""));
         for (size_t c = 0; c < 4; c++) {
             json_t *v = json_obj_get(aux, WS2_AUX_COUNTERS[c]);
             json_set(entry, WS2_AUX_COUNTERS[c], ws2_truthy(v) ? json_copy(v) : json_number(0));
@@ -1862,7 +1954,7 @@ json_t *ws_u_infer_provider_on_model_change(json_t *req) {
                 json_append(ret, json_copy(detected->c.items[1]));
             } else {
                 json_free(ret);
-                ret = ws2_raise("IndexError", "list index out of range");
+                ret = ws2_raise("IndexError", "tuple index out of range");
             }
         } else if (ws2_is_str(detected)) {
             if (ws2_cplen(detected->str_val) >= 2) {

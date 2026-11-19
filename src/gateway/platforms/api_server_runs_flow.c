@@ -177,6 +177,24 @@ static long asrun_py_int(const json_t *v) {
     }
 }
 
+/* Python type(v).__name__ for a JSON scalar/container. Integral JSON numbers
+ * read as int (json_t carries no int/float identity); a fixture written as
+ * "5.0" would be a float in live json.loads, so the .get-AttributeError domain
+ * excludes integral-float literals (see the port header). */
+static const char *asrun_py_type_name(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+        case JSON_BOOL: return "bool";
+        case JSON_NUMBER:
+            return (v->num_val == floor(v->num_val) && fabs(v->num_val) < 9.2233720368547758e18)
+                       ? "int" : "float";
+        case JSON_STRING: return "str";
+        case JSON_ARRAY: return "list";
+        case JSON_OBJECT: return "dict";
+    }
+    return "object";
+}
+
 /* ── sha256 (FIPS 180-4), self-contained so the gate links only libjson ─── */
 
 static const uint32_t asrun_sha_k[64] = {
@@ -512,8 +530,10 @@ json_t *asrun_terminal_run_status(const json_t *result, char **status_out) {
 /* ── _run_user_message ──────────────────────────────────────────────────── */
 
 /* PoP: asrun_run_user_message @ gateway/platforms/api_server_runs.py:_run_user_message */
-json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s, json_t **err_out) {
+json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s,
+                               json_t **err_out, char **exc_out) {
     *err_out = NULL;
+    *exc_out = NULL;
     if (!asrun_truthy(raw_input)) {
         *err_out = asrun_json_error(s, "Missing 'input' field", 400, NULL);
         return NULL;
@@ -527,7 +547,13 @@ json_t *asrun_run_user_message(const json_t *raw_input, const asrun_seams_t *s, 
             const json_t *content = json_obj_get(last, "content");
             msg = content ? json_copy(content) : json_string("");
         } else {
-            msg = json_string("");
+            /* Live `raw_input[-1].get("content", "")` raises AttributeError on
+             * a non-dict last element (the truthy gate already ruled out []). */
+            char m[128];
+            snprintf(m, sizeof(m), "'%s' object has no attribute 'get'",
+                     asrun_py_type_name(last));
+            *exc_out = asrun_exc_str("AttributeError", m);
+            return NULL;
         }
     } else {
         msg = json_string("");
@@ -587,13 +613,41 @@ char *asrun_tool_completed_preview(const json_t *result, const asrun_seams_t *s)
 
 /* PoP: asrun_run_event @ gateway/platforms/api_server_runs.py:_run_event */
 json_t *asrun_run_event(const char *run_id, const char *name, const json_t *fields,
-                        const asrun_seams_t *s) {
+                        const asrun_seams_t *s, char **exc_out) {
+    *exc_out = NULL;
+    /* Live `_run_event(run_id, name, **fields)` binds arguments BEFORE the body
+     * runs: a fields key colliding with a positional parameter raises TypeError
+     * (first colliding key in fields insertion order) and time.time() is never
+     * reached, so the collision check precedes the clock seam. */
+    if (fields && fields->type == JSON_OBJECT) {
+        for (size_t i = 0; i < fields->c.count; i++) {
+            const char *k = fields->c.keys[i];
+            if (strcmp(k, "run_id") == 0 || strcmp(k, "name") == 0) {
+                char m[128];
+                snprintf(m, sizeof(m), "_run_event() got multiple values for argument '%s'", k);
+                *exc_out = asrun_exc_str("TypeError", m);
+                return NULL;
+            }
+        }
+    }
     json_t *e = json_object();
     json_set(e, "event", json_string(name ? name : ""));
     json_set(e, "run_id", json_string(run_id ? run_id : ""));
     json_set(e, "timestamp", json_number(s->clock(s->ctx)));
     asrun_obj_update(e, fields);
     return e;
+}
+
+/* ── _call_id ───────────────────────────────────────────────────────────── */
+
+/* PoP: asrun_call_id @ gateway/platforms/api_server_runs.py:_call_id */
+json_t *asrun_call_id(const json_t *kw) {
+    /* {"tool_call_id": kw["tool_call_id"]} if kw.get("tool_call_id") else {} —
+     * a truthy .get guarantees the key is present, so no KeyError is reachable. */
+    json_t *out = json_object();
+    const json_t *v = kw ? json_obj_get(kw, "tool_call_id") : NULL;
+    if (asrun_truthy(v)) json_set(out, "tool_call_id", json_copy(v));
+    return out;
 }
 
 /* ── _room_permission_for ───────────────────────────────────────────────── */
@@ -913,7 +967,10 @@ json_t *asrun_durable_run_status(json_t *state, const json_t *request, json_t *r
     }
     json_t *status = json_obj_get(statuses, run_id);
     json_t *ids = json_obj_get(state, "run_idempotency_ids");
-    if (status) {
+    /* Live `status = self._run_statuses.get(run_id); if status is not None` —
+     * .get returns None for BOTH an absent key and a present-null value, so a
+     * JSON null status falls through to durable hydration, not the return. */
+    if (status && status->type != JSON_NULL) {
         if (asrun_set_has(ids, run_id)) {
             char *scope = asrun_run_idempotency_scope(request, req_state, s, err_out);
             if (*err_out) return NULL;
@@ -936,12 +993,13 @@ json_t *asrun_durable_run_status(json_t *state, const json_t *request, json_t *r
         return NULL;
     }
     json_t *hydrated = json_copy(rec_status);
-    json_free(record);
     const json_t *st = hydrated->type == JSON_OBJECT ? json_obj_get(hydrated, "status") : NULL;
     bool terminal = st && st->type == JSON_STRING && asrun_is_terminal(st->str_val);
     if (!terminal) {
-        const json_t *pid_v = json_obj_get(hydrated, "owner_pid");
-        const json_t *started_v = json_obj_get(hydrated, "owner_started");
+        /* Live reads owner_pid/owner_started from the RECORD (record.get(...)),
+         * NOT from record["status"]; keep record alive until after this branch. */
+        const json_t *pid_v = json_obj_get(record, "owner_pid");
+        const json_t *started_v = json_obj_get(record, "owner_started");
         long pid = asrun_truthy(pid_v) ? asrun_py_int(pid_v) : 0;
         long started = asrun_truthy(started_v) ? asrun_py_int(started_v) : 0;
         if (!asrun_owner_alive(pid, started, s)) {
@@ -955,11 +1013,13 @@ json_t *asrun_durable_run_status(json_t *state, const json_t *request, json_t *r
             if (raised) {
                 *err_out = asrun_exc_str(etype ? etype : "Exception", emsg ? emsg : "");
                 json_free(hydrated);
+                json_free(record);
                 free(scope);
                 return NULL;
             }
         }
     }
+    json_free(record);
     json_set(statuses, run_id, hydrated);   /* adopts hydrated (new key) */
     asrun_set_add(ids, run_id);
     json_t *owners = asrun_state_table(state, "run_owners");

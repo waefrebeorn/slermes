@@ -91,11 +91,20 @@ def extract(modpath, funcs=(), consts=(), seed=None):
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in funcs:
             exec_node(node)
-    # re-seed constants that reference extracted defs
+    # re-seed constants that reference extracted defs. Only re-exec a const
+    # whose value actually names an extracted def: re-executing an identity
+    # sentinel (_OMIT = object()) mints a NEW object, so `is` checks against
+    # defaults bound at def time (_status_card's last_refresh=_OMIT) fail and
+    # the bare object leaks into the card (TypeError on json.dumps).
     for node in tree.body:
         if isinstance(node, (ast.Assign, ast.AnnAssign)):
             targets = node.targets if isinstance(node, ast.Assign) else [node.target]
             if any(isinstance(t, ast.Name) and t.id in consts for t in targets):
+                val = node.value
+                if val is None or not any(
+                        isinstance(n, ast.Name) and n.id in funcs
+                        for n in ast.walk(val)):
+                    continue
                 try:
                     exec_node(node)
                 except Exception:
@@ -760,8 +769,14 @@ def drive(rec):
                                 idle_days, min_interval_hours)
         PMEM.discover_memory_providers = ctx.recorder("discover_memory_providers")
         PMEM.parked_provider_notice = ctx.recorder("parked_provider_notice")
-        TTSREG.list_providers = ctx.recorder("list_voice_providers")
-        STTREG.list_providers = ctx.recorder("list_voice_providers")
+        # Registry entries are attribute objects live (getattr(_p, "name"));
+        # materialize scripted dicts so .name resolves instead of silently
+        # dropping every plugin name.
+        def _voice_providers():
+            return [types.SimpleNamespace(**c) if isinstance(c, dict) else c
+                    for c in ctx.recorder("list_voice_providers")()]
+        TTSREG.list_providers = _voice_providers
+        STTREG.list_providers = _voice_providers
         AMEM.is_core_memory_provider = ctx.recorder("is_core_memory_provider")
         HTTPX.Client = lambda timeout=None, headers=None: HttpClientDouble(ctx, timeout, headers)
 
@@ -828,8 +843,12 @@ def drive(rec):
             out = NS_OAUTH["_resolve_provider_status"](inp.get("provider_id", ""), status_fn)
         elif func == "ws_u_maybe_auto_archive_for_profile":
             NS_SESS["_last_auto_archive_check"] = dict(state.get("last_auto_archive_check") or {})
-            out = NS_SESS["_maybe_auto_archive_for_profile"](inp.get("profile"))
-            st = {"last_auto_archive_check": NS_SESS["_last_auto_archive_check"]}
+            # Capture post-state even when the call raises: the check stamp is
+            # written BEFORE load_config, and the C harness emits st on raises.
+            try:
+                out = NS_SESS["_maybe_auto_archive_for_profile"](inp.get("profile"))
+            finally:
+                st = {"last_auto_archive_check": NS_SESS["_last_auto_archive_check"]}
         elif func == "ws_u_spawn_gateway_restart":
             gm = types.SimpleNamespace()
             gm._gateway_subcommand = ctx.recorder("gateway_subcommand")
@@ -840,11 +859,19 @@ def drive(rec):
                                    for k, v in (state.get("action_commands") or {}).items()}
             NS_WS["_gateway_mod"] = gm
             NS_WS["_LAST_GATEWAY_RESTART"] = materialize_restart(state.get("last_gateway_restart"))
-            out = NS_WS["_spawn_gateway_restart"](inp.get("profile"),
-                                                  interrupt=inp.get("interrupt", False))
-            st = {"last_gateway_restart": jnorm(NS_WS["_LAST_GATEWAY_RESTART"]),
-                  "action_procs": {k: jnorm(v) for k, v in gm._ACTION_PROCS.items()},
-                  "action_commands": {k: list(v) for k, v in gm._ACTION_COMMANDS.items()}}
+            # Seed st with the pre-call state, then refresh in finally: the C
+            # harness emits st even when the call raises (e.g. the in-flight
+            # restart guard), with whatever state survived.
+            st = {"last_gateway_restart": state.get("last_gateway_restart"),
+                  "action_procs": state.get("action_procs") or {},
+                  "action_commands": state.get("action_commands") or {}}
+            try:
+                out = NS_WS["_spawn_gateway_restart"](inp.get("profile"),
+                                                      interrupt=inp.get("interrupt", False))
+            finally:
+                st = {"last_gateway_restart": jnorm(NS_WS["_LAST_GATEWAY_RESTART"]),
+                      "action_procs": {k: jnorm(v) for k, v in gm._ACTION_PROCS.items()},
+                      "action_commands": {k: list(v) for k, v in gm._ACTION_COMMANDS.items()}}
         elif func == "ws_u_custom_endpoint_response":
             out = NS_CE["_custom_endpoint_response"](inp["cfg"])
         elif func == "ws_u_get_models_analytics":

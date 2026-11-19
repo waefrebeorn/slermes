@@ -821,12 +821,14 @@ static json_t *pccf_event_from_json(pccf_ctx *ctx, const json_t *raw) {
         mapped = rc ? json_copy(rc) : json_null();
     }
     json_set(data, "route_class", mapped);
-    /* route / destination must exist (KeyError) and be iterable (TypeError) */
+    /* route / destination must exist (KeyError) and be iterable (TypeError).
+     * Live wraps the whole body in try/except (TypeError, ValueError,
+     * KeyError) -> None, so a tupleify raise is swallowed here. */
     if (!json_has(data, "route") || !json_has(data, "destination")) { json_free(data); return NULL; }
     json_t *route = pccf_tupleify(ctx, json_obj_get(data, "route"));
-    if (!route) { json_free(data); return NULL; }
+    if (!route) { pccf_exc_clear(ctx); json_free(data); return NULL; }
     json_t *dest = pccf_tupleify(ctx, json_obj_get(data, "destination"));
-    if (!dest) { json_free(route); json_free(data); return NULL; }
+    if (!dest) { pccf_exc_clear(ctx); json_free(route); json_free(data); return NULL; }
     /* required fields (route_class always present after the legacy line) */
     static const char *const REQ[] = {
         "requested_ttl", "sent_at", "read_tokens", "write_tokens", "tier", "confidence", "reason",

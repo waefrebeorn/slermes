@@ -14,9 +14,10 @@
  * harness models `with self._state_lock` as a no-op, no seam events).
  * in.self carries _reads (dict) and _last_writer (dict path -> [writer_tid,
  * ts] — the live 2-tuples). The port pops the task's read stamp, then
- * deletes every writer claim whose writer_tid == task_id. A non-2-element
- * claim value raises the exact py3.14 unpack ValueError (probed), AFTER
- * the reads pop already happened — state order matches live. Missing self
+ * deletes every writer claim whose writer_tid == task_id. Unpacking a
+ * claim value follows live py3.14 semantics: non-iterables raise
+ * TypeError, wrong-length iterables raise ValueError, AFTER the reads
+ * pop already happened — state order matches live. Missing self
  * attributes raise with the oracle double's SimpleNamespace type name.
  * json_t *fn(fs_io_t *io, json_t *in) — io unused (no seams). */
 typedef struct fs_io {
@@ -70,25 +71,69 @@ json_t *forget_task(fs_io_t *io, json_t *in) {
     size_t ndoom = 0;
     for (size_t i = 0; i < n; i++) {
         json_t *v = lw->c.items[i];
-        if (!v || v->type != JSON_ARRAY || v->c.count != 2) {
+        /* Live unpack (writer_tid, _ts) = value: non-iterables raise
+         * TypeError; iterables of length != 2 raise ValueError (py3.14
+         * lists/dicts report "got N" on too-many, str does not); a
+         * length-2 iterable unpacks to its first element (str: first
+         * code point, dict: first key). */
+        int iterable = v && (v->type == JSON_ARRAY || v->type == JSON_STRING ||
+                             v->type == JSON_OBJECT);
+        if (!iterable) {
+            const char *tn = (!v || v->type == JSON_NULL) ? "NoneType"
+                : (v->type == JSON_NUMBER ? (v->num_val == (double)(long long)v->num_val ? "int" : "float")
+                : (v->type == JSON_BOOL ? "bool" : "object"));
             char msg[96];
-            if (v && v->type == JSON_ARRAY) {
-                if (v->c.count < 2)
-                    snprintf(msg, sizeof msg, "not enough values to unpack (expected 2, got %zu)", v->c.count);
-                else
-                    snprintf(msg, sizeof msg, "too many values to unpack (expected 2, got %zu)", v->c.count);
-            } else {
-                const char *tn = (!v || v->type == JSON_NULL) ? "NoneType"
-                    : (v->type == JSON_STRING ? "str"
-                    : (v->type == JSON_NUMBER ? (v->num_val == (double)(long long)v->num_val ? "int" : "float")
-                    : (v->type == JSON_BOOL ? "bool" : (v->type == JSON_OBJECT ? "dict" : "object"))));
-                snprintf(msg, sizeof msg, "cannot unpack non-iterable %s object", tn);
+            snprintf(msg, sizeof msg, "cannot unpack non-iterable %s object", tn);
+            for (size_t j = 0; j < ndoom; j++) free(doomed[j]);
+            free(doomed);
+            return fs_raise("TypeError", msg);
+        }
+        size_t seqlen = 0;
+        json_t *first = NULL;          /* array: borrowed first element */
+        const char *first_key = NULL;  /* dict: first key */
+        char first_cp[8];              /* str: first code point, utf-8 */
+        first_cp[0] = '\0';
+        int is_str = 0;
+        if (v->type == JSON_ARRAY) {
+            seqlen = v->c.count;
+            if (seqlen == 2) first = v->c.items[0];
+        } else if (v->type == JSON_OBJECT) {
+            seqlen = v->c.count;
+            if (seqlen == 2) first_key = v->c.keys[0];
+        } else {
+            is_str = 1;
+            const char *s = v->str_val ? v->str_val : "";
+            const char *firstp = NULL;
+            for (const char *q = s; *q; q++) {
+                if (((unsigned char)*q & 0xC0) != 0x80) {
+                    if (!firstp) firstp = q;
+                    seqlen++;
+                }
             }
+            if (seqlen == 2 && firstp) {
+                size_t l = 1;
+                while (firstp[l] && ((unsigned char)firstp[l] & 0xC0) == 0x80 && l < 4) l++;
+                memcpy(first_cp, firstp, l);
+                first_cp[l] = '\0';
+            }
+        }
+        if (seqlen != 2) {
+            char msg[96];
+            if (seqlen < 2)
+                snprintf(msg, sizeof msg, "not enough values to unpack (expected 2, got %zu)", seqlen);
+            else if (is_str)
+                snprintf(msg, sizeof msg, "too many values to unpack (expected 2)");
+            else
+                snprintf(msg, sizeof msg, "too many values to unpack (expected 2, got %zu)", seqlen);
             for (size_t j = 0; j < ndoom; j++) free(doomed[j]);
             free(doomed);
             return fs_raise("ValueError", msg);
         }
-        if (fs_json_eq(v->c.items[0], tid))
+        int match;
+        if (first) match = fs_json_eq(first, tid);
+        else if (first_key) match = tid && tid->type == JSON_STRING && strcmp(first_key, tid->str_val) == 0;
+        else match = tid && tid->type == JSON_STRING && strcmp(first_cp, tid->str_val) == 0;
+        if (match)
             doomed[ndoom++] = strdup(lw->c.keys[i]);
     }
     for (size_t j = 0; j < ndoom; j++) {
