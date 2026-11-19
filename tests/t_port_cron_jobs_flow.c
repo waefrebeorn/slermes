@@ -74,6 +74,11 @@ static void io_init(cjf_io_t *io, script_ctx_t *sc, json_t *in, json_t *state) {
     io->ctx = sc;
     sc->io = json_obj_get(in, "io");
     sc->cursors = json_object();
+    /* live module-global init at import: _timezone_migration_catchups_recent
+     * exists (empty list) even when no catchup ever ran — mirror it so the
+     * state snapshot matches the oracle's unconditional seed. */
+    if (state && !json_obj_get(state, "_timezone_migration_catchups_recent"))
+        json_set(state, "_timezone_migration_catchups_recent", json_array());
 }
 
 static json_t *state_from(json_t *in) {

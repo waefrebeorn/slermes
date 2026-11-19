@@ -706,6 +706,14 @@ json_t *mlf_reference_context_length(const json_t *in, const mlf_io_t *io, json_
             free(model); free(provider); free(base_url); free(api_key); free(kb.p);
             return NULL;
         }
+        /* live except branch: logger.debug('...', _slot_label(slot)) —
+         * logger args evaluate even when logging is disabled; _slot_label
+         * is a recorded seam event. */
+        json_t *sla = json_object();
+        json_set(sla, "slot", slot ? json_copy(slot) : json_null());
+        json_t *e2 = NULL;
+        json_free(mlf_call(io, "_slot_label", sla, &e2));
+        if (e2) json_free(e2);
         ctx = NULL;   /* except Exception -> None */
     }
 
