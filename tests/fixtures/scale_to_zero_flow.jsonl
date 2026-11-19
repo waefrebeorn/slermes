@@ -1,0 +1,86 @@
+{"func": "env_str", "in": {"env": {"K": "  hello  "}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": null}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": null, "key": "K", "io": {"os.environ": {"K": " x "}}}}
+{"func": "env_str", "in": {"env": null, "key": "K", "io": {"os.environ": null}}}
+{"func": "env_str", "in": {"env": {"K": 123}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": true}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": "\t\n a \u001c"}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": null, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": "   "}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": "None"}, "key": "K", "io": {}}}
+{"func": "env_str", "in": {"env": {"K": ""}, "key": "K", "io": {}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": true}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "", "FLY_MACHINE_ID": "m"}, "io": {}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": " "}, "io": {}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": false}}}
+{"func": "self_suspend_available", "in": {"environ": null, "io": {"os.environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "os.path.exists": true}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": {"__raise__": "OSError", "msg": "no socket"}}}}
+{"func": "self_suspend_available", "in": {"environ": null, "io": {"os.environ": null}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": 1}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app"}, "io": {}}}
+{"func": "self_suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "https://x.example/sleep"}, "io": {"urlsplit": {"scheme": "https", "netloc": "x.example"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": ""}, "io": {}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "  https://x  "}, "io": {"urlsplit": {"scheme": "https", "netloc": "x"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "http://x"}, "io": {"urlsplit": {"scheme": "http", "netloc": "x"}, "logger.warning": null}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "https://"}, "io": {"urlsplit": {"scheme": "https", "netloc": ""}, "logger.warning": null}}}
+{"func": "brokered_sleep_url", "in": {"environ": {}, "io": {}}}
+{"func": "brokered_sleep_url", "in": {"environ": null, "io": {"os.environ": {"GATEWAY_RELAY_SLEEP_URL": "https://x"}, "urlsplit": {"scheme": "https", "netloc": "x"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": null, "io": {"os.environ": null}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "http://x"}, "state": {"malformed_logged": true}, "io": {"urlsplit": {"scheme": "http", "netloc": "x"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "https://x"}, "io": {"urlsplit": {"__raise__": "ValueError", "msg": "bad url"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "https://x"}, "io": {"urlsplit": null}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "http://x"}, "io": {"urlsplit": {"scheme": "http", "netloc": "x"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": null}, "io": {"urlsplit": {"scheme": "https", "netloc": "x"}}}}
+{"func": "brokered_sleep_url", "in": {"environ": {"GATEWAY_RELAY_SLEEP_URL": "ftp://x"}, "io": {"urlsplit": {"scheme": "ftp", "netloc": "x"}, "logger.warning": null}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": true}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "", "FLY_MACHINE_ID": "m", "GATEWAY_RELAY_SLEEP_URL": "https://x"}, "io": {"urlsplit": {"scheme": "https", "netloc": "x"}}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m", "GATEWAY_RELAY_SLEEP_URL": ""}, "io": {"os.path.exists": false}}}
+{"func": "suspend_available", "in": {"environ": null, "io": {"os.environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "os.path.exists": true}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"os.path.exists": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "", "GATEWAY_RELAY_SLEEP_URL": "http://x"}, "io": {"urlsplit": {"scheme": "http", "netloc": "x"}, "logger.warning": null}}}
+{"func": "suspend_available", "in": {"environ": null, "io": {"os.environ": null}}}
+{"func": "suspend_available", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m", "GATEWAY_RELAY_SLEEP_URL": "https://x"}, "io": {"os.path.exists": false, "urlsplit": {"scheme": "https", "netloc": "x"}}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200}, "response.__enter__": null, "response.__exit__": null, "logger.info": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 404}, "response.__enter__": null, "response.__exit__": null, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "opener": {"fn": 1}, "io": {"urllib.request.Request": {"req": 1}, "opener": {"status": 200}, "response.__enter__": null, "response.__exit__": null, "logger.info": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": "200"}, "response.__enter__": null, "response.__exit__": null, "logger.info": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": "bad"}, "response.__enter__": null, "response.__exit__": null, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": null}, "response.__enter__": null, "response.__exit__": null, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {}, "response.__enter__": null, "response.__exit__": null, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"__raise__": "HTTPError", "msg": "HTTP Error 500: boom", "code": 500, "reason": "boom"}, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200}, "response.__enter__": null, "response.__exit__": {"__raise__": "OSError", "msg": "close fail"}, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": "bad"}, "response.__enter__": null, "response.__exit__": true}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200}, "response.__enter__": {"__raise__": "OSError", "msg": "enter fail"}, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"__raise__": "ValueError", "msg": "bad url"}}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200}, "response.__enter__": null, "response.__exit__": null, "logger.info": {"__raise__": "RuntimeError", "msg": "log fail"}}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200}, "response.__enter__": null, "response.__exit__": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 200.5}, "response.__enter__": null, "response.__exit__": null, "logger.info": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": {}}, "response.__enter__": null, "response.__exit__": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"__raise__": "URLError", "msg": "<urlopen error refused>"}, "logger.warning": null}}}
+{"func": "request_brokered_suspend", "in": {"url": "https://x", "timeout": 5, "io": {"urllib.request.Request": {"req": 1}, "urlopen": {"status": 204}, "response.__enter__": null, "response.__exit__": null, "logger.info": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}, "logger.info": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 500 Internal Server Error\r\n\r\nbody here", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "", "FLY_MACHINE_ID": "m"}, "io": {"logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app"}, "io": {"logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": null, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}, "logger.info": null, "os.environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": {"__raise__": "OSError", "msg": "conn refused"}, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {"__raise__": "OSError", "msg": "no socket"}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", {"x": 1}]}}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": {"__raise__": "OSError", "msg": "close fail"}, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": {"__raise__": "OSError", "msg": "timeout fail"}, "sock.connect": null, "sock.sendall": null, "sock.__exit__": true, "sock.recv": {"__seq__": ["", ""]}}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK", ""]}, "logger.info": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["garbage", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 2xx OK\r\n\r\n", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": {"__raise__": "OSError", "msg": "enter fail"}, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": null, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 500 X\r\n\r\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", ""]}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": {"__raise__": "SystemExit", "msg": "bye"}, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": true, "sock.recv": {"__raise__": "OSError", "msg": "recv fail"}, "logger.warning": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "socket_path": "/custom.sock", "timeout": 3, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 200 OK\r\n\r\n", ""]}, "logger.info": null}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m"}, "io": {"logger.warning": {"__raise__": "RuntimeError", "msg": "log fail"}}}}
+{"func": "suspend_self", "in": {"environ": {"FLY_APP_NAME": "app", "FLY_MACHINE_ID": "m1"}, "io": {"socket.socket": {}, "sock.__enter__": null, "sock.settimeout": null, "sock.connect": null, "sock.sendall": null, "sock.__exit__": null, "sock.recv": {"__seq__": ["HTTP/1.1 500 X\r\n\r\na\u007f\u0001b\"c\\d\te", ""]}, "logger.warning": null}}}

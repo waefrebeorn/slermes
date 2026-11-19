@@ -1,0 +1,127 @@
+{"func": "mark_shutdown_requested", "in": {"io": {"runs._mark_shutdown_requested": 0}}}
+{"func": "mark_shutdown_requested", "in": {"io": {"runs._mark_shutdown_requested": 3}}}
+{"func": "mark_shutdown_requested", "in": {"io": {"runs._mark_shutdown_requested": 7}}}
+{"func": "mark_shutdown_requested", "in": {"io": {}}}
+{"func": "mark_shutdown_requested", "in": {"io": {"runs._mark_shutdown_requested": {"__raise__": "RuntimeError", "message": "drain fail"}}}}
+{"func": "_active_structured_run_count", "in": {"state": {"run_statuses": {}}}}
+{"func": "_active_structured_run_count", "in": {"state": {"run_statuses": {"r1": {"status": "running"}, "r2": {"status": "completed"}}}}}
+{"func": "_active_structured_run_count", "in": {"state": {"run_statuses": {"r1": {"status": "queued"}, "r2": {"status": "waiting_for_approval"}, "r3": {"status": "stopping"}, "r4": {"status": "running"}}}}}
+{"func": "_active_structured_run_count", "in": {"state": {"run_statuses": {"r1": {"status": "completed"}, "r2": {"status": "failed"}, "r3": {"status": "cancelled"}}}}}
+{"func": "_active_structured_run_count", "in": {"state": {"run_statuses": {"r1": {"status": "interrupted"}, "r2": {}}}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {"config.load_config": {"cfg": 1}, "config.cfg_get": "5"}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {"config.load_config": {"cfg": 1}, "config.cfg_get": -3}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {"config.load_config": {"cfg": 1}, "config.cfg_get": 0}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {"config.load_config": {"cfg": 1}, "config.cfg_get": {"__raise__": "RuntimeError", "message": "no config"}}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {"config.load_config": {"cfg": 1}, "config.cfg_get": "abc"}}}
+{"func": "_resolve_api_server_int", "in": {"key": "max_concurrent_runs", "default": 10, "io": {}}}
+{"func": "_metrics_day_key", "in": {"timestamp": 86400}}
+{"func": "_metrics_day_key", "in": {"timestamp": 1700000000}}
+{"func": "_metrics_day_key", "in": {"timestamp": 0, "io": {"time.time": 1700000000}}}
+{"func": "_metrics_day_key", "in": {"timestamp": null, "io": {"time.time": 86400}}}
+{"func": "_metrics_day_key", "in": {"timestamp": null, "io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_iso_timestamp", "in": {"timestamp": 0}}
+{"func": "_iso_timestamp", "in": {"timestamp": 1700000000}}
+{"func": "_iso_timestamp", "in": {"timestamp": null}}
+{"func": "_iso_timestamp", "in": {"timestamp": 1.5}}
+{"func": "_iso_timestamp", "in": {"timestamp": -1}}
+{"func": "_reset_metrics_if_needed", "in": {"state": {"metrics_day": "2023-11-14"}, "io": {"time.time": 1700000000}}}
+{"func": "_reset_metrics_if_needed", "in": {"state": {"metrics_day": "2020-01-01", "metrics_requests_today": 5, "metrics_latency_ms": [1.0, 2.0]}, "io": {"time.time": 1700000000}}}
+{"func": "_reset_metrics_if_needed", "in": {"state": {"metrics_day": ""}, "io": {"time.time": 0}}}
+{"func": "_reset_metrics_if_needed", "in": {"io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_reset_metrics_if_needed", "in": {"state": {"metrics_day": "2023-11-14", "metrics_tokens_today": 9}, "io": {"time.time": 1700086400}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": {"total_tokens": 5}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": null}}
+{"func": "_total_tokens_from_usage", "in": {"usage": {"total_tokens": null}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": {"total_tokens": "abc"}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": {"total_tokens": -3}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": {"total_tokens": 3}}}
+{"func": "_total_tokens_from_usage", "in": {"usage": "not a dict"}}
+{"func": "_latency_p95_ms", "in": {"samples": []}}
+{"func": "_latency_p95_ms", "in": {"samples": [1.0]}}
+{"func": "_latency_p95_ms", "in": {"samples": [1.0, 2.0, 3.0, 4.0]}}
+{"func": "_latency_p95_ms", "in": {"samples": [10.0, 20.0, 30.0, 40.0, 50.0]}}
+{"func": "_latency_p95_ms", "in": {"samples": [5.0, 1.0, 4.0, 2.0, 3.0]}}
+{"func": "_latency_p95_ms", "in": {"samples": [0.125, 0.375, 1.005]}}
+{"func": "_api_server_status_payload", "in": {"io": {"time.time": 1700000000}}}
+{"func": "_api_server_status_payload", "in": {"heartbeat_at": 1700000000, "io": {"time.time": 1700000000}}}
+{"func": "_api_server_status_payload", "in": {"state": {"metrics_day": "2023-11-14", "metrics_requests_today": 4, "metrics_messages_today": 4, "metrics_tokens_today": 100, "metrics_latency_ms": [10.0, 20.0], "metrics_last_request_at": 1700000000, "inflight_agent_runs": 2, "run_statuses": {"r1": {"status": "running"}}}, "io": {"time.time": 1700000000}}}
+{"func": "_api_server_status_payload", "in": {"io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_api_server_status_payload", "in": {"heartbeat_at": null, "state": {"metrics_last_heartbeat_at": 1700000000}, "io": {"time.time": 1700000000}}}
+{"func": "_publish_runtime_status", "in": {"io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": null}}}
+{"func": "_publish_runtime_status", "in": {"io": {"time.time": 1700000000, "is_connected": false, "self._write_runtime_status_safe": null}}}
+{"func": "_publish_runtime_status", "in": {"io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_publish_runtime_status", "in": {"io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": {"__raise__": "OSError", "message": "disk full"}}}}
+{"func": "_publish_runtime_status", "in": {"io": {"time.time": 1700000000}}}
+{"func": "_record_api_metrics", "in": {"usage": {"total_tokens": 7}, "latency_seconds": 0.5, "io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": null}}}
+{"func": "_record_api_metrics", "in": {"usage": null, "latency_seconds": -1.0, "io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": null}}}
+{"func": "_record_api_metrics", "in": {"usage": {"total_tokens": 3}, "latency_seconds": 2.0, "state": {"metrics_latency_ms": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 40.0, 41.0, 42.0, 43.0, 44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0, 60.0, 61.0, 62.0, 63.0, 64.0, 65.0, 66.0, 67.0, 68.0, 69.0, 70.0, 71.0, 72.0, 73.0, 74.0, 75.0, 76.0, 77.0, 78.0, 79.0, 80.0, 81.0, 82.0, 83.0, 84.0, 85.0, 86.0, 87.0, 88.0, 89.0, 90.0, 91.0, 92.0, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0, 99.0, 100.0, 101.0, 102.0, 103.0, 104.0, 105.0, 106.0, 107.0, 108.0, 109.0, 110.0, 111.0, 112.0, 113.0, 114.0, 115.0, 116.0, 117.0, 118.0, 119.0, 120.0, 121.0, 122.0, 123.0, 124.0, 125.0, 126.0, 127.0, 128.0, 129.0, 130.0, 131.0, 132.0, 133.0, 134.0, 135.0, 136.0, 137.0, 138.0, 139.0, 140.0, 141.0, 142.0, 143.0, 144.0, 145.0, 146.0, 147.0, 148.0, 149.0, 150.0, 151.0, 152.0, 153.0, 154.0, 155.0, 156.0, 157.0, 158.0, 159.0, 160.0, 161.0, 162.0, 163.0, 164.0, 165.0, 166.0, 167.0, 168.0, 169.0, 170.0, 171.0, 172.0, 173.0, 174.0, 175.0, 176.0, 177.0, 178.0, 179.0, 180.0, 181.0, 182.0, 183.0, 184.0, 185.0, 186.0, 187.0, 188.0, 189.0, 190.0, 191.0, 192.0, 193.0, 194.0, 195.0, 196.0, 197.0, 198.0, 199.0, 200.0, 201.0, 202.0, 203.0, 204.0, 205.0, 206.0, 207.0, 208.0, 209.0, 210.0, 211.0, 212.0, 213.0, 214.0, 215.0, 216.0, 217.0, 218.0, 219.0, 220.0, 221.0, 222.0, 223.0, 224.0, 225.0, 226.0, 227.0, 228.0, 229.0, 230.0, 231.0, 232.0, 233.0, 234.0, 235.0, 236.0, 237.0, 238.0, 239.0, 240.0, 241.0, 242.0, 243.0, 244.0, 245.0, 246.0, 247.0, 248.0, 249.0, 250.0, 251.0, 252.0, 253.0, 254.0, 255.0, 256.0, 257.0, 258.0, 259.0, 260.0, 261.0, 262.0, 263.0, 264.0, 265.0, 266.0, 267.0, 268.0, 269.0, 270.0, 271.0, 272.0, 273.0, 274.0, 275.0, 276.0, 277.0, 278.0, 279.0, 280.0, 281.0, 282.0, 283.0, 284.0, 285.0, 286.0, 287.0, 288.0, 289.0, 290.0, 291.0, 292.0, 293.0, 294.0, 295.0, 296.0, 297.0, 298.0, 299.0, 300.0, 301.0, 302.0, 303.0, 304.0, 305.0, 306.0, 307.0, 308.0, 309.0, 310.0, 311.0, 312.0, 313.0, 314.0, 315.0, 316.0, 317.0, 318.0, 319.0, 320.0, 321.0, 322.0, 323.0, 324.0, 325.0, 326.0, 327.0, 328.0, 329.0, 330.0, 331.0, 332.0, 333.0, 334.0, 335.0, 336.0, 337.0, 338.0, 339.0, 340.0, 341.0, 342.0, 343.0, 344.0, 345.0, 346.0, 347.0, 348.0, 349.0, 350.0, 351.0, 352.0, 353.0, 354.0, 355.0, 356.0, 357.0, 358.0, 359.0, 360.0, 361.0, 362.0, 363.0, 364.0, 365.0, 366.0, 367.0, 368.0, 369.0, 370.0, 371.0, 372.0, 373.0, 374.0, 375.0, 376.0, 377.0, 378.0, 379.0, 380.0, 381.0, 382.0, 383.0, 384.0, 385.0, 386.0, 387.0, 388.0, 389.0, 390.0, 391.0, 392.0, 393.0, 394.0, 395.0, 396.0, 397.0, 398.0, 399.0, 400.0, 401.0, 402.0, 403.0, 404.0, 405.0, 406.0, 407.0, 408.0, 409.0, 410.0, 411.0, 412.0, 413.0, 414.0, 415.0, 416.0, 417.0, 418.0, 419.0, 420.0, 421.0, 422.0, 423.0, 424.0, 425.0, 426.0, 427.0, 428.0, 429.0, 430.0, 431.0, 432.0, 433.0, 434.0, 435.0, 436.0, 437.0, 438.0, 439.0, 440.0, 441.0, 442.0, 443.0, 444.0, 445.0, 446.0, 447.0, 448.0, 449.0, 450.0, 451.0, 452.0, 453.0, 454.0, 455.0, 456.0, 457.0, 458.0, 459.0, 460.0, 461.0, 462.0, 463.0, 464.0, 465.0, 466.0, 467.0, 468.0, 469.0, 470.0, 471.0, 472.0, 473.0, 474.0, 475.0, 476.0, 477.0, 478.0, 479.0, 480.0, 481.0, 482.0, 483.0, 484.0, 485.0, 486.0, 487.0, 488.0, 489.0, 490.0, 491.0, 492.0, 493.0, 494.0, 495.0, 496.0, 497.0, 498.0, 499.0, 500.0, 501.0, 502.0, 503.0, 504.0, 505.0, 506.0, 507.0, 508.0, 509.0, 510.0, 511.0]}, "io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": null}}}
+{"func": "_record_api_metrics", "in": {"usage": {"total_tokens": 1}, "latency_seconds": 0.1, "io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_record_api_metrics", "in": {"usage": {"total_tokens": 1}, "latency_seconds": 0.1, "io": {"time.time": 1700000000, "is_connected": true, "self._write_runtime_status_safe": {"__raise__": "OSError", "message": "write fail"}}}}
+{"func": "_heartbeat_loop", "in": {"io": {"is_connected": [false]}}}
+{"func": "_heartbeat_loop", "in": {"io": {"is_connected": [true, true, false], "time.time": 1700000000, "self._write_runtime_status_safe": null}}}
+{"func": "_heartbeat_loop", "in": {"io": {"is_connected": [true, true, true, true, false], "time.time": 1700000000, "asyncio.sleep": null, "self._write_runtime_status_safe": null}}}
+{"func": "_heartbeat_loop", "in": {"io": {"is_connected": [true, true], "time.time": 1700000000, "self._write_runtime_status_safe": {"__raise__": "OSError", "message": "write fail"}}}}
+{"func": "_heartbeat_loop", "in": {"io": {"is_connected": [true, true, true], "time.time": 1700000000, "asyncio.sleep": {"__raise__": "RuntimeError", "message": "sleep fail"}, "self._write_runtime_status_safe": null}}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "  ", "required": true}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "openai", "target_model": "gpt", "required": true, "io": {"resolve_request_runtime_agent_kwargs": {"provider": "openai", "api_key": "k"}}}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "openai", "required": true, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "RuntimeError", "message": "boom"}, "run._resolve_runtime_agent_kwargs_for_provider": {"__raise__": "RuntimeError", "message": "fallback fail"}}}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "openai", "required": true, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "RuntimeError", "message": "boom"}, "run._resolve_runtime_agent_kwargs_for_provider": {"provider": "openai", "api_key": "fb"}}}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "openai", "required": false, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "RuntimeError", "message": "boom"}, "run._resolve_runtime_agent_kwargs_for_provider": {"__raise__": "RuntimeError", "message": "fallback fail"}}}}
+{"func": "_resolve_provider_runtime", "in": {"provider": "openai", "required": true, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "KeyboardInterrupt", "message": "stop"}}}}
+{"func": "_apply_provider_runtime", "in": {"provider": "openai", "state": {"runtime_kwargs": {"provider": "old"}}, "io": {"resolve_request_runtime_agent_kwargs": {"provider": "openai", "api_key": "k", "base_url": "u"}}}}
+{"func": "_apply_provider_runtime", "in": {"provider": "openai", "io": {"resolve_request_runtime_agent_kwargs": null}}}
+{"func": "_apply_provider_runtime", "in": {"provider": "openai", "required": true, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "RuntimeError", "message": "boom"}, "run._resolve_runtime_agent_kwargs_for_provider": {"__raise__": "RuntimeError", "message": "fb"}}}}
+{"func": "_apply_provider_runtime", "in": {"provider": "", "io": {}}}
+{"func": "_apply_provider_runtime", "in": {"provider": "openai", "state": {"runtime_kwargs": {}}, "io": {"resolve_request_runtime_agent_kwargs": {"args": ["a", "b"], "provider": "openai"}}}}
+{"func": "_recover_or_record_model", "in": {"model": "gpt", "gateway_session_key": "k1", "state": {"model_name": "hermes-agent", "runtime_kwargs": {}}}}
+{"func": "_recover_or_record_model", "in": {"model": "", "gateway_session_key": "k1", "state": {"runtime_kwargs": {"provider": "openai"}, "model_name": "hermes-agent"}, "io": {"models.get_default_model_for_provider": "gpt-4"}}}
+{"func": "_recover_or_record_model", "in": {"model": "", "gateway_session_key": "k1", "state": {"runtime_kwargs": {}, "model_name": "hermes-agent", "last_resolved_model": {"k1": "known-good"}}}}
+{"func": "_recover_or_record_model", "in": {"model": "", "gateway_session_key": "k2", "state": {"runtime_kwargs": {}, "model_name": "hermes-agent", "last_resolved_model": {"*": "global-good"}}}}
+{"func": "_recover_or_record_model", "in": {"model": "hermes-agent", "gateway_session_key": "k1", "state": {"model_name": "hermes-agent", "runtime_kwargs": {}}}}
+{"func": "_recover_or_record_model", "in": {"model": "", "gateway_session_key": "", "state": {"runtime_kwargs": {"provider": "openai"}, "model_name": "hermes-agent"}, "io": {"models.get_default_model_for_provider": {"__raise__": "RuntimeError", "message": "no catalog"}}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "gateway_session_key": "k1", "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"session_model_override_for": {"provider": "openai", "model": "ov"}, "model_switch.resolve_effective_model": "ov-model", "resolve_request_runtime_agent_kwargs": {"provider": "openai", "api_key": "k"}}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "session_model": "sess-model", "gateway_session_key": "k1", "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"session_model_override_for": null, "resolve_request_runtime_agent_kwargs": {"provider": "cur"}, "model_switch.resolve_effective_model": "sess-model"}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "requested_model": "req", "requested_provider": "openai", "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"session_model_override_for": null, "resolve_request_runtime_agent_kwargs": {"provider": "openai", "api_key": "k"}}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "route": {"model": "route-model", "provider": "rprov", "api_key": "rk"}, "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"session_model_override_for": null, "resolve_request_runtime_agent_kwargs": {"provider": "rprov"}}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "requested_provider": "openai", "confirmed_runtime_lock": true, "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"resolve_request_runtime_agent_kwargs": {"__raise__": "RuntimeError", "message": "boom"}, "run._resolve_runtime_agent_kwargs_for_provider": {"__raise__": "RuntimeError", "message": "fb"}}}}
+{"func": "_select_agent_runtime", "in": {"model": "global", "requested_provider": "openai", "state": {"runtime_kwargs": {"provider": "cur"}}, "io": {"session_model_override_for": null, "resolve_request_runtime_agent_kwargs": null}}}
+{"func": "is_rate_limited", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": false}}}
+{"func": "is_rate_limited", "in": {"error": {"message": "auth failed", "cause": {"kind": "RuntimeError", "message": "wrap", "cause": {"kind": "AuthError", "message": "429"}}}, "io": {"auth.is_rate_limited_auth_error": true}}}
+{"func": "is_rate_limited", "in": {"error": {"message": "auth failed", "cause": {"kind": "ValueError", "message": "v"}}, "io": {"auth.is_rate_limited_auth_error": false}}}
+{"func": "is_rate_limited", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": {"__raise__": "RuntimeError", "message": "probe fail"}}}}
+{"func": "is_rate_limited", "in": {"error": {"message": "auth failed", "cause": null}, "io": {}}}
+{"func": "user_text", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": false, "t": ["Auth failed", "Error: {label}: {error}"]}}}
+{"func": "user_text", "in": {"error": {"message": "quota", "cause": {"kind": "RuntimeError", "message": "w", "cause": {"kind": "AuthError", "message": "429"}}}, "io": {"auth.is_rate_limited_auth_error": true, "t": ["Rate limited", "Line: {label} ({error})"]}}}
+{"func": "user_text", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": false, "t": ["Auth failed", {"__raise__": "RuntimeError", "message": "i18n fail"}]}}}
+{"func": "user_text", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": {"__raise__": "RuntimeError", "message": "probe fail"}, "t": ["x", "y"]}}}
+{"func": "user_text", "in": {"error": {"message": "auth failed", "cause": null}, "io": {"auth.is_rate_limited_auth_error": false}}}
+{"func": "_effective_turn_runtime", "in": {"runtime_request": {"requested": {"model": "m"}, "route_source": "raw_request"}, "result": {"runtime": {"provider": "p", "model": "m"}}, "usage": {}}}
+{"func": "_effective_turn_runtime", "in": {"runtime_request": {"route_source": "global"}, "result": {}, "usage": {"runtime": {"provider": "u", "model": "um"}}}}
+{"func": "_effective_turn_runtime", "in": {"runtime_request": {"require_model_lock": true, "requested": {"provider": "p"}}, "result": {"runtime": {"provider": "p", "model": "m"}}, "usage": {}}}
+{"func": "_effective_turn_runtime", "in": {"runtime_request": {"require_model_lock": true}, "result": {}, "usage": {}}}
+{"func": "_effective_turn_runtime", "in": {"runtime_request": {}, "result": null, "usage": null}}
+{"func": "_turn_runtime_metadata", "in": {"agent": {"provider": "openai", "model": "gpt", "_hermes_api_runtime": {"provider": "openai"}}, "route": null, "requested_runtime": null, "route_source": "global", "confirmed_runtime_lock": false}}
+{"func": "_turn_runtime_metadata", "in": {"agent": {"provider": "openai", "model": "gpt"}, "route": {"provider": "anthropic", "model": "claude"}, "requested_runtime": {}, "route_source": "raw_request", "confirmed_runtime_lock": true}}
+{"func": "_turn_runtime_metadata", "in": {"agent": {"provider": "openai", "model": "gpt", "_hermes_api_runtime": {"provider": "openai"}}, "route": {"provider": "openai", "model": "gpt"}, "requested_runtime": {"provider": "openai", "model": "gpt"}, "route_source": "raw_request", "confirmed_runtime_lock": true}}
+{"func": "_turn_runtime_metadata", "in": {"agent": {"provider": "openai", "model": "gpt"}, "route": null, "requested_runtime": {"provider": "openai", "model": "gpt"}, "route_source": "", "confirmed_runtime_lock": false}}
+{"func": "_turn_runtime_metadata", "in": {"agent": {"_hermes_api_runtime": {"provider": "p", "route_source": "session_model_lock"}}, "route": null, "requested_runtime": null, "route_source": "", "confirmed_runtime_lock": false}}
+{"func": "_finish_turn_result", "in": {"agent": {"session_id": "s2", "session_prompt_tokens": 10, "session_completion_tokens": 20, "session_total_tokens": 30}, "session_id": "s1", "route": null, "requested_runtime": null, "route_source": "global", "confirmed_runtime_lock": false, "state": {"result": {"content": "hi"}}}}
+{"func": "_finish_turn_result", "in": {"agent": {"session_id": "s1", "_last_compaction_in_place": true}, "session_id": "s1", "route": null, "requested_runtime": null, "route_source": "global", "confirmed_runtime_lock": false, "state": {"result": {}}}}
+{"func": "_finish_turn_result", "in": {"agent": {"session_id": "s1", "provider": "openai", "model": "gpt"}, "session_id": "s1", "route": null, "requested_runtime": {"provider": "openai", "model": "gpt"}, "route_source": "raw_request", "confirmed_runtime_lock": false, "state": {"result": {"content": "x"}}}}
+{"func": "_finish_turn_result", "in": {"agent": {"session_id": "s1"}, "session_id": "s1", "route": null, "requested_runtime": null, "route_source": "global", "confirmed_runtime_lock": false, "state": {"result": {"content": "y"}}}}
+{"func": "_finish_turn_result", "in": {"agent": {"session_id": "s2", "provider": "openai", "model": "gpt"}, "session_id": "s1", "route": {"provider": "anthropic", "model": "claude"}, "requested_runtime": {}, "route_source": "raw_request", "confirmed_runtime_lock": true, "state": {"result": {}}}}
+{"func": "_handle_health", "in": {"io": {"hermes_version": "1.2.3", "web.json_response": {"__response__": true}}}}
+{"func": "_handle_health", "in": {"io": {"hermes_version": {"__raise__": "RuntimeError", "message": "version fail"}, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_health", "in": {"io": {"hermes_version": "1.0"}}}
+{"func": "_handle_health", "in": {"io": {"hermes_version": null, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_health", "in": {"io": {"hermes_version": "1.0", "web.json_response": {"__raise__": "OSError", "message": "write fail"}}}}
+{"func": "_handle_models", "in": {"state": {"model_name": "hermes-agent"}, "io": {"time.time": 1700000000, "request_profile": null, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_models", "in": {"state": {"model_name": "hermes-agent"}, "io": {"time.time": 1700000000, "request_profile": "prof", "resolve_model_name": "prof-model", "web.json_response": {"__response__": true}}}}
+{"func": "_handle_models", "in": {"state": {"model_name": "hermes-agent", "model_routes": {"alias1": {"model": "gpt"}, "alias2": {}}}, "io": {"time.time": 1700000000, "request_profile": null, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_models", "in": {"state": {"model_name": "hermes-agent", "model_routes": {"hermes-agent": {"model": "x"}}}, "io": {"time.time": 1700000000, "request_profile": null, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_models", "in": {"io": {"time.time": {"__raise__": "RuntimeError", "message": "clock fail"}}}}
+{"func": "_handle_capabilities", "in": {"state": {"gateway_runner": {"session_authority": {"x": 1}}, "cors_origins": ["*"], "api_key": "k"}, "io": {"runs._idempotency_capabilities": {"enabled": true}, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_capabilities", "in": {"state": {"gateway_runner": null, "cors_origins": [], "api_key": ""}, "io": {"runs._idempotency_capabilities": {"enabled": false}, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_capabilities", "in": {"state": {"gateway_runner": {"session_authority": null}, "cors_origins": ["a"], "api_key": "k"}, "io": {"runs._idempotency_capabilities": {}, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_capabilities", "in": {"io": {"runs._idempotency_capabilities": {"__raise__": "RuntimeError", "message": "idem fail"}, "web.json_response": {"__response__": true}}}}
+{"func": "_handle_capabilities", "in": {"state": {"gateway_runner": {"session_authority": {"x": 1}}}, "io": {"runs._idempotency_capabilities": {"enabled": true}}}}

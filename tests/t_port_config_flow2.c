@@ -214,6 +214,14 @@ static json_t *cfg2_run_case(const char *func, json_t *in) {
     }
 
     json_t *out = json_object();
+    /* Normalize a propagated raise: drop the internal __untrace__ import flag
+     * so the envelope matches the live exc_spec shape ({__raise__:{...}} only). */
+    if (cfg2_raised(ret)) {
+        json_t *spec = json_copy(cfg2_raise_spec(ret));
+        json_free(ret);
+        ret = json_object();
+        json_set(ret, "__raise__", spec);
+    }
     json_set(out, "ret", ret ? ret : json_null());
     json_set(out, "trace", json_copy(io.trace));
     json_set(out, "state", cfg2_state_proj(state, in));

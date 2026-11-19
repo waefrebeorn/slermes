@@ -553,8 +553,8 @@ static const char *lg_node_source(const json_t *n) {
 }
 
 /* ====================================================================== */
-/* PoP: lg_fm_field @ agent/learning_graph.py:_fm_field */
 /* Top-level key or metadata.hermes.<key>; tolerant of string frontmatter. */
+/* PoP: lg_fm_field @ agent/learning_graph.py:_fm_field */
 static json_t *lg_fm_field(json_t *fm, const char *key) {
     /* if fm.get(key): return fm[key] */
     json_t *v = lg_get(fm, key);
@@ -568,8 +568,8 @@ static json_t *lg_fm_field(json_t *fm, const char *key) {
     return json_null();
 }
 
-/* PoP: lg_memory_fingerprint @ agent/learning_graph.py:memory_fingerprint */
 /* sha256(entry.strip().encode("utf-8")).hexdigest()[:12] */
+/* PoP: lg_memory_fingerprint @ agent/learning_graph.py:memory_fingerprint */
 static json_t *lg_memory_fingerprint(const char *entry) {
     char *stripped = lg_strip(entry);
     char *hex = lg_sha256_hex((const uint8_t *)(stripped ? stripped : ""),
@@ -582,8 +582,8 @@ static json_t *lg_memory_fingerprint(const char *entry) {
     return r;
 }
 
-/* PoP: lg_memory_node_id @ agent/learning_graph.py:memory_node_id */
 /* f"memory:{card['source']}:{index}:{card['fingerprint']}" */
+/* PoP: lg_memory_node_id @ agent/learning_graph.py:memory_node_id */
 static json_t *lg_memory_node_id(json_t *card, long long index) {
     if (!j_is_obj(card)) {
         char msg[128];
@@ -605,8 +605,8 @@ static json_t *lg_memory_node_id(json_t *card, long long index) {
     return r;
 }
 
-/* PoP: lg_has_learning_signal @ agent/learning_graph.py:_has_learning_signal */
 /* node.source != "external" and (created_by in {"agent","learn"} or use_count>0) */
+/* PoP: lg_has_learning_signal @ agent/learning_graph.py:_has_learning_signal */
 static json_t *lg_has_learning_signal(json_t *node) {
     const char *source = lg_node_source(node);
     json_t *cb = lg_get(node, "created_by");
@@ -776,12 +776,15 @@ static json_t *lg_density_stats(json_t *nodes, json_t *edges) {
     json_set(res, "categories", json_number((double)ncat));
     json_set(res, "agent_created", json_number((double)agent_created));
     json_set(res, "used", json_number((double)used));
-    /* top_categories: stable sort by count desc (first-seen tie), top 8 */
+    /* top_categories: STABLE sort by count desc (first-seen tie), top 8 */
     size_t *order = malloc((ncat ? ncat : 1) * sizeof(size_t));
     for (size_t i = 0; i < ncat; i++) order[i] = i;
-    for (size_t i = 0; i < ncat; i++)
-        for (size_t j = i + 1; j < ncat; j++)
-            if (counts[order[j]] > counts[order[i]]) { size_t t = order[i]; order[i] = order[j]; order[j] = t; }
+    for (size_t i = 1; i < ncat; i++) {
+        size_t key = order[i]; long kc = counts[key];
+        size_t j = i;
+        while (j > 0 && counts[order[j - 1]] < kc) { order[j] = order[j - 1]; j--; }
+        order[j] = key;
+    }
     json_t *top = json_array();
     size_t limit = ncat < 8 ? ncat : 8;
     for (size_t i = 0; i < limit; i++) {
@@ -901,17 +904,18 @@ static json_t *lg_memory_skill_edges(lg_io_t *io, json_t *memory_cards, json_t *
                     if (strcmp(stoks[s][a], ttoks[b]) == 0) { score++; break; }
             if (score > 0) { scores[scored_n] = score; idxs[scored_n] = s; scored_n++; }
         }
-        /* stable sort by (-score, name asc) */
-        for (size_t i = 0; i < scored_n; i++)
-            for (size_t j = i + 1; j < scored_n; j++) {
-                int swap = 0;
-                if (scores[j] > scores[i]) swap = 1;
-                else if (scores[j] == scores[i] && strcmp(snames[idxs[j]], snames[idxs[i]]) < 0) swap = 1;
-                if (swap) {
-                    long ts = scores[i]; scores[i] = scores[j]; scores[j] = ts;
-                    size_t ti = idxs[i]; idxs[i] = idxs[j]; idxs[j] = ti;
-                }
+        /* STABLE sort by (-score, name asc) — insertion sort on parallel arrays */
+        for (size_t i = 1; i < scored_n; i++) {
+            long ks = scores[i]; size_t ki = idxs[i];
+            size_t j = i;
+            while (j > 0) {
+                long ps = scores[j - 1]; size_t pi = idxs[j - 1];
+                int prev_after = (ps < ks) || (ps == ks && strcmp(snames[pi], snames[ki]) > 0);
+                if (!prev_after) break;
+                scores[j] = scores[j - 1]; idxs[j] = idxs[j - 1]; j--;
             }
+            scores[j] = ks; idxs[j] = ki;
+        }
         size_t lim = scored_n < 4 ? scored_n : 4;
         for (size_t i = 0; i < lim && !prop; i++) {
             json_t *id = lg_memory_node_id(card, (long long)ci);
@@ -1101,12 +1105,15 @@ static json_t *lg_build_learning_graph(lg_io_t *io) {
         }
     }
 
-    /* clusters sorted desc (stable, first-seen tie) */
+    /* clusters sorted desc (STABLE, first-seen tie) */
     size_t *order = malloc((nck ? nck : 1) * sizeof(size_t));
     for (size_t i = 0; i < nck; i++) order[i] = i;
-    for (size_t i = 0; i < nck; i++)
-        for (size_t j = i + 1; j < nck; j++)
-            if (cv[order[j]] > cv[order[i]]) { size_t t = order[i]; order[i] = order[j]; order[j] = t; }
+    for (size_t i = 1; i < nck; i++) {
+        size_t key = order[i]; long kc = cv[key];
+        size_t j = i;
+        while (j > 0 && cv[order[j - 1]] < kc) { order[j] = order[j - 1]; j--; }
+        order[j] = key;
+    }
     json_t *clusters_arr = json_array();
     for (size_t i = 0; i < nck; i++) {
         json_t *obj = json_object();

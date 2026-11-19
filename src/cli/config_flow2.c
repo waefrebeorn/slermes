@@ -201,6 +201,20 @@ static const char *cfg2_sval(const json_t *v) {
     return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : "";
 }
 
+/* Python type(x).__name__ for a JSON value (integral numbers read as int). */
+static const char *cfg2_py_type_name(const json_t *v) {
+    if (!v) return "NoneType";
+    switch (v->type) {
+        case JSON_NULL: return "NoneType";
+        case JSON_BOOL: return "bool";
+        case JSON_NUMBER: return (v->num_val == floor(v->num_val) && fabs(v->num_val) < 1e15) ? "int" : "float";
+        case JSON_STRING: return "str";
+        case JSON_ARRAY: return "list";
+        case JSON_OBJECT: return "dict";
+    }
+    return "object";
+}
+
 /* Unicode White_Space predicate over a decoded codepoint (str.strip set). */
 static bool cfg2_is_ws_cp(unsigned long cp) {
     if (cp == 0x20 || (cp >= 0x09 && cp <= 0x0d)) return true;   /* ASCII */
@@ -305,18 +319,38 @@ static char *cfg2_join(const char *a, const char *b) {
     return out;
 }
 
-/* Path-style join with a single '/' separator (posix fixtures). */
+/* Path-style join mirroring the oracle FakePath.__truediv__: base.rstrip('/')
+ * (empty when base == "/"), then ALWAYS a single '/' separator + name. */
 static char *cfg2_path_join(const char *base, const char *name) {
-    size_t nb = strlen(base ? base : "");
-    bool need_sep = nb > 0 && base[nb - 1] != '/';
-    size_t nn = strlen(name ? name : "");
-    char *out = malloc(nb + nn + 2);
+    const char *b = base ? base : "";
+    size_t nb = strlen(b);
+    if (nb == 1 && b[0] == '/') nb = 0;
+    else while (nb > 0 && b[nb - 1] == '/') nb--;
+    const char *nm = name ? name : "";
+    size_t nn = strlen(nm);
+    char *out = malloc(nb + 1 + nn + 1);
     if (!out) return NULL;
-    if (nb) memcpy(out, base, nb);
-    size_t k = nb;
-    if (need_sep) out[k++] = '/';
-    if (nn) memcpy(out + k, name, nn);
-    out[k + nn] = '\0';
+    if (nb) memcpy(out, b, nb);
+    out[nb] = '/';
+    if (nn) memcpy(out + nb + 1, nm, nn);
+    out[nb + 1 + nn] = '\0';
+    return out;
+}
+
+/* NEW sorted copy of a string array (frozenset projection). */
+static json_t *cfg2_sorted_strs(const json_t *arr) {
+    json_t *out = json_array();
+    size_t n = (arr && arr->type == JSON_ARRAY) ? json_len(arr) : 0;
+    if (n == 0) return out;
+    const char **tmp = malloc(n * sizeof(char *));
+    for (size_t i = 0; i < n; i++) tmp[i] = cfg2_sval(json_get(arr, i));
+    for (size_t i = 1; i < n; i++) {
+        const char *v = tmp[i]; size_t j = i;
+        while (j > 0 && strcmp(tmp[j - 1], v) > 0) { tmp[j] = tmp[j - 1]; j--; }
+        tmp[j] = v;
+    }
+    for (size_t i = 0; i < n; i++) json_append(out, json_string(tmp[i]));
+    free(tmp);
     return out;
 }
 
@@ -513,7 +547,12 @@ json_t *cfg2_format_docker_update_message(cfg2_flow_io_t *io) {
 /* PoP: cfg2_module_getattr @ hermes_cli/config.py:__getattr__ */
 json_t *cfg2_module_getattr(cfg2_flow_io_t *io, const char *name) {
     if (name && strcmp(name, "CORE_DECLARED_ENV_NAMES") == 0) {
-        return cfg2_seam(io, "core_declared_env_names", NULL);
+        json_t *r = cfg2_seam(io, "core_declared_env_names", NULL);
+        if (cfg2_raised(r)) return r;
+        /* core_declared_env_names() returns a frozenset -> sorted projection */
+        json_t *sorted = cfg2_sorted_strs(r);
+        json_free(r);
+        return sorted;
     }
     /* f"module {__name__!r} has no attribute {name!r}" — __name__ is
      * 'hermes_cli.config'; name is an ASCII identifier (fixture domain). */
@@ -532,7 +571,8 @@ json_t *cfg2_module_getattr(cfg2_flow_io_t *io, const char *name) {
 json_t *cfg2_managed_source(cfg2_flow_io_t *io, const char *filename) {
     json_t *md = cfg2_seam(io, "get_managed_dir", NULL);
     if (cfg2_raised(md)) return md;
-    if (cfg2_truthy(md)) {
+    /* managed_dir is a Path OBJECT (always truthy) or None — identity gate. */
+    if (!cfg2_is_null(md)) {
         char *p = cfg2_path_join(cfg2_sval(md), filename);
         json_t *out = json_string(p);
         free(p);
@@ -718,6 +758,17 @@ json_t *cfg2_exit_if_key_managed(cfg2_flow_io_t *io, const char *key, const char
     json_free(backend);
     json_t *cp = cfg2_seam(io, "get_config_path", NULL);
     if (cfg2_raised(cp)) return cp;
+    /* get_config_path().parent — a non-Path result raises AttributeError on
+     * `.parent` (uncaught here; propagates). */
+    if (!cfg2_is_str(cp)) {
+        char *m1 = cfg2_join("'", cfg2_py_type_name(cp));
+        char *msg = cfg2_join(m1, "' object has no attribute 'parent'");
+        free(m1);
+        json_free(cp);
+        json_t *r = cfg2_make_raise("AttributeError", msg);
+        free(msg);
+        return r;
+    }
     json_free(cp);
     json_t *largs = json_object();
     json_set(largs, "key", json_string(key ? key : ""));
@@ -758,6 +809,9 @@ json_t *cfg2_touch_skin_file(cfg2_flow_io_t *io, const char *key, const json_t *
         }
         return gh;
     }
+    /* get_hermes_home() yields a Path; a non-Path result (None/bool/...) makes
+     * `home / "skins"` raise TypeError, swallowed by the except Exception. */
+    if (!cfg2_is_str(gh)) { json_free(gh); return json_null(); }
     char *skins = cfg2_path_join(cfg2_sval(gh), "skins");
     json_free(gh);
     char *fname = cfg2_join(cfg2_sval(value), ".yaml");
@@ -958,7 +1012,11 @@ json_t *cfg2_cmd_config_get(cfg2_flow_io_t *io, const json_t *args) {
     json_set(gargs, "as_json", json_bool(cfg2_truthy(jv)));
     json_t *rv = args ? json_obj_get(args, "raw") : NULL;
     json_set(gargs, "raw", json_bool(cfg2_truthy(rv)));
-    return cfg2_seam(io, "get_config_value", gargs);
+    /* get_config_value(...) is a statement-position call — the def returns None. */
+    json_t *r = cfg2_seam(io, "get_config_value", gargs);
+    if (cfg2_raised(r)) return r;
+    json_free(r);
+    return json_null();
 }
 
 /* ===================================================================

@@ -40,7 +40,14 @@
  *     membership is modelled but integral-FLOAT type-name positions are
  *     excluded — libjson has no int/float identity); descriptor / config /
  *     supported_ops attribute doubles carry the fields the live body reads.
- *     EXCLUDED: integral-FLOAT literals in str() positions (7.0 reads as 7).
+ *     EXCLUDED: integral-FLOAT literals in str() positions (7.0 reads as 7);
+ *     _card_frame `fields` keys that collide with the named params
+ *     (chat_id / op / reply_to / metadata) — live raises a class-name-dependent
+ *     argument-binding TypeError before the body, so those stay out of the
+ *     corpus (non-colliding keys, incl. the body-computed card_id, are exercised);
+ *     ExecApprovalPrompt action rows are lists (materialized via tuple(), so a
+ *     non-iterable row fails with "'<T>' object is not iterable"; str/dict rows
+ *     are excluded).
  *
  * libjson-only (default oracle deps suffice). Self-contained: the harness
  * #includes "gateway/relay_adapter_flow2.c". ra2_ prefix (radapter_flow_ is
@@ -1225,7 +1232,7 @@ static json_t *ra2_send_exec_approval_prompt(ra2_io_t *io, const json_t *in, jso
     for (size_t i = 0; i < actions->c.count; i++) {
         const json_t *row = actions->c.items[i];
         if (!ra2_is_arr(row)) {
-            char *m = ra2_xfmt("cannot unpack non-iterable %s object", ra2_type_name(row));
+            char *m = ra2_xfmt("'%s' object is not iterable", ra2_type_name(row));
             json_t *r = ra2_mkraise("TypeError", m ? m : "");
             free(m);
             json_free(options);
@@ -1290,7 +1297,7 @@ static json_t *ra2_w_stamp_slack_unfurl(ra2_io_t *io, const json_t *in, json_t *
 
 static json_t *ra2_w_mint_and_send_prompt(ra2_io_t *io, const json_t *in, json_t *st)
 {
-    return ra2_mint_and_send_prompt(io, ra2_get(in, "kind"), ra2_get(in, "state"),
+    return ra2_mint_and_send_prompt(io, ra2_get(in, "kind"), ra2_get(in, "prompt_state"),
                                     ra2_get(in, "chat_id"), ra2_get(in, "prompt_kind"),
                                     ra2_get(in, "text"), ra2_get(in, "options"),
                                     ra2_get(in, "metadata"), st);

@@ -556,15 +556,21 @@ static json_t *cl_pyint(const json_t *v)
         int neg = 0;
         if (i < b && (s[i] == '+' || s[i] == '-')) { neg = (s[i] == '-'); i++; }
         size_t dstart = i;
-        while (i < b && s[i] >= '0' && s[i] <= '9') i++;
-        if (i == dstart || i != b) {
+        int ndig = 0, prev_digit = 0;
+        while (i < b) {
+            char c = s[i];
+            if (c >= '0' && c <= '9') { ndig++; prev_digit = 1; i++; }
+            else if (c == '_' && prev_digit && i + 1 < b && s[i + 1] >= '0' && s[i + 1] <= '9') { prev_digit = 0; i++; }
+            else break;
+        }
+        if (ndig == 0 || i != b) {
             char *m = cl_xfmt("invalid literal for int() with base 10: '%s'", s);
             json_t *r = cl_mkraise("ValueError", m ? m : "");
             free(m);
             return r;
         }
         double acc = 0.0;
-        for (size_t k = dstart; k < i; k++) acc = acc * 10.0 + (s[k] - '0');
+        for (size_t k = dstart; k < i; k++) if (s[k] != '_') acc = acc * 10.0 + (s[k] - '0');
         return json_number(neg ? -acc : acc);
     }
     char *m = cl_xfmt("int() argument must be a string, a bytes-like object or a real number, not '%s'",
@@ -714,18 +720,19 @@ static int cl_jnumber(cl_jscan *j)
     else if (j->i < j->n && j->s[j->i] >= '1' && j->s[j->i] <= '9') {
         while (j->i < j->n && j->s[j->i] >= '0' && j->s[j->i] <= '9') j->i++;
     } else { cl_jerr(j, "Expecting value", start); return -1; }
-    if (j->i < j->n && j->s[j->i] == '.') {
+    /* fraction: consume '.' only when followed by >=1 digit (regex backtrack) */
+    if (j->i + 1 < j->n && j->s[j->i] == '.' && j->s[j->i + 1] >= '0' && j->s[j->i + 1] <= '9') {
         j->i++;
-        size_t fs = j->i;
         while (j->i < j->n && j->s[j->i] >= '0' && j->s[j->i] <= '9') j->i++;
-        if (j->i == fs) { cl_jerr(j, "Expecting value", start); return -1; }
     }
+    /* exponent: consume only when (optional sign +) >=1 digit follows */
     if (j->i < j->n && (j->s[j->i] == 'e' || j->s[j->i] == 'E')) {
-        j->i++;
-        if (j->i < j->n && (j->s[j->i] == '+' || j->s[j->i] == '-')) j->i++;
-        size_t es = j->i;
-        while (j->i < j->n && j->s[j->i] >= '0' && j->s[j->i] <= '9') j->i++;
-        if (j->i == es) { cl_jerr(j, "Expecting value", start); return -1; }
+        size_t k = j->i + 1;
+        if (k < j->n && (j->s[k] == '+' || j->s[k] == '-')) k++;
+        if (k < j->n && j->s[k] >= '0' && j->s[k] <= '9') {
+            j->i = k;
+            while (j->i < j->n && j->s[j->i] >= '0' && j->s[j->i] <= '9') j->i++;
+        }
     }
     return 0;
 }
@@ -747,7 +754,12 @@ static int cl_jobject(cl_jscan *j)
         cl_jws(j);
         if (j->i < j->n && j->s[j->i] == '}') { j->i++; return 0; }
         if (j->i >= j->n || j->s[j->i] != ',') { cl_jerr(j, "Expecting ',' delimiter", j->i); return -1; }
+        size_t comma_pos = j->i;
         j->i++;
+        cl_jws(j);
+        if (j->i < j->n && j->s[j->i] == '}') {
+            cl_jerr(j, "Illegal trailing comma before end of object", comma_pos); return -1;
+        }
     }
 }
 static int cl_jarray(cl_jscan *j)
@@ -760,8 +772,12 @@ static int cl_jarray(cl_jscan *j)
         cl_jws(j);
         if (j->i < j->n && j->s[j->i] == ']') { j->i++; return 0; }
         if (j->i >= j->n || j->s[j->i] != ',') { cl_jerr(j, "Expecting ',' delimiter", j->i); return -1; }
+        size_t comma_pos = j->i;
         j->i++;
         cl_jws(j);
+        if (j->i < j->n && j->s[j->i] == ']') {
+            cl_jerr(j, "Illegal trailing comma before end of array", comma_pos); return -1;
+        }
     }
 }
 static int cl_jvalue(cl_jscan *j)
@@ -842,7 +858,7 @@ static json_t *cl_log(cl_io_t *io, const char *level, const char *msg, json_t *a
 
 /* ════════════════════════ ported functions ════════════════════════ */
 
-/* PoP: _continuation_overlap_length @ agent/conversation_loop.py:_continuation_overlap_length */
+/* PoP: cl_continuation_overlap_length @ agent/conversation_loop.py:_continuation_overlap_length */
 static json_t *cl_continuation_overlap_length(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)io; (void)st;
@@ -880,7 +896,7 @@ done:
     return json_number((double)result);
 }
 
-/* PoP: _partial_turn_result @ agent/conversation_loop.py:_partial_turn_result */
+/* PoP: cl_partial_turn_result @ agent/conversation_loop.py:_partial_turn_result */
 static json_t *cl_partial_turn_result(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)io; (void)st;
@@ -933,7 +949,7 @@ static json_t *cl_redact_value(cl_io_t *io, const json_t *v)
     return cl_copy_or_null(v);
 }
 
-/* PoP: _redact_display_metadata @ agent/conversation_loop.py:_redact_display_metadata */
+/* PoP: cl_redact_display_metadata @ agent/conversation_loop.py:_redact_display_metadata */
 static json_t *cl_redact_display_metadata(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)st;
@@ -942,7 +958,7 @@ static json_t *cl_redact_display_metadata(cl_io_t *io, const json_t *in, json_t 
     return cl_redact_value(io, md);
 }
 
-/* PoP: _peel_moa_guidance @ agent/conversation_loop.py:_peel_moa_guidance */
+/* PoP: cl_peel_moa_guidance @ agent/conversation_loop.py:_peel_moa_guidance */
 static json_t *cl_peel_moa_guidance(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)st;
@@ -952,7 +968,7 @@ static json_t *cl_peel_moa_guidance(cl_io_t *io, const json_t *in, json_t *st)
     return cl_call(io, "peel_reference_guidance", a);
 }
 
-/* PoP: _credential_refresh_profile @ agent/conversation_loop.py:_credential_refresh_profile */
+/* PoP: cl_credential_refresh_profile @ agent/conversation_loop.py:_credential_refresh_profile */
 static json_t *cl_credential_refresh_profile(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;
@@ -965,7 +981,7 @@ static json_t *cl_credential_refresh_profile(cl_io_t *io, const json_t *in, json
     free(prov_or); free(prov_strip);
     /* str(getattr(agent,"base_url","") or "") */
     json_t *bu = cl_get(agent, "base_url");
-    char *bu_str = cl_pystr(cl_truth(bu) ? bu : NULL);
+    char *bu_str = cl_truth(bu) ? cl_pystr(bu) : cl_xfmt("");
     json_t *a = cl_args();
     cl_arg_s(a, "hook", "refresh_runtime_credentials");
     cl_arg_s(a, "provider", prov);
@@ -980,7 +996,7 @@ static json_t *cl_credential_refresh_profile(cl_io_t *io, const json_t *in, json
     return ret;
 }
 
-/* PoP: _decode_inline_moa_turn @ agent/conversation_loop.py:_decode_inline_moa_turn */
+/* PoP: cl_decode_inline_moa_turn @ agent/conversation_loop.py:_decode_inline_moa_turn */
 static json_t *cl_decode_inline_moa_turn(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)st;
@@ -1018,13 +1034,13 @@ unchanged:
     }
 }
 
-/* PoP: _print_guidance @ agent/conversation_loop.py:_print_guidance */
+/* PoP: cl_print_guidance @ agent/conversation_loop.py:_print_guidance */
 static json_t *cl_print_guidance(cl_io_t *io, const json_t *in, json_t *st)
 {
     const char *message = cl_str(cl_get(in, "message"));
     if (!message || !message[0]) return json_bool(false);
     json_t *agent = cl_self(st, "agent");
-    json_t *lp = cl_req_attr(agent, "log_prefix");
+    json_t *lp = cl_req_attr(cl_get(st, "agent"), "log_prefix");
     if (cl_is_raise(lp)) return lp;
     const char *prefix = cl_str(lp);
     if (!prefix) prefix = "";
@@ -1046,7 +1062,7 @@ static json_t *cl_print_guidance(cl_io_t *io, const json_t *in, json_t *st)
     return ret;
 }
 
-/* PoP: _engine_overrides_hook @ agent/conversation_loop.py:_engine_overrides_hook */
+/* PoP: cl_engine_overrides_hook @ agent/conversation_loop.py:_engine_overrides_hook */
 static json_t *cl_engine_overrides_hook(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)io; (void)st;
@@ -1066,7 +1082,7 @@ static json_t *cl_engine_overrides_hook(cl_io_t *io, const json_t *in, json_t *s
     return json_bool(is_ce ? false : true);
 }
 
-/* PoP: _maybe_inject_run_budget_wrapup @ agent/conversation_loop.py:_maybe_inject_run_budget_wrapup */
+/* PoP: cl_maybe_inject_run_budget_wrapup @ agent/conversation_loop.py:_maybe_inject_run_budget_wrapup */
 static json_t *cl_maybe_inject_run_budget_wrapup(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;
@@ -1119,7 +1135,7 @@ static json_t *cl_maybe_inject_run_budget_wrapup(cl_io_t *io, const json_t *in, 
             json_append(arr, block);
             json_set(msg, "content", arr);
         }
-        cl_dset(agent, "_run_budget_wrapup_injected", json_bool(true));
+        cl_dset(cl_get(st, "agent"), "_run_budget_wrapup_injected", json_bool(true));
         /* logger.info(fmt, float(budget), time.time()-started) — time fires again */
         json_t *t2 = cl_call(io, "time", cl_args());
         if (cl_is_raise(t2)) { json_free(fb); return t2; }
@@ -1138,7 +1154,7 @@ static json_t *cl_maybe_inject_run_budget_wrapup(cl_io_t *io, const json_t *in, 
     return json_bool(false);
 }
 
-/* PoP: _ollama_context_limit_error @ agent/conversation_loop.py:_ollama_context_limit_error */
+/* PoP: cl_ollama_context_limit_error @ agent/conversation_loop.py:_ollama_context_limit_error */
 static json_t *cl_ollama_context_limit_error(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *agent = cl_self(st, "agent");
@@ -1190,14 +1206,14 @@ static json_t *cl_ollama_context_limit_error(cl_io_t *io, const json_t *in, json
     return out;
 }
 
-/* PoP: _persist_system_prompt @ agent/conversation_loop.py:_persist_system_prompt */
+/* PoP: cl_persist_system_prompt @ agent/conversation_loop.py:_persist_system_prompt */
 static json_t *cl_persist_system_prompt(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *agent = cl_self(st, "agent");
     const char *failure_message = cl_str(cl_get(in, "failure_message"));
     int persist_tools = cl_truth(cl_get(in, "persist_tools"));
     /* if not agent._session_db: return (direct attr read raises when absent) */
-    json_t *sdb = cl_req_attr(agent, "_session_db");
+    json_t *sdb = cl_req_attr(cl_get(st, "agent"), "_session_db");
     if (cl_is_raise(sdb)) return sdb;
     if (!cl_truth(sdb)) return NULL;
     /* try: store = agent_interface(agent); (store.sessions if store else db).update_system_prompt(...) */
@@ -1207,9 +1223,9 @@ static json_t *cl_persist_system_prompt(cl_io_t *io, const json_t *in, json_t *s
     json_t *exc = NULL;
     if (cl_is_raise(store)) { exc = store; goto handle; }
     {
-        json_t *sid = cl_req_attr(agent, "session_id");
+        json_t *sid = cl_req_attr(cl_get(st, "agent"), "session_id");
         if (cl_is_raise(sid)) { exc = sid; json_free(store); goto handle; }
-        json_t *csp = cl_req_attr(agent, "_cached_system_prompt");
+        json_t *csp = cl_req_attr(cl_get(st, "agent"), "_cached_system_prompt");
         if (cl_is_raise(csp)) { exc = csp; json_free(store); goto handle; }
         json_t *a = cl_args();
         cl_arg_j(a, "session_id", sid);
@@ -1231,7 +1247,7 @@ handle:
     {
         /* except Exception as exc: logger.warning(failure_message, agent.session_id, exc) */
         if (!cl_exc_is_exception(cl_kind(exc))) return exc; /* BaseException passthrough */
-        json_t *sid = cl_req_attr(agent, "session_id");
+        json_t *sid = cl_req_attr(cl_get(st, "agent"), "session_id");
         json_t *args_arr = json_array();
         if (cl_is_raise(sid)) { json_free(exc); return sid; }
         json_append(args_arr, json_copy(sid));
@@ -1244,7 +1260,7 @@ handle:
     }
 }
 
-/* PoP: _restore_pinned_tools @ agent/conversation_loop.py:_restore_pinned_tools */
+/* PoP: cl_restore_pinned_tools @ agent/conversation_loop.py:_restore_pinned_tools */
 static json_t *cl_restore_pinned_tools(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *agent = cl_self(st, "agent");
@@ -1300,7 +1316,7 @@ static json_t *cl_restore_pinned_tools(cl_io_t *io, const json_t *in, json_t *st
     return built;
 }
 
-/* PoP: _refresh_bot_chat_tools @ agent/conversation_loop.py:_refresh_bot_chat_tools */
+/* PoP: cl_refresh_bot_chat_tools @ agent/conversation_loop.py:_refresh_bot_chat_tools */
 static json_t *cl_refresh_bot_chat_tools(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;
@@ -1356,7 +1372,7 @@ handle:
     json_free(policy);
     if (!cl_exc_is_exception(cl_kind(exc))) return exc;
     {
-        json_t *sid = cl_req_attr(agent, "session_id");
+        json_t *sid = cl_req_attr(cl_get(st, "agent"), "session_id");
         if (cl_is_raise(sid)) { json_free(exc); return sid; }
         json_t *args_arr = json_array();
         json_append(args_arr, json_copy(sid));
@@ -1370,7 +1386,7 @@ handle:
     }
 }
 
-/* PoP: _bot_chat_prompt_stale @ agent/conversation_loop.py:_bot_chat_prompt_stale */
+/* PoP: cl_bot_chat_prompt_stale @ agent/conversation_loop.py:_bot_chat_prompt_stale */
 static json_t *cl_bot_chat_prompt_stale(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *agent = cl_self(st, "agent");
@@ -1411,9 +1427,9 @@ static json_t *cl_bot_chat_prompt_stale(cl_io_t *io, const json_t *in, json_t *s
     char *title = cl_strip(title_raw ? title_raw : "");
     free(title_raw);
     if (!title[0]) {
-        json_t *sdb = cl_req_attr(agent, "_session_db");
+        json_t *sdb = cl_req_attr(cl_get(st, "agent"), "_session_db");
         if (cl_is_raise(sdb)) { free(title); json_free(home); return sdb; }
-        json_t *sid = cl_req_attr(agent, "session_id");
+        json_t *sid = cl_req_attr(cl_get(st, "agent"), "session_id");
         if (cl_is_raise(sid)) { free(title); json_free(home); return sid; }
         if (cl_truth(sdb) && cl_truth(sid)) {
             /* inner try: store = agent_interface(agent); title = ... */
@@ -1479,7 +1495,7 @@ static json_t *cl_uw_empty(void)
     return o;
 }
 
-/* PoP: _usage_window_refusal @ agent/conversation_loop.py:_usage_window_refusal */
+/* PoP: cl_usage_window_refusal @ agent/conversation_loop.py:_usage_window_refusal */
 static json_t *cl_usage_window_refusal(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *agent = cl_self(st, "agent");
@@ -1597,7 +1613,7 @@ outer_catch:
     }
 }
 
-/* PoP: _arm_fallback_restart @ agent/conversation_loop.py:_arm_fallback_restart */
+/* PoP: cl_arm_fallback_restart @ agent/conversation_loop.py:_arm_fallback_restart */
 static json_t *cl_arm_fallback_restart(cl_io_t *io, const json_t *in, json_t *st)
 {
     json_t *retry = cl_self(st, "retry");
@@ -1607,12 +1623,12 @@ static json_t *cl_arm_fallback_restart(cl_io_t *io, const json_t *in, json_t *st
     cl_arg_j(a, "active_system_prompt", cl_get(in, "active_system_prompt"));
     json_t *asp = cl_call(io, "sync_failover_system_message", a);
     if (cl_is_raise(asp)) return asp;
-    cl_dset(retry, "primary_recovery_attempted", json_bool(false));
-    cl_dset(retry, "restart_with_rebuilt_messages", json_bool(true));
+    cl_dset(cl_get(st, "retry"), "primary_recovery_attempted", json_bool(false));
+    cl_dset(cl_get(st, "retry"), "restart_with_rebuilt_messages", json_bool(true));
     return asp;
 }
 
-/* PoP: _preflight_timeout_result @ agent/conversation_loop.py:_preflight_timeout_result */
+/* PoP: cl_preflight_timeout_result @ agent/conversation_loop.py:_preflight_timeout_result */
 static json_t *cl_preflight_timeout_result(cl_io_t *io, const json_t *in, json_t *st)
 {
     const json_t *exc = cl_get(in, "exc");
@@ -1703,7 +1719,7 @@ static json_t *cl_run_phase_core(cl_io_t *io, const json_t *fn, const json_t *ag
     return verdict;
 }
 
-/* PoP: _run_phase @ agent/conversation_loop.py:_run_phase */
+/* PoP: cl_run_phase @ agent/conversation_loop.py:_run_phase */
 static json_t *cl_run_phase(cl_io_t *io, const json_t *in, json_t *st)
 {
     cl_self(st, "state"); /* vivify the state double wrapper */
@@ -1711,12 +1727,12 @@ static json_t *cl_run_phase(cl_io_t *io, const json_t *in, json_t *st)
     return cl_run_phase_core(io, cl_get(in, "fn"), cl_get(in, "agent"), sw, cl_get(in, "extra"));
 }
 
-/* PoP: _run_api_retry_loop @ agent/conversation_loop.py:_run_api_retry_loop */
+/* PoP: cl_run_api_retry_loop @ agent/conversation_loop.py:_run_api_retry_loop */
 static json_t *cl_run_api_retry_loop(cl_io_t *io, const json_t *in, json_t *st)
 {
     cl_self(st, "s");
     json_t *sw = cl_get(st, "s");
-    const json_t *agent = cl_get(in, "agent");
+    const json_t *agent = cl_get(st, "agent");
     const json_t *phases = cl_get(in, "phases");
     for (;;) {
         double rc = cl_num(cl_dattr(sw, "retry_count"));
@@ -1784,12 +1800,12 @@ handled:
     return NULL;
 }
 
-/* PoP: _finalize_from_state @ agent/conversation_loop.py:_finalize_from_state */
+/* PoP: cl_finalize_from_state @ agent/conversation_loop.py:_finalize_from_state */
 static json_t *cl_finalize_from_state(cl_io_t *io, const json_t *in, json_t *st)
 {
     cl_self(st, "s");
     json_t *sw = cl_get(st, "s");
-    const json_t *agent = cl_get(in, "agent");
+    const json_t *agent = cl_get(st, "agent");
     const json_t *params = cl_get(in, "finalize_params");
     json_t *a = cl_args();
     cl_arg_j(a, "agent", agent);
@@ -1808,7 +1824,7 @@ static json_t *cl_finalize_from_state(cl_io_t *io, const json_t *in, json_t *st)
 /* forward decl for the composed sibling */
 static json_t *cl_codex_app_server_turn(cl_io_t *io, const json_t *in, json_t *st);
 
-/* PoP: _turn_without_loop @ agent/conversation_loop.py:_turn_without_loop */
+/* PoP: cl_turn_without_loop @ agent/conversation_loop.py:_turn_without_loop */
 static json_t *cl_turn_without_loop(cl_io_t *io, const json_t *in, json_t *st)
 {
     cl_self(st, "s");
@@ -1820,7 +1836,7 @@ static json_t *cl_turn_without_loop(cl_io_t *io, const json_t *in, json_t *st)
         return cl_finalize_from_state(io, in, st);
     }
     json_t *agent = cl_self(st, "agent");
-    json_t *api_mode = cl_req_attr(agent, "api_mode");
+    json_t *api_mode = cl_req_attr(cl_get(st, "agent"), "api_mode");
     if (cl_is_raise(api_mode)) return api_mode;
     const char *am = cl_str(api_mode);
     if (am && strcmp(am, "codex_app_server") == 0)
@@ -1828,7 +1844,7 @@ static json_t *cl_turn_without_loop(cl_io_t *io, const json_t *in, json_t *st)
     return NULL;
 }
 
-/* PoP: _codex_app_server_turn @ agent/conversation_loop.py:_codex_app_server_turn */
+/* PoP: cl_codex_app_server_turn @ agent/conversation_loop.py:_codex_app_server_turn */
 static json_t *cl_codex_app_server_turn(cl_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;
@@ -1880,4 +1896,171 @@ static json_t *cl_codex_app_server_turn(cl_io_t *io, const json_t *in, json_t *s
     if (cl_is_raise(newasp)) return newasp;
     cl_dset(sw, "active_system_prompt", newasp);
     return NULL;
+}
+
+/* `x is True` identity gate: JSON_BOOL true only. */
+static int cl_is_true(const json_t *v) { return v && v->type == JSON_BOOL && v->bool_val; }
+
+/* PoP: cl_failed_turn_display_metadata @ agent/conversation_loop.py:_failed_turn_display_metadata */
+static json_t *cl_failed_turn_display_metadata(cl_io_t *io, const json_t *in, json_t *st)
+{
+    json_t *agent = cl_self(st, "agent");
+    const json_t *result = cl_get(in, "result");
+    json_t *surface = NULL;
+    /* try: surface = build_error_surface_from_result(result, provider=agent.provider or "", model=...) */
+    json_t *prov = cl_req_attr(cl_get(st, "agent"), "provider");
+    if (cl_is_raise(prov)) {
+        if (!cl_exc_is_exception(cl_kind(prov))) return prov;
+        goto surf_except;
+    }
+    json_t *model = cl_req_attr(cl_get(st, "agent"), "model");
+    if (cl_is_raise(model)) {
+        if (!cl_exc_is_exception(cl_kind(model))) return model;
+        goto surf_except;
+    }
+    {
+        json_t *a = cl_args();
+        cl_arg_j(a, "result", result);
+        json_set(a, "provider", cl_truth(prov) ? json_copy(prov) : json_string(""));
+        json_set(a, "model", cl_truth(model) ? json_copy(model) : json_string(""));
+        surface = cl_call(io, "build_error_surface_from_result", a);
+        if (cl_is_raise(surface)) {
+            if (!cl_exc_is_exception(cl_kind(surface))) return surface;
+            json_free(surface); surface = NULL;
+            goto surf_except;
+        }
+    }
+    goto after_surf;
+surf_except:
+    {
+        json_t *lr = cl_log(io, "debug", "failed-turn error surface unavailable", NULL, 1);
+        if (cl_is_raise(lr)) return lr;
+        json_free(lr);
+        surface = NULL;
+    }
+after_surf:
+    {
+        /* error = str(result.get("error") or "").strip()[:2000] */
+        json_t *err_v = cl_get(result, "error");
+        char *err_raw = cl_truth(err_v) ? cl_pystr(err_v) : cl_xfmt("");
+        char *err_strip = cl_strip(err_raw ? err_raw : "");
+        free(err_raw);
+        size_t elen = strlen(err_strip);
+        if (elen > CL_FAILED_TURN_ERROR_MAX_CHARS) elen = CL_FAILED_TURN_ERROR_MAX_CHARS;
+        json_t *error = cl_strn(err_strip, elen);
+        free(err_strip);
+        /* metadata = {k:v for (error,error),(error_surface,surface) if v} */
+        json_t *md = json_object();
+        if (cl_truth(error)) json_set(md, "error", json_copy(error));
+        if (cl_truth(surface)) json_set(md, "error_surface", json_copy(surface));
+        json_free(error); json_free(surface);
+        json_t *pin = json_object();
+        json_set(pin, "metadata", md);
+        return cl_redact_display_metadata(io, pin, st);
+    }
+}
+
+/* PoP: cl_close_durable_failed_turn @ agent/conversation_loop.py:_close_durable_failed_turn */
+static json_t *cl_close_durable_failed_turn(cl_io_t *io, const json_t *in, json_t *st)
+{
+    (void)in;
+    json_t *agent = cl_self(st, "agent");
+    json_t *result = cl_get(st, "result");
+    /* try: */
+    json_t *exc = NULL;
+    if (!cl_is_plain_dict(result) || cl_is_true(cl_get(result, "completed"))) return NULL;
+    {
+        const char *fr = cl_str(cl_get(result, "failure_reason"));
+        if (cl_truth(cl_get(result, "compression_exhausted"))
+            || cl_truth(cl_get(result, "compression_deferred"))
+            || (fr && (strcmp(fr, "context_overflow") == 0 || strcmp(fr, "content_policy_blocked") == 0)))
+            return NULL;
+    }
+    json_t *messages = cl_get(result, "messages");
+    json_t *db = cl_get(agent, "_session_db");
+    json_t *session_id = cl_get(agent, "session_id");
+    if (!cl_is_arr(messages) || json_len(messages) == 0 || cl_is_null(db) || !cl_truth(session_id))
+        return NULL;
+    {
+        json_t *a = cl_args();
+        cl_arg_j(a, "agent", cl_get(st, "agent"));
+        json_t *store = cl_call(io, "agent_interface", a);
+        if (cl_is_raise(store)) { exc = store; goto handle; }
+        if (cl_truth(cl_get(agent, "_persist_disabled"))) { json_free(store); return NULL; }
+        /* (store.messages if store is not None else db).latest_conversation_role(session_id) */
+        if (!cl_is_null(store)) {
+            json_t *sm = cl_req_attr(store, "messages");
+            if (cl_is_raise(sm)) { exc = sm; json_free(store); goto handle; }
+        }
+        json_t *la = cl_args();
+        cl_arg_j(la, "session_id", session_id);
+        json_t *role = cl_call(io, "latest_conversation_role", la);
+        json_free(store);
+        if (cl_is_raise(role)) { exc = role; goto handle; }
+        const char *rs = cl_str(role);
+        int open = (rs && (strcmp(rs, "user") == 0 || strcmp(rs, "tool") == 0));
+        json_free(role);
+        if (!open) return NULL;
+    }
+    {
+        /* start = result.get("current_turn_user_idx"); turn_messages = messages[start:] if valid else messages */
+        json_t *start = cl_get(result, "current_turn_user_idx");
+        json_t *turn_messages = messages;
+        json_t *sliced = NULL;
+        if (cl_is_int(start)) {
+            double s = cl_num(start);
+            if (s >= 0 && s < (double)json_len(messages)) {
+                sliced = json_array();
+                for (size_t i = (size_t)s; i < json_len(messages); i++)
+                    json_append(sliced, json_copy(json_get(messages, i)));
+                turn_messages = sliced;
+            }
+        }
+        /* boundary = {"role":"assistant","content":failed_turn_notice(turn_messages),"display_kind":"failed_turn"} */
+        json_t *fa = cl_args();
+        cl_arg_j(fa, "turn_messages", turn_messages);
+        json_t *notice = cl_call(io, "failed_turn_notice", fa);
+        json_free(sliced);
+        if (cl_is_raise(notice)) { exc = notice; goto handle; }
+        json_t *boundary = json_object();
+        json_set(boundary, "role", json_string("assistant"));
+        json_set(boundary, "content", notice);
+        json_set(boundary, "display_kind", json_string("failed_turn"));
+        /* if failure := _failed_turn_display_metadata(agent, result): boundary["display_metadata"]=failure */
+        json_t *pin = json_object();
+        json_set(pin, "result", json_copy(result));
+        json_t *failure = cl_failed_turn_display_metadata(io, pin, st);
+        json_free(pin);
+        if (cl_is_raise(failure)) { exc = failure; json_free(boundary); goto handle; }
+        if (cl_truth(failure)) json_set(boundary, "display_metadata", failure);
+        else json_free(failure);
+        /* append_message(messages, boundary): stamp timestamp (wall_time) + append */
+        json_t *aa = cl_args();
+        cl_arg_j(aa, "message", boundary);
+        json_t *ar = cl_call(io, "append_message", aa);
+        if (cl_is_raise(ar)) { exc = ar; json_free(boundary); goto handle; }
+        json_free(ar);
+        if (cl_is_null(cl_get(boundary, "timestamp"))) {
+            json_t *wt = cl_call(io, "wall_time", cl_args());
+            if (cl_is_raise(wt)) { exc = wt; json_free(boundary); goto handle; }
+            json_set(boundary, "timestamp", wt);
+        }
+        json_append(messages, boundary);
+        /* agent._flush_messages_to_session_db(messages) */
+        json_t *fla = cl_args();
+        cl_arg_j(fla, "arg0", messages);
+        json_t *flr = cl_call(io, "flush_messages_to_session_db", fla);
+        if (cl_is_raise(flr)) { exc = flr; goto handle; }
+        json_free(flr);
+    }
+    return NULL;
+handle:
+    if (!cl_exc_is_exception(cl_kind(exc))) return exc;
+    {
+        json_t *lr = cl_log(io, "debug", "failed-turn boundary not written", NULL, 1);
+        json_free(exc);
+        if (cl_is_raise(lr)) return lr;
+        json_free(lr);
+        return NULL;
+    }
 }

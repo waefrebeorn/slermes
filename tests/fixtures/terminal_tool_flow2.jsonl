@@ -1,0 +1,253 @@
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": null, "current_session_profile": "p1"}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": null, "current_session_profile": "", "home_profile_name": "launch"}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "p1", "profile_name_for_home": "b"}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "b", "profile_name_for_home": "b"}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "", "profile_name_for_home": "b", "is_routed_home": true}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "", "profile_name_for_home": "b", "is_routed_home": false, "home_profile_name": "launch"}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "s", "profile_name_for_home": null}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "", "current_session_profile": "", "home_profile_name": "launch"}}}
+{"func": "container_profile", "in": {"io": {}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": null, "current_session_profile": {"__raise__": "ValueError", "msg": "s"}}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "p1", "profile_name_for_home": {"__raise__": "OSError", "msg": "p"}}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": "/h/b", "current_session_profile": "", "profile_name_for_home": "b", "is_routed_home": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "container_profile", "in": {"io": {"get_hermes_home_override": null, "current_session_profile": "", "home_profile_name": {"__raise__": "RuntimeError", "msg": "h"}}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": null, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": "/x"}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "local"}, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": "/x", "is_container_backend": false}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/host/w"}, "new_cwd": "/host/w/sub", "io": {"coerce_ssh_remote_cwd": "/host/w/sub", "is_container_backend": true, "is_unusable_container_cwd": false}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/host/w"}, "new_cwd": "/host/w", "io": {"coerce_ssh_remote_cwd": "/host/w", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": true}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/host/w", "host_cwd_mount": "/mnt/w"}, "new_cwd": "/host/w", "io": {"coerce_ssh_remote_cwd": "/host/w", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": true}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/host/w"}, "new_cwd": "/host/w/sub", "io": {"coerce_ssh_remote_cwd": "/host/w/sub", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": false, "translate_mounted_host_path": "/mnt/w/sub"}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/host/w"}, "new_cwd": "/host/w/sub", "io": {"coerce_ssh_remote_cwd": "/host/w/sub", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": false, "translate_mounted_host_path": null}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": null}, "new_cwd": "/raw", "io": {"coerce_ssh_remote_cwd": "/raw", "is_container_backend": true, "is_unusable_container_cwd": true}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": ""}, "new_cwd": "/raw", "io": {"coerce_ssh_remote_cwd": "/raw", "is_container_backend": true, "is_unusable_container_cwd": true}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker"}, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": {"__raise__": "ValueError", "msg": "c"}}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/h"}, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": "/x", "is_container_backend": true, "is_unusable_container_cwd": {"__raise__": "SystemExit", "msg": "u"}}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/h"}, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": "/x", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": false, "translate_mounted_host_path": {"__raise__": "RuntimeError", "msg": "t"}}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker"}, "new_cwd": "/x", "io": {}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": "docker", "host_cwd": "/h", "host_cwd_mount": ""}, "new_cwd": "/h", "io": {"coerce_ssh_remote_cwd": "/h", "is_container_backend": true, "is_unusable_container_cwd": true, "is_mounted_host_cwd": true}}}
+{"func": "sanitize_cwd_for_live_env", "in": {"env": {"env_type": ""}, "new_cwd": "/x", "io": {"coerce_ssh_remote_cwd": "/x"}}}
+{"func": "shell_state_chain", "in": {"task_id": null}}
+{"func": "shell_state_chain", "in": {"task_id": ""}}
+{"func": "shell_state_chain", "in": {"task_id": "a", "state": {"container_aliases": {}}}}
+{"func": "shell_state_chain", "in": {"task_id": "a", "state": {"container_aliases": {"a": "b", "b": "c"}}}}
+{"func": "shell_state_chain", "in": {"task_id": "a", "state": {"container_aliases": {"a": "b", "b": "a"}}}}
+{"func": "shell_state_chain", "in": {"task_id": "a", "state": {"container_aliases": {"a": "a"}}}}
+{"func": "shell_state_chain", "in": {"task_id": "x", "state": {"container_aliases": {"a": "b"}}}}
+{"func": "shell_state_chain", "in": {"task_id": "a", "state": {"container_aliases": {"a": "b", "b": "c", "c": "d"}}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": true}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "local", "tenv_bool": false}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": {"__raise__": "RuntimeError", "msg": "b"}}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": {"__raise__": "ValueError", "msg": "e"}}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": {"__raise__": "SystemExit", "msg": "p"}}}}
+{"func": "session_scope", "in": {"io": {}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "", "tenv_bool": true}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": null}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": ""}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": false}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": "b", "profile_container_key": "profile:b"}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": "/real/b"}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": null, "os.path.realpath": "/r"}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": "", "os.path.realpath": "/r"}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": {"__raise__": "OSError", "msg": "no"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": {"__raise__": "RuntimeError", "msg": "not oserror"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": {"__raise__": "ValueError", "msg": "r"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": "b", "profile_container_key": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {}}}
+{"func": "routed_home_task_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": {"__raise__": "ImportError", "msg": "p"}}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": null}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": null, "home_profile_name": "launch", "profile_container_key": "profile:launch"}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "profile_name_for_home": "b", "profile_container_key": "profile:b"}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": false, "home_profile_name": "", "profile_container_key": ""}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": false, "io": {"get_hermes_home_override": "/h/b", "is_routed_home": true, "os.path.realpath": "/r"}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": null, "home_profile_name": {"__raise__": "RuntimeError", "msg": "h"}}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {}}}
+{"func": "sessionless_container_key", "in": {"profile_scoped": true, "io": {"get_hermes_home_override": null, "home_profile_name": "p", "profile_container_key": {"__raise__": "ValueError", "msg": "k"}}}}
+{"func": "workspace_key_for", "in": {"cwd": "/a/b", "io": {"os.path.expanduser": "/a/b", "os.path.realpath": "/a/b"}}}
+{"func": "workspace_key_for", "in": {"cwd": "~/w", "io": {"os.path.expanduser": "/home/u/w", "os.path.realpath": "/home/u/w"}}}
+{"func": "workspace_key_for", "in": {"cwd": "/x", "io": {"os.path.expanduser": {"__raise__": "OSError", "msg": "e"}}}}
+{"func": "workspace_key_for", "in": {"cwd": "/x", "io": {"os.path.expanduser": "/x", "os.path.realpath": {"__raise__": "SystemExit", "msg": "r"}}}}
+{"func": "workspace_key_for", "in": {"cwd": "/x", "io": {}}}
+{"func": "workspace_key_for", "in": {"cwd": "", "io": {"os.path.expanduser": "", "os.path.realpath": ""}}}
+{"func": "workspace_key_for", "in": {"cwd": "/x", "io": {"os.path.expanduser": "/x", "os.path.realpath": {"__raise__": "ValueError", "msg": "r"}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": null, "io": {}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "", "io": {}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "profile:p:ws:abc", "io": {}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "io": {"tenv_bool": false}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "child", "state": {"task_env_overrides": {"q:parent": {"cwd_source": "session", "workspace_key": "d1"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "parent", "qualify_task_key": {"__seq__": ["q:child", "q:parent"]}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "process", "workspace_key": "d"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"workspace_key": "d"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "session", "cwd": "/w"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1", "os.path.expanduser": "/w", "os.path.realpath": "/w"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "session", "cwd": "   "}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "session", "cwd": null}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "session", "workspace_key": "", "cwd": "/w"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1", "os.path.expanduser": "/w", "os.path.realpath": "/w"}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"t1": {"cwd_source": "session", "cwd": "/w"}}}, "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": "t1", "os.path.expanduser": {"__raise__": "OSError", "msg": "e"}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "io": {"tenv_bool": true, "resolve_container_alias": {"__raise__": "SystemExit", "msg": "a"}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "io": {"tenv_bool": true, "resolve_container_alias": "t1", "qualify_task_key": {"__raise__": "RuntimeError", "msg": "q"}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "io": {"tenv_bool": {"__raise__": "ValueError", "msg": "b"}}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "io": {}}}
+{"func": "workspace_container_key", "in": {"base": "profile:p", "task_id": "t1", "state": {"task_env_overrides": {"q:t": {}}}, "io": {"tenv_bool": true, "resolve_container_alias": null, "qualify_task_key": {"__seq__": ["q:t", null]}}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {"docker_image": "img1"}, "config": {"docker_image": "cfg"}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {}, "config": {"docker_image": "cfg"}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {"docker_image": ""}, "config": {"docker_image": "cfg"}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {}, "config": {}}}
+{"func": "select_image", "in": {"env_type": "modal", "overrides": {"modal_image": "m"}, "config": {}}}
+{"func": "select_image", "in": {"env_type": "daytona", "overrides": {}, "config": {"daytona_image": "d"}}}
+{"func": "select_image", "in": {"env_type": "ssh", "overrides": {"ssh_image": "s"}, "config": {}}}
+{"func": "select_image", "in": {"env_type": "ssh", "overrides": {}, "config": {}}}
+{"func": "select_image", "in": {"env_type": "local", "overrides": {"local_image": null}, "config": {}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": null, "config": {"docker_image": "cfg"}}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {}, "config": null}}
+{"func": "select_image", "in": {"env_type": "docker", "overrides": {"docker_image": 0}, "config": {"docker_image": "cfg"}}}
+{"func": "select_image", "in": {"env_type": "vercel_sandbox", "overrides": {"vercel_sandbox_image": "v"}, "config": {}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "io": {"hosted_scope": null}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "state": {"active_environments": {"e1": {"env_type": "docker"}}}, "io": {"hosted_scope": null, "time.time": 100, "admit_env": {"env_type": "docker"}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": "t1", "state": {"active_environments": {"t1": {"env_type": "local"}}}, "io": {"hosted_scope": null, "time.time": 7, "admit_env": {"env_type": "local"}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": "t1", "state": {"active_environments": {"t1": {"x": 1}}}, "io": {"hosted_scope": {}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "", "task_id": "t1", "state": {"active_environments": {"t1": {"x": 1}}}, "io": {"hosted_scope": null, "time.time": 1, "admit_env": {"x": 1}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "state": {"active_environments": {"e1": {"x": 1}}}, "io": {"hosted_scope": null, "time.time": {"__raise__": "RuntimeError", "msg": "clock"}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "state": {"active_environments": {"e1": {"x": 1}}}, "io": {"hosted_scope": null, "time.time": 5, "admit_env": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "state": {"active_environments": {"e1": {"x": 1}}}, "io": {"hosted_scope": null, "time.time": 5, "admit_env": null}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "io": {"hosted_scope": {"__raise__": "ValueError", "msg": "h"}}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "io": {}}}
+{"func": "lookup_active_env", "in": {"effective_task_id": "e1", "task_id": null, "state": {"active_environments": {"e1": {"x": 1}}}, "io": {"hosted_scope": null, "time.time": 5, "admit_env": {"__raise__": "ImportError", "msg": "a"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": null}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w", "cwd_source": "process"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/w", "os.path.isdir": true}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "   "}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": 5}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/w", "os.path.isdir": false}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/workspace", "os.path.isdir": true}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/workspace/sub", "os.path.isdir": true}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/root/x", "os.path.isdir": true}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": {"__raise__": "OSError", "msg": "e"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": {"__raise__": "SystemExit", "msg": "a"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "/w"}, "os.path.expanduser": "/w", "os.path.abspath": "/w", "os.path.isdir": {"__raise__": "RuntimeError", "msg": "d"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"__raise__": "ValueError", "msg": "o"}}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {}}}
+{"func": "session_workspace_mount_source", "in": {"task_id": "t", "io": {"resolve_task_overrides": {"cwd": "~/w", "cwd_source": "session"}, "os.path.expanduser": "/home/u/w", "os.path.abspath": "/home/u/w", "os.path.isdir": true}}}
+{"func": "backend_default_cwd", "in": {"env_type": "local", "io": {"safe_getcwd": "/cur"}}}
+{"func": "backend_default_cwd", "in": {"env_type": "ssh", "io": {}}}
+{"func": "backend_default_cwd", "in": {"env_type": "vercel_sandbox", "io": {}}}
+{"func": "backend_default_cwd", "in": {"env_type": "docker", "io": {"plugin_env_flag": null}}}
+{"func": "backend_default_cwd", "in": {"env_type": "modal", "io": {"plugin_env_flag": "~"}}}
+{"func": "backend_default_cwd", "in": {"env_type": "daytona", "io": {"plugin_env_flag": "/sandbox"}}}
+{"func": "backend_default_cwd", "in": {"env_type": "modal", "io": {"plugin_env_flag": "relative"}}}
+{"func": "backend_default_cwd", "in": {"env_type": "modal", "io": {"plugin_env_flag": 5}}}
+{"func": "backend_default_cwd", "in": {"env_type": "modal", "io": {"plugin_env_flag": {"__raise__": "RuntimeError", "msg": "p"}}}}
+{"func": "backend_default_cwd", "in": {"env_type": "local", "io": {"safe_getcwd": {"__raise__": "SystemExit", "msg": "g"}}}}
+{"func": "backend_default_cwd", "in": {"env_type": "docker", "io": {}}}
+{"func": "backend_default_cwd", "in": {"env_type": "modal", "io": {"plugin_env_flag": ""}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "/cur", "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "~/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/home/u/x", "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "~/x", "is_ssh_remote_tilde_cwd": true, "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "~/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": {}, "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", "/host/w"]}, "os.path.expanduser": "/host/w", "os.path.abspath": "/host/w", "is_host_cwd": true}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", ""]}, "safe_getcwd": "/cur", "os.path.expanduser": "/cur", "os.path.abspath": "/cur", "is_host_cwd": false, "os.path.isabs": true, "os.path.isdir": true}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", "/host/w"]}, "os.path.expanduser": "/host/w", "os.path.abspath": "/host/w", "is_host_cwd": false, "os.path.isabs": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", "/host/w"]}, "os.path.expanduser": "/host/w", "os.path.abspath": "/host/w", "is_host_cwd": false, "os.path.isabs": true, "os.path.isdir": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", "/workspace"]}, "os.path.expanduser": "/workspace", "os.path.abspath": "/workspace", "is_host_cwd": false, "os.path.isabs": true, "os.path.isdir": true}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": false, "state": {"os_name": "nt"}, "io": {"plugin_env_flag": null, "tenv": "C:\\w", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": {"__seq__": ["C:\\w", "C:\\w"]}, "is_windows_drive_path": true, "os.path.abspath": "C:/w", "os.path.isdir": true}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "C:\\w", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": {"__seq__": ["C:\\w", "C:\\w"]}, "is_windows_drive_path": true, "os.path.isdir": false, "logger.info": null}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/x", "is_windows_drive_path": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/host/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/host/x", "is_windows_drive_path": false, "is_container_backend": true, "is_unusable_container_cwd": true, "logger.info": null}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "modal", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/host/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/host/x", "is_container_backend": true, "is_unusable_container_cwd": true, "logger.info": null}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "modal", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/host/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/host/x", "is_container_backend": true, "is_unusable_container_cwd": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "modal", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/host/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/host/x", "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "ssh", "mount_docker_cwd": false, "io": {"tenv": "~", "is_container_backend": false}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": {"__raise__": "ValueError", "msg": "t"}}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": {"__raise__": "SystemExit", "msg": "g"}}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "~/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": {"__raise__": "OSError", "msg": "e"}}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "modal", "mount_docker_cwd": false, "io": {"plugin_env_flag": null, "tenv": "/host/x", "is_ssh_remote_tilde_cwd": false, "hosted_scope": null, "os.path.expanduser": "/host/x", "is_container_backend": true, "is_unusable_container_cwd": true, "logger.info": {"__raise__": "RuntimeError", "msg": "log"}}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "docker", "mount_docker_cwd": true, "io": {"plugin_env_flag": null, "tenv": {"__seq__": ["/root", {"__raise__": "RuntimeError", "msg": "t2"}]}}}}
+{"func": "resolve_config_cwd", "in": {"env_type": "local", "mount_docker_cwd": false, "io": {"safe_getcwd": "/cur", "tenv": "~/x", "is_ssh_remote_tilde_cwd": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": null, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"translate_mounted_host_path": "/m/x"}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "", "host_cwd_mount": "/m"}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": 5, "host_cwd_mount": "/m"}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": null}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": ""}, "io": {}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"translate_mounted_host_path": null}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"translate_mounted_host_path": {"__raise__": "SystemExit", "msg": "t"}}}}
+{"func": "rewrite_via_env_mount", "in": {"path": "/h/x", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {}}}
+{"func": "mount_envs", "in": {"env": {"a": 1}}}
+{"func": "mount_envs", "in": {"env": null, "state": {"active_environments": {}}}}
+{"func": "mount_envs", "in": {"env": null, "state": {"active_environments": {"e1": {"x": 1}, "e2": {"y": 2}}}}}
+{"func": "mount_envs", "in": {"env": null}}
+{"func": "mount_envs", "in": {"env": "str"}}
+{"func": "mount_envs", "in": {"env": 0}}
+{"func": "container_visible_cwd", "in": {"path": "", "env_type": "docker", "io": {}}}
+{"func": "container_visible_cwd", "in": {"path": "/x", "env_type": null, "io": {"is_container_backend": false}}}
+{"func": "container_visible_cwd", "in": {"path": "/x", "env_type": "local", "io": {"is_container_backend": false}}}
+{"func": "container_visible_cwd", "in": {"path": "/h/x", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "translate_mounted_host_path": "/m/x"}}}
+{"func": "container_visible_cwd", "in": {"path": "/x", "env_type": "docker", "env": null, "io": {"is_container_backend": true}}}
+{"func": "container_visible_cwd", "in": {"path": "/h/x", "env_type": "docker", "env": null, "state": {"active_environments": {"e1": {"host_cwd": "/h", "host_cwd_mount": "/m"}}}, "io": {"is_container_backend": true, "translate_mounted_host_path": "/m/x"}}}
+{"func": "container_visible_cwd", "in": {"path": "/h/x", "env_type": "docker", "env": null, "state": {"active_environments": {"e1": {"x": 1}, "e2": {"host_cwd": "/h", "host_cwd_mount": "/m2"}}}, "io": {"is_container_backend": true, "translate_mounted_host_path": "/m2/x"}}}
+{"func": "container_visible_cwd", "in": {"path": "/x", "env_type": "docker", "io": {"is_container_backend": {"__raise__": "SystemExit", "msg": "c"}}}}
+{"func": "container_visible_cwd", "in": {"path": "/h/x", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "translate_mounted_host_path": {"__raise__": "RuntimeError", "msg": "t"}}}}
+{"func": "container_visible_cwd", "in": {"path": "/x", "env_type": "docker", "io": {}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": null, "io": {"is_container_backend": false}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "env": null, "io": {"is_container_backend": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/root", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "is_unusable_container_cwd": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/root", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "is_unusable_container_cwd": false}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/root", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/root"}, "io": {"is_container_backend": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "env": {"host_cwd_mount": "/m"}, "io": {"is_container_backend": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": ""}, "io": {"is_container_backend": true}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/opt", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "is_unusable_container_cwd": false}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/root", "env_type": "docker", "env": {"host_cwd": "/h", "host_cwd_mount": "/m"}, "io": {"is_container_backend": true, "is_unusable_container_cwd": {"__raise__": "SystemExit", "msg": "u"}}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "io": {"is_container_backend": {"__raise__": "ValueError", "msg": "c"}}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "io": {}}}
+{"func": "container_visible_default", "in": {"default_cwd": "/workspace", "env_type": "docker", "env": null, "state": {"active_environments": {"e1": {"host_cwd": "/h", "host_cwd_mount": "/workspace"}, "e2": {"host_cwd": "/h2", "host_cwd_mount": "/m2"}}}, "io": {"is_container_backend": true}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__seq__": ["REDACTED", "RTB"]}, "hosted_scope": null}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": "REDACTED", "hosted_scope": {}}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "KeyError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__seq__": ["REDACTED", "RTB"]}, "hosted_scope": null}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": {"__raise__": "RuntimeError", "msg": "tb"}}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": {"__raise__": "ValueError", "msg": "log"}}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__raise__": "SystemExit", "msg": "r"}}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": "REDACTED", "hosted_scope": {"__raise__": "OSError", "msg": "h"}}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__seq__": ["REDACTED", {"__raise__": "RuntimeError", "msg": "r2"}]}, "hosted_scope": null}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "RuntimeError", "msg": "boom"}, "io": {}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "SystemExit", "msg": "bye"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__seq__": ["REDACTED", "RTB"]}, "hosted_scope": null}}}
+{"func": "fatal_error_json", "in": {"exc": {"__raise__": "ValueError", "msg": "v"}, "io": {"traceback.format_exc": "TB", "logger.error": null, "redact_terminal_error_text": {"__seq__": ["a\"b\nc", "t"]}, "hosted_scope": null}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "state": {"active_environments": {"eff123456789": {"env_type": "docker"}}}, "io": {"start_cleanup_thread": null, "hosted_scope": null, "time.time": 5, "admit_env": {"ok": 1}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "time.time": 9, "create_configured_env": {"new": 1}, "logger.info": null}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": "t1", "state": {"active_environments": {"t1": {"env_type": "local"}}}, "io": {"start_cleanup_thread": null, "hosted_scope": null, "time.time": 5, "admit_env": {"ok": 1}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "ImportError", "msg": "no docker"}, "redact_terminal_error_text": "R", "error_json": "EJ"}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "ModuleNotFoundError", "msg": "no module"}, "redact_terminal_error_text": "R", "error_json": "EJ"}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "ImportError", "msg": "no docker"}, "redact_terminal_error_text": {"__raise__": "ValueError", "msg": "r"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"__raise__": "ImportError", "msg": "no docker"}, "redact_terminal_error_text": "R", "error_json": {"__raise__": "OSError", "msg": "ej"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": null, "create_configured_env": {"new": 1}, "time.time": {"__raise__": "RuntimeError", "msg": "clock"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": {"__raise__": "SystemExit", "msg": "s"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "logger.info": {"__raise__": "RuntimeError", "msg": "log1"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "create_configured_env": {"new": 1}, "time.time": 9, "logger.info": {"__seq__": [null, {"__raise__": "ValueError", "msg": "log2"}]}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "io": {"start_cleanup_thread": null, "hosted_scope": {"__raise__": "ImportError", "msg": "h"}}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": null, "state": {"creation_locks": {"eff123456789": true}}, "io": {"start_cleanup_thread": null, "hosted_scope": {"__seq__": [null, null]}, "time.time": 9, "create_configured_env": {"new": 1}, "logger.info": null}}}
+{"func": "acquire_env", "in": {"plan": {"config": {"env_type": "docker"}, "env_type": "docker", "effective_task_id": "eff123456789", "image": "img", "cwd": "/w", "host_cwd": null, "effective_timeout": 180}, "task_id": "t1", "state": {"active_environments": {"t1": {"x": 1}}}, "io": {"start_cleanup_thread": null, "hosted_scope": {}, "time.time": 5, "create_configured_env": {"new": 1}, "logger.info": null}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": null}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": {"fn": 1}}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": 0}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": ""}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "effective_task_id": "e"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s", "extra": 1}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s", "command": "c2"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": {"__raise__": "RuntimeError", "msg": "y"}}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {"yield_to_background_handler": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s"}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "extra": 1}, "io": {}}}
+{"func": "yield_kwargs", "in": {"command": "c", "ctx": {"env_type": "local", "cwd": "/w", "effective_task_id": "e", "task_id": "t", "session_key": "s", "command": "c2", "extra": 1}, "io": {}}}

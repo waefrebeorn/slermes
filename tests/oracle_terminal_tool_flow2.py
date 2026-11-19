@@ -274,6 +274,7 @@ def seamfn(name, argfn):
 
 def install_globals():
     NS["logger"] = RecLogger()
+    NS["json"] = json   # _fatal_error_json's json.dumps (pure serialization, real)
     NS["threading"] = threading
     NS["time"] = types.SimpleNamespace(time=lambda: materialize(script("time.time", {})))
     NS["os"] = types.SimpleNamespace(

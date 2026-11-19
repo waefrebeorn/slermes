@@ -1,0 +1,184 @@
+{"func": "format_docker_update_message", "in": {"state": {"_DOCKER_UPDATE_MESSAGE": "docker update message A"}}}
+{"func": "format_docker_update_message", "in": {"state": {"_DOCKER_UPDATE_MESSAGE": "msg B"}}}
+{"func": "format_docker_update_message", "in": {"state": {"_DOCKER_UPDATE_MESSAGE": ""}}}
+{"func": "format_docker_update_message", "in": {"state": {"_DOCKER_UPDATE_MESSAGE": "line1\nline2"}}}
+{"func": "format_docker_update_message", "in": {"state": {"_DOCKER_UPDATE_MESSAGE": "pull nousresearch/hermes-agent:latest"}}}
+{"func": "module_getattr", "in": {"name": "CORE_DECLARED_ENV_NAMES", "io": {"core_declared_env_names": {"ret": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"]}}}}
+{"func": "module_getattr", "in": {"name": "CORE_DECLARED_ENV_NAMES", "io": {"core_declared_env_names": {"ret": []}}}}
+{"func": "module_getattr", "in": {"name": "CORE_DECLARED_ENV_NAMES", "io": {"core_declared_env_names": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "module_getattr", "in": {"name": "OTHER_ATTR"}}
+{"func": "module_getattr", "in": {"name": "foo"}}
+{"func": "module_getattr", "in": {"name": "CORE_DECLARED_ENV_NAMES", "io": {}}}
+{"func": "managed_source", "in": {"filename": ".env", "io": {"get_managed_dir": {"ret": "/managed"}}}}
+{"func": "managed_source", "in": {"filename": "config.yaml", "io": {"get_managed_dir": {"ret": "/m"}}}}
+{"func": "managed_source", "in": {"filename": ".env", "io": {"get_managed_dir": {"ret": null}}}}
+{"func": "managed_source", "in": {"filename": ".env", "io": {"get_managed_dir": {"ret": ""}}}}
+{"func": "managed_source", "in": {"filename": ".env", "io": {"get_managed_dir": {"raise": {"type": "OSError", "message": "denied"}}}}}
+{"func": "managed_source", "in": {"filename": ".env", "io": {}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": true}, "format_managed_message": {"ret": "managed msg"}}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": true}, "get_managed_dir": {"ret": "/m"}}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "remove", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": true}, "get_managed_dir": {"ret": null}}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": false}}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "set", "io": {"is_managed": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "env_write_refusal", "in": {"key": "K", "action": "set", "io": {}}}
+{"func": "env_write_blocked", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": false}}}}
+{"func": "env_write_blocked", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": true}, "format_managed_message": {"ret": "refusal text"}}}}
+{"func": "env_write_blocked", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": true}, "format_managed_message": {"ret": ""}}}}
+{"func": "env_write_blocked", "in": {"key": "K", "action": "remove", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": true}, "get_managed_dir": {"ret": "/m"}}}}
+{"func": "env_write_blocked", "in": {"key": "K", "action": "set", "io": {"is_managed": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "require_env_writable", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": false}}}}
+{"func": "require_env_writable", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": true}, "format_managed_message": {"ret": "refusal text"}}}}
+{"func": "require_env_writable", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": true}, "format_managed_message": {"ret": ""}}}}
+{"func": "require_env_writable", "in": {"key": "K", "action": "set", "io": {"is_managed": {"ret": false}, "is_env_managed": {"ret": true}, "get_managed_dir": {"ret": null}}}}
+{"func": "require_env_writable", "in": {"key": "K", "action": "set", "io": {"is_managed": {"raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "io": {"save_env_value": [{"ret": null}, {"ret": null}]}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "token_first": false, "io": {"save_env_value": [{"ret": null}, {"ret": null}]}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "save_fn": {"fn": 1}, "io": {"save_fn": [{"ret": null}, {"ret": null}]}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "io": {"save_env_value": [{"raise": {"type": "ValueError", "message": "bad"}}]}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "io": {"save_env_value": [{"ret": null}, {"raise": {"type": "RuntimeError", "message": "x"}}]}}}
+{"func": "write_anthropic_slots", "in": {"token": "tok", "api_key": "key", "io": {}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {"get_secret": {"ret": "val"}}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {"get_secret": {"ret": null}}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {"get_secret": {"import_raise": {"type": "ImportError", "message": "no module"}}, "os.environ.get": {"ret": "envval"}}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {"get_secret": {"raise": {"type": "RuntimeError", "message": "scope fail"}}}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {"get_secret": {"import_raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "scoped_environ_get", "in": {"key": "K", "io": {}}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "gateway.platforms.discord.token"}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "gateway.platforms"}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "gateway.platforms.x"}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "model.default"}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "gateway.other.x"}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": ""}}
+{"func": "legacy_gateway_platforms_key", "in": {"requested_key": "gateway.platforms.a\\.b"}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {"is_key_managed": {"ret": true}, "get_managed_dir": {"ret": "/m"}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {"is_key_managed": {"ret": true}, "get_managed_dir": {"ret": null}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {"is_key_managed": {"ret": false}, "get_config_backend": {"ret": null}, "get_config_path": {"ret": "/h/c.yaml"}, "backend_locked": {"ret": null}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "unset", "io": {"is_key_managed": {"ret": false}, "get_config_backend": {"ret": null}, "get_config_path": {"ret": "/h/c.yaml"}, "backend_locked": {"ret": "org"}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {"is_key_managed": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {"is_key_managed": {"ret": false}, "get_config_backend": {"ret": null}, "get_config_path": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "exit_if_key_managed", "in": {"key": "model", "action": "set", "io": {}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "dark", "io": {"get_hermes_home": {"ret": "/h"}, "path_exists": {"ret": true}, "touch": {"ret": null}}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "dark", "io": {"get_hermes_home": {"ret": "/h"}, "path_exists": {"ret": false}}}}
+{"func": "touch_skin_file", "in": {"key": "other", "value": "dark", "io": {}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "", "io": {}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": 5, "io": {}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "dark", "io": {"get_hermes_home": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "dark", "io": {"get_hermes_home": {"ret": "/h"}, "path_exists": {"ret": true}, "touch": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "touch_skin_file", "in": {"key": "display.skin", "value": "dark", "io": {"get_hermes_home": {"raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "exit_invalid", "in": {"msg": "bad key"}}
+{"func": "exit_invalid", "in": {"msg": ""}}
+{"func": "exit_invalid", "in": {"msg": "Invalid config key: 'x'"}}
+{"func": "exit_invalid", "in": {"msg": "nope"}}
+{"func": "exit_invalid", "in": {"msg": "a b c"}}
+{"func": "write_user_config", "in": {"config_path": "/h/c.yaml", "user_config": {"model": "x"}, "io": {"ensure_hermes_home": {"ret": null}, "recording_raw_config_write": {"ret": null}}}}
+{"func": "write_user_config", "in": {"config_path": "/h/c.yaml", "user_config": {}, "io": {"ensure_hermes_home": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "write_user_config", "in": {"config_path": "/h/c.yaml", "user_config": {"a": 1}, "io": {"ensure_hermes_home": {"ret": null}, "recording_raw_config_write": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "write_user_config", "in": {"config_path": "/h/c.yaml", "user_config": {}, "io": {"ensure_hermes_home": {"ret": null}, "recording_raw_config_write": {"import_raise": {"type": "ImportError", "message": "no"}}}}}
+{"func": "write_user_config", "in": {"config_path": "/h/c.yaml", "user_config": {}, "io": {}}}
+{"func": "print_unknown_key_notice", "in": {"key": "foo", "suggestion": null}}
+{"func": "print_unknown_key_notice", "in": {"key": "foo", "suggestion": "food"}}
+{"func": "print_unknown_key_notice", "in": {"key": "a.b", "suggestion": null}}
+{"func": "print_unknown_key_notice", "in": {"key": "a.b", "suggestion": "a.c"}}
+{"func": "print_unknown_key_notice", "in": {"key": "", "suggestion": null}}
+{"func": "print_unknown_key_notice", "in": {"key": "stt.provider", "suggestion": "stt"}}
+{"func": "dropped_shadow_notes", "in": {"key": "discord.token", "legacy_key": "gateway.platforms.x", "state": {"user_config": {"gateway": {"platforms": {"x": 1}}}}, "io": {"unset_nested": {"ret": true, "state": {"user_config": {"gateway": {"platforms": {}}}}}, "locate_nested": {"ret": null}, "drop_legacy_disabled": {"ret": false}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "mcp_servers.s.disabled", "legacy_key": null, "state": {"user_config": {"mcp_servers": {"s": {"disabled": true}}}}, "io": {"locate_nested": {"ret": {"container": "mcp_servers.s", "key": "disabled"}}, "drop_legacy_disabled": {"ret": true}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "k", "legacy_key": "x", "state": {"user_config": {}}, "io": {"unset_nested": {"ret": false}, "locate_nested": {"ret": null}, "drop_legacy_disabled": {"ret": false}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "k", "legacy_key": "gateway.platforms.x", "state": {"user_config": {"gateway": {"platforms": {"x": 1}}}}, "io": {"unset_nested": {"ret": true, "state": {"user_config": {}}}, "locate_nested": {"ret": {"k": 1}}, "drop_legacy_disabled": {"ret": true}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "k", "legacy_key": "x", "state": {"user_config": {}}, "io": {"unset_nested": {"raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "k", "legacy_key": null, "state": {"user_config": {}}, "io": {"locate_nested": {"ret": null}, "drop_legacy_disabled": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "dropped_shadow_notes", "in": {"key": "k", "legacy_key": null, "state": {"user_config": {}}, "io": {}}}
+{"func": "usage_exit", "in": {"usage": "Usage: U", "examples": ["a", "b"], "extra": null}}
+{"func": "usage_exit", "in": {"usage": "Usage: U", "examples": [], "extra": ["x", ""]}}
+{"func": "usage_exit", "in": {"usage": "Usage: U", "examples": ["a"], "extra": ["e1", "e2"]}}
+{"func": "usage_exit", "in": {"usage": "Usage: U", "examples": ["only"], "extra": null}}
+{"func": "usage_exit", "in": {"usage": "", "examples": [], "extra": null}}
+{"func": "run_write_command", "in": {"fn_name": "set_config_value", "args": ["k", "v", false], "io": {"set_config_value": {"ret": null}}}}
+{"func": "run_write_command", "in": {"fn_name": "set_config_value", "args": ["k", "v", false], "io": {"set_config_value": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "run_write_command", "in": {"fn_name": "set_config_value", "args": ["k", "v"], "io": {"set_config_value": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "run_write_command", "in": {"fn_name": "unset_config_value", "args": ["k"], "io": {"unset_config_value": {"ret": null}}}}
+{"func": "run_write_command", "in": {"fn_name": "set_config_value", "args": ["k"], "io": {}}}
+{"func": "cmd_config_get", "in": {"args": {"key": "model"}, "io": {"get_config_value": {"ret": null}}}}
+{"func": "cmd_config_get", "in": {"args": {"key": ""}}}
+{"func": "cmd_config_get", "in": {"args": {}}}
+{"func": "cmd_config_get", "in": {"args": {"key": "model", "json": true, "raw": true}, "io": {"get_config_value": {"ret": "v"}}}}
+{"func": "cmd_config_get", "in": {"args": {"key": "model"}, "io": {"get_config_value": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "cmd_config_set", "in": {"args": {"key": "k", "value": "v"}, "io": {"set_config_value": {"ret": null}}}}
+{"func": "cmd_config_set", "in": {"args": {"key": "k", "value": ""}, "io": {"set_config_value": {"ret": null}}}}
+{"func": "cmd_config_set", "in": {"args": {"key": "k"}}}
+{"func": "cmd_config_set", "in": {"args": {"key": "", "value": "v"}}}
+{"func": "cmd_config_set", "in": {"args": {"key": "k", "value": "v", "force": true}, "io": {"set_config_value": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "cmd_config_unset", "in": {"args": {"key": "k"}, "io": {"unset_config_value": {"ret": null}}}}
+{"func": "cmd_config_unset", "in": {"args": {"key": ""}}}
+{"func": "cmd_config_unset", "in": {"args": {}}}
+{"func": "cmd_config_unset", "in": {"args": {"key": "k"}, "io": {"unset_config_value": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "cmd_config_unset", "in": {"args": {"key": "k"}, "io": {"unset_config_value": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "tools_suffix", "in": {"info": {"tools": ["a", "b", "c"]}, "fmt": " -> {}"}}
+{"func": "tools_suffix", "in": {"info": {"tools": ["a"]}, "fmt": "{}"}}
+{"func": "tools_suffix", "in": {"info": {"tools": []}, "fmt": "{}"}}
+{"func": "tools_suffix", "in": {"info": {}, "fmt": "{}"}}
+{"func": "tools_suffix", "in": {"info": {"tools": ["a", "b"]}, "fmt": "x{}y"}}
+{"func": "tools_suffix", "in": {"info": {"tools": ["a", "b"]}, "fmt": "no placeholder"}}
+{"func": "print_banner", "in": {"text": "Hello"}}
+{"func": "print_banner", "in": {"text": ""}}
+{"func": "print_banner", "in": {"text": "X Y"}}
+{"func": "print_banner", "in": {"text": "Configuration Status"}}
+{"func": "print_banner", "in": {"text": "a"}}
+{"func": "cmd_config_show", "in": {"io": {"show_config": {"ret": null}}}}
+{"func": "cmd_config_show", "in": {"io": {"show_config": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "cmd_config_show", "in": {"io": {"show_config": {"import_raise": {"type": "ImportError", "message": "no"}}}}}
+{"func": "cmd_config_show", "in": {"io": {}}}
+{"func": "cmd_config_show", "in": {"io": {"show_config": {"ret": "shown"}}}}
+{"func": "is_plugin_dir_name", "in": {"name": "telegram"}}
+{"func": "is_plugin_dir_name", "in": {"name": "__pycache__"}}
+{"func": "is_plugin_dir_name", "in": {"name": "__init__"}}
+{"func": "is_plugin_dir_name", "in": {"name": ".hidden"}}
+{"func": "is_plugin_dir_name", "in": {"name": "__"}}
+{"func": "is_plugin_dir_name", "in": {"name": "a__"}}
+{"func": "is_plugin_dir_name", "in": {"name": ""}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": ["FOO_TOKEN", "BAR"]}}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": [{"name": "X_KEY", "password": false}]}}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": [{"name": "Y", "secret": true}]}}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": ["A"], "optional_env": ["B_SECRET"]}, "optional": true}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": ["A"], "optional_env": ["B_SECRET"]}, "optional": false}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": [123, null, "", {"name": ""}]}}}
+{"func": "platform_manifest_env_entries", "in": {"manifest": {"requires_env": [{"name": "Z_JSON", "category": "messaging"}]}}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": ["FOO_TOKEN", "BAR"]}]], "core": ["BAR"]}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": ["FOO_TOKEN"]}]], "core": null, "io": {"core_declared_env_names": {"ret": []}}}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": ["FOO_TOKEN"]}]], "core": null, "io": {"core_declared_env_names": {"ret": ["FOO_TOKEN"]}}}}
+{"func": "manifest_secret_envs", "in": {"manifests": [], "core": null, "io": {"core_declared_env_names": {"ret": []}}}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": [{"name": "X_KEY", "category": "other"}]}]], "core": []}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": ["B_SECRET", "A_TOKEN"]}]], "core": []}}
+{"func": "manifest_secret_envs", "in": {"manifests": [["d", {"requires_env": ["A_TOKEN"]}]], "core": null, "io": {"core_declared_env_names": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "user", "io": {"platform_plugin_manifests": {"ret": [["d", {"requires_env": ["FOO_TOKEN"]}]]}, "core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "bundled", "state": {"BUNDLED_PLATFORM_SECRET_ENVS": ["A_TOKEN", "B"]}, "io": {"core_declared_env_names": {"ret": ["B"]}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "bundled", "state": {"BUNDLED_PLATFORM_SECRET_ENVS": null}, "io": {"platform_plugin_manifests": {"ret": []}, "core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "bundled", "state": {"BUNDLED_PLATFORM_SECRET_ENVS": []}, "io": {"core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "user", "io": {"platform_plugin_manifests": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "platform_manifest_secret_envs", "in": {"source": "user", "io": {}}}
+{"func": "platform_manifest_secret_scan", "in": {"state": {}, "io": {"platform_plugin_manifests": {"ret": [["d", {"requires_env": ["FOO_TOKEN"]}]], "state": {"skipped": []}}, "core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_scan", "in": {"state": {}, "io": {"platform_plugin_manifests": {"ret": [], "state": {"skipped": ["p1"]}}, "core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_scan", "in": {"state": {}, "io": {"platform_plugin_manifests": {"ret": [["d", {"requires_env": ["A_TOKEN"]}]], "state": {"skipped": ["p1"]}}, "core_declared_env_names": {"ret": []}}}}
+{"func": "platform_manifest_secret_scan", "in": {"state": {}, "io": {"platform_plugin_manifests": {"raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "platform_manifest_secret_scan", "in": {"state": {}, "io": {}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"ret": "y"}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"ret": "YES"}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"ret": "  yes  "}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"ret": "n"}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"ret": "maybe"}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"raise": {"type": "EOFError", "message": ""}}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {"input": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "ask_yes_no", "in": {"prompt": "Q?", "io": {}}}
+{"func": "offer_list", "in": {"heading": "H", "items": ["a", "b"], "question": "Q?", "io": {"input": {"ret": "y"}}}}
+{"func": "offer_list", "in": {"heading": "H", "items": ["a", "b"], "question": "Q?", "io": {"input": {"ret": "n"}}}}
+{"func": "offer_list", "in": {"heading": "H", "items": [], "question": "Q?", "io": {"input": {"ret": "y"}}}}
+{"func": "offer_list", "in": {"heading": "H", "items": ["a"], "question": "Q?", "io": {"input": {"raise": {"type": "EOFError", "message": ""}}}}}
+{"func": "offer_list", "in": {"heading": "H", "items": ["a"], "question": "Q?", "io": {"input": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": false}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"line_input": {"ret": "val"}, "save_env_value": {"ret": null}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": true}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"masked_secret_prompt": {"ret": "secret"}, "save_env_value": {"ret": null}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": false}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"line_input": {"ret": ""}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": false}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"line_input": {"ret": "   "}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": false}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"line_input": {"ret": "v"}, "save_env_value": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": false}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"line_input": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "prompt_and_save_env", "in": {"name": "K", "info": {"password": true}, "prompt": "P", "state": {"results": {"env_added": []}}, "io": {"masked_secret_prompt": {"ret": ""}}}}

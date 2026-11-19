@@ -11,10 +11,22 @@ leaf values are mutated type-preservingly (ASCII strings, integral numbers,
 bools, nulls, list/dict recursion, seam-script rets). The C harness and the
 live-Python oracle consume the SAME generated cases; mismatches are saved.
 
+Timeout discipline (platforms_helpers_flow once hung the oracle 1200s on 540
+cases): the corpus runs in BATCHES with a fast path (whole batch through
+harness+oracle, bounded by --case-timeout * batch_size + startup). Any batch
+that crashes, hangs, or mismatches falls back to a PER-CASE scan with a short
+single-case budget, so one infinite-loop input costs seconds, not the whole
+run. Findings: MISMATCH / PYERR (divergences), HARNESS_CRASH / HARNESS_HANG
+(port-side faults), ORACLE_HANG (live-Python infinite loop = out-of-domain
+input, not a port bug), ORACLE_ERR. Mismatches are attributed to exact inputs
+by single-case harness+oracle re-runs (ground truth, never a shadow mirror).
+Findings append incrementally to .testbin/fuzz_<name>_findings.jsonl.
+
 Usage: python scripts/fuzz_flow_oracle.py <name> [--per-fn N] [--seed S]
-Requires: .testbin/harnesses/<name>.exe (run the oracle once via
-run_one_oracle.sh to build it) and tests/fixtures/<name>.jsonl (or
-tests/<name>_cases.jsonl).
+       [--batch-size N] [--case-timeout SEC] [--max-cases N]
+Requires: .testbin/harnesses/<name>.exe (falls back to newest
+.testbin/tt_<name>_*.exe) and tests/fixtures/<name>.jsonl (or
+tests/<name>_cases.jsonl). Run the oracle gate once to build the harness.
 """
 import argparse
 import json
@@ -28,6 +40,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 PY = "C:/Users/eman5/hermes-agent/.venv/Scripts/python.exe"
 ASCII = string.ascii_letters + string.digits + " _-./:+=@#"
+STARTUP = 10  # seconds of slack per oracle/harness invocation
 
 
 def rand_str(rng, like):
@@ -70,11 +83,67 @@ def mutate(rng, v, depth=0):
     return v
 
 
+class Runner:
+    def __init__(self, exe, oracle, case_timeout):
+        self.exe = exe
+        self.oracle = oracle
+        self.ct = case_timeout
+
+    def harness(self, lines):
+        t = STARTUP + self.ct * max(1, len(lines))
+        return subprocess.run([str(self.exe)],
+                              input="\n".join(lines).encode("utf-8") + b"\n",
+                              capture_output=True, timeout=t)
+
+    def oracle_run(self, hout_bytes, n):
+        t = STARTUP + self.ct * max(1, n)
+        # input MUST be str in text mode: bytes kill the stdin writer thread
+        # (TypeError) and the oracle then blocks on stdin forever.
+        return subprocess.run([PY, str(self.oracle)],
+                              input=hout_bytes.decode("utf-8", "replace"),
+                              capture_output=True, timeout=t,
+                              encoding="utf-8", errors="replace")
+
+
+def classify_single(runner, line):
+    """Run one case alone; return (kind, detail) — kind in
+    OK / MISMATCH / PYERR / HARNESS_CRASH / HARNESS_HANG / ORACLE_HANG / ORACLE_ERR."""
+    try:
+        h = runner.harness([line])
+    except subprocess.TimeoutExpired:
+        return "HARNESS_HANG", ""
+    if h.returncode != 0:
+        return "HARNESS_CRASH", f"rc={h.returncode} {h.stderr.decode('utf-8', 'replace')[:300]}"
+    try:
+        o = runner.oracle_run(h.stdout, 1)
+    except subprocess.TimeoutExpired:
+        return "ORACLE_HANG", ""
+    if o.returncode not in (0, 1):
+        return "ORACLE_ERR", f"rc={o.returncode} {o.stdout[-300:]} {o.stderr[-300:]}"
+    blocks = []
+    cur = None
+    for l in o.stdout.splitlines():
+        if l.startswith("MISMATCH") or l.startswith("PYERR"):
+            cur = [l]
+            blocks.append(cur)
+        elif cur is not None and l.startswith("  "):
+            cur.append(l)
+    if blocks:
+        kind = "MISMATCH" if blocks[0][0].startswith("MISMATCH") else "PYERR"
+        return kind, "\n".join("\n".join(b) for b in blocks)
+    return "OK", ""
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("name")
     ap.add_argument("--per-fn", type=int, default=40)
     ap.add_argument("--seed", type=int, default=1234)
+    ap.add_argument("--batch-size", type=int, default=25)
+    ap.add_argument("--case-timeout", type=float, default=2.0,
+                    help="per-case seconds budget for each side (default 2)")
+    ap.add_argument("--max-cases", type=int, default=0,
+                    help="cap total corpus (0 = no cap); for slow oracles")
     a = ap.parse_args()
     rng = random.Random(a.seed)
 
@@ -96,51 +165,92 @@ def main():
             if key:
                 c[key] = mutate(rng, c[key])
             cases.append(c)
+    if a.max_cases and len(cases) > a.max_cases:
+        cases = cases[:a.max_cases]
     fuzz_fx = REPO / f".testbin/fuzz_{a.name}.jsonl"
     fuzz_fx.write_text("\n".join(json.dumps(c, ensure_ascii=False) for c in cases) + "\n",
                        encoding="utf-8")
 
     exe = REPO / f".testbin/harnesses/{a.name}.exe"
     if not exe.exists():
-        print(f"no cached harness {exe}; run the oracle gate once first")
-        return 2
-    h = subprocess.run([str(exe)], stdin=fuzz_fx.open("rb"),
-                       capture_output=True, timeout=600)
-    if h.returncode != 0:
-        print(f"HARNESS CRASH rc={h.returncode} on fuzz corpus — itself a finding")
-        (REPO / f".testbin/fuzz_{a.name}_harness_err.txt").write_bytes(h.stderr)
-        # bisect: find first crashing prefix
-        lines = fuzz_fx.read_text(encoding="utf-8").splitlines()
-        lo, hi = 1, len(lines)
-        while lo < hi:
-            mid = (lo + hi) // 2
-            p = subprocess.run([str(exe)], input="\n".join(lines[:mid]).encode(),
-                               capture_output=True, timeout=300)
-            if p.returncode == 0:
-                lo = mid + 1
-            else:
-                hi = mid
-        print(f"first crashing prefix: {lo} cases; case {lo}: {lines[lo-1][:200]}")
-        return 1
-    hout = REPO / f".testbin/fuzz_{a.name}_out.jsonl"
-    hout.write_bytes(h.stdout)
+        tts = sorted(REPO.glob(f".testbin/tt_{a.name}_*.exe"),
+                     key=lambda p: p.stat().st_mtime)
+        if tts:
+            exe = tts[-1]
+        else:
+            print(f"no cached harness for {a.name}; run the oracle gate once first")
+            return 2
+    runner = Runner(exe, REPO / f"tests/oracle_{a.name}.py", a.case_timeout)
 
-    o = subprocess.run([PY, str(REPO / f"tests/oracle_{a.name}.py")],
-                       stdin=hout.open("rb"), capture_output=True, text=True,
-                       timeout=1200)
-    tail = o.stdout.strip().splitlines()[-1] if o.stdout.strip() else "?"
-    print("oracle:", tail)
-    mism = [l for l in o.stdout.splitlines() if l.startswith("MISMATCH")]
+    findings = []   # {kind, case, detail}
+    n_ok = 0
+    inc = REPO / f".testbin/fuzz_{a.name}_findings.jsonl"
+    inc.write_text("", encoding="utf-8")
+
+    def record(kind, case, detail):
+        nonlocal n_ok
+        if kind == "OK":
+            n_ok += 1
+            return
+        f = {"kind": kind, "case": case, "detail": detail}
+        findings.append(f)
+        with inc.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(f, ensure_ascii=False) + "\n")
+
+    def scan(lines):
+        for line in lines:
+            kind, detail = classify_single(runner, line)
+            record(kind, json.loads(line), detail)
+
+    def process(lines):
+        nonlocal n_ok
+        if not lines:
+            return
+        try:
+            h = runner.harness(lines)
+            if h.returncode == 0:
+                o = runner.oracle_run(h.stdout, len(lines))
+                if o.returncode in (0, 1):
+                    if "MISMATCH" in o.stdout or "PYERR" in o.stdout:
+                        scan(lines)  # attribute to exact inputs
+                    else:
+                        n_ok += len(lines)
+                    return
+        except subprocess.TimeoutExpired:
+            pass
+        scan(lines)  # crash / hang / oracle error: per-case isolation
+
+    lines = fuzz_fx.read_text(encoding="utf-8").splitlines()
+    nb = (len(lines) + a.batch_size - 1) // a.batch_size
+    for bi, s in enumerate(range(0, len(lines), a.batch_size), 1):
+        process(lines[s:s + a.batch_size])
+        print(f"[{a.name} batch {bi}/{nb}] clean={n_ok} findings={len(findings)}",
+              file=sys.stderr, flush=True)
+
+    mism = [f for f in findings if f["kind"] in ("MISMATCH", "PYERR")]
     per = defaultdict(int)
-    for l in mism:
-        per[l.split()[1]] += 1
-    print(f"fuzz cases: {len(cases)} | divergences: {len(mism)}")
+    for f in mism:
+        per[(f["case"] or {}).get("func", "?")] += 1
+    print(f"fuzz cases: {len(cases)} | clean: {n_ok} | divergences: {len(mism)}")
     for fn, n in sorted(per.items(), key=lambda kv: -kv[1]):
         print(f"  {n:4d} {fn}")
-    if mism:
+    other = [f for f in findings if f["kind"] not in ("MISMATCH", "PYERR")]
+    if other:
+        print(f"anomalies: {len(other)}")
+        for f in other:
+            c = f["case"]
+            print(f"  {f['kind']}: {json.dumps(c, ensure_ascii=False)[:160] if c else f['detail']}")
+    if findings:
         div = REPO / f".testbin/fuzz_{a.name}_divergences.txt"
-        div.write_text(o.stdout, encoding="utf-8")
+        with div.open("w", encoding="utf-8") as fh:
+            for f in findings:
+                fh.write(f"=== {f['kind']} ===\n")
+                fh.write(json.dumps(f["case"], ensure_ascii=False) + "\n")
+                fh.write(f["detail"] + "\n\n")
+        dij = REPO / f".testbin/fuzz_{a.name}_div_inputs.json"
+        dij.write_text(json.dumps(findings, ensure_ascii=False, indent=1), encoding="utf-8")
         print("divergence detail:", div)
+        print("divergent inputs: ", dij)
     return 0
 
 

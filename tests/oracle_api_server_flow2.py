@@ -24,6 +24,7 @@ import contextlib
 import copy
 import json
 import os
+import re
 import sys
 import time as _real_time
 import types
@@ -285,7 +286,7 @@ def extract():
     sys.modules[mod.__name__] = mod
     ns = mod.__dict__
     ns.update({
-        "json": json, "contextlib": contextlib, "copy": copy,
+        "json": json, "contextlib": contextlib, "copy": copy, "re": re,
         "suppress": contextlib.suppress, "datetime": datetime, "UTC": UTC,
         "asyncio": asyncio, "Optional": object, "Any": object,
         "ContextVar": __import__("contextvars").ContextVar,
@@ -383,9 +384,9 @@ def setup_case(ns, func, inp):
             setattr(sd, nm, types.MethodType(ns[nm], sd))
         else:
             setattr(sd, nm, ns[nm])
-    sd.session_model_override_for = recorder("session_model_override_for",
+    sd._session_model_override_for = recorder("session_model_override_for",
         lambda a, k: {"session_key": a[0]})
-    sd.resolve_model_name = recorder("resolve_model_name", lambda a, k: {"explicit": a[0]})
+    sd._resolve_model_name = recorder("resolve_model_name", lambda a, k: {"explicit": a[0]})
     sd._write_runtime_status_safe = recorder("self._write_runtime_status_safe",
         lambda a, k: {"context": a[0], "platform_state": k.get("platform_state"),
                       "platform_metrics": proj(k.get("platform_metrics"))})
@@ -475,11 +476,12 @@ def drive(ns, func, inp):
     if func == "_recover_or_record_model":
         return sd._recover_or_record_model(g("model"), CUR["rk"], g("gateway_session_key"))
     if func == "_select_agent_runtime":
-        return sd._select_agent_runtime(
-            CUR["rk"], g("model"), requested_model=g("requested_model"),
-            requested_provider=g("requested_provider"), route=g("route"),
-            session_model=g("session_model"), confirmed_runtime_lock=g("confirmed_runtime_lock", False),
-            gateway_session_key=g("gat...y"), session_id=g("session_id"))
+        _gsk = g("gateway_session_key"); _sid = g("session_id")
+        _rm = g("requested_model"); _rp = g("requested_provider"); _rt = g("route")
+        _sm = g("session_model"); _crl = g("confirmed_runtime_lock", False)
+        return sd._select_agent_runtime(CUR["rk"], g("model"), requested_model=_rm,
+            requested_provider=_rp, route=_rt, session_model=_sm, confirmed_runtime_lock=_crl,
+            gateway_session_key=_gsk, session_id=_sid)
     if func == "_effective_turn_runtime":
         return sd._effective_turn_runtime(g("runtime_request"), g("result"), g("usage"))
     if func == "_turn_runtime_metadata":

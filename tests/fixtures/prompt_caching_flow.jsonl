@@ -1,0 +1,224 @@
+{"func": "_text_part", "in": {"text": "hello"}}
+{"func": "_text_part", "in": {"text": "hello", "cache_marker": {"type": "ephemeral"}}}
+{"func": "_text_part", "in": {"text": "hello", "cache_marker": {"type": "ephemeral", "ttl": "1h"}}}
+{"func": "_text_part", "in": {"text": "hello", "cache_marker": null}}
+{"func": "_text_part", "in": {"text": "hello", "cache_marker": false}}
+{"func": "_text_part", "in": {"text": "hello", "cache_marker": 0}}
+{"func": "_text_part", "in": {"text": ""}}
+{"func": "_text_part", "in": {"text": "x", "cache_marker": ""}}
+{"func": "_has_part_marker", "in": {"content": null}}
+{"func": "_has_part_marker", "in": {"content": "str"}}
+{"func": "_has_part_marker", "in": {"content": []}}
+{"func": "_has_part_marker", "in": {"content": [{"type": "text"}]}}
+{"func": "_has_part_marker", "in": {"content": [{"type": "text", "cache_control": {"type": "ephemeral"}}]}}
+{"func": "_has_part_marker", "in": {"content": [5, {"cache_control": null}]}}
+{"func": "_has_part_marker", "in": {"content": [{"cache_control": false}]}}
+{"func": "_has_part_marker", "in": {"content": {"cache_control": 1}}}
+{"func": "is_one_shot_request", "in": {"messages": null, "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [], "tools": []}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "user", "content": "hi"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "user"}, {"role": "user"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "assistant", "content": "x"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "tool", "content": "x"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "user", "cache_control": {"type": "ephemeral"}}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "user", "content": [{"type": "text", "text": "x", "cache_control": {}}]}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [], "tools": [{"name": "t"}]}}
+{"func": "is_one_shot_request", "in": {"messages": [5, "x", {"role": "user"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": {"a": 1}, "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": "ab", "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": 5, "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "system", "content": "s"}, {"role": "user", "content": "u"}], "tools": null}}
+{"func": "is_one_shot_request", "in": {"messages": [{"role": "user", "content": ""}], "tools": false}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": "SCAFFOLD"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": null}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "assistant", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": "X"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": 123}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": "X"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": null, "io": {"find_stable_prefix": "SCAFFOLD"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": ""}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": "SCAFFOLD tail extra"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": 5}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": {"type": "ephemeral"}, "io": {"find_stable_prefix": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_scaffold_parts", "in": {"msg": {"content": "no role"}, "io": {"find_stable_prefix": "X"}}}
+{"func": "_scaffold_parts", "in": {"msg": {"role": "user", "content": "SCAFFOLD tail"}, "cache_marker": false, "io": {"find_stable_prefix": "SCAFFOLD"}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "A tail"}, {"role": "assistant", "content": "x"}, 5, {"role": "user", "content": "B tail"}], "io": {"find_stable_prefix": {"$seq": ["A", null]}}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "S tail"}], "io": {"find_stable_prefix": "S"}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [], "io": {"find_stable_prefix": "S"}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "A tail"}, {"role": "user", "content": "B tail"}], "io": {"find_stable_prefix": {"$seq": ["A"]}}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "A tail"}], "io": {"find_stable_prefix": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "A tail"}], "io": {}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "S tail", "extra": 1}], "io": {"find_stable_prefix": "S"}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [1, "x", null], "io": {"find_stable_prefix": "S"}}}
+{"func": "_split_unmarked_scaffolds", "in": {"messages": [{"role": "user", "content": "A tail"}, {"role": "assistant", "content": "x"}, 5, {"role": "user", "content": "B tail"}], "io": {"find_stable_prefix": {"$seq": [null, "B"]}}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": [{"role": "user", "content": "x"}]}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": [{"type": "text", "text": "x"}]}], "io": {"strip_anthropic_cache_control": [{"role": "user", "content": "x"}]}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "plain"}], "io": {"strip_anthropic_cache_control": [{"role": "user", "content": "z"}]}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [5, "x", null, {"role": "system", "content": "s"}], "io": {"strip_anthropic_cache_control": [{"role": "user", "content": "z"}]}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}, {"role": "assistant", "content": "y", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": {"$seq": [[{"role": "user", "content": "a"}], [{"role": "assistant", "content": "b"}]]}}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": []}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": null}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}, {"role": "assistant", "content": "y", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": [{"role": "user", "content": "a"}]}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": "abc"}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": {}}}}
+{"func": "_strip_prior_decoration", "in": {"messages": [{"role": "user", "content": "x", "cache_control": {"type": "ephemeral"}}, {"role": "assistant", "content": "y", "cache_control": {"type": "ephemeral"}}], "io": {"strip_anthropic_cache_control": {"$seq": [[{"role": "user", "content": "a"}]]}}}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "cron"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": " Cron "}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "CRON"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "cli"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": null}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": ""}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "api_server"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "gateway_hygiene"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "subagent"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "desktop"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "cron\u001c"}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": 5}}
+{"func": "auto_cache_ttl_for_source", "in": {"source": "msgraph_webhook"}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": true, "active_policy": null}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": null, "session_source_for": "cron"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{\"turn_v1\":{\"finite\":true}}", "source": "cli"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{\"turn_v1\":{\"finite\":false}}", "source": "cli"}, "session_source_for": "cli"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{}", "source": "oneshot"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{}", "source": "cli"}, "session_source_for": "tui"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{\"turn_v1\":null}", "source": "cli"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{\"turn_v1\":{\"finite\":true}}"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": null, "session_source_for": {"__raise__": "KeyError", "msg": "boom"}}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": null, "io": {}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": null}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": 1, "active_policy": null, "session_source_for": "cli"}}}
+{"func": "auto_cache_ttl_for_agent", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{\"turn_v1\":{\"finite\":1}}", "source": "cli"}, "session_source_for": "cli"}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": "5m"}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": true, "active_policy": null, "adaptive_start_tier": "1h"}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": null, "io": {}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli"}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": null, "active_policy": {"request_json": "{}", "source": "oneshot"}, "adaptive_start_tier": "5m"}}}
+{"func": "auto_start_cache_ttl", "in": {"agent": {"platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cron", "adaptive_start_tier": "5m"}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {}, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": false}, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "side_agent": true}, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": "5m"}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "_cache_ttl_adaptive": true, "_cache_ttl": "1h", "platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": "5m"}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "_cache_ttl_adaptive": true, "_cache_ttl": "5m", "platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": "5m"}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "_cache_ttl_adaptive": true, "platform": "cli"}, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": 1, "_cache_ttl_adaptive": 1, "_cache_ttl": "1h", "platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": "5m"}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "platform": "cli"}, "io": {"finite_turn_required": false, "active_policy": null, "session_source_for": "cli", "adaptive_start_tier": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": null, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "side_agent": 1}, "io": {}}}
+{"func": "refresh_auto_cache_ttl", "in": {"agent": {"_cache_ttl_auto": true, "platform": "cli"}, "io": {}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"name": "nous"}}}}
+{"func": "_route_names", "in": {"provider": "custom", "base_url": "https://portal.nousresearch.com/v1", "io": {"_infer_provider_from_url": "nous", "get_provider_profile": {"$seq": [{"name": "custom"}, {"name": "nous"}]}}}}
+{"func": "_route_names", "in": {"provider": "", "base_url": "https://x", "io": {"_infer_provider_from_url": "nous", "get_provider_profile": {"name": "nous"}}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "https://x", "io": {"_infer_provider_from_url": null, "get_provider_profile": {"name": "nous"}}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "https://x", "io": {"_infer_provider_from_url": "nous", "get_provider_profile": {"name": "nous"}}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": null}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"name": "alias"}}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"name": ""}}}}
+{"func": "_route_names", "in": {"provider": null, "base_url": "", "io": {}}}
+{"func": "_route_names", "in": {"provider": " Nous ", "base_url": "", "io": {"get_provider_profile": {"name": "nous"}}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "https://x", "io": {}}}
+{"func": "_route_names", "in": {"provider": 5, "base_url": "", "io": {}}}
+{"func": "_route_names", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_route_names", "in": {"provider": "a", "base_url": "https://x", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"$seq": [{"name": "a2"}, {"name": "b2"}]}}}}
+{"func": "_catalog_route", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true}}}}
+{"func": "_catalog_route", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": false}}}}
+{"func": "_catalog_route", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": null}}}
+{"func": "_catalog_route", "in": {"provider": "", "base_url": "", "io": {}}}
+{"func": "_catalog_route", "in": {"provider": "a", "base_url": "https://x", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"prompt_cache_markers_from_catalog": true}}}}
+{"func": "_catalog_route", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_catalog_route", "in": {"provider": "nous", "base_url": "", "io": {}}}
+{"func": "_catalog_route", "in": {"provider": "a", "base_url": "https://x", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"$seq": [{"prompt_cache_markers_from_catalog": true}, {"prompt_cache_markers_from_catalog": false}, {"prompt_cache_markers_from_catalog": true}]}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "", "model": "m", "io": {"get_provider_profile": {}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "", "model": "", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "", "model": "m", "api_key": "", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "0.001"}}}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://override", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "0.001"}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "0"}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": ""}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": null}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": 0}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": "row"}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": "x"}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": null, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"other": {}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": null}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "1"}}}}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"__raise__": "RuntimeError", "msg": "boom"}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "api_key": "sk", "io": {"get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "0.001"}}}, "_infer_provider_from_url": null}}}
+{"func": "catalog_cache_markers", "in": {"provider": "a", "base_url": "https://x", "model": "m", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"$seq": [{}, {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, {}, {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}]}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "1"}}}}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": true, "_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": false, "_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "", "model": "m", "io": {"marker_preference": null, "get_provider_profile": {}}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": null, "get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": {"m": {"pricing": {"cache_write": "1"}}}, "_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": {"__raise__": "ValueError", "msg": "boom"}, "_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": null, "get_provider_profile": {"prompt_cache_markers_from_catalog": true, "base_url": "https://api"}, "fetch_endpoint_model_metadata": null, "_infer_provider_from_url": null}}}
+{"func": "learned_or_catalog_markers", "in": {"provider": "nous", "base_url": "https://o", "model": "m", "io": {"marker_preference": 0, "_infer_provider_from_url": null}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"nous": "5m"}}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"nous": "2h"}}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"nous": null}}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"nous": "1h"}}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_max_ttl": "1h"}, "load_config_readonly": {"prompt_caching": "x"}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_max_ttl": "5m"}, "load_config_readonly": {}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_max_ttl": "2h"}, "load_config_readonly": {}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": null, "load_config_readonly": {}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {"prompt_cache_max_ttl": "1h"}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": "x"}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "a", "base_url": "https://x", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"$seq": [{"name": "a"}, {"name": "b"}]}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"b": "5m"}}}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "a", "base_url": "https://x", "io": {"_infer_provider_from_url": "b", "get_provider_profile": {"$seq": [{"name": "a", "prompt_cache_max_ttl": "2h"}, {"name": "b", "prompt_cache_max_ttl": "1h"}, {"name": "a", "prompt_cache_max_ttl": "2h"}, {"name": "b", "prompt_cache_max_ttl": "1h"}]}, "load_config_readonly": {}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": null}}}
+{"func": "route_ttl_ceiling", "in": {"provider": "nous", "base_url": "", "io": {"get_provider_profile": {}, "load_config_readonly": {"prompt_caching": {"route_ttl_ceilings": {"nous": 5}}}}}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}], "start": 0}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}], "start": 1}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}], "start": 2}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}], "start": 3}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}], "start": 5}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, 5, {"role": "tool"}], "start": 0}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}, {"role": "assistant"}], "start": 0}}
+{"func": "_tool_run_end", "in": {"messages": [{}, {"role": "tool"}], "start": 0}}
+{"func": "_tool_run_end", "in": {"messages": [], "start": 0}}
+{"func": "_tool_run_end", "in": {"messages": [{"role": "tool"}], "start": 0}}
+{"func": "PromptCachePlan.__init__", "in": {"kwargs": {"messages": [1], "tools": [2]}}}
+{"func": "PromptCachePlan.__init__", "in": {"args": [[1], [2]]}}
+{"func": "PromptCachePlan.__init__", "in": {"args": [[1]], "kwargs": {"tools": [2]}}}
+{"func": "PromptCachePlan.__init__", "in": {"kwargs": {"tools": [2], "messages": [1]}}}
+{"func": "PromptCachePlan.__init__", "in": {"args": [], "kwargs": {}}}
+{"func": "PromptCachePlan.__init__", "in": {"kwargs": {"messages": []}}}
+{"func": "PromptCachePlan.__init__", "in": {"kwargs": {"messages": [], "tools": [], "zz": 1}}}
+{"func": "PromptCachePlan.__init__", "in": {"args": [[], []], "kwargs": {"messages": []}}}
+{"func": "PromptCachePlan.__init__", "in": {"args": [[], [], []]}}
+{"func": "PromptCachePlan.__init__", "in": {"kwargs": {"messages": null, "tools": null}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"role": "user"}], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [{"role": "user"}], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"role": "user"}], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"role": "user"}], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [{"role": "user"}], "tools": [1]}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"role": "user"}], "tools": []}, "other": {"kind": "object"}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"role": "user"}], "tools": []}, "other": {"kind": "subclass", "fields": {"messages": [{"role": "user"}], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [true], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [1], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [0], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [false], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [""], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [false], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [{"a": 1, "b": 2}], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [{"b": 2, "a": 1}], "tools": []}}}}
+{"func": "PromptCachePlan.__eq__", "in": {"self": {"messages": [[1, 2]], "tools": []}, "other": {"kind": "plan", "fields": {"messages": [[2, 1]], "tools": []}}}}
+{"func": "PromptCachePlan.__setattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "messages", "value": []}}
+{"func": "PromptCachePlan.__setattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "tools", "value": null}}
+{"func": "PromptCachePlan.__setattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "extra", "value": 1}}
+{"func": "PromptCachePlan.__setattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "", "value": {}}}
+{"func": "PromptCachePlan.__setattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "zzz", "value": "x"}}
+{"func": "PromptCachePlan.__delattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "messages"}}
+{"func": "PromptCachePlan.__delattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "tools"}}
+{"func": "PromptCachePlan.__delattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "nope"}}
+{"func": "PromptCachePlan.__delattr__", "in": {"fields": {"messages": [], "tools": []}, "name": ""}}
+{"func": "PromptCachePlan.__delattr__", "in": {"fields": {"messages": [], "tools": []}, "name": "extra"}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": [1], "tools": []}}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": {}, "tools": []}}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": null, "tools": {}}}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": [], "tools": null}}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": [{"a": 1}], "tools": [{"b": 2}]}}}
+{"func": "PromptCachePlan.__hash__", "in": {"fields": {"messages": null, "tools": [1]}}}

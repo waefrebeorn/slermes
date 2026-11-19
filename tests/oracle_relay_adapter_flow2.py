@@ -609,7 +609,7 @@ def drive(func, inp, holder):
                                                  g("reply_to"), g("metadata"),
                                                  materialize_double(g("fallback")), filename=g("filename")))
     if func == "_mint_and_send_prompt":
-        return asyncio.run(slf._mint_and_send_prompt(g("kind"), g("state"), g("chat_id"),
+        return asyncio.run(slf._mint_and_send_prompt(g("kind"), g("prompt_state"), g("chat_id"),
                                                      prompt_kind=g("prompt_kind"), text=g("text"),
                                                      options=g("options"), metadata=g("metadata")))
     if func == "_send_exec_approval_prompt":

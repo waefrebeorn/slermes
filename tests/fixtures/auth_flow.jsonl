@@ -1,0 +1,374 @@
+{"func": "api_key_provider", "in": {"id": "openai-api", "name": "OpenAI API", "inference_base_url": "https://api.openai.com/v1", "api_key_env_vars": ["OPENAI_API_KEY"], "base_url_env_var": "OPENAI_BASE_URL", "seams": {}}}
+{"func": "api_key_provider", "in": {"id": "x", "name": "X", "inference_base_url": "", "api_key_env_vars": [], "seams": {}}}
+{"func": "api_key_provider", "in": {"id": "bedrock", "name": "AWS Bedrock", "inference_base_url": "https://bedrock.example", "api_key_env_vars": [], "base_url_env_var": "BEDROCK_BASE_URL", "auth_type": "aws_sdk", "seams": {}}}
+{"func": "api_key_provider", "in": {"id": "vertex", "name": "Google Vertex AI", "inference_base_url": "", "api_key_env_vars": [], "auth_type": "vertex", "seams": {}}}
+{"func": "api_key_provider", "in": {"id": "multi", "name": "Multi", "inference_base_url": "https://m.example/v1", "api_key_env_vars": ["A_KEY", "B_KEY", "C_KEY"], "seams": {}}}
+{"func": "api_key_provider", "in": {"id": "", "name": "", "inference_base_url": "", "api_key_env_vars": null, "seams": {}}}
+{"func": "empty_auth_store", "in": {"seams": {}}}
+{"func": "empty_auth_store", "in": {"seams": {}}}
+{"func": "empty_auth_store", "in": {"seams": {}}}
+{"func": "empty_auth_store", "in": {"seams": {}}}
+{"func": "empty_auth_store", "in": {"seams": {}}}
+{"func": "store_section", "in": {"state": {}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": {"nous": {"a": 1}}}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": null}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": [1, 2]}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": "x"}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": 5}, "key": "providers", "seams": {}}}
+{"func": "store_section", "in": {"state": {"credential_pool": {}, "version": 1}, "key": "credential_pool", "seams": {}}}
+{"func": "store_section", "in": {"state": {"providers": {}}, "key": "suppressed_sources", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": {"nous": {"access_token": "t"}}}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": {"nous": null}}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": {"nous": "x"}}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": {}}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": [1]}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {}, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": null, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": 0, "provider_id": "nous", "seams": {}}}
+{"func": "provider_state_in", "in": {"store": {"providers": {"nous": {"a": 1, "b": null}}}, "provider_id": "nous", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": "Anthropic"}, "normalized": "anthropic", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": 5}, "normalized": "anthropic", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": 5.5}, "normalized": "anthropic", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": true}, "normalized": "anthropic", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": 0}, "normalized": "", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": null}, "normalized": "", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": "  "}, "normalized": "", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {}, "normalized": "x", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": null, "normalized": "x", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": "model", "normalized": "x", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": " X "}, "normalized": "x", "seams": {}}}
+{"func": "slot_selects", "in": {"slot": {"provider": "x"}, "normalized": "y", "seams": {}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "openai-api", "key_env": "MY_KEY"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": " OpenAI-API ", "key_env": " MY_KEY "}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "openai-api", "key_env": null, "api_key_env": "FALLBACK_KEY"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "openai-api"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "other", "key_env": "MY_KEY"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "OpenAI-API", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "openai-api", "key_env": "MY_KEY"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": null}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": "not-a-dict"}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"model": {"provider": 5, "key_env": "MY_KEY"}}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"__raise__": "RuntimeError", "msg": "cfg boom"}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": {"__raise__": "ImportError", "msg": "no config"}, "load_config": {}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "model_level_key_env", "in": {"provider_id": "openai-api", "seams": {"import_load_config": null, "load_config": 5}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": "Nous"}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": " nous "}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": ""}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": null}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": "xai"}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": null}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": 5}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": 5}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"active_provider": 0}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"__raise__": "RuntimeError", "msg": "io"}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {"load_auth_store": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "active_provider_is", "in": {"normalized": "nous", "seams": {}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "anthropic"}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "x"}, "auxiliary": {"summarize": {"provider": "Anthropic"}}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "x"}, "moa": {"aggregator": {"provider": "anthropic"}}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": null, "moa": {"reference_models": [{"provider": "x"}, {"provider": "anthropic"}]}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"moa": {"presets": {"p1": {"aggregator": {"provider": "ANTHROPIC"}}}}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": {"provider": "x"}, "moa": {"presets": {"p1": {"reference_models": []}}}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"auxiliary": "not-dict", "moa": [1]}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"moa": {"reference_models": null, "aggregator": null}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": null}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"model": {"provider": 5}}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": {"__raise__": "ImportError", "msg": "no"}, "load_config": {}}}}
+{"func": "config_selects_provider", "in": {"normalized": "anthropic", "seams": {"import_load_config": null, "load_config": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "env_secret", "in": {"name": "DEEPSEEK_API_KEY", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-real-key", "has_usable_secret": true}}}
+{"func": "env_secret", "in": {"name": "DEEPSEEK_API_KEY", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": null, "has_usable_secret": false}}}
+{"func": "env_secret", "in": {"name": "DEEPSEEK_API_KEY", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "", "has_usable_secret": false}}}
+{"func": "env_secret", "in": {"name": "DEEPSEEK_API_KEY", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "  ", "has_usable_secret": false}}}
+{"func": "env_secret", "in": {"name": "K", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": {"__raise__": "RuntimeError", "msg": "env boom"}, "has_usable_secret": true}}}
+{"func": "env_secret", "in": {"name": "K", "seams": {"import_get_env_value_prefer_dotenv": {"__raise__": "ImportError", "msg": "no"}, "get_env_value_prefer_dotenv": "x", "has_usable_secret": true}}}
+{"func": "env_secret", "in": {"name": "K", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-x", "has_usable_secret": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "env_secret", "in": {"name": "K", "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-x", "has_usable_secret": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "openai-api", "registry": {"openai-api": {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-real", "has_usable_secret": true}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "openai-api", "registry": {"openai-api": {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": null, "has_usable_secret": false}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "anthropic", "registry": {"anthropic": {"auth_type": "api_key", "api_key_env_vars": ["CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY"]}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-ant-real", "has_usable_secret": true}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "anthropic", "registry": {"anthropic": {"auth_type": "api_key", "api_key_env_vars": ["CLAUDE_CODE_OAUTH_TOKEN"]}}, "seams": {}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "multi", "registry": {"multi": {"auth_type": "api_key", "api_key_env_vars": ["A", "B"]}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": ["", "sk-b"], "has_usable_secret": [false, true]}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "openrouter", "registry": {}, "seams": {"import_get_provider": null, "get_provider": {"auth_type": "api_key", "api_key_env_vars": ["OPENROUTER_API_KEY"]}, "import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-or-v1-x", "has_usable_secret": true}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "openrouter", "registry": {}, "seams": {"import_get_provider": null, "get_provider": null}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "openrouter", "registry": {}, "seams": {"import_get_provider": null, "get_provider": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "bedrock", "registry": {"bedrock": {"auth_type": "aws_sdk", "api_key_env_vars": []}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "bearer-tok", "has_usable_secret": true}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "bedrock", "registry": {"bedrock": {"auth_type": "aws_sdk", "api_key_env_vars": []}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": ["", "akid", "secret"], "has_usable_secret": [false, true, false]}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "bedrock", "registry": {"bedrock": {"auth_type": "aws_sdk", "api_key_env_vars": []}}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": ["", ""], "has_usable_secret": [false, false]}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "nous", "registry": {"nous": {"auth_type": "oauth_device_code", "api_key_env_vars": []}}, "seams": {}}}
+{"func": "explicit_env_credentials_present", "in": {"normalized": "empty", "registry": {"empty": {"auth_type": "api_key", "api_key_env_vars": []}}, "seams": {}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "vertex", "seams": {"import_has_explicit_vertex_config": null, "has_explicit_vertex_config": true}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "google-vertex", "seams": {"import_has_explicit_vertex_config": null, "has_explicit_vertex_config": false}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "vertexai", "seams": {"import_has_explicit_vertex_config": {"__raise__": "ImportError", "msg": "no"}, "has_explicit_vertex_config": true}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": {"bedrock": {"region": "us-east-1"}}}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": {"bedrock": {"region": "  "}}}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": {"bedrock": null}}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": {}}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": null}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "openai-api", "seams": {}}}
+{"func": "keyless_provider_has_explicit_config", "in": {"normalized": "bedrock", "seams": {"import_load_config": null, "load_config": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": null}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": ""}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": "bad yaml at line 3", "get_config_path": "/h/.hermes/config.yaml"}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": {"__raise__": "ImportError", "msg": "no"}, "get_active_config_parse_failure": "x", "get_config_path": "/p"}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": {"__raise__": "RuntimeError", "msg": "probe boom"}}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": "err", "get_config_path": {"__raise__": "OSError", "msg": "no path"}}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {"import_get_active_config_parse_failure": null, "get_active_config_parse_failure": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "refuse_env_adoption_if_config_corrupt", "in": {"seams": {}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": []}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": [{"name": "plug-x", "aliases": ["px", "plug"], "ambient_credentials": false}]}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": [{"name": "plug-x", "aliases": ["glm", "px"], "ambient_credentials": false}]}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": [{"name": "p1", "aliases": ["shared"], "ambient_credentials": false}, {"name": "p2", "aliases": ["shared", "other"], "ambient_credentials": false}]}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": {"__raise__": "ImportError", "msg": "no"}, "list_providers": []}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": null}}}
+{"func": "plugin_aliases", "in": {"seams": {"import_list_providers": null, "list_providers": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "scoped_key_env_reader", "in": {"seams": {"import_scoped_key_env": null}}}
+{"func": "scoped_key_env_reader", "in": {"seams": {"import_scoped_key_env": {"__raise__": "ImportError", "msg": "no aux"}}}}
+{"func": "scoped_key_env_reader", "in": {"seams": {"import_scoped_key_env": {"__raise__": "ModuleNotFoundError", "msg": "no module"}}}}
+{"func": "scoped_key_env_reader", "in": {"seams": {"import_scoped_key_env": {"__raise__": "RuntimeError", "msg": "aux boom"}}}}
+{"func": "scoped_key_env_reader", "in": {"seams": {"import_scoped_key_env": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["sk-or-v1-real", ""], "seams": {"has_usable_secret": [true]}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", "sk-or-v1-legacy"], "seams": {"has_usable_secret": [false, true], "looks_like_openrouter_key": true}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", "sk-real-openai"], "seams": {"has_usable_secret": [false, true], "looks_like_openrouter_key": false, "import_load_pool": null, "load_pool": {"id": "p"}, "has_credentials": true}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, false], "import_load_pool": null, "load_pool": {"id": "p"}, "has_credentials": false}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, false]}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, false], "import_load_pool": null, "load_pool": {"__raise__": "RuntimeError", "msg": "pool boom"}, "has_credentials": null}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, false], "import_load_pool": null, "load_pool": {"id": "p"}, "has_credentials": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, false], "import_load_pool": {"__raise__": "ImportError", "msg": "no pool"}, "load_pool": {"id": "p"}, "has_credentials": true}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": {"__raise__": "RuntimeError", "msg": "key boom"}, "seams": {"has_usable_secret": true}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "os_getenv"}, "os_getenv": ["sk-or-v1-env", ""], "seams": {"has_usable_secret": [true]}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "os_getenv"}, "os_getenv": [null, null], "seams": {"has_usable_secret": [false, false], "import_load_pool": null, "load_pool": {"id": "p"}, "has_credentials": true}}}
+{"func": "openrouter_auto_detected", "in": {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""], "seams": {"has_usable_secret": [false, {"__raise__": "SystemExit", "msg": "bye"}]}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_free_inference_active": null, "import_has_guest": null, "load_auth_store": {"active_provider": "nous"}, "has_guest": true, "free_inference_active": true, "get_auth_status": {"logged_in": true}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_free_inference_active": null, "import_has_guest": null, "load_auth_store": {"active_provider": "nous"}, "has_guest": true, "free_inference_active": false}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "skip_free_tier": true, "seams": {"import_free_inference_active": null, "import_has_guest": null, "load_auth_store": {"active_provider": "nous"}, "has_guest": true}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_free_inference_active": null, "import_has_guest": null, "load_auth_store": {"active_provider": "nous"}, "has_guest": false, "get_auth_status": {"logged_in": true}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"active_provider": "openai-codex"}, "get_auth_status": {"logged_in": true}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"active_provider": "openai-codex"}, "get_auth_status": {"logged_in": false}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {}, "seams": {"load_auth_store": {"active_provider": "openai-codex"}, "get_auth_status": {"logged_in": true}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"active_provider": ""}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": null}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"__raise__": "RuntimeError", "msg": "io"}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"load_auth_store": {"active_provider": "nous"}, "import_free_inference_active": null, "import_has_guest": null, "has_guest": true, "free_inference_active": true, "get_auth_status": null}}}
+{"func": "logged_in_oauth_active_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_free_inference_active": null, "import_has_guest": null, "load_auth_store": {"active_provider": "nous"}, "has_guest": {"__raise__": "RuntimeError", "msg": "guest boom"}}}}
+{"func": "config_model_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "custom"}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "custom:local-llama"}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {"zai": {"auth_type": "api_key"}}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": " GLM "}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "openrouter", "base_url": "https://mirror.example"}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {"nous": {"auth_type": "oauth_device_code"}, "openai-codex": {"auth_type": "oauth_external"}}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "nous"}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "my-local"}}, "import_list_providers": null, "list_providers": [], "import_has_named_custom_provider": null, "has_named_custom_provider": true}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "my-local"}}, "import_list_providers": null, "list_providers": [], "import_has_named_custom_provider": null, "has_named_custom_provider": false}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"base_url": "http://127.0.0.1:8080/v1"}}, "import_list_providers": null, "list_providers": [], "import_config_base_url_trustworthy_for_bare_custom": null, "config_base_url_trustworthy_for_bare_custom": true}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"base_url": "http://127.0.0.1:8080/v1"}}, "import_list_providers": null, "list_providers": [], "import_config_base_url_trustworthy_for_bare_custom": null, "config_base_url_trustworthy_for_bare_custom": false}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {}}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": null, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"__raise__": "RuntimeError", "msg": "cfg"}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": "x"}, "import_list_providers": null, "list_providers": []}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "plug-alias"}}, "import_list_providers": null, "list_providers": [{"name": "plug-x", "aliases": ["plug-alias"], "ambient_credentials": false}]}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"model": {"provider": "nous"}}, "import_list_providers": null, "list_providers": {"__raise__": "RuntimeError", "msg": "lp boom"}}}}
+{"func": "config_model_provider", "in": {"registry": {}, "seams": {"import_load_config": null, "load_config": {"__raise__": "GeneratorExit", "msg": ""}, "import_list_providers": null, "list_providers": []}}}
+{"func": "credential_profile", "in": {"provider_id": "nous", "seams": {"import_get_provider_profile": null, "get_provider_profile": {"id": "nous", "runtime_base_url": "https://x"}}}}
+{"func": "credential_profile", "in": {"provider_id": "unknown", "seams": {"import_get_provider_profile": null, "get_provider_profile": null}}}
+{"func": "credential_profile", "in": {"provider_id": "x", "seams": {"import_get_provider_profile": {"__raise__": "ImportError", "msg": "no"}, "get_provider_profile": {}}}}
+{"func": "credential_profile", "in": {"provider_id": "x", "seams": {"import_get_provider_profile": null, "get_provider_profile": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "credential_profile", "in": {"provider_id": "x", "seams": {"import_get_provider_profile": null, "get_provider_profile": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "credential_profile", "in": {"provider_id": "x", "seams": {"import_get_provider_profile": null, "get_provider_profile": {}}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["sk-openai"], "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": "nous", "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["sk-openai"], "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["", "sk-gemini"], "has_usable_secret": [false, true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["", ""], "has_usable_secret": [false, false]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["lmstudio", {"auth_type": "api_key", "api_key_env_vars": ["LM_API_KEY"]}], ["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}]], "scoped_key_env": ["sk-openai"], "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [{"name": "openai-api", "aliases": [], "ambient_credentials": true}], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["sk-gemini"], "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["nous", {"auth_type": "oauth_device_code", "api_key_env_vars": []}]]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": []}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": null, "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["sk-x"], "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": {"__raise__": "RuntimeError", "msg": "rows boom"}}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": {"__raise__": "RuntimeError", "msg": "key boom"}, "has_usable_secret": [true]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "keyenv": {"__callable__": "os_getenv"}, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "has_usable_secret": [true], "os_getenv": ["sk-env"]}}}
+{"func": "env_key_auto_detected", "in": {"oauth_active": null, "seams": {"import_list_providers": null, "list_providers": [], "canonical_registry_rows": [["openai-api", {"auth_type": "api_key", "api_key_env_vars": ["OPENAI_API_KEY"]}], ["gemini", {"auth_type": "api_key", "api_key_env_vars": ["GOOGLE_API_KEY", "GEMINI_API_KEY"]}]], "scoped_key_env": ["sk-x"], "has_usable_secret": [{"__raise__": "KeyboardInterrupt", "msg": ""}]}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "manual"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "device_code"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "loopback_pkce"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "hermes_pkce"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "manual:extra"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "gh_cli"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "claude_code"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": null}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": 5}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": ""}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": null, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": "row", "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "env:MY_KEY"}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-live", "has_usable_secret": true}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "env:MY_KEY"}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": null, "has_usable_secret": false}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "env:"}, "seams": {}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": "ENV: MY_KEY "}, "seams": {"import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-live", "has_usable_secret": true}}}
+{"func": "pool_entry_is_explicit", "in": {"entry": {"source": " Manual "}, "seams": {}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": []}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": [{"source": "manual"}]}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": [{"source": "gh_cli"}, {"source": "device_code"}]}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": [{"source": "gh_cli"}, {"source": "claude_code"}]}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": [null, 5, "x"]}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": null}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": 5}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": {"__raise__": "RuntimeError", "msg": "pool io"}}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {"read_credential_pool": [{"source": "env:KEY"}], "import_get_env_value_prefer_dotenv": null, "get_env_value_prefer_dotenv": "sk-live", "has_usable_secret": true}}}
+{"func": "explicit_pool_entry_present", "in": {"normalized": "anthropic", "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "BlockingIOError", "errno": 11}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "BlockingIOError", "errno": null}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": 13}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": 11}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": 36}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": 2}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": null}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "PermissionError", "errno": 13}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "TimeoutError", "errno": 11}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "ValueError", "message": "no errno"}, "seams": {}}}
+{"func": "is_lock_contention", "in": {"exc": {"kind": "OSError", "errno": "13"}, "seams": {}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "12345\n", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "12345\n", "os_getpid": 12345}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "0\n", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "-5\n", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "   \n\t ", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "abc", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "12abc", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": "+42 rest", "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": {"__raise__": "OSError", "msg": "io"}, "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": {"__raise__": "ValueError", "msg": "bad"}, "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": null, "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": 5, "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "os_name": "posix", "seams": {"path_read_text": "777\n", "os_getpid": 999, "os_kill": {"__raise__": "ProcessLookupError", "msg": "gone"}}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "os_name": "posix", "seams": {"path_read_text": "777\n", "os_getpid": 999, "os_kill": {"__raise__": "PermissionError", "msg": "not signalable"}}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "os_name": "posix", "seams": {"path_read_text": "777\n", "os_getpid": 999, "os_kill": null}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "os_name": "posix", "seams": {"path_read_text": "777\n", "os_getpid": 999, "os_kill": {"__raise__": "RuntimeError", "msg": "kill boom"}}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"path_read_text": {"__raise__": "KeyboardInterrupt", "msg": ""}, "os_getpid": 999}}}
+{"func": "lock_holder_hint", "in": {"path": "/h/auth.lock", "seams": {"os_getpid": 999}}}
+{"func": "kernel_lock", "in": {"lock_backend": "msvcrt", "acquire": true, "seams": {"file_seek": null, "file_fileno": 7, "msvcrt_locking": null}}}
+{"func": "kernel_lock", "in": {"lock_backend": "msvcrt", "acquire": false, "seams": {"file_seek": null, "file_fileno": 7, "msvcrt_locking": null}}}
+{"func": "kernel_lock", "in": {"lock_backend": "fcntl", "acquire": true, "seams": {"file_fileno": 3, "fcntl_flock": null}}}
+{"func": "kernel_lock", "in": {"lock_backend": "fcntl", "acquire": false, "seams": {"file_fileno": 3, "fcntl_flock": null}}}
+{"func": "kernel_lock", "in": {"lock_backend": "none", "acquire": true, "seams": {"file_seek": null, "file_fileno": 7}}}
+{"func": "kernel_lock", "in": {"lock_backend": "msvcrt", "acquire": true, "seams": {"file_seek": null, "file_fileno": {"__raise__": "OSError", "msg": "bad fd"}, "msvcrt_locking": null}}}
+{"func": "kernel_lock", "in": {"lock_backend": "msvcrt", "acquire": true, "seams": {"file_seek": null, "file_fileno": 7, "msvcrt_locking": {"__raise__": "BlockingIOError", "msg": "held"}}}}
+{"func": "kernel_lock", "in": {"lock_backend": "fcntl", "acquire": true, "seams": {"file_fileno": 3, "fcntl_flock": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": null, "os_getpid": 4242, "file_write": null, "file_flush": null}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": {"__raise__": "OSError", "msg": "ro"}, "os_getpid": 4242, "file_write": null, "file_flush": null}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": null, "os_getpid": 4242, "file_write": {"__raise__": "PermissionError", "msg": "no"}, "file_flush": null}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": null, "os_getpid": 4242, "file_write": null, "file_flush": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": null, "os_getpid": {"__raise__": "RuntimeError", "msg": "pid boom"}, "file_write": null, "file_flush": null}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"file_truncate": {"__raise__": "SystemExit", "msg": "bye"}, "os_getpid": 4242, "file_write": null, "file_flush": null}}}
+{"func": "stamp_lock_holder_pid", "in": {"seams": {"os_getpid": 4242}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "msvcrt", "seams": {"file_truncate": null, "file_write": null, "file_flush": null}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "fcntl", "seams": {"file_truncate": null, "file_flush": null}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "none", "seams": {"file_truncate": null, "file_flush": null}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "msvcrt", "seams": {"file_truncate": {"__raise__": "OSError", "msg": "ro"}, "file_write": null, "file_flush": null}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "msvcrt", "seams": {"file_truncate": null, "file_write": {"__raise__": "OSError", "msg": "no"}, "file_flush": null}}}
+{"func": "clear_stamped_lock_holder_pid", "in": {"lock_backend": "msvcrt", "seams": {"file_truncate": null, "file_write": null, "file_flush": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "tls_state_from_verify", "in": {"verify": false, "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": true, "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": null, "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": 0, "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": "/etc/ssl/ca.pem", "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": "", "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"verify": 5, "seams": {}}}
+{"func": "tls_state_from_verify", "in": {"seams": {}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": "2026-11-18T12:34:56.789012+00:00"}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": "2026-11-18T12:34:56"}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": "2026-11-18T12:34:56+00:00+00:00"}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": null}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": 5}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": {"__raise__": "RuntimeError", "msg": "clock boom"}}}}
+{"func": "utc_now_z", "in": {"seams": {"datetime_now": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead token", "provider": "", "code": "invalid_grant", "relogin_required": false}, "reason": "runtime_refresh_failure", "default_code": null, "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": null, "relogin_required": false}, "reason": "runtime_refresh_failure", "default_code": "refresh_failed", "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "last_auth_error_marker", "in": {"provider": "xai-oauth", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "", "relogin_required": false}, "reason": "r", "default_code": "refresh_failed", "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "invalid_grant", "relogin_required": false}, "reason": "r", "default_code": "refresh_failed", "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "x", "relogin_required": false}, "reason": "r", "seams": {"datetime_now": {"__raise__": "RuntimeError", "msg": "clock boom"}}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "x", "relogin_required": false}, "reason": "r", "seams": {"datetime_now": null}}}
+{"func": "last_auth_error_marker", "in": {"provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "x", "relogin_required": false}, "reason": "r", "seams": {"datetime_now": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {"access_token": "a", "refresh_token": "r", "expires_at": "2026-11-18T12:34:56Z", "expires_in": 3600, "obtained_at": "2026-11-18T11:34:56Z", "portal_base_url": "https://portal.nousresearch.com", "scope": "inference"}, "provider": "nous", "error": {"kind": "AuthError", "message": "refresh died", "provider": "", "code": "invalid_grant", "relogin_required": false}, "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {}, "provider": "xai-oauth", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": null, "relogin_required": false}, "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {"access_token": "a", "refresh_token": "r", "expires_at": "2026-11-18T12:34:56Z", "expires_in": 3600, "obtained_at": "2026-11-18T11:34:56Z", "portal_base_url": "https://portal.nousresearch.com", "scope": "inference"}, "provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": null, "relogin_required": false}, "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {"access_token": "a", "refresh_token": "r", "expires_at": "2026-11-18T12:34:56Z", "expires_in": 3600, "obtained_at": "2026-11-18T11:34:56Z", "portal_base_url": "https://portal.nousresearch.com", "scope": "inference"}, "provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "x", "relogin_required": false}, "seams": {"datetime_now": {"__raise__": "RuntimeError", "msg": "clock boom"}}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {"access_token": "a", "other": 1}, "provider": "codex", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": "", "relogin_required": false}, "seams": {"datetime_now": "2026-11-18T12:34:56+00:00"}}}
+{"func": "quarantine_flat_oauth_state", "in": {"state": {"access_token": "a", "refresh_token": "r", "expires_at": "2026-11-18T12:34:56Z", "expires_in": 3600, "obtained_at": "2026-11-18T11:34:56Z", "portal_base_url": "https://portal.nousresearch.com", "scope": "inference"}, "provider": "nous", "error": {"kind": "AuthError", "message": "dead", "provider": "", "code": null, "relogin_required": false}, "seams": {"datetime_now": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": "invalid_grant", "relogin_required": true}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": "invalid_grant", "relogin_required": false}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "xai-oauth", "code": "invalid_grant", "relogin_required": true}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": "transient", "relogin_required": true}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": null, "relogin_required": true}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "qwen-oauth", "code": "invalid_grant", "relogin_required": true}, "provider": "qwen-oauth", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "openai-codex", "code": "codex_refresh_failed", "relogin_required": true}, "provider": "openai-codex", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "xai-oauth", "code": "xai_refresh_failed", "relogin_required": true}, "provider": "xai-oauth", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": "nous_auth_missing", "relogin_required": true}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "ValueError", "message": "not auth"}, "provider": "nous", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "nous", "code": "invalid_grant", "relogin_required": true}, "provider": "unknown-provider", "seams": {}}}
+{"func": "is_terminal_refresh_error", "in": {"exc": {"kind": "AuthError", "message": "dead", "provider": "minimax-oauth", "code": "invalid_grant", "relogin_required": true}, "provider": "minimax-oauth", "seams": {}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": null}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {}}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"label": "primary", "message": "quota hit", "last_refresh": "2026-11-18T12:34:56Z", "reset_at": "2026-11-19T00:00:00Z"}, "auth_file_path": "/h/.hermes/auth.json"}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"label": null, "message": null}, "auth_file_path": "/h/.hermes/auth.json"}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"label": "", "message": "custom"}, "auth_file_path": "/h/.hermes/auth.json"}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"label": "x"}, "auth_file_path": {"__raise__": "RuntimeError", "msg": "path boom"}}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "codex_pool_rate_limited_status", "in": {"seams": {"codex_pool_rate_limit_status": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "resolved_key", "in": {"path": "/h/.hermes/auth.json", "seams": {"path_resolve": "/real/h/.hermes/auth.json"}}}
+{"func": "resolved_key", "in": {"path": "/h/../x/auth.json", "seams": {"path_resolve": {"__raise__": "OSError", "msg": "no resolve"}}}}
+{"func": "resolved_key", "in": {"path": "/h/auth.json", "seams": {"path_resolve": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "resolved_key", "in": {"path": "/h/auth.json", "seams": {"path_resolve": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "resolved_key", "in": {"path": "/h/auth.json", "seams": {"path_resolve": null}}}
+{"func": "resolved_key", "in": {"path": "rel/auth.json", "seams": {"path_resolve": "/abs/rel/auth.json"}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {"version": 1}, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {"version": 1}, "fsync_dir": true, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": [1, 2], "dump_kwargs": {"indent": 2}, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/auth.json", "data": null, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {}, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": {"__raise__": "PermissionError", "msg": "no"}, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {}, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": {"__raise__": "OSError", "msg": "disk full"}}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {}, "seams": {"import_mkdir_under_hermes_home": {"__raise__": "ImportError", "msg": "no"}, "mkdir_under_hermes_home": null, "secure_parent_dir": null, "atomic_json_write": null}}}
+{"func": "save_private_json", "in": {"target": "/h/.hermes/auth.json", "data": {}, "seams": {"import_mkdir_under_hermes_home": null, "mkdir_under_hermes_home": null, "secure_parent_dir": {"__raise__": "KeyboardInterrupt", "msg": ""}, "atomic_json_write": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {"access_token": "t"}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "xai-oauth", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {"xai-oauth": {"old": 1}}}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"__raise__": "OSError", "msg": "io"}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": {"__raise__": "RuntimeError", "msg": "save boom"}, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": null, "save_auth_store": {"__raise__": "OSError", "msg": "disk"}, "auth_store_lock_exit": {"__raise__": "RuntimeError", "msg": "exit boom"}}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": {"__raise__": "ValueError", "msg": "exit only"}}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": {"__raise__": "TimeoutError", "msg": "lock timeout"}, "auth_store_lock_enter": null, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": {"__raise__": "RuntimeError", "msg": "enter boom"}, "load_auth_store": {"version": 1, "providers": {}}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null, "load_auth_store": {"__raise__": "KeyboardInterrupt", "msg": ""}, "save_provider_state": null, "save_auth_store": "/h/.hermes/auth.json", "auth_store_lock_exit": null}}}
+{"func": "save_active_provider_state", "in": {"provider_id": "nous", "state": {}, "seams": {"auth_store_lock": null, "auth_store_lock_enter": null}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"anthropic": ["gh_cli", "claude_code"]}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"anthropic": ["b", "a", "b"]}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"anthropic": {"gh_cli": 1, "env:X": 2}}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"anthropic": [5, null, true, "x"]}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"other": ["a"]}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": null}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"suppressed_sources": {"anthropic": "not-list"}}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": null}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"__raise__": "OSError", "msg": "unreadable"}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"__raise__": "ValueError", "msg": "not oserror"}}}}
+{"func": "suppressed_credential_sources", "in": {"provider_id": "anthropic", "seams": {"load_auth_store": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": null, "has_aws_credentials": true}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": null, "has_aws_credentials": false}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": {"__raise__": "ImportError", "msg": "no boto3"}, "has_aws_credentials": true}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": {"__raise__": "ModuleNotFoundError", "msg": "no module"}, "has_aws_credentials": true}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": {"__raise__": "RuntimeError", "msg": "boom"}, "has_aws_credentials": true}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": null, "has_aws_credentials": {"__raise__": "RuntimeError", "msg": "chain boom"}}}}
+{"func": "get_aws_sdk_auth_status", "in": {"target": "bedrock", "seams": {"import_has_aws_credentials": null, "has_aws_credentials": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": "https://env.example/v1", "import_get_provider_profile": null, "get_provider_profile": {"process_command_env_vars": ["ACP_X_BIN"], "process_args_env_var": "ACP_X_ARGS", "process_args": ["--default"]}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli", "shlex_split": ["--flag", "x"], "os_getenv": "  --flag  x "}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {"process_args": ["--stdio"]}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": "", "import_get_provider_profile": null, "get_provider_profile": null, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {"__raise__": "RuntimeError", "msg": "profile boom"}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {"process_args_env_var": "ACP_ARGS"}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli", "os_getenv": {"__raise__": "RuntimeError", "msg": "env boom"}}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {"process_args_env_var": "ACP_ARGS"}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli", "os_getenv": "--x", "shlex_split": {"__raise__": "ValueError", "msg": "No closing quotation"}}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": null, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": null}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": null, "import_external_process_command": {"__raise__": "ImportError", "msg": "no"}, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": null, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": {"__raise__": "KeyboardInterrupt", "msg": ""}, "resolve_external_process_command": "/usr/bin/acp-cli"}}}
+{"func": "external_process_spec", "in": {"pconfig": {"id": "acp-x", "inference_base_url": "https://acp.example/v1"}, "seams": {"provider_env_base_url": null, "import_get_provider_profile": null, "get_provider_profile": {"process_command_env_vars": ["A", "B"], "process_args_env_var": null, "process_args": null}, "import_external_process_command": null, "import_resolve_external_process_command": null, "external_process_command": "acp-cli", "resolve_external_process_command": "/usr/bin/acp-cli"}}}

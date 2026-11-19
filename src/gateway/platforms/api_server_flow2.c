@@ -73,6 +73,14 @@
  *    correctly-rounded decimal of the binary double (matches Python round).
  *    _metrics_day_key / _iso_timestamp transcribe time.gmtime+strftime and
  *    datetime.fromtimestamp(ts, UTC).isoformat() (microsecond carry handled).
+ *  - FIXTURE DOMAIN (excluded divergences, verified by probes): json_t carries
+ *    no int/float identity, so an integral-FLOAT literal (100.0) in a str()
+ *    position reads as int ("100") where live str(100.0)=="100.0" — fixtures
+ *    keep str()-position numbers integral-int or non-integral. _metrics_day_key
+ *    fixtures use non-negative timestamps (Windows time.gmtime rejects negative;
+ *    the C civil algorithm is more permissive). _iso_timestamp fixtures stay
+ *    within Windows datetime.fromtimestamp's valid range (small negatives OK).
+ *    Invalid int() tokens are printable ASCII without quotes/backslashes.
  *  - Exception kinds: `except Exception` / suppress(Exception) swallow the
  *    Exception family and pass the BaseException trio (SystemExit,
  *    KeyboardInterrupt, GeneratorExit) + CancelledError through. The full
@@ -618,7 +626,7 @@ static json_t *as2_resolve_api_server_int(as2_env *e, const json_t *in) {
     double def = json_get_num(in, "default", 0);
     /* try: value = int(cfg_get(load_config(), "gateway","api_server",key,default=default)) */
     json_t *cfg = as2_seam_obj(e, "config.load_config");
-    if (as2_is_raise(cfg)) { if (as2_swallow_exc(cfg)) return cfg; cfg = NULL; }
+    if (as2_is_raise(cfg)) { if (as2_swallow_exc(cfg)) return cfg; return json_number(def); }
     json_t *a = json_object();
     json_set(a, "config", cfg ? cfg : json_null());
     json_set(a, "key", json_string(key));
@@ -971,13 +979,14 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
     bool confirmed_runtime_lock = json_get_bool(in, "confirmed_runtime_lock", false);
     /* session_override = None if confirmed else self._session_model_override_for(session_key) */
     json_t *session_override = NULL;
+    json_t *fail_ret = NULL;
+    json_t *ret_override = NULL;
     if (!confirmed_runtime_lock) {
         json_t *a = json_object();
         json_set(a, "session_key", session_key ? json_string(session_key) : json_null());
         session_override = as2_call(e, "session_model_override_for", a);
-        if (as2_is_raise(session_override)) goto fail;
+        if (as2_is_raise(session_override)) { fail_ret = session_override; session_override = NULL; goto fail; }
     }
-    json_t *ret_override = NULL;
     if (as2_truth(session_override)) {
         /* model = resolve_effective_model(session_override, None, model) */
         json_t *a = json_object();
@@ -985,7 +994,7 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
         json_set(a, "profile_name", json_null());
         json_set(a, "default", json_string(model));
         json_t *em = as2_call(e, "model_switch.resolve_effective_model", a);
-        if (as2_is_raise(em)) { json_free(session_override); goto fail; }
+        if (as2_is_raise(em)) { fail_ret = em; json_free(session_override); session_override = NULL; goto fail; }
         free(model); model = strdup(as2_sval(em)); json_free(em);
         /* _apply_provider_runtime(rk, clean(override.provider) or current_provider, target_model=model) */
         char *ov_prov = as2_clean_request_string(json_obj_get(session_override, "provider"));
@@ -996,7 +1005,7 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
         json_set(ap_in, "required", json_bool(false));
         json_t *ap = as2_apply_provider_runtime(e, ap_in);
         json_free(ap_in); free(ov_prov);
-        if (as2_is_raise(ap)) { json_free(session_override); goto fail; }
+        if (as2_is_raise(ap)) { fail_ret = ap; json_free(session_override); session_override = NULL; goto fail; }
         json_free(ap);
         as2_apply_overrides(rk, session_override);
         if (as2_truth(route) || request_model || request_provider) { /* logger.debug silent */ }
@@ -1008,14 +1017,14 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
         json_set(ap_in, "required", json_bool(false));
         json_t *ap = as2_apply_provider_runtime(e, ap_in);
         json_free(ap_in);
-        if (as2_is_raise(ap)) { json_free(session_override); goto fail; }
+        if (as2_is_raise(ap)) { fail_ret = ap; json_free(session_override); session_override = NULL; goto fail; }
         json_free(ap);
         json_t *a = json_object();
         json_set(a, "explicit", json_null());
         json_set(a, "profile_name", json_string(session_row_model));
         json_set(a, "default", json_string(model));
         json_t *em = as2_call(e, "model_switch.resolve_effective_model", a);
-        if (as2_is_raise(em)) { json_free(session_override); goto fail; }
+        if (as2_is_raise(em)) { fail_ret = em; json_free(session_override); session_override = NULL; goto fail; }
         free(model); model = strdup(as2_sval(em)); json_free(em);
         if (request_model || request_provider) { /* logger.debug silent */ }
     } else {
@@ -1039,7 +1048,7 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
             json_set(ap_in, "required", json_bool((request_provider && request_provider[0]) || confirmed_runtime_lock));
             json_t *ap = as2_apply_provider_runtime(e, ap_in);
             json_free(ap_in);
-            if (as2_is_raise(ap)) { json_free(session_override); goto fail; }
+            if (as2_is_raise(ap)) { fail_ret = ap; json_free(session_override); session_override = NULL; goto fail; }
             applied = as2_truth(ap);
             json_free(ap);
         }
@@ -1063,7 +1072,7 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
         json_set(rr_in, "gateway_session_key", gsk ? json_copy(gsk) : json_null());
         json_t *rr = as2_recover_or_record_model(e, rr_in);
         json_free(rr_in);
-        if (as2_is_raise(rr)) { json_free(session_override); goto fail; }
+        if (as2_is_raise(rr)) { fail_ret = rr; json_free(session_override); session_override = NULL; goto fail; }
         free(model); model = strdup(as2_sval(rr)); json_free(rr);
     }
     {
@@ -1080,8 +1089,8 @@ static json_t *as2_select_agent_runtime(as2_env *e, const json_t *in) {
 fail:
     free(model); free(request_model); free(request_provider);
     free(route_model); free(route_provider); free(session_row_model); free(current_provider);
-    json_free(route_cfg);
-    return session_override;   /* the raise spec */
+    json_free(route_cfg); json_free(session_override); json_free(ret_override);
+    return fail_ret;   /* the raise spec */
 }
 
 /* _ProviderAuthResolutionError.is_rate_limited */

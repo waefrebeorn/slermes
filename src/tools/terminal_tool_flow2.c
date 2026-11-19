@@ -61,7 +61,11 @@
  *    "\0" not in cwd guard is transcribed but never fires). KeyError str()
  *    repr-quoting is modeled for printable-ASCII messages without quotes /
  *    backslashes. _yield_kwargs ctx is always a mapping (the non-mapping **
- *    surface lives at the OUTER drive binding, outside the ported body).
+ *    surface lives at the OUTER drive binding, outside the ported body); a
+ *    ctx "command" key collides at the OUTER _yield_kwargs(command, **ctx)
+ *    binding — no seam event, unprefixed "got multiple values for argument"
+ *    message — while unexpected/missing keys raise at the INNER strict
+ *    yield_to_background_handler call (unprefixed messages).
  *  - Ordered collections: active_environments / task_env_overrides /
  *    container_aliases iterate in JSON insertion order (== dict order).
  *    dict.fromkeys((task_id, alias)) dedupes first-wins.
@@ -526,7 +530,7 @@ static const json_t *tt2_st_obj(const json_t *st, const char *key) {
     return (o && o->type == JSON_OBJECT) ? o : NULL;
 }
 static json_t *tt2_st_ensure(json_t *st, const char *key) {
-    json_t *o = tt2_oget(st, key);
+    json_t *o = (st && st->type == JSON_OBJECT) ? json_obj_get(st, key) : NULL;
     if (o && o->type == JSON_OBJECT) return o;
     json_t *n = json_object();
     json_set(st, key, n);
@@ -1057,28 +1061,36 @@ static json_t *tt2_resolve_config_cwd(const char *env_type, bool mount_docker_cw
         } else {
             json_free(ab);
         }
-    } else if (is_docker) {
-        json_t *a9 = tt2_args();
-        tt2_j(a9, "path", cwd);
-        json_t *wd = tt2_call(s, "is_windows_drive_path", a9);
-        if (tt2_raised(wd)) { json_free(cwd); json_free(default_cwd); return wd; }
-        if (tt2_truth(wd)) {
+    } else {
+        /* live elif chain: the third branch (_is_container_backend) is reached
+         * whenever the second condition (docker AND windows-drive) is FALSE —
+         * including docker with a non-drive cwd. */
+        bool windows_branch = false;
+        if (is_docker) {
+            json_t *a9 = tt2_args();
+            tt2_j(a9, "path", cwd);
+            json_t *wd = tt2_call(s, "is_windows_drive_path", a9);
+            if (tt2_raised(wd)) { json_free(cwd); json_free(default_cwd); return wd; }
+            windows_branch = tt2_truth(wd);
+            json_free(wd);
+        }
+        if (windows_branch) {
             json_t *a10 = tt2_args();
             tt2_j(a10, "path", cwd);
             json_t *cand = tt2_call(s, "os.path.expanduser", a10);
-            if (tt2_raised(cand)) { json_free(wd); json_free(cwd); json_free(default_cwd); return cand; }
+            if (tt2_raised(cand)) { json_free(cwd); json_free(default_cwd); return cand; }
             if (strcmp(os_name, "nt") == 0) {
                 json_t *a11 = tt2_args();
                 tt2_j(a11, "path", cand);
                 json_t *ab = tt2_call(s, "os.path.abspath", a11);
-                if (tt2_raised(ab)) { json_free(cand); json_free(wd); json_free(cwd); json_free(default_cwd); return ab; }
+                if (tt2_raised(ab)) { json_free(cand); json_free(cwd); json_free(default_cwd); return ab; }
                 json_free(cand);
                 cand = ab;
             }
             json_t *a12 = tt2_args();
             tt2_j(a12, "path", cand);
             json_t *id = tt2_call(s, "os.path.isdir", a12);
-            if (tt2_raised(id)) { json_free(cand); json_free(wd); json_free(cwd); json_free(default_cwd); return id; }
+            if (tt2_raised(id)) { json_free(cand); json_free(cwd); json_free(default_cwd); return id; }
             if (tt2_truth(id)) {
                 json_free(host_cwd);
                 host_cwd = json_copy(cand);
@@ -1090,7 +1102,7 @@ static json_t *tt2_resolve_config_cwd(const char *env_type, bool mount_docker_cw
                 json_append(la, json_string(et));
                 json_append(la, json_copy(default_cwd));
                 json_t *lr = tt2_log(s, "info", IGN_FMT, la);
-                if (tt2_raised(lr)) { json_free(cand); json_free(id); json_free(wd); json_free(cwd); json_free(default_cwd); return lr; }
+                if (tt2_raised(lr)) { json_free(cand); json_free(id); json_free(cwd); json_free(default_cwd); return lr; }
                 json_free(lr);
                 json_free(cwd);
                 cwd = json_copy(default_cwd);
@@ -1098,8 +1110,7 @@ static json_t *tt2_resolve_config_cwd(const char *env_type, bool mount_docker_cw
             }
             json_free(id);
         }
-        json_free(wd);
-    } else {
+        if (!windows_branch) {
         json_t *a13 = tt2_args();
         tt2_s(a13, "env_type", et);
         json_t *cb = tt2_call(s, "is_container_backend", a13);
@@ -1124,6 +1135,7 @@ static json_t *tt2_resolve_config_cwd(const char *env_type, bool mount_docker_cw
             json_free(uc);
         }
         json_free(cb);
+        }
     }
     json_free(default_cwd);
     json_t *out = json_array();
@@ -1335,12 +1347,13 @@ static json_t *tt2_yield_kwargs(const char *command, const json_t *ctx, const tt
         "command", "env_type", "cwd", "effective_task_id", "task_id", "session_key",
     };
     const json_t *c = (ctx && ctx->type == JSON_OBJECT) ? ctx : NULL;
-    /* 1. keyword collision (wins over unexpected / missing) — the stub's
-     * module-qualified name carries the oracle namespace prefix. */
+    /* 1. keyword collision: a ctx "command" key collides at the OUTER
+     * _yield_kwargs(command, **ctx) binding, BEFORE the body runs (no seam
+     * event). CPython's positional-or-keyword duplicate message carries no
+     * module prefix and says "argument", not "keyword argument". */
     if (c && json_has(c, "command"))
         return tt2_raise("TypeError",
-            "oracle_terminal_tool_flow2.yield_to_background_handler() "
-            "got multiple values for keyword argument 'command'");
+            "_yield_kwargs() got multiple values for argument 'command'");
     /* 2. first unexpected key in ctx insertion order */
     if (c) {
         for (size_t i = 0; i < c->c.count; i++) {

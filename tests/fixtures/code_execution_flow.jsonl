@@ -1,0 +1,164 @@
+{"func": "is_secret_env_name", "in": {"name": "MY_TOKEN"}}
+{"func": "is_secret_env_name", "in": {"name": "PATH"}}
+{"func": "is_secret_env_name", "in": {"name": "OPENAI_API_KEY"}}
+{"func": "is_secret_env_name", "in": {"name": "HOME"}}
+{"func": "is_secret_env_name", "in": {"name": "my_password"}}
+{"func": "is_secret_env_name", "in": {"name": "BYPASS_CACHE"}}
+{"func": "is_secret_env_name", "in": {"name": "HERMES_WEBHOOK_URL"}}
+{"func": "is_secret_env_name", "in": {"name": ""}}
+{"func": "is_secret_env_name", "in": {"name": "AUTH_HEADER"}}
+{"func": "is_secret_env_name", "in": {"name": "COMPASS_DIR"}}
+{"func": "is_secret_env_name", "in": {"name": "AWS_SECRET_ACCESS_KEY"}}
+{"func": "is_secret_env_name", "in": {"name": "LANG"}}
+{"func": "is_secret_env_name", "in": {"name": "GITHUB_CREDS"}}
+{"func": "is_secret_env_name", "in": {"name": "DSN_URL"}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {}}, "key": "p1", "value": true}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {"k0": 0, "k1": 1, "k2": 2, "k3": 3, "k4": 4, "k5": 5, "k6": 6, "k7": 7, "k8": 8, "k9": 9, "k10": 10, "k11": 11, "k12": 12, "k13": 13, "k14": 14, "k15": 15, "k16": 16, "k17": 17, "k18": 18, "k19": 19, "k20": 20, "k21": 21, "k22": 22, "k23": 23, "k24": 24, "k25": 25, "k26": 26, "k27": 27, "k28": 28, "k29": 29, "k30": 30}}, "key": "new", "value": false}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {"k0": 0, "k1": 1, "k2": 2, "k3": 3, "k4": 4, "k5": 5, "k6": 6, "k7": 7, "k8": 8, "k9": 9, "k10": 10, "k11": 11, "k12": 12, "k13": 13, "k14": 14, "k15": 15, "k16": 16, "k17": 17, "k18": 18, "k19": 19, "k20": 20, "k21": 21, "k22": 22, "k23": 23, "k24": 24, "k25": 25, "k26": 26, "k27": 27, "k28": 28, "k29": 29, "k30": 30, "k31": 31}}, "key": "new", "value": "v"}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {"k0": 0, "k1": 1, "k2": 2, "k3": 3, "k4": 4, "k5": 5, "k6": 6, "k7": 7, "k8": 8, "k9": 9, "k10": 10, "k11": 11, "k12": 12, "k13": 13, "k14": 14, "k15": 15, "k16": 16, "k17": 17, "k18": 18, "k19": 19, "k20": 20, "k21": 21, "k22": 22, "k23": 23, "k24": 24, "k25": 25, "k26": 26, "k27": 27, "k28": 28, "k29": 29, "k30": 30, "k31": 31}}, "key": "k0", "value": "updated"}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {"a": 1}}, "key": "b", "value": null}}
+{"func": "_cache_probe_result", "in": {"state": {"cache": {"k0": 0, "k1": 1, "k2": 2, "k3": 3, "k4": 4, "k5": 5, "k6": 6, "k7": 7, "k8": 8, "k9": 9, "k10": 10, "k11": 11, "k12": 12, "k13": 13, "k14": 14, "k15": 15, "k16": 16, "k17": 17, "k18": 18, "k19": 19, "k20": 20, "k21": 21, "k22": 22, "k23": 23, "k24": 24, "k25": 25, "k26": 26, "k27": 27, "k28": 28, "k29": 29, "k30": 30, "k31": 31, "k32": 32}}, "key": "new", "value": 1}}
+{"func": "_cache_probe_result", "in": {"state": {}, "key": "solo", "value": {"x": 1}}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": null}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": []}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": ["read_file", "terminal"]}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": ["read_file", "bogus"]}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": ["web_search", "web_extract", "read_file", "write_file", "search_files", "patch", "terminal"]}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": ["bogus"]}}
+{"func": "_sandbox_tools_for", "in": {"enabled_tools": ["read_file", "read_file", "patch"]}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "json_parse"}, "enabled_tools": null}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "shell_quote"}, "enabled_tools": []}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "retry"}, "enabled_tools": ["read_file"]}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "bogus"}, "enabled_tools": null, "io": {"sandbox_tools_for": [["web_search", "web_extract", "read_file", "write_file", "search_files", "patch", "terminal"]]}}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "bogus"}, "enabled_tools": [], "io": {"sandbox_tools_for": [[]]}}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "read_file"}, "enabled_tools": ["read_file", "terminal"], "io": {"sandbox_tools_for": [["terminal", "read_file"]]}}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "bogus"}, "enabled_tools": null, "io": {"sandbox_tools_for": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_missing_hermes_tools_import_hint", "in": {"m": {"group1": "x"}, "enabled_tools": null, "io": {}}}
+{"func": "json_parse", "in": {"text": "{\"a\":1}", "io": {"json_loads": {"a": 1}}}}
+{"func": "json_parse", "in": {"text": "﻿{\"a\":1}", "io": {"json_loads": {"a": 1}}}}
+{"func": "json_parse", "in": {"text": null, "io": {"json_loads": null}}}
+{"func": "json_parse", "in": {"text": 123, "io": {"json_loads": {"x": 1}}}}
+{"func": "json_parse", "in": {"text": "bad", "io": {"json_loads": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}}}}
+{"func": "json_parse", "in": {"text": "x", "io": {"json_loads": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "json_parse", "in": {"text": "x", "io": {}}}
+{"func": "json_parse", "in": {"text": "﻿", "io": {"json_loads": ""}}}
+{"func": "shell_quote", "in": {"s": ""}}
+{"func": "shell_quote", "in": {"s": "abc"}}
+{"func": "shell_quote", "in": {"s": "a b"}}
+{"func": "shell_quote", "in": {"s": "a'b"}}
+{"func": "shell_quote", "in": {"s": "/path/to"}}
+{"func": "shell_quote", "in": {"s": "a$b"}}
+{"func": "shell_quote", "in": {"s": "say \"hi\""}}
+{"func": "shell_quote", "in": {"s": "a=b"}}
+{"func": "shell_quote", "in": {"s": "a\tb"}}
+{"func": "shell_quote", "in": {"s": "ABC_123"}}
+{"func": "shell_quote", "in": {"s": "a|b"}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [42]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, 42], "time.sleep": [null]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}], "time.sleep": [null, null]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "exit"}}]}}}
+{"func": "retry", "in": {"max_attempts": 1, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}]}}}
+{"func": "retry", "in": {"max_attempts": 0, "delay": 2, "io": {}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 0.5, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, "ok"], "time.sleep": [null]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}], "time.sleep": [null]}}}
+{"func": "retry", "in": {"max_attempts": 3, "delay": 2, "io": {}}}
+{"func": "retry", "in": {"max_attempts": 2, "delay": 1, "io": {"fn": [{"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}, {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}], "time.sleep": [null]}}}
+{"func": "_sanitize_output_text", "in": {"text": "x", "io": {"strip_ansi": "s", "redact_code_output": "r"}}}
+{"func": "_sanitize_output_text", "in": {"text": "", "io": {"strip_ansi": "", "redact_code_output": ""}}}
+{"func": "_sanitize_output_text", "in": {"text": "x", "io": {"strip_ansi": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_sanitize_output_text", "in": {"text": "x", "io": {"strip_ansi": "s", "redact_code_output": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_sanitize_output_text", "in": {"text": "x", "io": {"strip_ansi": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "_sanitize_output_text", "in": {"text": "x", "io": {}}}
+{"func": "_sanitize_output_text", "in": {"text": "abc", "io": {"strip_ansi": "ABC", "redact_code_output": "REDACTED"}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": null, "io": {"sanitize_output_text": "san", "truncate_stdout_text": [["clean", {"stdout_truncated": false}]]}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": {"k": 1}, "io": {"sanitize_output_text": "san", "truncate_stdout_text": [["clean", {"stdout_truncated": true, "warning": "w"}]]}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": null, "io": {"sanitize_output_text": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": null, "io": {"sanitize_output_text": "san", "truncate_stdout_text": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_clean_output", "in": {"stdout_text": "", "env": null, "io": {"sanitize_output_text": "", "truncate_stdout_text": [["", {"stdout_bytes_total": 0}]]}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": null, "io": {}}}
+{"func": "_clean_output", "in": {"stdout_text": "raw", "env": null, "io": {"sanitize_output_text": "san", "truncate_stdout_text": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "out", "timeout_msg": "T"}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "", "timeout_msg": "T"}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "line1\nline2", "timeout_msg": "msg"}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "out", "timeout_msg": ""}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "", "timeout_msg": ""}}
+{"func": "_with_timeout_notice", "in": {"stdout_text": "x", "timeout_msg": "timed out after 300s"}}
+{"func": "_error_result", "in": {"error": "boom", "tool_calls_made": 0, "duration": 1.25}}
+{"func": "_error_result", "in": {"error": "x", "tool_calls_made": 5, "duration": 0.1, "user_summary": "s"}}
+{"func": "_error_result", "in": {"error": "x", "tool_calls_made": 2, "duration": 2.5, "user_summary": null}}
+{"func": "_error_result", "in": {"error": "x", "tool_calls_made": 0, "duration": 0.33, "user_summary": ""}}
+{"func": "_error_result", "in": {"error": "q\"uote", "tool_calls_made": 1, "duration": 1.5}}
+{"func": "_error_result", "in": {"error": "x", "tool_calls_made": 0, "duration": 0.1, "user_summary": "sum"}}
+{"func": "_error_result", "in": {"error": "back\\slash", "tool_calls_made": 3, "duration": 10.25}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "RuntimeError", "message": "boom"}, "exec_start": 0, "tool_calls_made": 0, "io": {"time.monotonic": 1.25, "logger.error": null, "error_result": "ERRSTR"}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "ValueError", "message": "bad"}, "exec_start": 1.0, "tool_calls_made": 3, "io": {"time.monotonic": 3.5, "logger.error": null, "error_result": "ERR2"}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "RuntimeError", "message": "boom"}, "exec_start": 0, "tool_calls_made": 0, "io": {"time.monotonic": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "RuntimeError", "message": "boom"}, "exec_start": 0, "tool_calls_made": 0, "io": {"time.monotonic": 1.25, "logger.error": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "RuntimeError", "message": "boom"}, "exec_start": 0, "tool_calls_made": 0, "io": {"time.monotonic": 1.25, "logger.error": null, "error_result": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "KeyboardInterrupt", "message": "ki"}, "exec_start": 0, "tool_calls_made": 2, "io": {"time.monotonic": 2.5, "logger.error": null, "error_result": "ERRKI"}}}
+{"func": "_remote_failure", "in": {"exc": {"__raise__": "RuntimeError", "message": "boom"}, "exec_start": 0, "tool_calls_made": 0, "io": {}}}
+{"func": "_remote_result", "in": {"status": "success", "raw_stdout": "out", "exec_start": 0, "fields": {"exit_code": 0}, "kernel": null, "env": null, "io": {"clean_output": [["clean", {"stdout_truncated": false}]], "time.monotonic": 1.25}}}
+{"func": "_remote_result", "in": {"status": "success", "raw_stdout": "out", "exec_start": 0, "fields": {"exit_code": 0}, "kernel": {"remote": true}, "env": null, "io": {"clean_output": [["clean", {"stdout_truncated": false}]], "time.monotonic": 2.5}}}
+{"func": "_remote_result", "in": {"status": "error", "raw_stdout": "out", "exec_start": 0, "fields": {"tool_calls_made": 2, "exit_code": 1}, "kernel": null, "env": null, "io": {"clean_output": [["clean", {"stdout_truncated": true, "warning": "w"}]], "time.monotonic": 0.5}}}
+{"func": "_remote_result", "in": {"status": "success", "raw_stdout": "out", "exec_start": 0, "fields": {}, "kernel": null, "env": {"k": 1}, "io": {"clean_output": [["clean", {}]], "time.monotonic": 1.25}}}
+{"func": "_remote_result", "in": {"status": "success", "raw_stdout": "out", "exec_start": 0, "fields": {}, "kernel": null, "env": null, "io": {"clean_output": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_result", "in": {"status": "success", "raw_stdout": "out", "exec_start": 0, "fields": {}, "kernel": null, "env": null, "io": {"clean_output": [["clean", {}]], "time.monotonic": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_result", "in": {"status": "timeout", "raw_stdout": "partial", "exec_start": 1.0, "fields": {"exit_code": 124}, "kernel": null, "env": null, "io": {"clean_output": [["partial", {"stdout_truncated": false}]], "time.monotonic": 301.25}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"output": "out", "status": "timeout"}}, "timeout_msg": "T", "io": {"with_timeout_notice": "out\n\n⏰ T"}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"output": ""}}, "timeout_msg": "T", "io": {"with_timeout_notice": "⏰ T"}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"output": "out", "status": "timeout"}}, "timeout_msg": "T", "io": {"with_timeout_notice": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"output": null}}, "timeout_msg": "T", "io": {"with_timeout_notice": "⏰ T"}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"status": "x"}}, "timeout_msg": "T", "io": {}}}
+{"func": "_apply_timeout", "in": {"state": {"result": {"output": "out"}}, "timeout_msg": "T", "io": {}}}
+{"func": "_private_dirs_cmd", "in": {"root": "/tmp/x", "subdirs": []}}
+{"func": "_private_dirs_cmd", "in": {"root": "/tmp/x", "subdirs": ["/tmp/x/rpc"]}}
+{"func": "_private_dirs_cmd", "in": {"root": "/tmp/a b", "subdirs": []}}
+{"func": "_private_dirs_cmd", "in": {"root": "/tmp/x", "subdirs": ["/tmp/x/a", "/tmp/x/b"]}}
+{"func": "_private_dirs_cmd", "in": {"root": "rel", "subdirs": ["rel/sub"]}}
+{"func": "_private_dirs_cmd", "in": {"root": "/tmp/x", "subdirs": ["/tmp/x/rpc", "/tmp/x/out"]}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"returncode": 0, "output": "ok"}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"returncode": 1, "output": "err"}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"output": "no rc"}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"returncode": 0, "output": null}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {"stdin_data": "x"}, "io": {"env.execute": {"returncode": 0, "output": "ok"}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {"env.execute": {"returncode": 2, "output": "bad"}}}}
+{"func": "_execute_checked", "in": {"cmd": "ls", "what": "setup", "timeout": 10, "kwargs": {}, "io": {}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": false, "timeout": 30, "check": false, "io": {"env.execute": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": true, "timeout": 30, "check": false, "io": {"env.execute": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": false, "timeout": 30, "check": true, "io": {"execute_checked": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": true, "timeout": 60, "check": true, "io": {"execute_checked": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": false, "timeout": 30, "check": false, "io": {"env.execute": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "", "atomic": false, "timeout": 30, "check": false, "io": {"env.execute": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/a b", "content": "x", "atomic": false, "timeout": 30, "check": false, "io": {"env.execute": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "café", "atomic": false, "timeout": 30, "check": false, "io": {"env.execute": {"returncode": 0}}}}
+{"func": "_remote_write", "in": {"remote_path": "/tmp/f", "content": "hi", "atomic": false, "timeout": 30, "check": true, "io": {}}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": "abc"}, "rpc_token": "abc"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": "abc"}, "rpc_token": "xyz"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": "abc"}, "rpc_token": ""}}
+{"func": "_rpc_token_ok", "in": {"request": {}, "rpc_token": "abc"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": null}, "rpc_token": "abc"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": ""}, "rpc_token": "abc"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": 123}, "rpc_token": "123"}}
+{"func": "_rpc_token_ok", "in": {"request": {"token": "abc"}, "rpc_token": "abc"}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"boom\"}", "io": {"json_loads": {"error": "boom"}}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"\"}", "io": {"json_loads": {"error": ""}}}}
+{"func": "_result_error", "in": {"result": "not json", "io": {}}}
+{"func": "_result_error", "in": {"result": "{\"x\":1}", "io": {}}}
+{"func": "_result_error", "in": {"result": 123, "io": {}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"boom\"}", "io": {"json_loads": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad value"}}}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"boom\"}", "io": {"json_loads": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"boom\"}", "io": {"json_loads": [1, 2]}}}
+{"func": "_result_error", "in": {"result": "{\"error\":{\"a\":1}}", "io": {"json_loads": {"error": {"a": 1}}}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"}", "io": {"json_loads": {"error": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}}}}
+{"func": "_result_error", "in": {"result": "{\"error\":\"x\"}", "io": {}}}
+{"func": "_result_error", "in": {"result": null, "io": {}}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a", "error": "e1"}, {"tool": "b"}], "start": 0}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a", "error": "e1"}, {"tool": "b", "error": "e2"}], "start": 1}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [], "start": 0}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "t0", "error": "e0"}, {"tool": "t1", "error": "e1"}, {"tool": "t2", "error": "e2"}, {"tool": "t3", "error": "e3"}, {"tool": "t4", "error": "e4"}, {"tool": "t5", "error": "e5"}], "start": 0}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a", "error": ""}], "start": 0}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a"}], "start": 0}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a", "error": "e"}], "start": 2}}
+{"func": "tool_errors_since", "in": {"tool_call_log": [{"tool": "a", "error": "e"}, {"tool": "b", "error": ""}, {"tool": "c", "error": "e3"}], "start": 0}}

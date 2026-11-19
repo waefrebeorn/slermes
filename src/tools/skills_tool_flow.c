@@ -145,7 +145,6 @@ static const char *SKT_INJECTION_PATTERNS[] = {
     "disregard your", "forget your instructions", "new instructions:",
     "system prompt:", "<system>", "]]>",
 };
-/* _LINKED_FILE_SPECS: (sub, globs, recursive, files_only) — key order. */
 typedef struct { const char *sub; const char *globs[8]; size_t ng; bool recursive, files_only; } skt_link_spec;
 static const skt_link_spec SKT_LINK_SPECS[] = {
     {"references", {"*.md"}, 1, false, false},
@@ -156,7 +155,7 @@ static const skt_link_spec SKT_LINK_SPECS[] = {
 
 /* ── seam environment ─────────────────────────────────────────────────────── */
 typedef struct skt_env {
-    json_t *state;   /* borrowed mirror (harness-owned copy of in["state"]) */
+    json_t *state;
     json_t *(*call)(void *ud, const char *name, const json_t *args);
     void *ud;
 } skt_env;
@@ -227,7 +226,7 @@ static json_t *skt_keyerror_raise(const char *key) {
 }
 static json_t *skt_valueerror_raise(const char *msg) { return skt_raise_spec("ValueError", msg); }
 
-/* ── FULL builtin exception hierarchy (except Exception / suppress families) ─ */
+/* ── FULL builtin exception hierarchy ─────────────────────────────────────── */
 static const char *skt_exc_parent(const char *c) {
     static const struct { const char *c, *p; } T[] = {
         {"Exception", "BaseException"},
@@ -272,8 +271,6 @@ static const char *skt_exc_parent(const char *c) {
         if (strcmp(T[i].c, c) == 0) return T[i].p;
     return NULL;
 }
-/* Walk the MRO: does `kind` reach `target`? Unknown kinds are synthetic
- * Exception subclasses (oracle make_exc) so their parent is Exception. */
 static bool skt_exc_is(const char *kind, const char *target) {
     const char *cls = kind;
     for (int depth = 0; depth < 64; depth++) {
@@ -288,8 +285,7 @@ static bool skt_exc_is(const char *kind, const char *target) {
     return false;
 }
 static bool skt_exc_is_exception(const char *kind) { return skt_exc_is(kind, "Exception"); }
-/* `except Exception`: swallow plain Exception (free r), propagate BaseException.
- * Returns true when the caller must propagate (r stays owned). */
+/* except Exception: swallow plain Exception (free r); return true to propagate. */
 static bool skt_swallow_exc(json_t *r) {
     if (skt_exc_is_exception(skt_kind(r))) { json_free(r); return false; }
     return true;
@@ -348,7 +344,6 @@ static char *skt_concat3(const char *a, const char *b, const char *c) {
     skt_buf buf; skt_buf_init(&buf); skt_buf_add(&buf, a); skt_buf_add(&buf, b); skt_buf_add(&buf, c);
     return skt_buf_take(&buf);
 }
-/* "; ".join / ", ".join over a JSON string array. */
 static char *skt_join_strs(const json_t *arr, const char *sep) {
     skt_buf buf; skt_buf_init(&buf);
     for (size_t i = 0; i < json_len(arr); i++) {
@@ -416,7 +411,6 @@ static char *skt_upper(const char *s) {
     for (char *p = r; *p; p++) if (*p >= 'a' && *p <= 'z') *p -= 32;
     return r;
 }
-/* s[:n] over an ASCII string. */
 static char *skt_slice(const char *s, size_t n) {
     size_t l = strlen(s); if (n < l) l = n;
     char *r = (char *)malloc(l + 1); memcpy(r, s, l); r[l] = '\0';
@@ -439,7 +433,7 @@ static skt_parts skt_parts_parse(const char *s) {
         const char *start = cur;
         while (*cur && *cur != '/') cur++;
         size_t len = (size_t)(cur - start);
-        if (len == 1 && start[0] == '.') continue;   /* drop "." */
+        if (len == 1 && start[0] == '.') continue;
         if (p.n == cap) { cap = cap ? cap * 2 : 8; p.v = (char **)realloc(p.v, cap * sizeof(char *)); }
         char *c = (char *)malloc(len + 1); memcpy(c, start, len); c[len] = '\0';
         p.v[p.n++] = c;
@@ -466,8 +460,7 @@ static char *skt_path_join(const char *a, const char *b) {
     skt_parts_free(&pa); skt_parts_free(&pb); skt_parts_free(&m);
     return r;
 }
-static const char *skt_path_name(const char *s) {
-    /* returns a pointer into a static-free heap buffer; caller frees via wrapper */
+static char *skt_path_name(const char *s) {
     skt_parts p = skt_parts_parse(s);
     char *r = skt_strdup(p.n ? p.v[p.n - 1] : "");
     skt_parts_free(&p);
@@ -475,14 +468,12 @@ static const char *skt_path_name(const char *s) {
 }
 static char *skt_path_parent(const char *s) {
     skt_parts p = skt_parts_parse(s);
-    skt_parts q; q.abs = p.abs; q.n = p.n ? p.n - 1 : 0;
-    q.v = p.v;   /* borrow */
+    skt_parts q; q.abs = p.abs; q.n = p.n ? p.n - 1 : 0; q.v = p.v;
     char *r = skt_parts_str(&q);
     q.v = NULL; q.n = 0;
     skt_parts_free(&p);
     return r;
 }
-/* last '.' at index > 0 in the name */
 static void skt_name_stem_suffix(const char *name, char **stem, char **suffix) {
     const char *dot = NULL;
     for (const char *p = name + 1; *p; p++) if (*p == '.') dot = p;
@@ -492,15 +483,10 @@ static void skt_name_stem_suffix(const char *name, char **stem, char **suffix) {
         *suffix = skt_strdup(dot);
     } else { *stem = skt_strdup(name); *suffix = skt_strdup(""); }
 }
-static char *skt_path_stem(const char *s) {
-    char *name = (char *)skt_path_name(s), *stem, *suf;
-    skt_name_stem_suffix(name, &stem, &suf);
-    free(name); free(suf); return stem;
-}
 static char *skt_with_suffix(const char *s, const char *suf, json_t **err) {
     *err = NULL;
     char *norm = skt_path_norm(s);
-    char *name = (char *)skt_path_name(s);
+    char *name = skt_path_name(s);
     if (!name[0]) {
         char buf[512];
         snprintf(buf, sizeof(buf), "PurePosixPath('%s') has an empty name", norm);
@@ -552,13 +538,18 @@ static char *skt_relative_to(const char *s, const char *root, json_t **err) {
     skt_parts_free(&p); skt_parts_free(&r); skt_parts_free(&q);
     return out;
 }
-static size_t skt_parts_count(const char *s) { skt_parts p = skt_parts_parse(s); size_t n = p.n + (p.abs ? 1 : 0); skt_parts_free(&p); return n; }
+static size_t skt_parts_count(const char *s) {
+    skt_parts p = skt_parts_parse(s);
+    size_t n = p.n + (p.abs ? 1 : 0);
+    skt_parts_free(&p);
+    return n;
+}
 static bool skt_in_strset(const char *s, const char *const *set, size_t n) {
     for (size_t i = 0; i < n; i++) if (strcmp(s, set[i]) == 0) return true;
     return false;
 }
 
-/* ── sorted string-set helpers (disabled / load_names / seen) ─────────────── */
+/* ── sorted string-set helpers ────────────────────────────────────────────── */
 static void skt_sort_strs(json_t *arr) {
     for (size_t i = 1; i < json_len(arr); i++) {
         json_t *key = arr->c.items[i];
@@ -578,14 +569,13 @@ static void skt_set_add(json_t *arr, const char *s) {
     json_append(arr, json_string(s));
     skt_sort_strs(arr);
 }
-/* normalize a scripted name list into a sorted, deduped set-array */
 static json_t *skt_norm_set(const json_t *v) {
     json_t *out = json_array();
     if (skt_is_arr(v)) for (size_t i = 0; i < json_len(v); i++) skt_set_add(out, skt_sval(json_get(v, i)));
     return out;
 }
 
-/* ── logger seam (msg / args / exc_info) ──────────────────────────────────── */
+/* ── logger seam ──────────────────────────────────────────────────────────── */
 static json_t *skt_log(skt_env *e, const char *level, const char *msg, json_t *args, bool exc_info) {
     char name[32]; snprintf(name, sizeof(name), "logger.%s", level);
     json_t *a = json_object();
@@ -594,7 +584,6 @@ static json_t *skt_log(skt_env *e, const char *level, const char *msg, json_t *a
     json_set(a, "exc_info", json_bool(exc_info));
     return skt_call(e, name, a);
 }
-/* logger args array carrying str(projected) values */
 static json_t *skt_log_args1(const char *s) {
     json_t *a = json_array(); json_append(a, json_string(s ? s : "")); return a;
 }
@@ -627,12 +616,21 @@ static json_t *skt_path_glob(skt_env *e, const char *op, const char *path, const
     return skt_call(e, name, a);
 }
 
+/* ── forward declarations (internal composition) ──────────────────────────── */
+static json_t *skt_dts_rec(skt_env *, const char *, json_t *, double);
+static json_t *skt_skill_search_dirs(skt_env *, const json_t *);
+static json_t *skt_collect_skill_candidates(skt_env *, const json_t *);
+static json_t *skt_owning_search_dir(skt_env *, const json_t *);
+static json_t *skt_owned_relative(skt_env *, const json_t *);
+static json_t *skt_is_package_owned_markdown(skt_env *, const char *, const char *);
+static json_t *skt_under_any(skt_env *, const char *, const json_t *);
+static json_t *skt_legacy_portable_skill_name(skt_env *, const json_t *, const char *, const char *);
+
 /* ══════════════════════════════════════════════════════════════════════════ */
 /* PoP: skt_clear_skills_cache @ tools/skills_tool.py:clear_skills_cache */
 static json_t *skt_clear_skills_cache(skt_env *e, const json_t *in) {
     (void)in;
     json_t *c = skt_cache(e);
-    /* _SKILLS_CACHE.clear() — drop every key in place. */
     while (c->c.count) json_obj_del(c, c->c.keys[0]);
     return NULL;
 }
@@ -642,29 +640,19 @@ static json_t *skt_dir_tree_signature(skt_env *e, const json_t *in) {
     const char *root = json_get_str(in, "root", "");
     double depth = json_get_num(in, "depth", SKT_SIGNATURE_MAX_DEPTH);
     json_t *sig = json_array();   /* out-param model: returned as ret */
-    /* recursive helper carries sig + depth */
-    typedef struct { skt_env *e; json_t *sig; } DTS;
-    /* iterative recursion via explicit function below */
-    json_t *err = NULL;
-    /* nested recursion implemented as a static helper (forward decl at file scope) */
-    extern json_t *skt_dts_rec(skt_env *, const char *, json_t *, double);
-    err = skt_dts_rec(e, root, sig, depth);
+    json_t *err = skt_dts_rec(e, root, sig, depth);
     if (err) { json_free(sig); return err; }
     return sig;
 }
-/* recursive body of _dir_tree_signature (returns raise or NULL) */
-json_t *skt_dts_rec(skt_env *e, const char *root, json_t *sig, double depth) {
-    /* os.stat(root).st_mtime_ns */
+static json_t *skt_dts_rec(skt_env *e, const char *root, json_t *sig, double depth) {
     json_t *sa = json_object(); json_set(sa, "path", json_string(root));
     json_t *st = skt_call(e, "os.stat", sa);
     if (skt_is_raise(st)) {
         if (skt_exc_is(skt_kind(st), "OSError")) { json_free(st); return NULL; }
         return st;
     }
-    if (!skt_is_obj(st)) { json_free(st); return skt_attr_raise(st, "st_mtime_ns"); }
     json_t *mt = json_obj_get(st, "mtime_ns");
     double mtime = skt_is_num(mt) ? mt->num_val : 0;
-    /* os.scandir(root) -> entries */
     json_t *da = json_object(); json_set(da, "path", json_string(root));
     json_t *entries = skt_call(e, "os.scandir", da);
     if (skt_is_raise(entries)) {
@@ -674,6 +662,7 @@ json_t *skt_dts_rec(skt_env *e, const char *root, json_t *sig, double depth) {
     }
     json_t *names = json_array();
     bool is_skill = false;
+    json_t *prop = NULL;
     if (skt_is_arr(entries)) {
         for (size_t i = 0; i < json_len(entries); i++) {
             json_t *ent = json_get(entries, i);
@@ -684,8 +673,7 @@ json_t *skt_dts_rec(skt_env *e, const char *root, json_t *sig, double depth) {
             json_t *isd = skt_call(e, "entry.is_dir", ia);
             if (skt_is_raise(isd)) {
                 if (skt_exc_is(skt_kind(isd), "OSError")) { json_free(isd); continue; }
-                json_free(isd); json_free(names); json_free(entries); json_free(st);
-                return isd;   /* unreachable: isd freed; handled below */
+                prop = isd; break;
             }
             bool d = skt_truth(isd);
             json_free(isd);
@@ -694,11 +682,12 @@ json_t *skt_dts_rec(skt_env *e, const char *root, json_t *sig, double depth) {
         }
     }
     json_free(entries);
+    if (prop) { json_free(names); json_free(st); return prop; }
     skt_sort_strs(names);
     json_t *row = json_array();
     json_append(row, json_string(root));
     json_append(row, json_number(mtime));
-    json_append(row, names);   /* transfer */
+    json_append(row, names);
     json_append(sig, row);
     json_free(st);
     if (depth <= 0) return NULL;
@@ -721,14 +710,13 @@ static json_t *skt_bind_turn_secret_capture(skt_env *e, const json_t *in) {
     json_t *sa = json_object();
     json_set(sa, "callback", cb ? json_copy(cb) : json_null());
     json_t *token = skt_call(e, "turn_capture.set", sa);
-    if (skt_is_raise(token)) return token;   /* set outside try: no reset */
-    /* try: yield (body seam) finally: reset(token) */
+    if (skt_is_raise(token)) return token;
     json_t *body = skt_seam0(e, "cm_body");
     json_t *ra = json_object();
     json_set(ra, "token", token ? json_copy(token) : json_null());
     json_t *reset = skt_call(e, "turn_capture.reset", ra);
     json_free(token);
-    if (skt_is_raise(reset)) { json_free(body); return reset; }   /* finally raise wins */
+    if (skt_is_raise(reset)) { json_free(body); return reset; }
     json_free(reset);
     if (skt_is_raise(body)) return body;
     json_free(body);
@@ -739,7 +727,6 @@ static json_t *skt_bind_turn_secret_capture(skt_env *e, const json_t *in) {
 static json_t *skt_skill_utils_delegate(skt_env *e, const json_t *in) {
     const char *attr = json_get_str(in, "attr", "");
     json_t *args = json_obj_get(in, "args");
-    /* build the delegate marker, then call it: getattr(skill_utils, attr)(*args) */
     json_t *ca = json_object();
     json_set(ca, "attr", json_string(attr));
     json_set(ca, "args", args ? json_copy(args) : json_array());
@@ -763,18 +750,17 @@ static json_t *skt_skill_search_dirs(skt_env *e, const json_t *in) {
     json_t *roots_raw = skt_call(e, "get_skill_search_roots", ga);
     if (skt_is_raise(roots_raw)) { free(active_s); json_free(active); return roots_raw; }
     json_t *roots = json_array();
+    json_t *prop = NULL;
     if (skt_is_arr(roots_raw)) {
         for (size_t i = 0; i < json_len(roots_raw); i++) {
             json_t *pair = json_get(roots_raw, i);
-            double tier = json_get_num(pair, NULL, 0);
             json_t *tnode = json_get(pair, 0);
-            tier = skt_is_num(tnode) ? tnode->num_val : 0;
+            double tier = skt_is_num(tnode) ? tnode->num_val : 0;
             const char *dir = skt_sval(json_get(pair, 1));
-            /* if t != TIER_LOCAL or d.exists() */
             bool keep = true;
             if ((int)tier == SKT_TIER_LOCAL) {
                 json_t *ex = skt_path_bool(e, "exists", dir);
-                if (skt_is_raise(ex)) { json_free(ex); json_free(roots); json_free(roots_raw); free(active_s); json_free(active); return ex; }
+                if (skt_is_raise(ex)) { prop = ex; break; }
                 keep = skt_truth(ex);
                 json_free(ex);
             }
@@ -787,6 +773,7 @@ static json_t *skt_skill_search_dirs(skt_env *e, const json_t *in) {
         }
     }
     json_free(roots_raw);
+    if (prop) { json_free(roots); free(active_s); json_free(active); return prop; }
     json_t *out = json_array();
     json_append(out, roots);
     json_append(out, json_string(active_s));
@@ -794,13 +781,104 @@ static json_t *skt_skill_search_dirs(skt_env *e, const json_t *in) {
     return out;
 }
 
-/* forward decls for internal composition */
-static json_t *skt_collect_skill_candidates(skt_env *, const json_t *);
-static json_t *skt_owning_search_dir(skt_env *, const json_t *);
-static json_t *skt_owned_relative(skt_env *, const json_t *);
-static json_t *skt_is_package_owned_markdown(skt_env *, const char *, const char *);
-static json_t *skt_under_any(skt_env *, const char *, const json_t *);
-static json_t *skt_legacy_portable_skill_name(skt_env *, const json_t *, const char *, const char *);
+/* per-file scan body of _skill_catalog: returns a row object OR a raise spec. */
+static json_t *skt_catalog_one(skt_env *e, const char *skill_md, double tier, const char *scan_dir) {
+    json_t *err = NULL, *row = NULL, *fm = NULL, *body = NULL, *desc = NULL;
+    json_t *trunc = NULL, *cat = NULL, *text = NULL, *pf = NULL;
+    char *name_s = NULL;
+    json_t *ra = json_object(); json_set(ra, "path", json_string(skill_md));
+    text = skt_call(e, "_read_skill_text", ra);
+    if (skt_is_raise(text)) { err = text; text = NULL; goto done; }
+    if (skt_is_str(text)) {
+        char *content = skt_slice(skt_str(text), 4000);
+        json_t *pa = json_object(); json_set(pa, "content", json_string(content)); free(content);
+        pf = skt_call(e, "_parse_frontmatter", pa);
+    } else if (skt_is_arr(text)) {
+        json_t *sl = json_array();
+        for (size_t k = 0; k < json_len(text) && k < 4000; k++) json_append(sl, json_copy(json_get(text, k)));
+        json_t *pa = json_object(); json_set(pa, "content", sl);
+        pf = skt_call(e, "_parse_frontmatter", pa);
+    } else if (skt_is_obj(text)) {
+        err = skt_raise_spec("KeyError", "slice(None, 4000, None)"); goto done;
+    } else {
+        err = skt_subscript_raise(text); goto done;
+    }
+    if (skt_is_raise(pf)) { err = pf; pf = NULL; goto done; }
+    if (!skt_is_arr(pf)) { err = skt_raise_spec("TypeError", "cannot unpack non-iterable object"); goto done; }
+    if (json_len(pf) != 2) {
+        char buf[96];
+        snprintf(buf, sizeof(buf), "%s values to unpack (expected 2, got %zu)",
+                 json_len(pf) < 2 ? "not enough" : "too many", json_len(pf));
+        err = skt_valueerror_raise(buf); goto done;
+    }
+    fm = json_copy(json_get(pf, 0)); body = json_copy(json_get(pf, 1));
+    if (!skt_is_obj(fm)) { err = skt_attr_raise(fm, "get"); goto done; }
+    desc = json_copy(json_obj_get(fm, "description")); if (!desc) desc = json_string("");
+    if (!skt_truth(desc)) {
+        if (!skt_is_str(body)) { err = skt_attr_raise(body, "strip"); goto done; }
+        char *bs = skt_strip(skt_str(body));
+        char *found = NULL, *p = bs;
+        while (p && *p) {
+            char *nl = strchr(p, '\n');
+            if (nl) *nl = '\0';
+            char *ln = skt_strip(p);
+            if (ln[0] && ln[0] != '#') { found = ln; break; }
+            free(ln);
+            if (!nl) break;
+            p = nl + 1;
+        }
+        free(bs);
+        if (found) { json_free(desc); desc = json_string(found); free(found); }
+    }
+    {
+        json_t *namev = json_obj_get(fm, "name");
+        if (!namev) { char *parent = skt_path_parent(skill_md); name_s = skt_path_name(parent); free(parent); }
+        else if (skt_is_str(namev)) name_s = skt_slice(skt_str(namev), SKT_MAX_NAME_LENGTH);
+        else { err = skt_subscript_raise(namev); goto done; }
+    }
+    {
+        json_t *ta = json_object(); json_set(ta, "description", json_copy(desc));
+        trunc = skt_call(e, "_truncate_description", ta);
+        if (skt_is_raise(trunc)) { err = trunc; trunc = NULL; goto done; }
+    }
+    {
+        json_t *ca = json_object(); json_set(ca, "path", json_string(skill_md));
+        cat = skt_call(e, "_get_category_from_path", ca);
+        if (skt_is_raise(cat)) { err = cat; cat = NULL; goto done; }
+    }
+    {
+        bool visible = false;
+        json_t *fa = json_object(); json_set(fa, "frontmatter", json_copy(fm));
+        json_t *m1 = skt_call(e, "skill_matches_platform", fa);
+        if (skt_is_raise(m1)) { err = m1; goto done; }
+        if (skt_truth(m1)) {
+            json_t *fa2 = json_object(); json_set(fa2, "frontmatter", json_copy(fm));
+            json_t *m2 = skt_call(e, "skill_matches_environment", fa2);
+            if (skt_is_raise(m2)) { json_free(m1); err = m2; goto done; }
+            if (skt_truth(m2)) {
+                json_t *fa3 = json_object(); json_set(fa3, "frontmatter", json_copy(fm));
+                json_t *m3 = skt_call(e, "skill_matches_apps", fa3);
+                if (skt_is_raise(m3)) { json_free(m1); json_free(m2); err = m3; goto done; }
+                visible = skt_truth(m3); json_free(m3);
+            }
+            json_free(m2);
+        }
+        json_free(m1);
+        row = json_object();
+        json_set(row, "name", json_string(name_s));
+        json_set(row, "description", trunc); trunc = NULL;
+        json_set(row, "category", cat); cat = NULL;
+        json_set(row, "tier", json_number(tier));
+        json_set(row, "root", json_string(scan_dir));
+        json_set(row, "path", json_string(skill_md));
+        json_set(row, "visible", json_bool(visible));
+    }
+done:
+    json_free(text); json_free(pf); json_free(fm); json_free(body); json_free(desc);
+    json_free(trunc); json_free(cat); free(name_s);
+    if (err) { json_free(row); return err; }
+    return row;
+}
 
 /* PoP: skt_skill_catalog @ tools/skills_tool.py:_skill_catalog */
 static json_t *skt_skill_catalog(skt_env *e, const json_t *in) {
@@ -808,21 +886,18 @@ static json_t *skt_skill_catalog(skt_env *e, const json_t *in) {
     bool include_hidden = json_get_bool(in, "include_hidden", false);
     char *ckey = skt_cache_key(skip_disabled, include_hidden);
     json_t *cache = skt_cache(e);
-    /* disabled = set() if skip_disabled else _get_disabled_skill_names() */
     json_t *disabled = json_array();
     if (!skip_disabled) {
         json_t *d = skt_seam0(e, "_get_disabled_skill_names");
-        if (skt_is_raise(d)) { free(ckey); return d; }
+        if (skt_is_raise(d)) { free(ckey); json_free(disabled); return d; }
         json_free(disabled);
         disabled = skt_norm_set(d);
         json_free(d);
     }
-    /* roots, _ = skill_search_dirs() */
     json_t *ssd = skt_skill_search_dirs(e, in);
     if (skt_is_raise(ssd)) { json_free(disabled); free(ckey); return ssd; }
     json_t *roots = json_copy(json_get(ssd, 0));
     json_free(ssd);
-    /* signature = _skills_scan_signature([d for _t,d in roots], disabled) */
     json_t *dirs = json_array();
     for (size_t i = 0; i < json_len(roots); i++) json_append(dirs, json_string(skt_sval(json_get(json_get(roots, i), 1))));
     json_t *sia = json_object();
@@ -830,17 +905,13 @@ static json_t *skt_skill_catalog(skt_env *e, const json_t *in) {
     json_set(sia, "disabled", json_copy(disabled));
     json_t *signature = skt_call(e, "_skills_scan_signature", sia);
     if (skt_is_raise(signature)) { json_free(disabled); json_free(roots); free(ckey); return signature; }
-    /* now = time.monotonic() */
     json_t *now = skt_seam0(e, "monotonic");
     if (skt_is_raise(now)) { json_free(signature); json_free(disabled); json_free(roots); free(ckey); return now; }
     double now_val = skt_is_num(now) ? now->num_val : 0;
-    /* cached hit? */
     json_t *cached = json_obj_get(cache, ckey);
     if (skt_is_arr(cached) && json_len(cached) >= 3) {
-        json_t *csig = json_get(cached, 0);
-        json_t *cts = json_get(cached, 1);
-        double cts_val = skt_is_num(cts) ? cts->num_val : 0;
-        if (skt_json_eq(csig, signature) && (now_val - cts_val) < SKT_CACHE_TTL) {
+        double cts_val = skt_is_num(json_get(cached, 1)) ? json_get(cached, 1)->num_val : 0;
+        if (skt_json_eq(json_get(cached, 0), signature) && (now_val - cts_val) < SKT_CACHE_TTL) {
             json_t *out = json_array();
             json_t *crows = json_get(cached, 2);
             for (size_t i = 0; i < json_len(crows); i++) json_append(out, json_copy(json_get(crows, i)));
@@ -848,9 +919,9 @@ static json_t *skt_skill_catalog(skt_env *e, const json_t *in) {
             return out;
         }
     }
-    /* scan */
     json_t *scanned = json_array();
-    for (size_t ri = 0; ri < json_len(roots); ri++) {
+    json_t *prop = NULL;
+    for (size_t ri = 0; ri < json_len(roots) && !prop; ri++) {
         json_t *pair = json_get(roots, ri);
         double tier = skt_is_num(json_get(pair, 0)) ? json_get(pair, 0)->num_val : 0;
         const char *scan_dir = skt_sval(json_get(pair, 1));
@@ -864,169 +935,40 @@ static json_t *skt_skill_catalog(skt_env *e, const json_t *in) {
             json_set(a, "filename", json_string("SKILL.md"));
             files = skt_call(e, "iter_skill_index_files", a);
         }
-        if (skt_is_raise(files)) {
-            if (skt_swallow_exc(files)) { json_free(scanned); json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey); return files; }
-            continue;   /* swallowed: live has no try here actually — see note */
-        }
+        if (skt_is_raise(files)) { prop = files; break; }
         for (size_t fi = 0; fi < json_len(files); fi++) {
             const char *skill_md = skt_sval(json_get(files, fi));
-            /* any(part in _EXCLUDED_SKILL_DIRS for part in skill_md.parts) */
             skt_parts pp = skt_parts_parse(skill_md);
             bool excluded = false;
             for (size_t k = 0; k < pp.n; k++)
                 if (skt_in_strset(pp.v[k], SKT_EXCLUDED_DIRS, sizeof(SKT_EXCLUDED_DIRS) / sizeof(SKT_EXCLUDED_DIRS[0]))) { excluded = true; break; }
             skt_parts_free(&pp);
             if (excluded) continue;
-            /* try: frontmatter, body = _parse_frontmatter(_read_skill_text(skill_md)[:4000]) */
-            json_t *ra = json_object(); json_set(ra, "path", json_string(skill_md));
-            json_t *text = skt_call(e, "_read_skill_text", ra);
-            json_t *fm = NULL, *body = NULL, *desc = NULL, *row = NULL;
-            json_t *err = NULL;
-            if (skt_is_raise(text)) { err = text; goto handle; }
-            /* [:4000] */
-            char *content = NULL;
-            if (skt_is_str(text)) content = skt_slice(skt_str(text), 4000);
-            else if (skt_is_arr(text)) {
-                /* list slice -> pass array (seamed _parse_frontmatter records it) */
-                json_t *sl = json_array();
-                for (size_t k = 0; k < json_len(text) && k < 4000; k++) json_append(sl, json_copy(json_get(text, k)));
-                json_t *pa = json_object(); json_set(pa, "content", sl);
-                json_t *pf = skt_call(e, "_parse_frontmatter", pa);
-                json_free(text);
-                if (skt_is_raise(pf)) { err = pf; goto handle; }
-                if (!skt_is_arr(pf) || json_len(pf) != 2) {
-                    err = skt_valueerror_raise(json_len(pf) < 2 ? "not enough values to unpack (expected 2, got 1)" : "too many values to unpack (expected 2)");
-                    json_free(pf); goto handle;
-                }
-                fm = json_copy(json_get(pf, 0)); body = json_copy(json_get(pf, 1)); json_free(pf);
-                goto parsed;
-            } else if (skt_is_obj(text)) {
-                err = skt_raise_spec("KeyError", "slice(None, 4000, None)"); json_free(text); goto handle;
+            json_t *r = skt_catalog_one(e, skill_md, tier, scan_dir);
+            if (!skt_is_raise(r)) { json_append(scanned, r); continue; }
+            const char *k = skt_kind(r);
+            char *es = skt_strdup(json_get_str(r, "message", ""));
+            if (skt_exc_is(k, "UnicodeDecodeError") || skt_exc_is(k, "PermissionError")) {
+                json_t *la = json_array();
+                json_append(la, json_string(skill_md)); json_append(la, json_string(es));
+                json_t *lr = skt_log(e, "debug", "Failed to read skill file %s: %s", la, false);
+                if (skt_is_raise(lr)) { free(es); json_free(r); prop = lr; break; }
+                json_free(lr);
+            } else if (skt_exc_is_exception(k)) {
+                json_t *la = json_array();
+                json_append(la, json_string(skill_md)); json_append(la, json_string(es));
+                json_t *lr = skt_log(e, "debug", "Skipping skill at %s: failed to parse: %s", la, true);
+                if (skt_is_raise(lr)) { free(es); json_free(r); prop = lr; break; }
+                json_free(lr);
             } else {
-                err = skt_subscript_raise(text); json_free(text); goto handle;
+                free(es); prop = r; break;
             }
-            json_free(text);
-            {
-                json_t *pa = json_object(); json_set(pa, "content", json_string(content));
-                free(content);
-                json_t *pf = skt_call(e, "_parse_frontmatter", pa);
-                if (skt_is_raise(pf)) { err = pf; goto handle; }
-                if (!skt_is_arr(pf) || json_len(pf) != 2) {
-                    char buf[96];
-                    size_t got = skt_is_arr(pf) ? json_len(pf) : 0;
-                    if (!skt_is_arr(pf)) { err = skt_raise_spec("TypeError", "cannot unpack non-iterable object"); json_free(pf); goto handle; }
-                    snprintf(buf, sizeof(buf), "%s values to unpack (expected 2, got %zu)", got < 2 ? "not enough" : "too many", got);
-                    err = skt_valueerror_raise(buf); json_free(pf); goto handle;
-                }
-                fm = json_copy(json_get(pf, 0)); body = json_copy(json_get(pf, 1)); json_free(pf);
-            }
-parsed:
-            /* description = frontmatter.get("description", "") */
-            if (!skt_is_obj(fm)) { err = skt_attr_raise(fm, "get"); goto handle; }
-            desc = json_copy(json_obj_get(fm, "description"));
-            if (!desc) desc = json_string("");
-            if (!skt_truth(desc)) {
-                /* next((ln for ln in map(str.strip, body.strip().split("\n")) if ln and not ln.startswith("#")), description) */
-                if (!skt_is_str(body)) { err = skt_attr_raise(body, "strip"); goto handle; }
-                char *bs = skt_strip(skt_str(body));
-                char *save = NULL, *tok = strtok_r(bs, "\n", &save);
-                char *found = NULL;
-                while (tok) {
-                    char *ln = skt_strip(tok);
-                    if (ln[0] && ln[0] != '#') { found = ln; break; }
-                    free(ln);
-                    tok = strtok_r(NULL, "\n", &save);
-                }
-                free(bs);
-                if (found) { json_free(desc); desc = json_string(found); free(found); }
-            }
-            /* name = frontmatter.get("name", skill_md.parent.name)[:64] */
-            json_t *namev = json_obj_get(fm, "name");
-            char *name_s = NULL;
-            if (!namev) {
-                char *parent = skt_path_parent(skill_md);
-                name_s = (char *)skt_path_name(parent);
-                free(parent);
-            } else if (skt_is_str(namev)) {
-                name_s = skt_slice(skt_str(namev), SKT_MAX_NAME_LENGTH);
-            } else if (skt_is_null(namev)) {
-                err = skt_subscript_raise(namev); goto handle;
-            } else {
-                err = skt_subscript_raise(namev); goto handle;
-            }
-            /* _truncate_description(description) */
-            json_t *ta = json_object(); json_set(ta, "description", json_copy(desc));
-            json_t *trunc = skt_call(e, "_truncate_description", ta);
-            if (skt_is_raise(trunc)) { free(name_s); err = trunc; goto handle; }
-            /* _get_category_from_path(skill_md) */
-            json_t *ca = json_object(); json_set(ca, "path", json_string(skill_md));
-            json_t *cat = skt_call(e, "_get_category_from_path", ca);
-            if (skt_is_raise(cat)) { free(name_s); json_free(trunc); err = cat; goto handle; }
-            /* visible = bool(platform and environment and apps) */
-            bool visible = false;
-            json_t *m1 = NULL, *m2 = NULL, *m3 = NULL;
-            json_t *fa = json_object(); json_set(fa, "frontmatter", json_copy(fm));
-            m1 = skt_call(e, "skill_matches_platform", fa);
-            if (skt_is_raise(m1)) { free(name_s); json_free(trunc); json_free(cat); err = m1; goto handle; }
-            if (skt_truth(m1)) {
-                json_t *fa2 = json_object(); json_set(fa2, "frontmatter", json_copy(fm));
-                m2 = skt_call(e, "skill_matches_environment", fa2);
-                if (skt_is_raise(m2)) { free(name_s); json_free(trunc); json_free(cat); json_free(m1); err = m2; goto handle; }
-                if (skt_truth(m2)) {
-                    json_t *fa3 = json_object(); json_set(fa3, "frontmatter", json_copy(fm));
-                    m3 = skt_call(e, "skill_matches_apps", fa3);
-                    if (skt_is_raise(m3)) { free(name_s); json_free(trunc); json_free(cat); json_free(m1); json_free(m2); err = m3; goto handle; }
-                    visible = skt_truth(m3);
-                }
-            }
-            json_free(m1); json_free(m2); json_free(m3);
-            row = json_object();
-            json_set(row, "name", json_string(name_s));
-            json_set(row, "description", trunc);   /* transfer */
-            json_set(row, "category", cat);        /* transfer */
-            json_set(row, "tier", json_number(tier));
-            json_set(row, "root", json_string(scan_dir));
-            json_set(row, "path", json_string(skill_md));
-            json_set(row, "visible", json_bool(visible));
-            free(name_s);
-            json_append(scanned, row);
-            json_free(fm); json_free(body); json_free(desc);
-            continue;
-handle:
-            /* except (UnicodeDecodeError, PermissionError) / except Exception */
-            json_free(fm); json_free(body); json_free(desc);
-            {
-                const char *k = skt_kind(err);
-                char *md = skt_strdup(skill_md);
-                char *es = skt_pystr(err);   /* str(exc) = message */
-                json_t *msgnode = json_obj_get(err, "message");
-                free(es);
-                es = skt_strdup(skt_sval(msgnode));
-                if (skt_exc_is(k, "UnicodeDecodeError") || skt_exc_is(k, "PermissionError")) {
-                    json_t *la = json_array();
-                    json_append(la, json_string(md)); json_append(la, json_string(es));
-                    json_t *lr = skt_log(e, "debug", "Failed to read skill file %s: %s", la, false);
-                    if (skt_is_raise(lr)) { free(md); free(es); json_free(err); json_free(scanned); json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey); return lr; }
-                    json_free(lr);
-                } else if (skt_exc_is_exception(k)) {
-                    json_t *la = json_array();
-                    json_append(la, json_string(md)); json_append(la, json_string(es));
-                    json_t *lr = skt_log(e, "debug", "Skipping skill at %s: failed to parse: %s", la, true);
-                    if (skt_is_raise(lr)) { free(md); free(es); json_free(err); json_free(scanned); json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey); return lr; }
-                    json_free(lr);
-                } else {
-                    /* BaseException passes through */
-                    free(md); free(es);
-                    json_free(scanned); json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey);
-                    return err;
-                }
-                free(md); free(es); json_free(err);
-            }
+            free(es); json_free(r);
         }
         json_free(files);
     }
-    /* skills = [s for s in resolve_skill_catalog(scanned) if (s.pop("visible") or include_hidden) and not is_disabled_entry(s, disabled)] */
-    json_t *rsa = json_object(); json_set(rsa, "entries", scanned);   /* transfer scanned */
+    if (prop) { json_free(scanned); json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey); return prop; }
+    json_t *rsa = json_object(); json_set(rsa, "entries", scanned);
     json_t *resolved = skt_call(e, "resolve_skill_catalog", rsa);
     if (skt_is_raise(resolved)) { json_free(now); json_free(signature); json_free(disabled); json_free(roots); free(ckey); return resolved; }
     json_t *skills = json_array();
@@ -1048,10 +990,9 @@ handle:
         if (!disabled_entry) json_append(skills, json_copy(s));
     }
     json_free(resolved);
-    /* cache[key] = (signature, now, skills); return [dict(s) for s in skills] */
     json_t *entry = json_array();
-    json_append(entry, signature);   /* transfer */
-    json_append(entry, now);         /* transfer */
+    json_append(entry, signature);
+    json_append(entry, now);
     json_append(entry, json_copy(skills));
     json_set(cache, ckey, entry);
     json_t *out = json_array();
@@ -1065,7 +1006,6 @@ static json_t *skt_host_skills(skt_env *e, const json_t *in) {
     const char *fn_name = json_get_str(in, "fn_name", "");
     json_t *args = json_obj_get(in, "args");
     json_t *kwargs = json_obj_get(in, "kwargs");
-    /* gated(*args, **kwargs): host_feature_refusal("skills", fn.__name__) */
     json_t *ha = json_object();
     json_set(ha, "feature", json_string("skills"));
     json_set(ha, "fn_name", json_string(fn_name));
@@ -1098,7 +1038,6 @@ static json_t *skt_host_skills(skt_env *e, const json_t *in) {
 static json_t *skt_legacy_portable_skill_name(skt_env *e, const json_t *pm, const char *namespace, const char *bare) {
     (void)e;
     if (strncmp(namespace, "agent-plugin-", 13) != 0) return NULL;
-    /* keys = {key for key,loaded in pm._plugins.items() if loaded.manifest.portable and loaded.manifest.data_namespace == namespace} */
     json_t *plugins = json_obj_get(pm, "_plugins");
     json_t *keys = json_array();
     if (skt_is_obj(plugins)) {
@@ -1110,7 +1049,6 @@ static json_t *skt_legacy_portable_skill_name(skt_env *e, const json_t *pm, cons
                 json_append(keys, json_string(plugins->c.keys[i]));
         }
     }
-    /* next((qualified for qualified,entry in pm._plugin_skills.items() if entry.get("plugin_key") in keys and entry.get("bare_name")==bare), None) */
     json_t *pskills = json_obj_get(pm, "_plugin_skills");
     json_t *out = NULL;
     if (skt_is_obj(pskills)) {
@@ -1126,6 +1064,10 @@ static json_t *skt_legacy_portable_skill_name(skt_env *e, const json_t *pm, cons
     json_free(keys);
     return out;
 }
+static json_t *skt_legacy_portable_skill_name_wrap(skt_env *e, const json_t *in) {
+    json_t *pm = json_obj_get(in, "pm");
+    return skt_legacy_portable_skill_name(e, pm, json_get_str(in, "namespace", ""), json_get_str(in, "bare", ""));
+}
 
 /* PoP: skt_resolve_plugin_skill @ tools/skills_tool.py:_resolve_plugin_skill */
 static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
@@ -1133,7 +1075,6 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
     json_t *file_path = json_obj_get(in, "file_path");
     json_t *task_id = json_obj_get(in, "task_id");
     bool preprocess = json_get_bool(in, "preprocess", true);
-    /* namespace, bare = parse_qualified_name(name) */
     json_t *pa = json_object(); json_set(pa, "name", json_string(name));
     json_t *pq = skt_call(e, "parse_qualified_name", pa);
     if (skt_is_raise(pq)) { free(name); return pq; }
@@ -1150,7 +1091,6 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         bare = skt_strdup(skt_sval(json_get(pq2, 1)));
         json_free(pq2);
     }
-    /* if not is_valid_namespace(namespace): return _fail(...), None */
     json_t *va = json_object(); json_set(va, "candidate", json_string(ns));
     json_t *valid = skt_call(e, "is_valid_namespace", va);
     if (skt_is_raise(valid)) { free(name); free(ns); free(bare); return valid; }
@@ -1171,13 +1111,11 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         return out;
     }
     json_free(valid);
-    /* discover_plugins(); pm = get_plugin_manager() */
     json_t *dp = skt_seam0(e, "discover_plugins");
     if (skt_is_raise(dp)) { free(name); free(ns); free(bare); return dp; }
     json_free(dp);
     json_t *pm = skt_seam0(e, "get_plugin_manager");
     if (skt_is_raise(pm)) { free(name); free(ns); free(bare); return pm; }
-    /* legacy = _legacy_portable_skill_name(pm, namespace, bare) */
     json_t *legacy = skt_legacy_portable_skill_name(e, pm, ns, bare);
     if (skt_truth(legacy)) {
         free(name); name = skt_strdup(skt_str(legacy));
@@ -1186,14 +1124,11 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         ns = colon ? skt_slice(name, (size_t)(colon - name)) : skt_strdup(name);
     }
     json_free(legacy);
-    /* active_memory_provider = None; try: _get_active_memory_provider(); _prune...(provider) */
     json_t *amp = NULL;
     json_t *amp_r = skt_seam0(e, "_get_active_memory_provider");
     if (skt_is_raise(amp_r)) {
         if (!skt_swallow_exc(amp_r)) { free(name); free(ns); free(bare); json_free(pm); return amp_r; }
-        /* logged below */
-        json_t *es = json_obj_get(amp_r, "message");
-        json_t *la = skt_log_args1(skt_sval(es));
+        json_t *la = skt_log_args1(json_get_str(amp_r, "message", ""));
         json_t *lr = skt_log(e, "debug", "Failed pruning inactive memory-provider skills: %s", la, false);
         json_free(amp_r);
         if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); return lr; }
@@ -1204,27 +1139,23 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         json_t *pr = skt_call(e, "_prune_inactive_memory_provider_skills", pra);
         if (skt_is_raise(pr)) {
             if (!skt_swallow_exc(pr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); return pr; }
-            json_t *es = json_obj_get(pr, "message");
-            json_t *la = skt_log_args1(skt_sval(es));
+            json_t *la = skt_log_args1(json_get_str(pr, "message", ""));
             json_t *lr = skt_log(e, "debug", "Failed pruning inactive memory-provider skills: %s", la, false);
             json_free(pr);
             if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); return lr; }
             json_free(lr);
         } else json_free(pr);
     }
-    /* plugin_skill_md = pm.find_plugin_skill(name) */
     json_t *fa = json_object(); json_set(fa, "name", json_string(name));
     json_t *md = skt_call(e, "pm.find_plugin_skill", fa);
     if (skt_is_raise(md)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); return md; }
-    /* lazy memory-provider load */
-    if (skt_is_null(md) && amp && skt_is_str(amp) && strcmp(skt_str(amp), ns) == 0) {
+    if (skt_is_null(md) && skt_is_str(amp) && strcmp(skt_str(amp), ns) == 0) {
         json_t *la = json_object(); json_set(la, "namespace", json_string(ns));
         json_t *lm = skt_call(e, "load_memory_provider", la);
         if (skt_is_raise(lm)) {
             if (!skt_swallow_exc(lm)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return lm; }
-            json_t *es = json_obj_get(lm, "message");
             json_t *largs = json_array();
-            json_append(largs, json_string(ns)); json_append(largs, json_string(skt_sval(es)));
+            json_append(largs, json_string(ns)); json_append(largs, json_string(json_get_str(lm, "message", "")));
             json_t *lr = skt_log(e, "debug", "Failed lazy memory-provider skill load for %s: %s", largs, false);
             json_free(lm);
             if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return lr; }
@@ -1237,7 +1168,6 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
             json_free(md); md = md2;
         }
     }
-    /* if md is not None and not md.exists(): remove + fail */
     if (!skt_is_null(md)) {
         char *md_s = skt_pystr(md);
         json_t *ex = skt_path_bool(e, "exists", md_s);
@@ -1245,7 +1175,8 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         bool exists = skt_truth(ex);
         json_free(ex);
         if (!exists) {
-            json_t *rm = skt_call(e, "pm.remove_plugin_skill", ({ json_t *a = json_object(); json_set(a, "name", json_string(name)); a; }));
+            json_t *rma = json_object(); json_set(rma, "name", json_string(name));
+            json_t *rm = skt_call(e, "pm.remove_plugin_skill", rma);
             if (skt_is_raise(rm)) { free(md_s); free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return rm; }
             json_free(rm);
             skt_buf b; skt_buf_init(&b);
@@ -1262,7 +1193,6 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
             json_t *out = json_array(); json_append(out, fail); json_append(out, json_null());
             return out;
         }
-        /* _serve_plugin_skill(md, namespace, bare, file_path=..., preprocess=..., session_id=task_id) */
         json_t *sa = json_object();
         json_set(sa, "skill_md", json_string(md_s));
         json_set(sa, "namespace", json_string(ns));
@@ -1276,7 +1206,6 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         json_t *out = json_array(); json_append(out, served); json_append(out, json_null());
         return out;
     }
-    /* available = pm.list_plugin_skills(namespace) */
     json_t *lsa = json_object(); json_set(lsa, "namespace", json_string(ns));
     json_t *available = skt_call(e, "pm.list_plugin_skills", lsa);
     if (skt_is_raise(available)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return available; }
@@ -1286,8 +1215,8 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
             char *q = skt_concat3(ns, ":", skt_sval(json_get(available, i)));
             json_append(avail_skills, json_string(q)); free(q);
         }
-        skt_buf hb; skt_buf_init(&hb);
         char cnt[32]; snprintf(cnt, sizeof(cnt), "%zu", json_len(available));
+        skt_buf hb; skt_buf_init(&hb);
         skt_buf_add(&hb, "The '"); skt_buf_add(&hb, ns);
         skt_buf_add(&hb, "' plugin provides "); skt_buf_add(&hb, cnt); skt_buf_add(&hb, " skill(s).");
         skt_buf eb; skt_buf_init(&eb);
@@ -1307,52 +1236,49 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         return out;
     }
     json_free(available);
-    /* return None, (f"{namespace}/{bare}" if bare else None) */
     json_t *out = json_array();
     json_append(out, json_null());
-    if (bare[0]) {
-        char *lc = skt_concat3(ns, "/", bare);
-        json_append(out, json_string(lc)); free(lc);
-    } else json_append(out, json_null());
+    if (bare[0]) { char *lc = skt_concat3(ns, "/", bare); json_append(out, json_string(lc)); free(lc); }
+    else json_append(out, json_null());
     free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md);
     return out;
 }
 
 /* PoP: skt_under_any @ tools/skills_tool.py:_under_any */
 static json_t *skt_under_any(skt_env *e, const char *path, const json_t *dirs) {
-    /* resolved = path; with suppress(Exception): resolved = path.resolve() */
     char *resolved = skt_strdup(path);
     json_t *rs = skt_path_resolve(e, path);
     if (skt_is_raise(rs)) {
         if (!skt_swallow_exc(rs)) { free(resolved); return rs; }
     } else {
-        free(resolved);
-        resolved = skt_pystr(rs);
-        json_free(rs);
+        free(resolved); resolved = skt_pystr(rs); json_free(rs);
     }
-    /* any(resolved.is_relative_to(d) for d in dirs) */
     bool any = false;
-    for (size_t i = 0; i < json_len(dirs); i++) {
+    for (size_t i = 0; i < json_len(dirs); i++)
         if (skt_is_relative_to(resolved, skt_sval(json_get(dirs, i)))) { any = true; break; }
-    }
     free(resolved);
     return json_bool(any);
+}
+static json_t *skt_under_any_wrap(skt_env *e, const json_t *in) {
+    json_t *dirs = json_obj_get(in, "dirs");
+    json_t *empty = json_array();
+    json_t *r = skt_under_any(e, json_get_str(in, "path", ""), dirs ? dirs : empty);
+    if (!dirs) json_free(empty);
+    return r;
 }
 
 /* PoP: skt_is_package_owned_markdown @ tools/skills_tool.py:_is_package_owned_markdown */
 static json_t *skt_is_package_owned_markdown(skt_env *e, const char *path, const char *search_root) {
-    /* relative = path.relative_to(search_root); except ValueError: return False */
     json_t *err = NULL;
     char *rel = skt_relative_to(path, search_root, &err);
     if (err) {
         if (skt_exc_is(skt_kind(err), "ValueError")) { json_free(err); return json_bool(false); }
         return err;
     }
-    /* any((search_root.joinpath(*relative.parts[:depth]) / "SKILL.md").is_file() for depth in range(1, len(relative.parts))) */
     skt_parts rp = skt_parts_parse(rel);
     bool any = false;
+    json_t *prop = NULL;
     for (size_t depth = 1; depth < rp.n; depth++) {
-        /* joinpath(*parts[:depth]) */
         skt_parts sub; sub.abs = false; sub.n = depth;
         sub.v = (char **)malloc(depth * sizeof(char *));
         for (size_t k = 0; k < depth; k++) sub.v[k] = skt_strdup(rp.v[k]);
@@ -1364,14 +1290,18 @@ static json_t *skt_is_package_owned_markdown(skt_env *e, const char *path, const
         free(joined);
         json_t *isf = skt_path_bool(e, "is_file", cand);
         free(cand);
-        if (skt_is_raise(isf)) { skt_parts_free(&rp); free(rel); return isf; }
+        if (skt_is_raise(isf)) { prop = isf; break; }
         bool f = skt_truth(isf);
         json_free(isf);
         if (f) { any = true; break; }
     }
     skt_parts_free(&rp);
     free(rel);
+    if (prop) return prop;
     return json_bool(any);
+}
+static json_t *skt_is_package_owned_markdown_wrap(skt_env *e, const json_t *in) {
+    return skt_is_package_owned_markdown(e, json_get_str(in, "path", ""), json_get_str(in, "search_root", ""));
 }
 
 /* PoP: skt_owning_search_dir @ tools/skills_tool.py:_owning_search_dir */
@@ -1379,13 +1309,12 @@ static json_t *skt_owning_search_dir(skt_env *e, const json_t *in) {
     (void)e;
     const char *skill_md = json_get_str(in, "skill_md", "");
     json_t *all_dirs = json_obj_get(in, "all_dirs");
-    /* owners = [Path(d) for d in all_dirs if skill_md.is_relative_to(d)]; max(key=len(parts), default=None) */
     const char *best = NULL; size_t best_n = 0;
     for (size_t i = 0; i < json_len(all_dirs); i++) {
         const char *d = skt_sval(json_get(all_dirs, i));
         if (skt_is_relative_to(skill_md, d)) {
             size_t n = skt_parts_count(d);
-            if (!best || n > best_n) { best = d; best_n = n; }   /* first max wins */
+            if (!best || n > best_n) { best = d; best_n = n; }
         }
     }
     return best ? json_string(best) : json_null();
@@ -1396,13 +1325,11 @@ static json_t *skt_owned_relative(skt_env *e, const json_t *in) {
     const char *skill_md = json_get_str(in, "skill_md", "");
     json_t *skill_dir = json_obj_get(in, "skill_dir");
     json_t *all_dirs = json_obj_get(in, "all_dirs");
-    /* root = _owning_search_dir(skill_md, all_dirs) */
     json_t *oa = json_object();
     json_set(oa, "skill_md", json_string(skill_md));
     json_set(oa, "all_dirs", all_dirs ? json_copy(all_dirs) : json_array());
     json_t *root = skt_owning_search_dir(e, oa);
     json_free(oa);
-    /* target = skill_dir if skill_dir is not None else skill_md.with_suffix("") */
     char *target;
     if (!skt_is_null(skill_dir)) target = skt_pystr(skill_dir);
     else {
@@ -1415,26 +1342,20 @@ static json_t *skt_owned_relative(skt_env *e, const json_t *in) {
         json_t *err = NULL;
         char *rel = skt_relative_to(target, skt_str(root), &err);
         if (err) { free(target); json_free(root); return err; }
-        out = json_string(rel);
-        free(rel);
-    } else {
-        out = json_string(target);
-    }
+        out = json_string(rel); free(rel);
+    } else out = json_string(target);
     free(target); json_free(root);
     return out;
 }
 
-/* _record helper for _collect_skill_candidates: dedup by resolved path.
- * seen: sorted string array; candidates: array of [sd|null, smd]. */
+/* _record helper: dedup by resolved path. */
 static json_t *skt_record_candidate(skt_env *e, json_t *seen, json_t *candidates,
                                     const char *sd, const char *smd) {
     char *key = skt_strdup(smd);
     json_t *rs = skt_path_resolve(e, smd);
     if (skt_is_raise(rs)) {
         if (!skt_swallow_exc(rs)) { free(key); return rs; }
-    } else {
-        free(key); key = skt_pystr(rs); json_free(rs);
-    }
+    } else { free(key); key = skt_pystr(rs); json_free(rs); }
     if (!skt_arr_has_str(seen, key)) {
         skt_set_add(seen, key);
         json_t *pair = json_array();
@@ -1453,129 +1374,127 @@ static json_t *skt_collect_skill_candidates(skt_env *e, const json_t *in) {
     json_t *all_dirs = json_obj_get(in, "all_dirs");
     json_t *candidates = json_array();
     json_t *seen = json_array();
-    for (size_t di = 0; di < json_len(all_dirs); di++) {
+    json_t *prop = NULL;
+    for (size_t di = 0; di < json_len(all_dirs) && !prop; di++) {
         const char *search_dir = skt_sval(json_get(all_dirs, di));
-        /* for direct in filter(None, (name, local_category_name)) */
         const char *directs[2] = {name, lcn};
-        for (int k = 0; k < 2; k++) {
+        for (int k = 0; k < 2 && !prop; k++) {
             const char *direct = directs[k];
             if (!direct || !direct[0]) continue;
             char *direct_path = skt_path_join(search_dir, direct);
-            /* flat = direct_path.with_suffix(".md") */
             json_t *werr = NULL;
             char *flat = skt_with_suffix(direct_path, ".md", &werr);
-            if (werr) { free(direct_path); json_free(candidates); json_free(seen); return werr; }
-            /* if not _is_skill_support_path(direct_path) and direct_path.is_dir() and (direct_path/"SKILL.md").exists() */
+            if (werr) { free(direct_path); prop = werr; break; }
             json_t *sa = json_object(); json_set(sa, "path", json_string(direct_path));
             json_t *sup = skt_call(e, "_is_skill_support_path", sa);
-            if (skt_is_raise(sup)) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return sup; }
+            if (skt_is_raise(sup)) { free(direct_path); free(flat); prop = sup; break; }
             bool support = skt_truth(sup);
             json_free(sup);
             bool taken = false;
             if (!support) {
                 json_t *isd = skt_path_bool(e, "is_dir", direct_path);
-                if (skt_is_raise(isd)) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return isd; }
+                if (skt_is_raise(isd)) { free(direct_path); free(flat); prop = isd; break; }
                 bool isdir = skt_truth(isd);
                 json_free(isd);
                 if (isdir) {
                     char *smd = skt_path_join(direct_path, "SKILL.md");
                     json_t *ex = skt_path_bool(e, "exists", smd);
-                    if (skt_is_raise(ex)) { free(smd); free(direct_path); free(flat); json_free(candidates); json_free(seen); return ex; }
+                    if (skt_is_raise(ex)) { free(smd); free(direct_path); free(flat); prop = ex; break; }
                     bool exists = skt_truth(ex);
                     json_free(ex);
                     if (exists) {
                         json_t *err = skt_record_candidate(e, seen, candidates, direct_path, smd);
                         free(smd);
-                        if (err) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return err; }
+                        if (err) { free(direct_path); free(flat); prop = err; break; }
                         taken = true;
                     } else free(smd);
                 }
             }
-            if (!taken) {
-                /* elif flat.exists() and not _is_skill_support_path(flat) and not _is_package_owned_markdown(flat, search_root) */
+            if (!taken && !prop) {
                 json_t *fex = skt_path_bool(e, "exists", flat);
-                if (skt_is_raise(fex)) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return fex; }
+                if (skt_is_raise(fex)) { free(direct_path); free(flat); prop = fex; break; }
                 bool fexists = skt_truth(fex);
                 json_free(fex);
                 if (fexists) {
                     json_t *sa2 = json_object(); json_set(sa2, "path", json_string(flat));
                     json_t *sup2 = skt_call(e, "_is_skill_support_path", sa2);
-                    if (skt_is_raise(sup2)) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return sup2; }
+                    if (skt_is_raise(sup2)) { free(direct_path); free(flat); prop = sup2; break; }
                     bool sup2v = skt_truth(sup2);
                     json_free(sup2);
                     if (!sup2v) {
                         json_t *pom = skt_is_package_owned_markdown(e, flat, search_dir);
-                        if (skt_is_raise(pom)) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return pom; }
+                        if (skt_is_raise(pom)) { free(direct_path); free(flat); prop = pom; break; }
                         bool owned = skt_truth(pom);
                         json_free(pom);
                         if (!owned) {
                             json_t *err = skt_record_candidate(e, seen, candidates, NULL, flat);
-                            if (err) { free(direct_path); free(flat); json_free(candidates); json_free(seen); return err; }
+                            if (err) { free(direct_path); free(flat); prop = err; break; }
                         }
                     }
                 }
             }
             free(direct_path); free(flat);
         }
-        /* recursive by dir name / frontmatter name */
+        if (prop) break;
         json_t *ia = json_object();
         json_set(ia, "dir", json_string(search_dir));
         json_set(ia, "filename", json_string("SKILL.md"));
         json_t *idx = skt_call(e, "iter_skill_index_files", ia);
-        if (skt_is_raise(idx)) { json_free(candidates); json_free(seen); return idx; }
-        for (size_t i = 0; i < json_len(idx); i++) {
+        if (skt_is_raise(idx)) { prop = idx; break; }
+        for (size_t i = 0; i < json_len(idx) && !prop; i++) {
             const char *found = skt_sval(json_get(idx, i));
             char *parent = skt_path_parent(found);
-            char *pname = (char *)skt_path_name(parent);
+            char *pname = skt_path_name(parent);
             bool match = (strcmp(pname, name) == 0);
             if (!match) {
                 json_t *sfa = json_object();
                 json_set(sfa, "path", json_string(found));
                 json_set(sfa, "content", json_null());
                 json_t *sf = skt_call(e, "_safe_frontmatter", sfa);
-                if (skt_is_raise(sf)) { free(parent); free(pname); json_free(idx); json_free(candidates); json_free(seen); return sf; }
-                if (!skt_is_obj(sf)) { json_free(sf); free(parent); free(pname); json_free(idx); json_free(candidates); json_free(seen); return skt_attr_raise(sf, "get"); }
+                if (skt_is_raise(sf)) { free(parent); free(pname); prop = sf; break; }
+                if (!skt_is_obj(sf)) { json_free(sf); free(parent); free(pname); prop = skt_attr_raise(sf, "get"); break; }
                 match = (strcmp(json_get_str(sf, "name", ""), name) == 0);
                 json_free(sf);
             }
             if (match) {
                 json_t *err = skt_record_candidate(e, seen, candidates, parent, found);
-                if (err) { free(parent); free(pname); json_free(idx); json_free(candidates); json_free(seen); return err; }
+                if (err) { free(parent); free(pname); prop = err; break; }
             }
             free(parent); free(pname);
         }
         json_free(idx);
-        /* legacy flat <name>.md anywhere */
+        if (prop) break;
         char *pattern = skt_concat3(name, ".md", "");
         json_t *rg = skt_path_glob(e, "rglob", search_dir, pattern);
         free(pattern);
-        if (skt_is_raise(rg)) { json_free(candidates); json_free(seen); return rg; }
-        for (size_t i = 0; i < json_len(rg); i++) {
+        if (skt_is_raise(rg)) { prop = rg; break; }
+        for (size_t i = 0; i < json_len(rg) && !prop; i++) {
             const char *found = skt_sval(json_get(rg, i));
-            char *fname = (char *)skt_path_name(found);
+            char *fname = skt_path_name(found);
             bool ok = (strcmp(fname, "SKILL.md") != 0);
             free(fname);
             if (ok) {
                 json_t *sa = json_object(); json_set(sa, "path", json_string(found));
                 json_t *sup = skt_call(e, "_is_skill_support_path", sa);
-                if (skt_is_raise(sup)) { json_free(rg); json_free(candidates); json_free(seen); return sup; }
+                if (skt_is_raise(sup)) { prop = sup; break; }
                 ok = !skt_truth(sup);
                 json_free(sup);
             }
             if (ok) {
                 json_t *pom = skt_is_package_owned_markdown(e, found, search_dir);
-                if (skt_is_raise(pom)) { json_free(rg); json_free(candidates); json_free(seen); return pom; }
+                if (skt_is_raise(pom)) { prop = pom; break; }
                 ok = !skt_truth(pom);
                 json_free(pom);
             }
             if (ok) {
                 json_t *err = skt_record_candidate(e, seen, candidates, NULL, found);
-                if (err) { json_free(rg); json_free(candidates); json_free(seen); return err; }
+                if (err) { prop = err; break; }
             }
         }
         json_free(rg);
     }
     json_free(seen);
+    if (prop) { json_free(candidates); return prop; }
     return candidates;
 }
 
@@ -1583,45 +1502,45 @@ static json_t *skt_collect_skill_candidates(skt_env *e, const json_t *in) {
 static json_t *skt_skill_linked_files(skt_env *e, const json_t *in) {
     json_t *skill_dir = json_obj_get(in, "skill_dir");
     json_t *files = json_object();
-    if (skt_is_null(skill_dir)) return files;   /* `if skill_dir else ()` */
+    if (skt_is_null(skill_dir)) return files;
     char *sd = skt_pystr(skill_dir);
-    for (size_t s = 0; s < sizeof(SKT_LINK_SPECS) / sizeof(SKT_LINK_SPECS[0]); s++) {
+    json_t *prop = NULL;
+    for (size_t s = 0; s < sizeof(SKT_LINK_SPECS) / sizeof(SKT_LINK_SPECS[0]) && !prop; s++) {
         const skt_link_spec *spec = &SKT_LINK_SPECS[s];
         char *base = skt_path_join(sd, spec->sub);
         json_t *found = json_array();
-        for (size_t g = 0; g < spec->ng; g++) {
-            /* if base.exists() — evaluated PER glob */
+        for (size_t g = 0; g < spec->ng && !prop; g++) {
             json_t *ex = skt_path_bool(e, "exists", base);
-            if (skt_is_raise(ex)) { free(base); json_free(found); json_free(files); free(sd); return ex; }
+            if (skt_is_raise(ex)) { prop = ex; break; }
             bool exists = skt_truth(ex);
             json_free(ex);
             if (!exists) continue;
             json_t *gl = skt_path_glob(e, spec->recursive ? "rglob" : "glob", base, spec->globs[g]);
-            if (skt_is_raise(gl)) { free(base); json_free(found); json_free(files); free(sd); return gl; }
+            if (skt_is_raise(gl)) { prop = gl; break; }
             for (size_t i = 0; i < json_len(gl); i++) {
                 const char *f = skt_sval(json_get(gl, i));
-                /* if not files_only or f.is_file() */
                 if (spec->files_only) {
                     json_t *isf = skt_path_bool(e, "is_file", f);
-                    if (skt_is_raise(isf)) { json_free(gl); free(base); json_free(found); json_free(files); free(sd); return isf; }
+                    if (skt_is_raise(isf)) { prop = isf; break; }
                     bool isfile = skt_truth(isf);
                     json_free(isf);
                     if (!isfile) continue;
                 }
-                /* f.relative_to(skill_dir).as_posix() */
                 json_t *err = NULL;
                 char *rel = skt_relative_to(f, sd, &err);
-                if (err) { json_free(gl); free(base); json_free(found); json_free(files); free(sd); return err; }
+                if (err) { prop = err; break; }
                 json_append(found, json_string(rel));
                 free(rel);
             }
             json_free(gl);
         }
+        if (prop) { free(base); json_free(found); break; }
         if (json_len(found) > 0) json_set(files, spec->sub, found);
         else json_free(found);
         free(base);
     }
     free(sd);
+    if (prop) { json_free(files); return prop; }
     return files;
 }
 
@@ -1629,11 +1548,9 @@ static json_t *skt_skill_linked_files(skt_env *e, const json_t *in) {
 static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
     json_t *fm = json_obj_get(in, "frontmatter");
     const char *skill_name = json_get_str(in, "skill_name", "");
-    /* required_env_vars = _get_required_environment_variables(frontmatter) */
     json_t *ga = json_object(); json_set(ga, "frontmatter", fm ? json_copy(fm) : json_null());
     json_t *req = skt_call(e, "_get_required_environment_variables", ga);
     if (skt_is_raise(req)) return req;
-    /* backend = str(terminal_env("TERMINAL_ENV","local")).strip().lower() or "local" */
     json_t *ta = json_object();
     json_set(ta, "key", json_string("TERMINAL_ENV"));
     json_set(ta, "default", json_string("local"));
@@ -1646,52 +1563,48 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
     free(tes); free(stripped);
     if (backend != lowered) free(lowered);
     json_free(te);
-    /* env_snapshot = load_env() */
     json_t *env = skt_seam0(e, "load_env");
     if (skt_is_raise(env)) { json_free(req); free(backend); return env; }
-    /* missing_required_env_vars = [e for e in req if not e.get("optional") and not _is_env_var_persisted(e["name"], env)] */
     json_t *missing = json_array();
-    for (size_t i = 0; i < json_len(req); i++) {
+    json_t *prop = NULL;
+    for (size_t i = 0; i < json_len(req) && !prop; i++) {
         json_t *ev = json_get(req, i);
-        if (!skt_is_obj(ev)) { json_free(missing); json_free(req); json_free(env); free(backend); return skt_attr_raise(ev, "get"); }
+        if (!skt_is_obj(ev)) { prop = skt_attr_raise(ev, "get"); break; }
         if (skt_truth(json_obj_get(ev, "optional"))) continue;
         json_t *nm = json_obj_get(ev, "name");
-        if (!nm) { json_free(missing); json_free(req); json_free(env); free(backend); return skt_keyerror_raise("name"); }
+        if (!nm) { prop = skt_keyerror_raise("name"); break; }
         char *nms = skt_pystr(nm);
         json_t *pa = json_object();
         json_set(pa, "name", json_string(nms));
         json_set(pa, "snapshot", json_copy(env));
         json_t *pers = skt_call(e, "_is_env_var_persisted", pa);
         free(nms);
-        if (skt_is_raise(pers)) { json_free(missing); json_free(req); json_free(env); free(backend); return pers; }
+        if (skt_is_raise(pers)) { prop = pers; break; }
         bool persisted = skt_truth(pers);
         json_free(pers);
         if (!persisted) json_append(missing, json_copy(ev));
     }
-    /* capture_result = _capture_required_environment_variables(skill_name, missing) */
+    if (prop) { json_free(missing); json_free(req); json_free(env); free(backend); return prop; }
     json_t *ca = json_object();
     json_set(ca, "skill_name", json_string(skill_name));
     json_set(ca, "missing", json_copy(missing));
     json_t *capture = skt_call(e, "_capture_required_environment_variables", ca);
     if (skt_is_raise(capture)) { json_free(missing); json_free(req); json_free(env); free(backend); return capture; }
-    /* if missing: env_snapshot = load_env() */
     if (json_len(missing) > 0) {
         json_t *env2 = skt_seam0(e, "load_env");
         if (skt_is_raise(env2)) { json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return env2; }
         json_free(env); env = env2;
     }
-    /* still_missing = set(capture_result["missing_names"]) */
     json_t *mn = json_obj_get(capture, "missing_names");
     if (!mn) { json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return skt_keyerror_raise("missing_names"); }
     json_t *still = skt_norm_set(mn);
-    /* remaining = [e["name"] for e in req if not e.get("optional") and (e["name"] in still or not persisted)] */
     json_t *remaining = json_array();
-    for (size_t i = 0; i < json_len(req); i++) {
+    for (size_t i = 0; i < json_len(req) && !prop; i++) {
         json_t *ev = json_get(req, i);
-        if (!skt_is_obj(ev)) { json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return skt_attr_raise(ev, "get"); }
+        if (!skt_is_obj(ev)) { prop = skt_attr_raise(ev, "get"); break; }
         if (skt_truth(json_obj_get(ev, "optional"))) continue;
         json_t *nm = json_obj_get(ev, "name");
-        if (!nm) { json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return skt_keyerror_raise("name"); }
+        if (!nm) { prop = skt_keyerror_raise("name"); break; }
         char *nms = skt_pystr(nm);
         bool in_still = skt_arr_has_str(still, nms);
         bool keep = in_still;
@@ -1700,24 +1613,25 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
             json_set(pa, "name", json_string(nms));
             json_set(pa, "snapshot", json_copy(env));
             json_t *pers = skt_call(e, "_is_env_var_persisted", pa);
-            if (skt_is_raise(pers)) { free(nms); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return pers; }
+            if (skt_is_raise(pers)) { free(nms); prop = pers; break; }
             keep = !skt_truth(pers);
             json_free(pers);
         }
         if (keep) json_append(remaining, json_string(nms));
         free(nms);
     }
+    if (prop) { json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return prop; }
     bool setup_needed = json_len(remaining) > 0;
-    /* available_env_names = [e["name"] for e in req if e["name"] not in remaining] */
     json_t *avail = json_array();
-    for (size_t i = 0; i < json_len(req); i++) {
+    for (size_t i = 0; i < json_len(req) && !prop; i++) {
         json_t *ev = json_get(req, i);
         json_t *nm = json_obj_get(ev, "name");
-        if (!nm) { json_free(avail); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return skt_keyerror_raise("name"); }
+        if (!nm) { prop = skt_keyerror_raise("name"); break; }
         char *nms = skt_pystr(nm);
         if (!skt_arr_has_str(remaining, nms)) json_append(avail, json_string(nms));
         free(nms);
     }
+    if (prop) { json_free(avail); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return prop; }
     json_t *refused = json_array();
     if (json_len(avail) > 0) {
         json_t *pa = json_object(); json_set(pa, "names", json_copy(avail));
@@ -1736,7 +1650,6 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
         }
     }
     json_free(avail);
-    /* required_cred_files_raw = frontmatter.get("required_credential_files", []) */
     json_t *cred_raw = json_obj_get(fm, "required_credential_files");
     json_t *missing_cred = json_array();
     if (skt_is_arr(cred_raw) && json_len(cred_raw) > 0) {
@@ -1756,7 +1669,6 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
             setup_needed = setup_needed || json_len(missing_cred) > 0;
         }
     }
-    /* status / fields */
     const char *status = setup_needed ? "setup_needed" : "available";
     json_t *fields = json_object();
     json_set(fields, "required_environment_variables", json_copy(req));
@@ -1768,11 +1680,9 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
     json_set(fields, "setup_skipped", json_copy(json_obj_get(capture, "setup_skipped")));
     json_set(fields, "readiness_status", json_string(status));
     json_t *extras = json_object();
-    /* setup_help = next((e["help"] for e in req if e.get("help")), None) */
     json_t *setup_help = NULL;
     for (size_t i = 0; i < json_len(req); i++) {
-        json_t *ev = json_get(req, i);
-        json_t *h = json_obj_get(ev, "help");
+        json_t *h = json_obj_get(json_get(req, i), "help");
         if (skt_truth(h)) { setup_help = json_copy(h); break; }
     }
     if (setup_help) json_set(extras, "setup_help", json_copy(setup_help));
@@ -1786,7 +1696,6 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
         json_set(extras, "env_passthrough_refused", json_string(b.s));
         free(js); free(b.s);
     }
-    /* missing_items = [f"env ${n}" for n in remaining] + [f"file {p}" for p in missing_cred] */
     json_t *missing_items = json_array();
     for (size_t i = 0; i < json_len(remaining); i++) {
         char *it = skt_concat3("env $", skt_sval(json_get(remaining, i)), "");
@@ -1796,7 +1705,6 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
         char *it = skt_concat3("file ", skt_sval(json_get(missing_cred, i)), "");
         json_append(missing_items, json_string(it)); free(it);
     }
-    /* if setup_needed and (setup_note := _build_setup_note(status, missing_items, setup_help)) */
     if (setup_needed) {
         json_t *ba = json_object();
         json_set(ba, "status", json_string(status));
@@ -1837,7 +1745,6 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
     const char *name = json_get_str(in, "name", "");
     json_t *lcn = json_obj_get(in, "local_category_name");
     json_t *roots = json_obj_get(in, "roots");
-    /* all_dirs = [d for _t,d in roots] */
     json_t *all_dirs = json_array();
     for (size_t i = 0; i < json_len(roots); i++) json_append(all_dirs, json_string(skt_sval(json_get(json_get(roots, i), 1))));
     if (json_len(all_dirs) == 0) {
@@ -1850,7 +1757,6 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
         json_t *out = json_array(); json_append(out, fail); json_append(out, json_null()); json_append(out, json_null());
         return out;
     }
-    /* candidates = _collect_skill_candidates(name, local_category_name, all_dirs) */
     json_t *cca = json_object();
     json_set(cca, "name", json_string(name));
     json_set(cca, "local_category_name", lcn ? json_copy(lcn) : json_null());
@@ -1858,44 +1764,37 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
     json_t *candidates = skt_collect_skill_candidates(e, cca);
     json_free(cca);
     if (skt_is_raise(candidates)) { json_free(all_dirs); return candidates; }
-    /* tier_of = {d: t for t,d in roots} */
     json_t *tier_of = json_object();
     for (size_t i = 0; i < json_len(roots); i++) {
         json_t *pair = json_get(roots, i);
         json_set(tier_of, skt_sval(json_get(pair, 1)), json_copy(json_get(pair, 0)));
     }
+    json_t *prop = NULL;
     if (json_len(candidates) > 1) {
-        /* owned = [(c, _owning_search_dir(c[1], all_dirs)) for c in candidates] */
         json_t *owned_roots = json_array();
         for (size_t i = 0; i < json_len(candidates); i++) {
-            json_t *c = json_get(candidates, i);
             json_t *oa = json_object();
-            json_set(oa, "skill_md", json_string(skt_sval(json_get(c, 1))));
+            json_set(oa, "skill_md", json_string(skt_sval(json_get(json_get(candidates, i), 1))));
             json_set(oa, "all_dirs", json_copy(all_dirs));
-            json_t *root = skt_owning_search_dir(e, oa);
+            json_append(owned_roots, skt_owning_search_dir(e, oa));
             json_free(oa);
-            json_append(owned_roots, root);
         }
-        /* pick_skill_candidate([(tier_of[root], str(root), skill_candidate_rank(c[1], root), c[1]) ...]) */
         json_t *pick_args = json_array();
-        for (size_t i = 0; i < json_len(candidates); i++) {
+        for (size_t i = 0; i < json_len(candidates) && !prop; i++) {
             json_t *c = json_get(candidates, i);
             json_t *root = json_get(owned_roots, i);
             const char *smd = skt_sval(json_get(c, 1));
             json_t *tier = skt_is_null(root) ? NULL : json_obj_get(tier_of, skt_str(root));
             if (!tier) {
-                /* tier_of[root] KeyError (root None -> "None") */
                 char *rk = skt_is_null(root) ? skt_strdup("None") : skt_pyrepr(skt_str(root));
-                json_t *ke = skt_raise_spec("KeyError", rk);
-                free(rk);
-                json_free(pick_args); json_free(owned_roots); json_free(candidates); json_free(tier_of); json_free(all_dirs);
-                return ke;
+                prop = skt_raise_spec("KeyError", rk);
+                free(rk); break;
             }
             json_t *ra = json_object();
             json_set(ra, "skill_md", json_string(smd));
             json_set(ra, "root", json_string(skt_str(root)));
             json_t *rank = skt_call(e, "skill_candidate_rank", ra);
-            if (skt_is_raise(rank)) { json_free(pick_args); json_free(owned_roots); json_free(candidates); json_free(tier_of); json_free(all_dirs); return rank; }
+            if (skt_is_raise(rank)) { prop = rank; break; }
             json_t *item = json_array();
             json_append(item, json_copy(tier));
             json_append(item, json_string(skt_str(root)));
@@ -1903,50 +1802,55 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
             json_append(item, json_string(smd));
             json_append(pick_args, item);
         }
-        json_t *pka = json_object(); json_set(pka, "candidates", pick_args);
-        json_t *pick = skt_call(e, "pick_skill_candidate", pka);
-        if (skt_is_raise(pick)) { json_free(owned_roots); json_free(candidates); json_free(tier_of); json_free(all_dirs); return pick; }
-        json_t *won = json_get(pick, 0);
-        json_t *contenders = json_get(pick, 1);
-        if (!skt_is_null(won)) {
-            size_t wi = (size_t)won->num_val;
-            /* dropped = [str(smd) for i,(_sd,smd) in enumerate(candidates) if i != won] */
-            json_t *dropped = json_array();
-            for (size_t i = 0; i < json_len(candidates); i++)
-                if (i != wi) json_append(dropped, json_string(skt_sval(json_get(json_get(candidates, i), 1))));
-            if (json_len(dropped) > 0) {
-                char *js = skt_join_strs(dropped, "; ");
-                json_t *la = json_array();
-                json_append(la, json_string(name));
-                json_append(la, json_string(skt_sval(json_get(json_get(candidates, wi), 1))));
-                json_append(la, json_string(js));
-                json_t *lr = skt_log(e, "info", "Skill '%s' resolved to %s by precedence (project > local > create_dir > external_dirs, then identical same-root copies); not loaded: %s", la, false);
-                free(js);
-                if (skt_is_raise(lr)) { json_free(dropped); json_free(pick); json_free(owned_roots); json_free(candidates); json_free(tier_of); json_free(all_dirs); return lr; }
-                json_free(lr);
+        if (!prop) {
+            json_t *pka = json_object(); json_set(pka, "candidates", pick_args);
+            json_t *pick = skt_call(e, "pick_skill_candidate", pka);
+            if (skt_is_raise(pick)) prop = pick;
+            else {
+                json_t *won = json_get(pick, 0);
+                json_t *contenders = json_get(pick, 1);
+                if (!skt_is_null(won)) {
+                    size_t wi = (size_t)won->num_val;
+                    json_t *dropped = json_array();
+                    for (size_t i = 0; i < json_len(candidates); i++)
+                        if (i != wi) json_append(dropped, json_string(skt_sval(json_get(json_get(candidates, i), 1))));
+                    if (json_len(dropped) > 0) {
+                        char *js = skt_join_strs(dropped, "; ");
+                        json_t *la = json_array();
+                        json_append(la, json_string(name));
+                        json_append(la, json_string(skt_sval(json_get(json_get(candidates, wi), 1))));
+                        json_append(la, json_string(js));
+                        json_t *lr = skt_log(e, "info", "Skill '%s' resolved to %s by precedence (project > local > create_dir > external_dirs, then identical same-root copies); not loaded: %s", la, false);
+                        free(js);
+                        if (skt_is_raise(lr)) prop = lr;
+                        else json_free(lr);
+                    }
+                    if (!prop) {
+                        json_free(dropped);
+                        json_t *winner = json_copy(json_get(candidates, wi));
+                        json_free(candidates);
+                        candidates = json_array();
+                        json_append(candidates, winner);
+                    } else json_free(dropped);
+                } else {
+                    json_t *nc = json_array();
+                    for (size_t i = 0; i < json_len(contenders); i++) {
+                        size_t ci = (size_t)json_get(contenders, i)->num_val;
+                        json_append(nc, json_copy(json_get(candidates, ci)));
+                    }
+                    json_free(candidates);
+                    candidates = nc;
+                }
+                json_free(pick);
             }
-            json_free(dropped);
-            json_t *winner = json_copy(json_get(candidates, wi));
-            json_free(candidates);
-            candidates = json_array();
-            json_append(candidates, winner);
-        } else {
-            json_t *nc = json_array();
-            for (size_t i = 0; i < json_len(contenders); i++) {
-                size_t ci = (size_t)json_get(contenders, i)->num_val;
-                json_append(nc, json_copy(json_get(candidates, ci)));
-            }
-            json_free(candidates);
-            candidates = nc;
-        }
-        json_free(pick); json_free(owned_roots);
+        } else json_free(pick_args);
+        json_free(owned_roots);
     }
-    if (json_len(candidates) > 1) {
-        /* paths / load_names */
+    if (!prop && json_len(candidates) > 1) {
         json_t *paths = json_array();
         for (size_t i = 0; i < json_len(candidates); i++) json_append(paths, json_string(skt_sval(json_get(json_get(candidates, i), 1))));
         json_t *load_set = json_array();
-        for (size_t i = 0; i < json_len(candidates); i++) {
+        for (size_t i = 0; i < json_len(candidates) && !prop; i++) {
             json_t *c = json_get(candidates, i);
             json_t *ora = json_object();
             json_set(ora, "skill_dir", json_copy(json_get(c, 0)));
@@ -1954,61 +1858,65 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
             json_set(ora, "all_dirs", json_copy(all_dirs));
             json_t *rel = skt_owned_relative(e, ora);
             json_free(ora);
-            if (skt_is_raise(rel)) { json_free(paths); json_free(load_set); json_free(candidates); json_free(tier_of); json_free(all_dirs); return rel; }
+            if (skt_is_raise(rel)) { prop = rel; break; }
             skt_set_add(load_set, skt_sval(rel));
             json_free(rel);
         }
-        /* load_names = sorted(set - {name}) */
-        json_t *load_names = json_array();
-        for (size_t i = 0; i < json_len(load_set); i++) {
-            const char *s = skt_sval(json_get(load_set, i));
-            if (strcmp(s, name) != 0) json_append(load_names, json_string(s));
+        if (!prop) {
+            json_t *load_names = json_array();
+            for (size_t i = 0; i < json_len(load_set); i++) {
+                const char *s = skt_sval(json_get(load_set, i));
+                if (strcmp(s, name) != 0) json_append(load_names, json_string(s));
+            }
+            char *pj = skt_join_strs(paths, "; ");
+            char cnt[32]; snprintf(cnt, sizeof(cnt), "%zu", json_len(candidates));
+            json_t *la = json_array();
+            json_append(la, json_string(name));
+            json_append(la, json_number((double)json_len(candidates)));
+            json_append(la, json_string(pj));
+            json_t *lr = skt_log(e, "warning", "Skill name collision for '%s': %d candidates \xe2\x80\x94 %s", la, false);
+            free(pj);
+            if (skt_is_raise(lr)) prop = lr;
+            else {
+                json_free(lr);
+                skt_buf b; skt_buf_init(&b);
+                skt_buf_add(&b, SKT_AMBIGUOUS_PREFIX);
+                skt_buf_add(&b, "'"); skt_buf_add(&b, name); skt_buf_add(&b, "': ");
+                if (json_len(load_names) > 0) {
+                    char *lj = skt_join_strs(load_names, ", ");
+                    skt_buf_add(&b, "use one of "); skt_buf_add(&b, lj); skt_buf_add(&b, ". ");
+                    free(lj);
+                }
+                skt_buf_add(&b, cnt);
+                skt_buf_add(&b, " different skills share this name in the same skills directory tier; refusing to guess.");
+                json_t *extra = json_object();
+                json_set(extra, "matches", paths); paths = NULL;
+                json_set(extra, "load_names", load_names); load_names = NULL;
+                json_set(extra, "hint", json_string("Pass the exact relative path instead of the bare name, or rename one of the colliding skills so each name is unique."));
+                json_t *fa = json_object();
+                json_set(fa, "error", json_string(b.s));
+                json_set(fa, "extra", extra);
+                free(b.s);
+                json_t *fail = skt_call(e, "_fail", fa);
+                if (skt_is_raise(fail)) prop = fail;
+                else {
+                    json_t *out = json_array(); json_append(out, fail); json_append(out, json_null()); json_append(out, json_null());
+                    json_free(candidates); json_free(tier_of); json_free(all_dirs);
+                    return out;
+                }
+            }
+            json_free(load_names);
         }
         json_free(load_set);
-        /* logger.warning */
-        char *pj = skt_join_strs(paths, "; ");
-        char cnt[32]; snprintf(cnt, sizeof(cnt), "%zu", json_len(candidates));
-        json_t *la = json_array();
-        json_append(la, json_string(name));
-        json_append(la, json_string(cnt));
-        json_append(la, json_string(pj));
-        json_t *lr = skt_log(e, "warning", "Skill name collision for '%s': %d candidates \xe2\x80\x94 %s", la, false);
-        free(pj);
-        if (skt_is_raise(lr)) { json_free(paths); json_free(load_names); json_free(candidates); json_free(tier_of); json_free(all_dirs); return lr; }
-        json_free(lr);
-        /* _fail(AMBIGUOUS...) */
-        skt_buf b; skt_buf_init(&b);
-        skt_buf_add(&b, SKT_AMBIGUOUS_PREFIX);
-        skt_buf_add(&b, "'"); skt_buf_add(&b, name); skt_buf_add(&b, "': ");
-        if (json_len(load_names) > 0) {
-            char *lj = skt_join_strs(load_names, ", ");
-            skt_buf_add(&b, "use one of "); skt_buf_add(&b, lj); skt_buf_add(&b, ". ");
-            free(lj);
-        }
-        skt_buf_add(&b, cnt);
-        skt_buf_add(&b, " different skills share this name in the same skills directory tier; refusing to guess.");
-        json_t *extra = json_object();
-        json_set(extra, "matches", paths);   /* transfer */
-        json_set(extra, "load_names", load_names);   /* transfer */
-        json_set(extra, "hint", json_string("Pass the exact relative path instead of the bare name, or rename one of the colliding skills so each name is unique."));
-        json_t *fa = json_object();
-        json_set(fa, "error", json_string(b.s));
-        json_set(fa, "extra", extra);
-        free(b.s);
-        json_t *fail = skt_call(e, "_fail", fa);
-        json_free(candidates); json_free(tier_of); json_free(all_dirs);
-        if (skt_is_raise(fail)) return fail;
-        json_t *out = json_array(); json_append(out, fail); json_append(out, json_null()); json_append(out, json_null());
-        return out;
+        json_free(paths);
     }
-    /* skill_dir, skill_md = candidates[0] if candidates else (None, None) */
+    if (prop) { json_free(candidates); json_free(tier_of); json_free(all_dirs); return prop; }
     json_t *skill_dir = NULL, *skill_md = NULL;
     if (json_len(candidates) > 0) {
         skill_dir = json_copy(json_get(json_get(candidates, 0), 0));
         skill_md = json_copy(json_get(json_get(candidates, 0), 1));
     }
     json_free(candidates);
-    /* quarantine gate */
     if (!skt_is_null(skill_md)) {
         json_t *oa = json_object();
         json_set(oa, "skill_md", json_copy(skill_md));
@@ -2042,7 +1950,6 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
             }
         }
     }
-    /* if not skill_md or not skill_md.exists() */
     bool exists = false;
     if (!skt_is_null(skill_md)) {
         json_t *ex = skt_path_bool(e, "exists", skt_str(skill_md));
@@ -2051,17 +1958,15 @@ static json_t *skt_locate_skill(skt_env *e, const json_t *in) {
         json_free(ex);
     }
     if (skt_is_null(skill_md) || !exists) {
-        /* available = [s["name"] for s in sort_skills(find_all_skills())[:20]] */
         json_t *ffa = json_object(); json_set(ffa, "skip_disabled", json_bool(false));
         json_t *fas = skt_call(e, "find_all_skills", ffa);
         if (skt_is_raise(fas)) { json_free(skill_dir); json_free(skill_md); json_free(tier_of); json_free(all_dirs); return fas; }
-        json_t *ssa = json_object(); json_set(ssa, "skills", fas);   /* transfer */
+        json_t *ssa = json_object(); json_set(ssa, "skills", fas);
         json_t *sorted = skt_call(e, "sort_skills", ssa);
         if (skt_is_raise(sorted)) { json_free(skill_dir); json_free(skill_md); json_free(tier_of); json_free(all_dirs); return sorted; }
         json_t *available = json_array();
         for (size_t i = 0; i < json_len(sorted) && i < 20; i++) {
-            json_t *s = json_get(sorted, i);
-            json_t *nm = json_obj_get(s, "name");
+            json_t *nm = json_obj_get(json_get(sorted, i), "name");
             if (!nm) { json_free(available); json_free(sorted); json_free(skill_dir); json_free(skill_md); json_free(tier_of); json_free(all_dirs); return skt_keyerror_raise("name"); }
             json_append(available, json_copy(nm));
         }
@@ -2096,25 +2001,21 @@ static json_t *skt_log_security_warnings(skt_env *e, const json_t *in) {
     const char *content = json_get_str(in, "content", "");
     json_t *all_dirs = json_obj_get(in, "all_dirs");
     const char *active = json_get_str(in, "active_skills_dir", "");
-    /* trusted_dirs = [active_skills_dir.resolve()] */
     json_t *trusted = json_array();
     json_t *ar = skt_path_resolve(e, active);
     if (skt_is_raise(ar)) { json_free(trusted); return ar; }
-    json_append(trusted, json_string(skt_pystr(ar)));
-    json_free(ar);
-    /* with suppress(Exception): trusted_dirs.extend(d.resolve() for d in all_dirs) — partial extend persists */
+    { char *as = skt_pystr(ar); json_append(trusted, json_string(as)); free(as); json_free(ar); }
     for (size_t i = 0; i < json_len(all_dirs); i++) {
         json_t *dr = skt_path_resolve(e, skt_sval(json_get(all_dirs, i)));
         if (skt_is_raise(dr)) {
             if (!skt_swallow_exc(dr)) { json_free(trusted); return dr; }
-            break;   /* generator raised: stop extending, keep partial */
+            break;
         }
         char *ds = skt_pystr(dr);
         json_append(trusted, json_string(ds));
         free(ds); json_free(dr);
     }
     json_t *warnings = json_array();
-    /* if not _under_any(skill_md, trusted_dirs) */
     json_t *ua = skt_under_any(e, skill_md, trusted);
     if (skt_is_raise(ua)) { json_free(warnings); json_free(trusted); return ua; }
     bool under = skt_truth(ua);
@@ -2125,7 +2026,6 @@ static json_t *skt_log_security_warnings(skt_env *e, const json_t *in) {
         skt_buf_add(&b, skill_md);
         json_append(warnings, json_string(b.s)); free(b.s);
     }
-    /* if any(p in content.lower() for p in _INJECTION_PATTERNS) */
     char *lc = skt_lower(content);
     bool inject = false;
     for (size_t i = 0; i < sizeof(SKT_INJECTION_PATTERNS) / sizeof(SKT_INJECTION_PATTERNS[0]); i++)

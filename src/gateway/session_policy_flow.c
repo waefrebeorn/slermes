@@ -67,13 +67,60 @@ static const char *label_for_platform(const char *platform) {
 }
 
 /* ── internal helpers ── */
+/*
+ * persistence.core.errors._one_line: whitespace collapses to single spaces
+ * (str.split()/join), other non-printables drop, bounded; empty -> None.
+ * ASCII fixture strings: bytes >= 0x80 are treated as printable (the live
+ * Unicode categories are identity on the fixture corpus). Same shape as
+ * gateway_inbound_flow.c's gif_one_line.
+ */
+static char *gsp_one_line(const char *value, size_t limit) {
+    if (!value) return NULL;
+    size_t n = strlen(value);
+    char *tmp = malloc(n + 1);
+    if (!tmp) return NULL;
+    size_t k = 0;
+    bool pending_space = false, started = false;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char ch = (unsigned char)value[i];
+        if (isspace(ch)) { if (started) pending_space = true; continue; }
+        if (pending_space) { tmp[k++] = ' '; pending_space = false; }
+        started = true;
+        tmp[k++] = (char)ch;
+    }
+    tmp[k] = '\0';
+    /* drop non-printables (Cc control ranges for ASCII) */
+    size_t w = 0;
+    for (size_t i = 0; i < k; i++) {
+        unsigned char ch = (unsigned char)tmp[i];
+        if (ch < 0x20 || (ch >= 0x7f && ch <= 0x9f)) continue;
+        tmp[w++] = tmp[i];
+    }
+    tmp[w] = '\0';
+    if (w == 0) { free(tmp); return NULL; }
+    if (w > limit) w = limit;
+    char *out = malloc(w + 1);
+    if (!out) { free(tmp); return NULL; }
+    memcpy(out, tmp, w);
+    out[w] = '\0';
+    free(tmp);
+    return out;
+}
+
+/* AuthorityRefusal.__init__: reason raw; field/detail _one_line-bound
+ * (80/160). Empty normalization -> None, which the harness emits as JSON
+ * null via the empty buffer. */
 static void set_refusal(gsp_refusal_t *r, const char *reason, const char *field,
                         const char *detail) {
     if (!r) return;
     r->raised = true;
     snprintf(r->reason, sizeof(r->reason), "%s", reason ? reason : "");
-    snprintf(r->field, sizeof(r->field), "%s", field ? field : "");
-    snprintf(r->detail, sizeof(r->detail), "%s", detail ? detail : "");
+    char *f = gsp_one_line(field, 80);
+    snprintf(r->field, sizeof(r->field), "%s", f ? f : "");
+    free(f);
+    char *d = gsp_one_line(detail, 160);
+    snprintf(r->detail, sizeof(r->detail), "%s", d ? d : "");
+    free(d);
 }
 
 static char *strip_dup(const char *s) {
@@ -403,10 +450,23 @@ json_t *gsp_flow_restore_policy(const json_t *data, const gsp_restore_seams_t *s
         source_ok = true;
     bool forward = s && s->is_forward_policy ? s->is_forward_policy(s->ctx, policy) : false;
     if (!forward && !source_ok) {
-        char detail[192];
-        snprintf(detail, sizeof(detail),
-                 "stored source/platform %s/%s is not a known surface pair", source, platform);
-        set_refusal(refusal, "storage_unavailable", "source", detail);
+        /* Live formats the FULL message, then _one_line bounds it to 160;
+         * a fixed pre-buffer would truncate raw bytes before normalization
+         * (whitespace collapse can need >160 raw chars to yield 160). */
+        int dn = snprintf(NULL, 0,
+                          "stored source/platform %s/%s is not a known surface pair",
+                          source, platform);
+        char *detail = malloc((size_t)dn + 1);
+        if (detail) {
+            snprintf(detail, (size_t)dn + 1,
+                     "stored source/platform %s/%s is not a known surface pair",
+                     source, platform);
+            set_refusal(refusal, "storage_unavailable", "source", detail);
+            free(detail);
+        } else {
+            set_refusal(refusal, "storage_unavailable", "source",
+                        "stored source/platform is not a known surface pair");
+        }
         json_free(policy);
         return NULL;
     }
