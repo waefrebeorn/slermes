@@ -303,6 +303,23 @@ def extract():
         if isinstance(node, ast.FunctionDef) and node.name == "_parse_absolute_timestamp":
             exec(compile(ast.Module(body=[node], type_ignores=[]), TS_SRC, "exec"), ns)
     sys.modules["agent.credential_pool_timestamps"]._parse_absolute_timestamp = ns["_parse_absolute_timestamp"]
+    # CODEX_ACCESS_TOKEN_REFRESH_SKEW_SECONDS is IMPORTED by credential_pool.py
+    # (hermes_cli.auth -> hermes_cli.auth_constants); AST extraction of the pool
+    # module never executes ImportFrom nodes, so seed the real assignment from
+    # the defining module (fail-closed if it moves).
+    ac_path = QUARRY / "hermes_cli" / "auth_constants.py"
+    ac_tree = ast.parse(open(ac_path, encoding="utf-8").read())
+    seeded_skew = False
+    for node in ac_tree.body:
+        if isinstance(node, ast.Assign) and any(
+            isinstance(t, ast.Name) and t.id == "CODEX_ACCESS_TOKEN_REFRESH_SKEW_SECONDS"
+            for t in node.targets
+        ):
+            exec(compile(ast.Module(body=[node], type_ignores=[]), str(ac_path), "exec"), ns)
+            seeded_skew = True
+    if not seeded_skew:
+        print("FATAL credential_pool_flow: CODEX_ACCESS_TOKEN_REFRESH_SKEW_SECONDS not found in auth_constants.py")
+        sys.exit(2)
     ns["_METHODS"] = methods
     missing = [v for v in PY.values() if "." not in v and v not in ns and v not in methods]
     if missing:

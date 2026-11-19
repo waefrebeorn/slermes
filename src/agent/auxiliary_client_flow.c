@@ -1280,7 +1280,7 @@ json_t *acf_stream_request_plan(acf_io_t *io, json_t *in) {
     json_free(a1);
     if (acf_truthy(managed) && !acf_raised(managed)) {
         json_t *a2 = json_object();
-        json_set(a2, "kwargs", stream_kwargs);   /* borrowed; dispatcher copies */
+        json_set(a2, "kwargs", json_copy(stream_kwargs));   /* a2 adopts; keep ownership */
         json_t *pp = acf_call(io, "with_prompt_progress", a2);
         json_free(a2);
         if (pp && pp->type == JSON_OBJECT) {
@@ -2793,7 +2793,7 @@ json_t *acf_ladder_provider_fallback(acf_io_t *io, json_t *in) {
         if (route_info && route_info->type == JSON_OBJECT) {
             json_t *ri_in = json_object();
             json_set(ri_in, "route_info", json_copy(route_info));
-            json_set(ri_in, "provider", fb_provider);
+            json_set(ri_in, "provider", json_copy(fb_provider));   /* ri_in adopts; fb_provider freed below */
             json_set(ri_in, "model", acf_copy_or_null(fb_model));
             json_t *ri_out = acf_record_route_info(io, ri_in);
             json_free(ri_in);

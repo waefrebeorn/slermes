@@ -203,6 +203,7 @@ SIBLINGS = {
     "send_clarify", "send_slash_confirm", "build_source", "format_message",
     "truncate_message", "_mark_connected", "_mark_disconnected",
     "max_message_length_for_chat", "message_len_fn_for_chat",
+    "_EA_ACTION_LABELS",
 }
 ALL_DEFS = WANTED | SIBLINGS
 CONSTS = {
@@ -314,6 +315,21 @@ def norm(o):
         return o
     if isinstance(o, float):
         return o
+    sr_cls = ns_g.get("SendResult")
+    if sr_cls is not None and isinstance(o, sr_cls):
+        keys = getattr(o, "_script_keys", None)
+        if keys is not None:
+            return {k: norm(getattr(o, k)) for k in keys}
+        # internally constructed result: the C port builds only the fields it
+        # assigns — project onto non-default fields (success always present)
+        out = {"success": norm(o.success)}
+        for k, dflt in (("message_id", None), ("error", None), ("raw_response", None),
+                        ("retryable", False), ("retry_after", None),
+                        ("continuation_message_ids", ()), ("error_kind", None)):
+            v = getattr(o, k)
+            if v != dflt:
+                out[k] = norm(v)
+        return out
     if isinstance(o, enum.Enum):
         if type(o).__name__ == "Platform":
             return {"value": o.value, "name": o.name}
@@ -342,7 +358,8 @@ def norm(o):
             d["done_callbacks"] = o.done_callbacks
         return d
     if hasattr(o, "__dict__"):
-        return {k: norm(v) for k, v in vars(o).items() if not callable(v)}
+        return {k: norm(v) for k, v in vars(o).items()
+                if not callable(v) or isinstance(v, weakref.ReferenceType)}
     return str(o)
 
 
@@ -407,6 +424,7 @@ def guard_double(spec):
 # ── extraction ──
 
 def extract():
+    import abc
     import contextlib
     import inspect
     import logging
@@ -424,6 +442,11 @@ def extract():
         "logger": RecLogger(),
         "Enum": enum.Enum, "ipaddress": __import__("ipaddress"),
         "contextlib": __import__("contextlib"),
+        "ABC": abc.ABC, "abstractmethod": abc.abstractmethod,
+        # Upstream observability decorator on _send_with_retry: awaits the
+        # wrapped send and returns its result unchanged (metrics side-effects
+        # only, no seam in the port's table) -> transparent for the flow.
+        "records_delivery": lambda f: f,
     }
     tree = ast.parse(src)
     # Module constants (plain-Name Assign/AnnAssign only; skip I/O assigns).
@@ -475,6 +498,15 @@ def extract():
         elif isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef)) and sub.name in ALL_DEFS:
             exec(compile(ast.Module(body=[sub], type_ignores=[]), SRC, "exec"), ns)
     ns["_CLASS_ATTRS"] = class_attrs
+    # agent.retry_utils.jittered_backoff — live base.py imports it for the
+    # requeue backoff; extract the real function with its module globals.
+    ru_src = open(os.path.join(QUARRY, "agent", "retry_utils.py"), encoding="utf-8").read()
+    ru_ns = {"time": time, "random": __import__("random"), "threading": threading,
+             "_jitter_counter": 0, "_jitter_lock": threading.Lock()}
+    for node in ast.parse(ru_src).body:
+        if isinstance(node, ast.FunctionDef) and node.name == "jittered_backoff":
+            exec(compile(ast.Module(body=[node], type_ignores=[]), "agent/retry_utils.py", "exec"), ru_ns)
+    ns["jittered_backoff"] = ru_ns["jittered_backoff"]
     # Re-seed constants that depend on extracted functions (e.g.
     # _SEND_ERROR_CLASSIFIERS references _any_in / _error_blob).
     seed_consts()
@@ -527,7 +559,19 @@ def materialize(kind, r):
     if r is None:
         return None
     if kind == "sendresult":
-        return ns_g["SendResult"](**r) if isinstance(r, dict) else r
+        if isinstance(r, dict):
+            sr = ns_g["SendResult"](**r)
+            # C passes the scripted dict through verbatim; norm() must project
+            # the live dataclass back onto exactly the scripted keys. Store on
+            # the object (id() keys would collide after GC reuse).
+            sr._script_keys = list(r.keys())
+            return sr
+        return r
+    if kind == "lockresult":
+        # live unpacks: acquired, existing = acquire_scoped_lock(...)
+        if isinstance(r, dict):
+            return (r.get("acquired", False), r.get("existing"))
+        return (bool(r), None)
     if kind == "task":
         return task_double(r)
     if kind == "guard":
@@ -564,8 +608,31 @@ def mk_stub(seam, argspec, kind="json", is_async=False, strip_self=False):
 
 
 class DictEvent:
+    # live MessageEvent dataclass field defaults for fields the flows read but
+    # fixtures omit; returned WITHOUT storing so snapshots stay fixture-shaped
+    _FIELD_DEFAULTS = {"media_urls": [], "media_types": [], "media_text_inlined": []}
+
     def __init__(self, d):
         self.__dict__.update(copy.deepcopy(d or {}))
+
+    def __getattr__(self, name):
+        if name in DictEvent._FIELD_DEFAULTS:
+            return copy.deepcopy(DictEvent._FIELD_DEFAULTS[name])
+        raise AttributeError(name)
+
+
+def _event_stubs(e):
+    """Seam stubs for the live MessageEvent methods the flows call. The
+    receiver is the event itself (C records it as event/existing)."""
+    e.get_command = mk_stub("get_command", lambda a, k: {"event": e}, "json", False, False)
+    e.is_command = mk_stub("is_command", lambda a, k: {"event": e}, "bool", False, False)
+    e.extend_media = mk_stub("extend_media",
+                             lambda a, k: {"existing": e, "event": ga(a, k, 0, ["other", "event"])},
+                             "json", False, False)
+    e.absorb_turn_input = mk_stub("absorb_turn_input",
+                                  lambda a, k: {"existing": e, "event": ga(a, k, 0, ["other", "event"])},
+                                  "json", False, False)
+    return e
 
 
 def ev(d):
@@ -578,6 +645,11 @@ def ev(d):
             pass
     if isinstance(e.__dict__.get("source"), dict):
         e.source = src_double(e.source)
+    # asyncio.Event-typed fields materialize to guard doubles (.set() etc.)
+    if isinstance(e.__dict__.get("_gateway_marker_released"), dict):
+        e._gateway_marker_released = guard_double(e._gateway_marker_released)
+    _event_stubs(e)
+    CUR["ev"] = e
     return e
 
 
@@ -625,7 +697,7 @@ ARGSPEC = {
     "is_darwin": lambda a, k: {},
     "monotonic": lambda a, k: {},
     "scutil": lambda a, k: {},
-    "write_status": lambda a, k: {"context": ga(a, k, 0, ["context"]),
+    "write_status": lambda a, k: {"platform": k.get("platform"),
                                   "platform_state": k.get("platform_state"),
                                   "error_code": k.get("error_code"),
                                   "error_message": k.get("error_message")},
@@ -678,6 +750,9 @@ ARGSPEC = {
                                        "profile": k.get("profile")},
     "dm_thread_batch_suffix": lambda a, k: {"source": ga(a, k, 0, ["source"]), "extra": ga(a, k, 1, ["extra"])},
     "handle_message": _ev,
+    "start_session": lambda a, k: {"owner": "self", "event": ga(a, k, 0, ["event"]),
+                                   "session_key": ga(a, k, 1, ["session_key"])},
+    "get_pending": lambda a, k: {"owner": "self", "session_key": ga(a, k, 0, ["session_key"])},
     "dispatch_busy_burst": lambda a, k: {"event": ga(a, k, 1, ["event"]), "session_key": ga(a, k, 2, ["session_key"])},
     "should_bypass": lambda a, k: {"cmd": ga(a, k, 0, ["cmd", "command_name"])},
     "is_interrupt": lambda a, k: {"cmd": ga(a, k, 0, ["cmd", "command_name"])},
@@ -690,15 +765,15 @@ ARGSPEC = {
     "busy_handler": lambda a, k: {"event": ga(a, k, 0, ["event"]), "session_key": ga(a, k, 1, ["session_key"])},
     "merge_pending": lambda a, k: {"session_key": ga(a, k, 1, ["session_key"]), "event": ga(a, k, 2, ["event"]),
                                    "merge_text": k.get("merge_text")},
-    "queue_debounce": lambda a, k: {"session_key": ga(a, k, 1, ["session_key"]), "event": ga(a, k, 2, ["event"])},
+    "queue_debounce": lambda a, k: {"session_key": ga(a, k, 0, ["session_key"]), "event": ga(a, k, 1, ["event"])},
     "pad_flags": _ev,
     "extend_media": lambda a, k: {"existing": ga(a, k, 0, ["existing"]), "event": ga(a, k, 1, ["event"])},
     "absorb_turn_input": lambda a, k: {"existing": ga(a, k, 0, ["existing"]), "event": ga(a, k, 1, ["event"])},
     "sleep": lambda a, k: {"delay": ga(a, k, 0, ["delay"])},
     "dispatch": _ev,
-    "flush_debounce": lambda a, k: {"session_key": ga(a, k, 1, ["session_key"])},
-    "cleanup_finished": lambda a, k: {"session_key": ga(a, k, 1, ["session_key"]), "guard": ga(a, k, 2, ["guard", "interrupt_event"])},
-    "process_background": lambda a, k: {"event": ga(a, k, 1, ["event"]), "session_key": ga(a, k, 2, ["session_key"])},
+    "flush_debounce": lambda a, k: {"session_key": ga(a, k, 0, ["session_key"])},
+    "cleanup_finished": lambda a, k: {"session_key": ga(a, k, 0, ["session_key"]), "guard": ga(a, k, 1, ["guard", "interrupt_event"])},
+    "process_background": lambda a, k: {"event": ga(a, k, 0, ["event"]), "session_key": ga(a, k, 1, ["session_key"])},
     "ledger_bracket": lambda a, k: {"event": ga(a, k, 1, ["event"]), "session_key": ga(a, k, 2, ["session_key"]),
                                     "text_content": ga(a, k, 3, ["text_content"]),
                                     "is_ephemeral_response": k.get("is_ephemeral_response")},
@@ -723,7 +798,7 @@ ARGSPEC = {
                                 "metadata": k.get("metadata")},
     "send_document": lambda a, k: {"chat_id": k.get("chat_id"), "file_path": k.get("file_path"),
                                    "metadata": k.get("metadata")},
-    "notify_failure": lambda a, k: {"chat_id": ga(a, k, 1, ["chat_id"]), "path": ga(a, k, 2, ["media_path", "path"]),
+    "notify_failure": lambda a, k: {"chat_id": ga(a, k, 0, ["chat_id"]), "path": ga(a, k, 1, ["media_path", "path"]),
                                     "is_voice": k.get("is_voice"), "metadata": k.get("metadata")},
     "acquire_lock": lambda a, k: {"scope": ga(a, k, 0, ["scope"]), "identity": ga(a, k, 1, ["identity"]),
                                   "metadata": k.get("metadata")},
@@ -750,10 +825,10 @@ ARGSPEC = {
                                         "adapter_profile": k.get("adapter_profile")},
     "unwrap_ephemeral": lambda a, k: {"response": ga(a, k, 0, ["response"])},
     "message_handler": _ev,
-    "fallback_notice": lambda a, k: {"method": ga(a, k, 1, ["method"]), "kind": ga(a, k, 2, ["kind"]),
-                                     "path": ga(a, k, 3, ["path"]), "chat_id": ga(a, k, 4, ["chat_id"]),
-                                     "caption": ga(a, k, 5, ["caption"]), "reply_to": ga(a, k, 6, ["reply_to"]),
-                                     "metadata": ga(a, k, 7, ["metadata"]), "file_name": k.get("file_name")},
+    "fallback_notice": lambda a, k: {"method": ga(a, k, 0, ["method"]), "kind": ga(a, k, 1, ["kind"]),
+                                     "path": ga(a, k, 2, ["path"]), "chat_id": ga(a, k, 3, ["chat_id"]),
+                                     "caption": ga(a, k, 4, ["caption"]), "reply_to": ga(a, k, 5, ["reply_to"]),
+                                     "metadata": ga(a, k, 6, ["metadata"]), "file_name": k.get("file_name")},
     "send_image": lambda a, k: {"chat_id": k.get("chat_id"), "image_url": k.get("image_url"),
                                 "caption": k.get("caption"), "reply_to": k.get("reply_to"),
                                 "metadata": k.get("metadata")},
@@ -766,7 +841,11 @@ def modstub(seam, argspec, kind="json", is_async=False):
 
 
 def install_base_stubs(ns):
-    ns["t"] = lambda key, **kw: (rec("t", na({"key": key, "kwargs": kw}), script("t")), script("t"))[1]
+    def _t_stub(key, **kw):
+        r = script("t")   # ONE consume: rec and return must see the same value
+        rec("t", na({"key": key, "kwargs": kw}), r)
+        return maybe_raise(r)
+    ns["t"] = _t_stub
     ns["logger"] = RecLogger()
     ns["_reply_anchor_for_event"] = modstub("reply_anchor", _ev)
     ns["merge_pending_message_event"] = modstub(
@@ -818,6 +897,7 @@ def install_base_stubs(ns):
     ns["approval_timeout_seconds"] = modstub("approval_timeout", lambda a, k: {})
     ns["format_approval_deadline_line"] = modstub("deadline_line", lambda a, k: {"timeout": ga(a, k, 0, ["timeout"])})
     ns["stop_reply_clock"] = modstub("stop_clock", ARGSPEC["stop_clock"])
+    ns["ledger_bracket"] = _ledger_bracket_stub   # live module-level import
     ns["configured_bot_user"] = modstub("configured_bot", ARGSPEC["configured_bot"], "bool")
     # foreign modules reached by function-local imports
     _mkmod("gateway.session_identity", {
@@ -835,7 +915,7 @@ def install_base_stubs(ns):
         "diagnostic_wake_muted": ns["diagnostic_wake_muted"],
     })
     _mkmod("gateway.status", {
-        "acquire_scoped_lock": modstub("acquire_lock", ARGSPEC["acquire_lock"]),
+        "acquire_scoped_lock": modstub("acquire_lock", ARGSPEC["acquire_lock"], "lockresult"),
         "take_over_scoped_lock_holder": modstub("takeover", ARGSPEC["takeover"]),
         "scoped_lock_owner_label": modstub("owner_label", ARGSPEC["owner_label"]),
         "publish_runtime_status": modstub("write_status", ARGSPEC["write_status"]),
@@ -966,6 +1046,8 @@ def _plugin_manager_stub():
         r = script("get_factories")
         rec("get_factories", na({"platform": platform}), r)
         r = maybe_raise(r) or []
+        if isinstance(r, dict):
+            r = [r]   # a single factory spec models a one-element list
         return [(FactoryDouble(spec), spec.get("plugin")) for spec in r]
     return types.SimpleNamespace(get_platform_handler_factories=get_factories)
 
@@ -978,8 +1060,10 @@ async def _ledger_bracket_stub(adapter, event, session_key, text_content, send_f
     ob = r.get("obligation_id")
     ad = r.get("delivery_adapter") or {}
     adapter_double = types.SimpleNamespace(id=ad.get("id"), name=ad.get("name"))
-    adapter_double._send_with_retry = mk_stub("send_with_retry", ARGSPEC["send_with_retry"], "sendresult", True, True)
-    adapter_double._schedule_ephemeral_delete = mk_stub("schedule_delete", ARGSPEC["schedule_delete"], "json", False, True)
+    adapter_double._send_with_retry = types.MethodType(
+        mk_stub("send_with_retry", ARGSPEC["send_with_retry"], "sendresult", True, True), adapter_double)
+    adapter_double._schedule_ephemeral_delete = types.MethodType(
+        mk_stub("schedule_delete", ARGSPEC["schedule_delete"], "json", False, True), adapter_double)
     result = await send_fn(adapter_double, ob)
     rec("ledger_finalize", na({"event": event, "session_key": session_key, "obligation_id": ob,
                                "result": result, "delivery_adapter": adapter_double}), script("ledger_finalize"))
@@ -1046,7 +1130,7 @@ def convert_state(k, v):
     if k in ("_session_tasks", "_pending_text_batch_tasks") and isinstance(v, dict):
         return {kk: task_double(vv) for kk, vv in v.items()}
     if k in ("_pending_messages", "_pending_text_batches") and isinstance(v, dict):
-        return {kk: DictEvent(vv) for kk, vv in v.items()}
+        return {kk: _event_stubs(DictEvent(vv)) for kk, vv in v.items()}
     if k == "_text_debounce" and isinstance(v, dict):
         out = {}
         for kk, vv in v.items():
@@ -1056,6 +1140,8 @@ def convert_state(k, v):
         return out
     if k in ("_background_tasks", "_expected_cancelled_tasks") and isinstance(v, list):
         return set(task_double({"id": x} if isinstance(x, int) else x) for x in v)
+    if k == "_plugin_handlers_wired" and isinstance(v, list):
+        return set(tuple(x) if isinstance(x, list) else x for x in v)
     if k == "gateway_runner" and isinstance(v, dict):
         return runner_double(v)
     if k == "_session_store" and isinstance(v, dict):
@@ -1069,48 +1155,150 @@ def convert_state(k, v):
 def runner_double(d):
     r = types.SimpleNamespace()
     r._transport_owner = (lambda: None) if d.get("has_transport_owner") else None
-    r._media_delivery_scope_for_source = modstub("scope_resolve", _src, "ns") if d.get("scope_resolve") else None
-    r._delivery_adapter_for = modstub("delivery_adapter", _src, "ns")
+    _da_stub = modstub("scope_resolve", _src, "ns") if d.get("scope_resolve") else None
+    r._media_delivery_scope_for_source = _da_stub
+    _delivery_stub = modstub("delivery_adapter", _src, "ns")
+
+    def _delivery_adapter_for(source):
+        ad = _delivery_stub(source)
+        if ad is not None:
+            # a recovery owner: equip the seams the busy-admission walk calls
+            if not hasattr(ad, "_active_sessions"):
+                ad._active_sessions = {}
+            aid = getattr(ad, "id", "self")
+            ad.get_pending_message = _owner_get_pending(aid)
+            ad._start_session_processing = _owner_start_session(aid)
+        return ad
+
+    r._delivery_adapter_for = _delivery_adapter_for
     r._profile_name_for_source = modstub("profile_for_source", ARGSPEC["profile_for_source"])
     r._clear_durable_active_turn = modstub("clear_durable_turn", _ev, is_async=True)
     r.session_authority = d.get("session_authority")
     return r
 
 
+def _overridable_property(name, fget):
+    """A property whose value can be shadowed by an instance attribute (the
+    drivers override e.g. message_len_fn); keeps the live getter lazy."""
+    def getter(self):
+        if name in self.__dict__:
+            return self.__dict__[name]
+        return fget(self)
+    def setter(self, value):
+        self.__dict__[name] = value
+    return property(getter, setter)
+
+
+# Instance defaults from the live BasePlatformAdapter.__init__ (state the
+# flows mutate; fixtures only carry the keys a case cares about).
+_FS_DEFAULTS = {
+    "_message_handler": None, "_no_message_handler_logged": False,
+    "_reaction_handler": None, "_platform_event_handler": None,
+    "_topic_recovery_fn": None, "_running": False, "_fatal_error_retryable": True,
+    "_fatal_error_code": None, "_fatal_error_message": None,
+    "_fatal_error_handler": None, "_detached_fatal_tasks": set(),
+    "_platform_lock_takeover_allowed": False, "_platform_lock_takeover_attempted": False,
+    "_active_sessions": {}, "_pending_messages": {}, "_requeue_counts": {},
+    "_pending_text_batches": {}, "_pending_text_batch_tasks": {},
+    "_session_tasks": {},    "_busy_text_mode": "interrupt",
+    "_human_delay_range_ms": None, "_text_debounce": {},
+    "_background_tasks": set(), "_post_delivery_callbacks": {},
+    "_expected_cancelled_tasks": set(), "_busy_session_handler": None,
+    "_owner_profile": None, "_shared_listener_profile": None,
+    "_authorization_check": None, "_auto_tts_default": False,
+    "_auto_tts_mode": "all", "_auto_tts_enabled_chats": set(),
+    "_auto_tts_disabled_chats": set(), "_typing_paused": set(),
+}
+
+
+def _title_name(s):
+    """C adapter_name(): title-case the platform value (first letter of each
+    cased run upper, rest lower)."""
+    out = []
+    prev_cased = False
+    for ch in s:
+        cased = ("a" <= ch <= "z") or ("A" <= ch <= "Z")
+        if cased:
+            if not prev_cased and "a" <= ch <= "z":
+                ch = ch.upper()
+            elif prev_cased and "A" <= ch <= "Z":
+                ch = ch.lower()
+        out.append(ch)
+        prev_cased = cased
+    return "".join(out)
+
+
 def build_fs(inp):
-    st = inp.get("st", {})
-    fs = types.SimpleNamespace()
+    st = inp.get("st") or {}
+    # A real (per-case) class so live properties/classmethods/staticmethods
+    # keep their descriptor semantics; methods bind self naturally.
+    body = {}
+    for name in ALL_DEFS:
+        f = ns_g.get(name)
+        if f is None or name in ("choices", "cancel_timer"):
+            continue
+        if isinstance(f, property):
+            f = _overridable_property(name, f.fget)
+        body[name] = f
     for k, v in ns_g["_CLASS_ATTRS"].items():
-        setattr(fs, k, copy.deepcopy(v))
+        body[k] = copy.deepcopy(v)
+    cls = type(inp.get("class_name") or "AdapterDouble", (), body)
+    fs = cls()
     pm = st.get("platform", "telegram")
-    fs.platform = ns_g["Platform"](pm["value"] if isinstance(pm, dict) else pm)
-    cfg = st.get("config", {})
+    pv = pm["value"] if isinstance(pm, dict) else pm
+    fs.platform = ns_g["Platform"](pv)
+    fs.name = _title_name(pv)
+    cfg = st.get("config") or {}
     fs.config = types.SimpleNamespace(extra=copy.deepcopy(cfg.get("extra", {})))
+    for k, v in _FS_DEFAULTS.items():
+        if not hasattr(fs, k):
+            setattr(fs, k, copy.deepcopy(v))
+    if not hasattr(fs, "_busy_text_debounce_seconds"):
+        fs._busy_text_debounce_seconds = ns_g.get("DEFAULT_BUSY_TEXT_DEBOUNCE_SECONDS", 0.35)
+    if not hasattr(fs, "_busy_text_hard_cap_seconds"):
+        fs._busy_text_hard_cap_seconds = ns_g.get("DEFAULT_BUSY_TEXT_HARD_CAP_SECONDS", 1.0)
     for k, v in st.items():
         if k in ("platform", "config"):
             continue
         setattr(fs, k, convert_state(k, v))
-    for name in ALL_DEFS:
-        f = ns_g.get(name)
-        if callable(f) and name not in ("choices", "cancel_timer"):
-            setattr(fs, name, types.MethodType(f, fs))
     # default handler presence flags
     if not hasattr(fs, "_message_handler"):
         fs._message_handler = None
+    CUR["fs"] = fs
+    CUR["st_before"] = set(vars(fs))
     return fs
 
 
 def attach(fs, method, seam, kind="json", is_async=False):
-    setattr(fs, method, mk_stub(seam, ARGSPEC[seam], kind, is_async, strip_self=True))
+    # Bind the stub so self IS passed and strip_self removes it: the ARGSPEC
+    # indices count arguments AFTER self. _message_handler stays a plain
+    # function because drivers assign its __self__ (handler_self cases).
+    if method == "_message_handler":
+        setattr(fs, method, mk_stub(seam, ARGSPEC[seam], kind, is_async, strip_self=False))
+    else:
+        setattr(fs, method, types.MethodType(mk_stub(seam, ARGSPEC[seam], kind, is_async, True), fs))
 
 
 def state_snapshot(fs, inp):
-    st = inp.get("st", {})
+    st = inp.get("st") or {}
     out = {}
     for k in st:
-        if k in ("platform", "config"):
+        if k in ("platform", "config", "gateway_runner", "_busy_session_handler"):
+            # opaque to the port: echoed verbatim (runner/handler doubles are
+            # presence flags, not state the C side mutates)
+            out[k] = copy.deepcopy(st[k])
             continue
         out[k] = norm(getattr(fs, k, None))
+    # keys the live call ADDED to the adapter (C json_set's them into st);
+    # attached seam stubs are callables, not state
+    before = CUR.get("st_before") or set()
+    for k in vars(fs):
+        if k in before or k in out:
+            continue
+        v = getattr(fs, k)
+        if callable(v):
+            continue
+        out[k] = norm(v)
     return out
 
 
@@ -1210,8 +1398,11 @@ def _drive(ns, func, py, inp, override):
         exc = inp.get("exc")
         e = None
         if exc:
-            e = EXC_MAP.get(exc.get("class", "Exception"), Exception)(exc.get("str", ""))
-            e.__class__.__name__ = exc.get("class", "Exception")
+            cname = exc.get("class", "Exception")
+            cls = EXC_MAP.get(cname, Exception)
+            if cls.__name__ != cname:
+                cls = type(cname, (cls,), {})   # live classifiers match type(exc).__name__
+            e = cls(exc.get("str", ""))
         return {"ret": f(e, inp.get("error_text", ""))}
     if func == "split_post_delivery_entry":
         entry = inp.get("entry")
@@ -1270,7 +1461,6 @@ def _drive(ns, func, py, inp, override):
     if func == "shared_runtime_owns_input":
         fs = build_fs(inp)
         e = ev(inp.get("event"))
-        e.get_command = mk_stub("get_command", _ev, "json", False, True)
         handler = lambda event: None
         handler.__self__ = types.SimpleNamespace(session_authority=inp.get("session_authority")) \
             if inp.get("has_handler_self") else None
@@ -1299,13 +1489,14 @@ def _drive(ns, func, py, inp, override):
                                           command="cmd", description="d", smart_denied=False)
         return {"ret": prompt.choices}
     if func == "text_debounce_cancel_timer":
-        state = ns["TextDebounceState"](event=ev(inp.get("event")), task=task_double(inp.get("task")),
+        stt = inp.get("state") or {}
+        state = ns["TextDebounceState"](event=ev(stt.get("event")), task=task_double(stt.get("task")),
                                         first_ts=0.0, last_ts=0.0)
-        unless = task_double(inp["unless"]) if inp.get("unless") is not None else None
+        unless = task_double({"id": inp.get("unless_id", -1)}) if "unless" in inp else None
         state.cancel_timer(unless=unless)
         return {"ret": None, "state": norm(state.task)}
     if func == "unauthorized_action_notice":
-        return {"ret": f(inp.get("platform"))}
+        return {"ret": f(src_double(inp.get("platform")))}
     if func == "get_inbound_media_max_bytes":
         override("_config_section", modstub("config_section", ARGSPEC["config_section"]))
         return {"ret": f()}
@@ -1384,7 +1575,7 @@ def _drive(ns, func, py, inp, override):
         return {"ret": f(fs, inp.get("content", ""))}
     if func == "message_len_fn":
         fs = build_fs(inp)
-        return {"ret": f(fs)(inp.get("s", ""))}
+        return {"ret": fs.message_len_fn(inp.get("s", ""))}
     if func == "supports_draft_streaming":
         fs = build_fs(inp)
         return {"ret": f(fs, inp.get("chat_type"), inp.get("metadata"), inp.get("chat_id"))}
@@ -1407,8 +1598,7 @@ def _drive(ns, func, py, inp, override):
     if func == "accepts_kwarg":
         params = inp.get("params")
         if params is None:
-            fn = lambda: None  # uninspectable? use a builtin to force ValueError
-            fn = len
+            fn = type   # builtin whose signature raises ValueError -> unknown branch
         else:
             import inspect as ins
             kinds = {"var_keyword": ins.Parameter.VAR_KEYWORD, "positional": ins.Parameter.POSITIONAL_OR_KEYWORD}
@@ -1419,7 +1609,8 @@ def _drive(ns, func, py, inp, override):
         return {"ret": f(fn, inp.get("name", "metadata"), var_kw=inp.get("var_kw", False),
                          unknown=inp.get("unknown", False))}
     if func == "prepare_tts_text":
-        return {"ret": f(inp.get("text", ""))}
+        fs = build_fs(inp)
+        return {"ret": f(fs, inp.get("text", ""))}
     if func == "media_delivery_scope":
         import contextlib
         fs = build_fs(inp)
@@ -1527,7 +1718,7 @@ def _drive(ns, func, py, inp, override):
             r = script("measure")
             rec("measure", {"s": s}, r)
             return len(s)
-        fs.message_len_fn = lambda: mlen
+        fs.message_len_fn = mlen   # live property returns the callable itself
         return {"ret": f(fs, inp.get("text", ""), inp.get("budget", 0), inp.get("suffix", "..."))}
     if func == "ea_deadline_line":
         fs = build_fs(inp)
@@ -1542,7 +1733,8 @@ def _drive(ns, func, py, inp, override):
             sub = type("Sub", (base,), {"_send_exec_approval_prompt": lambda self, p: None})
         else:
             sub = base
-        return {"ret": f(sub)}
+        fn = f.__func__ if isinstance(f, classmethod) else f
+        return {"ret": fn(sub)}
     if func in ("event_session_key", "source_session_key", "text_batch_key"):
         fs = build_fs(inp)
         if func == "source_session_key":
@@ -1576,10 +1768,7 @@ def _drive(ns, func, py, inp, override):
 def _wire_flow(fs, e, func, inp):
     # event method stubs
     if e is not None:
-        e.get_command = mk_stub("get_command", _ev, "json", False, True)
-        e.is_command = mk_stub("is_command", _ev, "bool", False, True)
-        e.extend_media = mk_stub("extend_media", ARGSPEC["extend_media"], "json", False, True)
-        e.absorb_turn_input = mk_stub("absorb_turn_input", ARGSPEC["absorb_turn_input"], "json", False, True)
+        _event_stubs(e)
     # common claimed self-method seams
     attach(fs, "send", "send", "sendresult", True)
     attach(fs, "_send_with_retry", "send_with_retry", "sendresult", True)
@@ -1592,7 +1781,8 @@ def _wire_flow(fs, e, func, inp):
     attach(fs, "_schedule_ephemeral_delete", "schedule_delete", "json")
     attach(fs, "_message_handler", "message_handler", "json", True)
     attach(fs, "handle_message", "handle_message", "json", True)
-    attach(fs, "_dispatch_active_session_command", "dispatch_active_session_command", "json", True)
+    # _dispatch_active_session_command stays the REAL method: it delegates to
+    # the module seam (adapter first arg), whose argspec counts from idx1.
     attach(fs, "_queue_text_debounce", "queue_debounce", "json", True)
     attach(fs, "_start_session_processing", "start_session", "bool")
     attach(fs, "get_pending_message", "get_pending", "event")
@@ -1617,7 +1807,7 @@ def _wire_flow(fs, e, func, inp):
     attach(fs, "_set_fatal_error", "set_fatal_error", "json")
     attach(fs, "_dispatch_inline_reply", "dispatch_inline_reply", "json", True)
     attach(fs, "_send_media_fallback_notice", "fallback_notice", "sendresult", True)
-    if e is not None and inp.get("handler_self"):
+    if e is not None and inp.get("has_handler_self"):
         fs._message_handler.__self__ = types.SimpleNamespace(session_authority=inp.get("session_authority"))
 
 
@@ -1627,12 +1817,16 @@ def _run_flow(ns, fs, e, func, inp):
     if func == "handle_message_while_active":
         # busy handler presence
         if inp.get("has_busy_handler"):
-            fs._busy_session_handler = mk_stub("busy_handler", ARGSPEC["busy_handler"], "bool", True, True)
+            fs._busy_session_handler = types.MethodType(
+                mk_stub("busy_handler", ARGSPEC["busy_handler"], "bool", True, True), fs)
         else:
             fs._busy_session_handler = None
         # pending recovery owners: self.get_pending_message stub knows owner id
         fs.get_pending_message = _owner_get_pending("self")
-        return asyncio.run(f(fs, e, sk))
+        asyncio.run(f(fs, e, sk))
+        # C returns {"accepted": event._gateway_accepted}; live returns None and
+        # stamps the event — derive the same contract from the live event.
+        return {"accepted": getattr(e, "_gateway_accepted", None)}
     if func == "deliver_media_attachments":
         rd = mk_stub("record_delivery", ARGSPEC["record_delivery"], "json", False, False)
         mf = [tuple(x) for x in inp.get("media_files", [])]
@@ -1652,6 +1846,10 @@ def _run_flow(ns, fs, e, func, inp):
         return None
     if func == "wire_plugin_handlers":
         native = inp.get("native_id")
+        # live compares native by IDENTITY (`is not native`); equal id values
+        # in the fixture model the SAME native client object
+        if getattr(fs, "_plugin_handler_native", None) == native:
+            fs._plugin_handler_native = native
         f(fs, native)
         return None
     if func == "rewire_plugin_handlers":
@@ -1689,12 +1887,22 @@ def _run_flow(ns, fs, e, func, inp):
     if func == "notify_turn_error":
         return asyncio.run(f(fs, e, Exception("boom")))
     if func == "deliver_attachments":
+        # C resolves the final transport then runs the base seams on the SAME
+        # state; model the resolved adapter as fs itself (scripted id is only
+        # recorded, exactly like the port's freed resolver result).
+        def _final_adapter(source):
+            r = script("final_adapter")
+            rec("final_adapter", na({"source": source}), r)
+            maybe_raise(r)
+            return fs
+        fs._final_delivery_adapter = _final_adapter
         rd = mk_stub("record_delivery", ARGSPEC["record_delivery"], "json", False, False)
+        ex = inp.get("extracted") or {}
         extracted = ns["_ExtractedResponse"](
-            text_content=inp.get("text_content", ""), images=[tuple(x) for x in inp.get("images", [])],
-            media_files=[tuple(x) for x in inp.get("media_files", [])], local_files=inp.get("local_files", []),
-            force_document_attachments=inp.get("force_document_attachments", False),
-            pre_extract=inp.get("pre_extract", ""))
+            text_content=ex.get("text_content", ""), images=[tuple(x) for x in ex.get("images", [])],
+            media_files=[tuple(x) for x in ex.get("media_files", [])], local_files=ex.get("local_files", []),
+            force_document_attachments=ex.get("force_document_attachments", False),
+            pre_extract=ex.get("pre_extract", ""))
         asyncio.run(f(fs, e, extracted, inp.get("metadata"), anything_sent=inp.get("anything_sent", False),
                       record_delivery=rd))
         return None
@@ -1711,6 +1919,9 @@ def _run_flow(ns, fs, e, func, inp):
                              inp.get("path", "p"), inp.get("chat_id", "c"), inp.get("caption"),
                              inp.get("reply_to"), inp.get("metadata"), file_name=inp.get("file_name")))
     if func == "send_exec_approval":
+        # the native render hook is the "send_prompt" seam (default returns
+        # "Not supported"; the fixture scripts the adapter's native result)
+        attach(fs, "_send_exec_approval_prompt", "send_prompt", "sendresult", True)
         return asyncio.run(f(fs, inp.get("chat_id", "c"), inp.get("command", ""), sk,
                              description=inp.get("description"), metadata=inp.get("metadata"),
                              allow_permanent=inp.get("allow_permanent", True),
@@ -1721,6 +1932,8 @@ def _run_flow(ns, fs, e, func, inp):
                              inp.get("clarify_id", "cid"), sk, metadata=inp.get("metadata")))
     if func == "build_source":
         fields = inp.get("fields", {})
+        if "config" not in (inp.get("st") or {}):
+            fs.config = None   # sparse-st model: absent config passes as None
         r = f(fs, **fields)
         return norm(r)
     if func == "dispatch_inline_reply":
@@ -1754,10 +1967,18 @@ def _run_flow(ns, fs, e, func, inp):
 
 
 def _owner_get_pending(owner_id):
-    def stub(self, session_key):
+    def stub(session_key):
         r = script("get_pending")
         rec("get_pending", na({"owner": owner_id, "session_key": session_key}), r)
         return materialize("event", maybe_raise(r))
+    return stub
+
+
+def _owner_start_session(owner_id):
+    def stub(event, session_key, *, interrupt_event=None):
+        r = script("start_session")
+        rec("start_session", na({"owner": owner_id, "event": event, "session_key": session_key}), r)
+        return bool(maybe_raise(r))
     return stub
 
 
@@ -1803,13 +2024,27 @@ def main():
         CUR["idx"] = {}
         CUR["tasks"] = {}
         CUR["guards"] = {}
+        CUR["fs"] = None
+        CUR["ev"] = None
+        CUR["sr_keys"] = {}
+        CUR["st_before"] = set()
         EventDouble._next_id = 1000
         try:
             want = drive(ns, func, inp)
         except Exception as ex:
             mism += 1
+            import traceback
             print("PYERR %s: %r" % (func, ex))
+            traceback.print_exc()
             continue
+        # The C harness echoes st/event whenever the input carries them; the
+        # early-return drivers don't build the echo themselves.
+        if "st" in inp and "st" not in want:
+            fs = CUR.get("fs")
+            want["st"] = state_snapshot(fs, inp) if fs is not None else copy.deepcopy(inp.get("st") or {})
+        if "event" in inp and "ev" not in want:
+            e = CUR.get("ev")
+            want["ev"] = event_snapshot(e) if e is not None else copy.deepcopy(inp.get("event") or {})
         want["trace"] = CUR["trace"]
         ordered = func in ("thread_metadata_for_source", "thread_metadata_for_event",
                            "mark_notify_metadata", "build_source")

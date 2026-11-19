@@ -73,6 +73,14 @@ static size_t cp_len(const char *s) {
     return n;
 }
 
+/* Python str() of a float: integral values keep the ".0" suffix. */
+static void py_float_str(double d, char *buf, size_t cap) {
+    if (isfinite(d) && d == floor(d) && fabs(d) < 1e16)
+        snprintf(buf, cap, "%.1f", d);
+    else
+        snprintf(buf, cap, "%.17g", d);
+}
+
 /* Byte offset just past the first n code points (Python s[:n] boundary). */
 static size_t cp_byte_offset(const char *s, size_t n) {
     if (!s) return 0;
@@ -82,6 +90,9 @@ static size_t cp_byte_offset(const char *s, size_t n) {
         bytes++;
         if ((c & 0xC0) != 0x80) cps++;
     }
+    /* the loop stops right after the n-th code point's LEAD byte; skip its
+     * continuation bytes so the slice never cuts a code point in half. */
+    while (s[bytes] && ((unsigned char)s[bytes] & 0xC0) == 0x80) bytes++;
     return bytes;
 }
 
@@ -329,7 +340,10 @@ json_t *gwb_mark_notify_metadata(const json_t *metadata) {
 static char *seam_t(const gwb_seams_t *s, const char *key, const json_t *kwargs) {
     json_t *a = args0();
     asets(a, "key", key);
-    aset(a, "kwargs", kwargs);
+    /* live _t(key, **kwargs): the stub always records a kwargs dict ({} when
+     * the call passes none) — never a dropped null. */
+    if (kwargs) aset(a, "kwargs", kwargs);
+    else json_set(a, "kwargs", json_object());
     json_t *r = gwb_call(s, "t", a);
     json_free(a);
     char *out = jstr(r) ? strdup(jstr(r)) : strdup("");
@@ -938,17 +952,26 @@ static long long py_int(const json_t *v, int *exc) {
 
 /* PoP: gwb_coerce_float_extra @ gateway/platforms/base.py:_coerce_float_extra */
 double gwb_coerce_float_extra(const json_t *value, double defval, double min_value,
-                              bool has_max, double max_value, const char *key,
-                              const gwb_seams_t *s) {
+                              bool has_max, double max_value, bool max_is_float,
+                              const char *key, const gwb_seams_t *s) {
     int exc = 0;
     double parsed = py_float(value, &exc);
     if (exc) parsed = defval;
     if (!isfinite(parsed) || parsed < 0) parsed = defval;
     if (parsed < min_value) parsed = min_value;
     if (has_max && parsed > max_value) {
+        /* live: logger.warning("%s=%s exceeds the %s ceiling; clamped",
+         * key, parsed, max_value) — str() of a float keeps ".0"; the ceiling
+         * renders as the Python object it is (int 2 -> "2", float 2.0 -> "2.0"). */
+        char vbuf[64], mbuf[64];
+        py_float_str(parsed, vbuf, sizeof(vbuf));
+        if (max_is_float) py_float_str(max_value, mbuf, sizeof(mbuf));
+        else if (max_value == floor(max_value) && fabs(max_value) < 9.2e18)
+            snprintf(mbuf, sizeof(mbuf), "%lld", (long long)max_value);
+        else snprintf(mbuf, sizeof(mbuf), "%.17g", max_value);
         char msg[256];
-        snprintf(msg, sizeof(msg), "%s=%.17g exceeds the %.17g ceiling; clamped",
-                 key ? key : "", parsed, max_value);
+        snprintf(msg, sizeof(msg), "%s=%s exceeds the %s ceiling; clamped",
+                 key ? key : "", vbuf, mbuf);
         seam_log(s, "warning", msg);
         parsed = max_value;
     }
@@ -961,9 +984,9 @@ void gwb_configure_text_batch_delays(json_t *st, const gwb_seams_t *s) {
     const json_t *extra = jgetattr(config, "extra");
     if (!jtruth(extra)) extra = NULL;
     double delay = gwb_coerce_float_extra(json_obj_get(extra, "text_batch_delay_seconds"),
-                                          0.3, 0.0, true, 2.0, "text_batch_delay_seconds", s);
+                                          0.3, 0.0, true, 2.0, true, "text_batch_delay_seconds", s);
     double split = gwb_coerce_float_extra(json_obj_get(extra, "text_batch_split_delay_seconds"),
-                                          1.0, delay, true, 4.0, "text_batch_split_delay_seconds", s);
+                                          1.0, delay, true, 4.0, true, "text_batch_split_delay_seconds", s);
     json_set(st, "_text_batch_delay_seconds", json_number(delay));
     json_set(st, "_text_batch_split_delay_seconds", json_number(split));
 }
@@ -1191,7 +1214,7 @@ const char *gwb_warning_text(const json_t *st, const char *visible, const char *
                              const json_t *metadata, const gwb_seams_t *s) {
     (void)chat_id; (void)metadata;
     if (gwb_warning_notifications_enabled(st, logical_platform, s)) return visible;
-    return hidden ? hidden : "";
+    return hidden;   /* live returns hidden verbatim (None stays None) */
 }
 
 /* ── exec approval helpers ── */
@@ -1207,11 +1230,13 @@ json_t *gwb_exec_approval_actions(bool allow_permanent, bool allow_session,
         if (allow_permanent) choices[nc++] = "always";
     }
     choices[nc++] = "deny";
-    json_t *a = args0();
-    json_t *labels = gwb_call(s, "ea_labels", a);
-    json_free(a);
     json_t *rows = json_array();
     for (size_t i = 0; i < nc; i++) {
+        /* live reads the _EA_ACTION_LABELS property PER ROW: one ea_labels
+         * seam call per choice, in order */
+        json_t *a = args0();
+        json_t *labels = gwb_call(s, "ea_labels", a);
+        json_free(a);
         const char *style = strcmp(choices[i], "once") == 0 ? "primary"
                             : strcmp(choices[i], "deny") == 0 ? "danger" : "";
         const json_t *lv = json_obj_get(labels, choices[i]);
@@ -1222,8 +1247,8 @@ json_t *gwb_exec_approval_actions(bool allow_permanent, bool allow_session,
         json_append(row, json_string(style));
         json_append(rows, row);
         free(label);
+        json_free(labels);
     }
-    json_free(labels);
     return rows;
 }
 
@@ -1339,10 +1364,7 @@ json_t *gwb_read_httpx_body_with_limit(const json_t *headers, const json_t *chun
             char msg[512];
             snprintf(msg, sizeof(msg), "Ignoring invalid Content-Length for inbound %s: %s",
                      media_type ? media_type : "media", repr);
-            json_t *a = args0();
-            asets(a, "msg", msg);
-            json_t *r = gwb_call(s, "log_debug", a);
-            json_free(a); json_free(r);
+            seam_log(s, "debug", msg);   /* live logger.debug -> "log" seam */
             free(rs); free(repr);
         } else if (exc == 0) {
             char *err = gwb_validate_inbound_media_size(declared, media_type, maxv, s);
@@ -1524,7 +1546,8 @@ bool gwb_is_network_accessible(const char *host, const gwb_seams_t *s) {
 /* ── proxy family ── */
 
 /* PoP: gwb_detect_macos_system_proxy @ gateway/platforms/base.py:_detect_macos_system_proxy */
-char *gwb_detect_macos_system_proxy(json_t *cache, const gwb_seams_t *s) {
+char *gwb_detect_macos_system_proxy(json_t **cache_p, const gwb_seams_t *s) {
+    json_t *cache = cache_p ? *cache_p : NULL;
     json_t *a = args0();
     json_t *rd = gwb_call(s, "is_darwin", a);
     json_free(a);
@@ -1548,6 +1571,7 @@ char *gwb_detect_macos_system_proxy(json_t *cache, const gwb_seams_t *s) {
     json_free(a);
     if (gwb_raise_class(out)) {
         json_free(out);
+        if (!cache && cache_p) { cache = json_object(); *cache_p = cache; }
         if (cache) {
             json_set(cache, "ts", json_number(now));
             json_set(cache, "value", json_null());
@@ -1597,6 +1621,7 @@ char *gwb_detect_macos_system_proxy(json_t *cache, const gwb_seams_t *s) {
     }
     json_free(props);
     json_free(out);
+    if (!cache && cache_p) { cache = json_object(); *cache_p = cache; }
     if (cache) {
         json_set(cache, "ts", json_number(now));
         json_set(cache, "value", resolved ? json_string(resolved) : json_null());
@@ -1807,9 +1832,14 @@ char *gwb_send_draft(const char *adapter_class_name) {
 
 /* PoP: gwb_mark_degraded @ gateway/platforms/base.py:_mark_degraded */
 void gwb_mark_degraded(json_t *st, const gwb_seams_t *s) {
-    (void)st;
+    /* live: publish_runtime_status(platform=<platform.value>, **kwargs) —
+     * the context string is only used in the failure log, not published.
+     * Multiplexed adapters override the key via _runtime_status_platform_key. */
+    const json_t *pk = jgetattr(st, "_runtime_status_platform_key");
+    char *pn = jtruth(pk) ? jpystr(pk) : platform_name(jgetattr(st, "platform"));
     json_t *a = args0();
-    asets(a, "context", "connected_degraded");
+    asets(a, "platform", pn);
+    free(pn);
     asets(a, "platform_state", "retrying");
     json_set(a, "error_code", json_null());
     asets(a, "error_message", GWB_DEGRADED_MSG);
@@ -1907,7 +1937,11 @@ json_t *gwb_media_delivery_scope(const json_t *st, const json_t *source, const g
     json_free(a);
     if (gwb_raise_class(r)) {
         json_free(r);
-        seam_log(s, "debug", "Failed to resolve media delivery scope");
+        char *name = adapter_name(st);
+        char lmsg[256];
+        snprintf(lmsg, sizeof(lmsg), "[%s] Failed to resolve media delivery scope", name);
+        seam_log(s, "debug", lmsg);
+        free(name);
         json_t *noop = json_object();
         json_set(noop, "noop", json_bool(true));
         return noop;
@@ -2163,19 +2197,22 @@ bool gwb_ledger_attempted_final(const json_t *st, const json_t *event, const cha
     aset(a, "event", event);
     asets(a, "session_key", session_key);
     asetb(a, "is_ephemeral_response", false);
-    json_t *text = gwb_call(s, "extract_text", a);
+    json_t *extracted = gwb_call(s, "extract_text", a);
     json_free(a);
-    bool has_text = jtruth(text);
-    if (!has_text) { json_free(text); return false; }
+    /* live: text = (await _extract_response_content(...)).text_content;
+     * bool(text) gates the ledger row, and the STRING is what's ledgered. */
+    const char *text_s = jstr(json_obj_get(extracted, "text_content"));
+    bool has_text = text_s && text_s[0] != '\0';
+    if (!has_text) { json_free(extracted); return false; }
     a = args0();
     aset(a, "event", event);
     asets(a, "session_key", session_key);
-    aset(a, "text", text);
+    asets(a, "text", text_s);
     asets(a, "error", error);
     json_t *r = gwb_call(s, "ledger_attempted", a);
     json_free(a);
     bool saved = jtruth(r);
-    json_free(text);
+    json_free(extracted);
     json_free(r);
     return saved;
 }
@@ -2247,7 +2284,11 @@ json_t *gwb_canonicalize(const json_t *st, const json_t *source, const gwb_seams
     json_free(a);
     if (gwb_raise_class(r)) {
         json_free(r);
-        seam_log(s, "debug", "identity resolution failed; using legacy key readers");
+        char *name = adapter_name(st);
+        char lmsg[256];
+        snprintf(lmsg, sizeof(lmsg), "[%s] identity resolution failed; using legacy key readers", name);
+        seam_log(s, "debug", lmsg);
+        free(name);
         return NULL;
     }
     return r;
@@ -2692,7 +2733,9 @@ json_t *gwb_handle_message_while_active(json_t *st, json_t *event, const char *s
         a = args0();
         asets(a, "session_key", session_key);
         aset(a, "event", event);
-        asetb(a, "merge_text", false);
+        /* live photo path calls merge_pending_message_event WITHOUT merge_text
+         * (defaults False); record it as absent, not an explicit false */
+        json_set(a, "merge_text", json_null());
         json_t *rm = gwb_call(s, "merge_pending", a);
         json_free(a);
         json_free(rm);
@@ -3140,8 +3183,16 @@ void gwb_wire_plugin_handlers(json_t *st, const json_t *native_id, const gwb_sea
         wired = json_obj_get(st, "_plugin_handlers_wired");
     }
     size_t n = factories ? json_len(factories) : 0;
+    /* a single factory spec (object) models a one-element list — the oracle
+     * stub wraps it the same way */
+    json_t *flist = factories;
+    if (factories && factories->type == JSON_OBJECT) {
+        flist = json_array();
+        json_append(flist, json_copy(factories));
+        n = 1;
+    }
     for (size_t i = 0; i < n; i++) {
-        const json_t *f = json_get(factories, i);
+        const json_t *f = json_get(flist, i);
         const char *plugin = jstr(json_obj_get(f, "plugin"));
         const json_t *qv = json_obj_get(f, "qualname");
         char *key2 = jtruth(qv) ? jpystr(qv) : jpystr(json_obj_get(f, "repr"));
@@ -3178,6 +3229,7 @@ void gwb_wire_plugin_handlers(json_t *st, const json_t *native_id, const gwb_sea
         }
         free(key2);
     }
+    if (flist != factories) json_free(flist);
     json_free(factories);
 }
 

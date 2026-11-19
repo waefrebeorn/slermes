@@ -162,11 +162,12 @@ json_t *gwb_extract_images(const char *content);
 
 /* _coerce_float_extra: value is extra.get(key) as JSON (null == None/absent);
  * float() coercion, NaN/Inf/negative -> default, clamp [min_value, max_value].
- * Seam "log_warning" stands in for logger.warning (ceiling clamp). */
+ * Seam "log" (level=warning) on ceiling clamp; max_is_float selects Python
+ * str(float) vs str(int) rendering of the ceiling in that message. */
 /* PoP: gwb_coerce_float_extra @ gateway/platforms/base.py:_coerce_float_extra */
 double gwb_coerce_float_extra(const json_t *value, double defval, double min_value,
-                              bool has_max, double max_value, const char *key,
-                              const gwb_seams_t *s);
+                              bool has_max, double max_value, bool max_is_float,
+                              const char *key, const gwb_seams_t *s);
 
 /* _configure_text_batch_delays: reads st.config.extra; mutates
  * st._text_batch_delay_seconds / _text_batch_split_delay_seconds. */
@@ -267,7 +268,8 @@ char *gwb_validate_inbound_media_size(long long size, const char *media_type,
                                       const json_t *max_bytes, const gwb_seams_t *s);
 
 /* read_httpx_body_with_limit: headers object + chunks array of strings;
- * seams "inbound_max", "log_debug". Returns NEW {"body": str, "error": str|null}. */
+ * seams "config_section" (via inbound max), "log" (level=debug). Returns NEW
+ * {"body": str, "error": str|null}. */
 /* PoP: gwb_read_httpx_body_with_limit @ gateway/platforms/base.py:read_httpx_body_with_limit */
 json_t *gwb_read_httpx_body_with_limit(const json_t *headers, const json_t *chunks,
                                        const char *media_type, const gwb_seams_t *s);
@@ -280,10 +282,11 @@ bool gwb_is_network_accessible(const char *host, const gwb_seams_t *s);
 
 /* _detect_macos_system_proxy: cache is an injected object {"ts": num, "value":
  * str|null} or NULL; seams "is_darwin", "monotonic", "scutil" (returns output
- * string or {"__raise__": ...}). Mutates cache in place (when non-NULL).
+ * string or {"__raise__": ...}). Mutates *cache in place, creating the cache
+ * object when absent (live memoises successes AND failures).
  * Returns NEW proxy string or NULL. */
 /* PoP: gwb_detect_macos_system_proxy @ gateway/platforms/base.py:_detect_macos_system_proxy */
-char *gwb_detect_macos_system_proxy(json_t *cache, const gwb_seams_t *s);
+char *gwb_detect_macos_system_proxy(json_t **cache_p, const gwb_seams_t *s);
 
 /* reset_macos_proxy_cache: *cache = NULL (caller frees old). */
 /* PoP: gwb_reset_macos_proxy_cache @ gateway/platforms/base.py:reset_macos_proxy_cache */
@@ -381,7 +384,7 @@ json_t *gwb_start_typing_refresh(const json_t *st, const json_t *event,
                                  const gwb_seams_t *s);
 
 /* _chain_callbacks: seam "cb_<i>" per callback (result null or {"__raise__": ...}
- * or {"awaitable": true}); seam "log_debug" on failure. Runs in order, isolated. */
+ * or {"awaitable": true}); seam "log" (level=debug) on failure. Runs in order, isolated. */
 /* PoP: gwb_chain_callbacks @ gateway/platforms/base.py:_chain_callbacks */
 void gwb_chain_callbacks(size_t n, const gwb_seams_t *s);
 

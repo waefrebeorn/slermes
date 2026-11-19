@@ -201,10 +201,13 @@ static const char *cp_attr_str(const json_t *entry, const char *name, const char
     return def;
 }
 
-/* runtime_api_key for the non-nous subset the harness feeds (str(access_token or "")). */
+/* runtime_api_key for the non-nous subset the harness feeds (str(access_token or "")).
+ * Falsy token renders "" — NOT str(None)="None" (cp_pystr(NULL) would produce
+ * "None", defeating the empty-key guard in _available_entries). */
 static char *cp_runtime_api_key(const json_t *entry) {
     json_t *at = cp_get(entry, "access_token");
-    return cp_pystr(cp_truthy(at) ? at : NULL);
+    if (cp_truthy(at)) return cp_pystr(at);
+    return strdup("");
 }
 
 static json_t *cp_state_get(cp_flow_io_t *io, const char *key) { return cp_get(io->state, key); }
@@ -621,14 +624,16 @@ bool cp_prune_stale_seeded_entries(cp_flow_io_t *io, json_t *entries,
             bool prunable;
             if (cp_startswith(src, "env:")) {
                 prunable = prune_env_sources;
-            } else if (strcmp(src, "hermes_pkce") == 0) {
-                prunable = true;
             } else {
+                /* live: is_borrowed_credential_source(entry.source, entry.provider)
+                 *       or entry.source == "hermes_pkce"
+                 * — the seam fires for EVERY non-env source (even hermes_pkce);
+                 * the pkce check is the right operand of `or`, evaluated after. */
                 json_t *a = json_object();
                 json_set(a, "source", json_string(src));
                 json_set(a, "provider", json_string(cp_get_str(e, "provider", cp_provider(io))));
                 json_t *r = seam(io, "is_borrowed_credential_source", a);
-                prunable = cp_truthy(r);
+                prunable = cp_truthy(r) || strcmp(src, "hermes_pkce") == 0;
                 json_free(r);
             }
             keep = !prunable;
@@ -1430,8 +1435,10 @@ void cp_mark_dead_refresh_grant(cp_flow_io_t *io, const json_t *entry, const jso
     json_append(secrets, json_copy(cp_get(current, "refresh_token")));
     json_append(secrets, json_copy(cp_get(current, "agent_key")));
     json_set(ra, "known_secrets", secrets);
-    json_t *message = seam(io, "redact_error_text", ra);
+    /* live evaluates the _adopt kwargs in order: last_status_at=time.time()
+     * BEFORE last_error_message=redact_error_text(...). */
     json_t *now = seam(io, "time.time", NULL);
+    json_t *message = seam(io, "redact_error_text", ra);
     json_t *updates = json_object();
     json_set(updates, "last_status", json_string(CP_STATUS_DEAD));
     json_set(updates, "last_status_at", now);
@@ -1800,29 +1807,42 @@ bool cp_upsert_entry(cp_flow_io_t *io, json_t *entries, const char *provider,
         for (int i = 0; CP_CLEAR_STATUS_KEYS[i]; i++)
             json_set(field_updates, CP_CLEAR_STATUS_KEYS[i], json_null());
     }
-    bool has_updates = json_len(field_updates) > 0 || json_len(extra_updates) > 0;
+    /* json_len() is ARRAY-only (returns 0 for objects) — count the update
+     * dicts with json_object_size, or adoption never fires. */
+    bool has_updates = json_object_size(field_updates) > 0 || json_object_size(extra_updates) > 0;
     bool ret = any_dup;
     if (has_updates) {
-        if (json_len(extra_updates) > 0) {
-            json_t *merged_extra = json_copy(cp_truthy(cp_get(existing, "extra")) ? cp_get(existing, "extra") : json_object());
+        if (json_object_size(extra_updates) > 0) {
+            json_t *ex = cp_get(existing, "extra");
+            json_t *merged_extra = cp_truthy(ex) ? json_copy(ex) : json_object();
             for (size_t i = 0; i < extra_updates->c.count; i++)
                 json_set(merged_extra, extra_updates->c.keys[i], json_copy(extra_updates->c.items[i]));
             json_set(field_updates, "extra", merged_extra);
         }
+        /* existing borrows entries[existing_idx]; snapshot the pre-update row
+         * BEFORE the slot is freed/replaced (live compares existing.to_dict()
+         * against updated.to_dict()). */
+        json_t *existing_copy = json_copy(existing);
         json_t *updated = cp_merge(existing, field_updates);
         json_free(entries->c.items[existing_idx]);
         entries->c.items[existing_idx] = json_copy(updated);
-        json_t *ea = json_object();
-        json_set(ea, "entry", json_copy(existing));
-        json_t *d1 = seam(io, "to_dict", ea);
-        json_t *ua = json_object();
-        json_set(ua, "entry", json_copy(updated));
-        json_t *d2 = seam(io, "to_dict", ua);
-        bool differ = !cp_json_equal(d1, d2);
-        json_free(d1);
-        json_free(d2);
+        /* live: return bool(duplicate_indices) or existing.to_dict() != updated.to_dict()
+         * — `or` short-circuits: the to_dict pair is only evaluated when there
+         * were no duplicates. */
+        if (!any_dup) {
+            json_t *ea = json_object();
+            json_set(ea, "entry", existing_copy);
+            json_t *d1 = seam(io, "to_dict", ea);
+            json_t *ua = json_object();
+            json_set(ua, "entry", json_copy(updated));
+            json_t *d2 = seam(io, "to_dict", ua);
+            ret = !cp_json_equal(d1, d2);
+            json_free(d1);
+            json_free(d2);
+        } else {
+            json_free(existing_copy);
+        }
         json_free(updated);
-        ret = any_dup || differ;
     }
     json_free(field_updates);
     json_free(extra_updates);

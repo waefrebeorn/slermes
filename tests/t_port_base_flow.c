@@ -177,7 +177,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     } else if (!strcmp(func, "coerce_float_extra")) {
         bool has_max = json_has(in, "max_value") && J("max_value")->type != JSON_NULL;
         ret_num(out, gwb_coerce_float_extra(J("value"), N("default", 0.0), N("min_value", 0.0),
-                                            has_max, N("max_value", 0.0), S("key"), sp));
+                                            has_max, N("max_value", 0.0), false, S("key"), sp));
     } else if (!strcmp(func, "configure_text_batch_delays")) {
         gwb_configure_text_batch_delays(st, sp);
         ret_json(out, NULL);
@@ -238,7 +238,8 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_bool(out, gwb_is_network_accessible(S("host"), sp));
     } else if (!strcmp(func, "detect_macos_system_proxy")) {
         json_t *cache = json_copy(J("cache"));
-        char *r = gwb_detect_macos_system_proxy(cache, sp);
+        if (cache && cache->type == JSON_NULL) { json_free(cache); cache = NULL; }
+        char *r = gwb_detect_macos_system_proxy(&cache, sp);
         ret_str(out, r);
         json_set(out, "cache", cache ? cache : json_null());
     } else if (!strcmp(func, "reset_macos_proxy_cache")) {
@@ -437,12 +438,14 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     }
 
     json_set(out, "trace", trace.events ? json_copy(trace.events) : json_array());
+    /* json_set ADOPTS: when st/event are stored into out, out owns them and
+     * the end-of-case json_free must not free them again (double free). */
     if (json_has(in, "st")) json_set(out, "st", st ? st : json_object());
     if (json_has(in, "event")) json_set(out, "ev", event ? event : json_object());
     gwb_trace_free(&trace);
     json_free(counters);
-    json_free(st);
-    json_free(event);
+    if (!json_has(in, "st")) json_free(st);
+    if (!json_has(in, "event")) json_free(event);
 }
 
 int main(void) {
