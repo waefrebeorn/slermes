@@ -1,0 +1,32 @@
+{"func":"exit_with_failure_verdict","in":{"runner":{"should_exit_with_failure":false}}}
+{"func":"exit_with_failure_verdict","in":{"runner":{"should_exit_with_failure":true,"exit_reason":"fatal"}}}
+{"func":"exit_with_failure_verdict","in":{"runner":{"should_exit_with_failure":true,"exit_reason":null}}}
+{"func":"exit_with_failure_verdict","in":{"runner":{"should_exit_with_failure":true,"exit_reason":""}}}
+{"func":"exit_with_failure_verdict","in":{"runner":{"should_exit_with_failure":true,"exit_reason":"startup aborted"}}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{},"failure_verdict":true}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{"exit_code":3},"failure_verdict":false}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{},"failure_verdict":false,"signal_initiated_shutdown":true}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{"_restart_via_service":true},"failure_verdict":false}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{},"failure_verdict":false}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{"_restart_requested":true},"failure_verdict":false,"signal_initiated_shutdown":true}}
+{"func":"resolve_gateway_exit_verdict","in":{"runner":{"exit_code":0},"failure_verdict":false}}
+{"func":"notice_allowed","in":{"config_platforms":{"telegram":{"gateway_restart_notification":false}},"platform_value":"telegram","what":"shutdown"}}
+{"func":"notice_allowed","in":{"config_platforms":{"telegram":{"gateway_restart_notification":true}},"platform_value":"telegram","what":"shutdown"}}
+{"func":"notice_allowed","in":{"config_platforms":{},"platform_value":"slack","what":"shutdown"}}
+{"func":"notice_allowed","in":{"config_platforms":{},"platform_value":"slack","what":"shutdown","platform_cfg":{"gateway_restart_notification":false}}}
+{"func":"notice_allowed","in":{"config_platforms":{},"platform_value":"slack","what":"restart","platform_cfg":{"gateway_restart_notification":true}}}
+{"func":"notice_allowed","in":{"config_platforms":{"discord":{"gateway_restart_notification":false}},"platform_value":"discord","what":"shutdown","platform_cfg":{"gateway_restart_notification":true}}}
+{"func":"shutdown_interrupt_reason","in":{"restart_requested":true}}
+{"func":"shutdown_interrupt_reason","in":{"restart_requested":false}}
+{"func":"shutdown_interrupt_reason","in":{"restart_requested":true}}
+{"func":"shutdown_interrupt_reason","in":{"restart_requested":false}}
+{"func":"quiet_step","in":{"label":"kill","step_ret":5}}
+{"func":"quiet_step","in":{"label":"kill","step_ret":"ok"}}
+{"func":"quiet_step","in":{"label":"kill","step_raises":true,"step_error":"boom"}}
+{"func":"quiet_step","in":{"label":"kill","step_ret":null}}
+{"func":"quiet_step","in":{"label":"cleanup","step_raises":true,"step_error":"subprocess failed"}}
+{"func":"quiet_step","in":{"label":"flush","step_ret":{"n":2}}}
+{"func":"scale_to_zero_status","in":{"state":"running","fail_msg":"restore failed"}}
+{"func":"scale_to_zero_status","in":{"state":"degraded","fail_msg":"restore failed"}}
+{"func":"scale_to_zero_status","in":{"state":"running","fail_msg":"restore failed","status_raises":true}}
+{"func":"scale_to_zero_status","in":{"state":"draining","fail_msg":"scale-to-zero: status restore failed","status_raises":true}}

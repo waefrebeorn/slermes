@@ -1,0 +1,32 @@
+{"func":"serving_state","in":{"state":{"_startup_parked_platforms":true}}}
+{"func":"serving_state","in":{"state":{"_startup_parked_platforms":false}}}
+{"func":"serving_state","in":{"state":{}}}
+{"func":"serving_state","in":{"state":{"_startup_parked_platforms":true,"_running":true}}}
+{"func":"startup_should_abort","in":{"state":{"_restart_requested":true},"shutdown_event_set":true}}
+{"func":"startup_should_abort","in":{"state":{"_draining":true},"shutdown_event_set":true}}
+{"func":"startup_should_abort","in":{"state":{},"shutdown_event_set":true}}
+{"func":"startup_should_abort","in":{"state":{},"shutdown_event_set":false}}
+{"func":"startup_should_abort","in":{"state":{"_restart_requested":false,"_draining":false},"shutdown_event_set":false}}
+{"func":"resume_owner_authorized","in":{"session_key":"s1","source":{"platform":"telegram"},"authorized":true}}
+{"func":"resume_owner_authorized","in":{"session_key":"s1","source":{},"authorized":false}}
+{"func":"resume_owner_authorized","in":{"session_key":"s1","source":{},"authorize_raises":true,"authorize_error":"boom"}}
+{"func":"resume_owner_authorized","in":{"session_key":"s2","source":null,"authorized":false}}
+{"func":"resume_owner_authorized","in":{"session_key":"s3","source":{},"authorize_raises":true,"authorize_error":"allowlist unreadable"}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":true},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"x_lock","platform":{"value":"telegram"}}}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":true},"conflict":true,"adapter":{"fatal_error_retryable":false,"fatal_error_code":"x_lock","platform":{"value":"telegram"}}}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":true},"conflict":false,"adapter":{"fatal_error_retryable":false,"fatal_error_code":"bad_token","fatal_error_message":"invalid","platform":{"value":"telegram"}}}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":true,"_draining":true},"conflict":false,"adapter":{"fatal_error_retryable":false,"fatal_error_code":null,"fatal_error_message":null,"platform":{"value":"slack"}}}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":false},"conflict":false,"adapter":{"fatal_error_retryable":false,"fatal_error_code":"e","fatal_error_message":"m","platform":{"value":"discord"}}}}
+{"func":"park_last_fatal_platform","in":{"state":{"_running":true,"_external_drain_active":true},"conflict":false,"adapter":{"fatal_error_retryable":false,"fatal_error_code":"e","fatal_error_message":"m","platform":{"value":"matrix"}}}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":2,"enabled_platform_count":3,"retryable":[],"nonretryable":["telegram: bad"]}}
+{"func":"start_handle_no_connections","in":{"state":{"_startup_ownership_conflict":true},"connected_count":0,"enabled_platform_count":1,"retryable":[],"nonretryable":["telegram: conflict"]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":0,"enabled_platform_count":1,"retryable":[],"nonretryable":["telegram: bad"]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":0,"enabled_platform_count":2,"retryable":["slack: blip"],"nonretryable":["telegram: bad"]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":0,"enabled_platform_count":0,"retryable":[],"nonretryable":[]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":0,"enabled_platform_count":2,"retryable":["slack: blip"],"nonretryable":[]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":1,"enabled_platform_count":1,"retryable":[],"nonretryable":[]}}
+{"func":"start_handle_no_connections","in":{"state":{},"connected_count":0,"enabled_platform_count":2,"retryable":[],"nonretryable":["a: x","b: y"]}}
+{"func":"startup_fail_fatal_config","in":{"state":{"_exit_code":null,"_startup_restore_in_progress":true},"reason":"bad config"}}
+{"func":"startup_fail_fatal_config","in":{"state":{"_exit_code":0,"_startup_restore_in_progress":true},"reason":"multiplex error"}}
+{"func":"startup_fail_fatal_config","in":{"state":{"_exit_code":null,"_startup_restore_in_progress":false},"reason":""}}
+{"func":"startup_fail_fatal_config","in":{"state":{},"reason":"another reason"}}

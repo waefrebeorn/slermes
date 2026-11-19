@@ -1,0 +1,53 @@
+{"func": "start_or_report_running", "in": {"running_pids": null, "seams": {"gateway_pids": [[]], "spawn_detached": 99, "report_gateway_start": null}}}
+{"func": "start_or_report_running", "in": {"running_pids": null, "seams": {"gateway_pids": [[10]], "report_already_running": null}}}
+{"func": "start_or_report_running", "in": {"running_pids": [7], "seams": {"report_already_running": null}}}
+{"func": "start_or_report_running", "in": {"running_pids": [], "seams": {"spawn_detached": 5, "report_gateway_start": null}}}
+{"func": "offer_elevated_install", "in": {"headline": "H", "force": false, "start_now": true, "start_on_login": true, "seams": {"prompt_yes_no": true, "launch_elevated_install": true}}}
+{"func": "offer_elevated_install", "in": {"headline": "H", "force": true, "start_now": false, "start_on_login": true, "seams": {"prompt_yes_no": true, "launch_elevated_install": true}}}
+{"func": "offer_elevated_install", "in": {"headline": "H", "force": false, "start_now": true, "start_on_login": false, "seams": {"prompt_yes_no": true, "launch_elevated_install": false}}}
+{"func": "offer_elevated_install", "in": {"headline": "H", "force": false, "start_now": false, "start_on_login": false, "seams": {"prompt_yes_no": false}}}
+{"func": "reconcile_autostart_launchers", "in": {"seams": {"is_task_registered": true, "get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_unlink": [null, null]}}}
+{"func": "reconcile_autostart_launchers", "in": {"seams": {"is_task_registered": false, "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [true, false], "write_task_script": "/h/g.cmd", "install_startup_entry": "/h/e.vbs"}}}
+{"func": "reconcile_autostart_launchers", "in": {"seams": {"is_task_registered": false, "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [true, true], "write_task_script": "/h/g.cmd", "install_startup_entry": "/h/e.vbs"}}}
+{"func": "reconcile_autostart_launchers", "in": {"seams": {"is_task_registered": false, "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [false, true], "get_startup_entry_path": "/h/e.vbs", "get_task_script_path": "/h/g.cmd", "install_startup_entry": "/h/e.vbs"}}}
+{"func": "reconcile_autostart_launchers", "in": {"seams": {"is_task_registered": false, "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [false, false], "get_startup_entry_path": "/h/e.vbs"}}}
+{"func": "redundant_autostart_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [true, true], "is_task_registered": true}}}
+{"func": "redundant_autostart_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [true, true], "is_task_registered": false}}}
+{"func": "redundant_autostart_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [true, false], "is_task_registered": false}}}
+{"func": "redundant_autostart_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_exists": [false, false], "is_task_registered": true}}}
+{"func": "remove_startup_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_unlink": [null, null]}}}
+{"func": "remove_startup_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_unlink": [{"__raise__": "FileNotFoundError"}, null]}}}
+{"func": "remove_startup_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_unlink": [{"__raise__": "OSError", "msg": "locked"}, null]}}}
+{"func": "remove_startup_entries", "in": {"seams": {"get_startup_entry_path": "/h/e.vbs", "legacy_startup_entry_path": "/h/l.cmd", "path_unlink": [{"__raise__": "FileNotFoundError"}, {"__raise__": "FileNotFoundError"}]}}}
+{"func": "attested_death_generation", "in": {"current_pids": [], "home": "/h", "seams": {"read_start_attestation": {"pids": [10], "generation": "g1", "ts": "x", "create_times": {"10": 100.0}}, "within_horizon": true, "get_lifecycle_sentinel_path": "/h/sent.json", "read_text": {"__raise__": "OSError"}}}}
+{"func": "attested_death_generation", "in": {"current_pids": [], "home": "/h", "seams": {"read_start_attestation": {"pids": [], "generation": "g1"}, "within_horizon": true}}}
+{"func": "attested_death_generation", "in": {"current_pids": [], "home": "/h", "seams": {"read_start_attestation": {"pids": [10], "generation": "g1"}, "within_horizon": false}}}
+{"func": "attested_death_generation", "in": {"current_pids": [10], "home": "/h", "seams": {"read_start_attestation": {"pids": [10], "generation": "g1"}, "within_horizon": true}}}
+{"func": "attested_death_generation", "in": {"current_pids": [], "home": "/h", "seams": {"read_start_attestation": null}}}
+{"func": "attested_dead", "in": {"attested": [10], "current_pids": [], "data": {"create_times": {"10": 100.0}}, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "{\"pid\": 10, \"create_time\": 100.0, \"phase\": \"exited\"}"}}}
+{"func": "attested_dead", "in": {"attested": [10], "current_pids": [], "data": {"create_times": {"10": 100.0}}, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": {"__raise__": "OSError"}}}}
+{"func": "attested_dead", "in": {"attested": [10], "current_pids": [10], "data": {}, "home": "/h", "seams": {}}}
+{"func": "attested_dead", "in": {"attested": [], "current_pids": [], "data": null, "home": "/h", "seams": {}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": 100.0, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "{\"pid\": 10, \"create_time\": 100.0, \"phase\": \"exited\"}"}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": 100.0, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "{\"pid\": 99, \"phase\": \"exited\"}"}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": 100.0, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "{\"pid\": 10, \"create_time\": 200.0, \"phase\": \"exited\"}"}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": null, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "not json"}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": null, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": "{\"pid\": 10, \"phase\": \"exited\"}"}}}
+{"func": "attested_pid_exited_cleanly", "in": {"pid": 10, "create_time": 100.0, "home": "/h", "seams": {"get_lifecycle_sentinel_path": "/h/sent.json", "read_text": {"__raise__": "OSError"}}}}
+{"func": "consume_start_attestation", "in": {"generation": "g1", "home": "/h", "seams": {"read_start_attestation": {"generation": "g1"}, "clear_start_attestation": null}}}
+{"func": "consume_start_attestation", "in": {"generation": "g1", "home": "/h", "seams": {"read_start_attestation": {"generation": "g2"}}}}
+{"func": "consume_start_attestation", "in": {"generation": "g1", "home": "/h", "seams": {"read_start_attestation": null}}}
+{"func": "consume_start_attestation", "in": {"generation": "g1", "home": null, "seams": {"read_start_attestation": {"generation": "g1"}, "clear_start_attestation": null}}}
+{"func": "reconcile_scheduled_task", "in": {"task_name": "T", "seams": {"scheduled_task_drift": [["LogonTrigger Delay", "version"]], "write_task_script": "/h/g.cmd", "install_scheduled_task": {"ok": true, "detail": "Created Scheduled Task 'T'"}}}}
+{"func": "reconcile_scheduled_task", "in": {"task_name": "T", "seams": {"scheduled_task_drift": [["LogonTrigger Delay"]], "write_task_script": "/h/g.cmd", "install_scheduled_task": {"ok": false, "detail": "denied"}}}}
+{"func": "reconcile_scheduled_task", "in": {"task_name": "T", "seams": {"scheduled_task_drift": [[]]}}}
+{"func": "reconcile_scheduled_task", "in": {"task_name": "T", "seams": {"scheduled_task_drift": [["a", "b", "c"]], "write_task_script": "/h/g.cmd", "install_scheduled_task": {"ok": true, "detail": "ok"}}}}
+{"func": "live_gateway_pids", "in": {"all_profiles": false, "home": "/h", "pid_filter_present": false, "seams": {"get_running_pid": 42}}}
+{"func": "live_gateway_pids", "in": {"all_profiles": false, "home": "/h", "pid_filter_present": false, "seams": {"get_running_pid": null}}}
+{"func": "live_gateway_pids", "in": {"all_profiles": true, "home": null, "pid_filter_present": false, "seams": {"find_gateway_pids": [[1, 2]]}}}
+{"func": "live_gateway_pids", "in": {"all_profiles": false, "home": null, "pid_filter_present": true, "seams": {"find_gateway_pids": [[1, 2, 3]], "pid_filter": [[2, 3]]}}}
+{"func": "live_gateway_pids", "in": {"all_profiles": false, "home": "/h", "pid_filter_present": false, "seams": {"get_running_pid": 0}}}
+{"func": "gateway_pid_identities", "in": {"pids": [10, 20], "seams": {"import_start_time": null, "get_process_start_time": [1.5, 2.5]}}}
+{"func": "gateway_pid_identities", "in": {"pids": [10], "seams": {"import_start_time": {"__raise__": "ImportError"}}}}
+{"func": "gateway_pid_identities", "in": {"pids": [], "seams": {"import_start_time": null}}}
+{"func": "gateway_pid_identities", "in": {"pids": [10], "seams": {"import_start_time": null, "get_process_start_time": [null]}}}

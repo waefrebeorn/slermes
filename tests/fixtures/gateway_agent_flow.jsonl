@@ -1,0 +1,59 @@
+{"func": "effort_word", "in": {"config": {"enabled": false}}}
+{"func": "effort_word", "in": {"config": {"effort": "high"}}}
+{"func": "effort_word", "in": {"config": {"effort": ""}}}
+{"func": "effort_word", "in": {"config": {"enabled": true, "effort": "low"}}}
+{"func": "effort_word", "in": {"config": null}}
+{"func": "effort_word", "in": {"config": {"effort": 5}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"model": "sess"}}}, "model": "pick", "provider": "", "alias": "", "seams": {"runs_route": false}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"model": "sess"}}}, "model": "pick", "provider": "prov", "alias": "", "seams": {"runs_route": false}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"model": "sess"}}}, "model": "", "provider": "", "alias": "", "seams": {"runs_route": false}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "model": "pick", "provider": "", "alias": "", "seams": {"runs_route": false}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"model": "sess"}}}, "model": "pick", "provider": "", "alias": "", "seams": {"runs_route": true}}}
+{"func": "route_off_session", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"model": "sess"}}}, "model": "pick", "provider": "", "alias": "al", "seams": {"runs_route": true}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "config": {"effort": "high"}, "explicit": true, "seams": {"call": [{"revision": 3, "execution_generation": 7}, null], "uuid4_hex": "abc"}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"reasoning_effort": "high"}}}, "config": {"effort": "high"}, "explicit": false, "seams": {}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "config": null, "explicit": true, "seams": {}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "config": {"effort": "high"}, "explicit": false, "seams": {"call": {"__raise__": "GatewayClientError", "msg": "boom"}}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "config": {"effort": "high"}, "explicit": true, "seams": {"call": [{"execution_generation": 7}, null], "uuid4_hex": "abc"}}}
+{"func": "set_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}}, "config": {"enabled": false}, "explicit": true, "seams": {"call": [{"revision": 1, "execution_generation": 2}, null], "uuid4_hex": "n"}}}
+{"func": "sync_show_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 2, "state": {"info": {}}, "_reasoning_callback": {}, "_show_reasoning_sent": null}, "seams": {"call": null}}}
+{"func": "sync_show_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 2, "state": {"info": {}}, "_reasoning_callback": null, "_show_reasoning_sent": null}, "seams": {"call": null}}}
+{"func": "sync_show_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 2, "state": {"info": {}}, "_reasoning_callback": {}, "_show_reasoning_sent": ["s1", true, 2]}, "seams": {"call": null}}}
+{"func": "sync_show_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 2, "state": {"info": {}}, "_reasoning_callback": {}, "_show_reasoning_sent": ["s1", true, 1]}, "seams": {"call": null}}}
+{"func": "sync_show_reasoning", "in": {"st": {"session_id": "s1", "connection_epoch": 2, "state": {"info": {}}, "_reasoning_callback": {}, "_show_reasoning_sent": null}, "seams": {"call": {"__raise__": "GatewayClientError", "msg": "x"}}}}
+{"func": "service_tier", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {}}, "tier": "fast", "seams": {"call": null}}}
+{"func": "service_tier", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"service_tier_sent": "fast"}}, "tier": "fast", "seams": {"call": null}}}
+{"func": "service_tier", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {}}, "tier": null, "seams": {"call": null}}}
+{"func": "service_tier", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"service_tier_sent": "fast"}}, "tier": null, "seams": {"call": null}}}
+{"func": "service_tier", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {}}, "tier": "fast", "seams": {"call": {"__raise__": "GatewayClientError", "msg": "x"}}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": 5, "suppress_status_output": false}, "verb": "steer", "text": "hi", "seams": {"call": {"status": "queued"}}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": 5, "suppress_status_output": false}, "verb": "redirect", "text": "hi", "seams": {"call": {"status": "redirected"}}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": 5, "suppress_status_output": false}, "verb": "steer", "text": "hi", "seams": {"call": {"status": "other"}}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": null}, "verb": "steer", "text": "x", "seams": {}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": 5, "suppress_status_output": false}, "verb": "steer", "text": "stop", "seams": {"call": {"voice_stopped": true}, "t": "STOPPED"}}}
+{"func": "correct", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_generation": 5}, "verb": "steer", "text": "x", "seams": {"call": {"__raise__": "GatewayClientError", "msg": "e"}}}}
+{"func": "take_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": {"model": "m", "provider": "p"}, "_turn_reasoning": "high"}}}
+{"func": "take_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": {"model": "m"}, "_turn_reasoning": null}}}
+{"func": "take_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": null, "_turn_reasoning": null}}}
+{"func": "take_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": {}, "_turn_reasoning": "high"}}}
+{"func": "give_back_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_taken_turn_route": [{"model": "m"}, "high"], "_turn_route": null}}}
+{"func": "give_back_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_taken_turn_route": [{"model": "m"}, "high"], "_turn_route": {"model": "x"}}}}
+{"func": "give_back_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_taken_turn_route": null, "_turn_route": null}}}
+{"func": "give_back_turn_route", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_taken_turn_route": [{"model": "m"}, null], "_turn_route": null}}}
+{"func": "prepare_submit", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"gaps": 1, "attached_gaps": 0, "pending": [{"status": "unknown"}]}, "_reasoning_callback": null, "_show_reasoning_sent": null}, "turn_session_id": "s1", "seams": {"reattach": {}, "start": null, "call": null, "pending_lines": [["line1"]]}}}
+{"func": "prepare_submit", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"gaps": 0, "attached_gaps": 0, "pending": []}, "_reasoning_callback": null, "_show_reasoning_sent": ["s1", false, 1]}, "turn_session_id": "s1", "seams": {"start": null}}}
+{"func": "prepare_submit", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"gaps": 2, "attached_gaps": 0, "pending": [{"status": "queued"}]}, "_reasoning_callback": null, "_show_reasoning_sent": null}, "turn_session_id": "s1", "seams": {"reattach": {}, "start": null, "call": null}}}
+{"func": "prepare_submit", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"gaps": 0, "attached_gaps": 0, "pending": []}, "_reasoning_callback": {}, "_show_reasoning_sent": null}, "turn_session_id": "s1", "seams": {"start": null, "call": null}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_moa_preset": null}, "user_message": "hello", "persist_user_message": null, "turn_author": null, "seams": {"uuid4_hex": "sub1"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_moa_preset": null}, "user_message": "api", "persist_user_message": "stored", "turn_author": null, "seams": {"uuid4_hex": "sub2"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": null, "_moa_preset": null}, "user_message": [{"type": "text", "text": "hi\n[Image attached at: x]"}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,AAA"}}], "persist_user_message": ["ignored"], "turn_author": "bob", "seams": {"call": {"path": "/staged/a.png", "mime": "image/png"}, "uuid4_hex": "sub3"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_voice_turn_pending": true, "_moa_preset": null}, "user_message": "x", "persist_user_message": null, "turn_author": "bob", "seams": {"uuid4_hex": "sub4"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {"provider": "openai", "model": "gpt"}}, "_moa_preset": "moa-model"}, "user_message": "x", "persist_user_message": null, "turn_author": null, "seams": {"uuid4_hex": "sub5"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "_turn_route": {"model": "once"}, "_turn_reasoning": "high", "_moa_preset": null}, "user_message": "x", "persist_user_message": null, "turn_author": null, "seams": {"uuid4_hex": "sub6"}}}
+{"func": "submit_params", "in": {"st": {"session_id": "s1", "connection_epoch": 1, "state": {"info": {}}, "clarify_callback": {}, "_finite": true, "_pending_cli_user_message": {"display_kind": "card"}, "_moa_preset": null}, "user_message": "x", "persist_user_message": null, "turn_author": null, "seams": {"uuid4_hex": "sub7"}}}
+{"func": "clarify_reply", "in": {"callback_present": true, "params": {"questions": [{"qid": "q1", "question": "Q?"}]}, "seams": {"clarify_callback": {"answers": {"q1": "yes"}, "outcome": "submitted"}}}}
+{"func": "clarify_reply", "in": {"callback_present": false, "params": {"questions": [{"qid": "q1"}]}, "seams": {}}}
+{"func": "clarify_reply", "in": {"callback_present": true, "params": {"questions": []}, "seams": {}}}
+{"func": "clarify_reply", "in": {"callback_present": true, "params": {"questions": [{"qid": "q1"}]}, "seams": {"clarify_callback": "not-a-dict"}}}
+{"func": "clarify_reply", "in": {"callback_present": true, "params": {"questions": [{"qid": "q1"}]}, "seams": {"clarify_callback": {"answers": {"q1": 5}}}}}
+{"func": "clarify_reply", "in": {"callback_present": true, "params": {"questions": [{"qid": "q1"}]}, "seams": {"clarify_callback": {"answers": {"q1": "a"}, "outcome": "bogus"}}}}

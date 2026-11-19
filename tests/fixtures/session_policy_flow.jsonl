@@ -1,0 +1,73 @@
+{"func":"session_pinned","in":{"config":{"session_pins":{"reasoning":true}},"field":"reasoning","launched":false}}
+{"func":"session_pinned","in":{"config":{"session_pins":{"reasoning":false}},"field":"reasoning","launched":true}}
+{"func":"session_pinned","in":{"config":{},"field":"reasoning","launched":true}}
+{"func":"session_pinned","in":{"config":{"session_pins":{"reasoning":"yes"}},"field":"reasoning","launched":false}}
+{"func":"session_pinned","in":{"config":{"session_pins":[1,2]},"field":"reasoning","launched":true}}
+{"func":"created_surface","in":{"label":"gui"}}
+{"func":"created_surface","in":{"label":"cli"}}
+{"func":"created_surface","in":{"label":"tui"}}
+{"func":"created_surface","in":{"label":"acp"}}
+{"func":"created_surface","in":{"label":"tool"}}
+{"func":"created_surface","in":{"label":"oneshot"}}
+{"func":"created_surface","in":{"label":"local"}}
+{"func":"created_surface","in":{"label":"unknown"}}
+{"func":"created_surface","in":{"label":"desktop"}}
+{"func":"created_surface","in":{"label":null}}
+{"func":"profile_target","in":{"config":{"model":{"default":" gpt ","provider":"Auto"}}}}
+{"func":"profile_target","in":{"config":{"model":{"default":"claude","provider":" anthropic "}}}}
+{"func":"profile_target","in":{"config":{"model":" claude "}}}
+{"func":"profile_target","in":{"config":{"model":null}}}
+{"func":"profile_target","in":{"config":{"model":{"default":"x"}}}}
+{"func":"profile_target","in":{"config":{}}}
+{"func":"present_sections","in":{"config":{"model":"gpt","gateway":null,"agent":{"x":1}}}}
+{"func":"present_sections","in":{"config":{"model":"   ","agent":null}}}
+{"func":"present_sections","in":{"config":{"model":{"default":"z"},"providers":{"a":1}}}}
+{"func":"present_sections","in":{"config":{}}}
+{"func":"present_sections","in":{"config":{"model":"  padded  "}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{"TERMINAL_ENV":"docker","TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE":"yes"}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{"TERMINAL_ENV":"docker","TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE":"no"}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{"TERMINAL_ENV":"ssh"}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{"TERMINAL_ENV":" Docker ","TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE":"1"}}}
+{"func":"terminal_uses_host_cwd","in":{"terminal":{"TERMINAL_ENV":"local"}}}
+{"func":"launch_skills","in":{"params":{"skills":[" a ","b"]}}}
+{"func":"launch_skills","in":{"params":{"skills":[]}}}
+{"func":"launch_skills","in":{"params":{"skills":"notalist"}}}
+{"func":"launch_skills","in":{"params":{"skills":["a"],"safe_mode":true}}}
+{"func":"launch_skills","in":{"params":{"skills":["a"],"ignore_user_config":true}}}
+{"func":"launch_skills","in":{"params":{}}}
+{"func":"launch_skills","in":{"params":{"skills":["  "]}}}
+{"func":"launch_skills","in":{"params":{"skills":["ok",5]}}}
+{"func":"valid_client_env","in":{"value":"{\"A\":\"b\"}","kind":"str"}}
+{"func":"valid_client_env","in":{"value":"{\"A\":[\"b\",\"c\"]}","kind":"list"}}
+{"func":"valid_client_env","in":{"value":"bad","kind":"str"}}
+{"func":"valid_client_env","in":{"value":"[1,2]","kind":"str"}}
+{"func":"valid_client_env","in":{"value":null,"kind":"str"}}
+{"func":"valid_client_env","in":{"value":"{\"A\":[1]}","kind":"list"}}
+{"func":"valid_client_env","in":{"value":"{\"A\":\"b\"}","kind":"list"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"C:\\Users\\x"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"/home/x"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"C:rel"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"\\Users\\x"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"\\\\server\\share"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"relative/path"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"C:/Users/x"}}
+{"func":"stored_cwd_is_absolute","in":{"cwd":"/"}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"local","platform":"desktop","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"local\",\"TERMINAL_CWD\":\"/home/x\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"acp","platform":"acp","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","edit_approval_policy":"session"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","bogus_key":1,"another":2}}}
+{"func":"restore_policy","in":{"data":{"source":"bot_room","platform":"custom","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"},"forward_policy":true}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"relative","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"   ","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","safe_mode":true,"ignore_user_config":false}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","edit_approval_policy":"session"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"[]","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"local\",\"TERMINAL_CWD\":\"/other\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":"web","config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","safe_mode":1}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":"gpt","toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}","client_env_json":"{bad"}}}
+{"func":"restore_policy","in":{"data":{"source":"cli","platform":"cli","cwd":"/home/x","model":null,"toolsets":["web"],"config_json":"{}","request_json":"{}","terminal_json":"{\"TERMINAL_ENV\":\"ssh\"}"}}}
+{"func":"restore_policy","in":{"data":"notanobject"}}

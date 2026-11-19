@@ -1,0 +1,104 @@
+{"func": "_with_think_block", "in": {"content": "hello"}}
+{"func": "_with_think_block", "in": {"content": "x\ny"}}
+{"func": "_with_think_block", "in": {"content": ""}}
+{"func": "_with_think_block", "in": {"content": "prefix  suffix"}}
+{"func": "_with_think_block", "in": {"content": "no tags here"}}
+{"func": "_flatten_content_text", "in": {"content": "plain"}}
+{"func": "_flatten_content_text", "in": {"content": ["a", {"type": "text", "text": "b"}, {"type": "thinking", "text": "secret"}, {"type": "reasoning", "text": "s"}, {"type": "redacted_thinking", "text": "s"}, {"type": "text", "text": ""}, {"type": "text"}, 42, null]}}
+{"func": "_flatten_content_text", "in": {"content": [{"type": " THINKING ", "text": "x"}, {"type": "Text", "text": "ok"}]}}
+{"func": "_flatten_content_text", "in": {"content": {"text": "t", "content": "c"}}}
+{"func": "_flatten_content_text", "in": {"content": {"text": "", "content": "c"}}}
+{"func": "_flatten_content_text", "in": {"content": {"text": 0, "content": false}}}
+{"func": "_flatten_content_text", "in": {"content": {}}}
+{"func": "_flatten_content_text", "in": {"content": null}}
+{"func": "_flatten_content_text", "in": {"content": 42}}
+{"func": "_flatten_content_text", "in": {"content": true}}
+{"func": "_flatten_content_text", "in": {"content": {"text": 123}}}
+{"func": "_merge_user_content", "in": {"prev": "a", "cur": "b"}}
+{"func": "_merge_user_content", "in": {"prev": "", "cur": "b"}}
+{"func": "_merge_user_content", "in": {"prev": "a", "cur": ""}}
+{"func": "_merge_user_content", "in": {"prev": "", "cur": ""}}
+{"func": "_merge_user_content", "in": {"prev": [1], "cur": [2]}}
+{"func": "_merge_user_content", "in": {"prev": [{"type": "text", "text": "x"}], "cur": "y"}}
+{"func": "_merge_user_content", "in": {"prev": [1], "cur": ""}}
+{"func": "_merge_user_content", "in": {"prev": "a", "cur": [{"type": "text", "text": "b"}]}}
+{"func": "_merge_user_content", "in": {"prev": "", "cur": [1]}}
+{"func": "_merge_user_content", "in": {"prev": null, "cur": "x"}}
+{"func": "_merge_user_content", "in": {"prev": 5, "cur": 6}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {"reasoning": "plan"}}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {"reasoning": "  "}}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {"reasoning": ""}}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {}}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {"reasoning": null}}}
+{"func": "_trajectory_gpt_prefix", "in": {"msg": {"reasoning": "a\nb"}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"tool_calls": []}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"reasoning": "r", "tool_calls": [{"function": {"name": "f", "arguments": "{\"x\": 1}"}}]}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"content": "<REASONING_SCRATCHPAD>x</REASONING_SCRATCHPAD>", "tool_calls": []}, "io": {"convert_scratchpad_to_think": "converted"}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"content": "   ", "tool_calls": []}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"tool_calls": [{"function": {"name": "f", "arguments": "{bad"}}]}, "io": {"logger.warning": {"__script__": true, "ret": null}}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"tool_calls": [null, 5, {"function": {"name": "g", "arguments": {"k": [1, 2]}}}]}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"tool_calls": [{"function": {"name": "h", "arguments": 42}}]}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"tool_calls": [{"function": {"name": "u", "arguments": "{\"t\": \"héllo →\"}"}}]}, "io": {}}}
+{"func": "_trajectory_tool_call_turn", "in": {"msg": {"reasoning": "think", "content": "scratch", "tool_calls": [{"function": {"name": "a", "arguments": "{\"n\": 1}"}}, {"function": {"name": "b", "arguments": "nope"}}]}, "io": {"convert_scratchpad_to_think": "THINK", "logger.warning": {"__script__": true, "ret": null}}}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "plain", "tool_call_id": "c1"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "{\"a\": 1}", "tool_call_id": "c1"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "{bad", "tool_call_id": "c1"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "[1, 2]", "tool_call_id": "c1"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "one", "tool_call_id": "c1"}, {"role": "tool", "content": "two", "tool_call_id": "c2"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": {"already": "dict"}, "tool_call_id": "c1"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "one", "tool_call_id": "c1"}, {"role": "user", "content": "stop"}], "start": 0}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "user", "content": "skip"}, {"role": "tool", "content": "one"}], "start": 1}}
+{"func": "_trajectory_tool_responses", "in": {"msg": {"tool_calls": [{"function": {"name": "f"}}]}, "messages": [{"role": "tool", "content": "  {\"a\": 1}  ", "tool_call_id": "c1"}], "start": 0}}
+{"func": "_duration_string_seconds", "in": {"text": "30"}}
+{"func": "_duration_string_seconds", "in": {"text": "1h30m"}}
+{"func": "_duration_string_seconds", "in": {"text": "500ms"}}
+{"func": "_duration_string_seconds", "in": {"text": "2h"}}
+{"func": "_duration_string_seconds", "in": {"text": "1m30s"}}
+{"func": "_duration_string_seconds", "in": {"text": ""}}
+{"func": "_duration_string_seconds", "in": {"text": "abc"}}
+{"func": "_duration_string_seconds", "in": {"text": "1x"}}
+{"func": "_duration_string_seconds", "in": {"text": "1e3"}}
+{"func": "_duration_string_seconds", "in": {"text": "+2.5"}}
+{"func": "_duration_string_seconds", "in": {"text": "inf"}}
+{"func": "_duration_string_seconds", "in": {"text": "nan"}}
+{"func": "_duration_string_seconds", "in": {"text": "1_000"}}
+{"func": "_duration_string_seconds", "in": {"text": "1h30"}}
+{"func": "_duration_string_seconds", "in": {"text": "0.5s"}}
+{"func": "_duration_string_seconds", "in": {"text": "  45  "}}
+{"func": "_duration_string_seconds", "in": {"text": ".5"}}
+{"func": "_duration_string_seconds", "in": {"text": "5."}}
+{"func": "_duration_string_seconds", "in": {"text": "1H30M"}}
+{"func": "_duration_string_seconds", "in": {"text": "-inf"}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {}, "retry_after": "30", "io": {"parse_retry_after_seconds": 30.0, "time.time": 1000.0}}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {"reset_at": 5}, "retry_after": "30", "io": {}}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {}, "retry_after": "x", "io": {"parse_retry_after_seconds": null}}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {}, "retry_after": "0", "io": {"parse_retry_after_seconds": 0.0, "time.time": 1000.0}}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {}, "retry_after": "x", "io": {"parse_retry_after_seconds": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_set_reset_from_retry_after", "in": {"context": {}, "retry_after": null, "io": {"parse_retry_after_seconds": 12.5, "time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "30"}, "io": {"time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "  ", "x-ratelimit-reset-tokens": "1m"}, "io": {"time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "2026-01-01T00:00:00Z"}, "io": {"_parse_absolute_timestamp": 2000.0, "time.time": [1000.0, 1500.0]}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "when"}, "io": {"_parse_absolute_timestamp": null}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "when"}, "io": {"_parse_absolute_timestamp": 500.0, "time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {}, "io": {}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": "0s", "x-ratelimit-reset-tokens": "5s"}, "io": {"time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": null, "io": {}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"anthropic-ratelimit-tokens-reset": "2m"}, "io": {"time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {}, "headers": {"x-ratelimit-reset-requests": 5, "anthropic-ratelimit-requests-reset": "10s"}, "io": {"time.time": 1000.0}}}
+{"func": "_set_reset_from_vendor_headers", "in": {"context": {"reset_at": 1}, "headers": {"x-ratelimit-reset-requests": "30"}, "io": {"time.time": 1000.0}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 500, "error_context": {}, "io": {"agent._is_entitlement_failure": true}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 401, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": {"message": "OAuth authentication is currently not allowed for this organization"}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "anthropic", "api_mode": "anthropic_messages"}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "anthropic", "api_mode": "chat_completions"}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"message": "[WKE=unauthenticated:xyz]"}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"reason": "OAuth2 access token could not be validated"}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"message": "something else"}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": null, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "openai"}, "status_code": 403, "error_context": {"message": 0, "reason": false, "code": "X", "error": null}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "probe boom"}}}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": null}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": "text", "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "anthropic"}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
