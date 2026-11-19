@@ -1,7 +1,7 @@
 /*
  * t_port_provider_pool_setup.c — faithful verification harness for
  * config_setup_supports_same_provider_pool_setup() in
- * src/cli/config_setup.c (port of hermes_cli/setup.py:
+ * src/hermes_cli/config_setup.c (port of hermes_cli/setup.py:
  * _supports_same_provider_pool_setup).
  *
  * The fixture (argv[1]) is one provider name per line. For each non-empty
@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Forward declaration — defined in src/cli/config_setup.c. Avoid pulling
+/* Forward declaration — defined in src/hermes_cli/config_setup.c. Avoid pulling
  * hermes.h (libdb chain). */
 bool config_setup_supports_same_provider_pool_setup(const char *provider);
 

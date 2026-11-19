@@ -6,7 +6,7 @@
  *
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libcrypto \
- *       -I lib/libplugin tests/test_yuanbao_media.c src/tools/yuanbao_media.c \
+ *       -I lib/libplugin tests/test_yuanbao_media.c src/plugins/platforms/yuanbao/yuanbao_media.c \
  *       src/tools/url_safety.c lib/libjson/json.c lib/libcrypto/crypto.c \
  *       -o /tmp/hermes_test_yuanbao_media -lm -lssl -lcrypto
  *

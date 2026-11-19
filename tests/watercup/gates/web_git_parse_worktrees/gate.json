@@ -13,5 +13,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "git worktree --porcelain parser (parsing rungs of src/hermes_cli/web_git.c::web_git_worktree_list vs LIVE hermes_cli/web_git.py::_parse_worktrees). The git subprocess itself is I/O and untraced. Result serialized canonically as path|branch|detached,bare,locked,isMain; per tree. Known accepted divergences excluded from inputs: LIVE strips whitespace on worktree/branch values while the C port does not, and preamble lines before the first 'worktree ' entry are skipped by both but the C port would retain pre-parsed branch state (unreachable in real git output); no trailing-newline inputs (strtok vs split differ there)."
+  "notes": "git worktree --porcelain parser (parsing rungs of src/plugins/platforms/yuanbao/web_git.c::web_git_worktree_list vs LIVE hermes_cli/web_git.py::_parse_worktrees). The git subprocess itself is I/O and untraced. Result serialized canonically as path|branch|detached,bare,locked,isMain; per tree. Known accepted divergences excluded from inputs: LIVE strips whitespace on worktree/branch values while the C port does not, and preamble lines before the first 'worktree ' entry are skipped by both but the C port would retain pre-parsed branch state (unreachable in real git output); no trailing-newline inputs (strtok vs split differ there)."
 }

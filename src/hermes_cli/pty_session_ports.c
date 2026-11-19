@@ -3,7 +3,7 @@
  * output surface. Bounded ring buffer, snapshot, attach, close.
  *
  * Faithful C port: a real PTY session registry.  Each session owns a
- * pty_t (src/pty.c) and a drain thread that reads child output into a
+ * pty_t (src/hermes_cli/pty.c) and a drain thread that reads child output into a
  * bounded ring buffer (Python's BoundedOutputBuffer).  attach() swaps
  * the current WebSocket-like sink, close() cancels the drain and
  * disposes the pty, close_all() closes every session.

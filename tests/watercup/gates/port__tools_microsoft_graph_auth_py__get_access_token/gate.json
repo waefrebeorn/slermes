@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/microsoft_graph_auth.c"
+    "src/plugins/teams_pipeline/microsoft_graph_auth.c"
   ],
   "cflags": [
     "-I",

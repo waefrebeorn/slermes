@@ -1,6 +1,6 @@
 /*
  * t_port_run_pure.c — oracle harness for the PURE gateway/run.py helpers
- * ported in src/gateway/run_pure.c. One op per line; each op exercises the
+ * ported in src/plugins/platforms/bluebubbles/run_pure.c. One op per line; each op exercises the
  * REAL C function with REAL inputs. The Python oracle
  * (tests/sta_oracle_run_pure.py) recomputes the expected result from the same
  * fixture; run_oracle.sh diffs them as JSON.

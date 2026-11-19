@@ -10,7 +10,7 @@
  * Build (telegram only):
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson \
  *       tests/test_gateway_platforms.c \
- *       src/gateway/platforms/telegram.c lib/libjson/json.c \
+ *       src/plugins/platforms/telegram/telegram.c lib/libjson/json.c \
  *       -o /tmp/hermes_test_gw_platforms -lm \
  *       -Wl,--unresolved-symbols=ignore-all
  *

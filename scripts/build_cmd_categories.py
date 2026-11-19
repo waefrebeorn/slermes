@@ -1,6 +1,6 @@
 import re, json
 from collections import defaultdict
-src=open('src/cli/commands.c').read()
+src=open('src/hermes_cli/commands.c').read()
 entries=re.findall(r'\.name="([^"]+)"[^}]*?\.category="([^"]+)"[^}]*?\.handler=([a-zA-Z_][\w]*)\s*}', src, re.S)
 entries2=re.findall(r'\.name="([^"]+)"[^}]*?\.handler=([a-zA-Z_][\w]*)\s*}(?![^}]*\.category)', src, re.S)
 cats=defaultdict(list); handler_cat={}

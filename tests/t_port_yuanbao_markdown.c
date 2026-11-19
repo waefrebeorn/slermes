@@ -2,7 +2,7 @@
  * t_port_yuanbao_markdown.c — v561 residual-façade verification oracle.
  * Proves the 9 pure MarkdownProcessor static helpers in
  * gateway/platforms/yuanbao.py are faithfully ported to C
- * (yuanbao_md_* in src/gateway/platforms/yuanbao.c). The parity scanner
+ * (yuanbao_md_* in src/plugins/platforms/yuanbao/yuanbao.c). The parity scanner
  * counts them as 148 "gaps" due to symbol-prefix mangling — this oracle
  * verifies they are actually REAL ported code, not missing work.
  *

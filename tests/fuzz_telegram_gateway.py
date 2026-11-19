@@ -91,7 +91,7 @@ def test(name, category="general"):
 @test("telegram_send_message signature", "TL1-api")
 def test_telegram_send_message_signature():
     """telegram_send_message should exist with correct signature."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_send_message(http_client_t *http, const char *chat_id," in src, \
         "telegram_send_message signature not found"
     return "PASS"
@@ -99,7 +99,7 @@ def test_telegram_send_message_signature():
 @test("telegram_get_me signature", "TL1-api")
 def test_telegram_get_me_signature():
     """telegram_get_me should exist with correct signature."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_get_me(http_client_t *http)" in src, \
         "telegram_get_me signature not found"
     return "PASS"
@@ -107,7 +107,7 @@ def test_telegram_get_me_signature():
 @test("all send_media wrappers present", "TL1-api")
 def test_all_send_media_wrappers():
     """All 5 media send wrappers should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for fn in ["telegram_send_photo", "telegram_send_document", "telegram_send_voice",
                "telegram_send_video", "telegram_send_animation"]:
         assert f"bool {fn}(http_client_t *http" in src, f"{fn} not found!"
@@ -116,7 +116,7 @@ def test_all_send_media_wrappers():
 @test("all interactive prompt wrappers", "TL1-api")
 def test_all_interactive_prompts():
     """All 6 interactive Telegram prompt functions should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for fn in ["telegram_send_draft", "telegram_send_clarify", "telegram_send_approval_prompt",
                "telegram_send_confirm_prompt", "telegram_send_model_picker", "telegram_send_update_prompt"]:
         assert f"bool {fn}(http_client_t *http" in src, f"{fn} not found!"
@@ -125,7 +125,7 @@ def test_all_interactive_prompts():
 @test("all forum topic wrappers", "TL1-api")
 def test_all_forum_topic_wrappers():
     """All 4 forum topic wrapper functions should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for fn in ["telegram_create_forum_topic", "telegram_edit_forum_topic",
                "telegram_close_forum_topic", "telegram_reopen_forum_topic"]:
         assert f"bool {fn}(http_client_t *http" in src, f"{fn} not found!"
@@ -134,14 +134,14 @@ def test_all_forum_topic_wrappers():
 @test("telegram_set_message_reaction", "TL1-api")
 def test_telegram_set_message_reaction():
     """telegram_set_message_reaction should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_set_message_reaction(http_client_t *http" in src
     return "PASS"
 
 @test("telegram_get_update_type all types", "TL1-api")
 def test_telegram_get_update_type_all():
     """telegram_get_update_type should handle all message types."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for mtype in ["inline_query", "callback_query", "poll_answer", "text", "sticker",
                   "animation", "voice", "video", "audio", "photo", "location",
                   "venue", "contact", "poll"]:
@@ -156,21 +156,21 @@ def test_telegram_get_update_type_all():
 @test("telegram_get_text handles inline_query", "TL2-parse")
 def test_telegram_get_text_inline():
     """telegram_get_text should read inline_query.query."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert 'json_object_get(update, "inline_query")' in src
     return "PASS"
 
 @test("telegram_get_text handles callback_query", "TL2-parse")
 def test_telegram_get_text_callback():
     """telegram_get_text should read callback_query.data."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert 'json_object_get(update, "callback_query")' in src
     return "PASS"
 
 @test("telegram_get_text sticker/anim/voice/photo/etc", "TL2-parse")
 def test_telegram_get_text_all_media():
     """telegram_get_text should handle all media types (E17-E26)."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for kw in ['"sticker"', '"animation"', '"voice"', '"video"', '"audio"',
                '"photo"', '"location"', '"venue"', '"contact"', '"poll"']:
         assert kw in src, f"media type {kw} not in get_text"
@@ -179,7 +179,7 @@ def test_telegram_get_text_all_media():
 @test("telegram_get_chat_id all update types", "TL2-parse")
 def test_telegram_get_chat_id_all():
     """telegram_get_chat_id should handle inline, callback, poll, and msg."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     for kw in ['"inline_query"', '"callback_query"', '"poll_answer"', '"edited_message"']:
         assert kw in src, f"chat_id source {kw} not handled"
     return "PASS"
@@ -187,63 +187,63 @@ def test_telegram_get_chat_id_all():
 @test("telegram_get_callback_query_id", "TL2-parse")
 def test_telegram_get_callback_query_id():
     """telegram_get_callback_query_id should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_get_callback_query_id" in src
     return "PASS"
 
 @test("telegram_get_inline_query_id", "TL2-parse")
 def test_telegram_get_inline_query_id():
     """telegram_get_inline_query_id should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_get_inline_query_id" in src
     return "PASS"
 
 @test("telegram_get_message_thread_id", "TL2-parse")
 def test_telegram_get_message_thread_id():
     """telegram_get_message_thread_id should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_get_message_thread_id" in src
     return "PASS"
 
 @test("telegram_message_thread_id_for_send skips 1", "TL2-parse")
 def test_telegram_message_thread_id_for_send():
     """telegram_message_thread_id_for_send should return NULL for '1' (General topic)."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert 'strcmp(thread_id, "1") == 0' in src
     return "PASS"
 
 @test("telegram_is_group checks types", "TL2-parse")
 def test_telegram_is_group():
     """telegram_is_group should check 'group' and 'supergroup'."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"group"' in src and '"supergroup"' in src
     return "PASS"
 
 @test("telegram_is_mentioned entity+text fallback", "TL2-parse")
 def test_telegram_is_mentioned():
     """telegram_is_mentioned should check entities AND direct text."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"mention"' in src and 'strstr' in src
     return "PASS"
 
 @test("telegram_get_chat_type normalizes", "TL2-parse")
 def test_telegram_get_chat_type():
     """telegram_get_chat_type should normalize 'private' -> 'dm'."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert 'strcmp(type, "private") == 0' in src
     return "PASS"
 
 @test("telegram_get_user_name first+last", "TL2-parse")
 def test_telegram_get_user_name():
     """telegram_get_user_name should combine first_name + last_name."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "first_name" in src and "last_name" in src
     return "PASS"
 
 @test("telegram_get_chat_name title/fallback", "TL2-parse")
 def test_telegram_get_chat_name():
     """telegram_get_chat_name should try title then first_name."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"title"' in src and '"first_name"' in src
     return "PASS"
 
@@ -299,7 +299,7 @@ def test_format_message_missing():
     """C is missing full MarkdownV2 format_message conversion (Python has 175 LOC)."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "def format_message(self, content: str) -> str:" in py
-    c_has = "format_message" in open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c_has = "format_message" in open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     if not c_has and py_has:
         return "PASS (MISSING: no format_message MarkdownV2 pipeline in C)"
     return "PASS"
@@ -312,28 +312,28 @@ def test_format_message_missing():
 @test("create_forum_topic signature", "TL4-topics")
 def test_create_forum_topic():
     """telegram_create_forum_topic should have correct signature."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_create_forum_topic(http_client_t *http" in src
     return "PASS"
 
 @test("edit_forum_topic signature", "TL4-topics")
 def test_edit_forum_topic():
     """telegram_edit_forum_topic should have correct signature."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_edit_forum_topic(http_client_t *http" in src
     return "PASS"
 
 @test("close_forum_topic signature", "TL4-topics")
 def test_close_forum_topic():
     """telegram_close_forum_topic should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_close_forum_topic" in src
     return "PASS"
 
 @test("reopen_forum_topic signature", "TL4-topics")
 def test_reopen_forum_topic():
     """telegram_reopen_forum_topic should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_reopen_forum_topic" in src
     return "PASS"
 
@@ -341,7 +341,7 @@ def test_reopen_forum_topic():
 def test_dm_topic_lifecycle_missing():
     """Python has DM topic lifecycle (create/ensure/rename/persist) — C doesn't."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     combined = c + c_server
     py_has_dm_topic = "ensure_dm_topic" in py or "dm_topic" in py
@@ -353,14 +353,14 @@ def test_dm_topic_lifecycle_missing():
 @test("telegram_forward_message exists", "TL4-topics")
 def test_forward_message():
     """telegram_forward_message should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_forward_message" in src
     return "PASS"
 
 @test("telegram_pin/unpin exists", "TL4-topics")
 def test_pin_unpin():
     """telegram_pin_chat_message and unpin should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_pin_chat_message" in src and "telegram_unpin_chat_message" in src
     return "PASS"
 
@@ -372,49 +372,49 @@ def test_pin_unpin():
 @test("send_draft signature", "TL5-interact")
 def test_send_draft():
     """telegram_send_draft should exist with correct params."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_send_draft(http_client_t *http" in src
     return "PASS"
 
 @test("send_clarify builds keyboard", "TL5-interact")
 def test_send_clarify():
     """telegram_send_clarify should build inline keyboard."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"callback_data"' in src and '"text"' in src
     return "PASS"
 
 @test("send_approval_prompt has Approve/Deny", "TL5-interact")
 def test_send_approval():
     """telegram_send_approval_prompt should have Approve and Deny buttons."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"✅ Approve"' in src and '"❌ Deny"' in src
     return "PASS"
 
 @test("send_confirm_prompt has Confirm/Cancel", "TL5-interact")
 def test_send_confirm():
     """telegram_send_confirm_prompt should have Confirm and Cancel buttons."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"✅ Confirm"' in src and '"❌ Cancel"' in src
     return "PASS"
 
 @test("send_model_picker builds 2-column keyboard", "TL5-interact")
 def test_send_model_picker():
     """telegram_send_model_picker should build 2-column keyboard."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "items_in_row >= 2" in src
     return "PASS"
 
 @test("send_update_prompt has Apply/Dismiss", "TL5-interact")
 def test_send_update_prompt():
     """telegram_send_update_prompt should have Apply and Dismiss buttons."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert '"✅ Apply"' in src and '"❌ Dismiss"' in src
     return "PASS"
 
 @test("send_message_with_keyboard exists", "TL5-interact")
 def test_send_with_keyboard():
     """telegram_send_message_with_keyboard should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "bool telegram_send_message_with_keyboard" in src
     return "PASS"
 
@@ -422,7 +422,7 @@ def test_send_with_keyboard():
 def test_callback_query_handler_missing():
     """Python has 368-line _handle_callback_query — C lacks this."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     combined = c + c_server
     py_has = "_handle_callback_query" in py
@@ -613,7 +613,7 @@ def test_max_concurrent():
 @test("is_thread_not_found case-insensitive", "TL8-thread")
 def test_is_thread_not_found():
     """telegram_is_thread_not_found should check case-insensitively."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_is_thread_not_found" in src
     # Case insensitive: checks each char with upper+lower variants
     # This verifies the function uses character-level case folding
@@ -631,14 +631,14 @@ def test_vtable_send_reaction():
 @test("typing indicator thread exists", "TL8-thread")
 def test_typing_thread():
     """telegram_start_typing and telegram_stop_typing should exist."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_start_typing" in src and "telegram_stop_typing" in src
     return "PASS"
 
 @test("typing thread loop refreshes every 5s", "TL8-thread")
 def test_typing_interval():
     """Typing thread should refresh every ~5 seconds."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "100000" in src  # 100ms × 50 = 5s
     return "PASS"
 
@@ -650,14 +650,14 @@ def test_typing_interval():
 @test("telegram_parse_fallback_ips exists", "TL9-network")
 def test_parse_fallback_ips():
     """telegram_parse_fallback_ips should exist with validation."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "telegram_parse_fallback_ips" in src
     return "PASS"
 
 @test("fallback IPs reject private/loopback/link-local", "TL9-network")
 def test_fallback_ip_filter():
     """telegram_parse_fallback_ips should reject private, loopback, link-local."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     assert "10." in src or "b[0] == 10" in src
     assert "127." in src or "b[0] == 127" in src
     assert "169.254" in src or "b[0] == 169" in src
@@ -811,7 +811,7 @@ def test_allowed_topics_gap():
 def test_mention_patterns_gap():
     """Python has _compile_mention_patterns + regex wake-words — C has basic @mention only."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     py_has = "_compile_mention_patterns" in py and "mention_patterns" in py
     c_has = "mention_pattern" in c
     if py_has and not c_has:
@@ -822,7 +822,7 @@ def test_mention_patterns_gap():
 def test_exclusive_bot_mentions_gap():
     """Python has exclusive_bot_mentions multi-bot routing — C doesn't."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py_has = "exclusive_bot_mentions" in py
     c_has = "exclusive" in c or "exclusive" in c_server
@@ -858,7 +858,7 @@ def test_reactions_lifecycle_gap():
     """Python has on_processing_start/_complete with reactions — C has only set API."""
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
-    c_tg = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c_tg = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     py_has = "on_processing_start" in py and "on_processing_complete" in py
     c_has = "on_processing" in c_server
     if py_has and not c_has:
@@ -879,7 +879,7 @@ def test_send_or_update_status_gap():
 @test("GAP: edit_message overflow split", "TL11-gap")
 def test_edit_overflow_split_gap():
     """Python has _edit_overflow_split — C only has edit_message_text."""
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "_edit_overflow_split" in py
     if py_has:
@@ -889,7 +889,7 @@ def test_edit_overflow_split_gap():
 @test("GAP: thread fallback on send", "TL11-gap")
 def test_thread_fallback_gap():
     """Python tries send without thread_id on 'thread not found' — C doesn't."""
-    c = open(os.path.join(SLERMES_DIR, "src/gateway/platforms/telegram.c"), "r").read()
+    c = open(os.path.join(SLERMES_DIR, "src/plugins/platforms/telegram/telegram.c"), "r").read()
     c_server = open(os.path.join(SLERMES_DIR, "src/gateway/server.c"), "r").read()
     py = open("C:/Users/eman5/hermes-agent/gateway/platforms/telegram.py", "r").read()
     py_has = "_send_message_with_thread_fallback" in py

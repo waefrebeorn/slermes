@@ -3,7 +3,7 @@
  *
  * Faithful extraction from the monolithic hermes.h god header (the
  * god-header-elimination pass). The redaction engine lives in
- * src/agent/redact.c. Translation units that only need redaction no
+ * src/plugins/platforms/bluebubbles/redact.c. Translation units that only need redaction no
  * longer drag in the entire master header.
  */
 

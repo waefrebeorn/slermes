@@ -6,7 +6,7 @@ import re, sys
 from pycparser import c_parser, c_ast
 
 BASE='SLERMES_REPO/'
-SRC='src/cli/commands.c'
+SRC='src/hermes_cli/commands.c'
 STUB='scripts/c_stub.h'
 
 def parse_extents(src_text, orig_lines):

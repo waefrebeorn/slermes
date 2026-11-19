@@ -1,6 +1,6 @@
 /*
  * t_port_yuanbao_map_entry.c — parity harness for the map-entry codec helpers
- * in src/hermes_cli/yuanbao_proto_helpers.c
+ * in src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c
  * (gateway/platforms/yuanbao_proto.py: _encode_map_entry, _decode_map_entry).
  *
  * Reads a JSON fixture (argv[1]) with "ops": each op is either
@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdint.h>
 
-/* Implemented in src/hermes_cli/yuanbao_proto_helpers.c (wired build). */
+/* Implemented in src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c (wired build). */
 unsigned char *yuanbao_proto_encode_map_entry(const char *key, const char *value, size_t *out_len);
 char *yuanbao_proto_decode_map_entry(const unsigned char *data, size_t len);
 

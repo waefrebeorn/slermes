@@ -19,7 +19,7 @@
     "src/cli/paths.c",
     "src/hermes_cli/billing_mixin_ports.c",
     "src/agent/billing_view.c",
-    "src/hermes_cli/nous_billing.c"
+    "src/plugins/platforms/yuanbao/nous_billing.c"
   ],
   "cflags": [
     "-I",

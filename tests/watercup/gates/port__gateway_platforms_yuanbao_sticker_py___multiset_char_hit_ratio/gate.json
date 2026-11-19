@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/platforms_yuanbao_sticker.c"
+    "src/plugins/platforms/yuanbao/platforms_yuanbao_sticker.c"
   ],
   "cflags": [
     "-I",

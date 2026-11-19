@@ -13,5 +13,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "WeChat copy-friendly markdown collapse: fence toggle, code-block passthrough, blank-run squash, final strip. PARITY FIX applied to src/gateway/platforms/weixin.c during gating: the final join strip only trimmed trailing newlines, missing Python .strip()'s leading-whitespace/other-WS removal. Fence regex approximated as prefix ``` match (inputs avoid backticks inside fence markers). Inputs avoid \\r-only / vertical-tab splitlines divergences."
+  "notes": "WeChat copy-friendly markdown collapse: fence toggle, code-block passthrough, blank-run squash, final strip. PARITY FIX applied to src/plugins/platforms/weixin/weixin.c during gating: the final join strip only trimmed trailing newlines, missing Python .strip()'s leading-whitespace/other-WS removal. Fence regex approximated as prefix ``` match (inputs avoid backticks inside fence markers). Inputs avoid \\r-only / vertical-tab splitlines divergences."
 }

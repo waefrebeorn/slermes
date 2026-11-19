@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Oracle for what is now agent/model_metadata.py:_count_image_tokens +
 agent/image_token_cost.py:count_images (ported to include/port_image_token_cost.h,
-object src/cli/port_image_token_cost.o). The live modules import cleanly; replay
+object src/agent/port_image_token_cost.o). The live modules import cleanly; replay
 directly.
 
 Harness (now emit-input) families:

@@ -1,7 +1,7 @@
 /*
  * t_port_hermes_state.c — faithful verification harness for the pure,
  * DB-free helpers of agent/hermes_state.py, ported in
- * src/persistence/sqlite_state/hermes_state_gaps.c.
+ * src/persistence/sqlite/_state/hermes_state_gaps.c.
  *
  * Emits JSON lines consumed by tests/sta_oracle_hermes_state.py, which
  * recomputes the SAME functions from the LIVE hermes_state.py and asserts

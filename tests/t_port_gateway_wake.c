@@ -1,6 +1,6 @@
 /*
  * t_port_gateway_wake.c — Oracle harness for the pure shape helpers of
- * gateway/wake.py (src/cli/port_gateway_wake.c).
+ * gateway/wake.py (src/gateway/port_gateway_wake.c).
  */
 #include "port_gateway_wake.h"
 #include "hermes_json.h"

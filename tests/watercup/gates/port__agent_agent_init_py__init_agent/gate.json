@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/agent/core_helpers.c",
-    "src/agent/redact.c"
+    "src/plugins/platforms/bluebubbles/redact.c"
   ],
   "cflags": [
     "-I",

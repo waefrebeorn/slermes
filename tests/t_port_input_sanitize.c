@@ -1,6 +1,6 @@
 /*
  * t_port_input_sanitize.c — oracle harness for input_sanitize helpers in
- * src/cli/port_input_sanitize.c (ports of hermes_cli/input_sanitize.py).
+ * src/hermes_cli/port_input_sanitize.c (ports of hermes_cli/input_sanitize.py).
  * Reads the fixture from argv[1] (one text per line), decodes \e -> ESC and
  * \n -> newline exactly like the Python oracle, then calls
  * sanitize_user_prompt_text() and emits {"in":...,"out":...} (raw bytes).

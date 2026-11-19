@@ -6,7 +6,7 @@
  *
  * Build (from C/):
  *   gcc -O2 -g -Wall -Werror -I include -I lib/libjson \
- *       tests/test_shell_hooks.c src/agent/shell_hooks.c \
+ *       tests/test_shell_hooks.c src/plugins/platforms/qqbot/shell_hooks.c \
  *       src/agent/hook_registry.c lib/libjson/json.c \
  *       -o /tmp/hermes_test_shell_hooks -lpthread
  *

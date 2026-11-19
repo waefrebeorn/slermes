@@ -4,7 +4,7 @@
  *
  * Build:
  *   gcc -O2 -Wall -Wextra -I include -I lib/libjson -I lib/libplugin -I lib/libregex \
- *       tests/test_tirith.c src/tools/tirith.c \
+ *       tests/test_tirith.c src/plugins/platforms/weixin/tirith.c \
  *       -o /tmp/hermes_test_tirith \
  *       -lm -Wl,--unresolved-symbols=ignore-all
  *

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/signal_rate_limit_ports.c"
+    "src/plugins/platforms/signal/signal_rate_limit_ports.c"
   ],
   "cflags": [
     "-I",

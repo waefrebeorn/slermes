@@ -1,6 +1,6 @@
 /*
  * t_port_auth_qwen.c — Oracle harness for the file/env half of
- * hermes_cli/auth_qwen.py (ported to src/cli/port_auth_qwen.c).
+ * hermes_cli/auth_qwen.py (ported to src/hermes_cli/port_auth_qwen.c).
  */
 #include "port_auth_qwen.h"
 #include "hermes_json.h"

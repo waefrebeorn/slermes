@@ -5,7 +5,7 @@
  *
  * Build:
  *   gcc -O2 -Wall -Wextra -I../include -I../lib/libansi \
- *       tests/test_display_word_wrap.c src/cli/display_core.c \
+ *       tests/test_display_word_wrap.c src/agent/display_core.c \
  *       -o /tmp/hermes_test_wordwrap -lm \
  *       -Wl,--unresolved-symbols=ignore-all
  */

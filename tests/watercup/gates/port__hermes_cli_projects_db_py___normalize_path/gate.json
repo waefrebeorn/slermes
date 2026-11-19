@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/tools/checkpoint_manager.c"
+    "src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c"
   ],
   "cflags": [
     "-I",

@@ -79,6 +79,28 @@ preservation across runs. ~134 port-style files still fail to COMPILE on
 Windows (POSIX-only APIs: pthread_timedjoin_np, dirent d_type, …) — that is
 the Windows porting backlog, measured not guessed.
 
+## C tree mirror (reorganization to the new schema)
+`scripts/reorg_c_mirror.py` moved **313 C files** so `src/` mirrors the
+quarry's CURRENT package layout, driven by each file's PoP claims:
+- `src/persistence/sqlite_state/` → `src/persistence/sqlite/_state/` (exact
+  mirror); admin ports → `persistence/sqlite/admin/`, state_repair likewise.
+- `src/cli/port_*` hermes_cli claims → `src/hermes_cli/`; agent claims →
+  `src/agent/`; tools claims → `src/tools/`; gateway platform claims →
+  `src/gateway/platforms/` and `src/plugins/platforms/*` (upstream moved
+  platforms under plugins).
+- checkpoint ports → `src/agent/checkpoints/`, transports →
+  `src/agent/transports/`, utils ports → `src/utils/`, cron → `src/cron/`,
+  tui_gateway ports → `src/tui_gateway/`.
+- 2,061 path references rewritten (objects.mk, DEPS, 22k gate.json
+  extra_src/cflags, pyport_map, harness/oracle paths, C include forms);
+  stale `.o` at old paths deleted (the FULL-link tier globs `src/**/*.o`);
+  SRCINCS depth bumped 3 → 6 for the deeper mirror.
+- **19 namesake collisions kept their old path** (two ports of one module,
+  e.g. `src/hermes_cli/display.c` vs `src/agent/display.c`) — refs reverted,
+  merge/dedupe is a follow-up cleanup. List: re-run the script (idempotent)
+  to print them.
+- Parallel porting agents' files were excluded from moves/rewrites.
+
 ## Backups taken before the pull
 - Pre-migration watercup verdicts: scratch/checkpoint-2026-11-18/
   watercup-results-pre-migration.jsonl (23 streamed verdicts).

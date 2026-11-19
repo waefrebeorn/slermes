@@ -13,5 +13,5 @@
     1024,
     -7
   ],
-  "notes": "Yuanbao protobuf ConnMsg.Head encoder (src/hermes_cli/yuanbao_proto_helpers.c::yb_encode_head vs LIVE gateway/platforms/yuanbao_proto.py::_encode_head). One branch rung per field presence (fields 1,2,3,4,5,6,10); V is the hex-encoded wire bytes from each side's own encoder, so varint/tag divergence fails. Inputs are tab-separated field tuples; status masked to 32 bits on both sides."
+  "notes": "Yuanbao protobuf ConnMsg.Head encoder (src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c::yb_encode_head vs LIVE gateway/platforms/yuanbao_proto.py::_encode_head). One branch rung per field presence (fields 1,2,3,4,5,6,10); V is the hex-encoded wire bytes from each side's own encoder, so varint/tag divergence fails. Inputs are tab-separated field tuples; status masked to 32 bits on both sides."
 }

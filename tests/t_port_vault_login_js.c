@@ -1,6 +1,6 @@
 /*
  * t_port_vault_login_js.c — Oracle harness for the two JS builders in
- * agent/vault_login_classifier.py (src/cli/port_vault_login_js.c).
+ * agent/vault_login_classifier.py (src/agent/port_vault_login_js.c).
  *
  * Deliberately a SMALL link (the two port objects + libjson): the all-objects
  * harness for the classifier prints its 53 cases and then dies in some

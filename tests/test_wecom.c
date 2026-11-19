@@ -8,7 +8,7 @@
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libhttp \
  *       -I lib/libplugin -I lib/libmangateway \
- *       tests/test_wecom.c src/gateway/platforms/wecom.c \
+ *       tests/test_wecom.c src/plugins/platforms/wecom/wecom.c \
  *       lib/libjson/json.c -lm -lpthread \
  *       -Wl,--unresolved-symbols=ignore-all \
  *       -o /tmp/hermes_test_wecom

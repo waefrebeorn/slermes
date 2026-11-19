@@ -23,7 +23,7 @@ LIBINCS=$(cat "$LIBINCS_FILE")
 # tests/oracle runner carries as SRCINCS). Cached: the dir set rarely changes.
 SRCINCS_FILE=".testbin/srcincs.cache"
 if [ ! -s "$SRCINCS_FILE" ]; then
-  find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ' > "$SRCINCS_FILE"
+  find src -maxdepth 6 -type d | sed 's#^#-I #' | tr '\n' ' ' > "$SRCINCS_FILE"
 fi
 SRCINCS=$(cat "$SRCINCS_FILE")
 # Windows/MinGW: the inline object list overflows the command line (gcc then

@@ -1,7 +1,7 @@
 /*
  * path_security.h — minimal declaration surface for the deterministic
  * path-safety helpers ported from tools/path_security.py in
- * src/cli/port_tools_path_security.c. Opaque / minimal: no god-header.
+ * src/tools/port_tools_path_security.c. Opaque / minimal: no god-header.
  */
 
 #ifndef SLERMES_PATH_SECURITY_H

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/platforms_wecom_callback.c"
+    "src/plugins/platforms/whatsapp_cloud/platforms_wecom_callback.c"
   ],
   "cflags": [
     "-I",

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/web_git.c"
+    "src/plugins/platforms/yuanbao/web_git.c"
   ],
   "cflags": [
     "-I",

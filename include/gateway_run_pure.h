@@ -1,6 +1,6 @@
 /*
  * gateway_run_pure.h — opaque-struct-free declaration surface for the pure
- * gateway/run.py helpers ported in src/gateway/run_pure.c.
+ * gateway/run.py helpers ported in src/plugins/platforms/bluebubbles/run_pure.c.
  *
  * These are deterministic string/data transforms with NO network, config-IO,
  * or async coupling. They are oracle-verified against the canonical Python.

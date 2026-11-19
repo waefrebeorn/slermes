@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Oracle for tools/xai_http.py:_coerce_expires_after (port
-src/cli/port_tools_xai_http.c). Ast-extract the live fn and seed the SAFE/MAX
+src/tools/port_tools_xai_http.c). Ast-extract the live fn and seed the SAFE/MAX
 seconds constants it references (its body reads them as globals).
 
 Harness emits {fn:"coerce_expires", in:<str|null>, out:<str|null>} where out is the

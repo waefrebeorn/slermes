@@ -887,11 +887,11 @@ json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *defa
 }
 
 /* ===========================================================================
- *  web_server.py pure helpers (implemented in src/gateway/run_pure.c)
+ *  web_server.py pure helpers (implemented in src/plugins/platforms/bluebubbles/run_pure.c)
  * =========================================================================== */
 
 /* Note: The following functions are declared in include/gateway_run_pure.h
- * and implemented in src/gateway/run_pure.c:
+ * and implemented in src/plugins/platforms/bluebubbles/run_pure.c:
  * - web_tail_lines
  * - web_dashboard_spawn_executable
  * - web_record_completed_action (stub)

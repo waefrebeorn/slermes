@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/platforms/qqbot/qqbot_chunked_upload_ports.c"
+    "src/plugins/platforms/qqbot/qqbot_chunked_upload_ports.c"
   ],
   "cflags": [
     "-I",

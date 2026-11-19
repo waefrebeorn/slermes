@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate src/cli/port_vault_login_js.c from the LIVE Python templates.
+"""Generate src/agent/port_vault_login_js.c from the LIVE Python templates.
 
 The two JS expressions are byte-level contracts (backslash escapes,
 json.dumps spacing). Transcribing them by hand is how a port silently drifts,
@@ -194,9 +194,9 @@ char *vl_build_fill_js(const char *fills_json, const char *expected_origin,
 def main() -> int:
     body = (HEADER + c_literal(V._LOGIN_CONTROL_INSPECTION_JS_TEMPLATE)
             + MIDDLE + c_literal(V._FILL_JS_TEMPLATE) + TAIL)
-    with open("src/cli/port_vault_login_js.c", "w", encoding="utf-8", newline="") as fh:
+    with open("src/agent/port_vault_login_js.c", "w", encoding="utf-8", newline="") as fh:
         fh.write(body)
-    print(f"wrote src/cli/port_vault_login_js.c ({len(body)} bytes)")
+    print(f"wrote src/agent/port_vault_login_js.c ({len(body)} bytes)")
     return 0
 
 

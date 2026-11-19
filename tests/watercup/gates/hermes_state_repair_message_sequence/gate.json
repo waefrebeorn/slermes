@@ -22,5 +22,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "Pre-request alternation repair. REAL src/persistence/sqlite_state/hermes_state_repair.c::hermes_state_repair_message_sequence linked via extra_src against LIVE repair_message_sequence (agent arg unused on this path). AGREED SUB-CONTRACT: plain-string contents only; assistant tool_calls represented by the struct's ';'-joined tool_call_ids string (id[,call_id] entries per #58168); no api_content sidecar keys (LIVE drop_stale_api_content becomes a no-op). V event hashes repairs count plus a canonical dump of the surviving sequence."
+  "notes": "Pre-request alternation repair. REAL src/persistence/sqlite/_state/hermes_state_repair.c::hermes_state_repair_message_sequence linked via extra_src against LIVE repair_message_sequence (agent arg unused on this path). AGREED SUB-CONTRACT: plain-string contents only; assistant tool_calls represented by the struct's ';'-joined tool_call_ids string (id[,call_id] entries per #58168); no api_content sidecar keys (LIVE drop_stale_api_content becomes a no-op). V event hashes repairs count plus a canonical dump of the surviving sequence."
 }

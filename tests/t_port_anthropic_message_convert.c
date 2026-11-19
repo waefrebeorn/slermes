@@ -1,6 +1,6 @@
 /*
  * t_port_anthropic_message_convert.c — Oracle harness for agent/anthropic_message_convert.py
- * block-shaping helpers (src/cli/port_anthropic_message_convert.c). Emits inputs + C output
+ * block-shaping helpers (src/agent/port_anthropic_message_convert.c). Emits inputs + C output
  * as JSONL so an oracle replays the LIVE Python on identical values.
  * Families:
  *   carry:      {family, case, out_json, block_json, copy, out}  _carry_cache_control

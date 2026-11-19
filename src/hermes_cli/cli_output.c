@@ -1,7 +1,7 @@
 /*
  * cli_display.c — CLI display helpers for Hermes C.
  * Higher-level display wrappers over the lower-level primitives in
- * src/cli/display_core.c (which implements display_init/set_style/clear/...).
+ * src/agent/display_core.c (which implements display_init/set_style/clear/...).
  */
 
 

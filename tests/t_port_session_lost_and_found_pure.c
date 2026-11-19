@@ -1,6 +1,6 @@
 /*
  * t_port_session_lost_and_found_pure.c — faithful parity harness for
- * src/hermes_cli/session_lost_and_found_pure.c
+ * src/persistence/sqlite/admin/session_lost_and_found_pure.c
  * (hermes_cli/session_lost_and_found.py pure classification heuristics).
  *
  * Reads a JSON fixture from argv[1] describing ops; calls the C helpers and

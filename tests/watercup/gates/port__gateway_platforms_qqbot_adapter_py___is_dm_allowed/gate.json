@@ -17,8 +17,8 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/platforms/qqbot/qqbot_wrappers.c",
-    "src/gateway/platforms/qqbot.c"
+    "src/plugins/platforms/qqbot/qqbot_wrappers.c",
+    "src/plugins/platforms/qqbot/qqbot.c"
   ],
   "cflags": [
     "-I",

@@ -101,7 +101,7 @@ PYTHON_SOURCE_DIRS = {
 
 # Top-level fork modules beyond cli.py that are runtime surface with C
 # ports (utils.py -> src/agent/proxy_utils.c etc.; hermes_state.py ->
-# src/persistence/sqlite_state/*.c). Tracked so their parity is visible.
+# src/persistence/sqlite/_state/*.c). Tracked so their parity is visible.
 ROOT_PY_MODULES = ["utils.py", "hermes_state.py"]
 
 SLERMES_SRC_DIRS = [
@@ -710,21 +710,21 @@ class ParityAnalyzer:
         M = {}
         def add(py, c): M[py] = c
         # agent/
-        add("agent/pet/constants.py","src/pet/pet_constants.c")
-        add("hermes_state.py","src/persistence/sqlite_state/port_hermes_state.c")
+        add("agent/pet/constants.py","src/agent/pet/pet_constants.c")
+        add("hermes_state.py","src/persistence/sqlite/_state/port_hermes_state.c")
         add("hermes_cli/_startup_fast.py","src/cli/port_startup_fast.c")
-        add("agent/pet/state.py","src/pet/pet_state.c")
+        add("agent/pet/state.py","src/agent/pet/pet_state.c")
         add("agent/pet/manifest.py","src/pet/pet_manifest.c")
-        add("agent/pet/store.py","src/pet/pet_store.c")
+        add("agent/pet/store.py","src/agent/pet/pet_store.c")
         add("agent/pet/render.py","src/pet/pet_render.c")
         add("agent/pet/__init__.py","src/pet/pet_commands.c")
         add("agent/coding_context.py","src/agent/coding_context.c")
         # tools/ (compressed: topic -> real C home)
         for py, c in {
-            "tools/approval.py":"src/tools/approval.c","tools/blueprints.py":"src/tools/blueprints.c",
+            "tools/approval.py":"src/tools/approval.c","tools/blueprints.py":"src/cron/blueprints.c",
             "tools/browser_camofox.py":"src/tools/browser.c","tools/browser_cdp_tool.py":"src/tools/browser.c",
             "tools/browser_dialog_tool.py":"src/tools/browser.c","tools/browser_supervisor.py":"src/tools/browser.c",
-            "tools/browser_tool.py":"src/tools/browser.c","tools/checkpoint_manager.py":"src/tools/checkpoint_manager.c",
+            "tools/browser_tool.py":"src/tools/browser.c","tools/checkpoint_manager.py":"src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c",
             "tools/code_execution_tool.py":"src/tools/exec_code.c","tools/computer_use/backend.py":"src/tools/computer_use.c",
             "tools/computer_use/cua_backend.py":"src/tools/computer_use.c","tools/computer_use/tool.py":"src/tools/computer_use.c",
             "tools/computer_use/vision_routing.py":"src/tools/computer_use.c","tools/credential_files.py":"src/tools/credential_files.c",
@@ -754,7 +754,7 @@ class ParityAnalyzer:
             "tools/skills_hub.py":"src/tools/skills_hub.c","tools/skills_sync.py":"src/tools/skills_sync.c",
             "tools/skills_tool.py":"src/tools/port_skills_tool.c","tools/slash_confirm.py":"src/tools/slash_confirm.c",
             "tools/terminal_tool.py":"src/tools/terminal.c","tools/thread_context.py":"src/tools/thread_context.c",
-            "tools/threat_patterns.py":"src/tools/threat_patterns.c","tools/tirith_security.py":"src/tools/tirith.c",
+            "tools/threat_patterns.py":"src/tools/threat_patterns.c","tools/tirith_security.py":"src/plugins/platforms/weixin/tirith.c",
             "tools/todo_tool.py":"src/tools/todo.c","tools/tool_backend_helpers.py":"src/tools/tool_backend_helpers.c",
             "tools/tool_output_limits.py":"src/tools/tool_output_limits.c","tools/tool_result_storage.py":"src/tools/result_storage.c",
             "tools/tool_search.py":"src/tools/tool_search.c","tools/transcription_tools.py":"src/tools/transcribe.c",
@@ -765,7 +765,7 @@ class ParityAnalyzer:
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
             "tools/write_approval.py":"src/tools/write_approval.c",
             "tools/environments/vercel_sandbox.py":"src/tools/port_tools_vercel_sandbox.c",
-            "agent/redact.py":"src/tools/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
+            "agent/redact.py":"src/agent/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
             "agent/monitoring/gateway_health_export.py":"src/agent/port_agent_monitoring_health_export.c",
             "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/tools/yuanbao_tools.c",
             "tools/kanban_tools.py":"src/tools/kanban_tools.c","tools/mcp_oauth.py":"src/tools/mcp_oauth.c",
@@ -774,7 +774,7 @@ class ParityAnalyzer:
             "tools/budget_config.py":"src/tools/budget_config.c","tools/clarify_gateway.py":"src/tools/clarify.c",
             "tools/clarify_tool.py":"src/tools/clarify.c","tools/debug_helpers.py":"src/tools/debug_helpers.c",
             "tools/env_passthrough.py":"src/tools/env_passthrough.c","tools/microsoft_graph_auth.py":"src/tools/microsoft_graph_auth.c",
-            "tools/microsoft_graph_client.py":"src/tools/microsoft_graph_client.c","tools/openrouter_client.py":"src/tools/openrouter_client.c",
+            "tools/microsoft_graph_client.py":"src/plugins/teams_pipeline/microsoft_graph_client.c","tools/openrouter_client.py":"src/tools/openrouter_client.c",
             "tools/skill_provenance.py":"src/tools/skill_provenance.c","tools/slash_confirm.py":"src/tools/slash_confirm.c",
             "tools/tool_result_storage.py":"src/tools/result_storage.c","tools/website_policy.py":"src/tools/website_policy.c",
             "tools/xai_http.py":"src/tools/xai_http.c",
@@ -795,29 +795,29 @@ class ParityAnalyzer:
             "gateway/response_filters.py":"src/gateway/response_filters.c","gateway/runtime_footer.py":"src/gateway/runtime_footer.c",
             "gateway/shutdown_forensics.py":"src/gateway/shutdown_forensics.c","gateway/slash_access.py":"src/gateway/slash_access.c",
             "gateway/whatsapp_identity.py":"src/gateway/whatsapp_identity.c",
-            "gateway/platforms/base.py":"src/gateway/platforms/base.c","gateway/platforms/api_server.py":"src/gateway/platforms/api_server_adapter.c",
-            "gateway/platforms/bluebubbles.py":"src/gateway/platforms/bluebubbles.c","gateway/platforms/dingtalk.py":"src/gateway/platforms/dingtalk.c",
-            "gateway/platforms/email.py":"src/gateway/platforms/email.c","gateway/platforms/feishu.py":"src/gateway/platforms/feishu.c",
+            "gateway/platforms/base.py":"src/plugins/platforms/yuanbao/base.c","gateway/platforms/api_server.py":"src/plugins/platforms/yuanbao/api_server_adapter.c",
+            "gateway/platforms/bluebubbles.py":"src/plugins/platforms/bluebubbles/bluebubbles.c","gateway/platforms/dingtalk.py":"src/plugins/platforms/dingtalk/dingtalk.c",
+            "gateway/platforms/email.py":"src/gateway/platforms/email.c","gateway/platforms/feishu.py":"src/plugins/platforms/feishu/feishu.c",
             "gateway/platforms/feishu_comment.py":"src/gateway/platforms/feishu_comment.c","gateway/platforms/feishu_comment_rules.py":"src/gateway/platforms/feishu_comment_rules.c",
             "gateway/platforms/feishu_meeting_invite.py":"src/gateway/platforms/feishu_comment.c","gateway/platforms/helpers.py":"src/gateway/platforms/helpers.c",
             "gateway/platforms/matrix.py":"src/gateway/platforms/matrix.c","gateway/platforms/msgraph_webhook.py":"src/gateway/platforms/msgraph_webhook.c",
-            "gateway/platforms/slack.py":"src/gateway/platforms/slack.c","gateway/platforms/sms.py":"src/gateway/platforms/sms.c",
-            "gateway/platforms/signal.py":"src/gateway/platforms/signal.c","gateway/platforms/signal_rate_limit.py":"src/gateway/platforms/signal_rate_limit.c",
-            "gateway/platforms/telegram.py":"src/gateway/platforms/telegram.c","gateway/platforms/telegram_network.py":"src/gateway/platforms/telegram_network.c",
-            "gateway/platforms/webhook.py":"src/gateway/platforms/webhook.c","gateway/platforms/wecom.py":"src/gateway/platforms/wecom.c",
-            "gateway/platforms/wecom_callback.py":"src/gateway/platforms/wecom_callback.c","gateway/platforms/weixin.py":"src/gateway/platforms/weixin.c",
+            "gateway/platforms/slack.py":"src/gateway/platforms/slack.c","gateway/platforms/sms.py":"src/plugins/platforms/sms/sms.c",
+            "gateway/platforms/signal.py":"src/plugins/platforms/signal/signal.c","gateway/platforms/signal_rate_limit.py":"src/gateway/platforms/signal_rate_limit.c",
+            "gateway/platforms/telegram.py":"src/plugins/platforms/telegram/telegram.c","gateway/platforms/telegram_network.py":"src/gateway/platforms/telegram_network.c",
+            "gateway/platforms/webhook.py":"src/gateway/platforms/webhook.c","gateway/platforms/wecom.py":"src/plugins/platforms/wecom/wecom.c",
+            "gateway/platforms/wecom_callback.py":"src/plugins/platforms/wecom/wecom_callback.c","gateway/platforms/weixin.py":"src/plugins/platforms/weixin/weixin.c",
             "gateway/platforms/whatsapp.py":"src/gateway/platforms/whatsapp.c","gateway/platforms/whatsapp_cloud.py":"src/gateway/platforms/whatsapp.c",
-            "gateway/platforms/whatsapp_common.py":"src/gateway/platforms/whatsapp.c","gateway/platforms/yuanbao.py":"src/gateway/platforms/yuanbao.c",
+            "gateway/platforms/whatsapp_common.py":"src/gateway/platforms/whatsapp.c","gateway/platforms/yuanbao.py":"src/plugins/platforms/yuanbao/yuanbao.c",
             "gateway/platforms/yuanbao_media.py":"src/gateway/platforms/yuanbao_media.c","gateway/platforms/yuanbao_proto.py":"src/gateway/platforms/yuanbao_proto.c",
             "gateway/platforms/yuanbao_sticker.py":"src/gateway/platforms/yuanbao_sticker.c",
-            "gateway/platforms/qqbot/adapter.py":"src/gateway/platforms/qqbot.c","gateway/platforms/qqbot/chunked_upload.py":"src/gateway/platforms/qqbot.c",
-            "gateway/platforms/qqbot/crypto.py":"src/gateway/platforms/qqbot.c","gateway/platforms/qqbot/keyboards.py":"src/gateway/platforms/qqbot.c",
-            "gateway/platforms/qqbot/onboard.py":"src/gateway/platforms/qqbot.c","gateway/platforms/qqbot/utils.py":"src/gateway/platforms/qqbot.c",
+            "gateway/platforms/qqbot/adapter.py":"src/plugins/platforms/qqbot/qqbot.c","gateway/platforms/qqbot/chunked_upload.py":"src/plugins/platforms/qqbot/qqbot.c",
+            "gateway/platforms/qqbot/crypto.py":"src/plugins/platforms/qqbot/qqbot.c","gateway/platforms/qqbot/keyboards.py":"src/plugins/platforms/qqbot/qqbot.c",
+            "gateway/platforms/qqbot/onboard.py":"src/plugins/platforms/qqbot/qqbot.c","gateway/platforms/qqbot/utils.py":"src/plugins/platforms/qqbot/qqbot.c",
         }.items():
             add(py, c)
         # cron/
         for py, c in {
-            "cron/blueprint_catalog.py":"src/tools/blueprints.c","cron/jobs.py":"src/tools/cronjob_tools.c",
+            "cron/blueprint_catalog.py":"src/cron/blueprints.c","cron/jobs.py":"src/tools/cronjob_tools.c",
             "cron/scheduler.py":"src/tools/scheduler.c","cron/suggestion_catalog.py":"src/tools/suggestion_catalog.c",
             "cron/suggestions.py":"src/tools/suggestions.c",
         }.items():
@@ -825,11 +825,11 @@ class ParityAnalyzer:
         # cli.py + hermes_cli/
         add("cli.py","src/hermes_cli/cli.c")
         for py, c in {
-            "hermes_cli/auth.py":"src/cli/auth.c","hermes_cli/auth_commands.py":"src/cli/commands.c",
+            "hermes_cli/auth.py":"src/cli/auth.c","hermes_cli/auth_commands.py":"src/hermes_cli/commands.c",
             "hermes_cli/backup.py":"src/cli/backup.c","hermes_cli/banner.py":"src/cli/banner.c",
             "hermes_cli/blueprint_cmd.py":"src/cli/blueprint_cmd.c","hermes_cli/cli_agent_setup_mixin.py":"src/cli/cli_agent_setup_mixin.c",
-            "hermes_cli/cli_commands_mixin.py":"src/cli/commands.c","hermes_cli/cli_output.py":"src/cli/cli_output.c",
-            "hermes_cli/clipboard.py":"src/cli/clipboard.c","hermes_cli/commands.py":"src/cli/commands.c",
+            "hermes_cli/cli_commands_mixin.py":"src/hermes_cli/commands.c","hermes_cli/cli_output.py":"src/cli/cli_output.c",
+            "hermes_cli/clipboard.py":"src/cli/clipboard.c","hermes_cli/commands.py":"src/hermes_cli/commands.c",
             "hermes_cli/completion.py":"src/cli/completion.c","hermes_cli/config.py":"src/cli/config.c",
             "hermes_cli/container_boot.py":"src/cli/container_boot.c","hermes_cli/curator.py":"src/cli/curator.c",
             "hermes_cli/curses_ui.py":"src/cli/tui_fullscreen.c","hermes_cli/doctor.py":"src/cli/doctor.c",

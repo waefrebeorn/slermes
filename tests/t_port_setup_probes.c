@@ -28,7 +28,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-/* Forward declarations — defined in src/cli/config_setup.c and
+/* Forward declarations — defined in src/hermes_cli/config_setup.c and
  * src/provider/google_oauth.c. We avoid pulling hermes.h (libdb chain). */
 bool setup_check_espeak_ng(void);
 bool setup_xai_oauth_logged_in(void);

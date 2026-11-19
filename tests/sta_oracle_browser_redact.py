@@ -7,7 +7,7 @@ equals what LIVE agent/redact.py returns (redact_sensitive_text /
 redact_cdp_url). Behavior-contract + exact-match; any divergence fails.
 
 Run:  gcc -O2 -g -I include -I src/tools -I lib/libregex \
-        tests/t_port_browser_redact.c src/tools/browser_redact.o -o /tmp/t_br \
+        tests/t_port_browser_redact.c src/agent/browser_redact.o -o /tmp/t_br \
       && /tmp/t_br | python3 tests/sta_oracle_browser_redact.py
 """
 import json, sys

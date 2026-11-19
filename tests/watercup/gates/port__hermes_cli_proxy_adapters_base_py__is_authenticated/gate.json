@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/hermes_cli/proxy_adapters_base_ports.c"
+    "src/hermes_cli/proxy/adapters/proxy_adapters_base_ports.c"
   ],
   "cflags": [
     "-I",

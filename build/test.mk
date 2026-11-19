@@ -35,7 +35,7 @@ test-libs:
 	@echo "=== Testing libhive (skipfield + freelist) ==="
 	@gcc -std=c11 -O2 -Wall -Wextra -I lib/libhive lib/libhive/hive.c lib/libhive/hive_test.c -o /tmp/t_hive 2>/dev/null; /tmp/t_hive 2>&1 || echo "(no test runner)"
 	@echo "=== Testing plugin_llm ==="
-	@gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libplugin tests/test_plugin_llm.c src/agent/plugin_llm.o lib/libjson/json.o -o /tmp/t_plugin_llm -lm 2>/dev/null && /tmp/t_plugin_llm 2>&1 || echo "(no test runner)"
+	@gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libplugin tests/test_plugin_llm.c src/plugins/platforms/qqbot/plugin_llm.o lib/libjson/json.o -o /tmp/t_plugin_llm -lm 2>/dev/null && /tmp/t_plugin_llm 2>&1 || echo "(no test runner)"
 	@echo "=== Testing auxiliary_client ==="
 	@gcc -O2 -g -Wall -Wextra -I include $(LIB_INCS) tests/test_auxiliary_client.c src/agent/auxiliary_client.o src/tools/url_safety.o -o /tmp/t_aux_client -lm 2>/dev/null && /tmp/t_aux_client 2>&1 || echo "(no test runner)"
 	@echo "=== Testing iteration_budget ==="
@@ -93,7 +93,7 @@ test-models-net:
 # config-resolver behavior. Depends on port_models_net.o + port_models_helpers.o.
 test-models-pure:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/port_models_pure_test.c \
-		src/cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
+		src/hermes_cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
 		src/cli/port_hermes_cli_models.o src/cli/model_catalog.o src/cli/port_model_normalize.o \
 		src/slermes_home.o lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o \
 		$(SSL_LDFLAGS) -o /tmp/t_models_pure 2>/dev/null \
@@ -103,7 +103,7 @@ test-models-pure:
 # Injectable HTTP transport + MoA/catalog resolvers, no real network.
 test-models-validate:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/port_models_validate_test.c \
-		src/cli/port_models_validate.o src/cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
+		src/cli/port_models_validate.o src/hermes_cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
 		src/cli/port_hermes_cli_models.o src/cli/model_catalog.o src/cli/port_model_normalize.o \
 		src/slermes_home.o lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o lib/libfuzzymatch/fuzzy_match.o \
 		$(SSL_LDFLAGS) -lm -o /tmp/t_models_validate 2>/dev/null \
@@ -749,9 +749,9 @@ test-cron-delivery:
 	    || echo "cron_delivery oracle: all cases MATCH"
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
-test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
+test-debug: src/hermes_cli/debug_cli.o src/plugins/platforms/bluebubbles/redact.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
-	    tests/test_debug_cli.c src/hermes_cli/debug_cli.o src/agent/redact.o -o /tmp/t_dbg 2>&1 \
+	    tests/test_debug_cli.c src/hermes_cli/debug_cli.o src/plugins/platforms/bluebubbles/redact.o -o /tmp/t_dbg 2>&1 \
 	    && /tmp/t_dbg 2>&1 || echo "(debug test failed)"
 
 # hermes_cli/auth.py pure helpers (faithful port of testable core).

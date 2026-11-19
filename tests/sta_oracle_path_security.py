@@ -3,7 +3,7 @@ import os
 """
 sta_oracle_path_security.py — Python oracle for the path-safety helpers in
 tools/path_security.py (has_traversal_component, validate_within_dir), ported
-in src/cli/port_tools_path_security.c.
+in src/tools/port_tools_path_security.c.
 
 Imports the REAL tools.path_security module. For validate_within_dir it
 materializes the same temp tree the C harness builds (real FS, no mocks) and

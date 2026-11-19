@@ -29,12 +29,12 @@ PARTIALS = [
     ("hermes_cli/web_server.py", "_write_dashboard_ready_file", "src/cli/port_web_server.c", "web_write_dashboard_ready_file"),
     ("hermes_cli/web_server.py", "_maybe_open_browser", "src/cli/port_web_server.c", "web_maybe_open_browser"),
     # From run_pure.c
-    ("hermes_cli/web_server.py", "_record_completed_action", "src/gateway/run_pure.c", "web_record_completed_action"),
-    ("hermes_cli/web_server.py", "_dashboard_spawn_executable", "src/gateway/run_pure.c", "web_dashboard_spawn_executable"),
-    ("hermes_cli/web_server.py", "_tail_lines", "src/gateway/run_pure.c", "web_tail_lines"),
-    ("hermes_cli/web_server.py", "_normalize_config_for_web", "src/gateway/run_pure.c", "web_normalize_config_for_web"),
+    ("hermes_cli/web_server.py", "_record_completed_action", "src/plugins/platforms/bluebubbles/run_pure.c", "web_record_completed_action"),
+    ("hermes_cli/web_server.py", "_dashboard_spawn_executable", "src/plugins/platforms/bluebubbles/run_pure.c", "web_dashboard_spawn_executable"),
+    ("hermes_cli/web_server.py", "_tail_lines", "src/plugins/platforms/bluebubbles/run_pure.c", "web_tail_lines"),
+    ("hermes_cli/web_server.py", "_normalize_config_for_web", "src/plugins/platforms/bluebubbles/run_pure.c", "web_normalize_config_for_web"),
     # From checkpoint_manager.c
-    ("tools/checkpoint_manager.py", "prune_checkpoints", "src/tools/checkpoint_manager.c", "prune_checkpoints"),
+    ("tools/checkpoint_manager.py", "prune_checkpoints", "src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c", "prune_checkpoints"),
 ]
 
 

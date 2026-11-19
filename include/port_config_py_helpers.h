@@ -297,6 +297,67 @@ json_t *cron_model_drift_axes(const json_t *job, const char *current_provider,
 json_t *build_cron_model_impact(const char *current_provider, const char *current_model,
                                 const json_t *config, const json_t *jobs);
 
+/* ===================================================================
+ * config_py_pure.c — pure-gap closure batch (oracle_config_pure).
+ * Live underscore-prefixed defs; ownership documented at each definition.
+ * =================================================================== */
+#include "port_config.h"        /* CFG_ENV_* codes, cfg_* helpers */
+#include "port_config_nested.h" /* cfg_loc_t, cfg_greedy_literal_match */
+
+/* _split_key_path — NEW JSON array of segments (caller frees); NULL key -> NULL. */
+json_t *config_py_split_key_path(const char *key);
+/* _greedy_literal_match — n_consumed > 0 + literal key in out, else 0 (None). */
+int config_py_greedy_literal_match(const json_t *container, const json_t *parts,
+                                   char *out, size_t cap);
+/* _phantom_sibling — 1 + shadowing key in out, else 0 (None). */
+int config_py_phantom_sibling(const json_t *container, const char *part, char *out, size_t cap);
+/* _locate_nested — 1 + filled loc (caller frees key/parents/parent_keys), 0 None. */
+int config_py_locate_nested(json_t *root, const json_t *parts, cfg_loc_t *loc);
+/* _validate_entry_list / _validate_custom_providers / _validate_fallback_model —
+ * append {severity,message,hint} issue objects to the borrowed issues array. */
+void config_py_validate_entry_list(json_t *issues, const json_t *entries, const char *label,
+                                   const json_t *fields, const char *severity,
+                                   const char *message, const char *hint);
+void config_py_validate_custom_providers(json_t *issues, const json_t *cp);
+void config_py_validate_fallback_model(json_t *issues, const json_t *fb);
+/* _strip_dotted_keys — mutates cfg in place; *out_stripped NEW sorted array. */
+json_t *config_py_strip_dotted_keys(json_t *cfg, const json_t *dotted_keys, json_t **out_stripped);
+/* _is_non_env_secret_ref / _is_secret_config_key / _looks_structured_value. */
+bool config_py_is_non_env_secret_ref(const char *ref);
+bool config_py_is_secret_config_key(const char *key);
+bool config_py_looks_structured_value(const char *value);
+/* _canonicalize_config — NEW config; NULL + *err_msg "Type: msg" on raise. */
+json_t *config_py_canonicalize_config(const json_t *config, char **err_msg);
+/* _ensure_dict — BORROWED child dict, replacing missing/non-dict with {}. */
+json_t *config_py_ensure_dict(json_t *parent, const char *key);
+/* _commented_sections_for_save — malloc'd text or NULL (None / AttributeError
+ * via *err_msg). */
+char *config_py_commented_sections_for_save(const json_t *normalized, char **err_msg);
+/* _omitted_config_paths — NEW array of dotted paths in existing-key order. */
+json_t *config_py_omitted_config_paths(const json_t *existing, const json_t *proposed);
+/* _expected_container_type — static "mapping"/"list" or NULL (no I/O). */
+const char *config_py_expected_container_type(const char *key, const json_t *user_config);
+/* _refuse_container_type_mismatch — NEW value to store, or NULL + *err_msg
+ * (exact _exit_invalid text; live sys.exit(1)s). */
+json_t *config_py_refuse_container_type_mismatch(const char *key, const json_t *value,
+                                                 const json_t *user_config, int force,
+                                                 char **err_msg);
+/* install-method shims (live constants False/False/""). */
+bool config_py_is_uv_tool_install(void);
+bool config_py_is_unsupported_install_method(const char *method);
+char *config_py_format_unsupported_install_warning(const char *method); /* malloc'd "" */
+/* _env_var_policy_name — is_windows: 1/0/-1 host default; writes into out. */
+void config_py_env_var_policy_name(const char *key, int is_windows, char *out, size_t cap);
+/* validate_env_var_name_for_write — CFG_ENV_* code; exact ValueError text in
+ * err on failure. launch_denylist: borrowed JSON array of names (seam for the
+ * live dynamic env_writer_launch_denylist() registry). */
+int config_py_validate_env_var_name_for_write(const char *key, int is_windows,
+                                              const json_t *launch_denylist,
+                                              char *err, size_t errcap);
+/* _install_method_stamp — pure core: caller passes utf-8-sig-decoded stamp
+ * text (NULL for the OSError path); static supported method or NULL. */
+const char *config_py_install_method_stamp(const char *text);
+
 #ifdef __cplusplus
 }
 #endif

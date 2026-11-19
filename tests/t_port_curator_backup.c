@@ -1,7 +1,7 @@
 /*
  * t_port_curator_backup.c — faithful verification harness for
  * curator_backup_config_enabled / curator_backup_config_keep in
- * src/tools/curator_backup.c (port of agent/curator_backup.py).
+ * src/agent/curator_backup.c (port of agent/curator_backup.py).
  *
  * The fixture (argv[1]) is a sequence of YAML documents separated by a
  * line containing only "---". For each document we write it to
@@ -20,7 +20,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-/* Forward declarations — defined in src/tools/curator_backup.c (port of
+/* Forward declarations — defined in src/agent/curator_backup.c (port of
  * agent/curator_backup.py). Avoid pulling hermes_curator.h (libdb chain). */
 bool curator_backup_config_enabled(void);
 int  curator_backup_config_keep(void);

@@ -21,7 +21,7 @@ TARGET = {
     "mcp_tool_reinject_post_build_tools","mcp_tool_schedule_tools_refresh",
     "mcp_tool_stop_mcp_loop","mcp_tool_stop_mcp_loop_if_idle",
  ],
- "src/cli/port_agent_skill_utils.c": ["cli_agent_skill_utils__raw_config_cache_clear"],
+ "src/agent/port_agent_skill_utils.c": ["cli_agent_skill_utils__raw_config_cache_clear"],
  "src/cli/port_gateway_platforms_signal_rate_limit.c": ["cli_gateway_platforms_signal_rate_limit_report_rpc_duration"],
  "src/cli/port_hermes_cli_skills_config.c": ["cli_hermes_cli_skills_config_skills_command"],
  "src/cli/port_hermes_cli_voice.c": ["cli_hermes_cli_voice_start_recording"],

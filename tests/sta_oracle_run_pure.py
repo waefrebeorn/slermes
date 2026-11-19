@@ -2,7 +2,7 @@ import os
 #!/usr/bin/env python3
 """
 sta_oracle_run_pure.py — Python oracle for the PURE gateway/run.py helpers
-ported in src/gateway/run_pure.c.
+ported in src/plugins/platforms/bluebubbles/run_pure.c.
 
 gateway/run.py is NOT importable in this dev tree (an unrelated broken
 `from agent.replay_cleanup import ...` at line ~970 crashes module import).

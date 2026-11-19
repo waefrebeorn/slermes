@@ -9,7 +9,7 @@
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libhttp \
  *       -I lib/libplugin -I lib/libmangateway \
- *       tests/test_bluebubbles.c src/gateway/platforms/bluebubbles.c \
+ *       tests/test_bluebubbles.c src/plugins/platforms/bluebubbles/bluebubbles.c \
  *       lib/libjson/json.c -lm \
  *       -Wl,--unresolved-symbols=ignore-all \
  *       -o /tmp/hermes_test_bluebubbles

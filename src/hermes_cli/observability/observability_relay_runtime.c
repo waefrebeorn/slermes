@@ -4,7 +4,7 @@
  *
  * The Python module is a compatibility alias: it re-exports
  * agent.relay_runtime so legacy imports keep working during migration.
- * The C port of the relay runtime lives in src/gateway/relay/relay_runtime.c;
+ * The C port of the relay runtime lives in src/agent/relay_runtime.c;
  * this module declares that mapping and provides an accessor for new callers.
  */
 

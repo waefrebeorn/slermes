@@ -2,7 +2,7 @@ import os
 #!/usr/bin/env python3
 """
 sta_oracle_input_sanitize.py — Python oracle for hermes_cli/input_sanitize.py,
-ported in src/cli/port_input_sanitize.c.
+ported in src/hermes_cli/port_input_sanitize.c.
 
 Imports the REAL hermes_cli.input_sanitize module and calls
 sanitize_user_prompt_text() on each fixture line. One JSON object per line:

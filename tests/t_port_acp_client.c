@@ -1,6 +1,6 @@
 /*
  * t_port_acp_client.c — Oracle harness for agent/acp_client.py's JSON-RPC /
- * session-model shaping (src/cli/port_acp_client.c). Emits inputs + C output as
+ * session-model shaping (src/agent/port_acp_client.c). Emits inputs + C output as
  * JSONL so an oracle replays the LIVE Python on the identical values.
  * Families:
  *   result:       {family, case, id, result, out}      _jsonrpc_result

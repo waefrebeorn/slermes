@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/weixin_ports.c"
+    "src/plugins/platforms/weixin/weixin_ports.c"
   ],
   "cflags": [
     "-I",

@@ -13,5 +13,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "NO_PROXY single-entry matching (traced copy of src/gateway/platforms/base.c::no_proxy_entry_matches vs LIVE _no_proxy_entry_matches). PARITY FIX APPLIED TO PORT: C suffix-matched without the leading dot ('notexample.com' wrongly matched 'example.com') and '*.'-tokens wrongly matched the bare host \u2014 both corrected to LIVE semantics. Scope limits (documented): (1) C omits the LIVE ipaddress CIDR/IP-literal branches \u2014 only domain/wildcard/port cases gated; (2) C lowercases the HOST before comparison while LIVE compares original case \u2014 inputs use lowercase hosts. Twin asserts traced result == LIVE result per input."
+  "notes": "NO_PROXY single-entry matching (traced copy of src/plugins/platforms/yuanbao/base.c::no_proxy_entry_matches vs LIVE _no_proxy_entry_matches). PARITY FIX APPLIED TO PORT: C suffix-matched without the leading dot ('notexample.com' wrongly matched 'example.com') and '*.'-tokens wrongly matched the bare host \u2014 both corrected to LIVE semantics. Scope limits (documented): (1) C omits the LIVE ipaddress CIDR/IP-literal branches \u2014 only domain/wildcard/port cases gated; (2) C lowercases the HOST before comparison while LIVE compares original case \u2014 inputs use lowercase hosts. Twin asserts traced result == LIVE result per input."
 }

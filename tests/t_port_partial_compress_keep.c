@@ -1,7 +1,7 @@
 /*
  * t_port_partial_compress_keep.c — Oracle harness for
  * hermes_cli/partial_compress.py:_coerce_keep
- * (ported to src/cli/commands.c as cmd_compress_coerce_keep).
+ * (ported to src/hermes_cli/commands.c as cmd_compress_coerce_keep).
  *
  * Calls the port with a set of keep-count tokens and emits case->result.
  * The Python oracle replays against LIVE Python and compares the ints.

@@ -20,5 +20,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "MCP health_report extraction ladder. REAL src/gateway/cua_doctor.c::cua_doctor_extract_health_report linked via extra_src against LIVE tools/computer_use/doctor.py::_extract_health_report_from_result. Rungs: isError denial (with human-text preference), structuredContent direct hit, legacy JSON-in-text-block parse, unavailable-vs-protocol-error fallback. '-' encodes a non-object response (protocol error)."
+  "notes": "MCP health_report extraction ladder. REAL src/tools/computer_use/cua_doctor.c::cua_doctor_extract_health_report linked via extra_src against LIVE tools/computer_use/doctor.py::_extract_health_report_from_result. Rungs: isError denial (with human-text preference), structuredContent direct hit, legacy JSON-in-text-block parse, unavailable-vs-protocol-error fallback. '-' encodes a non-object response (protocol error)."
 }

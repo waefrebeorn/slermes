@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Oracle for the relay-media / plugin-label / credential-generation helpers
-port (src/cli/port_media_labels.c).
+port (src/gateway/relay/port_media_labels.c).
 
 Harness (t_port_media_labels.c) emits per family:
   burl:  {family:"burl", in:<str|null>, out:<str>}   -> gateway/relay/media.py:media_base_url

@@ -40,4 +40,55 @@ int st_is_shell_boundary_echo(const char *segment);
 void st_summarize_shell_command(const char *command, const char *plus_one,
                                 const char *plus_many, char *out, size_t cap);
 
+/* ── Pure formatting ports (src/agent/display_ports.c, disp_ prefix) ──────
+ * Dict/list arguments arrive as JSON text and are parsed with libjson inside.
+ * Every char* return is malloc'd (caller frees); NULL models Python None.
+ * i18n templates are the bundled English (locales/en.yaml) strings. */
+
+/* _http_url: candidate when it parses as an absolute http(s) URL, else NULL. */
+char *disp_http_url(const char *candidate);
+/* _hex_rgb: "#rrggbb" -> malloc'd JSON "[r,g,b]"; NULL on invalid. */
+char *disp_hex_rgb(const char *h);
+/* _fg: malloc'd truecolor foreground escape. */
+char *disp_fg(int r, int g, int b);
+/* _tinted_bg: malloc'd white-on-tint background escape. */
+char *disp_tinted_bg(int r, int g, int b, int dominant);
+/* _scan_quoted: malloc'd JSON array of [index, char, inside_quotes] triples. */
+char *disp_scan_quoted(const char *text);
+/* verbose_tool_args_text: compact JSON capped at max_len (0=no cap), optional
+ * ``` code block. */
+char *disp_verbose_tool_args_text(const char *args_json, long max_len, int code_block);
+/* _delegate_task_goals: malloc'd JSON array of truncated goal strings. */
+char *disp_delegate_task_goals(const char *tasks_json, long per_goal_len);
+/* _delegate_action_preview: "list/steer/stop <id>" or NULL. */
+char *disp_delegate_action_preview(const char *args_json);
+/* _preview_browser_exec / _preview_delegate_task / _preview_process_manage /
+ * _preview_todo_list / _preview_read_file / _preview_memory /
+ * _preview_send_message / _preview_skill_view / _preview_clarify:
+ * tool-call preview builders (malloc'd or NULL). */
+char *disp_preview_browser_exec(const char *args_json, long max_len);
+char *disp_preview_delegate_task(const char *args_json, long max_len);
+char *disp_preview_process_manage(const char *args_json, long max_len);
+char *disp_preview_todo_list(const char *args_json, long max_len);
+char *disp_preview_read_file(const char *args_json, long max_len);
+char *disp_preview_memory(const char *args_json, long max_len);
+char *disp_preview_send_message(const char *args_json, long max_len);
+char *disp_preview_skill_view(const char *args_json, long max_len);
+char *disp_preview_clarify(const char *args_json, long max_len);
+/* _primary_arg_preview: primary argument preview (malloc'd or NULL). */
+char *disp_primary_arg_preview(const char *tool_name, const char *args_json, long max_len);
+/* _tool_verb: curated friendly verb or NULL. */
+char *disp_tool_verb(const char *tool_name);
+/* bridge_generating_phrase: bridge phrase when friendly enabled, else NULL. */
+char *disp_bridge_generating_phrase(const char *tool_name, int friendly);
+/* _degraded_suffix: " [<reason> — <hint>]" suffix. */
+char *disp_degraded_suffix(const char *data_json);
+/* is_neutral_failure: result arrives as JSON text (dict or string). */
+int disp_is_neutral_failure(const char *tool_name, const char *result_json);
+/* _domain: host portion of a URL. */
+char *disp_domain(const char *url);
+/* _cute_trunc / _cute_path: tail/head truncate to an explicit preview cap. */
+char *disp_cute_trunc(const char *s, long limit);
+char *disp_cute_path(const char *p, long limit);
+
 #endif /* PORT_DISPLAY_H */

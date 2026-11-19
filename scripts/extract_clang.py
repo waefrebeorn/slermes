@@ -6,7 +6,7 @@ import sys
 from clang import cindex
 
 BASE='SLERMES_REPO/'
-SRC='src/cli/commands.c'
+SRC='src/hermes_cli/commands.c'
 
 def parse_extents(src_text):
     idx=cindex.Index.create()

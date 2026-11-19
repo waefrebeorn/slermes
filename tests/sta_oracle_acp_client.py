@@ -2,7 +2,7 @@ import os
 #!/usr/bin/env python3
 """
 sta_oracle_acp_client.py — Oracle for the JSON-RPC / session-model shaping in
-agent/acp_client.py (src/cli/port_acp_client.c).
+agent/acp_client.py (src/agent/port_acp_client.c).
 
 The module imports the OpenAI bridge (openai SDK) servicing names it never uses
 for these helpers, so that one dependency is stubbed; everything compared here

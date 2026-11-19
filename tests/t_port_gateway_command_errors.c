@@ -1,7 +1,7 @@
 /*
  * t_port_gateway_command_errors.c — Oracle harness for
  * hermes_cli/gateway_command_errors.py (ported to
- * src/cli/port_gateway_command_errors.c).
+ * src/hermes_cli/port_gateway_command_errors.c).
  *
  * Emits one JSON line per case with the extracted verb or the guidance
  * lines (plus the argv/returncode that produced them), so the Python

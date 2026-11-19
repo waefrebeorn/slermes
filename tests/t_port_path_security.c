@@ -1,6 +1,6 @@
 /*
  * t_port_path_security.c — oracle harness for the path-safety helpers in
- * src/cli/port_tools_path_security.c (ports of tools/path_security.py):
+ * src/tools/port_tools_path_security.c (ports of tools/path_security.py):
  *   cli_tools_path_security_has_traversal_component  (pure, no FS)
  *   cli_tools_path_security_validate_within_dir     (realpath-based; the
  *     harness materializes the temp tree it is asked to validate so the

@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/cli/display_core.c"
+    "src/agent/display_core.c"
   ],
   "cflags": [
     "-I",

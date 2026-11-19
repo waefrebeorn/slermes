@@ -8,7 +8,7 @@
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libhttp \
  *       -I lib/libplugin -I lib/libmangateway \
- *       tests/test_feishu.c src/gateway/platforms/feishu.c \
+ *       tests/test_feishu.c src/plugins/platforms/feishu/feishu.c \
  *       lib/libjson/json.c -lm \
  *       -Wl,--unresolved-symbols=ignore-all \
  *       -o /tmp/hermes_test_feishu

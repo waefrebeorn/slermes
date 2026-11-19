@@ -7,7 +7,7 @@
  *
  * Build:
  *   gcc -O2 -Wall -Wextra -I include -I lib/libjson \
- *       tests/test_sms.c src/gateway/platforms/sms.c \
+ *       tests/test_sms.c src/plugins/platforms/sms/sms.c \
  *       lib/libjson/json.c -o /tmp/hermes_test_sms \
  *       -lm -Wl,--unresolved-symbols=ignore-all
  *

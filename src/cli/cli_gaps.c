@@ -197,7 +197,7 @@ const char *cli_subprocess_invoke(const char *module, const char *args) {
  * ═══════════════════════════════════════════════════════════════ */
 
 /*
- *  hermes_cli/commands.py       → src/cli/commands.c   (93 cmds, PORTED)
+ *  hermes_cli/commands.py       → src/hermes_cli/commands.c   (93 cmds, PORTED)
  *  hermes_cli/main.py           → src/cli/main.c        (PORTED)
  *  hermes_cli/setup.py          → src/cli/setup_wizard.c (PORTED)
  *  hermes_cli/config.py         → src/cli/config.c      (PORTED)

@@ -8,7 +8,7 @@
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libhttp \
  *       -I lib/libplugin -I lib/libgateway \
- *       tests/test_qqbot.c src/gateway/platforms/qqbot.c \
+ *       tests/test_qqbot.c src/plugins/platforms/qqbot/qqbot.c \
  *       lib/libjson/json.c -lm \
  *       -Wl,--unresolved-symbols=ignore-all \
  *       -o /tmp/hermes_test_qqbot

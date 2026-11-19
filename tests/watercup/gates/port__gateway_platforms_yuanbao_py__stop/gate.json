@@ -17,7 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
-    "src/gateway/platforms/yuanbao.c"
+    "src/plugins/platforms/yuanbao/yuanbao.c"
   ],
   "cflags": [
     "-I",

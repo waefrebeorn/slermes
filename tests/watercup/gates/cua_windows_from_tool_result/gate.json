@@ -28,5 +28,5 @@
     "test123",
     "NULL"
   ],
-  "notes": "cua-driver list_windows result-shape ladder. Harness LINKS the real src/tools/cua_backend_methods.c::cua_windows_from_tool_result (+ lib/libjson) and re-derives the same decision ladder around it for tracing; V carries the returned window count from each side."
+  "notes": "cua-driver list_windows result-shape ladder. Harness LINKS the real src/tools/computer_use/cua_backend_methods.c::cua_windows_from_tool_result (+ lib/libjson) and re-derives the same decision ladder around it for tracing; V carries the returned window count from each side."
 }

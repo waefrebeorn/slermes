@@ -24,7 +24,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* Declared in src/persistence/sqlite_state/hermes_state_misc.c (PoP:
+/* Declared in src/persistence/sqlite/_state/hermes_state_misc.c (PoP:
  * hermes_state.py:delete_session_if_empty); not yet in hermes_state_db.h. */
 extern bool hermes_state_delete_session_if_empty(hermes_state_db_t *db,
                                                  const char *session_id);

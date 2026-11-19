@@ -3,7 +3,7 @@
  * Port of Python tools/checkpoint_manager.py (CheckpointManager, v2).
  *
  * Opaque struct + minimal includes. The C port already provides the
- * git-shadow helper layer (src/tools/checkpoint_manager.c); this header
+ * git-shadow helper layer (src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c); this header
  * exposes the manager object and its methods.
  */
 #ifndef CHECKPOINT_MANAGER_H

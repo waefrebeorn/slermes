@@ -1,6 +1,6 @@
 /*
  * t_port_backup_sqlite.c — Oracle harness for hermes_cli/backup_sqlite.py
- * (ported to src/cli/port_backup_sqlite.c).
+ * (ported to src/hermes_cli/port_backup_sqlite.c).
  *
  * Builds real SQLite fixtures (journal and WAL), runs the ported preflight,
  * and reports what it produced: the JSON, the surviving .bak count and a

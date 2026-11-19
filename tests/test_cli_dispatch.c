@@ -7,7 +7,7 @@
  * Build:
  *   gcc -O2 -g -Wall -Wextra -I include -I lib/libjson \
  *       tests/test_cli_dispatch.c \
- *       src/cli/commands.c lib/libjson/json.c \
+ *       src/hermes_cli/commands.c lib/libjson/json.c \
  *       -o /tmp/hermes_test_cli_dispatch -lm
  *
  * Run:

@@ -1,6 +1,6 @@
 /*
  * t_port_gateway_short_label.c — faithful verification harness for
- * setup_gateway_platform_short_label in src/cli/config_setup.c
+ * setup_gateway_platform_short_label in src/hermes_cli/config_setup.c
  * (port of hermes_cli/setup.py:_gateway_platform_short_label).
  *
  * Reads a label from each line of argv[1] (trailing newline stripped) and
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Forward declaration — defined in src/cli/config_setup.c (port of
+/* Forward declaration — defined in src/hermes_cli/config_setup.c (port of
  * hermes_cli/setup.py). Avoid pulling heavy setup headers. */
 char *setup_gateway_platform_short_label(const char *label);
 

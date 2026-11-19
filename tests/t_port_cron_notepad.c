@@ -1,6 +1,6 @@
 /*
  * t_port_cron_notepad.c — Oracle harness for cron/notepad.py
- * (ported to src/cli/port_cron_notepad.c).
+ * (ported to src/cron/port_cron_notepad.c).
  */
 #include "port_cron_notepad.h"
 #include "hermes_json.h"
