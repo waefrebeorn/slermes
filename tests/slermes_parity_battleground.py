@@ -750,11 +750,11 @@ class ParityAnalyzer:
             "tools/read_terminal_tool.py":"src/tools/read_terminal.c","tools/registry.py":"src/tools/registry.c",
             "tools/schema_sanitizer.py":"src/tools/schema_sanitizer.c","tools/send_message_tool.py":"src/tools/send_message.c",
             "tools/skill_usage.py":"src/tools/skills.c","tools/skill_manager_tool.py":"src/tools/skill_manager.c",
-            "tools/skills_ast_audit.py":"src/tools/skills_ast_audit.c","tools/skills_guard.py":"src/tools/skills_guard.c",
-            "tools/skills_hub.py":"src/tools/skills_hub.c","tools/skills_sync.py":"src/tools/skills_sync.c",
+            "tools/skills_ast_audit.py":"src/tools/skills_ast_audit.c","tools/skills_guard.py":"src/hermes_cli/skills_guard.c",
+            "tools/skills_hub.py":"src/skills_hub.c","tools/skills_sync.py":"src/tools/skills_sync.c",
             "tools/skills_tool.py":"src/tools/port_skills_tool.c","tools/slash_confirm.py":"src/tools/slash_confirm.c",
             "tools/terminal_tool.py":"src/tools/terminal.c","tools/thread_context.py":"src/tools/thread_context.c",
-            "tools/threat_patterns.py":"src/tools/threat_patterns.c","tools/tirith_security.py":"src/plugins/platforms/weixin/tirith.c",
+            "tools/threat_patterns.py":"src/agent/threat_patterns.c","tools/tirith_security.py":"src/plugins/platforms/weixin/tirith.c",
             "tools/todo_tool.py":"src/tools/todo.c","tools/tool_backend_helpers.py":"src/tools/tool_backend_helpers.c",
             "tools/tool_output_limits.py":"src/tools/tool_output_limits.c","tools/tool_result_storage.py":"src/tools/result_storage.c",
             "tools/tool_search.py":"src/tools/tool_search.c","tools/transcription_tools.py":"src/tools/transcribe.c",
@@ -763,11 +763,11 @@ class ParityAnalyzer:
             "tools/wake_word.py":"src/tools/port_tools_wake_word.c",
             "tools/flux3_video_tool.py":"src/tools/port_tools_flux3_video.c",
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
-            "tools/write_approval.py":"src/tools/write_approval.c",
+            "tools/write_approval.py":"src/hermes_cli/write_approval.c",
             "tools/environments/vercel_sandbox.py":"src/tools/port_tools_vercel_sandbox.c",
             "agent/redact.py":"src/agent/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
             "agent/monitoring/gateway_health_export.py":"src/agent/port_agent_monitoring_health_export.c",
-            "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/tools/yuanbao_tools.c",
+            "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/hermes_cli/yuanbao_tools.c",
             "tools/kanban_tools.py":"src/tools/kanban_tools.c","tools/mcp_oauth.py":"src/tools/mcp_oauth.c",
             "tools/registry.py":"src/tools/registry.c","tools/web_tools.py":"src/tools/web.c",
             "tools/ansi_strip.py":"src/tools/ansi_strip.c","tools/binary_extensions.py":"src/tools/binary_extensions.c",
@@ -790,11 +790,11 @@ class ParityAnalyzer:
             "gateway/slash_commands.py":"src/gateway/slash_commands.c","gateway/status.py":"src/gateway/status.c",
             "gateway/sticker_cache.py":"src/gateway/sticker_cache.c","gateway/stream_consumer.py":"src/gateway/stream_consumer.c",
             "gateway/stream_dispatch.py":"src/gateway/stream_dispatch.c","gateway/stream_events.py":"src/gateway/stream_events.c",
-            "gateway/authz_mixin.py":"src/gateway/authz_mixin.c","gateway/channel_directory.py":"src/gateway/channel_directory.c",
+            "gateway/authz_mixin.py":"src/gateway/authz_mixin.c","gateway/channel_directory.py":"src/hermes_cli/channel_directory.c",
             "gateway/display_config.py":"src/gateway/display_config.c","gateway/kanban_watchers.py":"src/gateway/kanban_watchers.c",
             "gateway/response_filters.py":"src/gateway/response_filters.c","gateway/runtime_footer.py":"src/gateway/runtime_footer.c",
-            "gateway/shutdown_forensics.py":"src/gateway/shutdown_forensics.c","gateway/slash_access.py":"src/gateway/slash_access.c",
-            "gateway/whatsapp_identity.py":"src/gateway/whatsapp_identity.c",
+            "gateway/shutdown_forensics.py":"src/hermes_cli/shutdown_forensics.c","gateway/slash_access.py":"src/gateway/slash_access.c",
+            "gateway/whatsapp_identity.py":"src/hermes_cli/whatsapp_identity.c",
             "gateway/platforms/base.py":"src/plugins/platforms/yuanbao/base.c","gateway/platforms/api_server.py":"src/plugins/platforms/yuanbao/api_server_adapter.c",
             "gateway/platforms/bluebubbles.py":"src/plugins/platforms/bluebubbles/bluebubbles.c","gateway/platforms/dingtalk.py":"src/plugins/platforms/dingtalk/dingtalk.c",
             "gateway/platforms/email.py":"src/gateway/platforms/email.c","gateway/platforms/feishu.py":"src/plugins/platforms/feishu/feishu.c",
@@ -1586,22 +1586,22 @@ class ParityAnalyzer:
             rel = pf.relative_to(agent)
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue  # empty package marker
-            all_py.append((pf, "agent/" + str(rel)))
+            all_py.append((pf, "agent/" + rel.as_posix()))
         tools = PYTHON_SOURCE_DIRS["tools"]
         for pf in sorted(tools.rglob("*.py")):
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue
-            all_py.append((pf, "tools/" + str(pf.relative_to(tools))))
+            all_py.append((pf, "tools/" + pf.relative_to(tools).as_posix()))
         gw = PYTHON_SOURCE_DIRS["gateway"]
         for pf in sorted(gw.rglob("*.py")):
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue
-            all_py.append((pf, "gateway/" + str(pf.relative_to(gw))))
+            all_py.append((pf, "gateway/" + pf.relative_to(gw).as_posix()))
         cron = PYTHON_SOURCE_DIRS["cron"]
         for pf in sorted(cron.rglob("*.py")):
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue
-            all_py.append((pf, "cron/" + str(pf.relative_to(cron))))
+            all_py.append((pf, "cron/" + pf.relative_to(cron).as_posix()))
         clipy = PYTHON_SOURCE_DIRS["cli_root"]
         if clipy.exists():
             all_py.append((clipy, "cli.py"))
@@ -1613,7 +1613,7 @@ class ParityAnalyzer:
         for pf in sorted(hc.rglob("*.py")):
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue
-            all_py.append((pf, "hermes_cli/" + str(pf.relative_to(hc))))
+            all_py.append((pf, "hermes_cli/" + pf.relative_to(hc).as_posix()))
         all_py.sort(key=lambda x: x[1])
 
         # Apply module substring filter early so --module doesn't scan the
