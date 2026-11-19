@@ -33,7 +33,7 @@ static const char *const HD_GENERATION_FENCE =
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: hd_task_update @ gateway/hosted_room_driver.py:_task_update */
+/* PoP: hd_task_update @ persistence/sqlite/gateway/hosted_room_driver.py:_task_update */
 char *hd_task_update(const char *set_clause, const char *fence)
 {
     size_t cap = strlen(set_clause ? set_clause : "") + strlen(fence ? fence : "") + 96;
@@ -55,7 +55,7 @@ char *hd_task_update(const char *set_clause, const char *fence)
  *  the recovery family). Caller frees.
  * =========================================================================== */
 
-/* PoP: hd_generation_update @ gateway/hosted_room_driver.py:_generation_update */
+/* PoP: hd_generation_update @ persistence/sqlite/gateway/hosted_room_driver.py:_generation_update */
 char *hd_generation_update(const char *set_clause, const char *status)
 {
     size_t cap = strlen(status ? status : "") + strlen(HD_GENERATION_FENCE) + 32;
@@ -134,16 +134,18 @@ double hd_timestamp(const char *clock_value, int is_callable, int *ok, char **er
  *      now = _timestamp(clock)
  *      if not math.isfinite(now + ttl):
  *          raise DriverValidationError("lease expiry must be finite")
- *      return now, now + ttl
+ *      return now, ttl
  *
  *  Validate ttl FIRST, then the clock. The SUM is re-checked for finiteness -
- *  two finite values can still overflow. `now` and `expires_at` are out-params.
+ *  two finite values can still overflow. LIVE 2026-11-18: the tuple's second
+ *  element is the TTL itself, not the expiry (callers compute now + ttl).
+ *  `now` and `ttl_out` are out-params.
  *  Returns 1 on success, 0 when validation failed (err set).
  * =========================================================================== */
 
 /* PoP: hd_lease_window @ gateway/hosted_room_driver.py:_lease_window */
 int hd_lease_window(const char *ttl_seconds, const char *clock_value, int is_callable,
-                    double *now_out, double *expires_out, char **err)
+                    double *now_out, double *ttl_out, char **err)
 {
     if (err) *err = NULL;
 
@@ -161,6 +163,6 @@ int hd_lease_window(const char *ttl_seconds, const char *clock_value, int is_cal
     }
 
     if (now_out) *now_out = now;
-    if (expires_out) *expires_out = now + ttl;
+    if (ttl_out) *ttl_out = ttl;
     return 1;
 }

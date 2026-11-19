@@ -188,7 +188,7 @@ char *hr_grant_scope_key(const char *const *claims, char **err)
  *          or (row_epoch == epoch and str(row["authority_gateway_id"]) != gateway_id)
  * =========================================================================== */
 
-/* PoP: hr_reservation_superseded @ gateway/hosted_rooms.py:_reservation_superseded */
+/* PoP: hr_reservation_superseded @ persistence/sqlite/gateway/hosted_room_peers.py:_reservation_superseded */
 int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
                               const char *gateway_id, long long epoch)
 {
@@ -206,7 +206,7 @@ int hr_reservation_superseded(long long row_epoch, const char *row_gateway_id,
  *  Caller frees the array and its strings.
  * =========================================================================== */
 
-/* PoP: hr_remote_run_identity @ gateway/hosted_rooms.py:remote_run_identity */
+/* PoP: hr_remote_run_identity @ persistence/sqlite/gateway/hosted_room_peers.py:_remote_run_identity */
 char **hr_remote_run_identity(const char *const *record,
                               const char *const *columns, int ncols,
                               int *out_count, char **err)

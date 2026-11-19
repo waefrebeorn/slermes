@@ -56,6 +56,21 @@ def extract():
     for node in ast.parse(src).body:
         if isinstance(node, ast.FunctionDef) and node.name in WANTED:
             exec(compile(ast.Module(body=[node], type_ignores=[]), DRIVER, "exec"), ns)
+    # 2026-11-18 pluggable-DB migration: the SQL builders (_task_update,
+    # _generation_update) moved to persistence/sqlite/gateway/. Seed whatever
+    # WANTED names the gateway module no longer defines from the new home.
+    PDRIVER = r"C:\Users\eman5\hermes-agent\persistence\sqlite\gateway\hosted_room_driver.py"
+    psrc = open(PDRIVER, encoding="utf-8").read()
+    ptree = ast.parse(psrc)
+    for node in ptree.body:
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            try:
+                exec(compile(ast.Module(body=[node], type_ignores=[]), PDRIVER, "exec"), ns)
+            except Exception:
+                pass
+    for node in ptree.body:
+        if isinstance(node, ast.FunctionDef) and node.name in WANTED and node.name not in ns:
+            exec(compile(ast.Module(body=[node], type_ignores=[]), PDRIVER, "exec"), ns)
     return ns
 
 

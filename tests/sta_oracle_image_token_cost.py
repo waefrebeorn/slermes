@@ -33,6 +33,12 @@ ns = {}
 for n in nodes:
     mod = ast.Module(body=[n], type_ignores=[])
     exec(compile(ast.fix_missing_locations(mod), "model_metadata.py", "exec"), ns)
+# 2026-11-18 reorg: _IMAGE_PART_TYPES moved out of model_metadata.py into
+# session_rules.turns (model_metadata now imports it). Seed it from the new
+# home so the extracted _count_image_tokens resolves its reference.
+if "_IMAGE_PART_TYPES" not in ns:
+    from session_rules.turns import _IMAGE_PART_TYPES as _ipt
+    ns["_IMAGE_PART_TYPES"] = _ipt
 MM_COUNT = ns["_count_image_tokens"]
 
 import agent.image_token_cost as ITC  # noqa: E402

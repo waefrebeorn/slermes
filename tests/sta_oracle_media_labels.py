@@ -20,6 +20,14 @@ sources = [
 ]
 
 NS = {}
+# The extracted defs reference stdlib modules (urllib.parse in
+# is_relay_media_url etc.) — provide them in the exec namespace.
+import urllib.parse as _up
+import urllib as _u
+import re as _re
+import os as _os
+import json as _json
+NS.update({"urllib": _u, "re": _re, "os": _os, "json": _json, "sys": sys})
 
 
 def _collect(path, names):

@@ -14,6 +14,7 @@ sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
 ROOMS = r"C:\Users\eman5\hermes-agent\gateway\hosted_rooms.py"
 COMMON = r"C:\Users\eman5\hermes-agent\gateway\hosted_rooms_common.py"
+PEERS = r"C:\Users\eman5\hermes-agent\persistence\sqlite\gateway\hosted_room_peers.py"
 
 
 class HostedRoomError(Exception):
@@ -40,10 +41,13 @@ def extract():
     for path, names in ((COMMON, ["bounded_int", "identifier", "canonical_json", "compact_json", "utf8_len", "exact_fields", "text"]),
                         (ROOMS, ["_claim_values", "_room_grant_scope_key",
                                  "_reservation_superseded", "_remote_run_identity",
-                                 "_validate_members", "user_event_id"])):
+                                 "_validate_members", "user_event_id"]),
+                        # 2026-11-18 pluggable-DB migration: the row-mapping
+                        # helpers moved into persistence/sqlite/gateway/.
+                        (PEERS, ["_reservation_superseded", "_remote_run_identity"])):
         src = open(path, encoding="utf-8").read()
         for node in ast.parse(src).body:
-            if isinstance(node, ast.FunctionDef) and node.name in names:
+            if isinstance(node, ast.FunctionDef) and node.name in names and node.name not in ns:
                 exec(compile(ast.Module(body=[node], type_ignores=[]), path, "exec"), ns)
     # hosted_rooms.py builds its vocabulary from functools.partial aliases at
     # import time (_room_id, _event_id, _actor_json, _payload_json,
