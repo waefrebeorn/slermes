@@ -100,7 +100,14 @@ def make_exc(spec):
     elif t == "RuntimeError":
         e = RuntimeError(msg)
     else:
-        e = Exception(msg)
+        # any builtin exception class named by the script (ImportError,
+        # AttributeError, KeyError, ...); Exception only as last resort
+        import builtins as _b
+        cls = getattr(_b, t, None)
+        if isinstance(cls, type) and issubclass(cls, BaseException):
+            e = cls(msg)
+        else:
+            e = Exception(msg)
     if "problem" in spec:
         e.problem = spec["problem"]
     if "problem_mark_line" in spec:
@@ -532,7 +539,7 @@ def run_case(func, inp):
             out["ret"] = ns["_coerce_config_set_value"](inp.get("key", ""), inp.get("value", ""))
         else:
             raise KeyError(func)
-    except Exception as e:   # includes SystemExit
+    except BaseException as e:   # SystemExit is BaseException, NOT Exception
         out["ret"] = {"__raise__": exc_spec(e)}
     out["ret"] = proj(out["ret"])
     out["state"] = {k: proj(ctx.state[k]) for k in (inp.get("state") or {}) if k in ctx.state}

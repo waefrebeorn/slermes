@@ -1063,7 +1063,11 @@ static json_t *cfgls_expand_rec(cfgls_flow_io_t *io, const json_t *obj) {
                         return err ? err : json_null();
                     }
                     size_t rl = strlen(rep);
-                    char *grown = realloc(out, k + rl + 1);
+                    /* keep room for the ENTIRE remaining literal tail, not just
+                     * the replacement — the old k+rl+1 size overflowed on the
+                     * next out[k++] = s[i++] write (multi-${} templates). */
+                    size_t remaining = n - (j + 1);
+                    char *grown = realloc(out, k + rl + remaining + 1);
                     if (!grown) { free(rep); free(out); return json_null(); }
                     out = grown;
                     memcpy(out + k, rep, rl); k += rl;

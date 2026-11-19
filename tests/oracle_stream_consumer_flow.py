@@ -230,6 +230,13 @@ def extract():
         "uuid": uuid, "dataclass": dataclass, "field": field,
         "Any": Any, "Callable": Callable, "Optional": Optional,
     }
+    # py3.14 dataclasses resolves annotations via sys.modules[cls.__module__];
+    # register the extraction namespace as a real module and exec INTO its
+    # dict so later definitions stay visible to annotation resolution.
+    _m = types.ModuleType("gateway_stream_consumer_extracted")
+    _m.__dict__.update(ns)
+    sys.modules["gateway_stream_consumer_extracted"] = _m
+    ns = _m.__dict__
     flag = __future__.annotations.compiler_flag
 
     def x(node, srcname=SRC):
