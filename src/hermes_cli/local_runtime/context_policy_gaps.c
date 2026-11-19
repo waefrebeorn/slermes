@@ -46,7 +46,13 @@ json_t *ub_logits_bytes(cp2_io_t *io, json_t *in) {
     double raw = tag ? json_get_num(tag, "value", 0.0) : 0.0;
     long long v;
     if (strcmp(kind, "bool") == 0) {
-        v = (raw != 0.0) ? 1 : 0;
+        /* value is a JSON boolean: json_get_num defaults on JSON_BOOL,
+         * which read true as 0.0 (int(True) == 1 in the reference). */
+        json_t *val = json_obj_get(tag, "value");
+        if (val && val->type == JSON_BOOL)
+            v = val->bool_val ? 1 : 0;
+        else
+            v = (raw != 0.0) ? 1 : 0;  /* bool(number) truthiness */
     } else {
         v = (long long)raw;  /* C cast truncates toward zero like int() */
     }

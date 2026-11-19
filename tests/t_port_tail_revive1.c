@@ -51,6 +51,17 @@
 #include "tools/environments/local_gaps.c"
 #include "agent/prompt_builder.c"
 
+/* ---- link seams for prompt_builder.c's unrelated functions ----
+ * The author's gate above drops build_skills_system_prompt /
+ * build_nous_subscription_prompt with -ffunction-sections + --gc-sections.
+ * The runner's default link (run_one_oracle.sh, no --gc-sections) keeps
+ * every included function, so the two skills-scan externals they call
+ * need definitions. No fixture case drives those two builders, so these
+ * stubs are link-only and never execute — behaviour is identical to the
+ * gc-sections gate. Signatures match include/hermes_skills.h. */
+skill_list_t *skills_scan_all(void) { return NULL; }
+void skills_scan_free(skill_list_t *list) { (void)list; }
+
 /* ---- scripted seam recorder (shared by every port) ---- */
 
 typedef struct {
