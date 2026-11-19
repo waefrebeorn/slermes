@@ -1165,7 +1165,7 @@ def coverage_report():
     by_subsystem = {}
     for name in discover_gates():
         try:
-            g = json.load(open(os.path.join(GATES, name, "gate.json", encoding="utf-8")))
+            g = json.load(open(os.path.join(GATES, name, "gate.json"), encoding="utf-8"))
         except (ValueError, OSError):
             continue
         sub = g.get("subsystem", "?")
@@ -1224,7 +1224,7 @@ def main():
         entry = {"gate": name, "ok": False, "mismatches": 0, "lines": []}
         g = None
         try:
-            g = json.load(open(os.path.join(gd, "gate.json", encoding="utf-8")))
+            g = json.load(open(os.path.join(gd, "gate.json"), encoding="utf-8"))
             entry["subsystem"] = g.get("subsystem", "?")
             if not args.json:
                 print("-- %s (subsystem: %s) --" % (name,

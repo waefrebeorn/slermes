@@ -53,11 +53,22 @@ def main() -> int:
     ports = reg["ports"]
 
     # Every candidate file in tests/, indexed by basename and by suffix stem.
+    # PRUNED walk: tests/watercup/build holds thousands of gate binaries and
+    # objects (and grows during fleet runs), and fixtures/working_diff is a
+    # nested repo checkout — an unpruned rglob over them ballooned to 4.4 GB
+    # of Path objects. Harness/oracle candidates live in the tests/ tree
+    # proper, never in build artifacts or fixture data.
+    import os
+    PRUNE = {"build", "__pycache__", ".git", "working_diff", "home_watercup"}
     by_base = {}
-    for p in (REPO / "tests").rglob("*"):
-        if p.suffix not in (".c", ".py", ".sh"):
-            continue
-        by_base.setdefault(p.name, []).append(p)
+    for root, dirs, files in os.walk(REPO / "tests"):
+        dirs[:] = [d for d in dirs
+                   if d not in PRUNE and not d.startswith("watercup_sandbox")]
+        for fn in files:
+            if not fn.endswith((".c", ".py", ".sh")):
+                continue
+            p = Path(root) / fn
+            by_base.setdefault(p.name, []).append(p)
 
     rows = []
     for name, ent in ports.items():

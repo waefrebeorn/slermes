@@ -1,95 +1,90 @@
 #!/usr/bin/env bash
-# sync-upstream.sh — Pull latest Python source from upstream NousResearch/hermes-agent
-# Usage: ./scripts/sync-upstream.sh
+# sync-upstream.sh — refresh the Python quarry from NousResearch/hermes-agent.
 #
-# This script:
-# 1. Fetches the latest upstream/main from NousResearch/hermes-agent
-# 2. Merges into our fork (waefrebeorn/hermes-agent)
-# 3. Resolves Python file conflicts by accepting upstream's version
-# 4. Updates the slermes gitlink reference
-# 5. Pushes to our fork (or you can do it manually)
+# Layout (Windows dev box): the quarry is a DIRECT clone of
+# NousResearch/hermes-agent at ~/hermes-agent (origin = NousResearch).
+# slermes (this repo) is an independent C11 repo — it never pushes code back
+# upstream. Parity scanners/oracles/watercups read the quarry LIVE, so a
+# quarry pull immediately re-targets every gate.
 #
-# The slermes C11 repo at /home/wubu/hermes-agent-dev/slermes/ is an independent
-# git repo (separate .git, remote → waefrebeorn/slermes) and is NOT affected by
-# upstream Python changes. It survives as a gitlink (mode 160000).
+# Usage:
+#   bash scripts/sync-upstream.sh           # fetch + report the gap (safe)
+#   bash scripts/sync-upstream.sh --now     # also fast-forward the quarry
 #
-# We are a special sunflower 🌻 — a C11 fork that benefits from upstream Python
-# improvements by porting them, but we NEVER push C11 code back to upstream.
-
+# SAFETY: never pull while a watercup fleet or oracle suite is running —
+# the gates execute the quarry's Python files; changing them mid-run
+# corrupts verdicts. --now refuses when runner processes are detected.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PARENT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+NOW=0
+[ "${1:-}" = "--now" ] && NOW=1
 
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-CYAN='\033[0;36m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-echo ""
-echo -e "${CYAN}🌻 Slermes — Sync Upstream${NC}"
-echo ""
-
-cd "$PARENT_DIR"
-
-# ── 1. Fetch upstream ────────────────────────────────────────────────────
-echo -e "${CYAN}→${NC} Fetching upstream (NousResearch/hermes-agent)..."
-git fetch upstream 2>&1 | tail -3
-
-# ── 2. Check how far behind we are ───────────────────────────────────────
-BEHIND=$(git rev-list --count main..upstream/main 2>/dev/null || echo "0")
-echo -e "  Behind upstream: ${CYAN}${BEHIND}${NC} commits"
-
-if [ "$BEHIND" -eq "0" ]; then
-    echo -e "  ${GREEN}✓${NC} Already up to date with upstream."
-    exit 0
-fi
-
-# ── 3. Merge upstream ────────────────────────────────────────────────────
-echo -e "${CYAN}→${NC} Merging upstream/main into main..."
-git merge upstream/main --no-edit 2>&1 || true
-
-# ── 4. Auto-resolve conflicts (take upstream for Python files) ────────────
-CONFLICTS=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
-if [ -n "$CONFLICTS" ]; then
-    echo -e "  ${YELLOW}⚠${NC} Conflicts in $(echo "$CONFLICTS" | wc -l) files"
-    echo -e "${CYAN}→${NC} Resolving by accepting upstream's version..."
-    for f in $CONFLICTS; do
-        git checkout --theirs "$f" 2>/dev/null
-        git add "$f"
-        echo -e "  ${GREEN}✓${NC} Resolved: $f (theirs)"
-    done
-fi
-
-# ── 5. Commit merge ──────────────────────────────────────────────────────
-PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit --no-edit 2>&1 || true
-
-# ── 6. Update slermes gitlink ─────────────────────────────────────────────
-echo -e "${CYAN}→${NC} Updating slermes gitlink reference..."
-PRE_COMMIT_ALLOW_NO_CONFIG=1 git add slermes 2>/dev/null || true
-PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m "update slermes gitlink" 2>/dev/null || true
-
-# ── 7. Push ───────────────────────────────────────────────────────────────
-echo ""
-echo -e "${CYAN}→${NC} Pushing to waefrebeorn/hermes-agent..."
-git push origin main 2>&1 | tail -3
-
-# ── 8. Summary ────────────────────────────────────────────────────────────
-AHEAD=$(git rev-list --count upstream/main..main 2>/dev/null || echo "?")
-BEHIND_NOW=$(git rev-list --count main..upstream/main 2>/dev/null || echo "0")
-echo ""
-echo -e "${GREEN}✓${NC} Sync complete!"
-echo -e "  Ahead of upstream: ${CYAN}${AHEAD}${NC} commits (our C11 changes)"
-echo -e "  Behind upstream:  ${CYAN}${BEHIND_NOW}${NC} commits (synced)"
-echo ""
-echo -e "  ${YELLOW}💡${NC} Next: Check which new upstream Python features need C11 porting"
-echo -e "       Run: git log --oneline upstream/main ^$(git merge-base HEAD upstream/main 2>/dev/null || echo 'HEAD~30') | head -50"
-echo ""
-
-# ── 9. Check for PoP gaps ────────────────────────────────────────────────
-echo -e "${CYAN}→${NC} Recent upstream changes for PoP consideration:"
-git log --oneline upstream/main..main --first-parent 2>/dev/null | head -5 | while read -r line; do
-    echo -e "  ${YELLOW}📝${NC} $line"
+# MSYS2 login shells do not inherit Windows env vars, and $HOME is the
+# MSYS home (/home/<user>), not the Windows profile. Probe real locations.
+WINHOME=""
+for cand in "${USERPROFILE:-}" "/c/Users/eman5" "$HOME"; do
+  if [ -n "$cand" ] && [ -d "$cand/AppData/Local" ]; then WINHOME="$cand"; break; fi
 done
-echo ""
+[ -n "$WINHOME" ] || WINHOME="/c/Users/eman5"
+LAPP="$WINHOME/AppData/Local"
+
+QUARRY="${SLERMES_QUARRY:-}"
+if [ -z "$QUARRY" ]; then
+  for cand in "$WINHOME/hermes-agent" "$HOME/hermes-agent"; do
+    if [ -d "$cand/.git" ]; then QUARRY="$cand"; break; fi
+  done
+fi
+
+# Portable git (WindowsApps blocks the bundled one); fall back to PATH git.
+GIT="git"
+PGIT="$LAPP/hermes/tools/git-2.53.0-win32-x64/mingw64/bin/git.exe"
+if [ -x "$PGIT" ]; then
+  GIT="$PGIT"
+  export GIT_EXEC_PATH="$LAPP/hermes/tools/git-2.53.0-win32-x64/mingw64/libexec/git-core"
+fi
+unset GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM || true
+export GIT_TERMINAL_PROMPT=0
+if [ -f "$LAPP/hermes/tools/askpass.exe" ]; then
+  export GIT_ASKPASS="$LAPP/hermes/tools/askpass.exe"
+fi
+
+if [ ! -d "$QUARRY/.git" ]; then
+  echo "ERROR: quarry not found at $QUARRY (set SLERMES_QUARRY to override)" >&2
+  exit 2
+fi
+cd "$QUARRY"
+
+echo "-> Fetching upstream (NousResearch/hermes-agent)..."
+"$GIT" -c credential.helper= fetch origin 2>&1 | tail -2 || true
+
+BRANCH="$("$GIT" branch --show-current)"
+COUNTS="$("$GIT" rev-list --left-right --count "HEAD...origin/$BRANCH")"
+AHEAD="$(echo "$COUNTS" | cut -f1)"
+BEHIND="$(echo "$COUNTS" | cut -f2)"
+echo "  quarry $BRANCH: $AHEAD ahead / $BEHIND behind origin/$BRANCH"
+
+if [ "$NOW" = "0" ]; then
+  echo "  (report only — pass --now to fast-forward)"
+  exit 0
+fi
+
+# Fleet/suite guard: refuse to move the Python under running gates.
+if powershell -NoProfile -Command     "Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match 'wc_run|run_all_oracles|run_one_oracle' } | Select-Object -First 1 -ExpandProperty ProcessId"     2>/dev/null | grep -q '[0-9]'; then
+  echo "ERROR: watercup/oracle runners are active — pulling now would corrupt verdicts." >&2
+  echo "       Wait for the fleet to finish, then re-run with --now." >&2
+  exit 3
+fi
+
+if [ -n "$("$GIT" status --porcelain | grep -v '^??' | head -1)" ]; then
+  echo "ERROR: quarry working tree is dirty — commit/stash first." >&2
+  exit 4
+fi
+if [ "$AHEAD" != "0" ]; then
+  echo "ERROR: quarry has local commits ($AHEAD) — refusing non-ff pull." >&2
+  exit 5
+fi
+
+echo "-> Fast-forwarding $BRANCH to origin/$BRANCH ($BEHIND commits)..."
+"$GIT" merge --ff-only "origin/$BRANCH"
+echo "OK: quarry updated. Next: re-run 'make parity' and the oracle suite in slermes"
+echo "  (every gate now targets the new upstream Python)."

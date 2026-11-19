@@ -529,6 +529,49 @@ json_t *models_cache_catalog(const char *cache_key, json_t *result) {
     return result;
 }
 
+/* PoP: models_peek_cached_pricing @ hermes_cli/models_pricing.py:peek_cached_pricing */
+/* PEEK ONLY — never fetches. Returns the BORROWED cached catalog json_t for
+ * base_url (caller must NOT free), or NULL when nothing is cached. Prefers an
+ * authenticated catalog (key = root + "\x00auth:" + digest), scanning newest
+ * first — the cache list is head-newest — and skipping expired entries via
+ * models_cached_catalog, so a rotated credential never answers from its
+ * predecessor's catalog. Falls back to the bare root key. */
+json_t *models_peek_cached_pricing(const char *base_url) {
+    char *root = mg_strip_dup(base_url ? base_url : "");
+    if (!root) return NULL;
+    mg_rstrip_slashes(root);
+    if (mg_endswith(root, "/v1")) {
+        root[strlen(root) - 3] = '\0';
+        mg_rstrip_slashes(root);
+    }
+    /* "\x00auth:" is 6 bytes (embedded NUL included); strncmp compares it
+     * literally, matching the Python _PRICING_AUTH_KEY_PREFIX keys. */
+    size_t rlen = strlen(root);
+    char *prefix = malloc(rlen + 6 + 1);
+    if (!prefix) { free(root); return NULL; }
+    memcpy(prefix, root, rlen);
+    memcpy(prefix + rlen, "\x00auth:", 6);
+    prefix[rlen + 6] = '\0';
+    json_t *found = NULL;
+    for (mg_price_entry_t *e = mg_pricing_cache; e; e = e->next) {
+        /* A real auth key is root + "\x00auth:" + digest — strictly longer
+         * than the prefix. The length guard keeps a bare root key (which
+         * strncmp would match up to its NUL) out of the auth branch. */
+        if (strlen(e->key) > rlen + 6 &&
+            strncmp(e->key, prefix, rlen + 6) == 0) {
+            json_t *cached = models_cached_catalog(e->key);
+            if (cached && cached->type == JSON_OBJECT && cached->c.count > 0) {
+                found = cached;
+                break;
+            }
+        }
+    }
+    if (!found) found = models_cached_catalog(root);
+    free(prefix);
+    free(root);
+    return found;
+}
+
 /* PoP: models_fetch_novita_pricing @ hermes_cli/models_pricing.py:_fetch_novita_pricing */
 char *models_fetch_novita_pricing(int force_refresh) {
     const char *raw_key = getenv("NOVITA_API_KEY");

@@ -121,8 +121,16 @@ def run_single_gate(gate_name):
     return result
 
 
-def run_parallel(selected, max_workers=None):
+def run_parallel(selected, max_workers=None, on_result=None):
     """Run gates in parallel using ProcessPoolExecutor.
+
+    on_result(dict), when given, is called in the MAIN process for every
+    verdict as it lands (including wedged-gate timeout verdicts). The fleet
+    uses it to stream results.jsonl incrementally: a crash at gate N keeps
+    the N-1 verdicts already on disk, and --resume continues from there.
+    Before streaming, a cp1252 reader-thread crash at 32% of a fleet run
+    discarded ~2000 completed verdicts because results were only written
+    at the very end.
 
     Per-gate timeout (WATERCUP_GATE_TIMEOUT, default 120s) bounds the REPORT:
     a gate that hangs is recorded as a timeout instead of blocking the run
@@ -149,6 +157,15 @@ def run_parallel(selected, max_workers=None):
     total = len(selected)
     done = 0
     start = time.time()
+    last_tick = start
+
+    def _record(r):
+        results.append(r)
+        if on_result is not None:
+            try:
+                on_result(r)
+            except Exception:
+                pass  # a broken sink must never kill the fleet
 
     # Managed manually rather than via `with`: the context manager calls
     # shutdown(wait=True) on exit, which blocks until every in-flight gate
@@ -184,7 +201,7 @@ def run_parallel(selected, max_workers=None):
                 # wedged. Record them, drop the queued ones, stop waiting.
                 wedged = len(pending)
                 for fut, name in list(pending.items()):
-                    results.append({
+                    _record({
                         "gate": name, "ok": False,
                         "error": "TIMEOUT after %.0fs (worker wedged)" % per_gate_timeout,
                     })
@@ -199,14 +216,16 @@ def run_parallel(selected, max_workers=None):
             for fut in finished:
                 name = pending.pop(fut)
                 try:
-                    results.append(fut.result())
+                    _record(fut.result())
                 except Exception as e:
-                    results.append({"gate": name, "ok": False, "error": str(e)})
+                    _record({"gate": name, "ok": False, "error": str(e)})
                 done += 1
-                if done % 1000 == 0 or done == total:
-                    elapsed = time.time() - start
+                now = time.time()
+                if done % 100 == 0 or done == total or now - last_tick >= 60:
+                    last_tick = now
+                    elapsed = now - start
                     rate = done / elapsed if elapsed > 0 else 0
-                    print(f"  progress: {done}/{total} gates ({100*done/total:.0f}%, {rate:.0f} gates/s)", file=sys.stderr)
+                    print(f"  progress: {done}/{total} gates ({100*done/total:.0f}%, {rate:.2f} gates/s)", file=sys.stderr, flush=True)
             _submit_more()
     finally:
         # wait=False: do not block on wedged workers. cancel_futures drops
@@ -220,6 +239,35 @@ def run_parallel(selected, max_workers=None):
     return results
 
 
+def _load_verdicts():
+    """Last-wins map gate -> verdict dict from results.jsonl ({} if absent)."""
+    out = {}
+    if os.path.isfile(RESULT_FILE):
+        with open(RESULT_FILE, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    r = json.loads(line)
+                except Exception:
+                    continue
+                g = r.get("gate")
+                if g:
+                    out[g] = r
+    return out
+
+
+def _write_verdict_line(f, r):
+    f.write(json.dumps({
+        "ok": r["ok"],
+        "gate": r["gate"],
+        "mismatches": r.get("mismatches", 0),
+        "classification": r.get("classification", "legacy"),
+    }) + "\n")
+    f.flush()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Parallel watercup runner")
     parser.add_argument("gates", nargs="*", help="gate names (default: all)")
@@ -230,6 +278,10 @@ def main():
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-write", action="store_true", help="don't write results.jsonl")
+    parser.add_argument("--resume", action="store_true",
+                        help="skip gates that already have a verdict in results.jsonl")
+    parser.add_argument("--retry-failed", action="store_true",
+                        help="re-run only gates whose latest verdict failed; new verdicts supersede old ones")
     parser.add_argument("--single", metavar="GATE", help=argparse.SUPPRESS)
     args = parser.parse_args()
 
@@ -296,6 +348,22 @@ def main():
     elif args.legacy_only:
         selected = [g for g in selected if not g.startswith(("port__", "real__", "part__"))]
 
+    # Resume / retry-failed selection. Verdicts stream to results.jsonl as
+    # they land, so an interrupted fleet continues instead of restarting.
+    prior = {}
+    if args.resume or args.retry_failed:
+        prior = _load_verdicts()
+        candidates = list(selected)
+        if args.retry_failed:
+            selected = [g for g in selected
+                        if g in prior and not prior[g].get("ok", False)]
+        else:
+            selected = [g for g in selected if g not in prior]
+        if not selected and candidates and all(g in prior for g in candidates):
+            print("All %d selected gate(s) already have verdicts — nothing to do."
+                  % len(candidates), file=sys.stderr)
+            return 0
+
     if not selected:
         # FAIL-OPEN BUG (fixed): this used to `return 0` — success. A typo'd gate
         # name, or --port-only over a list with no port__ gates, silently
@@ -340,19 +408,33 @@ def main():
         print(f"    workers: {args.max_workers or min(os.cpu_count() or 4, 16)}")
         print()
 
-    results = run_parallel(selected, max_workers=args.max_workers)
-
-    # Write results
+    # Stream verdicts to disk AS THEY LAND (crash resilience), then normalize
+    # the file to last-wins-per-gate at the end. --no-write disables both.
+    sink = None
     if not args.no_write:
         os.makedirs(os.path.dirname(RESULT_FILE), exist_ok=True)
-        with open(RESULT_FILE, "a", encoding="utf-8") as f:
-            for r in results:
-                f.write(json.dumps({
-                    "ok": r["ok"],
-                    "gate": r["gate"],
-                    "mismatches": r.get("mismatches", 0),
-                    "classification": r.get("classification", "legacy"),
-                }) + "\n")
+        sink = open(RESULT_FILE, "a", encoding="utf-8")
+
+    def _sink(r):
+        if sink is not None:
+            _write_verdict_line(sink, r)
+
+    try:
+        results = run_parallel(selected, max_workers=args.max_workers,
+                               on_result=_sink)
+    finally:
+        if sink is not None:
+            sink.close()
+
+    # Normalize: dedupe last-wins so a --retry-failed verdict supersedes the
+    # old one and the walkway's reader sees one authoritative line per gate.
+    if not args.no_write:
+        merged = _load_verdicts()
+        tmp = RESULT_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            for g in sorted(merged):
+                _write_verdict_line(f, merged[g])
+        os.replace(tmp, RESULT_FILE)
 
     # Summary
     total = len(results)

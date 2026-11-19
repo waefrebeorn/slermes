@@ -46,6 +46,9 @@ void models_warm_nous_reasoning_caps_async(void);
 
 /* ── pricing cache + dispatch ───────────────────────────────────────────── */
 json_t *models_cached_catalog(const char *cache_key);
+/* Borrowed cached pricing catalog for base_url (peek only, never fetches);
+ * NULL when nothing cached. Caller must NOT free the returned json_t. */
+json_t *models_peek_cached_pricing(const char *base_url);
 json_t *models_cache_catalog(const char *cache_key, json_t *result); /* takes ownership of result */
 char *models_fetch_novita_pricing(int force_refresh);   /* malloc'd JSON object */
 char *models_get_pricing_for_provider(const char *provider, int force_refresh);

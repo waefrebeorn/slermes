@@ -228,7 +228,7 @@ def compute_parity():
             pass
     elif os.path.isfile(wc_results):
         wc_gates = {}
-        with open(wc_results) as f:
+        with open(wc_results, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -238,8 +238,9 @@ def compute_parity():
                 except:
                     continue
                 gname = r.get("gate", "?")
-                if gname not in wc_gates:
-                    wc_gates[gname] = r.get("ok", False)
+                # LAST verdict wins: a re-run (--retry-failed) supersedes the
+                # old verdict for the same gate. First-wins froze stale fails.
+                wc_gates[gname] = r.get("ok", False)
         wc_total = len(wc_gates)
         wc_pass = sum(1 for v in wc_gates.values() if v)
         watercup = {

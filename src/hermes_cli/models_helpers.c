@@ -89,7 +89,40 @@ static void normalize_provider_low(char *out, size_t outsz, const char *provider
  * --------------------------------------------------------------------------- */
 
 /*
- * Returns 1 if pricing JSON has prompt==0 AND completion==0 for model_id. */
+ * Port of LIVE hermes_cli/models.py:_is_model_free:
+ *   bool(entry) and (_is_subscription_billed(entry) or
+ *                    _zero_priced(entry, ("prompt", "completion"), "1"))
+ * A catalog row billed to a subscription (billing_mode == "subscription")
+ * costs no credits. Otherwise BOTH prompt and completion must parse to 0;
+ * missing fields read as the default "1" (not free), and unparseable values
+ * fail open to billable (Python float() raises -> False). /v1/models prices
+ * arrive as STRINGS, so string parsing is the common path, not an edge.
+ */
+static int mh_price_field_zero(json_t *entry, const char *key)
+{
+    json_t *v = json_object_get(entry, key);
+    double d;
+    if (!v) return 0;                       /* default "1" -> not zero */
+    if (v->type == JSON_NUMBER) {
+        d = json_number_value(v);
+    } else if (v->type == JSON_STRING) {
+        const char *s = json_string_value(v);
+        if (!s) return 0;
+        while (isspace((unsigned char)*s)) s++;
+        /* float("0x0") raises ValueError in Python; strtod would accept it. */
+        if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) return 0;
+        char *end = NULL;
+        d = strtod(s, &end);
+        if (end == s) return 0;             /* no parse -> ValueError */
+        while (isspace((unsigned char)*end)) end++;
+        if (*end) return 0;                 /* trailing junk -> ValueError */
+    } else {
+        return 0;                           /* float(None/dict/list) raises */
+    }
+    return d == 0.0;
+}
+
+/* Returns 1 if the catalog row for model_id costs no credits. */
 int is_model_free(const char *model_id, const char *pricing_json)
 {
     if (!model_id || !pricing_json) return 0;
@@ -97,16 +130,17 @@ int is_model_free(const char *model_id, const char *pricing_json)
     if (!pricing || pricing->type != JSON_OBJECT) { if (pricing) json_free(pricing); return 0; }
     json_t *p = json_object_get(pricing, model_id);
     if (!p || p->type != JSON_OBJECT) { json_free(pricing); return 0; }
-    json_t *prom = json_object_get(p, "prompt");
-    json_t *comp = json_object_get(p, "completion");
-    int free_flag = 0;
-    if (prom && comp) {
-        double pv = json_number_value(prom);
-        double cv = json_number_value(comp);
-        if (pv == 0.0 && cv == 0.0) free_flag = 1;
+    int result = 0;
+    json_t *bm = json_object_get(p, "billing_mode");
+    if (bm && bm->type == JSON_STRING && json_string_value(bm) &&
+        strcmp(json_string_value(bm), "subscription") == 0) {
+        result = 1;
+    } else {
+        result = mh_price_field_zero(p, "prompt") &&
+                 mh_price_field_zero(p, "completion");
     }
     json_free(pricing);
-    return free_flag;
+    return result;
 }
 
 /*

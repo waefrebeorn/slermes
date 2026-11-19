@@ -20,6 +20,10 @@
 #define _GNU_SOURCE
 #include "hermes_credits_tracker.h"
 #include "hermes_logger.h"
+#include "port_anon_auth.h"      /* anon_route_is_welcome_host */
+#include "models_gaps.h"         /* models_peek_cached_pricing */
+#include "port_models_helpers.h" /* is_model_free */
+#include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -656,19 +660,34 @@ bool credits_tracker_dev_fixture(credits_state_t *state) {
 
 /* PoP: model @ agent/credits_tracker.py:is_free_tier_model */
 
-/* Port of Python agent/credits_tracker.py:is_free_tier_model */
-/* Returns True when model is a Nous free-tier model (:free suffix check). */
+/* Port of LIVE Python agent/credits_tracker.py:is_free_tier_model.
+ * Local data only, fail-open to False (a wrong depleted notice is recoverable
+ * noise; wrongly hiding it masks a real billing block):
+ *   1. ":free" suffix — canonical Nous free SKU marker.
+ *   2. "stealth/" prefix — stealth-preview SKUs are free without the suffix
+ *      (naming-convention trust, same as upstream).
+ *   3. No base_url → False.
+ *   4. Nous welcome host → True (that host serves only the free tier; the
+ *      host is the evidence, not the model name).
+ *   5. PEEK into the picker's pricing cache (never fetches): when a concrete
+ *      catalog exists, is_model_free requires $0 prompt AND completion.
+ * Harvested from the fix/credits-free-tier-suffix-trust branch lesson and
+ * reconciled against the live quarry, which superseded that branch. */
 bool cli_agent_credits_tracker_is_free_tier_model(const char *model, const char *base_url)
 {
-    (void)base_url;
     if (!model || !model[0]) return false;
-    /* Check for :free suffix — the canonical Nous free SKU marker */
     size_t len = strlen(model);
     if (len >= 5 && strcmp(model + len - 5, ":free") == 0) return true;
-    /* Stealth-preview SKUs are free-tier but carry no :free suffix. */
     if (len >= 8 && strncmp(model, "stealth/", 8) == 0) return true;
-    /* Pricing cache lookup omitted — CLI/TUI-specific, gateway uses :free
-     * suffix + stealth/ prefix only */
+    if (!base_url || !base_url[0]) return false;
+    if (anon_route_is_welcome_host(base_url)) return true;
+    json_t *pricing = models_peek_cached_pricing(base_url);
+    if (pricing && pricing->type == JSON_OBJECT && pricing->c.count > 0) {
+        char *s = json_serialize(pricing);
+        int free_flag = s ? is_model_free(model, s) : 0;
+        free(s);
+        return free_flag != 0;
+    }
     return false;
 }
 
