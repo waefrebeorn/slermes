@@ -17,11 +17,14 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
    Agent reported 43/48 strings byte-identical — the 5 drifters are suspects.
    Log: C:/Users/eman5/doc_mdf_dbg.log.
 
-2. **gateway_migrate_flow rc127** — objs: src/cli/port_gateway_migrate_flow.o + libjson
-   (harness links port object; battery ran libjson-only -> undefined refs, NOT SAC).
-   Re-run with correct objs first; if still 127, heap-corruption probe
-   (poison shim .testbin/dbg_alloc2.c pattern; gateway_agent precedent:
-   json_append adoption double-free).
+2. **gateway_migrate_flow rc127 = STATUS_HEAP_CORRUPTION (0xC0000374)** —
+   DIAGNOSED: correct objs link fine; harness emits 167/170 lines then dies
+   (NTSTATUS via PowerShell). Same pattern as gateway_agent: adoption
+   double-free planted mid-fixture, surfaces at teardown. Use poison-heap
+   shim (.testbin/dbg_alloc2.c, compile shim TU separately WITHOUT -D
+   macros, harness WITH -Dmalloc=dbg_malloc etc.) + fixture-prefix bisect.
+   Suspect: json_append/json_set adoption of borrowed objects in the
+   migration compensator paths (rollback_migration, apply_migration).
 
 3. **mcp_oauth_flow rc139** — segfault. Self-contained harness (libjson only).
    Poison-heap shim bisect; agent noted a fixed use-after-free in
