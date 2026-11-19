@@ -563,7 +563,7 @@ CLI (src/cli/cli.c)               Gateway (src/gateway/)
 - [x] Skins/themes (lib/libskin, `/skin`)
 
 ### Navigation
-- [x] 96 slash commands across 14 categories (see §4)
+- [x] 110 slash commands across 17 categories (see §4)
 - [x] Command aliases (/n → /new, /c → /clear)
 - [x] Unambiguous prefix resolution + tab completion
 - [x] Help system (/help, /commands)

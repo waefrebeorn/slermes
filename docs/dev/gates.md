@@ -64,9 +64,9 @@ bash tests/run_one_oracle.sh <name> <oracle.py> "" "<obj> [<obj> ...]"
 bash tests/run_all_oracles.sh          # needs ORACLE_JOBS=1 on MSYS2
 ```
 
-The object list is argument 4. Passing an empty string forces a full ~46 MB
-link, which Smart App Control refuses to run on this box — always pass the
-minimal object list. `tests/run_all_oracles.sh` carries the authoritative list
+The object list is argument 4. Passing an empty string forces a full
+project link (every `.o` in `src/` + `lib/`), which Smart App Control refuses
+to run on this box — always pass the minimal object list. `tests/run_all_oracles.sh` carries the authoritative list
 in its `DEPS` table.
 
 A harness that cannot execute must be reported as an explicit skip with a

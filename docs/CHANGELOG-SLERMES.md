@@ -139,8 +139,8 @@ These are genuine C-vs-Python architectural differences that would be bugs to po
 | NA-01 | **No asyncio** | C is synchronous. Python uses `asyncio` for concurrent I/O. C uses blocking I/O with optional `SIGALRM` timeout. |
 | NA-02 | **No SDK objects** | C uses raw HTTP + JSON. Python SDKs (openai, anthropic) add abstraction layer. C's approach eliminates 100K+ lines of dependency. |
 | NA-03 | **No pandas** | C uses `qsort` + structs. Python uses pandas DataFrames for session analysis. C version is faster for bounded datasets. |
-| NA-04 | **No plugin system** (dynamic) | C has static plugin registration (`plugin_ext.c`). Python has dynamic `importlib`-based plugin discovery. C's approach is simpler and more secure. |
-| NA-05 | **No JSON-RPC TUI backend** | Python TUI requires a Python JSON-RPC server (`tui_gateway/`). C TUI is compiled into the binary. |
+| NA-04 | **No plugin system** (dynamic) | C has static plugin registration (`plugin_ext.c`). Python has dynamic `importlib`-based plugin discovery. C's approach is simpler and more secure. **[Superseded: C now builds loadable `.so` plugins — `make plugins`, `src/plugins/plugin_*.c`.]** |
+| NA-05 | **No JSON-RPC TUI backend** | Python TUI requires a Python JSON-RPC server (`tui_gateway/`). C TUI is compiled into the binary. **[Superseded: C has a 92-method JSON-RPC 2.0 registry (`src/hermes_cli/tui_json_rpc.c`) + WebSocket transport (`tui_websocket.c`).]** |
 
 ---
 
@@ -158,7 +158,7 @@ These are genuine C-vs-Python architectural differences that would be bugs to po
 | F-* | File System / DB |
 | R-* | Provider Integration |
 | B-* | Build & Testing |
-| NA-* | Architectural N/A |
+| NA-* | Architectural delta (deliberate design difference — NOT an escape hatch; unported features are REAL_GAP, never N/A) |
 
 ## 12. Bug Fixes Found by Edge Fuzzing
 
