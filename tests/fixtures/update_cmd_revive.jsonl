@@ -1,0 +1,113 @@
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 0, "outcome": "success"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 1}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 0, "outcome": "failed"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"outcome": "running"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 0, "gateway_restart": {"incomplete": true}}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 0, "gateway_restart": {"incomplete": false}, "stop_reason": "completed at command boundary"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"outcome": "refused", "stop_reason": "update_contract refusal"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"outcome": "success", "stop_reason": "sys.exit(0)"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": false}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": "0"}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {"exit_code": 0, "gateway_restart": {"incomplete": "yes"}}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": {}}, "ctx": {}, "io": {}}}
+{"func": "receipt_looks_unfinished", "in": {"args": {"receipt": null}, "ctx": {}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": null}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": [{"state": "stale", "code_sha": "aaa"}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": [{"state": "current", "code_sha": "bbb"}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": [{"state": "current", "code_sha": "aaa"}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": [{"state": "external", "code_sha": "bbb"}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": ["x", 5, {"code_sha": "bbb"}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": ""}, "ctx": {"receipt": {"exit_code": 1, "plan": {"runtimes": [{"code_sha": "ddd"}]}}}, "io": {"current_checkout_sha": "ccc"}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": null}, "ctx": {"receipt": {"exit_code": 1}}, "io": {"current_checkout_sha": null}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"exit_code": 0, "fleet": []}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"outcome": "partial", "plan": {"runtimes": [{"code_sha": "aaa"}, {"code_sha": "bbb"}]}}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"outcome": "partial", "plan": {"runtimes": [{"code_sha": "aaa"}]}}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"exit_code": 1, "plan": "x"}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"exit_code": 1, "plan": {"runtimes": null}}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "123"}, "ctx": {"receipt": {"fleet": [{"code_sha": 123}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "123"}, "ctx": {"receipt": {"fleet": [{"code_sha": 124}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "True"}, "ctx": {"receipt": {"fleet": [{"code_sha": true}]}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": null}, "ctx": {"receipt": {}}, "io": {"current_checkout_sha": {"__raise__": "RuntimeError", "msg": "head capture failed"}}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"fleet": {"a": 1}, "exit_code": 1, "plan": {"runtimes": [{"code_sha": "bbb"}]}}}, "io": {}}}
+{"func": "receipt_reports_stale_runtime", "in": {"args": {"expected_sha": "aaa"}, "ctx": {"receipt": {"exit_code": 1, "plan": {"runtimes": "abc"}}}, "io": {}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 1, "stdout": ""}}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": ""}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-20261110-120000\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-20261110-120000\nstash@{1}: WIP on dev: hermes-update-autostash-20261109-120000\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-20261110-120000\nstash@{1}: On main: hermes-update-autostash-20261117-120000\nstash@{2}: WIP on main: manual stash\nstash@{3}: On main: hermes-update-autostash-notastamp\nstash@{4}: On main: hermes-update-autostash-2025111\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-20261111-120000\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"__raise__": "OSError", "msg": "disk gone"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"__raise__": "SystemExit", "msg": "1"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": false, "stdout": "stash@{0}: hermes-update-autostash-20261110-120000"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "  stash@{0}: On main: hermes-update-autostash-20261110-120000  \r\nstash@{1}: On main: hermes-update-autostash-20240229-000000\r\nstash@{2}: On main: hermes-update-autostash-20251332-000000\r\nstash@{3}: On main: hermes-update-autostash-20250229-000000\r\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": null, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": null}, "ctx": {}, "io": {"now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-2026118-120000\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-20261118-12000\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": "stash@{0}: On main: hermes-update-autostash-202611-111\n"}, "now_utc": 1795003200}}}
+{"func": "warn_orphaned_update_autostashes", "in": {"args": {"git_cmd": ["git"], "cwd": "/repo"}, "ctx": {}, "io": {"git_run": {"returncode": 0, "stdout": " stash@{0}: On main: hermes-update-autostash-20261110-120000 \n"}, "now_utc": 1795003200}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "serve", "pid": 1}]}, "spawner_is_dead": false}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "serve"}]}, "spawner_is_dead": true, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "chat"}]}, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": null, "detect_venv_python_processes": {"__const__": [[10, "python", "python -m hermes_cli.main serve"]]}, "holder_subcommand": "serve"}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": {}, "detect_venv_python_processes": {"__const__": [[10, "python", "python -m hermes_cli.main serve"]]}, "holder_subcommand": "serve", "psutil.Process": {}, "parent_is_live": true}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": {}, "detect_venv_python_processes": {"__const__": [[10, "python", "python -m hermes_cli.main serve"]]}, "holder_subcommand": "serve", "psutil.Process": {}, "parent_is_live": false}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": null, "detect_venv_python_processes": {"__const__": [[10, "python", "kanban --preserve-cache"]]}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__raise__": "RuntimeError", "msg": "ledger corrupt"}, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "dashboard"}]}, "spawner_is_dead": {"__raise__": "ValueError", "msg": "bad row"}, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": null, "detect_venv_python_processes": {"__raise__": "OSError", "msg": "scan failed"}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": {}, "detect_venv_python_processes": {"__const__": [[10, "python", "python -m hermes_cli.main serve"]]}, "holder_subcommand": "serve", "psutil.Process": {"__raise__": "OSError", "msg": "no such process"}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [5]}, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "serve"}]}, "spawner_is_dead": null, "psutil": null, "detect_venv_python_processes": {"__const__": []}}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": [{"purpose": "serve"}, {"purpose": "serve"}]}, "spawner_is_dead": [false, {"__raise__": "RuntimeError", "msg": "must not run"}]}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__const__": []}, "psutil": null, "detect_venv_python_processes": {"__const__": [[10, "python", "python -m hermes_cli.main serve"]]}, "holder_subcommand": "unknown"}}}
+{"func": "desktop_owns_gateway_lifecycle", "in": {"args": {}, "ctx": {}, "io": {"ledger_entries": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": true, "marker_only_restart_obsolete": true}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": true, "marker_only_restart_obsolete": false}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {"exit_code": 0}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": []}, "current_checkout_sha": "aaa"}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {"fleet": [{"state": "stale"}]}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": []}, "current_checkout_sha": "aaa", "live_fleet_covers_receipt": true}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {"fleet": [{"state": "stale"}]}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": [["gateway", "default"]]}, "current_checkout_sha": "aaa", "live_fleet_covers_receipt": false}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {}, "io": {"read_latest_receipt": {"exit_code": 1, "fleet": [{"state": "stale"}]}, "retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": null, "current_checkout_sha": "aaa", "live_fleet_covers_receipt": false}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {}, "io": {"read_latest_receipt": null, "retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": []}, "current_checkout_sha": "aaa"}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {"exit_code": 0}, "pending_manual_kw": [{"profile": "p"}]}, "io": {"fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": []}, "current_checkout_sha": "aaa"}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "pending_fleet_restart_needed", "in": {"args": {}, "ctx": {"receipt_kw": {"fleet": [{"state": "stale"}]}}, "io": {"retain_receipt_manual_serves": {"__const__": []}, "fleet_restart_obligation_armed": false, "receipt_owed_gateways": {"__const__": []}, "current_checkout_sha": "aaa", "live_fleet_covers_receipt": {"__raise__": "RuntimeError", "msg": "probe died"}}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [1]}, "ctx": {"gateway_mode": true}, "io": {}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": []}, "ctx": {}, "io": {}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [1, 2]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": [false, true]}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [1, 2]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": false}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [1]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": {"__raise__": "ValueError", "msg": "ancestry unknown"}}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": ["7"]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": true}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": ["abc"]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": true}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [1]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": null}, "ctx": {}, "io": {}}}
+{"func": "refuse_gateway_ancestor_tree_kill", "in": {"args": {"gateway_pids": [3, 3]}, "ctx": {}, "io": {"is_pid_ancestor_of_current_process": true}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": null, "pre_restart_pids": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": [1], "pre_restart_pids": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": [], "pre_restart_pids": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": [], "pre_restart_pids": [5]}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": [], "pre_restart_pids": null}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": "", "pre_restart_pids": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": 0, "pre_restart_pids": []}, "io": {}}}
+{"func": "restart_phase_failure_is_incomplete", "in": {"args": {}, "ctx": {"surviving": {"a": 1}, "pre_restart_pids": []}, "io": {}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main serve"}, "ctx": {}, "io": {"holder_subcommand": "serve"}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main dashboard"}, "ctx": {}, "io": {"holder_subcommand": "dashboard"}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main gateway"}, "ctx": {}, "io": {"holder_subcommand": "unknown"}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main serve"}, "ctx": {}, "io": {"holder_subcommand": null}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "kanban --preserve-cache"}, "ctx": {}, "io": {}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": null}, "ctx": {}, "io": {}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": ""}, "ctx": {}, "io": {}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "PYTHON -M HERMES_CLI.MAIN SERVE"}, "ctx": {}, "io": {"holder_subcommand": "serve"}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main serve"}, "ctx": {}, "io": {"holder_subcommand": {"__raise__": "RuntimeError", "msg": "parser died"}}}}
+{"func": "looks_like_desktop_control_plane", "in": {"args": {"cmdline": "python -m hermes_cli.main serve"}, "ctx": {}, "io": {"holder_subcommand": "gateway"}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": "git version 2.56.0", "stderr": ""}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": "fatal: fork bomb detected", "stderr": ""}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": "", "stderr": "FORK BOMB guard"}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"__raise__": "OSError", "msg": "spawn failed"}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": null, "stderr": "fork bomb"}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": "", "stderr": ""}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": {"stdout": "x"}}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": ["git"]}, "ctx": {}, "io": {"run_git": null}}}
+{"func": "git_is_trampoline", "in": {"args": {"git_cmd": null}, "ctx": {}, "io": {"run_git": {"stdout": "fork bomb", "stderr": ""}}}}

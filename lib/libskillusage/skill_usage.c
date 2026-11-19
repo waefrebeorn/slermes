@@ -25,7 +25,221 @@
 #include <dirent.h>
 #include <strings.h>
 #include <errno.h>
+#include <ctype.h>
+#include <utime.h>
+/* ================================================================
+ *  Wave-2 revival: injected I/O seam + faithful ports
+ *
+ *  All I/O for the revived functions routes through a universal seam
+ *  (json_t *(*)(ctx, name, args) -> NEW json_t; NULL == None,
+ *  {"__raise__": cls, "msg": ...} == exception). The differential oracle
+ *  installs a scripted recording seam; with no seam installed a default
+ *  dispatcher performs real POSIX I/O (fail-closed where the live code
+ *  swallows errors). skill_usage_set_seam() wires the harness.
+ * ================================================================ */
+typedef json_t *(*su_seam_fn)(void *ctx, const char *name, const json_t *args);
+static su_seam_fn g_su_seam = NULL;
+static void *g_su_seam_ctx = NULL;
+static const char *g_su_home = NULL;   /* ambient home for default I/O */
 
+void skill_usage_set_seam(su_seam_fn fn, void *ctx)
+{
+    g_su_seam = fn;
+    g_su_seam_ctx = ctx;
+}
+
+static json_t *su_default_seam(void *ctx, const char *name, const json_t *args);
+
+/* Returns a NEW json_t (caller frees). args is borrowed (may be NULL == {}). */
+static json_t *su_call(const char *name, const json_t *args)
+{
+    if (g_su_seam)
+        return g_su_seam(g_su_seam_ctx, name, args);
+    return su_default_seam(NULL, name, args);
+}
+
+/* Python bool() truthiness over a json node. */
+static int su_truth(const json_t *v)
+{
+    if (!v || v->type == JSON_NULL) return 0;
+    switch (v->type) {
+    case JSON_BOOL:   return v->bool_val ? 1 : 0;
+    case JSON_NUMBER: return v->num_val != 0.0 ? 1 : 0;
+    case JSON_STRING: return v->str_val && v->str_val[0] ? 1 : 0;
+    case JSON_ARRAY:  return v->c.count ? 1 : 0;
+    case JSON_OBJECT: return v->c.count ? 1 : 0;
+    default:          return 1;
+    }
+}
+
+static int su_name_in_array(const json_t *arr, const char *name)
+{
+    if (!arr || arr->type != JSON_ARRAY || !name) return 0;
+    for (size_t i = 0; i < arr->c.count; i++) {
+        const json_t *it = arr->c.items[i];
+        if (it && it->type == JSON_STRING && it->str_val &&
+            strcmp(it->str_val, name) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+/* ---- ISO-8601 parsing (datetime.fromisoformat + naive->UTC) ---- */
+static long long su_days_from_civil(long long y, unsigned m, unsigned d)
+{
+    y -= m <= 2;
+    long long era = (y >= 0 ? y : y - 399) / 400;
+    unsigned yoe = (unsigned)(y - era * 400);
+    unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097 + (long long)doe - 719468;
+}
+
+static int su_days_in_month(long long y, unsigned m)
+{
+    static const int dm[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    if (m < 1 || m > 12) return 0;
+    if (m == 2) {
+        int leap = (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
+        return leap ? 29 : 28;
+    }
+    return dm[m - 1];
+}
+
+/* Parse an ISO-8601 timestamp to epoch seconds (double, fractional).
+ * Returns 1 on success, 0 on malformed input (Python ValueError/TypeError).
+ * Naive timestamps are treated as UTC. Supports extended (YYYY-MM-DD,
+ * HH:MM:SS) and basic (YYYYMMDD, HHMMSS) date/time forms, optional fractional
+ * seconds and Z / +HH:MM / +HHMM / +HH offsets, matching datetime.fromisoformat
+ * for the forms skill telemetry produces. Exotic ISO forms (week dates
+ * "2024-W01-1", ordinal dates) are out of scope and excluded from fixtures. */
+static int su_parse_iso(const char *s, double *out)
+{
+    if (!s || !*s) return 0;
+    const char *p = s;
+    for (int i = 0; i < 4; i++)
+        if (!isdigit((unsigned char)p[i])) return 0;
+    long long year = (p[0]-'0')*1000 + (p[1]-'0')*100 + (p[2]-'0')*10 + (p[3]-'0');
+    p += 4;
+    unsigned mon, day;
+    if (*p == '-') {
+        p++;
+        if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+        mon = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+        if (*p != '-') return 0;
+        p++;
+        if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+        day = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+    } else {
+        if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1]) ||
+            !isdigit((unsigned char)p[2]) || !isdigit((unsigned char)p[3])) return 0;
+        mon = (unsigned)((p[0]-'0')*10 + (p[1]-'0'));
+        day = (unsigned)((p[2]-'0')*10 + (p[3]-'0')); p += 4;
+    }
+    if (mon < 1 || mon > 12 || day < 1 || (int)day > su_days_in_month(year, mon))
+        return 0;
+    unsigned hh = 0, mm = 0, ss = 0;
+    double frac = 0.0;
+    long long tz_off = 0;
+    if (*p == 'T' || *p == ' ') {
+        p++;
+        if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+        hh = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+        if (*p == ':') {
+            p++;
+            if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+            mm = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+            if (*p == ':') {
+                p++;
+                if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+                ss = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+            }
+        } else {
+            if (isdigit((unsigned char)p[0]) && isdigit((unsigned char)p[1])) {
+                mm = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+                if (isdigit((unsigned char)p[0]) && isdigit((unsigned char)p[1])) {
+                    ss = (unsigned)((p[0]-'0')*10 + (p[1]-'0')); p += 2;
+                }
+            }
+        }
+        if (hh > 23 || mm > 59 || ss > 59) return 0;
+        if (*p == '.') {
+            p++;
+            if (!isdigit((unsigned char)*p)) return 0;
+            double scale = 0.1;
+            int nd = 0;
+            while (isdigit((unsigned char)*p)) {
+                if (nd < 6) { frac += (*p - '0') * scale; scale *= 0.1; }
+                nd++;
+                p++;
+            }
+        }
+        if (*p == 'Z' || *p == 'z') {
+            p++;
+        } else if (*p == '+' || *p == '-') {
+            int sign = (*p == '-') ? -1 : 1;
+            p++;
+            if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+            long long oh = (p[0]-'0')*10 + (p[1]-'0'); p += 2;
+            long long om = 0;
+            if (*p == ':') {
+                p++;
+                if (!isdigit((unsigned char)p[0]) || !isdigit((unsigned char)p[1])) return 0;
+                om = (p[0]-'0')*10 + (p[1]-'0'); p += 2;
+            } else if (isdigit((unsigned char)p[0]) && isdigit((unsigned char)p[1])) {
+                om = (p[0]-'0')*10 + (p[1]-'0'); p += 2;
+            }
+            if (oh > 23 || om > 59) return 0;
+            tz_off = sign * (oh * 3600 + om * 60);
+        }
+    }
+    if (*p != '\0') return 0;
+    long long days = su_days_from_civil(year, mon, day);
+    double epoch = (double)(days * 86400LL + hh * 3600 + mm * 60 + ss) + frac - (double)tz_off;
+    if (out) *out = epoch;
+    return 1;
+}
+
+/* Core of latest_activity_at: newest use/view/patch timestamp (created_at
+ * excluded). Returns 1 with the RAW string copied to raw_out and its epoch in
+ * epoch_out, or 0 when none parse. Ties keep the first in (used,viewed,patched)
+ * order, matching Python max(). Empty struct fields model absent/falsy values. */
+static int su_latest_activity_core(const skill_usage_record_t *r,
+                                   char *raw_out, size_t cap, double *epoch_out)
+{
+    if (!r) return 0;
+    const char *fields[3] = { r->last_used_at, r->last_viewed_at, r->last_patched_at };
+    int found = 0;
+    double best = 0.0;
+    const char *best_raw = NULL;
+    for (int i = 0; i < 3; i++) {
+        const char *raw = fields[i];
+        if (!raw || !raw[0]) continue;       /* falsy -> skipped */
+        double ep;
+        if (!su_parse_iso(raw, &ep)) continue;
+        if (!found || ep > best) {           /* strict >: first max wins */
+            found = 1; best = ep; best_raw = raw;
+        }
+    }
+    if (!found) return 0;
+    if (raw_out && cap) {
+        strncpy(raw_out, best_raw, cap - 1);
+        raw_out[cap - 1] = '\0';
+    }
+    if (epoch_out) *epoch_out = best;
+    return 1;
+}
+
+/* Raw-string accessor (the live Optional[str] result); NULL when none.
+ * Unheadered: the harness #includes this .c. */
+const char *skill_usage_latest_activity_at_str(const skill_usage_record_t *record,
+                                               char *out_buf, size_t cap)
+{
+    if (out_buf && cap) out_buf[0] = '\0';
+    if (!su_latest_activity_core(record, out_buf, cap, NULL))
+        return NULL;
+    return out_buf;
+}
 /* ================================================================
  *  Helpers
  * ================================================================ */
@@ -542,7 +756,7 @@ int skill_usage_archive(const char *hermes_home, const char *skill_name,
                              char lock_path[SKILL_USAGE_MAX_PATH];
                              _skill_usage_file(hermes_home, lock_path);
                              snprintf(lock_path + strlen(lock_path), SKILL_USAGE_MAX_PATH - strlen(lock_path), ".lock");
-    
+
                              int fd = open(lock_path, O_CREAT | O_EXCL | O_WRONLY, 0644);
                              if (fd >= 0) {
                                  close(fd);
@@ -837,23 +1051,23 @@ int skill_usage_archive(const char *hermes_home, const char *skill_name,
     return NULL;
 }
 
-/* Port of Python tools/skill_usage.py:activity_count() */
-int skill_usage_restore(const char *hermes_home, const char *skill_name,
-                          char *out_msg) {
-    (void)hermes_home;
-    (void)skill_name;
-    if (out_msg) out_msg[0] = '\0';
-    return 0;
-}
+/* skill_usage_restore: real restore_skill flow defined at the end of this file
+ * (wave-2 revival); the PoP claim rides on skill_usage_restore_skill_by_name. */
 
 int skill_usage_activity_count(const skill_usage_record_t *record)
 {
     return record->use_count + record->view_count + record->patch_count;
 }
 
-/* PoP: latest_activity_at @ tools/skill_usage.py:latest_activity_at */
+/* PoP: latest_activity_at @ tools/skill_usage.py:latest_activity_at
+ * Projection: the fixed C signature returns double; the port returns the epoch
+ * seconds of the newest use/view/patch timestamp (0.0 when none parse, modeling
+ * Python None). The faithful Optional[str] result is exposed via the unheadered
+ * skill_usage_latest_activity_at_str() accessor for exact comparison. */
 double skill_usage_latest_activity_at(const skill_usage_record_t *record) {
-    (void)record; return 0.0;
+    double ep = 0.0;
+    su_latest_activity_core(record, NULL, 0, &ep);
+    return ep;
 }
 
 /* PoP: _read_bundled_manifest_names @ tools/skill_usage.py:_read_bundled_manifest_names */
@@ -866,8 +1080,23 @@ json_t *skill_usage_read_hub_installed_names(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
 
-/* PoP: _prune_builtins_enabled @ tools/skill_usage.py:_prune_builtins_enabled */
-bool skill_usage_prune_builtins_enabled(void) { return true; }
+/* PoP: _prune_builtins_enabled @ tools/skill_usage.py:_prune_builtins_enabled
+ * curator.prune_builtins (default False); config read via the load_config seam.
+ * Fail-closed (False) when the config read raises or curator is not a dict. */
+bool skill_usage_prune_builtins_enabled(void) {
+    json_t *cfg = su_call("load_config", NULL);
+    if (!cfg) return false;
+    bool result = false;
+    if (cfg->type == JSON_OBJECT) {
+        const json_t *cur = json_obj_get(cfg, "curator");
+        if (cur && cur->type == JSON_OBJECT) {
+            const json_t *pb = json_obj_get(cur, "prune_builtins");
+            result = pb ? (su_truth(pb) ? true : false) : false;
+        }
+    }
+    json_free(cfg);
+    return result;
+}
 
 /* PoP: _suppressed_file @ tools/skill_usage.py:_suppressed_file */
 const char *skill_usage_suppressed_file(const char *hermes_home, char *out, size_t sz) {
@@ -900,20 +1129,36 @@ bool skill_usage_is_agent_created(const skill_usage_record_t *record) {
     return record && record->created_by[0] && strcmp(record->created_by, "agent") == 0;
 }
 
-/* PoP: is_hub_installed @ tools/skill_usage.py:is_hub_installed */
+/* PoP: is_hub_installed @ tools/skill_usage.py:is_hub_installed
+ * Projection: live takes skill_name (str); the fixed C signature takes a record,
+ * so the port uses record->name (empty when unset) as the name. Hub-installed
+ * names are supplied via the hub_names seam (live _read_hub_installed_names). */
 bool skill_usage_is_hub_installed(const skill_usage_record_t *record) {
-    (void)record; return false;
+    if (!record) return false;
+    json_t *names = su_call("hub_names", NULL);
+    bool found = su_name_in_array(names, record->name) ? true : false;
+    json_free(names);
+    return found;
 }
 
-/* PoP: is_bundled @ tools/skill_usage.py:is_bundled */
+/* PoP: is_bundled @ tools/skill_usage.py:is_bundled
+ * Projection: record->name as the live skill_name; bundled names via the
+ * bundled_names seam (live _read_bundled_names). */
 bool skill_usage_is_bundled(const skill_usage_record_t *record) {
-    (void)record; return false;
+    if (!record) return false;
+    json_t *names = su_call("bundled_names", NULL);
+    bool found = su_name_in_array(names, record->name) ? true : false;
+    json_free(names);
+    return found;
 }
 
 /* PoP: _external_read_only_message @ tools/skill_usage.py:_external_read_only_message */
 const char *skill_usage_external_read_only_message(const char *skill_name) {
-    (void)skill_name;
-    return "This skill is externally managed and cannot be modified.";
+    static char buf[512];
+    snprintf(buf, sizeof(buf),
+             "skill '%s' lives in skills.external_dirs; external skills are read-only to the curator",
+             skill_name ? skill_name : "None");
+    return buf;
 }
 
 /* PoP: is_curation_eligible @ tools/skill_usage.py:is_curation_eligible */
@@ -1184,10 +1429,438 @@ int skill_usage_archive_skill_by_name(const char *hermes_home, const char *name)
 
 /* PoP: restore_skill @ tools/skill_usage.py:restore_skill */
 int skill_usage_restore_skill_by_name(const char *hermes_home, const char *name) {
-    (void)hermes_home; (void)name; return 0;
+    char msg[SKILL_USAGE_MAX_VALUE];
+    return skill_usage_restore(hermes_home, name, msg);
+}
+/* ================================================================
+ *  Default I/O dispatcher (production; no seam installed)
+ * ================================================================ */
+static int su_default_is_dir(const char *path)
+{
+    struct stat st;
+    return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
 }
 
+/* Recursive rglob("*"): collect every descendant path (files + dirs). */
+static void su_default_rglob_walk(const char *root, json_t *acc, int depth)
+{
+    if (depth > 24) return;
+    DIR *d = opendir(root);
+    if (!d) return;
+    struct dirent *e;
+    while ((e = readdir(d)) != NULL) {
+        if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
+        char full[SKILL_USAGE_MAX_PATH];
+        snprintf(full, sizeof(full), "%s/%s", root, e->d_name);
+        json_append(acc, json_string(full));
+        if (su_default_is_dir(full))
+            su_default_rglob_walk(full, acc, depth + 1);
+    }
+    closedir(d);
+}
 
+/* read_skill_name: frontmatter name: field (first 4000 chars), else fallback. */
+static char *su_default_read_skill_name(const char *path, const char *fallback)
+{
+    FILE *f = fopen(path, "r");
+    if (!f) return strdup(fallback ? fallback : "");
+    char buf[4096];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+    fclose(f);
+    buf[n] = '\0';
+    /* split into lines, find frontmatter block between --- markers */
+    char *lines[256];
+    int nl = 0;
+    char *save = NULL;
+    for (char *tok = strtok_r(buf, "\n", &save); tok && nl < 256; tok = strtok_r(NULL, "\n", &save)) {
+        /* strip */
+        char *a = tok; while (*a == ' ' || *a == '\t' || *a == '\r') a++;
+        char *b = tok + strlen(tok); while (b > a && (b[-1] == ' ' || b[-1] == '\t' || b[-1] == '\r')) b--;
+        *b = '\0';
+        lines[nl++] = a;
+    }
+    int dash = -1;
+    for (int i = 0; i < nl; i++) if (strcmp(lines[i], "---") == 0) { dash = i; break; }
+    if (dash < 0) return strdup(fallback ? fallback : "");
+    for (int i = dash + 1; i < nl; i++) {
+        if (strcmp(lines[i], "---") == 0) break;
+        if (strncmp(lines[i], "name:", 5) == 0) {
+            char *v = lines[i] + 5;
+            while (*v == ' ' || *v == '\t') v++;
+            /* strip surrounding quotes */
+            size_t vl = strlen(v);
+            while (vl && (v[vl-1] == '"' || v[vl-1] == '\'')) vl--;
+            while (vl && (v[0] == '"' || v[0] == '\'')) { v++; vl--; }
+            if (vl) { char *o = malloc(vl + 1); memcpy(o, v, vl); o[vl] = '\0'; return o; }
+        }
+    }
+    return strdup(fallback ? fallback : "");
+}
 
+/* _toggle_suppressed_name default: add/discard in skills/.curator_suppressed. */
+static void su_default_toggle_suppressed(const char *name, int add)
+{
+    if (!name || !*name || !g_su_home) return;
+    char path[SKILL_USAGE_MAX_PATH];
+    snprintf(path, sizeof(path), "%s/skills/.curator_suppressed", g_su_home);
+    char *names[SKILL_USAGE_MAX_SKILLS];
+    int nn = 0;
+    FILE *f = fopen(path, "r");
+    if (f) {
+        char line[512];
+        while (fgets(line, sizeof(line), f) && nn < SKILL_USAGE_MAX_SKILLS) {
+            char *a = line; while (*a == ' ' || *a == '\t') a++;
+            char *b = line + strlen(line); while (b > a && (b[-1] == '\n' || b[-1] == '\r' || b[-1] == ' ' || b[-1] == '\t')) b--;
+            *b = '\0';
+            if (!*a || *a == '#') continue;
+            names[nn++] = strdup(a);
+        }
+        fclose(f);
+    }
+    int present = 0;
+    for (int i = 0; i < nn; i++) if (strcmp(names[i], name) == 0) { present = 1; break; }
+    if (present == add) { for (int i = 0; i < nn; i++) free(names[i]); return; }
+    if (add) {
+        if (nn < SKILL_USAGE_MAX_SKILLS) names[nn++] = strdup(name);
+    } else {
+        for (int i = 0; i < nn; i++) if (strcmp(names[i], name) == 0) { free(names[i]); names[i] = names[nn-1]; nn--; break; }
+    }
+    /* sorted join */
+    for (int i = 1; i < nn; i++) { char *k = names[i]; int j = i-1; while (j >= 0 && strcmp(names[j], k) > 0) { names[j+1] = names[j]; j--; } names[j+1] = k; }
+    FILE *o = fopen(path, "w");
+    if (o) { for (int i = 0; i < nn; i++) fprintf(o, "%s\n", names[i]); fclose(o); }
+    for (int i = 0; i < nn; i++) free(names[i]);
+}
 
+static json_t *su_raise(const char *cls, const char *msg)
+{
+    json_t *j = json_object();
+    json_set(j, "__raise__", json_string(cls));
+    json_set(j, "msg", json_string(msg ? msg : ""));
+    return j;
+}
 
+static json_t *su_default_seam(void *ctx, const char *name, const json_t *args)
+{
+    (void)ctx;
+    const char *path = args ? json_get_str(args, "path", NULL) : NULL;
+    const char *nm = args ? json_get_str(args, "name", NULL) : NULL;
+    const char *src = args ? json_get_str(args, "src", NULL) : NULL;
+    const char *dest = args ? json_get_str(args, "dest", NULL) : NULL;
+
+    if (strcmp(name, "load_config") == 0) return NULL;   /* fail-closed */
+    if (strcmp(name, "hub_names") == 0) return skill_usage_read_hub_installed_names(g_su_home);
+    if (strcmp(name, "bundled_names") == 0) return skill_usage_read_bundled_manifest_names(g_su_home);
+    if (strcmp(name, "is_hub_installed") == 0) return json_bool(skill_usage_is_hub_installed_by_name(g_su_home, nm));
+    if (strcmp(name, "is_bundled") == 0) return json_bool(skill_usage_is_bundled_by_name(g_su_home, nm));
+    if (strcmp(name, "prune_builtins_enabled") == 0) return json_bool(skill_usage_prune_builtins_enabled());
+    if (strcmp(name, "exists") == 0) { struct stat st; return json_bool(path && stat(path, &st) == 0); }
+    if (strcmp(name, "is_dir") == 0) return json_bool(path && su_default_is_dir(path));
+    if (strcmp(name, "is_file") == 0) { struct stat st; return json_bool(path && stat(path, &st) == 0 && S_ISREG(st.st_mode)); }
+    if (strcmp(name, "rglob") == 0) {
+        json_t *acc = json_array();
+        const char *root = args ? json_get_str(args, "root", NULL) : NULL;
+        if (root) su_default_rglob_walk(root, acc, 0);
+        return acc;
+    }
+    if (strcmp(name, "read_skill_name") == 0) {
+        const char *fb = args ? json_get_str(args, "fallback", "") : "";
+        char *r = su_default_read_skill_name(path, fb);
+        json_t *j = json_string(r ? r : "");
+        free(r);
+        return j;
+    }
+    if (strcmp(name, "rename") == 0) {
+        if (src && dest && rename(src, dest) == 0) return json_null();
+        return su_raise("OSError", strerror(errno));
+    }
+    if (strcmp(name, "move") == 0) {
+        if (src && dest && rename(src, dest) == 0) return json_null();
+        return su_raise("OSError", strerror(errno));
+    }
+    if (strcmp(name, "utime") == 0) {
+        if (path && utime(path, NULL) == 0) return json_null();
+        return su_raise("OSError", strerror(errno));
+    }
+    if (strcmp(name, "toggle_suppressed_name") == 0) {
+        su_default_toggle_suppressed(nm, args ? json_get_bool(args, "add", false) : false);
+        return json_null();
+    }
+    if (strcmp(name, "set_state") == 0) {
+        const char *state = args ? json_get_str(args, "state", NULL) : NULL;
+        if (nm && state) skill_usage_set_state(g_su_home, nm, state);
+        return json_null();
+    }
+    if (strcmp(name, "ledger_capture_before") == 0) return su_raise("ImportError", "skill_ledger unavailable");
+    if (strcmp(name, "ledger_record_mutation") == 0) return json_null();
+    return NULL;
+}
+
+/* ================================================================
+ *  restore_skill flow (tools/skill_usage.py:restore_skill + _relocate)
+ * ================================================================ */
+#define SU_MAX_DIRS 512
+
+static const char *su_basename(const char *p)
+{
+    const char *s = strrchr(p, '/');
+    return s ? s + 1 : p;
+}
+
+static int su_all_digits(const char *s)
+{
+    if (!*s) return 0;
+    for (const char *p = s; *p; p++) if (!isdigit((unsigned char)*p)) return 0;
+    return 1;
+}
+
+static int su_is_raise(const json_t *j)
+{
+    return j && j->type == JSON_OBJECT && json_obj_get(j, "__raise__") != NULL;
+}
+
+/* _relocate(src, dest, name, action): rename (OSError -> move fallback),
+ * suppression + state side effects, best-effort ledger. 0 ok / -1 fail. */
+static int su_relocate(const char *src, const char *dest, const char *name,
+                       const char *action, char *out_msg)
+{
+    int archiving = strcmp(action, "archive") == 0;
+
+    /* ledger capture_before (try/except -> ledger None) */
+    json_t *cap_args = json_object();
+    json_set(cap_args, "src", json_string(src));
+    json_t *cap = su_call("ledger_capture_before", cap_args);
+    json_free(cap_args);
+    int ledger_active = 0;
+    json_t *ledger_before = NULL;
+    if (cap && !su_is_raise(cap)) { ledger_active = 1; ledger_before = cap; }
+    else { if (cap) json_free(cap); }
+
+    /* src.rename(dest); OSError -> shutil.move */
+    json_t *rn_args = json_object();
+    json_set(rn_args, "src", json_string(src));
+    json_set(rn_args, "dest", json_string(dest));
+    json_t *rn = su_call("rename", rn_args);
+    json_free(rn_args);
+    int rename_ok = rn && rn->type == JSON_NULL;
+    if (rn) json_free(rn);
+    if (!rename_ok) {
+        json_t *mv_args = json_object();
+        json_set(mv_args, "src", json_string(src));
+        json_set(mv_args, "dest", json_string(dest));
+        json_t *mv = su_call("move", mv_args);
+        json_free(mv_args);
+        int move_ok = mv && mv->type == JSON_NULL;
+        if (!move_ok) {
+            const char *m = (mv && mv->type == JSON_OBJECT) ? json_get_str(mv, "msg", "") : "";
+            snprintf(out_msg, SKILL_USAGE_MAX_VALUE, "failed to %s: %s", action, m);
+            if (mv) json_free(mv);
+            if (ledger_before) json_free(ledger_before);
+            return -1;
+        }
+        if (mv) json_free(mv);
+    }
+
+    /* os.utime only when archiving (suppress OSError) */
+    if (archiving) {
+        json_t *ut_args = json_object();
+        json_set(ut_args, "path", json_string(dest));
+        json_t *ut = su_call("utime", ut_args);
+        json_free(ut_args);
+        if (ut) json_free(ut);
+    }
+
+    /* if not archiving or is_bundled(name): toggle suppression (add=archiving).
+     * For restore, "not archiving" short-circuits True (is_bundled NOT called). */
+    int do_toggle = !archiving;
+    if (archiving) {
+        json_t *b_args = json_object();
+        json_set(b_args, "name", json_string(name));
+        json_t *b = su_call("is_bundled", b_args);
+        json_free(b_args);
+        do_toggle = su_truth(b);
+        if (b) json_free(b);
+    }
+    if (do_toggle) {
+        json_t *tg_args = json_object();
+        json_set(tg_args, "name", json_string(name));
+        json_set(tg_args, "add", json_bool(archiving));
+        json_t *tg = su_call("toggle_suppressed_name", tg_args);
+        json_free(tg_args);
+        if (tg) json_free(tg);
+    }
+
+    /* set_state(name, archived if archiving else active) */
+    json_t *ss_args = json_object();
+    json_set(ss_args, "name", json_string(name));
+    json_set(ss_args, "state", json_string(archiving ? "archived" : "active"));
+    json_t *ss = su_call("set_state", ss_args);
+    json_free(ss_args);
+    if (ss) json_free(ss);
+
+    /* suppress(Exception): ledger.record_mutation when ledger active */
+    if (ledger_active) {
+        json_t *rm_args = json_object();
+        json_set(rm_args, "action", json_string(action));
+        json_set(rm_args, "name", json_string(name));
+        json_set(rm_args, "before", (ledger_before && su_truth(ledger_before)) ? json_copy(ledger_before) : json_array());
+        json_set(rm_args, "after_root", json_string(dest));
+        json_t *rm = su_call("ledger_record_mutation", rm_args);
+        json_free(rm_args);
+        if (rm) json_free(rm);
+    }
+    if (ledger_before) json_free(ledger_before);
+
+    snprintf(out_msg, SKILL_USAGE_MAX_VALUE, "%sd to %s", action, dest);
+    return 0;
+}
+
+/* Port of tools/skill_usage.py:restore_skill (real logic; the PoP claim rides
+ * on skill_usage_restore_skill_by_name below, which wraps this). Projection:
+ * live tuple[bool, str] -> (rc 0/-1, out_msg). */
+int skill_usage_restore(const char *hermes_home, const char *skill_name, char *out_msg)
+{
+    if (out_msg) out_msg[0] = '\0';
+    g_su_home = hermes_home;
+    const char *name = skill_name ? skill_name : "";
+    const char *home = hermes_home ? hermes_home : "";
+
+    json_t *h_args = json_object();
+    json_set(h_args, "name", json_string(name));
+    json_t *h = su_call("is_hub_installed", h_args);
+    json_free(h_args);
+    int hub = su_truth(h);
+    if (h) json_free(h);
+    if (hub) {
+        snprintf(out_msg, SKILL_USAGE_MAX_VALUE,
+                 "skill '%s' is now hub-installed; restore would shadow the upstream version", name);
+        return -1;
+    }
+
+    json_t *b_args = json_object();
+    json_set(b_args, "name", json_string(name));
+    json_t *b = su_call("is_bundled", b_args);
+    json_free(b_args);
+    int bundled = su_truth(b);
+    if (b) json_free(b);
+    if (bundled) {
+        json_t *p = su_call("prune_builtins_enabled", NULL);
+        int prune = su_truth(p);
+        if (p) json_free(p);
+        if (!prune) {
+            snprintf(out_msg, SKILL_USAGE_MAX_VALUE,
+                     "skill '%s' is now bundled; restore would shadow the upstream version", name);
+            return -1;
+        }
+    }
+
+    char archive_root[SKILL_USAGE_MAX_PATH];
+    snprintf(archive_root, sizeof(archive_root), "%s/skills/.archive", home);
+    json_t *e_args = json_object();
+    json_set(e_args, "path", json_string(archive_root));
+    json_t *e = su_call("exists", e_args);
+    json_free(e_args);
+    int aexists = su_truth(e);
+    if (e) json_free(e);
+    if (!aexists) {
+        snprintf(out_msg, SKILL_USAGE_MAX_VALUE, "no archive directory");
+        return -1;
+    }
+
+    /* dirs = [p for p in archive_root.rglob("*") if p.is_dir()] */
+    json_t *rg_args = json_object();
+    json_set(rg_args, "root", json_string(archive_root));
+    json_set(rg_args, "pattern", json_string("*"));
+    json_t *rg = su_call("rglob", rg_args);
+    json_free(rg_args);
+    char *dirs[SU_MAX_DIRS];
+    int ndirs = 0;
+    if (rg && rg->type == JSON_ARRAY) {
+        for (size_t i = 0; i < rg->c.count && ndirs < SU_MAX_DIRS; i++) {
+            const json_t *it = rg->c.items[i];
+            if (!it || it->type != JSON_STRING || !it->str_val) continue;
+            json_t *id_args = json_object();
+            json_set(id_args, "path", json_string(it->str_val));
+            json_t *id = su_call("is_dir", id_args);
+            json_free(id_args);
+            int isd = su_truth(id);
+            if (id) json_free(id);
+            if (isd) dirs[ndirs++] = strdup(it->str_val);
+        }
+    }
+    if (rg) json_free(rg);
+
+    /* candidates: exact name, else timestamped (reverse sorted), else frontmatter */
+    char prefix[SKILL_USAGE_MAX_NAME + 2];
+    snprintf(prefix, sizeof(prefix), "%s-", name);
+    size_t plen = strlen(prefix);
+    int cand = -1;
+    for (int i = 0; i < ndirs; i++) {
+        if (strcmp(su_basename(dirs[i]), name) == 0) { cand = i; break; }
+    }
+    if (cand < 0) {
+        int ts[SU_MAX_DIRS];
+        int nts = 0;
+        for (int i = 0; i < ndirs; i++) {
+            const char *bn = su_basename(dirs[i]);
+            size_t bl = strlen(bn);
+            if (bl > plen && strncmp(bn, prefix, plen) == 0 && bl - plen == 14 &&
+                su_all_digits(bn + plen))
+                ts[nts++] = i;
+        }
+        /* sorted(reverse=True) by path string (lowercase slugs: case-fold == id) */
+        for (int i = 1; i < nts; i++) {
+            int k = ts[i]; int j = i - 1;
+            while (j >= 0 && strcmp(dirs[ts[j]], dirs[k]) < 0) { ts[j+1] = ts[j]; j--; }
+            ts[j+1] = k;
+        }
+        if (nts > 0) cand = ts[0];
+        else {
+            /* frontmatter fallback: evaluate EVERY dir (full comprehension),
+             * keep the first match. */
+            for (int i = 0; i < ndirs; i++) {
+                char md[SKILL_USAGE_MAX_PATH];
+                snprintf(md, sizeof(md), "%s/SKILL.md", dirs[i]);
+                json_t *if_args = json_object();
+                json_set(if_args, "path", json_string(md));
+                json_t *ifj = su_call("is_file", if_args);
+                json_free(if_args);
+                int isf = su_truth(ifj);
+                if (ifj) json_free(ifj);
+                if (isf) {
+                    json_t *rn_args = json_object();
+                    json_set(rn_args, "path", json_string(md));
+                    json_set(rn_args, "fallback", json_string(su_basename(dirs[i])));
+                    json_t *rn = su_call("read_skill_name", rn_args);
+                    json_free(rn_args);
+                    const char *rns = (rn && rn->type == JSON_STRING) ? rn->str_val : NULL;
+                    if (cand < 0 && rns && strcmp(rns, name) == 0) cand = i;
+                    if (rn) json_free(rn);
+                }
+            }
+        }
+    }
+    if (cand < 0) {
+        snprintf(out_msg, SKILL_USAGE_MAX_VALUE, "skill '%s' not found in archive", name);
+        for (int i = 0; i < ndirs; i++) free(dirs[i]);
+        return -1;
+    }
+
+    char dest[SKILL_USAGE_MAX_PATH];
+    snprintf(dest, sizeof(dest), "%s/skills/%s", home, name);
+    json_t *de_args = json_object();
+    json_set(de_args, "path", json_string(dest));
+    json_t *de = su_call("exists", de_args);
+    json_free(de_args);
+    int dexists = su_truth(de);
+    if (de) json_free(de);
+    if (dexists) {
+        snprintf(out_msg, SKILL_USAGE_MAX_VALUE, "destination already exists: %s", dest);
+        for (int i = 0; i < ndirs; i++) free(dirs[i]);
+        return -1;
+    }
+
+    int rc = su_relocate(dirs[cand], dest, name, "restore", out_msg);
+    for (int i = 0; i < ndirs; i++) free(dirs[i]);
+    return rc;
+}

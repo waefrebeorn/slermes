@@ -1,0 +1,98 @@
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "2024-01-01T00:00:00Z", "last_viewed_at": "2024-06-01T12:00:00", "last_patched_at": "2023-01-01T00:00:00", "created_at": "2099-01-01T00:00:00"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "2024-01-01T00:00:00", "last_viewed_at": null, "last_patched_at": null}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": null, "last_viewed_at": null, "last_patched_at": null, "created_at": "2024-01-01T00:00:00"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "2024-01-01T00:00:00+05:00", "last_viewed_at": "2024-01-01T00:00:00Z", "last_patched_at": "2024-01-01T00:00:00-05:00"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "bad", "last_viewed_at": "2024-02-29T23:59:59.123456", "last_patched_at": "2023-02-29T00:00:00"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "20240101", "last_viewed_at": "2024-01-02T00:00:00", "last_patched_at": null}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "2024-01-01T00:00:00", "last_viewed_at": "2024-01-01T00:00:00", "last_patched_at": "2024-01-01T00:00:00"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "", "last_viewed_at": "2024-03-01 08:15:00", "last_patched_at": "2024-01-01T00:00:00garbage"}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "2024-01-01T00:00:00.123456789", "last_viewed_at": "2024-01-01T00:00:00.123456", "last_patched_at": null}}}
+{"func": "latest_activity_at", "in": {"record": {"last_used_at": "1970-01-01T00:00:00", "last_viewed_at": "2025-12-31T23:59:59.999999+14:00", "last_patched_at": "2024-06-15T10:20:30Z"}}}
+{"func": "_external_read_only_message", "in": {"skill_name": "foo"}}
+{"func": "_external_read_only_message", "in": {"skill_name": "git"}}
+{"func": "_external_read_only_message", "in": {"skill_name": "my-skill"}}
+{"func": "_external_read_only_message", "in": {"skill_name": ""}}
+{"func": "_external_read_only_message", "in": {"skill_name": null}}
+{"func": "_external_read_only_message", "in": {"skill_name": "a'b"}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "minimax-m3", "cached": 204800}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "minimax-m3", "cached": 1000000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "minimax-m3", "cached": 256000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "minimax", "cached": 204800}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "muse-spark-1.3", "cached": 256000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "muse-spark", "cached": 1048576}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4.3", "cached": 256000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4.3", "cached": 1000000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4-fast", "cached": 256000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4.20", "cached": 2000000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "qwen3.6-plus", "cached": 131072}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "qwen3.6-plus", "cached": 1048576}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "deepseek-flash", "cached": 128000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "deepseek-v4.1-flash", "cached": 128000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "deepseek-chat", "cached": 1000000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "deepseek", "cached": 128000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "claude", "cached": 200000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "gpt-5", "cached": 400000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "unknown-model", "cached": 100}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4.6", "cached": 256000}}
+{"func": "_stale_pre_catalog_cache_entry", "in": {"model": "grok-4.6", "cached": 500000}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.4-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.6-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.6-sol-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.6-sol-2026-09-22-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-6-sol-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-6-luna-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-6-astra-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-6.1-sol-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-daybreak-blue-latest-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.5-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.4-mini-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-5.4"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "openai/gpt-5.6-sol-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": " GPT-5.4-900K "}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": "gpt-6-sol-2026-9-22-900k"}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": null}}
+{"func": "_verified_codex_ctx_for_slug", "in": {"model_bare": ""}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": {"prune_builtins": true}}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": {"prune_builtins": false}}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": {}}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": "notdict"}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": null}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": {"prune_builtins": "yes"}}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"curator": {"prune_builtins": 0}}}}}
+{"func": "_prune_builtins_enabled", "in": {"io": {"load_config": {"__raise__": "RuntimeError", "msg": "config boom"}}}}
+{"func": "is_hub_installed", "in": {"record": {"name": "git"}, "io": {"hub_names": ["git", "foo"]}}}
+{"func": "is_hub_installed", "in": {"record": {"name": "bar"}, "io": {"hub_names": ["git", "foo"]}}}
+{"func": "is_hub_installed", "in": {"record": {"name": ""}, "io": {"hub_names": ["git"]}}}
+{"func": "is_hub_installed", "in": {"record": {"name": "git"}, "io": {"hub_names": []}}}
+{"func": "is_hub_installed", "in": {"record": {}, "io": {"hub_names": ["git"]}}}
+{"func": "is_hub_installed", "in": {"record": {"name": "x"}, "io": {"hub_names": ["x", "y", "z"]}}}
+{"func": "is_bundled", "in": {"record": {"name": "git"}, "io": {"bundled_names": ["git"]}}}
+{"func": "is_bundled", "in": {"record": {"name": "bar"}, "io": {"bundled_names": ["git"]}}}
+{"func": "is_bundled", "in": {"record": {"name": "terminal"}, "io": {"bundled_names": ["terminal", "file"]}}}
+{"func": "is_bundled", "in": {"record": {"name": "git"}, "io": {"bundled_names": []}}}
+{"func": "is_bundled", "in": {"record": {}, "io": {"bundled_names": ["git"]}}}
+{"func": "is_bundled", "in": {"record": {"name": "a"}, "io": {"bundled_names": ["a", "b"]}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "reply"}, {"role": "user", "content": "again"}], "anchor": {"prompt_tokens": 100, "completion_tokens": 50, "base_count": 1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 42}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "reply"}, {"role": "user", "content": "again"}], "anchor": {"prompt_tokens": 100, "completion_tokens": 50, "base_count": 1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": false, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 7}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}], "anchor": {"prompt_tokens": 100, "completion_tokens": 50, "base_count": 1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 42}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "reply"}, {"role": "user", "content": "again"}], "anchor": {"prompt_tokens": 100, "completion_tokens": 50, "base_count": 1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": false, "estimate_messages_tokens_rough": 42}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}], "anchor": null, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 42}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "reply"}, {"role": "user", "content": "again"}], "anchor": {"prompt_tokens": 200, "completion_tokens": 0, "base_count": 3, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 99}}}
+{"func": "anchored_context_tokens", "in": {"messages": "notlist", "anchor": {"prompt_tokens": 100, "completion_tokens": 50, "base_count": 1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 42}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "assistant", "content": "a"}, {"role": "user", "content": "b"}], "anchor": {"prompt_tokens": 10, "completion_tokens": 5, "base_count": 0, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 3}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": true, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": true, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": true, "prune_builtins_enabled": true, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": [], "is_dir": {}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": true}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": {"__raise__": "OSError", "msg": "cross-device"}, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": {"__raise__": "OSError", "msg": "x"}, "move": {"__raise__": "OSError", "msg": "boom"}, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": {"__raise__": "ImportError", "msg": "no ledger"}, "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git"], "is_dir": {"/h/skills/.archive/git": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": ["a", "b"], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "git", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/git": false}, "rglob": ["/h/skills/.archive/git-helpers", "/h/skills/.archive/git-20240101120000", "/h/skills/.archive/git-20240601120000"], "is_dir": {"/h/skills/.archive/git-helpers": true, "/h/skills/.archive/git-20240101120000": true, "/h/skills/.archive/git-20240601120000": true}, "is_file": {}, "read_skill_name": {}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "restore_skill", "in": {"home": "/h", "name": "hf-accelerate", "io": {"is_hub_installed": false, "is_bundled": false, "prune_builtins_enabled": false, "exists": {"/h/skills/.archive": true, "/h/skills/hf-accelerate": false}, "rglob": ["/h/skills/.archive/accelerate", "/h/skills/.archive/other"], "is_dir": {"/h/skills/.archive/accelerate": true, "/h/skills/.archive/other": true}, "is_file": {"/h/skills/.archive/accelerate/SKILL.md": true, "/h/skills/.archive/other/SKILL.md": true}, "read_skill_name": {"/h/skills/.archive/accelerate/SKILL.md": "hf-accelerate", "/h/skills/.archive/other/SKILL.md": "other"}, "rename": null, "move": null, "utime": null, "toggle_suppressed_name": null, "set_state": null, "ledger_capture_before": [], "ledger_record_mutation": null}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "assistant", "content": "a"}, {"role": "user", "content": "b"}], "anchor": {"prompt_tokens": 10, "completion_tokens": 5, "base_count": -1, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 3}}}
+{"func": "anchored_context_tokens", "in": {"messages": [{"role": "assistant", "content": "a"}, {"role": "user", "content": "b"}], "anchor": {"prompt_tokens": 10, "completion_tokens": 5, "base_count": 5, "base_last_role": "user", "base_last_fp": "x", "base_prefix_fp": "y"}, "charge_stale_thinking": true, "io": {"anchor_matches": true, "estimate_messages_tokens_rough": 3}}}

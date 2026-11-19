@@ -1,0 +1,114 @@
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": null}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": null}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": 42}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": 5}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": 12.5}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": 0}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": -5}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "30.5"}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "abc"}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": null}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": [1]}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": true}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"__script__": true, "ret": "x"}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"__script__": true, "ret": [1]}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "logger.debug": null}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "  7.25  "}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "1_000.5"}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "nan"}}}}
+{"func": "codex_compaction_cooldown_remaining", "in": {"agent": {"context_compressor": {"get_active_compression_failure_cooldown": {"__callable__": true}}}, "io": {"get_active_compression_failure_cooldown": {"remaining_seconds": "0x10"}}}}
+{"func": "context_compression_timed_out", "in": {"agent": null}}
+{"func": "context_compression_timed_out", "in": {"agent": 5}}
+{"func": "context_compression_timed_out", "in": {"agent": {}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_last_compression_timed_out": true}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_last_compression_timed_out": false}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_last_compression_timed_out": 1}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"__local__": true, "timed_out": true}}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"__local__": true, "timed_out": false}}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"__local__": true}}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"__local__": true, "timed_out": 1}}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"__local__": true, "timed_out": true}, "_last_compression_timed_out": false}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": "notlocal", "_last_compression_timed_out": true}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": null, "_last_compression_timed_out": true}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state_lock": {"__lock__": true}, "_context_compression_timeout_state": {"__local__": true, "timed_out": true}}}}
+{"func": "context_compression_timed_out", "in": {"agent": {"_context_compression_timeout_state": {"plain": "dict"}, "_last_compression_timed_out": true}}}
+{"func": "compression_blocked_transiently", "in": {"agent": null}}
+{"func": "compression_blocked_transiently", "in": {"agent": {}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": "cooldown"}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": ""}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": null}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": 0}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": 123}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": true}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": ["reason"]}}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": {"k": "v"}}}}
+{"func": "compression_blocked_transiently", "in": {"agent": "x"}}
+{"func": "compression_blocked_transiently", "in": {"agent": {"_compression_blocked_transient": "structural_backoff"}}}
+{"func": "checkpoint_blocked", "in": {"reason": "disk full"}}
+{"func": "checkpoint_blocked", "in": {"reason": ""}}
+{"func": "checkpoint_blocked", "in": {"reason": "missing WAL"}}
+{"func": "checkpoint_blocked", "in": {"reason": null}}
+{"func": "checkpoint_blocked", "in": {"reason": 42}}
+{"func": "checkpoint_blocked", "in": {"reason": true}}
+{"func": "checkpoint_blocked", "in": {"reason": false}}
+{"func": "checkpoint_blocked", "in": {"reason": "unicode: café ✓"}}
+{"func": "checkpoint_blocked", "in": {"reason": "line\nbreak"}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": 0, "io": {"time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": 90, "io": {"time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 0, "commit_fence": null, "started_at": 0, "io": {"time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": -5, "commit_fence": null, "started_at": 0}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": "abc", "commit_fence": null, "started_at": 0}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": {}, "started_at": 0, "io": {"seconds_since_progress": 40}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": {}, "started_at": 0, "io": {"seconds_since_progress": 10}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": {}, "started_at": 0, "io": {"seconds_since_progress": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": {}, "started_at": 0, "io": {"seconds_since_progress": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": {}, "started_at": 0, "io": {"seconds_since_progress": "abc"}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": 5, "started_at": 0}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": "abc", "io": {"time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": 0, "io": {"time.monotonic": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": 0, "io": {"time.monotonic": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": 30, "commit_fence": null, "started_at": 0, "io": {"time.monotonic": "x"}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": "30", "commit_fence": null, "started_at": 0, "io": {"time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [30, 600]}, "time.monotonic": 100}}}
+{"func": "compression_attempt_stalled", "in": {"idle_timeout_seconds": null, "commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [0, 600]}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": ["abc", 600]}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [null, 600]}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": null}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [1]}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": null, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [1, 2, 3]}}}}
+{"func": "compression_attempt_stalled", "in": {"commit_fence": {}, "started_at": 0, "io": {"resolve_context_compression_timeouts": {"__script__": true, "ret": [30, 600]}, "seconds_since_progress": 40}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": 150}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": 50}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": 100}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": null}}}
+{"func": "deadline_exceeded", "in": {"fence": {}}}
+{"func": "deadline_exceeded", "in": {"fence": null}}
+{"func": "deadline_exceeded", "in": {"fence": "x"}}
+{"func": "deadline_exceeded", "in": {"fence": [1]}}
+{"func": "deadline_exceeded", "in": {"fence": true}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": "abc"}, "io": {"time.monotonic": 100}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100.5}, "io": {"time.monotonic": 100}}}
+{"func": "deadline_exceeded", "in": {"fence": {"_deadline": 100}, "io": {"time.monotonic": 150.5}}}
+{"func": "progress_observed", "in": {"fence": {"_progress_observed": true}}}
+{"func": "progress_observed", "in": {"fence": {"_progress_observed": false}}}
+{"func": "progress_observed", "in": {"fence": {}}}
+{"func": "progress_observed", "in": {"fence": {"_progress_observed": "yes"}}}
+{"func": "progress_observed", "in": {"fence": {"_progress_observed": 1}}}
+{"func": "progress_observed", "in": {"fence": null}}
+{"func": "progress_observed", "in": {"fence": "x"}}
+{"func": "progress_observed", "in": {"fence": {"_progress_observed": null}}}
+{"func": "commit_watermark_fenced", "in": {"fence": {"_commit_watermark_fenced": true}}}
+{"func": "commit_watermark_fenced", "in": {"fence": {"_commit_watermark_fenced": false}}}
+{"func": "commit_watermark_fenced", "in": {"fence": {}}}
+{"func": "commit_watermark_fenced", "in": {"fence": {"_commit_watermark_fenced": "yes"}}}
+{"func": "commit_watermark_fenced", "in": {"fence": null}}
+{"func": "commit_watermark_fenced", "in": {"fence": [1]}}
+{"func": "commit_watermark_fenced", "in": {"fence": {"_commit_watermark_fenced": 1}}}
