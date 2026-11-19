@@ -152,7 +152,7 @@ def install_stubs(ns):
 
     # ── fake modules for the targets' function-local imports ──
     fake_module("tools.terminal_tool",
-                _redact_terminal_error_text=lambda t: t,
+                _redact_terminal_error_text=lambda t: rec({"ev": "redact", "text": t, "ret": t}) or t,
                 _resolve_command_cwd=None,
                 _resolve_notification_flag_conflict=live_flag_conflict,
                 record_session_cwd=None)
@@ -444,7 +444,7 @@ def drive(ns, func, inp):
     if func == "run_approval_guards":
         try:
             v = LIVE["_run_approval_guards"](inp.get("command", "ls"), inp.get("env_type", "local"),
-                                             inp.get("config", {}), force=inp.get("force", False))
+                                             inp.get("config"), force=inp.get("force", False))
             return {"ret": {"note": v.note, "approved_run": v.approved_run}, "rejected": None}
         except ns["_Rejected"] as r:
             return {"ret": None, "rejected": r.result_json}

@@ -1370,6 +1370,8 @@ char *ttlf_finalize_foreground_result_flow(const char *command, const json_t *re
     bool raised = false;
     char *transformed = s->transform_hook(s->ctx, kw, &raised);
     json_free(kw);
+    /* live: with _quiet("transform_terminal_output hook") — debug-log on raise */
+    if (raised && s->log) s->log(s->ctx, "debug", "transform_terminal_output hook");
     free(output);
     output = transformed ? transformed : xstrdup("");
 
@@ -1402,6 +1404,8 @@ char *ttlf_finalize_foreground_result_flow(const char *command, const json_t *re
     raised = false;
     char *failure_hint = s->failure_hint(s->ctx, kw, &raised);
     json_free(kw);
+    /* live: with _quiet("failure hint") — debug-log on raise */
+    if (raised && s->log) s->log(s->ctx, "debug", "failure hint");
 
     /* cwd echo, gated on the observation flag; _quiet("cwd comparison") */
     char *changed_cwd = NULL;
@@ -1471,6 +1475,8 @@ char *ttlf_finalize_foreground_result_flow(const char *command, const json_t *re
     raised = false;
     json_t *verification = s->verification(s->ctx, kw, &raised);
     json_free(kw);
+    /* live: with _quiet("verification evidence recording") — debug-log on raise */
+    if (raised && s->log) s->log(s->ctx, "debug", "verification evidence recording");
     if (verification) json_set(rd, "verification_evidence", verification);
 
     if (approval_final) json_set(rd, "approval", json_string(approval_final));

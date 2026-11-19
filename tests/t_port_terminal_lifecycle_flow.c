@@ -666,7 +666,10 @@ static json_t *fn_spill(void *ctx, const json_t *path, const json_t *total_chars
     evj(e, "path", path);
     evj(e, "total_chars", total_chars);
     evs(e, "command", command);
-    evj(e, "ret", pairs);
+    /* live _redact_spill_file returns [] when path is falsy */
+    json_t *empty_spill = pairs ? NULL : json_array();
+    evj(e, "ret", pairs ? pairs : empty_spill);
+    if (empty_spill) json_free(empty_spill);
     rec(c, e);
     return pairs ? json_copy(pairs) : json_array();
 }
@@ -815,8 +818,14 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
             .redact = sc_redact, .record_outcome = fg_record_outcome, .finalize = fg_finalize,
             .log = sc_log,
         };
+        /* live env is an object carrying .execute; a null fixture env models
+         * an attribute-less env object ({}), not None — the oracle builds
+         * SimpleNamespace(execute=...) and records its non-callable attrs. */
+        json_t *env_node = in_obj(&ctx, "env");
+        bool env_tmp = false;
+        if (!env_node || env_node->type == JSON_NULL) { env_node = json_object(); env_tmp = true; }
         char *r = ttlf_run_foreground_flow(
-            in_str(&ctx, "command", "ls"), in_obj(&ctx, "env"),
+            in_str(&ctx, "command", "ls"), env_node,
             in_str(&ctx, "env_type", "local"), in_str(&ctx, "effective_task_id", "t1"),
             (int)json_get_num(in, "effective_timeout", 180),
             in_str(&ctx, "plan_cwd", "/w"), json_get_str(in, "plan_host_cwd", NULL),
@@ -824,6 +833,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
             in_str(&ctx, "session_key", "sk"), in_str(&ctx, "cwd_key", "sk"),
             json_get_str(in, "workdir", NULL), json_get_str(in, "approval_note", NULL),
             in_bool(&ctx, "clear_interrupt"), json_get_bool(in, "metered", true), &s);
+        if (env_tmp) json_free(env_node);
         json_set(out, "ret", r ? json_string(r) : json_null());
         free(r);
     } else if (strcmp(func, "terminal_deadline_floor") == 0) {
