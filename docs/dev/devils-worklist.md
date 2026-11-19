@@ -97,3 +97,27 @@ Scans run against the live tree and quarry; raw data in
 Honest gap totals pending: `scripts/parity_truth.py` re-run in flight; its
 DA-4 stub exclusion already discounts annotation-only claims. The 9,317/
 37,307 headline predates this audit and WILL shrink when DA-5 lands.
+
+## Triple-check verdict (independent second pass + live AST behavior analysis)
+
+Of the 653 stub-body candidates: **503 GUILTY** (live function has real
+logic — branches/calls/state — while the C body is empty or constant),
+**21 FAITHFUL** (live also returns a constant; the port is honest),
+**116 ORPHAN STUBS** (live fn deleted upstream — tag-strip queue),
+**38 extraction false positives** (second-pass brace match found real
+bodies; first pass mis-attributed — 13 removed from the guilty count).
+Method: `stub_triplecheck.py` — independent C body re-extraction + quarry
+AST behavior scoring (If/For/Try/With=3, Call/BoolOp/Compare/Raise=2,
+Assign=1); a constant-return port is only lazy if live does more.
+
+Revival wave 1 (5 agents, in flight): cli_gaps ×2, setup_gaps, plugin.c,
+gateway gaps — ~139 guilty fns. Wave 2 lists prepared (unowned clusters):
+update_cmd_gaps 9, conversation_compression_gaps* 15, skill_usage+
+model_metadata 13, agent_gaps+conversation_loop_gaps+scheduler_gaps 16,
+tail 311 across ~180 files. auxiliary_client_gaps (9) held until the
+wave-3 aux debugger finishes.
+
+Bulk wiring: 612 unwired tagged files with >=1 real fn batch-built;
+only clean-built objects get wired (latent compile errors in never-built
+files are themselves a work queue — e.g. computer_use.c incompatible
+pointer types).
