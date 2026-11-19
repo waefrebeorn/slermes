@@ -1,0 +1,139 @@
+{"func": "terminal_run_status", "in": {"result": {}}}
+{"func": "terminal_run_status", "in": {"result": {"interrupted": true}}}
+{"func": "terminal_run_status", "in": {"result": {"failed": true}}}
+{"func": "terminal_run_status", "in": {"result": {"partial": true}}}
+{"func": "terminal_run_status", "in": {"result": {"completed": false}}}
+{"func": "terminal_run_status", "in": {"result": {"completed": 0}}}
+{"func": "terminal_run_status", "in": {"result": {"failed": true, "turn_exit_reason": "budget", "pending_steer": "go left"}}}
+{"func": "terminal_run_status", "in": {"result": {"interrupted": true, "turn_exit_reason": "stop", "completed": true}}}
+{"func": "terminal_run_status", "in": {"result": {"turn_exit_reason": "x"}}}
+{"func": "terminal_run_status", "in": {"result": {"pending_steer": ""}}}
+{"func": "run_user_message", "in": {"raw_input": null}}
+{"func": "run_user_message", "in": {"raw_input": ""}}
+{"func": "run_user_message", "in": {"raw_input": []}}
+{"func": "run_user_message", "in": {"raw_input": {}}}
+{"func": "run_user_message", "in": {"raw_input": 0}}
+{"func": "run_user_message", "in": {"raw_input": "hello"}}
+{"func": "run_user_message", "in": {"raw_input": [{"content": "hi"}]}}
+{"func": "run_user_message", "in": {"raw_input": [{"role": "user"}]}}
+{"func": "run_user_message", "in": {"raw_input": [5]}}
+{"func": "run_user_message", "in": {"raw_input": [{"content": ""}]}}
+{"func": "run_user_message", "in": {"raw_input": [{"content": "a"}, {"content": "b"}]}}
+{"func": "run_user_message", "in": {"raw_input": {"a": 1}}}
+{"func": "tool_completed_preview", "in": {"result": null}}
+{"func": "tool_completed_preview", "in": {"result": "secret text", "redact_ret": "[REDACTED]"}}
+{"func": "tool_completed_preview", "in": {"result": {"a": 1, "b": [true, null, "x"]}}}
+{"func": "tool_completed_preview", "in": {"result": "abc", "redact_ret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "tool_completed_preview", "in": {"result": "abc", "redact_ret": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"func": "tool_completed_preview", "in": {"result": "abc", "redact_ret": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}}
+{"func": "tool_completed_preview", "in": {"result": "abc", "redact_ret": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}}
+{"func": "tool_completed_preview", "in": {"result": 42}}
+{"func": "tool_completed_preview", "in": {"result": "x", "redact_ret": ""}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "message.delta", "clock": 100.5}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "message.delta", "fields": {"delta": "hi"}, "clock": 100.5}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "tool.started", "fields": {"event": "override", "run_id": "other", "timestamp": 9, "extra": 1}, "clock": 100.5}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "run.completed", "fields": {}, "clock": [1, 2]}}
+{"func": "run_event", "in": {"run_id": "r1", "name": "run.completed", "fields": {"seq": 0, "flag": false, "nothing": null}, "clock": 7}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/stop", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/resolve-unknown", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/approval", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/clarify", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs", "method": "GET"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/events", "method": "GET"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/stopx", "method": "POST"}}}
+{"func": "room_permission_for", "in": {"request": {"path": "/v1/runs/r1/stop", "method": "GET"}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": "mem1", "target_install_id": "inst1", "target_profile": "default"}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "target_install_id": "inst1", "target_profile": "default"}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3.5, "member_id": "mem1", "target_install_id": "inst1", "target_profile": "default"}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": "mem1", "target_install_id": "inst1", "target_profile": null}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": true, "target_install_id": "inst1", "target_profile": "default"}}}
+{"func": "room_run_scope", "in": {"claims": {"room_id": "", "home_install_id": "", "authority_gateway_id": "", "authority_epoch": "", "member_id": "", "target_install_id": "", "target_profile": ""}}}
+{"func": "remember_room_retention", "in": {"claims": {"status_expires_at": 12.5}}}
+{"func": "remember_room_retention", "in": {"claims": {"expires_at": "99"}}}
+{"func": "remember_room_retention", "in": {"claims": {}}}
+{"func": "remember_room_retention", "in": {"claims": {"status_expires_at": null, "expires_at": 7}}}
+{"func": "remember_room_retention", "in": {"claims": {"status_expires_at": 4.25}, "request_set_raises": "AttributeError"}}
+{"func": "remember_room_retention", "in": {"claims": {"expires_at": 8}, "request_set_raises": "TypeError"}}
+{"func": "remember_room_retention", "in": {"claims": {"status_expires_at": 0, "expires_at": 5}}}
+{"func": "run_idempotency_scope", "in": {"room_token": "tok", "request": {"path": "/v1/runs/r1/stop", "method": "POST"}, "claims_ret": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": "mem1", "target_install_id": "inst1", "target_profile": "default"}}}
+{"func": "run_idempotency_scope", "in": {"profile": "p1", "api_key_ret": "k1"}}
+{"func": "run_idempotency_scope", "in": {"profile": null, "api_key_ret": null}}
+{"func": "run_idempotency_scope", "in": {"profile": "", "api_key_ret": ""}}
+{"func": "run_idempotency_scope", "in": {"room_token": "", "profile": "p2", "api_key_ret": "k2"}}
+{"func": "run_idempotency_scope", "in": {"room_token": "tok", "request": {"path": "/v1/runs", "method": "POST"}, "claims_raises": true, "claims_exc_type": "ValueError", "claims_exc_msg": "bad grant"}}
+{"func": "check_run_auth", "in": {"permission": "status"}}
+{"func": "check_run_auth", "in": {"permission": "status", "check_auth_ret": {"status": 401, "body": {"error": "nope"}, "headers": null}}}
+{"func": "check_run_auth", "in": {"room_token": "tok", "permission": "approve", "claims_ret": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": "mem1", "target_install_id": "inst1", "target_profile": "default"}, "request": {"path": "/v1/runs/r1/approval", "method": "POST"}}}
+{"func": "check_run_auth", "in": {"room_token": "tok", "permission": "stop", "claims_raises": true, "claims_exc_type": "RuntimeError", "claims_exc_msg": "grant invalid"}}
+{"func": "check_run_auth", "in": {"room_token": "tok", "permission": "stop", "claims_raises": true, "claims_exc_type": "RoomGrantReauthorizationRequired", "claims_exc_msg": "room grant is revoked"}}
+{"func": "owner_alive", "in": {"owner_pid": 0, "owner_started": 0}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 0, "pid_exists_ret": false}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 0, "pid_exists_ret": true}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 100, "pid_exists_ret": true, "start_time_ret": 100, "fp_match_ret": true}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 100, "pid_exists_ret": true, "start_time_ret": 200, "fp_match_ret": false}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 0, "pid_exists_raises": true}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 100, "pid_exists_ret": true, "start_time_ret": null, "fp_match_ret": false}}
+{"func": "owner_alive", "in": {"owner_pid": 5, "owner_started": 100, "pid_exists_ret": true, "start_time_ret": 100, "fp_match_raises": true}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "queued", "clock": 10, "fields": {"created_at": 10, "session_id": "s", "model": "m"}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "completed", "clock": 20, "state": {"run_statuses": {"r1": {"status": "running", "created_at": 5}}, "run_idempotency_ids": ["r1"]}, "fields": {"output": "done"}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "running", "clock": 20, "state": {"run_statuses": {"r1": {"status": "running", "created_at": 5}}, "run_idempotency_ids": ["r1"]}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "running", "clock": 20, "state": {"run_statuses": {"r1": {"status": "running"}}, "run_idempotency_ids": ["r1"]}, "fields": {"output": "x"}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "waiting_for_approval", "clock": 20, "fields": {"approval": {"request_id": "a1"}, "last_event": "approval.request"}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "running", "clock": 20, "state": {"run_statuses": {"r1": {"status": "waiting_for_approval", "approval": {"request_id": "a1"}}}}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "running", "clock": 20, "state": {"run_shutdown_requested_at": 55.5}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "completed", "clock": 20, "state": {"run_shutdown_requested_at": 55.5}}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "completed", "clock": 20, "state": {"run_statuses": {"r1": {"status": "running"}}, "run_idempotency_ids": ["r1"]}, "store_update_raises": true, "store_update_exc_type": "OSError", "store_update_exc_msg": "disk full"}}
+{"func": "set_run_status", "in": {"run_id": "r1", "status": "queued", "clock": 20, "state": {"run_statuses": {"r1": {"status": "queued", "created_at": 5}}}, "fields": {"created_at": 99}}}
+{"func": "mark_shutdown_requested", "in": {"clock": 50}}
+{"func": "mark_shutdown_requested", "in": {"clock": 50, "state": {"run_statuses": {"r1": {"status": "running"}, "r2": {"status": "completed"}, "r3": {"status": null}}}}}
+{"func": "mark_shutdown_requested", "in": {"clock": 50, "state": {"run_statuses": {"r1": {"status": "running", "shutdown_requested_at": 10}}}}}
+{"func": "mark_shutdown_requested", "in": {"clock": 50, "state": {"run_shutdown_requested_at": 10, "run_statuses": {"r1": {"status": "running", "shutdown_requested_at": 10}}}}}
+{"func": "mark_shutdown_requested", "in": {"clock": 50, "state": {"run_statuses": {"r1": {"status": "running"}}, "run_idempotency_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "r1", "tables": ["run_streams", "run_streams_created"], "state": {"run_statuses": {"r1": {"status": "running"}}, "run_streams": {"r1": {}}, "run_streams_created": {"r1": 1}, "run_owners": {"r1": "scope1"}, "run_approval_sessions": {"r1": "r1"}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_idempotency_ids": ["r1"], "stopping_run_ids": ["r1"], "shutdown_interrupted_run_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "r1", "tables": ["run_statuses", "active_run_agents", "active_run_tasks", "run_streams", "run_approval_sessions", "stopping_run_ids", "shutdown_interrupted_run_ids", "run_idempotency_ids"], "state": {"run_statuses": {"r1": {"status": "running"}}, "run_streams": {"r1": {}}, "run_streams_created": {"r1": 1}, "run_owners": {"r1": "scope1"}, "run_approval_sessions": {"r1": "r1"}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_idempotency_ids": ["r1"], "stopping_run_ids": ["r1"], "shutdown_interrupted_run_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "r1", "tables": ["stopping_run_ids"], "state": {"run_statuses": {"r1": {"status": "running"}}, "run_streams": {"r1": {}}, "run_streams_created": {"r1": 1}, "run_owners": {"r1": "scope1"}, "run_approval_sessions": {"r1": "r1"}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_idempotency_ids": ["r1"], "stopping_run_ids": ["r1"], "shutdown_interrupted_run_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "rX", "tables": ["run_statuses", "run_streams"], "state": {"run_statuses": {"r1": {"status": "running"}}, "run_streams": {"r1": {}}, "run_streams_created": {"r1": 1}, "run_owners": {"r1": "scope1"}, "run_approval_sessions": {"r1": "r1"}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_idempotency_ids": ["r1"], "stopping_run_ids": ["r1"], "shutdown_interrupted_run_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "r1", "tables": ["run_idempotency_ids"], "state": {"run_statuses": {"r1": {"status": "running"}}, "run_streams": {"r1": {}}, "run_streams_created": {"r1": 1}, "run_owners": {"r1": "scope1"}, "run_approval_sessions": {"r1": "r1"}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_idempotency_ids": ["r1"], "stopping_run_ids": ["r1"], "shutdown_interrupted_run_ids": ["r1"]}}}
+{"func": "forget_run", "in": {"run_id": "r1", "tables": ["run_statuses", "active_run_agents", "active_run_tasks", "run_streams", "run_approval_sessions"], "state": {"run_statuses": {"r1": {}}, "active_run_agents": {"r1": {}}, "active_run_tasks": {"r1": {}}, "run_streams": {"r1": {}}, "run_approval_sessions": {"r1": "r1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"run_statuses": {"r1": {}}, "run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"active_run_agents": {"r1": {}}, "run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"active_run_tasks": {"r1": {}}, "run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"run_streams": {"r1": {}}, "run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"run_approval_sessions": {"r1": {}}, "run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {"run_owners": {"r1": "scope1"}}}}
+{"func": "release_run_owner_if_forgotten", "in": {"run_id": "r1", "state": {}}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "projection_ret": {"status": "completed", "output": "o"}, "state": {"run_statuses": {"r1": {"model": "m", "runtime": {"provider": "p"}, "created_at": 1, "extra": "x"}}}}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "state": {"run_statuses": {"r1": {"status": "running", "object": "hermes.run"}}}}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "retention_until": 12.5, "state": {"run_statuses": {"r1": {"status": "running"}}, "run_idempotency_ids": ["r1"]}}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1"}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "store_record": {"status": {"status": "completed", "output": "done"}, "owner_pid": 0}}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "store_record": {"status": {"status": "running"}, "owner_pid": 9, "owner_started": 0}, "pid_exists_ret": true}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "clock": 77, "store_record": {"status": {"status": "running"}, "owner_pid": 9, "owner_started": 0}, "pid_exists_ret": false}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "profile": "p1", "api_key_ret": "k1", "store_record": {"status": {"status": "queued"}, "owner_pid": "7", "owner_started": null}, "pid_exists_ret": true}}
+{"func": "durable_run_status", "in": {"run_id": "r1", "room_token": "tok", "request": {"path": "/v1/runs/r1", "method": "GET"}, "claims_ret": {"room_id": "room1", "home_install_id": "home1", "authority_gateway_id": "gw1", "authority_epoch": 3, "member_id": "mem1", "target_install_id": "inst1", "target_profile": "default"}, "retention_until": 12.5, "store_record": {"status": {"status": "failed", "error": "e"}, "owner_pid": 0}}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}], "instructions": "i"}}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": "nope", "instructions": "i"}}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": [{"role": "user"}]}}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": [{"role": "u", "content": "c"}, 5]}}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": [{"role": "user", "content": "a"}], "previous_response_id": "p1"}}}
+{"func": "resolve_conversation_history", "in": {"body": {"previous_response_id": "p1"}, "stored_ret": {"conversation_history": [{"role": "user", "content": "h"}], "session_id": "s1", "instructions": "si"}}}
+{"func": "resolve_conversation_history", "in": {"body": {"previous_response_id": "p1", "instructions": "keep"}, "stored_ret": {"conversation_history": [{"role": "user", "content": "h"}], "session_id": "s1", "instructions": "si"}}}
+{"func": "resolve_conversation_history", "in": {"body": {"previous_response_id": "p1"}, "stored_ret": null}}
+{"func": "resolve_conversation_history", "in": {"body": {}, "raw_input": [{"role": "user", "content": "a"}, {"role": "assistant", "content": [{"type": "text", "text": "b"}, {"type": "image", "url": "u"}, {"type": "text", "text": "c"}]}, {"role": "user", "content": "last"}]}}
+{"func": "resolve_conversation_history", "in": {"body": {}, "raw_input": [{"role": "user", "content": "only"}]}}
+{"func": "resolve_conversation_history", "in": {"body": {}, "raw_input": [{"role": "", "content": "x"}, {"content": "y"}, {"role": "user", "content": ""}, {"role": "user", "content": "z"}, {"role": "user", "content": "last"}]}}
+{"func": "resolve_conversation_history", "in": {"body": {"conversation_history": [{"role": 5, "content": true}]}}}
+{"func": "accepted_response", "in": {"run_id": "r1", "status": "started", "replayed": false}}
+{"func": "accepted_response", "in": {"run_id": "r1", "status": "started", "replayed": true}}
+{"func": "accepted_response", "in": {"run_id": "r1", "status": "started", "gateway_session_key": "k", "replayed": false}}
+{"func": "accepted_response", "in": {"run_id": "r1", "status": "started", "gateway_session_key": "k", "replayed": true}}
+{"func": "accepted_response", "in": {"run_id": "r1", "status": "started", "gateway_session_key": "", "replayed": true}}
+{"func": "replay_or_conflict", "in": {"outcome": "conflict", "record": {"run_id": "r1", "status": {"status": "queued"}}}}
+{"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": "r1", "status": {"status": "queued"}}, "state": {"run_statuses": {"r1": {"status": "running", "object": "hermes.run", "run_id": "r1"}}}}}
+{"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": "r1", "status": {"status": "queued"}}, "profile": "p1", "api_key_ret": "k1"}}
+{"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": "r1", "status": {}}, "profile": "p1", "api_key_ret": "k1"}}
+{"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": "r1", "status": {"status": "completed"}}, "state": {"run_statuses": {"r1": {}}}}}
+{"func": "replay_or_conflict", "in": {"outcome": "reused", "record": {"run_id": 42, "status": {"status": "queued"}}, "profile": "p1", "api_key_ret": "k1"}}
+{"func": "resolve_conversation_history", "in": {"body": {"previous_response_id": "p1", "instructions": null}, "stored_ret": {"conversation_history": [{"role": "user", "content": "h"}], "session_id": "s1", "instructions": "si"}}}
+{"func": "remember_room_retention", "in": {"claims": {"expires_at": 3}, "request_set_raises": "RuntimeError"}}

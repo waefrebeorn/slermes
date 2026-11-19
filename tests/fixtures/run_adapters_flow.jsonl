@@ -1,0 +1,138 @@
+{"func": "env_timeout_override", "in": {"name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "io": {}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "   "}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "5.5"}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "-3"}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "abc"}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "1e2"}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "0"}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "  2.5  "}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": {"__raise__": "OSError", "msg": "env"}}}}
+{"func": "env_timeout_override", "in": {"name": "N", "io": {"os.getenv": "1_0.5"}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"done": ["t1"], "pending": []}}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"done": [], "pending": ["t1"]}}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"__raise__": "RuntimeError", "msg": "wait"}}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"done": [], "pending": ["t1"]}, "task.cancel": {"__raise__": "RuntimeError", "msg": "cancel"}}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"done": ["t1"], "pending": []}, "task.cancel": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "wait_or_detach", "in": {"task": "t1", "timeout": 5.0, "io": {"asyncio.wait": {"done": [], "pending": ["t1"]}, "task.add_done_callback": {"__raise__": "ValueError", "msg": "cb"}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "is_reconnect": false, "initial": false, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": true}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": false}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": {"__raise__": "RuntimeError", "msg": "connect"}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "is_reconnect": true, "initial": true, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": true, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": ["t1"], "pending": []}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": true, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": [], "pending": ["t1"]}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": {"__raise__": "RuntimeError", "msg": "c"}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": {"__raise__": "ValueError", "msg": "t"}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": null, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": ["t1"], "pending": []}}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": null}}}
+{"func": "connect_adapter_bounded", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 180, "adapter.connect": true, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": [], "pending": ["t1"]}}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": true}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": false}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": true, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": [], "pending": ["t1"]}}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": {"__raise__": "CancelledError", "msg": "cancel"}}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "is_reconnect": true, "io": {"platform_connect_timeout_secs": 5, "adapter.connect": true, "asyncio.ensure_future": "t1", "asyncio.wait": {"done": ["t1"], "pending": []}}}}
+{"func": "connect_adapter_with_timeout", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"platform_connect_timeout_secs": 0, "adapter.connect": true, "record_platform_connect": {"__raise__": "OSError", "msg": "metric"}}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"_running": true}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"_running": false, "config": {"systemd_watchdog_seconds": 0}}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {"systemd_watchdog_seconds": 90}}, "io": {"platform_connect_timeout_secs": 0}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {"systemd_watchdog_seconds": 90}}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"_running": false}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {}}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {"systemd_watchdog_seconds": 90}}, "io": {"platform_connect_timeout_secs": {"__raise__": "ValueError", "msg": "t"}}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {"systemd_watchdog_seconds": -1}}, "io": {"platform_connect_timeout_secs": 5}}}
+{"func": "extend_systemd_boot_for", "in": {"platform": "telegram", "self": {"config": {"systemd_watchdog_seconds": 90}}, "io": {"platform_connect_timeout_secs": 5, "extend_start_timeout": {"__raise__": "OSError", "msg": "sd"}}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": "reaction:added"}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": ""}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": "custom"}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": "x"}, "io": {"hooks.emit": {"__raise__": "RuntimeError", "msg": "emit"}}}}
+{"func": "handle_reaction_event", "in": {"self": {}, "ctx": {"event_name": "x"}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": "x"}, "io": {"hooks.emit": {"__raise__": "CancelledError", "msg": "c"}}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": 5}, "io": {}}}
+{"func": "handle_reaction_event", "in": {"self": {"hooks": {}}, "ctx": {"event_name": "x"}, "io": {"hooks.emit": {"__raise__": "RuntimeError", "msg": "e"}, "logger.log": {"__raise__": "OSError", "msg": "log"}}}}
+{"func": "on_all_adapters_down", "in": {"self": {"config": {"on_all_adapters_down": "exit"}}}}
+{"func": "on_all_adapters_down", "in": {"self": {"config": {"on_all_adapters_down": "stay_alive"}}}}
+{"func": "on_all_adapters_down", "in": {"self": {"config": {"on_all_adapters_down": "bogus"}}}}
+{"func": "on_all_adapters_down", "in": {"self": {}}}
+{"func": "on_all_adapters_down", "in": {"self": {"config": {}}}}
+{"func": "on_all_adapters_down", "in": {"self": {"config": {"on_all_adapters_down": null}}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "0.0.0.0", "_sidecar_port": 8080}}}
+{"func": "adapter_listener_claim", "in": {"platform": "telegram", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h", "_sidecar_port": 8080}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "   ", "_sidecar_port": 8080}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "HOST", "_sidecar_port": "9090"}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h", "_sidecar_port": "abc"}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h"}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h", "_sidecar_port": 80.9}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon"}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h", "_sidecar_port": true}}}
+{"func": "adapter_listener_claim", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "h", "_sidecar_port": " 7070 "}}}
+{"func": "adapter_credential_claim", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"adapter_credential_fingerprint": "abc123"}}}
+{"func": "adapter_credential_claim", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"adapter_credential_fingerprint": null}}}
+{"func": "adapter_credential_claim", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {}}}
+{"func": "adapter_credential_claim", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"adapter_credential_fingerprint": {"__raise__": "RuntimeError", "msg": "fp"}}}}
+{"func": "adapter_credential_claim", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "io": {"adapter_credential_fingerprint": ""}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "platform_config": {"token": "x"}, "attempts": 0, "delay": 30.0, "queued": true, "io": {"time.monotonic": 100, "adapter_credential_fingerprint": "fp"}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "platform_config": {"token": "x"}, "attempts": 2, "delay": 0.0, "queued": false, "io": {"time.monotonic": 100, "adapter_credential_fingerprint": "fp"}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "platform_config": {"token": "x"}, "attempts": 0, "delay": 30.0, "io": {"time.monotonic": 100, "adapter_credential_fingerprint": null}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "photon", "adapter": {"id": "p", "platform": "photon", "_sidecar_bind": "H", "_sidecar_port": 8080}, "platform_config": {"token": "x"}, "attempts": 1, "delay": 5.0, "io": {"time.monotonic": 50, "adapter_credential_fingerprint": "fp"}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "platform_config": {"token": "x"}, "attempts": 0, "delay": 30.0, "io": {"time.monotonic": {"__raise__": "OSError", "msg": "clock"}}}}
+{"func": "reconnect_queue_entry", "in": {"platform": "telegram", "adapter": {"id": "a1", "platform": "telegram"}, "platform_config": {"token": "x"}, "attempts": 0, "delay": 30.0, "io": {"time.monotonic": 100, "adapter_credential_fingerprint": {"__raise__": "ValueError", "msg": "fp"}}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1", "platform": "telegram"}, "why": "exception", "io": {"queue_retryable_fatal_platform": true}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1", "platform": "telegram"}, "why": "exception", "io": {"queue_retryable_fatal_platform": false}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1", "platform": "telegram"}, "why": "cancellation", "io": {"queue_retryable_fatal_platform": {"__raise__": "RuntimeError", "msg": "q"}}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1", "platform": "telegram"}, "why": "exception", "io": {"queue_retryable_fatal_platform": {"__raise__": "CancelledError", "msg": "c"}}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1"}, "why": "exception", "io": {}}}
+{"func": "queue_retryable_best_effort", "in": {"adapter": {"id": "a1", "platform": "telegram"}, "why": "exception", "io": {"queue_retryable_fatal_platform": {"__raise__": "RuntimeError", "msg": "q"}, "logger.log": {"__raise__": "OSError", "msg": "log"}}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {}, "io": {}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {"_background_tasks": {"set": ["t1"]}}, "io": {}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {"_background_tasks": {"set": ["t0"]}}, "io": {}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {"_background_tasks": {"other": [1, 2]}}, "io": {}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {}, "io": {"task.add_done_callback": {"__raise__": "RuntimeError", "msg": "cb"}}}}
+{"func": "retain_background_task", "in": {"task": "t1", "self": {"_background_tasks": {"set": ["t2", "t0"]}}, "io": {}}}
+{"func": "track_task_in", "in": {"tasks": [], "task": "t1", "io": {}}}
+{"func": "track_task_in", "in": {"tasks": ["t1"], "task": "t1", "io": {}}}
+{"func": "track_task_in", "in": {"tasks": ["t0"], "task": "t1", "io": {}}}
+{"func": "track_task_in", "in": {"tasks": ["t0"], "task": "t1", "io": {"task.add_done_callback": {"__raise__": "RuntimeError", "msg": "cb"}}}}
+{"func": "track_task_in", "in": {"tasks": ["t2", "t0"], "task": "t1", "io": {}}}
+{"func": "request_clean_exit", "in": {"reason": "shutdown", "self": {"_shutdown_event": {}}, "io": {}}}
+{"func": "request_clean_exit", "in": {"reason": "", "self": {"_shutdown_event": {}}, "io": {}}}
+{"func": "request_clean_exit", "in": {"reason": "x", "self": {}, "io": {}}}
+{"func": "request_clean_exit", "in": {"reason": "x", "self": {"_shutdown_event": {}}, "io": {"shutdown_event.set": {"__raise__": "RuntimeError", "msg": "set"}}}}
+{"func": "request_clean_exit", "in": {"reason": "bye", "self": {"_shutdown_event": {}, "extra": 7}, "io": {}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attention_flagged": true, "attempts": 3}, "io": {}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 0}, "io": {}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 2}, "io": {"_reconnect_needs_attention": false}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 2, "queued_at": 100.0}, "io": {"_reconnect_needs_attention": true, "datetime.now": "2026-11-19T12:00:00+00:00"}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 3}, "io": {"_reconnect_needs_attention": true, "datetime.now": "2026-11-19T12:00:00+00:00"}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "status_key": "prof:telegram", "info": {"attempts": 2, "queued_at": 100.0}, "io": {"_reconnect_needs_attention": true, "datetime.now": "2026-11-19T12:00:00+00:00"}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 2}, "io": {"_reconnect_needs_attention": {"__raise__": "RuntimeError", "msg": "na"}}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 2, "queued_at": 100.0}, "io": {"_reconnect_needs_attention": true, "datetime.now": "2026-11-19T12:00:00+00:00", "update_platform_runtime_status": {"__raise__": "OSError", "msg": "status"}}}}
+{"func": "flag_reconnect_needs_attention", "in": {"platform": "telegram", "now": 1000.0, "info": {"attempts": 1, "queued_at": 1000.0}, "io": {"_reconnect_needs_attention": true, "datetime.now": "2026-11-19T12:00:00.500000+00:00"}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 2, "error_code": "x", "error_message": "m", "info": {"retry_now": true}, "io": {"time.monotonic": 100}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 2, "error_code": "x", "error_message": "m", "info": {}, "io": {"_reconnect_backoff": 60, "time.monotonic": 100}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 1, "error_code": "x", "error_message": "m", "info": {"retry_now": false}, "io": {"_reconnect_backoff": 30, "time.monotonic": 100}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 3, "error_code": "x", "error_message": "m", "info": {"retry_now": 0}, "io": {"_reconnect_backoff": 120, "time.monotonic": 100}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 2, "error_code": "x", "error_message": "m", "info": {"retry_now": true}, "io": {"update_platform_runtime_status": {"__raise__": "OSError", "msg": "s"}}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 2, "error_code": null, "error_message": "m", "info": {}, "io": {"_reconnect_backoff": 60, "time.monotonic": 100}}}
+{"func": "bump_reconnect_backoff", "in": {"platform": "telegram", "attempt": 2, "error_code": "x", "error_message": "m", "info": {}, "io": {"_reconnect_backoff": {"__raise__": "ValueError", "msg": "b"}, "time.monotonic": 100}}}
+{"func": "adapter_may_heal", "in": {"platform": "myplugin", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {"platform_registry.is_registered": false, "_platform_has_bot_credential": true}}}
+{"func": "adapter_may_heal", "in": {"platform": "api_server", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {}}}
+{"func": "adapter_may_heal", "in": {"platform": "myplugin", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {"platform_registry.is_registered": true}}}
+{"func": "adapter_may_heal", "in": {"platform": "myplugin", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {"platform_registry.is_registered": false, "_platform_has_bot_credential": false}}}
+{"func": "adapter_may_heal", "in": {"platform": "myplugin", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {"platform_registry.is_registered": {"__raise__": "RuntimeError", "msg": "reg"}}}}
+{"func": "adapter_may_heal", "in": {"platform": "myplugin", "platform_config": {"token": "x"}, "_BUILTIN_ADAPTERS": ["api_server"], "io": {"platform_registry.is_registered": false, "_platform_has_bot_credential": {"__raise__": "OSError", "msg": "cred"}}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {}, "adapters": {}}, "io": {}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}, "paused": true}}, "adapters": {}}, "io": {}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 100.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": false}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false}, "connect_adapter_with_timeout": true}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": null, "platform_registry.is_registered": true}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": null, "platform_registry.is_registered": false, "_adapter_unavailable_message": "No adapter available", "_reconnect_backoff": 60, "time.monotonic": 1000}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": true, "fatal_error_retryable": false, "fatal_error_message": "revoked"}, "connect_adapter_with_timeout": false}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false, "fatal_error_code": "e", "fatal_error_message": "m"}, "connect_adapter_with_timeout": false, "_reconnect_backoff": 60, "time.monotonic": 1000}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"__raise__": "RuntimeError", "msg": "create failed"}, "_reconnect_backoff": 60, "time.monotonic": 1000}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false}, "connect_adapter_with_timeout": {"__raise__": "RuntimeError", "msg": "connect failed"}, "_reconnect_backoff": 60, "time.monotonic": 1000}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false}, "connect_adapter_with_timeout": {"__raise__": "CancelledError", "msg": "cancel"}}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 2, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}}}, "adapters": {}}, "io": {"_reconnect_needs_attention": true, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false}, "connect_adapter_with_timeout": true, "datetime.now": "2026-11-19T12:00:00+00:00"}}}
+{"func": "reconnect_failed_platform", "in": {"platform": "telegram", "now": 1000.0, "self": {"_failed_platforms": {"telegram": {"config": {"token": "x"}, "attempts": 1, "next_retry": 500.0, "queued_at": 100.0, "predecessor": {"id": "pred", "platform": "telegram"}, "retry_now": true}}, "adapters": {}}, "io": {"_reconnect_needs_attention": false, "_platform_has_bot_credential": true, "create_adapter_off_loop_deps": {"id": "a2", "platform": "telegram", "has_fatal_error": false, "fatal_error_code": "e", "fatal_error_message": "m"}, "connect_adapter_with_timeout": false, "time.monotonic": 1000}}}

@@ -1,0 +1,119 @@
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "/usr/bin:/bin", "dirs": ["/opt/x", "/usr/bin"], "pathsep": ":"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "/usr/bin:/bin", "dirs": ["/bin", "/usr/bin"], "pathsep": ":"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "", "dirs": ["/a"], "pathsep": ":"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "/a::/b:", "dirs": ["/c"], "pathsep": ":"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "/a:/b", "dirs": [], "pathsep": ":"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "C:\\x;C:\\y", "dirs": ["C:\\z", "C:\\x"], "pathsep": ";"}}
+{"func": "prepend_missing_path_entries", "in": {"existing_path": "/a", "dirs": ["/b", "/b"], "pathsep": ":"}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "/a:/b", "is_windows": true}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "/a:/b", "is_windows": false, "io": {"isabs": [true, true], "isdir": [true, false]}}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "rel:/a", "is_windows": false, "io": {"isabs": [false, true], "isdir": [true]}}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "", "is_windows": false}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "/a:/a:/b", "is_windows": false, "io": {"isabs": [true, true], "isdir": [true, true]}}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "/a", "is_windows": false, "io": {"isabs": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "append_dropped_path_entries", "in": {"cmd_string": "echo hi", "parent_path": "/a:/b", "is_windows": false, "io": {"isabs": [true, false], "isdir": [true]}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": "/git/bin/bash", "dirname": ["/git/bin", "/git"], "basename": ["git"], "path_join": ["/git/ucrt64/bin", "/git/clangarm64/bin", "/git/mingw64/bin", "/git/mingw32/bin", "/git/usr/local/bin", "/git/usr/bin", "/git/bin"], "isdir": [true, false, true, false, false, true, true]}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": "/git/usr/bin/bash", "dirname": ["/git/usr/bin", "/git/usr", "/git"], "basename": ["usr"], "path_join": ["/git/ucrt64/bin", "/git/clangarm64/bin", "/git/mingw64/bin", "/git/mingw32/bin", "/git/usr/local/bin", "/git/usr/bin", "/git/bin"], "isdir": [false, false, false, false, false, false, true]}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": {"__raise__": "RuntimeError", "msg": "no shell"}}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": "/g/bin/bash", "dirname": ["/g/bin", "/g"], "basename": ["bin"], "path_join": ["/g/bin", "/g/bin", "/g/x", "/g/x", "/g/y", "/g/y", "/g/z"], "isdir": [true, true, true, true, true, true, true]}}}
+{"func": "compute_git_bash_bin_dirs", "in": {"io": {"find_bash": "/g/bin/bash", "dirname": ["/g/bin", "/g"], "basename": ["bin"], "path_join": ["/g/a", "/g/b"], "isdir": [true, {"__raise__": "OSError", "msg": "x"}]}}}
+{"func": "user_tools_first", "in": {"existing_path": "/usr/bin:/bin", "pathsep": ":", "io": {"user_facing_path": "/usr/bin:/bin", "git_bash_bin_dirs": {"__script__": true, "ret": ["/git/bin"]}, "normcase": ["/git/bin", "/usr/bin", "/bin"]}}}
+{"func": "user_tools_first", "in": {"existing_path": "/usr/bin:/bin", "pathsep": ":", "io": {"user_facing_path": "/usr/bin:/bin", "git_bash_bin_dirs": {"__script__": true, "ret": []}, "normcase": ["/usr/bin", "/bin"]}}}
+{"func": "user_tools_first", "in": {"existing_path": "/git/bin:/usr/bin", "pathsep": ":", "io": {"user_facing_path": "/git/bin:/usr/bin", "git_bash_bin_dirs": {"__script__": true, "ret": ["/Git/Bin"]}, "normcase": ["/git/bin", "/git/bin", "/usr/bin"]}}}
+{"func": "user_tools_first", "in": {"existing_path": "/a::/b", "pathsep": ":", "io": {"user_facing_path": "/a::/b", "git_bash_bin_dirs": {"__script__": true, "ret": ["/g"]}, "normcase": ["/g", "/a", "/b"]}}}
+{"func": "user_tools_first", "in": {"existing_path": "/x", "pathsep": ":", "io": {"user_facing_path": {"__raise__": "RuntimeError", "msg": "uf"}}}}
+{"func": "user_tools_first", "in": {"existing_path": "/x", "pathsep": ":", "io": {"user_facing_path": "/x", "git_bash_bin_dirs": {"__raise__": "OSError", "msg": "gb"}}}}
+{"func": "terminal_env", "in": {"env": {"PATH": "/usr/bin"}, "pathsep": ":", "io": {"path_env_key": "PATH", "user_facing_path": "/usr/bin", "git_bash_bin_dirs": {"__script__": true, "ret": ["/g"]}, "normcase": ["/g", "/usr/bin"]}}}
+{"func": "terminal_env", "in": {"env": {"PATH": "/x"}, "pathsep": ":", "io": {"path_env_key": null}}}
+{"func": "terminal_env", "in": {"env": {"Path": "/x"}, "pathsep": ":", "io": {"path_env_key": "Path", "user_facing_path": "/x", "git_bash_bin_dirs": {"__script__": true, "ret": []}, "normcase": ["/x"]}}}
+{"func": "terminal_env", "in": {"env": {"FOO": "bar"}, "pathsep": ":", "io": {"path_env_key": "PATH"}}}
+{"func": "terminal_env", "in": {"env": {"PATH": "/x"}, "pathsep": ":", "io": {"path_env_key": {"__raise__": "RuntimeError", "msg": "pk"}}}}
+{"func": "terminal_env", "in": {"env": {"PATH": "/x"}, "pathsep": ":", "io": {"path_env_key": "PATH", "user_facing_path": {"__raise__": "OSError", "msg": "uf"}}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": "/home/x", "apply_subprocess_home_env": {"HOME": "/home/x"}}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": "", "apply_subprocess_home_env": {"HOME": "/default"}}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": null, "apply_subprocess_home_env": null}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": {"__raise__": "RuntimeError", "msg": "ov"}, "apply_subprocess_home_env": {"HOME": "/h"}}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "apply_profile_home", "in": {"env": {}, "io": {"get_hermes_home_override": "/home/x", "apply_subprocess_home_env": {"__raise__": "OSError", "msg": "ap"}}}}
+{"func": "carry_bridge_markers", "in": {"env": {"HERMES_BRIDGED_X": "d1", "X": "v", "OTHER": "o"}, "source": {}, "own_profile": false}}
+{"func": "carry_bridge_markers", "in": {"env": {"X": "v"}, "source": {"HERMES_BRIDGED_X": "sha256:abc"}, "own_profile": true, "io": {"bridged_env_digest": "sha256:abc"}}}
+{"func": "carry_bridge_markers", "in": {"env": {"X": "v"}, "source": {"HERMES_BRIDGED_X": "sha256:abc"}, "own_profile": true, "io": {"bridged_env_digest": "sha256:OTHER"}}}
+{"func": "carry_bridge_markers", "in": {"env": {"hermes_bridged_y": "d", "Z": "w"}, "source": {"HERMES_BRIDGED_X": "sha256:n"}, "own_profile": true, "io": {"bridged_env_digest": null}}}
+{"func": "carry_bridge_markers", "in": {"env": {}, "source": {"HERMES_BRIDGED_X": null}, "own_profile": true, "io": {"bridged_env_digest": null}}}
+{"func": "carry_bridge_markers", "in": {"env": {"A": "1"}, "source": {"X": "v", "HERMES_BRIDGED_": "d"}, "own_profile": true}}
+{"func": "carry_bridge_markers", "in": {"env": {"X": "v"}, "source": {"HERMES_BRIDGED_X": "sha256:abc"}, "own_profile": true, "io": {"bridged_env_digest": {"__raise__": "RuntimeError", "msg": "dg"}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {}, "source": {"TOK_A": "a", "TOK_B": ""}, "io": {"secret_source_bootstrap_env": {"__script__": true, "ret": ["TOK_A", "TOK_B"]}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {"TOK_A": "existing"}, "source": {"TOK_A": "new"}, "io": {"secret_source_bootstrap_env": {"__script__": true, "ret": ["TOK_A"]}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {}, "source": {"X": "1"}, "io": {"secret_source_bootstrap_env": {"__script__": true, "ret": []}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {"A": "0"}, "source": {"A": "a", "B": "b"}, "io": {"secret_source_bootstrap_env": {"__script__": true, "ret": ["A", "B"]}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {}, "source": {}, "io": {"secret_source_bootstrap_env": {"__raise__": "RuntimeError", "msg": "bs"}}}}
+{"func": "restore_bootstrap_tokens", "in": {"env": {}, "source": {}, "io": {"secret_source_bootstrap_env": {"__script__": true, "ret": ["A"]}}}}
+{"func": "usable_cwd", "in": {"cwd": "/abs/path", "self_cwd": "/base", "io": {"expanduser": "/abs/path", "msys_to_windows_path": "/abs/path", "isabs": true, "resolve_safe_cwd": "/abs/path"}}}
+{"func": "usable_cwd", "in": {"cwd": "rel", "self_cwd": "/base", "io": {"expanduser": "rel", "msys_to_windows_path": "rel", "isabs": false, "path_join": "/base/rel", "resolve_safe_cwd": "/base/rel"}}}
+{"func": "usable_cwd", "in": {"cwd": "/gone", "self_cwd": "/base", "io": {"expanduser": "/gone", "msys_to_windows_path": ["/gone", "/gone"], "isabs": true, "resolve_safe_cwd": "/fallback"}}}
+{"func": "usable_cwd", "in": {"cwd": "/c/x", "self_cwd": "/base", "io": {"expanduser": "/c/x", "msys_to_windows_path": ["C:\\x", "C:\\x"], "isabs": true, "resolve_safe_cwd": "C:\\x"}}}
+{"func": "usable_cwd", "in": {"cwd": "", "self_cwd": "/base", "io": {"expanduser": "", "msys_to_windows_path": "", "resolve_safe_cwd": "/tmp"}}}
+{"func": "usable_cwd", "in": {"cwd": "/x", "self_cwd": "/base", "io": {"expanduser": {"__raise__": "RuntimeError", "msg": "eu"}}}}
+{"func": "usable_cwd", "in": {"cwd": "/x", "self_cwd": "/base", "io": {"expanduser": "/x", "msys_to_windows_path": "/x", "isabs": true, "resolve_safe_cwd": {"__raise__": "OSError", "msg": "rs"}}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "raw"}, "io": {"base_parse_cwd_marker": {"cwd_observed": true, "cwd": "/c/x", "output": "clean"}, "msys_to_windows_path": "C:\\x", "isdir": true}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "raw"}, "io": {"base_parse_cwd_marker": {"cwd_observed": true, "cwd": "/gone", "output": "clean"}, "msys_to_windows_path": "/gone", "isdir": false}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "x"}, "io": {"base_parse_cwd_marker": null}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "x"}, "io": {"base_parse_cwd_marker": {"cwd_observed": true}}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "x"}, "io": {"base_parse_cwd_marker": {"cwd_observed": true, "cwd": "", "output": "x"}, "msys_to_windows_path": ""}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "x"}, "io": {"base_parse_cwd_marker": {"__raise__": "RuntimeError", "msg": "bp"}}}}
+{"func": "parse_cwd_marker", "in": {"result": {"output": "x"}, "io": {"base_parse_cwd_marker": {"cwd_observed": true, "cwd": "/c/x"}, "msys_to_windows_path": "C:\\x", "isdir": {"__raise__": "OSError", "msg": "id"}}}}
+{"func": "leader_is_ours", "in": {"pgid": null, "expected_start": null}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": null}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": "fp2", "fingerprints_match": true}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": "fp2", "fingerprints_match": false}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": {"__raise__": "RuntimeError", "msg": "gp"}}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": null}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": "fp2", "fingerprints_match": {"__raise__": "ValueError", "msg": "fp"}}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": "fp2", "fingerprints_match": {"__raise__": "RuntimeError", "msg": "fp"}}}}
+{"func": "leader_is_ours", "in": {"pgid": 100, "expected_start": "fp1", "io": {"get_process_start_time": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0], "proc_poll": null, "killpg": [{"__raise__": "ProcessLookupError", "msg": "gone"}]}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0, 0.6, 1.1], "proc_poll": null, "killpg": [null, null], "sleep": null}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0, 1.1], "proc_poll": null, "killpg": [{"__raise__": "PermissionError", "msg": "perm"}]}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0], "proc_poll": {"__raise__": "RuntimeError", "msg": "poll"}, "killpg": [{"__raise__": "ProcessLookupError", "msg": "gone"}]}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0], "proc_poll": null, "killpg": [{"__raise__": "OSError", "msg": "x"}]}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0], "proc_poll": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "wait_for_group_exit", "in": {"proc": {"pid": 50}, "pgid": 100, "timeout": 1.0, "io": {"monotonic": [0.0, 0.5], "proc_poll": null, "killpg": [null], "sleep": {"__raise__": "RuntimeError", "msg": "sleep"}}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": true, "getpgid": 999, "child_kill": null}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": false}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": true, "getpgid": 100}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": true, "getpgid": {"__raise__": "ProcessLookupError", "msg": "x"}, "child_kill": null}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}, {"pid": 102}], "pgid": 100, "io": {"child_is_running": [true, true], "getpgid": [999, 998], "child_kill": [{"__raise__": "OSError", "msg": "x"}, null]}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": true, "getpgid": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "sweep_escaped_descendants", "in": {"descendants": [{"pid": 101}], "pgid": 100, "io": {"child_is_running": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "kill_known_pids", "in": {"proc": {"pid": 50}, "descendants": [{"pid": 101}, {"pid": 102}], "io": {"proc_kill": null, "child_kill": [null, null]}}}
+{"func": "kill_known_pids", "in": {"proc": {"pid": 50}, "descendants": [{"pid": 101}], "io": {"proc_kill": {"__raise__": "OSError", "msg": "x"}, "child_kill": [null]}}}
+{"func": "kill_known_pids", "in": {"proc": {"pid": 50}, "descendants": [{"pid": 101}], "io": {"proc_kill": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "kill_known_pids", "in": {"proc": {"pid": 50}, "descendants": [], "io": {"proc_kill": null}}}
+{"func": "kill_known_pids", "in": {"proc": {"pid": 50}, "descendants": [{"pid": 101}, {"pid": 102}], "io": {"proc_kill": null, "child_kill": [{"__raise__": "RuntimeError", "msg": "x"}, null]}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": "fp_old"}, "io": {"getpgid": [100, 999], "get_process_start_time": "fp_new", "fingerprints_match": false, "psutil_children": {"__script__": true, "ret": [{"pid": 101}]}, "child_is_running": true, "child_kill": null}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": null}, "io": {"getpgid": [100, 100], "psutil_children": {"__script__": true, "ret": [{"pid": 101}]}, "getpgrp": 100, "proc_kill": null, "child_kill": null, "child_is_running": true}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": null}, "io": {"getpgid": [100, 999], "psutil_children": {"__script__": true, "ret": [{"pid": 101}]}, "getpgrp": 1, "killpg": [null, {"__raise__": "ProcessLookupError", "msg": "gone"}], "monotonic": [0.0], "proc_poll": null, "child_is_running": true, "child_kill": null}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": null}, "io": {"getpgid": [100, 999], "psutil_children": {"__script__": true, "ret": [{"pid": 101}]}, "getpgrp": 1, "killpg": [null, null, null, null, {"__raise__": "ProcessLookupError", "msg": "gone"}], "monotonic": [0.0, 0.6, 1.1, 100], "proc_poll": null, "sleep": null, "proc_wait": null, "child_is_running": true, "child_kill": null}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid": 200, "_hermes_pgid_start": null}, "io": {"getpgid": {"__raise__": "ProcessLookupError", "msg": "x"}, "psutil_children": {"__script__": true, "ret": []}, "getpgrp": 1, "killpg": [null, {"__raise__": "ProcessLookupError", "msg": "gone"}], "monotonic": [0.0], "proc_poll": null}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50}, "io": {"getpgid": {"__raise__": "ProcessLookupError", "msg": "no proc"}}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": null}, "psutil_import_fail": true, "io": {"getpgid": 100, "getpgrp": 1, "killpg": [null, {"__raise__": "ProcessLookupError", "msg": "gone"}], "monotonic": [0.0], "proc_poll": null}}}
+{"func": "kill_process_group_posix", "in": {"proc": {"pid": 50, "_hermes_pgid_start": null}, "io": {"getpgid": [100, 999], "psutil_children": {"__script__": true, "ret": [{"pid": 101}]}, "getpgrp": 1, "killpg": {"__raise__": "PermissionError", "msg": "perm"}, "proc_kill": null, "child_kill": [null, null], "child_is_running": true}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": "fp", "terminate_pid": null, "proc_wait": null}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": {"__raise__": "RuntimeError", "msg": "gp"}, "proc_kill": null, "proc_wait": null}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": "fp", "terminate_pid": {"__raise__": "OSError", "msg": "tp"}, "proc_kill": null, "proc_wait": null}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "status_import_fail": true, "io": {"proc_kill": null, "proc_wait": null}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": "fp", "terminate_pid": null, "proc_wait": {"__raise__": "TimeoutExpired", "msg": "Command 'proc' timed out after 2.0 seconds"}}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": "fp", "terminate_pid": null, "proc_wait": {"__raise__": "RuntimeError", "msg": "pw"}}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "kill_process_windows", "in": {"proc": {"pid": 50}, "io": {"get_process_start_time": null, "terminate_pid": null, "proc_wait": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50}, "is_windows": true, "io": {"kill_process": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": 100, "_hermes_pgid_start": null}, "is_windows": false, "io": {"getpgrp": 1, "killpg": null, "proc_kill": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": null, "_hermes_pgid_start": null}, "is_windows": false, "io": {"getpgid": 100, "getpgrp": 100, "proc_kill": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": 0, "_hermes_pgid_start": "fp1"}, "is_windows": false, "io": {"getpgid": 100, "getpgrp": 1, "get_process_start_time": "fp2", "fingerprints_match": false, "proc_kill": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": null}, "is_windows": false, "io": {"getpgid": {"__raise__": "ProcessLookupError", "msg": "x"}, "proc_kill": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": 100, "_hermes_pgid_start": null}, "is_windows": false, "io": {"getpgrp": 1, "killpg": {"__raise__": "OSError", "msg": "x"}, "proc_kill": null}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": 100, "_hermes_pgid_start": null}, "is_windows": false, "io": {"getpgrp": 100, "proc_kill": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50, "_hermes_pgid": 100}, "is_windows": false, "io": {"getpgrp": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "force_kill_process", "in": {"proc": {"pid": 50}, "is_windows": true, "io": {"kill_process": {"__raise__": "RuntimeError", "msg": "x"}}}}
