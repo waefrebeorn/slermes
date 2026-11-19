@@ -34,8 +34,8 @@ definitions for Hermes C CLI"). It is the first entry of `CUPBOARD_HERMES_CLI` i
 
 Two related files that are **not** the live dispatch table:
 
-- `src/cli/commands.c` — an older twin of the registry (96 entries; verify with
-  `grep -c '{\.name="/' src/cli/commands.c`). It is not listed in any
+- `src/hermes_cli/commands.c` — an older twin of the registry (96 entries; verify with
+  `grep -c '{\.name="/' src/hermes_cli/commands.c`). It is not listed in any
   cupboard in `build/objects.mk`, so it is not linked into the binary.
 - `src/hermes_cli/command_registry.c` — the auto-generated faithful port of Python
   `hermes_cli/commands.py:COMMAND_REGISTRY` (its header still says

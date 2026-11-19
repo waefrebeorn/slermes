@@ -127,7 +127,7 @@ All functions listed below have identical names in both Python (agent/) and C (s
 ### File Safety
 - `get_read_block_error` — src/agent/file_safety.c (RENAMED v76: file_get_read_block_error)
 - `is_write_denied` — src/agent/file_safety.c
-- `allowlist_path` — src/agent/shell_hooks.c
+- `allowlist_path` — src/plugins/platforms/qqbot/shell_hooks.c
 
 ### I18n
 - `get_language` — src/agent/i18n.c (RENAMED v76: i18n_get_language)
@@ -140,13 +140,13 @@ All functions listed below have identical names in both Python (agent/) and C (s
 - `save_context_length` — src/agent/provider_metadata.c
 - `format_size` — src/agent/curator.c
 - `make_error_response` — src/agent/tool_error.c
-- `run_inline_shell` — src/agent/shell_hooks.c
+- `run_inline_shell` — src/plugins/platforms/qqbot/shell_hooks.c
 - `sanitize_context` — src/agent/agent_message_sanitize.c
 - `sanitize_gemini_schema` — src/agent/gemini_schema.c
 - `sanitize_gemini_tool_parameters` — src/agent/gemini_schema.c
 - `sanitize_moonshot_tool_parameters` — src/agent/moonshot_schema.c
 - `find_bws` — src/agent/markdown_tables.c
-- `redact_sensitive_text` — src/agent/redact.c
+- `redact_sensitive_text` — src/plugins/platforms/bluebubbles/redact.c
 - `resolve_aws_auth_env_var` — src/agent/provider_bedrock.c
 - `resolve_lmstudio_effort` — src/agent/lmstudio_reasoning.c
 - `has_aws_credentials` — src/agent/provider_bedrock.c

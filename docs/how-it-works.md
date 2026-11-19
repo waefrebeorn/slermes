@@ -52,14 +52,14 @@ main                              [src/main.c]
   ├─ subcommand dispatch (strcmp on argv[1]):
   │    gateway       → hermes_gateway_main        [src/gateway/server.c]
   │    cron          → hermes_cron_main           [src/cron/scheduler.c]
-  │    init          → hermes_config_init         [src/cli/config_setup.c]
-  │    setup         → hermes_config_setup_interactive [src/cli/config_setup.c]
+  │    init          → hermes_config_init         [src/hermes_cli/config_setup.c]
+  │    setup         → hermes_config_setup_interactive [src/hermes_cli/config_setup.c]
   │    doctor        → inline diagnostics (version, config, API keys)
   │    update        → cmd_update                 [src/hermes_cli/write_approval_commands.c]
   │    completions   → inline bash / zsh / install scripts
   │    acp           → acp_server_new/run/free    [src/acp/server.c]
   │    mcp-serve     → mcp_serve_start            [src/mcp_serve.c]
-  │    api-server    → api_server_start           [src/api_server.c]
+  │    api-server    → api_server_start           [src/hermes_cli/api_server.c]
   ├─ --tui / tui     → tui_fullscreen_run         [src/cli/tui_fullscreen.c]
   │                    (requires HAS_NCURSES_TUI; otherwise error, exit 1)
   ├─ first-run welcome banner     onboarding.json "cli_welcome" flag
@@ -256,7 +256,7 @@ Commands are declared in the `COMMANDS[]` table in
 **`src/hermes_cli/partial_compress.c`** (historical filename — the file
 header reads "commands.c — Slash command definitions"; it is the first
 entry of `CUPBOARD_HERMES_CLI`, so it is the definition linked into the
-binary). `src/cli/commands.c` is an **unlinked legacy twin** (96 entries,
+binary). `src/hermes_cli/commands.c` is an **unlinked legacy twin** (96 entries,
 in no object list) — it is NOT the dispatch table. Entries use
 `command_def_t` (fields: `.name`, `.alias`, `.description`,
 `.category`, `.args_hint`, `.subcommands`, `.handler`, `.cli_only`,
@@ -331,7 +331,7 @@ The same surface works one-shot from the shell: `slermes /model list`
 ```
 response rendering in cli.c
   (hermes_markdown_render + display_panel / display_panel_hex)
-  └─ display core                 [src/cli/display_core.c]
+  └─ display core                 [src/agent/display_core.c]
        display_printf / display_set_fg / display_set_style /
        display_panel / display_statusbar / display_tool_activity
        └─ ANSI helpers            [lib/libansi/ansi.c]

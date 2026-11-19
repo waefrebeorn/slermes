@@ -64,7 +64,7 @@ pipeline via `ccm_handle_hatch_command`.
 ## Pet states
 
 Seven states (`pet_state_t` in `include/pet.h`). `pet_state_derive`
-(`src/pet/pet_state.c`) picks exactly one, in this priority order:
+(`src/agent/pet/pet_state.c`) picks exactly one, in this priority order:
 
 | Priority | Condition | State |
 |----------|-----------|-------|

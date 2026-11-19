@@ -123,7 +123,7 @@ refuses to write unless the expanded object multiset is identical).
 ## Adding a CLI command / tool
 
 - Slash command: handler + registration in the command registry
-  (`src/cli/commands.c`, `src/hermes_cli/command_registry.c`), then build
+  (`src/hermes_cli/commands.c`, `src/hermes_cli/command_registry.c`), then build
   and exercise it in the running CLI.
 - Tool: handler in `src/tools/`, registered via `tools_init_all()` /
   `registry.c` (`registry_dispatch` is the real dispatcher — prove the tool

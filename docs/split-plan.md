@@ -37,7 +37,7 @@ deps. Clean islands move to a new `.c` with a bounded header interface.
 | `src/cron/port_cron_jobs.c` | 2012 | 20 | 18 | cronjobs secure-dir/file/lock/unlock; iso/time (iso_to_ts, iso_utc_offset, iso_wall_clock); is_cron_field; atomic_write_epoch, epoch_file_age; compute_provider_model_snapshots, normalized_inference_axes; find_job_index; rmtree, prune_job_output, cron_output_keep; cmp_str_desc |
 | `src/tools/skills.c` | 2599 | 21 | 12 | fs helpers (skills_dir, ensure_dir, write_file, file_mtime, dir_exists, file_exists); cache (cache_move_to_front, cache_evict_lru); parse (is_valid_version, text_match, parse_deps, is_in_ordered) |
 | `src/tools/memory_storage.c` | 1251 | 40 | 31 | vtable backends: inmem (10 fns), sqlite (11), file (5) — each a self-contained backend |
-| `src/tools/curator_backup.c` | 1270 | 15 | 8 | tar/backup: utc_timestamp, is_valid_snapshot_name, is_excluded_top_level, tar_write_header, tar_write_file_data, extract_tar_gz, copy_file, count_json_jobs |
+| `src/agent/curator_backup.c` | 1270 | 15 | 8 | tar/backup: utc_timestamp, is_valid_snapshot_name, is_excluded_top_level, tar_write_header, tar_write_file_data, extract_tar_gz, copy_file, count_json_jobs |
 | `src/agent/provider_anthropic.c` | 3334 | 6 | 1 | normalize_model_key (+ already split provider_endpoint_detect) |
 | `src/cli/config.c` | 1814 | 2 | 2 | get_slermes_home, parse_env_file |
 | `src/tools/terminal.c` | 2110 | 5 | 5 | ssh_sync_upload/download, _inject_sudo_failure, looks_like_env_assignment, _looks_like_help_or_version_command |
@@ -46,10 +46,10 @@ deps. Clean islands move to a new `.c` with a bounded header interface.
 
 | File | Lines | Tables | Note |
 |---|---|---|---|
-| `src/cli/display_core.c` | 3123 | `SPINNER_CHARS` | diff subsystem `g_ansi_diff_*` coupled to `g_display_skin`/`skin_get`. |
+| `src/agent/display_core.c` | 3123 | `SPINNER_CHARS` | diff subsystem `g_ansi_diff_*` coupled to `g_display_skin`/`skin_get`. |
 | `src/cli/tui_fullscreen.c` | 3018 | `slash_registry` | overlay layer drained; core engine cohesive. |
 | `src/agent/provider_metadata.c` | 2912 | `MODELS`, `PROVIDERS` | capability cluster reads the tables. |
-| `src/cli/config_setup.c` | 2709 | `SETUP_KEY_INFO` | setup wizard key table. |
+| `src/hermes_cli/config_setup.c` | 2709 | `SETUP_KEY_INFO` | setup wizard key table. |
 | `src/skills_hub.c` | 2115 | `g_wellknown_skills` | well-known skills table. |
 | `src/agent/auxiliary_client.c` | 1671 | 5 tables | AUX_MODEL_FALLBACK, CHAIN_LABELS, PROVIDER_ALIASES, TASK_LABELS, VISION_MODELS. |
 | `src/agent/prompt_builder.c` | 1586 | `THREAT_PATTERNS` | threat-pattern table. |
@@ -57,7 +57,7 @@ deps. Clean islands move to a new `.c` with a bounded header interface.
 
 ## Tier C — cohesive engines (high static-fn + shared state): leave, or extract only pure leaves
 
-`src/web_dashboard.c` (1754, 55 static fns), `src/api_server.c` (1776, 35),
+`src/web_dashboard.c` (1754, 55 static fns), `src/hermes_cli/api_server.c` (1776, 35),
 `src/gateway/status.c` (1361, 19), `src/gateway/platforms/*` (per-platform
 adapters, already modular), `src/tools/computer_use.c` (2216, 19),
 `src/tools/mcp_tool.c` (1931, 7), `src/tools/registry.c` (1309, 5).
@@ -106,7 +106,7 @@ static) and `gw_setup.c` (gateway, exported).
 ## Parity gaps found while splitting (not splits)
 
 ### weixin file upload does not encrypt (real gap)
-`src/gateway/platforms/weixin.c` exports five AES helpers with PoP
+`src/plugins/platforms/weixin/weixin.c` exports five AES helpers with PoP
 annotations - `weixin_aes128_ecb_encrypt`, `weixin_aes128_ecb_decrypt`,
 `weixin_parse_aes_key`, `weixin_pkcs7_pad`, `weixin_aes_padded_size` - but
 **none has a caller anywhere in the repo** (verified by grep over `src/`,
@@ -337,7 +337,7 @@ skills cache. Moving them means publishing the struct or passing its fields
 explicitly.
 
 Note: `_run_git` and `_shadow_repo_path` are declared in
-`src/tools/checkpoint_store.h` (split in 4bb8563), so the new module includes
+`src/agent/checkpoints/checkpoint_store.h` (split in 4bb8563), so the new module includes
 that rather than redeclaring them.
 
 ## pairing.c: two private types anchor nearly everything
@@ -359,7 +359,7 @@ Tree-wide `char *xstrdup(const char *)` definitions:
 - `src/agent/verification_evidence.c:19` (static)
 - `src/cli/port_cli_profiles.c:41` (static)
 - `src/cli/port_gateway_signal_format.c:23` (static, `strdup(s ? s : "")`)
-- `src/cli/port_models_pure.c:51` (static)
+- `src/hermes_cli/port_models_pure.c:51` (static)
 - `src/cli/port_models_validate.c:31` (static)
 - `src/cron/cron_jobs_paths.c:40` (**non-static**, malloc+memcpy)
 - `src/gateway/pairing.c` (**non-static**, `s ? strdup(s) : NULL`)

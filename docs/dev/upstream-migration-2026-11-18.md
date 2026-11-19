@@ -66,7 +66,7 @@ scratch checkpoint dir).
   and returns UTF-16 error blobs (two false retest rounds before catching it).
 
 ## C tree mirror
-`src/agent/hermes_state/` (24 ports) → `src/persistence/sqlite_state/`,
+`src/persistence/sqlite/_state/` (24 ports) → `src/persistence/sqlite/_state/`,
 mirroring the quarry package. objects.mk, DEPS, 80 gate extra_src,
 pyport_map, comment refs all rewritten; binary relinks green.
 
@@ -82,7 +82,7 @@ the Windows porting backlog, measured not guessed.
 ## C tree mirror (reorganization to the new schema)
 `scripts/reorg_c_mirror.py` moved **313 C files** so `src/` mirrors the
 quarry's CURRENT package layout, driven by each file's PoP claims:
-- `src/persistence/sqlite_state/` → `src/persistence/sqlite/_state/` (exact
+- `src/persistence/sqlite/_state/` → `src/persistence/sqlite/_state/` (exact
   mirror); admin ports → `persistence/sqlite/admin/`, state_repair likewise.
 - `src/cli/port_*` hermes_cli claims → `src/hermes_cli/`; agent claims →
   `src/agent/`; tools claims → `src/tools/`; gateway platform claims →
@@ -109,7 +109,7 @@ quarry's CURRENT package layout, driven by each file's PoP claims:
 
 ## Consequences (measured, not guessed — see sentinels after make parity)
 - The 169-file `persistence/` package is NEW gap surface: the C
-  `src/agent/hermes_state/*` ports now correspond to
+  `src/persistence/sqlite/_state/*` ports now correspond to
   `persistence/sqlite/_state/*`; the driver abstraction (core/, authority/)
   is unported territory. This is the next porting front.
 - Content-changed functions (renames with similarity < 100%) may lose

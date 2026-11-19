@@ -98,7 +98,7 @@ hand-written percentages here.
 | Python `agent/` | C Location | Status | Notes |
 |---|---|---|---|
 | `insights.py` | `src/agent/insights.c` | C unit exists | Usage insights/analytics, native C (no pandas) |
-| `display.py` | `src/cli/display_core.c` | Oracle-backed | `tests/sta_oracle_display.py` (registry: `display`, harness `tests/t_port_display.c`); CLI display primitives |
+| `display.py` | `src/agent/display_core.c` | Oracle-backed | `tests/sta_oracle_display.py` (registry: `display`, harness `tests/t_port_display.c`); CLI display primitives |
 
 ## System Prompt
 
@@ -147,7 +147,7 @@ hand-written percentages here.
 | `video_gen_registry.py` | `src/tools/video_gen_registry.c` | C unit exists | Video provider registry |
 | `web_search_registry.py` | `src/tools/web_search_registry.c` | C unit exists | Web search provider registry |
 | `transcription_registry.py` | `lib/libtranscribe/transcription_registry.c` | C unit exists | Transcription provider registry |
-| `curator_backup.py` | `src/tools/curator_backup.c` | Oracle-backed | `tests/sta_oracle_curator_backup.py` |
+| `curator_backup.py` | `src/agent/curator_backup.c` | Oracle-backed | `tests/sta_oracle_curator_backup.py` |
 | `jiter_preload.py` | `src/jiter_preload.c` | C unit exists | Also `src/agent/jiter_preload.c` |
 
 ## Subdirectory & Hints
