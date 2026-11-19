@@ -552,18 +552,21 @@ json_t *prf_transfer_ownership_flow(json_t *st, const char *session_id,
     json_t *gr = prf_call(s, "get", a);
     const char *rid = (gr && gr->type == JSON_STRING) ? gr->str_val : NULL;
     json_t *session = rid ? prf_sess(st, rid) : NULL;
-    json_free(gr);
     /* with self._lock: if session is None or session.exited
      *     or session.owner_task_id != from_owner: return None */
-    if (!session) return NULL;
-    if (prf_truthy(json_obj_get(session, "exited"))) return NULL;
-    if (strcmp(json_get_str(session, "owner_task_id", ""), from_owner ? from_owner : "") != 0) return NULL;
+    if (!session) { json_free(gr); return NULL; }
+    if (prf_truthy(json_obj_get(session, "exited"))) { json_free(gr); return NULL; }
+    if (strcmp(json_get_str(session, "owner_task_id", ""), from_owner ? from_owner : "") != 0) { json_free(gr); return NULL; }
     /* session.owner_task_id = to_owner; task_id; session_key; handoff_note = note */
     json_set(session, "owner_task_id", json_string(to_owner ? to_owner : ""));
     json_set(session, "task_id", json_string(to_task_id ? to_task_id : ""));
     json_set(session, "session_key", json_string(to_session_key ? to_session_key : ""));
     json_set(session, "handoff_note", json_string(note ? note : ""));
-    return json_string(rid);
+    /* rid points INTO gr — build the return before freeing (use-after-free
+     * otherwise reads whatever reused the slot). */
+    json_t *ret = json_string(rid);
+    json_free(gr);
+    return ret;
 }
 
 /* PoP: prf_unread_completions_owned_by @ tools/process_registry.py:ProcessRegistry.unread_completions_owned_by */
