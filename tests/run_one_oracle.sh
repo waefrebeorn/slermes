@@ -41,7 +41,11 @@ OBJSET=.testbin/oracle_objs_${NAME}_$$.rsp
 # is handed @$OBJSET either way, and a missing file is a hard link error.
 OBJARG="${4:-${MINIMAL_OBJS:-}}"
 if [ -z "$OBJARG" ] || [ "$OBJARG" = "FULL" ]; then
-  find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ' > "$OBJSET"
+  # SAC refuses images containing these three objects (rc=127); the -O0 hash
+  # object supplies the same symbols and is accepted.
+  find src lib -name '*.o' ! -name 'main.o' ! -name 'hash.o' ! -name 'hermes_regex.o' ! -name 'auxiliary_client_runtime.o' | tr '\n' ' ' > "$OBJSET"
+  [ -f .testbin/hash_O0.o ] && printf '%s ' .testbin/hash_O0.o >> "$OBJSET"
+  [ -f .testbin/hermes_regex_O0.o ] && printf '%s ' .testbin/hermes_regex_O0.o >> "$OBJSET"
   echo >> "$OBJSET"
   OBJARG="@$OBJSET"
 else

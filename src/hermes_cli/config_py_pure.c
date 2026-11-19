@@ -1490,3 +1490,1367 @@ json_t *build_cron_model_impact(const char *current_provider, const char *curren
     if (owned_jobs) json_free(jobs_list);
     return result;
 }
+/* ============================================================
+ * hermes_cli/config.py — pure-gap closure batch (oracle_config_pure).
+ *
+ * C names carry the config_py_ prefix; each PoP annotation names the LIVE
+ * Python function (underscore-prefixed where the live def is private).
+ * Dict/list values are libjson json_t*; ownership is documented per function.
+ * Functions that raise in Python return NULL (or an error code) plus the
+ * exact exception message through a caller-frees / caller-buffer seam.
+ *
+ * Known representation limits (documented, not chased): a parsed JSON number
+ * has no int/float identity (1.0 reads back as 1), and str()/lower()/strip()
+ * ports cover the ASCII range the config surface uses.
+ * ============================================================ */
+
+#include <math.h>
+#include "port_config.h"
+#include "port_config_nested.h"
+#include "config_defaults.h"
+
+static const char CP_SECURITY_COMMENT[] = "\x0a# \xe2\x94\x80\xe2\x94\x80 Security \xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\x0a# Secret redaction is ON by default \xe2\x80\x94 strings that look like API keys,\x0a# tokens, and passwords are masked in tool output, logs, and chat\x0a# responses before the model or user ever sees them. Set redact_secrets\x0a# to false to disable (e.g. when developing the redactor itself).\x0a#\x0a# security:\x0a#   redact_secrets: true\x0a";
+
+static const char CP_FALLBACK_COMMENT[] = "\x0a# \xe2\x94\x80\xe2\x94\x80 Fallback Model \xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\x0a# Automatic provider failover when primary is unavailable.\x0a# Uncomment and configure to enable. Triggers on rate limits (429),\x0a# overload (529), service errors (503), or connection failures.\x0a#\x0a# Supported providers:\x0a#   openrouter   (OPENROUTER_API_KEY)  \xe2\x80\x94 routes to any model\x0a#   openai-codex (OAuth \xe2\x80\x94 hermes auth) \xe2\x80\x94 OpenAI Codex\x0a#   nous         (OAuth \xe2\x80\x94 hermes auth) \xe2\x80\x94 Nous Portal\x0a#   zai          (ZAI_API_KEY)         \xe2\x80\x94 Z.AI / GLM\x0a#   kimi-coding  (KIMI_API_KEY)        \xe2\x80\x94 Kimi / Moonshot\x0a#   kimi-coding-cn (KIMI_CN_API_KEY)   \xe2\x80\x94 Kimi / Moonshot (China)\x0a#   minimax      (MINIMAX_API_KEY)     \xe2\x80\x94 MiniMax\x0a#   minimax-cn   (MINIMAX_CN_API_KEY)  \xe2\x80\x94 MiniMax (China)\x0a#   bedrock      (AWS IAM / boto3)     \xe2\x80\x94 AWS Bedrock (Converse API)\x0a#\x0a# For custom OpenAI-compatible endpoints, add base_url and key_env.\x0a#\x0a# fallback_model:\x0a#   provider: openrouter\x0a#   model: anthropic/claude-sonnet-4\x0a";
+
+static const char CP_LIST_HINT[] = "Change to:\x0a  custom_providers:\x0a    - name: my-provider\x0a      base_url: https://...\x0a      api_key: ...";
+
+/* ---- shared Python-semantics helpers ---- */
+
+/* str.strip() whitespace set (ASCII subset of Python's Unicode whitespace). */
+static int cp_is_py_ws(unsigned char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f';
+}
+
+/* In-place str.strip() (both ends). */
+static void cp_str_strip(char *s) {
+    size_t n = strlen(s);
+    size_t a = 0;
+    while (a < n && cp_is_py_ws((unsigned char)s[a])) a++;
+    size_t b = n;
+    while (b > a && cp_is_py_ws((unsigned char)s[b - 1])) b--;
+    memmove(s, s + a, b - a);
+    s[b - a] = '\0';
+}
+
+/* Python type(x).__name__ for a JSON value. Integral doubles read as "int":
+ * a parsed JSON number carries no int/float identity (see batch note). */
+static const char *cp_typename(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+    case JSON_OBJECT: return "dict";
+    case JSON_ARRAY:  return "list";
+    case JSON_STRING: return "str";
+    case JSON_BOOL:   return "bool";
+    case JSON_NUMBER:
+        return (isfinite(v->num_val) && v->num_val == floor(v->num_val)) ? "int" : "float";
+    }
+    return "object";
+}
+
+/* Python truthiness: None/False/0/""/[]/{} are falsy, everything else truthy. */
+static int cp_truthy(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return 0;
+    switch (v->type) {
+    case JSON_BOOL:   return v->bool_val ? 1 : 0;
+    case JSON_NUMBER: return v->num_val != 0.0 ? 1 : 0;
+    case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+    case JSON_ARRAY:
+    case JSON_OBJECT: return v->c.count ? 1 : 0;
+    }
+    return 0;
+}
+
+/* Growable string buffer (caller frees .s). */
+typedef struct { char *s; size_t len, cap; } cp_buf;
+static void cp_buf_init(cp_buf *b) {
+    b->cap = 128; b->len = 0;
+    b->s = (char *)malloc(b->cap);
+    b->s[0] = '\0';
+}
+static void cp_buf_add(cp_buf *b, const char *t) {
+    size_t n = strlen(t);
+    if (b->len + n + 1 > b->cap) {
+        while (b->len + n + 1 > b->cap) b->cap *= 2;
+        b->s = (char *)realloc(b->s, b->cap);
+    }
+    memcpy(b->s + b->len, t, n + 1);
+    b->len += n;
+}
+
+/* Python repr() of a str: single quotes unless the value contains ' and no ".
+ * Caller frees. */
+static char *cp_py_repr_str(const char *s) {
+    if (!s) s = "";
+    int has_sq = strchr(s, '\'') != NULL;
+    int has_dq = strchr(s, '"') != NULL;
+    char quote = (has_sq && !has_dq) ? '"' : '\'';
+    size_t cap = strlen(s) * 4 + 3;
+    char *out = (char *)malloc(cap);
+    size_t w = 0;
+    out[w++] = quote;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+        unsigned char c = *p;
+        if (c == (unsigned char)quote || c == '\\') { out[w++] = '\\'; out[w++] = (char)c; }
+        else if (c == '\n') { out[w++] = '\\'; out[w++] = 'n'; }
+        else if (c == '\r') { out[w++] = '\\'; out[w++] = 'r'; }
+        else if (c == '\t') { out[w++] = '\\'; out[w++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) w += (size_t)snprintf(out + w, cap - w, "\\x%02x", c);
+        else out[w++] = (char)c;   /* printable non-ASCII passes through, as repr does */
+    }
+    out[w++] = quote;
+    out[w] = '\0';
+    return out;
+}
+
+/* Python str(float): shortest round-trip digits, fixed notation for decimal
+ * exponents in [-4, 16), exponent form otherwise, ".0" on integral values. */
+static char *cp_float_repr(double d) {
+    char buf[64];
+    if (isnan(d)) return strdup("nan");
+    if (isinf(d)) return strdup(d > 0 ? "inf" : "-inf");
+    if (d == 0.0) return strdup(signbit(d) ? "-0.0" : "0.0");
+    int prec;
+    for (prec = 1; prec <= 17; prec++) {
+        snprintf(buf, sizeof buf, "%.*g", prec, d);
+        if (strtod(buf, NULL) == d) break;
+    }
+    snprintf(buf, sizeof buf, "%.*e", prec - 1, d);
+    char *p = buf;
+    int neg = 0;
+    if (*p == '-') { neg = 1; p++; }
+    char digits[32];
+    int nd = 0;
+    digits[nd++] = *p++;
+    if (*p == '.') { p++; while (*p && *p != 'e' && *p != 'E') digits[nd++] = *p++; }
+    while (nd > 1 && digits[nd - 1] == '0') nd--;
+    char *ep = strchr(p, 'e');
+    if (!ep) ep = strchr(p, 'E');
+    int E = ep ? atoi(ep + 1) : 0;
+    char out[80];
+    size_t w = 0;
+    if (neg) out[w++] = '-';
+    if (E >= -4 && E < 16) {
+        if (E >= 0) {
+            int intd = E + 1;
+            for (int i = 0; i < intd; i++) out[w++] = (i < nd) ? digits[i] : '0';
+            out[w++] = '.';
+            if (nd > intd) { for (int i = intd; i < nd; i++) out[w++] = digits[i]; }
+            else out[w++] = '0';
+        } else {
+            out[w++] = '0'; out[w++] = '.';
+            for (int i = 0; i < -E - 1; i++) out[w++] = '0';
+            for (int i = 0; i < nd; i++) out[w++] = digits[i];
+        }
+    } else {
+        out[w++] = digits[0];
+        if (nd > 1) { out[w++] = '.'; for (int i = 1; i < nd; i++) out[w++] = digits[i]; }
+        out[w++] = 'e';
+        out[w++] = E < 0 ? '-' : '+';
+        char eb[8];
+        snprintf(eb, sizeof eb, "%02d", E < 0 ? -E : E);
+        for (char *q = eb; *q; q++) out[w++] = *q;
+    }
+    out[w] = '\0';
+    return strdup(out);
+}
+
+static char *cp_py_repr(const json_t *v);
+
+/* Python str(v) for a JSON value (repr for containers). Caller frees. */
+static char *cp_py_str(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return strdup("None");
+    switch (v->type) {
+    case JSON_STRING: return strdup(v->str_val ? v->str_val : "");
+    case JSON_BOOL:   return strdup(v->bool_val ? "True" : "False");
+    case JSON_NUMBER:
+        if (isfinite(v->num_val) && v->num_val == floor(v->num_val) && fabs(v->num_val) < 1e16) {
+            char buf[64];
+            snprintf(buf, sizeof buf, "%.0f", v->num_val);
+            return strdup(buf);
+        }
+        return cp_float_repr(v->num_val);
+    default: return cp_py_repr(v);
+    }
+}
+
+static void cp_repr_rec(const json_t *v, cp_buf *b) {
+    if (!v || v->type == JSON_NULL) { cp_buf_add(b, "None"); return; }
+    switch (v->type) {
+    case JSON_BOOL: cp_buf_add(b, v->bool_val ? "True" : "False"); return;
+    case JSON_NUMBER: { char *t = cp_py_str(v); cp_buf_add(b, t); free(t); return; }
+    case JSON_STRING: { char *t = cp_py_repr_str(v->str_val); cp_buf_add(b, t); free(t); return; }
+    case JSON_ARRAY:
+        cp_buf_add(b, "[");
+        for (size_t i = 0; i < v->c.count; i++) {
+            if (i) cp_buf_add(b, ", ");
+            cp_repr_rec(v->c.items[i], b);
+        }
+        cp_buf_add(b, "]");
+        return;
+    case JSON_OBJECT:
+        cp_buf_add(b, "{");
+        for (size_t i = 0; i < v->c.count; i++) {
+            if (i) cp_buf_add(b, ", ");
+            char *k = cp_py_repr_str(v->c.keys[i]);
+            cp_buf_add(b, k);
+            free(k);
+            cp_buf_add(b, ": ");
+            cp_repr_rec(v->c.items[i], b);
+        }
+        cp_buf_add(b, "}");
+        return;
+    }
+}
+
+/* Python repr(v) for a JSON value. Caller frees. */
+static char *cp_py_repr(const json_t *v) {
+    cp_buf b;
+    cp_buf_init(&b);
+    cp_repr_rec(v, &b);
+    return b.s;
+}
+
+/* str(v or "").strip() — the provider/model text normalizer shape. Caller frees. */
+static char *cp_py_str_truthy(const json_t *v) {
+    char *s = cp_truthy(v) ? cp_py_str(v) : strdup("");
+    cp_str_strip(s);
+    return s;
+}
+
+/* dict-key text for dict(pairs) conversion: JSON object keys are strings, so
+ * non-string keys use the json.dumps key spelling (numbers via str(), bools
+ * "true"/"false", None "null"). Caller frees. */
+static char *cp_dict_key_text(const json_t *k) {
+    if (!k || k->type == JSON_NULL) return strdup("null");
+    if (k->type == JSON_STRING) return strdup(k->str_val ? k->str_val : "");
+    if (k->type == JSON_BOOL) return strdup(k->bool_val ? "true" : "false");
+    return cp_py_str(k);
+}
+
+/* Python int(s), base 10: surrounding whitespace, optional sign, digits with
+ * single underscores BETWEEN digits. Returns 1 on success, 0 on ValueError.
+ * Overflow fails too: the only caller indexes lists, where a huge int would
+ * raise IndexError and the walk returns None anyway. */
+static int cp_py_int_parse(const char *s, long long *out) {
+    if (!s) return 0;
+    while (*s && cp_is_py_ws((unsigned char)*s)) s++;
+    const char *end = s + strlen(s);
+    while (end > s && cp_is_py_ws((unsigned char)end[-1])) end--;
+    const char *p = s;
+    int neg = 0;
+    if (p < end && (*p == '+' || *p == '-')) { neg = (*p == '-'); p++; }
+    char clean[128];
+    size_t n = 0;
+    int prev_digit = 0;
+    for (; p < end; p++) {
+        char c = *p;
+        if (c >= '0' && c <= '9') {
+            if (n + 1 >= sizeof clean) return 0;
+            clean[n++] = c;
+            prev_digit = 1;
+        } else if (c == '_') {
+            if (!prev_digit) return 0;   /* leading / doubled / post-sign underscore */
+            prev_digit = 0;              /* an underscore must be followed by a digit */
+        } else {
+            return 0;
+        }
+    }
+    if (!n || !prev_digit) return 0;     /* empty or trailing underscore */
+    clean[n] = '\0';
+    errno = 0;
+    char *e2 = NULL;
+    long long v = strtoll(clean, &e2, 10);
+    if (errno == ERANGE || (e2 && *e2)) return 0;
+    *out = neg ? -v : v;
+    return 1;
+}
+
+/* _split_key_path into a malloc'd segment array (caller frees each + array).
+ * Returns the segment count, or -1 on bad args. */
+static int cp_split(const char *key, char ***out) {
+    size_t klen = strlen(key);
+    int max = (int)klen + 1;             /* a segment count can never exceed this */
+    char **segs = (char **)malloc(sizeof(char *) * (size_t)max);
+    if (!segs) return -1;
+    int n = cfg_split_key_path(key, segs, max);
+    if (n < 0) { free(segs); return -1; }
+    *out = segs;
+    return n;
+}
+
+/* cfg_get(cfg, *parts): dict-only traversal, NULL on any miss (default=None).
+ * Zero parts returns cfg itself. Borrowed result. */
+static json_t *cp_cfg_get_node(json_t *cfg, char *const *parts, int n) {
+    if (!cfg || cfg->type != JSON_OBJECT) return NULL;
+    json_t *node = cfg;
+    for (int i = 0; i < n; i++) {
+        if (!node || node->type != JSON_OBJECT) return NULL;
+        node = json_obj_get(node, parts[i]);
+        if (!node) return NULL;
+    }
+    return node;
+}
+
+/* Python str.splitlines() boundary length at p (0 when not a boundary):
+ * \n \r \v \f \x1c \x1d \x1e \x85    . \r\n is handled by the caller. */
+static int cp_line_break_len(const char *p) {
+    unsigned char c = (unsigned char)p[0];
+    if (c == '\n' || c == '\r' || c == '\v' || c == '\f' ||
+        c == 0x1c || c == 0x1d || c == 0x1e) return 1;
+    if (c == 0xc2 && (unsigned char)p[1] == 0x85) return 2;
+    if (c == 0xe2 && (unsigned char)p[1] == 0x80 &&
+        ((unsigned char)p[2] == 0xa8 || (unsigned char)p[2] == 0xa9)) return 3;
+    return 0;
+}
+/* ---- config-structure validation (ConfigIssue -> {severity,message,hint}) ---- */
+
+static void cp_issue(json_t *issues, const char *severity, const char *message, const char *hint) {
+    if (!issues || issues->type != JSON_ARRAY) return;
+    json_t *e = json_object();
+    json_set(e, "severity", json_string(severity ? severity : ""));
+    json_set(e, "message", json_string(message ? message : ""));
+    json_set(e, "hint", json_string(hint ? hint : ""));
+    json_append(issues, e);
+}
+
+/* Substitute {i} and {type} in a non-dict entry message template. Caller frees. */
+static char *cp_fmt_msg(const char *tpl, int i, const char *type) {
+    size_t cap = strlen(tpl) + 64;
+    char *out = (char *)malloc(cap);
+    if (!out) return NULL;
+    size_t w = 0;
+    for (const char *p = tpl; *p && w + 1 < cap; p++) {
+        if (p[0] == '{' && p[1] == 'i' && p[2] == '}') {
+            w += (size_t)snprintf(out + w, cap - w, "%d", i);
+            p += 2;
+        } else if (p[0] == '{' && p[1] == 't' && p[2] == 'y' && p[3] == 'p' &&
+                   p[4] == 'e' && p[5] == '}') {
+            w += (size_t)snprintf(out + w, cap - w, "%s", type);
+            p += 5;
+        } else {
+            out[w++] = *p;
+        }
+    }
+    out[w] = '\0';
+    return out;
+}
+
+/* _require_fields: a warning for every FALSY field (0 and False included).
+ * fields is a flat [field, hint, ...] pair array. */
+static void cp_require_fields(json_t *issues, const json_t *entry, const char *label,
+                              const char *const *fields, int nfields, const char *suffix) {
+    if (!entry || entry->type != JSON_OBJECT) return;
+    for (int i = 0; i < nfields; i++) {
+        const char *field = fields[2 * i];
+        const char *hint = fields[2 * i + 1];
+        json_t *v = json_obj_get(entry, field);
+        if (!cp_truthy(v)) {
+            char msg[1024];
+            snprintf(msg, sizeof msg, "%s is missing '%s' field%s",
+                     label ? label : "", field, suffix ? suffix : "");
+            cp_issue(issues, "warning", msg, hint ? hint : "");
+        }
+    }
+}
+
+/* _CP_REQUIRED_FIELDS / _FB_REQUIRED_FIELDS / _FB_SINGLE_REQUIRED_FIELDS. */
+static const char *const CP_REQUIRED_FIELDS[] = {
+    "name", "Add a name, e.g.: name: my-provider",
+    "base_url", "Add the API endpoint URL, e.g.: base_url: https://api.example.com/v1",
+};
+static const char *const CP_FB_REQUIRED_FIELDS[] = {
+    "provider", "Add: provider: openrouter (or another provider)",
+    "model", "Add: model: <model-name>",
+};
+static const char *const CP_FB_SINGLE_REQUIRED_FIELDS[] = {
+    "provider", "Add: provider: openrouter (or another provider)",
+    "model", "Add: model: anthropic/claude-sonnet-4 (or another model)",
+};
+/* _CUSTOM_PROVIDER_LIKE_FIELDS, pre-sorted (Python emits sorted(intersection)). */
+static const char *const CP_LIKE_FIELDS_SORTED[] = {
+    "api_key", "api_mode", "base_url", "rate_limit_delay",
+};
+static const char CP_CP_DICT_MSG[] =
+    "custom_providers is a dict \xe2\x80\x94" " it must be a YAML list (items prefixed with '-')";
+static const char CP_CP_SCALAR_FMT[] =
+    "custom_providers is a %s \xe2\x80\x94" " it must be a YAML list (items prefixed with '-'); "
+    "legacy custom_providers entries are ignored until it is";
+static const char CP_FB_DISABLED_SUFFIX[] = " \xe2\x80\x94" " fallback will be disabled";
+static const char CP_FB_CHANGE_HINT[] =
+    "Change to:\n  fallback_model:\n    provider: openrouter\n    model: anthropic/claude-sonnet-4";
+
+/* Materialize a flat pair table as the JSON [[field, hint], ...] the public
+ * entry-list seam takes. Caller frees. */
+static json_t *cp_fields_json(const char *const *flat, int nfields) {
+    json_t *arr = json_array();
+    for (int i = 0; i < nfields; i++) {
+        json_t *pair = json_array();
+        json_append(pair, json_string(flat[2 * i]));
+        json_append(pair, json_string(flat[2 * i + 1]));
+        json_append(arr, pair);
+    }
+    return arr;
+}
+
+/* PoP: config_py_validate_entry_list @ hermes_cli/config.py:_validate_entry_list */
+/* issues: borrowed JSON array, appended in order. entries: borrowed JSON array.
+ * fields: borrowed JSON array of [field, hint] pairs. The keyword-only non_dict
+ * tuple is passed as (severity, message, hint); message may hold {i} / {type}. */
+void config_py_validate_entry_list(json_t *issues, const json_t *entries, const char *label,
+                                   const json_t *fields, const char *severity,
+                                   const char *message, const char *hint) {
+    if (!entries || entries->type != JSON_ARRAY) return;
+    int nfields = 0;
+    const char **flat = NULL;
+    if (fields && fields->type == JSON_ARRAY && fields->c.count > 0) {
+        nfields = (int)fields->c.count;
+        flat = (const char **)malloc(sizeof(char *) * (size_t)(nfields * 2));
+        for (int k = 0; k < nfields; k++) {
+            json_t *pair = fields->c.items[k];
+            const char *f = "", *h = "";
+            if (pair && pair->type == JSON_ARRAY && pair->c.count >= 2) {
+                json_t *a = pair->c.items[0];
+                json_t *b = pair->c.items[1];
+                if (a && a->type == JSON_STRING && a->str_val) f = a->str_val;
+                if (b && b->type == JSON_STRING && b->str_val) h = b->str_val;
+            }
+            flat[2 * k] = f;
+            flat[2 * k + 1] = h;
+        }
+    }
+    for (size_t i = 0; i < entries->c.count; i++) {
+        json_t *entry = entries->c.items[i];
+        if (!entry || entry->type != JSON_OBJECT) {
+            char *m = cp_fmt_msg(message ? message : "", (int)i, cp_typename(entry));
+            cp_issue(issues, severity ? severity : "warning", m ? m : "", hint ? hint : "");
+            free(m);
+        } else {
+            char lbl[512];
+            snprintf(lbl, sizeof lbl, "%s[%zu]", label ? label : "", i);
+            cp_require_fields(issues, entry, lbl, flat, nfields, "");
+        }
+    }
+    free(flat);
+}
+
+/* PoP: config_py_validate_custom_providers @ hermes_cli/config.py:_validate_custom_providers */
+/* issues: borrowed JSON array, appended. cp: borrowed value; NULL models None
+ * (the live function itself issues the NoneType error — the caller-side
+ * `is not None` guard lives in validate_config_structure, not here). */
+void config_py_validate_custom_providers(json_t *issues, const json_t *cp) {
+    if (cp && cp->type == JSON_OBJECT) {
+        cp_issue(issues, "error", CP_CP_DICT_MSG, CP_LIST_HINT);
+        /* suspicious = sorted(set(cp.keys()) & _CUSTOM_PROVIDER_LIKE_FIELDS) */
+        const char *hits[4];
+        size_t nh = 0;
+        for (int k = 0; k < 4; k++)
+            if (json_obj_get(cp, CP_LIKE_FIELDS_SORTED[k]))
+                hits[nh++] = CP_LIKE_FIELDS_SORTED[k];
+        if (nh > 0) {
+            cp_buf b;
+            cp_buf_init(&b);
+            cp_buf_add(&b, "[");
+            for (size_t k = 0; k < nh; k++) {
+                if (k) cp_buf_add(&b, ", ");
+                char *r = cp_py_repr_str(hits[k]);
+                cp_buf_add(&b, r);
+                free(r);
+            }
+            cp_buf_add(&b, "]");
+            char msg[1024];
+            snprintf(msg, sizeof msg,
+                     "Root-level keys %s look like custom_providers entry fields", b.s);
+            free(b.s);
+            cp_issue(issues, "warning", msg,
+                     "These should be indented under a '- name: ...' list entry, not at root level");
+        }
+    } else if (cp && cp->type == JSON_ARRAY) {
+        json_t *fields = cp_fields_json(CP_REQUIRED_FIELDS, 2);
+        config_py_validate_entry_list(issues, cp, "custom_providers", fields,
+                                      "warning",
+                                      "custom_providers[{i}] is not a dict (got {type})",
+                                      "Each entry should have at minimum: name, base_url");
+        json_free(fields);
+    } else {
+        char msg[512];
+        snprintf(msg, sizeof msg, CP_CP_SCALAR_FMT, cp_typename(cp));
+        cp_issue(issues, "error", msg, CP_LIST_HINT);
+    }
+}
+
+/* PoP: config_py_validate_fallback_model @ hermes_cli/config.py:_validate_fallback_model */
+/* issues: borrowed JSON array, appended. fb: borrowed value (NULL models None).
+ * An EMPTY dict passes silently (`elif fb:`), matching the live truthiness gate. */
+void config_py_validate_fallback_model(json_t *issues, const json_t *fb) {
+    if (fb && fb->type == JSON_ARRAY) {
+        json_t *fields = cp_fields_json(CP_FB_REQUIRED_FIELDS, 2);
+        config_py_validate_entry_list(issues, fb, "fallback_model", fields,
+                                      "error",
+                                      "fallback_model[{i}] should be a dict, got {type}",
+                                      "Each entry needs provider + model");
+        json_free(fields);
+    } else if (!fb || fb->type != JSON_OBJECT) {
+        char msg[512];
+        snprintf(msg, sizeof msg,
+                 "fallback_model should be a dict with 'provider' and 'model', got %s",
+                 cp_typename(fb));
+        cp_issue(issues, "error", msg, CP_FB_CHANGE_HINT);
+    } else if (fb->c.count > 0) {
+        cp_require_fields(issues, fb, "fallback_model",
+                          CP_FB_SINGLE_REQUIRED_FIELDS, 2, CP_FB_DISABLED_SUFFIX);
+    }
+}
+
+/* PoP: config_py_strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */
+/* Mutates cfg (BORROWED) in place and returns it. *out_stripped receives a NEW
+ * JSON array of the dotted keys actually removed (caller frees), sorted for
+ * determinism — Python returns a set. dotted_keys: borrowed JSON array of
+ * strings; split is a PLAIN '.' split (no escape handling), walk is cfg_get. */
+json_t *config_py_strip_dotted_keys(json_t *cfg, const json_t *dotted_keys, json_t **out_stripped) {
+    json_t *stripped = json_array();
+    if (out_stripped) *out_stripped = stripped;
+    if (!cfg || cfg->type != JSON_OBJECT || !dotted_keys || dotted_keys->type != JSON_ARRAY)
+        return cfg;
+    for (size_t i = 0; i < dotted_keys->c.count; i++) {
+        json_t *d = dotted_keys->c.items[i];
+        if (!d || d->type != JSON_STRING || !d->str_val) continue;
+        const char *dotted = d->str_val;
+        const char *last_dot = strrchr(dotted, '.');
+        const char *leaf = last_dot ? last_dot + 1 : dotted;
+        /* walk the parent segments with cfg_get semantics */
+        json_t *node = cfg;
+        if (last_dot) {
+            size_t plen = (size_t)(last_dot - dotted);
+            char *prefix = (char *)malloc(plen + 1);
+            memcpy(prefix, dotted, plen);
+            prefix[plen] = '\0';
+            char *p = prefix;
+            while (node && node->type == JSON_OBJECT) {
+                char *dot = strchr(p, '.');
+                if (dot) *dot = '\0';
+                node = json_obj_get(node, p);
+                if (!dot) break;
+                p = dot + 1;
+            }
+            free(prefix);
+        }
+        if (node && node->type == JSON_OBJECT && json_obj_get(node, leaf)) {
+            json_obj_del(node, leaf);
+            int dup = 0;
+            for (size_t k = 0; k < stripped->c.count; k++) {
+                json_t *s = stripped->c.items[k];
+                if (s && s->type == JSON_STRING && strcmp(s->str_val, dotted) == 0) { dup = 1; break; }
+            }
+            if (!dup) json_append(stripped, json_string(dotted));
+        }
+    }
+    /* insertion sort: Python's set has no order; the oracle sorts both sides */
+    for (size_t a = 1; a < stripped->c.count; a++) {
+        json_t *cur = stripped->c.items[a];
+        size_t b = a;
+        while (b > 0 && strcmp(stripped->c.items[b - 1]->str_val, cur->str_val) > 0) {
+            stripped->c.items[b] = stripped->c.items[b - 1];
+            b--;
+        }
+        stripped->c.items[b] = cur;
+    }
+    return cfg;
+}
+
+/* PoP: config_py_is_non_env_secret_ref @ hermes_cli/config.py:_is_non_env_secret_ref */
+/* True for a SecretRef body with a non-env source: ":" present AND the body
+ * matches ^[a-z][a-z0-9_-]*: (case-sensitive, anchored). */
+bool config_py_is_non_env_secret_ref(const char *ref) {
+    if (!ref || !strchr(ref, ':')) return false;
+    if (!(ref[0] >= 'a' && ref[0] <= 'z')) return false;
+    const char *p = ref + 1;
+    while ((*p >= 'a' && *p <= 'z') || (*p >= '0' && *p <= '9') || *p == '_' || *p == '-') p++;
+    return *p == ':';
+}
+
+/* PoP: config_py_is_secret_config_key @ hermes_cli/config.py:_is_secret_config_key */
+/* The LAST dotted segment, lowercased with '-' folded to '_', decides.
+ * Env-routed keys are secrets unless they end in a non-secret suffix. */
+bool config_py_is_secret_config_key(const char *key) {
+    if (!key) return false;
+    const char *leaf = strrchr(key, '.');
+    leaf = leaf ? leaf + 1 : key;
+    char buf[512];
+    size_t n = strlen(leaf);
+    if (n >= sizeof buf) n = sizeof buf - 1;
+    for (size_t i = 0; i < n; i++) {
+        char c = leaf[i];
+        if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+        if (c == '-') c = '_';
+        buf[i] = c;
+    }
+    buf[n] = '\0';
+    if (cfg_is_env_config_key(key)) {
+        static const char *const non_secret[] = {
+            "_url", "_host", "_user", "_id", "_domain", "_scheme",
+        };
+        for (int i = 0; i < 6; i++) {
+            size_t sl = strlen(non_secret[i]);
+            if (n >= sl && strcmp(buf + n - sl, non_secret[i]) == 0) return false;
+        }
+        return true;
+    }
+    static const char *const secret_keys[] = {
+        "api_key", "apikey", "key", "token", "access_token", "refresh_token", "id_token",
+        "secret", "client_secret", "password", "passwd", "authorization",
+        "private_key", "bearer", "jwt", NULL,
+    };
+    for (int i = 0; secret_keys[i]; i++)
+        if (strcmp(buf, secret_keys[i]) == 0) return true;
+    static const char *const secret_suffixes[] = {
+        "_api_key", "_token", "_secret", "_password", "_key", "_access_key",
+    };
+    for (int i = 0; i < 6; i++) {
+        size_t sl = strlen(secret_suffixes[i]);
+        if (n >= sl && strcmp(buf + n - sl, secret_suffixes[i]) == 0) return true;
+    }
+    return false;
+}
+/* ---- load/save canonicalization pipeline ---- */
+
+/* dict(x) for a JSON value, with the live exception texts: object -> copy,
+ * list -> dict(pairs) (empty -> {}), "" -> {}, non-empty str -> ValueError
+ * (iterating chars yields length-1 elements), other scalars -> TypeError.
+ * Returns a NEW object (caller frees) or NULL + *err "Type: message". */
+static json_t *cp_dict_from(const json_t *v, char **err) {
+    if (err) *err = NULL;
+    char m[160];
+    if (v && v->type == JSON_OBJECT) return json_copy(v);
+    if (v && v->type == JSON_ARRAY) {
+        json_t *d = json_object();
+        for (size_t i = 0; i < v->c.count; i++) {
+            json_t *item = v->c.items[i];
+            if (item && item->type == JSON_ARRAY && item->c.count == 2) {
+                char *k = cp_dict_key_text(item->c.items[0]);
+                json_set(d, k, json_copy(item->c.items[1]));
+                free(k);
+            } else if (item && item->type == JSON_STRING && item->str_val &&
+                       strlen(item->str_val) == 2) {
+                char kb[2] = { item->str_val[0], '\0' };
+                char vb[2] = { item->str_val[1], '\0' };
+                json_set(d, kb, json_string(vb));
+            } else if (item && (item->type == JSON_ARRAY || item->type == JSON_STRING)) {
+                size_t ilen = (item->type == JSON_ARRAY) ? item->c.count
+                                                         : strlen(item->str_val ? item->str_val : "");
+                snprintf(m, sizeof m,
+                         "ValueError: dictionary update sequence element #%zu has length %zu; 2 is required",
+                         i, ilen);
+                if (err) *err = strdup(m);
+                json_free(d);
+                return NULL;
+            } else {
+                snprintf(m, sizeof m,
+                         "TypeError: cannot convert dictionary update sequence element #%zu to a sequence", i);
+                if (err) *err = strdup(m);
+                json_free(d);
+                return NULL;
+            }
+        }
+        return d;
+    }
+    if (v && v->type == JSON_STRING) {
+        if (!v->str_val || !v->str_val[0]) return json_object();
+        if (err) *err = strdup("ValueError: dictionary update sequence element #0 has length 1; 2 is required");
+        return NULL;
+    }
+    snprintf(m, sizeof m, "TypeError: '%s' object is not iterable", cp_typename(v));
+    if (err) *err = strdup(m);
+    return NULL;
+}
+
+/* _normalize_max_turns_config (live config.py): config = dict(config);
+ * agent_config = dict(config.get("agent") or {}); relocate a root max_turns
+ * only when agent lacks one; attach agent only when non-empty or present;
+ * drop the root key. Returns a NEW object (caller frees); on a Python
+ * exception returns NULL and sets *err to "Type: message" (caller frees). */
+static json_t *cp_normalize_max_turns(const json_t *config_in, char **err) {
+    if (err) *err = NULL;
+    json_t *config = cp_dict_from(config_in, err);
+    if (!config) return NULL;
+    json_t *agent_in = json_obj_get(config, "agent");
+    json_t *agent = cp_truthy(agent_in) ? cp_dict_from(agent_in, err) : json_object();
+    if (!agent) { json_free(config); return NULL; }
+    json_t *root_mt = json_obj_get(config, "max_turns");
+    if (root_mt && !json_obj_get(agent, "max_turns"))
+        json_set(agent, "max_turns", json_copy(root_mt));
+    /* a sparse save must not grow an `agent: {}` section */
+    if (cp_truthy(agent) || json_obj_get(config, "agent"))
+        json_set(config, "agent", agent);
+    else
+        json_free(agent);
+    json_obj_del(config, "max_turns");
+    return config;
+}
+
+/* _normalize_root_model_keys — live def in hermes_cli/config_model_section.py,
+ * re-exported by config.py and run by _canonicalize_config. Faithful port:
+ * dict-valued id flattening with provider promotion, root-key promotion,
+ * provider string coercion, api_base aliasing, default>model>name canon.
+ * The discarded-extra-key warnings are logging-only and do not affect the
+ * returned value, so they are omitted in the pure port. Returns a NEW object
+ * (caller frees). */
+static json_t *cp_normalize_root_model_keys(const json_t *config_in) {
+    json_t *config = json_copy(config_in);
+    json_t *model_in = json_obj_get(config, "model");
+    json_t *model_provider = (model_in && model_in->type == JSON_OBJECT)
+                                 ? json_obj_get(model_in, "provider") : NULL;
+    int needs_model_work =
+        (model_provider && model_provider->type != JSON_NULL && model_provider->type != JSON_STRING) ||
+        (model_in && model_in->type == JSON_OBJECT && (
+            cp_truthy(json_obj_get(model_in, "api_base")) ||
+            cp_truthy(json_obj_get(model_in, "model")) ||
+            cp_truthy(json_obj_get(model_in, "name")) ||
+            (json_obj_get(model_in, "default") && json_obj_get(model_in, "default")->type == JSON_OBJECT) ||
+            (json_obj_get(model_in, "model") && json_obj_get(model_in, "model")->type == JSON_OBJECT) ||
+            (json_obj_get(model_in, "name") && json_obj_get(model_in, "name")->type == JSON_OBJECT)));
+    int has_root =
+        cp_truthy(json_obj_get(config, "provider")) ||
+        cp_truthy(json_obj_get(config, "base_url")) ||
+        cp_truthy(json_obj_get(config, "context_length")) ||
+        cp_truthy(json_obj_get(config, "api_base"));
+    if (!has_root && !needs_model_work) return config;
+
+    /* model = dict(model) if isinstance(model, dict) else {"default": model} if model else {} */
+    json_t *mcur = json_obj_get(config, "model");
+    json_t *model;
+    if (mcur && mcur->type == JSON_OBJECT) {
+        model = json_copy(mcur);
+    } else if (cp_truthy(mcur)) {
+        model = json_object();
+        json_set(model, "default", json_copy(mcur));
+    } else {
+        model = json_object();
+    }
+    json_set(config, "model", model);
+
+    /* flatten dict-valued default/model/name; nested provider wins over an
+     * empty/"auto" outer provider, never over a configured one */
+    static const char *const idkeys[] = { "default", "model", "name" };
+    for (int k = 0; k < 3; k++) {
+        json_t *val = json_obj_get(model, idkeys[k]);
+        if (val && val->type == JSON_OBJECT) {
+            json_t *nm = json_obj_get(val, "model");
+            if (!cp_truthy(nm)) nm = json_obj_get(val, "default");
+            char *nested_model = cp_py_str_truthy(nm);
+            char *nested_provider = cp_py_str_truthy(json_obj_get(val, "provider"));
+            json_set(model, idkeys[k], json_string(nested_model));
+            free(nested_model);
+            if (nested_provider[0]) {
+                char *outer = cp_py_str_truthy(json_obj_get(model, "provider"));
+                if (!outer[0] || strcmp(outer, "auto") == 0)
+                    json_set(model, "provider", json_string(nested_provider));
+                free(outer);
+            }
+            free(nested_provider);
+        }
+    }
+
+    /* promote root provider/base_url/context_length (never override) */
+    static const char *const rootkeys[] = { "provider", "base_url", "context_length" };
+    for (int k = 0; k < 3; k++) {
+        json_t *rv = json_obj_get(config, rootkeys[k]);
+        if (cp_truthy(rv) && !cp_truthy(json_obj_get(model, rootkeys[k])))
+            json_set(model, rootkeys[k], json_copy(rv));
+        json_obj_del(config, rootkeys[k]);
+    }
+
+    /* provider identity is a string; guard on presence (None stays absent) */
+    json_t *pv = json_obj_get(model, "provider");
+    if (pv && pv->type != JSON_NULL) {
+        char *s = cp_py_str(pv);
+        cp_str_strip(s);
+        json_set(model, "provider", json_string(s));
+        free(s);
+    }
+
+    /* api_base alias: root first, then model; fallback-only */
+    json_t *ab1 = json_obj_get(config, "api_base");
+    if (cp_truthy(ab1) && !cp_truthy(json_obj_get(model, "base_url")))
+        json_set(model, "base_url", json_copy(ab1));
+    json_t *ab2 = json_obj_get(model, "api_base");
+    if (cp_truthy(ab2) && !cp_truthy(json_obj_get(model, "base_url")))
+        json_set(model, "base_url", json_copy(ab2));
+    json_obj_del(config, "api_base");
+    json_obj_del(model, "api_base");
+
+    /* model/name are last-resort aliases (in that order), then dropped */
+    json_t *alias = json_obj_get(model, "model");
+    if (!cp_truthy(alias)) alias = json_obj_get(model, "name");
+    if (!cp_truthy(json_obj_get(model, "default")) && cp_truthy(alias))
+        json_set(model, "default", json_copy(alias));
+    if (cp_truthy(json_obj_get(model, "default"))) {
+        json_obj_del(model, "model");
+        json_obj_del(model, "name");
+    }
+    return config;
+}
+
+/* PoP: config_py_canonicalize_config @ hermes_cli/config.py:_canonicalize_config */
+/* The load/save normalization pipeline: max_turns relocation, then model-section
+ * canon. Returns a NEW config (caller frees). On a Python exception returns NULL
+ * and sets *err_msg to "ExcType: message" (caller frees). */
+json_t *config_py_canonicalize_config(const json_t *config, char **err_msg) {
+    if (err_msg) *err_msg = NULL;
+    char *err = NULL;
+    json_t *t = cp_normalize_max_turns(config, &err);
+    if (!t) {
+        if (err_msg) *err_msg = err; else free(err);
+        return NULL;
+    }
+    json_t *r = cp_normalize_root_model_keys(t);
+    json_free(t);
+    return r;
+}
+
+/* PoP: config_py_ensure_dict @ hermes_cli/config.py:_ensure_dict */
+/* Returns parent[key] as a dict (BORROWED — owned by parent), replacing a
+ * missing or non-dict value with a fresh {}. parent must be a JSON object;
+ * NULL/non-object returns NULL (the live .get would raise AttributeError). */
+json_t *config_py_ensure_dict(json_t *parent, const char *key) {
+    if (!parent || parent->type != JSON_OBJECT || !key) return NULL;
+    json_t *child = json_obj_get(parent, key);
+    if (!child || child->type != JSON_OBJECT) {
+        child = json_object();
+        json_set(parent, key, child);
+    }
+    return child;
+}
+
+/* PoP: config_py_commented_sections_for_save @ hermes_cli/config.py:_commented_sections_for_save */
+/* Commented example blocks for off/unconfigured features. Returns malloc'd
+ * text (caller frees), or NULL for Python None ("".join(parts) or None).
+ * A truthy non-dict "security" value raises AttributeError in the live def:
+ * NULL + *err_msg = "AttributeError: '<type>' object has no attribute 'get'". */
+char *config_py_commented_sections_for_save(const json_t *normalized, char **err_msg) {
+    if (err_msg) *err_msg = NULL;
+    if (!normalized || normalized->type != JSON_OBJECT) return NULL;
+    cp_buf parts;
+    cp_buf_init(&parts);
+    json_t *security = json_obj_get(normalized, "security");
+    if (!cp_truthy(security)) {
+        /* (normalized.get("security") or {}).get("redact_secrets") is None */
+        cp_buf_add(&parts, CP_SECURITY_COMMENT);
+    } else if (security->type == JSON_OBJECT) {
+        json_t *rs = json_obj_get(security, "redact_secrets");
+        if (!rs || rs->type == JSON_NULL) cp_buf_add(&parts, CP_SECURITY_COMMENT);
+    } else {
+        char m[128];
+        snprintf(m, sizeof m, "AttributeError: '%s' object has no attribute 'get'",
+                 cp_typename(security));
+        if (err_msg) *err_msg = strdup(m);
+        free(parts.s);
+        return NULL;
+    }
+    /* fb = normalized.get("fallback_model", {}); entries = fb if list else [fb] */
+    json_t *fb = json_obj_get(normalized, "fallback_model");
+    int any_ok = 0;
+    if (fb && fb->type == JSON_ARRAY) {
+        for (size_t i = 0; i < fb->c.count && !any_ok; i++) {
+            json_t *e = fb->c.items[i];
+            if (e && e->type == JSON_OBJECT &&
+                cp_truthy(json_obj_get(e, "provider")) && cp_truthy(json_obj_get(e, "model")))
+                any_ok = 1;
+        }
+    } else if (fb && fb->type == JSON_OBJECT) {
+        if (cp_truthy(json_obj_get(fb, "provider")) && cp_truthy(json_obj_get(fb, "model")))
+            any_ok = 1;
+    }
+    if (!any_ok) cp_buf_add(&parts, CP_FALLBACK_COMMENT);
+    if (parts.len == 0) { free(parts.s); return NULL; }
+    return parts.s;
+}
+
+/* PoP: config_py_omitted_config_paths @ hermes_cli/config.py:_omitted_config_paths */
+/* Mapping paths proposed would delete by omission from existing. Returns a NEW
+ * JSON array of dotted strings (caller frees), in existing-key iteration order.
+ * Both inputs borrowed JSON objects; recursion mirrors the live prefix walk. */
+static void cp_omitted_rec(const json_t *existing, const json_t *proposed,
+                           const char *prefix, json_t *out) {
+    if (!existing || existing->type != JSON_OBJECT) return;
+    for (size_t i = 0; i < existing->c.count; i++) {
+        const char *key = existing->c.keys[i];
+        json_t *old_value = existing->c.items[i];
+        char path[2048];
+        if (prefix[0]) snprintf(path, sizeof path, "%s.%s", prefix, key);
+        else snprintf(path, sizeof path, "%s", key);
+        json_t *new_value = (proposed && proposed->type == JSON_OBJECT)
+                                ? json_obj_get(proposed, key) : NULL;
+        if (!new_value) {
+            json_append(out, json_string(path));
+            continue;
+        }
+        if (old_value && old_value->type == JSON_OBJECT) {
+            if (new_value->type == JSON_OBJECT)
+                cp_omitted_rec(old_value, new_value, path, out);
+            else if (old_value->c.count > 0)
+                json_append(out, json_string(path));
+        }
+    }
+}
+
+json_t *config_py_omitted_config_paths(const json_t *existing, const json_t *proposed) {
+    json_t *out = json_array();
+    cp_omitted_rec(existing, proposed, "", out);
+    return out;
+}
+/* ---- escape-aware dotted-key navigation (#84064 family) ---- */
+
+/* PoP: config_py_split_key_path @ hermes_cli/config.py:_split_key_path */
+/* Split a dotted key path honoring backslash-escaped dots (a\.b -> one segment
+ * "a.b"); a backslash before any other character is preserved verbatim.
+ * Returns a NEW JSON array of segment strings (caller frees). NULL key -> NULL
+ * (the live len(None) would raise TypeError). Empty key -> [""]; a trailing
+ * dot yields a final empty segment, exactly as the live loop appends it. */
+json_t *config_py_split_key_path(const char *key) {
+    if (!key) return NULL;
+    char **segs = NULL;
+    int n = cp_split(key, &segs);
+    if (n < 0) return NULL;
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        json_append(arr, json_string(segs[i]));
+        free(segs[i]);
+    }
+    free(segs);
+    return arr;
+}
+
+/* PoP: config_py_greedy_literal_match @ hermes_cli/config.py:_greedy_literal_match */
+/* Longest dot-join of parts[0..n) present as a literal key in container.
+ * container/parts borrowed (parts: JSON array of strings). Returns n_consumed
+ * (>0) and copies the literal key into out (caller buffer), or 0 for Python
+ * None (non-dict container, empty parts, or no match). */
+int config_py_greedy_literal_match(const json_t *container, const json_t *parts,
+                                   char *out, size_t cap) {
+    if (!container || container->type != JSON_OBJECT ||
+        !parts || parts->type != JSON_ARRAY || parts->c.count == 0)
+        return 0;
+    size_t n = parts->c.count;
+    char **segs = (char **)malloc(sizeof(char *) * n);
+    if (!segs) return 0;
+    int ok = 1;
+    for (size_t i = 0; i < n; i++) {
+        json_t *p = parts->c.items[i];
+        segs[i] = (p && p->type == JSON_STRING) ? p->str_val : NULL;
+        if (!segs[i]) ok = 0;   /* live ".".join would raise TypeError; parts are always strings */
+    }
+    int r = ok ? cfg_greedy_literal_match((json_t *)container, segs, (int)n, out, cap) : 0;
+    free(segs);
+    return r;
+}
+
+/* PoP: config_py_phantom_sibling @ hermes_cli/config.py:_phantom_sibling */
+/* First existing literal key starting with "<part>." (insertion order), which
+ * creating an intermediate mapping `part` would shadow. Returns 1 and copies
+ * the key into out (caller buffer), else 0 for Python None. Borrowed inputs. */
+int config_py_phantom_sibling(const json_t *container, const char *part, char *out, size_t cap) {
+    if (!part) return 0;
+    return cfg_phantom_sibling((json_t *)container, part, out, cap);
+}
+
+/* PoP: config_py_locate_nested @ hermes_cli/config.py:_locate_nested */
+/* Walk parts (borrowed JSON array of strings) through root. Returns 1 and fills
+ * loc on success, 0 for Python None (missing hop, non-numeric/out-of-range list
+ * index, scalar before the path is consumed, empty parts). On success the
+ * caller frees loc.key / loc.parents / loc.parent_keys; the container pointers
+ * are BORROWED. List indices use Python int() semantics: whitespace, sign,
+ * digit underscores, and NEGATIVE indexing (current[-1] is the last item).
+ * Index keys are stored canonically ("%lld") so callers can re-parse them. */
+int config_py_locate_nested(json_t *root, const json_t *parts, cfg_loc_t *loc) {
+    if (!loc) return 0;
+    memset(loc, 0, sizeof *loc);
+    if (!root || !parts || parts->type != JSON_ARRAY || parts->c.count == 0) return 0;
+    int nparts = (int)parts->c.count;
+    char **segs = (char **)malloc(sizeof(char *) * (size_t)nparts);
+    if (!segs) return 0;
+    for (int i = 0; i < nparts; i++) {
+        json_t *p = parts->c.items[i];
+        segs[i] = (p && p->type == JSON_STRING) ? p->str_val : NULL;
+        if (!segs[i]) { free(segs); return 0; }
+    }
+    json_t **parents = NULL;
+    char **parent_keys = NULL;
+    int np = 0;
+    json_t *current = root;
+    int i = 0, ok = 0;
+    for (;;) {
+        const char *key = NULL;
+        long long index = 0;
+        int is_index = 0, consumed = 1;
+        int remaining = nparts - i;
+        if (current->type == JSON_ARRAY) {
+            if (remaining < 1) goto done;
+            if (!cp_py_int_parse(segs[i], &index)) goto done;
+            long long len = (long long)current->c.count;
+            long long eff = index < 0 ? index + len : index;
+            if (eff < 0 || eff >= len) goto done;   /* IndexError -> None */
+            is_index = 1;
+        } else if (current->type == JSON_OBJECT) {
+            char joined[2048];
+            int n = cfg_greedy_literal_match(current, segs + i, remaining, joined, sizeof joined);
+            if (n <= 0) goto done;
+            consumed = n;
+            key = joined;
+        } else {
+            goto done;                              /* scalar before path end */
+        }
+        i += consumed;
+        char *key_copy;
+        if (is_index) {
+            char ibuf[32];
+            snprintf(ibuf, sizeof ibuf, "%lld", index);
+            key_copy = strdup(ibuf);
+        } else {
+            key_copy = strdup(key);
+        }
+        if (!key_copy) goto done;
+        if (i >= nparts) {
+            loc->container = current;
+            loc->key = key_copy;
+            loc->is_index = is_index;
+            loc->parents = parents;
+            loc->parent_keys = parent_keys;
+            loc->n_parents = np;
+            ok = 1;
+            goto done;
+        }
+        json_t *next;
+        if (is_index) {
+            long long eff = index < 0 ? index + (long long)current->c.count : index;
+            next = current->c.items[(size_t)eff];
+        } else {
+            next = json_obj_get(current, key_copy);
+        }
+        json_t **np2 = (json_t **)realloc(parents, sizeof(json_t *) * (size_t)(np + 1));
+        char **nk2 = (char **)realloc(parent_keys, sizeof(char *) * (size_t)(np + 1));
+        if (!np2 || !nk2) { free(key_copy); goto done; }
+        parents = np2;
+        parent_keys = nk2;
+        parents[np] = current;
+        parent_keys[np] = key_copy;
+        np++;
+        current = next;
+        if (!current) goto done;
+    }
+done:
+    if (!ok) {
+        for (int k = 0; k < np; k++) free(parent_keys[k]);
+        free(parents);
+        free(parent_keys);
+    }
+    free(segs);
+    return ok;
+}
+
+/* PoP: config_py_looks_structured_value @ hermes_cli/config.py:_looks_structured_value */
+/* Conservative YAML/JSON structure sniff: a leading '['/'{' after lstrip, or a
+ * multiline value with a '- ' list item or a 'key: value' / 'key:' mapping
+ * shape. A bare leading '-' is NOT a trigger (-5, --flag stay strings).
+ * splitlines() boundaries include \r \v \f \x1c-\x1e \x85    . */
+bool config_py_looks_structured_value(const char *value) {
+    if (!value) return false;
+    const char *s = value;
+    while (*s && cp_is_py_ws((unsigned char)*s)) s++;
+    if (s[0] == '[' || s[0] == '{') return true;
+    if (!strchr(value, '\n')) return false;
+    const char *p = value;
+    while (*p) {
+        const char *start = p;
+        while (*p && !cp_line_break_len(p)) p++;
+        size_t len = (size_t)(p - start);
+        char item[2048];
+        size_t a = 0, b = len;
+        while (a < b && cp_is_py_ws((unsigned char)start[a])) a++;
+        while (b > a && cp_is_py_ws((unsigned char)start[b - 1])) b--;
+        size_t ilen = b - a;
+        if (ilen >= sizeof item) ilen = sizeof item - 1;
+        memcpy(item, start + a, ilen);
+        item[ilen] = '\0';
+        if (strcmp(item, "-") == 0 || strncmp(item, "- ", 2) == 0) return true;
+        /* partition(': '): head non-empty, no space in head, not a comment */
+        char *sep = strstr(item, ": ");
+        if (sep) {
+            *sep = '\0';
+            int head_ok = item[0] && !strchr(item, ' ') && item[0] != '#';
+            *sep = ':';
+            if (head_ok) return true;
+        }
+        size_t L = strlen(item);
+        if (L > 0 && item[L - 1] == ':') {
+            item[L - 1] = '\0';
+            if (item[0] && !strchr(item, ' ')) return true;
+        }
+        if (*p) {
+            if (p[0] == '\r' && p[1] == '\n') p += 2;
+            else p += cp_line_break_len(p);
+        }
+    }
+    return false;
+}
+
+/* ---- container-type guardrails (#114471) ---- */
+
+/* _KNOWN_CONTAINER_TYPES: roots absent from DEFAULT_CONFIG whose shape is
+ * fixed by their readers. */
+static const struct { const char *key; const char *type; } CP_KNOWN_CONTAINER_TYPES[] = {
+    { "custom_providers", "list" },
+    { "providers", "mapping" },
+    { "model.aliases", "mapping" },
+    { "model_aliases", "mapping" },
+    { "plugins.enabled", "list" },
+    { "plugins.disabled", "list" },
+    { "model_catalog.excluded_providers", "list" },
+};
+
+/* PoP: config_py_expected_container_type @ hermes_cli/config.py:_expected_container_type */
+/* "list"/"mapping" (static strings) when the schema, the known-container table,
+ * or the value already on disk fixes key to a container; NULL for scalars and
+ * open paths. Reads the EMBEDDED DEFAULT_CONFIG (config_defaults port — no I/O).
+ * key/user_config borrowed; user_config may be NULL. A single-segment key whose
+ * schema node is a mapping section skips the schema lookup (section overwrite
+ * is _guard_section_overwrite's call). */
+const char *config_py_expected_container_type(const char *key, const json_t *user_config) {
+    if (!key) return NULL;
+    char **segs = NULL;
+    int n = cp_split(key, &segs);
+    if (n <= 0) { free(segs); return NULL; }
+    json_t *defaults = config_defaults_DEFAULT_CONFIG();
+    json_t *schema_node = cp_cfg_get_node(defaults, segs, n);
+    if (n == 1 && schema_node && schema_node->type == JSON_OBJECT) schema_node = NULL;
+    /* _get_nested: greedy-literal navigation; NULL stands in for _MISSING
+     * (neither a dict/list nor equal to "mapping"/"list", so both skip). */
+    json_t *existing = cfg_get_nested((json_t *)user_config, key);
+    const char *table_val = NULL;
+    for (size_t i = 0; i < sizeof CP_KNOWN_CONTAINER_TYPES / sizeof CP_KNOWN_CONTAINER_TYPES[0]; i++)
+        if (strcmp(key, CP_KNOWN_CONTAINER_TYPES[i].key) == 0) {
+            table_val = CP_KNOWN_CONTAINER_TYPES[i].type;
+            break;
+        }
+    const char *result = NULL;
+    for (int pass = 0; pass < 3 && !result; pass++) {
+        const json_t *node = (pass == 0) ? schema_node : (pass == 2) ? existing : NULL;
+        if (pass == 1) {
+            if (table_val) result = table_val;   /* the literal "mapping"/"list" rows */
+            continue;
+        }
+        if (!node) continue;
+        if (node->type == JSON_OBJECT) result = "mapping";
+        else if (node->type == JSON_ARRAY) result = "list";
+        else if (node->type == JSON_STRING && node->str_val) {
+            if (strcmp(node->str_val, "mapping") == 0) result = "mapping";
+            else if (strcmp(node->str_val, "list") == 0) result = "list";
+        }
+    }
+    for (int i = 0; i < n; i++) free(segs[i]);
+    free(segs);
+    json_free(defaults);
+    return result;
+}
+
+/* PoP: config_py_refuse_container_type_mismatch @ hermes_cli/config.py:_refuse_container_type_mismatch */
+/* Returns a NEW json value to store (caller frees): a copy of value, or a
+ * one-item list for the parse_config_string_list scalar slots. On refusal
+ * returns NULL and sets *err_msg to the exact _exit_invalid text (caller
+ * frees) — the live def prints it to stderr and sys.exit(1)s. force keeps its
+ * documented meaning: replace a whole MAPPING section only. */
+json_t *config_py_refuse_container_type_mismatch(const char *key, const json_t *value,
+                                                 const json_t *user_config, int force,
+                                                 char **err_msg) {
+    if (err_msg) *err_msg = NULL;
+    const char *expected = config_py_expected_container_type(key, user_config);
+    if (!expected) return value ? json_copy(value) : json_null();
+    if (strcmp(expected, "list") == 0 && value && value->type == JSON_STRING &&
+        (strcmp(key, "agent.disabled_toolsets") == 0 || strcmp(key, "skills.disabled") == 0)) {
+        json_t *arr = json_array();
+        json_append(arr, json_copy(value));
+        return arr;
+    }
+    int ok = (strcmp(expected, "list") == 0)
+                 ? (value && value->type == JSON_ARRAY)
+                 : (value && value->type == JSON_OBJECT);
+    if (ok || (strcmp(expected, "mapping") == 0 && force))
+        return value ? json_copy(value) : json_null();
+    const char *got = (value && value->type == JSON_STRING) ? "string" : cp_typename(value);
+    const char *literal = (strcmp(expected, "list") == 0) ? "[item, ...]" : "{key: value}";
+    size_t cap = strlen(key) * 2 + strlen(expected) + strlen(got) + strlen(literal) + 256;
+    char *msg = (char *)malloc(cap);
+    snprintf(msg, cap,
+             "\xe2\x9c\x97" " Cannot set '%s': it must be a %s, got a %s \xe2\x80\x94" " nothing was written.\n"
+             "  Pass a YAML/JSON literal, e.g.:\n    hermes config set %s '%s'\n"
+             "  or edit config.yaml directly.",
+             key, expected, got, key, literal);
+    if (err_msg) *err_msg = msg; else free(msg);
+    return NULL;
+}
+/* ---- install-method shims (live defs are deliberate constants) ---- */
+
+/* PoP: config_py_is_uv_tool_install @ hermes_cli/config.py:is_uv_tool_install */
+/* Live shim: False until relaunch (no uv-tool selection). */
+bool config_py_is_uv_tool_install(void) {
+    return cfg_is_uv_tool_install() != 0;
+}
+
+/* PoP: config_py_is_unsupported_install_method @ hermes_cli/config.py:is_unsupported_install_method */
+/* Live shim: False for every method (no legacy detection). */
+bool config_py_is_unsupported_install_method(const char *method) {
+    return cfg_is_unsupported_install_method(method) != 0;
+}
+
+/* PoP: config_py_format_unsupported_install_warning @ hermes_cli/config.py:format_unsupported_install_warning */
+/* Live shim: the empty string for every method. Returns malloc'd "" (caller frees). */
+char *config_py_format_unsupported_install_warning(const char *method) {
+    char buf[8];
+    cfg_format_unsupported_install_warning(method, buf, sizeof buf);
+    return strdup(buf);
+}
+
+/* ---- env-name write policy ---- */
+
+/* PoP: config_py_env_var_policy_name @ hermes_cli/config.py:_env_var_policy_name */
+/* Name used for env policy comparisons: upper-cased on Windows only.
+ * is_windows: 1 Windows, 0 POSIX, -1 host default (the live _IS_WINDOWS).
+ * Writes into out (caller buffer); ASCII upper-casing (env names are ASCII). */
+void config_py_env_var_policy_name(const char *key, int is_windows, char *out, size_t cap) {
+    if (!out || cap == 0) return;
+    out[0] = '\0';
+    if (!key) return;
+#ifdef _WIN32
+    int host_windows = 1;
+#else
+    int host_windows = 0;
+#endif
+    int win = (is_windows < 0) ? host_windows : (is_windows != 0);
+    cfg_env_var_policy_name(key, win, out, cap);
+}
+
+/* _ENV_VAR_NAME_DENYLIST | LAUNCH_ONLY_ENV_KEYS (hermes_constants:
+ * {"HERMES_MANAGED_DIR", "HERMES_HOME"}). Name-by-name, exact match. */
+static const char *const CP_ENV_DENYLIST[] = {
+    "LD_PRELOAD", "LD_LIBRARY_PATH", "LD_AUDIT", "LD_DEBUG",
+    "DYLD_INSERT_LIBRARIES", "DYLD_LIBRARY_PATH", "DYLD_FRAMEWORK_PATH",
+    "DYLD_FALLBACK_LIBRARY_PATH", "DYLD_FALLBACK_FRAMEWORK_PATH",
+    "PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE",
+    "PYTHONEXECUTABLE", "PYTHONNOUSERSITE", "PYTHONBREAKPOINT", "PYTHONCASEOK",
+    "NODE_OPTIONS", "NODE_PATH",
+    "PERL5OPT", "PERL5LIB", "PERLLIB", "RUBYOPT", "RUBYLIB", "CLASSPATH",
+    "JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS",
+    "GOFLAGS", "RUSTFLAGS",
+    "PATH", "SHELL", "BROWSER", "EDITOR", "VISUAL", "PAGER", "MANPAGER",
+    "GIT_SSH_COMMAND", "GIT_EXEC_PATH", "GIT_SHELL",
+    "GIT_SSH", "GIT_ASKPASS", "SSH_ASKPASS", "SUDO_ASKPASS",
+    "GIT_EDITOR", "GIT_SEQUENCE_EDITOR", "GIT_PAGER", "GIT_EXTERNAL_DIFF",
+    "GIT_PROXY_COMMAND", "GIT_TEMPLATE_DIR", "GIT_DIR",
+    "BASH_ENV", "ENV", "ZDOTDIR", "PROMPT_COMMAND", "VIMINIT", "EXINIT",
+    "HERMES_HOME", "HERMES_PROFILE", "HERMES_CONFIG", "HERMES_ENV",
+    "HERMES_CONFIG_PATH", "HERMES_ENV_PATH",
+    "HERMES_OPTIONAL_MCPS",
+    "HERMES_YOLO_MODE", "HERMES_ACCEPT_HOOKS", "HERMES_REDACT_SECRETS",
+    "HERMES_INTERACTIVE", "HERMES_EXEC_ASK", "HERMES_GATEWAY_SESSION",
+    "HERMES_CRON_SESSION", "HERMES_SINGLE_QUERY_SESSION",
+    "HERMES_SESSION_KEY", "HERMES_SESSION_PLATFORM",
+    "HERMES_MANAGED_DIR",   /* LAUNCH_ONLY_ENV_KEYS */
+    NULL,
+};
+/* _ENV_VAR_NAME_DENY_PREFIXES: whole families matched by prefix. */
+static const char *const CP_ENV_DENY_PREFIXES[] = { "LD_", "DYLD_", "GIT_CONFIG_" };
+
+/* PoP: config_py_validate_env_var_name_for_write @ hermes_cli/config.py:validate_env_var_name_for_write */
+/* Returns CFG_ENV_OK / CFG_ENV_INVALID_NAME / CFG_ENV_DENIED; on failure writes
+ * the exact ValueError message into err (caller buffer). launch_denylist is a
+ * borrowed JSON array of names — the C seam for the live in-function import of
+ * auth_external_process.env_writer_launch_denylist() (a dynamic provider/left-
+ * core registry; the oracle feeds the same set to the live def). is_windows:
+ * -1 host default — the live function always uses the host policy.
+ * Shape regex ^[A-Za-z_][A-Za-z0-9_]*$: Python's $ also matches just before a
+ * single trailing newline, so "FOO\n" passes the shape check. */
+int config_py_validate_env_var_name_for_write(const char *key, int is_windows,
+                                              const json_t *launch_denylist,
+                                              char *err, size_t errcap) {
+    if (err && errcap) err[0] = '\0';
+    int shape_ok = 0;
+    if (key && key[0] &&
+        ((key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= 'a' && key[0] <= 'z') || key[0] == '_')) {
+        const char *p = key + 1;
+        while ((*p >= 'A' && *p <= 'Z') || (*p >= 'a' && *p <= 'z') ||
+               (*p >= '0' && *p <= '9') || *p == '_') p++;
+        if (*p == '\0' || (p[0] == '\n' && p[1] == '\0')) shape_ok = 1;
+    }
+    if (!shape_ok) {
+        if (err && errcap) {
+            char *r = cp_py_repr_str(key ? key : "");
+            snprintf(err, errcap, "Invalid environment variable name: %s", r);
+            free(r);
+        }
+        return CFG_ENV_INVALID_NAME;
+    }
+    size_t polcap = strlen(key) + 1;
+    char *policy = (char *)malloc(polcap);
+    config_py_env_var_policy_name(key, is_windows, policy, polcap);
+    int denied = 0;
+    for (int i = 0; CP_ENV_DENYLIST[i] && !denied; i++)
+        if (strcmp(policy, CP_ENV_DENYLIST[i]) == 0) denied = 1;
+    if (!denied && launch_denylist && launch_denylist->type == JSON_ARRAY) {
+        for (size_t i = 0; i < launch_denylist->c.count && !denied; i++) {
+            json_t *nm = launch_denylist->c.items[i];
+            if (!nm || nm->type != JSON_STRING || !nm->str_val) continue;
+            size_t lcap = strlen(nm->str_val) + 1;
+            char *lp = (char *)malloc(lcap);
+            config_py_env_var_policy_name(nm->str_val, is_windows, lp, lcap);
+            if (strcmp(policy, lp) == 0) denied = 1;
+            free(lp);
+        }
+    }
+    if (!denied)
+        for (int i = 0; i < 3 && !denied; i++)
+            if (strncmp(policy, CP_ENV_DENY_PREFIXES[i], strlen(CP_ENV_DENY_PREFIXES[i])) == 0)
+                denied = 1;
+    free(policy);
+    if (denied) {
+        if (err && errcap) {
+            char *r = cp_py_repr_str(key);
+            snprintf(err, errcap,
+                     "Environment variable %s is on the writer denylist. "
+                     "Names that influence subprocess execution (LD_PRELOAD, PYTHONPATH, PATH, EDITOR, ...) "
+                     "or Hermes runtime location and security policy (HERMES_HOME, HERMES_YOLO_MODE, ...) "
+                     "cannot be persisted via the env writer. If you really need this, edit ~/.hermes/.env "
+                     "directly.", r);
+            free(r);
+        }
+        return CFG_ENV_DENIED;
+    }
+    return CFG_ENV_OK;
+}
+
+/* PoP: config_py_install_method_stamp @ hermes_cli/config.py:_install_method_stamp */
+/* Pure core of the stamp reader: the CALLER does the file read (utf-8-sig) and
+ * passes the decoded text, or NULL for the live OSError -> None path. Strips a
+ * leading UTF-8 BOM (the utf-8-sig codec), then .strip().lower(), and returns a
+ * static _SUPPORTED_INSTALL_METHODS member or NULL. No I/O here. */
+const char *config_py_install_method_stamp(const char *text) {
+    if (!text) return NULL;
+    static const char *const supported[] = {
+        "apt", "docker", "nix", "nixos", "home-manager", "git", "unknown",
+    };
+    const unsigned char *p = (const unsigned char *)text;
+    if (p[0] == 0xef && p[1] == 0xbb && p[2] == 0xbf) p += 3;
+    while (*p && cp_is_py_ws(*p)) p++;
+    const unsigned char *e = p + strlen((const char *)p);
+    while (e > p && cp_is_py_ws(e[-1])) e--;
+    size_t n = (size_t)(e - p);
+    char buf[64];
+    if (n >= sizeof buf) return NULL;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = p[i];
+        buf[i] = (c >= 'A' && c <= 'Z') ? (char)(c - 'A' + 'a') : (char)c;
+    }
+    buf[n] = '\0';
+    for (int i = 0; i < 7; i++)
+        if (strcmp(buf, supported[i]) == 0) return supported[i];
+    return NULL;
+}
