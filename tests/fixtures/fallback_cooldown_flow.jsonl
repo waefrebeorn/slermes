@@ -1,0 +1,215 @@
+{"func": "_provider_reset_delay", "in": {"reset_at": "x", "io": {"parse_absolute_timestamp": null}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 100, "io": {"parse_absolute_timestamp": 100, "time.time": 50}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 100, "io": {"parse_absolute_timestamp": 100, "time.time": 150}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 100, "io": {"parse_absolute_timestamp": 100, "time.time": 100}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 1e+308, "io": {"parse_absolute_timestamp": 1e+308, "time.time": -1e+308}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": "bad", "io": {"parse_absolute_timestamp": {"__raise__": "ValueError", "message": "bad ts"}}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 100, "io": {"parse_absolute_timestamp": 100, "time.time": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 100, "io": {}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": 90.5, "io": {"parse_absolute_timestamp": 90.5, "time.time": 60}}}
+{"func": "_provider_reset_delay", "in": {"reset_at": null, "io": {"parse_absolute_timestamp": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": null, "io": {}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "auth", "io": {}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "agent": {"_fallback_activated": true}, "io": {}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"__raise__": "ValueError", "message": "cfg"}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "billing", "io": {"load_config": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "upstream_rate_limit", "io": {"load_config": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": null}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": "abc"}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": 100, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 60}}, "parse_absolute_timestamp": 100, "time.time": 70, "logging.info": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": 120, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 60}}, "parse_absolute_timestamp": 120, "time.time": 60}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": "x", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 60}}, "parse_absolute_timestamp": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": 51, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": "2.5"}}, "parse_absolute_timestamp": 51, "time.time": 50, "logging.info": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"__script__": true, "ret": []}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": "x"}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": {"a": 1}}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 0}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": ""}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": 100, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 60}}, "parse_absolute_timestamp": 100, "time.time": 70, "logging.info": {"__raise__": "RuntimeError", "message": "log"}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"__raise__": "GeneratorExit", "message": "ge"}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "io": {"load_config": {"fallback": {"min_switch_reset_seconds": "5\u001c"}}}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "reset_at": 51, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": " 7 "}}, "parse_absolute_timestamp": 51, "time.time": 50, "logging.info": null}}}
+{"func": "switch_deferred_by_reset", "in": {"reason": "rate_limit", "agent": {"_fallback_activated": false}, "reset_at": 100, "io": {"load_config": {"fallback": {"min_switch_reset_seconds": 60}}, "parse_absolute_timestamp": 100, "time.time": 70, "logging.info": null}}}
+{"func": "_on_primary_route", "in": {"agent": {}, "io": {}}}
+{"func": "_on_primary_route", "in": {"agent": {"_primary_runtime": {}}, "io": {}}}
+{"func": "_on_primary_route", "in": {"agent": {"_primary_runtime": {"provider": "  "}}, "io": {}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "OpenAI", "model": "gpt", "base_url": "https://a.com/", "_primary_runtime": {"provider": "openai", "model": "gpt", "base_url": "https://a.com"}}, "io": {"normalize_route_base_url": ["https://a.com", "https://a.com"]}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "openai", "model": "gpt", "base_url": "u", "_primary_runtime": {"provider": "openai", "model": "other", "base_url": "u"}}, "io": {"normalize_route_base_url": ["u", "u"]}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "openai", "model": "gpt", "base_url": "u", "_primary_runtime": {"provider": "openai", "model": "gpt", "base_url": "u"}}, "io": {"normalize_route_base_url": ["https://a.com", "https://b.com"]}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "p", "model": "m", "base_url": "u", "_primary_runtime": {"provider": "p", "model": "m", "base_url": "u"}}, "io": {"normalize_route_base_url": {"__raise__": "ValueError", "message": "bad url"}}}}
+{"func": "_on_primary_route", "in": {"agent": {"_primary_runtime": {"provider": null, "model": "m"}}, "io": {}}}
+{"func": "_on_primary_route", "in": {"agent": {"model": "m", "_primary_runtime": {"provider": "openai", "model": "m"}}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "p", "model": "m", "base_url": "u", "_primary_runtime": {"provider": "p", "model": "m", "base_url": "u"}}, "io": {"normalize_route_base_url": ["u", {"__raise__": "SystemExit", "message": "x"}]}}}
+{"func": "_on_primary_route", "in": {"agent": {"provider": "p", "_primary_runtime": {"provider": "p"}}, "io": {}}}
+{"func": "ident", "in": {"provider": "OpenAI", "model": " GPT ", "base_url": "https://a.com/", "io": {"normalize_route_base_url": "https://a.com"}}}
+{"func": "ident", "in": {"provider": null, "model": null, "base_url": null, "io": {"normalize_route_base_url": ""}}}
+{"func": "ident", "in": {"provider": 0, "model": false, "base_url": "", "io": {"normalize_route_base_url": ""}}}
+{"func": "ident", "in": {"provider": "p", "model": "m", "base_url": "u", "io": {"normalize_route_base_url": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "ident", "in": {"provider": "openai", "model": "gpt", "base_url": "u", "io": {"normalize_route_base_url": null}}}
+{"func": "ident", "in": {"provider": "  CUSTOM  ", "model": "m", "base_url": "url", "io": {"normalize_route_base_url": "URL"}}}
+{"func": "ident", "in": {"provider": "p", "model": "m", "base_url": "u", "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "auth", "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": null, "agent": {"_rate_limit_backoff_count": 3, "_rate_limited_until": 5}, "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "io": {"parse_absolute_timestamp": null, "time.monotonic": 1000, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "billing", "agent": {"_rate_limit_backoff_count": 3}, "io": {"parse_absolute_timestamp": null, "time.monotonic": 10, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_rate_limit_backoff_count": 8}, "io": {"parse_absolute_timestamp": null, "time.monotonic": 0, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "upstream_rate_limit", "agent": {"_rate_limit_backoff_count": 20}, "io": {"parse_absolute_timestamp": null, "time.monotonic": 0, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "reset_at": 150.7, "io": {"parse_absolute_timestamp": 150.7, "time.time": 60, "time.monotonic": 5, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_fallback_activated": true, "provider": "other", "_primary_runtime": {"provider": "openai"}}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_fallback_activated": true, "provider": "openai", "model": "g", "base_url": "u", "_primary_runtime": {"provider": "openai", "model": "g", "base_url": "u"}}, "io": {"normalize_route_base_url": ["u", "u"], "parse_absolute_timestamp": null, "time.monotonic": 100, "logging.info": null}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "reset_at": "x", "io": {"parse_absolute_timestamp": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "io": {"parse_absolute_timestamp": null, "time.monotonic": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "io": {"parse_absolute_timestamp": null, "time.monotonic": 0, "logging.info": {"__raise__": "GeneratorExit", "message": "x"}}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_rate_limit_backoff_count": "2"}, "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_rate_limit_backoff_count": null}, "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "io": {}}}
+{"func": "_arm_rate_limit_cooldown", "in": {"reason": "rate_limit", "agent": {"_rate_limit_backoff_count": -1}, "io": {"parse_absolute_timestamp": null, "time.monotonic": 0, "logging.info": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 500, "message": "model is not supported when using codex with a chatgpt account"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"message": "model is not supported when using codex with a chatgpt account"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": "400", "message": "model is not supported when using codex with a chatgpt account"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "other"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "MODEL IS NOT SUPPORTED WHEN USING CODEX WITH A CHATGPT ACCOUNT"}, "agent": {"provider": "OpenAI", "model": "gpt-5"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "", "str": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": null}, "agent": {"provider": "p", "model": "m"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "", "model": "m"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "  "}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_credential_pool": {}, "provider": "p", "model": "m"}, "io": {"pool.has_available": true}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_credential_pool": {}, "provider": "p", "model": "m"}, "io": {"pool.has_available": false, "logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_credential_pool": null, "provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_entitlement_rejected_models": [["p", "m"]], "provider": "p", "model": "m"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_entitlement_rejected_models": null, "provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_credential_pool": {}, "provider": "p", "model": "m"}, "io": {"pool.has_available": {"__raise__": "KeyboardInterrupt", "message": "x"}}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": {"__raise__": "RuntimeError", "message": "x"}}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "m"}, "io": {"logger.warning": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_entitlement_rejected_models": [["z", "m2"], ["a", "m1"]], "provider": "b", "model": "m3"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "m"}, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400.0, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": null, "io": {}}}
+{"func": "_mark_entitlement_rejected_model", "in": {"api_error": {"status_code": 400, "message": "model is not supported when using codex with a chatgpt account"}, "agent": {"_entitlement_rejected_models": [], "provider": "p", "model": "m"}, "io": {"logger.warning": null, "buffer_diagnostic_status": null}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "io": {}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": []}, "io": {}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": null}, "io": {}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": [["p", "m"]]}, "io": {}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "claude", "agent": {"_entitlement_rejected_models": [["p", "anthropic/claude"]]}, "io": {"normalize_model_for_provider": "anthropic/claude"}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "claude", "agent": {"_entitlement_rejected_models": [["p", "anthropic/claude"]]}, "io": {"normalize_model_for_provider": "other"}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": [["p", "x"]]}, "io": {"normalize_model_for_provider": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": [["p", "x"]]}, "io": {"normalize_model_for_provider": null}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "p", "model": "m", "agent": {"_entitlement_rejected_models": [["p", "x"]]}, "io": {}}}
+{"func": "_is_entitlement_rejected", "in": {"provider": "q", "model": "n", "agent": {"_entitlement_rejected_models": [["p", "m"], ["q", "n"]]}, "io": {}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "x", "io": {"base_url_hostname": ""}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "x", "io": {"base_url_hostname": null}}}
+{"func": "provider_owns_route", "in": {"provider": "Custom", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "custom"}}}
+{"func": "provider_owns_route", "in": {"provider": "local", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "local"}}}
+{"func": "provider_owns_route", "in": {"provider": "OpenAI", "base_url": "https://h.com/v1", "io": {"base_url_hostname": ["h.com", "h.com"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "https://h.com/v1"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", "other.com"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "https://other.com"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", "h.com"], "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": {"base_url": "https://h.com"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": {"base_url": ""}, "get_provider": null, "infer_provider_from_url": null}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", "h.com"], "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": {"base_url": "https://h.com"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": null}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", "other.com"], "normalize_provider": ["openai", "openai"], "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": {"base_url": "https://other.com"}, "infer_provider_from_url": "openai"}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", "other.com"], "normalize_provider": ["openai", "anthropic"], "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": {"base_url": "https://other.com"}, "infer_provider_from_url": "anthropic"}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": {"base_url": "https://other.com"}, "infer_provider_from_url": null}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "config": {"custom_providers": [{"name": "x"}]}, "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": null}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {}}}
+{"func": "provider_owns_route", "in": {"provider": null, "base_url": "https://h.com", "io": {"base_url_hostname": "h.com", "normalize_provider": "openai", "resolve_user_provider": null, "resolve_custom_provider": null, "get_provider": null}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": null, "io": {"base_url_hostname": ""}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "config": {"providers": {"p": {}}}, "io": {"base_url_hostname": ["h.com", "h.com"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "https://h.com"}}}}
+{"func": "provider_owns_route", "in": {"provider": "openai", "base_url": "https://h.com", "io": {"base_url_hostname": ["h.com", null], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "https://h.com"}}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": null, "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": "x", "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {}, "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u", "api_mode": "chat"}, "provider": "custom", "io": {"base_url_hostname": "h", "normalize_provider": "custom"}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u", "api_mode": "chat"}, "provider": "openai", "io": {"base_url_hostname": ""}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u", "api_mode": "chat"}, "provider": "openai", "io": {"base_url_hostname": ["h", "other"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "x"}}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "", "api_mode": "chat"}, "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "  ", "api_mode": "chat"}, "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u", "api_mode": null}, "provider": "openai", "io": {"base_url_hostname": ["h", "other"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "x"}}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u", "api_mode": 0}, "provider": "openai", "io": {"base_url_hostname": ["h", "other"], "normalize_provider": "openai", "resolve_user_provider": {"base_url": "x"}}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": "u"}, "provider": "openai", "io": {"base_url_hostname": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": {"base_url": null, "api_mode": "chat"}, "provider": "openai", "io": {}}}
+{"func": "drop_stale_model_route", "in": {"model_cfg": [1, 2], "provider": "openai", "io": {}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "base_url": "u", "api_key": "k"}, "prior_model_cfg": {"provider": "OpenAI", "base_url": "u"}, "io": {"normalize_route_base_url": ["u", "u"]}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "api_key": "k", "api": "a", "key_env": "E", "api_key_env": "E2", "api_mode": "chat", "base_url": "u"}, "prior_model_cfg": {"provider": "anthropic"}, "io": {"clear_model_endpoint_credentials": null}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "base_url": "u1", "api_key": "k"}, "prior_model_cfg": {"provider": "openai", "base_url": "u2"}, "io": {"normalize_route_base_url": ["u1", "u2"], "clear_model_endpoint_credentials": null}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "api_key": "k"}, "prior_model_cfg": null, "io": {"clear_model_endpoint_credentials": null}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "api_key": "k"}, "prior_model_cfg": "x", "io": {"clear_model_endpoint_credentials": null}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"base_url": "u"}, "prior_model_cfg": {}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "base_url": "u"}, "prior_model_cfg": {"provider": "openai", "base_url": "u"}, "io": {"normalize_route_base_url": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "api_key": "k"}, "prior_model_cfg": {"provider": "anthropic"}, "io": {"clear_model_endpoint_credentials": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "base_url": null}, "prior_model_cfg": {"provider": "openai", "base_url": null}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {"provider": "openai", "api_key": "k"}, "prior_model_cfg": {"provider": "anthropic"}, "io": {}}}
+{"func": "drop_credentials_of_other_route", "in": {"model_cfg": {}, "prior_model_cfg": {}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "_error_obj", "in": {"body": {"error": {"code": "x"}}, "io": {}}}
+{"func": "_error_obj", "in": {"body": {"error": "str"}, "io": {}}}
+{"func": "_error_obj", "in": {"body": {"error": null}, "io": {}}}
+{"func": "_error_obj", "in": {"body": {}, "io": {}}}
+{"func": "_error_obj", "in": {"body": null, "io": {}}}
+{"func": "_error_obj", "in": {"body": "x", "io": {}}}
+{"func": "_error_obj", "in": {"body": {"error": [1]}, "io": {}}}
+{"func": "_error_obj", "in": {"body": {"error": {"a": {"b": 1}}}, "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": 1}", "io": {}}}
+{"func": "_json_dict", "in": {"text": "", "io": {}}}
+{"func": "_json_dict", "in": {"text": "   ", "io": {}}}
+{"func": "_json_dict", "in": {"text": null, "io": {}}}
+{"func": "_json_dict", "in": {"text": 5, "io": {}}}
+{"func": "_json_dict", "in": {"text": "not json", "io": {}}}
+{"func": "_json_dict", "in": {"text": "[1,2]", "io": {}}}
+{"func": "_json_dict", "in": {"text": "123", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": 1,}", "io": {}}}
+{"func": "_json_dict", "in": {"text": "01", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": \"x\\q\"}", "io": {}}}
+{"func": "_json_dict", "in": {"text": "  {\"a\": {\"b\": [1, true, null]}}  ", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": 1.5e2}", "io": {}}}
+{"func": "_json_dict", "in": {"text": "\"str\"", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": \"\\u0041\"}", "io": {}}}
+{"func": "_json_dict", "in": {"text": "true", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{\"a\": 1} extra", "io": {}}}
+{"func": "_json_dict", "in": {"text": "{a: 1}", "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": "  hello  "}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"error": {"display_message": "win"}}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": "   "}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": 5}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": null, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": "x", "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": "", "error": {"display_message": "second"}}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"error": "str"}, "io": {}}}
+{"func": "_usage_window_display_message", "in": {"body": {"display_message": "top", "error": {"display_message": "inner"}}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "please retry later", "body": {}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {"resets_in_seconds": 30}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {"error": {"reset_at": 100}}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": {"retry-after": "5"}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": {"Retry-After": "5"}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": {}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {"resets_at": ""}, "response_headers": {}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {"retry_after": 0}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": "x", "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "window", "body": {}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {"resets_at": null}, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": {}, "response_headers": {"x-ratelimit-reset": "1"}, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "ok", "body": null, "response_headers": null, "io": {}}}
+{"func": "_has_usage_limit_transient_signal", "in": {"error_msg": "", "body": {"error": {"resets_in_seconds": ""}}, "response_headers": null, "io": {}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_at": 100}, "response_headers": null, "io": {"time.time": 60}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_at": 50}, "response_headers": null, "io": {"time.time": 60}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_in_seconds": "30"}, "response_headers": null, "io": {"parse_retry_after_seconds": 30}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"error": {"reset_at": 100}}, "response_headers": null, "io": {"time.time": 60}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"retry_after": "5"}, "response_headers": {"retry-after": "5"}, "io": {"parse_retry_after_seconds": [null, 7]}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {}, "response_headers": {"retry-after": "5"}, "io": {"parse_retry_after_seconds": 7}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "resets in 4hr", "body": {}, "response_headers": null, "io": {"parse_retry_after_seconds": null, "reset_delay_from_message": 12}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {}, "response_headers": null, "io": {"parse_retry_after_seconds": null, "reset_delay_from_message": null}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_in_seconds": "x"}, "response_headers": null, "io": {"parse_retry_after_seconds": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"reset_at": 100}, "response_headers": null, "io": {"time.time": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_in_seconds": ""}, "response_headers": null, "io": {"parse_retry_after_seconds": null, "reset_delay_from_message": null}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_at": "100"}, "response_headers": null, "io": {"parse_retry_after_seconds": 100}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"reset_at": true}, "response_headers": null, "io": {"time.time": 0}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_in_seconds": "30"}, "response_headers": null, "io": {}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"resets_in_seconds": 30, "reset_at": 100}, "response_headers": null, "io": {"parse_retry_after_seconds": 30}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {}, "response_headers": {"retry-after": "5"}, "io": {"parse_retry_after_seconds": {"__raise__": "GeneratorExit", "message": "x"}}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "", "body": {"error": {"retry_after": "9"}}, "response_headers": null, "io": {"parse_retry_after_seconds": 9}}}
+{"func": "_rate_limit_reset_seconds", "in": {"error_msg": "x", "body": {}, "response_headers": null, "io": {"parse_retry_after_seconds": null, "reset_delay_from_message": {"__raise__": "RuntimeError", "message": "m"}}}}

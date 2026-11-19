@@ -1,0 +1,101 @@
+{"func": "regex_hint", "in": {"pattern": "x", "message": "m {0}", "flags": 0, "io": {"re.compile": {"pattern": "x", "flags": 32}}}}
+{"func": "regex_hint", "in": {"pattern": "^C", "message": "conflict", "flags": 8, "io": {"re.compile": {"pattern": "^C", "flags": 40}}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": {"__callable__": "missing_command_hint"}, "flags": 0, "io": {"re.compile": {"pattern": "p", "flags": 32}}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": {"__callable__": "custom"}, "flags": 0, "io": {"re.compile": {"pattern": "p", "flags": 32}}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": "m", "flags": 0, "io": {"re.compile": null}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": "m", "flags": 0, "io": {"re.compile": {"__raise__": "ValueError", "msg": "bad pattern"}}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": "m", "flags": 0, "io": {"re.compile": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "regex_hint", "in": {"pattern": "p", "message": "m", "flags": 0, "io": {}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["X"]}}}}
+{"func": "hint", "in": {"message": "hit {0} {1}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["A", "B"]}}}}
+{"func": "hint", "in": {"message": "no fields", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["X"]}}}}
+{"func": "hint", "in": {"message": "literal {{brace}} {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["X"]}}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": null}}}
+{"func": "hint", "in": {"message": {"__callable__": "missing_command_hint"}, "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["python"]}}}}
+{"func": "hint", "in": {"message": {"__callable__": "custom"}, "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["g"]}, "message_call": "custom-result"}}}
+{"func": "hint", "in": {"message": {"__callable__": "custom"}, "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["g"]}, "message_call": {"__raise__": "RuntimeError", "msg": "cb"}}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"__raise__": "ValueError", "msg": "search"}}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"__raise__": "SystemExit", "msg": "stop"}}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": null, "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["X"]}}}}
+{"func": "hint", "in": {"message": "hit {0}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {}}}
+{"func": "hint", "in": {"message": "field {0} — done", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["café"]}}}}
+{"func": "hint", "in": {"message": "{0}/{1}", "command": "c", "output": "abc", "rx": {"pattern": "x", "flags": 0}, "io": {"rx.search": {"groups": ["naïve", "☕"]}}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": ["title"]}}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_merge_conflict", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": []}}}}
+{"func": "hint_merge_conflict", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_merge_conflict", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_merge_conflict", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_merge_conflict", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": ["python"]}}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": ["numpy"]}}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": ["main"]}}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_gh_rate_limit", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": []}}}}
+{"func": "hint_gh_rate_limit", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_gh_rate_limit", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_gh_rate_limit", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_gh_rate_limit", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_permission_denied", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"groups": []}}}}
+{"func": "hint_permission_denied", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": null}}}
+{"func": "hint_permission_denied", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hint_permission_denied", "in": {"command": "cmd", "output": "some output", "io": {"rx.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "hint_permission_denied", "in": {"command": "cmd", "output": "some output", "io": {}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "bash: python: command not found", "io": {"rx.search": {"groups": ["pip"]}}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "bash: foobar: command not found", "io": {"rx.search": {"groups": ["foobar"]}}}}
+{"func": "hint_command_not_found", "in": {"command": "cmd", "output": "x", "io": {"rx.search": {"groups": [""]}}}}
+{"func": "hint_gh_unknown_json_field", "in": {"command": "cmd", "output": "Unknown JSON field: \"number\"", "io": {"rx.search": {"groups": ["number"]}}}}
+{"func": "hint_already_exists", "in": {"command": "cmd", "output": "fatal: 'dev' already exists", "io": {"rx.search": {"groups": ["dev"]}}}}
+{"func": "hint_module_not_found", "in": {"command": "cmd", "output": "ImportError: No module named 'os.path'", "io": {"rx.search": {"groups": ["os.path"]}}}}
+{"func": "missing_command_hint", "in": {"missing": "python", "io": {}}}
+{"func": "missing_command_hint", "in": {"missing": "pip", "io": {}}}
+{"func": "missing_command_hint", "in": {"missing": "foobar", "io": {}}}
+{"func": "missing_command_hint", "in": {"missing": "", "io": {}}}
+{"func": "missing_command_hint", "in": {"missing": "Python", "io": {}}}
+{"func": "missing_command_hint", "in": {"missing": "node.js", "io": {}}}
+{"func": "wrapper_cd_hint", "in": {"output": "bash: line 1: cd: /no/dir: No such file or directory", "io": {"rx.fullmatch": {"groups": ["/no/dir", "No such file or directory"]}}}}
+{"func": "wrapper_cd_hint", "in": {"output": null, "io": {"rx.fullmatch": null}}}
+{"func": "wrapper_cd_hint", "in": {"output": "some\nlast line", "io": {"rx.fullmatch": {"groups": ["/d", "err"]}}}}
+{"func": "wrapper_cd_hint", "in": {"output": "trailing   \n\n", "io": {"rx.fullmatch": null}}}
+{"func": "wrapper_cd_hint", "in": {"output": "C:\\x: line 2: cd: /d: Permission denied", "io": {"rx.fullmatch": {"groups": ["/d", "Permission denied"]}}}}
+{"func": "wrapper_cd_hint", "in": {"output": "bash: line 1: cd: /d: err", "io": {"rx.fullmatch": {"__raise__": "ValueError", "msg": "fm"}}}}
+{"func": "wrapper_cd_hint", "in": {"output": "bash: line 1: cd: /d: err", "io": {"rx.fullmatch": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "wrapper_cd_hint", "in": {"output": "bash: line 1: cd: /d: err", "io": {}}}
+{"func": "failure_shapes_search", "in": {"window": "error[E0308]: mismatched types", "io": {"failure_shapes.search": {"groups": []}}}}
+{"func": "failure_shapes_search", "in": {"window": "all good", "io": {"failure_shapes.search": null}}}
+{"func": "failure_shapes_search", "in": {"window": "Traceback (most recent call last)", "io": {"failure_shapes.search": {"groups": []}}}}
+{"func": "failure_shapes_search", "in": {"window": "x", "io": {"failure_shapes.search": {"__raise__": "RuntimeError", "msg": "fs"}}}}
+{"func": "failure_shapes_search", "in": {"window": "x", "io": {"failure_shapes.search": {"__raise__": "SystemExit", "msg": "se"}}}}
+{"func": "failure_shapes_search", "in": {"window": "x", "io": {}}}
+{"func": "masking_pipe_search", "in": {"cmd": "cargo build | tail -20", "io": {"masking_pipe.search": {"groups": []}}}}
+{"func": "masking_pipe_search", "in": {"cmd": "cargo build", "io": {"masking_pipe.search": null}}}
+{"func": "masking_pipe_search", "in": {"cmd": "grep x | head", "io": {"masking_pipe.search": {"groups": []}}}}
+{"func": "masking_pipe_search", "in": {"cmd": "x", "io": {"masking_pipe.search": {"__raise__": "ValueError", "msg": "mp"}}}}
+{"func": "masking_pipe_search", "in": {"cmd": "x", "io": {"masking_pipe.search": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "masking_pipe_search", "in": {"cmd": "x", "io": {}}}
+{"func": "masking_fallback_search", "in": {"cmd": "cargo build || echo FAILED", "io": {"masking_fallback.search": {"groups": []}}}}
+{"func": "masking_fallback_search", "in": {"cmd": "cargo build", "io": {"masking_fallback.search": null}}}
+{"func": "masking_fallback_search", "in": {"cmd": "cmd || true", "io": {"masking_fallback.search": {"groups": []}}}}
+{"func": "masking_fallback_search", "in": {"cmd": "x", "io": {"masking_fallback.search": {"__raise__": "RuntimeError", "msg": "mf"}}}}
+{"func": "masking_fallback_search", "in": {"cmd": "x", "io": {"masking_fallback.search": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "masking_fallback_search", "in": {"cmd": "x", "io": {}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "bash: line 1: cd: /d: err", "io": {"rx.fullmatch": {"groups": ["/d", "err"]}}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "not a cd error", "io": {"rx.fullmatch": null}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "Zeile 2: cd: /d: Datei nicht gefunden", "io": {"rx.fullmatch": {"groups": ["/d", "Datei nicht gefunden"]}}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "x", "io": {"rx.fullmatch": {"__raise__": "ValueError", "msg": "wf"}}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "x", "io": {"rx.fullmatch": {"__raise__": "SystemExit", "msg": "se"}}}}
+{"func": "wrapper_cd_fullmatch", "in": {"last_line": "x", "io": {}}}

@@ -155,7 +155,7 @@
 #include "libjson/json.h"
 
 /* ── live module constants (byte-exact) ───────────────────────────────────── */
-#define RSU2_TURN_LIMIT_UNLIMITED 9223372036854775807.0   /* sys.maxsize */
+#define RSU2_TURN_LIMIT_UNLIMITED 9223372036854775807LL   /* sys.maxsize, exact int64 */
 #define RSU2_DEFAULT_CRON_DRAIN_TIMEOUT 30.0
 static const char *RSU2_PLATFORM_VALUES[] = {
     "local", "telegram", "discord", "whatsapp", "whatsapp_cloud", "slack",
@@ -613,8 +613,19 @@ static json_t *rsu2_log_agent_budget(rsu2_env *e) {
     json_free(raw);
     json_t *limit = rsu2_call(e, "config.resolve_turn_limit", a2);
     if (rsu2_raised(limit)) return limit;
-    /* limit == TURN_LIMIT_UNLIMITED (sys.maxsize) */
-    bool unlimited = rsu2_is_num(limit) && limit->num_val == RSU2_TURN_LIMIT_UNLIMITED;
+    /* limit == TURN_LIMIT_UNLIMITED (sys.maxsize = 2^63-1). Python float==int
+     * is EXACT and the sentinel is not representable as a double (it rounds
+     * to 2^63), so a scripted double — all the harness echo carries — never
+     * equals it. The old num_val == 9223372036854775807.0 rounded the
+     * sentinel to 2^63 and wrongly matched the echoed float 2^63 (case 11:
+     * C logged "unlimited", PY logged the raw number). Exact test: integral,
+     * strictly inside int64 range, truncation == sentinel. */
+    bool unlimited = false;
+    if (rsu2_is_num(limit)) {
+        double d = limit->num_val;
+        if (d == floor(d) && d >= -9223372036854775808.0 && d < 9223372036854775808.0)
+            unlimited = ((long long)d == RSU2_TURN_LIMIT_UNLIMITED);
+    }
     json_t *args = json_array();
     if (unlimited) json_append(args, json_string("unlimited"));
     else json_append(args, limit ? json_copy(limit) : json_null());

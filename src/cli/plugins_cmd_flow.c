@@ -1020,7 +1020,7 @@ static json_t *plc_missing_env_specs(plc_io_t *io, const json_t *manifest) {
         json_t *a = json_object();
         json_set(a, "name", json_string(nm));
         json_t *v = plc_call(io, "get_env_value", a);
-        if (plc_is_raise(v)) { json_free(v); json_free(out); json_free(specs); return v; }
+        if (plc_is_raise(v)) { json_free(out); json_free(specs); return v; }
         int unset = !plc_truthy(v);
         json_free(v);
         if (unset) json_append(out, json_copy(s));

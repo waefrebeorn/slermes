@@ -1,0 +1,219 @@
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": [{"type": "function", "function": {"name": "tool_search", "parameters": {}}}], "io": {"_alias_reserved_tools": [[{"type": "function", "function": {"name": "hermes_tool_search"}}], {"hermes_tool_search": "tool_search"}]}}}
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": [], "io": {"_alias_reserved_tools": [[], {}]}}}
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": null, "io": {"_alias_reserved_tools": null}}}
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": [{"type": "function", "function": {"name": "tool_search", "parameters": {}}}], "io": {"_alias_reserved_tools": {"__raise__": "ValueError", "msg": "alias clash"}}}}
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": [{"type": "function", "function": {"name": "tool_search", "parameters": {}}}], "io": {}}}
+{"func": "_rename_tool_search_bridge_for_xai", "in": {"tools": [{"type": "function", "function": {"name": "tool_search", "parameters": {}}}], "io": {"_alias_reserved_tools": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "gemini", "io": {"get_provider_profile": {"name": "gemini", "replays_tool_call_signatures": true}}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "  Gemini  ", "io": {"get_provider_profile": {"name": "gemini", "replays_tool_call_signatures": true}}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "vertex", "io": {"get_provider_profile": {"name": "other", "replays_tool_call_signatures": true}}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "gemini", "io": {"get_provider_profile": {"name": "gemini", "replays_tool_call_signatures": false}}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "gemini", "io": {"get_provider_profile": null}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": null, "io": {}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "   ", "io": {}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "gemini", "io": {}}}
+{"func": "_profile_replays_tool_call_signatures", "in": {"provider": "gemini", "io": {"get_provider_profile": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "openrouter", "base_url": "https://openrouter.ai/api/v1", "io": {"route_reasoning_carriers": ["reasoning", "reasoning_content", "reasoning_details"]}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "groq", "base_url": null, "io": {"route_reasoning_carriers": []}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": null, "base_url": null, "io": {"route_reasoning_carriers": ["reasoning_details"]}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "mistral", "base_url": "https://api.mistral.ai/v1", "io": {"route_reasoning_carriers": {"__raise__": "RuntimeError", "msg": "table gone"}}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "x", "base_url": null, "io": {}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "x", "base_url": null, "io": {"route_reasoning_carriers": {"__raise__": "GeneratorExit", "msg": "boom"}}}}
+{"func": "_wire_reasoning_carriers", "in": {"provider": "x", "base_url": null, "io": {"route_reasoning_carriers": null}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": "sig123"}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"google": {"thought_signature": "gsig"}}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": null, "google": {"thought_signature": "gsig"}}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": "   "}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": "\t\n\u001c "}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": 5}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"thought_signature": ""}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"google": {"thought_signature": ""}}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {"google": "notadict"}}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": null}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": "sig"}}
+{"func": "_has_replayable_thought_signature", "in": {"extra_content": {}}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"reasoning_content": "think"}, "name": "reasoning_content"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"model_extra": {"refusal": "no"}}, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"refusal": null, "model_extra": {"refusal": "no"}}, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"model_extra": "notadict"}, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"model_extra": null}, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"other": 1}, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": null, "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": "plain", "name": "refusal"}}
+{"func": "_attr_or_model_extra", "in": {"obj": {"model_extra": {"x": {"nested": [1, 2]}}}, "name": "x"}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": false}}
+{"func": "_dump_extra_content", "in": {"extra": null, "has_model_dump": false}}
+{"func": "_dump_extra_content", "in": {"extra": "plain", "has_model_dump": true}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"dumped": true}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"$seq": [{"__raise__": "TypeError", "msg": "warnings kwarg"}, {"dumped": "second"}]}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"$seq": [{"__raise__": "TypeError", "msg": "w"}, {"__raise__": "TypeError", "msg": "nokw"}]}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"__raise__": "ValueError", "msg": "bad model"}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"$seq": [{"__raise__": "RuntimeError", "msg": "first"}]}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"__raise__": "SystemExit", "msg": "propagate"}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": {"$seq": [{"first": 1}, {"second": 2}]}}}}
+{"func": "_dump_extra_content", "in": {"extra": {"a": 1}, "has_model_dump": true, "io": {"model_dump": null}}}
+{"func": "_pareto_score", "in": {"raw": null}}
+{"func": "_pareto_score", "in": {"raw": ""}}
+{"func": "_pareto_score", "in": {"raw": 0}}
+{"func": "_pareto_score", "in": {"raw": 1}}
+{"func": "_pareto_score", "in": {"raw": 0.5}}
+{"func": "_pareto_score", "in": {"raw": -0.1}}
+{"func": "_pareto_score", "in": {"raw": 1.1}}
+{"func": "_pareto_score", "in": {"raw": "0.5"}}
+{"func": "_pareto_score", "in": {"raw": " 0.5 "}}
+{"func": "_pareto_score", "in": {"raw": "0.5_0"}}
+{"func": "_pareto_score", "in": {"raw": "1_0"}}
+{"func": "_pareto_score", "in": {"raw": "abc"}}
+{"func": "_pareto_score", "in": {"raw": "1e"}}
+{"func": "_pareto_score", "in": {"raw": "0x10"}}
+{"func": "_pareto_score", "in": {"raw": true}}
+{"func": "_pareto_score", "in": {"raw": false}}
+{"func": "_pareto_score", "in": {"raw": [0.5]}}
+{"func": "_pareto_score", "in": {"raw": {"x": 1}}}
+{"func": "_pareto_score", "in": {"raw": "nan"}}
+{"func": "_pareto_score", "in": {"raw": "inf"}}
+{"func": "_pareto_score", "in": {"raw": "-inf"}}
+{"func": "_pareto_score", "in": {"raw": "1e-1"}}
+{"func": "_pareto_score", "in": {"raw": ".5"}}
+{"func": "_pareto_score", "in": {"raw": "1."}}
+{"func": "_pareto_score", "in": {"raw": "+0.5"}}
+{"func": "_pareto_score", "in": {"raw": "1__0"}}
+{"func": "_pareto_score", "in": {"raw": "_0.5"}}
+{"func": "_pareto_score", "in": {"raw": "0.5_"}}
+{"func": "_pareto_score", "in": {"raw": "1_.5"}}
+{"func": "_pareto_score", "in": {"raw": "0.5\n"}}
+{"func": "_pareto_score", "in": {"raw": "0.5\u001c"}}
+{"func": "_pareto_score", "in": {"raw": "1e999"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [{"role": "system", "content": "be nice"}, {"role": "user", "content": "hi"}], "model_lower": "gpt-5.2"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [{"role": "system", "content": "be nice"}, {"role": "user", "content": "hi"}], "model_lower": "codex-mini"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [{"role": "system", "content": "be nice"}, {"role": "user", "content": "hi"}], "model_lower": "gpt-4o"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [{"role": "user", "content": "hi"}], "model_lower": "gpt-5"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [], "model_lower": "gpt-5"}}
+{"func": "_swap_developer_role", "in": {"sanitized": null, "model_lower": "gpt-5"}}
+{"func": "_swap_developer_role", "in": {"sanitized": ["plain", {"role": "system"}], "model_lower": "gpt-5"}}
+{"func": "_swap_developer_role", "in": {"sanitized": [{"role": "system", "content": "x", "z": 1}], "model_lower": "openai/codex-1"}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {"model": "m"}, "model": "gemini-2.5-pro", "reasoning_config": {"effort": "high"}, "params": {"ephemeral_max_output_tokens": 500, "max_tokens": 100, "max_tokens_param_fn": {"fn": 1}}, "io": {"_raise_gemini_thinking_max_tokens": 900, "max_tokens_param_fn": {"max_tokens": 900}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "gpt-5", "reasoning_config": null, "params": {"max_tokens": 100, "max_tokens_param_fn": {"fn": 1}}, "io": {"_raise_gemini_thinking_max_tokens": 100, "max_tokens_param_fn": {"max_tokens": 100}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens_param_fn": {"fn": 1}}, "profile_max": 200, "io": {"_raise_gemini_thinking_max_tokens": 200, "max_tokens_param_fn": {"max_tokens": 200}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens_param_fn": {"fn": 1}}, "profile_max": 0, "io": {}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens": 100, "max_tokens_param_fn": {}}, "io": {}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens": 100}, "io": {}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {"temperature": 0.5}, "model": "m", "reasoning_config": null, "params": {"ephemeral_max_output_tokens": 0, "max_tokens_param_fn": {"fn": 1}}, "io": {"_raise_gemini_thinking_max_tokens": 0, "max_tokens_param_fn": {"max_tokens": 0}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens": 100, "max_tokens_param_fn": {"fn": 1}}, "io": {"_raise_gemini_thinking_max_tokens": {"__raise__": "ValueError", "msg": "cap"}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens": 100, "max_tokens_param_fn": {"fn": 1}}, "io": {"_raise_gemini_thinking_max_tokens": 100, "max_tokens_param_fn": {"__raise__": "SystemExit", "msg": "stop"}}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": "m", "reasoning_config": null, "params": {"max_tokens": 100, "max_tokens_param_fn": {"fn": 1}}, "io": {}}}
+{"func": "_apply_max_tokens", "in": {"api_kwargs": {}, "model": null, "reasoning_config": null, "params": {"max_tokens": null, "max_tokens_param_fn": {"fn": 1}}, "profile_max": null, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {}, "profile": null, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {"temperature": 0.7, "timeout": 30}, "profile": {"fixed_temperature": 0.2}, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {"temperature": 0.7}, "profile": {"fixed_temperature": "__OMIT_TEMPERATURE__"}, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {"temperature": 0.7}, "profile": {"fixed_temperature": null}, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {}, "profile": {"fixed_temperature": null}, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "kimi-k3", "sanitized": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "f"}}], "params": {}, "profile": null, "io": {"is_moonshot_model": true, "sanitize_moonshot_tools": [{"type": "function", "function": {"name": "f", "strict": true}}]}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "f"}}], "params": {}, "profile": null, "io": {"is_moonshot_model": false}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": [], "params": {}, "profile": null, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "f"}}], "params": {}, "profile": null, "io": {"is_moonshot_model": {"__raise__": "RuntimeError", "msg": "probe failed"}}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "f"}}], "params": {}, "profile": null, "io": {"is_moonshot_model": true, "sanitize_moonshot_tools": {"__raise__": "ValueError", "msg": "schema"}}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": null, "params": {}, "profile": {}, "io": {}}}
+{"func": "_base_kwargs", "in": {"model": "gpt-5", "sanitized": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "f"}}], "params": {}, "profile": null, "io": {}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": null}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {"session_id": "s1", "cache_scope_id": "c1"}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": {"__update__": {"prompt_cache_key": "abc123"}}}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m", "tools": [{"type": "function", "function": {"name": "f"}}]}, "sanitized": [{"role": "user", "content": "hi"}], "params": {"session_id": "s1"}, "supports_prompt_cache_key": false, "io": {"_add_prompt_cache_key": null}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m", "tools": null}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": null}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": {"__raise__": "RuntimeError", "msg": "hash failed"}}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"model": "m"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": {"__raise__": "GeneratorExit", "msg": "boom"}}}}
+{"func": "_finish_kwargs", "in": {"api_kwargs": {"prompt_cache_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "sanitized": [{"role": "user", "content": "hi"}], "params": {}, "supports_prompt_cache_key": true, "io": {"_add_prompt_cache_key": {"__update__": {"prompt_cache_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": "mistral", "model": null, "base_url": null, "io": {}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": "  Mistral  ", "model": null, "base_url": null, "io": {}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": "other", "model": null, "base_url": "https://api.mistral.ai/v1", "io": {"base_url_host_matches": true}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": "mistral-large-latest", "base_url": null, "io": {"base_url_host_matches": false}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": "magistral-medium", "base_url": null, "io": {"base_url_host_matches": false}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": "MISTRAL-Small", "base_url": null, "io": {"base_url_host_matches": false}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": "gpt-5", "base_url": null, "io": {"base_url_host_matches": false}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": null, "base_url": null, "io": {}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": null, "base_url": "https://x.ai", "io": {"base_url_host_matches": {"__raise__": "OSError", "msg": "dns"}}}}
+{"func": "_route_requires_mistral_tool_ids", "in": {"provider": null, "model": "devstral-2", "base_url": null, "io": {"base_url_host_matches": false}}}
+{"func": "_mistral_tool_id", "in": {"key": "abc123XYZ"}}
+{"func": "_mistral_tool_id", "in": {"key": "AAAAAAAAA"}}
+{"func": "_mistral_tool_id", "in": {"key": "abc123XY"}}
+{"func": "_mistral_tool_id", "in": {"key": "abc123XYZ0"}}
+{"func": "_mistral_tool_id", "in": {"key": "abc-123XY"}}
+{"func": "_mistral_tool_id", "in": {"key": ""}}
+{"func": "_mistral_tool_id", "in": {"key": "call_0123456789abcdef"}}
+{"func": "_mistral_tool_id", "in": {"key": "call|item_42"}}
+{"func": "_mistral_tool_id", "in": {"key": null}}
+{"func": "_mistral_tool_id", "in": {"key": true}}
+{"func": "_mistral_tool_id", "in": {"key": []}}
+{"func": "_mistral_tool_id", "in": {"key": {}}}
+{"func": "_mistral_tool_id", "in": {"key": 5.5}}
+{"func": "_sanitize_message", "in": {"msg": "notadict", "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": null, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "user", "content": "hi"}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "user", "content": "hi", "timestamp": 5, "_x": 1, "message_uid": "u1", "data_use": ["a"]}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "reasoning": "r", "reasoning_content": "rc"}, "strip_extra_content": false, "strip_reasoning": ["reasoning", "reasoning_content"]}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "reasoning": "r"}, "strip_extra_content": false, "strip_reasoning": ["reasoning_details"]}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res", "name": "f", "tool_call_id": "abc123XYZ"}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": []}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": null}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": [{"id": "call_1", "call_id": "c1", "response_item_id": "r1", "function": {"name": "f", "arguments": "{}"}}]}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": [{"id": "i1", "extra_content": {"thought_signature": "s"}}]}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": [{"id": "i1", "extra_content": {"thought_signature": "s"}}]}, "strip_extra_content": true}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": [{"id": "i1", "extra_content": {}}]}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "content": "x", "tool_calls": ["plain", {"id": "i2", "call_id": "c2"}]}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "reasoning_details": [{"type": "openai.native_assistant", "text": "a"}, {"type": "reasoning.summary", "text": "b"}]}, "strip_extra_content": false, "native_reasoning_details_type": "other.native_assistant"}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "reasoning_details": [{"type": "openai.native_assistant", "text": "a"}]}, "strip_extra_content": false, "native_reasoning_details_type": "openai.native_assistant"}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "reasoning_details": [{"type": "openai.native_assistant"}, {"type": "x.native_assistant"}]}, "strip_extra_content": false, "native_reasoning_details_type": null}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "reasoning_details": "notalist"}, "strip_extra_content": false}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "reasoning_details": [{"type": "openai.native_assistant"}], "reasoning_content": "keep"}, "strip_extra_content": false, "strip_reasoning": ["reasoning_details"]}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res", "tool_call_id": "call_0123456789abcdef"}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "call_0123456789abcdef"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res", "tool_call_id": "abc123XYZ"}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "abc123XYZ"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res", "tool_call_id": "call_x"}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": ""}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res"}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "call_x"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "tool", "content": "res", "tool_call_id": "call_x"}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": {"__raise__": "RuntimeError", "msg": "coalesce down"}}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"id": "call_0123456789abcdef", "function": {"name": "f"}}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "call_0123456789abcdef"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"id": "abc123XYZ", "function": {"name": "f"}}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "abc123XYZ"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"function": {"name": "f"}, "call_id": "call_z"}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "call_z"}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"id": "i1", "function": {"name": "f"}}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": null}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"id": "i1", "call_id": "c1"}, {"id": "i2"}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": {"$seq": ["c1", ""]}}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "assistant", "tool_calls": [{"id": "i1"}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {}}}
+{"func": "_sanitize_message", "in": {"msg": {"role": "user", "content": "hi", "tool_calls": [{"id": "i1"}]}, "strip_extra_content": false, "mistral_tool_ids": true, "io": {"coalesce_tool_call_id": "i1"}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i1", "function": {"name": "f", "arguments": "{\"a\":1}"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i2", "function": {"name": "hermes_tool_search", "arguments": null}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": {"hermes_tool_search": "tool_search"}}, "tc": {"id": "i3", "function": {"name": "hermes_tool_search", "arguments": "{}"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": {"hermes_tool_search": "tool_search"}}, "tc": {"id": "i4", "function": {"name": "real_tool", "arguments": "{}"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": {}}, "tc": {"id": "i5", "function": {"name": "hermes_tool_search", "arguments": "{}"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i6"}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i7", "function": {"arguments": "{}"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i8", "extra_content": {"google": {"thought_signature": "gs"}}, "function": {"name": "f", "arguments": "{}", "thought_signature": "sig"}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i9", "model_extra": {"extra_content": {"k": "v"}}, "function": {"name": "f", "arguments": "{}", "model_extra": {"thought_signature": "msig"}}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i10", "function": {"name": "f", "arguments": "{}", "args_repaired": true}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i11", "function": {"name": "f", "arguments": "{}", "args_repaired": 1}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": "i12", "function": {"name": "f", "arguments": "{}", "args_repaired": false}}}}
+{"func": "_normalize_tool_call", "in": {"self": {"_last_wire_aliases": null}, "tc": {"id": null, "function": {"name": "f", "arguments": null, "extra_content": null}}}}
+{"func": "_normalize_tool_call", "in": {"self": {}, "tc": {"id": "i14", "function": {"name": "f", "arguments": "{}"}}}}
+{"func": "ToolCall._pd", "in": {"provider_data": {"call_id": "c1", "extra_content": {"g": 1}}, "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": {"call_id": "c1"}, "key": "missing"}}
+{"func": "ToolCall._pd", "in": {"provider_data": null, "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": {}, "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": [1], "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": "x", "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": true, "key": "call_id"}}
+{"func": "ToolCall._pd", "in": {"provider_data": {"nested": {"a": [1, 2]}}, "key": "nested"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": {"call_id": "c1", "extra_content": {"g": 1}}, "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": {"call_id": "c1"}, "key": "missing"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": null, "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": {}, "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": [1], "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": "x", "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": true, "key": "call_id"}}
+{"func": "NormalizedResponse._pd", "in": {"provider_data": {"nested": {"a": [1, 2]}}, "key": "nested"}}
+{"func": "Usage.from_openai", "in": {"u": {"prompt_tokens": 10, "completion_tokens": 20, "total_tokens": 30}}}
+{"func": "Usage.from_openai", "in": {"u": {"prompt_tokens": 10}}}
+{"func": "Usage.from_openai", "in": {"u": {"prompt_tokens": null, "completion_tokens": 0, "total_tokens": false}}}
+{"func": "Usage.from_openai", "in": {"u": null}}
+{"func": "Usage.from_openai", "in": {"u": {}}}
+{"func": "Usage.from_openai", "in": {"u": {"prompt_tokens": "5", "completion_tokens": 2.5, "total_tokens": 7}}}
+{"func": "Usage.from_openai", "in": {"u": {"prompt_tokens": 10, "extra_field": 99}}}
+{"func": "Usage.from_openai", "in": {"u": "plain"}}

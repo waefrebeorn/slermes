@@ -1,0 +1,94 @@
+{"func": "_clean_phrase_list", "in": {"value": ["a", "b", "a"]}}
+{"func": "_clean_phrase_list", "in": {"value": ["  x  ", "", "y", null, 0, false]}}
+{"func": "_clean_phrase_list", "in": {"value": ["zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"]}}
+{"func": "_clean_phrase_list", "in": {"value": ["zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"]}}
+{"func": "_clean_phrase_list", "in": {"value": "notlist"}}
+{"func": "_clean_phrase_list", "in": {"value": null}}
+{"func": "_clean_phrase_list", "in": {"value": [1, 2, true]}}
+{"func": "_clean_phrase_list", "in": {"value": ["p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28", "p29", "p30", "p31", "p32", "p33", "p34", "p35", "p36", "p37", "p38", "p39", "p40", "p41", "p42", "p43", "p44", "p45", "p46", "p47", "p48", "p49", "p50", "p51", "p52", "p53", "p54", "p55", "p56", "p57", "p58", "p59", "p60", "p61", "p62", "p63", "p64", "p65", "p66", "p67", "p68", "p69", "p70", "p71", "p72", "p73", "p74", "p75", "p76", "p77", "p78", "p79", "p80", "p81", "p82", "p83", "p84"]}}
+{"func": "_clean_phrase_list", "in": {"value": ["  ", "\t\n", "ok"]}}
+{"func": "_copy_catalog", "in": {"catalog": {"status": ["a"], "generic": ["b"]}}}
+{"func": "_copy_catalog", "in": {"catalog": {}}}
+{"func": "_copy_catalog", "in": {"catalog": {"status": []}}}
+{"func": "_copy_catalog", "in": {"catalog": {"x": ["1", "2"]}}}
+{"func": "_copy_catalog", "in": {"catalog": {"status": ["a"], "generic": ["b"], "extra": ["c"]}}}
+{"func": "classify_status_context", "in": {"kind": "heartbeat", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "waiting", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "long_running", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "status", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "  STATUS  ", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "tool", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": null, "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "Heartbeat", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": 5, "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "waiting ", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "classify_status_context", "in": {"kind": "generic", "tool_name": "t", "preview": "p", "args": {"k": 1}}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"status": ["x", "y"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"mode": "replace", "status": ["x"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"phrases": {"status": ["x"]}}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"status": ["x", "x", "  ", "z"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"mode": "  REPLACE  ", "generic": ["g"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"status": []}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"status": ["x"]}, "inherited_mode": "replace"}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"phrases": "notmap", "generic": ["g"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_mapping", "in": {"catalog": {}, "section": {"status": ["s"], "generic": ["g"]}, "inherited_mode": null}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "status:\n- x\n", "yaml.safe_load": {"status": ["x"]}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": "replace", "io": {"Path.read_text": "status:\n- x\n", "yaml.safe_load": {"status": ["x"]}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": {"__script__": true, "ret": null, "raise": {"type": "OSError", "message": "boom"}}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "text", "yaml.safe_load": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad yaml"}}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "text", "yaml.safe_load": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "text", "yaml.safe_load": {"__script__": true, "ret": null, "raise": {"type": "GeneratorExit", "message": "ge"}}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "- x\n", "yaml.safe_load": {"__script__": true, "ret": ["x"]}}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {}}}
+{"func": "_merge_phrase_file", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "path": "/home/cat.yaml", "inherited_mode": null, "io": {"Path.read_text": "text", "yaml.safe_load": null}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "cat.yaml", "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["/home", "/home/cat.yaml"], "Path.is_file": true}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "cats", "io": {"Path.expanduser": "cats", "Path.resolve": ["/home", "/home/cats"], "Path.is_file": [false, true, true, true, false], "Path.is_dir": true, "Path.iterdir": {"__script__": true, "ret": ["/home/cats/b.yaml", "/home/cats/a.yml", "/home/cats/c.txt", "/home/cats/d"]}}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "/etc/x.yaml", "io": {"Path.expanduser": "/etc/x.yaml"}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "../x", "io": {"Path.expanduser": "../x"}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": null, "io": {"Path.expanduser": "."}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "link", "io": {"Path.expanduser": "link", "Path.resolve": ["/home", "/elsewhere/link"]}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "cat.txt", "io": {"Path.expanduser": "cat.txt", "Path.resolve": ["/home", "/home/cat.txt"], "Path.is_file": true, "Path.is_dir": false}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "  ", "io": {"Path.expanduser": "."}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "cat.yaml", "io": {}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "cats", "io": {"Path.expanduser": "cats", "Path.resolve": ["/home", "/home/cats"], "Path.is_file": [false, true], "Path.is_dir": true, "Path.iterdir": {"__script__": true, "ret": ["/home/cats/a.yml"]}}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home", "raw_path": "dbl", "io": {"Path.expanduser": "//srv/x.yaml"}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "", "raw_path": "cat.yaml", "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["", "/home/cat.yaml"]}}}
+{"func": "_iter_phrase_files", "in": {"base_dir": "/home//x", "raw_path": "cat.yaml", "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["/home/x", "/home/x/cat.yaml"], "Path.is_file": true}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": null, "base_dir": "/home", "inherited_mode": null, "io": {}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": "cat.yaml", "base_dir": "/home", "inherited_mode": null, "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["/home", "/home/cat.yaml"], "Path.is_file": true, "Path.read_text": "status:\n- x\n", "yaml.safe_load": {"status": ["x"]}}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": ["cat.yaml", "dog.yaml"], "base_dir": "/home", "inherited_mode": null, "io": {"Path.expanduser": ["cat.yaml", "dog.yaml"], "Path.resolve": ["/home", "/home/cat.yaml", "/home", "/home/dog.yaml"], "Path.is_file": [true, true], "Path.read_text": ["status:\n- x\n", "generic:\n- y\n"], "yaml.safe_load": [{"status": ["x"]}, {"generic": ["y"]}]}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": ["/abs"], "base_dir": "/home", "inherited_mode": null, "io": {"Path.expanduser": "/abs"}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": "cats", "base_dir": "/home", "inherited_mode": "replace", "io": {"Path.expanduser": "cats", "Path.resolve": ["/home", "/home/cats"], "Path.is_file": [false, true], "Path.is_dir": true, "Path.iterdir": {"__script__": true, "ret": ["/home/cats/a.yml"]}, "Path.read_text": "status:\n- x\n", "yaml.safe_load": {"status": ["x"]}}}}
+{"func": "_merge_phrase_paths", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "paths": "cat.yaml", "base_dir": "/home", "inherited_mode": null, "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["/home", "/home/cat.yaml"], "Path.is_file": true, "Path.read_text": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": null, "base_dir": "/home", "io": {}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"status": ["x"]}, "base_dir": "/home", "io": {}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"mode": "replace", "generic": ["g"]}, "base_dir": "/home", "io": {}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"path": "cat.yaml", "status": ["x"]}, "base_dir": "/home", "io": {"Path.expanduser": "cat.yaml", "Path.resolve": ["/home", "/home/cat.yaml"], "Path.is_file": true, "Path.read_text": "status:\n- f\n", "yaml.safe_load": {"status": ["f"]}}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": {"paths": ["a.yaml"], "mode": "append"}, "base_dir": "/home", "io": {"Path.expanduser": "a.yaml", "Path.resolve": ["/home", "/home/a.yaml"], "Path.is_file": true, "Path.read_text": "generic:\n- g\n", "yaml.safe_load": {"generic": ["g"]}}}}
+{"func": "_merge_phrase_config", "in": {"catalog": {"status": ["a"], "generic": ["b"]}, "section": "notmap", "base_dir": "/home", "io": {}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": null, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": {"status_phrases": {"status": ["x"]}}}, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": {"platforms": {"telegram": {"status_phrases": {"generic": ["tg"]}}}}}, "platform_key": "telegram", "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": {"platforms": {"telegram": {"status_phrases": {"generic": ["tg"]}}}}}, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": "notmap"}, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": {"generic_status_phrases": {"status": ["legacy"]}}}, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": null, "platform_key": null, "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "nohome"}}}}}
+{"func": "resolve_status_phrase_catalog", "in": {"user_config": {"display": {"status_phrases": {"mode": "replace", "generic": ["rg"]}}}, "platform_key": "telegram", "default_phrases": {"status": ["s"], "generic": ["g"]}, "io": {"get_hermes_home": "/home", "Path.expanduser": ["/abs1", "/abs2"]}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a", "b"], "generic": ["g"]}, "recent": null, "io": {"random.choice": "a"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a", "b"], "generic": ["g"]}, "recent": ["a"], "io": {"random.choice": "b"}}}
+{"func": "choose_status_phrase", "in": {"kind": "tool", "catalog": {"status": ["a"], "generic": ["g1", "g2"]}, "recent": [], "io": {"random.choice": "g1"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a", "h"], "generic": ["g"]}, "recent": ["a", "b", "c", "d", "e", "f", "g"], "io": {"random.choice": "h"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {}, "default_phrases": {"status": ["s"], "generic": ["g"]}, "recent": null, "io": {"random.choice": "s"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a"], "generic": ["g"]}, "recent": ["a"], "io": {"random.choice": "a"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a", "b"], "generic": ["g"]}, "recent": null, "rng": true, "io": {"random.choice": "b"}}}
+{"func": "choose_status_phrase", "in": {"kind": "tool", "catalog": {}, "default_phrases": {"status": ["s"]}, "recent": null, "io": {}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a", "b"], "generic": ["g"]}, "recent": ["a", "b"], "io": {"random.choice": "a"}}}
+{"func": "choose_status_phrase", "in": {"kind": "status", "catalog": {"status": ["a"], "generic": ["g"]}, "recent": null, "io": {"random.choice": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {"Path.resolve": "/quarry/gateway/status_phrases.py", "Path.read_text": "status:\n- s1\ngeneric:\n- g1\n", "yaml.safe_load": {"status": ["s1"], "generic": ["g1"]}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {"Path.resolve": "/quarry/gateway/status_phrases.py", "Path.read_text": "text", "yaml.safe_load": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {"Path.resolve": "/quarry/gateway/status_phrases.py", "Path.read_text": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {"Path.resolve": "/quarry/gateway/status_phrases.py", "Path.read_text": "- x\n", "yaml.safe_load": {"__script__": true, "ret": ["x"]}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {"Path.resolve": {"__script__": true, "ret": null, "raise": {"type": "OSError", "message": "noresolve"}}}}}
+{"func": "_load_default_phrases", "in": {"module_file": "/quarry/gateway/status_phrases.py", "io": {}}}

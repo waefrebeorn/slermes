@@ -1087,8 +1087,7 @@ static json_t *td_run_children_parallel(td_io_t *io, const json_t *in, json_t *s
     if (td_is_raise(stagger)) { ret = stagger; goto finally; }
     json_t *ga = td_args();
     json_set(ga, "children", td_triple_proj(children));
-    json_append(ga, json_copy(stagger));   /* positional stagger arg */
-    json_free(stagger);
+    json_set(ga, "stagger", stagger ? stagger : json_null());   /* positional stagger arg, named for the args projection */
     json_t *gate = td_call(io, "gate.for_children", ga);
     if (td_is_raise(gate)) { ret = gate; goto finally; }
     json_free(gate);   /* gate None -> run_child, else partial(_run_gated); both project {"__callable__":true} */
@@ -1464,7 +1463,7 @@ static json_t *td_resolve_async_wake_sid(td_io_t *io, const json_t *in, json_t *
     int oneshot = td_truth(td_get(in, "oneshot_session"));
     json_t *finite = td_call(io, "finite_turn_required", td_args());
     if (td_is_raise(finite)) return finite;
-    int finite_true = (finite->type == JSON_BOOL && finite->bool_val);
+    int finite_true = (finite && finite->type == JSON_BOOL && finite->bool_val);
     int finite_none = td_is_null(finite);
     json_free(finite);
     /* oneshot or finite is True or (finite is None and env == "1") */
@@ -1662,7 +1661,8 @@ static json_t *td_dispatched_payload(td_io_t *io, const json_t *in, json_t *st)
             json_t *uid = json_get(pair, 1);
             json_t *uo = json_object();
             td_arg_j(uo, "delegation_id", uid);
-            td_arg_j(uo, "group", td_get(unit, "group"));
+            json_t *grp = td_get(unit, "group");
+            json_set(uo, "group", grp ? json_copy(grp) : json_null());   /* group key always present (None -> null) */
             json_t *tidx = json_array();
             json_t *uch = td_get(unit, "children");
             for (size_t j = 0; j < json_len(uch); j++) json_append(tidx, json_copy(json_get(json_get(uch, j), 0)));
