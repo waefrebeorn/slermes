@@ -88,7 +88,7 @@ void update_session_tool_names(const char *session_id, const char *tool_names_js
     sqlite3_finalize(st);
 }
 
-/* PoP: freelist_ratio @ hermes_state_maintenance.py:freelist_ratio */
+/* PoP: freelist_ratio @ persistence/sqlite/admin/_maintenance.py:freelist_ratio */
 float freelist_ratio(sqlite3 *conn) {
     if (!conn) return -1.0f;
     int64_t page_count = 0, freelist = 0;

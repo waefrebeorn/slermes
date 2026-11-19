@@ -659,7 +659,7 @@ int tools_registry_init(const char *name)
     return 0;
 }
 
-/* PoP: tools_is_telegram_thread_not_found @ tools/send_message_senders.py:_is_telegram_thread_not_found */
+/* PoP: tools_is_telegram_thread_not_found @ plugins/platforms/telegram/standalone.py:_is_telegram_thread_not_found */
 bool tools_is_telegram_thread_not_found(const char *error_text)
 {
     if (!error_text) return false;
@@ -668,7 +668,7 @@ bool tools_is_telegram_thread_not_found(const char *error_text)
            strstr(error_text, "message thread not found") != NULL;
 }
 
-/* PoP: tools_registry_standalone_send @ tools/send_message_senders.py:_registry_standalone_send */
+/* PoP: tools_registry_standalone_send @ gateway/outbound/senders.py:_registry_standalone_send */
 int tools_registry_standalone_send(const char *platform_name, const char *chat_id,
                                    const char *message, const char *thread_id)
 {

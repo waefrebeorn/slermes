@@ -22,7 +22,7 @@ char *hs_search_messages(void *db, const char *query) {
     return hermes_state_search_messages(db, query);
 }
 
-/* PoP: hs_search_messages_impl @ hermes_state_search.py:_search_messages_impl */
+/* PoP: hs_search_messages_impl @ persistence/sqlite/conversation/_store/search.py:_search_messages_impl */
 char *hs_search_messages_impl(void *db, const char *query) {
     return hermes_state_search_messages_impl(db, query);
 }
@@ -36,7 +36,7 @@ char *hs_search_sanitize_fts5_query(const char *raw) {
     return hermes_state_sanitize_fts5_query(raw);
 }
 
-/* PoP: hs_search_contains_cjk @ hermes_state_search.py:_contains_cjk */
+/* PoP: hs_search_contains_cjk @ persistence/sqlite/conversation/_store/search.py:_contains_cjk */
 int hs_search_contains_cjk(const char *s) {
     if (!s) return 0;
     for (const unsigned char *p = (const unsigned char *)s; *p; p++) {

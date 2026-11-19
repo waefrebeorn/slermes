@@ -440,7 +440,7 @@ char *hsk_profile_from_session_key(const char *session_key)
 
 /* --- hermes_state_runtime.py --- */
 
-/* PoP: hsr_replacement_binding @ hermes_state_runtime.py:replacement_binding */
+/* PoP: hsr_replacement_binding @ persistence/sqlite/authority/_runtime.py:replacement_binding */
 char *hsr_replacement_binding(const char *principal_id, const char *session_id,
                               const char *request_id)
 {
@@ -459,7 +459,7 @@ char *hsr_replacement_binding(const char *principal_id, const char *session_id,
     return out;
 }
 
-/* PoP: hsr_mutation_receipt_key @ hermes_state_runtime.py:mutation_receipt_key */
+/* PoP: hsr_mutation_receipt_key @ persistence/authority/runtime.py:mutation_receipt_key */
 int hsr_mutation_receipt_key(const char *principal_id, const char *session_id,
                              const char *request_id, const char *operation,
                              json_t *payload, json_t *expected_revision,

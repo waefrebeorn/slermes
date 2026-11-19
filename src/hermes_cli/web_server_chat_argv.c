@@ -63,7 +63,7 @@ static bool session_exists(sqlite3 *db, const char *sid) {
     return found;
 }
 
-/* PoP: ws_chat_resolve_session_id @ hermes_state_sessions.py:resolve_session_id */
+/* PoP: ws_chat_resolve_session_id @ persistence/sqlite/conversation/_store/sessions.py:resolve_session_id */
 char *ws_chat_resolve_session_id(const char *db_path, const char *prefix) {
     if (!db_path || !prefix || !*prefix) return NULL;
     sqlite3 *db = NULL;

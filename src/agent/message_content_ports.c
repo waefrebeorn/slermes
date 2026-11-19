@@ -36,7 +36,7 @@ char *mct_field(const char *value_json, const char *key) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: mct_text_from_part @ agent/message_content.py:_text_from_part */
+/* PoP: mct_text_from_part @ session_rules/turns.py:_text_from_part */
 char *mct_text_from_part(const char *part_json) {
     /* Python: str or mapping text. */
     if (!part_json) return strdup("");
@@ -48,7 +48,7 @@ char *mct_text_from_part(const char *part_json) {
     return t ? t : strdup("");
 }
 
-/* PoP: mct_flatten_message_text @ agent/message_content.py:flatten_message_text */
+/* PoP: mct_flatten_message_text @ session_rules/turns.py:flatten_message_text */
 char *mct_flatten_message_text(const char *message_json) {
     /* Python: visible text from common shapes. */
     if (!message_json) return strdup("");

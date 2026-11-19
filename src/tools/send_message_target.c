@@ -120,7 +120,7 @@ int send_message_target_parse_target_ref(const char *platform_name, const char *
 /* _display_chat_id was deleted upstream (691e2f7d9f) with no replacement, so
  * this log-safe-id helper has no live counterpart. Removed with its decl. */
 
-/* PoP: send_message_target_telegram_retry_delay @ tools/send_message_senders.py:_telegram_retry_delay */
+/* PoP: send_message_target_telegram_retry_delay @ plugins/platforms/telegram/standalone.py:_telegram_retry_delay */
 /* Backoff seconds for retryable Telegram API errors; -1 / NULL = no retry.
  * NOTE: Python reads `retry_after` from the exception ATTRIBUTE, not the
  * error text. A plain error string has no such attribute, so we do NOT

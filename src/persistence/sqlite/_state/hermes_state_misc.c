@@ -90,7 +90,7 @@ void reopen_after_close_locked(const char *context) {
     /* Reopen the writer connection after a race. Handled by session_db.c. */
 }
 
-/* PoP: list_recent_sessions_bounded @ hermes_state_sessions.py:list_recent_sessions_bounded */
+/* PoP: list_recent_sessions_bounded @ persistence/sqlite/conversation/_store/sessions.py:list_recent_sessions_bounded */
 char *list_recent_sessions_bounded(int limit, const char **exclude_sources, int n_exclude, float timeout_sec, int candidate_limit, int lineage_limit, sqlite3 *conn) {
     if (!conn) return strdup("[]");
     (void)exclude_sources; (void)n_exclude; (void)timeout_sec; (void)candidate_limit; (void)lineage_limit;

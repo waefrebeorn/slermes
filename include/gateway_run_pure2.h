@@ -218,7 +218,7 @@ bool gw_is_discord_auto_thread_lane(const char *platform,
 
 /* run.py turn_context.compression_made_progress — True when materially reduced.
  * Row-count drop counts; otherwise token drop >5% counts. */
-/* PoP: compression_made_progress @ turn_context.py:compression_made_progress */
+/* PoP: compression_made_progress @ agent/turn_context.py:compression_made_progress */
 bool gw_compression_made_progress(int orig_len, int new_len,
                                   int orig_tokens, int new_tokens);
 

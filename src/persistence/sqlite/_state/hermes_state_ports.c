@@ -21,7 +21,7 @@ int hermes_state_log_wal_reset_bug_once(const char *db_label, bool kept_wal);
 int hermes_state_log_wal_fallback_once(const char *db_label, const char *action);
 bool hermes_state_has_fts_trash(hermes_state_db_t *db);
 
-/* PoP: hermes_state_delegate_from_json @ hermes_state_sessions.py:_delegate_from_json */
+/* PoP: hermes_state_delegate_from_json @ persistence/sqlite/conversation/_store/sessions.py:_delegate_from_json */
 char *hermes_state_delegate_from_json(const char *col) {
     /* Python: "SELECT json_extract(<col>, '$.mode') ..." — delegate rows
      * carry mode in a JSON column; NULL/none maps to "" and 'None' is
@@ -53,14 +53,14 @@ char *hermes_state_ephemeral_child_sql(const char *alias) {
     return out;
 }
 
-/* PoP: hermes_state_collect_delegate_child_ids @ hermes_state_sessions.py:_collect_delegate_child_ids */
+/* PoP: hermes_state_collect_delegate_child_ids @ persistence/sqlite/conversation/_store/sessions.py:_collect_delegate_child_ids */
 char *hermes_state_collect_delegate_child_ids(const char *parent_ids_csv) {
     /* Python: recursive CTE over delegate children; excludes seeds. */
     (void)parent_ids_csv;
     return strdup("[]");
 }
 
-/* PoP: hermes_state_delete_delegate_children @ hermes_state_sessions.py:_delete_delegate_children */
+/* PoP: hermes_state_delete_delegate_children @ persistence/sqlite/conversation/_store/sessions.py:_delete_delegate_children */
 int hermes_state_delete_delegate_children(hermes_state_db_t *db, const char *parent_ids_csv) {
     /* Python: DELETE children (not the parents themselves) — REAL sqlite. */
     if (!db || !db->db || !parent_ids_csv) return -1;
@@ -287,7 +287,7 @@ int hermes_state_quarantine_zeroed_state_db(const char *path) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: hermes_state_is_fts5_unavailable_error @ hermes_state_fts.py:_is_fts5_unavailable_error */
+/* PoP: hermes_state_is_fts5_unavailable_error @ persistence/sqlite/_schema.py:_is_fts5_unavailable_error */
 bool hermes_state_is_fts5_unavailable_error(const char *err) {
     /* Python: "no such module" + "fts5" in message. */
     if (!err) return false;
@@ -299,7 +299,7 @@ bool hermes_state_is_fts5_unavailable_error(const char *err) {
     return r;
 }
 
-/* PoP: hermes_state_is_trigram_unavailable_error @ hermes_state_fts.py:_is_trigram_unavailable_error */
+/* PoP: hermes_state_is_trigram_unavailable_error @ persistence/sqlite/_schema.py:_is_trigram_unavailable_error */
 bool hermes_state_is_trigram_unavailable_error(const char *err) {
     /* Python: "no such tokenizer" (trigram / cjk_unicode61) — FTS5 itself works. */
     if (!err) return false;
@@ -311,7 +311,7 @@ bool hermes_state_is_trigram_unavailable_error(const char *err) {
     return r;
 }
 
-/* PoP: hermes_state_db_has_legacy_inline_fts @ hermes_state_fts.py:_db_has_legacy_inline_fts */
+/* PoP: hermes_state_db_has_legacy_inline_fts @ persistence/sqlite/_schema.py:_db_has_legacy_inline_fts */
 bool hermes_state_db_has_legacy_inline_fts(hermes_state_db_t *db) {
     /* Python: messages_fts exists in pre-v23 shape — REAL probe. */
     if (!db || !db->db) return false;
@@ -325,7 +325,7 @@ bool hermes_state_db_has_legacy_inline_fts(hermes_state_db_t *db) {
     return found;
 }
 
-/* PoP: hermes_state_warn_trigram_unavailable @ hermes_state_fts.py:_warn_trigram_unavailable */
+/* PoP: hermes_state_warn_trigram_unavailable @ persistence/sqlite/_schema.py:_warn_trigram_unavailable */
 int hermes_state_warn_trigram_unavailable(void) {
     static bool warned = false;
     if (!warned) {
@@ -335,7 +335,7 @@ int hermes_state_warn_trigram_unavailable(void) {
     return 0;
 }
 
-/* PoP: hermes_state_warn_fts5_unavailable @ hermes_state_fts.py:_warn_fts5_unavailable */
+/* PoP: hermes_state_warn_fts5_unavailable @ persistence/sqlite/_schema.py:_warn_fts5_unavailable */
 int hermes_state_warn_fts5_unavailable(const char *label) {
     static bool warned = false;
     if (!warned) {
@@ -346,7 +346,7 @@ int hermes_state_warn_fts5_unavailable(const char *label) {
     return 0;
 }
 
-/* PoP: hermes_state_sqlite_supports_fts5 @ hermes_state_schema.py:_sqlite_supports_fts5 */
+/* PoP: hermes_state_sqlite_supports_fts5 @ persistence/sqlite/_schema.py:_sqlite_supports_fts5 */
 bool hermes_state_sqlite_supports_fts5(void) {
     /* Python: CREATE VIRTUAL TABLE temp probe — REAL, cached. */
     static int cached = -1;
@@ -374,7 +374,7 @@ int hermes_state_ensure_fts_cjk_schema(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_drop_fts_triggers @ hermes_state_fts.py:_drop_fts_triggers */
+/* PoP: hermes_state_drop_fts_triggers @ persistence/sqlite/_schema.py:_drop_fts_triggers */
 int hermes_state_drop_fts_triggers(hermes_state_db_t *db) {
     /* Python: DROP TRIGGER IF EXISTS for each _FTS_TRIGGERS name. */
     if (!db || !db->db) return -1;
@@ -408,7 +408,7 @@ long long hermes_state_fts_trigger_count(hermes_state_db_t *db) {
     return n;
 }
 
-/* PoP: hermes_state_rebuild_fts_indexes @ hermes_state_schema.py:_rebuild_fts_indexes */
+/* PoP: hermes_state_rebuild_fts_indexes @ persistence/sqlite/_schema.py:_rebuild_fts_indexes */
 int hermes_state_rebuild_fts_indexes(hermes_state_db_t *db) {
     /* Python: FTS 'rebuild' command on both external-content indexes. */
     if (!db || !db->db) return -1;
@@ -430,7 +430,7 @@ int hermes_state_rebuild_legacy_fts_indexes(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_fts_table_probe @ hermes_state_schema.py:_fts_table_probe */
+/* PoP: hermes_state_fts_table_probe @ persistence/sqlite/_schema.py:_fts_table_probe */
 int hermes_state_fts_table_probe(hermes_state_db_t *db, const char *table_name) {
     /* Python: SELECT * FROM <table> LIMIT 0 → 1 ok, 0 missing,
      * -1 unavailable-error. */
@@ -445,7 +445,7 @@ int hermes_state_fts_table_probe(hermes_state_db_t *db, const char *table_name) 
     return unavailable ? -1 : 0;
 }
 
-/* PoP: hermes_state_ensure_fts_schema @ hermes_state_fts.py:_ensure_fts_schema */
+/* PoP: hermes_state_ensure_fts_schema @ persistence/sqlite/_schema.py:_ensure_fts_schema */
 bool hermes_state_ensure_fts_schema(hermes_state_db_t *db, const char *table_name) {
     /* Python: probe + create/recreate triggers for one FTS table — REAL. */
     if (!db || !db->db || !table_name) return false;
@@ -471,7 +471,7 @@ int hermes_state_execute_write(hermes_state_db_t *db, const char *label) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_is_fts_write_corruption_error @ hermes_state_fts.py:_is_fts_write_corruption_error */
+/* PoP: hermes_state_is_fts_write_corruption_error @ persistence/sqlite/_schema.py:_is_fts_write_corruption_error */
 bool hermes_state_is_fts_write_corruption_error(const char *err) {
     /* Python: "database disk image is malformed" / "fts5: ... corrupt". */
     if (!err) return false;
@@ -533,14 +533,14 @@ int hermes_state_close(hermes_state_db_t *db) {
     return 0;
 }
 
-/* PoP: hermes_state_fts_rebuild_status @ hermes_state_search.py:fts_rebuild_status */
+/* PoP: hermes_state_fts_rebuild_status @ persistence/sqlite/conversation/_store/search.py:fts_rebuild_status */
 char *hermes_state_fts_rebuild_status(hermes_state_db_t *db) {
     /* Python: {"pending":bool,"total":n,"indexed":n,"percent":n} or None. */
     if (!db) return NULL;
     return strdup("{\"pending\": false}");
 }
 
-/* PoP: hermes_state_fts_rebuild_finish @ hermes_state_search.py:_fts_rebuild_finish */
+/* PoP: hermes_state_fts_rebuild_finish @ persistence/sqlite/admin/_maintenance.py:_fts_rebuild_finish */
 int hermes_state_fts_rebuild_finish(hermes_state_db_t *db) {
     /* Python: boundary sweep + clear markers — REAL. */
     if (!db || !db->db) return -1;
@@ -551,7 +551,7 @@ int hermes_state_fts_rebuild_finish(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_fts_teardown_trash_step @ hermes_state_search.py:_fts_teardown_trash_step */
+/* PoP: hermes_state_fts_teardown_trash_step @ persistence/sqlite/admin/_maintenance.py:_fts_teardown_trash_step */
 bool hermes_state_fts_teardown_trash_step(hermes_state_db_t *db) {
     /* Python: chunked DELETE + final DROP of demoted shadow tables. */
     if (!db || !db->db) return false;
@@ -562,7 +562,7 @@ bool hermes_state_fts_teardown_trash_step(hermes_state_db_t *db) {
     return rc != SQLITE_OK;
 }
 
-/* PoP: hermes_state_fts_rebuild_step @ hermes_state_search.py:fts_rebuild_step */
+/* PoP: hermes_state_fts_rebuild_step @ persistence/sqlite/admin/_maintenance.py:fts_rebuild_step */
 bool hermes_state_fts_rebuild_step(hermes_state_db_t *db) {
     /* Python: backfill one chunk — REAL. */
     if (!db || !db->db) return false;
@@ -615,7 +615,7 @@ int hermes_state_fts_cjk_reset_if_stale(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_fts_optimize_available @ hermes_state_search.py:fts_optimize_available */
+/* PoP: hermes_state_fts_optimize_available @ persistence/sqlite/admin/_maintenance.py:fts_optimize_available */
 bool hermes_state_fts_optimize_available(hermes_state_db_t *db) {
     /* Python: legacy inline install OR interrupted optimize run. */
     if (!db || !db->db) return false;
@@ -630,7 +630,7 @@ bool hermes_state_fts_optimize_available(hermes_state_db_t *db) {
     return hermes_state_has_fts_trash(db);
 }
 
-/* PoP: hermes_state_has_fts_trash @ hermes_state_fts.py:_has_fts_trash */
+/* PoP: hermes_state_has_fts_trash @ persistence/sqlite/_schema.py:_has_fts_trash */
 bool hermes_state_has_fts_trash(hermes_state_db_t *db) {
     if (!db || !db->db) return false;
     sqlite3_stmt *st = NULL;
@@ -644,7 +644,7 @@ bool hermes_state_has_fts_trash(hermes_state_db_t *db) {
     return has;
 }
 
-/* PoP: hermes_state_demote_legacy_fts_to_trash @ hermes_state_search.py:_demote_legacy_fts_to_trash */
+/* PoP: hermes_state_demote_legacy_fts_to_trash @ persistence/sqlite/admin/_maintenance.py:_demote_legacy_fts_to_trash */
 long long hermes_state_demote_legacy_fts_to_trash(hermes_state_db_t *db) {
     /* Python: demote vtables to shadow tables — REAL sqlite. */
     if (!db || !db->db) return -1;
@@ -664,7 +664,7 @@ long long hermes_state_demote_legacy_fts_to_trash(hermes_state_db_t *db) {
     return (int)max_id;
 }
 
-/* PoP: hermes_state_optimize_fts_storage @ hermes_state_search.py:optimize_fts_storage */
+/* PoP: hermes_state_optimize_fts_storage @ persistence/sqlite/admin/_maintenance.py:optimize_fts_storage */
 int hermes_state_optimize_fts_storage(hermes_state_db_t *db) {
     /* Python: foreground migration v22→v23, resumable — REAL. */
     if (!db || !db->db) return -1;
@@ -675,14 +675,14 @@ int hermes_state_optimize_fts_storage(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_parse_schema_columns @ hermes_state_schema.py:_parse_schema_columns */
+/* PoP: hermes_state_parse_schema_columns @ persistence/sqlite/_schema.py:_parse_schema_columns */
 char *hermes_state_parse_schema_columns(void) {
     /* Python: in-memory sqlite parse of SCHEMA_SQL → column map. */
     printf("schema columns parsed (in-memory sqlite)\n");
     return strdup("{}");
 }
 
-/* PoP: hermes_state_reconcile_columns @ hermes_state_schema.py:_reconcile_columns */
+/* PoP: hermes_state_reconcile_columns @ persistence/sqlite/_schema.py:_reconcile_columns */
 int hermes_state_reconcile_columns(hermes_state_db_t *db) {
     /* Python: ALTER TABLE ADD COLUMN for every missing declared column — REAL. */
     if (!db || !db->db) return -1;
@@ -701,7 +701,7 @@ int hermes_state_reconcile_columns(hermes_state_db_t *db) {
     return 0;
 }
 
-/* PoP: hermes_state_init_schema @ hermes_state_schema.py:_init_schema */
+/* PoP: hermes_state_init_schema @ persistence/sqlite/_schema.py:_init_schema */
 int hermes_state_init_schema(hermes_state_db_t *db) {
     /* Python: schema initialized (create + reconcile + fts) — REAL. */
     if (!db || !db->db) return -1;
@@ -731,7 +731,7 @@ int hermes_state_record_gateway_session_peer(hermes_state_db_t *db, const char *
     return rc;
 }
 
-/* PoP: hermes_state_backfill_gateway_metadata_from_sessions_json @ hermes_state_schema.py:_backfill_gateway_metadata_from_sessions_json */
+/* PoP: hermes_state_backfill_gateway_metadata_from_sessions_json @ persistence/sqlite/_schema.py:_backfill_gateway_metadata_from_sessions_json */
 int hermes_state_backfill_gateway_metadata_from_sessions_json(hermes_state_db_t *db) {
     /* Python: one-time v18 backfill — REAL sqlite. */
     if (!db || !db->db) return -1;
@@ -762,7 +762,7 @@ int hermes_state_backfill_repo_roots(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_get_session_by_title @ hermes_state_titles.py:get_session_by_title */
+/* PoP: hermes_state_get_session_by_title @ persistence/sqlite/conversation/_store/titles.py:get_session_by_title */
 char *hermes_state_get_session_by_title(hermes_state_db_t *db, const char *title) {
     /* Python: SELECT * FROM sessions WHERE title = ? */
     if (!db || !db->db || !title) return NULL;
@@ -780,7 +780,7 @@ char *hermes_state_get_session_by_title(hermes_state_db_t *db, const char *title
     return id;
 }
 
-/* PoP: hermes_state_resolve_session_by_title @ hermes_state_titles.py:resolve_session_by_title */
+/* PoP: hermes_state_resolve_session_by_title @ persistence/sqlite/conversation/_store/titles.py:resolve_session_by_title */
 char *hermes_state_resolve_session_by_title(hermes_state_db_t *db, const char *title) {
     /* Python: exact match, else "title #N" lineage variants (latest). */
     if (!db || !title) return NULL;
@@ -788,7 +788,7 @@ char *hermes_state_resolve_session_by_title(hermes_state_db_t *db, const char *t
     return NULL;
 }
 
-/* PoP: hermes_state_compact_session_cols @ hermes_state_portability.py:_compact_session_cols */
+/* PoP: hermes_state_compact_session_cols @ persistence/sqlite/conversation/_store/portability.py:_compact_session_cols */
 char *hermes_state_compact_session_cols(void) {
     /* Python: sessions columns minus system_prompt blob, aliased "s". */
     return strdup("s.id, s.source, s.title, s.cwd, s.started_at, s.last_active");
@@ -809,7 +809,7 @@ char *hermes_state_list_cron_job_runs(hermes_state_db_t *db, const char *job_id)
     return strdup("[]");
 }
 
-/* PoP: hermes_state_get_session_rich_row @ hermes_state_portability.py:_get_session_rich_row */
+/* PoP: hermes_state_get_session_rich_row @ persistence/sqlite/conversation/_store/portability.py:_get_session_rich_row */
 char *hermes_state_get_session_rich_row(hermes_state_db_t *db, const char *session_id, bool compact_rows) {
     if (!db || !session_id) return NULL;
     (void)compact_rows;
@@ -831,7 +831,7 @@ char *hermes_state_get_first_assistant_text(hermes_state_db_t *db, const char *s
     return strdup("");
 }
 
-/* PoP: hermes_state_get_resume_conversations @ hermes_state_messages.py:get_resume_conversations */
+/* PoP: hermes_state_get_resume_conversations @ persistence/sqlite/conversation/_store/messages.py:get_resume_conversations */
 char *hermes_state_get_resume_conversations(hermes_state_db_t *db, const char *session_id) {
     /* Python: (model_history, display_history) in ONE SELECT, alternation-repaired. */
     if (!db || !session_id) return strdup("{\"model\": [], \"display\": []}");
@@ -839,14 +839,14 @@ char *hermes_state_get_resume_conversations(hermes_state_db_t *db, const char *s
     return strdup("{\"model\": [], \"display\": []}");
 }
 
-/* PoP: hermes_state_get_ancestor_display_prefix @ hermes_state_messages.py:get_ancestor_display_prefix */
+/* PoP: hermes_state_get_ancestor_display_prefix @ persistence/sqlite/conversation/_store/messages.py:get_ancestor_display_prefix */
 char *hermes_state_get_ancestor_display_prefix(hermes_state_db_t *db, const char *session_id) {
     if (!db || !session_id) return strdup("[]");
     printf("ancestor display prefix for %s (compression ancestors)\n", session_id);
     return strdup("[]");
 }
 
-/* PoP: hermes_state_sanitize_fts5_query @ hermes_state_search.py:_sanitize_fts5_query */
+/* PoP: hermes_state_sanitize_fts5_query @ persistence/sqlite/conversation/_store/search.py:_sanitize_fts5_query */
 char *hermes_state_sanitize_fts5_query(const char *query) {
     /* Python: escape FTS5 metachars: " ( ) + * { } : and bare booleans. */
     if (!query) return strdup("");
@@ -869,7 +869,7 @@ bool hermes_state_is_cjk_codepoint(unsigned long cp) {
            (cp >= 0x20000 && cp <= 0x2A6DF) || (cp >= 0x3000 && cp <= 0x303F);
 }
 
-/* PoP: hermes_state_contains_cjk @ hermes_state_search.py:_contains_cjk */
+/* PoP: hermes_state_contains_cjk @ persistence/sqlite/conversation/_store/search.py:_contains_cjk */
 bool hermes_state_contains_cjk(const char *text) {
     if (!text) return false;
     for (const unsigned char *p = (const unsigned char *)text; *p; ) {
@@ -884,7 +884,7 @@ bool hermes_state_contains_cjk(const char *text) {
     return false;
 }
 
-/* PoP: hermes_state_count_cjk @ hermes_state_search.py:_count_cjk */
+/* PoP: hermes_state_count_cjk @ persistence/sqlite/conversation/_store/search.py:_count_cjk */
 long hermes_state_count_cjk(const char *text) {
     long n = 0;
     if (!text) return 0;
@@ -922,7 +922,7 @@ bool hermes_state_has_lone_cjk_run(const char *query) {
     return run == 1;
 }
 
-/* PoP: hermes_state_trigram_eligible_tokens @ hermes_state_search.py:_trigram_eligible_tokens */
+/* PoP: hermes_state_trigram_eligible_tokens @ persistence/sqlite/conversation/_store/search.py:_trigram_eligible_tokens */
 bool hermes_state_trigram_eligible_tokens(const char *query) {
     /* Python: every non-operator token >= 3 chars. */
     if (!query) return false;
@@ -954,14 +954,14 @@ char *hermes_state_search_messages(hermes_state_db_t *db, const char *query) {
     return strdup("[]");
 }
 
-/* PoP: hermes_state_search_messages_impl @ hermes_state_search.py:_search_messages_impl */
+/* PoP: hermes_state_search_messages_impl @ persistence/sqlite/conversation/_store/search.py:_search_messages_impl */
 char *hermes_state_search_messages_impl(hermes_state_db_t *db, const char *query) {
     if (!db || !query) return strdup("[]");
     printf("fts search impl: %s (syntax: keywords / phrases / boolean)\n", query);
     return strdup("[]");
 }
 
-/* PoP: hermes_state_search_unindexed_gap @ hermes_state_search.py:_search_unindexed_gap */
+/* PoP: hermes_state_search_unindexed_gap @ persistence/sqlite/conversation/_store/search.py:_search_unindexed_gap */
 char *hermes_state_search_unindexed_gap(hermes_state_db_t *db, const char *query) {
     /* Python: LIKE-scan ids in (progress, high_water] — degraded to per-row LIKE. */
     if (!db || !query) return strdup("[]");
@@ -969,7 +969,7 @@ char *hermes_state_search_unindexed_gap(hermes_state_db_t *db, const char *query
     return strdup("[]");
 }
 
-/* PoP: hermes_state_search_sessions_by_id @ hermes_state_search.py:search_sessions_by_id */
+/* PoP: hermes_state_search_sessions_by_id @ persistence/sqlite/conversation/_store/search.py:search_sessions_by_id */
 char *hermes_state_search_sessions_by_id(hermes_state_db_t *db, const char *fragment) {
     if (!db || !fragment) return strdup("[]");
     printf("sessions by id fragment %s (exact/prefix/substring)\n", fragment);
@@ -984,14 +984,14 @@ char *hermes_state_search_sessions(hermes_state_db_t *db, const char *source) {
     return strdup("[]");
 }
 
-/* PoP: hermes_state_export_session_lineage @ hermes_state_portability.py:export_session_lineage */
+/* PoP: hermes_state_export_session_lineage @ persistence/sqlite/housekeeping/_portability.py:export_session_lineage */
 char *hermes_state_export_session_lineage(hermes_state_db_t *db, const char *session_id) {
     if (!db || !session_id) return NULL;
     printf("lineage exported as one logical session for %s\n", session_id);
     return strdup("{}");
 }
 
-/* PoP: hermes_state_export_all @ hermes_state_portability.py:export_all */
+/* PoP: hermes_state_export_all @ persistence/sqlite/housekeeping/_portability.py:export_all */
 char *hermes_state_export_all(hermes_state_db_t *db, const char *source) {
     if (!db) return strdup("[]");
     printf("all sessions exported (source=%s, JSONL-ready)\n", source ? source : "*");
@@ -1009,7 +1009,7 @@ double hermes_state_float_or_none(const char *value, bool *ok) {
     return d;
 }
 
-/* PoP: hermes_state_import_sessions @ hermes_state_portability.py:import_sessions */
+/* PoP: hermes_state_import_sessions @ persistence/sqlite/housekeeping/_portability.py:import_sessions */
 int hermes_state_import_sessions(hermes_state_db_t *db, const char *payload_json) {
     /* Python: import exported sessions; existing ids skipped; children keep
      * parents only when present in payload. */
@@ -1018,7 +1018,7 @@ int hermes_state_import_sessions(hermes_state_db_t *db, const char *payload_json
     return 0;
 }
 
-/* PoP: hermes_state_list_unlinked_telegram_sessions_for_user @ hermes_state_telegram.py:list_unlinked_telegram_sessions_for_user */
+/* PoP: hermes_state_list_unlinked_telegram_sessions_for_user @ persistence/sqlite/conversation/_store/telegram.py:list_unlinked_telegram_sessions_for_user */
 char *hermes_state_list_unlinked_telegram_sessions_for_user(hermes_state_db_t *db, const char *chat_id, const char *user_id) {
     /* Python: telegram sessions not bound to a topic; read-only; falls back
      * when topic tables absent. */
@@ -1037,7 +1037,7 @@ int hermes_state_optimize_fts(hermes_state_db_t *db) {
     return rc == SQLITE_OK ? 0 : -1;
 }
 
-/* PoP: hermes_state_rebuild_fts @ hermes_state_search.py:rebuild_fts */
+/* PoP: hermes_state_rebuild_fts @ persistence/sqlite/conversation/_store/search.py:rebuild_fts */
 int hermes_state_rebuild_fts(hermes_state_db_t *db) {
     if (!db || !db->db) return -1;
     char *err = NULL;

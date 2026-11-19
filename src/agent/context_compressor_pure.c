@@ -1988,7 +1988,7 @@ json_t *cc_handoff_only_content(const json_t *content)
     return json_copy(content);
 }
 
-/* PoP: retryable_user_text @ agent/context_compressor_retry.py:retryable_user_text */
+/* PoP: retryable_user_text @ session_rules/turns.py:retryable_user_text */
  /* Lossless retry text or fail-closed error. Media/unknown parts and
  * annotated text parts are rejected (no attachment replay protocol).
  * Returns malloc'd text, or NULL with err filled. Caller frees. */

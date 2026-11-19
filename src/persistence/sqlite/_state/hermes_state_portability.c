@@ -42,12 +42,12 @@ char *hs_portability_get_first_assistant_text(void *db, const char *session_id) 
     return hermes_state_get_first_assistant_text(db, session_id);
 }
 
-/* PoP: hs_portability_export_session_lineage @ hermes_state_portability.py:export_session_lineage */
+/* PoP: hs_portability_export_session_lineage @ persistence/sqlite/housekeeping/_portability.py:export_session_lineage */
 char *hs_portability_export_session_lineage(void *db, const char *session_id) {
     return hermes_state_export_session_lineage(db, session_id);
 }
 
-/* PoP: hs_portability_export_all @ hermes_state_portability.py:export_all */
+/* PoP: hs_portability_export_all @ persistence/sqlite/housekeeping/_portability.py:export_all */
 char *hs_portability_export_all(void *db, const char *source) {
     return hermes_state_export_all(db, source);
 }

@@ -1420,7 +1420,7 @@ void prune_never_active_keyed_sessions(hermes_state_db_t *self,
     free(ids);
 }
 
-/* PoP: publish_session_git_metadata @ hermes_state_sessions.py:publish_session_git_metadata */
+/* PoP: publish_session_git_metadata @ persistence/sqlite/conversation/_store/sessions.py:publish_session_git_metadata */
 bool publish_session_git_metadata(hermes_state_db_t *self,
                                   const char *session_id, const char *cwd,
                                   long generation, const char *git_branch,
@@ -1838,7 +1838,7 @@ json_t *session_gateway_runtime(const json_t *session_meta) {
     return out;
 }
 
-/* PoP: sweep_orphaned_sessions @ hermes_state_maintenance.py:sweep_orphaned_sessions */
+/* PoP: sweep_orphaned_sessions @ persistence/sqlite/housekeeping/maintenance.py:sweep_orphaned_sessions */
 json_t *sweep_orphaned_sessions(hermes_state_db_t *self,
                                 double max_idle_seconds,
                                 const char *const *sources, int n_sources,
@@ -1981,7 +1981,7 @@ json_t *get_dominant_session_model_route(hermes_state_db_t *self,
     return row;
 }
 
-/* PoP: unarchive_recoverable_session @ hermes_state_sessions.py:unarchive_recoverable_session */
+/* PoP: unarchive_recoverable_session @ persistence/sqlite/conversation/_store/sessions.py:unarchive_recoverable_session */
 bool unarchive_recoverable_session(hermes_state_db_t *self,
                                    const char *session_id) {
     /* Un-archive a session archived by a recoverable accident (ws_orphan_reap,
@@ -2044,7 +2044,7 @@ bool unarchive_recoverable_session(hermes_state_db_t *self,
     return true;
 }
 
-/* PoP: set_session_hidden @ hermes_state_sessions.py:set_session_hidden */
+/* PoP: set_session_hidden @ persistence/sqlite/conversation/_store/sessions.py:set_session_hidden */
 bool set_session_hidden(hermes_state_db_t *self, const char *session_id,
                         bool hidden) {
     /* Hide/unhide a session and its whole compression lineage via the
@@ -2353,7 +2353,7 @@ static bool hs_json_deep_equal(const json_t *a, const json_t *b) {
     return false;
 }
 
-/* PoP: get_active_message_ids @ hermes_state_messages.py:get_active_message_ids */
+/* PoP: get_active_message_ids @ persistence/sqlite/conversation/_store/messages.py:get_active_message_ids */
 long long *hermes_state_get_active_message_ids(hermes_state_db_t *db,
                                                const char *session_id, int *out_n) {
     /* Ordered physical ids pinned by rewind CAS checks: every ACTIVE row so

@@ -297,7 +297,7 @@ char *dedupe_display_generations(const char *rows_json) {
     return strdup(rows_json);
 }
 
-/* PoP: resume_lineage_ids @ hermes_state_messages.py:resume_lineage_ids */
+/* PoP: resume_lineage_ids @ persistence/sqlite/conversation/lineage.py:resume_lineage_ids */
 /* Returns JSON array of session ids from root to tip */
 char *resume_lineage_ids(const char *session_id, sqlite3 *conn) {
     if (!session_id || !conn) return strdup("[]");
@@ -333,7 +333,7 @@ char *resume_lineage_ids(const char *session_id, sqlite3 *conn) {
     return result;
 }
 
-/* PoP: backfill_null_session_profiles @ hermes_state_sessions.py:backfill_null_session_profiles */
+/* PoP: backfill_null_session_profiles @ persistence/sqlite/conversation/_store/sessions.py:backfill_null_session_profiles */
 int backfill_null_session_profiles(const char *profile_name, sqlite3 *conn) {
     if (!profile_name || !conn) return 0;
     sqlite3_stmt *st = NULL;
@@ -346,7 +346,7 @@ int backfill_null_session_profiles(const char *profile_name, sqlite3 *conn) {
     return changes;
 }
 
-/* PoP: get_compression_chain @ hermes_state_compression.py:get_compression_chain */
+/* PoP: get_compression_chain @ persistence/sqlite/conversation/_store/compression.py:get_compression_chain */
 /* Returns JSON array of session ids from root to tip */
 char *get_compression_chain(const char *session_id, sqlite3 *conn) {
     return resume_lineage_ids(session_id, conn);

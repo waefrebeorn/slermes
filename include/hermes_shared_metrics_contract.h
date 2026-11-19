@@ -29,7 +29,7 @@ extern "C" {
 
 /* ── Frozen sets — checked via membership functions ───────── */
 
-/* PoP: execution_surface @ agent/shared_metrics_contract.py:execution_surface */
+/* PoP: execution_surface @ hermes_cli/observability/shared_metrics_contract.py:execution_surface */
 bool smc_is_valid_execution_surface(const char *s);
 
 /* PoP: provider_family @ agent/shared_metrics_contract.py:provider_family */
@@ -41,42 +41,42 @@ const char *smc_model_family_from_model(const char *model);
 /* PoP: model_call_outcome @ agent/shared_metrics_contract.py:model_call_outcome */
 const char *smc_model_call_outcome(const char *outcome);
 
-/* PoP: counter_dimensions_are_valid @ agent/shared_metrics_contract.py:counter_dimensions_are_valid */
+/* PoP: counter_dimensions_are_valid @ hermes_cli/observability/shared_metrics_contract.py:counter_dimensions_are_valid */
 bool smc_counter_dimensions_are_valid(const char *metric_name, const json_t *dimensions);
 
-/* PoP: model_call_dimensions @ agent/shared_metrics_contract.py:model_call_dimensions */
+/* PoP: model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
 const json_t *smc_model_call_dimensions(const json_t *event);
 
-/* PoP: task_counter @ agent/shared_metrics_contract.py:task_counter */
+/* PoP: task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
 const json_t *smc_task_counter(const json_t *event);
 
-/* PoP: task_start_fields @ agent/shared_metrics_contract.py:task_start_fields */
+/* PoP: task_start_fields @ hermes_cli/observability/shared_metrics_contract.py:task_start_fields */
 const json_t *smc_task_start_fields(const json_t *kwargs);
 
-/* PoP: task_entrypoint @ agent/shared_metrics_contract.py:task_entrypoint */
+/* PoP: task_entrypoint @ hermes_cli/observability/shared_metrics_contract.py:task_entrypoint */
 const char *smc_task_entrypoint(const json_t *kwargs, const char *surface);
 
-/* PoP: task_terminal_fields @ agent/shared_metrics_contract.py:task_terminal_fields */
+/* PoP: task_terminal_fields @ hermes_cli/observability/shared_metrics_contract.py:task_terminal_fields */
 const json_t *smc_task_terminal_fields(const json_t *kwargs,
                                         int64_t duration_ms,
                                         int64_t model_call_count,
                                         int64_t tool_call_count,
                                         int64_t retry_count);
 
-/* PoP: task_terminal_state @ agent/shared_metrics_contract.py:task_terminal_state */
+/* PoP: task_terminal_state @ hermes_cli/observability/shared_metrics_contract.py:task_terminal_state */
 const char *smc_task_terminal_state(const json_t *kwargs,
                                      const char **out_end_reason,
                                      const char **out_termination);
 
-/* PoP: duration_bucket @ agent/shared_metrics_contract.py:duration_bucket */
+/* PoP: duration_bucket @ hermes_cli/observability/shared_metrics_contract.py:duration_bucket */
 const char *smc_duration_bucket(int64_t duration_ms);
 
-/* PoP: count_bucket @ agent/shared_metrics_contract.py:count_bucket */
+/* PoP: count_bucket @ hermes_cli/observability/shared_metrics_contract.py:count_bucket */
 const char *smc_count_bucket(int64_t count);
 
 /* ── Model call fields builder ───────────────────────────── */
 
-/* PoP: model_call_fields @ agent/shared_metrics_contract.py:model_call_fields */
+/* PoP: model_call_fields @ hermes_cli/observability/shared_metrics_contract.py:model_call_fields */
 const json_t *smc_model_call_fields(const json_t *kwargs);
 
 /* ── Provider metadata helpers ────────────────────────────── */

@@ -39,7 +39,7 @@ char *hermes_state_format_session_db_unavailable(const char *prefix) {
     return result;
 }
 
-/* PoP: update_session_model @ hermes_state_sessions.py:update_session_model */
+/* PoP: update_session_model @ persistence/sqlite/conversation/_store/sessions.py:update_session_model */
 void hermes_state_update_session_model(sqlite3 *conn, const char *session_id,
         const char *model, const char *provider) {
     if (!conn || !session_id) return;
@@ -54,7 +54,7 @@ void hermes_state_update_session_model(sqlite3 *conn, const char *session_id,
     }
 }
 
-/* PoP: session_yolo_enabled @ hermes_state_sessions.py:session_yolo_enabled */
+/* PoP: session_yolo_enabled @ persistence/sqlite/conversation/_store/sessions.py:session_yolo_enabled */
 bool hermes_state_session_yolo_enabled(const char *model_config_json) {
     if (!model_config_json) return false;
     return strstr(model_config_json, "\"yolo_mode\":true") != NULL ||
@@ -90,7 +90,7 @@ bool hermes_state_set_session_title(sqlite3 *conn, const char *session_id, const
     return changed;
 }
 
-/* PoP: assert_export_safe @ hermes_state_sessions.py:assert_export_safe */
+/* PoP: assert_export_safe @ persistence/sqlite/housekeeping/maintenance.py:assert_export_safe */
 int hermes_state_assert_export_safe(sqlite3 *conn, const char *session_id, int max_messages) {
     if (!conn || !session_id) return 0;
     if (max_messages <= 0) return 0; /* guard disabled */
@@ -112,7 +112,7 @@ char *hermes_state_sanitize_context(const char *content) {
     return strdup(content); /* simplified: full impl sanitizes context */
 }
 
-/* PoP: vacuum @ hermes_state_maintenance.py:vacuum */
+/* PoP: vacuum @ persistence/sqlite/admin/_maintenance.py:vacuum */
 int hermes_state_vacuum(sqlite3 *conn) {
     if (!conn) return 0;
     /* Merge FTS5 segments first, then VACUUM */
