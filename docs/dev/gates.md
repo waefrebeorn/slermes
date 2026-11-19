@@ -67,7 +67,13 @@ bash tests/run_all_oracles.sh          # needs ORACLE_JOBS=1 on MSYS2
 The object list is argument 4. Passing an empty string forces a full
 project link (every `.o` in `src/` + `lib/`), which Smart App Control refuses
 to run on this box — always pass the minimal object list. `tests/run_all_oracles.sh` carries the authoritative list
-in its `DEPS` table.
+in its `DEPS` table. To converge a new oracle's object closure automatically
+(link → read undefined refs → `nm` for definers → append → repeat, with the
+SAC `-O0` hash substitution and stubs-last ordering):
+
+```bash
+python scripts/resolve_oracle_deps.py <name> [max_rounds]
+```
 
 A harness that cannot execute must be reported as an explicit skip with a
 reason; "0 cases" is a failure, not a pass.

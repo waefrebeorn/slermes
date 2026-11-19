@@ -91,12 +91,19 @@ python tests/watercup/wc_run.py --list           # gate names
 python tests/watercup/wc_run.py --coverage       # subsystem coverage map
 python tests/watercup/wc_run.py --json           # machine-readable report
 python tests/watercup/wc_run_parallel.py --port-only   # structural subset (fast)
+python tests/watercup/wc_run_parallel.py --port-only --resume        # continue an interrupted fleet
+python tests/watercup/wc_run_parallel.py --port-only --retry-failed  # re-run only failed gates
 ```
 
 `make parity` runs the `--port-only` structural subset as its watercup stage
-(the full 22k sweep is the documented batch op: `--full`). Every run appends
-per-gate verdicts to `tests/watercup/build/results.jsonl`; the parity
-pipeline truncates it first so a stale run cannot poison the walkway stats.
+(the full 22k sweep is the documented batch op: `--full`). Verdicts STREAM
+to `tests/watercup/build/results.jsonl` as they land — a crash at gate N
+keeps the N-1 verdicts already on disk, and `--resume` continues from there
+(before streaming, a mid-fleet crash discarded ~2000 completed verdicts).
+`--retry-failed` re-runs only gates whose latest verdict failed; new
+verdicts supersede old ones (the walkway reads last-wins). The parity
+pipeline truncates results first so a stale run cannot poison the walkway
+stats.
 Builds are cached: a harness recompiles only when its sources, `watercup.h`,
 or `gate.json` are newer than the binary (stale binaries were the #1
 historical source of false REDs). Compile and link are split so ccache can

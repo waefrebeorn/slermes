@@ -93,15 +93,37 @@ def run_single_gate(gate_name):
     import sys as _sys
     per_gate_timeout = float(os.environ.get("WATERCUP_GATE_TIMEOUT", "120"))
     try:
-        r = subprocess.run(
+        # Manual Popen instead of subprocess.run(timeout=...): on Windows,
+        # run()'s timeout kills only the direct child, then communicate()
+        # blocks FOREVER on the stdout pipe when a grandchild (gcc, the
+        # Python twin, a spawned server) inherited the handle. Observed:
+        # 4 workers wedged 17+ min past a 45s timeout. Kill the whole
+        # process TREE on timeout so every pipe handle closes.
+        proc = subprocess.Popen(
             [_sys.executable, os.path.abspath(__file__), "--single", gate_name],
-            capture_output=True, text=True, encoding="utf-8", errors="replace",
-            timeout=per_gate_timeout,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, encoding="utf-8", errors="replace",
             start_new_session=True,
             cwd=REPO,
         )
+        try:
+            outs, errs = proc.communicate(timeout=per_gate_timeout)
+            rc = proc.returncode
+        except subprocess.TimeoutExpired:
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                               capture_output=True)
+            else:
+                import signal
+                try:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            proc.kill()
+            outs, errs = proc.communicate()
+            raise
         line = None
-        for l in (r.stdout or "").splitlines():
+        for l in (outs or "").splitlines():
             if l.startswith("@@RESULT@@"):
                 line = l[len("@@RESULT@@"):]
         if line:
@@ -112,7 +134,7 @@ def run_single_gate(gate_name):
             result["lines"] = None
         else:
             result["error"] = "single-mode no result (rc=%d): %s" % (
-                r.returncode, (r.stderr or "").strip()[-300:])
+                rc, (errs or "").strip()[-300:])
     except subprocess.TimeoutExpired:
         result["error"] = "timeout(%ss)" % per_gate_timeout
     except Exception as e:

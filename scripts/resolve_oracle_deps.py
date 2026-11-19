@@ -23,6 +23,7 @@ RUNNER = os.path.join(REPO, "tests", "run_all_oracles.sh")
 BASH = "C:/msys64/usr/bin/bash.exe" if os.name == "nt" else "bash"
 SAC_SUB = {"lib/libhash/hash.o": ".testbin/hash_O0.o"}
 SAC_DROP = {"lib/libregex/hermes_regex.o", "src/agent/auxiliary_client_runtime.o"}
+_NM_INDEX = None  # symbol -> defining object, built once per invocation
 
 
 def deps_line(name):
@@ -32,23 +33,24 @@ def deps_line(name):
 
 
 def nm_definers(syms):
-    found = {}
-    objs = sorted(glob.glob(os.path.join(REPO, "src", "**", "*.o"), recursive=True)
-                  + glob.glob(os.path.join(REPO, "lib", "**", "*.o"), recursive=True))
-    for o in objs:
-        rel = os.path.relpath(o, REPO).replace("\\", "/")
-        if rel in SAC_DROP:
-            continue
-        try:
-            out = subprocess.run(["nm", "--defined-only", o],
-                                 capture_output=True, text=True, timeout=60).stdout
-        except Exception:
-            continue
-        defined = {l.split()[-1] for l in out.splitlines() if " T " in l}
-        for s in syms:
-            if s in defined and s not in found:
-                found[s] = SAC_SUB.get(rel, rel)
-    return found
+    global _NM_INDEX
+    if _NM_INDEX is None:
+        _NM_INDEX = {}
+        objs = sorted(glob.glob(os.path.join(REPO, "src", "**", "*.o"), recursive=True)
+                      + glob.glob(os.path.join(REPO, "lib", "**", "*.o"), recursive=True))
+        for o in objs:
+            rel = os.path.relpath(o, REPO).replace("\\", "/")
+            if rel in SAC_DROP:
+                continue
+            try:
+                out = subprocess.run(["nm", "--defined-only", o],
+                                     capture_output=True, text=True, timeout=60).stdout
+            except Exception:
+                continue
+            for l in out.splitlines():
+                if " T " in l:
+                    _NM_INDEX.setdefault(l.split()[-1], SAC_SUB.get(rel, rel))
+    return {s: _NM_INDEX[s] for s in syms if s in _NM_INDEX}
 
 
 def main():
