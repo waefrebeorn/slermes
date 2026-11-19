@@ -1,5 +1,11 @@
 /*
  * native_flow.c — canonical C11 port of hermes_cli/dashboard_auth/native_flow.py.
+ *
+ * wave13 metadata fix: this TU is registered in build/objects.mk and ships in
+ * the binary, but has NO driver harness and NO oracle (credited, linked, never
+ * gated). Its PoP claims were stripped (orphan _b64url_no_pad is test-only; the
+ * rest are dead credit). Bodies are retained. TODO: add harness+oracle and
+ * restore PoP tags, or unregister the object. See docs/dev/devils-worklist-wave13.md.
  */
 
 #include "hermes_json.h"
@@ -12,7 +18,7 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: hermes_cli_dashboard_auth_nati_u_b64url_no_pad @ hermes_cli/dashboard_auth/native_flow.py:_b64url_no_pad */
+/* test-only helper (exists only in tests/...; PoP claim removed) */
 int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) {
     /* Python: base64.urlsafe_b64encode(raw).rstrip(b"=") — RFC 7636 §4. */
     if (!arg) { printf("\n"); return 0; }
@@ -32,7 +38,7 @@ int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_u_s256 @ hermes_cli/dashboard_auth/native_flow.py:_s256 */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) {
     /* Python: RFC 7636 S256 — base64url(sha256(ascii(verifier))), no pad.
      * Arg = verifier. */
@@ -55,7 +61,7 @@ int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_u_gc_locked @ hermes_cli/dashboard_auth/native_flow.py:_gc_locked */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) {
     /* Python: drop expired pending + issued entries (caller holds lock).
      * Arg = "now\texpires\texpires..." (tab-sep expiry epochs). */
@@ -77,7 +83,7 @@ int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_u_capacity_ok_locked @ hermes_cli/dashboard_auth/native_flow.py:_capacity_ok_locked */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) {
     /* Python: (len(_pending) + len(_issued)) < 256 (per-IP cap). Arg =
      * "pending\tissued". */
@@ -87,7 +93,7 @@ int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) {
     return (pending + issued) < 256;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_register_pending @ hermes_cli/dashboard_auth/native_flow.py:register_pending */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_register_pending(const char *arg) {
     /* Python: per-IP cap. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -107,7 +113,7 @@ int hermes_cli_dashboard_auth_nati_register_pending(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_get_pending @ hermes_cli/dashboard_auth/native_flow.py:get_pending */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_get_pending(const char *arg) {
     /* Python: peek pending entry or raise. Arg = "broker_state\tfound\tentry". */
     if (!arg || !*arg) { printf("0 unknown or expired native authorization\n"); return 1; }
@@ -118,7 +124,7 @@ int hermes_cli_dashboard_auth_nati_get_pending(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_complete_pending @ hermes_cli/dashboard_auth/native_flow.py:complete_pending */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) {
     /* Python: consume pending + mint gw_code. Arg =
      * "state\tcapacity\tresult\tcode". */
@@ -139,7 +145,7 @@ int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_cli_dashboard_auth_nati_redeem_code @ hermes_cli/dashboard_auth/native_flow.py:redeem_code */
+/* linked but ungated (no harness/oracle; PoP claim removed pending gate) */
 int hermes_cli_dashboard_auth_nati_redeem_code(const char *arg) {
     /* Python: PKCE redeem, pop-before-check. Arg =
      * "state\tresult\terr". */

@@ -563,7 +563,7 @@ char *cc_serialize_for_summary(const char *messages_json) {
     return result;
 }
 
-/* PoP: cc_generate_summary @ agent/context_compressor.py:_generate_summary */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *cc_generate_summary(const char *serialized_json, long budget) {
     /* Python: LLM summarization call — REAL: deterministic local
      * summary when the LLM path is unavailable: dedupe + head/tail
@@ -849,7 +849,7 @@ bool cc_has_content_to_compress(const char *messages_json) {
     return count >= 3;
 }
 
-/* PoP: cc_compress @ agent/context_compressor.py:compress */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *cc_compress(const char *messages_json) {
     /* Python: prune → summarize middle turns → reassemble. */
     if (!messages_json) return strdup("[]");

@@ -48,7 +48,9 @@ static json_t *pc_harness_run(pc_ctx *ctx, const char *func, json_t *in, json_t 
         json_t *m = json_obj_get(in, "messages");
         json_t *r = pc_strip_prior_decoration(ctx, m);
         *state_out = pc_state_win("messages", m);
-        return r;
+        /* r aliases the input node (live returns the same list); snapshot it
+         * so out.ret adoption does not double-free it at json_free(work). */
+        return r ? json_copy(r) : NULL;
     }
     if (strcmp(func, "auto_cache_ttl_for_source") == 0)
         return pc_auto_cache_ttl_for_source(ctx, json_obj_get(in, "source"));

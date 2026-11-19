@@ -843,13 +843,13 @@ void st2_nav_state_reset(st2_nav_t *s, int section_index, const json_t *replay) 
     st2_nav_reset_core(s, section_index, replay);
 }
 
-/* PoP: st2_nav_state_init @ hermes_cli/setup.py:__init__ */
+/* PoP: st2_nav_state_init @ hermes_cli/setup.py:_SetupNavigationState.__init__ */
 void st2_nav_state_init(st2_nav_t *s, int section_index, int prompt_index) {
     st2_nav_reset_core(s, section_index, NULL);
     s->prompt_index = prompt_index;
 }
 
-/* PoP: st2_go_back_init @ hermes_cli/setup.py:__init__ */
+/* PoP: st2_go_back_init @ hermes_cli/setup.py:_SetupGoBack.__init__ */
 json_t *st2_go_back_init(int prompt_index) {
     json_t *o = json_object();
     json_set(o, "prompt_index", json_number((double)prompt_index));

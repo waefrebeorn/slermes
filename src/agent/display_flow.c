@@ -521,7 +521,7 @@ static json_t *dp_tool_row_emoji(dp_io_t *io, const char *tool_name, json_t *arg
 }
 
 /* ===================================================================== */
-/* PoP: dp_cute_row @ agent/display.py:_cute_row                          */
+/* PoP: dp_cute_row_fn @ agent/display.py:_cute_row */
 /* ===================================================================== */
 static json_t *dp_cute_row_fn(dp_io_t *io, const char *emoji, const char *verb, const char *detail) {
     char *key = malloc(strlen(verb) + 32);

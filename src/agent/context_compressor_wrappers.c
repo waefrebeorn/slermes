@@ -156,7 +156,7 @@ int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_should_compress_info @ agent/context_compressor.py:should_compress_info */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int ctxc_should_compress_info(const char *arg) {
     /* Python: threshold tuple. Arg =
      * "over\tblocked\tstate\treason\tresult". */
@@ -175,7 +175,7 @@ int ctxc_should_compress_info(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_u_compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int ctxc_u_compression_block_reason(const char *arg) {
     /* Python: cooldown/ineffective/None. Arg =
      * "cooldown_remaining\tineffective_count\tfallback_streak\tresult". */
@@ -203,7 +203,7 @@ int ctxc_u_refresh_durable_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_u_automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int ctxc_u_automatic_compression_blocked(const char *arg) {
     /* Python: local snapshot + durable refresh re-check. Arg =
      * "locally_blocked\tstill_blocked\tstate". */
@@ -219,7 +219,7 @@ int ctxc_u_automatic_compression_blocked(const char *arg) {
     return 0;
 }
 
-/* PoP: ctxc_u_automatic_compression_blocked_locally @ agent/context_compressor.py:_automatic_compression_blocked_locally */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
     /* Python: cooldown + tripped snapshot check. Arg = "blocked". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }

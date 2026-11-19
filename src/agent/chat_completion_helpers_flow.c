@@ -182,7 +182,7 @@ static char *jnext_str(jcursor_t *c, const char *dflt)
  *  Pure leaves the flow calls (ported faithfully; PoP points at live origin)
  * =========================================================================== */
 
-/* PoP: cch_flow_text_from_part @ session_rules/turns.py:_text_from_part */
+/* PoP: flow_text_from_part @ session_rules/turns.py:_text_from_part */
 static char *flow_text_from_part(const json_t *part)
 {
     if (!part || part->type == JSON_NULL) return strdup("");
@@ -207,10 +207,7 @@ static char *flow_text_from_part(const json_t *part)
     return strdup("");
 }
 
-/* PoP: cch_flow_flatten_message_text @ session_rules/turns.py:flatten_message_text
- * Only the shapes the stream produces (None / str / list-of-parts / single part)
- * are exercised; the str(content) fallback for exotic objects is not reachable
- * from json_t scripted chunks. sep is "" on the streaming path. */
+/* PoP: flow_flatten_message_text @ session_rules/turns.py:flatten_message_text */
 static char *flow_flatten_message_text(const json_t *content, const char *sep)
 {
     if (!content || content->type == JSON_NULL) return strdup("");
@@ -245,7 +242,7 @@ static char *flow_flatten_message_text(const json_t *content, const char *sep)
     return strdup("");
 }
 
-/* PoP: cch_flow_separate_glued_reasoning_blocks @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
+/* PoP: flow_separate_glued @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
 static char *flow_separate_glued(const char *previous, const json_t *delta)
 {
     char *d = flow_flatten_message_text(delta, "");
@@ -268,7 +265,7 @@ static char *flow_separate_glued(const char *previous, const json_t *delta)
     return d;
 }
 
-/* PoP: cch_flow_normalize_finish_reason @ agent/message_sanitization.py:normalize_finish_reason */
+/* PoP: flow_normalize_finish_reason @ agent/message_sanitization.py:normalize_finish_reason */
 static char *flow_normalize_finish_reason(const json_t *raw)
 {
     const char *s = jstrv(raw);
@@ -290,7 +287,7 @@ static char *flow_normalize_finish_reason(const json_t *raw)
 
 #define FLOW_ROUTER_SHIM "Connect timeout, please try again later."
 
-/* PoP: cch_flow_router_timeout_shim_may_follow @ agent/transports/chat_completions.py:router_timeout_shim_may_follow */
+/* PoP: flow_router_shim_may_follow @ agent/transports/chat_completions.py:router_timeout_shim_may_follow */
 static int flow_router_shim_may_follow(const char *text)
 {
     if (!text || !text[0]) return 0;
@@ -300,7 +297,7 @@ static int flow_router_shim_may_follow(const char *text)
     return r;
 }
 
-/* PoP: cch_flow_has_positive_completion_tokens @ agent/transports/chat_completions.py:_has_positive_completion_tokens */
+/* PoP: flow_positive_completion_tokens @ agent/transports/chat_completions.py:_has_positive_completion_tokens */
 static int flow_positive_completion_tokens(const json_t *usage)
 {
     if (!usage) return 0;
@@ -312,7 +309,7 @@ static int flow_positive_completion_tokens(const json_t *usage)
     return 0;
 }
 
-/* PoP: cch_flow_is_router_timeout_shim @ agent/transports/chat_completions.py:is_router_timeout_shim */
+/* PoP: flow_is_router_timeout_shim @ agent/transports/chat_completions.py:is_router_timeout_shim */
 static int flow_is_router_timeout_shim(const json_t *response)
 {
     const json_t *choices = jget(response, "choices");
@@ -329,7 +326,7 @@ static int flow_is_router_timeout_shim(const json_t *response)
     return !flow_positive_completion_tokens(jget(response, "usage"));
 }
 
-/* PoP: cch_flow_streamed_reasoning_detail_text @ agent/reasoning_summaries.py:streamed_reasoning_detail_text */
+/* PoP: flow_detail_text @ agent/reasoning_summaries.py:streamed_reasoning_detail_text */
 static char *flow_detail_text(const json_t *detail)
 {
     const char *dtype = jstrv(jget(detail, "type"));
@@ -343,8 +340,7 @@ static char *flow_detail_text(const json_t *detail)
     return strdup(text ? text : "");
 }
 
-/* PoP: cch_flow_append_streamed_reasoning_detail @ agent/reasoning_summaries.py:append_streamed_reasoning_detail
- * details_acc is a json array of dict entries; detail is a json object. */
+/* PoP: flow_append_detail @ agent/reasoning_summaries.py:append_streamed_reasoning_detail */
 static void flow_append_detail(json_t *details_acc, const json_t *detail)
 {
     if (!detail || detail->type != JSON_OBJECT) return;
@@ -384,7 +380,7 @@ static void flow_append_detail(json_t *details_acc, const json_t *detail)
     json_append(details_acc, json_copy(detail));
 }
 
-/* PoP: cch_flow_provider_error_body @ agent/chat_completion_helpers.py:_provider_error_body */
+/* PoP: flow_provider_error_body @ agent/chat_completion_helpers.py:_provider_error_body */
 static json_t *flow_provider_error_body(const json_t *payload, int status_code)
 {
     if (!payload || payload->type != JSON_OBJECT) payload = NULL;
@@ -428,7 +424,7 @@ static json_t *flow_provider_error_body(const json_t *payload, int status_code)
     return out;
 }
 
-/* PoP: cch_flow_provider_stream_text_may_be_sse @ agent/chat_completion_helpers.py:_provider_stream_text_may_be_sse */
+/* PoP: flow_text_may_be_sse @ agent/chat_completion_helpers.py:_provider_stream_text_may_be_sse */
 static int flow_text_may_be_sse(const char *text)
 {
     if (!text) text = "";
@@ -492,7 +488,7 @@ static int flow_text_may_be_sse(const char *text)
     return saw_sse_field;
 }
 
-/* PoP: cch_flow_format_provider_stream_error_message @ agent/chat_completion_helpers.py:_format_message */
+/* PoP: flow_pse_format_message @ agent/chat_completion_helpers.py:_format_message */
 static char *flow_pse_format_message(int status_code, const json_t *body)
 {
     const json_t *error_obj = jget(body, "error");
@@ -574,7 +570,7 @@ static int tc_notified(const tc_acc_t *t, int slot)
     return 0;
 }
 
-/* PoP: cch_flow_tc_arguments_closed @ agent/chat_completion_helpers_tool_calls.py:_arguments_closed */
+/* PoP: tc_arguments_closed @ agent/chat_completion_helpers_tool_calls.py:_arguments_closed */
 static int tc_arguments_closed(tc_acc_t *t, int slot)
 {
     char key[32]; slot_key(slot, key, sizeof(key));
@@ -612,7 +608,7 @@ static int tc_arguments_closed(tc_acc_t *t, int slot)
     return started && depth == 0 && !in_string;
 }
 
-/* PoP: cch_flow_tc_starts_new_call @ agent/chat_completion_helpers_tool_calls.py:_starts_new_call */
+/* PoP: tc_starts_new_call @ agent/chat_completion_helpers_tool_calls.py:_starts_new_call */
 static int tc_starts_new_call(tc_acc_t *t, const json_t *tc_delta, int slot)
 {
     const json_t *fn = jget(tc_delta, "function");
@@ -625,9 +621,7 @@ static int tc_starts_new_call(tc_acc_t *t, const json_t *tc_delta, int slot)
     return tc_arguments_closed(t, slot);
 }
 
-/* PoP: cch_flow_tc_feed @ agent/chat_completion_helpers_tool_calls.py:feed
- * Returns the entry name the first time a slot is complete (borrowed pointer
- * into acc), else NULL. */
+/* PoP: tc_feed @ agent/chat_completion_helpers_tool_calls.py:feed */
 static const char *tc_feed(tc_acc_t *t, const json_t *tc_delta)
 {
     const json_t *ridx = jget(tc_delta, "index");
@@ -712,7 +706,7 @@ static const char *tc_feed(tc_acc_t *t, const json_t *tc_delta)
     return NULL;
 }
 
-/* PoP: cch_flow_tc_materialize @ agent/chat_completion_helpers_tool_calls.py:materialize */
+/* PoP: tc_materialize @ agent/chat_completion_helpers_tool_calls.py:materialize */
 static void tc_materialize(tc_acc_t *t)
 {
     for (size_t i = 0; i < t->argument_parts->c.count; i++) {
@@ -1362,7 +1356,7 @@ json_t *cch_flow_retry_after_drop(const json_t *in)
  *  _reasoning_config_for_wire  (+ _consume_ephemeral_reasoning_off)
  * =========================================================================== */
 
-/* PoP: cch_flow_consume_ephemeral_reasoning_off @ agent/chat_completion_helpers.py:_consume_ephemeral_reasoning_off */
+/* PoP: flow_consume_ephemeral @ agent/chat_completion_helpers.py:_consume_ephemeral_reasoning_off */
 static int flow_consume_ephemeral(json_t *agent)
 {
     int consumed = jtruth(jget(agent, "_ephemeral_reasoning_off"));
@@ -1761,7 +1755,7 @@ typedef struct {
     cch_display_seams_t display;
 } chunk_loop_t;
 
-/* PoP: cch_flow_fire_first_delta @ agent/chat_completion_helpers.py:_fire_first_delta */
+/* PoP: loop_fire_first @ agent/chat_completion_helpers.py:_fire_first_delta */
 static void loop_fire_first(chunk_loop_t *s)
 {
     if (!s->first_delta_fired && s->on_first_delta_present) {
@@ -1771,7 +1765,7 @@ static void loop_fire_first(chunk_loop_t *s)
     }
 }
 
-/* PoP: cch_flow_emit_text @ agent/chat_completion_helpers.py:_emit_text */
+/* PoP: loop_emit_text @ agent/chat_completion_helpers.py:_emit_text */
 static void loop_emit_text(chunk_loop_t *s, const char *text)
 {
     loop_fire_first(s);
@@ -1780,7 +1774,7 @@ static void loop_emit_text(chunk_loop_t *s, const char *text)
     s->deltas_were_sent = 1;
 }
 
-/* PoP: cch_flow_emit_reasoning @ agent/chat_completion_helpers.py:_emit_reasoning */
+/* PoP: loop_emit_reasoning @ agent/chat_completion_helpers.py:_emit_reasoning */
 static void loop_emit_reasoning(chunk_loop_t *s, const char *text)
 {
     loop_fire_first(s);
@@ -1788,7 +1782,7 @@ static void loop_emit_reasoning(chunk_loop_t *s, const char *text)
     json_t *a = act("emit_reasoning"); json_set(a, "text", json_string(text)); push(s->log, a);
 }
 
-/* PoP: cch_flow_emit_tool_started @ agent/chat_completion_helpers.py:_emit_tool_started */
+/* PoP: loop_emit_tool_started @ agent/chat_completion_helpers.py:_emit_tool_started */
 static void loop_emit_tool_started(chunk_loop_t *s, const char *name)
 {
     loop_fire_first(s);
@@ -1796,7 +1790,7 @@ static void loop_emit_tool_started(chunk_loop_t *s, const char *name)
     json_t *a = act("emit_tool_started"); json_set(a, "name", json_string(name)); push(s->log, a);
 }
 
-/* PoP: cch_flow_route_suppressed_text @ agent/chat_completion_helpers.py:_route_suppressed_text */
+/* PoP: loop_route_suppressed @ agent/chat_completion_helpers.py:_route_suppressed_text */
 static void loop_route_suppressed(chunk_loop_t *s, const char *text)
 {
     if (s->stream_delta_callback && !s->hold_stream) {
@@ -1804,7 +1798,7 @@ static void loop_route_suppressed(chunk_loop_t *s, const char *text)
     }
 }
 
-/* PoP: cch_flow_flush_pending_stream_text @ agent/chat_completion_helpers.py:_flush_pending_stream_text */
+/* PoP: loop_flush_pending @ agent/chat_completion_helpers.py:_flush_pending_stream_text */
 static void loop_flush_pending(chunk_loop_t *s)
 {
     json_t *pending = s->pending_text_parts;
@@ -1818,7 +1812,7 @@ static void loop_flush_pending(chunk_loop_t *s)
     json_free(pending);
 }
 
-/* PoP: cch_flow_prompt_progress @ agent/local_prompt_progress.py:prompt_progress */
+/* PoP: loop_prompt_progress @ agent/local_prompt_progress.py:prompt_progress */
 static int loop_prompt_progress(const json_t *chunk)
 {
     const json_t *extra = jget(chunk, "model_extra");

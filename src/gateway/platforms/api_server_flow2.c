@@ -1137,7 +1137,7 @@ static json_t *as2_user_text(as2_env *e, const json_t *in) {
     json_t *ka = json_object();
     json_set(ka, "key", json_string("platform.api_server.provider_error_line"));
     json_t *kw = json_object();
-    json_set(kw, "label", label ? label : json_null());
+    json_set(kw, "label", label ? json_copy(label) : json_null());  /* copy: ka is freed by as2_call */
     json_set(kw, "error", json_string(emsg));
     json_set(ka, "kwargs", kw);
     json_t *r = as2_call(e, "t", ka);

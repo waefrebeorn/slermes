@@ -510,7 +510,7 @@ void cch_provider_stream_error_free(cch_provider_stream_error_t *e)
     free(e);
 }
 
-/* PoP: cch_provider_stream_error_format_message @ agent/chat_completion_helpers.py:_format_message */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *cch_provider_stream_error_format_message(const cch_provider_stream_error_t *self)
 {
     /* error_obj = self.body.get("error", {}) if isinstance(body, dict) */

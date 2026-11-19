@@ -41,7 +41,7 @@ char *stringify_provider_map(void) { return strdup("{}"); }
 /* PoP: find_provider_entry @ hermes_cli/config_providers.py:find_provider_entry */
 char *find_provider_entry(const char *id) { return strdup("{}"); }
 
-/* PoP: env_ref_lookup @ hermes_cli/config.py:_env_ref_lookup */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *env_ref_lookup(const char *ref) { return strdup(""); }
 
 /* PoP: _prompt_text @ hermes_cli/config.py:_prompt_text */

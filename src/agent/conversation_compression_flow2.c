@@ -609,7 +609,6 @@ static json_t *cp2_extend_deadline(cp2_io_t *io, const json_t *in, json_t *st)
  *       and _commit_fence.is_cancelled: _suppressed = True
  *    return _suppressed
  * ═══════════════════════════════════════════════════════════════════════════ */
-/* PoP: cp2_should_suppress @ agent/conversation_compression.py:_should_suppress */
 static json_t *cp2_should_suppress_core(cp2_io_t *io, json_t *hb)
 {
     json_t *sup = cp2_get(hb, "_suppressed");
@@ -626,6 +625,7 @@ static json_t *cp2_should_suppress_core(cp2_io_t *io, json_t *hb)
     return cp2_copy_or_null(cp2_get(hb, "_suppressed"));
 }
 
+/* PoP: cp2_should_suppress @ agent/conversation_compression.py:_should_suppress */
 static json_t *cp2_should_suppress(cp2_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;
@@ -721,7 +721,6 @@ swallow_exit:
  *    if status_emitted and (commit_status == "committed" or force_terminal):
  *      _emit_compaction_done(_agent)
  * ═══════════════════════════════════════════════════════════════════════════ */
-/* PoP: cp2_complete @ agent/conversation_compression.py:complete */
 static json_t *cp2_complete_core(cp2_io_t *io, json_t *lc, int force)
 {
     if (cp2_truth(cp2_get(lc, "_done_emitted"))) return NULL;
@@ -739,6 +738,7 @@ static json_t *cp2_complete_core(cp2_io_t *io, json_t *lc, int force)
     return NULL;
 }
 
+/* PoP: cp2_complete @ agent/conversation_compression.py:complete */
 static json_t *cp2_complete(cp2_io_t *io, const json_t *in, json_t *st)
 {
     int force = cp2_truth(cp2_get(in, "force_terminal"));
@@ -810,7 +810,6 @@ static json_t *cp2_start_refresher(cp2_io_t *io, const json_t *in, json_t *st)
  *        with _swallow('compression lock release failed: %s'):
  *          _release_compression_lock(self)
  * ═══════════════════════════════════════════════════════════════════════════ */
-/* PoP: cp2_release_holder_only @ agent/conversation_compression.py:release_holder_only */
 static json_t *cp2_release_holder_only_core(cp2_io_t *io, json_t *lease_wrap)
 {
     json_t *lease = cp2_get(lease_wrap, "__attr__");
@@ -870,6 +869,7 @@ static json_t *cp2_release_holder_only_core(cp2_io_t *io, json_t *lease_wrap)
     return NULL;
 }
 
+/* PoP: cp2_release_holder_only @ agent/conversation_compression.py:release_holder_only */
 static json_t *cp2_release_holder_only(cp2_io_t *io, const json_t *in, json_t *st)
 {
     (void)in;

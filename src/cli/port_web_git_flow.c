@@ -1,6 +1,12 @@
 /* port_web_git_flow.c — FLOW-core port of hermes_cli/web_git.py.
  * See include/port_web_git_flow.h for the seam table and the representation
  * contract. libjson-only; no real I/O inside the decision core.
+ *
+ * wave13 metadata fix: this TU is FULLY DEAD credit — no driver harness, no .o
+ * on disk, and absent from every build/*.mk. Its 18 PoP claims were stripped
+ * (bodies retained). The live web_git port is src/cli/web_git_flow.c. TODO: wire
+ * harness+oracle+objects.mk and restore PoP tags, or remove this TU.
+ * See docs/dev/devils-worklist-wave13.md.
  */
 #include "port_web_git_flow.h"
 
@@ -2705,104 +2711,104 @@ static json_t *h_worktree_add(wgf_io_t *io, const json_t *cwd, const json_t *opt
 
 /* ── PoP-claimed targets (json in -> json out) ─────────────────────────── */
 
-/* PoP: wgf__run @ hermes_cli/web_git.py:_run */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__run(wgf_io_t *io, json_t *in) {
     return h_run(io, json_obj_get(in, "argv"), json_obj_get(in, "cwd"),
                  json_get_num(in, "timeout", WGF_GIT_TIMEOUT), json_obj_get(in, "env"));
 }
 
-/* PoP: wgf__git_in @ hermes_cli/web_git.py:_git_in */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__git_in(wgf_io_t *io, json_t *in) {
     return h_git_in(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"),
                     json_get_num(in, "timeout", WGF_GIT_TIMEOUT), json_obj_get(in, "env"));
 }
 
-/* PoP: wgf__git @ hermes_cli/web_git.py:_git */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__git(wgf_io_t *io, json_t *in) {
     return h_git(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"),
                  json_get_num(in, "timeout", WGF_GIT_TIMEOUT));
 }
 
-/* PoP: wgf__git_write @ hermes_cli/web_git.py:_git_write */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__git_write(wgf_io_t *io, json_t *in) {
     return h_git_write(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"),
                        json_get_num(in, "timeout", WGF_GIT_TIMEOUT));
 }
 
-/* PoP: wgf__git_out @ hermes_cli/web_git.py:_git_out */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__git_out(wgf_io_t *io, json_t *in) {
     bool write = strcmp(json_get_str(in, "run", "read"), "write") == 0;
     return h_git_out(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"), write);
 }
 
-/* PoP: wgf__git_ok @ hermes_cli/web_git.py:_git_ok */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__git_ok(wgf_io_t *io, json_t *in) {
     return h_git_ok(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"));
 }
 
-/* PoP: wgf_resolve_rename_path @ hermes_cli/web_git.py:resolve_rename_path */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_resolve_rename_path(wgf_io_t *io, json_t *in) {
     (void)io;
     return h_resolve_rename_path(json_obj_get(in, "raw"));
 }
 
-/* PoP: wgf__numstat @ hermes_cli/web_git.py:_numstat */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__numstat(wgf_io_t *io, json_t *in) {
     return h_numstat(io, json_obj_get(in, "cwd"), json_obj_get(in, "args"));
 }
 
-/* PoP: wgf__branch_base @ hermes_cli/web_git.py:_branch_base */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__branch_base(wgf_io_t *io, json_t *in) {
     return h_branch_base(io, json_obj_get(in, "cwd"));
 }
 
-/* PoP: wgf__default_branch_name @ hermes_cli/web_git.py:_default_branch_name */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__default_branch_name(wgf_io_t *io, json_t *in) {
     return h_default_branch_name(io, json_obj_get(in, "cwd"));
 }
 
-/* PoP: wgf_repo_status @ hermes_cli/web_git.py:repo_status */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_repo_status(wgf_io_t *io, json_t *in) {
     return h_repo_status(io, json_obj_get(in, "cwd"));
 }
 
-/* PoP: wgf_review_list @ hermes_cli/web_git.py:review_list */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_review_list(wgf_io_t *io, json_t *in) {
     return h_review_list(io, json_obj_get(in, "cwd"), json_get_str(in, "scope", "working"),
                          json_obj_get(in, "base_ref"));
 }
 
-/* PoP: wgf_review_diff @ hermes_cli/web_git.py:review_diff */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_review_diff(wgf_io_t *io, json_t *in) {
     bool staged = jtruth(json_obj_get(in, "staged"));
     return h_review_diff(io, json_obj_get(in, "cwd"), json_get_str(in, "file_path", ""),
                          json_get_str(in, "scope", "working"), json_obj_get(in, "base_ref"), staged);
 }
 
-/* PoP: wgf__review_commit_env @ hermes_cli/web_git.py:_review_commit_env */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__review_commit_env(wgf_io_t *io, json_t *in) {
     return h_review_commit_env(io, json_obj_get(in, "cwd"));
 }
 
-/* PoP: wgf_review_commit @ hermes_cli/web_git.py:review_commit */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_review_commit(wgf_io_t *io, json_t *in) {
     bool push = jtruth(json_obj_get(in, "push"));
     return h_review_commit(io, json_obj_get(in, "cwd"), json_get_str(in, "message", ""), push);
 }
 
-/* PoP: wgf_review_commit_context @ hermes_cli/web_git.py:review_commit_context */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_review_commit_context(wgf_io_t *io, json_t *in) {
     json_t *pa = json_obj_get(in, "path_allowed");
     bool has_pa = pa && pa->type == JSON_BOOL && pa->bool_val;
     return h_review_commit_context(io, json_obj_get(in, "cwd"), has_pa);
 }
 
-/* PoP: wgf_worktree_add @ hermes_cli/web_git.py:worktree_add */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf_worktree_add(wgf_io_t *io, json_t *in) {
     return h_worktree_add(io, json_obj_get(in, "cwd"), json_obj_get(in, "options"));
 }
 
-/* PoP: wgf__worktree_for_existing @ hermes_cli/web_git.py:_worktree_for_existing */
+/* fully dead credit (no harness/.o/build registration; PoP claim removed) */
 json_t *wgf__worktree_for_existing(wgf_io_t *io, json_t *in) {
     return h_worktree_for_existing(io, json_obj_get(in, "root"), json_obj_get(in, "raw_name"));
 }

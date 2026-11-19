@@ -132,6 +132,57 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_json(out, gmf_flow_apply_migration(J("plan"), N("served_wait", 90.0), sp));
     } else if (!strcmp(func, "rollback_migration")) {
         ret_json(out, gmf_flow_rollback_migration(S("default_home"), sp));
+    /* wave13: direct leaf dispatch for internal helpers previously reached only
+     * via the gmf_flow_* wrappers (clears name-based DEAD-CREDIT; additive — no
+     * existing case uses these func names). */
+    } else if (!strcmp(func, "manifest_path")) {
+        char *p = gmf_manifest_path(SD("home", ""));
+        json_t *r = p ? json_string(p) : NULL; free(p); ret_json(out, r);
+    } else if (!strcmp(func, "service_dict")) {
+        ret_json(out, gmf_service_dict(J("service")));
+    } else if (!strcmp(func, "recorded_run_as_user")) {
+        ret_json(out, gmf_recorded_run_as_user(J("rec")));
+    } else if (!strcmp(func, "live_gateway_pid")) {
+        ret_json(out, gmf_live_gateway_pid(SD("home", ""), sp));
+    } else if (!strcmp(func, "host_gateway_owner")) {
+        ret_json(out, gmf_host_gateway_owner(sp));
+    } else if (!strcmp(func, "default_home")) {
+        ret_json(out, gmf_default_home(sp));
+    } else if (!strcmp(func, "print_line")) {
+        ret_json(out, gmf_print_line(sp, S("line")));
+    } else if (!strcmp(func, "write_manifest")) {
+        ret_json(out, gmf_write_manifest(SD("home", ""), J("data"), sp));
+    } else if (!strcmp(func, "wait_for_served")) {
+        ret_json(out, gmf_wait_for_served(SD("home", ""), J("expected"), N("served_wait", 90.0), sp));
+    } else if (!strcmp(func, "reconcile_standalone_runtime")) {
+        ret_json(out, gmf_reconcile_standalone_runtime(SD("home", ""), J("names"), sp));
+    } else if (!strcmp(func, "wait_for_live_gateway")) {
+        ret_json(out, gmf_wait_for_live_gateway(SD("home", ""), N("timeout", 90.0), sp));
+    } else if (!strcmp(func, "pg_service")) {
+        ret_json(out, pg_service(J("p")));
+    } else if (!strcmp(func, "pg_has_gateway")) {
+        ret_json(out, json_bool(pg_has_gateway(J("p"))));
+    } else if (!strcmp(func, "pg_has_system_unit")) {
+        ret_json(out, json_bool(pg_has_system_unit(J("p"))));
+    } else if (!strcmp(func, "pg_service_label")) {
+        char *l = pg_service_label(J("p"));
+        json_t *r = l ? json_string(l) : NULL; free(l); ret_json(out, r);
+    } else if (!strcmp(func, "pg_to_dict")) {
+        ret_json(out, pg_to_dict(J("p")));
+    } else if (!strcmp(func, "plan_secondaries")) {
+        ret_json(out, plan_secondaries(J("plan")));
+    } else if (!strcmp(func, "plan_standalone_secondaries")) {
+        ret_json(out, plan_standalone_secondaries(J("plan")));
+    } else if (!strcmp(func, "plan_blocked")) {
+        ret_json(out, json_bool(plan_blocked(J("plan"))));
+    } else if (!strcmp(func, "plan_already_multiplexed")) {
+        ret_json(out, json_bool(plan_already_multiplexed(J("plan"))));
+    } else if (!strcmp(func, "plan_target_service_kind")) {
+        ret_json(out, plan_target_service_kind(J("plan")));
+    } else if (!strcmp(func, "plan_target_run_as_user")) {
+        ret_json(out, plan_target_run_as_user(J("plan")));
+    } else if (!strcmp(func, "plan_expected_served")) {
+        ret_json(out, plan_expected_served(J("plan"), sp));
     } else {
         fprintf(stderr, "unknown func: %s\n", func);
         ret_json(out, NULL);

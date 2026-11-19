@@ -185,7 +185,7 @@ void warn_unresolved_docker_media(const char *path) { (void)path; }
 /* PoP: send_path_degraded @ gateway/platforms/base.py:send_path_degraded */
 void send_path_degraded(const char *path) { (void)path; }
 
-/* PoP: mark_degraded @ gateway/platforms/base.py:_mark_degraded */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void mark_degraded(const char *path) { (void)path; }
 
 /* PoP: set_platform_event_handler @ gateway/platforms/base.py:set_platform_event_handler */
@@ -194,7 +194,7 @@ void set_platform_event_handler(const char *handler) { (void)handler; }
 /* PoP: set_owner_profile @ gateway/platforms/base.py:set_owner_profile */
 void set_owner_profile(const char *profile) { (void)profile; }
 
-/* PoP: session_key_profile @ gateway/platforms/base.py:_session_key_profile */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *session_key_profile(const char *profile) {
     if (!profile) return strdup("default");
     return strdup(profile);

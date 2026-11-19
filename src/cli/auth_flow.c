@@ -2010,7 +2010,7 @@ static json_t *au_suppressed_credential_sources(const au_seams_t *s, const char 
     const json_t *section = json_obj_get(st, "suppressed_sources");
     const json_t *listed = (section && section->type == JSON_OBJECT)
                                ? json_obj_get(section, provider_id) : NULL;
-    json_free(st);
+    /* listed aliases into st: build strs BEFORE freeing the store tree */
     json_t *strs = json_array();
     if (listed && listed->type == JSON_ARRAY) {
         for (size_t i = 0; i < listed->c.count; i++) {
@@ -2022,6 +2022,7 @@ static json_t *au_suppressed_credential_sources(const au_seams_t *s, const char 
         for (size_t i = 0; i < listed->c.count; i++)
             json_append(strs, json_string(listed->c.keys[i]));
     }
+    json_free(st);
     /* frozenset -> sorted list (set-valued output normalization, both sides) */
     size_t n = strs->c.count;
     for (size_t i = 1; i < n; i++) {

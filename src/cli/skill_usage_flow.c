@@ -812,12 +812,12 @@ static json_t *su_int_or_zero(const json_t *value) {
     return json_number(0.0);
 }
 
-/* PoP: su_read_lines @ tools/skill_usage.py:_read_lines */
+/* PoP: su_read_lines_pub @ tools/skill_usage.py:_read_lines */
 static json_t *su_read_lines_pub(su_io_t *io, const char *path, const char *fail_log) {
     return su_read_lines(io, path, fail_log);
 }
 
-/* PoP: su_backfilled @ tools/skill_usage.py:_backfilled */
+/* PoP: su_backfilled_pub @ tools/skill_usage.py:_backfilled */
 static json_t *su_backfilled_pub(su_io_t *io, const json_t *rec) {
     return su_backfilled(io, rec);
 }
@@ -852,7 +852,7 @@ static json_t *su_report_row(su_io_t *io, const char *name, const json_t *raw,
     return row;
 }
 
-/* PoP: su_load_usage_strict @ tools/skill_usage.py:_load_usage_strict */
+/* PoP: su_load_usage_strict_pub @ tools/skill_usage.py:_load_usage_strict */
 static json_t *su_load_usage_strict_pub(su_io_t *io) {
     return su_load_usage_strict(io);
 }
@@ -982,17 +982,17 @@ static json_t *su_external_skill_names(su_io_t *io) {
     return out;
 }
 
-/* PoP: su_iter_skill_mds @ tools/skill_usage.py:_iter_skill_mds */
+/* PoP: su_iter_skill_mds_pub @ tools/skill_usage.py:_iter_skill_mds */
 static json_t *su_iter_skill_mds_pub(su_io_t *io, const char *base, int local_only) {
     return su_iter_skill_mds(io, base, local_only);
 }
 
-/* PoP: su_read_bundled_names @ tools/skill_usage.py:_read_bundled_names */
+/* PoP: su_read_bundled_names_pub @ tools/skill_usage.py:_read_bundled_names */
 static json_t *su_read_bundled_names_pub(su_io_t *io) {
     return su_read_bundled_names(io);
 }
 
-/* PoP: su_toggle_suppressed_name @ tools/skill_usage.py:_toggle_suppressed_name */
+/* PoP: su_toggle_suppressed_name_pub @ tools/skill_usage.py:_toggle_suppressed_name */
 static json_t *su_toggle_suppressed_name_pub(su_io_t *io, const char *skill_name, int add) {
     return su_toggle_suppressed_name(io, skill_name, add);
 }
@@ -1290,6 +1290,7 @@ static json_t *su_flock(su_io_t *io, const char *fd_tag, int lock,
 
 /* skill_file_lock enter: pre-yield code. ctx_out gets {noop, fd, path}.
  * held (owned array) + *has_paths mutate in place. */
+/* PoP: su_skill_file_lock_enter @ tools/skill_usage.py:skill_file_lock */
 static json_t *su_skill_file_lock_enter(su_io_t *io, const char *lock_path,
                                         json_t *held, int *has_paths,
                                         int fcntl_present, int msvcrt_present,
@@ -1371,7 +1372,6 @@ static json_t *su_skill_file_lock_exit(su_io_t *io, const json_t *ctx, json_t *h
     return NULL;
 }
 
-/* PoP: su_skill_file_lock @ tools/skill_usage.py:skill_file_lock */
 /* (enter/exit pair above; the harness orchestrates body + exception combine) */
 
 /* ── archive / restore mover ── */

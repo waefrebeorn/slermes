@@ -680,7 +680,7 @@ static json_t *ce_missing_hermes_tools_import_hint(ce_io_t *io, const json_t *in
     return r;
 }
 
-/* PoP: ce_json_parse @ tools/code_execution_tool.py:json_parse */
+/* generated helper from _COMMON_HELPERS template literal (not a quarry AST def; PoP claim removed) */
 static json_t *ce_json_parse(ce_io_t *io, const json_t *in) {
     json_t *text = ce_get(in, "text");
     /* if isinstance(text, str) and text.startswith("\ufeff"): text = text[1:] */
@@ -703,7 +703,7 @@ static json_t *ce_json_parse(ce_io_t *io, const json_t *in) {
     return r;
 }
 
-/* PoP: ce_shell_quote @ tools/code_execution_tool.py:shell_quote */
+/* generated helper from _COMMON_HELPERS template literal (not a quarry AST def; PoP claim removed) */
 static json_t *ce_shell_quote(ce_io_t *io, const json_t *in) {
     (void)io;
     const char *s = ce_get_str(in, "s", "");
@@ -713,7 +713,7 @@ static json_t *ce_shell_quote(ce_io_t *io, const json_t *in) {
     return r;
 }
 
-/* PoP: ce_retry @ tools/code_execution_tool.py:retry */
+/* generated helper from _COMMON_HELPERS template literal (not a quarry AST def; PoP claim removed) */
 static json_t *ce_retry(ce_io_t *io, const json_t *in) {
     double max_attempts = ce_get_num(in, "max_attempts", 3);
     double delay = ce_get_num(in, "delay", 2);

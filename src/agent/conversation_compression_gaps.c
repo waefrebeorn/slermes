@@ -452,7 +452,7 @@ int refresh_agent_tool_definitions(void *agent) {
     return 1; /* success */
 }
 
-/* PoP: claim_compressor_attempt @ agent/conversation_compression.py:_claim_compressor_attempt */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 unsigned int claim_compressor_attempt(void *compressor) {
     static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
     static unsigned int generation = 0;
@@ -463,7 +463,7 @@ unsigned int claim_compressor_attempt(void *compressor) {
     return generation;
 }
 
-/* PoP: compressor_attempt_is_current @ agent/conversation_compression.py:_compressor_attempt_is_current */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 bool compressor_attempt_is_current(void *compressor, unsigned int generation) {
     (void)compressor;
     if (generation == 0) return true;
@@ -471,7 +471,7 @@ bool compressor_attempt_is_current(void *compressor, unsigned int generation) {
     return true;
 }
 
-/* PoP: install_compression_cancelled_check @ agent/conversation_compression.py:_install_compression_cancelled_check */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void install_compression_cancelled_check(void *compressor, void *check, unsigned int generation) {
     (void)compressor; (void)check; (void)generation;
     /* Install F4 cancellation consult */
@@ -510,7 +510,7 @@ void allow_cancelled_lock_release(void *deadline) {
     /* Undo retain_compression_lock_until_worker_done */
 }
 
-/* PoP: stall_source_fingerprint @ agent/conversation_compression.py:_stall_source_fingerprint */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *stall_source_fingerprint(void *deadline) {
     (void)deadline;
     return strdup("unknown");

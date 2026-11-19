@@ -1,0 +1,209 @@
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"backend": " Tavily "}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"backend": "NOUS"}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"backend": null}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"backend": ""}}}}
+{"func": "_configured_backend", "in": {"key": "search_backend", "io": {"_load_web_config": {"search_backend": "Exa"}}}}
+{"func": "_configured_backend", "in": {"key": "extract_backend", "io": {"_load_web_config": {"backend": "x"}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"backend": 5}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {"_load_web_config": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_configured_backend", "in": {"key": "backend", "io": {}}}
+{"func": "_registry_call", "in": {"func_name": "get_provider", "default": null, "args": ["firecrawl"], "io": {"get_provider": {"name": "firecrawl"}}}}
+{"func": "_registry_call", "in": {"func_name": "get_provider", "default": null, "args": ["x"], "io": {"get_provider": null}}}
+{"func": "_registry_call", "in": {"func_name": "list_providers", "default": [], "args": [], "io": {"list_providers": [{"name": "a"}]}}}
+{"func": "_registry_call", "in": {"func_name": "list_providers", "default": [], "args": [], "io": {"list_providers": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_registry_call", "in": {"func_name": "get_provider", "default": "DEF", "args": ["x"], "io": {"get_provider": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_registry_call", "in": {"func_name": "get_provider", "default": null, "args": ["x"], "io": {"get_provider": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_registry_call", "in": {"func_name": "list_providers", "default": [], "args": [], "io": {}}}
+{"func": "_registry_call", "in": {"func_name": "get_provider", "default": null, "args": ["x"], "io": {"get_provider": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": true}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": false}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": null}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_keyless_available", "io": {"provider.is_keyless_available": 1}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_probe", "in": {"provider": null, "method": "is_available", "io": {}}}
+{"func": "_probe", "in": {"provider": "str", "method": "is_available", "io": {}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {}}}
+{"func": "_probe", "in": {"provider": {"name": "x"}, "method": "is_available", "io": {"provider.is_available": "yes"}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": {"$seq": [true, false, false, false, false, false, false, false, false]}, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": true, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": true, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": [{"name": "custom"}], "provider.is_available": true}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": [{"name": "exa"}], "provider.is_available": true}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": [{"name": "custom"}], "provider.is_available": false}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": {"$seq": [false, false, false, false, false, true, false, false, false]}, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": {"__raise__": "RuntimeError", "msg": "boom"}, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false, "_is_tool_gateway_ready": {"__raise__": "ValueError", "msg": "boom"}, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_autodetect_backend", "in": {"io": {"_has_env": false}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": true, "_keyless_preference": ["exa"], "_registered_web_provider": {"name": "exa"}, "provider.is_keyless_available": true}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": false}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": true, "_keyless_preference": []}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": true, "_keyless_preference": ["exa"], "_registered_web_provider": null}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": true, "_keyless_preference": ["exa", "parallel"], "_registered_web_provider": {"$seq": [null, {"name": "parallel"}]}, "provider.is_keyless_available": true}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_keyless_backend", "in": {"io": {"_ensure_web_plugins_loaded": null, "_keyless_tier_enabled": true, "_keyless_preference": ["exa"], "_registered_web_provider": {"name": "exa"}, "provider.is_keyless_available": false}}}
+{"func": "_keyless_backend", "in": {"io": {}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {"search_backend": "nous"}}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {"search_backend": "tavily"}}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": "nous"}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": "exa"}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": null, "_has_env": false, "_is_tool_gateway_ready": true, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": null, "_has_env": {"$seq": [false, false, false, false, false, true, false, false, false]}, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": []}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": null, "_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": [], "resolve_free_search_gateway": {"ok": true}}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": null, "_has_env": false, "_is_tool_gateway_ready": false, "_ddgs_package_importable": false, "_list_registered_web_providers": [], "resolve_free_search_gateway": null}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_managed_web_search", "in": {"io": {"_load_web_config": {}, "read_selection": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_xai_available", "in": {"io": {"has_xai_credentials": true}}}
+{"func": "_xai_available", "in": {"io": {"has_xai_credentials": false}}}
+{"func": "_xai_available", "in": {"io": {"has_xai_credentials": null}}}
+{"func": "_xai_available", "in": {"io": {"has_xai_credentials": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_xai_available", "in": {"io": {"has_xai_credentials": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_xai_available", "in": {"io": {}}}
+{"func": "_finish_debug", "in": {"call_name": "web_search_tool", "debug_call_data": {"error": null, "x": 1}, "error_msg": "EM", "io": {"debug_log_call": null, "debug_save": null, "tool_error": "{\"success\": false}"}}}
+{"func": "_finish_debug", "in": {"call_name": "web_search_tool", "debug_call_data": {"error": null}, "error_msg": null, "io": {"debug_log_call": null, "debug_save": null}}}
+{"func": "_finish_debug", "in": {"call_name": "web_extract_tool", "debug_call_data": {"error": "pre"}, "error_msg": "EM2", "io": {"debug_log_call": null, "debug_save": null, "tool_error": "ERR"}}}
+{"func": "_finish_debug", "in": {"call_name": "c", "debug_call_data": {}, "error_msg": "EM", "io": {"debug_log_call": {"__raise__": "RuntimeError", "msg": "boom"}, "debug_save": null, "tool_error": "ERR"}}}
+{"func": "_finish_debug", "in": {"call_name": "c", "debug_call_data": {}, "error_msg": null, "io": {"debug_log_call": null, "debug_save": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_finish_debug", "in": {"call_name": "c", "debug_call_data": {"a": 1}, "error_msg": "EM", "io": {"debug_log_call": null, "debug_save": null, "tool_error": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_finish_debug", "in": {"call_name": "c", "debug_call_data": {"a": 1}, "error_msg": "EM", "io": {}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"success": true, "data": {"web": [1, 2, 3]}}, "slice_search_response": {"success": true, "data": {"web": [1, 2, 3]}}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": null, "bucket_limit": 10, "provider.search": {"success": true, "data": {"web": []}}, "search_memo.store": null, "slice_search_response": {"success": true, "data": {"web": []}}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, {"success": true}]}, "search_memo.flight_lock": null, "slice_search_response": {"success": true}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": null, "bucket_limit": 10, "provider.search": {"__raise__": "ValueError", "msg": "boom"}, "_rescue_eligible": true, "search_with_failover": {"success": true, "data": {"web": []}}, "slice_search_response": {"success": true, "data": {"web": []}}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": null, "bucket_limit": 10, "provider.search": {"__raise__": "ValueError", "msg": "boom"}, "_rescue_eligible": false, "slice_search_response": {"success": false}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": null, "bucket_limit": 10, "provider.search": {"success": false, "error": "SE"}, "_rescue_eligible": true, "search_with_failover": {"success": true, "data": {"web": []}}, "slice_search_response": {"success": true}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": null, "bucket_limit": 10, "provider.search": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {"search_memo.lookup": {"$seq": [null, null]}, "search_memo.flight_lock": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_memoized_search", "in": {"provider": {"name": "tavily"}, "query": "q", "limit": 5, "io": {}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "firecrawl", "io": {"_use_keyless_ring": true}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "firecrawl", "io": {"_use_keyless_ring": false}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "exa", "io": {"get_provider_env": "KEY", "use_keyless": false}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "exa", "io": {"get_provider_env": "", "use_keyless": true}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "zzz", "io": {"use_keyless": true}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "parallel", "io": {"get_provider_env": {"__raise__": "RuntimeError", "msg": "boom"}, "use_keyless": true}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "firecrawl", "io": {"_use_keyless_ring": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_ring_vendor_keyless", "in": {"name": "keenable", "io": {"get_provider_env": "K", "use_keyless": null}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"name": "firecrawl"}, "provider.search": {"success": true, "data": {"web": []}}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "tavily"}, "original_error": "OE", "query": "q", "limit": 5, "io": {}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "KEY"}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "tavily"}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": false}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"name": "firecrawl"}, "provider.search": {"success": false, "error": "FE"}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"name": "firecrawl"}, "provider.search": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"__raise__": "ValueError", "msg": "boom"}, "provider.search": {"success": true, "data": {"web": []}}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"name": "firecrawl"}, "provider.search": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_managed_search_fallback", "in": {"provider": {"name": "perplexity"}, "original_error": "OE", "query": "q", "limit": 5, "io": {"get_provider_env": "", "_load_web_config": {"search_backend": "nous"}, "_is_tool_gateway_ready": true, "get_provider": {"name": "firecrawl"}, "provider.search": {"success": true}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "OE", "query": "q", "limit": 5, "io": {"search_with_failover": {"success": true, "data": {"web": []}}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "OE", "query": "q", "limit": 5, "io": {"search_with_failover": {"success": false, "error": "RE"}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "", "query": "q", "limit": 5, "io": {"search_with_failover": {"success": false}}}}
+{"func": "_rescue_search", "in": {"provider_name": "exa", "original_error": "OE", "query": "q", "limit": 5, "io": {"search_with_failover": {"success": true}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "OE", "query": "q", "limit": 5, "io": {"search_with_failover": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "OE", "query": "q", "limit": 5, "io": {"search_with_failover": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_rescue_search", "in": {"provider_name": "tavily", "original_error": "OE", "query": "q", "limit": 5, "io": {}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [false, false]}, "extract_with_failover": [{"url": "u1", "content": "c1"}, {"url": "u2", "content": "c2"}]}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [true, true]}}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [false, false]}, "extract_with_failover": [{"url": "u1", "error": "x"}, {"url": "u2", "error": "y"}]}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [true, false]}, "extract_with_failover": [{"url": "u2", "content": "c2"}]}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2", "u3"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"extract_with_failover": [{"url": "u1", "content": "c1"}]}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": [], "results": [], "io": {}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [false, false]}, "extract_with_failover": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": "e1"}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [false, false]}, "extract_with_failover": [{"url": "u1", "content": "c1"}, {"url": "u2", "content": "c2"}, {"url": "u3"}]}}}
+{"func": "_rescue_extract", "in": {"provider_name": "tavily", "urls": ["u1", "u2"], "results": [{"url": "u1", "error": ""}, {"url": "u2", "error": "e2"}], "io": {"_policy_blocked_result": {"$seq": [false, false]}, "extract_with_failover": [{"url": "u1", "content": "c1"}, {"url": "u2", "content": "c2"}]}}}
+{"func": "_clamp_char_limit", "in": {"value": 5000}}
+{"func": "_clamp_char_limit", "in": {"value": 100}}
+{"func": "_clamp_char_limit", "in": {"value": 999999}}
+{"func": "_clamp_char_limit", "in": {"value": "12345"}}
+{"func": "_clamp_char_limit", "in": {"value": 12.9}}
+{"func": "_clamp_char_limit", "in": {"value": true}}
+{"func": "_clamp_char_limit", "in": {"value": "abc"}}
+{"func": "_clamp_char_limit", "in": {"value": null}}
+{"func": "_clamp_char_limit", "in": {"value": [1]}}
+{"func": "_clamp_char_limit", "in": {"value": "12.5"}}
+{"func": "_clamp_char_limit", "in": {"value": ""}}
+{"func": "_clamp_or_default", "in": {"value": 5000}}
+{"func": "_clamp_or_default", "in": {"value": null}}
+{"func": "_clamp_or_default", "in": {"value": "abc"}}
+{"func": "_clamp_or_default", "in": {"value": 100}}
+{"func": "_clamp_or_default", "in": {"value": [1]}}
+{"func": "_clamp_or_default", "in": {"value": "  6000  "}}
+{"func": "_clamp_or_default", "in": {"value": false}}
+{"func": "_effective_char_limit", "in": {"char_limit": 3000, "io": {}}}
+{"func": "_effective_char_limit", "in": {"char_limit": null, "io": {"_get_extract_char_limit": 20000}}}
+{"func": "_effective_char_limit", "in": {"char_limit": "abc", "io": {}}}
+{"func": "_effective_char_limit", "in": {"char_limit": 100, "io": {}}}
+{"func": "_effective_char_limit", "in": {"char_limit": null, "io": {"_get_extract_char_limit": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_effective_char_limit", "in": {"char_limit": null, "io": {}}}
+{"func": "_trim_results", "in": {"results": [{"url": "u", "title": "t", "content": "c", "error": null, "extra": 1}]}}
+{"func": "_trim_results", "in": {"results": [{"url": "u", "blocked_by_policy": {"host": "h"}}]}}
+{"func": "_trim_results", "in": {"results": []}}
+{"func": "_trim_results", "in": {"results": [{}]}}
+{"func": "_trim_results", "in": {"results": [{"url": "u", "error": "e"}, {"title": "t"}]}}
+{"func": "_trim_results", "in": {"results": [{"url": "u", "content": "c", "blocked_by_policy": false}]}}
+{"func": "_disabled_plugin_error", "in": {"capability": "search", "disabled_key": "plugins/web/tavily"}}
+{"func": "_disabled_plugin_error", "in": {"capability": "extract", "disabled_key": "plugins/web/firecrawl"}}
+{"func": "_disabled_plugin_error", "in": {"capability": "search", "disabled_key": "tavily"}}
+{"func": "_disabled_plugin_error", "in": {"capability": "search", "disabled_key": ""}}
+{"func": "_disabled_plugin_error", "in": {"capability": "extract", "disabled_key": "a/b/c"}}
+{"func": "_no_provider_error", "in": {"capability": "search", "fallback": "FB", "io": {"_disabled_web_plugin_for": null}}}
+{"func": "_no_provider_error", "in": {"capability": "search", "fallback": "FB", "io": {"_disabled_web_plugin_for": "plugins/web/tavily"}}}
+{"func": "_no_provider_error", "in": {"capability": "extract", "fallback": "FB", "io": {"_disabled_web_plugin_for": ""}}}
+{"func": "_no_provider_error", "in": {"capability": "search", "fallback": "FB", "io": {"_disabled_web_plugin_for": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_no_provider_error", "in": {"capability": "search", "fallback": "FB", "io": {}}}
+{"func": "_no_provider_error", "in": {"capability": "search", "fallback": "FB", "io": {"_disabled_web_plugin_for": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_strict_selection_error", "in": {"capability": "extract", "backend": "foo", "io": {"selection_error": "SELERR", "_disabled_web_plugin_for": null}}}
+{"func": "_strict_selection_error", "in": {"capability": "search", "backend": "bar", "io": {"selection_error": "SELERR", "_disabled_web_plugin_for": "plugins/web/bar"}}}
+{"func": "_strict_selection_error", "in": {"capability": "extract", "backend": "foo", "io": {"selection_error": {"__raise__": "RuntimeError", "msg": "boom"}, "_disabled_web_plugin_for": null}}}
+{"func": "_strict_selection_error", "in": {"capability": "extract", "backend": "foo", "io": {"selection_error": "SELERR", "_disabled_web_plugin_for": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_strict_selection_error", "in": {"capability": "extract", "backend": "", "io": {"selection_error": "SELERR", "_disabled_web_plugin_for": null}}}
+{"func": "_strict_selection_error", "in": {"capability": "extract", "backend": "foo", "io": {"_disabled_web_plugin_for": null}}}
+{"func": "_result_entry", "in": {"url": "u", "error": "e"}}
+{"func": "_result_entry", "in": {"url": "u", "error": null}}
+{"func": "_result_entry", "in": {"url": "", "error": ""}}
+{"func": "_result_entry", "in": {"url": "u", "error": false}}
+{"func": "_result_entry", "in": {"url": "u", "error": {"k": 1}}}
+{"func": "_extract_error_json", "in": {"error": "boom"}}
+{"func": "_extract_error_json", "in": {"error": ""}}
+{"func": "_extract_error_json", "in": {"error": "quote\" and \\ backslash"}}
+{"func": "_extract_error_json", "in": {"error": "line\nbreak"}}
+{"func": "_extract_error_json", "in": {"error": "tab\there"}}
+{"func": "_refuse_all", "in": {"error": "boom"}}
+{"func": "_refuse_all", "in": {"error": ""}}
+{"func": "_refuse_all", "in": {"error": "quote\" x"}}
+{"func": "_refuse_all", "in": {"error": "newline\nx"}}
+{"func": "_refuse_all", "in": {"error": "Blocked: URL contains what appears to be an API key or token. Secrets must not be sent in URLs."}}
+{"func": "_merge_in_order", "in": {"total": 3, "fixed": {"0": {"url": "a"}}, "fetch_positions": [1, 2], "fetch_urls": ["b", "c"], "results": [{"url": "b"}]}}
+{"func": "_merge_in_order", "in": {"total": 2, "fixed": {}, "fetch_positions": [0, 1], "fetch_urls": ["a", "b"], "results": [{"url": "a"}, {"url": "b"}]}}
+{"func": "_merge_in_order", "in": {"total": 1, "fixed": {"0": {"url": "a"}}, "fetch_positions": [], "fetch_urls": [], "results": []}}
+{"func": "_merge_in_order", "in": {"total": 3, "fixed": {"1": {"url": "b"}}, "fetch_positions": [0, 2], "fetch_urls": ["a", "c"], "results": []}}
+{"func": "_merge_in_order", "in": {"total": 2, "fixed": {}, "fetch_positions": [0, 1], "fetch_urls": ["a", "b"], "results": [{"url": "a"}, {"url": "b"}, {"url": "extra"}]}}
+{"func": "_merge_in_order", "in": {"total": 0, "fixed": {}, "fetch_positions": [], "fetch_urls": [], "results": []}}
+{"func": "_resolve_extract_provider", "in": {"backend": "firecrawl", "io": {"get_provider": {"name": "firecrawl", "display_name": "Firecrawl"}, "provider.supports_extract": true}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "tavily", "io": {"get_provider": {"name": "tavily", "display_name": "Tavily"}, "provider.supports_extract": false}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "foo", "io": {"get_provider": null, "selection_exists": true, "selection_error": "SELERR", "_disabled_web_plugin_for": null}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "foo", "io": {"get_provider": null, "selection_exists": false, "get_active_extract_provider": {"name": "exa"}}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "", "io": {"get_active_extract_provider": null, "_disabled_web_plugin_for": null}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "", "io": {"get_active_extract_provider": {"name": "firecrawl", "display_name": "F"}}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "firecrawl", "io": {"get_provider": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "foo", "io": {"get_provider": null, "selection_exists": true, "selection_error": "SELERR", "_disabled_web_plugin_for": "plugins/web/foo"}}}
+{"func": "_resolve_extract_provider", "in": {"backend": "firecrawl", "io": {"get_provider": {"name": "firecrawl", "display_name": "F"}, "provider.supports_extract": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": "30.5"}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": "abc"}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": null}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": 60}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": true}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_extract_timeout_seconds", "in": {"io": {"_load_web_config": {"extract_timeout": [1]}}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}, {"error": "e2"}], "io": {"is_origin_http_error": {"$seq": [false, false]}}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}, {"error": null}], "io": {}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [], "io": {}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}], "io": {"is_origin_http_error": true}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}, {"error": "e2"}], "io": {"is_origin_http_error": {"$seq": [false, true]}}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}], "io": {"is_origin_http_error": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{}], "io": {}}}
+{"func": "_backend_failed_whole_batch", "in": {"results": [{"error": "e1"}, {"error": "e2"}], "io": {}}}

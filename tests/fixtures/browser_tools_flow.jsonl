@@ -1,0 +1,140 @@
+{"func": "_set_cdp_env", "in": {"env": {}, "cdp": "http://127.0.0.1:9222"}}
+{"func": "_set_cdp_env", "in": {"env": {}, "cdp": "https://host/devtools"}}
+{"func": "_set_cdp_env", "in": {"env": {}, "cdp": "ws://127.0.0.1:9222/devtools/browser/x"}}
+{"func": "_set_cdp_env", "in": {"env": {"BU_CDP_WS": "old"}, "cdp": "http://h"}}
+{"func": "_set_cdp_env", "in": {"env": {}, "cdp": ""}}
+{"func": "_set_cdp_env", "in": {"env": {}, "cdp": "HTTP://UPPER"}}
+{"func": "_has_cdp_env", "in": {"env": {}}}
+{"func": "_has_cdp_env", "in": {"env": {"BU_CDP_WS": "ws://x"}}}
+{"func": "_has_cdp_env", "in": {"env": {"BU_CDP_URL": "http://x"}}}
+{"func": "_has_cdp_env", "in": {"env": {"BU_CDP_WS": "", "BU_CDP_URL": ""}}}
+{"func": "_has_cdp_env", "in": {"env": {"BU_CDP_WS": null, "BU_CDP_URL": "http://x"}}}
+{"func": "_has_cdp_env", "in": {"env": {"BU_CDP_WS": "ws://x", "BU_CDP_URL": "http://y"}}}
+{"func": "_clamp_timeout", "in": {"timeout_s": 300}}
+{"func": "_clamp_timeout", "in": {"timeout_s": 1}}
+{"func": "_clamp_timeout", "in": {"timeout_s": 9999}}
+{"func": "_clamp_timeout", "in": {"timeout_s": 5.9}}
+{"func": "_clamp_timeout", "in": {"timeout_s": -3}}
+{"func": "_clamp_timeout", "in": {"timeout_s": "12"}}
+{"func": "_clamp_timeout", "in": {"timeout_s": "abc"}}
+{"func": "_clamp_timeout", "in": {"timeout_s": null}}
+{"func": "_clamp_timeout", "in": {"timeout_s": []}}
+{"func": "_clamp_timeout", "in": {"timeout_s": true}}
+{"func": "_clamp_timeout", "in": {"timeout_s": "  45  "}}
+{"func": "_no_code_error", "in": {"code": ""}}
+{"func": "_no_code_error", "in": {"code": "   "}}
+{"func": "_no_code_error", "in": {"code": "print(1)"}}
+{"func": "_no_code_error", "in": {"code": null}}
+{"func": "_no_code_error", "in": {"code": "\t\n"}}
+{"func": "_no_code_error", "in": {"code": "  x  "}}
+{"func": "_sidecar_daemon_name", "in": {"name": "abc"}}
+{"func": "_sidecar_daemon_name", "in": {"name": ""}}
+{"func": "_sidecar_daemon_name", "in": {"name": null}}
+{"func": "_sidecar_daemon_name", "in": {"name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"func": "_sidecar_daemon_name", "in": {"name": "r7k2"}}
+{"func": "_sidecar_daemon_name", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "_served_profile_tag", "in": {"io": {"get_hermes_home_override": null}}}
+{"func": "_served_profile_tag", "in": {"io": {"get_hermes_home_override": "/h", "hermes_home_key": "k1"}}}
+{"func": "_served_profile_tag", "in": {"io": {"get_hermes_home_override": "", "hermes_home_key": "k2"}}}
+{"func": "_served_profile_tag", "in": {"io": {"get_hermes_home_override": "/h", "hermes_home_key": ""}}}
+{"func": "_served_profile_tag", "in": {"io": {"get_hermes_home_override": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_served_profile_tag", "in": {}}
+{"func": "_browser_use_api_key_set", "in": {"io": {"get_secret": "sk-1"}}}
+{"func": "_browser_use_api_key_set", "in": {"io": {"get_secret": ""}}}
+{"func": "_browser_use_api_key_set", "in": {"io": {"get_secret": null}}}
+{"func": "_browser_use_api_key_set", "in": {"io": {"get_secret": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_browser_use_api_key_set", "in": {"io": {"get_secret": "0"}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {"use_gateway": true}, "io": {"is_truthy_value": true}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {"cloud_provider": "nous"}, "io": {"is_truthy_value": false, "nous_managed_provider": "nous"}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {"cloud_provider": "other"}, "io": {"is_truthy_value": false, "nous_managed_provider": "nous"}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {"cloud_provider": "  NOUS  "}, "io": {"is_truthy_value": false, "nous_managed_provider": "nous"}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {}, "io": {"is_truthy_value": false, "nous_managed_provider": {"__raise__": "ImportError", "msg": "x"}}}}
+{"func": "_use_gateway", "in": {"browser_cfg": {"cloud_provider": null}, "io": {"is_truthy_value": false, "nous_managed_provider": "nous"}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": false, "get_secret": "sk"}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": false, "get_secret": null}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": true, "current_secret_scope": {"BROWSER_USE_API_KEY": "s"}}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": true, "current_secret_scope": {}}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": true, "current_secret_scope": null}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": true, "current_secret_scope": {"BROWSER_USE_API_KEY": null}}}}
+{"func": "_harness_credentials", "in": {"io": {"serves_routed_profile": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_export_real_profile_note", "in": {"env": {}, "key": "k", "io": {"real_profile_note": "note"}}}
+{"func": "_export_real_profile_note", "in": {"env": {}, "key": "k", "io": {"real_profile_note": null}}}
+{"func": "_export_real_profile_note", "in": {"env": {}, "key": "k", "io": {"real_profile_note": ""}}}
+{"func": "_export_real_profile_note", "in": {"env": {"_HERMES_BU_REAL_PROFILE_FALLBACK": "existing"}, "key": "k", "io": {"real_profile_note": "new"}}}
+{"func": "_export_real_profile_note", "in": {"env": {}, "key": "k", "io": {"real_profile_note": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {}, "key": "k", "io": {"real_profile_note": null}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {"features": {"lightpanda": true}}, "key": "k", "io": {"real_profile_note": null}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {"shared_profile": true}, "key": "k", "io": {"real_profile_note": null}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {"features": {"real_profile": true}}, "key": "k", "io": {"real_profile_note": null}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {"features": null}, "key": "k", "io": {"real_profile_note": "n"}}}
+{"func": "_mark_local_browser", "in": {"env": {}, "session_obj": {}, "key": "k", "io": {"real_profile_note": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": "d", "log_prefix": "", "io": {"fn": "v"}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": "d", "log_prefix": "p", "io": {"fn": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": "d", "log_prefix": "", "io": {"fn": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": "d", "log_prefix": "p", "io": {"fn": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": null, "log_prefix": "", "io": {"fn": null}}}
+{"func": "_quiet", "in": {"fn_seam": "fn", "default": {"x": 1}, "log_prefix": "p", "io": {"fn": {"__raise__": "RuntimeError", "msg": "b"}}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": "d", "log_prefix": "p", "io": {"import_module": true, "f": "v"}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": "d", "log_prefix": "p", "io": {"import_module": {"__raise__": "ImportError", "msg": "no"}}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": "d", "log_prefix": "p", "io": {"import_module": true, "f": {"__raise__": "RuntimeError", "msg": "b"}}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": "d", "log_prefix": "", "io": {"import_module": true, "f": null}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": "d", "log_prefix": "p", "io": {"import_module": true, "f": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_lazy_call", "in": {"module": "m", "lname": "f", "default": false, "log_prefix": "p", "io": {"import_module": true, "f": true}}}
+{"func": "_real_profile_consented", "in": {"io": {"import_module": true, "use_real_profile": true}}}
+{"func": "_real_profile_consented", "in": {"io": {"import_module": true, "use_real_profile": false}}}
+{"func": "_real_profile_consented", "in": {"io": {"import_module": {"__raise__": "ImportError", "msg": "x"}}}}
+{"func": "_real_profile_consented", "in": {"io": {"import_module": true, "use_real_profile": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_real_profile_consented", "in": {"io": {"import_module": true, "use_real_profile": null}}}
+{"func": "_code_url_verdict", "in": {"code": "print(1)"}}
+{"func": "_code_url_verdict", "in": {"code": "new_tab('https://a.com')", "io": {"hybrid_routes_locally": false, "evaluate_url_safety": null}}}
+{"func": "_code_url_verdict", "in": {"code": "new_tab('https://a.com')", "io": {"hybrid_routes_locally": true, "evaluate_url_safety": null}}}
+{"func": "_code_url_verdict", "in": {"code": "new_tab('https://bad.com')", "io": {"hybrid_routes_locally": false, "evaluate_url_safety": {"error": "Blocked: private"}}}}
+{"func": "_code_url_verdict", "in": {"code": "https://a.com https://b.com", "io": {"hybrid_routes_locally": {"$seq": [false, true]}, "evaluate_url_safety": {"$seq": [null, null]}}}}
+{"func": "_code_url_verdict", "in": {"code": "https://a.com", "io": {"hybrid_routes_locally": false, "evaluate_url_safety": {}}}}
+{"func": "_code_url_verdict", "in": {"code": "https://a.com", "io": {"hybrid_routes_locally": false, "evaluate_url_safety": {"error": null}}}}
+{"func": "_code_url_verdict", "in": {"code": "https://a.com", "io": {"hybrid_routes_locally": {"__raise__": "RuntimeError", "msg": "dns"}}}}
+{"func": "_attach_vault_supervisor", "in": {"env": {}, "task_id": "t"}}
+{"func": "_attach_vault_supervisor", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"get_dialog_policy_config": ["allow", 5], "resolve_cdp_override": "ws://r", "SUPERVISOR_REGISTRY.get_or_start": null}}}
+{"func": "_attach_vault_supervisor", "in": {"env": {"BU_CDP_URL": "http://x"}, "task_id": null, "io": {"get_dialog_policy_config": [null, 10], "resolve_cdp_override": "http://r", "SUPERVISOR_REGISTRY.get_or_start": null}}}
+{"func": "_attach_vault_supervisor", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"get_dialog_policy_config": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_attach_vault_supervisor", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"get_dialog_policy_config": ["allow", 5], "resolve_cdp_override": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_attach_vault_supervisor", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"get_dialog_policy_config": ["allow", 5], "resolve_cdp_override": "ws://r", "SUPERVISOR_REGISTRY.get_or_start": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_record_driven_tab", "in": {"env": {}, "task_id": "t"}}
+{"func": "_record_driven_tab", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"SUPERVISOR_REGISTRY.get": null}}}
+{"func": "_record_driven_tab", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"SUPERVISOR_REGISTRY.get": {"id": 1}, "harness_current_target": "tab1", "supervisor.set_driven_target": null}}}
+{"func": "_record_driven_tab", "in": {"env": {"BU_CDP_URL": "http://x"}, "task_id": null, "io": {"SUPERVISOR_REGISTRY.get": {"id": 1}, "harness_current_target": "tab2", "supervisor.set_driven_target": null}}}
+{"func": "_record_driven_tab", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"SUPERVISOR_REGISTRY.get": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_record_driven_tab", "in": {"env": {"BU_CDP_WS": "ws://x"}, "task_id": "t", "io": {"SUPERVISOR_REGISTRY.get": {"id": 1}, "harness_current_target": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid.json", "read_text": "{\"pid\": 123, \"started\": 1}"}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid", "read_text": "456"}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid", "read_text": "  789  "}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid.json", "read_text": "{\"pid\": \"abc\"}"}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid.json", "read_text": "{\"started\": 1}"}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid", "read_text": ""}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid", "read_text": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_published_daemon_pid", "in": {"env": {"BU_NAME": "n"}, "io": {"harness_pid_file": "/run/pid", "read_text": "notjson"}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "k", "state": {"real_profile_fallback": {}, "real_profile_note_delivered": []}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "k", "state": {"real_profile_fallback": {"k": "note"}, "real_profile_note_delivered": []}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "k", "state": {"real_profile_fallback": {"k": "note"}, "real_profile_note_delivered": ["k"]}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "k", "state": {"real_profile_fallback": {"k": ""}, "real_profile_note_delivered": []}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "other", "state": {"real_profile_fallback": {"k": "note"}, "real_profile_note_delivered": []}}}
+{"func": "_take_real_profile_note", "in": {"route_key": "k", "state": {"real_profile_fallback": {"k": "n1", "j": "n2"}, "real_profile_note_delivered": ["j"]}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "", "task_id": "t", "local": false, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "s", "task_id": "t", "local": false, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": "err"}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "", "task_id": "t", "local": true, "io": {"_resolve_real_profile_cdp": null, "import_module": true, "use_real_profile": false}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "", "task_id": "t", "local": true, "io": {"_resolve_real_profile_cdp": "rp_err", "real_profile_fallback_note": "note", "_resolve_backend_cdp": null, "import_module": true, "use_real_profile": true}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "", "task_id": "t", "local": true, "real_profile": false, "io": {"_resolve_backend_cdp": null}}}
+{"func": "_route_backend", "in": {"env": {"BU_CDP_WS": "ws://x"}, "session": "", "task_id": "t", "local": true, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null, "import_module": true, "use_real_profile": true}}}
+{"func": "_route_backend", "in": {"env": {}, "session": "", "task_id": "t", "local": false, "io": {"_resolve_real_profile_cdp": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_route_exec", "in": {"env": {}, "session": "", "task_id": "t", "local": false, "local_sidecar": false, "route_key": "k", "state": {"real_profile_fallback": {}, "real_profile_note_delivered": []}, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null}}}
+{"func": "_route_exec", "in": {"env": {"_HERMES_BU_REAL_PROFILE_FALLBACK": "note"}, "session": "", "task_id": "t", "local": false, "local_sidecar": false, "route_key": "k", "state": {"real_profile_fallback": {}, "real_profile_note_delivered": []}, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null}}}
+{"func": "_route_exec", "in": {"env": {"_HERMES_BU_LOCAL_FALLBACK": "1"}, "session": "", "task_id": "t", "local": false, "local_sidecar": false, "route_key": "k", "state": {"real_profile_fallback": {}, "real_profile_note_delivered": []}, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null}}}
+{"func": "_route_exec", "in": {"env": {}, "session": "", "task_id": "t", "local": false, "local_sidecar": true, "route_key": "k", "state": {"real_profile_fallback": {"k": "old"}, "real_profile_note_delivered": []}, "io": {"_resolve_backend_cdp": null}}}
+{"func": "_route_exec", "in": {"env": {}, "session": "", "task_id": "t", "local": false, "local_sidecar": false, "route_key": "k", "state": {"real_profile_fallback": {}, "real_profile_note_delivered": []}, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": "err"}}}
+{"func": "_route_exec", "in": {"env": {"_HERMES_BU_REAL_PROFILE_FALLBACK": "n", "_HERMES_BU_LOCAL_FALLBACK": "1"}, "session": "s", "task_id": "t", "local": false, "local_sidecar": false, "route_key": "k", "state": {"real_profile_fallback": {"k": "pre"}, "real_profile_note_delivered": []}, "io": {"_resolve_real_profile_cdp": null, "_resolve_backend_cdp": null}}}
+{"func": "browser_exec_available", "in": {"io": {"_find_cli": null}}}
+{"func": "browser_exec_available", "in": {"io": {"_find_cli": ["py", "-m", "browser_harness.run"]}}}
+{"func": "browser_exec_available", "in": {"io": {"_find_cli": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "browser_exec_available", "in": {"io": {"_find_cli": []}}}
+{"func": "browser_exec_available", "in": {}}

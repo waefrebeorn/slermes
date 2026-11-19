@@ -660,10 +660,10 @@ static json_t *fa__is_bot_sender(fa_ctx_t *ctx, const json_t *args) {
     return json_bool(strcmp(st, "bot") == 0 || strcmp(st, "app") == 0);
 }
 
-/* PoP: fa__sender_identity @ plugins/platforms/feishu/adapter.py:_sender_identity */
 static int fa_cmp_str(const void *a, const void *b) {
     return strcmp(*(const char *const *)a, *(const char *const *)b);
 }
+/* PoP: fa__sender_identity @ plugins/platforms/feishu/adapter.py:_sender_identity */
 static json_t *fa__sender_identity(fa_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *sender = json_obj_get(args, "sender");
@@ -999,7 +999,6 @@ static json_t *fa__strip_edge_self_mentions(fa_ctx_t *ctx, const json_t *args) {
     return r;
 }
 
-/* PoP: fa__build_markdown_post_rows @ plugins/platforms/feishu/adapter.py:_build_markdown_post_rows */
 static json_t *fa_md_row(const char *text) {
     json_t *row = json_array();
     json_t *el = json_object();
@@ -1012,6 +1011,7 @@ static bool fa_fence_close_match(const char *stripped) { return strcmp(stripped,
 static bool fa_fence_open_match(const char *stripped) {
     return fa_startswith(stripped, "```") && strchr(stripped + 3, '`') == NULL;
 }
+/* PoP: fa__build_markdown_post_rows @ plugins/platforms/feishu/adapter.py:_build_markdown_post_rows */
 static json_t *fa__build_markdown_post_rows(fa_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const char *content = json_get_str(args, "content", "");
@@ -1076,7 +1076,6 @@ static json_t *fa_matches(fa_ctx_t *ctx, const json_t *args) {
     return json_bool(b_nm[0] && strcmp(name, b_nm) == 0);
 }
 
-/* PoP: fa__walk_nodes @ plugins/platforms/feishu/adapter.py:_walk_nodes */
 static void fa_walk_collect(const json_t *value, json_t *arr) {
     if (!value) return;
     if (value->type == JSON_OBJECT) {
@@ -1086,6 +1085,7 @@ static void fa_walk_collect(const json_t *value, json_t *arr) {
         for (size_t i = 0; i < value->c.count; i++) fa_walk_collect(value->c.items[i], arr);
     }
 }
+/* PoP: fa__walk_nodes @ plugins/platforms/feishu/adapter.py:_walk_nodes */
 static json_t *fa__walk_nodes(fa_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     json_t *arr = json_array();

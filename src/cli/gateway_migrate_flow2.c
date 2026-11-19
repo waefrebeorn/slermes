@@ -1334,7 +1334,9 @@ json_t *gm2_flow_build_migration_plan(const gm2_seams_t *s) {
         gm2_aset_j(a6, "live_served", json_obj_get(plan, "live_served"));
         json_t *mnys = gm2_scall(s, "manifest_not_yet_served", a6);
         if (gm2_is_raise(mnys)) { json_free(plan); return mnys; }
-        json_set(plan, "interrupted", mnys);
+        /* live: plan.interrupted = flag and _manifest_not_yet_served(...) —
+         * a None result assigns None (json_set ignores a NULL val). */
+        json_set(plan, "interrupted", mnys ? mnys : json_null());
     }
     if (json_len(profiles) < 2) {
         gm2_arr_append_str(gm2_plan_notices(plan), "Only one profile exists: nothing to multiplex.");

@@ -605,7 +605,7 @@ static json_t *sa_is_table_row(sa_ctx_t *ctx, const json_t *args) {
     return json_bool(r);
 }
 
-/* PoP: sa_disp_width @ plugins/platforms/slack/adapter.py:_disp_width */
+/* PoP: sa_disp_width_case @ plugins/platforms/slack/adapter.py:_disp_width */
 static json_t *sa_disp_width_case(sa_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return json_number((double)sa_disp_width(json_get_str(args, "s", "")));

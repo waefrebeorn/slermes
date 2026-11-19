@@ -1,0 +1,200 @@
+{"func": "console", "in": {"seams": {"Console": {"console": 1}}, "env": {}}}
+{"func": "console", "in": {"seams": {"Console": {"console": 2, "x": "y"}}, "env": {}}}
+{"func": "console", "in": {"seams": {"Console": null}, "env": {}}}
+{"func": "console", "in": {"seams": {"Console": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "console", "in": {"seams": {}, "env": {}}}
+{"func": "table", "in": {"columns": [["Name", "bold"], ["Version", null]], "kwargs": {"show_header": true}, "seams": {"Table": {"table": 1}, "add_column": null}, "env": {}}}
+{"func": "table", "in": {"columns": [], "kwargs": {}, "seams": {"Table": {"table": 1}, "add_column": null}, "env": {}}}
+{"func": "table", "in": {"columns": [["A", "red"]], "kwargs": {}, "seams": {"Table": {"table": 1}, "add_column": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "table", "in": {"columns": [["A", null]], "kwargs": {}, "seams": {"Table": {"__raise__": "ValueError", "msg": "boom"}}, "env": {}}}
+{"func": "table", "in": {"columns": [["A", null]], "kwargs": {}, "seams": {}, "env": {}}}
+{"func": "is_tty", "in": {"seams": {"stdin_isatty": true, "stdout_isatty": true}, "env": {}}}
+{"func": "is_tty", "in": {"seams": {"stdin_isatty": false, "stdout_isatty": true}, "env": {}}}
+{"func": "is_tty", "in": {"seams": {"stdin_isatty": true, "stdout_isatty": false}, "env": {}}}
+{"func": "is_tty", "in": {"seams": {"stdin_isatty": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "is_tty", "in": {"seams": {}, "env": {}}}
+{"func": "fail", "in": {"console": {"console": 1}, "message": "[red]Error:[/red] nope", "seams": {"console_print": null}, "env": {}}}
+{"func": "fail", "in": {"console": null, "message": "x", "seams": {"console_print": null}, "env": {}}}
+{"func": "fail", "in": {"console": {"console": 1}, "message": "x", "seams": {"console_print": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "fail", "in": {"console": {"console": 1}, "message": "x", "seams": {}, "env": {}}}
+{"func": "fail", "in": {"console": {"console": 1}, "message": "", "seams": {"console_print": null}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "Enable? ", "seams": {"reader": "Y"}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": "  YES  "}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": "n"}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": ""}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": {"__raise__": "EOFError", "msg": "boom"}}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {"reader": 5}, "env": {}}}
+{"func": "ask_yes", "in": {"prompt": "p", "seams": {}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["plugins", "x"], "default": "d", "seams": {"load_config": {"a": 1}, "cfg_get": "val"}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {"__raise__": "RuntimeError", "msg": "boom"}, "cfg_get": "val"}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["k"], "default": 7, "seams": {"load_config": {}, "cfg_get": {"__raise__": "ValueError", "msg": "boom"}}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {"__raise__": "SystemExit", "msg": "boom"}, "cfg_get": "val"}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {}, "cfg_get": null}, "env": {}}}
+{"func": "config_value", "in": {"keys": ["k"], "default": "d", "seams": {}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 300, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 0, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": true, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": "x", "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 2.5, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 4000, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 3600, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": -5, "logger_warning": null}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {"load_config": {}, "cfg_get": 60, "logger_warning": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "clone_timeout_seconds", "in": {"seams": {}, "env": {}}}
+{"func": "config_name_set", "in": {"keys": ["plugins", "enabled"], "seams": {"load_config": {}, "cfg_get": ["a", "b", "a"]}, "env": {}}}
+{"func": "config_name_set", "in": {"keys": ["k"], "seams": {"load_config": {}, "cfg_get": "x"}, "env": {}}}
+{"func": "config_name_set", "in": {"keys": ["k"], "seams": {"load_config": {}, "cfg_get": []}, "env": {}}}
+{"func": "config_name_set", "in": {"keys": ["k"], "seams": {"load_config": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "config_name_set", "in": {"keys": ["k"], "seams": {"load_config": {}, "cfg_get": ["z", "m"]}, "env": {}}}
+{"func": "config_str", "in": {"keys": ["memory", "provider"], "default": "", "seams": {"load_config": {}, "cfg_get": "val"}, "env": {}}}
+{"func": "config_str", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {}, "cfg_get": ""}, "env": {}}}
+{"func": "config_str", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {}, "cfg_get": null}, "env": {}}}
+{"func": "config_str", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {}, "cfg_get": 0}, "env": {}}}
+{"func": "config_str", "in": {"keys": ["k"], "default": "d", "seams": {"load_config": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "memory", "key": "provider", "value": "x", "seams": {"load_config": {}, "save_config": null}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "memory", "key": "provider", "value": "new", "seams": {"load_config": {"memory": {"provider": "old"}}, "save_config": null}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "memory", "key": "provider", "value": "x", "seams": {"load_config": {"memory": "notdict"}, "save_config": null}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "s", "key": "k", "value": 1, "seams": {"load_config": "notdict", "save_config": null}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "s", "key": "k", "value": 1, "seams": {"load_config": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "s", "key": "k", "value": 1, "seams": {"load_config": {}, "save_config": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "write_config_value", "in": {"section": "s", "key": "k", "value": 1, "seams": {}, "env": {}}}
+{"func": "native_manifest_file", "in": {"plugin_dir": "/p", "seams": {"native_manifest_file": "/p/plugin.yaml"}, "env": {}}}
+{"func": "native_manifest_file", "in": {"plugin_dir": "/p", "seams": {"native_manifest_file": null}, "env": {}}}
+{"func": "native_manifest_file", "in": {"plugin_dir": "/p", "seams": {"native_manifest_file": {"__raise__": "ValueError", "msg": "bad manifest"}}, "env": {}}}
+{"func": "native_manifest_file", "in": {"plugin_dir": "/p", "seams": {"native_manifest_file": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "native_manifest_file", "in": {"plugin_dir": "/p", "seams": {}, "env": {}}}
+{"func": "has_portable_manifest", "in": {"plugin_dir": "/p", "seams": {"exists": true}, "env": {}}}
+{"func": "has_portable_manifest", "in": {"plugin_dir": "/p", "seams": {"exists": false, "is_symlink": true}, "env": {}}}
+{"func": "has_portable_manifest", "in": {"plugin_dir": "/p", "seams": {"exists": false, "is_symlink": false}, "env": {}}}
+{"func": "has_portable_manifest", "in": {"plugin_dir": "/p", "seams": {"exists": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "has_portable_manifest", "in": {"plugin_dir": "/p", "seams": {}, "env": {}}}
+{"func": "load_yaml_manifest", "in": {"manifest_file": "/p/plugin.yaml", "seams": {"read_native_manifest": {"name": "x"}}, "env": {}}}
+{"func": "load_yaml_manifest", "in": {"manifest_file": "/p/plugin.yaml", "seams": {"read_native_manifest": {}}, "env": {}}}
+{"func": "load_yaml_manifest", "in": {"manifest_file": "/p/plugin.yaml", "seams": {"read_native_manifest": {"__raise__": "ValueError", "msg": "boom"}}, "env": {}}}
+{"func": "load_yaml_manifest", "in": {"manifest_file": "/p/plugin.yaml", "seams": {"read_native_manifest": null}, "env": {}}}
+{"func": "load_yaml_manifest", "in": {"manifest_file": "/p/plugin.yaml", "seams": {}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {"native_manifest_file": "/p/plugin.yaml"}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {"native_manifest_file": null, "exists": true}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {"native_manifest_file": null, "exists": [false, true]}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {"native_manifest_file": null, "exists": [false, false]}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {"native_manifest_file": {"__raise__": "ValueError", "msg": "bad"}}, "env": {}}}
+{"func": "looks_like_plugin_dir", "in": {"target": "/p", "seams": {}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/foo", "prefix": "", "seams": {"native_manifest_file": "/p/plugin.yaml", "read_native_manifest": {"name": "foo", "version": "2", "description": "desc"}}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/foo", "prefix": "web", "seams": {"native_manifest_file": "/p/plugin.yaml", "read_native_manifest": {"version": "2"}}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/foo", "prefix": "", "seams": {"native_manifest_file": "/p/plugin.yaml", "read_native_manifest": {"__raise__": "ValueError", "msg": "boom"}}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/bar", "prefix": "", "seams": {"native_manifest_file": null, "exists": true, "read_agent_plugin_manifest": [[{"name": "bar"}]]}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/bar", "prefix": "", "seams": {"native_manifest_file": null, "exists": false}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/bar", "prefix": "", "seams": {"native_manifest_file": null, "exists": true, "read_agent_plugin_manifest": [[]]}, "env": {}}}
+{"func": "read_manifest_info", "in": {"d": "/p/bar", "prefix": "", "seams": {"native_manifest_file": null, "exists": true, "read_agent_plugin_manifest": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {"requires_env": ["A", "B"]}, "seams": {"get_env_value": [null, "set"]}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {"requires_env": []}, "seams": {}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {}, "seams": {}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {"requires_env": [{"name": "X", "secret": true}, {"name": ""}, {"noname": 1}, 5]}, "seams": {"get_env_value": ""}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {"requires_env": ["A"]}, "seams": {"get_env_value": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": "notdict", "seams": {}, "env": {}}}
+{"func": "missing_env_specs", "in": {"manifest": {"requires_env": ["A", "B"]}, "seams": {"get_env_value": [null, null]}, "env": {}}}
+{"func": "clone_failure_message", "in": {"git_url": "https://github.com/o/r.git", "git_error": "  fatal: repo not found  ", "seams": {"markup_escape": "fatal: repo not found"}, "env": {}}}
+{"func": "clone_failure_message", "in": {"git_url": "u", "git_error": "a[b]", "seams": {"markup_escape": "a\\[b]"}, "env": {}}}
+{"func": "clone_failure_message", "in": {"git_url": "u", "git_error": "   ", "seams": {"markup_escape": ""}, "env": {}}}
+{"func": "clone_failure_message", "in": {"git_url": "u", "git_error": "e", "seams": {"markup_escape": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "clone_failure_message", "in": {"git_url": "u", "git_error": "e", "seams": {}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "seams": {"moved_plugin_hint": "It moved to X."}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "seams": {"moved_plugin_hint": null}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "downloaded_only": true, "seams": {"moved_plugin_hint": null}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "seams": {"moved_plugin_hint": ""}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "seams": {"moved_plugin_hint": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "unknown_plugin_message", "in": {"name": "old", "seams": {}, "env": {}}}
+{"func": "preserved_files_note", "in": {"exc": {"message": "blocked", "scan_result": {"findings": [{"file": "a.py"}, {"file": "b.py"}]}}, "merged": ["a.py", "c.py"], "seams": {}, "env": {}}}
+{"func": "preserved_files_note", "in": {"exc": {"message": "blocked", "scan_result": {"findings": [{"file": "z.py"}]}}, "merged": ["a.py"], "seams": {}, "env": {}}}
+{"func": "preserved_files_note", "in": {"exc": {"message": "blocked", "scan_result": null}, "merged": ["a.py"], "seams": {}, "env": {}}}
+{"func": "preserved_files_note", "in": {"exc": {"message": "blocked", "scan_result": {"findings": []}}, "merged": [], "seams": {}, "env": {}}}
+{"func": "preserved_files_note", "in": {"exc": {"message": "m", "scan_result": {"findings": [{"file": "a.py"}, {"file": "a.py"}]}}, "merged": ["a.py"], "seams": {}, "env": {}}}
+{"func": "scan_merged_tree", "in": {"plugin_dir": "/p", "identifier": "o/r", "merged": ["a.py"], "kwargs": {"force": true}, "seams": {"_scan_plugin_tree": {"scan": "ok"}}, "env": {}}}
+{"func": "scan_merged_tree", "in": {"plugin_dir": "/p", "identifier": "o/r", "merged": [], "kwargs": {"force": false}, "seams": {"_scan_plugin_tree": {"__raise__": "PluginScanBlocked", "msg": "blocked", "scan_result": {"findings": [{"file": "a.py"}]}}}, "env": {}}}
+{"func": "scan_merged_tree", "in": {"plugin_dir": "/p", "identifier": "o/r", "merged": ["a.py"], "kwargs": {"force": false, "reviewed_pin": true}, "seams": {"_scan_plugin_tree": {"__raise__": "PluginScanBlocked", "msg": "blocked", "scan_result": {"findings": [{"file": "a.py"}]}}}, "env": {}}}
+{"func": "scan_merged_tree", "in": {"plugin_dir": "/p", "identifier": "o/r", "merged": ["a.py"], "kwargs": {}, "seams": {"_scan_plugin_tree": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "scan_merged_tree", "in": {"plugin_dir": "/p", "identifier": "o/r", "merged": ["a.py"], "kwargs": {}, "seams": {}, "env": {}}}
+{"func": "discard_key_and_leaf", "in": {"names": ["web/exa", "exa", "other"], "key": "web/exa", "seams": {}, "env": {}}}
+{"func": "discard_key_and_leaf", "in": {"names": ["exa", "other"], "key": "web/exa", "seams": {}, "env": {}}}
+{"func": "discard_key_and_leaf", "in": {"names": ["a", "b"], "key": "c", "seams": {}, "env": {}}}
+{"func": "discard_key_and_leaf", "in": {"names": [], "key": "web/exa", "seams": {}, "env": {}}}
+{"func": "discard_key_and_leaf", "in": {"names": ["x", "x/y"], "key": "x/y", "seams": {}, "env": {}}}
+{"func": "plugin_aliases", "in": {"key": "web/exa", "entries": [["web-exa", "1.0", "d", "user", "/u/web-exa", "web/exa"], ["other", "1.0", "d", "user", "/u/other", "web/other"]], "seams": {"legacy_plugin_keys": [["old-exa"]]}, "env": {}}}
+{"func": "plugin_aliases", "in": {"key": "exa", "entries": [], "seams": {"legacy_plugin_keys": [[]]}, "env": {}}}
+{"func": "plugin_aliases", "in": {"key": "web/exa", "entries": [["e1", "1.0", "d", "user", "/u/e1", "web/exa"], ["e2", "1.0", "d", "user", "/u/e2", "web/exa"]], "seams": {"legacy_plugin_keys": [["l1", "l2"]]}, "env": {}}}
+{"func": "plugin_aliases", "in": {"key": "web/exa", "entries": null, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [["legacy"]]}, "env": {}}}
+{"func": "plugin_aliases", "in": {"key": "k", "entries": [], "seams": {"legacy_plugin_keys": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "web/exa", "aliases": ["exa"], "seams": {"get_hermes_home": "/home", "read_home_selection": {"plugins": {"disabled_by_update": {"web/exa": {"reason": "x"}}}}}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "web/exa", "aliases": ["exa"], "seams": {"get_hermes_home": "/home", "read_home_selection": {"plugins": {"disabled_by_update": {"other": {}}}}}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "k", "aliases": [], "seams": {"get_hermes_home": "/home", "read_home_selection": null}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "k", "aliases": [], "seams": {"get_hermes_home": "/home", "read_home_selection": {"plugins": {"disabled_by_update": "notdict"}}}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "web/exa", "aliases": ["exa"], "seams": {"get_hermes_home": "/home", "read_home_selection": {"plugins": {"disabled_by_update": {"exa": {}}}}}, "env": {}}}
+{"func": "disabled_by_update", "in": {"key": "k", "aliases": [], "seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": true, "console": {"console": 1}, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [[]], "get_disabled_set": [[]], "set_plugin_enabled": null}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": true, "console": {"console": 1}, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [["web/exa"]], "get_disabled_set": [[]], "set_plugin_enabled": null}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": true, "console": null, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [[]], "get_disabled_set": [["exa"]], "set_plugin_enabled": null}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": false, "console": {"console": 1}, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [[]], "get_disabled_set": [["web/exa"]], "get_hermes_home": "/home", "read_home_selection": {"plugins": {"disabled_by_update": {"web/exa": {}}}}, "set_plugin_enabled": null}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": false, "console": {"console": 1}, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [[]], "get_disabled_set": [["web/exa"]], "get_hermes_home": "/home", "read_home_selection": null, "set_plugin_enabled": null}, "env": {}}}
+{"func": "activate_key", "in": {"key": "web/exa", "enable": true, "console": {"console": 1}, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": [[]], "get_disabled_set": [[]], "set_plugin_enabled": {"__raise__": "PluginOperationError", "msg": "recalled"}}, "env": {}}}
+{"func": "activate_key", "in": {"key": "k", "enable": true, "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]], "get_enabled_set": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "apply_activation", "in": {"enabled": ["a"], "disabled": ["web/exa", "exa", "b"], "key": "web/exa", "aliases": ["exa"], "enable": true, "seams": {}, "env": {}}}
+{"func": "apply_activation", "in": {"enabled": ["web/exa", "exa"], "disabled": ["b"], "key": "web/exa", "aliases": ["exa"], "enable": false, "seams": {}, "env": {}}}
+{"func": "apply_activation", "in": {"enabled": [], "disabled": [], "key": "k", "aliases": [], "enable": true, "seams": {}, "env": {}}}
+{"func": "apply_activation", "in": {"enabled": ["k"], "disabled": ["k"], "key": "k", "aliases": ["k"], "enable": false, "seams": {}, "env": {}}}
+{"func": "apply_activation", "in": {"enabled": ["x"], "disabled": ["y"], "key": "web/exa", "aliases": ["exa", "old"], "enable": true, "seams": {}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["web/exa", "exa"], "seams": {"load_config": {"plugins": {"enabled": ["web/exa", "keep"], "disabled": ["exa"]}}, "save_config": null}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["web/exa"], "seams": {"load_config": {"plugins": {"entries": {"web/exa": {"g": 1}, "keep": {}}}}, "save_config": null}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["web/exa"], "seams": {"load_config": {"memory": {"provider": " web/exa "}}, "save_config": null}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["web/exa"], "seams": {"load_config": {"plugins": {"enabled": ["other"]}}, "save_config": null}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": [""], "seams": {"load_config": {"memory": {"provider": null}}, "save_config": null}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["x"], "seams": {"load_config": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "forget_plugin_config", "in": {"aliases": ["web/exa"], "seams": {"load_config": {}, "save_config": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "plugin_selection_version", "in": {"seams": {"get_hermes_home": "/home", "_digest": "abc123"}, "env": {}}}
+{"func": "plugin_selection_version", "in": {"seams": {"get_hermes_home": "/home", "_digest": null}, "env": {}}}
+{"func": "plugin_selection_version", "in": {"seams": {"get_hermes_home": "/home", "_digest": ""}, "env": {}}}
+{"func": "plugin_selection_version", "in": {"seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "plugin_selection_version", "in": {"seams": {}, "env": {}}}
+{"func": "refuse_recalled_entry", "in": {"entry": ["x", "1.0", "d", "user", "/u/x", "web/x"], "seams": {"refuse_if_installed_removed": null}, "env": {}}}
+{"func": "refuse_recalled_entry", "in": {"entry": ["x", "1.0", "d", "bundled", "/b/x", "web/x"], "seams": {}, "env": {}}}
+{"func": "refuse_recalled_entry", "in": {"entry": null, "seams": {}, "env": {}}}
+{"func": "refuse_recalled_entry", "in": {"entry": ["x", "1.0", "d", "git", "/u/x", "web/x"], "seams": {"refuse_if_installed_removed": {"__raise__": "PluginOperationError", "msg": "recalled"}}, "env": {}}}
+{"func": "refuse_recalled_entry", "in": {"entry": ["x", "1.0", "d", "user", "/u/x", "web/x"], "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {"enable": true}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {"no_enable": true}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {"enable": false, "no_enable": false}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {"enable": true, "no_enable": true}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "tri_state_flag", "in": {"args": {"enable": null}, "yes_attr": "enable", "no_attr": "no_enable", "seams": {}, "env": {}}}
+{"func": "category_active_names", "in": {"seams": {"get_current_memory_provider": "mem0"}, "env": {}}}
+{"func": "category_active_names", "in": {"seams": {"get_current_memory_provider": ""}, "env": {}}}
+{"func": "category_active_names", "in": {"seams": {"get_current_memory_provider": null}, "env": {}}}
+{"func": "category_active_names", "in": {"seams": {"get_current_memory_provider": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "category_active_names", "in": {"seams": {}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {"platform_toolsets": {"cli": ["core"]}}, "parse_platform_toolsets_value": [["core"]], "get_plugin_toolset_key": "ts"}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {"platform_toolsets": {"cli": "core"}}, "parse_platform_toolsets_value": [null]}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {"platform_toolsets": "notdict"}}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {}}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {"platform_toolsets": {"a": "x", "b": "y"}}, "parse_platform_toolsets_value": [null, ["t"]], "get_plugin_toolset_key": "ts"}, "env": {}}}
+{"func": "saved_list_toolset_key", "in": {"name": "x", "seams": {"load_config": {"platform_toolsets": {"cli": ["core"]}}, "parse_platform_toolsets_value": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "bundled", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": false}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "bundled", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, true], "iterdir": [["/b/foo"]], "native_manifest_file": "/b/foo/plugin.yaml", "read_native_manifest": {"name": "foo", "version": "1", "description": "d"}}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "user", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, true], "iterdir": [["/b/foo"]], "native_manifest_file": "/b/foo/plugin.yaml", "read_native_manifest": {"name": "foo"}, "exists": true}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "bundled", "skip_names": ["memory"], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, true], "iterdir": [["/b/memory"]], "native_manifest_file": "/b/memory/plugin.yaml", "read_native_manifest": {"name": "memory"}}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "bundled", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, false], "iterdir": {"__raise__": "OSError", "msg": "unreadable"}, "logger_warning": null}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "user", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, true, true], "iterdir": [["/b/cat"]], "native_manifest_file": [null, "/b/cat/sub/plugin.yaml"], "exists": false, "read_native_manifest": {"name": "sub"}}, "env": {}}}
+{"func": "scan_level", "in": {"base": "/b", "source": "bundled", "skip_names": [], "prefix": "", "depth": 0, "seen": {}, "seams": {"is_dir": [true, true], "iterdir": [["/b/foo"]], "native_manifest_file": {"__raise__": "ValueError", "msg": "bad"}, "logger_warning": null}, "env": {}}}
+{"func": "discover_all_plugins", "in": {"seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[]], "legacy_plugin_keys": [[]]}, "env": {}}}
+{"func": "discover_all_plugins", "in": {"seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [true, true, false], "iterdir": [["/bundled/foo"]], "native_manifest_file": "/bundled/foo/plugin.yaml", "read_native_manifest": {"name": "foo"}, "discover_entrypoint_manifests": [[]]}, "env": {}}}
+{"func": "discover_all_plugins", "in": {"seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": false, "discover_entrypoint_manifests": [[{"name": "ep", "version": "1", "description": "d", "path": "mod:attr"}]]}, "env": {}}}
+{"func": "discover_all_plugins", "in": {"seams": {"get_bundled_plugins_dir": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "discover_all_plugins", "in": {"seams": {}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/b/x", "source": "bundled", "seams": {"is_dir": true, "native_manifest_file": "/b/x/plugin.yaml", "read_native_manifest": {"kind": "backend"}}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/b/x", "source": "bundled", "seams": {"is_dir": true, "native_manifest_file": "/b/x/plugin.yaml", "read_native_manifest": {"kind": "standalone"}}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/b/x", "source": "bundled", "seams": {"is_dir": false}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/user/x", "source": "user", "seams": {"is_dir": true, "_plugins_dir": "/user", "_declares_model_provider_kind": true}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/user/model-providers/x", "source": "user", "seams": {"is_dir": true, "_plugins_dir": "/user", "native_manifest_file": "/user/model-providers/x/plugin.yaml", "read_native_manifest": {"kind": "model-provider"}}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/user/_hidden", "source": "user", "seams": {"is_dir": true, "_plugins_dir": "/user"}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/b/x", "source": "bundled", "seams": {"is_dir": true, "native_manifest_file": null}, "env": {}}}
+{"func": "default_on", "in": {"dir_path": "/b/x", "source": "bundled", "seams": {"is_dir": true, "native_manifest_file": "/b/x/plugin.yaml", "read_native_manifest": {"__raise__": "ValueError", "msg": "boom"}}, "env": {}}}

@@ -12,7 +12,7 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: hermes_cli_web_models_validate_reference_timeout @ hermes_cli/web_models.py:_validate_reference_timeout */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 /* Class-validator: coerce `value` to a finite positive float, or -1 on
  * rejection (mirrors Python raising ValueError). None/"" -> -1 sentinel
  * (caller treats as "unset"). Booleans, non-numeric, inf/nan, and <=0
@@ -33,7 +33,7 @@ int hermes_cli_web_models_validate_reference_timeout(const char *value, double *
     return 0;
 }
 
-/* PoP: hermes_cli_web_models_u_validate_reference_timeout @ hermes_cli/web_models.py:_validate_reference_timeout */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int hermes_cli_web_models_u_validate_reference_timeout(const char *arg) {
     /* Python: reject JSON booleans / non-finite values before float coercion.
      * Arg = "value_type\tvalue" (bool/int/float/str/null). */

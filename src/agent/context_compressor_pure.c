@@ -49,7 +49,7 @@ static const char *SUMMARY_PERMANENT_QUOTA_MARKERS[] = {
 
 /* ── _is_summary_access_or_quota_error ─────────────────────────────────── */
 
-/* PoP: cc_is_summary_access_or_quota_error @ agent/context_compressor.py:_is_summary_access_or_quota_error */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 bool cc_is_summary_access_or_quota_error(int status_code,
                                          const char *error_text,
                                          int classified_reason) {
@@ -1414,7 +1414,7 @@ void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error) {
     }
 }
 
-/* PoP: cc_compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *cc_compression_block_reason(const cc_compression_guards_t *g) {
     if (!g) return NULL;
     double remaining = g->summary_failure_cooldown_until - cc_monotonic_seconds();
@@ -1428,12 +1428,12 @@ char *cc_compression_block_reason(const cc_compression_guards_t *g) {
     return NULL;
 }
 
-/* PoP: cc_automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 bool cc_automatic_compression_blocked(const cc_compression_guards_t *g) {
     return cc_compression_block_reason(g) != NULL;
 }
 
-/* PoP: cc_should_compress_info @ agent/context_compressor.py:should_compress_info */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_tokens,
                              long threshold_tokens, bool *out_should, char **out_reason) {
     if (out_should) *out_should = false;
@@ -1510,7 +1510,7 @@ bool cc_is_clarify_non_response_sentinel(const json_t *response) {
     return false;
 }
 
-/* PoP: cc_last_assistant_index @ agent/context_compressor.py:_last_assistant_index */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 /* Index of the newest assistant message, or -1. */
 int cc_last_assistant_index(const json_t *messages) {
     if (!messages || messages->type != JSON_ARRAY) return -1;
@@ -1524,7 +1524,7 @@ int cc_last_assistant_index(const json_t *messages) {
     return -1;
 }
 
-/* PoP: cc_prune_stale_reasoning_replay @ agent/context_compressor.py:_prune_stale_reasoning_replay */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 /* Strip stale per-turn replay items (codex_reasoning_items) from assistant
  * messages belonging to turns older than the active one. Turn boundary is the
  * LAST USER message; everything after it keeps its items. Native compaction
@@ -1731,7 +1731,7 @@ json_t *cc_merge_adjacent_user_turns(const json_t *result) {
 #define CC_PRUNED_SKILL_RELOAD_NOTICE_HEADER \
     "[Skills pruned during compression — reload before acting on these tasks]"
 
-/* PoP: cc_looks_like_compaction_summary @ agent/context_compressor.py:_looks_like_compaction_summary */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
  /* Only cap a standalone handoff summary. */
 static bool cc_looks_like_compaction_summary(const json_t *msg, const char *content)
 {
@@ -1761,7 +1761,7 @@ static bool cc_looks_like_compaction_summary(const json_t *msg, const char *cont
            strstr(head, "Conversation Summary") != NULL;
 }
 
-/* PoP: cc_salvage_reduce_todo_snapshot @ agent/context_compressor.py:_salvage_reduce_todo_snapshot */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
  /* Last-resort shrink of the synthetic todo
  * snapshot row (keep the coupled pruned-skill reload notice, else drop it). */
 static void cc_salvage_reduce_todo_snapshot(json_t *out)
@@ -1787,7 +1787,7 @@ static void cc_salvage_reduce_todo_snapshot(json_t *out)
     }
 }
 
-/* PoP: salvage_grown_transcript @ agent/context_compressor.py:salvage_grown_transcript */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 json_t *salvage_grown_transcript(const json_t *original,
                                  const json_t *candidate,
                                  long budget_in)
@@ -2298,7 +2298,7 @@ void cc_split_user_originated_turn(const json_t *message,
 
 /* ── synthetic-row detection + recovery footer ─────────────────────────── */
 
-/* PoP: _synthetic_user_row @ agent/context_compressor.py:_synthetic_user_row */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
  /* True for scaffolding user rows carrying no real user words. */
 bool cc_synthetic_user_row(const json_t *content)
 {

@@ -385,7 +385,7 @@ static json_t *msp_fallback_keys(const char *slug, const json_t *fallback_keys) 
 
 /* ── ported flows/leaves ─────────────────────────────────────────────────── */
 
-/* PoP: _discovered_catalog_stale @ hermes_cli/model_switch_providers.py:_discovered_catalog_stale */
+/* PoP: msp_discovered_catalog_stale @ hermes_cli/model_switch_providers.py:_discovered_catalog_stale */
 json_t *msp_discovered_catalog_stale(msp_ctx *ctx, const json_t *entry, const json_t *model_ids) {
     (void)ctx;
     const json_t *existing = msp_is_obj(entry) ? json_obj_get(entry, "models") : NULL;
@@ -404,7 +404,7 @@ json_t *msp_discovered_catalog_stale(msp_ctx *ctx, const json_t *entry, const js
     return json_bool(true);
 }
 
-/* PoP: _any_env @ hermes_cli/model_switch_providers.py:_any_env */
+/* PoP: msp_any_env @ hermes_cli/model_switch_providers.py:_any_env */
 json_t *msp_any_env(msp_ctx *ctx, const json_t *env_vars) {
     if (!msp_is_arr(env_vars)) return json_bool(false);
     for (size_t i = 0; i < env_vars->c.count; i++) {
@@ -419,7 +419,7 @@ json_t *msp_any_env(msp_ctx *ctx, const json_t *env_vars) {
     return json_bool(false);
 }
 
-/* PoP: _skip @ hermes_cli/model_switch_providers.py:_skip */
+/* PoP: msp_skip @ hermes_cli/model_switch_providers.py:_skip */
 json_t *msp_skip(msp_ctx *ctx, const json_t *seen, const json_t *excluded, const json_t *keys) {
     (void)ctx;
     if (!msp_is_arr(keys)) return json_bool(false);
@@ -439,7 +439,7 @@ json_t *msp_skip(msp_ctx *ctx, const json_t *seen, const json_t *excluded, const
     return json_bool(false);
 }
 
-/* PoP: _auth_store_has_provider @ hermes_cli/model_switch_providers.py:_auth_store_has_provider */
+/* PoP: msp_auth_store_has_provider @ hermes_cli/model_switch_providers.py:_auth_store_has_provider */
 json_t *msp_auth_store_has_provider(msp_ctx *ctx, const json_t *keys) {
     json_t *store = msp_call(ctx, "load_auth_store", NULL);
     int t = msp_exc_tri(ctx);
@@ -464,7 +464,7 @@ json_t *msp_auth_store_has_provider(msp_ctx *ctx, const json_t *keys) {
     return json_bool(result);
 }
 
-/* PoP: _raw_pool_usable @ hermes_cli/model_switch_providers.py:_raw_pool_usable */
+/* PoP: msp_raw_pool_usable @ hermes_cli/model_switch_providers.py:_raw_pool_usable */
 json_t *msp_raw_pool_usable(msp_ctx *ctx, const char *hermes_id, bool for_picker) {
     json_t *store = msp_call(ctx, "load_auth_store", NULL);
     int t = msp_exc_tri(ctx);
@@ -493,7 +493,7 @@ json_t *msp_raw_pool_usable(msp_ctx *ctx, const char *hermes_id, bool for_picker
     return json_bool(false);
 }
 
-/* PoP: _pool_usable @ hermes_cli/model_switch_providers.py:_pool_usable */
+/* PoP: msp_pool_usable @ hermes_cli/model_switch_providers.py:_pool_usable */
 json_t *msp_pool_usable(msp_ctx *ctx, const char *slug, bool for_picker) {
     json_t *args = json_object();
     msp_arg_str(args, "provider", slug);
@@ -505,7 +505,7 @@ json_t *msp_pool_usable(msp_ctx *ctx, const char *slug, bool for_picker) {
     return r; /* live returns the seam value directly (NULL == None) */
 }
 
-/* PoP: _azure_entra_configured @ hermes_cli/model_switch_providers.py:_azure_entra_configured */
+/* PoP: msp_azure_entra_configured @ hermes_cli/model_switch_providers.py:_azure_entra_configured */
 json_t *msp_azure_entra_configured(msp_ctx *ctx) {
     json_t *cfg = msp_call(ctx, "get_model_config_dict", NULL);
     if (msp_exc_pending(ctx)) { json_free(cfg); return NULL; } /* no try: propagates */
@@ -534,7 +534,7 @@ json_t *msp_azure_entra_configured(msp_ctx *ctx) {
     return json_bool(hit);
 }
 
-/* PoP: _overlay_has_env_creds @ hermes_cli/model_switch_providers.py:_overlay_has_env_creds */
+/* PoP: msp_overlay_has_env_creds @ hermes_cli/model_switch_providers.py:_overlay_has_env_creds */
 json_t *msp_overlay_has_env_creds(msp_ctx *ctx, const char *pid, const char *hermes_slug,
                                   const json_t *overlay) {
     const char *auth_type = msp_jstr(msp_is_obj(overlay) ? json_obj_get(overlay, "auth_type") : NULL);
@@ -586,7 +586,7 @@ static int msp_aws_set(msp_ctx *ctx, const char *name) {
     return hit ? 1 : 0;
 }
 
-/* PoP: _has_fast_aws_sdk_signal @ hermes_cli/model_switch_providers.py:_has_fast_aws_sdk_signal */
+/* PoP: msp_has_fast_aws_sdk_signal @ hermes_cli/model_switch_providers.py:_has_fast_aws_sdk_signal */
 json_t *msp_has_fast_aws_sdk_signal(msp_ctx *ctx) {
     int a = msp_aws_set(ctx, "AWS_BEARER_TOKEN_BEDROCK");
     if (a < 0) return NULL;
@@ -610,7 +610,7 @@ json_t *msp_has_fast_aws_sdk_signal(msp_ctx *ctx) {
     return json_bool(false);
 }
 
-/* PoP: _has_aws_sdk_creds_for_listing @ hermes_cli/model_switch_providers.py:_has_aws_sdk_creds_for_listing */
+/* PoP: msp_has_aws_sdk_creds_for_listing @ hermes_cli/model_switch_providers.py:_has_aws_sdk_creds_for_listing */
 json_t *msp_has_aws_sdk_creds_for_listing(msp_ctx *ctx, const char *slug, const char *current_provider) {
     json_t *fast = msp_has_fast_aws_sdk_signal(ctx);
     if (msp_exc_pending(ctx)) { json_free(fast); return NULL; }
@@ -631,7 +631,7 @@ json_t *msp_has_aws_sdk_creds_for_listing(msp_ctx *ctx, const char *slug, const 
     return json_bool(result);
 }
 
-/* PoP: _live_or_curated_ids @ hermes_cli/model_switch_providers.py:_live_or_curated_ids */
+/* PoP: msp_live_or_curated_ids @ hermes_cli/model_switch_providers.py:_live_or_curated_ids */
 json_t *msp_live_or_curated_ids(msp_ctx *ctx, const char *slug, const json_t *curated,
                                 const json_t *fallback_keys, bool merge_models_dev, bool non_blocking) {
     json_t *args = json_object();
@@ -660,7 +660,7 @@ json_t *msp_live_or_curated_ids(msp_ctx *ctx, const char *slug, const json_t *cu
     return out;
 }
 
-/* PoP: _aws_live_or_curated_ids @ hermes_cli/model_switch_providers.py:_aws_live_or_curated_ids */
+/* PoP: msp_aws_live_or_curated_ids @ hermes_cli/model_switch_providers.py:_aws_live_or_curated_ids */
 json_t *msp_aws_live_or_curated_ids(msp_ctx *ctx, const char *slug, const json_t *curated,
                                     const json_t *fallback_keys, bool non_blocking) {
     json_t *r = msp_live_or_curated_ids(ctx, slug, curated, fallback_keys, false, non_blocking);
@@ -680,7 +680,7 @@ json_t *msp_aws_live_or_curated_ids(msp_ctx *ctx, const char *slug, const json_t
     return json_array();
 }
 
-/* PoP: _nous_picker_model_ids @ hermes_cli/model_switch_providers.py:_nous_picker_model_ids */
+/* PoP: msp_nous_picker_model_ids @ hermes_cli/model_switch_providers.py:_nous_picker_model_ids */
 json_t *msp_nous_picker_model_ids(msp_ctx *ctx, const json_t *curated, bool force_fresh_nous_tier) {
     const json_t *nous = msp_is_obj(curated) ? json_obj_get(curated, "nous") : NULL;
     json_t *model_ids = nous ? json_copy(nous) : json_array();
@@ -791,7 +791,7 @@ json_t *msp_nous_picker_model_ids(msp_ctx *ctx, const json_t *curated, bool forc
     return model_ids;
 }
 
-/* PoP: _free_tier_nous_row @ hermes_cli/model_switch_providers.py:_free_tier_nous_row */
+/* PoP: msp_free_tier_nous_row @ hermes_cli/model_switch_providers.py:_free_tier_nous_row */
 json_t *msp_free_tier_nous_row(msp_ctx *ctx, const json_t *row) {
     json_t *g = msp_call(ctx, "has_guest", NULL);
     if (msp_exc_pending(ctx)) { json_free(g); return NULL; }
@@ -818,7 +818,7 @@ json_t *msp_free_tier_nous_row(msp_ctx *ctx, const json_t *row) {
     return out;
 }
 
-/* PoP: _cap_models @ hermes_cli/model_switch_providers.py:_cap_models */
+/* PoP: msp_cap_models @ hermes_cli/model_switch_providers.py:_cap_models */
 json_t *msp_cap_models(msp_ctx *ctx, const json_t *model_ids, const json_t *max_models, const char *slug) {
     (void)ctx;
     if (msp_is_none(max_models)) return json_copy(model_ids);
@@ -858,7 +858,7 @@ static json_t *msp_tuple2(json_t *models, bool native_empty) {
     return t;
 }
 
-/* PoP: _discover_endpoint_models @ hermes_cli/model_switch_providers.py:_discover_endpoint_models */
+/* PoP: msp_discover_endpoint_models @ hermes_cli/model_switch_providers.py:_discover_endpoint_models */
 json_t *msp_discover_endpoint_models(msp_ctx *ctx, const json_t *api_key, const char *api_url,
                                      const char *native_catalog_provider, bool has_explicit_models,
                                      const json_t *headers, const json_t *api_mode, bool probe_live,
@@ -925,7 +925,7 @@ json_t *msp_discover_endpoint_models(msp_ctx *ctx, const json_t *api_key, const 
     return msp_tuple2(NULL, false);
 }
 
-/* PoP: _finalize_picker_rows @ hermes_cli/model_switch_providers.py:_finalize_picker_rows */
+/* PoP: msp_finalize_picker_rows @ hermes_cli/model_switch_providers.py:_finalize_picker_rows */
 json_t *msp_finalize_picker_rows(msp_ctx *ctx, json_t *results, const json_t *user_providers,
                                  const char *current_model) {
     size_t count = msp_is_arr(results) ? results->c.count : 0;
@@ -1051,7 +1051,7 @@ json_t *msp_finalize_picker_rows(msp_ctx *ctx, json_t *results, const json_t *us
     return out;
 }
 
-/* PoP: _saved_entry_on_other_origin @ hermes_cli/model_switch_providers.py:_saved_entry_on_other_origin */
+/* PoP: msp_saved_entry_on_other_origin @ hermes_cli/model_switch_providers.py:_saved_entry_on_other_origin */
 json_t *msp_saved_entry_on_other_origin(msp_ctx *ctx, const char *name, const char *base_url) {
     json_t *cfg = msp_call(ctx, "load_config", NULL);
     if (msp_exc_pending(ctx)) { json_free(cfg); return NULL; } /* no try: propagates */

@@ -25,6 +25,29 @@
 typedef json_t *(*phf_fn_t)(phf_ctx_t *, const json_t *);
 typedef struct { const char *func; phf_fn_t fn; } phf_case_t;
 
+/* wave13: direct leaf dispatch for internal helpers previously reached only via
+ * the case entries (clears name-based DEAD-CREDIT; additive). */
+static json_t *phf_h_table_header_above(phf_ctx_t *ctx, const json_t *args) {
+    (void)ctx;
+    const char *text = json_get_str(args, "text", "");
+    long long i = (long long)json_get_num(args, "i", 0);
+    char *trimmed = phf_rstrip_nl(text);
+    phf_lines_t ls = phf_split_nl(trimmed);
+    free(trimmed);
+    long long h = phf_table_header_above(ls.lines, ls.count, i);
+    phf_lines_free(&ls);
+    return json_number((double)h);
+}
+static json_t *phf_h_is_pipe_row(phf_ctx_t *ctx, const json_t *args) {
+    (void)ctx;
+    return json_bool(phf_is_pipe_row(json_get_str(args, "line", "")));
+}
+static json_t *phf_h_split_inside_table(phf_ctx_t *ctx, const json_t *args) {
+    (void)ctx;
+    return json_bool(phf_split_inside_table(json_get_str(args, "head", ""),
+                                            json_get_str(args, "tail", "")));
+}
+
 static const phf_case_t CASES[] = {
     { "display_width", phf_display_width },
     { "_clip_text", phf_clip_text },
@@ -44,6 +67,10 @@ static const phf_case_t CASES[] = {
     { "reply_file_parts", phf_reply_file_parts },
     { "scaled_upload_deadline", phf_scaled_upload_deadline },
     { "media_upload_seconds", phf_media_upload_seconds },
+    { "_on_disk_size", phf_on_disk_size },
+    { "_table_header_above", phf_h_table_header_above },
+    { "_is_pipe_row", phf_h_is_pipe_row },
+    { "_split_inside_table", phf_h_split_inside_table },
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 

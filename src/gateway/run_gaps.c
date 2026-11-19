@@ -293,7 +293,7 @@ int enable_multiplex_log_routing(int multiplex_profiles) {
     return multiplex_profiles ? 1 : 0;
 }
 
-/* PoP: handoff_watch_scopes @ gateway/run.py:_handoff_watch_scopes */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char **handoff_watch_scopes(void *runner) {
     (void)runner;
     char **scopes = malloc(sizeof(char *) * 2);

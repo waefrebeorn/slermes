@@ -454,13 +454,13 @@ static bool pg_is_default(const json_t *p) {
     const char *n = jstr(json_obj_get(p, "name"));
     return n && !strcmp(n, "default");
 }
-/* PoP: gmf_pg_service @ hermes_cli/gateway_migrate.py:service */
+/* PoP: pg_service @ hermes_cli/gateway_migrate.py:service */
 static json_t *pg_service(const json_t *p) {
     const json_t *svcs = json_obj_get(p, "services");
     if (is_arr(svcs) && svcs->c.count > 0) return json_copy(svcs->c.items[0]);
     return NULL;
 }
-/* PoP: gmf_pg_has_gateway @ hermes_cli/gateway_migrate.py:has_gateway */
+/* PoP: pg_has_gateway @ hermes_cli/gateway_migrate.py:has_gateway */
 static bool pg_has_gateway(const json_t *p) {
     const json_t *svcs = json_obj_get(p, "services");
     return jpresent(json_obj_get(p, "pid")) || (is_arr(svcs) && svcs->c.count > 0);
@@ -468,7 +468,7 @@ static bool pg_has_gateway(const json_t *p) {
 static bool system_true(const json_t *v) {
     return (is_bool(v) && v->bool_val) || (is_num(v) && v->num_val == 1.0);
 }
-/* PoP: gmf_pg_has_system_unit @ hermes_cli/gateway_migrate.py:has_system_unit */
+/* PoP: pg_has_system_unit @ hermes_cli/gateway_migrate.py:has_system_unit */
 static bool pg_has_system_unit(const json_t *p) {
     const json_t *svcs = json_obj_get(p, "services");
     if (!is_arr(svcs)) return false;
@@ -480,7 +480,7 @@ static bool pg_has_system_unit(const json_t *p) {
     }
     return false;
 }
-/* PoP: gmf_pg_service_label @ hermes_cli/gateway_migrate.py:service_label */
+/* PoP: pg_service_label @ hermes_cli/gateway_migrate.py:service_label */
 static char *pg_service_label(const json_t *p) {
     const json_t *svcs = json_obj_get(p, "services");
     if (!is_arr(svcs) || svcs->c.count == 0) return strdup("none");
@@ -494,7 +494,7 @@ static char *pg_service_label(const json_t *p) {
     }
     return out;
 }
-/* PoP: gmf_pg_to_dict @ hermes_cli/gateway_migrate.py:to_dict */
+/* PoP: pg_to_dict @ hermes_cli/gateway_migrate.py:to_dict */
 static json_t *pg_to_dict(const json_t *p) {
     json_t *o = json_object();
     json_set(o, "profile", json_copy(json_obj_get(p, "name")));
@@ -534,7 +534,7 @@ static const json_t *plan_default(const json_t *plan) {
             if (pg_is_default(ps->c.items[i])) return ps->c.items[i];
     return NULL;
 }
-/* PoP: gmf_plan_secondaries @ hermes_cli/gateway_migrate.py:secondaries */
+/* PoP: plan_secondaries @ hermes_cli/gateway_migrate.py:secondaries */
 static json_t *plan_secondaries(const json_t *plan) {
     json_t *out = json_array();
     const json_t *ps = json_obj_get(plan, "profiles");
@@ -543,7 +543,7 @@ static json_t *plan_secondaries(const json_t *plan) {
             if (!pg_is_default(ps->c.items[i])) json_append(out, json_copy(ps->c.items[i]));
     return out;
 }
-/* PoP: gmf_plan_standalone_secondaries @ hermes_cli/gateway_migrate.py:standalone_secondaries */
+/* PoP: plan_standalone_secondaries @ hermes_cli/gateway_migrate.py:standalone_secondaries */
 static json_t *plan_standalone_secondaries(const json_t *plan) {
     json_t *sec = plan_secondaries(plan);
     json_t *out = json_array();
@@ -552,12 +552,12 @@ static json_t *plan_standalone_secondaries(const json_t *plan) {
     json_free(sec);
     return out;
 }
-/* PoP: gmf_plan_blocked @ hermes_cli/gateway_migrate.py:blocked */
+/* PoP: plan_blocked @ hermes_cli/gateway_migrate.py:blocked */
 static bool plan_blocked(const json_t *plan) {
     const json_t *b = json_obj_get(plan, "blockers");
     return is_arr(b) && b->c.count > 0;
 }
-/* PoP: gmf_plan_already_multiplexed @ hermes_cli/gateway_migrate.py:already_multiplexed */
+/* PoP: plan_already_multiplexed @ hermes_cli/gateway_migrate.py:already_multiplexed */
 static bool plan_already_multiplexed(const json_t *plan) {
     if (jtruth(json_obj_get(plan, "interrupted"))) return false;
     json_t *ss = plan_standalone_secondaries(plan);
@@ -568,7 +568,7 @@ static bool plan_already_multiplexed(const json_t *plan) {
     bool multi = is_arr(ls) && ls->c.count > 1;
     return jtruth(json_obj_get(plan, "multiplex_flag_on")) || multi;
 }
-/* PoP: gmf_plan_target_service_kind @ hermes_cli/gateway_migrate.py:target_service_kind */
+/* PoP: plan_target_service_kind @ hermes_cli/gateway_migrate.py:target_service_kind */
 static json_t *plan_target_service_kind(const json_t *plan) {
     const json_t *d = plan_default(plan);
     if (!d) return raise_stopiteration();
@@ -582,7 +582,7 @@ static json_t *plan_target_service_kind(const json_t *plan) {
     json_free(sec);
     return NULL;
 }
-/* PoP: gmf_plan_target_run_as_user @ hermes_cli/gateway_migrate.py:target_run_as_user */
+/* PoP: plan_target_run_as_user @ hermes_cli/gateway_migrate.py:target_run_as_user */
 static json_t *plan_target_run_as_user(const json_t *plan) {
     const json_t *d = plan_default(plan);
     if (!d) return raise_stopiteration();
@@ -596,7 +596,7 @@ static json_t *plan_target_run_as_user(const json_t *plan) {
     json_free(sec);
     return NULL;
 }
-/* PoP: gmf_plan_expected_served @ hermes_cli/gateway_migrate.py:expected_served_names */
+/* PoP: plan_expected_served @ hermes_cli/gateway_migrate.py:expected_served_names */
 static json_t *plan_expected_served(const json_t *plan, const gmf_seams_t *s) {
     json_t *out = json_array();
     const json_t *ps = json_obj_get(plan, "profiles");
@@ -1114,7 +1114,7 @@ static json_t *gmf_wait_for_served(const char *home, const json_t *expected,
 }
 
 /* PoP: gmf_wait_for_live_gateway @ hermes_cli/gateway_migrate.py:_wait_for_live_gateway */
-/* PoP: gmf_poll_until_loop @ agent/deadline.py:poll_until */
+/* loop body models agent/deadline.py:poll_until (no separate def; stacked PoP claim removed) */
 static json_t *gmf_wait_for_live_gateway(const char *home, double timeout, const gmf_seams_t *s) {
     json_t *r = scall(s, "monotonic", args0());
     GMF_PROP(r);

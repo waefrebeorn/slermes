@@ -496,7 +496,7 @@ static bool phf_eaw_wf(unsigned int cp) {
     return false;
 }
 
-/* PoP: phf_display_width_str @ gateway/platforms/helpers.py:display_width */
+/* internal core helper; PoP credit lives on the dispatched case wrapper */
 static size_t phf_display_width_str(const char *s) {
     size_t w = 0;
     if (!s) return 0;
@@ -670,7 +670,7 @@ static json_t *phf_render(phf_ctx_t *ctx, const json_t *args, char *const *texts
     return o;
 }
 
-/* PoP: phf_shorten_choice @ gateway/platforms/helpers.py:_shorten_choice */
+/* internal core helper; PoP credit lives on the dispatched case wrapper */
 static char *phf_shorten_choice(const char *text, long long each, long long anchor) {
     long long n = (long long)phf_utf8_len(text);
     if (n <= each) return phf_strdup(text);
@@ -716,7 +716,7 @@ static char *phf_shorten_choice(const char *text, long long each, long long anch
     return o;
 }
 
-/* PoP: phf_distinct_shortenings @ gateway/platforms/helpers.py:_distinct_shortenings */
+/* internal core helper; PoP credit lives on the dispatched case wrapper */
 static char **phf_distinct_shortenings(char *const *texts, size_t n, long long each,
                                        size_t *prefix) {
     char **out = malloc(n * sizeof(char *));
@@ -864,7 +864,7 @@ static bool phf_is_float_tag(const json_t *v) {
     return v && v->type == JSON_OBJECT && json_get_bool(v, "__float__", false);
 }
 
-/* PoP: phf_reply_document_sender @ gateway/platforms/helpers.py:reply_document_sender */
+/* internal core helper; PoP credit lives on the dispatched case wrapper */
 static const char *phf_reply_document_sender(const json_t *args) {
     const json_t *hooks = phf_adapter_hooks(args);
     const json_t *srd = hooks ? json_obj_get(hooks, "send_reply_document") : NULL;
@@ -878,7 +878,7 @@ static const char *phf_reply_document_sender(const json_t *args) {
     return NULL;
 }
 
-/* PoP: phf_reply_message_cap @ gateway/platforms/helpers.py:reply_message_cap */
+/* internal core helper; PoP credit lives on the dispatched case wrapper */
 static json_t *phf_reply_message_cap(const json_t *args) {
     const json_t *cap = phf_adapter_attr(args, "MAX_SPLIT_MESSAGES");
     /* type(cap) is not int: bools and tagged floats fail, plain numbers pass */

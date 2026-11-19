@@ -1014,7 +1014,7 @@ static void fo_j_value(fo_jscan *j) {
 
 /* ── ported functions ── */
 
-/* PoP: __init__ @ tools/file_operations.py:__init__ */
+/* PoP: fo_init @ tools/file_operations.py:__init__ */
 static json_t *fo_init(fo_io_t *io, const json_t *terminal_env, const json_t *cwd_arg) {
     (void)io;
     const char *c = NULL;
@@ -1037,7 +1037,7 @@ static json_t *fo_init(fo_io_t *io, const json_t *terminal_env, const json_t *cw
     return self;
 }
 
-/* PoP: _cat @ tools/file_operations.py:_cat */
+/* PoP: fo_cat @ tools/file_operations.py:_cat */
 static json_t *fo_cat(fo_io_t *io, const char *path) {
     json_t *a = json_object();
     json_set(a, "arg", json_string(path));
@@ -1056,7 +1056,7 @@ static json_t *fo_cat(fo_io_t *io, const char *path) {
     return out;
 }
 
-/* PoP: _head @ tools/file_operations.py:_head */
+/* PoP: fo_head @ tools/file_operations.py:_head */
 static json_t *fo_head(fo_io_t *io, const char *path, long long nbytes) {
     json_t *a = json_object();
     json_set(a, "arg", json_string(path));
@@ -1075,14 +1075,14 @@ static json_t *fo_head(fo_io_t *io, const char *path, long long nbytes) {
     return out;
 }
 
-/* PoP: _bounded @ tools/file_operations.py:_bounded */
+/* PoP: fo_bounded @ tools/file_operations.py:_bounded */
 static char *fo_bounded(const char *encoder, const char *arg, const json_t *max_bytes) {
     if (!fo_present(max_bytes)) return fo_fmt("%s < %s", encoder, arg);
     long long mb = (long long)max_bytes->num_val;
     return fo_fmt("{ head -c %lld | %s; } < %s", mb + 1, encoder, arg);
 }
 
-/* PoP: _failed_read @ tools/file_operations.py:_failed_read */
+/* PoP: fo_failed_read @ tools/file_operations.py:_failed_read */
 static json_t *fo_failed_read(fo_io_t *io, const char *path, const char *payload, long long read_rc) {
     json_t *a = json_object();
     json_set(a, "text", json_string(payload));
@@ -1099,7 +1099,7 @@ static json_t *fo_failed_read(fo_io_t *io, const char *path, const char *payload
     return res;
 }
 
-/* PoP: _matches_size @ tools/file_operations.py:_matches_size */
+/* PoP: fo_matches_size @ tools/file_operations.py:_matches_size */
 static json_t *fo_matches_size(fo_io_t *io, const char *data_hex, const char *size_segment) {
     int ok;
     fo_bytes data = fo_bytes_fromhex(data_hex, &ok);
@@ -1122,7 +1122,7 @@ static json_t *fo_matches_size(fo_io_t *io, const char *data_hex, const char *si
     return ret;
 }
 
-/* PoP: _fenced_read @ tools/file_operations.py:_fenced_read */
+/* PoP: fo_fenced_read @ tools/file_operations.py:_fenced_read */
 static json_t *fo_fenced_read(fo_io_t *io, const char *body, const json_t *more) {
     json_t *sa = json_object();
     json_set(sa, "prefix", json_string("__HERMES_RB_"));
@@ -1186,7 +1186,7 @@ static json_t *fo_fenced_read(fo_io_t *io, const char *body, const json_t *more)
     return fo_tuple3(mid, rc, exec);
 }
 
-/* PoP: _probe_regular_file @ tools/file_operations.py:_probe_regular_file */
+/* PoP: fo_probe_regular_file @ tools/file_operations.py:_probe_regular_file */
 static json_t *fo_probe_regular_file(fo_io_t *io, const char *path) {
     json_t *a = json_object();
     json_set(a, "arg", json_string(path));
@@ -1230,7 +1230,7 @@ static json_t *fo_probe_regular_file(fo_io_t *io, const char *path) {
     return ret;
 }
 
-/* PoP: _env_unavailable_error @ tools/file_operations.py:_env_unavailable_error */
+/* PoP: fo_env_unavailable_error @ tools/file_operations.py:_env_unavailable_error */
 static json_t *fo_env_unavailable_error(const char *path, const char *status) {
     json_t *r = fo_read_result();
     if (strcmp(status, "env_unavailable") != 0) {
@@ -1244,7 +1244,7 @@ static json_t *fo_env_unavailable_error(const char *path, const char *status) {
     return r;
 }
 
-/* PoP: _native_path @ tools/file_operations.py:_native_path */
+/* PoP: fo_native_path @ tools/file_operations.py:_native_path */
 static json_t *fo_native_path(fo_io_t *io, const char *path) {
     if (fo_isabs(path)) return json_string(path);
     char *j = fo_join(fo_live_cwd(io), path);
@@ -1253,7 +1253,7 @@ static json_t *fo_native_path(fo_io_t *io, const char *path) {
     return r;
 }
 
-/* PoP: _detect_binary @ tools/file_operations.py:_detect_binary */
+/* PoP: fo_detect_binary @ tools/file_operations.py:_detect_binary */
 static json_t *fo_detect_binary(fo_io_t *io, const char *path) {
     json_t *a = json_object();
     json_set(a, "path", json_string(path));
@@ -1296,7 +1296,7 @@ static json_t *fo_detect_binary(fo_io_t *io, const char *path) {
     return ret;
 }
 
-/* PoP: _python_interpreter_cmd @ tools/file_operations.py:_python_interpreter_cmd */
+/* PoP: fo_python_interpreter_cmd @ tools/file_operations.py:_python_interpreter_cmd */
 static json_t *fo_python_interpreter_cmd(fo_io_t *io) {
     json_t *r = fo_call(io, "lsp_local_only", json_object());
     if (fo_is_raise(r)) return r;
@@ -1311,7 +1311,7 @@ static json_t *fo_python_interpreter_cmd(fo_io_t *io) {
     return json_string("python3");
 }
 
-/* PoP: _exec_python_snippet @ tools/file_operations.py:_exec_python_snippet */
+/* PoP: fo_exec_python_snippet @ tools/file_operations.py:_exec_python_snippet */
 static json_t *fo_exec_python_snippet(fo_io_t *io, const char *snippet, const json_t *py_node) {
     char *enc = fo_b64_encode((const unsigned char *)snippet, strlen(snippet));
     const char *py;
@@ -1370,7 +1370,7 @@ static char *fo_join_tokens(const char *s) {
     return out;
 }
 
-/* PoP: _read_exact_bytes_hex @ tools/file_operations.py:_read_exact_bytes_hex */
+/* PoP: fo_read_exact_bytes_hex @ tools/file_operations.py:_read_exact_bytes_hex */
 static json_t *fo_read_exact_bytes_hex(fo_io_t *io, const char *path, const json_t *max_bytes) {
     json_t *ret = NULL, *fr = NULL, *unavailable = NULL, *garbled = NULL, *q = NULL;
     char *body = NULL, *wc = NULL, *joined = NULL;
@@ -1457,7 +1457,7 @@ done:
     return ret;
 }
 
-/* PoP: _read_exact_bytes @ tools/file_operations.py:_read_exact_bytes */
+/* PoP: fo_read_exact_bytes @ tools/file_operations.py:_read_exact_bytes */
 static json_t *fo_read_exact_bytes(fo_io_t *io, const char *path, const json_t *max_bytes) {
     json_t *ret = NULL, *too_large = NULL, *fr = NULL, *garbled = NULL, *q = NULL, *more = NULL;
     char *body = NULL, *wc = NULL;
@@ -1630,7 +1630,7 @@ done:
     return ret;
 }
 
-/* PoP: read_file_bytes @ tools/file_operations.py:read_file_bytes */
+/* PoP: fo_read_file_bytes @ tools/file_operations.py:read_file_bytes */
 static json_t *fo_read_file_bytes(fo_io_t *io, const char *path, const json_t *max_bytes) {
     json_t *ret = NULL, *ep = NULL, *pr = NULL, *exec = NULL, *q = NULL, *sr = NULL;
     char *compact = NULL, *stripped = NULL;
@@ -1726,7 +1726,7 @@ done:
     return ret;
 }
 
-/* PoP: _reject_unencodable @ tools/file_operations.py:_reject_unencodable */
+/* PoP: fo_reject_unencodable @ tools/file_operations.py:_reject_unencodable */
 static json_t *fo_reject_unencodable(const char *path, const json_t *content_cps) {
     /* _LONE_SURROGATE_RE = [\ud800-\udc7f\udD00-\udfff]; the surrogateescape
      * range U+DC80-U+DCFF round-trips and is NOT refused. content travels as
@@ -1749,7 +1749,7 @@ static json_t *fo_reject_unencodable(const char *path, const json_t *content_cps
     return NULL;
 }
 
-/* PoP: _json_nonstandard_constant @ tools/file_operations.py:_json_nonstandard_constant */
+/* PoP: fo_json_nonstandard_constant @ tools/file_operations.py:_json_nonstandard_constant */
 static json_t *fo_json_nonstandard_constant(fo_io_t *io, const char *text) {
     if (!strstr(text, "NaN") && !strstr(text, "Infinity")) return NULL;
     json_t *a = json_object();
@@ -1773,7 +1773,7 @@ static json_t *fo_json_nonstandard_constant(fo_io_t *io, const char *text) {
     return ret;
 }
 
-/* PoP: _refuse_introduced_json_constant @ tools/file_operations.py:_refuse_introduced_json_constant */
+/* PoP: fo_refuse_introduced_json_constant @ tools/file_operations.py:_refuse_introduced_json_constant */
 static json_t *fo_refuse_introduced_json_constant(fo_io_t *io, const char *path,
                                                   const char *content, const json_t *pre_content) {
     json_t *c1 = fo_json_nonstandard_constant(io, content);
@@ -1795,7 +1795,7 @@ static json_t *fo_refuse_introduced_json_constant(fo_io_t *io, const char *path,
     return r;
 }
 
-/* PoP: _fail_closed_syntax_error @ tools/file_operations.py:_fail_closed_syntax_error */
+/* PoP: fo_fail_closed_syntax_error @ tools/file_operations.py:_fail_closed_syntax_error */
 static json_t *fo_fail_closed_syntax_error(fo_io_t *io, const char *path, const char *ext,
                                            const char *content) {
     if (!fo_amb_has_ext(io, "fail_closed_exts", ext, FO_FAIL_CLOSED_EXTS, 4)) return NULL;
@@ -1818,7 +1818,7 @@ static json_t *fo_fail_closed_syntax_error(fo_io_t *io, const char *path, const 
     return ret;
 }
 
-/* PoP: _verify_written_hash @ tools/file_operations.py:_verify_written_hash */
+/* PoP: fo_verify_written_hash @ tools/file_operations.py:_verify_written_hash */
 static json_t *fo_verify_written_hash(fo_io_t *io, const char *path, const char *content_hex) {
     json_t *ret = NULL, *pending = NULL, *nr = NULL, *ns = NULL, *q = NULL, *hr = NULL, *exec = NULL;
     char *disk_sha = NULL, *stripped = NULL;
@@ -1892,7 +1892,7 @@ done:
     return ret;
 }
 
-/* PoP: write_file @ tools/file_operations.py:write_file */
+/* PoP: fo_write_file @ tools/file_operations.py:ShellFileOperations.write_file */
 static json_t *fo_write_file(fo_io_t *io, const char *path, const char *content,
                              const json_t *pre_content) {
     json_t *ret = NULL, *started = NULL, *ep = NULL, *denied = NULL, *refused = NULL;
@@ -2079,7 +2079,7 @@ done:
     return ret;
 }
 
-/* PoP: _no_match_result @ tools/file_operations.py:_no_match_result */
+/* PoP: fo_no_match_result @ tools/file_operations.py:_no_match_result */
 static json_t *fo_no_match_result(fo_io_t *io, const char *path, const char *content,
                                   const char *old_string, const char *new_string,
                                   long long match_count, const json_t *error) {
@@ -2131,7 +2131,7 @@ done:
     return ret;
 }
 
-/* PoP: _verify_patch_persisted @ tools/file_operations.py:_verify_patch_persisted */
+/* PoP: fo_verify_patch_persisted @ tools/file_operations.py:_verify_patch_persisted */
 static json_t *fo_verify_patch_persisted(fo_io_t *io, const char *path, const char *new_content) {
     json_t *ret = NULL, *rb = NULL, *sb = NULL;
     char *text = NULL, *on_disk = NULL, *intended = NULL, *tmp = NULL;
@@ -2166,7 +2166,7 @@ static json_t *fo_verify_patch_persisted(fo_io_t *io, const char *path, const ch
     free(tmp);
     tmp = fo_replace(new_content, "\r\n", "\n");
     intended = fo_replace(tmp, "\r", "\n");
-    free(tmp);
+    free(tmp); tmp = NULL;   /* done: frees tmp again — keep it NULL */
     if (strcmp(on_disk, intended) != 0) {
         ret = fo_patch_result();
         char *m = fo_fmt("Post-write verification failed for %s: on-disk content differs from "

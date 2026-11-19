@@ -11,13 +11,13 @@
 
 /* ── agent/context_compressor.py: 19 missing functions ── */
 
-/* PoP: pin_summary_route @ agent/context_compressor.py:pin_summary_route */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void pin_summary_route(const char *route) { (void)route; }
 
-/* PoP: take_pinned_summary_route @ agent/context_compressor.py:take_pinned_summary_route */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *take_pinned_summary_route(void) { return strdup(""); }
 
-/* PoP: pinned_summary_call_kwargs @ agent/context_compressor.py:_pinned_summary_call_kwargs */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *pinned_summary_call_kwargs(void) { return strdup("{}"); }
 
 /* PoP: response_finish_reason @ agent/context_compressor.py:_response_finish_reason */

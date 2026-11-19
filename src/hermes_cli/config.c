@@ -643,7 +643,7 @@ const char *known_top_level_keys(const char *prev)
 
 /*
  * Return true if key is a valid dot-separated config path. */
-/* PoP: validate_config_key @ hermes_cli/config.py:_validate_config_key */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
 {
     if (suggestion && sug_size > 0) suggestion[0] = '\0';

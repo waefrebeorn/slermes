@@ -670,7 +670,7 @@ json_t *cpy_suspend_output_history_enter(json_t *st) {
     return json_bool(oldb);
 }
 
-/* PoP: cpy_suspend_output_history_exit @ cli.py:_suspend_output_history */
+/* contextmanager exit half; single PoP claim lives on the enter half */
 json_t *cpy_suspend_output_history_exit(json_t *st, bool old_value) {
     json_set(st, "suppressed", json_bool(old_value));   /* finally: restore */
     return NULL;

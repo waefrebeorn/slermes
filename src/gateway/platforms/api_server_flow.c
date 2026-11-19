@@ -800,7 +800,7 @@ void apisf_register_session_stream_approval(json_t *state, const char *run_id) {
     json_set(map, run_id, json_string(run_id));
 }
 
-/* PoP: apisf_session_stream_approval_notify @ gateway/platforms/api_server.py:_register_session_stream_approval */
+/* PoP: apisf_session_stream_approval_notify @ gateway/platforms/api_server.py:_approval_notify */
 void apisf_session_stream_approval_notify(const char *run_id, const json_t *approval_data,
                                           const char *message_id, const apisf_seams_t *s) {
     json_t *fields = json_object();

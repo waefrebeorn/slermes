@@ -55,12 +55,12 @@ char *nous_policy_blocks(void) {
     return strdup("[]");
 }
 
-/* PoP: should_skip_same_provider_retry @ agent/auxiliary_client.py:_should_skip_same_provider_retry */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int should_skip_same_provider_retry(void) {
     return 0;
 }
 
-/* PoP: coerce_positive_timeout @ agent/auxiliary_client.py:_coerce_positive_timeout */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 double coerce_positive_timeout(double timeout) {
     return timeout > 0 ? timeout : 30.0;
 }
@@ -70,7 +70,7 @@ void schedule_async_close(void *client) {
     (void)client;
 }
 
-/* PoP: fast_lane_config_fields @ agent/auxiliary_client.py:_fast_lane_config_fields */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *fast_lane_config_fields(void) {
     return strdup("[]");
 }
@@ -81,13 +81,13 @@ int resolve_compression_fast_lane(const char *config) {
     return 0;
 }
 
-/* PoP: compression_config_claims_fast_lane @ agent/auxiliary_client.py:_compression_config_claims_fast_lane */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int compression_config_claims_fast_lane(const char *config) {
     (void)config;
     return 0;
 }
 
-/* PoP: compression_fast_lane_controls @ agent/auxiliary_client.py:_compression_fast_lane_controls */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *compression_fast_lane_controls(void) {
     return strdup("{}");
 }
@@ -104,7 +104,7 @@ int is_managed_local_endpoint(const char *url) {
     return 0;
 }
 
-/* PoP: affordable_max_tokens_from_error @ agent/auxiliary_client.py:_affordable_max_tokens_from_error */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int affordable_max_tokens_from_error(const char *error) {
     (void)error;
     return 4096;
@@ -116,13 +116,13 @@ char *create_with_progress_once(const char *config) {
     return strdup("{}");
 }
 
-/* PoP: coerce_llm_message @ agent/auxiliary_client.py:_coerce_llm_message */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *coerce_llm_message(const char *message) {
     (void)message;
     return strdup("{}");
 }
 
-/* PoP: message_field @ agent/auxiliary_client.py:_message_field */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *message_field(const char *message, const char *field) {
     (void)message; (void)field;
     return strdup("");

@@ -755,7 +755,7 @@ static json_t *hrd_receipt_from(const json_t *receipt, const json_t *identity, d
     json_set(r, "result", res);
     return r;
 }
-/* PoP: hrd_receipt_from @ tui_gateway/hosted_room_driver.py:_receipt_from */
+/* PoP: hrd_receipt_from_entry @ tui_gateway/hosted_room_driver.py:_receipt_from */
 static json_t *hrd_receipt_from_entry(hrd_env *e, const json_t *in) {
     (void)e;
     return hrd_receipt_from(json_obj_get(in, "receipt"), json_obj_get(in, "identity"),

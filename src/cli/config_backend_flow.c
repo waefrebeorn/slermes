@@ -399,7 +399,7 @@ json_t *cb_file_locked(const char *home, const char *dotted) {
     return NULL;  /* a local file has no levels */
 }
 
-/* PoP: cb_file_supports_file_tooling @ hermes_cli/config_backend.py:supports_file_tooling */
+/* duplicate trivial concrete; single PoP claim lives on cb_supports_file_tooling_flow */
 json_t *cb_file_supports_file_tooling(void) { return json_bool(true); }
 
 /* PoP: cb_file_honors_managed_config @ hermes_cli/config_backend.py:honors_managed_config */

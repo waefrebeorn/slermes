@@ -337,7 +337,7 @@ static json_t *pc_is_one_shot(pc_ctx *ctx, json_t *messages, json_t *tools) {
     if (src) {
         if (pc_is_arr(src)) {
             for (size_t i = 0; i < src->c.count; i++)
-                if (pc_is_obj(src->c.items[i])) json_append(msgs, src->c.items[i]);
+                if (pc_is_obj(src->c.items[i])) json_append(msgs, json_copy(src->c.items[i]));
         } else if (pc_is_obj(src) || pc_is_str(src)) {
             /* dict keys / str chars are never dicts -> all filtered out */
         } else {
@@ -771,7 +771,7 @@ static json_t *pc_notimplemented(void) {
     return o;
 }
 
-/* PoP: pc_plan_init @ agent/prompt_caching.py:PromptCachePlan.__init__ */
+/* dataclass-generated dunder (frozen dataclass; absent from quarry AST; PoP claim removed) */
 static json_t *pc_plan_init(pc_ctx *ctx, json_t *args, json_t *kwargs) {
     size_t nargs = pc_is_arr(args) ? args->c.count : 0;
     if (nargs > 2) { pc_raise(ctx, "TypeError"); return NULL; }
@@ -800,7 +800,7 @@ static json_t *pc_plan_init(pc_ctx *ctx, json_t *args, json_t *kwargs) {
     return o;
 }
 
-/* PoP: pc_plan_eq @ agent/prompt_caching.py:PromptCachePlan.__eq__ */
+/* dataclass-generated dunder (frozen dataclass; absent from quarry AST; PoP claim removed) */
 static json_t *pc_plan_eq(pc_ctx *ctx, json_t *slf, json_t *other) {
     (void)ctx;
     const char *kind = pc_jstr(json_obj_get(other, "kind"));
@@ -811,21 +811,21 @@ static json_t *pc_plan_eq(pc_ctx *ctx, json_t *slf, json_t *other) {
     return json_bool(eq);
 }
 
-/* PoP: pc_plan_setattr @ agent/prompt_caching.py:PromptCachePlan.__setattr__ */
+/* dataclass-generated dunder (frozen dataclass; absent from quarry AST; PoP claim removed) */
 static json_t *pc_plan_setattr(pc_ctx *ctx, json_t *name) {
     (void)name;
     pc_raise(ctx, "FrozenInstanceError");   /* type(self) is cls: any name */
     return NULL;
 }
 
-/* PoP: pc_plan_delattr @ agent/prompt_caching.py:PromptCachePlan.__delattr__ */
+/* dataclass-generated dunder (frozen dataclass; absent from quarry AST; PoP claim removed) */
 static json_t *pc_plan_delattr(pc_ctx *ctx, json_t *name) {
     (void)name;
     pc_raise(ctx, "FrozenInstanceError");
     return NULL;
 }
 
-/* PoP: pc_plan_hash @ agent/prompt_caching.py:PromptCachePlan.__hash__ */
+/* dataclass-generated dunder (frozen dataclass; absent from quarry AST; PoP claim removed) */
 static json_t *pc_plan_hash(pc_ctx *ctx, json_t *fields) {
     json_t *m = json_obj_get(fields, "messages");
     json_t *t = json_obj_get(fields, "tools");

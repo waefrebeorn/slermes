@@ -1,0 +1,171 @@
+{"func": "model_route", "in": {"block": {"provider": " OpenAI ", "base_url": "https://x"}, "io": {"normalize_route_base_url": "https://x/"}}}
+{"func": "model_route", "in": {"block": {"provider": "auto", "base_url": null}, "io": {"normalize_route_base_url": ""}}}
+{"func": "model_route", "in": {"block": null, "io": {"normalize_route_base_url": "ep"}}}
+{"func": "model_route", "in": {"block": {"provider": 5}, "io": {"normalize_route_base_url": "ep"}}}
+{"func": "model_route", "in": {"block": {"provider": null}, "io": {"normalize_route_base_url": "ep"}}}
+{"func": "model_route", "in": {"block": {"provider": "p"}, "io": {}}}
+{"func": "model_route", "in": {"block": {"provider": "p"}, "io": {"normalize_route_base_url": {"__raise__": "ValueError", "msg": "bad url"}}}}
+{"func": "model_route", "in": {"block": {"provider": "p"}, "io": {"normalize_route_base_url": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "model_route", "in": {"block": {"provider": "p"}, "io": {"normalize_route_base_url": ["a", "b"]}}}
+{"func": "_held_pick", "in": {"frozen": {"provider": "p", "base_url": "u1", "default": "m1", "api_key": "k"}, "live": {"provider": "p", "base_url": "u1", "default": "m2", "api_key": "k2", "extra": "e"}, "io": {"normalize_route_base_url": ["u1/", "u1/"]}}}
+{"func": "_held_pick", "in": {"frozen": {"provider": "p", "base_url": "u1", "default": "m1"}, "live": {"provider": "p", "base_url": "u2", "default": "m2"}, "io": {"normalize_route_base_url": ["u1/", "u2/"]}}}
+{"func": "_held_pick", "in": {"frozen": {}, "live": {}, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "_held_pick", "in": {"frozen": {}, "live": {}, "io": {}}}
+{"func": "_held_pick", "in": {"frozen": {}, "live": {}, "io": {"normalize_route_base_url": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_held_pick", "in": {"frozen": {}, "live": null, "io": {"normalize_route_base_url": ["", ""]}}}
+{"func": "entry_serves", "in": {"block": {"base_url": null}, "config": {}, "io": {"normalize_route_base_url": ""}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p"}, "config": {}, "io": {"normalize_route_base_url": ["u/", "u/"], "_named_entry": {"base_url": "u"}}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": ""}, "config": {}, "io": {"normalize_route_base_url": ["u/"]}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p", "api_key_from": ["providers", "x", "key"]}, "config": {"providers": {"x": {"base_url": "u"}}}, "io": {"normalize_route_base_url": ["u/", "u/", "u/"], "_named_entry": {"base_url": "u"}}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p", "api_key_from": ["providers", "x", "key"]}, "config": {"providers": {"x": 5}}, "io": {"normalize_route_base_url": ["u/", "u/"], "_named_entry": {"base_url": "u"}}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u"}, "config": {}, "io": {}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p"}, "config": {}, "io": {"normalize_route_base_url": ["u/"], "_named_entry": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p"}, "config": {}, "io": {"normalize_route_base_url": ["u/"], "_named_entry": {"base_url": ""}}}}
+{"func": "entry_serves", "in": {"block": {"base_url": "u", "provider": "p"}, "config": {}, "io": {"normalize_route_base_url": ["u/", {"__raise__": "SystemExit", "msg": "bye"}], "_named_entry": {"base_url": "u"}}}}
+{"func": "bound_route_holds", "in": {"bound": {"provider": "p"}, "bound_config": {}, "block": {"provider": "q"}, "config": {}, "io": {"resolved_route": [["id1", "u1"], ["id2", "u2"]], "same_route": true}}}
+{"func": "bound_route_holds", "in": {"bound": {"base_url": "u"}, "bound_config": {}, "block": {"base_url": "u"}, "config": {}, "io": {"resolved_route": [["auto", ""], ["id2", ""]], "normalize_route_base_url": ["e", "e"]}}}
+{"func": "bound_route_holds", "in": {"bound": {"base_url": "u"}, "bound_config": {}, "block": {"base_url": "v"}, "config": {}, "io": {"resolved_route": [["auto", ""], ["id2", ""]], "normalize_route_base_url": ["e1", "e2"]}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [null]}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [["only"]]}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [["id", "u"], null]}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [["id", "u"], ["id2", "u2"]], "same_route": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "bound_route_holds", "in": {"bound": {}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [["id", "u"], ["id2", "u2"]], "same_route": "yes"}}}
+{"func": "bound_route_holds", "in": {"bound": {"provider": "p"}, "bound_config": {}, "block": {}, "config": {}, "io": {"resolved_route": [["id", ""], ["id2", ""]], "same_route": true}}}
+{"func": "_without_auto_pick", "in": {"params": {"provider": "auto", "model": "m"}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": {"provider": " AUTO ", "x": 1}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": {"provider": "openai"}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": {"provider": null}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": {}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": {"provider": "auto"}, "io": {}}}
+{"func": "_without_auto_pick", "in": {"params": null, "io": {}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {"profile_route_identity": "id", "resolved_route": [["id", "u"]]}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {"profile_route_identity": "auto"}}}
+{"func": "_keeps_profile_route", "in": {"picked": "", "config": {}, "io": {"profile_route_identity": "id"}}}
+{"func": "_keeps_profile_route", "in": {"picked": null, "config": {}, "io": {"profile_route_identity": "id"}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {"profile_route_identity": "id", "resolved_route": [["other", "u"]]}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {"profile_route_identity": "id", "resolved_route": [null]}}}
+{"func": "_keeps_profile_route", "in": {"picked": "p", "config": {}, "io": {"profile_route_identity": "id", "resolved_route": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": 5}, "config": {}, "io": {}}}
+{"func": "_with_entry_pick", "in": {"params": {}, "config": {}, "io": {}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "p"}, "config": {}, "io": {"profile_route_identity": "auto"}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "deepseek"}, "config": {}, "io": {"profile_route_identity": "custom:deepseek", "configured_entry_key": "deepseek"}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "deepseek"}, "config": {}, "io": {"profile_route_identity": "custom:deepseek", "configured_entry_key": "other"}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "deepseek"}, "config": {}, "io": {"profile_route_identity": "custom:deepseek", "configured_entry_key": null}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "base_url": "u", "model": "m"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom", "normalize_route_base_url": ["cu/"], "_route_key": ["cukey", "cukey"]}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "model": "M"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom", "normalize_route_base_url": ["cu/"], "_route_key": ["cukey"], "profile_target": [["M2", "p"]], "routed_custom_identity": [null]}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "model": "m"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom:x", "normalize_route_base_url": ["cu/"], "_route_key": [""], "routed_custom_identity": ["custom:y"]}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "model": "m", "api_key": "k"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom:x", "normalize_route_base_url": ["cu/"], "_route_key": [""], "routed_custom_identity": ["custom:y"]}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "model": "m"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom:x", "normalize_route_base_url": ["cu/"], "_route_key": [""], "routed_custom_identity": [null]}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom"}, "config": {}, "io": {}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "model": "m"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom:x", "normalize_route_base_url": ["cu/"], "_route_key": [""], "routed_custom_identity": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_with_entry_pick", "in": {"params": {"provider": "custom", "base_url": "u", "model": "m"}, "config": {"model": {"base_url": "cu"}}, "io": {"profile_route_identity": "custom", "normalize_route_base_url": ["cu/"], "_route_key": ["cukey", "other"], "routed_custom_identity": [null]}}}
+{"func": "pin_reasoning_effort", "in": {"config": {}, "effort": "high", "session": false, "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"agent": {"reasoning_effort": "low", "reasoning_overrides": {"x": 1}}}, "effort": "high", "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"agent": {"reasoning_effort": "low"}}, "effort": "high", "session": true, "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"session_pins": {"reasoning": false, "other": 1}}, "effort": "x", "session": true, "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"agent": null}, "effort": "x", "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"session_pins": "x"}, "effort": "e", "session": true, "io": {}}}
+{"func": "pin_reasoning_effort", "in": {"config": {"session_pins": {"reasoning": true}}, "effort": "e", "session": true, "io": {}}}
+{"func": "unpin_reasoning", "in": {"config": {"agent": {"reasoning_effort": "high", "reasoning_overrides": {}}}, "profile": {"agent": {"reasoning_effort": "low"}}, "io": {"_follow": [null, null]}}}
+{"func": "unpin_reasoning", "in": {"config": {}, "profile": {}, "io": {"_follow": [null, null]}}}
+{"func": "unpin_reasoning", "in": {"config": {"agent": {"reasoning_effort": "high"}}, "profile": {"agent": {"reasoning_overrides": {"x": 1}}}, "io": {"_follow": [null, null]}}}
+{"func": "unpin_reasoning", "in": {"config": {"session_pins": {"reasoning": true}}, "profile": {"agent": {"reasoning_effort": "med"}}, "io": {"_follow": [null, null]}}}
+{"func": "unpin_reasoning", "in": {"config": {}, "profile": {}, "io": {}}}
+{"func": "unpin_reasoning", "in": {"config": {}, "profile": {}, "io": {"_follow": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "unpin_reasoning", "in": {"config": {}, "profile": {}, "io": {"_follow": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "unpin_reasoning", "in": {"config": {"agent": {"reasoning_effort": "h"}}, "profile": {"agent": null}, "io": {"_follow": [null, null]}}}
+{"func": "profile_config", "in": {"authority": {"id": "a"}, "io": {"authority_persistence": {"profile_dir": "/h/p1"}, "_load_gateway_config": {"model": {"default": "m"}}, "present_sections": {"model": {"default": "m"}}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": ""}, "_load_gateway_config": {}, "present_sections": {}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": "/"}, "_load_gateway_config": {}, "present_sections": {}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": "//"}, "_load_gateway_config": {}, "present_sections": {}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": null}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": "/h"}, "_load_gateway_config": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": "/h"}, "_load_gateway_config": {}, "present_sections": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "profile_config", "in": {"authority": {}, "io": {"authority_persistence": {"profile_dir": "/h/p1"}, "_load_gateway_config": {"gateway": null}, "present_sections": {"gateway": null}}}}
+{"func": "_key_slot", "in": {"credential_ref": "i:e:s#fp", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": "i:e:s", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": "#fp", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": "a#b#c", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": "", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": "x#", "io": {}}}
+{"func": "_key_slot", "in": {"credential_ref": null, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": null}, "authority": {}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": "i:e:s#fp"}, "authority": {"_local_launch_keys": {"i:e:s": "secret"}}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": "i:e:s#fp"}, "authority": {"_local_launch_keys": {}}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": "i:e:s"}, "authority": {}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": "i:e:s#fp"}, "authority": {"_local_launch_keys": {"i:e:s": null}}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": "i:e:s#fp"}, "authority": {"_local_launch_keys": {"i:e:s": ""}}, "io": {}}}
+{"func": "launch_key", "in": {"policy": {"credential_ref": 5}, "authority": {}, "io": {}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{\"model\": {\"provider\": \"p\", \"base_url\": \"u\"}}", "credential_ref": "i:e:s#fp"}, "config": {"model": {"provider": "p", "base_url": "u"}}, "authority": {"_local_launch_keys": {"i:e:s": "k"}}, "io": {"present_sections": {"model": {"provider": "p", "base_url": "u"}}, "resolved_route": [["id", "u"], ["id", "u"]], "same_route": true}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{\"model\": {\"provider\": \"p\", \"base_url\": \"u\"}}", "credential_ref": "i:e:s#fp"}, "config": {"model": {"provider": "p", "base_url": "u"}}, "authority": {"_local_launch_keys": {"i:e:s": "k"}}, "io": {"present_sections": {"model": {"provider": "p", "base_url": "u"}}, "resolved_route": [["id", "u"], ["id", "u"]], "same_route": false}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": null, "credential_ref": "i:e:s#fp"}, "config": {}, "authority": {}, "io": {}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{}", "credential_ref": null}, "config": {}, "authority": {}, "io": {"present_sections": [[1]]}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{}", "credential_ref": null}, "config": {}, "authority": {}, "io": {}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{\"model\": {\"provider\": \"p\", \"base_url\": \"u\"}}", "credential_ref": "i:e:s#fp"}, "config": {"model": {"provider": "p", "base_url": "u"}}, "authority": {"_local_launch_keys": {"i:e:s": "k"}}, "io": {"present_sections": {"model": {"provider": "p", "base_url": "u"}}, "resolved_route": [["auto", ""], ["id", ""]], "normalize_route_base_url": ["u/", "u/"]}}}
+{"func": "route_launch_key", "in": {"policy": {"config_json": "{}", "credential_ref": null}, "config": {}, "authority": {}, "io": {"present_sections": {"model": {}}, "resolved_route": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": true, "Path.is_dir": true}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": false}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": true, "Path.is_dir": false}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": true, "Path.is_dir": "yes"}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": 0}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": "/x"}, "io": {"Path.is_absolute": true, "Path.is_dir": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "workspace_ready", "in": {"policy": {"cwd": null}, "io": {}}}
+{"func": "bind_turn_workspace", "in": {"policy": null, "task_id": "t", "overrides": {}, "io": {}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{}", "cwd": "/x"}, "task_id": "", "overrides": {}, "io": {}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"ssh\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"_qualify_task_key": "key"}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": false, "_qualify_task_key": "key"}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": true, "resolve_task_overrides": {"cwd": "/x", "cwd_source": "session"}}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": true, "resolve_task_overrides": {"cwd": "/other"}, "workspace_key_for": "wk", "register_task_env_overrides": null}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": true, "resolve_task_overrides": {}, "workspace_key_for": "wk", "register_task_env_overrides": null}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": true}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"ssh\"}", "cwd": "/x"}, "task_id": "t", "overrides": {"key": {"workspace_key": "wk", "cwd": "/x"}}, "io": {"_qualify_task_key": "key", "get_session_cwd": "/x", "clear_session_cwd": null}}}
+{"func": "bind_turn_workspace", "in": {"policy": {"terminal_json": "{\"TERMINAL_ENV\": \"docker\"}", "cwd": "/x"}, "task_id": "t", "overrides": {}, "io": {"terminal_uses_host_cwd": true, "resolve_task_overrides": {}, "workspace_key_for": "wk", "register_task_env_overrides": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "", "overrides": {}, "io": {}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {}, "io": {"_qualify_task_key": "key"}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": {"cwd": "/x"}}, "io": {"_qualify_task_key": "key"}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": {"workspace_key": "wk", "cwd": "/x"}}, "io": {"_qualify_task_key": "key", "get_session_cwd": "/x", "clear_session_cwd": null}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": {"workspace_key": "wk", "cwd": "/x"}}, "io": {"_qualify_task_key": "key", "get_session_cwd": "/other"}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": {"workspace_key": "wk", "cwd": null}}, "io": {"_qualify_task_key": "key", "get_session_cwd": null, "clear_session_cwd": null}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {}, "io": {}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": {"workspace_key": "wk", "cwd": "/x"}}, "io": {"_qualify_task_key": "key", "get_session_cwd": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "unbind_turn_workspace", "in": {"task_id": "t", "overrides": {"key": null}, "io": {"_qualify_task_key": "key"}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": false}, "io": {"_load_gateway_config": {"hooks": []}, "accept_for_launch": null}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": false}", "ignore_user_config": false}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": true}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": true}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "[1]", "ignore_user_config": false}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "null", "ignore_user_config": false}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": false}, "io": {}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": false}, "io": {"_load_gateway_config": {}, "accept_for_launch": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "accept_launch_hooks", "in": {"policy": {"request_json": "{\"accept_hooks\": true}", "ignore_user_config": false}, "io": {"_load_gateway_config": {}, "accept_for_launch": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "refresh_profile_hooks", "in": {"policy": null, "io": {}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": true}, "io": {}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"sync_from_config": null}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"sync_from_config": {"__raise__": "RuntimeError", "msg": "boom"}, "logger.warning": null}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"sync_from_config": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"sync_from_config": {"__raise__": "ValueError", "msg": "x"}, "logger.warning": null}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"logger.warning": null}}}
+{"func": "refresh_profile_hooks", "in": {"policy": {"ignore_user_config": false}, "io": {"sync_from_config": {"__raise__": "RuntimeError", "msg": "boom"}, "logger.warning": {"__raise__": "ValueError", "msg": "log"}}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": true}, "io": {}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{\"accept_hooks\": true}"}, "io": {"policy.config": {"model": {}}, "shell_hooks.register_from_config": null, "outbound_webhooks.register_from_config": null}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": "{\"accept_hooks\": true}", "request_json": "{}"}, "io": {"policy.config": {}, "shell_hooks.register_from_config": null, "outbound_webhooks.register_from_config": null}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{\"accept_hooks\": 1}"}, "io": {"policy.config": {}, "shell_hooks.register_from_config": null, "outbound_webhooks.register_from_config": null}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{}"}, "io": {"policy.config": {}, "shell_hooks.register_from_config": null, "outbound_webhooks.register_from_config": null}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": "[1]", "request_json": "{}"}, "io": {}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{}"}, "io": {}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{}"}, "io": {"policy.config": {}, "shell_hooks.register_from_config": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "register_worker_hooks", "in": {"policy": {"ignore_user_config": false, "kanban_json": null, "request_json": "{}"}, "io": {"policy.config": {}, "shell_hooks.register_from_config": null, "outbound_webhooks.register_from_config": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": true}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "cli", "cwd": "/x", "io": {"in_focus_workspace": false}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "unknown", "cwd": "/x", "io": {"logger.debug": null}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": {"__raise__": "ValueError", "msg": "x"}, "logger.debug": null}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": {"__raise__": "AuthorityRefusal", "msg": "invalid_params"}, "logger.debug": null}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"logger.debug": null}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": {"__raise__": "RuntimeError", "msg": "x"}, "logger.debug": {"__raise__": "ValueError", "msg": "log"}}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": "maybe"}}}
+{"func": "_in_coding_workspace", "in": {"config": {}, "source": "tool", "cwd": "/x", "io": {"in_focus_workspace": true}}}

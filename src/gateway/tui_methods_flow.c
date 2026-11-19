@@ -918,7 +918,6 @@ static json_t *tm_read_profile_yaml(tm_ctx_t *ctx, const json_t *args) {
 
 /* ── roster session readers ── */
 
-/* PoP: tm_latest_message_preview @ tui_gateway/methods_profiles.py:_latest_message_preview */
 static json_t *tm_latest_message_preview_call(tm_ctx_t *ctx, const json_t *persistence,
                                               const json_t *session_id) {
     json_t *pc = tm_persist_check(persistence, "messages");
@@ -955,6 +954,7 @@ static json_t *tm_latest_message_preview_call(tm_ctx_t *ctx, const json_t *persi
     return ret;
 }
 
+/* PoP: tm_latest_message_preview @ tui_gateway/methods_profiles.py:_latest_message_preview */
 static json_t *tm_latest_message_preview(tm_ctx_t *ctx, const json_t *args) {
     return tm_latest_message_preview_call(ctx, json_obj_get(args, "persistence"),
                                           json_obj_get(args, "session_id"));

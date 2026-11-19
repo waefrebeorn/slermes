@@ -339,12 +339,12 @@ cleanup:
  * Tag stripped here (honest gap, not double credit). */
 void log_tick_yield_once(void) {}
 
-/* PoP: upsert_incident_for_failure @ cron/scheduler.py:_upsert_incident_for_failure */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void upsert_incident_for_failure(const char *job_id, const char *error) {
     (void)job_id; (void)error;
 }
 
-/* PoP: mark_incident_alerted @ cron/scheduler.py:_mark_incident_alerted */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void mark_incident_alerted(const char *job_id) {
     (void)job_id;
 }

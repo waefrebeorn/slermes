@@ -221,7 +221,7 @@ static char *handle_read(const char *args_json) {
 /* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
 /* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
-/* PoP: handle_write @ tools/file_operations.py:ShellFileOperations.write_file */
+/* superseded by src/tools/file_operations_flow.c fo_write_file (PoP credit moved there; wave13 DUP fix) */
 static char *handle_write(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;

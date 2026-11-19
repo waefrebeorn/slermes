@@ -144,7 +144,7 @@ json_t *start_attestation_path(gw_io_t *io, json_t *in) {
     return out;
 }
 
-/* PoP: attested_pid_exited_cleanly @ hermes_cli/gateway_windows.py:_attested_pid_exited_cleanly */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int attested_pid_exited_cleanly(void) { return 1; }
 
 /* check_start_attestation: deferred (PoP tag removed; stub left untagged). */

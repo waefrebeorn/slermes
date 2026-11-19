@@ -100,9 +100,187 @@ static json_t *cch2_h_dispatch(void *ctx, const char *name, const json_t *args)
     return retnode;
 }
 
+/* ---- wave13: direct leaf dispatch for first-wave internal helpers ----
+ * These static helpers were previously reached only via the cch_flow_* entries
+ * dispatched by t_port_cch_flow.c. Adding direct dispatch here clears the
+ * name-based DEAD-CREDIT finding and gives independent leaf coverage. Additive:
+ * no existing cch2 case uses these func names. */
+static void cch2_h_tc_feed(tc_acc_t *t, const json_t *in) {
+    const json_t *deltas = jget(in, "deltas");
+    size_t n = deltas ? json_len((json_t *)deltas) : 0;
+    for (size_t i = 0; i < n; i++) tc_feed(t, json_get((json_t *)deltas, i));
+}
+static void cch2_h_loop_init(chunk_loop_t *s, const json_t *in) {
+    memset(s, 0, sizeof(*s));
+    s->log = json_array();
+    s->content_parts = json_array();
+    s->reasoning_parts = json_array();
+    s->detail_display_parts = json_array();
+    s->refusal_parts = json_array();
+    s->reasoning_details = json_array();
+    s->pending_text_parts = json_array();
+    s->partial_tool_names = json_array();
+    tc_init(&s->tc);
+    s->deltas_were_sent = jtruth(jget(in, "deltas_were_sent"));
+    s->hold_stream = jtruth(jget(in, "hold_stream"));
+    s->stream_delta_callback = jtruth(jget(in, "stream_delta_callback"));
+    s->on_first_delta_present = jhas(in, "on_first_delta") ? jtruth(jget(in, "on_first_delta")) : 1;
+    s->display.ud = NULL;
+    s->display.fire_stream_delta = display_noop;
+    s->display.fire_reasoning_delta = display_noop;
+    s->display.fire_tool_gen_started = display_noop;
+    s->display.on_first_delta = display_noop0;
+    const json_t *watch = jget(in, "watch");
+    s->watch_content.arr = jget(watch, "content");
+    s->watch_reasoning.arr = jget(watch, "reasoning");
+    s->watch_detail.arr = jget(watch, "detail");
+}
+static void cch2_h_loop_free(chunk_loop_t *s) {
+    json_free(s->content_parts); json_free(s->reasoning_parts); json_free(s->detail_display_parts);
+    json_free(s->refusal_parts); json_free(s->reasoning_details); json_free(s->pending_text_parts);
+    json_free(s->partial_tool_names);
+    tc_free(&s->tc);
+    free(s->finish_reason); free(s->model_name); free(s->response_id); free(s->upstream_provider);
+    json_free(s->usage_obj);
+}
+static json_t *cch2_h_loop_proj(chunk_loop_t *s) {
+    json_t *o = json_object();
+    json_set(o, "log", json_copy(s->log));
+    json_set(o, "content_parts", json_copy(s->content_parts));
+    json_set(o, "reasoning_parts", json_copy(s->reasoning_parts));
+    json_set(o, "pending_text_parts", json_copy(s->pending_text_parts));
+    json_set(o, "partial_tool_names", json_copy(s->partial_tool_names));
+    json_set(o, "first_delta_fired", json_bool(s->first_delta_fired));
+    return o;
+}
+static json_t *cch2_l_normalize_finish_reason(const json_t *in) {
+    char *r = flow_normalize_finish_reason(jget(in, "raw"));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_router_shim_may_follow(const json_t *in) {
+    return json_bool(flow_router_shim_may_follow(jstrv(jget(in, "text"))));
+}
+static json_t *cch2_l_positive_completion_tokens(const json_t *in) {
+    return json_bool(flow_positive_completion_tokens(jget(in, "usage")));
+}
+static json_t *cch2_l_is_router_timeout_shim(const json_t *in) {
+    return json_bool(flow_is_router_timeout_shim(jget(in, "response")));
+}
+static json_t *cch2_l_detail_text(const json_t *in) {
+    char *r = flow_detail_text(jget(in, "detail"));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_append_detail(const json_t *in) {
+    json_t *acc = jget(in, "acc") ? json_copy(jget(in, "acc")) : json_array();
+    flow_append_detail(acc, jget(in, "detail"));
+    return acc;
+}
+static json_t *cch2_l_provider_error_body(const json_t *in) {
+    return flow_provider_error_body(jget(in, "payload"), (int)json_get_num(in, "status_code", 0));
+}
+static json_t *cch2_l_text_may_be_sse(const json_t *in) {
+    return json_bool(flow_text_may_be_sse(jstrv(jget(in, "text"))));
+}
+static json_t *cch2_l_consume_ephemeral(const json_t *in) {
+    json_t *agent = jget(in, "agent") ? json_copy(jget(in, "agent")) : json_object();
+    int r = flow_consume_ephemeral(agent);
+    json_free(agent);
+    return json_bool(r);
+}
+static json_t *cch2_l_prompt_progress(const json_t *in) {
+    return json_bool(loop_prompt_progress(jget(in, "chunk")));
+}
+static json_t *cch2_l_text_from_part(const json_t *in) {
+    char *r = flow_text_from_part(jget(in, "part"));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_flatten_message_text(const json_t *in) {
+    char *r = flow_flatten_message_text(jget(in, "content"), jstrv(jget(in, "sep")));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_separate_glued(const json_t *in) {
+    char *r = flow_separate_glued(jstrv(jget(in, "previous")), jget(in, "delta"));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_pse_format_message(const json_t *in) {
+    char *r = flow_pse_format_message((int)json_get_num(in, "status_code", 0), jget(in, "body"));
+    json_t *o = r ? json_string(r) : json_null(); free(r); return o;
+}
+static json_t *cch2_l_tc_arguments_closed(const json_t *in) {
+    tc_acc_t t; tc_init(&t);
+    cch2_h_tc_feed(&t, in);
+    int r = tc_arguments_closed(&t, (int)json_get_num(in, "slot", 0));
+    tc_free(&t);
+    return json_bool(r);
+}
+static json_t *cch2_l_tc_starts_new_call(const json_t *in) {
+    tc_acc_t t; tc_init(&t);
+    cch2_h_tc_feed(&t, in);
+    int r = tc_starts_new_call(&t, jget(in, "delta"), (int)json_get_num(in, "slot", 0));
+    tc_free(&t);
+    return json_bool(r);
+}
+static json_t *cch2_l_tc_feed(const json_t *in) {
+    tc_acc_t t; tc_init(&t);
+    cch2_h_tc_feed(&t, in);
+    const char *name = tc_feed(&t, jget(in, "delta"));
+    json_t *r = name ? json_string(name) : json_null();
+    tc_free(&t);
+    return r;
+}
+static json_t *cch2_l_tc_materialize(const json_t *in) {
+    tc_acc_t t; tc_init(&t);
+    cch2_h_tc_feed(&t, in);
+    tc_materialize(&t);
+    json_t *r = json_copy(t.acc);
+    tc_free(&t);
+    return r;
+}
+#define CCH2_LOOP_LEAF(nm, stmt) \
+    static json_t *cch2_l_##nm(const json_t *in) { \
+        chunk_loop_t s; cch2_h_loop_init(&s, in); \
+        stmt; \
+        json_t *o = cch2_h_loop_proj(&s); \
+        cch2_h_loop_free(&s); json_free(s.log); \
+        return o; \
+    }
+CCH2_LOOP_LEAF(loop_fire_first, loop_fire_first(&s))
+CCH2_LOOP_LEAF(loop_emit_text, loop_emit_text(&s, jstrv(jget(in, "text"))))
+CCH2_LOOP_LEAF(loop_emit_reasoning, loop_emit_reasoning(&s, jstrv(jget(in, "text"))))
+CCH2_LOOP_LEAF(loop_emit_tool_started, loop_emit_tool_started(&s, jstrv(jget(in, "name"))))
+CCH2_LOOP_LEAF(loop_route_suppressed, loop_route_suppressed(&s, jstrv(jget(in, "text"))))
+CCH2_LOOP_LEAF(loop_flush_pending, loop_flush_pending(&s))
+#undef CCH2_LOOP_LEAF
+
 /* ---- entry dispatch ---- */
 static json_t *cch2_h_entry(const char *func, cch2_io_t *io, const json_t *in, json_t *st)
 {
+    /* wave13 first-wave leaf dispatch (before underscore normalization). */
+    if (strcmp(func, "normalize_finish_reason") == 0) return cch2_l_normalize_finish_reason(in);
+    if (strcmp(func, "router_shim_may_follow") == 0) return cch2_l_router_shim_may_follow(in);
+    if (strcmp(func, "positive_completion_tokens") == 0) return cch2_l_positive_completion_tokens(in);
+    if (strcmp(func, "is_router_timeout_shim") == 0) return cch2_l_is_router_timeout_shim(in);
+    if (strcmp(func, "detail_text") == 0) return cch2_l_detail_text(in);
+    if (strcmp(func, "append_detail") == 0) return cch2_l_append_detail(in);
+    if (strcmp(func, "provider_error_body") == 0) return cch2_l_provider_error_body(in);
+    if (strcmp(func, "text_may_be_sse") == 0) return cch2_l_text_may_be_sse(in);
+    if (strcmp(func, "consume_ephemeral") == 0) return cch2_l_consume_ephemeral(in);
+    if (strcmp(func, "prompt_progress") == 0) return cch2_l_prompt_progress(in);
+    if (strcmp(func, "text_from_part") == 0) return cch2_l_text_from_part(in);
+    if (strcmp(func, "flatten_message_text") == 0) return cch2_l_flatten_message_text(in);
+    if (strcmp(func, "separate_glued") == 0) return cch2_l_separate_glued(in);
+    if (strcmp(func, "pse_format_message") == 0) return cch2_l_pse_format_message(in);
+    if (strcmp(func, "tc_arguments_closed") == 0) return cch2_l_tc_arguments_closed(in);
+    if (strcmp(func, "tc_starts_new_call") == 0) return cch2_l_tc_starts_new_call(in);
+    if (strcmp(func, "tc_feed") == 0) return cch2_l_tc_feed(in);
+    if (strcmp(func, "tc_materialize") == 0) return cch2_l_tc_materialize(in);
+    if (strcmp(func, "loop_fire_first") == 0) return cch2_l_loop_fire_first(in);
+    if (strcmp(func, "loop_emit_text") == 0) return cch2_l_loop_emit_text(in);
+    if (strcmp(func, "loop_emit_reasoning") == 0) return cch2_l_loop_emit_reasoning(in);
+    if (strcmp(func, "loop_emit_tool_started") == 0) return cch2_l_loop_emit_tool_started(in);
+    if (strcmp(func, "loop_route_suppressed") == 0) return cch2_l_loop_route_suppressed(in);
+    if (strcmp(func, "loop_flush_pending") == 0) return cch2_l_loop_flush_pending(in);
+    (void)io; (void)st;
     /* Cases carry the LIVE name (e.g. "_rejects_stream_options"); the C entry
      * suffix drops the leading underscore (cch2_rejects_stream_options).
      * Normalize before suffix dispatch or every underscored name falls

@@ -392,7 +392,7 @@ int todo_snapshot_is_only_content(void) { return 0; }
  * port_conversation_compression_flow.c (duplicate claim removed). */
 int messages_match_scoped_identity(const char *a, const char *b) { return 0; }
 
-/* PoP: get_context_compression_timeout_state @ agent/conversation_compression.py:_get_context_compression_timeout_state */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *get_context_compression_timeout_state(void) { return strdup("{}"); }
 
 /* PoP: automatic_gate_blocked @ agent/conversation_compression.py:automatic_gate_blocked */
@@ -401,10 +401,10 @@ int automatic_gate_blocked(void) { return 0; }
 /* PoP: emit_progress_status @ agent/conversation_compression.py:_emit_progress_status */
 void emit_progress_status(const char *status) { (void)status; }
 
-/* PoP: direct_messages_for_pre_compress_memory @ agent/conversation_compression.py:_direct_messages_for_pre_compress_memory */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *direct_messages_for_pre_compress_memory(void) { return strdup("[]"); }
 
-/* PoP: extract_steer_text_from_message @ agent/conversation_compression.py:_extract_steer_text_from_message */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *extract_steer_text_from_message(const char *msg) { return strdup(""); }
 
 /* PoP: replace_message_content @ agent/conversation_compression.py:_replace_message_content */

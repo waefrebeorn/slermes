@@ -1217,107 +1217,107 @@ static json_t *ph_str_ret(char *s) {
     free(s);
     return r;
 }
-/* PoP: photon__normalize_content @ plugins/platforms/photon/adapter.py:_normalize_content */
+/* PoP: ph__normalize_content @ plugins/platforms/photon/adapter.py:_normalize_content */
 static json_t *ph__normalize_content(ph_ctx_t *ctx, const json_t *args) {
     return ph_normalize_content(ctx, ph_arg_node(args, "content"));
 }
-/* PoP: photon__normalize_group_content @ plugins/platforms/photon/adapter.py:_normalize_group_content */
+/* PoP: ph__normalize_group_content @ plugins/platforms/photon/adapter.py:_normalize_group_content */
 static json_t *ph__normalize_group_content(ph_ctx_t *ctx, const json_t *args) {
     return ph_normalize_group_content(ctx, ph_arg_node(args, "content"));
 }
-/* PoP: photon__normalize_binary_payload @ plugins/platforms/photon/adapter.py:_normalize_binary_payload */
+/* PoP: ph__normalize_binary_payload @ plugins/platforms/photon/adapter.py:_normalize_binary_payload */
 static json_t *ph__normalize_binary_payload(ph_ctx_t *ctx, const json_t *args) {
     return ph_normalize_binary_payload(ctx, ph_arg_node(args, "payload"));
 }
-/* PoP: photon__is_voice_payload @ plugins/platforms/photon/adapter.py:_is_voice_payload */
+/* PoP: ph__is_voice_payload @ plugins/platforms/photon/adapter.py:_is_voice_payload */
 static json_t *ph__is_voice_payload(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_bool(ph_is_voice_payload(ph_arg_node(args, "payload")));
 }
-/* PoP: photon__cached_media_type @ plugins/platforms/photon/adapter.py:_cached_media_type */
+/* PoP: ph__cached_media_type @ plugins/platforms/photon/adapter.py:_cached_media_type */
 static json_t *ph__cached_media_type(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ph_str_ret(ph_cached_media_type(ph_arg_node(args, "payload"),
                                          ph_arg_str(args, "mime", ""),
                                          ph_arg_bool(args, "is_voice", false)));
 }
-/* PoP: photon__attachment_message_type @ plugins/platforms/photon/adapter.py:_attachment_message_type */
+/* PoP: ph__attachment_message_type @ plugins/platforms/photon/adapter.py:_attachment_message_type */
 static json_t *ph__attachment_message_type(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_string(ph_attachment_message_type(ph_arg_str(args, "mime", "")));
 }
-/* PoP: photon__format_richlink_content @ plugins/platforms/photon/adapter.py:_format_richlink_content */
+/* PoP: ph__format_richlink_content @ plugins/platforms/photon/adapter.py:_format_richlink_content */
 static json_t *ph__format_richlink_content(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_format_richlink_content(ph_arg_node(args, "content")));
 }
-/* PoP: photon__group_item_contents @ plugins/platforms/photon/adapter.py:_group_item_contents */
+/* PoP: ph__group_item_contents @ plugins/platforms/photon/adapter.py:_group_item_contents */
 static json_t *ph__group_item_contents(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_group_item_contents(ph_arg_node(args, "content"));
 }
-/* PoP: photon__reply_inner @ plugins/platforms/photon/adapter.py:_reply_inner */
+/* PoP: ph__reply_inner @ plugins/platforms/photon/adapter.py:_reply_inner */
 static json_t *ph__reply_inner(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_copy(ph_reply_inner(ph_arg_node(args, "content")));
 }
-/* PoP: photon__carries_voice @ plugins/platforms/photon/adapter.py:_carries_voice */
+/* PoP: ph__carries_voice @ plugins/platforms/photon/adapter.py:_carries_voice */
 static json_t *ph__carries_voice(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_bool(ph_carries_voice(ph_arg_node(args, "content")));
 }
-/* PoP: photon__mention_gate_text @ plugins/platforms/photon/adapter.py:_mention_gate_text */
+/* PoP: ph__mention_gate_text @ plugins/platforms/photon/adapter.py:_mention_gate_text */
 static json_t *ph__mention_gate_text(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_mention_gate_text(ph_arg_node(args, "content")));
 }
-/* PoP: photon__richlink_url_from_content @ plugins/platforms/photon/adapter.py:_richlink_url_from_content */
+/* PoP: ph__richlink_url_from_content @ plugins/platforms/photon/adapter.py:_richlink_url_from_content */
 static json_t *ph__richlink_url_from_content(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_richlink_url_from_content(ph_arg_node(args, "content")));
 }
-/* PoP: photon__url_only_candidate @ plugins/platforms/photon/adapter.py:_url_only_candidate */
+/* PoP: ph__url_only_candidate @ plugins/platforms/photon/adapter.py:_url_only_candidate */
 static json_t *ph__url_only_candidate(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_url_only_candidate(ph_arg_str(args, "text", "")));
 }
-/* PoP: photon__is_richlink_preview_attachment @ plugins/platforms/photon/adapter.py:_is_richlink_preview_attachment */
+/* PoP: ph__is_richlink_preview_attachment @ plugins/platforms/photon/adapter.py:_is_richlink_preview_attachment */
 static json_t *ph__is_richlink_preview_attachment(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_bool(ph_is_richlink_preview_attachment(ph_arg_node(args, "payload")));
 }
-/* PoP: photon__richlink_preview_label @ plugins/platforms/photon/adapter.py:_richlink_preview_label */
+/* PoP: ph__richlink_preview_label @ plugins/platforms/photon/adapter.py:_richlink_preview_label */
 static json_t *ph__richlink_preview_label(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_richlink_preview_label(ph_arg_node(args, "content")));
 }
-/* PoP: photon__is_richlink_preview_content @ plugins/platforms/photon/adapter.py:_is_richlink_preview_content */
+/* PoP: ph__is_richlink_preview_content @ plugins/platforms/photon/adapter.py:_is_richlink_preview_content */
 static json_t *ph__is_richlink_preview_content(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_bool(ph_is_richlink_preview_content(ph_arg_node(args, "content")));
 }
-/* PoP: photon__markdown_enabled @ plugins/platforms/photon/adapter.py:_markdown_enabled */
+/* PoP: ph__markdown_enabled @ plugins/platforms/photon/adapter.py:_markdown_enabled */
 static json_t *ph__markdown_enabled(ph_ctx_t *ctx, const json_t *args) {
     (void)args; return ph_markdown_enabled(ctx);
 }
-/* PoP: photon__richlink_candidate @ plugins/platforms/photon/adapter.py:_richlink_candidate */
+/* PoP: ph__richlink_candidate @ plugins/platforms/photon/adapter.py:_richlink_candidate */
 static json_t *ph__richlink_candidate(ph_ctx_t *ctx, const json_t *args) {
     return ph_richlink_candidate(ctx, ph_arg_str(args, "text", ""));
 }
-/* PoP: photon__sidecar_payload_text @ plugins/platforms/photon/adapter.py:_sidecar_payload_text */
+/* PoP: ph__sidecar_payload_text @ plugins/platforms/photon/adapter.py:_sidecar_payload_text */
 static json_t *ph__sidecar_payload_text(ph_ctx_t *ctx, const json_t *args) {
     return ph_sidecar_payload_text(ctx, ph_arg_str(args, "text", ""),
                                    ph_arg_bool(args, "send_markdown", false));
 }
-/* PoP: photon__attachment_label @ plugins/platforms/photon/adapter.py:_attachment_label */
+/* PoP: ph__attachment_label @ plugins/platforms/photon/adapter.py:_attachment_label */
 static json_t *ph__attachment_label(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_attachment_label(ph_arg_str(args, "kind", ""),
                                                      ph_arg_str(args, "name", "")));
 }
-/* PoP: photon__attachment_body @ plugins/platforms/photon/adapter.py:_attachment_body */
+/* PoP: ph__attachment_body @ plugins/platforms/photon/adapter.py:_attachment_body */
 static json_t *ph__attachment_body(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ph_attachment_body(ph_arg_str(args, "space_id", ""), ph_arg_str(args, "safe_path", ""),
                               ph_arg_str(args, "kind", "attachment"), ph_arg_str(args, "name", NULL),
                               ph_arg_str(args, "mime_type", NULL), ph_arg_str(args, "caption", NULL));
 }
-/* PoP: photon__normalize_chat_key @ plugins/platforms/photon/adapter.py:_normalize_chat_key */
+/* PoP: ph__normalize_chat_key @ plugins/platforms/photon/adapter.py:_normalize_chat_key */
 static json_t *ph__normalize_chat_key(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return ph_str_ret(ph_normalize_chat_key(ph_arg_str(args, "chat_id", "")));
 }
-/* PoP: photon__record_sent_message @ plugins/platforms/photon/adapter.py:_record_sent_message */
+/* PoP: ph__record_sent_message @ plugins/platforms/photon/adapter.py:_record_sent_message */
 static json_t *ph__record_sent_message(ph_ctx_t *ctx, const json_t *args) {
     return ph_record_sent_message(ctx, ph_arg_node(args, "message_id"));
 }
-/* PoP: photon__put_by_chat @ plugins/platforms/photon/adapter.py:_put_by_chat */
+/* PoP: ph__put_by_chat @ plugins/platforms/photon/adapter.py:_put_by_chat */
 static json_t *ph__put_by_chat(ph_ctx_t *ctx, const json_t *args) {
     /* the generic store arg travels in args; echo its mutation as state.store */
     const json_t *src = ph_arg_node(args, "store");
@@ -1325,57 +1325,57 @@ static json_t *ph__put_by_chat(ph_ctx_t *ctx, const json_t *args) {
     json_set(ctx->state, "store", store);
     return ph_put_by_chat(ctx, store, ph_arg_str(args, "chat_id", ""), ph_arg_node(args, "value"));
 }
-/* PoP: photon__record_last_inbound @ plugins/platforms/photon/adapter.py:_record_last_inbound */
+/* PoP: ph__record_last_inbound @ plugins/platforms/photon/adapter.py:_record_last_inbound */
 static json_t *ph__record_last_inbound(ph_ctx_t *ctx, const json_t *args) {
     return ph_record_last_inbound(ctx, ph_arg_node(args, "chat_id"), ph_arg_node(args, "message_id"));
 }
-/* PoP: photon__record_recent_richlink @ plugins/platforms/photon/adapter.py:_record_recent_richlink */
+/* PoP: ph__record_recent_richlink @ plugins/platforms/photon/adapter.py:_record_recent_richlink */
 static json_t *ph__record_recent_richlink(ph_ctx_t *ctx, const json_t *args) {
     return ph_record_recent_richlink(ctx, ph_arg_node(args, "chat_id"), ph_arg_str(args, "text", ""));
 }
-/* PoP: photon__is_recent_richlink_preview @ plugins/platforms/photon/adapter.py:_is_recent_richlink_preview */
+/* PoP: ph__is_recent_richlink_preview @ plugins/platforms/photon/adapter.py:_is_recent_richlink_preview */
 static json_t *ph__is_recent_richlink_preview(ph_ctx_t *ctx, const json_t *args) {
     return ph_is_recent_richlink_preview(ctx, ph_arg_node(args, "chat_id"), ph_arg_node(args, "content"));
 }
-/* PoP: photon__reactions_enabled @ plugins/platforms/photon/adapter.py:_reactions_enabled */
+/* PoP: ph__reactions_enabled @ plugins/platforms/photon/adapter.py:_reactions_enabled */
 static json_t *ph__reactions_enabled(ph_ctx_t *ctx, const json_t *args) {
     (void)args; return ph_reactions_enabled(ctx);
 }
-/* PoP: photon__is_retryable_error @ plugins/platforms/photon/adapter.py:_is_retryable_error */
+/* PoP: ph__is_retryable_error @ plugins/platforms/photon/adapter.py:_is_retryable_error */
 static json_t *ph__is_retryable_error(ph_ctx_t *ctx, const json_t *args) {
     return ph_is_retryable_error(ctx, ph_arg_node(args, "error"));
 }
-/* PoP: photon__is_permanent_sidecar_failure @ plugins/platforms/photon/adapter.py:_is_permanent_sidecar_failure */
+/* PoP: ph__is_permanent_sidecar_failure @ plugins/platforms/photon/adapter.py:_is_permanent_sidecar_failure */
 static json_t *ph__is_permanent_sidecar_failure(ph_ctx_t *ctx, const json_t *args) {
     (void)ctx; return json_bool(ph_is_permanent_sidecar_failure(ph_arg_node(args, "result")));
 }
-/* PoP: photon__send_retry_is_final @ plugins/platforms/photon/adapter.py:_send_retry_is_final */
+/* PoP: ph__send_retry_is_final @ plugins/platforms/photon/adapter.py:_send_retry_is_final */
 static json_t *ph__send_retry_is_final(ph_ctx_t *ctx, const json_t *args) {
     return json_bool(ph_send_retry_is_final(ctx, ph_arg_node(args, "result")));
 }
-/* PoP: photon__sidecar_try @ plugins/platforms/photon/adapter.py:_sidecar_try */
+/* PoP: ph__sidecar_try @ plugins/platforms/photon/adapter.py:_sidecar_try */
 static json_t *ph__sidecar_try(ph_ctx_t *ctx, const json_t *args) {
     return ph_sidecar_try(ctx, ph_arg_str(args, "path", ""), ph_arg_node(args, "body"),
                           ph_arg_str(args, "what", ""));
 }
-/* PoP: photon__post_send @ plugins/platforms/photon/adapter.py:_post_send */
+/* PoP: ph__post_send @ plugins/platforms/photon/adapter.py:_post_send */
 static json_t *ph__post_send(ph_ctx_t *ctx, const json_t *args) {
     return ph_post_send(ctx, ph_arg_str(args, "path", ""), ph_arg_node(args, "body"),
                         ph_arg_bool(args, "structured", false), ph_arg_str(args, "sent_text", NULL));
 }
-/* PoP: photon__sidecar_send_poll @ plugins/platforms/photon/adapter.py:_sidecar_send_poll */
+/* PoP: ph__sidecar_send_poll @ plugins/platforms/photon/adapter.py:_sidecar_send_poll */
 static json_t *ph__sidecar_send_poll(ph_ctx_t *ctx, const json_t *args) {
     return ph_sidecar_send_poll(ctx, ph_arg_str(args, "space_id", ""),
                                 ph_arg_node(args, "title"), ph_arg_node(args, "options"));
 }
-/* PoP: photon__sidecar_send_attachment @ plugins/platforms/photon/adapter.py:_sidecar_send_attachment */
+/* PoP: ph__sidecar_send_attachment @ plugins/platforms/photon/adapter.py:_sidecar_send_attachment */
 static json_t *ph__sidecar_send_attachment(ph_ctx_t *ctx, const json_t *args) {
     return ph_sidecar_send_attachment(ctx, ph_arg_str(args, "space_id", ""),
                                       ph_arg_node(args, "path"), ph_arg_str(args, "name", NULL),
                                       ph_arg_str(args, "mime_type", NULL), ph_arg_str(args, "caption", NULL),
                                       ph_arg_str(args, "kind", "attachment"));
 }
-/* PoP: photon__sidecar_send @ plugins/platforms/photon/adapter.py:_sidecar_send */
+/* PoP: ph__sidecar_send @ plugins/platforms/photon/adapter.py:_sidecar_send */
 static json_t *ph__sidecar_send(ph_ctx_t *ctx, const json_t *args) {
     return ph_sidecar_send(ctx, ph_arg_str(args, "space_id", ""), ph_arg_str(args, "text", ""),
                            ph_arg_bool(args, "richlink", true), ph_arg_bool(args, "markdown", true));

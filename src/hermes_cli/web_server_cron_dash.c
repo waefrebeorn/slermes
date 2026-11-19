@@ -61,7 +61,7 @@ static char *opt_text(const json_t *v, bool strip_trailing_slash) {
 }
 
 /* _cron_string_list(value) over a json value → json array or NULL. */
-/* PoP: string_list @ hermes_cli/web_server_memory.py:_string_list */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 static json_t *string_list(const json_t *v) {
     if (!v || v->type == JSON_NULL) return NULL;
     json_t *items = json_array();

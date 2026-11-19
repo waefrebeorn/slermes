@@ -132,56 +132,56 @@ bool cc_state_truthy(const json_t *v) {
     }
 }
 
-/* PoP: cc_state_get @ agent/context_compressor.py:ContextCompressor.__getattribute__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 json_t *cc_state_get(const json_t *state, const char *key) {
     if (!state || state->type != JSON_OBJECT) return NULL;
     return json_obj_get(state, key);
 }
 
-/* PoP: cc_state_has @ agent/context_compressor.py:ContextCompressor.__getattribute__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 bool cc_state_has(const json_t *state, const char *key) {
     return cc_state_get(state, key) != NULL;
 }
 
-/* PoP: cc_state_str @ agent/context_compressor.py:ContextCompressor.__getattribute__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 const char *cc_state_str(const json_t *state, const char *key, const char *def) {
     json_t *v = cc_state_get(state, key);
     if (v && v->type == JSON_STRING && v->str_val) return v->str_val;
     return def;
 }
 
-/* PoP: cc_state_num @ agent/context_compressor.py:ContextCompressor.__getattribute__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 double cc_state_num(const json_t *state, const char *key, double def) {
     json_t *v = cc_state_get(state, key);
     if (v && v->type == JSON_NUMBER) return v->num_val;
     return def;
 }
 
-/* PoP: cc_state_bool @ agent/context_compressor.py:ContextCompressor.__getattribute__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 bool cc_state_bool(const json_t *state, const char *key, bool def) {
     json_t *v = cc_state_get(state, key);
     if (!v) return def;
     return cc_state_truthy(v);
 }
 
-/* PoP: cc_state_set @ agent/context_compressor.py:ContextCompressor.__setattr__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 void cc_state_set(json_t *state, const char *key, json_t *val) {
     if (!state || state->type != JSON_OBJECT) { if (val) json_free(val); return; }
     json_set(state, key, val ? val : json_null());
 }
-/* PoP: cc_state_set_str @ agent/context_compressor.py:ContextCompressor.__setattr__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 void cc_state_set_str(json_t *state, const char *key, const char *val) {
     cc_state_set(state, key, json_string(val ? val : ""));
 }
-/* PoP: cc_state_set_num @ agent/context_compressor.py:ContextCompressor.__setattr__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 void cc_state_set_num(json_t *state, const char *key, double val) {
     cc_state_set(state, key, json_number(val));
 }
-/* PoP: cc_state_set_bool @ agent/context_compressor.py:ContextCompressor.__setattr__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 void cc_state_set_bool(json_t *state, const char *key, bool val) {
     cc_state_set(state, key, json_bool(val));
 }
-/* PoP: cc_state_set_null @ agent/context_compressor.py:ContextCompressor.__setattr__ */
+/* state plumbing seam accessor (no live quarry dunder; PoP claim removed) */
 void cc_state_set_null(json_t *state, const char *key) {
     cc_state_set(state, key, json_null());
 }

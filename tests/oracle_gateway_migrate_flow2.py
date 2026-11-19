@@ -123,7 +123,10 @@ def seam(name, args):
     else:
         r = sc
     r = json.loads(json.dumps(r))
-    CUR["trace"].append({"ev": name, "args": args, "ret": r})
+    # Snapshot ret at call time: the live caller may mutate the returned object
+    # afterwards (e.g. _write_multiplex_flag pops/sets the config dict), and the
+    # C harness records a json_copy snapshot — the trace must not alias it.
+    CUR["trace"].append({"ev": name, "args": args, "ret": json.loads(json.dumps(r))})
     return maybe_raise(r)
 
 

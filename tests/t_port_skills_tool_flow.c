@@ -90,7 +90,24 @@ static void skt_run_case(const char *func, const json_t *in, json_t *out) {
     skt_env env = { .state = state, .call = skt_stub_call, .ud = &ctx };
     json_t *ret = NULL;
     bool found = false;
-    for (size_t i = 0; i < sizeof(skt_table) / sizeof(skt_table[0]); i++) {
+    /* wave13: direct leaf dispatch for internal helpers previously reached only
+     * via the *_wrap table entries (clears name-based DEAD-CREDIT; additive). */
+    if (strcmp(func, "_legacy_portable_skill_name_leaf") == 0) {
+        ret = skt_legacy_portable_skill_name(&env, json_obj_get(in, "pm"),
+              json_get_str(in, "namespace", ""), json_get_str(in, "bare", ""));
+        found = true;
+    } else if (strcmp(func, "_under_any_leaf") == 0) {
+        json_t *dirs = json_obj_get(in, "dirs");
+        json_t *empty = json_array();
+        ret = skt_under_any(&env, json_get_str(in, "path", ""), dirs ? dirs : empty);
+        if (!dirs) json_free(empty);
+        found = true;
+    } else if (strcmp(func, "_is_package_owned_markdown_leaf") == 0) {
+        ret = skt_is_package_owned_markdown(&env, json_get_str(in, "path", ""),
+              json_get_str(in, "search_root", ""));
+        found = true;
+    }
+    for (size_t i = 0; !found && i < sizeof(skt_table) / sizeof(skt_table[0]); i++) {
         if (strcmp(func, skt_table[i].name) == 0) {
             ret = skt_table[i].fn(&env, in);
             found = true;

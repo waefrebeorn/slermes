@@ -913,7 +913,7 @@ static json_t *cf_iter_gateway_skills(const json_t *inp, const cf_seams_t *s) {
     json_free(a);
     if (CF_RAISED(dis)) {
         if (cf_exc_is_exception(dis)) { json_free(dis); dis = NULL; dis_empty_set = true; }
-        else { cf_park(dis); goto fail; }
+        else { cf_park(dis); dis = NULL; goto fail; }  /* parked spec owned by cf_pending */
     }
 
     /* hub_dir = (skills_dir / ".hub").resolve(); roots = [skills_dir.resolve()] */
@@ -955,7 +955,7 @@ static json_t *cf_iter_gateway_skills(const json_t *inp, const cf_seams_t *s) {
     }
 
     sc = cf_call(s, "get_skill_commands", args0());
-    if (CF_RAISED(sc)) { cf_park(sc); goto fail; }
+    if (CF_RAISED(sc)) { cf_park(sc); sc = NULL; goto fail; }  /* parked spec owned by cf_pending */
     if (!is_obj(sc)) {  /* sorted(None) TypeError (domain: object or null) */
         cf_park_not_iterable(sc);
         goto fail;
@@ -1153,6 +1153,7 @@ static json_t *cf_dir_completions(const json_t *inp, const cf_seams_t *s) {
             return out;  /* empty generator */
         }
         cf_park(entries);
+        entries = NULL;  /* parked spec owned by cf_pending; fail must not free it */
         goto fail;
     }
     if (!is_arr(entries)) {  /* sorted(None) TypeError propagates (no try) */
@@ -1199,7 +1200,7 @@ static json_t *cf_dir_completions(const json_t *inp, const cf_seams_t *s) {
             aset_s(a, "path", full);
             meta = cf_call(s, "_file_size_label", a);
             json_free(a);
-            if (CF_RAISED(meta)) { cf_park(meta); goto fail; }
+            if (CF_RAISED(meta)) { cf_park(meta); meta = NULL; goto fail; }  /* cf_pending owns it */
         }
         display = xsf("%s%s", entry, suffix);
         json_append(out, cf_completion(text, word, display, meta));
@@ -1287,11 +1288,14 @@ static json_t *cf_unknown_command_lines(const char *typed, const json_t *known,
                                         const cf_seams_t *s) {
     if (!typed) typed = "";
     json_t *parts = cf_split(typed);
-    const char *base = json_len(parts) ? jstr(json_get(parts, 0)) : typed;
+    /* base borrows parts[0]'s string; own a copy so it survives json_free(parts). */
+    const char *base_b = json_len(parts) ? jstr(json_get(parts, 0)) : typed;
+    char *base = strdup(base_b ? base_b : "");
     /* list(known) evaluates BEFORE the get_close_matches call */
     if (!is_arr(known)) {
         cf_park_not_iterable(known);
         json_free(parts);
+        free(base);
         return NULL;
     }
     json_t *a = args0();
@@ -1302,7 +1306,7 @@ static json_t *cf_unknown_command_lines(const char *typed, const json_t *known,
     json_t *close = cf_call(s, "get_close_matches", a);
     json_free(a);
     json_free(parts);
-    if (CF_RAISED(close)) { cf_park(close); return NULL; }
+    if (CF_RAISED(close)) { cf_park(close); free(base); return NULL; }
     char *hint = strdup("");
     if (jtruth(close)) {
         const json_t *first = json_get(close, 0);
@@ -1311,11 +1315,11 @@ static json_t *cf_unknown_command_lines(const char *typed, const json_t *known,
         aset_j(a, "suggestion", first);
         json_t *r = cf_call(s, "t", a);
         json_free(a);
-        if (CF_RAISED(r)) { cf_park(r); free(hint); json_free(close); return NULL; }
+        if (CF_RAISED(r)) { cf_park(r); free(hint); free(base); json_free(close); return NULL; }
         if (!is_str(r)) {
             char *m = xsf("can only concatenate str (not \"%s\") to str", cf_type_name(r));
             cf_park_new("TypeError", m);
-            free(m); free(hint); json_free(r); json_free(close);
+            free(m); free(hint); free(base); json_free(r); json_free(close);
             return NULL;
         }
         free(hint);
@@ -1330,6 +1334,7 @@ static json_t *cf_unknown_command_lines(const char *typed, const json_t *known,
     json_t *lead = cf_call(s, "t", a);
     json_free(a);
     free(hint);
+    free(base);
     if (CF_RAISED(lead)) { cf_park(lead); return NULL; }
     a = args0();
     aset_s(a, "key", "cli.command.type_help");

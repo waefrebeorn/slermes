@@ -1051,7 +1051,7 @@ static int pp_probe_raise_class(const json_t *r) {
     return 3;
 }
 
-/* PoP: pp_bp_verify @ pm/packages.py:verify */
+/* PoP: pp_bp_verify @ pm/packages.py:BinaryPackage.verify */
 static json_t *pp_bp_verify(pp_ctx_t *ctx, const json_t *self, const json_t *args) {
     json_t *ret = NULL, *err = NULL;
     json_t *binary = pp_bp_binary(ctx, self, args);
@@ -1230,7 +1230,7 @@ static json_t *pp_dmgbuild_verify(pp_ctx_t *ctx, const json_t *self, const json_
 
 /* -- _BionicDebArm -- */
 
-/* PoP: pp_bionic_verify @ pm/packages.py:verify */
+/* PoP: pp_bionic_verify @ pm/packages.py:_BionicDebArm.verify */
 static json_t *pp_bionic_verify(pp_ctx_t *ctx, const json_t *self, const json_t *args) {
     (void)self;
     json_t *sa = json_object();

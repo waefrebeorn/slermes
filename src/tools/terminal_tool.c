@@ -205,7 +205,7 @@ bool is_persistent_env_port(const char *task_id) {
 }
 
 
-/* PoP: command_requires_pipe_stdin @ tools/terminal_tool_result.py:_interpret_exit_code */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 const char* interpret_exit_code(const char *command, int exit_code) {
     (void)command;
     if (exit_code == 0) return "success";
@@ -463,7 +463,7 @@ char* terminal_tool(const char *command, int timeout, bool pty, bool force,
 }
 
 
-/* PoP: register_terminal_tool @ tools/terminal_tool.py:_handle_terminal */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char* handle_terminal(const char *args_json) {
     char *error_msg = NULL;
     json_t *args = json_parse(args_json, &error_msg);

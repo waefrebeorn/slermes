@@ -380,7 +380,6 @@ static const json_t *ba_self(const ba_ctx_t *ctx, const char *key) {
  * Group A — CLI text leaves
  * ================================================================ */
 
-/* PoP: ba__bounded_cli_message @ plugins/platforms/buzz/adapter.py:_bounded_cli_message */
 static json_t *ba_bounded_cli_message_c(const char *message, const json_t *redact) {
     char *msg = ba_strdup(message ? message : "");
     if (redact && redact->type == JSON_OBJECT) {
@@ -403,13 +402,13 @@ static json_t *ba_bounded_cli_message_c(const char *message, const json_t *redac
     free(msg);
     return ret;
 }
+/* PoP: ba__bounded_cli_message @ plugins/platforms/buzz/adapter.py:_bounded_cli_message */
 static json_t *ba__bounded_cli_message(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const char *message = json_get_str(args, "message", "");
     return ba_bounded_cli_message_c(message, json_obj_get(args, "redact_path"));
 }
 
-/* PoP: ba__json_or @ plugins/platforms/buzz/adapter.py:_json_or */
 static json_t *ba_json_or_c(const json_t *text, const json_t *deflt) {
     const char *t = ba_str(text);
     if (!t || t[0] == '\0') return deflt ? json_copy(deflt) : json_null();
@@ -417,6 +416,7 @@ static json_t *ba_json_or_c(const json_t *text, const json_t *deflt) {
     if (!parsed) return deflt ? json_copy(deflt) : json_null();
     return parsed;
 }
+/* PoP: ba__json_or @ plugins/platforms/buzz/adapter.py:_json_or */
 static json_t *ba__json_or(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_json_or_c(json_obj_get(args, "text"), json_obj_get(args, "default"));
@@ -545,7 +545,6 @@ static json_t *ba__attachment_rejection_note(ba_ctx_t *ctx, const json_t *args) 
  * Group B — identity / allow-list leaves
  * ================================================================ */
 
-/* PoP: ba__split_csv @ plugins/platforms/buzz/adapter.py:_split_csv */
 static json_t *ba_split_csv_c(const json_t *raw) {
     const char *s = ba_str(raw);
     if (!s) return raw ? json_copy(raw) : json_null();
@@ -562,12 +561,12 @@ static json_t *ba_split_csv_c(const json_t *raw) {
     }
     return ret;
 }
+/* PoP: ba__split_csv @ plugins/platforms/buzz/adapter.py:_split_csv */
 static json_t *ba__split_csv(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_split_csv_c(json_obj_get(args, "raw"));
 }
 
-/* PoP: ba__normalize_user_ref @ plugins/platforms/buzz/adapter.py:_normalize_user_ref */
 static json_t *ba_normalize_user_ref_c(ba_ctx_t *ctx, const json_t *ref) {
     if (ba_truthy(ref) && ref->type != JSON_STRING) {
         char msg[128];
@@ -592,6 +591,7 @@ static json_t *ba_normalize_user_ref_c(ba_ctx_t *ctx, const json_t *ref) {
     free(low);
     return ret;
 }
+/* PoP: ba__normalize_user_ref @ plugins/platforms/buzz/adapter.py:_normalize_user_ref */
 static json_t *ba__normalize_user_ref(ba_ctx_t *ctx, const json_t *args) {
     return ba_normalize_user_ref_c(ctx, json_obj_get(args, "ref"));
 }
@@ -679,7 +679,6 @@ static json_t *ba__ttl_get(ba_ctx_t *ctx, const json_t *args) {
     return json_null();
 }
 
-/* PoP: ba__credentials_key @ plugins/platforms/buzz/adapter.py:_credentials_key */
 static json_t *ba_credentials_key_c(const json_t *data) {
     if (!data || data->type != JSON_OBJECT) {
         char msg[128];
@@ -698,6 +697,7 @@ static json_t *ba_credentials_key_c(const json_t *data) {
     }
     return json_string("");
 }
+/* PoP: ba__credentials_key @ plugins/platforms/buzz/adapter.py:_credentials_key */
 static json_t *ba__credentials_key(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_credentials_key_c(json_obj_get(args, "data"));
@@ -707,7 +707,6 @@ static json_t *ba__credentials_key(ba_ctx_t *ctx, const json_t *args) {
  * Group C — NIP-10 tags / thread / event-meta state
  * ================================================================ */
 
-/* PoP: ba__e_tags @ plugins/platforms/buzz/adapter.py:_e_tags */
 static json_t *ba_e_tags_c(const json_t *event) {
     json_t *ret = json_array();
     const json_t *tags = event ? json_obj_get(event, "tags") : NULL;
@@ -729,6 +728,7 @@ static json_t *ba_e_tags_c(const json_t *event) {
     }
     return ret;
 }
+/* PoP: ba__e_tags @ plugins/platforms/buzz/adapter.py:_e_tags */
 static json_t *ba__e_tags(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_e_tags_c(json_obj_get(args, "event"));
@@ -760,7 +760,6 @@ static json_t *ba__event_reply_parent_id(ba_ctx_t *ctx, const json_t *args) {
     return ret;
 }
 
-/* PoP: ba__p_tagged @ plugins/platforms/buzz/adapter.py:_p_tagged */
 static bool ba_p_tagged_c(const json_t *event, const char *pubkey) {
     const json_t *tags = event ? json_obj_get(event, "tags") : NULL;
     if (!tags || tags->type != JSON_ARRAY) return false;
@@ -778,13 +777,13 @@ static bool ba_p_tagged_c(const json_t *event, const char *pubkey) {
     }
     return false;
 }
+/* PoP: ba__p_tagged @ plugins/platforms/buzz/adapter.py:_p_tagged */
 static json_t *ba__p_tagged(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const char *pubkey = json_get_str(args, "pubkey", "");
     return json_bool(ba_p_tagged_c(json_obj_get(args, "event"), pubkey));
 }
 
-/* PoP: ba__extract_thread_root @ plugins/platforms/buzz/adapter.py:_extract_thread_root */
 static json_t *ba_extract_thread_root_c(const json_t *event) {
     json_t *tags = ba_e_tags_c(event);
     char *root = NULL, *reply = NULL;
@@ -809,12 +808,12 @@ static json_t *ba_extract_thread_root_c(const json_t *event) {
     free(root); free(reply);
     return ret;
 }
+/* PoP: ba__extract_thread_root @ plugins/platforms/buzz/adapter.py:_extract_thread_root */
 static json_t *ba__extract_thread_root(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_extract_thread_root_c(json_obj_get(args, "event"));
 }
 
-/* PoP: ba__store_event_meta @ plugins/platforms/buzz/adapter.py:_store_event_meta */
 static json_t *ba_store_event_meta_c(json_t *state, const char *event_id, const char *pubkey, const char *snippet) {
     if (!state || state->type != JSON_OBJECT)
         return ba_err("TypeError", "'state' must be a dict");
@@ -831,6 +830,7 @@ static json_t *ba_store_event_meta_c(json_t *state, const char *event_id, const 
     ba_trim_to(cache, 500);
     return NULL;
 }
+/* PoP: ba__store_event_meta @ plugins/platforms/buzz/adapter.py:_store_event_meta */
 static json_t *ba__store_event_meta(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     json_t *state = json_obj_get(args, "state");
@@ -858,7 +858,6 @@ static json_t *ba__lookup_event_meta(ba_ctx_t *ctx, const json_t *args) {
     return ret;
 }
 
-/* PoP: ba__trim_seen @ plugins/platforms/buzz/adapter.py:_trim_seen */
 static json_t *ba_trim_seen_c(json_t *state) {
     if (!state || state->type != JSON_OBJECT || !json_obj_get(state, "seen"))
         return ba_err("KeyError", "'seen'");
@@ -868,13 +867,13 @@ static json_t *ba_trim_seen_c(json_t *state) {
     if (meta && meta->type == JSON_OBJECT) ba_trim_to(meta, 500);
     return NULL;
 }
+/* PoP: ba__trim_seen @ plugins/platforms/buzz/adapter.py:_trim_seen */
 static json_t *ba__trim_seen(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     json_t *r = ba_trim_seen_c(json_obj_get(args, "state"));
     return r ? r : json_null();
 }
 
-/* PoP: ba__remember_event @ plugins/platforms/buzz/adapter.py:_remember_event */
 static json_t *ba_remember_event_c(ba_ctx_t *ctx, json_t *state, const json_t *event) {
     (void)ctx;
     char *eid = ba_pystr_or_empty(event ? json_obj_get(event, "id") : NULL);
@@ -892,6 +891,7 @@ static json_t *ba_remember_event_c(ba_ctx_t *ctx, json_t *state, const json_t *e
     free(eid);
     return r;
 }
+/* PoP: ba__remember_event @ plugins/platforms/buzz/adapter.py:_remember_event */
 static json_t *ba__remember_event(ba_ctx_t *ctx, const json_t *args) {
     json_t *r = ba_remember_event_c(ctx, json_obj_get(args, "state"), json_obj_get(args, "event"));
     return r ? r : json_null();
@@ -915,7 +915,6 @@ static json_t *ba__remember_event_meta(ba_ctx_t *ctx, const json_t *args) {
     return r ? r : json_null();
 }
 
-/* PoP: ba__new_channel_state @ plugins/platforms/buzz/adapter.py:_new_channel_state */
 static json_t *ba_new_channel_state_c(const char *chat_type) {
     json_t *st = json_object();
     ba_set_s(st, "chat_type", chat_type);
@@ -924,6 +923,7 @@ static json_t *ba_new_channel_state_c(const char *chat_type) {
     json_set(st, "event_meta", json_object());
     return st;
 }
+/* PoP: ba__new_channel_state @ plugins/platforms/buzz/adapter.py:_new_channel_state */
 static json_t *ba__new_channel_state(ba_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     return ba_new_channel_state_c(json_get_str(args, "chat_type", ""));
@@ -988,7 +988,6 @@ static json_t *ba__record_thread_root(ba_ctx_t *ctx, const json_t *args) {
     return json_null();
 }
 
-/* PoP: ba__resolve_reply_anchor @ plugins/platforms/buzz/adapter.py:_resolve_reply_anchor */
 static json_t *ba_resolve_reply_anchor_c(ba_ctx_t *ctx, const json_t *anchor) {
     if (!ba_truthy(anchor)) return anchor ? json_copy(anchor) : json_null();
     if (!json_has(ctx->state, "_thread_roots")) return ba_attr_err("_thread_roots");
@@ -999,6 +998,7 @@ static json_t *ba_resolve_reply_anchor_c(ba_ctx_t *ctx, const json_t *anchor) {
     if (ba_truthy(root)) return json_copy(root);
     return json_copy(anchor);
 }
+/* PoP: ba__resolve_reply_anchor @ plugins/platforms/buzz/adapter.py:_resolve_reply_anchor */
 static json_t *ba__resolve_reply_anchor(ba_ctx_t *ctx, const json_t *args) {
     return ba_resolve_reply_anchor_c(ctx, json_obj_get(args, "anchor"));
 }
@@ -1026,7 +1026,6 @@ static json_t *ba__reply_args(ba_ctx_t *ctx, const json_t *args) {
  * Group D — DM classification / mention gating
  * ================================================================ */
 
-/* PoP: ba__may_reclassify_as_dm @ plugins/platforms/buzz/adapter.py:_may_reclassify_as_dm */
 static json_t *ba_may_reclassify_c(ba_ctx_t *ctx, const char *channel_id) {
     if (!json_has(ctx->state, "_channel_meta")) return ba_attr_err("_channel_meta");
     const json_t *cm = ba_self(ctx, "_channel_meta");
@@ -1045,11 +1044,11 @@ static json_t *ba_may_reclassify_c(ba_ctx_t *ctx, const char *channel_id) {
     free(name); free(desc);
     return json_bool(ok);
 }
+/* PoP: ba__may_reclassify_as_dm @ plugins/platforms/buzz/adapter.py:_may_reclassify_as_dm */
 static json_t *ba__may_reclassify_as_dm(ba_ctx_t *ctx, const json_t *args) {
     return ba_may_reclassify_c(ctx, json_get_str(args, "channel_id", ""));
 }
 
-/* PoP: ba__p_tagged_to_self @ plugins/platforms/buzz/adapter.py:_p_tagged_to_self */
 static json_t *ba_p_tagged_to_self_c(ba_ctx_t *ctx, const json_t *event) {
     if (!json_has(ctx->state, "_self_pubkey")) return ba_attr_err("_self_pubkey");
     const json_t *pk = ba_self(ctx, "_self_pubkey");
@@ -1057,6 +1056,7 @@ static json_t *ba_p_tagged_to_self_c(ba_ctx_t *ctx, const json_t *event) {
     const char *pks = ba_str(pk);
     return json_bool(ba_p_tagged_c(event, pks ? pks : ""));
 }
+/* PoP: ba__p_tagged_to_self @ plugins/platforms/buzz/adapter.py:_p_tagged_to_self */
 static json_t *ba__p_tagged_to_self(ba_ctx_t *ctx, const json_t *args) {
     return ba_p_tagged_to_self_c(ctx, json_obj_get(args, "event"));
 }
@@ -1099,7 +1099,6 @@ static bool ba_search_display(const char *hay, const char *needle) {
     return false;
 }
 
-/* PoP: ba__is_mentioned @ plugins/platforms/buzz/adapter.py:_is_mentioned */
 static json_t *ba_is_mentioned_c(ba_ctx_t *ctx, const char *content) {
     if (!json_has(ctx->state, "_self_pubkey")) return ba_attr_err("_self_pubkey");
     if (!json_has(ctx->state, "_self_npub")) return ba_attr_err("_self_npub");
@@ -1128,6 +1127,7 @@ static json_t *ba_is_mentioned_c(ba_ctx_t *ctx, const char *content) {
     free(low);
     return json_bool(found);
 }
+/* PoP: ba__is_mentioned @ plugins/platforms/buzz/adapter.py:_is_mentioned */
 static json_t *ba__is_mentioned(ba_ctx_t *ctx, const json_t *args) {
     return ba_is_mentioned_c(ctx, json_get_str(args, "content", ""));
 }
@@ -1145,7 +1145,6 @@ static json_t *ba__is_addressed(ba_ctx_t *ctx, const json_t *args) {
     return ba_p_tagged_to_self_c(ctx, event);
 }
 
-/* PoP: ba__is_direct_message_event @ plugins/platforms/buzz/adapter.py:_is_direct_message_event */
 static json_t *ba_is_direct_c(ba_ctx_t *ctx, const char *channel_id, const json_t *event) {
     if (!json_has(ctx->state, "_self_pubkey")) return ba_attr_err("_self_pubkey");
     const json_t *self_pk = ba_self(ctx, "_self_pubkey");
@@ -1184,6 +1183,7 @@ static json_t *ba_is_direct_c(ba_ctx_t *ctx, const char *channel_id, const json_
     if (m) json_free(m);
     return json_bool(!mentioned);
 }
+/* PoP: ba__is_direct_message_event @ plugins/platforms/buzz/adapter.py:_is_direct_message_event */
 static json_t *ba__is_direct_message_event(ba_ctx_t *ctx, const json_t *args) {
     return ba_is_direct_c(ctx, json_get_str(args, "channel_id", ""), json_obj_get(args, "event"));
 }
@@ -1208,7 +1208,6 @@ static json_t *ba__maybe_latch_dm(ba_ctx_t *ctx, const json_t *args) {
     return json_null();
 }
 
-/* PoP: ba__strip_mention @ plugins/platforms/buzz/adapter.py:_strip_mention */
 static json_t *ba_strip_mention_c(ba_ctx_t *ctx, const char *content) {
     if (!json_has(ctx->state, "_display_name")) return ba_attr_err("_display_name");
     if (!json_has(ctx->state, "_self_npub")) return ba_attr_err("_self_npub");
@@ -1256,6 +1255,7 @@ static json_t *ba_strip_mention_c(ba_ctx_t *ctx, const char *content) {
     }
     json_t *r = json_string(text); free(text); return r;
 }
+/* PoP: ba__strip_mention @ plugins/platforms/buzz/adapter.py:_strip_mention */
 static json_t *ba__strip_mention(ba_ctx_t *ctx, const json_t *args) {
     return ba_strip_mention_c(ctx, json_get_str(args, "content", ""));
 }
@@ -1264,7 +1264,6 @@ static json_t *ba__strip_mention(ba_ctx_t *ctx, const json_t *args) {
  * Group E — scoped config / credentials resolution
  * ================================================================ */
 
-/* PoP: ba__scoped_platform_setting @ plugins/platforms/buzz/adapter.py:_scoped_platform_setting */
 static json_t *ba_scoped_platform_setting_c(ba_ctx_t *ctx, const char *env_name, const json_t *extra, const char *key) {
     json_t *a = ba_args();
     json_t *scoped_flag = ba_call(ctx, "_profile_scoped", a);
@@ -1284,12 +1283,12 @@ static json_t *ba_scoped_platform_setting_c(ba_ctx_t *ctx, const char *env_name,
     json_t *ga = ba_args(); ba_set_s(ga, "name", env_name);
     return ba_call(ctx, "os.getenv", ga);
 }
+/* PoP: ba__scoped_platform_setting @ plugins/platforms/buzz/adapter.py:_scoped_platform_setting */
 static json_t *ba__scoped_platform_setting(ba_ctx_t *ctx, const json_t *args) {
     return ba_scoped_platform_setting_c(ctx, json_get_str(args, "env_name", ""),
                                         json_obj_get(args, "extra"), json_get_str(args, "key", ""));
 }
 
-/* PoP: ba__setting_or @ plugins/platforms/buzz/adapter.py:_setting_or */
 static json_t *ba_setting_or_c(ba_ctx_t *ctx, const char *env_name, const json_t *extra, const char *key, const json_t *deflt) {
     json_t *raw = ba_scoped_platform_setting_c(ctx, env_name, extra, key);
     if (ba_is_raise(raw)) return raw;
@@ -1303,6 +1302,7 @@ static json_t *ba_setting_or_c(ba_ctx_t *ctx, const char *env_name, const json_t
     const json_t *v = json_obj_get(extra, key);
     return v ? json_copy(v) : (deflt ? json_copy(deflt) : json_null());
 }
+/* PoP: ba__setting_or @ plugins/platforms/buzz/adapter.py:_setting_or */
 static json_t *ba__setting_or(ba_ctx_t *ctx, const json_t *args) {
     return ba_setting_or_c(ctx, json_get_str(args, "env_name", ""), json_obj_get(args, "extra"),
                            json_get_str(args, "key", ""), json_obj_get(args, "default"));
@@ -1431,7 +1431,6 @@ static json_t *ba__reply_to_mode(ba_ctx_t *ctx, const json_t *args) {
     return ret;
 }
 
-/* PoP: ba__resolve_credentials_data @ plugins/platforms/buzz/adapter.py:_resolve_credentials_data */
 static json_t *ba_resolve_credentials_data_c(ba_ctx_t *ctx, const json_t *extra) {
     json_t *ca = ba_args(); ba_set_copy(ca, "extra", extra);
     json_t *candidates = ba_call(ctx, "_credentials_candidates", ca);
@@ -1472,6 +1471,7 @@ static json_t *ba_resolve_credentials_data_c(ba_ctx_t *ctx, const json_t *extra)
     json_free(candidates);
     return result ? result : json_object();
 }
+/* PoP: ba__resolve_credentials_data @ plugins/platforms/buzz/adapter.py:_resolve_credentials_data */
 static json_t *ba__resolve_credentials_data(ba_ctx_t *ctx, const json_t *args) {
     return ba_resolve_credentials_data_c(ctx, json_obj_get(args, "extra"));
 }

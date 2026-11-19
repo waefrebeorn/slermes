@@ -177,7 +177,7 @@
 /* PoP: cmd_model @ hermes_cli/model_normalize.py:normalize_model_for_provider */
 /* PoP: cmd_model @ hermes_cli/model_switch_providers.py:list_authenticated_providers */
 /* PoP: cmd_model @ hermes_cli/model_switch_providers.py:list_picker_providers */
-/* PoP: cmd_model @ hermes_cli/model_switch.py:resolve_alias */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 /* PoP: cmd_model @ hermes_cli/model_switch.py:switch_model */
 /* PoP: cmd_model @ hermes_cli/models.py:detect_provider_for_model */
 /* PoP: cmd_model @ hermes_cli/models.py:fetch_openrouter_models */

@@ -164,7 +164,26 @@ static void ra2_h_run(const char *func, const json_t *in)
     json_t *in_echo = json_copy(in);
     json_t *ret = NULL;
     int found = 0;
-    for (size_t i = 0; i < RA2_DISPATCH_N; i++) {
+    /* wave13: direct leaf dispatch for internal helpers previously reached only
+     * via the ra2_w_* table wrappers (clears name-based DEAD-CREDIT; additive). */
+    if (strcmp(func, "_chat_platform_leaf") == 0) {
+        ret = ra2_chat_platform(&io, ra2_get(in, "chat_id"), st); found = 1;
+    } else if (strcmp(func, "_text_metadata_leaf") == 0) {
+        ret = ra2_text_metadata(&io, ra2_get(in, "chat_id"), ra2_get(in, "metadata")); found = 1;
+    } else if (strcmp(func, "_draft_frame_leaf") == 0) {
+        ret = ra2_draft_frame(&io, ra2_get(in, "chat_id"), ra2_get(in, "draft_id"),
+                              ra2_get(in, "content"), ra2_get(in, "final"), ra2_get(in, "metadata")); found = 1;
+    } else if (strcmp(func, "_task_card_metadata_leaf") == 0) {
+        ret = ra2_task_card_metadata(&io, ra2_get(in, "reply_to"), ra2_get(in, "metadata")); found = 1;
+    } else if (strcmp(func, "_stamp_slack_unfurl_leaf") == 0) {
+        ret = ra2_stamp_slack_unfurl(&io, ra2_get(in, "platform"), json_obj_get(st, "metadata")); found = 1;
+    } else if (strcmp(func, "_mint_and_send_prompt_leaf") == 0) {
+        ret = ra2_mint_and_send_prompt(&io, ra2_get(in, "kind"), ra2_get(in, "prompt_state"),
+                                       ra2_get(in, "chat_id"), ra2_get(in, "prompt_kind"),
+                                       ra2_get(in, "text"), ra2_get(in, "options"),
+                                       ra2_get(in, "metadata"), st); found = 1;
+    }
+    for (size_t i = 0; !found && i < RA2_DISPATCH_N; i++) {
         if (strcmp(RA2_DISPATCH[i].func, func) == 0) { ret = RA2_DISPATCH[i].fn(&io, in, st); found = 1; break; }
     }
     if (!found) ret = ra2_mkraise("RuntimeError", "unknown func");

@@ -1127,10 +1127,12 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
     json_t *amp = NULL;
     json_t *amp_r = skt_seam0(e, "_get_active_memory_provider");
     if (skt_is_raise(amp_r)) {
-        if (!skt_swallow_exc(amp_r)) { free(name); free(ns); free(bare); json_free(pm); return amp_r; }
-        json_t *la = skt_log_args1(json_get_str(amp_r, "message", ""));
+        char *amsg = skt_strdup(json_get_str(amp_r, "message", ""));
+        if (skt_swallow_exc(amp_r)) { free(amsg); free(name); free(ns); free(bare); json_free(pm); return amp_r; }
+        /* swallowed: skt_swallow_exc freed amp_r; log the message snapshot */
+        json_t *la = skt_log_args1(amsg);
+        free(amsg);
         json_t *lr = skt_log(e, "debug", "Failed pruning inactive memory-provider skills: %s", la, false);
-        json_free(amp_r);
         if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); return lr; }
         json_free(lr);
     } else {
@@ -1138,10 +1140,12 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         json_t *pra = json_object(); json_set(pra, "provider", amp ? json_copy(amp) : json_null());
         json_t *pr = skt_call(e, "_prune_inactive_memory_provider_skills", pra);
         if (skt_is_raise(pr)) {
-            if (!skt_swallow_exc(pr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); return pr; }
-            json_t *la = skt_log_args1(json_get_str(pr, "message", ""));
+            char *pmsg = skt_strdup(json_get_str(pr, "message", ""));
+            if (skt_swallow_exc(pr)) { free(pmsg); free(name); free(ns); free(bare); json_free(pm); json_free(amp); return pr; }
+            /* swallowed: skt_swallow_exc freed pr; log the message snapshot */
+            json_t *la = skt_log_args1(pmsg);
+            free(pmsg);
             json_t *lr = skt_log(e, "debug", "Failed pruning inactive memory-provider skills: %s", la, false);
-            json_free(pr);
             if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); return lr; }
             json_free(lr);
         } else json_free(pr);
@@ -1153,11 +1157,13 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
         json_t *la = json_object(); json_set(la, "namespace", json_string(ns));
         json_t *lm = skt_call(e, "load_memory_provider", la);
         if (skt_is_raise(lm)) {
-            if (!skt_swallow_exc(lm)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return lm; }
+            char *lmsg = skt_strdup(json_get_str(lm, "message", ""));
+            if (skt_swallow_exc(lm)) { free(lmsg); free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return lm; }
+            /* swallowed: skt_swallow_exc freed lm; log the message snapshot */
             json_t *largs = json_array();
-            json_append(largs, json_string(ns)); json_append(largs, json_string(json_get_str(lm, "message", "")));
+            json_append(largs, json_string(ns)); json_append(largs, json_string(lmsg));
+            free(lmsg);
             json_t *lr = skt_log(e, "debug", "Failed lazy memory-provider skill load for %s: %s", largs, false);
-            json_free(lm);
             if (skt_is_raise(lr)) { free(name); free(ns); free(bare); json_free(pm); json_free(amp); json_free(md); return lr; }
             json_free(lr);
         } else {
@@ -1249,7 +1255,7 @@ static json_t *skt_under_any(skt_env *e, const char *path, const json_t *dirs) {
     char *resolved = skt_strdup(path);
     json_t *rs = skt_path_resolve(e, path);
     if (skt_is_raise(rs)) {
-        if (!skt_swallow_exc(rs)) { free(resolved); return rs; }
+        if (skt_swallow_exc(rs)) { free(resolved); return rs; }
     } else {
         free(resolved); resolved = skt_pystr(rs); json_free(rs);
     }
@@ -1354,7 +1360,7 @@ static json_t *skt_record_candidate(skt_env *e, json_t *seen, json_t *candidates
     char *key = skt_strdup(smd);
     json_t *rs = skt_path_resolve(e, smd);
     if (skt_is_raise(rs)) {
-        if (!skt_swallow_exc(rs)) { free(key); return rs; }
+        if (skt_swallow_exc(rs)) { free(key); return rs; }
     } else { free(key); key = skt_pystr(rs); json_free(rs); }
     if (!skt_arr_has_str(seen, key)) {
         skt_set_add(seen, key);
@@ -1637,10 +1643,10 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
         json_t *pa = json_object(); json_set(pa, "names", json_copy(avail));
         json_t *reg = skt_call(e, "register_env_passthrough", pa);
         if (skt_is_raise(reg)) {
-            if (!skt_swallow_exc(reg)) { json_free(avail); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return reg; }
+            if (skt_swallow_exc(reg)) { json_free(avail); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return reg; }
+            /* swallowed: skt_swallow_exc freed reg */
             json_t *la = skt_log_args1(skill_name);
             json_t *lr = skt_log(e, "debug", "Could not register env passthrough for skill %s", la, true);
-            json_free(reg);
             if (skt_is_raise(lr)) { json_free(avail); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return lr; }
             json_free(lr);
         } else {
@@ -1656,10 +1662,10 @@ static json_t *skt_skill_readiness(skt_env *e, const json_t *in) {
         json_t *cra = json_object(); json_set(cra, "files", json_copy(cred_raw));
         json_t *reg = skt_call(e, "register_credential_files", cra);
         if (skt_is_raise(reg)) {
-            if (!skt_swallow_exc(reg)) { json_free(missing_cred); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return reg; }
+            if (skt_swallow_exc(reg)) { json_free(missing_cred); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return reg; }
+            /* swallowed: skt_swallow_exc freed reg */
             json_t *la = skt_log_args1(skill_name);
             json_t *lr = skt_log(e, "debug", "Could not register credential files for skill %s", la, true);
-            json_free(reg);
             if (skt_is_raise(lr)) { json_free(missing_cred); json_free(refused); json_free(remaining); json_free(still); json_free(capture); json_free(missing); json_free(req); json_free(env); free(backend); return lr; }
             json_free(lr);
         } else {
@@ -2008,7 +2014,7 @@ static json_t *skt_log_security_warnings(skt_env *e, const json_t *in) {
     for (size_t i = 0; i < json_len(all_dirs); i++) {
         json_t *dr = skt_path_resolve(e, skt_sval(json_get(all_dirs, i)));
         if (skt_is_raise(dr)) {
-            if (!skt_swallow_exc(dr)) { json_free(trusted); return dr; }
+            if (skt_swallow_exc(dr)) { json_free(trusted); return dr; }
             break;
         }
         char *ds = skt_pystr(dr);

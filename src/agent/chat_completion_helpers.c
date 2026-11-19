@@ -673,7 +673,7 @@ int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *
     return 1;
 }
 
-/* PoP: agent_chat_completion_helpers_u_build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
+/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
     /* Python: PARTIAL_STREAM_STUB_ID stub. Arg =
      * "role\tcontent\tstate\tresult". */
