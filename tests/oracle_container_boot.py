@@ -20,7 +20,15 @@ WANTED = ["_strip_container_argv_prefix", "_is_legacy_gateway_run_request",
 
 def extract():
     src = open(SRC, encoding="utf-8").read()
-    ns = {"Path": Path}
+    # Constants/helpers reference re, os, json etc. — provide the modules
+    # (missing re silently skipped _PYTHON_RE and NameError'd at case time).
+    import re as _re
+    import os as _os
+    import json as _json
+    import logging as _logging
+    ns = {"Path": Path, "re": _re, "os": _os, "json": _json,
+          "logging": _logging, "sys": sys,
+          "logger": _logging.getLogger("container_boot")}
     tree = ast.parse(src)
     # module-level constants the defs read
     for node in tree.body:

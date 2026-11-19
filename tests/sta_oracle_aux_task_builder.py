@@ -15,10 +15,25 @@ code = open(SRC, encoding="utf-8").read()
 tree = ast.parse(code)
 
 seg = None
+helpers = []
+assigns = []
 for n in tree.body:
+    # Collect module-level constants and private helpers (upstream added
+    # _INHERITABLE_CORE_BLOCKS in the 2026-11-18 reorg); seed them below.
+    if isinstance(n, ast.Assign):
+        assigns.append(n)
+    if isinstance(n, ast.FunctionDef) and n.name.startswith("_"):
+        helpers.append(n)
     if isinstance(n, ast.FunctionDef) and n.name == "build_auxiliary_task_entry":
         seg = ast.get_source_segment(code, n)
 NS = {"logger": types.SimpleNamespace(warning=lambda *a, **k: None)}
+for n in assigns:
+    try:
+        exec(compile(ast.Module(body=[n], type_ignores=[]), "x", "exec"), NS)
+    except Exception:
+        pass
+for n in helpers:
+    exec(compile(ast.Module(body=[n], type_ignores=[]), "x", "exec"), NS)
 exec(compile(ast.parse(seg), "x", "exec"), NS)
 fn = NS["build_auxiliary_task_entry"]
 
