@@ -99,36 +99,16 @@ static int ci_contains(const char *hay, size_t hn, const char *needle)
 }
 
 /* PoP: cc_is_compaction_progress_status @ agent/conversation_compression.py:is_compaction_progress_status */
-int cc_is_compaction_progress_status(const char *text)
+/* LIVE semantics (2026-11-18 upstream): decided by the TYPE MARK, never the
+ * wording — True iff the producer marked the text CompactionProgressText
+ * (a str subclass) AND it is non-empty after strip. C carries the mark as
+ * an explicit flag; the old wording-matching logic is gone upstream. */
+int cc_is_compaction_progress_status(const char *text, int marked)
 {
-    if (!text)
+    if (!marked || !text)
         return 0;
     const char *body = text;
     size_t n = strlen(text);
     trim_ws(&body, &n);
-    if (n == 0)
-        return 0;
-
-    if (ci_contains(body, n, CC_STATUS_MARKER))
-        return 1;
-
-    /* body == DONE_STATUS (exact, after the strip) */
-    if (n == strlen(CC_DONE_STATUS)
-        && memcmp(body, CC_DONE_STATUS, n) == 0)
-        return 0;
-
-    /* lowercase copy for the case-insensitive checks */
-    char lower[1024];
-    size_t cn = n < sizeof(lower) - 1 ? n : sizeof(lower) - 1;
-    for (size_t i = 0; i < cn; i++)
-        lower[i] = (char)tolower((unsigned char)body[i]);
-    lower[cn] = '\0';
-
-    if (ci_contains(lower, cn, "compaction complete")
-        || ci_contains(lower, cn, "compression is currently blocked"))
-        return 0;
-
-    return ci_contains(lower, cn, "compact")
-           || ci_contains(lower, cn, "compress")
-           || ci_contains(lower, cn, "context reduced to");
+    return n != 0;
 }

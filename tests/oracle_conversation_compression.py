@@ -89,7 +89,12 @@ def main() -> int:
             if fn == "strip_marker":
                 want = cc._strip_marker_for_comparison(i["msgs"])
             elif fn == "is_progress":
-                want = cc.is_compaction_progress_status(i.get("text"))
+                # Live semantics: the TYPE mark decides, never the wording.
+                from agent.context_engine import CompactionProgressText
+                txt = i.get("text")
+                if i.get("marked"):
+                    txt = CompactionProgressText(txt or "")
+                want = cc.is_compaction_progress_status(txt)
             else:
                 continue
         except Exception as exc:                       # noqa: BLE001

@@ -128,7 +128,7 @@ json_t *ccl_cli_config_defaults(void)
         "\"browser\":{\"inactivity_timeout\":120,\"engine\":\"auto\"},"
         "\"compression\":{\"enabled\":true,\"threshold\":0.50,\"min_tail_user_messages\":1},"
         "\"agent\":{"
-        "\"max_turns\":500,\"verbose\":false,\"system_prompt\":\"\","
+        "\"max_turns\":null,\"verbose\":false,\"system_prompt\":\"\","
         "\"prefill_messages_file\":\"\",\"reasoning_effort\":\"\",\"service_tier\":\"\","
         "\"personalities\":{}},"
         "\"display\":{"
@@ -142,7 +142,7 @@ json_t *ccl_cli_config_defaults(void)
         "\"skin\":\"default\"},"
         "\"code_execution\":{\"timeout\":300,\"max_tool_calls\":50},"
         "\"auxiliary\":{\"vision\":{\"provider\":\"auto\",\"model\":\"\",\"base_url\":\"\",\"api_key\":\"\"}},"
-        "\"delegation\":{\"max_iterations\":45,\"model\":\"\",\"provider\":\"\",\"base_url\":\"\",\"api_key\":\"\"},"
+        "\"delegation\":{\"max_iterations\":250,\"model\":\"\",\"provider\":\"\",\"base_url\":\"\",\"api_key\":\"\"},"
         "\"onboarding\":{\"seen\":{}}}";
     return json_parse(lit, NULL);
 }

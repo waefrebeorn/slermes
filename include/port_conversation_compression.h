@@ -19,7 +19,7 @@ json_t *cc_strip_marker_for_comparison(const json_t *msgs);
 /* is_compaction_progress_status -- True for in-progress auto-compaction
  * lifecycle lines, False for the done edge, idle/preflight/retry and the
  * blocked-overflow notice. */
-int cc_is_compaction_progress_status(const char *text);
+int cc_is_compaction_progress_status(const char *text, int marked);
 
 #ifdef __cplusplus
 }
