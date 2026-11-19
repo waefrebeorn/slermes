@@ -103,7 +103,7 @@ extern char *drain_notifications(const char *session_key_filter,
 extern int adel_claim_event_delivery(const char *arg);
 extern int adel_complete_event_delivery(const char *arg);
 
-/* Declared in src/agent/account_usage.c (test port). */
+/* Declared in src/tools/account_usage.c (test port). */
 extern int agent_account_usage_redeem_codex_reset_credit(const char *arg);
 
 /* ── faithful ports of nested helpers used by _rewind_persisted_user_turn ── */

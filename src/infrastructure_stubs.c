@@ -497,11 +497,13 @@ char *image_gen_path_looks_like_absolute_file_path(const char *p) {
     return strdup((p && p[0] == '/') ? "1" : "0");
 }
 
-int parse_absolute_timestamp(const char *ts, double *out) { (void)ts; (void)out; return 0; }
+/* parse_absolute_timestamp: superseded by the real port (credential_pool_custom.c) */
+
 int stub_shadowed__worktree_is_dirty(void) { return 0; }
 int stub_shadowed__worktree_has_unpushed_commits(void) { return 0; }
 int stub_shadowed__save_entry(void) { return 0; }
-int _exhausted_ttl(void) { return 0; }
+/* _exhausted_ttl: superseded by the real port (credential_pool_custom.c) */
+
 void stub_shadowed__normalize_telegram_topic_profile_name(const char *input, char *output, size_t out_size) {
     if (!input || !output || out_size == 0) return;
     strncpy(output, input, out_size - 1);
@@ -638,7 +640,8 @@ int stub_shadowed_cli_save_worktree_merge_cache(void) { return 0; }
 int coding_context_coding_mode(void) { return 0; }
 const char *coding_context_find_git_root(void) { return ""; }
 const char *coding_context_find_marker_root(void) { return ""; }
-int recipe_detect(void) { return 0; }
+/* recipe_detect: superseded by verify_recipes.c */
+
 
 /* ── Remaining ~100 refs ── */
 
@@ -871,52 +874,8 @@ int stub_shadowed_allowlist_clear(void) { return 0; }
 int stub_shadowed_allowlist_remove(const char *entry) { (void)entry; return 0; }
 int stub_shadowed_save_permanent_allowlist(void) { return 0; }
 
+/* get_custom_provider_pool_key: superseded by the real port (credential_pool_custom.c) */
 
-/* Misc */
-int stub_shadowed_voice_recorder_stop(void) { return 0; }
-int stub_shadowed_voice_close_stream_with_timeout(void) { return 0; }
-int verify_manifest_path(void) { return 0; }
-int tts_strip_markdown(void) { return 0; }
-char *tf_relative_time(void) { return strdup(""); }
-int stub_shadowed_system_prompt_build(void) { return 0; }
-int stub_shadowed_stop_playback(void) { return 0; }
-int stub_shadowed_skill_bundles_scan(void) { return 0; }
-int stub_shadowed_sched_create_job_with_scheduler_registration(void) { return 0; }
-const char *sbd_bundles_dir(void) { return ""; }
-int stub_shadowed_relay_lease_session_id(void) { return 0; }
-char *red_mask_secret(void) { return strdup("****"); }
-void recipe_free(void *r) { free(r); }
-int reasoning_parse_effort(void) { return 0; }
-int stub_shadowed_psize_compute_toolsets_breakdown(void) { return 0; }
-int stub_shadowed_psize_compute_skills_breakdown(void) { return 0; }
-int stub_shadowed_profile_validate_name(const char *name) { (void)name; return 1; }
-char *stub_shadowed_process_registry_list(void) { return strdup("[]"); }
-char *stub_shadowed_plug_get_commands(void) { return strdup("[]"); }
-int stub_shadowed_plug_ensure_discovered(void) { return 0; }
-int patch_apply_v4a(void) { return 0; }
-char *stub_shadowed_memory_format_snapshot(void) { return strdup(""); }
-char *stub_shadowed_load_skill_payload(const char *name) { (void)name; return strdup("{}"); }
-char *stub_shadowed_load_pool(void) { return strdup("{}"); }
-int ipx_installed(void) { return 0; }
-const char *ipx_find_iron_proxy(void) { return NULL; }
-const char *igr_get_provider(void) { return NULL; }
-int igp_is_available(void) { return 0; }
-int stub_shadowed_hub_validate_skill_name(const char *name) { (void)name; return 1; }
-/* 2026-10-20: the real SessionDB port (src/persistence/sqlite_state/, 322 public
- * symbols, 8.4k lines) is now wired into the link. These four legacy stubs
- * shadowed the REAL ports for every linked caller (session recovery, kanban
- * retag, console engine) — db_open returned NULL and db_close was a no-op.
- * Renamed out of the way (hermes_get_home pattern) so the real definitions
- * win. Kept as *_stub_shadowed_* for archaeology; nothing references them. */
-void *stub_shadowed_hermes_state_db_open(const char *path) { (void)path; return NULL; }
-int stub_shadowed_hermes_state_db_close(void *db) { (void)db; return 0; }
-void *stub_shadowed_hermes_state_default_db_path(void) { return NULL; }
-int stub_shadowed_hermes_state_retag_kanban_worker_sessions(void) { return 0; }
-int stub_shadowed_hermes_gateway_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
-int stub_shadowed_hermes_cron_main(int argc, char **argv) { (void)argc; (void)argv; return 0; }
-int stub_shadowed_hermes_cli_browser_connect_try_launch_chrome_debug(void) { return 0; }
-char *google_oauth_get_valid_token(void) { return strdup(""); }
-char *get_custom_provider_pool_key(void) { return strdup(""); }
 int stub_shadowed_get_approval_mode(void) { return 0; }
 int stub_shadowed_config_py_require_readable_config_before_write(void) { return 0; }
 int stub_shadowed_config_py_is_container(void) { return 0; }
