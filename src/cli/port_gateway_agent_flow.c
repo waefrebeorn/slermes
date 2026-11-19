@@ -164,17 +164,22 @@ bool gwa_set_reasoning(json_t *st, const json_t *config, bool explicit_, const g
     json_t *snapshot = gwa_call(s, "call", ra);
     json_free(ra);
     if (gwa_caught(snapshot, "GatewayClientError")) { json_free(snapshot); free(effort); return false; }
-    /* snapshot["revision"], snapshot["execution_generation"] — KeyError if absent */
-    const json_t *rev = is_obj(snapshot) ? json_obj_get(snapshot, "revision") : NULL;
-    const json_t *gen = is_obj(snapshot) ? json_obj_get(snapshot, "execution_generation") : NULL;
-    if (!rev || !gen) { json_free(snapshot); free(effort); return false; }  /* KeyError */
-    /* request_id = uuid.uuid4().hex */
+    /* request_id = uuid.uuid4().hex — Python evaluates the session.mutate kwargs
+     * left-to-right, so the uuid seam fires BEFORE snapshot["revision"] /
+     * snapshot["execution_generation"] are read (a missing fence key raises
+     * KeyError only after the uuid call). */
     json_t *ua = args0();
     json_t *ur = gwa_call(s, "uuid4_hex", ua);
     json_free(ua);
+    if (gwa_caught(ur, "GatewayClientError")) { json_free(ur); json_free(snapshot); free(effort); return false; }
     const char *rid = jstr(ur);
     char *rid_free = rid ? strdup(rid) : NULL;
     json_free(ur);
+    /* snapshot["revision"], snapshot["execution_generation"] — KeyError if absent,
+     * TypeError if snapshot is not subscriptable; both caught -> false, no mutate. */
+    const json_t *rev = is_obj(snapshot) ? json_obj_get(snapshot, "revision") : NULL;
+    const json_t *gen = is_obj(snapshot) ? json_obj_get(snapshot, "execution_generation") : NULL;
+    if (!rev || !gen) { json_free(snapshot); free(rid_free); free(effort); return false; }
     json_t *ma = args0();
     aset_s(ma, "method", "session.mutate");
     aset_s(ma, "session_id", sid);
@@ -190,10 +195,12 @@ bool gwa_set_reasoning(json_t *st, const json_t *config, bool explicit_, const g
     free(rid_free);
     if (gwa_caught(mr, "GatewayClientError")) { json_free(mr); json_free(snapshot); free(effort); return false; }
     json_free(mr);
-    /* info["reasoning_effort"] = effort (persist only when state.info exists) */
+    /* info = self._state().info or {} — a FALSY info (None or empty dict) binds a
+     * DETACHED dict, so the post-success write does not persist into state.info;
+     * only a truthy (non-empty) info object receives reasoning_effort. */
     json_t *state = self_state(st);
     json_t *winfo = state ? json_obj_get(state, "info") : NULL;
-    if (is_obj(winfo)) json_set(winfo, "reasoning_effort", json_string(effort));
+    if (jtruth(winfo)) json_set(winfo, "reasoning_effort", json_string(effort));
     ok = true;
     json_free(snapshot);
     free(effort);
@@ -318,7 +325,7 @@ json_t *gwa_take_turn_route(json_t *st) {
     json_set(st, "_taken_turn_route", taken);
     json_t *out = json_copy(pending_copy);
     if (jtruth(reasoning_copy)) json_set(out, "reasoning", json_copy(reasoning_copy));
-    json_free(reasoning_copy);
+    /* reasoning_copy is owned by `taken` (json_append takes ownership); do not free it here. */
     return out;
 }
 

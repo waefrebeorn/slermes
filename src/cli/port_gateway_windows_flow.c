@@ -466,7 +466,9 @@ json_t *gww_reconcile_autostart_launchers(const gww_seams_t *s) {
 void gww_start_or_report_running(const json_t *running_pids, const gww_seams_t *s) {
     json_t *pids = NULL;
     bool owned = false;
-    if (!running_pids) {
+    /* running_pids is None: a JSON null node means None, not an empty list
+     * (an explicit [] is truthy-checked below without calling gateway_pids). */
+    if (!running_pids || running_pids->type == JSON_NULL) {
         json_t *a = args0();
         pids = gww_call(s, "gateway_pids", a);
         json_free(a);

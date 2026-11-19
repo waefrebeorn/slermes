@@ -272,6 +272,14 @@ def drive(ns, func, inp):
             cb = lambda questions: seam("clarify_callback", {"questions": questions})
         return ns[name](cb, inp.get("params") or {}), None
     st = json.loads(json.dumps(inp.get("st") or {}))
+    # Live type invariant: _show_reasoning_sent is only ever None or the 3-TUPLE
+    # written by _sync_show_reasoning. JSON injects it as a list, and the live
+    # dedup `sent[:2] == (self.session_id, show)` is False for a list (list !=
+    # tuple), which would silently disable the dedup on the PY side. Restore the
+    # tuple so the self-model mirrors the live attribute; norm() maps it back to
+    # a list for comparison.
+    if isinstance(st.get("_show_reasoning_sent"), list):
+        st["_show_reasoning_sent"] = tuple(st["_show_reasoning_sent"])
     self = SelfDouble(st, ns)
     f = ns[name]
     if func == "route_off_session":

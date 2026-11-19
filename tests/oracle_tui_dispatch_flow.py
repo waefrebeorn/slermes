@@ -509,7 +509,10 @@ def run_case(func, inp):
 
     f = ns[PY[func]]
     try:
-        if func == "enter_inline_command":
+        if func == "submit_buffer":
+            # live signature: _tui_submit_buffer(self, event, buf)
+            ret = f(sd, event, buf)
+        elif func == "enter_inline_command":
             ret = f(sd, event, inp.get("text", ""), inp.get("has_images", False))
         elif func == "enter_while_busy":
             ret = f(sd, inp.get("text", ""), inp.get("images") or [],

@@ -306,10 +306,10 @@ static json_t *key_error(const char *key) {
 json_t *arhf_with_think_block(arhf_io_t *io, json_t *in) {
     (void)io;
     const char *content = json_get_str(in, "content", "");
-    if (strstr(content, "") != NULL) return json_string(content);
+    if (strstr(content, "<think>") != NULL) return json_string(content);
     size_t n = strlen(content);
     char *out = malloc(n + 18);
-    memcpy(out, "\n\n", 17);
+    memcpy(out, "<think>\n</think>\n", 17);
     memcpy(out + 17, content, n + 1);
     json_t *r = json_string(out);
     free(out);
@@ -419,7 +419,7 @@ json_t *arhf_trajectory_gpt_prefix(arhf_io_t *io, json_t *in) {
         if (nonempty) {
             size_t n = strlen(r->str_val);
             char *out = malloc(n + 20);
-            snprintf(out, n + 20, "\n%s\n\n", r->str_val);
+            snprintf(out, n + 20, "<think>\n%s\n</think>\n", r->str_val);
             json_t *res = json_string(out);
             free(out);
             return res;
@@ -438,7 +438,7 @@ static char *gpt_prefix_of(const json_t *msg) {
         if (nonempty) {
             size_t n = strlen(r->str_val);
             char *out = malloc(n + 20);
-            snprintf(out, n + 20, "\n%s\n\n", r->str_val);
+            snprintf(out, n + 20, "<think>\n%s\n</think>\n", r->str_val);
             return out;
         }
     }
@@ -511,15 +511,15 @@ json_t *arhf_trajectory_tool_call_turn(arhf_io_t *io, json_t *in) {
         (void)args_owned;
         char *dumped = py_json_dumps(obj);
         json_free(obj);
-        sb_puts(&content, "\n");
+        sb_puts(&content, "<tool_call>\n");
         sb_puts(&content, dumped);
-        sb_puts(&content, "\n");
+        sb_puts(&content, "\n</tool_call>\n");
         free(dumped);
     }
     /* _with_think_block(content).rstrip() */
-    if (strstr(content.buf, "") == NULL) {
+    if (strstr(content.buf, "<think>") == NULL) {
         sbuf_t wrapped; sb_init(&wrapped);
-        sb_puts(&wrapped, "\n\n");
+        sb_puts(&wrapped, "<think>\n</think>\n");
         sb_puts(&wrapped, content.buf);
         free(content.buf);
         content = wrapped;
@@ -582,8 +582,8 @@ json_t *arhf_trajectory_tool_responses(arhf_io_t *io, json_t *in) {
         json_free(payload);
         json_free(content_owned);
         size_t n = strlen(dumped);
-        char *block = malloc(n + 32);
-        snprintf(block, n + 32, "\n%s\n", dumped);
+        char *block = malloc(n + 40);
+        snprintf(block, n + 40, "<tool_response>\n%s\n</tool_response>", dumped);
         json_append(blocks, json_string(block));
         free(block);
         free(dumped);

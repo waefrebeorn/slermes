@@ -403,7 +403,9 @@ static void ctd_queue_put(ctd_io_t *io, const char *qkey, const char *evname,
 }
 static void ctd_sudo_queue_put(ctd_io_t *io, const char *text) {
     json_t *args = json_object();
-    json_set(args, "text", json_string(text));
+    /* Queue-put events carry {"payload": ...} on both sides (ctd_queue_put /
+     * the oracle's QueueDouble.put); the sudo queue is no exception. */
+    json_set(args, "payload", json_string(text));
     ctd_record(io, "sudo_response_queue.put", args, json_null());
     json_t *sudo = ctd_st(io, "_sudo_state");
     if (sudo && sudo->type == JSON_OBJECT) {
@@ -1056,7 +1058,6 @@ json_t *ctd_enter_clarify_freetext_flow(ctd_io_t *io) {
     if (text[0] == '\0') {
         ctd_st_set(io, "_clarify_freetext", json_bool(false));
         ctd_st_set(io, "_clarify_prefill", json_string(""));
-        ctd_st_set(io, "_clarify_multi_base", json_null());
         if (ctd_truthy(base)) {
             char *dumps = ctd_py_dumps(base);
             answer = json_string(dumps);
@@ -1068,6 +1069,10 @@ json_t *ctd_enter_clarify_freetext_flow(ctd_io_t *io) {
             answer = json_null();
             json_set(meta, "kind", json_string("skipped"));
         }
+        /* Clear AFTER the last read of `base`: it borrows the state node,
+         * which json_set frees on replacement (use-after-free otherwise).
+         * Still before the seam call, matching the live mutation order. */
+        ctd_st_set(io, "_clarify_multi_base", json_null());
         json_t *args = json_object();
         json_set(args, "state", ctd_copy_or_null(state));
         json_set(args, "answer", answer);

@@ -47,6 +47,20 @@ add("set_reasoning", st=st(), config={"effort": "high"}, explicit=True,
     seams={"call": [{"execution_generation": 7}, None], "uuid4_hex": "abc"})
 add("set_reasoning", st=st(), config={"enabled": False}, explicit=True,
     seams={"call": [{"revision": 1, "execution_generation": 2}, None], "uuid4_hex": "n"})
+# truthy (non-empty) info DOES persist reasoning_effort (the `or {}` detach only
+# applies to a falsy info).
+add("set_reasoning", st=st(state={"info": {"model": "m"}}), config={"effort": "high"}, explicit=True,
+    seams={"call": [{"revision": 3, "execution_generation": 7}, None], "uuid4_hex": "abc"})
+# missing execution_generation only: uuid4_hex still fires (kwarg eval order), then KeyError -> false.
+add("set_reasoning", st=st(), config={"effort": "high"}, explicit=True,
+    seams={"call": [{"revision": 3}, None], "uuid4_hex": "abc"})
+# null snapshot: uuid4_hex fires, then TypeError (not subscriptable) -> false.
+add("set_reasoning", st=st(), config={"effort": "high"}, explicit=True,
+    seams={"call": [None, None], "uuid4_hex": "abc"})
+# uuid4_hex seam raising GatewayClientError is caught -> false (no mutate).
+add("set_reasoning", st=st(), config={"effort": "high"}, explicit=True,
+    seams={"call": [{"revision": 1, "execution_generation": 2}, None],
+           "uuid4_hex": {"__raise__": "GatewayClientError", "msg": "u"}})
 
 # ── sync_show_reasoning ──
 add("sync_show_reasoning", st=st(connection_epoch=2, _reasoning_callback={}, _show_reasoning_sent=None), seams={"call": None})
@@ -55,6 +69,12 @@ add("sync_show_reasoning", st=st(connection_epoch=2, _reasoning_callback={}, _sh
 add("sync_show_reasoning", st=st(connection_epoch=2, _reasoning_callback={}, _show_reasoning_sent=["s1", True, 1]), seams={"call": None})
 add("sync_show_reasoning", st=st(connection_epoch=2, _reasoning_callback={}, _show_reasoning_sent=None),
     seams={"call": {"__raise__": "GatewayClientError", "msg": "x"}})
+# show=False dedup: a matching "0" tuple outlives the epoch check (not show -> skip).
+add("sync_show_reasoning", st=st(connection_epoch=1, _reasoning_callback=None, _show_reasoning_sent=["s1", False, 1]),
+    seams={"call": None})
+# sent sid mismatch: dedup fails on sent[:2] -> config.set fires.
+add("sync_show_reasoning", st=st(connection_epoch=2, _reasoning_callback={}, _show_reasoning_sent=["other", True, 2]),
+    seams={"call": None})
 
 # ── service_tier ──
 add("service_tier", st=st(state={}), tier="fast", seams={"call": None})

@@ -96,9 +96,9 @@
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"message": "[WKE=unauthenticated:xyz]"}, "io": {"agent._is_entitlement_failure": false}}}
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"reason": "OAuth2 access token could not be validated"}, "io": {"agent._is_entitlement_failure": false}}}
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": "xai-oauth"}, "status_code": 403, "error_context": {"message": "something else"}, "io": {"agent._is_entitlement_failure": false}}}
-{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": null, "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "openai"}, "status_code": 403, "error_context": null, "io": {"agent._is_entitlement_failure": false}}}
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": "openai"}, "status_code": 403, "error_context": {"message": 0, "reason": false, "code": "X", "error": null}, "io": {"agent._is_entitlement_failure": false}}}
 {"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "probe boom"}}}}}
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": null}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}
-{"func": "_is_entitlement_403", "in": {"agent": {}, "status_code": 403, "error_context": "text", "io": {"agent._is_entitlement_failure": false}}}
+{"func": "_is_entitlement_403", "in": {"agent": {"provider": "openai"}, "status_code": 403, "error_context": "text", "io": {"agent._is_entitlement_failure": false}}}
 {"func": "_is_entitlement_403", "in": {"agent": {"provider": "anthropic"}, "status_code": 403, "error_context": {}, "io": {"agent._is_entitlement_failure": false}}}

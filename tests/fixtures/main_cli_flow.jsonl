@@ -1,0 +1,147 @@
+{"func": "_early_interface_config_path", "in": {"env": {"HERMES_HOME": "/home/u/.hermes"}, "io": {}}}
+{"func": "_early_interface_config_path", "in": {"env": {"HERMES_HOME": "/x/"}, "io": {}}}
+{"func": "_early_interface_config_path", "in": {"env": {"HERMES_HOME": ""}, "io": {"expanduser": "/home/u"}}}
+{"func": "_early_interface_config_path", "in": {"env": {}, "io": {"expanduser": "/root"}}}
+{"func": "_early_interface_config_path", "in": {"env": {"HERMES_HOME": "rel/dir"}, "io": {}}}
+{"func": "_early_interface_config_path", "in": {"env": {}, "io": {"expanduser": "~"}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "default", "io": {}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "work", "io": {"sudo_invoker_default_home": null}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "work", "io": {"sudo_invoker_default_home": "/home/u", "named_profile_is_live": true}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "work", "io": {"sudo_invoker_default_home": "/home/u", "named_profile_is_live": false}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "work", "io": {"sudo_invoker_default_home": "/home/u/", "named_profile_is_live": true}}}
+{"func": "_resolve_sudo_user_profile_env", "in": {"name": "", "io": {"sudo_invoker_default_home": "/home/u", "named_profile_is_live": true}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["gateway", "run"], "env": {"HERMES_SUPERVISED_CHILD": "1"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["gateway", "run"], "env": {"HERMES_S6_SUPERVISED_CHILD": "1"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["gateway", "run"], "env": {"INVOCATION_ID": "abc123"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["chat"], "env": {"INVOCATION_ID": "abc123"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["-p", "x", "gateway", "run"], "env": {"INVOCATION_ID": "abc123"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": [], "env": {"HERMES_GATEWAY_EXTERNAL_SUPERVISOR": " YES "}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": [], "env": {"HERMES_GATEWAY_PROFILE_PIN": "on"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": [], "env": {"HERMES_GATEWAY_EXTERNAL_SUPERVISOR": "0", "HERMES_GATEWAY_PROFILE_PIN": "false"}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": [], "env": {}, "io": {}}}
+{"func": "_under_gateway_supervisor", "in": {"argv": ["gateway"], "env": {"HERMES_GATEWAY_EXTERNAL_SUPERVISOR": "1", "HERMES_GATEWAY_PROFILE_PIN": "0"}, "io": {}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["chat"], "env": {}, "io": {}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway", "run"], "env": {}, "io": {"_s6_running": false}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway", "run"], "env": {"HERMES_GATEWAY_NO_SUPERVISE": "TRUE"}, "io": {}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway", "run"], "env": {"HERMES_GATEWAY_NO_SUPERVISE": " yes "}, "io": {"_s6_running": true, "gateway_run_no_supervise": false}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway", "run", "--foreground"], "env": {}, "io": {"_s6_running": true, "gateway_run_no_supervise": true}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["-p", "x", "gateway", "run"], "env": {}, "io": {"_s6_running": true, "gateway_run_no_supervise": false}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway"], "env": {}, "io": {}}}
+{"func": "_s6_supervised_gateway_run", "in": {"argv": ["gateway", "run"], "env": {}, "io": {"_s6_running": {"__script__": true, "raise": {"type": "RuntimeError", "message": "s6 probe failed"}}}}}
+{"func": "explicit_cli_profile", "in": {"explicit_cli_profile": null, "io": {}}}
+{"func": "explicit_cli_profile", "in": {"explicit_cli_profile": "default", "io": {}}}
+{"func": "explicit_cli_profile", "in": {"explicit_cli_profile": "work", "io": {}}}
+{"func": "explicit_cli_profile", "in": {"explicit_cli_profile": "", "io": {}}}
+{"func": "explicit_cli_profile", "in": {"explicit_cli_profile": "profile with space", "io": {}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "packed-refs", "errno": 2}}}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "# pack-refs with: peeled\nabc123 refs/heads/main\n^def456\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/other", "io": {"path.read_text": "abc123 refs/heads/main\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "abc123  refs/heads/main\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "  abc123 refs/heads/main\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "﻿abc123 refs/heads/main\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": ""}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "abc123\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "abc123 refs/heads/main \n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": "^abc123 refs/heads/main\n"}}}
+{"func": "_read_packed_ref", "in": {"common_dir": "/repo/.git", "ref": "refs/heads/main", "io": {"path.read_text": {"__script__": true, "raise": {"type": "ValueError", "message": "bad decode"}}}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": false}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "# comment\n"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "NOEQUALS\n"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "export OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OTHER_KEY"], "io": {"path.exists": true, "path.read_text": " OTHER_KEY =v\n"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": {"__script__": true, "raise": {"type": "OSError", "message": "read failed", "errno": 5}}}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": "OPENAI_API_KEY=***"}}}
+{"func": "_dotenv_has_provider_key", "in": {"env_file": "/home/u/.hermes/.env", "provider_env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"], "io": {"path.exists": true, "path.read_text": {"__script__": true, "raise": {"type": "SystemExit", "code": 9}}}}}
+{"func": "_latest_session_id", "in": {"use_tui": false, "io": {"_resolve_last_session": "s1"}}}
+{"func": "_latest_session_id", "in": {"use_tui": false, "io": {"_resolve_last_session": null}}}
+{"func": "_latest_session_id", "in": {"use_tui": true, "io": {"_resolve_last_session": "t1"}}}
+{"func": "_latest_session_id", "in": {"use_tui": true, "io": {"_resolve_last_session": [null, "c1"]}}}
+{"func": "_latest_session_id", "in": {"use_tui": true, "io": {"_resolve_last_session": [null, null]}}}
+{"func": "_latest_session_id", "in": {"use_tui": true, "io": {"_resolve_last_session": ["", "c1"]}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": false}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": ""}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": "Y"}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": " YES "}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": "n"}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": {"__script__": true, "raise": {"type": "EOFError", "message": "EOF when reading a line"}}}}}
+{"func": "_first_run_setup_guard", "in": {"args": {}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "_first_run_setup_guard", "in": {"args": {"query": "hi"}, "io": {"print": null, "cmd_setup": null, "print_noninteractive_setup_guidance": null, "is_interactive_stdin": true, "input": "no"}}}
+{"func": "_finalize_update_receipt", "in": {"code": 0, "reason": "ok", "io": {"finalize_pending_update_receipt": null}}}
+{"func": "_finalize_update_receipt", "in": {"code": 1, "reason": "fail", "io": {"finalize_pending_update_receipt": null}}}
+{"func": "_finalize_update_receipt", "in": {"code": 2, "reason": "", "io": {"finalize_pending_update_receipt": {"__script__": true, "raise": {"type": "Exception", "message": "disk full"}}}}}
+{"func": "_finalize_update_receipt", "in": {"code": 3, "reason": "x", "io": {"finalize_pending_update_receipt": {"__script__": true, "raise": {"type": "SystemExit", "code": 3}}}}}
+{"func": "_finalize_update_receipt", "in": {"code": 1, "reason": "y", "io": {"finalize_pending_update_receipt": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "_finalize_update_receipt", "in": {"code": 0, "reason": "done", "io": {"finalize_pending_update_receipt": {"__script__": true, "raise": {"type": "OSError", "message": "io", "errno": 5}}}}}
+{"func": "_update_preflight_handled", "in": {"args": {}, "project_root": "/repo", "io": {"handle_metadata_args": true, "is_managed": false, "evaluate_update_admission": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": true, "evaluate_update_admission": null, "managed_error": null, "_record_stop": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"plan": true}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": true, "evaluate_update_admission": null, "managed_error": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"plan": true}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "collect_runtime_inventory": {"profiles": []}, "print_update_plan": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"list_venv_holders": true}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "list_venv_holders": [], "json.dumps": "[]", "print": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"list_venv_holders": true}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "list_venv_holders": [{"pid": 123, "exe": "C:/x/python.exe", "user": "eman"}], "json.dumps": "[\n  {\n    \"pid\": 123,\n    \"exe\": \"C:/x/python.exe\",\n    \"user\": \"eman\"\n  }\n]", "print": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": {"message": "image-managed install"}, "record_refusal_receipt": null, "print": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"check": true, "branch": "main", "channel": "stable"}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "_resolve_update_branch": "main", "_cmd_update_check": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"check": true}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "_resolve_update_branch": "main", "_cmd_update_check": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {"check": true, "branch": ""}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null, "_resolve_update_branch": "dev", "_cmd_update_check": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": false, "evaluate_update_admission": null}}}
+{"func": "_update_preflight_handled", "in": {"args": {}, "project_root": "/repo", "io": {"handle_metadata_args": false, "is_managed": true, "evaluate_update_admission": null, "managed_error": {"__script__": true, "raise": {"type": "SystemExit", "code": 1}}}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"status": true}, "token_file": "/t", "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"stop": true}, "token_file": "/t", "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {}, "token_file": "/t", "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"status": true}, "token_file": null, "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"stop": true}, "token_file": null, "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null, "_find_stale_dashboard_pids": []}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"stop": true}, "token_file": null, "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null, "_find_stale_dashboard_pids": [123], "_kill_stale_dashboard_processes": {"failed": []}}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {"stop": true}, "token_file": null, "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null, "_find_stale_dashboard_pids": [123], "_kill_stale_dashboard_processes": {"failed": [123]}}}}
+{"func": "_dashboard_lifecycle_flags", "in": {"args": {}, "token_file": null, "io": {"get_hermes_home": "/home/u/.hermes", "_report_dashboard_status": null, "print": null}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": true, "env": {"HERMES_WEB_DIST": "/app/dist", "HERMES_SERVE_HEADLESS": "1"}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": true}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {"HERMES_WEB_DIST": "/app/dist", "HERMES_SERVE_HEADLESS": "1"}, "io": {"_is_desktop_owned_backend": true, "_is_electron_packaged_web_dist": true}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {"HERMES_WEB_DIST": "/app.asar/unpacked/dist", "HERMES_SERVE_HEADLESS": "1"}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": true}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {"HERMES_WEB_DIST": "/dev/dist", "HERMES_SERVE_HEADLESS": "1"}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": false}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": true}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {"HERMES_SERVE_HEADLESS": "1"}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": true}}}
+{"func": "_dashboard_sanitize_desktop_env", "in": {"headless_backend": false, "env": {"HERMES_WEB_DIST": "/app/dist"}, "io": {"_is_desktop_owned_backend": false, "_is_electron_packaged_web_dist": true}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": null, "import.uvicorn": null, "print": null, "smart_app_control_block_message": null, "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": {"__script__": true, "raise": {"type": "ImportError", "message": "DLL load failed while importing _ssl: policy block"}}, "import.uvicorn": null, "print": null, "smart_app_control_block_message": "Smart App Control blocked the embedded runtime.", "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": {"__script__": true, "raise": {"type": "ImportError", "message": "No module named 'fastapi'"}}, "import.uvicorn": null, "print": null, "smart_app_control_block_message": "", "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": {"__script__": true, "raise": {"type": "ImportError", "message": "broken fastapi"}}, "import.uvicorn": null, "print": null, "smart_app_control_block_message": null, "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": null, "import.uvicorn": {"__script__": true, "raise": {"type": "ImportError", "message": "No module named 'uvicorn'"}}, "print": null, "smart_app_control_block_message": null, "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": {"__script__": true, "raise": {"type": "RuntimeError", "message": "native init crashed"}}, "import.uvicorn": null, "print": null, "smart_app_control_block_message": null, "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_require_dashboard_web_deps", "in": {"io": {"import.fastapi": {"__script__": true, "raise": {"type": "ModuleNotFoundError", "message": "No module named 'fastapi'"}}, "import.uvicorn": null, "print": null, "smart_app_control_block_message": null, "missing_optional_deps_message": "The dashboard can't start: repair guidance."}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"_noninteractive_config_validated": true, "oneshot": "hi"}, "io": {}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {}, "io": {}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"oneshot": "hi"}, "io": {"require_parseable_user_config": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"query": "q"}, "io": {"require_parseable_user_config": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"oneshot": "hi", "ignore_user_config": true}, "io": {"require_parseable_user_config": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"oneshot": "hi", "safe_mode": true}, "io": {"require_parseable_user_config": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"oneshot": "hi"}, "io": {"require_parseable_user_config": {"__script__": true, "raise": {"type": "InvalidUserConfigError", "message": "bad yaml in config"}}, "print": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"oneshot": "", "query": null}, "io": {}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"query": "q", "ignore_user_config": false, "safe_mode": false}, "io": {"require_parseable_user_config": null}}}
+{"func": "_guard_noninteractive_user_config", "in": {"args": {"query": "q"}, "io": {"require_parseable_user_config": {"__script__": true, "raise": {"type": "RuntimeError", "message": "unexpected"}}}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {}, "env": {}, "io": {"_bypass_chat_launch": true}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"tui": true}, "env": {}, "io": {"_bypass_chat_launch": false}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {}, "env": {"HERMES_TUI": "1"}, "io": {"_bypass_chat_launch": false}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"command": "gateway"}, "env": {}, "io": {"_bypass_chat_launch": false}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"command": null}, "env": {}, "io": {"_bypass_chat_launch": false, "_resolve_use_tui": true}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"command": "chat"}, "env": {}, "io": {"_bypass_chat_launch": false, "_resolve_use_tui": false}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"command": "chat"}, "env": {"HERMES_TUI": "0"}, "io": {"_bypass_chat_launch": false, "_resolve_use_tui": true}}}
+{"func": "_is_tui_chat_launch", "in": {"args": {"command": "acp"}, "env": {}, "io": {"_bypass_chat_launch": false}}}
+{"func": "_default_to_chat", "in": {"args": {}, "io": {"_promote_top_level_resume": null, "_set_chat_arg_defaults": null, "cmd_chat": null}}}
+{"func": "_default_to_chat", "in": {"args": {"command": null, "resume": "s1"}, "io": {"_promote_top_level_resume": null, "_set_chat_arg_defaults": null, "cmd_chat": null}}}
+{"func": "_default_to_chat", "in": {"args": {"command": "chat", "query": "hi"}, "io": {"_promote_top_level_resume": null, "_set_chat_arg_defaults": null, "cmd_chat": null}}}
+{"func": "_default_to_chat", "in": {"args": {"continue_last": true}, "io": {"_promote_top_level_resume": null, "_set_chat_arg_defaults": null, "cmd_chat": null}}}
+{"func": "_default_to_chat", "in": {"args": {}, "io": {"_promote_top_level_resume": null, "_set_chat_arg_defaults": null, "cmd_chat": {"__script__": true, "raise": {"type": "SystemExit", "code": 0}}}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["chat"], "parser.parse_args": [{"__script__": true, "ret": {"command": "chat"}}]}, "argv": ["chat"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": [], "parser.parse_args": [{"__script__": true, "ret": {"command": null}}]}, "argv": [], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["-c", "model"], "parser.parse_args": [{"__script__": true, "raise": {"type": "SystemExit", "code": 2}, "stderr": "usage: hermes [-h]\nerror: unrecognized arguments: model\n"}, {"__script__": true, "ret": {"command": null, "resume": "model"}}]}, "argv": ["-c", "model"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["--help"], "parser.parse_args": [{"__script__": true, "raise": {"type": "SystemExit", "code": 0}, "stdout": "usage: hermes [-h] ...\n"}]}, "argv": ["--help"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["gateway", "run"], "parser.parse_args": [{"__script__": true, "raise": {"type": "SystemExit", "code": 0}, "stdout": "gateway help\n"}]}, "argv": ["gateway", "run"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["model"], "parser.parse_args": [{"__script__": true, "ret": {"command": "model"}, "stdout": "spec text\n"}]}, "argv": ["model"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["chat"], "parser.parse_args": [{"__script__": true, "ret": {"command": "chat"}}]}, "argv": ["chat"], "subparsers": {"has_choices": false, "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["-p", "x", "chat"], "parser.parse_args": [{"__script__": true, "ret": {"command": "chat"}}]}, "argv": ["-p", "x", "chat"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["-c", "foo bar"], "parser.parse_args": [{"__script__": true, "ret": {"command": null, "resume": "foo bar"}}]}, "argv": ["-c", "foo", "bar"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["model"], "parser.parse_args": [{"__script__": true, "raise": {"type": "SystemExit", "code": 2}, "stderr": "err\n"}, {"__script__": true, "raise": {"type": "SystemExit", "code": 2}, "stderr": "err2\n"}]}, "argv": ["model"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["model"], "parser.parse_args": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "parser exploded"}}]}, "argv": ["model"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}
+{"func": "_parse_cli_args", "in": {"io": {"stringio.getvalue": null, "print": null, "_coalesce_session_name_args": ["chat", "--resume", "x"], "parser.parse_args": [{"__script__": true, "ret": {"command": "chat", "resume": "x"}}]}, "argv": ["chat", "--resume", "x"], "subparsers": {"has_choices": true, "choices": ["chat", "gateway", "model"], "required": false}}}

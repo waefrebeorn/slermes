@@ -33,6 +33,7 @@ import math
 import os
 import re
 import sys
+import textwrap
 import threading
 import types
 import functools
@@ -71,7 +72,11 @@ def seg(src, node):
 
 
 def exec_node(src, node, ns, path):
-    exec(compile(seg(src, node), path, "exec", flags=_FLAGS, dont_inherit=True), ns)
+    # Class-method segments (e.g. UpdateLock._claim_marker) are extracted with
+    # their class-body indentation intact; compile() rejects a leading indent.
+    # Module-level defs start at col 0, so dedent is a no-op for them.
+    text = textwrap.dedent(seg(src, node))
+    exec(compile(text, path, "exec", flags=_FLAGS, dont_inherit=True), ns)
 
 
 def extract():

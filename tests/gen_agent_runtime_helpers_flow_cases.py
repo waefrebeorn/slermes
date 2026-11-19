@@ -214,7 +214,7 @@ add("_is_entitlement_403", agent={"provider": "xai-oauth"}, status_code=403,
     io={"agent._is_entitlement_failure": False})
 add("_is_entitlement_403", agent={"provider": "xai-oauth"}, status_code=403,
     error_context={"message": "something else"}, io={"agent._is_entitlement_failure": False})
-add("_is_entitlement_403", agent={}, status_code=403, error_context=None,
+add("_is_entitlement_403", agent={"provider": "openai"}, status_code=403, error_context=None,
     io={"agent._is_entitlement_failure": False})
 add("_is_entitlement_403", agent={"provider": "openai"}, status_code=403,
     error_context={"message": 0, "reason": False, "code": "X", "error": None},
@@ -223,7 +223,7 @@ add("_is_entitlement_403", agent={}, status_code=403, error_context={},
     io={"agent._is_entitlement_failure": script(raise_spec={"type": "RuntimeError", "message": "probe boom"})})
 add("_is_entitlement_403", agent={"provider": None}, status_code=403, error_context={},
     io={"agent._is_entitlement_failure": False})
-add("_is_entitlement_403", agent={}, status_code=403, error_context="text",
+add("_is_entitlement_403", agent={"provider": "openai"}, status_code=403, error_context="text",
     io={"agent._is_entitlement_failure": False})
 add("_is_entitlement_403", agent={"provider": "anthropic"}, status_code=403,
     error_context={}, io={"agent._is_entitlement_failure": False})  # api_mode absent

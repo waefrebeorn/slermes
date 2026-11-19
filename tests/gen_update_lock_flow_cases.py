@@ -218,18 +218,23 @@ add("_reclaim_dead", path=PATH, install_root=None,
     io=reclaim_io(_read_marker=marker(started_at=None, create_time=None, ct_text=None, pid=-1, raw="x\n")))
 
 # ── _claim_marker ─────────────────────────────────────────────────────────
+# NOTE: seams whose RETURN VALUE is a list (legacy_profile_claims,
+# _live_partners) must be wrapped in script(ret=[...]): a bare JSON array in
+# in.io is a call-QUEUE (one element consumed per call), so a bare [] reads
+# as "script exhausted" and a bare [spec] returns its first element instead
+# of the list. script() returns the list verbatim on every call.
 def claim_io(**over):
     io = {
         "path.parent.mkdir": script(None),
         "_sweep_dead_tmp_siblings": script(None),
-        "legacy_profile_claims": [],
+        "legacy_profile_claims": script([]),
         "os.getpid": 100,
         "time.time": 1000.0,
         "_identity_line": "ct:1000.000",
         "_publish_exclusive": True,
         "mutex.enter": script(None), "mutex.exit": script(None),
         "_read_marker": None,
-        "_live_partners": [],
+        "_live_partners": script([]),
         "self._checkout_held_elsewhere": False,
         "path.unlink": script(None),
         "read_live_update": None,
@@ -249,27 +254,27 @@ add("_claim_marker", self=claim_self(), claims={PATH: 1}, io=claim_io())
 add("_claim_marker", self=claim_self(), claims={},
     io=claim_io(**{"path.parent.mkdir": script(raise_spec={"type": "PermissionError", "message": "denied", "errno": 13})}))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(legacy_profile_claims=[{"pid": 200, "age_seconds": 5.0}],
+    io=claim_io(legacy_profile_claims=script([{"pid": 200, "age_seconds": 5.0}]),
                 **{"self._is_partner": False}))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(legacy_profile_claims=[{"pid": 100, "age_seconds": 5.0}],
+    io=claim_io(legacy_profile_claims=script([{"pid": 100, "age_seconds": 5.0}]),
                 **{"self._is_partner": True}))
 add("_claim_marker", self=claim_self(), claims={},
     io=claim_io(_publish_exclusive=[False, False, False], _read_marker=[None, None, None]))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=[200],
+    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=script([200]),
                 **{"self._adopt_or_refuse": script(False, holder={"pid": 200, "age_seconds": 5.0})}))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=[200],
+    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=script([200]),
                 **{"self._adopt_or_refuse": script(True)}))
 add("_claim_marker", self=claim_self(), claims={},
     io=claim_io(_publish_exclusive=False, _read_marker=marker(),
-                _live_partners=[], **{"self._checkout_held_elsewhere": True,
+                _live_partners=script([]), **{"self._checkout_held_elsewhere": True,
                                       "time.time": [1000.0, 2000.0]}))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=[False, True], _read_marker=marker(), _live_partners=[]))
+    io=claim_io(_publish_exclusive=[False, True], _read_marker=marker(), _live_partners=script([])))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=[],
+    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=script([]),
                 **{"path.unlink": script(raise_spec={"type": "PermissionError", "message": "denied", "errno": 13})}))
 add("_claim_marker", self=claim_self(), claims={},
     io=claim_io(_publish_exclusive=False,
@@ -284,18 +289,18 @@ add("_claim_marker", self=claim_self(), claims={},
 add("_claim_marker", self=claim_self(), claims={},
     io=claim_io(_publish_exclusive=[False, False, False, False, False, False],
                 _read_marker=[marker(started_at=None, create_time=None, ct_text=None, pid=-1, raw="x\n")] * 3,
-                _live_partners=[]))
+                _live_partners=script([])))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=[False, True], _read_marker=marker(), _live_partners=[],
+    io=claim_io(_publish_exclusive=[False, True], _read_marker=marker(), _live_partners=script([]),
                 **{"path.unlink": script(raise_spec={"type": "FileNotFoundError", "message": "gone"})}))
 add("_claim_marker", self=claim_self(install_root="/install"), claims={},
     io=claim_io(_publish_exclusive=[False, False, False], _read_marker=[None, None, None],
                 read_live_update=None))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(legacy_profile_claims=[{"pid": 200, "age_seconds": 5.0}, {"pid": 300, "age_seconds": 7.0}],
+    io=claim_io(legacy_profile_claims=script([{"pid": 200, "age_seconds": 5.0}, {"pid": 300, "age_seconds": 7.0}]),
                 **{"self._is_partner": [False, True]}))
 add("_claim_marker", self=claim_self(), claims={},
-    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=[0],
+    io=claim_io(_publish_exclusive=False, _read_marker=marker(), _live_partners=script([0]),
                 **{"self._adopt_or_refuse": script(False, holder={"pid": 0, "age_seconds": 0.0, "held": True})}))
 
 
