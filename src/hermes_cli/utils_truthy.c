@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: is_truthy_value @ utils.py:is_truthy_value */
+/* PoP: is_truthy_value @ utils/files.py:is_truthy_value */
 bool is_truthy_value(const char *value, bool default_value) {
     if (!value) return default_value;   /* Python: value is None -> default */
     /* Python str branch: value.strip().lower() in TRUTHY_STRINGS */
@@ -27,7 +27,7 @@ bool is_truthy_value(const char *value, bool default_value) {
            strcmp(buf, "yes") == 0 || strcmp(buf, "on") == 0;
 }
 
-/* PoP: env_var_enabled @ utils.py:env_var_enabled */
+/* PoP: env_var_enabled @ utils/files.py:env_var_enabled */
 bool env_var_enabled(const char *name, const char *default_value) {
     const char *v = name ? getenv(name) : NULL;
     if (!v) v = default_value ? default_value : "";

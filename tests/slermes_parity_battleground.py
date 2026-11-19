@@ -91,6 +91,12 @@ PYTHON_SOURCE_DIRS = {
     "cron": HERMES_DIR / "cron",
     "cli_root": HERMES_DIR / "cli.py",
     "hermes_cli": HERMES_DIR / "hermes_cli",
+    # 2026-11-18 upstream migration: pluggable-DB architecture (persistence/),
+    # ACP adapter surface, platform declaration layer. Home-dir junctions
+    # point at the quarry, same as agent/tools/gateway above.
+    "persistence": HERMES_DIR / "persistence",
+    "acp_adapter": HERMES_DIR / "acp_adapter",
+    "hermes_platform": HERMES_DIR / "hermes_platform",
 }
 
 # Top-level fork modules beyond cli.py that are runtime surface with C

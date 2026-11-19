@@ -21,7 +21,7 @@
 #define BP_MAX_SCHED 64
 #define BP_MAX_PROMPT 4096
 
-/* PoP: cli_tools_blueprints__split_frontmatter @ tools/blueprints.py:_split_frontmatter */
+/* PoP: cli_tools_blueprints__split_frontmatter @ cron/skill_blueprints.py:_split_frontmatter */
 
 /* Port of Python tools/blueprints.py:_split_frontmatter */
 /* Return the parsed YAML frontmatter mapping, or NULL if absent/invalid. */
@@ -56,7 +56,7 @@ int cli_tools_blueprints__split_frontmatter(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_parse_blueprint @ tools/blueprints.py:parse_blueprint */
+/* PoP: cli_tools_blueprints_parse_blueprint @ cron/skill_blueprints.py:parse_blueprint */
 
 /* Port of Python tools/blueprints.py:parse_blueprint */
 /* Extract a BlueprintSpec from a SKILL.md string. */
@@ -152,7 +152,7 @@ int cli_tools_blueprints_parse_blueprint(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_blueprint_spec_for_installed @ tools/blueprints.py:blueprint_spec_for_installed */
+/* PoP: cli_tools_blueprints_blueprint_spec_for_installed @ cron/skill_blueprints.py:blueprint_spec_for_installed */
 
 /* Port of Python tools/blueprints.py:blueprint_spec_for_installed */
 /* Locate an installed skill's SKILL.md and parse its blueprint block. */
@@ -198,7 +198,7 @@ int cli_tools_blueprints_blueprint_spec_for_installed(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_blueprint_to_job_spec @ tools/blueprints.py:blueprint_to_job_spec */
+/* PoP: cli_tools_blueprints_blueprint_to_job_spec @ cron/skill_blueprints.py:blueprint_to_job_spec */
 
 /* Port of Python tools/blueprints.py:blueprint_to_job_spec */
 /* Build the cron.jobs.create_job kwargs dict for a BlueprintSpec. */
@@ -226,7 +226,7 @@ int cli_tools_blueprints_blueprint_to_job_spec(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_create_blueprint_job @ tools/blueprints.py:create_blueprint_job */
+/* PoP: cli_tools_blueprints_create_blueprint_job @ cron/skill_blueprints.py:create_blueprint_job */
 
 /* Port of Python tools/blueprints.py:create_blueprint_job */
 /* Create the cron job described by a BlueprintSpec via the existing cron API. */
@@ -299,7 +299,7 @@ int cli_tools_blueprints_create_blueprint_job(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_register_blueprint_suggestion @ tools/blueprints.py:register_blueprint_suggestion */
+/* PoP: cli_tools_blueprints_register_blueprint_suggestion @ cron/skill_blueprints.py:register_blueprint_suggestion */
 
 /* Port of Python tools/blueprints.py:register_blueprint_suggestion */
 /* Turn an installed blueprint into a pending Suggested Cron Job. */
@@ -335,7 +335,7 @@ int cli_tools_blueprints_register_blueprint_suggestion(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints_export_blueprint @ tools/blueprints.py:export_blueprint */
+/* PoP: cli_tools_blueprints_export_blueprint @ cron/skill_blueprints.py:export_blueprint */
 
 /* Port of Python tools/blueprints.py:export_blueprint */
 /* Render a shareable blueprint SKILL.md from an existing cron job dict. */
@@ -389,7 +389,7 @@ int cli_tools_blueprints_export_blueprint(
     return 0;
 }
 
-/* PoP: cli_tools_blueprints__schedule_to_string @ tools/blueprints.py:_schedule_to_string */
+/* PoP: cli_tools_blueprints__schedule_to_string @ cron/skill_blueprints.py:_schedule_to_string */
 
 /* Port of Python tools/blueprints.py:_schedule_to_string */
 /* Best-effort render of a parsed schedule dict back to a string. */

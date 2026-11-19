@@ -25,7 +25,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: util_preserve_file_mode @ utils.py:_preserve_file_mode */
+/* PoP: util_preserve_file_mode @ utils/files.py:_preserve_file_mode */
 long util_preserve_file_mode(const char *path) {
     /* Python: permission bits or 0 when missing. */
     if (!path) return 0;
@@ -34,7 +34,7 @@ long util_preserve_file_mode(const char *path) {
     return (long)(st.st_mode & 07777);
 }
 
-/* PoP: util_preserve_file_owner @ utils.py:_preserve_file_owner */
+/* PoP: util_preserve_file_owner @ utils/files.py:_preserve_file_owner */
 char *util_preserve_file_owner(const char *path) {
     /* Python: (uid, gid) when platform supports. */
     if (!path) return strdup("null");
@@ -45,7 +45,7 @@ char *util_preserve_file_owner(const char *path) {
     return out;
 }
 
-/* PoP: util_restore_file_owner @ utils.py:_restore_file_owner */
+/* PoP: util_restore_file_owner @ utils/files.py:_restore_file_owner */
 int util_restore_file_owner(const char *path, const char *owner_json) {
     /* Python: re-apply uid/gid when permitted. */
     if (!path || !owner_json) return -1;
@@ -63,7 +63,7 @@ int util_restore_file_owner(const char *path, const char *owner_json) {
     return 0;
 }
 
-/* PoP: util_restore_file_mode @ utils.py:_restore_file_mode */
+/* PoP: util_restore_file_mode @ utils/files.py:_restore_file_mode */
 int util_restore_file_mode(const char *path, long mode) {
     /* Python: re-apply mode after atomic replace. */
     if (!path || mode <= 0) return -1;
@@ -71,7 +71,7 @@ int util_restore_file_mode(const char *path, long mode) {
     return 0;
 }
 
-/* PoP: util_atomic_replace @ utils.py:atomic_replace */
+/* PoP: util_atomic_replace @ utils/files.py:atomic_replace */
 int util_atomic_replace(const char *tmp_path, const char *target) {
     /* Python: os.replace preserving symlinks. */
     if (!tmp_path || !target) return -1;
@@ -79,7 +79,7 @@ int util_atomic_replace(const char *tmp_path, const char *target) {
     return 0;
 }
 
-/* PoP: util_atomic_json_write @ utils.py:atomic_json_write */
+/* PoP: util_atomic_json_write @ utils/files.py:atomic_json_write */
 int util_atomic_json_write(const char *path, const char *data_json) {
     /* Python: temp + fsync + os.replace. */
     if (!path || !data_json) return -1;
@@ -98,7 +98,7 @@ int util_atomic_json_write(const char *path, const char *data_json) {
     return 0;
 }
 
-/* PoP: util_warn_if_credential_file_broadly_readable @ utils.py:warn_if_credential_file_broadly_readable */
+/* PoP: util_warn_if_credential_file_broadly_readable @ utils/files.py:warn_if_credential_file_broadly_readable */
 bool util_warn_if_credential_file_broadly_readable(const char *path) {
     /* Python: warn when group/world-readable. */
     if (!path) return false;
@@ -111,7 +111,7 @@ bool util_warn_if_credential_file_broadly_readable(const char *path) {
     return false;
 }
 
-/* PoP: util_atomic_yaml_write @ utils.py:atomic_yaml_write */
+/* PoP: util_atomic_yaml_write @ utils/files.py:atomic_yaml_write */
 int util_atomic_yaml_write(const char *path, const char *yaml_text) {
     /* Python: temp + fsync + os.replace. */
     if (!path || !yaml_text) return -1;
@@ -130,7 +130,7 @@ int util_atomic_yaml_write(const char *path, const char *yaml_text) {
     return 0;
 }
 
-/* PoP: util_atomic_roundtrip_yaml_update @ utils.py:atomic_roundtrip_yaml_update */
+/* PoP: util_atomic_roundtrip_yaml_update @ utils/files.py:atomic_roundtrip_yaml_update */
 int util_atomic_roundtrip_yaml_update(const char *path, const char *dotted_key, const char *value) {
     /* Python: update one dotted YAML key preserving comments. */
     if (!path || !dotted_key) return -1;
@@ -138,7 +138,7 @@ int util_atomic_roundtrip_yaml_update(const char *path, const char *dotted_key, 
     return 0;
 }
 
-/* PoP: util_safe_json_loads @ utils.py:safe_json_loads */
+/* PoP: util_safe_json_loads @ utils/files.py:safe_json_loads */
 char *util_safe_json_loads(const char *text, const char *default_value) {
     /* Python: parse or default on any error. */
     if (!text) return default_value ? strdup(default_value) : NULL;
@@ -151,14 +151,14 @@ char *util_safe_json_loads(const char *text, const char *default_value) {
     return strdup(text);
 }
 
-/* PoP: util_get_fast_yaml_loader @ utils.py:_get_fast_yaml_loader */
+/* PoP: util_get_fast_yaml_loader @ utils/files.py:_get_fast_yaml_loader */
 char *util_get_fast_yaml_loader(void) {
     /* Python: libyaml C loader when available. */
     printf("fast yaml loader (libyaml C loader)\n");
     return strdup("CSafeLoader");
 }
 
-/* PoP: util_fast_safe_load @ utils.py:fast_safe_load */
+/* PoP: util_fast_safe_load @ utils/files.py:fast_safe_load */
 char *util_fast_safe_load(const char *yaml_text) {
     /* Python: yaml.safe_load via libyaml. */
     if (!yaml_text) return NULL;
@@ -166,7 +166,7 @@ char *util_fast_safe_load(const char *yaml_text) {
     return strdup(yaml_text);
 }
 
-/* PoP: util_env_int @ utils.py:env_int */
+/* PoP: util_env_int @ utils/files.py:env_int */
 long util_env_int(const char *key, long default_value) {
     /* Python: env int with fallback. */
     const char *raw = getenv(key);
@@ -178,7 +178,7 @@ long util_env_int(const char *key, long default_value) {
     return v;
 }
 
-/* PoP: util_env_float @ utils.py:env_float */
+/* PoP: util_env_float @ utils/files.py:env_float */
 double util_env_float(const char *key, double default_value) {
     const char *raw = getenv(key);
     if (!raw || !*raw) return default_value;
@@ -188,7 +188,7 @@ double util_env_float(const char *key, double default_value) {
     return v;
 }
 
-/* PoP: util_env_bool @ utils.py:env_bool */
+/* PoP: util_env_bool @ utils/files.py:env_bool */
 bool util_env_bool(const char *key) {
     /* Python: is_truthy_value on env. */
     const char *raw = getenv(key);
@@ -201,7 +201,7 @@ bool util_env_bool(const char *key) {
     return r;
 }
 
-/* PoP: util_normalize_proxy_env_vars @ utils.py:normalize_proxy_env_vars */
+/* PoP: util_normalize_proxy_env_vars @ utils/files.py:normalize_proxy_env_vars */
 char *util_normalize_proxy_env_vars(const char *env_json) {
     /* Python: rewrite proxy env vars to canonical URL forms. */
     if (!env_json) return strdup("{}");
@@ -209,7 +209,7 @@ char *util_normalize_proxy_env_vars(const char *env_json) {
     return strdup(env_json);
 }
 
-/* PoP: util_model_forces_max_completion_tokens @ utils.py:model_forces_max_completion_tokens */
+/* PoP: util_model_forces_max_completion_tokens @ utils/files.py:model_forces_max_completion_tokens */
 bool util_model_forces_max_completion_tokens(const char *model) {
     /* Python: OpenAI newer families require max_completion_tokens. */
     if (!model) return false;
@@ -221,7 +221,7 @@ bool util_model_forces_max_completion_tokens(const char *model) {
     return r;
 }
 
-/* PoP: dirs @ utils.py:atomic_write_text */
+/* PoP: dirs @ utils/files.py:atomic_write_text */
 
 /* Write content to path via temp file + fsync + atomic rename.
  * Creates parent dirs (mkdir -p semantics). Never leaves a partially

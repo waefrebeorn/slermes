@@ -9,16 +9,16 @@
 
 /* ── tools/cronjob_tools.py: 12 missing functions ── */
 
-/* PoP: mode_guidance_notes @ tools/cronjob_job_args.py:mode_guidance_notes */
+/* PoP: mode_guidance_notes @ cron/job_args.py:mode_guidance_notes */
 char *mode_guidance_notes(void) { return strdup("[]"); }
 
-/* PoP: split_monitor_arg @ tools/cronjob_job_args.py:split_monitor_arg */
+/* PoP: split_monitor_arg @ cron/job_args.py:split_monitor_arg */
 char *split_monitor_arg(const char *arg) { return strdup(""); }
 
-/* PoP: validate_bot_chat_deliver @ tools/cronjob_job_args.py:validate_bot_chat_deliver */
+/* PoP: validate_bot_chat_deliver @ cron/job_args.py:validate_bot_chat_deliver */
 int validate_bot_chat_deliver(void) { return 1; }
 
-/* PoP: resolve_cron_context_deliver @ tools/cronjob_job_args.py:resolve_cron_context_deliver */
+/* PoP: resolve_cron_context_deliver @ cron/job_args.py:resolve_cron_context_deliver */
 char *resolve_cron_context_deliver(void) { return strdup("{}"); }
 
 /* PoP: forward_relay_fronted_run @ tools/cronjob_tools.py:forward_relay_fronted_run */
@@ -37,7 +37,7 @@ char *latest_job_output_excerpt(void) { return strdup(""); }
 char *try_dispatch_background_run(void) { return strdup("{}"); }
 
 
-/* PoP: gateway_liveness_notice @ tools/cronjob_job_args.py:gateway_liveness_notice */
+/* PoP: gateway_liveness_notice @ cron/job_args.py:gateway_liveness_notice */
 char *gateway_liveness_notice(void) { return strdup(""); }
 
 /* PoP: _cronjob_handler @ tools/cronjob_tools.py:_cronjob_handler */

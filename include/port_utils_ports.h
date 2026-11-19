@@ -12,10 +12,10 @@
 extern "C" {
 #endif
 
-/* PoP: atomic_yaml_write @ utils.py:atomic_yaml_write */
+/* PoP: atomic_yaml_write @ utils/files.py:atomic_yaml_write */
 int util_atomic_yaml_write(const char *path, const char *yaml_text);
 
-/* PoP: atomic_json_write @ utils.py:atomic_yaml_write */
+/* PoP: atomic_json_write @ utils/files.py:atomic_yaml_write */
 int util_atomic_json_write(const char *path, const char *data_json);
 
 /* util_rename_replace @ os.replace -- atomic replace that WORKS on Windows.
@@ -27,13 +27,13 @@ int util_atomic_json_write(const char *path, const char *data_json);
  * read back the old contents. os.replace overwrites on all platforms. */
 int util_rename_replace(const char *src, const char *dst);
 
-/* PoP: fast_safe_load @ utils.py:fast_safe_load */
+/* PoP: fast_safe_load @ utils/files.py:fast_safe_load */
 char *util_fast_safe_load(const char *yaml_text);
 
-/* PoP: preserve_file_mode @ utils.py:atomic_yaml_write */
+/* PoP: preserve_file_mode @ utils/files.py:atomic_yaml_write */
 long util_preserve_file_mode(const char *path);
 
-/* PoP: restore_file_mode @ utils.py:atomic_yaml_write */
+/* PoP: restore_file_mode @ utils/files.py:atomic_yaml_write */
 int util_restore_file_mode(const char *path, long mode);
 
 #ifdef __cplusplus

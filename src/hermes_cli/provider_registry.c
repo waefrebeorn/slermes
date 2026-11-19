@@ -129,7 +129,7 @@ static char *strip_lower(const char *s) {
 }
 
 /* ─── utils.base_url_hostname / base_url_host_matches ──────────────────── */
-/* PoP: provider_base_url_hostname @ utils.py:base_url_hostname */
+/* PoP: provider_base_url_hostname @ utils/files.py:base_url_hostname */
 char *provider_base_url_hostname(const char *base_url) {
     if (!base_url) return dup_or_empty("");
     /* strip leading/trailing ws */
@@ -170,7 +170,7 @@ char *provider_base_url_hostname(const char *base_url) {
     return out;
 }
 
-/* PoP: provider_base_url_host_matches @ utils.py:base_url_host_matches */
+/* PoP: provider_base_url_host_matches @ utils/files.py:base_url_host_matches */
 bool provider_base_url_host_matches(const char *base_url, const char *domain) {
     char *host = provider_base_url_hostname(base_url);
     if (!host || !*host) { free(host); return false; }

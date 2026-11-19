@@ -269,7 +269,7 @@ ALLOW = {
         "src/agent/hermes_state/hermes_state_open.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/hermes_state/hermes_state_ops.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/hermes_state/hermes_state_portability.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
-        "src/agent/hermes_state/hermes_state_repair.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
+        "src/agent/hermes_state/persistence.sqlite._state.repair.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/hermes_state/hermes_state_schema.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/hermes_state/hermes_state_search.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",
         "src/agent/hermes_state/hermes_state_session.c": "PoP-annotated but not named port_<stem>.c (pre-standard)",

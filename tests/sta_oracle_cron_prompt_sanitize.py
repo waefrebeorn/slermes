@@ -20,7 +20,7 @@ _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-from tools.cronjob_prompt_scan import (  # noqa: E402
+from cron.prompt_scan import (  # noqa: E402
     _scan_cron_prompt as _check_invisible_unicode,
     _strip_invisible_unicode,
     _scan_cron_skill_assembled,

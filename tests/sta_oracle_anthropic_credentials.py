@@ -20,7 +20,7 @@ from urllib.parse import urlparse  # noqa: E402
 
 # agent.anthropic_credentials imports utils -> hermes_yaml -> ruamel.yaml, which
 # is not installed here. Stub utils with the same two definitions the module
-# uses, transcribed from utils.py (``base_url_hostname`` is the reference this
+# uses, transcribed from utils.files.py (``base_url_hostname`` is the reference this
 # oracle checks the C port against).
 _utils = _types.ModuleType("utils")
 

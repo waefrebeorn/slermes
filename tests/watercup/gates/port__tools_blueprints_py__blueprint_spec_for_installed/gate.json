@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "cli_tools_blueprints_blueprint_spec_for_installed",
-  "py_module": "tools/blueprints.py",
+  "py_module": "cron/skill_blueprints.py",
   "py_fn": "blueprint_spec_for_installed",
   "inputs": [
     "hello",

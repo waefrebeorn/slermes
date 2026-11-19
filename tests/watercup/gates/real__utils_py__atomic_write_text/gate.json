@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "atomic_write_text",
-  "py_module": "utils.py",
+  "py_module": "utils/files.py",
   "py_fn": "atomic_write_text",
   "inputs": [
     "hello",

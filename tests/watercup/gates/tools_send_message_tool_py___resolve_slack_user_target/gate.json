@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "tools_send_message_tool_u_resolve_slack_user_target",
-  "py_module": "tools/send_message_tool.py",
+  "py_module": "gateway/outbound/send.py",
   "py_fn": "_resolve_slack_user_target",
   "inputs": [
     "hello",

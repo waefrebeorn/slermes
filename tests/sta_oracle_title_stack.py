@@ -34,7 +34,7 @@ for _cand in (os.environ.get("SLERMES_SRC") or "",
             sys.path.append(_cand)
         break
 
-from utils import is_truthy_value
+from utils.files import is_truthy_value
 from hermes_state import SessionDB
 from agent.skill_commands import (
     describe_skill_invocation,

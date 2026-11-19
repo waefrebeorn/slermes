@@ -3,8 +3,7 @@ import os
 """sta_oracle_inline_source.py -- diffs the C status_inline_source.py port.
 
 Reads the harness JSONL on stdin. The Python reference is extracted with ast;
-the two option tables are supplied directly (the function imports them from
-hermes_state_holders at call time, which is not importable here).
+the two option tables are supplied directly (the function imports them from persistence.sqlite._state.holders at call time, which is not importable here).
 """
 import ast
 import json
@@ -14,13 +13,13 @@ import types
 
 SRC = "C:/Users/eman5/hermes-agent/gateway/status_inline_source.py"
 
-# inline_source_flag_index imports these at CALL time from hermes_state_holders,
+# inline_source_flag_index imports these at CALL time from persistence.sqlite._state.holders,
 # which is not importable here. Values verbatim from that module:39-42.
-_sh = types.ModuleType("hermes_state_holders")
+_sh = types.ModuleType("persistence.sqlite._state.holders")
 _sh._PYTHON_SHORT_OPTIONS_WITH_OPERANDS = frozenset({"Q", "W", "X"})
 _sh._PYTHON_LONG_OPTIONS_WITH_OPERANDS = frozenset(
     {"--check-hash-based-pycs", "--jit"})
-sys.modules.setdefault("hermes_state_holders", _sh)
+sys.modules.setdefault("persistence.sqlite._state.holders", _sh)
 with open(SRC, encoding="utf-8") as f:
     text = f.read()
 tree = ast.parse(text)
@@ -31,7 +30,7 @@ ns = {
     "Optional": object,
     "Any": object,
     "__name__": "oracle_inline_source_extracted",
-    # verbatim from hermes_state_holders.py:39-42
+    # verbatim from persistence.sqlite._state.holders.py:39-42
     "_PYTHON_SHORT_OPTIONS_WITH_OPERANDS": frozenset({"Q", "W", "X"}),
     "_PYTHON_LONG_OPTIONS_WITH_OPERANDS": frozenset(
         {"--check-hash-based-pycs", "--jit"}),

@@ -25,7 +25,7 @@ if (len(_hh) > 2 and _hh[1].isalpha()
 import load_dev_module as _ldm
 sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 import tools.cronjob_tools as ct
-_ldm.rebind_used(ct, "ct", ["tools.cronjob_job_args"], Path(__file__))
+_ldm.rebind_used(ct, "ct", ["cron.job_args"], Path(__file__))
 
 PROMPT = ("This is a very long prompt that exceeds one hundred characters to "
           "force the preview truncation logic to kick in properly and verify "

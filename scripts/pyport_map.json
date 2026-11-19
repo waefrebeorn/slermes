@@ -114,7 +114,7 @@
   ],
   "func_match_files": []
  },
- "agent/async_utils.py": {
+ "agent/async_utils/files.py": {
   "marker_files": [
    "src/agent/async_utils.c"
   ],
@@ -608,7 +608,7 @@
   "marker_files": [],
   "func_match_files": []
  },
- "agent/retry_utils.py": {
+ "agent/retry_utils/files.py": {
   "marker_files": [
    "src/agent/retry_utils.c"
   ],
@@ -652,7 +652,7 @@
   ],
   "func_match_files": []
  },
- "agent/skill_utils.py": {
+ "agent/skill_utils/files.py": {
   "marker_files": [
    "src/agent/skill_utils.c"
   ],
@@ -946,7 +946,7 @@
   ],
   "func_match_files": []
  },
- "async_utils.py": {
+ "async_utils/files.py": {
   "marker_files": [
    "src/agent/async_utils.c"
   ],
@@ -4568,7 +4568,7 @@
   ],
   "func_match_files": []
  },
- "retry_utils.py": {
+ "retry_utils/files.py": {
   "marker_files": [
    "src/agent/retry_utils.c",
    "src/agent/retry_utils_ports.c",
@@ -5051,7 +5051,7 @@
   ],
   "func_match_files": []
  },
- "skill_utils.py": {
+ "skill_utils/files.py": {
   "marker_files": [
    "src/agent/core_helpers.c",
    "src/agent/skill_utils.c",
@@ -5577,7 +5577,7 @@
   ],
   "func_match_files": []
  },
- "tools/blueprints.py": {
+ "cron/skill_blueprints.py": {
   "marker_files": [
    "src/tools/blueprints.c"
   ],
@@ -5616,7 +5616,7 @@
   ],
   "func_match_files": []
  },
- "tools/checkpoint_manager.py": {
+ "agent/checkpoints/manager.py": {
   "marker_files": [
    "src/agent/checkpoint.c",
    "src/tools/checkpoint_manager.c"
@@ -5750,13 +5750,13 @@
   ],
   "func_match_files": []
  },
- "tools/microsoft_graph_auth.py": {
+ "plugins/teams_pipeline/graph_auth.py": {
   "marker_files": [
    "src/tools/microsoft_graph_auth.c"
   ],
   "func_match_files": []
  },
- "tools/microsoft_graph_client.py": {
+ "plugins/teams_pipeline/graph_client.py": {
   "marker_files": [
    "src/tools/browser.c",
    "src/tools/microsoft_graph_client.c"
@@ -5834,7 +5834,7 @@
   ],
   "func_match_files": []
  },
- "tools/send_message_tool.py": {
+ "gateway/outbound/send.py": {
   "marker_files": [
    "src/tools/send_message.c",
    "src/tools/send_message_tool.c"

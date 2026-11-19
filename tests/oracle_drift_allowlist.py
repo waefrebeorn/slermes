@@ -31,7 +31,7 @@ ALLOW = {
     "sta_oracle_tools_approval.py:5": "tools.approval.unregister_gateway_notify",
     "sta_oracle_tools_interrupt.py:5": "tools.interrupt._ThreadAwareEventProxy",
     "sta_oracle_tools_mcp_oauth_manager.py:5": "tools.mcp_oauth_manager._make_hermes_provider_class",
-    "sta_oracle_tools_microsoft_graph_auth.py:5": "tools.microsoft_graph_auth.clear_cache",
+    "sta_oracle_tools_microsoft_graph_auth.py:5": "plugins.teams_pipeline.graph_auth.clear_cache",
     "sta_oracle_tools_read_terminal_tool.py:5": "tools.read_terminal_tool.check_read_terminal_requirements",
     "sta_oracle_tools_skill_usage.py:5": "tools.skills_sync.is_bundled_skills_opt_out",
     "sta_oracle_tools_skills_hub.py:5": "tools.skills_hub.GitHubAuth",

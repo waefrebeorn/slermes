@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "base_url_hostname",
-  "py_module": "utils.py",
+  "py_module": "utils/files.py",
   "py_fn": "base_url_hostname",
   "inputs": [
     "hello",

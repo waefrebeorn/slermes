@@ -24,7 +24,7 @@
 #include <math.h>
 #include <regex.h>
 
-/* PoP: ERE @ tools/send_message_targets.py:_parse_target_ref */
+/* PoP: ERE @ gateway/outbound/targets.py:_parse_target_ref */
 /* Faithful subset for the regex-based platforms Python implements. Uses
  * POSIX ERE (capturing groups only — no (?:...) which fails to compile
  * under this glibc). g1 = chat_id, g2 = thread_id (where present). */

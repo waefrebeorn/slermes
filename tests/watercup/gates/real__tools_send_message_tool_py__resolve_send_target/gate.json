@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "resolve_send_target",
-  "py_module": "tools/send_message_tool.py",
+  "py_module": "gateway/outbound/send.py",
   "py_fn": "resolve_send_target",
   "inputs": [
     "hello",

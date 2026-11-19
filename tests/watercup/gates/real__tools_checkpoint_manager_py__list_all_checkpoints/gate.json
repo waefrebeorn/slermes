@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "list_all_checkpoints",
-  "py_module": "tools/checkpoint_manager.py",
+  "py_module": "agent/checkpoints/manager.py",
   "py_fn": "list_all_checkpoints",
   "inputs": [
     "hello",

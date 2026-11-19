@@ -26,7 +26,7 @@
  *
  * Port of Python utils.py:normalize_proxy_url().
  */
-/* PoP: normalize_proxy_url @ utils.py:normalize_proxy_url */
+/* PoP: normalize_proxy_url @ utils/files.py:normalize_proxy_url */
 static char *normalize_proxy_url(const char *proxy_url) {
     if (!proxy_url || !proxy_url[0]) return NULL;
 

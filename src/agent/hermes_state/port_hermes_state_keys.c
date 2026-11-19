@@ -187,7 +187,7 @@ static char *canon_dumps(const json_t *v)
 
 /* --- hermes_state_keys.py --- */
 
-/* PoP: hsk_cron_request_id @ hermes_state_keys.py:cron_request_id */
+/* PoP: hsk_cron_request_id @ persistence/sqlite/_state/keys.py:cron_request_id */
 char *hsk_cron_request_id(const char *job_id, const char *execution_id)
 {
     size_t n = strlen(CRON_REQUEST_PREFIX) + strlen(job_id ? job_id : "") + 1 +
@@ -200,7 +200,7 @@ char *hsk_cron_request_id(const char *job_id, const char *execution_id)
     return out;
 }
 
-/* PoP: hsk_prefix_range @ hermes_state_keys.py:prefix_range */
+/* PoP: hsk_prefix_range @ persistence/sqlite/_state/keys.py:prefix_range */
 char *hsk_prefix_range(const char *prefix, char **hi)
 {
     if (!prefix || !*prefix)
@@ -222,7 +222,7 @@ char *hsk_prefix_range(const char *prefix, char **hi)
     return lo;
 }
 
-/* PoP: hsk_cron_request_range @ hermes_state_keys.py:cron_request_range */
+/* PoP: hsk_cron_request_range @ persistence/sqlite/_state/keys.py:cron_request_range */
 char *hsk_cron_request_range(const char *job_id, char **hi)
 {
     char *prefix = hsk_cron_request_id(job_id, "");
@@ -233,7 +233,7 @@ char *hsk_cron_request_range(const char *job_id, char **hi)
     return lo;
 }
 
-/* PoP: hsk_cron_run_from_request @ hermes_state_keys.py:cron_run_from_request */
+/* PoP: hsk_cron_run_from_request @ persistence/sqlite/_state/keys.py:cron_run_from_request */
 int hsk_cron_run_from_request(const char *request_id, const char *job_id,
                               char **job_out, char **exec_out)
 {
@@ -275,7 +275,7 @@ int hsk_cron_run_from_request(const char *request_id, const char *job_id,
     return 1;
 }
 
-/* PoP: hsk_legacy_cron_run_job @ hermes_state_keys.py:legacy_cron_run_job */
+/* PoP: hsk_legacy_cron_run_job @ persistence/sqlite/_state/keys.py:legacy_cron_run_job */
 char *hsk_legacy_cron_run_job(const char *session_id)
 {
     if (!session_id)
@@ -311,7 +311,7 @@ char *hsk_legacy_cron_run_job(const char *session_id)
     return out;
 }
 
-/* PoP: hsk_admission_fingerprint @ hermes_state_keys.py:admission_fingerprint */
+/* PoP: hsk_admission_fingerprint @ persistence/sqlite/_state/keys.py:admission_fingerprint */
 char *hsk_admission_fingerprint(const char *canonical_target, json_t *payload)
 {
     json_t *root = json_new_object();
@@ -327,7 +327,7 @@ char *hsk_admission_fingerprint(const char *canonical_target, json_t *payload)
     return hex;
 }
 
-/* PoP: hsk_local_identity @ hermes_state_keys.py:local_identity */
+/* PoP: hsk_local_identity @ persistence/sqlite/_state/keys.py:local_identity */
 char *hsk_local_identity(const char *profile_id, const char *principal_id,
                          const char *request_id)
 {
@@ -349,7 +349,7 @@ char *hsk_local_identity(const char *profile_id, const char *principal_id,
     return out;
 }
 
-/* PoP: hsk_profile_from_session_key_namespace @ hermes_state_keys.py:profile_from_session_key_namespace */
+/* PoP: hsk_profile_from_session_key_namespace @ persistence/sqlite/_state/keys.py:profile_from_session_key_namespace */
 char *hsk_profile_from_session_key_namespace(const char *namespace)
 {
     if (namespace && strcmp(namespace, "main") == 0)
@@ -359,7 +359,7 @@ char *hsk_profile_from_session_key_namespace(const char *namespace)
     return strdup(namespace ? namespace : "");
 }
 
-/* PoP: hsk_profile_from_session_key @ hermes_state_keys.py:profile_from_session_key */
+/* PoP: hsk_profile_from_session_key @ persistence/sqlite/_state/keys.py:profile_from_session_key */
 char *hsk_profile_from_session_key(const char *session_key)
 {
     if (!session_key || !*session_key)

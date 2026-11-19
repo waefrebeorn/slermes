@@ -212,7 +212,7 @@ static char *hs_canonical_path(const char *p) {
     return copy;
 }
 
-/* PoP: apply_wal_size_limit @ hermes_state_wal.py:apply_wal_size_limit */
+/* PoP: apply_wal_size_limit @ sqlite_support.py:apply_wal_size_limit */
 void apply_wal_size_limit(sqlite3 *conn) {
     /* Bound the WAL so checkpoints truncate it back to 64 MiB instead of
      * retaining the high-water mark forever. Best-effort: never raises. */
@@ -229,14 +229,14 @@ void apply_wal_size_limit(sqlite3 *conn) {
     free(sql);
 }
 
-/* PoP: is_malformed_schema_error @ hermes_state_errors.py:is_malformed_schema_error */
+/* PoP: is_malformed_schema_error @ persistence/sqlite/_state/errors.py:is_malformed_schema_error */
 bool is_malformed_schema_error(const char *exc_message) {
     /* True only when SQLite explicitly reports malformed SCHEMA text; a
      * generic "database disk image is malformed" does not qualify. */
     return hs_contains_any_lower(exc_message, HS_MALFORMED_SCHEMA_MARKERS);
 }
 
-/* ── PoP: cross_process_repair_lock @ hermes_state_repair.py:cross_process_repair_lock ──
+/* ── PoP: cross_process_repair_lock @ persistence/sqlite/_state/repair.py:cross_process_repair_lock ──
  * Generator → acquire/release pair. cross_process_repair_lock returns true
  * when the caller holds the repair lock for db_path (false when the bounded
  * acquire timed out). On lock-file open failure it degrades to in-process
@@ -288,7 +288,7 @@ void cross_process_repair_lock_release(void *handle) {
     close(fd);
 }
 
-/* PoP: bump_schema_cookie @ hermes_state_repair.py:bump_schema_cookie */
+/* PoP: bump_schema_cookie @ persistence/sqlite/_state/repair.py:bump_schema_cookie */
 void bump_schema_cookie(sqlite3 *conn) {
     /* Increment PRAGMA schema_version after direct sqlite_master surgery so
      * other connections discard their cached schema. Wraps at 32-bit signed
@@ -310,7 +310,7 @@ void bump_schema_cookie(sqlite3 *conn) {
     free(sql);
 }
 
-/* PoP: mask_volatile_header @ hermes_state_repair.py:mask_volatile_header */
+/* PoP: mask_volatile_header @ persistence/sqlite/_state/repair.py:mask_volatile_header */
 void mask_volatile_header(unsigned char *head, size_t len) {
     /* Zero the commit-counter fields (bytes 24..28 and 92..96 of the SQLite
      * header) so ordinary writes don't re-key the ledger. In-place; no-op
@@ -322,7 +322,7 @@ void mask_volatile_header(unsigned char *head, size_t len) {
     }
 }
 
-/* PoP: db_fingerprint @ hermes_state_repair.py:db_fingerprint */
+/* PoP: db_fingerprint @ persistence/sqlite/_state/repair.py:db_fingerprint */
 char *db_fingerprint(const char *db_path) {
     /* Cheap identity: size + sha256(masked 64KiB head + up-to-64KiB tail),
      * first 32 hex chars. Deliberately EXCLUDES mtime. Returns NULL on any
@@ -359,7 +359,7 @@ char *db_fingerprint(const char *db_path) {
     return out;
 }
 
-/* PoP: backup_content_identity @ hermes_state_repair.py:backup_content_identity */
+/* PoP: backup_content_identity @ persistence/sqlite/_state/repair.py:backup_content_identity */
 char *backup_content_identity(const char *db_path) {
     /* Recovery-image identity for forensic-backup dedupe: length-delimited
      * digest of the ENTIRE main file plus every present sidecar. Different
@@ -403,7 +403,7 @@ char *backup_content_identity(const char *db_path) {
     return strdup(hex);
 }
 
-/* PoP: record_repair_outcome @ hermes_state_repair.py:record_repair_outcome */
+/* PoP: record_repair_outcome @ persistence/sqlite/_state/repair.py:record_repair_outcome */
 void record_repair_outcome(const char *db_path, bool repaired,
                             const char *fingerprint) {
     /* Update the persistent attempt ledger after a repair pass. Never raises.
@@ -447,7 +447,7 @@ void record_repair_outcome(const char *db_path, bool repaired,
     free(ledger_path);
 }
 
-/* PoP: reapply_durability_barriers @ hermes_state_repair.py:reapply_durability_barriers */
+/* PoP: reapply_durability_barriers @ persistence/sqlite/_state/repair.py:reapply_durability_barriers */
 bool reapply_durability_barriers(sqlite3 *conn) {
     /* Best-effort (re)application of the macOS write barriers
      * (_apply_macos_checkpoint_barrier + _enforce_macos_synchronous_full).
@@ -460,7 +460,7 @@ bool reapply_durability_barriers(sqlite3 *conn) {
     return rc1 == SQLITE_OK && rc2 == SQLITE_OK;
 }
 
-/* PoP: connect_repair_durable @ hermes_state_repair.py:connect_repair_durable */
+/* PoP: connect_repair_durable @ persistence/sqlite/_state/repair.py:connect_repair_durable */
 sqlite3 *connect_repair_durable(const char *db_path, double timeout) {
     /* sqlite3.connect for the repair/probe paths with durability barriers.
      * Autocommit preserved (no implicit BEGIN). Barrier application is
@@ -482,7 +482,7 @@ sqlite3 *connect_repair_durable(const char *db_path, double timeout) {
     return conn;
 }
 
-/* ── PoP: exclusive_repair_db_guard @ hermes_state_repair.py:exclusive_repair_db_guard ──
+/* ── PoP: exclusive_repair_db_guard @ persistence/sqlite/_state/repair.py:exclusive_repair_db_guard ──
  * Generator → acquire/release. On failure returns false and sets *err_out
  * (malloc'd, caller frees) to the exception text, mirroring `yield None, exc`. */
 bool exclusive_repair_db_guard(const char *db_path, sqlite3 **guard_out,
@@ -520,7 +520,7 @@ void exclusive_repair_db_guard_release(sqlite3 *guard) {
     sqlite3_close(guard);
 }
 
-/* ── PoP: copy_database_snapshot @ hermes_state_repair.py:copy_database_snapshot ──
+/* ── PoP: copy_database_snapshot @ persistence/sqlite/_state/repair.py:copy_database_snapshot ──
  * Returns 0 on success; on failure returns -1 and sets *err_out (malloc'd).
  * Uses the online backup API in 256-page steps under a deadline so neither
  * file's inode is replaced. */
@@ -598,7 +598,7 @@ int copy_database_snapshot(const char *source_path, const char *destination_path
     return failed ? -1 : 0;
 }
 
-/* PoP: live_writer_holds_db @ hermes_state_repair.py:live_writer_holds_db */
+/* PoP: live_writer_holds_db @ persistence/sqlite/_state/repair.py:live_writer_holds_db */
 bool live_writer_holds_db(const char *db_path) {
     /* True when another connection holds db_path open: probe via
      * locking_mode=EXCLUSIVE + BEGIN IMMEDIATE (fails SQLITE_BUSY against
@@ -654,7 +654,7 @@ static char *gaps_db_opens_cleanly(const char *db_path) {
     return reason;
 }
 
-/* PoP: unlink_db_triple @ hermes_state_repair.py:unlink_db_triple */
+/* PoP: unlink_db_triple @ persistence/sqlite/_state/repair.py:unlink_db_triple */
 char *unlink_db_triple(const char *path) {
     /* Remove path and every SQLite sidecar; return any cleanup failure as a
      * malloc'd "; "-joined string, or NULL. POSIX unlink has no Windows
@@ -686,7 +686,7 @@ char *unlink_db_triple(const char *path) {
     return failures;
 }
 
-/* PoP: run_repair_strategies @ hermes_state_repair.py:run_repair_strategies */
+/* PoP: run_repair_strategies @ persistence/sqlite/_state/repair.py:run_repair_strategies */
 json_t *run_repair_strategies(const char *db_path, json_t *report) {
     /* Escalating repair attempts applied IN PLACE to db_path (the caller runs
      * them on a scratch copy). Strategy 0: FTS 'rebuild'. 0.5: REINDEX.
@@ -827,7 +827,7 @@ json_t *run_repair_strategies(const char *db_path, json_t *report) {
     return report;
 }
 
-/* PoP: repair_state_db_schema_locked @ hermes_state_repair.py:repair_state_db_schema_locked */
+/* PoP: repair_state_db_schema_locked @ persistence/sqlite/_state/repair.py:repair_state_db_schema_locked */
 json_t *repair_state_db_schema_locked(const char *db_path, bool backup,
                                        json_t *report) {
     /* Repair strategies for repair_state_db_schema. Caller must hold the
@@ -974,7 +974,7 @@ json_t *repair_state_db_schema_locked(const char *db_path, bool backup,
 /* holder tuple: (pid, path) — mirrors List[Tuple[int, str]] */
 typedef struct { long pid; char *path; } hs_holder_t;
 
-/* PoP: is_inactive_orphan_desktop_holder @ hermes_state_dbfile.py:is_inactive_orphan_desktop_holder */
+/* PoP: is_inactive_orphan_desktop_holder @ persistence/sqlite/_state/dbfile.py:is_inactive_orphan_desktop_holder */
 bool is_inactive_orphan_desktop_holder(long ppid, double age_seconds,
                                         double min_age_seconds,
                                         bool ephemeral_backend,
@@ -991,7 +991,7 @@ bool is_inactive_orphan_desktop_holder(long ppid, double age_seconds,
     return true;
 }
 
-/* PoP: concrete_state_db_holder_pids @ hermes_state_dbfile.py:concrete_state_db_holder_pids */
+/* PoP: concrete_state_db_holder_pids @ persistence/sqlite/_state/dbfile.py:concrete_state_db_holder_pids */
 long *concrete_state_db_holder_pids(const char *db_path, hs_holder_t *holders,
                                      int n_holders, int *out_n) {
     /* Unique PIDs proven to hold this DB or one of its sidecars. Caller

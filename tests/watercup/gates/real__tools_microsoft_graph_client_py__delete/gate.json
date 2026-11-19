@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "delete",
-  "py_module": "tools/microsoft_graph_client.py",
+  "py_module": "plugins/teams_pipeline/graph_client.py",
   "py_fn": "delete",
   "inputs": [
     "hello",

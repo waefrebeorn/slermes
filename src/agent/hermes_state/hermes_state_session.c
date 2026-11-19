@@ -276,7 +276,7 @@ void raise_if_db_corrupt(const char *db_path, const char *exc_msg) {
     }
 }
 
-/* PoP: classify_persistence_error @ hermes_state_errors.py:classify_persistence_error */
+/* PoP: classify_persistence_error @ persistence/sqlite/_state/errors.py:classify_persistence_error */
 const char *hermes_state_classify_persistence_error(const char *exc_msg) {
     if (!exc_msg) return "unknown";
     char lower[2048];
@@ -297,7 +297,7 @@ const char *hermes_state_classify_persistence_error(const char *exc_msg) {
     return "unknown";
 }
 
-/* PoP: _repair_scratch_space_error @ hermes_state_repair.py:_repair_scratch_space_error */
+/* PoP: _repair_scratch_space_error @ persistence/sqlite/_state/repair.py:_repair_scratch_space_error */
 char *hermes_state_repair_scratch_space_error(const char *db_path) {
     if (!db_path) return NULL;
     struct stat st;

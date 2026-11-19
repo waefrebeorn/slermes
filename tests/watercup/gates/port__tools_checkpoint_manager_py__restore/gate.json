@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "checkpoint_manager_restore",
-  "py_module": "tools/checkpoint_manager.py",
+  "py_module": "agent/checkpoints/manager.py",
   "py_fn": "restore",
   "inputs": [
     "hello",

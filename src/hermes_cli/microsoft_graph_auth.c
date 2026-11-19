@@ -15,7 +15,7 @@
  * forces a fresh fetch. */
 static char  *_msgraph_cached_token = NULL;
 
-/* PoP: token @ tools/microsoft_graph_auth.py:clear_cache */
+/* PoP: token @ plugins/teams_pipeline/graph_auth.py:clear_cache */
 /* Drop the cached token (self._cached_token = None). Idempotent. */
 void cli_tools_microsoft_graph_auth_clear_cache(void) {
     free(_msgraph_cached_token);
@@ -23,7 +23,7 @@ void cli_tools_microsoft_graph_auth_clear_cache(void) {
     hermes_log(LOG_DEBUG, "graph_auth", "clear_cache: cached token dropped");
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_token_url @ tools/microsoft_graph_auth.py:token_url */
+/* PoP: cli_tools_microsoft_graph_auth_token_url @ plugins/teams_pipeline/graph_auth.py:token_url */
 int cli_tools_microsoft_graph_auth_token_url(const char *tenant_id, const char *authority, char *buf, size_t bufsize) {
     if (!tenant_id || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "graph_auth", "token_url: invalid args");
@@ -35,7 +35,7 @@ int cli_tools_microsoft_graph_auth_token_url(const char *tenant_id, const char *
     return 0;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_from_env @ tools/microsoft_graph_auth.py:from_env */
+/* PoP: cli_tools_microsoft_graph_auth_from_env @ plugins/teams_pipeline/graph_auth.py:from_env */
 int cli_tools_microsoft_graph_auth_from_env(char *tenant_buf, size_t tenant_size, char *client_buf, size_t client_size, char *secret_buf, size_t secret_size) {
     if (!tenant_buf || !client_buf || !secret_buf) return -1;
     const char *tenant = getenv("MSGRAPH_TENANT_ID");
@@ -55,7 +55,7 @@ int cli_tools_microsoft_graph_auth_from_env(char *tenant_buf, size_t tenant_size
     return 0;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_is_expired @ tools/microsoft_graph_auth.py:is_expired */
+/* PoP: cli_tools_microsoft_graph_auth_is_expired @ plugins/teams_pipeline/graph_auth.py:is_expired */
 int cli_tools_microsoft_graph_auth_is_expired(time_t expires_at, int skew_seconds) {
     time_t now = time(NULL);
     int expired = (expires_at <= now + skew_seconds);
@@ -64,7 +64,7 @@ int cli_tools_microsoft_graph_auth_is_expired(time_t expires_at, int skew_second
     return expired;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_expires_in_seconds @ tools/microsoft_graph_auth.py:expires_in_seconds */
+/* PoP: cli_tools_microsoft_graph_auth_expires_in_seconds @ plugins/teams_pipeline/graph_auth.py:expires_in_seconds */
 int cli_tools_microsoft_graph_auth_expires_in_seconds(time_t expires_at) {
     time_t now = time(NULL);
     int remaining = (int)difftime(expires_at, now);
@@ -75,7 +75,7 @@ int cli_tools_microsoft_graph_auth_expires_in_seconds(time_t expires_at) {
 
 
 
-/* PoP: cli_tools_microsoft_graph_auth_inspect_token_health @ tools/microsoft_graph_auth.py:inspect_token_health */
+/* PoP: cli_tools_microsoft_graph_auth_inspect_token_health @ plugins/teams_pipeline/graph_auth.py:inspect_token_health */
 int cli_tools_microsoft_graph_auth_inspect_token_health(char *buf, size_t bufsize) {
     if (!buf || bufsize == 0) return -1;
     const char *tenant = getenv("MSGRAPH_TENANT_ID");
@@ -88,7 +88,7 @@ int cli_tools_microsoft_graph_auth_inspect_token_health(char *buf, size_t bufsiz
     return 0;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_get_access_token @ tools/microsoft_graph_auth.py:get_access_token */
+/* PoP: cli_tools_microsoft_graph_auth_get_access_token @ plugins/teams_pipeline/graph_auth.py:get_access_token */
 int cli_tools_microsoft_graph_auth_get_access_token(const char *tenant_id, const char *client_id, const char *client_secret, char *buf, size_t bufsize) {
     if (!tenant_id || !client_id || !client_secret || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "graph_auth", "get_access_token: invalid args");
@@ -99,7 +99,7 @@ int cli_tools_microsoft_graph_auth_get_access_token(const char *tenant_id, const
     return -1;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth__fetch_access_token @ tools/microsoft_graph_auth.py:_fetch_access_token */
+/* PoP: cli_tools_microsoft_graph_auth__fetch_access_token @ plugins/teams_pipeline/graph_auth.py:_fetch_access_token */
 int cli_tools_microsoft_graph_auth__fetch_access_token(const char *token_url, const char *client_id, const char *client_secret, char *buf, size_t bufsize) {
     if (!token_url || !client_id || !client_secret || !buf || bufsize == 0) {
         hermes_log(LOG_WARNING, "graph_auth", "_fetch_access_token: invalid args");
@@ -110,7 +110,7 @@ int cli_tools_microsoft_graph_auth__fetch_access_token(const char *token_url, co
     return -1;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth__extract_error_detail @ tools/microsoft_graph_auth.py:_extract_error_detail */
+/* PoP: cli_tools_microsoft_graph_auth__extract_error_detail @ plugins/teams_pipeline/graph_auth.py:_extract_error_detail */
 int cli_tools_microsoft_graph_auth__extract_error_detail(const char *response_body, char *buf, size_t bufsize) {
     if (!response_body || !buf || bufsize == 0) return -1;
     /* Try to extract error_description from JSON */
@@ -173,7 +173,7 @@ static char *graph_json_scalar_str(const json_t *v)
     }
 }
 
-/* PoP: tools_microsoft_graph_auth_format_graph_error @ tools/microsoft_graph_auth.py:format_graph_error */
+/* PoP: tools_microsoft_graph_auth_format_graph_error @ plugins/teams_pipeline/graph_auth.py:format_graph_error */
 char *tools_microsoft_graph_auth_format_graph_error(const json_t *error)
 {
     if (!error) return NULL;
@@ -221,7 +221,7 @@ void tools_microsoft_graph_auth_set_cached_token(const char *token, time_t expir
     _msgraph_cached_expires_at = expires_at;
 }
 
-/* PoP: tools_microsoft_graph_auth_fresh_cached @ tools/microsoft_graph_auth.py:_fresh_cached */
+/* PoP: tools_microsoft_graph_auth_fresh_cached @ plugins/teams_pipeline/graph_auth.py:_fresh_cached */
 int tools_microsoft_graph_auth_fresh_cached(int skew_seconds)
 {
     if (!_msgraph_cached_token)

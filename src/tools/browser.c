@@ -777,7 +777,7 @@ static char *find_link_by_text(const char *html, const char *target) {
 
 /* Port of Python tools/microsoft_graph_client.py:_resolve_url(). */
 /* Resolve a relative URL against the current page URL */
-/* PoP: resolve_url @ tools/microsoft_graph_client.py:_resolve_url */
+/* PoP: resolve_url @ plugins/teams_pipeline/graph_client.py:_resolve_url */
 static char *resolve_url(const char *base, const char *href) {
     if (!href) return NULL;
     if (strstr(href, "://")) return strdup(href);

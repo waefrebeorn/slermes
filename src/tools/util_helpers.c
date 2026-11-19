@@ -175,7 +175,7 @@ bool tools_vision_lookup_supports(const char *provider, const char *model,
     return true;
 }
 
-/* PoP: tools_cronjob_canonical_skills @ tools/cronjob_job_args.py:_canonical_skills */
+/* PoP: tools_cronjob_canonical_skills @ cron/job_args.py:_canonical_skills */
 char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json,
                                       int *out_count)
 {
@@ -203,7 +203,7 @@ char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json
     return out;
 }
 
-/* PoP: tools_cronjob_normalize_optional @ tools/cronjob_job_args.py:_normalize_optional_job_value */
+/* PoP: tools_cronjob_normalize_optional @ cron/job_args.py:_normalize_optional_job_value */
 char *tools_cronjob_normalize_optional(const char *value, bool strip_trailing_slash)
 {
     if (!value) return NULL;
@@ -567,7 +567,7 @@ int tools_mcp_watchdog_main(long ppid, const char *command_json)
     return 0;
 }
 
-/* PoP: tools_ms_graph_init @ tools/microsoft_graph_auth.py:__init__ */
+/* PoP: tools_ms_graph_init @ plugins/teams_pipeline/graph_auth.py:__init__ */
 int tools_ms_graph_init(const char *client_id, double timeout)
 {
     (void)timeout;

@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "cli_tools_blueprints_export_blueprint",
-  "py_module": "tools/blueprints.py",
+  "py_module": "cron/skill_blueprints.py",
   "py_fn": "export_blueprint",
   "inputs": [
     "hello",

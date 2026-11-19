@@ -2,7 +2,7 @@
 import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.checkpoint_manager import (_git_env)
+from agent.checkpoints.manager import (_git_env)
 
 mism = 0; n = 0
 for line in sys.stdin:

@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "util_warn_if_credential_file_broadly_readable",
-  "py_module": "utils.py",
+  "py_module": "utils/files.py",
   "py_fn": "warn_if_credential_file_broadly_readable",
   "inputs": [
     "hello",

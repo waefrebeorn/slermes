@@ -50,7 +50,7 @@ static const char *const SR_SIDECAR_SUFFIXES[] = { "-wal", "-shm", "-journal" };
  *  A short header is returned UNCHANGED. `head` is modified in place.
  * =========================================================================== */
 
-/* PoP: sr_mask_volatile_header @ hermes_state_repair.py:mask_volatile_header */
+/* PoP: sr_mask_volatile_header @ persistence/sqlite/_state/repair.py:mask_volatile_header */
 void sr_mask_volatile_header(unsigned char *head, size_t len)
 {
     if (!head || len < 96) return;
@@ -73,7 +73,7 @@ void sr_mask_volatile_header(unsigned char *head, size_t len)
  *  make repair never run on small volumes.
  * =========================================================================== */
 
-/* PoP: _repair_backup_headroom_bytes @ hermes_state_repair.py:_repair_backup_headroom_bytes */
+/* PoP: _repair_backup_headroom_bytes @ persistence/sqlite/_state/repair.py:_repair_backup_headroom_bytes */
 long long sr_backup_headroom(long long total_bytes)
 {
     long long proportional = total_bytes / SR_FREE_FRACTION_DEN * SR_FREE_FRACTION_NUM;
@@ -97,7 +97,7 @@ long long sr_backup_headroom(long long total_bytes)
  *  `error_code` is sqlite_errorcode (0 = absent); `message` is str(exc).
  * =========================================================================== */
 
-/* PoP: _repair_failure_consumes_attempt @ hermes_state_repair.py:_repair_failure_consumes_attempt */
+/* PoP: _repair_failure_consumes_attempt @ persistence/sqlite/_state/repair.py:_repair_failure_consumes_attempt */
 int sr_failure_consumes(int is_db_error, int error_code, const char *message)
 {
     if (!is_db_error) return 0;
@@ -133,7 +133,7 @@ int sr_failure_consumes(int is_db_error, int error_code, const char *message)
  *  Caller frees.
  * =========================================================================== */
 
-/* PoP: _sidecars @ hermes_state_repair.py:_sidecars */
+/* PoP: _sidecars @ persistence/sqlite/_state/repair.py:_sidecars */
 char **sr_sidecar_names(const char *db_name, int *out_count)
 {
     char **out = (char **)calloc(SR_SIDECAR_N + 1, sizeof(char *));

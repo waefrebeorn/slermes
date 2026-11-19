@@ -20,8 +20,8 @@ sys.path.insert(0, "C:/Users/eman5/hermes-agent")
 # False) for "123456:789" -- a platform artefact, not a C defect. Point
 # discovery at the live tree so both sides see the same platform set.
 os.environ["HERMES_BUNDLED_PLUGINS"] = "C:/Users/eman5/hermes-agent/plugins"
-import tools.send_message_tool as sm
-_ldm.rebind_used(sm, 'sm', ["tools.send_message_senders", "tools.send_message_targets"], Path(__file__))
+import gateway.outbound.send as sm
+_ldm.rebind_used(sm, 'sm', ["gateway.outbound.senders", "gateway.outbound.targets"], Path(__file__))
 
 
 _harness_dir = os.environ.get("SLERMES_HARNESS_DIR") or str(

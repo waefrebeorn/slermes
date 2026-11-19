@@ -20,7 +20,7 @@ extern int resolve_synchronous_level(const char *raw);
 
 /* ── hermes_state.py: remaining read-budget + pragma + session functions ── */
 
-/* PoP: reclaim_idle_read_conn_anywhere @ hermes_state_readpool.py:reclaim_idle_read_conn_anywhere */
+/* PoP: reclaim_idle_read_conn_anywhere @ persistence/sqlite/_state/readpool.py:reclaim_idle_read_conn_anywhere */
 /* Note: full implementation requires _PathReadBudget instances; this is a stub */
 bool reclaim_idle_read_conn_anywhere(void) {
     /* The C port doesn't maintain the _read_budgets WeakValueDictionary.
@@ -29,27 +29,27 @@ bool reclaim_idle_read_conn_anywhere(void) {
     return false;
 }
 
-/* PoP: acquire_process_permit @ hermes_state_readpool.py:acquire_process_permit */
+/* PoP: acquire_process_permit @ persistence/sqlite/_state/readpool.py:acquire_process_permit */
 bool acquire_process_permit(void) {
     /* Process-wide read semaphore: bounded by _process_read_permits. */
     /* In the C port, the semaphore is a pthread_mutex_t; non-blocking try. */
     return true; /* simplified: actual semaphore logic lives in session_db.c */
 }
 
-/* PoP: acquire_path_permit @ hermes_state_readpool.py:acquire_path_permit */
+/* PoP: acquire_path_permit @ persistence/sqlite/_state/readpool.py:acquire_path_permit */
 bool acquire_path_permit(void) {
     /* Per-path read permit. Simplified in C port. */
     return true;
 }
 
-/* PoP: reclaim_idle @ hermes_state_readpool.py:reclaim_idle */
+/* PoP: reclaim_idle @ persistence/sqlite/_state/readpool.py:reclaim_idle */
 bool reclaim_idle(void *exclude) {
     (void)exclude;
     /* Close one idle pooled connection. Simplified in C port. */
     return false;
 }
 
-/* PoP: read_budget_key @ hermes_state_readpool.py:read_budget_key */
+/* PoP: read_budget_key @ persistence/sqlite/_state/readpool.py:read_budget_key */
 char *read_budget_key(const char *db_path) {
     if (!db_path) return strdup("");
     char *resolved = realpath(db_path, NULL);
@@ -57,7 +57,7 @@ char *read_budget_key(const char *db_path) {
     return strdup(db_path);
 }
 
-/* PoP: read_budget_for @ hermes_state_readpool.py:read_budget_for */
+/* PoP: read_budget_for @ persistence/sqlite/_state/readpool.py:read_budget_for */
 /* Returns a dummy budget (the C port doesn't maintain the WeakValueDictionary) */
 void *read_budget_for(const char *db_path) {
     (void)db_path;
@@ -65,7 +65,7 @@ void *read_budget_for(const char *db_path) {
     return &dummy;
 }
 
-/* PoP: apply_synchronous_pragma @ hermes_state_wal.py:apply_synchronous_pragma */
+/* PoP: apply_synchronous_pragma @ sqlite_support.py:apply_synchronous_pragma */
 void apply_synchronous_pragma(sqlite3 *conn, const char *raw_value, const char *db_label) {
     if (!conn || !raw_value) return;
     int level = resolve_synchronous_level(raw_value);

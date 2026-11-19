@@ -27,7 +27,7 @@ static bool sys_platform_is_linux(void) {
 
 /* ── hermes_state.py: SQLite file identity + generation + heartbeats ── */
 
-/* PoP: pread_db_header @ hermes_state_dbfile.py:pread_db_header */
+/* PoP: pread_db_header @ persistence/sqlite/_state/dbfile.py:pread_db_header */
 /* Returns malloc'd buffer (caller frees) or NULL. */
 char *pread_db_header(const char *db_path, int length) {
     static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
@@ -84,7 +84,7 @@ char *pread_db_header(const char *db_path, int length) {
     return buf;
 }
 
-/* PoP: read_sqlite_application_id @ hermes_state_dbfile.py:read_sqlite_application_id */
+/* PoP: read_sqlite_application_id @ persistence/sqlite/_state/dbfile.py:read_sqlite_application_id */
 int read_sqlite_application_id(const char *db_path) {
     if (!db_path) return -1;
     char *hdr = pread_db_header(db_path, 68);
@@ -107,7 +107,7 @@ char *stat_db_file_identity(const char *path) {
     return strdup(buf);
 }
 
-/* PoP: stat_sqlite_sidecar_identity @ hermes_state_dbfile.py:stat_sqlite_sidecar_identity */
+/* PoP: stat_sqlite_sidecar_identity @ persistence/sqlite/_state/dbfile.py:stat_sqlite_sidecar_identity */
 /* Returns malloc'd JSON string {"-wal":"dev,ino","-shm":"dev,ino"} or NULL */
 char *stat_sqlite_sidecar_identity(const char *db_path) {
     if (!db_path) return NULL;
@@ -125,7 +125,7 @@ char *stat_sqlite_sidecar_identity(const char *db_path) {
     return result;
 }
 
-/* PoP: watched_sqlite_sidecar_paths @ hermes_state_dbfile.py:watched_sqlite_sidecar_paths */
+/* PoP: watched_sqlite_sidecar_paths @ persistence/sqlite/_state/dbfile.py:watched_sqlite_sidecar_paths */
 /* Returns malloc'd comma-separated path list or NULL */
 char *watched_sqlite_sidecar_paths(const char *db_path) {
     if (!db_path) return NULL;
@@ -143,7 +143,7 @@ char *watched_sqlite_sidecar_paths(const char *db_path) {
     return result;
 }
 
-/* PoP: iter_deleted_sqlite_sidecar_holders @ hermes_state_dbfile.py:iter_deleted_sqlite_sidecar_holders */
+/* PoP: iter_deleted_sqlite_sidecar_holders @ persistence/sqlite/_state/dbfile.py:iter_deleted_sqlite_sidecar_holders */
 /* Returns malloc'd JSON array of [pid, target] pairs or empty array */
 char *iter_deleted_sqlite_sidecar_holders(const char *db_path) {
     if (!db_path || !sys_platform_is_linux()) return strdup("[]");
@@ -192,7 +192,7 @@ char *iter_deleted_sqlite_sidecar_holders(const char *db_path) {
     return result;
 }
 
-/* PoP: refuse_deleted_wal_generation @ hermes_state_dbfile.py:refuse_deleted_wal_generation */
+/* PoP: refuse_deleted_wal_generation @ persistence/sqlite/_state/dbfile.py:refuse_deleted_wal_generation */
 /* Returns true if a holder was found (caller raises) */
 bool refuse_deleted_wal_generation(const char *db_path) {
     char *holders = iter_deleted_sqlite_sidecar_holders(db_path);

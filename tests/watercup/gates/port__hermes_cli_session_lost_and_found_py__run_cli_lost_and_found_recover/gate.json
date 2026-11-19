@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "run_cli_lost_and_found_recover",
-  "py_module": "hermes_cli/session_lost_and_found.py",
+  "py_module": "persistence/sqlite/admin/_lost_and_found.py",
   "py_fn": "run_cli_lost_and_found_recover",
   "inputs": [
     "/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_zze7rzy2.txt",

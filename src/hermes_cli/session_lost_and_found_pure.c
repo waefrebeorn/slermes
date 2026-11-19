@@ -24,7 +24,7 @@
 #define LAF_EPOCH_HIGH 4000000000.0
 
 /* SESSION_ID_PATTERN = ^\d{8}_\d{6}_  */
-/* PoP: laf_is_session_id @ hermes_cli/session_lost_and_found.py:_is_session_id */
+/* PoP: laf_is_session_id @ persistence/sqlite/admin/_lost_and_found.py:_is_session_id */
 
 int laf_is_session_id(const char *value) {
     if (!value) return 0;
@@ -57,7 +57,7 @@ static int laf_source_shape(const char *v) {
     }
     return 1;
 }
-/* PoP: laf_looks_like_source @ hermes_cli/session_lost_and_found.py:_looks_like_source */
+/* PoP: laf_looks_like_source @ persistence/sqlite/admin/_lost_and_found.py:_looks_like_source */
 
 int laf_looks_like_source(const char *value) {
     if (!value || !*value) return 0;
@@ -70,7 +70,7 @@ static int laf_is_role(const char *v) {
            strcmp(v, "tool") == 0 || strcmp(v, "system") == 0;
 }
 
-/* PoP: laf_classify_row @ hermes_cli/session_lost_and_found.py:classify_lost_and_found_row */
+/* PoP: laf_classify_row @ persistence/sqlite/admin/_lost_and_found.py:classify_lost_and_found_row */
 char *laf_classify_row(int nfield, const char *cells_json) {
     json_t *cells = json_parse(cells_json, NULL);
     char *result = (char *)malloc(8);
@@ -122,7 +122,7 @@ char *laf_classify_row(int nfield, const char *cells_json) {
     json_free(cells);
     return result;
 }
-/* PoP: laf_heuristic_started_at @ hermes_cli/session_lost_and_found.py:_heuristic_started_at */
+/* PoP: laf_heuristic_started_at @ persistence/sqlite/admin/_lost_and_found.py:_heuristic_started_at */
 
 double laf_heuristic_started_at(const char *cells_json) {
     json_t *cells = json_parse(cells_json, NULL);
@@ -167,7 +167,7 @@ static char *laf_strndup(const char *s, size_t n)
 #define LAF_SESSION_MODEL_USAGE_NFIELD     18
 #define LAF_SESSIONS_LEGACY_MINIMAL_NFIELD 14
 
-/* PoP: laf_cli_supports_recover @ hermes_cli/session_lost_and_found.py:_cli_supports_recover */
+/* PoP: laf_cli_supports_recover @ persistence/sqlite/admin/_lost_and_found.py:_cli_supports_recover */
 /*
  *  True when the binary can run `.recover` (has sqlite_dbpage). Probes a
  * scratch DB instead of discovering it mid-recovery. */
@@ -235,7 +235,7 @@ int laf_cli_supports_recover(const char *binary)
     return supports;
 }
 
-/* PoP: laf_find_sqlite3_cli @ hermes_cli/session_lost_and_found.py:find_sqlite3_cli */
+/* PoP: laf_find_sqlite3_cli @ persistence/sqlite/admin/_lost_and_found.py:find_sqlite3_cli */
 /*
  *  Return a malloc'd `.recover`-capable sqlite3 CLI path from PATH, or NULL.
  * PATH presence is not enough: distro builds can lack sqlite_dbpage. */
@@ -259,7 +259,7 @@ char *laf_find_sqlite3_cli(void)
     return found[0] ? strdup(found) : NULL;
 }
 
-/* PoP: laf_lost_and_found_db_usable @ hermes_cli/session_lost_and_found.py:_lost_and_found_db_usable */
+/* PoP: laf_lost_and_found_db_usable @ persistence/sqlite/admin/_lost_and_found.py:_lost_and_found_db_usable */
 int laf_lost_and_found_db_usable(const char *lf_path)
 {
     struct stat st;
@@ -280,7 +280,7 @@ int laf_lost_and_found_db_usable(const char *lf_path)
     return usable;
 }
 
-/* PoP: laf_table_columns @ hermes_cli/session_lost_and_found.py:_table_columns */
+/* PoP: laf_table_columns @ persistence/sqlite/admin/_lost_and_found.py:_table_columns */
 /*
  *  Column names of *table* in *conn*. Malloc'd NULL-terminated array; caller
  * frees each string + array. *out_count set. Empty when table is missing. */
@@ -313,7 +313,7 @@ static void laf_free_columns(char **cols, int n)
     free(cols);
 }
 
-/* PoP: laf_notnull_defaults @ hermes_cli/session_lost_and_found.py:_notnull_defaults */
+/* PoP: laf_notnull_defaults @ persistence/sqlite/admin/_lost_and_found.py:_notnull_defaults */
 /*
  *  Map column index -> substitute value for NOT NULL columns (JSON-encoded:
  * {"<index>": <value>} with numeric or string substitutes). Returns a
@@ -387,7 +387,7 @@ static json_t *laf_apply_substitutes(json_t *values, json_t *notnull_subs)
     return out;
 }
 
-/* PoP: laf_insert_prefix_row @ hermes_cli/session_lost_and_found.py:_insert_prefix_row */
+/* PoP: laf_insert_prefix_row @ persistence/sqlite/admin/_lost_and_found.py:_insert_prefix_row */
 /*
  *  INSERT OR IGNORE the first N values into dest_columns of *table*.
  * values/notnull_substitutes are json_t arrays/objects. Returns rows==1. */
@@ -441,7 +441,7 @@ int laf_insert_prefix_row(sqlite3 *dest, const char *table,
     return inserted;
 }
 
-/* PoP: laf_copy_direct_tables @ hermes_cli/session_lost_and_found.py:_copy_direct_tables */
+/* PoP: laf_copy_direct_tables @ persistence/sqlite/admin/_lost_and_found.py:_copy_direct_tables */
 /*
  *  Copy rows .recover attributed to real canonical tables. Returns a JSON
  * object {table: copied_count} (caller frees). */
@@ -525,7 +525,7 @@ json_t *laf_copy_direct_tables(sqlite3 *lf_conn, sqlite3 *dest)
 }
 
 
-/* PoP: laf_run_cli_lost_and_found_recover @ hermes_cli/session_lost_and_found.py:run_cli_lost_and_found_recover */
+/* PoP: laf_run_cli_lost_and_found_recover @ persistence/sqlite/admin/_lost_and_found.py:run_cli_lost_and_found_recover */
 /*
  *  Run `sqlite3 <source> .recover` streamed into a fresh scratch DB. Tries
  * `.recover --ignore-freelist` first, falling back to a plain `.recover`.
@@ -621,7 +621,7 @@ char *laf_run_cli_lost_and_found_recover(const char *source, const char *lf_path
     return out;
 }
 
-/* PoP: laf_map_lost_and_found_rows @ hermes_cli/session_lost_and_found.py:map_lost_and_found_rows */
+/* PoP: laf_map_lost_and_found_rows @ persistence/sqlite/admin/_lost_and_found.py:map_lost_and_found_rows */
 /*
  *  Best-effort mapping of a .recover output DB into a fresh SessionDB.
  * Returns a JSON report object (caller frees). */
@@ -833,7 +833,7 @@ json_t *laf_map_lost_and_found_rows(sqlite3 *lf_conn, sqlite3 *dest)
     return report;
 }
 
-/* PoP: laf_stub_missing_parent_sessions @ hermes_cli/session_lost_and_found.py:stub_missing_parent_sessions */
+/* PoP: laf_stub_missing_parent_sessions @ persistence/sqlite/admin/_lost_and_found.py:stub_missing_parent_sessions */
 /*
  *  Fabricate clearly-marked placeholder parents for salvaged child rows.
  * Returns a JSON report (caller frees). */
@@ -955,7 +955,7 @@ static int laf_insert_session_stub(sqlite3 *dest, const char *session_id,
     return ok;
 }
 
-/* PoP: laf_rebuild_fts_indexes @ hermes_cli/session_lost_and_found.py:rebuild_fts_indexes */
+/* PoP: laf_rebuild_fts_indexes @ persistence/sqlite/admin/_lost_and_found.py:rebuild_fts_indexes */
 /*
  *  Rebuild derived FTS indexes from the salvaged canonical rows. Returns a
  * JSON object {table: status} (caller frees). */

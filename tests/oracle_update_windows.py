@@ -12,7 +12,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
 # The live modules import siblings from the hermes-agent tree (e.g.
-# gateway/status_inline_source.py imports hermes_state_holders). Without this
+# gateway/status_inline_source.py imports persistence.sqlite._state.holders). Without this
 # the import raises and the extractor silently skips the module - the oracle
 # then passes or fails depending on which interpreter happened to run it.
 # The port targets Windows; the oracle must NOT inherit os.sep from whichever

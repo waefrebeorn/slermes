@@ -25,20 +25,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_auth.py:from_env */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:get_json */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:patch_json */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:iterate_pages */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:collect_paginated */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:download_to_file */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_decode_json */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_should_retry */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_should_refresh_token */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_retry_delay */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_build_api_error */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_auth.py:from_env */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:get_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:patch_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:iterate_pages */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:collect_paginated */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:download_to_file */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:_decode_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:_should_retry */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:_should_refresh_token */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:_retry_delay */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_client.py:_build_api_error */
 
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_auth.py:from_env */
-/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_auth.py:from_env */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_auth.py:from_env */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ plugins/teams_pipeline/graph_auth.py:from_env */
 /* Port of Python tools/microsoft_graph_client.py:from_env */
 int cli_tools_microsoft_graph_client_from_env(char *tenant_buf, size_t tenant_size, char *client_buf, size_t client_size, char *secret_buf, size_t secret_size) {
     if (!tenant_buf || !client_buf || !secret_buf) {
@@ -84,7 +84,7 @@ int cli_tools_microsoft_graph_client_from_env(char *tenant_buf, size_t tenant_si
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: tools_microsoft_graph_client_post_json @ tools/microsoft_graph_client.py:post_json */
+/* PoP: tools_microsoft_graph_client_post_json @ plugins/teams_pipeline/graph_client.py:post_json */
 int tools_microsoft_graph_client_post_json(const char *arg) {
     /* Python: POST decode. Arg =
      * "state\tresult\terr". */
@@ -101,7 +101,7 @@ int tools_microsoft_graph_client_post_json(const char *arg) {
     return 0;
 }
 
-/* PoP: tools_microsoft_graph_client_u_request @ tools/microsoft_graph_client.py:_request */
+/* PoP: tools_microsoft_graph_client_u_request @ plugins/teams_pipeline/graph_client.py:_request */
 int tools_microsoft_graph_client_u_request(const char *arg) {
     /* Python: retry + refresh. Arg =
      * "state\tresult\terr". */

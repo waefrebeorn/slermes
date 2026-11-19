@@ -2,7 +2,7 @@
 import os
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.microsoft_graph_auth import (clear_cache)
+from plugins.teams_pipeline.graph_auth import (clear_cache)
 
 mism = 0; n = 0
 for line in sys.stdin:

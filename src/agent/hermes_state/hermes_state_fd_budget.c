@@ -17,7 +17,7 @@
 
 /* ── hermes_state.py: FD budget + read-budget cluster ── */
 
-/* PoP: open_fd_count @ hermes_state_readpool.py:open_fd_count */
+/* PoP: open_fd_count @ persistence/sqlite/_state/readpool.py:open_fd_count */
 int open_fd_count(void) {
     static const char *const fd_dirs[] = { "/proc/self/fd", "/dev/fd", NULL };
     for (int i = 0; fd_dirs[i]; i++) {
@@ -36,7 +36,7 @@ int open_fd_count(void) {
     return -1;
 }
 
-/* PoP: fd_soft_limit @ hermes_state_readpool.py:fd_soft_limit */
+/* PoP: fd_soft_limit @ persistence/sqlite/_state/readpool.py:fd_soft_limit */
 int fd_soft_limit(void) {
 #ifdef __linux__
     struct rlimit rl;
@@ -54,7 +54,7 @@ static struct { double stamp; int cached; pthread_mutex_t lock; } _fd_cache = {
 #define FD_USAGE_CACHE_SECONDS 5.0
 #define FD_HEADROOM_RESERVE 16
 
-/* PoP: fd_headroom_ok @ hermes_state_readpool.py:fd_headroom_ok */
+/* PoP: fd_headroom_ok @ persistence/sqlite/_state/readpool.py:fd_headroom_ok */
 bool fd_headroom_ok(void) {
     int soft = fd_soft_limit();
     if (soft < 0) return true;
@@ -89,7 +89,7 @@ const char *normalize_telegram_topic_profile_name(const char *profile_name) {
     return result;
 }
 
-/* PoP: database_has_content @ hermes_state_wal.py:database_has_content */
+/* PoP: database_has_content @ sqlite_support.py:database_has_content */
 bool database_has_content(sqlite3 *conn) {
     if (!conn) return false;
     sqlite3_stmt *st = NULL;
@@ -104,7 +104,7 @@ bool database_has_content(sqlite3 *conn) {
     return has;
 }
 
-/* PoP: is_transient_sqlite_error @ hermes_state_errors.py:is_transient_sqlite_error */
+/* PoP: is_transient_sqlite_error @ persistence/sqlite/_state/errors.py:is_transient_sqlite_error */
 bool is_transient_sqlite_error(const char *msg) {
     if (!msg) return false;
     static const char *markers[] = {
@@ -135,7 +135,7 @@ bool is_transient_read_only_ioerr(const char *msg, int attempt) {
     return strstr(lower, "disk i/o error") != NULL;
 }
 
-/* PoP: resolve_synchronous_level @ hermes_state_wal.py:resolve_synchronous_level */
+/* PoP: resolve_synchronous_level @ sqlite_support.py:resolve_synchronous_level */
 int resolve_synchronous_level(const char *raw) {
     if (!raw || !*raw) return -1;
     char upper[32];

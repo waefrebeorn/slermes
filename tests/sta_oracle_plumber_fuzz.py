@@ -29,7 +29,7 @@ sys.path.insert(0, REPO)
 import tools.file_operations as fo
 _ldm.rebind_used(fo, 'fo', ["tools.file_operations_common", "tools.file_operations_search"], Path(__file__))
 import tools.cronjob_tools as cj
-_ldm.rebind_used(cj, 'cj', ["tools.cronjob_prompt_scan"], Path(__file__))
+_ldm.rebind_used(cj, 'cj', ["cron.prompt_scan"], Path(__file__))
 
 # ---- live expected-computers (LIVE Python, no re-implementation) -----------
 def py_strip_fence(s):

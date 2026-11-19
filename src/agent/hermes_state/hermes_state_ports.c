@@ -103,7 +103,7 @@ char *hermes_state_strip_background_review_harness(const char *text) {
     return strdup(text);
 }
 
-/* PoP: hermes_state_apply_macos_checkpoint_barrier @ hermes_state_wal.py:_apply_macos_checkpoint_barrier */
+/* PoP: hermes_state_apply_macos_checkpoint_barrier @ sqlite_support.py:_apply_macos_checkpoint_barrier */
 int hermes_state_apply_macos_checkpoint_barrier(void) {
     /* Python: PRAGMA checkpoint_fullfsync=1 on macOS. Best-effort. */
 #if defined(__APPLE__)
@@ -112,7 +112,7 @@ int hermes_state_apply_macos_checkpoint_barrier(void) {
     return 0;
 }
 
-/* PoP: hermes_state_enforce_macos_synchronous_full @ hermes_state_wal.py:_enforce_macos_synchronous_full */
+/* PoP: hermes_state_enforce_macos_synchronous_full @ sqlite_support.py:_enforce_macos_synchronous_full */
 int hermes_state_enforce_macos_synchronous_full(void) {
     /* Python: PRAGMA synchronous=FULL on macOS. Best-effort. */
 #if defined(__APPLE__)
@@ -121,7 +121,7 @@ int hermes_state_enforce_macos_synchronous_full(void) {
     return 0;
 }
 
-/* PoP: hermes_state_apply_wal_with_fallback @ hermes_state_wal.py:apply_wal_with_fallback */
+/* PoP: hermes_state_apply_wal_with_fallback @ sqlite_support.py:apply_wal_with_fallback */
 char *hermes_state_apply_wal_with_fallback(hermes_state_db_t *db) {
     /* Python: PRAGMA journal_mode=WAL; on failure fall back to DELETE
      * and log once. Returns resulting mode string. */
@@ -140,7 +140,7 @@ char *hermes_state_apply_wal_with_fallback(hermes_state_db_t *db) {
     return strdup("wal");
 }
 
-/* PoP: hermes_state_apply_delete_for_wal_reset_bug @ hermes_state_wal.py:_apply_delete_for_wal_reset_bug */
+/* PoP: hermes_state_apply_delete_for_wal_reset_bug @ sqlite_support.py:_apply_delete_for_wal_reset_bug */
 char *hermes_state_apply_delete_for_wal_reset_bug(hermes_state_db_t *db, const char *db_label) {
     /* Python: WAL-reset-bug workaround — force DELETE journal mode. */
     if (!db || !db->db) return strdup("delete");
@@ -156,7 +156,7 @@ char *hermes_state_apply_delete_for_wal_reset_bug(hermes_state_db_t *db, const c
     return strdup("delete");
 }
 
-/* PoP: hermes_state_log_wal_reset_bug_once @ hermes_state_wal.py:_log_wal_reset_bug_once */
+/* PoP: hermes_state_log_wal_reset_bug_once @ sqlite_support.py:_log_wal_reset_bug_once */
 int hermes_state_log_wal_reset_bug_once(const char *db_label, bool kept_wal) {
     /* Python: single-flight warning about the WAL reset bug. */
     static bool logged = false;
@@ -181,7 +181,7 @@ int hermes_state_log_wal_fallback_once(const char *db_label, const char *action)
     return 0;
 }
 
-/* PoP: hermes_state_backup_db_file @ hermes_state_repair.py:_backup_db_file */
+/* PoP: hermes_state_backup_db_file @ persistence/sqlite/_state/repair.py:_backup_db_file */
 char *hermes_state_backup_db_file(const char *db_path) {
     /* Python: copy db_path → db_path.backup-<ts>; returns backup path or
      * NULL on failure (logged once per path). */
@@ -199,7 +199,7 @@ char *hermes_state_backup_db_file(const char *db_path) {
     return backup;
 }
 
-/* PoP: hermes_state_preflight_db_writability @ hermes_state_repair.py:preflight_db_writability */
+/* PoP: hermes_state_preflight_db_writability @ persistence/sqlite/_state/repair.py:preflight_db_writability */
 char *hermes_state_preflight_db_writability(const char *db_path) {
     /* Python: open + write-probe the db; returns error string or NULL. */
     if (!db_path || !*db_path) return strdup("empty path");
@@ -213,7 +213,7 @@ char *hermes_state_preflight_db_writability(const char *db_path) {
     return NULL;
 }
 
-/* PoP: hermes_state_repair_state_db_schema @ hermes_state_repair.py:repair_state_db_schema */
+/* PoP: hermes_state_repair_state_db_schema @ persistence/sqlite/_state/repair.py:repair_state_db_schema */
 char *hermes_state_repair_state_db_schema(const char *db_path) {
     /* Python: backup malformed db, then re-run schema init; returns error
      * string or NULL on success. */
@@ -253,7 +253,7 @@ int hermes_state_load_fts5_cjk_extension(const char *so_path) {
     return 0;
 }
 
-/* PoP: hermes_state_connect_tracked_db @ hermes_state_dbfile.py:_connect_tracked_db */
+/* PoP: hermes_state_connect_tracked_db @ persistence/sqlite/_state/dbfile.py:_connect_tracked_db */
 char *hermes_state_connect_tracked_db(const char *path) {
     /* Python: sqlite3.connect with tracking pragmas (busy_timeout,
      * foreign_keys). */
@@ -261,7 +261,7 @@ char *hermes_state_connect_tracked_db(const char *path) {
     return strdup(path);
 }
 
-/* PoP: hermes_state_is_zeroed_state_db @ hermes_state_dbfile.py:is_zeroed_state_db */
+/* PoP: hermes_state_is_zeroed_state_db @ persistence/sqlite/_state/dbfile.py:is_zeroed_state_db */
 bool hermes_state_is_zeroed_state_db(const char *path) {
     /* Python: first 100 bytes all zero (and not "SQLite format 3"). */
     if (!path || !*path) return false;

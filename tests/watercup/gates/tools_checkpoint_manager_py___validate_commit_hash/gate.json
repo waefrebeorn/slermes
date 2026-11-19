@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "_validate_commit_hash",
-  "py_module": "tools/checkpoint_manager.py",
+  "py_module": "agent/checkpoints/manager.py",
   "py_fn": "_validate_commit_hash",
   "inputs": [
     "hello",

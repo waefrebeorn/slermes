@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "tools_microsoft_graph_client_u_request",
-  "py_module": "tools/microsoft_graph_client.py",
+  "py_module": "plugins/teams_pipeline/graph_client.py",
   "py_fn": "_request",
   "inputs": [
     "hello",

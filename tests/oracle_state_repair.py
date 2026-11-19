@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Oracle for port_state_repair.c -- drives the LIVE hermes_state_repair.py defs.
+"""Oracle for port_state_repair.c -- drives the LIVE persistence.sqlite._state.repair.py defs.
 The SQLite surgery / locking / ledger half is not imported; the pure defs are
 ast-extracted.
 """
@@ -16,7 +16,7 @@ HERMES_ROOT = r"C:\Users\eman5\hermes-agent"
 if HERMES_ROOT not in sys.path:
     sys.path.insert(0, HERMES_ROOT)
 
-REPAIR = r"C:\Users\eman5\hermes-agent\hermes_state_repair.py"
+REPAIR = r"C:\Users\eman5\hermes-agent\persistence.sqlite._state.repair.py"
 WANTED = ["_mask_volatile_header", "_repair_backup_headroom_bytes",
           "_repair_failure_consumes_attempt", "_sidecars"]
 

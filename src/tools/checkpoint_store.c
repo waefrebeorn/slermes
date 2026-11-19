@@ -19,7 +19,7 @@
 #include <errno.h>
 
 
-/* PoP: project_hash @ tools/checkpoint_manager.py:project_hash */ void project_hash(const char *working_dir, char *out_hash, size_t out_len) {
+/* PoP: project_hash @ agent/checkpoints/manager.py:project_hash */ void project_hash(const char *working_dir, char *out_hash, size_t out_len) {
     if (!working_dir) {
         snprintf(out_hash, out_len, "default");
         return;
@@ -33,7 +33,7 @@
 }
 
 
-/* PoP: _store_path @ tools/checkpoint_manager.py:_store_path */ void _store_path(const char *base, char *out_path, size_t out_len) {
+/* PoP: _store_path @ agent/checkpoints/manager.py:_store_path */ void _store_path(const char *base, char *out_path, size_t out_len) {
     if (base && base[0]) {
         snprintf(out_path, out_len, "%s/%s", base, CHECKPOINT_DIR);
     } else {
@@ -47,7 +47,7 @@
 }
 
 
-/* PoP: shadow_repo_path @ tools/checkpoint_manager.py:shadow_repo_path */ void shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
+/* PoP: shadow_repo_path @ agent/checkpoints/manager.py:shadow_repo_path */ void shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
     char dir_hash[64];
@@ -56,33 +56,33 @@
 }
 
 
-/* PoP: _index_path @ tools/checkpoint_manager.py:_index_path */ void _index_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
+/* PoP: _index_path @ agent/checkpoints/manager.py:_index_path */ void _index_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/index-%s.json", dir_hash);
 }
 
 
-/* PoP: ref_name @ tools/checkpoint_manager.py:ref_name */ void ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
+/* PoP: ref_name @ agent/checkpoints/manager.py:ref_name */ void ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
     snprintf(out_ref, out_len, "refs/checkpoints/%s", dir_hash);
 }
 
 
-/* PoP: project_meta_path @ tools/checkpoint_manager.py:project_meta_path */ void project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
+/* PoP: project_meta_path @ agent/checkpoints/manager.py:project_meta_path */ void project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/meta-%s.json", dir_hash);
 }
 
 
-/* PoP: git_env @ tools/checkpoint_manager.py:git_env */
+/* PoP: git_env @ agent/checkpoints/manager.py:git_env */
 static void git_env(void) {
     setenv("GIT_DIR", ".", 1);
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
 
-/* PoP: run_git @ tools/checkpoint_manager.py:run_git */ bool run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
+/* PoP: run_git @ agent/checkpoints/manager.py:run_git */ bool run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
     FILE *fp = popen(full_cmd, "r");

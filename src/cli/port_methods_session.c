@@ -39,7 +39,7 @@ static const char *const MS_INTERNAL_SOURCES[] = { "kanban", "tool", "oneshot" }
  *  numeric value's truthiness). Returns 1/0.
  * =========================================================================== */
 
-/* PoP: is_truthy_value @ utils.py:is_truthy_value */
+/* PoP: is_truthy_value @ utils/files.py:is_truthy_value */
 int ms_is_truthy(int kind, const char *sval, int ival, int dflt)
 {
     if (kind == 0) return dflt;

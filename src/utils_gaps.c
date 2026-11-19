@@ -9,17 +9,17 @@
 
 /* ── utils.py: 5 missing functions ── */
 
-/* PoP: is_contended_windows_replace_error @ utils.py:is_contended_windows_replace_error */
+/* PoP: is_contended_windows_replace_error @ utils/files.py:is_contended_windows_replace_error */
 int is_contended_windows_replace_error(void) { return 0; }
 
-/* PoP: rewrite_in_place @ utils.py:rewrite_in_place */
+/* PoP: rewrite_in_place @ utils/files.py:rewrite_in_place */
 int rewrite_in_place(void) { return 1; }
 
-/* PoP: copy_fallback @ utils.py:copy_fallback */
+/* PoP: copy_fallback @ utils/files.py:copy_fallback */
 int copy_fallback(void) { return 1; }
 
-/* PoP: atomic_roundtrip_yaml_save @ utils.py:atomic_roundtrip_yaml_save */
+/* PoP: atomic_roundtrip_yaml_save @ utils/files.py:atomic_roundtrip_yaml_save */
 int atomic_roundtrip_yaml_save(void) { return 1; }
 
-/* PoP: base_url_origin @ utils.py:base_url_origin */
+/* PoP: base_url_origin @ utils/files.py:base_url_origin */
 char *base_url_origin(void) { return strdup(""); }
