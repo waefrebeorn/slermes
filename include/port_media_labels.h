@@ -12,9 +12,10 @@
  * trailing "/relay" suffix). Returns malloc'd, caller frees. */
 char *ml_media_base_url(const char *relay_dial_url);
 
-/* media.py RelayMediaClient.is_relay_media_url: True when the URL is a
- * connector re-host reference ("/relay/media/" appears in it). */
-int ml_is_relay_media_url(const char *url);
+/* media.py RelayMediaClient.is_relay_media_url: True only for a URL on the
+ * connector's own origin under {base path}/relay/media/ (userinfo, foreign
+ * hosts and '..' traversal refused). base_url = the client's _base_url. */
+int ml_is_relay_media_url(const char *url, const char *base_url);
 
 /* media.py _content_disposition_filename: the filename a Content-Disposition
  * header names, cleaned for display; "" when none. RFC 5987 filename*

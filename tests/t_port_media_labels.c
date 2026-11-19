@@ -39,12 +39,16 @@ int main(void)
         free(out);
     }
 
-    /* is_relay_media_url. */
+    /* is_relay_media_url — base is fixed at http://x on both sides. */
     static const char *const us[] = {
         "http://x/relay/media/1", "http://x/relay/", "pre/relay/media/post", NULL,
+        "http://evil/relay/media/1", "http://x@evil/relay/media/1",
+        "http://x/relay/media/../secret", "http://x/relay/media/%2e%2e/secret",
+        "http://x:80/relay/media/1", "https://x/relay/media/1",
+        "http://x/relay/media/", "http://x/relay/mediaX",
     };
-    for (int i = 0; i < 4; i++) {
-        int out = ml_is_relay_media_url(us[i]);
+    for (int i = 0; i < 12; i++) {
+        int out = ml_is_relay_media_url(us[i], "http://x");
         printf("{\"family\":\"url\",\"case\":%d,\"in\":", i);
         jstr(us[i]);
         printf(",\"out\":%d}\n", out);

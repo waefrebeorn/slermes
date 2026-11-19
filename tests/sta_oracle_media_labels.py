@@ -85,7 +85,7 @@ def main() -> int:
                 print(f"MISMATCH burl {c['case']}: C={c['out']!r} PY={want!r} "
                       f"in={c['in']!r}")
         elif fam == "url":
-            want = 1 if irm(None, c["in"]) else 0
+            want = 1 if irm(SimpleNamespace(_base_url="http://x"), c["in"]) else 0
             if c["out"] != want:
                 mism += 1
                 print(f"MISMATCH url {c['case']}: C={c['out']} PY={want} "

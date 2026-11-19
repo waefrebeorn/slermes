@@ -266,9 +266,150 @@ char *ml_media_base_url(const char *relay_dial_url)
     return out;
 }
 
-int ml_is_relay_media_url(const char *url)
+/* --- URL splitting / origin helpers for is_relay_media_url ---------------
+ * Faithful to urllib.parse.urlsplit + hermes_cli.urllib_security.url_origin
+ * for the cases the live method relies on. Fail-closed on malformed ports. */
+typedef struct {
+    char scheme[32];
+    char netloc[1024];
+    char path[4096];
+} ml_split_t;
+
+static int ml_urlsplit(const char *url, ml_split_t *out)
 {
-    return url && strstr(url, "/relay/media/") != NULL;
+    memset(out, 0, sizeof(*out));
+    const char *p = url ? url : "";
+    /* scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." ) ":" */
+    if (isalpha((unsigned char)*p)) {
+        const char *q = p + 1;
+        while (isalnum((unsigned char)*q) || *q == '+' || *q == '-' || *q == '.')
+            q++;
+        if (*q == ':' && (size_t)(q - p) < sizeof(out->scheme)) {
+            memcpy(out->scheme, p, (size_t)(q - p));
+            for (char *s = out->scheme; *s; s++)
+                *s = (char)tolower((unsigned char)*s);
+            p = q + 1;
+        }
+    }
+    if (p[0] == '/' && p[1] == '/') {
+        p += 2;
+        const char *e = p;
+        while (*e && *e != '/' && *e != '?' && *e != '#') e++;
+        if ((size_t)(e - p) >= sizeof(out->netloc)) return -1;
+        memcpy(out->netloc, p, (size_t)(e - p));
+        p = e;
+    }
+    const char *e = p;
+    while (*e && *e != '?' && *e != '#') e++;
+    if ((size_t)(e - p) >= sizeof(out->path)) return -1;
+    memcpy(out->path, p, (size_t)(e - p));
+    return 0;
+}
+
+/* origin: (scheme, hostname lowercased rstrip '.', effective port).
+ * Returns 0 ok, -1 on ValueError-equivalent (malformed port). */
+static int ml_origin(const ml_split_t *s, char *host, size_t hostsz, long *port)
+{
+    const char *nl = s->netloc;
+    const char *at = strrchr(nl, '@');
+    if (at) nl = at + 1;
+    /* IPv6 literal */
+    const char *hostend;
+    if (*nl == '[') {
+        const char *close = strchr(nl, ']');
+        if (!close) return -1;
+        hostend = close + 1;
+        if ((size_t)(close - nl - 1) >= hostsz) return -1;
+        memcpy(host, nl + 1, (size_t)(close - nl - 1));
+        host[close - nl - 1] = '\0';
+    } else {
+        const char *colon = strchr(nl, ':');
+        hostend = colon ? colon : nl + strlen(nl);
+        if ((size_t)(hostend - nl) >= hostsz) return -1;
+        memcpy(host, nl, (size_t)(hostend - nl));
+        host[hostend - nl] = '\0';
+    }
+    for (char *q = host; *q; q++) *q = (char)tolower((unsigned char)*q);
+    size_t hl = strlen(host);
+    while (hl > 0 && host[hl - 1] == '.') host[--hl] = '\0';
+    long pt = -1;
+    if (*hostend == ':') {
+        const char *pp = hostend + 1;
+        if (*pp) {
+            char *end = NULL;
+            pt = strtol(pp, &end, 10);
+            if (end == pp || *end != '\0' || pt < 0 || pt > 65535)
+                return -1;   /* parsed.port raises ValueError -> fail closed */
+        }
+    }
+    if (pt < 0) {
+        if (strcmp(s->scheme, "http") == 0) pt = 80;
+        else if (strcmp(s->scheme, "https") == 0) pt = 443;
+    }
+    *port = pt;
+    return 0;
+}
+
+/* percent-decode (urllib.parse.unquote: invalid % sequences left as-is) */
+static void ml_pct_decode(const char *in, char *out, size_t outsz)
+{
+    size_t w = 0;
+    for (const char *p = in; *p && w + 1 < outsz; p++) {
+        if (p[0] == '%' && isxdigit((unsigned char)p[1]) && isxdigit((unsigned char)p[2])) {
+            int hi = p[1], lo = p[2];
+            hi = hi <= '9' ? hi - '0' : (tolower(hi) - 'a' + 10);
+            lo = lo <= '9' ? lo - '0' : (tolower(lo) - 'a' + 10);
+            out[w++] = (char)((hi << 4) | lo);
+            p += 2;
+        } else {
+            out[w++] = *p;
+        }
+    }
+    out[w] = '\0';
+}
+
+/* PoP: ml_is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
+/* LIVE semantics (RelayMediaClient method; self._base_url is the base_url
+ * parameter): only a URL on the connector's OWN origin under its
+ * {base path}/relay/media/ gets the bearer. Userinfo/backslash in netloc is
+ * refused outright; '..' segments (also percent-encoded, also backslash)
+ * are refused so a normalizing proxy cannot escape the base path. The old
+ * bare substring match handed the bearer to any host naming the path. */
+int ml_is_relay_media_url(const char *url, const char *base_url)
+{
+    if (!url || !base_url) return 0;
+    ml_split_t c, b;
+    if (ml_urlsplit(url, &c) != 0 || ml_urlsplit(base_url, &b) != 0)
+        return 0;
+    char ch[512], bh[512];
+    long cp = -1, bp = -1;
+    if (ml_origin(&c, ch, sizeof(ch), &cp) != 0) return 0;
+    if (ml_origin(&b, bh, sizeof(bh), &bp) != 0) return 0;
+    if (strchr(c.netloc, '@') || strchr(c.netloc, '\\')) return 0;
+    if (strcmp(c.scheme, "http") != 0 && strcmp(c.scheme, "https") != 0)
+        return 0;
+    if (!ch[0]) return 0;
+    if (strcmp(c.scheme, b.scheme) != 0 || strcmp(ch, bh) != 0 || cp != bp)
+        return 0;
+    char dec[4096];
+    ml_pct_decode(c.path, dec, sizeof(dec));
+    for (char *q = dec; *q; q++) if (*q == '\\') *q = '/';
+    /* reject ".." path segments */
+    const char *seg = dec;
+    while (seg) {
+        const char *slash = strchr(seg, '/');
+        size_t sl = slash ? (size_t)(slash - seg) : strlen(seg);
+        if (sl == 2 && seg[0] == '.' && seg[1] == '.') return 0;
+        seg = slash ? slash + 1 : NULL;
+    }
+    /* prefix = base.path.rstrip('/') + "/relay/media/" */
+    char prefix[4200];
+    size_t bl = strlen(b.path);
+    while (bl > 0 && b.path[bl - 1] == '/') bl--;
+    if (bl + 14 >= sizeof(prefix)) return 0;
+    memcpy(prefix, b.path, bl);
+    memcpy(prefix + bl, "/relay/media/", 14);
+    return strncmp(c.path, prefix, bl + 13) == 0;
 }
 
 char *ml_plugin_label(const char *emoji, const char *label)

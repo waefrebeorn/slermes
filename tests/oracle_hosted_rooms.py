@@ -7,7 +7,9 @@ import ast
 import hashlib
 import json
 import re
+import sqlite3
 import sys
+from types import SimpleNamespace
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
@@ -23,7 +25,7 @@ class HostedRoomError(Exception):
 
 def extract():
     ns = {"re": re, "json": json, "hashlib": hashlib, "Any": object,
-          "Mapping": dict, "sqlite3": None, "functools": None,
+          "Mapping": dict, "sqlite3": __import__("sqlite3"), "functools": None,
           "HostedRoomError": HostedRoomError, "partial": None}
     import functools as _ft
     ns["partial"] = _ft.partial
@@ -74,6 +76,20 @@ def call(fn, *a, **kw):
         return True, fn(*a, **kw)
     except Exception as e:
         return False, str(e)
+
+
+def _as_row(d):
+    # The live _remote_run_identity takes sqlite3.Row (record[column]) or an
+    # attribute object; a plain dict matches neither. Build a real Row so the
+    # Row branch runs and a missing column raises KeyError('col') — the same
+    # error shape the C port names.
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    cols = ", ".join('"%s" TEXT' % k for k in d)
+    conn.execute("CREATE TABLE t (%s)" % cols)
+    conn.execute("INSERT INTO t VALUES (%s)" % ",".join("?" for _ in d),
+                 list(d.values()))
+    return conn.execute("SELECT * FROM t").fetchone()
 
 
 def main():
@@ -193,15 +209,18 @@ def main():
 
             elif fn == "_remote_run_identity":
                 rec, cols = identities[label]
-                want = call(ns["_remote_run_identity"], rec)
+                # Attribute branch of the live def: getattr(record, column).
+                # Missing column -> AttributeError naming the column; the C
+                # port names the bare column too.
+                want = call(ns["_remote_run_identity"], SimpleNamespace(**rec))
                 if want[0]:
                     want = (True, list(want[1]))   # the Python returns a tuple
                     if c.get("out") != want[1]:
                         mism += 1
                         print(f"MISMATCH _remote_run_identity case={label} C={c.get('out')!r} PY={want[1]!r}")
                 else:
-                    # KeyError's str() is the quoted key; the C names the bare column
-                    py_msg = want[1].strip("'\"")
+                    m = re.search(r"has no attribute '(\w+)'", want[1])
+                    py_msg = m.group(1) if m else want[1].strip("'\"")
                     if c.get("err") != py_msg:
                         mism += 1
                         print(f"MISMATCH _remote_run_identity case={label} C={c.get('err')!r} PY={py_msg!r}")
