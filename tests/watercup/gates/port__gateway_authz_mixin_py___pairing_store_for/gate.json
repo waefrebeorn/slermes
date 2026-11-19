@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\gateway\\authz_mixin.c",
     "src\\agent\\port_agent_secret_scope.c"
   ],

@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\hermes_cli\\kanban_tasks.c",
     "src\\persistence\\sqlite\\_state\\hermes_state_open.c",
     "src\\persistence\\sqlite\\_state\\hermes_state_ops.c",

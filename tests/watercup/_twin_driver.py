@@ -58,7 +58,8 @@ def main(argv):
     # Mirror wc_run's import environment so the twin resolves the same modules.
     os.environ.setdefault("WATERCUP_NO_BROWSER", "1")
     sys.path.insert(0, HERE)
-    sys.path.insert(0, os.environ.get("WATERCUP_QUARRY") or os.path.join(os.path.dirname(REPO), "hermes-agent"))  # quarry for LIVE imports
+    from watercup_paths import ensure_sys_path
+    ensure_sys_path()  # quarry + watercup dir by cross-OS rules
 
     # Same guards the in-process path installs. Best-effort: a guard that fails
     # to import must not mask the gate's own result.

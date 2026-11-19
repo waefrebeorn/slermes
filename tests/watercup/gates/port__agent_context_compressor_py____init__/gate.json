@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\agent\\context_compressor_ports.c",
     "src\\agent\\auxiliary_client_helpers.c",
     "src\\agent\\agent_message_sanitize.c"

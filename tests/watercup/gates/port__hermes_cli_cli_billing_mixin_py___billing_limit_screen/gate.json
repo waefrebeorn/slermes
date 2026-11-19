@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\hermes_cli\\billing_mixin_ports.c",
     "src\\agent\\billing_view.c",
     "src\\plugins\\platforms\\yuanbao\\nous_billing.c"

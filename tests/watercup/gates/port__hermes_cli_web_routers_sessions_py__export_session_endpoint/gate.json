@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\hermes_cli\\web_server_session_endpoints.c"
   ],
   "cflags": [

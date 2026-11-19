@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\hermes_cli\\tools_config_providers.c",
     "src\\tools\\browser_tool_install.c",
     "src\\tools\\browser_tool_cdp.c",

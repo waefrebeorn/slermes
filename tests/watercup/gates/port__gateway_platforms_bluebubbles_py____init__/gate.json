@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\plugins\\platforms\\bluebubbles\\bluebubbles_ports.c",
     "src\\plugins\\platforms\\bluebubbles\\bluebubbles.c",
     "src\\agent\\port_agent_secret_scope.c"

@@ -1,66 +1,5 @@
-"""twin for gateway/platforms/yuanbao_proto.py:_get_repeated_bytes."""
-import os, sys, importlib.util as ilu
-HERE = os.path.dirname(os.path.abspath(__file__))
-SLERMES = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.dirname(HERE))))
-DEV = os.environ.get("WATERCUP_QUARRY") or os.path.join(os.path.dirname(SLERMES), "hermes-agent")
-if not os.path.isdir(os.path.join(DEV, "agent")):
-    DEV = os.path.dirname(SLERMES)  # legacy sibling-package layout
-sys.path.insert(0, DEV)
-
-from watercup_py import Cup
-
-# Relative imports (from .config import ...) need the module loaded
-# inside its real package; a bare synthetic name has no package
-# context. Register each ancestor package, preferring the REAL one.
-_pkg_parts = "gateway/platforms/yuanbao_proto.py".replace(".py", "").split("/")
-_mod_name = ".".join(_pkg_parts)
-for _i in range(1, len(_pkg_parts)):
-    _anc = ".".join(_pkg_parts[:_i])
-    if _anc in sys.modules:
-        continue
-    try:
-        __import__(_anc)
-    except Exception:
-        import types as _t
-        _m = _t.ModuleType(_anc)
-        _m.__path__ = [os.path.join(DEV, *_pkg_parts[:_i])]
-        _m.__package__ = _anc
-        sys.modules[_anc] = _m
-_spec = ilu.spec_from_file_location(_mod_name, os.path.join(
-    DEV, "gateway/platforms/yuanbao_proto.py"))
-_pb = ilu.module_from_spec(_spec)
-_pb.__package__ = ".".join(_pkg_parts[:-1])
-sys.modules[_mod_name] = _pb
-_spec.loader.exec_module(_pb)
-
-def _resolve_fn():
-    """Module-level fn, else a method on any class in the LIVE module."""
-    f = getattr(_pb, "_get_repeated_bytes", None)
-    if f is not None:
-        return f
-    import inspect as _i
-    for _n, _o in vars(_pb).items():
-        if _i.isclass(_o) and hasattr(_o, '_get_repeated_bytes'):
-            _m = getattr(_o, '_get_repeated_bytes')
-            if callable(_m):
-                return _m.__get__(_DummySelf(), _o)
-    return None
-
-
-class _DummySelf:
-    """Permissive stand-in for self: any attribute yields another
-    _DummySelf, so pure methods run. Methods that need real instance
-    state raise and are reported as an ERROR cup — honest, not a false
-    MATCH."""
-    def __getattr__(self, name):
-        return _DummySelf()
-    def __call__(self, *a, **k):
-        return _DummySelf()
-
-
-_FN = _resolve_fn()
-
+"""twin for gateway/platforms/yuanbao_proto.py:_get_repeated_bytes (thin: shared runtime, cross-OS)."""
+from watercup_twin_runtime import TwinBase
 _SPECS = [('buf', None, 'unsigned char')]
 _LENY = __import__('re').compile(
     '(count|len|num|size|length|total|^n$)')
@@ -135,44 +74,20 @@ def _cvt(p, v):
     return v
 
 
-def _call(inp, inputs, idx=0):
-    import inspect as _insp
-    try:
-        _sig = _insp.signature(_FN)
-    except Exception:
-        _sig = None
-    if _sig is not None:
-        _pos = [p for p in _sig.parameters.values()
-                if p.kind in (p.POSITIONAL_ONLY,
-                              p.POSITIONAL_OR_KEYWORD)]
-        _n = len(_pos)
-        if not _n:
-            return _FN()
-        _args = []
-        n = len(inputs) if inputs else 1
-        for j, p in enumerate(_pos):
-            raw = inp if j == 0 else inputs[(idx + j) % n]
-            _args.append(_cvt(p, raw))
-        return _FN(*_args)
-    try:
-        return _FN(inp)
-    except TypeError:
-        return _FN()
+class _Twin(TwinBase):
+    PY_MODULE = "gateway/platforms/yuanbao_proto.py"
+    PY_FN = "_get_repeated_bytes"
+    C_FN = "yb_get_repeated_bytes"
 
-def trace(inp, inputs, idx=0):
-    c = Cup("yb_get_repeated_bytes")
-    try:
-        result = _call(inp, inputs, idx)
+    def norm(self, c, result):
         import inspect as _ic
         if _ic.iscoroutine(result):
             import asyncio as _aio
             result = _aio.run(result)
         for _sp, _v in zip(_SPECS, _outvals(result)):
             c.valstr(_enc_out(_sp, _v))
-    except Exception as e:
-        c.valstr(f"ERROR:{type(e).__name__}")
-    return c.finalize()
 
 
-def run(inputs):
-    return [trace(inp, inputs, i) for i, inp in enumerate(inputs)]
+_t = _Twin()
+trace = _t.trace
+run = _t.run

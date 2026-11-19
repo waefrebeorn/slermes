@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\tools\\write_approval.c"
   ],
   "cflags": [
@@ -31,4 +32,6 @@
     "-DHERMES_VERSION=\"0.21.0\"",
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
-  ],
+  ],
+  "classification": "PORTED"
+}

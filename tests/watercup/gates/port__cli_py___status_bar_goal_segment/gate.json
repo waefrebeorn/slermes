@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\cli\\cli_hermes_cli_methods.c",
     "src\\tools\\async_delegation_wrappers.c",
     "src\\agent\\account_usage.c",

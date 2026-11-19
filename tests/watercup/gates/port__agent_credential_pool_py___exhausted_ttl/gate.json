@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\agent\\credential_pool_ports.c",
     "src\\agent\\credential_pool_engine.c",
     "src\\agent\\credential_pool_custom.c"

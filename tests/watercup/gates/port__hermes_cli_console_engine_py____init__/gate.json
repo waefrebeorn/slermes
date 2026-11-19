@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\hermes_cli\\console_engine_ports.c",
     "src\\hermes_cli\\logs.c",
     "src\\hermes_cli\\config.c",

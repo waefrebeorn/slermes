@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\plugins\\platforms\\signal\\signal_rate_limit_ports.c"
   ],
   "cflags": [

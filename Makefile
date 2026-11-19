@@ -31,7 +31,7 @@ include build/clean.mk
 
 # ── Legacy alias / backward compatibility ───────────────────────────
 
-.PHONY: help parity parity-walkway
+.PHONY: help parity parity-walkway watercup-index watercup-gates
 
 help:
 	@echo "Slermes Build System -- modular Makefile"
@@ -116,6 +116,19 @@ org-parity:
 # Use this to pick the next module to port — highest score = best first.
 gap-triage:
 	@python3 scripts/gap_triage.py --top 25
+
+# ── Watercup: self-describing verification, any OS ─────────────────────
+# The C modules self-refer via /* PoP: c_fn @ py_module:py_fn */ tags.
+# watercup-index derives the symbol/signature index from THIS tree at
+# build time (relative posix paths, no machine artifacts); watercup-gates
+# regenerates harnesses+twins against it. Twins are thin: they refer to
+# tests/watercup/watercup_twin_runtime.py, which resolves the live quarry
+# by the rules in watercup_paths.py (env / config / git / sibling search).
+watercup-index:
+	@python3 scripts/build_watercup_index.py
+
+watercup-gates: watercup-index
+	@python3 tests/watercup/fix_all_gates.py
 
 # Rebase/PoP commit path: after pulling fresh Python from upstream
 # (git checkout upstream/main -- agent tools gateway cli.py hermes_cli cron),

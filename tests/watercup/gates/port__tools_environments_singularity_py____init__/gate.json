@@ -17,6 +17,7 @@
     "lib/libjson/json.c",
     "src/agent/logger.c",
     "src/cli/paths.c",
+    "src/hermes_cli/fs_replace.c",
     "src\\tools\\util_helpers.c",
     "src\\tools\\async_delegation.c",
     "src\\tools\\browser_supervisor.c",
