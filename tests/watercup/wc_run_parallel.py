@@ -70,7 +70,7 @@ def run_single_gate(gate_name):
     result = {"gate": gate_name, "ok": False, "mismatches": 0}
 
     try:
-        gate = json.load(open(gj))
+        gate = json.load(open(gj, encoding="utf-8"))
         result["subsystem"] = gate.get("subsystem", "?")
         result["classification"] = gate.get("classification", "legacy")
     except Exception:
@@ -95,7 +95,7 @@ def run_single_gate(gate_name):
     try:
         r = subprocess.run(
             [_sys.executable, os.path.abspath(__file__), "--single", gate_name],
-            capture_output=True, text=True,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
             timeout=per_gate_timeout,
             start_new_session=True,
             cwd=REPO,
@@ -253,7 +253,7 @@ def main():
             import wc_run
             gd = os.path.join(GATES, gate)
             gj = os.path.join(gd, "gate.json")
-            g = _json.load(open(gj))
+            g = _json.load(open(gj, encoding="utf-8"))
             res["subsystem"] = g.get("subsystem", "?")
             res["classification"] = g.get("classification", "legacy")
             kind = g.get("kind", "cup")
@@ -345,7 +345,7 @@ def main():
     # Write results
     if not args.no_write:
         os.makedirs(os.path.dirname(RESULT_FILE), exist_ok=True)
-        with open(RESULT_FILE, "a") as f:
+        with open(RESULT_FILE, "a", encoding="utf-8") as f:
             for r in results:
                 f.write(json.dumps({
                     "ok": r["ok"],

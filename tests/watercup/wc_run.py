@@ -223,7 +223,7 @@ def _run_link(args):
                          for a in norm))
     try:
         return subprocess.run([args[0], "@" + rsp],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, encoding="utf-8", errors="replace")
     finally:
         try:
             os.remove(rsp)
@@ -254,7 +254,7 @@ def _compile_one(g, src_path):
     obj = os.path.join(BUILD, "%s.xr.%s.o" % (tag, os.path.basename(src_path)))
     cf = _resolve_cflags(g)
     ccmd = _compiler() + ["-I", HERE] + cf + ["-c", src_path, "-o", obj]
-    r = subprocess.run(ccmd, capture_output=True, text=True)
+    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return obj if r.returncode == 0 else None
 
 
@@ -300,7 +300,7 @@ def _compile_stub_shadowed(g, keep_srcs):
     obj = os.path.join(BUILD, "%s.stub.o" % g["name"])
     ccmd = _compiler() + ["-I", HERE] + _resolve_cflags(g) + \
            ["-c", tmp, "-o", obj]
-    r = subprocess.run(ccmd, capture_output=True, text=True)
+    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return obj if r.returncode == 0 else None
 
 
@@ -405,7 +405,7 @@ def build_harness(gate_dir, g, force=False):
         # of failing on siblings' undefined symbols.
         ccmd = (_compiler() + ["-I", HERE] + cflags + _GC_FLAGS
                 + ["-c", s, "-o", obj])
-        r = subprocess.run(ccmd, capture_output=True, text=True)
+        r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
         if r.returncode != 0:
             compile_fail = "BUILD FAIL (compile %s) for %s:\n%s" % (
                 os.path.basename(s), g["name"], r.stderr)
@@ -752,7 +752,7 @@ def _build_vendored_syms():
                 if not fn.endswith(".o"):
                     continue
                 p = os.path.join(root, fn)
-                r = _sp.run(["nm", p], capture_output=True, text=True)
+                r = _sp.run(["nm", p], capture_output=True, text=True, encoding="utf-8", errors="replace")
                 for line in (r.stdout or "").split("\n"):
                     parts = line.split()
                     if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
@@ -801,7 +801,7 @@ def _resolve_missing_symbols(missing, gate_name):
 
 def run_harness(out, g):
     args = [out, g["c_fn"]] + [str(x) for x in g["inputs"]]
-    r = subprocess.run(args, capture_output=True, text=True, timeout=60, cwd=REPO)
+    r = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60, cwd=REPO)
     if r.returncode != 0:
         raise RuntimeError(
             "HARNESS CRASH for %s (exit %d): %s"
@@ -1005,7 +1005,7 @@ def _run_twin_isolated(g, inputs, timeout=None):
 
     try:
         r = subprocess.run([sys.executable, driver, twin_path, inputs_file],
-                           capture_output=True, text=True, timeout=timeout,
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout,
                            env=os.environ)
         out = (r.stdout or "").strip()
         if not out:
@@ -1108,7 +1108,7 @@ def run_cup_gate(gd, g, verbose=False):
         lines.append("  -> golden cups pinned (%d)" % len(c_cups))
     elif os.path.exists(golden_path):
         try:
-            golden = json.load(open(golden_path))
+            golden = json.load(open(golden_path, encoding="utf-8"))
             if golden.get("cups") != c_cups:
                 drift = [i for i, (a, b) in
                          enumerate(zip(golden["cups"], c_cups)) if a != b]
@@ -1131,7 +1131,7 @@ def run_unit_gate(gd, g, verbose=False):
     control-char escaping, ...)."""
     lines = []
     out = build_harness(gd, g)
-    rh = subprocess.run([out], capture_output=True, text=True)
+    rh = subprocess.run([out], capture_output=True, text=True, encoding="utf-8", errors="replace")
     if rh.returncode != 0:
         lines.append("  HARNESS FAIL (exit %d):\n%s"
                      % (rh.returncode, rh.stdout.strip()))
@@ -1141,7 +1141,7 @@ def run_unit_gate(gd, g, verbose=False):
         # env=os.environ so the operator-state sandbox (HERMES_HOME) reaches the
         # child; a unit twin importing a live module must not touch the real home.
         rt = subprocess.run([sys.executable, twin_path], capture_output=True,
-                            text=True, cwd=gd, env=os.environ)
+                            text=True, encoding="utf-8", errors="replace", cwd=gd, env=os.environ)
         if rt.returncode != 0:
             lines.append("  TWIN FAIL (exit %d):\n%s"
                          % (rt.returncode, rt.stdout.strip()))
@@ -1165,7 +1165,7 @@ def coverage_report():
     by_subsystem = {}
     for name in discover_gates():
         try:
-            g = json.load(open(os.path.join(GATES, name, "gate.json")))
+            g = json.load(open(os.path.join(GATES, name, "gate.json", encoding="utf-8")))
         except (ValueError, OSError):
             continue
         sub = g.get("subsystem", "?")
@@ -1224,7 +1224,7 @@ def main():
         entry = {"gate": name, "ok": False, "mismatches": 0, "lines": []}
         g = None
         try:
-            g = json.load(open(os.path.join(gd, "gate.json")))
+            g = json.load(open(os.path.join(gd, "gate.json", encoding="utf-8")))
             entry["subsystem"] = g.get("subsystem", "?")
             if not args.json:
                 print("-- %s (subsystem: %s) --" % (name,
@@ -1305,7 +1305,7 @@ def main():
     # results.jsonl — one line per run (consumed by CI dashboards)
     try:
         os.makedirs(os.path.dirname(RESULT_FILE), exist_ok=True)
-        with open(RESULT_FILE, "a") as f:
+        with open(RESULT_FILE, "a", encoding="utf-8") as f:
             for r in report:
                 f.write(json.dumps({"ok": r["ok"],
                                     "gate": r["gate"],
