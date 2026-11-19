@@ -1502,7 +1502,8 @@ static json_t *hrd_open_session_of(hrd_env *e, const json_t *binding, const json
         && strcmp(json_get_str(transport, "id", ""), hrd_rpc_id(e)) == 0;
     json_t *r = json_array();
     if (hrd_is_null(transport) || (peer_only && is_rpc)) {
-        json_append(r, hrd_transport_proj(transport));
+        json_t *tp = hrd_transport_proj(transport);
+        json_append(r, tp ? tp : json_null());
         json_append(r, json_null());
         json_append(r, json_null());
         json_free(transport);
