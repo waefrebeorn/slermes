@@ -336,6 +336,9 @@ add("_send_exported_packages", state=SEP_ST, io={})
 add("_send_exported_packages", state=SEP_ST,
     io={"_resolved_send_config": resolved(True), "rt._guarded": None,
         "spawn_context_thread": raise_("ValueError")})
+add("_send_exported_packages", state=SEP_ST,
+    io={"_resolved_send_config": resolved(True), "rt._guarded": None,
+        "spawn_context_thread": THREAD, "thread.start": raise_("RuntimeError")})
 
 # ── _run_send_pass ──
 RSP_ST = {"subscriber": {"store": STORE}}

@@ -127,7 +127,8 @@ case("_init_prompt_cache_config", {"agent": {}}, methods=PC_M,
      io={"agent._anthropic_prompt_cache_policy": [True, False],
          "load_config_readonly": {}, "auto_start_cache_ttl": "5m"})
 case("_init_prompt_cache_config", {"agent": {"side_agent": True}}, methods=PC_M,
-     io={"agent._anthropic_prompt_cache_policy": [True, True], "load_config_readonly": {}})
+     io={"agent._anthropic_prompt_cache_policy": [True, True], "load_config_readonly": {},
+         "cache_ttl_means_disabled": False})
 case("_init_prompt_cache_config", {"agent": {}}, methods=PC_M,
      io={"agent._anthropic_prompt_cache_policy": [True, True],
          "load_config_readonly": {"prompt_caching": {"cache_ttl": "off"}},

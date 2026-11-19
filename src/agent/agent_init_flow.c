@@ -734,8 +734,9 @@ static char *ai_urlunparse(const char *scheme, const char *netloc, const char *p
     ai_sb out; ai_sb_init(&out);
     if (scheme && scheme[0]) { ai_sb_put(&out, scheme); ai_sb_putc(&out, ':'); }
     ai_sb_put(&out, p);
-    if (query) { ai_sb_putc(&out, '?'); ai_sb_put(&out, query); }
-    if (fragment) { ai_sb_putc(&out, '#'); ai_sb_put(&out, fragment); }
+    /* urlunparse passes query/fragment through `or None`: empty -> omitted. */
+    if (query && query[0]) { ai_sb_putc(&out, '?'); ai_sb_put(&out, query); }
+    if (fragment && fragment[0]) { ai_sb_putc(&out, '#'); ai_sb_put(&out, fragment); }
     free(p);
     return out.p ? out.p : strdup("");
 }
@@ -1045,16 +1046,15 @@ static json_t *ai_init_prompt_cache_config(ai_ctx *ctx, json_t *agent) {
     bool in_tuple = ai_is_str(ttl) && (ai_str_eq(ttl->str_val, "5m") || ai_str_eq(ttl->str_val, "1h"));
     if (in_tuple) {
         json_set(agent, "_cache_ttl", json_copy(ttl));
-    } else if (is_auto) {
-        json_t *side = ai_get(agent, "side_agent"); /* getattr default False */
-        if (!ai_truthy(side)) {
-            json_t *a = json_object();
-            ai_arg(a, "agent", agent);
-            json_t *st = ai_call(ctx, "auto_start_cache_ttl", a);
-            if (ai_exc_pending(ctx)) { json_free(st); json_free(ttl); return NULL; }
-            json_set(agent, "_cache_ttl", st ? st : json_null());
-        }
+    } else if (is_auto && !ai_truthy(ai_get(agent, "side_agent"))) {
+        /* elif ttl == AUTO_CACHE_TTL and not getattr(agent, "side_agent", False) */
+        json_t *a = json_object();
+        ai_arg(a, "agent", agent);
+        json_t *st = ai_call(ctx, "auto_start_cache_ttl", a);
+        if (ai_exc_pending(ctx)) { json_free(st); json_free(ttl); return NULL; }
+        json_set(agent, "_cache_ttl", st ? st : json_null());
     } else {
+        /* elif cache_ttl_means_disabled(ttl) — reached for auto+side_agent too */
         json_t *a = json_object();
         ai_arg(a, "ttl", ttl);
         json_t *dis = ai_call(ctx, "cache_ttl_means_disabled", a);

@@ -100,6 +100,7 @@
 {"func": "_send_exported_packages", "in": {"state": {"_send_thread": null, "subscriber": {"store": {"__store__": true}}}, "io": {"_resolved_send_config": {"send": true, "endpoint": "e1"}, "rt._guarded": {"__raise__": "RuntimeError", "message": "boom"}}}}
 {"func": "_send_exported_packages", "in": {"state": {"_send_thread": null, "subscriber": {"store": {"__store__": true}}}, "io": {}}}
 {"func": "_send_exported_packages", "in": {"state": {"_send_thread": null, "subscriber": {"store": {"__store__": true}}}, "io": {"_resolved_send_config": {"send": true, "endpoint": "e1"}, "rt._guarded": null, "spawn_context_thread": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_send_exported_packages", "in": {"state": {"_send_thread": null, "subscriber": {"store": {"__store__": true}}}, "io": {"_resolved_send_config": {"send": true, "endpoint": "e1"}, "rt._guarded": null, "spawn_context_thread": {"__thread__": true}, "thread.start": {"__raise__": "RuntimeError", "message": "boom"}}}}
 {"func": "_run_send_pass", "in": {"endpoint": "e1", "state": {"subscriber": {"store": {"__store__": true}}}, "io": {"SharedMetricsSender": {"__sender__": true}, "rt._guarded": null}}}
 {"func": "_run_send_pass", "in": {"endpoint": "e1", "state": {"subscriber": {"store": {"__store__": true}}}, "io": {"SharedMetricsSender": {"__raise__": "ValueError", "message": "boom"}}}}
 {"func": "_run_send_pass", "in": {"endpoint": "e1", "state": {"subscriber": {"store": {"__store__": true}}}, "io": {"SharedMetricsSender": null}}}

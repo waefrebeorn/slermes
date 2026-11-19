@@ -13,11 +13,11 @@
 {"func": "_bindable_text", "in": {"value": null}}
 {"func": "_bindable_text", "in": {"value": "hello"}}
 {"func": "_bindable_text", "in": {"value": 42}}
-{"func": "_bindable_text", "in": {"value": -9221111111111175808}}
-{"func": "_bindable_text", "in": {"value": 9221111111111175807}}
-{"func": "_bindable_text", "in": {"value": 9221111111111175808}}
-{"func": "_bindable_text", "in": {"value": 9221111111111176832}}
-{"func": "_bindable_text", "in": {"value": -9221111111111176832}}
+{"func": "_bindable_text", "in": {"value": -9223372036854775808}}
+{"func": "_bindable_text", "in": {"value": 9223372036854774784}}
+{"func": "_bindable_text", "in": {"value": 9223372036854775808}}
+{"func": "_bindable_text", "in": {"value": 9223372036854777856}}
+{"func": "_bindable_text", "in": {"value": -9223372036854777856}}
 {"func": "_bindable_text", "in": {"value": 1.5}}
 {"func": "_bindable_text", "in": {"value": true}}
 {"func": "_bindable_text", "in": {"value": {"a": 1, "b": [1, 2.5, "x"]}}}
@@ -32,7 +32,7 @@
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": "user", "timestamp": null}, "fallback_ts": 5}}
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": "user", "platform_message_id": "", "message_id": "m1"}}}
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": "user", "platform_message_id": "p1", "message_id": "m1"}}}
-{"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": {"x": 1}, "tool_name": [1], "tool_call_id": 9221111111111175808, "reasoning": {"a": 1}, "reasoning_content": "ok", "platform_message_id": {"p": 2}}}}
+{"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": {"x": 1}, "tool_name": [1], "tool_call_id": 9223372036854775808, "reasoning": {"a": 1}, "reasoning_content": "ok", "platform_message_id": {"p": 2}}}}
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": "user", "api_content": 5, "observed": "yes"}}}
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": {"role": "user", "observed": 0}}}
 {"func": "transcript_append_kwargs", "in": {"session_id": "s1", "message": null}}

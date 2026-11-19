@@ -366,8 +366,27 @@ _LOGGER = LoggerDouble("")
 _BASE_NS["logger"] = _LOGGER
 # module-level import globals that are seamed collaborators
 for _nm in ("normalize_route_base_url", "base_url_host_matches", "is_truthy_value",
-            "get_hermes_home", "SubdirectoryHintTracker"):
+            "get_hermes_home", "SubdirectoryHintTracker", "get_provider_request_timeout",
+            "is_local_server"):
     _BASE_NS[_nm] = SeamFn(_nm)
+# claimed siblings (ported elsewhere) — seamed here under their LIVE global name,
+# recording the C seam event name (no leading underscore).
+for _live, _seam in (
+    ("_normalize_run_budget_seconds", "normalize_run_budget_seconds"),
+    ("_resolve_compression_threshold", "resolve_compression_threshold"),
+    ("_context_route_mismatch", "context_route_mismatch"),
+    ("_normalize_custom_provider_name", "normalize_custom_provider_name"),
+    ("_custom_provider_runtime_ids", "custom_provider_runtime_ids"),
+):
+    _BASE_NS[_live] = _rec(_seam, SEAM_ARGS[_seam])
+# the four SDK client initializers are seamed collaborators of _build_client
+for _live, _seam in (
+    ("_init_anthropic_client", "init_anthropic_client"),
+    ("_init_moa_client", "init_moa_client"),
+    ("_init_bedrock_client", "init_bedrock_client"),
+    ("_init_openai_client", "init_openai_client"),
+):
+    _BASE_NS[_live] = SeamFn(_seam)
 
 
 # ── stub modules for lazy imports ───────────────────────────────────────────

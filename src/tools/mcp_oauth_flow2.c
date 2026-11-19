@@ -1227,9 +1227,10 @@ static json_t *mo2_do_get(mo2_io_t *io, const char *path) {
     }
     json_free(parsed);
     json_t *e;
-    json_t *stn = json_number((double)status);
-    e = mo2_seam_prop(io, "send_response", mo2_args1("status", stn));
-    json_free(stn);
+    /* mo2_args1 ADOPTS the status node; mo2_seam frees the args object.
+     * Do NOT free it again here (was a double-free -> 0xC0000374). */
+    e = mo2_seam_prop(io, "send_response",
+                      mo2_args1("status", json_number((double)status)));
     if (e) { free(body); return e; }
     json_t *ha = json_object();
     json_set(ha, "name", json_string("Content-Type"));

@@ -1034,10 +1034,11 @@ static json_t *rm_send_exported_packages(rm_io_t *io, const json_t *in, json_t *
         json_set(a, "args", args_arr);
         json_t *nt = rm_call(io, "spawn_context_thread", a);
         if (rm_is_raise(nt)) { json_free(resolved); return nt; }
-        json_t *sr = rm_call(io, "thread.start", json_object());
-        if (rm_is_raise(sr)) { json_free(nt); json_free(resolved); return sr; }
-        json_free(sr);
+        /* live assigns self._send_thread BEFORE calling .start() on it */
         json_set(st, "_send_thread", nt);
+        json_t *sr = rm_call(io, "thread.start", json_object());
+        if (rm_is_raise(sr)) { json_free(resolved); return sr; }
+        json_free(sr);
     }
     json_free(resolved);
     return NULL;

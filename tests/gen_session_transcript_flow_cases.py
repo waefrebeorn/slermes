@@ -76,11 +76,11 @@ case("_spool_dropped", session_id="s1", message=M1,
 case("_bindable_text", value=None)
 case("_bindable_text", value="hello")
 case("_bindable_text", value=42)
-case("_bindable_text", value=-9221111111111175808)
-case("_bindable_text", value=9221111111111175807)
-case("_bindable_text", value=9221111111111175808)      # 2**63 -> dumps
-case("_bindable_text", value=9221111111111176832)      # 2**63+1024 -> dumps
-case("_bindable_text", value=-9221111111111175808 - 1024)
+case("_bindable_text", value=-(1 << 63))
+case("_bindable_text", value=(1 << 63) - 1024)   # in-range, double-exact
+case("_bindable_text", value=(1 << 63))          # 2**63 -> dumps
+case("_bindable_text", value=(1 << 63) + 2048)   # out-of-range, double-exact
+case("_bindable_text", value=-((1 << 63) + 2048))
 case("_bindable_text", value=1.5)
 case("_bindable_text", value=True)
 case("_bindable_text", value={"a": 1, "b": [1, 2.5, "x"]})
@@ -112,7 +112,7 @@ case("transcript_append_kwargs", session_id="s1",
 case("transcript_append_kwargs", session_id="s1",
      message={"role": "user", "platform_message_id": "p1", "message_id": "m1"})
 case("transcript_append_kwargs", session_id="s1",
-     message={"role": {"x": 1}, "tool_name": [1], "tool_call_id": 9221111111111175808,
+     message={"role": {"x": 1}, "tool_name": [1], "tool_call_id": (1 << 63),
               "reasoning": {"a": 1}, "reasoning_content": "ok",
               "platform_message_id": {"p": 2}})
 case("transcript_append_kwargs", session_id="s1",

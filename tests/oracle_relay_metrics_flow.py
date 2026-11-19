@@ -235,6 +235,19 @@ def make_exc(marker):
             return cls(ast.literal_eval(msg))
         except (ValueError, SyntaxError):
             return cls(msg)
+    # special constructors: the scripted kind must raise the REAL class; the
+    # spec round-trips via Script.handed identity, so str(e) need not equal msg.
+    if kind == "UnicodeDecodeError":
+        return cls("utf-8", b"x", 0, 1, msg or "boom")
+    if kind == "UnicodeEncodeError":
+        return cls("utf-8", "x", 0, 1, msg or "boom")
+    if kind == "UnicodeTranslateError":
+        return cls("x", 0, 1, msg or "boom")
+    if kind in ("ExceptionGroup", "BaseExceptionGroup"):
+        # BaseExceptionGroup with Exception-only contents auto-collapses to
+        # ExceptionGroup live; keep the nominal kind via a base-only inner.
+        inner = KeyboardInterrupt("inner") if kind == "BaseExceptionGroup" else RuntimeError("inner")
+        return cls(msg or "boom", [inner])
     return cls(msg)
 
 
