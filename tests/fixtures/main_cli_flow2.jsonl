@@ -1,0 +1,165 @@
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": 2}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": null, "io": {"os.getpid": 2}}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": null, "io": {"os.getpid": 1, "print": null}}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": 1, "io": {"print": null}}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": 1, "io": {"print": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": null, "io": {"os.getpid": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_warn_if_unsupervised_pid1", "in": {"pid": null}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": false, "path.read_text": "abc123\n"}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": {"$seq": [false, true]}, "path.read_text": {"$seq": ["ref: refs/heads/main\n", "sha1\n"]}}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": true, "path.read_text": {"$seq": ["gitdir: /real/git\n", "ref: refs/heads/x\n"]}, "path.resolve": "/real/git", "path.exists": {"$seq": [false, false, false]}, "_read_packed_ref": "packedsha"}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": {"$seq": [false, false, false]}, "path.read_text": "ref: refs/heads/y\n", "_read_packed_ref": null}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": false, "path.read_text": {"__raise__": "OSError", "msg": "no"}}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": {"$seq": [true, false, true]}, "path.read_text": {"$seq": ["../common\n", "ref: refs/heads/z\n", "zsha\n"]}, "path.resolve": "/common"}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo", "io": {"path.is_file": false, "path.exists": false, "path.read_text": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_read_git_revision_fingerprint", "in": {"repo_root": "/repo"}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": false}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "{\"active_provider\":\"nous\"}", "json.loads": {"active_provider": "nous"}, "get_auth_status": {"logged_in": true}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "api_key"}}, "strict_profile_scope": true, "io": {"path.exists": true, "path.read_text": "{\"active_provider\":\"nous\"}", "json.loads": {"active_provider": "nous"}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "{}", "json.loads": {"active_provider": null}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "bad", "json.loads": {"__raise__": "JSONDecodeError", "msg": "bad"}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "{\"active_provider\":\"nous\"}", "json.loads": {"active_provider": "nous"}, "get_auth_status": {"logged_in": false}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "{\"active_provider\":\"nous\"}", "json.loads": {"active_provider": "nous"}, "get_auth_status": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_auth_store_logged_in", "in": {"auth_file": "/a/auth.json", "registry": {"nous": {"auth_type": "oauth"}}, "strict_profile_scope": false, "io": {"path.exists": true, "path.read_text": "{\"active_provider\":\"nous\"}"}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"returncode": 0, "stdout": "/repo\n"}, "os.path.abspath": "/repo"}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"returncode": 1, "stdout": ""}, "os.getcwd": "/cwd"}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"__raise__": "RuntimeError", "msg": "x"}, "os.getcwd": "/cwd"}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"returncode": 0, "stdout": "  "}, "os.getcwd": "/cwd"}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"returncode": 1, "stdout": ""}, "os.getcwd": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "_resolve_workspace_key", "in": {"io": {"subprocess.run": {"returncode": 0}, "os.getcwd": "/cwd"}}}
+{"func": "_resolve_workspace_key", "in": {}}
+{"func": "_session_db", "in": {"io": {"get_hermes_home": "/home", "open_persistence_reader": {"id": "s1"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null}}}
+{"func": "_session_db", "in": {"io": {"get_hermes_home": "/home", "open_persistence_reader": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_session_db", "in": {"io": {"get_hermes_home": "/home", "open_persistence_reader": {"id": "s1"}, "store.ready": {"__raise__": "ValueError", "msg": "x"}, "store.close": null}}}
+{"func": "_session_db", "in": {"body_raise": {"__raise__": "ValueError", "msg": "body"}, "io": {"get_hermes_home": "/home", "open_persistence_reader": {"id": "s1"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null}}}
+{"func": "_session_db", "in": {"body_raise": {"__raise__": "SystemExit", "msg": "bye"}, "io": {"get_hermes_home": "/home", "open_persistence_reader": {"id": "s1"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null}}}
+{"func": "_session_db", "in": {"io": {"get_hermes_home": "/home", "open_persistence_reader": {"id": "s1"}, "store.ready": null, "SurfaceLabelReader": {"__raise__": "RuntimeError", "msg": "x"}, "store.close": null}}}
+{"func": "_session_db", "in": {}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": null, "command": "chat"}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "latest"}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_latest_session_id": "sid1", "_resolve_session_by_name_or_id": "sid1", "get_hermes_home": "/home", "open_persistence_reader": {"id": "s"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null, "sessions.get": {"cwd": "/saved"}, "os.path.isdir": true, "os.path.realpath": {"$seq": ["/saved", "/cwd"]}, "os.getcwd": "/cwd", "os.chdir": null, "print": null}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "latest"}, "use_tui": true, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_latest_session_id": null, "print": {"$seq": [null, null]}, "sys.exit": null}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "mytitle"}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_resolve_session_by_name_or_id": null, "get_hermes_home": "/home", "open_persistence_reader": {"id": "s"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null, "sessions.get": null}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "sid", "no_restore_cwd": true}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_resolve_session_by_name_or_id": "sid"}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "sid", "worktree": true}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_resolve_session_by_name_or_id": "sid"}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "sid"}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_resolve_session_by_name_or_id": "sid", "get_hermes_home": "/home", "open_persistence_reader": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": "sid"}, "use_tui": false, "io": {"_apply_in_dir": null, "_resolve_continue_arg": null, "import_foreign_resume": null, "recreate_resumed_tui_worktree": null, "_resolve_session_by_name_or_id": "sid", "get_hermes_home": "/home", "open_persistence_reader": {"id": "s"}, "store.ready": null, "SurfaceLabelReader": {"persistence": {"sessions": {}}}, "store.close": null, "sessions.get": {"cwd": "/gone"}, "os.path.isdir": false, "os.getcwd": "/cwd", "print": null}}}
+{"func": "_resolve_chat_session_args", "in": {"args": {"resume": null}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}, "io": {"load_config": {}, "find_retired_xai_refs": []}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}, "io": {"load_config": {"x": 1}, "find_retired_xai_refs": ["grok-1", "grok-2"], "format_issue": {"$seq": ["issue1", "issue2"]}, "sys.stderr.write": {"$seq": [null, null, null, null]}}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}, "io": {"load_config": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}, "io": {"load_config": {}, "find_retired_xai_refs": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}}}
+{"func": "_warn_retired_xai_models", "in": {"env": {"MIGRATION_GUIDE_URL": "https://guide", "RETIREMENT_DATE": "2026-12-01"}, "io": {"load_config": {}, "find_retired_xai_refs": ["a"], "format_issue": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": false, "get_hermes_home": "/home", "path.is_dir": true, "path.rglob": ["/home/skills/x/SKILL.md"], "thread.start": null}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": true, "prefetch_update_check": null, "prefetch_banner_data": null, "get_hermes_home": "/home", "path.is_dir": true, "path.rglob": ["/home/skills/x/SKILL.md"], "thread.start": null}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": false, "get_hermes_home": "/home", "path.is_dir": false, "_sync_bundled_skills_for_startup": null, "banner.set_cache": null}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": false, "get_hermes_home": "/home", "path.is_dir": true, "path.rglob": [], "_sync_bundled_skills_for_startup": null, "banner.set_cache": null}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": true, "prefetch_update_check": {"__raise__": "RuntimeError", "msg": "x"}, "get_hermes_home": "/home", "path.is_dir": true, "path.rglob": ["/home/skills/x/SKILL.md"], "thread.start": null}}}
+{"func": "_start_chat_background_prefetch", "in": {"io": {"_termux_should_prefetch_update_check": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_start_chat_background_prefetch", "in": {}}
+{"func": "_forward_command", "in": {"name": "cmd_kanban", "module": "hermes_cli.kanban", "attr": "cmd_kanban", "forward_return": true, "doc": "d", "call_args": {"x": 1}, "io": {"import_module": {}, "forward.call": {"rc": 0}}}}
+{"func": "_forward_command", "in": {"name": "cmd_x", "module": "m", "attr": "a", "forward_return": false, "doc": "", "call_args": {}, "io": {"import_module": {}, "forward.call": {"rc": 0}}}}
+{"func": "_forward_command", "in": {"name": "cmd_x", "module": "m", "attr": "a", "forward_return": true, "doc": "hi", "call_args": {}, "io": {"import_module": {}, "forward.call": null}}}
+{"func": "_forward_command", "in": {"name": "cmd_x", "module": "m", "attr": "a", "forward_return": true, "doc": "", "call_args": {}, "io": {"import_module": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_forward_command", "in": {"name": "cmd_x", "module": "m", "attr": "a", "forward_return": true, "doc": "", "call_args": {}, "io": {"import_module": {}, "forward.call": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_forward_command", "in": {"name": "cmd_x", "module": "m", "attr": "a", "forward_return": true, "doc": "", "call_args": {}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "auto", "custom_provider_map": {}, "io": {"resolve_provider": "nous"}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "auto", "custom_provider_map": {}, "io": {"resolve_provider": {"__raise__": "AuthError", "msg": "none", "code": "no_provider_configured"}, "print": null}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "auto", "custom_provider_map": {}, "io": {"resolve_provider": {"__raise__": "AuthError", "msg": "x", "code": "other"}, "format_auth_error": "formatted", "print": null}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": {"base_url": "http://x"}, "effective_provider": "custom", "custom_provider_map": {"mycust": {"base_url": "http://x"}}, "io": {"_norm_base_url": {"$seq": ["http://x", "http://x"]}}}}
+{"func": "_resolve_active_provider", "in": {"config": {"providers": {}}, "model_cfg": null, "effective_provider": "nous", "custom_provider_map": {"cust1": {"name": "Nous", "provider_key": "nous"}}, "io": {"get_compatible_custom_providers": {}, "resolve_provider_full": {"id": "nous", "source": "user-config"}, "custom_provider_aliases": ["nous"]}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "bogus", "custom_provider_map": {}, "io": {"resolve_provider_full": null, "provider_install_hint": null, "print": null, "resolve_provider": "auto_resolved"}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "auto", "custom_provider_map": {}, "io": {"resolve_provider": "openrouter", "get_env_value": "http://x"}}}
+{"func": "_resolve_active_provider", "in": {"config": {}, "model_cfg": null, "effective_provider": "auto", "custom_provider_map": {}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["nous", "Nous", []]], 0], "_prompt_provider_choice": null}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["cancel", "Cancel", []]], 0], "_prompt_provider_choice": 0}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["nous", "Nous", []], ["openai", "OpenAI", []]], 0], "_prompt_provider_choice": 1}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": "m2", "provider_labels": {"m1": "Member 1", "m2": "Member 2"}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["group", "Group ▸ Sub", ["m1", "m2"]]], 0], "_prompt_provider_choice": {"$seq": [0, 1]}}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["group", "Group ▸ Sub", ["m1", "m2"]]], 0], "_prompt_provider_choice": {"$seq": [0, null]}}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}, "io": {"_build_provider_picker_rows": [[["nous", "Nous", []]], 0], "_prompt_provider_choice": 5}}}
+{"func": "_pick_provider", "in": {"config": {}, "active": null, "provider_labels": {}, "custom_provider_map": {}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {"x": 1}, "headless_backend": false, "io": {"setup_logging": null, "_require_dashboard_web_deps": null, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": null, "_resolve_dashboard_web_dist": null, "discover_plugins": null, "_is_desktop_owned_backend": false, "defer_background_mcp_discovery": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": true, "io": {"setup_logging": null, "_require_dashboard_web_deps": null, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": null, "_resolve_dashboard_web_dist": null, "discover_plugins": null, "_is_desktop_owned_backend": true, "defer_background_mcp_discovery": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": false, "io": {"setup_logging": null, "_require_dashboard_web_deps": null, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": null, "_resolve_dashboard_web_dist": null, "discover_plugins": null, "_is_desktop_owned_backend": true, "defer_background_mcp_discovery": null, "start_background_mcp_discovery": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": false, "io": {"setup_logging": null, "_require_dashboard_web_deps": null, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": {"__raise__": "RuntimeError", "msg": "x"}, "_resolve_dashboard_web_dist": null, "discover_plugins": null, "_is_desktop_owned_backend": false, "defer_background_mcp_discovery": null, "logger.debug": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": false, "io": {"setup_logging": null, "_require_dashboard_web_deps": null, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": null, "_resolve_dashboard_web_dist": null, "discover_plugins": {"__raise__": "ValueError", "msg": "boom"}, "_is_desktop_owned_backend": false, "defer_background_mcp_discovery": null, "print": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": false, "io": {"setup_logging": null, "_require_dashboard_web_deps": {"__raise__": "SystemExit", "msg": ""}, "_sync_bundled_skills_quietly": null, "apply_terminal_config_to_env": null, "_resolve_dashboard_web_dist": null, "discover_plugins": null, "_is_desktop_owned_backend": false, "defer_background_mcp_discovery": null}}}
+{"func": "_dashboard_prepare_runtime", "in": {"args": {}, "headless_backend": false}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": ["chat", "hi"]}, "io": {"command_argv": ["chat", "hi"]}}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": []}, "io": {"command_argv": []}}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": ["--flag"]}, "io": {"command_argv": ["--flag"]}}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": ["x"]}, "io": {"command_argv": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": ["x"]}}}
+{"func": "_first_positional_argv", "in": {"env": {"argv": ["-p", "x", "chat"]}, "io": {"command_argv": ["chat"]}}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": null}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": ""}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": "photon", "io": {"platform_registry.get": null}}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": "photon", "io": {"platform_registry.get": {"__raise__": "ValueError", "msg": "x"}, "logger.debug": null}}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": "photon", "io": {"platform_registry.get": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_resolve_deferred_platform_cli_command", "in": {"command_name": "x"}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": "cron", "cron_command": "run"}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": "cron", "cron_command": "list"}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": "gateway", "gateway_command": "run"}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": "chat"}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": null}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {"command": "curator"}}}
+{"func": "_agent_subcommand_selected", "in": {"args": {}}}
+{"func": "_chat_runs_at_gateway", "in": {"args": {"command": null}}}
+{"func": "_chat_runs_at_gateway", "in": {"args": {"command": "chat"}}}
+{"func": "_chat_runs_at_gateway", "in": {"args": {"command": "gateway"}}}
+{"func": "_chat_runs_at_gateway", "in": {"args": {"command": ""}}}
+{"func": "_chat_runs_at_gateway", "in": {"args": {}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {"ignore_user_config": true}, "io": {"os.environ.set": null}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {"ignore_user_config": false}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {"ignore_user_config": 1}, "io": {"os.environ.set": null}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {"ignore_user_config": true}, "io": {"os.environ.set": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_apply_user_config_bypass", "in": {"args": {"ignore_user_config": true}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {"z": true}, "io": {"launch_gateway_chat": 0, "sys.exit": null}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {}, "io": {"launch_gateway_chat": null, "sys.exit": null}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {}, "io": {"launch_gateway_chat": "x", "sys.exit": null}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {}, "io": {"launch_gateway_chat": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {}, "io": {"launch_gateway_chat": 0, "sys.exit": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_run_oneshot_from_args", "in": {"args": {}}}
+{"func": "_enable_cpu_profile", "in": {"args": {"cpu_profile": true}, "io": {"enable_cpu_profile_from_args": null}}}
+{"func": "_enable_cpu_profile", "in": {"args": {}, "io": {"enable_cpu_profile_from_args": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_enable_cpu_profile", "in": {"args": {}, "io": {"enable_cpu_profile_from_args": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_enable_cpu_profile", "in": {"args": {}}}
+{"func": "_enable_cpu_profile", "in": {"args": {"cpu_profile": false}, "io": {"enable_cpu_profile_from_args": null}}}
+{"func": "_light_chat_parser", "in": {"io": {"build_top_level_parser": [{"id": "p"}, {"id": "s"}, {"id": "c"}], "parser.set_defaults": null}}}
+{"func": "_light_chat_parser", "in": {"io": {"build_top_level_parser": [{"id": "p"}, {"id": "s"}, null]}}}
+{"func": "_light_chat_parser", "in": {"io": {"build_top_level_parser": [{"id": "p"}, {"id": "s"}, {"id": "c"}], "parser.set_defaults": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_light_chat_parser", "in": {}}
+{"func": "_light_chat_parser", "in": {"io": {"build_top_level_parser": ["PARSER", "SUB", "CHAT"]}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": "sid", "continue_last": false, "command": null}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": null, "continue_last": true, "command": null}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": null, "continue_last": false, "command": null}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": "sid", "continue_last": false, "command": "gateway"}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": "sid", "command": null}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": null, "command": null}}}
+{"func": "_promote_top_level_resume", "in": {"args": {"resume": "sid", "continue_last": false}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve", "--port", "8080"]}, "io": {"os.environ.get": null, "get_container_exec_info": null, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": [{"x": 1}, []], "cmd_dashboard": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["chat"]}, "io": {"os.environ.get": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve", "-h"]}, "io": {"os.environ.get": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": "1"}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": null, "get_container_exec_info": {"x": 1}, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": [{"x": 1}, []], "cmd_dashboard": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": null, "get_container_exec_info": null, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": [{"x": 1}, ["--unknown"]], "cmd_dashboard": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": null, "get_container_exec_info": null, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": {"__raise__": "ArgumentError", "msg": "bad"}, "cmd_dashboard": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": null, "get_container_exec_info": null, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": {"__raise__": "ValueError", "msg": "bad"}, "cmd_dashboard": null}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}, "io": {"os.environ.get": null, "get_container_exec_info": null, "build_serve_parser": {"id": "p"}, "parser.parse_known_args": [{"x": 1}, []], "cmd_dashboard": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_try_fast_serve_launch", "in": {"env": {"argv": ["serve"]}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": "setup", "handler_fn": "handler"}, "io": {"subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null, "parser.set_defaults": null}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": "setup"}, "io": {"subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": "setup", "handler_fn": null}, "io": {"subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"help": "h", "setup_fn": "s"}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": null}, "io": {"subparsers.add_parser": {"id": "pp"}}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": "setup"}, "io": {"subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "setup_fn": "setup"}}}
+{"func": "_attach_plugin_cli_command", "in": {"cmd_info": {"name": "plug", "help": "h", "description": "desc", "setup_fn": "setup"}, "io": {"subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": false}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": true, "command_argv": ["plug"], "recover_for_command": null, "discover_plugins": null, "platform_registry.get": null, "discover_plugin_cli_commands": [{"name": "plug", "help": "h", "setup_fn": "s"}], "subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null, "get_plugin_manager": {"_cli_commands": {}}}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": true, "command_argv": ["plug"], "recover_for_command": null, "discover_plugins": null, "platform_registry.get": null, "discover_plugin_cli_commands": [], "subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null, "get_plugin_manager": {"_cli_commands": {"extra": {"name": "extra", "help": "h", "setup_fn": "s"}}}}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": true, "command_argv": ["plug"], "recover_for_command": null, "discover_plugins": null, "platform_registry.get": null, "discover_plugin_cli_commands": [{"name": "dup", "help": "h", "setup_fn": "s"}], "subparsers.add_parser": {"id": "pp"}, "plugin.setup_fn": null, "get_plugin_manager": {"_cli_commands": {"dup": {"name": "dup", "help": "h", "setup_fn": "s"}}}}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": true, "command_argv": ["plug"], "recover_for_command": {"__raise__": "ValueError", "msg": "x"}, "discover_plugins": null, "platform_registry.get": null, "logger.debug": null}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "_register_plugin_cli_commands", "in": {"io": {"_plugin_cli_discovery_needed": true}}}

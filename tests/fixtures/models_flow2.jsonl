@@ -1,0 +1,208 @@
+{"func": "_zero_priced", "in": {"pricing": {"prompt": "0", "completion": "0"}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": "0", "completion": "0.5"}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": "0"}, "keys": ["prompt", "completion"], "default": "0"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": "0"}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": "notdict", "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": "abc"}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": null}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {}, "keys": [], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": 0, "completion": 0}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_zero_priced", "in": {"pricing": {"prompt": true}, "keys": ["prompt", "completion"], "default": "1"}}
+{"func": "_is_subscription_billed", "in": {"entry": {"billing_mode": "subscription"}}}
+{"func": "_is_subscription_billed", "in": {"entry": {"billing_mode": "credits"}}}
+{"func": "_is_subscription_billed", "in": {"entry": {}}}
+{"func": "_is_subscription_billed", "in": {"entry": null}}
+{"func": "_is_subscription_billed", "in": {"entry": "x"}}
+{"func": "_is_subscription_billed", "in": {"entry": {"billing_mode": null}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": ["a"], "pricing": {"a": {"prompt": "1"}}, "portal_base_url": "https://p", "force_refresh": false, "synthesize_free_pricing": true, "io": {"fetch_nous_recommended_models": {"__raise__": "RuntimeError", "msg": "net"}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": ["a"], "pricing": {"a": {"prompt": "1"}}, "portal_base_url": "https://p", "force_refresh": true, "synthesize_free_pricing": true, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": [{"modelName": "a"}, {"modelName": "b"}]}, "extract_model_name": {"$seq": ["a", "b"]}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": ["a"], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": false, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": "notlist"}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "paidRecommendedModels", "curated_ids": [], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": false, "io": {"fetch_nous_recommended_models": null}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": [], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": false, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": [{"modelName": "a"}, {"modelName": " "}]}, "extract_model_name": {"$seq": ["a", null]}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": [], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": true, "io": {"fetch_nous_recommended_models": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": [], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": false, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": [{"modelName": "a"}]}, "extract_model_name": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": [], "pricing": {"b": null}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": true, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": [{"modelName": "b"}]}, "extract_model_name": {"$seq": ["b"]}}}}
+{"func": "_union_with_portal_recommendations", "in": {"tier_key": "freeRecommendedModels", "curated_ids": [], "pricing": {}, "portal_base_url": "", "force_refresh": false, "synthesize_free_pricing": false, "io": {"fetch_nous_recommended_models": {"freeRecommendedModels": [{"modelName": "a"}, {"modelName": "a"}]}, "extract_model_name": {"$seq": ["a", "a"]}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": null}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "completion": "2", "original": {"prompt": "10", "completion": "20"}}}, "io": {"compute_sale_discount": [50, "10", "20"], "price_float": 1.0}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"tools": false, "prompt": "1", "original": {"prompt": "10"}}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"generation": true, "prompt": "1", "original": {"prompt": "10"}}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["m"], "pricing": {"m": {"prompt": "1", "original": {"prompt": "10"}}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "completion": "2", "original": {"prompt": "10"}}}, "io": {"compute_sale_discount": null, "price_float": 1.0}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "original": "notdict"}}, "io": {"compute_sale_discount": [50, "10", ""], "price_float": 1.0}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "completion": "2", "original": {"prompt": "10"}}}, "io": {"compute_sale_discount": [50, "10", ""], "price_float": {"$seq": [null, null]}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "completion": "2", "original": {"prompt": "10"}}}, "io": {"compute_sale_discount": [50, "10", ""], "price_float": {"$seq": [null, 2.0]}}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m1": {"prompt": "1", "original": {"prompt": "10"}}, "m2": {"prompt": "1", "original": {"prompt": "10"}}}, "io": {"compute_sale_discount": {"$seq": [[50, "10", ""], [80, "10", ""]]}, "price_float": 1.0}}}
+{"func": "union_with_nous_on_sale_models", "in": {"curated_ids": ["c"], "pricing": {"m": {"prompt": "1", "original": {"prompt": "10"}}}, "io": {"compute_sale_discount": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": "home1"}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": ""}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": "profile/key"}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_pricing_profile_key", "in": {"io": {"hermes_home_key": "another"}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {}}, "io": {"hermes_home_key": "h"}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [true, 100]}, "free_tier_ttl": 180}, "io": {"hermes_home_key": "h", "time.monotonic": 150}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [false, 100]}, "free_tier_ttl": 180}, "io": {"hermes_home_key": "h", "time.monotonic": 300}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [true, 100]}, "free_tier_ttl": 180}, "io": {"hermes_home_key": "h", "time.monotonic": 280}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [true, 100]}}, "io": {"hermes_home_key": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [true, 100]}}, "io": {"hermes_home_key": "h", "time.monotonic": {"__raise__": "RuntimeError", "msg": "clock"}}}}
+{"func": "get_cached_nous_free_tier", "in": {"env": {"free_tier_cache": {"h": [true, 100]}, "free_tier_ttl": 180}, "io": {"hermes_home_key": "h", "time.monotonic": 100}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "anthropic/claude-opus-4-6", "io": {"strip_vendor_prefix": "claude-opus-4-6"}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "claude-sonnet-4", "io": {"strip_vendor_prefix": "claude-sonnet-4"}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": null, "io": {"strip_vendor_prefix": ""}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "claude-fable-5:x", "io": {"strip_vendor_prefix": "claude-fable-5:x"}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "qwopus3.6", "io": {"strip_vendor_prefix": "qwopus3.6"}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "x", "io": {"strip_vendor_prefix": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_is_anthropic_frontier_tier", "in": {"model_id": "anthropic/claude-opus", "io": {"strip_vendor_prefix": "claude-opus"}}}
+{"func": "_anthropic_models_url", "in": {"base_url": null}}
+{"func": "_anthropic_models_url", "in": {"base_url": "https://api.anthropic.com/v1"}}
+{"func": "_anthropic_models_url", "in": {"base_url": "https://x.com/"}}
+{"func": "_anthropic_models_url", "in": {"base_url": null, "after_id": "model_123"}}
+{"func": "_anthropic_models_url", "in": {"base_url": "https://x.com/v1?foo=bar"}}
+{"func": "_anthropic_models_url", "in": {"base_url": "https://x.com", "after_id": "a b&c"}}
+{"func": "_anthropic_models_url", "in": {"base_url": "https://x.com", "after_id": ""}}
+{"func": "_anthropic_models_url", "in": {"base_url": "  https://x.com/v1  "}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": true, "last_id": "m1"}, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": false, "last_id": "m1"}, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": true, "last_id": "m1"}, "seen": ["m1"]}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": true, "last_id": ""}, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": true, "last_id": 5}, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": null, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": 1, "last_id": "m1"}, "seen": []}}
+{"func": "_anthropic_next_cursor", "in": {"page": {"has_more": true}, "seen": ["x"]}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "claude-opus-4-8", "provider": "anthropic", "base_url": "https://api.anthropic.com", "io": {"is_anthropic_fast_model": true, "normalize_provider": "anthropic"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "claude-opus-4-8", "provider": "openai", "base_url": "https://api.anthropic.com", "io": {"is_anthropic_fast_model": true, "normalize_provider": "openai"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "claude-opus-4-8", "provider": null, "base_url": "https://api.anthropic.com", "io": {"is_anthropic_fast_model": true}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "claude-opus-4-8", "provider": null, "base_url": "https://other.com", "io": {"is_anthropic_fast_model": true}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "grok-4-6", "provider": "xai", "base_url": "https://api.x.ai", "io": {"is_anthropic_fast_model": false, "is_grok_46_family": true, "normalize_provider": "xai"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "gpt-6", "provider": "openai", "base_url": "https://regional.openai.com", "io": {"is_anthropic_fast_model": false, "is_grok_46_family": false, "openai_fast_region_allows": true, "normalize_provider": "openai"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "gpt-6", "provider": "openai", "base_url": "https://api.openai.com", "io": {"is_anthropic_fast_model": false, "is_grok_46_family": false, "openai_fast_region_allows": false, "normalize_provider": "openai"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "gpt-6", "provider": "openai-codex", "base_url": "https://chatgpt.com", "io": {"is_anthropic_fast_model": false, "is_grok_46_family": false, "openai_fast_region_allows": false, "normalize_provider": "openai-codex"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "gpt-6", "provider": null, "base_url": null, "io": {"is_anthropic_fast_model": false, "is_grok_46_family": false, "openai_fast_region_allows": false}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "gpt-6", "provider": "azure", "base_url": "https://api.openai.com", "io": {"is_anthropic_fast_model": false, "is_grok_46_family": false, "openai_fast_region_allows": false, "normalize_provider": "azure"}}}
+{"func": "_fast_mode_route_supported", "in": {"model_id": "x", "provider": null, "base_url": null, "io": {"is_anthropic_fast_model": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "gpt-6-astra", "env": {"ultrafast_models": ["gpt-6-astra"]}, "io": {"strip_codex_context_variant_suffix": "gpt-6-astra", "strip_vendor_prefix": "gpt-6-astra"}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "openai/gpt-6-astra", "env": {"ultrafast_models": ["gpt-6-astra"]}, "io": {"strip_codex_context_variant_suffix": "openai/gpt-6-astra", "strip_vendor_prefix": "gpt-6-astra"}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "gpt-6-astra:variant", "env": {"ultrafast_models": ["gpt-6-astra"]}, "io": {"strip_codex_context_variant_suffix": "gpt-6-astra:variant", "strip_vendor_prefix": "gpt-6-astra:variant"}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "gpt-5", "env": {"ultrafast_models": ["gpt-6-astra"]}, "io": {"strip_codex_context_variant_suffix": "gpt-5", "strip_vendor_prefix": "gpt-5"}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": null, "env": {"ultrafast_models": ["gpt-6-astra"]}, "io": {"strip_codex_context_variant_suffix": "", "strip_vendor_prefix": ""}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "x", "env": {"ultrafast_models": []}, "io": {"strip_codex_context_variant_suffix": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "model_supports_ultrafast", "in": {"model_id": "gpt-6-astra", "env": {"ultrafast_models": []}, "io": {"strip_codex_context_variant_suffix": "gpt-6-astra", "strip_vendor_prefix": "gpt-6-astra"}}}
+{"func": "_cache_entry", "in": {"fp": "f", "models": ["a", "b"], "at": null, "io": {"time.time": 100}}}
+{"func": "_cache_entry", "in": {"fp": "f", "models": ["a"], "at": 50}}
+{"func": "_cache_entry", "in": {"fp": "f", "models": {"$curated": ["a"]}, "at": 10}}
+{"func": "_cache_entry", "in": {"fp": "f", "models": [], "at": 0}}
+{"func": "_cache_entry", "in": {"fp": "f", "models": ["a"], "at": null, "io": {"time.time": {"__raise__": "RuntimeError", "msg": "clock"}}}}
+{"func": "_cache_entry", "in": {"fp": "x", "models": ["m"], "at": 99.5}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": ["a"], "existing": null, "at": 10}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": ["a"]}, "existing": {"fp": "f", "models": ["x"], "at": 5}, "at": 10, "io": {"cache_entry_valid": true}}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": ["a"]}, "existing": {"fp": "f", "models": ["x"], "at": 5, "fallback": true}, "at": null, "io": {"cache_entry_valid": true, "time.time": 100}}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": ["a"]}, "existing": null, "at": null, "io": {"cache_entry_valid": false, "time.time": 100}}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": []}, "existing": null, "at": 7, "io": {"cache_entry_valid": false}}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": ["a"]}, "existing": null, "at": 10, "io": {"cache_entry_valid": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_live_result_entry", "in": {"fp": "f", "live": {"$curated": ["a"]}, "existing": null, "at": 10, "io": {"cache_entry_valid": true}}}
+{"func": "_normalized_cache_slug", "in": {"provider": "ollama"}}
+{"func": "_normalized_cache_slug", "in": {"provider": "  OLLAMA  "}}
+{"func": "_normalized_cache_slug", "in": {"provider": "openai", "io": {"normalize_provider": "openai"}}}
+{"func": "_normalized_cache_slug", "in": {"provider": null, "io": {"normalize_provider": ""}}}
+{"func": "_normalized_cache_slug", "in": {"provider": "x", "io": {"normalize_provider": ""}}}
+{"func": "_normalized_cache_slug", "in": {"provider": "auto", "io": {"normalize_provider": "auto"}}}
+{"func": "_normalized_cache_slug", "in": {"provider": "x", "io": {"normalize_provider": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "openai-codex", "model": "m", "io": {"normalize_provider": "openai-codex", "codex_model_requires_account_discovery": true}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "openai", "model": "gpt-6-astra", "io": {"normalize_provider": "openai", "is_astra_model": true}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "openai-api", "model": "gpt-5", "io": {"normalize_provider": "openai-api", "is_astra_model": false}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "anthropic", "model": "m", "io": {"normalize_provider": "anthropic"}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "ollama", "model": "m"}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "openai", "model": "m", "io": {"normalize_provider": "openai", "is_astra_model": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_model_requires_account_discovery", "in": {"provider": "openai-codex", "model": "m", "io": {"normalize_provider": "openai-codex", "codex_model_requires_account_discovery": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {"k": true}}, "io": {"get_ollama_base_url": "http://localhost:11434", "get_ollama_native_headers": {"h": 1}, "root_for_ollama_native_api": "http://localhost:11434", "ollama_probe_cache_key": "k"}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {"k": false}}, "io": {"get_ollama_base_url": "http://h", "get_ollama_native_headers": {"h": 1}, "root_for_ollama_native_api": "http://h", "ollama_probe_cache_key": "k"}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {}}, "io": {"get_ollama_base_url": "http://h", "get_ollama_native_headers": null, "root_for_ollama_native_api": "http://h", "ollama_probe_cache_key": "k"}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {"k": true}}, "io": {"get_ollama_base_url": "http://h", "get_ollama_native_headers": null, "root_for_ollama_native_api": "http://h", "ollama_probe_cache_key": "k"}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {"k": 1}}, "io": {"get_ollama_base_url": "http://h", "get_ollama_native_headers": {"h": 1}, "root_for_ollama_native_api": "http://h", "ollama_probe_cache_key": "k"}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {}}, "io": {"get_ollama_base_url": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_ollama_native_probe_reachable", "in": {"env": {"probe_reachable": {"k": true}}, "io": {"get_ollama_base_url": "http://h", "get_ollama_native_headers": {}, "root_for_ollama_native_api": "http://h", "ollama_probe_cache_key": "k"}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": [{"auth_type": "api_key", "access_token": "tok", "base_url": "https://x"}]}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": [{"auth_type": "oauth", "access_token": "t"}]}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": [{"auth_type": "api_key", "access_token": "  "}]}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": [{"auth_type": "api_key", "access_token": "tok", "inference_base_url": "https://y"}]}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": null}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": [{"auth_type": "api_key", "access_token": "tok", "base_url": "  https://z  "}]}}}
+{"func": "_resolve_anthropic_pool_catalog_credentials", "in": {"io": {"read_credential_pool": ["notdict", {"auth_type": "api_key", "access_token": "t2"}]}}}
+{"func": "_probe_neg_key", "in": {"base_url": "https://h:8080", "io": {"base_url_origin": ["https", "h", 8080]}}}
+{"func": "_probe_neg_key", "in": {"base_url": "https://h", "io": {"base_url_origin": ["https", "", 0]}}}
+{"func": "_probe_neg_key", "in": {"base_url": "https://h", "io": {"base_url_origin": ["https", "h", 443]}}}
+{"func": "_probe_neg_key", "in": {"base_url": "https://h", "io": {"base_url_origin": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_probe_neg_key", "in": {"base_url": "http://localhost:11434", "io": {"base_url_origin": ["http", "localhost", 11434]}}}
+{"func": "_probe_neg_key", "in": {"base_url": "https://h", "io": {"base_url_origin": ["h"]}}}
+{"func": "_probe_result", "in": {"models": ["a"], "probed_url": "u", "resolved_base_url": "r"}}
+{"func": "_probe_result", "in": {"models": null, "probed_url": "u", "resolved_base_url": "r", "suggested_base_url": "s", "used_fallback": true}}
+{"func": "_probe_result", "in": {"models": null, "probed_url": null, "resolved_base_url": null}}
+{"func": "_probe_result", "in": {"models": [], "probed_url": "u", "resolved_base_url": "r"}}
+{"func": "_probe_result", "in": {"models": ["a", "b"], "probed_url": null, "resolved_base_url": "r", "used_fallback": false}}
+{"func": "_probe_result", "in": {"models": null, "probed_url": "u", "resolved_base_url": "", "suggested_base_url": null}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": "  val  "}}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": null}}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": ""}}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": "val"}}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_deepinfra_env", "in": {"key": "K", "io": {"get_env_value_prefer_dotenv": "   "}}}
+{"func": "_chat_catalog_rows", "in": {"models": ["a", "b"], "io": {"without_generation_models": ["a", "b"]}}}
+{"func": "_chat_catalog_rows", "in": {"models": {"$curated": ["a"]}, "io": {"without_generation_models": {"$curated": ["a"]}}}}
+{"func": "_chat_catalog_rows", "in": {"models": null, "io": {"without_generation_models": null}}}
+{"func": "_chat_catalog_rows", "in": {"models": [], "io": {"without_generation_models": []}}}
+{"func": "_chat_catalog_rows", "in": {"models": ["a"], "io": {"without_generation_models": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_chat_catalog_rows", "in": {"models": {"$native": ["a"]}, "io": {"without_generation_models": {"$native": ["a"]}}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"api_key": "tok", "base_url": "https://x"}, "codex_access_token_is_expiring": false, "get_codex_model_ids": ["m"]}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"api_key": "tok", "base_url": "https://x"}, "codex_access_token_is_expiring": true, "get_codex_model_ids": ["m"]}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": null, "get_codex_model_ids": ["m"]}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"__raise__": "RuntimeError", "msg": "x"}, "get_codex_model_ids": ["m"]}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"api_key": "tok", "base_url": "https://x"}, "codex_access_token_is_expiring": {"__raise__": "RuntimeError", "msg": "x"}, "get_codex_model_ids": ["m"]}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"api_key": "tok"}, "get_codex_model_ids": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_codex_catalog", "in": {"normalized": "openai-codex", "force_refresh": false, "io": {"resolve_codex_runtime_credentials": {"api_key": null, "base_url": null}, "codex_access_token_is_expiring": false, "get_codex_model_ids": ["m"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"api_key": "k", "base_url": "https://x"}, "fetch_nous_models": ["m"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"api_key": "k"}, "fetch_nous_models": [], "get_curated_nous_model_ids": ["c"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": null, "get_curated_nous_model_ids": ["c"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {}, "get_curated_nous_model_ids": null}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"__raise__": "RuntimeError", "msg": "x"}, "get_curated_nous_model_ids": ["c"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"api_key": "k"}, "fetch_nous_models": {"__raise__": "RuntimeError", "msg": "x"}, "get_curated_nous_model_ids": ["c"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"api_key": "k"}, "fetch_nous_models": ["m"], "get_curated_nous_model_ids": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"background_caller": {"__raise__": "RuntimeError", "msg": "x"}, "get_curated_nous_model_ids": ["c"]}}}
+{"func": "_nous_catalog", "in": {"normalized": "nous", "force_refresh": false, "io": {"resolve_nous_runtime_credentials": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "anthropic", "base_url": "https://x", "api_key": "k"}, "normalize_provider": "anthropic", "fetch_anthropic_models": ["live"]}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "anthropic"}, "normalize_provider": "anthropic", "fetch_anthropic_models": ["live"], "merge_unique": ["c", "live"]}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "openai"}, "normalize_provider": "openai", "fetch_anthropic_models": null}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": null}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "anthropic"}, "normalize_provider": "anthropic", "fetch_anthropic_models": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "anthropic", "base_url": "  "}, "normalize_provider": "anthropic", "fetch_anthropic_models": ["live"], "merge_unique": ["c", "live"]}}}
+{"func": "_anthropic_catalog", "in": {"normalized": "anthropic", "force_refresh": false, "env": {"provider_models": {"anthropic": ["c"]}}, "io": {"get_model_config_dict": {"provider": "anthropic"}, "normalize_provider": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_static_catalog", "in": {"normalized": "anthropic", "fetcher": null, "io": {"static_catalog": ["a"], "drop_delisted_opencode_models": ["a"], "without_generation_models": ["a"]}}}
+{"func": "_static_catalog", "in": {"normalized": "anthropic", "fetcher": {"fn": 1}, "io": {"static_catalog": ["a"], "drop_delisted_opencode_models": {"$curated": ["a"]}, "without_generation_models": {"$curated": ["a"]}}}}
+{"func": "_static_catalog", "in": {"normalized": "xai", "fetcher": null, "env": {"models_dev_preferred": ["xai"]}, "io": {"static_catalog": ["a"], "merge_with_models_dev": ["a", "b"], "drop_delisted_opencode_models": ["a", "b"], "xai_finalize_catalog": ["b", "a"], "without_generation_models": ["b", "a"]}}}
+{"func": "_static_catalog", "in": {"normalized": "openai", "fetcher": {"fn": 1}, "env": {"models_dev_preferred": ["openai"]}, "io": {"static_catalog": ["a"], "merge_with_models_dev": {"$curated": ["a", "b"]}, "drop_delisted_opencode_models": {"$curated": ["a", "b"]}, "without_generation_models": {"$curated": ["a", "b"]}}}}
+{"func": "_static_catalog", "in": {"normalized": "xai-oauth", "fetcher": null, "env": {"models_dev_preferred": ["xai-oauth"]}, "io": {"static_catalog": ["a"], "merge_with_models_dev": ["a"], "drop_delisted_opencode_models": ["a"], "xai_finalize_catalog": ["a"], "without_generation_models": ["a"]}}}
+{"func": "_static_catalog", "in": {"normalized": "anthropic", "fetcher": null, "io": {"static_catalog": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "_static_catalog", "in": {"normalized": "kimi", "fetcher": null, "env": {"models_dev_preferred": ["kimi"]}, "io": {"static_catalog": ["a"], "merge_with_models_dev": ["a", "b"], "drop_delisted_opencode_models": ["a", "b"], "without_generation_models": ["a", "b"]}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "load_provider_models_cache": {"old": {"fp": "g"}}, "save_provider_models_cache": null}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "load_provider_models_cache": {}, "save_provider_models_cache": null}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "write_under_cache_lock": {"__raise__": "RuntimeError", "msg": "lock"}}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "load_provider_models_cache": {"__raise__": "OSError", "msg": "read"}}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": {"__raise__": "RuntimeError", "msg": "path"}}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "load_provider_models_cache": null}}}
+{"func": "_store_cache_entry", "in": {"cache_key": "k", "entry": {"fp": "f"}, "io": {"provider_models_cache_path": "/h/cache.json", "load_provider_models_cache": {}, "save_provider_models_cache": {"__raise__": "OSError", "msg": "write"}}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": null, "cache_only": true}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": null, "cache_only": false, "fetch_models": {"fn": 1}, "io": {"fetch_models": ["m"], "without_generation_models": ["m"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x/", "cache_only": false, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {"custom:https://x#f": {"fp": "f", "at": 100, "models": ["a"], "native_catalog": false}}, "time.time": 150, "cache_entry_valid": true, "without_generation_models": ["a"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "cache_only": true, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {}, "time.time": 150, "cache_entry_valid": false}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "force_refresh": true, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {}, "time.time": 100, "materialize_probe_api_key": "k", "fetch_api_models": ["live"], "provider_models_cache_path": "/h/c.json", "save_provider_models_cache": null, "without_generation_models": ["live"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "cache_only": false, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {"custom:https://x#f": {"fp": "f", "at": 100, "models": ["a"], "native_catalog": false}}, "time.time": 5000, "cache_entry_valid": true, "spawn_swr_refresh": null, "without_generation_models": ["a"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "cache_only": false, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {"custom:https://x#f": {"fp": "f", "at": 100, "models": [], "native_catalog": true}}, "time.time": 150, "cache_entry_valid": true, "without_generation_models": {"$native": []}}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "cache_only": false, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {"custom:https://x#f": {"fp": "f", "at": 100, "models": ["a"], "native_catalog": false}}, "time.time": 150, "cache_entry_valid": {"$seq": [false, true]}, "materialize_probe_api_key": "k", "fetch_api_models": null, "without_generation_models": ["a"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "cache_only": false, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {}, "time.time": 150, "cache_entry_valid": false, "materialize_probe_api_key": "k", "fetch_api_models": null, "without_generation_models": null}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "fetch_models": {"fn": 1}, "force_refresh": true, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {}, "time.time": 100, "fetch_models": ["m"], "provider_models_cache_path": "/h/c.json", "save_provider_models_cache": null, "without_generation_models": ["m"]}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "io": {"custom_endpoint_fingerprint": {"__raise__": "RuntimeError", "msg": "fp"}}}}
+{"func": "cached_fetch_api_models", "in": {"api_key": "k", "base_url": "https://x", "force_refresh": true, "io": {"custom_endpoint_fingerprint": "f", "load_provider_models_cache": {}, "time.time": 100, "materialize_probe_api_key": "k", "fetch_api_models": {"$native": []}, "provider_models_cache_path": "/h/c.json", "save_provider_models_cache": null, "without_generation_models": {"$native": []}}}}

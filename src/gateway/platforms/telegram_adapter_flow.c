@@ -1107,7 +1107,7 @@ static json_t *ta_compute_single_send_routing(ta_ctx_t *ctx, const json_t *args)
     json_set(ka, "chat_id", chat_id ? json_copy(chat_id) : json_null());
     json_set(ka, "thread_id", thread_id ? json_copy(thread_id) : json_null());
     json_set(ka, "metadata", metadata ? json_copy(metadata) : json_null());
-    json_set(ka, "reply_to_message_id", rtid);
+    json_set(ka, "reply_to_message_id", json_copy(rtid));
     json_set(ka, "reply_to_mode", json_copy(mode));
     json_t *kw = ta_thread_kwargs_for_send(ctx, ka);
     json_free(ka);

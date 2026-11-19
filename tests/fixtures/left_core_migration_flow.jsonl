@@ -1,0 +1,248 @@
+{"func": "_no_notice", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "_no_notice", "in": {"home": "/h/u", "process_env": true, "seams": {}}}
+{"func": "_no_notice", "in": {"home": "/a/b", "seams": {}}}
+{"func": "_no_notice", "in": {"home": "", "seams": {}}}
+{"func": "_no_notice", "in": {"seams": {}}}
+{"func": "profile_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "launch_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "profile_env_names", "in": {"home": "/h/u", "process_env": true, "seams": {}}}
+{"func": "launch_env_names", "in": {"home": "/h/u", "process_env": true, "seams": {}}}
+{"func": "profile_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "launch_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "profile_env_names", "in": {"home": "/h/u", "process_env": true, "seams": {}}}
+{"func": "launch_env_names", "in": {"home": "/h/u", "process_env": true, "seams": {}}}
+{"func": "profile_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "launch_env_names", "in": {"home": "/h/u", "process_env": false, "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "observability/langfuse", "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "platforms/yuanbao", "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "yuanbao-platform", "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "langfuse", "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "unknown", "seams": {}}}
+{"func": "legacy_plugin_alias", "in": {"name": "", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "langfuse", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "yuanbao", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "spotify", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "github-copilot", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "unknown", "seams": {}}}
+{"func": "legacy_plugin_keys", "in": {"plugin": "", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "copilot", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "GITHUB", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "  Copilot-Acp  ", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "github-models", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "nope", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": "", "seams": {}}}
+{"func": "_provider_feature", "in": {"name": null, "seams": {}}}
+{"func": "_notice_file", "in": {"home": "/h/u", "seams": {}}}
+{"func": "_notice_file", "in": {"home": "/h/u/", "seams": {}}}
+{"func": "_notice_file", "in": {"home": "h\\u", "seams": {}}}
+{"func": "_notice_file", "in": {"home": "/a/b/c", "seams": {}}}
+{"func": "_notice_file", "in": {"home": "/", "seams": {}}}
+{"func": "_install_sentence", "in": {"feature": "spotify", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install spotify"}}}
+{"func": "_install_sentence", "in": {"feature": "langfuse", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install langfuse"}}}
+{"func": "_install_sentence", "in": {"feature": "github-copilot", "seams": {"get_hermes_home": "/p/x", "install_command": "hermes -p x plugins install github-copilot"}}}
+{"func": "_install_sentence", "in": {"feature": "spotify", "seams": {"get_hermes_home": "/h/u"}}}
+{"func": "_install_sentence", "in": {"feature": "spotify", "seams": {"get_hermes_home": {"__raise__": "SystemExit", "msg": "bye"}, "install_command": "hermes plugins install spotify"}}}
+{"func": "_install_sentence", "in": {"feature": "spotify", "seams": {"get_hermes_home": "/h/u", "install_command": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_install_sentence", "in": {"feature": "zzz", "seams": {}}}
+{"func": "platform_install_hint", "in": {"platform": "homeassistant", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install homeassistant"}}}
+{"func": "platform_install_hint", "in": {"platform": "yuanbao", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install yuanbao"}}}
+{"func": "platform_install_hint", "in": {"platform": "unknown", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install unknown"}}}
+{"func": "platform_install_hint", "in": {"platform": "", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install "}}}
+{"func": "platform_install_hint", "in": {"platform": "webhook", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install webhook"}}}
+{"func": "platform_install_hint", "in": {"platform": "homeassistant", "seams": {"get_hermes_home": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "terminal_backend_install_hint", "in": {"backend": "singularity", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install singularity"}}}
+{"func": "terminal_backend_install_hint", "in": {"backend": "unknown", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install singularity"}}}
+{"func": "terminal_backend_install_hint", "in": {"backend": "", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install singularity"}}}
+{"func": "terminal_backend_install_hint", "in": {"backend": "local", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install singularity"}}}
+{"func": "terminal_backend_install_hint", "in": {"backend": "docker", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install singularity"}}}
+{"func": "moved_plugin_hint", "in": {"name": "observability/langfuse", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "moved_plugin_hint", "in": {"name": "langfuse", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "moved_plugin_hint", "in": {"name": "platforms/yuanbao", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "moved_plugin_hint", "in": {"name": "yuanbao", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "moved_plugin_hint", "in": {"name": "unknown", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "moved_plugin_hint", "in": {"name": "", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install x"}}}
+{"func": "_load_error", "in": {"feature": "github-copilot", "seams": {"plugin_load_error": "import failed"}}}
+{"func": "_load_error", "in": {"feature": "github-copilot", "seams": {"plugin_load_error": ""}}}
+{"func": "_load_error", "in": {"feature": "github-copilot", "seams": {"plugin_load_error": null}}}
+{"func": "_load_error", "in": {"feature": "github-copilot", "seams": {"plugin_load_error": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "_load_error", "in": {"feature": "github-copilot", "seams": {}}}
+{"func": "_load_error", "in": {"feature": "zzz", "seams": {}}}
+{"func": "provider_left_core", "in": {"name": "copilot", "seams": {"get_provider_profile": null}}}
+{"func": "provider_left_core", "in": {"name": "copilot", "seams": {"get_provider_profile": {"id": "copilot"}}}}
+{"func": "provider_left_core", "in": {"name": "  COPILOT ", "seams": {"get_provider_profile": null}}}
+{"func": "provider_left_core", "in": {"name": "nope", "seams": {}}}
+{"func": "provider_left_core", "in": {"name": "", "seams": {}}}
+{"func": "provider_left_core", "in": {"name": null, "seams": {}}}
+{"func": "provider_left_core", "in": {"name": "copilot", "seams": {"get_provider_profile": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "provider_install_hint", "in": {"name": "nope", "seams": {}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": false, "install_command": "hermes plugins install github-copilot"}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": true, "install_command": "hermes plugins install github-copilot", "read_yaml_layers": {"plugins": {"disabled": ["github-copilot"]}}}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": true, "install_command": "hermes plugins install github-copilot", "read_yaml_layers": {"plugins": {"enabled": ["github-copilot"]}}, "plugin_load_error": "bad import"}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": true, "install_command": "hermes plugins install github-copilot", "read_yaml_layers": {}, "plugin_load_error": ""}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "provider_install_hint", "in": {"name": "copilot", "seams": {"get_hermes_home": "/h/u", "path_is_dir": true, "install_command": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "feature_in_use", "in": {"feature": "spotify", "home": "/h/u", "seams": {"in_use": true}}}
+{"func": "feature_in_use", "in": {"feature": "spotify", "home": "/h/u", "seams": {"in_use": false}}}
+{"func": "feature_in_use", "in": {"feature": "github-copilot", "home": "/h/u", "seams": {"in_use": false, "routes_at_hosts": true}}}
+{"func": "feature_in_use", "in": {"feature": "github-copilot", "home": "/h/u", "seams": {"in_use": false, "routes_at_hosts": false}}}
+{"func": "feature_in_use", "in": {"feature": "github-copilot", "home": "/h/u", "process_env": true, "seams": {"in_use": true, "routes_at_hosts": false}}}
+{"func": "feature_in_use", "in": {"feature": "spotify", "home": "/h/u", "seams": {"in_use": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "feature_in_use", "in": {"feature": "github-copilot", "home": "/h/u", "seams": {"in_use": false, "routes_at_hosts": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "feature_in_use", "in": {"feature": "zzz", "home": "/h/u", "seams": {}}}
+{"func": "host_install_hint", "in": {"base_url": "https://api.githubcopilot.com/v1", "seams": {"at_host": false}}}
+{"func": "host_install_hint", "in": {"base_url": null, "seams": {"at_host": false}}}
+{"func": "host_install_hint", "in": {"base_url": "https://api.githubcopilot.com/v1", "seams": {"at_host": true, "get_provider_profile": null, "get_hermes_home": "/h/u", "path_is_dir": false, "install_command": "hermes plugins install github-copilot"}}}
+{"func": "host_install_hint", "in": {"base_url": "https://api.githubcopilot.com/v1", "seams": {"at_host": true, "get_provider_profile": [null, {"id": "x"}]}}}
+{"func": "host_install_hint", "in": {"base_url": "https://api.githubcopilot.com/v1", "seams": {"at_host": {"__raise__": "ValueError", "msg": "bad url"}}}}
+{"func": "host_install_hint", "in": {"base_url": "https://models.github.ai/x", "seams": {"at_host": [false, true], "get_provider_profile": null, "get_hermes_home": "/h/u", "path_is_dir": false, "install_command": "hermes plugins install github-copilot"}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "mcp-serve", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install mcp-serve", "path_is_dir": false}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "mcp-serve", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install mcp-serve", "path_is_dir": true}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes auth", "value": "spotify", "action": "login", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install spotify", "path_is_dir": false}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes auth", "value": "spotify", "action": "", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install spotify", "path_is_dir": true}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes auth", "value": "spotify", "action": "status", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install spotify", "path_is_dir": false}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "spotify", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install spotify", "path_is_dir": true}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "claw", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install agent-importers", "path_is_dir": false}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "import-agent", "seams": {"get_hermes_home": "/h/u", "install_command": "hermes plugins install agent-importers", "path_is_dir": false}}}
+{"func": "moved_command_hint", "in": {"prog": "other", "value": "spotify", "seams": {"get_hermes_home": "/h/u"}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "unknown", "seams": {"get_hermes_home": "/h/u"}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "", "seams": {"get_hermes_home": "/h/u"}}}
+{"func": "moved_command_hint", "in": {"prog": "hermes", "value": "spotify", "seams": {"get_hermes_home": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_noticed", "in": {"message": "msg", "home": "/h/u", "feature": "spotify", "seams": {"notice": ""}}}
+{"func": "_noticed", "in": {"message": "msg", "home": "/h/u", "feature": "spotify", "seams": {"notice": "extra"}}}
+{"func": "_noticed", "in": {"message": "msg", "home": "/h/u", "feature": "spotify", "seams": {"notice": null}}}
+{"func": "_noticed", "in": {"message": "", "home": "/h/u", "feature": "yuanbao", "seams": {"notice": "n"}}}
+{"func": "_noticed", "in": {"message": "msg", "home": "/h/u", "feature": "spotify", "seams": {"notice": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_noticed", "in": {"message": "msg", "home": "/h/u", "feature": "zzz", "seams": {}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {"read_config_doc": {"model": "x"}}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {"read_config_doc": {"__raise__": "ValueError", "msg": "bad yaml"}}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {"read_config_doc": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {"read_config_doc": null}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {"read_config_doc": [1, 2]}}}
+{"func": "_read_config", "in": {"home": "/h/u", "seams": {}}}
+{"func": "_auth_store", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": {}}}}}
+{"func": "_auth_store", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {}}}}
+{"func": "_auth_store", "in": {"home": "/h/u", "seams": {"read_json_or_empty": null}}}
+{"func": "_auth_store", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "_auth_store", "in": {"home": "/h/u", "seams": {}}}
+{"func": "plugin_present", "in": {"plugin": "spotify", "home": "/h/u", "seams": {"path_is_dir": true}}}
+{"func": "plugin_present", "in": {"plugin": "spotify", "home": "/h/u", "seams": {"path_is_dir": false}}}
+{"func": "plugin_present", "in": {"plugin": "spotify", "home": "/h/u", "seams": {"path_is_dir": null}}}
+{"func": "plugin_present", "in": {"plugin": "spotify", "home": "/h/u", "seams": {"path_is_dir": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "plugin_present", "in": {"plugin": "spotify", "home": "/h/u", "seams": {}}}
+{"func": "agent_imports_in_use", "in": {"home": "/h/u", "seams": {"path_is_file": true}}}
+{"func": "agent_imports_in_use", "in": {"home": "/h/u", "seams": {"path_is_file": false}}}
+{"func": "agent_imports_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"path_is_file": true}}}
+{"func": "agent_imports_in_use", "in": {"home": "/h/u", "seams": {"path_is_file": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "agent_imports_in_use", "in": {"home": "/h/u", "seams": {}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["langfuse"], "seams": {"read_yaml_layers": {"plugins": {"enabled": ["langfuse"], "disabled": []}}}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["langfuse"], "seams": {"read_yaml_layers": {"plugins": {"enabled": [], "disabled": ["langfuse"]}}}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {"read_yaml_layers": {"plugins": {"enabled": [1, "x"], "disabled": [null]}}}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {"read_yaml_layers": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {"read_yaml_layers": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {"read_yaml_layers": null}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {"read_yaml_layers": [1]}}}
+{"func": "_plugins_listed", "in": {"home": "/h/u", "names": ["x"], "seams": {}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["observability/langfuse"]}}}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "yuanbao", "seams": {"read_yaml_layers": {"plugins": {"disabled": ["yuanbao-platform"]}}}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "spotify", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["spotify"]}}}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "langfuse", "also": ["extra"], "seams": {"read_yaml_layers": {"plugins": {"enabled": ["extra"]}}}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "zzz", "seams": {}}}
+{"func": "_plugin_lists", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "_bundled_plugin_selected", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["langfuse"], "disabled": []}}}}}
+{"func": "_bundled_plugin_selected", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["langfuse"], "disabled": ["langfuse"]}}}}}
+{"func": "_bundled_plugin_selected", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"plugins": {"enabled": []}}}}}
+{"func": "_bundled_plugin_selected", "in": {"home": "/h/u", "plugin": "langfuse", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["observability/langfuse"]}}}}}
+{"func": "_bundled_plugin_selected", "in": {"home": "/h/u", "plugin": "zzz", "seams": {}}}
+{"func": "langfuse_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["langfuse"]}}}}}
+{"func": "langfuse_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"plugins": {"enabled": ["langfuse"], "disabled": ["langfuse"]}}}}}
+{"func": "langfuse_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"plugins": {}}}}}
+{"func": "langfuse_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"read_yaml_layers": {"plugins": {"enabled": ["observability/langfuse"]}}}}}
+{"func": "langfuse_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": {"spotify": {"access_token": "t"}}}}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": {"spotify": {"refresh_token": "r"}}}}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": {"spotify": {}}}, "read_config_doc": {"toolsets": ["spotify"]}, "toolset_listed": true}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {}, "read_config_doc": {}, "toolset_listed": false}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": null}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": [1]}, "read_config_doc": {}, "toolset_listed": false}}}
+{"func": "spotify_in_use", "in": {"home": "/h/u", "seams": {"read_json_or_empty": {"providers": {"spotify": {"access_token": null, "refresh_token": "r"}}}}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {"X": "  v  "}, "current_secret_scope_home": null}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {}, "current_secret_scope_home": "/h/u", "hermes_home_key": "k", "current_secret_scope": {"X": "s"}}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "process_env": true, "seams": {"resolve_home_dotenv": {}, "current_secret_scope_home": null, "hermes_home_key": "k", "get_routing_process_hermes_home": "/h/u", "os_environ_get": "e"}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {}, "current_secret_scope_home": "/other", "hermes_home_key": ["a", "b"]}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": null}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {"X": null}, "current_secret_scope_home": null}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "process_env": true, "seams": {"resolve_home_dotenv": {}, "current_secret_scope_home": null, "hermes_home_key": "k", "get_routing_process_hermes_home": "/h/u", "os_environ_get": null}}}
+{"func": "_home_env", "in": {"home": "/h/u", "name": "X", "seams": {"resolve_home_dotenv": {}, "current_secret_scope_home": "/h/u", "hermes_home_key": "k", "current_secret_scope": null}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {"browser": {"cdp_url": "http://x"}}}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {}, "resolve_home_dotenv": {"BROWSER_CDP_URL": "http://y"}, "current_secret_scope_home": null}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {"browser": {"use_gateway": true}}, "resolve_home_dotenv": {}, "current_secret_scope_home": null, "is_truthy_value": true}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {"browser": {"cloud_provider": "Camofox"}}, "resolve_home_dotenv": {}, "current_secret_scope_home": null, "is_truthy_value": false}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {"browser": {"cloud_provider": "other"}}, "resolve_home_dotenv": {}, "current_secret_scope_home": null, "is_truthy_value": false}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {}, "resolve_home_dotenv": {"CAMOFOX_URL": "http://z"}, "current_secret_scope_home": null, "is_truthy_value": false}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {}, "resolve_home_dotenv": {}, "current_secret_scope_home": null, "is_truthy_value": false}}}
+{"func": "camofox_in_use", "in": {"home": "/h/u", "seams": {"read_config_doc": {"browser": {"use_gateway": 1}}, "resolve_home_dotenv": {}, "current_secret_scope_home": null, "is_truthy_value": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"terminal": {"backend": "Singularity"}}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"terminal": {"env_type": "singularity"}}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {}, "resolve_home_dotenv": {"TERMINAL_ENV": "singularity"}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"read_yaml_layers": {}, "resolve_home_dotenv": {}, "hermes_home_key": "k", "get_routing_process_hermes_home": "/h/u", "os_environ_get": "Singularity"}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"terminal": {"backend": "local"}}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": null, "resolve_home_dotenv": {}}}}
+{"func": "singularity_in_use", "in": {"home": "/h/u", "seams": {"read_yaml_layers": {}, "resolve_home_dotenv": {"TERMINAL_ENV": null}}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "seams": {"load_env_file": {"HASS_TOKEN": "t"}}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"load_env_file": {}, "get_secret": "secret"}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "seams": {"load_env_file": {}, "merged_platform_block": {"enabled": true}, "platform_config_from_dict": {"enabled": true, "token": null, "extra": {}}}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "seams": {"load_env_file": {}, "merged_platform_block": null, "read_config_doc": {"toolsets": ["homeassistant"]}, "toolset_listed": true}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "seams": {"load_env_file": {}, "merged_platform_block": null, "read_config_doc": {}, "toolset_listed": false}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "seams": {"load_env_file": null}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"load_env_file": {}, "get_secret": {"__raise__": "ValueError", "msg": "bad"}, "merged_platform_block": null, "read_config_doc": {}, "toolset_listed": false}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"load_env_file": {}, "get_secret": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "homeassistant_in_use", "in": {"home": "/h/u", "process_env": true, "seams": {"load_env_file": {}, "get_secret": null, "merged_platform_block": null, "read_config_doc": {}, "toolset_listed": false}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": null}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {"enabled": true}, "platform_config_from_dict": {"enabled": true, "token": null, "extra": {}}}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {"enabled": false}, "platform_config_from_dict": {"enabled": false, "token": "t", "extra": {}}}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {"token": "t"}, "platform_config_from_dict": {"enabled": false, "token": "t", "extra": {}}}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {}, "platform_config_from_dict": {"enabled": false, "token": null, "extra": {}}}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "platform_configured_on", "in": {"home": "/h/u", "name": "homeassistant", "seams": {"merged_platform_block": {"token": "t"}, "platform_config_from_dict": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_platform_config", "in": {"block": {"enabled": true, "token": "t"}, "seams": {"platform_config_from_dict": {"enabled": true, "token": "t", "extra": {"a": 1}}}}}
+{"func": "_platform_config", "in": {"block": {}, "seams": {"platform_config_from_dict": {"enabled": false, "token": null, "extra": {}}}}}
+{"func": "_platform_config", "in": {"block": {"home_channel": "x"}, "seams": {"platform_config_from_dict": {"enabled": false, "token": null, "extra": {}}}}}
+{"func": "_platform_config", "in": {"block": {}, "seams": {"platform_config_from_dict": null}}}
+{"func": "_platform_config", "in": {"block": {}, "seams": {"platform_config_from_dict": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_platform_config", "in": {"block": {"enabled": true}, "seams": {"platform_config_from_dict": {"enabled": true}}}}
+{"func": "_yuanbao_notice", "in": {"home": "/h/u", "seams": {"path_is_dir": true, "read_yaml_layers": {"plugins": {"disabled": ["yuanbao"]}}}}}
+{"func": "_yuanbao_notice", "in": {"home": "/h/u", "seams": {"path_is_dir": true, "read_yaml_layers": {"plugins": {"enabled": ["yuanbao"]}}}}}
+{"func": "_yuanbao_notice", "in": {"home": "/h/u", "seams": {"path_is_dir": false}}}
+{"func": "_yuanbao_notice", "in": {"home": "/h/u", "seams": {"path_is_dir": true, "read_yaml_layers": {}}}}
+{"func": "_yuanbao_notice", "in": {"home": "/h/u", "seams": {"path_is_dir": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "spotify", "seams": {}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "camofox", "seams": {"marked": true}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "camofox", "seams": {"marked": false}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "homeassistant", "seams": {"marked": false}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "zzz", "seams": {}}}
+{"func": "_scope_kept", "in": {"config": {}, "feature": "camofox", "seams": {"marked": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_mark", "in": {"config": {}, "key": "_left_core_installed", "feature": "spotify", "seams": {}}}
+{"func": "_mark", "in": {"config": {"_left_core_installed": ["camofox", "spotify"]}, "key": "_left_core_installed", "feature": "langfuse", "seams": {}}}
+{"func": "_mark", "in": {"config": {"_left_core_installed": ["spotify", "spotify"]}, "key": "_left_core_installed", "feature": "spotify", "seams": {}}}
+{"func": "_mark", "in": {"config": {"_left_core_installed": "notalist"}, "key": "_left_core_installed", "feature": "camofox", "seams": {}}}
+{"func": "_mark", "in": {"config": {"_left_core_installed": [1, "camofox"]}, "key": "_left_core_installed", "feature": "spotify", "seams": {}}}
+{"func": "_mark", "in": {"config": {}, "key": "_left_core_installed", "feature": "zzz", "seams": {}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "seams": {"logger_warning": null, "get_hermes_home": "/h/u", "queue_notice": null}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "log": false, "seams": {"get_hermes_home": "/h/u", "queue_notice": null}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "seams": {"logger_warning": {"__raise__": "SystemExit", "msg": "bye"}, "get_hermes_home": "/h/u", "queue_notice": null}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "seams": {"logger_warning": null, "get_hermes_home": {"__raise__": "ValueError", "msg": "bad"}, "queue_notice": null}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "seams": {"logger_warning": null, "get_hermes_home": "/h/u", "queue_notice": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "defer_startup_notice", "in": {"message": "hi", "seams": {"logger_warning": null}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "seams": {"path_is_dir": true}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "backoff": true, "seams": {"path_is_dir": false, "failed_recently": true}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "seams": {"path_is_dir": false, "note_failure": null, "install_command": "hermes plugins install spotify", "notice": "", "say": null}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "process_env": true, "seams": {"path_is_dir": false, "note_failure": null, "install_command": "hermes plugins install spotify", "notice": "extra", "say": null}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "backoff": true, "seams": {"path_is_dir": false, "failed_recently": false, "note_failure": null, "install_command": "hermes plugins install spotify", "notice": "", "say": null}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "seams": {"path_is_dir": false, "note_failure": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "seams": {"path_is_dir": false, "note_failure": null, "install_command": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "spotify", "seams": {"path_is_dir": false, "note_failure": null, "install_command": "hermes plugins install spotify", "notice": "", "say": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "_say_post_split", "in": {"home": "/h/u", "feature": "zzz", "seams": {}}}

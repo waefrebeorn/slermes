@@ -1,0 +1,135 @@
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": "result", "_db_persisted": true}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": "MARK already", "_db_persisted": true}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": null, "_db_persisted": true}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": ""}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": {"a": 1, "b": [2, "x"]}}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": [1, "x", true, null]}, "marker": "MARK"}}
+{"func": "_prepend_corruption_marker", "in": {"tool_msg": {"role": "tool", "content": "tail"}, "marker": "MARK", "env": {"db_persisted_marker": "_custom_mark"}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": ["c1"], "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": ["c1"], "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "tool", "tool_call_id": "x", "content": "ok"}], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": ["x"], "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "tool", "tool_call_id": "c0", "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "start": 1, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": ["c1"], "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": ["not-a-dict"], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": ["c1"], "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "tool", "tool_call_id": "x", "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": {"$seq": [["x"], ["c1"]]}, "tool_call_id_variants": ["c1"]}}}
+{"func": "_find_tool_result", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}], "start": 0, "tool_call": {"id": "c1"}, "io": {"tool_result_id_variants": {"__raise__": "ValueError", "msg": "bad variant"}}}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "tool_calls": []}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}]}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "bogus", "content": "x"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": null}, {"role": "user"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": 5}, {"role": "tool", "tool_call_id": "c1"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": "assistant", "tool_calls": []}, {"role": "user", "content": "hi"}], "env": {"valid_api_roles": ["user"]}, "io": {"ra.logger.debug": null}}}
+{"func": "_drop_invalid_roles", "in": {"messages": [{"role": "bogus"}, {"role": "also_bad"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "assistant", "tool_calls": [], "content": "hi"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}]}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "assistant", "tool_calls": "x"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "assistant", "tool_calls": null}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}]}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "tool", "tool_calls": []}]}}
+{"func": "_drop_empty_tool_calls_arrays", "in": {"messages": [{"role": "assistant", "tool_calls": [], "content": "a"}, {"role": "assistant", "tool_calls": [], "content": "b"}], "io": {"ra.logger.debug": null}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "read_file", "arguments": "{}"}, "id": "c1"}]}], "io": {"coerce_tool_name": "read_file"}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "multi_tool_use.parallel", "arguments": "{}"}, "id": "c1"}]}], "io": {"coerce_tool_name": "invalid_tool_call", "ra._get_tool_call_id_static": "c1", "ra.logger.warning": null}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"id": "c1", "function": null}]}], "io": {"coerce_tool_name": "invalid_tool_call", "ra._get_tool_call_id_static": "c1", "ra.logger.warning": null}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"id": "c1", "function": {"name": null}}]}], "io": {"coerce_tool_name": "invalid_tool_call", "ra._get_tool_call_id_static": "c1", "ra.logger.warning": null}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "read_file", "arguments": "{}"}, "id": "c1"}, {"type": "function", "function": {"name": "bad name", "arguments": "{}"}, "id": "c2"}]}], "io": {"coerce_tool_name": {"$seq": ["read_file", "invalid_tool_call"]}, "ra._get_tool_call_id_static": "c2", "ra.logger.warning": null}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "x", "arguments": "{}"}, "id": "c1"}]}], "io": {"coerce_tool_name": {"__raise__": "ValueError", "msg": "coerce fail"}}}}
+{"func": "_repair_invalid_tool_call_names", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"coerce_tool_name": "x"}}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "", "content": "ok"}, {"role": "tool", "tool_call_id": null, "content": "ok"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "c2", "content": "ok"}]}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "tool", "tool_call_id": "   ", "content": "ok"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "tool_calls": []}]}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "tool", "tool_call_id": "", "content": "ok"}, {"role": "tool", "tool_call_id": null, "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"ra.logger.debug": null}}}
+{"func": "_drop_results_without_ids", "in": {"messages": [{"role": "tool"}], "io": {"ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"]}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}], "io": {"tool_call_id_variants": ["c1"], "ra._get_tool_call_name_static": "read_file", "coalesce_tool_call_id": "c1", "ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}], "io": {"tool_result_id_variants": ["c1"], "tool_call_id_variants": ["c1"], "ra._get_tool_call_name_static": "read_file", "coalesce_tool_call_id": "c1", "ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f1", "arguments": "{}"}, "id": "c1"}, {"type": "function", "function": {"name": "f2", "arguments": "{}"}, "id": "c2"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": {"$seq": [["c1"], ["c2"]]}, "tool_result_id_variants": ["c1"], "ra._get_tool_call_name_static": "f2", "coalesce_tool_call_id": "c2", "ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"], "ra._get_tool_call_name_static": "f", "coalesce_tool_call_id": "c1", "ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"], "ra.logger.debug": null}}}
+{"func": "_pair_tool_calls_positionally", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_result_id_variants": ["c1"], "ra.logger.debug": null}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}, {"type": "function", "function": {"name": "g", "arguments": "{}"}, "id": "c1"}]}], "io": {"tool_call_id_variants": ["c1"], "ra.logger.debug": null}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"], "ra.logger.debug": null}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "g", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"]}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_result_id_variants": ["c1"], "ra.logger.debug": null}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": ["c1"], "tool_result_id_variants": ["c1"]}}}
+{"func": "_dedupe_tool_call_ids", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "f", "arguments": "{}"}, "id": "c1"}, {"type": "function", "function": {"name": "g", "arguments": "{}"}, "id": "c2"}]}, {"role": "tool", "tool_call_id": "c2", "content": "ok"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"tool_call_id_variants": {"$seq": [["c1"], ["c2"]]}, "tool_result_id_variants": {"$seq": [["c2"], ["c1"]]}}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok", "name": "mcp__x"}], "io": {"ra._get_tool_call_id_static": "c1", "ra._get_tool_call_name_static": "tool_call", "ra.logger.debug": null}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok", "name": "tool_call"}], "io": {"ra._get_tool_call_id_static": "c1", "ra._get_tool_call_name_static": "tool_call"}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}], "io": {"ra._get_tool_call_id_static": "c1", "ra._get_tool_call_name_static": "tool_call"}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c1"}]}, {"role": "tool", "tool_call_id": " c1 ", "content": "ok", "name": "mcp__x"}], "io": {"ra._get_tool_call_id_static": " c1 ", "ra._get_tool_call_name_static": "tool_call", "ra.logger.debug": null}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "assistant", "tool_calls": [{"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c1"}, {"type": "function", "function": {"name": "tool_call", "arguments": "{}"}, "id": "c2"}]}, {"role": "tool", "tool_call_id": "c1", "content": "ok", "name": "a"}, {"role": "tool", "tool_call_id": "c2", "content": "ok", "name": "b"}], "io": {"ra._get_tool_call_id_static": {"$seq": ["c1", "c2"]}, "ra._get_tool_call_name_static": "tool_call", "ra.logger.debug": null}}}
+{"func": "_realign_tool_result_names", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok", "name": "x"}], "io": {"ra._get_tool_call_id_static": "c1", "ra._get_tool_call_name_static": "f"}}}
+{"func": "tool_results_this_turn", "in": {"messages": [{"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "c2", "content": "ok"}]}}
+{"func": "tool_results_this_turn", "in": {"messages": [{"role": "tool", "tool_call_id": "c0", "content": "ok"}, {"role": "user", "content": "hi"}, {"role": "tool", "tool_call_id": "c1", "content": "ok"}]}}
+{"func": "tool_results_this_turn", "in": {"messages": [{"role": "tool", "tool_call_id": "c1", "content": "ok"}, {"role": "tool", "tool_call_id": "c2", "content": "ok"}]}}
+{"func": "tool_results_this_turn", "in": {"messages": []}}
+{"func": "tool_results_this_turn", "in": {"messages": [{"role": "user", "content": "hi"}]}}
+{"func": "tool_results_this_turn", "in": {"messages": [{"role": "user", "content": "hi"}, "skip", {"role": "tool", "tool_call_id": "c1", "content": "ok"}]}}
+{"func": "tool_results_this_turn", "in": {"messages": null}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "ValueError", "msg": "bad", "attrs": {"status_code": 400, "request_id": "r1"}}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "APIError", "msg": "e", "attrs": {"type": "err_type", "code": "c"}}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "HTTPError", "msg": "e", "attrs": {}, "response": {"status_code": 500, "text": "body"}}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "HTTPError", "msg": "e", "attrs": {}, "response": {"status_code": 500}}, "io": {"ra.logger.debug": null}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "ValueError", "msg": "e", "attrs": {"status_code": null, "param": "p"}}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "ValueError", "msg": "e", "attrs": {}, "response": null}}}
+{"func": "_api_error_debug_info", "in": {"error": {"cls": "Err", "msg": "e", "attrs": {"body": {"k": 1}, "request_id": "r"}}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"_credential_pool": {}, "api_key": "k"}, "io": {"pool.entry_id_for_api_key": "e1"}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"_credential_pool": null, "api_key": "k"}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"api_key": "k"}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"_credential_pool": {}, "api_key": "k"}, "io": {"pool.entry_id_for_api_key": {"__raise__": "ValueError", "msg": "refresh fail"}}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"_credential_pool": {}, "api_key": "k"}, "io": {"pool.entry_id_for_api_key": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "sync_credential_pool_entry_id", "in": {"agent": {"_credential_pool": {}}, "io": {"pool.entry_id_for_api_key": "e2"}}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": "k", "_credential_pool_entry_id": "e1"}, "pool": {}}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": null, "_credential_pool_entry_id": null}, "pool": {}, "io": {"pool.current": {"runtime_api_key": "k2", "id": "e2"}}}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": null, "_credential_pool_entry_id": "e1"}, "pool": {}, "io": {"pool.current": {"runtime_api_key": "k2"}}}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": null}, "pool": {}, "io": {"pool.current": null}}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": null}, "pool": null}}
+{"func": "_failed_credential_identity", "in": {"agent": {"api_key": "k", "_credential_pool_entry_id": 5}, "pool": {}}}
+{"func": "_failed_credential_identity", "in": {"agent": {}, "pool": {}, "io": {"pool.current": {"id": "e3"}}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {}, "rt": {"runtime_capabilities": {"a": 1}}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {}, "rt": {"capabilities": {"b": 2}}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {}, "rt": {"runtime_capabilities": null}, "io": {"logger.warning": null}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {}, "rt": {"runtime_capabilities": "x"}, "io": {"logger.warning": null}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {}, "rt": {}}}
+{"func": "_restore_runtime_capabilities", "in": {"agent": {"runtime_capabilities": {"old": 1}}, "rt": {"runtime_capabilities": {}, "capabilities": {"z": 9}}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}}, "io": {"is_actual_route": false}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}}, "io": {"is_actual_route": true}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"provider": "p"}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}, "requested_provider": "rp"}, "io": {"is_actual_route": false}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {"_transport_cache": {"x": 1}}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}}, "io": {"is_actual_route": false}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}, "request_overrides": null, "reasoning_echo_flag": true}, "io": {"is_actual_route": false}}}
+{"func": "_apply_primary_runtime_fields", "in": {"agent": {}, "rt": {"model": "m", "provider": "openai", "base_url": "https://x", "api_key": "k", "api_mode": "chat_completions", "client_kwargs": {"timeout": 30}}, "io": {"is_actual_route": {"__raise__": "OSError", "msg": "net"}}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": null}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": null}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "_credential_pool_entry_id": "e1"}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "model": "m", "_swap_credential": {}}, "io": {"pool.reclaim": {"id": "e1", "label": "L"}, "agent._swap_credential": null, "logger.info": null}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "model": "m", "_swap_credential": {}}, "io": {"pool.reclaim": null}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "model": "m", "_swap_credential": {}}, "io": {"pool.reclaim": {"__raise__": "ValueError", "msg": "reclaim fail"}, "logger.warning": null}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "model": "m", "_swap_credential": {}}, "io": {"pool.reclaim": {"id": "e1", "label": "L"}, "agent._swap_credential": false}}}
+{"func": "_revert_credential_rotation", "in": {"agent": {"_credential_pool_revert_id": "e1", "_credential_pool": {}, "model": "m"}, "io": {"pool.reclaim": {"id": "e1", "label": "L"}}}}
+{"func": "_requeue_pending_steer", "in": {"agent": {"session_id": "s"}, "steer_text": "do x", "io": {"requeue_drained_steer": null}}}
+{"func": "_requeue_pending_steer", "in": {"agent": {}, "steer_text": "", "io": {"requeue_drained_steer": null}}}
+{"func": "_requeue_pending_steer", "in": {"agent": {}, "steer_text": "t", "io": {"requeue_drained_steer": {"__raise__": "ValueError", "msg": "no"}}}}
+{"func": "_requeue_pending_steer", "in": {"agent": {"a": 1}, "steer_text": "hello", "io": {"requeue_drained_steer": null}}}
+{"func": "_requeue_pending_steer", "in": {"agent": {}, "steer_text": "multi word steer", "io": {"requeue_drained_steer": null}}}
+{"func": "_pre_tool_block_message", "in": {"agent": {"session_id": "s"}, "function_name": "f", "function_args": {"x": 1}, "effective_task_id": "t", "tool_call_id": "c", "middleware_trace": [], "io": {"_dispatch_pre_tool_call_hooks": ["block msg", {"x": 2}]}}}
+{"func": "_pre_tool_block_message", "in": {"agent": {}, "function_name": "f", "function_args": {"x": 1}, "effective_task_id": null, "tool_call_id": null, "middleware_trace": [], "io": {"_dispatch_pre_tool_call_hooks": [null, null]}}}
+{"func": "_pre_tool_block_message", "in": {"agent": {}, "function_name": "f", "function_args": {"x": 1}, "effective_task_id": "t", "tool_call_id": "c", "middleware_trace": null}}
+{"func": "_pre_tool_block_message", "in": {"agent": {}, "function_name": "f", "function_args": {"x": 1}, "effective_task_id": "t", "tool_call_id": "c", "middleware_trace": [], "io": {"_dispatch_pre_tool_call_hooks": {"__raise__": "ValueError", "msg": "hook fail"}}}}
+{"func": "_pre_tool_block_message", "in": {"agent": {}, "function_name": "f", "function_args": {"x": 1}, "effective_task_id": "t", "tool_call_id": "c", "middleware_trace": [], "io": {"_dispatch_pre_tool_call_hooks": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_pre_tool_block_message", "in": {"agent": {"session_id": "s", "_current_turn_id": "tu", "_current_api_request_id": "ar"}, "function_name": "f", "function_args": {}, "effective_task_id": "t", "tool_call_id": "c", "middleware_trace": [{"m": 1}], "io": {"_dispatch_pre_tool_call_hooks": [null, {"y": 9}]}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {"model": "m", "api_key": "k"}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {"_client_kwargs": {"a": 1}}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {"_client_kwargs": null}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {"model": "m", "provider": "p", "base_url": "u", "_reasoning_echo_flag": true}}}
+{"func": "_snapshot_switch_state", "in": {"agent": {"client": null, "_anthropic_client": {"c": 1}}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {}, "snapshot": {"model": "m", "provider": {"__missing__": true}}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {}, "snapshot": {}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {}, "snapshot": {"api_key": null}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {"model": "old"}, "snapshot": {"model": "new", "api_mode": "chat_completions"}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {}, "snapshot": {"model": "m", "base_url": "u", "_client_kwargs": {"a": 1}}}}
+{"func": "_restore_switch_snapshot", "in": {"agent": {"provider": "p"}, "snapshot": {"provider": {"__missing__": true}, "model": "m"}}}
+{"func": "_recover_auth_failure", "in": {"agent": {"a": 1}, "pool": {"p": 1}, "kwargs": {"status_code": 401}, "io": {"recover_auth_failure": {"ok": true}}}}
+{"func": "_recover_auth_failure", "in": {"agent": {}, "pool": {}, "kwargs": {}, "io": {"recover_auth_failure": null}}}
+{"func": "_recover_auth_failure", "in": {"agent": null, "pool": null, "kwargs": {"x": 1}, "io": {"recover_auth_failure": "r"}}}
+{"func": "_recover_auth_failure", "in": {"agent": {}, "pool": {}, "kwargs": {}, "io": {"recover_auth_failure": {"__raise__": "ValueError", "msg": "auth"}}}}
+{"func": "_recover_auth_failure", "in": {"agent": {"id": "a"}, "pool": {"id": "p"}, "kwargs": {"force": true, "n": 2}, "io": {"recover_auth_failure": [true, false]}}}

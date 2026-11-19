@@ -1216,8 +1216,10 @@ static json_t *cm_conversation_message_as_openai_message(cm_ctx_t *ctx, const js
                     if (cm_is_raise(iv)) { json_free(ids); json_free(wire); wire = iv; break; }
                     json_append(ids, iv);
                 }
+                /* ids is already freed on the raise branch above; only the
+                 * success path adopts it (freeing it again here is a
+                 * double-free -> STATUS_HEAP_CORRUPTION). */
                 if (!cm_is_raise(wire)) { json_free(wire); wire = ids; }
-                else json_free(ids);
             }
         } else wire = cm_proj(value);
         if (cm_is_raise(wire)) { json_free(out); return wire; }
@@ -1341,8 +1343,10 @@ static json_t *cm_conversation_message_from_openai_message(cm_ctx_t *ctx, const 
                         if (cm_is_raise(iv)) { json_free(ids); json_free(conv); conv = iv; break; }
                         json_append(ids, iv);
                     }
+                    /* ids is already freed on the raise branch above; only
+                     * the success path adopts it (a second free here is a
+                     * double-free -> STATUS_HEAP_CORRUPTION). */
                     if (!cm_is_raise(conv)) { json_free(conv); conv = ids; }
-                    else json_free(ids);
                 }
             } else conv = cm_proj(value);
             if (cm_is_raise(conv)) { json_free(rec); return conv; }

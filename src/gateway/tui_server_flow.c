@@ -947,7 +947,7 @@ static json_t *ts_clarify_block(ts_env *e, const json_t *in) {
     json_set(a, "method", json_string("clarify"));
     json_set(a, "sid", json_string(sid));
     json_set(a, "params", params);
-    json_set(a, "timeout", tmo);   /* adopts */
+    json_set(a, "timeout", tmo ? tmo : json_null());   /* adopts; None is still a kwarg */
     json_set(a, "qids", qids);
     json_t *result = ts_call(e, "send", a);
     if (ts_is_raise(result)) return ts_prop(e, result);

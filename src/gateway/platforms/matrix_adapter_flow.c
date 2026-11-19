@@ -338,10 +338,11 @@ static bool ma_parse_float_str(const char *s, double *out) {
         if (!isdigit((unsigned char)*p)) return false;
         while (isdigit((unsigned char)*p)) p++;
     }
+    const char *num_end = p; /* span ends BEFORE the trailing-ws skip below */
     while (*p && ma_is_ascii_ws((unsigned char)*p)) p++;
     if (*p != '\0') return false;
-    /* shape validated; strtod on the cleaned span (sign included) */
-    size_t n = (size_t)(p - start);
+    /* shape validated; strtod on the cleaned span (sign included, no ws) */
+    size_t n = (size_t)(num_end - start);
     char *clean = malloc(n + 1);
     if (!clean) return false;
     memcpy(clean, start, n);

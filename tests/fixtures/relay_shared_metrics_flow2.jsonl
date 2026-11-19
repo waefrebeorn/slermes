@@ -1,0 +1,170 @@
+{"func": "_text", "in": {"event": {"k": "hello"}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": ""}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": null}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": 0}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": 5}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": false}, "key": "k"}}
+{"func": "_text", "in": {"event": {"k": "x"}, "key": "missing"}}
+{"func": "_text", "in": {"event": {"k": 7.5}, "key": "k"}}
+{"func": "_elapsed_ms", "in": {"started_ns": 1000000, "io": {"monotonic_ns": 5000000}}}
+{"func": "_elapsed_ms", "in": {"started_ns": 5000000, "io": {"monotonic_ns": 1000000}}}
+{"func": "_elapsed_ms", "in": {"started_ns": 0, "io": {"monotonic_ns": 0}}}
+{"func": "_elapsed_ms", "in": {"started_ns": 1500000, "io": {"monotonic_ns": 1000000}}}
+{"func": "_elapsed_ms", "in": {"started_ns": 0, "io": {"monotonic_ns": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_elapsed_ms", "in": {"started_ns": 0, "io": {}}}
+{"func": "_scope_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task": {"handle": "TH"}}}
+{"func": "_scope_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task": null}}
+{"func": "_scope_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task": {"handle": null}}}
+{"func": "_scope_handle", "in": {"session": {"session_id": "s", "relay_session": {"handle": null}}, "task": null}}
+{"func": "_scope_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task": {"handle": {"h": 1}}}}
+{"func": "_sole", "in": {"items": [{"ref": "A", "v": 1}]}}
+{"func": "_sole", "in": {"items": [{"ref": "A", "v": 1}, {"ref": "A", "v": 2}]}}
+{"func": "_sole", "in": {"items": [{"ref": "A"}, {"ref": "B"}]}}
+{"func": "_sole", "in": {"items": []}}
+{"func": "_sole", "in": {"items": [{"ref": "A"}, {"ref": "A"}, {"ref": "B"}]}}
+{"func": "_sole", "in": {"items": [{"ref": "Z", "v": 9}]}}
+{"func": "_forget", "in": {"key": "s1", "owner": {"ref": "S1"}, "state": {"index": {"s1": {"ref": "S1"}}}}}
+{"func": "_forget", "in": {"key": "s1", "owner": {"ref": "S1"}, "state": {"index": {"s1": {"ref": "OTHER"}}}}}
+{"func": "_forget", "in": {"key": "s1", "owner": {"ref": "S1"}, "state": {"index": {}}}}
+{"func": "_forget", "in": {"key": "s1", "owner": {"ref": "S1"}, "state": {"index": {"s1": {"ref": "S1"}, "s2": {"ref": "S2"}}}}}
+{"func": "_forget", "in": {"key": "missing", "owner": {"ref": "S1"}, "state": {"index": {"s1": {"ref": "S1"}}}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": null}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": {"lease": {"session_id": "s1"}, "task_id": "t1", "handle": "AH"}}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": {"lease": {"session_id": "s1"}, "task_id": "OTHER", "handle": "AH"}}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": {"lease": {"session_id": "OTHER"}, "task_id": "t1", "handle": "AH"}}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": {"lease": {"session_id": "s1"}, "task_id": "t1", "handle": null}}}}
+{"func": "_task_parent_handle", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "task_id": "t1", "io": {"relay_runtime.active_turn": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {"entrypoint": "repl"}, "io": {}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {"parent_task_id": "p"}, "io": {}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {}, "io": {"contract.execution_surface": "gateway"}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {}, "io": {"contract.execution_surface": "cli", "is_single_query_session": false}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {"session_id": "s"}, "io": {"contract.execution_surface": "cli", "is_single_query_session": true, "get_session_env": "a2a"}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {"session_id": "s"}, "io": {"contract.execution_surface": "cli", "is_single_query_session": true, "get_session_env": " Kanban "}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {"session_id": "s"}, "io": {"contract.execution_surface": "cli", "is_single_query_session": true, "get_session_env": "other"}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {}, "io": {"contract.execution_surface": "cli", "is_single_query_session": true, "get_session_env": null}}}
+{"func": "_with_launch_entrypoint", "in": {"event": {}, "io": {"contract.execution_surface": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_cold_key", "in": {"session_id": "s1", "io": {"get_conversation_context": "conv"}}}
+{"func": "_cold_key", "in": {"session_id": "s1", "io": {"get_conversation_context": ""}}}
+{"func": "_cold_key", "in": {"session_id": "s1", "io": {"get_conversation_context": null}}}
+{"func": "_cold_key", "in": {"session_id": "", "io": {"get_conversation_context": null}}}
+{"func": "_cold_key", "in": {"session_id": "s1", "io": {"get_conversation_context": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_cold_key", "in": {"session_id": "s1", "io": {}}}
+{"func": "_process_marks_admitted", "in": {"io": {"relay_runtime.current_turn": null}}}
+{"func": "_process_marks_admitted", "in": {"io": {"relay_runtime.current_turn": {"relay_enabled": true}}}}
+{"func": "_process_marks_admitted", "in": {"io": {"relay_runtime.current_turn": {"relay_enabled": false}}}}
+{"func": "_process_marks_admitted", "in": {"io": {"relay_runtime.current_turn": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_process_marks_admitted", "in": {"io": {}}}
+{"func": "_raw_config", "in": {"io": {"read_raw_config_readonly": {"telemetry": {"enabled": true}}}}}
+{"func": "_raw_config", "in": {"io": {"read_raw_config_readonly": null}}}
+{"func": "_raw_config", "in": {"io": {"read_raw_config_readonly": {}}}}
+{"func": "_raw_config", "in": {"io": {"read_raw_config_readonly": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_raw_config", "in": {"io": {}}}
+{"func": "_resolved_send_config", "in": {"io": {"read_raw_config_readonly": {"a": 1}, "resolve_send_config": {"send": true, "endpoint": "e"}}}}
+{"func": "_resolved_send_config", "in": {"io": {"read_raw_config_readonly": null, "resolve_send_config": {"send": false}}}}
+{"func": "_resolved_send_config", "in": {"io": {"read_raw_config_readonly": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_resolved_send_config", "in": {"io": {"read_raw_config_readonly": {}, "resolve_send_config": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_resolved_send_config", "in": {"io": {"read_raw_config_readonly": {}}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [1], "kwargs": {"x": 2}, "io": {"cb": 42}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"cb": null}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"cb": {"__raise__": "ValueError", "message": "boom"}, "logger.warning": null}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"cb": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"cb": {"__raise__": "KeyboardInterrupt", "message": "boom"}}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"cb": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_guarded", "in": {"message": "m", "callback": {"__callable__": "cb"}, "io": {}}}
+{"func": "_with_scope_stack", "in": {"callback": {"__callable__": "cb"}, "args": [1], "kwargs": {"k": "v"}, "io": {"relay.get_scope_stack": null, "cb": "R"}}}
+{"func": "_with_scope_stack", "in": {"callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"relay.get_scope_stack": null, "cb": null}}}
+{"func": "_with_scope_stack", "in": {"callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"relay.get_scope_stack": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_with_scope_stack", "in": {"callback": {"__callable__": "cb"}, "args": [], "kwargs": {}, "io": {"relay.get_scope_stack": null, "cb": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "_with_scope_stack", "in": {"callback": {"__callable__": "cb"}, "io": {"relay.get_scope_stack": null}}}
+{"func": "_emit_rows", "in": {"session": null, "rows": [["hermes.a", {"x": "1"}]], "io": {"rt.record_process_mark": null}}}
+{"func": "_emit_rows", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "rows": [["hermes.a", {"x": "1"}], ["hermes.b", {"y": "2"}]], "io": {"rt._mark": null}}}
+{"func": "_emit_rows", "in": {"session": null, "rows": [], "io": {}}}
+{"func": "_emit_rows", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "rows": [["hermes.a", {}]], "io": {"rt._mark": {"__raise__": "ValueError", "message": "boom"}, "logger.warning": null}}}
+{"func": "_emit_rows", "in": {"session": null, "rows": [["hermes.a", {}]], "io": {"rt.record_process_mark": {"__raise__": "GeneratorExit", "message": "boom"}}}}
+{"func": "_emit_rows", "in": {"session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}, "rows": [["hermes.a", {}]], "io": {}}}
+{"func": "_any_session", "in": {"event": {"session_id": "s1"}, "io": {"rt._task_session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}}}}
+{"func": "_any_session", "in": {"event": {"session_id": "s1"}, "io": {"rt._task_session": null, "rt._session": {"session_id": "s1", "ref": "S1", "relay_session": {"handle": "H"}, "closing": false, "tasks": {}}}}}
+{"func": "_any_session", "in": {"event": {"session_id": "s1"}, "io": {"rt._task_session": null, "rt._session": null}}}
+{"func": "_any_session", "in": {"event": {"session_id": "s1"}, "io": {"rt._task_session": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_any_session", "in": {"event": {"session_id": "s1"}, "io": {"rt._task_session": null}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": false, "io": {"rt._task_session": {"session_id": "s1", "tasks": {"t1": {"task_id": "t1", "ref": "T1"}}}}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": false, "io": {"rt._task_session": {"session_id": "s1", "tasks": {}}}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": false, "io": {"rt._task_session": null}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": true, "lookup": {"allow_task_id_fallback": true}, "io": {"rt._task_session": [{"session_id": "s1", "tasks": {}}, {"session_id": "s1", "tasks": {"t1": {"task_id": "t1"}}}], "rt.start_task": {"task_id": "t1", "cost": {"user_turn": false}}}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": true, "io": {"rt._task_session": {"session_id": "s1", "tasks": {}}, "rt.start_task": null}}}
+{"func": "_task_pair", "in": {"event": {"session_id": "s1", "task_id": "t1"}, "start": true, "io": {"rt._task_session": {"session_id": "s1", "tasks": {}}, "rt.start_task": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1"}, "state": {"session": {"session_id": "s1", "closing": false, "tasks": {}}}, "io": {"rt._end_pending_model_calls": null}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1"}, "state": {"session": {"session_id": "s1", "closing": true, "tasks": {}}}, "io": {}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1", "status": "x"}, "state": {"session": {"session_id": "s1", "closing": false, "tasks": {"t1": {}, "t2": {}}}}, "io": {"rt._finish_task": null, "rt._end_pending_model_calls": null}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1"}, "state": {"session": {"session_id": "s1", "closing": false, "tasks": {"t1": {}}}}, "io": {"rt._finish_task": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1"}, "state": {"session": {"session_id": "s1", "closing": false, "tasks": {}}}, "io": {"rt._end_pending_model_calls": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "_abort_session", "in": {"base_event": {"session_id": "s1"}, "state": {"session": {"session_id": "s1", "closing": false, "tasks": {"t1": {}}}}, "io": {"rt._finish_task": null}}}
+{"func": "start_user_turn", "in": {"event": {"session_id": "s1"}, "io": {"rt.start_task": {"task_id": "t1", "cost": {"user_turn": false}}}, "state": {}}}
+{"func": "start_user_turn", "in": {"event": {"session_id": "s1"}, "io": {"rt.start_task": null}, "state": {}}}
+{"func": "start_user_turn", "in": {"event": {"session_id": "s1"}, "io": {"rt.start_task": {"task_id": "t1", "cost": {"user_turn": true}}}, "state": {}}}
+{"func": "start_user_turn", "in": {"event": {"session_id": "s1"}, "io": {"rt.start_task": {"__raise__": "RuntimeError", "message": "boom"}}, "state": {}}}
+{"func": "start_user_turn", "in": {"event": {"session_id": "s1"}, "io": {}, "state": {}}}
+{"func": "_deregister", "in": {"state": {"_subscriber_name": "sub", "_registered": true, "id": "r1"}, "io": {"rt._safe": null, "host.release_managed_execution": null}}}
+{"func": "_deregister", "in": {"state": {"_subscriber_name": "sub", "_registered": true, "id": "r1"}, "io": {"rt._safe": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_deregister", "in": {"state": {"_subscriber_name": "sub", "_registered": true, "id": "r1"}, "io": {"rt._safe": null, "host.release_managed_execution": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "_deregister", "in": {"state": {"_subscriber_name": "sub", "_registered": false, "id": "r1"}, "io": {"rt._safe": null, "host.release_managed_execution": null}}}
+{"func": "_deregister", "in": {"state": {"_subscriber_name": "sub", "_registered": true, "id": "r1"}, "io": {"rt._safe": null}}}
+{"func": "_join_send_thread", "in": {"timeout": 2.0, "state": {"_send_thread": null}, "io": {}}}
+{"func": "_join_send_thread", "in": {"timeout": 1.5, "state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true, "thread.join": null}}}
+{"func": "_join_send_thread", "in": {"timeout": 2.0, "state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": false}}}
+{"func": "_join_send_thread", "in": {"timeout": 2.0, "state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true, "thread.join": {"__raise__": "ValueError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_join_send_thread", "in": {"timeout": 2.0, "state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true, "thread.join": {"__raise__": "KeyboardInterrupt", "message": "boom"}}}}
+{"func": "_join_send_thread", "in": {"timeout": 2.0, "state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true}}}
+{"func": "_release", "in": {"state": {"_send_thread": null}, "io": {"atexit.unregister": null}}}
+{"func": "_release", "in": {"state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true, "thread.join": null, "atexit.unregister": null}}}
+{"func": "_release", "in": {"state": {"_send_thread": null}, "io": {"atexit.unregister": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_release", "in": {"state": {"_send_thread": null}, "io": {"atexit.unregister": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "_release", "in": {"state": {"_send_thread": {"__thread__": true}}, "io": {"thread.is_alive": true, "thread.join": {"__raise__": "GeneratorExit", "message": "boom"}}}}
+{"func": "_release", "in": {"state": {"_send_thread": null}, "io": {}}}
+{"func": "_lineage_spent", "in": {"session_id": "s1", "state": {"_lineage_of": {"s1": "root"}, "_lineages": {"root": {"spent": ["t1", "t2"]}}}}}
+{"func": "_lineage_spent", "in": {"session_id": "s1", "state": {"_lineage_of": {}, "_lineages": {}}}}
+{"func": "_lineage_spent", "in": {"session_id": "s1", "state": {"_lineage_of": {"s1": "root"}, "_lineages": {"root": {"spent": null}}}}}
+{"func": "_lineage_spent", "in": {"session_id": "s1", "state": {"_lineage_of": {"s1": "root"}, "_lineages": {}}}}
+{"func": "_lineage_spent", "in": {"session_id": "s2", "state": {"_lineage_of": {"s1": "root"}, "_lineages": {"root": {"spent": ["t1"]}}}}}
+{"func": "_close_child_session", "in": {"kwargs": {"child_session_id": "c1"}, "io": {"rt.close_session": null}}}
+{"func": "_close_child_session", "in": {"kwargs": {"child_session_id": ""}, "io": {}}}
+{"func": "_close_child_session", "in": {"kwargs": {}, "io": {}}}
+{"func": "_close_child_session", "in": {"kwargs": {"child_session_id": "c1"}, "io": {"rt.close_session": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_close_child_session", "in": {"kwargs": {"child_session_id": "c1"}, "io": {}}}
+{"func": "_close_child_session", "in": {"kwargs": {"child_session_id": 0}, "io": {}}}
+{"func": "_run_task_hook", "in": {"method": "start_task", "retry_failed": true, "event": {"session_id": "s1"}, "io": {"enabled": true, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": null}}}
+{"func": "_run_task_hook", "in": {"method": "finish_task", "event": {"session_id": "s1"}, "io": {"enabled": false}}}
+{"func": "_run_task_hook", "in": {"method": "start_task", "event": {}, "io": {"enabled": true, "_get_runtime": null}}}
+{"func": "_run_task_hook", "in": {"method": "start_task", "event": {}, "io": {"enabled": true, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "_run_task_hook", "in": {"method": "start_task", "event": {}, "io": {"enabled": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "_run_task_hook", "in": {"method": "start_task", "event": {}, "io": {"enabled": true}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {"a": "1"}, "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": null}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {}, "io": {"enabled": false}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {}, "io": {"enabled": true, "relay_runtime.current_turn": {"relay_enabled": false}}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {}, "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": null}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {}, "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "record_process_mark", "in": {"mark": "hermes.x", "data": {}, "io": {"enabled": true}}}
+{"func": "record_process_marks_saved", "in": {"marks": [["hermes.x", {"a": "1"}]], "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": 1}}}
+{"func": "record_process_marks_saved", "in": {"marks": [["a", {}], ["b", {}]], "io": {"enabled": false}}}
+{"func": "record_process_marks_saved", "in": {"marks": [], "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": null}}}
+{"func": "record_process_marks_saved", "in": {"marks": [["a", {}]], "io": {"enabled": true, "relay_runtime.current_turn": null, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": null}}}
+{"func": "record_process_marks_saved", "in": {"marks": [["a", {}]], "io": {"enabled": true, "relay_runtime.current_turn": {"relay_enabled": true}, "_get_runtime": {"__runtime__": true, "id": "r1"}, "rt._safe": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "record_process_marks_saved", "in": {"marks": [["a", {}]], "io": {"enabled": true}}}
+{"func": "close_session_run", "in": {"session_id": "s1", "state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1", "rt._safe": null}}}
+{"func": "close_session_run", "in": {"session_id": "", "io": {}}}
+{"func": "close_session_run", "in": {"session_id": "s1", "io": {"enabled": false}}}
+{"func": "close_session_run", "in": {"session_id": "s1", "state": {"_RUNTIMES": {}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1"}}}
+{"func": "close_session_run", "in": {"session_id": "s1", "state": {"_RUNTIMES": {"p1": {"__failed__": true}}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1"}}}
+{"func": "close_session_run", "in": {"session_id": "s1", "state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1", "rt._safe": {"__raise__": "SystemExit", "message": "boom"}}}}
+{"func": "rotate_segment", "in": {"old_session_id": "s1", "new_session_id": "s2", "state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1", "rt._safe": null}}}
+{"func": "rotate_segment", "in": {"old_session_id": "", "new_session_id": "s2", "io": {}}}
+{"func": "rotate_segment", "in": {"old_session_id": "s1", "new_session_id": "s1", "io": {}}}
+{"func": "rotate_segment", "in": {"old_session_id": "s1", "new_session_id": "s2", "io": {"enabled": false}}}
+{"func": "rotate_segment", "in": {"old_session_id": "s1", "new_session_id": "s2", "state": {"_RUNTIMES": {}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1"}}}
+{"func": "rotate_segment", "in": {"old_session_id": "s1", "new_session_id": "s2", "state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"enabled": true, "relay_runtime.current_profile_key": "p1", "rt._safe": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"rt._safe": null}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {}}, "io": {}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}, "p2": {"__runtime__": true, "id": "r2"}}}, "io": {"rt._safe": null}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {"p1": {"__failed__": true}}}, "io": {}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {"rt._safe": {"__raise__": "KeyboardInterrupt", "message": "boom"}}}}
+{"func": "shutdown_runtimes", "in": {"state": {"_RUNTIMES": {"p1": {"__runtime__": true, "id": "r1"}}}, "io": {}}}

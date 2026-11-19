@@ -1,0 +1,152 @@
+{"func": "_memory_first_op", "in": {"args": {}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": []}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": "x"}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": [{"action": "add"}]}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": [{"action": "add"}, {"action": "remove"}]}, "io": {"t": "N"}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": [5]}, "io": {}}}
+{"func": "_memory_first_op", "in": {"args": {"operations": [{"action": "add"}, {"action": "remove"}]}, "io": {"t": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"labels_for_call": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}, "logger.debug": {"__script__": true, "ret": null}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": null, "io": {"labels_for_call": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]], "_get_skin": null}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]], "_get_skin": {"tool_emojis": {"n": "X"}}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]], "_get_skin": {"tool_emojis": {}}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": null, "io": {"labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}, {"name": "m", "emoji": "f", "text": "t", "preview": "p"}]], "_get_skin": {"tool_emojis": {"m": "Z"}}}}}
+{"func": "tool_labels_for_call", "in": {"tool_name": "x", "args": {}, "io": {}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": {"a": 1}, "state": {"_friendly_tool_labels": false}, "io": {}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"tool_labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]]}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"tool_labels_for_call": [[]]}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": null, "io": {"tool_labels_for_call": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]]}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": {}, "io": {"tool_labels_for_call": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "bridge_tool_labels", "in": {"tool_name": "x", "args": {}, "state": {"_friendly_tool_labels": true}, "io": {"tool_labels_for_call": [[{"name": "a", "emoji": "e", "text": "t", "preview": "p"}, {"name": "b", "emoji": "e", "text": "t", "preview": "p"}]]}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": null, "io": {"get_tool_emoji": "EM"}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"bridge_tool_labels": [[]], "get_tool_emoji": "EM"}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "LE", "text": "t", "preview": "p"}]]}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": null, "default": "DF", "io": {"get_tool_emoji": "EM"}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": {"a": 1}, "io": {"bridge_tool_labels": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "tool_row_emoji", "in": {"tool_name": "x", "args": {}, "io": {"get_tool_emoji": "EM"}}}
+{"func": "_cute_row", "in": {"emoji": "📄", "verb": "fetch", "detail": "d", "io": {"t": "LBL"}}}
+{"func": "_cute_row", "in": {"emoji": "📄", "verb": "fetch", "detail": "d", "io": {"t": "abcdefghij"}}}
+{"func": "_cute_row", "in": {"emoji": " 📄 ", "verb": "fetch", "detail": "", "io": {"t": "LBL"}}}
+{"func": "_cute_row", "in": {"emoji": "E", "verb": "v", "detail": "detail text", "io": {"t": "x"}}}
+{"func": "_cute_row", "in": {"emoji": "E", "verb": "v", "detail": "d", "io": {"t": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_row", "in": {"emoji": "E", "verb": "fetch", "detail": "d", "io": {"t": ""}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "web_search", "args": {"q": 1}, "io": {"build_tool_preview": "PV", "_cute_trunc": "TR", "get_tool_emoji": "EM"}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "web_search", "args": {}, "io": {"build_tool_preview": null, "_cute_trunc": "TR", "get_tool_emoji": "EM"}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "ab", "args": {}, "io": {"build_tool_preview": "PV", "_cute_trunc": "TR", "get_tool_emoji": "EM"}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "x", "args": {}, "io": {"build_tool_preview": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "x", "args": {}, "io": {"build_tool_preview": "PV", "_cute_trunc": "TR", "get_tool_emoji": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_fallback_row", "in": {"tool_name": "abcdefghijk", "args": {}, "io": {"build_tool_preview": "PV", "_cute_trunc": "TR", "get_tool_emoji": "EM"}}}
+{"func": "_cute_web_extract", "in": {"args": {}, "io": {"t": "PAGES", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_web_extract", "in": {"args": {"urls": ["http://a.com"]}, "io": {"_display_url": "http://a.com", "_domain": "a.com", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_web_extract", "in": {"args": {"urls": ["u1", "u2"]}, "io": {"_display_url": "u1", "_domain": "d", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_web_extract", "in": {"args": {"urls": "scalar"}, "io": {"_display_url": "scalar", "_domain": "d", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_web_extract", "in": {"args": {"urls": [""]}, "io": {"_display_url": "", "t": "PAGES", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_web_extract", "in": {"args": {"urls": ["u"]}, "io": {"_display_url": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": null}, "result": null, "io": {"t": "X", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1, 2]}, "result": {"summary": {"total": 3, "completed": 1}}, "io": {"safe_json_loads": {"summary": {"total": 3, "completed": 1}}, "t": "PROG", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1], "merge": true}, "result": {"s": 1}, "io": {"safe_json_loads": {"summary": {"total": 2, "completed": 1}}, "t": "UP", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1, 2, 3], "merge": true}, "result": null, "io": {"t": "UC", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": null}, "result": {"s": 1}, "io": {"safe_json_loads": {"summary": {"total": 5, "completed": 0}}, "t": "PROG", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1]}, "result": "str", "io": {"safe_json_loads": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad"}}, "t": "X", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1]}, "result": "str", "io": {"safe_json_loads": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "_cute_todo_list", "in": {"args": {"todos": [1]}, "result": null, "io": {"t": "CNT", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {"operations": [{"action": "add", "content": "c"}], "target": "T"}, "io": {"_memory_first_op": {"op": {"action": "add", "content": "c"}, "more": ""}, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {"target": "T"}, "io": {"_memory_first_op": {"op": {"action": "replace", "old_text": "o"}, "more": ""}, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {"target": "T"}, "io": {"_memory_first_op": {"op": {"action": "remove", "old_text": "o"}, "more": " (2)"}, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {"target": "T"}, "io": {"_memory_first_op": {"op": {"action": "patch"}, "more": ""}, "t": "MISS", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {}, "io": {"_memory_first_op": {"op": {"action": "other"}, "more": ""}, "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {"target": "T"}, "io": {"_memory_first_op": {"op": {"action": "add", "new_text": "nt"}, "more": ""}, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_memory", "in": {"args": {}, "io": {"_memory_first_op": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_skill_view", "in": {"args": {"name": "n", "file_path": "f"}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_skill_view", "in": {"args": {"name": "n"}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_skill_view", "in": {"args": {"file_path": "f"}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_skill_view", "in": {"args": {}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_skill_view", "in": {"args": {"name": "n"}, "io": {"_cute_trunc": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_skill_view", "in": {"args": {"name": "", "file_path": "f"}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create", "name": "nm"}, "io": {"t": "X", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create", "skills": ["s1", "s2"]}, "io": {"t": "X", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create", "skill": "sk"}, "io": {"t": "X", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create", "prompt": "pr"}, "io": {"t": "X", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create"}, "io": {"t": "FB", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "list"}, "io": {"t": "LIST", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "pause", "job_id": "j1"}, "io": {"_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_cronjob", "in": {"args": {"action": "create", "name": "nm"}, "io": {"t": "X", "_cute_trunc": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_execute_code", "in": {"args": {"code": "line1\nline2"}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_execute_code", "in": {"args": {"code": ""}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_execute_code", "in": {"args": {"code": "   "}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_execute_code", "in": {"args": {}, "io": {"_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_execute_code", "in": {"args": {"code": null}, "io": {}}}
+{"func": "_cute_execute_code", "in": {"args": {"code": "x"}, "io": {"_cute_trunc": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_browser_exec", "in": {"args": {"code": "# Step\ncode"}, "io": {"_browser_exec_step_label": "Step", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_browser_exec", "in": {"args": {"code": "code"}, "io": {"_browser_exec_step_label": null, "_oneline": "OL", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_browser_exec", "in": {"args": {}, "io": {"_browser_exec_step_label": null, "_oneline": "OL", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_browser_exec", "in": {"args": {"code": "x"}, "io": {"_browser_exec_step_label": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_browser_exec", "in": {"args": {"code": "x"}, "io": {"_browser_exec_step_label": null, "_oneline": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_browser_exec", "in": {"args": {"code": null}, "io": {"_browser_exec_step_label": null, "_oneline": "OL", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"action": "list"}, "io": {"_delegate_action_preview": "list abc", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"tasks": [{"goal": "g1"}, {"goal": "g2"}]}, "io": {"_delegate_action_preview": null, "_delegate_task_goals": [["g1", "g2"]], "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"tasks": [{}, {}]}, "io": {"_delegate_action_preview": null, "_delegate_task_goals": [[]], "t": "PAR", "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"goal": "do it"}, "io": {"_delegate_action_preview": null, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"goal": null}, "io": {"_delegate_action_preview": null, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_delegate", "in": {"args": {"tasks": [{"goal": "g"}]}, "io": {"_delegate_action_preview": null, "_delegate_task_goals": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "list"}, "io": {"t": "LIST", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "wait", "session_id": "abcdefghijklmnop"}, "io": {"_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "poll"}, "io": {"_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "wait", "session_id": null}, "io": {}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "kill", "session_id": "short"}, "io": {"_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_process_manage", "in": {"args": {"action": "list"}, "io": {"t": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_scroll", "in": {"args": {"direction": "down"}, "io": {"t": "DOWN", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_scroll", "in": {"args": {"direction": "up"}, "io": {"t": "UP", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_scroll", "in": {"args": {"direction": "left"}, "io": {"t": "LEFT", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_scroll", "in": {"args": {"direction": "diag"}, "io": {"_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_scroll", "in": {"args": {}, "io": {"t": "DOWN", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_cute_scroll", "in": {"args": {"direction": "right"}, "io": {"t": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": {}, "io": {"bridge_tool_labels": [[]]}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": {}, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]], "_cute_trunc": "TR"}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": {}, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "t", "preview": ""}]], "_cute_trunc": "TR"}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": {}, "io": {"bridge_tool_labels": [[{"name": "a", "emoji": "e", "text": "t", "preview": "p"}, {"name": "b", "emoji": "e", "text": "t", "preview": ""}]], "_cute_trunc": "TR"}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": {}, "io": {"bridge_tool_labels": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_cute_bridge_rows", "in": {"tool_name": "x", "args": null, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "EM", "text": "TX", "preview": "p"}]], "_cute_trunc": "TR"}}}
+{"func": "_entry_failure_suffix", "in": {"entry": "notdict", "io": {}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"error": {"message": "m"}}, "io": {"_trim_error": "trimmed"}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"error": {"code": "c"}}, "io": {"_trim_error": "trimmed"}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"error": {}}, "io": {"t": "GW", "_trim_error": "trimmed"}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"error": "boom", "name": "t"}, "io": {"_detect_tool_failure": [[true, " [d]"]]}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"success": false}, "io": {"_detect_tool_failure": [[true, " [d]"]]}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {}, "io": {}}}
+{"func": "_entry_failure_suffix", "in": {"entry": {"error": {"message": "m"}}, "io": {"_trim_error": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 2, "result": {"results": [{"error": "boom", "name": "t"}, {"success": false, "name": "u"}]}, "call_suffix": "", "io": {"_entry_failure_suffix": [" [e1]", " [e2]"]}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 1, "result": null, "call_suffix": "calls[0]", "io": {"safe_json_loads": null}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 2, "result": "jsonstr", "call_suffix": "", "io": {"safe_json_loads": {"results": [{"error": "x", "index": 1}]}, "_entry_failure_suffix": [" [e]"]}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 2, "result": {"results": [{"error": "x", "index": 5}]}, "call_suffix": "", "io": {"_entry_failure_suffix": [" [e]"]}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 2, "result": null, "call_suffix": "xx", "io": {"safe_json_loads": null}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 2, "result": {"results": [{"error": "x"}]}, "call_suffix": "calls[9]", "io": {"_entry_failure_suffix": [" [e]"]}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 1, "result": {"results": [{"error": "x"}]}, "call_suffix": "", "io": {"_entry_failure_suffix": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "_bridge_row_suffixes", "in": {"rows": 0, "result": null, "call_suffix": "", "io": {"safe_json_loads": null}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": {"q": 1}, "result": null, "is_error": false, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}, {"name": "b", "emoji": "e", "text": "t", "preview": "p"}]], "_bridge_row_suffixes": [["", ""]], "_cute_trunc": "TR"}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "web_search", "args": {"query": "x"}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[]], "cute_render": {"__cute_row__": true, "text": "ROW", "emoji": "🔍", "verb": "search", "detail": "d"}}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "web_search", "args": {"query": "x"}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[]], "cute_render": "plainstr", "_cute_fallback_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "custom_tool", "args": {"a": 1}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[]], "_cute_fallback_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": {"a": 1}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}, "logger.debug": {"__script__": true, "ret": null}}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": {"a": 1}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": {"q": 1}, "result": null, "is_error": true, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}]], "_bridge_row_suffixes": [[""]], "_cute_trunc": "TR"}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": {"q": 1}, "result": null, "io": {"redact_tool_args_for_display": null, "_detect_tool_failure": [[true, " [exit 1]"]], "bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "t", "preview": "p"}, {"name": "b", "emoji": "e", "text": "t", "preview": "p"}]], "_bridge_row_suffixes": [["", ""]], "_cute_trunc": "TR"}}}
+{"func": "get_tool_row_parts", "in": {"tool_name": "x", "args": null, "result": null, "io": {"redact_tool_args_for_display": {"z": 2}, "_detect_tool_failure": [[false, ""]], "bridge_tool_labels": [[]], "_cute_fallback_row": {"__cute_row__": true, "text": "ROW", "emoji": "E", "verb": "V", "detail": "D"}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": null}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"spinner": {"waiting_faces": ["x"]}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"spinner": {"waiting_faces": []}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "interrupted"}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"tool_emojis": {}}}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "a, b ,c"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": ""}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "display.thinking_verbs"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": " , , "}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "pondering"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 0}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 10}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 35}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 40}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 100}}}
+{"func": "_clear_line_blanks", "in": {"state": {}}}

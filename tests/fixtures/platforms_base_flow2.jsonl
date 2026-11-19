@@ -1,0 +1,192 @@
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": false, "make_user_dir": null, "secure_dir": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": true, "mkdir": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": {"__raise__": "OSError", "msg": "boom"}, "log_debug": null, "mkdir": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": false, "make_user_dir": {"__raise__": "ValueError", "msg": "mv"}, "log_debug": null, "mkdir": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": false, "make_user_dir": null, "secure_dir": {"__raise__": "RuntimeError", "msg": "sd"}, "log_debug": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "config_import_fail": true, "io": {"make_user_dir": null, "log_debug": null}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {"is_managed": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "_secure_media_cache_dir", "in": {"cache_dir": "/c", "io": {}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": {"__raise__": "OSError", "msg": "no"}, "write_bytes": null}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "aud", "ext": ".ogg", "data": "y", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": {"__raise__": "PermissionError", "msg": "p"}, "write_bytes": null}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": {"__raise__": "OSError", "msg": "w"}}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": null}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": {"__raise__": "SystemExit", "msg": "se"}}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/c", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "/", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "_write_cache_file", "in": {"cache_dir": "//", "prefix": "img", "ext": ".jpg", "data": "xx", "io": {"uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_image_from_bytes", "in": {"data": "imgdata", "ext": ".jpg", "io": {"validate_inbound_media_size": null, "looks_like_image": true, "get_image_cache_dir": "/i", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_image_from_bytes", "in": {"data": "notimg", "ext": ".jpg", "io": {"validate_inbound_media_size": null, "looks_like_image": false}}}
+{"func": "cache_image_from_bytes", "in": {"data": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "ext": ".png", "io": {"validate_inbound_media_size": null, "looks_like_image": false}}}
+{"func": "cache_image_from_bytes", "in": {"data": "a'b\"c\td", "ext": ".jpg", "io": {"validate_inbound_media_size": null, "looks_like_image": false}}}
+{"func": "cache_image_from_bytes", "in": {"data": "img", "ext": ".jpg", "io": {"validate_inbound_media_size": {"__raise__": "ValueError", "msg": "big"}, "looks_like_image": true}}}
+{"func": "cache_image_from_bytes", "in": {"data": "img", "ext": ".jpg", "io": {"validate_inbound_media_size": null, "looks_like_image": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "cache_image_from_bytes", "in": {"data": "img", "ext": ".jpg", "io": {}}}
+{"func": "cache_image_from_bytes_async", "in": {"data": "x", "ext": ".jpg", "io": {"to_thread": "/i/img.jpg"}}}
+{"func": "cache_image_from_bytes_async", "in": {"data": "x", "ext": ".png", "io": {"to_thread": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "cache_image_from_bytes_async", "in": {"data": "x", "io": {"to_thread": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "cache_image_from_bytes_async", "in": {"data": "x", "io": {"to_thread": null}}}
+{"func": "cache_image_from_bytes_async", "in": {"data": "x", "io": {}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".ogg", "io": {"validate_inbound_media_size": null, "get_audio_cache_dir": "/a", "sniff_audio_ext": ".opus", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".mp3", "io": {"validate_inbound_media_size": null, "get_audio_cache_dir": "/a", "sniff_audio_ext": ".mp3", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".ogg", "audio_import_fail": true, "io": {}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".ogg", "io": {"validate_inbound_media_size": {"__raise__": "ValueError", "msg": "big"}}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".ogg", "io": {"validate_inbound_media_size": null, "get_audio_cache_dir": "/a", "sniff_audio_ext": {"__raise__": "ValueError", "msg": "sn"}}}}
+{"func": "cache_audio_from_bytes", "in": {"data": "aud", "ext": ".ogg", "io": {}}}
+{"func": "cache_audio_from_bytes_async", "in": {"data": "x", "ext": ".ogg", "io": {"to_thread": "/a/audio.ogg"}}}
+{"func": "cache_audio_from_bytes_async", "in": {"data": "x", "ext": ".ogg", "io": {"to_thread": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "cache_audio_from_bytes_async", "in": {"data": "x", "io": {"to_thread": {"__raise__": "SystemExit", "msg": "se"}}}}
+{"func": "cache_audio_from_bytes_async", "in": {"data": "x", "io": {"to_thread": null}}}
+{"func": "cache_audio_from_bytes_async", "in": {"data": "x", "io": {}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "ext": ".mp4", "io": {"validate_inbound_media_size": null, "get_video_cache_dir": "/v", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "ext": ".webm", "io": {"validate_inbound_media_size": null, "get_video_cache_dir": "/v", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "io": {"validate_inbound_media_size": {"__raise__": "ValueError", "msg": "big"}}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "io": {"validate_inbound_media_size": null, "get_video_cache_dir": {"__raise__": "OSError", "msg": "gd"}}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "io": {"validate_inbound_media_size": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "cache_video_from_bytes", "in": {"data": "vid", "io": {}}}
+{"func": "cache_video_from_bytes_async", "in": {"data": "x", "ext": ".mp4", "io": {"to_thread": "/v/video.mp4"}}}
+{"func": "cache_video_from_bytes_async", "in": {"data": "x", "io": {"to_thread": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "cache_video_from_bytes_async", "in": {"data": "x", "io": {"to_thread": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "cache_video_from_bytes_async", "in": {"data": "x", "io": {"to_thread": null}}}
+{"func": "cache_video_from_bytes_async", "in": {"data": "x", "io": {}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "a/b.txt", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_b.txt", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "evil.txt", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/elsewhere/doc_abcdef012345_evil.txt", "/d"], "is_relative_to": false}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_document", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "..", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_document", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "  x.txt  ", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_x.txt", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "ok.txt", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_ok.txt", "/d"], "is_relative_to": true, "write_bytes": {"__raise__": "OSError", "msg": "w"}}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "ok.txt", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": {"__raise__": "ValueError", "msg": "r"}}}}
+{"func": "cache_document_from_bytes", "in": {"data": "d", "filename": "ok.txt", "io": {}}}
+{"func": "cache_document_from_bytes_async", "in": {"data": "x", "filename": "f.txt", "io": {"to_thread": "/d/doc_f.txt"}}}
+{"func": "cache_document_from_bytes_async", "in": {"data": "x", "filename": "f.txt", "io": {"to_thread": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "cache_document_from_bytes_async", "in": {"data": "x", "filename": "", "io": {"to_thread": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "cache_document_from_bytes_async", "in": {"data": "x", "filename": "f", "io": {"to_thread": null}}}
+{"func": "cache_document_from_bytes_async", "in": {"data": "x", "filename": "f", "io": {}}}
+{"func": "_resolve_media_ext", "in": {"filename": "a.PNG", "mime_type": ""}}
+{"func": "_resolve_media_ext", "in": {"filename": "", "mime_type": "image/jpeg"}}
+{"func": "_resolve_media_ext", "in": {"filename": "a.tar.gz", "mime_type": ""}}
+{"func": "_resolve_media_ext", "in": {"filename": ".hidden", "mime_type": ""}}
+{"func": "_resolve_media_ext", "in": {"filename": "a.", "mime_type": ""}}
+{"func": "_resolve_media_ext", "in": {"filename": "C:\\x\\y.TXT", "mime_type": ""}}
+{"func": "_resolve_media_ext", "in": {"filename": "/.hidden", "mime_type": "video/mp4"}}
+{"func": "_resolve_media_ext", "in": {"filename": "", "mime_type": "application/x-unknown"}}
+{"func": "_resolve_media_ext", "in": {"filename": "noext", "mime_type": "TEXT/PLAIN"}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "p.png", "mime_type": "image/png", "io": {"validate_inbound_media_size": null, "looks_like_image": true, "get_image_cache_dir": "/i", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "p.png", "mime_type": "image/png", "io": {"validate_inbound_media_size": null, "looks_like_image": false}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "v.mp4", "mime_type": "video/mp4", "io": {"validate_inbound_media_size": null, "get_video_cache_dir": "/v", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "", "mime_type": "", "default_kind": "audio", "io": {"validate_inbound_media_size": null, "get_audio_cache_dir": "/a", "sniff_audio_ext": ".ogg", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "r.pdf", "mime_type": "", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_r.pdf", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "x.weird", "mime_type": "", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_x.weird", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "a/b?c.png", "mime_type": "image/png", "io": {"validate_inbound_media_size": null, "looks_like_image": true, "get_image_cache_dir": "/i", "uuid4_hex": "abcdef0123456789abcdef0123456789", "os_open": 7, "fdopen_write": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "v.mp4", "mime_type": "video/mp4", "io": {"validate_inbound_media_size": {"__raise__": "ValueError", "msg": "big"}}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "", "mime_type": "", "io": {"get_document_cache_dir": "/d", "uuid4_hex": "abcdef0123456789abcdef0123456789", "resolve": ["/d/doc_abcdef012345_document", "/d"], "is_relative_to": true, "write_bytes": null}}}
+{"func": "cache_media_bytes", "in": {"data": "x", "filename": "p.png", "mime_type": "image/png", "io": {}}}
+{"func": "cache_media_bytes_async", "in": {"data": "x", "filename": "f", "mime_type": "image/png", "default_kind": "image", "io": {"to_thread": {"path": "/p", "media_type": "image/png", "kind": "image", "display_name": "f"}}}}
+{"func": "cache_media_bytes_async", "in": {"data": "x", "filename": "f", "mime_type": "", "io": {"to_thread": null}}}
+{"func": "cache_media_bytes_async", "in": {"data": "x", "filename": "", "mime_type": "", "io": {"to_thread": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "cache_media_bytes_async", "in": {"data": "x", "filename": "f", "mime_type": "image/png", "default_kind": "image", "io": {"to_thread": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "cache_media_bytes_async", "in": {"data": "x", "io": {}}}
+{"func": "_sqlite_files", "in": {"name": "state.db"}}
+{"func": "_sqlite_files", "in": {"name": "kanban.db"}}
+{"func": "_sqlite_files", "in": {"name": ""}}
+{"func": "_sqlite_files", "in": {"name": "a-b"}}
+{"func": "_sqlite_files", "in": {"name": "x.db"}}
+{"func": "_docker_env_active", "in": {"io": {"tenv": "docker"}}}
+{"func": "_docker_env_active", "in": {"io": {"tenv": " Docker "}}}
+{"func": "_docker_env_active", "in": {"io": {"tenv": "local"}}}
+{"func": "_docker_env_active", "in": {"io": {"tenv": ""}}}
+{"func": "_docker_env_active", "in": {"io": {"tenv": null}}}
+{"func": "_docker_env_active", "in": {"io": {}}}
+{"func": "_docker_persistent_active", "in": {"io": {"tenv": ["docker", "true"]}}}
+{"func": "_docker_persistent_active", "in": {"io": {"tenv": ["docker", "0"]}}}
+{"func": "_docker_persistent_active", "in": {"io": {"tenv": ["local"]}}}
+{"func": "_docker_persistent_active", "in": {"io": {"tenv": ["docker", "YES"]}}}
+{"func": "_docker_persistent_active", "in": {"io": {"tenv": ["docker", null]}}}
+{"func": "_docker_persistent_active", "in": {"io": {}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {"tenv": "local"}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {"tenv": "docker", "get_cache_directory_mounts": {"__script__": true, "ret": [{"host_path": "/h", "container_path": "/c"}]}}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {"tenv": "docker", "get_cache_directory_mounts": {"__raise__": "KeyError", "msg": "host_path"}}}}
+{"func": "_cache_dir_container_mounts", "in": {"cred_import_fail": true, "io": {"tenv": "docker"}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {"tenv": "docker", "get_cache_directory_mounts": {"__script__": true, "ret": [{"container_path": "/c"}]}}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {"tenv": "docker", "get_cache_directory_mounts": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "_cache_dir_container_mounts", "in": {"io": {}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": false}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": "30"}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": ""}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": "abc"}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": "-5"}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": "nan"}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": "1_000"}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {"media_delivery_trust_recent": true, "media_delivery_trust_recent_seconds": null}}}
+{"func": "_media_delivery_recency_seconds", "in": {"policy_import_fail": true, "io": {}}}
+{"func": "_media_delivery_recency_seconds", "in": {"io": {}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": "/a/b"}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": {"__raise__": "OSError", "msg": "o"}}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": {"__raise__": "RuntimeError", "msg": "r"}}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": {"__raise__": "TypeError", "msg": "t"}}}}
+{"func": "_resolve_path", "in": {"path": "~/x", "expand": true, "io": {"expanduser": "/root/x", "resolve": "/root/x"}}}
+{"func": "_resolve_path", "in": {"path": "~/x", "expand": true, "io": {"expanduser": {"__raise__": "ValueError", "msg": "nul"}}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "strict": true, "io": {"resolve": null}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {"resolve": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "_resolve_path", "in": {"path": "/a/b", "io": {}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": ""}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"/h:/c\"]", "expanduser": "/h", "resolve": "/h"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"C:/data:/workspace:ro\"]", "expanduser": "C:/data", "resolve": "C:/data"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"vol:/c\"]", "expanduser": "vol"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[1,]"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "{}"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[1,2]"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"/h:/c\"]", "expanduser": "/h", "resolve": null}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"/h:/c\"]", "expanduser": {"__raise__": "ValueError", "msg": "nul"}}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"/h:/c\n\"]"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {"tenv": "[\"/h://c\"]", "expanduser": "/h", "resolve": "/h"}}}
+{"func": "_parse_docker_volume_mounts", "in": {"io": {}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__script__": true, "ret": ["/r/profiles/a", "/r/profiles/b", "/r/profiles/c"]}, "is_dir": [true, false, true]}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__raise__": "OSError", "msg": "no"}}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__script__": true, "ret": ["/r/profiles/a", "/r/profiles/b"]}, "is_dir": [true, {"__raise__": "OSError", "msg": "mid"}]}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__script__": true, "ret": ["/r/profiles/a"]}, "is_dir": [{"__raise__": "ValueError", "msg": "v"}]}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__script__": true, "ret": []}}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {"iterdir": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "_profile_dirs", "in": {"hermes_root": "/r", "io": {}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {"get_hermes_home": "/r", "iterdir": {"__script__": true, "ret": []}}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {"get_hermes_home": "/home", "iterdir": {"__script__": true, "ret": ["/r/profiles/a"]}, "is_dir": [true]}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {"get_hermes_home": "/home", "iterdir": {"__raise__": "OSError", "msg": "no"}}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "h"}}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {"get_hermes_home": "/home", "iterdir": {"__script__": true, "ret": ["/r", "/r/profiles/a"]}, "is_dir": [true, true]}}}
+{"func": "_credential_home_roots", "in": {"hermes_root": "/r", "io": {}}}
+{"func": "_existing_regular_file", "in": {"raw": "/x", "io": {"expanduser": "/x", "is_file": true}}}
+{"func": "_existing_regular_file", "in": {"raw": "/x", "io": {"expanduser": "/x", "is_file": false}}}
+{"func": "_existing_regular_file", "in": {"raw": "~/x", "io": {"expanduser": {"__raise__": "ValueError", "msg": "nul"}}}}
+{"func": "_existing_regular_file", "in": {"raw": "/x", "io": {"expanduser": "/x", "is_file": {"__raise__": "OSError", "msg": "o"}}}}
+{"func": "_existing_regular_file", "in": {"raw": "/x", "io": {"expanduser": "/x", "is_file": {"__raise__": "TypeError", "msg": "t"}}}}
+{"func": "_existing_regular_file", "in": {"raw": "/x", "io": {}}}
+{"func": "_mask_media_scan_text", "in": {"text": "hello", "io": {"mask_protected_spans": "hello", "mask_json_string_media": "hello", "terminal_sentinel_start": -1}}}
+{"func": "_mask_media_scan_text", "in": {"text": "hi <|eos|>  ", "io": {"mask_protected_spans": "hi <|eos|>  ", "mask_json_string_media": "hi <|eos|>  ", "terminal_sentinel_start": 3, "blank_spans": "hi         "}}}
+{"func": "_mask_media_scan_text", "in": {"text": "t", "io": {"mask_protected_spans": {"__raise__": "ValueError", "msg": "m"}}}}
+{"func": "_mask_media_scan_text", "in": {"text": "t", "io": {"mask_protected_spans": "t", "mask_json_string_media": "t", "terminal_sentinel_start": {"__raise__": "ValueError", "msg": "s"}}}}
+{"func": "_mask_media_scan_text", "in": {"text": "t", "io": {"mask_protected_spans": "t", "mask_json_string_media": "t", "terminal_sentinel_start": 0, "blank_spans": {"__raise__": "OSError", "msg": "b"}}}}
+{"func": "_mask_media_scan_text", "in": {"text": "t", "io": {"mask_protected_spans": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "_mask_media_scan_text", "in": {"text": "t", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {"done": {"fn": 1}}}}, "session_key": "k", "io": {"task_done": true}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {"done": {"fn": 1}}}}, "session_key": "k", "io": {"task_done": false}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": null}}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {}}}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {"done": null}}}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"other": {"done": {"fn": 1}}}}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": null}, "session_key": "k", "io": {}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {"done": {"fn": 1}}}}, "session_key": "k", "io": {"task_done": {"__raise__": "RuntimeError", "msg": "d"}}}}
+{"func": "_session_task_is_stale", "in": {"self": {"_session_tasks": {"k": {"done": {"fn": 1}}}}, "session_key": "k", "io": {}}}
+{"func": "truncate_message", "in": {"content": "long text", "max_length": 10, "io": {"chunk_markdown_message": {"__script__": true, "ret": ["long", "text"]}}}}
+{"func": "truncate_message", "in": {"content": "abc", "max_length": 4096, "len_fn": {"fn": 1}, "io": {"chunk_markdown_message": {"__script__": true, "ret": ["abc"]}}}}
+{"func": "truncate_message", "in": {"content": "abc", "io": {"chunk_markdown_message": {"__raise__": "ValueError", "msg": "c"}}}}
+{"func": "truncate_message", "in": {"content": "abc", "chunking_import_fail": true, "io": {}}}
+{"func": "truncate_message", "in": {"content": "abc", "io": {"chunk_markdown_message": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "truncate_message", "in": {"content": "abc", "io": {}}}
+{"func": "supports_exec_approval_buttons", "in": {"override": false}}
+{"func": "supports_exec_approval_buttons", "in": {"override": true}}
+{"func": "supports_exec_approval_buttons", "in": {}}
+{"func": "supports_exec_approval_buttons", "in": {"override": false}}
+{"func": "supports_exec_approval_buttons", "in": {"override": true}}

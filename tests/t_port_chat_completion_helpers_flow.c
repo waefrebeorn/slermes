@@ -103,6 +103,11 @@ static json_t *cch2_h_dispatch(void *ctx, const char *name, const json_t *args)
 /* ---- entry dispatch ---- */
 static json_t *cch2_h_entry(const char *func, cch2_io_t *io, const json_t *in, json_t *st)
 {
+    /* Cases carry the LIVE name (e.g. "_rejects_stream_options"); the C entry
+     * suffix drops the leading underscore (cch2_rejects_stream_options).
+     * Normalize before suffix dispatch or every underscored name falls
+     * through to "unknown func" (fail-closed). */
+    if (func[0] == '_') func++;
 #define CCH2_DISPATCH(nm) if (strcmp(func, #nm) == 0) return cch2_##nm(io, in, st)
     CCH2_DISPATCH(is_provider_stream_empty_frame_error);
     CCH2_DISPATCH(rejects_stream_options);
