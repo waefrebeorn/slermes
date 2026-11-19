@@ -51,7 +51,7 @@ case("_debug_call_data", kind="image", source="s", user_prompt="x" * 200, model=
 case("_debug_call_data", kind="image", source="s", user_prompt="x" * 201, model=None)
 case("_debug_call_data", kind="video", source="s", user_prompt="", model="m3")
 
-for n in [0, 1048576, 5 * 1048576, 20 * 1048576, 3 * 1048576 + 500000]:
+for n in [0, 100000, 524288, 1048576, 1572864]:
     case("_too_large_message", image_data_url="a" * n)
 
 for suf in [".flv", ".wmv", "", ".MP4", ".xyz"]:
@@ -366,9 +366,10 @@ case("_vision_analyze_native", image_url="http://x/a.png", question="q", task_id
 case("_vision_analyze_native", image_url="http://x/a.png", question="q", task_id=None, region=None,
      io={"native_turn_duplicate": None, "repeat_refusal": None, "resolve_repeat_cap": 0,
          "is_interrupted": False, "prepare_image": NPREP,
-         "run_encode_on_cpu_executor": ["data:" + "a" * 300000, True], "resolve_embed_target_bytes": 256000,
-         "resize_prepared": {"data_url": "data:" + "a" * 21000000, "scale_out": {}},
-         "too_large_message": "TOO LARGE", "tool_error": "{\"error\":\"TOO LARGE\"}", "unlink_quietly": None})
+         "run_encode_on_cpu_executor": ["data:" + "a" * 300000, False], "resolve_embed_target_bytes": 256000,
+         "resize_prepared": {"data_url": "data:resized", "scale_out": {"orig_width": 100, "new_width": 50}},
+         "record_embed": None, "build_scale_note": "downscaled", "build_native_vision_tool_result": ENV,
+         "unlink_quietly": None})
 case("_vision_analyze_native", image_url="http://x/a.png", question="q", task_id=None, region=None,
      io={"native_turn_duplicate": None, "repeat_refusal": None, "resolve_repeat_cap": 2,
          "is_interrupted": False, "prepare_image": NPREP,
@@ -421,7 +422,7 @@ case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="
          "path.exists": True, "path.unlink": None})
 case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="m", task_id=None, region=None,
      io={"debug_call_data": DCD, "is_interrupted": False, "prepare_image": VPREP,
-         "run_encode_on_cpu_executor": "data:" + "a" * 6000000,
+         "run_encode_on_cpu_executor": "data:" + "a" * 5242881,
          "resize_prepared": {"data_url": "data:resized", "scale_out": {"orig_width": 100}},
          "media_messages": S([{"role": "user", "content": [{}, {"image_url": {"url": "old"}}]}]),
          "aux_call_kwargs": {"task": "vision"}, "load_auxiliary_client": None,
@@ -431,11 +432,11 @@ case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="
          "path.exists": True, "path.unlink": None})
 case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="m", task_id=None, region=None,
      io={"debug_call_data": DCD, "is_interrupted": False, "prepare_image": VPREP,
-         "run_encode_on_cpu_executor": "data:" + "a" * 21000000,
-         "resize_prepared": {"data_url": "data:" + "a" * 21000000, "scale_out": {}},
-         "too_large_message": "TOO LARGE",
+         "run_encode_on_cpu_executor": "data:small", "media_messages": S([{"role": "user", "content": []}]),
+         "aux_call_kwargs": {"task": "vision"}, "load_auxiliary_client": None,
+         "async_call_llm": R("RuntimeError", "image too large"), "is_image_size_error": True,
          "debug.log_call": None, "debug.save": None, "json.dumps": "ERRJSON",
-         "path.exists": True, "path.unlink": None})
+         "path.exists": True, "path.unlink": None, "logger.debug": None})
 case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="m", task_id=None, region=None,
      io={"debug_call_data": DCD, "is_interrupted": True, "tool_error": "{\"error\":\"Interrupted\"}"})
 case("vision_analyze_tool", image_url="http://x/a.png", user_prompt="q", model="m", task_id=None, region=None,

@@ -416,19 +416,26 @@ static json_t *ra2_mk_send_result(bool success, const json_t *message_id,
     json_set(o, "error_kind", json_null());
     return o;
 }
-/* project a tagged SendResult double to the full field set. */
+/* project a tagged SendResult double to the full field set. Absent fields
+ * must be emitted as JSON null: json_set() silently skips a C NULL value,
+ * which would drop the dataclass defaults from the wire frame. */
+static json_t *ra2_sr_field(const json_t *sr, const char *k)
+{
+    const json_t *v = ra2_get(sr, k);
+    return v ? json_copy(v) : json_null();
+}
 static json_t *ra2_project_send_result(const json_t *sr)
 {
     json_t *o = json_object();
     json_set(o, "success", json_bool(ra2_bool(sr, "success", false)));
-    json_set(o, "message_id", ra2_copy_or_null(ra2_get(sr, "message_id")));
-    json_set(o, "error", ra2_copy_or_null(ra2_get(sr, "error")));
-    json_set(o, "raw_response", ra2_copy_or_null(ra2_get(sr, "raw_response")));
+    json_set(o, "message_id", ra2_sr_field(sr, "message_id"));
+    json_set(o, "error", ra2_sr_field(sr, "error"));
+    json_set(o, "raw_response", ra2_sr_field(sr, "raw_response"));
     json_set(o, "retryable", json_bool(ra2_bool(sr, "retryable", false)));
-    json_set(o, "retry_after", ra2_copy_or_null(ra2_get(sr, "retry_after")));
+    json_set(o, "retry_after", ra2_sr_field(sr, "retry_after"));
     const json_t *cmi = ra2_get(sr, "continuation_message_ids");
     json_set(o, "continuation_message_ids", cmi ? json_copy(cmi) : json_array());
-    json_set(o, "error_kind", ra2_copy_or_null(ra2_get(sr, "error_kind")));
+    json_set(o, "error_kind", ra2_sr_field(sr, "error_kind"));
     return o;
 }
 
