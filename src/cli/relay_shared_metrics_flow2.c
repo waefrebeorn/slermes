@@ -756,6 +756,9 @@ static json_t *rsm2_deregister(rsm2_io_t *io, const json_t *in, json_t *st)
     json_append(args_arr, json_string(name));
     json_set(sa, "args", args_arr);
     json_set(sa, "kwargs", json_object());
+    /* self._safe records runtime_id (the oracle's _make_safe_recorder(self.id)). */
+    const char *rid = rsm2_str(rsm2_get(st, "id"));
+    rsm2_arg_s(sa, "runtime_id", rid ? rid : "");
     json_t *r = rsm2_call(io, "rt._safe", sa);
     if (rsm2_is_raise(r)) return r;
     json_free(r);

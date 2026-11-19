@@ -136,8 +136,15 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     } else if (!strcmp(func, "apply_set_fields")) {
         const json_t *t = J("target");
         json_t *target = t ? json_copy(t) : json_object();
-        ret_json(out, gsf_apply_set_fields(target, J("fields"), sp));
-        json_set(out, "st", target);
+        json_t *r = gsf_apply_set_fields(target, J("fields"), sp);
+        ret_json(out, r);
+        /* The oracle binds st_out=target only AFTER make_coerce prepared every
+         * field: an unknown-tag ValueError (preparation) leaves no "st" key;
+         * runtime coerce raises happen after the binding and keep it. */
+        bool prep_raise = gsf_is_raise(r) && !strcmp(gsf_raise_class(r), "ValueError")
+            && !strncmp(json_get_str(r, "msg", ""), "unknown coerce tag: ", 20);
+        if (prep_raise) json_free(target);
+        else json_set(out, "st", target);
     } else if (!strcmp(func, "emit_transition")) {
         ret_json(out, gsf_emit_runtime_status_transition(J("previous"), J("payload"), sp));
     } else {

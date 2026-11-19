@@ -1,0 +1,177 @@
+{"func": "_coerce_timeout", "in": {"timeout": 5}}
+{"func": "_coerce_timeout", "in": {"timeout": 5.5}}
+{"func": "_coerce_timeout", "in": {"timeout": 0.1}}
+{"func": "_coerce_timeout", "in": {"timeout": 100}}
+{"func": "_coerce_timeout", "in": {"timeout": 0}}
+{"func": "_coerce_timeout", "in": {"timeout": -3}}
+{"func": "_coerce_timeout", "in": {"timeout": null}}
+{"func": "_coerce_timeout", "in": {"timeout": true}}
+{"func": "_coerce_timeout", "in": {"timeout": false}}
+{"func": "_coerce_timeout", "in": {"timeout": "5"}}
+{"func": "_coerce_timeout", "in": {"timeout": [5]}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://api.openai.com/v1", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://API.OPENAI.COM", "io": {"base_url_hostname": "API.OPENAI.COM"}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://proxy.example.com", "io": {"base_url_hostname": "proxy.example.com"}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": null, "io": {"base_url_hostname": ""}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "", "io": {"base_url_hostname": ""}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://chatgpt.com", "io": {"base_url_hostname": "chatgpt.com"}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://x", "io": {"base_url_hostname": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://x", "io": {"base_url_hostname": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_is_openai_api_origin", "in": {"base_url": "https://x", "io": {}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://api.perplexity.ai"}, "io": {"base_url_hostname": "api.perplexity.ai"}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_hostname": "API.PERPLEXITY.AI"}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_hostname": "other.com"}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {}, "io": {"base_url_hostname": ""}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_hostname": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_hostname": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_hostname": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_is_perplexity_responses_backend", "in": {"params": {"base_url": "https://x"}, "io": {}}}
+{"func": "_is_azure_responses", "in": {"params": {"provider": "azure-foundry"}, "io": {}}}
+{"func": "_is_azure_responses", "in": {"params": {"provider": " Azure-Foundry "}, "io": {}}}
+{"func": "_is_azure_responses", "in": {"params": {"provider": "other", "base_url": "https://x.openai.azure.com"}, "io": {"base_url_host_matches": true}}}
+{"func": "_is_azure_responses", "in": {"params": {"provider": "other", "base_url": "https://x.services.ai.azure.com"}, "io": {"base_url_host_matches": {"$seq": [false, true]}}}}
+{"func": "_is_azure_responses", "in": {"params": {"provider": "other", "base_url": "https://x.com"}, "io": {"base_url_host_matches": {"$seq": [false, false]}}}}
+{"func": "_is_azure_responses", "in": {"params": {}, "io": {"base_url_host_matches": {"$seq": [false, false]}}}}
+{"func": "_is_azure_responses", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_host_matches": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_is_azure_responses", "in": {"params": {"base_url": "https://x"}, "io": {"base_url_host_matches": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_is_azure_responses", "in": {"params": {"base_url": "https://x"}, "io": {}}}
+{"func": "_reserves_tool_search", "in": {"params": {}, "is_xai_responses": true, "io": {}}}
+{"func": "_reserves_tool_search", "in": {"params": {"is_codex_backend": true}, "is_xai_responses": false, "io": {}}}
+{"func": "_reserves_tool_search", "in": {"params": {"is_codex_backend": 1, "base_url": "https://api.openai.com"}, "is_xai_responses": false, "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://api.openai.com"}, "is_xai_responses": false, "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://chatgpt.com"}, "is_xai_responses": false, "io": {"base_url_hostname": "chatgpt.com"}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://x"}, "is_xai_responses": false, "io": {"base_url_hostname": "other.com"}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://x"}, "is_xai_responses": false, "io": {"base_url_hostname": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://x"}, "is_xai_responses": false, "io": {"base_url_hostname": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_reserves_tool_search", "in": {"params": {"base_url": "https://x"}, "is_xai_responses": false, "io": {}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": {"name": "openai-native"}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": {"name": "xai"}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": {}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null, "_get_search_backend": "openai-native"}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null, "_get_search_backend": " OpenAI-Native "}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null, "_get_search_backend": "xai"}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null, "_get_search_backend": null}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null, "_get_search_backend": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {}}}
+{"func": "_openai_prefers_native_web_search", "in": {"io": {"get_active_search_provider": null}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "vendor/gpt-6.2-sol", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://proxy.com", "io": {"base_url_hostname": "proxy.com", "is_official_codex_base_url": true}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://proxy.com", "io": {"base_url_hostname": {"$seq": ["proxy.com", "us.api.openai.com"]}, "is_official_codex_base_url": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://proxy.com", "io": {"base_url_hostname": {"$seq": ["proxy.com", "eu.api.openai.com"]}, "is_official_codex_base_url": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://proxy.com", "io": {"base_url_hostname": {"$seq": ["proxy.com", "US.API.OPENAI.COM"]}, "is_official_codex_base_url": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://proxy.com", "io": {"base_url_hostname": {"$seq": ["proxy.com", "other.com"]}, "is_official_codex_base_url": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6-astra", "base_url": "https://api.openai.com", "io": {"is_astra_model": true, "base_url_hostname": "api.openai.com"}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6-astra", "base_url": "https://x", "io": {"is_astra_model": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6-astra", "base_url": "https://proxy.com", "io": {"is_astra_model": true, "base_url_hostname": "proxy.com"}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": null, "base_url": "https://x", "io": {"is_astra_model": false}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6.2-astra", "base_url": "https://x", "io": {}}}
+{"func": "_is_official_openai_responses_route", "in": {"model": "gpt-6-astra", "base_url": "https://x", "io": {"is_astra_model": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-4o", "base_url": "https://api.openai.com", "is_codex_backend": false, "io": {"base_url_hostname": "api.openai.com", "openai_model_rejects_reasoning": true}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-4o", "base_url": "https://api.openai.com", "is_codex_backend": false, "io": {"base_url_hostname": "api.openai.com", "openai_model_rejects_reasoning": false, "is_astra_model": false, "codex_supported_efforts": ["none", "low", "medium", "high", "xhigh"]}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-5", "base_url": "https://x", "is_codex_backend": true, "io": {"is_astra_model": false, "codex_supported_efforts": ["none", "low", "medium", "high", "xhigh"]}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-6-astra", "base_url": "https://x", "is_codex_backend": true, "io": {"is_astra_model": true, "codex_supported_efforts": ["low", "medium", "high", "xhigh", "max"]}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-6-astra", "base_url": "https://proxy.com", "is_codex_backend": false, "io": {"base_url_hostname": {"$seq": ["proxy.com", "proxy.com"]}, "is_astra_model": {"$seq": [true, true]}}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "x", "base_url": "https://proxy.com", "is_codex_backend": false, "io": {"base_url_hostname": "proxy.com", "is_astra_model": false, "codex_supported_efforts": []}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-4o", "base_url": "https://api.openai.com", "is_codex_backend": false, "io": {"base_url_hostname": "api.openai.com", "openai_model_rejects_reasoning": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_codex_efforts_for_route", "in": {"model": "gpt-5", "base_url": "https://x", "is_codex_backend": true, "io": {}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"is_codex_backend": true}, "io": {}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"is_codex_backend": 1, "base_url": "https://api.openai.com"}, "io": {"base_url_hostname": "api.openai.com", "openai_reasoning_family": "gpt-6"}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"base_url": "https://api.openai.com"}, "io": {"base_url_hostname": "api.openai.com", "openai_reasoning_family": "gpt-6"}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"base_url": "https://api.openai.com"}, "io": {"base_url_hostname": "api.openai.com", "openai_reasoning_family": null}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"base_url": "https://proxy.com"}, "io": {"base_url_hostname": "proxy.com"}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {}, "io": {"base_url_hostname": ""}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"base_url": "https://api.openai.com"}, "io": {"base_url_hostname": "api.openai.com", "openai_reasoning_family": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_sends_all_turns", "in": {"model": "gpt-5.4", "params": {"base_url": "https://x"}, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "grok-4.6", "params": {}, "effort": "high", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": true, "profile_reasoning": false, "io": {"grok_supports_reasoning_effort": true}}}
+{"func": "_reasoning_fields", "in": {"model": "grok-4.6", "params": {}, "effort": "high", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": true, "profile_reasoning": false, "io": {"grok_supports_reasoning_effort": false}}}
+{"func": "_reasoning_fields", "in": {"model": "grok-4.6", "params": {}, "effort": "low", "enabled": true, "replay_encrypted_reasoning": false, "is_xai_responses": true, "profile_reasoning": false, "io": {"grok_supports_reasoning_effort": true}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "medium", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": false, "all_turns": false, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "medium", "enabled": true, "replay_encrypted_reasoning": false, "is_xai_responses": false, "profile_reasoning": false, "all_turns": true, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {"profile_reasoning": {"effort": "high"}}, "effort": "medium", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": true, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "medium", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": true, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "none", "enabled": false, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": false, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "medium", "enabled": false, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": false, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "gpt-5", "params": {}, "effort": "none", "enabled": false, "replay_encrypted_reasoning": true, "is_xai_responses": false, "profile_reasoning": true, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "grok", "params": {}, "effort": "none", "enabled": false, "replay_encrypted_reasoning": true, "is_xai_responses": true, "profile_reasoning": false, "io": {}}}
+{"func": "_reasoning_fields", "in": {"model": "grok", "params": {}, "effort": "high", "enabled": true, "replay_encrypted_reasoning": true, "is_xai_responses": true, "profile_reasoning": false, "io": {"grok_supports_reasoning_effort": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": "short"}, "io": {"_bounded_prompt_cache_key": "short"}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "io": {"_bounded_prompt_cache_key": "pck_abc123"}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": ""}, "io": {"_bounded_prompt_cache_key": null}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": null}, "io": {"_bounded_prompt_cache_key": null}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"other": 1}, "io": {}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": null, "io": {}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {}, "io": {}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": "x"}, "io": {"_bounded_prompt_cache_key": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": "x"}, "io": {}}}
+{"func": "_bound_prompt_cache_key_field", "in": {"container": {"prompt_cache_key": "x", "other": 2}, "io": {"_bounded_prompt_cache_key": null}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": {"a": "1", "b": "2"}}, "headers": {"c": "3"}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {}, "headers": {"x": "y"}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": {"a": "1", "": "empty", "b": null}}, "headers": {}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": "notdict"}, "headers": {"x": "y"}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": {"a": 5}}, "headers": {}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": {"a": "1"}}, "headers": {"a": "override"}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": null}, "headers": {"x": "y"}}}
+{"func": "_merge_extra_headers", "in": {"kwargs": {"extra_headers": {"a": "1", "b": 0}}, "headers": {"c": "3"}}}
+{"func": "_newest_reasoning_only", "in": {"messages": []}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "user", "content": "hi"}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}, {"role": "user", "content": "x"}, {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r2"}]}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}, {"type": "compaction", "id": "c1"}]}, {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r2"}]}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": [{"type": "compaction", "id": "c1"}]}, {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [5, "x", {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}, null]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}, {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}, {"role": "assistant", "codex_reasoning_items": [{"type": "reasoning", "id": "r1"}]}]}}
+{"func": "_newest_reasoning_only", "in": {"messages": [{"role": "assistant", "codex_reasoning_items": "notlist"}]}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": "HIGH"}, "temperature": 0.5, "include": ["reasoning.encrypted_content", "reasoning.logprobs"]}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com", "clamp_effort": "high"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": "high"}, "top_p": 0.9}, "model": "gpt-4o", "base_url": "https://proxy.com", "io": {"is_astra_model": false, "base_url_hostname": "proxy.com"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": ""}}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": null}, "logprobs": true}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"temperature": 0.5, "include": ["a", "logprob_x"]}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"include": "notlist"}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com"}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": "max"}}, "model": "gpt-6.2-astra", "base_url": "https://api.openai.com", "io": {"base_url_hostname": "api.openai.com", "clamp_effort": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_sanitize_astra_request_kwargs", "in": {"kwargs": {"reasoning": {"effort": "high"}}, "model": "gpt-6.2-astra", "base_url": "https://x", "io": {}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"effort": "high"}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"], "clamp_effort": "high"}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"enabled": false}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["none", "low", "medium", "high", "xhigh"]}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"enabled": false}}, "warned": [], "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"], "logger.warning": null}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"enabled": false}}, "warned": ["gpt-5"], "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"]}}}
+{"func": "_resolve_reasoning", "in": {"model": "grok-4.6", "params": {"is_xai_responses": true}, "io": {"is_grok_46_family": true, "clamp_effort": "medium"}}}
+{"func": "_resolve_reasoning", "in": {"model": "grok-4", "params": {"is_xai_responses": true}, "io": {"is_grok_46_family": false, "clamp_effort": "medium"}}}
+{"func": "_resolve_reasoning", "in": {"model": "grok-4.6", "params": {"is_xai_responses": true, "reasoning_config": {"enabled": false}}, "warned": [], "io": {"is_grok_46_family": true, "logger.warning": null}}}
+{"func": "_resolve_reasoning", "in": {"model": "x", "params": {}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": null, "is_astra_model": false, "codex_supported_efforts": []}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"effort": ""}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"], "clamp_effort": "medium"}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"enabled": 0, "effort": "high"}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"], "clamp_effort": "high"}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"effort": "high"}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"], "clamp_effort": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"enabled": false}}, "warned": [], "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": ["low", "medium", "high"]}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"reasoning_config": {"effort": "high"}}, "io": {"base_url_hostname": "proxy.com", "_profile_declared_efforts": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_resolve_reasoning", "in": {"model": "gpt-5", "params": {"is_codex_backend": true, "reasoning_config": {"effort": "high"}}, "io": {"is_astra_model": false, "codex_supported_efforts": ["none", "low", "medium", "high", "xhigh"], "clamp_effort": "high"}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}], "params": {"base_url": "https://x"}, "is_xai_responses": true, "io": {"_xai_prefers_native_web_search": true, "_is_opencode_responses_backend": false, "base_url_hostname": "other.com", "_alias_reserved_tools": [[{"type": "web_search"}], {}]}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}], "params": {"base_url": "https://x"}, "is_xai_responses": true, "io": {"_xai_prefers_native_web_search": false, "_is_opencode_responses_backend": false, "base_url_hostname": "other.com", "_alias_reserved_tools": [[{"type": "function", "name": "hermes_web_search"}], {}]}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "search_files"}], "params": {"base_url": "https://opencode.ai"}, "is_xai_responses": false, "io": {"_is_opencode_responses_backend": true, "_alias_reserved_tools": [[{"type": "function", "name": "hermes_search_files"}], {"hermes_search_files": "search_files"}], "base_url_hostname": "opencode.ai"}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}], "params": {"base_url": "https://x"}, "is_xai_responses": false, "is_codex_backend": true, "io": {"get_active_search_provider": {"name": "openai-native"}, "_is_opencode_responses_backend": false, "base_url_hostname": "other.com", "_alias_reserved_tools": [[{"type": "web_search"}], {}]}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [], "params": {}, "is_xai_responses": true, "io": {}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": null, "params": {}, "is_xai_responses": true, "io": {}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "foo"}], "params": {"base_url": "https://x"}, "is_xai_responses": true, "io": {"_is_opencode_responses_backend": false, "base_url_hostname": "other.com"}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}], "params": {"base_url": "https://x"}, "is_xai_responses": true, "io": {"_xai_prefers_native_web_search": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}], "params": {"base_url": "https://x"}, "is_xai_responses": true, "io": {}}}
+{"func": "_alias_wire_tools", "in": {"response_tools": [{"type": "function", "name": "web_search"}, {"type": "function", "name": "foo"}], "params": {"base_url": "https://api.perplexity.ai"}, "is_xai_responses": false, "io": {"_is_opencode_responses_backend": false, "base_url_hostname": "api.perplexity.ai", "_alias_reserved_tools": [[{"type": "function", "name": "hermes_web_search"}, {"type": "function", "name": "foo"}], {"hermes_web_search": "web_search"}]}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "reasoning.context rejected", "status_code": 400}, "io": {"logger.warning": null}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "all_turns not supported", "status_code": null}, "io": {"logger.warning": null}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "reasoning.context bad", "status_code": 401}, "io": {}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "some other error", "status_code": 400}, "io": {}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": false, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "reasoning.context", "status_code": 400}, "io": {}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": "reasoning.context bad", "io": {"logger.warning": null}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": null, "io": {}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "ALL_TURNS", "status_code": 400}, "io": {}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": ["gpt-5"], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "reasoning.context", "status_code": 400}, "io": {"logger.warning": null}}}
+{"func": "reject_all_turns", "in": {"self": {"_last_sent_all_turns": true, "_all_turns_rejected": [], "_last_issuer_model": "gpt-5"}, "error": {"__raise__": "BadRequestError", "msg": "reasoning.context", "status_code": 400}, "io": {"logger.warning": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}], [{"role": "user", "content": "x"}]], "io": {"strip_unverified_reasoning_items": {"$seq": [2, 3]}}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": null, "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}]], "io": {}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": null}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}]], "io": {}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [], "io": {}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}]], "io": {"strip_unverified_reasoning_items": 0}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}]], "io": {"strip_unverified_reasoning_items": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}]], "io": {}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [null], "io": {"strip_unverified_reasoning_items": 5}}}
+{"func": "drop_unverified_replay", "in": {"self": {"_last_issuer_kind": "openai", "_last_issuer_model": "gpt-5"}, "message_lists": [[{"role": "assistant", "codex_reasoning_items": [{"type": "reasoning"}]}], [{"role": "user", "content": "x"}]], "io": {"strip_unverified_reasoning_items": {"$seq": [1, 0]}}}}

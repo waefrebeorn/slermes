@@ -844,10 +844,16 @@ json_t *mcat_profile_live_catalog(mcat_ctx *ctx, const char *normalized) {
     const char *key = creds->c.items[0]->str_val;
     const char *cbase = creds->c.items[1]->str_val;
     json_t *bu = json_obj_get(profile, "base_url");
-    const char *eff = NULL;
-    if (cbase[0]) eff = cbase;
-    else if (bu && bu->type == JSON_STRING && bu->str_val[0]) eff = bu->str_val;
-    json_t *out = mcat_probe_profile_catalog(ctx, normalized, profile, key, eff);
+    /* live: base_url or profile.base_url or None — the RAW or-chain operand;
+     * a truthy non-string profile.base_url travels verbatim, not coerced. */
+    json_t *eff = NULL;
+    bool eff_owned = false;
+    if (cbase[0]) { eff = json_string(cbase); eff_owned = true; }
+    else if (mcat_node_truthy(bu)) eff = bu; /* borrowed from profile */
+    json_t *jk = json_string(key);
+    json_t *out = mcat_probe_profile_catalog(ctx, normalized, profile, jk, eff);
+    json_free(jk);
+    if (eff_owned) json_free(eff);
     json_free(creds);
     json_free(profile);
     return out;
@@ -855,12 +861,15 @@ json_t *mcat_profile_live_catalog(mcat_ctx *ctx, const char *normalized) {
 
 /* PoP: mcat_probe_profile_catalog @ hermes_cli/models.py:probe_profile_catalog */
 json_t *mcat_probe_profile_catalog(mcat_ctx *ctx, const char *normalized, const json_t *profile,
-                                   const char *api_key, const char *base_url) {
+                                   const json_t *api_key, const json_t *base_url) {
     json_t *live = NULL;
-    if (api_key && api_key[0]) { /* no key -> no doomed probe */
+    if (mcat_node_truthy(api_key)) { /* no key -> no doomed probe */
         json_t *args = json_object();
-        json_set(args, "api_key", json_string(api_key));
-        if (base_url) json_set(args, "base_url", json_string(base_url));
+        /* Live forwards the RAW operands; the trace drops only None-valued
+         * keys (representation contract), never coerces to string. */
+        json_set(args, "api_key", json_copy(api_key));
+        if (base_url && base_url->type != JSON_NULL)
+            json_set(args, "base_url", json_copy(base_url));
         live = mcat_call(ctx, "fetch_models", args);
         if (mcat_exc_pending(ctx)) {
             mcat_exc_clear(ctx);

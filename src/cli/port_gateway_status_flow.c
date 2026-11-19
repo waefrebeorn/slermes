@@ -135,12 +135,39 @@ static char *py_str(const json_t *v) {
     return strdup("");
 }
 
+/* Python repr() of a string: quote selection + the common escapes. */
+static char *py_repr_str(const char *s) {
+    bool has_sq = strchr(s, '\'') != NULL, has_dq = strchr(s, '"') != NULL;
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = strlen(s);
+    char *out = malloc(n * 4 + 3);
+    if (!out) return strdup("''");
+    size_t k = 0;
+    out[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char ch = (unsigned char)s[i];
+        if (ch == (unsigned char)q || ch == '\\') { out[k++] = '\\'; out[k++] = (char)ch; }
+        else if (ch == '\n') { out[k++] = '\\'; out[k++] = 'n'; }
+        else if (ch == '\r') { out[k++] = '\\'; out[k++] = 'r'; }
+        else if (ch == '\t') { out[k++] = '\\'; out[k++] = 't'; }
+        else if (ch < 0x20 || ch == 0x7f) { k += (size_t)sprintf(out + k, "\\x%02x", ch); }
+        else out[k++] = (char)ch;
+    }
+    out[k++] = q; out[k] = '\0';
+    return out;
+}
+/* repr() for the coerce-tag error: strings quoted, scalars str()==repr(). */
+static char *py_repr(const json_t *v) {
+    if (is_str(v)) return py_repr_str(jstr(v) ? jstr(v) : "");
+    return py_str(v);
+}
+
 /* ── path helpers (Path.as_posix semantics for trace args) ── */
 
-/* Normalize a path string the way Windows Path + as_posix does for the
- * fixture spellings: backslashes -> slashes, collapse duplicate slashes,
- * drop a trailing separator (root "/" stays). Caller frees. */
-static char *path_norm(const char *s) {
+/* PathDouble normalization (oracle's scripted-resolve double): backslashes ->
+ * slashes, collapse duplicate slashes, drop a trailing separator (len > 1).
+ * NO "."-component removal and NO "" -> "." (the double keeps those). */
+static char *pathdouble_norm(const char *s) {
     if (!s) return strdup("");
     size_t n = strlen(s);
     char *out = malloc(n + 2);
@@ -155,12 +182,49 @@ static char *path_norm(const char *s) {
     while (k > 1 && out[k - 1] == '/') out[--k] = '\0';
     return out;
 }
-/* Path(base) / name. Caller frees. */
+
+/* Normalize a path string the way Windows pathlib.Path + as_posix does:
+ * backslashes -> slashes, collapse duplicate slashes, drop "." components
+ * (pathlib keeps ".."), drop a trailing separator (root "/" stays), and the
+ * empty path is Path(".") -> ".". Caller frees. */
+static char *path_norm(const char *s) {
+    if (!s) return strdup(".");
+    char *flat = pathdouble_norm(s);
+    size_t n = strlen(flat);
+    bool rooted = (n > 0 && flat[0] == '/');
+    char *out = malloc(n + 3);
+    if (!out) { free(flat); return strdup("."); }
+    size_t k = 0;
+    if (rooted) out[k++] = '/';
+    size_t i = rooted ? 1 : 0;
+    bool first = true;
+    while (i <= n) {
+        size_t j = i;
+        while (j < n && flat[j] != '/') j++;
+        size_t len = j - i;
+        if (len == 1 && flat[i] == '.') { /* drop "." component */ }
+        else if (len > 0) {
+            if (!first) out[k++] = '/';
+            memcpy(out + k, flat + i, len);
+            k += len;
+            first = false;
+        }
+        i = j + 1;
+    }
+    out[k] = '\0';
+    free(flat);
+    if (k == 0) { out[0] = '.'; out[1] = '\0'; }
+    return out;
+}
+/* Path(base) / name: an absolute name resets the base; the join re-normalizes
+ * (a trailing separator on name, "." components, "" base -> "."). Caller frees. */
 static char *path_join(const char *base, const char *name) {
+    if (name && name[0] == '/') return path_norm(name);
     char *b = path_norm(base);
-    size_t bl = strlen(b);
-    char *out = xsf("%s%s%s", b, (bl > 0 && b[bl - 1] == '/') ? "" : "/", name);
+    char *raw = xsf("%s/%s", b, name ? name : "");
+    char *out = path_norm(raw);
     free(b);
+    free(raw);
     return out;
 }
 /* os.path.normcase equality on normalized posix paths (Windows semantics). */
@@ -803,7 +867,7 @@ json_t *gsf_flow_live_gateway_pid_for_home(const char *home, const gsf_seams_t *
 /* ── profile_name_for_home ── */
 /* PoP: gsf_profile_name_for_home @ gateway/status.py:profile_name_for_home */
 json_t *gsf_profile_name_for_home(const char *profile_home, const gsf_seams_t *s) {
-    char *hn = path_norm(profile_home);
+    char *hn = pathdouble_norm(profile_home);
     json_t *a = args0(); aset_s(a, "profile_home", hn);
     json_t *named = gsf_call(s, "profile_name_for_home_priv", a);
     json_free(a);
@@ -819,7 +883,9 @@ json_t *gsf_profile_name_for_home(const char *profile_home, const gsf_seams_t *s
         if (swallow_exception(r1)) return r1;
         return NULL;
     }
-    char *r1s = jstr(r1) ? strdup(jstr(r1)) : py_str(r1);
+    char *r1raw = jstr(r1) ? strdup(jstr(r1)) : py_str(r1);
+    char *r1s = pathdouble_norm(r1raw); /* resolve() returns PathDouble(ret) */
+    free(r1raw);
     json_free(r1);
     a = args0();
     json_t *root = gsf_call(s, "get_default_hermes_root", a);
@@ -835,16 +901,23 @@ json_t *gsf_profile_name_for_home(const char *profile_home, const gsf_seams_t *s
     }
     char *roots = jstr(root) ? strdup(jstr(root)) : py_str(root);
     json_free(root);
-    a = args0(); aset_s(a, "path", roots);
+    /* The oracle's get_default_hermes_root stub returns REAL Path(ret)
+     * ("" -> "."), then live wraps it in PathDouble: normalize with real
+     * pathlib semantics before the scripted resolve() call. */
+    char *rootn = path_norm(roots);
+    free(roots);
+    a = args0(); aset_s(a, "path", rootn);
     json_t *r2 = gsf_call(s, "path_resolve", a);
     json_free(a);
-    free(roots);
+    free(rootn);
     if (gsf_is_raise(r2)) {
         free(hn); free(r1s);
         if (swallow_exception(r2)) return r2;
         return NULL;
     }
-    char *r2s = jstr(r2) ? strdup(jstr(r2)) : py_str(r2);
+    char *r2raw = jstr(r2) ? strdup(jstr(r2)) : py_str(r2);
+    char *r2s = pathdouble_norm(r2raw);
+    free(r2raw);
     json_free(r2);
     bool eq = normcase_eq(r1s, r2s);
     free(hn); free(r1s); free(r2s);
@@ -907,6 +980,27 @@ json_t *gsf_profile_platforms_from_multiplexer(const json_t *runtime, const char
 /* PoP: gsf_apply_set_fields @ gateway/status.py:_apply_set_fields */
 json_t *gsf_apply_set_fields(json_t *target, const json_t *fields, const gsf_seams_t *s) {
     if (!is_arr(fields) || !is_obj(target)) return NULL;
+    /* The oracle's make_coerce runs for EVERY field during preparation,
+     * before any assignment: an unknown tag raises ValueError and the target
+     * stays untouched (even for fields whose value is _UNSET). */
+    for (size_t i = 0; i < fields->c.count; i++) {
+        const json_t *f = fields->c.items[i];
+        if (!is_obj(f)) continue;
+        const json_t *ct = json_obj_get(f, "coerce");
+        if (!ct || ct->type == JSON_NULL) continue;
+        const char *tag = jstr(ct);
+        bool known = tag && (!strcmp(tag, "bool") || !strcmp(tag, "parse_active_agents")
+            || !strcmp(tag, "active_work") || !strcmp(tag, "served_profiles")
+            || !strcmp(tag, "parked_profiles") || !strcmp(tag, "multiplex_reason")
+            || !strcmp(tag, "session_store"));
+        if (!known) {
+            char *rv = py_repr(ct);
+            char *m = xsf("unknown coerce tag: %s", rv);
+            json_t *r = raise_obj("ValueError", m);
+            free(rv); free(m);
+            return r;
+        }
+    }
     for (size_t i = 0; i < fields->c.count; i++) {
         const json_t *f = fields->c.items[i];
         if (!is_obj(f)) continue;
@@ -1052,11 +1146,20 @@ json_t *gsf_flow_prepare_runtime_status(json_t *st, const json_t *fields, const 
     char *pn = path_norm(path);
     json_free(pathr);
     if (!is_obj(fields)) fields = NULL;
-    /* if reload_existing or _runtime_status_state_path != path or _runtime_status_state is None */
+    /* The oracle seeds _runtime_status_state_path = Path(sp) if sp else None:
+     * normalize the seeded spelling up front (st_out reads it back as_posix). */
     const json_t *sp = json_obj_get(st, "state_path");
+    char *spn = NULL;
+    if (is_str(sp) && jstr(sp)[0]) {
+        spn = path_norm(jstr(sp));
+        json_set(st, "state_path", json_string(spn));
+    } else {
+        json_set(st, "state_path", json_null());
+    }
     const json_t *ss = json_obj_get(st, "state");
+    /* if reload_existing or _runtime_status_state_path != path or _runtime_status_state is None */
     bool reload = (fields && jtruth(json_obj_get(fields, "reload_existing")))
-        || !is_str(sp) || !normcase_eq(jstr(sp), pn) || !jpresent(ss);
+        || !spn || !normcase_eq(spn, pn) || !jpresent(ss);
     if (reload) {
         json_set(st, "state_path", json_string(pn));
         json_t *existing = NULL;
@@ -1075,25 +1178,24 @@ json_t *gsf_flow_prepare_runtime_status(json_t *st, const json_t *fields, const 
             json_free(a);
             GSF_PROP(existing);
         }
-        json_set(st, "state", existing);
+        /* Live ASSIGNS the or-chain result even when it is None; a NULL
+         * pointer here would drop the key and keep the stale seeded state. */
+        json_set(st, "state", existing ? existing : json_null());
     }
     const json_t *previous = json_obj_get(st, "state");
     json_t *payload = previous ? json_copy(previous) : NULL;
-    if (!is_obj(payload)) {
-        /* payload.setdefault on a non-dict snapshot */
-        json_t *r = raise_attr(payload, "setdefault");
-        json_free(payload);
-        free(pn);
-        return r;
-    }
+    /* Live order: current_record = _build_pid_record() BEFORE payload.setdefault
+     * (a None snapshot raises AttributeError only after the pid seam ran). */
     a = args0();
     json_t *cur = gsf_call(s, "build_pid_record", a);
     json_free(a);
     GSF_PROP(cur);
-    if (!is_obj(cur)) {
-        char *m = xsf("'%s' object is not subscriptable", py_type_name(cur));
-        json_t *r = raise_typeerror(m);
-        free(m); json_free(cur); json_free(payload); free(pn);
+    if (!is_obj(payload)) {
+        /* payload.setdefault on a non-dict snapshot */
+        json_t *r = raise_attr(payload, "setdefault");
+        json_free(payload);
+        json_free(cur);
+        free(pn); free(spn);
         return r;
     }
     /* payload.setdefault("platforms", {}); non-dict -> {} */
@@ -1128,7 +1230,15 @@ json_t *gsf_flow_prepare_runtime_status(json_t *st, const json_t *fields, const 
         plats = filtered;
         free(drop_prefix);
     }
-    /* payload.update({key: current_record[key] for key in (...)}) */
+    /* payload.update({key: current_record[key] for key in (...)}) — the
+     * subscript happens HERE (after setdefault/platforms/clear), so a non-dict
+     * pid record raises only now, matching live's evaluation order. */
+    if (!is_obj(cur)) {
+        char *m = xsf("'%s' object is not subscriptable", py_type_name(cur));
+        json_t *r = raise_typeerror(m);
+        free(m); json_free(cur); json_free(payload); free(pn); free(spn);
+        return r;
+    }
     static const char *idkeys[] = { "kind", "pid", "argv", "start_time" };
     for (size_t j = 0; j < 4; j++) {
         const json_t *cv = json_obj_get(cur, idkeys[j]);
@@ -1214,6 +1324,7 @@ json_t *gsf_flow_prepare_runtime_status(json_t *st, const json_t *fields, const 
     json_append(out, prev_copy);
     json_free(cur);
     free(pn);
+    free(spn);
     return out;
 }
 

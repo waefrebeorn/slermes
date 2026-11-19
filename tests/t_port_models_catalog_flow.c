@@ -63,8 +63,8 @@ static json_t *mcat_harness_run(mcat_ctx *ctx, const char *func, json_t *in) {
     if (strcmp(func, "probe_profile_catalog") == 0) {
         return mcat_probe_profile_catalog(ctx, json_get_str(in, "normalized", ""),
                                           json_obj_get(in, "profile"),
-                                          json_get_str(in, "api_key", NULL),
-                                          json_get_str(in, "base_url", NULL));
+                                          json_obj_get(in, "api_key"),
+                                          json_obj_get(in, "base_url"));
     }
     if (strcmp(func, "merge_profile_catalog") == 0) {
         return mcat_merge_profile_catalog(ctx, json_get_str(in, "normalized", ""),

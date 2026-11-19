@@ -307,20 +307,20 @@ add("refuse_env_adoption_if_config_corrupt", {}, {})  # fail-closed import
 
 # ── _plugin_aliases ──
 LP_IMPORT = {"import_list_providers": None}
-add("plugin_aliases", {}, dict(LP_IMPORT, list_providers=[]))
+add("plugin_aliases", {}, dict(LP_IMPORT, list_providers=[[]]))
 add("plugin_aliases", {},
-    dict(LP_IMPORT, list_providers=[{"name": "plug-x", "aliases": ["px", "plug"],
-                                     "ambient_credentials": False}]))
+    dict(LP_IMPORT, list_providers=[[{"name": "plug-x", "aliases": ["px", "plug"],
+                                      "ambient_credentials": False}]]))
 add("plugin_aliases", {},
-    dict(LP_IMPORT, list_providers=[{"name": "plug-x", "aliases": ["glm", "px"],
-                                     "ambient_credentials": False}]))
+    dict(LP_IMPORT, list_providers=[[{"name": "plug-x", "aliases": ["glm", "px"],
+                                      "ambient_credentials": False}]]))
 add("plugin_aliases", {},
-    dict(LP_IMPORT, list_providers=[{"name": "p1", "aliases": ["shared"],
-                                     "ambient_credentials": False},
-                                    {"name": "p2", "aliases": ["shared", "other"],
-                                     "ambient_credentials": False}]))
+    dict(LP_IMPORT, list_providers=[[{"name": "p1", "aliases": ["shared"],
+                                      "ambient_credentials": False},
+                                     {"name": "p2", "aliases": ["shared", "other"],
+                                      "ambient_credentials": False}]]))
 add("plugin_aliases", {},
-    {"import_list_providers": rs("ImportError", "no"), "list_providers": []})
+    {"import_list_providers": rs("ImportError", "no"), "list_providers": [[]]})
 add("plugin_aliases", {}, dict(LP_IMPORT, list_providers=rs("RuntimeError", "boom")))
 add("plugin_aliases", {}, dict(LP_IMPORT, list_providers=None))
 add("plugin_aliases", {}, dict(LP_IMPORT, list_providers=rs("KeyboardInterrupt")))
@@ -345,47 +345,34 @@ def or_seams(h1, h2=None, looks=None, pool=None, hc=None, keyenv=None, **over):
     return s
 
 
-OR_KEY = {"keyenv": {"__callable__": "scoped_key_env"},
-          "scoped_key_env": ["sk-or-v1-real", ""]}
-add("openrouter_auto_detected", OR_KEY, or_seams(True))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"},
-     "scoped_key_env": ["", "sk-or-v1-legacy"]},
-    or_seams(False, True, looks=True))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"},
-     "scoped_key_env": ["", "sk-real-openai"]},
-    or_seams(False, True, looks=False, pool={"id": "p"}, hc=True))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
-    or_seams(False, False, pool={"id": "p"}, hc=False))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
-    or_seams(False, False, pool=None))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
-    or_seams(False, False, pool=rs("RuntimeError", "pool boom")))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
-    or_seams(False, False, pool={"id": "p"}, hc=rs("OSError", "io")))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
+OR_KEY = {"keyenv": {"__callable__": "scoped_key_env"}}
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(True), scoped_key_env=["sk-or-v1-real", ""]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, True, looks=True), scoped_key_env=["", "sk-or-v1-legacy"]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, True, looks=False, pool={"id": "p"}, hc=True),
+         scoped_key_env=["", "sk-real-openai"]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, False, pool={"id": "p"}, hc=False), scoped_key_env=["", ""]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, False, pool=None), scoped_key_env=["", ""]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, False, pool=rs("RuntimeError", "pool boom")), scoped_key_env=["", ""]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, False, pool={"id": "p"}, hc=rs("OSError", "io")), scoped_key_env=["", ""]))
+add("openrouter_auto_detected", OR_KEY,
     {"has_usable_secret": [False, False],
      "import_load_pool": rs("ImportError", "no pool"), "load_pool": {"id": "p"},
-     "has_credentials": True})
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"},
-     "scoped_key_env": rs("RuntimeError", "key boom")},
-    {"has_usable_secret": True})
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "os_getenv"}, "os_getenv": ["sk-or-v1-env", ""]},
-    or_seams(True))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "os_getenv"}, "os_getenv": [None, None]},
-    or_seams(False, False, pool={"id": "p"}, hc=True))
-add("openrouter_auto_detected",
-    {"keyenv": {"__callable__": "scoped_key_env"}, "scoped_key_env": ["", ""]},
-    or_seams(False, rs("SystemExit", "bye")))
+     "has_credentials": True, "scoped_key_env": ["", ""]})
+add("openrouter_auto_detected", OR_KEY,
+    {"has_usable_secret": True, "scoped_key_env": rs("RuntimeError", "key boom")})
+add("openrouter_auto_detected", {"keyenv": {"__callable__": "os_getenv"}},
+    dict(or_seams(True), os_getenv=["sk-or-v1-env", ""]))
+add("openrouter_auto_detected", {"keyenv": {"__callable__": "os_getenv"}},
+    dict(or_seams(False, False, pool={"id": "p"}, hc=True), os_getenv=[None, None]))
+add("openrouter_auto_detected", OR_KEY,
+    dict(or_seams(False, rs("SystemExit", "bye")), scoped_key_env=["", ""]))
 
 # ── _logged_in_oauth_active_provider ──
 REG_NOUS = {"nous": {"auth_type": "oauth_device_code"},
@@ -432,7 +419,7 @@ add("logged_in_oauth_active_provider", {"registry": REG_NOUS},
 def cmp_seams(cfg, lp=None, **over):
     s = cfg_seams(cfg)
     s["import_list_providers"] = None
-    s["list_providers"] = [] if lp is None else lp
+    s["list_providers"] = [[]] if lp is None else [lp]
     s.update(over)
     return s
 
@@ -492,8 +479,8 @@ add("credential_profile", {"provider_id": "x"},
 # ── _env_key_auto_detected ──
 def ek_seams(rows, lp=None, keys=None, usable=None, **over):
     s = {"import_list_providers": None,
-         "list_providers": [] if lp is None else lp,
-         "canonical_registry_rows": rows}
+         "list_providers": [[]] if lp is None else [lp],
+         "canonical_registry_rows": [rows]}
     if keys is not None:
         s["scoped_key_env"] = keys
     if usable is not None:
@@ -558,16 +545,18 @@ add("pool_entry_is_explicit", {"entry": {"source": "ENV: MY_KEY "}},
 add("pool_entry_is_explicit", {"entry": {"source": " Manual "}}, {})
 
 # ── _explicit_pool_entry_present ──
+# read_credential_pool returns a LIST: script one level deeper ([[rows]]),
+# a bare array is a per-call QUEUE.
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    {"read_credential_pool": []})
+    {"read_credential_pool": [[]]})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    {"read_credential_pool": [{"source": "manual"}]})
+    {"read_credential_pool": [[{"source": "manual"}]]})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    {"read_credential_pool": [{"source": "gh_cli"}, {"source": "device_code"}]})
+    {"read_credential_pool": [[{"source": "gh_cli"}, {"source": "device_code"}]]})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    {"read_credential_pool": [{"source": "gh_cli"}, {"source": "claude_code"}]})
+    {"read_credential_pool": [[{"source": "gh_cli"}, {"source": "claude_code"}]]})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    {"read_credential_pool": [None, 5, "x"]})
+    {"read_credential_pool": [[None, 5, "x"]]})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
     {"read_credential_pool": None})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
@@ -575,7 +564,7 @@ add("explicit_pool_entry_present", {"normalized": "anthropic"},
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
     {"read_credential_pool": rs("RuntimeError", "pool io")})
 add("explicit_pool_entry_present", {"normalized": "anthropic"},
-    dict({"read_credential_pool": [{"source": "env:KEY"}]},
+    dict({"read_credential_pool": [[{"source": "env:KEY"}]]},
          **dotenv_seams("sk-live", True)))
 add("explicit_pool_entry_present", {"normalized": "anthropic"}, {})  # fail-closed
 
@@ -820,6 +809,9 @@ add("save_private_json", {"target": "/h/.hermes/auth.json", "data": {"version": 
 add("save_private_json", {"target": "/h/.hermes/auth.json", "data": [1, 2],
                           "dump_kwargs": {"indent": 2}}, spj_seams())
 add("save_private_json", {"target": "/auth.json", "data": None}, spj_seams())
+add("save_private_json", {"target": "/h/./sub/auth.json", "data": {}}, spj_seams())
+add("save_private_json", {"target": "//h/auth.json", "data": {}}, spj_seams())
+add("save_private_json", {"target": "/h/../x/auth.json", "data": {}}, spj_seams())
 add("save_private_json", {"target": "/h/.hermes/auth.json", "data": {}},
     spj_seams(mkdir_under_hermes_home=rs("PermissionError", "no")))
 add("save_private_json", {"target": "/h/.hermes/auth.json", "data": {}},
@@ -917,7 +909,7 @@ def eps_seams(profile=None, env_url=None, cmd="acp-cli", resolved="/usr/bin/acp-
          "external_process_command": cmd,
          "resolve_external_process_command": resolved}
     if args is not None:
-        s["shlex_split"] = args
+        s["shlex_split"] = [args]
     if raw:
         s["os_getenv"] = raw
     s.update(over)

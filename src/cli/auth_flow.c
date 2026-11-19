@@ -110,7 +110,10 @@
  * AttributeError on msvcrt.locking).
  *
  * Fixture domains (documented exclusions):
- * - ASCII strings; POSIX path strings (path algebra models PurePosixPath).
+ * - ASCII strings; POSIX path strings. Path inputs are normalized at the
+ *   call boundary exactly like PurePosixPath (drop '.'/empty components,
+ *   keep '..', exactly two leading slashes preserved); parent uses the same
+ *   component algebra.
  * - JSON numbers have no int/float identity in libjson: integral-float
  *   literals (5.0) are excluded where live distinguishes type names
  *   (AttributeError messages) or str() renders ".0"; use integral ints or
@@ -310,11 +313,18 @@ static const char *au_exc_parent(const char *k) {
     if (au_in_names(k, WARNING_CHILDREN)) return "Warning";
     static const char *const NAME_CHILDREN[] = { "UnboundLocalError", NULL };
     if (au_in_names(k, NAME_CHILDREN)) return "NameError";
+    /* py3.11+ groups / py3.13+ finalization / py3.14 interactive */
+    if (!strcmp(k, "BaseExceptionGroup")) return "BaseException";
+    if (!strcmp(k, "ExceptionGroup")) return "BaseExceptionGroup";
+    if (!strcmp(k, "PythonFinalizationError")) return "RuntimeError";
+    if (!strcmp(k, "_IncompleteInputError")) return "SyntaxError";
     return "Exception";  /* unknown custom kind: oracle bases it on Exception */
 }
 /* caught(r, cls): cls appears anywhere in r's parent chain */
 static bool au_caught(const json_t *r, const char *cls) {
     const char *k = au_raise_class(r);
+    /* ExceptionGroup multiply-inherits (BaseExceptionGroup, Exception) */
+    if (k && !strcmp(k, "ExceptionGroup") && !strcmp(cls, "Exception")) return true;
     while (k) {
         if (!strcmp(k, cls)) return true;
         k = au_exc_parent(k);
@@ -363,7 +373,7 @@ static void au_aset_j(json_t *a, const char *k, const json_t *v) {
 /* ── Python float repr / str / repr ── */
 
 static char *au_float_repr(double v) {
-    if (v == 0.0) return strdup("0.0");
+    if (v == 0.0) return strdup(signbit(v) ? "-0.0" : "0.0");
     if (!isfinite(v)) return strdup(v > 0 ? "inf" : (isnan(v) ? "nan" : "-inf"));
     char tmp[64];
     int prec;
@@ -554,23 +564,68 @@ static bool au_int_token(const char *s, double *out) {
     *out = neg ? -v : v;
     return true;
 }
-/* PurePosixPath.parent on a POSIX string */
+/* PurePosixPath(s) stringification: drop empty + '.' components, keep '..',
+ * 1 leading slash -> /, exactly 2 -> //, 3+ -> /, no components -> "." */
+static char *au_path_norm(const char *s) {
+    size_t lead = 0;
+    while (s[lead] == '/') lead++;
+    const char *root = lead == 2 ? "//" : (lead >= 1 ? "/" : "");
+    struct { const char *p; size_t n; } parts[256];
+    size_t np = 0;
+    const char *p = s + lead;
+    while (*p && np < 256) {
+        const char *st = p;
+        while (*p && *p != '/') p++;
+        size_t n = (size_t)(p - st);
+        if (n > 0 && !(n == 1 && st[0] == '.')) { parts[np].p = st; parts[np].n = n; np++; }
+        if (*p == '/') p++;
+    }
+    if (np == 0) return strdup(root[0] ? root : ".");
+    au_buf b; au_binit(&b);
+    au_bputs(&b, root);
+    for (size_t i = 0; i < np; i++) {
+        if (i) au_bputc(&b, '/');
+        au_bput(&b, parts[i].p, parts[i].n);
+    }
+    return au_btake(&b);
+}
+
+/* PurePosixPath(s).parent: component algebra — drop empty + '.' parts, keep
+ * '..', exactly two leading slashes preserved (3+ collapse to one). */
 static char *au_path_parent(const char *s) {
-    if (!strcmp(s, "/")) return strdup("/");
-    size_t n = strlen(s);
-    while (n > 0 && s[n - 1] == '/') n--;
-    if (n == 0) return strdup("/");
-    const char *slash = NULL;
-    for (size_t i = 0; i < n; i++) if (s[i] == '/') slash = s + i;
-    if (!slash) return strdup(".");
-    if (slash == s) return strdup("/");
-    size_t pn = (size_t)(slash - s);
-    char *r = malloc(pn + 1);
-    memcpy(r, s, pn); r[pn] = '\0';
-    return r;
+    size_t lead = 0;
+    while (s[lead] == '/') lead++;
+    const char *root = lead == 2 ? "//" : (lead >= 1 ? "/" : "");
+    struct { const char *p; size_t n; } parts[256];
+    size_t np = 0;
+    const char *p = s + lead;
+    while (*p && np < 256) {
+        const char *st = p;
+        while (*p && *p != '/') p++;
+        size_t n = (size_t)(p - st);
+        if (n > 0 && !(n == 1 && st[0] == '.')) { parts[np].p = st; parts[np].n = n; np++; }
+        if (*p == '/') p++;
+    }
+    if (np == 0) return strdup(root[0] ? root : ".");
+    np--;  /* drop the last component */
+    if (np == 0) return strdup(root[0] ? root : ".");
+    au_buf b; au_binit(&b);
+    au_bputs(&b, root);
+    for (size_t i = 0; i < np; i++) {
+        if (i) au_bputc(&b, '/');
+        au_bput(&b, parts[i].p, parts[i].n);
+    }
+    return au_btake(&b);
 }
 
 /* ── module constants (AST-seeded on the oracle side) ── */
+
+/* path-normalizing inner bodies (defined below their PoP wrappers) */
+static json_t *au_lock_holder_hint_n(const au_seams_t *s, const char *path, const char *os_name);
+static json_t *au_resolved_key_n(const au_seams_t *s, const char *path);
+static json_t *au_save_private_json_n(const au_seams_t *s, const char *target,
+                                      const json_t *data, bool fsync_dir,
+                                      const json_t *dump_kwargs);
 
 #define AU_AUTH_STORE_VERSION 1
 #define AU_AUTH_LOCK_TIMEOUT_SECONDS 15.0
@@ -1060,13 +1115,13 @@ static json_t *au_plugin_aliases(const au_seams_t *s) {
     }
     for (size_t i = 0; i < lp->c.count; i++) {
         const json_t *row = lp->c.items[i];
-        if (!row || row->type != JSON_OBJECT) return out;  /* SimpleNamespace(**d) TypeError */
+        if (!row || row->type != JSON_OBJECT) { json_free(lp); return out; }  /* SimpleNamespace(**d) TypeError */
         const json_t *aliases = json_obj_get(row, "aliases");
         const json_t *name = json_obj_get(row, "name");
-        if (!aliases || aliases->type != JSON_ARRAY || !name) return out;
+        if (!aliases || aliases->type != JSON_ARRAY || !name) { json_free(lp); return out; }
         for (size_t j = 0; j < aliases->c.count; j++) {
             const char *al = au_jstr(aliases->c.items[j]);
-            if (!al) return out;  /* fixture domain: aliases are str */
+            if (!al) { json_free(lp); return out; }  /* fixture domain: aliases are str */
             if (!json_has(out, al)) json_set(out, al, json_copy(name));
         }
     }
@@ -1288,7 +1343,7 @@ static json_t *au_config_model_provider(const au_seams_t *s, const json_t *regis
         if (eff[0]) {
             json_t *ir2 = au_import(s, "has_named_custom_provider");
             if (au_is_raise(ir2)) {
-                if (au_is_exception(ir2)) { json_free(ir2); goto out; }
+                if (au_is_exception(ir2)) { json_free(ir2); goto swallow; }
                 res = ir2; goto cleanup;
             }
             json_free(ir2);
@@ -1297,7 +1352,7 @@ static json_t *au_config_model_provider(const au_seams_t *s, const json_t *regis
             json_t *hn = au_call(s, "has_named_custom_provider", a);
             json_free(a);
             if (au_is_raise(hn)) {
-                if (au_is_exception(hn)) { json_free(hn); goto out; }
+                if (au_is_exception(hn)) { json_free(hn); goto swallow; }
                 res = hn; goto cleanup;
             }
             if (au_jtruth(hn)) {
@@ -1314,7 +1369,8 @@ static json_t *au_config_model_provider(const au_seams_t *s, const json_t *regis
             char *burl = strdup("");
             if (model && model->type == JSON_OBJECT) {
                 const json_t *bu = json_obj_get(model, "base_url");
-                char *bs = au_pystr(au_jtruth(bu) ? bu : NULL);
+                /* str(base_url or "") — falsy collapses to "", never "None" */
+                char *bs = au_jtruth(bu) ? au_pystr(bu) : strdup("");
                 free(burl);
                 burl = au_strip(bs);
                 free(bs);
@@ -1323,7 +1379,7 @@ static json_t *au_config_model_provider(const au_seams_t *s, const json_t *regis
                 json_t *ir3 = au_import(s, "config_base_url_trustworthy_for_bare_custom");
                 if (au_is_raise(ir3)) {
                     free(burl);
-                    if (au_is_exception(ir3)) { json_free(ir3); goto out; }
+                    if (au_is_exception(ir3)) { json_free(ir3); goto swallow; }
                     res = ir3; goto cleanup;
                 }
                 json_free(ir3);
@@ -1334,7 +1390,7 @@ static json_t *au_config_model_provider(const au_seams_t *s, const json_t *regis
                 json_free(a);
                 if (au_is_raise(tr)) {
                     free(burl);
-                    if (au_is_exception(tr)) { json_free(tr); goto out; }
+                    if (au_is_exception(tr)) { json_free(tr); goto swallow; }
                     res = tr; goto cleanup;
                 }
                 if (au_jtruth(tr)) {
@@ -1362,6 +1418,13 @@ cleanup:
     if (empty) json_free(empty);
     json_free(fail);
     return res;
+swallow:
+    /* live `except Exception: return None, None` — NOT (model_cfg, None) */
+    free(pstr);
+    json_free(aliases);
+    json_free(lc);
+    if (empty) json_free(empty);
+    return fail;
 }
 
 /* PoP: au_credential_profile @ hermes_cli/auth.py:_credential_profile */
@@ -1518,6 +1581,14 @@ static json_t *au_is_lock_contention(const json_t *exc) {
 /* PoP: au_lock_holder_hint @ hermes_cli/auth.py:_lock_holder_hint */
 static json_t *au_lock_holder_hint(const au_seams_t *s, const char *path,
                                    const char *os_name) {
+    /* live materializes Path(lock_path) — normalize at the call boundary */
+    char *np = au_path_norm(path);
+    json_t *r = au_lock_holder_hint_n(s, np, os_name);
+    free(np);
+    return r;
+}
+static json_t *au_lock_holder_hint_n(const au_seams_t *s, const char *path,
+                                     const char *os_name) {
     json_t *a = json_object();
     au_aset_s(a, "path", path);
     au_aset_s(a, "encoding", "utf-8-sig");
@@ -1784,8 +1855,9 @@ static json_t *au_codex_pool_rate_limited_status(const au_seams_t *s) {
     au_aset_j(out, "last_refresh", json_obj_get(rl, "last_refresh"));
     au_aset_s(out, "auth_mode", "chatgpt");
     const json_t *label = json_obj_get(rl, "label");
-    char *ls = au_pystr(au_jtruth(label) ? label : NULL);
-    char *src = au_xsf("pool:%s", ls[0] ? ls : "unknown");
+    /* f"pool:{label or 'unknown'}" — falsy collapses to 'unknown' BEFORE str() */
+    char *ls = au_jtruth(label) ? au_pystr(label) : strdup("unknown");
+    char *src = au_xsf("pool:%s", ls);
     free(ls);
     json_set(out, "source", json_string(src));
     free(src);
@@ -1803,6 +1875,12 @@ static json_t *au_codex_pool_rate_limited_status(const au_seams_t *s) {
 
 /* PoP: au_resolved_key @ hermes_cli/auth.py:_resolved_key */
 static json_t *au_resolved_key(const au_seams_t *s, const char *path) {
+    char *np = au_path_norm(path);
+    json_t *r = au_resolved_key_n(s, np);
+    free(np);
+    return r;
+}
+static json_t *au_resolved_key_n(const au_seams_t *s, const char *path) {
     json_t *a = json_object();
     au_aset_s(a, "path", path);
     au_aset_b(a, "strict", false);
@@ -1823,6 +1901,14 @@ static json_t *au_resolved_key(const au_seams_t *s, const char *path) {
 static json_t *au_save_private_json(const au_seams_t *s, const char *target,
                                     const json_t *data, bool fsync_dir,
                                     const json_t *dump_kwargs) {
+    char *nt = au_path_norm(target);
+    json_t *r = au_save_private_json_n(s, nt, data, fsync_dir, dump_kwargs);
+    free(nt);
+    return r;
+}
+static json_t *au_save_private_json_n(const au_seams_t *s, const char *target,
+                                      const json_t *data, bool fsync_dir,
+                                      const json_t *dump_kwargs) {
     json_t *ir = au_import(s, "mkdir_under_hermes_home");
     if (au_is_raise(ir)) return ir;
     json_free(ir);

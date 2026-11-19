@@ -10,8 +10,9 @@
  * adoption warning log) enters through seams; the cores perform no I/O.
  *
  * Refusals model persistence.core.errors.AuthorityRefusal: a raised flag plus
- * reason / field / detail (the live _one_line bounds are identity for the
- * clean, short fixture strings). JSON values are libjson json_t.
+ * reason / field / detail, with the live _one_line normalization applied
+ * (whitespace collapse, non-printable drop, 80/160 bounds, empty -> None,
+ * emitted as JSON null). JSON values are libjson json_t.
  */
 #ifndef SESSION_POLICY_FLOW_H
 #define SESSION_POLICY_FLOW_H
@@ -23,7 +24,8 @@ extern "C" {
 #endif
 
 /* A named refusal (AuthorityRefusal). field/detail buffers exceed the live
- * _one_line bounds (80/160); fixture strings are clean so bounds are identity. */
+ * _one_line bounds (80/160); set_refusal normalizes into them, empty -> ""
+ * which the harness emits as JSON null (live None). */
 typedef struct gsp_refusal {
     bool raised;
     char reason[64];

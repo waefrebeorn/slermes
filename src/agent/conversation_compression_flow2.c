@@ -1286,7 +1286,9 @@ static json_t *cp2_fence_gated_worker(cp2_io_t *io, const json_t *in, json_t *st
         if (cp2_is_raise(lr)) return lr;
         json_free(lr);
         json_t *tup = json_array();
-        json_append(tup, cp2_copy_or_null(messages));
+        /* return messages, "" — a 2-tuple even when messages is None;
+         * json_append(NULL) is a no-op, so append an explicit null node. */
+        json_append(tup, messages ? json_copy(messages) : json_null());
         json_append(tup, json_string(""));
         return tup;
     }

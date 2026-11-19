@@ -300,7 +300,7 @@ case("format_update_warning", plan=plan([pg("default", "/h")], blockers=["b1"]),
 case("host_supports_migration", seams={"running_under_s6": False})
 case("host_supports_migration", seams={"running_under_s6": True, "named_slot_name": "hermes-default", "s6_scandir": "/run/s6", "path_is_dir": True})
 case("host_supports_migration", seams={"running_under_s6": True, "named_slot_name": "hermes-default", "s6_scandir": "/run/s6", "path_is_dir": False})
-case("host_supports_migration", seams={"running_under_s6": True, "named_slot_name": raise_spec("RuntimeError", "x")})
+case("host_supports_migration", seams={"running_under_s6": True, "s6_scandir": "/run/s6", "named_slot_name": raise_spec("RuntimeError", "x")})
 case("host_supports_migration", seams={"running_under_s6": True, "named_slot_name": "hermes-default", "s6_scandir": "/run/s6", "path_is_dir": raise_spec("OSError", "x")})
 case("host_supports_migration", seams={"running_under_s6": None})
 
@@ -323,7 +323,7 @@ def build_seams(profiles_pairs=None, own_pids=None, services=None, identities=No
         "installed_services": svcs,
         "gateway_identity": ids,
         "explicit_multiplex_flag": flag,
-        "recorded_served_profiles": live_served,
+        "recorded_served_profiles": (L(live_served) if live_served is not None else None),
         "read_manifest": manifest,
         "profile_gateway_config": pgcfg if pgcfg is not None else cfg({}),
         "plan_secondaries": L(sec if sec is not None else []),
@@ -373,7 +373,7 @@ def format_seams(**over):
         "signalled_gateways": L(["p1 (pid 123)"]),
         "remove_verb": "uninstall",
         "service_label": "systemd (user)",
-        "plan_target_service_kind": ["systemd", True],
+        "plan_target_service_kind": L(["systemd", True]),
         "plan_default": pg("default", "/h", services=[["systemd", True]]),
         "pg_has_gateway": True,
         "plan_expected_served": L(["default", "p1"]),
@@ -388,7 +388,7 @@ case("format_plan", plan=plan([pg("default", "/h")], multiplex_flag_on=True, liv
      dry_run=False, seams=format_seams(plan_already_multiplexed=True, pg_service_label="none"))
 case("format_plan", plan=plan([pg("default", "/h"), pg("p1", "/h/p1")], interrupted=True, manifest={"version": 1}),
      dry_run=False, seams=format_seams(plan_standalone_secondaries=L([]), signalled_gateways=L([]),
-                                       resume_target=[["systemd", True], "alice"], pg_service_label=["none", "none"]))
+                                       resume_target=L([["systemd", True], "alice"]), pg_service_label=["none", "none"]))
 case("format_plan", plan=plan([pg("default", "/h")]), dry_run=False,
      seams=format_seams(pg_service_label="none", plan_standalone_secondaries=L([]), signalled_gateways=L([])))
 case("format_plan", plan=plan([pg("default", "/h"), pg("p1", "/h/p1")], blockers=["b1"]),
@@ -399,59 +399,62 @@ case("format_plan", plan=plan([pg("default", "/h"), pg("p1", "/h/p1", pid=5, ser
                                        remove_verb="park", service_label="s6 slot", pg_service_label=["none", "s6 slot"]))
 case("format_plan", plan=plan([pg("default", "/h"), pg("p1", "/h/p1")], manifest={"version": 1}, blockers=["b1"]),
      dry_run=False, seams=format_seams(plan_standalone_secondaries=L([]), signalled_gateways=L([]),
-                                       resume_target=[None, None], pg_service_label=["none", "none"],
+                                       resume_target=L([None, None]), pg_service_label=["none", "none"],
                                        manifest_path="/h/gateway_migration.json"))
 
 # ── 25. cmd_migrate ──
+def cmd_seams(build_over=None, **over):
+    s = dict(build_seams(**(build_over or {})), **format_seams())
+    s.update({"plan_standalone_secondaries": L([]), "signalled_gateways": L([]),
+              "pg_service_label": ["none", "none"], "plan_already_multiplexed": False,
+              "plan_blocked": False})
+    s.update(over)
+    return s
+
+
 case("cmd_migrate", args={"backends": True}, seams={"cmd_backends_report": None})
 case("cmd_migrate", args={"json": True}, seams={})  # SystemExit 2
 case("cmd_migrate", args={}, seams={"running_under_s6": True, "named_slot_name": "hermes-default", "s6_scandir": "/run/s6", "path_is_dir": False})  # SystemExit 1
-case("cmd_migrate", args={"dry_run": True}, seams=dict(build_seams(), **format_seams()))
-case("cmd_migrate", args={}, seams=dict(build_seams(flag=True, live_served=["default", "p1"]),
-                                        plan_already_multiplexed=True, pg_service_label="none"))
-case("cmd_migrate", args={"yes": True}, seams=dict(build_seams(), plan_blocked=True,
-                                                   plan_already_multiplexed=False, pg_service_label=["none", "none"]))
-case("cmd_migrate", args={"yes": True}, seams=dict(build_seams(profiles_pairs=[["default", "/h"]]),
-                                                   plan_already_multiplexed=False, plan_blocked=False, pg_service_label="none"))
-case("cmd_migrate", args={}, seams=dict(build_seams(), plan_already_multiplexed=False, plan_blocked=False,
-                                        pg_service_label=["none", "none"], stdin_isatty=True, prompt_yes_no=False))
-case("cmd_migrate", args={"yes": True}, seams=dict(build_seams(), plan_already_multiplexed=False, plan_blocked=False,
-                                                   pg_service_label=["none", "none"], apply_migration=True,
-                                                   plan_standalone_secondaries=L([]), signalled_gateways=L([])))
-case("cmd_migrate", args={"yes": True}, seams=dict(build_seams(), plan_already_multiplexed=False, plan_blocked=False,
-                                                   pg_service_label=["none", "none"], apply_migration=False,
-                                                   plan_standalone_secondaries=L([]), signalled_gateways=L([])))
+case("cmd_migrate", args={"dry_run": True}, seams=cmd_seams())
+case("cmd_migrate", args={}, seams=cmd_seams({"flag": True, "live_served": ["default", "p1"]},
+                                             plan_already_multiplexed=True))
+case("cmd_migrate", args={"yes": True}, seams=cmd_seams(plan_blocked=True))
+case("cmd_migrate", args={"yes": True}, seams=cmd_seams({"profiles_pairs": [["default", "/h"]]},
+                                                        pg_service_label="none"))
+case("cmd_migrate", args={}, seams=cmd_seams(stdin_isatty=True, prompt_yes_no=False))
+case("cmd_migrate", args={"yes": True}, seams=cmd_seams(apply_migration=True))
+case("cmd_migrate", args={"yes": True}, seams=cmd_seams(apply_migration=False))
 
 # ── 26. maybe_auto_migrate_after_update ──
+def auto_seams(build_over=None, **over):
+    s = dict(build_seams(**(build_over or {})), **format_seams())
+    s.update({"running_under_s6": False, "auto_migration_opted_out": False,
+              "plan_already_multiplexed": False, "plan_standalone_secondaries": L([]),
+              "signalled_gateways": L([]), "pg_service_label": ["none", "none"],
+              "plan_blocked": False, "masked_default_unit": None})
+    s.update(over)
+    return s
+
+
 case("maybe_auto_migrate_after_update", seams={"running_under_s6": True, "named_slot_name": "hermes-default", "s6_scandir": "/run/s6", "path_is_dir": False})
 case("maybe_auto_migrate_after_update", seams={"running_under_s6": False, "default_home": "/h", "auto_migration_opted_out": True})
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(flag=True, live_served=["default", "p1"]),
-                                                   running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=True, pg_service_label="none"))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(profiles_pairs=[["default", "/h"]]),
-                                                   running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=False, pg_service_label="none"))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(), running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=False, plan_standalone_secondaries=L([]),
-                                                   pg_service_label=["none", "none"]))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(), running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=False, plan_standalone_secondaries=L(_FSEC),
-                                                   masked_default_unit="hermes-gateway", pg_service_label=["none", "none"]))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(), running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=False, plan_standalone_secondaries=L(_FSEC),
-                                                   masked_default_unit=None, plan_blocked=True, pg_service_label=["none", "none"]))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(manifest={"version": 1}), running_under_s6=False,
-                                                   auto_migration_opted_out=False, plan_already_multiplexed=False,
-                                                   plan_standalone_secondaries=L([]), pg_service_label=["none", "none"],
-                                                   resume_target=[None, None], apply_migration=True, signalled_gateways=L([])))
-case("maybe_auto_migrate_after_update", seams=dict(build_seams(), running_under_s6=False, auto_migration_opted_out=False,
-                                                   plan_already_multiplexed=False, plan_standalone_secondaries=L(_FSEC),
-                                                   masked_default_unit=None, plan_blocked=False, pg_service_label=["none", "none"],
-                                                   apply_migration=True, signalled_gateways=L(["p1 (pid 123)"]),
-                                                   remove_verb="uninstall", service_label="systemd (user)",
-                                                   plan_target_service_kind=["systemd", True],
-                                                   plan_default=pg("default", "/h"), pg_has_gateway=False,
-                                                   plan_expected_served=L(["default", "p1"])))
+case("maybe_auto_migrate_after_update", seams=auto_seams({"flag": True, "live_served": ["default", "p1"]},
+                                                         plan_already_multiplexed=True))
+case("maybe_auto_migrate_after_update", seams=auto_seams({"profiles_pairs": [["default", "/h"]]},
+                                                         pg_service_label="none"))
+case("maybe_auto_migrate_after_update", seams=auto_seams())  # no secondaries, no resume -> None
+case("maybe_auto_migrate_after_update", seams=auto_seams(plan_standalone_secondaries=L(_FSEC),
+                                                         masked_default_unit="hermes-gateway"))
+case("maybe_auto_migrate_after_update", seams=auto_seams(plan_standalone_secondaries=L(_FSEC),
+                                                         plan_blocked=True))
+case("maybe_auto_migrate_after_update", seams=auto_seams({"manifest": {"version": 1}},
+                                                         resume_target=L([None, None]), apply_migration=True))
+case("maybe_auto_migrate_after_update", seams=auto_seams(plan_standalone_secondaries=L(_FSEC),
+                                                         apply_migration=True, signalled_gateways=L(["p1 (pid 123)"]),
+                                                         remove_verb="uninstall", service_label="systemd (user)",
+                                                         plan_target_service_kind=L(["systemd", True]),
+                                                         plan_default=pg("default", "/h"), pg_has_gateway=False,
+                                                         plan_expected_served=L(["default", "p1"])))
 
 
 def main():

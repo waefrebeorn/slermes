@@ -351,11 +351,17 @@ bool cp_is_sole_credential(const json_t *entries) {
 
 /* PoP: cp_next_priority @ agent/credential_pool.py:_next_priority */
 long cp_next_priority(const json_t *entries) {
+    /* max((e.priority ...), default=-1) + 1: the default applies only to an
+     * EMPTY iterable; a present priority of -2 yields -1, not 0. */
     long max_p = -1;
+    bool seen = false;
     if (entries && entries->type == JSON_ARRAY) {
         for (size_t i = 0; i < json_len(entries); i++) {
             json_t *p = cp_get(json_get(entries, i), "priority");
-            if (p && p->type == JSON_NUMBER && (long)p->num_val > max_p) max_p = (long)p->num_val;
+            if (p && p->type == JSON_NUMBER) {
+                long v = (long)p->num_val;
+                if (!seen || v > max_p) { max_p = v; seen = true; }
+            }
         }
     }
     return max_p + 1;
@@ -1715,6 +1721,35 @@ static void cp_array_replace(json_t *arr, json_t *retained) {
     for (size_t i = 0; i < json_len(retained); i++) json_append(arr, json_copy(json_get(retained, i)));
 }
 
+/* oracle mk_entry(provider, d): PooledCredential defaults over the payload. */
+static json_t *cp_mk_entry(const char *provider, const json_t *d) {
+    json_t *e = json_object();
+    json_set(e, "provider", json_string(provider ? provider : ""));
+    json_set(e, "id", json_string(cp_get_str(d, "id", "")));
+    json_set(e, "label", json_string(cp_get_str(d, "label", "")));
+    json_set(e, "auth_type", json_string(cp_get_str(d, "auth_type", CP_AUTH_TYPE_API_KEY)));
+    json_t *pri = cp_get(d, "priority");
+    json_set(e, "priority", pri ? json_copy(pri) : json_number(0));
+    json_set(e, "source", json_string(cp_get_str(d, "source", CP_SOURCE_MANUAL)));
+    json_set(e, "access_token", json_string(cp_get_str(d, "access_token", "")));
+    static const char *nullable[] = {
+        "refresh_token", "last_status", "last_status_at", "last_error_code",
+        "last_error_reason", "last_error_message", "last_error_reset_at",
+        "status_cleared_at", "base_url", "expires_at", "expires_at_ms",
+        "last_refresh", "inference_base_url", "agent_key", "agent_key_expires_at",
+        "model_cooldowns", NULL,
+    };
+    for (int i = 0; nullable[i]; i++) {
+        json_t *v = cp_get(d, nullable[i]);
+        json_set(e, nullable[i], v ? json_copy(v) : json_null());
+    }
+    json_t *rc = cp_get(d, "request_count");
+    json_set(e, "request_count", rc ? json_copy(rc) : json_number(0));
+    json_t *ex = cp_get(d, "extra");
+    json_set(e, "extra", (ex && ex->type == JSON_OBJECT) ? json_copy(ex) : json_object());
+    return e;
+}
+
 /* PoP: cp_upsert_entry @ agent/credential_pool.py:_upsert_entry */
 bool cp_upsert_entry(cp_flow_io_t *io, json_t *entries, const char *provider,
                      const char *source, json_t *payload) {
@@ -1748,8 +1783,16 @@ bool cp_upsert_entry(cp_flow_io_t *io, json_t *entries, const char *provider,
     free(duplicate);
     if (existing_idx < 0) {
         if (!cp_get(payload, "id")) {
+            /* live: uuid.uuid4().hex[:6] with the oracle's uuid double
+             * hex = (uuid_hex6() or "") + "000000" — pad, then take 6. */
             json_t *r = seam(io, "uuid_hex6", NULL);
-            json_set(payload, "id", r);
+            const char *rs = (cp_truthy(r) && r->type == JSON_STRING) ? r->str_val : "";
+            char id6[7];
+            size_t rl = strlen(rs);
+            for (size_t i = 0; i < 6; i++) id6[i] = (i < rl) ? rs[i] : '0';
+            id6[6] = '\0';
+            json_free(r);
+            json_set(payload, "id", json_string(id6));
         }
         if (!cp_get(payload, "priority")) {
             json_set(payload, "priority", json_number((double)cp_next_priority(entries)));
@@ -1762,6 +1805,12 @@ bool cp_upsert_entry(cp_flow_io_t *io, json_t *entries, const char *provider,
         json_set(fa, "provider", json_string(provider));
         json_set(fa, "payload", json_copy(payload));
         json_t *entry = seam(io, "from_dict", fa);
+        /* oracle stub: mk_entry(prov, r if isinstance(r, dict) else payload) —
+         * an unscripted/non-dict from_dict builds the entry from the payload. */
+        if (!entry || entry->type != JSON_OBJECT) {
+            json_free(entry);
+            entry = cp_mk_entry(provider, payload);
+        }
         json_append(entries, entry);
         return true;
     }

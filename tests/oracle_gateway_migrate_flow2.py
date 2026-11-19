@@ -482,9 +482,10 @@ def install_stubs(ns):
     # ── external module stubs ──
     hcli = _pkg("hermes_cli")
     profiles = _mod("hermes_cli.profiles")
-    profiles.profiles_to_serve = lambda multiplex=False, include_parked=False, include_standalone=False: seam(
-        "profiles_to_serve", {"multiplex": multiplex, "include_parked": include_parked,
-                              "include_standalone": include_standalone})
+    profiles.profiles_to_serve = lambda multiplex=False, include_parked=False, include_standalone=False: [
+        (nm, PathDouble(h)) for nm, h in seam(
+            "profiles_to_serve", {"multiplex": multiplex, "include_parked": include_parked,
+                                  "include_standalone": include_standalone})]
     profiles._stop_gateway_process = lambda home: seam("profiles_stop_gateway_process", {"home": posix(home)})
     hcli.profiles = profiles
 

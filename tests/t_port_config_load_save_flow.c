@@ -105,6 +105,36 @@ static json_t *cfgls_state_proj(json_t *state, json_t *in) {
     return out;
 }
 
+/* drive-level tuple(cache_sig/cache_key): the oracle converts before calling.
+ * array -> copy; str -> chars; dict -> keys; scalar -> TypeError "'X' object
+ * is not iterable". null_is_none: load_* pass None through; raw_* tuple(None)
+ * raises (their drive default is []). Returns NULL for pass-through None, a
+ * NEW array, or a raise node. */
+static json_t *cfgls_sig_tuple(const json_t *cs, bool null_is_none) {
+    if (!cs || cs->type == JSON_NULL) {
+        if (null_is_none) return NULL;
+        return cfgls_make_raise("TypeError", "'NoneType' object is not iterable");
+    }
+    if (cs->type == JSON_ARRAY) return json_copy(cs);
+    json_t *out = json_array();
+    if (cs->type == JSON_STRING) {
+        const char *s = cs->str_val ? cs->str_val : "";
+        for (size_t i = 0; s[i]; i++) {
+            char ch[2] = { s[i], '\0' };
+            json_append(out, json_string(ch));
+        }
+        return out;
+    }
+    if (cs->type == JSON_OBJECT) {
+        for (size_t i = 0; i < cs->c.count; i++) json_append(out, json_string(cs->c.keys[i]));
+        return out;
+    }
+    json_free(out);
+    char m[128];
+    snprintf(m, sizeof m, "'%s' object is not iterable", cfgls_py_type_name(cs));
+    return cfgls_make_raise("TypeError", m);
+}
+
 static json_t *cfgls_run_case(const char *func, json_t *in) {
     cfgls_flow_io_t io;
     cfgls_script_ctx_t sc;
@@ -115,20 +145,40 @@ static json_t *cfgls_run_case(const char *func, json_t *in) {
     if (strcmp(func, "worker_config_snapshot") == 0) {
         ret = cfgls_worker_config_snapshot(&io);
     } else if (strcmp(func, "raw_config_cache_hit") == 0) {
-        ret = cfgls_raw_config_cache_hit(&io, json_get_str(in, "path_key", ""), json_obj_get(in, "cache_key"));
+        json_t *ck = cfgls_sig_tuple(json_obj_get(in, "cache_key"), false);
+        if (ck && cfgls_raised(ck)) ret = ck;
+        else {
+            ret = cfgls_raw_config_cache_hit(&io, json_get_str(in, "path_key", ""), ck);
+            json_free(ck);
+        }
     } else if (strcmp(func, "raw_config_cache_store") == 0) {
-        ret = cfgls_raw_config_cache_store(&io, json_get_str(in, "path_key", ""),
-                                           json_obj_get(in, "cache_key"), json_obj_get(in, "data"));
+        json_t *ck = cfgls_sig_tuple(json_obj_get(in, "cache_key"), false);
+        if (ck && cfgls_raised(ck)) ret = ck;
+        else {
+            ret = cfgls_raw_config_cache_store(&io, json_get_str(in, "path_key", ""),
+                                               ck, json_obj_get(in, "data"));
+            json_free(ck);
+        }
     } else if (strcmp(func, "read_raw_config_impl") == 0) {
         ret = cfgls_read_raw_config_impl_flow(&io, json_get_bool(in, "want_deepcopy", true));
     } else if (strcmp(func, "load_config_cache_sig") == 0) {
         ret = cfgls_load_config_cache_sig(&io, json_get_str(in, "config_path", ""));
     } else if (strcmp(func, "load_config_cache_hit") == 0) {
-        ret = cfgls_load_config_cache_hit_flow(&io, json_get_str(in, "path_key", ""), json_obj_get(in, "cache_sig"));
+        json_t *cs = cfgls_sig_tuple(json_obj_get(in, "cache_sig"), true);
+        if (cs && cfgls_raised(cs)) ret = cs;
+        else {
+            ret = cfgls_load_config_cache_hit_flow(&io, json_get_str(in, "path_key", ""), cs);
+            json_free(cs);
+        }
     } else if (strcmp(func, "last_known_good_fallback") == 0) {
-        ret = cfgls_last_known_good_fallback_flow(&io, json_get_str(in, "config_path", ""),
-                                                  json_get_str(in, "path_key", ""),
-                                                  json_obj_get(in, "cache_sig"), json_obj_get(in, "exc"));
+        json_t *cs = cfgls_sig_tuple(json_obj_get(in, "cache_sig"), true);
+        if (cs && cfgls_raised(cs)) ret = cs;
+        else {
+            ret = cfgls_last_known_good_fallback_flow(&io, json_get_str(in, "config_path", ""),
+                                                      json_get_str(in, "path_key", ""),
+                                                      cs, json_obj_get(in, "exc"));
+            json_free(cs);
+        }
     } else if (strcmp(func, "merge_managed_overlay") == 0) {
         ret = cfgls_merge_managed_overlay_flow(&io, json_obj_get(in, "expanded"));
     } else if (strcmp(func, "write_config_state") == 0) {

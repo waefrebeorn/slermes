@@ -210,7 +210,7 @@ case("_reject_unencodable", path="/f", content=[0xDCFF, 0xDD00])
 def jnc(text, strip=None):
     s = {}
     if strip is not None:
-        s["strip_bom"] = strip
+        s["strip_bom"] = [strip]
     return s
 case("_json_nonstandard_constant", text="plain text", seams={})
 case("_json_nonstandard_constant", text='{"a": NaN}', seams=jnc('{"a": NaN}', ['{"a": NaN}', False]))
@@ -226,7 +226,7 @@ case("_json_nonstandard_constant", text='\ufeff{"a": Infinity}', seams=jnc('\ufe
 # ── _refuse_introduced_json_constant ──
 case("_refuse_introduced_json_constant", path="/f.json", content="{}", pre_content=None, seams={})
 case("_refuse_introduced_json_constant", path="/f.json", content='{"a": NaN}', pre_content=None,
-     seams={"strip_bom": ['{"a": NaN}', False]})
+     seams={"strip_bom": [['{"a": NaN}', False]]})
 case("_refuse_introduced_json_constant", path="/f.json", content='{"a": NaN}', pre_content="[Infinity]",
      seams={"strip_bom": [['{"a": NaN}', False], ["[Infinity]", False]]})
 case("_refuse_introduced_json_constant", path="/f.json", content='{"a": NaN}', pre_content="{}",
@@ -301,7 +301,7 @@ def wf(content, path="/f.txt", expand=None, denied=None, linter=None, lsp_ext=Fa
     if lsp is not None:
         s["maybe_lsp_diagnostics"] = lsp
     if strip_bom is not None:
-        s["strip_bom"] = strip_bom
+        s["strip_bom"] = [strip_bom]
     if extra:
         s.update(extra)
     return s
@@ -325,7 +325,8 @@ case("write_file", path="/f.txt", content="a\nb", pre_content=None, amb=AMB,
               hash_exec={"stdout": sha(b"\xef\xbb\xbfa\r\nb") + "  /f.txt", "exit_code": 0},
               lint={"success": True, "skipped": False, "output": "", "message": ""}, lsp=""))
 case("write_file", path="/f.txt", content="hello", pre_content=None, amb=AMB,
-     seams=wf("hello", hash_exec={"stdout": HELLO_SHA + "  /f.txt", "exit_code": 0}, lint=None))
+     seams=wf("hello", hash_exec={"stdout": HELLO_SHA + "  /f.txt", "exit_code": 0},
+              extra={"check_lint_delta": None}))
 case("write_file", path="/f.txt", content="hello", pre_content=None, amb=AMB,
      seams=wf("hello", monotonic=rs("SystemExit", "x")))
 case("write_file", path="/f.txt", content="hello", pre_content=None, amb=AMB,
@@ -367,7 +368,7 @@ def vpp(data_hex, strip_bom=None, native=False, rc="0", segments=None, decode=No
                          matches_strip if matches_strip is not None else (size if size is not None else str(len(bytes.fromhex(data_hex)) if data_hex else 0))],
          "decode_base64_sample": decode if decode is not None else data_hex}
     if strip_bom is not None:
-        s["strip_bom"] = strip_bom
+        s["strip_bom"] = [strip_bom]
     if extra:
         s.update(extra)
     return s

@@ -1,0 +1,186 @@
+{"func": "_block_type", "in": {"b": {"type": "text"}}}
+{"func": "_block_type", "in": {"b": {"type": "tool_use", "id": "x"}}}
+{"func": "_block_type", "in": {"b": {}}}
+{"func": "_block_type", "in": {"b": null}}
+{"func": "_block_type", "in": {"b": 5}}
+{"func": "_block_type", "in": {"b": "str"}}
+{"func": "_block_type", "in": {"b": {"type": null}}}
+{"func": "_block_type", "in": {"b": {"type": 3}}}
+{"func": "_has_block_type", "in": {"blocks": [{"type": "text"}], "types": ["text"]}}
+{"func": "_has_block_type", "in": {"blocks": [{"type": "image"}], "types": ["text", "tool_use"]}}
+{"func": "_has_block_type", "in": {"blocks": [], "types": ["text"]}}
+{"func": "_has_block_type", "in": {"blocks": [{"type": "thinking"}, {"type": "tool_use"}], "types": ["tool_use"]}}
+{"func": "_has_block_type", "in": {"blocks": [5, {"type": "text"}], "types": ["text"]}}
+{"func": "_has_block_type", "in": {"blocks": null, "types": ["text"]}}
+{"func": "_has_block_type", "in": {"blocks": [{"type": "text"}], "types": []}}
+{"func": "_has_block_type", "in": {"blocks": [{"type": null}], "types": [null]}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": "hello"}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": ""}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": "   "}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": null}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": 5}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text"}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "image"}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": "\t\n"}}}
+{"func": "_is_blank_text_block", "in": {"b": {"type": "text", "text": "\u001c"}}}
+{"func": "_is_blank_text_block", "in": {"b": null}}
+{"func": "_cache_control_of", "in": {"b": {"cache_control": {"type": "ephemeral"}}}}
+{"func": "_cache_control_of", "in": {"b": {"cache_control": "x"}}}
+{"func": "_cache_control_of", "in": {"b": {"cache_control": null}}}
+{"func": "_cache_control_of", "in": {"b": {}}}
+{"func": "_cache_control_of", "in": {"b": null}}
+{"func": "_cache_control_of", "in": {"b": {"cache_control": {}}}}
+{"func": "_text_block", "in": {"text": "hi"}}
+{"func": "_text_block", "in": {"text": ""}}
+{"func": "_text_block", "in": {"text": null}}
+{"func": "_text_block", "in": {"text": 5}}
+{"func": "_text_block", "in": {"text": "a\nb"}}
+{"func": "_text_block_with_citations", "in": {"text": "hi", "cits": [{"a": 1}]}}
+{"func": "_text_block_with_citations", "in": {"text": "hi", "cits": []}}
+{"func": "_text_block_with_citations", "in": {"text": "hi", "cits": null}}
+{"func": "_text_block_with_citations", "in": {"text": "hi", "cits": "x"}}
+{"func": "_text_block_with_citations", "in": {"text": "hi", "cits": [{"a": 1}, {"b": 2}]}}
+{"func": "_parse_tool_args", "in": {"raw": "{\"a\": 1}"}}
+{"func": "_parse_tool_args", "in": {"raw": "[1, 2, 3]"}}
+{"func": "_parse_tool_args", "in": {"raw": "bad json"}}
+{"func": "_parse_tool_args", "in": {"raw": "null"}}
+{"func": "_parse_tool_args", "in": {"raw": "42"}}
+{"func": "_parse_tool_args", "in": {"raw": "\"str\""}}
+{"func": "_parse_tool_args", "in": {"raw": "true"}}
+{"func": "_parse_tool_args", "in": {"raw": {"a": 1}}}
+{"func": "_parse_tool_args", "in": {"raw": null}}
+{"func": "_parse_tool_args", "in": {"raw": "01"}}
+{"func": "_parse_tool_args", "in": {"raw": "[1,]"}}
+{"func": "_parse_tool_args", "in": {"raw": "{\"a\":1,}"}}
+{"func": "_parse_tool_args", "in": {"raw": "1 2"}}
+{"func": "_parse_tool_args", "in": {"raw": "\"a\\tb\""}}
+{"func": "_parse_tool_args", "in": {"raw": "\"\\u0041\""}}
+{"func": "_parse_tool_args", "in": {"raw": "{\"a\":1,\"a\":2}"}}
+{"func": "_parse_tool_args", "in": {"raw": " 1 "}}
+{"func": "_parse_tool_args", "in": {"raw": "1.5"}}
+{"func": "_parse_tool_args", "in": {"raw": "1e3"}}
+{"func": "_parse_tool_args", "in": {"raw": "\"\\q\""}}
+{"func": "_parse_tool_args", "in": {"raw": ""}}
+{"func": "_strip_thinking", "in": {"blocks": [{"type": "thinking"}, {"type": "text"}]}}
+{"func": "_strip_thinking", "in": {"blocks": [{"type": "redacted_thinking"}, {"type": "tool_use"}]}}
+{"func": "_strip_thinking", "in": {"blocks": []}}
+{"func": "_strip_thinking", "in": {"blocks": [{"type": "text"}, {"type": "image"}]}}
+{"func": "_strip_thinking", "in": {"blocks": [5, {"type": "thinking"}]}}
+{"func": "_strip_thinking", "in": {"blocks": null}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_use", "id": "a"}, {"type": "tool_use", "id": "b"}], "btype": "tool_use", "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_use", "id": "a"}, {"type": "text"}], "btype": "tool_use", "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_use", "id": "a"}, {"type": "tool_use", "id": "a"}], "btype": "tool_use", "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_use"}], "btype": "tool_use", "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [], "btype": "tool_use", "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_result", "tool_use_id": "x"}], "btype": "tool_result", "key": "tool_use_id"}}
+{"func": "_block_ids", "in": {"blocks": [5], "btype": null, "key": "id"}}
+{"func": "_block_ids", "in": {"blocks": [{"type": "tool_use", "id": "b"}, {"type": "tool_use", "id": "a"}], "btype": "tool_use", "key": "id"}}
+{"func": "_assistant_block_lists", "in": {"result": [{"role": "assistant", "content": [{"type": "text"}]}, {"role": "user", "content": "hi"}]}}
+{"func": "_assistant_block_lists", "in": {"result": [{"role": "user", "content": "hi"}]}}
+{"func": "_assistant_block_lists", "in": {"result": [{"role": "assistant", "content": "str"}]}}
+{"func": "_assistant_block_lists", "in": {"result": []}}
+{"func": "_assistant_block_lists", "in": {"result": [{"role": "assistant", "content": []}, {"role": "assistant", "content": [{"type": "text"}]}]}}
+{"func": "_assistant_block_lists", "in": {"result": [5]}}
+{"func": "_assistant_block_lists", "in": {"result": [{"role": "assistant"}]}}
+{"func": "_tool_use_block", "in": {"tool_id": "x.y", "name": "read", "tool_input": {"a": 1}, "io": {"sanitize_tool_id": "x_y"}}}
+{"func": "_tool_use_block", "in": {"tool_id": "", "name": "t", "tool_input": {}, "io": {"sanitize_tool_id": "tool_0"}}}
+{"func": "_tool_use_block", "in": {"tool_id": null, "name": "t", "tool_input": null, "io": {"sanitize_tool_id": "tool_0"}}}
+{"func": "_tool_use_block", "in": {"tool_id": "z", "name": "f", "tool_input": {"k": "v"}, "io": {"sanitize_tool_id": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_tool_use_block", "in": {"tool_id": "z", "name": "f", "tool_input": {}, "io": {}}}
+{"func": "_tool_use_block", "in": {"tool_id": "z", "name": "f", "tool_input": {}, "io": {"sanitize_tool_id": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "_tool_use_block", "in": {"tool_id": "z", "name": "f", "tool_input": {}, "io": {"sanitize_tool_id": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {"tool_calls": [{"id": "t1", "function": {"name": "f", "arguments": "{\"x\": 1}"}}]}, "ordered_blocks": [{"type": "tool_use", "id": "t1", "name": "f", "input": {"x": 99}}], "io": {"sanitize_tool_id": "t1", "sanitize_replay_block": {"$seq": [{"type": "tool_use", "id": "t1", "name": "f", "input": {"x": 99}}]}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "text", "text": "  "}], "io": {"sanitize_replay_block": {"$seq": [null]}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "image", "source": {}}], "io": {"sanitize_replay_block": {"$seq": [null]}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "text", "text": "", "cache_control": {"type": "ephemeral"}}, {"type": "tool_use", "id": "t", "name": "f", "input": {}}], "io": {"sanitize_tool_id": "t", "sanitize_replay_block": {"$seq": [null, {"type": "tool_use", "id": "t", "name": "f", "input": {}}]}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {"content": [{"type": "text", "text": "x", "cache_control": {"type": "inline"}}]}, "ordered_blocks": [{"type": "text", "text": "hi"}], "io": {"sanitize_replay_block": {"$seq": [{"type": "text", "text": "hi"}]}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "text", "text": "hi"}], "io": {"sanitize_replay_block": {"__raise__": "ValueError", "msg": "boom"}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "text"}], "io": {}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {"tool_calls": [{"id": "t", "function": "x"}]}, "ordered_blocks": [], "io": {"sanitize_tool_id": "t"}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {}, "ordered_blocks": [{"type": "text"}], "io": {"sanitize_replay_block": {"__raise__": "KeyboardInterrupt", "msg": ""}, "apply_assistant_cache_control": null}}}
+{"func": "_replay_ordered_blocks", "in": {"m": {"cache_control": {"type": "top"}, "tool_calls": [{"id": "a", "function": {"arguments": "null"}}]}, "ordered_blocks": [{"type": "tool_use", "id": "a", "name": "f", "input": {"secret": 1}}], "io": {"sanitize_tool_id": "a", "sanitize_replay_block": {"$seq": [{"type": "tool_use", "id": "a", "name": "f", "input": {"secret": 1}}]}, "apply_assistant_cache_control": null}}}
+{"func": "assistant_replay_carrier", "in": {"m": {"anthropic_content_blocks": [{"type": "text", "text": "hi"}]}, "io": {"sanitize_replay_block": {"$seq": [{"type": "text", "text": "hi"}]}, "apply_assistant_cache_control": null}}}
+{"func": "assistant_replay_carrier", "in": {"m": {"anthropic_content_blocks": []}, "io": {"extract_preserved_thinking_blocks": [{"type": "thinking", "thinking": "t"}]}}}
+{"func": "assistant_replay_carrier", "in": {"m": {}, "io": {"extract_preserved_thinking_blocks": []}}}
+{"func": "assistant_replay_carrier", "in": {"m": {"anthropic_content_blocks": [{"type": "image"}]}, "io": {"sanitize_replay_block": {"$seq": [null]}, "extract_preserved_thinking_blocks": [{"type": "thinking"}]}}}
+{"func": "assistant_replay_carrier", "in": {"m": {"anthropic_content_blocks": [{"type": "text"}]}, "io": {}}}
+{"func": "assistant_replay_carrier", "in": {"m": {}, "io": {"extract_preserved_thinking_blocks": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "assistant_replay_carrier", "in": {"m": {"anthropic_content_blocks": [{"type": "text", "text": "hi"}]}, "io": {"sanitize_replay_block": {"$seq": [{"type": "text", "text": "hi"}]}, "apply_assistant_cache_control": null, "extract_preserved_thinking_blocks": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "_tool_result_content", "in": {"m": {"content": "hello"}}}
+{"func": "_tool_result_content", "in": {"m": {"content": ""}}}
+{"func": "_tool_result_content", "in": {"m": {"content": "  "}}}
+{"func": "_tool_result_content", "in": {"m": {"content": {"_multimodal": true, "content": [{"type": "text", "text": "x"}]}}, "io": {"content_parts_to_anthropic_blocks": [{"type": "text", "text": "x"}]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": {"_multimodal": true, "content": [], "text_summary": "sum"}}, "io": {"content_parts_to_anthropic_blocks": []}}}
+{"func": "_tool_result_content", "in": {"m": {"content": {"_multimodal": true, "content": [], "text_summary": 5}}, "io": {"content_parts_to_anthropic_blocks": []}}}
+{"func": "_tool_result_content", "in": {"m": {"content": [{"type": "image", "source": {"type": "url", "url": "u"}}]}, "io": {"content_parts_to_anthropic_blocks": [{"type": "image", "source": {"type": "url", "url": "u"}}]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": [{"type": "text", "text": "x"}]}, "io": {"content_parts_to_anthropic_blocks": [{"type": "text", "text": "x"}]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": {"a": 1}}}}
+{"func": "_tool_result_content", "in": {"m": {"content": null}}}
+{"func": "_tool_result_content", "in": {"m": {"content": "x", "_anthropic_content_blocks": [{"type": "image", "source": {}}]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": "", "_anthropic_content_blocks": [{"type": "image"}]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": [{"type": "text"}]}, "io": {}}}
+{"func": "_tool_result_content", "in": {"m": {"content": [{"type": "text"}]}, "io": {"content_parts_to_anthropic_blocks": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "_tool_result_content", "in": {"m": {"content": [1, 2]}}}
+{"func": "_tool_result_content", "in": {"m": {"content": true}}}
+{"func": "_concat_content", "in": {"prev": "a", "curr": "b"}}
+{"func": "_concat_content", "in": {"prev": [{"type": "text", "text": "a"}], "curr": "b"}}
+{"func": "_concat_content", "in": {"prev": "a", "curr": [{"type": "image"}]}}
+{"func": "_concat_content", "in": {"prev": {"k1": 1, "k2": 2}, "curr": []}}
+{"func": "_concat_content", "in": {"prev": [], "curr": []}}
+{"func": "_concat_content", "in": {"prev": null, "curr": "b"}}
+{"func": "_concat_content", "in": {"prev": "a", "curr": 5}}
+{"func": "_concat_content", "in": {"prev": [1, 2], "curr": [3]}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "thinking", "thinking": "t", "signature": "s"}], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "thinking", "thinking": "t"}], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "thinking", "thinking": "t", "signature": "s"}], "signature_dead": true}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "redacted_thinking", "data": "d"}], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "redacted_thinking"}], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "redacted_thinking", "thinking": "t"}], "signature_dead": true}}
+{"func": "_keep_valid_thinking", "in": {"content": [{"type": "text", "text": "x"}], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": [5], "signature_dead": false}}
+{"func": "_keep_valid_thinking", "in": {"content": null, "signature_dead": false}}
+{"func": "_current_tool_loop_start", "in": {"result": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": []}]}}
+{"func": "_current_tool_loop_start", "in": {"result": [{"role": "user", "content": [{"type": "tool_result"}]}, {"role": "assistant", "content": []}]}}
+{"func": "_current_tool_loop_start", "in": {"result": [{"role": "assistant", "content": []}]}}
+{"func": "_current_tool_loop_start", "in": {"result": []}}
+{"func": "_current_tool_loop_start", "in": {"result": [{"role": "user", "content": "a"}, {"role": "user", "content": "b"}]}}
+{"func": "_current_tool_loop_start", "in": {"result": [5]}}
+{"func": "_current_tool_loop_start", "in": {"result": [{"role": "user", "content": [{"type": "text"}]}]}}
+{"func": "_image_source_data", "in": {"block": {"type": "image", "source": {"type": "base64", "data": "abc"}}}}
+{"func": "_image_source_data", "in": {"block": {"type": "image", "source": {"type": "url", "url": "u"}}}}
+{"func": "_image_source_data", "in": {"block": {"type": "image", "source": {"data": 5}}}}
+{"func": "_image_source_data", "in": {"block": {"type": "image", "source": "x"}}}
+{"func": "_image_source_data", "in": {"block": {"type": "image"}}}
+{"func": "_image_source_data", "in": {"block": null}}
+{"func": "_image_source_data", "in": {"block": {"source": {"data": "d"}}}}
+{"func": "_convert_system_content", "in": {"content": "plain str"}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a"}, {"type": "text", "text": "b"}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a", "cache_control": {"type": "ephemeral"}}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "  ", "cache_control": {"type": "ephemeral"}}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a"}, {"type": "image"}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text"}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": 5}]}}
+{"func": "_convert_system_content", "in": {"content": [5]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a"}, 5]}}
+{"func": "_convert_system_content", "in": {"content": null}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a", "cache_control": {}}, {"type": "text", "text": "b"}]}}
+{"func": "_convert_system_content", "in": {"content": [{"type": "text", "text": "a", "cache_control": {"x": 1}}, {"type": "text", "text": "  "}]}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__read_file", "io": {"registry.get_entry": {"$seq": [null, null, {"name": "read_file"}]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__chat_history_lookup", "io": {"registry.get_entry": {"$seq": [null, null, null]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__context_notes", "io": {"registry.get_entry": {"$seq": [null, null, null]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__unknown", "io": {"registry.get_entry": {"$seq": [null, null, null]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__read_file", "io": {"registry.get_entry": {"$seq": [{"name": "x"}]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "short", "io": {"registry.get_entry": {"$seq": [null, null, null]}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": null, "io": {}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__x", "io": {}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__x", "io": {"registry.get_entry": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "_unprefix_oauth_tool_name", "in": {"name": "mcp__memory", "io": {"registry.get_entry": {"$seq": [null, null, null]}}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "end_turn"}, "io": {"guardrail_intervened": false, "map_finish_reason": "stop"}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "tool_use"}, "io": {"guardrail_intervened": true, "map_finish_reason": "tool_calls"}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "max_tokens"}, "io": {"guardrail_intervened": false, "map_finish_reason": "length"}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "refusal"}, "io": {"guardrail_intervened": false, "map_finish_reason": "content_filter"}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "unknown"}, "io": {"guardrail_intervened": false, "map_finish_reason": "stop"}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "end_turn"}, "io": {}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "end_turn"}, "io": {"guardrail_intervened": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": "end_turn"}, "io": {"guardrail_intervened": false, "map_finish_reason": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "response_finish_reason", "in": {"response": {"stop_reason": null}, "io": {"guardrail_intervened": false, "map_finish_reason": "stop"}}}

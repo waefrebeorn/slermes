@@ -598,17 +598,22 @@ static int pf_profile_id_match(const char *s) {
     return 1;
 }
 
-/* _PYTHON_INTERPRETER_RE: ^python[\d.]*w?(\.exe)?$ (full match). */
+/* _PYTHON_INTERPRETER_RE: ^python[\d.]*w?(\.exe)?$ (full match). The trailing
+ * ".exe" is optional and its leading '.' overlaps the [\d.]* run, so resolve the
+ * backtracking by stripping a ".exe" suffix first: 'e'/'x' cannot appear in
+ * [\d.]*w?, so the suffix interpretation is the only one that can match. */
 static int pf_python_interp_match(const char *s) {
     if (!s) return 0;
     size_t n = strlen(s);
     if (n < 6 || strncmp(s, "python", 6) != 0) return 0;
-    size_t i = 6;
-    while (i < n && ((s[i] >= '0' && s[i] <= '9') || s[i] == '.')) i++;
-    if (i < n && s[i] == 'w') i++;
-    if (i == n) return 1;
-    if (n - i == 4 && strcmp(s + i, ".exe") == 0) return 1;
-    return 0;
+    const char *rest = s + 6;
+    size_t rn = n - 6;
+    size_t core_n = rn;
+    if (rn >= 4 && strcmp(rest + rn - 4, ".exe") == 0) core_n = rn - 4;
+    size_t i = 0;
+    while (i < core_n && ((rest[i] >= '0' && rest[i] <= '9') || rest[i] == '.')) i++;
+    if (i < core_n && rest[i] == 'w') i++;
+    return i == core_n;
 }
 
 static int pf_all_digits(const char *s, size_t n) {
@@ -649,7 +654,7 @@ static int pf_store_copy_fullmatch(const char *s) {
         if (rn >= 4 + 8 + 1 + 6 + 1 && strncmp(r, "bak-", 4) == 0) {
             const char *d8 = r + 4;
             if (pf_all_digits(d8, 8) && d8[8] == 't' && pf_all_digits(d8 + 9, 6) && d8[15] == 'z') {
-                size_t used = 16;
+                size_t used = 20;   /* "bak-" + 8 digits + 't' + 6 digits + 'z' */
                 if (rn == used) return 1;
                 if (rn > used && r[used] == '.' && pf_all_digits(r + used + 1, rn - used - 1)) return 1;
             }

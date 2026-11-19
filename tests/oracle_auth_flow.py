@@ -49,7 +49,7 @@ import os
 import sys
 import types
 from dataclasses import asdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
@@ -154,6 +154,7 @@ EXC_MAP = {
     "Warning": Warning, "UserWarning": UserWarning, "DeprecationWarning": DeprecationWarning,
     "RuntimeWarning": RuntimeWarning, "FutureWarning": FutureWarning,
     "ResourceWarning": ResourceWarning,
+    "BaseExceptionGroup": BaseExceptionGroup, "ExceptionGroup": ExceptionGroup,
 }
 
 
@@ -177,16 +178,22 @@ def posix(p):
         return None
     if isinstance(p, PathDouble):
         return p.posix
+    if isinstance(p, PurePosixPath):
+        return p.as_posix()
     if isinstance(p, Path):
         return p.as_posix()
-    return Path(p).as_posix()
+    # PurePosixPath, NOT Path: on Windows Path mangles POSIX paths
+    # (backslashes, UNC '//host/share' trailing-slash artifacts).
+    return PurePosixPath(p).as_posix()
 
 
 class PathDouble:
     """A Path stand-in: POSIX stringification + scripted resolve/read_text."""
 
     def __init__(self, s):
-        self.posix = Path(s).as_posix() if s is not None else ""
+        # PurePosixPath: the port's documented POSIX path domain (Windows
+        # Path would flip separators and treat '//h/x' as a UNC share).
+        self.posix = PurePosixPath(s).as_posix() if s is not None else ""
 
     def __str__(self):
         return self.posix
@@ -204,16 +211,20 @@ class PathDouble:
 
     @property
     def parent(self):
-        p = self.posix
-        if p == "/":
-            return PathDouble("/")
-        p = p.rstrip("/")
-        i = p.rfind("/")
-        if i < 0:
-            return PathDouble(".")
-        if i == 0:
-            return PathDouble("/")
-        return PathDouble(p[:i])
+        # PurePosixPath parent: drop empty + '.' parts, keep '..',
+        # exactly two leading slashes preserved (3+ collapse to one).
+        s = self.posix
+        lead = 0
+        while lead < len(s) and s[lead] == "/":
+            lead += 1
+        root = "//" if lead == 2 else ("/" if lead >= 1 else "")
+        parts = [p for p in s[lead:].split("/") if p not in ("", ".")]
+        if not parts:
+            return PathDouble(root if root else ".")
+        parts = parts[:-1]
+        if not parts:
+            return PathDouble(root if root else ".")
+        return PathDouble(root + "/".join(parts))
 
     def resolve(self, strict=False):
         return seam("path_resolve", {"path": self.posix, "strict": strict})
@@ -439,6 +450,14 @@ def get_provider_profile_stub(provider_id):
     return r
 
 
+def canonical_rows_stub():
+    r = seam("canonical_registry_rows", {})
+    if isinstance(r, list):
+        # pconfig is consumed via attribute access live -> SimpleNamespace double
+        return [(p[0], types.SimpleNamespace(**p[1])) for p in r]
+    return r
+
+
 def load_pool_stub(provider_id):
     r = seam("load_pool", {"provider_id": provider_id})
     if r is None:
@@ -474,7 +493,7 @@ def install_stubs(ns):
     ns["_auth_file_path"] = lambda: seam("auth_file_path", {})
     # bare globals (module-top imports in auth.py)
     ns["get_config_path"] = lambda: seam("get_config_path", {})
-    ns["_canonical_registry_rows"] = lambda: seam("canonical_registry_rows", {})
+    ns["_canonical_registry_rows"] = canonical_rows_stub
     ns["_codex_pool_rate_limit_status"] = lambda: seam("codex_pool_rate_limit_status", {})
     ns["provider_env_base_url"] = lambda pconfig: seam(
         "provider_env_base_url",
@@ -645,7 +664,11 @@ def drive(ns, func, inp):
     if func == "plugin_aliases":
         return f()
     if func == "scoped_key_env_reader":
-        return norm(f())
+        r = f()
+        if callable(r) and not hasattr(r, "__au_callable__"):
+            # the live ImportError fallback lambda reads os.getenv
+            r.__au_callable__ = "os_getenv"
+        return norm(r)
     if func == "openrouter_auto_detected":
         return f(mat_keyenv(inp.get("keyenv")))
     if func == "logged_in_oauth_active_provider":

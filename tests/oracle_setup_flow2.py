@@ -624,7 +624,7 @@ def main():
         except BaseException as ex:
             ret = {"__raise__": type(ex).__name__, "msg": str(ex)}
             state = CUR["state"]
-        want = {"ret": norm(ret), "trace": CUR["trace"]}
+        want = {"ret": norm(ret), "trace": norm(CUR["trace"])}
         if state is not None:
             want["state"] = norm(state)
         if canon(want) != canon(got):

@@ -86,7 +86,7 @@ json_t *mcat_api_key_provider_live(mcat_ctx *ctx, const char *normalized, bool f
 json_t *mcat_stepfun_catalog(mcat_ctx *ctx, const char *normalized, bool force_refresh);
 json_t *mcat_profile_live_catalog(mcat_ctx *ctx, const char *normalized);
 json_t *mcat_probe_profile_catalog(mcat_ctx *ctx, const char *normalized, const json_t *profile,
-                                   const char *api_key, const char *base_url);
+                                   const json_t *api_key, const json_t *base_url);
 json_t *mcat_merge_profile_catalog(mcat_ctx *ctx, const char *normalized, const json_t *profile,
                                    const json_t *live);
 json_t *mcat_drop_delisted_opencode_models(mcat_ctx *ctx, const char *normalized, json_t *rows);

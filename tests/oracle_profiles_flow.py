@@ -186,7 +186,12 @@ def seam(name, args):
         else:
             r = sc
     CUR["trace"].append({"ev": name, "args": args, "ret": r})
-    return maybe_raise(r)
+    # The C universal seam returns a FRESH copy (json_copy) of the script result;
+    # live code that mutates its result (e.g. _strip_multiplex_flag's cfg.pop) must
+    # mutate a private copy, never the shared script dict / recorded trace ret.
+    if isinstance(r, dict) and "__raise__" in r:
+        raise make_exc(r["__raise__"], r.get("msg", ""))
+    return copy.deepcopy(r)
 
 
 def norm(o):

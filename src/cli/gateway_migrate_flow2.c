@@ -922,11 +922,10 @@ json_t *gm2_flow_duplicate_credential_findings(const gm2_seams_t *s) {
     GM2_PROP(en);
     json_free(en);
     json_t *homes = gm2_flow_profile_homes(s);
-    json_t *result;
-    if (gm2_is_raise(homes)) { result = homes; }
+    json_t *configs = json_array();
+    json_t *err = NULL;
+    if (gm2_is_raise(homes)) { err = homes; }
     else {
-        json_t *configs = json_array();
-        json_t *err = NULL;
         for (size_t i = 0; i < homes->c.count; i++) {
             const json_t *pair = homes->c.items[i];
             const char *name = gm2_jstr(json_get(pair, 0));
@@ -943,13 +942,16 @@ json_t *gm2_flow_duplicate_credential_findings(const gm2_seams_t *s) {
             json_append(configs, entry);
         }
         json_free(homes);
-        if (err) { json_free(configs); result = err; }
-        else {
-            result = gm2_flow_duplicate_credential_lines(configs, s);
-            json_free(configs);
-        }
     }
-    return gm2_cm_finish(s, "multiplex_read_exit", NULL, result);
+    /* the with block ends here: __exit__ fires BEFORE duplicate_credential_lines
+     * (the live `return duplicate_credential_lines(configs)` is OUTSIDE the with). */
+    json_t *ex = gm2_scall(s, "multiplex_read_exit", gm2_args0());
+    if (gm2_is_raise(ex)) { json_free(configs); json_free(err); return ex; }
+    json_free(ex);
+    if (err) { json_free(configs); return err; }
+    json_t *result = gm2_flow_duplicate_credential_lines(configs, s);
+    json_free(configs);
+    return result;
 }
 
 /* PoP: gm2_flow_check_duplicate_credentials @ hermes_cli/gateway_migrate.py:_check_duplicate_credentials */
@@ -1203,25 +1205,34 @@ json_t *gm2_flow_host_supports_migration(const gm2_seams_t *s) {
     GM2_PROP(r);
     if (!gm2_jtruth(r)) { json_free(r); return NULL; }
     json_free(r);
+    json_t *scandir = gm2_scall(s, "s6_scandir", gm2_args0());
+    GM2_PROP(scandir);
     json_t *a = gm2_args0(); gm2_aset_s(a, "name", "default");
     json_t *name = gm2_scall(s, "named_slot_name", a);
-    GM2_PROP(name);
-    json_t *scandir = gm2_scall(s, "s6_scandir", gm2_args0());
-    if (gm2_is_raise(scandir)) { json_free(name); return scandir; }
+    if (gm2_is_raise(name)) { json_free(scandir); return name; }
     char *path = gm2_path_join(gm2_jstr(scandir) ? gm2_jstr(scandir) : "",
                                gm2_jstr(name) ? gm2_jstr(name) : "");
-    json_free(name); json_free(scandir);
+    json_free(name);
     json_t *a2 = gm2_args0(); gm2_aset_s(a2, "path", path);
     json_t *isdir = gm2_scall(s, "path_is_dir", a2);
-    if (gm2_is_raise(isdir)) { free(path); return isdir; }
+    if (gm2_is_raise(isdir)) { free(path); json_free(scandir); return isdir; }
     json_t *ret = NULL;
     if (!gm2_jtruth(isdir)) {
+        /* the message re-joins scandir / named_slot_name('default') — a SECOND
+         * named_slot_name call (live evaluates it again in the f-string). */
+        json_t *a3 = gm2_args0(); gm2_aset_s(a3, "name", "default");
+        json_t *name2 = gm2_scall(s, "named_slot_name", a3);
+        if (gm2_is_raise(name2)) { free(path); json_free(scandir); json_free(isdir); return name2; }
+        char *path2 = gm2_path_join(gm2_jstr(scandir) ? gm2_jstr(scandir) : "",
+                                    gm2_jstr(name2) ? gm2_jstr(name2) : "");
+        json_free(name2);
         char *m = gm2_xsf("s6-supervised container without a root gateway slot (%s); "
-                          "the container's boot registers it — restart the container.", path);
+                          "the container's boot registers it — restart the container.", path2);
+        free(path2);
         ret = json_string(m);
         free(m);
     }
-    json_free(isdir); free(path);
+    json_free(isdir); free(path); json_free(scandir);
     return ret;
 }
 

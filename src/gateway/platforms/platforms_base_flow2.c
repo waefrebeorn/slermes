@@ -1242,17 +1242,19 @@ static const char *pb2_audio_mime(const char *e) {
     return "";
 }
 static const char *pb2_document_mime(const char *e) {
+    /* pb2_mime_ext_t is {mime, ext} — initializers MUST be mime-first
+     * (SUPPORTED_DOCUMENT_TYPES items are ext->mime; reversed here). */
     static const pb2_mime_ext_t t[] = {
-        {".pdf", "application/pdf"}, {".md", "text/markdown"}, {".txt", "text/plain"},
-        {".csv", "text/csv"}, {".log", "text/plain"}, {".json", "application/json"},
-        {".xml", "application/xml"}, {".yaml", "application/yaml"}, {".yml", "application/yaml"},
-        {".toml", "application/toml"}, {".ini", "text/plain"}, {".cfg", "text/plain"},
-        {".zip", "application/zip"}, {".doc", "application/msword"}, {".xls", "application/vnd.ms-excel"},
-        {".ppt", "application/vnd.ms-powerpoint"},
-        {".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
-        {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
-        {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
-        {".ts", "text/plain"}, {".py", "text/plain"}, {".sh", "text/plain"},
+        {"application/pdf", ".pdf"}, {"text/markdown", ".md"}, {"text/plain", ".txt"},
+        {"text/csv", ".csv"}, {"text/plain", ".log"}, {"application/json", ".json"},
+        {"application/xml", ".xml"}, {"application/yaml", ".yaml"}, {"application/yaml", ".yml"},
+        {"application/toml", ".toml"}, {"text/plain", ".ini"}, {"text/plain", ".cfg"},
+        {"application/zip", ".zip"}, {"application/msword", ".doc"}, {"application/vnd.ms-excel", ".xls"},
+        {"application/vnd.ms-powerpoint", ".ppt"},
+        {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx"},
+        {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"},
+        {"application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pptx"},
+        {"text/plain", ".ts"}, {"text/plain", ".py"}, {"text/plain", ".sh"},
     };
     for (size_t i = 0; i < sizeof(t) / sizeof(t[0]); i++)
         if (strcmp(t[i].ext, e) == 0) return t[i].mime;

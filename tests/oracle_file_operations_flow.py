@@ -456,6 +456,7 @@ def extract():
         "_new_sentinel": new_sentinel_rec, "_split_segments": split_segments_rec,
         "has_binary_extension": has_binary_extension_rec,
         "get_write_denied_error": get_write_denied_error_rec,
+        "_UTF8_BOM": "\ufeff",
         "LINTERS_INPROC": {e: linter_rec(e) for e in DEFAULT_LINTER_EXTS},
         "_FAIL_CLOSED_INPROC_EXTS": frozenset(DEFAULT_FAIL_CLOSED_EXTS),
     }
@@ -584,6 +585,8 @@ def drive(ns, func, inp):
             return ns[live](inp.get("encoder", ""), inp.get("arg", ""), inp.get("max_bytes")), None
         if func == "_failed_read":
             return ns[live](inp.get("path", ""), inp.get("payload", ""), inp.get("read_rc", 0)), None
+        if func == "_fail_closed_syntax_error":
+            return ns[live](inp.get("path", ""), inp.get("ext", ""), inp.get("content", "")), None
         return ns[live](bytes.fromhex(inp.get("data", "")), inp.get("size_segment", "")), None
     slf = make_self(inp)
     m = getattr(slf, live)

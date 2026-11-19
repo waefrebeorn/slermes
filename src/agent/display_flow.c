@@ -1385,14 +1385,18 @@ static json_t *dp_get_tool_row_parts(dp_io_t *io, const char *tool_name, json_t 
     json_free(ra);
     if (dp_raised(redacted)) {
         if (dp_is_base_exc(redacted)) return redacted;
+        json_free(redacted);
         goto except_block;
     }
     json_t *eff_args = NULL;
     bool eff_owned = false;
     if (jtruth(redacted)) { eff_args = redacted; eff_owned = true; }
-    else if (jtruth(args)) { eff_args = args; }
-    else { eff_args = json_object(); eff_owned = true; }
-    json_free(redacted);
+    else {
+        /* redacted not adopted: free it here; eff_args owns its own value */
+        json_free(redacted);
+        if (jtruth(args)) { eff_args = args; }
+        else { eff_args = json_object(); eff_owned = true; }
+    }
 
     /* is_failure, suffix = _detect_tool_failure(tool_name, result) */
     json_t *da = json_object();

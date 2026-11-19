@@ -121,6 +121,78 @@ static json_t *cfgls_make_raise_code(const char *type, double code) {
     return r;
 }
 
+/* Builtin exception class names (py3.14): make_exc's getattr(builtins, t)
+ * succeeds only for these; anything else degrades to Exception. */
+static bool cfgls_builtin_exc(const char *t) {
+    static const char *names[] = {
+        "BaseException", "SystemExit", "KeyboardInterrupt", "GeneratorExit",
+        "Exception", "StopIteration", "StopAsyncIteration", "ArithmeticError",
+        "FloatingPointError", "OverflowError", "ZeroDivisionError", "AssertionError",
+        "AttributeError", "BufferError", "EOFError", "ImportError", "ModuleNotFoundError",
+        "LookupError", "IndexError", "KeyError", "MemoryError", "NameError",
+        "UnboundLocalError", "OSError", "BlockingIOError", "ChildProcessError",
+        "ConnectionError", "BrokenPipeError", "ConnectionAbortedError",
+        "ConnectionRefusedError", "ConnectionResetError", "FileExistsError",
+        "FileNotFoundError", "InterruptedError", "IsADirectoryError", "NotADirectoryError",
+        "PermissionError", "ProcessLookupError", "TimeoutError", "ReferenceError",
+        "RuntimeError", "NotImplementedError", "RecursionError", "SyntaxError",
+        "IndentationError", "TabError", "SystemError", "TypeError", "ValueError",
+        "UnicodeError", "UnicodeDecodeError", "UnicodeEncodeError", "UnicodeTranslateError",
+        "Warning", "DeprecationWarning", "PendingDeprecationWarning", "RuntimeWarning",
+        "SyntaxWarning", "UserWarning", "FutureWarning", "ImportWarning", "UnicodeWarning",
+        "BytesWarning", "EncodingWarning", "ResourceWarning", "ExceptionGroup",
+        "BaseExceptionGroup", NULL,
+    };
+    if (!t) return false;
+    for (int i = 0; names[i]; i++) if (strcmp(t, names[i]) == 0) return true;
+    return false;
+}
+
+/* Normalize a scripted raise spec the way the live seam stub + case wrapper
+ * do: make_exc(spec) builds a REAL exception (unknown class -> Exception),
+ * and exc_spec(e) re-projects it. So the propagated spec carries the
+ * effective class name, str(e) as message, name ONLY for ModuleNotFoundError,
+ * code ONLY for SystemExit, problem/problem_mark_line when set. Single-arg
+ * constructors str() to the message (KeyError's repr-quoting is outside the
+ * fixture/fuzz domain). Returns a NEW spec; caller frees. */
+static json_t *cfgls_norm_exc_spec(const json_t *spec) {
+    const char *t = json_get_str(spec, "type", "RuntimeError");
+    const char *msg = json_get_str(spec, "message", "");
+    json_t *out = json_object();
+    if (!strcmp(t, "SystemExit")) {
+        const json_t *code = json_obj_get(spec, "code");
+        double cv = 1.0;
+        char buf[64];
+        const char *m;
+        if (!code || code->type == JSON_NULL) { m = ""; }
+        else if (code->type == JSON_NUMBER) {
+            cv = code->num_val;
+            if (cv == floor(cv) && fabs(cv) < 1e15) snprintf(buf, sizeof buf, "%.0f", cv);
+            else snprintf(buf, sizeof buf, "%g", cv);
+            m = buf;
+        } else if (code->type == JSON_BOOL) { m = code->bool_val ? "True" : "False"; }
+        else if (code->type == JSON_STRING) { m = code->str_val ? code->str_val : ""; }
+        else { m = ""; }
+        json_set(out, "type", json_string("SystemExit"));
+        json_set(out, "message", json_string(m));
+        json_set(out, "code", code ? json_copy(code) : json_number(1));
+        (void)cv;
+    } else {
+        const char *eff = (cfgls_builtin_exc(t) || !strcmp(t, "YAMLError")) ? t : "Exception";
+        json_set(out, "type", json_string(eff));
+        json_set(out, "message", json_string(msg ? msg : ""));
+        if (!strcmp(eff, "ModuleNotFoundError")) {
+            const json_t *nm = json_obj_get(spec, "name");
+            json_set(out, "name", nm ? json_copy(nm) : json_null());
+        }
+    }
+    const json_t *problem = json_obj_get(spec, "problem");
+    if (problem && problem->type != JSON_NULL) json_set(out, "problem", json_copy(problem));
+    const json_t *pml = json_obj_get(spec, "problem_mark_line");
+    if (pml && pml->type != JSON_NULL) json_set(out, "problem_mark_line", json_copy(pml));
+    return out;
+}
+
 /* seam: trace the attempt, dispatch, free args. An "__untrace__" result (failed
  * in-function import) retracts the trace token so the live silent import matches. */
 static json_t *cfgls_seam(cfgls_flow_io_t *io, const char *name, json_t *args) {
@@ -136,8 +208,17 @@ static json_t *cfgls_seam(cfgls_flow_io_t *io, const char *name, json_t *args) {
         }
         json_t *spec = json_obj_get(r, "__raise__");
         json_t *out = json_object();
-        json_set(out, "__raise__", spec ? json_copy(spec) : json_null());
+        json_set(out, "__raise__", spec ? cfgls_norm_exc_spec(spec) : json_null());
         json_free(r);
+        return out;
+    }
+    if (cfgls_raised(r)) {
+        /* The live stub raises make_exc(spec): normalize at the seam boundary
+         * so except-matching and the final projection see the real class. */
+        json_t *norm = cfgls_norm_exc_spec(cfgls_raise_spec(r));
+        json_free(r);
+        json_t *out = json_object();
+        json_set(out, "__raise__", norm);
         return out;
     }
     return r;
@@ -316,6 +397,66 @@ static const char *cfgls_py_type_name(const json_t *v) {
     return "object";
 }
 
+/* FakePath.__truediv__: base = s.rstrip("/") ("" when s == "/"), then
+ * base + "/" + name — an EMPTY base still yields "/name". Caller frees. */
+static char *cfgls_fakepath_join(const char *s, const char *name) {
+    const char *p = s ? s : "";
+    size_t n = strlen(p);
+    if (n == 1 && p[0] == '/') n = 0;
+    else while (n > 0 && p[n - 1] == '/') n--;
+    size_t nn = strlen(name ? name : "");
+    char *out = malloc(n + nn + 2);
+    if (!out) return NULL;
+    if (n) memcpy(out, p, n);
+    out[n] = '/';
+    if (nn) memcpy(out + n + 1, name, nn);
+    out[n + 1 + nn] = '\0';
+    return out;
+}
+
+/* (*v, ...) spread into arr: list items / str chars / dict keys; a
+ * non-iterable returns a TypeError raise node (caller propagates). */
+static json_t *cfgls_spread_into(json_t *arr, const json_t *v) {
+    if (v && v->type == JSON_ARRAY) {
+        for (size_t i = 0; i < v->c.count; i++) json_append(arr, json_copy(v->c.items[i]));
+        return NULL;
+    }
+    if (v && v->type == JSON_STRING) {
+        const char *s = v->str_val ? v->str_val : "";
+        for (size_t i = 0; s[i]; i++) {
+            char ch[2] = { s[i], '\0' };
+            json_append(arr, json_string(ch));
+        }
+        return NULL;
+    }
+    if (v && v->type == JSON_OBJECT) {
+        for (size_t i = 0; i < v->c.count; i++) json_append(arr, json_string(v->c.keys[i]));
+        return NULL;
+    }
+    char m[128];
+    snprintf(m, sizeof m, "Value after * must be an iterable, not %s", cfgls_py_type_name(v));
+    return cfgls_make_raise("TypeError", m);
+}
+
+/* Python str(x) for the scalar JSON domain (f-string operands): None ->
+ * "None", bool -> True/False, integral numbers -> decimal, strings verbatim.
+ * Caller frees. */
+static char *cfgls_py_str(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return strdup("None");
+    switch (v->type) {
+        case JSON_BOOL: return strdup(v->bool_val ? "True" : "False");
+        case JSON_NUMBER: {
+            char buf[64];
+            double d = v->num_val;
+            if (d == floor(d) && fabs(d) < 1e15) snprintf(buf, sizeof buf, "%.0f", d);
+            else snprintf(buf, sizeof buf, "%g", d);
+            return strdup(buf);
+        }
+        case JSON_STRING: return strdup(v->str_val ? v->str_val : "");
+        default: return strdup("");
+    }
+}
+
 /* FailedConfigRead marker: {"__failed_read__": {"data": {...}, "error": spec}} */
 static bool cfgls_is_fcr(const json_t *v) {
     return v && v->type == JSON_OBJECT && json_obj_get(v, "__failed_read__") != NULL;
@@ -419,9 +560,20 @@ static char *cfgls_join_segments(const json_t *segments, size_t from) {
 
 /* _deep_merge (config.py:1353) — None over a dict section is IGNORED. */
 static json_t *cfgls_deep_merge(const json_t *base, const json_t *override) {
-    json_t *result = base ? json_copy(base) : json_object();
+    /* live: base.copy() / override.items() — non-dict operands raise
+     * AttributeError (a scripted backup ret of 0/"" must not merge silently). */
+    if (!base || base->type != JSON_OBJECT) {
+        char m[128];
+        snprintf(m, sizeof m, "'%s' object has no attribute 'copy'", cfgls_py_type_name(base));
+        return cfgls_make_raise("AttributeError", m);
+    }
+    if (!override || override->type != JSON_OBJECT) {
+        char m[128];
+        snprintf(m, sizeof m, "'%s' object has no attribute 'items'", cfgls_py_type_name(override));
+        return cfgls_make_raise("AttributeError", m);
+    }
+    json_t *result = json_copy(base);
     if (!result) return NULL;
-    if (!override || override->type != JSON_OBJECT) return result;
     for (size_t i = 0; i < override->c.count; i++) {
         const char *key = override->c.keys[i];
         json_t *val = override->c.items[i];
@@ -535,6 +687,13 @@ static void cfgls_omitted_rec(const json_t *existing, const json_t *proposed,
 }
 
 static json_t *cfgls_omitted_config_paths(const json_t *existing, const json_t *proposed) {
+    /* live: for key, old_value in existing.items() — a non-dict existing
+     * (e.g. an unscripted None guard read) raises AttributeError. */
+    if (!existing || existing->type != JSON_OBJECT) {
+        char m[128];
+        snprintf(m, sizeof m, "'%s' object has no attribute 'items'", cfgls_py_type_name(existing));
+        return cfgls_make_raise("AttributeError", m);
+    }
     json_t *omitted = json_array();
     cfgls_omitted_rec(existing, proposed, json_array(), omitted);
     return omitted;
@@ -736,17 +895,33 @@ json_t *cfgls_worker_config_snapshot(cfgls_flow_io_t *io) {
 json_t *cfgls_raw_config_cache_hit(cfgls_flow_io_t *io, const char *path_key, const json_t *cache_key) {
     json_t *cache = cfgls_state_obj(io, "_RAW_CONFIG_CACHE");
     json_t *cached = cache ? json_obj_get(cache, path_key) : NULL;
-    if (cached && cached->type == JSON_ARRAY && cache_key && cache_key->type == JSON_ARRAY) {
-        size_t n = json_len(cache_key);
-        if (json_len(cached) >= n) {
-            bool eq = true;
-            for (size_t i = 0; i < n && eq; i++)
-                eq = cfgls_json_eq(json_get(cached, i), json_get(cache_key, i));
-            if (eq) {
-                json_t *data = json_get(cached, n);
-                return data ? json_copy(data) : json_null();
+    if (cached && cached->type != JSON_NULL) {
+        /* live: cached[:len(cache_key)] — len() first (None/bool/number have
+         * no len), then the slice (a non-list cached value is not subscriptable). */
+        if (!cache_key || cache_key->type == JSON_NULL || cache_key->type == JSON_BOOL
+                || cache_key->type == JSON_NUMBER) {
+            char m[128];
+            snprintf(m, sizeof m, "object of type '%s' has no len()", cfgls_py_type_name(cache_key));
+            return cfgls_make_raise("TypeError", m);
+        }
+        if (cached->type != JSON_ARRAY) {
+            char m[128];
+            snprintf(m, sizeof m, "'%s' object is not subscriptable", cfgls_py_type_name(cached));
+            return cfgls_make_raise("TypeError", m);
+        }
+        if (cache_key->type == JSON_ARRAY) {
+            size_t n = json_len(cache_key);
+            if (json_len(cached) >= n) {
+                bool eq = true;
+                for (size_t i = 0; i < n && eq; i++)
+                    eq = cfgls_json_eq(json_get(cached, i), json_get(cache_key, i));
+                if (eq) {
+                    json_t *data = json_get(cached, n);
+                    return data ? json_copy(data) : json_null();
+                }
             }
         }
+        /* str/dict cache_key: len() works but list == str/dict is False. */
     }
     return json_null();
 }
@@ -757,9 +932,26 @@ json_t *cfgls_raw_config_cache_hit(cfgls_flow_io_t *io, const char *path_key, co
 /* PoP: cfgls_raw_config_cache_store @ hermes_cli/config.py:_raw_config_cache_store */
 json_t *cfgls_raw_config_cache_store(cfgls_flow_io_t *io, const char *path_key,
                                      const json_t *cache_key, const json_t *data) {
+    /* live: (*cache_key, data) — a non-iterable signature raises TypeError;
+     * str spreads characters, dict spreads keys. */
+    if (!cache_key || cache_key->type == JSON_NULL || cache_key->type == JSON_BOOL
+            || cache_key->type == JSON_NUMBER) {
+        char m[128];
+        snprintf(m, sizeof m, "Value after * must be an iterable, not %s", cfgls_py_type_name(cache_key));
+        return cfgls_make_raise("TypeError", m);
+    }
     json_t *entry = json_array();
-    if (cache_key && cache_key->type == JSON_ARRAY)
+    if (cache_key->type == JSON_ARRAY) {
         for (size_t i = 0; i < cache_key->c.count; i++) json_append(entry, json_copy(cache_key->c.items[i]));
+    } else if (cache_key->type == JSON_STRING) {
+        const char *s = cache_key->str_val ? cache_key->str_val : "";
+        for (size_t i = 0; s[i]; i++) {
+            char ch[2] = { s[i], '\0' };
+            json_append(entry, json_string(ch));
+        }
+    } else if (cache_key->type == JSON_OBJECT) {
+        for (size_t i = 0; i < cache_key->c.count; i++) json_append(entry, json_string(cache_key->c.keys[i]));
+    }
     json_append(entry, data ? json_copy(data) : json_null());
     json_t *cache = cfgls_state_obj(io, "_RAW_CONFIG_CACHE");
     if (cache) json_set(cache, path_key, entry);
@@ -785,14 +977,18 @@ json_t *cfgls_read_raw_config_impl_flow(cfgls_flow_io_t *io, bool want_deepcopy)
         json_set(args, "path", json_copy(cp));
         json_t *ck = cfgls_seam(io, "config_cache_version", args);
         if (!cfgls_raised(ck)) {
-            const char *pk = (cp->type == JSON_STRING) ? cp->str_val : "";
+            char *pk = cfgls_py_str(cp); /* live: str(config_path) */
             json_t *hit = cfgls_raw_config_cache_hit(io, pk, ck);
-            if (!cfgls_is_null(hit)) {
+            free(pk);
+            if (cfgls_raised(hit)) {
+                json_free(hit); /* fast path: except Exception: pass */
+            } else if (!cfgls_is_null(hit)) {
                 json_free(ck);
                 json_free(cp);
                 return hit;
+            } else {
+                json_free(hit);
             }
-            json_free(hit);
         }
         json_free(ck);
     }
@@ -802,7 +998,7 @@ json_t *cfgls_read_raw_config_impl_flow(cfgls_flow_io_t *io, bool want_deepcopy)
     cfgls_trace(io, "lock.acquire");
     json_t *cp2 = cfgls_seam(io, "get_config_path", NULL);
     if (cfgls_raised(cp2)) { cfgls_trace(io, "lock.release"); return cp2; }
-    const char *path_key = (cp2->type == JSON_STRING) ? cp2->str_val : "";
+    char *path_key = cfgls_py_str(cp2); /* live: str(config_path) */
     json_t *args2 = json_object();
     json_set(args2, "path", json_copy(cp2));
     json_t *ck2 = cfgls_seam(io, "config_cache_version", args2);
@@ -818,9 +1014,14 @@ json_t *cfgls_read_raw_config_impl_flow(cfgls_flow_io_t *io, bool want_deepcopy)
         return ck2;
     }
     json_t *hit2 = cfgls_raw_config_cache_hit(io, path_key, ck2);
+    if (cfgls_raised(hit2)) {
+        cfgls_trace(io, "lock.release");
+        json_free(ck2); json_free(cp2); free(path_key);
+        return hit2;
+    }
     if (!cfgls_is_null(hit2)) {
         cfgls_trace(io, "lock.release");
-        json_free(ck2); json_free(cp2);
+        json_free(ck2); json_free(cp2); free(path_key);
         return hit2;
     }
     json_free(hit2);
@@ -856,10 +1057,16 @@ json_t *cfgls_read_raw_config_impl_flow(cfgls_flow_io_t *io, bool want_deepcopy)
     json_t *pf = cfgls_state_obj(io, "_CONFIG_PARSE_FAILURES");
     if (pf) json_obj_del(pf, path_key);
     json_t *cached_copy = json_copy(data);
-    cfgls_raw_config_cache_store(io, path_key, ck2, cached_copy);
+    json_t *stored = cfgls_raw_config_cache_store(io, path_key, ck2, cached_copy);
     json_free(cached_copy);
+    if (cfgls_raised(stored)) {
+        cfgls_trace(io, "lock.release");
+        json_free(data); json_free(ck2); json_free(cp2); free(path_key);
+        return stored;
+    }
+    json_free(stored);
     cfgls_trace(io, "lock.release");
-    json_free(ck2); json_free(cp2);
+    json_free(ck2); json_free(cp2); free(path_key);
     return data;   /* want_deepcopy ? data : cached_copy — value-equal */
 }
 
@@ -892,9 +1099,17 @@ json_t *cfgls_load_config_cache_sig(cfgls_flow_io_t *io, const char *config_path
     json_t *md = cfgls_seam(io, "get_managed_dir", NULL);
     if (cfgls_raised(md)) { json_free(user_sig); return md; }
     json_t *managed_sig = NULL;
-    if (cfgls_truthy(md)) {
-        const char *mds = (md->type == JSON_STRING) ? md->str_val : "";
-        char *mpath = cfgls_path_join(mds, "config.yaml");
+    /* get_managed_dir returns FakePath(str): ANY string (even "") is a truthy
+     * object; only a falsy non-str (None/0/""-less) skips the managed probe. */
+    if (!cfgls_is_null(md) && (cfgls_truthy(md) || md->type == JSON_STRING)) {
+        if (md->type != JSON_STRING) {
+            char m[128];
+            snprintf(m, sizeof m, "unsupported operand type(s) for /: '%s' and 'str'",
+                     cfgls_py_type_name(md));
+            json_free(user_sig); json_free(md);
+            return cfgls_make_raise("TypeError", m);
+        }
+        char *mpath = cfgls_fakepath_join(md->str_val, "config.yaml");
         json_t *fargs = json_object();
         json_set(fargs, "path", json_string(mpath));
         free(mpath);
@@ -919,14 +1134,17 @@ json_t *cfgls_load_config_cache_sig(cfgls_flow_io_t *io, const char *config_path
         return out;
     }
     json_free(zero);
-    /* cache_sig = (*(user_sig or zero), *managed_sig) */
+    /* cache_sig = (*(user_sig or zero), *managed_sig) — a non-iterable
+     * managed_sig (e.g. an unscripted None) raises TypeError HERE. */
     json_t *base = (!cfgls_is_null(user_sig) && cfgls_truthy(user_sig)) ? user_sig : cfgls_zero_sig();
     json_t *cache_sig = json_array();
-    if (base->type == JSON_ARRAY)
-        for (size_t i = 0; i < base->c.count; i++) json_append(cache_sig, json_copy(base->c.items[i]));
+    json_t *spr = cfgls_spread_into(cache_sig, base);
     if (base != user_sig) json_free(base);
-    if (managed_sig && managed_sig->type == JSON_ARRAY)
-        for (size_t i = 0; i < managed_sig->c.count; i++) json_append(cache_sig, json_copy(managed_sig->c.items[i]));
+    if (!spr) spr = cfgls_spread_into(cache_sig, managed_sig);
+    if (spr) {
+        json_free(cache_sig); json_free(user_sig); json_free(managed_sig);
+        return spr;
+    }
     json_t *out = json_array();
     json_append(out, user_sig ? user_sig : json_null());
     json_append(out, cache_sig);
@@ -1141,6 +1359,7 @@ json_t *cfgls_merge_managed_overlay_flow(cfgls_flow_io_t *io, const json_t *expa
     json_t *merged = cfgls_deep_merge(expanded, exp_mn);
     json_free(exp_mn);
     json_free(mn);
+    if (cfgls_raised(merged)) { json_free(mc); return merged; }
     json_t *out = json_array();
     json_append(out, merged);
     json_append(out, mc);
@@ -1154,6 +1373,9 @@ json_t *cfgls_merge_managed_overlay_flow(cfgls_flow_io_t *io, const json_t *expa
 json_t *cfgls_last_known_good_fallback_flow(cfgls_flow_io_t *io, const char *config_path,
                                             const char *path_key, const json_t *cache_sig,
                                             const json_t *exc_spec) {
+    /* drive passes make_exc(inp["exc"]): a REAL exception (unknown class ->
+     * Exception; absent exc -> RuntimeError("")). Normalize once. */
+    json_t *nexc = cfgls_norm_exc_spec(exc_spec);
     json_t *lkg_src = cfgls_state_obj(io, "_LAST_EXPANDED_CONFIG_BY_PATH");
     json_t *lkg = lkg_src ? json_obj_get(lkg_src, path_key) : NULL;
     lkg = lkg ? json_copy(lkg) : NULL;
@@ -1168,6 +1390,7 @@ json_t *cfgls_last_known_good_fallback_flow(cfgls_flow_io_t *io, const char *con
         if (!cfgls_is_null(raw_good)) {
             json_t *dc = cfgls_state_obj(io, "DEFAULT_CONFIG");
             json_t *merged_good = cfgls_deep_merge(dc, raw_good);
+            if (cfgls_raised(merged_good)) { json_free(raw_good); return merged_good; }
             /* apply_user_moa_presets(merged_good, raw_good) — scripted in-place mutation */
             json_t *pargs = json_object();
             json_set(pargs, "merged", json_copy(merged_good));
@@ -1199,16 +1422,17 @@ json_t *cfgls_last_known_good_fallback_flow(cfgls_flow_io_t *io, const char *con
     const char *fb = !cfgls_is_null(lkg) ? fallback : "defaults";
     json_t *wargs = json_object();
     json_set(wargs, "path", json_string(config_path));
-    json_set(wargs, "error", exc_spec ? json_copy(exc_spec) : json_null());
+    json_set(wargs, "error", json_copy(nexc));
     json_set(wargs, "fallback", json_string(fb));
     json_t *w = cfgls_seam(io, "_warn_config_parse_failure", wargs);
     json_free(w);
 
-    if (cfgls_is_null(lkg)) { json_free(lkg); return json_null(); }
+    if (cfgls_is_null(lkg)) { json_free(lkg); json_free(nexc); return json_null(); }
 
     json_t *lkg_exp = cfgls_expand_env_vars_flow(io, lkg);
-    if (cfgls_raised(lkg_exp)) { json_free(lkg); return lkg_exp; }
-    json_t *lkg_copy = cfgls_fcr(lkg_exp, exc_spec);
+    if (cfgls_raised(lkg_exp)) { json_free(lkg); json_free(nexc); return lkg_exp; }
+    json_t *lkg_copy = cfgls_fcr(lkg_exp, nexc);
+    json_free(nexc);
     if (!cfgls_is_null(cache_sig) && cache_sig->type == JSON_ARRAY) {
         json_t *entry = json_array();
         for (size_t i = 0; i < cache_sig->c.count; i++) json_append(entry, json_copy(cache_sig->c.items[i]));
@@ -1250,8 +1474,10 @@ static json_t *cfgls_refuse_failed_read(cfgls_flow_io_t *io, const char *config_
     }
     json_t *dh = cfgls_seam(io, "display_hermes_home", NULL);
     if (cfgls_raised(dh)) return dh;
-    const char *dhs = (dh && dh->type == JSON_STRING) ? dh->str_val : "";
+    /* f"{display_hermes_home()}/backups/config/" — str(None) is "None". */
+    char *dhs = cfgls_py_str(dh);
     char *backups = cfgls_join(dhs, "/backups/config/");
+    free(dhs);
     json_free(dh);
     char *fix = cfgls_fix_yaml(backups);
     free(backups);
@@ -1285,6 +1511,7 @@ json_t *cfgls_write_config_state_flow(cfgls_flow_io_t *io, const char *config_pa
         json_t *existing = cfgls_seam(io, "require_readable_config_before_write", gargs);
         if (cfgls_raised(existing)) return existing;
         json_t *omitted = cfgls_omitted_config_paths(existing, data);
+        if (cfgls_raised(omitted)) { json_free(existing); return omitted; }
         size_t no = json_len(omitted);
         if (no > 0) {
             size_t shown_n = no < 12 ? no : 12;
@@ -1376,13 +1603,20 @@ json_t *cfgls_strip_managed_keys_for_save(cfgls_flow_io_t *io, const json_t *con
 /* PoP: cfgls_seed_config_file @ hermes_cli/config.py:seed_config_file */
 json_t *cfgls_seed_config_file(cfgls_flow_io_t *io, const char *config_path, const char *template) {
     char *tmpl = NULL;
-    if (template) {
+    if (template && template[0]) { /* live: template or get_project_root()/... */
         tmpl = strdup(template);
     } else {
         json_t *pr = cfgls_seam(io, "get_project_root", NULL);
         if (cfgls_raised(pr)) return pr;
-        const char *prs = (pr && pr->type == JSON_STRING) ? pr->str_val : "";
-        tmpl = cfgls_path_join(prs, "cli-config.yaml.example");
+        if (!pr || pr->type != JSON_STRING) {
+            /* None / non-str root: None / "str" raises TypeError in live. */
+            char m[128];
+            snprintf(m, sizeof m, "unsupported operand type(s) for /: '%s' and 'str'",
+                     cfgls_py_type_name(pr));
+            json_free(pr);
+            return cfgls_make_raise("TypeError", m);
+        }
+        tmpl = cfgls_fakepath_join(pr->str_val, "cli-config.yaml.example");
         json_free(pr);
     }
     char *parent = cfgls_path_parent(config_path);
@@ -1491,14 +1725,20 @@ json_t *cfgls_validate_schema_key_flow(cfgls_flow_io_t *io, const char *key) {
         char *rest = cfgls_join_segments(segments, 1);
         json_t *out;
         if (rest && rest[0]) {
-            char *full = cfgls_join(sugs, ".");
+            char *sv = cfgls_py_str(sug); /* f"{suggestion}.{rest}" */
+            char *full = cfgls_join(sv, ".");
             char *full2 = cfgls_join(full, rest);
+            free(sv);
             free(full);
             out = cfgls_valid_pair(false, full2);
             free(full2);
         } else {
-            out = cfgls_valid_pair(false, sugs);
+            /* live returns the RAW suggestion operand (may be non-str). */
+            out = json_array();
+            json_append(out, json_bool(false));
+            json_append(out, json_copy(sug));
         }
+        (void)sugs;
         free(rest);
         json_free(sug); json_free(segments);
         return out;
@@ -1549,6 +1789,14 @@ json_t *cfgls_validate_schema_key_flow(cfgls_flow_io_t *io, const char *key) {
             json_t *sibling = cfgls_seam(io, "_suggest_closest_key", sargs);
             if (cfgls_raised(sibling)) { json_free(consumed); json_free(segments); return sibling; }
             if (!cfgls_is_null(sibling)) {
+                if (sibling->type != JSON_STRING) {
+                    /* ".".join(consumed + [sibling]) demands str items. */
+                    char m[128];
+                    snprintf(m, sizeof m, "sequence item %zu: expected str instance, %s found",
+                             json_len(consumed), cfgls_py_type_name(sibling));
+                    json_free(sibling); json_free(consumed); json_free(segments);
+                    return cfgls_make_raise("TypeError", m);
+                }
                 const char *sibs = (sibling->type == JSON_STRING) ? sibling->str_val : "";
                 json_append(consumed, json_string(sibs));
                 char *full = cfgls_join_segments(consumed, 0);

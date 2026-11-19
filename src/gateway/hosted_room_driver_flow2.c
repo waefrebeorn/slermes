@@ -366,6 +366,14 @@ static char *hrd2_pystr_or_empty(const json_t *v) {
     if (!hrd2_truth(v)) return strdup("");
     return hrd2_pystr(v);
 }
+/* str(x) for f-string interpolation of a task generation (never NULL).
+ * Integral numbers render int-like ("3"); other numbers use %.17g. */
+static void hrd2_gen_str(const json_t *v, char *buf, size_t bufsz) {
+    char *s = hrd2_pystr(v);
+    if (s) { snprintf(buf, bufsz, "%s", s); free(s); return; }
+    if (v && v->type == JSON_NUMBER) snprintf(buf, bufsz, "%.17g", v->num_val);
+    else snprintf(buf, bufsz, "%s", hrd2_sval(v));
+}
 static char *hrd2_pyrepr(const char *s) {
     bool has_sq = strchr(s, '\'') != NULL, has_dq = strchr(s, '"') != NULL;
     char q = (has_sq && !has_dq) ? '"' : '\'';
@@ -1413,7 +1421,7 @@ static json_t *hrd2_cancel(hrd2_env *e, const json_t *in) {
                 confirm = hrd2_truth(cr);
                 json_free(cr);
             }
-            if (!confirm) { json_free(before); json_free(cancel_id); return before; }
+            if (!confirm) { json_free(cancel_id); return before; }
         }
         /* result = (cancel_task if direct else begin_task_cancel)(...) */
         const json_t *ecg = hrd2_sub(before, "cancel_generation", &err);
@@ -1591,8 +1599,9 @@ static json_t *hrd2_retry_deferred_of(hrd2_env *e, const json_t *binding, const 
     if (hrd2_str(ist) && strcmp(hrd2_str(ist), "cancelled") == 0) {
         const json_t *reg = hrd2_sub(reopened, "execution_generation", &err);
         if (err) { json_free(inspection); json_free(reopened); json_free(lease); return err; }
-        char cid[160];
-        snprintf(cid, sizeof(cid), "remote-cancel:%s", hrd2_sval(reg));
+        char cid[160], genbuf[64];
+        hrd2_gen_str(reg, genbuf, sizeof genbuf);
+        snprintf(cid, sizeof(cid), "remote-cancel:%s", genbuf);
         json_t *extra = json_object();
         json_set(extra, "cancel_id", json_string(cid));
         json_t *r = hrd2_self_fenced(e, "resolve_indeterminate_cancellation", binding, reopened, lease, true, extra);
@@ -1658,8 +1667,9 @@ static json_t *hrd2_retry_indeterminate(hrd2_env *e, const json_t *in) {
     }
     const json_t *ist = json_obj_get(inspection, "status");
     if (hrd2_str(ist) && strcmp(hrd2_str(ist), "cancelled") == 0) {
-        char cid[160];
-        snprintf(cid, sizeof(cid), "remote-cancel:%s", hrd2_sval(teg));
+        char cid[160], genbuf[64];
+        hrd2_gen_str(teg, genbuf, sizeof genbuf);
+        snprintf(cid, sizeof(cid), "remote-cancel:%s", genbuf);
         json_t *extra = json_object();
         json_set(extra, "cancel_id", json_string(cid));
         json_t *r = hrd2_self_fenced(e, "resolve_indeterminate_cancellation", binding, task, lease, true, extra);

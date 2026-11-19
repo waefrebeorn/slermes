@@ -984,6 +984,9 @@ static json_t *arh2_failed_credential_identity(arh2_ctx *ctx, json_t *agent, jso
     if (!arh2_truthy(hint)) hint = NULL;
     json_t *raw_id = arh2_get(agent, "_credential_pool_entry_id");
     json_t *cred = (arh2_is_str(raw_id) && arh2_truthy(raw_id)) ? raw_id : NULL;
+    /* Values taken from the pool.current() result must be OWNED snapshots:
+     * cur is freed below, and a borrowed pointer into it dangles (UAF). */
+    json_t *hint_owned = NULL, *cred_owned = NULL;
     if (!hint) {
         if (arh2_is_none(pool)) {
             arh2_raise(ctx, "AttributeError", "'NoneType' object has no attribute 'current'");
@@ -992,10 +995,14 @@ static json_t *arh2_failed_credential_identity(arh2_ctx *ctx, json_t *agent, jso
         json_t *cur = arh2_call(ctx, "pool.current", json_object());
         if (arh2_exc_pending(ctx)) { json_free(cur); return NULL; }
         if (arh2_truthy(cur)) {
-            hint = arh2_get(cur, "runtime_api_key");
+            json_t *h = arh2_get(cur, "runtime_api_key");
+            if (h) { hint_owned = json_copy(h); hint = hint_owned; }
             if (!cred) {
                 json_t *cid = arh2_get(cur, "id");
-                if (arh2_is_str(cid) && arh2_truthy(cid)) cred = cid;
+                if (arh2_is_str(cid) && arh2_truthy(cid)) {
+                    cred_owned = json_copy(cid);
+                    cred = cred_owned;
+                }
             }
         }
         json_free(cur);
@@ -1003,6 +1010,8 @@ static json_t *arh2_failed_credential_identity(arh2_ctx *ctx, json_t *agent, jso
     json_t *ret = json_array();
     json_append(ret, arh2_copy_or_null(hint));
     json_append(ret, arh2_copy_or_null(cred));
+    json_free(hint_owned);
+    json_free(cred_owned);
     return ret;
 }
 
@@ -1168,7 +1177,10 @@ static json_t *arh2_pre_tool_block_message(arh2_ctx *ctx, json_t *agent, json_t 
     json_t *modified = arh2_is_arr(r) ? json_get(r, 1) : NULL;
     json_t *ret = json_array();
     json_append(ret, arh2_copy_or_null(block));
-    json_append(ret, modified ? json_copy(modified) : arh2_copy_or_null(function_args));
+    /* modified_args if modified_args is not None else function_args —
+     * a PRESENT JSON null is None and must fall back, not pass through. */
+    json_append(ret, !arh2_is_none(modified) ? json_copy(modified)
+                                             : arh2_copy_or_null(function_args));
     json_free(r);
     return ret;
 }

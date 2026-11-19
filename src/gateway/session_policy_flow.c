@@ -4,8 +4,8 @@
  *
  * Decision sequences only: every live I/O (forward-policy classification, the
  * adoption warning log) enters through seams. Refusals mirror AuthorityRefusal
- * (reason / field / detail); the live _one_line bounds are identity for the
- * clean fixture strings.
+ * (reason / field / detail) including the live _one_line normalization
+ * (whitespace collapse, non-printable drop, 80/160 bounds, empty -> None).
  */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE

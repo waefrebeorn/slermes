@@ -1480,7 +1480,7 @@ static json_t *fo_read_exact_bytes(fo_io_t *io, const char *path, const json_t *
         char *full = fo_isabs(path) ? strdup(path) : fo_join(fo_live_cwd(io), path);
         json_t *oa = json_object();
         json_set(oa, "path", json_string(full));
-        json_set(oa, "flags", json_number(16384));   /* O_RDONLY | O_NONBLOCK (POSIX) */
+        json_set(oa, "flags", json_number(2048));   /* O_RDONLY | O_NONBLOCK (POSIX 0o4000) */
         free(full);
         json_t *fd_r = fo_call(io, "os_open", oa);
         if (fo_is_raise(fd_r)) {

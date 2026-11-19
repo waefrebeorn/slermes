@@ -1,0 +1,201 @@
+{"func": "get_default_hermes_root", "in": {"seams": {"stop_historical_updater": {"__raise__": "RetiredUpdaterHook", "msg": "hermes_cli.update_cmd.get_default_hermes_root is a retired updater hook; it does nothing outside a running update."}}}}
+{"func": "get_default_hermes_root", "in": {"seams": {"stop_historical_updater": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "get_default_hermes_root", "in": {"seams": {"stop_historical_updater": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "get_default_hermes_root", "in": {"seams": {"stop_historical_updater": null}}}
+{"func": "get_default_hermes_root", "in": {"seams": {"stop_historical_updater": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "get_default_hermes_root", "in": {"seams": {}}}
+{"func": "ensure_venv_pip", "in": {"pip_cmd": ["pip"], "python_exe": "/py0", "seams": {"stop_historical_updater": {"__raise__": "RetiredUpdaterHook", "msg": "retired"}}}}
+{"func": "ensure_venv_pip", "in": {"pip_cmd": ["pip"], "python_exe": "/py1", "seams": {"stop_historical_updater": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "ensure_venv_pip", "in": {"pip_cmd": ["pip"], "python_exe": "/py2", "seams": {"stop_historical_updater": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "ensure_venv_pip", "in": {"pip_cmd": ["pip"], "python_exe": "/py3", "seams": {"stop_historical_updater": null}}}
+{"func": "ensure_venv_pip", "in": {"pip_cmd": ["pip"], "python_exe": "/py4", "seams": {"stop_historical_updater": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "pip_install_prefix", "in": {"uv_bin": "/uv0", "seams": {"stop_historical_updater": {"__raise__": "RetiredUpdaterHook", "msg": "retired"}}}}
+{"func": "pip_install_prefix", "in": {"uv_bin": "/uv1", "seams": {"stop_historical_updater": {"__raise__": "SystemExit", "msg": "2"}}}}
+{"func": "pip_install_prefix", "in": {"uv_bin": "/uv2", "seams": {"stop_historical_updater": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "pip_install_prefix", "in": {"uv_bin": "/uv3", "seams": {"stop_historical_updater": null}}}
+{"func": "pip_install_prefix", "in": {"uv_bin": "/uv4", "seams": {"stop_historical_updater": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"updates": {"a": 1}}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": null}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"updates": null}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"updates": "x"}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"updates": {"parked_branch_strategy": "switch"}}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": "x"}}}
+{"func": "updates_config", "in": {"seams": {"load_config": 5}}}
+{"func": "updates_config", "in": {"seams": {"load_config": [1]}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"__raise__": "RuntimeError", "msg": "cfg boom"}}}}
+{"func": "updates_config", "in": {"seams": {"load_config": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "updates_config", "in": {"seams": {}}}
+{"func": "record_update_step", "in": {"step": "fetch", "ok": true, "detail": "d", "seams": {"record_step": null}}}
+{"func": "record_update_step", "in": {"step": "fetch", "ok": false, "seams": {"record_step": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "record_update_step", "in": {"step": "s", "ok": true, "detail": "", "seams": {"record_step": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "record_update_step", "in": {"step": "s", "ok": true, "seams": {"record_step": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "record_update_step", "in": {"step": "s", "ok": false, "seams": {"record_step": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "record_update_step", "in": {"step": "s", "ok": true, "seams": {"record_step": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "record_update_step", "in": {"step": "s", "ok": true, "seams": {}}}
+{"func": "record_update_skip", "in": {"step": "backup", "reason": "off", "seams": {"record_skip": null}}}
+{"func": "record_update_skip", "in": {"step": "b", "reason": "r", "seams": {"record_skip": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "record_update_skip", "in": {"step": "b", "reason": "r", "seams": {"record_skip": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "record_update_skip", "in": {"step": "b", "reason": "r", "seams": {"record_skip": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "record_update_skip", "in": {"step": "b", "reason": "r", "seams": {"record_skip": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "record_update_skip", "in": {"step": "b", "reason": "r", "seams": {}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": "snap1", "seams": {"record_step": null}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": null, "args": {"no_backup": true}, "seams": {"resolve_pre_update_backup_mode": "off", "record_skip": null}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": "off", "record_skip": null}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": "on", "record_step": null}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": "", "args": {}, "seams": {"resolve_pre_update_backup_mode": "on", "record_step": null}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": "snap1", "seams": {"record_step": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "record_pre_update_backup_outcome", "in": {"snapshot_id": null, "seams": {"resolve_pre_update_backup_mode": "off", "record_skip": null}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": "s", "seams": {"record_stage": null}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": "off", "record_stage": null}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": "on", "record_stage": null}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": "", "args": {}, "seams": {"resolve_pre_update_backup_mode": "off", "record_stage": null}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": null, "args": {}, "seams": {"resolve_pre_update_backup_mode": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "record_snapshot_stage", "in": {"snapshot_id": "s", "seams": {"record_stage": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {"finalize_update_receipt": null}}}
+{"func": "finalize_receipt", "in": {"status": "success", "debug_message": "m", "seams": {"finalize_update_receipt": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {"finalize_update_receipt": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {"finalize_update_receipt": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {"finalize_update_receipt": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {"finalize_update_receipt": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "finalize_receipt", "in": {"status": "failed", "debug_message": "m", "seams": {}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "cwd": "/repo", "seams": {"windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "ok", "stderr": ""}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["fetch"], "cwd": "/repo", "network": true, "seams": {"no_prompt_git_kwargs": {}, "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["fetch"], "cwd": "/repo", "network": true, "seams": {"no_prompt_git_kwargs": {"env": {"GIT_TERMINAL_PROMPT": "0"}}, "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "ok", "stderr": ""}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["fetch", "origin"], "cwd": "/repo", "seams": {"windows_hide_flags": 0, "run_git": {"__raise__": "TimeoutExpired", "cmd": ["git", "fetch"], "timeout": 300}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["fetch", "origin"], "cwd": "/repo", "check": true, "seams": {"windows_hide_flags": 0, "run_git": {"__raise__": "TimeoutExpired", "cmd": ["git", "fetch"], "timeout": 300}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "cwd": "/repo", "seams": {"windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "disk"}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "cwd": "/repo", "seams": {"windows_hide_flags": 0, "run_git": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "cwd": "/repo", "seams": {"windows_hide_flags": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["status"], "cwd": "/repo", "seams": {"windows_hide_flags": 0}}}
+{"func": "git_run", "in": {"git_cmd": ["git"], "args": ["fetch"], "cwd": "/repo", "network": true, "check": true, "seams": {"no_prompt_git_kwargs": {"creationflags": 99}, "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "base_git_cmd", "in": {"platform": "win32", "seams": {}}}
+{"func": "base_git_cmd", "in": {"platform": "linux", "seams": {}}}
+{"func": "base_git_cmd", "in": {"platform": "darwin", "seams": {}}}
+{"func": "base_git_cmd", "in": {"platform": "", "seams": {}}}
+{"func": "base_git_cmd", "in": {"platform": "freebsd", "seams": {}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "true", "stderr": ""}}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "false", "stderr": ""}}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": " true \n", "stderr": ""}}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": null, "stderr": ""}}}}
+{"func": "is_shallow_checkout", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "tip_shas", "in": {"git_cmd": ["git"], "target_ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "aaa", "stderr": ""}, {"returncode": 0, "stdout": "bbb", "stderr": ""}]}}}
+{"func": "tip_shas", "in": {"git_cmd": ["git"], "target_ref": "origin/main", "base": "feature", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "aaa", "stderr": ""}, {"returncode": 0, "stdout": "bbb", "stderr": ""}]}}}
+{"func": "tip_shas", "in": {"git_cmd": ["git"], "target_ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "aaa", "stderr": ""}, {"returncode": 0, "stdout": null, "stderr": ""}]}}}
+{"func": "tip_shas", "in": {"git_cmd": ["git"], "target_ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"__raise__": "OSError", "msg": "x"}, {"returncode": 0, "stdout": "bbb", "stderr": ""}]}}}
+{"func": "tip_shas", "in": {"git_cmd": ["git"], "target_ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "", "stderr": ""}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "resolved_commit", "in": {"git_cmd": ["git"], "ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "abc123\n", "stderr": ""}}}}
+{"func": "resolved_commit", "in": {"git_cmd": ["git"], "ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "resolved_commit", "in": {"git_cmd": ["git"], "ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": null, "stderr": ""}}}}
+{"func": "resolved_commit", "in": {"git_cmd": ["git"], "ref": "HEAD", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 1, "stdout": "", "stderr": ""}}}}
+{"func": "resolved_commit", "in": {"git_cmd": ["git"], "ref": "origin/main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "current_branch_name", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "main\n", "stderr": ""}}}}
+{"func": "current_branch_name", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "HEAD", "stderr": ""}}}}
+{"func": "current_branch_name", "in": {"git_cmd": ["git"], "check": true, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "main", "stderr": ""}}}}
+{"func": "current_branch_name", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": null, "stderr": ""}}}}
+{"func": "current_branch_name", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "CalledProcessError", "returncode": 1, "cmd": ["git"], "msg": "Command '['git']' returned non-zero exit status 1."}}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "abc", "stderr": ""}}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "def", "stderr": ""}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "def", "stderr": ""}, {"returncode": 1, "stdout": "", "stderr": ""}]}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "merged": false, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "def", "stderr": ""}}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": null, "stderr": ""}}}}
+{"func": "landed_off_target", "in": {"git_cmd": ["git"], "target_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "p", "pre_sync_sha": "s", "rollback_branch": null, "target_sha": "t", "seams": {}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "p", "pre_sync_sha": "s", "rollback_branch": "feature", "target_sha": "t", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 1, "stdout": "", "stderr": ""}}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "p", "pre_sync_sha": "s", "rollback_branch": "feature", "target_sha": "t", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "", "pre_sync_sha": null, "rollback_branch": "feature", "target_sha": "t", "seams": {}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "p", "pre_sync_sha": null, "rollback_branch": "feature", "target_sha": "", "seams": {}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": null, "pre_sync_sha": null, "rollback_branch": null, "target_sha": "t", "seams": {}}}
+{"func": "update_movement_baseline", "in": {"git_cmd": ["git"], "pre_pull_sha": "p", "pre_sync_sha": "s", "rollback_branch": "feature", "target_sha": "t", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "abc", "stderr": ""}, {"returncode": 0, "stdout": "def", "stderr": ""}]}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "", "stderr": ""}, {"returncode": 0, "stdout": "def", "stderr": ""}]}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "", "stderr": ""}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"__raise__": "OSError", "msg": "x"}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"__raise__": "KeyboardInterrupt", "msg": ""}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "missing_branch_stop", "in": {"git_cmd": ["git"], "branch": "main", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"__raise__": "RuntimeError", "msg": "x"}, {"returncode": 0, "stdout": "", "stderr": ""}]}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": null, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "abc", "stderr": ""}}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": "def", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "def", "stderr": ""}, {"returncode": 1, "stdout": "", "stderr": ""}], "print": null, "record_stop": null}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": "xyz", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "def", "stderr": ""}, {"returncode": 1, "stdout": "", "stderr": ""}], "print": null, "record_stop": null}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": null, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}, "print": null, "record_stop": null}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": null, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "refuse_unselected_head", "in": {"git_cmd": ["git"], "target_sha": "abc", "unmoved": "xyz", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": [{"returncode": 0, "stdout": "def", "stderr": ""}, {"returncode": 1, "stdout": "", "stderr": ""}], "print": {"__raise__": "OSError", "msg": "x"}, "record_stop": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/r", "capture_head_sha": "abc", "print": null, "disarm_commit_obligations": null, "resume_windows_gateways_after_update": null, "record_stop": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "main", "stderr": ""}, "capture_head_sha": "def", "print": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "feature", "stderr": ""}, "capture_head_sha": "def", "print": null, "resume_windows_gateways_after_update": null, "record_stop": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "in_place_update": true, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "feature", "stderr": ""}, "capture_head_sha": "def", "print": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": null, "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "main", "stderr": ""}, "capture_head_sha": "def", "print": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/r", "capture_head_sha": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "HEAD", "stderr": ""}, "capture_head_sha": "def", "print": null}}}
+{"func": "verify_head_after_pull", "in": {"git_cmd": ["git"], "branch": "main", "pre_pull_sha": "abc", "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}, "capture_head_sha": "def", "print": null}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"environ_get": null}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"environ_get": ["/ca.pem", "/existing"]}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "value", "stderr": ""}, "environ_get": ["/ca.pem", null]}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": "", "stderr": ""}, "environ_get": ["/ca.pem", null], "environ_set": null}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 1, "stdout": "", "stderr": ""}, "environ_get": ["/ca.pem", null], "environ_set": null}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"environ_get": ""}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"environ_get": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "map_ssl_cert_file_for_git", "in": {"git_cmd": ["git"], "seams": {"project_root": "/repo", "windows_hide_flags": 0, "run_git": {"returncode": 0, "stdout": null, "stderr": ""}, "environ_get": ["/ca.pem", null]}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": true, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": false}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "OSError", "msg": "disk full"}, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "CalledProcessError", "returncode": 128, "cmd": ["git", "fetch"], "stderr": "fatal: bad\nsecond line"}, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "TimeoutExpired", "cmd": ["git", "fetch"], "timeout": 300}, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "SubprocessError", "msg": ""}, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {"env": {"GIT_TERMINAL_PROMPT": "0"}}, "heal_shallow_history": true, "print": null}}}
+{"func": "heal_stale_shallow_checkout", "in": {"repo_root": "/r", "branch": "main", "seams": {"no_prompt_git_kwargs": {}, "heal_shallow_history": {"__raise__": "CalledProcessError", "returncode": 128, "cmd": ["git"], "stderr": ""}, "print": null}}}
+{"func": "source_update_channel", "in": {"branch_explicit": true, "seams": {}}}
+{"func": "source_update_channel", "in": {"args": {"branch": "feature"}, "seams": {}}}
+{"func": "source_update_channel", "in": {"channel": "stable", "seams": {"validate_name": "stable"}}}
+{"func": "source_update_channel", "in": {"args": {"channel": "beta"}, "seams": {"validate_name": "beta"}}}
+{"func": "source_update_channel", "in": {"args": {}, "seams": {"get_config_path": "/cfg", "require_readable_config_before_write": {"updates": {}}, "project_root": "/r", "resolve_update_channel": "main"}}}
+{"func": "source_update_channel", "in": {"channel": "bad", "seams": {"validate_name": {"__raise__": "ChannelError", "msg": "bad name"}}}}
+{"func": "source_update_channel", "in": {"args": {"branch": null}, "seams": {"get_config_path": "/cfg", "require_readable_config_before_write": {}, "project_root": "/r", "resolve_update_channel": "main"}}}
+{"func": "source_update_channel", "in": {"seams": {"get_config_path": "/cfg", "require_readable_config_before_write": {}, "project_root": "/r", "resolve_update_channel": "main"}}}
+{"func": "source_update_channel", "in": {"channel": "", "seams": {"validate_name": ""}}}
+{"func": "source_update_channel", "in": {"args": {}, "seams": {"get_config_path": "/cfg", "require_readable_config_before_write": {}, "project_root": "/r", "resolve_update_channel": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "update_run_channel", "in": {"args": {"branch": "x"}, "seams": {}}}
+{"func": "update_run_channel", "in": {"args": {"channel": "stable"}, "seams": {"validate_name": "stable"}}}
+{"func": "update_run_channel", "in": {"args": {"channel": "bad"}, "seams": {"validate_name": {"__raise__": "ChannelError", "msg": "bad"}, "record_stop": null}}}
+{"func": "update_run_channel", "in": {"args": {"channel": "bad"}, "seams": {"validate_name": {"__raise__": "ValueError", "msg": "bad"}, "record_stop": null}}}
+{"func": "update_run_channel", "in": {"args": {"channel": "bad"}, "seams": {"validate_name": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "update_run_channel", "in": {"args": {}, "seams": {"get_config_path": "/cfg", "require_readable_config_before_write": {}, "project_root": "/r", "resolve_update_channel": "main"}}}
+{"func": "settle_windows_resume", "in": {"request": {}, "seams": {"atexit_unregister": null}}}
+{"func": "settle_windows_resume", "in": {"request": {"windows_resume": {"resume_needed": true}}, "seams": {"atexit_unregister": null}}}
+{"func": "settle_windows_resume", "in": {"request": null, "seams": {"atexit_unregister": null}}}
+{"func": "settle_windows_resume", "in": {"request": {}, "seams": {"atexit_unregister": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "settle_windows_resume", "in": {"request": {}, "seams": {"atexit_unregister": [null, {"__raise__": "SystemExit", "msg": "1"}]}}}
+{"func": "settle_windows_resume", "in": {"request": {"a": 1}, "seams": {"atexit_unregister": null}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": null, "request": null, "seams": {}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": false}, "request": null, "seams": {}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": {"windows_resume_settled": true}, "seams": {}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": null, "seams": {"resume_windows_gateways_after_update": null}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": {"receipt": {"update_id": "u1"}}, "seams": {"resume_windows_gateways_after_update": {"__raise__": "RuntimeError", "msg": "boom"}, "owe_followup": null}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": null, "seams": {"resume_windows_gateways_after_update": {"__raise__": "RuntimeError", "msg": "boom"}, "owe_followup": null}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": null, "seams": {"resume_windows_gateways_after_update": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": null, "seams": {"resume_windows_gateways_after_update": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": {}, "seams": {"resume_windows_gateways_after_update": {"__raise__": "RuntimeError", "msg": "x"}, "owe_followup": null}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": {"resume_needed": true}, "request": {"receipt": {}}, "seams": {"resume_windows_gateways_after_update": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "resume_paused_gateways_at_exit", "in": {"token": "x", "request": null, "seams": {}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": {"resume_needed": true}}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": null, "arm_pause": {"armed": true}}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": null, "arm_pause": null}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": {"__raise__": "RuntimeError", "msg": "x"}, "record_stop": null}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": {"__raise__": "RetiredUpdaterHook", "msg": "x"}, "record_stop": null}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": false, "force": false}, "seams": {"pause_windows_gateways_for_update": null, "arm_pause": {"__raise__": "RuntimeError", "msg": "x"}, "record_stop": null}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {}, "seams": {"pause_windows_gateways_for_update": null}}}
+{"func": "pause_gateways_for_update", "in": {"opts": {"no_gateway_restart": true, "force": true}, "seams": {"pause_windows_gateways_for_update": "", "arm_pause": {"armed": true}}}}
+{"func": "upstream_broken_header", "in": {"broken": {"sha": "abcdefghijk"}, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": {"sha": "abc"}, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": {"sha": "0123456789abcdef"}, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": null, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": {}, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": {"sha": null}, "seams": {}}}
+{"func": "upstream_broken_header", "in": {"broken": {"sha": ""}, "seams": {}}}

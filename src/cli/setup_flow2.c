@@ -669,7 +669,7 @@ json_t *st2_section_rule(st2_io_t *io, const char *title) {
     json_free(text);
     if (st2_is_raise(c)) return c;
     json_t *va = json_array();
-    json_append(va, c);
+    json_append(va, c ? c : json_null());   /* seam NULL == None: print(None) keeps it */
     r = st2_print(io, va);
     json_free(va);
     if (st2_is_raise(r)) return r;
@@ -687,7 +687,7 @@ json_t *st2_print_banner(st2_io_t *io, const json_t *lines) {
     json_free(top);
     if (st2_is_raise(c)) return c;
     json_t *va = json_array();
-    json_append(va, c);
+    json_append(va, c ? c : json_null());   /* seam NULL == None: print(None) keeps it */
     r = st2_print(io, va);
     json_free(va);
     if (st2_is_raise(r)) return r;
@@ -696,7 +696,7 @@ json_t *st2_print_banner(st2_io_t *io, const json_t *lines) {
             c = st2_color(io, json_get(lines, i), ST2_MAGENTA);
             if (st2_is_raise(c)) return c;
             va = json_array();
-            json_append(va, c);
+            json_append(va, c ? c : json_null());   /* seam NULL == None: print(None) keeps it */
             r = st2_print(io, va);
             json_free(va);
             if (st2_is_raise(r)) return r;
@@ -707,7 +707,7 @@ json_t *st2_print_banner(st2_io_t *io, const json_t *lines) {
     json_free(bottom);
     if (st2_is_raise(c)) return c;
     va = json_array();
-    json_append(va, c);
+    json_append(va, c ? c : json_null());   /* seam NULL == None: print(None) keeps it */
     r = st2_print(io, va);
     json_free(va);
     if (st2_is_raise(r)) return r;
