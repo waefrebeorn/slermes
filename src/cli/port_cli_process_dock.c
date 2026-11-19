@@ -1,7 +1,7 @@
 /*
  * port_cli_process_dock.c — pure helpers from hermes_cli/cli_process_dock.py.
  *
- * _STATUS_BY_REASON = {"killed":"killed","lost":"lost","failed_start":"failed"}
+ * _STATUS_BY_REASON = {"killed":"killed","lost":"lost"} (live 2026-11-18)
  * _GLYPH = {"running":"⚙","done":"✔","failed":"✘","killed":"✘","lost":"?"}
  */
 
@@ -69,7 +69,9 @@ const char *cpa_process_status(int exited, const char *completion_reason,
         return RUNNING;
     if (strcmp(reason, "killed") == 0) return KILLED;
     if (strcmp(reason, "lost") == 0) return LOST;
-    if (strcmp(reason, "failed_start") == 0) return FAILED;
+    /* Upstream 2026-11-18: "failed_start" was REMOVED from _STATUS_BY_REASON
+     * (live map is {"killed","lost"} only) — a failed start with no exit code
+     * now reads "done", not "failed". */
     return has_exit_code ? FAILED : DONE;
 }
 

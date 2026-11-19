@@ -29,10 +29,13 @@ def main() -> int:
     exec(fn_src, ns)
     FN = ns["_cli_config_defaults"]
 
-    fake = types.ModuleType("hermes_cli.config_defaults")
-    fake.DEFAULT_SANDBOX_IMAGE = IMG
-    sys.modules["hermes_cli.config_defaults"] = fake
-    sys.modules["hermes_cli"] = types.ModuleType("hermes_cli")
+    # The 2026-11-18 upstream reorg added `from hermes_cli.config import
+    # DEFAULT_CONFIG, cfg_get` inside the function; the old non-package fake
+    # hermes_cli module broke that import. The suite interpreter is the quarry
+    # venv (every dependency present) — use the REAL modules so the expected
+    # values carry live semantics, not stubbed ones.
+    import hermes_cli.config  # noqa: F401,E402
+    import hermes_cli.config_defaults  # noqa: F401,E402
 
     cases = []
     for line in sys.stdin.read().splitlines():

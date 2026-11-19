@@ -36,9 +36,18 @@ def main() -> int:
          "logger": types.SimpleNamespace(warning=lambda *a, **k: None)}
     got = None
     for n in ast.parse(src).body:
-        if isinstance(n, ast.FunctionDef) and n.name == "build_auxiliary_task_entry":
+        # Seed module-level constants (upstream added _INHERITABLE_CORE_BLOCKS
+        # in the 2026-11-18 reorg) and private helpers alongside the target.
+        if isinstance(n, ast.Assign):
+            try:
+                exec(compile(ast.Module(body=[n], type_ignores=[]), "atb", "exec"), g)
+            except Exception:
+                pass
+        if isinstance(n, ast.FunctionDef) and (
+                n.name == "build_auxiliary_task_entry" or n.name.startswith("_")):
             exec(compile(ast.Module(body=[n], type_ignores=[]), "atb", "exec"), g)
-            got = True
+            if n.name == "build_auxiliary_task_entry":
+                got = True
     if not got:
         print("ORACLE aux_task_builder: live fn not extracted")
         return 1

@@ -157,6 +157,9 @@ if [ "$HRC" -ne 0 ] && [ ! -s "$TMPH/harness.out" ]; then
   rm -rf "$TMPH"
   exit 1
 fi
+# Windows pipes default to cp1252; harness output and oracle prose carry
+# UTF-8 (box-drawing, emoji). Pin the IO encoding for the oracle process.
+export PYTHONIOENCODING=utf-8
 "$PYBIN" "tests/$ORACLE" < "$TMPH/harness.out"
 RC=$?
 rm -rf "$TMPH"

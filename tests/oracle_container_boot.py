@@ -30,7 +30,12 @@ def extract():
             except Exception:
                 pass
     for node in tree.body:
-        if isinstance(node, ast.FunctionDef) and node.name in WANTED:
+        # All private helpers, not just WANTED: upstream keeps adding new
+        # ones (_strip_python_launcher appeared in the 2026-11-18 reorg) and
+        # a missing helper is a NameError at case time. exec only DEFINES
+        # them; nothing runs until a case calls the target.
+        if isinstance(node, ast.FunctionDef) and (
+                node.name in WANTED or node.name.startswith("_")):
             exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec"), ns)
     return ns
 

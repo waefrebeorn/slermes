@@ -62,7 +62,16 @@ def symbols(obj: Path, kind: str) -> set[str]:
 
 def main() -> int:
     text = MK.read_text(encoding="utf-8", errors="replace")
-    linked = set(re.findall(r'(src/[A-Za-z0-9_/]+\.o)', text))
+    # Union with the existing ports_linked.mk: those objects are already in
+    # the binary, so they are neither candidates nor collisions — and their
+    # entries must SURVIVE the rewrite below (regenerating from scratch
+    # silently unlinked the previous run's survivors).
+    prior = []
+    if OUT.exists():
+        m0 = re.search(r'PORTS_LINKED_OBJ\s*=\s*(.*)', OUT.read_text(encoding="utf-8"))
+        if m0:
+            prior = m0.group(1).split()
+    linked = set(re.findall(r'(src/[A-Za-z0-9_/]+\.o)', text)) | set(prior)
 
     cands = []
     for c in sorted((REPO / "src").rglob("*.c")):
@@ -172,7 +181,7 @@ def main() -> int:
         "# On another platform re-run:  python scripts/link_dead_ports.py\n"
         "# POSIX-only twins (pthread_timedjoin_np, dirent d_type, sys/syscall.h)\n"
         "# compile on Linux/macOS and are picked up there automatically.\n"
-        "PORTS_LINKED_OBJ = " + " ".join(final) + "\n",
+        "PORTS_LINKED_OBJ = " + " ".join(dict.fromkeys(prior + final)) + "\n",
         encoding="utf-8", newline="\n")
     print(f"\nwrote {OUT.relative_to(REPO)} ({sys.platform})")
     return 0
