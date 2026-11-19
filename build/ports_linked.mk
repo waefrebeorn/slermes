@@ -3,4 +3,4 @@
 # On another platform re-run:  python scripts/link_dead_ports.py
 # POSIX-only twins (pthread_timedjoin_np, dirent d_type, sys/syscall.h)
 # compile on Linux/macOS and are picked up there automatically.
-PORTS_LINKED_OBJ = src/agent/lsp/lsp_reporter_ports.o src/agent/lsp/lsp_workspace_ports.o src/agent/portal_tags_ports.o src/agent/prompt_caching_ports.o src/agent/message_content_ports.o src/agent/account_usage_ports.o src/agent/markdown_tables_ports.o src/agent/memory_provider_ports.o
+PORTS_LINKED_OBJ = src/tools/process_registry_gaps.o src/agent/lsp/lsp_reporter_ports.o src/agent/lsp/lsp_workspace_ports.o src/agent/portal_tags_ports.o src/agent/prompt_caching_ports.o src/agent/message_content_ports.o src/agent/account_usage_ports.o src/agent/markdown_tables_ports.o src/agent/memory_provider_ports.o
