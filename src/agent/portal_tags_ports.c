@@ -36,7 +36,6 @@ char *ptg_hermes_client_tag(void) {
     return out;
 }
 
-/* PoP: ptg_nous_portal_tags @ agent/portal_tags.py:nous_portal_tags */
 char *ptg_nous_portal_tags(void) {
     /* Python: canonical product tags, fresh list. */
     return strdup("[\"hermes\", \"agent\"]");

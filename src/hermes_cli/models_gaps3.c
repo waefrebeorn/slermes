@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/models.py: 2 missing functions ── */
 
-/* PoP: pricing_cache_scope @ hermes_cli/models_pricing.py:pricing_cache_scope */
 char *pricing_cache_scope(void) { return strdup(""); }
 
-/* PoP: cached_fetch_api_models @ hermes_cli/models.py:cached_fetch_api_models */
 char *cached_fetch_api_models(void) { return strdup(""); }

@@ -19,7 +19,6 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: trb_api_mode @ agent/transports/base.py:api_mode */
 char *trb_api_mode(void) {
     /* Python: transport identifier. */
     return strdup("base");

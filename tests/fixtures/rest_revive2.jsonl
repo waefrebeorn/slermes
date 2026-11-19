@@ -1,0 +1,193 @@
+{"func": "split_monitor_arg", "in": {"monitor": null, "monitor_script": "s.sh", "monitor_url": "http://u"}}
+{"func": "split_monitor_arg", "in": {}}
+{"func": "split_monitor_arg", "in": {"monitor": ""}}
+{"func": "split_monitor_arg", "in": {"monitor": "   "}}
+{"func": "split_monitor_arg", "in": {"monitor": "https://x.example/a"}}
+{"func": "split_monitor_arg", "in": {"monitor": "HTTP://X"}}
+{"func": "split_monitor_arg", "in": {"monitor": " /path/m.sh "}}
+{"func": "split_monitor_arg", "in": {"monitor": "ftp://x"}}
+{"func": "split_monitor_arg", "in": {"monitor": 5}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": null}}
+{"func": "mode_guidance_notes", "in": {"job": {"monitor_script": "m.sh"}}}
+{"func": "mode_guidance_notes", "in": {"job": {"monitor_url": "http://u"}}}
+{"func": "mode_guidance_notes", "in": {"job": {"no_agent": true}}}
+{"func": "mode_guidance_notes", "in": {"job": {"monitor_script": "m", "no_agent": true}}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "all"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "bot-chat:prof"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "telegram:123"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "telegram:123#topic"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "room:abc"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "sms:123"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "telegram:"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": " ALL , bot-chat:p , telegram:1 "}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "telegram:1,discord:2"}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "telegram:1:extra"}}
+{"func": "mode_guidance_notes", "in": {"job": null}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": 5}}
+{"func": "mode_guidance_notes", "in": {"job": {}, "user_deliver": "\u001call\u001f"}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "", "refreshed": {}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": null, "refreshed": {}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "local", "refreshed": {}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_queued": true}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_error": "boom"}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_error": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_error": "   "}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_error": null, "last_delivery_queued": false}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": null}}
+{"func": "manual_run_delivery_note", "in": {"deliver": "telegram", "refreshed": {"last_delivery_error": "⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠"}}}
+{"func": "manual_run_delivery_note", "in": {"deliver": 0, "refreshed": {}}}
+{"func": "gateway_liveness_notice", "in": {"plural": false, "io": {"builtin_gateway_liveness": true}}}
+{"func": "gateway_liveness_notice", "in": {"plural": false, "io": {"builtin_gateway_liveness": false}}}
+{"func": "gateway_liveness_notice", "in": {"plural": true, "io": {"builtin_gateway_liveness": false}}}
+{"func": "gateway_liveness_notice", "in": {"io": {"builtin_gateway_liveness": null}}}
+{"func": "gateway_liveness_notice", "in": {"io": {"builtin_gateway_liveness": {"__script__": true, "raise": {"type": "RuntimeError", "message": "probe failed"}}}}}
+{"func": "gateway_liveness_notice", "in": {"io": {"builtin_gateway_liveness": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "gateway_liveness_notice", "in": {"io": {"builtin_gateway_liveness": 0}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "telegram:1", "io": {"get_session_env": ["0"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": null, "io": {"get_session_env": ["true", "plat", "chat", "thr"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": null, "io": {"get_session_env": ["1", "", "chat"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": null, "io": {"get_session_env": ["yes", "plat", ""]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "origin", "io": {"get_session_env": ["on", "p", "c", ""]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "origin,local", "io": {"get_session_env": ["1", "p", "c", "", "p", "c", ""]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "telegram:1,origin", "io": {"get_session_env": ["1", "p", "c", "t"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "origin,origin", "io": {"get_session_env": ["1", "p", "c", "t", "p", "c", "t"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "", "io": {"get_session_env": ["1"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "Origin", "io": {"get_session_env": ["1", "p", "c", "t"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "telegram:1, telegram:1 ", "io": {"get_session_env": ["1"]}}}
+{"func": "resolve_cron_context_deliver", "in": {"deliver": "x", "io": {"get_session_env": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env down"}}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": []}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 200}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 500}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"__script__": true, "raise": {"type": "RuntimeError", "message": "conn refused"}}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": null}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": {"__script__": true, "raise": {"type": "ValueError", "message": "no scope"}}, "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 200}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "raise": {"type": "RuntimeError", "message": "relay down"}}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 200}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "extra_prompt": "go", "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 201}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": "200"}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": null, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 200}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"status_code": 200}}}}
+{"func": "forward_relay_fronted_run", "in": {"job": {"id": "j1"}, "io": {"relay_fronted_delivery_platforms": {"__script__": true, "ret": ["telegram"]}, "get_secret": "K", "api_server_base_url": "http://127.0.0.1:8642", "httpx_post": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": []}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": "hello"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": "  "}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "max_chars": 10, "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": {"__script__": true, "raise": {"type": "OSError", "message": "disk"}}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "raise": {"type": "OSError", "message": "perm"}}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no home"}}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/B.md", "/h/out/j1/a.md"]}, "read_text": "x"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "max_chars": 0, "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": "abc"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "io": {"get_cron_output_dir": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": 5, "io": {"get_cron_output_dir": "/h/out"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": null, "io": {"get_cron_output_dir": "/h/out"}}}
+{"func": "latest_job_output_excerpt", "in": {"job_id": "j1", "max_chars": 200, "io": {"get_cron_output_dir": "/h/out", "glob": {"__script__": true, "ret": ["/h/out/j1/a.md"]}, "read_text": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}}}
+{"func": "_cronjob_handler", "in": {"args": {}, "kw": {}, "io": {"cronjob": "ok"}}}
+{"func": "_cronjob_handler", "in": {"args": {"monitor": "https://u", "action": "create", "prompt": "p"}, "kw": {"session_id": "s1"}, "io": {"cronjob": "ok"}}}
+{"func": "_cronjob_handler", "in": {"args": {"monitor": "m.sh", "monitor_script": "old.sh", "monitor_url": "http://old"}, "io": {"cronjob": "ok"}}}
+{"func": "_cronjob_handler", "in": {"args": {"monitor": null, "monitor_script": "s", "monitor_url": "u"}, "io": {"cronjob": "ok"}}}
+{"func": "_cronjob_handler", "in": {"args": {}, "io": {"cronjob": {"__script__": true, "raise": {"type": "ValueError", "message": "bad action"}}}}}
+{"func": "_cronjob_handler", "in": {"args": null, "io": {}}}
+{"func": "_cronjob_handler", "in": {"args": {"paused": true, "no_agent": true, "grace_minutes": 5, "deliver": "telegram"}, "io": {"cronjob": "ok"}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "name": "Job"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": false, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "release_running_job": null, "get_job": {"last_status": "ok"}, "mark_job_run": null, "logger.error": null}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "fire_claim": {"by": "owner-abc"}}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "release_running_job": null, "get_job": {"last_status": "ok"}, "mark_job_run": null, "logger.error": null}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "delivery_failed", "last_delivery_error": "derr"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "delivery_failed", "last_error": "e", "last_delivery_error": "d"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "get_execution": {"status": "failed", "error": "ex"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "get_execution": {"status": "running"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "get_execution": {"status": "completed"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "runner": {"ref_callable": true}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "runner_ref_call": {"adapters": {"telegram": "ad"}, "has_adapters_for_profile": true, "has_is_shared_bot_satellite": true, "gateway_loop": {"id": "loop1"}}, "get_hermes_home": "/h", "profile_name_for_home": "default", "adapters_for_profile": {"telegram": "ad2"}, "is_shared_bot_satellite": true, "shared_route_adapters": {"telegram": "ad3"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": null}}}
+{"func": "run_claimed_job", "in": {"job": {}, "io": {}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": {"__script__": true, "raise": {"type": "RuntimeError", "message": "reg down"}}, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "mark_job_run": null, "logger.error": null}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no cb"}}, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "runner": {"ref_callable": false}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "release_running_job": null, "get_job": {"last_status": "ok"}, "mark_job_run": {"__script__": true, "raise": {"type": "ValueError", "message": "mark down"}}, "logger.error": null}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1", "execution_id": "e1"}, "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}, "get_execution": {"__script__": true, "raise": {"type": "RuntimeError", "message": "exec down"}}, "mark_job_run": null, "logger.error": null}}}
+{"func": "run_claimed_job", "in": {"job": {"id": "j1"}, "extra_prompt": "extra", "io": {"try_register_running_job": true, "get_activity_callback": null, "run_one_job": true, "release_running_job": null, "get_job": {"last_status": "ok"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1", "name": "J"}, "io": {"reap_stale_executions": null, "async_delivery_supported": false, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": true, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1", "name": "J"}, "session_id": "s1", "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "rejected", "error": "full"}, "logger.info": null, "run_claimed_job": {"claimed": true, "success": true, "error": null}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": false, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}, "get_job": null}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": false, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}, "get_job": {"paused": true}, "is_job_runnable": false}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"__script__": true, "raise": {"type": "RuntimeError", "message": "claimboom"}}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}, "logger.error": null, "mark_job_run": null}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": {"__script__": true, "raise": {"type": "ImportError", "message": "no registry"}}, "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}, "logger.warning": null, "run_claimed_job": {"claimed": true, "success": false, "error": "x"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": {"__script__": true, "raise": {"type": "ValueError", "message": "cfg"}}, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "session_id": "s9", "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": {"__script__": true, "raise": {"type": "RuntimeError", "message": "probe"}}, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"__script__": true, "raise": {"type": "RuntimeError", "message": "dispatch down"}}}}}
+{"func": "try_dispatch_background_run", "in": {"job": {"id": "j1"}, "extra_prompt": "ep", "io": {"reap_stale_executions": null, "async_delivery_supported": true, "get_current_session_key": "k", "is_job_running": false, "claim_job_for_fire": {"id": "j1", "deliver": "telegram"}, "get_session_env": "ui1", "current_origin_session_id": "o1", "get_max_async_children": 3, "time.time": 100.0, "dispatch_async_delegation": {"status": "dispatched", "delegation_id": "d1"}}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_status": "ok", "enabled": true, "state": "active", "next_run_at": "2026-01-01T00:00:00+00:00"}, "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2025-12-31T23:00:00+00:00"}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_status": "error", "last_error": "boom", "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_delivery_error": "adapter down", "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_delivery_unverified": ["telegram:1", "discord:2"], "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_dispatch": {"kind": "late", "scheduled_at": "S", "lateness_seconds": 30}, "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_fire_error": {"at": "T", "detail": "gateway unreachable"}, "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "enabled": true, "next_run_at": ""}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "no_agent": true, "script": "", "enabled": false}, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "script": "x.py", "enabled": false}, "io": {"cron_dir": "/h/cron", "path_resolve": ["/h/scripts", "/h/scripts/x.py"], "path_expanduser": "x.py", "path_exists": true, "path_is_file": true}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "workdir": "/missing", "enabled": false}, "io": {"path_expanduser": "/missing", "path_exists": false}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "timezone": "Bad/Zone", "enabled": false}, "io": {"zone_for_job": null}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "grace_minutes": true, "enabled": false}, "io": {"normalize_grace_minutes": {"__script__": true, "raise": {"type": "ValueError", "message": "grace_minutes must be a whole number of minutes (0 = never catch up), not a boolean."}}}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "grace_minutes": 5, "schedule": {"kind": "once"}, "enabled": false}, "io": {"normalize_grace_minutes": null}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "grace_minutes": 5, "schedule": {"kind": "cron"}, "enabled": false}, "io": {"normalize_grace_minutes": null}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "enabled": true, "next_run_at": "2026-01-01T00:00:00+00:00"}, "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2026-01-01T02:30:00+00:00"}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "grace_minutes": 5, "enabled": false}, "io": {"normalize_grace_minutes": {"__script__": true, "raise": {"type": "TypeError", "message": "bad type"}}}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": null, "io": {}}}
+{"func": "cron_doctor_issues_for_job", "in": {"job": {"id": "j1", "last_status": "delivery_failed", "enabled": false}, "io": {}}}
+{"func": "dispatch_display", "in": {"dispatch": null, "io": {}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S"}, "io": {}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "on_time"}, "io": {"color": "on time (scheduled S)"}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "late", "lateness_seconds": 45}, "io": {"color": ["⚠ late: ", "(45s late)"]}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "catch_up", "lateness_seconds": 3600}, "io": {"color": ["⚠ catch-up after missed fire: ", "(1h late)"]}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "weird"}, "io": {"color": ["⚠ late: ", "(0s late)"]}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "late", "lateness_seconds": "abc"}, "io": {"color": ["⚠ late: ", "(? late)"]}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": "S", "dispatched_at": "A", "kind": "on_time"}, "io": {"color": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no color"}}}}}
+{"func": "dispatch_display", "in": {"dispatch": {"scheduled_at": 0, "dispatched_at": "A", "kind": "late"}, "io": {}}}
+{"func": "script_health_issue", "in": {"script": "x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "x.py", "path_resolve": ["/h/scripts", "/h/scripts/x.py"], "path_exists": true, "path_is_file": true}}}
+{"func": "script_health_issue", "in": {"script": "x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "x.py", "path_resolve": ["/h/scripts", "/h/scripts/x.py"], "path_exists": false, "path_is_file": true}}}
+{"func": "script_health_issue", "in": {"script": "x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "x.py", "path_resolve": ["/h/scripts", "/h/scripts/x.py"], "path_exists": true, "path_is_file": false}}}
+{"func": "script_health_issue", "in": {"script": "C:/other/x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "C:/other/x.py", "path_resolve": ["/h/scripts", "C:/other/x.py"]}}}
+{"func": "script_health_issue", "in": {"script": "sub/x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "sub/x.py", "path_resolve": ["/h/scripts", "/h/scripts/sub/x.py"], "path_exists": true, "path_is_file": true}}}
+{"func": "script_health_issue", "in": {"script": "x.py", "io": {"cron_dir": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no cron dir"}}, "path_expanduser": "x.py", "path_resolve": ["/h/scripts", "/h/scripts/x.py"], "path_exists": true, "path_is_file": true}}}
+{"func": "script_health_issue", "in": {"script": "x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "x.py", "path_resolve": {"__script__": true, "raise": {"type": "OSError", "message": "resolve down"}}, "path_exists": true, "path_is_file": true}}}
+{"func": "script_health_issue", "in": {"script": 5, "io": {}}}
+{"func": "script_health_issue", "in": {"script": 5, "io": {"cron_dir": "/h/cron", "path_resolve": "/h/scripts"}}}
+{"func": "script_health_issue", "in": {"script": null, "io": {"cron_dir": "/h/cron", "path_resolve": "/h/scripts"}}}
+{"func": "script_health_issue", "in": {"script": "~/x.py", "io": {"cron_dir": "/h/cron", "path_expanduser": "/h/x.py", "path_resolve": ["/h/scripts", "/h/x.py"]}}}
+{"func": "format_lateness", "in": {"seconds": 0}}
+{"func": "format_lateness", "in": {"seconds": 45}}
+{"func": "format_lateness", "in": {"seconds": 60}}
+{"func": "format_lateness", "in": {"seconds": 3600}}
+{"func": "format_lateness", "in": {"seconds": 5400}}
+{"func": "format_lateness", "in": {"seconds": 90000}}
+{"func": "format_lateness", "in": {"seconds": 90061}}
+{"func": "format_lateness", "in": {"seconds": -5}}
+{"func": "format_lateness", "in": {"seconds": null}}
+{"func": "format_lateness", "in": {"seconds": "abc"}}
+{"func": "format_lateness", "in": {"seconds": "30"}}
+{"func": "format_lateness", "in": {"seconds": 12.9}}
+{"func": "format_lateness", "in": {"seconds": "  +1_0  "}}
+{"func": "format_lateness", "in": {"seconds": 59}}
+{"func": "format_lateness", "in": {"seconds": 86399}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "bad", "io": {"parse_aware": null}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2025-12-31T23:00:00+00:00"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2026-01-01T00:15:00+00:00"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2026-01-01T00:15:01+00:00"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2026-01-01T02:30:00+00:00"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T00:00:00+00:00", "now": "2026-01-01T01:00:00+00:00"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": "2026-01-01T05:00:00+05:00", "now": "2026-01-01T02:30:00Z"}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": "x", "io": {"parse_aware": {"__script__": true, "raise": {"type": "RuntimeError", "message": "parse down"}}}}}
+{"func": "next_run_overdue_issue", "in": {"next_run": 5, "io": {"parse_aware": null}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": "/h/cron"}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": "/h/deep/nest/cron"}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": "cron"}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": "/"}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no dir"}}}}}
+{"func": "scripts_dir_for_cron", "in": {"io": {"cron_dir": "C:/h/cron"}}}

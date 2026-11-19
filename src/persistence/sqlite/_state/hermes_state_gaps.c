@@ -1246,7 +1246,6 @@ long *reap_inactive_orphan_desktop_holders(const char *db_path,
     return signalled;
 }
 
-/* PoP: __enter__ @ hermes_state.py:__enter__ */
 hermes_state_db_t *__enter__(hermes_state_db_t *self) {
     /* Enter a scope that closes this handle on the way out. Returns self so
      * `with SessionDB(path) as db:` binds the same object. Purely additive:

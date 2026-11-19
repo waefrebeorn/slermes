@@ -132,3 +132,21 @@
 {"func": "canonical_url_param_name", "in": {"name": "TOKEN"}}
 {"func": "canonical_url_param_name", "in": {"name": "x-goog-signature"}}
 {"func": "canonical_url_param_name", "in": {"name": "usertoken"}}
+{"func": "is_sensitive_url_param", "in": {"name": "Wsn5C_", "io": {"canonical_url_param_name": {"ret": "1nJ"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "fh9m=DpJLvKcc6", "io": {"canonical_url_param_name": {"ret": "qBj d 70QzvzP"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "gY/np", "io": {"canonical_url_param_name": {"ret": "tc/4.uJ5J"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "AN=SwffnpwVCUw#Rj:@", "io": {"canonical_url_param_name": {"ret": "Q-q#Ng7:PUcH0f"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "kh5Xh", "io": {"canonical_url_param_name": {"ret": "Qj"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "wChY48#5bnftTx#ti_U3", "io": {"canonical_url_param_name": {"ret": "n2BnBeN1wNTwfX"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "ekUokW=Z=", "io": {"canonical_url_param_name": {"ret": "QTZ.@#/0"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "SLedO=mv/cg4GR", "io": {"canonical_url_param_name": {"ret": "4jIqut1oj-tJl"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "7y8ql", "io": {"canonical_url_param_name": {"ret": "GhMyTyf"}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "_rY7LD_Y dZ1n+Gg", "io": {"canonical_url_param_name": {"ret": "m1PQ/3b8y@"}, "decode_url_param_name": {"ret": "2f:0t#RJFM3cZF9bw"}, "json_key_names_full_fullmatch": {"ret": false}}}}
+{"func": "is_sensitive_url_param", "in": {"name": "f5._MKoengr+:R+y_C", "io": {"canonical_url_param_name": {"ret": "38Q-#xqqdy9:/S"}}}}
+{"func": "redact_log_urls", "in": {"text": 0}}
+{"func": "should_redact_assignment", "in": {"key": "iMd-xssW2w:", "value": "Mm", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}}}}
+{"func": "should_redact_assignment", "in": {"key": "0a/SyC@ccU", "value": "Eb12_1Q/F ", "check_keyword": false, "io": {"env_lookup_match": {"ret": false}, "key_has_secret_keyword": {"ret": false}}}}
+{"func": "redact_log_urls", "in": {"text": -3}}
+{"func": "redact_log_urls", "in": {"text": 5}}
+{"func": "redact_log_urls", "in": {"text": 7}}
+{"func": "redact_log_urls", "in": {"text": 3}}

@@ -89,7 +89,6 @@ char *cfg_recommended_update_command(const char *managed_cmd, bool in_docker) {
     return strdup("git pull && hermes setup");
 }
 
-/* PoP: cfg_format_docker_update_message @ hermes_cli/config.py:format_docker_update_message */
 char *cfg_format_docker_update_message(void) {
     /* Python: user-facing docker update guidance. */
     return strdup("You are running Hermes inside Docker — pull the new image and restart the container.");
@@ -375,7 +374,7 @@ long cfg_sanitize_env_file(const char *path) {
         size_t ll = nl ? (size_t)(nl - line) : strlen(line);
         char *copy = strndup(line, ll);
         if (!copy) { break; }
-        /* strip trailing 
+        /* strip trailing
  */
         size_t cl = strlen(copy);
         if (cl && copy[cl-1] == '\r') { copy[--cl] = '\0'; changed++; }

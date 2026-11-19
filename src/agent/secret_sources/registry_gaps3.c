@@ -9,5 +9,4 @@
 
 /* ── agent/secret_sources/registry.py: 1 missing functions ── */
 
-/* PoP: list_plugin_sources @ agent/secret_sources/registry.py:list_plugin_sources */
 char *list_plugin_sources(void) { return strdup(""); }

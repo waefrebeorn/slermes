@@ -10,7 +10,6 @@
 /* ── hermes_cli/observability/shared_metrics_send_config.py: 3 missing functions ── */
 
 
-/* PoP: resolve_send_config @ hermes_cli/observability/shared_metrics_send_config.py:resolve_send_config */
 char *resolve_send_config(void) { return strdup(""); }
 
 /* PoP: reset_warning_latch_for_tests @ hermes_cli/observability/shared_metrics_send_config.py:reset_warning_latch_for_tests */

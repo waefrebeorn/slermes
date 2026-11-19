@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/web_routers/skills.py: 1 missing functions ── */
 
-/* PoP: list_official_skills @ hermes_cli/web_routers/skills.py:list_official_skills */
 char *list_official_skills(void) { return strdup(""); }

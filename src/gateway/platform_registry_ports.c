@@ -18,7 +18,6 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: prg_init @ gateway/platform_registry.py:__init__ */
 char *prg_init(void) {
     return strdup("{\"entries\": {}, \"deferred\": {}}");
 }

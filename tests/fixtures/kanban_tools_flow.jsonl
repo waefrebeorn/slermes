@@ -1,0 +1,133 @@
+{"func": "_delegation_ctx", "in": {"predicate": "is_delegated_child_context", "default": false, "io": {"delegation_ctx": {"ret": true}}}}
+{"func": "_delegation_ctx", "in": {"predicate": "is_delegated_child_context", "default": false, "io": {"delegation_ctx": {"ret": false}}}}
+{"func": "_delegation_ctx", "in": {"predicate": "is_dispatcher_owned_worker_context", "default": true, "io": {"delegation_ctx": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_delegation_ctx", "in": {"predicate": "is_delegated_child_context", "default": false, "io": {"delegation_ctx": {"raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_delegation_ctx", "in": {"predicate": "is_delegated_child_context", "default": true, "state": {"delegation_import_fail": true}, "io": {}}}
+{"func": "_delegation_ctx", "in": {"predicate": "is_delegated_child_process_context", "default": false, "io": {"delegation_ctx": {"ret": null}}}}
+{"func": "_is_dispatcher_owned_worker", "in": {"io": {"delegation_ctx": {"ret": true}}}}
+{"func": "_is_dispatcher_owned_worker", "in": {"io": {"delegation_ctx": {"ret": false}}}}
+{"func": "_is_dispatcher_owned_worker", "in": {"io": {"delegation_ctx": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_is_dispatcher_owned_worker", "in": {"io": {"delegation_ctx": {"raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_dispatcher_owned_worker", "in": {"state": {"delegation_import_fail": true}, "io": {}}}
+{"func": "_visible", "in": {"to_env_worker": true, "io": {"delegation_ctx": {"ret": true}, "profile_has_kanban_toolset": {"ret": true}}}}
+{"func": "_visible", "in": {"to_env_worker": true, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}]}}}
+{"func": "_visible", "in": {"to_env_worker": false, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}]}}}
+{"func": "_visible", "in": {"to_env_worker": true, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": false}], "profile_has_kanban_toolset": {"ret": true}}}}
+{"func": "_visible", "in": {"to_env_worker": true, "io": {"delegation_ctx": {"ret": false}, "profile_has_kanban_toolset": {"ret": false}}}}
+{"func": "_visible", "in": {"to_env_worker": false, "io": {"delegation_ctx": {"raise": {"type": "RuntimeError", "message": "boom"}}, "profile_has_kanban_toolset": {"ret": true}}}}
+{"func": "_check", "in": {"cond": true, "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_check", "in": {"cond": false, "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_check", "in": {"cond": 0, "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_check", "in": {"cond": "", "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_check", "in": {"cond": [], "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_check", "in": {"cond": null, "message": "boom", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"body": "hello"}, "name": "body", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"body": "  "}, "name": "body", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {}, "name": "body", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"body": ""}, "name": "body", "message": "need body", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"n": 5}, "name": "n", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"n": 0}, "name": "n", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"d": {"a": 1}}, "name": "d", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {}, "name": "body", "message": "", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_text", "in": {"args": {"body": " x "}, "name": "body", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": null, "name": "skills", "what": "skill names", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": "one", "name": "skills", "what": "skill names", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": ["a", "b"], "name": "skills", "what": "skill names", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": [" a ", "", "b", "  "], "name": "skills", "what": "skill names", "strip": true, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": 5, "name": "skills", "what": "skill names", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": {"a": 1}, "name": "skills", "what": "skill names", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": [1, " 2 ", ""], "name": "artifacts", "what": "file paths", "strip": true, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_coerce_str_list", "in": {"value": true, "name": "parents", "what": "task ids", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": null, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": {}, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": {"a": 1}, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": "x", "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": [1], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_dict_metadata", "in": {"metadata": 5, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": null, "artifacts": ["a.txt"], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {"artifacts": ["a", " b "]}, "artifacts": ["b", "c", ""], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {"artifacts": "old"}, "artifacts": ["new"], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {"x": 1}, "artifacts": [], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": "bad", "artifacts": ["a"], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {"artifacts": ["a", "a"]}, "artifacts": ["a"], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {}, "artifacts": [1, " p "], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_merge_artifacts", "in": {"metadata": {"artifacts": [1, 2]}, "artifacts": [], "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_opt_int", "in": {"value": null}}
+{"func": "_opt_int", "in": {"value": null, "default": 5}}
+{"func": "_opt_int", "in": {"value": "42"}}
+{"func": "_opt_int", "in": {"value": " -7 "}}
+{"func": "_opt_int", "in": {"value": "1_000"}}
+{"func": "_opt_int", "in": {"value": "abc"}}
+{"func": "_opt_int", "in": {"value": ""}}
+{"func": "_opt_int", "in": {"value": 3.9}}
+{"func": "_opt_int", "in": {"value": true}}
+{"func": "_opt_int", "in": {"value": []}}
+{"func": "_opt_int", "in": {"value": "_1"}}
+{"func": "_opt_int", "in": {"value": "1_"}}
+{"func": "_fields", "in": {"obj": null, "names": ["id", "status"]}}
+{"func": "_fields", "in": {"obj": {"id": "t1", "status": "done", "x": 9}, "names": ["id", "status"]}}
+{"func": "_fields", "in": {"obj": {"id": "t1"}, "names": ["id", "title"]}}
+{"func": "_fields", "in": {"obj": "abc", "names": ["id"]}}
+{"func": "_fields", "in": {"obj": {"a": 1}, "names": []}}
+{"func": "_fields", "in": {"obj": {"a": 1}, "names": ["a", "a"]}}
+{"func": "_redact", "in": {"value": "secret x", "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact", "in": {"value": 0, "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact", "in": {"value": null, "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact", "in": {"value": [1, "a"], "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact", "in": {"value": "x", "io": {"redact_sensitive_text": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_redact_opt", "in": {"value": "", "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact_opt", "in": {"value": 0, "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact_opt", "in": {"value": null, "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact_opt", "in": {"value": [], "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact_opt", "in": {"value": "x", "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_redact_opt", "in": {"value": {"a": 1}, "io": {"redact_sensitive_text": {"ret": "[R]"}}}}
+{"func": "_own_task_env", "in": {"task_id": "", "var": "HERMES_SESSION_ID", "state": {"env": {"HERMES_SESSION_ID": "s1"}}, "io": {"owned_kanban_task": {"ret": "t1"}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "state": {"env": {"HERMES_SESSION_ID": "s1"}}, "io": {"owned_kanban_task": {"ret": "t1"}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "state": {"env": {"HERMES_SESSION_ID": "s1"}}, "io": {"owned_kanban_task": {"ret": "t2"}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "state": {"env": {"HERMES_SESSION_ID": "s1"}}, "io": {"owned_kanban_task": {"ret": null}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "io": {"owned_kanban_task": {"ret": "t1"}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "io": {"owned_kanban_task": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_own_task_env", "in": {"task_id": "t1", "var": "HERMES_SESSION_ID", "state": {"env": {"HERMES_SESSION_ID": "s1"}}, "io": {"owned_kanban_task": {"ret": 5}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "env_tid": "", "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "env_tid": "t1", "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "env_tid": "t1", "io": {"owned_kanban_task": {"ret": "w"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t2", "env_tid": "t1", "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "state": {"env": {"HERMES_KANBAN_TASK": " t1 "}}, "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "env_tid": "t1", "io": {"owned_kanban_task": {"ret": ""}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_reject_inherited_task_mutation", "in": {"tid": "t1", "state": {"env": {"HERMES_KANBAN_TASK": "t9"}}, "io": {"owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {"task_id": "t9"}, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {"task_id": "  "}, "state": {"env": {"HERMES_KANBAN_TASK": "t5"}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {}, "state": {"env": {"HERMES_KANBAN_TASK": "t5"}}, "io": {"delegation_ctx": {"ret": true}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {}, "state": {"env": {"HERMES_KANBAN_TASK": "t5"}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": false}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {"task_id": 7}, "io": {"tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {}, "state": {"env": {"HERMES_KANBAN_TASK": "   "}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_require_task_id", "in": {"args": {"task_id": null}, "state": {"env": {"HERMES_KANBAN_TASK": " t5 "}}, "io": {"delegation_ctx": [{"ret": false}, {"ret": true}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_complete", "args": {"task_id": "t1"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1", "HERMES_KANBAN_RUN_ID": "7"}}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": "t1"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_complete", "args": {"task_id": "t1"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": {"ret": true}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_block", "args": {}, "io": {"delegation_ctx": [{"ret": false}, {"ret": false}, {"ret": true}], "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_complete", "args": {"task_id": "t2"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": "t1"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_complete", "args": {"task_id": "t1"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_schedule", "args": {"task_id": "t1"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": "t1"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_heartbeat", "args": {"task_id": "t1"}, "state": {"env": {"HERMES_KANBAN_TASK": "t1"}}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": "t1"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_worker_guard", "in": {"tool_name": "kanban_complete", "args": {"task_id": "t9"}, "io": {"delegation_ctx": {"ret": false}, "owned_kanban_task": {"ret": null}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"task_id": "t1", "body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "inner_fn": {"ret": "{\"ok\": true}"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"task_id": "t1", "bogus": 1}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "inner_fn": {"raise": {"type": "_Reject", "message": "PAYLOAD"}}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "inner_fn": {"raise": {"type": "ValueError", "message": "bad"}}, "tool_error": {"ret": "rendered"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "inner_fn": {"raise": {"type": "RuntimeError", "message": "boom"}}, "tool_error": {"ret": "rendered"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "inner_fn": {"raise": {"type": "SystemExit", "message": "x"}}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": {"parameters": {}}}, "tool_error": {"ret": "rendered"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_create", "args": {"title": "t", "assignee": "a", "session_id": "s"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"title": {}, "assignee": {}}}}}, "inner_fn": {"ret": "OK"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_attach_url", "args": {"url": "u", "title": "t"}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"url": {}, "filename": {}}}}}, "inner_fn": {"ret": "OK"}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"body": "x"}, "io": {"registry.get_schema": {"ret": null}, "tool_error": {"ret": "rendered"}}}}
+{"func": "_kanban_handler", "in": {"tool_name": "kanban_comment", "args": {"zeta": 1, "alpha": 2}, "io": {"registry.get_schema": {"ret": {"parameters": {"properties": {"task_id": {}, "body": {}, "board": {}}}}}, "tool_error": {"ret": "ERR_PAYLOAD"}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "io": {"kb.latest_run": {"ret": {"id": 3}}, "kb.get_task": {"ret": {"status": "done"}}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "io": {"kb.latest_run": {"ret": null}, "kb.get_task": {"ret": {"status": "review"}}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "scheduled", "io": {"kb.latest_run": {"ret": {"id": 3}}, "kb.get_task": {"ret": null}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "extra": {"reason": "r", "block_kind": "needs_input"}, "io": {"kb.latest_run": {"ret": {"id": 3}}, "kb.get_task": {"ret": {"status": "blocked"}}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "io": {"kb.latest_run": {"ret": {"xid": 1}}, "kb.get_task": {"ret": {"status": "done"}}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "io": {"kb.latest_run": {"ret": {"id": 3}}, "kb.get_task": {"ret": {"status": null}}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "extra": {"implementer": "dev"}, "io": {"kb.latest_run": {"ret": null}, "kb.get_task": {"ret": null}}}}
+{"func": "_ok_landed", "in": {"task_id": "t1", "default_status": "blocked", "extra": {"note": "h\u00e9llo"}, "io": {"kb.latest_run": {"ret": null}, "kb.get_task": {"ret": {"status": "done"}}}}}

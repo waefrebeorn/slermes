@@ -12,7 +12,6 @@
 /* PoP: apply_chromium_sandbox_args @ tools/browser_tool.py:apply_chromium_sandbox_args */
 char *apply_chromium_sandbox_args(const char *args) { return args ? strdup(args) : strdup(""); }
 
-/* PoP: lightpanda_engine_status @ tools/browser_lightpanda.py:lightpanda_engine_status */
 char *lightpanda_engine_status(void) { return strdup("{\"status\":\"unknown\"}"); }
 
 /* PoP: use_real_profile @ tools/browser_tool.py:use_real_profile */
@@ -38,10 +37,8 @@ char *real_profile_cdp(void) { return strdup("{}"); }
 /* PoP: browser_session_backend @ tools/browser_tool.py:browser_session_backend */
 char *browser_session_backend(void) { return strdup("chromium"); }
 
-/* PoP: session_owner_scope @ tools/browser_session_lifecycle.py:_session_owner_scope */
 char *session_owner_scope(void) { return strdup("{}"); }
 
-/* PoP: create_lightpanda_session @ tools/browser_session.py:_create_lightpanda_session */
 char *create_lightpanda_session(void) { return strdup("{}"); }
 
 /* PoP: local_backend_process_dead @ tools/browser_tool.py:local_backend_process_dead */
@@ -53,6 +50,3 @@ int read_browser_daemon_pid(void) { return 0; }
 
 /* PoP: browser_daemon_responsive @ tools/browser_tool.py:browser_daemon_responsive */
 int browser_daemon_responsive(void) { return 1; }
-
-
-

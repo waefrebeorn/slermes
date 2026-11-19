@@ -1,0 +1,183 @@
+{"func": "_ok", "in": {"rid": "r1", "result": {"a": 1}}}
+{"func": "_ok", "in": {"rid": 7, "result": {}}}
+{"func": "_ok", "in": {"rid": null, "result": {"x": [1, 2]}}}
+{"func": "_ok", "in": {"rid": "r2", "result": {"nested": {"k": "v"}}}}
+{"func": "_ok", "in": {"rid": 0, "result": {"flag": true}}}
+{"func": "_ok", "in": {"rid": "r3", "result": {"empty": null}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": "m", "params": {"p": 1}}, "io": {"_err": {"__raise__": "AssertionError", "message": "should not be called"}}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": "m"}, "io": {"_err": {"__raise__": "AssertionError", "message": "no"}}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": "m", "params": null}, "io": {"_err": {"__raise__": "AssertionError", "message": "no"}}}}
+{"func": "_normalize_request", "in": {"req": "not-a-dict", "io": {"_err": {"jsonrpc": "2.0", "id": null, "error": {"code": -32600, "message": "invalid request: expected an object"}}}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": ""}, "io": {"_err": {"jsonrpc": "2.0", "id": "a", "error": {"code": -32600, "message": "invalid request: method must be a non-empty string"}}}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": 5}, "io": {"_err": {"jsonrpc": "2.0", "id": "a", "error": {"code": -32600, "message": "invalid request: method must be a non-empty string"}}}}}
+{"func": "_normalize_request", "in": {"req": {"id": "a", "method": "m", "params": [1]}, "io": {"_err": {"jsonrpc": "2.0", "id": "a", "error": {"code": -32602, "message": "invalid params: expected an object"}}}}}
+{"func": "_normalize_request", "in": {"req": {"method": "m"}, "io": {"_err": {"__raise__": "AssertionError", "message": "no"}}}}
+{"func": "_coerce_int_config_value", "in": {"value": "12", "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": 3, "default": 15, "min_value": 5}}
+{"func": "_coerce_int_config_value", "in": {"value": null, "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": "abc", "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": 12.9, "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": -12.9, "default": 0, "min_value": -100}}
+{"func": "_coerce_int_config_value", "in": {"value": true, "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": "1_0", "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": "_1", "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": [1], "default": 15, "min_value": 1}}
+{"func": "_coerce_int_config_value", "in": {"value": " 7 ", "default": 15, "min_value": 0}}
+{"func": "_coerce_int_config_value", "in": {"value": 0, "default": 15, "min_value": 0}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": {"display": {"x": 1}}}}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": {}}}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": {"display": "not-dict"}}}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": {"display": null}}}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": {"display": {}}}}}
+{"func": "_display_cfg", "in": {"io": {"_load_cfg": null}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": {"interim_assistant_messages": true}, "is_truthy_value": true}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": {}, "is_truthy_value": true}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": {"interim_assistant_messages": "off"}, "is_truthy_value": false}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": {"interim_assistant_messages": null}, "is_truthy_value": false}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": {"interim_assistant_messages": false}, "is_truthy_value": false}}}
+{"func": "_load_interim_assistant_messages", "in": {"io": {"_display_cfg": null, "is_truthy_value": true}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": {"dashboard": {"turn_isolation": "on", "compute_host_heartbeat_secs": "20", "compute_host_respawn_max": 5}}, "io": {"is_truthy_value": true, "_coerce_int_config_value": [20, 5]}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": null, "io": {"_load_cfg": {"dashboard": {}}, "is_truthy_value": false, "_coerce_int_config_value": [15, 3]}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": {"dashboard": "bad"}, "io": {"is_truthy_value": false, "_coerce_int_config_value": [15, 3]}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": "not-dict", "io": {"is_truthy_value": false, "_coerce_int_config_value": [15, 3]}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": {}, "io": {"is_truthy_value": false, "_coerce_int_config_value": [15, 3]}}}
+{"func": "_load_dashboard_process_isolation_config", "in": {"cfg": null, "io": {"_load_cfg": null, "is_truthy_value": false, "_coerce_int_config_value": [15, 3]}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": null}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": "/h/override"}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": ""}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": 5}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/other", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": null}}}
+{"func": "_active_config_path", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"get_hermes_home_override": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {"a": 1}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": {"__raise__": "RuntimeError", "message": "pathfail"}, "load_user_config_effective": {}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {"__raise__": "ConfigBackendUnavailable", "message": "backend"}}}}
+{"func": "_load_cfg", "in": {"io": {"_active_config_path": "/h/launch/config.yaml", "load_user_config_effective": {"display": {"pet": {}}}}}}
+{"func": "_drop_cfg_cache", "in": {"state": {"cfg": {"cache": {"a": 1}, "sig": 3, "path": "/h/launch/config.yaml"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}}}
+{"func": "_drop_cfg_cache", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}}}
+{"func": "_drop_cfg_cache", "in": {"state": {"cfg": {"cache": {}, "sig": null, "path": "/x"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}}}
+{"func": "_drop_cfg_cache", "in": {"state": {"cfg": {"cache": {"k": [1]}, "sig": [1, 2], "path": "/y"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}}}
+{"func": "_drop_cfg_cache", "in": {"state": {"cfg": {"cache": null, "sig": 9, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1, "config_exists": true, "read_user_config_raw": {"a": 1}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1, "config_exists": false}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": {"cached": 1}, "sig": 1, "path": "/h/launch/config.yaml"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": {"cached": 1}, "sig": 2, "path": "/h/launch/config.yaml"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1, "config_exists": true, "read_user_config_raw": {"fresh": 1}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": {"__raise__": "FileNotFoundError", "message": "absent"}, "config_exists": true, "read_user_config_raw": {"b": 2}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1, "config_exists": true, "read_user_config_raw": {"__raise__": "ValueError", "message": "parse"}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": 1, "config_exists": {"__raise__": "ConfigBackendUnavailable", "message": "be"}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "config_cache_version": {"__raise__": "SystemExit", "message": "exit"}}}}
+{"func": "_load_cfg_raw", "in": {"state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": {"__raise__": "RuntimeError", "message": "pf"}, "config_cache_version": 1}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": null, "supports_file_tooling": true, "config_cache_version": 5}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": null, "supports_file_tooling": false, "_drop_cfg_cache": null}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": null, "supports_file_tooling": true, "config_cache_version": {"__raise__": "OSError", "message": "stat"}}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": {"__raise__": "RuntimeError", "message": "write"}}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": null, "supports_file_tooling": true, "config_cache_version": {"__raise__": "ConfigBackendUnavailable", "message": "be"}}}}
+{"func": "_save_cfg", "in": {"cfg": {"a": 1}, "state": {"cfg": {"cache": {"old": 1}, "sig": 9, "path": "/old"}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_active_config_path": "/h/launch/config.yaml", "atomic_config_replace": null, "supports_file_tooling": true, "config_cache_version": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "_write_config_changes", "in": {"sets": {"a.b": 1}, "unsets": ["c"], "io": {"_active_config_path": "/h/launch/config.yaml", "write_changes": null, "_drop_cfg_cache": null}}}
+{"func": "_write_config_changes", "in": {"sets": {}, "unsets": [], "io": {"_active_config_path": "/h/launch/config.yaml", "write_changes": null, "_drop_cfg_cache": null}}}
+{"func": "_write_config_changes", "in": {"sets": {"k": "v"}, "unsets": [], "io": {"_active_config_path": "/h/launch/config.yaml", "write_changes": {"__raise__": "RuntimeError", "message": "locked"}, "_drop_cfg_cache": null}}}
+{"func": "_write_config_changes", "in": {"sets": {"k": "v"}, "unsets": ["u"], "io": {"_active_config_path": "/h/launch/config.yaml", "write_changes": {"__raise__": "SystemExit", "message": "bye"}, "_drop_cfg_cache": null}}}
+{"func": "_write_config_changes", "in": {"sets": {"k": 1}, "unsets": [], "io": {"_active_config_path": {"__raise__": "RuntimeError", "message": "pf"}, "write_changes": null, "_drop_cfg_cache": null}}}
+{"func": "_write_config_changes", "in": {"sets": {"k": 1}, "unsets": [], "io": {"_active_config_path": "/h/launch/config.yaml", "write_changes": null, "_drop_cfg_cache": {"__raise__": "RuntimeError", "message": "dropfail"}}}}
+{"func": "_write_config_key", "in": {"key_path": "a.b", "value": 1, "io": {"_write_config_keys": null}}}
+{"func": "_write_config_key", "in": {"key_path": "leaf", "value": "v", "io": {"_write_config_keys": null}}}
+{"func": "_write_config_key", "in": {"key_path": "x", "value": null, "io": {"_write_config_keys": null}}}
+{"func": "_write_config_key", "in": {"key_path": "a.b.c", "value": [1], "io": {"_write_config_keys": null}}}
+{"func": "_write_config_key", "in": {"key_path": "k", "value": 1, "io": {"_write_config_keys": {"__raise__": "RuntimeError", "message": "refused"}}}}
+{"func": "_write_config_keys", "in": {"updates": {"a.b": 1}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": false, "_write_config_changes": null}}}
+{"func": "_write_config_keys", "in": {"updates": {"a.b": 1, "c": 2}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": true, "_load_cfg_raw": {}, "_save_cfg": null}}}
+{"func": "_write_config_keys", "in": {"updates": {"leaf": 5}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": true, "_load_cfg_raw": {"leaf": 0}, "_save_cfg": null}}}
+{"func": "_write_config_keys", "in": {"updates": {"a.b.c": 9}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": true, "_load_cfg_raw": {"a": {"b": {"old": 1}}}, "_save_cfg": null}}}
+{"func": "_write_config_keys", "in": {"updates": {"a.b": 1}, "io": {"_refuse_managed_keys": {"__raise__": "RuntimeError", "message": "managed"}}}}
+{"func": "_write_config_keys", "in": {"updates": {"a.b": 1}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": true, "_load_cfg_raw": {"a": "not-dict"}, "_save_cfg": null}}}
+{"func": "_write_config_keys", "in": {"updates": {}, "io": {"_refuse_managed_keys": null, "supports_file_tooling": true, "_load_cfg_raw": {"z": 1}, "_save_cfg": null}}}
+{"func": "_is_model_switch_marker", "in": {"entry": {"content": "[System: The active model for this chat has changed to gpt via provider x.]"}}}
+{"func": "_is_model_switch_marker", "in": {"entry": {"content": "plain text"}}}
+{"func": "_is_model_switch_marker", "in": {"entry": {"content": 5}}}
+{"func": "_is_model_switch_marker", "in": {"entry": "not-dict"}}
+{"func": "_is_model_switch_marker", "in": {"entry": {}}}
+{"func": "_is_model_switch_marker", "in": {"entry": {"content": "[System: The active model for this chat has changed to "}}}
+{"func": "_is_model_switch_marker", "in": {"entry": null}}
+{"func": "_is_pivot_marker", "in": {"entry": {"display_kind": "personality_switch"}, "io": {"_is_model_switch_marker": false}}}
+{"func": "_is_pivot_marker", "in": {"entry": {"content": "[System: The active model for this chat has changed to m"}, "io": {"_is_model_switch_marker": true}}}
+{"func": "_is_pivot_marker", "in": {"entry": {"display_kind": "other"}, "io": {"_is_model_switch_marker": false}}}
+{"func": "_is_pivot_marker", "in": {"entry": "not-dict", "io": {"_is_model_switch_marker": false}}}
+{"func": "_is_pivot_marker", "in": {"entry": {}, "io": {"_is_model_switch_marker": false}}}
+{"func": "_is_pivot_marker", "in": {"entry": {"display_kind": "personality_switch"}, "io": {"_is_model_switch_marker": true}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": {"started_at": 123.5}}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": {"started_at": "100"}}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": {"started_at": 0}}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": {}}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": "not-dict"}}}
+{"func": "_turn_started_at", "in": {"session": null}}
+{"func": "_turn_started_at", "in": {"session": {}}}
+{"func": "_turn_started_at", "in": {"session": {"inflight_turn": {"started_at": "1e3"}}}}
+{"func": "_cli_exec_blocked", "in": {"argv": []}}
+{"func": "_cli_exec_blocked", "in": {"argv": null}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["setup"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["SETUP", "extra"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["sessions", "browse"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["config", "edit"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["gateway"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["chat", "-q", "hi"]}}
+{"func": "_cli_exec_blocked", "in": {"argv": ["sessions"]}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": 120}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": 0}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": -5}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": {"__raise__": "ValueError", "message": "cfg"}}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": null}}}
+{"func": "_clarify_timeout_seconds", "in": {"io": {"get_clarify_timeout": 0.5}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {"p": 1}, "timeout": 300, "io": {"send": {"value": "secret"}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": null}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"value": 5}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"value": null}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"value": {"a": 1}}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"value": [1, 2]}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"__raise__": "TimeoutError", "message": "late"}}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": [1]}}}
+{"func": "_ask", "in": {"method": "sudo", "sid": "s1", "params": {}, "timeout": 300, "io": {"send": {"value": true}}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [{"qid": "q1", "question": "Q?", "choices": ["a"], "multi_select": false}], "io": {"_clarify_timeout_seconds": 120, "send": {"answers": {"q1": "a"}, "outcome": "answered"}}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [{"qid": "q1", "question": "Q?", "choices": [], "multi_select": true}], "io": {"_clarify_timeout_seconds": null, "send": null}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [], "io": {"_clarify_timeout_seconds": 300, "send": {}}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [{"question": "Q?", "choices": [], "multi_select": false}], "io": {"_clarify_timeout_seconds": 300, "send": null}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [{"qid": "q1", "question": "Q?", "choices": ["a"], "multi_select": false}], "io": {"_clarify_timeout_seconds": 300, "send": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_clarify_block", "in": {"sid": "s1", "questions": [{"qid": "q1", "question": "Q?", "choices": ["a"], "multi_select": 1}], "io": {"_clarify_timeout_seconds": 300, "send": {"answers": {}, "outcome": "undelivered"}}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": "ok"}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"tour_bridge": "answered"}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": "ok"}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"tour_bridge": "unanswered"}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": "ok"}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": ""}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"tour_bridge": "answered"}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": ""}}}
+{"func": "_tour_request", "in": {"sid": "ghost", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": "ok"}}}
+{"func": "_tour_request", "in": {"sid": "ghost", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": ""}}}
+{"func": "_tour_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ask": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100, 200], "_ask": "ok"}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"preview_action_bridge": "answered"}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100], "_ask": "ok"}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"preview_action_bridge": "unanswered", "preview_action_bridge_retry_at": 500}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100], "_ask": "ok"}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"preview_action_bridge": "unanswered", "preview_action_bridge_retry_at": 50}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100, 300], "_ask": ""}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {"preview_action_bridge": "unanswered"}}, "reprobe": {"s1": true}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100], "_ask": "ok"}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100, 200], "_ask": ""}}}
+{"func": "_preview_action_request", "in": {"sid": "ghost", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100, 200], "_ask": "ok"}}}
+{"func": "_preview_action_request", "in": {"sid": "s1", "payload": {"a": 1}, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {"s1": {}}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"monotonic": [100], "_ask": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "thinking", "text": null, "io": {"_emit": true}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "thinking", "text": "hello", "io": {"_emit": true}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "thinking", "text": "   ", "io": {"_emit": true}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "  ", "text": null, "io": {"_emit": true}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "tool", "text": "  run  ", "io": {"_emit": false}}}
+{"func": "_status_update", "in": {"sid": "s1", "kind": "x", "text": "", "io": {"_emit": true}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": {"name": "foobar"}}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": null}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": {}}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": {"name": ""}}}}
+{"func": "_resolve_name", "in": {"name": "foo", "io": {"resolve_command": "plain"}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {"always": true}, "coalesced": false, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev9"}}, "io": {"save_config_value": null, "_ok": {"jsonrpc": "2.0", "id": "r1", "result": {"status": "reloaded", "loaded_rev": "rev9"}}}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {}, "coalesced": true, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev9"}}, "io": {"_ok": {"jsonrpc": "2.0", "id": "r1", "result": {"status": "reloaded", "loaded_rev": "rev9", "coalesced": true}}}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {"always": false}, "coalesced": false, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"_ok": {"jsonrpc": "2.0", "id": "r1", "result": {"status": "reloaded", "loaded_rev": "rev0"}}}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {"always": true}, "coalesced": false, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"save_config_value": {"__raise__": "RuntimeError", "message": "savefail"}, "log": null, "_ok": {"jsonrpc": "2.0", "id": "r1", "result": {"status": "reloaded", "loaded_rev": "rev0"}}}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {"always": true}, "coalesced": false, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "rev0"}}, "io": {"save_config_value": {"__raise__": "SystemExit", "message": "bye"}, "_ok": {"jsonrpc": "2.0", "id": "r1", "result": {}}}}}
+{"func": "_finish_reload", "in": {"rid": "r1", "params": {"always": "yes"}, "coalesced": true, "state": {"cfg": {"cache": null, "sig": null, "path": null}, "home": {"hermes_home": "/h/launch", "at_import": "/h/launch"}, "sessions": {}, "reprobe": {}, "mcp": {"loaded_rev": "abc"}}, "io": {"save_config_value": null, "_ok": {"jsonrpc": "2.0", "id": "r1", "result": {"status": "reloaded", "loaded_rev": "abc", "coalesced": true}}}}}

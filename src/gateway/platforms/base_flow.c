@@ -2389,7 +2389,6 @@ int gwb_exec_approval_cmd_budget(const json_t *st, const char *description,
     return budget;
 }
 
-/* PoP: gwb_supports_exec_approval_buttons @ gateway/platforms/base.py:supports_exec_approval_buttons */
 bool gwb_supports_exec_approval_buttons(bool overrides_prompt) {
     return overrides_prompt;
 }

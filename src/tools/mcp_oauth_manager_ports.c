@@ -19,7 +19,6 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: mom_init @ tools/mcp_oauth_manager.py:__init__ */
 char *mom_init(void) {
     return strdup("{\"entries\": {}, \"lock\": true}");
 }

@@ -1,0 +1,249 @@
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "a, b ,c"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "  ,  , "}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": ""}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": null}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": 0}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": false}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "12345, 67890"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": " a b , c d "}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": " x , y"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "a,,b"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "solo"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "\t,\n"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "1234567890@s.whatsapp.net"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "+1 (555) 010-1234:5"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "abc"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": ""}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": null}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "  4915112345678:0  "}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "user:123@host"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "007"}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": 12345}}
+{"func": "ws_u_whatsapp_phone_from_identifier", "in": {"value": "12@34"}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": "bot"}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": " Self-Chat "}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": "BOT"}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": null}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": ""}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": 0}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": false}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": "self"}}
+{"func": "ws_u_normalize_whatsapp_onboarding_mode", "in": {"value": "chat"}}
+{"func": "ws_u_string_list", "in": {"value": ["a", " b ", "", "  ", "c"]}}
+{"func": "ws_u_string_list", "in": {"value": "notlist"}}
+{"func": "ws_u_string_list", "in": {"value": null}}
+{"func": "ws_u_string_list", "in": {"value": [1, 2.5, true, null, " x "]}}
+{"func": "ws_u_string_list", "in": {"value": []}}
+{"func": "ws_u_string_list", "in": {"value": {"a": 1}}}
+{"func": "ws_u_string_list", "in": {"value": [" ", " z "]}}
+{"func": "ws_u_string_list", "in": {"value": [0, false]}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": "plug"}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": "", "imagegen_backend": "fal"}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": null, "imagegen_backend": 0}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "video_gen", "provider_row": {"video_gen_plugin_name": "v"}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "video_gen", "provider_row": {}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "other", "provider_row": {"image_gen_plugin_name": "x"}}}
+{"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": 0, "imagegen_backend": "nous"}}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "89504e470d0a1a0a0000000d49484452"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "ffd8ffe000104a464946"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "474946383761"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "474946383961"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "424d0000"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "524946462400000057454250565038"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "524946462400000057415645"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": ""}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "8950"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "000102"}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "sk-abc"}, "io": {"redacted_credential_preview": "PREVIEW"}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "  "}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"key_env": "OPENAI_API_KEY"}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": 0, "key_env": "X"}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k", "key_env": "X"}, "io": {"redacted_credential_preview": {"__script__": true, "raise": {"type": "RuntimeError", "message": "nope"}}}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k"}, "io": {"redacted_credential_preview": null}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": " k "}, "io": {"redacted_credential_preview": "P2"}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k"}, "io": {"redacted_credential_preview": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external", "id": "claude-code"}, "status": {}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external", "id": "other"}, "status": {}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external", "id": "anthropic"}, "status": {"source": "env_var"}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "pkce", "id": "x"}, "status": {"source": "env_var"}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "pkce"}, "status": {"source": "file"}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external"}, "status": {}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external", "id": "anthropic"}, "status": {}}}
+{"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {}, "status": {"source": "env_var"}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 400, "text": "fallback"}, "io": {"resp.json": {"error": {"message": "Device code authorization required", "code": "device_denied"}}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 500}, "io": {"resp.json": {"error": "plain failure"}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {}, "io": {"resp.json": null}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"text": "  boom  "}, "io": {"resp.json": {"__script__": true, "raise": {"type": "ValueError", "message": "bad json"}}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 403}, "io": {"resp.json": {"detail": "Enable device flow"}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 429, "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "io": {"resp.json": {}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 400}, "io": {"resp.json": {"error": {"message": "  ", "code": ""}}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 400}, "io": {"resp.json": {"error": {"message": null}}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {}, "io": {"resp.json": {"message": "device authorization disabled"}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {}, "io": {"resp.json": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_codex_device_code_start_error", "in": {"resp": {"status_code": 401, "text": "t"}, "io": {"resp.json": {"error": {"error_description": "enable device authorization"}}}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [{"api_key": "v"}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [{"api_key": null}, {"key": "legacy"}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [{}, {"key": 0}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [{"api_key": false}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [], "env": {"FB": "envval"}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [], "env": {"FB": ""}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "api_key", "aliases": ["key"], "env_fallbacks": ["FB"]}, "sources": [{"other": 1}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "k", "aliases": ["alias1", "alias2"], "env_fallbacks": []}, "sources": [{"alias2": "second", "alias1": "first"}], "env": {}}}
+{"func": "ws_u_read_field", "in": {"field": {"key": "k", "aliases": [], "env_fallbacks": ["FB1", "FB2"]}, "sources": [], "env": {"FB2": "two", "FB1": "one"}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [], "env": {"EK": "1"}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [{"k": 0}], "env": {"EK": ""}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [{"a": "x"}], "env": {}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [], "env": {"FB": "yes"}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [], "env": {"EK": null}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [{"k": false}, {"a": []}], "env": {}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [{"k": {}}], "env": {}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": "EK", "env_fallbacks": ["FB"], "aliases": ["a"]}, "sources": [{"k": [1]}], "env": {}}}
+{"func": "ws_u_declared_field_is_set", "in": {"field": {"key": "k", "env_key": null, "env_fallbacks": [], "aliases": []}, "sources": [{"k": "v"}], "env": {}}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": "d"}, "value": null}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": " YES "}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": "off"}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": 0}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": []}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": [1]}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": "x"}, "value": null}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "json", "default": ""}, "value": {"a": 1, "b": [1, 2]}}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "json", "default": ""}, "value": "str"}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": 42}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": 2.5}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": true}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "json", "default": ""}, "value": {"u": "é"}}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": "1"}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok"}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "command": "pip install x", "completed": {"returncode": 0, "stdout": "out", "stderr": "err"}}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "failed", "completed": {"returncode": 1, "stdout": "", "stderr": ""}, "error": "boom"}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "failed", "completed": {"returncode": 1, "stdout": "o", "stderr": "e"}, "error": ""}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "completed": {"returncode": 0, "stdout": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "stderr": ""}}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "completed": {"returncode": null, "stdout": null, "stderr": null}}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "completed": {"returncode": 0, "stdout": "", "stderr": "e"}, "error": 0}}
+{"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "error": "solo error"}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": "h"}, "key": "ssh_host", "env_var": "TERMINAL_SSH_HOST"}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": "  "}, "key": "ssh_host", "env_var": "E", "io": {"get_env_value": " env "}}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {}, "key": "k", "env_var": "E", "io": {"get_env_value": null}}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": null}, "key": "ssh_host", "env_var": "E", "io": {"get_env_value": "x"}}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": 0}, "key": "ssh_host", "env_var": "E"}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": false}, "key": "ssh_host", "env_var": "E"}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {}, "key": "k", "env_var": "E", "io": {"get_env_value": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {}, "key": "k", "env_var": "E", "io": {"get_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {}, "key": "k", "env_var": "E"}}
+{"func": "ws_u_terminal_cfg_value", "in": {"terminal_cfg": {"ssh_host": 2.5}, "key": "ssh_host", "env_var": "E"}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": "h", "ssh_user": "u"}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": ["eh", "eu"]}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": "h"}, "io": {"get_env_value": ""}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": ["", ""]}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": " ", "ssh_user": "u"}, "io": {"get_env_value": ""}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": " h ", "ssh_user": "u"}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": true}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": false, "get_env_value": ["id", "secret"]}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": false, "get_env_value": ["id", ""]}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": false, "get_env_value": ""}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": {"__script__": true, "raise": {"type": "ValueError", "message": "no"}}, "get_env_value": ["a", "b"]}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": null, "get_env_value": ["a", "b"]}}}
+{"func": "ws_u_probe_modal_backend", "in": {}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {"c": 1}, "provider": "b", "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": "zz", "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": null, "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}, "_is_provider_active": [false, true]}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": "", "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}, "_is_provider_active": [true]}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": 0, "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}, "_is_provider_active": [false, true]}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": "x", "io": {"_category_providers": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": null, "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}, "_is_provider_active": [false, false]}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": null, "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}, "_is_provider_active": {"__script__": true, "raise": {"type": "RuntimeError", "message": "active fail"}}}}}
+{"func": "ws_u_find_toolset_provider_row", "in": {"ts_key": "image_gen", "config": {}, "provider": "a", "io": {"_category_providers": {"__script__": true, "ret": [{"name": "a", "x": 1}, {"name": "b", "x": 2}]}}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 500}, "b": {"created_at": 1500}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 1100}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 1}}, "io": {"time.time": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": "x"}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 1100.2}, "b": {"created_at": 1100.7}}, "io": {"time.time": 2000.5}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 1}}}}
+{"func": "ws_u_gc_oauth_sessions", "in": {"oauth_sessions": {"a": {"created_at": 10}, "b": {"created_at": 20}, "c": {"created_at": 1900}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": 500}, "b": {"created_at": 1500}, "c": {}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": 0}, "b": {}}, "io": {"time.time": 100}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": "x"}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": 1}}, "io": {"time.time": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": 1100}}, "io": {"time.time": 2000}}}
+{"func": "ws_u_gc_mcp_oauth_flows", "in": {"mcp_oauth_flows": {"a": {"created_at": 5}}, "io": {"time.time": 2000.5}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {"expires_at_ts": 999}, "b": {"expires_at_ts": 1000}, "c": {"expires_at_ts": 1001}}, "io": {"time.time": 1000}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {}, "io": {"time.time": 1000}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {}}, "io": {"time.time": 1000}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {"expires_at_ts": "x"}}, "io": {"time.time": 1000}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {"expires_at_ts": 5}}, "io": {"time.time": "now"}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {}, "io": {"time.time": "now"}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {"expires_at_ts": 1}}, "io": {"time.time": {"__script__": true, "raise": {"type": "GeneratorExit", "message": ""}}}}}
+{"func": "ws_u_prune_telegram_onboarding_pairings", "in": {"telegram_onboarding_pairings": {"a": {"expires_at_ts": 999.5}}, "io": {"time.time": 1000}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "My Server!", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "!!!", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "x", "action_log_files": {"mcp-install-x-11f6ad8e": "custom.log"}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "Ünïcode", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "a-b_c", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "x"}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "install", "key": "My Skill", "profile": null, "action_log_files": {}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "update", "key": "s", "profile": "  DEFAULT ", "action_log_files": {}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "install", "key": "s", "profile": "", "action_log_files": {}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "install", "key": "s", "profile": 0, "action_log_files": {}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "uninstall", "key": "!!!", "profile": "p", "action_log_files": {}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "install", "key": "s", "profile": "Work", "action_log_files": {"skills-install-s-39918fc8": "keep.log"}}}
+{"func": "ws_u_hub_action_name", "in": {"verb": "install", "key": "s", "profile": "Work", "action_log_files": {}}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": null}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "current"}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": " CURRENT "}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": ""}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "work", "io": {"_resolve_profile_dir": "/h/work", "normalize_profile_name": "work"}}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "work", "io": {"_resolve_profile_dir": {"__script__": true, "raise": {"type": "ValueError", "message": "bad profile"}}}}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "work", "io": {"_resolve_profile_dir": "/h/work", "normalize_profile_name": {"__script__": true, "raise": {"type": "RuntimeError", "message": "norm fail"}}}}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "Work", "io": {"_resolve_profile_dir": "/h/Work", "normalize_profile_name": "work"}}}
+{"func": "ws_u_profile_cli_args", "in": {"profile": "work"}}
+{"func": "ws_u_pairing_store", "in": {"profile": null, "io": {"PairingStore": {"__script__": true, "ret": {"store": "default"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": "current", "io": {"PairingStore": {"__script__": true, "ret": {"store": "default"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": "work", "io": {"_resolve_profile_dir": "/h/work", "PairingStore": {"__script__": true, "ret": {"store": "work"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": "work", "io": {"_resolve_profile_dir": {"__script__": true, "raise": {"type": "ValueError", "message": "unknown profile"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": "  ", "io": {"PairingStore": {"__script__": true, "ret": {"store": "default"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": 0, "io": {"PairingStore": {"__script__": true, "ret": {"store": "default"}}}}}
+{"func": "ws_u_pairing_store", "in": {"profile": null, "io": {"PairingStore": {"__script__": true, "raise": {"type": "RuntimeError", "message": "store fail"}}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "ret": ["a", "b"]}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "ret": ["a", "a", ""]}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "raise": {"type": "ValueError", "message": "disc fail"}}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": "ab"}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "ret": {"k1": 1, "k2": 2}}}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": 5}}}
+{"func": "ws_u_memory_provider_options", "in": {"io": {"list_memory_provider_names": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_memory_provider_options", "in": {}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": null, "profile_name": "p1"}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": [], "profile_name": "p1"}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["self", " SELF "], "profile_name": "p1"}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["job1"], "profile_name": "p1", "io": {"_call_cron_for_profile": {"id": "job1"}}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["job1"], "profile_name": "p1", "io": {"_call_cron_for_profile": null}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["ok", "bad"], "profile_name": "p1", "io": {"_call_cron_for_profile": [{"id": "ok"}, null]}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": [5], "profile_name": "p1", "io": {"_call_cron_for_profile": null}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": [null], "profile_name": "p1", "io": {"_call_cron_for_profile": null}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["bad"], "profile_name": "p1", "io": {"_call_cron_for_profile": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["bad"], "profile_name": null, "io": {"_call_cron_for_profile": null}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": "ab", "profile_name": "p1", "io": {"_call_cron_for_profile": [null, null]}}}
+{"func": "ws_u_validate_dashboard_cron_context_from", "in": {"refs": ["self", "j2"], "profile_name": "p1", "io": {"_call_cron_for_profile": {"id": "j2"}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": ["A", "B"]}, {"env_vars": ["B", "C"]}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": "AB"}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": {"K1": 1}}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [5]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": 5}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": [["x"]]}]}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "raise": {"type": "ValueError", "message": "cat fail"}}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "raise": {"type": "GeneratorExit", "message": ""}}}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": "x"}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": null}}}
+{"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": ["Z", "A"]}, {"env_vars": ["A", "M"]}]}}}}

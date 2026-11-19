@@ -1,0 +1,105 @@
+{"func": "strip_archive_timestamp", "in": {"name": "foo-20261118120000"}}
+{"func": "strip_archive_timestamp", "in": {"name": "plain"}}
+{"func": "strip_archive_timestamp", "in": {"name": "skill-20261118120000"}}
+{"func": "strip_archive_timestamp", "in": {"name": "a-12345678901234"}}
+{"func": "strip_archive_timestamp", "in": {"name": "x-1234567890123"}}
+{"func": "strip_archive_timestamp", "in": {"name": "-20261118120000"}}
+{"func": "strip_archive_timestamp", "in": {"name": "foo-20261118120000-extra"}}
+{"func": "quant_label", "in": {"filename": "model-Q4_K_M.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-IQ3_XXS.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-F16.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-BF16.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-F32.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-noquant.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-q4_k_m.gguf"}}
+{"func": "quant_label", "in": {"filename": "model-Q8_0.gguf"}}
+{"func": "rough_fit", "in": {"total_bytes": 1000000000, "budget": {"usable_vram_bytes": 8000000000, "ram_available_bytes": 16000000000}}}
+{"func": "rough_fit", "in": {"total_bytes": 8000000000, "budget": {"usable_vram_bytes": 4000000000, "ram_available_bytes": 16000000000}}}
+{"func": "rough_fit", "in": {"total_bytes": 20000000000, "budget": {"usable_vram_bytes": 4000000000, "ram_available_bytes": 8000000000}}}
+{"func": "rough_fit", "in": {"total_bytes": 0, "budget": {"usable_vram_bytes": 4294967296, "ram_available_bytes": 0}}}
+{"func": "rough_fit", "in": {"total_bytes": 1, "budget": {"usable_vram_bytes": 4294967296, "ram_available_bytes": 0}}}
+{"func": "rough_fit", "in": {"total_bytes": 1, "budget": {"usable_vram_bytes": 4294967296, "ram_available_bytes": 1}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills/foo", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills/foo/bar", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills/.archive/foo", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/other", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills/.hub/x", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_rel", "in": {"root": "/home/u/skills/.curator_backups/y", "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": "/home/u/skills/foo", "skill": null, "before": null, "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": null, "skill": "bar", "before": null, "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": null, "skill": "baz-20261118120000", "before": null, "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": "/home/u/skills/foo", "skill": "foo", "before": [{"path": "/home/u/skills/foo/SKILL.md"}], "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": "/home/u/skills/.archive/foo", "skill": "qux", "before": null, "io": {"get_hermes_home": "/home/u"}}}
+{"func": "package_prefixes", "in": {"root": null, "skill": null, "before": [{"path": "/home/u/skills/a/SKILL.md"}, {"path": "/home/u/skills/b/SKILL.md"}], "io": {"get_hermes_home": "/home/u"}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": "/home/u/skills/foo", "existing": [], "skill": null, "io": {"get_hermes_home": "/home/u", "_read_package_files_from_latest_backup": {"foo/SKILL.md": "data1", "foo/ref.md": "data2"}, "_store_blob": ["hash1", "hash2"]}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": null, "existing": [], "skill": "bar", "io": {"get_hermes_home": "/home/u", "_read_package_files_from_latest_backup": {"bar/SKILL.md": "d"}, "_store_blob": ["h"]}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": null, "existing": [{"path": "/x", "sha256": "s"}], "skill": null, "io": {}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": "/home/u/skills/foo", "existing": [{"path": "/home/u/skills/foo/a.md", "sha256": "x"}], "skill": null, "io": {"get_hermes_home": "/home/u", "_read_package_files_from_latest_backup": {}}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": "/home/u/skills/foo", "existing": [{"path": "/home/u/skills/foo/SKILL.md", "sha256": "old"}], "skill": null, "io": {"get_hermes_home": "/home/u", "_read_package_files_from_latest_backup": {"foo/SKILL.md": "new"}}}}
+{"func": "fill_snapshot_from_curator_backup", "in": {"root": "/home/u/skills/foo", "existing": [], "skill": null, "io": {"get_hermes_home": "/home/u", "_read_package_files_from_latest_backup": {"foo/../../../../etc/passwd": "d"}}}}
+{"func": "repo_files", "in": {"repo": "x/y", "io": {"_get_json": {"__script__": true, "ret": [{"path": "model-Q4_K_M.gguf", "size": 100}, {"path": "model-Q8_0.gguf", "size": 200}]}}}}
+{"func": "repo_files", "in": {"repo": "unsloth/Qwen3 GGUF", "io": {"_get_json": {"__script__": true, "ret": [{"path": "m-Q4_K_M-00001-of-00002.gguf", "size": 100}, {"path": "m-Q4_K_M-00002-of-00002.gguf", "size": 150}]}}}}
+{"func": "repo_files", "in": {"repo": "r", "io": {"_get_json": {"__script__": true, "ret": [{"path": "mmproj-x.gguf", "size": 50}, {"path": "model-draft-Q4.gguf", "size": 60}, {"path": "mtp-head.gguf", "size": 70}, {"path": "model-Q4_K_M.gguf", "size": 100}]}}}}
+{"func": "repo_files", "in": {"repo": "r", "io": {"_get_json": {"__script__": true, "ret": [{"path": "readme.md", "size": 10}, {"path": "model-F16.gguf", "size": 300}]}}}}
+{"func": "repo_files", "in": {"repo": "r", "io": {"_get_json": {"__script__": true, "ret": []}}}}
+{"func": "repo_files", "in": {"repo": "r", "io": {"_get_json": {"__script__": true, "ret": [{"path": "a-Q4_K_M.gguf", "size": 500}, {"path": "b-Q8_0-00001-of-00002.gguf", "size": 200}, {"path": "b-Q8_0-00002-of-00002.gguf", "size": 200}]}}}}
+{"func": "search_models", "in": {"query": "qwen", "limit": 20, "io": {"_get_json": {"__script__": true, "ret": [{"id": "a/b", "downloads": 100, "likes": 5, "lastModified": "2026-01-01", "gated": false}]}}}}
+{"func": "search_models", "in": {"query": "  llama  ", "limit": 5, "io": {"_get_json": {"__script__": true, "ret": [{"id": "x", "downloads": 0, "likes": 0, "lastModified": null, "gated": true}]}}}}
+{"func": "search_models", "in": {"query": "t", "limit": 100, "io": {"_get_json": {"__script__": true, "ret": []}}}}
+{"func": "search_models", "in": {"query": "t", "limit": 0, "io": {"_get_json": {"__script__": true, "ret": [{"id": "m", "downloads": 7, "likes": 2, "lastModified": "d", "gated": false}]}}}}
+{"func": "search_models", "in": {"query": "a b", "limit": 10, "io": {"_get_json": {"__script__": true, "ret": [{"id": "m1", "downloads": 1, "likes": 0, "lastModified": "x", "gated": false}, {"id": "m2", "downloads": 2, "likes": 1, "lastModified": "y", "gated": true}]}}}}
+{"func": "search_models", "in": {"query": "z", "limit": 20, "io": {"_get_json": {"__script__": true, "ret": [{}]}}}}
+{"func": "priced_repo_files", "in": {"repo": "r", "budget": {"usable_vram_bytes": 8000000000, "ram_available_bytes": 16000000000}, "io": {"_get_json": {"__script__": true, "ret": [{"path": "m-Q4_K_M.gguf", "size": 1000000000}]}}}}
+{"func": "priced_repo_files", "in": {"repo": "r", "budget": {"usable_vram_bytes": 1000000000, "ram_available_bytes": 1000000000}, "io": {"_get_json": {"__script__": true, "ret": [{"path": "m-Q4_K_M.gguf", "size": 8000000000}]}}}}
+{"func": "priced_repo_files", "in": {"repo": "r", "budget": {"usable_vram_bytes": 4000000000, "ram_available_bytes": 16000000000}, "io": {"_get_json": {"__script__": true, "ret": [{"path": "m-Q4_K_M.gguf", "size": 8000000000}]}}}}
+{"func": "priced_repo_files", "in": {"repo": "r", "budget": {"usable_vram_bytes": 8000000000, "ram_available_bytes": 16000000000}, "io": {"_get_json": {"__script__": true, "ret": []}}}}
+{"func": "priced_repo_files", "in": {"repo": "r", "budget": {"usable_vram_bytes": 8000000000, "ram_available_bytes": 16000000000}, "io": {"_get_json": {"__script__": true, "ret": [{"path": "a-Q4_K_M.gguf", "size": 1000000000}, {"path": "b-Q8_0.gguf", "size": 9000000000}]}}}}
+{"func": "wake_scope_id", "in": {"sub": {"delivery_metadata": {"scope_id": "T123"}}, "adapter": {}}}
+{"func": "wake_scope_id", "in": {"sub": {"delivery_metadata": {"guild_id": "G9"}}, "adapter": {}}}
+{"func": "wake_scope_id", "in": {"sub": {"delivery_metadata": {"scope_id": "", "team_id": "T9"}}, "adapter": {}}}
+{"func": "wake_scope_id", "in": {"sub": {"chat_id": "C1"}, "adapter": {"resolver": "callable"}, "io": {"scope_id_for_chat": "S99"}}}
+{"func": "wake_scope_id", "in": {"sub": {"chat_id": "C1"}, "adapter": {"resolver": "callable"}, "io": {"scope_id_for_chat": null}}}
+{"func": "wake_scope_id", "in": {"sub": {"chat_id": "C1"}, "adapter": {"resolver": "noncallable"}}}
+{"func": "wake_scope_id", "in": {"sub": {"chat_id": "C1"}, "adapter": {"resolver": "absent"}}}
+{"func": "wake_scope_id", "in": {"sub": {"chat_id": "C1"}, "adapter": {"resolver": "callable"}, "io": {"scope_id_for_chat": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "wake_scope_id", "in": {"sub": {"delivery_metadata": {"scope_id": 456}}, "adapter": {}}}
+{"func": "safe_review_reason", "in": {"value": "hello", "limit": 160, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "hello world"}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 160, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "see /home/u/file.txt now"}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 160, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "path C:\\Users\\me\\a.txt end"}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 160, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "a   b\tc\n d"}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 10, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "abcdefghijklmnop"}}}
+{"func": "safe_review_reason", "in": {"value": null, "limit": 160, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": ""}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 10, "io": {"import_redact_sensitive_text": null, "redact_sensitive_text": "/home/u/verylongpath/file name"}}}
+{"func": "safe_review_reason", "in": {"value": "x", "limit": 160, "io": {"import_redact_sensitive_text": {"__script__": true, "raise": {"type": "ImportError", "message": "no module"}}}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "linux", "import_project_root_str": null, "project_root_str": "/proj", "is_file": [true], "sys_executable": "/usr/bin/python3", "shutil.which": null}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "linux", "import_project_root_str": null, "project_root_str": "/proj", "is_file": [false, true], "sys_executable": "/usr/bin/python3", "shutil.which": null}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "linux", "import_project_root_str": null, "project_root_str": "/proj", "is_file": [false, false], "sys_executable": "/usr/bin/python3", "shutil.which": "/bin/hermes"}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "linux", "import_project_root_str": null, "project_root_str": "/proj", "is_file": [false, false], "sys_executable": "/usr/bin/python3", "shutil.which": null}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "win32", "import_project_root_str": null, "project_root_str": "/proj", "is_file": [true], "sys_executable": "/usr/bin/python3", "shutil.which": null}}}
+{"func": "_hermes_cli", "in": {"io": {"sys_platform": "linux", "import_project_root_str": {"__script__": true, "raise": {"type": "ImportError", "message": "x"}}}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "", "workspace_key": "", "io": {"import_sanitize_task_id_for_path": null, "import_home_profile_name": null, "import_profile_container_key": null, "home_profile_name": "default", "profile_container_key": "default", "tenv": "", "cwd_mount_enabled": false}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "s1", "workspace_key": "", "io": {"import_sanitize_task_id_for_path": null, "import_home_profile_name": null, "import_profile_container_key": null, "home_profile_name": "dev", "profile_container_key": "profile:dev", "tenv": "", "cwd_mount_enabled": false, "sanitize_task_id_for_path": ["profile-dev", "session-s1"]}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "", "workspace_key": "", "io": {"import_sanitize_task_id_for_path": null, "import_home_profile_name": null, "import_profile_container_key": null, "home_profile_name": "default", "profile_container_key": "default", "tenv": "sharedkey", "sanitize_task_id_for_path": ["shared-sharedkey"]}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "", "workspace_key": "0123456789abcdef", "io": {"import_sanitize_task_id_for_path": null, "import_home_profile_name": null, "import_profile_container_key": null, "home_profile_name": "default", "profile_container_key": "default", "tenv": "", "cwd_mount_enabled": true, "sanitize_task_id_for_path": ["default-ws-0123456789abcdef"]}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "", "workspace_key": "0123456789abcdef", "io": {"import_sanitize_task_id_for_path": null, "import_home_profile_name": null, "import_profile_container_key": null, "home_profile_name": "default", "profile_container_key": "default", "tenv": "", "cwd_mount_enabled": false}}}
+{"func": "docker_sandbox_dir_candidates", "in": {"session_key": "", "workspace_key": "", "io": {"import_sanitize_task_id_for_path": {"__script__": true, "raise": {"type": "ImportError", "message": "x"}}}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "", "workspace_key": "", "workspace_cwd": "", "io": {"persistent": false}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "", "workspace_key": "", "workspace_cwd": "", "io": {"persistent": true, "cwd_mount_enabled": true, "_mounted_workspace_cwd": {"__script__": true, "ret": ["/host/cwd"]}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": []}}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "s", "workspace_key": "0123456789abcdef", "workspace_cwd": "/host/ws", "io": {"persistent": true, "cwd_mount_enabled": true, "tenv": "", "_session_mounted_workspace": {"__script__": true, "ret": ["/host/ws"]}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": ["/sb/docker/default/workspace"]}}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "s", "workspace_key": "0123456789abcdef", "workspace_cwd": "", "io": {"persistent": true, "cwd_mount_enabled": true, "tenv": "shared", "_shared_cwd_mount_guess": {"__script__": true, "ret": ["/host/shared"]}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": ["/host/shared"]}}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "", "workspace_key": "", "workspace_cwd": "", "io": {"persistent": true, "cwd_mount_enabled": false, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": ["/sb/a", "/sb/b"]}}}}
+{"func": "default_docker_workspace_host_roots", "in": {"session_key": "", "workspace_key": "0123456789abcdef", "workspace_cwd": "", "io": {"persistent": true, "cwd_mount_enabled": true, "tenv": "", "_session_mounted_workspace": {"__script__": true, "ret": []}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": ["/sb/x"]}}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "io": {"shutil.which": null}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "output_path": "/out.ogg", "io": {"shutil.which": "/usr/bin/ffmpeg", "os.path.abspath": ["/in.wav", "/out.ogg"], "subprocess.run": {"returncode": 0, "stderr": ""}, "os.path.getsize": 1234}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "output_path": "/in.wav", "io": {"shutil.which": "/usr/bin/ffmpeg", "os.path.abspath": ["/in.wav", "/in.wav"], "subprocess.run": {"returncode": 0, "stderr": ""}, "os.path.getsize": 500, "os.replace": null}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "output_path": "/out.ogg", "io": {"shutil.which": "/usr/bin/ffmpeg", "os.path.abspath": ["/in.wav", "/out.ogg"], "subprocess.run": {"returncode": 1, "stderr": "err"}, "os.unlink": null}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "io": {"shutil.which": "/usr/bin/ffmpeg", "tempfile.mkstemp": {"__script__": true, "ret": [7, "/tmp/voice_transcode_x.ogg"]}, "os.close": null, "os.path.abspath": ["/in.wav", "/tmp/voice_transcode_x.ogg"], "subprocess.run": {"__script__": true, "raise": {"type": "OSError", "message": "boom"}}, "os.unlink": null}}}
+{"func": "transcode_to_ogg_opus", "in": {"path": "/in.wav", "output_path": "/out.ogg", "io": {"shutil.which": "/usr/bin/ffmpeg", "os.path.abspath": ["/in.wav", "/out.ogg"], "subprocess.run": {"returncode": 0, "stderr": ""}, "os.path.getsize": 0, "os.unlink": null}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "relative/path", "io": {}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/workspace/a.txt", "session_key": "", "workspace_key": "", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": [["/host/data", "/workspace"]]}, "_cache_dir_container_mounts": {"__script__": true, "ret": []}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": []}, "_resolve_path": "/host/data/a.txt", "_path_is_within": true}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/workspace/a.txt", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": []}, "_cache_dir_container_mounts": {"__script__": true, "ret": []}, "_default_docker_workspace_host_roots": {"__script__": true, "ret": ["/host/ws"]}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": []}, "_resolve_path": "/host/ws/a.txt", "_path_is_within": true}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/root/out.png", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": []}, "_cache_dir_container_mounts": {"__script__": true, "ret": []}, "_default_docker_workspace_host_roots": {"__script__": true, "ret": []}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": ["/host/home"]}, "_resolve_path": "/host/home/out.png", "_path_is_within": true}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/workspace/a.txt", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": []}, "_cache_dir_container_mounts": {"__script__": true, "ret": []}, "_default_docker_workspace_host_roots": {"__script__": true, "ret": []}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": []}, "warn_unresolved_docker_media": null}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/other/a.txt", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": [["/host/data", "/workspace"]]}, "_cache_dir_container_mounts": {"__script__": true, "ret": []}, "_docker_persistent_sandbox_roots": {"__script__": true, "ret": []}, "warn_unresolved_docker_media": null}}}
+{"func": "translate_docker_container_media_path", "in": {"candidate": "/root/.hermes/cred", "io": {"import__ensure_terminal_env_bridged": null, "_ensure_terminal_env_bridged": null, "import__default_docker_workspace_host_roots": null, "import__docker_persistent_sandbox_roots": null, "_parse_docker_volume_mounts": {"__script__": true, "ret": []}, "_cache_dir_container_mounts": {"__script__": true, "ret": [["/host/cache", "/root/.hermes/cache"]]}, "_default_docker_workspace_host_roots": {"__script__": true, "ret": []}, "_resolve_path": null, "warn_unresolved_docker_media": null}}}

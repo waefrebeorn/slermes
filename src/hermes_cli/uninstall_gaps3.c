@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/uninstall.py: 1 missing functions ── */
 
-/* PoP: remove_windows_bin_launchers @ hermes_cli/uninstall.py:remove_windows_bin_launchers */
 char *remove_windows_bin_launchers(void) { return strdup(""); }

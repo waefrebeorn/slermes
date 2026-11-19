@@ -738,12 +738,12 @@ json_t *mof_sdk_class(mof_io_t *io, const char *name) {
         json_t *sa = NULL;
         if (mof_raised(ca)) {
             if (mof_exc_is(ca, "ImportError") || mof_exc_is(ca, "AttributeError")) failed = true;
-            else { json_free(ca); return ca; }
+            else { return ca; }  /* ownership passes to the caller — do NOT free */
         } else {
             sa = seam(io, "import_shared_auth", NULL);
             if (mof_raised(sa)) {
                 if (mof_exc_is(sa, "ImportError") || mof_exc_is(sa, "AttributeError")) failed = true;
-                else { json_free(ca); json_free(sa); return sa; }
+                else { json_free(ca); return sa; }  /* sa ownership passes to caller */
             } else {
                 json_t *prov = mof_get(ca, "OAuthClientProvider");
                 if (!prov) {
@@ -1044,11 +1044,14 @@ json_t *mof_rebase_expires_in(mof_io_t *io, json_t *data) {
         json_t *t = seam(io, "time.time", NULL);
         if (mof_raised(t)) { json_free(abs_copy); return t; }
         double now = (t->type == JSON_NUMBER) ? t->num_val : 0.0;
+        /* int-like doubles model Python ints (harness serializes them int-like,
+         * so the live right operand is an int) — name the type, don't pin it. */
+        const char *tname = mof_typename(t);
         json_free(t);
         if (abs_copy->type != JSON_NUMBER && abs_copy->type != JSON_BOOL) {
             char msg[128];
-            snprintf(msg, sizeof msg, "unsupported operand type(s) for -: '%s' and 'float'",
-                mof_typename(abs_copy));
+            snprintf(msg, sizeof msg, "unsupported operand type(s) for -: '%s' and '%s'",
+                mof_typename(abs_copy), tname);
             json_free(abs_copy);
             return mof_raise("TypeError", msg);
         }

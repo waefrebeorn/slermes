@@ -214,7 +214,6 @@ int mgr_on_session_end(void) {
     return 0;
 }
 
-/* PoP: mgr_scrubber_init @ agent/memory_manager.py:__init__ */
 char *mgr_scrubber_init(void) {
     /* Python: stream scrubber state. */
     return strdup("{\"in_span\": false, \"buf\": \"\", \"at_block_boundary\": true}");

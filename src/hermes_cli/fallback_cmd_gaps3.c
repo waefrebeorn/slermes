@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/fallback_cmd.py: 1 missing functions ── */
 
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback */
 char *cmd_fallback(void) { return strdup(""); }

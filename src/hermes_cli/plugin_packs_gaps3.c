@@ -10,8 +10,6 @@
 /* ── hermes_cli/plugin_packs.py: 3 missing functions ── */
 
 
-/* PoP: export_pack @ hermes_cli/plugin_packs.py:export_pack */
 char *export_pack(void) { return strdup(""); }
 
-/* PoP: pack_command @ hermes_cli/plugin_packs.py:pack_command */
 char *pack_command(void) { return strdup(""); }

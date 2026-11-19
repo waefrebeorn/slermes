@@ -101,7 +101,7 @@ static json_t *rf_run_case(const char *func, json_t *in) {
     } else if (strcmp(func, "is_sensitive_url_param") == 0) {
         ret = rf_is_sensitive_url_param(&io, json_get_str(in, "name", ""));
     } else if (strcmp(func, "redact_log_urls") == 0) {
-        ret = rf_redact_log_urls(&io, rf_str_or_null(in, "text"));
+        ret = rf_redact_log_urls(&io, json_obj_get(in, "text"));
     } else if (strcmp(func, "redact_for_egress") == 0) {
         ret = rf_redact_for_egress(&io, rf_str_or_null(in, "text"),
             json_get_bool(in, "urls", false), json_get_bool(in, "keep_phone_numbers", false));

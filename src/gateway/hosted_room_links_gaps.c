@@ -9,22 +9,17 @@
 
 /* ── gateway/hosted_room_links.py: 8 missing functions ── */
 
-/* PoP: from_record @ gateway/hosted_room_links.py:from_record */
 char *from_record(const char *record) { return strdup("{}"); }
 
-/* PoP: as_record @ gateway/hosted_room_links.py:as_record */
 char *as_record(void) { return strdup("{}"); }
 
 /* PoP: short_string @ gateway/hosted_room_links.py:_short_string */
 char *short_string(const char *s) { return s ? strdup(s) : strdup(""); }
 
-/* PoP: load_room_links @ gateway/hosted_room_links.py:load_room_links */
 char *load_room_links(void) { return strdup("[]"); }
 
-/* PoP: load_room_links_tolerant @ gateway/hosted_room_links.py:load_room_links_tolerant */
 char *load_room_links_tolerant(void) { return strdup("[]"); }
 
 
 
-/* PoP: make_stored_link @ gateway/hosted_room_links.py:make_stored_link */
 char *make_stored_link(void) { return strdup("{}"); }

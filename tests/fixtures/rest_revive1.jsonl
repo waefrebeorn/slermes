@@ -1,0 +1,247 @@
+{"func": "resolve_bedrock_bearer_token", "in": {"env": {"AWS_BEARER_TOKEN_BEDROCK": "  tok123  "}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": {}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": {"AWS_BEARER_TOKEN_BEDROCK": ""}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": null, "io": {"import_get_hermes_home_override": null, "get_hermes_home_override": null, "environ_get": "  envtok  "}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": null, "io": {"import_get_hermes_home_override": null, "get_hermes_home_override": "/h/profile", "import_get_secret": null, "get_secret": " secret-tok "}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": null, "io": {"import_get_hermes_home_override": {"__script__": true, "raise": {"type": "ImportError", "message": "no module"}}}}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": [1]}}
+{"func": "resolve_bedrock_bearer_token", "in": {"env": {"AWS_BEARER_TOKEN_BEDROCK": 5}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "ValidationException: cachePoint is not permitted at #/system"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "cachePoint not permitted at #/messages/0/content/1"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "extraneous cachePoint block at #/toolConfig/tools/0"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "cachePoint not permitted at #/unknownSection"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "cachePoint not permitted"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "some other error"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "cachePoint is fine here"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "CACHEPOINT NOT PERMITTED #/System"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "extraneous cachePoint at #/"}}}
+{"func": "cache_point_rejection_placement", "in": {"exc": {"type": "ValidationException", "message": "cachePoint not permitted at #/mytools[0]"}}}
+{"func": "strip_cache_points", "in": {"kwargs": {"messages": [{"role": "user", "content": [{"text": "hi"}, {"cachePoint": {}}]}]}, "placement": "messages"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"messages": [{"content": [{"text": "x"}]}]}, "placement": "messages"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"modelId": "m"}, "placement": "messages"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"system": [{"text": "s"}, {"cachePoint": {"ttl": "5m"}}]}, "placement": "system"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"system": "plain"}, "placement": "system"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"toolConfig": {"tools": [{"toolSpec": {"name": "t"}}, {"cachePoint": {}}]}}, "placement": "tools"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"toolConfig": null}, "placement": "tools"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"a": 1}, "placement": "other"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"messages": ["x", {"content": [{"cachePoint": {}}]}]}, "placement": "messages"}}
+{"func": "strip_cache_points", "in": {"kwargs": null, "placement": "system"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"toolConfig": "x"}, "placement": "tools"}}
+{"func": "strip_cache_points", "in": {"kwargs": {"messages": [{"content": [{"cachePoint": {}, "x": 1}]}]}, "placement": "messages"}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "ValidationException", "message": "cachePoint not permitted at #/system"}, "kwargs": {"modelId": "m1", "system": [{"text": "s"}, {"cachePoint": {}}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "unrelated"}, "kwargs": {"system": [{"cachePoint": {}}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "cachePoint not permitted at #/system"}, "kwargs": {"system": [{"text": "s"}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "cachePoint not permitted at #/messages"}, "kwargs": {"messages": [{"content": [{"cachePoint": {}}]}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "cachePoint not permitted at #/system"}, "kwargs": {"modelId": null, "system": [{"cachePoint": {}}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "cachePoint not permitted at #/system"}, "kwargs": {"modelId": 42, "system": [{"cachePoint": {}}]}, "io": {"note_cache_point_rejection": null, "logger.warning": null}}}
+{"func": "recover_from_cache_point_rejection", "in": {"exc": {"type": "X", "message": "cachePoint not permitted at #/system"}, "kwargs": {"system": [{"cachePoint": {}}]}, "io": {"note_cache_point_rejection": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": null, "discover_plugins": null}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": null, "discover_plugins": {"__script__": true, "raise": {"type": "RuntimeError", "message": "plug fail"}}}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": {"__script__": true, "raise": {"type": "ImportError", "message": "no plugins"}}}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": null, "discover_plugins": "ignored"}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": null, "discover_plugins": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "prepare_send_message_platforms", "in": {"io": {"import_discover_plugins": null}}}
+{"func": "bounded_send_error", "in": {"detail": "short"}}
+{"func": "bounded_send_error", "in": {"detail": null}}
+{"func": "bounded_send_error", "in": {"detail": ""}}
+{"func": "bounded_send_error", "in": {"detail": 0}}
+{"func": "bounded_send_error", "in": {"detail": 5}}
+{"func": "bounded_send_error", "in": {"detail": true}}
+{"func": "bounded_send_error", "in": {"detail": false}}
+{"func": "bounded_send_error", "in": {"detail": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"func": "bounded_send_error", "in": {"detail": "abcdef", "max_chars": 5}}
+{"func": "bounded_send_error", "in": {"detail": "abcdef", "max_chars": 3}}
+{"func": "bounded_send_error", "in": {"detail": "abcdef", "max_chars": 0}}
+{"func": "bounded_send_error", "in": {"detail": "abcdef", "max_chars": 2}}
+{"func": "bounded_send_error", "in": {"detail": "héllo🌍w", "max_chars": 6}}
+{"func": "bounded_send_error", "in": {"detail": "héllo🌍w", "max_chars": 8}}
+{"func": "shell_write_re", "in": {"file_alt": "AGENTS.md"}}
+{"func": "shell_write_re", "in": {"file_alt": "CLAUDE.md"}}
+{"func": "shell_write_re", "in": {"file_alt": "a|b"}}
+{"func": "shell_write_re", "in": {"file_alt": "x(y)"}}
+{"func": "shell_write_re", "in": {"file_alt": ""}}
+{"func": "shell_write_re", "in": {"file_alt": "skills/foo/SKILL.md"}}
+{"func": "prose_modify_re", "in": {"file_alt": "AGENTS.md"}}
+{"func": "prose_modify_re", "in": {"file_alt": "CLAUDE.md"}}
+{"func": "prose_modify_re", "in": {"file_alt": "a|b"}}
+{"func": "prose_modify_re", "in": {"file_alt": "x(y)"}}
+{"func": "prose_modify_re", "in": {"file_alt": ""}}
+{"func": "prose_modify_re", "in": {"file_alt": "skills/foo/SKILL.md"}}
+{"func": "content_contract_re", "in": {"file_alt": "AGENTS.md"}}
+{"func": "content_contract_re", "in": {"file_alt": "CLAUDE.md"}}
+{"func": "content_contract_re", "in": {"file_alt": "a|b"}}
+{"func": "content_contract_re", "in": {"file_alt": "x(y)"}}
+{"func": "content_contract_re", "in": {"file_alt": ""}}
+{"func": "content_contract_re", "in": {"file_alt": "skills/foo/SKILL.md"}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": "p1"}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": true}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": "p1"}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": true}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": "default"}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": true}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": ""}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": true}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": null}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": null}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": "p1"}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": true}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "named_profile_for_key", "in": {"self": {"config": {"multiplex_profiles": "yes"}}, "session_key": "agent:p1:main", "io": {"_profile_from_session_key": "p2"}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": null}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {"p1": "/cached/home"}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1"}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": null, "profile_exists": true, "get_profile_dir": "/h/p1"}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": null, "profile_exists": false}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": {"__script__": true, "raise": {"type": "ImportError", "message": "no profiles"}}, "logger.debug": null}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": null, "profile_exists": true, "get_profile_dir": {"__script__": true, "raise": {"type": "OSError", "message": "denied"}}, "logger.debug": null}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": null, "profile_exists": true, "get_profile_dir": null, "logger.debug": null}}}
+{"func": "profile_home_for_key", "in": {"self": {"_profile_home_cache": {}}, "session_key": "agent:p1:main", "io": {"_named_profile_for_key": "p1", "import_profiles": null, "profile_exists": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {}}, "session_id": null}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {"e1": {"session_id": "s1", "session_key": "k1"}}}, "session_id": "s1"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {"e1": {"session_id": "sX", "session_key": "kX"}}, "_session_owner_hints": {"s2": "k2"}}, "session_id": "s2"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {"bad": {"session_key": "kb"}, "e1": {"session_id": "s1", "session_key": "k1"}}, "_session_owner_hints": {"s1": "hint1"}}, "session_id": "s1"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_session_owner_hints": {"s1": "k1"}}, "session_id": "s1"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {}, "_session_owner_hints": "x"}, "session_id": "s1"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": [1]}, "session_id": "s1"}}
+{"func": "owner_key_for_session_id", "in": {"self": {"_entries": {"e1": {"session_id": 5, "session_key": "k5"}}}, "session_id": "5"}}
+{"func": "get_transcript_drain_lock", "in": {"self": {}, "io": {"_lazy": "lock-1"}}}
+{"func": "get_transcript_drain_lock", "in": {"self": {}, "io": {"_lazy": {"id": "L2"}}}}
+{"func": "get_transcript_drain_lock", "in": {"self": {}, "io": {"_lazy": null}}}
+{"func": "get_transcript_drain_lock", "in": {"self": {}, "io": {"_lazy": 42}}}
+{"func": "get_transcript_drain_lock", "in": {"self": {}, "io": {"_lazy": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no lock"}}}}}
+{"func": "normalize_archive_parts", "in": {"member_name": "pkg/sub/file.txt"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a\\b\\c"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "/abs/path"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "C:\\x"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "C:rel"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "../escape"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a/../b"}}
+{"func": "normalize_archive_parts", "in": {"member_name": ""}}
+{"func": "normalize_archive_parts", "in": {"member_name": "."}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a//b/./c"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "\\\\srv\\share\\x"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "1:x"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a:b"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "ab:c"}}
+{"func": "normalize_archive_parts", "in": {"member_name": null}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a/.../b"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "a\\..\\b"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "pkg/"}}
+{"func": "normalize_archive_parts", "in": {"member_name": "é:x"}}
+{"func": "normalize_archive_parts", "in": {"member_name": " :x"}}
+{"func": "normalize_windows_path", "in": {"value": "C:/Program Files/Hermes/"}}
+{"func": "normalize_windows_path", "in": {"value": "C:\\X\\"}}
+{"func": "normalize_windows_path", "in": {"value": ""}}
+{"func": "normalize_windows_path", "in": {"value": null}}
+{"func": "normalize_windows_path", "in": {"value": 5}}
+{"func": "normalize_windows_path", "in": {"value": true}}
+{"func": "normalize_windows_path", "in": {"value": "a/b\\c/"}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["%USERPROFILE%\\bin;C:\\x;;  ;y", 2]}, "os.path.expandvars": "C:\\Users\\u\\bin;C:\\x;;  ;y"}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "no Path"}}, "os.environ.get": "a;b"}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": {"__script__": true, "raise": {"type": "ImportError", "message": "no winreg"}}, "os.environ.get": "a;b"}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": {"__script__": true, "raise": {"type": "PermissionError", "message": "denied"}}, "os.environ.get": "a;b"}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a;b", 2]}, "os.path.expandvars": {"__script__": true, "raise": {"type": "OSError", "message": "bad var"}}, "os.environ.get": "fallback"}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": [1]}}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": null}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a", 2]}, "os.path.expandvars": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "windows_user_path_entries", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["", 2]}, "os.path.expandvars": "", "os.environ.get": "unused"}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a;%X%;b", 2]}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "missing"}}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": {"__script__": true, "raise": {"type": "ImportError", "message": "no winreg"}}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": {"__script__": true, "raise": {"type": "OSError", "message": "denied"}}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a", "1"]}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a", "x"]}}}}
+{"func": "read_user_path_raw", "in": {"io": {"import_winreg": null, "winreg.OpenKey": "hk1", "winreg.QueryValueEx": {"__script__": true, "ret": ["a; ;b", 1]}}}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": "/h"}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": null, "io": {"import_get_process_hermes_home": null, "get_process_hermes_home": "/h2"}}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": ""}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": "C:\\h\\"}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": 5}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": "//srv/share"}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": "h/./x"}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": null, "io": {"import_get_process_hermes_home": null, "get_process_hermes_home": {"__script__": true, "raise": {"type": "OSError", "message": "no home"}}}}}
+{"func": "dashboard_client_heartbeat_path", "in": {"hermes_home": "///h"}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/h/state/marker", "io": {"os.path.dirname": "/h/state", "os.makedirs": null, "open": "fd", "close": null, "os.utime": null, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": null, "io": {"os.path.dirname": "/h/state", "os.makedirs": null, "open": "fd", "close": null, "os.utime": null, "logger.debug": null, "dashboard_client_heartbeat_path": "/h/state/marker"}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": "/h/state", "os.makedirs": {"__script__": true, "raise": {"type": "OSError", "message": "ro"}}, "open": "fd", "close": null, "os.utime": null, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": "/h/state", "os.makedirs": null, "open": {"__script__": true, "raise": {"type": "PermissionError", "message": "no"}}, "close": null, "os.utime": null, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": "/h/state", "os.makedirs": null, "open": "fd", "close": null, "os.utime": {"__script__": true, "raise": {"type": "OSError", "message": "utime"}}, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": "/h/state", "os.makedirs": null, "open": "fd", "close": {"__script__": true, "raise": {"type": "RuntimeError", "message": "close"}}, "os.utime": null, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": "/h/state", "os.makedirs": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}, "open": "fd", "close": null, "os.utime": null, "logger.debug": null}}}
+{"func": "touch_dashboard_client_heartbeat", "in": {"path": "/m", "io": {"os.path.dirname": {"__script__": true, "raise": {"type": "OSError", "message": "dn"}}, "os.makedirs": null, "open": "fd", "close": null, "os.utime": null, "logger.debug": null}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 1000, "io": {"os.stat": {"st_mtime": 500.5}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": null, "io": {"time.time": 2000, "os.stat": {"st_mtime": 3000}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 1000, "io": {"os.stat": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone"}}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 1000, "io": {"os.stat": {"__script__": true, "raise": {"type": "PermissionError", "message": "no"}}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": null, "now": 1000, "io": {"dashboard_client_heartbeat_path": "/m", "os.stat": {"st_mtime": 42}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 1000, "io": {"os.stat": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 0, "io": {"os.stat": {"st_mtime": 5}}}}
+{"func": "dashboard_client_last_seen", "in": {"path": "/m", "now": 1000, "io": {"os.stat": {}}}}
+{"func": "start_attestation_path", "in": {"home": "/h"}}
+{"func": "start_attestation_path", "in": {"home": null, "io": {"_hermes_home": "/h2"}}}
+{"func": "start_attestation_path", "in": {"home": ""}}
+{"func": "start_attestation_path", "in": {"home": "C:\\h"}}
+{"func": "start_attestation_path", "in": {"home": 5}}
+{"func": "start_attestation_path", "in": {"home": null, "io": {"_hermes_home": {"__script__": true, "raise": {"type": "OSError", "message": "no home"}}}}}
+{"func": "macos_protected_search_warning", "in": {"paths": ["/Users/x/Library/Mail", "/Users/x/Library/Messages"]}}
+{"func": "macos_protected_search_warning", "in": {"paths": ["C:\\x\\y", "a/b/", "plain"]}}
+{"func": "macos_protected_search_warning", "in": {"paths": []}}
+{"func": "macos_protected_search_warning", "in": {"paths": ["C:", "1:x", "é:x"]}}
+{"func": "macos_protected_search_warning", "in": {"paths": null}}
+{"func": "macos_protected_search_warning", "in": {"paths": ["\\\\srv\\share\\f", "//srv/share/g"]}}
+{"func": "macos_protected_search_warning", "in": {"paths": ["a/.", "..", "x\\"]}}
+{"func": "pxb_name", "in": {"self": {"i": 0}}}
+{"func": "pxb_display_name", "in": {"self": {"i": 0}}}
+{"func": "pxb_name", "in": {"self": {"i": 1}}}
+{"func": "pxb_display_name", "in": {"self": {"i": 1}}}
+{"func": "pxb_name", "in": {"self": {"i": 2}}}
+{"func": "pxb_display_name", "in": {"self": {"i": 2}}}
+{"func": "pxb_name", "in": {"self": {"i": 3}}}
+{"func": "pxb_display_name", "in": {"self": {"i": 3}}}
+{"func": "pxb_name", "in": {"self": {"i": 4}}}
+{"func": "pxb_display_name", "in": {"self": {"i": 4}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": false, "input": "ans"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": false, "input": "ans"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": null, "prompt_toolkit_prompt": "typed"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": {"__script__": true, "raise": {"type": "ImportError", "message": "no pt"}}, "input": "fallback"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": {"__script__": true, "raise": {"type": "ImportError", "message": "no ansi"}}, "input": "fallback"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": null, "prompt_toolkit_prompt": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": null, "prompt_toolkit_prompt": {"__script__": true, "raise": {"type": "EOFError", "message": ""}}}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": null, "prompt_toolkit_prompt": {"__script__": true, "raise": {"type": "RuntimeError", "message": "sel"}}, "input": "fallback"}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": true, "stdout.isatty": true, "import_prompt_toolkit_prompt": null, "import_ANSI": null, "prompt_toolkit_prompt": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "line_input", "in": {"prompt_text": "P> ", "io": {"stdin.isatty": false, "input": {"__script__": true, "raise": {"type": "EOFError", "message": ""}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": {"x": true}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": {"x": 0}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": false, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": {"x": "yes"}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": "nope"}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": false, "io": {"import_load_config_readonly": {"__script__": true, "raise": {"type": "ImportError", "message": "no cfg"}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "user_enabled", "in": {"setting": "x", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": {"x": null}}}}}
+{"func": "user_enabled", "in": {"setting": "y", "default": true, "io": {"import_load_config_readonly": null, "load_config_readonly": {"display": {"x": true}}}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": "proj"}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": "/sa.json", "os.path.isfile": true, "os.access": true}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": ""}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": "/sa.json", "os.path.isfile": false}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": "/sa.json", "os.path.isfile": true, "os.access": false}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ov"}}}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": null}}}
+{"func": "has_explicit_vertex_config", "in": {"io": {"_resolve_project_override": null, "_get_secret": "/sa.json", "os.path.isfile": {"__script__": true, "raise": {"type": "OSError", "message": "stat"}}}}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1, 2, 3], "t2": [4]}, "_last_writer": {"/a": ["t1", 1], "/b": ["t2", 2], "/c": ["t1", 3]}}, "task_id": "t1"}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1]}, "_last_writer": {}}, "task_id": "t1"}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1]}, "_last_writer": {"/a": ["t2", 1]}}, "task_id": "t9"}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1], "t2": [2]}, "_last_writer": {"/a": [1]}}, "task_id": "t1"}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1]}, "_last_writer": {"/a": null}}, "task_id": "t1"}}
+{"func": "forget_task", "in": {"self": {"_reads": {}, "_last_writer": {"/a": ["t1", 1], "/b": ["t1", 2]}}, "task_id": "t1"}}
+{"func": "forget_task", "in": {"self": {"_reads": {"t1": [1]}, "_last_writer": {"/a": [5, 1]}}, "task_id": "5"}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": 123, "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": null, "pid": null, "io": {"os.getpid": 456, "_process_hermes_home": "/h2"}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": 3.9, "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": -3.9, "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": " 42 ", "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": "1_0", "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": "abc", "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "", "pid": 123, "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": 5, "pid": 123, "io": {}}}
+{"func": "get_loop_tick_socket_path", "in": {"home": "/h", "pid": true, "io": {}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "current_state": {"terminal": {"mode": "ask"}}}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "resolve": {"mode": "allow"}, "current_state": {"terminal": {"__type__": "DeferredTerminalPolicy"}}}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "resolve": {"__script__": true, "raise": {"type": "RuntimeError", "message": "res"}}, "current_state": {"terminal": {"__type__": "DeferredTerminalPolicy"}}}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "current_state": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cs"}}}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": {"__script__": true, "raise": {"type": "ImportError", "message": "no scope"}}, "current_state": null}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "current_state": {}}}}
+{"func": "get_terminal_scope", "in": {"io": {"import_current_state": null, "current_state": {"terminal": null}}}}

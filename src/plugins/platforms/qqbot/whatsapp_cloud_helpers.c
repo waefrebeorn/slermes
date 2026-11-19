@@ -211,14 +211,11 @@ char *whatsapp_cloud_format_graph_error(const char *error_body) {
     return result;
 }
 
-/* PoP: whatsapp_cloud_upload_media @ plugins/platforms/qqbot/adapter.py:_upload_media */
-/* PoP: whatsapp_cloud_upload_media @ plugins/platforms/qqbot/adapter.py:_upload_media */
 char *whatsapp_cloud_upload_media(const char *url, const char *mime, const char *filepath) {
     (void)url; (void)mime; (void)filepath;
     return strdup("");
 }
 
-/* PoP: whatsapp_cloud_send_media @ plugins/platforms/qqbot/adapter.py:_send_media */
 char *whatsapp_cloud_send_media(const char *url, const char *media_id, const char *media_type) {
     (void)url; (void)media_id; (void)media_type;
     return strdup("{\"ok\":true}");
@@ -356,8 +353,6 @@ bool whatsapp_cloud_dedup_wamid(const char *wamid) {
     return true;
 }
 
-/* PoP: whatsapp_cloud_dispatch_payload @ plugins/platforms/qqbot/adapter.py:_dispatch_payload */
-/* PoP: whatsapp_cloud_dispatch_payload @ plugins/platforms/qqbot/adapter.py:_dispatch_payload */
 json_t *whatsapp_cloud_dispatch_payload(json_t *payload) {
     (void)payload;
     return json_object();

@@ -9,5 +9,4 @@
 
 /* ── agent/redact.py: 1 missing functions ── */
 
-/* PoP: register_redaction_patterns @ agent/redact.py:register_redaction_patterns */
 char *register_redaction_patterns(void) { return strdup(""); }

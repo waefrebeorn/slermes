@@ -1,0 +1,203 @@
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "mem0", "io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "builtin", "io": {"is_core_memory_provider": true}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "  spaced  ", "io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": null, "io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "", "io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "x", "io": {"is_core_memory_provider": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "x", "io": {"is_core_memory_provider": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "x", "io": {}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": " mem0 ", "io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"name": "x", "io": {"is_core_memory_provider": 1}}}
+{"func": "ws_u_normalize_memory_provider_name", "in": {"io": {"is_core_memory_provider": false}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "io": {"load_env": {"A": "va"}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "env": {"A": "ve"}, "io": {"load_env": {"A": ""}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "env": {}, "io": {"load_env": {}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": null, "io": {}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "env": {"A": "ve"}, "io": {"load_env": {"A": 0}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "env": {"A": "ve"}, "io": {"load_env": {"A": "va"}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": 5, "io": {"load_env": {}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "io": {"load_env": null}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "io": {"load_env": {"__script__": true, "raise": {"type": "ValueError", "message": "env"}}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "A", "io": {"load_env": {"A": 7}}}}
+{"func": "ws_u_env_lookup", "in": {"env_key": "", "io": {}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": "yes"}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": "OFF"}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean"}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": null}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": 0}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": 3}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": true}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": "maybe"}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "text", "default": "x"}}}
+{"func": "ws_u_field_default", "in": {"field": {"default": "x"}}}
+{"func": "ws_u_field_default", "in": {"field": null}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": "  ON  "}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "boolean", "default": "0"}}}
+{"func": "ws_u_field_default", "in": {"field": {"kind": "text", "default": {"a": 1}}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "io": {"load_memory_provider": {"ok": 1}}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "register_skills": true, "io": {"load_memory_provider": null}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "io": {"load_memory_provider": {"__script__": true, "raise": {"type": "ValueError", "message": "nope"}}}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "io": {"load_memory_provider": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "io": {}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "register_skills": false, "io": {"load_memory_provider": {"x": 2}}}}
+{"func": "ws_u_load_memory_provider", "in": {"name": "mem0", "io": {"load_memory_provider": [{"a": 1}]}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": [{"a": 1}, []]}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": "ab"}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": {"k1": 1, "k2": 2}}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": [1]}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": [1, 2, 3]}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "ret": "abc"}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": null}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "ws_u_memory_provider_manifest", "in": {"name": "mem0", "io": {"memory_provider_dependency_inputs": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "short"}}
+{"func": "ws_u_trim_setup_output", "in": {"value": null}}
+{"func": "ws_u_trim_setup_output", "in": {"value": 0}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "xxxxxxxxxx", "limit": 5}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "héllo", "limit": 4}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "abc", "limit": 0}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "abc", "limit": -1}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "  pad  "}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}}
+{"func": "ws_u_trim_setup_output", "in": {"value": "abc", "limit": 3}}
+{"func": "ws_u_trim_setup_output", "in": {"value": false}}
+{"func": "ws_u_trim_setup_output", "in": {}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "mem0"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": ""}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": null}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "_bad"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "a b"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "é"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": 5}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "abc\n"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {"name": "a-b_C9"}}
+{"func": "ws_u_require_valid_memory_provider_name", "in": {}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"__script__": true, "raise": {"type": "ValueError", "message": "read"}}, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": {"__script__": true, "raise": {"type": "ValueError", "message": "save"}}, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": null, "apply_field_values": {"__script__": true, "raise": {"type": "ValueError", "message": "apply"}}, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": {"__script__": true, "raise": {"type": "ValueError", "message": "path"}}, "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": {"k": "v"}, "io": {"read_flat_json": null, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_write_provider_flat", "in": {"provider": "p", "values": null, "io": {"read_flat_json": {"a": "1"}, "save_submitted_secrets": null, "apply_field_values": null, "flat_json_path": "/h/p/config.json", "write_json_0600": null}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "mem0"}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "mem0"}, "io": {"get_hermes_home": ""}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "mem0"}, "io": {"get_hermes_home": "/"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "a/b"}, "io": {"get_hermes_home": "/h/"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": ".."}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "/abs"}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": 5}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "m"}, "io": {"get_hermes_home": {"__script__": true, "raise": {"type": "ValueError", "message": "home"}}}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "m"}, "io": {"get_hermes_home": "//h"}}}
+{"func": "ws_u_flat_json_path", "in": {"provider": {"name": "."}, "io": {"get_hermes_home": "/h"}}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "My Endpoint!"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "  --__  "}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": null}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "a__b--c"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "ABC"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "!!!", "fallback": "fb"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "é"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": "a b!!c"}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": 0}}
+{"func": "ws_u_custom_endpoint_id", "in": {"raw": " -x- "}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "${MY_KEY}"}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "literal"}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "${}"}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "x${a}y"}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "${a${b}"}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": null}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": 5}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": {"__script__": true, "raise": {"type": "ValueError", "message": "k"}}}}}
+{"func": "ws_u_config_api_key_is_env_ref", "in": {"endpoint_id": "e1", "io": {"_raw_provider_api_key": "${a}\n${b}"}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "sk-abcdef123456", "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 2, "io": {"redact_key": "sk-abc…3456"}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "", "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 1, "io": {}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": null, "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 1, "io": {}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "sk-abcdef123456", "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": null}, "index": 1, "io": {"redact_key": "masked"}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "sk-abcdef123456", "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3}, "index": 1, "io": {"redact_key": "masked"}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "sk-abcdef123456", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 1, "io": {}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": "sk-abcdef123456", "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 1, "io": {"redact_key": {"__script__": true, "raise": {"type": "ValueError", "message": "r"}}}}}
+{"func": "ws_u_pool_entry_summary", "in": {"entry": {"access_token": 5, "id": "c1", "label": "L", "auth_type": "oauth", "source": "pool", "priority": 1, "last_status": "ok", "request_count": 3, "refresh_token": "r"}, "index": 1, "io": {"redact_key": "masked"}}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": [{"id": "s1", "system_prompt": "sp", "model_config": {"m": 1}, "x": 2}, {"id": "s2"}]}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": []}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": [{"id": "s1"}, 5]}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": null}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": [{"system_prompt": "a", "model_config": "b"}]}}
+{"func": "ws_u_strip_session_list_rows", "in": {"sessions": [{"id": "s3", "model_config": null}]}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": {"_x": 1, "a": 2}}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": {}}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": {"_a": 1, "_b": 2}}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": {"b": 1, "_a": 2, "c": 3}}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": null}}
+{"func": "ws_u_strip_dashboard_manifest", "in": {"p": {"a": {"_z": 1}, "_b": 2}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"locked_root": "/x", "can_change_path": true}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"locked_root": null, "can_change_path": false}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"can_change_path": true}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"locked_root": "/x"}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"locked_root": 5, "can_change_path": true}}}
+{"func": "ws_u_managed_response_meta", "in": {"policy": {"locked_root": "/y", "can_change_path": false}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": ["a", "b"]}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": null}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": ""}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": "ab"}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": {"k1": 1, "k2": 2}}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": 5}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": ["a", "b"]}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": []}}}
+{"func": "ws_u_skill_meta_to_payload", "in": {"m": {"name": "n", "description": "d", "source": "hub", "identifier": "i", "trust_level": "trusted", "repo": "r", "tags": "héllo"}}}
+{"func": "ws_u_clear_skills_prompt_cache", "in": {"io": {"clear_skills_system_prompt_cache": null}}}
+{"func": "ws_u_clear_skills_prompt_cache", "in": {"io": {"clear_skills_system_prompt_cache": {"__script__": true, "raise": {"type": "ValueError", "message": "c"}}}}}
+{"func": "ws_u_clear_skills_prompt_cache", "in": {"io": {"clear_skills_system_prompt_cache": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_clear_skills_prompt_cache", "in": {"io": {"clear_skills_system_prompt_cache": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "ws_u_clear_skills_prompt_cache", "in": {"io": {}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 100, "io": {"auxiliary_usage_by_model_task": {"__script__": true, "ret": [{"model": "m", "task": "t", "tokens": 5}]}}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 100, "io": {"auxiliary_usage_by_model_task": {"__script__": true, "raise": {"type": "ValueError", "message": "db"}}}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 100, "io": {"auxiliary_usage_by_model_task": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 100, "io": {"auxiliary_usage_by_model_task": null}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 100, "io": {}}}
+{"func": "ws_u_aux_usage_rows", "in": {"cutoff": 123.5, "io": {"auxiliary_usage_by_model_task": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_write_platform_enabled", "in": {"platform_id": "telegram", "enabled": true, "io": {"write_platform_config_field": null}}}
+{"func": "ws_u_write_platform_enabled", "in": {"platform_id": "telegram", "enabled": false, "io": {"write_platform_config_field": null}}}
+{"func": "ws_u_write_platform_enabled", "in": {"platform_id": "telegram", "enabled": true, "io": {"write_platform_config_field": {"__script__": true, "raise": {"type": "ValueError", "message": "w"}}}}}
+{"func": "ws_u_write_platform_enabled", "in": {"platform_id": "telegram", "enabled": true, "io": {"write_platform_config_field": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_write_platform_enabled", "in": {"platform_id": "telegram", "io": {"write_platform_config_field": null}}}
+{"func": "ws_u_write_platform_enabled", "in": {"enabled": true, "io": {"write_platform_config_field": null}}}
+{"func": "ws_u_whatsapp_session_path", "in": {"io": {"get_hermes_dir": "/h/platforms/whatsapp/session"}}}
+{"func": "ws_u_whatsapp_session_path", "in": {"io": {"get_hermes_dir": "/h/whatsapp/session"}}}
+{"func": "ws_u_whatsapp_session_path", "in": {"io": {"get_hermes_dir": {"__script__": true, "raise": {"type": "ValueError", "message": "d"}}}}}
+{"func": "ws_u_whatsapp_session_path", "in": {"io": {"get_hermes_dir": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_whatsapp_session_path", "in": {"io": {}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": "p1", "record": {"status": "pending", "qr_payload": "qr", "expires_at": 123, "mode": "pair", "allowed_users": ["u1"], "account_id": null, "account_name": null, "account_phone": null, "error": null}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": "p1", "record": {"qr_payload": "qr", "expires_at": 123, "mode": "pair", "allowed_users": ["u1"], "account_id": null, "account_name": null, "account_phone": null, "error": null}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": "p1", "record": {"status": "pending", "qr_payload": "qr", "expires_at": 123, "mode": "pair", "allowed_users": ["u1"], "account_id": null, "account_name": null, "account_phone": null}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": null, "record": {"status": "pending", "qr_payload": "qr", "expires_at": 123, "mode": "pair", "allowed_users": ["u1"], "account_id": null, "account_name": null, "account_phone": null, "error": null}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": "p2", "record": {}}}
+{"func": "ws_u_whatsapp_onboarding_payload", "in": {"pairing_id": "p3", "record": {"status": "pending", "qr_payload": "qr", "expires_at": 999, "mode": "pair", "allowed_users": [], "account_id": null, "account_name": null, "account_phone": null, "error": null}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": "https://x/"}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": "  https://x//  "}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": ""}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": null}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": "/"}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": " https://x "}}}
+{"func": "ws_u_telegram_onboarding_base_url", "in": {"env": {"TELEGRAM_ONBOARDING_URL": "https://x///"}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "default", "io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "work", "io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "work", "io": {"_resolve_profile_dir": {"__script__": true, "raise": {"type": "HTTPException", "message": "404: unknown profile"}}}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "work", "io": {"_resolve_profile_dir": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "work", "io": {}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": "", "io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_profile_setup_command", "in": {"name": null, "io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_profile_setup_command", "in": {"io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "work", "io": {"_resolve_profile_dir": null}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": null, "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "", "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "   ", "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "current", "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "CURRENT", "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": " Current ", "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "work", "io": {"_resolve_profile_dir": {"__script__": true, "raise": {"type": "HTTPException", "message": "404: no"}}}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": 5, "io": {}}}
+{"func": "ws_u_validate_oauth_profile", "in": {"profile": "x", "io": {}}}

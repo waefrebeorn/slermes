@@ -10,15 +10,12 @@
 /* ── gateway/platforms/api_server_run_idempotency.py: 8 missing functions ── */
 
 
-/* PoP: reserve @ gateway/platforms/api_server_run_idempotency.py:reserve */
 char *reserve(void) { return strdup("{}"); }
 
 
-/* PoP: status_for_run @ gateway/platforms/api_server_run_idempotency.py:status_for_run */
 char *status_for_run(void) { return strdup("{}"); }
 
 
 
 /* PoP: owns_run @ gateway/platforms/api_server_run_idempotency.py:owns_run */
 int owns_run(void) { return 1; }
-

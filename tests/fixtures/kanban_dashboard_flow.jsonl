@@ -1,0 +1,186 @@
+{"func": "_placeholders", "in": {"ids": ["a", "b", "c"]}}
+{"func": "_placeholders", "in": {"ids": []}}
+{"func": "_placeholders", "in": {"ids": ["x"]}}
+{"func": "_placeholders", "in": {"ids": ["a", "b"]}}
+{"func": "_placeholders", "in": {"ids": [1, 2, 3]}}
+{"func": "_placeholders", "in": {"ids": ["only"]}}
+{"func": "_cap", "in": {"s": "  hello world  ", "n": 5}}
+{"func": "_cap", "in": {"s": "hi", "n": 5}}
+{"func": "_cap", "in": {"s": null, "n": 3}}
+{"func": "_cap", "in": {"s": "abcdef", "n": 6}}
+{"func": "_cap", "in": {"s": "  pad  ", "n": 10}}
+{"func": "_cap", "in": {"s": "abcdefgh", "n": 3}}
+{"func": "_cap", "in": {"s": "", "n": 4}}
+{"func": "_attachment_dict", "in": {"a": {"id": 1, "task_id": "t1", "filename": "f.pdf", "content_type": "application/pdf", "size": 10, "uploaded_by": "u", "stored_path": "/x/f.pdf", "created_at": 100}}}
+{"func": "_attachment_dict", "in": {"a": {"id": 2, "task_id": "t2", "filename": "g.txt", "content_type": null, "size": 0, "uploaded_by": null, "stored_path": "/y/g.txt", "created_at": 0}}}
+{"func": "_attachment_dict", "in": {"a": {"id": 3, "task_id": "t1", "filename": "a b.png", "content_type": "image/png", "size": 999, "uploaded_by": "dash", "stored_path": "/z/a b.png", "created_at": 5}}}
+{"func": "_attachment_dict", "in": {"a": {"id": 4, "task_id": "t9", "filename": "x", "content_type": "text/plain", "size": 1, "uploaded_by": "u2", "stored_path": "/x", "created_at": 7}}}
+{"func": "_attachment_dict", "in": {"a": {"id": 5, "task_id": "t5", "filename": "y", "content_type": null, "size": 42, "uploaded_by": null, "stored_path": "/p/y", "created_at": 9}}}
+{"func": "_attachment_dict", "in": {"a": {"id": 6, "task_id": "t6", "filename": "z", "content_type": "application/json", "size": 3, "uploaded_by": "u3", "stored_path": "/q/z", "created_at": 11}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": "N", "description": "D", "icon": "I", "color": "C"}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": null, "description": null, "icon": null, "color": null}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": "Board", "description": "", "icon": "star", "color": "#fff"}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": "x", "description": "d", "icon": null, "color": "red"}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": "", "description": "desc", "icon": "i", "color": null}}}
+{"func": "_board_display_kwargs", "in": {"p": {"name": "Z", "description": null, "icon": "", "color": "blue"}}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": []}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": [{"kind": "stale", "count": 1, "last_seen_at": 10, "severity": "warning"}]}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": [{"kind": "stale", "count": 2, "last_seen_at": 50, "severity": "warning"}, {"kind": "loop", "count": 1, "last_seen_at": 90, "severity": "critical"}]}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": [{"kind": "a", "last_seen_at": 5, "severity": "error"}]}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": [{"kind": "a", "count": 3, "last_seen_at": null, "severity": "bogus"}]}}
+{"func": "_warnings_summary_from_diagnostics", "in": {"diagnostics": [{"kind": "a", "count": 1, "last_seen_at": 1, "severity": "critical"}, {"kind": "b", "count": 2, "last_seen_at": 2, "severity": "warning"}]}}
+{"func": "_require_ok", "in": {"ok": false}}
+{"func": "_require_ok", "in": {"ok": true}}
+{"func": "_require_ok", "in": {"ok": 0}}
+{"func": "_require_ok", "in": {"ok": 1}}
+{"func": "_require_ok", "in": {"ok": ""}}
+{"func": "_require_ok", "in": {"ok": "x"}}
+{"func": "_conflict", "in": {"detail": "nope"}}
+{"func": "_conflict", "in": {"detail": "task not found"}}
+{"func": "_conflict", "in": {"detail": ""}}
+{"func": "_conflict", "in": {"detail": "cannot move"}}
+{"func": "_conflict", "in": {"detail": "a b c"}}
+{"func": "_conflict", "in": {"detail": "x: y"}}
+{"func": "_require", "in": {"ident": "known", "label": "task", "io": {"kanban_db.get_task": {"ret": {"id": "known"}}}}}
+{"func": "_require", "in": {"ident": "missing", "label": "task", "io": {"kanban_db.get_task": {"ret": null}}}}
+{"func": "_require", "in": {"ident": "e", "label": "task", "io": {"kanban_db.get_task": {"ret": {}}}}}
+{"func": "_require", "in": {"ident": "x", "label": "run", "ident_key": "run_id", "getter_name": "kanban_db.get_run", "io": {"kanban_db.get_run": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_require", "in": {"ident": "x", "label": "task", "io": {"kanban_db.get_task": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_require", "in": {"ident": "x", "label": "task", "io": {}}}
+{"func": "_require_task", "in": {"task_id": "known", "io": {"kanban_db.get_task": {"ret": {"id": "known", "title": "T"}}}}}
+{"func": "_require_task", "in": {"task_id": "missing", "io": {"kanban_db.get_task": {"ret": null}}}}
+{"func": "_require_task", "in": {"task_id": "t1", "io": {}}}
+{"func": "_require_task", "in": {"task_id": "t1", "io": {"kanban_db.get_task": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_require_task", "in": {"task_id": "t2", "io": {"kanban_db.get_task": {"ret": {"id": "t2"}}}}}
+{"func": "_require_task", "in": {"task_id": "t3", "io": {"kanban_db.get_task": {"raise": {"type": "RuntimeError", "message": "db"}}}}}
+{"func": "_require_run", "in": {"run_id": 5, "io": {"kanban_db.get_run": {"ret": {"id": 5}}}}}
+{"func": "_require_run", "in": {"run_id": 5, "io": {"kanban_db.get_run": {"ret": null}}}}
+{"func": "_require_run", "in": {"run_id": 7, "io": {}}}
+{"func": "_require_run", "in": {"run_id": 8, "io": {"kanban_db.get_run": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_require_run", "in": {"run_id": 9, "io": {"kanban_db.get_run": {"ret": {"id": 9, "task_id": "t1"}}}}}
+{"func": "_require_run", "in": {"run_id": 10, "io": {"kanban_db.get_run": {"raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "ABC", "io": {"kanban_db._normalize_board_slug": {"ret": "abc"}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "ValueError", "message": "bad slug"}}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "ok", "io": {"kanban_db._normalize_board_slug": {"ret": null}}}}
+{"func": "_normalize_slug_or_400", "in": {"slug": "ok", "io": {}}}
+{"func": "_existing_board_slug", "in": {"slug": "exists", "io": {"kanban_db._normalize_board_slug": {"ret": "exists"}, "kanban_db.board_exists": {"ret": true}}}}
+{"func": "_existing_board_slug", "in": {"slug": "missing", "io": {"kanban_db._normalize_board_slug": {"ret": "missing"}, "kanban_db.board_exists": {"ret": false}}}}
+{"func": "_existing_board_slug", "in": {"slug": "x", "io": {"kanban_db._normalize_board_slug": {"ret": ""}}}}
+{"func": "_existing_board_slug", "in": {"slug": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_existing_board_slug", "in": {"slug": "x", "io": {}}}
+{"func": "_existing_board_slug", "in": {"slug": "b", "io": {"kanban_db._normalize_board_slug": {"ret": "b"}, "kanban_db.board_exists": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {"_ws_auth_ok": {"ret": true}, "_ws_request_is_allowed": {"ret": true}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {"_ws_auth_ok": {"ret": false}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {"_ws_auth_ok": {"ret": true}, "_ws_request_is_allowed": {"ret": false}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {"import:hermes_cli.web_server_chat": {"import_raise": {"type": "ImportError", "message": "no module"}}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {"_ws_auth_ok": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_ws_upgrade_authorized", "in": {"io": {}}}
+{"func": "_since_param", "in": {"query_params": {"since": "5"}}}
+{"func": "_since_param", "in": {"query_params": {"since": "-3"}}}
+{"func": "_since_param", "in": {"query_params": {"since": "abc"}}}
+{"func": "_since_param", "in": {"query_params": {}}}
+{"func": "_since_param", "in": {"query_params": {"since": "  "}}}
+{"func": "_since_param", "in": {"query_params": {"since": "0"}}}
+{"func": "_since_param", "in": {"query_params": {"since": "  7  "}}}
+{"func": "_since_param", "in": {"query_params": {"since": "3.5"}}}
+{"func": "_ws_board", "in": {"raw": "ABC", "io": {"kanban_db._normalize_board_slug": {"ret": "abc"}}}}
+{"func": "_ws_board", "in": {"raw": null}}
+{"func": "_ws_board", "in": {"raw": ""}}
+{"func": "_ws_board", "in": {"raw": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_ws_board", "in": {"raw": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_ws_board", "in": {"raw": "ok", "io": {}}}
+{"func": "_ws_board_live", "in": {"normed": "default"}}
+{"func": "_ws_board_live", "in": {"normed": "exists", "io": {"kanban_db.board_exists": {"ret": true}}}}
+{"func": "_ws_board_live", "in": {"normed": "missing", "io": {"kanban_db.board_exists": {"ret": false}}}}
+{"func": "_ws_board_live", "in": {"normed": null}}
+{"func": "_ws_board_live", "in": {"normed": ""}}
+{"func": "_ws_board_live", "in": {"normed": "b", "io": {"kanban_db.board_exists": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"load_config": {"ret": {"a": 1}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"load_config": {"ret": null}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"import:hermes_cli.config": {"import_raise": {"type": "ImportError", "message": "x"}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"load_config": {"raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"load_config": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {"load_config": {"ret": {}}}}}
+{"func": "_load_config_or_empty", "in": {"io": {}}}
+{"func": "_active_profile_name", "in": {"io": {"get_active_profile_name": {"ret": "prof1"}}}}
+{"func": "_active_profile_name", "in": {"io": {"get_active_profile_name": {"ret": null}}}}
+{"func": "_active_profile_name", "in": {"io": {"import:hermes_cli.profiles": {"import_raise": {"type": "ImportError", "message": "x"}}}}}
+{"func": "_active_profile_name", "in": {"io": {"get_active_profile_name": {"raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_active_profile_name", "in": {"io": {"get_active_profile_name": {"raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "_active_profile_name", "in": {"io": {"get_active_profile_name": {"ret": ""}}}}
+{"func": "_resolve_board", "in": {"board": null}}
+{"func": "_resolve_board", "in": {"board": ""}}
+{"func": "_resolve_board", "in": {"board": "default", "io": {"kanban_db._normalize_board_slug": {"ret": "default"}}}}
+{"func": "_resolve_board", "in": {"board": "exists", "io": {"kanban_db._normalize_board_slug": {"ret": "exists"}, "kanban_db.board_exists": {"ret": true}, "kanban_db.read_board_metadata": {"ret": {"archived": false}}}}}
+{"func": "_resolve_board", "in": {"board": "arch", "io": {"kanban_db._normalize_board_slug": {"ret": "arch"}, "kanban_db.board_exists": {"ret": true}, "kanban_db.read_board_metadata": {"ret": {"archived": true}}}}}
+{"func": "_resolve_board", "in": {"board": "missing", "io": {"kanban_db._normalize_board_slug": {"ret": "missing"}, "kanban_db.board_exists": {"ret": false}}}}
+{"func": "_resolve_board", "in": {"board": "X", "io": {"kanban_db._normalize_board_slug": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_conn", "in": {"board": "b1", "io": {"kanban_db.init_db": {"ret": null}, "kbc.connect": {"ret": "conn-1"}}}}
+{"func": "_conn", "in": {"board": "b1", "io": {"kanban_db.init_db": {"raise": {"type": "RuntimeError", "message": "db locked"}}, "log.warning": {"ret": null}, "kbc.connect": {"ret": "conn-1"}}}}
+{"func": "_conn", "in": {"board": "b1", "io": {"kanban_db.init_db": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_conn", "in": {"board": "b1", "io": {"kanban_db.init_db": {"ret": null}, "kbc.connect": {"raise": {"type": "RuntimeError", "message": "no conn"}}}}}
+{"func": "_conn", "in": {"board": null, "io": {"kanban_db.init_db": {"ret": null}, "kbc.connect": {"ret": "conn-2"}}}}
+{"func": "_conn", "in": {"board": "b1", "io": {}}}
+{"func": "_attach_diagnostics", "in": {"task_d": {"id": "t1"}, "diags": [{"kind": "stale", "count": 1, "last_seen_at": 10, "severity": "warning"}]}}
+{"func": "_attach_diagnostics", "in": {"task_d": {"id": "t2"}, "diags": []}}
+{"func": "_attach_diagnostics", "in": {"task_d": {"id": "t3"}, "diags": null}}
+{"func": "_attach_diagnostics", "in": {"task_d": {"id": "t4", "x": 1}, "diags": [{"kind": "a", "count": 2, "last_seen_at": 5, "severity": "error"}, {"kind": "b", "count": 1, "last_seen_at": 9, "severity": "critical"}]}}
+{"func": "_attach_diagnostics", "in": {"task_d": {}, "diags": [{"kind": "z", "count": 1, "last_seen_at": 1, "severity": "warning"}]}}
+{"func": "_attach_diagnostics", "in": {"task_d": {"id": "t6"}, "diags": [{"kind": "q", "count": 4, "last_seen_at": 20, "severity": "critical"}]}}
+{"func": "_task_dict", "in": {"task": {"id": "t1", "title": "T", "body": null, "assignee": null, "status": "todo", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "latest_summary": "sum", "current_run_started_at": 42, "io": {"kanban_db.task_age": {"ret": {"created_age_seconds": 5, "started_age_seconds": null, "time_to_complete_seconds": null}}}}}
+{"func": "_task_dict", "in": {"task": {"id": "t2", "title": "T", "body": null, "assignee": null, "status": "running", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "io": {"kanban_db.task_age": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_task_dict", "in": {"task": {"id": "t3", "title": "T", "body": null, "assignee": null, "status": "todo", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "io": {"kanban_db.task_age": {"raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_task_dict", "in": {"task": {"id": "t4", "title": "T", "body": null, "assignee": null, "status": "todo", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "latest_summary": null, "current_run_started_at": null, "io": {"kanban_db.task_age": {"ret": {"created_age_seconds": 1, "started_age_seconds": 2, "time_to_complete_seconds": 3}}}}}
+{"func": "_task_dict", "in": {"task": {"id": "t5", "title": "Long", "body": null, "assignee": null, "status": "todo", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "latest_summary": "s", "io": {"kanban_db.task_age": {"ret": {"created_age_seconds": 0, "started_age_seconds": null, "time_to_complete_seconds": null}}}}}
+{"func": "_task_dict", "in": {"task": {"id": "t6", "title": "T", "body": null, "assignee": null, "status": "todo", "priority": 0, "created_by": "dashboard", "created_at": 100, "started_at": null, "completed_at": null, "workspace_kind": "scratch", "workspace_path": null, "claim_lock": null, "claim_expires": null, "tenant": null, "branch_name": null, "project_id": null, "result": null, "idempotency_key": null, "consecutive_failures": 0, "worker_pid": null, "last_failure_error": null, "max_runtime_seconds": null, "last_heartbeat_at": null, "current_run_id": null, "workflow_template_id": null, "current_step_key": null, "skills": null, "model_override": null, "provider_override": null, "reasoning_effort": null, "max_retries": null, "goal_mode": false, "goal_max_turns": null, "session_id": null, "block_kind": null, "block_recurrences": 0, "completion_contract": null}, "io": {}}}
+{"func": "_links_for", "in": {"task_id": "t1", "io": {"conn.execute": [{"ret": [{"parent_id": "p1"}, {"parent_id": "p2"}]}, {"ret": [{"child_id": "c1"}]}]}}}
+{"func": "_links_for", "in": {"task_id": "t2", "io": {"conn.execute": [{"ret": []}, {"ret": []}]}}}
+{"func": "_links_for", "in": {"task_id": "t3", "io": {"conn.execute": [{"ret": [{"parent_id": "p1"}]}, {"ret": []}]}}}
+{"func": "_links_for", "in": {"task_id": "t4", "io": {"conn.execute": [{"ret": []}, {"ret": [{"child_id": "c1"}, {"child_id": "c2"}]}]}}}
+{"func": "_links_for", "in": {"task_id": "t5", "io": {"conn.execute": [{"raise": {"type": "RuntimeError", "message": "sql"}}]}}}
+{"func": "_links_for", "in": {"task_id": "t6", "io": {}}}
+{"func": "_link_tasks", "in": {"links": {"parents": ["p1", "p2", "p1"], "children": ["c1", "p2"]}, "io": {"kanban_db.get_task": [{"ret": {"id": "p1", "title": "T p1", "status": "todo"}}, {"ret": {"id": "p2", "title": "T p2", "status": "ready"}}, {"ret": {"id": "c1", "title": "T c1", "status": "done"}}]}}}
+{"func": "_link_tasks", "in": {"links": {"parents": ["p1"], "children": []}, "io": {"kanban_db.get_task": [{"ret": null}]}}}
+{"func": "_link_tasks", "in": {"links": {"parents": ["p1"], "children": ["c1"]}, "io": {"kanban_db.get_task": [{"ret": null}, {"ret": {"id": "c1", "title": "C", "status": "todo"}}]}}}
+{"func": "_link_tasks", "in": {"links": {"parents": [], "children": []}, "io": {}}}
+{"func": "_link_tasks", "in": {"links": {"parents": ["p1"], "children": []}, "io": {"kanban_db.get_task": [{"raise": {"type": "RuntimeError", "message": "x"}}]}}}
+{"func": "_link_tasks", "in": {"links": {"parents": ["p1"], "children": []}, "io": {}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "ready", "io": {"kanban_db.get_task": {"ret": {"status": "blocked"}}, "kanban_db.unblock_task": {"ret": true}}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "todo", "io": {"kanban_db.get_task": {"ret": {"status": "review"}}, "kanban_db.reopen_review_task": {"ret": true}}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "ready", "io": {"kanban_db.get_task": {"ret": {"status": "todo"}}, "_set_status_direct": {"ret": true}}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "triage", "io": {"_set_status_direct": {"ret": true}}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "ready", "io": {"kanban_db.get_task": {"ret": {"status": "scheduled"}}, "kanban_db.unblock_task": {"ret": false}}}}
+{"func": "_drag_to", "in": {"task_id": "t1", "s": "ready", "io": {"kanban_db.get_task": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "running", "p": {}, "unknown_detail": "x"}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "bogus", "p": {}, "unknown_detail": "unknown status: bogus"}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "done", "p": {"result": "r", "summary": "s", "metadata": null}, "io": {"kanban_db.complete_task": {"ret": true}}}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "blocked", "p": {"block_reason": "why"}, "io": {"kanban_db.block_task": {"ret": true}}}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "review", "p": {"summary": "s", "metadata": null, "assignee": "rev"}, "io": {"kanban_db.request_review": {"ret": true}}}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "ready", "p": {}, "io": {"kanban_db.get_task": {"ret": {"status": "todo"}}, "_set_status_direct": {"ret": true}}}}
+{"func": "_apply_status", "in": {"task_id": "t1", "s": "triage", "p": {}, "io": {"_set_status_direct": {"ret": false}}}}
+{"func": "_set_priority", "in": {"task_id": "t1", "priority": 3, "board": "b", "io": {"kanban_db.edit_task": {"ret": null}}}}
+{"func": "_set_priority", "in": {"task_id": "t1", "priority": 0, "board": "b", "io": {"kanban_db.edit_task": {"ret": null}}}}
+{"func": "_set_priority", "in": {"task_id": "t1", "priority": -2, "board": null, "io": {"kanban_db.edit_task": {"ret": null}}}}
+{"func": "_set_priority", "in": {"task_id": "t2", "priority": 9, "board": "b2", "io": {"kanban_db.edit_task": {"ret": null}}}}
+{"func": "_set_priority", "in": {"task_id": "t1", "priority": 1, "board": "b", "io": {"kanban_db.edit_task": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_set_priority", "in": {"task_id": "t1", "priority": 1, "board": "b", "io": {}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": false, "model_override": "  gpt  ", "provider_override": "openai"}, "io": {"kanban_db.set_model_override": {"ret": true}}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": true, "model_override": "gpt", "provider_override": null}, "io": {"kanban_db.set_model_override": {"ret": true}}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": false, "model_override": "   ", "provider_override": null}, "io": {"kanban_db.set_model_override": {"ret": false}}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": false, "model_override": null, "provider_override": "p"}, "io": {"kanban_db.set_model_override": {"ret": true}}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": false, "model_override": "m", "provider_override": null}, "io": {"kanban_db.set_model_override": {"raise": {"type": "ValueError", "message": "bad model"}}}}}
+{"func": "_apply_model_override", "in": {"task_id": "t1", "p": {"clear_model_override": false, "model_override": "m", "provider_override": null}, "io": {}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": false, "reasoning_effort": "high"}, "io": {"kanban_db.set_reasoning_effort": {"ret": true}}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": true, "reasoning_effort": "high"}, "io": {"kanban_db.set_reasoning_effort": {"ret": true}}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": false, "reasoning_effort": null}, "io": {"kanban_db.set_reasoning_effort": {"ret": false}}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": false, "reasoning_effort": "none"}, "io": {"kanban_db.set_reasoning_effort": {"ret": true}}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": false, "reasoning_effort": "low"}, "io": {"kanban_db.set_reasoning_effort": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_apply_reasoning_effort", "in": {"task_id": "t1", "p": {"clear_reasoning_effort": false, "reasoning_effort": "low"}, "io": {}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "done", "io": {"kanban_db.unsatisfied_parents": {"ret": [["p1", "todo"], ["p2", "ready"]]}}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "review", "io": {"kanban_db.unsatisfied_parents": {"ret": [["p1", "blocked"]]}}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "ready", "io": {}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "done", "io": {"kanban_db.unsatisfied_parents": {"ret": []}}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "done", "io": {"kanban_db.unsatisfied_parents": {"raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_open_parent_refusal", "in": {"task_id": "t1", "s": "review", "io": {}}}

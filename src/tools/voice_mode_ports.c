@@ -37,7 +37,6 @@ int vmd_play_beep(double frequency, double duration_sec) {
     return 0;
 }
 
-/* PoP: vmd_recorder_init @ tools/voice_mode.py:__init__ */
 char *vmd_recorder_init(void) {
     /* Python: recording state machine init. */
     return strdup("{\"recording\": false}");

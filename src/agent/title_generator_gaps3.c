@@ -9,6 +9,5 @@
 
 /* ── agent/title_generator.py: 2 missing functions ── */
 
-/* PoP: apply_instant_title @ agent/title_generator.py:apply_instant_title */
 char *apply_instant_title(void) { return strdup(""); }
 

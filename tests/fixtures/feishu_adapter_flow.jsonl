@@ -1,0 +1,324 @@
+{"func": "_is_bot_sender", "in": {"args": {"sender": {"sender_type": "bot"}}, "io": {}}}
+{"func": "_is_bot_sender", "in": {"args": {"sender": {"sender_type": "app"}}, "io": {}}}
+{"func": "_is_bot_sender", "in": {"args": {"sender": {"sender_type": "user"}}, "io": {}}}
+{"func": "_is_bot_sender", "in": {"args": {"sender": {"sender_type": ""}}, "io": {}}}
+{"func": "_is_bot_sender", "in": {"args": {"sender": {"sender_type": "Bot"}}, "io": {}}}
+{"func": "_is_bot_sender", "in": {"args": {"sender": {}}, "io": {}}}
+{"func": "_sender_identity", "in": {"args": {"sender": {"sender_id": null}}, "io": {}}}
+{"func": "_sender_identity", "in": {"args": {"sender": {"sender_id": {"open_id": "ou_1"}}}, "io": {}}}
+{"func": "_sender_identity", "in": {"args": {"sender": {"sender_id": {"open_id": "ou_1", "user_id": "u_1", "union_id": "on_1"}}}, "io": {}}}
+{"func": "_sender_identity", "in": {"args": {"sender": {"sender_id": {"open_id": "x", "user_id": "x", "union_id": ""}}}, "io": {}}}
+{"func": "_sender_identity", "in": {"args": {"sender": {}}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": ""}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "plain text"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "a*b_c[d]"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "back\\slash `code`"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "# head > quote | pipe"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "é中*"}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": true}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": 1}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": "true"}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": "True"}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": 0}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": false}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": "1"}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": 1.0}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": null}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": "false"}, "io": {}}}
+{"func": "_to_boolean", "in": {"args": {"value": 2}, "io": {}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": null, "key": "bold"}, "io": {}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": {}, "key": "bold"}, "io": {}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": {"code": true}, "key": "code"}, "io": {"_to_boolean": [true]}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": {"bold": 1}, "key": "bold"}, "io": {"_to_boolean": [true]}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": {"italic": "true"}, "key": "italic"}, "io": {"_to_boolean": [true]}}}
+{"func": "_is_style_enabled", "in": {"args": {"style": {"bold": false}, "key": "bold"}, "io": {"_to_boolean": [false]}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": ""}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "code"}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "`x`"}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "a``b```c"}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "```"}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "x`"}, "io": {}}}
+{"func": "_wrap_inline_code", "in": {"args": {"text": "`"}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": "py"}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": "  py  "}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": "p\ny"}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": "p\ry"}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": ""}, "io": {}}}
+{"func": "_sanitize_fence_language", "in": {"args": {"language": "\tpython\n"}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "5", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": " 7 ", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "+5", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "-5", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "1_0", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "bad", "default": 9, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": null, "default": 9, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": true, "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": 5.7, "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": -5.7, "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": [], "default": 3, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "2", "default": 9, "min_value": 5}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "1__0", "default": 4, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "_1", "default": 4, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "0x10", "default": 4, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": false, "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "1\u001c", "default": 9, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "1 ", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": "\u001c5\u001d", "default": 9, "min_value": 0}, "io": {}}}
+{"func": "_coerce_int", "in": {"args": {"value": " 5　", "default": null, "min_value": 0}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": "notdict"}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": {"title": "t"}}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": {"content": "notlist"}}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": {"title": "t", "content": [[{"tag": "text", "text": "x"}]]}}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": {"content": [], "files": [{"file_key": "k"}]}}, "io": {}}}
+{"func": "_to_post_payload", "in": {"args": {"candidate": {"content": [], "files": "notlist", "title": 5}}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": ""}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "{\"text\": \"hi\"}"}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "[1, 2, 3]"}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "\"just a string\""}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "not json at all"}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "42"}, "io": {}}}
+{"func": "_load_feishu_payload", "in": {"args": {"raw_content": "{\"a\": 1, \"b\": [true, null]}"}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "  hello   world  \n\n foo ", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "a\r\nb\rc", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_user_1 hi @_user_2", "mentions_map": {"@_user_1": {"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}}}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_all meet", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "\t tabbed   space 　", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "line1\n\n\nline2", "mentions_map": null}, "io": {}}}
+{"func": "_unique_lines", "in": {"args": {"lines": []}, "io": {}}}
+{"func": "_unique_lines", "in": {"args": {"lines": ["a", "b", "a", "c", "b"]}, "io": {}}}
+{"func": "_unique_lines", "in": {"args": {"lines": ["", "a", "", "a"]}, "io": {}}}
+{"func": "_unique_lines", "in": {"args": {"lines": ["x"]}, "io": {}}}
+{"func": "_unique_lines", "in": {"args": {"lines": ["a", "a", "a"]}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {"id": "ou_1", "id_type": "open_id"}}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {"id": "u_1", "id_type": "user_id"}}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {"id": "x", "id_type": "union_id"}}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {"id": null}}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {"id": {"open_id": "ou_9", "user_id": "u_9"}}}, "io": {}}}
+{"func": "_extract_mention_ids", "in": {"args": {"mention": {}}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": []}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": [{"name": "Bot", "open_id": "ou_b", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": [{"name": "", "open_id": "", "is_all": true, "is_self": false}]}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": [{"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}]}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": [{"name": "Bo", "open_id": "", "is_all": false, "is_self": false}]}, "io": {}}}
+{"func": "_build_mention_hint", "in": {"args": {"mentions": [{"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}, {"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "", "mentions": []}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "@Bot hello", "mentions": [{"name": "Bot", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "hello @Bot", "mentions": [{"name": "Bot", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "hello @Bot again", "mentions": [{"name": "Bot", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "@Bot @Bot hi", "mentions": [{"name": "Bot", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "@Bot你好", "mentions": [{"name": "Bot", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "hi @机器人。", "mentions": [{"name": "机器人", "open_id": "", "is_all": false, "is_self": true}]}, "io": {}}}
+{"func": "_strip_edge_self_mentions", "in": {"args": {"text": "no self here", "mentions": [{"name": "Al", "open_id": "", "is_all": false, "is_self": false}]}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": ""}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "just prose"}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "```py\ncode\n```"}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "before\n```py\ncode\n```\nafter"}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "```\na\n```\n```\nb\n```"}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "unclosed\n```py\ncode"}, "io": {}}}
+{"func": "_build_markdown_post_rows", "in": {"args": {"content": "  \n``` \nx\n```  "}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "ou_b", "user_id": "u_b", "name": "Bot"}, "open_id": "ou_b", "user_id": "", "name": ""}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "ou_b", "user_id": "u_b", "name": "Bot"}, "open_id": "ou_x", "user_id": "", "name": ""}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "", "user_id": "u_b", "name": "Bot"}, "open_id": "ou_x", "user_id": "u_b", "name": ""}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "", "user_id": "", "name": "Bot"}, "open_id": "", "user_id": "", "name": "Bot"}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "", "user_id": "", "name": "Bot"}, "open_id": "", "user_id": "", "name": "Other"}, "io": {}}}
+{"func": "matches", "in": {"args": {"bot": {"open_id": "", "user_id": "", "name": ""}, "open_id": "", "user_id": "", "name": "Bot"}, "io": {}}}
+{"func": "_walk_nodes", "in": {"args": {"value": {"a": 1, "b": {"c": 2}}}, "io": {}}}
+{"func": "_walk_nodes", "in": {"args": {"value": [1, {"x": 1}, [2, 3]]}, "io": {}}}
+{"func": "_walk_nodes", "in": {"args": {"value": "scalar"}, "io": {}}}
+{"func": "_walk_nodes", "in": {"args": {"value": {}}, "io": {}}}
+{"func": "_walk_nodes", "in": {"args": {"value": {"header": {"title": {"content": "T"}}, "elements": [{"tag": "div"}]}}, "io": {}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "plain"}}, "io": {"_is_style_enabled": [false, false, false, false, false]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "code", "style": {"code": true}}}, "io": {"_is_style_enabled": [true], "_wrap_inline_code": ["`code`"]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "bold", "style": {"bold": true}}}, "io": {"_is_style_enabled": [false, true, false, false, false]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "both", "style": {"bold": true, "italic": true}}}, "io": {"_is_style_enabled": [false, true, true, false, false]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": ""}}, "io": {"_is_style_enabled": [false]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "x", "style": "notdict"}}, "io": {"_is_style_enabled": [false, false, false, false, false]}}}
+{"func": "_render_text_element", "in": {"args": {"element": {"text": "all", "style": {"bold": true, "italic": true, "underline": true, "strikethrough": true}}}, "io": {"_is_style_enabled": [false, true, true, true, true]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {"language": "py", "text": "x=1"}}, "io": {"_sanitize_fence_language": ["py"]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {"lang": "js", "text": "y=2"}}, "io": {"_sanitize_fence_language": ["js"]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {"text": "a\r\nb"}}, "io": {"_sanitize_fence_language": [""]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {"content": "c\n"}}, "io": {"_sanitize_fence_language": [""]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {}}, "io": {"_sanitize_fence_language": [""]}}}
+{"func": "_render_code_block_element", "in": {"args": {"element": {"language": "  py\n ", "text": "z"}}, "io": {"_sanitize_fence_language": ["py"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": "raw string", "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": 42, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "br"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "hr"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "text", "text": "hi", "style": {"bold": true}}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_render_text_element": ["**hi**"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "a", "href": "http://x", "text": "label"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["label"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "a", "text": "nolink"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["nolink"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "at", "user_id": "@_all"}, "image_keys": [], "media_refs": [], "mentions_map": {}}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "at", "user_id": "@_user_1"}, "image_keys": [], "media_refs": [], "mentions_map": {"@_user_1": {"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}}}, "io": {"_escape_markdown_text": ["Al"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "at", "user_id": "@_user_2", "user_name": "Fallback"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["Fallback"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "img", "image_key": "img_1", "text": "alt"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "img", "image_key": "img_1"}, "image_keys": ["img_1"], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "file", "file_key": "f1", "file_name": "doc.pdf"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "audio", "file_key": "a1"}, "image_keys": [], "media_refs": [{"file_key": "a1", "file_name": "", "resource_type": "audio"}], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "media", "file_key": ""}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "emoji", "text": "smile"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["smile"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "emoji"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "code", "text": "x`y"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_wrap_inline_code": ["``x`y``"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "div", "text": "nested", "title": "T"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["nested", "T"]}}}
+{"func": "_render_post_element", "in": {"args": {"element": {"tag": "text", "text": "x"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_render_text_element": [{"__script__": true, "raise": {"type": "SystemExit", "message": "boom"}}]}}}
+{"func": "_join_nested_posts", "in": {"args": {"values": ["a", "b"], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["a", "b"]}}}
+{"func": "_join_nested_posts", "in": {"args": {"values": ["a", "", "c"], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["a", "", "c"]}}}
+{"func": "_join_nested_posts", "in": {"args": {"values": [{"tag": "text", "text": "x"}], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_render_text_element": ["x"]}}}
+{"func": "_join_nested_posts", "in": {"args": {"values": [["a", "b"], "c"], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["a", "b", "c"]}}}
+{"func": "_join_nested_posts", "in": {"args": {"values": [], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "_render_nested_post", "in": {"args": {"value": "a*b", "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["a\\*b"]}}}
+{"func": "_render_nested_post", "in": {"args": {"value": ["a", "b"], "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["a", "b"]}}}
+{"func": "_render_nested_post", "in": {"args": {"value": {"tag": "text", "text": "x"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_render_text_element": ["x"]}}}
+{"func": "_render_nested_post", "in": {"args": {"value": {"foo": "bar", "text": "x"}, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {"_escape_markdown_text": ["x"]}}}
+{"func": "_render_nested_post", "in": {"args": {"value": 42, "image_keys": [], "media_refs": [], "mentions_map": null}, "io": {}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {}, "mentions_map": null}, "io": {"_resolve_post_payload": [{}]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"title": "T", "content": [[{"tag": "text", "text": "hello"}]]}, "mentions_map": null}, "io": {"_resolve_post_payload": [{"title": "T", "content": [[{"tag": "text", "text": "hello"}]], "files": []}], "_normalize_feishu_text": ["T", "hello"], "_render_text_element": ["hello"]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"content": [[{"tag": "img", "image_key": "i1"}, {"tag": "text", "text": "x"}]]}, "mentions_map": {}}, "io": {"_resolve_post_payload": [{"title": "", "content": [[{"tag": "img", "image_key": "i1"}, {"tag": "text", "text": "x"}]], "files": []}], "_normalize_feishu_text": ["", "[Image]x"], "_render_text_element": ["x"]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"content": [], "files": [{"file_key": "f1", "file_name": "a.pdf"}, {"file_key": "f2", "is_folder": true}, {"file_key": "  "}]}, "mentions_map": null}, "io": {"_resolve_post_payload": [{"title": "", "content": [], "files": [{"file_key": "f1", "file_name": "a.pdf"}, {"file_key": "f2", "is_folder": true}, {"file_key": "  "}]}], "_normalize_feishu_text": [""], "_to_boolean": [false, true, false]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"post": {"zh_cn": {"title": "标题", "content": [[{"tag": "text", "text": "中文"}]]}}}, "mentions_map": null}, "io": {"_resolve_post_payload": [{"title": "标题", "content": [[{"tag": "text", "text": "中文"}]], "files": []}], "_normalize_feishu_text": ["标题", "中文"], "_render_text_element": ["中文"]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"content": [[{"tag": "at", "user_id": "@_all"}]]}, "mentions_map": {}}, "io": {"_resolve_post_payload": [{"title": "", "content": [[{"tag": "at", "user_id": "@_all"}]], "files": []}], "_normalize_feishu_text": ["", "@all"]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"content": "notlist"}, "mentions_map": null}, "io": {"_resolve_post_payload": [{}]}}}
+{"func": "parse_feishu_post_payload", "in": {"args": {"payload": {"title": "T", "content": [[{"tag": "text", "text": "x"}]]}, "mentions_map": null}, "io": {"_resolve_post_payload": [{"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}]}}}
+{"func": "_resolve_post_payload", "in": {"args": {"payload": {"content": [[{"tag": "text", "text": "x"}]]}}, "io": {"_to_post_payload": [{"title": "", "content": [[{"tag": "text", "text": "x"}]], "files": []}]}}}
+{"func": "_resolve_post_payload", "in": {"args": {"payload": {"post": {"content": [[{"tag": "text", "text": "y"}]]}}}, "io": {"_to_post_payload": [{}], "_resolve_locale_payload": [{"title": "", "content": [[{"tag": "text", "text": "y"}]], "files": []}]}}}
+{"func": "_resolve_post_payload", "in": {"args": {"payload": {"zh_cn": {"content": [[{"tag": "text", "text": "z"}]]}}}, "io": {"_to_post_payload": [{}], "_resolve_locale_payload": [{}, {"title": "", "content": [[{"tag": "text", "text": "z"}]], "files": []}]}}}
+{"func": "_resolve_post_payload", "in": {"args": {"payload": "notdict"}, "io": {"_to_post_payload": [{}]}}}
+{"func": "_resolve_post_payload", "in": {"args": {"payload": {"post": {"en_us": {"content": []}}}}, "io": {"_to_post_payload": [{}], "_resolve_locale_payload": [{"title": "", "content": [], "files": []}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": {"content": [[{"tag": "text", "text": "x"}]]}}, "io": {"_to_post_payload": [{"title": "", "content": [[{"tag": "text", "text": "x"}]], "files": []}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": {"zh_cn": {"content": [[{"tag": "text", "text": "zh"}]]}}}, "io": {"_to_post_payload": [{}, {"title": "", "content": [[{"tag": "text", "text": "zh"}]], "files": []}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": {"en_us": {"content": [[{"tag": "text", "text": "en"}]]}}}, "io": {"_to_post_payload": [{}, {}, {"title": "", "content": [[{"tag": "text", "text": "en"}]], "files": []}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": {"fr_fr": {"content": [[{"tag": "text", "text": "fr"}]]}}}, "io": {"_to_post_payload": [{}, {}, {}, {"title": "", "content": [[{"tag": "text", "text": "fr"}]], "files": []}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": "notdict"}, "io": {"_to_post_payload": [{}]}}}
+{"func": "_resolve_locale_payload", "in": {"args": {"payload": {"zh_cn": {"content": "notlist"}, "en_us": {"content": [[{"tag": "text", "text": "e"}]]}}}, "io": {"_to_post_payload": [{}, {}, {"title": "", "content": [[{"tag": "text", "text": "e"}]], "files": []}]}}}
+{"func": "_build_markdown_post_payload", "in": {"args": {"content": ""}, "io": {"_build_markdown_post_rows": [{"__script__": true, "ret": [[{"tag": "md", "text": ""}]]}]}}}
+{"func": "_build_markdown_post_payload", "in": {"args": {"content": "hi"}, "io": {"_build_markdown_post_rows": [{"__script__": true, "ret": [[{"tag": "md", "text": "hi"}]]}]}}}
+{"func": "_build_markdown_post_payload", "in": {"args": {"content": "a\nb"}, "io": {"_build_markdown_post_rows": [{"__script__": true, "ret": [[{"tag": "md", "text": "a\nb"}]]}]}}}
+{"func": "_build_markdown_post_payload", "in": {"args": {"content": "```py\ncode\n```"}, "io": {"_build_markdown_post_rows": [{"__script__": true, "ret": [[{"tag": "md", "text": "```py\ncode\n```"}]]}]}}}
+{"func": "_build_markdown_post_payload", "in": {"args": {"content": "prose\n```\nx\n```\ntail"}, "io": {"_build_markdown_post_rows": [{"__script__": true, "ret": [[{"tag": "md", "text": "prose"}], [{"tag": "md", "text": "```\nx\n```"}], [{"tag": "md", "text": "tail"}]]}]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": "5", "default": 9, "min_value": 0}, "io": {"_coerce_int": [5]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": "bad", "default": 9, "min_value": 0}, "io": {"_coerce_int": [9]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": "2", "default": 9, "min_value": 5}, "io": {"_coerce_int": [9]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": null, "default": 9, "min_value": 0}, "io": {"_coerce_int": [9]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": "-3", "default": 9, "min_value": 0}, "io": {"_coerce_int": [9]}}}
+{"func": "_coerce_required_int", "in": {"args": {"value": "5", "default": 9, "min_value": 0}, "io": {"_coerce_int": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "int"}}]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "[label](http://x)"}, "io": {"strip_markdown": ["label (http://x)"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "> quoted"}, "io": {"strip_markdown": ["quoted"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "  ---  "}, "io": {"strip_markdown": ["---"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "~~strike~~"}, "io": {"strip_markdown": ["strike"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "<u>under</u>"}, "io": {"strip_markdown": ["under"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "plain"}, "io": {"strip_markdown": ["plain"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "a\r\nb\n> q\n~~s~~"}, "io": {"strip_markdown": ["a\nb\nq\ns"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "  ---  \n"}, "io": {"strip_markdown": ["---"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "before\n  ---  \nafter"}, "io": {"strip_markdown": ["before\n---\nafter"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "\n  ---  \n"}, "io": {"strip_markdown": ["---"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "x\n---\n\n---\ny"}, "io": {"strip_markdown": ["x\n------\ny"]}}}
+{"func": "_strip_markdown_to_plain_text", "in": {"args": {"text": "hello"}, "io": {"strip_markdown": [{"__script__": true, "raise": {"type": "SystemExit", "message": "exit"}}]}}}
+{"func": "_attachment_placeholder", "in": {"args": {"file_name": "doc.pdf"}, "io": {"_normalize_feishu_text": ["doc.pdf"]}}}
+{"func": "_attachment_placeholder", "in": {"args": {"file_name": ""}, "io": {"_normalize_feishu_text": [""]}}}
+{"func": "_attachment_placeholder", "in": {"args": {"file_name": "  spaced  "}, "io": {"_normalize_feishu_text": ["spaced"]}}}
+{"func": "_attachment_placeholder", "in": {"args": {"file_name": "  "}, "io": {"_normalize_feishu_text": [""]}}}
+{"func": "_attachment_placeholder", "in": {"args": {"file_name": "中文.pdf"}, "io": {"_normalize_feishu_text": ["中文.pdf"]}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": ["first", "second"]}, "io": {"_normalize_feishu_text": ["first"]}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": [null, {}, [], "real"]}, "io": {"_normalize_feishu_text": ["real"]}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": [5, "x"]}, "io": {"_normalize_feishu_text": ["5"]}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": ["", "  ", "ok"]}, "io": {"_normalize_feishu_text": ["", "", "ok"]}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": [null, {}]}, "io": {}}}
+{"func": "_first_non_empty_text", "in": {"args": {"values": [true, "x"]}, "io": {"_normalize_feishu_text": ["True"]}}}
+{"func": "_find_header_title", "in": {"args": {"payload": "notdict"}, "io": {}}}
+{"func": "_find_header_title", "in": {"args": {"payload": {"header": "notdict"}}, "io": {}}}
+{"func": "_find_header_title", "in": {"args": {"payload": {"header": {"title": "Simple"}}}, "io": {"_normalize_feishu_text": ["Simple"]}}}
+{"func": "_find_header_title", "in": {"args": {"payload": {"header": {"title": {"content": "C", "text": "T"}}}}, "io": {"_first_non_empty_text": ["C"]}}}
+{"func": "_find_header_title", "in": {"args": {"payload": {"header": {"title": null}}}, "io": {"_normalize_feishu_text": [""]}}}
+{"func": "_find_header_title", "in": {"args": {"payload": {"header": {"title": {"name": "N"}}}}, "io": {"_first_non_empty_text": ["N"]}}}
+{"func": "_find_first_text", "in": {"args": {"payload": {"title": "T"}, "keys": ["title", "summary"]}, "io": {"_normalize_feishu_text": ["T"]}}}
+{"func": "_find_first_text", "in": {"args": {"payload": {"elements": [{"text": "deep"}]}, "keys": ["text"]}, "io": {"_normalize_feishu_text": ["deep"]}}}
+{"func": "_find_first_text", "in": {"args": {"payload": {"title": "  "}, "keys": ["title"]}, "io": {"_normalize_feishu_text": [""]}}}
+{"func": "_find_first_text", "in": {"args": {"payload": {"a": {"b": {"summary": "S"}}}, "keys": ["summary", "title"]}, "io": {"_normalize_feishu_text": ["S"]}}}
+{"func": "_find_first_text", "in": {"args": {"payload": [1, 2], "keys": ["title"]}, "io": {}}}
+{"func": "_first_text_field", "in": {"args": {"payload": {"name": "N"}, "keys": ["name", "title"], "deep": []}, "io": {"_first_non_empty_text": ["N"]}}}
+{"func": "_first_text_field", "in": {"args": {"payload": {"x": {"title": "Deep"}}, "keys": ["name"], "deep": ["title"]}, "io": {"_find_first_text": ["Deep"], "_first_non_empty_text": ["Deep"]}}}
+{"func": "_first_text_field", "in": {"args": {"payload": {}, "keys": ["name"], "deep": []}, "io": {"_first_non_empty_text": [""]}}}
+{"func": "_first_text_field", "in": {"args": {"payload": {"name": "  "}, "keys": ["name"], "deep": ["title"]}, "io": {"_find_first_text": [""], "_first_non_empty_text": [""]}}}
+{"func": "_first_text_field", "in": {"args": {"payload": {"title": "T", "name": "N"}, "keys": ["name", "title"], "deep": []}, "io": {"_first_non_empty_text": ["N"]}}}
+{"func": "_build_media_ref_from_payload", "in": {"args": {"payload": {"file_key": "k1", "file_name": "a.mp3"}, "resource_type": "audio"}, "io": {"_first_text_field": ["a.mp3"]}}}
+{"func": "_build_media_ref_from_payload", "in": {"args": {"payload": {"file_key": "k2", "title": "v.mp4"}, "resource_type": "video"}, "io": {"_first_text_field": ["v.mp4"]}}}
+{"func": "_build_media_ref_from_payload", "in": {"args": {"payload": {"file_key": "k3", "text": "d.pdf"}, "resource_type": "file"}, "io": {"_first_text_field": ["d.pdf"]}}}
+{"func": "_build_media_ref_from_payload", "in": {"args": {"payload": {"file_key": "  "}, "resource_type": "media"}, "io": {"_first_text_field": [""]}}}
+{"func": "_build_media_ref_from_payload", "in": {"args": {"payload": {}, "resource_type": "audio"}, "io": {"_first_text_field": [""]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": "plain", "in_rich_block": false}, "io": {}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": "rich", "in_rich_block": true}, "io": {"_normalize_feishu_text": ["rich"]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": ["a", "b"], "in_rich_block": true}, "io": {"_normalize_feishu_text": ["a", "b"]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": {"tag": "div", "text": "hello"}, "in_rich_block": false}, "io": {"_normalize_feishu_text": ["hello", "hello", "hello"]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": {"tag": "div", "text": "x", "url": "http://skip"}, "in_rich_block": false}, "io": {"_normalize_feishu_text": ["x", "x", "x"]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": {"tag": "button", "text": "Go", "value": "v"}, "in_rich_block": false}, "io": {"_normalize_feishu_text": ["Go", "Go", "v", "v", "Go", "v"]}}}
+{"func": "_collect_text_segments", "in": {"args": {"value": {"elements": [{"tag": "note", "text": "n"}]}, "in_rich_block": false}, "io": {"_normalize_feishu_text": ["n", "n", "n"]}}}
+{"func": "_collect_card_lines", "in": {"args": {"payload": {"tag": "div", "text": "Hello"}}, "io": {"_collect_text_segments": [{"__script__": true, "ret": ["Hello", "Hello"]}], "_normalize_feishu_text": ["Hello", "Hello"], "_unique_lines": [{"__script__": true, "ret": ["Hello"]}]}}}
+{"func": "_collect_card_lines", "in": {"args": {"payload": {}}, "io": {"_collect_text_segments": [{"__script__": true, "ret": []}], "_unique_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_collect_card_lines", "in": {"args": {"payload": {"elements": [{"tag": "div", "text": "A"}, {"tag": "div", "text": "A"}]}}, "io": {"_collect_text_segments": [{"__script__": true, "ret": ["A", "A", "A", "A"]}], "_normalize_feishu_text": ["A", "A", "A", "A"], "_unique_lines": [{"__script__": true, "ret": ["A"]}]}}}
+{"func": "_collect_card_lines", "in": {"args": {"payload": {"tag": "markdown", "content": "Line"}}, "io": {"_collect_text_segments": [{"__script__": true, "ret": ["Line", "Line"]}], "_normalize_feishu_text": ["Line", "Line"], "_unique_lines": [{"__script__": true, "ret": ["Line"]}]}}}
+{"func": "_collect_card_lines", "in": {"args": {"payload": {"title": "T", "text": "body"}}, "io": {"_collect_text_segments": [{"__script__": true, "ret": []}], "_unique_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_collect_action_labels", "in": {"args": {"payload": {"elements": [{"tag": "button", "text": "Go"}]}}, "io": {"_first_text_field": ["Go"], "_unique_lines": [{"__script__": true, "ret": ["Go"]}]}}}
+{"func": "_collect_action_labels", "in": {"args": {"payload": {"elements": [{"tag": "select_static", "text": "Pick"}]}}, "io": {"_first_text_field": ["Pick"], "_unique_lines": [{"__script__": true, "ret": ["Pick"]}]}}}
+{"func": "_collect_action_labels", "in": {"args": {"payload": {"elements": [{"tag": "div", "text": "not action"}]}}, "io": {"_unique_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_collect_action_labels", "in": {"args": {"payload": {"elements": [{"tag": "button", "text": "Go"}, {"tag": "button", "text": "Go"}]}}, "io": {"_first_text_field": ["Go", "Go"], "_unique_lines": [{"__script__": true, "ret": ["Go"]}]}}}
+{"func": "_collect_action_labels", "in": {"args": {"payload": {}}, "io": {"_unique_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {"messages": [{"sender_name": "Al", "text": "hi"}]}}, "io": {"_first_text_field": ["Al", "hi"], "_normalize_feishu_text": ["hi"], "_unique_lines": [{"__script__": true, "ret": ["- Al: hi"]}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {"messages": ["plain entry", "plain entry"]}}, "io": {"_normalize_feishu_text": ["plain entry", "plain entry"], "_unique_lines": [{"__script__": true, "ret": ["- plain entry"]}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {"messages": [{"sender_name": "Al", "message_type": "post", "content": {"content": [[{"tag": "text", "text": "p"}]]}}]}}, "io": {"_first_text_field": ["Al"], "_resolve_post_payload": [{"title": "", "content": [[{"tag": "text", "text": "p"}]], "files": []}], "_normalize_feishu_text": ["", "p", "p"], "_render_text_element": ["p"], "_unique_lines": [{"__script__": true, "ret": ["- Al: p"]}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {"items": [{"text": "a"}, {"summary": "b"}]}}, "io": {"_first_text_field": ["", "a", "", "b"], "_normalize_feishu_text": ["a", "b"], "_unique_lines": [{"__script__": true, "ret": ["- a", "- b"]}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {}}, "io": {"_unique_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_collect_forward_entries", "in": {"args": {"payload": {"messages": [{"sender_name": "Al", "text": "x"}, {"sender_name": "Al", "text": "x"}]}}, "io": {"_first_text_field": ["Al", "x", "Al", "x"], "_normalize_feishu_text": ["x", "x"], "_unique_lines": [{"__script__": true, "ret": ["- Al: x"]}]}}}
+{"func": "_normalize_merge_forward_message", "in": {"args": {"payload": {"title": "Forward", "messages": [{"sender_name": "Al", "text": "hi"}]}}, "io": {"_first_text_field": ["Forward"], "_collect_forward_entries": [{"__script__": true, "ret": ["- Al: hi"]}]}}}
+{"func": "_normalize_merge_forward_message", "in": {"args": {"payload": {}}, "io": {"_first_text_field": [""], "_collect_forward_entries": [{"__script__": true, "ret": []}]}}}
+{"func": "_normalize_merge_forward_message", "in": {"args": {"payload": {"messages": [{"text": "m0"}, {"text": "m1"}, {"text": "m2"}, {"text": "m3"}, {"text": "m4"}, {"text": "m5"}, {"text": "m6"}, {"text": "m7"}, {"text": "m8"}, {"text": "m9"}]}}, "io": {"_first_text_field": [""], "_collect_forward_entries": [{"__script__": true, "ret": ["- m0", "- m1", "- m2", "- m3", "- m4", "- m5", "- m6", "- m7", "- m8", "- m9"]}]}}}
+{"func": "_normalize_merge_forward_message", "in": {"args": {"payload": {"summary": "Sum", "messages": ["a"]}}, "io": {"_first_text_field": ["Sum"], "_collect_forward_entries": [{"__script__": true, "ret": ["- a"]}]}}}
+{"func": "_normalize_merge_forward_message", "in": {"args": {"payload": {"messages": []}}, "io": {"_first_text_field": [""], "_collect_forward_entries": [{"__script__": true, "ret": []}]}}}
+{"func": "_normalize_share_chat_message", "in": {"args": {"payload": {"chat_name": "Room", "chat_id": "oc_1"}}, "io": {"_first_text_field": ["Room", "oc_1"]}}}
+{"func": "_normalize_share_chat_message", "in": {"args": {"payload": {"chat_name": "Room"}}, "io": {"_first_text_field": ["Room", ""]}}}
+{"func": "_normalize_share_chat_message", "in": {"args": {"payload": {"chat_id": "oc_1"}}, "io": {"_first_text_field": ["", "oc_1"]}}}
+{"func": "_normalize_share_chat_message", "in": {"args": {"payload": {}}, "io": {"_first_text_field": ["", ""]}}}
+{"func": "_normalize_share_chat_message", "in": {"args": {"payload": {"name": "N", "open_chat_id": "oc_2"}}, "io": {"_first_text_field": ["N", "oc_2"]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "interactive", "payload": {"header": {"title": {"content": "Card"}}}}, "io": {"_find_header_title": ["Card"], "_find_first_text": [""], "_first_non_empty_text": ["Card"], "_collect_action_labels": [{"__script__": true, "ret": []}], "_collect_card_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "card", "payload": {"elements": [{"tag": "button", "text": "Go"}]}}, "io": {"_find_header_title": [""], "_find_first_text": [""], "_first_non_empty_text": [""], "_collect_action_labels": [{"__script__": true, "ret": ["Go"]}], "_collect_card_lines": [{"__script__": true, "ret": ["Go"]}]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "interactive", "payload": {"card": {"header": {"title": "Inner"}, "elements": [{"tag": "div", "text": "body"}]}}}, "io": {"_find_header_title": ["Inner"], "_find_first_text": ["Inner"], "_first_non_empty_text": ["Inner"], "_collect_action_labels": [{"__script__": true, "ret": []}], "_collect_card_lines": [{"__script__": true, "ret": ["body"]}]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "interactive", "payload": {}}, "io": {"_find_header_title": [""], "_find_first_text": [""], "_first_non_empty_text": [""], "_collect_action_labels": [{"__script__": true, "ret": []}], "_collect_card_lines": [{"__script__": true, "ret": []}]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "interactive", "payload": {"title": "T", "header": {"title": "H"}, "elements": [{"tag": "div", "text": "H"}]}}, "io": {"_find_header_title": ["H"], "_find_first_text": ["T"], "_first_non_empty_text": ["H"], "_collect_action_labels": [{"__script__": true, "ret": []}], "_collect_card_lines": [{"__script__": true, "ret": ["H"]}]}}}
+{"func": "_normalize_interactive_message", "in": {"args": {"message_type": "interactive", "payload": {"elements": [{"tag": "div", "text": "line0"}, {"tag": "div", "text": "line1"}, {"tag": "div", "text": "line2"}, {"tag": "div", "text": "line3"}, {"tag": "div", "text": "line4"}, {"tag": "div", "text": "line5"}, {"tag": "div", "text": "line6"}, {"tag": "div", "text": "line7"}, {"tag": "div", "text": "line8"}, {"tag": "div", "text": "line9"}, {"tag": "div", "text": "line10"}, {"tag": "div", "text": "line11"}, {"tag": "div", "text": "line12"}, {"tag": "div", "text": "line13"}, {"tag": "div", "text": "line14"}]}}, "io": {"_find_header_title": [""], "_find_first_text": [""], "_first_non_empty_text": [""], "_collect_action_labels": [{"__script__": true, "ret": []}], "_collect_card_lines": [{"__script__": true, "ret": ["line0", "line1", "line2", "line3", "line4", "line5", "line6", "line7", "line8", "line9", "line10", "line11", "line12", "line13", "line14"]}]}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": [], "bot": {"open_id": "ou_b", "user_id": "", "name": "Bot"}}, "io": {}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": [{"key": "@_all"}], "bot": {"open_id": "", "user_id": "", "name": ""}}, "io": {}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": [{"key": "@_user_1", "name": "Al", "id": "ou_1", "id_type": "open_id"}], "bot": {"open_id": "ou_b", "user_id": "", "name": "Bot"}}, "io": {"_extract_mention_ids": [{"__script__": true, "ret": ["ou_1", ""]}]}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": [{"key": "@_user_1", "name": "Bot", "id": "ou_b", "id_type": "open_id"}], "bot": {"open_id": "ou_b", "user_id": "", "name": "Bot"}}, "io": {"_extract_mention_ids": [{"__script__": true, "ret": ["ou_b", ""]}]}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": [{"key": ""}, {"key": "@_user_1", "name": "Al", "id": {"open_id": "ou_1"}}], "bot": {"open_id": "", "user_id": "", "name": ""}}, "io": {"_extract_mention_ids": [{"__script__": true, "ret": ["ou_1", ""]}]}}}
+{"func": "_build_mentions_map", "in": {"args": {"mentions": null, "bot": {"open_id": "", "user_id": "", "name": ""}}, "io": {}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "text", "raw_content": "{\"text\": \"hello\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"text": "hello"}], "_build_mentions_map": [{}], "_normalize_feishu_text": ["hello"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "text", "raw_content": "{\"text\": \"@_all hi\"}", "mentions": [], "bot": null}, "io": {"_load_feishu_payload": [{"text": "@_all hi"}], "_build_mentions_map": [{}], "_normalize_feishu_text": ["@all hi"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "text", "raw_content": "{\"text\": \"@_user_1 hey\"}", "mentions": [{"key": "@_user_1", "name": "Al", "id": "ou_1", "id_type": "open_id"}], "bot": {"open_id": "ou_b", "user_id": "", "name": "Bot"}}, "io": {"_load_feishu_payload": [{"text": "@_user_1 hey"}], "_build_mentions_map": [{"@_user_1": {"name": "Al", "open_id": "ou_1", "is_all": false, "is_self": false}}], "_normalize_feishu_text": ["@Al hey"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "post", "raw_content": "{\"title\": \"T\", \"content\": [[{\"tag\": \"text\", \"text\": \"body\"}]]}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"title": "T", "content": [[{"tag": "text", "text": "body"}]]}], "_build_mentions_map": [{}], "_resolve_post_payload": [{"title": "T", "content": [[{"tag": "text", "text": "body"}]], "files": []}], "_normalize_feishu_text": ["T", "body"], "_render_text_element": ["body"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "post", "raw_content": "{\"content\": [[{\"tag\": \"img\", \"image_key\": \"i1\"}, {\"tag\": \"at\", \"user_id\": \"@_all\"}]]}", "mentions": [], "bot": null}, "io": {"_load_feishu_payload": [{"content": [[{"tag": "img", "image_key": "i1"}, {"tag": "at", "user_id": "@_all"}]]}], "_build_mentions_map": [{}], "_resolve_post_payload": [{"title": "", "content": [[{"tag": "img", "image_key": "i1"}, {"tag": "at", "user_id": "@_all"}]], "files": []}], "_normalize_feishu_text": ["", "[Image]@all"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "image", "raw_content": "{\"image_key\": \"img_1\", \"text\": \"alt\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"image_key": "img_1", "text": "alt"}], "_build_mentions_map": [{}], "_normalize_feishu_text": ["alt"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "image", "raw_content": "{\"image_key\": \"img_1\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"image_key": "img_1"}], "_build_mentions_map": [{}], "_normalize_feishu_text": ["[Image]"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "file", "raw_content": "{\"file_key\": \"f1\", \"file_name\": \"doc.pdf\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"file_key": "f1", "file_name": "doc.pdf"}], "_build_mentions_map": [{}], "_build_media_ref_from_payload": [{"file_key": "f1", "file_name": "doc.pdf", "resource_type": "file"}], "_attachment_placeholder": ["[Attachment: doc.pdf]"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "audio", "raw_content": "{\"file_key\": \"a1\", \"file_name\": \"v.mp3\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"file_key": "a1", "file_name": "v.mp3"}], "_build_mentions_map": [{}], "_build_media_ref_from_payload": [{"file_key": "a1", "file_name": "v.mp3", "resource_type": "audio"}], "_attachment_placeholder": ["[Attachment: v.mp3]"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "media", "raw_content": "{\"file_key\": \"m1\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"file_key": "m1"}], "_build_mentions_map": [{}], "_build_media_ref_from_payload": [{"file_key": "m1", "file_name": "", "resource_type": "file"}], "_attachment_placeholder": ["[Attachment]"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "merge_forward", "raw_content": "{\"title\": \"F\", \"messages\": [{\"sender_name\": \"Al\", \"text\": \"hi\"}]}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"title": "F", "messages": [{"sender_name": "Al", "text": "hi"}]}], "_build_mentions_map": [{}], "_normalize_merge_forward_message": [{"raw_type": "merge_forward", "text_content": "F\n- Al: hi", "preferred_message_type": "text", "image_keys": [], "media_refs": [], "mentions": [], "relation_kind": "merge_forward", "metadata": {"entry_count": 1, "title": "F"}}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "share_chat", "raw_content": "{\"chat_name\": \"Room\", \"chat_id\": \"oc_1\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"chat_name": "Room", "chat_id": "oc_1"}], "_build_mentions_map": [{}], "_normalize_share_chat_message": [{"raw_type": "share_chat", "text_content": "Shared chat: Room\nChat ID: oc_1", "preferred_message_type": "text", "image_keys": [], "media_refs": [], "mentions": [], "relation_kind": "share_chat", "metadata": {"chat_id": "oc_1", "chat_name": "Room"}}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "interactive", "raw_content": "{\"header\": {\"title\": {\"content\": \"Card\"}}}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"header": {"title": {"content": "Card"}}}], "_build_mentions_map": [{}], "_normalize_interactive_message": [{"raw_type": "interactive", "text_content": "Card", "preferred_message_type": "text", "image_keys": [], "media_refs": [], "mentions": [], "relation_kind": "interactive", "metadata": {"title": "Card", "actions": []}}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "card", "raw_content": "{\"elements\": [{\"tag\": \"button\", \"text\": \"Go\"}]}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"elements": [{"tag": "button", "text": "Go"}]}], "_build_mentions_map": [{}], "_normalize_interactive_message": [{"raw_type": "card", "text_content": "Go\nActions: Go", "preferred_message_type": "text", "image_keys": [], "media_refs": [], "mentions": [], "relation_kind": "interactive", "metadata": {"title": "", "actions": ["Go"]}}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "sticker", "raw_content": "{}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{}], "_build_mentions_map": [{}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": " TEXT ", "raw_content": "not json", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"text": "not json"}], "_build_mentions_map": [{}], "_normalize_feishu_text": ["not json"]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "text", "raw_content": "{\"text\": \"x\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "normalize_feishu_message", "in": {"args": {"message_type": "text", "raw_content": "{\"text\": \"x\"}", "mentions": null, "bot": null}, "io": {"_load_feishu_payload": [{"text": "x"}], "_build_mentions_map": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "gen"}}]}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "中文 hello", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_all\r", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "　a*b　@_user_1\t", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_all ", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "中文 ", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "foo\nworld ", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_all\r@_user_1\t@_all \r@_all ", "mentions_map": null}, "io": {}}}
+{"func": "_normalize_feishu_text", "in": {"args": {"text": "@_user_1foo @_user_1a*b", "mentions_map": null}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "]a*[] "}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": " (éé_([é]é"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "*` [()é_#_* "}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "()("}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": "a[(*#`a]"}, "io": {}}}
+{"func": "_escape_markdown_text", "in": {"args": {"text": ""}, "io": {}}}

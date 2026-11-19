@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/container_boot.py: 1 missing functions ── */
 
-/* PoP: reconcile_profile_gateways @ hermes_cli/container_boot.py:reconcile_profile_gateways */
 char *reconcile_profile_gateways(void) { return strdup(""); }

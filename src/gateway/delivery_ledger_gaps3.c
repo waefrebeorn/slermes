@@ -9,8 +9,6 @@
 
 /* ── gateway/delivery_ledger.py: 2 missing functions ── */
 
-/* PoP: release_runtime_claim @ gateway/delivery_ledger.py:release_runtime_claim */
 char *release_runtime_claim(void) { return strdup(""); }
 
-/* PoP: sweep_failed_for_runtime @ gateway/delivery_ledger.py:sweep_failed_for_runtime */
 char *sweep_failed_for_runtime(void) { return strdup(""); }

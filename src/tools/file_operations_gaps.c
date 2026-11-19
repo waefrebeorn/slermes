@@ -264,10 +264,143 @@ char **effective_macos_search_exclusions(const char *path) {
     return macos_protected_search_exclusions(path);
 }
 
+/* ── rest_revive1 (file_operations_gaps): macos_protected_search_warning ────
+ * Pure string builder: ", ".join(ntpath.basename(item) for item in paths)
+ * inside a fixed warning. The oracle pins os.path to ntpath (Windows
+ * target), so fo_basename transcribes ntpath.splitroot+split exactly:
+ * UNC/device drives (\\server\share, \\?\UNC\... prefix, case-insensitive),
+ * single-codepoint + ':' drives (ANY first codepoint except a separator —
+ * '1:x', ' :x', 'é:x'), then the tail after the last '/' or '\' of the
+ * drive/root-stripped remainder. json_t *fn(void *io, json_t *in); io unused. */
+
+static json_t *fo_raise(const char *type, const char *msg) {
+    json_t *e = json_object();
+    json_set_hdr(e, "__raise__", type);
+    json_set_hdr(e, "message", msg);
+    return e;
+}
+
+static const char *fo_typename(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+        case JSON_BOOL:   return "bool";
+        case JSON_NUMBER: return v->num_val == (double)(long long)v->num_val ? "int" : "float";
+        case JSON_STRING: return "str";
+        case JSON_ARRAY:  return "list";
+        case JSON_OBJECT: return "dict";
+        default: return "object";
+    }
+}
+
+static size_t fo_cp_len(const char *s) {
+    unsigned char c = (unsigned char)s[0];
+    if (c < 0x80) return 1;
+    if ((c & 0xE0) == 0xC0) return 2;
+    if ((c & 0xF0) == 0xE0) return 3;
+    if ((c & 0xF8) == 0xF0) return 4;
+    return 1;
+}
+
+static int fo_is_sep(char c) { return c == '/' || c == '\\'; }
+
+/* ntpath.basename transcription (see header note). Returns a pointer INTO
+ * the input string (no allocation). */
+static const char *fo_basename(const char *p) {
+    size_t n = strlen(p);
+    const char *rest = p;
+    if (n >= 1 && fo_is_sep(p[0])) {
+        if (n >= 2 && fo_is_sep(p[1])) {
+            /* UNC / device drive: \\?\UNC\ prefix (8 chars, case-folded)
+             * else start at 2; drive spans server + share. */
+            size_t start = 2;
+            if (n >= 8) {
+                static const char unc[8] = { '\\', '\\', '?', '\\', 'U', 'N', 'C', '\\' };
+                int match = 1;
+                for (size_t i = 0; i < 8; i++) {
+                    char c = p[i];
+                    if (c == '/') c = '\\';
+                    if (c >= 'a' && c <= 'z') c = (char)(c - ('a' - 'A'));
+                    if (c != unc[i]) { match = 0; break; }
+                }
+                if (match) start = 8;
+            }
+            const char *q = p + start;
+            const char *s1 = NULL;
+            for (; *q; q++) if (fo_is_sep(*q)) { s1 = q; break; }
+            if (!s1) return p + n; /* whole path is the drive */
+            const char *s2 = NULL;
+            for (q = s1 + 1; *q; q++) if (fo_is_sep(*q)) { s2 = q; break; }
+            if (!s2) return p + n;
+            rest = s2 + 1;
+        } else {
+            rest = p + 1; /* rooted relative path: skip the root separator */
+        }
+    } else if (n >= 2) {
+        size_t first = fo_cp_len(p);
+        if (first < n && p[first] == ':') {
+            /* drive = first codepoint + ':'; optional root separator */
+            rest = p + first + 1;
+            if (*rest && fo_is_sep(*rest)) rest++;
+        }
+    }
+    /* tail after the LAST separator of the remainder */
+    const char *last = NULL;
+    for (const char *q = rest; *q; q++)
+        if (fo_is_sep(*q)) last = q;
+    return last ? last + 1 : rest;
+}
+
 /* PoP: macos_protected_search_warning @ tools/file_operations_search.py:_macos_protected_search_warning */
-char *macos_protected_search_warning(const char *path) {
-    (void)path;
-    return strdup("");
+json_t *macos_protected_search_warning(void *io, json_t *in) {
+    (void)io;
+    json_t *paths = json_obj_get(in, "paths");
+    if (!paths || paths->type != JSON_ARRAY) {
+        char msg[128];
+        snprintf(msg, sizeof msg, "'%s' object is not iterable", fo_typename(paths));
+        return fo_raise("TypeError", msg);
+    }
+    /* ", ".join(basename(item) ...) — items are str in the fixture model */
+    size_t cap = 256, len = 0;
+    char *skipped = malloc(cap);
+    if (!skipped) return fo_raise("MemoryError", "out of memory");
+    skipped[0] = '\0';
+    for (size_t i = 0; i < paths->c.count; i++) {
+        json_t *item = paths->c.items[i];
+        if (!item || item->type != JSON_STRING) {
+            free(skipped);
+            char msg[160];
+            snprintf(msg, sizeof msg,
+                "argument should be a str, bytes or os.PathLike object, not '%s'",
+                fo_typename(item));
+            return fo_raise("TypeError", msg);
+        }
+        const char *base = fo_basename(item->str_val);
+        size_t blen = strlen(base);
+        size_t need = len + blen + (i ? 2 : 0) + 1;
+        if (need > cap) {
+            while (cap < need) cap *= 2;
+            char *nb = realloc(skipped, cap);
+            if (!nb) { free(skipped); return fo_raise("MemoryError", "out of memory"); }
+            skipped = nb;
+        }
+        if (i) { memcpy(skipped + len, ", ", 2); len += 2; }
+        memcpy(skipped + len, base, blen);
+        len += blen;
+        skipped[len] = '\0';
+    }
+    static const char pre[] =
+        "Skipped macOS protected folders during broad search to avoid "
+        "an unattended privacy prompt: ";
+    static const char post[] =
+        ". Search a protected folder directly when access is intentional.";
+    size_t total = sizeof(pre) - 1 + len + sizeof(post) - 1 + 1;
+    char *msg = malloc(total);
+    if (!msg) { free(skipped); return fo_raise("MemoryError", "out of memory"); }
+    snprintf(msg, total, "%s%s%s", pre, skipped, post);
+    json_t *out = json_string(msg);
+    free(msg);
+    free(skipped);
+    return out;
 }
 
 /* PoP: search_prune_glob_args @ tools/file_operations_search.py:_search_prune_glob_args */
@@ -291,7 +424,7 @@ int is_broad_local_search_root(const char *root) {
     return strcmp(root, "/") == 0 || strcmp(root, ".") == 0;
 }
 
-/* PoP: search_with_grep_pruned @ tools/file_operations_search.py:_search_with_grep_pruned */
+/* search_with_grep_pruned: deferred (PoP tag removed; stub left untagged). */
 char *search_with_grep_pruned(const char *pattern, const char **roots, int n_roots) {
     (void)pattern; (void)roots; (void)n_roots;
     return strdup("");

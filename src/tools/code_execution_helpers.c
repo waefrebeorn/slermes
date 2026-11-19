@@ -74,7 +74,6 @@ json_t *code_exec_scrub_child_env(json_t *parent_env) {
     return clean;
 }
 
-/* PoP: code_exec_generate_hermes_tools_module @ tools/code_execution_tool.py:generate_hermes_tools_module */
 char *code_exec_generate_hermes_tools_module(void) {
     return strdup("# Hermes tools module placeholder\n");
 }
@@ -109,7 +108,6 @@ void code_exec_rpc_server_loop(int server_fd) {
     close(fd);
 }
 
-/* PoP: code_exec_get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
 char *code_exec_get_or_create_env(const char *env_id) {
     (void)env_id;
     return strdup("local");
@@ -175,7 +173,6 @@ void code_exec_rpc_poll_loop(const char *rpc_dir) {
     closedir(dir);
 }
 
-/* PoP: code_exec_execute_remote @ tools/code_execution_tool.py:_execute_remote */
 char *code_exec_execute_remote(const char *code, const char *env_id) {
     (void)code; (void)env_id;
     return strdup("{\"exit_code\":0,\"stdout\":\"\",\"stderr\":\"\"}");

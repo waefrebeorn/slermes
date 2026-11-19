@@ -1612,12 +1612,12 @@ void aux_interrupt_protected_dec(void) {
 /* Port of Python: _fallback_entry_api_key */
 const char *fallback_entry_api_key(const char *provider) {
     if (!provider) return NULL;
-    
+
     /* Look up API key for fallback provider */
     char env_key[256];
     snprintf(env_key, sizeof(env_key), "%s_API_KEY", provider);
     for (char *p = env_key; *p; p++) *p = toupper(*p);
-    
+
     return getenv(env_key);
 }
 
@@ -1633,7 +1633,7 @@ typedef struct {
 fallback_entry_t resolve_fallback_entry(const char *fallback_config, int index) {
     fallback_entry_t entry = {0};
     if (!fallback_config) return entry;
-    
+
     /* Parse fallback entry from config JSON array */
     /* Simplified: extract provider name */
     const char *p = fallback_config;
@@ -1644,9 +1644,9 @@ fallback_entry_t resolve_fallback_entry(const char *fallback_config, int index) 
         if (!p) break;
         p++;
     }
-    
+
     if (!p) return entry;
-    
+
     const char *prov = strstr(p, "\"provider\"");
     if (prov) {
         const char *val = strchr(prov + 10, '"');
@@ -1659,7 +1659,7 @@ fallback_entry_t resolve_fallback_entry(const char *fallback_config, int index) 
             entry.provider[i] = '\0';
         }
     }
-    
+
     entry.valid = (entry.provider[0] != '\0');
     return entry;
 }
@@ -1668,20 +1668,20 @@ fallback_entry_t resolve_fallback_entry(const char *fallback_config, int index) 
 /* Port of Python: _try_main_fallback_chain */
 bool try_main_fallback_chain(const char *primary_provider, const char *fallback_config) {
     if (!primary_provider) return false;
-    
+
     /* Check if primary is available */
     const char *primary_key = fallback_entry_api_key(primary_provider);
     if (primary_key && *primary_key) return true; /* Primary available */
-    
+
     /* Try fallback chain */
     for (int i = 0; i < 8; i++) {
         fallback_entry_t entry = resolve_fallback_entry(fallback_config, i);
         if (!entry.valid) break;
-        
+
         const char *key = fallback_entry_api_key(entry.provider);
         if (key && *key) return true; /* Fallback available */
     }
-    
+
     return false;
 }
 
@@ -1726,7 +1726,7 @@ bool resolve_nous_pool_runtime_api(bool force_refresh, char *api_key_out, size_t
     const char *api_key = getenv("NOUS_API_KEY");
     if (!api_key) api_key = getenv("NOUS_BILLING_KEY");
     if (!api_key) api_key = getenv("HERMES_NOUS_API_KEY");
-    
+
     const char *base_url = getenv("NOUS_BASE_URL");
     if (!base_url) base_url = getenv("NOUS_PORTAL_URL");
     if (!base_url) base_url = "https://api.nousresearch.com";
@@ -2041,7 +2041,6 @@ char *auxc_normalize_main_runtime(const char *runtime_json) {
     return strdup(runtime_json);
 }
 
-/* PoP: auxc_get_provider_chain @ agent/auxiliary_client.py:_get_provider_chain */
 /* Python: ordered chain built at call time — openrouter, nous, local/custom,
  * api-key. openai-codex deliberately excluded. Returns malloc'd
  * comma-joined label list. */

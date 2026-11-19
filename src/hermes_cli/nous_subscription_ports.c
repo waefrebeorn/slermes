@@ -51,7 +51,6 @@ bool nsub_modal(const char *features_json) {
     return feat(features_json, "modal");
 }
 
-/* PoP: nsub_items @ hermes_cli/nous_subscription.py:items */
 char *nsub_items(void) {
     /* Python: ordered feature list. */
     return strdup("[\"web\", \"image_gen\", \"video_gen\", \"tts\", \"stt\", \"browser\", \"modal\"]");

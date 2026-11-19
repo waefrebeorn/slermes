@@ -63,7 +63,18 @@ static json_t *script_call(void *vctx, const char *name, const json_t *args) {
     json_t *e = json_object();
     json_set(e, "ev", json_string(name));
     json_set(e, "args", args_drop_null(args));
-    json_set(e, "ret", result ? json_copy(result) : json_null());
+    /* The oracle's seam records ret BY REFERENCE. The live flow mutates the
+     * read_runtime_status OBJECT in place (_reconcile_standalone_runtime), so
+     * for that result the trace ADOPTS the node itself (the port must not free
+     * it — see the ownership note in gmf_reconcile_standalone_runtime). Raise
+     * specs are never mutated by the flow and stay port-owned (snapshotted),
+     * as does every other seam's result. */
+    if (result && result->type == JSON_OBJECT && !gmf_is_raise(result)
+        && !strcmp(name, "read_runtime_status")) {
+        json_set(e, "ret", result);
+    } else {
+        json_set(e, "ret", result ? json_copy(result) : json_null());
+    }
     gmf_trace_add(ctx->trace, e);
     return result;
 }

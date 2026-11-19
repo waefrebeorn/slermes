@@ -1,0 +1,238 @@
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["rev-parse", "HEAD"], "io": {"git_out": "  main  "}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "io": {"git_out": ""}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "run": "write", "io": {"git_out": "x"}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "io": {"git_out": null}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "io": {}}}
+{"func": "_git_line", "in": {"cwd": "/r", "args": ["x"], "io": {"git_out": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {"path.is_dir": true}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {"path.is_dir": false}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {"path.is_dir": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {"path.is_dir": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_is_dir", "in": {"cwd": null, "io": {}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {"path.is_dir": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_is_dir", "in": {"cwd": "/r", "io": {}}}
+{"func": "_status_z", "in": {"cwd": "/r", "io": {"git": {"__script__": true, "ret": [0, "raw", ""]}}}}
+{"func": "_status_z", "in": {"cwd": "/r", "extra": ["--branch"], "io": {"git": {"__script__": true, "ret": [0, "# branch.head main\u0001", ""]}}}}
+{"func": "_status_z", "in": {"cwd": "/r", "run": "write", "io": {"git_write": {"__script__": true, "ret": [1, "", "err"]}}}}
+{"func": "_status_z", "in": {"cwd": "/r", "io": {"git": {"__script__": true, "raise": {"type": "RuntimeError", "message": "z"}}}}}
+{"func": "_status_z", "in": {"cwd": "/r", "io": {}}}
+{"func": "_status_z", "in": {"cwd": "/r", "io": {"git": {"__script__": true, "raise": {"type": "SystemExit", "message": "z"}}}}}
+{"func": "_origin_head", "in": {"cwd": "/r", "io": {"git_out": "main"}}}
+{"func": "_origin_head", "in": {"cwd": "/r", "io": {"git_out": ""}}}
+{"func": "_origin_head", "in": {"cwd": "/r", "run": "write", "io": {"git_out": "origin/main"}}}
+{"func": "_origin_head", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "oh"}}}}}
+{"func": "_origin_head", "in": {"cwd": "/r", "io": {}}}
+{"func": "_origin_head_abbrev", "in": {"cwd": "/r", "io": {"git_out": "origin/main"}}}
+{"func": "_origin_head_abbrev", "in": {"cwd": "/r", "io": {"git_out": ""}}}
+{"func": "_origin_head_abbrev", "in": {"cwd": "/r", "io": {"git_out": "  origin/master  "}}}
+{"func": "_origin_head_abbrev", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "a"}}}}}
+{"func": "_origin_head_abbrev", "in": {"cwd": "/r", "io": {}}}
+{"func": "_ref_exists", "in": {"cwd": "/r", "ref": "HEAD", "io": {"git": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_ref_exists", "in": {"cwd": "/r", "ref": "HEAD", "io": {"git": {"__script__": true, "ret": [1, "", ""]}}}}
+{"func": "_ref_exists", "in": {"cwd": "/r", "ref": "HEAD", "run": "write", "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_ref_exists", "in": {"cwd": "/r", "ref": "HEAD", "io": {"git": {"__script__": true, "raise": {"type": "RuntimeError", "message": "re"}}}}}
+{"func": "_ref_exists", "in": {"cwd": "/r", "ref": "HEAD", "io": {}}}
+{"func": "_entry_staged", "in": {"tag": "1", "xy": "M."}}
+{"func": "_entry_staged", "in": {"tag": "1", "xy": ".M"}}
+{"func": "_entry_staged", "in": {"tag": "?", "xy": "??"}}
+{"func": "_entry_staged", "in": {"tag": "2", "xy": "R."}}
+{"func": "_entry_staged", "in": {"tag": "1", "xy": ""}}
+{"func": "_entry_staged", "in": {"tag": "u", "xy": "UU"}}
+{"func": "_classify", "in": {"tag": "1", "xy": "M.", "path": "a"}}
+{"func": "_classify", "in": {"tag": "1", "xy": ".M", "path": "a"}}
+{"func": "_classify", "in": {"tag": "?", "xy": "??", "path": "n"}}
+{"func": "_classify", "in": {"tag": "u", "xy": "UU", "path": "c"}}
+{"func": "_classify", "in": {"tag": "2", "xy": "RM", "path": "r"}}
+{"func": "_classify", "in": {"tag": "1", "xy": "", "path": "a"}}
+{"func": "_status_letter", "in": {"tag": "?", "xy": "??"}}
+{"func": "_status_letter", "in": {"tag": "u", "xy": "UU"}}
+{"func": "_status_letter", "in": {"tag": "1", "xy": "M."}}
+{"func": "_status_letter", "in": {"tag": "1", "xy": ".D"}}
+{"func": "_status_letter", "in": {"tag": "1", "xy": ".."}}
+{"func": "_status_letter", "in": {"tag": "1", "xy": ""}}
+{"func": "_status_letter", "in": {"tag": "1", "xy": "A."}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": "x", "files": [{"path": "b", "status": "M", "added": 1, "removed": 0}], "io": {}}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": null, "files": [{"path": "a", "status": "?", "added": 0, "removed": 0}], "io": {"untracked_insertions": 5}}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": "b", "files": [{"path": "z", "status": "M", "added": 0, "removed": 0}, {"path": "a", "status": "M", "added": 0, "removed": 0}], "io": {}}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": null, "files": [{"path": "n", "status": "?", "added": 0, "removed": 0}], "io": {"untracked_insertions": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ui"}}}}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": null, "files": [], "io": {}}}
+{"func": "_review_result", "in": {"cwd": "/r", "base": null, "files": [{"path": "n", "status": "?", "added": 3, "removed": 0}], "io": {}}}
+{"func": "_all_add_diff", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_file": true, "git": {"__script__": true, "ret": [1, "difftext", ""]}}}}
+{"func": "_all_add_diff", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_file": false}}}
+{"func": "_all_add_diff", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_file": {"__script__": true, "raise": {"type": "RuntimeError", "message": "f"}}}}}
+{"func": "_all_add_diff", "in": {"cwd": null, "file_path": "f", "io": {}}}
+{"func": "_all_add_diff", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_file": true, "git": {"__script__": true, "raise": {"type": "SystemExit", "message": "g"}}}}}
+{"func": "_all_add_diff", "in": {"cwd": "/r", "file_path": "f", "io": {}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": [], "file_path": "f", "io": {"git_out": ""}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": [], "file_path": "f", "io": {"git_out": ["f\u0001", "/r", "DIFF"], "path.resolve": ["/r/f", "/r/f"]}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": ["HEAD"], "file_path": "f", "io": {"git_out": ["f\u0001g\u0001", "/r"], "path.resolve": ["/r/f", "/r/f", "/r/g"]}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": [], "file_path": "f", "io": {"git_out": ["f\u0001", {"__script__": true, "raise": {"type": "RuntimeError", "message": "tl"}}]}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": [], "file_path": "f", "io": {}}}
+{"func": "_single_file_diff", "in": {"cwd": "/r", "args": [], "file_path": "f", "io": {"git_out": ["f\u0001", "/r"], "path.resolve": [{"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}]}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_dir": false}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_dir": true, "git_out": ["", "?? f"], "path.is_file": true, "git": {"__script__": true, "ret": [1, "ALLADD", ""]}}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_dir": true, "git_out": ["", "M f"]}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_dir": true, "git_out": ["f\u0001", "/r", "HD"], "path.resolve": ["/r/f", "/r/f"]}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {}}}
+{"func": "file_diff_vs_head", "in": {"cwd": "/r", "file_path": "f", "io": {"path.is_dir": true, "git_out": ["", {"__script__": true, "raise": {"type": "RuntimeError", "message": "st"}}]}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": "f", "io": {"git_ok": null}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": null, "io": {"git_ok": null}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": "", "io": {"git_ok": null}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": "f", "io": {"git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "err"}}}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": "f", "io": {}}}
+{"func": "review_stage", "in": {"cwd": "/r", "file_path": "f", "io": {"git_ok": {"__script__": true, "raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "review_unstage", "in": {"cwd": "/r", "file_path": "f", "io": {"git_ok": null}}}
+{"func": "review_unstage", "in": {"cwd": "/r", "file_path": null, "io": {"git_ok": null}}}
+{"func": "review_unstage", "in": {"cwd": "/r", "file_path": "f", "io": {"git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "u"}}}}}
+{"func": "review_unstage", "in": {"cwd": "/r", "file_path": "f", "io": {}}}
+{"func": "review_unstage", "in": {"cwd": "/r", "file_path": "x", "io": {"git_ok": null}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": "f", "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": null, "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": "f", "io": {"git_write": [{"__script__": true, "ret": [0, "", ""]}, {"__script__": true, "raise": {"type": "RuntimeError", "message": "clean fail"}}]}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": "f", "io": {"git_write": {"__script__": true, "raise": {"type": "RuntimeError", "message": "co"}}}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": "f", "io": {}}}
+{"func": "review_revert", "in": {"cwd": "/r", "file_path": "", "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": "HEAD", "io": {"git_out": "abc123"}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": null, "io": {"git_out": "abc"}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": "x", "io": {"git_out": ""}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": "x", "io": {"git_out": "   "}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": "x", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "rp"}}}}}
+{"func": "review_rev_parse", "in": {"cwd": "/r", "ref": "x", "io": {}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "ret": [["1", "M.", "a"]]}}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "ret": [["1", ".M", "a"]]}}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "ret": []}}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "ret": [["?", "??", "n"], ["2", "R.", "r"]]}}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "raise": {"type": "RuntimeError", "message": "we"}}}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {}}}
+{"func": "_has_staged", "in": {"raw": "r", "io": {"walk_entries": {"__script__": true, "ret": [["1", "", "a"]]}}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": ["", "feature"], "git_ok": null}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": ["", "HEAD"]}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": ["", ""]}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "rp"}}}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "push fail"}}}}}
+{"func": "_review_push", "in": {"cwd": "/r", "io": {}}}
+{"func": "review_push", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null}}}
+{"func": "review_push", "in": {"cwd": "/r", "io": {"git_out": ["", "feature"], "git_ok": null}}}
+{"func": "review_push", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "rp"}}}}}
+{"func": "review_push", "in": {"cwd": "/r", "io": {}}}
+{"func": "review_push", "in": {"cwd": "/r", "io": {"git_out": ["", "HEAD"]}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [true, "{\"a\":1}", ""]}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [false, "", ""]}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [true, "not json", ""]}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [true, "null", ""]}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "raise": {"type": "RuntimeError", "message": "gj"}}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [true, null, ""]}}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {}}}
+{"func": "_gh_json", "in": {"cwd": "/r", "args": ["x"], "io": {"gh": {"__script__": true, "ret": [true, "5", ""]}}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": false}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": true, "gh": {"__script__": true, "ret": [false, "", ""]}}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": true, "gh": [{"__script__": true, "ret": [true, "", ""]}, {"__script__": true, "ret": [true, "{\"url\":\"u\",\"state\":\"OPEN\",\"number\":5}", ""]}]}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": true, "gh": [{"__script__": true, "ret": [true, "", ""]}, {"__script__": true, "ret": [true, "null", ""]}]}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": true, "gh": [{"__script__": true, "ret": [true, "", ""]}, {"__script__": true, "ret": [true, "{\"state\":\"OPEN\"}", ""]}]}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {}}}
+{"func": "review_ship_info", "in": {"cwd": "/r", "io": {"path.is_dir": true, "gh": {"__script__": true, "raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "_pr_query", "in": {"owner": "o", "name": "n", "branches": ["main"], "numbers": []}}
+{"func": "_pr_query", "in": {"owner": "o", "name": "n", "branches": [], "numbers": [5]}}
+{"func": "_pr_query", "in": {"owner": "o", "name": "n", "branches": ["a", "b"], "numbers": [1, 2]}}
+{"func": "_pr_query", "in": {"owner": "o", "name": "n", "branches": [], "numbers": []}}
+{"func": "_pr_query", "in": {"owner": "o\"q", "name": "n\\x", "branches": ["feat/x"], "numbers": []}}
+{"func": "_pr_query", "in": {"owner": "o", "name": "n", "branches": ["main"], "numbers": [7]}}
+{"func": "_pr_payload", "in": {"pr": {"headRefName": "main", "isDraft": false, "number": 5, "state": "OPEN", "title": "T", "url": "u"}}}
+{"func": "_pr_payload", "in": {"pr": {}}}
+{"func": "_pr_payload", "in": {"pr": {"number": "7", "state": "Closed", "isDraft": true}}}
+{"func": "_pr_payload", "in": {"pr": {"number": "abc"}}}
+{"func": "_pr_payload", "in": {"pr": {"headRefName": "x", "number": 0, "state": "", "title": "", "url": ""}}}
+{"func": "_pr_payload", "in": {"pr": null}}
+{"func": "_pr_payload", "in": {"pr": {"number": 3.0}}}
+{"func": "_own_pr", "in": {"key": "n0", "field": {"number": 9}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": {"nodes": [{"isCrossRepository": false, "headRefName": "main"}]}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": {"nodes": [{"isCrossRepository": true}, {"isCrossRepository": false, "number": 2}]}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": {"nodes": []}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": {}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": {"nodes": [null, {"isCrossRepository": false}]}}}
+{"func": "_own_pr", "in": {"key": "b0", "field": null}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null, "gh": {"__script__": true, "ret": [true, "https://pr\n", ""]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "push"}}, "gh": {"__script__": true, "ret": [true, "url", ""]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null, "gh": {"__script__": true, "ret": [false, "", "no commits"]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null, "gh": {"__script__": true, "ret": [false, "", ""]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null, "gh": {"__script__": true, "ret": [false, "", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {"git_out": "origin/main", "git_ok": null, "gh": {"__script__": true, "ret": [true, "  \n\nurl2\n  ", ""]}}}}
+{"func": "review_create_pr", "in": {"cwd": "/r", "io": {}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {"git_out": "worktree /r\nbranch refs/heads/main\n\nworktree /r/w\nbranch refs/heads/feat\ndetached\n"}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {"git_out": ""}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {"git_out": "worktree /r\nlocked reason\n"}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "run": "write", "io": {"git_out": "worktree /r\n"}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "wl"}}}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {}}}
+{"func": "worktree_list", "in": {"cwd": "/r", "io": {"git_out": "bare\nworktree /r\n"}}}
+{"func": "_main_root", "in": {"cwd": "/r", "io": {"git_out": "worktree /r\nbranch refs/heads/main\n"}}}
+{"func": "_main_root", "in": {"cwd": "/x", "io": {"git_out": ""}}}
+{"func": "_main_root", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "mr"}}}}}
+{"func": "_main_root", "in": {"cwd": "/r", "io": {}}}
+{"func": "_main_root", "in": {"cwd": "/r", "io": {"git_out": "worktree /a\nworktree /b\n"}}}
+{"func": "_fetch_tracking_ref", "in": {"root": "/r", "remote": "origin", "branch": "feat", "io": {"tracking_refspec": "+refs/heads/feat:refs/remotes/origin/feat", "git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_fetch_tracking_ref", "in": {"root": "/r", "remote": "origin", "branch": "feat", "io": {"tracking_refspec": "rs", "git_write": {"__script__": true, "ret": [1, "", ""]}}}}
+{"func": "_fetch_tracking_ref", "in": {"root": "/r", "remote": "origin", "branch": "feat", "io": {"tracking_refspec": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ts"}}}}}
+{"func": "_fetch_tracking_ref", "in": {"root": "/r", "remote": "origin", "branch": "feat", "io": {}}}
+{"func": "_fetch_tracking_ref", "in": {"root": "/r", "remote": "origin", "branch": "feat", "io": {"tracking_refspec": "rs", "git_write": {"__script__": true, "raise": {"type": "SystemExit", "message": "g"}}}}}
+{"func": "_slugify", "in": {"name": "My Feature"}}
+{"func": "_slugify", "in": {"name": "  Hello World  "}}
+{"func": "_slugify", "in": {"name": ""}}
+{"func": "_slugify", "in": {"name": null}}
+{"func": "_slugify", "in": {"name": "!!!"}}
+{"func": "_slugify", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "_slugify", "in": {"name": "Foo/Bar_Baz"}}
+{"func": "_slugify", "in": {"name": "ABC123"}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": "main"}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": "origin/develop"}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": ["", "trunk"]}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": ["", "", "hash"]}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": ["", "", "", "hash"]}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": ["", "", "", ""]}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "db"}}}}}
+{"func": "_default_branch", "in": {"cwd": "/r", "io": {}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {"git_out": "true", "git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {"git_out": "false", "git_ok": null}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {"git_out": "true", "git_write": {"__script__": true, "ret": [1, "", ""]}, "git_ok": null}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "er"}}}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {"git_out": "false", "git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "init fail"}}}}}
+{"func": "_ensure_repo", "in": {"cwd": "/r", "io": {}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "origin/main", "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "main", "io": {}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "origin/main", "io": {"git_write": {"__script__": true, "ret": [1, "", ""]}}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "up/feat/x", "io": {"git_write": {"__script__": true, "ret": [0, "", ""]}}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "origin/main", "io": {"git_write": {"__script__": true, "raise": {"type": "RuntimeError", "message": "rr"}}}}}
+{"func": "_remote_of_ref", "in": {"cwd": "/r", "name": "origin/main", "io": {}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": false, "io": {"git_out": "worktree /r\n", "git_ok": null}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": true, "io": {"git_out": "worktree /r\n", "git_ok": null}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": false, "io": {"git_out": "", "git_ok": null}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": false, "io": {"git_out": "worktree /r\n", "git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "wr"}}}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": false, "io": {}}}
+{"func": "worktree_remove", "in": {"cwd": "/r", "worktree_path": "/r/w", "force": false, "io": {"git_out": {"__script__": true, "raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads"], "io": {"git_out": "main\nfeat\n"}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads"], "io": {"git_out": ""}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads"], "io": {"git_out": "  main  \n\n  feat \n"}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads", "refs/remotes"], "fmt": "%(refname:short)\t%(committerdate:iso)", "io": {"git_out": "main\td1\norigin/main\td2\n"}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads"], "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "rn"}}}}}
+{"func": "_ref_names", "in": {"cwd": "/r", "patterns": ["refs/heads"], "io": {}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {"git_out": ""}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main\nfeat", "worktree /r\nbranch refs/heads/main\n", "main", "origin/main\norigin/feat\norigin/HEAD"]}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main", "worktree /r\nbranch refs/heads/main\n", "main", "origin/other"]}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main", {"__script__": true, "raise": {"type": "RuntimeError", "message": "wt"}}]}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {}}}
+{"func": "branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main\nfeat", "worktree /r\n", "main", "origin/feat2"]}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "feat", "io": {"sanitize_branch": "feat", "git_ok": null}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "bad", "io": {"sanitize_branch": ""}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "x", "io": {"sanitize_branch": {"__script__": true, "raise": {"type": "RuntimeError", "message": "sb"}}}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "feat", "io": {"sanitize_branch": "feat", "git_ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "switch fail"}}}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "feat", "io": {}}}
+{"func": "branch_switch", "in": {"cwd": "/r", "branch": "feat", "io": {"sanitize_branch": "feat", "git_ok": {"__script__": true, "raise": {"type": "SystemExit", "message": "s"}}}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {"git_out": ""}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main\td1\norigin/main\td2", "main"]}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {"git_out": ["main\td1", "", "trunk"]}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {"git_out": ["origin/main\td1", "origin/main"]}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {"git_out": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bb"}}}}}
+{"func": "base_branch_list", "in": {"cwd": "/r", "io": {}}}

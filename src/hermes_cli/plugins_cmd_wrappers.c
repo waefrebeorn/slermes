@@ -408,15 +408,12 @@ bool pcmd_plugin_exists(const char *hermes_home, const char *name) {
     closedir(d);
     return found;
 }
-/* PoP: pcmd_read_manifest_info @ hermes_cli/plugins_cmd.py:_read_manifest_info */
 json_t *pcmd_read_manifest_info(const char *plugin_dir) {
     (void)plugin_dir; return json_object();
 }
-/* PoP: pcmd_scan_level @ hermes_cli/plugins_cmd.py:_scan_level */
 json_t *pcmd_scan_level(const char *dir, int level) {
     (void)dir; (void)level; return json_array();
 }
-/* PoP: pcmd_discover_all_plugins @ hermes_cli/plugins_cmd.py:_discover_all_plugins */
 json_t *pcmd_discover_all_plugins(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
@@ -432,11 +429,9 @@ const char *pcmd_plugin_status(const char *hermes_home, const char *name) {
 json_t *pcmd_filter_plugin_entries(json_t *entries, const char *filter_str) {
     (void)filter_str; return entries ? entries : json_array();
 }
-/* PoP: pcmd_discover_memory_providers @ hermes_cli/plugins_cmd_toggle.py:_discover_memory_providers */
 json_t *pcmd_discover_memory_providers(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
-/* PoP: pcmd_discover_context_engines @ hermes_cli/plugins_cmd_toggle.py:_discover_context_engines */
 json_t *pcmd_discover_context_engines(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }

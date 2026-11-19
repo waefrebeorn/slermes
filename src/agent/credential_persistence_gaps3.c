@@ -9,5 +9,4 @@
 
 /* ── agent/credential_persistence.py: 1 missing functions ── */
 
-/* PoP: fingerprint_secret_value @ agent/credential_persistence.py:fingerprint_secret_value */
 char *fingerprint_secret_value(void) { return strdup(""); }

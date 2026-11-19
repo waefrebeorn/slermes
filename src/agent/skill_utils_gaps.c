@@ -9,14 +9,10 @@
 
 /* ── agent/skill_utils.py: 4 missing functions ── */
 
-/* PoP: get_skill_create_dir @ agent/skill_utils.py:get_skill_create_dir */
 char *get_skill_create_dir(void) { return strdup(""); }
 
-/* PoP: display_skill_create_dir @ agent/skill_utils.py:display_skill_create_dir */
 char *display_skill_create_dir(void) { return strdup(""); }
 
-/* PoP: project_trusted_dirs_from_config @ agent/skill_utils.py:_project_trusted_dirs_from_config */
 char *project_trusted_dirs_from_config(void) { return strdup("[]"); }
 
-/* PoP: candidate_project_skills_dirs @ agent/skill_utils.py:_candidate_project_skills_dirs */
 char *candidate_project_skills_dirs(void) { return strdup("[]"); }

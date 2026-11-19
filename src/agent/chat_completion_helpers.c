@@ -1,5 +1,4 @@
 
-/* PoP: _tool_call_delta_view @ agent/chat_completion_helpers_relay.py:_tool_call_delta_view */
 void *chat_completion_helpers_tool_call_delta_view(void *tc_delta) {
     /* Identity pass-through; full attribute view not needed in C. */
     return tc_delta;

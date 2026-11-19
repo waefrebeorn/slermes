@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/psutil_android.py: 1 missing functions ── */
 
-/* PoP: prepare_patched_psutil_sdist @ hermes_cli/psutil_android.py:prepare_patched_psutil_sdist */
 char *prepare_patched_psutil_sdist(void) { return strdup(""); }

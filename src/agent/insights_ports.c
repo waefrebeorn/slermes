@@ -50,7 +50,6 @@ char *ins_bar_chart(const long *values, long count, long max_bar) {
     return out;
 }
 
-/* PoP: ins_init @ agent/insights.py:__init__ */
 char *ins_init(void) {
     /* Python: report generator over session db. */
     return strdup("{}");

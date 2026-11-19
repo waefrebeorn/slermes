@@ -21,7 +21,6 @@ static char *lowerdup(const char *s) {
 
 static const char *TAGS[] = {"<thinking>", "</thinking>", "<reasoning_scratchpad>", "</reasoning_scratchpad>", NULL};
 
-/* PoP: ths_init @ agent/think_scrubber.py:__init__ */
 char *ths_init(void) {
     return strdup("{\"in_block\": false, \"buf\": \"\"}");
 }

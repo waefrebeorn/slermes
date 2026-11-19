@@ -12,10 +12,8 @@
 /* PoP: relay_protocol @ agent/relay_llm.py:relay_protocol */
 char *relay_protocol(void) { return strdup(""); }
 
-/* PoP: relay_operation_name @ agent/relay_llm.py:_relay_operation_name */
 char *relay_operation_name(void) { return strdup(""); }
 
-/* PoP: _relay_metadata @ agent/relay_llm.py:_relay_metadata */
 char *_relay_metadata(void) { return strdup("{}"); }
 
 

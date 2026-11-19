@@ -80,7 +80,6 @@ char *obd_profile_build_mode(const char *config_yaml) {
     return r;
 }
 
-/* PoP: obd_profile_build_directive @ agent/onboarding.py:profile_build_directive */
 char *obd_profile_build_directive(void) {
     /* Python: system-note directive for first message. */
     return strdup("[profile-build] Observe preferences and build my profile.");

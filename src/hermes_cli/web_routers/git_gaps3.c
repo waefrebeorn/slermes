@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/web_routers/git.py: 2 missing functions ── */
 
-/* PoP: gh_auth_status_route @ hermes_cli/web_routers/git.py:gh_auth_status_route */
 char *gh_auth_status_route(void) { return strdup(""); }
 
-/* PoP: git_pr_list_route @ hermes_cli/web_routers/git.py:git_pr_list_route */
 char *git_pr_list_route(void) { return strdup(""); }

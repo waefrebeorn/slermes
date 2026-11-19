@@ -2085,3 +2085,1609 @@ done:
     json_free(s.usage_obj);
     return s.log;
 }
+/* ===========================================================================
+ * cch2 -- second-wave FLOW + leaf port of agent/chat_completion_helpers.py
+ * ===========================================================================
+ * Self-contained libjson-only section appended to the cch_flow port file.
+ * Every symbol here is prefixed cch2_ (the cch_ / cch_flow_ names belong to
+ * the first-wave port above). All helpers are static; the cch2_<fn> entries
+ * are the only non-static symbols and need no header (the harness #includes
+ * this .c directly).
+ *
+ * UNIVERSAL SEAM. Live I/O and claimed siblings are injected through one
+ * callback:
+ *     json_t *(*call)(void *ctx, const char *name, const json_t *args)
+ * `name` identifies the live call (table below), `args` is a BORROWED JSON
+ * object (the dispatcher copies it into the trace; the port owns and frees
+ * the args object it builds). The result is a NEW json_t owned by the port:
+ *   - NULL                == Python None
+ *   - {"__raise__":K,...}  == a raised exception of kind K (message = str(exc))
+ *   - anything else        == the return value
+ * A scripted JSON null result is returned as a NULL pointer (not a json_null
+ * node) so truthiness tests read it as falsy. Fail-closed: a missing or
+ * exhausted script yields {"__raise__":"RuntimeError","message":"no script
+ * for <name>"} which the dispatcher records BEFORE the port propagates it.
+ *
+ * ENTRIES. json_t *cch2_<fn>(cch2_io_t *io, const json_t *in, json_t *st)
+ *   io  -- universal seam channel (NULL => fail-closed production default)
+ *   in  -- borrowed case input object (never mutated)
+ *   st  -- fresh object the entry fills with the final state projection
+ *          ({} for pure functions). Caller owns the returned json_t.
+ * The return is the Python return value projected to JSON, or a raise spec
+ * {"__raise__":kind,"message":str(exc)} when the live function raises.
+ * Tuples project to JSON arrays; None projects to NULL.
+ *
+ * BaseException kinds (SystemExit, KeyboardInterrupt, GeneratorExit,
+ * CancelledError) PASS THROUGH every `except Exception` / suppress site.
+ *
+ * Seam name -> live call table:
+ *   env_float                       utils.env_float(name, default)
+ *   env_has                         name in os.environ
+ *   load_config_readonly            hermes_cli.config.load_config_readonly()
+ *   load_config                     hermes_cli.config.load_config()
+ *   time.time                       time.time()
+ *   time.monotonic                  time.monotonic()
+ *   estimate_request_context_tokens estimate_request_context_tokens(api_kwargs)
+ *   scale_stale_timeout_for_context _scale_stale_timeout_for_context(base, est)
+ *   get_reasoning_stale_timeout_floor agent.reasoning_timeouts.get_reasoning_stale_timeout_floor(model_id)
+ *   bedrock_reasoning_stale_floor   _bedrock_reasoning_stale_floor(model_id)
+ *   get_provider_stale_timeout      hermes_cli.timeouts.get_provider_stale_timeout(provider, model)
+ *   model_dump                      obj.model_dump(warnings=False) / obj.model_dump()
+ *   hint_fn                         agent._codex_silent_hang_hint(model=...)
+ *   logger.info / logger.warning / logger.debug   logger.<lvl>(fmt, *args)
+ *   get_hermes_home                 hermes_constants.get_hermes_home()
+ *   profile_name_for_home           hermes_constants.profile_name_for_home(home)
+ *   load_route_pool                 agent.custom_entry_pool.load_route_pool(provider, base_url)
+ *   load_pool                       agent.credential_pool.load_pool(provider)
+ *   pool_has_credentials            pool.has_credentials()
+ *   pool_has_available              pool.has_available(model=...)
+ *   pool_next_available_at          pool.next_available_at(model=...)
+ *   get_model_context_length        agent.model_metadata.get_model_context_length(...)
+ *   compressor.update_model         compressor.update_model(...)
+ *   revalidate_compression_feasibility  ...revalidate_compression_feasibility(agent)
+ *   resolve_reasoning_config        hermes_constants.resolve_reasoning_config(cfg, model)
+ *   custom_provider_extra_body_for_agent  agent.agent_init._custom_provider_extra_body_for_agent(...)
+ *   merge_custom_provider_extra_body      agent.agent_init._merge_custom_provider_extra_body(agent, cp)
+ *   parse_api_mode                  hermes_cli.runtime_provider._parse_api_mode(value)
+ *   get_named_custom_provider       hermes_cli.runtime_provider._get_named_custom_provider(provider)
+ *   host_mandated_api_mode          hermes_cli.providers.host_mandated_api_mode(url)
+ *   relay_llm.execute_current       agent.relay_llm.execute_current(...)
+ *   is_router_timeout_shim          agent.transports.chat_completions.is_router_timeout_shim(response)
+ *   transport.normalize_response    transport.normalize_response(response, **kw)
+ *   emit_stream_start               agent._emit_stream_start()
+ *   run                             run()
+ *   emit_stream_end                 agent._emit_stream_end(final_text=,finished=,error=)
+ *   stream_converse_with_callbacks  agent.bedrock_adapter.stream_converse_with_callbacks(kwargs)
+ *
+ * Domain restrictions (documented, enforced by the generator):
+ *   - str()-computed positions carry strings or integral numbers only (a
+ *     parsed JSON number has no int/float identity; integral doubles print
+ *     as ints). Non-integral floats and containers are excluded there.
+ *   - strip()/lower() operate on ASCII whitespace / ASCII letters; fixtures
+ *     are ASCII in those positions.
+ *   - exc.body in _rejects_stream_options is a string or None (not a dict).
+ *   - pool / compressor / transport doubles are OBJECTS: their Python
+ *     truthiness is "is not None" (an object is always truthy), modeled as
+ *     non-null-node, NOT json count>0.
+ * =========================================================================== */
+
+typedef struct cch2_io {
+    json_t *(*call)(void *ctx, const char *name, const json_t *args);
+    void *ctx;
+} cch2_io_t;
+
+/* ---- truthiness / accessors ---- */
+
+static int cch2_truth(const json_t *v)
+{
+    if (!v || v->type == JSON_NULL) return 0;
+    if (v->type == JSON_BOOL) return v->bool_val ? 1 : 0;
+    if (v->type == JSON_NUMBER) return v->num_val != 0.0 ? 1 : 0;
+    if (v->type == JSON_STRING) return (v->str_val && v->str_val[0]) ? 1 : 0;
+    if (v->type == JSON_ARRAY || v->type == JSON_OBJECT) return v->c.count > 0 ? 1 : 0;
+    return 0;
+}
+
+/* Object-double truthiness: an object is always truthy in Python; only
+ * None (NULL / json_null) is falsy. Used for pool/compressor/transport. */
+static int cch2_obj_truth(const json_t *v)
+{
+    return (v && v->type != JSON_NULL) ? 1 : 0;
+}
+
+static const char *cch2_str(const json_t *v)
+{
+    return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : NULL;
+}
+
+static json_t *cch2_get(const json_t *o, const char *k)
+{
+    return (o && o->type == JSON_OBJECT) ? json_obj_get(o, k) : NULL;
+}
+
+static int cch2_has(const json_t *o, const char *k)
+{
+    return cch2_get(o, k) != NULL;
+}
+
+static double cch2_num(const json_t *v)
+{
+    return (v && v->type == JSON_NUMBER) ? v->num_val : 0.0;
+}
+
+static json_t *cch2_copy_or_null(const json_t *v)
+{
+    return v ? json_copy(v) : NULL;
+}
+
+/* ---- raise specs ---- */
+
+static int cch2_is_raise(const json_t *r)
+{
+    return r && r->type == JSON_OBJECT && json_obj_get(r, "__raise__") != NULL;
+}
+
+static const char *cch2_kind(const json_t *r)
+{
+    const char *k = cch2_str(cch2_get(r, "__raise__"));
+    return k ? k : "";
+}
+
+static int cch2_is_base(const char *kind)
+{
+    return strcmp(kind, "SystemExit") == 0 || strcmp(kind, "KeyboardInterrupt") == 0
+        || strcmp(kind, "GeneratorExit") == 0 || strcmp(kind, "CancelledError") == 0;
+}
+
+static json_t *cch2_mkraise(const char *kind, const char *msg)
+{
+    json_t *o = json_object();
+    json_set(o, "__raise__", json_string(kind));
+    json_set(o, "message", json_string(msg ? msg : ""));
+    return o;
+}
+
+static json_t *cch2_attr_raise(const char *name)
+{
+    char buf[256];
+    snprintf(buf, sizeof buf,
+             "'types.SimpleNamespace' object has no attribute '%s'", name);
+    return cch2_mkraise("AttributeError", buf);
+}
+
+/* malloc'd printf-style string builder */
+static char *cch2_xfmt(const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    int n = vsnprintf(NULL, 0, fmt, ap);
+    va_end(ap);
+    if (n < 0) return NULL;
+    char *buf = (char *)malloc((size_t)n + 1);
+    if (!buf) return NULL;
+    va_start(ap, fmt);
+    vsnprintf(buf, (size_t)n + 1, fmt, ap);
+    va_end(ap);
+    return buf;
+}
+
+/* ---- universal seam call ----
+ * args is OWNED by the caller (built fresh); borrowed by the dispatcher,
+ * freed here. Result is caller-owned (NULL == None). Fail-closed when no
+ * channel is installed. */
+static json_t *cch2_call(cch2_io_t *io, const char *name, json_t *args)
+{
+    json_t *r;
+    if (!io || !io->call) {
+        char *m = cch2_xfmt("no seam installed for %s", name);
+        r = cch2_mkraise("RuntimeError", m ? m : "no seam installed");
+        free(m);
+        json_free(args);
+        return r;
+    }
+    r = io->call(io->ctx, name, args);
+    json_free(args);
+    return r;
+}
+
+/* convenience: build an args object */
+static json_t *cch2_args(void)
+{
+    return json_object();
+}
+
+/* drop None-valued keys is done by the harness/oracle arg builders; the port
+ * simply omits keys whose value is None by not setting them. */
+
+/* ---- string helpers (ASCII domain) ---- */
+
+static int cch2_is_ws(unsigned char c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f';
+}
+
+static char *cch2_strip(const char *s)
+{
+    if (!s) s = "";
+    size_t n = strlen(s);
+    size_t a = 0, b = n;
+    while (a < b && cch2_is_ws((unsigned char)s[a])) a++;
+    while (b > a && cch2_is_ws((unsigned char)s[b - 1])) b--;
+    char *out = (char *)malloc(b - a + 1);
+    if (!out) return NULL;
+    memcpy(out, s + a, b - a);
+    out[b - a] = '\0';
+    return out;
+}
+
+static char *cch2_lower(const char *s)
+{
+    if (!s) s = "";
+    size_t n = strlen(s);
+    char *out = (char *)malloc(n + 1);
+    if (!out) return NULL;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        out[i] = (char)((c >= 'A' && c <= 'Z') ? c + 32 : c);
+    }
+    out[n] = '\0';
+    return out;
+}
+
+/* Python str() projection (domain: strings / integral numbers / bool / None).
+ * Caller frees. Containers are excluded from str() positions by the generator. */
+static char *cch2_pystr(const json_t *v)
+{
+    if (!v || v->type == JSON_NULL) return cch2_xfmt("None");
+    if (v->type == JSON_BOOL) return cch2_xfmt(v->bool_val ? "True" : "False");
+    if (v->type == JSON_NUMBER) {
+        double d = v->num_val;
+        if (d == (double)(long long)d) return cch2_xfmt("%.0f", d);
+        return cch2_xfmt("%.17g", d);
+    }
+    if (v->type == JSON_STRING) return cch2_xfmt("%s", v->str_val ? v->str_val : "");
+    /* containers: compact JSON stand-in (excluded from fixtures) */
+    char *s = json_serialize(v);
+    return s ? s : cch2_xfmt("");
+}
+
+/* str(x or "") projection: falsy -> "", else str(x). Caller frees. */
+static char *cch2_pystr_or_empty(const json_t *v)
+{
+    if (!cch2_truth(v)) return cch2_xfmt("");
+    return cch2_pystr(v);
+}
+
+/* ---- Python equality (bool is a subclass of int: True == 1) ---- */
+static int cch2_pyequal(const json_t *a, const json_t *b)
+{
+    if (a == b) return 1;
+    if (!a || !b) return 0;
+    int an = (a->type == JSON_NUMBER || a->type == JSON_BOOL);
+    int bn = (b->type == JSON_NUMBER || b->type == JSON_BOOL);
+    if (an && bn) {
+        double av = a->type == JSON_BOOL ? (a->bool_val ? 1.0 : 0.0) : a->num_val;
+        double bv = b->type == JSON_BOOL ? (b->bool_val ? 1.0 : 0.0) : b->num_val;
+        return av == bv;
+    }
+    if (a->type != b->type) return 0;
+    switch (a->type) {
+    case JSON_NULL: return 1;
+    case JSON_STRING: return strcmp(a->str_val ? a->str_val : "",
+                                    b->str_val ? b->str_val : "") == 0;
+    case JSON_ARRAY:
+        if (a->c.count != b->c.count) return 0;
+        for (size_t i = 0; i < a->c.count; i++)
+            if (!cch2_pyequal(a->c.items[i], b->c.items[i])) return 0;
+        return 1;
+    case JSON_OBJECT:
+        if (a->c.count != b->c.count) return 0;
+        for (size_t i = 0; i < a->c.count; i++) {
+            json_t *bv = json_obj_get(b, a->c.keys[i]);
+            if (!bv || !cch2_pyequal(a->c.items[i], bv)) return 0;
+        }
+        return 1;
+    default: return 0;
+    }
+}
+#include <stdarg.h>
+#include <math.h>
+#include <errno.h>
+
+/* ---- Python int()/float() coercion ----
+ * Return the value; on failure set *err to a raise spec (caller propagates).
+ * Messages probed on the quarry CPython 3.14.9. */
+
+static const char *cch2_typename(const json_t *v)
+{
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+    case JSON_BOOL: return "bool";
+    case JSON_NUMBER: return "int";   /* parsed JSON numbers read as int */
+    case JSON_STRING: return "str";
+    case JSON_ARRAY: return "list";
+    case JSON_OBJECT: return "dict";
+    default: return "object";
+    }
+}
+
+/* validate every '_' sits between two digits (Python numeric underscore rule) */
+static int cch2_underscores_ok(const char *s, size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        if (s[i] == '_') {
+            if (i == 0 || i + 1 >= n) return 0;
+            unsigned char p = (unsigned char)s[i - 1], q = (unsigned char)s[i + 1];
+            if (!(p >= '0' && p <= '9') || !(q >= '0' && q <= '9')) return 0;
+        }
+    }
+    return 1;
+}
+
+/* build a clean digit buffer with underscores removed; caller frees */
+static char *cch2_strip_underscores(const char *s, size_t n)
+{
+    char *out = (char *)malloc(n + 1);
+    if (!out) return NULL;
+    size_t j = 0;
+    for (size_t i = 0; i < n; i++)
+        if (s[i] != '_') out[j++] = s[i];
+    out[j] = '\0';
+    return out;
+}
+
+static int cch2_ieq(const char *a, const char *b)
+{
+    while (*a && *b) {
+        unsigned char ca = (unsigned char)*a, cb = (unsigned char)*b;
+        if (ca >= 'A' && ca <= 'Z') ca += 32;
+        if (cb >= 'A' && cb <= 'Z') cb += 32;
+        if (ca != cb) return 0;
+        a++; b++;
+    }
+    return *a == '\0' && *b == '\0';
+}
+
+/* validate a cleaned (no underscores, no leading sign) float mantissa+exponent:
+ * (\d+\.?\d*|\.\d+)([eE][+-]?\d+)?  — rejects double signs, '1e', '1.2.3'. */
+static int cch2_float_grammar_ok(const char *s)
+{
+    const char *p = s;
+    int intdigits = 0, fracdigits = 0;
+    while (*p >= '0' && *p <= '9') { p++; intdigits++; }
+    if (*p == '.') {
+        p++;
+        while (*p >= '0' && *p <= '9') { p++; fracdigits++; }
+    }
+    if (intdigits + fracdigits == 0) return 0;
+    if (*p == 'e' || *p == 'E') {
+        p++;
+        if (*p == '+' || *p == '-') p++;
+        int expdigits = 0;
+        while (*p >= '0' && *p <= '9') { p++; expdigits++; }
+        if (expdigits == 0) return 0;
+    }
+    return *p == '\0';
+}
+
+/* parse a float string (already stripped, sign NOT yet consumed).
+ * returns 1 on success with *out set; 0 on failure. */
+static int cch2_parse_float_str(const char *s, double *out)
+{
+    if (!s || !*s) return 0;
+    int neg = 0;
+    const char *p = s;
+    if (*p == '+' || *p == '-') { neg = (*p == '-'); p++; }
+    if (!*p) return 0;
+    /* inf / infinity / nan special forms (case-insensitive, full match) */
+    if (cch2_ieq(p, "inf") || cch2_ieq(p, "infinity")) {
+        *out = neg ? -INFINITY : INFINITY;
+        return 1;
+    }
+    if (cch2_ieq(p, "nan")) { *out = NAN; return 1; }
+    /* reject hex (strtod would accept it; Python float() does not) */
+    if (p[0] == '0' && (p[1] == 'x' || p[1] == 'X')) return 0;
+    size_t n = strlen(p);
+    if (!cch2_underscores_ok(p, n)) return 0;
+    char *clean = cch2_strip_underscores(p, n);
+    if (!clean) return 0;
+    if (!cch2_float_grammar_ok(clean)) { free(clean); return 0; }
+    char *full = cch2_xfmt("%s%s", neg ? "-" : "", clean);
+    free(clean);
+    if (!full) return 0;
+    char *end = NULL;
+    errno = 0;
+    double d = strtod(full, &end);
+    int ok = (end && *end == '\0' && end != full);
+    free(full);
+    if (!ok) return 0;
+    *out = d;
+    return 1;
+}
+
+/* parse an int string (base 10, already stripped). 1 on success. */
+static int cch2_parse_int_str(const char *s, long long *out)
+{
+    if (!s || !*s) return 0;
+    int neg = 0;
+    const char *p = s;
+    if (*p == '+' || *p == '-') { neg = (*p == '-'); p++; }
+    if (!*p) return 0;
+    size_t n = strlen(p);
+    if (!cch2_underscores_ok(p, n)) return 0;
+    int has_digit = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (p[i] >= '0' && p[i] <= '9') has_digit = 1;
+        else if (p[i] != '_') return 0;
+    }
+    if (!has_digit) return 0;
+    char *clean = cch2_strip_underscores(p, n);
+    if (!clean) return 0;
+    char *full = cch2_xfmt("%s%s", neg ? "-" : "", clean);
+    free(clean);
+    if (!full) return 0;
+    char *end = NULL;
+    errno = 0;
+    long long v = strtoll(full, &end, 10);
+    int ok = (end && *end == '\0' && end != full && errno != ERANGE);
+    free(full);
+    if (!ok) return 0;
+    *out = v;
+    return 1;
+}
+
+/* float(value) projection. *err set on failure (caller owns/propagates). */
+static double cch2_pyfloat(const json_t *v, json_t **err)
+{
+    *err = NULL;
+    if (!v || v->type == JSON_NULL) {
+        *err = cch2_mkraise("TypeError",
+            "float() argument must be a string or a real number, not 'NoneType'");
+        return 0.0;
+    }
+    if (v->type == JSON_BOOL) return v->bool_val ? 1.0 : 0.0;
+    if (v->type == JSON_NUMBER) return v->num_val;
+    if (v->type == JSON_STRING) {
+        char *t = cch2_strip(v->str_val ? v->str_val : "");
+        double d;
+        int ok = t && cch2_parse_float_str(t, &d);
+        if (!ok) {
+            char *m = cch2_xfmt("could not convert string to float: '%s'",
+                                v->str_val ? v->str_val : "");
+            *err = cch2_mkraise("ValueError", m ? m : "");
+            free(m);
+        }
+        free(t);
+        return ok ? d : 0.0;
+    }
+    char *m = cch2_xfmt("float() argument must be a string or a real number, not '%s'",
+                        cch2_typename(v));
+    *err = cch2_mkraise("TypeError", m ? m : "");
+    free(m);
+    return 0.0;
+}
+
+/* int(value) projection. *err set on failure. */
+static long long cch2_pyint(const json_t *v, json_t **err)
+{
+    *err = NULL;
+    if (!v || v->type == JSON_NULL) {
+        *err = cch2_mkraise("TypeError",
+            "int() argument must be a string, a bytes-like object or a real number, not 'NoneType'");
+        return 0;
+    }
+    if (v->type == JSON_BOOL) return v->bool_val ? 1 : 0;
+    if (v->type == JSON_NUMBER) return (long long)trunc(v->num_val);
+    if (v->type == JSON_STRING) {
+        char *t = cch2_strip(v->str_val ? v->str_val : "");
+        long long d;
+        int ok = t && cch2_parse_int_str(t, &d);
+        if (!ok) {
+            char *m = cch2_xfmt("invalid literal for int() with base 10: '%s'",
+                                v->str_val ? v->str_val : "");
+            *err = cch2_mkraise("ValueError", m ? m : "");
+            free(m);
+        }
+        free(t);
+        return ok ? d : 0;
+    }
+    char *m = cch2_xfmt("int() argument must be a string, a bytes-like object or a real number, not '%s'",
+                        cch2_typename(v));
+    *err = cch2_mkraise("TypeError", m ? m : "");
+    free(m);
+    return 0;
+}
+
+/* logger seam: record fmt + args verbatim (args projected: exceptions -> str).
+ * name is "logger.info" / "logger.warning" / "logger.debug". */
+static json_t *cch2_log(cch2_io_t *io, const char *name, const char *fmt, json_t *args)
+{
+    json_t *a = cch2_args();
+    json_set(a, "fmt", json_string(fmt));
+    json_set(a, "args", args ? args : json_array());
+    return cch2_call(io, name, a);
+}
+/* ===========================================================================
+ * Group A -- pure leaves
+ * =========================================================================== */
+
+static int cch2_contains(const char *hay, const char *needle)
+{
+    return hay && needle && strstr(hay, needle) != NULL;
+}
+
+/* PoP: cch2_is_provider_stream_empty_frame_error @ agent/chat_completion_helpers.py:_is_provider_stream_empty_frame_error */
+json_t *cch2_is_provider_stream_empty_frame_error(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *exc = cch2_get(in, "exc");
+    const json_t *body = cch2_get(exc, "body");
+    const json_t *error_obj = (body && body->type == JSON_OBJECT) ? cch2_get(body, "error") : NULL;
+    int r = 0;
+    if (error_obj && error_obj->type == JSON_OBJECT) {
+        const char *code = cch2_str(cch2_get(error_obj, "code"));
+        r = code && strcmp(code, "provider_stream_empty_frame") == 0;
+    }
+    return json_bool(r);
+}
+
+/* PoP: cch2_rejects_stream_options @ agent/chat_completion_helpers.py:_rejects_stream_options */
+json_t *cch2_rejects_stream_options(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *exc = cch2_get(in, "exc");
+    const json_t *status = cch2_get(exc, "status_code");
+    int ok_status = status && status->type == JSON_NUMBER
+                    && (status->num_val == 400.0 || status->num_val == 422.0);
+    if (!ok_status) return json_bool(0);
+    char *body = cch2_pystr_or_empty(cch2_get(exc, "body"));
+    const char *msg = cch2_str(cch2_get(exc, "message"));
+    char *combined = cch2_xfmt("%s %s", body ? body : "", msg ? msg : "");
+    free(body);
+    char *low = cch2_lower(combined ? combined : "");
+    free(combined);
+    int r = cch2_contains(low, "stream_options") &&
+        (cch2_contains(low, "extra") || cch2_contains(low, "not supported") ||
+         cch2_contains(low, "unrecognized") || cch2_contains(low, "unexpected") ||
+         cch2_contains(low, "unknown"));
+    free(low);
+    return json_bool(r);
+}
+
+static const char *CCH2_SSE_CONN_PHRASES[] = {
+    "connection lost", "connection reset", "connection closed", "connection terminated",
+    "network error", "network connection", "terminated", "peer closed", "broken pipe",
+    "upstream connect error", NULL
+};
+
+/* Projection: in.is_api_error carries isinstance(exc, openai.APIError) (the oracle
+ * builds exc as an instance of a stub openai.APIError class when true). */
+/* PoP: cch2_is_sse_connection_error @ agent/chat_completion_helpers.py:_is_sse_connection_error */
+json_t *cch2_is_sse_connection_error(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *isae = cch2_get(in, "is_api_error");
+    if (!(isae && isae->type == JSON_BOOL && isae->bool_val)) return json_bool(0);
+    const json_t *exc = cch2_get(in, "exc");
+    if (cch2_truth(cch2_get(exc, "status_code"))) return json_bool(0);
+    const char *msg = cch2_str(cch2_get(exc, "message"));
+    char *low = cch2_lower(msg ? msg : "");
+    int r = 0;
+    for (size_t i = 0; CCH2_SSE_CONN_PHRASES[i]; i++)
+        if (cch2_contains(low, CCH2_SSE_CONN_PHRASES[i])) { r = 1; break; }
+    free(low);
+    return json_bool(r);
+}
+
+/* PoP: cch2_relay_stream_identity @ agent/chat_completion_helpers.py:_relay_stream_identity */
+json_t *cch2_relay_stream_identity(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *name_default = cch2_get(in, "name_default");
+    char *session = cch2_pystr_or_empty(cch2_get(agent, "session_id"));
+    const json_t *prov = cch2_get(agent, "provider");
+    char *name = cch2_pystr(cch2_truth(prov) ? prov : name_default);
+    char *model = cch2_pystr_or_empty(cch2_get(agent, "model"));
+    json_t *o = json_object();
+    json_set(o, "session_id", json_string(session ? session : ""));
+    json_set(o, "name", json_string(name ? name : ""));
+    json_set(o, "model_name", json_string(model ? model : ""));
+    free(session); free(name); free(model);
+    return o;
+}
+
+/* PoP: cch2_relay_stream_metadata @ agent/chat_completion_helpers.py:_relay_stream_metadata */
+json_t *cch2_relay_stream_metadata(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const char *role;
+    if (cch2_truth(cch2_get(agent, "is_subagent"))) {
+        role = "delegated";
+    } else {
+        const json_t *fb = cch2_get(agent, "_fallback_index");
+        json_t *zero = json_number(0);
+        json_t *err = NULL;
+        long long idx = cch2_pyint(cch2_truth(fb) ? fb : zero, &err);
+        json_free(zero);
+        if (err) return err;
+        role = idx > 0 ? "fallback" : "primary";
+    }
+    json_t *o = json_object();
+    const json_t *api_mode = cch2_get(in, "api_mode");
+    json_set(o, "api_mode", api_mode ? json_copy(api_mode) : json_null());
+    const json_t *rid = cch2_get(agent, "_current_api_request_id");
+    json_set(o, "api_request_id", rid ? json_copy(rid) : json_null());
+    json_set(o, "call_role", json_string(role));
+    return o;
+}
+
+/* PoP: cch2_stream_final_text @ agent/chat_completion_helpers.py:_stream_final_text */
+json_t *cch2_stream_final_text(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *response = cch2_get(in, "response");
+    /* first suppress block: choices[0].message.content if str */
+    const json_t *choices = cch2_get(response, "choices");
+    if (choices && choices->type == JSON_ARRAY && choices->c.count > 0) {
+        const json_t *first = json_get(choices, 0);
+        const json_t *content = cch2_get(cch2_get(first, "message"), "content");
+        const char *s = cch2_str(content);
+        if (s) return json_string(s);
+    }
+    /* second suppress block: response.content str or list of parts */
+    const json_t *content = cch2_get(response, "content");
+    const char *s = cch2_str(content);
+    if (s) return json_string(s);
+    if (content && content->type == JSON_ARRAY) {
+        size_t cap = 1;
+        for (size_t i = 0; i < content->c.count; i++) {
+            const char *t = cch2_str(cch2_get(json_get(content, i), "text"));
+            if (t) cap += strlen(t);
+        }
+        char *buf = (char *)malloc(cap);
+        if (buf) {
+            size_t k = 0;
+            for (size_t i = 0; i < content->c.count; i++) {
+                const char *t = cch2_str(cch2_get(json_get(content, i), "text"));
+                if (t) { size_t n = strlen(t); memcpy(buf + k, t, n); k += n; }
+            }
+            buf[k] = '\0';
+            json_t *r = json_string(buf);
+            free(buf);
+            return r;
+        }
+    }
+    return json_string("");
+}
+
+static const char *CCH2_EFFORT_LADDER[] = {
+    "none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra", NULL
+};
+
+/* PoP: cch2_high_effort_silence_floor @ agent/chat_completion_helpers.py:_high_effort_silence_floor */
+json_t *cch2_high_effort_silence_floor(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io; (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *cfg = cch2_get(agent, "reasoning_config");
+    if (!cfg || cfg->type != JSON_OBJECT) return json_number(0.0);
+    const json_t *enabled = cch2_get(cfg, "enabled");
+    if (enabled && enabled->type == JSON_BOOL && !enabled->bool_val) return json_number(0.0);
+    char *eff = cch2_pystr_or_empty(cch2_get(cfg, "effort"));
+    char *t = cch2_strip(eff ? eff : "");
+    free(eff);
+    char *low = cch2_lower(t ? t : "");
+    free(t);
+    int idx = -1;
+    for (int i = 0; CCH2_EFFORT_LADDER[i]; i++)
+        if (strcmp(low, CCH2_EFFORT_LADDER[i]) == 0) { idx = i; break; }
+    free(low);
+    /* index("high") == 4 */
+    if (idx < 0 || idx < 4) return json_number(0.0);
+    return json_number(300.0);
+}
+/* ===========================================================================
+ * Group B -- small state / seam flows
+ * =========================================================================== */
+
+/* PoP: cch2_consume_ephemeral_max_output @ agent/chat_completion_helpers.py:_consume_ephemeral_max_output */
+json_t *cch2_consume_ephemeral_max_output(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)io;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *out = cch2_get(agent, "_ephemeral_max_output_tokens");
+    /* final state is always None: a present value is cleared, an absent/null
+     * value stays None. */
+    json_set(st, "_ephemeral_max_output_tokens", json_null());
+    return cch2_copy_or_null(out);
+}
+
+/* PoP: cch2_model_dump_safe @ agent/chat_completion_helpers.py:_model_dump_safe */
+json_t *cch2_model_dump_safe(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)in; (void)st;
+    json_t *a = cch2_args();
+    json_set(a, "warnings", json_bool(0));
+    json_t *r = cch2_call(io, "model_dump", a);
+    if (cch2_is_raise(r) && strcmp(cch2_kind(r), "TypeError") == 0) {
+        json_free(r);
+        r = cch2_call(io, "model_dump", cch2_args());
+    }
+    return r;
+}
+
+/* Projection: in.has_model_dump carries hasattr(value, "model_dump"). */
+/* PoP: cch2_dump_if_model @ agent/chat_completion_helpers.py:_dump_if_model */
+json_t *cch2_dump_if_model(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *has = cch2_get(in, "has_model_dump");
+    if (has && has->type == JSON_BOOL && has->bool_val)
+        return cch2_model_dump_safe(io, in, st);
+    return cch2_copy_or_null(cch2_get(in, "value"));
+}
+
+/* Projection: in.hint_callable carries callable(getattr(agent,"_codex_silent_hang_hint",None)). */
+/* PoP: cch2_codex_silent_hang_hint @ agent/chat_completion_helpers.py:_codex_silent_hang_hint */
+json_t *cch2_codex_silent_hang_hint(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *hc = cch2_get(in, "hint_callable");
+    if (!(hc && hc->type == JSON_BOOL && hc->bool_val)) return NULL;
+    const json_t *api_kwargs = cch2_get(in, "api_kwargs");
+    json_t *a = cch2_args();
+    const json_t *model = cch2_get(api_kwargs, "model");
+    if (model && model->type != JSON_NULL) json_set(a, "model", json_copy(model));
+    json_t *r = cch2_call(io, "hint_fn", a);
+    if (cch2_is_raise(r)) {
+        if (cch2_is_base(cch2_kind(r))) return r;
+        json_free(r);
+        return NULL;   /* suppress(Exception) */
+    }
+    return r;
+}
+
+/* PoP: cch2_stream_env_stale_base @ agent/chat_completion_helpers.py:_stream_env_stale_base */
+json_t *cch2_stream_env_stale_base(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)in; (void)st;
+    json_t *a = cch2_args();
+    json_set(a, "name", json_string("HERMES_STREAM_STALE_TIMEOUT"));
+    json_set(a, "default", json_number(180.0));
+    json_t *r1 = cch2_call(io, "env_float", a);
+    if (cch2_is_raise(r1)) return r1;
+    json_t *a2 = cch2_args();
+    json_set(a2, "name", json_string("HERMES_STREAM_STALE_TIMEOUT"));
+    json_t *r2 = cch2_call(io, "env_has", a2);
+    if (cch2_is_raise(r2)) { json_free(r1); return r2; }
+    json_t *arr = json_array();
+    json_append(arr, r1 ? r1 : json_null());
+    json_append(arr, r2 ? r2 : json_null());
+    return arr;
+}
+
+/* PoP: cch2_local_stream_stale_timeout_default @ agent/chat_completion_helpers.py:_local_stream_stale_timeout_default */
+json_t *cch2_local_stream_stale_timeout_default(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)in; (void)st;
+    double local_default = 900.0;
+    json_t *cfg = cch2_call(io, "load_config_readonly", cch2_args());
+    if (cch2_is_raise(cfg)) {
+        if (cch2_is_base(cch2_kind(cfg))) return cfg;
+        json_free(cfg);
+        cfg = NULL;   /* suppress(Exception): keep 900.0 */
+    }
+    if (cfg) {
+        const json_t *agent_cfg = (cfg->type == JSON_OBJECT) ? cch2_get(cfg, "agent") : NULL;
+        const json_t *value = (agent_cfg && agent_cfg->type == JSON_OBJECT)
+                              ? cch2_get(agent_cfg, "local_stream_stale_timeout") : NULL;
+        if (value && (value->type == JSON_NUMBER || value->type == JSON_BOOL))
+            local_default = value->type == JSON_BOOL ? (value->bool_val ? 1.0 : 0.0) : value->num_val;
+        json_free(cfg);
+    }
+    json_t *a = cch2_args();
+    json_set(a, "name", json_string("HERMES_LOCAL_STREAM_STALE_TIMEOUT"));
+    json_set(a, "default", json_number(local_default));
+    return cch2_call(io, "env_float", a);   /* outside suppress: propagates */
+}
+
+/* PoP: cch2_cap_to_run_budget @ agent/chat_completion_helpers.py:cap_to_run_budget */
+json_t *cch2_cap_to_run_budget(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *timeout = cch2_get(in, "timeout");
+    const json_t *run_budget = cch2_get(agent, "run_budget_seconds");
+    const json_t *started = cch2_get(agent, "_run_budget_started_at");
+    if (!cch2_truth(run_budget) || !cch2_truth(started))
+        return cch2_copy_or_null(timeout);
+    /* eval order: float(run_budget), time.time(), float(started) */
+    json_t *err = NULL;
+    double fb = cch2_pyfloat(run_budget, &err);
+    if (err) return err;
+    json_t *t = cch2_call(io, "time.time", cch2_args());
+    if (cch2_is_raise(t)) return t;
+    double tn = cch2_num(t);
+    json_free(t);
+    double fs = cch2_pyfloat(started, &err);
+    if (err) return err;
+    double remaining = fb - (tn - fs);
+    double half = remaining * 0.5;
+    if (half < 60.0) half = 60.0;
+    double to = cch2_num(timeout);
+    return json_number(to < half ? to : half);
+}
+/* ===========================================================================
+ * Group C -- stale-timeout composition (claimed siblings are seams)
+ * =========================================================================== */
+
+/* core of _cloud_stale_timeout: base + api_kwargs borrowed */
+static json_t *cch2_cloud_stale_timeout_core(cch2_io_t *io, const json_t *base,
+                                             const json_t *api_kwargs)
+{
+    json_t *a = cch2_args();
+    json_set(a, "api_kwargs", cch2_copy_or_null(api_kwargs));
+    json_t *est = cch2_call(io, "estimate_request_context_tokens", a);
+    if (cch2_is_raise(est)) return est;
+
+    json_t *a2 = cch2_args();
+    json_set(a2, "base", cch2_copy_or_null(base));
+    json_set(a2, "est_tokens", est ? json_copy(est) : json_null());
+    json_t *timeout = cch2_call(io, "scale_stale_timeout_for_context", a2);
+    json_free(est);
+    if (cch2_is_raise(timeout)) return timeout;
+
+    /* api_kwargs.get("model") or api_kwargs.get("modelId") or "" */
+    const json_t *m = cch2_get(api_kwargs, "model");
+    if (!cch2_truth(m)) m = cch2_get(api_kwargs, "modelId");
+    json_t *m_owned = NULL;
+    if (!cch2_truth(m)) { m_owned = json_string(""); m = m_owned; }
+    json_t *a3 = cch2_args();
+    json_set(a3, "model_id", json_copy(m));
+    json_free(m_owned);
+    json_t *floor = cch2_call(io, "get_reasoning_stale_timeout_floor", a3);
+    if (cch2_is_raise(floor)) { json_free(timeout); return floor; }
+
+    const json_t *model_id = cch2_get(api_kwargs, "modelId");
+    if ((!floor || floor->type == JSON_NULL) && cch2_truth(model_id)) {
+        json_t *a4 = cch2_args();
+        json_set(a4, "model_id", json_copy(model_id));
+        json_t *floor2 = cch2_call(io, "bedrock_reasoning_stale_floor", a4);
+        if (cch2_is_raise(floor2)) { json_free(timeout); json_free(floor); return floor2; }
+        json_free(floor);
+        floor = floor2;
+    }
+    double to = cch2_num(timeout);
+    double result = to;
+    if (floor && floor->type != JSON_NULL) {
+        double fl = cch2_num(floor);
+        if (fl > result) result = fl;
+    }
+    json_free(timeout);
+    json_free(floor);
+    return json_number(result);
+}
+
+/* PoP: cch2_cloud_stale_timeout @ agent/chat_completion_helpers.py:_cloud_stale_timeout */
+json_t *cch2_cloud_stale_timeout(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    return cch2_cloud_stale_timeout_core(io, cch2_get(in, "base"), cch2_get(in, "api_kwargs"));
+}
+
+/* required attribute access (agent.provider / agent.model): missing -> raise */
+static const json_t *cch2_req(const json_t *agent, const char *name, json_t **err)
+{
+    const json_t *v = cch2_get(agent, name);
+    if (!v) *err = cch2_attr_raise(name);
+    return v;
+}
+
+/* PoP: cch2_stream_stale_timeout_is_explicit @ agent/chat_completion_helpers.py:_stream_stale_timeout_is_explicit */
+json_t *cch2_stream_stale_timeout_is_explicit(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    json_t *err = NULL;
+    const json_t *prov = cch2_req(agent, "provider", &err);
+    if (err) return err;
+    const json_t *model = cch2_req(agent, "model", &err);
+    if (err) return err;
+    json_t *a = cch2_args();
+    if (prov->type != JSON_NULL) json_set(a, "provider", json_copy(prov));
+    if (model->type != JSON_NULL) json_set(a, "model", json_copy(model));
+    json_t *explicit = cch2_call(io, "get_provider_stale_timeout", a);
+    if (cch2_is_raise(explicit)) return explicit;
+    if (explicit && explicit->type != JSON_NULL) { json_free(explicit); return json_bool(1); }
+    json_free(explicit);
+    json_t *arr = cch2_stream_env_stale_base(io, in, st);
+    if (cch2_is_raise(arr)) return arr;
+    int explicit_env = cch2_truth(json_get(arr, 1));
+    json_free(arr);
+    return json_bool(explicit_env);
+}
+
+/* PoP: cch2_cloud_stale_timeout_for @ agent/chat_completion_helpers.py:_cloud_stale_timeout_for */
+json_t *cch2_cloud_stale_timeout_for(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *api_kwargs = cch2_get(in, "api_kwargs");
+    json_t *err = NULL;
+    const json_t *prov = cch2_req(agent, "provider", &err);
+    if (err) return err;
+    const json_t *model = cch2_req(agent, "model", &err);
+    if (err) return err;
+    json_t *a = cch2_args();
+    if (prov->type != JSON_NULL) json_set(a, "provider", json_copy(prov));
+    if (model->type != JSON_NULL) json_set(a, "model", json_copy(model));
+    json_t *explicit = cch2_call(io, "get_provider_stale_timeout", a);
+    if (cch2_is_raise(explicit)) return explicit;
+    if (explicit && explicit->type != JSON_NULL) return explicit;   /* wins over everything */
+    json_free(explicit);
+
+    json_t *arr = cch2_stream_env_stale_base(io, in, st);
+    if (cch2_is_raise(arr)) return arr;
+    json_t *base = json_copy(json_get(arr, 0));
+    int explicit_env = cch2_truth(json_get(arr, 1));
+    json_free(arr);
+
+    json_t *timeout = cch2_cloud_stale_timeout_core(io, base, api_kwargs);
+    json_free(base);
+    if (cch2_is_raise(timeout)) return timeout;
+    if (explicit_env) return timeout;
+
+    json_t *in3 = json_object();
+    json_set(in3, "agent", cch2_copy_or_null(agent));
+    json_set(in3, "timeout", json_copy(timeout));
+    json_free(timeout);
+    json_t *r = cch2_cap_to_run_budget(io, in3, st);
+    json_free(in3);
+    return r;
+}
+/* ===========================================================================
+ * Group D -- provider-fallback flows
+ * =========================================================================== */
+
+#define CCH2_FMT_FALLBACK_INFO "Fallback activated: %s \xe2\x86\x92 %s (%s)"
+#define CCH2_FMT_BILLING_WARN "Profile %s: %s via %s refused for billing/credits \xe2\x80\x94 using fallback %s via %s. Top up credits, or run `%s` to pick a model this account can use."
+#define CCH2_FMT_POOL_CLEAR "Fallback to %s/%s: clearing primary credential pool (pool_provider=%s) to prevent cross-provider contamination"
+#define CCH2_FMT_POOL_ATTACH "Fallback to %s/%s: attached fallback credential pool"
+#define CCH2_FMT_POOL_DEBUG "Fallback to %s/%s: could not attach credential pool: %s"
+#define CCH2_FMT_RC_INFO "Fallback %s: reasoning_config resolved: %s"
+#define CCH2_FMT_RC_DEBUG "Failed to resolve reasoning_config for fallback %s; keeping current: %s"
+#define CCH2_FMT_EB_INFO "Fallback %s: extra_body resolved: %s"
+#define CCH2_FMT_EB_DEBUG "Failed to resolve extra_body for fallback %s; keeping current: %s"
+
+static const char *CCH2_RATE_LIMIT_REASONS[] = { "rate_limit", "billing", "upstream_rate_limit", NULL };
+
+static int cch2_reason_in_set(const char *r)
+{
+    if (!r) return 0;
+    for (size_t i = 0; CCH2_RATE_LIMIT_REASONS[i]; i++)
+        if (strcmp(r, CCH2_RATE_LIMIT_REASONS[i]) == 0) return 1;
+    return 0;
+}
+
+/* PoP: cch2_fallback_chain_exhausted @ agent/chat_completion_helpers.py:_fallback_chain_exhausted */
+json_t *cch2_fallback_chain_exhausted(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    json_t *err = NULL;
+    const json_t *chain = cch2_req(agent, "_fallback_chain", &err);
+    if (err) return err;
+    const char *reason = cch2_str(cch2_get(in, "reason"));
+    const json_t *old = cch2_get(agent, "_rate_limited_until");
+    double old_eff = cch2_truth(old) ? cch2_num(old) : 0.0;
+    double final = old_eff;
+    if (cch2_truth(chain) && !cch2_reason_in_set(reason)) {
+        json_t *mono = cch2_call(io, "time.monotonic", cch2_args());
+        if (cch2_is_raise(mono)) return mono;
+        double cand = cch2_num(mono) + 5.0;
+        json_free(mono);
+        if (cand > old_eff) final = cand;
+    }
+    json_set(st, "_rate_limited_until", json_number(final));
+    return json_bool(0);
+}
+
+/* PoP: cch2_log_fallback_activated @ agent/chat_completion_helpers.py:_log_fallback_activated */
+json_t *cch2_log_fallback_activated(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const char *reason = cch2_str(cch2_get(in, "reason"));
+    const json_t *old_model = cch2_get(in, "old_model");
+    const json_t *old_provider = cch2_get(in, "old_provider");
+    const json_t *fb_model = cch2_get(in, "fb_model");
+    const json_t *fb_provider = cch2_get(in, "fb_provider");
+    if (!reason || strcmp(reason, "billing") != 0) {
+        json_t *args = json_array();
+        json_append(args, cch2_copy_or_null(old_model));
+        json_append(args, cch2_copy_or_null(fb_model));
+        json_append(args, cch2_copy_or_null(fb_provider));
+        json_t *r = cch2_log(io, "logger.info", CCH2_FMT_FALLBACK_INFO, args);
+        if (cch2_is_raise(r)) return r;
+        json_free(r);
+        return NULL;
+    }
+    json_t *home = cch2_call(io, "get_hermes_home", cch2_args());
+    if (cch2_is_raise(home)) return home;
+    json_t *a = cch2_args();
+    json_set(a, "home", cch2_copy_or_null(home));
+    json_t *prof = cch2_call(io, "profile_name_for_home", a);
+    json_free(home);
+    if (cch2_is_raise(prof)) return prof;
+    char *profile = cch2_truth(prof) ? cch2_pystr(prof) : cch2_xfmt("default");
+    json_free(prof);
+    char *remedy = (strcmp(profile, "default") == 0) ? cch2_xfmt("hermes model")
+                   : cch2_xfmt("hermes -p %s model", profile);
+    json_t *args = json_array();
+    json_append(args, json_string(profile));
+    json_append(args, cch2_copy_or_null(old_model));
+    json_append(args, cch2_copy_or_null(old_provider));
+    json_append(args, cch2_copy_or_null(fb_model));
+    json_append(args, cch2_copy_or_null(fb_provider));
+    json_append(args, json_string(remedy));
+    free(profile); free(remedy);
+    json_t *r = cch2_log(io, "logger.warning", CCH2_FMT_BILLING_WARN, args);
+    if (cch2_is_raise(r)) return r;
+    json_free(r);
+    return NULL;
+}
+
+/* log a debug line whose last arg is the str(exc) of a caught raise spec */
+static json_t *cch2_log_debug_exc(cch2_io_t *io, const char *fmt,
+                                  const json_t *fb_provider, const json_t *fb_model,
+                                  const json_t *caught)
+{
+    json_t *args = json_array();
+    json_append(args, cch2_copy_or_null(fb_provider));
+    json_append(args, cch2_copy_or_null(fb_model));
+    const char *msg = cch2_str(cch2_get(caught, "message"));
+    json_append(args, json_string(msg ? msg : ""));
+    return cch2_log(io, "logger.debug", fmt, args);
+}
+
+/* PoP: cch2_rebind_fallback_credential_pool @ agent/chat_completion_helpers.py:_rebind_fallback_credential_pool */
+json_t *cch2_rebind_fallback_credential_pool(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *fb_provider = cch2_get(in, "fb_provider");
+    const json_t *fb_model = cch2_get(in, "fb_model");
+    const json_t *prefetched = cch2_get(in, "prefetched_pool");
+    int prefetched_notnull = cch2_obj_truth(prefetched);
+    const json_t *orig_pool = cch2_get(agent, "_credential_pool");
+    const json_t *orig_entry = cch2_get(agent, "_credential_pool_entry_id");
+
+    char *pp0 = cch2_pystr_or_empty(cch2_get(orig_pool, "provider"));
+    char *pp1 = cch2_strip(pp0 ? pp0 : ""); free(pp0);
+    char *pool_provider = cch2_lower(pp1 ? pp1 : ""); free(pp1);
+    const char *fbp = cch2_str(fb_provider);
+    int cond = prefetched_notnull ||
+        (strcmp(pool_provider, "") != 0 && strcmp(pool_provider, fbp ? fbp : "") != 0);
+
+    json_t *pool_final = cch2_copy_or_null(orig_pool);
+    json_t *entry_final = cch2_copy_or_null(orig_entry);
+
+    if (cond) {
+        if (!prefetched_notnull) {
+            json_t *args = json_array();
+            json_append(args, cch2_copy_or_null(fb_provider));
+            json_append(args, cch2_copy_or_null(fb_model));
+            json_append(args, json_string(pool_provider));
+            json_t *li = cch2_log(io, "logger.info", CCH2_FMT_POOL_CLEAR, args);
+            if (cch2_is_raise(li)) { free(pool_provider); json_free(pool_final); json_free(entry_final); return li; }
+            json_free(li);
+        }
+        json_free(pool_final); pool_final = NULL;
+        json_free(entry_final); entry_final = NULL;
+    }
+    free(pool_provider);
+
+    if (!cch2_obj_truth(pool_final)) {
+        json_t *fallback = NULL; int fb_owned = 0; json_t *caught = NULL;
+        if (prefetched_notnull) {
+            fallback = (json_t *)prefetched;   /* borrowed; always truthy object */
+        } else {
+            json_t *a = cch2_args();
+            json_set(a, "provider", cch2_copy_or_null(fb_provider));
+            const json_t *burl = cch2_get(agent, "base_url");
+            if (burl && burl->type != JSON_NULL) json_set(a, "base_url", json_copy(burl));
+            fallback = cch2_call(io, "load_route_pool", a);
+            fb_owned = 1;
+            if (cch2_is_raise(fallback)) {
+                if (cch2_is_base(cch2_kind(fallback))) { json_free(pool_final); json_free(entry_final); return fallback; }
+                caught = fallback; fallback = NULL; fb_owned = 0;
+                goto debug;
+            }
+        }
+        if (cch2_obj_truth(fallback)) {
+            json_t *hc = cch2_call(io, "pool_has_credentials", cch2_args());
+            if (cch2_is_raise(hc)) {
+                if (cch2_is_base(cch2_kind(hc))) { if (fb_owned) json_free(fallback); json_free(pool_final); json_free(entry_final); return hc; }
+                caught = hc; goto debug_fb;
+            }
+            if (cch2_truth(hc)) {
+                json_free(pool_final); pool_final = json_copy(fallback);
+                json_t *args = json_array();
+                json_append(args, cch2_copy_or_null(fb_provider));
+                json_append(args, cch2_copy_or_null(fb_model));
+                json_t *li = cch2_log(io, "logger.info", CCH2_FMT_POOL_ATTACH, args);
+                if (cch2_is_raise(li)) {
+                    if (cch2_is_base(cch2_kind(li))) { if (fb_owned) json_free(fallback); json_free(pool_final); json_free(entry_final); return li; }
+                    caught = li; goto debug_fb;
+                }
+                json_free(li);
+            }
+            json_free(hc);
+        }
+        if (fb_owned) json_free(fallback);
+        goto done;
+    debug_fb:
+        if (fb_owned) json_free(fallback);
+    debug:
+        {
+            json_t *dl = cch2_log_debug_exc(io, CCH2_FMT_POOL_DEBUG, fb_provider, fb_model, caught);
+            json_free(caught);
+            if (cch2_is_raise(dl)) { json_free(pool_final); json_free(entry_final); return dl; }
+            json_free(dl);
+        }
+    }
+done:
+    json_set(st, "_credential_pool", pool_final ? pool_final : json_null());
+    json_set(st, "_credential_pool_entry_id", entry_final ? entry_final : json_null());
+    return NULL;
+}
+
+/* PoP: cch2_candidate_pool_exhausted @ agent/chat_completion_helpers.py:_candidate_pool_exhausted */
+json_t *cch2_candidate_pool_exhausted(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *fb_provider = cch2_get(in, "fb_provider");
+    const json_t *fb_model = cch2_get(in, "fb_model");
+    const json_t *pool = cch2_get(agent, "_credential_pool");
+    char *pp0 = cch2_pystr_or_empty(cch2_get(pool, "provider"));
+    char *pp1 = cch2_strip(pp0 ? pp0 : ""); free(pp0);
+    char *pp = cch2_lower(pp1 ? pp1 : ""); free(pp1);
+    const char *fbp = cch2_str(fb_provider);
+    int need_load = !cch2_obj_truth(pool) || strcmp(pp, fbp ? fbp : "") != 0;
+    free(pp);
+    json_t *loaded = NULL;
+    if (need_load) {
+        json_t *a = cch2_args();
+        json_set(a, "provider", cch2_copy_or_null(fb_provider));
+        loaded = cch2_call(io, "load_pool", a);
+        if (cch2_is_raise(loaded)) {
+            if (cch2_is_base(cch2_kind(loaded))) return loaded;
+            json_free(loaded);
+            return json_bool(0);   /* except Exception -> False */
+        }
+        pool = loaded;
+    }
+    if (!cch2_obj_truth(pool)) { json_free(loaded); return json_bool(0); }
+    json_t *hc = cch2_call(io, "pool_has_credentials", cch2_args());
+    if (cch2_is_raise(hc)) { json_free(loaded); return hc; }
+    if (!cch2_truth(hc)) { json_free(hc); json_free(loaded); return json_bool(0); }
+    json_free(hc);
+    json_t *a2 = cch2_args();
+    json_set(a2, "model", cch2_copy_or_null(fb_model));
+    json_t *ha = cch2_call(io, "pool_has_available", a2);
+    if (cch2_is_raise(ha)) { json_free(loaded); return ha; }
+    if (cch2_truth(ha)) { json_free(ha); json_free(loaded); return json_bool(0); }
+    json_free(ha);
+    json_t *a3 = cch2_args();
+    json_set(a3, "model", cch2_copy_or_null(fb_model));
+    json_t *until = cch2_call(io, "pool_next_available_at", a3);
+    if (cch2_is_raise(until)) { json_free(loaded); return until; }
+    if (!until || until->type == JSON_NULL) { json_free(until); json_free(loaded); return json_bool(1); }
+    json_t *t = cch2_call(io, "time.time", cch2_args());
+    if (cch2_is_raise(t)) { json_free(until); json_free(loaded); return t; }
+    int r = (cch2_num(until) - cch2_num(t)) > 600.0;
+    json_free(until); json_free(t); json_free(loaded);
+    return json_bool(r);
+}
+/* PoP: cch2_update_fallback_context_compressor @ agent/chat_completion_helpers.py:_update_fallback_context_compressor */
+json_t *cch2_update_fallback_context_compressor(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *compressor = cch2_get(agent, "context_compressor");
+    if (!cch2_obj_truth(compressor)) return NULL;
+    json_t *err = NULL;
+    const json_t *model = cch2_req(agent, "model", &err); if (err) return err;
+    const json_t *base_url = cch2_req(agent, "base_url", &err); if (err) return err;
+    const json_t *api_key = cch2_req(agent, "api_key", &err); if (err) return err;
+    const json_t *provider = cch2_req(agent, "provider", &err); if (err) return err;
+    json_t *a = cch2_args();
+    json_set(a, "model", json_copy(model));
+    json_set(a, "base_url", json_copy(base_url));
+    json_set(a, "api_key", (api_key->type == JSON_STRING) ? json_copy(api_key) : json_string(""));
+    json_set(a, "provider", json_copy(provider));
+    const json_t *ccl = cch2_get(agent, "_config_context_length");
+    if (ccl && ccl->type != JSON_NULL) json_set(a, "config_context_length", json_copy(ccl));
+    const json_t *cps = cch2_get(agent, "_custom_providers");
+    if (cps && cps->type != JSON_NULL) json_set(a, "custom_providers", json_copy(cps));
+    json_t *fb_ctx = cch2_call(io, "get_model_context_length", a);
+    if (cch2_is_raise(fb_ctx)) return fb_ctx;
+
+    const json_t *api_mode = cch2_req(agent, "api_mode", &err);
+    if (err) { json_free(fb_ctx); return err; }
+    json_t *a2 = cch2_args();
+    json_set(a2, "model", json_copy(model));
+    json_set(a2, "context_length", cch2_copy_or_null(fb_ctx));
+    json_set(a2, "base_url", json_copy(base_url));
+    const json_t *ak2 = cch2_get(agent, "api_key");
+    json_set(a2, "api_key", ak2 ? json_copy(ak2) : json_string(""));
+    json_set(a2, "provider", json_copy(provider));
+    json_set(a2, "api_mode", json_copy(api_mode));
+    json_t *um = cch2_call(io, "compressor.update_model", a2);
+    if (cch2_is_raise(um)) { json_free(fb_ctx); return um; }
+    json_free(um);
+
+    const json_t *checked = cch2_get(agent, "_compression_feasibility_checked");
+    if (checked && checked->type == JSON_BOOL && checked->bool_val) {
+        json_t *rv = cch2_call(io, "revalidate_compression_feasibility", cch2_args());
+        if (cch2_is_raise(rv)) { json_free(fb_ctx); return rv; }
+        json_free(rv);
+    }
+    json_free(fb_ctx);
+    return NULL;
+}
+
+/* PoP: cch2_reresolve_fallback_reasoning_config @ agent/chat_completion_helpers.py:_reresolve_fallback_reasoning_config */
+json_t *cch2_reresolve_fallback_reasoning_config(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *orig_rc = cch2_get(agent, "reasoning_config");
+    json_t *rc_final = NULL;
+    json_t *caught = NULL;
+
+    json_t *cfg = cch2_call(io, "load_config", cch2_args());
+    if (cch2_is_raise(cfg)) {
+        if (cch2_is_base(cch2_kind(cfg))) return cfg;
+        caught = cfg; goto debug;
+    }
+    {
+        json_t *cfg_arg = cch2_truth(cfg) ? json_copy(cfg) : json_object();
+        json_free(cfg);
+        json_t *err = NULL;
+        const json_t *model = cch2_req(agent, "model", &err);
+        if (err) { json_free(cfg_arg); caught = err; goto debug; }
+        json_t *a = cch2_args();
+        json_set(a, "config", cfg_arg);
+        json_set(a, "model", json_copy(model));
+        json_t *rc = cch2_call(io, "resolve_reasoning_config", a);
+        if (cch2_is_raise(rc)) {
+            if (cch2_is_base(cch2_kind(rc))) return rc;
+            caught = rc; goto debug;
+        }
+        rc_final = rc;
+        json_t *args = json_array();
+        json_append(args, json_copy(model));
+        json_append(args, json_copy(rc_final));
+        json_t *li = cch2_log(io, "logger.info", CCH2_FMT_RC_INFO, args);
+        if (cch2_is_raise(li)) {
+            if (cch2_is_base(cch2_kind(li))) { json_free(rc_final); return li; }
+            caught = li; goto debug;
+        }
+        json_free(li);
+    }
+    goto done;
+debug:
+    {
+        json_t *err = NULL;
+        const json_t *model = cch2_req(agent, "model", &err);
+        if (err) { json_free(caught); return err; }
+        json_t *args = json_array();
+        json_append(args, json_copy(model));
+        const char *msg = cch2_str(cch2_get(caught, "message"));
+        json_append(args, json_string(msg ? msg : ""));
+        json_free(caught);
+        json_t *dl = cch2_log(io, "logger.debug", CCH2_FMT_RC_DEBUG, args);
+        if (cch2_is_raise(dl)) return dl;
+        json_free(dl);
+    }
+done:
+    json_set(st, "reasoning_config",
+             rc_final ? rc_final : (orig_rc ? json_copy(orig_rc) : json_null()));
+    return NULL;
+}
+
+/* PoP: cch2_rescope_fallback_extra_body @ agent/chat_completion_helpers.py:_rescope_fallback_extra_body */
+json_t *cch2_rescope_fallback_extra_body(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *old_model = cch2_get(in, "old_model");
+    const json_t *old_provider = cch2_get(in, "old_provider");
+    const json_t *old_base_url = cch2_get(in, "old_base_url");
+    const json_t *orig_ro = cch2_get(agent, "request_overrides");
+    json_t *overrides = cch2_truth(orig_ro) ? json_copy(orig_ro) : json_object();
+    const json_t *cp_node = cch2_get(agent, "_custom_providers");
+    json_t *cp = cch2_truth(cp_node) ? json_copy(cp_node) : json_array();
+    json_t *caught = NULL;
+
+    json_t *a = cch2_args();
+    json_set(a, "provider", cch2_copy_or_null(old_provider));
+    json_set(a, "model", cch2_copy_or_null(old_model));
+    json_set(a, "base_url", cch2_copy_or_null(old_base_url));
+    json_set(a, "custom_providers", json_copy(cp));
+    json_t *old_res = cch2_call(io, "custom_provider_extra_body_for_agent", a);
+    if (cch2_is_raise(old_res)) {
+        if (cch2_is_base(cch2_kind(old_res))) { json_free(overrides); json_free(cp); return old_res; }
+        caught = old_res; goto debug;
+    }
+    {
+        json_t *old_eb = cch2_truth(old_res) ? old_res : json_object();
+        const json_t *existing_eb = cch2_get(overrides, "extra_body");
+        if (existing_eb && existing_eb->type == JSON_OBJECT && cch2_truth(old_eb)) {
+            json_t *scrubbed = json_object();
+            for (size_t i = 0; i < existing_eb->c.count; i++) {
+                const char *k = existing_eb->c.keys[i];
+                json_t *v = existing_eb->c.items[i];
+                json_t *ov = cch2_get(old_eb, k);
+                if (!(ov && cch2_pyequal(v, ov)))
+                    json_set(scrubbed, k, json_copy(v));
+            }
+            if (scrubbed->c.count > 0) {
+                json_set(overrides, "extra_body", scrubbed);
+            } else {
+                json_obj_del(overrides, "extra_body");
+                json_free(scrubbed);
+            }
+        }
+        if (old_eb != old_res) json_free(old_eb);
+        json_free(old_res);
+    }
+    {
+        json_t *a2 = cch2_args();
+        json_set(a2, "custom_providers", json_copy(cp));
+        json_t *mg = cch2_call(io, "merge_custom_provider_extra_body", a2);
+        if (cch2_is_raise(mg)) {
+            if (cch2_is_base(cch2_kind(mg))) { json_free(overrides); json_free(cp); return mg; }
+            caught = mg; goto debug;
+        }
+        json_free(mg);
+    }
+    {
+        json_t *err = NULL;
+        const json_t *model = cch2_req(agent, "model", &err);
+        if (err) { json_free(overrides); json_free(cp); caught = err; goto debug; }
+        const json_t *eb_val = cch2_get(overrides, "extra_body");
+        json_t *args = json_array();
+        json_append(args, json_copy(model));
+        json_append(args, eb_val ? json_copy(eb_val) : json_null());
+        json_t *li = cch2_log(io, "logger.info", CCH2_FMT_EB_INFO, args);
+        if (cch2_is_raise(li)) {
+            if (cch2_is_base(cch2_kind(li))) { json_free(overrides); json_free(cp); return li; }
+            caught = li; goto debug;
+        }
+        json_free(li);
+    }
+    json_free(cp);
+    goto done;
+debug:
+    {
+        json_free(cp);
+        json_t *err = NULL;
+        const json_t *model = cch2_req(agent, "model", &err);
+        if (err) { json_free(caught); json_free(overrides); return err; }
+        json_t *args = json_array();
+        json_append(args, json_copy(model));
+        const char *msg = cch2_str(cch2_get(caught, "message"));
+        json_append(args, json_string(msg ? msg : ""));
+        json_free(caught);
+        json_t *dl = cch2_log(io, "logger.debug", CCH2_FMT_EB_DEBUG, args);
+        if (cch2_is_raise(dl)) { json_free(overrides); return dl; }
+        json_free(dl);
+    }
+done:
+    json_set(st, "request_overrides", overrides);
+    return NULL;
+}
+/* ===========================================================================
+ * Group E -- api-mode hint + summary / stream bracket flows
+ * =========================================================================== */
+
+#define CCH2_FMT_SHIM_WARN "Iteration summary returned a router timeout shim; retrying"
+#define CCH2_FMT_TOOLS_WARN "Iteration summary emitted tool calls; discarding them"
+
+/* core of _is_anthropic_wire_url */
+static json_t *cch2_is_anthropic_wire_url_core(cch2_io_t *io, const json_t *url)
+{
+    json_t *a = cch2_args();
+    json_set(a, "url", cch2_copy_or_null(url));
+    json_t *r = cch2_call(io, "host_mandated_api_mode", a);
+    if (cch2_is_raise(r)) return r;
+    const char *s = cch2_str(r);
+    int yes = s && strcmp(s, "anthropic_messages") == 0;
+    json_free(r);
+    return json_bool(yes);
+}
+
+/* PoP: cch2_is_anthropic_wire_url @ agent/chat_completion_helpers.py:_is_anthropic_wire_url */
+json_t *cch2_is_anthropic_wire_url(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    return cch2_is_anthropic_wire_url_core(io, cch2_get(in, "url"));
+}
+
+/* PoP: cch2_fallback_api_mode_hint @ agent/chat_completion_helpers.py:_fallback_api_mode_hint */
+json_t *cch2_fallback_api_mode_hint(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *fb = cch2_get(in, "fb");
+    const json_t *fb_provider = cch2_get(in, "fb_provider");
+    const json_t *hint = cch2_get(in, "fb_base_url_hint");
+    const char *fbp = cch2_str(fb_provider);
+
+    const json_t *mode = cch2_get(fb, "api_mode");
+    if (!cch2_truth(mode)) mode = cch2_get(fb, "transport");
+    json_t *a = cch2_args();
+    if (mode && mode->type != JSON_NULL) json_set(a, "value", json_copy(mode));
+    json_t *explicit = cch2_call(io, "parse_api_mode", a);
+    if (cch2_is_raise(explicit)) return explicit;
+    if (cch2_truth(explicit)) {
+        json_t *arr = json_array();
+        json_append(arr, json_bool(1));
+        json_append(arr, explicit);
+        return arr;
+    }
+    json_free(explicit);
+
+    if (cch2_truth(fb_provider) && strcmp(fbp, "custom") != 0 && strcmp(fbp, "moa") != 0) {
+        json_t *a2 = cch2_args();
+        json_set(a2, "provider", json_copy(fb_provider));
+        json_t *named = cch2_call(io, "get_named_custom_provider", a2);
+        if (cch2_is_raise(named)) return named;
+        const json_t *declared = (named && named->type == JSON_OBJECT) ? cch2_get(named, "api_mode") : NULL;
+        if (cch2_truth(declared)) {
+            json_t *arr = json_array();
+            json_append(arr, json_bool(1));
+            json_append(arr, json_copy(declared));
+            json_free(named);
+            return arr;
+        }
+        json_free(named);
+    }
+    int anthropic = (fbp && strcmp(fbp, "anthropic") == 0);
+    if (!anthropic && cch2_truth(hint)) {
+        json_t *w = cch2_is_anthropic_wire_url_core(io, hint);
+        if (cch2_is_raise(w)) return w;
+        anthropic = cch2_truth(w);
+        json_free(w);
+    }
+    json_t *arr = json_array();
+    json_append(arr, json_bool(0));
+    json_append(arr, json_string(anthropic ? "anthropic_messages" : "chat_completions"));
+    return arr;
+}
+
+/* Projection: in.callback is the marker string for agent._interruptible_api_call. */
+/* PoP: cch2_managed_summary_call @ agent/chat_completion_helpers.py:_managed_summary_call */
+json_t *cch2_managed_summary_call(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *agent = cch2_get(in, "agent");
+    const json_t *prov = cch2_get(agent, "provider");
+    const json_t *model = cch2_get(agent, "model");
+    const json_t *am = cch2_get(agent, "api_mode");
+    char *name = cch2_truth(prov) ? cch2_pystr(prov) : cch2_xfmt("provider");
+    char *model_name = cch2_pystr_or_empty(model);
+    char *api_mode = cch2_truth(am) ? cch2_pystr(am) : cch2_xfmt("chat_completions");
+
+    json_t *meta = json_object();
+    json_set(meta, "api_mode", json_string(api_mode ? api_mode : ""));
+    json_set(meta, "api_request_id", cch2_copy_or_null(cch2_get(in, "api_request_id")));
+    json_set(meta, "call_role", json_string("iteration_summary"));
+    json_set(meta, "retry_count", cch2_copy_or_null(cch2_get(in, "retry_count")));
+
+    json_t *a = cch2_args();
+    json_set(a, "request", cch2_copy_or_null(cch2_get(in, "request")));
+    json_set(a, "callback", cch2_copy_or_null(cch2_get(in, "callback")));
+    json_set(a, "name", json_string(name ? name : ""));
+    json_set(a, "model_name", json_string(model_name ? model_name : ""));
+    json_set(a, "metadata", meta);
+    json_set(a, "defer_logical_completion", json_bool(1));
+    free(name); free(model_name); free(api_mode);
+    return cch2_call(io, "relay_llm.execute_current", a);
+}
+
+/* PoP: cch2_summary_text @ agent/chat_completion_helpers.py:_summary_text */
+json_t *cch2_summary_text(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *response = cch2_get(in, "response");
+    const json_t *nkw = cch2_get(in, "normalize_kwargs");
+    json_t *a = cch2_args();
+    json_set(a, "response", cch2_copy_or_null(response));
+    json_t *shim = cch2_call(io, "is_router_timeout_shim", a);
+    if (cch2_is_raise(shim)) return shim;
+    if (cch2_truth(shim)) {
+        json_free(shim);
+        json_t *w = cch2_log(io, "logger.warning", CCH2_FMT_SHIM_WARN, json_array());
+        if (cch2_is_raise(w)) return w;
+        json_free(w);
+        return json_string("");
+    }
+    json_free(shim);
+
+    json_t *a2 = cch2_args();
+    json_set(a2, "response", cch2_copy_or_null(response));
+    if (nkw && nkw->type == JSON_OBJECT)
+        for (size_t i = 0; i < nkw->c.count; i++)
+            json_set(a2, nkw->c.keys[i], json_copy(nkw->c.items[i]));
+    json_t *normalized = cch2_call(io, "transport.normalize_response", a2);
+    if (cch2_is_raise(normalized)) return normalized;
+
+    if (cch2_truth(cch2_get(normalized, "tool_calls"))) {
+        json_t *w = cch2_log(io, "logger.warning", CCH2_FMT_TOOLS_WARN, json_array());
+        if (cch2_is_raise(w)) { json_free(normalized); return w; }
+        json_free(w);
+    }
+    char *content = cch2_pystr_or_empty(cch2_get(normalized, "content"));
+    char *stripped = cch2_strip(content ? content : "");
+    free(content);
+    json_free(normalized);
+    json_t *r = json_string(stripped ? stripped : "");
+    free(stripped);
+    return r;
+}
+
+/* PoP: cch2_with_stream_emitters @ agent/chat_completion_helpers.py:_with_stream_emitters */
+json_t *cch2_with_stream_emitters(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    const json_t *agent = cch2_get(in, "agent");
+    int has_start = cch2_obj_truth(cch2_get(agent, "_emit_stream_start"));
+    int has_end = cch2_obj_truth(cch2_get(agent, "_emit_stream_end"));
+    if (has_start) {
+        json_t *s = cch2_call(io, "emit_stream_start", cch2_args());
+        if (cch2_is_raise(s)) return s;
+        json_free(s);
+    }
+    json_t *r = cch2_call(io, "run", cch2_args());
+    if (cch2_is_raise(r)) {
+        if (cch2_is_base(cch2_kind(r))) return r;   /* except Exception does not catch */
+        if (has_end) {
+            json_t *a = cch2_args();
+            json_set(a, "final_text", json_string(""));
+            json_set(a, "finished", json_bool(0));
+            const char *msg = cch2_str(cch2_get(r, "message"));
+            json_set(a, "error", json_string(msg ? msg : ""));
+            json_t *e = cch2_call(io, "emit_stream_end", a);
+            if (cch2_is_raise(e)) { json_free(r); return e; }
+            json_free(e);
+        }
+        return r;   /* re-raise */
+    }
+    if (has_end) {
+        json_t *tmp = json_object();
+        json_set(tmp, "response", json_copy(r));
+        json_t *ft = cch2_stream_final_text(io, tmp, st);
+        json_free(tmp);
+        json_t *a = cch2_args();
+        json_set(a, "final_text", ft ? ft : json_string(""));
+        json_set(a, "finished", json_bool(1));
+        json_t *e = cch2_call(io, "emit_stream_end", a);
+        if (cch2_is_raise(e)) { json_free(r); return e; }
+        json_free(e);
+    }
+    return r;
+}
+
+/* PoP: cch2_finalize_bedrock_relay_events @ agent/chat_completion_helpers.py:_finalize_bedrock_relay_events */
+json_t *cch2_finalize_bedrock_relay_events(cch2_io_t *io, const json_t *in, json_t *st)
+{
+    (void)st;
+    const json_t *events = cch2_get(in, "events");
+    json_t *kw = json_object();
+    json_set(kw, "stream", cch2_copy_or_null(events));
+    json_t *a = cch2_args();
+    json_set(a, "kwargs", kw);
+    json_t *r = cch2_call(io, "stream_converse_with_callbacks", a);
+    if (cch2_is_raise(r)) {
+        if (strcmp(cch2_kind(r), "EmptyStreamError") == 0) { json_free(r); return NULL; }
+        return r;
+    }
+    return r;
+}

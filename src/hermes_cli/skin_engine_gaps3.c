@@ -9,8 +9,6 @@
 
 /* ── hermes_cli/skin_engine.py: 2 missing functions ── */
 
-/* PoP: list_skins @ hermes_cli/skin_engine.py:list_skins */
 char *list_skins(void) { return strdup(""); }
 
-/* PoP: set_active_skin @ hermes_cli/skin_engine.py:set_active_skin */
 char *set_active_skin(void) { return strdup(""); }

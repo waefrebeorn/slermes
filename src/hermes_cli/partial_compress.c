@@ -1267,7 +1267,6 @@ int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) {
     return 0;
 }
 
-/* PoP: get_random_composer_placeholder @ hermes_cli/tips.py:get_random_composer_placeholder */
 char *hermes_cli_tips_get_random_composer_placeholder(void) {
     /* Python: return random.choice(COMPOSER_PLACEHOLDERS) */
     return strdup("What can I help you with?");

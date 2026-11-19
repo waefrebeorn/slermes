@@ -336,7 +336,10 @@ json_t *gmf_flow_service_label(const json_t *service) {
         return r;
     }
     if (service->c.count > 2) {
-        return raise_obj("ValueError", "too many values to unpack (expected 2)");
+        char *m = xsf("too many values to unpack (expected 2, got %zu)", service->c.count);
+        json_t *r = raise_obj("ValueError", m);
+        free(m);
+        return r;
     }
     const json_t *kind = service->c.items[0];
     const json_t *system = service->c.items[1];
@@ -1173,7 +1176,12 @@ static json_t *gmf_reconcile_standalone_runtime(const char *home, const json_t *
     json_set(a, "separators", sep);
     free(path);
     json_t *r = scall(s, "atomic_json_write", a);
-    json_free(runtime);
+    /* The harness trace records read_runtime_status's ret BY REFERENCE (the
+     * oracle's seam appends the returned object itself, and this flow mutates
+     * it in place above). A non-raise OBJECT result is therefore ADOPTED by the
+     * trace event and must not be freed here; raise specs (returned above) and
+     * non-object results stay port-owned. */
+    if (!is_obj(runtime)) json_free(runtime);
     GMF_PROP(r);
     json_free(r);
     return NULL;
@@ -1439,7 +1447,7 @@ json_t *gmf_flow_rollback_migration(const char *default_home, const gmf_seams_t 
         aset_b(a, "value", jtruth(json_obj_get(manifest, "flag_was")));
         json_t *r = scall(s, "write_multiplex_flag", a);
         if (gmf_is_raise(r)) {
-            if (kind_base_only(gmf_raise_class(r))) { json_free(r); ret = r; goto done; }
+            if (kind_base_only(gmf_raise_class(r))) { ret = r; goto done; }
             char *line = xsf("  ✗ default: could not restore gateway.multiplex_profiles (%s)",
                              json_get_str(r, "msg", ""));
             json_free(r);
@@ -1496,7 +1504,7 @@ json_t *gmf_flow_rollback_migration(const char *default_home, const gmf_seams_t 
     {
         json_t *r = gmf_reconcile_standalone_runtime(home, names, s);
         if (gmf_is_raise(r)) {
-            if (kind_base_only(gmf_raise_class(r))) { json_free(r); ret = r; goto done; }
+            if (kind_base_only(gmf_raise_class(r))) { ret = r; goto done; }
             char *line = xsf("  ✗ default: could not clear multiplex-owned runtime status (%s)",
                              json_get_str(r, "msg", ""));
             json_free(r);
@@ -1548,7 +1556,7 @@ json_t *gmf_flow_rollback_migration(const char *default_home, const gmf_seams_t 
         const char *user = jstr(tf->c.items[1]);
         json_t *rd = gmf_flow_restart_default(dgw, target, home, user, s);
         if (gmf_is_raise(rd)) {
-            if (kind_base_only(gmf_raise_class(rd))) { json_free(rd); ret = rd; goto done; }
+            if (kind_base_only(gmf_raise_class(rd))) { ret = rd; goto done; }
             char *line = xsf("  ✗ default: could not bring the host gateway back up via the recorded service manager (%s); falling back to a detached gateway",
                              json_get_str(rd, "msg", ""));
             json_free(rd);
@@ -1561,7 +1569,7 @@ json_t *gmf_flow_rollback_migration(const char *default_home, const gmf_seams_t 
             json_t *sp = scall(s, "spawn_detached_gateway", a);
             bool spawned;
             if (gmf_is_raise(sp)) {
-                if (kind_base_only(gmf_raise_class(sp))) { json_free(sp); ret = sp; goto done; }
+                if (kind_base_only(gmf_raise_class(sp))) { ret = sp; goto done; }
                 char *l2 = xsf("  ✗ default: the detached fallback also failed (%s)",
                                json_get_str(sp, "msg", ""));
                 json_free(sp);

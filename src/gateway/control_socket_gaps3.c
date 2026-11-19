@@ -9,5 +9,4 @@
 
 /* ── gateway/control_socket.py: 1 missing functions ── */
 
-/* PoP: pause_gateway_for_update @ gateway/control_socket.py:pause_gateway_for_update */
 char *pause_gateway_for_update(void) { return strdup(""); }

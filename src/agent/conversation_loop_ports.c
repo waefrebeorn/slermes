@@ -48,7 +48,6 @@ long cvl_image_error_max_dimension(const char *error) {
     return 0;
 }
 
-/* PoP: cvl_ollama_context_limit_error @ agent/conversation_loop.py:_ollama_context_limit_error */
 char *cvl_ollama_context_limit_error(void) {
     /* Python: user-facing message when ollama context too small. */
     return strdup("Ollama context limit reached — increase num_ctx in your Modelfile");
@@ -524,7 +523,6 @@ bool cvl_ensure_cached_system_prompt_static(agent_state_t *agent,
  * pass (returns messages unchanged) — the real peeler must be wired in when
  * the MoA aggregator C port lands. The contract: given a JSON array of
  * messages and a guidance object, strip the MoA reference guidance blocks. */
-/* PoP: cvl_peel_moa_guidance @ agent/conversation_loop.py:_peel_moa_guidance */
 json_t *cvl_peel_moa_guidance(json_t *messages, const json_t *guidance) {
     (void)guidance;  /* guidance is opaque to the no-op path */
     /* No-op identity: return the messages as-is. When the C MoA port lands,

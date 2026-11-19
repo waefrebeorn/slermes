@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/callbacks.py: 1 missing functions ── */
 
-/* PoP: prompt_for_secret @ hermes_cli/callbacks.py:prompt_for_secret */
 char *prompt_for_secret(void) { return strdup(""); }

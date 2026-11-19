@@ -1,0 +1,142 @@
+{"func": "_resolves_to_custom", "in": {"name": "ollama", "io": {"auth.resolve_provider": "custom"}}}
+{"func": "_resolves_to_custom", "in": {"name": "openai", "io": {"auth.resolve_provider": "openai"}}}
+{"func": "_resolves_to_custom", "in": {"name": "vllm", "io": {"auth.resolve_provider": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_resolves_to_custom", "in": {"name": "x", "io": {"auth.resolve_provider": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "halt", "code": "halt"}}}}}
+{"func": "_resolves_to_custom", "in": {"name": "", "io": {"auth.resolve_provider": "custom"}}}
+{"func": "_resolves_to_custom", "in": {"name": "weird", "io": {"auth.resolve_provider": null}}}
+{"func": "_resolves_to_custom", "in": {"name": "kbd", "io": {"auth.resolve_provider": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": " OpenAI "}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": null}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": 0}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": 5}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": true}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": "  CUSTOM  "}}}
+{"func": "_cfg_provider", "in": {"model_cfg": {"provider": "\tX\n"}}}
+{"func": "_same_registered_provider", "in": {"provider": "openai", "configured_provider": "openai", "io": {}}}
+{"func": "_same_registered_provider", "in": {"provider": "openai", "configured_provider": "openai-codex", "io": {"PROVIDER_REGISTRY.get": {"id": "openai"}}}}
+{"func": "_same_registered_provider", "in": {"provider": "openai", "configured_provider": "anthropic", "io": {"PROVIDER_REGISTRY.get": [{"id": "openai"}, {"id": "anthropic"}]}}}
+{"func": "_same_registered_provider", "in": {"provider": "openai", "configured_provider": "ghost", "io": {"PROVIDER_REGISTRY.get": [{"id": "openai"}, null]}}}
+{"func": "_same_registered_provider", "in": {"provider": "ghost", "configured_provider": "openai", "io": {"PROVIDER_REGISTRY.get": [null, {"id": "openai"}]}}}
+{"func": "_same_registered_provider", "in": {"provider": "a", "configured_provider": "b", "io": {"PROVIDER_REGISTRY.get": null}}}
+{"func": "_same_registered_provider", "in": {"provider": "openai", "configured_provider": "openai-codex", "io": {"PROVIDER_REGISTRY.get": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "reg boom"}}}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "openai", "model_cfg": {"provider": "openai", "base_url": " https://api.openai.com/v1/ "}, "io": {}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "anthropic", "model_cfg": {"provider": "openai", "base_url": "https://api.openai.com"}, "io": {"PROVIDER_REGISTRY.get": [{"id": "anthropic"}, {"id": "openai"}]}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "actual", "model_cfg": {"provider": "Actual", "base_url": "http://localhost:8080/"}, "io": {"_models.normalize_provider": "actual"}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "actual", "model_cfg": {"provider": "openai", "base_url": "http://x/"}, "io": {"_models.normalize_provider": "other", "PROVIDER_REGISTRY.get": [{"id": "actual"}, {"id": "other"}]}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "openai", "model_cfg": {"provider": "openai", "base_url": null}, "io": {}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "openai", "model_cfg": {"provider": "openai", "base_url": 0}, "io": {}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "openai", "model_cfg": {"provider": "openai"}, "io": {}}}
+{"func": "_config_base_url_for_provider", "in": {"provider": "openai", "model_cfg": {"provider": "openai", "base_url": "https://x///"}, "io": {}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io/anthropic", "io": {"get_provider": null, "base_url_path": ""}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io/anthropic", "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic/v1"}, "base_url_path": ["/anthropic/v1", "/anthropic"], "base_url_hostname": "api.minimax.io", "base_url_host_matches": true}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://evil.test/anthropic", "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic"}, "base_url_path": "/anthropic", "base_url_hostname": "api.minimax.io", "base_url_host_matches": false}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "anthropic", "base_url": "https://api.anthropic.com", "io": {"get_provider": {"base_url": "https://api.anthropic.com"}, "base_url_path": ""}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": null, "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic"}, "base_url_path": "/anthropic"}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io/anthropic/v1", "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic"}, "base_url_path": ["/anthropic", "/anthropic/v1"], "base_url_hostname": "api.minimax.io", "base_url_host_matches": true}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io/other", "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic"}, "base_url_path": ["/anthropic", "/other"], "base_url_hostname": "api.minimax.io", "base_url_host_matches": true}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io", "io": {"get_provider": {"base_url": "https://api.minimax.io/anthropic"}, "base_url_path": ["/anthropic", ""], "base_url_hostname": "api.minimax.io", "base_url_host_matches": true}}}
+{"func": "_on_declared_anthropic_endpoint", "in": {"provider": "minimax", "base_url": "https://api.minimax.io/anthropic", "io": {"get_provider": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "catalog boom"}}}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "", "api_mode": "chat_completions", "io": {}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "anthropic_messages", "io": {}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "chat_completions", "io": {"_models.azure_foundry_model_api_mode": "codex_responses"}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "chat_completions", "io": {"_models.azure_foundry_model_api_mode": null}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "chat_completions", "io": {"_models.azure_foundry_model_api_mode": ""}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "chat_completions", "io": {"_models.azure_foundry_model_api_mode": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad model"}}}}}
+{"func": "_azure_inferred_api_mode", "in": {"effective_model": "gpt-5", "api_mode": "chat_completions", "io": {"_models.azure_foundry_model_api_mode": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "halt", "code": "halt"}}}}}
+{"func": "_runtime", "in": {"provider": "openai", "api_mode": "codex_responses", "base_url": "https://api.openai.com/v1", "api_key": "k", "extra": {"source": "explicit"}, "io": {"is_actual_route": false}}}
+{"func": "_runtime", "in": {"provider": "actual", "api_mode": "codex_responses", "base_url": "http://localhost:8080", "api_key": "", "extra": {"source": "env", "requested_provider": "actual"}, "io": {"is_actual_route": true, "normalize_actual_base_url": "http://127.0.0.1:8080"}}}
+{"func": "_runtime", "in": {"provider": "x", "api_mode": "m", "base_url": null, "api_key": null, "extra": {}, "io": {"is_actual_route": false}}}
+{"func": "_runtime", "in": {"provider": "a", "api_mode": "m", "base_url": "u", "api_key": "k", "extra": {"provider": "b", "source": "s"}, "io": {"is_actual_route": false}}}
+{"func": "_runtime", "in": {"provider": "openai", "api_mode": "m", "base_url": "u", "api_key": "k", "extra": {}, "io": {"is_actual_route": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "route boom"}}}}}
+{"func": "_runtime", "in": {"provider": "actual", "api_mode": "m", "base_url": "u", "api_key": "k", "extra": {}, "io": {"is_actual_route": true, "normalize_actual_base_url": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "norm boom"}}}}}
+{"func": "_creds_fallback", "in": {"api_key": "explicit", "explicit_base_url": "https://e", "base_url": "https://b", "expiry": 123, "expiry_key": "expires_at", "resolve_name": "resolve_codex_runtime_credentials", "io": {}}}
+{"func": "_creds_fallback", "in": {"api_key": "", "explicit_base_url": "https://e", "base_url": "https://b", "expiry": null, "expiry_key": "last_refresh", "resolve_name": "resolve_x", "io": {"resolve_x": {"api_key": "stored", "base_url": "https://s/", "last_refresh": 999}}}}
+{"func": "_creds_fallback", "in": {"api_key": null, "explicit_base_url": null, "base_url": "https://b", "expiry": null, "expiry_key": "expires_at", "resolve_name": "resolve_y", "io": {"resolve_y": {"api_key": "k2", "base_url": "https://s/"}}}}
+{"func": "_creds_fallback", "in": {"api_key": "", "explicit_base_url": "", "base_url": "https://b", "expiry": null, "expiry_key": "e", "resolve_name": "resolve_z", "io": {"resolve_z": {"api_key": "k3", "base_url": ""}}}}
+{"func": "_creds_fallback", "in": {"api_key": 0, "explicit_base_url": null, "base_url": "https://b", "expiry": null, "expiry_key": "e", "resolve_name": "resolve_w", "io": {"resolve_w": {"api_key": "", "base_url": "https://s"}}}}
+{"func": "_creds_fallback", "in": {"api_key": "", "explicit_base_url": null, "base_url": "https://b", "expiry": null, "expiry_key": "e", "resolve_name": "resolve_boom", "io": {"resolve_boom": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "creds boom"}}}}}
+{"func": "_creds_fallback", "in": {"api_key": "k", "explicit_base_url": null, "base_url": null, "expiry": null, "expiry_key": "e", "resolve_name": "resolve_unused", "io": {}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"key_env": "MY_KEY"}, "io": {"get_secret_str": "tok"}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"key_env": "MY_KEY", "api_key_env": "OTHER"}, "io": {"get_secret_str": ["", "tok2"]}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"api_key": "inline"}, "io": {}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {}, "io": {"get_secret_str": ["az", "an"]}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {}, "io": {"get_secret_str": ["", "an"]}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {}, "io": {"get_secret_str": ""}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"key_env": "  "}, "io": {"get_secret_str": ""}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"api_key": 0}, "io": {"get_secret_str": "x"}}}
+{"func": "_azure_anthropic_env_key", "in": {"model_cfg": {"key_env": "K"}, "io": {"get_secret_str": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "secret boom"}}}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://api.openai.com/v1", "env_openai_base": "", "io": {"base_url_host_matches": true}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://x.openai.azure.com", "env_openai_base": "", "io": {"base_url_host_matches": [false, true]}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://proxy.test", "env_openai_base": "https://proxy.test/", "io": {"base_url_host_matches": false}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://proxy.test", "env_openai_base": "https://other.test", "io": {"base_url_host_matches": false}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://proxy.test", "env_openai_base": "", "io": {"base_url_host_matches": false}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": null, "env_openai_base": "https://p", "io": {"base_url_host_matches": false}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": " https://p/ ", "env_openai_base": " https://p/ ", "io": {"base_url_host_matches": false}}}
+{"func": "openai_env_key_authoritative_for", "in": {"base_url": "https://api.openai.com", "env_openai_base": "", "io": {"base_url_host_matches": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "host boom"}}}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.openai.com/v1", "ollama": false, "io": {"get_secret_str": ["ob", "ok"], "base_url_host_matches": [true, false], "_host_derived_api_key": ""}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.ollama.com", "ollama": true, "io": {"get_secret_str": ["", "oll"], "base_url_host_matches": [false, false, true, false], "_host_derived_api_key": ""}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://openrouter.ai/api/v1", "ollama": false, "io": {"get_secret_str": ["ob", "or"], "base_url_host_matches": [false, false, true], "_host_derived_api_key": ""}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.deepseek.com", "ollama": false, "io": {"get_secret_str": "", "base_url_host_matches": false, "_host_derived_api_key": "ds"}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.ollama.com", "ollama": true, "io": {"get_secret_str": "", "base_url_host_matches": false, "_host_derived_api_key": ""}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.openai.com", "ollama": false, "io": {"get_secret_str": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "secret boom"}}, "base_url_host_matches": false, "_host_derived_api_key": ""}}}
+{"func": "_host_gated_env_key_candidates", "in": {"base_url": "https://api.deepseek.com", "ollama": false, "io": {"get_secret_str": "", "base_url_host_matches": false, "_host_derived_api_key": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "derived boom"}}}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openrouter", "model_cfg": {"provider": "openrouter", "base_url": "https://openrouter.ai/api/v1"}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": "", "base_url_host_matches": true}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openrouter", "model_cfg": {"provider": "custom", "base_url": "https://mirror.test"}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": ""}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "auto", "model_cfg": {}, "explicit_api_key": "k", "explicit_base_url": null, "io": {"get_secret_str": ""}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openai", "model_cfg": {}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": ""}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openrouter", "model_cfg": {"provider": "openrouter", "base_url": "https://mirror.test"}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": "", "base_url_host_matches": false}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openrouter", "model_cfg": {}, "explicit_api_key": null, "explicit_base_url": "https://e", "io": {"get_secret_str": ""}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "auto", "model_cfg": {"provider": "auto", "base_url": "https://local"}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": "envurl"}}}
+{"func": "_openrouter_should_use_pool", "in": {"requested_provider": "openrouter", "model_cfg": {}, "explicit_api_key": null, "explicit_base_url": null, "io": {"get_secret_str": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "secret boom"}}}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {"providers": {"openai": {"enabled": false}}}, "_config_mod.is_provider_enabled": false}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {"providers": {"openai": {"enabled": true}}}, "_config_mod.is_provider_enabled": true}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {"providers": {}}}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {}}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {"providers": {"openai": "notdict"}}}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": null}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "weird'name", "io": {"load_config": {"providers": {"weird'name": {"enabled": false}}}, "_config_mod.is_provider_enabled": false}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "a\tb", "io": {"load_config": {"providers": {"a\tb": {"enabled": false}}}, "_config_mod.is_provider_enabled": false}}}
+{"func": "_raise_if_provider_disabled", "in": {"requested_provider": "openai", "io": {"load_config": {"providers": {"openai": {"enabled": false}}}, "_config_mod.is_provider_enabled": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "enabled boom"}}}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom", "api_key": ""}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom", "api_key": "k"}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom"}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "openai", "api_key": ""}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "openrouter", "runtime": {"provider": "custom", "api_key": ""}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom", "api_key": null}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom", "api_key": 0}}}
+{"func": "_raise_for_credentialless_bare_custom", "in": {"requested_provider": "custom", "runtime": {"provider": "custom", "api_key": "no-key-required"}}}
+{"func": "_tag", "in": {"runtime": {"provider": "openai"}, "requested_provider": "openai"}}
+{"func": "_tag", "in": {"runtime": {}, "requested_provider": "x"}}
+{"func": "_tag", "in": {"runtime": null, "requested_provider": "x"}}
+{"func": "_tag", "in": {"runtime": {"provider": "custom", "requested_provider": "old"}, "requested_provider": "new"}}
+{"func": "_tag", "in": {"runtime": {"api_key": "k"}, "requested_provider": "auto"}}
+{"func": "_tag", "in": {"runtime": {"provider": "x", "requested_provider": "keep"}, "requested_provider": "keep"}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "auto", "base_url": "http://localhost:11434"}, "base_url_host_matches": false, "_resolve_openrouter_runtime": {"provider": "openrouter", "api_key": "k"}}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "openai", "base_url": "http://localhost"}}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "auto", "base_url": ""}}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "auto", "base_url": "https://openrouter.ai/api/v1"}, "base_url_host_matches": true}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "", "base_url": "https://api.anthropic.com"}, "base_url_host_matches": [false, true]}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "auto", "base_url": "http://localhost"}, "base_url_host_matches": false, "_resolve_openrouter_runtime": null}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "cfg boom"}}}}}
+{"func": "_local_endpoint_bypass", "in": {"requested_provider": "auto", "explicit_api_key": null, "explicit_base_url": null, "io": {"_get_model_config": {"provider": "auto", "base_url": "http://localhost"}, "base_url_host_matches": false, "_resolve_openrouter_runtime": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "or boom"}}}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "moa", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {"is_actual_route": false}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "anthropic", "explicit_api_key": "azkey", "explicit_base_url": "https://x.openai.azure.com/", "target_model": null, "io": {"base_url_host_matches": true, "is_actual_route": false}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "anthropic", "explicit_api_key": "", "explicit_base_url": "https://x.azure.com", "target_model": null, "io": {"base_url_host_matches": true, "get_secret_str": "envkey", "is_actual_route": false}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "anthropic", "explicit_api_key": null, "explicit_base_url": "https://x.azure.com", "target_model": null, "io": {"base_url_host_matches": true, "get_secret_str": ""}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "anthropic", "explicit_api_key": null, "explicit_base_url": "https://api.anthropic.com", "target_model": null, "io": {"base_url_host_matches": false}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "azure-foundry", "explicit_api_key": "k", "explicit_base_url": "https://f", "target_model": "m", "io": {"_get_model_config": {"provider": "azure-foundry"}, "_resolve_azure_foundry_runtime": {"provider": "azure-foundry", "api_mode": "chat_completions"}}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "vertex", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {"_resolve_vertex_runtime": {"provider": "vertex", "api_mode": "chat_completions"}}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "google-vertex", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {"_resolve_vertex_runtime": {"provider": "vertex"}}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "openai", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "azure-foundry", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {"_get_model_config": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "cfg boom"}}}}}
+{"func": "_resolve_requested_shortcuts", "in": {"requested_provider": "moa", "explicit_api_key": null, "explicit_base_url": null, "target_model": null, "io": {"is_actual_route": true, "normalize_actual_base_url": "moa://norm"}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"agent_key": "jwt", "agent_key_expires_at": 9999, "scope": "s", "runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": true}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"agent_key": null, "agent_key_expires_at": 0, "scope": "s", "runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": [false, true], "logger.debug": null, "pool.try_refresh_current": {"agent_key": "new", "runtime_api_key": "newk", "access_token": "at"}}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": false, "logger.debug": [null, null], "pool.try_refresh_current": null}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": false, "logger.debug": [null, null, null], "pool.try_refresh_current": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "", "io": {"env_int": 1800, "_agent_key_is_usable": false, "logger.debug": [null, null], "pool.try_refresh_current": null}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 30, "_agent_key_is_usable": true}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": false, "logger.debug": null, "pool.try_refresh_current": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "halt", "code": "halt"}}}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"runtime_api_key": "k"}, "pool_api_key": "k", "io": {"env_int": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "ttl boom"}}}}}
+{"func": "_refresh_nous_pool_entry", "in": {"entry": {"access_token": "at", "runtime_api_key": null}, "pool_api_key": "k", "io": {"env_int": 1800, "_agent_key_is_usable": [false, true], "logger.debug": null, "pool.try_refresh_current": {"access_token": "at2", "runtime_api_key": ""}}}}

@@ -4,12 +4,15 @@
  * safe defaults.
  */
 #define _POSIX_C_SOURCE 200809L
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -19,14 +22,25 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
+/* ── rest_revive1 (proxy_adapters_base_ports) ───────────────────────────────
+ * UpstreamAdapter.name / display_name are @property @abstractmethod with
+ * docstring-only bodies: calling the plain extracted def returns None.
+ * The faithful port therefore returns NULL (Python None) — the previous
+ * "nous"/"Nous" literals were fabricated adapter-specific answers.
+ * json_t *fn(void *io, json_t *in) — no I/O seams; io/in unused. */
+
 /* PoP: pxb_name @ hermes_cli/proxy/adapters/base.py:name */
-char *pxb_name(void) {
-    return strdup("nous");
+json_t *pxb_name(void *io, json_t *in) {
+    (void)io;
+    (void)in;
+    return json_null();
 }
 
 /* PoP: pxb_display_name @ hermes_cli/proxy/adapters/base.py:display_name */
-char *pxb_display_name(void) {
-    return strdup("Nous");
+json_t *pxb_display_name(void *io, json_t *in) {
+    (void)io;
+    (void)in;
+    return json_null();
 }
 
 /* PoP: pxb_is_authenticated @ hermes_cli/proxy/adapters/base.py:is_authenticated */

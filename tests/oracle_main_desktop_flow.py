@@ -143,10 +143,16 @@ class FakePath:
 
     def glob(self, pattern):
         r = _ctx().call("path.glob", {"path": self.s, "pattern": pattern})
+        # A script queue hands back ONE path string per call; a bare string is
+        # a single match, not an iterable of characters.
+        if isinstance(r, str):
+            r = [r]
         return [FakePath(x) for x in r]
 
     def rglob(self, pattern):
         r = _ctx().call("path.rglob", {"path": self.s, "pattern": pattern})
+        if isinstance(r, str):
+            r = [r]
         return iter([FakePath(x) for x in r])   # next(..., None) live
 
     def stat(self):

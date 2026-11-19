@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/projects_db.py: 1 missing functions ── */
 
-/* PoP: find_by_primary_path @ hermes_cli/projects_db.py:find_by_primary_path */
 char *find_by_primary_path(void) { return strdup(""); }

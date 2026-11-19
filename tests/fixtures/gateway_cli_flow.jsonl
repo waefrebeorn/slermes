@@ -1,0 +1,164 @@
+{"func": "parse_kv_pairs", "in": {"items": ["A=1", "B=2"], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": ["A=1", "A=2"], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": ["NOEQ", "X= y "], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": [], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": ["K="], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": ["A=b=c"], "seams": {}}}
+{"func": "parse_kv_pairs", "in": {"items": ["=v"], "seams": {}}}
+{"func": "systemd_cli_bits", "in": {"system": true, "seams": {}}}
+{"func": "systemd_cli_bits", "in": {"system": false, "seams": {}}}
+{"func": "systemd_cli_bits", "in": {"system": true, "seams": {}}}
+{"func": "systemd_cli_bits", "in": {"system": false, "seams": {}}}
+{"func": "systemd_cli_bits", "in": {"system": true, "seams": {}}}
+{"func": "runtime_state_pid", "in": {"state": {"pid": 5}, "seams": {"positive_pid": 5}}}
+{"func": "runtime_state_pid", "in": {"state": {"pid": "7"}, "seams": {"positive_pid": 7}}}
+{"func": "runtime_state_pid", "in": {"state": {}, "seams": {"positive_pid": null}}}
+{"func": "runtime_state_pid", "in": {"state": null, "seams": {"positive_pid": null}}}
+{"func": "runtime_state_pid", "in": {"state": {"pid": 0}, "seams": {"positive_pid": null}}}
+{"func": "runtime_state_pid", "in": {"state": {"pid": -3}, "seams": {"positive_pid": null}}}
+{"func": "runtime_state_pid", "in": {"state": {"pid": "abc"}, "seams": {"positive_pid": null}}}
+{"func": "host_decision_exit_code", "in": {"decision": {"transient": true}, "seams": {}}}
+{"func": "host_decision_exit_code", "in": {"decision": {"transient": false}, "seams": {}}}
+{"func": "host_decision_exit_code", "in": {"decision": {}, "seams": {}}}
+{"func": "host_decision_exit_code", "in": {"decision": null, "seams": {}}}
+{"func": "host_decision_exit_code", "in": {"decision": {"transient": true, "outcome": "refuse"}, "seams": {}}}
+{"func": "host_decision_exit_code", "in": {"decision": {"outcome": "attach"}, "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": ["a", "b"], "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": [], "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": ["one"], "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": ["x", "y", "z"], "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": [""], "seams": {}}}
+{"func": "print_info_lines", "in": {"lines": ["a"], "seams": {"print_info": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_indented", "in": {"text": "a\nb", "seams": {}}}
+{"func": "print_indented", "in": {"text": "", "seams": {}}}
+{"func": "print_indented", "in": {"text": "single", "seams": {}}}
+{"func": "print_indented", "in": {"text": "a\n", "seams": {}}}
+{"func": "print_indented", "in": {"text": "a\n\nb", "seams": {}}}
+{"func": "print_indented", "in": {"text": "a\r\nb", "seams": {}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice"}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": null, "profile_suffix": "hash"}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "default"}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "", "profile_suffix": "sfx"}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "current_profile_name", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": false}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"stdout": "active\n", "returncode": 0}}}}
+{"func": "systemd_unit_is_active", "in": {"system": false, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"stdout": "inactive\n", "returncode": 0}}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"stdout": "  active  ", "returncode": 0}}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"__raise__": "TimeoutExpired", "msg": "Command 'systemctl' timed out after 90 seconds", "cmd": "systemctl", "timeout": 90}}}}
+{"func": "systemd_unit_is_active", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_service_name": "hermes-gateway", "path_exists": true, "run_systemctl": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "systemctl_show", "in": {"properties": ["ActiveState", "MainPID"], "system": false, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": false, "run_systemctl": {"stdout": "A=1\nB=2\n", "returncode": 0}}}}
+{"func": "systemctl_show", "in": {"properties": ["A"], "system": false, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": false, "run_systemctl": {"stdout": "A=1\n", "returncode": 1}}}}
+{"func": "systemctl_show", "in": {"properties": ["A"], "system": true, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": true, "run_systemctl": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "systemctl_show", "in": {"properties": ["A"], "system": false, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": false, "run_systemctl": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemctl_show", "in": {"properties": [], "system": false, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": false, "run_systemctl": {"stdout": "", "returncode": 0}}}}
+{"func": "systemctl_show", "in": {"properties": ["A"], "system": false, "seams": {"get_service_name": {"__raise__": "RuntimeError", "msg": "boom"}, "select_systemd_scope": false}}}
+{"func": "systemctl_show", "in": {"properties": ["A", "B"], "system": false, "seams": {"get_service_name": "hermes-gateway", "select_systemd_scope": false, "run_systemctl": {"stdout": "X= y \nZ=3", "returncode": 0}}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": false}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": true, "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "path_exists": [false, false]}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": true, "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "path_exists": [true], "foreign_systemd_unit_home": [null]}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": true, "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "path_exists": [true, true], "foreign_systemd_unit_home": ["other", null]}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": true, "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "path_exists": [false, true], "foreign_systemd_unit_home": [null]}}}
+{"func": "systemd_unit_installed", "in": {"seams": {"supports_systemd_services": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": "5", "parse": 5}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": null, "read_raw_config": {"agent": {"cron_drain_timeout": 7}}, "parse": 7}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": null, "read_raw_config": {"agent": {}}, "parse": 0}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": null, "read_raw_config": null, "parse": 0}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": "  ", "read_raw_config": {"agent": {"cron_drain_timeout": 9}}, "parse": 9}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": null, "read_raw_config": {"agent": "notdict"}, "parse": 0}}}
+{"func": "agent_timeout_setting", "in": {"env_var": "HERMES_CRON_DRAIN_TIMEOUT", "key": "cron_drain_timeout", "seams": {"os_getenv": null, "read_raw_config": {"agent": {"cron_drain_timeout": null}}, "parse": 0}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": true, "require_installed": true, "seams": {"select_systemd_scope": true}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": false, "require_installed": true, "preflight_user": true, "seams": {"select_systemd_scope": false}}}
+{"func": "systemd_scope_preamble", "in": {"action": "stop", "system": false, "require_installed": false, "preflight_user": false, "seams": {"select_systemd_scope": false}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": true, "require_installed": false, "seams": {"select_systemd_scope": true}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": true, "seams": {"select_systemd_scope": true, "require_root_for_system_service": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": false, "preflight_user": true, "seams": {"select_systemd_scope": false, "preflight_user_systemd": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemd_scope_preamble", "in": {"action": "start", "system": false, "seams": {"select_systemd_scope": false, "require_service_installed": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": "no tokens here"}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": "Added to end the gateway respawn storm\nExecStart=x --replace\n"}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": false, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": "Added to end the gateway respawn storm --replace"}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": "Added to end the gateway respawn storm\nExecStart=x --replace\n", "unlink": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "retire_hermes_replace_dropin", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "read_text": "Added to end the gateway respawn storm\nExecStart=x --replace\n", "unlink": null}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": null}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": false}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": true, "gateway.describe": "PID 100"}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": null, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "bob", "host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "launched_by_other_tenant": false}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "host_multiplexer_serving", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "served_by_another_host_gateway", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": null}}}
+{"func": "served_by_another_host_gateway", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": false, "get_process_hermes_home": "/home/u/.hermes", "same_hermes_home": true}}}
+{"func": "served_by_another_host_gateway", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": false, "get_process_hermes_home": "/other", "same_hermes_home": false}}}
+{"func": "served_by_another_host_gateway", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": false, "get_process_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "served_by_another_host_gateway", "in": {"profile_name": "alice", "seams": {"host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "get_hermes_home": "/home/u/.hermes", "launched_by_other_tenant": false, "get_process_hermes_home": "/home/u/.hermes", "same_hermes_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "host_multiplexer_for_all_verb", "in": {"seams": {"host_gateway": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}}}}
+{"func": "host_multiplexer_for_all_verb", "in": {"seams": {"host_gateway": null}}}
+{"func": "host_multiplexer_for_all_verb", "in": {"seams": {"host_gateway": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "host_multiplexer_for_all_verb", "in": {"seams": {"host_gateway": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "host_multiplexer_for_all_verb", "in": {"seams": {"host_gateway": {"home": "/home/other/.hermes", "pid": 200, "profile_label": "alice"}}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"get_process_hermes_home": "/home/u/.hermes", "same_hermes_home": true}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"get_process_hermes_home": "/other", "same_hermes_home": false}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": null, "seams": {}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"get_process_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"get_process_hermes_home": "/home/u/.hermes", "same_hermes_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "host_multiplexer_is_ours", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"get_process_hermes_home": "/home/u/.hermes", "same_hermes_home": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": [[100]]}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": [[100, 200, 300]]}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": [[]]}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": null, "seams": {}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "print_unfolded_gateway_note", "in": {"owner": {"pid": 100}, "seams": {"find_gateway_pids": [[200]]}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 3}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 0, "terminate_pid": null}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 0, "terminate_pid": {"__raise__": "ProcessLookupError", "msg": "boom"}}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 0, "terminate_pid": {"__raise__": "PermissionError", "msg": "boom"}}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 0, "terminate_pid": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "stop_host_multiplexer", "in": {"owner": null, "seams": {"kill_gateway_processes": 0}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": 0, "terminate_pid": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "stop_host_multiplexer", "in": {"owner": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "seams": {"kill_gateway_processes": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": [["a", "b"]]}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": [[]]}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": [["one"]]}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "print_multiplex_standalone_reason", "in": {"seams": {"recorded_standalone_warning_lines": [["a"]], "print": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": null}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": {}}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": {"telegram": {"x": 1}}, "format_ingress_url_lines": [["line1"]]}}}
+{"func": "print_served_ingress_urls", "in": {"profile": "p", "seams": {"served_profile_ingress_urls": {"b": {}, "a": {}}, "format_ingress_url_lines": [["L"]]}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "print_served_ingress_urls", "in": {"profile": null, "seams": {"served_profile_ingress_urls": {"t": {}}, "format_ingress_url_lines": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "served_profile_needs_no_service", "in": {"seams": {"named_profile_served": false, "get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "default", "host_gateway_serving": null}}}
+{"func": "served_profile_needs_no_service", "in": {"seams": {"named_profile_served": true, "get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": true, "standalone_rescan_message": "rescan now"}}}
+{"func": "served_profile_needs_no_service", "in": {"seams": {"named_profile_served": true, "get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": false}}}
+{"func": "served_profile_needs_no_service", "in": {"seams": {"named_profile_served": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "served_profile_needs_no_service", "in": {"seams": {"named_profile_served": true, "get_hermes_home": "/home/u/.hermes", "profile_is_standalone": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": true, "seams": {}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "default", "host_gateway_serving": null, "named_profile_served": false}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": true, "host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "launched_by_other_tenant": false, "get_process_hermes_home": "/other", "same_hermes_home": false, "standalone_rescan_message": "rescan now"}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": false, "is_service_installed": false, "host_gateway_serving": null, "named_profile_served": false, "display_hermes_home": "~/.hermes"}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": false, "is_service_installed": true, "host_gateway_serving": null, "named_profile_served": false}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": "alice", "profile_is_standalone": false, "is_service_installed": true, "host_gateway_serving": {"home": "/home/u/.hermes", "pid": 100, "profile_label": "default"}, "launched_by_other_tenant": false, "get_process_hermes_home": "/other", "same_hermes_home": false, "gateway.describe": "PID 100", "display_hermes_home": "~/.hermes"}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "profile_name_for_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": true, "seams": {}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "replace": true, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"outcome": "replace-host", "message": "", "transient": false}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"outcome": "attach", "message": "attached", "transient": true}, "running_under_gateway_supervisor": false}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"outcome": "attach", "message": "attached", "transient": true}, "running_under_gateway_supervisor": true}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"outcome": "refuse", "message": "refused", "transient": false}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"outcome": "refuse", "message": "refused", "transient": true}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": null}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "attach_to_host_gateway_or_guard", "in": {"force": false, "seams": {"get_hermes_home": "/home/u/.hermes", "decide": null, "guard_named_profile_under_multiplexer": {"__raise__": "SystemExit", "msg": "78"}}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"returncode": 0}]}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "CalledProcessError", "msg": "Command 'systemctl start hermes-gateway' returned non-zero exit status 1.", "returncode": 1, "cmd": "systemctl start hermes-gateway"}], "systemd_error_indicates_start_limit": true}}}
+{"func": "systemd_reset_and_run", "in": {"action": "restart", "system": true, "previous_pid": null, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "CalledProcessError", "msg": "Command 'systemctl start hermes-gateway' returned non-zero exit status 1.", "returncode": 1, "cmd": "systemctl start hermes-gateway"}], "systemd_error_indicates_start_limit": false, "systemd_service_is_start_limited": true}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "CalledProcessError", "msg": "Command 'systemctl start hermes-gateway' returned non-zero exit status 1.", "returncode": 1, "cmd": "systemctl start hermes-gateway"}], "systemd_error_indicates_start_limit": false, "systemd_service_is_start_limited": false}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "TimeoutExpired", "msg": "Command 'systemctl' timed out after 90 seconds", "cmd": "systemctl", "timeout": 90}], "service_scope_label": "user"}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "ValueError", "msg": "boom"}]}}}
+{"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"returncode": 0}], "wait_for_systemd_service_restart": {"__raise__": "RuntimeError", "msg": "boom"}}}}

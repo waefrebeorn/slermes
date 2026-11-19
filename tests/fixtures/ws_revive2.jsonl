@@ -1,0 +1,210 @@
+{"func": "ws_u_validate_reference_timeout", "in": {"value": null}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": ""}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": 5}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "2.5"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "  +1_2.5e1  "}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": true}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": false}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "nan"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "-Infinity"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": 0}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": -3}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "abc"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": []}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": {}}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "1_"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": ".5"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "1e999"}}
+{"func": "ws_u_validate_reference_timeout", "in": {"value": "1."}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"command": "say hi"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": "command", "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": "  COMMAND  ", "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": "openai", "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"command": "   "}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"command": 5}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": "x"}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": null}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": null, "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": "", "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": {"a": 1}, "command": "x"}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"command": " x "}}}
+{"func": "ws_u_is_command_provider_block", "in": {"value": {"type": ["command"], "command": "x"}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": ["a", "b"], "model": "c"}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": {"m1": 1, "m2": 2}}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": ["a", "a", "", " b "], "default_model": "a"}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"model": 0, "default_model": "d"}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": ["x"], "model": " x "}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": [1, 2.5, null, true]}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": "notlist"}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"model": "  "}}}
+{"func": "ws_u_models_from_custom_endpoint_entry", "in": {"entry": {"models": {"k": 1}, "model": "k"}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "gh", "base_url": "https://x.test", "route": {"description": "d", "events": ["push"], "deliver": "agent", "deliver_only": 1, "prompt": "p", "script": "s", "skills": ["a"], "created_at": "2026-01-01", "signature": "sig", "secret": "s3cr3t", "enabled": true}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "empty", "base_url": "http://h", "route": {}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "off", "base_url": "", "route": {"enabled": false}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "zero", "base_url": "", "route": {"enabled": 0}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "dictev", "base_url": "b", "route": {"events": {"a": 1, "b": 2}}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "strev", "base_url": "b", "route": {"events": "ab"}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "bad", "base_url": "b", "route": {"events": 5}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "nullsk", "base_url": "b", "route": {"skills": null, "created_at": null}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "num", "base_url": 7, "route": {"deliver": null, "prompt": null}}}
+{"func": "ws_u_webhook_route_summary", "in": {"name": "x", "base_url": "b", "route": {"enabled": "false", "secret": ""}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "secret"}, "data": {"k": "v"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text"}, "data": {"k": "hello"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text", "_env_key": "EK"}, "data": {}, "io": {"env_lookup": "envval"}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text", "_env_key": "EK", "default": "dv"}, "data": {"k": ""}, "io": {"env_lookup": ""}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": "a"}, {"value": "b"}], "default": "a"}, "data": {"k": "b"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": "a"}], "default": "a"}, "data": {"k": "zzz"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "boolean"}, "data": {"k": "yes"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "boolean"}, "data": {"k": "maybe"}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "boolean", "default": "on"}, "data": {}, "io": {"env_lookup": ""}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text", "_env_key": "EK"}, "data": {}, "io": {"env_lookup": {"__script__": true, "raise": {"type": "ValueError", "message": "env boom"}}}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text"}, "data": {"k": 5}, "io": {}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "text", "default": 7}, "data": {"k": null}, "io": {"env_lookup": null}}}
+{"func": "ws_u_field_value", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": 1}], "default": 1}, "data": {"k": 1}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text"}, "data": {}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {}}, "data": {}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"mode": "advanced"}}, "data": {"mode": "advanced"}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"mode": "advanced"}}, "data": {"mode": "basic"}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"dep": "x"}}, "data": {}, "fields_by_key": {"dep": {"key": "dep", "kind": "text", "default": "x"}}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"flag": true}}, "data": {"flag": "yes"}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"dep": "x"}}, "data": {}, "fields_by_key": {}, "io": {"env_lookup": ""}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": "notdict"}, "data": {}, "io": {}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"dep": ""}}, "data": {}, "io": {"env_lookup": ""}}}
+{"func": "ws_u_field_visible", "in": {"field": {"key": "k", "kind": "text", "when": {"a": "1", "b": "2"}}, "data": {"a": "1", "b": "nope"}, "io": {}}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "boolean"}, "raw": "yes"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "boolean", "default": "on"}, "raw": null}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "integer"}, "raw": "5"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "number"}, "raw": "2.5"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "integer"}, "raw": "2.5"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "integer", "minimum": 10}, "raw": 5}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "number", "maximum": 2}, "raw": "2.5"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "text", "default": "dv"}, "raw": null}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "text"}, "raw": "  hi  "}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": "a"}]}, "raw": "a"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": "a"}]}, "raw": "b"}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "select", "options": [{"value": "a"}], "default": "a"}, "raw": ""}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "integer"}, "raw": true}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "number", "minimum": "x"}, "raw": 1}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "integer", "default": "3"}, "raw": ""}}
+{"func": "ws_u_coerce_schema_field", "in": {"field": {"key": "k", "kind": "number"}, "raw": "nan"}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": []}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"task": "t1", "input_tokens": 5, "output_tokens": 2, "estimated_cost": 0.1, "api_calls": 1, "model": "m1"}, {"task": "t1", "input_tokens": 3, "output_tokens": 1, "estimated_cost": 0.2, "api_calls": 2, "model": "m1"}, {"task": "t2", "input_tokens": 100, "output_tokens": 0, "estimated_cost": 0, "api_calls": 1, "model": "m2"}]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"task": "a", "input_tokens": 1, "model": "m"}, {"task": "b", "input_tokens": 1, "model": "m"}]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"input_tokens": null, "output_tokens": "", "model": null}]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"task": "t", "input_tokens": "x"}]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": ["notdict"]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"task": 5, "input_tokens": 2}, {"task": "5", "input_tokens": 3}]}}
+{"func": "ws_u_aux_task_summary", "in": {"aux_rows": [{"task": "t", "input_tokens": 1.5, "output_tokens": 2.5}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "input_tokens": 10, "sessions": 2}], "aux_rows": []}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "input_tokens": 10, "output_tokens": 0, "estimated_cost": 0, "sessions": 2, "api_calls": 0}], "aux_rows": [{"model": "m", "task": "t", "input_tokens": 5, "api_calls": 1}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [], "aux_rows": [{"model": "new", "task": "vision", "input_tokens": 7, "output_tokens": 3}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "aux_tasks": [{"task": "old"}]}], "aux_rows": [{"model": "m", "task": "new", "input_tokens": 1}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "aux_tasks": null}], "aux_rows": [{"model": "m", "task": "t"}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "input_tokens": 1}, {"model": "m", "input_tokens": 9}], "aux_rows": [{"model": "m", "input_tokens": 1}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "a", "input_tokens": 1}, {"model": "b", "input_tokens": 50}], "aux_rows": [{"model": "c", "input_tokens": 20}]}}
+{"func": "ws_u_merge_aux_into_by_model", "in": {"by_model": [{"model": "m", "input_tokens": "x"}], "aux_rows": [{"model": "m", "input_tokens": 1}]}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "fallback"}, "io": {"resp.json": {"__script__": true, "ret": {"error": {"message": "bad", "code": "E1", "type": "", "error_description": "  "}}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "fallback"}, "io": {"resp.json": {"__script__": true, "ret": {"error": "  plain  "}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "fallback"}, "io": {"resp.json": {"__script__": true, "ret": {"detail": " det "}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "fallback"}, "io": {"resp.json": {"__script__": true, "ret": {"message": "msg"}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": " fallback text "}, "io": {"resp.json": {"__script__": true, "raise": {"type": "ValueError", "message": "no json"}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "io": {"resp.json": {"__script__": true, "ret": null}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "  pad  "}, "io": {"resp.json": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": ""}, "io": {"resp.json": {"__script__": true, "ret": {"error": {"message": ""}}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "t"}, "io": {"resp.json": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": "t"}, "io": {"resp.json": {"__script__": true, "ret": {"error": {"message": 5, "code": ["a"]}}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {"text": null}, "io": {"resp.json": {"__script__": true, "ret": {"error_description": "ed"}}}}}
+{"func": "ws_u_http_response_error_detail", "in": {"resp": {}, "io": {}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "", "io": {}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "mem0", "io": {"discover_memory_provider_statuses": {"__script__": true, "ret": [{"name": "mem0", "status": "ready"}]}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "mem0", "io": {"discover_memory_provider_statuses": {"__script__": true, "ret": [{"name": "mem0", "status": "needs_setup"}]}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "nope", "io": {"discover_memory_provider_statuses": {"__script__": true, "ret": [{"name": "other", "status": "ready"}]}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "mem0", "io": {"discover_memory_provider_statuses": {"__script__": true, "raise": {"type": "RuntimeError", "message": "disc boom"}}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "mem0", "io": {"discover_memory_provider_statuses": {"__script__": true, "ret": [{"status": "ready"}]}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": "mem0", "io": {"discover_memory_provider_statuses": {"__script__": true, "ret": [{"name": "mem0", "status": 5}]}}}}
+{"func": "ws_u_require_memory_provider_ready", "in": {"name": null, "io": {}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"name": "p1", "path": "/h/p1", "is_default": true, "model": "m", "provider": "nous", "has_env": 1, "skill_count": 3, "gateway_running": "yes", "description": "d", "description_auto": 1, "display_name": "P1", "bot_title": "Bot", "ui_meta": {"a": 1}, "distribution_name": "dn", "distribution_version": "1.0", "distribution_source": "ds", "alias_path": "/h/alias"}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": null}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"skill_count": "5"}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"skill_count": 2.9}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"skill_count": "abc"}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"alias_path": null, "ui_meta": {}, "description": null}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"skill_count": 0, "path": 5, "display_name": 0, "bot_title": false}}}
+{"func": "ws_u_profile_to_dict", "in": {"info": {"skill_count": []}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": "  /forced/root  ", "ensure_managed_root": "/resolved/root"}}}
+{"func": "ws_u_managed_files_policy", "in": {"create_root": false, "io": {"environ.get": "/forced/root", "canonical_path": "/canon/root"}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": "", "default_hermes_root_is_opt_data": true, "ensure_managed_root": "/opt/data"}}}
+{"func": "ws_u_managed_files_policy", "in": {"create_root": false, "io": {"environ.get": "", "default_hermes_root_is_opt_data": true}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": "", "default_hermes_root_is_opt_data": false, "path_home": "/home/u", "canonical_path": "/home/u"}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": {"__script__": true, "raise": {"type": "OSError", "message": "env boom"}}}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": "/r", "ensure_managed_root": {"__script__": true, "raise": {"type": "HTTPException", "message": "Managed files root is unavailable: disk full", "status_code": 500}}}}}
+{"func": "ws_u_managed_files_policy", "in": {"io": {"environ.get": "   ", "default_hermes_root_is_opt_data": false, "path_home": "/h", "canonical_path": {"__script__": true, "raise": {"type": "HTTPException", "message": "Invalid path"}}}}}
+{"func": "ws_u_managed_files_policy", "in": {"create_root": false, "io": {"environ.get": "", "default_hermes_root_is_opt_data": false, "path_home": "/h", "canonical_path": "/h"}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "telegram", "requested_profile": "p2", "io": {}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": null, "io": {"get_active_profile_name": "default"}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": "p2", "io": {"resolve_profile_dir": "/h/p2", "default_gateway_multiplexes": true}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "webhook", "requested_profile": "p2", "io": {"resolve_profile_dir": "/h/p2", "default_gateway_multiplexes": false}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": "CURRENT", "io": {"get_active_profile_name": "p9", "default_gateway_multiplexes": true}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": "   ", "io": {"get_active_profile_name": "custom"}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": "ghost", "io": {"resolve_profile_dir": {"__script__": true, "raise": {"type": "HTTPException", "message": "Profile not found", "status_code": 404}}}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "webhook", "requested_profile": "default", "io": {}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": [], "requested_profile": null, "io": {}}}
+{"func": "ws_u_multiplex_port_binding_conflict", "in": {"platform_id": "api_server", "requested_profile": "p2", "io": {"resolve_profile_dir": "/h/p2", "default_gateway_multiplexes": {"__script__": true, "raise": {"type": "RuntimeError", "message": "gw boom"}}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "   ", "prev_provider": "nous", "io": {}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "gpt-5", "prev_provider": "openai", "io": {"detect_provider_for_model": {"__script__": true, "ret": ["nous", "gpt-5"]}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "ollama-local", "io": {"detect_provider_for_model": {"__script__": true, "ret": null}, "normalize_provider": "ollama-local", "provider_has_credentials": true}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "plainmodel", "prev_provider": "nous", "io": {"detect_provider_for_model": {"__script__": true, "ret": null}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "openrouter", "io": {"detect_provider_for_model": {"__script__": true, "ret": null}, "normalize_provider": "openrouter"}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "models_import": false, "io": {}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "detect_import": false, "io": {"detect_provider_for_model": {"__script__": true, "ret": null}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "ret": null}, "normalize_provider": "x", "provider_has_credentials": false}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "ret": []}, "normalize_provider": "x", "provider_has_credentials": "yes"}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "ab", "prev_provider": "x", "io": {"detect_provider_for_model": "ab"}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "m", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "ret": ["only"]}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "ret": null}, "normalize_provider": {"__script__": true, "raise": {"type": "ValueError", "message": "norm boom"}}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "m", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "raise": {"type": "SystemExit", "message": "halt"}}}}}
+{"func": "ws_u_infer_provider_on_model_change", "in": {"model_val": "vendor/model", "prev_provider": "x", "io": {"detect_provider_for_model": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "Hi. There? Yes!", "cap": 4000}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "One.  Two.Three", "cap": 4000}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "A.\n\n\nB", "cap": 4000}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "abcdefghijklmnopqrstuvwxyz", "cap": 5}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "Short. Sentence here.", "cap": 0}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "Short. Sentence here.", "cap": null}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "", "cap": 10}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "   \n\t  ", "cap": 10}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "a. b", "cap": 4000}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "Ab. Cd", "cap": 1}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "Héllo wörld. Über cool!", "cap": 7}}
+{"func": "ws_u_split_text_for_speak_stream", "in": {"text": "End.", "cap": -5}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"io": {"secondary_profile_home": "/h/p2", "profile_dashboard_plugins": {"__script__": true, "ret": [{"name": "pl"}]}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": null, "io": {"secondary_profile_home": null, "discover_dashboard_plugins": {"__script__": true, "ret": [{"_dir": "/d1"}]}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": [{"_dir": "/d1"}, {"_dir": "/d2"}], "io": {"secondary_profile_home": null, "path_is_dir": [true, true]}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": [{"_dir": "/d1"}, {"_dir": "/d2"}], "io": {"secondary_profile_home": null, "path_is_dir": [true, false], "discover_dashboard_plugins": {"__script__": true, "ret": [{"_dir": "/new"}]}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"force_rescan": true, "cache": [{"_dir": "/d1"}], "io": {"secondary_profile_home": null, "discover_dashboard_plugins": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": [{"name": "no-dir"}], "io": {"secondary_profile_home": null}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"io": {"secondary_profile_home": "", "profile_dashboard_plugins": {"__script__": true, "ret": []}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": null, "io": {"secondary_profile_home": null, "discover_dashboard_plugins": {"__script__": true, "raise": {"type": "OSError", "message": "scan boom"}}}}}
+{"func": "ws_u_get_dashboard_plugins", "in": {"cache": [{"_dir": 5}], "io": {"secondary_profile_home": null}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "flat_json"}, "values": {"k": "v"}, "io": {"write_provider_flat": null, "load_config": {"__script__": true, "ret": {"memory": {"provider": "other"}}}, "save_config": null}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "provider"}, "values": {}, "io": {"write_provider_own": null, "load_config": {"__script__": true, "ret": {"memory": {"provider": "mem0"}}}}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "bogus"}, "values": {}, "io": {}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": null}, "values": {}, "io": {}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "flat_json"}, "values": {"a": 1}, "io": {"write_provider_flat": null, "load_config": {"__script__": true, "ret": {"memory": "notdict"}}, "save_config": null}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "flat_json"}, "values": {}, "io": {"write_provider_flat": {"__script__": true, "raise": {"type": "OSError", "message": "write boom"}}}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "flat_json"}, "values": {}, "io": {"write_provider_flat": null, "load_config": {"__script__": true, "raise": {"type": "RuntimeError", "message": "load boom"}}}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": ["flat_json"]}, "values": {}, "io": {}}}
+{"func": "ws_u_update_memory_provider_config", "in": {"provider": {"name": "mem0", "storage": "provider"}, "values": {"x": "y"}, "io": {"write_provider_own": null, "load_config": {"__script__": true, "ret": {}}, "save_config": {"__script__": true, "raise": {"type": "OSError", "message": "save boom"}}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "{\"me\": {\"id\": \"12345:6@s.whatsapp.net\", \"name\": \"Me Name\"}, \"account\": {\"id\": \"999\", \"name\": \"Acct\"}}"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "{\"account\": {\"jid\": \"777@s.whatsapp.net\", \"pushName\": \"Push\"}}"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "{\"id\": \"555:1@lid\", \"verifiedName\": \"Root Name\"}"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": "﻿{\"me\": {\"lid\": \"888\", \"notify\": \"Bom\"}}"}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": "{not json"}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "raise": {"type": "OSError", "message": "no file"}}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "[1, 2]"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa/", "io": {"read_text": {"__script__": true, "ret": "{\"me\": {\"id\": \"abc-no-digits\"}}"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "{\"me\": {}}"}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
+{"func": "ws_u_whatsapp_linked_account_from_session", "in": {"session_path": "/h/wa", "io": {"read_text": {"__script__": true, "ret": "{\"me\": {\"id\": \"12\\u00e945\", \"name\": \"Uni\"}}"}}}}

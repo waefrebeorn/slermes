@@ -10,13 +10,45 @@
 #include <string.h>
 
 /* ── seam dispatch ─────────────────────────────────────────────────────── */
+/* CPython OSError(errno, msg) promotes the BASE OSError to the errno's
+ * subclass (PermissionError, FileNotFoundError, ...); a subclass constructor
+ * does NOT re-promote. The oracle materializes scripted raises with the real
+ * OSError(errno, msg), so a scripted {"type":"OSError","errno":N} escapes as
+ * the subclass. Mirror that here at materialization so both the escaping-ret
+ * projection AND the type-specific catch sites (PermissionError retry, etc.)
+ * see the promoted name. Only the base "OSError" with a numeric errno maps. */
+static void promote_oserror(json_t *r) {
+    if (!r || r->type != JSON_OBJECT) return;
+    json_t *t = json_obj_get(r, "__raise__");
+    if (!t || t->type != JSON_STRING || strcmp(t->str_val, "OSError") != 0) return;
+    json_t *en = json_obj_get(r, "errno");
+    if (!en || en->type != JSON_NUMBER) return;
+    const char *sub = NULL;
+    switch ((long)en->num_val) {
+        case 1:  case 13: sub = "PermissionError";      break; /* EPERM/EACCES */
+        case 2:           sub = "FileNotFoundError";    break; /* ENOENT */
+        case 3:           sub = "ProcessLookupError";   break; /* ESRCH */
+        case 4:           sub = "InterruptedError";     break; /* EINTR */
+        case 10:          sub = "ChildProcessError";    break; /* ECHILD */
+        case 11:          sub = "BlockingIOError";      break; /* EAGAIN */
+        case 17:          sub = "FileExistsError";      break; /* EEXIST */
+        case 20:          sub = "NotADirectoryError";   break; /* ENOTDIR */
+        case 21:          sub = "IsADirectoryError";    break; /* EISDIR */
+        case 32:          sub = "BrokenPipeError";      break; /* EPIPE */
+        default: return;   /* EIO/EXDEV/... stay plain OSError */
+    }
+    json_set_hdr(r, "__raise__", sub);
+}
+
 json_t *mdf_call(mdf_io_t *io, const char *name, json_t *args) {
     json_t *ev = json_object();
     json_set_hdr(ev, "name", name);
     json_set(ev, "args", args ? json_copy(args) : json_object());
     json_append(io->trace, ev);
     if (!io->call) return json_null();
-    return io->call(io, name, args);
+    json_t *r = io->call(io, name, args);
+    promote_oserror(r);
+    return r;
 }
 
 bool mdf_raised(const json_t *result) {
@@ -186,10 +218,20 @@ static char *py_repr_str(const char *s) {
 static size_t utf8_len(const char *s) { return s ? strlen(s) : 0; }
 
 /* ── injected print / env helpers ──────────────────────────────────────── */
-/* builtins.print(text) — effect seam (end="\n", file="stdout"). */
+/* builtins.print(text) — effect seam (end="\n", file="stdout"). The oracle's
+ * print double records text = sep.join(args) + end (the FULL written text,
+ * trailing newline included) and appends that to the capture buffer, so the
+ * seam's args.text must carry the end newline too. */
 static json_t *do_print(mdf_io_t *io, const char *text) {
+    const char *t = text ? text : "";
+    size_t n = strlen(t);
+    char *buf = malloc(n + 2);
+    memcpy(buf, t, n);
+    buf[n] = '\n';
+    buf[n + 1] = '\0';
     json_t *a = json_object();
-    json_set_hdr(a, "text", text ? text : "");
+    json_set_hdr(a, "text", buf);
+    free(buf);
     json_set_hdr(a, "end", "\n");
     json_set_hdr(a, "file", "stdout");
     json_t *r = mdf_call(io, "print", a);
@@ -665,11 +707,15 @@ json_t *mdf_packaged_node_pty_missing(mdf_io_t *io, json_t *in) {
     if (mdf_raised(glob)) { free(release); return propagate(glob); }
 
     /* native_dirs = [build/Release, *prebuilds.glob(...)]; any() short-circuits
-     * on the first dir whose rglob yields an item (a Path is always truthy). */
+     * on the first dir whose rglob yields an item (a Path is always truthy).
+     * A script queue hands back ONE path string per call; a bare string result
+     * is a single match (the oracle's glob double coerces str -> [str]). */
+    bool glob_str = j_is_str(glob);
     bool found = false;
-    size_t n_dirs = 1 + (j_is_arr(glob) ? json_len(glob) : 0);
+    size_t n_dirs = 1 + (j_is_arr(glob) ? json_len(glob) : (glob_str ? 1 : 0));
     for (size_t i = 0; i < n_dirs && !found; i++) {
-        const char *d = (i == 0) ? release : jstr(json_get(glob, i - 1));
+        const char *d = (i == 0) ? release
+                        : (glob_str ? jstr(glob) : jstr(json_get(glob, i - 1)));
         if (!d) continue;
         a = field_str("path", d);
         json_t *isd = mdf_call(io, "path.is_dir", a);
@@ -684,7 +730,8 @@ json_t *mdf_packaged_node_pty_missing(mdf_io_t *io, json_t *in) {
         json_t *rg = mdf_call(io, "path.rglob", a);
         json_free(a);
         if (mdf_raised(rg)) { free(release); json_free(glob); return propagate(rg); }
-        found = j_is_arr(rg) && json_len(rg) > 0;   /* next(..., None) != None */
+        /* next(..., None) != None: a non-empty list OR a single path string. */
+        found = (j_is_arr(rg) && json_len(rg) > 0) || j_is_str(rg);
         json_free(rg);
     }
     free(release);
@@ -859,8 +906,12 @@ json_t *mdf_desktop_launch_env(mdf_io_t *io, json_t *in) {
     json_t *opts = mdf_call(io, "_desktop_launch_options", NULL);
     if (mdf_raised(opts)) { result = propagate(opts); goto fail; }
     if (!j_is_arr(opts) || json_len(opts) < 5) {
+        char umsg[96];
+        snprintf(umsg, sizeof umsg,
+                 "not enough values to unpack (expected 5, got %zu)",
+                 j_is_arr(opts) ? json_len(opts) : (size_t)0);
         json_free(opts);
-        result = raise_desc("ValueError", "not enough values to unpack (expected 5, got 0)");
+        result = raise_desc("ValueError", umsg);
         goto fail;
     }
     json_t *flags = json_copy(json_get(opts, 0));

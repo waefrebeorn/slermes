@@ -1,0 +1,166 @@
+{"func": "_any_filter_args", "in": {"args": {}}}
+{"func": "_any_filter_args", "in": {"args": {"older_than": null}}}
+{"func": "_any_filter_args", "in": {"args": {"source": ""}}}
+{"func": "_any_filter_args", "in": {"args": {"min_messages": 0}}}
+{"func": "_any_filter_args", "in": {"args": {"max_tool_calls": false}}}
+{"func": "_any_filter_args", "in": {"args": {"title": "x", "source": null}}}
+{"func": "_any_filter_args", "in": {"args": {"newer_than": "5h"}}}
+{"func": "_any_filter_args", "in": {"args": {"cwd": null, "user": null, "chat_type": null}}}
+{"func": "_prune_args", "in": {"filters": {}}}
+{"func": "_prune_args", "in": {"filters": {"older_than_days": 90}}}
+{"func": "_prune_args", "in": {"filters": {"source": "cli", "older_than_days": 30, "title_like": "x"}}}
+{"func": "_prune_args", "in": {"filters": {"include_pinned": true, "archived": false}}}
+{"func": "_prune_args", "in": {"filters": {"older_than_days": null}}}
+{"func": "_prune_args", "in": {"filters": {"bogus_key": 1}}}
+{"func": "_prune_args", "in": {"filters": null}}
+{"func": "_prune_args", "in": {"filters": {"min_messages": 3, "max_cost": 1.5, "source": "telegram"}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "io": {"confirm_prompt": true}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "io": {"confirm_prompt": false}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "io": {"confirm_prompt": null}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "unattended": null, "io": {"confirm_prompt": null}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "unattended": "", "io": {"confirm_prompt": null}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "io": {"confirm_prompt": {"__raise__": "KeyboardInterrupt"}}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "declined": "Aborted.", "io": {"confirm_prompt": false}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "unattended": "--json", "io": {"confirm_prompt": null}}}
+{"func": "_confirm_or_exit_code", "in": {"prompt": "Delete session 's1' and all its messages? [y/N] ", "io": {"confirm_prompt": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_not_found", "in": {"session_id": "abc"}}
+{"func": "_not_found", "in": {"session_id": ""}}
+{"func": "_not_found", "in": {"session_id": null}}
+{"func": "_not_found", "in": {"session_id": "x'y"}}
+{"func": "_not_found", "in": {"session_id": "会话-1"}}
+{"func": "_print_empty_store", "in": {"action": "stats", "args": {}}}
+{"func": "_print_empty_store", "in": {"action": "pinned", "args": {"json": true}}}
+{"func": "_print_empty_store", "in": {"action": "pinned", "args": {"json": false}}}
+{"func": "_print_empty_store", "in": {"action": "pinned", "args": {}}}
+{"func": "_print_empty_store", "in": {"action": "list", "args": {}}}
+{"func": "_print_empty_store", "in": {"action": "delete", "args": {"json": true}}}
+{"func": "_print_empty_store", "in": {"action": "pinned", "args": {"json": null}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": ["s1"]}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": []}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": null}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": {"__raise__": "SessionWriteGuarded", "session_id": "s1", "msg": "lease held"}}}}
+{"func": "_delete", "in": {"session_id": "s1", "fences": {"expected_ids": ["s1", "s2"]}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": ["s1"]}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/h/", "native_inputs_root": "/m", "sessions_delete": ["s1"]}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": {"__raise__": "OSError", "msg": "no media"}}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": ["s1"], "after_sessions_removed": {"__raise__": "RuntimeError", "msg": "post"}}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": null, "sessions_delete": ["s1"]}}}
+{"func": "_delete", "in": {"session_id": "s1", "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": null, "native_inputs_root": "/home/u/.hermes/media", "sessions_delete": ["s1"]}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": null}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": ["s1"]}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": true}, "sessions_delete": ["s1"]}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": false}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "confirm_prompt": true, "sessions_delete": ["s1"]}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": false}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": true}, "confirm_prompt": false}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": false}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "confirm_prompt": null}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": false}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "confirm_prompt": {"__raise__": "KeyboardInterrupt"}}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": []}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": {"__raise__": "SessionWriteGuarded", "session_id": "s1"}}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": {"__raise__": "AuthorityRefusal", "reason": "unknown_execution"}}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": {"__raise__": "AuthorityRefusal", "reason": "session_busy"}}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": true}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}, "sessions_delete": {"__raise__": "AuthorityRefusal", "reason": "ownership_conflict"}}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1", "yes": false}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": null, "confirm_prompt": true, "sessions_delete": ["s1"]}}}
+{"func": "_cmd_delete", "in": {"args": {"session_id": "s1"}, "env": {"profile_dir": "/h/p1"}, "io": {"get_hermes_home": "/home/u/.hermes", "native_inputs_root": "/home/u/.hermes/media", "resolve_id": "s1", "session_get": {"pinned": false}}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["New", "Title"]}, "io": {"resolve_id": "s1", "set_title": true}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["x"]}, "io": {"resolve_id": null}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": []}, "io": {"resolve_id": "s1"}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["  ", "\t"]}, "io": {"resolve_id": "s1"}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["a\nb"]}, "io": {"resolve_id": "s1"}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["a", "b\rc"]}, "io": {"resolve_id": "s1"}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["x"]}, "io": {"resolve_id": "s1", "set_title": false}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["x"]}, "io": {"resolve_id": "s1", "set_title": {"__raise__": "ValueError", "msg": "title too long"}}}}
+{"func": "_cmd_rename", "in": {"args": {"session_id": "s1", "title": ["  x  "]}, "io": {"resolve_id": "s1", "set_title": true}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": true, "io": {"resolve_id": "s1", "set_pinned": true, "get_title": "My Title"}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": true, "io": {"resolve_id": "s1", "set_pinned": true, "get_title": null}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": true, "io": {"resolve_id": "s1", "set_pinned": true, "get_title": ""}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": false, "io": {"resolve_id": "s1", "set_pinned": true, "get_title": null}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": true, "io": {"resolve_id": null}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["s1"]}, "pinning": true, "io": {"resolve_id": "s1", "set_pinned": false}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["a", "b"]}, "pinning": true, "io": {"resolve_id": {"$seq": ["a", null]}, "set_pinned": true, "get_title": "T"}}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": []}, "pinning": true}}
+{"func": "_cmd_pin", "in": {"args": {"session_ids": ["a", "b"]}, "pinning": true, "io": {"resolve_id": {"$seq": [null, null]}}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [], "filters": {}, "io": {"describe_filters": "all"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s1", "source": "cli"}], "filters": {"source": "cli"}, "io": {"describe_filters": "source=cli"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s1", "source": null}], "filters": {}, "io": {"describe_filters": "all"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s1", "source": ""}], "filters": {}, "io": {"describe_filters": "all"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s0", "source": "cli"}, {"session_id": "s1", "source": "cli"}, {"session_id": "s2", "source": "cli"}, {"session_id": "s3", "source": "cli"}, {"session_id": "s4", "source": "cli"}, {"session_id": "s5", "source": "cli"}, {"session_id": "s6", "source": "cli"}, {"session_id": "s7", "source": "cli"}, {"session_id": "s8", "source": "cli"}, {"session_id": "s9", "source": "cli"}, {"session_id": "s10", "source": "cli"}, {"session_id": "s11", "source": "cli"}, {"session_id": "s12", "source": "cli"}, {"session_id": "s13", "source": "cli"}, {"session_id": "s14", "source": "cli"}, {"session_id": "s15", "source": "cli"}, {"session_id": "s16", "source": "cli"}, {"session_id": "s17", "source": "cli"}, {"session_id": "s18", "source": "cli"}, {"session_id": "s19", "source": "cli"}, {"session_id": "s20", "source": "cli"}, {"session_id": "s21", "source": "cli"}, {"session_id": "s22", "source": "cli"}, {"session_id": "s23", "source": "cli"}, {"session_id": "s24", "source": "cli"}, {"session_id": "s25", "source": "cli"}, {"session_id": "s26", "source": "cli"}, {"session_id": "s27", "source": "cli"}, {"session_id": "s28", "source": "cli"}, {"session_id": "s29", "source": "cli"}, {"session_id": "s30", "source": "cli"}, {"session_id": "s31", "source": "cli"}, {"session_id": "s32", "source": "cli"}, {"session_id": "s33", "source": "cli"}, {"session_id": "s34", "source": "cli"}, {"session_id": "s35", "source": "cli"}, {"session_id": "s36", "source": "cli"}, {"session_id": "s37", "source": "cli"}, {"session_id": "s38", "source": "cli"}, {"session_id": "s39", "source": "cli"}, {"session_id": "s40", "source": "cli"}, {"session_id": "s41", "source": "cli"}, {"session_id": "s42", "source": "cli"}, {"session_id": "s43", "source": "cli"}, {"session_id": "s44", "source": "cli"}, {"session_id": "s45", "source": "cli"}, {"session_id": "s46", "source": "cli"}, {"session_id": "s47", "source": "cli"}, {"session_id": "s48", "source": "cli"}, {"session_id": "s49", "source": "cli"}, {"session_id": "s50", "source": "cli"}, {"session_id": "s51", "source": "cli"}, {"session_id": "s52", "source": "cli"}, {"session_id": "s53", "source": "cli"}, {"session_id": "s54", "source": "cli"}, {"session_id": "s55", "source": "cli"}, {"session_id": "s56", "source": "cli"}, {"session_id": "s57", "source": "cli"}, {"session_id": "s58", "source": "cli"}, {"session_id": "s59", "source": "cli"}, {"session_id": "s60", "source": "cli"}, {"session_id": "s61", "source": "cli"}, {"session_id": "s62", "source": "cli"}, {"session_id": "s63", "source": "cli"}, {"session_id": "s64", "source": "cli"}, {"session_id": "s65", "source": "cli"}, {"session_id": "s66", "source": "cli"}, {"session_id": "s67", "source": "cli"}, {"session_id": "s68", "source": "cli"}, {"session_id": "s69", "source": "cli"}, {"session_id": "s70", "source": "cli"}, {"session_id": "s71", "source": "cli"}, {"session_id": "s72", "source": "cli"}, {"session_id": "s73", "source": "cli"}, {"session_id": "s74", "source": "cli"}, {"session_id": "s75", "source": "cli"}, {"session_id": "s76", "source": "cli"}, {"session_id": "s77", "source": "cli"}, {"session_id": "s78", "source": "cli"}, {"session_id": "s79", "source": "cli"}, {"session_id": "s80", "source": "cli"}, {"session_id": "s81", "source": "cli"}, {"session_id": "s82", "source": "cli"}, {"session_id": "s83", "source": "cli"}, {"session_id": "s84", "source": "cli"}, {"session_id": "s85", "source": "cli"}, {"session_id": "s86", "source": "cli"}, {"session_id": "s87", "source": "cli"}, {"session_id": "s88", "source": "cli"}, {"session_id": "s89", "source": "cli"}, {"session_id": "s90", "source": "cli"}, {"session_id": "s91", "source": "cli"}, {"session_id": "s92", "source": "cli"}, {"session_id": "s93", "source": "cli"}, {"session_id": "s94", "source": "cli"}, {"session_id": "s95", "source": "cli"}, {"session_id": "s96", "source": "cli"}, {"session_id": "s97", "source": "cli"}, {"session_id": "s98", "source": "cli"}, {"session_id": "s99", "source": "cli"}, {"session_id": "s100", "source": "cli"}], "filters": {"older_than": "90"}, "io": {"describe_filters": "older than 90d"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s0", "source": "cli"}, {"session_id": "s1", "source": "cli"}, {"session_id": "s2", "source": "cli"}, {"session_id": "s3", "source": "cli"}, {"session_id": "s4", "source": "cli"}, {"session_id": "s5", "source": "cli"}, {"session_id": "s6", "source": "cli"}, {"session_id": "s7", "source": "cli"}, {"session_id": "s8", "source": "cli"}, {"session_id": "s9", "source": "cli"}, {"session_id": "s10", "source": "cli"}, {"session_id": "s11", "source": "cli"}, {"session_id": "s12", "source": "cli"}, {"session_id": "s13", "source": "cli"}, {"session_id": "s14", "source": "cli"}, {"session_id": "s15", "source": "cli"}, {"session_id": "s16", "source": "cli"}, {"session_id": "s17", "source": "cli"}, {"session_id": "s18", "source": "cli"}, {"session_id": "s19", "source": "cli"}, {"session_id": "s20", "source": "cli"}, {"session_id": "s21", "source": "cli"}, {"session_id": "s22", "source": "cli"}, {"session_id": "s23", "source": "cli"}, {"session_id": "s24", "source": "cli"}, {"session_id": "s25", "source": "cli"}, {"session_id": "s26", "source": "cli"}, {"session_id": "s27", "source": "cli"}, {"session_id": "s28", "source": "cli"}, {"session_id": "s29", "source": "cli"}, {"session_id": "s30", "source": "cli"}, {"session_id": "s31", "source": "cli"}, {"session_id": "s32", "source": "cli"}, {"session_id": "s33", "source": "cli"}, {"session_id": "s34", "source": "cli"}, {"session_id": "s35", "source": "cli"}, {"session_id": "s36", "source": "cli"}, {"session_id": "s37", "source": "cli"}, {"session_id": "s38", "source": "cli"}, {"session_id": "s39", "source": "cli"}, {"session_id": "s40", "source": "cli"}, {"session_id": "s41", "source": "cli"}, {"session_id": "s42", "source": "cli"}, {"session_id": "s43", "source": "cli"}, {"session_id": "s44", "source": "cli"}, {"session_id": "s45", "source": "cli"}, {"session_id": "s46", "source": "cli"}, {"session_id": "s47", "source": "cli"}, {"session_id": "s48", "source": "cli"}, {"session_id": "s49", "source": "cli"}, {"session_id": "s50", "source": "cli"}, {"session_id": "s51", "source": "cli"}, {"session_id": "s52", "source": "cli"}, {"session_id": "s53", "source": "cli"}, {"session_id": "s54", "source": "cli"}, {"session_id": "s55", "source": "cli"}, {"session_id": "s56", "source": "cli"}, {"session_id": "s57", "source": "cli"}, {"session_id": "s58", "source": "cli"}, {"session_id": "s59", "source": "cli"}, {"session_id": "s60", "source": "cli"}, {"session_id": "s61", "source": "cli"}, {"session_id": "s62", "source": "cli"}, {"session_id": "s63", "source": "cli"}, {"session_id": "s64", "source": "cli"}, {"session_id": "s65", "source": "cli"}, {"session_id": "s66", "source": "cli"}, {"session_id": "s67", "source": "cli"}, {"session_id": "s68", "source": "cli"}, {"session_id": "s69", "source": "cli"}, {"session_id": "s70", "source": "cli"}, {"session_id": "s71", "source": "cli"}, {"session_id": "s72", "source": "cli"}, {"session_id": "s73", "source": "cli"}, {"session_id": "s74", "source": "cli"}, {"session_id": "s75", "source": "cli"}, {"session_id": "s76", "source": "cli"}, {"session_id": "s77", "source": "cli"}, {"session_id": "s78", "source": "cli"}, {"session_id": "s79", "source": "cli"}, {"session_id": "s80", "source": "cli"}, {"session_id": "s81", "source": "cli"}, {"session_id": "s82", "source": "cli"}, {"session_id": "s83", "source": "cli"}, {"session_id": "s84", "source": "cli"}, {"session_id": "s85", "source": "cli"}, {"session_id": "s86", "source": "cli"}, {"session_id": "s87", "source": "cli"}, {"session_id": "s88", "source": "cli"}, {"session_id": "s89", "source": "cli"}, {"session_id": "s90", "source": "cli"}, {"session_id": "s91", "source": "cli"}, {"session_id": "s92", "source": "cli"}, {"session_id": "s93", "source": "cli"}, {"session_id": "s94", "source": "cli"}, {"session_id": "s95", "source": "cli"}, {"session_id": "s96", "source": "cli"}, {"session_id": "s97", "source": "cli"}, {"session_id": "s98", "source": "cli"}, {"session_id": "s99", "source": "cli"}], "filters": {}, "io": {"describe_filters": "all"}}}
+{"func": "_print_dry_run_preview", "in": {"candidates": [{"session_id": "s1", "source": "cli"}], "filters": null, "io": {"describe_filters": "all"}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 0}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 1}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 2}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "archive", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 1}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "archive", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 3}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {"older_than_days": 90, "source": "cli", "title_like": "x"}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 1}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {"bogus": 1}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": 1}}}
+{"func": "_note_pinned_skipped", "in": {"filters": {}, "action": "prune", "env": {"profile_dir": "/h/p1"}, "io": {"count_prune_matches": null}}}
+{"func": "_output_file_in_dir", "in": {"output": null, "default_name": "x.jsonl"}}
+{"func": "_output_file_in_dir", "in": {"output": "", "default_name": "x.jsonl"}}
+{"func": "_output_file_in_dir", "in": {"output": "-", "default_name": "x.jsonl"}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/out.jsonl", "default_name": "x.jsonl"}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir/", "default_name": "x.jsonl", "io": {"makedirs": null}}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir", "default_name": "x.jsonl", "io": {"isdir": true, "makedirs": null}}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir", "default_name": "x.jsonl", "io": {"isdir": false}}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir/", "default_name": "x.jsonl", "io": {"makedirs": {"__raise__": "OSError", "msg": "permission denied"}}}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir/", "default_name": "/abs/name.jsonl", "io": {"makedirs": null}}}
+{"func": "_output_file_in_dir", "in": {"output": "/tmp/dir//", "default_name": "n", "io": {"makedirs": null}}}
+{"func": "_write_output", "in": {"output": null, "text": "hello", "summary": "S"}}
+{"func": "_write_output", "in": {"output": "-", "text": "hello", "summary": "S"}}
+{"func": "_write_output", "in": {"output": "", "text": "hello", "summary": "S"}}
+{"func": "_write_output", "in": {"output": "/tmp/f.jsonl", "text": "L1\n", "summary": "Saved.", "io": {"file_write": null}}}
+{"func": "_write_output", "in": {"output": "/tmp/f.jsonl", "text": "x", "summary": "S", "io": {"file_write": {"__raise__": "OSError", "msg": "disk full"}}}}
+{"func": "_write_output", "in": {"output": "-", "text": "x", "summary": "S", "io": {"stdout_write": {"__raise__": "OSError", "msg": "closed"}}}}
+{"func": "_write_output", "in": {"output": null, "text": "", "summary": ""}}
+{"func": "_write_output", "in": {"output": "/tmp/f.jsonl", "text": "", "summary": "", "io": {"file_write": null}}}
+{"func": "_render_only", "in": {"args": {"format": "md", "only": "user-prompts", "output": "/tmp/o.md"}, "sessions": [{"id": "s1"}], "io": {"render_sessions_export": "RENDERED", "export_record_count": [1, "prompt"]}}}
+{"func": "_render_only", "in": {"args": {"format": "jsonl", "only": "user-prompts", "output": "/tmp/o.md"}, "sessions": [{"id": "s1"}], "io": {"render_sessions_export": "RENDERED", "export_record_count": [1, "prompt"]}}}
+{"func": "_render_only", "in": {"args": {"format": "md", "only": "user-prompts", "output": "/tmp/o.md"}, "sessions": [{"id": "s1"}, {"id": "s2"}], "io": {"render_sessions_export": "R", "export_record_count": [2, "prompt"]}}}
+{"func": "_render_only", "in": {"args": {"format": "md", "only": "user-prompts", "output": "/tmp/o.md"}, "sessions": [], "io": {"render_sessions_export": "", "export_record_count": [0, "session"]}}}
+{"func": "_render_only", "in": {"args": {"format": "md", "only": "user-prompts", "output": null}, "sessions": [{"id": "s1"}], "io": {"render_sessions_export": "RENDERED", "export_record_count": [1, "prompt"]}}}
+{"func": "_render_only", "in": {"args": {"format": "html", "only": "user-prompts", "output": "/tmp/o.md"}, "sessions": [{"id": "s1"}], "io": {"render_sessions_export": "RENDERED", "export_record_count": [1, "prompt"]}}}
+{"func": "_render_only", "in": {"args": {"format": "md", "only": null, "output": "/tmp/o.md"}, "sessions": [{"id": "s1"}], "io": {"render_sessions_export": "R", "export_record_count": [1, "prompt"]}}}
+{"func": "_render_html", "in": {"args": {"output": "/tmp/o.html"}, "sessions": [{"id": "s1"}], "io": {"generate_html_export": "<html>"}}}
+{"func": "_render_html", "in": {"args": {"output": "/tmp/o.html"}, "sessions": [], "io": {"generate_multi_session_html_export": "<multi>"}}}
+{"func": "_render_html", "in": {"args": {"output": "/tmp/o.html"}, "sessions": [{"id": "s1"}, {"id": "s2"}, {"id": "s3"}], "io": {"generate_multi_session_html_export": "<multi>"}}}
+{"func": "_render_html", "in": {"args": {"output": null}, "sessions": [{"id": "s1"}], "io": {"generate_html_export": "<html>"}}}
+{"func": "_render_html", "in": {"args": {"output": "/tmp/o.html"}, "sessions": [{"id": "s1"}], "io": {"generate_html_export": null}}}
+{"func": "_render_html", "in": {"args": {"output": "/tmp/o.html"}, "sessions": null}}
+{"func": "_export_flat", "in": {"kind": "only", "args": {"format": "html", "output": "/tmp/o.md"}}}
+{"func": "_export_flat", "in": {"kind": "html", "args": {"format": "html", "output": null}}}
+{"func": "_export_flat", "in": {"kind": "html", "args": {"format": "html", "output": "-"}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": null}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": null}, "io": {"collect": 1}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": null}, "io": {"collect": null}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": "s1"}, "io": {"collect": [{"id": "s1"}], "default_save_filename": "s1.jsonl", "render_jsonl": ["L1\n", "Exported 1 session to -"]}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "/tmp/dir/", "session_id": null}, "io": {"collect": [{"id": "s1"}, {"id": "s2"}], "makedirs": null, "render_jsonl": ["L1\nL2\n", "Exported 2 sessions to /tmp/dir/hermes_sessions.jsonl"], "file_write": null}}}
+{"func": "_export_flat", "in": {"kind": "only", "args": {"format": "md", "only": "user-prompts", "output": "/tmp/o.md", "session_id": null}, "io": {"collect": [{"id": "s1"}], "default_save_filename": "s1.md", "isdir": false, "render_sessions_export": "MD", "export_record_count": [1, "prompt"], "file_write": null}}}
+{"func": "_export_flat", "in": {"kind": "html", "args": {"format": "html", "output": "/tmp/o.html", "session_id": null}, "io": {"collect": [{"id": "s1"}], "default_save_filename": "s1.html", "isdir": false, "generate_html_export": "<html>", "file_write": null}}}
+{"func": "_export_flat", "in": {"kind": "bogus", "args": {"format": "jsonl", "output": "-"}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": null}, "io": {"collect": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "_export_flat", "in": {"kind": "only", "args": {"format": "jsonl", "only": "user-prompts", "output": "-", "session_id": null}, "io": {"collect": [], "render_sessions_export": "", "export_record_count": [0, "prompt"]}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": null}, "io": {"collect": true}}}
+{"func": "_export_flat", "in": {"kind": "jsonl", "args": {"format": "jsonl", "output": "-", "session_id": null}, "io": {"collect": 1.5}}}
+{"func": "_print_recovery_verdict", "in": {"report": {"complete": true}, "output": "/tmp/r.db"}}
+{"func": "_print_recovery_verdict", "in": {"report": {"complete": false, "verified": true, "verification": {"table_counts": {"sessions": 1234, "messages": 56789}}}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true, "best_effort": true, "verification": {"table_counts": {"sessions": 2, "messages": 3}}}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true}, "output": "/tmp/r.db", "allow_partial": false}}
+{"func": "_print_recovery_verdict", "in": {"report": {}, "output": "/tmp/r.db"}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true, "verification": {"table_counts": {"sessions": null, "messages": 0}}}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true, "verification": null}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_print_recovery_verdict", "in": {"report": {"complete": "yes"}, "output": "/tmp/r.db"}}
+{"func": "_print_recovery_verdict", "in": {"report": {"complete": true}, "output": null}}
+{"func": "_print_recovery_verdict", "in": {"report": {"verified": true, "verification": {"table_counts": {"sessions": 1, "messages": 1}}}, "output": "/tmp/r.db", "allow_partial": true}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"function": {"name": "skill_manage"}}, {"function": {"name": "memory"}}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": ["a", "b"]}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": "notlist"}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"function": {"name": ""}}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"function": "notdict"}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"function": {}}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [42]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [null]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": null}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": "str"}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": []}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": ["ok", {"function": {"name": "x"}}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"name": "x"}]}}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {}}}
+{"func": "_repair_prompts_pin_names", "in": {"record": {"tool_pin": {"tools": [{"function": {"name": 5}}]}}}}

@@ -9,5 +9,4 @@
 
 /* ── tools/tour_tool.py: 1 missing functions ── */
 
-/* PoP: check_tours_enabled @ tools/tour_tool.py:check_tours_enabled */
 char *check_tours_enabled(void) { return strdup(""); }

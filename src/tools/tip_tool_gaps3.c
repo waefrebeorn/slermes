@@ -9,8 +9,6 @@
 
 /* ── tools/tip_tool.py: 2 missing functions ── */
 
-/* PoP: tip_tool @ tools/tip_tool.py:tip_tool */
 char *tip_tool(void) { return strdup(""); }
 
-/* PoP: check_tips_enabled @ tools/tip_tool.py:check_tips_enabled */
 char *check_tips_enabled(void) { return strdup(""); }

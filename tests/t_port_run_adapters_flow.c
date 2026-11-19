@@ -101,6 +101,15 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     json_t *state = NULL;
     const json_t *platform = node(in, "platform");
     const json_t *adapter = node(in, "adapter");
+    /* Materialize the platform double: the fixture carries the platform VALUE
+     * string (the oracle wraps it in Plat(value)); the port reads .value, so
+     * wrap the string into {"value": s}. An object is already a double. */
+    json_t *plat_owned = NULL;
+    if (platform && platform->type == JSON_STRING) {
+        plat_owned = json_object();
+        json_set(plat_owned, "value", json_copy(platform));
+        platform = plat_owned;
+    }
 
     if (strcmp(func, "env_timeout_override") == 0) {
         r = raf_env_timeout_override(json_get_str(in, "name", ""), &s);
@@ -179,6 +188,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     json_set(out, "trace", ctx.trace);
     json_set(out, "state", state ? state : json_null());
     json_free(ctx.seq_pos);
+    json_free(plat_owned);
 }
 
 int main(int argc, char **argv) {

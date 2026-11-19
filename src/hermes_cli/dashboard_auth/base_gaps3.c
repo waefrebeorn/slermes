@@ -9,5 +9,4 @@
 
 /* ── hermes_cli/dashboard_auth/base.py: 1 missing functions ── */
 
-/* PoP: classify_jwks_lookup_error @ hermes_cli/dashboard_auth/base.py:classify_jwks_lookup_error */
 char *classify_jwks_lookup_error(void) { return strdup(""); }

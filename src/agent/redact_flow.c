@@ -154,6 +154,68 @@ static char *rf_pystr(const json_t *v) {
     return ser ? ser : strdup("");
 }
 
+/* Python type name of a seam result (for AttributeError / TypeError messages). */
+static const char *rf_py_type_name(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return "NoneType";
+    switch (v->type) {
+        case JSON_NULL: return "NoneType";
+        case JSON_BOOL: return "bool";
+        case JSON_NUMBER: {
+            double d = v->num_val;
+            return (d == floor(d) && fabs(d) < 1e15) ? "int" : "float";
+        }
+        case JSON_STRING: return "str";
+        case JSON_ARRAY: return "list";
+        case JSON_OBJECT: return "dict";
+    }
+    return "object";
+}
+
+/* AttributeError: '<type>' object has no attribute '<attr>' (live .replace/.lower
+ * on a non-str seam result). The flows call these OUTSIDE any try, so it propagates. */
+static json_t *rf_attr_error(const json_t *v, const char *attr) {
+    char msg[160];
+    snprintf(msg, sizeof msg, "'%s' object has no attribute '%s'", rf_py_type_name(v), attr);
+    json_t *e = json_object();
+    json_set(e, "__raise__", json_string("AttributeError"));
+    json_set(e, "message", json_string(msg));
+    return e;
+}
+
+/* TypeError: argument of type '<type>' is not a container or iterable
+ * (live `x in <scalar>`, CPython 3.14 wording — the oracle's interpreter). */
+static json_t *rf_type_error_not_iterable(const json_t *v) {
+    char msg[160];
+    snprintf(msg, sizeof msg, "argument of type '%s' is not a container or iterable", rf_py_type_name(v));
+    json_t *e = json_object();
+    json_set(e, "__raise__", json_string("TypeError"));
+    json_set(e, "message", json_string(msg));
+    return e;
+}
+
+/* Python `needle in hay`: substring for str, element equality for list, key
+ * equality for dict. Returns 1 present, 0 absent, -1 TypeError (non-iterable
+ * scalar: int/float/bool/None). Only reached for TRUTHY hay (falsy short-circuits
+ * earlier in the live `not x or needle in x` gates). */
+static int rf_contains(const json_t *hay, const char *needle) {
+    if (!hay) return -1;
+    switch (hay->type) {
+        case JSON_STRING:
+            return (hay->str_val && strstr(hay->str_val, needle)) ? 1 : 0;
+        case JSON_ARRAY:
+            for (size_t i = 0; i < json_len(hay); i++) {
+                json_t *e = json_get(hay, i);
+                if (e && e->type == JSON_STRING && e->str_val && strcmp(e->str_val, needle) == 0)
+                    return 1;
+            }
+            return 0;
+        case JSON_OBJECT:
+            return json_obj_get(hay, needle) ? 1 : 0;
+        default:
+            return -1;
+    }
+}
+
 static char *rf_lower(const char *s) {
     const char *p = s ? s : "";
     size_t n = strlen(p);
@@ -582,19 +644,20 @@ json_t *rf_should_redact_assignment(rf_io_t *io, const char *key, const char *va
         bool kw = rf_truthy(r); json_free(r);
         if (!kw) return json_bool(false);
     }
-    r = rf_seam(io, "has_word_bounded_keyword_password", rf_args1("key", k));
-    if (rf_raised(r)) return r;
-    bool password_key = rf_truthy(r); json_free(r);
-    if (!password_key) {
-        r = rf_seam(io, "has_password_keyword", rf_args1("key", k));
-        if (rf_raised(r)) return r;
-        password_key = rf_truthy(r); json_free(r);
+    /* password_key = hwb_password or has_password_keyword: Python `or` keeps the
+     * RAW operand (a scripted None stays None), so carry the json value, not a bool. */
+    json_t *password_key = rf_seam(io, "has_word_bounded_keyword_password", rf_args1("key", k));
+    if (rf_raised(password_key)) return password_key;
+    if (!rf_truthy(password_key)) {
+        json_free(password_key);
+        password_key = rf_seam(io, "has_password_keyword", rf_args1("key", k));
+        if (rf_raised(password_key)) return password_key;
     }
     r = rf_seam(io, "path_or_var_match", rf_args1("value", v));
-    if (rf_raised(r)) return r;
+    if (rf_raised(r)) { json_free(password_key); return r; }
     bool pv = rf_truthy(r); json_free(r);
-    if (pv && !password_key) {
-        if (v[0] == '$') return json_bool(false);
+    if (pv && !rf_truthy(password_key)) {
+        if (v[0] == '$') { json_free(password_key); return json_bool(false); }
         bool any_opaque = false;
         /* any(fullmatch(seg) for seg in value.split("/")): short-circuit on True */
         size_t n = strlen(v), start = 0;
@@ -604,23 +667,27 @@ json_t *rf_should_redact_assignment(rf_io_t *io, const char *key, const char *va
             char *seg = rf_substr(v, start, end - start);
             r = rf_seam(io, "opaque_path_segment_fullmatch", rf_args1("seg", seg ? seg : ""));
             free(seg);
-            if (rf_raised(r)) return r;
+            if (rf_raised(r)) { json_free(password_key); return r; }
             bool sm = rf_truthy(r); json_free(r);
             if (sm) { any_opaque = true; break; }
             if (end >= n) break;
             start = end + 1;
         }
-        if (!any_opaque) return json_bool(false);
+        if (!any_opaque) { json_free(password_key); return json_bool(false); }
     }
-    if (password_key) return json_bool(true);
+    /* return (password_key or strong or glued or (qual and not ph) or opaque):
+     * each truthy operand is returned RAW; `not ph` is a real bool; the final
+     * operand is returned as-is (None included) — no bool coercion. */
+    if (rf_truthy(password_key)) return password_key;
+    json_free(password_key);
     r = rf_seam(io, "has_word_bounded_keyword_strong", rf_args1("key", k));
     if (rf_raised(r)) return r;
-    bool strong = rf_truthy(r); json_free(r);
-    if (strong) return json_bool(true);
+    if (rf_truthy(r)) return r;
+    json_free(r);
     r = rf_seam(io, "is_glued_credential_env", rf_args1("key", k));
     if (rf_raised(r)) return r;
-    bool glued = rf_truthy(r); json_free(r);
-    if (glued) return json_bool(true);
+    if (rf_truthy(r)) return r;
+    json_free(r);
     r = rf_seam(io, "is_qualified_key_name", rf_args1("key", k));
     if (rf_raised(r)) return r;
     bool qual = rf_truthy(r); json_free(r);
@@ -632,8 +699,7 @@ json_t *rf_should_redact_assignment(rf_io_t *io, const char *key, const char *va
     }
     r = rf_seam(io, "looks_like_opaque_credential", rf_args1("value", v));
     if (rf_raised(r)) return r;
-    bool opaque = rf_truthy(r); json_free(r);
-    return json_bool(opaque);
+    return r;
 }
 
 /* PoP: rf_json_affixed_key_secret @ agent/redact.py:_json_affixed_key_secret */
@@ -673,8 +739,8 @@ json_t *rf_json_affixed_key_secret(rf_io_t *io, const char *key, const char *val
     json_free(r);
     r = rf_seam(io, "is_python_repr_secret_key", a2);
     if (rf_raised(r)) return r;
-    bool res = rf_truthy(r); json_free(r);
-    return json_bool(res);
+    /* return _is_python_repr_secret_key(sub): RAW operand (None included). */
+    return r;
 }
 
 /* PoP: rf_is_sensitive_url_param @ agent/redact.py:_is_sensitive_url_param */
@@ -689,8 +755,15 @@ json_t *rf_is_sensitive_url_param(rf_io_t *io, const char *name) {
     if (in_set) return json_bool(true);
     r = rf_seam(io, "decode_url_param_name", rf_args1("name", nm));
     if (rf_raised(r)) return r;
-    const char *dec = (r->type == JSON_STRING && r->str_val) ? r->str_val : "";
-    char *decoded = rf_replace_char(dec, '-', '_');
+    /* decoded = _decode_url_param_name(name).replace("-", "_"): a non-str seam
+     * result (unscripted seam -> None) raises AttributeError in live; do NOT
+     * swallow it to "". */
+    if (r->type != JSON_STRING) {
+        json_t *e = rf_attr_error(r, "replace");
+        json_free(r);
+        return e;
+    }
+    char *decoded = rf_replace_char(r->str_val ? r->str_val : "", '-', '_');
     json_free(r);
     r = rf_seam(io, "json_key_names_full_fullmatch", rf_args1("key", decoded));
     if (rf_raised(r)) { free(decoded); return r; }
@@ -704,20 +777,27 @@ json_t *rf_is_sensitive_url_param(rf_io_t *io, const char *name) {
     free(decoded);
     r = rf_seam(io, "is_python_repr_secret_key", a2);
     if (rf_raised(r)) return r;
-    bool res = rf_truthy(r); json_free(r);
-    return json_bool(res);
+    /* return (bool(fullmatch) or _is_python_repr_secret_key(sub)): the final
+     * operand is returned RAW (a scripted None stays None), not coerced. */
+    return r;
 }
 
 /* PoP: rf_redact_log_urls @ agent/redact.py:redact_log_urls */
-json_t *rf_redact_log_urls(rf_io_t *io, const char *text) {
-    if (!text) return json_null();
-    if (text[0] == '\0') return json_string("");
-    if (!strstr(text, "://")) return json_string(text);
+json_t *rf_redact_log_urls(rf_io_t *io, const json_t *text) {
+    /* if not text or "://" not in text or not _redact_enabled(): return text.
+     * A falsy argument (None/""/0/false/[]) is returned RAW — live hands the
+     * input back unchanged, so an int 0 must not be flattened to "". */
+    if (!rf_truthy(text)) return text ? json_copy(text) : json_null();
+    int has = rf_contains(text, "://");
+    if (has < 0) return rf_type_error_not_iterable(text);  /* `"://" in <scalar>` */
+    if (!has) return json_copy(text);
     json_t *r = rf_seam(io, "redact_enabled", json_object());
     if (rf_raised(r)) return r;
     bool en = rf_truthy(r); json_free(r);
-    if (!en) return json_string(text);
-    r = rf_seam(io, "redact_strict_url_credentials", rf_args1("text", text));
+    if (!en) return json_copy(text);
+    json_t *a = json_object();
+    json_set(a, "text", json_copy(text));
+    r = rf_seam(io, "redact_strict_url_credentials", a);
     if (rf_raised(r)) return r;
     return r;
 }
@@ -736,7 +816,14 @@ json_t *rf_redact_for_egress(rf_io_t *io, const char *text, bool urls, bool keep
         json_free(r);
         return json_string(RF_REDACTION_UNAVAILABLE);
     }
-    char *redacted = strdup((r->type == JSON_STRING && r->str_val) ? r->str_val : "");
+    /* if "earer" in text.lower(): live calls .lower() OUTSIDE the try, so a
+     * non-str seam result raises AttributeError (None -> 'NoneType' ...). */
+    if (r->type != JSON_STRING) {
+        json_t *e = rf_attr_error(r, "lower");
+        json_free(r);
+        return e;
+    }
+    char *redacted = strdup(r->str_val ? r->str_val : "");
     json_free(r);
     char *low = rf_lower(redacted);
     bool gate = strstr(low, "earer") != NULL;
@@ -760,22 +847,25 @@ json_t *rf_redact_code_output(rf_io_t *io, const char *output, bool force) {
     json_set(a, "code_file", json_bool(true));
     json_t *r = rf_seam(io, "redact_sensitive_text", a);
     if (rf_raised(r)) return r;
-    char *redacted = strdup((r->type == JSON_STRING && r->str_val) ? r->str_val : "");
-    json_free(r);
-    if (redacted[0] == '\0' || !strstr(redacted, "=")) {
-        json_t *ret = json_string(redacted); free(redacted); return ret;
-    }
+    /* if not redacted or "=" not in redacted or not (force or _redact_enabled()):
+     * return redacted — RAW (a scripted None/0/[] is handed back unchanged). */
+    if (!rf_truthy(r)) return r;
+    int has_eq = rf_contains(r, "=");
+    if (has_eq < 0) { json_t *e = rf_type_error_not_iterable(r); json_free(r); return e; }
+    if (!has_eq) return r;
     bool en;
     if (force) {
         en = true;
     } else {
-        r = rf_seam(io, "redact_enabled", json_object());
-        if (rf_raised(r)) { free(redacted); return r; }
-        en = rf_truthy(r); json_free(r);
+        json_t *r2 = rf_seam(io, "redact_enabled", json_object());
+        if (rf_raised(r2)) { json_free(r); return r2; }
+        en = rf_truthy(r2); json_free(r2);
     }
-    if (!en) { json_t *ret = json_string(redacted); free(redacted); return ret; }
-    r = rf_seam(io, "env_dump_line_sub", rf_args1("text", redacted));
-    free(redacted);
+    if (!en) return r;
+    json_t *a2 = json_object();
+    json_set(a2, "text", json_copy(r));
+    json_free(r);
+    r = rf_seam(io, "env_dump_line_sub", a2);
     if (rf_raised(r)) return r;
     return r;
 }

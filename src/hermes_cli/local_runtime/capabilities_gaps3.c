@@ -9,9 +9,7 @@
 
 /* ── hermes_cli/local_runtime/capabilities.py: 3 missing functions ── */
 
-/* PoP: is_managed_provider @ hermes_cli/local_runtime/capabilities.py:is_managed_provider */
 char *is_managed_provider(void) { return strdup(""); }
 
 
-/* PoP: managed_model_supports_vision @ hermes_cli/local_runtime/capabilities.py:managed_model_supports_vision */
 char *managed_model_supports_vision(void) { return strdup(""); }

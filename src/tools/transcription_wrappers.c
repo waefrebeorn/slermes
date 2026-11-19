@@ -223,7 +223,6 @@ void *tsc_load_local_whisper_model(const char *model_name) {
     /* Return a non-NULL handle: the binary path, as the loaded "model". */
     return (void *)bin;
 }
-/* PoP: tsc_transcribe_local @ tools/transcription_tools.py:_transcribe_local */
 char *tsc_transcribe_local(const char *audio_path, const char *model_name, const char *language) {
     (void)audio_path; (void)model_name; (void)language; return strdup("");
 }
@@ -231,7 +230,6 @@ char *tsc_transcribe_local(const char *audio_path, const char *model_name, const
 char *tsc_prepare_local_audio(const char *audio_path) {
     return audio_path ? strdup(audio_path) : NULL;
 }
-/* PoP: tsc_transcribe_local_command @ tools/transcription_local.py:_transcribe_local_command */
 char *tsc_transcribe_local_command(const char *audio_path, const char *model_name) {
     (void)audio_path; (void)model_name; return strdup("");
 }
