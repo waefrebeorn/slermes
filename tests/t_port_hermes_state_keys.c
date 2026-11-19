@@ -71,6 +71,32 @@ static void emit_obj(int cs, const char *fn, const char *in, const char *a,
     (void)b;
 }
 
+static void emit_run(int cs, const char *req, const char *job)
+{
+    char *j = NULL, *e = NULL;
+    int ok = hsk_cron_run_from_request(req, job, &j, &e);
+    printf("{\"case\":%d,\"fn\":\"cron_run_from_request\",\"in\":{\"request_id\":", cs);
+    jstr_escape(req);
+    printf(",\"job_id\":");
+    if (job)
+        jstr_escape(job);
+    else
+        printf("null");
+    printf("},\"out\":");
+    if (ok) {
+        printf("{\"job\":");
+        jstr_escape(j);
+        printf(",\"exec\":");
+        jstr_escape(e);
+        printf("}\n");
+    } else {
+        printf("null}\n");
+    }
+    fflush(stdout);
+    free(j);
+    free(e);
+}
+
 int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -273,6 +299,69 @@ int main(void)
         free(key);
         free(digest);
     }
+    /* --- extended edge cases (None/empty, re newline semantics, the two
+     * json.dumps ensure_ascii modes) --- */
+
+    /* legacy_cron_run_job: '$' tolerates ONE trailing newline, '.' never
+     * crosses an internal one. */
+    emit_str_or_null(27, "legacy_cron_run_job",
+                     "{\"session_id\":\"cron_j_20260101_120000\\n\"}",
+                     hsk_legacy_cron_run_job("cron_j_20260101_120000\n"));
+    emit_str_or_null(28, "legacy_cron_run_job",
+                     "{\"session_id\":\"cron_j\\nx_20260101_120000\"}",
+                     hsk_legacy_cron_run_job("cron_j\nx_20260101_120000"));
+    emit_str_or_null(29, "legacy_cron_run_job",
+                     "{\"session_id\":\"cron_j_20260101_120000\\n\\n\"}",
+                     hsk_legacy_cron_run_job("cron_j_20260101_120000\n\n"));
+    emit_str_or_null(30, "legacy_cron_run_job",
+                     "{\"session_id\":\"\"}",
+                     hsk_legacy_cron_run_job(""));
+
+    /* local_identity: ensure_ascii=True (é, DEL \x7f, astral 😀
+     * all escape to \uXXXX / surrogate pairs before hashing). */
+    emit_str(31, "local_identity",
+             "{\"profile_id\":\"café\",\"principal_id\":\"p\",\"request_id\":\"r\"}",
+             hsk_local_identity("café", "p", "r"));
+    emit_str(32, "local_identity",
+             "{\"profile_id\":\"p\",\"principal_id\":\"q\",\"request_id\":\"\\u007f\"}",
+             hsk_local_identity("p", "q", "\x7f"));
+    emit_str(33, "local_identity",
+             "{\"profile_id\":\"😀\",\"principal_id\":\"p\",\"request_id\":\"r\"}",
+             hsk_local_identity("😀", "p", "r"));
+
+    /* admission_fingerprint: ensure_ascii=False (é stays raw UTF-8). */
+    emit_str(34, "admission_fingerprint",
+             "{\"target\":\"s\",\"payload\":{\"k\":\"é\"}}",
+             hsk_admission_fingerprint("s", P("{\"k\":\"é\"}")));
+
+    /* cron_run_from_request: empty job / empty exec / prefix mismatch. */
+    emit_run(35, "cron:x:1", "");
+    emit_run(36, "cron:j:", NULL);
+    emit_run(37, "cron:other:1", "j");
+
+    /* profile_from_session_key: no colon at all / empty namespace slot. */
+    emit_str_or_null(38, "profile_from_session_key",
+                     "{\"session_key\":\"agent\"}",
+                     hsk_profile_from_session_key("agent"));
+    emit_str_or_null(39, "profile_from_session_key",
+                     "{\"session_key\":\"agent:\"}",
+                     hsk_profile_from_session_key("agent:"));
+
+    /* prefix_range: last-char bump at the ASCII edge ('z' -> '{'). */
+    {
+        char *hi = NULL;
+        char *lo = hsk_prefix_range("z", &hi);
+        printf("{\"case\":40,\"fn\":\"prefix_range\",\"in\":{\"prefix\":\"z\"},"
+               "\"out\":{\"lo\":");
+        jstr_escape(lo ? lo : "");
+        printf(",\"hi\":");
+        jstr_escape(hi ? hi : "");
+        printf("}}\n");
+        fflush(stdout);
+        free(lo);
+        free(hi);
+    }
+
     (void)emit_json;
     return 0;
 }

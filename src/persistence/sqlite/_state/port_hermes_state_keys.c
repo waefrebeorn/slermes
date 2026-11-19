@@ -4,10 +4,11 @@
  *
  * Pure identity derivations the canonical store and the gateway both need.
  * The fingerprints are SHA-256 over a CANONICAL JSON encoding: sorted keys,
- * ','/':' separators, no spaces, non-ASCII left as UTF-8 — matching
- * ``json.dumps(..., ensure_ascii=False, sort_keys=True,
- * separators=(',', ':'), allow_nan=False)`` byte for byte, because the digest
- * is a durable on-disk identity.
+ * ','/':' separators, no spaces — matching json.dumps byte for byte, because
+ * the digest is a durable on-disk identity. admission_fingerprint uses
+ * ensure_ascii=False (non-ASCII left as UTF-8, allow_nan=False);
+ * local_identity uses json.dumps' default ensure_ascii=True (\uXXXX escapes,
+ * surrogate pairs for astral planes).
  */
 
 #include "port_hermes_state_keys.h"
@@ -71,9 +72,39 @@ static void sb_free(sb_t *sb)
     sb->len = sb->cap = 0;
 }
 
-/* --- canonical JSON (sorted keys, compact separators, UTF-8) --- */
+/* --- canonical JSON (sorted keys, compact separators) --- */
 
-static void canon_string(sb_t *sb, const char *s)
+/* Decode one UTF-8 code point at s; *adv receives the byte width. Invalid
+ * lead/continuation bytes decode as the raw byte value (width 1). */
+static unsigned long utf8_next(const char *s, size_t *adv)
+{
+    unsigned char c = (unsigned char)s[0];
+    if (c < 0x80) {
+        *adv = 1;
+        return c;
+    }
+    int need;
+    unsigned long cp;
+    if ((c & 0xE0) == 0xC0) { need = 1; cp = c & 0x1F; }
+    else if ((c & 0xF0) == 0xE0) { need = 2; cp = c & 0x0F; }
+    else if ((c & 0xF8) == 0xF0) { need = 3; cp = c & 0x07; }
+    else { *adv = 1; return c; }
+    for (int i = 1; i <= need; i++) {
+        unsigned char cc = (unsigned char)s[i];
+        if ((cc & 0xC0) != 0x80) {
+            *adv = 1;
+            return c;
+        }
+        cp = (cp << 6) | (cc & 0x3F);
+    }
+    *adv = (size_t)(need + 1);
+    return cp;
+}
+
+/* ensure_ascii=1 escapes every non-ASCII code point (and DEL) as \uXXXX,
+ * astral planes as surrogate pairs — json.dumps' default mode, which
+ * local_identity uses; admission_fingerprint uses ensure_ascii=0 (UTF-8). */
+static void canon_string(sb_t *sb, const char *s, int ensure_ascii)
 {
     sb_putc(sb, '"');
     for (; s && *s; s++) {
@@ -91,6 +122,20 @@ static void canon_string(sb_t *sb, const char *s)
                 char esc[8];
                 snprintf(esc, sizeof(esc), "\\u%04x", ch);
                 sb_puts(sb, esc);
+            } else if (ensure_ascii && ch >= 0x7F) {
+                size_t adv = 1;
+                unsigned long cp = utf8_next(s, &adv);
+                char esc[16];
+                if (cp > 0xFFFF) {
+                    unsigned long v = cp - 0x10000;
+                    snprintf(esc, sizeof(esc), "\\u%04x\\u%04x",
+                             (unsigned)(0xD800 + (v >> 10)),
+                             (unsigned)(0xDC00 + (v & 0x3FF)));
+                } else {
+                    snprintf(esc, sizeof(esc), "\\u%04x", (unsigned)cp);
+                }
+                sb_puts(sb, esc);
+                s += adv - 1;
             } else {
                 sb_putc(sb, (char)ch);
             }
@@ -117,7 +162,7 @@ static void canon_number(sb_t *sb, double d)
     sb_puts(sb, buf);
 }
 
-static void canon_value(sb_t *sb, const json_t *v);
+static void canon_value(sb_t *sb, const json_t *v, int ensure_ascii);
 
 static int cmp_keys(const void *a, const void *b)
 {
@@ -126,7 +171,7 @@ static int cmp_keys(const void *a, const void *b)
     return strcmp(*ka, *kb);
 }
 
-static void canon_object(sb_t *sb, const json_t *obj)
+static void canon_object(sb_t *sb, const json_t *obj, int ensure_ascii)
 {
     size_t n = json_object_size(obj);
     const char **keys = (const char **)malloc((n ? n : 1) * sizeof(char *));
@@ -140,15 +185,15 @@ static void canon_object(sb_t *sb, const json_t *obj)
     for (size_t i = 0; i < n; i++) {
         if (i)
             sb_putc(sb, ',');
-        canon_string(sb, keys[i]);
+        canon_string(sb, keys[i], ensure_ascii);
         sb_putc(sb, ':');
-        canon_value(sb, json_obj_get(obj, keys[i]));
+        canon_value(sb, json_obj_get(obj, keys[i]), ensure_ascii);
     }
     sb_putc(sb, '}');
     free(keys);
 }
 
-static void canon_value(sb_t *sb, const json_t *v)
+static void canon_value(sb_t *sb, const json_t *v, int ensure_ascii)
 {
     if (!v || json_is_null(v)) {
         sb_puts(sb, "null");
@@ -157,27 +202,27 @@ static void canon_value(sb_t *sb, const json_t *v)
     } else if (json_is_number(v)) {
         canon_number(sb, json_number_value(v));
     } else if (json_is_string(v)) {
-        canon_string(sb, json_string_value(v));
+        canon_string(sb, json_string_value(v), ensure_ascii);
     } else if (json_is_array(v)) {
         size_t n = json_len(v);
         sb_putc(sb, '[');
         for (size_t i = 0; i < n; i++) {
             if (i)
                 sb_putc(sb, ',');
-            canon_value(sb, json_get(v, i));
+            canon_value(sb, json_get(v, i), ensure_ascii);
         }
         sb_putc(sb, ']');
     } else if (json_is_object(v)) {
-        canon_object(sb, v);
+        canon_object(sb, v, ensure_ascii);
     }
 }
 
 /* json.dumps(...) -> malloc'd canonical text; NULL when the tree is empty. */
-static char *canon_dumps(const json_t *v)
+static char *canon_dumps(const json_t *v, int ensure_ascii)
 {
     sb_t sb;
     sb_init(&sb);
-    canon_value(&sb, v);
+    canon_value(&sb, v, ensure_ascii);
     if (!sb.buf) {
         sb_free(&sb);
         return NULL;
@@ -281,6 +326,13 @@ char *hsk_legacy_cron_run_job(const char *session_id)
     if (!session_id)
         return NULL;
     size_t n = strlen(session_id);
+    /* re '$' also matches just before ONE trailing newline ... */
+    if (n && session_id[n - 1] == '\n')
+        n--;
+    /* ... but '.' never crosses a newline anywhere in the job id. */
+    for (size_t k = 0; k < n; k++)
+        if (session_id[k] == '\n')
+            return NULL;
     /* tail: _\d{6} */
     if (n < 7)
         return NULL;
@@ -318,7 +370,7 @@ char *hsk_admission_fingerprint(const char *canonical_target, json_t *payload)
     json_t *target = json_new_string(canonical_target ? canonical_target : "");
     json_object_set(root, "target", target);
     json_object_set(root, "payload", payload ? json_copy(payload) : json_new_object());
-    char *encoded = canon_dumps(root);
+    char *encoded = canon_dumps(root, 0);
     json_free(root);
     if (!encoded)
         return NULL;
@@ -335,7 +387,9 @@ char *hsk_local_identity(const char *profile_id, const char *principal_id,
     json_array_append(arr, json_new_string(profile_id ? profile_id : ""));
     json_array_append(arr, json_new_string(principal_id ? principal_id : ""));
     json_array_append(arr, json_new_string(request_id ? request_id : ""));
-    char *encoded = canon_dumps(arr);
+    /* local_identity uses json.dumps' DEFAULT ensure_ascii=True (unlike
+     * admission_fingerprint): non-ASCII escapes to \uXXXX before hashing. */
+    char *encoded = canon_dumps(arr, 1);
     json_free(arr);
     if (!encoded)
         return NULL;

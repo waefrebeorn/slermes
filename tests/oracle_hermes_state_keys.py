@@ -7,20 +7,36 @@ The harness (t_port_hermes_state_keys.c) emits one JSON line per case with a
 single byte of difference shows up as a different digest.
 """
 import json
+import os
 import sys
 
-sys.path.insert(0, "C:/Users/eman5/hermes-agent")
+for _quarry in ("C:/Users/eman5/hermes-agent", os.path.expanduser("~/hermes-agent")):
+    if os.path.isdir(os.path.join(_quarry, "persistence")):
+        sys.path.insert(0, _quarry)
+        break
+
+try:
+    from persistence.sqlite._state.keys import (                      # noqa: E402
+        admission_fingerprint, cron_request_id, cron_request_range,
+        cron_run_from_request, legacy_cron_run_job, local_identity,
+        prefix_range, profile_from_session_key,
+        profile_from_session_key_namespace,
+    )
+    from persistence.authority.runtime import mutation_receipt_key
+    from persistence.sqlite.authority._runtime import replacement_binding
+except ImportError:
+    # The suite interpreter is the quarry venv; re-exec under it when the
+    # current interpreter lacks the quarry import chain (stdin survives execv).
+    _venv = "C:/Users/eman5/hermes-agent/.venv/Scripts/python.exe"
+    if not os.path.isfile(_venv):
+        _venv = os.path.expanduser("~/hermes-agent/.venv/bin/python")
+    if os.path.isfile(_venv) and \
+            os.path.abspath(sys.executable) != os.path.abspath(_venv):
+        os.execv(_venv, [_venv, os.path.abspath(__file__)] + sys.argv[1:])
+    raise
+
 sys.stdin.reconfigure(encoding="utf-8")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
-from persistence.sqlite._state.keys import (                          # noqa: E402
-    admission_fingerprint, cron_request_id, cron_request_range,
-    cron_run_from_request, legacy_cron_run_job, local_identity,
-    prefix_range, profile_from_session_key,
-    profile_from_session_key_namespace,
-)
-from persistence.authority.runtime import mutation_receipt_key
-from persistence.sqlite.authority._runtime import replacement_binding
 
 
 def main() -> int:
