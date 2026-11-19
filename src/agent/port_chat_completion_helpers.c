@@ -39,7 +39,34 @@
  *  Returns the code, or -1 for None.
  * =========================================================================== */
 
-/* cch_status_code_from_value: canonical definition lives in chat_completions_ports.c */
+/* Canonical global definition (the chat_completions_ports.c copy is static;
+ * the old infrastructure_stubs.c placeholder `int ...(void){return 0;}` won
+ * the link and poisoned every cch_* status parse — removed 2026-11-19).
+ * Live: agent/chat_completion_helpers.py:_status_code_from_value
+ * kind: 0 = not int/str, 1 = int, 2 = str. Returns the code, or -1 for None. */
+static int cch_scfv_is_word(unsigned char c)
+{
+    return isalnum(c) || c == '_';
+}
+
+int cch_status_code_from_value(int kind, long long ival, const char *sval)
+{
+    if (kind == 1)
+        return (ival >= 100 && ival < 600) ? (int)ival : -1;
+    if (kind != 2 || !sval) return -1;
+    /* The optional HTTP_STATUS/ prefix is unanchored, so the match set is
+     * exactly the word-bounded 3-digit runs starting with 1-5. */
+    const unsigned char *s = (const unsigned char *)sval;
+    for (size_t i = 0; s[i]; i++) {
+        if (s[i] < '1' || s[i] > '5') continue;
+        if (!isdigit(s[i + 1]) || !isdigit(s[i + 2])) continue;
+        int prev_ok = (i == 0) || !cch_scfv_is_word(s[i - 1]);
+        int next_ok = !cch_scfv_is_word(s[i + 3]);
+        if (prev_ok && next_ok)
+            return (s[i] - '0') * 100 + (s[i + 1] - '0') * 10 + (s[i + 2] - '0');
+    }
+    return -1;
+}
 
 
 /* ===========================================================================

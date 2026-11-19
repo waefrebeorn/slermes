@@ -170,8 +170,10 @@ if [ "$HRC" -eq 126 ] || [ "$HRC" -eq 127 ]; then
     SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
   fi
 fi
-if [ "$HRC" -ne 0 ] && [ ! -s "$TMPH/harness.out" ]; then
-  echo "ORACLE $NAME: harness could not run (rc $HRC)" >&2
+if [ "$HRC" -ne 0 ]; then
+  # Fail closed: a crashed harness with partial output is NOT a pass — it
+  # silently dropped fixture cases (context_flow lost 21 this way).
+  echo "ORACLE $NAME: harness exited rc $HRC (partial output is not a pass)" >&2
   sed -n '1,3p' "$TMPH/harness.err" >&2 || true
   rm -rf "$TMPH"
   exit 1

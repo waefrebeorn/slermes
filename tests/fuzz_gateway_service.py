@@ -264,7 +264,7 @@ def test_thread_join():
 @test("shutdown_forensics snapshot exists", "GS4-shutdown")
 def test_shutdown_forensics():
     """forensics_snapshot_context should capture process state on crash."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/shutdown_forensics.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/hermes_cli/shutdown_forensics.c"), "r").read()
     assert "forensics_snapshot_context" in src
     assert "forensics_spawn_diagnostic" in src
     assert "tracer_pid" in src
@@ -313,7 +313,7 @@ def test_runtime_footer_fields():
 @test("forensics_proc_summary", "GS6-forensics")
 def test_forensics_proc():
     """forensics_proc_summary should read /proc/pid/status/cmdline."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/shutdown_forensics.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/hermes_cli/shutdown_forensics.c"), "r").read()
     assert "forensics_proc_summary" in src
     assert "forensics_read_proc_field" in src
     assert "forensics_read_proc_cmdline" in src
@@ -322,7 +322,7 @@ def test_forensics_proc():
 @test("forensics_signal_name", "GS6-forensics")
 def test_forensics_signal():
     """forensics_signal_name should map signal numbers to names."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/shutdown_forensics.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/hermes_cli/shutdown_forensics.c"), "r").read()
     assert "forensics_signal_name" in src
     # Check it maps SIGTERM, SIGINT, SIGKILL
     assert "SIGTERM" in src or "SIGKILL" in src
@@ -331,7 +331,7 @@ def test_forensics_signal():
 @test("forensics diagnostic output format", "GS6-forensics")
 def test_forensics_diagnostic():
     """forensics_spawn_diagnostic should write formatted output."""
-    src = open(os.path.join(SLERMES_DIR, "src/gateway/shutdown_forensics.c"), "r").read()
+    src = open(os.path.join(SLERMES_DIR, "src/hermes_cli/shutdown_forensics.c"), "r").read()
     assert "forensics_spawn_diagnostic" in src
     assert "under_systemd" in src
     assert "planned_stop_marker" in src

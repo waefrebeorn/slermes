@@ -138,6 +138,9 @@ json_t *cch_flow_call_retry_loop(const json_t *in);
  *      "result_error":{...}|null,"result_response":{...}|null,
  *      "abandon_error":{...}|null,"deltas_were_sent":bool,
  *      "diag_first_chunk_at":num|null,"partial_stub":{...}}
+ * NOTE: live run() re-initializes _monitor_interrupted={"yes":False} before
+ * the (scripted, no-op) monitor thread runs, so monitor_interrupted is always
+ * False at the tail and the seed is discarded.
  * out: ordered actions ending in {"a":"return",...} / {"a":"raise",...}. */
 json_t *cch_flow_run_outcome(const json_t *in);
 

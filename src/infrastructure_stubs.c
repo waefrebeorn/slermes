@@ -632,7 +632,6 @@ int stub_shadowed_clear_skills_system_prompt_cache(void) { return 0; }
 char *obj_values_array(void *obj) { (void)obj; return strdup("[]"); }
 
 /* Misc remaining */
-int cch_status_code_from_value(void) { return 0; }
 int cgw_systemd_restart(void) { return 0; }
 int stub_shadowed_cli_is_ghostty_terminal(void) { return 0; }
 int stub_shadowed_cli_load_worktree_merge_cache(void) { return 0; }

@@ -96,7 +96,7 @@
  },
  "agent/anthropic_adapter.py": {
   "marker_files": [
-   "src/agent/anthropic_adapter.c",
+   "src/hermes_cli/anthropic_adapter.c",
    "src/agent/prompt_caching.c",
    "src/agent/provider_anthropic.c"
   ],
@@ -144,7 +144,7 @@
  },
  "agent/bedrock_adapter.py": {
   "marker_files": [
-   "src/agent/bedrock_adapter.c",
+   "src/hermes_cli/bedrock_adapter.c",
    "src/agent/provider_bedrock.c"
   ],
   "func_match_files": []
@@ -195,7 +195,7 @@
  "agent/context_compressor.py": {
   "marker_files": [
    "src/agent/context.c",
-   "src/agent/context_compressor.c",
+   "src/hermes_cli/context_compressor.c",
    "src/agent/llm_client.c"
   ],
   "func_match_files": []
@@ -282,7 +282,7 @@
  },
  "agent/display.py": {
   "marker_files": [
-   "src/agent/display.c",
+   "src/hermes_cli/display.c",
    "src/agent/display_core.c"
   ],
   "func_match_files": []
@@ -872,7 +872,7 @@
  },
  "anthropic_adapter.py": {
   "marker_files": [
-   "src/agent/anthropic_adapter.c",
+   "src/hermes_cli/anthropic_adapter.c",
    "src/agent/anthropic_adapter_ports.c",
    "src/agent/anthropic_adapter_py_parity.c",
    "src/agent/batch15_gaps.c",
@@ -1084,7 +1084,7 @@
  },
  "battery.py": {
   "marker_files": [
-   "src/agent/battery.c",
+   "src/battery.c",
    "src/agent/ports_wrappers.c",
    "src/battery.c"
   ],
@@ -1092,7 +1092,7 @@
  },
  "bedrock_adapter.py": {
   "marker_files": [
-   "src/agent/bedrock_adapter.c",
+   "src/hermes_cli/bedrock_adapter.c",
    "src/agent/bedrock_adapter_ports.c",
    "src/agent/ports_wrappers.c",
    "src/agent/provider_bedrock.c",
@@ -1160,7 +1160,7 @@
    "src/plugins/platforms/yuanbao/nous_billing.c",
    "src/session_db.c",
    "src/tools/browser.c",
-   "src/tools/browser_camofox.c",
+   "src/hermes_cli/browser_camofox.c",
    "src/tools/browser_tool_env.c",
    "src/tools/browser_tool_install.c",
    "src/tools/memory.c",
@@ -1295,7 +1295,7 @@
    "src/agent/batch15_gaps.c",
    "src/agent/channel_directory_py_parity.c",
    "src/agent/final_missing_gaps.c",
-   "src/gateway/channel_directory.c",
+   "src/hermes_cli/channel_directory.c",
    "src/gateway/ports_wrappers.c",
    "src/hermes_cli/channel_directory.c"
   ],
@@ -1590,7 +1590,7 @@
  "context_compressor.py": {
   "marker_files": [
    "src/agent/context.c",
-   "src/agent/context_compressor.c",
+   "src/hermes_cli/context_compressor.c",
    "src/agent/context_compressor_micro.c",
    "src/agent/context_compressor_ports.c",
    "src/agent/context_compressor_pure.c",
@@ -1620,7 +1620,7 @@
  "context_switch_guard.py": {
   "marker_files": [
    "src/agent/context.c",
-   "src/agent/context_compressor.c",
+   "src/hermes_cli/context_compressor.c",
    "src/hermes_cli/context_switch_guard.c"
   ],
   "func_match_files": []
@@ -1961,7 +1961,7 @@
  "display.py": {
   "marker_files": [
    "src/agent/batch11_gaps.c",
-   "src/agent/display.c",
+   "src/hermes_cli/display.c",
    "src/agent/display_helpers.c",
    "src/agent/display_ports.c",
    "src/agent/display_py_parity.c",
@@ -2242,7 +2242,7 @@
  },
  "gateway/channel_directory.py": {
   "marker_files": [
-   "src/gateway/channel_directory.c"
+   "src/hermes_cli/channel_directory.c"
   ],
   "func_match_files": []
  },
@@ -2381,7 +2381,7 @@
  },
  "gateway/shutdown_forensics.py": {
   "marker_files": [
-   "src/gateway/shutdown_forensics.c"
+   "src/hermes_cli/shutdown_forensics.c"
   ],
   "func_match_files": []
  },
@@ -2427,7 +2427,7 @@
  },
  "gateway/whatsapp_identity.py": {
   "marker_files": [
-   "src/gateway/whatsapp_identity.c",
+   "src/hermes_cli/whatsapp_identity.c",
    "src/ports/gateway/platforms/helpers.c"
   ],
   "func_match_files": []
@@ -2798,7 +2798,7 @@
  "hermes_cli/plugins.py": {
   "marker_files": [
    "src/agent/hook_registry.c",
-   "src/tools/skills_guard.c"
+   "src/hermes_cli/skills_guard.c"
   ],
   "func_match_files": []
  },
@@ -3053,7 +3053,7 @@
    "src/tools/tool_search.c",
    "src/tools/toolsets.c",
    "src/tools/web.c",
-   "src/tools/yuanbao_tools.c"
+   "src/hermes_cli/yuanbao_tools.c"
   ]
  },
  "hermes_cli/web_server.py": {
@@ -4158,7 +4158,7 @@
    "src/hermes_cli/plugins_ports.c",
    "src/hermes_cli/plugins_wrappers.c",
    "src/hermes_cli/profiles_helpers.c",
-   "src/tools/skills_guard.c"
+   "src/hermes_cli/skills_guard.c"
   ],
   "func_match_files": []
  },
@@ -4960,7 +4960,7 @@
   "marker_files": [
    "src/agent/batch10_gaps.c",
    "src/agent/shutdown_forensics_py_parity.c",
-   "src/gateway/shutdown_forensics.c",
+   "src/hermes_cli/shutdown_forensics.c",
    "src/hermes_cli/shutdown_forensics.c"
   ],
   "func_match_files": []
@@ -5081,7 +5081,7 @@
    "src/agent/skills_guard_py_parity.c",
    "src/hermes_cli/skills_guard.c",
    "src/tools/ports_wrappers.c",
-   "src/tools/skills_guard.c",
+   "src/hermes_cli/skills_guard.c",
    "src/tools/todo.c"
   ],
   "func_match_files": []
@@ -5102,7 +5102,7 @@
    "src/skills_hub.c",
    "src/tools/ports_wrappers.c",
    "src/tools/skill_usage_wrappers.c",
-   "src/tools/skills_hub.c",
+   "src/skills_hub.c",
    "src/tools/skills_hub_gaps.c",
    "src/tools/skills_hub_ports.c"
   ],
@@ -5585,7 +5585,7 @@
  },
  "tools/browser_camofox.py": {
   "marker_files": [
-   "src/tools/browser_camofox.c",
+   "src/hermes_cli/browser_camofox.c",
    "src/tools/memory.c"
   ],
   "func_match_files": []
@@ -5868,7 +5868,7 @@
  },
  "tools/skills_guard.py": {
   "marker_files": [
-   "src/tools/skills_guard.c",
+   "src/hermes_cli/skills_guard.c",
    "src/tools/todo.c"
   ],
   "func_match_files": []
@@ -6458,7 +6458,7 @@
  },
  "whatsapp_identity.py": {
   "marker_files": [
-   "src/gateway/whatsapp_identity.c",
+   "src/hermes_cli/whatsapp_identity.c",
    "src/gateway/whatsapp_identity_ports.c",
    "src/hermes_cli/whatsapp_identity.c",
    "src/ports/gateway/platforms/helpers.c"
@@ -6500,7 +6500,7 @@
   "marker_files": [
    "src/hermes_cli/write_approval.c",
    "src/tools/util_helpers.c",
-   "src/tools/write_approval.c"
+   "src/hermes_cli/write_approval.c"
   ],
   "func_match_files": []
  },
@@ -6551,7 +6551,7 @@
  "yuanbao_tools.py": {
   "marker_files": [
    "src/hermes_cli/yuanbao_tools.c",
-   "src/tools/yuanbao_tools.c"
+   "src/hermes_cli/yuanbao_tools.c"
   ],
   "func_match_files": []
  }

@@ -775,7 +775,14 @@ int main(int argc, char **argv) {
         json_free(empty);
         char *in_s = json_serialize(in);
         char *out_s = json_serialize(out);
-        char *func_s = json_escape_string(func);
+        /* libjson json_escape_string has an off-by-one heap overflow (its
+         * `need` reserves ONE quote but it writes TWO, so the closing NUL
+         * lands 1 byte past the malloc). Serialize a string node instead:
+         * identical quoted/escaped output via the bounds-safe ser_putc
+         * growth path. Do NOT call json_escape_string here. */
+        json_t *func_node = json_string(func);
+        char *func_s = json_serialize(func_node);
+        json_free(func_node);
         printf("{\"func\":%s,\"in\":%s,\"out\":%s}\n", func_s,
                in_s ? in_s : "null", out_s ? out_s : "null");
         free(in_s); free(out_s); free(func_s);

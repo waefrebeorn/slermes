@@ -79,6 +79,8 @@ def make_exc(spec):
     if t == "JSONDecodeError":
         e = _JD(msg or "expecting value", "", 0)
         e._m = msg
+    elif t == "AuxiliaryExplicitCancellation":
+        e = AuxiliaryExplicitCancellation(msg)
     elif t == "TimeoutError":
         e = TimeoutError(msg)
     elif t == "RuntimeError":
@@ -133,9 +135,14 @@ def extract():
     }
     src = open(SRC, encoding="utf-8").read()
     tree = ast.parse(src)
-    # module constants (skip ones needing unseeded imports)
+    # module constants (skip ones needing unseeded imports). AnnAssign included:
+    # _SUMMARY_ROUTE_PIN / _PINNED_ROUTE_FIELDS / DETERMINISTIC_SUMMARY_ROUTE /
+    # _SUMMARY_*_MARKERS are annotated assignments; on py3.14 (PEP 649) the
+    # annotation is deferred, so exec evaluates only the value expression.
     for node in tree.body:
-        if isinstance(node, ast.Assign):
+        if isinstance(node, ast.Assign) or (
+            isinstance(node, ast.AnnAssign) and node.value is not None
+        ):
             try:
                 exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec"), ns)
             except Exception:
@@ -254,6 +261,10 @@ KNOWN_METHODS = {
     "_reset_proactive_prune_rearm", "_strip_context_summary_handoff_message",
     "_sanitize_tool_pairs", "_reappend_inflight_user_task", "_find_inflight_user_task",
     "_record_compression_effect", "_take_prepared_summary",
+    # accessed as a bound-method arg to typed_summary_messages (live _generate_summary)
+    "_render_tool_args_for_summary",
+    # live compress no-op seam (capture() already models its failure_class arg)
+    "_structural_no_op_result",
 }
 
 # tuple/object-shaped seam returns
@@ -379,7 +390,12 @@ def seed_case_ns(ctx):
     for fn in ("_redact_compaction_text", "_collect_ghosted_skill_names",
                "_extract_pruned_skill_names", "typed_summary_messages",
                "estimate_messages_tokens_rough", "summary_view",
-               "is_user_role_scaffolding"):
+               "is_user_role_scaffolding",
+               # module-level helper the live flow calls directly; the AST pass
+               # extracts the REAL def, but the flow models it as a scripted
+               # seam (its internal _redact_compaction_text call is helper-internal,
+               # not a flow decision) — override with the recorder.
+               "_reinject_pruned_skill_markers"):
         NS[fn] = ctx.recorder(fn)
     CURRENT["rec"] = ctx.recorder
 

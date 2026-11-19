@@ -1077,8 +1077,18 @@ json_t *cc_flow_generate_summary(cc_flow_io_t *io, json_t *state,
         }
         if (!raised) {
             char *st = cf_strip(stripped_think ? stripped_think : "");
-            char *new_content = (st && st[0]) ? st : cf_dup(content ? content : "");
-            free(st); free(stripped_think); stripped_think = NULL;
+            /* `.strip() or content`: adopt st when non-empty (do NOT free it —
+             * it becomes content and is freed once at cleanup); else keep a
+             * copy of the original content. Freeing st unconditionally here
+             * left content dangling and double-freed at cleanup. */
+            char *new_content;
+            if (st && st[0]) {
+                new_content = st;
+            } else {
+                new_content = cf_dup(content ? content : "");
+                free(st);
+            }
+            free(stripped_think); stripped_think = NULL;
             free(content); content = new_content;
             /* summary = _redact_compaction_text(content.strip()) */
             char *cs = cf_strip(content);

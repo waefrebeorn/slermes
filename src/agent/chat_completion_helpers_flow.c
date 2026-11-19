@@ -1672,13 +1672,12 @@ json_t *cch_flow_call_retry_loop(const json_t *in)
 json_t *cch_flow_run_outcome(const json_t *in)
 {
     json_t *log = json_array();
-    if (jtruth(jget(in, "monitor_interrupted"))) {
-        json_t *a = act("raise");
-        json_set(a, "kind", json_string("InterruptedError"));
-        json_set(a, "message", json_string("Agent interrupted during streaming API call"));
-        push(log, a);
-        return log;
-    }
+    /* Live run() RE-INITIALIZES self._monitor_interrupted = {"yes": False}
+     * before starting the monitor thread (chat_completion_helpers.py:run);
+     * the scripted monitor is a no-op seam (its Thread.start never runs the
+     * target), so the flag is always False at the decision tail -- a seeded
+     * monitor_interrupted input is discarded exactly as live discards it.
+     * Only the monitor's own writes could set it, and this model has none. */
     if (jtruth(jget(in, "interrupt_requested"))) {
         json_t *a = act("raise");
         json_set(a, "kind", json_string("InterruptedError"));

@@ -701,7 +701,12 @@ int grun_flow_claim_host_gateway_role(bool force, const grun_claim_seams_t *s) {
         bool standalone = s->profile_is_standalone(s->ctx, home ? home : "");
         if (standalone) {
             json_t *live_owner = s->host_gateway(s->ctx, 5.0);   /* ATTACH_CHANNEL_WAIT_S */
-            json_t *decision = s->attach_decision(s->ctx, home ? home : "", live_owner);
+            /* live RE-CALLS get_hermes_home() for the recheck decision
+             * (run.py: standalone_attach_decision(get_hermes_home(), live_owner));
+             * it does not reuse the home read for profile_is_standalone. */
+            char *home2 = s->hermes_home(s->ctx);
+            json_t *decision = s->attach_decision(s->ctx, home2 ? home2 : "", live_owner);
+            free(home2);
             if (decision && decision->type != JSON_NULL) {
                 if (strcmp(json_get_str(decision, "outcome", ""), "start") == 0) {
                     free(home);

@@ -7,7 +7,7 @@
 #include <string.h>
 
 /* Include the source under test */
-#include "../src/tools/yuanbao_tools.c"
+#include "../src/hermes_cli/yuanbao_tools.c"
 
 /* Test counters */
 static int g_pass = 0, g_fail = 0;

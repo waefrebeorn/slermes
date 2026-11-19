@@ -684,7 +684,10 @@ char *json_serialize_pretty(const json_t *node, int indent) {
 char *json_escape_string(const char *s)
 {
     if (!s) s = "";
-    size_t need = 1;
+    /* Two surrounding quotes + NUL; the old need=1 budgeted one quote and
+     * malloc(need+1) wrote the terminator 1 byte past the block (heap
+     * corruption in every caller — found via canary shim in gateway_flow). */
+    size_t need = 2;
     for (const char *p = s; *p; p++) {
         unsigned char c = (unsigned char)*p;
         if (c == '"' || c == '\\') need += 2;
