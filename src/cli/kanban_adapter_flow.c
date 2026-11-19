@@ -1123,7 +1123,7 @@ static json_t *ka_explicit_board_intent_pinned(ka_io_t *io);
 json_t *ka_lossy_text(ka_io_t *io, const json_t *value) {
     (void)io;
     /* bytes double: {"__bytes__": "<base64>"} -> utf-8 decode(errors=replace) */
-    if (value && value->type == JSON_OBJECT && json_len(value) == 1 &&
+    if (value && value->type == JSON_OBJECT && value->c.count == 1 &&
         json_has(value, "__bytes__")) {
         const char *b64 = json_get_str(value, "__bytes__", "");
         size_t n = 0;

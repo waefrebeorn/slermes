@@ -1,0 +1,288 @@
+{"func": "_api_client", "in": {"io": {"hermes_user_agent": "hermes-agent/1.2.3"}}}
+{"func": "_api_client", "in": {"io": {"hermes_user_agent": ""}}}
+{"func": "_api_client", "in": {"io": {"hermes_user_agent": null}}}
+{"func": "_api_client", "in": {"io": {"hermes_user_agent": {"__raise__": "RuntimeError", "msg": "version gone"}}}}
+{"func": "_api_client", "in": {"io": {}}}
+{"func": "_api_client", "in": {"io": {"hermes_user_agent": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_response_text", "in": {"response": {"text": "body text"}}}
+{"func": "_response_text", "in": {"response": {"text": ""}}}
+{"func": "_response_text", "in": {"response": {"text": null}}}
+{"func": "_response_text", "in": {"response": {}}}
+{"func": "_response_text", "in": {"response": null}}
+{"func": "_response_text", "in": {"response": "plain"}}
+{"func": "_response_text", "in": {"response": {"__raise__": "RuntimeError", "msg": "stream not read"}}}
+{"func": "_response_text", "in": {"response": {"__raise__": "ValueError", "msg": "closed"}}}
+{"func": "_response_text", "in": {"response": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}
+{"func": "_response_text", "in": {"response": {"__raise__": "GeneratorExit", "msg": "gen"}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://aiplatform.googleapis.com/v1beta1/publishers/google", "api_key": "AQ.x", "err_status": "PERMISSION_DENIED", "io": {"is_vertex_express_base_url": true}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://generativelanguage.googleapis.com/v1beta", "api_key": "AQ.abc", "err_status": "PERMISSION_DENIED", "io": {"is_vertex_express_base_url": false}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://generativelanguage.googleapis.com/v1beta", "api_key": "AIzaabc", "err_status": "PERMISSION_DENIED", "io": {"is_vertex_express_base_url": false}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "  HTTPS://GENERATIVELANGUAGE.GOOGLEAPIS.COM/V1BETA  ", "api_key": "  aq.Z  ", "err_status": " permission_denied ", "io": {"is_vertex_express_base_url": false}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://generativelanguage.googleapis.com/v1beta", "api_key": "AQ.x", "err_status": "INVALID_ARGUMENT", "io": {}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": null, "api_key": null, "err_status": null, "io": {}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://proxy.example/v1beta", "api_key": "AQ.x", "err_status": "PERMISSION_DENIED", "io": {"is_vertex_express_base_url": false}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://aiplatform.googleapis.com/v1beta1/publishers/google", "api_key": "AQ.x", "err_status": "PERMISSION_DENIED", "io": {}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://aiplatform.googleapis.com/v1beta1/publishers/google", "api_key": "AQ.x", "err_status": "PERMISSION_DENIED", "io": {"is_vertex_express_base_url": {"__raise__": "RuntimeError", "msg": "table gone"}}}}
+{"func": "wrong_gemini_surface_guidance", "in": {"base_url": "https://generativelanguage.googleapis.com/v1beta", "api_key": "AQ.x", "err_status": 5, "io": {}}}
+{"func": "_text_of", "in": {"item": "plain"}}
+{"func": "_text_of", "in": {"item": {"type": "text", "text": "hello"}}}
+{"func": "_text_of", "in": {"item": {"type": "text", "text": ""}}}
+{"func": "_text_of", "in": {"item": {"type": "text", "text": 5}}}
+{"func": "_text_of", "in": {"item": {"type": "image_url", "text": "x"}}}
+{"func": "_text_of", "in": {"item": {"text": "x"}}}
+{"func": "_text_of", "in": {"item": null}}
+{"func": "_text_of", "in": {"item": 5}}
+{"func": "_text_of", "in": {"item": ["a"]}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png;base64,aGVsbG8="}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/jpeg;name=x,!!!!"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png,aG!VsbG8=!!"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png,aGVsbG8=="}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png,aGVsbG8"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png,A"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:imagebase64,aGVsbG8="}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": "https://x/y.png"}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "text", "image_url": {"url": "data:img/x,aGVsbG8="}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": null}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": {"url": null}}}}
+{"func": "_inline_data_part", "in": {"item": {"type": "image_url", "image_url": "oops"}}}
+{"func": "_inline_data_part", "in": {"item": "oops"}}
+{"func": "_inline_data_part", "in": {"item": null}}
+{"func": "_multimodal_part", "in": {"item": "plain"}}
+{"func": "_multimodal_part", "in": {"item": ""}}
+{"func": "_multimodal_part", "in": {"item": {"type": "text", "text": "hello"}}}
+{"func": "_multimodal_part", "in": {"item": {"type": "text", "text": ""}}}
+{"func": "_multimodal_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png;base64,aGVsbG8="}}}}
+{"func": "_multimodal_part", "in": {"item": {"type": "image_url", "image_url": {"url": "data:image/png,A"}}}}
+{"func": "_multimodal_part", "in": {"item": null}}
+{"func": "_multimodal_part", "in": {"item": 5}}
+{"func": "_multimodal_part", "in": {"item": ["x"]}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": "call_1"}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": "", "call_id": "c2"}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": null, "call_id": "c3"}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"call_id": "c4"}}}
+{"func": "_tool_call_id", "in": {"tool_call": {}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": 5}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": true}}}
+{"func": "_tool_call_id", "in": {"tool_call": {"id": 0, "call_id": false}}}
+{"func": "_tool_call_id", "in": {"tool_call": null}}
+{"func": "_looks_like_json_schema", "in": {"node": {"$ref": "#/$defs/x"}}}
+{"func": "_looks_like_json_schema", "in": {"node": {"$ref": "https://x/y"}}}
+{"func": "_looks_like_json_schema", "in": {"node": {"$ref": 5}}}
+{"func": "_looks_like_json_schema", "in": {"node": {"a": {"b": [{"$ref": "#/x"}]}}}}
+{"func": "_looks_like_json_schema", "in": {"node": [{"$ref": "#/x"}, 1]}}
+{"func": "_looks_like_json_schema", "in": {"node": {"type": "object", "properties": {"a": {"type": "string"}}}}}
+{"func": "_looks_like_json_schema", "in": {"node": []}}
+{"func": "_looks_like_json_schema", "in": {"node": {}}}
+{"func": "_looks_like_json_schema", "in": {"node": "text"}}
+{"func": "_looks_like_json_schema", "in": {"node": null}}
+{"func": "_has_function_response", "in": {"content": {"parts": [{"functionResponse": {"name": "f"}}]}}}
+{"func": "_has_function_response", "in": {"content": {"parts": [{"text": "x"}]}}}
+{"func": "_has_function_response", "in": {"content": {"parts": []}}}
+{"func": "_has_function_response", "in": {"content": {}}}
+{"func": "_has_function_response", "in": {"content": {"parts": ["str", 5, null]}}}
+{"func": "_has_function_response", "in": {"content": {"parts": null}}}
+{"func": "_has_function_response", "in": {"content": null}}
+{"func": "_merge_alternating", "in": {"contents": []}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "a"}]}, {"role": "model", "parts": [{"text": "b"}]}, {"role": "user", "parts": [{"text": "c"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "a"}]}, {"role": "user", "parts": [{"text": "b"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "model", "parts": [{"text": "a"}]}, {"role": "model", "parts": [{"text": "b"}]}, {"role": "model", "parts": [{"text": "c"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"functionResponse": {"name": "f", "response": {}}}]}, {"role": "user", "parts": [{"text": "human"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "human"}]}, {"role": "user", "parts": [{"functionResponse": {"name": "f", "response": {}}}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"functionResponse": {"name": "f", "response": {}}}]}, {"role": "user", "parts": [{"functionResponse": {"name": "g", "response": {}}}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "a"}]}, {"role": "user", "parts": [{"functionResponse": {"name": "f", "response": {}}}]}, {"role": "user", "parts": [{"text": "b"}]}, {"role": "model", "parts": [{"text": "c"}]}, {"role": "user", "parts": [{"text": "d"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"parts": [{"text": "x"}]}, {"role": "user", "parts": [{"text": "y"}]}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "a"}]}, {"role": "user"}]}}
+{"func": "_merge_alternating", "in": {"contents": [{"role": "user", "parts": [{"text": "a"}]}, {"parts": []}]}}
+{"func": "_function_declaration", "in": {"tool": {"type": "function", "function": {"name": "f", "description": "d", "parameters": {"type": "object"}}}, "json_schema": false, "io": {"sanitize_gemini_tool_parameters": {"type": "object", "properties": {}}}}}
+{"func": "_function_declaration", "in": {"tool": {"type": "function", "function": {"name": "f", "description": "d", "parameters": {"type": "object"}}}, "json_schema": true, "io": {"prepare_gemini_tool_parameters": {"type": "object", "$defs": {}}}}}
+{"func": "_function_declaration", "in": {"tool": {"function": {"name": "f"}}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"function": {"name": "f", "description": "", "parameters": []}}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"function": {"name": ""}}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"function": {"name": 5}}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"function": "oops"}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"function": null}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": null, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": "oops", "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"type": "function", "function": {"name": "f", "description": "d", "parameters": {"type": "object"}}}, "json_schema": false, "io": {}}}
+{"func": "_function_declaration", "in": {"tool": {"type": "function", "function": {"name": "f", "description": "d", "parameters": {"type": "object"}}}, "json_schema": true, "io": {"prepare_gemini_tool_parameters": {"__raise__": "ValueError", "msg": "bad schema"}}}}
+{"func": "_function_declaration", "in": {"tool": {"type": "function", "function": {"name": "f", "description": "d", "parameters": {"type": "object"}}}, "json_schema": false, "io": {"sanitize_gemini_tool_parameters": {"__raise__": "GeneratorExit", "msg": "gen"}}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": {"max_output_tokens": 200}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 300, "extra_body": {"max_output_tokens": 200}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": null, "extra_body": {"max_output_tokens": 200}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": {"max_output_tokens": 0}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": {"max_output_tokens": "200"}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": {"max_output_tokens": null}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": {}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": "50", "extra_body": {"max_output_tokens": 60}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": "abc", "extra_body": {"max_output_tokens": 60}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": true, "extra_body": {"max_output_tokens": 2}}}
+{"func": "_long_decode_cap", "in": {"max_tokens": 100, "extra_body": null}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_object"}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"name": "s", "schema": {"type": "object"}}}, "json_schema": false, "io": {"sanitize_gemini_tool_parameters": {"type": "object"}}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"name": "s", "schema": {"type": "object"}}}, "json_schema": true, "io": {"prepare_gemini_tool_parameters": {"type": "object", "anyOf": []}}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema"}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"name": "s"}}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": "oops"}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"schema": []}}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "text"}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": null, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": "oops", "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"name": "s", "schema": {"type": "object"}}}, "json_schema": false, "io": {}}}
+{"func": "_translate_response_format", "in": {"response_format": {"type": "json_schema", "json_schema": {"name": "s", "schema": {"type": "object"}}}, "json_schema": true, "io": {"prepare_gemini_tool_parameters": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "_provider_call_id", "in": {"fc": {"id": "fc-1"}}}
+{"func": "_provider_call_id", "in": {"fc": {"id": ""}}}
+{"func": "_provider_call_id", "in": {"fc": {"id": null}}}
+{"func": "_provider_call_id", "in": {"fc": {"id": 5}}}
+{"func": "_provider_call_id", "in": {"fc": {}}}
+{"func": "_provider_call_id", "in": {"fc": null}}
+{"func": "_new_call_id", "in": {"fc": {"id": "fc-9"}, "io": {}}}
+{"func": "_new_call_id", "in": {"fc": {"id": ""}, "io": {"uuid4": "0123456789abcdef0123456789abcdef"}}}
+{"func": "_new_call_id", "in": {"fc": {}, "io": {"uuid4": "abcdef0123456789abcdef0123456789"}}}
+{"func": "_new_call_id", "in": {"fc": {"id": 5}, "io": {"uuid4": "ffffffffffffffffffffffffffffffff"}}}
+{"func": "_new_call_id", "in": {"fc": {"id": ""}, "io": {"uuid4": {"__raise__": "RuntimeError", "msg": "entropy gone"}}}}
+{"func": "_new_call_id", "in": {"fc": {}, "io": {}}}
+{"func": "_new_call_id", "in": {"fc": {}, "io": {"uuid4": null}}}
+{"func": "_new_call_id", "in": {"fc": {}, "io": {"uuid4": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_new_call_id", "in": {"fc": {}, "io": {"uuid4": "short"}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": {"b": 1, "a": "x"}}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": {"b": 1, "a": {"y": 2, "x": [true, null]}}}, "kwargs": {"sort_keys": true}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": null}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": []}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": "raw"}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": {"s": "q\"b\\n\t\u0001"}}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": {"a": 1}}, "kwargs": {"ensure_ascii": false}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": {"a": 1}}, "kwargs": {"bogus": 1}}}
+{"func": "_dump_call_args", "in": {"fc": {"args": 0}, "kwargs": {}}}
+{"func": "_dump_call_args", "in": {"fc": null, "kwargs": {}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": 10, "candidatesTokenCount": 20, "totalTokenCount": 30}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": 10, "candidatesTokenCount": 20, "totalTokenCount": 40, "thoughtsTokenCount": 10, "cachedContentTokenCount": 5}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": "12", "candidatesTokenCount": " 3 ", "totalTokenCount": null}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": 1.9, "candidatesTokenCount": -1.9, "totalTokenCount": true}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": 10, "initialPromptTokenCount": 7, "initialCachedContentTokenCount": 2}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"initialPromptTokenCount": 0}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": "1_0"}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": "1.5"}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": {"promptTokenCount": "1\u001c"}}}
+{"func": "_usage_from_metadata", "in": {"usage_meta": null}}
+{"func": "_envelope", "in": {"model": "gemini-3.7-flash", "object_": "chat.completion", "choice": {"index": 0, "finish_reason": "stop"}, "usage": {"total_tokens": 5}, "io": {"uuid4": "0123456789abcdef0123456789abcdef", "time_time": 1700000000.9}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion.chunk", "choice": {"index": 0, "finish_reason": "stop"}, "usage": null, "io": {"uuid4": "ffffffffffffffffffffffffffffffff", "time_time": 0}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion", "choice": null, "usage": null, "io": {"uuid4": "abcdef0123456789abcdef0123456789", "time_time": -5.5}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion", "choice": {"index": 0, "finish_reason": "stop"}, "usage": null, "io": {"uuid4": "0123456789abcdef0123456789abcdef", "time_time": {"__raise__": "RuntimeError", "msg": "clock gone"}}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion", "choice": {"index": 0, "finish_reason": "stop"}, "usage": null, "io": {"uuid4": "0123456789abcdef0123456789abcdef"}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion", "choice": {"index": 0, "finish_reason": "stop"}, "usage": null, "io": {"time_time": 1}}}
+{"func": "_envelope", "in": {"model": "m", "object_": "chat.completion", "choice": {"index": 0, "finish_reason": "stop"}, "usage": null, "io": {"uuid4": {"__raise__": "GeneratorExit", "msg": "gen"}, "time_time": 1}}}
+{"func": "_tool_call_ns", "in": {"name": "f", "arguments": "{}", "index": 0, "call_id": "c1", "extra_content": {"google": {"thought_signature": "s"}}}}
+{"func": "_tool_call_ns", "in": {"name": "f", "arguments": "{}", "index": 2, "call_id": "c2", "extra_content": null}}
+{"func": "_tool_call_ns", "in": {"name": "f", "arguments": "{}", "index": 1, "call_id": "c3", "extra_content": "not-a-dict"}}
+{"func": "_tool_call_ns", "in": {"name": "", "arguments": "", "index": 0, "call_id": "", "extra_content": {}}}
+{"func": "_tool_call_ns", "in": {"name": "f", "arguments": "{}", "index": 0, "call_id": "c4", "extra_content": []}}
+{"func": "_part_text", "in": {"part": {"text": "hello"}}}
+{"func": "_part_text", "in": {"part": {"text": "thought", "thought": true}}}
+{"func": "_part_text", "in": {"part": {"text": "x", "thought": false}}}
+{"func": "_part_text", "in": {"part": {"text": "x", "thought": 1}}}
+{"func": "_part_text", "in": {"part": {"text": ""}}}
+{"func": "_part_text", "in": {"part": {"text": 5}}}
+{"func": "_part_text", "in": {"part": {"thought": true}}}
+{"func": "_part_text", "in": {"part": {}}}
+{"func": "_part_text", "in": {"part": null}}
+{"func": "_text_part_signature", "in": {"part": {"thoughtSignature": "sig"}}}
+{"func": "_text_part_signature", "in": {"part": {"thoughtSignature": "sig", "functionCall": {"name": "f"}}}}
+{"func": "_text_part_signature", "in": {"part": {"thoughtSignature": ""}}}
+{"func": "_text_part_signature", "in": {"part": {"thoughtSignature": 5}}}
+{"func": "_text_part_signature", "in": {"part": {"thoughtSignature": null}}}
+{"func": "_text_part_signature", "in": {"part": {}}}
+{"func": "_text_part_signature", "in": {"part": null}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": {"name": "f", "args": {}}}}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": {"name": ""}}}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": {"args": {}}}}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": {"name": 5}}}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": "oops"}}}
+{"func": "_part_function_call", "in": {"part": {"functionCall": null}}}
+{"func": "_part_function_call", "in": {"part": {}}}
+{"func": "_part_function_call", "in": {"part": null}}
+{"func": "raise_on_prompt_block", "in": {"payload": {}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": null}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": "oops"}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "SAFETY"}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "BLOCKLIST"}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "OTHER"}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "safety", "blockReasonMessage": "  custom reason  "}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "SAFETY", "blockReasonMessage": "   "}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": "SAFETY", "blockReasonMessage": 5}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": 5}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": true}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": ""}}}}
+{"func": "raise_on_prompt_block", "in": {"payload": {"promptFeedback": {"blockReason": null}}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {\"candidates\": []}", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: [DONE]", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: [DONE]\r", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "event: ping", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data:{\"a\":1}", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: null", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: [1]", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: 5", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: ", "io": {"logger_debug": null}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {bad", "io": {"logger_debug": null}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {\"a\":1,}", "io": {"logger_debug": null}}}
+{"func": "_parse_sse_line", "in": {"line": "data: 01", "io": {"logger_debug": null}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {\"a\": \"\\u0041\"}", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {bad", "io": {}}}
+{"func": "_parse_sse_line", "in": {"line": "data: {bad", "io": {"logger_debug": {"__raise__": "RuntimeError", "msg": "log gone"}}}}
+{"func": "_parse_sse_line", "in": {"line": "data: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "io": {"logger_debug": null}}}
+{"func": "_tool_call_slot", "in": {"fc": {"id": "fc-1", "name": "f"}, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {}}}
+{"func": "_tool_call_slot", "in": {"fc": {"id": "fc-1", "name": "f"}, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {"{\"provider_call_id\": \"fc-1\"}": {"index": 0, "id": "c1", "last_arguments": "{\"a\": 1}"}}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {"thoughtSignature": "sig"}, "part_index": 1, "args_str": "{\"a\": 1}", "tool_call_indices": {}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {}, "part_index": 0, "args_str": "{\"a\": 1, \"b\": 2}", "tool_call_indices": {"{\"name\": \"f\", \"part_index\": 0, \"thought_signature\": \"\"}": {"index": 0, "id": "c1", "last_arguments": "{\"a\": 1}"}}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {}, "part_index": 0, "args_str": "{\"z\": 9}", "tool_call_indices": {"{\"name\": \"f\", \"part_index\": 0, \"thought_signature\": \"\"}": {"index": 0, "id": "c1", "last_arguments": "{\"a\": 1}"}}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {}, "part_index": 0, "args_str": "{\"a\": 1, \"b\": 2}", "tool_call_indices": {"{\"name\": \"f\", \"part_index\": 0, \"thought_signature\": \"\"}": {"index": 0, "id": "c1", "last_arguments": "{\"a\": 1}"}, "{\"name\": \"f\", \"part_index\": 0, \"thought_signature\": \"\"}#1": {"index": 1, "id": "c2", "last_arguments": "{\"a\": 1}"}}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {"thoughtSignature": 5}, "part_index": 2, "args_str": "{}", "tool_call_indices": {}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {"k#0": {"index": 0, "id": "c", "last_arguments": ""}}}}
+{"func": "_tool_call_slot", "in": {"fc": {}, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {}}}
+{"func": "_tool_call_slot", "in": {"fc": {"name": "f"}, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {"{\"name\": \"f\", \"part_index\": 0, \"thought_signature\": \"\"}": {"index": 0}}}}
+{"func": "_tool_call_slot", "in": {"fc": null, "part": {}, "part_index": 0, "args_str": "{}", "tool_call_indices": {}}}
+{"func": "_error_info", "in": {"err_obj": {"details": [{"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "RATE_LIMIT", "metadata": {"quota": "100"}}]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": [{"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "RATE_LIMIT", "metadata": {"quota": "100"}}, {"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "SECOND", "metadata": {"x": "1"}}]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": [{"@type": "type.googleapis.com/google.rpc.ErrorInfo", "metadata": {"m": "1"}}]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": [{"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": 5, "metadata": []}]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": [{"@type": "type.googleapis.com/google.rpc.RetryInfo", "reason": "X"}]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": ["str", 5, null]}}}
+{"func": "_error_info", "in": {"err_obj": {"details": null}}}
+{"func": "_error_info", "in": {"err_obj": {"details": "oops"}}}
+{"func": "_error_info", "in": {"err_obj": {}}}
+{"func": "_error_info", "in": {"err_obj": null}}
+{"func": "_error_object", "in": {"body_text": "{\"error\": {\"status\": \"RESOURCE_EXHAUSTED\", \"message\": \"m\"}}"}}
+{"func": "_error_object", "in": {"body_text": "{\"error\": \"not-a-dict\"}"}}
+{"func": "_error_object", "in": {"body_text": "{\"other\": 1}"}}
+{"func": "_error_object", "in": {"body_text": "[1]"}}
+{"func": "_error_object", "in": {"body_text": "null"}}
+{"func": "_error_object", "in": {"body_text": ""}}
+{"func": "_error_object", "in": {"body_text": null}}
+{"func": "_error_object", "in": {"body_text": "{bad"}}
+{"func": "_error_object", "in": {"body_text": "{\"error\": {\"message\": \"m\"},}"}}
+{"func": "_error_object", "in": {"body_text": "  {\"error\": {}}  "}}
+{"func": "GeminiNativeClient._auth_headers", "in": {"self": {"api_key": "k1"}}}
+{"func": "GeminiNativeClient._auth_headers", "in": {"self": {"api_key": ""}}}
+{"func": "GeminiNativeClient._auth_headers", "in": {"self": {"api_key": null}}}
+{"func": "GeminiNativeClient._auth_headers", "in": {"self": {}}}
+{"func": "GeminiNativeClient._auth_headers", "in": {"self": {"api_key": "k", "extra": 1}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": null, "io": {"gemini_http_error": {"message": "Gemini HTTP 429 (RESOURCE_EXHAUSTED): quota", "code": "gemini_rate_limited", "status_code": 429, "retry_after": 1.5, "details": {"status": "RESOURCE_EXHAUSTED"}}}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": "custom body", "io": {"gemini_http_error": {"message": "Gemini HTTP 429 (RESOURCE_EXHAUSTED): quota", "code": "gemini_rate_limited", "status_code": 429, "retry_after": 1.5, "details": {"status": "RESOURCE_EXHAUSTED"}}}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": "", "io": {"gemini_http_error": {"message": "Gemini HTTP 429 (RESOURCE_EXHAUSTED): quota", "code": "gemini_rate_limited", "status_code": 429, "retry_after": 1.5, "details": {"status": "RESOURCE_EXHAUSTED"}}}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": null, "io": {"gemini_http_error": null}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": null, "io": {}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k", "base_url": "https://generativelanguage.googleapis.com/v1beta"}, "response": {"status_code": 429, "text": "quota"}, "body_text": null, "io": {"gemini_http_error": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "GeminiNativeClient._http_error", "in": {"self": {"api_key": "k"}, "response": {"status_code": 429, "text": "quota"}, "body_text": null, "io": {"gemini_http_error": {"message": "Gemini HTTP 429 (RESOURCE_EXHAUSTED): quota", "code": "gemini_rate_limited", "status_code": 429, "retry_after": 1.5, "details": {"status": "RESOURCE_EXHAUSTED"}}}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 100, "extra_body": null, "io": {"_effective_gemini_max_output_tokens": 100}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 100, "extra_body": {"max_output_tokens": 500}, "io": {"_effective_gemini_max_output_tokens": 500}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": null, "extra_body": {"thinking_config": {"thinkingBudget": 0}}, "io": {"_effective_gemini_max_output_tokens": 65535}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": {"thinkingConfig": {"includeThoughts": false}}, "io": {"_effective_gemini_max_output_tokens": 64}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": {"thinking_config": null, "thinkingConfig": {"thinkingLevel": "low"}}, "io": {"_effective_gemini_max_output_tokens": 65535}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": "oops", "io": {"_effective_gemini_max_output_tokens": 64}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": {}, "io": {}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": {}, "io": {"_effective_gemini_max_output_tokens": {"__raise__": "ValueError", "msg": "bad cap"}}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": "abc", "extra_body": {}, "io": {"_effective_gemini_max_output_tokens": 65535}}}
+{"func": "GeminiNativeClient.effective_output_cap", "in": {"max_tokens": 64, "extra_body": {"max_output_tokens": 100}, "io": {"_effective_gemini_max_output_tokens": {"$seq": [100, 200]}}}}

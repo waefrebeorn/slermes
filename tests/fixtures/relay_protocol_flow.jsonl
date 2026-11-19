@@ -1,0 +1,207 @@
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["u1", "u2"], "media": [{"url": "u1", "mime": "a"}, {"url": "u2", "mime": "b"}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["u1", "u2", "u1"], "media": [{"url": "u1", "mime": "a"}, {"url": "u1", "mime": "b"}, {"url": "u2", "mime": 5}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["u1", 7, null], "media": [{"url": "u1", "mime": "a"}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": [], "media": [{"url": "u1"}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": "u1"}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["u1"], "media": {"url": "u1"}}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["", "u1"], "media": [{"url": "", "mime": "x"}, {"url": "u1", "mime": "y"}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "filename", "raw": {"media_urls": ["u1"], "media": [{"url": "u1", "filename": "doc.pdf"}]}}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": null}}
+{"func": "_per_url_from_wire", "in": {"key": "mime", "raw": {"media_urls": ["u1"], "media": [null, 3, {"url": "u1"}]}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1", "mime": "a"}]}, "io": {}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1", "u2"], "media": [{"url": "u1", "mime": "a"}]}, "io": {"logger.debug": null}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": []}, "io": {}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": null}, "io": {}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1", "u2"], "media": [{"url": "u1", "mime": "a"}]}, "io": {"logger.debug": {"__raise__": "RuntimeError", "message": "log boom"}}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1"}]}, "io": {"logger.debug": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_media_types_from_wire", "in": {"raw": null, "io": {}}}
+{"func": "_media_types_from_wire", "in": {"raw": {"media_urls": []}, "io": {}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1", "u2"], "media": [{"url": "u1", "filename": "a.png"}, {"url": "u2", "filename": "b.png"}]}, "io": {"clean_attachment_filename": ["clean1", "clean2"]}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1"}]}, "io": {"clean_attachment_filename": [""]}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1", "u2"], "media": [{"url": "u1", "filename": "a"}, {"url": "u2", "filename": "b"}]}, "io": {"clean_attachment_filename": ["ok", {"__raise__": "ValueError", "message": "bad"}]}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1", "filename": "a"}]}, "io": {}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1", "filename": "a"}]}, "io": {"clean_attachment_filename": [{"__raise__": "SystemExit", "message": "se"}]}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": []}, "io": {}}}
+{"func": "_media_filenames_from_wire", "in": {"raw": {"media_urls": ["u1"], "media": [{"url": "u1", "filename": "a"}]}, "io": {"clean_attachment_filename": [null]}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": null}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "TimeoutError", "message": "t"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "CancelledError", "message": "c"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "RuntimeError", "message": "x"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {"asyncio.wait_for": {"__raise__": "GeneratorExit", "message": "ge"}}}}
+{"func": "_await_bounded", "in": {"aw": {"__callable__": "teardown"}, "io": {}}}
+{"func": "_await_bounded", "in": {"aw": null, "io": {"asyncio.wait_for": null}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "send", "loop": {"__loop__": "l1"}, "io": {"super.__init__": null}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "send_media", "loop": null, "io": {"super.__init__": null}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "send", "loop": {"__loop__": "l1"}, "io": {"super.__init__": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "send", "loop": {"__loop__": "l1"}, "io": {}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "send", "loop": {"__loop__": "l1"}, "io": {"super.__init__": {"__raise__": "GeneratorExit", "message": "ge"}}}}
+{"func": "_PendingRequest.__init__", "in": {"op": "", "loop": null, "io": {"super.__init__": null}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "io": {"_ws_dial_url": "wss://c.x/relay", "asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "identities": [["discord", "b1"], ["slack", "b2"]], "connect_timeout_s": 5, "outbound_timeout_s": 7, "gateway_id": "g1", "upgrade_secret": "s3cr3t", "reconnect": true, "reconnect_backoff_s": 2, "reconnect_max_backoff_s": 20, "io": {"_ws_dial_url": "wss://c.x/relay", "asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "websockets_available": false, "io": {}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "io": {"_ws_dial_url": {"__raise__": "ValueError", "message": "bad url"}, "asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "io": {"asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "io": {"_ws_dial_url": "wss://c.x/relay", "asyncio.Event": {"__raise__": "RuntimeError", "message": "ev boom"}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "io": {"_ws_dial_url": "wss://c.x/relay", "asyncio.Event": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "__init__", "in": {"url": "http://c.x", "platform": "slack", "bot_id": "b2", "identities": [], "io": {"_ws_dial_url": "ws://c.x/relay", "asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "__init__", "in": {"url": "https://c.x", "platform": "discord", "bot_id": "b1", "connect_timeout_s": null, "io": {"_ws_dial_url": "wss://c.x/relay", "asyncio.Event": {"__event__": true, "id": "ev1", "set": false}}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {}}, "io": {"settle_fn": null}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"settle_fn": null}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": true, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": true, "result": null, "exception": null, "cancelled": false}, "r2": {"__future__": true, "id": "f2", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"settle_fn": null}}}
+{"func": "_fail_pending", "in": {"settle": {"__self__": "_settle_connection_lost"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send"}}}, "io": {"future.set_result": null}}}
+{"func": "_fail_pending", "in": {"settle": {"__self__": "_settle_connection_lost"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send_media"}}}, "io": {"future.set_result": null}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"settle_fn": {"__raise__": "RuntimeError", "message": "s boom"}}}}
+{"func": "_fail_pending", "in": {"settle": {"__self__": "_settle_connection_lost"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": {"__raise__": "ValueError", "message": "v"}}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_fail_pending", "in": {"settle": {"__callable__": "settle_fn"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"settle_fn": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send"}, "io": {"future.set_result": null}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send_media"}, "io": {"future.set_result": null}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}, "io": {"future.set_result": null}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": null}, "io": {"future.set_result": null}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send"}, "io": {"future.set_result": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send"}, "io": {}}}
+{"func": "_settle_connection_lost", "in": {"fut": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false, "op": "send"}, "io": {"future.set_result": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_settle_connection_lost", "in": {"fut": null, "io": {}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": null}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": {"__task__": true, "id": "t1", "done": false, "cancelled": false, "exception": null}}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": {"__task__": true, "id": "t1", "done": true, "cancelled": false, "exception": null}}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": {"__task__": true, "id": "t1", "done": true, "cancelled": false, "exception": null}, "_auth_retry": {"__task__": true, "id": "t2", "done": false, "cancelled": false, "exception": null}}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": null, "_auth_retry": {"__task__": true, "id": "t2", "done": true, "cancelled": false, "exception": null}}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": null, "_auth_retry": null}}}
+{"func": "_dialer_running", "in": {"state": {"_supervisor": {"__task__": true, "id": "t1", "done": false, "cancelled": false, "exception": null}, "_auth_retry": {"__task__": true, "id": "t2", "done": false, "cancelled": false, "exception": null}}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "rcvd": {"code": 4401, "reason": "expired"}}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "rcvd": {"code": 4401}, "sent": {"reason": "bye"}}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "rcvd": {"reason": 5}, "sent": {"reason": "x"}}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "reason": "unauthorized"}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed"}}}
+{"func": "_close_reason_of", "in": {"exc": null}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "reason": 7}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "rcvd": {"reason": ""}}}}
+{"func": "_close_reason_of", "in": {"exc": {"__raise__": "ConnectionError", "message": "closed", "rcvd": 5, "reason": "fallback"}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": false}, "io": {}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x", "rcvd": {"reason": "expired"}}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 4401}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x", "reason": "unauthorized"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 4401, "logger.warning": null}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 4401, "logger.warning": null}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 1006}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": null}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": {"__raise__": "RuntimeError", "message": "cc"}}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 4401, "logger.warning": {"__raise__": "RuntimeError", "message": "lw"}}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_latch_if_fresh_token_refused", "in": {"exc": {"__raise__": "ConnectionError", "message": "x"}, "state": {"_auth_retry_pending": true}, "io": {"_close_code_of": 4401.0, "logger.warning": null}}}
+{"func": "hold_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.clear": null}}}
+{"func": "hold_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": true}}, "io": {"event.clear": null}}}
+{"func": "hold_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.clear": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "hold_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {}}}
+{"func": "hold_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.clear": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "hold_redial", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.clear": null}}}
+{"func": "release_redial", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.set": null}}}
+{"func": "release_redial", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.set": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "release_redial", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {}}}
+{"func": "release_redial", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.set": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "release_redial", "in": {"state": {"_redial_release": {"__event__": true, "id": "ev1", "set": true}}, "io": {"event.set": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": false}, "io": {}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": null, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": {"__raise__": "TimeoutError", "message": "t"}, "logger.info": null, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": {"__raise__": "RuntimeError", "message": "x"}, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": {"__raise__": "SystemExit", "message": "se"}, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": {"__raise__": "TimeoutError", "message": "wt"}, "logger.info": null, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": {"__raise__": "RuntimeError", "message": "wr"}, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": null, "event.clear": {"__raise__": "RuntimeError", "message": "clear boom"}}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": {"__raise__": "TimeoutError", "message": "t"}, "logger.info": {"__raise__": "RuntimeError", "message": "li"}, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}}, "io": {"event.wait": null, "asyncio.wait_for": {"__raise__": "CancelledError", "message": "c"}, "event.clear": null}}}
+{"func": "_await_redial_hold", "in": {"state": {"_redial_held": true, "_redial_release": {"__event__": true, "id": "ev1", "set": false}, "_redial_hold_max_s": 5}, "io": {"event.wait": null, "asyncio.wait_for": null, "event.clear": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_closing": true}, "io": {}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {}, "io": {"_dial_and_start": null, "logger.info": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": true}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "4401"}, "logger.warning": null, "asyncio.create_task": {"__task__": true, "id": "t1", "done": false, "cancelled": false, "exception": null}}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_auth_retry_pending": true, "_reconnect": true}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x", "reason": "unauthorized"}, "_close_code_of": 4401, "logger.warning": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": false}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x"}, "logger.warning": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": true, "_supervisor": {"__task__": true, "id": "t9", "done": false, "cancelled": false, "exception": null}}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x"}, "logger.warning": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {}, "io": {"_dial_and_start": {"__raise__": "CancelledError", "message": "c"}}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {}, "io": {"_dial_and_start": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": false}, "io": {"_dial_and_start": null, "logger.info": {"__raise__": "RuntimeError", "message": "log"}, "logger.warning": null}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {}, "io": {}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": true}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x"}, "logger.warning": null, "asyncio.create_task": {"__raise__": "RuntimeError", "message": "ct"}}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_closing": true}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x"}}}}
+{"func": "_redial_with_fresh_token", "in": {"state": {"_reconnect": true, "_supervisor": {"__task__": true, "id": "t9", "done": true, "cancelled": false, "exception": null}}, "io": {"_dial_and_start": {"__raise__": "ConnectionError", "message": "x"}, "logger.warning": null, "asyncio.create_task": {"__task__": true, "id": "t1", "done": false, "cancelled": false, "exception": null}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord", "caps": 1}}, "state": {"_descriptor_ready": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {"json.dumps": "{\"platform\": \"discord\", \"caps\": 1}", "CapabilityDescriptor.from_json": {"platform": "discord", "caps": 1}, "future.set_result": null}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "slack"}}, "state": {"_descriptor": {"platform": "discord"}, "_descriptors_by_platform": {"discord": {"platform": "discord"}}}, "io": {"json.dumps": "{\"platform\": \"slack\"}", "CapabilityDescriptor.from_json": {"platform": "slack"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": ""}}, "io": {"json.dumps": "{\"platform\": \"\"}", "CapabilityDescriptor.from_json": {"platform": ""}}}}
+{"func": "_on_descriptor", "in": {"frame": {}, "io": {"json.dumps": "{}", "CapabilityDescriptor.from_json": {"platform": "relay"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": null}, "io": {"json.dumps": "null", "CapabilityDescriptor.from_json": {"platform": "relay"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"__raise__": "ValueError", "message": "bad desc"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "io": {"CapabilityDescriptor.from_json": {"platform": "discord"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "state": {"_descriptor_ready": {"__future__": true, "id": "f1", "done": true, "result": null, "exception": null, "cancelled": false}}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"platform": "discord"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "state": {"_descriptor_ready": null}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"platform": "discord"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "state": {"_descriptor_ready": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"platform": "discord"}, "future.set_result": {"__raise__": "RuntimeError", "message": "sr"}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"caps": 1}}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"caps": 1}}}}
+{"func": "_on_descriptor", "in": {"frame": {"descriptor": {"platform": "discord"}}, "io": {"json.dumps": "s", "CapabilityDescriptor.from_json": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_on_descriptor", "in": {"frame": null, "io": {}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {"text": "hi"}}, "state": {"_inbound": null}, "io": {}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {"text": "hi"}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {"text": "hi"}, "relay_callback": null, "inbound_handler": {"__task__": true, "id": "adm1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {"text": "hi"}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {"text": "hi"}, "relay_callback": null, "inbound_handler": null, "_send_inbound_ack": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {"text": "hi"}}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {"text": "hi"}, "relay_callback": null, "inbound_handler": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": 7}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": null, "_send_inbound_ack": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": {"__raise__": "ValueError", "message": "h"}, "logger.exception": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": {"__raise__": "RuntimeError", "message": "rc"}, "logger.exception": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {"__raise__": "RuntimeError", "message": "e"}}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": {"__task__": true, "id": "adm1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": {"__raise__": "RuntimeError", "message": "cb"}}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": null, "_send_inbound_ack": {"__raise__": "RuntimeError", "message": "ack"}}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": "x"}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": {"__raise__": "ValueError", "message": "h"}, "logger.exception": {"__raise__": "RuntimeError", "message": "le"}}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": ""}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": null, "inbound_handler": null}}}
+{"func": "_on_inbound", "in": {"frame": {"event": {}, "bufferId": "b1"}, "state": {"_inbound": {"__callable__": "inbound_handler"}}, "io": {"_event_from_wire": {}, "relay_callback": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": true, "exception": null}, "buffer_id": "b1", "io": {}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": {"__raise__": "ValueError", "message": "bad"}}, "buffer_id": "b1", "io": {"logger.error": null}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "io": {"asyncio.create_task": {"__task__": true, "id": "ack1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": null}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": null, "io": {}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "", "io": {}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": 9, "io": {"asyncio.create_task": {"__task__": true, "id": "ack1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": null}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "io": {"asyncio.create_task": {"__raise__": "RuntimeError", "message": "ct"}}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "io": {"asyncio.create_task": {"__task__": true, "id": "ack1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": {"__raise__": "RuntimeError", "message": "cb"}}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": {"__raise__": "ValueError", "message": "bad"}}, "buffer_id": "b1", "io": {"logger.error": {"__raise__": "RuntimeError", "message": "le"}}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "io": {}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "io": {"asyncio.create_task": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": null}, "buffer_id": "b1", "state": {"_inbound_acks": ["a0"]}, "io": {"asyncio.create_task": {"__task__": true, "id": "ack1", "done": false, "cancelled": false, "exception": null}, "task.add_done_callback": null}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": true, "exception": {"__raise__": "ValueError", "message": "bad"}}, "buffer_id": "b1", "io": {}}}
+{"func": "_ack_admitted", "in": {"admission": {"__task__": true, "id": "a1", "done": true, "cancelled": false, "exception": {"__raise__": "ConnectionError", "message": "closed", "rcvd": {"code": 4401}}}, "buffer_id": null, "io": {"logger.error": null}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": null}, "io": {}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {"future.set_result": null}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": {"__future__": true, "id": "f1", "done": true, "result": null, "exception": null, "cancelled": false}}, "io": {}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {"future.set_result": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {}}}
+{"func": "_on_going_idle_ack", "in": {"frame": {}, "state": {"_going_idle_ack": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}, "io": {"future.set_result": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": {"success": true}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": null}}}
+{"func": "_on_outbound_result", "in": {"frame": {"result": {"success": true}}, "state": {"_pending": {"": {"__future__": true, "id": "f0", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": null}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "zz", "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": true, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1"}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": null}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": null}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": null}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": "r1", "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {"future.set_result": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_on_outbound_result", "in": {"frame": null, "io": {}}}
+{"func": "_on_outbound_result", "in": {"frame": {"requestId": null, "result": {}}, "state": {"_pending": {"r1": {"__future__": true, "id": "f1", "done": false, "result": null, "exception": null, "cancelled": false}}}, "io": {}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {"session_key": "sk", "chat_id": "c1"}, "state": {"_interrupt_inbound_handler": null}, "io": {}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {"session_key": "sk", "chat_id": "c1"}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {"interrupt_handler": null}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {"interrupt_handler": null}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {"session_key": null, "chat_id": "c1"}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {"interrupt_handler": null}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {"session_key": "sk"}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {"interrupt_handler": {"__raise__": "RuntimeError", "message": "h"}}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": {}, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {"interrupt_handler": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_on_interrupt_inbound", "in": {"frame": null, "state": {"_interrupt_inbound_handler": {"__callable__": "interrupt_handler"}}, "io": {}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {"path": "/p"}}, "state": {"_passthrough_handler": null}, "io": {}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {"path": "/p"}, "bufferId": "b"}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": null, "passthrough_handler": null}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {"path": "/p"}}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": null, "passthrough_handler": null}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {}}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"__raise__": "ValueError", "message": "bad fwd"}}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {}}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": {"__raise__": "RuntimeError", "message": "rc"}}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {}, "bufferId": "b"}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": null, "passthrough_handler": {"__raise__": "RuntimeError", "message": "h"}}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {}}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {"forward": {}, "bufferId": "b"}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": null, "passthrough_handler": {"__raise__": "SystemExit", "message": "se"}}}}
+{"func": "_on_passthrough_forward", "in": {"frame": {}, "state": {"_passthrough_handler": {"__callable__": "passthrough_handler"}}, "io": {"_passthrough_from_wire": {"path": "/p"}, "relay_callback": null, "passthrough_handler": null}}}

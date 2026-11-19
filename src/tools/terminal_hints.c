@@ -10,7 +10,9 @@
  *   * Only fires on non-zero exit codes — never annotate success.
  *   * At most ONE hint per result, first match wins; patterns ordered by
  *     observed frequency in production trajectories (state.db mining, Aug 2026).
- *   * Scans only the first _SCAN_CHARS of output — hints key on error headers.
+ *   * Scans only the first _SCAN_CHARS of output — hints key on error
+ *     headers (the one exception, the wrapper's own failed `cd`, reads the
+ *     last line of the final _SCAN_CHARS).
  *   * Hints state the *next action*, not a diagnosis essay.
  *   * Pure function, no I/O, no config reads — trivially unit-testable.
  */
@@ -34,7 +36,6 @@
 static const char _EXIT_CODE_HINTS[][512] = {
     [126] = "Exit 126: the file was found but is not executable — `chmod +x` it or invoke it via its interpreter (e.g. `bash script.sh`).",
     [124] = "Exit 124: the command hit its timeout. Raise timeout= (foreground max 600s) or run it with background=true and notify_on_complete=true.",
-    [137] = "Exit 137: the process was SIGKILLed — usually out-of-memory or an external kill. Reduce memory use or check `dmesg | tail` before retrying.",
 };
 #define _EXIT_CODE_HINTS_LEN (sizeof(_EXIT_CODE_HINTS)/sizeof(_EXIT_CODE_HINTS[0]))
 
@@ -203,30 +204,116 @@ static const hint_fn _OUTPUT_HINTS[] = {
 };
 #define _N_HINTS (sizeof(_OUTPUT_HINTS)/sizeof(_OUTPUT_HINTS[0]))
 
+/* PoP: thint_wrapper_cd_hint @ tools/terminal_hints.py:_wrapper_cd_hint */
+/* The per-command wrapper runs `builtin cd -- <cwd> || exit 126` before the
+ * command when it may not fall back, so a 126 whose LAST line is bash's
+ * error for that cd means the command never ran: the working directory is
+ * the problem, and the chmod hint sends the model after the wrong file.
+ * The shell path may start with a drive letter, and bash localizes
+ * "line N: " ("Zeile 2: ", "ligne 2 : ").
+ *
+ * last_line = (output or "")[-_SCAN_CHARS:].rstrip().rsplit("\n", 1)[-1]
+ * then _WRAPPER_CD_FAILURE.fullmatch(last_line), pattern:
+ *   r"(?:[A-Za-z]:)?[^:\n]*: (?:[^:\n]+ \d+ ?: )?cd: (.+): ([^:\n]+)"
+ * tre/POSIX-ERE transcription notes (behavior verified against Python re):
+ * - the two non-capturing groups become plain capturing groups (vanilla
+ *   ERE, no (?:...) dependency); the path/error groups therefore land at
+ *   indices 3/4 instead of Python's 1/2.
+ * - the \n inside the bracket expressions is a LITERAL newline byte in the
+ *   pattern string: tre reads a backslash inside brackets literally, so a
+ *   two-char \n escape would exclude backslash and the letter n instead.
+ * - fullmatch = ^...$ anchors compiled WITHOUT REG_NEWLINE (string-end
+ *   anchors). last_line contains no \n by construction, so tre's
+ *   dot-matches-newline divergence from Python re is unreachable here. */
+static char *thint_wrapper_cd_hint(const char *output)
+{
+    const char *raw = output ? output : "";
+    size_t len = strlen(raw);
+    /* [-_SCAN_CHARS:] — the LAST _SCAN_CHARS, not the first. */
+    const char *tail = (len > _SCAN_CHARS) ? raw + (len - _SCAN_CHARS) : raw;
+    size_t tlen = (len > _SCAN_CHARS) ? (size_t)_SCAN_CHARS : len;
+    /* .rstrip() — str.rstrip() whitespace scope */
+    while (tlen > 0) {
+        char c = tail[tlen - 1];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f')
+            tlen--;
+        else break;
+    }
+    /* .rsplit("\n", 1)[-1] */
+    const char *line = tail;
+    size_t llen = tlen;
+    for (size_t i = tlen; i > 0; i--) {
+        if (tail[i - 1] == '\n') { line = tail + i; llen = tlen - i; break; }
+    }
+    char *lbuf = (char *)malloc(llen + 1);
+    if (!lbuf) return NULL;
+    memcpy(lbuf, line, llen);
+    lbuf[llen] = '\0';
+
+    char *hint = NULL;
+    hregex_t *re = regex_compile(
+        "^([A-Za-z]:)?[^:\n]*: ([^:\n]+ [0-9]+ ?: )?cd: (.+): ([^:\n]+)$", 0);
+    if (re) {
+        regex_match_t *m = regex_search(re, lbuf);
+        /* ^...$ already force fullmatch; the span check pins it explicitly. */
+        if (m && m->matched && m->start[0] == 0 && m->end[0] == (int)llen
+            && m->groups[3] && m->groups[4]) {
+            asprintf(&hint,
+                "The command never ran: Hermes could not enter its working directory %s "
+                "(%s) before running it, so a `cd` inside the command cannot help. Pass "
+                "`workdir` set to an accessible directory (on each call while this one stays unusable).",
+                m->groups[3], m->groups[4]);
+        }
+        regex_match_free(m);
+        regex_free(re);
+    }
+    free(lbuf);
+    return hint;
+}
+
 /* PoP: thint_annotate_failure @ tools/terminal_hints.py:annotate_failure */
 /* Return one short recovery hint for a failed command, or NULL.
  * Returns NULL for exit_code == 0. */
 char *thint_annotate_failure(const char *command, int exit_code, const char *output) {
     if (exit_code == 0)
         return NULL;
-    const char *window = output ? output : "";
-    size_t wlen = strlen(window);
-    char *scan = (wlen > _SCAN_CHARS) ? strndup(window, _SCAN_CHARS) : strdup(window);
-    if (!scan) return NULL;
+    /* if exit_code == 126 and (hint := _wrapper_cd_hint(output)): return hint */
+    if (exit_code == 126) {
+        char *cd_hint = thint_wrapper_cd_hint(output);
+        if (cd_hint)
+            return cd_hint;
+    }
+    /* window = (output or "")[:_SCAN_CHARS] */
+    const char *raw = output ? output : "";
+    size_t rlen = strlen(raw);
+    size_t wlen = (rlen > _SCAN_CHARS) ? (size_t)_SCAN_CHARS : rlen;
+    char *window = (char *)malloc(wlen + 1);
+    if (!window)
+        return NULL;
+    memcpy(window, raw, wlen);
+    window[wlen] = '\0';
 
+    /* for fn in _OUTPUT_HINTS if window else ():
+     *     try:
+     *         if hint := fn(command or "", window): return hint
+     *     except Exception: continue
+     * Per-hint try/except: the pure C hint fns are total — every internal
+     * failure (regex compile error, no match, OOM) returns NULL, which is
+     * exactly the live except-Exception-continue path. A NULL hint never
+     * leaves the loop; the first non-NULL hint wins. */
     char *hint = NULL;
-    if (*scan) {
+    if (wlen > 0) {
         for (size_t i = 0; i < _N_HINTS; i++) {
-            hint = _OUTPUT_HINTS[i](command ? command : "", scan);
-            if (hint) break;
+            hint = _OUTPUT_HINTS[i](command ? command : "", window);
+            if (hint)
+                break;
         }
     }
-    free(scan);
-
+    free(window);
     if (hint)
         return hint;
 
-    /* Exit-code-only hints for codes not covered by output patterns. */
+    /* return _EXIT_CODE_HINTS.get(exit_code) */
     if (exit_code >= 0 && exit_code < (int)_EXIT_CODE_HINTS_LEN
         && _EXIT_CODE_HINTS[exit_code][0]) {
         return strdup(_EXIT_CODE_HINTS[exit_code]);

@@ -1000,6 +1000,7 @@ static json_t *mo2_stdin_is_console(mo2_io_t *io, const json_t *in) {
     /* GetConsoleMode(ctypes.c_void_p(handle), ctypes.byref(mode)) */
     json_t *vp = mo2_seam(io, "ctypes.c_void_p", mo2_args1("handle", handle));
     if (mo2_raised(vp)) {
+        json_free(mode);   /* not yet adopted into any args object */
         if (mo2_is_base_exc(vp)) return vp;
         json_free(vp);
         return json_bool(false);

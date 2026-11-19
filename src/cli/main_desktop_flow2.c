@@ -1222,7 +1222,9 @@ static json_t *md2_kernel32(md2_io_t *io, json_t *in) {
     json_set(a, "use_last_error", json_bool(true));
     json_t *r = md2_call(io, "ctypes.WinDLL", a);
     json_free(a);
-    return r;   /* opaque WinDLL marker (or raise) */
+    /* opaque WinDLL marker (or raise); an escaping raise must be normalized
+     * to the oracle's proj_exc shape ({__raise__, message=str(exc)}) */
+    return md2_raised(r) ? md2_propagate(r) : r;
 }
 
 /* ── _runs_from ────────────────────────────────────────────────────────── */
@@ -1531,7 +1533,9 @@ static json_t *md2_codesign_verify(md2_io_t *io, json_t *in) {
     json_append(argv, json_string(json_get_str(in, "app", "")));
     json_t *r = md2_subprocess_run(io, argv, json_obj_get(in, "kwargs"));
     json_free(argv);
-    return r;   /* CompletedProcess projection {returncode,stdout,stderr} or raise */
+    /* CompletedProcess projection {returncode,stdout,stderr} or raise; an
+     * escaping raise must be normalized to {__raise__, message=str(exc)} */
+    return md2_raised(r) ? md2_propagate(r) : r;
 }
 
 /* field(key): first output line starting "key=" -> stripped value or None. */
@@ -1717,44 +1721,66 @@ static json_t *md2_macos_legacy_adhoc_resign(md2_io_t *io, json_t *in) {
             char *m = md2_sb_take(&b);
             json_t *pr = md2_print(io, m);
             free(m);
-            MD2_PROP(pr);
-            json_free(pr);
-            return json_bool(false);
-        }
-        json_t *sub_in = json_object();
-        json_set_hdr(sub_in, "codesign", codesign);
-        json_set_hdr(sub_in, "app", app);
-        json_t *vkw = json_object();
-        json_set(vkw, "check", json_bool(false));
-        json_set(vkw, "text", json_bool(true));
-        json_set_hdr(vkw, "encoding", "utf-8");
-        json_set_hdr(vkw, "errors", "replace");
-        json_set(sub_in, "kwargs", vkw);
-        json_t *cv = md2_codesign_verify(io, sub_in);
-        json_free(sub_in);
-        if (md2_raised(cv)) {
-            if (!md2_exc_is_exception(cv)) return md2_propagate(cv);
-            skip_exc = md2_exc_str(cv);
-            json_free(cv);
-        } else {
-            double vrc = json_get_num(cv, "returncode", 0);
-            json_free(cv);
-            if (vrc != 0) {
-                json_t *pr = md2_print(io,
-                    "  (warning: legacy ad-hoc re-sign did not pass strict verification; "
-                    "leaving safeStorage keychain item untouched)");
-                MD2_PROP(pr);
+            /* the print is INSIDE the live try: an Exception raise from it
+             * is caught by the except branch (warning print below), not
+             * propagated directly */
+            if (md2_raised(pr)) {
+                if (!md2_exc_is_exception(pr)) return md2_propagate(pr);
+                skip_exc = md2_exc_str(pr);
+                json_free(pr);
+            } else {
                 json_free(pr);
                 return json_bool(false);
             }
-            json_t *pr = md2_print(io,
-                "  " MD2_ARROW " macOS desktop re-signed (legacy ad-hoc); "
-                "safeStorage keychain item left untouched");
-            MD2_PROP(pr);
-            json_free(pr);
-            return json_bool(true);
+        } else {
+            json_t *sub_in = json_object();
+            json_set_hdr(sub_in, "codesign", codesign);
+            json_set_hdr(sub_in, "app", app);
+            json_t *vkw = json_object();
+            json_set(vkw, "check", json_bool(false));
+            json_set(vkw, "text", json_bool(true));
+            json_set_hdr(vkw, "encoding", "utf-8");
+            json_set_hdr(vkw, "errors", "replace");
+            json_set(sub_in, "kwargs", vkw);
+            json_t *cv = md2_codesign_verify(io, sub_in);
+            json_free(sub_in);
+            if (md2_raised(cv)) {
+                if (!md2_exc_is_exception(cv)) return md2_propagate(cv);
+                skip_exc = md2_exc_str(cv);
+                json_free(cv);
+            } else {
+                double vrc = json_get_num(cv, "returncode", 0);
+                json_free(cv);
+                if (vrc != 0) {
+                    json_t *pr = md2_print(io,
+                        "  (warning: legacy ad-hoc re-sign did not pass strict verification; "
+                        "leaving safeStorage keychain item untouched)");
+                    if (md2_raised(pr)) {
+                        if (!md2_exc_is_exception(pr)) return md2_propagate(pr);
+                        skip_exc = md2_exc_str(pr);
+                        json_free(pr);
+                    } else {
+                        json_free(pr);
+                        return json_bool(false);
+                    }
+                } else {
+                    json_t *pr = md2_print(io,
+                        "  " MD2_ARROW " macOS desktop re-signed (legacy ad-hoc); "
+                        "safeStorage keychain item left untouched");
+                    if (md2_raised(pr)) {
+                        if (!md2_exc_is_exception(pr)) return md2_propagate(pr);
+                        skip_exc = md2_exc_str(pr);
+                        json_free(pr);
+                    } else {
+                        json_free(pr);
+                        return json_bool(true);
+                    }
+                }
+            }
         }
     }
+    /* except Exception as exc: print(f"  (warning: ... skipped: {exc})");
+     * a raise from THIS print escapes (it is outside the try). */
     md2_sbuf b; md2_sb_init(&b);
     md2_sb_add(&b, "  (warning: macOS relaunch fixup skipped: ");
     md2_sb_add(&b, skip_exc);

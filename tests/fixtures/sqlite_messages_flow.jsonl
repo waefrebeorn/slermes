@@ -1,0 +1,290 @@
+{"func": "_visibility", "in": {"active": 1, "compacted": 0}}
+{"func": "_visibility", "in": {"active": true, "compacted": true}}
+{"func": "_visibility", "in": {"active": 0, "compacted": 1}}
+{"func": "_visibility", "in": {"active": null, "compacted": null}}
+{"func": "_visibility", "in": {"active": "", "compacted": "x"}}
+{"func": "_visibility", "in": {"active": [], "compacted": []}}
+{"func": "_visibility", "in": {"active": 0.0, "compacted": false}}
+{"func": "_sidecar", "in": {"value": "{\"a\": 1}"}}
+{"func": "_sidecar", "in": {"value": "[1, 2, 3]"}}
+{"func": "_sidecar", "in": {"value": "\"text\""}}
+{"func": "_sidecar", "in": {"value": "42"}}
+{"func": "_sidecar", "in": {"value": "true"}}
+{"func": "_sidecar", "in": {"value": "null"}}
+{"func": "_sidecar", "in": {"value": "bad"}}
+{"func": "_sidecar", "in": {"value": "01"}}
+{"func": "_sidecar", "in": {"value": "{\"a\": 1,}"}}
+{"func": "_sidecar", "in": {"value": ""}}
+{"func": "_sidecar", "in": {"value": 5}}
+{"func": "_sidecar", "in": {"value": null}}
+{"func": "_sidecar", "in": {"value": [1]}}
+{"func": "_sidecar", "in": {"value": false}}
+{"func": "_sidecar", "in": {"value": "{\"nested\": {\"x\": [1, null, true]}}"}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi"}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "timestamp": 0, "tool_calls": [{"id": "c1"}], "tool_name": "t", "tool_call_id": "c1", "display_kind": "dk", "api_content": "api", "platform_message_id": "p1", "effect_disposition": "ed", "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "reasoning_details": {"k": 1}, "codex_reasoning_items": [1], "codex_message_items": [2], "token_count": 9, "message_uid": "u1"}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "timestamp": 5.5, "display_metadata": {"m": 1}, "compressed_summary": true, "observed": true}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "tool_calls": []}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "repair_target": "7", "db_row_snapshot": "snap"}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "absorbed_message_uids": ["a", "b"], "tool_call_uids": {"c1": "u"}, "tool_call_uid": "tu", "data_use": ["d1"], "merged_durable_rows": 2, "unnamed_durable_rows": 1, "absorbed_row_ids": [3, 4], "restored_from_store": true}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "repair_target": "abc"}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "merged_durable_rows": 0, "unnamed_durable_rows": 0, "absorbed_row_ids": [], "data_use": []}}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "bogus": 1}}}
+{"func": "_message_dict", "in": {"message": {"content": "hi"}}}
+{"func": "_message_dict", "in": {"message": null}}
+{"func": "_message_dict", "in": {"message": {"role": "user", "content": "hi", "display_metadata": {}}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held"}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held", "tool_call_id": "c1", "tool_calls": [{"id": "c1"}], "timestamp": 0, "row_id": 3, "persisted": true, "db_row_snapshot": "snap", "message_uid": "u1"}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held", "absorbed_row_ids": [2, 3], "merged_durable_rows": 2, "tool_call_ids": ["c1", "c2"], "own_row": true, "retired_row": true}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held", "retired_durable_rows": [{"role": "tool", "content": "r"}, {"role": "user", "content": "u"}]}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held", "row_id": 9}}}
+{"func": "_held_dict", "in": {"held": {"role": "user", "content": "held", "timestamp": 2.5, "tool_call_id": null, "message_uid": ""}}}
+{"func": "_held_dict", "in": {"held": {"role": "user"}}}
+{"func": "_held_dict", "in": {"held": null}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held", "row_id": 5, "timestamp": 9.0, "message_uid": "ou"}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old", "repair_target": 8, "db_row_snapshot": "bsnap", "timestamp": 3.0}}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held", "tool_calls": [{"id": "h"}], "tool_call_id": "tc"}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old", "tool_calls": [{"id": "c"}]}}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held", "row_id": 5, "persisted": true, "db_row_snapshot": "osnap"}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held"}, "replacement": {"role": "user", "content": "hi"}, "before": {"role": "user", "content": "hi"}, "extra": 1}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held"}, "replacement": {"role": "user", "content": "hi"}}}}
+{"func": "_pruned_original", "in": {"change": {}}}
+{"func": "_pruned_original", "in": {"change": {"original": {"role": "user", "content": "held"}}}}
+{"func": "_pruned_original", "in": {"change": null}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}}}
+{"func": "_transcript_row", "in": {"row": {"id": 2, "session_id": "s2"}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "tool_calls": [{"id": "c"}], "display_metadata": {"m": 1}, "message_uid": "u", "observed": 1, "token_count": 5, "reasoning_details": "raw", "tool_call_uids": "rawuids"}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 0, "compacted": 1}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 0, "compacted": 0}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "_compressed_summary": true}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "_compressed_summary": 1}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": "1.5", "active": 1, "compacted": 0}}}
+{"func": "_transcript_row", "in": {"row": {"session_id": "s1"}}}
+{"func": "_transcript_row", "in": {"row": {"id": 1}}}
+{"func": "_transcript_row", "in": {"row": null}}
+{"func": "_transcript_row", "in": {"row": [1]}}
+{"func": "_transcript_row", "in": {"row": {"id": "abc", "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "display_metadata": {"reactions": [{"emoji": "x"}], "m": 1}}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "display_metadata": {"reactions": [{"emoji": "x"}]}}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "display_metadata": "notdict"}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "reasoning_details": "{\"a\": 1}", "codex_reasoning_items": "[1]", "codex_message_items": "bad"}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "tool_calls": [{"id": "c"}], "tool_name": "t", "tool_call_id": "c1", "display_kind": "dk", "_compressed_summary": 1, "api_content": "api", "platform_message_id": "p", "observed": 1, "effect_disposition": "ed", "finish_reason": "stop", "reasoning": "r", "reasoning_content": "rc", "message_uid": "u"}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": "2.5", "active": 1, "compacted": 0}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "tool_calls": []}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "tool_calls": 0}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0, "tool_calls": 5}}}
+{"func": "_message_record", "in": {"row": {"id": 1, "role": "user"}}}
+{"func": "_message_record", "in": {"row": {"role": "user", "timestamp": 1.0}}}
+{"func": "_message_record", "in": {"row": null}}
+{"func": "_message_record", "in": {"row": {"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 0, "compacted": 1}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5, "timestamp": 2.0, "message_uid": "u1"}, "stored": {}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5}, "stored": {"5": {"timestamp": 9.0}}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5}, "stored": {}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5, "message_uid": ""}, "stored": {"5": {"timestamp": 1.0, "message_uid": "su"}}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5, "message_uid": ""}, "stored": {"5": {"timestamp": 1.0, "message_uid": ""}}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5, "message_uid": ""}, "stored": {}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5, "timestamp": "3.5", "_db_row_snapshot": "snap", "_tool_call_uids": {"c": "u"}, "_tool_call_uid": "tu"}, "stored": {}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5}, "stored": {"5": {"timestamp": "4.5"}}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": 5}, "stored": {"5": {}}}}
+{"func": "_stamp", "in": {"msg": {}, "stored": {}}}
+{"func": "_stamp", "in": {"msg": null, "stored": {}}}
+{"func": "_stamp", "in": {"msg": {"_row_id": "abc"}, "stored": {}}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}, {"_row_id": 3, "timestamp": 2.0}], "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}, {"_row_id": 3, "timestamp": 2.0}], "count": 2}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}, {"_row_id": 3, "timestamp": 2.0}], "count": 0}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0, "_canonical_row": {"_metadata_only": true}}, {"_row_id": 3, "timestamp": 2.0, "_canonical_row": {}}, {"_row_id": 1, "timestamp": 3.0}], "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}, {"_row_id": 5, "timestamp": 2.0}], "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}], "count": null}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}], "count": 9}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5}], "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": [{"timestamp": 1.0}], "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": null, "count": 1}}
+{"func": "_row_outcomes", "in": {"rows": [], "count": 0}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0, "_canonical_row": "notdict"}], "count": 0}}
+{"func": "_row_outcomes", "in": {"rows": [{"_row_id": 5, "timestamp": 1.0}], "count": "x"}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {"from_openai_message": {"__script__": true, "ret": {"role": "user", "content": "hi"}}}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}], "io": {"from_openai_message": [{"role": "user", "content": "a", "timestamp": 1.0}, {"role": "assistant", "content": "b", "tool_calls": [{"id": "c"}], "db_persisted": false, "absorbed_message_uids": ["x"], "data_use": ["d"]}]}}}
+{"func": "_conversation", "in": {"messages": [], "io": {"from_openai_message": {"__script__": true, "ret": {}}}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {"from_openai_message": {"__raise__": "ValueError", "message": "unknown replay projection key 'bogus'"}}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {"from_openai_message": {"__script__": true, "ret": {"content": "hi"}}}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {"from_openai_message": {"__script__": true, "ret": {"role": "user", "content": "hi", "bogus": 1}}}}}
+{"func": "_conversation", "in": {"messages": null, "io": {}}}
+{"func": "_conversation", "in": {"messages": [{"role": "user", "content": "hi"}], "io": {"from_openai_message": {"__script__": true, "ret": 5}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"ret": 42}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "TransientStoreError", "message": "disk write failed", "cause": {"__raise__": "OSError", "message": "FOREIGN KEY constraint failed"}}}, "io": {"classify_persistence_error": "session_row_missing"}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "TransientStoreError", "message": "disk write failed", "cause": {"__raise__": "OSError", "message": "database is locked"}}}, "io": {"classify_persistence_error": "locked"}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "TransientStoreError", "message": "no cause"}}, "io": {"classify_persistence_error": "unknown"}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "TransientStoreError", "message": "disk write failed", "cause": {"__raise__": "OSError", "message": "fk"}}}, "io": {}}}
+{"func": "_refusals", "in": {"session_id": null, "body": {"raise": {"__raise__": "TransientStoreError", "message": "disk write failed", "cause": {"__raise__": "OSError", "message": "fk"}}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "session history changed before the rewind could be persisted"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "rewind target has no durable row identity"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "rewind did not retain its compaction handoff"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RuntimeError", "message": "some other failure"}}}}
+{"func": "_refusals", "in": {"session_id": null, "body": {"raise": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "ValueError", "message": "bad input"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "KeyError", "message": "missing"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "GeneratorExit", "message": ""}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "CustomFailure", "message": "custom"}}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "RewindRefused", "message": "rewind target changed before it could be persisted"}}, "io": {"classify_persistence_error": "unknown"}}}
+{"func": "_refusals", "in": {"session_id": "s1", "body": {"raise": {"__raise__": "TransientStoreError", "message": "x", "cause": {"__raise__": "OSError", "message": "fk"}}}, "io": {"classify_persistence_error": {"__raise__": "RuntimeError", "message": "classifier broke"}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [], "io": {}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": null, "io": {}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "guards": {"turn_lease_holder": "w1", "turn_lease_ttl_seconds": 60.0}, "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 1, "stamps": [{"_row_id": 10, "timestamp": 5.0, "_db_row_snapshot": "snap10"}]}}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "x", "_restored_from_store": true, "_db_persisted": true, "message_uid": "u1"}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 0, "stamps": [{}]}}, "message_uid_or_none": "u1", "_active_logical_message_row": {"__script__": true, "ret": {"id": 7, "timestamp": 3.0}}, "transcript_row_snapshot": "snap7", "_restore_row_identity": {"__script__": true, "ret": {"msg": {"message_uid": "u1"}}}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "x", "_restored_from_store": true, "_db_persisted": true, "message_uid": "u1"}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 0, "stamps": [{}]}}, "message_uid_or_none": "u1", "_active_logical_message_row": {"__script__": true, "ret": null}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"content": "x", "_restored_from_store": true, "_db_persisted": true}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 0, "stamps": [{}]}}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "io": {"_append_messages_in_transaction": {"__raise__": "RuntimeError", "message": "write failed"}}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "io": {}}}
+{"func": "_append_chunk", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "x", "_restored_from_store": true, "_db_persisted": true, "_row_id": 4}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 1, "stamps": [{}]}}}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {"append_message": 42}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi", "timestamp": 5.0, "tool_calls": [{"id": "c1"}], "tool_name": "t", "tool_call_id": "c1", "display_metadata": {"m": 1}, "observed": true, "compressed_summary": true, "message_uid": "u1", "token_count": 3}, "turn_lease_holder": "w1", "turn_lease_ttl_seconds": 60.0, "io": {"append_message": 7}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {"append_message": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {"append_message": {"__raise__": "TransientStoreError", "message": "fk failed", "cause": {"__raise__": "OSError", "message": "FOREIGN KEY constraint failed"}}, "classify_persistence_error": "session_row_missing"}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {"append_message": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi", "bogus": 1}, "io": {"append_message": 1}}}
+{"func": "append", "in": {"session_id": "s1", "message": {"role": "user", "content": "hi"}, "io": {"append_message": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [], "io": {}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 2, "stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1", "_db_row_snapshot": "s10"}, {"_row_id": 11, "timestamp": 2.0, "message_uid": "u2", "_db_row_snapshot": "s11"}]}}}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi", "tool_calls": [{"id": "c1"}]}, {"role": "user", "content": "second"}, {"role": "user", "content": "third"}], "chunk_rows": 2, "io": {"_parse_tool_calls": [null, null, null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {"_tool_call_uids": {"c1": "tu1"}}, "index": {"c1": "tu1"}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {"_tool_call_uid": "tu1"}, "index": {"c1": "tu1"}}}], "_append_messages_in_transaction": [{"inserted": 2, "stamps": [{"_row_id": 10, "timestamp": 1.0, "_db_row_snapshot": "s10"}, {"_row_id": 11, "timestamp": 2.0, "_db_row_snapshot": "s11"}]}, {"inserted": 1, "stamps": [{"_row_id": 12, "timestamp": 3.0, "_db_row_snapshot": "s12"}]}]}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}, {"role": "user", "content": "third"}], "chunk_rows": 2, "io": {"_parse_tool_calls": [null, null, null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}], "_append_messages_in_transaction": [{"inserted": 2, "stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1"}, {"_row_id": 11, "timestamp": 2.0}]}, {"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 1, "stamps": [{}]}}}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi", "restored_from_store": true, "message_uid": "u1"}], "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 0, "stamps": [{"_db_persisted": true}]}}, "message_uid_or_none": "u1", "_active_logical_message_row": {"__script__": true, "ret": {"id": 7, "timestamp": 3.0}}, "transcript_row_snapshot": "snap7", "_restore_row_identity": {"__script__": true, "ret": {"msg": {"message_uid": "u1"}}}}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "chunk_rows": 1, "io": {"_parse_tool_calls": [null, null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}], "_append_messages_in_transaction": [{"inserted": 1, "stamps": [{"_row_id": 10, "timestamp": 1.0}]}, {"__raise__": "SystemExit", "message": "halt"}]}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "chunk_rows": 0, "io": {"_parse_tool_calls": [null, null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}]}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "chunk_rows": -1, "io": {"_parse_tool_calls": [null, null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {}, "index": {}}}, {"__script__": true, "ret": {"msg": {}, "index": {}}}]}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "chunk_rows": 5, "io": {"_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 2, "stamps": [{"_row_id": 10, "timestamp": 1.0}, {"_row_id": 11, "timestamp": 2.0}]}}}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "io": {}}}
+{"func": "append_batch", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "chunk_rows": 1, "io": {"_parse_tool_calls": [null], "_stamp_tool_call_uids": [{"__script__": true, "ret": {"msg": {}, "index": {}}}], "_append_messages_in_transaction": {"__script__": true, "ret": {"inserted": 1, "stamps": [{"_row_id": 10, "timestamp": 1.0}]}}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "mode": "destructive", "io": {"replace_messages": {"__script__": true, "ret": {"stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1", "_db_row_snapshot": "s10"}, {"_row_id": 11, "timestamp": 2.0, "message_uid": "u2", "_db_row_snapshot": "s11"}]}}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi", "db_row_snapshot": "keepme"}], "mode": "preserve_existing_archive", "reject_active_turn_lease": true, "io": {"replace_messages": {"__script__": true, "ret": {"stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1", "_db_row_snapshot": "s10"}]}}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "mode": "archive_dropped", "io": {"replace_messages": {"__script__": true, "ret": {"stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1"}]}}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "mode": "destructive", "io": {"replace_messages": {"__script__": true, "ret": {"stamps": [{"_row_id": 10}, {"_row_id": 11}]}}, "get_messages": {"__script__": true, "ret": [{"id": 10, "timestamp": 5.0, "message_uid": "su10"}, {"id": 11, "timestamp": 6.0}]}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "mode": "bogus", "io": {}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "mode": null, "io": {}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}], "mode": "destructive", "io": {"replace_messages": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "second"}], "mode": "destructive", "io": {"replace_messages": {"__script__": true, "ret": {"stamps": [{"_row_id": 10, "timestamp": 1.0, "message_uid": "u1"}, {}]}}, "get_messages": {"__script__": true, "ret": [{"id": 10, "timestamp": 5.0}]}}}}
+{"func": "replace_transcript", "in": {"session_id": "s1", "messages": [], "mode": "destructive", "io": {"replace_messages": {"__script__": true, "ret": {"stamps": []}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 3, "stamps": [{"_row_id": 20, "timestamp": 7.0, "_db_row_snapshot": "s20", "message_uid": "cu"}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "watermark": {"last_active": 5}, "carried_tail_count": 2, "lock_holder": "comp1", "model_config_patch": {"k": 1}, "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": [{"_row_id": 20, "timestamp": 7.0}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "watermark": {"last_active": 0}, "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": [{"_row_id": 20, "timestamp": 7.0}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "watermark": {"last_active": null}, "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": [{"_row_id": 20, "timestamp": 7.0}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "carried": [{"role": "user", "content": "held", "row_id": 3}], "coverage": {"covered_ids": [1, 2], "unresolved": [{"role": "user", "content": "held"}]}, "held_for_cas": [{"role": "user", "content": "held", "row_id": 4}], "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 2, "stamps": [{"_row_id": 20, "timestamp": 7.0}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "carried": [], "held_for_cas": [], "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": [{"_row_id": 20, "timestamp": 7.0}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "io": {"archive_and_compact": {"__raise__": "RuntimeError", "message": "session history changed before the rewind could be persisted"}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": [{}]}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "carried": [{"role": "user", "content": "held", "absorbed_row_ids": ["abc"]}], "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": []}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [{"role": "user", "content": "hi"}], "watermark": {}, "io": {"archive_and_compact": {"__script__": true, "ret": {"active": 1, "stamps": []}}}}}
+{"func": "compact", "in": {"session_id": "s1", "replacement": [], "io": {}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}, {"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}], "io": {"rewrite_pruned_rows": {"__script__": true, "ret": {"rewritten": 2, "stamps": [{"_db_row_snapshot": "n1"}, {"_db_row_snapshot": "n2"}]}}}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [], "io": {"rewrite_pruned_rows": {"__script__": true, "ret": {"rewritten": 0, "stamps": []}}}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}], "io": {"rewrite_pruned_rows": {"__script__": true, "ret": {"rewritten": 0, "stamps": [{}]}}}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}], "model_config_patch": {"k": 1}, "turn_lease_holder": "w1", "turn_lease_ttl_seconds": 10.0, "io": {"rewrite_pruned_rows": {"__script__": true, "ret": {"rewritten": 1, "stamps": [{"_db_row_snapshot": "n1"}]}}}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}], "io": {"rewrite_pruned_rows": {"__raise__": "RuntimeError", "message": "a pruned message of session s1 is not rewritten in place"}}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held"}, "replacement": {"role": "user", "content": "hi"}}], "io": {}}}
+{"func": "rewrite_pruned_rows", "in": {"session_id": "s1", "changes": [{"original": {"role": "user", "content": "held", "row_id": 5}, "replacement": {"role": "user", "content": "new"}, "before": {"role": "user", "content": "old"}}], "io": {}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__script__": true, "ret": null}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__script__": true, "ret": [{"emoji": "+1", "author": "user", "at": 3.0, "seen": true}]}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": null, "author": "agent", "io": {"set_message_reaction": {"__script__": true, "ret": [{"emoji": null, "author": "agent"}]}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__script__": true, "ret": [{"emoji": "+1", "author": "user", "at": "2.5"}]}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__script__": true, "ret": 5}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {"set_message_reaction": {"__script__": true, "ret": ["notdict"]}}}}
+{"func": "set_reaction", "in": {"session_id": "s1", "message_id": 1, "emoji": "+1", "author": "user", "io": {}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {"take_unseen_reactions": {"__script__": true, "ret": [{"row_id": 1, "role": "user", "emoji": "+1", "text": "hi"}]}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {"take_unseen_reactions": {"__script__": true, "ret": []}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "author": "agent", "io": {"take_unseen_reactions": {"__script__": true, "ret": [{"row_id": 2, "role": "assistant", "emoji": "x", "text": ""}]}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {"take_unseen_reactions": {"__script__": true, "ret": [{"row_id": 1, "role": "user", "emoji": "+1"}]}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {"take_unseen_reactions": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {"take_unseen_reactions": {"__script__": true, "ret": null}}}}
+{"func": "take_unseen_reactions", "in": {"session_id": "s1", "io": {}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "io": {"get_messages": {"__script__": true, "ret": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}]}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "request": {"view": "display"}, "io": {"get_messages": {"__script__": true, "ret": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 0, "compacted": 1}]}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "request": {"view": "all", "include_lineage": true}, "io": {"get_messages": {"__script__": true, "ret": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 0, "compacted": 0}]}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "request": {"after_id": 5}, "io": {"get_messages": {"__script__": true, "ret": []}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "request": {"limit": 10, "offset": 2, "latest": true}, "io": {"get_messages": {"__script__": true, "ret": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}, {"id": 2, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}]}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "request": {"view": "bogus"}, "io": {}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "io": {"get_messages": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "io": {"get_messages": {"__script__": true, "ret": [{"id": 1}]}}}}
+{"func": "read_transcript", "in": {"session_id": "s1", "io": {}}}
+{"func": "active_watermark", "in": {"session_id": "s1", "io": {"get_active_message_watermark": 0}}}
+{"func": "active_watermark", "in": {"session_id": "s1", "io": {"get_active_message_watermark": 7}}}
+{"func": "active_watermark", "in": {"session_id": "s1", "io": {"get_active_message_watermark": null}}}
+{"func": "active_watermark", "in": {"session_id": "s1", "io": {"get_active_message_watermark": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "active_watermark", "in": {"session_id": "s1", "io": {}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {"conversation_revision": {"__script__": true, "ret": [["s1"], 3, 9, 2]}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "include_lineage": true, "io": {"conversation_revision": {"__script__": true, "ret": [["root", "s1"], 5, 12, 4]}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {"conversation_revision": {"__script__": true, "ret": [1, 2]}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {"conversation_revision": {"__script__": true, "ret": [1, 2, 3, 4, 5]}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {"conversation_revision": {"__script__": true, "ret": null}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {"conversation_revision": {"__script__": true, "ret": [5, 3, 9, 2]}}}}
+{"func": "conversation_revision", "in": {"session_id": "s1", "io": {}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {"get_messages_around": {"__script__": true, "ret": {"window": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}], "messages_before": 1, "messages_after": 2}}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "window": 0, "io": {"get_messages_around": {"__script__": true, "ret": {"window": [], "messages_before": 0, "messages_after": 0}}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {"get_messages_around": {"__script__": true, "ret": {"messages_before": 0, "messages_after": 0}}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {"get_messages_around": {"__script__": true, "ret": {"window": [], "messages_after": 0}}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {"get_messages_around": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {"get_messages_around": {"__script__": true, "ret": null}}}}
+{"func": "read_around", "in": {"session_id": "s1", "anchor": 1, "io": {}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {"get_session_timeline": {"__script__": true, "ret": {"entries": [{"row_id": 1, "preview": "p", "timestamp": 1.0}], "pagination": {"limit": 500, "after_row_id": 0, "returned": 1, "total": 5, "has_more": true, "next_cursor": 1}}}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "limit": 10, "after_row_id": 3, "io": {"get_session_timeline": {"__script__": true, "ret": {"entries": [], "pagination": {"limit": 10, "after_row_id": 3, "returned": 0, "total": 5, "has_more": false, "next_cursor": null}}}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {"get_session_timeline": {"__script__": true, "ret": {"entries": []}}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {"get_session_timeline": {"__script__": true, "ret": {"entries": [{"row_id": 1, "timestamp": 1.0}], "pagination": {"limit": 500, "after_row_id": 0, "returned": 1, "total": 5, "has_more": true, "next_cursor": 1}}}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {"get_session_timeline": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {"get_session_timeline": {"__script__": true, "ret": {"entries": [], "pagination": {"limit": 500, "after_row_id": 0, "returned": 0, "total": 0, "has_more": false}}}}}}
+{"func": "read_session_timeline", "in": {"session_id": "s1", "io": {}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {"get_session_messages_around": {"__script__": true, "ret": null}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {"get_session_messages_around": {"__script__": true, "ret": {"messages": [{"id": 1, "session_id": "s1", "role": "user", "content": "hi", "timestamp": 100.0, "active": 1, "compacted": 0}], "pagination": {"row_id": 1, "limit": 120, "returned": 1, "offset": 0, "total": 3, "has_older": false, "has_newer": true}}}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "limit": 5, "io": {"get_session_messages_around": {"__script__": true, "ret": {"messages": [], "pagination": {"row_id": 1, "limit": 5, "returned": 0, "offset": 0, "total": 3, "has_older": false, "has_newer": false}}}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {"get_session_messages_around": {"__script__": true, "ret": {"pagination": {"row_id": 1, "limit": 120, "returned": 1, "offset": 0, "total": 3, "has_older": false, "has_newer": true}}}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {"get_session_messages_around": {"__script__": true, "ret": {"messages": [], "pagination": {"limit": 120, "returned": 0, "offset": 0, "total": 0, "has_older": false, "has_newer": false}}}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {"get_session_messages_around": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "read_prompt_page", "in": {"session_id": "s1", "row_id": 1, "io": {}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": false}}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true, "cooldown_until": 5.0, "error": "e"}}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": 0, "cooldown_until": 9.0, "error": "x"}}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true}}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": null}}}}
+{"func": "read_compression_cooldown_snapshot", "in": {"session_id": "s1", "io": {}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 1.0, "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": false}}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 5.0, "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true, "cooldown_until": 5.0, "error": "e"}}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 6.0, "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true, "cooldown_until": 5.0, "error": null}}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 4.0, "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true, "cooldown_until": 5.0, "error": "e"}}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 1.0, "io": {"get_compression_failure_cooldown_row": {"__script__": true, "ret": {"session_exists": true, "cooldown_until": "7.5", "error": null}}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 1.0, "io": {"get_compression_failure_cooldown_row": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "read_compression_cooldown", "in": {"session_id": "s1", "at": 1.0, "io": {}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": true, "until": 5.0, "error": "e"}, "io": {"restore_compression_failure_cooldown_row": {"__script__": true, "ret": null}}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": false}, "io": {"restore_compression_failure_cooldown_row": {"__script__": true, "ret": null}}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": true, "until": 5.0, "error": null}, "io": {"restore_compression_failure_cooldown_row": {"__raise__": "RuntimeError", "message": "cooldown mismatch"}}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": true, "until": null, "error": null}, "io": {"restore_compression_failure_cooldown_row": {"__raise__": "TransientStoreError", "message": "disk"}, "classify_persistence_error": "disk"}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": true, "until": null, "error": null}, "io": {"restore_compression_failure_cooldown_row": {"__raise__": "RewindRefused", "message": "rewind target changed before it could be persisted"}, "classify_persistence_error": "unknown"}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": true, "until": null, "error": null}, "io": {"restore_compression_failure_cooldown_row": {"__raise__": "TransientStoreError", "message": "fk", "cause": {"__raise__": "OSError", "message": "FOREIGN KEY constraint failed"}}, "classify_persistence_error": "session_row_missing"}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"until": 5.0}, "io": {}}}
+{"func": "restore_compression_cooldown", "in": {"session_id": "s1", "snapshot": {"present": false}, "io": {}}}
+{"func": "latest_row_id", "in": {"session_id": "s1", "io": {"latest_message_row_id": 7}}}
+{"func": "latest_row_id", "in": {"session_id": "s1", "io": {"latest_message_row_id": null}}}
+{"func": "latest_row_id", "in": {"session_id": "s1", "role": "assistant", "offset": 1, "require_text": false, "io": {"latest_message_row_id": 3}}}
+{"func": "latest_row_id", "in": {"session_id": "s1", "io": {"latest_message_row_id": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "latest_row_id", "in": {"session_id": "s1", "io": {}}}
+{"func": "message_storage_state", "in": {"message_id": 0, "io": {}}}
+{"func": "message_storage_state", "in": {"message_id": null, "io": {}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__script__": true, "ret": null}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__script__": true, "ret": {"session_id": "s1", "active": 1, "compacted": 0}}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__script__": true, "ret": {"session_id": "s1", "active": 0, "compacted": 1}}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__script__": true, "ret": {"session_id": "s1", "active": 0, "compacted": 0}}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__script__": true, "ret": {"session_id": "s1", "compacted": 0}}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {"conn.execute": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "message_storage_state", "in": {"message_id": 5, "io": {}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": {"target_row_id": 5, "expected_active_ids": [5, 6], "expected_target_content": "hi", "scaffold": null, "prefix": [{"role": "user", "content": "p"}], "durable_prefix": [], "live_view": {"k": 1}, "live_text": "t", "durable_user": [0], "user_ordinal": 1}}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 2, "warm_history": [{"role": "user", "content": "w"}], "require_retryable": true, "require_composite": true, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": {"target_row_id": 5, "expected_active_ids": [5, 6], "expected_target_content": "hi", "scaffold": {"s": 1}, "prefix": [{"role": "user", "content": "p"}], "durable_prefix": [], "live_view": {"k": 1}, "live_text": null, "durable_user": [0], "user_ordinal": 1}}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": {"target_row_id": 5, "expected_active_ids": [5, 6], "expected_target_content": "hi", "scaffold": null, "prefix": [{"role": "user", "content": "p"}], "durable_prefix": [], "live_view": {"k": 1}, "durable_user": [0], "user_ordinal": 1}}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": {"target_row_id": 5, "expected_active_ids": [5, 6], "expected_target_content": "hi", "scaffold": null, "prefix": [{"role": "user", "content": "p"}], "durable_prefix": [], "live_view": {"k": 1}, "live_text": "t", "durable_user": [0], "user_ordinal": 1, "bogus": 1}}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__raise__": "RuntimeError", "message": "rewind target changed before it could be persisted"}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": {"target_row_id": 5, "expected_active_ids": [5, 6], "expected_target_content": "hi", "scaffold": null, "prefix": 5, "durable_prefix": [], "live_view": {"k": 1}, "live_text": "t", "durable_user": [0], "user_ordinal": 1}}}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {}}}
+{"func": "plan_user_turn_rewind", "in": {"session_id": "s1", "user_ordinal": 1, "io": {"plan_user_turn_rewind": {"__script__": true, "ret": null}}}}

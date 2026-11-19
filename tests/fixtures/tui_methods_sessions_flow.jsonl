@@ -1,0 +1,273 @@
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {"session_id": "s1"}}, "io": {"resolve": [["sess1", null]], "session_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": [["sess1", {"error": "denied"}]]}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": [["s", {}]], "session_fn": "ok"}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": {"__script__": true, "raise": {"type": "ValueError", "message": "bad resolve"}}}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": [[1, 2, 3]]}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": null}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": [["s", null]], "session_fn": {"__script__": true, "raise": {"type": "RuntimeError", "message": "fn blew up"}}}}}
+{"func": "_session_arg", "in": {"args": {"rid": "r1", "params": {}}, "io": {"resolve": "ab"}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": false, "rid": "r1", "params": {}}, "io": {"sess_nowait": [["s1", null]], "session_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": true, "rid": "r1", "params": {}}, "io": {"sess": [["s1", null]], "session_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": true, "rid": "r1", "params": {}}, "io": {"sess": [["s1", {"error": "busy"}]]}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": false, "rid": "r1", "params": {}}, "io": {"sess_nowait": {"__script__": true, "raise": {"type": "ValueError", "message": "nope"}}}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": true, "rid": "r1", "params": {}}, "io": {"sess": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": false, "rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_session_method", "in": {"args": {"name": "session.x", "live": false, "rid": "r1", "params": {}}, "io": {"sess_nowait": [["only-one"]]}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"db": 1}, "persistence_for": {"sessions": {}}, "db_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_with_db", "in": {"args": {"code": 5007, "session_scoped": true, "rid": "r1", "params": {}}, "io": {"sess_nowait": [["s1", null]], "session_db": {"db": 2}, "persistence_for": {"sessions": {}}, "db_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_with_db", "in": {"args": {"code": 5007, "session_scoped": true, "rid": "r1", "params": {}}, "io": {"sess_nowait": [["s1", {"error": "denied"}]]}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"db": 1}, "persistence_for": {"cm_enter_none": true}, "db_unavailable_error": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": null}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"db": 1}, "persistence_for": null}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"db": 1}, "persistence_for": {"__script__": true, "raise": {"type": "ValueError", "message": "store"}}}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"db": 1}, "persistence_for": {"sessions": {}}, "db_fn": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_with_db", "in": {"args": {"code": 5007, "session_scoped": true, "rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_with_db", "in": {"args": {"code": 5006, "session_scoped": false, "rid": "r1", "params": {}}, "io": {"profile_db": {"cm_enter_none": true}, "persistence_for": {"sessions": {}}, "db_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {"source": "web"}}, "io": {"uuid4_hex": "abcdef1234567890", "str_param": "web", "resolve_session_source": "web"}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": "abcdef1234567890", "str_param": "", "resolve_session_source": "default"}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": {"__script__": true, "raise": {"type": "RuntimeError", "message": "uuid"}}}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": "abcdef12", "str_param": {"__script__": true, "raise": {"type": "ValueError", "message": "sp"}}}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": null}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": "abc", "str_param": "tool", "resolve_session_source": "tool"}}}
+{"func": "_new_runtime_ids", "in": {"args": {"params": {}}, "io": {"uuid4_hex": "abcdef12", "str_param": "web", "resolve_session_source": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": "/h/p"}, "io": {"session_profile_runtime_scope": {"scope": 1}}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": null}, "io": {"session_profile_runtime_scope": {"scope": 2}}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": ""}, "io": {"session_profile_runtime_scope": null}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": 5}, "io": {"session_profile_runtime_scope": {"scope": 3}}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": "/h/p"}, "io": {"session_profile_runtime_scope": {"__script__": true, "raise": {"type": "ValueError", "message": "scope"}}}}}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": "/h/p"}, "io": {}}, "fail_closed": true}
+{"func": "_profile_build_scope", "in": {"args": {"profile_home": true}, "io": {"session_profile_runtime_scope": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {"set_session_context": "tok", "make_agent": {"agent": 1}, "clear_session_context": null}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {"cwd_override": "/w", "model": "m"}}, "io": {"set_session_context": "tok", "make_agent": {"agent": 1}, "clear_session_context": null}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {"set_session_context": "tok", "make_agent": {"__script__": true, "raise": {"type": "ValueError", "message": "build"}}, "clear_session_context": null}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {"set_session_context": "tok", "make_agent": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}, "clear_session_context": null}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {"set_session_context": "tok", "make_agent": {"agent": 1}, "clear_session_context": {"__script__": true, "raise": {"type": "RuntimeError", "message": "clear"}}}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {"set_session_context": {"__script__": true, "raise": {"type": "ValueError", "message": "ctx"}}}}}
+{"func": "_make_agent_in_context", "in": {"args": {"sid": "rt1", "key": "k1", "kwargs": {}}, "io": {}}, "fail_closed": true}
+{"func": "_cwd_info", "in": {"args": {"session": {"agent": {"m": 1}}, "cwd": "/w"}, "io": {"session_info": {"cwd": "/w", "lazy": false}}}}
+{"func": "_cwd_info", "in": {"args": {"session": {}, "cwd": "/w"}, "io": {"git_branch": "main", "project_info_for_cwd": {"name": "p"}}}}
+{"func": "_cwd_info", "in": {"args": {"session": {}, "cwd": "/w", "branch": "dev"}, "io": {"project_info_for_cwd": null}}}
+{"func": "_cwd_info", "in": {"args": {"session": {"agent": null}, "cwd": "/w"}, "io": {"git_branch": null, "project_info_for_cwd": {"name": "p"}}}}
+{"func": "_cwd_info", "in": {"args": {"session": {}, "cwd": "/w"}, "io": {"git_branch": {"__script__": true, "raise": {"type": "OSError", "message": "git"}}}}}
+{"func": "_cwd_info", "in": {"args": {"session": null, "cwd": "/w"}, "io": {}}}
+{"func": "_cwd_info", "in": {"args": {"session": {}, "cwd": "/w"}, "io": {}}, "fail_closed": true}
+{"func": "_cwd_info", "in": {"args": {"session": {}, "cwd": "/w"}, "io": {"git_branch": "main", "project_info_for_cwd": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1"}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1", "title": "T", "started_at": 10, "source": "web", "_lineage_root_id": "root1"}, "tip_row": {"preview": "pv", "message_count": 4}, "resolved_id": "tip1", "persistence": {"sessions": {}}}, "io": {"display_count_field": {"live_message_count": 5}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1", "title": "T"}, "tip_row": {}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1"}, "resolved_id": null, "persistence": {"sessions": {}}}, "io": {"display_count_field": {"live_message_count": 0}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": null}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"title": "no id"}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1"}, "persistence": {"sessions": {}}}, "io": {"display_count_field": {"__script__": true, "raise": {"type": "RuntimeError", "message": "count"}}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1", "title": "", "started_at": 0, "source": ""}, "tip_row": {"preview": "", "message_count": 0}}}}
+{"func": "_session_row_summary", "in": {"args": {"row": {"id": "s1"}, "persistence": null}}}
+{"func": "_row_of", "in": {"args": {"record": null}}}
+{"func": "_row_of", "in": {"args": {"record": {"rec": 1}}, "io": {"as_session_row": {"id": "s"}}}}
+{"func": "_row_of", "in": {"args": {"record": {"rec": 1}}, "io": {"as_session_row": null}}}
+{"func": "_row_of", "in": {"args": {"record": "str"}}}
+{"func": "_row_of", "in": {"args": {"record": {"rec": 1}}, "io": {"as_session_row": {"__script__": true, "raise": {"type": "ValueError", "message": "row"}}}}}
+{"func": "_row_of", "in": {"args": {"record": {}}, "io": {}}, "fail_closed": true}
+{"func": "_row_of", "in": {"args": {"record": {"rec": 1}}, "io": {"as_session_row": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": [[{"e": 1}, {"e": 2}]], "as_list_row": [{"id": "a", "source": "web"}, {"id": "b", "source": "kanban"}], "denied_source": [false, true]}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": [[]]}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": null}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": [["x"]]}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": [[{"e": 1}]], "as_list_row": {"id": "a"}, "denied_source": {"__script__": true, "raise": {"type": "RuntimeError", "message": "deny"}}}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 5, "kwargs": {"include_hidden": true, "include_subagents": false}}, "io": {"list_sessions": [[]]}}}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {}}, "fail_closed": true}
+{"func": "_listing_rows", "in": {"args": {"persistence": {"sessions": {}}, "limit": 10}, "io": {"list_sessions": [[{"e": 1}]], "as_list_row": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": [[["s1", {"a": 1}]]]}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": null, "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": {"__script__": true, "raise": {"type": "KeyError", "message": "k"}}, "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}, "err": {"__script__": true, "raise": {"type": "ValueError", "message": "err"}}}}}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_snapshot_sessions", "in": {"args": {"rid": "r1"}, "io": {"sessions_items": [[]]}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"display": {"pet": {"enabled": true}}}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"display": "nope"}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"display": {"pet": "nope"}}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": null}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"__script__": true, "raise": {"type": "ValueError", "message": "cfg"}}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pet_display_cfg", "in": {"args": {}, "io": {"load_config": {"display": {"pet": {"scale": 2}}}}}}
+{"func": "_pet_emit", "in": {"args": {"event": "pet.progress", "payload": {"p": 1}, "what": "gen"}, "io": {"emit": null}}}
+{"func": "_pet_emit", "in": {"args": {"event": "e", "payload": {}, "what": "gen"}, "io": {"emit": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": null}}}
+{"func": "_pet_emit", "in": {"args": {"event": "e", "payload": {}, "what": "gen"}, "io": {"emit": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pet_emit", "in": {"args": {"event": "e", "payload": {}, "what": "gen"}, "io": {"emit": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": {"__script__": true, "raise": {"type": "RuntimeError", "message": "log"}}}}}
+{"func": "_pet_emit", "in": {"args": {"event": "e", "payload": {}, "what": "hatch"}, "io": {"emit": {"__script__": true, "raise": {"type": "KeyError", "message": "k"}}, "logger_debug": null}}}
+{"func": "_pet_emit", "in": {"args": {"event": "e", "payload": {}, "what": "gen"}, "io": {}}, "fail_closed": true}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r1", "token": "t1", "code": 4004, "message": "bad"}, "io": {"pet_cancel_release": null, "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r1", "token": "t1", "code": 5031, "message": "x"}, "io": {"pet_cancel_release": {"__script__": true, "raise": {"type": "RuntimeError", "message": "release"}}}}}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r1", "token": "t1", "code": 5031, "message": "x"}, "io": {"pet_cancel_release": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r1", "token": "t1", "code": 5031, "message": "x"}, "io": {"pet_cancel_release": null, "err": {"__script__": true, "raise": {"type": "ValueError", "message": "err"}}}}}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r1", "token": "t1", "code": 5031, "message": "x"}, "io": {}}, "fail_closed": true}
+{"func": "_pet_gen_abort", "in": {"args": {"rid": "r2", "token": "t2", "code": 4009, "message": "busy"}, "io": {"pet_cancel_release": null, "err": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.cells", "slug": false, "rid": "r1", "params": {}}, "io": {"pet_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.select", "slug": true, "rid": "r1", "params": {"slug": "cat"}}, "io": {"str_param": "cat", "pet_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.select", "slug": true, "rid": "r1", "params": {}}, "io": {"str_param": "", "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.cells", "slug": false, "rid": "r1", "params": {}, "fail_open": {"enabled": false}}, "io": {"pet_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": null, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.thumb", "slug": true, "rid": "r1", "params": {"slug": "cat"}, "fail_open": {"__callable__": true}}, "io": {"str_param": "cat", "pet_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": null, "fail_open_fn": {"ok": false}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.cells", "slug": false, "rid": "r1", "params": {}}, "io": {"pet_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": null, "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5036, "message": "e"}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.cells", "slug": false, "rid": "r1", "params": {}}, "io": {"pet_fn": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.select", "slug": true, "rid": "r1", "params": {}, "fail_open": {"enabled": false}}, "io": {"str_param": {"__script__": true, "raise": {"type": "RuntimeError", "message": "sp"}}, "logger_debug": null, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.cells", "slug": false, "rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_pet_method", "in": {"args": {"name": "pet.thumb", "slug": false, "rid": "r1", "params": {}, "fail_open": {"__callable__": true}}, "io": {"pet_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "logger_debug": null, "fail_open_fn": {"__script__": true, "raise": {"type": "RuntimeError", "message": "fo"}}}}}
+{"func": "_pet_method", "in": {"args": {"name": "pet.select", "slug": true, "rid": "r1", "params": {}}, "io": {"str_param": "  ", "pet_fn": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[true, {"exists": true, "slug": "c"}, 2]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[false, {}, 1]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[true, null, 1]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[true, {"exists": false}, 1]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[true, {"slug": "c"}, 1]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": [[true, {"exists": true}]]}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": {"__script__": true, "raise": {"type": "RuntimeError", "message": "sel"}}}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {"pet_active_selection": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_active_pet", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_b64", "in": {"args": {"data": "hello"}}}
+{"func": "_b64", "in": {"args": {"data": ""}}}
+{"func": "_b64", "in": {"args": {"data": "a"}}}
+{"func": "_b64", "in": {"args": {"data": "ab"}}}
+{"func": "_b64", "in": {"args": {"data": "abc"}}}
+{"func": "_b64", "in": {"args": {"data": "Hello, World!"}}}
+{"func": "_b64", "in": {"args": {"data": null}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.remove", "args": ["cat"]}, "io": {"followup_fn": null}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.remove", "args": ["cat"]}, "io": {"followup_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "logger_debug": null}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.rename", "args": ["a", "b"]}, "io": {"followup_fn": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.rename", "args": ["a", "b"]}, "io": {"followup_fn": null}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.remove", "args": []}, "io": {"followup_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "logger_debug": {"__script__": true, "raise": {"type": "RuntimeError", "message": "log"}}}}}
+{"func": "_pet_config_followup", "in": {"args": {"what": "pet.remove", "args": ["cat"]}, "io": {}}, "fail_closed": true}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {"provider": "nous"}, "require_references": false}, "io": {"str_param": "nous", "resolve_provider": {"provider": "nous"}}}}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {}, "require_references": true}, "io": {"str_param": ""}}}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {}, "require_references": false}, "io": {"str_param": {"__script__": true, "raise": {"type": "ValueError", "message": "sp"}}}}}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {"provider": "x"}, "require_references": true}, "io": {"str_param": "x", "resolve_provider": {"__script__": true, "raise": {"type": "GenerationError", "message": "no backend"}}}}}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {"provider": "nous"}, "require_references": true}, "io": {"str_param": "nous", "resolve_provider": null}}}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {}, "require_references": false}, "io": {}}, "fail_closed": true}
+{"func": "_pet_pick_provider", "in": {"args": {"params": {"provider": "n"}, "require_references": false}, "io": {"str_param": "n", "resolve_provider": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {"billing_fn": {"x": 1}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1", "extra": {"e": 1}}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "BillingError", "message": "declined"}}, "serialize_billing_error": {"ok": false, "error": "billing", "message": "declined"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1", "extra": {"e": 1}}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1", "extra": null}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "RuntimeError", "message": "m"}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "KeyError", "message": "k"}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "BillingError", "message": "d"}}, "serialize_billing_error": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ser"}}}}}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_billing_call", "in": {"args": {"rid": "r1"}, "io": {"billing_fn": {"__script__": true, "raise": {"type": "BillingError", "message": "d"}}, "serialize_billing_error": {"ok": false, "code": "x"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": "bad"}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": "bad", "error": "invalid_charge_id"}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": "bad"}, "io": {"ok": {"__script__": true, "raise": {"type": "ValueError", "message": "ok"}}}}}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": "bad"}, "io": {"ok": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": "bad"}, "io": {}}, "fail_closed": true}
+{"func": "_billing_invalid", "in": {"args": {"rid": "r1", "message": ""}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": {"message": "m", "x": 1}}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": {}}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": null}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": "s"}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": {"message": null}}}}
+{"func": "_billing_pending_change", "in": {"args": {"result": {"message": "m", "nested": {"a": [1, 2]}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.change", "rid": "r1", "params": {"subscription_type_id": "t1"}}, "io": {"route_call": {"ok": true, "message": "scheduled"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.change", "rid": "r1", "params": {}, "invalid": {"__callable__": true}, "message": "subscription_type_id or cancel is required"}, "io": {"invalid_fn": true, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.change", "rid": "r1", "params": {"cancel": true}, "invalid": {"__callable__": true}, "message": "req"}, "io": {"invalid_fn": false, "route_call": {"ok": true}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.upgrade", "rid": "r1", "params": {"idempotency_key": "k0", "subscription_type_id": "t"}, "idempotent": true}, "io": {"route_call": {"ok": true, "status": "ok"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "billing.charge", "rid": "r1", "params": {"amount_usd": 5}, "idempotent": true}, "io": {"new_idempotency_key": "k1", "route_call": {"ok": true, "chargeId": "c"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "billing.charge", "rid": "r1", "params": {}, "idempotent": true}, "io": {"new_idempotency_key": "k1", "route_call": {"__script__": true, "raise": {"type": "BillingError", "message": "declined"}}, "serialize_billing_error": {"ok": false, "error": "billing"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "billing.auto_reload", "rid": "r1", "params": {}}, "io": {"route_call": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.resume", "rid": "r1", "params": {}}, "io": {"route_call": "not-a-dict", "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.change", "rid": "r1", "params": {}, "invalid": {"__callable__": true}, "message": "req"}, "io": {"invalid_fn": {"__script__": true, "raise": {"type": "RuntimeError", "message": "iv"}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.resume", "rid": "r1", "params": {}}, "io": {"route_call": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_billing_route", "in": {"args": {"name": "subscription.resume", "rid": "r1", "params": {}}, "io": {}}, "fail_closed": true}
+{"func": "_billing_route", "in": {"args": {"name": "billing.charge_status", "rid": "r1", "params": {}, "invalid": {"__callable__": true}, "message": "charge_id is required", "error": "invalid_charge_id"}, "io": {"invalid_fn": true, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": false, "sessions": {}}, "session_id": "s1"}, "io": {"unarchive_recoverable": true}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}, "sessions": {}}, "session_id": "s1"}, "io": {"open_persistence": {"w": 1}, "writer_unarchive": true, "writer_close": null}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": {"__script__": true, "raise": {"type": "RuntimeError", "message": "writer"}}, "logger_warning": null}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": {"w": 1}, "writer_unarchive": {"__script__": true, "raise": {"type": "ValueError", "message": "ua"}}, "writer_close": null}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": {"w": 1}, "writer_unarchive": true, "writer_close": {"__script__": true, "raise": {"type": "RuntimeError", "message": "close"}}}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": {"w": 1}, "writer_unarchive": true, "writer_close": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": null, "session_id": "s1"}, "io": {}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"sessions": {}}, "session_id": "s1"}, "io": {}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": null}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true, "scope": {"profile_dir": "/h/p"}}, "session_id": "s1"}, "io": {"open_persistence": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": true}, "session_id": "s1"}, "io": {}}}
+{"func": "_unarchive_recoverable", "in": {"args": {"persistence": {"read_only": false, "sessions": {}}, "session_id": "s1"}, "io": {}}, "fail_closed": true}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, "denied_source": false, "lineage_tip": null, "display_count_field": {"live_message_count": 2}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": [{"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, {"id": "tip1", "preview": "tp", "message_count": 9}], "denied_source": false, "lineage_tip": "tip1", "sessions_get": {"rec": 2}, "display_count_field": {"live_message_count": 9}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "Other"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "archived": true}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}, "read_only": false}, "title_lookup": "Bot Chat"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": [{"id": "s1", "archived": true, "source": "web"}, {"id": "s1", "archived": false, "source": "web", "title": "Bot Chat"}], "unarchive_recoverable": true, "sessions_get": {"rec": 2}, "denied_source": false, "lineage_tip": null, "display_count_field": {}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "read_only": false}, "title_lookup": "Bot Chat"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "archived": true}, "unarchive_recoverable": false, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, "denied_source": true, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": null, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"__script__": true, "raise": {"type": "RuntimeError", "message": "db"}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, "denied_source": false, "lineage_tip": {"__script__": true, "raise": {"type": "ValueError", "message": "tip"}}, "display_count_field": {}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, "denied_source": false, "lineage_tip": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "read_only": false}, "title_lookup": "Bot Chat"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": {"id": "s1", "archived": true}, "unarchive_recoverable": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ua"}}}}}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {}}, "fail_closed": true}
+{"func": "_session_list_by_title", "in": {"args": {"rid": "r1", "persistence": {"sessions": {}, "lineage": {}}, "title_lookup": "T"}, "io": {"get_by_title": {"rec": 1}, "as_session_row": [{"id": "s1", "title": "T", "archived": false, "source": "web", "started_at": 10, "preview": "pv", "message_count": 2}, null], "denied_source": false, "lineage_tip": "tip1", "sessions_get": {"rec": 2}, "display_count_field": {}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"ok": true}}}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k1", "home": null}, "io": {"sessions_items": [[["l1", {"session_key": "k1"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "T", "home": null}, "io": {"sessions_items": [[["l1", {"pending_title": "T"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k1", "home": "/h/p"}, "io": {"sessions_items": [[["l1", {"session_key": "k1", "profile_home": "/h/p"}], ["l2", {"session_key": "k1"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "nope", "home": null}, "io": {"sessions_items": [[["l1", {"session_key": "k1"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k", "home": null}, "io": {"sessions_items": [[["l1", "str"], ["l2", {"session_key": "k"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k", "home": null}, "io": {"sessions_items": {"__script__": true, "raise": {"type": "RuntimeError", "message": "items"}}}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k", "home": null}, "io": {"sessions_items": [[[1, 2, 3]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k1", "home": 5}, "io": {"sessions_items": [[["l1", {"session_key": "k1", "profile_home": "5"}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "k", "home": null}, "io": {}}, "fail_closed": true}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "5", "home": null}, "io": {"sessions_items": [[["l1", {"session_key": 5}]]]}}}
+{"func": "_find_live_unpersisted", "in": {"args": {"needle": "5", "home": null}, "io": {"sessions_items": [[["l1", {"pending_title": 5}]]]}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": ""}}}
+{"func": "_status_row", "in": {"args": {"session": {"s": 1}, "params": {}, "key": "k1"}, "io": {"session_db": {"d": 1}, "persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": {"id": "s"}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"cm_enter_none": true}, "profile_db": {"d": 2}, "persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": {"id": "s"}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"cm_enter_none": true}, "profile_db": {"cm_enter_none": true}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"cm_enter_none": true}, "profile_db": null}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"d": 1}, "persistence_for": {"__script__": true, "raise": {"type": "ValueError", "message": "store"}}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"d": 1}, "persistence_for": {"sessions": {}}, "sessions_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "get"}}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"d": 1}, "persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": {}}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": null}}}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {}}, "fail_closed": true}
+{"func": "_status_row", "in": {"args": {"session": {}, "params": {}, "key": "k1"}, "io": {"session_db": {"d": 1}, "persistence_for": {"sessions": {}}, "sessions_get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": {"id": "s"}}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": null}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": {"cm_enter_none": true}}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": {}}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": null}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {"persistence_for": {"sessions": {}}, "sessions_get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_try_get_session", "in": {"args": {"db": {"d": 1}, "key": "k1"}, "io": {}}}
+{"func": "_try_get_session", "in": {"args": {"db": null, "key": "k1"}, "io": {"persistence_for": {"sessions": {}}, "sessions_get": {"rec": 1}, "as_session_row": {"id": "s"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "T"}, "state": {"session": {}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": ""}, "state": {"session": {}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "T", "set_title": true}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "", "set_title": false, "sessions_get": {"rec": 1}, "as_session_row": {"title": " F "}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "", "set_title": false, "sessions_get": {"rec": 1}, "as_session_row": {"title": "X"}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "T", "set_title": false, "sessions_get": {"rec": 1}, "as_session_row": {"title": "X"}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": {"__script__": true, "raise": {"type": "RuntimeError", "message": "gt"}}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "", "set_title": {"__script__": true, "raise": {"type": "ValueError", "message": "st"}}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"session": {}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "T"}, "state": {"session": null}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {"get_title": "", "set_title": false, "sessions_get": {"rec": 1}, "as_session_row": {"title": 5}}, "state": {"session": {"pending_title": "F"}}}}
+{"func": "_title_read", "in": {"args": {"persistence": {"sessions": {}}, "key": "k1"}, "io": {}, "state": {"session": {}}}}
+{"func": "_auto_reload", "in": {"args": {"p": {"enabled": true, "threshold": 5, "top_up_amount": 10}}, "io": {"patch_auto_top_up": null}}}
+{"func": "_auto_reload", "in": {"args": {"p": {}}, "io": {"patch_auto_top_up": null}}}
+{"func": "_auto_reload", "in": {"args": {"p": null}, "io": {}}}
+{"func": "_auto_reload", "in": {"args": {"p": {"enabled": true}}, "io": {"patch_auto_top_up": {"__script__": true, "raise": {"type": "ValueError", "message": "patch"}}}}}
+{"func": "_auto_reload", "in": {"args": {"p": {}}, "io": {"patch_auto_top_up": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_auto_reload", "in": {"args": {"p": {}}, "io": {}}, "fail_closed": true}
+{"func": "_auto_reload", "in": {"args": {"p": {"enabled": "yes", "threshold": 0}}, "io": {"patch_auto_top_up": null}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{\"session_id\": \"s9\", \"subagents\": [1, 2], \"finished_at\": 5, \"started_at\": 3, \"label\": \"L\"}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"__script__": true, "raise": {"type": "FileNotFoundError", "message": "gone"}}}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": {"__script__": true, "raise": {"type": "OSError", "message": "read"}}}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{bad"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "null"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{\"finished_at\": 0, \"subagents\": \"abc\"}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {}, "read_text": "{}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {}}, "fail_closed": true}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{\"a\": 01}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{\"a\": 1,}"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": " \t{\"session_id\": \"s\"}\n"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "{\"a\": 1} x"}}}
+{"func": "_legacy_spawn_tree_entry", "in": {"args": {"path": "/h/p/snap.json", "session_dir_name": "d1"}, "io": {"stat": {"st_mtime": 77}, "read_text": "[1, 2]"}}}

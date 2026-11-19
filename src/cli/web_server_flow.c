@@ -1035,8 +1035,7 @@ static json_t *ws_no_auth_provider_message(const ws_seams_t *s, const json_t *ap
             /* append(f"  • nous: {_nous_plugin.LAST_SKIP_REASON}") (read 2) */
             json_t *sr2 = ws_call0(s, "nous_last_skip_reason");
             if (ws_is_raise(sr2)) {
-                json_free(sr1);
-                if (!ws_caught(sr2, "Exception")) return sr2;
+                if (!ws_caught(sr2, "Exception")) { json_free(sr1); return sr2; }
                 json_free(sr2);
             } else {
                 const char *v = ws_jstr(sr2);

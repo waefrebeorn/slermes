@@ -1202,8 +1202,7 @@ static json_t *sc2_load_prefill_messages(sc2_io_t *io, json_t *in) {
     json_set_hdr(ea, "name", "HERMES_PREFILL_MESSAGES_FILE");
     json_t *env = sc2_seam(io, "cron_env_setting", ea);
     if (sc2_raised(env)) return env;
-    const char *prefill_file = jstr(env);
-    json_free(env);
+    const char *prefill_file = jstr(env);   /* borrowed: keep env alive */
     if (!prefill_file[0]) {
         json_t *v = cfg ? json_obj_get(cfg, "prefill_messages_file") : NULL;
         if (jtruth(v)) prefill_file = jstr(v);
@@ -1212,10 +1211,11 @@ static json_t *sc2_load_prefill_messages(sc2_io_t *io, json_t *in) {
         json_t *v = json_obj_get(agent_cfg, "prefill_messages_file");
         if (jtruth(v)) prefill_file = jstr(v);
     }
-    if (!prefill_file[0]) return json_null();
+    if (!prefill_file[0]) { json_free(env); return json_null(); }
     /* pfpath = Path(prefill_file).expanduser() */
     json_t *xa = json_object();
     json_set_hdr(xa, "path", prefill_file);
+    json_free(env);   /* prefill_file's last use is done (key was copied) */
     json_t *xp = sc2_seam(io, "path.expanduser", xa);
     if (sc2_raised(xp)) return xp;
     char *pfpath = strdup(jstr(xp));
@@ -1243,13 +1243,15 @@ static json_t *sc2_load_prefill_messages(sc2_io_t *io, json_t *in) {
     json_set_hdr(la, "encoding", "utf-8-sig");
     json_t *val = sc2_seam(io, "prefill.load", la);
     if (sc2_raised(val)) {
+        /* snapshot str(e) BEFORE the swallow helper frees val (UAF otherwise) */
+        json_t *ea = sc2_exc_arg(val);
         json_t *p = sc2_swallow_exception(val);
-        if (p) { free(pfpath); return p; }
+        if (p) { json_free(ea); free(pfpath); return p; }
         /* logger.warning(msg, job_id, pfpath, e) */
         json_t *args = json_array();
         json_append(args, json_string(job_id));
         json_append(args, json_string(pfpath));
-        json_append(args, sc2_exc_arg(val));
+        json_append(args, ea);
         sc2_log(io, "warning",
                 "Job '%s': failed to parse prefill messages file '%s': %s", args, 0);
         free(pfpath);
@@ -1422,12 +1424,14 @@ static json_t *sc2_load_credential_pool(sc2_io_t *io, json_t *in) {
     json_set(la, "requested_provider", sc2_copy_or_null(runtime ? json_obj_get(runtime, "requested_provider") : NULL));
     json_t *pool = sc2_seam(io, "load_route_pool", la);
     if (sc2_raised(pool)) {
+        /* snapshot str(e) BEFORE the swallow helper frees pool (UAF otherwise) */
+        json_t *ea = sc2_exc_arg(pool);
         json_t *p = sc2_swallow_exception(pool);
-        if (p) { free(provider); return p; }
+        if (p) { json_free(ea); free(provider); return p; }
         json_t *args = json_array();
         json_append(args, json_string(job_id));
         json_append(args, json_string(provider));
-        json_append(args, sc2_exc_arg(pool));
+        json_append(args, ea);
         sc2_log(io, "debug", "Job '%s': failed to load credential pool for %s: %s", args, 0);
         free(provider);
         return out;
@@ -1459,11 +1463,13 @@ static json_t *sc2_init_cron_mcp_tools(sc2_io_t *io, json_t *in) {
     }
     json_t *r = sc2_seam(io, "discover_mcp_tools", json_object());
     if (sc2_raised(r)) {
+        /* snapshot str(e) BEFORE the swallow helper frees r (UAF otherwise) */
+        json_t *ea = sc2_exc_arg(r);
         json_t *p = sc2_swallow_exception(r);
-        if (p) return p;
+        if (p) { json_free(ea); return p; }
         json_t *args = json_array();
         json_append(args, json_string(job_id));
-        json_append(args, sc2_exc_arg(r));
+        json_append(args, ea);
         sc2_log(io, "warning", "Job '%s': MCP initialization failed (non-fatal): %s", args, 0);
         return json_null();
     }
@@ -1780,22 +1786,24 @@ static json_t *sc2_maybe_run_worktree_maintenance(sc2_io_t *io, json_t *in) {
         return sc2_raise("ModuleNotFoundError", "import of hermes_constants halted; None in sys.modules");
     json_t *hh = sc2_seam(io, "get_hermes_home", json_object());
     if (sc2_raised(hh)) return hh;
-    const char *home = jstr(hh);
-    json_free(hh);
+    const char *home = jstr(hh);   /* borrowed: keep hh alive until last use */
     /* now = time.monotonic() */
     json_t *nw = sc2_seam(io, "time.monotonic", json_object());
-    if (sc2_raised(nw)) return nw;
+    if (sc2_raised(nw)) { json_free(hh); return nw; }
     double now = jnum(nw);
     json_free(nw);
     /* stamps = _last_worktree_maintenance_at or {}; last = stamps.get(home);
      * if last is not None and now-last < INTERVAL: return */
     json_t *stamps = sc2_st(io, "_last_worktree_maintenance_at");
     json_t *last = (j_is_obj(stamps)) ? json_obj_get(stamps, home) : NULL;
-    if (!j_is_null(last) && (now - jnum(last)) < SC2_WORKTREE_MAINTENANCE_INTERVAL_SECONDS)
+    if (!j_is_null(last) && (now - jnum(last)) < SC2_WORKTREE_MAINTENANCE_INTERVAL_SECONDS) {
+        json_free(hh);
         return json_null();
+    }
     /* _last_worktree_maintenance_at = {**stamps, home: now} */
     json_t *newstamps = j_is_obj(stamps) ? json_copy(stamps) : json_object();
     json_set(newstamps, home, json_number(now));
+    json_free(hh);   /* home's last use is done (json_set copied the key) */
     json_set(io->state, "_last_worktree_maintenance_at", newstamps);
     /* threading.Thread(target=ctx.run, args=(_run,), name=..., daemon=True).start()
      * -> thread.start seam, then _run runs run_sweep (thread exceptions swallowed) */
