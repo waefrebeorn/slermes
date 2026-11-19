@@ -789,9 +789,10 @@ static json_t *ai_cfg_dict(ai_ctx *ctx, const json_t *cfg, const char *key) {
     (void)ctx;
     json_t *empty = json_object();
     json_t *section = ai_get_def(cfg, key, empty);
+    /* section may alias empty (absent key): read it BEFORE freeing. */
+    json_t *ret = ai_is_obj(section) ? json_copy(section) : json_object();
     json_free(empty);
-    if (ai_is_obj(section)) return json_copy(section);
-    return json_object();
+    return ret;
 }
 
 /* PoP: ai_positive_int @ agent/agent_init.py:_positive_int */
@@ -1033,9 +1034,9 @@ static json_t *ai_init_prompt_cache_config(ai_ctx *ctx, json_t *agent) {
             /* pc is a truthy dict or NULL (== {}) */
             json_t *auto_node = json_string(AUTO);
             json_t *ct = pc ? ai_get_def(pc, "cache_ttl", auto_node) : auto_node;
-            json_free(auto_node);
             json_free(ttl);
-            ttl = json_copy(ct);
+            ttl = json_copy(ct); /* ct may alias auto_node: copy before freeing */
+            json_free(auto_node);
             json_free(cfg);
         }
     }
@@ -1242,8 +1243,8 @@ static json_t *ai_build_client(ai_ctx *ctx, json_t *agent, const json_t *api_key
 static json_t *ai_compression_threshold(ai_ctx *ctx, json_t *agent, const json_t *cfg) {
     json_t *def_th = json_number(0.50);
     json_t *th_raw = ai_get_def(cfg, "threshold", def_th);
-    json_free(def_th);
     json_t *threshold = ai_py_float(ctx, th_raw);
+    json_free(def_th); /* th_raw may alias def_th: free only after the read */
     if (ai_exc_pending(ctx)) { json_free(threshold); return NULL; }
     json_t *true_node = json_bool(true);
     json_t *autoraise = ai_cfg_flag(ctx, cfg, "codex_gpt55_autoraise", true_node);
@@ -1333,9 +1334,9 @@ static json_t *ai_compression_codex_settings(ai_ctx *ctx, const json_t *cfg) {
     /* responses_native = is_truthy_value(cfg.get("codex_responses_native", False)) */
     json_t *false_node = json_bool(false);
     json_t *rn_raw = ai_get_def(cfg, "codex_responses_native", false_node);
-    json_free(false_node);
     json_t *rna = json_object();
     ai_arg(rna, "value", rn_raw);
+    json_free(false_node); /* rn_raw may alias false_node: free after last read */
     json_t *responses_native = ai_call(ctx, "is_truthy_value", rna);
     if (ai_exc_pending(ctx)) { free(app_server_auto); json_free(responses_native); return NULL; }
     /* compact_threshold */
@@ -1447,8 +1448,8 @@ static json_t *ai_parse_compression_config(ai_ctx *ctx, json_t *agent, const jso
     {
         json_t *def_tm = json_string("lean");
         json_t *tm_raw = ai_get_def(cfg, "tail_mode", def_tm);
-        json_free(def_tm);
         char *s = ai_py_str(tm_raw);
+        json_free(def_tm); /* tm_raw may alias def_tm: free only after the read */
         char *st = ai_strip(s ? s : "");
         free(s);
         char *low = ai_lower(st ? st : "");

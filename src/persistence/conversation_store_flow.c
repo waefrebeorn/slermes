@@ -747,6 +747,7 @@ static json_t *cst_index_held_dicts_node(cst_ctx_t *ctx, const json_t *holder,
     *by_uid_out = by_uid;
     return by_row;
 }
+/* PoP: cst_index_held_dicts @ persistence/sqlite/conversation/_store/coverage.py:_index_held_dicts */
 static json_t *cst_index_held_dicts(cst_ctx_t *ctx, const json_t *args) {
     json_t *by_uid = NULL;
     json_t *by_row = cst_index_held_dicts_node(ctx, cst_fget(args, "holder"),
@@ -805,6 +806,7 @@ static json_t *cst_replays_as_node(cst_ctx_t *ctx, const json_t *holder,
     json_free(content);
     return json_bool(result);
 }
+/* PoP: cst_replays_as @ persistence/sqlite/conversation/_store/coverage.py:_replays_as */
 static json_t *cst_replays_as(cst_ctx_t *ctx, const json_t *args) {
     const json_t *sc = cst_fget(args, "same_content");
     return cst_replays_as_node(ctx, cst_fget(args, "holder"), cst_fget(args, "row"),
@@ -821,6 +823,7 @@ static json_t *cst_copy_of_current_row_node(cst_ctx_t *ctx, const json_t *row, c
     json_free(snap);
     return json_bool(eq);
 }
+/* PoP: cst_copy_of_current_row @ persistence/sqlite/conversation/_store/coverage.py:_copy_of_current_row */
 static json_t *cst_copy_of_current_row(cst_ctx_t *ctx, const json_t *args) {
     return cst_copy_of_current_row_node(ctx, cst_fget(args, "row"), cst_fget(args, "held"));
 }
@@ -872,6 +875,7 @@ static json_t *cst_claim_stored_copy_node(cst_ctx_t *ctx, const json_t *holder,
     json_free(identity);
     return result;
 }
+/* PoP: cst_claim_stored_copy @ persistence/sqlite/conversation/_store/coverage.py:_claim_stored_copy */
 static json_t *cst_claim_stored_copy(cst_ctx_t *ctx, const json_t *args) {
     return cst_claim_stored_copy_node(ctx, cst_fget(args, "holder"), cst_fget(args, "row"),
                                       cst_fget(args, "compacted_messages"), cst_fget(args, "by_row"),
@@ -929,6 +933,7 @@ static json_t *cst_rewrite_explains_node(cst_ctx_t *ctx, const json_t *holder,
     json_free(content);
     return json_bool(result);
 }
+/* PoP: cst_rewrite_explains @ persistence/sqlite/conversation/_store/coverage.py:_rewrite_explains */
 static json_t *cst_rewrite_explains(cst_ctx_t *ctx, const json_t *args) {
     return cst_rewrite_explains_node(ctx, cst_fget(args, "holder"), cst_fget(args, "row"),
                                      cst_fget(args, "held"));
@@ -969,6 +974,7 @@ static json_t *cst_rewritten_carry_node(cst_ctx_t *ctx, const json_t *holder,
     json_free(unclaimed);
     return result;
 }
+/* PoP: cst_rewritten_carry @ persistence/sqlite/conversation/_store/coverage.py:_rewritten_carry */
 static json_t *cst_rewritten_carry(cst_ctx_t *ctx, const json_t *args) {
     return cst_rewritten_carry_node(ctx, cst_fget(args, "holder"), cst_fget(args, "row"),
                                     cst_fget(args, "row_uid"), cst_fget(args, "compacted_messages"),
@@ -1029,6 +1035,7 @@ static json_t *cst_uids_active_outside_node(cst_ctx_t *ctx, const json_t *rows,
     json_free(wanted);
     return result;
 }
+/* PoP: cst_uids_active_outside @ persistence/sqlite/conversation/_store/coverage.py:_uids_active_outside */
 static json_t *cst_uids_active_outside(cst_ctx_t *ctx, const json_t *args) {
     json_t *r = cst_uids_active_outside_node(ctx, cst_fget(args, "rows"),
                                              cst_fget(args, "tail_ids"), cst_fget(args, "named_uids"));
@@ -1039,6 +1046,7 @@ static json_t *cst_uids_active_outside(cst_ctx_t *ctx, const json_t *args) {
 }
 
 /* _carried_tail_ids -> [carried_dict, weak_sorted] or raise */
+/* PoP: cst_carried_tail_ids @ persistence/sqlite/conversation/_store/coverage.py:_carried_tail_ids */
 static json_t *cst_carried_tail_ids(cst_ctx_t *ctx, const json_t *args) {
     const json_t *holder = cst_fget(args, "holder");
     const json_t *tail_ids = cst_fget(args, "tail_ids");
@@ -1173,6 +1181,7 @@ static json_t *cst_matching_active_ids_node(cst_ctx_t *ctx, const json_t *holder
     json_free(rows);
     return out;
 }
+/* PoP: cst_matching_active_ids @ persistence/sqlite/conversation/_store/coverage.py:_matching_active_ids */
 static json_t *cst_matching_active_ids(cst_ctx_t *ctx, const json_t *args) {
     return cst_matching_active_ids_node(ctx, cst_fget(args, "holder"),
                                         cst_fget(args, "session_id"), cst_fget(args, "message"));
@@ -1244,6 +1253,7 @@ static json_t *cst_matching_retired_ids_node(cst_ctx_t *ctx, const json_t *holde
     json_free(rows);
     return matches;
 }
+/* PoP: cst_matching_retired_ids @ persistence/sqlite/conversation/_store/coverage.py:_matching_retired_ids */
 static json_t *cst_matching_retired_ids(cst_ctx_t *ctx, const json_t *args) {
     return cst_matching_retired_ids_node(ctx, cst_fget(args, "holder"),
                                          cst_fget(args, "session_id"), cst_fget(args, "retired"),
@@ -1326,6 +1336,7 @@ static json_t *cst_resolve_index(cst_ctx_t *ctx, const json_t *session_id,
     json_free(rows);
     return NULL;   /* success */
 }
+/* PoP: cst_resolve_carried_row_ids @ persistence/sqlite/conversation/_store/coverage.py:_resolve_carried_row_ids */
 static json_t *cst_resolve_carried_row_ids(cst_ctx_t *ctx, const json_t *args) {
     const json_t *holder = cst_fget(args, "holder");
     (void)holder;
@@ -1548,12 +1559,14 @@ static json_t *cst_merged_user_run_node(cst_ctx_t *ctx, const json_t *holder,
     json_free(runs);
     return json_array();
 }
+/* PoP: cst_merged_user_run @ persistence/sqlite/conversation/_store/coverage.py:_merged_user_run */
 static json_t *cst_merged_user_run(cst_ctx_t *ctx, const json_t *args) {
     return cst_merged_user_run_node(ctx, cst_fget(args, "holder"), cst_fget(args, "session_id"),
                                     cst_fget(args, "message"), cst_fget(args, "watermark"));
 }
 
 /* _proved_coverage -> [proved_list, merged_away_sorted] | null | raise */
+/* PoP: cst_proved_coverage @ persistence/sqlite/conversation/_store/coverage.py:_proved_coverage */
 static json_t *cst_proved_coverage(cst_ctx_t *ctx, const json_t *args) {
     const json_t *holder = cst_fget(args, "holder");
     const json_t *session_id = cst_fget(args, "session_id");

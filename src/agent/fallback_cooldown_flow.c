@@ -682,6 +682,10 @@ static int fc_is_none_or_empty(const json_t *v)
 static int fc_pair_in(const json_t *arr, const char *p, const char *m)
 {
     if (!arr || arr->type != JSON_ARRAY) return 0;
+    /* A None query element (NULL) never equals a string pair member: live
+     * `(provider, None) in rejected` is False for the string-pair domain.
+     * Guard BEFORE strcmp — the normalized-model probe passes fc_str(NULL). */
+    if (!p || !m) return 0;
     for (size_t i = 0; i < arr->c.count; i++) {
         json_t *e = arr->c.items[i];
         if (!e || e->type != JSON_ARRAY || e->c.count != 2) continue;

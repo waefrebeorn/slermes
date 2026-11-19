@@ -817,8 +817,12 @@ static json_t *pr_registration_state(pr_io_t *io, const json_t *in, json_t *st)
         free(key);
     }
     json_t *ret = json_array();
-    json_append(ret, pr_copy_or_null(entry));
-    json_append(ret, fallback ? fallback : pr_copy_or_null(loader));
+    /* None entries/loaders must survive as JSON null: json_append(arr, NULL)
+     * silently drops the item (Python returns a 2-tuple either way). */
+    json_t *ec = pr_copy_or_null(entry);
+    json_append(ret, ec ? ec : json_null());
+    json_t *lc = fallback ? fallback : pr_copy_or_null(loader);
+    json_append(ret, lc ? lc : json_null());
     json_free(maps);
     return ret;
 }
