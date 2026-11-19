@@ -1,0 +1,186 @@
+{"func": "_is_pausable_gateway", "in": {"cmdline": "hermes gateway", "import_ok": false}}
+{"func": "_is_pausable_gateway", "in": {"cmdline": "hermes gateway", "import_ok": true, "io": {"looks_like_gateway_command_line": true}}}
+{"func": "_is_pausable_gateway", "in": {"cmdline": "python other.py", "import_ok": true, "io": {"looks_like_gateway_command_line": false}}}
+{"func": "_is_pausable_gateway", "in": {"cmdline": "x", "import_ok": true, "io": {"looks_like_gateway_command_line": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_is_pausable_gateway", "in": {"cmdline": "", "import_ok": true, "io": {"looks_like_gateway_command_line": true}}}
+{"func": "_is_pausable_gateway", "in": {"cmdline": "gateway", "import_ok": false}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 401, "body": null}, {"status": 200, "body": {}}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 500, "body": null}, {"status": 200, "body": {}}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 200, "body": null}, {"status": 200, "body": {}}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 200, "body": {"build_info": ""}}, {"status": 200, "body": {}}]}}}}
+{"func": "probe_port", "in": {"port": 9090, "io": {"_get": {"__seq__": [{"status": 200, "body": {"build_info": "b1", "model_path": "/m.gguf", "default_generation_settings": {"n_ctx": 4096}}}, {"status": 200, "body": {"data": []}}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 200, "body": {"build_info": "b1", "default_generation_settings": null}}, {"status": 200, "body": {}}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 200, "body": {"build_info": "b1"}}, {"status": 503, "body": null}]}}}}
+{"func": "probe_port", "in": {"port": 8080, "io": {"_get": {"__seq__": [{"status": 200, "body": {"build_info": null, "model_path": null}}, {"status": 200, "body": {"data": [1]}}]}}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": "list"}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": "approve", "platform": "telegram", "code": "ABC"}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": "revoke", "platform": "telegram", "user_id": "u1"}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": "clear-pending"}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": "bogus"}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "pairing_command", "in": {"args": {"pairing_action": null}, "io": {"PairingStore": "store", "_cmd_list": null, "_cmd_approve": null, "_cmd_revoke": null, "_cmd_clear_pending": null, "print": null}}}
+{"func": "extract_compress_flags", "in": {"raw_args": ""}}
+{"func": "extract_compress_flags", "in": {"raw_args": null}}
+{"func": "extract_compress_flags", "in": {"raw_args": "--preview"}}
+{"func": "extract_compress_flags", "in": {"raw_args": "--dry-run --aggressive topic"}}
+{"func": "extract_compress_flags", "in": {"raw_args": "--PREVIEW --DryRun keep --AGGRESSIVE"}}
+{"func": "extract_compress_flags", "in": {"raw_args": "hello world"}}
+{"func": "extract_compress_flags", "in": {"raw_args": "  a\t b\n--dryrun c "}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "user"}, {"role": "assistant"}, {"role": "user"}], "partial": false, "keep_last": 2, "focus_topic": null, "approx_tokens": 500}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "user"}, {"role": "assistant"}, {"role": "user"}], "partial": true, "keep_last": 1, "focus_topic": null, "approx_tokens": 100}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "user"}, {"role": "assistant"}], "partial": true, "keep_last": 5, "focus_topic": null, "approx_tokens": 0}}
+{"func": "summarize_compress_preview", "in": {"history": [], "partial": true, "keep_last": 2, "focus_topic": null, "approx_tokens": 0}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "user"}, {"role": "assistant"}, {"role": "user"}], "partial": false, "keep_last": 2, "focus_topic": "cats", "approx_tokens": 1234567}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "assistant"}, {"role": "assistant"}], "partial": true, "keep_last": 2, "focus_topic": null, "approx_tokens": 12}}
+{"func": "summarize_compress_preview", "in": {"history": [{"role": "user"}, {"role": "assistant"}, {"role": "user"}], "partial": true, "keep_last": 2, "focus_topic": "dogs", "approx_tokens": 999}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": "sup", "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": "other", "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": null, "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": false, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": "sup", "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": true, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": "sup", "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w2"}, "io": {"registry_get": "sup", "loop_is_running": true}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": "sup", "sup_active": true, "sup_stop_requested": false, "sup_ws_id": "w1", "self_ws_id": "w1"}, "io": {"registry_get": "sup", "loop_is_running": false}}}
+{"func": "is_valid", "in": {"state": {"task_id": "t1", "sup_id": null, "sup_active": true, "sup_stop_requested": false, "sup_ws_id": null, "self_ws_id": "w1"}, "io": {"registry_get": null, "loop_is_running": true}}}
+{"func": "_invalid", "in": {"task_id": "t1"}}
+{"func": "_invalid", "in": {"task_id": "a'b"}}
+{"func": "_invalid", "in": {"task_id": "a\"b"}}
+{"func": "_invalid", "in": {"task_id": 123}}
+{"func": "_invalid", "in": {"task_id": null}}
+{"func": "_invalid", "in": {"task_id": "with\\slash"}}
+{"func": "_own_launcher", "in": {"argv": ["1234"], "io": {"_create_time": 99.5}}}
+{"func": "_own_launcher", "in": {"argv": ["1234"], "io": {"_create_time": null}}}
+{"func": "_own_launcher", "in": {"argv": [], "io": {"_create_time": 1.0}}}
+{"func": "_own_launcher", "in": {"argv": ["abc"], "io": {"_create_time": 1.0}}}
+{"func": "_own_launcher", "in": {"argv": ["007"], "io": {"_create_time": 0.0}}}
+{"func": "_own_launcher", "in": {"argv": ["-1"], "io": {"_create_time": 1.0}}}
+{"func": "_own_launcher", "in": {"argv": ["12a"], "io": {"_create_time": 1.0}}}
+{"func": "kanban_toolset_requested", "in": {"io": {"contextvar_get": null}}}
+{"func": "kanban_toolset_requested", "in": {"io": {"contextvar_get": true}}}
+{"func": "kanban_toolset_requested", "in": {"io": {"contextvar_get": false}}}
+{"func": "kanban_toolset_requested", "in": {"io": {"contextvar_get": null}}}
+{"func": "kanban_toolset_requested", "in": {"io": {"contextvar_get": true}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": false, "state": {"control_seq": 0}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "state": {"control_seq": 0}, "io": {"sessions_get": null}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "state": {"control_seq": 4}, "io": {"sessions_get": "live", "_read_control_snapshot": {"a": 1}, "_publish_snapshot": null}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "state": {"control_seq": 0}, "io": {"sessions_get": "live", "_read_control_snapshot": {"__raise__": "AuthorityRefusal", "message": "no row"}, "logger_debug": null}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "state": {"control_seq": 2}, "io": {"sessions_get": "live", "_read_control_snapshot": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "only_if_present": true, "only_if_changed": true, "state": {"control_seq": 0}, "io": {"sessions_get": "live", "_read_control_snapshot": {"b": 2}, "_publish_snapshot": null}}}
+{"func": "publish", "in": {"session_id": "s1", "authority_present": true, "state": {"control_seq": 0}, "io": {"sessions_get": "live", "_read_control_snapshot": null, "_publish_snapshot": null}}}
+{"func": "set_accounting_context", "in": {"session_db": null, "session_id": "s", "state": {"context": null}, "io": {"contextvar_set": "token", "writer_interface": "writer"}}}
+{"func": "set_accounting_context", "in": {"session_db": "db", "session_id": "", "state": {"context": null}, "io": {"contextvar_set": "token", "writer_interface": "writer"}}}
+{"func": "set_accounting_context", "in": {"session_db": "db", "session_id": null, "state": {"context": null}, "io": {"contextvar_set": "token", "writer_interface": "writer"}}}
+{"func": "set_accounting_context", "in": {"session_db": "db", "session_id": "s", "persistence": null, "state": {"context": null}, "io": {"contextvar_set": "token", "writer_interface": "writer"}}}
+{"func": "set_accounting_context", "in": {"session_db": "db", "session_id": "s", "persistence": "p", "state": {"context": "old"}, "io": {"contextvar_set": "token", "writer_interface": "writer"}}}
+{"func": "reset_accounting_context", "in": {"token": "t1", "state": {"context": "old"}, "io": {"contextvar_reset": null, "contextvar_set": null}}}
+{"func": "reset_accounting_context", "in": {"token": "t1", "state": {"context": "old"}, "io": {"contextvar_reset": {"__raise__": "ValueError", "message": "bad token"}, "contextvar_set": null}}}
+{"func": "reset_accounting_context", "in": {"token": "t2", "state": {"context": "old"}, "io": {"contextvar_reset": {"__raise__": "RuntimeError", "message": "x"}, "contextvar_set": null}}}
+{"func": "reset_accounting_context", "in": {"token": "t1", "state": {"context": "old"}, "io": {"contextvar_reset": {"__raise__": "SystemExit", "message": "1"}, "contextvar_set": null}}}
+{"func": "reset_accounting_context", "in": {"token": "t2", "state": {"context": null}, "io": {"contextvar_reset": null, "contextvar_set": null}}}
+{"func": "error_class", "in": {"error": {"kind": "SystemExit", "message": "1"}, "io": {}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom"}, "provider": "openai", "model": "m", "io": {"classify_api_error": {"reason": {"value": "auth"}}}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom", "provider_error": {"message": "quota"}}, "io": {"classify_api_error": {"reason": {"value": "quota"}}}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom", "provider_error": {"message": null}}, "io": {"classify_api_error": {"reason": {"value": "unknown"}}}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom"}, "io": {"classify_api_error": {"__raise__": "RuntimeError", "message": "classify fail"}, "logger_debug": null}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom"}, "io": {"classify_api_error": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "error_class", "in": {"error": {"kind": "KeyboardInterrupt", "message": ""}, "io": {}}}
+{"func": "error_class", "in": {"error": {"kind": "ValueError", "message": "boom", "provider_error": "notdict"}, "io": {"classify_api_error": {"reason": {"value": "timeout"}}}}}
+{"func": "record_compression_regions", "in": {"head_messages": [{"role": "user"}], "middle_messages": [{"role": "assistant"}], "tail_messages": [{"role": "user"}], "state": {"_active_compression_telemetry": {}}, "io": {"estimate_messages_tokens_rough": {"__seq__": [10, 20, 30]}}}}
+{"func": "record_compression_regions", "in": {"head_messages": [], "middle_messages": [], "tail_messages": [], "state": {"_active_compression_telemetry": null}, "io": {"estimate_messages_tokens_rough": 5}}}
+{"func": "record_compression_regions", "in": {"head_messages": [], "middle_messages": [], "tail_messages": [], "state": {"_active_compression_telemetry": "x"}, "io": {"estimate_messages_tokens_rough": 5}}}
+{"func": "record_compression_regions", "in": {"head_messages": [1], "middle_messages": [2], "tail_messages": [3], "state": {"_active_compression_telemetry": {"existing": 1}}, "io": {"estimate_messages_tokens_rough": 5}}}
+{"func": "record_compression_regions", "in": {"head_messages": [], "middle_messages": [], "tail_messages": [], "state": {"_active_compression_telemetry": []}, "io": {"estimate_messages_tokens_rough": 5}}}
+{"func": "record_compression_regions", "in": {"head_messages": [1], "middle_messages": [2], "tail_messages": [3], "state": {"_active_compression_telemetry": {}}, "io": {"estimate_messages_tokens_rough": {"__seq__": [10, {"__raise__": "RuntimeError", "message": "est fail"}]}}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": null}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": ""}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(openai)", "failure": "boom"}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "fallback_chain[0](x)"}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": null}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": 5}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": "e"}, "state": {"_active_compression_telemetry": null, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}, "state": {"_active_compression_telemetry": {"failure_class": "prior"}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "note_aux_route_fallback", "in": {"route": {"failed_model": "m", "fallback_label": "main-agent(x)", "failure": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}, "state": {"_active_compression_telemetry": {}, "_last_aux_model_failure_model": null, "_last_aux_model_failure_error": null}}}
+{"func": "iter_configured_targets", "in": {"cfg": null, "io": {}}}
+{"func": "iter_configured_targets", "in": {"cfg": "x", "io": {}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": null}, "io": {}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": null}}, "io": {}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": "x"}}, "io": {"logger_warning": null}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": [{"url": "a"}, {"url": "b"}]}}, "io": {"_parse_single_target": {"__seq__": [{"url": "a"}, null]}}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": []}}, "io": {}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": 5}}, "io": {"logger_warning": null}}}
+{"func": "iter_configured_targets", "in": {"cfg": {"hooks": {"outbound": {}}}, "io": {"logger_warning": null}}}
+{"func": "redirect_request", "in": {"code": 300, "newurl": "http://x0"}}
+{"func": "cache_path_base", "in": {"i": 0}}
+{"func": "default_cwd", "in": {"i": 0}}
+{"func": "setup_instructions", "in": {"i": 0}}
+{"func": "post_setup", "in": {"i": 0}}
+{"func": "redirect_request", "in": {"code": 301, "newurl": "http://x1"}}
+{"func": "cache_path_base", "in": {"i": 1}}
+{"func": "default_cwd", "in": {"i": 1}}
+{"func": "setup_instructions", "in": {"i": 1}}
+{"func": "post_setup", "in": {"i": 1}}
+{"func": "redirect_request", "in": {"code": 302, "newurl": "http://x2"}}
+{"func": "cache_path_base", "in": {"i": 2}}
+{"func": "default_cwd", "in": {"i": 2}}
+{"func": "setup_instructions", "in": {"i": 2}}
+{"func": "post_setup", "in": {"i": 2}}
+{"func": "redirect_request", "in": {"code": 303, "newurl": "http://x3"}}
+{"func": "cache_path_base", "in": {"i": 3}}
+{"func": "default_cwd", "in": {"i": 3}}
+{"func": "setup_instructions", "in": {"i": 3}}
+{"func": "post_setup", "in": {"i": 3}}
+{"func": "redirect_request", "in": {"code": 304, "newurl": "http://x4"}}
+{"func": "cache_path_base", "in": {"i": 4}}
+{"func": "default_cwd", "in": {"i": 4}}
+{"func": "setup_instructions", "in": {"i": 4}}
+{"func": "post_setup", "in": {"i": 4}}
+{"func": "live_dm_allow_from", "in": {"state": {"_allow_from": ["u1"]}}}
+{"func": "live_dm_allow_from", "in": {"state": {"_allow_from": []}}}
+{"func": "live_dm_allow_from", "in": {"state": {"_allow_from": null}}}
+{"func": "live_dm_allow_from", "in": {"state": {"_allow_from": ["u1", "u2"]}}}
+{"func": "live_dm_allow_from", "in": {"state": {"_allow_from": ["*"]}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": true}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": false}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": {"__raise__": "RuntimeError", "message": "nope"}}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": "x"}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": 0}}}
+{"func": "check_requirements", "in": {"config": {}, "io": {"is_available": null}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": true}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": false}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": {"__raise__": "RuntimeError", "message": "x"}}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": "x"}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": 0}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": ""}, "io": {"is_available": true}}}
+{"func": "doctor_checks", "in": {"state": {"display_name": "Local"}, "io": {"is_available": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {}}, "io": {"_settings": {"enabled": false}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {}}, "io": {"_settings": {"enabled": true}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {"c": 200.0}}, "io": {"_settings": {"enabled": true}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {"c": 100.0}}, "io": {"_settings": {"enabled": true}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {"c": 50.0}}, "io": {"_settings": {"enabled": true}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {}}, "io": {"_settings": {"__raise__": "RuntimeError", "message": "cfg"}, "_clock": 100.0}}}
+{"func": "blocked", "in": {"conversation": "c", "state": {"cooldown_until": {"c": 200.0}}, "io": {"_settings": {"enabled": true}, "_clock": 300.0}}}
+{"func": "checkout", "in": {"session_id": null, "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 1000.0}}}
+{"func": "checkout", "in": {"session_id": "", "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 1000.0}}}
+{"func": "checkout", "in": {"session_id": "s1", "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 1000.0}}}
+{"func": "checkout", "in": {"session_id": "s1", "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 605801.0}}}
+{"func": "checkout", "in": {"session_id": "missing", "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 1000.0}}}
+{"func": "checkout", "in": {"session_id": "s1", "state": {"entries": {"h|s1": ["m1", "/home", 0, 1000]}}, "io": {"_owner_home": {"home_key": "h", "home": "/home"}, "_shutdown_async": null, "time_time": 605800.0}}}
+{"func": "checkout", "in": {"session_id": "s1", "state": {"entries": {}}, "io": {"_owner_home": {"__raise__": "RuntimeError", "message": "home"}, "_shutdown_async": null, "time_time": 1000.0}}}
+{"func": "close_all", "in": {"state": {"entries": {"h|s1": ["m1", "/home", 0, 0], "h|s2": ["m2", null, 0, 0]}}, "io": {"_shutdown": null}}}
+{"func": "close_all", "in": {"state": {"entries": {}}, "io": {"_shutdown": null}}}
+{"func": "close_all", "in": {"state": {"entries": {"h|s1": ["m1", null, 0, 0]}}, "io": {"_shutdown": null}}}
+{"func": "close_all", "in": {"state": {"entries": {"h|s1": ["m1", "/home", 0, 0]}}, "io": {"_shutdown": {"__raise__": "RuntimeError", "message": "drain"}}}}
+{"func": "close_all", "in": {"state": {"entries": {"h|a": ["ma", null, 0, 0], "h|b": ["mb", null, 0, 0], "h|c": ["mc", null, 0, 0]}}, "io": {"_shutdown": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": 1.0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": null, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": 0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": null, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": 1.0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": {"__raise__": "CancelledError", "message": ""}, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g2", "delay": 1.0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": null, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": -1, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": null, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": 1.0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": "entry1"}}, "io": {"asyncio_sleep": {"__raise__": "RuntimeError", "message": "sleep"}, "_settle": null}}}
+{"func": "_timer", "in": {"group_key": "g1", "delay": 1.0, "state": {"_timers": {"g1": "task"}, "_pending": {"g1": null}}, "io": {"asyncio_sleep": null, "_settle": null}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": "g", "_secret": "s"}, "io": {"make_upgrade_token": "tok"}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": "g", "_secret": null}, "io": {"make_upgrade_token": "tok"}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": null, "_secret": "s"}, "io": {"make_upgrade_token": "tok"}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": "g", "_secret": "s"}, "io": {"make_upgrade_token": {"__raise__": "RuntimeError", "message": "sign"}}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": "g2", "_secret": "s2"}, "io": {"make_upgrade_token": "tok2"}}}
+{"func": "_bearer", "in": {"state": {"_gateway_id": "g", "_secret": "s"}, "io": {"make_upgrade_token": ""}}}

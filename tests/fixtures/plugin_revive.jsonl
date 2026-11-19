@@ -1,0 +1,163 @@
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "1"}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "TRUE"}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": " yes "}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "0"}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": null}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": ""}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "on\t\n"}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "no"}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": " true "}}
+{"fn": "_env_enabled", "in": {"name": "HERMES_X"}, "state": {}, "io": {"getenv": "False"}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": false}, "state": {"plugins_debug": false}, "io": {}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": false}, "state": {"plugins_debug": true, "debug_handler_installed": false}, "io": {}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": false}, "state": {"plugins_debug": true, "debug_handler_installed": true}, "io": {}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": true}, "state": {"plugins_debug": false}, "io": {"getenv": "1"}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": true}, "state": {"plugins_debug": true}, "io": {"getenv": "0"}}
+{"fn": "_install_plugin_debug_handler", "in": {"force": true}, "state": {"plugins_debug": false, "debug_handler_installed": true}, "io": {"getenv": "1"}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {"manifest_source": "bundled"}, "io": {}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"granted_capabilities": ["tools.override"]}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"allow_tool_override": true}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": null}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"__raise__": "RuntimeError", "msg": "config unreadable"}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"import_config": {"__raise__": "ModuleNotFoundError", "msg": "No module named 'hermes_cli.config'"}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"granted_capabilities": ["llm.model_override"], "allow_tool_override": false}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"granted_capabilities": [" tools.override "]}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"allow_tool_override": "yes"}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": {"allow_tool_override": 0}}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"plugins": {"entries": {"p1": "not-a-dict"}}}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": {"__raise__": "SystemExit", "msg": "config exit"}}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {}, "io": {"load_config": [1, 2]}}
+{"fn": "_tool_override_allowed", "in": {"name": "write_file"}, "state": {"manifest_source": "project", "plugin_id": "p1", "home_path": "/h/proj"}, "io": {"load_config": {"plugins": {"entries": {"p1": {"allow_tool_override": true}}}}}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "telegram-platform", "path": "/x/y"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "discord", "path": "/plugins/discord"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "discord", "path": "/plugins/discord/"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "slack", "path": null}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "", "path": "a/b/c"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "-platform", "path": null}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "x-platform", "path": "C:\\plug\\x"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "win", "path": "p2\\sub\\"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "dots", "path": "a/./b"}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": {"name": "up", "path": "a/.."}}, "state": {}, "io": {}}
+{"fn": "_platform_name_from_manifest", "in": {"manifest": null}, "state": {}, "io": {}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": false, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1", "exec_module": {"__raise__": "ValueError", "msg": "boom"}}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1", "exec_module": {"__raise__": "SystemExit", "msg": "die"}}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {"hermes_plugins.p1": {"kind": "mod", "token": "old:1", "package": "hermes_plugins.p1", "path": ["p1"]}, "hermes_plugins.p1.sub": {"kind": "mod", "token": "old:2", "package": "hermes_plugins.p1.sub", "path": ["p1"]}, "unrelated": {"kind": "mod", "token": "u:1", "package": "unrelated", "path": []}}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}, "module_name": "custom.mod"}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "openai", "path": "p1", "key": "image_gen/openai"}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {"hermes_plugins.p1": "/h/other"}, "scope_key": "/h/s1"}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {"hermes_plugins.p1": "/h/s1"}, "scope_key": "/h/s1"}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p1", "manifest": {"name": "p1", "path": "p1", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": {"token": "spec:2", "loader": null}}}
+{"fn": "_load_directory_module", "in": {"dir": "p2/sub", "manifest": {"name": "p2", "path": "p2/sub", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": true, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_directory_module", "in": {"dir": "p2/sub", "manifest": {"name": "p2", "path": "p2/sub", "key": ""}}, "state": {"sys_modules": {}, "bare_module_scope": {}}, "io": {"fs.exists": false, "module_from_spec": "mod:1", "spec_from_file_location": "spec:1"}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "list", "eps": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}]}, "ep.load": "mod:ep1"}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "select", "eps": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}]}, "ep.select": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}], "ep.load": "mod:ep1"}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "dict", "groups": {"hermes_agent.plugins": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}], "g2": []}}, "ep.load": "mod:ep1"}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "list", "eps": [{"name": "nope", "group": "hermes_agent.plugins"}]}}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "list", "eps": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}]}, "ep.load": {"__raise__": "ImportError", "msg": "no module named ep1"}}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "list", "eps": [{"name": "other", "group": "hermes_agent.plugins"}, {"name": "ep1", "group": "hermes_agent.plugins"}]}, "ep.load": null}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"kind": "list", "eps": [{"name": "ep1", "group": "wrong.group"}, {"name": "ep1", "group": "hermes_agent.plugins"}]}, "ep.load": "fn:register"}}
+{"fn": "_load_entrypoint_module", "in": {"path": "x", "manifest": {"name": "ep1", "path": null, "key": ""}}, "state": {}, "io": {"entry_points": {"__raise__": "RuntimeError", "msg": "metadata scan failed"}}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true}, "io": {}}
+{"fn": "has_hook", "in": {"name": "missing"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true}, "io": {}}
+{"fn": "has_hook", "in": {"name": "x"}, "state": {"hooks": {"x": []}, "discovered": true}, "io": {}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true}, "io": {"safe_worker_enabled": true}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": false}, "io": {"discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {}, "discovered": false}, "io": {"discover_and_load": {"__raise__": "RuntimeError", "msg": "sweep failed"}}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true, "bg_present": true}, "io": {"bg.is_alive": {"__list__": [true, false]}, "bg.join": null, "in_plugin_load_worker": false}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true, "bg_present": true}, "io": {"bg.is_alive": {"__list__": [true, true]}, "in_plugin_load_worker": true}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true, "bg_present": true, "bg_is_current": true}, "io": {"bg.is_alive": true}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "discovered": true, "bg_present": true, "delivery_join_abandoned": true}, "io": {"bg.is_alive": true}}
+{"fn": "has_hook", "in": {"name": "pre_tool_call"}, "state": {"hooks": {"pre_tool_call": ["cb1"]}, "has_discovered_attr": false}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {"request": ["cb"]}, "discovered": true}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "missing"}, "state": {"middleware": {"request": ["cb"]}, "discovered": true}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {"request": ["cb"]}, "discovered": true, "manager_has_middleware_method": false}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {}, "discovered": true, "manager_has_middleware_method": false, "has_middleware_attr": false}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {"request": ["cb"]}, "discovered": true}, "io": {"safe_worker_enabled": true}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {"request": []}, "discovered": true, "manager_has_middleware_method": false}, "io": {}}
+{"fn": "has_middleware", "in": {"name": "request"}, "state": {"middleware": {"request": ["cb"]}, "discovered": false}, "io": {"discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "find_plugin_skill", "in": {"name": "p1:s"}, "state": {"plugin_skills": {"p1:s": {"path": {"__path__": "skills/p1/s/SKILL.md"}, "bare_name": "s"}}}, "io": {}}
+{"fn": "find_plugin_skill", "in": {"name": "absent"}, "state": {"plugin_skills": {"p1:s": {"path": {"__path__": "skills/p1/s/SKILL.md"}, "bare_name": "s"}}}, "io": {}}
+{"fn": "find_plugin_skill", "in": {"name": "p1:e"}, "state": {"plugin_skills": {"p1:e": {}}}, "io": {}}
+{"fn": "find_plugin_skill", "in": {"name": "p1:n"}, "state": {"plugin_skills": {"p1:n": {"bare_name": "n"}}}, "io": {}}
+{"fn": "find_plugin_skill", "in": {"name": "p1:p"}, "state": {"plugin_skills": {"p1:p": {"path": "x/y.md"}}}, "io": {}}
+{"fn": "find_plugin_skill", "in": {"name": "p1:z"}, "state": {"plugin_skills": {"p1:z": {"path": null}}}, "io": {}}
+{"fn": "remove_plugin_skill", "in": {"name": "p1:s"}, "state": {"plugin_skills": {"p1:s": {"path": {"__path__": "skills/p1/s/SKILL.md"}, "bare_name": "s"}}}, "io": {}}
+{"fn": "remove_plugin_skill", "in": {"name": "absent"}, "state": {"plugin_skills": {"p1:s": {"path": {"__path__": "skills/p1/s/SKILL.md"}, "bare_name": "s"}}}, "io": {}}
+{"fn": "remove_plugin_skill", "in": {"name": "p1:e"}, "state": {"plugin_skills": {"p1:e": {}}}, "io": {}}
+{"fn": "remove_plugin_skill", "in": {"name": "b"}, "state": {"plugin_skills": {"a": {"path": "a"}, "b": {"path": "b"}, "c": {"path": "c"}}}, "io": {}}
+{"fn": "remove_plugin_skill", "in": {"name": "p1:s"}, "state": {"plugin_skills": {}}, "io": {}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block", "message": "no shell"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "ask human", "rule_key": " rk "}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "ask"}, {"action": "block", "message": "veto"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block", "message": ""}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "modify", "args": {"a": 1}}, {"action": "block", "message": "b"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [null, "x", 5, {"action": "approve"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block", "message": 5}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {"whitelist_allowed": ["other"]}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {"whitelist_allowed": ["shell_exec"]}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {"whitelist_allowed": []}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {"whitelist_allowed": ["other"], "whitelist_fmt": "no {tool_name} here"}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {"whitelist_allowed": ["other"], "whitelist_fmt": "{{literal}} {tool_name}"}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": {"__raise__": "RuntimeError", "msg": "hook bus down"}}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": null, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "modify", "args": {"a": 1}}, {"action": "approve", "message": "ok"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {"task_id": "t1", "session_id": "s1", "tool_call_id": "tc1", "turn_id": "tu1", "api_request_id": "ar1", "conversation_id": "c1", "middleware_trace": [{"m": 1}]}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "ok"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "first"}, {"action": "approve", "message": "second"}]}}
+{"fn": "get_pre_tool_call_directive", "in": {"tool_name": "shell_exec", "args": {"command": "ls"}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "modify", "args": {}}, {"action": "modify", "args": {"b": 2}}, {"action": "approve", "message": "m"}]}}
+{"fn": "get_pre_tool_call_block_message", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block", "message": "denied"}]}}
+{"fn": "get_pre_tool_call_block_message", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "ask"}]}}
+{"fn": "get_pre_tool_call_block_message", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_block_message", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {"whitelist_allowed": ["other"]}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "get_pre_tool_call_block_message", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block"}]}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "block", "message": "vetoed"}]}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": []}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": true}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": false, "message": "human said no"}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": false}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"__raise__": "RuntimeError", "msg": "gate crashed"}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": null, "approval.request": {"approved": false}}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": {"__raise__": "ValueError", "msg": "ctx broken"}, "approval.request": {"approved": true}}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": {"__raise__": "SystemExit", "msg": "ctx exit"}}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": null, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": false, "message": ""}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": false, "message": 0}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"__raise__": "SystemExit", "msg": "gate exit"}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "needs approval", "rule_key": "shell_exec:ls"}], "approval.set_ctx": "tok:1", "approval.request": {"approved": true}, "approval.reset_ctx": {"__raise__": "ValueError", "msg": "reset broken"}}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {"turn_id": "tu9", "tool_call_id": "tc9", "session_id": "s9"}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve", "message": "m"}], "approval.set_ctx": "tok:2", "approval.request": {"approved": true}, "approval.reset_ctx": null}}
+{"fn": "resolve_pre_tool_block", "in": {"tool_name": "shell_exec", "args": {}, "hook_kwargs": {}}, "state": {}, "io": {"lifecycle.invoke_hook": [{"action": "approve"}], "approval.set_ctx": null, "approval.request": {"approved": false}}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "message": " keep going "}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"decision": "block", "reason": " tests failed "}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "CONTINUE", "message": "x"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "message": "   "}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "finish", "message": "x"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [null, {"action": "continue", "message": 5}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": []}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {"changed_paths": "ab"}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "message": "go"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {"changed_paths": null}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "message": "go"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": {"__raise__": "RuntimeError", "msg": "verify bus down"}}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": false}, "io": {"manager.invoke_hook": [{"action": "continue", "message": "go"}], "discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "reason": "r"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": null, "decision": null}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": 0, "decision": "block", "reason": "r"}]}}
+{"fn": "get_pre_verify_continue_message", "in": {"tool_name": "vestigial", "kwargs": {"session_id": "s1", "platform": "cli", "model": "m1", "coding": true, "attempt": 2, "final_response": "done", "changed_paths": ["a.py", "b.py"]}}, "state": {"discovered": true}, "io": {"manager.invoke_hook": [{"action": "continue", "message": "go"}]}}
+{"fn": "_ensure_plugins_discovered", "in": {}, "state": {"discovered": false}, "io": {"discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "_ensure_plugins_discovered", "in": {}, "state": {"discovered": true}, "io": {}}
+{"fn": "_ensure_plugins_discovered", "in": {}, "state": {"discovered": false}, "io": {"discover_and_load": {"__raise__": "RuntimeError", "msg": "sweep failed"}}}
+{"fn": "_ensure_plugins_discovered", "in": {}, "state": {"discovered": true}, "io": {"discover_and_load": {"ret": null, "set_discovered": false}}}
+{"fn": "_ensure_plugins_discovered", "in": {}, "state": {}, "io": {"get_plugin_manager": {"__raise__": "RuntimeError", "msg": "no home"}}}
+{"fn": "get_plugin_context_engine", "in": {"name": "vestigial"}, "state": {"context_engine": "engine:mem", "discovered": true}, "io": {}}
+{"fn": "get_plugin_context_engine", "in": {"name": "vestigial"}, "state": {"discovered": true}, "io": {}}
+{"fn": "get_plugin_context_engine", "in": {"name": "vestigial"}, "state": {"context_engine": "engine:mem", "discovered": false}, "io": {"discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "get_plugin_context_engine", "in": {"name": "vestigial"}, "state": {}, "io": {"discover_and_load": {"__raise__": "RuntimeError", "msg": "sweep failed"}}}
+{"fn": "get_plugin_context_engine", "in": {"name": "vestigial"}, "state": {"context_engine": "", "discovered": true}, "io": {}}
+{"fn": "get_plugin_command_handler", "in": {"name": "cmd"}, "state": {"plugin_commands": {"cmd": {"handler": "h:1", "description": "d", "plugin": "p1"}}, "discovered": true}, "io": {}}
+{"fn": "get_plugin_command_handler", "in": {"name": "absent"}, "state": {"plugin_commands": {"cmd": {"handler": "h:1", "description": "d", "plugin": "p1"}}, "discovered": true}, "io": {}}
+{"fn": "get_plugin_command_handler", "in": {"name": "empty"}, "state": {"plugin_commands": {"empty": {}}, "discovered": true}, "io": {}}
+{"fn": "get_plugin_command_handler", "in": {"name": "nohandler"}, "state": {"plugin_commands": {"nohandler": {"description": "d"}}, "discovered": true}, "io": {}}
+{"fn": "get_plugin_command_handler", "in": {"name": "cmd"}, "state": {"plugin_commands": {"cmd": {"handler": "h:1", "description": "d", "plugin": "p1"}}, "discovered": false}, "io": {"discover_and_load": {"ret": null, "set_discovered": true}}}
+{"fn": "get_plugin_command_handler", "in": {"name": "cmd"}, "state": {}, "io": {"discover_and_load": {"__raise__": "RuntimeError", "msg": "sweep failed"}}}
