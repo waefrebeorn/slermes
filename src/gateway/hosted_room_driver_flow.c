@@ -1519,7 +1519,7 @@ static json_t *hrd_open_session_of(hrd_env *e, const json_t *binding, const json
                                       hrd_str(profile) ? hrd_str(profile) : "");
     if (hrd_is_raise(sid)) { json_free(transport); json_free(r); return sid; }
     json_append(r, hrd_transport_proj(transport));
-    json_append(r, json_copy(profile));
+    json_append(r, profile ? json_copy(profile) : json_null());
     json_append(r, sid ? sid : json_null());
     json_free(transport);
     return r;
