@@ -1624,6 +1624,25 @@ class ParityAnalyzer:
             if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
                 continue
             all_py.append((pf, "hermes_cli/" + pf.relative_to(hc).as_posix()))
+        # DA-6 (recursive audit): the universe was selection-biased — only
+        # the home-junction packages were walked, so the largest UNCLAIMED
+        # surfaces (platform adapters, TUI gateway, pm, session_rules,
+        # providers) and even persistence/acp_adapter/hermes_platform were
+        # invisible unless already PoP-claimed. Walk the quarry sibling
+        # directly for every package outside the junction set.
+        quarry = SLERMES_DIR.parent / "hermes-agent"
+        for pkg in ("plugins", "tui_gateway", "providers", "session_rules",
+                    "pm", "hermes_agent", "apps", "persistence",
+                    "acp_adapter", "hermes_platform"):
+            pd = quarry / pkg
+            if not pd.is_dir():
+                continue
+            for pf in sorted(pd.rglob("*.py")):
+                if "__pycache__" in pf.parts:
+                    continue
+                if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                    continue
+                all_py.append((pf, pkg + "/" + pf.relative_to(pd).as_posix()))
         all_py.sort(key=lambda x: x[1])
 
         # Apply module substring filter early so --module doesn't scan the
