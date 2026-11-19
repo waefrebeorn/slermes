@@ -39,45 +39,8 @@
  *  Returns the code, or -1 for None.
  * =========================================================================== */
 
-/* PoP: cch_status_code_from_value @ agent/chat_completion_helpers.py:_status_code_from_value */
-int cch_status_code_from_value(int kind, long long ival, const char *sval)
-{
-    if (kind == 1) {
-        return (ival >= 100 && ival < 600) ? (int)ival : -1;
-    }
-    if (kind != 2 || !sval) return -1;
+/* cch_status_code_from_value: canonical definition lives in chat_completions_ports.c */
 
-    /* tre (the backend libregex wraps) supports neither (?:...) nor \b, so
-     * the optional HTTP_STATUS/ prefix is dropped - it does not affect the
-     * captured code - and the word boundaries are checked by hand below.
-     *
-     * NOTE: regex_match_t.group_count is never populated by hermes_regex.c
-     * (it stays 0 from calloc), so the groups must be tested directly. */
-    static hregex_t *re = NULL;
-    if (!re) re = regex_compile("([1-5][0-9][0-9])", CCH_ICASE);
-    if (!re) return -1;
-
-    regex_match_t *m = regex_search(re, sval);
-    if (!m || !m->matched) { if (m) regex_match_free(m); return -1; }
-    int code = -1;
-    if (m->groups[1]) {
-        const char *hit = strstr(sval, m->groups[1]);
-        size_t clen = strlen(m->groups[1]);
-        size_t pos = hit ? (size_t)(hit - sval) : 0;
-        int boundary_ok = 1;
-        if (hit) {
-            if (pos > 0) {
-                unsigned char before = (unsigned char)sval[pos - 1];
-                if (isalnum(before) || before == '_') boundary_ok = 0;
-            }
-            unsigned char after = (unsigned char)sval[pos + clen];
-            if (after && (isalnum(after) || after == '_')) boundary_ok = 0;
-        }
-        if (boundary_ok) code = atoi(m->groups[1]);
-    }
-    regex_match_free(m);
-    return code;
-}
 
 /* ===========================================================================
  *  _status_code_from_payload  (chat_completion_helpers.py:_status_code_from_payload)

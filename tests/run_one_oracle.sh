@@ -138,6 +138,13 @@ else
   build "$OUT" -O2
 fi
 
+# Fixture-driven flow harnesses read cases from stdin (or argv[1]). Feed the
+# fixture when one exists: tests/fixtures/<name>.jsonl or tests/<name>_cases.jsonl.
+FIXTURE=""
+if [ -f "tests/fixtures/$NAME.jsonl" ]; then FIXTURE="tests/fixtures/$NAME.jsonl"
+elif [ -f "tests/${NAME}_cases.jsonl" ]; then FIXTURE="tests/${NAME}_cases.jsonl"
+fi
+
 # Smart App Control refuses some freshly linked binaries outright (rc 126) and
 # only PowerShell names the reason. A relink with an extra optimization level
 # produces a different image, which it lets through — retry once that way
@@ -145,7 +152,11 @@ fi
 # `set -e` would abort the script on the 126/127 Smart App Control block
 # before HRC is captured, so the -O1 retry below could never run.
 HRC=0
-SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+if [ -n "$FIXTURE" ]; then
+  SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" < "$FIXTURE" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+else
+  SLERMES_HOME="$TMPH" HOME="$TMPH" "$OUT" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+fi
 if [ "$HRC" -eq 126 ] || [ "$HRC" -eq 127 ]; then
   if [ "$prebuilt_fresh" = "1" ]; then
     cp ".testbin/harnesses/$NAME.exe" "${OUT}_alt"
@@ -153,7 +164,11 @@ if [ "$HRC" -eq 126 ] || [ "$HRC" -eq 127 ]; then
     build "${OUT}_alt" -O1
   fi
   HRC=0
-  SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+  if [ -n "$FIXTURE" ]; then
+    SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" < "$FIXTURE" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+  else
+    SLERMES_HOME="$TMPH" HOME="$TMPH" "${OUT}_alt" > "$TMPH/harness.out" 2> "$TMPH/harness.err" || HRC=$?
+  fi
 fi
 if [ "$HRC" -ne 0 ] && [ ! -s "$TMPH/harness.out" ]; then
   echo "ORACLE $NAME: harness could not run (rc $HRC)" >&2
