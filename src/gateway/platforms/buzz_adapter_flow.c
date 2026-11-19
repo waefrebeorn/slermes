@@ -1450,9 +1450,12 @@ static json_t *ba_resolve_credentials_data_c(ba_ctx_t *ctx, const json_t *extra)
         json_t *content = ba_call(ctx, "read_text", ra);
         if (ba_is_raise(content)) {
             const char *k = ba_kind(content);
-            if (ba_is_base_exc(k)) { json_free(content); json_free(candidates); return content; }
+            /* Propagated raises stay LIVE: ownership passes to the caller
+             * (freeing then returning dangles the node the harness adopts
+             * into out.ret -> teardown double-free, 0xC0000374). */
+            if (ba_is_base_exc(k)) { json_free(candidates); return content; }
             if (strcmp(k, "OSError") == 0 || strcmp(k, "ValueError") == 0) { json_free(content); continue; }
-            json_free(content); json_free(candidates); return content;
+            json_free(candidates); return content;
         }
         const char *cs = ba_str(content);
         json_t *data = cs ? ba_json_loads(cs) : NULL;
