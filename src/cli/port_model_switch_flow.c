@@ -737,10 +737,11 @@ static char *msf_read_env(msf_ctx *ctx, const char *name) {
 static char *msf_entry_configured_key(msf_ctx *ctx, const json_t *cfg) {
     char *key = msf_clean(json_obj_get(cfg, "api_key"));
     size_t klen = strlen(key);
-    if (klen >= 2 && msf_starts_with(key, "${") && key[klen - 1] == '}') {
-        char *inner = (char *)malloc(klen - 2 + 1);
-        memcpy(inner, key + 2, klen - 2);
-        inner[klen - 2] = '\0';
+    if (klen >= 3 && msf_starts_with(key, "${") && key[klen - 1] == '}') {
+        /* live key[2:-1]: drop BOTH "${" and the trailing "}" (klen-3). */
+        char *inner = (char *)malloc(klen - 3 + 1);
+        memcpy(inner, key + 2, klen - 3);
+        inner[klen - 3] = '\0';
         free(key);
         key = msf_read_env(ctx, inner);
         free(inner);

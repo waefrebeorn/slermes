@@ -1269,7 +1269,8 @@ static json_t *hrf_frozenset_sorted(const json_t *v) {
             if (el && (el->type == JSON_ARRAY || el->type == JSON_OBJECT)) {
                 json_free(items);
                 char buf[96];
-                snprintf(buf, sizeof buf, "unhashable type: '%s'", hrf_type_name(el));
+                snprintf(buf, sizeof buf, "cannot use '%s' as a set element (unhashable type: '%s')",
+                         hrf_type_name(el), hrf_type_name(el));
                 return hrf_err("TypeError", buf);
             }
             json_append(items, json_copy(el));
@@ -1371,7 +1372,8 @@ static json_t *hrf_merge_pairs(json_t *out, const json_t *seq) {
             if (chars_owned) json_free((json_t *)chars);
             json_free(items);
             char buf[96];
-            snprintf(buf, sizeof buf, "unhashable type: '%s'", hrf_type_name(key));
+            snprintf(buf, sizeof buf, "cannot use '%s' as a dict key (unhashable type: '%s')",
+                     hrf_type_name(key), hrf_type_name(key));
             return hrf_err("TypeError", buf);
         }
         char *ks = hrf_key_string(key);
@@ -1576,7 +1578,7 @@ static json_t *hrf_default_db_path(hrf_ctx_t *c, const json_t *args) {
         char buf[192];
         snprintf(buf, sizeof buf,
                  "argument should be a str or an os.PathLike object where __fspath__ returns a str, "
-                 "not <class '%s'>", hrf_type_name(home_str));
+                 "not '%s'", hrf_type_name(home_str));
         json_free(home_str);
         return hrf_err("TypeError", buf);
     }

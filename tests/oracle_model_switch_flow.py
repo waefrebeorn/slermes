@@ -279,11 +279,11 @@ ARGMAP = {
                                               "configured_provider": a[4], "provider": a[5]},
     "normalize_route_base_url": lambda a, k: {"base_url": a[0]},
     "get_config_path": lambda a, k: {},
-    "read_user_config_raw": lambda a, k: {"path": str(a[0])},
+    "read_user_config_raw": lambda a, k: {"path": norm(a[0])},
     "supports_file_tooling": lambda a, k: {},
-    "write_changes": lambda a, k: {"path": str(a[0]), "set": a[1].set, "unset": list(a[1].unset)},
-    "atomic_config_replace": lambda a, k: {"path": str(a[0]), "config": a[1]},
-    "chmod": lambda a, k: {"path": str(a[0]), "mode": a[1]},
+    "write_changes": lambda a, k: {"path": norm(a[0]), "set": a[1].set, "unset": list(a[1].unset)},
+    "atomic_config_replace": lambda a, k: {"path": norm(a[0]), "config": a[1]},
+    "chmod": lambda a, k: {"path": norm(a[0]), "mode": a[1]},
 }
 
 
@@ -607,8 +607,8 @@ def main():
             if shown < 10:
                 shown += 1
                 print(f"MISMATCH {rec.get('func')} case {n}:")
-                print(f"  C={json.dumps(got, ensure_ascii=False)[:800]}")
-                print(f"  P={json.dumps(out, ensure_ascii=False)[:800]}")
+                print(f"  C={json.dumps(got, ensure_ascii=False)[:4000]}")
+                print(f"  P={json.dumps(out, ensure_ascii=False)[:4000]}")
     print(f"ORACLE {NAME}: {n} cases, {mism} mismatches")
     sys.exit(1 if (mism or n == 0) else 0)
 
