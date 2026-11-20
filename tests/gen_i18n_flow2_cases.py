@@ -103,7 +103,9 @@ CASES += [
     case("_normalize_lang", {"resolve_language_id": "zh-hant"}, value="zh-tw", home=HOME),
     case("_normalize_lang", {"resolve_language_id": "en"}, home=HOME),   # value absent -> None
     case("_normalize_lang", {"resolve_language_id": {"__raise__": "MemoryError", "msg": "m"}}, value="de", home=HOME),
-    case("_normalize_lang", {"resolve_language_id": {"__raise__": "UnicodeDecodeError", "msg": "u"}}, value="de", home=HOME),
+    # Unicode-trio str() is attribute-derived (always "" under the make_exc
+    # bypass construction), so only an empty msg round-trips the raise protocol
+    case("_normalize_lang", {"resolve_language_id": {"__raise__": "UnicodeDecodeError", "msg": ""}}, value="de", home=HOME),
 ]
 
 # ── _flatten_into (i18n.py) ──
@@ -141,6 +143,7 @@ CASES += [
     case("_load_catalog", {"_load_bundled": {"z": "1", "a": "2"}, "overlay_layer": {"a": "3"}, "pack_layer": {}},
          lang="de", home=HOME),                                          # first-position key order
     case("_load_catalog", {"_load_bundled": {}, "overlay_layer": {}, "pack_layer": {}}, lang="en", home=HOME),
+    case("_load_catalog", {"_load_bundled": {"e": "1"}, "overlay_layer": {}, "pack_layer": {}}, lang="", home=HOME),
 ]
 
 # ── _config_language_cached (i18n.py) ──
@@ -175,6 +178,7 @@ CASES += [
     case("_config_language_cached", {"load_config_readonly": {"__raise__": "UserWarning", "msg": "w"}}, hermes_home=HOME),
     case("_config_language_cached", {"load_config_readonly": {"__raise__": "MyCustomError", "msg": "c"}}, hermes_home=HOME),
     case("_config_language_cached", {**CC, "resolve_language_id": {"__raise__": "KeyboardInterrupt", "msg": ""}}, hermes_home=HOME),
+    case("_config_language_cached", CC, hermes_home=""),                 # empty-home lru key
 ]
 
 # ── reset_language_cache (i18n.py) ──
@@ -277,6 +281,9 @@ CASES += [
     case("t", tseams({"k": "{ 1 }"}), key="k", lang="de", kwargs={" 1 ": "space"}),
     case("t", tseams({"k": "{a::}"}), key="k", lang="de", kwargs={"a": "x"}),  # bad spec -> ValueError fallback
     case("t", tseams({"k": "{name!s} and {n!s}"}), key="k", lang="de", kwargs={"name": "bob", "n": 3}),
+    case("t", tseams({}), key="{name}", lang="de", kwargs={"name": "x"}),  # bare KEY gets formatted
+    case("t", tseams({}), key="}", lang="de", kwargs={"name": "x"}),       # malformed bare key -> fallback
+    case("t", {**tseams({"k": "v"}), "_current_home": ""}, key="k", lang="de"),  # home "" -> 2nd _current_home
 ]
 
 # ── clear_cache (i18n_layers.py) ──

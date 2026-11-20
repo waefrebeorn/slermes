@@ -121,23 +121,30 @@ add("_warn_child_budget", {"idle_seconds": "x", "child_timeout": 30.0,
      "state": {"child": child("c", steer=cb("child.steer"))},
      "io": {"logger.debug": None}})  # budget text ValueError -> caught
 
-# ---- _child_last_event_age (8) ----
-add("_child_last_event_age", {"state": {"child": child("c")},
+# ---- _child_last_event_age (9) ----
+def agechild(**extra):
+    base = dict(get_activity_summary=cb("child.get_activity_summary"))
+    base.update(extra)
+    return child("c", **base)
+
+
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": {"last_activity_ts": 90.0}, "time.time": 100.0}})
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": {"last_activity_ts": None}, "time.time": 100.0}})
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": None}})  # or {} -> ts None
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": rs("RuntimeError", "boom")}})  # -> None
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": rs("GeneratorExit", "")}})  # passes
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": {"last_activity_ts": "95.5"}, "time.time": 100.0}})
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": {"last_activity_ts": [1]}, "time.time": 100.0}})  # float TypeError -> None
-add("_child_last_event_age", {"state": {"child": child("c")},
+add("_child_last_event_age", {"state": {"child": agechild()},
      "io": {"child.get_activity_summary": {"last_activity_ts": 200.0}, "time.time": 100.0}})  # max(0,..) -> 0
+add("_child_last_event_age", {"state": {"child": child("c")}})  # no method attr -> AttributeError caught -> None
 
 # ---- _merge_late_steer (6) ----
 add("_merge_late_steer", {"subagent_id": "s1", "state": {"result": {"pending_steer": "old"}, "child": child("c")},

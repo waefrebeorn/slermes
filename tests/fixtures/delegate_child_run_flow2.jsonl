@@ -35,14 +35,15 @@
 {"func": "_warn_child_budget", "in": {"idle_seconds": 10.0, "child_timeout": 30.0, "state": {"child": {"__attr__": {"steer": "notcallable"}, "__id__": "c"}}}}
 {"func": "_warn_child_budget", "in": {"idle_seconds": 10.0, "child_timeout": 30.0, "state": {"child": {"__attr__": {}, "__id__": "c"}}}}
 {"func": "_warn_child_budget", "in": {"idle_seconds": "x", "child_timeout": 30.0, "state": {"child": {"__attr__": {"steer": {"__callable__": "child.steer"}}, "__id__": "c"}}, "io": {"logger.debug": null}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": 90.0}, "time.time": 100.0}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": null}, "time.time": 100.0}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": null}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "RuntimeError", "message": "boom"}}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "GeneratorExit", "message": ""}}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": "95.5"}, "time.time": 100.0}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": [1]}, "time.time": 100.0}}}
-{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": 200.0}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": 90.0}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": null}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": null}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "GeneratorExit", "message": ""}}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": "95.5"}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": [1]}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {"get_activity_summary": {"__callable__": "child.get_activity_summary"}}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"last_activity_ts": 200.0}, "time.time": 100.0}}}
+{"func": "_child_last_event_age", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
 {"func": "_merge_late_steer", "in": {"subagent_id": "s1", "state": {"result": {"pending_steer": "old"}, "child": {"__attr__": {}, "__id__": "c"}}, "io": {"_close_subagent_steering": "late"}}}
 {"func": "_merge_late_steer", "in": {"subagent_id": "s1", "state": {"result": {}, "child": {"__attr__": {}, "__id__": "c"}}, "io": {"_close_subagent_steering": "late"}}}
 {"func": "_merge_late_steer", "in": {"subagent_id": null, "state": {"result": {}, "child": {"__attr__": {}, "__id__": "c"}}}}

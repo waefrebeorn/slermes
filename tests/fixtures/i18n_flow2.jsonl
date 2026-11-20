@@ -38,7 +38,7 @@
 {"func": "_normalize_lang", "in": {"value": "zh-tw", "home": "/home/u/.hermes", "seams": {"resolve_language_id": "zh-hant"}}}
 {"func": "_normalize_lang", "in": {"home": "/home/u/.hermes", "seams": {"resolve_language_id": "en"}}}
 {"func": "_normalize_lang", "in": {"value": "de", "home": "/home/u/.hermes", "seams": {"resolve_language_id": {"__raise__": "MemoryError", "msg": "m"}}}}
-{"func": "_normalize_lang", "in": {"value": "de", "home": "/home/u/.hermes", "seams": {"resolve_language_id": {"__raise__": "UnicodeDecodeError", "msg": "u"}}}}
+{"func": "_normalize_lang", "in": {"value": "de", "home": "/home/u/.hermes", "seams": {"resolve_language_id": {"__raise__": "UnicodeDecodeError", "msg": ""}}}}
 {"func": "_flatten_into", "in": {"node": {"a": {"b": "x"}}, "prefix": "", "out": {}, "seams": {"flatten": {"a.b": "x"}}}}
 {"func": "_flatten_into", "in": {"node": null, "prefix": "", "out": {}, "seams": {"flatten": {}}}}
 {"func": "_flatten_into", "in": {"node": {"k": "v"}, "prefix": "pfx", "out": null, "seams": {"flatten": {"k": "v"}}}}
@@ -63,6 +63,7 @@
 {"func": "_load_catalog", "in": {"lang": "de", "home": "/home/u/.hermes", "seams": {"_load_bundled": {"a": "1"}, "overlay_layer": [["a", "b"]], "pack_layer": {"b": "4"}}}}
 {"func": "_load_catalog", "in": {"lang": "de", "home": "/home/u/.hermes", "seams": {"_load_bundled": {"z": "1", "a": "2"}, "overlay_layer": {"a": "3"}, "pack_layer": {}}}}
 {"func": "_load_catalog", "in": {"lang": "en", "home": "/home/u/.hermes", "seams": {"_load_bundled": {}, "overlay_layer": {}, "pack_layer": {}}}}
+{"func": "_load_catalog", "in": {"lang": "", "home": "/home/u/.hermes", "seams": {"_load_bundled": {"e": "1"}, "overlay_layer": {}, "pack_layer": {}}}}
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {"load_config_readonly": {"display": {"language": "de"}}, "resolve_language_id": "de"}}}
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {}, "state": {"config_lang_cache": {"/home/u/.hermes": "fr"}}}}
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {}, "state": {"config_lang_cache": {"/home/u/.hermes": null}}}}
@@ -88,6 +89,7 @@
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {"load_config_readonly": {"__raise__": "UserWarning", "msg": "w"}}}}
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {"load_config_readonly": {"__raise__": "MyCustomError", "msg": "c"}}}}
 {"func": "_config_language_cached", "in": {"hermes_home": "/home/u/.hermes", "seams": {"load_config_readonly": {"display": {"language": "de"}}, "resolve_language_id": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_config_language_cached", "in": {"hermes_home": "", "seams": {"load_config_readonly": {"display": {"language": "de"}}, "resolve_language_id": "de"}}}
 {"func": "reset_language_cache", "in": {"seams": {}, "state": {}}}
 {"func": "reset_language_cache", "in": {"seams": {}, "state": {"catalog_cache": {"/home/u/.hermes\u001fde": {"a": "1"}}, "supported_cache": {"/home/u/.hermes": ["en", "de"]}, "config_lang_cache": {"/home/u/.hermes": "de"}, "bundled_surfaces_cache": {"/quarry/locales": [["de", "core"], ["pl", "tui"]]}, "pack_cache": {"pl\u001fcore": {"p": "1"}}, "overlay_cache": {"/home/u/.hermes\u001fpl\u001fcore": {"o": "1"}}, "overlay_files_cache": {"/home/u/.hermes": [["pl", "core"]]}}}}
 {"func": "reset_language_cache", "in": {"seams": {}, "state": {"catalog_cache": {"/home/u/.hermes\u001fde": {"a": "1"}}, "config_lang_cache": {"/home/u/.hermes": "de"}}}}
@@ -150,6 +152,9 @@
 {"func": "t", "in": {"key": "k", "lang": "de", "kwargs": {" 1 ": "space"}, "seams": {"_current_home": "/home/u/.hermes", "resolve_language_id": "de", "_load_bundled": {"k": "{ 1 }"}, "overlay_layer": {}, "pack_layer": {}}}}
 {"func": "t", "in": {"key": "k", "lang": "de", "kwargs": {"a": "x"}, "seams": {"_current_home": "/home/u/.hermes", "resolve_language_id": "de", "_load_bundled": {"k": "{a::}"}, "overlay_layer": {}, "pack_layer": {}}}}
 {"func": "t", "in": {"key": "k", "lang": "de", "kwargs": {"name": "bob", "n": 3}, "seams": {"_current_home": "/home/u/.hermes", "resolve_language_id": "de", "_load_bundled": {"k": "{name!s} and {n!s}"}, "overlay_layer": {}, "pack_layer": {}}}}
+{"func": "t", "in": {"key": "{name}", "lang": "de", "kwargs": {"name": "x"}, "seams": {"_current_home": "/home/u/.hermes", "resolve_language_id": "de", "_load_bundled": {}, "overlay_layer": {}, "pack_layer": {}}}}
+{"func": "t", "in": {"key": "}", "lang": "de", "kwargs": {"name": "x"}, "seams": {"_current_home": "/home/u/.hermes", "resolve_language_id": "de", "_load_bundled": {}, "overlay_layer": {}, "pack_layer": {}}}}
+{"func": "t", "in": {"key": "k", "lang": "de", "seams": {"_current_home": "", "resolve_language_id": "de", "_load_bundled": {"k": "v"}, "overlay_layer": {}, "pack_layer": {}}}}
 {"func": "clear_cache", "in": {"seams": {}, "state": {}}}
 {"func": "clear_cache", "in": {"seams": {}, "state": {"pack_cache": {"pl\u001fcore": {"p": "1"}}, "overlay_cache": {"/home/u/.hermes\u001fpl\u001fcore": {"o": "1"}}, "overlay_files_cache": {"/home/u/.hermes": [["pl", "core"]]}}}}
 {"func": "clear_cache", "in": {"seams": {}, "state": {"pack_cache": {"pl\u001fcore": {"p": "1"}}}}}

@@ -544,6 +544,19 @@ static char *dcr2_fmt_g(double x)
     return dcr2_xfmt("%s", buf);
 }
 
+/* f"{v:.0f}" / f"{v:g}" on a non-number: str -> ValueError "Unknown format code
+ * '<c>' for object of type 'str'"; other -> TypeError "unsupported format string
+ * passed to <type>.__format__" (probe-verified py3.14 messages). */
+static json_t *dcr2_fmt_code_raise(const json_t *v, char code)
+{
+    if (dcr2_is_str(v)) {
+        char *m = dcr2_xfmt("Unknown format code '%c' for object of type 'str'", code);
+        json_t *r = dcr2_mkraise("ValueError", m ? m : "format"); free(m); return r;
+    }
+    char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(v));
+    json_t *r = dcr2_mkraise("TypeError", m ? m : "format"); free(m); return r;
+}
+
 /* case-insensitive ASCII prefix test. */
 static int dcr2_iprefix(const char *s, const char *pref)
 {
@@ -773,8 +786,8 @@ static json_t *dcr2_list_coerce(const json_t *v)
     return r;
 }
 
-/* ── 2-tuple unpack (arrays / str chars; raising forms). On success *a/*b own
- *    copies; returns NULL. On failure returns a raise spec (*a/*b untouched). ── */
+/* ── 2-tuple unpack (arrays / str chars; raising forms). On success the out
+ *    params own copies; returns NULL. On failure returns a raise spec. ── */
 static json_t *dcr2_unpack2(const json_t *v, json_t **a, json_t **b)
 {
     if (dcr2_is_arr(v)) {
@@ -965,14 +978,8 @@ static json_t *dcr2_budget_warning_text_fn(dcr2_io_t *io, const json_t *in, json
     (void)io; (void)st;
     json_t *idle = dcr2_get(in, "idle_seconds");
     json_t *ct = dcr2_get(in, "child_timeout");
-    if (!dcr2_is_number_or_bool(idle)) {
-        char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(idle));
-        json_t *r = dcr2_mkraise(dcr2_is_str(idle) ? "ValueError" : "TypeError", m ? m : "format"); free(m); return r;
-    }
-    if (!dcr2_is_number_or_bool(ct)) {
-        char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(ct));
-        json_t *r = dcr2_mkraise(dcr2_is_str(ct) ? "ValueError" : "TypeError", m ? m : "format"); free(m); return r;
-    }
+    if (!dcr2_is_number_or_bool(idle)) return dcr2_fmt_code_raise(idle, 'f');
+    if (!dcr2_is_number_or_bool(ct)) return dcr2_fmt_code_raise(ct, 'f');
     char *a = dcr2_fmt_f0(dcr2_num(idle));
     char *b = dcr2_fmt_f0(dcr2_num(ct));
     char *s = dcr2_xfmt("[delegation budget warning] No progress signal for %ss of your %ss "
@@ -987,14 +994,8 @@ static json_t *dcr2_budget_warning_text_fn(dcr2_io_t *io, const json_t *in, json
 /* value helper (composes for REAL inside _warn_child_budget). May raise. */
 static json_t *dcr2_budget_warning_text_v(const json_t *idle, const json_t *ct)
 {
-    if (!dcr2_is_number_or_bool(idle)) {
-        char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(idle));
-        json_t *r = dcr2_mkraise(dcr2_is_str(idle) ? "ValueError" : "TypeError", m ? m : "format"); free(m); return r;
-    }
-    if (!dcr2_is_number_or_bool(ct)) {
-        char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(ct));
-        json_t *r = dcr2_mkraise(dcr2_is_str(ct) ? "ValueError" : "TypeError", m ? m : "format"); free(m); return r;
-    }
+    if (!dcr2_is_number_or_bool(idle)) return dcr2_fmt_code_raise(idle, 'f');
+    if (!dcr2_is_number_or_bool(ct)) return dcr2_fmt_code_raise(ct, 'f');
     char *a = dcr2_fmt_f0(dcr2_num(idle));
     char *b = dcr2_fmt_f0(dcr2_num(ct));
     char *s = dcr2_xfmt("[delegation budget warning] No progress signal for %ss of your %ss "
@@ -1149,20 +1150,18 @@ static json_t *dcr2_diag_prompt(dcr2_io_t *io, const json_t *child)
     /* sys_prompt = getattr(ephemeral) or getattr(system_prompt) or "" */
     json_t *sp = dcr2_getattr(child, "ephemeral_system_prompt", NULL);
     if (!dcr2_truth(sp)) sp = dcr2_getattr(child, "system_prompt", NULL);
-    if (!dcr2_truth(sp)) sp = NULL;  /* "" */
+    json_t *fallback = NULL;
+    if (!dcr2_truth(sp)) { fallback = json_string(""); sp = fallback; }  /* ... or "" */
     int is_str = dcr2_is_str(sp);
     const char *s = is_str ? (sp->str_val ? sp->str_val : "") : "";
     size_t slen = strlen(s);  /* ASCII: utf-8 bytes == chars */
-    char *b1;
-    if (is_str) b1 = dcr2_xfmt("  system_prompt_bytes: %zu", slen);
-    else b1 = dcr2_xfmt("  system_prompt_bytes: n/a");
-    char *b2;
-    if (is_str) b2 = dcr2_xfmt("  system_prompt_chars: %zu", slen);
-    else b2 = dcr2_xfmt("  system_prompt_chars: n/a");
+    char *b1 = is_str ? dcr2_xfmt("  system_prompt_bytes: %zu", slen) : dcr2_xfmt("  system_prompt_bytes: n/a");
+    char *b2 = is_str ? dcr2_xfmt("  system_prompt_chars: %zu", slen) : dcr2_xfmt("  system_prompt_chars: n/a");
     json_t *out = json_array();
     json_append(out, json_string(b1 ? b1 : ""));
     json_append(out, json_string(b2 ? b2 : ""));
     free(b1); free(b2);
+    json_free(fallback);
     return out;
 }
 
@@ -1217,8 +1216,15 @@ static json_t *dcr2_child_last_event_age(dcr2_io_t *io, const json_t *in, json_t
 {
     (void)in;
     json_t *child = dcr2_get(st, "child");
-    /* try: ts = (child.get_activity_summary() or {}).get("last_activity_ts") */
-    json_t *summ = dcr2_call(io, "child.get_activity_summary", dcr2_args());
+    /* try: ts = (child.get_activity_summary() or {}).get("last_activity_ts").
+     * child.get_activity_summary is a DIRECT attribute read: missing ->
+     * AttributeError, non-callable -> TypeError; both caught by except Exception
+     * -> None (no seam fires). */
+    if (!dcr2_hasattr(child, "get_activity_summary")) return json_null();
+    json_t *gas = dcr2_dattr(child, "get_activity_summary");
+    if (!dcr2_is_callable(gas)) return json_null();
+    const char *gas_seam = dcr2_str(dcr2_get(gas, "__callable__"));
+    json_t *summ = dcr2_call(io, gas_seam ? gas_seam : "child.get_activity_summary", dcr2_args());
     if (dcr2_is_raise(summ)) {
         if (dcr2_exc_is_exception(dcr2_kind(summ))) { json_free(summ); return json_null(); }
         return summ;
@@ -1234,17 +1240,18 @@ static json_t *dcr2_child_last_event_age(dcr2_io_t *io, const json_t *in, json_t
     json_t *ts = dcr2_get(dict, "last_activity_ts");
     json_free(dict);
     if (dcr2_is_null(ts)) return json_null();  /* ts is None */
-    /* round(max(0.0, time.time() - float(ts)), 2) */
-    json_t *ft = dcr2_py_float(ts);
-    if (dcr2_is_raise(ft)) {
-        if (dcr2_exc_is_exception(dcr2_kind(ft))) { json_free(ft); return json_null(); }
-        return ft;
-    }
+    /* round(max(0.0, time.time() - float(ts)), 2): the LEFT operand time.time()
+     * evaluates BEFORE float(ts) (binary operands left-to-right). */
     json_t *now = dcr2_call(io, "time.time", dcr2_args());
     if (dcr2_is_raise(now)) {
-        json_free(ft);
         if (dcr2_exc_is_exception(dcr2_kind(now))) { json_free(now); return json_null(); }
         return now;
+    }
+    json_t *ft = dcr2_py_float(ts);
+    if (dcr2_is_raise(ft)) {
+        json_free(now);
+        if (dcr2_exc_is_exception(dcr2_kind(ft))) { json_free(ft); return json_null(); }
+        return ft;
     }
     double diff = dcr2_num(now) - dcr2_num(ft);
     json_free(now); json_free(ft);
@@ -1497,6 +1504,7 @@ static json_t *dcr2_create_isolated_worktree(dcr2_io_t *io, const json_t *in, js
     if (qf) return qf;
     json_t *body_raise = NULL;
     json_t *result = NULL;
+    json_t *parent_cwd = NULL;
     int done = 0;
     /* if not subagent_worktree.local_backend_active(): logger.debug(...); return None */
     json_t *lb = dcr2_call(io, "local_backend_active", dcr2_args());
@@ -1510,16 +1518,16 @@ static json_t *dcr2_create_isolated_worktree(dcr2_io_t *io, const json_t *in, js
         result = json_null(); done = 1; goto exit;
     }
     /* _parent_cwd = None; with _quiet(None): _parent_cwd = get_session_cwd(parent_task_id) */
-    json_t *parent_cwd = json_null();
+    parent_cwd = json_null();
     {
         json_t *qf2 = dcr2_quiet_factory(io, NULL, NULL, 0);
-        if (qf2) { body_raise = qf2; json_free(parent_cwd); goto exit; }
+        if (qf2) { body_raise = qf2; goto exit; }
         json_t *ga = dcr2_args();
         dcr2_arg_j(ga, "task_id", parent_task_id);
         json_t *cwd = dcr2_call(io, "get_session_cwd", ga);
         if (dcr2_is_raise(cwd)) {
             json_t *ex = dcr2_quiet_exit(io, NULL, NULL, 0, cwd);
-            if (ex) { body_raise = ex; json_free(parent_cwd); goto exit; }
+            if (ex) { body_raise = ex; goto exit; }
         } else {
             json_free(parent_cwd);
             parent_cwd = cwd;
@@ -1534,20 +1542,19 @@ static json_t *dcr2_create_isolated_worktree(dcr2_io_t *io, const json_t *in, js
             json_t *ha = dcr2_args();
             dcr2_arg_j(ha, "parent_agent", parent);
             cwd_arg = dcr2_call(io, "_resolve_workspace_hint", ha);
-            if (dcr2_is_raise(cwd_arg)) { body_raise = cwd_arg; json_free(parent_cwd); goto exit; }
+            if (dcr2_is_raise(cwd_arg)) { body_raise = cwd_arg; goto exit; }
         }
         json_t *ca = dcr2_args();
         dcr2_arg_j(ca, "cwd", cwd_arg);
         json_free(cwd_arg);
         dcr2_arg_j(ca, "subagent_id", subagent_id);
         json_t *cr = dcr2_call(io, "create_subagent_worktree", ca);
-        if (dcr2_is_raise(cr)) { body_raise = cr; json_free(parent_cwd); goto exit; }
+        if (dcr2_is_raise(cr)) { body_raise = cr; goto exit; }
         result = cr; done = 1;
     }
-    json_free(parent_cwd);
 exit:
+    json_free(parent_cwd);
     if (body_raise) {
-        json_free(parent_cwd);
         json_t *ex = dcr2_quiet_exit(io, "worktree isolation setup failed: %s", NULL, 0, body_raise);
         if (ex) return ex;
         return json_null();
@@ -1615,7 +1622,7 @@ static json_t *dcr2_lease_child_credential(dcr2_io_t *io, const json_t *in, json
                 int eq = 0;
                 if (dcr2_is_str(eid) && dcr2_is_str(leased_id)) eq = strcmp(dcr2_str(eid), dcr2_str(leased_id)) == 0;
                 else if (dcr2_is_num(eid) && dcr2_is_num(leased_id)) eq = dcr2_num(eid) == dcr2_num(leased_id);
-                if (eq) { leased_entry = e; break; }
+                if (eq) { leased_entry = json_copy(e); break; }
             }
         }
         json_free(entries);
@@ -1639,6 +1646,7 @@ static json_t *dcr2_lease_child_credential(dcr2_io_t *io, const json_t *in, json
             json_t *entries2 = NULL;
             json_t *er2 = dcr2_pool_entries(io, &entries2);
             if (er2) { bind_raise = er2; goto bind_exit; }
+            json_free(leased_entry);
             leased_entry = NULL;
             if (!dcr2_is_arr(entries2)) {
                 bind_raise = dcr2_mkraise("TypeError", "'NoneType' object is not iterable");
@@ -1657,7 +1665,7 @@ static json_t *dcr2_lease_child_credential(dcr2_io_t *io, const json_t *in, json
                 if (dcr2_is_raise(sv)) { bind_raise = sv; break; }
                 int ok2 = dcr2_truth(sv);
                 json_free(sv);
-                if (ok2) { leased_entry = e; break; }
+                if (ok2) { leased_entry = json_copy(e); break; }
             }
             json_free(entries2);
             if (bind_raise) goto bind_exit;
@@ -1687,6 +1695,7 @@ static json_t *dcr2_lease_child_credential(dcr2_io_t *io, const json_t *in, json
             json_free(swr);
         }
 bind_exit:
+        json_free(leased_entry);
         if (bind_raise) {
             json_t *ex = dcr2_quiet_exit(io, "Failed to bind child to leased credential: %s", NULL, 0, bind_raise);
             if (ex) { body_raise = ex; goto exit; }
@@ -1976,10 +1985,14 @@ retry_done:
         {
             json_t *rc = dcr2_get(result, "api_calls");
             json_t *rc_v = dcr2_truth(rc) ? rc : NULL;
-            json_t *i1 = dcr2_py_int(rc_v ? rc_v : json_number(0));
+            json_t *i1;
+            if (rc_v) i1 = dcr2_py_int(rc_v);
+            else { json_t *z = json_number(0); i1 = dcr2_py_int(z); json_free(z); }
             json_t *ac = dcr2_get(retry_result, "api_calls");
             json_t *ac_v = dcr2_truth(ac) ? ac : NULL;
-            json_t *i2 = dcr2_py_int(ac_v ? ac_v : json_number(0));
+            json_t *i2;
+            if (ac_v) i2 = dcr2_py_int(ac_v);
+            else { json_t *z = json_number(0); i2 = dcr2_py_int(z); json_free(z); }
             if (!dcr2_is_raise(i1) && !dcr2_is_raise(i2)) {
                 json_set(result, "api_calls", json_number(dcr2_num(i1) + dcr2_num(i2)));
             }
@@ -2120,8 +2133,7 @@ static json_t *dcr2_build_result_entry(dcr2_io_t *io, const json_t *in, json_t *
             status = "timeout"; exit_reason = "timeout";
             free(interrupt_note);
             if (!dcr2_is_number_or_bool(stale)) {
-                char *m = dcr2_xfmt("unsupported format string passed to %s.__format__", dcr2_typename(stale));
-                json_t *r = dcr2_mkraise(dcr2_is_str(stale) ? "ValueError" : "TypeError", m ? m : "format"); free(m);
+                json_t *r = dcr2_fmt_code_raise(stale, 'g');
                 json_free(summary); return r;
             }
             char *gs = dcr2_fmt_g(dcr2_num(stale));
@@ -2304,7 +2316,6 @@ static json_t *dcr2_build_child_goal_message(dcr2_io_t *io, const json_t *in, js
         json_t *prov = dcr2_getattr(child, "provider", NULL);
         json_t *mod = dcr2_getattr(child, "model", NULL);
         json_t *rprov = dcr2_getattr(child, "requested_provider", NULL);
-        char *ps = dcr2_pystr(dcr2_truth(prov) ? prov : NULL); free(ps);
         char *prov_s = dcr2_truth(prov) ? dcr2_pystr(prov) : dcr2_xfmt("");
         char *mod_s = dcr2_truth(mod) ? dcr2_pystr(mod) : dcr2_xfmt("");
         char *rprov_s = dcr2_truth(rprov) ? dcr2_pystr(rprov) : dcr2_xfmt("");
