@@ -178,10 +178,124 @@ static const char *cc2_kind(const json_t *r)
     return k ? k : "";
 }
 
+/* ── full builtin exception hierarchy (Python 3.14) ──
+ * parent[kind] = immediate base name; IOError/EnvironmentError/WindowsError
+ * are OSError aliases, py3.14 adds PythonFinalizationError(RuntimeError) and
+ * _IncompleteInputError(SyntaxError).  ExceptionGroup inherits Exception (and
+ * BaseExceptionGroup) so it stays inside `except Exception`; CancelledError is
+ * asyncio.CancelledError, a BaseException since 3.8.  cc2_exc_is_base() walks
+ * the chain to implement the "BaseException but not Exception" predicate the
+ * same way live `except Exception` matches: an unknown/scripted custom class
+ * is treated as an Exception descendant (not base-only), which preserves the
+ * behaviour of the 24 defs in this port (none of them swallows a scripted
+ * Exception; a scripted BaseException trio propagates past every guard).
+ */
+typedef struct { const char *name; const char *parent; } cc2_exc_edge_t;
+static const cc2_exc_edge_t CC2_EXC_PARENT[] = {
+    { "BaseException", NULL },
+    { "SystemExit", "BaseException" },
+    { "KeyboardInterrupt", "BaseException" },
+    { "GeneratorExit", "BaseException" },
+    { "CancelledError", "BaseException" },          /* asyncio.CancelledError */
+    { "BaseExceptionGroup", "BaseException" },
+    { "Exception", "BaseException" },
+    { "ExceptionGroup", "Exception" },              /* ExceptionGroup(Exception, BaseExceptionGroup) */
+    { "StopIteration", "Exception" },
+    { "StopAsyncIteration", "Exception" },
+    { "ArithmeticError", "Exception" },
+    { "FloatingPointError", "ArithmeticError" },
+    { "OverflowError", "ArithmeticError" },
+    { "ZeroDivisionError", "ArithmeticError" },
+    { "AssertionError", "Exception" },
+    { "AttributeError", "Exception" },
+    { "BufferError", "Exception" },
+    { "EOFError", "Exception" },
+    { "ImportError", "Exception" },
+    { "ModuleNotFoundError", "ImportError" },
+    { "LookupError", "Exception" },
+    { "IndexError", "LookupError" },
+    { "KeyError", "LookupError" },
+    { "MemoryError", "Exception" },
+    { "NameError", "Exception" },
+    { "UnboundLocalError", "NameError" },
+    { "OSError", "Exception" },
+    { "EnvironmentError", "OSError" },              /* alias */
+    { "IOError", "OSError" },                        /* alias */
+    { "WindowsError", "OSError" },                   /* alias */
+    { "BlockingIOError", "OSError" },
+    { "ChildProcessError", "OSError" },
+    { "ConnectionError", "OSError" },
+    { "BrokenPipeError", "ConnectionError" },
+    { "ConnectionAbortedError", "ConnectionError" },
+    { "ConnectionRefusedError", "ConnectionError" },
+    { "ConnectionResetError", "ConnectionError" },
+    { "FileExistsError", "OSError" },
+    { "FileNotFoundError", "OSError" },
+    { "InterruptedError", "OSError" },
+    { "IsADirectoryError", "OSError" },
+    { "NotADirectoryError", "OSError" },
+    { "PermissionError", "OSError" },
+    { "ProcessLookupError", "OSError" },
+    { "TimeoutError", "OSError" },
+    { "ReferenceError", "Exception" },
+    { "RuntimeError", "Exception" },
+    { "NotImplementedError", "RuntimeError" },
+    { "RecursionError", "RuntimeError" },
+    { "PythonFinalizationError", "RuntimeError" },  /* py3.14 */
+    { "SyntaxError", "Exception" },
+    { "IndentationError", "SyntaxError" },
+    { "TabError", "IndentationError" },
+    { "_IncompleteInputError", "SyntaxError" },     /* py3.14 */
+    { "SystemError", "Exception" },
+    { "TypeError", "Exception" },
+    { "ValueError", "Exception" },
+    { "UnicodeError", "ValueError" },
+    { "UnicodeDecodeError", "UnicodeError" },
+    { "UnicodeEncodeError", "UnicodeError" },
+    { "UnicodeTranslateError", "UnicodeError" },
+    { "Warning", "Exception" },
+    { "DeprecationWarning", "Warning" },
+    { "ImportWarning", "Warning" },
+    { "PendingDeprecationWarning", "Warning" },
+    { "ResourceWarning", "Warning" },
+    { "RuntimeWarning", "Warning" },
+    { "SyntaxWarning", "Warning" },
+    { "UnicodeWarning", "Warning" },
+    { "UserWarning", "Warning" },
+    { "FutureWarning", "Warning" },
+    { "BytesWarning", "Warning" },
+    { "EncodingWarning", "Warning" },
+    { NULL, NULL },
+};
+
+static const char *cc2_exc_parent(const char *kind)
+{
+    if (!kind || !*kind) return NULL;
+    for (const cc2_exc_edge_t *e = CC2_EXC_PARENT; e->name; e++)
+        if (strcmp(kind, e->name) == 0) return e->parent;
+    return NULL;  /* unknown / scripted custom class */
+}
+
+/* True iff kind is a BaseException descendant that is NOT an Exception
+ * descendant (SystemExit / KeyboardInterrupt / GeneratorExit / CancelledError
+ * / BaseExceptionGroup and their ilk). */
+static int cc2_exc_is_base(const char *kind)
+{
+    if (!kind || !*kind) return 0;
+    const char *cur = kind;
+    for (int guard = 0; guard < 16 && cur; guard++) {
+        if (strcmp(cur, "Exception") == 0 || strcmp(cur, "ExceptionGroup") == 0) return 0;
+        if (strcmp(cur, "BaseException") == 0) return 1;
+        const char *p = cc2_exc_parent(cur);
+        if (!p) return 0;   /* unknown custom class -> Exception-descendant */
+        cur = p;
+    }
+    return 0;
+}
+
 static int cc2_is_base(const char *kind)
 {
-    return strcmp(kind, "SystemExit") == 0 || strcmp(kind, "KeyboardInterrupt") == 0
-        || strcmp(kind, "GeneratorExit") == 0 || strcmp(kind, "CancelledError") == 0;
+    return cc2_exc_is_base(kind);
 }
 
 static json_t *cc2_mkraise(const char *kind, const char *msg)

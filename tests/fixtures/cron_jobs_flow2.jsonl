@@ -1,0 +1,55 @@
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {}}}
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {"workdir": "/raw"}, "io": {"norm_workdir": {"ret": "/norm"}}}}
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {"workdir": "/raw", "timezone": "UTC"}, "io": {"norm_workdir": {"ret": "/norm"}, "norm_timezone": {"raise": {"type": "ValueError", "message": "bad tz"}}}}}
+{"func": "normalize_job_updates", "in": {"job": {"repeat": {"completed": 4}}, "updates": {"repeat": {"times": "3"}}, "io": {"normalize_repeat_value": {"ret": 3}}}}
+{"func": "normalize_job_updates", "in": {"job": {"repeat": {"completed": 7}}, "updates": {"repeat": 2}, "io": {"normalize_repeat_value": {"ret": 2}}}}
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {"repeat": {"times": 5, "completed": 9}}, "io": {"normalize_repeat_value": {"ret": 5}}}}
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {"repeat": 1}, "io": {"normalize_repeat_value": {"raise": {"type": "TypeError", "message": "bad repeat"}}}}}
+{"func": "normalize_job_updates", "in": {"job": {}, "updates": {"monitor_url": " http://x ", "catch_up": 1}, "io": {"norm_monitor_url": {"ret": "http://x"}, "norm_catch_up": {"ret": true}}}}
+{"func": "rederive_repeat", "in": {"job": {}, "updates": {}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "once"}}, "updates": {"schedule": "*/5 * * * *", "repeat": {"times": 1}}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "once"}}, "updates": {"schedule": "0 9 * * *"}, "io": {"parse_schedule": {"ret": {"kind": "once"}}}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "once"}, "repeat": {"times": 1}}, "updates": {"schedule": "*/5 * * * *"}, "io": {"parse_schedule": {"ret": {"kind": "interval"}}}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "interval"}, "repeat": {}}, "updates": {"schedule": "0 9 * * *"}, "io": {"parse_schedule": {"ret": {"kind": "once"}}}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "cron"}, "repeat": {"times": 4}}, "updates": {"schedule": {"ret": {"kind": "interval"}}}}}
+{"func": "rederive_repeat", "in": {"job": {"schedule": {"kind": "once"}}, "updates": {"schedule": "bad"}, "io": {"parse_schedule": {"raise": {"type": "ValueError", "message": "bad expr"}}}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": {"kind": "once"}}, "updates": {"schedule_display": "manual"}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": "0 9 * * *", "state": "paused"}, "updates": {}, "io": {"parse_schedule": {"ret": {"kind": "cron", "display": "0 9 * * *"}}}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": {"kind": "cron"}, "name": "job1"}, "updates": {}, "io": {"_next_run_or_reject_past_oneshot": {"ret": "2026-01-02T00:00:00+00:00"}}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": {"kind": "cron", "display": "in-sched"}, "schedule_display": "in-updated"}, "updates": {}, "io": {"_next_run_or_reject_past_oneshot": {"ret": "2026-01-02T00:00:00+00:00"}}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": "bad", "state": "scheduled"}, "updates": {}, "io": {"parse_schedule": {"raise": {"type": "ValueError", "message": "bad expr"}}}}}
+{"func": "apply_schedule_update", "in": {"updated": {"schedule": {"kind": "once"}}, "updates": {}, "io": {"_next_run_or_reject_past_oneshot": {"raise": {"type": "ValueError", "message": "past"}}}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"enabled": false}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"state": "paused"}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"next_run_at": "2026-01-01T00:00:00+00:00"}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"schedule": {"kind": "cron"}}, "io": {"compute_next_run": {"ret": "2026-01-02T00:00:00+00:00"}}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"schedule": {"kind": "once", "run_at": "2020-01-01"}}, "io": {"compute_next_run": {"ret": null}}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"schedule": {"kind": "interval"}}, "io": {"compute_next_run": {"ret": null}}}}
+{"func": "fill_missing_next_run", "in": {"updated": {"schedule": {"kind": "cron"}}, "io": {"compute_next_run": {"raise": {"type": "RuntimeError", "message": "no croniter"}}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"ret": {"cron": {"grace": 5}}}, "cast": {"ret": 5}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"ret": {"cron": {}}}, "cast": {"ret": 30}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"raise": {"type": "ValueError", "message": "bad config"}}, "cast": {"ret": 30}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"raise": {"type": "SystemExit", "message": "exit"}}, "cast": {"ret": 30}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"ret": {"cron": {"grace": 5}}}, "cast": [{"raise": {"type": "ValueError", "message": "bad cast"}}, {"ret": 30}]}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"ret": {"cron": {"grace": 5}}}, "cast": {"raise": {"type": "KeyboardInterrupt", "message": "stop"}}}}}
+{"func": "cron_config_number", "in": {"key": "grace", "default": 30, "io": {"load_config": {"ret": "not-a-dict"}, "cast": {"ret": 30}}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1"}, "success": true, "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": {"ret": null}}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1", "manual_run_at": "x", "manual_run_prompt": "p", "preflight_alerted": true}, "success": true, "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": {"ret": null}}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1"}, "success": false, "error": "boom", "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": [{"ret": "clean"}, {"ret": "clean2"}, {"ret": "clean3"}]}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1"}, "success": false, "error": "boom", "status": "cancelled", "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": {"ret": "d"}}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1"}, "success": false, "delivery_error": "  fail  ", "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": [{"ret": null}, {"ret": null}, {"ret": "fail"}]}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1", "run_claim": {"owner": "x"}, "pending_slot": 1}, "success": true, "status": "ok", "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": {"ret": null}}}}
+{"func": "record_run_outcome", "in": {"job": {"id": "j1"}, "success": false, "error": "boom", "now": "2026-01-02T00:00:00+00:00", "io": {"sanitize_persisted_error": {"raise": {"type": "RuntimeError", "message": "sanitize down"}}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "cron"}}, "now": "2026-01-02T00:00:00+00:00", "io": {"compute_next_run": {"ret": "2026-01-03T00:00:00+00:00"}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "once"}, "repeat": {"times": 2, "completed": 2}}, "now": "2026-01-02T00:00:00+00:00", "io": {"_complete_job_record": {"ret": null}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "interval"}, "repeat": {"times": 3, "completed": 2}}, "now": "2026-01-02T00:00:00+00:00", "io": {"_complete_job_record": {"ret": null}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "cron"}}, "now": "2026-01-02T00:00:00+00:00", "io": {"compute_next_run": {"ret": null}, "logger.error": {"ret": null}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "once"}}, "now": "2026-01-02T00:00:00+00:00", "io": {"compute_next_run": {"ret": null}, "_complete_job_record": {"ret": null}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "once"}, "repeat": {"times": 2, "completed": 1}}, "now": "2026-01-02T00:00:00+00:00", "ladder_rung": true, "io": {"compute_next_run": {"ret": "2026-01-03T00:00:00+00:00"}}}}
+{"func": "advance_after_run", "in": {"job": {"schedule": {"kind": "cron"}}, "now": "2026-01-02T00:00:00+00:00", "io": {"compute_next_run": {"raise": {"type": "RuntimeError", "message": "no croniter"}}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"ret": true}, "fn": {"ret": "ok"}, "fire_lock.exit": {"ret": null}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"ret": false}, "fire_lock.exit": {"ret": null}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"raise": {"type": "OSError", "message": "lock"}}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"ret": true}, "fn": {"raise": {"type": "ValueError", "message": "fn fail"}}, "fire_lock.exit": {"ret": null}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"ret": true}, "fn": {"ret": "ok"}, "fire_lock.exit": {"raise": {"type": "RuntimeError", "message": "exit fail"}}}}}
+{"func": "under_fire_fence", "in": {"job_id": "j1", "io": {"fire_lock.enter": {"ret": true}, "fn": {"ret": [1, 2]}, "fire_lock.exit": {"ret": null}}}}

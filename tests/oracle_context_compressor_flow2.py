@@ -112,26 +112,41 @@ class Raise:
         self.exc = exc
 
 
+# Full Python 3.14 builtin exception hierarchy.  Base-only (BaseException
+# descendants that are not Exception descendants): the trio + CancelledError
+# (asyncio) + BaseExceptionGroup.  Every other builtin exception class is an
+# Exception descendant and is resolved from `builtins` by name, so the whole
+# hierarchy (ArithmeticError, OSError family, ImportError family, Warning
+# family, py3.14 PythonFinalizationError/_IncompleteInputError, ...) is covered
+# without a hand-maintained partial table.  OSError aliases and unknown custom
+# names fall through to Exception subclasses, matching the C cc2_exc_parent()
+# walk in agent/context_compressor_flow2.c.
+_BASE_ONLY_BUILTINS = {"SystemExit", "KeyboardInterrupt", "GeneratorExit"}
+
+
 def build_exc(spec):
+    import builtins
     kind = spec.get("__raise__", "RuntimeError")
     msg = spec.get("message", "")
-    base = {"SystemExit": SystemExit, "KeyboardInterrupt": KeyboardInterrupt,
-            "GeneratorExit": GeneratorExit}
-    builtin = {"TypeError": TypeError, "ValueError": ValueError, "RuntimeError": RuntimeError,
-               "AttributeError": AttributeError, "KeyError": KeyError, "Exception": Exception,
-               "TimeoutError": TimeoutError, "OSError": OSError, "LookupError": LookupError}
-    if kind in base:
-        cls = base[kind]
-    elif kind in builtin:
-        cls = builtin[kind]
+    if kind in _BASE_ONLY_BUILTINS:
+        cls = getattr(builtins, kind)
     elif kind == "CancelledError":
         import asyncio
         cls = asyncio.CancelledError
+    elif kind == "BaseExceptionGroup":
+        cls = builtins.BaseExceptionGroup
+    elif kind == "ExceptionGroup":
+        cls = builtins.ExceptionGroup
     elif kind == "StaleHeldHistory":
         cls = NS.get("StaleHeldHistory") or type("StaleHeldHistory", (RuntimeError,), {})
     else:
-        cls = type(kind, (Exception,), {})
-    if kind == "KeyError":
+        candidate = getattr(builtins, kind, None)
+        if isinstance(candidate, type) and issubclass(candidate, BaseException) \
+                and issubclass(candidate, Exception):
+            cls = candidate  # any builtin Exception descendant (full hierarchy)
+        else:
+            cls = type(kind, (Exception,), {})  # unknown/custom -> Exception subclass
+    if isinstance(cls, type) and issubclass(cls, KeyError):
         try:
             return cls(ast.literal_eval(msg))
         except (ValueError, SyntaxError):
