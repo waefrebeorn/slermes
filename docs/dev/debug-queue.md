@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 60 wired 809->810, HEAD `8def487693`;
-  build health 2117/2117 clean, port gate PASS.
+- Parent working set (committed): wave 61 wired 810->812, HEAD `60bfbbc467`;
+  build health 2119/2119 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -121,17 +121,19 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
   tests/run_one_oracle.sh <name> oracle_<name>.py "" "lib/libjson/json.o"`
   with winlibs env sourced. Parent re-gates before any wire.
 
-## 2026-11-20 adapter wave (deleg_b577dbff) — parent battery = 3/3 RED
+## 2026-11-20 adapter wave (deleg_b577dbff) — RESOLVED in wave 61
 
-All three children claimed shadow 0; all three failed the real parent gate.
-None are wired. Debuggers `deleg_8589e8fd` active:
-- **telegram_adapter_flow6** — parent harness rc127 (17 fns / 116 cases).
-  Heap corruption; debugger `sa-0-f8aca04c`.
-- **discord_adapter_flow5** — parent 118 cases, 1 mismatch in
-  `_message_reference_from_ids`. Debugger `sa-1-2baa1d48`.
-- **slack_adapter_flow4** — CRITICAL: this is an existing wave-50
-  COMMITTED + WIRED port (9 fns). A code-only agent extended it in place
-  with 16 more; parent gate now rc127 (200 cases). A wired source must not
-  stay broken — debugger `sa-2-6d7a34a5` must preserve the original 9
-  green functions and honestly scope down the additions, or the parent
-  restores the file from HEAD.
+All three children claimed shadow 0 but failed the real parent gate; all
+three were debugged to green in `deleg_8589e8fd` and parent-verified:
+- **telegram_adapter_flow6** — 116/0; rc127 was a double-free on the
+  isoformat-exception swallow path plus a flaky borrowed-pointer UAF.
+- **discord_adapter_flow5** — 118/0; `da5_int` needed Python int()
+  trailing-whitespace semantics.
+- **slack_adapter_flow4** — 200/0; 4 borrowed-pointer double-frees plus
+  a context arg-shape fix. Original 9 wave-50 functions byte-identical;
+  all 16 additions kept. Already wired, source fixed in place.
+Committed `60bfbbc467`; wired 810->812, build health 2119/2119 clean.
+Next wave `deleg_20edbe62` (4 code-only agents) owns the verified
+remainders: tui_hosted_room_service_flow2 (59 unclaimed),
+executions_worker_flow2 (50), acp_gateway_server_flow2 (44),
+matrix_adapter_flow3 (102). Parent gates them before any wire.
