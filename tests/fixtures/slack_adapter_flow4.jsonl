@@ -1,0 +1,84 @@
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": true}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": false}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": null}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}, "expect_raise": "SystemExit"}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": {"__script__": true, "raise": {"type": "CancelledError", "message": "cx"}}}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}, "expect_raise": "CancelledError"}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "state": {"_AGENT_SESSIONS_SUPPORTED": true}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "state": {"_AGENT_SESSIONS_SUPPORTED": false}}}
+{"func": "_sdk_supports_agent_sessions", "in": {"args": {}, "io": {"sdk_agent_sessions_probe": {"__script__": true, "raise": {"type": "TypeError", "message": "t"}}}, "state": {"_AGENT_SESSIONS_SUPPORTED": null}}}
+{"func": "_interaction_fields", "in": {"args": {"body": {"message": {"ts": "111.1"}, "channel": {"id": "C1"}, "user": {"name": "alice", "id": "U1"}}, "action": {"action_id": "approve", "value": "yes"}}}}
+{"func": "_interaction_fields", "in": {"args": {"body": {}, "action": {}}}}
+{"func": "_interaction_fields", "in": {"args": {"body": {"user": {"id": "U2"}}, "action": {"action_id": "click"}}}}
+{"func": "_interaction_fields", "in": {"args": {"body": {"channel": {"id": 7}}, "action": {"value": 5}}}}
+{"func": "_interaction_fields", "in": {"args": {"body": 5, "action": {}}}, "expect_raise": "AttributeError"}
+{"func": "_interaction_fields", "in": {"args": {"body": {}, "action": null}}, "expect_raise": "AttributeError"}
+{"func": "_interaction_fields", "in": {"args": {"body": {"channel": 3}, "action": {}}}, "expect_raise": "AttributeError"}
+{"func": "_interaction_fields", "in": {"args": {"body": {"message": "hi"}, "action": {}}}, "expect_raise": "AttributeError"}
+{"func": "_interaction_fields", "in": {"args": {"body": {"message": null}, "action": {}}}, "expect_raise": "AttributeError"}
+{"func": "_interaction_fields", "in": {"args": {"body": {"user": "bob"}, "action": {}}}, "expect_raise": "AttributeError"}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": []}}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": {"text": "hello"}}]}}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "divider"}, {"type": "section", "text": {"text": "second"}}, {"type": "section", "text": {"text": "third"}}]}}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": {"text": "abcdef"}}]}, "limit": 3}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": {"text": "abcdef"}}]}, "limit": null}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": {"text": "abcdef"}}]}, "limit": 0}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section"}]}}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": null}]}}}}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": ["oops"]}}}, "expect_raise": "AttributeError"}
+{"func": "_section_text", "in": {"args": {"message": {"blocks": [{"type": "section", "text": "notadict"}]}}}, "expect_raise": "AttributeError"}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"is_bot": false, "profile": {"display_name": "Alice", "real_name": "A"}}}, "user_id": "U1"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"profile": {"real_name": "Real"}}}, "user_id": "U2"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"real_name": "UserReal"}}, "user_id": "U3"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"name": "uname"}}, "user_id": "U4"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {}}, "user_id": "U5"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"is_bot": true, "profile": {}}}, "user_id": "U6"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"is_workflow_bot": true, "profile": {}}}, "user_id": "U7"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"profile": {"bot_id": "B1"}}}, "user_id": "U8"}}}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": null}, "user_id": "U9"}}, "expect_raise": "AttributeError"}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"profile": "bad"}}, "user_id": "U10"}}, "expect_raise": "AttributeError"}
+{"func": "_parse_users_info", "in": {"args": {"payload": {"user": {"profile": null}}, "user_id": "U11"}}, "expect_raise": "AttributeError"}
+{"func": "_slack_file_kind", "in": {"args": {"f": {"id": "F1"}, "mimetype": "image/png"}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {"id": "F2"}, "mimetype": "audio/ogg"}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {"id": "F3"}, "mimetype": "video/mp4"}, "io": {"is_slack_voice_clip": true}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {"id": "F4"}, "mimetype": "video/quicktime"}, "io": {"is_slack_voice_clip": false}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {"id": "F5"}, "mimetype": "application/pdf"}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {}, "mimetype": "text/plain"}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {}, "mimetype": "image/jpeg"}}}
+{"func": "_slack_file_kind", "in": {"args": {"f": {}, "mimetype": null}}, "expect_raise": "AttributeError"}
+{"func": "_slack_file_kind", "in": {"args": {"f": {}, "mimetype": "video/mp4"}, "io": {"is_slack_voice_clip": {"__script__": true, "raise": {"type": "RuntimeError", "message": "clip fail"}}}}, "expect_raise": "RuntimeError"}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": "in_channel"}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": " IN_CHANNEL "}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": "thread"}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": null}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": 5}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": true}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {}}}}
+{"func": "_cron_continuable_surface", "in": {"args": {}, "state": {"extra": {"cron_continuable_surface": "in_channel extra"}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": "all"}, "state": {"extra": {"allow_bots": "all"}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": "MENTIONS"}, "state": {"extra": {"allow_bots": "MENTIONS"}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": "none"}, "state": {"extra": {"allow_bots": "none"}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": "bogus", "logger.warning": null}, "state": {"extra": {"allow_bots": "bogus"}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": 5, "logger.warning": null}, "state": {"extra": {"allow_bots": 5}}}}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": {"__script__": true, "raise": {"type": "RuntimeError", "message": "secret"}}}, "state": {"extra": {"allow_bots": "x"}}}, "expect_raise": "RuntimeError"}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": "?", "logger.warning": {"__script__": true, "raise": {"type": "RuntimeError", "message": "log boom"}}}, "state": {"extra": {"allow_bots": "?"}}}, "expect_raise": "RuntimeError"}
+{"func": "_slack_allow_bots", "in": {"args": {}, "io": {"_extra_or_secret": " ALL "}, "state": {"extra": {"allow_bots": " ALL "}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": "true"}, "state": {"extra": {"reactions": "true"}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": "false"}, "state": {"extra": {"reactions": "false"}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": "0"}, "state": {"extra": {"reactions": "0"}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": "NO"}, "state": {"extra": {"reactions": "NO"}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": 5}, "state": {"extra": {"reactions": 5}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": null}, "state": {"extra": {"reactions": null}}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}, "state": {"extra": {"reactions": "x"}}}, "expect_raise": "RuntimeError"}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_extra_or_secret": " FALSE "}, "state": {"extra": {"reactions": " FALSE "}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "x", "response": {"__obj__": {"status_code": 429}}}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "x", "response": {"__obj__": {"status_code": 503}}}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "x", "response": {"__obj__": {"status_code": 200}}}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "rate_limited"}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "Connection Reset by peer"}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "plain", "exc_message_attr": "SERVICE UNAVAILABLE"}}}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "plain"}}}, "io": {"_is_retryable_error": true}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "plain"}}}, "io": {"_is_retryable_error": false}}}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "plain"}}}, "io": {"_is_retryable_error": {"__script__": true, "raise": {"type": "RuntimeError", "message": "classify"}}}}, "expect_raise": "RuntimeError"}
+{"func": "_is_retryable_upload_error", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "oops", "response": null}}}, "io": {"_is_retryable_error": false}}}

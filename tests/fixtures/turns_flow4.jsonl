@@ -1,0 +1,56 @@
+{"func": "decode_content", "in": {"args": {"content": "plain text"}}}
+{"func": "decode_content", "in": {"args": {"content": null}}}
+{"func": "decode_content", "in": {"args": {"content": {"a": 1}}}}
+{"func": "decode_content", "in": {"args": {"content": "\u0000json:{\"a\": 1, \"b\": [2, 3]}"}}}
+{"func": "decode_content", "in": {"args": {"content": "\u0000json:[\"x\", \"y\"]"}}}
+{"func": "decode_content", "in": {"args": {"content": "\u0000json:\"hello\""}}}
+{"func": "decode_content", "in": {"args": {"content": "\u0000json:42"}}}
+{"func": "decode_content", "in": {"args": {"content": "\u0000json:this is not json"}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": 1234}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "just a normal request"}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]\n\nbody of skill\nthen run them with the terminal tool using the absolute path.\n\n  ship it  "}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]"}, "state": {"scaffolds": []}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"/a /b\" skill bundle, loaded\n\nUser instruction: do both\n\n[Loaded as part of the work\nbody"}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" — invoked.\nThe full skill content is loaded below.]\nbody\nThe user has provided the following instruction alongside the skill invocation: fix it\n\n[Runtime note: details"}}}
+{"func": "extract_user_instruction_from_skill_message", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" alone without marker"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "not a scaffold"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]\n\nbody of skill\nthen run them with the terminal tool using the absolute path.\n\nfix   the  bug"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "[IMPORTANT: The \"\" skill is auto-loaded. Follow its instructions for this session.]"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "[IMPORTANT: The \"x\" skill is auto-loaded. Follow its instructions for this session.]\nthen run them with the terminal tool using the absolute path.\n[Skill config (\nkey=1\n]\nfinal ask here"}}}
+{"func": "_describe_auto_loaded_skill_turn", "in": {"args": {"content": "[IMPORTANT: The \"x\" skill is auto-loaded. Follow its instructions for this session.]\nthen run them with the terminal tool using the absolute path.\n[This skill has supporting files see /scripts/foo.js`).\nreal request"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": 99}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "ordinary text"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" — invoked.\nThe full skill content is loaded below.]\nbody\nThe user has provided the following instruction alongside the skill invocation: fix the title leak\n\n[Runtime note: details"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"/a /b\" skill bundle, loaded\n\nUser instruction: do both\n\n[Loaded as part of the work\nbody", "separator": " "}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" bare invocation"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]\n\nbody of skill\nthen run them with the terminal tool using the absolute path.\n\nship it"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" — invoked.\nThe full skill content is loaded below.]\nbody\nThe user has provided the following instruction alongside the skill invocation: left\u001eright extra\n\n[Runtime note: details"}}}
+{"func": "describe_skill_invocation", "in": {"args": {"content": "[IMPORTANT: The user has invoked the \"work\" no marker at all"}}}
+{"func": "_cut_after", "in": {"args": {"message": "before [START] pick me [STOP] after", "marker": "[START]", "stop_marker": "[STOP]", "find": "find"}}}
+{"func": "_cut_after", "in": {"args": {"message": "a [M] tail no stop", "marker": "[M]", "stop_marker": "[END]", "find": "find"}}}
+{"func": "_cut_after", "in": {"args": {"message": "nothing here", "marker": "[M]", "stop_marker": "[END]", "find": "find"}}}
+{"func": "_cut_after", "in": {"args": {"message": "x [M] first [S] y [M] second [S] z", "marker": "[M]", "stop_marker": "[S]", "find": "rfind"}}}
+{"func": "_cut_after", "in": {"args": {"message": "x [M] first [M] second [S] z", "marker": "[M]", "stop_marker": "[S]", "find": "find"}}}
+{"func": "_cut_after", "in": {"args": {"message": "a [M]   [S] b", "marker": "[M]", "stop_marker": "[S]", "find": "find"}}}
+{"func": "_cut_after", "in": {"args": {"message": "head [M] body", "marker": "[M]", "stop_marker": "[S]", "find": "rfind"}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": "[A]"}, "state": {"scaffolds": []}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": ""}, "state": {"scaffolds": ["[A]", "[B]"]}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": "[A]"}, "state": {"scaffolds": ["[A]", "[B]"]}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": "[C]"}, "state": {"scaffolds": ["[A]", "[B]"]}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": null}, "state": {"scaffolds": ["[A]"]}}}
+{"func": "register_auto_load_scaffold", "in": {"args": {"scaffold": "[NEW]"}, "state": {"scaffolds": ["s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "s12", "s13", "s14", "s15", "s16", "s17", "s18", "s19", "s20", "s21", "s22", "s23", "s24", "s25", "s26", "s27", "s28", "s29", "s30", "s31", "s32"]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill] typed text"}, "state": {"scaffolds": ["[IMPORTANT: The \"work\" skill is", "[IMPORTANT: The \"work\" skill is auto-loaded"]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "no match here"}, "state": {"scaffolds": ["[A]", "[B]"]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "[EXACT]"}, "state": {"scaffolds": ["[EXACT]"]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "[A] tail", "x": 1}, "state": {"scaffolds": ["[A]"]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "anything"}, "state": {"scaffolds": []}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "prefixed content"}, "state": {"scaffolds": [""]}}}
+{"func": "_registered_auto_load_tail", "in": {"args": {"content": "abc"}, "state": {"scaffolds": ["a", "ab", "abc"]}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]  registered tail  "}, "state": {"scaffolds": ["[IMPORTANT: The \"work\" skill is auto-loaded. Follow its instructions for this session.]"]}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "no footer and nothing registered"}, "state": {"scaffolds": []}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "pad then run them with the terminal tool using the absolute path.   final ask   "}, "state": {"scaffolds": []}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.\n[Skill setup note: hi]\n\nreal ask"}, "state": {"scaffolds": []}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.\n[Skill config (\nkey=1\n]\nconf ask"}, "state": {"scaffolds": []}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.\n[This skill has supporting files see /scripts/foo.js`).\nsup ask"}, "state": {"scaffolds": []}}}
+{"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.  first then run them with the terminal tool using the absolute path.  last ask"}, "state": {"scaffolds": []}}}

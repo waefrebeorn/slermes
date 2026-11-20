@@ -1,0 +1,70 @@
+{"func": "_sdk_domain", "in": {"args": {"domain_name": "lark"}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": "feishu"}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": ""}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": "LARK"}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": "lark "}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": null}, "io": {}}}
+{"func": "_sdk_domain", "in": {"args": {"domain_name": 42}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "Approve", "btn_type": "primary", "value": {"action": "ok"}}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "Deny", "btn_type": "danger", "value": {"action": "no", "n": 2}}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "", "btn_type": "", "value": null}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "Go", "btn_type": "default", "value": "plain"}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "X", "btn_type": "primary", "value": 7}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "Y", "btn_type": "primary"}, "io": {}}}
+{"func": "_card_button", "in": {"args": {"label": "Z", "btn_type": "danger", "value": [1, "a"]}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "T", "template": "blue", "markdown": "body"}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "T", "template": "red", "markdown": "**hi**", "actions": [{"tag": "button"}, {"tag": "button"}]}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "", "template": "", "markdown": "", "actions": []}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "T", "template": "grey", "markdown": "m", "actions": null}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "A", "template": "green", "markdown": "x", "actions": [{"tag": "button", "value": {"k": 1}}]}, "io": {}}}
+{"func": "_card", "in": {"args": {"title": "N", "template": "turquoise", "markdown": "line1\nline2"}, "io": {}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": null, "fields": []}, "io": {}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": null, "fields": [{"name": "chat_id", "value": "oc_1"}, {"name": "retries", "value": 3}, {"name": "flag", "value": true}, {"name": "extra", "value": null}]}, "io": {}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": null, "fields": [{"name": "payload", "value": {"a": 1, "b": [2, 3]}}]}, "io": {}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "GetChatRequest", "fields": [{"name": "chat_id", "value": "oc_1"}]}, "io": {"builder_new": [{"__script__": true, "ret": "B0"}], "builder_set": [{"__script__": true, "ret": "B1"}], "builder_build": [{"__script__": true, "ret": {"kind": "req"}}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "CreateMessageRequestBody", "fields": [{"name": "receive_id", "value": "ou_1"}, {"name": "msg_type", "value": "text"}, {"name": "uuid", "value": "u-1"}]}, "io": {"builder_new": [{"__script__": true, "ret": "B0"}], "builder_set": [{"__script__": true, "ret": "B1"}, {"__script__": true, "ret": "B2"}, {"__script__": true, "ret": "B3"}], "builder_build": [{"__script__": true, "ret": {"built": true}}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "GetChatRequest", "fields": []}, "io": {"builder_new": [{"__script__": true, "ret": null}], "builder_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "GetChatRequest", "fields": [{"name": "chat_id", "value": "x"}]}, "io": {"builder_new": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad builder"}}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "GetMessageRequest", "fields": [{"name": "message_id", "value": "m1"}, {"name": "x", "value": 1}]}, "io": {"builder_new": [{"__script__": true, "ret": "B0"}], "builder_set": [{"__script__": true, "ret": "B1"}, {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "DeleteMessageRequest", "fields": [{"name": "message_id", "value": "m2"}]}, "io": {"builder_new": [{"__script__": true, "ret": "B0"}], "builder_set": [{"__script__": true, "ret": "B1"}], "builder_build": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "kb"}}]}}}
+{"func": "_sdk_build", "in": {"args": {"request_cls": "GetChatRequest", "fields": [{"name": "chat_id", "value": "x"}]}, "io": {"builder_new": [{"__script__": true, "raise": {"type": "AttributeError", "message": "ab"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": true}, "io": {}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "ret": true}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "ret": false}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "ret": "yes"}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "ret": null}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "KeyError", "message": "k"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "OSError", "message": "o"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "CancelledError", "message": "ce"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "feishu_deps_present", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"available": [{"__script__": true, "ret": true}, {"__script__": true, "raise": {"type": "RuntimeError", "message": "rt"}}, {"__script__": true, "ret": false}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": true}, "io": {}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "ret": null}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "ret": {"x": 1}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "r"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "LookupError", "message": "l"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "NotImplementedError", "message": "ni"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "raise": {"type": "CancelledError", "message": "ce"}}]}}}
+{"func": "check_feishu_requirements", "in": {"args": {"FEISHU_AVAILABLE": false}, "io": {"ensure_import": [{"__script__": true, "ret": null}, {"__script__": true, "raise": {"type": "ValueError", "message": "v"}}, {"__script__": true, "ret": null}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_1"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "chat", "id": "oc_1"}}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQUEST"}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_get_chat_request", "in": {"args": {"chat_id": "oc_6"}, "io": {"_sdk_build": [{"__script__": true, "ret": "EMPTY"}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "a.txt", "file": "B64", "duration": 0}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "upload"}}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "opus", "file_name": "v.ogg", "file": "B64", "duration": 5000}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "upload", "dur": 5000}}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "d.pdf", "file": {"bytes": 3}, "duration": -1}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "n.bin", "file": null}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "e.mp3", "file": "B64", "duration": 12.0}, "io": {"_sdk_build": [{"__script__": true, "ret": {"ok": true}}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "f.png", "file": "B64", "duration": 1}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "bad upload"}}]}}}
+{"func": "_build_file_upload_body", "in": {"args": {"file_type": "file", "file_name": "g.wav", "file": "B64", "duration": 2}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
