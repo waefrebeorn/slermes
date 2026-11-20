@@ -9,6 +9,7 @@ Usage:
   python3 scripts/gen_parity_walkway.py           # refresh all walkway files
   python3 scripts/gen_parity_walkway.py --bump    # v672 -> v673, then refresh
   python3 scripts/gen_parity_walkway.py --scan    # scan only, no writes
+  python3 scripts/gen_parity_walkway.py --from-scan <file.json>  # stamp from an existing scan (no rescan)
 """
 import json
 import os
@@ -144,15 +145,25 @@ def discover_walkway_files():
     return results
 
 
-def compute_parity():
-    """Compute all derived state from live sources."""
-    # Run parity_truth.py (fail-closed)
-    r = subprocess.run([sys.executable, TRUTH], capture_output=True, text=True, cwd=REPO)
-    if r.returncode != 0:
-        sys.exit(r.returncode)
-    
-    with open(os.path.join(REPO, "live_parity_scan.json")) as f:
-        doc = json.load(f)
+def compute_parity(scan_file=None):
+    """Compute all derived state from live sources.
+
+    scan_file: optional path to an already-generated parity scan JSON. When set,
+    skip parity_truth.py (the full scanner is slow on large trees) and read the
+    supplied scan. Used by --from-scan to refresh derived docs after a scan has
+    already run, without paying for a second full scan.
+    """
+    if scan_file:
+        with open(scan_file) as f:
+            doc = json.load(f)
+    else:
+        # Run parity_truth.py (fail-closed)
+        r = subprocess.run([sys.executable, TRUTH], capture_output=True, text=True, cwd=REPO)
+        if r.returncode != 0:
+            sys.exit(r.returncode)
+
+        with open(os.path.join(REPO, "live_parity_scan.json")) as f:
+            doc = json.load(f)
     
     tot = doc.get("totals", {})
     
@@ -411,10 +422,16 @@ def generate_gap_list(d):
 
 def main():
     scan = "--scan" in sys.argv
+    from_scan = None
+    if "--from-scan" in sys.argv:
+        i = sys.argv.index("--from-scan")
+        if i + 1 >= len(sys.argv):
+            sys.exit("--from-scan requires a path to a parity scan JSON")
+        from_scan = sys.argv[i + 1]
     if "--bump" in sys.argv:
         bump_version()
     
-    d = compute_parity()
+    d = compute_parity(scan_file=from_scan)
     
     # Discover files
     files = discover_walkway_files()
