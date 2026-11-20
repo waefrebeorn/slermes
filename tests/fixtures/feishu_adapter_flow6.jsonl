@@ -1,0 +1,129 @@
+{"func": "_is_connected", "in": {"args": {"config": {"extra": {"app_id": "cli_a"}}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"extra": {}}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"extra": {"app_id": ""}}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": null}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"extra": null}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"extra": {"app_id": 7}}}, "io": {}}}
+{"func": "_is_connected", "in": {"args": {"config": {"extra": {"app_id": true}}}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": "image/png", "default": "x"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": " Text/Plain ; charset=utf-8 ", "default": "x"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": "", "default": "application/octet-stream"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": null, "default": "d"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": "  ", "default": "fallback"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": "APPLICATION/JSON", "default": "d"}, "io": {}}}
+{"func": "_normalize_media_type", "in": {"args": {"content_type": "a;b;c", "default": "d"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".jpg"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".JPEG"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".png"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".gif"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".webp"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ""}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".svg"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": "jpg"}, "io": {}}}
+{"func": "_default_image_media_type", "in": {"args": {"ext": ".bmp"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "p2p"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": " P2P "}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "group"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "GROUP"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "topic_xyz"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "a-thread-b"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "forum"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "other"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": ""}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "p2p_topic"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": "thread"}, "io": {}}}
+{"func": "_map_chat_type", "in": {"args": {"raw_chat_type": null}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": "group"}, "event_chat_type": "p2p"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": "forum"}, "event_chat_type": "group"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": " P2P "}, "event_chat_type": "p2p"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": ""}, "event_chat_type": "p2p"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {}, "event_chat_type": "group"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": null}, "event_chat_type": "x"}, "io": {}}}
+{"func": "_resolve_source_chat_type", "in": {"args": {"chat_info": {"type": "GROUP"}, "event_chat_type": "p2p"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/a.png?token=1", "default": ".bin"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/a.PDF", "default": ".bin"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/a.zip?x", "default": ".dat"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/a.unknown", "default": ".dat"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/noext", "default": ".dat"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "", "default": ".dat"}, "io": {}}}
+{"func": "_guess_remote_extension", "in": {"args": {"url": "https://x/a.MP3?v=2", "default": ".dat"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "/tmp/aa_bb_report.txt"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "/tmp/aa_bb.txt"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "/tmp/report.pdf"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "aa_bb_a b@c#d.txt"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "aa_bb_cc_dd.txt"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "file"}, "io": {}}}
+{"func": "_display_name_from_cached_path", "in": {"args": {"path": "p_2024_06_summary.md"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {"headers": {"content-type": "Application/JSON; charset=utf-8"}}}, "name": "content-type"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {"headers": {"content-type": "text/plain"}}}, "name": "Content-Type"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {"headers": {"x": "v"}}}, "name": "missing"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {"headers": {"x": null}}}, "name": "x"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {}}, "name": "x"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": null, "name": "x"}, "io": {}}}
+{"func": "_get_response_header", "in": {"args": {"response": {"raw": {"headers": {"x": "  UPPER ; tail "}}}, "name": "x"}, "io": {}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "ret": {"text_content": "hello", "metadata": {}}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "post", "raw_content": "c", "mentions": null}, "io": {"_normalize": [{"__script__": true, "ret": {"text_content": "", "metadata": {"placeholder_text": " [IMAGE] "}}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "ret": {"text_content": "", "metadata": "not-a-dict"}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "ret": {"text_content": "", "metadata": {}}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "raise": {"type": "ValueError", "message": "normalize down"}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": [{"__script__": true, "ret": {"text_content": "a", "metadata": {"placeholder_text": "b"}}}, {"__script__": true, "ret": {"text_content": "second", "metadata": {}}}]}}}
+{"func": "_extract_text_from_raw_content", "in": {"args": {"msg_type": "text", "raw_content": "c", "mentions": []}, "io": {"_normalize": []}}, "_note": "fail-closed"}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.png", "content_type": "", "default": ".bin", "allowed": [".png", ".jpg"]}, "io": {}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.xyz", "content_type": "image/jpeg; q=1", "default": ".bin", "allowed": [".png", ".jpg"]}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": ".jpg"}]}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.xyz", "content_type": "image/gif", "default": ".bin", "allowed": [".png", ".jpg"]}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": ".gif"}]}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.xyz", "content_type": "", "default": ".bin", "allowed": [".png"]}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": null}]}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.xyz", "content_type": "x/y", "default": ".bin", "allowed": [".png"]}, "io": {"mimetypes_guess_extension": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "mime down"}}]}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.xyz", "content_type": "x/y", "default": ".bin", "allowed": [".png"]}, "io": {"mimetypes_guess_extension": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "_guess_extension", "in": {"args": {"filename": "a.JPG", "content_type": "", "default": ".bin", "allowed": [".jpg"]}, "io": {}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.pdf"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": ["application/pdf", null]}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": ["text/custom", null]}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.MD"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "raise": {"type": "ValueError", "message": "mime down"}}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_guess_document_media_type", "in": {"args": {"filename": "noext"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": ["application/octet-stream", null]}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.png"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": ["image/png", null]}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.mp4"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.MP3"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.png"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}], "_default_image_media_type": [{"__script__": true, "ret": "image/png"}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.xyz"}, "io": {"mimetypes_guess_type": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "mime down"}}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.png"}, "io": {"mimetypes_guess_type": [{"__script__": true, "ret": [null, null]}], "_default_image_media_type": [{"__script__": true, "raise": {"type": "ValueError", "message": "sibling down"}}]}}}
+{"func": "_guess_media_type_from_filename", "in": {"args": {"filename": "a.png"}, "io": {"mimetypes_guess_type": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/a.png?v=1", "content_type": "", "default_name": "f", "default_ext": ".bin"}, "io": {}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/noext", "content_type": "image/png", "default_name": "f", "default_ext": ".bin"}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": ".png"}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/noext", "content_type": "", "default_name": "f", "default_ext": ".bin"}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": null}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "", "content_type": "text/plain", "default_name": "f", "default_ext": ".txt"}, "io": {"mimetypes_guess_extension": [{"__script__": true, "ret": ".txt"}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/noext", "content_type": "x/y", "default_name": "f", "default_ext": ".bin"}, "io": {"mimetypes_guess_extension": [{"__script__": true, "raise": {"type": "OSError", "message": "mime down"}}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/noext", "content_type": "x/y", "default_name": "f", "default_ext": ".bin"}, "io": {"mimetypes_guess_extension": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "_derive_remote_filename", "in": {"args": {"file_url": "https://x/a.PDF?x", "content_type": "", "default_name": "f", "default_ext": ".bin"}, "io": {}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "ret": null}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "ret": 5}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}], "logger_exception": [{"__script__": true, "ret": null}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "rt"}}], "logger_exception": [{"__script__": true, "ret": null}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [], "logger_exception": [{"__script__": true, "ret": null}]}}, "_note": "fail-closed"}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}], "logger_exception": [{"__script__": true, "raise": {"type": "ValueError", "message": "handler"}}]}}}
+{"func": "_log_background_failure", "in": {"args": {}, "io": {"future_result": [{"__script__": true, "ret": 1}, {"__script__": true, "raise": {"type": "OSError", "message": "o"}}], "logger_exception": [{"__script__": true, "ret": null}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "ret": true}], "timestamp_fresh": [{"__script__": true, "ret": true}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "ret": false}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "ret": true}], "timestamp_fresh": [{"__script__": true, "ret": false}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "raise": {"type": "ValueError", "message": "hash down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "cmp down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "ret": true}], "timestamp_fresh": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": 1700000000, "x-lark-request-nonce": "n1", "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {"sha256_hex": [{"__script__": true, "ret": "abc"}], "secrets_match": [{"__script__": true, "ret": true}], "timestamp_fresh": [{"__script__": true, "ret": true}]}}}
+{"func": "_is_webhook_signature_valid", "in": {"args": {"headers": {"x-lark-request-timestamp": "1700000000", "x-lark-request-nonce": null, "x-lark-signature": "sig"}, "body_bytes": "body", "encrypt_key": "ek"}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": {"a": 1, "b": "two"}}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": {"a": {"b": {"c": 3}}}}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": [1, {"x": 2}, [3, 4]]}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": "scalar"}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": null}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": {}}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": []}, "io": {}}}
+{"func": "_namespace_from_mapping", "in": {"args": {"value": {"a": [{"b": 1}, 2], "c": null}}, "io": {}}}

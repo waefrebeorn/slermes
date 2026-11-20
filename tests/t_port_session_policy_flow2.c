@@ -159,6 +159,36 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         r = sp2_register_worker_hooks(J("policy"), sp);
     } else if (strcmp(func, "_in_coding_workspace") == 0) {
         r = sp2_in_coding_workspace(J("config"), S("source"), S("cwd"), sp);
+    } else if (strcmp(func, "session_pinned") == 0) {
+        r = sp2_session_pinned(J("config"), S("field"), J("launched"));
+    } else if (strcmp(func, "created_surface") == 0) {
+        r = sp2_created_surface(J("label"));
+    } else if (strcmp(func, "profile_target") == 0) {
+        r = sp2_profile_target(J("config"));
+    } else if (strcmp(func, "present_sections") == 0) {
+        r = sp2_present_sections(J("config"));
+    } else if (strcmp(func, "terminal_uses_host_cwd") == 0) {
+        r = sp2_terminal_uses_host_cwd(J("terminal"));
+    } else if (strcmp(func, "_valid_client_env") == 0) {
+        r = sp2_valid_client_env(J("value"), S("kind"));
+    } else if (strcmp(func, "client_env") == 0) {
+        r = sp2_client_env(J("client_env_json"));
+    } else if (strcmp(func, "ignore_rules") == 0) {
+        r = sp2_ignore_rules(B("safe_mode", false), J("request_json"));
+    } else if (strcmp(func, "yolo") == 0) {
+        r = sp2_yolo(J("request_json"));
+    } else if (strcmp(func, "pass_session_id") == 0) {
+        r = sp2_pass_session_id(J("request_json"));
+    } else if (strcmp(func, "verbose") == 0) {
+        r = sp2_verbose(J("request_json"));
+    } else if (strcmp(func, "follows_profile") == 0) {
+        r = sp2_follows_profile(J("request_json"), J("config_json"));
+    } else if (strcmp(func, "checkpoints_enabled") == 0) {
+        r = sp2_checkpoints_enabled(sp);
+    } else if (strcmp(func, "provider") == 0) {
+        r = sp2_provider(sp);
+    } else if (strcmp(func, "base_url") == 0) {
+        r = sp2_base_url(sp);
     } else {
         json_set(out, "error", json_string("unknown func"));
     }

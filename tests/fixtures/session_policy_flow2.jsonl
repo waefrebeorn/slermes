@@ -169,3 +169,114 @@
 {"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": {"__raise__": "RuntimeError", "msg": "x"}, "logger.debug": {"__raise__": "ValueError", "msg": "log"}}}}
 {"func": "_in_coding_workspace", "in": {"config": {}, "source": "gui", "cwd": "/x", "io": {"in_focus_workspace": "maybe"}}}
 {"func": "_in_coding_workspace", "in": {"config": {}, "source": "tool", "cwd": "/x", "io": {"in_focus_workspace": true}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {"reasoning": true}}, "field": "reasoning", "launched": false, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {"reasoning": false}}, "field": "reasoning", "launched": true, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {}}, "field": "reasoning", "launched": true, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {"other": true}}, "field": "reasoning", "launched": false, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": "notadict"}, "field": "reasoning", "launched": true, "io": {}}}
+{"func": "session_pinned", "in": {"config": {}, "field": "reasoning", "launched": false, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {"reasoning": 1}}, "field": "reasoning", "launched": true, "io": {}}}
+{"func": "session_pinned", "in": {"config": {"session_pins": {"reasoning": true}}, "field": "toolsets", "launched": "x", "io": {}}}
+{"func": "created_surface", "in": {"label": null, "io": {}}}
+{"func": "created_surface", "in": {"label": "", "io": {}}}
+{"func": "created_surface", "in": {"label": "local", "io": {}}}
+{"func": "created_surface", "in": {"label": "unknown", "io": {}}}
+{"func": "created_surface", "in": {"label": "cli", "io": {}}}
+{"func": "created_surface", "in": {"label": "tui", "io": {}}}
+{"func": "created_surface", "in": {"label": "gui", "io": {}}}
+{"func": "created_surface", "in": {"label": "acp", "io": {}}}
+{"func": "created_surface", "in": {"label": "tool", "io": {}}}
+{"func": "created_surface", "in": {"label": "oneshot", "io": {}}}
+{"func": "created_surface", "in": {"label": "custom", "io": {}}}
+{"func": "created_surface", "in": {"label": 5, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": {"provider": " OpenAI ", "default": " m1 "}}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": {"provider": "AUTO", "default": "m"}}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": {"provider": "custom"}}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": "  "}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": " m1 "}, "io": {}}}
+{"func": "profile_target", "in": {"config": {}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": null}, "io": {}}}
+{"func": "profile_target", "in": {"config": {"model": 5}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"gateway": null, "model": {"default": "m"}, "a": 1}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"model": "  "}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"model": " m1 "}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"model": 5}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"x": null, "y": false}, "io": {}}}
+{"func": "present_sections", "in": {"config": {}, "io": {}}}
+{"func": "present_sections", "in": {"config": {"model": null}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": " local "}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": "LOCAL"}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "YES"}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "0"}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": "ssh"}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "1"}, "io": {}}}
+{"func": "terminal_uses_host_cwd", "in": {"terminal": {"TERMINAL_ENV": null}, "io": {}}}
+{"func": "_valid_client_env", "in": {"value": null, "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "{\"A\":\"b\"}", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "{\"A\":1}", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "{\"A\":[\"x\",\"y\"]}", "kind": "list", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "{\"A\":\"x\"}", "kind": "list", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "{oops", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": "[]", "io": {}}}
+{"func": "_valid_client_env", "in": {"value": 123, "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "{\"A\":\"b\"}", "io": {}}}
+{"func": "client_env", "in": {"client_env_json": null, "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "[1,2]", "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "\"hi\"", "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "null", "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "{}", "io": {}}}
+{"func": "client_env", "in": {"client_env_json": "{\"x\":null,\"y\":true}", "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{\"ignore_rules\":true}", "safe_mode": false, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{}", "safe_mode": false, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{}", "safe_mode": true, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{\"ignore_rules\":false}", "safe_mode": true, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{\"ignore_rules\":\"yes\"}", "safe_mode": false, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{\"ignore_rules\":1}", "safe_mode": false, "io": {}}}
+{"func": "ignore_rules", "in": {"request_json": "{\"other\":true}", "safe_mode": false, "io": {}}}
+{"func": "yolo", "in": {"request_json": "{\"yolo\":true}", "io": {}}}
+{"func": "yolo", "in": {"request_json": "{}", "io": {}}}
+{"func": "yolo", "in": {"request_json": "{\"yolo\":false}", "io": {}}}
+{"func": "yolo", "in": {"request_json": "{\"yolo\":\"on\"}", "io": {}}}
+{"func": "yolo", "in": {"request_json": "{\"other\":1}", "io": {}}}
+{"func": "yolo", "in": {"request_json": "{\"yolo\":0}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{\"pass_session_id\":true}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{\"pass_session_id\":false}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{\"pass_session_id\":\"on\"}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{\"other\":1}", "io": {}}}
+{"func": "pass_session_id", "in": {"request_json": "{\"pass_session_id\":0}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{\"verbose\":true}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{\"verbose\":false}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{\"verbose\":\"on\"}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{\"other\":1}", "io": {}}}
+{"func": "verbose", "in": {"request_json": "{\"verbose\":0}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{\"follow_profile_config\":true}", "config_json": "{}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{\"follow_profile_config\":false}", "config_json": "{\"follow_adopted\":true}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{}", "config_json": "{\"follow_adopted\":true}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{}", "config_json": "{}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{\"follow_profile_config\":1}", "config_json": "{\"follow_adopted\":1}", "io": {}}}
+{"func": "follows_profile", "in": {"request_json": "{\"follow_profile_config\":true}", "config_json": "{\"follow_adopted\":false}", "io": {}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"checkpoints": {"enabled": true}}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"checkpoints": {"enabled": false}}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"checkpoints": null}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"checkpoints": true}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"checkpoints": {"enabled": 1}}}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {}}}
+{"func": "checkpoints_enabled", "in": {"policy": {}, "io": {"policy.config": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {"model": {"provider": "v"}}}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {}}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {"model": {}}}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {"model": {"provider": null}}}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {"model": {"other": "z"}}}}}
+{"func": "provider", "in": {"policy": {}, "io": {}}}
+{"func": "provider", "in": {"policy": {}, "io": {"policy.config": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {"model": {"base_url": "v"}}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {"model": {}}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {"model": {"base_url": null}}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {"model": {"other": "z"}}}}}
+{"func": "base_url", "in": {"policy": {}, "io": {}}}
+{"func": "base_url", "in": {"policy": {}, "io": {"policy.config": {"__raise__": "SystemExit", "msg": "bye"}}}}

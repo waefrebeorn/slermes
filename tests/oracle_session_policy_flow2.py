@@ -237,7 +237,20 @@ WANTED = (
     "workspace_ready", "bind_turn_workspace", "unbind_turn_workspace",
     "accept_launch_hooks", "refresh_profile_hooks", "register_worker_hooks",
     "_in_coding_workspace",
+    # third-wave remainder funcs
+    "session_pinned", "created_surface", "profile_target", "present_sections",
+    "terminal_uses_host_cwd", "_valid_client_env", "client_env", "ignore_rules",
+    "yolo", "pass_session_id", "verbose", "follows_profile",
+    "checkpoints_enabled", "provider", "base_url",
 )
+CLASS_WANTED = set(WANTED) - {
+    "model_route", "_held_pick", "entry_serves", "bound_route_holds",
+    "_without_auto_pick", "_keeps_profile_route", "_with_entry_pick",
+    "pin_reasoning_effort", "unpin_reasoning", "profile_config", "_key_slot",
+    "launch_key", "route_launch_key", "workspace_ready", "bind_turn_workspace",
+    "unbind_turn_workspace", "accept_launch_hooks", "refresh_profile_hooks",
+    "register_worker_hooks", "_in_coding_workspace",
+}
 HELPERS = ("_refuse",)
 
 
@@ -290,10 +303,20 @@ def extract():
             exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec", flags=flags), ns)
         elif isinstance(node, ast.ClassDef) and node.name == "LocalSessionPolicy":
             exec(compile(ast.Module(body=[node], type_ignores=[]), SRC, "exec"), ns)
+            # AST-extract the ported class methods/properties as plain module-level
+            # functions (decorators stripped) so drive() can call them on doubles.
+            for mnode in node.body:
+                if isinstance(mnode, ast.FunctionDef) and mnode.name in CLASS_WANTED:
+                    plain = copy.deepcopy(mnode)
+                    plain.decorator_list = []
+                    exec(compile(ast.Module(body=[plain], type_ignores=[]), SRC, "exec"), ns)
     return ns
 
 
 NS = extract()
+# These three are ALSO claimed-sibling seams for the older 20 funcs; keep the
+# live extracted defs so the newly ported funcs can call them directly.
+LIVE_FUNCS = {n: NS[n] for n in ("profile_target", "present_sections", "terminal_uses_host_cwd")}
 AuthorityRefusal = NS["AuthorityRefusal"]
 NS["logger"] = RecLogger()
 
@@ -563,6 +586,47 @@ def drive(func, inp):
     if func == "_in_coding_workspace":
         return run_flow(lambda: NS["_in_coding_workspace"](
             inp.get("config"), inp.get("source"), inp.get("cwd")), state_fn)
+    # -- third-wave remainder funcs --
+    if func == "session_pinned":
+        return run_flow(lambda: NS["session_pinned"](
+            inp.get("config"), inp.get("field"), inp.get("launched")), state_fn)
+    if func == "created_surface":
+        return run_flow(lambda: NS["created_surface"](inp.get("label")), state_fn)
+    if func == "profile_target":
+        return run_flow(lambda: LIVE_FUNCS["profile_target"](inp.get("config")), state_fn)
+    if func == "present_sections":
+        return run_flow(lambda: LIVE_FUNCS["present_sections"](inp.get("config")), state_fn)
+    if func == "terminal_uses_host_cwd":
+        return run_flow(lambda: LIVE_FUNCS["terminal_uses_host_cwd"](inp.get("terminal")), state_fn)
+    if func == "_valid_client_env":
+        k = list if inp.get("kind") == "list" else str
+        return run_flow(lambda: NS["_valid_client_env"](inp.get("value"), k), state_fn)
+    if func == "client_env":
+        return run_flow(lambda: NS["client_env"](
+            PolicyDouble({"client_env_json": inp.get("client_env_json")})), state_fn)
+    if func == "ignore_rules":
+        return run_flow(lambda: NS["ignore_rules"](PolicyDouble({
+            "safe_mode": inp.get("safe_mode", False),
+            "request_json": inp.get("request_json")})), state_fn)
+    if func == "yolo":
+        return run_flow(lambda: NS["yolo"](
+            PolicyDouble({"request_json": inp.get("request_json")})), state_fn)
+    if func == "pass_session_id":
+        return run_flow(lambda: NS["pass_session_id"](
+            PolicyDouble({"request_json": inp.get("request_json")})), state_fn)
+    if func == "verbose":
+        return run_flow(lambda: NS["verbose"](
+            PolicyDouble({"request_json": inp.get("request_json")})), state_fn)
+    if func == "follows_profile":
+        return run_flow(lambda: NS["follows_profile"](PolicyDouble({
+            "request_json": inp.get("request_json"),
+            "config_json": inp.get("config_json")})), state_fn)
+    if func == "checkpoints_enabled":
+        return run_flow(lambda: NS["checkpoints_enabled"](PolicyDouble(inp.get("policy"))), state_fn)
+    if func == "provider":
+        return run_flow(lambda: NS["provider"](PolicyDouble(inp.get("policy"))), state_fn)
+    if func == "base_url":
+        return run_flow(lambda: NS["base_url"](PolicyDouble(inp.get("policy"))), state_fn)
     raise ValueError("unknown func: %s" % func)
 
 

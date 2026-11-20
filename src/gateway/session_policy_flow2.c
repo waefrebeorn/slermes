@@ -1119,3 +1119,250 @@ static json_t *sp2_in_coding_workspace(const json_t *config, const char *source,
     }
     return r ? r : json_null();
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Third-wave remainder funcs (session_policy_flow2 extension). PoP-annotated
+ * at gateway/session_policy.py:<fn>. Same libjson-only / static sp2_* / universal
+ * seam / ordered-trace / BaseException-passthrough / fail-closed contract.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* strict Python `is True` (not ==) */
+static bool sp2_is_true(const json_t *v) {
+    return v && v->type == JSON_BOOL && v->bool_val;
+}
+
+/* -- 21. session_pinned -- */
+/* PoP: sp2_session_pinned @ gateway/session_policy.py:session_pinned */
+static json_t *sp2_session_pinned(const json_t *config, const char *field,
+                                  const json_t *launched) {
+    const json_t *pins = sp2_oget(config, "session_pins");
+    if (sp2_is_obj(pins)) {
+        const json_t *v = json_obj_get(pins, field);
+        if (v && v->type == JSON_BOOL) return json_copy(v);
+    }
+    return launched ? json_copy(launched) : json_null();
+}
+
+/* -- 22. created_surface -- */
+/* PoP: sp2_created_surface @ gateway/session_policy.py:created_surface */
+static json_t *sp2_created_surface(const json_t *label) {
+    if (sp2_is_null_node(label)) return json_null();
+    const char *s = sp2_sval(label);
+    if (!s) return json_copy(label);   /* non-str, non-None label: kept as provenance */
+    /* _NOT_A_SURFACE = {None, '', 'local', 'unknown'} */
+    if (strcmp(s, "") == 0 || strcmp(s, "local") == 0 || strcmp(s, "unknown") == 0)
+        return json_null();
+    /* STORED_AS_LOCAL = keys(SURFACES) - {tool, oneshot} = cli/tui/gui/acp */
+    if (strcmp(s, "cli") == 0 || strcmp(s, "tui") == 0 ||
+        strcmp(s, "gui") == 0 || strcmp(s, "acp") == 0)
+        return json_string(sp2_surface(s));  /* gui -> desktop */
+    return json_copy(label);                  /* tool/oneshot/other kept as provenance */
+}
+
+/* -- 23. profile_target -- */
+/* PoP: sp2_profile_target @ gateway/session_policy.py:profile_target */
+static json_t *sp2_profile_target(const json_t *config) {
+    json_t *out = json_array();
+    const json_t *model = sp2_oget(config, "model");
+    if (sp2_is_obj(model)) {
+        char *praw = sp2_str_or_empty(json_obj_get(model, "provider"));
+        char *pstrip = sp2_strip(praw);
+        free(praw);
+        char *plow = sp2_lower(pstrip);
+        bool is_auto = (strcmp(plow, "auto") == 0);
+        free(plow);
+        char *draw = sp2_str_or_empty(json_obj_get(model, "default"));
+        char *dstrip = sp2_strip(draw);
+        free(draw);
+        json_append(out, json_string(dstrip));
+        json_append(out, json_string(is_auto ? "" : pstrip));
+        free(dstrip);
+        free(pstrip);
+    } else {
+        char *mstrip = sp2_strip(sp2_sval(model) ? sp2_sval(model) : "");
+        json_append(out, json_string(mstrip));
+        json_append(out, json_string(""));
+        free(mstrip);
+    }
+    return out;
+}
+
+/* -- 24. present_sections -- */
+/* PoP: sp2_present_sections @ gateway/session_policy.py:present_sections */
+static json_t *sp2_present_sections(const json_t *config) {
+    json_t *out = json_object();
+    if (sp2_is_obj(config)) {
+        for (size_t i = 0; i < config->c.count; i++) {
+            const json_t *v = config->c.items[i];
+            if (sp2_is_null_node(v)) continue;  /* drop keys whose value is None */
+            json_set(out, config->c.keys[i], json_copy(v));
+        }
+    }
+    const json_t *m = json_obj_get(out, "model");
+    if (sp2_is_str(m)) {
+        char *t = sp2_strip(m->str_val ? m->str_val : "");
+        if (*t) {
+            json_t *d = json_object();
+            json_set(d, "default", json_copy(m));
+            json_set(out, "model", d);
+        } else {
+            json_set(out, "model", json_object());
+        }
+        free(t);
+    }
+    return out;
+}
+
+/* -- 25. terminal_uses_host_cwd -- */
+/* PoP: sp2_terminal_uses_host_cwd @ gateway/session_policy.py:terminal_uses_host_cwd */
+static json_t *sp2_terminal_uses_host_cwd(const json_t *terminal) {
+    const json_t *be = sp2_oget(terminal, "TERMINAL_ENV");
+    char *bes = sp2_truth(be) ? sp2_pystr(be) : strdup("local");
+    char *be_st = sp2_strip(bes);
+    free(bes);
+    char *be_lo = sp2_lower(be_st);
+    free(be_st);
+    const json_t *mo = sp2_oget(terminal, "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE");
+    char *mos = sp2_truth(mo) ? sp2_pystr(mo) : strdup("");
+    char *mo_st = sp2_strip(mos);
+    free(mos);
+    char *mo_lo = sp2_lower(mo_st);
+    free(mo_st);
+    bool mounts = (strcmp(mo_lo, "1") == 0 || strcmp(mo_lo, "true") == 0 ||
+                   strcmp(mo_lo, "yes") == 0 || strcmp(mo_lo, "on") == 0);
+    bool local = (strcmp(be_lo, "local") == 0);
+    bool docker = (strcmp(be_lo, "docker") == 0) && mounts;
+    free(be_lo);
+    free(mo_lo);
+    return json_bool(local || docker);
+}
+
+/* -- 26. _valid_client_env -- */
+/* PoP: sp2_valid_client_env @ gateway/session_policy.py:_valid_client_env */
+static json_t *sp2_valid_client_env(const json_t *value, const char *kind) {
+    if (sp2_is_null_node(value)) return json_bool(true);
+    if (!sp2_is_str(value)) return json_bool(false);
+    char *err = NULL;
+    json_t *env = json_parse(value->str_val ? value->str_val : "", &err);
+    free(err);
+    if (!env) return json_bool(false);            /* invalid JSON -> ValueError -> False */
+    if (!sp2_is_obj(env)) { json_free(env); return json_bool(false); }
+    bool listkind = (kind && strcmp(kind, "list") == 0);
+    bool ok = true;
+    for (size_t i = 0; i < env->c.count && ok; i++) {
+        json_t *v = env->c.items[i];
+        if (listkind) {
+            if (!sp2_is_arr(v)) { ok = false; break; }
+            for (size_t j = 0; j < v->c.count; j++)
+                if (!sp2_is_str(v->c.items[j])) { ok = false; break; }
+        } else {
+            if (!sp2_is_str(v)) ok = false;
+        }
+    }
+    json_free(env);
+    return json_bool(ok);
+}
+
+/* -- live-request helper: json.loads(request_json).get(key, False) -- */
+static json_t *sp2_request_flag(const char *key, const json_t *request_json) {
+    json_t *r = sp2_jloads(request_json);
+    if (sp2_raised(r)) return r;
+    const json_t *v = json_obj_get(r, key);  /* dict domain (live .get) */
+    json_t *out = v ? json_copy(v) : json_bool(false);
+    json_free(r);
+    return out;
+}
+
+/* -- 27. client_env -- */
+/* PoP: sp2_client_env @ gateway/session_policy.py:client_env */
+static json_t *sp2_client_env(const json_t *client_env_json) {
+    if (sp2_is_null_node(client_env_json)) return json_null();
+    return sp2_jloads(client_env_json);
+}
+
+/* -- 28. ignore_rules -- */
+/* PoP: sp2_ignore_rules @ gateway/session_policy.py:ignore_rules */
+static json_t *sp2_ignore_rules(bool safe_mode, const json_t *request_json) {
+    if (safe_mode) return json_bool(true);
+    return sp2_request_flag("ignore_rules", request_json);
+}
+
+/* -- 29. yolo -- */
+/* PoP: sp2_yolo @ gateway/session_policy.py:yolo */
+static json_t *sp2_yolo(const json_t *request_json) {
+    return sp2_request_flag("yolo", request_json);
+}
+
+/* -- 30. pass_session_id -- */
+/* PoP: sp2_pass_session_id @ gateway/session_policy.py:pass_session_id */
+static json_t *sp2_pass_session_id(const json_t *request_json) {
+    return sp2_request_flag("pass_session_id", request_json);
+}
+
+/* -- 31. verbose -- */
+/* PoP: sp2_verbose @ gateway/session_policy.py:verbose */
+static json_t *sp2_verbose(const json_t *request_json) {
+    return sp2_request_flag("verbose", request_json);
+}
+
+/* -- 32. follows_profile -- */
+/* PoP: sp2_follows_profile @ gateway/session_policy.py:follows_profile */
+static json_t *sp2_follows_profile(const json_t *request_json, const json_t *config_json) {
+    json_t *r = sp2_jloads(request_json);
+    if (sp2_raised(r)) return r;
+    bool a = sp2_is_true(json_obj_get(r, "follow_profile_config"));
+    json_free(r);
+    if (a) return json_bool(true);
+    json_t *c = sp2_jloads(config_json);
+    if (sp2_raised(c)) return c;
+    bool b = sp2_is_true(json_obj_get(c, "follow_adopted"));
+    json_free(c);
+    return json_bool(b);
+}
+
+/* -- config()-based property helper (seam "policy.config") -- */
+static json_t *sp2_config_model_field(const sp2_seams_t *s, const char *field) {
+    json_t *cfg = sp2_call(s, "policy.config", sp2_args());
+    if (sp2_raised(cfg)) return cfg;
+    const json_t *model = sp2_oget(cfg, "model");
+    json_t *out;
+    if (sp2_is_obj(model)) {
+        const json_t *v = json_obj_get(model, field);
+        out = v ? json_copy(v) : json_null();
+    } else if (sp2_is_null_node(model)) {
+        out = json_null();  /* .get('model', {}) -> {} -> .get(field) -> None */
+    } else {
+        out = sp2_attr_err(model, "get");  /* out-of-domain: non-dict model */
+    }
+    json_free(cfg);
+    return out;
+}
+
+/* -- 33. checkpoints_enabled -- */
+/* PoP: sp2_checkpoints_enabled @ gateway/session_policy.py:checkpoints_enabled */
+static json_t *sp2_checkpoints_enabled(const sp2_seams_t *s) {
+    json_t *cfg = sp2_call(s, "policy.config", sp2_args());
+    if (sp2_raised(cfg)) return cfg;
+    const json_t *section = sp2_oget(cfg, "checkpoints");
+    json_t *out;
+    if (sp2_is_obj(section)) {
+        const json_t *v = json_obj_get(section, "enabled");
+        out = json_bool(v ? sp2_truth(v) : false);
+    } else {
+        out = json_bool(sp2_truth(section));  /* absent -> {} -> False; None -> False */
+    }
+    json_free(cfg);
+    return out;
+}
+
+/* -- 34. provider -- */
+/* PoP: sp2_provider @ gateway/session_policy.py:provider */
+static json_t *sp2_provider(const sp2_seams_t *s) {
+    return sp2_config_model_field(s, "provider");
+}
+
+/* -- 35. base_url -- */
+/* PoP: sp2_base_url @ gateway/session_policy.py:base_url */
+static json_t *sp2_base_url(const sp2_seams_t *s) {
+    return sp2_config_model_field(s, "base_url");
+}

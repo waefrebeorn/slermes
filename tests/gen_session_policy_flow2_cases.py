@@ -390,6 +390,128 @@ C("_in_coding_workspace", {"in_focus_workspace": "maybe"}, config={}, source="gu
 C("_in_coding_workspace", {"in_focus_workspace": True}, config={}, source="tool", cwd="/x")
 
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Third-wave remainder funcs (7-8 cases each).
+# ═══════════════════════════════════════════════════════════════════════════
+
+# -- session_pinned --
+C("session_pinned", {}, config={"session_pins": {"reasoning": True}}, field="reasoning", launched=False)
+C("session_pinned", {}, config={"session_pins": {"reasoning": False}}, field="reasoning", launched=True)
+C("session_pinned", {}, config={"session_pins": {}}, field="reasoning", launched=True)
+C("session_pinned", {}, config={"session_pins": {"other": True}}, field="reasoning", launched=False)
+C("session_pinned", {}, config={"session_pins": "notadict"}, field="reasoning", launched=True)
+C("session_pinned", {}, config={}, field="reasoning", launched=False)
+C("session_pinned", {}, config={"session_pins": {"reasoning": 1}}, field="reasoning", launched=True)
+C("session_pinned", {}, config={"session_pins": {"reasoning": True}}, field="toolsets", launched="x")
+
+# -- created_surface --
+C("created_surface", {}, label=None)
+C("created_surface", {}, label="")
+C("created_surface", {}, label="local")
+C("created_surface", {}, label="unknown")
+C("created_surface", {}, label="cli")
+C("created_surface", {}, label="tui")
+C("created_surface", {}, label="gui")
+C("created_surface", {}, label="acp")
+C("created_surface", {}, label="tool")
+C("created_surface", {}, label="oneshot")
+C("created_surface", {}, label="custom")
+C("created_surface", {}, label=5)
+
+# -- profile_target --
+C("profile_target", {}, config={"model": {"provider": " OpenAI ", "default": " m1 "}})
+C("profile_target", {}, config={"model": {"provider": "AUTO", "default": "m"}})
+C("profile_target", {}, config={"model": {"provider": "custom"}})
+C("profile_target", {}, config={"model": "  "})
+C("profile_target", {}, config={"model": " m1 "})
+C("profile_target", {}, config={})
+C("profile_target", {}, config={"model": None})
+C("profile_target", {}, config={"model": 5})
+
+# -- present_sections --
+C("present_sections", {}, config={"gateway": None, "model": {"default": "m"}, "a": 1})
+C("present_sections", {}, config={"model": "  "})
+C("present_sections", {}, config={"model": " m1 "})
+C("present_sections", {}, config={"model": 5})
+C("present_sections", {}, config={"x": None, "y": False})
+C("present_sections", {}, config={})
+C("present_sections", {}, config={"model": None})
+
+# -- terminal_uses_host_cwd --
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": " local "})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": "LOCAL"})
+C("terminal_uses_host_cwd", {}, terminal={})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "YES"})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "0"})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": "ssh"})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": "docker", "TERMINAL_DOCKER_MOUNT_CWD_TO_WORKSPACE": "1"})
+C("terminal_uses_host_cwd", {}, terminal={"TERMINAL_ENV": None})
+
+# -- _valid_client_env --
+C("_valid_client_env", {}, value=None)
+C("_valid_client_env", {}, value='{"A":"b"}')
+C("_valid_client_env", {}, value='{"A":1}')
+C("_valid_client_env", {}, value='{"A":["x","y"]}', kind="list")
+C("_valid_client_env", {}, value='{"A":"x"}', kind="list")
+C("_valid_client_env", {}, value='{oops')
+C("_valid_client_env", {}, value='[]')
+C("_valid_client_env", {}, value=123)
+
+# -- client_env --
+C("client_env", {}, client_env_json='{"A":"b"}')
+C("client_env", {}, client_env_json=None)
+C("client_env", {}, client_env_json='[1,2]')
+C("client_env", {}, client_env_json='"hi"')
+C("client_env", {}, client_env_json='null')
+C("client_env", {}, client_env_json='{}')
+C("client_env", {}, client_env_json='{"x":null,"y":true}')
+
+# -- ignore_rules --
+C("ignore_rules", {}, request_json='{"ignore_rules":true}', safe_mode=False)
+C("ignore_rules", {}, request_json='{}', safe_mode=False)
+C("ignore_rules", {}, request_json='{}', safe_mode=True)
+C("ignore_rules", {}, request_json='{"ignore_rules":false}', safe_mode=True)
+C("ignore_rules", {}, request_json='{"ignore_rules":"yes"}', safe_mode=False)
+C("ignore_rules", {}, request_json='{"ignore_rules":1}', safe_mode=False)
+C("ignore_rules", {}, request_json='{"other":true}', safe_mode=False)
+
+# -- yolo / pass_session_id / verbose --
+for _fn, _key in (("yolo", "yolo"), ("pass_session_id", "pass_session_id"), ("verbose", "verbose")):
+    C(_fn, {}, request_json='{"%s":true}' % _key)
+    C(_fn, {}, request_json='{}')
+    C(_fn, {}, request_json='{"%s":false}' % _key)
+    C(_fn, {}, request_json='{"%s":"on"}' % _key)
+    C(_fn, {}, request_json='{"other":1}')
+    C(_fn, {}, request_json='{"%s":0}' % _key)
+
+# -- follows_profile --
+C("follows_profile", {}, request_json='{"follow_profile_config":true}', config_json='{}')
+C("follows_profile", {}, request_json='{"follow_profile_config":false}', config_json='{"follow_adopted":true}')
+C("follows_profile", {}, request_json='{}', config_json='{"follow_adopted":true}')
+C("follows_profile", {}, request_json='{}', config_json='{}')
+C("follows_profile", {}, request_json='{"follow_profile_config":1}', config_json='{"follow_adopted":1}')
+C("follows_profile", {}, request_json='{"follow_profile_config":true}', config_json='{"follow_adopted":false}')
+
+# -- checkpoints_enabled / provider / base_url (policy.config seam) --
+C("checkpoints_enabled", {"policy.config": {"checkpoints": {"enabled": True}}}, policy={})
+C("checkpoints_enabled", {"policy.config": {"checkpoints": {"enabled": False}}}, policy={})
+C("checkpoints_enabled", {"policy.config": {}}, policy={})
+C("checkpoints_enabled", {"policy.config": {"checkpoints": None}}, policy={})
+C("checkpoints_enabled", {"policy.config": {"checkpoints": True}}, policy={})
+C("checkpoints_enabled", {"policy.config": {"checkpoints": {"enabled": 1}}}, policy={})
+C("checkpoints_enabled", {}, policy={})  # fail-closed
+C("checkpoints_enabled", {"policy.config": R("SystemExit", "bye")}, policy={})
+
+for _fn, _field in (("provider", "provider"), ("base_url", "base_url")):
+    C(_fn, {"policy.config": {"model": {_field: "v"}}}, policy={})
+    C(_fn, {"policy.config": {}}, policy={})
+    C(_fn, {"policy.config": {"model": {}}}, policy={})
+    C(_fn, {"policy.config": {"model": {_field: None}}}, policy={})
+    C(_fn, {"policy.config": {"model": {"other": "z"}}}, policy={})
+    C(_fn, {}, policy={})  # fail-closed
+    C(_fn, {"policy.config": R("SystemExit", "bye")}, policy={})
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="") as f:

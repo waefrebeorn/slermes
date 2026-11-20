@@ -1,0 +1,116 @@
+{"func": "_is_image_part", "in": {"part": {"type": "image_url"}}}
+{"func": "_is_image_part", "in": {"part": {"type": "input_image"}}}
+{"func": "_is_image_part", "in": {"part": {"type": "image"}}}
+{"func": "_is_image_part", "in": {"part": {"type": "text", "text": "x"}}}
+{"func": "_is_image_part", "in": {"part": "not a dict"}}
+{"func": "_is_image_part", "in": {"part": {}}}
+{"func": "_is_image_part", "in": {"part": {"type": 5}}}
+{"func": "_content_has_images", "in": {"content": ["hi", {"type": "image_url"}]}}
+{"func": "_content_has_images", "in": {"content": ["hi"]}}
+{"func": "_content_has_images", "in": {"content": "str"}}
+{"func": "_content_has_images", "in": {"content": []}}
+{"func": "_content_has_images", "in": {"content": [{"type": "text", "text": "x"}]}}
+{"func": "_content_has_images", "in": {"content": [{"type": "input_image"}, {"type": "image"}]}}
+{"func": "_replace_image_parts", "in": {"parts": ["a", "b"], "placeholder": "[P]"}}
+{"func": "_replace_image_parts", "in": {"parts": "str", "placeholder": "[P]"}}
+{"func": "_replace_image_parts", "in": {"parts": [], "placeholder": "[P]"}}
+{"func": "_replace_image_parts", "in": {"parts": [{"type": "text", "text": "a"}, {"type": "image_url", "image_url": {"url": "x"}}], "placeholder": "[P]"}}
+{"func": "_replace_image_parts", "in": {"parts": [{"type": "image"}], "placeholder": "[P]"}}
+{"func": "_replace_image_parts", "in": {"parts": [{"type": "input_image"}, {"type": "text", "text": "keep"}], "placeholder": "[P]"}}
+{"func": "_strip_images_from_content", "in": {"content": "plain"}}
+{"func": "_strip_images_from_content", "in": {"content": [{"type": "text", "text": "a"}]}}
+{"func": "_strip_images_from_content", "in": {"content": null}}
+{"func": "_strip_images_from_content", "in": {"content": []}}
+{"func": "_strip_images_from_content", "in": {"content": [{"type": "image"}]}}
+{"func": "_strip_images_from_content", "in": {"content": [{"type": "text", "text": "a"}, {"type": "image_url"}]}}
+{"func": "_image_part_label", "in": {"part": {"image_url": {"url": "https://x/img.png"}}}}
+{"func": "_image_part_label", "in": {"part": {"image_url": {"url": "http://x"}}}}
+{"func": "_image_part_label", "in": {"part": {"image_url": {"url": "data:image/png;base64,AA"}}}}
+{"func": "_image_part_label", "in": {"part": {"image_url": "https://direct"}}}
+{"func": "_image_part_label", "in": {"part": {"url": "https://alt"}}}
+{"func": "_image_part_label", "in": {"part": {}}}
+{"func": "_image_part_label", "in": {"part": {"image_url": {"url": 123}}}}
+{"func": "_str_arg", "in": {"args": {"command": "ls"}, "key": "command"}}
+{"func": "_str_arg", "in": {"args": {}, "key": "command"}}
+{"func": "_str_arg", "in": {"args": {"command": 5}, "key": "command"}}
+{"func": "_str_arg", "in": {"args": {"command": null}, "key": "command"}}
+{"func": "_str_arg", "in": {"args": {"command": true}, "key": "command"}}
+{"func": "_str_arg", "in": {"args": {"other": "x"}, "key": "command", "default": "def"}}
+{"func": "_str_arg", "in": {"args": {"command": "x"}, "key": "command", "default": "def"}}
+{"func": "_tool_content_has_images", "in": {"content": {"_multimodal": true, "content": [{"type": "image_url"}]}, "io": {"_tool_result_parts": [{"type": "image_url"}]}}}
+{"func": "_tool_content_has_images", "in": {"content": "x", "io": {"_tool_result_parts": ["text"]}}}
+{"func": "_tool_content_has_images", "in": {"content": "x", "io": {"_tool_result_parts": null}}}
+{"func": "_tool_content_has_images", "in": {"content": "x", "io": {"_tool_result_parts": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_tool_content_has_images", "in": {"content": "x", "io": {"_tool_result_parts": {"__script__": true, "ret": [{"type": "text", "text": "a"}, {"type": "image"}]}}}}
+{"func": "_tool_content_has_images", "in": {"content": "x"}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": "plain"}}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": [{"type": "text", "text": "a"}]}}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": [{"type": "text", "text": "a"}, {"type": "image_url"}]}, "io": {"_rewritten": {"role": "tool", "content": "[Attached image — stripped after compression]"}}}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": {"_multimodal": true, "text_summary": "a screenshot"}}, "io": {"_rewritten": {"role": "tool", "content": "[screenshot removed] a screenshot"}}}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": {"_multimodal": true}}, "io": {"_rewritten": {"role": "tool", "content": "[screenshot removed] [Attached image — stripped after compression]"}}}}
+{"func": "_strip_images_from_tool_msg", "in": {"msg": {"content": [{"type": "image"}]}, "io": {"_rewritten": {"__raise__": "PermissionError", "message": "denied"}}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": [], "io": {"_clarify_headless_fullmatch": false, "_is_clarify_non_response": false}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["yes", "no"], "io": {"_clarify_headless_fullmatch": false, "_is_clarify_non_response": false}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["[oneshot mode: no user available. waiting", "answer"], "io": {"_clarify_headless_fullmatch": [true, false], "_is_clarify_non_response": false}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["[single-query mode: no user available to answer q", ", rest", "answer"], "io": {"_clarify_headless_fullmatch": [false, true, true], "_is_clarify_non_response": false}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["notice", "keep"], "io": {"_clarify_headless_fullmatch": false, "_is_clarify_non_response": [true, false]}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["x"], "io": {"_clarify_headless_fullmatch": false, "_is_clarify_non_response": {"__raise__": "CancelledError", "message": "c"}}}}
+{"func": "_filter_legacy_clarify_answers", "in": {"values": ["a"]}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx", "io": {"_sanitize_memory_context": null, "_json_dumps": "\"unused\""}}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx", "io": {"_sanitize_memory_context": {"k": "v"}, "_json_dumps": "{\"k\": \"v\"}"}}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx", "io": {"_sanitize_memory_context": "a&b<c>d", "_json_dumps": "\"a&b<c>d\""}}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx", "io": {"_sanitize_memory_context": {"__raise__": "SystemExit", "message": "x"}}}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx", "io": {"_sanitize_memory_context": {"k": "v"}, "_json_dumps": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_memory_provider_section", "in": {"memory_context": "ctx"}}
+{"func": "resolve_model_threshold", "in": {"model": "m", "model_thresholds": {}, "default": 0.5}}
+{"func": "resolve_model_threshold", "in": {"model": "", "model_thresholds": {"a": 0.7}, "default": 0.5}}
+{"func": "resolve_model_threshold", "in": {"model": "gpt-astra", "model_thresholds": {"astra": 0.7}, "default": 0.5, "io": {"_model_threshold_key_rank": {"__script__": true, "ret": [4, 0]}}}}
+{"func": "resolve_model_threshold", "in": {"model": "x", "model_thresholds": {"a": 0.7, "b": 0.9}, "default": 0.5, "io": {"_model_threshold_key_rank": {"__script__": true, "ret": [[1, 0], [2, 0]]}}}}
+{"func": "resolve_model_threshold", "in": {"model": "x", "model_thresholds": {"a": 0.7, "b": 0.9}, "default": 0.5, "io": {"_model_threshold_key_rank": {"__script__": true, "ret": [[1, 0], [1, 0]]}}}}
+{"func": "resolve_model_threshold", "in": {"model": "x", "provider": " CODEX ", "model_thresholds": {"codex:a": 0.8}, "default": 0.5, "io": {"_model_threshold_key_rank": {"__script__": true, "ret": [1, 1]}}}}
+{"func": "resolve_model_threshold", "in": {"model": "x", "model_thresholds": {"a": 0.7}, "default": 0.5, "io": {"_model_threshold_key_rank": null}}}
+{"func": "resolve_model_threshold", "in": {"model": "x", "model_thresholds": {"a": 0.7}, "default": 0.5, "io": {"_model_threshold_key_rank": {"__raise__": "RuntimeError", "message": "r"}}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x", "io": {"_content_text_for_contains": " raw ", "_redact_compaction_text": " redacted ", "_gh_token_sub1": "gh_abc12345", "_ws_collapse": "  a  b ", "_elide": "  a  b ", "_gh_token_sub2": "final"}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x", "io": {"_content_text_for_contains": {"__raise__": "KeyboardInterrupt", "message": "k"}}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x", "io": {"_content_text_for_contains": "raw", "_redact_compaction_text": {"__raise__": "ValueError", "message": "v"}}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x", "io": {"_content_text_for_contains": "raw", "_redact_compaction_text": "r", "_gh_token_sub1": "g", "_ws_collapse": "w", "_elide": {"__raise__": "ZeroDivisionError", "message": "z"}}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x", "io": {"_content_text_for_contains": "raw", "_redact_compaction_text": "r", "_gh_token_sub1": "g", "_ws_collapse": "w", "_elide": "e", "_gh_token_sub2": {"__raise__": "RuntimeError", "message": "last"}}}}
+{"func": "_compact_fallback_turn", "in": {"value": "x"}}
+{"func": "is_user_originated_turn", "in": {"message": {"role": "user"}, "io": {"_user_originated_turn_view": {"role": "user"}}}}
+{"func": "is_user_originated_turn", "in": {"message": {"role": "user"}, "io": {"_user_originated_turn_view": null}}}
+{"func": "is_user_originated_turn", "in": {"message": "x", "io": {"_user_originated_turn_view": "view"}}}
+{"func": "is_user_originated_turn", "in": {"message": null, "io": {"_user_originated_turn_view": {}}}}
+{"func": "is_user_originated_turn", "in": {"message": {"role": "user"}, "io": {"_user_originated_turn_view": {"__raise__": "KeyboardInterrupt", "message": "k"}}}}
+{"func": "is_user_originated_turn", "in": {"message": {"role": "user"}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": true, "truncated": true, "empty_content": false, "overloaded": false, "model_not_found": false, "streaming_closed": false, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": true, "empty_content": false, "overloaded": false, "model_not_found": false, "streaming_closed": false, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": true, "overloaded": false, "model_not_found": false, "streaming_closed": false, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": false, "overloaded": true, "model_not_found": false, "streaming_closed": false, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": false, "overloaded": false, "model_not_found": true, "streaming_closed": false, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": false, "overloaded": false, "model_not_found": false, "streaming_closed": true, "timeout": false}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": false, "overloaded": false, "model_not_found": false, "streaming_closed": false, "timeout": true}}}
+{"func": "fallback_reason", "in": {"self": {"json_decode": false, "truncated": false, "empty_content": false, "overloaded": false, "model_not_found": false, "streaming_closed": false, "timeout": false}}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": 5000}, "context_length": 100000}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": 200000}, "context_length": 100000}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": null}, "context_length": 100000}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": 0}, "context_length": 100000}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": -5}, "context_length": 100000}}
+{"func": "_effective_threshold_cap", "in": {"self": {"threshold_tokens_cap": 30000}, "context_length": 20000}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": 0}}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": 1}}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": 2}}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": 3}}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": -1}}}
+{"func": "_tripped", "in": {"self": {"_ineffective_compression_count": 5}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 1000, "self": {"context_length": 10000}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 1000, "self": {"context_length": 5000}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 1000, "self": {}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 100, "self": {"context_length": 100000}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 100, "self": {"context_length": 100}}}
+{"func": "_tail_soft_ceiling", "in": {"token_budget": 0, "self": {"context_length": 1000}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": "short", "io": {"_redact_compaction_text": "short"}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": null, "io": {"_redact_compaction_text": ""}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "io": {"_redact_compaction_text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "io": {"_redact_compaction_text": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": "x", "io": {"_redact_compaction_text": {"__raise__": "ValueError", "message": "v"}}}}
+{"func": "_render_tool_args_for_summary", "in": {"self": {"_TOOL_ARGS_HEAD": 1200, "_TOOL_ARGS_MAX": 1500}, "arguments": "x"}}
