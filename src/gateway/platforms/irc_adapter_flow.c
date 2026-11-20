@@ -1173,7 +1173,10 @@ static json_t *irc__send_raw(irc_ctx_t *ctx, const json_t *args) {
 static json_t *irc_split_message_c(irc_ctx_t *ctx, const char *content, const char *target) {
     const json_t *mml = irc_self(ctx, "max_message_length");
     if (!mml) return irc_attr_err("IRCAdapter", "max_message_length");
-    long max_msg = (long)json_get_num(mml, 0, 0);
+    /* mml is a SCALAR state attr (int in the adapter domain) -- json_get_num
+     * is an OBJECT key lookup and returned its default 0 here, making
+     * limit 0 and _chunk_paragraph loop forever on any non-empty text. */
+    long max_msg = (mml->type == JSON_NUMBER) ? (long)mml->num_val : 0;
     char *plain = irc_strip_markdown_c(content);
     /* paragraphs = [p for p in plain.split("\n") if p.strip()] */
     json_t *paragraphs = json_array();

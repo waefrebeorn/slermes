@@ -59,9 +59,11 @@
  *  - Locks (_lock, _transcript_retry_lock) are inert in the single-threaded
  *    harness (no events). _get_transcript_drain_lock is a CLAIMED sibling and
  *    fires a seam.
- *  - Integer domain: JSON numbers are doubles; integral-valued numbers are
- *    ints (fixtures write integer literals, never 1.0 / 1e30, on paths where
- *    int-vs-float is observable: _bindable_text range gate / dumps).
+ *  - Integer domain: JSON numbers are doubles. A number arrives live as a
+ *    Python int ONLY when libjson's echo serializer renders it int-like
+ *    (integral and inside [-2^63, 2^63), the (long long) round-trip);
+ *    everything else arrives as a float (stx_echo_int). Fixtures may write
+ *    big integer literals (2^63 etc.): those reach the oracle as floats.
  *  - _bindable_text containers serialize with Python json.dumps(default=str)
  *    semantics: ", " / ": " separators, ensure_ascii, insertion key order,
  *    shortest-roundtrip float repr. Pure JSON values never hit the
@@ -189,6 +191,15 @@ static json_t *stx_obj_take(json_t *obj, const char *key) {
 
 /* ── Python str() for the scalar fixture domain ───────────────────────────── */
 static bool stx_integral(double d) { return d == floor(d); }
+/* Echo-domain int test: the harness echoes inputs through libjson, whose
+ * serializer renders a double int-like (%.0f) ONLY when it round-trips
+ * through (long long) — i.e. integral AND inside [-2^63, 2^63). Every other
+ * double is echoed %.17g, so the oracle's json.loads yields a Python FLOAT.
+ * An out-of-range integer literal in a fixture therefore arrives live as a
+ * float, never as an out-of-range int. */
+static bool stx_echo_int(double d) {
+    return stx_integral(d) && d >= -9223372036854775808.0 && d < 9223372036854775808.0;
+}
 /* Shortest-roundtrip float repr with Python formatting rules. */
 static char *stx_float_repr(double d) {
     char sci[64];
@@ -240,7 +251,7 @@ static char *stx_pystr(const json_t *v) {
         case JSON_STRING: return strdup(v->str_val ? v->str_val : "");
         case JSON_NUMBER: {
             double d = v->num_val;
-            if (stx_integral(d) && d < 9.2e18 && d > -9.2e18) {
+            if (stx_echo_int(d)) {
                 char buf[64];
                 snprintf(buf, sizeof(buf), "%lld", (long long)d);
                 return strdup(buf);
@@ -258,7 +269,7 @@ static const char *stx_type_name(const json_t *v) {
     if (!v || v->type == JSON_NULL) return "NoneType";
     switch (v->type) {
         case JSON_BOOL:   return "bool";
-        case JSON_NUMBER: return stx_integral(v->num_val) ? "int" : "float";
+        case JSON_NUMBER: return stx_echo_int(v->num_val) ? "int" : "float";
         case JSON_STRING: return "str";
         case JSON_ARRAY:  return "list";
         case JSON_OBJECT: return "dict";
@@ -333,7 +344,7 @@ static void stx_dumps_val(stx_strbuf *b, const json_t *v) {
         case JSON_BOOL: stx_sb_puts(b, v->bool_val ? "true" : "false"); return;
         case JSON_NUMBER: {
             double d = v->num_val;
-            if (stx_integral(d)) {
+            if (stx_echo_int(d)) {
                 char tmp[64];
                 snprintf(tmp, sizeof(tmp), "%.0f", d);
                 stx_sb_puts(b, tmp);
@@ -688,15 +699,12 @@ static json_t *stx_bindable_value(const json_t *v) {
     if (!v || v->type == JSON_NULL) return json_null();
     if (v->type == JSON_STRING || v->type == JSON_BOOL) return json_copy(v);
     if (v->type == JSON_NUMBER) {
-        double d = v->num_val;
-        if (stx_integral(d)) {
-            if (d >= -9223372036854775808.0 && d < 9223372036854775808.0)
-                return json_copy(v);
-            char buf[64];
-            snprintf(buf, sizeof(buf), "%.0f", d);
-            return json_string(buf);
-        }
-        return json_copy(v);   /* float */
+        /* Echo domain: an int-like double (stx_echo_int) arrives as a Python
+         * int INSIDE sqlite's signed-64-bit range; every other double arrives
+         * as a float. Both pass through unchanged — the out-of-range-int
+         * json.dumps branch is unreachable here because the echo cannot
+         * deliver an out-of-range int (it renders those %.17g -> float). */
+        return json_copy(v);
     }
     char *s = stx_dumps(v);
     json_t *r = json_string(s);

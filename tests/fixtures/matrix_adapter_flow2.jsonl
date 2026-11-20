@@ -1,0 +1,230 @@
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": true}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": false}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "true"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "1"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "yes"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "TRUE"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "false"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "0"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "no"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": ""}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": "bogus"}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": 5}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": null}}}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}}, "fc": true}
+{"func": "_extra_truthy", "in": {"args": {"extra": {}, "key": "k", "env_name": "E", "default": ""}, "io": {"extra_or_secret": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": true}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": false}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "false"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "0"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "off"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "no"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": ""}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "bogus"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": null}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "true"}}}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}}, "fc": true}
+{"func": "_parse_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "stop"}}}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": false}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": true}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "false"}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "off"}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": ""}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": "yes"}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": null}}}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}}, "fc": true}
+{"func": "_parse_thread_require_mention", "in": {"args": {"extra": {}}, "io": {"extra_or_secret": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_reset_clock_skew_detector", "in": {"args": {}, "state": {}}}
+{"func": "_reset_clock_skew_detector", "in": {"args": {}, "state": {"_late_grace_drops": 5, "_late_grace_skew": 100, "_clock_skew_warned": true}}}
+{"func": "_reset_clock_skew_detector", "in": {"args": {}, "state": {"other": 1}}}
+{"func": "_reset_clock_skew_detector", "in": {"args": {}, "state": {"_clock_skew_warned": true}}}
+{"func": "_reset_clock_skew_detector", "in": {"args": {}, "state": {"_late_grace_drops": 2, "_late_grace_skew": 50.5, "_clock_skew_warned": false, "extra": "x"}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 50, "self": {"_startup_ts": 100}}, "io": {"time.time": 200}, "state": {"_late_grace_drops": 2, "_late_grace_skew": 100, "_clock_skew_warned": true}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 50, "self": {"_startup_ts": 100}}, "io": {"time.time": 120}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 1, "_late_grace_skew": 100, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 2, "_late_grace_skew": 100, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 800, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 1, "_late_grace_skew": 100, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 1995, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 0, "self": {"_startup_ts": 100000}}, "io": {"time.time": 200000}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "io": {"time.time": null}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": null, "self": {"_startup_ts": 1000}}, "io": {"time.time": 2000}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "io": {"time.time": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}}
+{"func": "_note_late_grace_drop", "in": {"args": {"event_ts": 900, "self": {"_startup_ts": 1000}}, "state": {"_late_grace_drops": 0, "_late_grace_skew": 0, "_clock_skew_warned": false}}, "fc": true}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "room_id": "!r:s", "self": {"_authorization_check": true}}, "io": {"self._is_sender_authorized": true}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {"_authorization_check": true}}, "io": {"self._is_sender_authorized": false}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {"_authorization_check": true}}, "io": {"self._is_sender_authorized": 1}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {"_authorization_check": null}}, "io": {"get_scoped_secret": "yes"}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {"_allowed_user_ids": ["@a:s"]}}, "io": {"get_scoped_secret": "false"}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@b:s", "self": {"_allowed_user_ids": ["@a:s"]}}, "io": {"get_scoped_secret": "false"}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@x:s", "self": {"_allowed_user_ids": []}}, "io": {"get_scoped_secret": ""}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {}}, "io": {"get_scoped_secret": null}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {}}, "io": {"get_scoped_secret": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {"_authorization_check": true}}, "io": {"self._is_sender_authorized": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_authorized_user", "in": {"args": {"user_id": "@a:s", "self": {}}}, "fc": true}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": true}}}, "io": {"self._is_authorized_user": true, "self._schedule_invite_join": null}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": true}}}, "io": {"self._is_authorized_user": false}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": false}}}, "io": {"self._is_authorized_user": true, "self._schedule_invite_join": null}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "", "content": {"is_direct": true}}}, "io": {"self._is_authorized_user": true, "self._schedule_invite_join": null}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s"}}, "io": {"self._is_authorized_user": true, "self._schedule_invite_join": null}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": true}}}, "io": {"self._is_authorized_user": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": true}}}, "io": {"self._is_authorized_user": true, "self._schedule_invite_join": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_on_invite", "in": {"args": {"event": {"room_id": "!r:s", "sender": "@a:s", "content": {"is_direct": true}}}}, "fc": true}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": null}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {}}}}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": "x"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": null}}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}}}}}, "state": {"_joined_rooms": ["!r1"]}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}}}}}, "io": {"self._extract_invite_dm_signal": [[true, "@a:s"]], "self._is_authorized_user": true, "self._schedule_invite_join": null}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}}}}}, "io": {"self._extract_invite_dm_signal": [[false, "@a:s"]], "self._is_authorized_user": false}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}, "!r2": {}}}}}, "io": {"self._extract_invite_dm_signal": [[true, "@b:s"]], "self._is_authorized_user": true, "self._schedule_invite_join": null}, "state": {"_joined_rooms": ["!r1"]}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}}}}}, "io": {"self._extract_invite_dm_signal": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_schedule_pending_invite_joins", "in": {"args": {"sync_data": {"rooms": {"invite": {"!r1": {}}}}}, "state": {"_joined_rooms": []}}, "fc": true}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": {"membership": "invite", "is_direct": true}, "sender": "@a:s"}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": {"membership": "invite", "is_direct": false}, "sender": "@a:s"}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": {"membership": "invite", "is_direct": true}}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": {"membership": "invite", "is_direct": true}, "sender": "@a:s"}]}}, "self": {"_user_id": ""}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": "x", "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": "x"}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": "x"}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": {"membership": "join", "is_direct": true}, "sender": "@a:s"}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@other:s", "content": {"membership": "invite", "is_direct": true}, "sender": "@a:s"}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:s", "content": "x"}]}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_extract_invite_dm_signal", "in": {"args": {"invited_room": {"invite_state": {"events": []}}, "self": {"_user_id": "@bot:s"}}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "", "self": {"_client": {"join_room": true}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "state": {"_joined_rooms": ["!r"]}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": null}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "io": {"client.join_room": null, "self._invalidate_room_identities": null, "self._refresh_dm_cache": null}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true, "leave_room": true}}}, "io": {"client.join_room": {"__script__": true, "raise": {"type": "RuntimeError", "message": "No servers in room"}}, "client.leave_room": null}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true, "leave_room": true}}}, "io": {"client.join_room": {"__script__": true, "raise": {"type": "RuntimeError", "message": "room not found"}}, "client.leave_room": null}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true, "leave_room": true}}}, "io": {"client.join_room": {"__script__": true, "raise": {"type": "RuntimeError", "message": "transient"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "io": {"client.join_room": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "io": {"client.join_room": null, "self._invalidate_room_identities": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "io": {"client.join_room": null, "self._invalidate_room_identities": null, "self._refresh_dm_cache": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true, "leave_room": true}}}, "io": {"client.join_room": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no servers"}}, "client.leave_room": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_join_room_by_id", "in": {"args": {"room_id": "!r", "self": {"_client": {"join_room": true}}}, "state": {"_joined_rooms": []}}, "fc": true}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": null}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"require_dict": false, "self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__attr__": {"content": {"@a": ["!r1"]}}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"require_dict": true, "self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__attr__": {"content": {"@a": ["!r1"]}}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"require_dict": true, "self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__attr__": {"content": ["!r1"]}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"require_dict": false, "self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__attr__": {"content": ["!r1"]}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"__attr__": {}}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": {"@a": ["!r1"]}}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": null}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}, "io": {"client.get_account_data": "x"}}}
+{"func": "_fetch_m_direct", "in": {"args": {"self": {"_client": {"get_account_data": true}}}}, "fc": true}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": null}}, "state": {"_joined_rooms": []}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": null}, "state": {"_joined_rooms": []}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": {"@a": ["!r1", "!r2"], "@b": ["!r3"]}, "self._invalidate_room_identities": null}, "state": {"_joined_rooms": ["!r1", "!r3", "!r9"]}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": {}, "self._invalidate_room_identities": null}, "state": {"_joined_rooms": ["!r1"]}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": {"__script__": true, "ret": ["x"]}}, "state": {"_joined_rooms": []}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": []}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "io": {"self._fetch_m_direct": {"@a": ["!r1"]}, "self._invalidate_room_identities": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_joined_rooms": ["!r1"]}}}
+{"func": "_refresh_dm_cache", "in": {"args": {"self": {"_client": {"mxid": "@bot:s"}}}, "state": {"_joined_rooms": []}}, "fc": true}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": null}}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": null, "client.set_account_data": null, "self._invalidate_room_identities": null}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": {"@a": ["!r"]}, "self._invalidate_room_identities": null}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": {"@a": ["!other"]}, "client.set_account_data": null, "self._invalidate_room_identities": null}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": {"@a": "notlist"}, "client.set_account_data": null, "self._invalidate_room_identities": null}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": null, "client.set_account_data": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "self._invalidate_room_identities": null}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": null, "client.set_account_data": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "io": {"self._fetch_m_direct": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"_dm_rooms": {}}}}
+{"func": "_record_dm_room", "in": {"args": {"room_id": "!r", "inviter": "@a", "self": {"_client": {"set_account_data": true}}}, "state": {"_dm_rooms": {}}}, "fc": true}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}, "io": {"self._resolve_room_identity": {"__attr__": {"chat_type": "dm"}}}}}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}, "io": {"self._resolve_room_identity": {"__attr__": {"chat_type": "group"}}}}}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}, "io": {"self._resolve_room_identity": null}}}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}, "io": {"self._resolve_room_identity": {"chat_type": "dm"}}}}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}, "io": {"self._resolve_room_identity": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_is_dm_room", "in": {"args": {"room_id": "!r"}}, "fc": true}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": null}}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}, "io": {"client.send_message_event": "$react"}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}, "io": {"client.send_message_event": 123}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}, "io": {"client.send_message_event": null}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}, "io": {"client.send_message_event": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}, "io": {"client.send_message_event": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_send_reaction", "in": {"args": {"room_id": "!r", "event_id": "$e", "emoji": "eyes", "self": {"_client": {"send_message_event": true}}}}, "fc": true}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": null}}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"set_fully_read_marker": true}}}, "io": {"client.set_fully_read_marker": null}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"send_receipt": true}}}, "io": {"client.send_receipt": null}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"set_read_markers": true}}}, "io": {"client.set_read_markers": null}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"mxid": "@bot:s"}}}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"send_receipt": true}}}, "io": {"client.send_receipt": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"send_receipt": true}}}, "io": {"client.send_receipt": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "send_read_receipt", "in": {"args": {"room_id": "!r", "event_id": "$e", "self": {"_client": {"send_receipt": true}}}}, "fc": true}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "level": "warning", "self": {"_client": null}}}}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "self": {"_client": {"mxid": "@bot:s"}}}, "io": {"coro_factory": null}}}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "self": {"_client": {"mxid": "@bot:s"}}}, "io": {"coro_factory": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "self": {"_client": {"mxid": "@bot:s"}}}, "io": {"coro_factory": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "self": {"_client": {"mxid": "@bot:s"}}}, "io": {"coro_factory": {"__script__": true, "raise": {"type": "CancelledError", "message": ""}}}}}
+{"func": "_client_op", "in": {"args": {"ok_msg": ["ok"], "err_msg": "err", "self": {"_client": {"mxid": "@bot:s"}}}}, "fc": true}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "x", "self": {"_client": null}}}}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "x", "self": {"_client": {"redact": true}}}, "io": {"client.redact": null}}}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "", "self": {"_client": {"redact": true}}}, "io": {"client.redact": null}}}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "x", "self": {"_client": {"redact": true}}}, "io": {"client.redact": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "x", "self": {"_client": {"redact": true}}}, "io": {"client.redact": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "redact_message", "in": {"args": {"room_id": "!r", "event_id": "$e", "reason": "x", "self": {"_client": {"redact": true}}}}, "fc": true}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": null}}}}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": {"invite_user": true}}}, "io": {"client.invite_user": null}}}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": {"invite_user": true}}}, "io": {"client.invite_user": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": {"invite_user": true}}}, "io": {"client.invite_user": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": {"invite_user": true}}}, "io": {"client.invite_user": {"__script__": true, "raise": {"type": "CancelledError", "message": ""}}}}}
+{"func": "invite_user", "in": {"args": {"room_id": "!r", "user_id": "@a:s", "self": {"_client": {"invite_user": true}}}}, "fc": true}
+{"func": "set_presence", "in": {"args": {"state": "online", "status_msg": "", "self": {"_client": null}}}}
+{"func": "set_presence", "in": {"args": {"state": "online", "status_msg": "", "self": {"_client": {"set_presence": true}}}, "io": {"client.set_presence": null}}}
+{"func": "set_presence", "in": {"args": {"state": "offline", "status_msg": "busy", "self": {"_client": {"set_presence": true}}}, "io": {"client.set_presence": null}}}
+{"func": "set_presence", "in": {"args": {"state": "unavailable", "status_msg": "", "self": {"_client": {"set_presence": true}}}, "io": {"client.set_presence": null}}}
+{"func": "set_presence", "in": {"args": {"state": "bogus", "status_msg": "", "self": {"_client": {"set_presence": true}}}}}
+{"func": "set_presence", "in": {"args": {"state": 5, "status_msg": "", "self": {"_client": {"set_presence": true}}}}}
+{"func": "set_presence", "in": {"args": {"state": ["x"], "status_msg": "", "self": {"_client": {"set_presence": true}}}}}
+{"func": "set_presence", "in": {"args": {"state": "online", "status_msg": "", "self": {"_client": {"set_presence": true}}}, "io": {"client.set_presence": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "set_presence", "in": {"args": {"state": "online", "status_msg": "", "self": {"_client": {"set_presence": true}}}, "io": {"client.set_presence": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "set_presence", "in": {"args": {"state": "online", "status_msg": "", "self": {"_client": {"set_presence": true}}}}, "fc": true}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": null}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}}}}, "io": {"state_store.get_members": ["a", "b"]}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}, "joined_members": true}}}, "io": {"state_store.get_members": null, "client.joined_members": {"__attr__": {"members": ["a", "b", "c"]}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}, "joined_members": true}}}, "io": {"state_store.get_members": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "client.joined_members": {"__attr__": {"members": ["a"]}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}, "joined_members": true}}}, "io": {"state_store.get_members": 5, "client.joined_members": {"__attr__": {"members": ["a", "b"]}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"joined_members": true}}}, "io": {"client.joined_members": {"__attr__": {"members": ["a", "b", "c"]}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"joined_members": true}}}, "io": {"client.joined_members": null}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"joined_members": true}}}, "io": {"client.joined_members": {"__attr__": {}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"mxid": "@bot:s"}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}}}}, "io": {"state_store.get_members": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"joined_members": true}}}, "io": {"client.joined_members": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_get_room_member_count", "in": {"args": {"room_id": "!r", "self": {"_client": {"state_store": {"get_members": true}}}}}, "fc": true}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": null}}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"mxid": "@bot:s"}}}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"name": "Room"}, "self._state_event_value": "Room"}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"name": "Room"}, "self._state_event_value": "  "}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"name": "Room"}, "self._state_event_value": null}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"name": "Room"}, "self._state_event_value": 5}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}, "io": {"client.get_state_event": {"name": "Room"}, "self._state_event_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_get_room_state_value", "in": {"args": {"room_id": "!r", "event_type": "m.room.name", "key": "name", "self": {"_client": {"get_state_event": true}}}}, "fc": true}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}, "io": {"state_store.get_member": {"__attr__": {"displayname": "Alice"}}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}, "io": {"state_store.get_member": {"__attr__": {"displayname": ""}}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}, "io": {"state_store.get_member": null}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}, "io": {"state_store.get_member": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"mxid": "@bot:s"}}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "bob", "self": {"_client": null}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob", "self": {"_client": null}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}, "io": {"state_store.get_member": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": null}}}}
+{"func": "_get_display_name", "in": {"args": {"room_id": "!r", "user_id": "@bob:s", "self": {"_client": {"state_store": {"get_member": true}}}}}, "fc": true}
+{"func": "_set_typing", "in": {"args": {"chat_id": "!r", "timeout": 5000, "self": {"_client": null}}}}
+{"func": "_set_typing", "in": {"args": {"chat_id": "!r", "timeout": 5000, "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": null}}}
+{"func": "_set_typing", "in": {"args": {"chat_id": "!r", "timeout": 5000, "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_set_typing", "in": {"args": {"chat_id": "!r", "timeout": 5000, "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_set_typing", "in": {"args": {"chat_id": "!r", "timeout": 5000, "self": {"_client": {"set_typing": true}}}}, "fc": true}
+{"func": "send_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": null}}}}
+{"func": "send_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": null}}}
+{"func": "send_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "send_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "send_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}}, "fc": true}
+{"func": "stop_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": null}}}}
+{"func": "stop_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": null}}}
+{"func": "stop_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "stop_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}, "io": {"client.set_typing": {"__script__": true, "raise": {"type": "CancelledError", "message": ""}}}}}
+{"func": "stop_typing", "in": {"args": {"chat_id": "!r", "self": {"_client": {"set_typing": true}}}}, "fc": true}

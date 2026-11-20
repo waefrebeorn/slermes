@@ -1237,8 +1237,9 @@ json_t *trp_commit_tool_result(const json_t *in, const trp_io_t *io,
     r = trp_call(io, "stamp_data_use", a, exc);
     if (*exc) goto done;
     json_free(r);
-    /* messages.append(tool_message) */
-    json_append(messages, json_copy(tool_message));
+    /* messages.append(tool_message) — a None message stays in the list as
+     * null; json_append(arr, NULL) would silently drop it. */
+    json_append(messages, tool_message ? json_copy(tool_message) : json_null());
     /* if not _flush_session_db_after_tool_progress(...): return None */
     {
         char stage[256];
@@ -2072,7 +2073,7 @@ json_t *trp_run_sequential_call(const json_t *in, const trp_io_t *io,
         pending = trp_raise_fmt("TypeError", "'%s' object is not iterable",
                                 trp_type_name(mk));
         json_free(mk);
-        goto finally;
+        goto excepts;   /* dict(None,...) raises INSIDE the try -> except Exception */
     }
     a = json_object();
     for (size_t i = 0; i < mk->c.count; i++)

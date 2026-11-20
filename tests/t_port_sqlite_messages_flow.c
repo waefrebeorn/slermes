@@ -130,11 +130,15 @@ int main(int argc, char **argv) {
         }
         const char *func = json_get_str(c, "func", "");
         const json_t *in = json_obj_get(c, "in");
+        /* Echo the PRISTINE input: the port applies stamp scripts to its
+         * working dicts IN PLACE, and the oracle drives live with this
+         * echoed "in" -- serializing after the run would feed it pre-stamped
+         * inputs (enter-event args + the _row_id repair gate diverge). */
+        char *in_s = json_serialize(in);
         json_t *empty = json_object();
         json_t *out = json_object();
         run_case(func, in ? in : empty, out);
         json_free(empty);
-        char *in_s = json_serialize(in);
         char *out_s = json_serialize(out);
         json_t *func_node = json_string(func);
         char *func_s = json_serialize(func_node);

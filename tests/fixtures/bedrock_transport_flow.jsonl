@@ -1,0 +1,240 @@
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "openai.gpt-6-astra", "io": {"parse_bedrock_openai_model_id": ["openai.gpt-6-astra", ""]}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "us.openai.gpt-6-astra", "io": {"parse_bedrock_openai_model_id": ["openai.gpt-6-astra", "us"]}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "x", "io": {"parse_bedrock_openai_model_id": null}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "openai.gpt-6-astra", "io": {}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "openai.gpt-6-astra", "io": {"parse_bedrock_openai_model_id": {"__raise__": "RuntimeError", "msg": "table gone"}}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "openai.gpt-6-astra", "io": {"parse_bedrock_openai_model_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": "openai.gpt-6-astra", "io": {"parse_bedrock_openai_model_id": ["only-one"]}}}
+{"func": "bedrock_openai_uses_mantle", "in": {"model_id": null, "io": {"parse_bedrock_openai_model_id": null}}}
+{"func": "_tool_use_block", "in": {"tool_use_id": "t1", "name": "fn", "input_dict": {"a": 1}}}
+{"func": "_tool_use_block", "in": {"tool_use_id": "", "name": "", "input_dict": {}}}
+{"func": "_tool_use_block", "in": {"tool_use_id": null, "name": null, "input_dict": null}}
+{"func": "_tool_use_block", "in": {"tool_use_id": 5, "name": true, "input_dict": [1, "x"]}}
+{"func": "_tool_use_block", "in": {"tool_use_id": "t", "name": "n", "input_dict": {"nested": {"k": [1, 2]}}}}
+{"func": "_reasoning_text_block", "in": {"text": "think", "signature": "sig"}}
+{"func": "_reasoning_text_block", "in": {"text": "think", "signature": null}}
+{"func": "_reasoning_text_block", "in": {"text": null, "signature": "sig"}}
+{"func": "_reasoning_text_block", "in": {"text": 5, "signature": ""}}
+{"func": "_reasoning_text_block", "in": {"text": "t", "signature": 5}}
+{"func": "_reasoning_text_block", "in": {"text": "", "signature": "sig"}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": "aGVsbG8=", "io": {"_decode_redacted": {"__bytes__": [104, 101, 108, 108, 111]}}}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": "!!!", "io": {"_decode_redacted": null}}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": "aGVsbG8=", "io": {}}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": "x", "io": {"_decode_redacted": {"__raise__": "ValueError", "msg": "bad b64"}}}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": "x", "io": {"_decode_redacted": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "_redacted_reasoning_block", "in": {"encoded": null, "io": {"_decode_redacted": null}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": [{"id": "c1", "function": {"arguments": "{\"x\": 1}"}}], "anthropic_content_blocks": [{"type": "thinking", "thinking": "t", "signature": "s"}, {"type": "tool_use", "id": "c1", "name": "fn"}]}, "io": {"_parse_tool_args": {"x": 1}}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"anthropic_content_blocks": [{"type": "text", "text": "  "}, {"type": "text", "text": "keep"}, {"type": "redacted_thinking", "data": "AQI="}]}, "io": {"_decode_redacted": {"__bytes__": [1, 2]}}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"anthropic_content_blocks": [{"type": "image"}, "not-a-dict", {"type": "tool_use", "id": "missing", "name": "fn", "input": {"d": 1}}]}, "io": {}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": null, "io": {}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": [{"id": "c1", "function": "oops"}]}, "io": {}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": [{"id": "c1", "function": {}}]}, "io": {}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": [{"id": "c1", "function": {"arguments": "{}"}}, {"id": "c1", "function": {"arguments": "{}"}}], "anthropic_content_blocks": [{"type": "tool_use", "id": "c1"}]}, "io": {"_parse_tool_args": {"$seq": [{"first": 1}, {"last": 2}]}}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": 5}, "io": {}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"anthropic_content_blocks": [{"type": "redacted_thinking", "data": "x"}]}, "io": {"_decode_redacted": {"__raise__": "RuntimeError", "msg": "sealed"}}}}
+{"func": "_anthropic_ordered_blocks", "in": {"msg": {"tool_calls": [null, {"id": "c2", "function": null}], "anthropic_content_blocks": [{"type": "tool_use", "id": "c2", "name": "f"}]}, "io": {"_parse_tool_args": {}}}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": "m1"}]}}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": [{"type": "thinking", "model": "m"}]}}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": 5}]}}}
+{"func": "_issuer", "in": {"msg": null}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": 5}}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": "xy"}}}
+{"func": "_issuer", "in": {"msg": {"reasoning_details": [null, {"type": "bedrock.native_assistant", "model": "m2"}]}}}
+{"func": "_issuer", "in": {"msg": {}}}
+{"func": "_minted_outside_claude", "in": {"issuer": null, "io": {}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "anthropic.claude-3-5-sonnet-20240620-v1:0", "io": {"_converse_replay_policy": "signed"}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "openai.gpt-6-astra", "io": {"_converse_replay_policy": "issuer"}}}
+{"func": "_minted_outside_claude", "in": {"issuer": 5, "io": {}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {}, "state": {"_inference_profile_model_cache": {"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123"}}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_converse_replay_policy": "unsigned"}, "state": {"_inference_profile_model_cache": {"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}]}, "_converse_replay_policy": "signed"}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "anthropic.claude-3-5-sonnet-20240620-v1:0", "io": {"_converse_replay_policy": {"__raise__": "RuntimeError", "msg": "policy gone"}}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "anthropic.claude-3-5-sonnet-20240620-v1:0", "io": {}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {"__raise__": "RuntimeError", "msg": "no creds"}, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_minted_outside_claude", "in": {"issuer": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {"__raise__": "SystemExit", "msg": "bye"}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": "anthropic.claude-3-5-sonnet-20240620-v1:0"}]}, "io": {"_converse_replay_policy": "signed"}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": "openai.gpt-6-astra"}]}, "io": {"_converse_replay_policy": "issuer"}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": {"reasoning_details": []}, "io": {}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": null, "io": {}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123"}]}, "io": {"_converse_replay_policy": "unsigned"}, "state": {"_inference_profile_model_cache": {"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}}}}
+{"func": "reasoning_minted_outside_claude", "in": {"msg": {"reasoning_details": [{"type": "bedrock.native_assistant", "model": "anthropic.claude-3-5-sonnet-20240620-v1:0"}]}, "io": {}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": {"reasoningText": {"text": "   "}}}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"text": "hello"}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": "flat"}}}
+{"func": "_unsigned_reasoning", "in": {"block": null}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": {"reasoningText": "flat"}}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": {"reasoningText": {"text": 5}}}}}
+{"func": "_unsigned_reasoning", "in": {"block": {"reasoningContent": {"reasoningText": {"text": " t "}, "redactedContent": "x"}}}}
+{"func": "_verbatim", "in": {"block": {"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}}}
+{"func": "_verbatim", "in": {"block": null}}
+{"func": "_verbatim", "in": {"block": "plain"}}
+{"func": "_verbatim", "in": {"block": [1, 2]}}
+{"func": "_verbatim", "in": {"block": 5}}
+{"func": "_without_reasoning", "in": {"block": {"reasoningContent": {}, "text": "x"}}}
+{"func": "_without_reasoning", "in": {"block": {"text": "hello"}}}
+{"func": "_without_reasoning", "in": {"block": "xxreasoningContentyy"}}
+{"func": "_without_reasoning", "in": {"block": "plain"}}
+{"func": "_without_reasoning", "in": {"block": null}}
+{"func": "_without_reasoning", "in": {"block": 5}}
+{"func": "_without_reasoning", "in": {"block": ["reasoningContent"]}}
+{"func": "_without_reasoning", "in": {"block": ["other"]}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}, {"text": "hello"}], "keep": "_without_reasoning"}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}, {"text": "hello"}], "keep": "_verbatim"}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}, {"text": "hello"}, {"reasoningContent": {"redactedContent": {"__bytes__": [1, 2, 3]}}}], "keep": "_unsigned_reasoning"}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"text": "hello"}], "keep": null}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"text": "hello"}], "keep": "bogus"}}
+{"func": "_filter_reasoning", "in": {"blocks": null, "keep": "_verbatim"}}
+{"func": "_filter_reasoning", "in": {"blocks": [], "keep": null}}
+{"func": "_filter_reasoning", "in": {"blocks": ["not-a-dict"], "keep": "_unsigned_reasoning"}}
+{"func": "_filter_reasoning", "in": {"blocks": [{"reasoningContent": {"reasoningText": {"text": ""}}}], "keep": "_unsigned_reasoning"}}
+{"func": "_without_cache_points", "in": {"blocks": [{"text": "hello"}, {"cachePoint": {"type": "default"}}, {"text": "hello"}]}}
+{"func": "_without_cache_points", "in": {"blocks": [{"text": "hello"}, {"text": "hello"}]}}
+{"func": "_without_cache_points", "in": {"blocks": "not-a-list"}}
+{"func": "_without_cache_points", "in": {"blocks": []}}
+{"func": "_without_cache_points", "in": {"blocks": [{"cachePoint": {"type": "default"}, "text": "x"}]}}
+{"func": "_without_cache_points", "in": {"blocks": null}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": [{"reasoningContent": {"redactedContent": {"__bytes__": [1, 2, 3]}}}, {"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}, {"text": "hello"}]}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": [{"reasoningContent": {"reasoningText": {"text": "think", "signature": "sig"}}}, {"text": "hello"}]}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": null}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": [{"reasoningContent": "flat"}]}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": []}}
+{"func": "_without_redacted_reasoning", "in": {"blocks": [{"reasoningContent": {"redactedContent": null}}]}}
+{"func": "note_cache_point_rejection", "in": {"model_id": "Anthropic.Claude", "placement": "tools", "state": {"_CACHE_POINT_REJECTIONS": {}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": "m", "placement": "other", "state": {"_CACHE_POINT_REJECTIONS": {}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": null, "placement": "tools", "state": {"_CACHE_POINT_REJECTIONS": {}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": null, "placement": "other", "state": {"_CACHE_POINT_REJECTIONS": {}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": "M", "placement": "tools", "state": {"_CACHE_POINT_REJECTIONS": {"m": ["tools"]}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": "M", "placement": "system", "state": {"_CACHE_POINT_REJECTIONS": {"m": ["tools"]}}}}
+{"func": "note_cache_point_rejection", "in": {"model_id": "M", "placement": "messages", "state": {"_CACHE_POINT_REJECTIONS": {"m": ["system", "tools"]}}}}
+{"func": "reset_cache_point_rejections", "in": {"state": {"_CACHE_POINT_REJECTIONS": {"m": ["tools"]}}}}
+{"func": "reset_cache_point_rejections", "in": {"state": {"_CACHE_POINT_REJECTIONS": {}}}}
+{"func": "reset_cache_point_rejections", "in": {}}
+{"func": "reset_cache_point_rejections", "in": {"state": {"_CACHE_POINT_REJECTIONS": {"a": ["tools"], "b": ["system"]}}}}
+{"func": "reset_cache_point_rejections", "in": {"state": {"_CACHE_POINT_REJECTIONS": {"m": ["tools"]}, "_inference_profile_model_cache": {"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"modelId": "m1", "messages": []}, "logger_warning": null}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "plain error", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"__same__": true}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": null, "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"__raise__": "RuntimeError", "msg": "strip gone"}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"__raise__": "GeneratorExit", "msg": "gen"}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": null, "io": {"strip_redacted_reasoning": {"__same__": true}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": null, "io": {"strip_redacted_reasoning": {"a": 1}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"messages": []}, "io": {"strip_redacted_reasoning": {"messages": [{"text": "hello"}]}, "logger_warning": null}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": null}, "io": {"strip_redacted_reasoning": {"x": 1}, "logger_warning": null}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": 5}, "io": {"strip_redacted_reasoning": {"x": 1}, "logger_warning": null}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": null, "logger_warning": null}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "ValidationException: replayed redacted reasoning is sealed", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"x": 1}, "logger_warning": {"__raise__": "RuntimeError", "msg": "log gone"}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "validationexception xx encrypt yy", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {"strip_redacted_reasoning": {"__same__": true}}}}
+{"func": "recover_from_redacted_reasoning_rejection", "in": {"exc": "redacted before ValidationException", "kwargs": {"modelId": "m1", "messages": [{"role": "user", "content": [{"text": "hello"}]}]}, "io": {}}}
+{"func": "_encode_redacted", "in": {"redacted": {"__bytes__": [104, 105]}}}
+{"func": "_encode_redacted", "in": {"redacted": {"__bytearray__": [0, 255, 128]}}}
+{"func": "_encode_redacted", "in": {"redacted": "already-str"}}
+{"func": "_encode_redacted", "in": {"redacted": null}}
+{"func": "_encode_redacted", "in": {"redacted": 5}}
+{"func": "_encode_redacted", "in": {"redacted": {"__bytes__": []}}}
+{"func": "_encode_redacted", "in": {"redacted": {"other": 1}}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "t1", "name": "fn", "input_dict": {"a": 1}}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "", "name": "", "input_dict": {}}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "t", "name": "f", "input_dict": [1, "x", null, true]}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "t", "name": "f", "input_dict": "str"}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "t", "name": "f", "input_dict": null}}
+{"func": "_tool_call_ns", "in": {"tool_use_id": "t", "name": "f", "input_dict": {"z": 1, "a": {"k": [1, 2]}}}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [{"reasoningContent": {"text": "t", "signature": "s"}}]}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [{"reasoningContent": {"redactedContentBase64": "AQI="}}]}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [{"reasoningContent": {"text": "t", "signature": "s", "redactedContentBase64": "AQI="}}]}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [null, {"text": "hello"}, {"reasoningContent": "flat"}]}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": null}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": "xy"}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [{"reasoningContent": {"text": "", "signature": "s"}}]}}
+{"func": "_persisted_reasoning_details", "in": {"ordered_blocks": [{"reasoningContent": {"text": "t", "signature": 5}}]}}
+{"func": "_model_entry", "in": {"model_id": "m1", "name": " Name ", "provider": "p", "input_mods": ["TEXT"], "output_mods": ["TEXT"]}}
+{"func": "_model_entry", "in": {"model_id": "m1", "name": null, "provider": "p", "input_mods": [], "output_mods": []}}
+{"func": "_model_entry", "in": {"model_id": "m1", "name": "", "provider": "p", "input_mods": ["TEXT"], "output_mods": ["TEXT"]}}
+{"func": "_model_entry", "in": {"model_id": "m1", "name": 5, "provider": "p", "input_mods": [], "output_mods": []}}
+{"func": "_model_entry", "in": {"model_id": 5, "name": null, "provider": "p", "input_mods": [], "output_mods": []}}
+{"func": "_model_entry", "in": {"model_id": "m1", "name": false, "provider": "p", "input_mods": ["TEXT", "IMAGE"], "output_mods": ["TEXT"]}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"enabled": false}, "max_tokens": 1000}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {}, "max_tokens": null}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": "MINIMAL"}, "max_tokens": 100}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": "high"}, "max_tokens": 100}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": null}, "max_tokens": null}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": 5}, "max_tokens": null}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": null, "max_tokens": null}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"enabled": 0}, "max_tokens": null}}
+{"func": "_nova_converse_reasoning", "in": {"model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": "low"}, "max_tokens": null}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {"enabled": true}, "max_tokens": 4096, "io": {"_thinking_kwargs": {"thinking": {"type": "enabled"}, "temperature": 0.7, "max_tokens": 8000}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"thinking": {"type": "disabled"}}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-opus-20240229-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"thinking": {"type": "enabled"}}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": null, "io": {"_thinking_kwargs": {"thinking": {"type": "enabled"}, "temperature": 1}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": null}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"thinking": "flat"}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": null, "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"thinking": {"type": "enabled"}}}}}
+{"func": "_claude_converse_reasoning", "in": {"model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"_thinking_kwargs": {"thinking": {"type": "enabled"}, "output_config": {"effort": "high"}}}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {"maxTokens": 100}, "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {"enabled": true}, "max_tokens": 4096, "io": {"is_anthropic_bedrock_model": true, "_thinking_kwargs": {"thinking": {"type": "enabled"}}}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {}, "model": "amazon.nova-2-lite-v1:0", "reasoning_config": {}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {"a": 1}, "inference_config": {"b": 2}, "model": "meta.llama", "reasoning_config": {}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {"temperature": 0.5, "topP": 0.9, "maxTokens": 100}, "model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": "high"}, "max_tokens": 100, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {}, "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": {"__raise__": "RuntimeError", "msg": "gate gone"}}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {}, "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": null, "io": {}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": null, "inference_config": {}, "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "reasoning_config": {}, "max_tokens": 100, "io": {"is_anthropic_bedrock_model": true, "_thinking_kwargs": {"thinking": {"type": "enabled"}}}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": null, "model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"effort": "high"}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {}, "model": null, "reasoning_config": {}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {}, "model": 5, "reasoning_config": {}, "max_tokens": null, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_apply_converse_reasoning", "in": {"kwargs": {}, "inference_config": {"maxTokens": 100}, "model": "amazon.nova-2-lite-v1:0", "reasoning_config": {"enabled": false}, "max_tokens": 100, "io": {"is_anthropic_bedrock_model": false}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "state": {"_inference_profile_model_cache": {"arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}}, "io": {}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}]}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": []}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": null, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": null, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {"__raise__": "RuntimeError", "msg": "no creds"}, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {"__raise__": "SystemExit", "msg": "bye"}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "x-application-inference-profile/abc", "region": "eu-west-1", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}]}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "x-application-inference-profile/abc", "region": "", "io": {"resolve_bedrock_region": "ap-south-1", "_get_bedrock_control_client": {}, "get_inference_profile": {"models": []}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": [], "io": {}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": 5, "io": {}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"__raise__": "ValueError", "msg": "bad profile"}, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": []}, "logger_debug": {"__raise__": "RuntimeError", "msg": "log gone"}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": [{"modelArn": null}, {"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet"}]}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": ["not-a-dict"]}, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "io": {"_get_bedrock_control_client": {}, "get_inference_profile": {"models": 5}, "logger_debug": null}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_resolve_inference_profile_model_id", "in": {"profile_arn": "arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abc123", "region": null, "io": {"resolve_bedrock_region": null, "_get_bedrock_control_client": {}, "get_inference_profile": {"models": []}}, "state": {"_inference_profile_model_cache": {}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "LEGACY"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": false, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["IMAGE"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "  ", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}, {"modelId": "amazon.nova-x", "providerName": "Amazon", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Other", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": null, "filter_set": [], "models": [], "io": {}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"__raise__": "RuntimeError", "msg": "api down"}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": null}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": null}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": null, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": 5, "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "anthropic.claude-x", "providerName": "Anthropic", "modelName": null, "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "_list_foundation_models", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_foundation_models": {"modelSummaries": [{"modelId": "nosuffix", "providerName": "Anthropic", "modelName": "Claude X", "modelLifecycle": {"status": "active"}, "responseStreamingSupported": true, "inputModalities": ["TEXT"], "outputModalities": ["TEXT"]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"$seq": [{"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}], "nextToken": "t1"}, {"inferenceProfileSummaries": [{"inferenceProfileId": "eu.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"$seq": [{"inferenceProfileSummaries": [], "nextToken": "t1"}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [{"id": "US.ANTHROPIC.CLAUDE-X", "name": "x"}], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "LEGACY", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}, "_extract_provider_from_arn": "anthropic"}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": ["amazon"], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}, "_extract_provider_from_arn": "anthropic"}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": null}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [{"name": "no-id"}], "io": {"list_inference_profiles": {"inferenceProfileSummaries": []}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [{"id": 5}], "io": {"list_inference_profiles": {"inferenceProfileSummaries": []}}}}
+{"func": "_list_inference_profiles", "in": {"client": null, "filter_set": [], "models": [], "io": {}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": ["flat"]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}, "_extract_provider_from_arn": {"__raise__": "RuntimeError", "msg": "arn gone"}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}, {"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}]}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": [], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-x"}]}], "nextToken": ""}}}}
+{"func": "_list_inference_profiles", "in": {"client": {}, "filter_set": ["anthropic"], "models": [], "io": {"list_inference_profiles": {"inferenceProfileSummaries": [{"inferenceProfileId": "us.anthropic.claude-x", "status": "ACTIVE", "inferenceProfileName": "US Claude X", "models": [{"modelArn": "a1"}, {"modelArn": "a2"}]}]}, "_extract_provider_from_arn": {"$seq": ["amazon", "anthropic"]}}}}

@@ -737,24 +737,24 @@ def first_trace_diff(want, got):
     return None, None, None
 
 
-def report_mismatch(func, want, got, shown):
-    if shown >= 12:
+def report_mismatch(func, want, got, shown, case_no=0):
+    if shown >= 100:
         return
-    print(f"MISMATCH {func}:")
+    print(f"MISMATCH {func} (case {case_no}):")
     if want.get("ret") != got.get("ret"):
-        print(f"  ret want={json.dumps(want.get('ret'), ensure_ascii=False)[:400]}")
-        print(f"  ret got ={json.dumps(got.get('ret'), ensure_ascii=False)[:400]}")
+        print(f"  ret want={json.dumps(want.get('ret'), ensure_ascii=False)[:2000]}")
+        print(f"  ret got ={json.dumps(got.get('ret'), ensure_ascii=False)[:2000]}")
     i, w, g = first_trace_diff(want, got)
     if i is not None:
-        print(f"  trace[{i}] want={json.dumps(w, ensure_ascii=False)[:400]}")
-        print(f"  trace[{i}] got ={json.dumps(g, ensure_ascii=False)[:400]}")
+        print(f"  trace[{i}] want={json.dumps(w, ensure_ascii=False)[:2000]}")
+        print(f"  trace[{i}] got ={json.dumps(g, ensure_ascii=False)[:2000]}")
     ws, gs = want.get("state") or {}, got.get("state") or {}
     if ws != gs:
         keys = [k for k in set(ws) | set(gs) if ws.get(k) != gs.get(k)]
         print(f"  state diff keys: {sorted(keys)[:10]}")
         for k in sorted(keys)[:3]:
-            print(f"    {k} want={json.dumps(ws.get(k), ensure_ascii=False)[:200]}")
-            print(f"    {k} got ={json.dumps(gs.get(k), ensure_ascii=False)[:200]}")
+            print(f"    {k} want={json.dumps(ws.get(k), ensure_ascii=False)[:1000]}")
+            print(f"    {k} got ={json.dumps(gs.get(k), ensure_ascii=False)[:1000]}")
 
 
 def main():
@@ -787,7 +787,7 @@ def main():
         g = canon(got)
         if g != want:
             m += 1
-            report_mismatch(func, want, g, shown)
+            report_mismatch(func, want, g, shown, n)
             shown += 1
     print(f"ORACLE tui_methods_config_flow: {n} cases, {m} mismatches")
     if n == 0:

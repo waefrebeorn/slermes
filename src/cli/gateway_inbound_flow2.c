@@ -887,6 +887,19 @@ static json_t *gi2_hm_rewrite_turn_to_prompt(gi2_ctx_t *c, json_t *args) {
     return gi2_pair(json_bool(false), NULL);
 }
 
+/* Live _hm_rewrite_turn_to_prompt mutates the caller's event IN PLACE
+ * (event.text = build()). ca carries an OWNED copy of the event (libjson has
+ * no detach: json_set/json_obj_del both free the displaced value), so after
+ * the rewrite sync the — possibly rewritten — text back to the original
+ * event. text is the only field the rewrite touches; on the raise paths it
+ * returns before setting text, so the copy still holds the original text and
+ * the sync is a no-op there. */
+static void gi2_sync_text(json_t *orig_ev, json_t *new_ev) {
+    if (!orig_ev || orig_ev->type != JSON_OBJECT || !new_ev || new_ev->type != JSON_OBJECT) return;
+    json_t *tx = json_obj_get(new_ev, "text");
+    if (tx) json_set(orig_ev, "text", json_copy(tx));
+}
+
 /* PoP: gi2_hm_cmd_learn @ gateway/run_inbound.py:_hm_cmd_learn */
 static json_t *gi2_hm_cmd_learn(gi2_ctx_t *c, json_t *args) {
     json_t *r = gi2_ev_command_args(c);
@@ -912,6 +925,7 @@ static json_t *gi2_hm_cmd_learn(gi2_ctx_t *c, json_t *args) {
     json_set(ca, "ack", ack);
     json_set(ca, "build", build);
     json_t *ret = gi2_hm_rewrite_turn_to_prompt(c, ca);
+    gi2_sync_text(json_obj_get(args, "event"), json_obj_get(ca, "event"));
     json_free(ca);
     return ret;
 }
@@ -955,6 +969,7 @@ static json_t *gi2_hm_cmd_plan(gi2_ctx_t *c, json_t *args) {
     json_set(ca, "ack", ack);
     json_set(ca, "build", build);
     json_t *ret = gi2_hm_rewrite_turn_to_prompt(c, ca);
+    gi2_sync_text(json_obj_get(args, "event"), json_obj_get(ca, "event"));
     json_free(ca);
     return ret;
 }
@@ -1234,7 +1249,7 @@ static json_t *gi2_hm_skill_slash_rewrite(gi2_ctx_t *c, json_t *args) {
         dst = gi2_call(c, name, a); \
         if (gi2_is_raise(dst)) { \
             if (gi2_is_exception(dst)) goto catch; \
-            ret = dst; goto done; \
+            ret = dst; dst = NULL; goto done; \
         } \
     } while (0)
 
@@ -1256,7 +1271,7 @@ static json_t *gi2_hm_skill_slash_rewrite(gi2_ctx_t *c, json_t *args) {
     ui_r = gi2_ev_command_args(c);
     if (gi2_is_raise(ui_r)) {
         if (gi2_is_exception(ui_r)) goto catch;
-        ret = ui_r; goto done;
+        ret = ui_r; ui_r = NULL; goto done;
     }
     if (!gi2_str(ui_r)) goto catch;   /* .strip AttributeError -> except */
     ui = gi2_strip(ui_r->str_val);
@@ -1265,7 +1280,7 @@ static json_t *gi2_hm_skill_slash_rewrite(gi2_ctx_t *c, json_t *args) {
     sp = gi2_call(c, "split_stacked_skill_commands",
                   gi2_args_str("user_instruction", ui));
     if (gi2_is_raise(sp)) {
-        if (!gi2_is_exception(sp)) { ret = sp; goto done; }
+        if (!gi2_is_exception(sp)) { ret = sp; sp = NULL; goto done; }
         json_free(sp); sp = NULL;
         stacked_avail = false;
         extra = json_array();
@@ -1452,6 +1467,7 @@ static json_t *gi2_hm_dispatch_idle_commands(gi2_ctx_t *c, json_t *args) {
         json_set_hdr(ca, "key", key);
         json_set(ca, "canonical", json_copy(canonical));
         json_t *cr = gi2_hm_dispatch_canonical_command(c, ca);
+        gi2_sync_text(ev, json_obj_get(ca, "event"));
         json_free(ca);
         if (gi2_is_raise(cr)) { json_free(h); json_free(result); json_free(command); json_free(canonical); json_free(se); return cr; }
         json_t *cp[2];
@@ -1487,6 +1503,7 @@ static json_t *gi2_hm_dispatch_idle_commands(gi2_ctx_t *c, json_t *args) {
         json_set_hdr(sa, "key", key);
         json_set(sa, "command", json_copy(command));
         json_t *sr = gi2_hm_skill_slash_rewrite(c, sa);
+        gi2_sync_text(ev, json_obj_get(sa, "event"));
         json_free(sa);
         if (gi2_is_raise(sr)) { json_free(h); json_free(result); json_free(command); json_free(canonical); json_free(se); return sr; }
         json_free(result);

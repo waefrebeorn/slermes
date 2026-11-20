@@ -1,0 +1,218 @@
+{"func": "lift_data_use", "in": {"args": {"message": {"role": "user", "display_metadata": {"data_use": ["a", "b"]}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": []}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": "not-a-dict"}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"role": "user"}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": "ab"}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": {"k1": 1, "k2": 2}}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": 5}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": {"__tuple__": true, "v": ["x", "y"]}}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": 0}}}}}
+{"func": "lift_data_use", "in": {"args": {"message": null}}}
+{"func": "lift_data_use", "in": {"args": {"message": {"display_metadata": {"data_use": false}}}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {"message_uid": "u-existing", "content": "x"}}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {"content": "x"}}, "io": {"uuid4": [{"hex": "u0000000000000000000000000000000"}]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {"message_uid": ""}}, "io": {"uuid4": [{"hex": "u0000000000000000000000000000000"}]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {"message_uid": 42}}, "io": {"uuid4": [{"hex": "u0000000000000000000000000000000"}]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {}}, "io": {"uuid4": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "entropy failed"}}]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {}}, "io": {"uuid4": [{}]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {}}, "io": {"uuid4": [null]}}}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {}}}, "fail_closed": true}
+{"func": "stamp_message_uid", "in": {"args": {"msg": {"message_uid": null}}, "io": {"uuid4": [{"hex": "u0000000000000000000000000000000"}]}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": {"type": "compaction"}}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": {"type": "text", "text": "x"}}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": {"type": "compaction", "summary": "s"}}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": "compaction"}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": {}}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": null}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": {"type": 5}}}}
+{"func": "_is_checkpoint_item", "in": {"args": {"item": [{"type": "compaction"}]}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "content": [{"type": "compaction"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "content": [{"type": "compaction"}]}, {"role": "user", "content": [{"type": "compaction"}]}, {"role": "assistant", "content": [{"type": "text", "text": "x"}, {"type": "compaction"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "user", "content": [{"type": "compaction"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "content": "plain"}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "content": [{"type": "text", "text": "x"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": ["not-a-dict", null, {"role": "assistant", "content": [{"type": "compaction"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "tool_calls": [{"type": "compaction"}]}], "key": "tool_calls"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": 5, "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant", "content": [{"type": "compaction"}]}, {"role": "assistant", "content": [{"type": "text", "text": "x"}]}], "key": "content"}}}
+{"func": "_newest_checkpoint_carrier", "in": {"args": {"messages": [{"role": "assistant"}], "key": "content"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "hello world"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": ""}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "cafÃ© â€” ok"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "í €"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "í¿¿"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "aí €bí¿¿c"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "í €í°€"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "ï¿½ already replacement"}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": 5}}}
+{"func": "_sanitize_surrogates", "in": {"args": {"text": "tab\tand\nnewline \u001c ctl"}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": "tz:+02:00"}, "io": {"dt.replace": [{"__dt__": true, "tzinfo": "tz:+02:00", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "ValueError", "message": "year out of range"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "OverflowError", "message": "too big"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 3600.0}], "time.localtime": [{"__tuple__": true, "v": [0, 0, -1]}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 500000}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 3600.0}], "time.localtime": [{"__tuple__": true, "v": [0, 0, -1]}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": "tz:+02:00"}, "io": {"dt.replace": [{"__dt__": true, "tzinfo": "tz:+02:00", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "no such file", "errno": 2}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__script__": true, "raise": {"type": "OSError", "message": "mktime failed", "errno": 22}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 3600.0}], "time.localtime": [{"__tuple__": true, "v": [1970, 1, 1, 0, 0, 0, 3, 1, -1]}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 90000.0}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "TypeError", "message": "bad type"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}, "tz": null}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad wall"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "timetuple broke"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": null, "tz": null}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}}, "fail_closed": true}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 7200.0}], "time.localtime": [{"__tuple__": true, "v": [0, 0, -1]}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": "tz:UTC"}, "io": {"dt.replace": [{"__dt__": true, "tzinfo": "tz:UTC", "microsecond": 250000}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 3600.0}], "time.localtime": [{"__script__": true, "raise": {"type": "OverflowError", "message": "lt overflow"}}]}}}
+{"func": "_localize", "in": {"args": {"dt": {"__dt__": true, "tzinfo": null, "microsecond": 0}, "tz": null}, "io": {"dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__script__": true, "raise": {"type": "SystemExit", "message": "mk exit"}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05+0200", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "ValueError", "message": "Invalid isoformat string"}}], "datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "garbage", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "ValueError", "message": "Invalid isoformat string"}}], "datetime.strptime": [{"__script__": true, "raise": {"type": "ValueError", "message": "time data does not match"}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "TypeError", "message": "fromisoformat: argument must be str"}}], "datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "ValueError", "message": "year out of range"}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}, {"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "TypeError", "message": "bad ts"}}, {"__float__": true, "v": 1700000000.0}], "datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05+0200", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "ValueError", "message": "Invalid isoformat string"}}], "datetime.strptime": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "strptime boom"}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": null}}, "fail_closed": true}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05", "tz": "tz:UTC"}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.replace": [{"__dt__": true, "tzinfo": "tz:UTC", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "no recovery", "errno": 2}}]}}}
+{"func": "_parse_iso", "in": {"args": {"text": "2026-01-02T03:04:05+0200", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "ValueError", "message": "Invalid isoformat string"}}], "datetime.strptime": [{"__dt__": true, "tzinfo": "+0200", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05 UTC] hi", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[2026-01-02T03:04:05+00:00] hi", "tz": null}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "no prefix here", "tz": null}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05] hi", "tz": null}, "io": {"datetime.strptime": [{"__script__": true, "raise": {"type": "ValueError", "message": "time data does not match"}}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05] hi", "tz": null}, "io": {"datetime.strptime": [{"__script__": true, "raise": {"type": "TypeError", "message": "strptime type"}}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[2026-01-02T03:04:05] hi", "tz": null}, "io": {"datetime.fromisoformat": [{"__script__": true, "raise": {"type": "ValueError", "message": "Invalid isoformat string"}}], "datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05]", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": 5, "tz": null}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05] hi", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__script__": true, "raise": {"type": "OSError", "message": "invalid fold", "errno": 22}}], "dt.timetuple": [{"__tuple__": true, "v": [2026, 1, 2, 3, 4, 5, 4, 2, -1]}], "time.mktime": [{"__float__": true, "v": 3600.0}], "time.localtime": [{"__tuple__": true, "v": [0, 0, -1]}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Tue 2026-01-02 03:04:05] hi", "tz": null}}, "fail_closed": true}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": "[Fri 2026-12-31 23:59:59 GMT+1] x", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "_parse_timestamp_match", "in": {"args": {"match_text": null, "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": 5, "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": null, "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "", "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "plain text", "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05 UTC] hello", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[2026-01-02T03:04:05] body", "tz": null}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] [Wed 2026-01-03 04:05:06] msg", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}, {"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}, {"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}, {"__float__": true, "v": 1700086400.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-13-99 99:99:99] msg", "tz": null}, "io": {"datetime.strptime": [{"__script__": true, "raise": {"type": "ValueError", "message": "unconverted data"}}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] [bad] msg", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": [1, 2], "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] \t\n msg", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[2026-01-02T03:04:05] x", "tz": "tz:UTC"}, "io": {"datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.replace": [{"__dt__": true, "tzinfo": "tz:UTC", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] x", "tz": null}, "io": {"datetime.strptime": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}]}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] x", "tz": null}}, "fail_closed": true}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[bad] [Tue 2026-01-02 03:04:05] after-non-prefix", "tz": null}}}
+{"func": "strip_leading_message_timestamps", "in": {"args": {"content": "[Tue 2026-01-02 03:04:05] [2026-01-03T04:05:06] mixed", "tz": null}, "io": {"datetime.strptime": [{"__dt__": true, "tzinfo": null, "microsecond": 0}], "dt.astimezone": [{"__dt__": true, "tzinfo": "local", "microsecond": 0}, {"__dt__": true, "tzinfo": "local", "microsecond": 0}], "dt.timestamp": [{"__float__": true, "v": 1700000000.0}, {"__float__": true, "v": 1700086400.0}], "datetime.fromisoformat": [{"__dt__": true, "tzinfo": null, "microsecond": 0}]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": null}}}
+{"func": "coerce_epoch", "in": {"args": {"value": ""}}}
+{"func": "coerce_epoch", "in": {"args": {"value": 1700000000}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__float__": true, "v": 1.5}}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1700000000"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": " 1.5e3 "}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1_000"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "bad"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "inf"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "nan"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": 4200000001}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": -1}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": true}}}
+{"func": "coerce_epoch", "in": {"args": {"value": [1]}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"a": 1}}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}}, "io": {"dt.timestamp": [{"__float__": true, "v": 1700000000.0}]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "ValueError", "message": "year out of range"}}], "logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "bad", "session_id": "s1"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "bad", "field": "created_at"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "0"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "4200000000"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__dt__": true, "tzinfo": "UTC", "microsecond": 0}}, "io": {"dt.timestamp": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__dt__": true, "tzinfo": null, "microsecond": 0}}}, "fail_closed": true}
+{"func": "coerce_epoch", "in": {"args": {"value": "_1"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1__0"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": {"__tuple__": true, "v": [1]}}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1."}}}
+{"func": "coerce_epoch", "in": {"args": {"value": ".5"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1e"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "0x10"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "INFINITY"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "-inf"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "1_0.0_1e1_0"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "bad", "session_id": ""}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": false}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "5\u001c"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "\u001c5"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "\u001f5\u001f"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": " 5 "}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "-1.5e3"}, "io": {"logger.warning": [null]}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "-0"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "+1_0"}}}
+{"func": "coerce_epoch", "in": {"args": {"value": "-1e-3"}, "io": {"logger.warning": [null]}}}
+{"func": "_is_image_part", "in": {"args": {"part": {"type": "image_url", "image_url": {"url": "u"}}}}}
+{"func": "_is_image_part", "in": {"args": {"part": {"type": "input_image"}}}}
+{"func": "_is_image_part", "in": {"args": {"part": {"type": "image"}}}}
+{"func": "_is_image_part", "in": {"args": {"part": {"type": "text", "text": "x"}}}}
+{"func": "_is_image_part", "in": {"args": {"part": "image"}}}
+{"func": "_is_image_part", "in": {"args": {"part": {}}}}
+{"func": "_is_image_part", "in": {"args": {"part": {"type": 5}}}}
+{"func": "_is_image_part", "in": {"args": {"part": null}}}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": [{"hex": "u0000000000000000000000000000000"}]}}}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad entropy"}}]}}}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": [null]}}}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": ["not-an-object"]}}}
+{"func": "mint_uid", "in": {"args": {}}, "fail_closed": true}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": [{"hex": ""}]}}}
+{"func": "mint_uid", "in": {"args": {}, "io": {"uuid4": [{"hex": "deadbeefdeadbeefdeadbeefdeadbeef"}]}}}
+{"func": "uid_list", "in": {"args": {"value": ["a", "b", "a", "", "c", 5, null]}}}
+{"func": "uid_list", "in": {"args": {"value": []}}}
+{"func": "uid_list", "in": {"args": {"value": "abc"}}}
+{"func": "uid_list", "in": {"args": {"value": null}}}
+{"func": "uid_list", "in": {"args": {"value": {"__tuple__": true, "v": ["a", "b"]}}}}
+{"func": "uid_list", "in": {"args": {"value": ["", ""]}}}
+{"func": "uid_list", "in": {"args": {"value": {"a": 1}}}}
+{"func": "uid_list", "in": {"args": {"value": ["x", "x", "x"]}}}
+{"func": "uid_list", "in": {"args": {"value": [true, "t"]}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": {"message_uid": "u"}}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": {"message_uid": ""}}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": {"message_uid": 5}}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": {}}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": null}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": [1]}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": "s"}}}
+{"func": "message_uid_or_none", "in": {"args": {"msg": {"message_uid": null}}}}
+{"func": "_is_empty_content", "in": {"args": {"content": null}}}
+{"func": "_is_empty_content", "in": {"args": {"content": []}}}
+{"func": "_is_empty_content", "in": {"args": {"content": ""}}}
+{"func": "_is_empty_content", "in": {"args": {"content": "  \t\n "}}}
+{"func": "_is_empty_content", "in": {"args": {"content": "x"}}}
+{"func": "_is_empty_content", "in": {"args": {"content": [{"type": "text"}]}}}
+{"func": "_is_empty_content", "in": {"args": {"content": {"__tuple__": true, "v": []}}}}
+{"func": "_is_empty_content", "in": {"args": {"content": 0}}}
+{"func": "_is_empty_content", "in": {"args": {"content": {}}}}
+{"func": "_is_empty_content", "in": {"args": {"content": " \u001c "}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"display_metadata": {"typed_ask": "the ask", "reactions": []}}}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"display_metadata": {"reactions": []}}}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"display_metadata": "not-a-dict"}}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"role": "user"}}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"display_metadata": {"typed_ask": null}}}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": null}}}
+{"func": "drop_typed_ask", "in": {"args": {"message": {"display_metadata": {"a": 1, "typed_ask": "x", "b": 2}}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "content": "keep", "display_metadata": {"typed_ask": "ask"}}, "dropped": {"message_uid": "d", "content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "content": "keep"}, "dropped": {"message_uid": "d", "content": "text"}, "dropped_leads": true}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "content": "keep", "display_metadata": {"typed_ask": "ask"}}, "dropped": {"message_uid": "d", "content": ""}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s"}, "dropped": {"message_uid": "d", "content": null}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"content": "keep"}, "dropped": {"content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "_absorbed_message_uids": ["x"]}, "dropped": {"message_uid": "d", "_absorbed_message_uids": ["y"], "content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "_absorbed_message_uids": ["o"]}, "dropped": {"message_uid": "d", "_absorbed_message_uids": ["t"], "content": "text"}, "dropped_leads": true}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s"}, "dropped": {"message_uid": "s", "content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s"}, "dropped": {"content": "text"}, "dropped_leads": true}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": null, "dropped": {"content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s"}, "dropped": null}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "content": "keep"}, "dropped": {"message_uid": "d", "content": []}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "_absorbed_message_uids": ["d"]}, "dropped": {"message_uid": "d", "content": "text"}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "content": "keep", "display_metadata": {"typed_ask": "ask", "model_only": true}}, "dropped": {"message_uid": "d", "content": "  "}}}}
+{"func": "record_absorbed_message", "in": {"args": {"survivor": {"message_uid": "s", "_absorbed_message_uids": ["d", "d", "x"]}, "dropped": {"message_uid": "d", "_absorbed_message_uids": ["x", "y"], "content": "text"}}}}

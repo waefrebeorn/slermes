@@ -265,6 +265,12 @@ static char *tmc_pystr(const json_t *v) {
     }
 }
 
+/* str(v or ""): every falsy value (None/absent/False/0/""/empty containers)
+ * collapses to the empty string -- NOT str(None) == "None". */
+static char *tmc_pystr_or_empty(const json_t *v) {
+    return tmc_truthy(v) ? tmc_pystr(v) : tmc_strdup("");
+}
+
 /* Python repr() for strings (ASCII corpus; quote choice minimises escapes). */
 static char *tmc_repr(const json_t *v) {
     if (!v || v->type == JSON_NULL) return tmc_strdup("None");
@@ -1788,7 +1794,7 @@ static json_t *tmc_projects_project_sessions(tmc_ctx_t *ctx, const json_t *args)
     const json_t *params = json_obj_get(args, "params");
     if (!params || params->type != JSON_OBJECT) return tmc_get_error(params);
     const json_t *pid_v = json_obj_get(params, "project_id");
-    char *pid = tmc_pystr(tmc_truthy(pid_v) ? pid_v : NULL); /* str(... or "") */
+    char *pid = tmc_pystr_or_empty(pid_v); /* str(... or "") */
     if (!pid[0]) {
         free(pid);
         return tmc_err(ctx, rid, 5063, "project_id required");
@@ -2094,7 +2100,7 @@ static json_t *tmc_readiness_check_body(tmc_ctx_t *ctx, const json_t *rid,
     char *profile = tmc_strdup("");
     if (params && params->type == JSON_OBJECT) {
         const json_t *pv = json_obj_get(params, "profile");
-        char *s = tmc_pystr(tmc_truthy(pv) ? pv : NULL);
+        char *s = tmc_pystr_or_empty(pv);
         free(profile);
         profile = tmc_strip(s);
         free(s);
@@ -2263,7 +2269,7 @@ static json_t *tmc_runtime_probe(tmc_ctx_t *ctx, const void *v) {
     const json_t *prov_v = json_obj_get(runtime, "provider");
     provider = tmc_truthy(prov_v) ? json_copy(prov_v) : json_string("provider");
     const json_t *src_v = json_obj_get(runtime, "source");
-    source_s = tmc_pystr(tmc_truthy(src_v) ? src_v : NULL); /* str(... or "") */
+    source_s = tmc_pystr_or_empty(src_v); /* str(... or "") */
     cfg = tmc_call(ctx, "load_cfg", tmc_args0());
     if (tmc_is_raise(cfg)) { err = cfg; cfg = NULL; goto cleanup; }
     if (!cfg || cfg->type != JSON_OBJECT) { err = tmc_get_error(cfg); goto cleanup; }
@@ -2271,7 +2277,7 @@ static json_t *tmc_runtime_probe(tmc_ctx_t *ctx, const void *v) {
     cfg_pin = tmc_strdup("");
     if (cfg_model && cfg_model->type == JSON_OBJECT) {
         const json_t *cp = json_obj_get(cfg_model, "provider");
-        char *s = tmc_pystr(tmc_truthy(cp) ? cp : NULL);
+        char *s = tmc_pystr_or_empty(cp);
         free(cfg_pin);
         cfg_pin = tmc_strip(s);
         free(s);
@@ -2392,7 +2398,7 @@ static json_t *tmc_setup_runtime_check(tmc_ctx_t *ctx, const json_t *args) {
         goto except_path;
     }
     const json_t *pv = json_obj_get(params, "provider");
-    char *s = tmc_pystr(tmc_truthy(pv) ? pv : NULL);
+    char *s = tmc_pystr_or_empty(pv);
     requested = tmc_strip(s);
     free(s);
     if (requested[0]) json_set_hdr(inner_args, "requested", requested);

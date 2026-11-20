@@ -1,0 +1,638 @@
+#!/usr/bin/env python3
+"""Oracle for the conversation-store compaction-rules FLOW port
+(src/persistence/store_rules_flow.c).
+
+Defining module: persistence/sqlite/conversation/_store/rules.py ("Pure helpers
+and constants of the application modules the store functions run"). All 11
+rules.py defs are driven LIVE, plus the 6 unclaimed uid/typed-ask leaves
+rules.py imports from session_rules/turns.py (mint_uid, uid_list,
+message_uid_or_none, _is_empty_content, drop_typed_ask,
+record_absorbed_message) — 17 functions.
+
+The live defs are AST-extracted (FunctionDef nodes; rules.py's plain-Name
+Assigns exec in source order with re/logging seeded; turns.py contributes the
+whitelisted constant Assigns + the 6 leaf defs). Top-level imports are skipped
+and their names seeded. Every exec namespace is a registered sys.modules module
+(py3.14). The heavy quarry import chain is never imported.
+
+SCRIPTED seams: every external collaborator is a recording stub fed the same
+scripts the C harness feeds its universal seam: uuid4, datetime.fromisoformat,
+datetime.strptime, dt.replace, dt.astimezone, dt.timestamp, dt.timetuple,
+time.mktime, time.localtime, logger.warning. Compares the DECISION SEQUENCE
+(ordered seam events {"name","args","ret"} in "trace"), the final return
+("ret") and the mutated dict params ("state", keyed by parameter name).
+Ported leaves call each other directly on both sides (no seam).
+
+Fail-closed: missing defs or 0 cases => exit 2. Per-case wrapper catches
+BaseException (SystemExit included). Summary:
+'ORACLE store_rules_flow: N cases, M mismatches'.
+
+Representation contract (shared with the C port):
+- None == JSON null; a raise is {"__raise__": cls, "message": str(exc)}
+  (OSError adds "errno"). Plain JSON numbers are Python ints; JSON bools are
+  bools. A Python float travels as {"__float__": true, "v": <number>}; a tuple
+  as {"__tuple__": true, "v": [...]}; a datetime double as
+  {"__dt__": true, "tzinfo": <token|null>, "microsecond": <int>}.
+- tz is an opaque token (null or a string) passed through to dt.replace.
+- The standalone _parse_timestamp_match drive builds a REAL re.Match from
+  args.match_text with the live _TIMESTAMP_PREFIX_RE (C: the ported matcher);
+  a failed match models match=None -> AttributeError on .group.
+- sys.platform is seeded "win32" (the fold-recovery branch is Windows-specific);
+  errno.EINVAL = 22. Sets return sorted; tuples fold to arrays and integral
+  floats to ints in canon. Dict key order is irrelevant to canon.
+- Fixture domain: text ASCII plus raw UTF-8 lone-surrogate triplets (the
+  fixture/harness transport carries them verbatim; this oracle decodes stdin
+  and the fixture surrogatepass so the live defs see real lone surrogates);
+  timestamps int/float/None; uids non-empty ASCII strings; data_use values
+  list/tuple/str/dict/int/bool/float/null; uuid4 returns {"hex": str};
+  dt.timestamp returns int/float; wall_time/localtime results are 9-tuples;
+  session_id str/null; no NaN/Infinity JSON literals.
+"""
+import ast
+import json
+import math
+import os
+import re
+import sys
+import textwrap
+import types
+import __future__ as _fut
+from collections.abc import Mapping, MutableMapping
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
+
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+_REPO = Path(__file__).resolve().parent.parent
+os.environ.setdefault("HOME", str(_REPO.parent))
+os.environ.setdefault("USERPROFILE", str(_REPO.parent))
+os.environ.setdefault("LOCALAPPDATA", str(_REPO.parent / "AppData" / "Local"))
+os.environ.setdefault("HERMES_HOME", str(_REPO / ".testbin" / "dbg_home"))
+
+Q = os.path.expanduser("~/hermes-agent")
+RULES_SRC = os.path.join(Q, "persistence", "sqlite", "conversation", "_store", "rules.py")
+TURNS_SRC = os.path.join(Q, "session_rules", "turns.py")
+
+_FLAGS = _fut.annotations.compiler_flag
+
+
+def seg(src, node):
+    start = node.lineno
+    for d in getattr(node, "decorator_list", []):
+        start = min(start, d.lineno)
+    return "\n".join(src.splitlines()[start - 1:node.end_lineno])
+
+
+def exec_node(src, node, ns, path):
+    text = textwrap.dedent(seg(src, node))
+    exec(compile(text, path, "exec", flags=_FLAGS, dont_inherit=True), ns)
+
+
+def new_module(name):
+    mod = types.ModuleType(name)
+    sys.modules[name] = mod
+    return mod
+
+
+# ── seeded constants (as the quarry defines them) ──
+MESSAGE_UID = "message_uid"
+DATA_USE = "data_use"
+TYPED_ASK = "typed_ask"
+ABSORBED_MESSAGE_UIDS = "_absorbed_message_uids"
+EPOCH_MIN = 0.0
+EPOCH_MAX = 4_200_000_000.0
+
+RULES_KINDS = ["lift_data_use", "stamp_message_uid", "_is_checkpoint_item",
+               "_newest_checkpoint_carrier", "_sanitize_surrogates", "_localize",
+               "_parse_iso", "_parse_timestamp_match",
+               "strip_leading_message_timestamps", "coerce_epoch", "_is_image_part"]
+TURNS_KINDS = ["mint_uid", "uid_list", "message_uid_or_none", "_is_empty_content",
+               "drop_typed_ask", "record_absorbed_message"]
+KINDS = RULES_KINDS + TURNS_KINDS
+TURNS_CONSTS = {"MESSAGE_UID", "ABSORBED_MESSAGE_UIDS", "TYPED_ASK",
+                "_AUTO_LOAD_PREFIX", "_SKILL_INVOCATION_PREFIX"}
+
+# ── canonical projection (compare parsed JSON, never raw strings) ──
+def canon(v):
+    def conv(x):
+        if isinstance(x, (set, frozenset)):
+            return sorted(conv(i) for i in x)
+        if isinstance(x, dict):
+            if x.get("__float__") is True:
+                f = float(x.get("v", 0))
+                return int(f) if math.isfinite(f) and f.is_integer() else f
+            if x.get("__tuple__") is True:
+                return [conv(i) for i in x.get("v", [])]
+            return {k: conv(val) for k, val in x.items()}
+        if isinstance(x, (list, tuple)):
+            return [conv(i) for i in x]
+        if isinstance(x, float):
+            return int(x) if math.isfinite(x) and x.is_integer() else x
+        return x
+    return json.loads(json.dumps(conv(v), ensure_ascii=False, default=str))
+
+
+# ── exception materialization / projection (FULL builtin hierarchy) ──
+EXC_CLASSES = {
+    "BaseException": BaseException, "Exception": Exception,
+    "TypeError": TypeError, "StopIteration": StopIteration,
+    "StopAsyncIteration": StopAsyncIteration, "ArithmeticError": ArithmeticError,
+    "FloatingPointError": FloatingPointError, "OverflowError": OverflowError,
+    "ZeroDivisionError": ZeroDivisionError, "AssertionError": AssertionError,
+    "AttributeError": AttributeError, "BufferError": BufferError,
+    "EOFError": EOFError, "ImportError": ImportError,
+    "ModuleNotFoundError": ModuleNotFoundError, "LookupError": LookupError,
+    "IndexError": IndexError, "KeyError": KeyError, "MemoryError": MemoryError,
+    "NameError": NameError, "UnboundLocalError": UnboundLocalError,
+    "OSError": OSError, "BlockingIOError": BlockingIOError,
+    "ChildProcessError": ChildProcessError, "ConnectionError": ConnectionError,
+    "BrokenPipeError": BrokenPipeError, "ConnectionAbortedError": ConnectionAbortedError,
+    "ConnectionRefusedError": ConnectionRefusedError,
+    "ConnectionResetError": ConnectionResetError, "FileExistsError": FileExistsError,
+    "FileNotFoundError": FileNotFoundError, "InterruptedError": InterruptedError,
+    "IsADirectoryError": IsADirectoryError, "NotADirectoryError": NotADirectoryError,
+    "PermissionError": PermissionError, "ProcessLookupError": ProcessLookupError,
+    "TimeoutError": TimeoutError, "ReferenceError": ReferenceError,
+    "RuntimeError": RuntimeError, "NotImplementedError": NotImplementedError,
+    "RecursionError": RecursionError, "SyntaxError": SyntaxError,
+    "IndentationError": IndentationError, "TabError": TabError,
+    "SystemError": SystemError, "ValueError": ValueError,
+    "UnicodeError": UnicodeError, "UnicodeDecodeError": UnicodeDecodeError,
+    "UnicodeEncodeError": UnicodeEncodeError,
+    "UnicodeTranslateError": UnicodeTranslateError, "Warning": Warning,
+    "DeprecationWarning": DeprecationWarning,
+    "PendingDeprecationWarning": PendingDeprecationWarning,
+    "RuntimeWarning": RuntimeWarning, "SyntaxWarning": SyntaxWarning,
+    "UserWarning": UserWarning, "FutureWarning": FutureWarning,
+    "ImportWarning": ImportWarning, "UnicodeWarning": UnicodeWarning,
+    "BytesWarning": BytesWarning, "EncodingWarning": EncodingWarning,
+    "ResourceWarning": ResourceWarning, "ExceptionGroup": ExceptionGroup,
+    "BaseExceptionGroup": BaseExceptionGroup, "GeneratorExit": GeneratorExit,
+    "KeyboardInterrupt": KeyboardInterrupt, "SystemExit": SystemExit,
+}
+
+
+def make_exc(spec):
+    kind = spec.get("type", "RuntimeError")
+    cls = EXC_CLASSES.get(kind)
+    if cls is None:
+        cls = type(kind, (Exception,), {})
+    msg = spec.get("message", "")
+    en = spec.get("errno")
+    if en is not None and issubclass(cls, OSError):
+        return cls(en, msg)
+    return cls(msg)
+
+
+def proj_exc(exc):
+    d = {"__raise__": type(exc).__name__, "message": str(exc)}
+    if isinstance(exc, OSError) and exc.errno is not None:
+        d["errno"] = exc.errno
+    return d
+
+
+# ── per-case script backend (mirrors the C sr_call exactly) ──
+_MISSING = object()
+
+
+class Ctx:
+    def __init__(self, io):
+        self.io = io or {}
+        self.cursors = {}
+        self.trace = []
+
+    def _record_raise(self, name, args, exc):
+        self.trace.append({"name": name, "args": args, "ret": proj_exc(exc)})
+        raise exc
+
+    def call(self, name, args):
+        entry = self.io.get(name, _MISSING)
+        used = entry
+        if entry is _MISSING:
+            self._record_raise(name, args, RuntimeError(f"no script for {name}"))
+        if isinstance(entry, list):
+            idx = self.cursors.get(name, 0)
+            if idx >= len(entry):
+                self._record_raise(name, args, RuntimeError(f"script exhausted for {name}"))
+            self.cursors[name] = idx + 1
+            used = entry[idx]
+        if isinstance(used, dict) and used.get("__script__"):
+            if isinstance(used.get("raise"), dict):
+                self._record_raise(name, args, make_exc(used["raise"]))
+            ret = used.get("ret")
+        else:
+            ret = used
+        self.trace.append({"name": name, "args": args, "ret": canon(ret)})
+        return ret
+
+
+# ── value materialization / transport ──
+class DatetimeSeam(datetime):
+    """The `datetime` global: a real datetime subclass (isinstance works) whose
+    fromisoformat/strptime classmethods are seams. DtDouble subclasses it."""
+    _ctx = None
+
+    @classmethod
+    def fromisoformat(cls, text):
+        raw = cls._ctx.call("datetime.fromisoformat", {"text": text})
+        return deep_mat(raw, cls._ctx)
+
+    @classmethod
+    def strptime(cls, text, fmt):
+        raw = cls._ctx.call("datetime.strptime", {"text": text, "fmt": fmt})
+        return deep_mat(raw, cls._ctx)
+
+
+class DtDouble(DatetimeSeam):
+    """datetime double: isinstance(x, datetime) is True; tzinfo/microsecond are
+    inert spec fields; replace/astimezone/timestamp/timetuple are seams."""
+    def __new__(cls, spec, ctx):
+        obj = super().__new__(cls, 2000, 1, 1)
+        obj._spec = spec
+        obj._ctx = ctx
+        return obj
+
+    @property
+    def tzinfo(self):
+        return deep_mat(self._spec.get("tzinfo"), self._ctx)
+
+    @property
+    def microsecond(self):
+        return self._spec.get("microsecond", 0)
+
+    def replace(self, tzinfo=None):
+        raw = self._ctx.call("dt.replace", {"dt": self._spec, "tzinfo": tzinfo})
+        return deep_mat(raw, self._ctx)
+
+    def astimezone(self):
+        raw = self._ctx.call("dt.astimezone", {"dt": self._spec})
+        return deep_mat(raw, self._ctx)
+
+    def timestamp(self):
+        return deep_mat(self._ctx.call("dt.timestamp", {"dt": self._spec}), self._ctx)
+
+    def timetuple(self):
+        return deep_mat(self._ctx.call("dt.timetuple", {"dt": self._spec}), self._ctx)
+
+
+class ObjDouble(dict):
+    """uuid4() result double: dict keys read as attributes (uuid4().hex)."""
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(f"'dict' object has no attribute '{name}'") from None
+
+
+def deep_mat(v, ctx=None):
+    if isinstance(v, dict):
+        if v.get("__float__") is True:
+            return float(v.get("v", 0))
+        if v.get("__tuple__") is True:
+            return tuple(deep_mat(i, ctx) for i in v.get("v", []))
+        if v.get("__dt__") is True:
+            return DtDouble(v, ctx)
+        return {k: deep_mat(x, ctx) for k, x in v.items()}
+    if isinstance(v, list):
+        return [deep_mat(i, ctx) for i in v]
+    return v
+
+
+def transport(v):
+    if isinstance(v, DtDouble):
+        return v._spec
+    if isinstance(v, float):
+        return {"__float__": True, "v": v}
+    if isinstance(v, tuple):
+        return {"__tuple__": True, "v": [transport(i) for i in v]}
+    if isinstance(v, dict):
+        return {k: transport(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [transport(i) for i in v]
+    return v
+
+
+class TimeDouble:
+    def __init__(self, ctx):
+        self._ctx = ctx
+
+    def mktime(self, wall_time):
+        return deep_mat(self._ctx.call("time.mktime", {"wall_time": transport(wall_time)}),
+                        self._ctx)
+
+    def localtime(self, epoch):
+        return deep_mat(self._ctx.call("time.localtime", {"epoch": transport(epoch)}),
+                        self._ctx)
+
+
+class LoggerDouble:
+    def __init__(self, ctx):
+        self._ctx = ctx
+
+    def warning(self, fmt, *args):
+        return self._ctx.call("logger.warning",
+                              {"fmt": fmt, "args": [transport(a) for a in args]})
+
+
+# ── seam registry (name -> live call; args shapes mirrored in the C port) ──
+SEAM_NAMES = ["uuid4", "datetime.fromisoformat", "datetime.strptime",
+              "dt.replace", "dt.astimezone", "dt.timestamp", "dt.timetuple",
+              "time.mktime", "time.localtime", "logger.warning"]
+
+
+# ── turns.py leaf namespace (live defs + whitelisted constants) ──
+def extract_turns():
+    mod = new_module("sr_oracle_turns")
+    ns = mod.__dict__
+    ns.update({"Any": Any, "Optional": Optional, "Mapping": Mapping,
+               "MutableMapping": MutableMapping})
+    src = open(TURNS_SRC, encoding="utf-8").read()
+    for node in ast.parse(src).body:
+        if isinstance(node, ast.Assign) and all(isinstance(t, ast.Name) for t in node.targets):
+            if any(t.id in TURNS_CONSTS for t in node.targets):
+                exec_node(src, node, ns, TURNS_SRC)
+        elif isinstance(node, ast.FunctionDef) and node.name in TURNS_KINDS:
+            exec_node(src, node, ns, TURNS_SRC)
+    missing = [k for k in TURNS_KINDS if k not in ns] + [c for c in TURNS_CONSTS if c not in ns]
+    if missing:
+        print(f"FATAL oracle_store_rules_flow: turns defs missing: {missing}")
+        sys.exit(2)
+    return ns
+
+
+NS_TURNS = extract_turns()
+
+
+# ── rules.py namespace (live defs + seeded constants/collaborators) ──
+def extract_rules():
+    mod = new_module("sr_oracle_rules")
+    ns = mod.__dict__
+    ns.update({"Any": Any, "Optional": Optional, "MutableMapping": MutableMapping,
+               "re": re, "math": math,
+               "logging": types.SimpleNamespace(getLogger=lambda name: None),
+               "datetime": DatetimeSeam, "time": None,
+               "sys": types.SimpleNamespace(platform="win32"),
+               "errno": types.SimpleNamespace(EINVAL=22)})
+    ns.update({"MESSAGE_UID": NS_TURNS["MESSAGE_UID"],
+               "message_uid_or_none": NS_TURNS["message_uid_or_none"],
+               "mint_uid": NS_TURNS["mint_uid"],
+               "_AUTO_LOAD_PREFIX": NS_TURNS["_AUTO_LOAD_PREFIX"],
+               "_SKILL_INVOCATION_PREFIX": NS_TURNS["_SKILL_INVOCATION_PREFIX"]})
+    src = open(RULES_SRC, encoding="utf-8").read()
+    for node in ast.parse(src).body:
+        if isinstance(node, ast.Assign) and all(isinstance(t, ast.Name) for t in node.targets):
+            exec_node(src, node, ns, RULES_SRC)
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            exec_node(src, node, ns, RULES_SRC)
+    missing = [k for k in RULES_KINDS if k not in ns]
+    if missing:
+        print(f"FATAL oracle_store_rules_flow: rules defs missing: {missing}")
+        sys.exit(2)
+    for name in ("_SURROGATE_RE", "_TIMESTAMP_PREFIX_RE", "EPOCH_MIN", "EPOCH_MAX",
+                 "DATA_USE", "_IMAGE_PART_TYPES"):
+        if name not in ns:
+            print(f"FATAL oracle_store_rules_flow: rules constant missing: {name}")
+            sys.exit(2)
+    return ns
+
+
+NS_RULES = extract_rules()
+
+
+def install(ctx):
+    DatetimeSeam._ctx = ctx
+    NS_RULES["time"] = TimeDouble(ctx)
+    NS_RULES["logger"] = LoggerDouble(ctx)
+    NS_TURNS["uuid4"] = lambda: (lambda r: ObjDouble(deep_mat(r, ctx))
+                                 if isinstance(r, dict) else deep_mat(r, ctx))(
+                                     ctx.call("uuid4", {}))
+
+
+# ── per-case drive ──
+def drive(func, inp, ctx=None):
+    args = inp.get("args") or {}
+    if ctx is None:
+        ctx = Ctx(inp.get("io"))
+    install(ctx)
+
+    def mat(k, default=None):
+        return deep_mat(args.get(k, default), ctx)
+
+    mut = {}
+    try:
+        if func == "lift_data_use":
+            mut["message"] = mat("message")
+            ret = NS_RULES["lift_data_use"](mut["message"])
+        elif func == "stamp_message_uid":
+            mut["msg"] = mat("msg")
+            ret = NS_RULES["stamp_message_uid"](mut["msg"])
+        elif func == "_is_checkpoint_item":
+            ret = NS_RULES["_is_checkpoint_item"](mat("item"))
+        elif func == "_newest_checkpoint_carrier":
+            ret = NS_RULES["_newest_checkpoint_carrier"](mat("messages"),
+                                                         args.get("key", "content"))
+        elif func == "_sanitize_surrogates":
+            ret = NS_RULES["_sanitize_surrogates"](mat("text"))
+        elif func == "_localize":
+            ret = NS_RULES["_localize"](mat("dt"), mat("tz"))
+        elif func == "_parse_iso":
+            ret = NS_RULES["_parse_iso"](mat("text"), mat("tz"))
+        elif func == "_parse_timestamp_match":
+            m = NS_RULES["_TIMESTAMP_PREFIX_RE"].match(args.get("match_text"))
+            ret = NS_RULES["_parse_timestamp_match"](m, mat("tz"))
+        elif func == "strip_leading_message_timestamps":
+            ret = NS_RULES["strip_leading_message_timestamps"](mat("content"), mat("tz"))
+        elif func == "coerce_epoch":
+            ret = NS_RULES["coerce_epoch"](mat("value"),
+                                           session_id=args.get("session_id"),
+                                           field=args.get("field", "timestamp"))
+        elif func == "_is_image_part":
+            ret = NS_RULES["_is_image_part"](mat("part"))
+        elif func == "mint_uid":
+            ret = NS_TURNS["mint_uid"]()
+        elif func == "uid_list":
+            ret = NS_TURNS["uid_list"](mat("value"))
+        elif func == "message_uid_or_none":
+            ret = NS_TURNS["message_uid_or_none"](mat("msg"))
+        elif func == "_is_empty_content":
+            ret = NS_TURNS["_is_empty_content"](mat("content"))
+        elif func == "drop_typed_ask":
+            mut["message"] = mat("message")
+            ret = NS_TURNS["drop_typed_ask"](mut["message"])
+        elif func == "record_absorbed_message":
+            mut["survivor"] = mat("survivor")
+            mut["dropped"] = mat("dropped")
+            ret = NS_TURNS["record_absorbed_message"](mut["survivor"], mut["dropped"],
+                                                      dropped_leads=args.get("dropped_leads", False))
+        else:
+            raise RuntimeError(f"unknown func {func}")
+    except BaseException as exc:  # SystemExit included
+        ret = proj_exc(exc)
+    state = {k: transport(v) for k, v in mut.items()}
+    return {"ret": canon(ret), "trace": canon(ctx.trace), "state": canon(state)}
+
+
+# ── three-way seam-name cross-check (C port <-> oracle stubs <-> fixture io) ──
+def cross_check():
+    csrc = open(_REPO / "src" / "persistence" / "store_rules_flow.c",
+                encoding="utf-8").read()
+    missing_c = [n for n in SEAM_NAMES if f'"{n}"' not in csrc]
+    if missing_c:
+        print(f"FATAL oracle_store_rules_flow: seams absent from C port: {missing_c}")
+        sys.exit(2)
+    fix = _REPO / "tests" / "fixtures" / "store_rules_flow.jsonl"
+    if fix.exists():
+        fix_keys = set()
+        counts = {}
+        for line in open(fix, encoding="utf-8", errors="surrogatepass"):
+            line = line.strip()
+            if not line:
+                continue
+            case = json.loads(line)
+            fix_keys |= set((case.get("in") or {}).get("io") or {})
+            f = case.get("func", "")
+            counts[f] = counts.get(f, 0) + 1
+        bad = fix_keys - set(SEAM_NAMES)
+        if bad:
+            print(f"FATAL oracle_store_rules_flow: fixture io keys without a seam: {sorted(bad)}")
+            sys.exit(2)
+        unknown_funcs = set(counts) - set(KINDS)
+        if unknown_funcs:
+            print(f"FATAL oracle_store_rules_flow: fixture funcs without a drive: {sorted(unknown_funcs)}")
+            sys.exit(2)
+        untested = set(KINDS) - set(counts)
+        if untested:
+            print(f"FATAL oracle_store_rules_flow: drive funcs without a fixture case: {sorted(untested)}")
+            sys.exit(2)
+        thin = {f: c for f, c in counts.items() if c < 5}
+        if thin:
+            print(f"FATAL oracle_store_rules_flow: funcs with <5 fixture cases: {thin}")
+            sys.exit(2)
+
+
+def first_trace_diff(want, got):
+    wt, gt = want.get("trace") or [], got.get("trace") or []
+    for i in range(max(len(wt), len(gt))):
+        w = wt[i] if i < len(wt) else None
+        g = gt[i] if i < len(gt) else None
+        if w != g:
+            return i, w, g
+    return None, None, None
+
+
+def report_mismatch(func, want, got, shown):
+    if shown >= 12:
+        return
+    print(f"MISMATCH {func}:")
+    if want.get("ret") != got.get("ret"):
+        print(f"  ret want={json.dumps(want.get('ret'), ensure_ascii=False)[:400]}")
+        print(f"  ret got ={json.dumps(got.get('ret'), ensure_ascii=False)[:400]}")
+    i, w, g = first_trace_diff(want, got)
+    if i is not None:
+        print(f"  trace[{i}] want={json.dumps(w, ensure_ascii=False)[:400]}")
+        print(f"  trace[{i}] got ={json.dumps(g, ensure_ascii=False)[:400]}")
+    ws, gs = want.get("state") or {}, got.get("state") or {}
+    if ws != gs:
+        keys = [k for k in set(ws) | set(gs) if ws.get(k) != gs.get(k)]
+        print(f"  state diff keys: {sorted(keys)[:10]}")
+
+
+def main():
+    cross_check()
+    n = m = shown = 0
+    # Raw lone-surrogate triplets ride the harness echo verbatim (libjson
+    # passes raw bytes through); decode surrogatepass so the live defs see
+    # real lone surrogates, exactly as the fixture intended.
+    data = sys.stdin.buffer.read().decode("utf-8", errors="surrogatepass")
+    for line in data.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec_in = json.loads(line)
+        except Exception as exc:
+            m += 1
+            print(f"MISMATCH <unparsable harness line>: {exc}")
+            continue
+        n += 1
+        func = rec_in.get("func", "")
+        inp = rec_in.get("in") or {}
+        got = rec_in.get("out")
+        if not isinstance(got, dict) or "error" in got:
+            m += 1
+            print(f"MISMATCH {func}: harness emitted no result: {got}")
+            continue
+        try:
+            want = drive(func, inp)
+        except BaseException as exc:
+            m += 1
+            print(f"MISMATCH {func}: oracle drive raised {type(exc).__name__}: {exc}")
+            continue
+        g = canon(got)
+        if g != want:
+            m += 1
+            report_mismatch(func, want, g, shown)
+            shown += 1
+    print(f"ORACLE store_rules_flow: {n} cases, {m} mismatches")
+    if n == 0:
+        sys.exit(2)
+    sys.exit(1 if m else 0)
+
+
+def selftest():
+    """Python-only drive() self-test over every fixture case (no C involved)."""
+    import faulthandler
+    faulthandler.dump_traceback_later(120, exit=True)
+    fix = _REPO / "tests" / "fixtures" / "store_rules_flow.jsonl"
+    n = bad = 0
+    counts = {}
+    # Watch for AttributeErrors naming a SEAM method or a ported func (signs of
+    # a misbound stub). Inert-double attribute reads on bad receivers (.get on
+    # a non-dict, .hex on a non-dict uuid4 result, .group on match=None,
+    # .isascii on a non-str, .tzinfo on a non-datetime) are LEGITIMATE live
+    # behavior this port reproduces, so they are not watched.
+    watch = KINDS + SEAM_NAMES + ["timestamp", "replace", "astimezone",
+                                 "timetuple", "mktime", "localtime", "warning",
+                                 "fromisoformat", "strptime"]
+    for line in open(fix, encoding="utf-8", errors="surrogatepass"):
+        line = line.strip()
+        if not line:
+            continue
+        case = json.loads(line)
+        n += 1
+        func = case["func"]
+        counts[func] = counts.get(func, 0) + 1
+        try:
+            out = drive(func, case.get("in") or {})
+        except BaseException as exc:
+            bad += 1
+            print(f"SELFTEST DRIVE RAISED {func} case {n}: {type(exc).__name__}: {exc}")
+            continue
+        r = out["ret"]
+        is_gap = isinstance(r, dict) and r.get("__raise__") == "RuntimeError" and \
+            str(r.get("message", "")).startswith(("no script", "script exhausted"))
+        if case.get("fail_closed"):
+            if not is_gap:
+                bad += 1
+                print(f"SELFTEST FAIL-CLOSED MISSING {func} case {n}: expected a seam RuntimeError, got {json.dumps(r, ensure_ascii=False)[:200]}")
+        elif is_gap:
+            bad += 1
+            print(f"SELFTEST SCRIPT GAP {func} case {n}: {r['message']}")
+        if isinstance(r, dict) and r.get("__raise__") == "AttributeError":
+            msg = str(r.get("message", ""))
+            hit = [w for w in watch if f"'{w}'" in msg]
+            if hit:
+                bad += 1
+                print(f"SELFTEST ATTR FAMILY {func} case {n}: {msg} (names {hit})")
+    print(f"SELFTEST store_rules_flow: {n} cases, {bad} drive/script failures")
+    for f in sorted(counts):
+        print(f"  {f}: {counts[f]}")
+    faulthandler.cancel_dump_traceback_later()
+    return 1 if bad or n == 0 else 0
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--self-test":
+        sys.exit(selftest())
+    main()

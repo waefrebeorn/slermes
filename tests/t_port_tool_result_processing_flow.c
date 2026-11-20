@@ -124,7 +124,10 @@ int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IOLBF, 0);
     FILE *f = (argc > 1) ? fopen(argv[1], "rb") : stdin;
     if (!f) { fprintf(stderr, "cannot open fixture\n"); return 1; }
-    char line[1 << 23];   /* large-result commit case carries a 1M-char string */
+    static char line[1 << 23];   /* large-result commit case carries a 1M-char
+                                  * string; static (.bss) — an 8MB auto array
+                                  * overflows the 1MB Windows PE stack at main
+                                  * entry (0xC00000FD before any case runs). */
     while (fgets(line, sizeof(line), f)) {
         if (line[0] == '\0' || line[0] == '\n' || line[0] == '#') continue;
         char *err = NULL;

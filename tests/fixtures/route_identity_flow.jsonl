@@ -1,0 +1,252 @@
+{"func": "normalize_route_base_url", "in": {"base_url": null}}
+{"func": "normalize_route_base_url", "in": {"base_url": ""}}
+{"func": "normalize_route_base_url", "in": {"base_url": 0}}
+{"func": "normalize_route_base_url", "in": {"base_url": false}}
+{"func": "normalize_route_base_url", "in": {"base_url": true}}
+{"func": "normalize_route_base_url", "in": {"base_url": 5}}
+{"func": "normalize_route_base_url", "in": {"base_url": -5}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://H:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "https://H:443/x/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://H:8080/x/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "HTTP://U:***@Example.COM:80/a/?q#f"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/?"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h?x"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/#f"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/path/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/path/?q"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[FE80::1%tESt]:1234/keys/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[::1]:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "https://[::1]:443/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[::1%z]:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[V1.X]/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[v1.x]:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[::1]:8080"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[fe80::1%25eth0]/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:bad/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[foo]/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[1.2.3.4]/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[::1/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:65536/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:8_0/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:99999/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:+80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/a b"}}
+{"func": "normalize_route_base_url", "in": {"base_url": " http://h/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/\t"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://ho\tst/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h\u007f/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "\u007fhttp://h/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://\u007fh/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/x\u007f"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://u@p@h:8080/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h%41/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h./"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:0/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:00080/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h?"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h?#f"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h#f?x"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/a?b#c/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h//"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h///"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "//h/x"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http:/h"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "mailto:a@b"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/a;b/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/a;b/?q"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:80?x"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:443/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "https://h:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:80#f"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:000/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://@h/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h@/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[:***@h/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/[::1]/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h%:80/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "https://h:0/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/a%3Fb/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h/?q#f/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:80./"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://[::1]:99999/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:0000000000000000000080/"}}
+{"func": "normalize_route_base_url", "in": {"base_url": "http://h:0000000000000000000099999/"}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m1", "active_model": "m2", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2"}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": true}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "", "active_model": "m2", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": " m ", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": null, "active_model": null, "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": 5, "active_model": 5, "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": " m ", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m1", "active_model": null, "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2"}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": "RET"}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2"}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"x": 1}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "RuntimeError", "message": "nope"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "GeneratorExit", "message": "ge"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "CancelledError", "message": "ce"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": {"__raise__": "CustomKind", "message": "ck"}}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "import_ok": false}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": [false]}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": null, "active_base_url": null, "configured_provider": null, "active_provider": null, "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": {"u": "x"}, "active_base_url": [1, 2], "configured_provider": 7, "active_provider": true, "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": true, "active_model": "True", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin", "in": {"configured_model": "m", "active_model": "m", "configured_base_url": "b1", "active_base_url": "b2", "configured_provider": "p1", "active_provider": "p2", "io": {"context_route_mismatch": [true, false]}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m1", "m2", "b1", "b2", "p1", "p2"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": {"__raise__": "CancelledError", "message": "ce"}}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": null}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": "RET"}}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "import_ok": false}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2"], "io": {}}}
+{"func": "should_clear_context_pin_async", "in": {"args": []}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2", "extra"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": ["m", "m", "b1", "b2", "p1", "p2", "e1", "e2"]}}
+{"func": "should_clear_context_pin_async", "in": {"args": [null, null, null, null, null, null], "io": {"context_route_mismatch": false}}}
+{"func": "should_clear_context_pin_async", "in": {"args": [5, 5, "b1", "b2", "p1", "p2"], "io": {"context_route_mismatch": false}}}
+{"func": "_parse_base_url", "in": {"base_url": null}}
+{"func": "_parse_base_url", "in": {"base_url": ""}}
+{"func": "_parse_base_url", "in": {"base_url": "   "}}
+{"func": "_parse_base_url", "in": {"base_url": false}}
+{"func": "_parse_base_url", "in": {"base_url": 0}}
+{"func": "_parse_base_url", "in": {"base_url": "api.openai.com"}}
+{"func": "_parse_base_url", "in": {"base_url": "api.openai.com:8080"}}
+{"func": "_parse_base_url", "in": {"base_url": "https://H:443/v1/"}}
+{"func": "_parse_base_url", "in": {"base_url": "http://h/a;b"}}
+{"func": "_parse_base_url", "in": {"base_url": "https://h/a;b/c"}}
+{"func": "_parse_base_url", "in": {"base_url": "h/path://x"}}
+{"func": "_parse_base_url", "in": {"base_url": "http://[foo]"}}
+{"func": "_parse_base_url", "in": {"base_url": "http://ho\tst/"}}
+{"func": "_parse_base_url", "in": {"base_url": "\u0001http://h/"}}
+{"func": "_parse_base_url", "in": {"base_url": "https://h/x;y/z"}}
+{"func": "_parse_base_url", "in": {"base_url": "hdl://h/p;q"}}
+{"func": "_parse_base_url", "in": {"base_url": "https://h/;x"}}
+{"func": "_parse_base_url", "in": {"base_url": "//h/x"}}
+{"func": "_parse_base_url", "in": {"base_url": "http://h?x#f"}}
+{"func": "_parse_base_url", "in": {"base_url": "https://u:***@h:443/"}}
+{"func": "_parse_base_url", "in": {"base_url": "http://h:80/p"}}
+{"func": "_parse_base_url", "in": {"base_url": 5}}
+{"func": "_parse_base_url", "in": {"base_url": true}}
+{"func": "_hostname_of", "in": {"parsed": null}}
+{"func": "_hostname_of", "in": {"parsed": ["", "", "", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "H:443", "/v1", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "H.", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "H..", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "[FE80::1%tESt]:1234", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "u@p@H", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["", "h:80", "", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", ".h", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "[::1]", "/", "", "", ""]}}
+{"func": "_hostname_of", "in": {"parsed": ["https", "h%41", "/", "", "", ""]}}
+{"func": "base_url_hostname", "in": {"base_url": null}}
+{"func": "base_url_hostname", "in": {"base_url": ""}}
+{"func": "base_url_hostname", "in": {"base_url": "  "}}
+{"func": "base_url_hostname", "in": {"base_url": false}}
+{"func": "base_url_hostname", "in": {"base_url": 0}}
+{"func": "base_url_hostname", "in": {"base_url": "api.openai.com"}}
+{"func": "base_url_hostname", "in": {"base_url": "https://H:443/v1/"}}
+{"func": "base_url_hostname", "in": {"base_url": "https://h."}}
+{"func": "base_url_hostname", "in": {"base_url": "http://h:bad"}}
+{"func": "base_url_hostname", "in": {"base_url": "http://[foo]"}}
+{"func": "base_url_hostname", "in": {"base_url": "http://ho\tst/"}}
+{"func": "base_url_hostname", "in": {"base_url": "  https://h/x  "}}
+{"func": "base_url_hostname", "in": {"base_url": "https://[FE80::1%tESt]:1234/keys/"}}
+{"func": "base_url_hostname", "in": {"base_url": "\u001chttps://h/"}}
+{"func": "base_url_hostname", "in": {"base_url": "http://h\u000b:80/"}}
+{"func": "base_url_hostname", "in": {"base_url": "https://u@p@h/"}}
+{"func": "base_url_hostname", "in": {"base_url": "https://h.."}}
+{"func": "base_url_hostname", "in": {"base_url": "http://h\n:80/"}}
+{"func": "base_url_hostname", "in": {"base_url": "https://h:99999/"}}
+{"func": "base_url_hostname", "in": {"base_url": 5}}
+{"func": "base_url_hostname", "in": {"base_url": true}}
+{"func": "base_url_path", "in": {"base_url": null}}
+{"func": "base_url_path", "in": {"base_url": ""}}
+{"func": "base_url_path", "in": {"base_url": "https://H:443/v1/"}}
+{"func": "base_url_path", "in": {"base_url": "http://h/a;b"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/a;b/c"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/;x"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/x;"}}
+{"func": "base_url_path", "in": {"base_url": "HTTPS://H/P;Q"}}
+{"func": "base_url_path", "in": {"base_url": "api.openai.com"}}
+{"func": "base_url_path", "in": {"base_url": "http://[foo]"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/A/B/"}}
+{"func": "base_url_path", "in": {"base_url": "hdl://h/p;q"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/a;b?x;y#f;g"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/x;y/z"}}
+{"func": "base_url_path", "in": {"base_url": "https://h/"}}
+{"func": "base_url_path", "in": {"base_url": "https://h///"}}
+{"func": "base_url_path", "in": {"base_url": 5}}
+{"func": "base_url_origin", "in": {"base_url": null}}
+{"func": "base_url_origin", "in": {"base_url": ""}}
+{"func": "base_url_origin", "in": {"base_url": false}}
+{"func": "base_url_origin", "in": {"base_url": "api.openai.com"}}
+{"func": "base_url_origin", "in": {"base_url": "api.openai.com:8080"}}
+{"func": "base_url_origin", "in": {"base_url": "https://H:443/v1/"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h"}}
+{"func": "base_url_origin", "in": {"base_url": "http://h"}}
+{"func": "base_url_origin", "in": {"base_url": "http://h:bad"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:99999/"}}
+{"func": "base_url_origin", "in": {"base_url": "http://[foo]"}}
+{"func": "base_url_origin", "in": {"base_url": "ftp://h/p"}}
+{"func": "base_url_origin", "in": {"base_url": "socks5://h:1080"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:0"}}
+{"func": "base_url_origin", "in": {"base_url": "h:80"}}
+{"func": "base_url_origin", "in": {"base_url": "https://[::1]:443/"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:080"}}
+{"func": "base_url_origin", "in": {"base_url": "http://h:8080"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:65535"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:65536"}}
+{"func": "base_url_origin", "in": {"base_url": "https://h:00000000000000000000443"}}
+{"func": "base_url_origin", "in": {"base_url": 5}}
+{"func": "base_url_origin", "in": {"base_url": true}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": "https://h:443"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": "http://h"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h:8443", "b": "https://h:8443/x"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": "https://g"}}
+{"func": "same_base_url_origin", "in": {"a": "", "b": "https://h"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": ""}}
+{"func": "same_base_url_origin", "in": {"a": "https://h:bad", "b": "https://h"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": "https://h:bad"}}
+{"func": "same_base_url_origin", "in": {"a": "http://h", "b": "http://h:80"}}
+{"func": "same_base_url_origin", "in": {"a": "socks5://h", "b": "socks5://h"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h", "b": "http://[foo]"}}
+{"func": "same_base_url_origin", "in": {"a": "", "b": "http://[foo]"}}
+{"func": "same_base_url_origin", "in": {"a": "http://[foo]", "b": "https://h"}}
+{"func": "same_base_url_origin", "in": {"a": "https://h:443", "b": "https://h"}}
+{"func": "same_base_url_origin", "in": {"a": "http://h:8080", "b": "http://h:8081"}}
+{"func": "same_base_url_origin", "in": {"a": 5, "b": "https://h"}}
+{"func": "same_base_url_origin", "in": {"a": null, "b": null}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://api.openai.com/v1", "domain": "openai.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://x.openai.com", "domain": "openai.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://openai.com.evil.com", "domain": "openai.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://openai.com", "domain": "openai.com."}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://openai.com", "domain": " OPENAI.COM "}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://openai.com", "domain": ""}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://openai.com", "domain": null}}
+{"func": "base_url_host_matches", "in": {"base_url": "", "domain": "openai.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://sub.h.com", "domain": "h.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h.com", "domain": "xh.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h:bad", "domain": "h"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h", "domain": 5}}
+{"func": "base_url_host_matches", "in": {"base_url": "http://[foo]", "domain": 5}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h.com", "domain": "h.com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h", "domain": true}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h.com", "domain": "COM."}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h.com", "domain": ".com"}}
+{"func": "base_url_host_matches", "in": {"base_url": "https://h", "domain": "h."}}
+{"func": "base_url_host_matches", "in": {"base_url": null, "domain": null}}
+{"func": "base_url_host_matches", "in": {"base_url": 5, "domain": "h"}}

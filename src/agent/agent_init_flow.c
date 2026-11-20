@@ -1861,21 +1861,23 @@ static json_t *ai_config_context_length_for_runtime(ai_ctx *ctx, json_t *agent, 
     if (!ai_is_obj(agent_cfg)) { ret = json_null(); goto done; }
     json_t *empty = json_object();
     json_t *model_section = ai_get_def(agent_cfg, "model", empty);
-    json_free(empty);
-    if (!ai_is_obj(model_section)) { ret = json_null(); goto done; }
+    /* model_section may alias empty (absent key): free the default only
+     * after its last read, on every exit path. */
+    if (!ai_is_obj(model_section)) { json_free(empty); ret = json_null(); goto done; }
     json_t *pin = ai_get(model_section, "context_length");
-    if (ai_is_none(pin) || ai_is_bool(pin)) { ret = json_null(); goto done; }
+    if (ai_is_none(pin) || ai_is_bool(pin)) { json_free(empty); ret = json_null(); goto done; }
     json_t *pin_int = ai_py_int(ctx, pin);
-    if (ai_exc_pending(ctx)) { json_free(pin_int); goto caught; }
-    if (pin_int->num_val <= 0) { json_free(pin_int); ret = json_null(); goto done; }
+    if (ai_exc_pending(ctx)) { json_free(empty); json_free(pin_int); goto caught; }
+    if (pin_int->num_val <= 0) { json_free(empty); json_free(pin_int); ret = json_null(); goto done; }
     json_t *cpa = json_object(); ai_arg(cpa, "cfg", agent_cfg);
     json_t *cps = ai_call(ctx, "get_compatible_custom_providers", cpa);
-    if (ai_exc_pending(ctx)) { json_free(pin_int); json_free(cps); goto caught; }
+    if (ai_exc_pending(ctx)) { json_free(empty); json_free(pin_int); json_free(cps); goto caught; }
     json_t *agent_base = ai_get(agent, "base_url"); /* getattr default "" */
     char *bs = ai_py_str_or_empty(agent_base);
     json_t *base_node = json_string(bs ? bs : "");
     free(bs);
     ret = ai_scope_context_length_to_default_runtime(ctx, agent, agent_cfg, model_section, cps, pin_int, base_node);
+    json_free(empty);
     json_free(base_node);
     json_free(pin_int);
     json_free(cps);
@@ -1919,11 +1921,11 @@ static json_t *ai_select_context_engine(ai_ctx *ctx, const json_t *agent_cfg) {
         if (!raised) {
             json_t *def = json_string("compressor");
             json_t *eng = ai_get_def(ctx_cfg, "engine", def);
-            json_free(def);
             if (ai_truthy(eng)) {
                 free(engine_name);
                 engine_name = strdup(ai_jstr(eng));
             }
+            json_free(def); /* eng may alias def: free only after the reads */
         }
         json_free(empty);
         (void)raised; /* AttributeError suppressed -> keep "compressor" */
@@ -2055,8 +2057,9 @@ static json_t *ai_enforce_minimum_context(ai_ctx *ctx, json_t *agent) {
     if (ai_exc_pending(ctx)) return NULL;
     json_t *zero = json_number(0);
     json_t *ctx_node = ai_get_def(compressor, "context_length", zero);
-    json_free(zero);
     double ctx_val = ai_num(ctx_node);
+    bool ctx_truthy = ai_truthy(ctx_node);
+    json_free(zero); /* ctx_node may alias zero: snapshot reads before freeing */
     json_t *ollama = ai_agent_attr(ctx, agent, "_ollama_num_ctx");
     if (ai_exc_pending(ctx)) return NULL;
     json_t *base_url = ai_agent_attr(ctx, agent, "base_url");
@@ -2069,7 +2072,7 @@ static json_t *ai_enforce_minimum_context(ai_ctx *ctx, json_t *agent) {
         json_t *ls = ai_call(ctx, "is_local_server", a);
         if (ai_exc_pending(ctx)) { json_free(ls); return NULL; }
         if (ai_truthy(ls)) {
-            double base = ai_truthy(ctx_node) ? ctx_val : 0;
+            double base = ctx_truthy ? ctx_val : 0;
             ctx_val = ai_max_d(base, ai_num(ollama));
         }
         json_free(ls);

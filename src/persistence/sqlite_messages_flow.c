@@ -1436,7 +1436,10 @@ static void sm_refusals_transform(sm_io_t *io, const char *sid, json_t **raise_o
             json_t *a = json_object();
             json_set(a, "cause", cause ? sm_exc_project(cause) : json_null());
             json_t *bucket = sm_seam(io, "classify_persistence_error", a, raise_out);
-            if (*raise_out) return; /* the classify failure replaces the original */
+            /* *raise_out ALREADY holds the original spec here; only a NULL
+             * bucket means the classify seam raised (its spec replaced the
+             * original) or the channel is missing. */
+            if (!bucket) return;
             bool missing = bucket && bucket->type == JSON_STRING
                            && strcmp(bucket->str_val, "session_row_missing") == 0;
             json_free(bucket);
@@ -1951,7 +1954,10 @@ static json_t *sm_compact(const json_t *in, sm_io_t *io, json_t **raise_out) {
     }
     sm_refusals_enter(io, sid, raise_out);
     if (*raise_out) { json_free(dicts); return NULL; }
-    /* kwargs in call order; the conversions fire INSIDE the with block. */
+    /* kwargs in call order; the conversions fire INSIDE the with block. Any
+     * raise here must still record refusals.exit (+transform) -- goto the
+     * shared exit below, never return directly. */
+    json_t *active = NULL;
     json_t *kw = json_object();
     const json_t *mcp = json_obj_get(in, "model_config_patch");
     json_set(kw, "model_config_patch", sm_is_null(mcp) ? json_null() : json_copy(mcp));
@@ -1959,14 +1965,14 @@ static json_t *sm_compact(const json_t *in, sm_io_t *io, json_t **raise_out) {
         json_set(kw, "watermark", json_null());
     } else {
         double w = sm_int_or_0(json_obj_get(wm, "last_active"), raise_out);
-        if (*raise_out) { json_free(kw); json_free(dicts); return NULL; }
+        if (*raise_out) { json_free(kw); goto compact_in_with_raise; }
         json_set(kw, "watermark", json_number(w));
     }
     json_set(kw, "lock_holder", sm_cp(json_obj_get(in, "lock_holder")));
     const json_t *tc = json_obj_get(in, "carried_tail_count");
     json_set(kw, "tail_count", tc ? json_copy(tc) : json_number(0));
     json_t *carried_dicts = sm_held_list(carried, raise_out);
-    if (*raise_out) { json_free(kw); json_free(dicts); return NULL; }
+    if (*raise_out) { json_free(kw); goto compact_in_with_raise; }
     /* [_held_dict(m) for m in carried] or None */
     json_set(kw, "carried_messages",
              carried_dicts->c.count > 0 ? carried_dicts : json_null());
@@ -1980,24 +1986,24 @@ static json_t *sm_compact(const json_t *in, sm_io_t *io, json_t **raise_out) {
         if (!sm_is_null(cids)) {
             if (cids->type != JSON_ARRAY) {
                 sm_iter_err(raise_out, cids);
-                json_free(ids); json_free(kw); json_free(dicts); return NULL;
+                json_free(ids); json_free(kw); goto compact_in_with_raise;
             }
             for (size_t i = 0; i < cids->c.count; i++) {
                 double d = sm_py_int(cids->c.items[i], raise_out);
-                if (*raise_out) { json_free(ids); json_free(kw); json_free(dicts); return NULL; }
+                if (*raise_out) { json_free(ids); json_free(kw); goto compact_in_with_raise; }
                 json_append(ids, json_number(d));
             }
         }
         json_set(kw, "covered_ids", ids);
         json_t *unres = sm_held_list(json_obj_get(coverage, "unresolved"), raise_out);
-        if (*raise_out) { json_free(kw); json_free(dicts); return NULL; }
+        if (*raise_out) { json_free(kw); goto compact_in_with_raise; }
         json_set(kw, "unresolved_held", unres);
     }
     if (sm_is_null(hfc)) {
         json_set(kw, "held_for_cas", json_null());
     } else {
         json_t *hfc_dicts = sm_held_list(hfc, raise_out);
-        if (*raise_out) { json_free(kw); json_free(dicts); return NULL; }
+        if (*raise_out) { json_free(kw); goto compact_in_with_raise; }
         json_set(kw, "held_for_cas", hfc_dicts);
     }
     json_t *a = json_object();
@@ -2007,7 +2013,6 @@ static json_t *sm_compact(const json_t *in, sm_io_t *io, json_t **raise_out) {
     json_set(a, "args", pos);
     json_set(a, "kwargs", kw);
     json_t *script = sm_seam(io, "archive_and_compact", a, raise_out);
-    json_t *active = NULL;
     if (!*raise_out) {
         if (script && script->type != JSON_OBJECT) {
             sm_get_attr_err(raise_out, script);
@@ -2017,6 +2022,7 @@ static json_t *sm_compact(const json_t *in, sm_io_t *io, json_t **raise_out) {
         }
     }
     json_free(script);
+compact_in_with_raise:
     sm_refusals_exit(io, sid, *raise_out);
     sm_refusals_transform(io, sid, raise_out);
     if (*raise_out) { json_free(active); json_free(dicts); return NULL; }

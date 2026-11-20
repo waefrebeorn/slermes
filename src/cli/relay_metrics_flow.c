@@ -783,15 +783,23 @@ static json_t *rm_close_segment_core(rm_io_t *io, const json_t *in, json_t *st)
     const json_t *tools = rm_get(in, "tools");
     json_t *lineage_of = rm_get(st, "_lineage_of");
     const json_t *keynode = rm_get(lineage_of, session_id);
-    const char *key = rm_str(keynode);
+    /* pop FREES keynode: snapshot the key string into owned memory BEFORE
+     * the delete — a borrowed rm_str(keynode) dangles and every later
+     * rm_get(lineages, key) / json_obj_del(lineages, key) reads freed heap
+     * (layout-dependent segfault + garbage lineage lookups). */
+    const char *ks = rm_str(keynode);
+    char *key = ks ? strdup(ks) : NULL;
     if (keynode) json_obj_del(lineage_of, session_id);   /* pop */
     json_t *lineages = rm_get(st, "_lineages");
-    const json_t *lineage = (key && !rm_is_null(keynode)) ? rm_get(lineages, key) : NULL;
+    const json_t *lineage = key ? rm_get(lineages, key) : NULL;
     if (rm_is_null(lineage)) {
         json_t *out = json_array();
-        json_append(out, rm_copy_or_null(state));
-        json_append(out, rm_copy_or_null(tally));
-        json_append(out, rm_copy_or_null(tools));
+        /* live returns the (state, tally, tools) 3-tuple: None members must
+         * survive as json_null — json_append(out, NULL) silently DROPS. */
+        json_append(out, state ? json_copy(state) : json_null());
+        json_append(out, tally ? json_copy(tally) : json_null());
+        json_append(out, tools ? json_copy(tools) : json_null());
+        free(key);
         return out;
     }
     /* lineage.open.discard(session_id) — sorted-array set model */
@@ -809,31 +817,40 @@ static json_t *rm_close_segment_core(rm_io_t *io, const json_t *in, json_t *st)
         rm_arg_j(aa, "into", rm_get(lineage, "peak"));
         rm_arg_j(aa, "segment", state);
         json_t *r = rm_call(io, "_absorb_peak", aa);
-        if (rm_is_raise(r)) return r;
+        if (rm_is_raise(r)) { free(key); return r; }
         json_free(r);
         json_t *ta = json_object();
         rm_arg_j(ta, "tally", tally);
         r = rm_call(io, "tally.absorb", ta);
-        if (rm_is_raise(r)) return r;
+        if (rm_is_raise(r)) { free(key); return r; }
         json_free(r);
     }
     json_t *toa = json_object();
     rm_arg_j(toa, "tools", tools);
     json_t *r = rm_call(io, "tools.absorb", toa);
-    if (rm_is_raise(r)) return r;
+    if (rm_is_raise(r)) { free(key); return r; }
     json_free(r);
     if (rm_truth(open)) {
         json_t *out = json_array();
         json_append(out, json_null());
         json_append(out, json_null());
         json_append(out, json_null());
+        free(key);
         return out;
     }
-    json_obj_del(lineages, key);
+    /* del self._lineages[key] FREES the lineage node in C (live keeps the
+     * popped object alive via its local): snapshot the merged triple BEFORE
+     * the delete, else the peak/tally/tools reads are use-after-free. None
+     * members survive as json_null (json_append drops a NULL child). */
     json_t *out = json_array();
-    json_append(out, rm_copy_or_null(rm_get(lineage, "peak")));
-    json_append(out, rm_copy_or_null(rm_get(lineage, "tally")));
-    json_append(out, rm_copy_or_null(rm_get(lineage, "tools")));
+    const json_t *pv = rm_get(lineage, "peak");
+    const json_t *tv = rm_get(lineage, "tally");
+    const json_t *tlv = rm_get(lineage, "tools");
+    json_append(out, pv ? json_copy(pv) : json_null());
+    json_append(out, tv ? json_copy(tv) : json_null());
+    json_append(out, tlv ? json_copy(tlv) : json_null());
+    json_obj_del(lineages, key);
+    free(key);
     return out;
 }
 /* PoP: rm_close_segment @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._close_segment */
@@ -1002,7 +1019,8 @@ static json_t *rm_send_exported_packages(rm_io_t *io, const json_t *in, json_t *
     rm_arg_j(ga, "callback", cb);
     json_free(cb);
     json_t *gargs = json_array();
-    json_append(gargs, rm_copy_or_null(store));
+    /* positional args: a None store stays in the list (json_append drops NULL) */
+    json_append(gargs, store ? json_copy(store) : json_null());
     json_append(gargs, json_copy(send));
     json_set(ga, "args", gargs);
     json_set(ga, "kwargs", json_object());
@@ -1445,7 +1463,8 @@ static json_t *rm_record_session_friction(rm_io_t *io, const json_t *in, json_t 
     json_t *args_arr = json_array();
     json_append(args_arr, json_string(json_get_str(in, "signal", "")));
     json_append(args_arr, json_string(json_get_str(in, "session_id", "")));
-    json_append(args_arr, rm_copy_or_null(rm_get(in, "fallback_route")));
+    const json_t *fr = rm_get(in, "fallback_route");
+    json_append(args_arr, fr ? json_copy(fr) : json_null());
     json_append(args_arr, json_number(rm_num(in, "turns", 1.0)));
     json_t *r = rm_rt_safe(io, runtime, "rt.record_friction", args_arr, json_object());
     json_free(runtime);
@@ -1469,8 +1488,10 @@ static json_t *rm_record_session_tools(rm_io_t *io, const json_t *in, json_t *st
     if (!rm_is_runtime(runtime)) return NULL;
     json_t *args_arr = json_array();
     json_append(args_arr, json_string(json_get_str(in, "session_id", "")));
-    json_append(args_arr, rm_copy_or_null(rm_get(in, "agent")));
-    json_append(args_arr, rm_copy_or_null(rm_get(in, "tools_for_api")));
+    const json_t *ag = rm_get(in, "agent");
+    json_append(args_arr, ag ? json_copy(ag) : json_null());
+    const json_t *tfa = rm_get(in, "tools_for_api");
+    json_append(args_arr, tfa ? json_copy(tfa) : json_null());
     json_t *r = rm_rt_safe(io, runtime, "rt.record_session_tools", args_arr, json_object());
     if (rm_is_raise(r)) return r;
     json_free(r);
@@ -1496,7 +1517,8 @@ static json_t *rm_record_known_cache_break(rm_io_t *io, const json_t *in, json_t
     if (rm_is_null(runtime)) { json_free(runtime); return NULL; }
     json_t *args_arr = json_array();
     json_append(args_arr, json_string(json_get_str(in, "cause", "")));
-    json_append(args_arr, rm_copy_or_null(rm_get(in, "route")));
+    const json_t *rt_node = rm_get(in, "route");
+    json_append(args_arr, rt_node ? json_copy(rt_node) : json_null());
     json_append(args_arr, json_string(json_get_str(in, "session_id", "")));
     json_t *r = rm_rt_safe(io, runtime, "rt.record_known_cache_break", args_arr, json_object());
     json_free(runtime);
