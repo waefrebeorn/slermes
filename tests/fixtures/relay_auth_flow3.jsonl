@@ -1,0 +1,52 @@
+{"func": "sign", "in": {"payload": "hello", "secret": "s3cret", "seams": {"hmac_hexdigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}
+{"func": "sign", "in": {"payload": "", "secret": "s3cret", "seams": {"hmac_hexdigest": ""}}}
+{"func": "sign", "in": {"payload": "gw-1", "secret": "", "seams": {"hmac_hexdigest": "0123456789abcdef"}}}
+{"func": "sign", "in": {"payload": "p:a|y", "secret": "k", "seams": {"hmac_hexdigest": ["deadbeef"]}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "ValueError", "msg": "bad hex"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "TypeError", "msg": "t"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "RuntimeError", "msg": "r"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "KeyError", "msg": "k"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "FileNotFoundError", "msg": "f"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "ZeroDivisionError", "msg": "z"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "ModuleNotFoundError", "msg": "m"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "UnicodeEncodeError", "msg": "u"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "ExceptionGroup", "msg": "e"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "Warning", "msg": "w"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "Exception", "msg": "x"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "sign", "in": {"payload": "p", "secret": "k", "seams": {"hmac_hexdigest": {"__raise__": "BaseException", "msg": "root"}}}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 0}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": -5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 0}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "cafe", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 0}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 60}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": -0.5, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 1}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.0, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 300}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": ["h1", "h2"], "b64url_encode": "QUJDRA=="}, "ttl_seconds": 7}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": {"__raise__": "ValueError", "msg": "clock"}, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": {"__raise__": "TypeError", "msg": "hm"}, "b64url_encode": "QUJDRA=="}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "RuntimeError", "msg": "b64"}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "FileNotFoundError", "msg": "nf"}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "UnicodeEncodeError", "msg": "ue"}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "ExceptionGroup", "msg": "eg"}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "SystemExit", "msg": "bye"}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "KeyboardInterrupt", "msg": ""}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "GeneratorExit", "msg": ""}}, "ttl_seconds": 5}}
+{"func": "make_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "BaseException", "msg": "root"}}, "ttl_seconds": 5}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 0}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 120}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-2", "secret": "sec", "seams": {"time_time": 1000.7, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 30}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QQ=="}, "ttl_seconds": 60}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": ["aa", "bb"], "b64url_encode": "QUJDRA=="}, "ttl_seconds": 1}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": {"__raise__": "ValueError", "msg": "clk"}, "hmac_hexdigest": "ab12cd34", "b64url_encode": "QUJDRA=="}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": {"__raise__": "TypeError", "msg": "hm"}, "b64url_encode": "QUJDRA=="}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "RuntimeError", "msg": "b64"}}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "SystemExit", "msg": "bye"}}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "KeyboardInterrupt", "msg": ""}}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "GeneratorExit", "msg": ""}}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "UnicodeEncodeError", "msg": "ue"}}, "ttl_seconds": 9}}
+{"func": "make_upgrade_token", "in": {"payload": "gw-1", "secret": "sec", "seams": {"time_time": 1700000000.9, "hmac_hexdigest": "ab12cd34", "b64url_encode": {"__raise__": "ExceptionGroup", "msg": "eg"}}, "ttl_seconds": 9}}

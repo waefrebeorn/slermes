@@ -97,13 +97,16 @@ def run(cmd, cwd=REPO, check=True, capture=True, timeout=None):
         except ProcessLookupError:
             pass
         raise
+    # out/err are the strings returned by communicate() (possibly None when
+    # capture=False). proc.stdout is a TextIOWrapper, not a string — slicing it
+    # raises TypeError and hides the child's real error. Use the captured text.
     if proc.returncode != 0 and check:
         sys.stderr.write("STAGE FAILED: %s\n" % " ".join(full))
         if capture:
-            sys.stderr.write((proc.stdout or "")[-4000:])
-            sys.stderr.write((proc.stderr or "")[-4000:])
+            sys.stderr.write((out or "")[-4000:])
+            sys.stderr.write((err or "")[-4000:])
         sys.exit(1)
-    return proc.stdout if capture else None
+    return out if capture else None
 
 
 def stage_scan():

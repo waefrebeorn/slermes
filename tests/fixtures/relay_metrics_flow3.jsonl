@@ -1,0 +1,65 @@
+{"func":"_text","in":{"event":{"s":"abc"},"key":"s"}}
+{"func":"_text","in":{"event":{"s":7},"key":"s"}}
+{"func":"_text","in":{"event":{"s":true},"key":"s"}}
+{"func":"_text","in":{"event":{},"key":"s"}}
+{"func":"_text","in":{"event":{"s":null},"key":"s"}}
+{"func":"_text","in":{"event":{"s":0},"key":"s"}}
+{"func":"_text","in":{"event":{"s":""},"key":"s"}}
+{"func":"_text","in":{"event":{"s":-3},"key":"s"}}
+{"func":"_retry_ordinal","in":{"event":{}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":3}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":0}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":-1}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":true}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":2.5}}}
+{"func":"_retry_ordinal","in":{"event":{"retry_count":"4"}}}
+{"func":"_session_pair","in":{"event":{"session_id":"s1","turn_id":"u1"},"key":"turn_id"}}
+{"func":"_session_pair","in":{"event":{"turn_id":"u1"},"key":"turn_id"}}
+{"func":"_session_pair","in":{"event":{"session_id":"s1"},"key":"turn_id"}}
+{"func":"_session_pair","in":{"event":{"session_id":"","turn_id":""},"key":"turn_id"}}
+{"func":"_session_pair","in":{"event":{"session_id":"s2","task_id":"t2"},"key":"task_id"}}
+{"func":"_session_pair","in":{"event":{"session_id":5,"turn_id":6},"key":"turn_id"}}
+{"func":"_identities_compatible","in":{"candidate":["a","r1","c1"],"observed":["a","r1","c1"]}}
+{"func":"_identities_compatible","in":{"candidate":["a","r1","c1"],"observed":["a","r1",""]}}
+{"func":"_identities_compatible","in":{"candidate":["a","r1","c1"],"observed":["a","r1","c2"]}}
+{"func":"_identities_compatible","in":{"candidate":["","","c1"],"observed":["a","r1","c1"]}}
+{"func":"_identities_compatible","in":{"candidate":["b","r1","c1"],"observed":["","","c1"]}}
+{"func":"_identities_compatible","in":{"candidate":["","","c1"],"observed":["","","c1"]}}
+{"func":"_identities_compatible","in":{"candidate":["b","r9","c1"],"observed":["a","r1","c1"]}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":[],"turn_ids":[]},"event":{}}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":["t1"],"turn_ids":["t1"]},"event":{"turn_id":"t1"}}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":[],"turn_ids":[]},"event":{"turn_id":"t9"}}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":[],"turn_ids":["t1","t2"]},"event":{"turn_id":"t1"}}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":[],"turn_ids":["t1"]},"event":{"turn_id":"t9"}}}
+{"func":"_event_matches_task_turn","in":{"task":{"retired_turn_ids":["t3"],"turn_ids":["t3"]},"event":{"turn_id":"t3"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t1","r1"]]},"event":{}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t1","r1"]]},"event":{"task_id":"t1","api_request_id":"r1"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t1","r1"]]},"event":{"task_id":"t9","api_request_id":"r1"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t2","r1"]]},"event":{"api_request_id":"r1"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t2","r1"],["t3","r1"]]},"event":{"api_request_id":"r1"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[]},"event":{"api_request_id":"r1"}}}
+{"func":"_existing_model_call_key","in":{"session":{"model_calls":[["t1","r1"],["t2","r2"]]},"event":{"task_id":"t2","api_request_id":"r2"}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":42}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":null}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[1,"x"],"kwargs":{"k":true},"io":{"cb":{"__raise__":"ValueError","message":"boom"},"logger.warning":null}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"SystemExit","message":"boom"}}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"KeyboardInterrupt","message":"boom"}}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"FileNotFoundError","message":"boom"},"logger.warning":null}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"ExceptionGroup","message":"boom"},"logger.warning":null}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"BaseExceptionGroup","message":"boom"}}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"ValueError","message":"boom"},"logger.warning":{"__raise__":"RuntimeError","message":"log fail"}}}}
+{"func":"_guarded","in":{"message":"Hermes shared metrics operation failed","callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"logger.warning":null}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":"ok"}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"TypeError","message":"boom"},"logger.warning":null}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"SystemExit","message":"boom"}}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__script__":true,"ret":["a","b"]}}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"UnicodeDecodeError","message":"boom"},"logger.warning":null}}}
+{"func":"_safe","in":{"callback":{"__callable__":"cb"},"args":[],"kwargs":{},"io":{"cb":{"__raise__":"OSError","message":"boom"},"logger.warning":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":{"id":"pkg"},"_send_exported_packages":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":{"__raise__":"RuntimeError","message":"boom"},"logger.warning":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":{"__raise__":"SystemExit","message":"boom"}}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":{"id":"pkg"},"_send_exported_packages":{"__raise__":"ValueError","message":"boom"},"logger.warning":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":0,"_send_exported_packages":null}}}
+{"func":"_export","in":{"io":{"store.create_and_export_package_if_due":{"id":"pkg"},"_send_exported_packages":"sent"}}}
+{"func":"_export","in":{"io":{"logger.warning":null}}}
