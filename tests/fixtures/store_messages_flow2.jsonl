@@ -1,0 +1,70 @@
+{"func": "_reasoning_json_text", "in": {"args": {"value": "raw reasoning text"}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": ""}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": null}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": {"kind": "summary", "n": 2}}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": [1, "two", false]}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": true}}}
+{"func": "_reasoning_json_text", "in": {"args": {"value": 0}}}
+{"func": "_encode_content", "in": {"args": {"content": "plain text"}}}
+{"func": "_encode_content", "in": {"args": {"content": null}}}
+{"func": "_encode_content", "in": {"args": {"content": 42}}}
+{"func": "_encode_content", "in": {"args": {"content": {"role": "user", "name": "a"}}}}
+{"func": "_encode_content", "in": {"args": {"content": ["part", 7, true]}}}
+{"func": "_encode_content", "in": {"args": {"content": true}}}
+{"func": "_encode_content", "in": {"args": {"content": {"__prefixed__": "payload"}}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": null}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": {}}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": ""}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": {"a": 1, "b": "two"}}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": "{\"b\": 2}"}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": "not json"}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": "[1,2]"}}}
+{"func": "_encode_display_metadata", "in": {"args": {"display_metadata": 42}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": null}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": "{\"a\": 1}"}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": "not json"}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": "{\"inner\": \"{\\\"x\\\": 1}\"}"}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": 42}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": "[1,2]"}}}
+{"func": "_decode_display_metadata", "in": {"args": {"raw": "null"}}}
+{"func": "_reaction_list", "in": {"args": {"meta": null}}}
+{"func": "_reaction_list", "in": {"args": {"meta": {"reactions": [{"emoji": "x"}, "bad", 5, {"emoji": "y"}]}}}}
+{"func": "_reaction_list", "in": {"args": {"meta": {"reactions": "not-a-list"}}}}
+{"func": "_reaction_list", "in": {"args": {"meta": {}}}}
+{"func": "_reaction_list", "in": {"args": {"meta": {"other": 1}}}}
+{"func": "_reaction_list", "in": {"args": {"meta": [1, 2]}}}
+{"func": "_reaction_list", "in": {"args": {"meta": {"reactions": null}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": null, "_compressed_summary": false}, "key": "K", "first_by_uid": {}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": "u1", "_compressed_summary": false}, "key": "K", "first_by_uid": {}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": "u1", "_compressed_summary": true}, "key": "K2", "first_by_uid": {"u1": "K"}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": "u2", "_compressed_summary": true}, "key": "K3", "first_by_uid": {}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": 0, "_compressed_summary": false}, "key": 5, "first_by_uid": {}}}}
+{"func": "_fold_summary_carrier", "in": {"args": {"row": {"message_uid": "u3", "_compressed_summary": false}, "key": {"k": 1}, "first_by_uid": {"other": 2}}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": false, "include_compacted": false}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": false, "include_compacted": true}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": true, "include_compacted": false}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": true, "include_compacted": true}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": false, "include_compacted": 0}}}
+{"func": "_active_clause", "in": {"args": {"include_inactive": 0, "include_compacted": 1}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": null, "content": "x"}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": null}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": ""}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": []}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": "hello"}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": {"b": 2, "a": 1}}}}
+{"func": "_exact_replayed_user_clone_key", "in": {"args": {"timestamp": 100, "content": [1, 2]}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {"display_metadata": "{\"model_only\": true}"}}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {"display_metadata": "{\"model_only\": false}"}}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {"display_metadata": "{\"other\": 1}"}}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {"display_metadata": null}}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {"display_metadata": "{\"inner\": \"{\\\"model_only\\\": true}\"}"}}}}
+{"func": "_is_model_only_row", "in": {"args": {"row": {}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"source": "tool"}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": {"_branched_from": "p"}}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": {"_branched_from": "p"}, "parent_session_id": "q"}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": {"_branched_from": "p"}, "parent_session_id": "p"}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": "{\"_delegate_from\":\"p\"}", "parent_session_id": "p"}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": "not json"}}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": {"_reset_from": "p"}, "parent_session_id": "p"}, "include_reset": true}}}
+{"func": "_is_explicit_fork_child_row", "in": {"args": {"session": {"model_config": {"_reset_from": "p"}, "parent_session_id": "p"}, "include_reset": false}}}

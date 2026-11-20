@@ -1,0 +1,256 @@
+{"func": "_bearer", "in": {"args": {"token": "tok"}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": ""}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": "abc123"}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": "a b"}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": "x-y-z"}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": null}, "state": {}, "io": {}}}
+{"func": "_bearer", "in": {"args": {"token": 123}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": "p", "project_secret": "s"}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": "", "project_secret": ""}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": "id-1", "project_secret": "secret-2"}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": "a:b", "project_secret": "c"}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": 123, "project_secret": 456}, "state": {}, "io": {}}}
+{"func": "_basic", "in": {"args": {"project_id": null, "project_secret": null}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": true}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": false, "what": ""}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": false, "what": " device login"}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": false, "what": " user creation"}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": false, "what": " device login"}, "state": {}, "io": {}}}
+{"func": "_require_httpx", "in": {"args": {"httpx_available": true, "what": "ignored"}, "state": {}, "io": {}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": null}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": ""}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://custom"}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://custom/"}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://a/b///"}}}
+{"func": "_dashboard_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "/x"}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": null}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": ""}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://spec"}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://spec/"}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "https://s//"}}}
+{"func": "_spectrum_host", "in": {"args": {}, "state": {}, "io": {"os.getenv": "//"}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "tok"}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "  tok  "}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "Bearer abc"}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "bearer   xyz "}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "BEARER t"}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": ""}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": null}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": 123}, "state": {}, "io": {}}}
+{"func": "_clean_bearer_token", "in": {"args": {"value": "   "}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": {"set-auth-token": "abc"}, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": {"Set-Auth-Token": "xyz"}, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": {}, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": null, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": {"other": "v"}, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_header_value", "in": {"args": {"headers": {"set-auth-token": 123}, "name": "set-auth-token"}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": "+1 (555) 123-4567"}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": "+15551234567"}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": "abc+1x2"}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": ""}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": null}, "state": {}, "io": {}}}
+{"func": "_normalize_phone", "in": {"args": {"phone": "+1.555.000.0000"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": {}, "action": "x"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": {"error": "bad"}, "action": "create-project"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": {"error": ""}, "action": "x"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": {"error": 123}, "action": "y"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": {"message": "ignored"}, "action": "z"}, "state": {}, "io": {}}}
+{"func": "_raise_on_error_key", "in": {"args": {"data": null, "action": "q"}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": [1, 2]}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": {"data": [1]}}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": {"projects": [{"id": "p"}]}}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": {"data": {"projects": [1, 2]}}}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": {"x": 1}}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": null}, "state": {}, "io": {}}}
+{"func": "_unwrap_list", "in": {"args": {"data": {}}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": {"assignedPhoneNumber": "+1555"}}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": {"assignedPhoneNumber": ""}}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": {"assignedPhoneNumber": 123}}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": {}}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": null}, "state": {}, "io": {}}}
+{"func": "user_assigned_line", "in": {"args": {"user": {"phoneNumber": "+1"}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {"meta": {"opt_in": true}}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {"meta": {"opt_in": false}}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {"meta": {}}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {"meta": 1}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {}}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": null}, "state": {}, "io": {}}}
+{"func": "user_opted_in", "in": {"args": {"user": {"meta": {"opt_in": "yes"}}}, "state": {}, "io": {}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K"}, "state": {}, "io": {"config.get_env_value": "v"}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K", "config_available": false}, "state": {}, "io": {"os.getenv": "env"}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K"}, "state": {}, "io": {"config.get_env_value": null}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K"}, "state": {}, "io": {"config.get_env_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K", "config_available": false}, "state": {}, "io": {"os.getenv": null}}}
+{"func": "_get_config_env_value", "in": {"args": {"key": "K", "config_available": false}, "state": {}, "io": {"os.getenv": {"__script__": true, "raise": {"type": "OSError", "message": "no"}}}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["+15551234567", ""]}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["", "+15550000000"]}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["", ""]}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["", "+111, +222"]}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["", "+111 +222"]}}}
+{"func": "_configured_operator_phone", "in": {"args": {}, "state": {}, "io": {"config.get_env_value": ["", "junk"]}}}
+{"func": "_configured_operator_phone", "in": {"args": {"config_available": false}, "state": {}, "io": {"os.getenv": ["", "+15551234567"]}}}
+{"func": "_safe", "in": {"args": {"fn": "ok"}, "state": {}, "io": {"safe_call": null}}}
+{"func": "_safe", "in": {"args": {"fn": "ok"}, "state": {}, "io": {"safe_call": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_safe", "in": {"args": {"fn": "ok"}, "state": {}, "io": {"safe_call": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "_safe", "in": {"args": {"fn": "ok"}, "state": {}, "io": {"safe_call": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_safe", "in": {"args": {"fn": "ok"}, "state": {}, "io": {"safe_call": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_safe", "in": {"args": {"fn": "b"}, "state": {}, "io": {"safe_call": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "stop"}}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "plain"}}, "state": {}, "io": {"resp.json": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "plain"}}, "state": {}, "io": {"resp.json": {"error": "boom"}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "plain"}}, "state": {}, "io": {"resp.json": {"message": "m"}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "plain"}}, "state": {}, "io": {"resp.json": {"detail": "d"}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "plain"}}, "state": {}, "io": {"resp.json": {"a": 1, "b": 2}}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": ""}}, "state": {}, "io": {"resp.json": null}}}
+{"func": "_response_error_detail", "in": {"args": {"resp": {"text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}, "state": {}, "io": {"resp.json": {"__script__": true, "raise": {"type": "TypeError", "message": "bad"}}}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 200, "text": "ok"}, "action": "x"}, "state": {}, "io": {"resp.json": null}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 400, "text": "bad"}, "action": "list-users"}, "state": {}, "io": {"resp.json": {"error": "denied"}}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 401, "text": "bad"}, "action": "list-users"}, "state": {}, "io": {"resp.json": {"error": "denied"}}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 403, "text": "bad"}, "action": "list-users"}, "state": {}, "io": {"resp.json": {"error": "denied"}}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 500, "text": "bad"}, "action": "list-users"}, "state": {}, "io": {"resp.json": {"error": "denied"}}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 503, "text": ""}, "action": "op"}, "state": {}, "io": {}}}
+{"func": "_raise_for_status", "in": {"args": {"resp": {"status_code": 500, "text": "t"}, "action": "op"}, "state": {}, "io": {"resp.json": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_pool_first", "in": {"args": {"auth": {"credential_pool": {"photon": [{"access_token": "t"}]}}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_pool_first", "in": {"args": {"auth": {"credential_pool": {}}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_pool_first", "in": {"args": {"auth": {}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_pool_first", "in": {"args": {"auth": {"credential_pool": {"photon": []}}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_pool_first", "in": {"args": {"auth": {"credential_pool": {"photon": "notlist"}}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_pool_first", "in": {"args": {"auth": {"credential_pool": {"photon": [1, 2]}}, "key": "photon"}, "state": {}, "io": {}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "//"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/a/b"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "h"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h/"}}}
+{"func": "_auth_json_path", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"a": 1}}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": false}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": null}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"__script__": true, "raise": {"type": "OSError", "message": "no"}}}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"__script__": true, "raise": {"type": "JSONDecodeError", "message": "bad"}}}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_load_auth", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_save_auth", "in": {"args": {"data": {"a": 1}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": {"__script__": true, "raise": {"type": "OSError", "message": "no"}}, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "os.fsync": null, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}, "path.replace": null}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": "/h", "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_save_auth", "in": {"args": {"data": {}}, "state": {}, "io": {"get_hermes_home": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_store_pool_record", "in": {"args": {"key": "photon", "record": {"access_token": "t"}}, "state": {}, "io": {"auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_store_pool_record", "in": {"args": {"key": "photon", "record": {"x": 1}}, "state": {}, "io": {"auth_store_lock": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_store_pool_record", "in": {"args": {"key": "photon", "record": {}}, "state": {}, "io": {"auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "_store_pool_record", "in": {"args": {"key": "photon_project", "record": {"id": "p"}}, "state": {}, "io": {"auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "_store_pool_record", "in": {"args": {"key": "photon", "record": {}}, "state": {}, "io": {}}, "fc": true}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": [{"access_token": "t"}]}}}}}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": [{"token": "legacy"}]}}}}}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"providers": {"photon": {"access_token": "old"}}}}}}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}}}}
+{"func": "load_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": [{"access_token": 123}]}}}}}
+{"func": "store_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_photon_token", "in": {"args": {"token": "x"}, "state": {}, "io": {"time.time": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "store_photon_token", "in": {"args": {"token": ""}, "state": {}, "io": {"time.time": 0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"time.time": 1.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "store_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": [{"access_token": "t"}]}, "providers": {"photon": {"x": 1}}}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"providers": {"photon": {"x": 1}}}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": "notobj"}, "path.mkdir": null, "os.getpid": 123, "uuid4_hex": "abc", "os.open": 7, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "clear_photon_token", "in": {"args": {}, "state": {}, "io": {"get_hermes_home": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": [null, null], "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"spectrum_project_id": "sid", "project_secret": "sec"}]}}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": [null, null], "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"project_id": "old", "project_secret": "sec"}]}}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": ["id", "sec"], "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": [null, null], "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, null], "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_project_credentials", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": [null, {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}], "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"spectrum_project_id": "sid"}]}}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"dashboard_project_id": "d"}]}}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"project_id": "p"}]}}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{}]}}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon_project": [{"spectrum_project_id": "", "project_id": "p"}]}}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": "env", "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "load_dashboard_project_id", "in": {"args": {}, "state": {}, "io": {"get_scoped_secret": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "get_hermes_home": "/h", "path.exists": true, "json.load": {}}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": null}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s", "dashboard_project_id": "d", "name": "N"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": null}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"time.time": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": null}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s", "config_available": false}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": null}}}
+{"func": "store_project_credentials", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null, "config.save_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "store_user_numbers", "in": {"args": {"phone_number": "+1555"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_user_numbers", "in": {"args": {"assigned_phone_number": "+1666", "user_id": "u"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_user_numbers", "in": {"args": {}, "state": {}, "io": {}}}
+{"func": "store_user_numbers", "in": {"args": {"phone_number": "p", "dashboard_project_id": "d"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_user_numbers", "in": {"args": {"phone_number": "p"}, "state": {}, "io": {"time.time": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": null}}}
+{"func": "store_user_numbers", "in": {"args": {"assigned_phone_number": "a"}, "state": {}, "io": {"time.time": 100.0, "auth_store_lock": null, "get_hermes_home": "/h", "path.exists": true, "json.load": {"credential_pool": {"photon": []}}, "path.mkdir": null, "os.getpid": 1, "uuid4_hex": "h", "os.open": 3, "os.fdopen": "fh", "json.dump": null, "os.fsync": null, "path.replace": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"config.save_env_value": null}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"config.save_env_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"config.save_env_value": [null, {"__script__": true, "raise": {"type": "OSError", "message": "x"}}]}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"config.save_env_value": [null, {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s"}, "state": {}, "io": {"config.save_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_persist_runtime_env", "in": {"args": {"spectrum_project_id": "p", "project_secret": "s", "config_available": false}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"access_token": "t"}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"access_token": "t", "accessToken": "t"}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"data": {"access_token": "d"}}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"session": {"access_token": "s"}}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {}, "headers": {"set-auth-token": "Bearer hdr"}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"access_token": "Bearer xyz"}}, "state": {}, "io": {}}}
+{"func": "_device_response_token_candidates", "in": {"args": {"body": {"access_token": 123}}, "state": {}, "io": {}}}
+{"func": "request_device_code", "in": {"args": {}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"device_code": "d", "user_code": "u", "verification_uri": "https://v", "expires_in": 600, "interval": 3}}}}
+{"func": "request_device_code", "in": {"args": {"scope": null}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"device_code": "d", "user_code": "u", "verification_uri": "https://v"}}}}
+{"func": "request_device_code", "in": {"args": {"client_id": "custom"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"device_code": "d", "user_code": "u", "verification_uri": "https://v", "verification_uri_complete": "https://v?c=1"}}}}
+{"func": "request_device_code", "in": {"args": {}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 400}, "resp.raise_for_status": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bad"}}}}}
+{"func": "request_device_code", "in": {"args": {}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "request_device_code", "in": {"args": {"httpx_available": false}, "state": {}, "io": {}}}
+{"func": "request_device_code", "in": {"args": {}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"device_code": "d", "user_code": "u", "verification_uri": "https://v", "expires_in": "1800", "interval": "5"}}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": ""}, "state": {}, "io": {}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 401}, "resp.raise_for_status": null, "resp.json": {}}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"user": {"id": "u"}}}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 500}, "resp.raise_for_status": null, "resp.json": {}}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"user": {}}}}}
+{"func": "check_photon_token_valid", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": [null, null], "resp.json": {"user": {"id": "u"}}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": [{"status_code": 401}, {"status_code": 200}], "resp.json": {}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": [{"status_code": 200}, {"status_code": 403}], "resp.raise_for_status": [null, null], "resp.json": {"user": {"id": "u"}}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"user": 1}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 500}, "resp.raise_for_status": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bad"}}}}}
+{"func": "validate_photon_token", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": []}, "state": {}, "io": {}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": [{"source": "poll", "token": "t"}]}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": [null, null], "resp.json": {"user": {"id": "u"}}}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": [{"source": "a", "token": "a"}, {"source": "b", "token": "b"}]}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 401}, "resp.json": {}}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": [{"source": "poll", "token": "t"}]}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": [{"source": "poll", "token": "t"}]}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"user": {}}}}}
+{"func": "_validated_dashboard_token", "in": {"args": {"candidates": [{"source": "poll", "token": "t"}]}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 500}, "resp.raise_for_status": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bad"}}}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/api/x", "token": "t"}, "state": {}, "io": {"os.getenv": null}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/x", "token": "t", "what": " custom"}, "state": {}, "io": {"os.getenv": null}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/x", "token": "t", "httpx_available": false}, "state": {}, "io": {}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": "https://custom", "httpx.get": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_dashboard_get", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": "https://h///"}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {"a": 1}, "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"ok": 1}}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {}, "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": null}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {}, "token": "t", "what": " custom"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {}}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {}, "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {}, "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.post": {"status_code": 200}, "resp.raise_for_status": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_dashboard_post", "in": {"args": {"path": "/x", "body": {}, "token": "t", "httpx_available": false}, "state": {}, "io": {}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/api/projects", "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"id": "p"}]}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"data": [1, 2]}}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {}}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 500}, "resp.raise_for_status": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bad"}}}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_dashboard_list", "in": {"args": {"path": "/x", "token": "t"}, "state": {}, "io": {"os.getenv": {"__script__": true, "raise": {"type": "OSError", "message": "x"}}}}}
+{"func": "list_projects", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"id": "p", "name": "A"}]}}}
+{"func": "list_projects", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": {"projects": [{"id": "q"}]}}}}
+{"func": "list_projects", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": []}}}
+{"func": "list_projects", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": null}}}
+{"func": "list_projects", "in": {"args": {"token": "t"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "list_projects", "in": {"args": {"token": "t", "httpx_available": false}, "state": {}, "io": {}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": "Hermes Agent"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"id": "p", "name": "hermes agent"}]}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": "nope"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"id": "p", "name": "other"}]}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": "  A  "}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"id": "p", "name": " a "}]}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": "a"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": []}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": "a"}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "find_project_by_name", "in": {"args": {"token": "t", "name": null}, "state": {}, "io": {"os.getenv": null, "httpx.get": {"status_code": 200}, "resp.raise_for_status": null, "resp.json": [{"name": null}]}}}

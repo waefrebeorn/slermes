@@ -1,0 +1,53 @@
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": "ls -la"}, "max_len": 20, "io": {"sanitize_command_for_display": "SAN", "summarize_shell_command": "SUM", "_tail_trunc": "ls -la"}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": "ls -la"}, "max_len": 20, "io": {"sanitize_command_for_display": "SAN", "summarize_shell_command": "SUM", "_tail_trunc": ""}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {}, "max_len": 20, "io": {}}}
+{"func": "_preview_shell", "in": {"key": "code", "args": {"code": 5}, "max_len": 10, "io": {"sanitize_command_for_display": "S5", "summarize_shell_command": "SUM5", "_tail_trunc": "5"}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": true}, "max_len": 10, "io": {"sanitize_command_for_display": "ST", "summarize_shell_command": "SUMT", "_tail_trunc": "True"}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": "x"}, "max_len": 10, "io": {"sanitize_command_for_display": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad sanitize"}}}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": "x"}, "max_len": 10, "io": {"sanitize_command_for_display": "SAN", "summarize_shell_command": {"__script__": true, "ret": null, "raise": {"type": "TypeError", "message": "bad summarize"}}}}}
+{"func": "_preview_shell", "in": {"key": "command", "args": {"command": "x"}, "max_len": 10, "io": {"sanitize_command_for_display": "SAN", "summarize_shell_command": "SUM", "_tail_trunc": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "stop"}}}}}
+{"func": "_preview_shell", "in": {"key": "code", "args": {"code": "print(1)"}, "max_len": 0, "io": {"sanitize_command_for_display": "SC", "summarize_shell_command": "PSC", "_tail_trunc": "print(1)"}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[]], "_primary_arg_preview": "ARG"}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "one", "preview": "p"}]], "_tail_trunc": "one"}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_search", "args": {"q": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "one", "preview": "p"}, {"name": "n", "emoji": "e", "text": "two", "preview": "p"}]], "_tail_trunc": "one +1"}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_describe", "args": {"n": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "a", "preview": "p"}, {"name": "n", "emoji": "e", "text": "b", "preview": "p"}, {"name": "n", "emoji": "e", "text": "c", "preview": "p"}]], "_tail_trunc": "TR"}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "one", "preview": "p"}]], "_tail_trunc": ""}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "labels boom"}}}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[]], "_primary_arg_preview": {"__script__": true, "ret": null, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_preview_bridge_call", "in": {"tool_name": "tool_call", "args": {"name": "x"}, "max_len": 30, "io": {"bridge_tool_labels": [[{"name": "n", "emoji": "e", "text": "one", "preview": "p"}]], "_tail_trunc": {"__script__": true, "ret": null, "raise": {"type": "GeneratorExit", "message": "gen"}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": null}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"spinner": {"waiting_faces": ["x", "y"]}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"spinner": {"waiting_faces": []}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"spinner": {"other": ["z"]}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "waiting_faces", "fallback": ["a"], "io": {"_get_skin": {"tool_emojis": {}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "thinking_faces", "fallback": ["f"], "io": {"_get_skin": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "skin boom"}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "thinking_faces", "fallback": ["f"], "io": {"_get_skin": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "kbi"}}}}}
+{"func": "_skin_spinner_list", "in": {"key": "thinking_faces", "fallback": ["f"], "io": {"_get_skin": {"spinner": ["not", "a", "dict"]}}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "a, b ,c"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": ""}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "display.thinking_verbs"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": " , , "}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": "pondering"}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "t boom"}}}}}
+{"func": "_catalog_thinking_verbs", "in": {"io": {"t": {"__script__": true, "ret": null, "raise": {"type": "CancelledError", "message": "cancelled"}}}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": {"__proxy__": true}}, "io": {"StdoutProxy_import": true}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": {"__proxy__": false}}, "io": {"StdoutProxy_import": true}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": {"__proxy__": true}}, "io": {"StdoutProxy_import": {"__script__": true, "ret": null, "raise": {"type": "ImportError", "message": "no proxy"}}}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": {"__proxy__": true}}, "io": {"StdoutProxy_import": {"__script__": true, "ret": null, "raise": {"type": "ModuleNotFoundError", "message": "no module"}}}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": {"__proxy__": true}}, "io": {"StdoutProxy_import": {"__script__": true, "ret": null, "raise": {"type": "OSError", "message": "import os err"}}}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {}, "io": {"StdoutProxy_import": true}}}
+{"func": "_is_patch_stdout_proxy", "in": {"state": {"_out": "plain"}, "io": {"StdoutProxy_import": true}}}
+{"func": "start", "in": {"state": {"running": false}, "io": {"time.time": 100.5, "threading.Thread": "THR", "thread.start": null}}}
+{"func": "start", "in": {"state": {}, "io": {"time.time": 0, "threading.Thread": "T2", "thread.start": null}}}
+{"func": "start", "in": {"state": {"running": true}, "io": {}}}
+{"func": "start", "in": {"state": {"running": 1}, "io": {}}}
+{"func": "start", "in": {"state": {"running": false}, "io": {"time.time": {"__script__": true, "ret": null, "raise": {"type": "OSError", "message": "clock"}}}}}
+{"func": "start", "in": {"state": {"running": false}, "io": {"time.time": 5, "threading.Thread": {"__script__": true, "ret": null, "raise": {"type": "RuntimeError", "message": "thread boom"}}}}}
+{"func": "start", "in": {"state": {"running": false}, "io": {"time.time": 5, "threading.Thread": "THR", "thread.start": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "start kbi"}}}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 0}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 10}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 35}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 40}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 100}}}
+{"func": "_clear_line_blanks", "in": {"state": {}}}
+{"func": "_clear_line_blanks", "in": {"state": {"last_line_len": -5}}}
