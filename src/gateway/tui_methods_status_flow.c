@@ -999,6 +999,10 @@ static json_t *tmst__claim_or_reuse_live(tmst_ctx_t *ctx, const json_t *args) {
     const json_t *lease = json_obj_get(args, "lease");
     const json_t *ph = record ? json_obj_get(record, "profile_home") : NULL;
     const char *sids = tmst_str(sid) ? tmst_str(sid) : "";
+    /* _sessions is a module global echoed for every registry func (REGISTRY_FUNCS):
+     * materialize it at entry so the live-winner early-return path still emits
+     * {"sessions": {}} instead of {}. */
+    tmst_sessions(ctx);
     json_t *a = tmst_args0();
     tmst_aset(a, "session_key", session_key);
     tmst_aset(a, "profile_home", ph);

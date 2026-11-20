@@ -922,28 +922,31 @@ static json_t *i18n2_config_language_cached(i18n2_io_t *io, const char *hermes_h
     } else {
         /* lang = (config.get("display") or {}).get("language") */
         const json_t *display = json_obj_get(r, "display");
-        const json_t *lang = NULL;
+        json_t *owned_lang = NULL;
         if (i18n2_truthy(display)) {
             if (display->type != JSON_OBJECT) {
                 json_free(r);   /* .get on a non-dict display: caught -> None */
                 goto store;
             }
-            lang = json_obj_get(display, "language");
+            const json_t *lang = json_obj_get(display, "language");
+            if (lang) owned_lang = json_copy(lang);   /* SNAPSHOT: lang borrows from r */
         }
         json_free(r);
-        if (i18n2_truthy(lang)) {
+        if (i18n2_truthy(owned_lang)) {
             json_t *hj = json_string(hermes_home ? hermes_home : "");
-            result = i18n2_normalize_lang(io, lang, hj);   /* REAL compose */
+            result = i18n2_normalize_lang(io, owned_lang, hj);   /* REAL compose */
             json_free(hj);
             if (i18n2_is_raise(result)) {
                 if (i18n2_caught_by_exception(i18n2_raise_kind(result))) {
                     json_free(result);
                     result = NULL;
                 } else {
+                    json_free(owned_lang);
                     return result;   /* BaseException passes; nothing cached */
                 }
             }
         }
+        json_free(owned_lang);
     }
 store:
     json_set(cache, hermes_home ? hermes_home : "", result ? json_copy(result) : json_null());
