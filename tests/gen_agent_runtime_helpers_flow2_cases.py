@@ -328,6 +328,406 @@ case("_recover_auth_failure", agent={"id": "a"}, pool={"id": "p"}, kwargs={"forc
      io={"recover_auth_failure": [True, False]})
 
 
+
+# ══ UNCLAIMED remainder cases (27 fns) ═════════════════════════════════════
+
+def envx(**kw):
+    d = {"now": 100.0, "monotonic": 1000.0, "codex_quota_probe_min_interval": 30.0,
+         "status_exhausted": "exhausted",
+         "usage_limit_reason_tokens": ["usage_limit_reached", "gousagelimit"],
+         "usage_limit_message_tokens": ["usage limit reached", "usage limit has been reached"],
+         "degenerate_final_max_chars": 24,
+         "sentence_terminals": [".", "!", "?"],
+         "degenerate_leading_punct": "?!,;:)]}",
+         "providers_import_ok": True}
+    d.update(kw)
+    return d
+
+
+def oid(i, **kw):
+    d = {"__id": i}
+    d.update(kw)
+    return d
+
+
+# ── _cursor_skip_prefix ──
+case("_cursor_skip_prefix", messages=[oid(1), oid(2)], cursor={"prefix": [oid(1)]})
+case("_cursor_skip_prefix", messages=[oid(1)], cursor=None)
+case("_cursor_skip_prefix", messages=[oid(1), oid(2)], cursor={"prefix": [oid(1), oid(3)]})
+case("_cursor_skip_prefix", messages=[oid(1)], cursor={"prefix": []})
+case("_cursor_skip_prefix", messages=[], cursor={"prefix": [oid(1)]})
+case("_cursor_skip_prefix", messages=[oid(1), oid(2)], cursor={"prefix": "notlist"})
+
+# ── _recover_rate_limit ──
+RLC = "rate limit"
+case("_recover_rate_limit", credential_id="c1", has_retried_429=False, api_key_hint=None, error_context=None,
+     io={"pool.entries": [{"id": "c1", "last_status": "exhausted"}], "ra.logger.info": None,
+         "rotate_and_swap": True}, env=envx())
+case("_recover_rate_limit", credential_id=None, has_retried_429=False, api_key_hint=None, error_context=None,
+     io={"pool.current": {"last_status": "ok"}}, env=envx())
+case("_recover_rate_limit", credential_id=None, has_retried_429=True, api_key_hint=None, error_context=None,
+     io={"pool.current": {"last_status": "ok"}, "rotate_and_swap": False}, env=envx())
+case("_recover_rate_limit", credential_id=None, has_retried_429=True, error_context={"reason": "UsageLimitReached"},
+     io={"pool.current": {"last_status": "ok"}, "rotate_and_swap": True}, env=envx())
+case("_recover_rate_limit", credential_id=None, api_key_hint="sk-hint", has_retried_429=False, error_context=None,
+     io={"pool.entries": [{"id": "c1", "runtime_api_key": "sk-hint", "last_status": "exhausted"}],
+         "ra.logger.info": None, "rotate_and_swap": True}, env=envx())
+case("_recover_rate_limit", credential_id="missing", api_key_hint=None, has_retried_429=False, error_context=None,
+     io={"pool.entries": [{"id": "c1", "last_status": "ok"}], "pool.current": {"last_status": "ok"}}, env=envx())
+
+# ── _build_anthropic_client_from_runtime ──
+RT = {"anthropic_api_key": "sk-a", "anthropic_base_url": "https://api.anthropic.com", "is_anthropic_oauth": False}
+for _p, _m in [("anthropic", "claude"), ("custom", "m"), ("bedrock", "b"), ("", ""), ("openai", "gpt")]:
+    case("_build_anthropic_client_from_runtime", agent={"provider": _p, "model": _m}, rt=RT,
+         io={"get_provider_request_timeout": 30, "build_anthropic_client": {"id": "cli"}})
+
+# ── _rebuild_primary_client ──
+for _prov in ["moa", " MOA ", "bedrock", "openai", "anthropic"]:
+    _ag = {"provider": _prov, "model": "m", "api_mode": "anthropic_messages" if _prov == "bedrock" else "chat_completions",
+           "base_url": "https://x"}
+    case("_rebuild_primary_client", agent=_ag, rt={"client_kwargs": {"api_key": "k"}}, reason="restore",
+         io={"build_moa_facade": {"id": "moa"}, "bind_bedrock_runtime": None,
+             "get_provider_request_timeout": 30, "build_anthropic_client": {"id": "cli"},
+             "agent._create_openai_client": {"id": "oai"}})
+
+# ── _primary_reset_gate_blocks ──
+PRG = {"model": "primary-model"}
+case("_primary_reset_gate_blocks", agent={}, rt=PRG, primary_provider="openai", primary_runtime_base_url="",
+     io={"matches_primary": True, "pool.next_available_at": None}, env=envx())
+case("_primary_reset_gate_blocks", agent={}, rt=PRG, primary_provider="openai", primary_runtime_base_url="",
+     io={"matches_primary": False, "load_primary_pool": {"id": "p"}, "pool.next_available_at": None}, env=envx())
+case("_primary_reset_gate_blocks", agent={}, rt=PRG, primary_provider="openai", primary_runtime_base_url="",
+     io={"matches_primary": True, "pool.next_available_at": 200, "datetime.isoformat": "t=200",
+         "logger.info": None}, env=envx())
+case("_primary_reset_gate_blocks", agent={"_restore_wait_logged": True}, rt=PRG, primary_provider="openai",
+     primary_runtime_base_url="", io={"matches_primary": True, "pool.next_available_at": 200}, env=envx())
+case("_primary_reset_gate_blocks", agent={}, rt={}, primary_provider="bedrock", primary_runtime_base_url="",
+     io={"matches_primary": True, "pool.next_available_at": 50}, env=envx())
+
+# ── _rebind_primary_credential_pool ──
+case("_rebind_primary_credential_pool", agent={}, primary_provider="openai", primary_model="m", prefetched=False,
+     io={"matches_primary": False}, env=envx())
+case("_rebind_primary_credential_pool", agent={"_credential_pool": {"provider": "bedrock"}},
+     primary_provider="openai", primary_model="m", prefetched=False,
+     io={"matches_primary": False, "load_primary_pool": {"provider": "openai", "has_available": True},
+         "pool.has_available": False}, env=envx())
+case("_rebind_primary_credential_pool", agent={"_credential_pool": {"provider": "bedrock"}},
+     primary_provider="openai", primary_model="m", prefetched=False,
+     io={"matches_primary": False, "load_primary_pool": {"provider": "openai"},
+         "pool.has_available": True, "pool.select": {"id": "e1", "runtime_api_key": "sk", "provider": "openai"},
+         "agent._swap_credential": None, "logger.info": None}, env=envx())
+case("_rebind_primary_credential_pool", agent={"_credential_pool": {"provider": "openai"}},
+     primary_provider="openai", primary_model="m", prefetched=False,
+     io={"matches_primary": True, "pool.has_available": True,
+         "pool.select": {"id": "e1", "access_token": "tok", "provider": "openai"},
+         "agent._swap_credential": None, "logger.info": None}, env=envx())
+case("_rebind_primary_credential_pool", agent={"_credential_pool": {"provider": "bedrock"}},
+     primary_provider="openai", primary_model="m", prefetched=False,
+     io={"matches_primary": False, "load_primary_pool": {"provider": "openai"},
+         "pool.has_available": True, "pool.select": {"id": "e1", "runtime_api_key": "sk", "provider": "bedrock"},
+         "logger.info": None}, env=envx())
+
+# ── _primary_quota_reopened_early ──
+case("_primary_quota_reopened_early", agent={}, primary_provider="openai", primary_model="m", env=envx())
+case("_primary_quota_reopened_early", agent={"_codex_reopen_checked_at": 995}, primary_provider="openai-codex",
+     primary_model="m", env=envx())
+case("_primary_quota_reopened_early", agent={}, primary_provider="openai-codex", primary_model="m",
+     io={"matches_primary": True, "load_primary_pool": None}, env=envx())
+case("_primary_quota_reopened_early", agent={}, primary_provider="openai-codex", primary_model="m",
+     io={"matches_primary": True, "load_primary_pool": {"id": "p"}, "pool.next_available_at": 50}, env=envx())
+case("_primary_quota_reopened_early", agent={}, primary_provider="openai-codex", primary_model="m",
+     io={"matches_primary": True, "load_primary_pool": {"id": "p"}, "pool.next_available_at": 200,
+         "pool.lift_reopened_cooldowns": True}, env=envx())
+
+# ── _moa_aggregator_cache_policy ──
+case("_moa_aggregator_cache_policy", agent={}, eff_model="m",
+     io={"load_config": {"moa": {}}, "resolve_moa_preset": {}})
+case("_moa_aggregator_cache_policy", agent={}, eff_model="m",
+     io={"load_config": {"moa": {}}, "resolve_moa_preset": {"aggregator": {"provider": "anthropic", "model": "c"}},
+         "resolve_runtime_provider": {"base_url": "https://a", "api_mode": "anthropic_messages"},
+         "anthropic_prompt_cache_policy": [True, False]})
+case("_moa_aggregator_cache_policy", agent={}, eff_model="m",
+     io={"load_config": {"moa": {}}, "resolve_moa_preset": {"aggregator": {"provider": "x", "model": "y"}},
+         "resolve_runtime_provider": raise_("ValueError", "no rt"), "anthropic_prompt_cache_policy": [False, True]})
+case("_moa_aggregator_cache_policy", agent={}, eff_model="m",
+     io={"load_config": raise_("RuntimeError", "cfg"), "logger.debug": None})
+case("_moa_aggregator_cache_policy", agent={}, eff_model="",
+     io={"load_config": {}, "resolve_moa_preset": {"aggregator": {"provider": "", "model": "m"}}})
+
+# ── _route_may_be_custom ──
+case("_route_may_be_custom", agent={"_custom_providers": [{"name": "x", "provider_key": "openai", "base_url": "https://x"}]},
+     eff_provider="custom:foo", provider_lower="custom:foo", eff_base_url="https://x",
+     io={"normalize_route_base_url": "https://x", "custom_provider_aliases": ["custom:foo"]})
+case("_route_may_be_custom", agent={"_custom_providers": [{"name": "x", "provider_key": "y", "base_url": "https://x"}]},
+     eff_provider="z", provider_lower="z", eff_base_url="https://x",
+     io={"normalize_route_base_url": seq("https://x", "https://x"), "custom_provider_aliases": []})
+case("_route_may_be_custom", agent={"_custom_providers": []}, eff_provider="openai", provider_lower="openai", eff_base_url="")
+case("_route_may_be_custom", agent={}, eff_provider="openai", provider_lower="openai", eff_base_url="",
+     io={"get_provider": None})
+case("_route_may_be_custom", agent={}, eff_provider="p", provider_lower="p", eff_base_url="https://e",
+     io={"get_provider": {"base_url": "https://a"}, "base_url_hostname": seq("a", "e")})
+case("_route_may_be_custom", agent={}, eff_provider="custom:p", provider_lower="custom:p", eff_base_url="https://e",
+     io={"get_provider": raise_("RuntimeError", "lookup"), "logger.debug": None})
+
+# ── _provider_supplied_client ──
+case("_provider_supplied_client", agent={"provider": "custom"}, client_kwargs={"base_url": "https://x"},
+     io={"get_provider_profile": {"name": "p", "auth_type": "http"}, "profile.create_client": {"id": "c"}}, env=envx())
+case("_provider_supplied_client", agent={"provider": ""}, client_kwargs={"base_url": "acp://x"},
+     io={"get_provider_profile": raise_("ValueError", "no profile"), "_profile_for_base_url": {"name": "acp"},
+         "profile.create_client": {"id": "acp-c"}}, env=envx())
+case("_provider_supplied_client", agent={"provider": "none"}, client_kwargs={},
+     io={"get_provider_profile": None}, env=envx())
+case("_provider_supplied_client", agent={"provider": "ext"}, client_kwargs={},
+     io={"get_provider_profile": {"name": "e", "auth_type": "external_process"},
+         "profile.create_client": raise_("RuntimeError", "boom")}, env=envx())
+case("_provider_supplied_client", agent={"provider": "http"}, client_kwargs={},
+     io={"get_provider_profile": {"name": "h", "auth_type": "http"},
+         "profile.create_client": raise_("RuntimeError", "boom"), "ra.logger.warning": None}, env=envx())
+case("_provider_supplied_client", agent={"provider": "x"}, client_kwargs={}, env=envx(providers_import_ok=False))
+
+# ── _ensure_route_client_headers ──
+case("_ensure_route_client_headers", client_kwargs={"base_url": "https://x", "api_key": "k"}, provider="p",
+     io={"route_answer": {}})
+case("_ensure_route_client_headers", client_kwargs={"base_url": "https://x", "api_key": "k"}, provider="p",
+     io={"route_answer": {"X-New": "v"}})
+case("_ensure_route_client_headers", client_kwargs={"base_url": "https://x", "api_key": "k",
+     "default_headers": {"x-new": "old"}}, provider="p", io={"route_answer": {"X-New": "v"}})
+case("_ensure_route_client_headers", client_kwargs={"base_url": "b", "api_key": "a"}, provider="q",
+     io={"route_answer": {"A": "1", "B": "2"}})
+case("_ensure_route_client_headers", client_kwargs={"base_url": "b", "api_key": "a"}, provider="q",
+     io={"route_answer": raise_("ValueError", "bad")})
+
+# ── _gemini_native_client ──
+case("_gemini_native_client", agent={}, client_kwargs={"base_url": "https://other", "api_key": "k"},
+     httpx_verify=True, reason="r", shared=False, io={"is_native_gemini_base_url": False})
+case("_gemini_native_client", agent={}, client_kwargs={"base_url": "https://gemini", "api_key": "k",
+     "http_client": {"id": "hc"}}, httpx_verify=True, reason="r", shared=True,
+     io={"is_native_gemini_base_url": True, "GeminiNativeClient": {"id": "cli"},
+         "agent._client_log_context": "ctx", "ra.logger.info": None})
+case("_gemini_native_client", agent={}, client_kwargs={"base_url": "https://gemini", "api_key": "k"},
+     httpx_verify=False, reason="r", shared=False,
+     io={"is_native_gemini_base_url": True, "agent._build_keepalive_http_client": {"id": "hc"},
+         "GeminiNativeClient": {"id": "cli"}, "agent._client_log_context": "ctx", "ra.logger.info": None})
+case("_gemini_native_client", agent={}, client_kwargs={"base_url": "https://gemini"},
+     httpx_verify=True, reason="r2", shared=True,
+     io={"is_native_gemini_base_url": True, "agent._build_keepalive_http_client": None,
+         "GeminiNativeClient": {"id": "cli2"}, "agent._client_log_context": "", "ra.logger.info": None})
+case("_gemini_native_client", agent={}, client_kwargs={"base_url": "", "timeout": 5},
+     httpx_verify=True, reason="r3", shared=False, io={"is_native_gemini_base_url": False})
+
+# ── _apply_switched_provider_request_overrides ──
+case("_apply_switched_provider_request_overrides", agent={"_custom_providers": [{"name": "x"}], "model": "m",
+     "base_url": "https://x", "request_overrides": {"service_tier": "t", "extra_body": {"old": 1}}},
+     new_provider="p", io={"_custom_provider_extra_body_for_agent": {"new": 2}})
+case("_apply_switched_provider_request_overrides", agent={"model": "m", "base_url": "https://x"},
+     new_provider="p", io={"load_config": {}, "get_compatible_custom_providers": [],
+                            "_custom_provider_extra_body_for_agent": {"k": "v"}})
+case("_apply_switched_provider_request_overrides", agent={"_custom_providers": [], "model": "m", "base_url": ""},
+     new_provider="p", io={"_custom_provider_extra_body_for_agent": None})
+case("_apply_switched_provider_request_overrides", agent={"_custom_providers": [], "model": "m", "base_url": ""},
+     new_provider="p", io={"load_config": raise_("RuntimeError", "cfg"),
+                            "get_compatible_custom_providers": [],
+                            "_custom_provider_extra_body_for_agent": {"k": "v"}})
+case("_apply_switched_provider_request_overrides", agent={"_custom_providers": [{"name": "x"}], "model": "m", "base_url": "b"},
+     new_provider="q", io={"_custom_provider_extra_body_for_agent": {"a": 1, "b": 2}})
+
+# ── _resolve_switch_destination ──
+case("_resolve_switch_destination", agent={"base_url": "https://x"}, new_model="m", new_provider="p",
+     base_url="https://b", api_mode="chat_completions", capabilities={"a": 1}, old_norm="p", new_norm="p", io={})
+case("_resolve_switch_destination", agent={}, new_model="m", new_provider="p", base_url="", api_mode="",
+     capabilities=None, old_norm="p", new_norm="openai", io={"determine_api_mode": "chat_completions"})
+case("_resolve_switch_destination", agent={"base_url": "https://old"}, new_model="m", new_provider="p",
+     base_url="", api_mode="", capabilities=None, old_norm="p", new_norm="p",
+     io={"determine_api_mode": "chat_completions", "resolve_native_compaction_capabilities": {"c": 1}})
+case("_resolve_switch_destination", agent={}, new_model="m", new_provider="p", base_url="https://actual",
+     api_mode="chat_completions", capabilities=None, old_norm="a", new_norm="b",
+     io={"is_actual_route": True, "normalize_actual_base_url": "https://actual/v1",
+         "resolve_native_compaction_capabilities": {}})
+case("_resolve_switch_destination", agent={}, new_model="m", new_provider="opencode", base_url="https://x/v1",
+     api_mode="anthropic_messages", capabilities={"k": 1}, old_norm="a", new_norm="b",
+     io={"opencode_provider_family": {"family": "opencode"}})
+
+# ── _build_switched_client ──
+case("_build_switched_client", agent={"model": "m"}, new_provider="moa", api_key="k", base_url="", api_mode="", new_norm="moa",
+     io={"bind_moa_runtime": None}, env=envx())
+case("_build_switched_client", agent={"model": "m", "base_url": "https://old"}, new_provider="bedrock", api_key="k",
+     base_url="", api_mode="anthropic_messages", new_norm="bedrock", io={"bind_bedrock_runtime": None}, env=envx())
+case("_build_switched_client", agent={"provider": "anthropic", "model": "m", "api_key": "", "base_url": "b"},
+     new_provider="anthropic", api_key="", base_url="https://a", api_mode="anthropic_messages", new_norm="anthropic",
+     io={"native_anthropic_fallback_token": "fallback", "get_provider_request_timeout": 30,
+         "build_anthropic_client": {"id": "cli"}, "anthropic_route_is_oauth": False}, env=envx())
+case("_build_switched_client", agent={"provider": "minimax-oauth", "model": "m", "api_key": "tok"},
+     new_provider="minimax-oauth", api_key="tok", base_url="https://m", api_mode="anthropic_messages", new_norm="minimax",
+     io={"build_minimax_oauth_token_provider": {"tok": "fn"}, "get_provider_request_timeout": None,
+         "build_anthropic_client": {"id": "cli"}, "anthropic_route_is_oauth": True}, env=envx())
+case("_build_switched_client", agent={"provider": "openai", "model": "m", "api_key": "old", "base_url": "https://old"},
+     new_provider="openai", api_key="new", base_url="https://new", api_mode="chat_completions", new_norm="openai",
+     io={"load_config_readonly": {}, "get_compatible_custom_providers": [],
+         "apply_custom_provider_tls_to_client_kwargs": None, "get_provider_request_timeout": 30,
+         "agent._apply_client_headers_for_base_url": None, "agent._create_openai_client": {"id": "oai"}}, env=envx())
+
+# ── _swap_switch_runtime ──
+SWAP_IO = {"agent._read_reasoning_echo_from_config": {"flag": True}, "reset_route_verdicts": None,
+           "bind_moa_runtime": None, "sync_credential_pool_entry_id": None}
+case("_swap_switch_runtime", agent={"model": "old", "base_url": "https://x"}, new_model="m", new_provider="p",
+     api_key="k", base_url="https://x", api_mode="chat_completions", old_provider="p", old_norm="p", new_norm="p",
+     io=dict(SWAP_IO), env=envx())
+case("_swap_switch_runtime", agent={}, new_model="m", new_provider="q", api_key="k", base_url="",
+     api_mode="chat_completions", old_provider="p", old_norm="p", new_norm="q", io=dict(SWAP_IO), env=envx())
+case("_swap_switch_runtime", agent={}, new_model="m", new_provider="q", api_key="k", base_url="https://q",
+     api_mode="chat_completions", old_provider="p", old_norm="p", new_norm="q",
+     io={**SWAP_IO, "load_route_pool": {"id": "pool"}}, env=envx())
+case("_swap_switch_runtime", agent={}, new_model="m", new_provider="p", api_key=None, base_url="https://x",
+     api_mode="anthropic_messages", old_provider="p", old_norm="p", new_norm="p",
+     io={**SWAP_IO, "get_provider_request_timeout": 30, "build_anthropic_client": {"id": "cli"},
+         "anthropic_route_is_oauth": False}, env=envx())
+case("_swap_switch_runtime", agent={}, new_model="m", new_provider="q", api_key="k", base_url="https://q",
+     api_mode="chat_completions", old_provider="p", old_norm="p", new_norm="q",
+     io={**SWAP_IO, "load_route_pool": raise_("RuntimeError", "pool"), "logger.warning": None}, env=envx())
+
+# ── _resolve_switch_context_length ──
+case("_resolve_switch_context_length", agent={}, snapshot={}, env=envx(has_lmstudio=False))
+case("_resolve_switch_context_length", agent={}, snapshot={},
+     io={"load_config": {}, "get_compatible_custom_providers": [], "config_context_length_for_runtime": 4096,
+         "set_config_context_length": None}, env=envx(has_lmstudio=False))
+case("_resolve_switch_context_length", agent={}, snapshot={},
+     io={"load_config": {}, "get_compatible_custom_providers": [], "config_context_length_for_runtime": None,
+         "get_custom_provider_context_length": 8192, "set_config_context_length": None},
+     env=envx(has_lmstudio=True))
+case("_resolve_switch_context_length", agent={}, snapshot={},
+     io={"load_config": {}, "get_compatible_custom_providers": [], "config_context_length_for_runtime": 4096,
+         "set_config_context_length": None, "agent._ensure_lmstudio_runtime_loaded": raise_("RuntimeError", "lm")},
+     env=envx(has_lmstudio=True))
+case("_resolve_switch_context_length", agent={}, snapshot={},
+     io={"load_config": raise_("RuntimeError", "cfg"), "get_compatible_custom_providers": [],
+         "config_context_length_for_runtime": None, "get_custom_provider_context_length": None,
+         "set_config_context_length": None, "agent._ensure_lmstudio_runtime_loaded": 4096,
+         "agent._lmstudio_load_was_unverified": True, "logger.warning": None,
+         "agent._effective_lmstudio_context_length": 4096}, env=envx(has_lmstudio=True, has_lmstudio_unverified=True, has_effective_lmstudio=True))
+
+# ── _update_switch_compressor ──
+case("_update_switch_compressor", agent={"model": "m", "base_url": "b", "api_key": "k", "provider": "p", "api_mode": "chat_completions"},
+     custom_providers=[], effective_context_length=4096, snapshot={},
+     io={"get_model_context_length": 8192, "agent.context_compressor.update_model": None,
+         "revalidate_compression_feasibility": None})
+case("_update_switch_compressor", agent={"model": "m", "base_url": "b", "api_key": None, "provider": "p", "api_mode": ""},
+     custom_providers=None, effective_context_length=None, snapshot={},
+     io={"load_config": {}, "get_compatible_custom_providers": [], "get_model_context_length": 4096,
+         "agent.context_compressor.update_model": None, "revalidate_compression_feasibility": None})
+case("_update_switch_compressor", agent={"model": "m", "base_url": "b", "api_key": 5, "provider": "p"},
+     custom_providers=[], effective_context_length=4096, snapshot={},
+     io={"get_model_context_length": raise_("ValueError", "len"), "logger.debug": None})
+case("_update_switch_compressor", agent={"model": "m", "base_url": "b", "api_key": "k", "provider": "p"},
+     custom_providers=[{"name": "x"}], effective_context_length=2048, snapshot={},
+     io={"get_model_context_length": 4096, "agent.context_compressor.update_model": None,
+         "revalidate_compression_feasibility": None})
+case("_update_switch_compressor", agent={"model": "m", "base_url": "b", "api_key": "k", "provider": "p"},
+     custom_providers=[], effective_context_length=100, snapshot={},
+     io={"get_model_context_length": 4096, "agent.context_compressor.update_model": None,
+         "revalidate_compression_feasibility": None})
+
+# ── _finish_switch ──
+case("_finish_switch", agent={}, new_provider="p", old_norm="a", new_norm="b", env=envx())
+case("_finish_switch", agent={"_fallback_chain": [{"provider": "a"}, {"provider": "b"}, {"provider": "c"}]},
+     new_provider="c", old_norm="a", new_norm="c",
+     io={"load_config": {}, "get_compatible_custom_providers": [],
+         "_custom_provider_extra_body_for_agent": None}, env=envx())
+case("_finish_switch", agent={"_fallback_chain": [{"provider": "c"}]},
+     new_provider="c", old_norm="a", new_norm="a",
+     io={"_custom_provider_extra_body_for_agent": {"x": 1}}, env=envx())
+case("_finish_switch", agent={"_fallback_chain": [{"provider": "d"}], "request_overrides": {"keep": 1}},
+     new_provider="p", old_norm="a", new_norm="b",
+     io={"_custom_provider_extra_body_for_agent": {"extra": 2}}, env=envx())
+case("_finish_switch", agent={"_fallback_chain": [{"provider": "a"}]},
+     new_provider="p", old_norm="a", new_norm="b",
+     io={"load_config": {}, "get_compatible_custom_providers": [],
+         "_custom_provider_extra_body_for_agent": raise_("RuntimeError", "ovr"), "logger.debug": None}, env=envx())
+
+# ── _persist_switch_billing_route ──
+case("_persist_switch_billing_route", agent={})
+case("_persist_switch_billing_route", agent={"session_id": "s"})
+case("_persist_switch_billing_route", agent={"_session_db": {}, "session_id": "s", "provider": "openai",
+     "base_url": "https://x", "api_mode": "chat_completions"}, io={"agent_interface": None})
+case("_persist_switch_billing_route", agent={"_session_db": {}, "session_id": "s", "provider": "p",
+     "base_url": "b", "api_mode": ""}, io={"agent_interface": {"store": True}, "session_db.update_session_billing_route": None})
+case("_persist_switch_billing_route", agent={"_session_db": {}, "session_id": "s", "provider": "p"},
+     io={"agent_interface": {"store": True}, "store.usage.set_billing_route": raise_("RuntimeError", "db"),
+         "logger.warning": None})
+
+# ── _log_empty_non_final_heal ──
+case("_log_empty_non_final_heal", healed=1,
+     io={"_session_id_for_heal_log": "s1", "_heal_escalation_threshold": 3, "publish_lru": None,
+         "ra.logger.warning": None}, env=envx())
+case("_log_empty_non_final_heal", healed=2,
+     io={"_session_id_for_heal_log": None, "_heal_escalation_threshold": 1, "publish_lru": None,
+         "ra.logger.error": None, "heal_user_notice.add": None, "heal_pending_notice.set": None}, env=envx())
+case("_log_empty_non_final_heal", healed=1,
+     io={"_session_id_for_heal_log": "s2", "_heal_escalation_threshold": 0, "publish_lru": None,
+         "ra.logger.warning": None}, env=envx())
+case("_log_empty_non_final_heal", healed=3,
+     io={"_session_id_for_heal_log": "s3", "_heal_escalation_threshold": 2, "publish_lru": None,
+         "ra.logger.error": None, "heal_user_notice.add": None, "heal_pending_notice.set": None},
+     env=envx(heal_state={"s3": {"count": 1, "window_start": 990, "escalated": False,
+                                "total_events": 1, "total_healed": 2}}))
+case("_log_empty_non_final_heal", healed=1,
+     io={"_session_id_for_heal_log": "s4", "_heal_escalation_threshold": 3, "publish_lru": None,
+         "ra.logger.warning": None},
+     env=envx(heal_state={"s4": {"count": 1, "window_start": 999, "escalated": True,
+                                "total_events": 5, "total_healed": 9}}))
+
+# ── looks_like_degenerate_final ──
+case("looks_like_degenerate_final", text="ok", user_message=None, env=envx())
+case("looks_like_degenerate_final", text="", user_message=None, env=envx())
+case("looks_like_degenerate_final", text="Done.", user_message=None, env=envx())
+case("looks_like_degenerate_final", text="是", user_message="你好", env=envx(),
+     io={"_summarize_user_message_for_log": "你好"})
+case("looks_like_degenerate_final", text="是", user_message="hello", env=envx(),
+     io={"_summarize_user_message_for_log": "hello"})
+case("looks_like_degenerate_final", text="!A", user_message=None, env=envx())
+
+# ── promoted_reasoning_announces_action ──
+case("promoted_reasoning_announces_action", text="", io={})
+case("promoted_reasoning_announces_action", text="  ok  ", io={"promoted_reasoning_plan_tail_re.search": False})
+case("promoted_reasoning_announces_action", text="I will do it", io={"promoted_reasoning_plan_tail_re.search": True})
+case("promoted_reasoning_announces_action", text="I'll try that next", io={"promoted_reasoning_plan_tail_re.search": True})
+case("promoted_reasoning_announces_action", text="noise", io={"promoted_reasoning_plan_tail_re.search": False})
+
+# ── socket leaves ──
+case("_socket_from_stream", stream={"_sock": {"id": "s1"}})
+case("_socket_from_stream", stream={"get_extra_info_callable": True},
+     io={"stream.get_extra_info": {"id": "s2"}})
+case("_socket_from_stream", stream={"stream": {"_sock": {"id": "s3"}}})
+case("_socket_from_stream", stream={"_stream": {"extra_callable": True}},
+     io={"stream._stream.extra": {"id": "s4"}})
+case("_socket_from_stream", stream={})
+
+case("_socket_from_candidate", candidate={"_network_stream": {"_sock": {"id": "s1"}}})
+case("_socket_from_candidate", candidate={"_stream": {"get_extra_info_callable": True}},
+     io={"stream.get_extra_info": {"id": "s2"}})
+case("_socket_from_candidate", candidate={"_sock": {"id": "s3"}})
+case("_socket_from_candidate", candidate={})
+case("_socket_from_candidate", candidate={"_network_stream": {}})
+
+case("_socket_from_response", response={"extensions": {"network_stream": {"id": "start"}}},
+     io={"connection_candidates": [{"_sock": {"id": "s1"}}]})
+case("_socket_from_response", response={"stream": {"id": "st"}},
+     io={"connection_candidates": [{"_sock": {"id": "s2"}}]})
+case("_socket_from_response", response={})
+case("_socket_from_response", response={"extensions": {}}, io={"connection_candidates": []})
+case("_socket_from_response", response={"extensions": {"network_stream": {}}},
+     io={"connection_candidates": [{}, {"_sock": {"id": "s3"}}]})
+
+case("_shutdown_socket", sock={"settimeout_callable": True, "shutdown_callable": True},
+     io={"sock.settimeout": None, "sock.shutdown": None})
+case("_shutdown_socket", sock={"settimeout_callable": False, "shutdown_callable": True},
+     io={"sock.shutdown": None})
+case("_shutdown_socket", sock={"shutdown_callable": True},
+     io={"sock.shutdown": raise_("OSError", "down")})
+case("_shutdown_socket", sock={"settimeout_callable": True, "shutdown_callable": True},
+     io={"sock.settimeout": raise_("OSError", "timeout"), "sock.shutdown": None})
+case("_shutdown_socket", sock={"shutdown_callable": True}, io={"sock.shutdown": None})
+
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:

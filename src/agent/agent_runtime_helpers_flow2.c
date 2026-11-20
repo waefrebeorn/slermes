@@ -1238,3 +1238,1316 @@ static json_t *arh2_recover_auth_failure(arh2_ctx *ctx, json_t *agent, json_t *p
             arh2_arg(a, kwargs->c.keys[i], kwargs->c.items[i]);
     return arh2_call(ctx, "recover_auth_failure", a);
 }
+
+/* ══ UNCLAIMED remainder (27 fns) — added by flow2 port ═══════════════════ */
+
+/* forward decls for composed flow2 fns (defined later in this section) */
+static json_t *arh2_build_anthropic_client_from_runtime(arh2_ctx *ctx, json_t *agent, json_t *rt);
+static json_t *arh2_apply_switched_provider_request_overrides(arh2_ctx *ctx, json_t *agent, const char *new_provider);
+static json_t *arh2_build_switched_client(arh2_ctx *ctx, json_t *agent, const char *new_provider,
+                                          json_t *api_key, const char *base_url, const char *api_mode,
+                                          const char *new_norm);
+static json_t *arh2_socket_from_stream(arh2_ctx *ctx, json_t *stream);
+static json_t *arh2_socket_from_candidate(arh2_ctx *ctx, json_t *candidate);
+static json_t *arh2_connection_candidates(arh2_ctx *ctx, json_t *start);
+
+/* small helpers */
+static char *arh2_lower_dup(const char *s) {
+    if (!s) return strdup("");
+    char *r = strdup(s);
+    for (char *p = r; *p; p++) *p = (char)tolower((unsigned char)*p);
+    return r;
+}
+static bool arh2_starts(const char *s, const char *pre) {
+    return s && pre && strncmp(s, pre, strlen(pre)) == 0;
+}
+static bool arh2_ends_any(const char *s, const json_t *arr) {
+    if (!s || !arh2_is_arr(arr)) return false;
+    for (size_t i = 0; i < arr->c.count; i++) {
+        const char *t = arh2_jstr(arr->c.items[i]);
+        size_t n = strlen(t), m = strlen(s);
+        if (n && m >= n && strcmp(s + m - n, t) == 0) return true;
+    }
+    return false;
+}
+static const char *arh2_sdef(const json_t *o, const char *k, const char *d) {
+    json_t *v = arh2_get(o, k);
+    return (v && v->type == JSON_STRING) ? v->str_val : d;
+}
+static double arh2_ndef(const json_t *o, const char *k, double d) {
+    json_t *v = arh2_get(o, k);
+    return arh2_is_num(v) ? v->num_val : d;
+}
+static bool arh2_bdef(const json_t *o, const char *k, bool d) {
+    json_t *v = arh2_get(o, k);
+    return arh2_is_bool(v) ? v->bool_val : d;
+}
+/* bool(agent field or default) */
+static bool arh2_truthy_key(const json_t *o, const char *k) {
+    return arh2_truthy(arh2_get(o, k));
+}
+/* str(field or "") stripped+lowered */
+static char *arh2_field_lower_strip(const json_t *o, const char *k) {
+    return arh2_lower_dup(arh2_strip(arh2_sdef(o, k, "")));
+}
+/* Python str.removeprefix for ASCII prefix */
+static const char *arh2_removeprefix(const char *s, const char *pre) {
+    if (s && pre && strncmp(s, pre, strlen(pre)) == 0) return s + strlen(pre);
+    return s ? s : "";
+}
+/* result tuple(bool, bool) as a JSON array */
+static json_t *arh2_pair_bool(bool a, bool b) {
+    json_t *r = json_array();
+    json_append(r, json_bool(a));
+    json_append(r, json_bool(b));
+    return r;
+}
+/* arbitrary JSON-array result helper */
+#define ARH2_ARR(...) /* unused */
+static json_t *arh2_str_array(const char *const *v, size_t n) {
+    json_t *r = json_array();
+    for (size_t i = 0; i < n; i++) json_append(r, json_string(v[i] ? v[i] : ""));
+    return r;
+}
+
+/* ── _cursor_skip_prefix ─────────────────────────────────────────────────── */
+/* PoP: arh2_cursor_skip_prefix @ agent/agent_runtime_helpers.py:_cursor_skip_prefix */
+static json_t *arh2_cursor_skip_prefix(arh2_ctx *ctx, const json_t *messages, const json_t *cursor) {
+    (void)ctx;
+    size_t start = 0;
+    json_t *prev = arh2_is_obj(cursor) ? arh2_get(cursor, "prefix") : NULL;
+    if (arh2_is_arr(prev) && arh2_is_arr(messages)) {
+        size_t lim = prev->c.count < messages->c.count ? prev->c.count : messages->c.count;
+        while (start < lim) {
+            json_t *a = messages->c.items[start], *b = prev->c.items[start];
+            bool same = false;
+            if (arh2_is_obj(a) && arh2_is_obj(b)) {
+                json_t *ia = arh2_get(a, "__id"), *ib = arh2_get(b, "__id");
+                if (ia && ib) same = arh2_json_eq(ia, ib);
+            }
+            if (!same) break;
+            start++;
+        }
+    }
+    return json_number((double)start);
+}
+
+/* ── _recover_rate_limit ─────────────────────────────────────────────────── */
+static json_t *arh2_pool_entries(arh2_ctx *ctx) {
+    return arh2_call(ctx, "pool.entries", json_object());
+}
+static json_t *arh2_pool_current(arh2_ctx *ctx) {
+    return arh2_call(ctx, "pool.current", json_object());
+}
+static json_t *arh2_entry_for(const json_t *entries, const char *key, const json_t *val) {
+    if (!arh2_is_arr(entries) || !val || arh2_is_none(val)) return NULL;
+    for (size_t i = 0; i < entries->c.count; i++)
+        if (arh2_json_eq(arh2_get(entries->c.items[i], key), val)) return entries->c.items[i];
+    return NULL;
+}
+static bool arh2_contains_tok(const char *hay, const json_t *toks) {
+    if (!hay || !arh2_is_arr(toks)) return false;
+    for (size_t i = 0; i < toks->c.count; i++) {
+        const char *t = arh2_jstr(toks->c.items[i]);
+        if (t[0] && strstr(hay, t)) return true;
+    }
+    return false;
+}
+static json_t *arh2_rotate_swap(arh2_ctx *ctx, const char *reason) {
+    json_t *a = json_object();
+    json_set(a, "code", json_number(429));
+    json_set(a, "reason", json_string(reason ? reason : ""));
+    json_t *r = arh2_call(ctx, "rotate_and_swap", a);
+    bool ok = arh2_truthy(r);
+    json_free(r);
+    return arh2_pair_bool(ok, !ok);
+}
+/* PoP: arh2_recover_rate_limit @ agent/agent_runtime_helpers.py:_recover_rate_limit */
+static json_t *arh2_recover_rate_limit(arh2_ctx *ctx, json_t *pool,
+        bool has_retried_429, json_t *error_context, json_t *api_key_hint,
+        json_t *credential_id, bool rotate_unused) {
+    (void)pool; (void)rotate_unused;
+    json_t *current = NULL;
+    if (!arh2_is_none(credential_id)) {
+        json_t *e = arh2_pool_entries(ctx);
+        current = arh2_entry_for(e, "id", credential_id);
+        json_free(e);
+    }
+    if (!arh2_is_none(api_key_hint) && !arh2_truthy(current)) {
+        json_t *e = arh2_pool_entries(ctx);
+        json_t *f = arh2_entry_for(e, "runtime_api_key", api_key_hint);
+        if (f) current = json_copy(f);
+        json_free(e);
+    }
+    if (!arh2_truthy(current)) {
+        json_free(current);
+        current = arh2_pool_current(ctx);
+    }
+    json_t *lst = arh2_get(current, "last_status");
+    const char *exhausted = arh2_sdef(ctx->env, "status_exhausted", "exhausted");
+    bool pre_exhausted = arh2_is_str(lst) && arh2_str_eq(lst->str_val, exhausted);
+    if (pre_exhausted) {
+        json_t *a = json_array();
+        if (lst) json_append(a, json_copy(lst));
+        arh2_log(ctx, "ra.", "info",
+                 "Credential already exhausted (last_status=%s) — rotating immediately instead of retrying",
+                 a, false);
+        return arh2_rotate_swap(ctx, "rate limit, pre-exhausted");
+    }
+    bool usage = false;
+    if (arh2_is_obj(error_context)) {
+        char *reason = arh2_lower_dup(arh2_sdef(error_context, "reason", ""));
+        char *msg = arh2_lower_dup(arh2_sdef(error_context, "message", ""));
+        usage = arh2_contains_tok(reason, arh2_get(ctx->env, "usage_limit_reason_tokens")) ||
+                arh2_contains_tok(msg, arh2_get(ctx->env, "usage_limit_message_tokens"));
+        free(reason); free(msg);
+    }
+    if (!has_retried_429 && !usage) return arh2_pair_bool(false, true);
+    return arh2_rotate_swap(ctx, "rate limit");
+}
+
+/* ── _build_anthropic_client_from_runtime ────────────────────────────────── */
+static json_t *arh2_get_timeout(arh2_ctx *ctx, const char *provider, const char *model) {
+    json_t *a = json_object();
+    arh2_arg_str(a, "provider", provider);
+    arh2_arg_str(a, "model", model);
+    return arh2_call(ctx, "get_provider_request_timeout", a);
+}
+/* PoP: arh2_build_anthropic_client_from_runtime @ agent/agent_runtime_helpers.py:_build_anthropic_client_from_runtime */
+static json_t *arh2_build_anthropic_client_from_runtime(arh2_ctx *ctx, json_t *agent, json_t *rt) {
+    json_t *key = arh2_get(rt, "anthropic_api_key");
+    json_t *base = arh2_get(rt, "anthropic_base_url");
+    json_set(agent, "_anthropic_api_key", arh2_copy_or_null(key));
+    json_set(agent, "_anthropic_base_url", arh2_copy_or_null(base));
+    json_t *t = arh2_get_timeout(ctx, arh2_sdef(agent, "provider", ""), arh2_sdef(agent, "model", ""));
+    json_t *a = json_object();
+    arh2_arg(a, "api_key", key);
+    arh2_arg(a, "base_url", base);
+    arh2_arg(a, "timeout", t);
+    json_t *cli = arh2_call(ctx, "build_anthropic_client", a);
+    json_set(agent, "_anthropic_client", cli ? cli : json_null());
+    json_set(agent, "_is_anthropic_oauth", arh2_copy_or_null(arh2_get(rt, "is_anthropic_oauth")));
+    json_set(agent, "client", json_null());
+    json_free(t);
+    return NULL;
+}
+
+/* ── _rebuild_primary_client ─────────────────────────────────────────────── */
+/* PoP: arh2_rebuild_primary_client @ agent/agent_runtime_helpers.py:_rebuild_primary_client */
+static json_t *arh2_rebuild_primary_client(arh2_ctx *ctx, json_t *agent, json_t *rt, const char *reason) {
+    char *prov = arh2_field_lower_strip(agent, "provider");
+    if (arh2_str_eq(prov, "moa")) {
+        json_t *a = json_object();
+        arh2_arg(a, "agent", agent);
+        arh2_arg(a, "model", arh2_get(agent, "model"));
+        json_t *cli = arh2_call(ctx, "build_moa_facade", a);
+        json_set(agent, "client", cli ? cli : json_null());
+        json_set(agent, "_anthropic_client", json_null());
+    } else if (arh2_str_eq(arh2_sdef(agent, "provider", ""), "bedrock") &&
+               (arh2_str_eq(arh2_sdef(agent, "api_mode", ""), "anthropic_messages") ||
+                arh2_str_eq(arh2_sdef(agent, "api_mode", ""), "bedrock_converse"))) {
+        json_t *a = json_object();
+        arh2_arg(a, "agent", agent);
+        arh2_arg(a, "base_url", arh2_get(agent, "base_url"));
+        arh2_arg_str(a, "api_mode", arh2_sdef(agent, "api_mode", ""));
+        json_t *r = arh2_call(ctx, "bind_bedrock_runtime", a);
+        json_free(r);
+    } else if (arh2_str_eq(arh2_sdef(agent, "api_mode", ""), "anthropic_messages")) {
+        arh2_build_anthropic_client_from_runtime(ctx, agent, rt);
+    } else {
+        json_t *ck = arh2_get(rt, "client_kwargs");
+        json_t *a = json_object();
+        arh2_arg(a, "client_kwargs", arh2_is_obj(ck) ? ck : json_object());
+        arh2_arg_str(a, "reason", reason);
+        json_set(a, "shared", json_bool(true));
+        json_t *cli = arh2_call(ctx, "agent._create_openai_client", a);
+        json_set(agent, "client", cli ? cli : json_null());
+    }
+    free(prov);
+    return NULL;
+}
+
+/* ── _primary_reset_gate_blocks ──────────────────────────────────────────── */
+static json_t *arh2_matches_primary(arh2_ctx *ctx, json_t *obj) {
+    json_t *a = json_object();
+    arh2_arg(a, "obj", obj);
+    return arh2_call(ctx, "matches_primary", a);
+}
+static json_t *arh2_load_primary_pool(arh2_ctx *ctx) {
+    return arh2_call(ctx, "load_primary_pool", json_object());
+}
+static json_t *arh2_pool_next(arh2_ctx *ctx, const char *model) {
+    json_t *a = json_object();
+    if (model && model[0]) json_set(a, "model", json_string(model));
+    return arh2_call(ctx, "pool.next_available_at", a);
+}
+/* PoP: arh2_primary_reset_gate_blocks @ agent/agent_runtime_helpers.py:_primary_reset_gate_blocks */
+static json_t *arh2_primary_reset_gate_blocks(arh2_ctx *ctx, json_t *agent, json_t *rt,
+        const char *primary_provider, const char *primary_runtime_base_url) {
+    (void)primary_runtime_base_url;
+    json_t *prefetched_pool = NULL;
+    bool prefetched = false;
+    json_t *pool = arh2_get(agent, "_credential_pool");
+    json_t *m = arh2_matches_primary(ctx, pool);
+    bool matches = arh2_truthy(m); json_free(m);
+    if (!matches) {
+        json_free(prefetched_pool);
+        prefetched_pool = pool = arh2_load_primary_pool(ctx);
+        prefetched = true;
+    }
+    char *primary_model = arh2_strip(arh2_sdef(rt, "model", ""));
+    json_t *next_at = arh2_truthy(pool) ? arh2_pool_next(ctx, primary_model) : NULL;
+    free(primary_model);
+    double now = arh2_ndef(ctx->env, "now", 0.0);
+    if (arh2_is_num(next_at) && next_at->num_val > now) {
+        if (!arh2_bdef(agent, "_restore_wait_logged", false)) {
+            json_set(agent, "_restore_wait_logged", json_bool(true));
+            json_t *a = json_object();
+            json_set(a, "ts", json_copy(next_at));
+            json_t *iso = arh2_call(ctx, "datetime.isoformat", a);
+            json_t *args = json_array();
+            json_append(args, json_string(primary_provider ? primary_provider : "?"));
+            json_append(args, iso ? iso : json_null());
+            json_append(args, json_string(arh2_sdef(agent, "provider", "")));
+            json_append(args, json_string(arh2_sdef(agent, "model", "")));
+            arh2_log(ctx, "", "info",
+                     "Primary %s rate-limited until %s; staying on fallback %s/%s until the reset elapses",
+                     args, false);
+        }
+        json_t *r = json_array();
+        json_append(r, json_bool(true));
+        json_append(r, prefetched_pool ? json_copy(prefetched_pool) : json_null());
+        json_append(r, json_bool(prefetched));
+        json_free(next_at);
+        return r;
+    }
+    json_free(next_at);
+    json_t *r = json_array();
+    json_append(r, json_bool(false));
+    json_append(r, prefetched_pool ? json_copy(prefetched_pool) : json_null());
+    json_append(r, json_bool(prefetched));
+    return r;
+}
+
+/* ── _rebind_primary_credential_pool ─────────────────────────────────────── */
+static json_t *arh2_pool_has_available(arh2_ctx *ctx, const char *model) {
+    json_t *a = json_object();
+    if (model && model[0]) json_set(a, "model", json_string(model));
+    return arh2_call(ctx, "pool.has_available", a);
+}
+static json_t *arh2_pool_select(arh2_ctx *ctx, const char *model) {
+    json_t *a = json_object();
+    if (model && model[0]) json_set(a, "model", json_string(model));
+    return arh2_call(ctx, "pool.select", a);
+}
+/* PoP: arh2_rebind_primary_credential_pool @ agent/agent_runtime_helpers.py:_rebind_primary_credential_pool */
+static json_t *arh2_rebind_primary_credential_pool(arh2_ctx *ctx, json_t *agent,
+        const char *primary_provider, const char *primary_model,
+        json_t *prefetched_pool, bool prefetched) {
+    json_t *pool = arh2_get(agent, "_credential_pool");
+    char *pp = arh2_field_lower_strip(pool, "provider");
+    bool matches = false;
+    if (arh2_truthy(pool) && pp[0]) {
+        json_t *m = arh2_matches_primary(ctx, pool);
+        matches = arh2_truthy(m); json_free(m);
+    }
+    if (arh2_truthy(pool) && pp[0] && !matches) {
+        json_set(agent, "_credential_pool", json_null());
+        json_set(agent, "_credential_pool_entry_id", json_null());
+        json_t *reloaded = prefetched ? json_copy(prefetched_pool) : arh2_load_primary_pool(ctx);
+        json_set(agent, "_credential_pool", reloaded ? reloaded : json_null());
+        if (arh2_exc_pending(ctx)) {
+            json_t *args = json_array();
+            json_append(args, json_string(primary_provider ? primary_provider : ""));
+            json_append(args, arh2_exc_arg(ctx));
+            arh2_log(ctx, "", "warning",
+                     "Restore could not reload primary credential pool for %s: %s", args, false);
+            arh2_exc_clear(ctx);
+        }
+    }
+    free(pp);
+    json_set(agent, "_credential_pool_entry_id", json_null());
+    pool = arh2_get(agent, "_credential_pool");
+    json_t *entry = NULL;
+    if (arh2_truthy(pool)) {
+        json_t *h = arh2_pool_has_available(ctx, primary_model);
+        bool avail = arh2_truthy(h); json_free(h);
+        if (avail) entry = arh2_pool_select(ctx, primary_model);
+    }
+    bool has_key = arh2_truthy(arh2_get(entry, "runtime_api_key")) ||
+                   arh2_truthy(arh2_get(entry, "access_token"));
+    if (!arh2_truthy(entry) || !has_key) { json_free(entry); return NULL; }
+    json_t *me = arh2_matches_primary(ctx, entry);
+    bool em = arh2_truthy(me); json_free(me);
+    if (em) {
+        json_t *a = json_object();
+        arh2_arg(a, "entry", entry);
+        json_t *r = arh2_call(ctx, "agent._swap_credential", a);
+        json_free(r);
+        json_t *args = json_array();
+        json_append(args, json_copy(arh2_get_def(entry, "id", json_string("?"))));
+        json_append(args, json_copy(arh2_get_def(entry, "label", json_string("?"))));
+        arh2_log(ctx, "", "info", "Restore re-selected pool entry %s (%s)", args, false);
+    } else {
+        json_t *args = json_array();
+        json_append(args, json_copy(arh2_get_def(entry, "id", json_string("?"))));
+        json_append(args, json_copy(arh2_get_def(entry, "label", json_string("?"))));
+        char *ep = arh2_field_lower_strip(entry, "provider");
+        json_append(args, json_string(ep[0] ? ep : "?"));
+        json_append(args, json_string(primary_provider ? primary_provider : "?"));
+        free(ep);
+        arh2_log(ctx, "", "info",
+                 "Restore skipped pool entry %s (%s): provider %s does not match primary provider %s",
+                 args, false);
+    }
+    json_free(entry);
+    return NULL;
+}
+
+/* ── _primary_quota_reopened_early ───────────────────────────────────────── */
+static json_t *arh2_pool_lift(arh2_ctx *ctx, const char *model) {
+    json_t *a = json_object();
+    if (model && model[0]) json_set(a, "model", json_string(model));
+    return arh2_call(ctx, "pool.lift_reopened_cooldowns", a);
+}
+/* PoP: arh2_primary_quota_reopened_early @ agent/agent_runtime_helpers.py:_primary_quota_reopened_early */
+static json_t *arh2_primary_quota_reopened_early(arh2_ctx *ctx, json_t *agent,
+        const char *primary_provider, const char *primary_model) {
+    if (!arh2_str_eq(primary_provider, "openai-codex")) return json_bool(false);
+    double mono = arh2_ndef(ctx->env, "monotonic", 0.0);
+    double interval = arh2_ndef(ctx->env, "codex_quota_probe_min_interval", 30.0);
+    json_t *checked = arh2_get(agent, "_codex_reopen_checked_at");
+    double prev = arh2_is_num(checked) ? checked->num_val : -1e18;
+    if (mono - prev < interval) return json_bool(false);
+    json_set(agent, "_codex_reopen_checked_at", json_number(mono));
+    json_t *pool = arh2_get(agent, "_credential_pool");
+    bool matches = false;
+    /* Python short-circuits `pool is None or not matches_primary(pool)`:
+     * no matches_primary seam fires when the agent has no pool. */
+    if (arh2_truthy(pool)) {
+        json_t *m = arh2_matches_primary(ctx, pool);
+        matches = arh2_truthy(m); json_free(m);
+    }
+    if (!arh2_truthy(pool) || !matches) {
+        pool = arh2_load_primary_pool(ctx);
+    }
+    if (!arh2_truthy(pool)) return json_bool(false);
+    json_t *until = arh2_pool_next(ctx, primary_model);
+    double now = arh2_ndef(ctx->env, "now", 0.0);
+    bool want = arh2_is_num(until) && until->num_val > now;
+    json_free(until);
+    if (!want) { json_free(pool); return json_bool(false); }
+    json_t *r = arh2_pool_lift(ctx, primary_model);
+    bool lifted = arh2_truthy(r); json_free(r); json_free(pool);
+    return json_bool(lifted);
+}
+
+/* ── _moa_aggregator_cache_policy ────────────────────────────────────────── */
+static json_t *arh2_anthropic_cache_policy(arh2_ctx *ctx, json_t *agent,
+        const char *provider, const char *base_url, const char *api_mode, const char *model) {
+    json_t *a = json_object();
+    arh2_arg(a, "agent", agent);
+    arh2_arg_str(a, "provider", provider);
+    arh2_arg_str(a, "base_url", base_url);
+    arh2_arg_str(a, "api_mode", api_mode);
+    arh2_arg_str(a, "model", model);
+    return arh2_call(ctx, "anthropic_prompt_cache_policy", a);
+}
+/* PoP: arh2_moa_aggregator_cache_policy @ agent/agent_runtime_helpers.py:_moa_aggregator_cache_policy */
+static json_t *arh2_moa_aggregator_cache_policy(arh2_ctx *ctx, json_t *agent, const char *eff_model) {
+    json_t *cfg = arh2_call(ctx, "load_config", json_object());
+    if (arh2_exc_pending(ctx)) {
+        /* Python's try/except wraps load_config too: log once, fail closed. */
+        json_t *args = json_array(); json_append(args, arh2_exc_arg(ctx));
+        arh2_log(ctx, "", "debug", "MoA aggregator cache-policy resolution failed: %s", args, false);
+        arh2_exc_clear(ctx);
+        json_free(cfg);
+        return arh2_pair_bool(false, false);
+    }
+    /* Python: resolve_moa_preset(_load_moa_cfg().get("moa") or {}, eff_model or None)
+     * -> pass only the "moa" subsection, empty dict when absent/falsy. */
+    json_t *moa = arh2_get(cfg, "moa");
+    json_t *moa_cfg = arh2_truthy(moa) ? json_copy(moa) : json_object();
+    json_free(cfg);
+    json_t *a = json_object();
+    arh2_arg(a, "config", moa_cfg);
+    if (eff_model && *eff_model) arh2_arg_str(a, "model", eff_model);  /* "" -> None -> dropped */
+    json_free(moa_cfg);
+    json_t *preset = arh2_call(ctx, "resolve_moa_preset", a);
+    json_t *agg = arh2_get(preset, "aggregator");
+    const char *prov = arh2_strip(arh2_sdef(agg, "provider", ""));
+    const char *model = arh2_strip(arh2_sdef(agg, "model", ""));
+    json_t *result = arh2_pair_bool(false, false);
+    if (prov[0] && model[0]) {
+        const char *base = "", *mode = "";
+        json_t *b = json_object();
+        arh2_arg_str(b, "requested", prov);
+        arh2_arg_str(b, "target_model", model);
+        json_t *rt = arh2_call(ctx, "resolve_runtime_provider", b);
+        if (arh2_exc_pending(ctx)) arh2_exc_clear(ctx);
+        else {
+            base = arh2_sdef(rt, "base_url", "");
+            mode = arh2_sdef(rt, "api_mode", "");
+        }
+        json_free(rt);
+        json_t *pol = arh2_anthropic_cache_policy(ctx, agent, prov, base, mode, model);
+        json_free(result); result = pol;
+    }
+    json_free(preset);
+    if (arh2_exc_pending(ctx)) {
+        json_t *args = json_array(); json_append(args, arh2_exc_arg(ctx));
+        arh2_log(ctx, "", "debug", "MoA aggregator cache-policy resolution failed: %s", args, false);
+        arh2_exc_clear(ctx);
+        json_free(result); result = arh2_pair_bool(false, false);
+    }
+    return result;
+}
+
+/* ── _route_may_be_custom ────────────────────────────────────────────────── */
+static json_t *arh2_norm_url(arh2_ctx *ctx, const char *url) {
+    json_t *a = json_object();
+    arh2_arg_str(a, "url", url);
+    return arh2_call(ctx, "normalize_route_base_url", a);
+}
+static json_t *arh2_hostname(arh2_ctx *ctx, const char *url) {
+    json_t *a = json_object();
+    arh2_arg_str(a, "url", url);
+    return arh2_call(ctx, "base_url_hostname", a);
+}
+/* PoP: arh2_route_may_be_custom @ agent/agent_runtime_helpers.py:_route_may_be_custom */
+static json_t *arh2_route_may_be_custom(arh2_ctx *ctx, json_t *agent,
+        const char *eff_provider, const char *provider_lower, const char *eff_base_url) {
+    json_t *custom = arh2_get(agent, "_custom_providers");
+    if (arh2_truthy(custom)) {
+        json_t *eff_norm = arh2_norm_url(ctx, eff_base_url);
+        const char *en = arh2_jstr(eff_norm);
+        bool any = false;
+        if (arh2_is_arr(custom)) {
+            for (size_t i = 0; i < custom->c.count; i++) {
+                json_t *e = custom->c.items[i];
+                if (!arh2_is_obj(e)) continue;
+                json_t *a = json_object();
+                json_set(a, "name", json_string(arh2_sdef(e, "name", "")));
+                json_set(a, "provider_key", json_string(arh2_sdef(e, "provider_key", "")));
+                json_t *aliases = arh2_call(ctx, "custom_provider_aliases", a);
+                bool hit = false;
+                if (arh2_is_arr(aliases)) {
+                    for (size_t j = 0; j < aliases->c.count; j++) {
+                        const char *x = arh2_jstr(aliases->c.items[j]);
+                        if (arh2_str_eq(x, provider_lower) ||
+                            arh2_str_eq(x, arh2_removeprefix(provider_lower, "custom:"))) { hit = true; break; }
+                    }
+                }
+                json_free(aliases);
+                if (!hit && en[0]) {
+                    json_t *n = arh2_norm_url(ctx, arh2_sdef(e, "base_url", ""));
+                    hit = arh2_str_eq(arh2_jstr(n), en);
+                    json_free(n);
+                }
+                if (hit) { any = true; break; }
+            }
+        }
+        json_free(eff_norm);
+        return json_bool(any);
+    }
+    if (!arh2_is_none(custom)) return json_bool(false);
+    json_t *a = json_object();
+    arh2_arg_str(a, "provider", eff_provider);
+    json_set(a, "allow_network", json_bool(false));
+    json_t *pd = arh2_call(ctx, "get_provider", a);
+    if (arh2_exc_pending(ctx)) {
+        json_t *args = json_array(); json_append(args, arh2_exc_arg(ctx));
+        arh2_log(ctx, "", "debug", "provider lookup failed during cache-policy pre-gate: %s", args, false);
+        arh2_exc_clear(ctx);
+        return json_bool(arh2_starts(provider_lower, "custom:"));
+    }
+    if (!arh2_truthy(pd)) { json_free(pd); return json_bool(true); }
+    const char *pu = arh2_sdef(pd, "base_url", "");
+    bool res = false;
+    if (pu[0]) {
+        json_t *h1 = arh2_hostname(ctx, pu);
+        json_t *h2 = arh2_hostname(ctx, eff_base_url);
+        res = !arh2_str_eq(arh2_jstr(h1), arh2_jstr(h2));
+        json_free(h1); json_free(h2);
+    }
+    json_free(pd);
+    return json_bool(res);
+}
+
+/* ── _provider_supplied_client ───────────────────────────────────────────── */
+static json_t *arh2_profile_call(arh2_ctx *ctx, const char *name, json_t *args) {
+    return arh2_call(ctx, name, args);
+}
+/* PoP: arh2_provider_supplied_client @ agent/agent_runtime_helpers.py:_provider_supplied_client */
+static json_t *arh2_provider_supplied_client(arh2_ctx *ctx, json_t *agent, json_t *client_kwargs) {
+    if (!arh2_bdef(ctx->env, "providers_import_ok", true)) return json_null();
+    const char *pname = arh2_strip(arh2_sdef(agent, "provider", ""));
+    json_t *profile = NULL;
+    if (pname[0]) {
+        json_t *a = json_object();
+        json_set(a, "name", json_string(pname));
+        profile = arh2_profile_call(ctx, "get_provider_profile", a);
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); json_free(profile); profile = NULL; }
+    }
+    if (!arh2_truthy(profile)) {
+        json_free(profile);
+        const char *base = arh2_strip(arh2_sdef(client_kwargs, "base_url", ""));
+        if (base[0]) {
+            json_t *a = json_object();
+            json_set(a, "base_url", json_string(base));
+            profile = arh2_profile_call(ctx, "_profile_for_base_url", a);
+        }
+    }
+    if (!arh2_truthy(profile)) { json_free(profile); return json_null(); }
+    json_t *a = json_object();
+    if (arh2_is_obj(client_kwargs))
+        for (size_t i = 0; i < client_kwargs->c.count; i++)
+            arh2_arg(a, client_kwargs->c.keys[i], client_kwargs->c.items[i]);
+    json_t *client = arh2_profile_call(ctx, "profile.create_client", a);
+    if (arh2_exc_pending(ctx)) {
+        const char *auth = arh2_sdef(profile, "auth_type", "");
+        if (arh2_str_eq(auth, "external_process")) { /* propagate */ return NULL; }
+        json_t *args = json_array();
+        json_append(args, json_string(arh2_sdef(profile, "name", pname)[0] ? arh2_sdef(profile, "name", pname) : "?"));
+        arh2_log(ctx, "ra.", "warning",
+                  "Provider profile %r failed to create a client; falling back to the standard client path",
+                  args, true);
+        arh2_exc_clear(ctx);
+        json_free(client);
+        json_free(profile);
+        return json_null();
+    }
+    json_free(profile);
+    return client;
+}
+
+/* ── _ensure_route_client_headers ────────────────────────────────────────── */
+/* PoP: arh2_ensure_route_client_headers @ agent/agent_runtime_helpers.py:_ensure_route_client_headers */
+static json_t *arh2_ensure_route_client_headers(arh2_ctx *ctx, json_t *client_kwargs, const char *provider) {
+    json_t *a = json_object();
+    json_set(a, "kind", json_string("client_headers"));
+    arh2_arg_str(a, "provider", provider);
+    json_set(a, "base_url", json_string(arh2_sdef(client_kwargs, "base_url", "")));
+    json_set(a, "api_key", json_string(arh2_sdef(client_kwargs, "api_key", "")));
+    json_t *required = arh2_call(ctx, "route_answer", a);
+    if (!arh2_truthy(required)) { json_free(required); return NULL; }
+    json_t *existing = json_object();
+    json_t *dh = arh2_get(client_kwargs, "default_headers");
+    if (arh2_is_obj(dh))
+        for (size_t i = 0; i < dh->c.count; i++) {
+            char *lk = arh2_lower_dup(dh->c.keys[i]);
+            json_set(existing, lk, json_copy(dh->c.items[i]));
+            free(lk);
+        }
+    if (arh2_is_obj(required)) {
+        for (size_t i = 0; i < required->c.count; i++) {
+            char *lk = arh2_lower_dup(required->c.keys[i]);
+            bool present = arh2_is_obj(existing) && json_obj_get(existing, lk) != NULL;
+            free(lk);
+            if (!present) json_set(existing, required->c.keys[i], json_copy(required->c.items[i]));
+        }
+    }
+    json_set(client_kwargs, "default_headers", existing);
+    json_free(required);
+    return NULL;
+}
+
+/* ── _gemini_native_client ───────────────────────────────────────────────── */
+/* PoP: arh2_gemini_native_client @ agent/agent_runtime_helpers.py:_gemini_native_client */
+static json_t *arh2_gemini_native_client(arh2_ctx *ctx, json_t *agent, json_t *client_kwargs,
+        json_t *httpx_verify, const char *reason, bool shared) {
+    const char *base = arh2_sdef(client_kwargs, "base_url", "");
+    json_t *a = json_object();
+    json_set(a, "base_url", json_string(base));
+    json_t *native = arh2_call(ctx, "is_native_gemini_base_url", a);
+    bool is_native = arh2_truthy(native); json_free(native);
+    if (!is_native) return json_null();
+    static const char *KEEP[] = {"api_key", "base_url", "default_headers", "timeout", "http_client"};
+    json_t *safe = json_object();
+    for (size_t i = 0; i < sizeof(KEEP) / sizeof(KEEP[0]); i++)
+        if (arh2_has(client_kwargs, KEEP[i]))
+            json_set(safe, KEEP[i], json_copy(arh2_get(client_kwargs, KEEP[i])));
+    if (!arh2_has(safe, "http_client")) {
+        json_t *b = json_object();
+        json_set(b, "base_url", json_string(base));
+        arh2_arg(b, "verify", httpx_verify);
+        json_t *ka = arh2_call(ctx, "agent._build_keepalive_http_client", b);
+        if (arh2_truthy(ka)) json_set(safe, "http_client", ka);
+        else json_free(ka);
+    }
+    json_t *c = json_object();
+    for (size_t i = 0; i < safe->c.count; i++) json_set(c, safe->c.keys[i], json_copy(safe->c.items[i]));
+    json_t *client = arh2_call(ctx, "GeminiNativeClient", c);
+    json_t *lc = arh2_call(ctx, "agent._client_log_context", json_object());
+    json_t *args = json_array();
+    json_append(args, json_string(reason ? reason : ""));
+    json_append(args, json_bool(shared));
+    json_append(args, lc ? lc : json_null());
+    arh2_log(ctx, "ra.", "info", "Gemini native client created (%s, shared=%s) %s", args, false);
+    json_free(safe);
+    return client;
+}
+
+/* ── _apply_switched_provider_request_overrides ──────────────────────────── */
+/* PoP: arh2_apply_switched_provider_request_overrides @ agent/agent_runtime_helpers.py:_apply_switched_provider_request_overrides */
+static json_t *arh2_apply_switched_provider_request_overrides(arh2_ctx *ctx, json_t *agent, const char *new_provider) {
+    json_t *cp = json_copy(arh2_get(agent, "_custom_providers"));
+    if (arh2_is_none(cp)) {
+        json_t *cfg = arh2_call(ctx, "load_config", json_object());
+        json_t *a = json_object();
+        arh2_arg(a, "config", cfg);
+        cp = arh2_call(ctx, "get_compatible_custom_providers", a);
+        json_free(cfg);
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); cp = json_array(); }
+    }
+    json_t *a = json_object();
+    arh2_arg_str(a, "provider", new_provider);
+    /* Python passes getattr(agent,"model","") or "" -- missing/falsy becomes
+     * an empty STRING in the recorded kwargs, not an omitted key. */
+    json_t *am = arh2_get(agent, "model");
+    json_t *ab = arh2_get(agent, "base_url");
+    json_set(a, "model", json_string(arh2_truthy(am) ? arh2_jstr(am) : ""));
+    json_set(a, "base_url", json_string(arh2_truthy(ab) ? arh2_jstr(ab) : ""));
+    arh2_arg(a, "custom_providers", cp ? cp : json_array());
+    json_t *extra = arh2_call(ctx, "_custom_provider_extra_body_for_agent", a);
+    if (arh2_exc_pending(ctx)) {
+        /* Python's except leaves agent.request_overrides UNCHANGED (None here);
+         * the caller logs the debug line.  Do not install an empty dict. */
+        json_free(extra);
+        return NULL;
+    }
+    json_t *ov = json_object();
+    json_t *old = arh2_get(agent, "request_overrides");
+    if (arh2_is_obj(old))
+        for (size_t i = 0; i < old->c.count; i++)
+            if (!arh2_str_eq(old->c.keys[i], "extra_body"))
+                json_set(ov, old->c.keys[i], json_copy(old->c.items[i]));
+    if (arh2_truthy(extra)) {
+        /* Python: overrides["extra_body"] = dict(new_extra_body) -- nested,
+         * never flattened into the top-level overrides dict. */
+        json_set(ov, "extra_body", json_copy(extra));
+    }
+    json_free(extra);
+    json_set(agent, "request_overrides", ov);
+    return NULL;
+}
+
+/* ── _resolve_switch_destination ─────────────────────────────────────────── */
+static json_t *arh2_determine_api_mode(arh2_ctx *ctx, const char *provider, const char *base_url, const char *model) {
+    json_t *a = json_object();
+    arh2_arg_str(a, "provider", provider);
+    arh2_arg_str(a, "base_url", base_url);
+    arh2_arg_str(a, "model", model);
+    return arh2_call(ctx, "determine_api_mode", a);
+}
+static json_t *arh2_is_actual_route(arh2_ctx *ctx, const char *provider, const char *base_url) {
+    json_t *a = json_object();
+    arh2_arg_str(a, "provider", provider);
+    arh2_arg_str(a, "base_url", base_url);
+    return arh2_call(ctx, "is_actual_route", a);
+}
+/* PoP: arh2_resolve_switch_destination @ agent/agent_runtime_helpers.py:_resolve_switch_destination */
+static json_t *arh2_resolve_switch_destination(arh2_ctx *ctx, json_t *agent,
+        const char *new_model, const char *new_provider, const char *base_url,
+        const char *api_mode, json_t *capabilities, const char *old_norm, const char *new_norm) {
+    char *mode = strdup(api_mode ? api_mode : "");
+    char *url = strdup(base_url ? base_url : "");
+    if (!mode[0]) {
+        json_t *dm = arh2_determine_api_mode(ctx, new_provider, url, new_model);
+        free(mode);
+        mode = strdup(arh2_jstr(dm));
+        json_free(dm);
+    }
+    if (!url[0] && arh2_str_eq(new_norm, "openai")) { free(url); url = strdup("https://api.openai.com/v1"); }
+    char *eff = strdup(url);
+    if (!eff[0] && arh2_str_eq(old_norm, new_norm)) { free(eff); eff = strdup(arh2_sdef(agent, "base_url", "")); }
+    json_t *actual = arh2_is_actual_route(ctx, new_provider, eff);
+    bool is_actual = arh2_truthy(actual); json_free(actual);
+    if (is_actual) {
+        free(mode); mode = strdup("chat_completions");
+        if (eff[0]) {
+            json_t *a = json_object(); json_set(a, "base_url", json_string(eff));
+            json_t *n = arh2_call(ctx, "normalize_actual_base_url", a);
+            free(url); url = strdup(arh2_jstr(n)); json_free(n);
+        }
+    }
+    json_t *caps = NULL;
+    if (arh2_is_obj(capabilities)) caps = json_copy(capabilities);
+    else {
+        json_t *a = json_object();
+        arh2_arg_str(a, "model", new_model);
+        arh2_arg_str(a, "base_url", eff);
+        arh2_arg_str(a, "provider", new_provider);
+        json_set(a, "is_codex_backend", json_bool(arh2_str_eq(new_norm, "openai-codex")));
+        caps = arh2_call(ctx, "resolve_native_compaction_capabilities", a);
+    }
+    if (arh2_str_eq(mode, "anthropic_messages")) {
+        json_t *a = json_object(); json_set(a, "provider", json_string(new_provider ? new_provider : ""));
+        json_t *fam = arh2_call(ctx, "opencode_provider_family", a);
+        bool oc = arh2_truthy(fam); json_free(fam);
+        if (oc && url[0]) {
+            size_t n = strlen(url);
+            if (n >= 3 && strcmp(url + n - 3, "/v1") == 0) url[n - 3] = '\0';
+            else if (n >= 4 && strcmp(url + n - 4, "/v1/") == 0) url[n - 4] = '\0';
+        }
+    }
+    json_t *r = json_array();
+    json_append(r, json_string(mode));
+    json_append(r, json_string(url));
+    json_append(r, caps ? caps : json_null());
+    free(mode); free(url); free(eff);
+    return r;
+}
+
+/* ── _build_switched_client ──────────────────────────────────────────────── */
+/* PoP: arh2_build_switched_client @ agent/agent_runtime_helpers.py:_build_switched_client */
+static json_t *arh2_build_switched_client(arh2_ctx *ctx, json_t *agent, const char *new_provider,
+        json_t *api_key, const char *base_url, const char *api_mode, const char *new_norm) {
+    if (arh2_str_eq(new_norm, "moa")) {
+        json_t *a = json_object();
+        arh2_arg(a, "agent", agent);
+        arh2_arg(a, "model", arh2_get(agent, "model"));
+        arh2_arg(a, "api_key", api_key);
+        json_t *r = arh2_call(ctx, "bind_moa_runtime", a); json_free(r);
+        return NULL;
+    }
+    if (arh2_str_eq(new_provider, "bedrock") &&
+        (arh2_str_eq(api_mode, "anthropic_messages") || arh2_str_eq(api_mode, "bedrock_converse"))) {
+        json_t *a = json_object();
+        arh2_arg(a, "agent", agent);
+        json_set(a, "base_url", json_string((base_url && base_url[0]) ? base_url : arh2_sdef(agent, "base_url", "")));
+        arh2_arg_str(a, "api_mode", api_mode);
+        json_t *r = arh2_call(ctx, "bind_bedrock_runtime", a); json_free(r);
+        return NULL;
+    }
+    if (arh2_str_eq(api_mode, "anthropic_messages")) {
+        bool native = arh2_str_eq(new_provider, "anthropic");
+        json_t *eff = json_copy(api_key ? api_key : json_null());
+        if (!arh2_truthy(eff)) { json_free(eff); eff = json_copy(arh2_get(agent, "api_key")); }
+        if (!arh2_truthy(eff) && native) {
+            json_t *a = json_object();
+            arh2_arg(a, "base_url", arh2_get(agent, "_anthropic_base_url"));
+            arh2_arg(a, "model", arh2_get(agent, "model"));
+            json_free(eff);
+            eff = arh2_call(ctx, "native_anthropic_fallback_token", a);
+        }
+        /* Live: (... or "") -- a non-native route with no key yields "". */
+        if (!arh2_truthy(eff)) { json_free(eff); eff = json_string(""); }
+        bool is_mm = arh2_str_eq(new_provider, "minimax-oauth") && arh2_is_str(eff) && eff->str_val[0];
+        if (is_mm) {
+            json_t *tok = arh2_call(ctx, "build_minimax_oauth_token_provider", json_object());
+            if (arh2_exc_pending(ctx)) {
+                json_t *args = json_array(); json_append(args, arh2_exc_arg(ctx));
+                arh2_log(ctx, "", "warning",
+                    "MiniMax OAuth: failed to install per-request token provider on switch (%s); using static bearer.",
+                    args, false);
+                arh2_exc_clear(ctx);
+            } else { json_free(eff); eff = tok; }
+        }
+        json_set(agent, "api_key", arh2_copy_or_null(eff));
+        json_set(agent, "_anthropic_api_key", arh2_copy_or_null(eff));
+        json_set(agent, "_anthropic_base_url", json_string((base_url && base_url[0]) ? base_url : arh2_sdef(agent, "_anthropic_base_url", "")));
+        json_t *t = arh2_get_timeout(ctx, arh2_sdef(agent, "provider", ""), arh2_sdef(agent, "model", ""));
+        json_t *a = json_object();
+        arh2_arg(a, "api_key", eff);
+        arh2_arg(a, "base_url", arh2_get(agent, "_anthropic_base_url"));
+        arh2_arg(a, "timeout", t);
+        json_t *cli = arh2_call(ctx, "build_anthropic_client", a);
+        json_set(agent, "_anthropic_client", cli ? cli : json_null());
+        json_free(t);
+        json_t *b = json_object();
+        arh2_arg(b, "base_url", arh2_get(agent, "_anthropic_base_url"));
+        arh2_arg(b, "api_key", eff);
+        arh2_arg_str(b, "provider", new_provider);
+        json_t *oauth = arh2_call(ctx, "anthropic_route_is_oauth", b);
+        json_set(agent, "_is_anthropic_oauth", oauth ? oauth : json_null());
+        json_set(agent, "client", json_null());
+        json_set(agent, "_client_kwargs", json_object());
+        json_free(eff);
+        return NULL;
+    }
+    const char *effbase = (base_url && base_url[0]) ? base_url : arh2_sdef(agent, "base_url", "");
+    json_t *ck = json_object();
+    /* Python: {"api_key": api_key or agent.api_key, ...} -- the new api_key
+     * argument wins when truthy; the agent's old key is only a fallback. */
+    json_set(ck, "api_key", arh2_truthy(api_key) ? json_copy(api_key)
+                                                 : json_copy(arh2_get(agent, "api_key")));
+    json_set(ck, "base_url", json_string(effbase));
+    json_set(agent, "_client_kwargs", json_copy(ck));
+    json_t *cfg = arh2_call(ctx, "load_config_readonly", json_object());
+    json_t *a = json_object();
+    arh2_arg(a, "client_kwargs", ck);
+    json_set(a, "base_url", json_string(effbase));
+    json_t *b = json_object(); arh2_arg(b, "config", cfg);
+    json_t *cps = arh2_call(ctx, "get_compatible_custom_providers", b);
+    /* The live call passes custom_providers POSITIONALLY; the seam projection
+     * reads only kwargs, so it is never recorded in the TLS-call args. */
+    json_free(cps);
+    json_t *r = arh2_call(ctx, "apply_custom_provider_tls_to_client_kwargs", a);
+    json_free(cfg); json_free(r);
+    if (arh2_exc_pending(ctx)) {
+        arh2_log(ctx, "", "debug", "custom-provider TLS resolution skipped on switch_model", json_array(), true);
+        arh2_exc_clear(ctx);
+    }
+    json_t *t = arh2_get_timeout(ctx, arh2_sdef(agent, "provider", ""), arh2_sdef(agent, "model", ""));
+    json_t *fck = arh2_get(agent, "_client_kwargs");
+    if (arh2_truthy(t)) json_set(fck, "timeout", json_copy(t));
+    json_free(t);
+    json_t *h = json_object(); json_set(h, "base_url", json_string(effbase));
+    json_t *hr = arh2_call(ctx, "agent._apply_client_headers_for_base_url", h); json_free(hr);
+    json_t *ca = json_object();
+    arh2_arg(ca, "client_kwargs", fck);
+    arh2_arg_str(ca, "reason", "switch_model");
+    json_set(ca, "shared", json_bool(true));
+    json_t *cli = arh2_call(ctx, "agent._create_openai_client", ca);
+    json_set(agent, "client", cli ? cli : json_null());
+    return NULL;
+}
+
+/* ── _swap_switch_runtime ────────────────────────────────────────────────── */
+/* PoP: arh2_swap_switch_runtime @ agent/agent_runtime_helpers.py:_swap_switch_runtime */
+static json_t *arh2_swap_switch_runtime(arh2_ctx *ctx, json_t *agent,
+        const char *new_model, const char *new_provider, json_t *api_key,
+        const char *base_url, const char *api_mode, const char *old_provider,
+        const char *old_norm, const char *new_norm) {
+    json_set(agent, "_config_context_length", json_null());
+    json_set(agent, "model", json_string(new_model ? new_model : ""));
+    json_set(agent, "provider", json_string(new_provider ? new_provider : ""));
+    json_set(agent, "requested_provider", json_string(new_provider ? new_provider : ""));
+    json_t *flag = arh2_call(ctx, "agent._read_reasoning_echo_from_config", json_object());
+    json_set(agent, "_reasoning_echo_flag", flag ? flag : json_null());
+    if (base_url && base_url[0]) json_set(agent, "base_url", json_string(base_url));
+    else if (!arh2_str_eq(old_norm, new_norm)) {
+        char msg[512];
+        snprintf(msg, sizeof msg,
+                 "switch_model: no base_url resolved for provider '%s' (switching from '%s'); refusing to keep the previous provider's endpoint",
+                 new_provider ? new_provider : "", old_provider ? old_provider : "");
+        arh2_raise(ctx, "ValueError", msg);
+        return NULL;
+    }
+    json_set(agent, "api_mode", json_string(api_mode ? api_mode : ""));
+    if (arh2_has(agent, "_transport_cache")) json_set(agent, "_transport_cache", json_object());
+    json_t *rva = json_object(); arh2_arg(rva, "agent", agent);
+    json_t *rv = arh2_call(ctx, "reset_route_verdicts", rva); json_free(rv);
+    if (arh2_truthy(api_key)) json_set(agent, "api_key", json_copy(api_key));
+    if (!arh2_str_eq(old_norm, new_norm) || !arh2_truthy(arh2_get(agent, "_credential_pool"))) {
+        json_set(agent, "_credential_pool", json_null());
+        json_set(agent, "_credential_pool_entry_id", json_null());
+        /* Live: load_route_pool(new_provider, agent.base_url) -- both
+         * positional; its projection reads only kwargs, so record no args. */
+        json_t *a = json_object();
+        json_t *pool = arh2_call(ctx, "load_route_pool", a);
+        if (arh2_exc_pending(ctx)) {
+            json_t *args = json_array();
+            json_append(args, json_string(new_provider ? new_provider : ""));
+            json_append(args, arh2_exc_arg(ctx));
+            arh2_log(ctx, "", "warning",
+                "switch_model: credential pool reload failed for %s (%s); continuing without pool rotation this turn",
+                args, false);
+            arh2_exc_clear(ctx);
+        } else json_set(agent, "_credential_pool", pool ? pool : json_null());
+    }
+    arh2_build_switched_client(ctx, agent, new_provider, api_key, base_url, api_mode, new_norm);
+    if (arh2_exc_pending(ctx)) return NULL;
+    json_t *a = json_object(); arh2_arg(a, "agent", agent);
+    json_t *r = arh2_call(ctx, "sync_credential_pool_entry_id", a); json_free(r);
+    return NULL;
+}
+
+/* ── _resolve_switch_context_length ──────────────────────────────────────── */
+/* PoP: arh2_resolve_switch_context_length @ agent/agent_runtime_helpers.py:_resolve_switch_context_length */
+static json_t *arh2_resolve_switch_context_length(arh2_ctx *ctx, json_t *agent, json_t *snapshot) {
+    json_t *cp = NULL, *intent = NULL;
+    bool cfg_failed = false;
+    json_t *cfg = arh2_call(ctx, "load_config", json_object());
+    if (arh2_exc_pending(ctx)) {
+        /* Python: `except Exception: intent = None` -- no further config seams
+         * fire and custom_providers stays None (not []).  A null (non-raising)
+         * config does NOT skip the block: the seams still fire. */
+        arh2_exc_clear(ctx);
+        json_free(cfg);
+        cfg = NULL;
+        cfg_failed = true;
+    }
+    if (!cfg_failed) {
+        json_t *a = json_object(); arh2_arg(a, "config", cfg);
+        cp = arh2_call(ctx, "get_compatible_custom_providers", a);
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); json_free(cp); cp = NULL; }
+        json_t *b = json_object();
+        arh2_arg(b, "agent", agent);
+        arh2_arg(b, "config", cfg);  /* live: config_context_length_for_runtime(agent, switch_cfg) */
+        intent = arh2_call(ctx, "config_context_length_for_runtime", b);
+        json_free(cfg);
+        if (!arh2_truthy(intent)) {
+            json_free(intent);
+            json_t *c = json_object();
+            arh2_arg(c, "model", arh2_get(agent, "model"));
+            arh2_arg(c, "base_url", arh2_get(agent, "base_url"));
+            arh2_arg(c, "custom_providers", cp);
+            intent = arh2_call(ctx, "get_custom_provider_context_length", c);
+        }
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); json_free(intent); intent = NULL; }
+    }
+    /* Every following call passes its value POSITIONALLY; the corresponding
+     * seam projections read only kwargs, so record no value args. */
+    json_t *d = json_object();
+    arh2_arg(d, "agent", agent);
+    json_t *r = arh2_call(ctx, "set_config_context_length", d); json_free(r);
+    json_t *runtime = NULL;
+    if (arh2_bdef(ctx->env, "has_lmstudio", true)) {
+        json_t *e = json_object();
+        runtime = arh2_call(ctx, "agent._ensure_lmstudio_runtime_loaded", e);
+        if (arh2_exc_pending(ctx)) {
+            arh2_restore_switch_snapshot(ctx, agent, snapshot);
+            return NULL; /* keep exc pending: the Python caller re-raises */
+        }
+    }
+    if (arh2_bdef(ctx->env, "has_lmstudio_unverified", false)) {
+        json_t *f = json_object();
+        json_t *uv = arh2_call(ctx, "agent._lmstudio_load_was_unverified", f);
+        if (arh2_truthy(uv)) arh2_log(ctx, "", "warning",
+            "LM Studio model activation was rejected or completed without a verifiable active context length during model switch; continuing with configured context",
+            json_array(), false);
+        json_free(uv);
+    }
+    json_t *eff = intent;
+    if (arh2_bdef(ctx->env, "has_effective_lmstudio", false)) {
+        json_t *g = json_object();
+        json_free(eff);
+        eff = arh2_call(ctx, "agent._effective_lmstudio_context_length", g);
+    }
+    json_t *out = json_array();
+    json_append(out, cp ? cp : json_null());
+    json_append(out, eff ? eff : json_null());
+    json_free(runtime);
+    return out;
+}
+
+/* ── _update_switch_compressor ───────────────────────────────────────────── */
+/* PoP: arh2_update_switch_compressor @ agent/agent_runtime_helpers.py:_update_switch_compressor */
+static json_t *arh2_update_switch_compressor(arh2_ctx *ctx, json_t *agent,
+        json_t *custom_providers, json_t *effective_context_length, json_t *snapshot) {
+    if (arh2_is_none(custom_providers)) {
+        json_t *cfg = arh2_call(ctx, "load_config", json_object());
+        json_t *a = json_object(); arh2_arg(a, "config", cfg);
+        custom_providers = arh2_call(ctx, "get_compatible_custom_providers", a);
+        json_free(cfg);
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); custom_providers = json_null(); }
+    }
+    json_t *key = arh2_get(agent, "api_key");
+    json_t *a = json_object();
+    /* get_model_context_length takes agent.model POSITIONALLY; its projection
+     * reads kwargs only, so `model` must not appear in the recorded args. */
+    arh2_arg(a, "base_url", arh2_get(agent, "base_url"));
+    json_set(a, "api_key", arh2_is_str(key) ? json_copy(key) : json_string(""));
+    arh2_arg(a, "provider", arh2_get(agent, "provider"));
+    arh2_arg(a, "config_context_length", effective_context_length);
+    arh2_arg(a, "custom_providers", custom_providers);
+    json_t *clen = arh2_call(ctx, "get_model_context_length", a);
+    if (arh2_exc_pending(ctx)) {
+        /* Python's try/except re-raises: no update_model, no revalidate. */
+        arh2_restore_switch_snapshot(ctx, agent, snapshot);
+        json_free(clen);
+        return NULL;
+    }
+    json_t *b = json_object();
+    arh2_arg(b, "model", arh2_get(agent, "model"));
+    arh2_arg(b, "context_length", clen);
+    arh2_arg(b, "base_url", arh2_get(agent, "base_url"));
+    arh2_arg(b, "api_key", arh2_get(agent, "api_key"));
+    arh2_arg(b, "provider", arh2_get(agent, "provider"));
+    arh2_arg(b, "api_mode", arh2_get(agent, "api_mode"));
+    json_t *r = arh2_call(ctx, "agent.context_compressor.update_model", b);
+    json_free(r);
+    json_free(clen);
+    if (arh2_exc_pending(ctx)) {
+        arh2_restore_switch_snapshot(ctx, agent, snapshot);
+        return NULL;
+    }
+    json_t *c = json_object(); arh2_arg(c, "agent", agent);
+    json_t *rr = arh2_call(ctx, "revalidate_compression_feasibility", c); json_free(rr);
+    return NULL;
+}
+
+/* ── _finish_switch ──────────────────────────────────────────────────────── */
+/* PoP: arh2_finish_switch @ agent/agent_runtime_helpers.py:_finish_switch */
+static json_t *arh2_finish_switch(arh2_ctx *ctx, json_t *agent, const char *new_provider,
+        const char *old_norm, const char *new_norm) {
+    json_set(agent, "_fallback_activated", json_bool(false));
+    json_set(agent, "_provider_fallback_active", json_bool(false));
+    json_set(agent, "_provider_fallback_route", json_null());
+    json_set(agent, "_fallback_index", json_number(0));
+    json_set(agent, "_credential_pool_revert_id", json_null());
+    json_t *chain = json_array();
+    json_t *old = arh2_get(agent, "_fallback_chain");
+    if (arh2_is_arr(old))
+        for (size_t i = 0; i < old->c.count; i++) json_append(chain, json_copy(old->c.items[i]));
+    if (old_norm[0] && new_norm[0] && !arh2_str_eq(old_norm, new_norm)) {
+        json_t *f = json_array();
+        for (size_t i = 0; i < chain->c.count; i++) {
+            json_t *e = chain->c.items[i];
+            char *p = arh2_lower_dup(arh2_strip(arh2_sdef(e, "provider", "")));
+            bool skip = arh2_str_eq(p, old_norm) || arh2_str_eq(p, new_norm);
+            free(p);
+            if (!skip) json_append(f, json_copy(e));
+        }
+        json_free(chain); chain = f;
+    }
+    json_set(agent, "_fallback_chain", chain);
+    json_set(agent, "_fallback_model", chain->c.count ? json_copy(chain->c.items[0]) : json_null());
+    arh2_apply_switched_provider_request_overrides(ctx, agent, new_provider);
+    if (arh2_exc_pending(ctx)) {
+        arh2_log(ctx, "", "debug", "switch_model: request_overrides re-derivation failed", json_array(), true);
+        arh2_exc_clear(ctx);
+    }
+    return NULL;
+}
+
+/* ── _persist_switch_billing_route ───────────────────────────────────────── */
+/* PoP: arh2_persist_switch_billing_route @ agent/agent_runtime_helpers.py:_persist_switch_billing_route */
+static json_t *arh2_persist_switch_billing_route(arh2_ctx *ctx, json_t *agent) {
+    json_t *db = arh2_get(agent, "_session_db");
+    json_t *sid = arh2_get(agent, "session_id");
+    /* Python guards with `session_db is None`, NOT truthiness -- an empty {}
+     * session_db is a valid store selector and must still fire both seams. */
+    if (!db || db->type == JSON_NULL || !arh2_truthy(sid)) return NULL;
+    json_t *a = json_object(); arh2_arg(a, "agent", agent);
+    json_t *store = arh2_call(ctx, "agent_interface", a);
+    /* session_id is passed positionally in Python, but both billing-route
+     * seam projections use dict(kwargs) -- never record it as an arg. */
+    json_t *b = json_object();
+    arh2_arg(b, "provider", arh2_get(agent, "provider"));
+    arh2_arg(b, "base_url", arh2_get(agent, "base_url"));
+    arh2_arg(b, "billing_mode", arh2_get(agent, "api_mode"));
+    json_t *r = arh2_call(ctx, arh2_truthy(store) ? "store.usage.set_billing_route" : "session_db.update_session_billing_route", b);
+    json_free(r); json_free(store);
+    if (arh2_exc_pending(ctx)) {
+        arh2_log(ctx, "", "warning", "Failed to persist billing route after model switch", json_array(), true);
+        arh2_exc_clear(ctx);
+    }
+    return NULL;
+}
+
+/* ── _log_empty_non_final_heal ───────────────────────────────────────────── */
+/* PoP: arh2_log_empty_non_final_heal @ agent/agent_runtime_helpers.py:_log_empty_non_final_heal */
+static json_t *arh2_log_empty_non_final_heal(arh2_ctx *ctx, double healed) {
+    json_t *skey = arh2_call(ctx, "_session_id_for_heal_log", json_object());
+    const char *key = arh2_truthy(skey) ? arh2_jstr(skey) : "-";
+    json_t *th = arh2_call(ctx, "_heal_escalation_threshold", json_object());
+    double threshold = arh2_is_num(th) ? th->num_val : 0.0; json_free(th);
+    double now = arh2_ndef(ctx->env, "monotonic", 0.0);
+    double window = arh2_ndef(ctx->env, "empty_heal_window_s", 600.0);
+    json_t *state = json_object();
+    json_t *prior = arh2_get(ctx->env, "heal_state");
+    if (arh2_is_obj(prior)) {
+        json_t *ps = arh2_get(prior, key);
+        if (arh2_is_obj(ps)) state = json_copy(ps);
+    }
+    double started = arh2_ndef(state, "window_start", now);
+    bool fresh = !arh2_is_obj(state) || arh2_is_none(arh2_get(state, "window_start")) || (now - started) > window;
+    if (fresh) {
+        double te = arh2_ndef(state, "total_events", 0.0);
+        double th2 = arh2_ndef(state, "total_healed", 0.0);
+        json_t *ns = json_object();
+        json_set(ns, "count", json_number(0));
+        json_set(ns, "window_start", json_number(now));
+        json_set(ns, "escalated", json_bool(false));
+        json_set(ns, "total_events", json_number(te));
+        json_set(ns, "total_healed", json_number(th2));
+        json_free(state); state = ns;
+    }
+    json_t *a = json_object();
+    json_set(a, "key", json_string(key));
+    json_set(a, "state", json_copy(state));
+    json_t *lr = arh2_call(ctx, "publish_lru", a); json_free(lr);
+    double count = arh2_ndef(state, "count", 0.0) + 1.0;
+    json_set(state, "count", json_number(count));
+    double te = arh2_ndef(state, "total_events", 0.0) + 1.0;
+    json_set(state, "total_events", json_number(te));
+    double total_healed = arh2_ndef(state, "total_healed", 0.0) + healed;
+    json_set(state, "total_healed", json_number(total_healed));
+    bool escalated = arh2_bdef(state, "escalated", false);
+    if (escalated) { json_free(skey); json_free(state); return NULL; }
+    bool escalate = threshold > 0.0 && count >= threshold;
+    if (escalate) {
+        json_set(state, "escalated", json_bool(true));
+        bool notified = arh2_bdef(arh2_get(ctx->env, "heal_notified"), key, false);
+        if (!notified) {
+            json_t *n = json_object();
+            json_set(n, "key", json_string(key));
+            json_t *r = arh2_call(ctx, "heal_user_notice.add", n); json_free(r);
+            json_t *p = json_object();
+            json_set(p, "key", json_string(key));
+            /* Only the key is projected: the notice VALUE is the message
+             * string, so Python's total_events extraction yields None and is
+             * dropped from the recorded args.  Do not pass it from C. */
+            json_t *r2 = arh2_call(ctx, "heal_pending_notice.set", p); json_free(r2);
+        }
+    }
+    if (escalate) {
+        json_t *args = json_array();
+        json_append(args, json_string(key));
+        json_append(args, json_number(healed));
+        json_append(args, json_number(te));
+        json_append(args, json_number(total_healed));
+        json_append(args, json_number(count));
+        json_append(args, json_number(threshold));
+        arh2_log(ctx, "ra.", "error",
+            "Pre-call sanitizer: repeated-heal escalation for session %s — healed %d empty non-final message(s) this send; heal pattern: %d heal events / %d messages healed this session (%d in the current session window, threshold %d). The transcript is being repaired on every send; /new drops the poisoned turns.",
+            args, false);
+    } else {
+        json_t *args = json_array(); json_append(args, json_number(healed));
+        arh2_log(ctx, "ra.", "warning",
+            "Pre-call sanitizer: healed %d empty non-final message(s) by substituting placeholder content — an empty-content turn was in the transcript and would 400 the request ('messages must have non-empty content' / INVALID_REQUEST_BODY). Self-recovering the poisoned transcript in memory; no restart needed.",
+            args, false);
+    }
+    json_free(skey);
+    json_free(state);
+    return NULL;
+}
+
+/* ── looks_like_degenerate_final ─────────────────────────────────────────── */
+static size_t arh2_py_len(const char *s) {
+    size_t n = 0;
+    for (const unsigned char *p = (const unsigned char *)(s ? s : ""); *p; p++)
+        if ((*p & 0xC0) != 0x80) n++;
+    return n;
+}
+static bool arh2_any_alpha(const char *s) {
+    for (const unsigned char *p = (const unsigned char *)(s ? s : ""); *p; p++)
+        if (isalpha(*p) || *p >= 0x80) return true;
+    return false;
+}
+static bool arh2_any_ascii_alnum(const char *s) {
+    for (const unsigned char *p = (const unsigned char *)(s ? s : ""); *p; p++)
+        if (isalnum(*p)) return true;
+    return false;
+}
+static bool arh2_any_non_ascii_alpha(const char *s) {
+    for (const unsigned char *p = (const unsigned char *)(s ? s : ""); *p; p++)
+        if (*p >= 0x80) return true;   /* non-ASCII code unit counted as non-ASCII alpha (ASCII fixture domain) */
+    return false;
+}
+/* PoP: arh2_looks_like_degenerate_final @ agent/agent_runtime_helpers.py:looks_like_degenerate_final */
+static json_t *arh2_looks_like_degenerate_final(arh2_ctx *ctx, const char *text, json_t *user_message) {
+    char *t = arh2_strip(text);
+    size_t len = arh2_py_len(t);
+    json_t *terms = arh2_get(ctx->env, "sentence_terminals");
+    if (!t[0] || len > (size_t)arh2_ndef(ctx->env, "degenerate_final_max_chars", 24.0) ||
+        arh2_ends_any(t, terms)) { free(t); return json_bool(false); }
+    const char *punct = arh2_sdef(ctx->env, "degenerate_leading_punct", "?!,;:)]}");
+    if (t[0] && strchr(punct, t[0]) && len > 1) {
+        /* Python: t[1].isalpha() -- inspect the SECOND codepoint, not the
+         * leading punctuation itself (the old loop only skipped UTF-8
+         * continuation bytes of t[0] and never advanced to t[1]). */
+        const unsigned char *q = (const unsigned char *)(t + 1);
+        while ((*q & 0xC0) == 0x80) q++;
+        if (*q && (isalpha(*q) || *q >= 0x80)) { free(t); return json_bool(true); }
+    }
+    if (!arh2_any_alpha(t) || arh2_any_ascii_alnum(t)) { free(t); return json_bool(false); }
+    json_t *ut = NULL;
+    if (arh2_truthy(user_message)) {
+        json_t *a = json_object();
+        arh2_arg(a, "message", user_message);
+        ut = arh2_call(ctx, "_summarize_user_message_for_log", a);
+    } else ut = json_string("");
+    bool res = !arh2_any_non_ascii_alpha(arh2_jstr(ut));
+    json_free(ut); free(t);
+    return json_bool(res);
+}
+
+/* ── promoted_reasoning_announces_action ─────────────────────────────────── */
+static char *arh2_last_codepoints(const char *s, size_t n) {
+    if (!s) return strdup("");
+    /* find start byte of the last n codepoints */
+    const char *start = s + strlen(s);
+    size_t cnt = 0;
+    while (start > s && cnt < n) {
+        start--;
+        while (start > s && (*start & 0xC0) == 0x80) start--;
+        cnt++;
+    }
+    return strdup(start);
+}
+/* PoP: arh2_promoted_reasoning_announces_action @ agent/agent_runtime_helpers.py:promoted_reasoning_announces_action */
+static json_t *arh2_promoted_reasoning_announces_action(arh2_ctx *ctx, const char *text) {
+    char *t = arh2_strip(text);
+    if (!t[0]) { free(t); return json_bool(false); }
+    char *tail = arh2_last_codepoints(t, 240);
+    json_t *a = json_object();
+    json_set(a, "text", json_string(tail));
+    json_t *m = arh2_call(ctx, "promoted_reasoning_plan_tail_re.search", a);
+    bool res = arh2_truthy(m); json_free(m);
+    free(tail); free(t);
+    return json_bool(res);
+}
+
+/* ── socket leaves ───────────────────────────────────────────────────────── */
+/* PoP: arh2_socket_from_stream @ agent/agent_runtime_helpers.py:_socket_from_stream */
+static json_t *arh2_socket_from_stream(arh2_ctx *ctx, json_t *stream) {
+    json_t *sock = arh2_get(stream, "_sock");
+    if (!arh2_truthy(sock) && arh2_truthy(arh2_get(stream, "get_extra_info_callable"))) {
+        json_t *a = json_object(); json_set(a, "name", json_string("socket"));
+        sock = arh2_call(ctx, "stream.get_extra_info", a);
+        if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); sock = NULL; }
+    }
+    if (!arh2_truthy(sock)) {
+        json_t *inner = arh2_get(stream, "stream");
+        sock = arh2_get(inner, "_sock");
+    }
+    if (!arh2_truthy(sock)) {
+        json_t *us = arh2_get(stream, "_stream");
+        if (arh2_truthy(arh2_get(us, "extra_callable"))) {
+            sock = arh2_call(ctx, "stream._stream.extra", json_object());
+            if (arh2_exc_pending(ctx)) { arh2_exc_clear(ctx); sock = NULL; }
+        }
+    }
+    return arh2_truthy(sock) ? json_copy(sock) : json_null();
+}
+/* PoP: arh2_socket_from_candidate @ agent/agent_runtime_helpers.py:_socket_from_candidate */
+static json_t *arh2_socket_from_candidate(arh2_ctx *ctx, json_t *candidate) {
+    json_t *stream = arh2_get(candidate, "_network_stream");
+    if (!arh2_truthy(stream)) stream = arh2_get(candidate, "_stream");
+    json_t *sock = NULL;
+    if (arh2_truthy(stream)) sock = arh2_socket_from_stream(ctx, stream);
+    if (arh2_truthy(sock)) return sock;
+    json_free(sock);
+    return arh2_socket_from_stream(ctx, candidate);
+}
+static json_t *arh2_connection_candidates(arh2_ctx *ctx, json_t *start) {
+    json_t *a = json_object(); arh2_arg(a, "start", start);
+    return arh2_call(ctx, "connection_candidates", a);
+}
+/* PoP: arh2_socket_from_response @ agent/agent_runtime_helpers.py:_socket_from_response */
+static json_t *arh2_socket_from_response(arh2_ctx *ctx, json_t *response) {
+    json_t *exts = arh2_get(response, "extensions");
+    json_t *direct = arh2_is_obj(exts) ? arh2_get(exts, "network_stream") : NULL;
+    json_t *starts[2] = {direct, arh2_get(response, "stream")};
+    for (int i = 0; i < 2; i++) {
+        /* Python guards with `if start is None` -- an empty {} network_stream
+         * is still a valid start and must yield connection candidates. */
+        if (!starts[i] || starts[i]->type == JSON_NULL) continue;
+        json_t *cands = arh2_connection_candidates(ctx, starts[i]);
+        if (arh2_is_arr(cands)) {
+            for (size_t j = 0; j < cands->c.count; j++) {
+                json_t *sock = arh2_socket_from_candidate(ctx, cands->c.items[j]);
+                if (arh2_truthy(sock)) { json_free(cands); return sock; }
+                json_free(sock);
+            }
+        }
+        json_free(cands);
+    }
+    return json_null();
+}
+/* PoP: arh2_shutdown_socket @ agent/agent_runtime_helpers.py:_shutdown_socket */
+static json_t *arh2_shutdown_socket(arh2_ctx *ctx, json_t *sock) {
+    if (arh2_truthy(arh2_get(sock, "settimeout_callable"))) {
+        json_t *a = json_object(); json_set(a, "timeout", json_number(0));
+        json_t *r = arh2_call(ctx, "sock.settimeout", a); json_free(r);
+        if (arh2_exc_pending(ctx)) arh2_exc_clear(ctx); /* suppress OSError */
+    }
+    json_t *b = json_object(); json_set(b, "how", json_number(2));
+    json_t *r = arh2_call(ctx, "sock.shutdown", b); json_free(r);
+    if (arh2_exc_pending(ctx)) arh2_exc_clear(ctx);
+    return NULL;
+}
