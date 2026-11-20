@@ -260,7 +260,6 @@ static int pc2_kind_is_a(const char *k, const char *ancestor) {
     return 0;
 }
 
-static int pc2_caught_by_exception(const char *k) { return pc2_kind_is_a(k, "Exception"); }
 static int pc2_is_plugin_operation_error(const char *k) { return pc2_kind_is_a(k, "PluginOperationError"); }
 static int pc2_is_admission_refused(const char *k) { return pc2_kind_is_a(k, "AdmissionRefused"); }
 static int pc2_is_dependency_conflict(const char *k) { return pc2_kind_is_a(k, "DependencyConflict"); }

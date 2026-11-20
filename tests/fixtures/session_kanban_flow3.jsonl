@@ -1,0 +1,199 @@
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "  My-Board_2  "}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": ""}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "   "}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": null}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "-bad"}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "_bad"}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "bad slug!"}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": 5}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": true}}}
+{"func": "_normalize_board_slug", "in": {"args": {"slug": "a\u001cb"}}}
+{"func": "_normalize_board_slug", "in": {"args": {}}}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}, "io": {"_normalize_board_slug": "x"}}}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}, "io": {"_normalize_board_slug": null}}}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}, "io": {"_normalize_board_slug": ""}}}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}, "io": {"_normalize_board_slug": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}}, "fail_closed": true}
+{"func": "_require_slug", "in": {"args": {"slug": "x"}, "io": {"_normalize_board_slug": "ok"}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": null, "path.expanduser": "/pinned.db"}, "state": {"environ": {"HERMES_KANBAN_DB": "/pinned.db"}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": "b", "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": "b", "_explicit_board_intent_pinned": true, "path.expanduser": "/pinned.db"}, "state": {"environ": {"HERMES_KANBAN_DB": "/pinned.db"}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": "b", "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": "b", "_explicit_board_intent_pinned": false, "board_dir": "/boards/b"}, "state": {"environ": {"HERMES_KANBAN_DB": "/pinned.db"}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": null, "get_current_board": "default", "kanban_home": "/root"}, "state": {"environ": {}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": null, "get_current_board": "myboard", "board_dir": "/boards/myboard"}, "state": {"environ": {}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": "default", "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": "default", "kanban_home": "/root"}, "state": {"environ": {}}}}
+{"func": "_board_path", "in": {"args": {"env_var": null, "board": null, "default_parts": ["kanban", "workspaces"], "leaf": "workspaces"}, "io": {"_explicit_board_slug": null, "get_current_board": "default", "kanban_home": "/root"}, "state": {"environ": {}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": null, "path.expanduser": "/p.db"}, "state": {"environ": {"HERMES_KANBAN_DB": "  /p.db  "}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}, "io": {"_explicit_board_slug": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}, "state": {"environ": {}}}}
+{"func": "_board_path", "in": {"args": {"env_var": "HERMES_KANBAN_DB", "board": null, "default_parts": ["kanban.db"], "leaf": "kanban.db"}}, "fail_closed": true}
+{"func": "kanban_db_path", "in": {"args": {"board": null}, "io": {"_board_path": "/x/kanban.db"}}}
+{"func": "kanban_db_path", "in": {"args": {"board": "b"}, "io": {"_board_path": "/boards/b/kanban.db"}}}
+{"func": "kanban_db_path", "in": {"args": {}, "io": {"_board_path": "/x/kanban.db"}}}
+{"func": "kanban_db_path", "in": {"args": {"board": "b"}, "io": {"_board_path": {"__script__": true, "raise": {"type": "OSError", "message": "y"}}}}}
+{"func": "kanban_db_path", "in": {"args": {"board": null}}, "fail_closed": true}
+{"func": "kanban_db_path", "in": {"args": {"board": ""}, "io": {"_board_path": "/x/kanban.db"}}}
+{"func": "workspaces_root", "in": {"args": {"board": null}, "io": {"_board_path": "/root/kanban/workspaces"}}}
+{"func": "workspaces_root", "in": {"args": {"board": "b"}, "io": {"_board_path": "/boards/b/workspaces"}}}
+{"func": "workspaces_root", "in": {"args": {}, "io": {"_board_path": "/root/kanban/workspaces"}}}
+{"func": "workspaces_root", "in": {"args": {"board": "b"}, "io": {"_board_path": {"__script__": true, "raise": {"type": "OSError", "message": "y"}}}}}
+{"func": "workspaces_root", "in": {"args": {"board": null}}, "fail_closed": true}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"id": "t1", "status": "running"}, "task.from_row": {"id": "t1", "status": "running"}}}}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": null}}}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {}}}}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "db"}}}}}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"id": "t1"}, "task.from_row": {"__script__": true, "raise": {"type": "ValueError", "message": "row"}}}}}
+{"func": "get_task", "in": {"args": {"task_id": "t1"}}, "fail_closed": true}
+{"func": "get_task", "in": {"args": {}}}
+{"func": "_json_or", "in": {"args": {"value": "{\"a\": 1}"}}}
+{"func": "_json_or", "in": {"args": {"value": "null"}}}
+{"func": "_json_or", "in": {"args": {"value": ""}}}
+{"func": "_json_or", "in": {"args": {"value": null}}}
+{"func": "_json_or", "in": {"args": {"value": "01"}}}
+{"func": "_json_or", "in": {"args": {"value": "abc"}}}
+{"func": "_json_or", "in": {"args": {"value": "[1,2]"}}}
+{"func": "_json_or", "in": {"args": {"value": "  {}  "}}}
+{"func": "_json_or", "in": {"args": {"value": 5}}}
+{"func": "_json_or", "in": {"args": {"value": [1]}}}
+{"func": "_json_or", "in": {"args": {"value": "{\"a\":1}", "default": {"d": 1}}}}
+{"func": "_json_or", "in": {"args": {"value": "bad", "default": {"d": 1}}}}
+{"func": "_json_or", "in": {"args": {"value": "\"\\u0041\""}}}
+{"func": "_json_or", "in": {"args": {"value": "1.0"}}}
+{"func": "_json_or", "in": {"args": {"value": "[1,]"}}}
+{"func": "_json_or", "in": {"args": {}}}
+{"func": "_json_or_null", "in": {"args": {"obj": {"a": 1}}}}
+{"func": "_json_or_null", "in": {"args": {"obj": {}}}}
+{"func": "_json_or_null", "in": {"args": {"obj": []}}}
+{"func": "_json_or_null", "in": {"args": {"obj": null}}}
+{"func": "_json_or_null", "in": {"args": {"obj": 0}}}
+{"func": "_json_or_null", "in": {"args": {"obj": [1, true, null, "x"]}}}
+{"func": "_json_or_null", "in": {"args": {"obj": {"k": "a\nb"}}}}
+{"func": "_json_or_null", "in": {"args": {"obj": "hi"}}}
+{"func": "_json_or_null", "in": {"args": {"obj": 5}}}
+{"func": "_json_or_null", "in": {"args": {"obj": false}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "worker_bound", "payload": {"pid": 5}, "run_id": 3}, "io": {"_json_or_null": "{\"pid\": 5}", "time.time": 1000.9, "conn.execute": null}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "worker_bound", "payload": null, "run_id": 3}, "io": {"_json_or_null": null, "time.time": 1000, "conn.execute": null}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "claimed"}, "io": {"_json_or_null": null, "time.time": 5, "conn.execute": null}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "k", "payload": {"a": 1}}, "io": {"_json_or_null": "{\"a\": 1}", "time.time": {"__script__": true, "raise": {"type": "OSError", "message": "clock"}}}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "k", "payload": {"a": 1}}, "io": {"_json_or_null": {"__script__": true, "raise": {"type": "ValueError", "message": "p"}}}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "k"}, "io": {"_json_or_null": null, "time.time": 1, "conn.execute": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "w"}}}}}
+{"func": "_append_event", "in": {"args": {"task_id": "t1", "kind": "k"}}, "fail_closed": true}
+{"func": "_append_event", "in": {"args": {"kind": "k"}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"current_run_id": 5}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"current_run_id": "7"}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"current_run_id": null}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"current_run_id": 0}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": null}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"current_run_id": "abc"}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"other": 1}}}}
+{"func": "_current_run_id", "in": {"args": {"task_id": "t1"}, "io": {"conn.execute": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "r"}}}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed"}, "io": {"conn.execute": {"payload": "x"}}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed", "run_id": 3}, "io": {"conn.execute": {"payload": "x"}}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed", "run_id": "4"}, "io": {"conn.execute": {"payload": "x"}}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed", "run_id": "abc"}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed"}, "io": {"conn.execute": null}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1", "kind": "claimed"}, "io": {"conn.execute": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "e"}}}}}
+{"func": "_latest_event", "in": {"args": {"task_id": "t1"}}}
+{"func": "_json_dict", "in": {"args": {"value": "{\"a\":1}"}, "io": {"_json_or": {"a": 1}}}}
+{"func": "_json_dict", "in": {"args": {"value": "x"}, "io": {"_json_or": {}}}}
+{"func": "_json_dict", "in": {"args": {"value": "x"}, "io": {"_json_or": [1]}}}
+{"func": "_json_dict", "in": {"args": {"value": "x"}, "io": {"_json_or": null}}}
+{"func": "_json_dict", "in": {"args": {"value": "x"}, "io": {"_json_or": {"__script__": true, "raise": {"type": "ValueError", "message": "j"}}}}}
+{"func": "_json_dict", "in": {"args": {"value": "x"}}, "fail_closed": true}
+{"func": "_row_get", "in": {"args": {"row": {"a": 1}, "col": "a"}}}
+{"func": "_row_get", "in": {"args": {"row": {"a": 1}, "col": "b"}}}
+{"func": "_row_get", "in": {"args": {"row": {"a": 1}, "col": "b", "default": 5}}}
+{"func": "_row_get", "in": {"args": {"row": null, "col": "a"}}}
+{"func": "_row_get", "in": {"args": {"row": null, "col": "a", "default": 7}}}
+{"func": "_row_get", "in": {"args": {"row": 5, "col": "a"}}}
+{"func": "_row_get", "in": {"args": {"row": "x", "col": "a"}}}
+{"func": "_row_get", "in": {"args": {"row": {"a": null}, "col": "a"}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1"}, "io": {"_current_run_id": 3, "_latest_event": {"payload": "p"}, "_row_get": "{\"source_status\":\"review\"}", "_json_dict": {"source_status": "review"}}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1", "run_id": 3}, "io": {"_latest_event": {"payload": "p"}, "_row_get": "{\"source_status\":\"ready\"}", "_json_dict": {"source_status": "ready"}}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1"}, "io": {"_current_run_id": null}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1", "run_id": 3}, "io": {"_latest_event": {"payload": "p"}, "_row_get": "{}", "_json_dict": {}}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1", "run_id": 3}, "io": {"_latest_event": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "e"}}}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1"}, "io": {"_current_run_id": {"__script__": true, "raise": {"type": "OSError", "message": "c"}}}}}
+{"func": "_retry_status_for_run", "in": {"args": {"task_id": "t1"}}, "fail_closed": true}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"status": "running", "current_run_id": 3}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": null}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1", "expected_run_id": 3}, "io": {"get_task": {"status": "running", "current_run_id": 3}, "conn.execute": {"outcome": "completed"}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1", "expected_run_id": 3}, "io": {"get_task": {"status": "running", "current_run_id": 3}, "conn.execute": {"outcome": null}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1", "expected_run_id": 3}, "io": {"get_task": {"status": "running", "current_run_id": 4}, "conn.execute": {"outcome": null}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1", "expected_run_id": 3}, "io": {"get_task": {"status": "running", "current_run_id": 3}, "conn.execute": {"outcome": "weird"}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1", "expected_run_id": 3}, "io": {"get_task": {"status": "running", "current_run_id": 3}, "conn.execute": null}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"status": "ready", "current_run_id": 3}, "conn.execute": {"kind": "changes_requested"}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"status": "ready", "current_run_id": 3}, "conn.execute": {"kind": "other"}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"status": "ready", "current_run_id": 3}, "conn.execute": null}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"current_run_id": 3}}}}
+{"func": "goal_run_status", "in": {"args": {"task_id": "t1"}, "io": {"get_task": {"__script__": true, "raise": {"type": "sqlite3.Error", "message": "g"}}}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": null, "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 0, "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": -5, "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": "abc", "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": "100", "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": "80"}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": "50"}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": " 60 "}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": "bad"}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": ""}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 100, "current_timeout": true}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 31, "current_timeout": null}}}
+{"func": "_worker_terminal_timeout_env", "in": {"args": {"max_runtime_seconds": 10, "current_timeout": null}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}, "io": {"get_process_start_time": 100, "current_instantiation_epoch": "epoch1"}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}, "io": {"get_process_start_time": null}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": "5"}, "io": {"get_process_start_time": 100, "current_instantiation_epoch": "e"}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": "abc"}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}, "io": {"get_process_start_time": {"__script__": true, "raise": {"type": "OSError", "message": "s"}}}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}, "io": {"get_process_start_time": 100, "current_instantiation_epoch": {"__script__": true, "raise": {"type": "RuntimeError", "message": "e"}}}}}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}}, "fail_closed": true}
+{"func": "_process_fingerprint", "in": {"args": {"pid": 5}, "io": {"get_process_start_time": 100, "current_instantiation_epoch": 7}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": null}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 0, "started_at": "x"}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": "unverified"}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": "epoch|100"}, "io": {"_process_fingerprint": "epoch|100"}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": "epoch|100"}, "io": {"_process_fingerprint": "other|99"}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": "epoch|100"}, "io": {"_process_fingerprint": null}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": 100, "_start_times_agree": true}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": null}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": 100, "_start_times_agree": false}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": 100, "_start_times_agree": {"__script__": true, "raise": {"type": "TypeError", "message": "t"}}}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": 100, "_start_times_agree": {"__script__": true, "raise": {"type": "ValueError", "message": "v"}}}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": 5, "started_at": 100}, "io": {"get_process_start_time": 100, "_start_times_agree": {"__script__": true, "raise": {"type": "OSError", "message": "o"}}}}}
+{"func": "_pid_recycled", "in": {"args": {"pid": "abc", "started_at": "e|1"}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": null}, "io": {"_pid_alive": false}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": "unverified"}, "io": {"_pid_alive": true}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": "e|1"}, "io": {"_pid_alive": true, "_pid_recycled": false}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": "e|1"}, "io": {"_pid_alive": true, "_pid_recycled": true}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": null}, "io": {"_pid_alive": {"__script__": true, "raise": {"type": "OSError", "message": "a"}}}}}
+{"func": "_worker_alive", "in": {"args": {"pid": 5, "started_at": null}}, "fail_closed": true}
+{"func": "process_birth", "in": {"args": {"proc": {}}, "io": {"proc.create_time": 123.5}}}
+{"func": "process_birth", "in": {"args": {"proc": {}}, "io": {"proc.create_time": 100}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": 200}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {"_proc": null}}, "io": {"proc.create_time": 100}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": {"__script__": true, "raise": {"type": "TypeError", "message": "m"}}, "proc.create_time": 100}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": null, "proc.create_time": 100}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": {"__script__": true, "raise": {"type": "ValueError", "message": "m"}}}, "state": {"psutil": {"MACOS": true}}}}
+{"func": "process_birth", "in": {"args": {"proc": {}}, "io": {"proc.create_time": "123.5"}}}
+{"func": "process_birth", "in": {"args": {"proc": {}}, "io": {"proc.create_time": "abc"}}}
+{"func": "process_birth", "in": {"args": {"proc": {}}, "io": {"proc.create_time": {"__script__": true, "raise": {"type": "OSError", "message": "c"}}}}}
+{"func": "process_birth", "in": {"args": {}}}
+{"func": "worker_birth", "in": {"args": {"proc": {}}, "state": {"psutil": {"LINUX": true}}}}
+{"func": "worker_birth", "in": {"args": {"proc": {"_proc": null}}, "state": {"psutil": {"LINUX": true}}}}
+{"func": "worker_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": 300}, "state": {"psutil": {"LINUX": true}}}}
+{"func": "worker_birth", "in": {"args": {"proc": {}}, "io": {"process_birth": 100}}}
+{"func": "worker_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": {"__script__": true, "raise": {"type": "OSError", "message": "b"}}}, "state": {"psutil": {"LINUX": true}}}}
+{"func": "worker_birth", "in": {"args": {"proc": {}}}, "fail_closed": true}
+{"func": "worker_birth", "in": {"args": {"proc": {"_proc": {}}}, "io": {"proc._proc.create_time": "abc"}, "state": {"psutil": {"LINUX": true}}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent:beta:x"}, "io": {"profile_from_session_key_namespace": "beta"}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent::x"}, "io": {"profile_from_session_key_namespace": "default"}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent:main~:x"}, "io": {"profile_from_session_key_namespace": "main"}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": ""}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": null}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "other:beta:x"}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent"}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": 5}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent:b:x"}, "io": {"profile_from_session_key_namespace": {"__script__": true, "raise": {"type": "ValueError", "message": "n"}}}}}
+{"func": "profile_from_session_key", "in": {"args": {"session_key": "agent:b:x"}}, "fail_closed": true}

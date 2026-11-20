@@ -690,7 +690,7 @@ def project_state(state, s):
         final["siblings"] = {pid: {"authority": aid_of(sib.authority), "actor": canon(sib.actor)}
                              for pid, sib in conn._siblings.items()}
         if hasattr(conn, "_notice_tasks"):
-            final["notice_tasks"] = sorted(t.id for t in conn._notice_tasks)
+            final["notice_tasks"] = sorted({t.id for t in conn._notice_tasks})
     final["authorities"] = project_authorities(s.auth_doubles)
     if s.auth is not None:
         final["sessions"] = {sid: canon(vars(l)) for sid, l in s.auth.sessions.items()}

@@ -721,15 +721,16 @@ static json_t *sct2_resume_transcript(sct2_ctx_t *c, const json_t *args) {
     if (sct2_is_raise(pair)) return pair;
     if (!sct2_is_arr(pair) || json_len(pair) != 2) {
         size_t got = sct2_is_arr(pair) ? json_len(pair) : 0;
+        bool is_arr = sct2_is_arr(pair);
         char buf[128];
-        if (!sct2_is_arr(pair))
+        if (!is_arr)
             snprintf(buf, sizeof buf, "cannot unpack non-iterable NoneType object");
         else if (got < 2)
             snprintf(buf, sizeof buf, "not enough values to unpack (expected 2, got %zu)", got);
         else
             snprintf(buf, sizeof buf, "too many values to unpack (expected 2)");
         json_free(pair);
-        return sct2_err("ValueError", buf);
+        return sct2_err(is_arr ? "ValueError" : "TypeError", buf);
     }
     json_t *out = json_object();
     json_set(out, "messages", json_array());

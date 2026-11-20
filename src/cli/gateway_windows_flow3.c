@@ -298,6 +298,7 @@ static const gw3_exc_parent GW3_EXC_PARENTS[] = {
     {"UnicodeDecodeError", "UnicodeError"},
     {"UnicodeEncodeError", "UnicodeError"},
     {"UnicodeTranslateError", "UnicodeError"},
+    {"JSONDecodeError", "ValueError"},
     {"BytesWarning", "Warning"},
     {"DeprecationWarning", "Warning"},
     {"FutureWarning", "Warning"},
@@ -543,7 +544,6 @@ static json_t *gw3_int_value(const json_t *v, json_t **exc) {
     while (*p == ' ' || (*p >= 0x09 && *p <= 0x0d)) p++;
     const char *start = p;
     if (*p == '+' || *p == '-') p++;
-    const char *dstart = p;
     size_t nd = 0;
     bool prev_digit = false;
     while (*p) {
@@ -562,11 +562,11 @@ static json_t *gw3_int_value(const json_t *v, json_t **exc) {
         return NULL;
     }
     gw3_buf clean; gw3_binit(&clean);
-    for (const char *q = dstart; q < dend; q++) if (*q != '_') gw3_bputc(&clean, *q);
+    /* carry the consumed sign into the clean buffer (start, not dstart) */
+    for (const char *q = start; q < dend; q++) if (*q != '_') gw3_bputc(&clean, *q);
     char *cs = gw3_btake(&clean);
     double d = strtod(cs, NULL);
     free(cs);
-    (void)start;
     return json_number(d);
 }
 /* -- POSIX path algebra (pathlib PurePosixPath component model) -- */
@@ -1311,6 +1311,17 @@ static char *gw3_resolve_str(const json_t *r) {
 /* PoP: gw3_refresh_dead_launcher @ hermes_cli/gateway_windows.py:refresh_dead_launcher */
 static json_t *gw3_refresh_dead_launcher(const char *home, const char *task_name,
                                          const gw3_seams_t *s) {
+    /* from hermes_cli.gateway_runtime_service_identity import
+     * _vbs_identity, launcher_text, read_definition -- BEFORE the vbs build */
+    json_t *i1 = gw3_call0(s, "import_vbs_identity");
+    if (gw3_is_raise(i1)) return i1;
+    json_free(i1);
+    json_t *i2 = gw3_call0(s, "import_launcher_text");
+    if (gw3_is_raise(i2)) return i2;
+    json_free(i2);
+    json_t *i3 = gw3_call0(s, "import_read_definition");
+    if (gw3_is_raise(i3)) return i3;
+    json_free(i3);
     if (!home) {
         return gw3_raise_spec("TypeError", "unsupported operand type(s) for /: 'NoneType' and 'str'");
     }
@@ -1424,7 +1435,7 @@ static json_t *gw3_refresh_dead_launcher(const char *home, const char *task_name
                         } else {
                             bool same = gw3_scalar_eq(n1, n2);
                             json_free(n1); json_free(n2);
-                            if (same) early_false = true;
+                            if (!same) early_false = true;  /* != -> return False */
                         }
                     }
                 }
@@ -1448,6 +1459,13 @@ static json_t *gw3_refresh_dead_launcher(const char *home, const char *task_name
     json_t *triples = gw3_call(s, "render_launchers", a4);
     json_free(a4); free(cmdpath); json_free(settings);
     if (gw3_is_raise(triples)) { free(interp); json_free(vi); free(vbs); free(homen); return triples; }
+    if (!triples || triples->type != JSON_ARRAY) {
+        char *msg = gw3_xsf("'%s' object is not iterable", gw3_typename(triples));
+        json_t *e = gw3_raise_spec("TypeError", msg);
+        free(msg);
+        json_free(triples); free(interp); json_free(vi); free(vbs); free(homen);
+        return e;
+    }
     bool rewritten = false;
     json_t *loop_esc = NULL;
     for (size_t i = 0; i < triples->c.count; i++) {
@@ -1511,6 +1529,13 @@ static json_t *gw3_launcher_script_drift(const gw3_seams_t *s) {
     json_free(aw);
     json_t *scripts = gw3_launcher_scripts(s);
     if (gw3_is_raise(scripts)) return scripts;
+    if (!scripts || scripts->type != JSON_ARRAY) {
+        char *msg = gw3_xsf("'%s' object is not iterable", gw3_typename(scripts));
+        json_t *e = gw3_raise_spec("TypeError", msg);
+        free(msg);
+        json_free(scripts);
+        return e;
+    }
     json_t *drift = json_array();
     json_t *esc = NULL;
     for (size_t i = 0; i < scripts->c.count; i++) {
@@ -1833,7 +1858,9 @@ static json_t *gw3_probe_state_file(const char *state_path, const gw3_seams_t *s
             if (gw3_is_raise(dt)) {
                 if (!gw3_is_exception(dt)) {
                     /* BaseException passes the inner AND outer except Exception */
-                    json_free(dt); json_free(data); free(age_str); free(path);
+                    /* BaseException passes the inner AND outer except Exception;
+                     * dt ownership transfers to the harness (do NOT free) */
+                    json_free(data); free(age_str); free(path);
                     return dt;
                 }
                 json_free(dt);  /* inner swallow: age_str stays "" */
@@ -1843,7 +1870,8 @@ static json_t *gw3_probe_state_file(const char *state_path, const gw3_seams_t *s
                 json_t *now = gw3_call0(s, "datetime_now");
                 if (gw3_is_raise(now)) {
                     if (!gw3_is_exception(now)) {
-                        json_free(now); json_free(dt); json_free(data); free(age_str); free(path);
+                        /* now ownership transfers to the harness (do NOT free) */
+                        json_free(dt); json_free(data); free(age_str); free(path);
                         return now;
                     }
                     json_free(now);
@@ -1855,7 +1883,7 @@ static json_t *gw3_probe_state_file(const char *state_path, const gw3_seams_t *s
                         double diff = now->num_val - epoch;
                         double age = diff >= 0 ? floor(diff) : ceil(diff);
                         free(age_str);
-                        age_str = gw3_xsf(" (updated %.0f ago)", age);
+                        age_str = gw3_xsf(" (updated %.0fs ago)", age);
                     }
                     json_free(now);
                 }
@@ -1918,6 +1946,12 @@ static json_t *gw3_probe_exit_diag(const char *diag_path, const gw3_seams_t *s) 
     }
     {
         const json_t *fdata = json_obj_get(fr, "data");
+        if (fdata && fdata->type == JSON_NULL) {
+            /* bytes(None) in the file-double materialization */
+            exc = gw3_raise_spec("TypeError", "cannot convert 'NoneType' object to bytes");
+            json_free(fr);
+            goto outer_caught;
+        }
         size_t size = (fdata && fdata->type == JSON_ARRAY) ? fdata->c.count : 0;
         size_t pos = size > 4096 ? size - 4096 : 0;
         unsigned char *b = malloc(size ? size : 1);

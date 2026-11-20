@@ -1,0 +1,188 @@
+{"func": "fail", "in": {"lines": ["a"]}}
+{"func": "fail", "in": {"lines": ["a", "b"]}}
+{"func": "fail", "in": {"lines": []}}
+{"func": "fail", "in": {"lines": [5, true]}}
+{"func": "fail", "in": {"lines": ["x"], "seams": {"sys_exit": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "fail", "in": {"lines": ["x"], "seams": {"print": {"__raise__": "SystemExit", "msg": "9"}}}}
+{"func": "fail", "in": {"lines": ["x"], "seams": {}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"env_multiplex_override": true}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"env_multiplex_override": false}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"env_multiplex_override": null, "config_exists": false}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": true}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": false}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": "yes"}, "bool_token": true}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": "maybe"}, "bool_token": null}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": null, "gateway": {"multiplex_profiles": true}}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"gateway": {"multiplex_profiles": "no"}}, "bool_token": false}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"gateway": "notdict", "multiplex_profiles": 1}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": null}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"__raise__": "ValueError", "msg": "bad yaml"}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": null, "seams": {"env_multiplex_override": true}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": null, "seams": {"env_multiplex_override": null}}}
+{"func": "explicit_multiplex_flag", "in": {"default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": 0}}}}
+{"func": "settled_explicit_flag", "in": {"value": true}}
+{"func": "settled_explicit_flag", "in": {"value": false}}
+{"func": "settled_explicit_flag", "in": {"value": null}}
+{"func": "settled_explicit_flag", "in": {"value": 1}}
+{"func": "settled_explicit_flag", "in": {"value": 0}}
+{"func": "settled_explicit_flag", "in": {"value": "x"}}
+{"func": "settled_explicit_flag", "in": {"value": ""}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": true}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": false, "env_multiplex_override": true}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": false, "env_multiplex_override": false}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": false, "env_multiplex_override": null, "config_exists": false}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": false, "env_multiplex_override": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "host_serves_named_profile", "in": {"default_home": "/h", "home": "/h/p1", "seams": {"profile_is_standalone": "yes"}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": [["p1"]]}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": [[]]}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": null, "env_multiplex_override": true}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": null, "env_multiplex_override": false}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": null, "env_multiplex_override": null, "config_exists": false}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": null, "seams": {"get_default_hermes_root": "/h", "recorded_served_profiles": [["a", "b"]]}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "default_gateway_multiplexes", "in": {"default_home": "/h", "seams": {"recorded_served_profiles": null, "config_exists": true, "read_user_config_raw": {"multiplex_profiles": true}}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": null}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default"}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": false}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "", "profile_is_standalone": true}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "standalone_launcher", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "standalone_launcher_decision", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default"}}}
+{"func": "standalone_launcher_decision", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "standalone_launcher_decision", "in": {"config": {"multiplex_profiles": true, "other": 1}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "standalone_launcher_decision", "in": {"config": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "standalone_launcher_decision", "in": {"config": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default"}}}
+{"func": "standalone_launcher_decision", "in": {"config": {"multiplex_profiles": true}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"]]]}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": "s6 host"}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [{"name": "p1", "pid": 123}], "blocked": false, "blockers": []}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [{"name": "p1", "pid": null}, {"name": "p2", "pid": 0}], "blocked": false, "blockers": []}, "pg_service_label": ["svc-p1", "svc-p2"]}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [], "blocked": true, "blockers": ["dup bot", "port fight"]}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": null}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": null}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [{"name": "p1"}], "blocked": false, "blockers": []}}}}
+{"func": "implicit_multiplex_blocker", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [{"name": "p1", "pid": null}], "blocked": false, "blockers": []}, "pg_service_label": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "default_profile_home", "in": {"seams": {"get_default_hermes_root": "/h"}}}
+{"func": "default_profile_home", "in": {"seams": {"get_default_hermes_root": null}}}
+{"func": "default_profile_home", "in": {"seams": {"get_default_hermes_root": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "default_profile_home", "in": {"seams": {"get_default_hermes_root": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "default_profile_home", "in": {"seams": {"get_default_hermes_root": "/h/x/"}}}
+{"func": "default_profile_home", "in": {"seams": {}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": false, "source": "config", "reason": ""}, "default_home": "/h", "seams": {}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "guard", "reason": ""}, "default_home": "/h", "seams": {}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": true}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": false}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": "x"}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": false}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "retired-opt-out", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}, "write_multiplex_flag": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}, "write_multiplex_flag": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "retired-opt-out", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}, "marker_write_text": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": null, "seams": {"get_default_hermes_root": "/h", "config_exists": false}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"multiplex_profiles": null, "gateway": {"multiplex_profiles": true}}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {"gateway": {"multiplex_profiles": true}}}}}
+{"func": "persist_resolved_default", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "default_home": "/h", "seams": {"config_exists": true, "read_user_config_raw": {}, "logger_info": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "retired_opt_out_notice_lines", "in": {}}
+{"func": "retired_opt_out_notice_lines", "in": {}}
+{"func": "retired_opt_out_notice_lines", "in": {}}
+{"func": "retired_opt_out_notice_lines", "in": {}}
+{"func": "retired_opt_out_notice_lines", "in": {}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": false}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": true, "marker_unlink": null}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": true, "marker_unlink": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": true, "marker_unlink": {"__raise__": "FileNotFoundError", "msg": "x"}}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": true, "marker_unlink": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": true, "marker_unlink": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": null, "seams": {"get_default_hermes_root": "/h", "marker_exists": false}}}
+{"func": "consume_rewritten_notice", "in": {"default_home": "/h", "seams": {"marker_exists": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "box", "in": {"body": ["ab", "c"]}}
+{"func": "box", "in": {"body": ["hello"]}}
+{"func": "box", "in": {"body": []}}
+{"func": "box", "in": {"body": null}}
+{"func": "box", "in": {"body": ["long line here", "x"]}}
+{"func": "box", "in": {"body": [5]}}
+{"func": "box", "in": {"body": [["a"]]}}
+{"func": "box", "in": {"body": ["", ""]}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {"multiplex_profiles": true}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default"}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {"multiplex_profiles": false}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": "s6 host", "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": null}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": null, "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": true}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {"multiplex_profiles": false}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]], "host_supports_migration": "blocker", "build_migration_plan": {"standalone_secondaries": [], "blocked": false, "blockers": []}}}}
+{"func": "resolve_multiplex_mode", "in": {"config": {"multiplex_profiles": 1}, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default"}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [], "seams": {"owns_gateway_runtime_lock": false}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [{"enabled": true, "source": "default", "reason": ""}], "seams": {"owns_gateway_runtime_lock": false}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": true, "source": "default", "reason": ""}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": ""}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [], "seams": {"owns_gateway_runtime_lock": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "write_runtime_status": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "write_runtime_status": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "record_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": null}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "publish_pending_multiplex_decision", "in": {"pending": [], "seams": {}}}
+{"func": "publish_pending_multiplex_decision", "in": {"pending": [{"enabled": false, "source": "guard", "reason": "why"}], "seams": {"owns_gateway_runtime_lock": false}}}
+{"func": "publish_pending_multiplex_decision", "in": {"pending": [{"enabled": true, "source": "default", "reason": ""}, {"enabled": false, "source": "guard", "reason": "why2"}], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "publish_pending_multiplex_decision", "in": {"pending": [{"enabled": false, "source": "guard", "reason": "why"}], "seams": {"owns_gateway_runtime_lock": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "publish_pending_multiplex_decision", "in": {"pending": [{"enabled": false, "source": "guard", "reason": "why"}], "seams": {"owns_gateway_runtime_lock": true, "write_runtime_status": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": true, "source": "retired-opt-out", "reason": ""}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "config_exists": false}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "only one profile exists (nothing to multiplex)"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "other"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "other"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"]]]}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": true, "source": "default", "reason": ""}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "config_exists": false}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "pending": [], "seams": {"owns_gateway_runtime_lock": true}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "other"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "log_multiplex_decision", "in": {"decision": {"enabled": false, "source": "guard", "reason": "other"}, "pending": [], "seams": {"owns_gateway_runtime_lock": true, "write_runtime_status": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "p1", "profile_is_standalone": false, "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": null, "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "", "profile_is_standalone": false, "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": null}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h", "extra"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default"]]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[5]]}}}
+{"func": "unserved_profiles", "in": {"seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": true, "source": "config", "reason": ""}, "seams": {}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "only one profile exists (nothing to multiplex)"}, "seams": {}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": ["p1", "p2"], "seams": {}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": [], "seams": {}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": null, "seams": {"get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"]]]}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": "guard", "reason": "why"}, "unserved": ["p1", 5], "seams": {}}}
+{"func": "standalone_warning_lines", "in": {"decision": {"enabled": false, "source": 5, "reason": "why"}, "seams": {}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": null}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "stopped"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "startup_failed"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": true}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": false}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": 5}, "runtime_status_pid_is_live": true}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": ""}, "runtime_status_pid_is_live": true}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running"}, "runtime_status_pid_is_live": true}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running"}, "runtime_status_pid_is_live": {"__raise__": "ValueError", "msg": "x"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running"}, "runtime_status_pid_is_live": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": "garbled"}}}
+{"func": "recorded_standalone_reason", "in": {"state_path": "/h/gateway_state.json", "seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": true}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": null, "multiplex_standalone_reason": "why"}}}}
+{"func": "recorded_standalone_reason", "in": {"seams": {"read_runtime_status": {"gateway_state": "running"}, "runtime_status_pid_is_live": {"__raise__": "JSONDecodeError", "msg": "x"}}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": true, "get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"], ["p1", "/h/p1"]]]}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": null}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": false}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": {"gateway_state": "running", "multiplex_standalone_reason": "why"}, "runtime_status_pid_is_live": true, "get_hermes_home": "/h", "profile_name_for_home": "default", "profiles_to_serve": [[["default", "/h"]]]}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "recorded_standalone_warning_lines", "in": {"seams": {"read_runtime_status": {"gateway_state": "running"}, "runtime_status_pid_is_live": {"__raise__": "SystemExit", "msg": "1"}}}}

@@ -133,6 +133,10 @@ case("build_kanban_policy",
      {"connection": CONN, "params": dict(PARAMS, run_id="5"), "config": {}})
 case("build_kanban_policy",
      {"connection": CONN, "params": dict(PARAMS, board=""), "config": {}})
+case("build_kanban_policy",
+     {"connection": CONN, "params": dict(PARAMS, board=7), "config": {}})
+case("build_kanban_policy",
+     {"connection": CONN, "params": dict(PARAMS, claim_lock=9), "config": {}})
 case("build_kanban_policy", {"connection": CONN, "params": PARAMS, "config": {}},
      bkp_io(**{"kb.get_task": dict(TASK, status="todo")}))
 case("build_kanban_policy", {"connection": CONN, "params": PARAMS, "config": {}},
@@ -442,6 +446,9 @@ case("_record_worker_result", RWR_ARGS,
      rwr_io(**{"bound_worker_matches": raise_script("SystemExit", "6")}))
 case("_record_worker_result", RWR_ARGS,
      rwr_io(**{"kb._append_event": raise_script("RuntimeError", "append failed")}))
+case("_record_worker_result", RWR_ARGS,
+     rwr_io(**{"turns_done.set": raise_script("RuntimeError", "set down")}),
+     state={"_TURNS_DONE": False})
 case("_record_worker_result", RWR_ARGS, {}, fail_closed=True)
 case("_record_worker_result", {"context": KCTX, "code": 75, "last_output": ""},
      rwr_io(), state={"_TURNS_DONE": False})
@@ -468,6 +475,9 @@ case("record_worker_loss", RWL_ARGS, rwl_io(**{"conn.execute": script(["done", 5
 case("record_worker_loss", RWL_ARGS,
      rwl_io(**{"conn.execute": raise_script("ValueError", "bad db"),
                "log.exception": None}))
+case("record_worker_loss", RWL_ARGS,
+     rwl_io(**{"conn.execute": raise_script("ValueError", "bad db"),
+               "log.exception": raise_script("RuntimeError", "log down")}))
 case("record_worker_loss", RWL_ARGS,
      rwl_io(**{"conn.execute": raise_script("SystemExit", "7")}))
 case("record_worker_loss", RWL_ARGS, {}, fail_closed=True)

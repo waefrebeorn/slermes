@@ -1,0 +1,174 @@
+{"func": "print_truncated", "in": {"more": 5, "hint": "", "seams": {"t": "5 more", "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": 0, "hint": "use --limit 40 to see more", "seams": {"t": "5 more", "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": null, "hint": "", "seams": {"t": "more not shown", "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": null, "hint": "see all", "seams": {"t": "more not shown", "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": 12, "hint": "", "seams": {"t": "5 more", "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": 5, "seams": {"t": {"__raise__": "ValueError", "msg": "boom"}, "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": 5, "seams": {"t": "5 more", "color": {"__raise__": "KeyboardInterrupt", "msg": ""}, "print": null}}}
+{"func": "print_truncated", "in": {"more": 5, "seams": {"t": "5 more", "color": "COLORED", "print": {"__raise__": "RuntimeError", "msg": "io"}}}}
+{"func": "print_truncated", "in": {"more": 5, "seams": {}}}
+{"func": "print_truncated", "in": {"more": 3, "seams": {"t": null, "color": "COLORED", "print": null}}}
+{"func": "print_truncated", "in": {"more": 3, "seams": {"t": "5 more", "color": null, "print": null}}}
+{"func": "print_truncated", "in": {"more": 7, "seams": {"t": ["a", "b"], "color": "COLORED", "print": null}}}
+{"func": "_write", "in": {"text": "hello", "seams": {"stdout.write": null, "stdout.flush": null}}}
+{"func": "_write", "in": {"text": "", "seams": {"stdout.write": null, "stdout.flush": null}}}
+{"func": "_write", "in": {"text": "x", "seams": {"stdout.write": {"__raise__": "ValueError", "msg": "w"}, "stdout.flush": null}}}
+{"func": "_write", "in": {"text": "x", "seams": {"stdout.write": null, "stdout.flush": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_write", "in": {"text": "x", "seams": {}}}
+{"func": "_write", "in": {"text": "y", "seams": {"stdout.write": "discarded", "stdout.flush": null}}}
+{"func": "_current_home", "in": {"seams": {"get_hermes_home": "/home/u/.hermes"}}}
+{"func": "_current_home", "in": {"seams": {"get_hermes_home": null}}}
+{"func": "_current_home", "in": {"seams": {"get_hermes_home": ""}}}
+{"func": "_current_home", "in": {"seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "h"}}}}
+{"func": "_current_home", "in": {"seams": {}}}
+{"func": "_current_home", "in": {"seams": {"get_hermes_home": true}}}
+{"func": "_config_language", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "_config_language_cached": "de"}}}
+{"func": "_config_language", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "_config_language_cached": null}}}
+{"func": "_config_language", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "_config_language_cached": ""}}}
+{"func": "_config_language", "in": {"seams": {"get_hermes_home": {"__raise__": "RuntimeError", "msg": "h"}, "_config_language_cached": "de"}}}
+{"func": "_config_language", "in": {"seams": {"get_hermes_home": "/home/u/.hermes", "_config_language_cached": {"__raise__": "ValueError", "msg": "c"}}}}
+{"func": "_config_language", "in": {"seams": {}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": "de", "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": "", "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": null, "_normalize_lang": "de", "_config_language_cached": null, "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": {"__raise__": "UnscopedSecretError", "msg": "u"}, "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": {"__raise__": "UnscopedSecretError", "msg": "u"}, "_normalize_lang": "de", "_config_language_cached": "es", "environ.get": null}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": {"__raise__": "RuntimeError", "msg": "r"}, "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": {"__raise__": "KeyboardInterrupt", "msg": ""}, "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": "", "_normalize_lang": "de", "_config_language_cached": {"__raise__": "ValueError", "msg": "c"}, "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": "EN", "_normalize_lang": "en", "_config_language_cached": "fr", "environ.get": "ja"}}}
+{"func": "_resolve_language", "in": {"home": "/home/u/.hermes", "seams": {"get_secret": {"__raise__": "UnscopedSecretError", "msg": "u"}, "_normalize_lang": "de", "_config_language_cached": "fr", "environ.get": {"__raise__": "RuntimeError", "msg": "e"}}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl", "de"]]}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "supported_languages", "in": {"home": null, "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl"]]}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl", "de"]]}, "state": {"supported_cache": {"/home/u/.hermes": ["en", "xx"]}}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["en", "zh"]]}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": {"__raise__": "ValueError", "msg": "l"}}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes"}}}
+{"func": "supported_languages", "in": {"home": "", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl"]]}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl", "pl"]]}}}
+{"func": "supported_languages", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["sr-latn-rs"]]}}}
+{"func": "resolve_language_id", "in": {"value": "en", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "PL", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["pl"]]}}}
+{"func": "resolve_language_id", "in": {"value": "chinese", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "pt-br", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "xx", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "zh-tw", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": 5, "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "en-us", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "resolve_language_id", "in": {"value": "xx-yy", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [["xx"]]}}}
+{"func": "resolve_language_id", "in": {"value": "en", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": {"__raise__": "ValueError", "msg": "l"}}}}
+{"func": "resolve_language_id", "in": {"value": "en", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}, "state": {"supported_cache": {"/home/u/.hermes": ["en", "zz"]}}}}
+{"func": "resolve_language_id", "in": {"value": "traditional-chinese", "home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "layered_languages": [[]]}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "b"}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": false, "parse_locale_file": {"a": "b"}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"__raise__": "ValueError", "msg": "p"}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"__raise__": "RuntimeError", "msg": "p"}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": {"__raise__": "RuntimeError", "msg": "d"}, "path.is_file": true, "parse_locale_file": {"a": "b"}}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {}}}
+{"func": "_load_bundled", "in": {"lang": "de", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": {"__raise__": "OSError", "msg": "f"}, "parse_locale_file": {"a": "b"}}}}
+{"func": "_load_bundled", "in": {"lang": "zh-hant", "seams": {"_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "b"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "surface": "core", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "surface": "tui", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"b": "3", "c": "4"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "surface": "tui", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": false, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "seams": {"_normalize_lang": {"__raise__": "ValueError", "msg": "n"}, "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"__raise__": "ValueError", "msg": "s"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "surface": "tui", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"__raise__": "RuntimeError", "msg": "p"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "seams": {"_normalize_lang": "de", "get_hermes_home": {"__raise__": "RuntimeError", "msg": "h"}, "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "surface_catalog", "in": {"lang": "de", "seams": {}}}
+{"func": "surface_catalog", "in": {"lang": "DE", "surface": "desktop", "seams": {"_normalize_lang": "de", "get_hermes_home": "/home/u/.hermes", "layers.surface_catalog": {"x": "y"}, "_locales_dir": "/quarry/locales", "path.is_file": true, "parse_locale_file": {"a": "1", "b": "2"}}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {}, "pack_layer": {}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[]], "pack_surfaces": [[]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"], ["en", "tui"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[]], "pack_surfaces": [[]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "tui"], ["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": {"__raise__": "ValueError", "msg": "o"}, "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {"__raise__": "KeyboardInterrupt", "msg": ""}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes"}}}
+{"func": "language_surfaces", "in": {"home": null, "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[]], "pack_surfaces": [[]], "overlay_layer": {"a": "b"}, "pack_layer": {"c": "d"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["pl", "xxx"]]]}}}
+{"func": "language_surfaces", "in": {"home": "/home/u/.hermes", "seams": {"get_hermes_home": "/home/u/.hermes", "overlay_surfaces": [[["pl", "core"]]], "pack_surfaces": [[["de", "tui"]]], "overlay_layer": {}, "pack_layer": {"__raise__": "RuntimeError", "msg": "p"}, "_locales_dir": "/quarry/locales", "_bundled_surfaces": [[["en", "core"]]]}}}
+{"func": "normalize_language_id", "in": {"value": "EN", "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": " pt_BR ", "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": "", "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": 5, "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": null, "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": "Zh-Hant", "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": true, "seams": {}}}
+{"func": "normalize_language_id", "in": {"value": "   ", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "en", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "e", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "pt-br", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "pt_br", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "en-x", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "en-abcdefgh", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "en-abcdefghi", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "", "seams": {}}}
+{"func": "is_language_id", "in": {"value": 5, "seams": {}}}
+{"func": "is_language_id", "in": {"value": "abcd", "seams": {}}}
+{"func": "is_language_id", "in": {"value": "ENG", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": {"b": "c"}}, "prefix": "", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": "x", "b": 5}, "prefix": "", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": [1, 2]}, "prefix": "p", "seams": {}}}
+{"func": "flatten", "in": {"node": "leaf", "prefix": "p", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": {"b": {"c": "d"}}}, "prefix": "", "out": {"pre": "x"}, "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": null, "b": true}, "prefix": "", "seams": {}}}
+{"func": "flatten", "in": {"node": {}, "prefix": "", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": "x"}, "prefix": "p", "seams": {}}}
+{"func": "flatten", "in": {"node": {"a": {"b": "c"}, "d": "e"}, "prefix": "", "out": {"z": "0"}, "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": {"a": 5, "b": "x"}, "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": {"a": {"b": [1]}}, "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": {"a": "x"}, "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": 5, "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": 5, "prefix": "p", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": {"a": null, "b": true, "c": {"d": 1.5}}, "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": [1, 2], "prefix": "", "seams": {}}}
+{"func": "non_text_leaves", "in": {"node": {}, "prefix": "", "seams": {}}}
+{"func": "overlay_dir", "in": {"home": "/h", "seams": {}}}
+{"func": "overlay_dir", "in": {"home": "", "seams": {}}}
+{"func": "overlay_dir", "in": {"home": "/h/", "seams": {}}}
+{"func": "overlay_dir", "in": {"home": "/", "seams": {}}}
+{"func": "overlay_dir", "in": {"home": "/a/b", "seams": {}}}
+{"func": "load_locale_source", "in": {"source": {"a": {"b": "c"}}, "seams": {}}}
+{"func": "load_locale_source", "in": {"source": "/p/x.yaml", "seams": {"parse_locale_file": {"k": "v"}}}}
+{"func": "load_locale_source", "in": {"source": 5, "seams": {}}}
+{"func": "load_locale_source", "in": {"source": null, "seams": {}}}
+{"func": "load_locale_source", "in": {"source": true, "seams": {}}}
+{"func": "load_locale_source", "in": {"source": [1], "seams": {}}}
+{"func": "load_locale_source", "in": {"source": "x.yaml", "seams": {"parse_locale_file": {"__raise__": "ValueError", "msg": "p"}}}}
+{"func": "load_locale_source", "in": {"source": "x.yaml", "seams": {}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {"a": "1"}, "source": "p1", "endonym": null, "rtl": false, "token": 1}]}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {"a": "1"}, "source": "p1", "endonym": null, "rtl": false, "token": 1}, {"lang": "pl", "surface": "core", "messages": {"a": "2", "b": "3"}, "source": "p2", "endonym": null, "rtl": false, "token": 2}]}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {"a": "1"}, "source": "p1", "endonym": null, "rtl": false, "token": 1}], "pack_cache": {"pl\u001fcore": {"cached": "yes"}}}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "tui", "messages": {"t": "9"}, "source": "p3", "endonym": null, "rtl": false, "token": 3}]}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "tui", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {"a": "1"}, "source": "p1", "endonym": null, "rtl": false, "token": 1}, {"lang": "pl", "surface": "tui", "messages": {"t": "9"}, "source": "p3", "endonym": null, "rtl": false, "token": 3}]}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": []}}}
+{"func": "pack_layer", "in": {"lang": "pl", "surface": "core", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {"a": "1"}, "source": "p1", "endonym": null, "rtl": false, "token": 1}], "pack_cache": {"pl\u001fcore": null}}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {}, "source": "plugin", "endonym": "Polski", "rtl": false, "token": 1}]}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": []}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {}, "source": "plugin", "endonym": "Old", "rtl": false, "token": 1}, {"lang": "pl", "surface": "tui", "messages": {}, "source": "plugin", "endonym": "Nowy", "rtl": true, "token": 2}]}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {}, "source": "plugin", "endonym": "Polski", "rtl": false, "token": 1}, {"lang": "pl", "surface": "tui", "messages": {}, "source": "plugin", "endonym": "", "rtl": true, "token": 2}]}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": [{"lang": "pl", "surface": "core", "messages": {}, "source": "plugin", "endonym": null, "rtl": true, "token": 1}, {"lang": "pl", "surface": "tui", "messages": {}, "source": "plugin", "endonym": null, "rtl": false, "token": 2}]}}}
+{"func": "pack_info", "in": {"lang": "pl", "seams": {}, "state": {"packs": [{"lang": "de", "surface": "core", "messages": {}, "source": "plugin", "endonym": "Deutsch", "rtl": false, "token": 1}]}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "surface": "core", "seams": {"path.is_file": true, "parse_locale_file": {"a": "b"}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "surface": "core", "seams": {"path.is_file": false, "parse_locale_file": {"a": "b"}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "seams": {"path.is_file": true, "parse_locale_file": {"__raise__": "ValueError", "msg": "p"}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "seams": {"path.is_file": true, "parse_locale_file": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "surface": "core", "seams": {"path.is_file": true, "parse_locale_file": {"a": "b"}}, "state": {"overlay_cache": {"/h\u001fpl\u001fcore": {"cached": "yes"}}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "surface": "tui", "seams": {"path.is_file": true, "parse_locale_file": {"a": "b"}}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "seams": {}}}
+{"func": "overlay_layer", "in": {"home": "/h", "lang": "pl", "seams": {"path.is_file": true, "parse_locale_file": null}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/pl.yaml", "/quarry/locales/en.tui.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": false, "path.iterdir": [["/quarry/locales/pl.yaml", "/quarry/locales/en.tui.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/README.md", "/quarry/locales/pl.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/pl.tiu.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/pl.yaml"]], "path.is_file": false}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/en.tui.yaml", "/quarry/locales/pl.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": {"__raise__": "OSError", "msg": "d"}, "path.iterdir": [["/quarry/locales/pl.yaml", "/quarry/locales/en.tui.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": {"__raise__": "RuntimeError", "msg": "i"}, "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/pl.yml", "/quarry/locales/zh-hant.yaml"]], "path.is_file": true}}}
+{"func": "scan_locale_dir", "in": {"directory": "/quarry/locales", "seams": {"path.is_dir": true, "path.iterdir": [["/quarry/locales/pl.desktop.yaml", "/quarry/locales/abc-tui.yaml"]], "path.is_file": true}}}

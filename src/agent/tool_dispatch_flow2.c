@@ -734,7 +734,7 @@ static json_t *td2_append_missed_steer(td2_io_t *io, const json_t *in, json_t *s
     json_t *err = td2_get(entry, "error");
     if (!err) return td2_mkraise("KeyError", "'error'");
     if (!td2_is_str(err)) {
-        char *m = td2_xfmt("can only concatenate str (not \"%s\") to str", td2_typename(err));
+        char *m = td2_xfmt("unsupported operand type(s) for +=: '%s' and 'str'", td2_typename(err));
         json_t *r = td2_mkraise("TypeError", m ? m : "concat");
         free(m);
         return r;
@@ -937,7 +937,14 @@ static json_t *td2_child_activity_fingerprint(td2_io_t *io, const json_t *in, js
     json_t *summary;
     if (!td2_truth(r)) { json_free(r); summary = json_object(); }
     else summary = r;
-    if (!td2_is_plain_dict(summary)) { json_free(summary); return triple_null; }
+    if (!td2_is_plain_dict(summary)) {
+        /* the return's summary.get(...) is OUTSIDE the live try: a truthy
+         * non-dict summary raises AttributeError uncaught. */
+        json_t *ar = td2_attr_raise(summary, "get");
+        json_free(summary);
+        json_free(triple_null);
+        return ar;
+    }
     json_t *out = json_array();
     const char *keys[3] = {"api_call_count", "current_tool", "last_activity_ts"};
     for (int i = 0; i < 3; i++) {
@@ -952,9 +959,9 @@ static json_t *td2_child_activity_fingerprint(td2_io_t *io, const json_t *in, js
  * tools/delegate_tool_progress.py
  * ===================================================================== */
 
-/* PoP: td2_quiet @ tools/delegate_tool_progress.py:_quiet
- * Direct drive of the contextmanager: the body is the quiet.body seam; the
- * except-Exception swallow + debug log is transcribed (td2_quiet_swallow). */
+/* _quiet direct drive: the body is the quiet.body seam; the except-Exception
+ * swallow + debug log is transcribed (td2_quiet_swallow). */
+/* PoP: td2_quiet @ tools/delegate_tool_progress.py:_quiet */
 static json_t *td2_quiet_fn(td2_io_t *io, const json_t *in, json_t *st)
 {
     (void)st;
@@ -1068,8 +1075,11 @@ static json_t *td2_print_completion_line(td2_io_t *io, const json_t *in, json_t 
         if (body_raise) {
             json_t *sw = td2_quiet_swallow(io, NULL, NULL, 0, body_raise);
             if (sw) return sw;
+            /* Exception swallowed: the `return` inside the with body was
+             * skipped, so execution falls through to _emit_parent_console. */
+        } else {
+            return json_null();
         }
-        return json_null();
     }
     char *out_line;
     if (td2_is_null(cl)) out_line = td2_xfmt("  %s", ls ? ls : "");

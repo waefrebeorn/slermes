@@ -1,0 +1,167 @@
+{"func": "_num", "in": {"value": 2.9}}
+{"func": "_num", "in": {"value": -2.9}}
+{"func": "_num", "in": {"value": true}}
+{"func": "_num", "in": {"value": "x", "default": 7}}
+{"func": "_num", "in": {"value": null}}
+{"func": "_num", "in": {"value": 5}}
+{"func": "_str_or_none", "in": {"value": "s"}}
+{"func": "_str_or_none", "in": {"value": 5}}
+{"func": "_str_or_none", "in": {"value": null}}
+{"func": "_str_or_none", "in": {"value": ""}}
+{"func": "_str_or_none", "in": {"value": true}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"service_tier": "priority"}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"request_overrides": {"service_tier": "cold"}}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"request_overrides": {"speed": "fast"}}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"request_overrides": {"extra_body": {"service_tier": "priority"}}}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"request_overrides": {"extra_body": {"speed": "fast"}}}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_tier_in_effect", "in": {"state": {"child": {"__attr__": {"service_tier": "", "request_overrides": {"speed": "fast"}}, "__id__": "c"}}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}, "provider": "p", "model": "m", "reasoning_config": {"enabled": true, "effort": "high"}}, "__id__": "c"}}, "io": {"service_tier_word": "normal"}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}, "reasoning_config": {"enabled": false, "effort": "high"}}, "__id__": "c"}}, "io": {"service_tier_word": "normal"}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}, "_fallback_activated": true}, "__id__": "c"}}, "io": {"service_tier_word": "fast"}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}}, "__id__": "c"}}, "io": {"service_tier_word": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_route_report", "in": {"state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}, "provider": 5}, "__id__": "c"}}, "io": {"service_tier_word": "normal"}}}
+{"func": "_fabricated_entry", "in": {"idx": 0, "status": "error", "error": "bad", "state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_fabricated_entry", "in": {"idx": 2, "status": "interrupted", "error": "stop", "duration": 1.5, "state": {"child": {"__attr__": {"_delegate_role": "worker", "_delegate_route": {"backend": "x"}}, "__id__": "c"}}, "io": {"service_tier_word": "normal"}}}
+{"func": "_fabricated_entry", "in": {"idx": 1, "status": "error", "error": "e", "state": {"child": {"__attr__": {"_delegate_route": {"backend": "x"}}, "__id__": "c"}}, "io": {"service_tier_word": {"__raise__": "ValueError", "message": "x"}}}}
+{"func": "_fabricated_entry", "in": {"idx": 0, "status": "completed", "error": null, "duration": 0, "state": {"child": {"__attr__": {"_delegate_role": "lead"}, "__id__": "c"}}}}
+{"func": "_fabricated_entry", "in": {"idx": 3, "status": "timeout", "error": "t", "state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_append_missed_steer", "in": {"late_steer": "go left", "state": {"entry": {"error": "failed"}}}}
+{"func": "_append_missed_steer", "in": {"late_steer": null, "state": {"entry": {"error": "failed"}}}}
+{"func": "_append_missed_steer", "in": {"late_steer": "", "state": {"entry": {"error": "failed"}}}}
+{"func": "_append_missed_steer", "in": {"late_steer": "s", "state": {"entry": {}}}}
+{"func": "_append_missed_steer", "in": {"late_steer": "s", "state": {"entry": {"error": null}}}}
+{"func": "_close_child", "in": {"log_message": "close failed: %s", "state": {"child": {"__attr__": {"close": {"__callable__": "child.close"}}, "__id__": "c"}}, "io": {"child.close": null}}}
+{"func": "_close_child", "in": {"log_message": "close failed: %s", "state": {"child": {"__attr__": {"close": {"__callable__": "child.close"}}, "__id__": "c"}}, "io": {"child.close": {"__raise__": "RuntimeError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_close_child", "in": {"log_message": "close failed: %s", "state": {"child": {"__attr__": {"close": {"__callable__": "child.close"}}, "__id__": "c"}}, "io": {"child.close": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "_close_child", "in": {"log_message": "m", "state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_close_child", "in": {"log_message": null, "state": {"child": {"__attr__": {"close": {"__callable__": "child.close"}}, "__id__": "c"}}, "io": {"child.close": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_close_child", "in": {"log_message": "m", "state": {"child": {"__attr__": {"close": "notcallable"}, "__id__": "c"}}}}
+{"func": "_with_children_lock", "in": {"op": "append", "state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_with_children_lock", "in": {"op": "remove", "state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": [{"__attr__": {}, "__id__": "c0"}]}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_with_children_lock", "in": {"op": "remove", "state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_with_children_lock", "in": {"op": "append", "state": {"parent_agent": {"__attr__": {}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_with_children_lock", "in": {"op": "append", "state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_active_children_lock": {"__lock__": true}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": false}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": true, "_interrupt_message": "stop now"}}, "child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c0"}}, "io": {"request_hard_interrupt": false}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": true, "_hard_interrupt_requested": {"__event__": "h1"}}}, "child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c0"}}, "io": {"event.is_set": true, "request_hard_interrupt": false}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": true, "_hard_interrupt_requested": {"__event__": "h1"}, "_interrupt_message": "soft"}}, "child": {"__attr__": {"interrupt": {"__callable__": "child.interrupt"}}, "__id__": "c0"}}, "io": {"event.is_set": false, "child.interrupt": null}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": true, "_hard_interrupt_requested": {"__event__": "h1"}}}, "child": {"__attr__": {"interrupt": {"__callable__": "child.interrupt"}}, "__id__": "c0"}}, "io": {"event.is_set": false, "child.interrupt": {"__raise__": "RuntimeError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_attach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}, "_interrupt_requested": true, "_hard_interrupt_requested": {"__event__": "h1"}}}, "child": {"__attr__": {"interrupt": {"__callable__": "child.interrupt"}}, "__id__": "c0"}}, "io": {"event.is_set": false, "child.interrupt": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "_detach_child", "in": {"state": {"parent_agent": {"__attr__": {}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_detach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": [{"__attr__": {}, "__id__": "c0"}]}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_detach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": []}}}, "child": {"__attr__": {}, "__id__": "c0"}}, "io": {"logger.debug": null}}}
+{"func": "_detach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": [{"__attr__": {}, "__id__": "c0"}]}}}, "child": {"__attr__": {}, "__id__": "c0"}}, "io": {}}}
+{"func": "_detach_child", "in": {"state": {"parent_agent": {"__attr__": {"_active_children": {"__children__": [{"__attr__": {}, "__id__": "c0"}]}}}, "child": {"__attr__": {}, "__id__": "c0"}}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["parent stopped"], "state": {"child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c"}}, "io": {"request_hard_interrupt": false}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["r"], "state": {"child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c"}}, "io": {"request_hard_interrupt": true}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["r"], "state": {"child": null}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["r"], "state": {"child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c"}}, "io": {"request_hard_interrupt": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["r"], "state": {"child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c"}}, "io": {"request_hard_interrupt": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "_signal_child_stop", "in": {"reasons": ["r"], "tool_reason": "custom", "state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"request_hard_interrupt": false}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"api_call_count": 3, "current_tool": "terminal", "last_activity_ts": 10.5}}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": null}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {"__raise__": "GeneratorExit", "message": ""}}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": {}}}}
+{"func": "_child_activity_fingerprint", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}, "io": {"child.get_activity_summary": 5}}}
+{"func": "_quiet", "in": {"log_message": "failed: %s", "io": {"quiet.body": null}}}
+{"func": "_quiet", "in": {"log_message": "failed: %s", "io": {"quiet.body": {"__raise__": "RuntimeError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_quiet", "in": {"log_message": null, "io": {"quiet.body": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_quiet", "in": {"log_message": "failed: %s", "io": {"quiet.body": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "_quiet", "in": {"log_message": "failed: %s", "log_args": ["ctx"], "exc_info": true, "io": {"quiet.body": {"__raise__": "ValueError", "message": "bad"}, "logger.debug": null}}}
+{"func": "_quiet", "in": {"log_message": "no placeholder", "io": {"quiet.body": {"__raise__": "RuntimeError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_safe_progress", "in": {"cb": null, "event_type": "tool.started"}}
+{"func": "_safe_progress", "in": {"cb": {"__callable__": "progress.cb"}, "event_type": "tool.started", "args": ["a"], "kwargs": {"k": 1}, "io": {"progress.cb": null}}}
+{"func": "_safe_progress", "in": {"cb": {"__callable__": "progress.cb"}, "event_type": "tool.started", "io": {"progress.cb": {"__raise__": "RuntimeError", "message": "boom"}, "logger.debug": null}}}
+{"func": "_safe_progress", "in": {"cb": {"__callable__": "progress.cb"}, "event_type": "tool.started", "io": {"progress.cb": {"__raise__": "KeyboardInterrupt", "message": ""}}}}
+{"func": "_safe_progress", "in": {"cb": "notcallable", "event_type": "tool.started", "io": {"logger.debug": null}}}
+{"func": "_safe_progress", "in": {"cb": {"__callable__": "progress.cb"}, "event_type": "thinking", "args": [], "kwargs": {}, "io": {"progress.cb": null}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": "model_not_found", "error": "e", "io": {"failure_cause_gloss": "the model was not found"}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": null, "error": "traceback", "io": {"failure_cause_gloss": null, "clean_error_text": "clean line"}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": "x", "error": "e", "io": {"failure_cause_gloss": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": null, "error": "e", "io": {"failure_cause_gloss": null, "clean_error_text": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": "x", "error": "e", "io": {"failure_cause_gloss": "", "clean_error_text": "fallback"}}}
+{"func": "describe_subagent_failure", "in": {"failure_reason": null, "error": "e", "max_chars": 50, "io": {"failure_cause_gloss": null, "clean_error_text": "short"}}}
+{"func": "_format_duration", "in": {"seconds": 0}}
+{"func": "_format_duration", "in": {"seconds": -1}}
+{"func": "_format_duration", "in": {"seconds": 30}}
+{"func": "_format_duration", "in": {"seconds": 120}}
+{"func": "_format_duration", "in": {"seconds": 59.5}}
+{"func": "_format_duration", "in": {"seconds": "x"}}
+{"func": "_format_duration", "in": {"seconds": 179.5}}
+{"func": "_format_duration", "in": {"seconds": true}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": {"__attr__": {"print_above": {"__callable__": "spinner.print_above"}}}, "line": "done", "io": {"spinner.print_above": null}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": {"__attr__": {"print_above": {"__callable__": "spinner.print_above"}}}, "line": "done", "io": {"spinner.print_above": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": {"__attr__": {"print_above": {"__callable__": "spinner.print_above"}}}, "line": "done", "io": {"spinner.print_above": {"__raise__": "SystemExit", "message": "1"}}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": null, "line": "done", "io": {"emit_parent_console": null}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": null, "line": "done", "console_line": "custom", "io": {"emit_parent_console": null}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": {"__attr__": {"print_above": {"__callable__": "spinner.print_above"}}}, "line": "done", "io": {"spinner.print_above": {"__raise__": "RuntimeError", "message": "boom"}, "emit_parent_console": null}}}
+{"func": "_print_completion_line", "in": {"parent_agent": {"__attr__": {}}, "spinner": null, "line": "done", "io": {"emit_parent_console": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_short", "in": {"text": "abcdef", "n": 3}}
+{"func": "_short", "in": {"text": "abc", "n": 3}}
+{"func": "_short", "in": {"text": "ab", "n": 3}}
+{"func": "_short", "in": {"text": "abc", "n": 0}}
+{"func": "_short", "in": {"text": "", "n": 3}}
+{"func": "_route_key", "in": {"state": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat"}, "__id__": "c"}}}}
+{"func": "_route_key", "in": {"state": {"child": {"__attr__": {"provider": "p", "model": "m"}, "__id__": "c"}}}}
+{"func": "_route_key", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_route_key", "in": {"state": {"child": {"__attr__": {"provider": null, "base_url": "b", "model": "m", "api_mode": "responses"}, "__id__": "c"}}}}
+{"func": "_route_key", "in": {"state": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": null}, "__id__": "c"}}}}
+{"func": "_caches_prompts", "in": {"state": {"child": {"__attr__": {"_use_prompt_caching": true}, "__id__": "c"}}}}
+{"func": "_caches_prompts", "in": {"state": {"child": {"__attr__": {"_use_prompt_caching": false}, "__id__": "c"}}}}
+{"func": "_caches_prompts", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_caches_prompts", "in": {"state": {"child": {"__attr__": {"_use_prompt_caching": 1}, "__id__": "c"}}}}
+{"func": "_caches_prompts", "in": {"state": {"child": {"__attr__": {"_use_prompt_caching": "x"}, "__id__": "c"}}}}
+{"func": "_first_response_started", "in": {"state": {"child": {"__attr__": {"session_api_calls": 1}, "__id__": "c"}}}}
+{"func": "_first_response_started", "in": {"state": {"child": {"__attr__": {"session_api_calls": 0, "_last_activity_desc": "receiving stream response"}, "__id__": "c"}}}}
+{"func": "_first_response_started", "in": {"state": {"child": {"__attr__": {"session_api_calls": 0}, "__id__": "c"}}}}
+{"func": "_first_response_started", "in": {"state": {"child": {"__attr__": {"_last_activity_desc": "receiving stream response"}, "__id__": "c"}}}}
+{"func": "_first_response_started", "in": {"state": {"child": {"__attr__": {"session_api_calls": 2}, "__id__": "c"}}}}
+{"func": "_stop_requested", "in": {"state": {"child": {"__attr__": {"_interrupt_requested": true}, "__id__": "c"}}}}
+{"func": "_stop_requested", "in": {"state": {"child": {"__attr__": {"_interrupt_requested": false}, "__id__": "c"}}}}
+{"func": "_stop_requested", "in": {"state": {"child": {"__attr__": {}, "__id__": "c"}}}}
+{"func": "_stop_requested", "in": {"state": {"child": {"__attr__": {"_interrupt_requested": 1}, "__id__": "c"}}}}
+{"func": "_stop_requested", "in": {"state": {"child": {"__attr__": {"_interrupt_requested": "x"}, "__id__": "c"}}}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {"goal": "g"}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}]], "max_wait_s": 1.0}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}], [1, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}]], "max_wait_s": 0}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {}, {"__attr__": {"_use_prompt_caching": false}, "__id__": "L"}], [1, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}]], "max_wait_s": 1.0}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}], [1, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}]], "max_wait_s": 1.0}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}], [1, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}]], "max_wait_s": -1}}
+{"func": "PrefixCacheGate.for_children", "in": {"children": [[0, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}], [1, {}, {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}], [2, {}, {"__attr__": {}, "__id__": "G"}]], "max_wait_s": 2.5}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"gate.run_fn": {"task_index": 0, "status": "completed"}}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": true}}, "io": {"gate.run_fn": null, "time.monotonic": [0]}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true, "session_api_calls": 1}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"gate.run_fn": null, "time.monotonic": [0]}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true, "_interrupt_requested": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"time.monotonic": [0]}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"gate.run_fn": null, "time.monotonic": [0, 2]}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "parent": {"__attr__": {"_interrupt_requested": true}}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"time.monotonic": [0]}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "F"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"gate.run_fn": null, "time.monotonic": [0, 0.02, 1.5], "event.wait": null}}}
+{"func": "PrefixCacheGate.run", "in": {"child": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "run": {"__callable__": "gate.run_fn"}, "state": {"gate": {"leader": {"__attr__": {"provider": "p", "base_url": "b", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "__id__": "L"}, "max_wait_s": 1.0, "leader_route": ["p", "b", "m", "chat"], "leader_done": false}}, "io": {"gate.run_fn": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": null}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": 5}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": "2.5"}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": -3}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": 100}}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": "abc"}, "logger.warning": null}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"prefix_stagger_seconds": [1]}, "logger.warning": null}}}
+{"func": "_get_prefix_stagger_seconds", "in": {"io": {"load_config": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "waiting_on_resume", "in": {"entry": {"auto_resume": {"sid": "s"}}}}
+{"func": "waiting_on_resume", "in": {"entry": {"waiting_to_resume": true}}}
+{"func": "waiting_on_resume", "in": {"entry": {"unstarted_auto": 1}}}
+{"func": "waiting_on_resume", "in": {"entry": {}}}
+{"func": "waiting_on_resume", "in": {"entry": {"auto_resume": "notdict"}}}
+{"func": "waiting_on_resume", "in": {"entry": {"waiting_to_resume": "", "unstarted_auto": null}}}
+{"func": "finite_turn_required", "in": {"finite_turn": true}}
+{"func": "finite_turn_required", "in": {"finite_turn": false}}
+{"func": "finite_turn_required", "in": {"finite_turn": null}}
+{"func": "finite_turn_required", "in": {"finite_turn": "x"}}
+{"func": "finite_turn_required", "in": {"finite_turn": 5}}
+{"func": "_process_accounting_lines", "in": {"r": {"handed_off_processes": [{"session_id": "s1", "command": "ls", "note": "n"}]}}}
+{"func": "_process_accounting_lines", "in": {"r": {"orphaned_processes": [{"session_id": "s2", "command": "sleep 9", "runtime_seconds": 12}]}}}
+{"func": "_process_accounting_lines", "in": {"r": {"unread_completions": [{"session_id": "s3", "command": "make", "exit_code": 0, "output_tail": "ok"}]}}}
+{"func": "_process_accounting_lines", "in": {"r": {"handed_off_processes": [{"session_id": "s1", "command": "ls", "note": "n"}], "orphaned_processes": [{"session_id": "s2", "command": "x", "runtime_seconds": 1}], "unread_completions": [{"session_id": "s3", "command": "y", "exit_code": 2, "output_tail": "t"}]}}}
+{"func": "_process_accounting_lines", "in": {"r": {}}}
+{"func": "_process_accounting_lines", "in": {"r": {"handed_off_processes": null, "orphaned_processes": [], "unread_completions": null}}}
+{"func": "_process_accounting_lines", "in": {"r": {"handed_off_processes": [{"command": "c"}]}}}
