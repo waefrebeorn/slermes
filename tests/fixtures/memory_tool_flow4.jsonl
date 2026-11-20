@@ -1,0 +1,86 @@
+{"func": "batch_op_line", "in": {"args": {"op": {}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {"op": {"action": "remove", "old_text": "stale fact"}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {"op": {"action": "patch", "old_text": "old", "content": "new"}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {"op": {"action": "add", "content": "remember this"}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {"op": {"content": "new_text alias"}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {"op": {"action": "add", "new_text": "from alias", "old_text": "ignored"}}, "script": {}}}
+{"func": "batch_op_line", "in": {"args": {}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "add", "content": "x"}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "remove", "old_text": "x"}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "patch", "old_text": "x", "content": "y"}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "batch", "operations": [{"action": "add", "content": "a"}, {"action": "remove", "old_text": "b"}, {"action": "patch", "old_text": "c", "content": "d"}, {"action": "replace", "old_text": "e"}]}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "batch", "operations": []}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {}}, "script": {}}}
+{"func": "destructive_ops", "in": {"args": {"payload": {"action": "batch", "operations": [null, {}, {"action": "add"}]}}, "script": {}}}
+{"func": "applied", "in": {"args": {"result": {"success": true, "target": "memory", "current_chars": 10}}, "script": {}}}
+{"func": "applied", "in": {"args": {"result": {"success": false, "error": "full", "current_entries": ["a", "b"]}}, "script": {}}}
+{"func": "applied", "in": {"args": {"result": {"success": true}}, "script": {}}}
+{"func": "applied", "in": {"args": {"result": {"success": false}}, "script": {}}}
+{"func": "applied", "in": {"args": {"result": {}}, "script": {}}}
+{"func": "invalid", "in": {"args": {"message": "Unknown action 'frobnicate'. Use: add, patch, remove"}, "script": {}}}
+{"func": "invalid", "in": {"args": {"message": "Content is required for 'add' action."}, "script": {}}}
+{"func": "invalid", "in": {"args": {"message": "quote \" and unicode ☃"}, "script": {}}}
+{"func": "invalid", "in": {"args": {"message": ""}, "script": {}}}
+{"func": "invalid", "in": {"args": {"message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "add", "target": "memory", "content": null}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "add", "target": "user", "content": ""}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "remove", "target": "memory", "old_text": null}, "script": {"store._entries_for": ["alpha", "beta"], "store._usage": "2/2200"}}}
+{"func": "validate_single_op", "in": {"args": {"action": "patch", "target": "user", "old_text": ""}, "script": {"store._entries_for": [], "store._usage": "0/1375"}}}
+{"func": "validate_single_op", "in": {"args": {"action": "patch", "target": "memory", "old_text": "x", "content": null}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "add", "target": "memory", "content": "valid new entry"}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "remove", "target": "memory", "old_text": "valid old"}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "patch", "target": "memory", "old_text": "old", "content": "new"}, "script": {}}}
+{"func": "validate_single_op", "in": {"args": {"action": "add", "target": "memory", "content": "x", "script_unused": true}, "script": {}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "batch", "target": "memory", "operations": [{"action": "remove", "old_text": "a"}, {"action": "patch", "old_text": "b", "content": "c"}]}}, "script": {"resolve_batch_entries": {"success": true, "matched_entries": ["full A", null]}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "batch", "target": "user", "operations": [{"action": "remove", "old_text": "a"}]}}, "script": {"resolve_batch_entries": {"success": false, "error": "not found", "target": "user"}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "remove", "target": "memory", "old_text": "a"}}, "script": {"resolve_entry": {"success": true, "matched_entry": "full entry A"}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "patch", "target": "memory", "old_text": "b"}}, "script": {"resolve_entry": {"success": false, "error": "nomatch"}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "add", "content": "x"}}, "script": {}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "batch", "operations": []}}, "script": {"resolve_batch_entries": {"success": true, "matched_entries": []}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "remove", "old_text": "a"}}, "script": {"resolve_entry": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "pin_matched_entries", "in": {"args": {"payload": {"action": "batch", "operations": [{"action": "remove"}]}}, "script": {"resolve_batch_entries": {"success": true, "matched_entries": [{"nested": 1}]}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "apply 1 op(s) to memory", "detail": "- remove: x", "payload": {"action": "remove", "target": "memory", "old_text": "x"}}, "script": {"import write_approval": {"__raise__": "ImportError", "msg": "no wa"}, "evaluate_gate": {"allow": true}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "add"}}, "script": {"import write_approval": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "add"}}, "script": {"import write_approval": null, "evaluate_gate": {"allow": true}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "add"}}, "script": {"evaluate_gate": {"blocked": true, "message": "denied by policy"}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "add to memory", "detail": "some detail", "payload": {"action": "add", "target": "memory", "content": "x"}}, "script": {"evaluate_gate": {"allow": false, "message": "please approve"}, "resolve_entry": {"success": true, "matched_entry": "E"}, "stage_write": {"id": "pending-1"}, "current_origin": "cli"}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "apply 2 op(s) to user profile", "detail": "- remove: a\n- patch: b", "payload": {"action": "batch", "target": "user", "operations": [{"action": "remove", "old_text": "a"}, {"action": "patch", "old_text": "b", "content": "c"}]}}, "script": {"evaluate_gate": {"message": "batch needs approval"}, "resolve_batch_entries": {"success": true, "matched_entries": [null, null]}, "stage_write": {"id": "pending-2"}, "current_origin": "gateway"}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "remove", "target": "memory", "old_text": "x"}}, "script": {"evaluate_gate": {"message": "approve"}, "resolve_entry": {"success": false, "error": "changed"}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "add"}}, "script": {"evaluate_gate": {"message": "approve"}, "stage_write": {"__raise__": "OSError", "msg": "disk"}}}}
+{"func": "gate_or_stage", "in": {"args": {"summary": "s", "detail": "d", "payload": {"action": "add"}}, "script": {"evaluate_gate": {"__raise__": "ValueError", "msg": "bad gate"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "target": "memory", "old_text": "x"}, "script": {"import skill_provenance": null, "is_unattended_review": false}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "add", "content": "x"}, "script": {"is_unattended_review": true}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "target": "memory", "old_text": "x"}, "script": {"is_unattended_review": true, "resolve_entry": {"success": true, "matched_entry": "E"}, "stage_write": {"id": "bg-1"}, "current_origin": "background"}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "patch", "target": "user", "old_text": "b", "content": "c"}, "script": {"is_unattended_review": true, "resolve_entry": {"success": false, "error": "changed"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "batch", "target": "memory", "operations": [{"action": "add", "content": "a"}, {"action": "remove", "old_text": "b"}]}, "script": {"is_unattended_review": true, "resolve_batch_entries": {"success": true, "matched_entries": [null, "full B"]}, "stage_write": {"id": "bg-2"}, "current_origin": "background"}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "old_text": "x"}, "script": {"is_unattended_review": true, "resolve_entry": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "old_text": "x"}, "script": {"is_unattended_review": true, "resolve_entry": {"success": true, "matched_entry": "E"}, "import write_approval": {"__raise__": "RuntimeError", "msg": "no wa"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "old_text": "x"}, "script": {"is_unattended_review": true, "resolve_entry": {"success": true, "matched_entry": "E"}, "stage_write": {"__raise__": "OSError", "msg": "disk"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "old_text": "x"}, "script": {"is_unattended_review": true, "resolve_entry": {"success": true, "matched_entry": "E"}, "stage_write": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "background_delete_gate", "in": {"args": {"action": "remove", "old_text": "x"}, "script": {"import skill_provenance": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "target": "memory", "content": "", "new_text": "aliased"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "_apply_write_gate": null, "store.add": {"success": true, "target": "memory"}}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "target": "memory", "content": "x"}, "script": {"_memory_target_error": {"success": false, "error": "disabled"}}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "operations": "not-a-list", "target": "memory"}, "script": {"_memory_target_error": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "batch", "operations": [{"action": "replace", "old_text": "x"}], "target": "memory"}, "script": {"_memory_target_error": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "batch", "operations": [{"action": "remove", "old_text": "x"}], "target": "memory"}, "script": {"_memory_target_error": null, "is_unattended_review": true, "resolve_batch_entries": {"success": true, "matched_entries": ["full entry X"]}, "import write_approval": null, "stage_write": {"id": "bg-1"}, "current_origin": "background"}}}
+{"func": "memory_tool", "in": {"args": {"action": "batch", "operations": [{"action": "add", "content": "x"}], "target": "memory"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "_apply_write_gate": {"success": false, "error": "approval required"}, "apply_batch": {"success": true, "target": "memory"}}}}
+{"func": "memory_tool", "in": {"args": {"action": "batch", "operations": [{"action": "add", "content": "x"}], "target": "memory"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "_apply_write_gate": null, "apply_batch": {"success": true, "count": 1}}}}
+{"func": "memory_tool", "in": {"args": {"target": "memory"}, "script": {"_memory_target_error": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "replace", "target": "memory", "old_text": "x", "content": "y"}, "script": {"_memory_target_error": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "frobnicate", "target": "memory"}, "script": {"_memory_target_error": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "target": "memory", "content": null}, "script": {"_memory_target_error": null, "failure_class.set": null}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "target": "memory", "content": "x"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "_apply_write_gate": {"success": false, "error": "staged"}, "store.add": {"success": true}}}}
+{"func": "memory_tool", "in": {"args": {"action": "remove", "target": "memory", "old_text": "x"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "store._entries_for": ["a"], "store._usage": "1/2200", "_apply_write_gate": null, "store.remove": {"success": true, "removed": "x"}}}}
+{"func": "memory_tool", "in": {"args": {"action": "add", "target": "memory", "content": "x"}, "script": {"_memory_target_error": null, "is_unattended_review": false, "_apply_write_gate": null, "store.add": {"__raise__": "RuntimeError", "msg": "disk"}}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "RuntimeError", "clauses": ["BaseException", "Exception", "SystemExit", "KeyboardInterrupt", "GeneratorExit", "CancelledError", "BaseExceptionGroup", "ExceptionGroup", "TypeError", "ValueError", "AttributeError", "NameError", "LookupError", "ArithmeticError", "OSError", "EnvironmentError", "IOError", "WindowsError", "StopIteration", "StopAsyncIteration", "AssertionError", "SyntaxError", "SystemError", "ImportError", "Warning", "RuntimeError", "MemoryError", "BufferError", "EOFError", "ReferenceError", "MT4TestExc", "PythonFinalizationError", "NotImplementedError", "RecursionError", "UnboundLocalError", "UnicodeError", "UnicodeEncodeError", "IndexError", "KeyError", "ZeroDivisionError", "OverflowError", "FloatingPointError", "FileNotFoundError", "PermissionError", "ConnectionError", "BrokenPipeError", "ModuleNotFoundError", "IndentationError", "TabError", "UserWarning", "DeprecationWarning", "EncodingWarning", "__NotAnExc__"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "ValueError", "clauses": ["Exception", "ValueError", "BaseException"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "FileNotFoundError", "clauses": ["OSError", "EnvironmentError", "IOError", "WindowsError"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "FileNotFoundError", "clauses": ["ValueError", "TypeError", "KeyError"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "KeyboardInterrupt", "clauses": ["Exception", "BaseException"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "SystemExit", "clauses": ["Exception", "ValueError", "BaseException"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "MT4TestExc", "clauses": ["RuntimeError", "Exception", "MT4TestExc"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "ImportError", "clauses": ["ModuleNotFoundError", "ImportError", "Exception"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "Exception", "clauses": ["BaseException", "Exception"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "OSError", "clauses": ["__NotAnExc__", "ValueError", "OSError"]}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "TypeError", "clauses": []}, "script": {}}}
+{"func": "except_dispatch", "in": {"args": {"raised": "ZeroDivisionError", "clauses": ["ArithmeticError", "ZeroDivisionError", "Exception"]}, "script": {}}}

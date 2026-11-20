@@ -1,0 +1,11 @@
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": {"__raise__": "ModuleNotFoundError", "msg": "No module named 'httpx'"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": {"__raise__": "ImportError", "msg": "generic import failure"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": {"__raise__": "KeyboardInterrupt", "msg": "interrupted"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": {"__raise__": "OSError", "msg": "io boom"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": true}, "seams": {"import_httpx": null, "asyncio_sleep": [null, {"__raise__": "_LoopBreak", "msg": "loop done"}]}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": null, "asyncio_sleep": [null, {"__raise__": "_LoopBreak", "msg": "loop done"}], "dashboard_selftest_once": null}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {}, "seams": {"import_httpx": null, "asyncio_sleep": [null, {"__raise__": "_LoopBreak", "msg": "loop done"}], "dashboard_selftest_once": null}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": 1}, "seams": {"import_httpx": null, "asyncio_sleep": [null, null, {"__raise__": "_LoopBreak", "msg": "third tick"}]}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": null, "asyncio_sleep": {"__raise__": "ValueError", "msg": "bad sleep"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": null, "asyncio_sleep": [null], "dashboard_selftest_once": {"__raise__": "RuntimeError", "msg": "selftest boom"}}}}
+{"func": "dashboard_selftest_loop", "in": {"app_state": {"auth_required": false}, "seams": {"import_httpx": null, "asyncio_sleep": [null, null, {"__raise__": "_LoopBreak", "msg": "third tick"}], "dashboard_selftest_once": null}}}

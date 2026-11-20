@@ -1,0 +1,18 @@
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": null, "handle.fileno": 5, "msvcrt.locking": null}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 8, "seams": {"handle.seek": null, "handle.fileno": 3, "msvcrt.locking": null}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": {"__raise__": "OSError", "msg": "seek fail"}}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": null, "handle.fileno": {"__raise__": "PermissionError", "msg": "no fd"}}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": null, "handle.fileno": 5, "msvcrt.locking": {"__raise__": "OSError", "msg": "lock fail"}}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": null, "handle.fileno": 5, "msvcrt.locking": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 2, "seams": {"handle.seek": null, "handle.fileno": 0, "msvcrt.locking": null}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {"handle.seek": null, "handle.fileno": null, "msvcrt.locking": null}}}
+{"func": "lock_op", "in": {"os": "nt", "flag": 1, "seams": {}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": 5, "fcntl.flock": null}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 8, "seams": {"handle.fileno": 3, "fcntl.flock": null}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": 5, "fcntl.flock": {"__raise__": "OSError", "msg": "flock fail"}}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": 5, "fcntl.flock": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 0, "seams": {"handle.fileno": 5, "fcntl.flock": null}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": 5, "fcntl.flock": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {"handle.fileno": 7, "fcntl.flock": {"__raise__": "GeneratorExit", "msg": "gen"}}}}
+{"func": "lock_op", "in": {"os": "posix", "flag": 6, "seams": {}}}

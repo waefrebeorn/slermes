@@ -1,0 +1,65 @@
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"chronos"}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":true}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":["g1"]}}}}
+{"func":"builtin_gateway_liveness","in":{"ticker_interval":60,"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":5,"multiplexer_serves":true}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":5,"multiplexer_serves":false,"ticker_writer_alive":true}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":5,"multiplexer_serves":false,"ticker_writer_alive":false}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":400}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":{"__raise__":"RuntimeError","msg":"resolve fail"}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":{"__raise__":"SystemExit","msg":"bye"}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":{"__raise__":"ValueError","msg":"suppressed"},"find_gateway_pids":{"__script__":true,"ret":["g"]}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__raise__":"PermissionError","msg":"EACCES"}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":{"__raise__":"KeyboardInterrupt","msg":""}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":1,"multiplexer_serves":{"__raise__":"OSError","msg":"probe dead"}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{"active_provider_name":"builtin","runtime_lock_active":false,"find_gateway_pids":{"__script__":true,"ret":[]},"ticker_heartbeat_age":1,"multiplexer_serves":false,"ticker_writer_alive":{"__raise__":"SystemExit","msg":"halt"}}}}
+{"func":"builtin_gateway_liveness","in":{"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":null,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":0,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":200,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":201,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":50,"ticker_interval":10,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":51,"ticker_interval":10,"io":{}}}
+{"func":"ticker_age_is_fresh","in":{"age":-1,"io":{}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"}}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":{"__raise__":"OSError","msg":"stat fail"}}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"__raise__":"ValueError","msg":"bad"}}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"__raise__":"SystemExit","msg":"halt"}}}}
+{"func":"store_unwritable_report","in":{"io":{}}}
+{"func":"store_unwritable_report","in":{"io":{"current_cron_store":"/h/.hermes/cron"}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"brief":true,"io":{"print":null}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"brief":false,"io":{"print":null}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"brief":true,"io":{"print":{"__raise__":"ValueError","msg":"print failed"}}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"brief":false,"io":{"print":[null,{"__raise__":"SystemExit","msg":"halt"}]}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"brief":false,"io":{}}}
+{"func":"print_store_unwritable","in":{"report":{"store":"/x/y","error":"readonly","fix":"chmod","since":"never"},"brief":true,"io":{"print":null}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"brief":false,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null,"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"brief":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"print":null,"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":false,"brief":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"print":null,"list_jobs":{"__raise__":"OSError","msg":"read fail"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null,"list_jobs":{"__raise__":"OSError","msg":"read fail"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null,"list_jobs":{"__raise__":"ValueError","msg":"bad job"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null,"list_jobs":{"__raise__":"SystemExit","msg":"halt"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"brief":false,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"print":{"__raise__":"OSError","msg":"print fail"},"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"brief":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":{"store":"/h/.hermes/cron","error":"EACCES","since":"2026-01-01","fix":"chown -R u:g /h/.hermes"},"print":null,"list_jobs":{"__raise__":"PermissionError","msg":"locked"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"io":{"current_cron_store":"/h/.hermes/cron","probe_report":null,"list_jobs":{"__raise__":"FileNotFoundError","msg":"no store"}}}}
+{"func":"probe_then_list_jobs","in":{"include_disabled":true,"io":{}}}
+{"func":"incidents","in":{"args":{},"io":{"print":null}}}
+{"func":"incidents","in":{"args":{"incident_action":"ack","incident_id":"inc-1"},"io":{"print":null,"ack_incident":true}}}
+{"func":"incidents","in":{"args":{"incident_action":"ack","incident_id":"inc-2"},"io":{"print":null,"ack_incident":false}}}
+{"func":"incidents","in":{"args":{"incident_action":"ack","incident_id":"inc-3"},"io":{"ack_incident":{"__raise__":"ValueError","msg":"bad id"}}}}
+{"func":"incidents","in":{"args":{"incident_action":"ack","incident_id":"inc-4"},"io":{"ack_incident":{"__raise__":"SystemExit","msg":"halt"}}}}
+{"func":"incidents","in":{"args":{},"io":{"print":null,"list_incidents":{"__script__":true,"ret":[]}}}}
+{"func":"incidents","in":{"args":{"state":"detected"},"io":{"print":null,"list_incidents":{"__script__":true,"ret":[]}}}}
+{"func":"incidents","in":{"args":{},"io":{"print":null,"print_banner":null,"list_incidents":{"__script__":true,"ret":[{"id":"i1","state":"detected","job_id":"j1","failure_type":"timeout","first_seen_at":"t0","last_seen_at":"t1","error":"  boom \n  again  ","output_file":"/o/1"}]}}}}
+{"func":"incidents","in":{"args":{"state":"closed"},"io":{"print":null,"print_banner":null,"list_incidents":{"__script__":true,"ret":[{"id":"i1","state":"alerted","job_id":"j1","error":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"},{"id":"i2","state":"closed","job_id":"j2","error":null,"output_file":null}]}}}}
+{"func":"incidents","in":{"args":{},"io":{"print":{"__raise__":"SystemExit","msg":"halt"},"print_banner":null,"list_incidents":{"__script__":true,"ret":[{"id":"i1","state":"detected","job_id":"j1"}]}}}}
+{"func":"incidents","in":{"args":{},"io":{}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[]}}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__script__":true,"ret":[]}}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__script__":true,"ret":["not firing","bad script"]},"print":null}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__script__":true,"ret":["single issue"]},"print":null}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__raise__":"OSError","msg":"read fail"}}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__raise__":"ValueError","msg":"bad job"}}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__raise__":"SystemExit","msg":"halt"}}}}
+{"func":"doctor","in":{"io":{"list_jobs":{"__script__":true,"ret":[{"id":"j1","name":"nightly"},{"id":"j2","name":"cleanup"}]},"doctor_issues":{"__script__":true,"ret":["issue"]},"print":{"__raise__":"OSError","msg":"print fail"}}}}
+{"func":"doctor","in":{"io":{}}}
