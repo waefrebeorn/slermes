@@ -1,0 +1,75 @@
+{"func":"revision","in":{"doc":{"revision":0}}}
+{"func":"revision","in":{"doc":{"revision":5}}}
+{"func":"revision","in":{"doc":{"revision":3}}}
+{"func":"revision","in":{"doc":{}}}
+{"func":"revision","in":{"doc":{"revision":"9"}}}
+{"func":"revision","in":{"doc":{"revision":true}}}
+{"func":"revision","in":{"doc":{"revision":null}}}
+{"func":"revision","in":{"doc":{"revision":-2}}}
+{"func":"revision","in":{"doc":{"other":1}}}
+{"func":"revision","in":{"doc":null}}
+{"func":"plain","in":{"secret":"raw-token"}}
+{"func":"plain","in":{"secret":{"encoding":"plain","value":"v"}}}
+{"func":"plain","in":{"secret":{"encoding":"safeStorage","value":"blob"}}}
+{"func":"plain","in":{"secret":"abc"}}
+{"func":"plain","in":{"secret":{"encoding":"other","value":"x"}}}
+{"func":"plain","in":{"secret":{"encoding":"plain"}}}
+{"func":"plain","in":{"secret":{}}}
+{"func":"plain","in":{"secret":5}}
+{"func":"plain","in":{"secret":null}}
+{"func":"kept_envelope","in":{"token":{"encoding":"safeStorage","value":"blob"},"existing":{"token":{"encoding":"safeStorage","value":"blob"}}}}
+{"func":"kept_envelope","in":{"token":{"encoding":"safeStorage","value":"blob"},"existing":{"token":{"encoding":"plain","value":"x"}}}}
+{"func":"kept_envelope","in":{"token":{"encoding":"safeStorage","value":"blob"},"existing":null}}
+{"func":"kept_envelope","in":{"token":{"encoding":"plain","value":"x"},"existing":{"token":{"encoding":"plain","value":"x"}}}}
+{"func":"kept_envelope","in":{"token":{"encoding":"safeStorage","value":""},"existing":{"token":{"encoding":"safeStorage","value":""}}}}
+{"func":"kept_envelope","in":{"token":"blob","existing":{"token":"blob"}}}
+{"func":"kept_envelope","in":{"token":{"encoding":"safeStorage","value":"blob"},"existing":{}}}
+{"func":"envelope","in":{"value":"tok"}}
+{"func":"envelope","in":{"value":""}}
+{"func":"envelope","in":{"value":"a b c"}}
+{"func":"envelope","in":{"value":"123456789012"}}
+{"func":"envelope","in":{"value":" leading "}}
+{"func":"token_preview","in":{"value":""}}
+{"func":"token_preview","in":{"value":"a"}}
+{"func":"token_preview","in":{"value":"12345678"}}
+{"func":"token_preview","in":{"value":"123456789"}}
+{"func":"token_preview","in":{"value":"abcdefghijklmnop"}}
+{"func":"token_preview","in":{"value":"  "}}
+{"func":"public_connection","in":{"entry":{"id":"local","kind":"local","label":"Home"}}}
+{"func":"public_connection","in":{"entry":{"id":"r1","kind":"remote","label":"Cloud","token":{"encoding":"plain","value":"tok"},"headers":{"Authorization":"a","X-A":"b"}}}}
+{"func":"public_connection","in":{"entry":{"id":"r2","label":"Safe","token":{"encoding":"safeStorage","value":"blob"}}}}
+{"func":"public_connection","in":{"entry":{"id":"r3","label":"NoTok","token":{"encoding":"plain","value":"abcdefghij"}}}}
+{"func":"public_connection","in":{"entry":{"id":"r4","label":"HdrOnly","headers":{"Z":"1","A":"2"}}}}
+{"func":"public_connection","in":{"entry":{"id":"r5","label":"BadHdr","headers":"not-a-dict","token":5}}}
+{"func":"public_registry","in":{"reg":{"version":2,"primary":"local","launchMode":"primary","lastUsed":"local","connections":[],"quarantined":[]}}}
+{"func":"public_registry","in":{"reg":{"version":2,"primary":"local","launchMode":"primary","lastUsed":"local","connections":[{"id":"local","kind":"local","label":"Home","token":{"encoding":"plain","value":"t"}},{"id":"r1","kind":"remote","label":"Cloud","token":{"encoding":"plain","value":"tok"},"headers":{"X-A":"v"}}],"quarantined":[]}}}
+{"func":"public_registry","in":{"reg":{"version":2,"primary":"local","launchMode":"primary","lastUsed":"local","connections":[],"quarantined":[{"reason":"dupe","entry":{"label":"D"}},{"reason":null,"entry":{"label":"E"}},{"reason":5,"entry":{"label":"F"}},{"entry":"not-a-dict"},{"reason":"x","entry":{"label":7}}]}}}
+{"func":"public_registry","in":{"reg":{"version":2,"primary":"r1","launchMode":"ondemand","lastUsed":"r2","connections":[],"quarantined":[]}}}
+{"func":"public_registry","in":{"reg":{"version":2,"primary":"local","launchMode":"primary","lastUsed":"local","connections":[{"id":"x","label":"X","token":{"encoding":"safeStorage","value":"b"}}],"quarantined":[]}}}
+{"func":"incoming_headers","in":{"raw":{"X-Test":"abc","Authorization":" secret ","bad name":"v"},"existing":{}}}
+{"func":"incoming_headers","in":{"raw":{"X-Keep":null,"X-Set":"new"},"existing":{"X-Keep":{"encoding":"plain","value":"old"},"X-Other":{"encoding":"plain","value":"o"}}}}
+{"func":"incoming_headers","in":{"raw":{"  Spaced  ":"  value  ","":"drop","X-Empty":"   "},"existing":{}}}
+{"func":"incoming_headers","in":{"raw":{"X-Env":{"encoding":"plain","value":"verbatim"},"X-Obj":{"encoding":"safeStorage","value":"s"}},"existing":{}}}
+{"func":"incoming_headers","in":{"raw":{"X-Num":5,"X-Bool":true,"X-Arr":[1],"X-None":null},"existing":{"X-None":{"encoding":"plain","value":"kept"}}}}
+{"func":"incoming_headers","in":{"raw":"not-a-dict","existing":{"A":{"encoding":"plain","value":"a"}}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[]},"after":{"connections":[]}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[{"id":"a","url":"http://h","authMode":"token"}]},"after":{"connections":[{"id":"a","url":"http://h","authMode":"token"}]}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[{"id":"a","url":"http://h"},{"id":"b"}]},"after":{"connections":[{"id":"a","url":"http://h"}]}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[{"id":"a","url":"http://one"},{"id":"b","url":"http://b"}]},"after":{"connections":[{"id":"a","url":"http://two"},{"id":"b","url":"http://b"}]}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[{"id":"a","authMode":"token"}]},"after":{"connections":[{"id":"a","authMode":"oauth"}]}}}
+{"func":"signed_in_ids_gone","in":{"before":{"connections":[{"id":"a"}]},"after":{"connections":[{"id":"a"}]}}}
+{"func":"entry_url","in":{"entry":{"url":"http://host/x"},"norm":"http://host/x"}}
+{"func":"entry_url","in":{"entry":{"url":"https://h/a"},"norm":"https://h/a/"}}
+{"func":"entry_url","in":{"entry":{"url":""},"norm":"http://ignored"}}
+{"func":"entry_url","in":{"entry":{},"norm":"http://ignored"}}
+{"func":"entry_url","in":{"entry":{"url":"bad://x"},"norm":{"__raise__":{"type":"ConnectionStoreError","message":"bad url"}}}}
+{"func":"entry_url","in":{"entry":{"url":"bad://x"},"norm":{"__raise__":{"type":"DuplicateConnection","message":"dupe"}}}}
+{"func":"entry_url","in":{"entry":{"url":"x"},"norm":{"__raise__":{"type":"ValueError","message":"boom"}}}}
+{"func":"entry_url","in":{"entry":{"url":"x"},"norm":{"__raise__":{"type":"TypeError","message":"boom"}}}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":"http://host/x"},"norm":"http://host/x"}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":5},"norm":"http://ignored"}}
+{"func":"bound_url","in":{"token_set":{},"norm":"http://ignored"}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":"bad"},"norm":{"__raise__":{"type":"ConnectionStoreError","message":"bad"}}}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":"bad"},"norm":{"__raise__":{"type":"NoSuchConnection","message":"gone"}}}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":"x"},"norm":{"__raise__":{"type":"RuntimeError","message":"boom"}}}}
+{"func":"bound_url","in":{"token_set":{"baseUrl":"x"},"norm":{"__raise__":{"type":"ConnectionStoreBusy","message":"busy"}}}}

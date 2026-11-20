@@ -1,0 +1,98 @@
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "ls -la"}, "content": "{\"exit_code\":0}", "content_len": 12, "line_count": 3, "io": {"_str_arg": "ls -la"}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "content": "{\"exit_code\": 2}", "content_len": 90, "line_count": 1, "io": {"_str_arg": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "echo hi"}, "content": "no status here", "content_len": 6, "line_count": 1, "io": {"_str_arg": "echo hi"}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "false"}, "content": "{\"exit_code\"  :  -1}", "content_len": 4, "line_count": 0, "io": {"_str_arg": "false"}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "echo spaced"}, "content": "{\"exit_code\" : 42}", "content_len": 11, "line_count": 2, "io": {"_str_arg": "echo spaced"}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": ""}, "content": "{\"exit_code\":0}", "content_len": 0, "line_count": 0, "io": {"_str_arg": ""}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {"path": "/a/b.py", "content": "a\nb\nc"}, "content": "ok", "content_len": 6, "line_count": 3, "io": {"_result_failure_suffix": "", "_str_arg": "a\nb\nc"}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {"path": "/x.py", "content": "hi"}, "content": "err", "content_len": 2, "line_count": 1, "io": {"_result_failure_suffix": " FAILED: disk full"}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {"path": "/no.py"}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {"path": "/e.py", "content": ""}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {"path": "/one.py", "content": "only"}, "content": "ok", "content_len": 4, "line_count": 1, "io": {"_result_failure_suffix": "", "_str_arg": "only"}}}
+{"func": "_sum_write_file", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"target": "files", "pattern": "TODO", "path": "/repo"}, "content": "{\"total_count\":12}", "content_len": 120, "line_count": 12}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"pattern": "x"}, "content": "{\"total_count\" : 0}", "content_len": 0, "line_count": 0}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"pattern": "y", "path": "/p"}, "content": "nothing", "content_len": 5, "line_count": 0}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"target": "content", "pattern": "z", "path": "."}, "content": "{\"total_count\": 1000}", "content_len": 1000, "line_count": 40}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"pattern": "a b"}, "content": "{\"total_count\":7}", "content_len": 7, "line_count": 3}}
+{"func": "_sum_search_files", "in": {"name": "tool", "args": {"pattern": "q"}, "content": "{\"total_count\":999}", "content_len": 999, "line_count": 9}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://example.com"}, "content": "ok", "content_len": 12345, "line_count": 50, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"ref": "abc123"}, "content": "ok", "content_len": 99, "line_count": 2, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://x.io"}, "content": "err", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": " FAILED: blocked"}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://big.io"}, "content": "ok", "content_len": 1234567, "line_count": 3, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_browser", "in": {"name": "other", "args": {"ref": "r"}, "content": "err", "content_len": 5, "line_count": 1, "io": {"_result_failure_suffix": " FAILED"}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": "do the thing"}, "content": "ok", "content_len": 500, "line_count": 5, "io": {"_str_arg": "do the thing", "_result_failure_suffix": ""}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"}, "content": "ok", "content_len": 900, "line_count": 9, "io": {"_str_arg": "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG", "_result_failure_suffix": ""}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": "failing"}, "content": "err", "content_len": 10, "line_count": 1, "io": {"_str_arg": "failing", "_result_failure_suffix": " FAILED: timeout"}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": ""}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": "", "_result_failure_suffix": ""}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}, "content": "ok", "content_len": 1234, "line_count": 2, "io": {"_str_arg": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "_result_failure_suffix": ""}}}
+{"func": "_sum_delegate_task", "in": {"name": "tool", "args": {"goal": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}, "content": "ok", "content_len": 4321, "line_count": 3, "io": {"_str_arg": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "_result_failure_suffix": ""}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": "print(1)"}, "content": "ok", "content_len": 8, "line_count": 1, "io": {"_str_arg": "print(1)"}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": "a\nb\nc\nzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}, "content": "ok", "content_len": 90, "line_count": 4, "io": {"_str_arg": "a\nb\nc\nzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, "content": "ok", "content_len": 60, "line_count": 1, "io": {"_str_arg": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": ""}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": ""}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": "x\ny\nz"}, "content": "ok", "content_len": 5, "line_count": 3, "io": {"_str_arg": "x\ny\nz"}}}
+{"func": "_sum_execute_code", "in": {"name": "tool", "args": {"code": "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}, "content": "ok", "content_len": 61, "line_count": 1, "io": {"_str_arg": "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": ["https://a.io"]}, "content": "ok", "content_len": 100, "line_count": 1, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": [{"url": "https://b.io"}]}, "content": "ok", "content_len": 200, "line_count": 1, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": [{"href": "https://c.io"}]}, "content": "ok", "content_len": 300, "line_count": 1, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": ["https://a", "https://b", "https://c"]}, "content": "ok", "content_len": 400, "line_count": 3, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": []}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_result_failure_suffix": ""}}}
+{"func": "_sum_web_extract", "in": {"name": "tool", "args": {"urls": ["https://a"]}, "content": "err", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": " FAILED: rate limit"}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {"category": "dev"}, "content": "ok", "content_len": 50, "line_count": 1, "io": {"_str_arg": "dev", "_json_dict": {"count": 7}, "_result_failure_suffix": ""}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": "", "_json_dict": {"count": 2}, "_result_failure_suffix": ""}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": "", "_json_dict": {"count": true}, "_result_failure_suffix": ""}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": "", "_json_dict": {}, "_result_failure_suffix": ""}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {"category": "ops"}, "content": "err", "content_len": 3, "line_count": 0, "io": {"_str_arg": "ops", "_json_dict": {"count": 1}, "_result_failure_suffix": " FAILED: x"}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 1, "line_count": 0, "io": {"_str_arg": "", "_json_dict": [], "_result_failure_suffix": ""}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"action": "add", "name": "alpha"}, "content": "ok", "content_len": 10, "line_count": 1, "io": {"_str_arg": ["add", "alpha"], "_result_failure_suffix": ""}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"operations": [{"action": "add", "name": "a"}, {"action": "rm", "name": "b"}]}, "content": "ok", "content_len": 20, "line_count": 2, "io": {"_str_arg": ["add", "a", "rm", "b"], "_result_failure_suffix": ""}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"operations": [{"action": "a0", "name": "n0"}, {"action": "a1", "name": "n1"}, {"action": "a2", "name": "n2"}, {"action": "a3", "name": "n3"}, {"action": "a4", "name": "n4"}]}, "content": "ok", "content_len": 50, "line_count": 5, "io": {"_str_arg": ["a0", "n0", "a1", "n1", "a2", "n2", "a3", "n3", "a4", "n4"], "_result_failure_suffix": ""}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"operations": [{"action": "add", "name": "a"}, "junk", {"action": "rm", "name": "b"}]}, "content": "ok", "content_len": 30, "line_count": 3, "io": {"_str_arg": ["add", "a", "rm", "b"], "_result_failure_suffix": ""}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"action": "add", "name": "x"}, "content": "err", "content_len": 5, "line_count": 0, "io": {"_str_arg": ["add", "x"], "_result_failure_suffix": " FAILED: denied"}}}
+{"func": "_sum_skill_manage", "in": {"name": "tool", "args": {"operations": [], "action": "list", "name": "?"}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": ["list", "?"], "_result_failure_suffix": ""}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"error": "oops"}, "_payload_failure_suffix": " FAILED: oops"}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"job": {"execution_error": "boom"}}, "_payload_failure_suffix": "", "_failure_suffix": " FAILED: boom"}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"job": {"execution_skipped": "idle"}}, "_payload_failure_suffix": "", "_failure_suffix": " SKIPPED: idle"}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"job": {"execution_success": false}}, "_payload_failure_suffix": "", "_failure_suffix": " FAILED"}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "create"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"job": {"execution_success": true}}, "_payload_failure_suffix": ""}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"job": {"execution_skipped": null, "execution_success": false}}, "_payload_failure_suffix": "", "_failure_suffix": " FAILED"}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s1"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"error": "gone"}, "_payload_failure_suffix": " FAILED: gone"}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s2"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"exit_code": 2}, "_payload_failure_suffix": "", "_failure_suffix": " FAILED: exit code 2"}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s3"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"exit_code": 0}, "_payload_failure_suffix": ""}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s4"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"exit_code": 3, "completion_reason": "killed"}, "_payload_failure_suffix": ""}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s5"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"exit_code": true}, "_payload_failure_suffix": ""}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "start", "session_id": "s6"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {"running": true}, "_payload_failure_suffix": ""}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "terminal", "args": {"command": "rm -rf /"}, "content": "", "io": {"_json_dict": {"status": "pending_approval"}}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "write_file", "args": {"path": "/etc/x"}, "content": "", "io": {"_json_dict": {"status": "blocked", "error": "sensitive path"}}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "write_file", "args": {"path": "/p"}, "content": "", "io": {"_json_dict": {"error": "BLOCKED by policy"}}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "terminal", "args": {"command": "x"}, "content": "", "io": {"_json_dict": {"error": "BLOCKED: NOT consented by user"}}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "terminal", "args": {"command": "x"}, "content": "", "io": {"_json_dict": {"status": "ok"}}}}
+{"func": "_summarize_refused_tool_result", "in": {"tool_name": "terminal", "args": {"command": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"}, "content": "", "io": {"_json_dict": {"status": "pending_approval"}}}}
+{"func": "_bullets", "in": {"items": ["a", "b", "a", " c ", ""]}}
+{"func": "_bullets", "in": {"items": ["  ", ""], "limit": 8}}
+{"func": "_bullets", "in": {"items": ["x", "y", "z"], "limit": 2}}
+{"func": "_bullets", "in": {"items": [], "limit": 8}}
+{"func": "_bullets", "in": {"items": [" one ", "two", " one", "three"], "limit": 3}}
+{"func": "_bullets", "in": {"items": ["alpha", "beta", "gamma", "delta"], "limit": 0}}
+{"func": "_tool_result_parts", "in": {"content": "plain text"}}
+{"func": "_tool_result_parts", "in": {"content": {"_multimodal": true, "content": [{"type": "text"}]}}}
+{"func": "_tool_result_parts", "in": {"content": {"_multimodal": false, "content": [1]}}}
+{"func": "_tool_result_parts", "in": {"content": {"content": "no envelope"}}}
+{"func": "_tool_result_parts", "in": {"content": [1, 2, 3]}}
+{"func": "_tool_result_parts", "in": {"content": null}}
+{"func": "_summary_part_text", "in": {"part": "just a string", "io": {}}}
+{"func": "_summary_part_text", "in": {"part": {"type": "text", "text": "hello"}, "io": {}}}
+{"func": "_summary_part_text", "in": {"part": {"type": "image_url"}, "io": {"_image_part_label": "[image: https://i.io]"}}}
+{"func": "_summary_part_text", "in": {"part": {"type": "input_image"}, "io": {"_image_part_label": "[image]"}}}
+{"func": "_summary_part_text", "in": {"part": {"type": "audio"}, "io": {}}}
+{"func": "_summary_part_text", "in": {"part": {}, "io": {}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://x.io"}, "content": "ok", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_sum_terminal", "in": {"name": "tool", "args": {"command": "ls"}, "content": "ok", "content_len": 2, "line_count": 1, "io": {"_str_arg": {"__raise__": "KeyboardInterrupt", "message": "stop"}}}}
+{"func": "_sum_skills_list", "in": {"name": "tool", "args": {}, "content": "ok", "content_len": 0, "line_count": 0, "io": {"_str_arg": "", "_json_dict": {"__raise__": "GeneratorExit", "message": "gen"}}}}
+{"func": "_sum_cronjob_manage", "in": {"name": "tool", "args": {"action": "run"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {}, "_payload_failure_suffix": {"__raise__": "CancelledError", "message": "cancelled"}}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://x.io"}, "content": "ok", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": {"__raise__": "FileNotFoundError", "message": "missing"}}}}
+{"func": "_summary_part_text", "in": {"part": {"type": "image_url"}, "io": {"_image_part_label": {"__raise__": "ModuleNotFoundError", "message": "no module"}}}}
+{"func": "_sum_browser", "in": {"name": "browser", "args": {"url": "https://x.io"}, "content": "ok", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": {"__raise__": "ValueError", "message": "bad value"}}}}
+{"func": "_sum_process_manage", "in": {"name": "tool", "args": {"action": "poll", "session_id": "s"}, "content": "ok", "content_len": 1, "line_count": 1, "io": {"_json_dict": {}, "_payload_failure_suffix": {"__raise__": "PermissionError", "message": "denied"}}}}

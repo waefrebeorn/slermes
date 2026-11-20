@@ -1,0 +1,103 @@
+{"func":"parse_ps_line","in":{"line":"  1234  my cmd  "}}
+{"func":"parse_ps_line","in":{"line":"grep something"}}
+{"func":"parse_ps_line","in":{"line":"   "}}
+{"func":"parse_ps_line","in":{"line":"notanint cmd"}}
+{"func":"parse_ps_line","in":{"line":"root 123 0.0 0.1 100 200 ? S 10:00 0:00 /usr/bin/python -m gateway"}}
+{"func":"parse_ps_line","in":{"line":"1_234 cmd"}}
+{"func":"parse_ps_line","in":{"line":"-5 cmd"}}
+{"func":"parse_ps_line","in":{"line":"\t42\t\ttabbed value"}}
+{"func":"iter_windows_list_processes","in":{"listing":"CommandLine=/usr/bin/python -m gateway\nProcessId=101\n"}}
+{"func":"iter_windows_list_processes","in":{"listing":"ProcessId=1\nCommandLine=first\nProcessId=2\nCommandLine=second\n"}}
+{"func":"iter_windows_list_processes","in":{"listing":"ProcessId= 55 \nCommandLine= spaced \n"}}
+{"func":"iter_windows_list_processes","in":{"listing":"CommandLine=x\nProcessId=abc\nCommandLine=y\nProcessId=7\n"}}
+{"func":"iter_windows_list_processes","in":{"listing":"CommandLine=a=1\nProcessId=9\r\n\nProcessId=10\n"}}
+{"func":"iter_windows_list_processes","in":{"listing":""}}
+{"func":"scm_service_field","in":{"service":"svc","field":"name","seams":{"scm_getattr":{"callable":true},"scm_call":"Hermes Gateway"}}}
+{"func":"scm_service_field","in":{"service":"svc","field":"status","seams":{"scm_getattr":{"callable":false},"scm_as_dict":{"status":"running","pid":7}}}}
+{"func":"scm_service_field","in":{"service":"svc","field":"name","seams":{"scm_getattr":null,"scm_as_dict":{"name":"fallback","pid":7}}}}
+{"func":"scm_service_field","in":{"service":"svc","field":"missing","seams":{"scm_getattr":null,"scm_as_dict":{"name":"x"}}}}
+{"func":"scm_service_field","in":{"service":"svc","field":"name","seams":{"scm_getattr":{"__raise__":"RuntimeError","msg":"boom"}}}}
+{"func":"scm_service_field","in":{"service":"svc","field":"name","seams":{"scm_getattr":{"callable":true},"scm_call":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":"1","truthy_env":true}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":"0","truthy_env":false}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":"yes","truthy_env":true}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":null,"truthy_env":false}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":{"__raise__":"OSError","msg":"boom"},"truthy_env":true}}}
+{"func":"gateway_detached_env","in":{"seams":{"getenv":"1","truthy_env":{"__raise__":"ValueError","msg":"boom"}}}}
+{"func":"stdin_is_tty","in":{"stdin_present":true,"seams":{"stdin_isatty":true}}}
+{"func":"stdin_is_tty","in":{"stdin_present":true,"seams":{"stdin_isatty":false}}}
+{"func":"stdin_is_tty","in":{"stdin_present":false}}
+{"func":"stdin_is_tty","in":{"stdin_present":true,"seams":{"stdin_isatty":{"__raise__":"ValueError","msg":"boom"}}}}
+{"func":"stdin_is_tty","in":{"stdin_present":true,"seams":{"stdin_isatty":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"stdin_is_tty","in":{"stdin_present":true,"seams":{"stdin_isatty":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"home_owns_bare_service_name","in":{"home":"/home/u/.hermes","seams":{"native_service_homes":[["/home/u/.hermes","/root/.hermes"]]}}}
+{"func":"home_owns_bare_service_name","in":{"home":"/data/h","seams":{"native_service_homes":[["/home/u/.hermes"]],"bare_unit_pinned_home":"/data/h"}}}
+{"func":"home_owns_bare_service_name","in":{"home":"/elsewhere","seams":{"native_service_homes":[["/home/u/.hermes"]],"bare_unit_pinned_home":"/root/.hermes"}}}
+{"func":"home_owns_bare_service_name","in":{"home":"/x","seams":{"native_service_homes":{"__raise__":"RuntimeError","msg":"boom"}}}}
+{"func":"home_owns_bare_service_name","in":{"home":"/x","seams":{"native_service_homes":[],"bare_unit_pinned_home":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"cmd_setup","in":{"args":{"quiet":true},"seams":{"gateway_setup":null}}}
+{"func":"cmd_list","in":{"args":{},"seams":{"gateway_list":null}}}
+{"func":"cmd_setup","in":{"args":{"quiet":true},"seams":{"gateway_setup":true}}}
+{"func":"cmd_list","in":{"args":{},"seams":{"gateway_list":true}}}
+{"func":"cmd_setup","in":{"args":{"quiet":true},"seams":{"gateway_setup":"ok"}}}
+{"func":"cmd_list","in":{"args":{},"seams":{"gateway_list":"ok"}}}
+{"func":"cmd_setup","in":{"args":{"quiet":true},"seams":{"gateway_setup":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"cmd_list","in":{"args":{},"seams":{"gateway_list":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"cmd_setup","in":{"args":{"quiet":true},"seams":{"gateway_setup":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"cmd_list","in":{"args":{},"seams":{"gateway_list":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"cmd_migrate_legacy","in":{"args":{"dry_run":true,"yes":true},"seams":{"supports_systemd_services":true,"remove_legacy_hermes_units":null}}}
+{"func":"cmd_migrate_legacy","in":{"args":{"dry_run":false,"yes":false},"seams":{"supports_systemd_services":false,"is_macos":true,"remove_legacy_hermes_units":null}}}
+{"func":"cmd_migrate_legacy","in":{"args":{},"seams":{"supports_systemd_services":false,"is_macos":false,"print":null}}}
+{"func":"cmd_migrate_legacy","in":{"args":{"dry_run":true,"yes":true},"seams":{"supports_systemd_services":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"cmd_migrate_legacy","in":{"args":{"dry_run":true,"yes":true},"seams":{"supports_systemd_services":false,"is_macos":{"__raise__":"ValueError","msg":"boom"}}}}
+{"func":"print_unserved_shared_ingress","in":{"profile":"work","seams":{"served_unserved_platforms":{},"print":null}}}
+{"func":"print_unserved_shared_ingress","in":{"profile":"work","seams":{"served_unserved_platforms":{"whatsapp":"not served under multiplex"},"print":null}}}
+{"func":"print_unserved_shared_ingress","in":{"profile":null,"seams":{"served_unserved_platforms":{"relay":"shared only on default","whatsapp":"disabled here"},"print":null}}}
+{"func":"print_unserved_shared_ingress","in":{"profile":"work","seams":{"served_unserved_platforms":{"__raise__":"RuntimeError","msg":"boom"},"print":null}}}
+{"func":"print_unserved_shared_ingress","in":{"profile":"work","seams":{"served_unserved_platforms":{"__raise__":"KeyboardInterrupt","msg":"boom"},"print":null}}}
+{"func":"print_duplicate_credential_warnings","in":{"seams":{"duplicate_credential_findings":[]}}}
+{"func":"print_duplicate_credential_warnings","in":{"seams":{"duplicate_credential_findings":[["telegram token reused","discord token reused"]],"print":null}}}
+{"func":"print_duplicate_credential_warnings","in":{"seams":{"duplicate_credential_findings":[["single ⚠ line"]],"print":null}}}
+{"func":"print_duplicate_credential_warnings","in":{"seams":{"duplicate_credential_findings":{"__raise__":"ValueError","msg":"boom"}}}}
+{"func":"print_duplicate_credential_warnings","in":{"seams":{"duplicate_credential_findings":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":null,"hasattr_sigbreak":true,"set_console_ctrl_handler":null}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":null,"hasattr_sigbreak":false,"set_console_ctrl_handler":null}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":{"__raise__":"OSError","msg":"boom"},"set_console_ctrl_handler":null}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":[null,{"__raise__":"ValueError","msg":"boom"}],"hasattr_sigbreak":true,"set_console_ctrl_handler":null}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":null,"hasattr_sigbreak":true,"set_console_ctrl_handler":{"__raise__":"AttributeError","msg":"boom"}}}}
+{"func":"absorb_windows_console_controls","in":{"seams":{"signal":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":0.5,"seams":{"socket_new":null,"settimeout":null,"connect":null,"recv":[[49]],"close":null}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":-1.0,"seams":{"socket_new":null,"settimeout":null,"connect":null,"recv":[[48]],"close":null}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":1.0,"seams":{"socket_new":null,"settimeout":null,"connect":{"__raise__":"ConnectionRefusedError","msg":"boom"},"close":null}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["::1",9000],"timeout":2.0,"seams":{"socket_new":null,"settimeout":{"__raise__":"OSError","msg":"boom"},"close":null}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":1.0,"seams":{"socket_new":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":1.0,"seams":{"socket_new":null,"settimeout":null,"connect":null,"recv":[[49]],"close":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"ping_loop_tick_witness","in":{"family":2,"address":["127.0.0.1",9000],"timeout":1.0,"seams":{"socket_new":null,"settimeout":null,"connect":null,"recv":{"__raise__":"BaseExceptionGroup","msg":"boom (1 sub-exception)"},"close":null}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[],"seams":{"getpid":500,"listdir":[["1","2","self","500","abc","3"]],"read_cmdline":["/bin/one\u0000--flag","/bin/two","/bin/three"]}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[1,3],"seams":{"getpid":500,"listdir":[["1","2","3"]],"read_cmdline":["/bin/one","/bin/two","/bin/three"]}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[],"seams":{"getpid":500,"listdir":[["1","2","3"]],"read_cmdline":[{"__raise__":"FileNotFoundError","msg":"boom"},"/bin/two",{"__raise__":"PermissionError","msg":"boom"}]}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[],"seams":{"getpid":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[],"seams":{"getpid":500,"listdir":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"iter_proc_cmdlines","in":{"exclude_pids":[],"seams":{"getpid":500,"listdir":[["1"]],"read_cmdline":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"wait_for_tcp_port_free","in":{"host":"127.0.0.1","port":8765,"timeout":0.5,"seams":{"poll_until":true}}}
+{"func":"wait_for_tcp_port_free","in":{"host":"127.0.0.1","port":8766,"timeout":1.5,"seams":{"poll_until":false}}}
+{"func":"wait_for_tcp_port_free","in":{"host":"127.0.0.1","port":8767,"timeout":2.5,"seams":{"poll_until":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"wait_for_tcp_port_free","in":{"host":"127.0.0.1","port":8768,"timeout":3.5,"seams":{"poll_until":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"wait_for_tcp_port_free","in":{"host":"127.0.0.1","port":8769,"timeout":4.5,"seams":{"poll_until":true}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":[]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["hermes","gateway","run"]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway","--profile","default"]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway","-p","work"]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway","--profile=default"]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway","--profile=work"]}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":true}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":{"__raise__":"RuntimeError","msg":"boom"},"hr_read_record":{"live_owner":true,"profiles":["default","work"]}}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":false,"hr_read_record":{"live_owner":false,"profiles":["default","work"]},"get_hermes_home":"/h/.hermes","get_default_hermes_root":"/h/.hermes"}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":false,"hr_read_record":null,"get_hermes_home":"/h/.hermes","get_default_hermes_root":"/other"}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":false,"hr_read_record":null,"get_hermes_home":{"__raise__":"OSError","msg":"boom"}}}}
+{"func":"restart_argv_is_host_gateway","in":{"argv":["gateway"],"seams":{"is_multiplex_active":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}
+{"func":"gw_windows","in":{"seams":{"import_gateway_windows":"<module gateway_windows>"}}}
+{"func":"gw_windows","in":{"seams":{"import_gateway_windows":"marker"}}}
+{"func":"gw_windows","in":{"seams":{"import_gateway_windows":null}}}
+{"func":"gw_windows","in":{"seams":{"import_gateway_windows":{"__raise__":"ImportError","msg":"boom"}}}}
+{"func":"gw_windows","in":{"seams":{"import_gateway_windows":{"__raise__":"KeyboardInterrupt","msg":"boom"}}}}

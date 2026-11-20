@@ -1,0 +1,90 @@
+{"func":"_b64","in":{"args":{"data":""},"io":{},"state":{}}}
+{"func":"_b64","in":{"args":{"data":"a"},"io":{},"state":{}}}
+{"func":"_b64","in":{"args":{"data":"ab"},"io":{},"state":{}}}
+{"func":"_b64","in":{"args":{"data":"abc"},"io":{},"state":{}}}
+{"func":"_b64","in":{"args":{"data":"hello"},"io":{},"state":{}}}
+{"func":"_b64","in":{"args":{"data":"Hi!"},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":80}},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":120}},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":"40"}},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":0}},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":true}},"io":{},"state":{}}}
+{"func":"terminal.resize","in":{"args":{"rid":"r1","params":{"cols":"0"}},"io":{},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":[]},"is_spawn_paused":{"__script__":true,"ret":false},"_get_max_spawn_depth":{"__script__":true,"ret":3},"_get_max_concurrent_children":{"__script__":true,"ret":4}},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":["a","b"]},"is_spawn_paused":{"__script__":true,"ret":true},"_get_max_spawn_depth":{"__script__":true,"ret":1},"_get_max_concurrent_children":{"__script__":true,"ret":2}},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":null},"is_spawn_paused":{"__script__":true,"ret":null},"_get_max_spawn_depth":{"__script__":true,"ret":null},"_get_max_concurrent_children":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":["z"]},"is_spawn_paused":{"__script__":true,"ret":false},"_get_max_spawn_depth":{"__script__":true,"ret":2},"_get_max_concurrent_children":{"__script__":true,"ret":2}},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":["x"]},"is_spawn_paused":{"__script__":true,"ret":false},"_get_max_spawn_depth":{"__script__":true,"ret":0},"_get_max_concurrent_children":{"__script__":true,"ret":0}},"state":{}}}
+{"func":"delegation.status","in":{"args":{"rid":"r1"},"io":{"list_active_subagents":{"__script__":true,"ret":["a"]},"is_spawn_paused":{"__script__":true,"ret":true},"_get_max_spawn_depth":{"__script__":true,"ret":5},"_get_max_concurrent_children":{"__script__":true,"ret":10}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{"paused":true}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{"paused":false}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{"paused":null}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{"paused":0}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"delegation.pause","in":{"args":{"rid":"r1","params":{"paused":"yes"}},"io":{"set_spawn_paused":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":{"total":5}}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":{}}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":{"seq":9,"truncated":false}}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"session.events.stats","in":{"args":{"rid":"r1"},"io":{"replay_stats":{"__script__":true,"ret":0}},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"session_id":"s1","last_seen":0}},"io":{"events_since":{"__script__":true,"ret":[{"n":1}]},"latest_seq":{"__script__":true,"ret":1},"is_truncated":{"__script__":true,"ret":false},"replay_epoch":{"__script__":true,"ret":7},"open_requests":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"session_id":"s2","last_seen":"5"}},"io":{"events_since":{"__script__":true,"ret":[]},"latest_seq":{"__script__":true,"ret":5},"is_truncated":{"__script__":true,"ret":true},"replay_epoch":{"__script__":true,"ret":7},"open_requests":{"__script__":true,"ret":["q1"]}},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"last_seen":0}},"io":{"events_since":{"__script__":true,"ret":[]},"latest_seq":{"__script__":true,"ret":0},"is_truncated":{"__script__":true,"ret":false},"replay_epoch":{"__script__":true,"ret":1},"open_requests":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"session_id":"s3","last_seen":"bad"}},"io":{},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"session_id":"s4","last_seen":2}},"io":{"events_since":{"__script__":true,"ret":[{"n":2},{"n":3}]},"latest_seq":{"__script__":true,"ret":0},"is_truncated":{"__script__":true,"ret":false},"replay_epoch":{"__script__":true,"ret":1},"open_requests":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"session.events.since","in":{"args":{"rid":"r1","params":{"session_id":123,"last_seen":1}},"io":{"events_since":{"__script__":true,"ret":[{"n":1},{"n":2}]},"latest_seq":{"__script__":true,"ret":2},"is_truncated":{"__script__":true,"ret":false},"replay_epoch":{"__script__":true,"ret":3},"open_requests":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":{}}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":false}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":0}},"state":{}}}
+{"func":"pet.disable","in":{"args":{"rid":"r1"},"io":{"set_enabled":{"__script__":true,"ret":"ok"}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":[0.8,null]}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":[1.0,null]}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":[2,""]}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":[null,"scale out of range"]}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":["1.5",null]}},"state":{}}}
+{"func":"pet.scale","in":{"args":{"rid":"r1","params":{"scale":1.5}},"io":{"set_pet_scale":{"__script__":true,"ret":[0,"bad"]}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{"token":""}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{"token":"abc"}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{"token":"  tok  "}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{"token":null}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.cancel","in":{"args":{"rid":"r1","params":{"token":123}},"io":{"pet_cancel_request":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"ret":null},"list_sprite_providers":{"__script__":true,"ret":["a","b"]}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"raise":{"type":"GenerationError","message":"no provider"}},"list_sprite_providers":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"ret":null},"list_sprite_providers":{"__script__":true,"raise":{"type":"RuntimeError","message":"list failed"}}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"ret":"provider-x"},"list_sprite_providers":{"__script__":true,"ret":["p"]}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"raise":{"type":"GenerationError","message":"refs required"}},"list_sprite_providers":{"__script__":true,"raise":{"type":"Exception","message":"x"}}},"state":{}}}
+{"func":"pet.generate.status","in":{"args":{"rid":"r1"},"io":{"resolve_provider":{"__script__":true,"ret":null},"list_sprite_providers":{"__script__":true,"ret":[]}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{"session_id":"s1"}},"io":{"pop_session_by_id":{"__script__":true,"ret":{"_end_msgs":["bye"]}},"teardown_popped_session":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{"session_id":"s1"}},"io":{"pop_session_by_id":{"__script__":true,"ret":{"_end_msgs":[]}},"teardown_popped_session":{"__script__":true,"ret":false}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{"session_id":"s2"}},"io":{"pop_session_by_id":{"__script__":true,"ret":null},"teardown_popped_session":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{}},"io":{"pop_session_by_id":{"__script__":true,"ret":{"_end_msgs":["a","b"]}},"teardown_popped_session":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{"session_id":"s3"}},"io":{"pop_session_by_id":{"__script__":true,"ret":{"_end_msgs":"not-a-list"}},"teardown_popped_session":{"__script__":true,"ret":false}},"state":{}}}
+{"func":"session.close","in":{"args":{"rid":"r1","params":{"session_id":"s4"}},"io":{"pop_session_by_id":{"__script__":true,"ret":{"other":1}},"teardown_popped_session":{"__script__":true,"ret":true}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"ret":{"jsonrpc":"2.0","id":"r1","result":{"ok":true}}}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"ret":{"jsonrpc":"2.0","id":"r1","error":{"code":4001,"message":"no"}}}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"raise":{"type":"RuntimeError","message":"branch boom"}}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"ret":{}}},"state":{}}}
+{"func":"session.branch","in":{"args":{"rid":"r1","params":{"session_id":"s1"},"session":{"cols":80}},"io":{"branch_live":{"__script__":true,"ret":"str-result"}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"ret":{"jsonrpc":"2.0","id":"r1","result":{"ok":true}}}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"ret":{"jsonrpc":"2.0","id":"r1","error":{"code":4001,"message":"no"}}}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"raise":{"type":"RuntimeError","message":"branch boom"}}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"ret":{}}},"state":{}}}
+{"func":"session.branch_whole","in":{"args":{"rid":"r1","params":{},"session":{"cols":40}},"io":{"branch_live":{"__script__":true,"ret":[1,2]}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"ret":{"result":{"saved":true},"code":0}},"compute_host_ack_error":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"ret":{"result":[1,2],"code":0}},"compute_host_ack_error":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"raise":{"type":"RuntimeError","message":"host gone"}},"compute_host_ack_error":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"ret":{"result":{"ok":1},"code":5011}},"compute_host_ack_error":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"ret":{"result":{"ok":1},"code":403}},"compute_host_ack_error":{"__script__":true,"ret":{"jsonrpc":"2.0","id":"r1","error":{"code":403,"message":"denied"}}}},"state":{}}}
+{"func":"_save_via_compute_host","in":{"args":{"rid":"r1","params":{"session_id":"  s1  "}},"io":{"send_compute_host_control":{"__script__":true,"ret":{}},"compute_host_ack_error":{"__script__":true,"ret":null}},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":""}},"io":{},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":"  /root/a.json  "}},"io":{"path_resolve":{"__script__":true,"raise":{"type":"ValueError","message":"path outside root"}}},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":"/root/a.json"}},"io":{"path_resolve":{"__script__":true,"ret":"/root/a.json"},"path_read_json":{"__script__":true,"ret":{"a":1}}},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":"/root/b.json"}},"io":{"path_resolve":{"__script__":true,"ret":"/root/b.json"},"path_read_json":{"__script__":true,"raise":{"type":"OSError","message":"cannot read"}}},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":"/root/c.json"}},"io":{"path_resolve":{"__script__":true,"ret":"/root/c.json"},"path_read_json":{"__script__":true,"ret":[1,2,3]}},"state":{}}}
+{"func":"spawn_tree.load","in":{"args":{"rid":"r1","params":{"path":"relative.json"}},"io":{"path_resolve":{"__script__":true,"ret":"/root/relative.json"},"path_read_json":{"__script__":true,"ret":{"z":true}}},"state":{}}}
